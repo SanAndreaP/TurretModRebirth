@@ -8,13 +8,24 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
-import io.netty.buffer.ByteBufInputStream;
+import de.sanandrew.core.manpack.util.helpers.SAPUtils;
+import de.sanandrew.mods.turretmod.item.ItemTurret;
+import net.minecraft.item.Item;
 
-import java.io.IOException;
-
-public class CommonProxy
+public class TmrItems
 {
-    public void init() {}
+    public static Item turretItem;
 
-    public void processTargetListClt(ByteBufInputStream stream) throws IOException {}
+    public static void initialize() {
+        initializeItems();
+        registerItems();
+    }
+
+    private static void initializeItems() {
+        turretItem = new ItemTurret();
+    }
+
+    private static void registerItems() {
+        SAPUtils.registerItems(turretItem);
+    }
 }

@@ -1,18 +1,25 @@
 /**
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
- * Copyright: SanAndreasP, SilverChiren and CliffracerX
+ * Copyright: SanAndreasP
  * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
 package de.sanandrew.mods.turretmod.client.util;
 
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import de.sanandrew.mods.turretmod.client.model.turret.techi.ModelTurretCrossbow;
-import de.sanandrew.mods.turretmod.client.render.entity.RenderTurret;
-import de.sanandrew.mods.turretmod.entity.turret.techi.EntityTurretCrossbow;
+import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
 import de.sanandrew.mods.turretmod.util.CommonProxy;
+import de.sanandrew.mods.turretmod.util.TmrEntities;
+import io.netty.buffer.ByteBufInputStream;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClientProxy
         extends CommonProxy
@@ -21,6 +28,27 @@ public class ClientProxy
     public void init() {
         super.init();
 
-        RenderingRegistry.registerEntityRenderingHandler(EntityTurretCrossbow.class, new RenderTurret(new ModelTurretCrossbow(0.0F)));
+        TmrEntities.registerRenderers();
+    }
+
+    @Override
+    public void processTargetListClt(ByteBufInputStream stream) throws IOException {
+        int entityId = stream.readInt();
+        int listSize = stream.readInt();
+        Entity e = getMinecraft().theWorld.getEntityByID(entityId);
+        if( e instanceof AEntityTurretBase ) {
+            List<Class<?extends EntityLiving>> applicableTargets = new ArrayList<>(listSize);
+            for( int i = 0; i < listSize; i++ ) {
+                    String clsName = stream.readUTF();
+                    //noinspection unchecked
+                    applicableTargets.add((Class<? extends EntityLiving>) EntityList.stringToClassMapping.get(clsName));
+            }
+
+            ((AEntityTurretBase) e).setTargetList(applicableTargets);
+        }
+    }
+
+    private static Minecraft getMinecraft() {
+        return Minecraft.getMinecraft();
     }
 }

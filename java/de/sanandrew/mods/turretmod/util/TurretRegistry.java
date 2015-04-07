@@ -8,9 +8,169 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
-public final class TurretRegistry
-{
-    static {
+import com.google.common.collect.Maps;
+import com.sun.istack.internal.NotNull;
+import de.sanandrew.core.manpack.util.helpers.SAPUtils;
+import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretOP;
+import de.sanandrew.mods.turretmod.entity.turret.techi.EntityTurretCrossbow;
+import de.sanandrew.mods.turretmod.entity.turret.techii.EntityTurretRevolver;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+public final class TurretRegistry<T extends AEntityTurretBase>
+{
+    private static final Map<Class<? extends AEntityTurretBase>, TurretRegistry<? extends AEntityTurretBase>> CLASS_MAP = Maps.newHashMap();
+    private static final Map<String, TurretRegistry<? extends AEntityTurretBase>> NAME_MAP = Maps.newHashMap();
+
+    public static <T extends AEntityTurretBase> TurretRegistry<T> registerNewTurret(Class<T> turretEntityCls, String turretName, String iconName) {
+        TurretRegistry<T> turret = new TurretRegistry<>(turretEntityCls, turretName, iconName);
+        CLASS_MAP.put(turretEntityCls, turret);
+        NAME_MAP.put(turretName, turret);
+
+        return turret;
+    }
+
+    public static void initialize() {
+        registerNewTurret(EntityTurretCrossbow.class, "turretCrossbow", TurretMod.MOD_ID + ":turret_crossbow")
+                .applyAmmoItems(new AmmoInfo(new ItemStack(Items.arrow), new ItemStack(Items.arrow), 1),
+                                new AmmoInfo(new ItemStack(Blocks.bedrock), new ItemStack(Items.arrow), 128))
+                .applyHealItems(new HealInfo(new ItemStack(Blocks.cobblestone), 10.0F));
+        registerNewTurret(EntityTurretRevolver.class, "turretRevolver", TurretMod.MOD_ID + ":turret_revolver")
+                .applyAmmoItems(new AmmoInfo(new ItemStack(Items.arrow), new ItemStack(Items.arrow), 1),
+                                new AmmoInfo(new ItemStack(Blocks.bedrock), new ItemStack(Items.arrow), 128)) //TODO: add bullets!
+                .applyHealItems(new HealInfo(new ItemStack(Items.iron_ingot), 4.0F),
+                                new HealInfo(new ItemStack(Blocks.iron_block), 36.0F)
+                );
+        registerNewTurret(EntityTurretOP.class, "turretOP", TurretMod.MOD_ID + ":turret_op");
+    }
+
+    public static TurretRegistry<? extends AEntityTurretBase> getTurretInfo(Class<? extends AEntityTurretBase> clazz) {
+        return CLASS_MAP.get(clazz);
+    }
+
+    public static TurretRegistry<? extends AEntityTurretBase> getTurretInfo(String name) {
+        return NAME_MAP.get(name);
+    }
+
+    public static List<String> getTurretNameList() {
+        return new ArrayList<>(NAME_MAP.keySet());
+    }
+
+    private final Class<T> turretEntityCls;
+    private final String iconName;
+    private final String turretName;
+    private AmmoInfo[] ammoItems = new AmmoInfo[0];
+    private HealInfo[] healItems = new HealInfo[0];
+
+    private TurretRegistry(Class<T> turretCls, String tName, String icoName) {
+        this.turretEntityCls = turretCls;
+        this.turretName = tName;
+        this.iconName = icoName;
+    }
+
+    public Class<T> getTurretClass() {
+        return this.turretEntityCls;
+    }
+
+    public String getTurretName() {
+        return this.turretName;
+    }
+
+    public String getTurretIcon() {
+        return this.iconName;
+    }
+
+    public TurretRegistry<T> applyAmmoItems(AmmoInfo... ammoTypes) {
+        if( ammoTypes != null && this.ammoItems == null && ammoTypes.length > 0 ) {
+            this.ammoItems = ammoTypes;
+        }
+
+        return this;
+    }
+
+    public TurretRegistry<T> applyHealItems(HealInfo... healTypes) {
+        if( healTypes != null && this.healItems == null && healTypes.length > 0 ) {
+            this.healItems = healTypes;
+        }
+
+        return this;
+    }
+
+    public AmmoInfo getAmmo(ItemStack stack) {
+        for( AmmoInfo info : this.ammoItems ) {
+            if( SAPUtils.areStacksEqual(stack, info.item, info.item.hasTagCompound()) ) {
+                return info;
+            }
+        }
+
+        return null;
+    }
+
+    public HealInfo getHeal(ItemStack stack) {
+        for( HealInfo info : this.healItems ) {
+            if( SAPUtils.areStacksEqual(stack, info.item, info.item.hasTagCompound()) ) {
+                return info;
+            }
+        }
+
+        return null;
+    }
+
+    public AmmoInfo getAmmoWithOneAmount() {
+        for( AmmoInfo info : this.ammoItems ) {
+            if( info.amount == 1 ) {
+                return info;
+            }
+        }
+
+        return null;
+    }
+
+    public static class HealInfo {
+        private ItemStack item;
+        private float amount;
+
+        public HealInfo(@NotNull ItemStack ammoItem, float givesAmount) {
+            this.item = ammoItem;
+            this.amount = givesAmount;
+        }
+
+        public ItemStack getItem() {
+            return this.item.copy();
+        }
+
+        public float getAmount() {
+            return this.amount;
+        }
+    }
+
+    public static class AmmoInfo {
+        private ItemStack item;
+        private ItemStack type;
+        private int amount;
+
+        public AmmoInfo(@NotNull ItemStack ammoItem, @NotNull ItemStack typeItem, int givesAmount) {
+            this.item = ammoItem;
+            this.type = typeItem;
+            this.amount = givesAmount;
+        }
+
+        public ItemStack getItem() {
+            return this.item.copy();
+        }
+
+        public ItemStack getTypeItem() {
+            return this.type.copy();
+        }
+
+        public int getAmount() {
+            return this.amount;
+        }
     }
 }

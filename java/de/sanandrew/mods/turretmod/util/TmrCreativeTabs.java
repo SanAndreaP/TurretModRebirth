@@ -8,13 +8,15 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
-import io.netty.buffer.ByteBufInputStream;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 
-import java.io.IOException;
-
-public class CommonProxy
+public class TmrCreativeTabs
 {
-    public void init() {}
-
-    public void processTargetListClt(ByteBufInputStream stream) throws IOException {}
+    public static final CreativeTabs TURRETS = new CreativeTabs("turrets") {
+        @Override public Item getTabIconItem() {
+            return Item.getItemFromBlock(Blocks.dispenser);
+        }
+    };
 }

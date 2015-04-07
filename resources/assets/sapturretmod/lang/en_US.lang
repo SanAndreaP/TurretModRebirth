@@ -1,3 +1,8 @@
+item.sapturretmod:turretPlacer.name=Turret Item
+entity.sapturretmod.turretCrossbow.name=Crossbow Turret (T1)
+entity.sapturretmod.turretRevolver.name=Revolver Turret (T2)
+
+
 turret.desct1a=Turret which shoots arrows. It's relatively cheap, so it's ideal as your basic defense.
 turret.amtp0t1a=Arrows
 turret.desct1s=Turret which shoots pebbles. It has the same stats as the T1 turret, but makes the lowest damage. Ideal for hitting multiple targets at once.

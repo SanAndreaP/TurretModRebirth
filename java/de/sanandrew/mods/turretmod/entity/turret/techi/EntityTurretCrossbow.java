@@ -8,11 +8,12 @@
  */
 package de.sanandrew.mods.turretmod.entity.turret.techi;
 
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileArrow;
+import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
 import de.sanandrew.mods.turretmod.util.EnumTextures;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -42,6 +43,16 @@ public class EntityTurretCrossbow
     }
 
     @Override
+    protected EntityTurretProjectile getProjectile() {
+        return new EntityProjectileArrow(this.worldObj);
+    }
+
+    @Override
+    protected String getShootSound() {
+        return "random.bow";
+    }
+
+    @Override
     public ResourceLocation getStandardTexture() {
         return EnumTextures.TURRET_T1_CROSSBOW.getResource();
     }
@@ -55,7 +66,8 @@ public class EntityTurretCrossbow
     {
         @Override
         public boolean isEntityApplicable(Entity entity) {
-            return entity instanceof EntityMob && EntityTurretCrossbow.this.getRangeBB().intersectsWith(entity.boundingBox);
+            return EntityTurretCrossbow.this.canEntityBeSeen(entity)
+                   && EntityTurretCrossbow.this.getRangeBB().intersectsWith(entity.boundingBox);
         }
     }
 }

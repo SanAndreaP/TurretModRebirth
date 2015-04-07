@@ -1,7 +1,7 @@
 /**
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
- * Copyright: SanAndreasP, SilverChiren and CliffracerX
+ * Copyright: SanAndreasP
  * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
@@ -151,7 +151,7 @@ public class RenderTurret
                 this.renderName(turret, var15);
 
                 double health = (turret.getHealth() / turret.getMaxHealth()) * 50.0D - 25.0D;
-//                double ammo = ((double)turret.getAmmo() / (double)turret.getMaxAmmo()) * 50.0D - 25.0D;
+                double ammo = ((double)turret.getAmmo() / (double)turret.getMaxAmmo()) * 50.0D - 25.0D;
 //                double exp = ((double)turret.getExperience() / (double)turret.getExpCap()) * 50.0D - 25.0D;
 //                boolean hasXP = TurretUpgrades.hasUpgrade(TUpgExperience.class, turret.upgrades) && turret.hasPlayerAccess(Minecraft.getMinecraft().thePlayer);
 
@@ -167,15 +167,15 @@ public class RenderTurret
                 var15.addVertex(25.0D, 11.0D, 0.0D);
                 var15.addVertex(25.0D, 9.0D, 0.0D);
 
-//                var15.addVertex(ammo, 11.5D, 0.0D);
-//                var15.addVertex(ammo, 13.5D, 0.0D);
-//                var15.addVertex(25.0D, 13.5D, 0.0D);
-//                var15.addVertex(25.0D, 11.5D, 0.0D);
+                var15.addVertex(ammo, 11.5D, 0.0D);
+                var15.addVertex(ammo, 13.5D, 0.0D);
+                var15.addVertex(25.0D, 13.5D, 0.0D);
+                var15.addVertex(25.0D, 11.5D, 0.0D);
 
-//                var15.addVertex(-25.5D, 8.5D, 0.0D);
-//                var15.addVertex(-25.5D, 9.0D, 0.0D);
-//                var15.addVertex(25.5D, 9.0D, 0.0D);
-//                var15.addVertex(25.5D, 8.5D, 0.0D);
+                var15.addVertex(-25.5D, 8.5D, 0.0D);
+                var15.addVertex(-25.5D, 9.0D, 0.0D);
+                var15.addVertex(25.5D, 9.0D, 0.0D);
+                var15.addVertex(25.5D, 8.5D, 0.0D);
 
                 var15.addVertex(-25.5D, 8.5D, 0.0D);
                 var15.addVertex(-25.5D, 11.5D, 0.0D);
@@ -231,11 +231,11 @@ public class RenderTurret
                 var15.addVertex(health, 9.0D, 0.0D);
 
                 //ammo bar
-//                var15.setColorRGBA_F(0.0F, 0.5F, 1.0F, 1.0F);
-//                var15.addVertex(-25.0D, 11.5D, 0.0D);
-//                var15.addVertex(-25.0D, 13.5D, 0.0D);
-//                var15.addVertex(ammo, 13.5D, 0.0D);
-//                var15.addVertex(ammo, 11.5D, 0.0D);
+                var15.setColorRGBA_F(0.0F, 0.5F, 1.0F, 1.0F);
+                var15.addVertex(-25.0D, 11.5D, 0.0D);
+                var15.addVertex(-25.0D, 13.5D, 0.0D);
+                var15.addVertex(ammo, 13.5D, 0.0D);
+                var15.addVertex(ammo, 11.5D, 0.0D);
 //
 //                //exp bar
 //                if (hasXP) {
