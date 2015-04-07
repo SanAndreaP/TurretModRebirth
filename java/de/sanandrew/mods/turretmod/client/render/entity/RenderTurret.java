@@ -11,7 +11,6 @@ package de.sanandrew.mods.turretmod.client.render.entity;
 import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
 import de.sanandrew.mods.turretmod.util.ITurretInfo;
 import de.sanandrew.mods.turretmod.util.TurretMod;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -19,7 +18,10 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.opengl.GL11;
 
@@ -127,132 +129,178 @@ public class RenderTurret
     }
 
     protected void renderStats(AEntityTurretBase turret, double x, double y, double z) {
-        if( Minecraft.isGuiEnabled() /*&& TM3ModRegistry.proxy.getPlayerTM3Data(Minecraft.getMinecraft().thePlayer).getBoolean("renderLabels") && !par1Turret.isInGui()*/) {
-            float scale = 0.016666668F;
-            double renderEntityDistSq = turret.getDistanceSqToEntity(this.renderManager.livingPlayer);
-            float maxRenderDist = 16.0F;
+        if( MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Specials.Pre(turret, this, x, y, z)) ) {
+            return;
+        }
 
-            if( renderEntityDistSq < maxRenderDist * maxRenderDist ) {
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
 
-                GL11.glPushMatrix();
-                GL11.glTranslatef((float) x + 0.0F, (float)y + 2.8F, (float) z);
-                GL11.glNormal3f(0.0F, 1.0F, 0.0F);
-                GL11.glRotatef(-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
-                GL11.glRotatef(this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
-                GL11.glScalef(-scale, -scale, scale);
-                GL11.glDisable(GL11.GL_LIGHTING);
-                GL11.glTranslatef(0.0F, 0.25F / scale, 0.0F);
-                GL11.glDepthMask(false);
-                GL11.glEnable(GL11.GL_BLEND);
-                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                Tessellator var15 = Tessellator.instance;
-                GL11.glDisable(GL11.GL_TEXTURE_2D);
+        if( this.func_110813_b(turret) && turret == this.renderManager.field_147941_i ) { // can show label
+            float scaleMulti = 1.6F;
+            float scale = 0.016666668F * scaleMulti;
 
-                this.renderName(turret, var15);
+            if( turret.getDistanceSqToEntity(this.renderManager.livingPlayer) < (NAME_TAG_RANGE * NAME_TAG_RANGE) ) {
+                String s = turret.getTurretName() + String.format(" (%s%d%s)", EnumChatFormatting.GREEN, turret.getFrequency(), EnumChatFormatting.RESET);
 
-                double health = (turret.getHealth() / turret.getMaxHealth()) * 50.0D - 25.0D;
-                double ammo = ((double)turret.getAmmo() / (double)turret.getMaxAmmo()) * 50.0D - 25.0D;
-//                double exp = ((double)turret.getExperience() / (double)turret.getExpCap()) * 50.0D - 25.0D;
-//                boolean hasXP = TurretUpgrades.hasUpgrade(TUpgExperience.class, turret.upgrades) && turret.hasPlayerAccess(Minecraft.getMinecraft().thePlayer);
-
-//                if (TurretUpgrades.hasUpgrade(TUpgInfAmmo.class, turret.upgrades) && turret.getAmmo() > 0) {
-//                    ammo = 25.0D;
-//                }
-
-                //bars bkg
-                var15.startDrawingQuads();
-                var15.setColorRGBA_F(0.0F, 0.0F, 0.0F, 1.0F);
-                var15.addVertex(health, 9.0D, 0.0D);
-                var15.addVertex(health, 11.0D, 0.0D);
-                var15.addVertex(25.0D, 11.0D, 0.0D);
-                var15.addVertex(25.0D, 9.0D, 0.0D);
-
-                var15.addVertex(ammo, 11.5D, 0.0D);
-                var15.addVertex(ammo, 13.5D, 0.0D);
-                var15.addVertex(25.0D, 13.5D, 0.0D);
-                var15.addVertex(25.0D, 11.5D, 0.0D);
-
-                var15.addVertex(-25.5D, 8.5D, 0.0D);
-                var15.addVertex(-25.5D, 9.0D, 0.0D);
-                var15.addVertex(25.5D, 9.0D, 0.0D);
-                var15.addVertex(25.5D, 8.5D, 0.0D);
-
-                var15.addVertex(-25.5D, 8.5D, 0.0D);
-                var15.addVertex(-25.5D, 11.5D, 0.0D);
-                var15.addVertex(-25.0D, 11.5D, 0.0D);
-                var15.addVertex(-25.0D, 8.5D, 0.0D);
-                var15.addVertex(25.0D, 8.5D, 0.0D);
-                var15.addVertex(25.0D, 11.5D, 0.0D);
-                var15.addVertex(25.5D, 11.5D, 0.0D);
-                var15.addVertex(25.5D, 8.5D, 0.0D);
-                var15.addVertex(-25.0D, 11.0D, 0.0D);
-                var15.addVertex(-25.0D, 11.5D, 0.0D);
-                var15.addVertex(25.0D, 11.5D, 0.0D);
-                var15.addVertex(25.0D, 11.0D, 0.0D);
-
-                var15.addVertex(-25.5D, 11.0D, 0.0D);
-                var15.addVertex(-25.5D, 14.0D, 0.0D);
-                var15.addVertex(-25.0D, 14.0D, 0.0D);
-                var15.addVertex(-25.0D, 11.0D, 0.0D);
-                var15.addVertex(25.0D, 11.0D, 0.0D);
-                var15.addVertex(25.0D, 14.0D, 0.0D);
-                var15.addVertex(25.5D, 14.0D, 0.0D);
-                var15.addVertex(25.5D, 11.0D, 0.0D);
-                var15.addVertex(-25.0D, 13.5D, 0.0D);
-                var15.addVertex(-25.0D, 14.0D, 0.0D);
-                var15.addVertex(25.0D, 14.0D, 0.0D);
-                var15.addVertex(25.0D, 13.5D, 0.0D);
-
-//                if (hasXP) {
-//                    var15.addVertex(exp, 14.0D, 0.0D);
-//                    var15.addVertex(exp, 16.0D, 0.0D);
-//                    var15.addVertex(25.0D, 16.0D, 0.0D);
-//                    var15.addVertex(25.0D, 14.0D, 0.0D);
-//
-//                    var15.addVertex(-25.5D, 13.5D, 0.0D);
-//                    var15.addVertex(-25.5D, 16.5D, 0.0D);
-//                    var15.addVertex(-25.0D, 16.5D, 0.0D);
-//                    var15.addVertex(-25.0D, 13.5D, 0.0D);
-//                    var15.addVertex(25.0D, 13.5D, 0.0D);
-//                    var15.addVertex(25.0D, 16.5D, 0.0D);
-//                    var15.addVertex(25.5D, 16.5D, 0.0D);
-//                    var15.addVertex(25.5D, 13.5D, 0.0D);
-//                    var15.addVertex(-25.0D, 16.0D, 0.0D);
-//                    var15.addVertex(-25.0D, 16.5D, 0.0D);
-//                    var15.addVertex(25.0D, 16.5D, 0.0D);
-//                    var15.addVertex(25.0D, 16.0D, 0.0D);
-//                }
-
-                //health bar
-                var15.setColorRGBA_F(1.0F, 0.0F, 0.0F, 1.0F);
-                var15.addVertex(-25.0D, 9.0D, 0.0D);
-                var15.addVertex(-25.0D, 11.0D, 0.0D);
-                var15.addVertex(health, 11.0D, 0.0D);
-                var15.addVertex(health, 9.0D, 0.0D);
-
-                //ammo bar
-                var15.setColorRGBA_F(0.0F, 0.5F, 1.0F, 1.0F);
-                var15.addVertex(-25.0D, 11.5D, 0.0D);
-                var15.addVertex(-25.0D, 13.5D, 0.0D);
-                var15.addVertex(ammo, 13.5D, 0.0D);
-                var15.addVertex(ammo, 11.5D, 0.0D);
-//
-//                //exp bar
-//                if (hasXP) {
-//                    var15.setColorRGBA_F(0.0F, 1.0F, 0.5F, 1.0F);
-//                    var15.addVertex(-25.0D, 14.0D, 0.0D);
-//                    var15.addVertex(-25.0D, 16.0D, 0.0D);
-//                    var15.addVertex(exp, 16.0D, 0.0D);
-//                    var15.addVertex(exp, 14.0D, 0.0D);
-//                }
-
-                var15.draw();
-                GL11.glEnable(GL11.GL_TEXTURE_2D);
-                GL11.glEnable(GL11.GL_LIGHTING);
-                GL11.glDisable(GL11.GL_BLEND);
-                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-                GL11.glPopMatrix();
+                    FontRenderer fontrenderer = this.getFontRendererFromRenderManager();
+                    GL11.glPushMatrix();
+                    GL11.glTranslated(x + 0.0D, y + turret.height + 0.8D, z);
+                    GL11.glNormal3f(0.0F, 1.0F, 0.0F);
+                    GL11.glRotatef(-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
+                    GL11.glRotatef(this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
+                    GL11.glScalef(-scale, -scale, scale);
+                    GL11.glDisable(GL11.GL_LIGHTING);
+                    GL11.glTranslatef(0.0F, 0.25F / scale, 0.0F);
+                    GL11.glDepthMask(false);
+                    GL11.glEnable(GL11.GL_BLEND);
+                    OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+                    Tessellator tessellator = Tessellator.instance;
+                    GL11.glDisable(GL11.GL_TEXTURE_2D);
+                    tessellator.startDrawingQuads();
+                    int i = fontrenderer.getStringWidth(s) / 2;
+                    tessellator.setColorRGBA_F(0.0F, 0.0F, 0.0F, 0.25F);
+                    tessellator.addVertex((-i - 1), -1.0D, 0.0D);
+                    tessellator.addVertex((-i - 1), 8.0D, 0.0D);
+                    tessellator.addVertex((i + 1), 8.0D, 0.0D);
+                    tessellator.addVertex((i + 1), -1.0D, 0.0D);
+                    tessellator.draw();
+                    GL11.glEnable(GL11.GL_TEXTURE_2D);
+                    GL11.glDepthMask(true);
+                    fontrenderer.drawString(s, -fontrenderer.getStringWidth(s) / 2, 0, 0xFFFFFF);
+                    GL11.glEnable(GL11.GL_LIGHTING);
+                    GL11.glDisable(GL11.GL_BLEND);
+                    GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                    GL11.glPopMatrix();
             }
         }
+
+        MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Specials.Post(turret, this, x, y, z));
+//        if( Minecraft.isGuiEnabled() /*&& TM3ModRegistry.proxy.getPlayerTM3Data(Minecraft.getMinecraft().thePlayer).getBoolean("renderLabels") && !par1Turret.isInGui()*/) {
+//            float scale = 0.016666668F;
+//            double renderEntityDistSq = turret.getDistanceSqToEntity(this.renderManager.livingPlayer);
+//            float maxRenderDist = 16.0F;
+//
+//            if( renderEntityDistSq < maxRenderDist * maxRenderDist ) {
+//
+//                GL11.glPushMatrix();
+//                GL11.glTranslatef((float) x + 0.0F, (float)y + 2.8F, (float) z);
+//                GL11.glNormal3f(0.0F, 1.0F, 0.0F);
+//                GL11.glRotatef(-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
+//                GL11.glRotatef(this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
+//                GL11.glScalef(-scale, -scale, scale);
+//                GL11.glDisable(GL11.GL_LIGHTING);
+//                GL11.glTranslatef(0.0F, 0.25F / scale, 0.0F);
+//                GL11.glDepthMask(false);
+//                GL11.glEnable(GL11.GL_BLEND);
+//                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+//                Tessellator var15 = Tessellator.instance;
+//                GL11.glDisable(GL11.GL_TEXTURE_2D);
+//
+//                this.renderName(turret, var15);
+//
+//                double health = (turret.getHealth() / turret.getMaxHealth()) * 50.0D - 25.0D;
+//                double ammo = ((double)turret.getAmmo() / (double)turret.getMaxAmmo()) * 50.0D - 25.0D;
+////                double exp = ((double)turret.getExperience() / (double)turret.getExpCap()) * 50.0D - 25.0D;
+////                boolean hasXP = TurretUpgrades.hasUpgrade(TUpgExperience.class, turret.upgrades) && turret.hasPlayerAccess(Minecraft.getMinecraft().thePlayer);
+//
+////                if (TurretUpgrades.hasUpgrade(TUpgInfAmmo.class, turret.upgrades) && turret.getAmmo() > 0) {
+////                    ammo = 25.0D;
+////                }
+//
+//                //bars bkg
+//                var15.startDrawingQuads();
+//                var15.setColorRGBA_F(0.0F, 0.0F, 0.0F, 1.0F);
+//                var15.addVertex(health, 9.0D, 0.0D);
+//                var15.addVertex(health, 11.0D, 0.0D);
+//                var15.addVertex(25.0D, 11.0D, 0.0D);
+//                var15.addVertex(25.0D, 9.0D, 0.0D);
+//
+//                var15.addVertex(ammo, 11.5D, 0.0D);
+//                var15.addVertex(ammo, 13.5D, 0.0D);
+//                var15.addVertex(25.0D, 13.5D, 0.0D);
+//                var15.addVertex(25.0D, 11.5D, 0.0D);
+//
+//                var15.addVertex(-25.5D, 8.5D, 0.0D);
+//                var15.addVertex(-25.5D, 9.0D, 0.0D);
+//                var15.addVertex(25.5D, 9.0D, 0.0D);
+//                var15.addVertex(25.5D, 8.5D, 0.0D);
+//
+//                var15.addVertex(-25.5D, 8.5D, 0.0D);
+//                var15.addVertex(-25.5D, 11.5D, 0.0D);
+//                var15.addVertex(-25.0D, 11.5D, 0.0D);
+//                var15.addVertex(-25.0D, 8.5D, 0.0D);
+//                var15.addVertex(25.0D, 8.5D, 0.0D);
+//                var15.addVertex(25.0D, 11.5D, 0.0D);
+//                var15.addVertex(25.5D, 11.5D, 0.0D);
+//                var15.addVertex(25.5D, 8.5D, 0.0D);
+//                var15.addVertex(-25.0D, 11.0D, 0.0D);
+//                var15.addVertex(-25.0D, 11.5D, 0.0D);
+//                var15.addVertex(25.0D, 11.5D, 0.0D);
+//                var15.addVertex(25.0D, 11.0D, 0.0D);
+//
+//                var15.addVertex(-25.5D, 11.0D, 0.0D);
+//                var15.addVertex(-25.5D, 14.0D, 0.0D);
+//                var15.addVertex(-25.0D, 14.0D, 0.0D);
+//                var15.addVertex(-25.0D, 11.0D, 0.0D);
+//                var15.addVertex(25.0D, 11.0D, 0.0D);
+//                var15.addVertex(25.0D, 14.0D, 0.0D);
+//                var15.addVertex(25.5D, 14.0D, 0.0D);
+//                var15.addVertex(25.5D, 11.0D, 0.0D);
+//                var15.addVertex(-25.0D, 13.5D, 0.0D);
+//                var15.addVertex(-25.0D, 14.0D, 0.0D);
+//                var15.addVertex(25.0D, 14.0D, 0.0D);
+//                var15.addVertex(25.0D, 13.5D, 0.0D);
+//
+////                if (hasXP) {
+////                    var15.addVertex(exp, 14.0D, 0.0D);
+////                    var15.addVertex(exp, 16.0D, 0.0D);
+////                    var15.addVertex(25.0D, 16.0D, 0.0D);
+////                    var15.addVertex(25.0D, 14.0D, 0.0D);
+////
+////                    var15.addVertex(-25.5D, 13.5D, 0.0D);
+////                    var15.addVertex(-25.5D, 16.5D, 0.0D);
+////                    var15.addVertex(-25.0D, 16.5D, 0.0D);
+////                    var15.addVertex(-25.0D, 13.5D, 0.0D);
+////                    var15.addVertex(25.0D, 13.5D, 0.0D);
+////                    var15.addVertex(25.0D, 16.5D, 0.0D);
+////                    var15.addVertex(25.5D, 16.5D, 0.0D);
+////                    var15.addVertex(25.5D, 13.5D, 0.0D);
+////                    var15.addVertex(-25.0D, 16.0D, 0.0D);
+////                    var15.addVertex(-25.0D, 16.5D, 0.0D);
+////                    var15.addVertex(25.0D, 16.5D, 0.0D);
+////                    var15.addVertex(25.0D, 16.0D, 0.0D);
+////                }
+//
+//                //health bar
+//                var15.setColorRGBA_F(1.0F, 0.0F, 0.0F, 1.0F);
+//                var15.addVertex(-25.0D, 9.0D, 0.0D);
+//                var15.addVertex(-25.0D, 11.0D, 0.0D);
+//                var15.addVertex(health, 11.0D, 0.0D);
+//                var15.addVertex(health, 9.0D, 0.0D);
+//
+//                //ammo bar
+//                var15.setColorRGBA_F(0.0F, 0.5F, 1.0F, 1.0F);
+//                var15.addVertex(-25.0D, 11.5D, 0.0D);
+//                var15.addVertex(-25.0D, 13.5D, 0.0D);
+//                var15.addVertex(ammo, 13.5D, 0.0D);
+//                var15.addVertex(ammo, 11.5D, 0.0D);
+////
+////                //exp bar
+////                if (hasXP) {
+////                    var15.setColorRGBA_F(0.0F, 1.0F, 0.5F, 1.0F);
+////                    var15.addVertex(-25.0D, 14.0D, 0.0D);
+////                    var15.addVertex(-25.0D, 16.0D, 0.0D);
+////                    var15.addVertex(exp, 16.0D, 0.0D);
+////                    var15.addVertex(exp, 14.0D, 0.0D);
+////                }
+//
+//                var15.draw();
+//                GL11.glEnable(GL11.GL_TEXTURE_2D);
+//                GL11.glEnable(GL11.GL_LIGHTING);
+//                GL11.glDisable(GL11.GL_BLEND);
+//                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+//                GL11.glPopMatrix();
+//            }
+//        }
     }
 }

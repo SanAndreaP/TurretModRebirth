@@ -419,6 +419,11 @@ public abstract class AEntityTurretBase
         }
     }
 
+    @Override
+    public boolean getAlwaysRenderNameTag() {
+        return true;
+    }
+
     public void shoot(boolean isRidden) {
         if( !this.worldObj.isRemote && this.getHealth() > 0 && (isRidden || this.hasTarget()) ) {
             if( this.getShootTicks() == 0 ) {

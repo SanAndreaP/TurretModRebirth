@@ -22,6 +22,7 @@ public class EntityTurretCrossbow
         extends AEntityTurretBase
 {
     private static final AxisAlignedBB rangeAABB = AxisAlignedBB.getBoundingBox(-16.0F, -4.0F, -16.0F, 16.0F, 4.0F, 16.0F);
+    private final TargetSelector targetSelector = new TargetSelector();
 
     public EntityTurretCrossbow(World par1World) {
         super(par1World);
@@ -39,7 +40,7 @@ public class EntityTurretCrossbow
 
     @Override
     protected IEntitySelector getTargetSelector() {
-        return new TargetSelector();
+        return this.targetSelector;
     }
 
     @Override
@@ -66,8 +67,7 @@ public class EntityTurretCrossbow
     {
         @Override
         public boolean isEntityApplicable(Entity entity) {
-            return EntityTurretCrossbow.this.canEntityBeSeen(entity)
-                   && EntityTurretCrossbow.this.getRangeBB().intersectsWith(entity.boundingBox);
+            return EntityTurretCrossbow.this.canEntityBeSeen(entity) && EntityTurretCrossbow.this.getRangeBB().intersectsWith(entity.boundingBox);
         }
     }
 }

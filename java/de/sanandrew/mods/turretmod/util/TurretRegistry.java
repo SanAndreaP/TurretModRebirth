@@ -19,6 +19,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -65,8 +66,8 @@ public final class TurretRegistry<T extends AEntityTurretBase>
     private final Class<T> turretEntityCls;
     private final String iconName;
     private final String turretName;
-    private AmmoInfo[] ammoItems = new AmmoInfo[0];
-    private HealInfo[] healItems = new HealInfo[0];
+    private AmmoInfo[] ammoItems;
+    private HealInfo[] healItems;
 
     private TurretRegistry(Class<T> turretCls, String tName, String icoName) {
         this.turretEntityCls = turretCls;
@@ -103,6 +104,10 @@ public final class TurretRegistry<T extends AEntityTurretBase>
     }
 
     public AmmoInfo getAmmo(ItemStack stack) {
+        if( this.ammoItems == null ) {
+            return null;
+        }
+
         for( AmmoInfo info : this.ammoItems ) {
             if( SAPUtils.areStacksEqual(stack, info.item, info.item.hasTagCompound()) ) {
                 return info;
@@ -112,7 +117,12 @@ public final class TurretRegistry<T extends AEntityTurretBase>
         return null;
     }
 
+    @Nullable
     public HealInfo getHeal(ItemStack stack) {
+        if( this.healItems == null ) {
+            return null;
+        }
+
         for( HealInfo info : this.healItems ) {
             if( SAPUtils.areStacksEqual(stack, info.item, info.item.hasTagCompound()) ) {
                 return info;
