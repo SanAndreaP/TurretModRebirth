@@ -54,6 +54,7 @@ public class ItemTurret
             world.spawnEntityInWorld(turret);
             turret.playLivingSound();
         }
+
         return turret;
     }
 

@@ -16,9 +16,7 @@ import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.network.packet.PacketTargetList;
 import de.sanandrew.mods.turretmod.network.packet.PacketTargetListRequest;
-import de.sanandrew.mods.turretmod.util.ITurretInfo;
-import de.sanandrew.mods.turretmod.util.TurretMod;
-import de.sanandrew.mods.turretmod.util.TurretRegistry;
+import de.sanandrew.mods.turretmod.util.*;
 import de.sanandrew.mods.turretmod.util.TurretRegistry.AmmoInfo;
 import de.sanandrew.mods.turretmod.util.TurretRegistry.HealInfo;
 import net.minecraft.block.Block;
@@ -330,11 +328,14 @@ public abstract class AEntityTurretBase
 
     @Override
     protected boolean interact(EntityPlayer player) {
-        if( !this.worldObj.isRemote ) {
-            ItemStack heldItem = player.getHeldItem();
-            if( heldItem != null ) {
+        ItemStack heldItem = player.getHeldItem();
+        if( heldItem != null ) {
+            if( !this.worldObj.isRemote ) {
                 HealInfo healInfo;
-                if( this.myInfo.getAmmo(heldItem) != null ) {
+                if( heldItem.getItem() == TmrItems.turretCtrlUnit ) {
+                    TurretMod.proxy.openGui(player, EnumGui.GUI_TCU_PG1, this.getEntityId(), 0, 0);
+                    return true;
+                } else if( this.myInfo.getAmmo(heldItem) != null ) {
                     this.addAmmo(heldItem);
                     if( heldItem.stackSize <= 0 ) {
                         player.setCurrentItemOrArmor(0, null);

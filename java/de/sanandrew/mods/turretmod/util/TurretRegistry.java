@@ -132,16 +132,6 @@ public final class TurretRegistry<T extends AEntityTurretBase>
         return null;
     }
 
-    public AmmoInfo getAmmoWithOneAmount() {
-        for( AmmoInfo info : this.ammoItems ) {
-            if( info.amount == 1 ) {
-                return info;
-            }
-        }
-
-        return null;
-    }
-
     public static class HealInfo {
         private ItemStack item;
         private float amount;

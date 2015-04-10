@@ -16,7 +16,11 @@ public enum EnumTextures
     TURRET_T1_CROSSBOW_GLOW("textures/entities/turrets/t1_crossbow_glow.png"),
     TURRET_T2_REVOLVER("textures/entities/turrets/t2_revolver.png"),
     TURRET_T2_REVOLVER_GLOW("textures/entities/turrets/t2_revolver_glow.png"),
-    PROJECTILE_BULLET("textures/entities/projectiles/bullet.png");
+
+    PROJECTILE_BULLET("textures/entities/projectiles/bullet.png"),
+
+    GUI_BUTTONS("textures/gui/buttons.png"),
+    GUI_TCU_PG1("textures/gui/tcu/page_1.png");
 
     private final ResourceLocation tex;
 

@@ -14,6 +14,7 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import de.sanandrew.mods.turretmod.network.PacketManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,6 +40,8 @@ public class TurretMod
         TmrItems.initialize();
 
         PacketManager.initialize();
+
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
     }
 
     @EventHandler

@@ -21,7 +21,7 @@ import net.minecraft.world.World;
 public class EntityTurretCrossbow
         extends AEntityTurretBase
 {
-    private static final AxisAlignedBB rangeAABB = AxisAlignedBB.getBoundingBox(-16.0F, -4.0F, -16.0F, 16.0F, 4.0F, 16.0F);
+    private static final AxisAlignedBB RANGE_AABB = AxisAlignedBB.getBoundingBox(-16.0F, -4.0F, -16.0F, 16.0F, 4.0F, 16.0F);
     private final TargetSelector targetSelector = new TargetSelector();
 
     public EntityTurretCrossbow(World par1World) {
@@ -30,7 +30,7 @@ public class EntityTurretCrossbow
 
     @Override
     public AxisAlignedBB getRangeBB() {
-        return rangeAABB.getOffsetBoundingBox(this.posX, this.posY, this.posZ);
+        return RANGE_AABB.getOffsetBoundingBox(this.posX, this.posY, this.posZ);
     }
 
     @Override

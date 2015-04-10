@@ -8,14 +8,21 @@
  */
 package de.sanandrew.mods.turretmod.client.util;
 
+import de.sanandrew.core.manpack.util.helpers.SAPUtils;
+import de.sanandrew.mods.turretmod.client.gui.GuiTurretCtrlUnitPg1;
 import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
 import de.sanandrew.mods.turretmod.util.CommonProxy;
+import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.TmrEntities;
+import de.sanandrew.mods.turretmod.util.TurretMod;
 import io.netty.buffer.ByteBufInputStream;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
+import org.apache.logging.log4j.Level;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,6 +53,29 @@ public class ClientProxy
 
             ((AEntityTurretBase) e).setTargetList(applicableTargets);
         }
+    }
+
+    @Override
+    public void openGui(EntityPlayer player, EnumGui id, int x, int y, int z) {
+        if( player == null ) {
+            player = Minecraft.getMinecraft().thePlayer;
+        }
+
+        super.openGui(player, id, x, y, z);
+    }
+
+    @Override
+    public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
+        if( SAPUtils.isIndexInRange(EnumGui.VALUES, id) ) {
+            switch( EnumGui.VALUES[id] ) {
+                case GUI_TCU_PG1:
+                    return new GuiTurretCtrlUnitPg1((AEntityTurretBase) getMinecraft().theWorld.getEntityByID(x));
+            }
+        } else {
+            TurretMod.MOD_LOG.printf(Level.WARN, "Gui ID %d cannot be opened as it isn't a valid index in EnumGui!", id);
+        }
+
+        return null;
     }
 
     private static Minecraft getMinecraft() {
