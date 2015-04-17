@@ -6,7 +6,7 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.client.gui.buttons;
+package de.sanandrew.mods.turretmod.client.gui.control;
 
 import de.sanandrew.mods.turretmod.util.EnumTextures;
 import net.minecraft.client.Minecraft;

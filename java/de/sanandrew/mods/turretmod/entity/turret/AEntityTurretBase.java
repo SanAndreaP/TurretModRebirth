@@ -650,6 +650,10 @@ public abstract class AEntityTurretBase
         this.targetMapHash = this.activeTargets.hashCode();
     }
 
+    public void toggleTarget(Class<? extends EntityLiving> entityCls, boolean flag) {
+        this.activeTargets.put(entityCls, flag);
+    }
+
     private void setDwBoolean(int flag, boolean state) {
         byte dwVal = this.dataWatcher.getWatchableObjectByte(DW_BOOLEANS);
         this.dataWatcher.updateObject(DW_BOOLEANS, (byte) (state ? (dwVal | flag) : (dwVal & ~flag)));
