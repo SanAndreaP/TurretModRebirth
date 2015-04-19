@@ -11,9 +11,11 @@ package de.sanandrew.mods.turretmod.client.gui;
 import com.google.common.collect.Maps;
 import de.sanandrew.core.manpack.util.client.helpers.GuiUtils;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
+import de.sanandrew.mods.turretmod.client.gui.control.GuiSlimButton;
 import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
 import de.sanandrew.mods.turretmod.network.packet.PacketSendTargetFlag;
 import de.sanandrew.mods.turretmod.util.EnumTextures;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -27,7 +29,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class GuiTurretCtrlUnitPg1
+public class GuiTurretCtrlUnit
         extends GuiScreen
 {
     protected int guiLeft;
@@ -44,7 +46,9 @@ public class GuiTurretCtrlUnitPg1
     private boolean canScroll;
     private boolean prevIsLmbDown;
 
-    public GuiTurretCtrlUnitPg1(AEntityTurretBase turret) {
+    private GuiButton toggleAll;
+
+    public GuiTurretCtrlUnit(AEntityTurretBase turret) {
         this.myTurret = turret;
     }
 
@@ -56,6 +60,10 @@ public class GuiTurretCtrlUnitPg1
         this.ySize = 222;
         this.guiLeft = (this.width - this.xSize) / 2;
         this.guiTop = (this.height - this.ySize) / 2;
+
+        this.buttonList.add(this.toggleAll = new GuiSlimButton(this.buttonList.size(), this.guiLeft + (this.xSize - 150) / 2, this.guiTop + 180, 150, "select all"));
+        this.buttonList.add(this.toggleAll = new GuiSlimButton(this.buttonList.size(), this.guiLeft + (this.xSize - 150) / 2, this.guiTop + 193, 150, "select all"));
+        this.buttonList.add(this.toggleAll = new GuiSlimButton(this.buttonList.size(), this.guiLeft + (this.xSize - 150) / 2, this.guiTop + 206, 150, "select all"));
     }
 
     @Override

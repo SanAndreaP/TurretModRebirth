@@ -85,7 +85,7 @@ public abstract class AEntityTurretBase
         {
             @Override
             public boolean apply(Class input) {
-                return EntityLiving.class.isAssignableFrom(input);
+                return EntityLiving.class.isAssignableFrom(input) && input != EntityLivingBase.class && !AEntityTurretBase.class.isAssignableFrom(input);
             }
         };
         @SuppressWarnings("unchecked")
