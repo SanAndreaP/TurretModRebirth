@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.client.util;
 
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
-import de.sanandrew.mods.turretmod.client.gui.GuiTurretCtrlUnit;
+import de.sanandrew.mods.turretmod.client.gui.GuiTurretCtrlUnitPageOne;
 import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
 import de.sanandrew.mods.turretmod.util.CommonProxy;
 import de.sanandrew.mods.turretmod.util.EnumGui;
@@ -69,7 +69,7 @@ public class ClientProxy
         if( SAPUtils.isIndexInRange(EnumGui.VALUES, id) ) {
             switch( EnumGui.VALUES[id] ) {
                 case GUI_TCU_PG1:
-                    return new GuiTurretCtrlUnit((AEntityTurretBase) getMinecraft().theWorld.getEntityByID(x));
+                    return new GuiTurretCtrlUnitPageOne((AEntityTurretBase) getMinecraft().theWorld.getEntityByID(x));
             }
         } else {
             TurretMod.MOD_LOG.printf(Level.WARN, "Gui ID %d cannot be opened as it isn't a valid index in EnumGui!", id);

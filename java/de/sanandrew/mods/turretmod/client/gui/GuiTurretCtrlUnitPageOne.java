@@ -29,7 +29,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class GuiTurretCtrlUnit
+public class GuiTurretCtrlUnitPageOne
         extends GuiScreen
 {
     protected int guiLeft;
@@ -48,7 +48,7 @@ public class GuiTurretCtrlUnit
 
     private GuiButton toggleAll;
 
-    public GuiTurretCtrlUnit(AEntityTurretBase turret) {
+    public GuiTurretCtrlUnitPageOne(AEntityTurretBase turret) {
         this.myTurret = turret;
     }
 
@@ -61,9 +61,11 @@ public class GuiTurretCtrlUnit
         this.guiLeft = (this.width - this.xSize) / 2;
         this.guiTop = (this.height - this.ySize) / 2;
 
-        this.buttonList.add(this.toggleAll = new GuiSlimButton(this.buttonList.size(), this.guiLeft + (this.xSize - 150) / 2, this.guiTop + 180, 150, "select all"));
-        this.buttonList.add(this.toggleAll = new GuiSlimButton(this.buttonList.size(), this.guiLeft + (this.xSize - 150) / 2, this.guiTop + 193, 150, "select all"));
-        this.buttonList.add(this.toggleAll = new GuiSlimButton(this.buttonList.size(), this.guiLeft + (this.xSize - 150) / 2, this.guiTop + 206, 150, "select all"));
+        this.buttonList.add(this.toggleAll = new GuiSlimButton(this.buttonList.size(), this.guiLeft + (this.xSize - 150) / 2, this.guiTop + 138, 150, "select all"));
+        this.buttonList.add(this.toggleAll = new GuiSlimButton(this.buttonList.size(), this.guiLeft + (this.xSize - 150) / 2, this.guiTop + 151, 150, "deselect all"));
+        this.buttonList.add(this.toggleAll = new GuiSlimButton(this.buttonList.size(), this.guiLeft + (this.xSize - 150) / 2, this.guiTop + 164, 150, "select monster"));
+        this.buttonList.add(this.toggleAll = new GuiSlimButton(this.buttonList.size(), this.guiLeft + (this.xSize - 150) / 2, this.guiTop + 177, 150, "select animals"));
+        this.buttonList.add(this.toggleAll = new GuiSlimButton(this.buttonList.size(), this.guiLeft + (this.xSize - 150) / 2, this.guiTop + 190, 150, "select other"));
     }
 
     @Override
@@ -73,7 +75,7 @@ public class GuiTurretCtrlUnit
         this.tempTargetList = this.myTurret.getTargetList();
 
         this.canScroll = this.tempTargetList.size() >= 18;
-        this.scrollAmount = Math.max(0.0F, 1.0F / (this.tempTargetList.size() - 18.0F));
+        this.scrollAmount = Math.max(0.0F, 1.0F / (this.tempTargetList.size() - 11.0F));
     }
 
     @Override
@@ -87,7 +89,7 @@ public class GuiTurretCtrlUnit
         int scrollMinX = this.guiLeft + 163;
         int scrollMaxX = this.guiLeft + 163 + 9;
         int scrollMinY = this.guiTop + 19;
-        int scrollMaxY = this.guiTop + 178;
+        int scrollMaxY = this.guiTop + 134;
 
         if( !this.isScrolling && this.canScroll && isLmbDown && mouseX >= scrollMinX && mouseX < scrollMaxX && mouseY > scrollMinY && mouseY < scrollMaxY ) {
             this.isScrolling = true;
@@ -96,7 +98,7 @@ public class GuiTurretCtrlUnit
         }
 
         if( this.isScrolling ) {
-            this.scroll = Math.max(0.0F, Math.min(1.0F, (mouseY - 2 - scrollMinY) / 178.0F));
+            this.scroll = Math.max(0.0F, Math.min(1.0F, (mouseY - 2 - scrollMinY) / 109.0F));
         }
 
         GL11.glColor3f(1.0F, 1.0F, 1.0F);
@@ -105,16 +107,16 @@ public class GuiTurretCtrlUnit
         this.mc.renderEngine.bindTexture(EnumTextures.GUI_TCU_PG1.getResource());
 
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
-        this.drawTexturedModalRect(this.guiLeft + 163, this.guiTop + 19 + MathHelper.floor_float(scroll * 178.0F), 176, this.canScroll ? 0 : 6, 6, 6);
+        this.drawTexturedModalRect(this.guiLeft + 163, this.guiTop + 19 + MathHelper.floor_float(scroll * 109.0F), 176, this.canScroll ? 0 : 6, 6, 6);
 
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
-        GuiUtils.doGlScissor(this.guiLeft + 6, this.guiTop + 19, this.xSize - 23, this.ySize - 38);
+        GuiUtils.doGlScissor(this.guiLeft + 6, this.guiTop + 19, this.xSize - 23, 115);
 
-        int offsetY = Math.round(-this.scroll * (this.tempTargetList.size() - 18)) * (this.fontRendererObj.FONT_HEIGHT + 1);
+        int offsetY = Math.round(-this.scroll * (this.tempTargetList.size() - 11)) * (this.fontRendererObj.FONT_HEIGHT + 1);
         for( Entry<Class<? extends EntityLiving>, Boolean> entry : this.tempTargetList.entrySet() ) {
             int btnTexOffY = 12 + (entry.getValue() ? 16 : 0);
             int btnMinOffY = this.guiTop + 20;
-            int btnMaxOffY = this.guiTop + 20 + 178;
+            int btnMaxOffY = this.guiTop + 20 + 115;
             if( mouseY >= btnMinOffY && mouseY < btnMaxOffY ) {
                 if( mouseX >= this.guiLeft + 10 && mouseX < this.guiLeft + 18 && mouseY >= this.guiTop + 20 + offsetY && mouseY < this.guiTop + 28 + offsetY ) {
                     btnTexOffY += 8;
@@ -144,6 +146,8 @@ public class GuiTurretCtrlUnit
         }
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
+
+//        this.fontRendererObj.drawString(TurretRegistry.getTurretInfo(this.myTurret.getClass()).getTurretName(), );
 
         this.prevIsLmbDown = isLmbDown;
 

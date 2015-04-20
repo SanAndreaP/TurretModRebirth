@@ -67,7 +67,8 @@ public abstract class AEntityTurretBase
         }
 
         private boolean isTargetApplicable(EntityLiving living) {
-            return AEntityTurretBase.this.activeTargets != null && AEntityTurretBase.this.activeTargets.get(living.getClass())
+            Boolean isTargetClsActive = AEntityTurretBase.this.activeTargets.get(living.getClass());
+            return AEntityTurretBase.this.activeTargets != null && isTargetClsActive != null && isTargetClsActive
                    && living.isEntityAlive() && !living.isEntityInvulnerable() && AEntityTurretBase.this.getTargetSelector().isEntityApplicable(living);
         }
     };
