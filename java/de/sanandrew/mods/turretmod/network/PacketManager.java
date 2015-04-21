@@ -10,10 +10,7 @@ package de.sanandrew.mods.turretmod.network;
 
 import de.sanandrew.core.manpack.network.NetworkManager;
 import de.sanandrew.core.manpack.util.javatuples.Tuple;
-import de.sanandrew.mods.turretmod.network.packet.PacketRemoteOpenGui;
-import de.sanandrew.mods.turretmod.network.packet.PacketSendTargetFlag;
-import de.sanandrew.mods.turretmod.network.packet.PacketTargetList;
-import de.sanandrew.mods.turretmod.network.packet.PacketTargetListRequest;
+import de.sanandrew.mods.turretmod.network.packet.*;
 import de.sanandrew.mods.turretmod.util.TurretMod;
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -23,6 +20,7 @@ public final class PacketManager
     public static final short TURRET_TARGET_SYNC_REQUEST = 1;
     public static final short OPEN_CLIENT_GUI = 2;
     public static final short SEND_TARGET_FLAG = 3;
+    public static final short SEND_MULTI_TARGET_FLAG = 4;
 
     public static void initialize() {
         NetworkManager.registerModHandler(TurretMod.MOD_ID, TurretMod.MOD_CHANNEL);
@@ -31,6 +29,7 @@ public final class PacketManager
         NetworkManager.registerModPacketCls(TurretMod.MOD_ID, TURRET_TARGET_SYNC_REQUEST, PacketTargetListRequest.class);
         NetworkManager.registerModPacketCls(TurretMod.MOD_ID, OPEN_CLIENT_GUI, PacketRemoteOpenGui.class);
         NetworkManager.registerModPacketCls(TurretMod.MOD_ID, SEND_TARGET_FLAG, PacketSendTargetFlag.class);
+        NetworkManager.registerModPacketCls(TurretMod.MOD_ID, SEND_MULTI_TARGET_FLAG, PacketSendMultiTargetFlag.class);
     }
 
     public static void sendToServer(short packet, Tuple data) {

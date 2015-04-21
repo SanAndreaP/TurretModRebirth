@@ -334,7 +334,7 @@ public abstract class AEntityTurretBase
             if( !this.worldObj.isRemote ) {
                 HealInfo healInfo;
                 if( heldItem.getItem() == TmrItems.turretCtrlUnit ) {
-                    TurretMod.proxy.openGui(player, EnumGui.GUI_TCU_PG1, this.getEntityId(), 0, 0);
+                    TurretMod.proxy.openGui(player, EnumGui.GUI_TCU_INFO, this.getEntityId(), 0, 0);
                     return true;
                 } else if( this.myInfo.getAmmo(heldItem) != null ) {
                     this.addAmmo(heldItem);

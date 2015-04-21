@@ -6,17 +6,18 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.client.gui;
+package de.sanandrew.mods.turretmod.client.gui.tcu;
 
 import com.google.common.collect.Maps;
 import de.sanandrew.core.manpack.util.client.helpers.GuiUtils;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiSlimButton;
 import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
+import de.sanandrew.mods.turretmod.network.packet.PacketSendMultiTargetFlag;
 import de.sanandrew.mods.turretmod.network.packet.PacketSendTargetFlag;
 import de.sanandrew.mods.turretmod.util.EnumTextures;
+import de.sanandrew.mods.turretmod.util.TurretMod;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.IMob;
@@ -29,15 +30,9 @@ import org.lwjgl.opengl.GL11;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class GuiTurretCtrlUnitPageOne
-        extends GuiScreen
+public class GuiTcuTargets
+        extends AGuiTurretControlUnit
 {
-    protected int guiLeft;
-    protected int guiTop;
-    protected int xSize;
-    protected int ySize;
-
-    private final AEntityTurretBase myTurret;
     private Map<Class<? extends EntityLiving>, Boolean> tempTargetList = Maps.newHashMap();
 
     private float scroll = 0.0F;
@@ -46,26 +41,35 @@ public class GuiTurretCtrlUnitPageOne
     private boolean canScroll;
     private boolean prevIsLmbDown;
 
-    private GuiButton toggleAll;
+    private boolean doSelectAll;
+    private boolean doDeselectAll;
+    private boolean doSelectMobs;
+    private boolean doSelectAnimals;
+    private boolean doSelectOther;
 
-    public GuiTurretCtrlUnitPageOne(AEntityTurretBase turret) {
-        this.myTurret = turret;
+    private GuiButton selectAll;
+    private GuiButton deselectAll;
+    private GuiButton selectMobs;
+    private GuiButton selectAnimals;
+    private GuiButton selectOther;
+
+    public GuiTcuTargets(AEntityTurretBase turret) {
+        super(turret);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void initGui() {
         super.initGui();
 
-        this.xSize = 176;
-        this.ySize = 222;
-        this.guiLeft = (this.width - this.xSize) / 2;
-        this.guiTop = (this.height - this.ySize) / 2;
+        int center = this.guiLeft + (this.xSize - 150) / 2;
+        this.buttonList.add(this.selectAll = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 138, 150, translateTargetBtn("selectAll")));
+        this.buttonList.add(this.deselectAll = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 151, 150, translateTargetBtn("deselectAll")));
+        this.buttonList.add(this.selectMobs = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 164, 150, translateTargetBtn("selectMobs")));
+        this.buttonList.add(this.selectAnimals = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 177, 150, translateTargetBtn("selectAnimals")));
+        this.buttonList.add(this.selectOther = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 190, 150, translateTargetBtn("selectOther")));
 
-        this.buttonList.add(this.toggleAll = new GuiSlimButton(this.buttonList.size(), this.guiLeft + (this.xSize - 150) / 2, this.guiTop + 138, 150, "select all"));
-        this.buttonList.add(this.toggleAll = new GuiSlimButton(this.buttonList.size(), this.guiLeft + (this.xSize - 150) / 2, this.guiTop + 151, 150, "deselect all"));
-        this.buttonList.add(this.toggleAll = new GuiSlimButton(this.buttonList.size(), this.guiLeft + (this.xSize - 150) / 2, this.guiTop + 164, 150, "select monster"));
-        this.buttonList.add(this.toggleAll = new GuiSlimButton(this.buttonList.size(), this.guiLeft + (this.xSize - 150) / 2, this.guiTop + 177, 150, "select animals"));
-        this.buttonList.add(this.toggleAll = new GuiSlimButton(this.buttonList.size(), this.guiLeft + (this.xSize - 150) / 2, this.guiTop + 190, 150, "select other"));
+        this.pageTargets.enabled = false;
     }
 
     @Override
@@ -79,12 +83,7 @@ public class GuiTurretCtrlUnitPageOne
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partTicks) {
-        if( this.myTurret.isDead ) {
-            this.mc.thePlayer.closeScreen();
-            return;
-        }
-
+    public void drawScreenPostBkg(int mouseX, int mouseY, float partTicks) {
         boolean isLmbDown = Mouse.isButtonDown(0);
         int scrollMinX = this.guiLeft + 163;
         int scrollMaxX = this.guiLeft + 163 + 9;
@@ -101,11 +100,9 @@ public class GuiTurretCtrlUnitPageOne
             this.scroll = Math.max(0.0F, Math.min(1.0F, (mouseY - 2 - scrollMinY) / 109.0F));
         }
 
+        this.mc.renderEngine.bindTexture(EnumTextures.GUI_TCU_TARGETS.getResource());
+
         GL11.glColor3f(1.0F, 1.0F, 1.0F);
-        this.drawDefaultBackground();
-
-        this.mc.renderEngine.bindTexture(EnumTextures.GUI_TCU_PG1.getResource());
-
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
         this.drawTexturedModalRect(this.guiLeft + 163, this.guiTop + 19 + MathHelper.floor_float(scroll * 109.0F), 176, this.canScroll ? 0 : 6, 6, 6);
 
@@ -113,10 +110,24 @@ public class GuiTurretCtrlUnitPageOne
         GuiUtils.doGlScissor(this.guiLeft + 6, this.guiTop + 19, this.xSize - 23, 115);
 
         int offsetY = Math.round(-this.scroll * (this.tempTargetList.size() - 11)) * (this.fontRendererObj.FONT_HEIGHT + 1);
+        Map<Class<? extends EntityLiving>, Boolean> newTargetStgs = Maps.newHashMap();
         for( Entry<Class<? extends EntityLiving>, Boolean> entry : this.tempTargetList.entrySet() ) {
             int btnTexOffY = 12 + (entry.getValue() ? 16 : 0);
             int btnMinOffY = this.guiTop + 20;
-            int btnMaxOffY = this.guiTop + 20 + 115;
+            int btnMaxOffY = this.guiTop + 20 + 110;
+
+            if( this.doSelectAll && !entry.getValue() ) {
+                newTargetStgs.put(entry.getKey(), true);
+            } else if( this.doDeselectAll && entry.getValue() ) {
+                newTargetStgs.put(entry.getKey(), false);
+            } else if( this.doSelectMobs && !entry.getValue() && IMob.class.isAssignableFrom(entry.getKey()) ) {
+                newTargetStgs.put(entry.getKey(), true);
+            } else if( this.doSelectAnimals && !entry.getValue() && IAnimals.class.isAssignableFrom(entry.getKey()) && !IMob.class.isAssignableFrom(entry.getKey()) ) {
+                newTargetStgs.put(entry.getKey(), true);
+            } else if( this.doSelectOther && !entry.getValue() && !IMob.class.isAssignableFrom(entry.getKey()) && !IAnimals.class.isAssignableFrom(entry.getKey())) {
+                newTargetStgs.put(entry.getKey(), true);
+            }
+
             if( mouseY >= btnMinOffY && mouseY < btnMaxOffY ) {
                 if( mouseX >= this.guiLeft + 10 && mouseX < this.guiLeft + 18 && mouseY >= this.guiTop + 20 + offsetY && mouseY < this.guiTop + 28 + offsetY ) {
                     btnTexOffY += 8;
@@ -125,8 +136,9 @@ public class GuiTurretCtrlUnitPageOne
                     }
                 }
             }
+
             GL11.glColor3f(1.0F, 1.0F, 1.0F);
-            this.mc.renderEngine.bindTexture(EnumTextures.GUI_TCU_PG1.getResource());
+            this.mc.renderEngine.bindTexture(EnumTextures.GUI_TCU_TARGETS.getResource());
             this.drawTexturedModalRect(this.guiLeft + 10, this.guiTop + 20 + offsetY, 176, btnTexOffY, 8, 8);
 
             int textColor = 0xFFFFFF;
@@ -147,11 +159,17 @@ public class GuiTurretCtrlUnitPageOne
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
-//        this.fontRendererObj.drawString(TurretRegistry.getTurretInfo(this.myTurret.getClass()).getTurretName(), );
+        this.doSelectAll = false;
+        this.doDeselectAll = false;
+        this.doSelectMobs = false;
+        this.doSelectAnimals = false;
+        this.doSelectOther = false;
+
+        if( newTargetStgs.size() > 0 ) {
+            applyMultiTarget(newTargetStgs);
+        }
 
         this.prevIsLmbDown = isLmbDown;
-
-        super.drawScreen(mouseX, mouseY, partTicks);
     }
 
     @Override
@@ -167,12 +185,32 @@ public class GuiTurretCtrlUnitPageOne
         }
     }
 
+    @Override
+    protected void actionPerformed(GuiButton button) {
+        if( button == this.selectAll ) {
+            this.doSelectAll = true;
+        } else if( button == this.deselectAll ) {
+            this.doDeselectAll = true;
+        } else if( button == this.selectMobs ) {
+            this.doSelectMobs = true;
+        } else if( button == this.selectAnimals ) {
+            this.doSelectAnimals = true;
+        } else if( button == this.selectOther ) {
+            this.doSelectOther = true;
+        } else {
+            super.actionPerformed(button);
+        }
+    }
+
     private void applyTarget(Class<? extends EntityLiving> entityCls, boolean active) {
         PacketSendTargetFlag.sendToServer(this.myTurret, entityCls, active);
     }
 
-    @Override
-    public boolean doesGuiPauseGame() {
-        return false;
+    private void applyMultiTarget(Map<Class<? extends EntityLiving>, Boolean> targets) {
+        PacketSendMultiTargetFlag.sendToServer(this.myTurret, targets);
+    }
+
+    private static String translateTargetBtn(String s) {
+        return SAPUtils.translatePreFormat("gui.%s.tcu.pageTargets.%s", TurretMod.MOD_ID, s);
     }
 }

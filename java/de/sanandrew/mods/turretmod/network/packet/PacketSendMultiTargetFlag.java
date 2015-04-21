@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.network.packet;
 
 import de.sanandrew.core.manpack.network.IPacket;
-import de.sanandrew.core.manpack.util.javatuples.Triplet;
+import de.sanandrew.core.manpack.util.javatuples.Pair;
 import de.sanandrew.core.manpack.util.javatuples.Tuple;
 import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
 import de.sanandrew.mods.turretmod.network.PacketManager;
@@ -24,21 +24,24 @@ import net.minecraft.network.NetHandlerPlayServer;
 import org.apache.logging.log4j.Level;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.Map.Entry;
 
-public class PacketSendTargetFlag
+public class PacketSendMultiTargetFlag
         implements IPacket
 {
     @Override
     public void process(ByteBufInputStream stream, ByteBuf rawData, INetHandler iNetHandler) throws IOException {
         if( iNetHandler instanceof NetHandlerPlayServer ) {
             AEntityTurretBase turret = (AEntityTurretBase) ((NetHandlerPlayServer) iNetHandler).playerEntity.worldObj.getEntityByID(stream.readInt());
-            String entityName = stream.readUTF();
             try {
-                @SuppressWarnings("unchecked")
-                Class<? extends EntityLiving> entityCls = (Class<? extends EntityLiving>) EntityList.stringToClassMapping.get(entityName);
-                turret.toggleTarget(entityCls, stream.readBoolean());
+                for( int i = 0, count = stream.readInt(); i < count; i++ ) {
+                    @SuppressWarnings("unchecked")
+                    Class<? extends EntityLiving> entityCls = (Class<? extends EntityLiving>) EntityList.stringToClassMapping.get(stream.readUTF());
+                    turret.toggleTarget(entityCls, stream.readBoolean());
+                }
             } catch( ClassCastException ex ) {
-                TurretMod.MOD_LOG.printf(Level.WARN, "Cannot apply target %s! This is an invalid entity name!", entityName);
+                TurretMod.MOD_LOG.log(Level.WARN, "Cannot apply multi-target list! An entry is invalid!");
                 throw new IOException(ex);
             }
         }
@@ -47,12 +50,21 @@ public class PacketSendTargetFlag
     @Override
     public void writeData(ByteBufOutputStream stream, Tuple data) throws IOException {
         stream.writeInt((Integer) data.getValue(0));
-        stream.writeUTF((String) data.getValue(1));
-        stream.writeBoolean((Boolean) data.getValue(2));
+        try {
+            @SuppressWarnings("unchecked")
+            Map<Class<? extends EntityLiving>, Boolean> newTargetStg = (Map<Class<? extends EntityLiving>, Boolean>) data.getValue(1);
+            stream.writeInt(newTargetStg.size());
+            for( Entry<Class<? extends EntityLiving>, Boolean> newTgts : newTargetStg.entrySet() ) {
+                stream.writeUTF((String) EntityList.classToStringMapping.get(newTgts.getKey()));
+                stream.writeBoolean(newTgts.getValue());
+            }
+        } catch( ClassCastException ex ) {
+            TurretMod.MOD_LOG.log(Level.WARN, "Cannot send multi-target list to server! An entry is invalid!");
+            throw new IOException(ex);
+        }
     }
 
-    public static void sendToServer(AEntityTurretBase turret, Class<? extends EntityLiving> entityCls, boolean flag) {
-        String registeredEntityName = (String) EntityList.classToStringMapping.get(entityCls);
-        PacketManager.sendToServer(PacketManager.SEND_TARGET_FLAG, Triplet.with(turret.getEntityId(), registeredEntityName, flag));
+    public static void sendToServer(AEntityTurretBase turret, Map<Class<? extends EntityLiving>, Boolean> newTargetStg) {
+        PacketManager.sendToServer(PacketManager.SEND_MULTI_TARGET_FLAG, Pair.with(turret.getEntityId(), newTargetStg));
     }
 }

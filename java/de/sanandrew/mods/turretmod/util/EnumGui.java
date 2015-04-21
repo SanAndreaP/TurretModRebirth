@@ -10,7 +10,8 @@ package de.sanandrew.mods.turretmod.util;
 
 public enum EnumGui
 {
-    GUI_TCU_PG1;
+    GUI_TCU_INFO,
+    GUI_TCU_TARGETS;
 
     public static final EnumGui[] VALUES = values();
 }

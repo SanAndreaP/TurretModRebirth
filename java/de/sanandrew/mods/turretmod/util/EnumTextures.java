@@ -20,7 +20,8 @@ public enum EnumTextures
     PROJECTILE_BULLET("textures/entities/projectiles/bullet.png"),
 
     GUI_BUTTONS("textures/gui/buttons.png"),
-    GUI_TCU_PG1("textures/gui/tcu/page_1.png");
+    GUI_TCU_TARGETS("textures/gui/tcu/page_targets.png"),
+    GUI_TCU_INFO_SETTINGS("textures/gui/tcu/page_info_settings.png");
 
     private final ResourceLocation tex;
 

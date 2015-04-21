@@ -159,8 +159,16 @@ public class EntityTurretProjectile
     }
 
     @Override
-    @SuppressWarnings({ "SuspiciousNameCombination", "unchecked" })
+    @SuppressWarnings({"SuspiciousNameCombination", "unchecked", "NonReproducibleMathCall"})
     public void onUpdate() {
+        if( this.ticksExisted == 1 ) {
+            this.lastTickPosX = this.posX;
+            this.lastTickPosY = this.posY;
+            this.lastTickPosZ = this.posZ;
+
+            return;
+        }
+
         if( !this.isMoving && !this.worldObj.isRemote ) {
             return;
         }
@@ -203,7 +211,7 @@ public class EntityTurretProjectile
             int groundBlockMeta = this.worldObj.getBlockMetadata(this.xTile, this.yTile, this.zTile);
 
             if( groundBlock == this.inTile && groundBlockMeta == this.inData ) {
-                if( this.dieOnGround() ) {
+                if( this.shouldDieOnGround() ) {
                     this.setDead();
                 }
 
@@ -214,13 +222,13 @@ public class EntityTurretProjectile
                 }
             } else {
                 this.inGround = false;
-                this.motionX *= (double) (this.rand.nextFloat() * 0.2F);
+                this.motionX *= (this.rand.nextFloat() * 0.2F);
                 if( this.isArrow() ) {
-                    this.motionY *= (double) (this.rand.nextFloat() * 0.2F);
+                    this.motionY *= (this.rand.nextFloat() * 0.2F);
                 } else {
                     this.motionY = -this.getSpeedVal();
                 }
-                this.motionZ *= (double) (this.rand.nextFloat() * 0.2F);
+                this.motionZ *= (this.rand.nextFloat() * 0.2F);
                 this.ticksInGround = 0;
                 this.ticksInAir = 0;
             }
@@ -271,13 +279,13 @@ public class EntityTurretProjectile
 //                				: this.shootingEntity instanceof AEntityTurretBase && collidedEntity instanceof EntityLiving
 //                						&& ((AEntityTurretBase)this.shootingEntity).get((EntityLiving) collidedEntity)
 //                						);
-                boolean cannotBeHit = (collidedEntity instanceof EntityLiving) && (float) ((EntityLiving) collidedEntity).hurtResistantTime > (float) ((EntityLiving) collidedEntity).maxHurtResistantTime / 2.0F || collidedEntity.isDead;
+                boolean cannotBeHit = (collidedEntity instanceof EntityLiving) && ((EntityLiving) collidedEntity).hurtResistantTime > ((EntityLiving) collidedEntity).maxHurtResistantTime / 2.0F || collidedEntity.isDead;
 
 
                 if( (collidedEntity.canBeCollidedWith() || (collidedEntity instanceof EntityDragon))
                         && !isShootingEntity && isNotRider && /*(isDispensed || isHostRidden) &&*/ (!cannotBeHit || !shouldFlyThroughOnEntityHit()) ) {
                     float expandBB = 0.3F;
-                    AxisAlignedBB var12 = collidedEntity.boundingBox.expand((double) expandBB, (double) expandBB, (double) expandBB);
+                    AxisAlignedBB var12 = collidedEntity.boundingBox.expand(expandBB, expandBB, expandBB);
                     MovingObjectPosition interceptObj = var12.calculateIntercept(posVec, motionVec);
 
                     if( interceptObj != null ) {
@@ -360,13 +368,13 @@ public class EntityTurretProjectile
                     this.zTile = currHitObj.blockZ;
                     this.inTile = this.worldObj.getBlock(this.xTile, this.yTile, this.zTile);
                     this.inData = this.worldObj.getBlockMetadata(this.xTile, this.yTile, this.zTile);
-                    this.motionX = (double) ((float) (currHitObj.hitVec.xCoord - this.posX));
-                    this.motionY = (double) ((float) (currHitObj.hitVec.yCoord - this.posY));
-                    this.motionZ = (double) ((float) (currHitObj.hitVec.zCoord - this.posZ));
+                    this.motionX = ((float) (currHitObj.hitVec.xCoord - this.posX));
+                    this.motionY = ((float) (currHitObj.hitVec.yCoord - this.posY));
+                    this.motionZ = ((float) (currHitObj.hitVec.zCoord - this.posZ));
                     float motionVecNormal = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
-                    this.posX -= this.motionX / (double) motionVecNormal * 0.05D;
-                    this.posY -= this.motionY / (double) motionVecNormal * 0.05D;
-                    this.posZ -= this.motionZ / (double) motionVecNormal * 0.05D;
+                    this.posX -= this.motionX / motionVecNormal * 0.05D;
+                    this.posY -= this.motionY / motionVecNormal * 0.05D;
+                    this.posZ -= this.motionZ / motionVecNormal * 0.05D;
                     this.playSound(getHitSound(), 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
                     this.inGround = true;
                     if( this.isArrow() ) {
@@ -390,7 +398,7 @@ public class EntityTurretProjectile
             this.posZ += this.motionZ;
             float motionXZNormal = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
             this.rotationYaw = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0D / Math.PI);
-            this.rotationPitch = (float) (Math.atan2(this.motionY, (double) motionXZNormal) * 180.0D / Math.PI);
+            this.rotationPitch = (float) (Math.atan2(this.motionY, motionXZNormal) * 180.0D / Math.PI);
 
             while( this.rotationPitch - this.prevRotationPitch < -180.0F ) {
                 this.prevRotationPitch -= 360.0F;
@@ -416,18 +424,18 @@ public class EntityTurretProjectile
             if( this.isInWater() ) {
                 for( int i = 0; i < 4; ++i ) {
                     float motReduction = 0.25F;
-                    this.worldObj.spawnParticle("bubble", this.posX - this.motionX * (double) motReduction, this.posY - this.motionY * (double) motReduction,
-                                                this.posZ - this.motionZ * (double) motReduction, this.motionX, this.motionY, this.motionZ
+                    this.worldObj.spawnParticle("bubble", this.posX - this.motionX * motReduction, this.posY - this.motionY * motReduction,
+                                                this.posZ - this.motionZ * motReduction, this.motionX, this.motionY, this.motionZ
                     );
                 }
 
                 motionMulti = 0.8F;
             }
 
-            this.motionX *= (double) motionMulti;
-            this.motionY *= (double) motionMulti;
-            this.motionZ *= (double) motionMulti;
-            this.motionY -= (double) gravityVal;
+            this.motionX *= motionMulti;
+            this.motionY *= motionMulti;
+            this.motionZ *= motionMulti;
+            this.motionY -= gravityVal;
             this.setPosition(this.posX, this.posY, this.posZ);
             this.func_145775_I();//collide with block
         }
@@ -490,7 +498,7 @@ public class EntityTurretProjectile
         return null;
     }
 
-    public boolean dieOnGround() {
+    public boolean shouldDieOnGround() {
         return true;
     }
 
@@ -517,12 +525,7 @@ public class EntityTurretProjectile
         return 2.0D;
     }
 
-    @Override
-    public void setKnockbackStrength(int par1) {
-        this.knockbackStrength = par1;
-    }
-
-    public void setKnockbackStrength(float par1) {
+    public void setKnockbackStrengthFloat(float par1) {
         this.knockbackStrength = par1;
     }
 }

@@ -1,0 +1,93 @@
+/**
+ * ****************************************************************************************************************
+ * Authors:   SanAndreasP
+ * Copyright: SanAndreasP
+ * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+ * http://creativecommons.org/licenses/by-nc-sa/4.0/
+ * *****************************************************************************************************************
+ */
+package de.sanandrew.mods.turretmod.client.gui.tcu;
+
+import de.sanandrew.core.manpack.util.helpers.SAPUtils;
+import de.sanandrew.mods.turretmod.client.gui.control.GuiIconTab;
+import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
+import de.sanandrew.mods.turretmod.util.EnumGui;
+import de.sanandrew.mods.turretmod.util.TurretMod;
+import de.sanandrew.mods.turretmod.util.TurretRegistry;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.init.Items;
+import org.lwjgl.opengl.GL11;
+
+public abstract class AGuiTurretControlUnit
+        extends GuiScreen
+{
+    protected int guiLeft;
+    protected int guiTop;
+    protected int xSize;
+    protected int ySize;
+
+    protected final AEntityTurretBase myTurret;
+
+    protected GuiIconTab pageInfo;
+    protected GuiIconTab pageTargets;
+
+    public AGuiTurretControlUnit(AEntityTurretBase turret) {
+        this.myTurret = turret;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void initGui() {
+        super.initGui();
+
+        this.xSize = 176;
+        this.ySize = 222;
+        this.guiLeft = (this.width - this.xSize) / 2;
+        this.guiTop = (this.height - this.ySize) / 2;
+
+        this.buttonList.add(this.pageInfo = new GuiIconTab(this.buttonList.size(), this.guiLeft - 23, this.guiTop + 5, Items.sign.getIconFromDamage(0), "info", false));
+        this.buttonList.add(this.pageTargets = new GuiIconTab(this.buttonList.size(), this.guiLeft - 23, this.guiTop + 33, Items.diamond_sword.getIconFromDamage(0), "targets", false));
+    }
+
+    @Override
+    public void updateScreen() {
+        super.updateScreen();
+
+        if( this.myTurret.isDead ) {
+            this.mc.thePlayer.closeScreen();
+        }
+    }
+
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partTicks) {
+        GL11.glColor3f(1.0F, 1.0F, 1.0F);
+        this.drawDefaultBackground();
+
+        this.drawScreenPostBkg(mouseX, mouseY, partTicks);
+
+        String turretName = SAPUtils.translatePreFormat("entity.%s.%s.name", TurretMod.MOD_ID, TurretRegistry.getTurretInfo(this.myTurret.getClass()).getTurretName());
+        this.fontRendererObj.drawString(turretName, this.guiLeft + (this.xSize - this.fontRendererObj.getStringWidth(turretName)) / 2, this.guiTop + this.ySize - 15,
+                                        0x00FF00, false
+        );
+
+        super.drawScreen(mouseX, mouseY, partTicks);
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton button) {
+        if( button == this.pageInfo ) {
+            TurretMod.proxy.openGui(this.mc.thePlayer, EnumGui.GUI_TCU_INFO, this.myTurret.getEntityId(), 0, 0);
+        } else if( button == this.pageTargets ) {
+            TurretMod.proxy.openGui(this.mc.thePlayer, EnumGui.GUI_TCU_TARGETS, this.myTurret.getEntityId(), 0, 0);
+        }
+        super.actionPerformed(button);
+    }
+
+    @Override
+    public boolean doesGuiPauseGame() {
+        return false;
+    }
+
+    public abstract void drawScreenPostBkg(int mouseX, int mouseY, float partTicks);
+}

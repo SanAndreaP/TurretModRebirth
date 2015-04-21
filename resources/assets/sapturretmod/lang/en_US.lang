@@ -2,7 +2,11 @@ item.sapturretmod:turretPlacer.name=Turret Item
 entity.sapturretmod.turretCrossbow.name=Crossbow Turret (T1)
 entity.sapturretmod.turretRevolver.name=Revolver Turret (T2)
 
-
+gui.sapturretmod.tcu.pageTargets.selectAll=Select All
+gui.sapturretmod.tcu.pageTargets.deselectAll=Deselect All
+gui.sapturretmod.tcu.pageTargets.selectMobs=Select Monster
+gui.sapturretmod.tcu.pageTargets.selectAnimals=Select Animals
+gui.sapturretmod.tcu.pageTargets.selectOther=Select Other
 
 turret.desct1a=Turret which shoots arrows. It's relatively cheap, so it's ideal as your basic defense.
 turret.amtp0t1a=Arrows

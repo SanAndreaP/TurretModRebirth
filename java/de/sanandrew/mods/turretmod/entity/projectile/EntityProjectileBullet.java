@@ -18,12 +18,12 @@ public class EntityProjectileBullet
 {
     public EntityProjectileBullet(World par1World) {
         super(par1World);
-        this.setKnockbackStrength(0.9F);
+        this.setKnockbackStrengthFloat(0.9F);
     }
 
     public EntityProjectileBullet(World par1World, double par2, double par4, double par6) {
         super(par1World, par2, par4, par6);
-        this.setKnockbackStrength(0.9F);
+        this.setKnockbackStrengthFloat(0.9F);
     }
 
     @Override
