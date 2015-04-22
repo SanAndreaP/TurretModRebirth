@@ -16,6 +16,8 @@ import org.lwjgl.opengl.GL11;
 public class GuiTcuInfo
         extends AGuiTurretControlUnit
 {
+    private int specOwnerHead;
+
     public GuiTcuInfo(AEntityTurretBase turret) {
         super(turret);
     }
@@ -25,33 +27,36 @@ public class GuiTcuInfo
         super.initGui();
 
         this.pageInfo.enabled = false;
+        this.specOwnerHead = SAPUtils.RNG.nextInt(3) == 0 ? SAPUtils.RNG.nextInt(3) : -1;
     }
 
     @Override
     public void drawScreenPostBkg(int mouseX, int mouseY, float partTicks) {
-        this.mc.renderEngine.bindTexture(EnumTextures.GUI_TCU_INFO_SETTINGS.getResource());
+        this.mc.renderEngine.bindTexture(EnumTextures.GUI_TCU_INFO.getResource());
 
         GL11.glColor3f(1.0F, 1.0F, 1.0F);
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
 
-        String title = "name:";
+        if( this.specOwnerHead >= 0 ) {
+            this.drawTexturedModalRect(this.guiLeft + 7, this.guiTop + 95, this.xSize, this.specOwnerHead * 8, 10, 8);
+        }
+
         String value = this.myTurret.hasCustomNameTag() ? this.myTurret.getCustomNameTag() : "-n/a-";
-        this.fontRendererObj.drawString(title, this.guiLeft + 10, this.guiTop + 10, 0x003300);
-        this.fontRendererObj.drawString(value, this.guiLeft + 14 + this.fontRendererObj.getStringWidth(title), this.guiTop + 10, 0x000000);
+        this.fontRendererObj.drawString(value, this.guiLeft + 20, this.guiTop + 23, 0x000000);
 
-        title = "health:";
         value = String.format("%.1f / %.1f HP", this.myTurret.getHealth(), this.myTurret.getMaxHealth());
-        this.fontRendererObj.drawString(title, this.guiLeft + 10, this.guiTop + 20, 0x660000);
-        this.fontRendererObj.drawString(value, this.guiLeft + 14 + this.fontRendererObj.getStringWidth(title), this.guiTop + 20, 0x330000);
+        this.fontRendererObj.drawString(value, this.guiLeft + 20, this.guiTop + 35, 0x000000);
 
-        title = "ammo:";
         value = String.format("%d / %d proj.", this.myTurret.getAmmo(), this.myTurret.getMaxAmmo());
-        this.fontRendererObj.drawString(title, this.guiLeft + 10, this.guiTop + 30, 0x000066);
-        this.fontRendererObj.drawString(value, this.guiLeft + 14 + this.fontRendererObj.getStringWidth(title), this.guiTop + 30, 0x000033);
+        this.fontRendererObj.drawString(value, this.guiLeft + 20, this.guiTop + 47, 0x000000);
 
-        title = "curr. target:";
+        value = this.myTurret.getAmmoType() != null ? this.myTurret.getAmmoType().getTypeItem().getDisplayName() : "-n/a-";
+        this.fontRendererObj.drawString(value, this.guiLeft + 20, this.guiTop + 59, 0x000000);
+
         value = this.myTurret.hasTarget() ? SAPUtils.translatePreFormat("entity.%s.name", this.myTurret.getTargetName()) : "-n/a-";
-        this.fontRendererObj.drawString(title, this.guiLeft + 10, this.guiTop + 40, 0x666600);
-        this.fontRendererObj.drawString(value, this.guiLeft + 14 + this.fontRendererObj.getStringWidth(title), this.guiTop + 40, 0x333300);
+        this.fontRendererObj.drawString(value, this.guiLeft + 20, this.guiTop + 71, 0x000000);
+
+        value = this.myTurret.getOwnerName();
+        this.fontRendererObj.drawString(value, this.guiLeft + 20, this.guiTop + 95, 0x000000);
     }
 }
