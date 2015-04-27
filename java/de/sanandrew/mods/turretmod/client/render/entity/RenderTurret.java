@@ -38,7 +38,7 @@ public class RenderTurret
             this.glowModel = standardModel.getClass().getConstructor(float.class).newInstance(0.001F);
         } catch( NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException ex ) {
             TurretMod.MOD_LOG.log(Level.ERROR, "Could not instanciate model class! Make sure it has a constructor with a one float parameter (scale)!" +
-                                  " Glowmap disabled.", ex);
+                                          " Glowmap disabled.", ex);
             this.glowModel = null;
         }
     }
@@ -142,35 +142,58 @@ public class RenderTurret
             if( turret.getDistanceSqToEntity(this.renderManager.livingPlayer) < (NAME_TAG_RANGE * NAME_TAG_RANGE) ) {
                 String s = turret.getTurretName() + String.format(" (%s%d%s)", EnumChatFormatting.GREEN, turret.getFrequency(), EnumChatFormatting.RESET);
 
-                    FontRenderer fontrenderer = this.getFontRendererFromRenderManager();
-                    GL11.glPushMatrix();
-                    GL11.glTranslated(x + 0.0D, y + turret.height + 0.8D, z);
-                    GL11.glNormal3f(0.0F, 1.0F, 0.0F);
-                    GL11.glRotatef(-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
-                    GL11.glRotatef(this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
-                    GL11.glScalef(-scale, -scale, scale);
-                    GL11.glDisable(GL11.GL_LIGHTING);
-                    GL11.glTranslatef(0.0F, 0.25F / scale, 0.0F);
-                    GL11.glDepthMask(false);
-                    GL11.glEnable(GL11.GL_BLEND);
-                    OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-                    Tessellator tessellator = Tessellator.instance;
-                    GL11.glDisable(GL11.GL_TEXTURE_2D);
-                    tessellator.startDrawingQuads();
-                    int i = fontrenderer.getStringWidth(s) / 2;
-                    tessellator.setColorRGBA_F(0.0F, 0.0F, 0.0F, 0.25F);
-                    tessellator.addVertex((-i - 1), -1.0D, 0.0D);
-                    tessellator.addVertex((-i - 1), 8.0D, 0.0D);
-                    tessellator.addVertex((i + 1), 8.0D, 0.0D);
-                    tessellator.addVertex((i + 1), -1.0D, 0.0D);
-                    tessellator.draw();
-                    GL11.glEnable(GL11.GL_TEXTURE_2D);
-                    GL11.glDepthMask(true);
-                    fontrenderer.drawString(s, -fontrenderer.getStringWidth(s) / 2, 0, 0xFFFFFF);
-                    GL11.glEnable(GL11.GL_LIGHTING);
-                    GL11.glDisable(GL11.GL_BLEND);
-                    GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-                    GL11.glPopMatrix();
+                FontRenderer fontrenderer = this.getFontRendererFromRenderManager();
+                GL11.glPushMatrix();
+                GL11.glTranslated(x + 0.0D, y + turret.height + 0.8D, z);
+                GL11.glNormal3f(0.0F, 1.0F, 0.0F);
+                GL11.glRotatef(-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
+                GL11.glRotatef(this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
+                GL11.glScalef(-scale, -scale, scale);
+                GL11.glDisable(GL11.GL_LIGHTING);
+                GL11.glTranslatef(0.0F, 0.25F / scale, 0.0F);
+                GL11.glDepthMask(false);
+                GL11.glEnable(GL11.GL_BLEND);
+                OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+                Tessellator tessellator = Tessellator.instance;
+                GL11.glDisable(GL11.GL_TEXTURE_2D);
+                tessellator.startDrawingQuads();
+                int i = fontrenderer.getStringWidth(s) / 2;
+                tessellator.setColorRGBA_F(0.0F, 0.0F, 0.0F, 0.25F);
+                tessellator.addVertex((-i - 1), -1.0D, 0.0D);
+                tessellator.addVertex((-i - 1), 8.0D, 0.0D);
+                tessellator.addVertex((i + 1), 8.0D, 0.0D);
+                tessellator.addVertex((i + 1), -1.0D, 0.0D);
+
+                tessellator.setColorRGBA_F(0.15F, 0.0F, 0.0F, 0.85F);
+                tessellator.addVertex(-19, 8, 0);
+                tessellator.addVertex(-19, 10, 0);
+                tessellator.addVertex(19, 10, 0);
+                tessellator.addVertex(19, 8, 0);
+                tessellator.setColorRGBA_F(0.0F, 0.0F, 0.15F, 0.85F);
+                tessellator.addVertex(-19, 10, 0);
+                tessellator.addVertex(-19, 12, 0);
+                tessellator.addVertex(19, 12, 0);
+                tessellator.addVertex(19, 10, 0);
+
+                tessellator.setColorRGBA_F(1.0F, 0.0F, 0.0F, 1.0F);
+                tessellator.addVertex(-19.0F, 8.0F, 0.0F);
+                tessellator.addVertex(-19.0F, 10.0F, 0.0F);
+                tessellator.addVertex((turret.getHealth() / turret.getMaxHealth()) * 38.0F - 19.0F, 10.0F, 0.0F);
+                tessellator.addVertex((turret.getHealth() / turret.getMaxHealth()) * 38.0F - 19.0F, 8.0F, 0.0F);
+
+                tessellator.setColorRGBA_F(0.25F, 0.25F, 1.0F, 1.0F);
+                tessellator.addVertex(-19.0F, 10.0F, 0.0F);
+                tessellator.addVertex(-19.0F, 12.0F, 0.0F);
+                tessellator.addVertex((turret.getAmmo() / (float) turret.getMaxAmmo()) * 38.0F - 19.0F, 12.0F, 0.0F);
+                tessellator.addVertex((turret.getAmmo() / (float) turret.getMaxAmmo()) * 38.0F - 19.0F, 10.0F, 0.0F);
+                tessellator.draw();
+                GL11.glEnable(GL11.GL_TEXTURE_2D);
+                GL11.glDepthMask(true);
+                fontrenderer.drawString(s, -fontrenderer.getStringWidth(s) / 2, 0, 0xFFFFFF);
+                GL11.glEnable(GL11.GL_LIGHTING);
+                GL11.glDisable(GL11.GL_BLEND);
+                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                GL11.glPopMatrix();
             }
         }
 

@@ -12,10 +12,8 @@ import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuInfo;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuTargets;
 import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
-import de.sanandrew.mods.turretmod.util.CommonProxy;
-import de.sanandrew.mods.turretmod.util.EnumGui;
-import de.sanandrew.mods.turretmod.util.TmrEntities;
-import de.sanandrew.mods.turretmod.util.TurretMod;
+import de.sanandrew.mods.turretmod.util.*;
+import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgrade;
 import io.netty.buffer.ByteBufInputStream;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -53,6 +51,36 @@ public class ClientProxy
             }
 
             ((AEntityTurretBase) e).setTargetList(applicableTargets);
+        }
+    }
+
+    @Override
+    public void processUpgradeListClt(ByteBufInputStream stream) throws IOException {
+        int entityId = stream.readInt();
+        int listSize = stream.readInt();
+        Entity e = getMinecraft().theWorld.getEntityByID(entityId);
+        List<TurretUpgrade> currUpgList = new ArrayList<>(listSize);
+        for( int i = 0; i < listSize; i++ ) {
+            String regName = stream.readUTF();
+            currUpgList.add(TurretUpgradeRegistry.getUpgrade(regName));
+        }
+
+        if( e instanceof AEntityTurretBase ) {
+            AEntityTurretBase turret = (AEntityTurretBase) e;
+            List<TurretUpgrade> oldUpgList = turret.getUpgradeList();
+
+            List<TurretUpgrade> remUpgList = turret.getUpgradeList();
+            remUpgList.removeAll(currUpgList);
+            List<TurretUpgrade> addUpgList = new ArrayList<>(currUpgList);
+            addUpgList.removeAll(oldUpgList);
+
+            for( TurretUpgrade removingUpgrade : remUpgList ) {
+                turret.removeUpgrade(removingUpgrade);
+            }
+
+            for( TurretUpgrade addingUpgrade : addUpgList ) {
+                turret.applyUpgrade(addingUpgrade);
+            }
         }
     }
 

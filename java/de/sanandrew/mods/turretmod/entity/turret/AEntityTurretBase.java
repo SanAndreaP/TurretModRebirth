@@ -16,9 +16,12 @@ import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.network.packet.PacketTargetList;
 import de.sanandrew.mods.turretmod.network.packet.PacketTargetListRequest;
+import de.sanandrew.mods.turretmod.network.packet.PacketUpgradeList;
+import de.sanandrew.mods.turretmod.network.packet.PacketUpgradeListRequest;
 import de.sanandrew.mods.turretmod.util.*;
 import de.sanandrew.mods.turretmod.util.TurretRegistry.AmmoInfo;
 import de.sanandrew.mods.turretmod.util.TurretRegistry.HealInfo;
+import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgrade;
 import net.minecraft.block.Block;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
@@ -38,27 +41,28 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 import org.apache.logging.log4j.Level;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.UUID;
 
 public abstract class AEntityTurretBase
         extends EntityLiving
         implements ITurretInfo
 {
+    // data watcher IDs
     private static final int DW_AMMO = 20; /* INT */
     private static final int DW_AMMO_TYPE = 21; /* ITEM_STACK */
     private static final int DW_EXPERIENCE = 22; /* INT */
     private static final int DW_OWNER_UUID = 23; /* STRING */
     private static final int DW_OWNER_NAME = 24; /* STRING */
-//    private static final int DW_TURRET_NAME = 25; /* STRING */
     private static final int DW_TARGET = 26; /* STRING */
     private static final int DW_SHOOT_TICKS = 27; /* INT */
     private static final int DW_FREQUENCY = 28; /* BYTE */
     private static final int DW_BOOLEANS = 29; /* BYTE */
 
+    // info
+    protected final TurretRegistry<? extends AEntityTurretBase> myInfo = TurretRegistry.getTurretInfo(this.getClass());
+
+    // targeting
     protected Entity currentTarget;
 
     private final IEntitySelector parentTargetSelector = new IEntitySelector() {
@@ -69,14 +73,16 @@ public abstract class AEntityTurretBase
         private boolean isTargetApplicable(EntityLiving living) {
             Boolean isTargetClsActive = AEntityTurretBase.this.activeTargets.get(living.getClass());
             return AEntityTurretBase.this.activeTargets != null && isTargetClsActive != null && isTargetClsActive
-                   && living.isEntityAlive() && !living.isEntityInvulnerable() && AEntityTurretBase.this.getTargetSelector().isEntityApplicable(living);
+                    && living.isEntityAlive() && !living.isEntityInvulnerable() && AEntityTurretBase.this.getTargetSelector().isEntityApplicable(living);
         }
     };
 
-    protected final TurretRegistry<? extends AEntityTurretBase> myInfo = TurretRegistry.getTurretInfo(this.getClass());
-
-    protected Map<Class<? extends EntityLiving>, Boolean> activeTargets = Maps.newHashMap();
+    protected Map<Class<? extends EntityLiving>, Boolean> activeTargets = new HashMap<>();
     protected Integer targetMapHash = null;
+
+    // upgrades
+    protected List<TurretUpgrade> upgrades = new ArrayList<>();
+    protected Integer upgradeListHash = null;
 
     public AEntityTurretBase(World par1World) {
         super(par1World);
@@ -97,7 +103,8 @@ public abstract class AEntityTurretBase
         }
 
         if( !this.worldObj.isRemote ) {
-            this.targetMapHash = livingClsList.hashCode();
+            this.targetMapHash = this.activeTargets.hashCode();
+            this.upgradeListHash = this.upgrades.hashCode();
         }
     }
 
@@ -217,7 +224,17 @@ public abstract class AEntityTurretBase
             } else {
                 PacketTargetList.sendPacket(this);
             }
-            this.targetMapHash = currTargetHash; // prevent resending packet until it arrives, TODO: maybe do a tick counter if the packet gets lost...
+            this.targetMapHash = currTargetHash; // prevent resending packet until it arrives
+        }
+
+        int currUpgradeHash = this.upgrades.hashCode();
+        if( this.upgradeListHash == null || this.upgradeListHash != currUpgradeHash ) {
+            if( this.worldObj.isRemote ) {
+                PacketUpgradeListRequest.sendPacket(this);
+            } else {
+                PacketUpgradeList.sendPacket(this);
+            }
+            this.upgradeListHash = currUpgradeHash; // prevent resending packet until it arrives
         }
 
         this.motionY -= 0.045F;
@@ -333,29 +350,29 @@ public abstract class AEntityTurretBase
         if( heldItem != null ) {
             if( !this.worldObj.isRemote ) {
                 HealInfo healInfo;
+                TurretUpgrade upgrade;
+
                 if( heldItem.getItem() == TmrItems.turretCtrlUnit ) {
                     TurretMod.proxy.openGui(player, EnumGui.GUI_TCU_INFO, this.getEntityId(), 0, 0);
                     return true;
-                } else if( this.myInfo.getAmmo(heldItem) != null ) {
+                }
+                if( this.myInfo.getAmmo(heldItem) != null ) {
                     this.addAmmo(heldItem);
-                    if( heldItem.stackSize <= 0 ) {
-                        player.setCurrentItemOrArmor(0, null);
-                    } else {
-                        player.setCurrentItemOrArmor(0, heldItem.copy()); // resetting the stack with a copy prevents the creative inventory from fucking over...
-                    }
-                    player.inventoryContainer.detectAndSendChanges();
+                    decrStackSize(player, heldItem);
                     this.playSound(TurretMod.MOD_ID + ":collect.ia_get", 1.0F, 1.0F);
 
                     return true;
-                } else if( (healInfo = this.myInfo.getHeal(heldItem)) != null && this.getHealth() < this.getMaxHealth() ) {
+                }
+                if( (healInfo = this.myInfo.getHeal(heldItem)) != null && this.getHealth() < this.getMaxHealth() ) {
                     this.heal(healInfo.getAmount());
-                    heldItem.stackSize--;
-                    if( heldItem.stackSize <= 0 ) {
-                        player.setCurrentItemOrArmor(0, null);
-                    } else {
-                        player.setCurrentItemOrArmor(0, heldItem.copy()); // resetting the stack with a copy prevents the creative inventory from fucking over...
-                    }
-                    player.inventoryContainer.detectAndSendChanges();
+                    decrStackSize(player, heldItem);
+                    this.playSound(TurretMod.MOD_ID + ":collect.ia_get", 1.0F, 1.0F);
+
+                    return true;
+                }
+                if( heldItem.getItem() == TmrItems.turretUpgrade && (upgrade = TmrItems.turretUpgrade.getUpgradeFromStack(heldItem)) != null ) {
+                    this.applyUpgrade(upgrade);
+                    decrStackSize(player, heldItem);
                     this.playSound(TurretMod.MOD_ID + ":collect.ia_get", 1.0F, 1.0F);
 
                     return true;
@@ -364,6 +381,16 @@ public abstract class AEntityTurretBase
         }
 
         return super.interact(player);
+    }
+
+    private static void decrStackSize(EntityPlayer player, ItemStack stack) {
+        stack.stackSize--;
+        if( stack.stackSize <= 0 ) {
+            player.setCurrentItemOrArmor(0, null);
+        } else {
+            player.setCurrentItemOrArmor(0, stack.copy()); // resetting the stack with a copy prevents the creative inventory from fucking over...
+        }
+        player.inventoryContainer.detectAndSendChanges();
     }
 
     @Override
@@ -392,6 +419,13 @@ public abstract class AEntityTurretBase
             }
         }
         nbt.setTag("targetList", targetList);
+
+        NBTTagList upgradeList = new NBTTagList();
+        for( TurretUpgrade upgrade : this.upgrades ) {
+            upgrade.onSave(this);
+            upgradeList.appendTag(new NBTTagString(upgrade.getRegistrationName()));
+        }
+        nbt.setTag("upgradeList", upgradeList);
     }
 
     @Override
@@ -417,6 +451,18 @@ public abstract class AEntityTurretBase
             if( EntityLiving.class.isAssignableFrom(entityCls) && this.activeTargets.containsKey(entityCls) ) {
                 //noinspection unchecked
                 this.activeTargets.put(entityCls, true);
+            }
+        }
+
+        NBTTagList upgradeList = nbt.getTagList("upgradeList", NBT.TAG_STRING);
+        for( int i = 0; i < upgradeList.tagCount(); i++ ) {
+            String upgradeName = upgradeList.getStringTagAt(i);
+            TurretUpgrade upgrade = TurretUpgradeRegistry.getUpgrade(upgradeName);
+            if( upgrade != null ) {
+                this.upgrades.add(upgrade);
+                upgrade.onLoad(this);
+            } else {
+                TurretMod.MOD_LOG.printf(Level.WARN, "Skipped loading upgrade %s, because it wasn't registered!", upgradeName);
             }
         }
     }
@@ -511,6 +557,28 @@ public abstract class AEntityTurretBase
 
     protected float getShootSoundRng() {
         return 1.5F;
+    }
+
+    public void applyUpgrade(TurretUpgrade upg) {
+        if( !this.hasUpgrade(upg) ) {
+            this.upgrades.add(upg);
+            upg.onApply(this);
+        }
+    }
+
+    public boolean hasUpgrade(TurretUpgrade upg) {
+        return this.upgrades.contains(upg);
+    }
+
+    public List<TurretUpgrade> getUpgradeList() {
+        return new ArrayList<>(this.upgrades);
+    }
+
+    public void removeUpgrade(TurretUpgrade upg) {
+        if( this.hasUpgrade(upg) ) {
+            upg.onRemove(this);
+            this.upgrades.remove(upg);
+        }
     }
 
     public abstract AxisAlignedBB getRangeBB();

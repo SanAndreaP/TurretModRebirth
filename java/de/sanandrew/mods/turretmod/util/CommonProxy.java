@@ -28,6 +28,8 @@ public class CommonProxy
 
     public void processTargetListClt(ByteBufInputStream stream) throws IOException {}
 
+    public void processUpgradeListClt(ByteBufInputStream stream) throws IOException {}
+
     @Override
     public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
         if( SAPUtils.isIndexInRange(EnumGui.VALUES, id) ) {

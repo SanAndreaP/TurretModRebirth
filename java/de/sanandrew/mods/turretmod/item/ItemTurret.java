@@ -104,10 +104,9 @@ public class ItemTurret
 
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
-//        String itemName = SAPUtils.translate(this.getUnlocalizedName() + ".name").trim();
         Class<? extends AEntityTurretBase> cls = TurretRegistry.getTurretInfo(getTurretName(stack)).getTurretClass();
         String entityName = cls != null ? (String) EntityList.classToStringMapping.get(cls) : "UNKNOWN";
-        return /*itemName + ' ' + */SAPUtils.translate("entity." + entityName + ".name");
+        return SAPUtils.translate("entity." + entityName + ".name");
     }
 
     @Override
