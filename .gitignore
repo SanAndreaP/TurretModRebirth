@@ -3,3 +3,4 @@
 *.iml
 minecraft/
 classes/
+build/

@@ -12,7 +12,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TurretMod;
-import de.sanandrew.mods.turretmod.util.TurretUpgradeRegistry;
+import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgrade;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -30,6 +30,8 @@ public class ItemTurretUpgrade
 {
     @SideOnly(Side.CLIENT)
     public Map<TurretUpgrade, IIcon> upgIcons;
+    @SideOnly(Side.CLIENT)
+    public IIcon baseIcon;
 
     public ItemTurretUpgrade() {
         super();
@@ -48,8 +50,9 @@ public class ItemTurretUpgrade
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister iconRegister) {
         List<TurretUpgrade> upgrades = TurretUpgradeRegistry.getRegisteredUpgrades();
-        this.upgIcons = new HashMap<>(upgrades.size() + 1);
-        this.upgIcons.put(null, iconRegister.registerIcon(TurretMod.MOD_ID + ":upgrades/empty"));
+        this.upgIcons = new HashMap<>(upgrades.size());
+
+        this.baseIcon = iconRegister.registerIcon(TurretMod.MOD_ID + ":upgrades/empty");
         for( TurretUpgrade upgrade : upgrades ) {
             this.upgIcons.put(upgrade, iconRegister.registerIcon(upgrade.getItemTextureLoc()));
         }
@@ -57,7 +60,8 @@ public class ItemTurretUpgrade
 
     @Override
     public IIcon getIcon(ItemStack stack, int pass) {
-        return this.upgIcons.get(this.getUpgradeFromStack(stack));
+        TurretUpgrade upgrade = this.getUpgradeFromStack(stack);
+        return pass == 0 || upgrade == null ? this.baseIcon : this.upgIcons.get(upgrade);
     }
 
     @Override
@@ -78,7 +82,7 @@ public class ItemTurretUpgrade
 
     @Override
     public int getRenderPasses(int metadata) {
-        return 1;
+        return 2;
     }
 
     public ItemStack getStackWithUpgrade(TurretUpgrade upgrade, int stackSize) {

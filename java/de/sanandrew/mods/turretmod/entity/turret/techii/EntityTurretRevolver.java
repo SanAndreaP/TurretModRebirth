@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 public class EntityTurretRevolver
 		extends AEntityTurretBase
 {
-	private static final AxisAlignedBB rangeAABB = AxisAlignedBB.getBoundingBox(-24.0F, -6.0F, -24.0F, 24.0F, 6.0F, 24.0F);
+	private static final AxisAlignedBB RANGE_AABB = AxisAlignedBB.getBoundingBox(-24.0F, -6.0F, -24.0F, 24.0F, 6.0F, 24.0F);
 	private boolean isRight = false;
 	private int rightBarrelOffset = 0;
 	private int leftBarrelOffset = 0;
@@ -26,7 +26,7 @@ public class EntityTurretRevolver
 
 	@Override
 	public AxisAlignedBB getRangeBB() {
-		return rangeAABB.getOffsetBoundingBox(this.posX, this.posY, this.posZ);
+		return RANGE_AABB.getOffsetBoundingBox(this.posX, this.posY, this.posZ);
 	}
 
     @Override

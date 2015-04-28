@@ -14,6 +14,7 @@ import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuTargets;
 import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
 import de.sanandrew.mods.turretmod.util.*;
 import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgrade;
+import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgradeRegistry;
 import io.netty.buffer.ByteBufInputStream;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;

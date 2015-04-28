@@ -12,12 +12,12 @@ import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
 
 /**
  * This is the base class for all Turret Upgrades. If you want to make your own, extend this to your own class, instanciate that and register
- * your new Instance via {@link de.sanandrew.mods.turretmod.util.TurretUpgradeRegistry#registerUpgrade(TurretUpgrade)
+ * your new Instance via {@link TurretUpgradeRegistry#registerUpgrade(TurretUpgrade)
  * TurretUpgradeRegistry#registerUpgrade()}.<br>
  * Those instances are acting like an instance of {@link net.minecraft.item.Item}, as they exist only once in the environment across every turret ever, so you
  * can compare 2 upgrade instances via ==, no need for .equals() here.<br>
  * It also provides some control methods, which affect the upgrade directly (apply an upgrade to a turret, load the upgrade etc.). For more
- * in-depth control, use the Event Bus system (mostly the {@link de.sanandrew.mods.turretmod.util.TurretUpgradeRegistry#EVENT_BUS
+ * in-depth control, use the Event Bus system (mostly the {@link TurretUpgradeRegistry#EVENT_BUS
  * TurretUpgradeRegistry#EVENT_BUS}, but you
  * can also use others if they get fired by the turret, like the {@link net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent LivingUpdateEvent})
  */

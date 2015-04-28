@@ -22,6 +22,7 @@ import de.sanandrew.mods.turretmod.util.*;
 import de.sanandrew.mods.turretmod.util.TurretRegistry.AmmoInfo;
 import de.sanandrew.mods.turretmod.util.TurretRegistry.HealInfo;
 import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgrade;
+import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgradeRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
@@ -370,8 +371,9 @@ public abstract class AEntityTurretBase
 
                     return true;
                 }
-                if( heldItem.getItem() == TmrItems.turretUpgrade && (upgrade = TmrItems.turretUpgrade.getUpgradeFromStack(heldItem)) != null ) {
-                    this.applyUpgrade(upgrade);
+                if( heldItem.getItem() == TmrItems.turretUpgrade && (upgrade = TmrItems.turretUpgrade.getUpgradeFromStack(heldItem)) != null
+                    && this.applyUpgrade(upgrade) )
+                {
                     decrStackSize(player, heldItem);
                     this.playSound(TurretMod.MOD_ID + ":collect.ia_get", 1.0F, 1.0F);
 
@@ -559,11 +561,14 @@ public abstract class AEntityTurretBase
         return 1.5F;
     }
 
-    public void applyUpgrade(TurretUpgrade upg) {
-        if( !this.hasUpgrade(upg) ) {
+    public boolean applyUpgrade(TurretUpgrade upg) {
+        if( !this.hasUpgrade(upg) && (upg.dependantOn == null || this.hasUpgrade(upg.dependantOn)) ) {
             this.upgrades.add(upg);
             upg.onApply(this);
+            return true;
         }
+
+        return false;
     }
 
     public boolean hasUpgrade(TurretUpgrade upg) {

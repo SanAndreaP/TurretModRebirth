@@ -6,25 +6,28 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.util;
+package de.sanandrew.mods.turretmod.util.upgrade;
 
 import com.google.common.eventbus.EventBus;
-import de.sanandrew.mods.turretmod.util.upgrade.TUpgradeHealth;
-import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgrade;
+import de.sanandrew.mods.turretmod.util.TurretMod;
 import org.apache.logging.log4j.Level;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TurretUpgradeRegistry
 {
     private static final Map<String, TurretUpgrade> NAME_TO_UPGRADE_MAP = new HashMap<>();
     public static final EventBus EVENT_BUS = new EventBus("TurretUpgradesEvtBus");
 
-    public static final TurretUpgrade HEALTH_INCR_I = new TUpgradeHealth("healthUpgradeI", "upgrades/health_i");
+    public static final TurretUpgrade HEALTH_INCR_I   = new TUpgradeHealth("healthUpgradeI", "upgrades/health_i",
+                                                                           UUID.fromString("84bf0c8f-a5e8-429f-a7ed-dee503ca4505"), 1);
+    public static final TurretUpgrade HEALTH_INCR_II  = new TUpgradeHealth("healthUpgradeII", "upgrades/health_ii",
+                                                                           UUID.fromString("704fa08b-f49a-4a69-86e9-ffad639868c9"), 2, HEALTH_INCR_I);
+    public static final TurretUpgrade HEALTH_INCR_III = new TUpgradeHealth("healthUpgradeIII", "upgrades/health_iii",
+                                                                           UUID.fromString("e1c7bbb8-ace8-413d-b7ea-d95c7ff5285f"), 3, HEALTH_INCR_II);
+    public static final TurretUpgrade HEALTH_INCR_IV  = new TUpgradeHealth("healthUpgradeIV", "upgrades/health_iv",
+                                                                           UUID.fromString("e4d37b7f-81dd-439e-b359-539e76f01b71"), 4, HEALTH_INCR_III);
     public static final TurretUpgrade COOLDOWN_TIME_DECR = new TurretUpgrade(TurretMod.MOD_ID, "coolTimeUpgradeI", "upgrades/cooltime_i");
 
     static {
