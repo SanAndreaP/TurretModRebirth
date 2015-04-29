@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.util.upgrade;
 
 import com.google.common.eventbus.EventBus;
+import de.sanandrew.mods.turretmod.entity.turret.techi.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.util.TurretMod;
 import org.apache.logging.log4j.Level;
 
@@ -41,6 +42,8 @@ public class TurretUpgradeRegistry
         } catch( IllegalAccessException | ClassCastException ex ) {
             throw new RuntimeException("An unexpected critical error occurred during initializing the Turret Upgrades!", ex);
         }
+
+        HEALTH_INCR_IV.addTurretApplicable(EntityTurretCrossbow.class);
     }
 
     /**

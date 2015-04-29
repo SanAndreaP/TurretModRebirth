@@ -10,6 +10,9 @@ package de.sanandrew.mods.turretmod.util.upgrade;
 
 import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This is the base class for all Turret Upgrades. If you want to make your own, extend this to your own class, instanciate that and register
  * your new Instance via {@link TurretUpgradeRegistry#registerUpgrade(TurretUpgrade)
@@ -27,6 +30,7 @@ public class TurretUpgrade
     public final String name;
     public final String textureName;
     public final TurretUpgrade dependantOn;
+    private final List<Class<? extends AEntityTurretBase>> applicableTurrets = new ArrayList<>();
 
     public TurretUpgrade(String modID, String upgName, String texture) {
         this(modID, upgName, texture, null);
@@ -49,6 +53,18 @@ public class TurretUpgrade
 
     public final String getItemTextureLoc() {
         return String.format("%s:%s", this.modId, this.textureName);
+    }
+
+    public final boolean isApplicableTo(AEntityTurretBase turret) {
+        return this.isApplicableToCls(turret.getClass());
+    }
+
+    public final void addTurretApplicable(Class<? extends AEntityTurretBase> turretCls) {
+        this.applicableTurrets.add(turretCls);
+    }
+
+    public final boolean isApplicableToCls(Class<? extends AEntityTurretBase> turretCls) {
+        return this.applicableTurrets.size() == 0 || this.applicableTurrets.contains(turretCls);
     }
 
     /**

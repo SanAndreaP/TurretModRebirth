@@ -562,7 +562,7 @@ public abstract class AEntityTurretBase
     }
 
     public boolean applyUpgrade(TurretUpgrade upg) {
-        if( !this.hasUpgrade(upg) && (upg.dependantOn == null || this.hasUpgrade(upg.dependantOn)) ) {
+        if( !this.hasUpgrade(upg) && (upg.dependantOn == null || this.hasUpgrade(upg.dependantOn)) && upg.isApplicableTo(this) ) {
             this.upgrades.add(upg);
             upg.onApply(this);
             return true;
