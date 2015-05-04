@@ -30,8 +30,6 @@ public class ItemTurretUpgrade
 {
     @SideOnly(Side.CLIENT)
     public Map<TurretUpgrade, IIcon> upgIcons;
-    @SideOnly(Side.CLIENT)
-    public IIcon baseIcon;
 
     public ItemTurretUpgrade() {
         super();
@@ -52,7 +50,7 @@ public class ItemTurretUpgrade
         List<TurretUpgrade> upgrades = TurretUpgradeRegistry.getRegisteredUpgrades();
         this.upgIcons = new HashMap<>(upgrades.size());
 
-        this.baseIcon = iconRegister.registerIcon(TurretMod.MOD_ID + ":upgrades/empty");
+        this.itemIcon = iconRegister.registerIcon(TurretMod.MOD_ID + ":upgrades/empty");
         for( TurretUpgrade upgrade : upgrades ) {
             this.upgIcons.put(upgrade, iconRegister.registerIcon(upgrade.getItemTextureLoc()));
         }
@@ -61,7 +59,7 @@ public class ItemTurretUpgrade
     @Override
     public IIcon getIcon(ItemStack stack, int pass) {
         TurretUpgrade upgrade = this.getUpgradeFromStack(stack);
-        return pass == 0 || upgrade == null ? this.baseIcon : this.upgIcons.get(upgrade);
+        return pass == 0 || upgrade == null ? this.itemIcon : this.upgIcons.get(upgrade);
     }
 
     @Override

@@ -105,6 +105,7 @@ public class GuiIconTab
     }
 
     protected void drawIcon(IIcon icon, int posX, int posY, Minecraft mc) {
+        GL11.glPushMatrix();
         GL11.glTranslatef(0.0F, 0.0F, 32.0F);
         this.zLevel = 200.0F;
         itemRenderer.zLevel = 200.0F;
@@ -129,5 +130,6 @@ public class GuiIconTab
 
         this.zLevel = 0.0F;
         itemRenderer.zLevel = 0.0F;
+        GL11.glPopMatrix();
     }
 }

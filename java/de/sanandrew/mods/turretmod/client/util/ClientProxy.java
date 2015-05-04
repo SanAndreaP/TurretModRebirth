@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.client.util;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuInfo;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuTargets;
+import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuUpgrades;
 import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
 import de.sanandrew.mods.turretmod.util.*;
 import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgrade;
@@ -102,6 +103,8 @@ public class ClientProxy
                     return new GuiTcuInfo((AEntityTurretBase) getMinecraft().theWorld.getEntityByID(x));
                 case GUI_TCU_TARGETS:
                     return new GuiTcuTargets((AEntityTurretBase) getMinecraft().theWorld.getEntityByID(x));
+                case GUI_TCU_UPGRADES:
+                    return new GuiTcuUpgrades((AEntityTurretBase) getMinecraft().theWorld.getEntityByID(x));
             }
         } else {
             TurretMod.MOD_LOG.printf(Level.WARN, "Gui ID %d cannot be opened as it isn't a valid index in EnumGui!", id);

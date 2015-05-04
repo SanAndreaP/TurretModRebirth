@@ -11,7 +11,8 @@ package de.sanandrew.mods.turretmod.util;
 public enum EnumGui
 {
     GUI_TCU_INFO,
-    GUI_TCU_TARGETS;
+    GUI_TCU_TARGETS,
+    GUI_TCU_UPGRADES;
 
     public static final EnumGui[] VALUES = values();
 }

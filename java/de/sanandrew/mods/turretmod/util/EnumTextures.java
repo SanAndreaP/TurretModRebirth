@@ -21,6 +21,7 @@ public enum EnumTextures
 
     GUI_BUTTONS("textures/gui/buttons.png"),
     GUI_TCU_TARGETS("textures/gui/tcu/page_targets.png"),
+    GUI_TCU_UPGRADES("textures/gui/tcu/page_upgrades.png"),
     GUI_TCU_INFO("textures/gui/tcu/page_info.png");
 
     private final ResourceLocation tex;

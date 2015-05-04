@@ -19,6 +19,7 @@ public class TUpgradeHealth
         extends TurretUpgrade
 {
     private final AttributeModifier healthModifier;
+    private final int upgLevel;
 
     public TUpgradeHealth(String upgName, String texture, UUID attribUUID, int level) {
         this(upgName, texture, attribUUID, level, null);
@@ -27,19 +28,32 @@ public class TUpgradeHealth
     public TUpgradeHealth(String upgName, String texture, UUID attribUUID, int level, TurretUpgrade dependsOn) {
         super(TurretMod.MOD_ID, upgName, texture, dependsOn);
         this.healthModifier = new AttributeModifier(attribUUID, String.format("healthUpg_%d", level), 0.25D, 1 /*ADD_PERC_BASE_VALUE*/);
+        this.upgLevel = level;
     }
 
     @Override
     public void onApply(AEntityTurretBase turret) {
         if( !turret.worldObj.isRemote ) {
             turret.getEntityAttribute(SharedMonsterAttributes.maxHealth).applyModifier(healthModifier);
-            turret.setHealth(turret.getHealth() * (1.0F + (float) healthModifier.getAmount()));
+            turret.setHealth(this.incrHealth(turret));
         }
     }
 
     @Override
     public void onRemove(AEntityTurretBase turret) {
+        turret.setHealth(this.decrHealth(turret));
         turret.getEntityAttribute(SharedMonsterAttributes.maxHealth).removeModifier(healthModifier);
-        turret.setHealth(turret.getHealth() / (1.0F + (float) healthModifier.getAmount()));
+    }
+
+    private float incrHealth(AEntityTurretBase turret) {
+        float modifierRemover = 1.0F + (float) healthModifier.getAmount() * (this.upgLevel - 1);
+        float modifierAdd = 1.0F + (float) healthModifier.getAmount() * this.upgLevel;
+        return (turret.getHealth() / modifierRemover) * modifierAdd;
+    }
+
+    private float decrHealth(AEntityTurretBase turret) {
+        float modifierRemover = 1.0F + (float) healthModifier.getAmount() * (this.upgLevel - 1);
+        float modifierAdd = 1.0F + (float) healthModifier.getAmount() * this.upgLevel;
+        return (turret.getHealth() / modifierAdd) * modifierRemover;
     }
 }

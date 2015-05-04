@@ -12,6 +12,7 @@ import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiIconTab;
 import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
 import de.sanandrew.mods.turretmod.util.EnumGui;
+import de.sanandrew.mods.turretmod.util.TmrItems;
 import de.sanandrew.mods.turretmod.util.TurretMod;
 import de.sanandrew.mods.turretmod.util.TurretRegistry;
 import net.minecraft.client.gui.GuiButton;
@@ -31,6 +32,7 @@ public abstract class AGuiTurretControlUnit
 
     protected GuiIconTab pageInfo;
     protected GuiIconTab pageTargets;
+    protected GuiIconTab pageUpgrades;
 
     public AGuiTurretControlUnit(AEntityTurretBase turret) {
         this.myTurret = turret;
@@ -48,6 +50,7 @@ public abstract class AGuiTurretControlUnit
 
         this.buttonList.add(this.pageInfo = new GuiIconTab(this.buttonList.size(), this.guiLeft - 23, this.guiTop + 5, Items.sign.getIconFromDamage(0), "info", false));
         this.buttonList.add(this.pageTargets = new GuiIconTab(this.buttonList.size(), this.guiLeft - 23, this.guiTop + 33, Items.diamond_sword.getIconFromDamage(0), "targets", false));
+        this.buttonList.add(this.pageUpgrades = new GuiIconTab(this.buttonList.size(), this.guiLeft - 23, this.guiTop + 61, TmrItems.turretUpgrade.getIconFromDamage(0), "targets", false));
     }
 
     @Override
@@ -80,6 +83,8 @@ public abstract class AGuiTurretControlUnit
             TurretMod.proxy.openGui(this.mc.thePlayer, EnumGui.GUI_TCU_INFO, this.myTurret.getEntityId(), 0, 0);
         } else if( button == this.pageTargets ) {
             TurretMod.proxy.openGui(this.mc.thePlayer, EnumGui.GUI_TCU_TARGETS, this.myTurret.getEntityId(), 0, 0);
+        } else if( button == this.pageUpgrades ) {
+            TurretMod.proxy.openGui(this.mc.thePlayer, EnumGui.GUI_TCU_UPGRADES, this.myTurret.getEntityId(), 0, 0);
         }
         super.actionPerformed(button);
     }

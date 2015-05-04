@@ -78,7 +78,7 @@ public class GuiTcuTargets
 
         this.tempTargetList = this.myTurret.getTargetList();
 
-        this.canScroll = this.tempTargetList.size() >= 18;
+        this.canScroll = this.tempTargetList.size() >= 11;
         this.scrollAmount = Math.max(0.0F, 1.0F / (this.tempTargetList.size() - 11.0F));
     }
 
