@@ -49,8 +49,6 @@ public class GuiTcuUpgrades
 
     private GuiButton ejectAll;
 
-    private static RenderItem itemRenderer = new RenderItem();
-
     public GuiTcuUpgrades(AEntityTurretBase turret) {
         super(turret);
     }
@@ -115,12 +113,12 @@ public class GuiTcuUpgrades
 
             GL11.glColor3f(1.0F, 1.0F, 1.0F);
 
-            drawIcon(TmrItems.turretUpgrade.getIcon(currStack, 0), this.guiLeft + 7 + col * 26, this.guiTop + 19 + row * 18 + offsetY);
-            drawIcon(TmrItems.turretUpgrade.getIcon(currStack, 1), this.guiLeft + 7 + col * 26, this.guiTop + 19 + row * 18 + offsetY);
+            GuiUtils.drawGuiIcon(TmrItems.turretUpgrade.getIcon(currStack, 0), this.guiLeft + 7 + col * 26, this.guiTop + 19 + row * 18 + offsetY);
+            GuiUtils.drawGuiIcon(TmrItems.turretUpgrade.getIcon(currStack, 1), this.guiLeft + 7 + col * 26, this.guiTop + 19 + row * 18 + offsetY);
 
             GL11.glEnable(GL11.GL_BLEND);
             this.mc.renderEngine.bindTexture(EnumTextures.GUI_TCU_UPGRADES.getResource());
-            boolean isHoveringOverEject = isMouseInRect(mouseX, mouseY, this.guiLeft + 24 + col * 26, this.guiTop + 18 + row * 18 + offsetY, 5, 6);
+            boolean isHoveringOverEject = GuiUtils.isMouseInRect(mouseX, mouseY, this.guiLeft + 24 + col * 26, this.guiTop + 18 + row * 18 + offsetY, 5, 6);
             this.drawTexturedModalRect(this.guiLeft + 24 + col * 26, this.guiTop + 18 + row * 18 + offsetY, 176, 12 + (isHoveringOverEject ? 0 : 6), 5, 6);
             if( isHoveringOverEject && isLmbDown && !this.prevIsLmbDown ) {
                 this.ejectUpgrade(this.tempUpgradeList.get(i));
@@ -160,36 +158,5 @@ public class GuiTcuUpgrades
 
     private static String translateBtn(String s) {
         return SAPUtils.translatePreFormat("gui.%s.tcu.pageUpgrades.%s", TurretMod.MOD_ID, s);
-    }
-
-    private static boolean isMouseInRect(int mouseX, int mouseY, int rectX, int rectY, int width, int height) {
-        return mouseX >= rectX && mouseX < rectX + width && mouseY >= rectY && mouseY < rectY + height;
-    }
-
-    private void drawIcon(IIcon icon, int posX, int posY) {
-        GL11.glPushMatrix();
-        GL11.glTranslatef(0.0F, 0.0F, 32.0F);
-        this.zLevel = 200.0F;
-        itemRenderer.zLevel = 200.0F;
-
-        GL11.glEnable(GL11.GL_BLEND);
-        OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
-
-        ResourceLocation resourcelocation = this.mc.getTextureManager().getResourceLocation(1);
-        mc.getTextureManager().bindTexture(resourcelocation);
-
-        if( icon == null ) {
-            icon = ((TextureMap)Minecraft.getMinecraft().getTextureManager().getTexture(resourcelocation)).getAtlasSprite("missingno");
-        }
-
-        itemRenderer.renderIcon(posX, posY, icon, 16, 16);
-
-        GL11.glDisable(GL11.GL_ALPHA_TEST);
-        GL11.glDisable(GL11.GL_BLEND);
-
-        this.zLevel = 0.0F;
-        itemRenderer.zLevel = 0.0F;
-        GL11.glPopMatrix();
     }
 }

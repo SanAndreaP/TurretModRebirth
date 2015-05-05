@@ -12,6 +12,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
+import de.sanandrew.core.manpack.util.helpers.InventoryUtils;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.network.packet.PacketTargetList;
@@ -29,7 +30,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -360,14 +360,14 @@ public abstract class AEntityTurretBase
                 }
                 if( this.myInfo.getAmmo(heldItem) != null ) {
                     this.addAmmo(heldItem);
-                    decrStackSize(player, heldItem);
+                    InventoryUtils.decrPlayerHeldStackSize(player, 1);
                     this.playSound(TurretMod.MOD_ID + ":collect.ia_get", 1.0F, 1.0F);
 
                     return true;
                 }
                 if( (healInfo = this.myInfo.getHeal(heldItem)) != null && this.getHealth() < this.getMaxHealth() ) {
                     this.heal(healInfo.getAmount());
-                    decrStackSize(player, heldItem);
+                    InventoryUtils.decrPlayerHeldStackSize(player, 1);
                     this.playSound(TurretMod.MOD_ID + ":collect.ia_get", 1.0F, 1.0F);
 
                     return true;
@@ -375,7 +375,7 @@ public abstract class AEntityTurretBase
                 if( heldItem.getItem() == TmrItems.turretUpgrade && (upgrade = TmrItems.turretUpgrade.getUpgradeFromStack(heldItem)) != null
                     && this.applyUpgrade(upgrade) )
                 {
-                    decrStackSize(player, heldItem);
+                    InventoryUtils.decrPlayerHeldStackSize(player, 1);
                     this.playSound(TurretMod.MOD_ID + ":collect.ia_get", 1.0F, 1.0F);
 
                     return true;
@@ -384,16 +384,6 @@ public abstract class AEntityTurretBase
         }
 
         return super.interact(player);
-    }
-
-    private static void decrStackSize(EntityPlayer player, ItemStack stack) {
-        stack.stackSize--;
-        if( stack.stackSize <= 0 ) {
-            player.setCurrentItemOrArmor(0, null);
-        } else {
-            player.setCurrentItemOrArmor(0, stack.copy()); // resetting the stack with a copy prevents the creative inventory from fucking over...
-        }
-        player.inventoryContainer.detectAndSendChanges();
     }
 
     @Override

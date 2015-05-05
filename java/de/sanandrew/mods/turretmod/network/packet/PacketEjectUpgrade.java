@@ -9,9 +9,8 @@
 package de.sanandrew.mods.turretmod.network.packet;
 
 import de.sanandrew.core.manpack.network.IPacket;
-import de.sanandrew.core.manpack.util.helpers.SAPUtils;
+import de.sanandrew.core.manpack.util.helpers.InventoryUtils;
 import de.sanandrew.core.manpack.util.javatuples.Pair;
-import de.sanandrew.core.manpack.util.javatuples.Triplet;
 import de.sanandrew.core.manpack.util.javatuples.Tuple;
 import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
 import de.sanandrew.mods.turretmod.network.PacketManager;
@@ -22,11 +21,7 @@ import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgradeRegistry;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetHandlerPlayServer;
@@ -51,7 +46,7 @@ public class PacketEjectUpgrade
                 for( TurretUpgrade ejectUpg : ejectingUpgrades ) {
                     ItemStack stack = TmrItems.turretUpgrade.getStackWithUpgrade(ejectUpg, 1);
                     turret.removeUpgrade(ejectUpg);
-                    if( (stack = addItemStackToInventory(stack, player.inventory)) != null ) {
+                    if( (stack = InventoryUtils.addStackToInventory(stack, player.inventory)) != null ) {
                         turret.entityDropItem(stack, 0.0F);
                     }
                     player.inventoryContainer.detectAndSendChanges();
@@ -84,49 +79,5 @@ public class PacketEjectUpgrade
         }
 
         return currDepUpgrades;
-    }
-
-    static ItemStack addItemStackToInventory(ItemStack is, IInventory inv) {
-        int invSize = inv.getSizeInventory() - (inv instanceof InventoryPlayer ? 4 : 0);
-
-        int i2;
-        ItemStack invIS;
-        int rest;
-        for(i2 = 0; i2 < invSize && is != null; ++i2) {
-            invIS = inv.getStackInSlot(i2);
-            if(invIS != null && ItemStack.areItemStacksEqual(is, invIS)) {
-                rest = is.stackSize + invIS.stackSize;
-                int maxStack = Math.min(invIS.getMaxStackSize(), inv.getInventoryStackLimit());
-                if(rest <= maxStack) {
-                    invIS.stackSize = rest;
-                    inv.setInventorySlotContents(i2, invIS.copy());
-                    is = null;
-                    break;
-                }
-
-                int rest1 = rest - maxStack;
-                invIS.stackSize = maxStack;
-                inv.setInventorySlotContents(i2, invIS.copy());
-                is.stackSize = rest1;
-            }
-        }
-
-        for(i2 = 0; i2 < invSize && is != null; ++i2) {
-            invIS = inv.getStackInSlot(i2);
-            if(invIS == null && inv.isItemValidForSlot(i2, is)) {
-                if(is.stackSize <= inv.getInventoryStackLimit()) {
-                    inv.setInventorySlotContents(i2, is.copy());
-                    is = null;
-                    break;
-                }
-
-                rest = is.stackSize - inv.getInventoryStackLimit();
-                is.stackSize = inv.getInventoryStackLimit();
-                inv.setInventorySlotContents(i2, is.copy());
-                is.stackSize = rest;
-            }
-        }
-
-        return is;
     }
 }
