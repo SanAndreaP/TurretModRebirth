@@ -27,13 +27,16 @@ import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 public class GuiTcuTargets
         extends AGuiTurretControlUnit
 {
-    private Map<Class<? extends EntityLiving>, Boolean> tempTargetList = Maps.newHashMap();
+    private Map<Class<? extends EntityLiving>, Boolean> tempTargetList = new HashMap<>();
 
     private float scroll = 0.0F;
     private float scrollAmount = 0.0F;
@@ -76,7 +79,11 @@ public class GuiTcuTargets
     public void updateScreen() {
         super.updateScreen();
 
-        this.tempTargetList = this.myTurret.getTargetList();
+        TreeMap<Class<? extends EntityLiving>, Boolean> btwSortMapNm = new TreeMap<>(new TargetComparatorName());
+        TreeMap<Class<? extends EntityLiving>, Boolean> btwSortMapCl = new TreeMap<>(new TargetComparatorClass());
+        btwSortMapNm.putAll(this.myTurret.getTargetList());
+        btwSortMapCl.putAll(btwSortMapNm);
+        this.tempTargetList = btwSortMapCl;
 
         this.canScroll = this.tempTargetList.size() >= 11;
         this.scrollAmount = Math.max(0.0F, 1.0F / (this.tempTargetList.size() - 11.0F));
@@ -147,12 +154,8 @@ public class GuiTcuTargets
             } else if( IAnimals.class.isAssignableFrom(entry.getKey()) ) {
                 textColor = 0xAAFFAA;
             }
-            String namedEntry = EntityList.classToStringMapping.get(entry.getKey()).toString();
-            String name = "entity." + namedEntry + ".name";
-            if( !StatCollector.canTranslate(name) ) {
-                name = namedEntry;
-            }
-            this.fontRendererObj.drawString(SAPUtils.translate(name), this.guiLeft + 20, this.guiTop + 20 + offsetY, textColor, false);
+
+            this.fontRendererObj.drawString(getTranslatedEntityName(entry.getKey()), this.guiLeft + 20, this.guiTop + 20 + offsetY, textColor, false);
 
             offsetY += this.fontRendererObj.FONT_HEIGHT + 1;
         }
@@ -210,7 +213,41 @@ public class GuiTcuTargets
         PacketSendMultiTargetFlag.sendToServer(this.myTurret, targets);
     }
 
+    static String getTranslatedEntityName(Class<?> entityCls) {
+        String namedEntry = EntityList.classToStringMapping.get(entityCls).toString();
+        String name = "entity." + namedEntry + ".name";
+        if( !StatCollector.canTranslate(name) ) {
+            name = namedEntry;
+        }
+
+        return SAPUtils.translate(name);
+    }
+
     private static String translateTargetBtn(String s) {
-        return SAPUtils.translatePreFormat("gui.%s.tcu.pageTargets.%s", TurretMod.MOD_ID, s);
+        return SAPUtils.translatePreFormat("gui.%s.tcu.page.targets.button.%s", TurretMod.MOD_ID, s);
+    }
+
+    private static final class TargetComparatorClass
+            implements Comparator<Class<? extends EntityLiving>>
+    {
+        @Override
+        public int compare(Class<? extends EntityLiving> o1, Class<? extends EntityLiving> o2) {
+            if( IMob.class.isAssignableFrom(o1) && IAnimals.class.isAssignableFrom(o2) ) {
+                return -1;
+            }
+            if( IAnimals.class.isAssignableFrom(o1) && !IMob.class.isAssignableFrom(o2) && !IAnimals.class.isAssignableFrom(o2) ) {
+                return -1;
+            }
+            return 1;
+        }
+    }
+
+    private static final class TargetComparatorName
+            implements Comparator<Class<? extends EntityLiving>>
+    {
+        @Override
+        public int compare(Class<? extends EntityLiving> o1, Class<? extends EntityLiving> o2) {
+            return getTranslatedEntityName(o2).compareTo(getTranslatedEntityName(o1));
+        }
     }
 }

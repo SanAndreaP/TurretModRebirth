@@ -61,6 +61,8 @@ public abstract class AEntityTurretBase
     private static final int DW_FREQUENCY = 28; /* BYTE */
     private static final int DW_BOOLEANS = 29; /* BYTE */
 
+    // TODO test dummy, command: /summon Zombie ~ ~ ~ {Attributes: [{Name: generic.maxHealth, Base: 1024}]}
+
     // info
     protected final TurretRegistry<? extends AEntityTurretBase> myInfo = TurretRegistry.getTurretInfo(this.getClass());
 
@@ -94,7 +96,8 @@ public abstract class AEntityTurretBase
         {
             @Override
             public boolean apply(Class input) {
-                return EntityLiving.class.isAssignableFrom(input) && input != EntityLivingBase.class && !AEntityTurretBase.class.isAssignableFrom(input);
+                return EntityLiving.class.isAssignableFrom(input) && input != EntityLivingBase.class && input != EntityLiving.class
+                       && !AEntityTurretBase.class.isAssignableFrom(input);
             }
         };
         @SuppressWarnings("unchecked")

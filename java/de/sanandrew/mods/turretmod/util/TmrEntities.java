@@ -16,12 +16,12 @@ import de.sanandrew.mods.turretmod.client.model.turret.techi.ModelTurretCrossbow
 import de.sanandrew.mods.turretmod.client.model.turret.techii.ModelTurretRevolver;
 import de.sanandrew.mods.turretmod.client.render.entity.RenderBullet;
 import de.sanandrew.mods.turretmod.client.render.entity.RenderTurret;
+import de.sanandrew.mods.turretmod.client.render.entity.RenderTurretArrow;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileArrow;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretOP;
 import de.sanandrew.mods.turretmod.entity.turret.techi.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.entity.turret.techii.EntityTurretRevolver;
-import net.minecraft.client.renderer.entity.RenderArrow;
 
 public final class TmrEntities
 {
@@ -41,7 +41,7 @@ public final class TmrEntities
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretRevolver.class, new RenderTurret(new ModelTurretRevolver(0.0F)));
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretOP.class, new RenderTurret(new ModelTurretCrossbow(0.0F)));
 
-        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileArrow.class, new RenderArrow());
+        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileArrow.class, new RenderTurretArrow());
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectileBullet.class, new RenderBullet());
     }
 }
