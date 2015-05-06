@@ -61,10 +61,10 @@ public abstract class AEntityTurretBase
     private static final int DW_EXPERIENCE = 22; /* INT */
     private static final int DW_OWNER_UUID = 23; /* STRING */
     private static final int DW_OWNER_NAME = 24; /* STRING */
-    private static final int DW_TARGET = 26; /* STRING */
-    private static final int DW_SHOOT_TICKS = 27; /* INT */
-    private static final int DW_FREQUENCY = 28; /* BYTE */
-    private static final int DW_BOOLEANS = 29; /* BYTE */
+    private static final int DW_TARGET = 25; /* STRING */
+    private static final int DW_SHOOT_TICKS = 26; /* INT */
+    private static final int DW_FREQUENCY = 27; /* BYTE */
+    private static final int DW_BOOLEANS = 28; /* BYTE */
 
     // info
     protected final TurretRegistry<? extends AEntityTurretBase> myInfo = TurretRegistry.getTurretInfo(this.getClass());
@@ -125,7 +125,6 @@ public abstract class AEntityTurretBase
         this.dataWatcher.addObject(DW_EXPERIENCE, 0); // Experience
         this.dataWatcher.addObject(DW_OWNER_UUID, ""); // Player UUID
         this.dataWatcher.addObject(DW_OWNER_NAME, ""); // Player name
-//        this.dataWatcher.addObject(DW_TURRET_NAME, this.getDefaultName()); // Turret name
         this.dataWatcher.addObject(DW_TARGET, ""); // Target name
         this.dataWatcher.addObject(DW_SHOOT_TICKS, 0); // shootTicks
         this.dataWatcher.addObject(DW_FREQUENCY, (byte) 0); // frequency
