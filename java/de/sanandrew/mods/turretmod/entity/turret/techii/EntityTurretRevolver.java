@@ -3,6 +3,7 @@ package de.sanandrew.mods.turretmod.entity.turret.techii;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
+import de.sanandrew.mods.turretmod.entity.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.util.EnumTextures;
 import de.sanandrew.mods.turretmod.util.TurretMod;
 import net.minecraft.command.IEntitySelector;
@@ -19,6 +20,7 @@ public class EntityTurretRevolver
 	private boolean isRight = false;
 	private int rightBarrelOffset = 0;
 	private int leftBarrelOffset = 0;
+	private boolean prevShooting = false;
 
 	public EntityTurretRevolver(World par1World) {
 		super(par1World);
@@ -41,11 +43,12 @@ public class EntityTurretRevolver
 	public int getLeftBarrelOffset() {
 		return this.leftBarrelOffset;
 	}
-
     @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
+
         this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(40.0D);
+		this.getEntityAttribute(TurretAttributes.MAX_COOLDOWN_TICKS).setBaseValue(15.0F);
     }
 
 	@Override
@@ -55,13 +58,22 @@ public class EntityTurretRevolver
 
 	@Override
 	public void shoot(boolean isRidden) {
-		if( this.worldObj.isRemote && this.getShootTicks() == 0 && this.hasTarget() ) {
-			if( this.isRight ) {
-				this.rightBarrelOffset = getMaxShootTicks();
+		if( this.worldObj.isRemote ) {
+			if( this.getShootTicks() == 0 && this.getHealth() > 0 && (isRidden || this.hasTarget()) && this.getAmmo() > 0 ) {
+				if( !this.prevShooting ) {
+					if( this.isRight ) {
+						this.rightBarrelOffset = getMaxShootTicks();
+					} else {
+						this.leftBarrelOffset = getMaxShootTicks();
+					}
+
+					this.isRight = !this.isRight;
+				}
+
+				this.prevShooting = true;
 			} else {
-				this.leftBarrelOffset = getMaxShootTicks();
+				this.prevShooting = false;
 			}
-			this.isRight = !this.isRight;
 		}
 
 		super.shoot(isRidden);
@@ -94,13 +106,6 @@ public class EntityTurretRevolver
 				this.leftBarrelOffset -= 1;
 			}
 		}
-	}
-
-
-
-	@Override
-	public int getMaxShootTicks() {
-		return 15;
 	}
 
 	@Override

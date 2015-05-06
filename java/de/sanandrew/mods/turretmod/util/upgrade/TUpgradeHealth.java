@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.util.upgrade;
 
+import de.sanandrew.core.manpack.util.EnumAttrModifierOperation;
 import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
 import de.sanandrew.mods.turretmod.util.TurretMod;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -27,7 +28,7 @@ public class TUpgradeHealth
 
     public TUpgradeHealth(String upgName, String texture, UUID attribUUID, int level, TurretUpgrade dependsOn) {
         super(TurretMod.MOD_ID, upgName, texture, dependsOn);
-        this.healthModifier = new AttributeModifier(attribUUID, String.format("healthUpg_%d", level), 0.25D, 1 /*ADD_PERC_BASE_VALUE*/);
+        this.healthModifier = new AttributeModifier(attribUUID, String.format("healthUpg_%d", level), 0.25D, EnumAttrModifierOperation.ADD_PERC_VAL_TO_SUM.ordinal());
         this.upgLevel = level;
     }
 

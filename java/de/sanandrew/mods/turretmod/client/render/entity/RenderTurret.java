@@ -9,7 +9,6 @@
 package de.sanandrew.mods.turretmod.client.render.entity;
 
 import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
-import de.sanandrew.mods.turretmod.util.ITurretInfo;
 import de.sanandrew.mods.turretmod.util.TurretMod;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBase;
@@ -45,8 +44,8 @@ public class RenderTurret
 
     @Override
     protected int shouldRenderPass(EntityLivingBase livingBase, int pass, float partTicks) {
-        if( livingBase instanceof ITurretInfo ) {
-            return this.renderGlowMap((ITurretInfo) livingBase, pass);
+        if( livingBase instanceof AEntityTurretBase ) {
+            return this.renderGlowMap((AEntityTurretBase) livingBase, pass);
         }
 
         return 0;
@@ -54,17 +53,17 @@ public class RenderTurret
 
     @Override
     protected ResourceLocation getEntityTexture(Entity entity) {
-        if( entity instanceof ITurretInfo ) {
-            return ((ITurretInfo) entity).getStandardTexture();
+        if( entity instanceof AEntityTurretBase ) {
+            return ((AEntityTurretBase) entity).getStandardTexture();
         }
 
         return null;
     }
 
-    private int renderGlowMap(ITurretInfo info, int pass) {
+    private int renderGlowMap(AEntityTurretBase turret, int pass) {
         if( pass == 0 ) {
             this.setRenderPassModel(this.glowModel);
-            this.bindTexture(info.getGlowTexture());
+            this.bindTexture(turret.getGlowTexture());
 
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glDisable(GL11.GL_ALPHA_TEST);

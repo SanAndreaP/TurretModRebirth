@@ -10,16 +10,24 @@ package de.sanandrew.mods.turretmod.item;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import de.sanandrew.core.manpack.util.helpers.SAPUtils;
+import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TurretMod;
-import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgradeRegistry;
+import de.sanandrew.mods.turretmod.util.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgrade;
+import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgradeRegistry;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
+import org.lwjgl.input.Keyboard;
 
 import java.util.HashMap;
 import java.util.List;
@@ -81,6 +89,44 @@ public class ItemTurretUpgrade
     @Override
     public int getRenderPasses(int metadata) {
         return 2;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    @SuppressWarnings("unchecked")
+    public void addInformation(ItemStack stack, EntityPlayer player, List lines, boolean advTooltip) {
+        TurretUpgrade stackUpgrade = this.getUpgradeFromStack(stack);
+        String unlocName = this.getUnlocalizedName(stack);
+        String upgName = stackUpgrade == null ? "empty" : stackUpgrade.name;
+
+        lines.add(EnumChatFormatting.AQUA + SAPUtils.translatePreFormat("%s.%s.name", unlocName, upgName));
+
+        if( Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) ) {
+            for( Object line : Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(SAPUtils.translatePreFormat("%s.%s.desc", unlocName, upgName), 200) ) {
+                lines.add(line);
+            }
+
+            if( stackUpgrade != null ) {
+                if( stackUpgrade.dependantOn != null ) {
+                    lines.add(EnumChatFormatting.YELLOW + SAPUtils.translatePreFormat("%s.requires", unlocName));
+                    lines.add("  " + SAPUtils.translatePreFormat("%s.%s.name", unlocName, stackUpgrade.dependantOn.name));
+                }
+
+                List<Class<? extends AEntityTurretBase>> applicables = stackUpgrade.getApplicableTurrets();
+                if( applicables.size() > 0 ) {
+                    lines.add(EnumChatFormatting.RED + SAPUtils.translatePreFormat("%s.applicableTo", unlocName));
+                    for( Class<? extends AEntityTurretBase> cls : applicables ) {
+                        TurretRegistry info = TurretRegistry.getTurretInfo(cls);
+                        if( info != null ) {
+                            String entityName = cls != null ? (String) EntityList.classToStringMapping.get(cls) : "UNKNOWN";
+                            lines.add("  " + SAPUtils.translatePreFormat("entity.%s.name", entityName));
+                        }
+                    }
+                }
+            }
+        } else {
+            lines.add(EnumChatFormatting.ITALIC + SAPUtils.translatePreFormat("%s.shdetails", unlocName));
+        }
     }
 
     public ItemStack getStackWithUpgrade(TurretUpgrade upgrade, int stackSize) {

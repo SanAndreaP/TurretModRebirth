@@ -67,6 +67,10 @@ public class TurretUpgrade
         return this.applicableTurrets.size() == 0 || this.applicableTurrets.contains(turretCls);
     }
 
+    public final List<Class<? extends AEntityTurretBase>> getApplicableTurrets() {
+        return new ArrayList<>(this.applicableTurrets);
+    }
+
     /**
      * Called when this upgrade gets applied to the turret (through interaction from the player or other means).
      * This is called client and server side!

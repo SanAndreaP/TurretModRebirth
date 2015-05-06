@@ -33,7 +33,8 @@ public class ItemTurretControlUnit
     public String getItemStackDisplayName(ItemStack stack) {
         long currDisplayNameTime = System.currentTimeMillis();
         if( this.prevDisplayNameTime + 1000 < currDisplayNameTime ) {
-            double indFloat = Math.pow(2, SAPUtils.RNG.nextInt(5)) / Math.pow(2, 4) * 5.0D;
+            final int count = 5;
+            double indFloat = SAPUtils.RNG.nextInt(20) != 0 ? 1 : SAPUtils.RNG.nextInt(count - 1) + 2;
             this.nameId = MathHelper.ceiling_double_int(indFloat);
         }
         this.prevDisplayNameTime = currDisplayNameTime;

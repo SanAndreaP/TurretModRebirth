@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.util;
 
 import com.google.common.collect.Maps;
 import com.sun.istack.internal.NotNull;
-import de.sanandrew.core.manpack.util.helpers.SAPUtils;
+import de.sanandrew.core.manpack.util.helpers.ItemUtils;
 import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretOP;
 import de.sanandrew.mods.turretmod.entity.turret.techi.EntityTurretCrossbow;
@@ -109,7 +109,7 @@ public final class TurretRegistry<T extends AEntityTurretBase>
         }
 
         for( AmmoInfo info : this.ammoItems ) {
-            if( SAPUtils.areStacksEqual(stack, info.item, info.item.hasTagCompound()) ) {
+            if( ItemUtils.areStacksEqual(stack, info.item, info.item.hasTagCompound()) ) {
                 return info;
             }
         }
@@ -124,7 +124,7 @@ public final class TurretRegistry<T extends AEntityTurretBase>
         }
 
         for( HealInfo info : this.healItems ) {
-            if( SAPUtils.areStacksEqual(stack, info.item, info.item.hasTagCompound()) ) {
+            if( ItemUtils.areStacksEqual(stack, info.item, info.item.hasTagCompound()) ) {
                 return info;
             }
         }

@@ -29,13 +29,13 @@ public class EntityTurretCrossbow
     }
 
     @Override
-    public AxisAlignedBB getRangeBB() {
-        return RANGE_AABB.getOffsetBoundingBox(this.posX, this.posY, this.posZ);
+    protected void applyEntityAttributes() {
+        super.applyEntityAttributes();
     }
 
     @Override
-    public int getMaxShootTicks() {
-        return 20;
+    public AxisAlignedBB getRangeBB() {
+        return RANGE_AABB.getOffsetBoundingBox(this.posX, this.posY, this.posZ);
     }
 
     @Override

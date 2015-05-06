@@ -13,13 +13,16 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
 import de.sanandrew.core.manpack.util.helpers.InventoryUtils;
-import de.sanandrew.core.manpack.util.helpers.SAPUtils;
+import de.sanandrew.core.manpack.util.helpers.ItemUtils;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.network.packet.PacketTargetList;
 import de.sanandrew.mods.turretmod.network.packet.PacketTargetListRequest;
 import de.sanandrew.mods.turretmod.network.packet.PacketUpgradeList;
 import de.sanandrew.mods.turretmod.network.packet.PacketUpgradeListRequest;
-import de.sanandrew.mods.turretmod.util.*;
+import de.sanandrew.mods.turretmod.util.EnumGui;
+import de.sanandrew.mods.turretmod.util.TmrItems;
+import de.sanandrew.mods.turretmod.util.TurretMod;
+import de.sanandrew.mods.turretmod.util.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.TurretRegistry.AmmoInfo;
 import de.sanandrew.mods.turretmod.util.TurretRegistry.HealInfo;
 import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgrade;
@@ -39,6 +42,7 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 import org.apache.logging.log4j.Level;
@@ -48,8 +52,9 @@ import java.util.Map.Entry;
 
 public abstract class AEntityTurretBase
         extends EntityLiving
-        implements ITurretInfo
 {
+    // TODO test dummy, command: /summon Zombie ~ ~ ~ {Attributes: [{Name: generic.maxHealth, Base: 1024}]}
+
     // data watcher IDs
     private static final int DW_AMMO = 20; /* INT */
     private static final int DW_AMMO_TYPE = 21; /* ITEM_STACK */
@@ -60,8 +65,6 @@ public abstract class AEntityTurretBase
     private static final int DW_SHOOT_TICKS = 27; /* INT */
     private static final int DW_FREQUENCY = 28; /* BYTE */
     private static final int DW_BOOLEANS = 29; /* BYTE */
-
-    // TODO test dummy, command: /summon Zombie ~ ~ ~ {Attributes: [{Name: generic.maxHealth, Base: 1024}]}
 
     // info
     protected final TurretRegistry<? extends AEntityTurretBase> myInfo = TurretRegistry.getTurretInfo(this.getClass());
@@ -124,11 +127,19 @@ public abstract class AEntityTurretBase
         this.dataWatcher.addObject(DW_OWNER_NAME, ""); // Player name
 //        this.dataWatcher.addObject(DW_TURRET_NAME, this.getDefaultName()); // Turret name
         this.dataWatcher.addObject(DW_TARGET, ""); // Target name
-        this.dataWatcher.addObject(DW_SHOOT_TICKS, this.getMaxShootTicks()); // shootTicks
+        this.dataWatcher.addObject(DW_SHOOT_TICKS, 0); // shootTicks
         this.dataWatcher.addObject(DW_FREQUENCY, (byte) 0); // frequency
         this.dataWatcher.addObject(DW_BOOLEANS, (byte) 0);   // boolean stuff
 
         this.setActiveState(true);
+    }
+
+    @Override
+    protected void applyEntityAttributes() {
+        super.applyEntityAttributes();
+
+        this.getAttributeMap().registerAttribute(TurretAttributes.MAX_AMMO_CAPACITY);
+        this.getAttributeMap().registerAttribute(TurretAttributes.MAX_COOLDOWN_TICKS);
     }
 
     @Override
@@ -581,7 +592,8 @@ public abstract class AEntityTurretBase
     }
 
     public abstract AxisAlignedBB getRangeBB();
-    public abstract int getMaxShootTicks();
+    public abstract ResourceLocation getStandardTexture();
+    public abstract ResourceLocation getGlowTexture();
     protected abstract IEntitySelector getTargetSelector();
     protected abstract EntityTurretProjectile getProjectile();
     protected abstract String getShootSound();
@@ -649,8 +661,8 @@ public abstract class AEntityTurretBase
         return this.dataWatcher.getWatchableObjectInt(DW_AMMO);
     }
 
-    public int getMaxAmmo() {
-        return 256;
+    public final int getMaxAmmo() {
+        return MathHelper.ceiling_double_int(this.getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY).getAttributeValue());
     }
 
     public AmmoInfo getAmmoType() {
@@ -662,12 +674,16 @@ public abstract class AEntityTurretBase
         return null;
     }
 
+    public final int getMaxShootTicks() {
+        return MathHelper.ceiling_double_int(this.getEntityAttribute(TurretAttributes.MAX_COOLDOWN_TICKS).getAttributeValue());
+    }
+
     public void addAmmo(ItemStack stack) {
         AmmoInfo ammoInfo = this.getAmmoType();
         if( ammoInfo != null ) {
             ItemStack typeItem = ammoInfo.getTypeItem();
             AmmoInfo newType = this.myInfo.getAmmo(stack);
-            if( newType != null && SAPUtils.areStacksEqual(newType.getTypeItem(), typeItem, typeItem.hasTagCompound()) ) {
+            if( newType != null && ItemUtils.areStacksEqual(newType.getTypeItem(), typeItem, typeItem.hasTagCompound()) ) {
                 int remainAmount = this.getMaxAmmo() - this.getAmmo();
                 if( remainAmount > 0 ) {
                     int stackSubtract = Math.min(stack.stackSize, MathHelper.floor_double(remainAmount / (double) newType.getAmount()));
