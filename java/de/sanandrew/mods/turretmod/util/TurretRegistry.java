@@ -8,7 +8,6 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
-import com.google.common.collect.Maps;
 import com.sun.istack.internal.NotNull;
 import de.sanandrew.core.manpack.util.helpers.ItemUtils;
 import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
@@ -20,19 +19,19 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public final class TurretRegistry<T extends AEntityTurretBase>
 {
-    private static final Map<Class<? extends AEntityTurretBase>, TurretRegistry<? extends AEntityTurretBase>> CLASS_MAP = Maps.newHashMap();
-    private static final Map<String, TurretRegistry<? extends AEntityTurretBase>> NAME_MAP = Maps.newHashMap();
+    private static final Map<Class<? extends AEntityTurretBase>, TurretRegistry<? extends AEntityTurretBase>> CLASS_MAP = new HashMap<>();
+    private static final Map<String, TurretRegistry<? extends AEntityTurretBase>> NAME_MAP = new HashMap<>();
+    private static final List<String> REG_SORTED_TURRET_NAME_LIST = new ArrayList<>();
 
     public static <T extends AEntityTurretBase> TurretRegistry<T> registerNewTurret(Class<T> turretEntityCls, String turretName, String iconName) {
         TurretRegistry<T> turret = new TurretRegistry<>(turretEntityCls, turretName, iconName);
         CLASS_MAP.put(turretEntityCls, turret);
         NAME_MAP.put(turretName, turret);
+        REG_SORTED_TURRET_NAME_LIST.add(turretName);
 
         return turret;
     }
@@ -59,8 +58,8 @@ public final class TurretRegistry<T extends AEntityTurretBase>
         return NAME_MAP.get(name);
     }
 
-    public static List<String> getTurretNameList() {
-        return new ArrayList<>(NAME_MAP.keySet());
+    public static List<String> getAllTurretNamesSorted() {
+        return new ArrayList<>(REG_SORTED_TURRET_NAME_LIST);
     }
 
     private final Class<T> turretEntityCls;

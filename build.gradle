@@ -42,7 +42,7 @@ group = "de.sanandrew.mods"
 archivesBaseName = "TurretMod"
 
 minecraft {
-    version = "1.7.10-10.13.3.1389-1710ls"
+    version = "1.7.10-10.13.3.1401-1710ls"
     runDir = "minecraft"
 }
 

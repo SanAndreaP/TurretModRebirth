@@ -42,7 +42,7 @@ public class ItemTurretUpgrade
     public ItemTurretUpgrade() {
         super();
         this.setUnlocalizedName(TurretMod.MOD_ID + ":turretUpgrade");
-        this.setCreativeTab(TmrCreativeTabs.TURRETS);
+        this.setCreativeTab(TmrCreativeTabs.UPGRADES);
     }
 
     @Override
@@ -50,12 +50,10 @@ public class ItemTurretUpgrade
         return super.getUnlocalizedName(stack);
     }
 
-
-
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister iconRegister) {
-        List<TurretUpgrade> upgrades = TurretUpgradeRegistry.getRegisteredUpgrades();
+        List<TurretUpgrade> upgrades = TurretUpgradeRegistry.getAllUpgradesSorted();
         this.upgIcons = new HashMap<>(upgrades.size());
 
         this.itemIcon = iconRegister.registerIcon(TurretMod.MOD_ID + ":upgrades/empty");
@@ -74,7 +72,7 @@ public class ItemTurretUpgrade
     @SideOnly(Side.CLIENT)
     @SuppressWarnings("unchecked")
     public void getSubItems(Item item, CreativeTabs tab, List items) {
-        List<TurretUpgrade> upgrades = TurretUpgradeRegistry.getRegisteredUpgrades();
+        List<TurretUpgrade> upgrades = TurretUpgradeRegistry.getAllUpgradesSorted();
         items.add(new ItemStack(this, 1));
         for( TurretUpgrade upgrade : upgrades ) {
             items.add(this.getStackWithUpgrade(upgrade, 1));

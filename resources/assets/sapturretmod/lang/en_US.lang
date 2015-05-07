@@ -39,6 +39,10 @@ gui.sapturretmod.tcu.page.upgrades.title=TCU - Upgrades
 gui.sapturretmod.tcu.page.upgrades.tab=Upgrades
 gui.sapturretmod.tcu.page.upgrades.button.ejectAll=Eject All Upgrades
 
+itemGroup.sapturretmod:turrets=Turret Mod: Turrets
+itemGroup.sapturretmod:misc=Turret Mod: Items
+itemGroup.sapturretmod:upgrades=Turret Mod: Upgrades
+
 turret.desct1a=Turret which shoots arrows. It's relatively cheap, so it's ideal as your basic defense.
 turret.amtp0t1a=Arrows
 turret.desct1s=Turret which shoots pebbles. It has the same stats as the T1 turret, but makes the lowest damage. Ideal for hitting multiple targets at once.

@@ -184,7 +184,7 @@ public class ItemTurret
     @SideOnly(Side.CLIENT)
     @SuppressWarnings("unchecked")
     public void getSubItems(Item item, CreativeTabs tab, List items) {
-        List<String> turrets = TurretRegistry.getTurretNameList();
+        List<String> turrets = TurretRegistry.getAllTurretNamesSorted();
         for( String name : turrets ) {
             ItemStack newStack = new ItemStack(this);
             setTurretName(newStack, name);
@@ -205,7 +205,7 @@ public class ItemTurret
     @Override
     public void registerIcons(IIconRegister iconRegister) {
         this.turretIcons = Maps.newHashMap();
-        List<String> turrets = TurretRegistry.getTurretNameList();
+        List<String> turrets = TurretRegistry.getAllTurretNamesSorted();
         for( String name : turrets ) {
             this.turretIcons.put(name, iconRegister.registerIcon(TurretRegistry.getTurretInfo(name).getTurretIcon()));
         }

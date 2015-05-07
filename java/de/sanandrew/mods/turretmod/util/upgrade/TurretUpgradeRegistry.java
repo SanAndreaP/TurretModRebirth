@@ -80,9 +80,7 @@ public class TurretUpgradeRegistry
         return NAME_TO_UPGRADE_MAP.get(registrationName);
     }
 
-    public static List<TurretUpgrade> getRegisteredUpgrades() {
-        List<TurretUpgrade> upgListCopy = new ArrayList<>(REG_SORTED_UPGRADE_LIST);
-        Collections.reverse(upgListCopy);
-        return upgListCopy;
+    public static List<TurretUpgrade> getAllUpgradesSorted() {
+        return new ArrayList<>(REG_SORTED_UPGRADE_LIST);
     }
 }
