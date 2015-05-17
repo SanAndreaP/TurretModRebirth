@@ -41,6 +41,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -67,7 +68,7 @@ public abstract class AEntityTurretBase
     private static final int DW_BOOLEANS = 28; /* BYTE */
 
     // info
-    protected final TurretRegistry<? extends AEntityTurretBase> myInfo = TurretRegistry.getTurretInfo(this.getClass());
+    public final TurretRegistry<? extends AEntityTurretBase> myInfo = TurretRegistry.getTurretInfo(this.getClass());
 
     // targeting
     protected Entity currentTarget;
@@ -88,7 +89,7 @@ public abstract class AEntityTurretBase
     protected Integer targetMapHash = null;
 
     // upgrades
-    protected List<TurretUpgrade> upgrades = new ArrayList<>();
+    protected List<TurretUpgrade> upgrades = new ArrayList<>(36);
     protected Integer upgradeListHash = null;
 
     public AEntityTurretBase(World par1World) {
@@ -138,7 +139,8 @@ public abstract class AEntityTurretBase
         super.applyEntityAttributes();
 
         this.getAttributeMap().registerAttribute(TurretAttributes.MAX_AMMO_CAPACITY);
-        this.getAttributeMap().registerAttribute(TurretAttributes.MAX_COOLDOWN_TICKS);
+        this.getAttributeMap().registerAttribute(TurretAttributes.MAX_RELOAD_TICKS);
+        this.getAttributeMap().registerAttribute(TurretAttributes.MAX_UPGRADE_SLOTS);
     }
 
     @Override
@@ -372,11 +374,12 @@ public abstract class AEntityTurretBase
                     return true;
                 }
                 if( this.myInfo.getAmmo(heldItem) != null ) {
-                    this.addAmmo(heldItem);
-                    InventoryUtils.decrPlayerHeldStackSize(player, 1);
-                    this.playSound(TurretMod.MOD_ID + ":collect.ia_get", 1.0F, 1.0F);
-
-                    return true;
+                    int amount = this.addAmmo(heldItem);
+                    if( amount > 0 ) {
+                        InventoryUtils.decrPlayerHeldStackSize(player, amount);
+                        this.playSound(TurretMod.MOD_ID + ":collect.ia_get", 1.0F, 1.0F);
+                        return true;
+                    }
                 }
                 if( (healInfo = this.myInfo.getHeal(heldItem)) != null && this.getHealth() < this.getMaxHealth() ) {
                     this.heal(healInfo.getAmount());
@@ -396,6 +399,8 @@ public abstract class AEntityTurretBase
             }
         }
 
+//        player.addChatMessage(new ChatComponentText("max. slots: " + this.getMaxUpgradeSlots()));
+
         return super.interact(player);
     }
 
@@ -407,7 +412,6 @@ public abstract class AEntityTurretBase
         nbt.setInteger("turretExp", this.dataWatcher.getWatchableObjectInt(DW_EXPERIENCE));
         nbt.setString("ownerUUID", this.dataWatcher.getWatchableObjectString(DW_OWNER_UUID));
         nbt.setString("ownerName", this.dataWatcher.getWatchableObjectString(DW_OWNER_NAME));
-//        nbt.setString("turretName", this.dataWatcher.getWatchableObjectString(DW_TURRET_NAME));
         nbt.setByte("frequency", this.dataWatcher.getWatchableObjectByte(DW_FREQUENCY));
         nbt.setByte("boolFlags", this.dataWatcher.getWatchableObjectByte(DW_BOOLEANS));
 
@@ -442,7 +446,6 @@ public abstract class AEntityTurretBase
         this.dataWatcher.updateObject(DW_EXPERIENCE, nbt.getInteger("turretExp"));
         this.dataWatcher.updateObject(DW_OWNER_UUID, nbt.getString("ownerUUID"));
         this.dataWatcher.updateObject(DW_OWNER_NAME, nbt.getString("ownerName"));
-//        this.dataWatcher.updateObject(DW_TURRET_NAME, nbt.getString("turretName"));
         this.dataWatcher.updateObject(DW_FREQUENCY, nbt.getByte("frequency"));
         this.dataWatcher.updateObject(DW_BOOLEANS, nbt.getByte("boolFlags"));
 
@@ -482,8 +485,8 @@ public abstract class AEntityTurretBase
         if( !this.worldObj.isRemote && this.getHealth() > 0 && (isRidden || this.hasTarget()) ) {
             if( this.getShootTicks() == 0 ) {
                 if( this.getAmmo() > 0 ) {
+                    this.depleteAmmo(1);
                     this.shootProjectile(isRidden);
-                    this.dataWatcher.updateObject(DW_AMMO, this.getAmmo() - 1);
                     if( this.getAmmo() == 0 ) {
                         this.dataWatcher.updateObject(DW_AMMO_TYPE, null);
                     }
@@ -492,6 +495,12 @@ public abstract class AEntityTurretBase
                 }
                 this.dataWatcher.updateObject(DW_SHOOT_TICKS, this.getMaxShootTicks());
             }
+        }
+    }
+
+    public void depleteAmmo(int amount) {
+        if( amount > 0 ) {
+            this.dataWatcher.updateObject(DW_AMMO, Math.max(this.getAmmo() - amount, 0));
         }
     }
 
@@ -566,7 +575,7 @@ public abstract class AEntityTurretBase
     }
 
     public boolean applyUpgrade(TurretUpgrade upg) {
-        if( !this.hasUpgrade(upg) && (upg.dependantOn == null || this.hasUpgrade(upg.dependantOn)) && upg.isApplicableTo(this) ) {
+        if( this.upgrades.size() < this.getMaxUpgradeSlots() && !this.hasUpgrade(upg) && (upg.dependantOn == null || this.hasUpgrade(upg.dependantOn)) && upg.isApplicableTo(this) ) {
             this.upgrades.add(upg);
             upg.onApply(this);
             return true;
@@ -579,8 +588,12 @@ public abstract class AEntityTurretBase
         return this.upgrades.contains(upg);
     }
 
-    public List<TurretUpgrade> getUpgradeList() {
+    public final List<TurretUpgrade> getUpgradeList() {
         return new ArrayList<>(this.upgrades);
+    }
+
+    public final int getMaxUpgradeSlots() {
+        return MathHelper.ceiling_double_int(this.getEntityAttribute(TurretAttributes.MAX_UPGRADE_SLOTS).getAttributeValue());
     }
 
     public void removeUpgrade(TurretUpgrade upg) {
@@ -674,10 +687,10 @@ public abstract class AEntityTurretBase
     }
 
     public final int getMaxShootTicks() {
-        return MathHelper.ceiling_double_int(this.getEntityAttribute(TurretAttributes.MAX_COOLDOWN_TICKS).getAttributeValue());
+        return MathHelper.ceiling_double_int(this.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).getAttributeValue());
     }
 
-    public void addAmmo(ItemStack stack) {
+    public int addAmmo(ItemStack stack) {
         AmmoInfo ammoInfo = this.getAmmoType();
         if( ammoInfo != null ) {
             ItemStack typeItem = ammoInfo.getTypeItem();
@@ -687,7 +700,7 @@ public abstract class AEntityTurretBase
                 if( remainAmount > 0 ) {
                     int stackSubtract = Math.min(stack.stackSize, MathHelper.floor_double(remainAmount / (double) newType.getAmount()));
                     this.dataWatcher.updateObject(DW_AMMO, this.getAmmo() + newType.getAmount() * stackSubtract);
-                    stack.stackSize -= stackSubtract;
+                    return stackSubtract;
                 }
             }
         } else {
@@ -697,9 +710,11 @@ public abstract class AEntityTurretBase
 
                 int stackSubtract = Math.min(stack.stackSize, MathHelper.floor_double(this.getMaxAmmo() / (double) newInfo.getAmount()));
                 this.dataWatcher.updateObject(DW_AMMO, newInfo.getAmount() * stackSubtract);
-                stack.stackSize -= stackSubtract;
+                return stackSubtract;
             }
         }
+
+        return 0;
     }
 
     // SETTERS

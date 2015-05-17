@@ -66,11 +66,11 @@ public class GuiTcuTargets
         super.initGui();
 
         int center = this.guiLeft + (this.xSize - 150) / 2;
-        this.buttonList.add(this.selectAll = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 138, 150, translateTargetBtn("selectAll")));
-        this.buttonList.add(this.deselectAll = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 151, 150, translateTargetBtn("deselectAll")));
-        this.buttonList.add(this.selectMobs = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 164, 150, translateTargetBtn("selectMobs")));
-        this.buttonList.add(this.selectAnimals = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 177, 150, translateTargetBtn("selectAnimals")));
-        this.buttonList.add(this.selectOther = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 190, 150, translateTargetBtn("selectOther")));
+        this.buttonList.add(this.selectAll = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 138, 150, translateBtn("selectAll")));
+        this.buttonList.add(this.deselectAll = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 151, 150, translateBtn("deselectAll")));
+        this.buttonList.add(this.selectMobs = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 164, 150, translateBtn("selectMobs")));
+        this.buttonList.add(this.selectAnimals = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 177, 150, translateBtn("selectAnimals")));
+        this.buttonList.add(this.selectOther = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 190, 150, translateBtn("selectOther")));
 
         this.pageTargets.enabled = false;
     }
@@ -223,7 +223,7 @@ public class GuiTcuTargets
         return SAPUtils.translate(name);
     }
 
-    private static String translateTargetBtn(String s) {
+    private static String translateBtn(String s) {
         return SAPUtils.translatePreFormat("gui.%s.tcu.page.targets.button.%s", TurretMod.MOD_ID, s);
     }
 

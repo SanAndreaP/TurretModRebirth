@@ -16,43 +16,43 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 
 import java.util.UUID;
 
-public abstract class TUpgradeCooldown
+public abstract class TUpgradeReloadTime
         extends TurretUpgrade
 {
-    protected AttributeModifier cooldownModifier;
+    protected AttributeModifier modifier;
 
-    protected TUpgradeCooldown(String modID, String upgName, String texture, TurretUpgrade dependUpgrade) {
+    protected TUpgradeReloadTime(String modID, String upgName, String texture, TurretUpgrade dependUpgrade) {
         super(modID, upgName, texture, dependUpgrade);
     }
 
     @Override
     public void onApply(AEntityTurretBase turret) {
         if( !turret.worldObj.isRemote ) {
-            turret.getEntityAttribute(TurretAttributes.MAX_COOLDOWN_TICKS).applyModifier(cooldownModifier);
+            turret.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).applyModifier(modifier);
         }
     }
 
     @Override
     public void onRemove(AEntityTurretBase turret) {
-        turret.getEntityAttribute(TurretAttributes.MAX_COOLDOWN_TICKS).removeModifier(cooldownModifier);
+        turret.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).removeModifier(modifier);
     }
 
-    public static class TUpgradeCooldownI
-            extends TUpgradeCooldown
+    public static class TUpgradeReloadTimeI
+            extends TUpgradeReloadTime
     {
-        public TUpgradeCooldownI() {
-            super(TurretMod.MOD_ID, "cooldownI", "upgrades/cooldown_i", null);
-            this.cooldownModifier = new AttributeModifier(UUID.fromString("44CDF38C-1562-4CBE-8C47-893FCDFDE175"), "cooldown_1", -0.15D,
+        public TUpgradeReloadTimeI() {
+            super(TurretMod.MOD_ID, "reloadTimeI", "upgrades/reload_i", null);
+            this.modifier = new AttributeModifier(UUID.fromString("44CDF38C-1562-4CBE-8C47-893FCDFDE175"), "reloadTime_1", -0.15D,
                                                           EnumAttrModifierOperation.ADD_PERC_VAL_TO_SUM.ordinal());
         }
     }
 
-    public static class TUpgradeCooldownII
-            extends TUpgradeCooldown
+    public static class TUpgradeReloadTimeII
+            extends TUpgradeReloadTime
     {
-        public TUpgradeCooldownII(TurretUpgrade depInst) {
-            super(TurretMod.MOD_ID, "cooldownII", "upgrades/cooldown_ii", depInst);
-            this.cooldownModifier = new AttributeModifier(UUID.fromString("B561CE77-79A9-4EBD-8EAE-64A263D522CE"), "cooldown_2", -0.35D,
+        public TUpgradeReloadTimeII(TurretUpgrade depInst) {
+            super(TurretMod.MOD_ID, "reloadTimeII", "upgrades/reload_ii", depInst);
+            this.modifier = new AttributeModifier(UUID.fromString("B561CE77-79A9-4EBD-8EAE-64A263D522CE"), "reloadTime_2", -0.35D,
                                                           EnumAttrModifierOperation.ADD_PERC_VAL_TO_SUM.ordinal());
         }
     }

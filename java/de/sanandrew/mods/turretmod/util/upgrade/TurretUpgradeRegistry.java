@@ -11,8 +11,15 @@ package de.sanandrew.mods.turretmod.util.upgrade;
 import com.google.common.eventbus.EventBus;
 import de.sanandrew.mods.turretmod.entity.turret.techi.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.util.TurretMod;
-import de.sanandrew.mods.turretmod.util.upgrade.TUpgradeCooldown.TUpgradeCooldownI;
-import de.sanandrew.mods.turretmod.util.upgrade.TUpgradeCooldown.TUpgradeCooldownII;
+import de.sanandrew.mods.turretmod.util.upgrade.TUpgradeReloadTime.TUpgradeReloadTimeI;
+import de.sanandrew.mods.turretmod.util.upgrade.TUpgradeReloadTime.TUpgradeReloadTimeII;
+import de.sanandrew.mods.turretmod.util.upgrade.TUpgradeUpgStorage.TUpgradeUpgStorageI;
+import de.sanandrew.mods.turretmod.util.upgrade.TUpgradeUpgStorage.TUpgradeUpgStorageII;
+import de.sanandrew.mods.turretmod.util.upgrade.TUpgradeUpgStorage.TUpgradeUpgStorageIII;
+import de.sanandrew.mods.turretmod.util.upgrade.TUpgradeHealth.TUpgradeHealthI;
+import de.sanandrew.mods.turretmod.util.upgrade.TUpgradeHealth.TUpgradeHealthII;
+import de.sanandrew.mods.turretmod.util.upgrade.TUpgradeHealth.TUpgradeHealthIII;
+import de.sanandrew.mods.turretmod.util.upgrade.TUpgradeHealth.TUpgradeHealthIV;
 import org.apache.logging.log4j.Level;
 
 import java.lang.reflect.Field;
@@ -24,16 +31,16 @@ public class TurretUpgradeRegistry
     private static final List<TurretUpgrade> REG_SORTED_UPGRADE_LIST = new ArrayList<>();
     public static final EventBus EVENT_BUS = new EventBus("TurretUpgradesEvtBus");
 
-    public static final TurretUpgrade HEALTH_INCR_I   = new TUpgradeHealth("healthUpgradeI", "upgrades/health_i",
-                                                                           UUID.fromString("84BF0C8F-A5E8-429F-A7ED-DEE503CA4505"), 1);
-    public static final TurretUpgrade HEALTH_INCR_II  = new TUpgradeHealth("healthUpgradeII", "upgrades/health_ii",
-                                                                           UUID.fromString("704FA08B-F49A-4A69-86E9-FFAD639868C9"), 2, HEALTH_INCR_I);
-    public static final TurretUpgrade HEALTH_INCR_III = new TUpgradeHealth("healthUpgradeIII", "upgrades/health_iii",
-                                                                           UUID.fromString("E1C7BBB8-ACE8-413D-B7EA-D95C7FF5285F"), 3, HEALTH_INCR_II);
-    public static final TurretUpgrade HEALTH_INCR_IV  = new TUpgradeHealth("healthUpgradeIV", "upgrades/health_iv",
-                                                                           UUID.fromString("E4D37B7F-81DD-439E-B359-539E76F01B71"), 4, HEALTH_INCR_III);
-    public static final TurretUpgrade COOLDOWN_I = new TUpgradeCooldownI();
-    public static final TurretUpgrade COOLDOWN_II = new TUpgradeCooldownII(COOLDOWN_I);
+    public static final TurretUpgrade HEALTH_INCR_I   = new TUpgradeHealthI();
+    public static final TurretUpgrade HEALTH_INCR_II  = new TUpgradeHealthII(HEALTH_INCR_I);
+    public static final TurretUpgrade HEALTH_INCR_III = new TUpgradeHealthIII(HEALTH_INCR_II);
+    public static final TurretUpgrade HEALTH_INCR_IV  = new TUpgradeHealthIV(HEALTH_INCR_III);
+    public static final TurretUpgrade RELOAD_TIME_I = new TUpgradeReloadTimeI();
+    public static final TurretUpgrade RELOAD_TIME_II = new TUpgradeReloadTimeII(RELOAD_TIME_I);
+    public static final TurretUpgrade UPG_STORAGE_I = new TUpgradeUpgStorageI();
+    public static final TurretUpgrade UPG_STORAGE_II = new TUpgradeUpgStorageII(UPG_STORAGE_I);
+    public static final TurretUpgrade UPG_STORAGE_III = new TUpgradeUpgStorageIII(UPG_STORAGE_II);
+    public static final TurretUpgrade AMMO_STORAGE = new TUpgradeAmmoStorage();
 
     static {
         try {

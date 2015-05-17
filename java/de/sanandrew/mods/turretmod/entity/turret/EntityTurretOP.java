@@ -35,7 +35,7 @@ public class EntityTurretOP
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(1000.0D);
-		this.getEntityAttribute(TurretAttributes.MAX_COOLDOWN_TICKS).setBaseValue(15.0F);
+		this.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).setBaseValue(15.0F);
     }
 
 	@Override

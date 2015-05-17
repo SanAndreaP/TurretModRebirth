@@ -17,6 +17,7 @@ import de.sanandrew.mods.turretmod.entity.turret.techii.EntityTurretRevolver;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.MathHelper;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -116,7 +117,6 @@ public final class TurretRegistry<T extends AEntityTurretBase>
         return null;
     }
 
-    @Nullable
     public HealInfo getHeal(ItemStack stack) {
         if( this.healItems == null ) {
             return null;
@@ -126,6 +126,30 @@ public final class TurretRegistry<T extends AEntityTurretBase>
             if( ItemUtils.areStacksEqual(stack, info.item, info.item.hasTagCompound()) ) {
                 return info;
             }
+        }
+
+        return null;
+    }
+
+    public ItemStack[] getDepletedAmmoStacks(int ammoCount) {
+        if( this.ammoItems == null || ammoCount <= 0 ) {
+            return null;
+        }
+
+        int minAmmo = Integer.MAX_VALUE;
+        AmmoInfo minAmmoType = null;
+
+        for( AmmoInfo info : this.ammoItems ) {
+            if( info.getAmount() < minAmmo ) {
+                minAmmo = info.getAmount();
+                minAmmoType = info;
+            }
+        }
+
+        if( minAmmoType != null ) {
+            ItemStack stack = minAmmoType.getItem().copy();
+            stack.stackSize = ammoCount / minAmmo;
+            return ItemUtils.getGoodItemStacks(stack);
         }
 
         return null;

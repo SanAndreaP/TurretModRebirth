@@ -48,7 +48,7 @@ public class EntityTurretRevolver
         super.applyEntityAttributes();
 
         this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(40.0D);
-		this.getEntityAttribute(TurretAttributes.MAX_COOLDOWN_TICKS).setBaseValue(15.0F);
+		this.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).setBaseValue(15.0F);
     }
 
 	@Override

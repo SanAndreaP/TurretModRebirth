@@ -10,9 +10,12 @@ package de.sanandrew.mods.turretmod.client.gui.tcu;
 
 import de.sanandrew.core.manpack.util.client.helpers.GuiUtils;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
+import de.sanandrew.mods.turretmod.client.gui.control.GuiSlimButton;
 import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
 import de.sanandrew.mods.turretmod.util.EnumTextures;
+import de.sanandrew.mods.turretmod.util.TurretMod;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
@@ -23,11 +26,15 @@ public class GuiTcuInfo
 
     private FontRenderer frAmmoItem;
 
+    private GuiButton dismantle;
+    private GuiButton toggleActive;
+
     public GuiTcuInfo(AEntityTurretBase turret) {
         super(turret);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void initGui() {
         super.initGui();
 
@@ -35,6 +42,10 @@ public class GuiTcuInfo
         this.specOwnerHead = SAPUtils.RNG.nextInt(3) == 0 ? SAPUtils.RNG.nextInt(3) : -1;
 
         this.frAmmoItem = new FontRenderer(this.mc.gameSettings, new ResourceLocation("textures/font/ascii.png"), this.mc.getTextureManager(), true);
+
+        int center = this.guiLeft + (this.xSize - 150) / 2;
+        this.buttonList.add(this.dismantle = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 138, 150, translateBtn("dismantle")));
+        this.buttonList.add(this.toggleActive = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 151, 150, translateBtn("toggleActive")));
     }
 
     @Override
@@ -72,5 +83,14 @@ public class GuiTcuInfo
 
         value = this.myTurret.getOwnerName();
         this.fontRendererObj.drawString(value, this.guiLeft + 20, this.guiTop + 95, 0x000000);
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton button) {
+        super.actionPerformed(button);
+    }
+
+    private static String translateBtn(String s) {
+        return SAPUtils.translatePreFormat("gui.%s.tcu.page.info.button.%s", TurretMod.MOD_ID, s);
     }
 }

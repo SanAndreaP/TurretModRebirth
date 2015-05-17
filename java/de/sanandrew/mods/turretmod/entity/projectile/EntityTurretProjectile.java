@@ -70,13 +70,13 @@ public class EntityTurretProjectile
         this.shootingEntity = shooter;
         this.targetedEntity = target;
 
-        this.posY = shooter.posY + shooter.getEyeHeight() - 0.10000000149011612D;
+        this.posY = shooter.posY + shooter.getEyeHeight() - 0.1D;
         double deltaX = target.posX - shooter.posX;
-        double deltaY = target.posY + target.getEyeHeight() - 0.699999988079071D - this.posY;
+        double deltaY = target.posY + target.getEyeHeight() - 0.7D - this.posY;
         double deltaZ = target.posZ - shooter.posZ;
         double distanceXZ = MathHelper.sqrt_double(deltaX * deltaX + deltaZ * deltaZ);
 
-        if( distanceXZ >= 1.0E-7D ) {
+        if( distanceXZ >= 0.0D ) {
             float yaw = (float) (Math.atan2(deltaZ, deltaX) * 180.0D / Math.PI) - 90.0F;
             float pitch = (float) (-(Math.atan2(deltaY, distanceXZ) * 180.0D / Math.PI));
             this.setLocationAndAngles(shooter.posX, this.posY, shooter.posZ, yaw, pitch);
@@ -94,7 +94,7 @@ public class EntityTurretProjectile
     }
 
     public float getCurveCorrector() {
-        return 0.2F;
+        return 0.20F;
     }
 
     public boolean isArrow() {
@@ -147,11 +147,11 @@ public class EntityTurretProjectile
     }
 
     public float getGravityVal() {
-        return 0.05F;
+        return 0.04F;
     }
 
     public float getSpeedVal() {
-        return 1.00F;
+        return 1.0F;
     }
 
     public float getMotionMulti() {
