@@ -37,7 +37,7 @@ idea {
 
 apply plugin: 'forge'
 
-version = "1.7.10-4.0.0"
+version = "1.7.10-4.0.0-alpha.1"
 group = "de.sanandrew.mods"
 archivesBaseName = "TurretMod"
 
@@ -46,8 +46,7 @@ minecraft {
     runDir = "minecraft"
 }
 
-processResources
-{
+processResources {
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
 
