@@ -13,6 +13,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
+import de.sanandrew.mods.turretmod.util.TurretInfo;
 import de.sanandrew.mods.turretmod.util.TurretMod;
 import de.sanandrew.mods.turretmod.util.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgrade;
@@ -114,7 +115,7 @@ public class ItemTurretUpgrade
                 if( applicables.size() > 0 ) {
                     lines.add(EnumChatFormatting.RED + SAPUtils.translatePreFormat("%s.applicableTo", unlocName));
                     for( Class<? extends AEntityTurretBase> cls : applicables ) {
-                        TurretRegistry info = TurretRegistry.getTurretInfo(cls);
+                        TurretInfo<?> info = TurretRegistry.getTurretInfo(cls);
                         if( info != null ) {
                             String entityName = cls != null ? (String) EntityList.classToStringMapping.get(cls) : "UNKNOWN";
                             lines.add("  " + SAPUtils.translatePreFormat("entity.%s.name", entityName));

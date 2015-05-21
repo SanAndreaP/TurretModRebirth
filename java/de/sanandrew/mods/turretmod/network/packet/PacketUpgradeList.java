@@ -40,7 +40,6 @@ public class PacketUpgradeList
         for( TurretUpgrade upg : upgrades ) {
             outStream.writeUTF(upg.getRegistrationName());
         }
-        System.out.println("Turret upgrades updated");
     }
 
     public static void sendPacket(AEntityTurretBase turret) {

@@ -83,7 +83,7 @@ public abstract class AGuiTurretControlUnit
         pageName = SAPUtils.translatePreFormat("gui.%s.tcu.page.%s.title", TurretMod.MOD_ID, pageName);
         this.fontRendererObj.drawString(pageName, this.guiLeft + 8, this.guiTop + 6, 0x404040);
 
-        String turretName = SAPUtils.translatePreFormat("entity.%s.%s.name", TurretMod.MOD_ID, TurretRegistry.getTurretInfo(this.myTurret.getClass()).getTurretName());
+        String turretName = SAPUtils.translatePreFormat("entity.%s.%s.name", TurretMod.MOD_ID, TurretRegistry.getTurretInfo(this.myTurret.getClass()).getName());
         this.fontRendererObj.drawString(turretName, this.guiLeft + (this.xSize - this.fontRendererObj.getStringWidth(turretName)) / 2, this.guiTop + this.ySize - 15,
                                         0x00FF00, false
         );

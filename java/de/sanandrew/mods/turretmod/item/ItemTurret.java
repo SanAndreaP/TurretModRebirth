@@ -207,7 +207,7 @@ public class ItemTurret
         this.turretIcons = Maps.newHashMap();
         List<String> turrets = TurretRegistry.getAllTurretNamesSorted();
         for( String name : turrets ) {
-            this.turretIcons.put(name, iconRegister.registerIcon(TurretRegistry.getTurretInfo(name).getTurretIcon()));
+            this.turretIcons.put(name, iconRegister.registerIcon(TurretRegistry.getTurretInfo(name).getIcon()));
         }
     }
 }

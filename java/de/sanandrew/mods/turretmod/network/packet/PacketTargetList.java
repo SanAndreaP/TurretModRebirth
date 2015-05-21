@@ -45,7 +45,6 @@ public class PacketTargetList
         for( Class targetCls : applicableTargets ) {
             outStream.writeUTF((String) EntityList.classToStringMapping.get(targetCls));
         }
-        System.out.println("Turret targets updated");
     }
 
     public static void sendPacket(AEntityTurretBase turret) {

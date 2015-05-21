@@ -19,12 +19,7 @@ import de.sanandrew.mods.turretmod.network.packet.PacketTargetList;
 import de.sanandrew.mods.turretmod.network.packet.PacketTargetListRequest;
 import de.sanandrew.mods.turretmod.network.packet.PacketUpgradeList;
 import de.sanandrew.mods.turretmod.network.packet.PacketUpgradeListRequest;
-import de.sanandrew.mods.turretmod.util.EnumGui;
-import de.sanandrew.mods.turretmod.util.TmrItems;
-import de.sanandrew.mods.turretmod.util.TurretMod;
-import de.sanandrew.mods.turretmod.util.TurretRegistry;
-import de.sanandrew.mods.turretmod.util.TurretRegistry.AmmoInfo;
-import de.sanandrew.mods.turretmod.util.TurretRegistry.HealInfo;
+import de.sanandrew.mods.turretmod.util.*;
 import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgrade;
 import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgradeRegistry;
 import net.minecraft.block.Block;
@@ -41,7 +36,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -68,7 +62,7 @@ public abstract class AEntityTurretBase
     private static final int DW_BOOLEANS = 28; /* BYTE */
 
     // info
-    public final TurretRegistry<? extends AEntityTurretBase> myInfo = TurretRegistry.getTurretInfo(this.getClass());
+    public final TurretInfo<? extends AEntityTurretBase> myInfo = TurretRegistry.getTurretInfo(this.getClass());
 
     // targeting
     protected Entity currentTarget;
@@ -366,7 +360,7 @@ public abstract class AEntityTurretBase
         ItemStack heldItem = player.getHeldItem();
         if( heldItem != null ) {
             if( !this.worldObj.isRemote ) {
-                HealInfo healInfo;
+                TurretInfo.HealInfo healInfo;
                 TurretUpgrade upgrade;
 
                 if( heldItem.getItem() == TmrItems.turretCtrlUnit ) {
@@ -677,7 +671,7 @@ public abstract class AEntityTurretBase
         return MathHelper.ceiling_double_int(this.getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY).getAttributeValue());
     }
 
-    public AmmoInfo getAmmoType() {
+    public TurretInfo.AmmoInfo getAmmoType() {
         ItemStack stack = this.dataWatcher.getWatchableObjectItemStack(DW_AMMO_TYPE);
         if( stack != null ) {
             return this.myInfo.getAmmo(stack);
@@ -691,10 +685,10 @@ public abstract class AEntityTurretBase
     }
 
     public int addAmmo(ItemStack stack) {
-        AmmoInfo ammoInfo = this.getAmmoType();
+        TurretInfo.AmmoInfo ammoInfo = this.getAmmoType();
         if( ammoInfo != null ) {
             ItemStack typeItem = ammoInfo.getTypeItem();
-            AmmoInfo newType = this.myInfo.getAmmo(stack);
+            TurretInfo.AmmoInfo newType = this.myInfo.getAmmo(stack);
             if( newType != null && ItemUtils.areStacksEqual(newType.getTypeItem(), typeItem, typeItem.hasTagCompound()) ) {
                 int remainAmount = this.getMaxAmmo() - this.getAmmo();
                 if( remainAmount > 0 ) {
@@ -704,7 +698,7 @@ public abstract class AEntityTurretBase
                 }
             }
         } else {
-            AmmoInfo newInfo = this.myInfo.getAmmo(stack);
+            TurretInfo.AmmoInfo newInfo = this.myInfo.getAmmo(stack);
             if( newInfo != null ) {
                 this.dataWatcher.updateObject(DW_AMMO_TYPE, newInfo.getTypeItem());
 
