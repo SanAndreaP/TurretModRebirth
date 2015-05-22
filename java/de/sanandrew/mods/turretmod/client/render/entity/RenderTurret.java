@@ -8,7 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.render.entity;
 
-import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.util.TurretMod;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBase;
@@ -44,8 +44,8 @@ public class RenderTurret
 
     @Override
     protected int shouldRenderPass(EntityLivingBase livingBase, int pass, float partTicks) {
-        if( livingBase instanceof AEntityTurretBase ) {
-            return this.renderGlowMap((AEntityTurretBase) livingBase, pass);
+        if( livingBase instanceof EntityTurretBase ) {
+            return this.renderGlowMap((EntityTurretBase) livingBase, pass);
         }
 
         return 0;
@@ -53,14 +53,14 @@ public class RenderTurret
 
     @Override
     protected ResourceLocation getEntityTexture(Entity entity) {
-        if( entity instanceof AEntityTurretBase ) {
-            return ((AEntityTurretBase) entity).getStandardTexture();
+        if( entity instanceof EntityTurretBase ) {
+            return ((EntityTurretBase) entity).getStandardTexture();
         }
 
         return null;
     }
 
-    private int renderGlowMap(AEntityTurretBase turret, int pass) {
+    private int renderGlowMap(EntityTurretBase turret, int pass) {
         if( pass == 0 ) {
             this.setRenderPassModel(this.glowModel);
             this.bindTexture(turret.getGlowTexture());
@@ -86,7 +86,7 @@ public class RenderTurret
         return 0;
     }
 
-    private void renderName(AEntityTurretBase turret, Tessellator tess) {
+    private void renderName(EntityTurretBase turret, Tessellator tess) {
         FontRenderer fontRenderer = this.getFontRendererFromRenderManager();
         String turretName = turret.getTurretName() + String.format(" (Freq: %s)", turret.getFrequency());
         String playerName = turret.getOwnerName();
@@ -124,10 +124,10 @@ public class RenderTurret
     @Override
     protected void passSpecialRender(EntityLivingBase par1EntityLiving, double par2, double par4, double par6)
     {
-        this.renderStats((AEntityTurretBase)par1EntityLiving, par2, par4, par6);
+        this.renderStats((EntityTurretBase)par1EntityLiving, par2, par4, par6);
     }
 
-    protected void renderStats(AEntityTurretBase turret, double x, double y, double z) {
+    protected void renderStats(EntityTurretBase turret, double x, double y, double z) {
         if( MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Specials.Pre(turret, this, x, y, z)) ) {
             return;
         }

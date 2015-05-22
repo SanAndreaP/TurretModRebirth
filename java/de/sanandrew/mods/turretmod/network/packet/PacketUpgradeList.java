@@ -11,10 +11,11 @@ package de.sanandrew.mods.turretmod.network.packet;
 import de.sanandrew.core.manpack.network.IPacket;
 import de.sanandrew.core.manpack.util.javatuples.Pair;
 import de.sanandrew.core.manpack.util.javatuples.Tuple;
-import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
+import de.sanandrew.mods.turretmod.api.TurretUpgrade;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.network.PacketManager;
 import de.sanandrew.mods.turretmod.util.TurretMod;
-import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgrade;
+import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgradeRegistry;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
@@ -38,11 +39,11 @@ public class PacketUpgradeList
         outStream.writeInt((Integer) data.getValue(0));
         outStream.writeInt(upgrades.size());
         for( TurretUpgrade upg : upgrades ) {
-            outStream.writeUTF(upg.getRegistrationName());
+            outStream.writeUTF(TurretUpgradeRegistry.getRegistrationName(upg));
         }
     }
 
-    public static void sendPacket(AEntityTurretBase turret) {
+    public static void sendPacket(EntityTurretBase turret) {
         final List<TurretUpgrade> upgrades = turret.getUpgradeList();
 
         Tuple data = Pair.with(turret.getEntityId(), upgrades);

@@ -11,7 +11,7 @@ package de.sanandrew.mods.turretmod.network.packet;
 import de.sanandrew.core.manpack.network.IPacket;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
 import de.sanandrew.core.manpack.util.javatuples.Tuple;
-import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.network.PacketManager;
 import de.sanandrew.mods.turretmod.util.TurretMod;
 import io.netty.buffer.ByteBuf;
@@ -31,7 +31,7 @@ public class PacketSendTargetFlag
     @Override
     public void process(ByteBufInputStream stream, ByteBuf rawData, INetHandler iNetHandler) throws IOException {
         if( iNetHandler instanceof NetHandlerPlayServer ) {
-            AEntityTurretBase turret = (AEntityTurretBase) ((NetHandlerPlayServer) iNetHandler).playerEntity.worldObj.getEntityByID(stream.readInt());
+            EntityTurretBase turret = (EntityTurretBase) ((NetHandlerPlayServer) iNetHandler).playerEntity.worldObj.getEntityByID(stream.readInt());
             String entityName = stream.readUTF();
             try {
                 @SuppressWarnings("unchecked")
@@ -51,7 +51,7 @@ public class PacketSendTargetFlag
         stream.writeBoolean((Boolean) data.getValue(2));
     }
 
-    public static void sendToServer(AEntityTurretBase turret, Class<? extends EntityLiving> entityCls, boolean flag) {
+    public static void sendToServer(EntityTurretBase turret, Class<? extends EntityLiving> entityCls, boolean flag) {
         String registeredEntityName = (String) EntityList.classToStringMapping.get(entityCls);
         PacketManager.sendToServer(PacketManager.SEND_TARGET_FLAG, Triplet.with(turret.getEntityId(), registeredEntityName, flag));
     }

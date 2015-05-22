@@ -12,11 +12,11 @@ import de.sanandrew.core.manpack.network.IPacket;
 import de.sanandrew.core.manpack.util.helpers.InventoryUtils;
 import de.sanandrew.core.manpack.util.javatuples.Pair;
 import de.sanandrew.core.manpack.util.javatuples.Tuple;
-import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
+import de.sanandrew.mods.turretmod.api.TurretUpgrade;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.network.PacketManager;
 import de.sanandrew.mods.turretmod.util.TmrItems;
 import de.sanandrew.mods.turretmod.util.TurretMod;
-import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgrade;
 import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgradeRegistry;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
@@ -38,7 +38,7 @@ public class PacketEjectUpgrade
     public void process(ByteBufInputStream stream, ByteBuf rawData, INetHandler iNetHandler) throws IOException {
         if( iNetHandler instanceof NetHandlerPlayServer ) {
             EntityPlayer player = ((NetHandlerPlayServer) iNetHandler).playerEntity;
-            AEntityTurretBase turret = (AEntityTurretBase) player.worldObj.getEntityByID(stream.readInt());
+            EntityTurretBase turret = (EntityTurretBase) player.worldObj.getEntityByID(stream.readInt());
             String upgradeName = stream.readUTF();
             TurretUpgrade upgrade = TurretUpgradeRegistry.getUpgrade(upgradeName);
             if( upgrade != null ) {
@@ -63,8 +63,8 @@ public class PacketEjectUpgrade
         stream.writeUTF((String) data.getValue(1));
     }
 
-    public static void sendToServer(AEntityTurretBase turret, TurretUpgrade upgrade) {
-        PacketManager.sendToServer(PacketManager.EJECT_UPGRADE, Pair.with(turret.getEntityId(), upgrade.getRegistrationName()));
+    public static void sendToServer(EntityTurretBase turret, TurretUpgrade upgrade) {
+        PacketManager.sendToServer(PacketManager.EJECT_UPGRADE, Pair.with(turret.getEntityId(), TurretUpgradeRegistry.getRegistrationName(upgrade)));
     }
 
     private static List<TurretUpgrade> getRcurDepUpgrades(TurretUpgrade baseUpgrade, List<TurretUpgrade> currTurretUpgrades) {
@@ -72,7 +72,7 @@ public class PacketEjectUpgrade
         if( currTurretUpgrades.contains(baseUpgrade) ) {
             currDepUpgrades.add(baseUpgrade);
             for( TurretUpgrade upg : currTurretUpgrades ) {
-                if( upg.dependantOn == baseUpgrade ) {
+                if( upg.getDependantOn() == baseUpgrade ) {
                     currDepUpgrades.addAll(getRcurDepUpgrades(upg, currTurretUpgrades));
                 }
             }

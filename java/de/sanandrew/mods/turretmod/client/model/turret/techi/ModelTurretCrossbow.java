@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.client.model.turret.techi;
 
 
 import de.sanandrew.mods.turretmod.client.model.turret.IModelTurret;
-import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
@@ -169,7 +169,7 @@ public class ModelTurretCrossbow
 
         setStaticBody(f3);
 
-        AEntityTurretBase turret = (AEntityTurretBase)entity;
+        EntityTurretBase turret = (EntityTurretBase)entity;
 
         float healthRot = -((float)Math.PI / 2.0F) * ((turret.getMaxHealth() - turret.getHealth()) / turret.getMaxHealth());
         this.healthBar.rotateAngleZ = healthRot;

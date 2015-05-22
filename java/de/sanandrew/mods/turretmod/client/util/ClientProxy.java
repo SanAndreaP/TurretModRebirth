@@ -9,12 +9,12 @@
 package de.sanandrew.mods.turretmod.client.util;
 
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
+import de.sanandrew.mods.turretmod.api.TurretUpgrade;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuInfo;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuTargets;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuUpgrades;
-import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.util.*;
-import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgrade;
 import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgradeRegistry;
 import io.netty.buffer.ByteBufInputStream;
 import net.minecraft.client.Minecraft;
@@ -44,7 +44,7 @@ public class ClientProxy
         int entityId = stream.readInt();
         int listSize = stream.readInt();
         Entity e = getMinecraft().theWorld.getEntityByID(entityId);
-        if( e instanceof AEntityTurretBase ) {
+        if( e instanceof EntityTurretBase ) {
             List<Class<?extends EntityLiving>> applicableTargets = new ArrayList<>(listSize);
             for( int i = 0; i < listSize; i++ ) {
                     String clsName = stream.readUTF();
@@ -52,7 +52,7 @@ public class ClientProxy
                     applicableTargets.add((Class<? extends EntityLiving>) EntityList.stringToClassMapping.get(clsName));
             }
 
-            ((AEntityTurretBase) e).setTargetList(applicableTargets);
+            ((EntityTurretBase) e).setTargetList(applicableTargets);
         }
     }
 
@@ -67,8 +67,8 @@ public class ClientProxy
             currUpgList.add(TurretUpgradeRegistry.getUpgrade(regName));
         }
 
-        if( e instanceof AEntityTurretBase ) {
-            AEntityTurretBase turret = (AEntityTurretBase) e;
+        if( e instanceof EntityTurretBase ) {
+            EntityTurretBase turret = (EntityTurretBase) e;
             List<TurretUpgrade> oldUpgList = turret.getUpgradeList();
 
             List<TurretUpgrade> remUpgList = turret.getUpgradeList();
@@ -100,11 +100,11 @@ public class ClientProxy
         if( SAPUtils.isIndexInRange(EnumGui.VALUES, id) ) {
             switch( EnumGui.VALUES[id] ) {
                 case GUI_TCU_INFO:
-                    return new GuiTcuInfo((AEntityTurretBase) getMinecraft().theWorld.getEntityByID(x));
+                    return new GuiTcuInfo((EntityTurretBase) getMinecraft().theWorld.getEntityByID(x));
                 case GUI_TCU_TARGETS:
-                    return new GuiTcuTargets((AEntityTurretBase) getMinecraft().theWorld.getEntityByID(x));
+                    return new GuiTcuTargets((EntityTurretBase) getMinecraft().theWorld.getEntityByID(x));
                 case GUI_TCU_UPGRADES:
-                    return new GuiTcuUpgrades((AEntityTurretBase) getMinecraft().theWorld.getEntityByID(x));
+                    return new GuiTcuUpgrades((EntityTurretBase) getMinecraft().theWorld.getEntityByID(x));
             }
         } else {
             TurretMod.MOD_LOG.printf(Level.WARN, "Gui ID %d cannot be opened as it isn't a valid index in EnumGui!", id);

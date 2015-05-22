@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.entity.turret.techi;
 
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileArrow;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
-import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.util.EnumTextures;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
@@ -19,7 +19,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 public class EntityTurretCrossbow
-        extends AEntityTurretBase
+        extends EntityTurretBase
 {
     private static final AxisAlignedBB RANGE_AABB = AxisAlignedBB.getBoundingBox(-16.0F, -4.0F, -16.0F, 16.0F, 4.0F, 16.0F);
     private final TargetSelector targetSelector = new TargetSelector();

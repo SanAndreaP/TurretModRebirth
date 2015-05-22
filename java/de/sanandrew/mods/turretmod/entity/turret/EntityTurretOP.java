@@ -13,7 +13,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 public class EntityTurretOP
-		extends AEntityTurretBase
+		extends EntityTurretBase
 {
 	private static final AxisAlignedBB rangeAABB = AxisAlignedBB.getBoundingBox(-64.0F, -64.0F, -64.0F, 64.0F, 64.0F, 64.0F);
 

@@ -11,7 +11,7 @@ package de.sanandrew.mods.turretmod.network.packet;
 import de.sanandrew.core.manpack.network.IPacket;
 import de.sanandrew.core.manpack.util.javatuples.Tuple;
 import de.sanandrew.core.manpack.util.javatuples.Unit;
-import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.network.PacketManager;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
@@ -30,8 +30,8 @@ public class PacketUpgradeListRequest
         if( iNetHandler instanceof NetHandlerPlayServer ) {
             int entityId = inStream.readInt();
             Entity e = ((NetHandlerPlayServer)iNetHandler).playerEntity.worldObj.getEntityByID(entityId);
-            if( e instanceof AEntityTurretBase ) {
-                PacketUpgradeList.sendPacket((AEntityTurretBase) e);
+            if( e instanceof EntityTurretBase ) {
+                PacketUpgradeList.sendPacket((EntityTurretBase) e);
             }
         }
     }
@@ -42,7 +42,7 @@ public class PacketUpgradeListRequest
         outStream.writeInt((Integer) data.getValue(0));
     }
 
-    public static void sendPacket(AEntityTurretBase turret) {
+    public static void sendPacket(EntityTurretBase turret) {
         Tuple data = Unit.with(turret.getEntityId());
         PacketManager.sendToServer(PacketManager.TURRET_UPGRADE_SYNC_REQUEST, data);
     }

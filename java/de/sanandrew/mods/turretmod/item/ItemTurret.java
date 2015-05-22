@@ -12,7 +12,7 @@ import com.google.common.collect.Maps;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
-import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
+import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TurretMod;
 import de.sanandrew.mods.turretmod.util.TurretRegistry;
@@ -21,6 +21,7 @@ import net.minecraft.block.BlockLiquid;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -44,24 +45,25 @@ public class ItemTurret
 
     private static final String NBT_TURRET = "turretName";
 
-    public static AEntityTurretBase spawnTurret(World world, String name, double x, double y, double z) {
-        AEntityTurretBase turret = createEntity(name, world);
+    public static Turret spawnTurret(World world, String name, double x, double y, double z) {
+        Turret turret = createEntity(name, world);
         if (turret != null) {
-            turret.setLocationAndAngles(x, y, z, MathHelper.wrapAngleTo180_float(world.rand.nextFloat() * 360.0F), 0.0F);
-            turret.rotationYawHead = turret.rotationYaw;
-            turret.renderYawOffset = turret.rotationYaw;
-            turret.onSpawnWithEgg(null);
-            world.spawnEntityInWorld(turret);
-            turret.playLivingSound();
+            EntityLiving turretEntity = turret.getEntity();
+            turretEntity.setLocationAndAngles(x, y, z, MathHelper.wrapAngleTo180_float(world.rand.nextFloat() * 360.0F), 0.0F);
+            turretEntity.rotationYawHead = turretEntity.rotationYaw;
+            turretEntity.renderYawOffset = turretEntity.rotationYaw;
+            turretEntity.onSpawnWithEgg(null);
+            world.spawnEntityInWorld(turretEntity);
+            turretEntity.playLivingSound();
         }
 
         return turret;
     }
 
-    private static AEntityTurretBase createEntity(String name, World world) {
-        AEntityTurretBase entity = null;
+    private static Turret createEntity(String name, World world) {
+        Turret entity = null;
         try {
-            Class<? extends AEntityTurretBase> entityClass = TurretRegistry.getTurretInfo(name).getTurretClass();
+            Class<? extends Turret> entityClass = TurretRegistry.getTurretInfo(name).getTurretClass();
             if( entityClass != null ) {
                 entity = entityClass.getConstructor(World.class).newInstance(world);
             }
@@ -104,7 +106,7 @@ public class ItemTurret
 
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
-        Class<? extends AEntityTurretBase> cls = TurretRegistry.getTurretInfo(getTurretName(stack)).getTurretClass();
+        Class<? extends Turret> cls = TurretRegistry.getTurretInfo(getTurretName(stack)).getTurretClass();
         String entityName = cls != null ? (String) EntityList.classToStringMapping.get(cls) : "UNKNOWN";
         return SAPUtils.translate("entity." + entityName + ".name");
     }
@@ -121,10 +123,10 @@ public class ItemTurret
                 shiftY = 0.5D;
             }
 
-            AEntityTurretBase turret = spawnTurret(world, getTurretName(stack), x + 0.5D, y + shiftY, z + 0.5D);
+            Turret turret = spawnTurret(world, getTurretName(stack), x + 0.5D, y + shiftY, z + 0.5D);
             if( turret != null ) {
                 if( stack.hasDisplayName() ) {
-                    turret.setCustomNameTag(stack.getDisplayName());
+                    turret.getEntity().setCustomNameTag(stack.getDisplayName());
                 }
 
                 if( !player.capabilities.isCreativeMode ) {
@@ -156,10 +158,10 @@ public class ItemTurret
                         return stack;
                     }
                     if( world.getBlock(x, y, z) instanceof BlockLiquid ) {
-                        AEntityTurretBase turret = spawnTurret(world, getTurretName(stack), x, y, z);
+                        Turret turret = spawnTurret(world, getTurretName(stack), x, y, z);
                         if( turret != null ) {
                             if( stack.hasDisplayName() ) {
-                                turret.setCustomNameTag(stack.getDisplayName());
+                                turret.getEntity().setCustomNameTag(stack.getDisplayName());
                             }
 
                             if( !player.capabilities.isCreativeMode ) {

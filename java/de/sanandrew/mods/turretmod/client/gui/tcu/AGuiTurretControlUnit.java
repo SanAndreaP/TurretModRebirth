@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.client.gui.tcu;
 
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiIconTab;
-import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.TmrItems;
 import de.sanandrew.mods.turretmod.util.TurretMod;
@@ -28,13 +28,13 @@ public abstract class AGuiTurretControlUnit
     protected int xSize;
     protected int ySize;
 
-    protected final AEntityTurretBase myTurret;
+    protected final EntityTurretBase myTurret;
 
     protected GuiIconTab pageInfo;
     protected GuiIconTab pageTargets;
     protected GuiIconTab pageUpgrades;
 
-    public AGuiTurretControlUnit(AEntityTurretBase turret) {
+    public AGuiTurretControlUnit(EntityTurretBase turret) {
         this.myTurret = turret;
     }
 

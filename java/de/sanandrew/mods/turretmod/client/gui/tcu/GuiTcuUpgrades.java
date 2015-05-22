@@ -10,23 +10,21 @@ package de.sanandrew.mods.turretmod.client.gui.tcu;
 
 import de.sanandrew.core.manpack.util.client.helpers.GuiUtils;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
+import de.sanandrew.mods.turretmod.api.TurretUpgrade;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiSlimButton;
-import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.entity.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.network.packet.PacketEjectAllUpgrades;
 import de.sanandrew.mods.turretmod.network.packet.PacketEjectUpgrade;
 import de.sanandrew.mods.turretmod.util.EnumTextures;
 import de.sanandrew.mods.turretmod.util.TmrItems;
 import de.sanandrew.mods.turretmod.util.TurretMod;
-import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgrade;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +42,7 @@ public class GuiTcuUpgrades
 
     private GuiButton ejectAll;
 
-    public GuiTcuUpgrades(AEntityTurretBase turret) {
+    public GuiTcuUpgrades(EntityTurretBase turret) {
         super(turret);
     }
 

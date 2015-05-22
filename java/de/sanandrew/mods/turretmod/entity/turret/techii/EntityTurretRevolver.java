@@ -2,7 +2,7 @@ package de.sanandrew.mods.turretmod.entity.turret.techii;
 
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
-import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.entity.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.util.EnumTextures;
 import de.sanandrew.mods.turretmod.util.TurretMod;
@@ -14,7 +14,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 public class EntityTurretRevolver
-		extends AEntityTurretBase
+		extends EntityTurretBase
 {
 	private static final AxisAlignedBB RANGE_AABB = AxisAlignedBB.getBoundingBox(-24.0F, -6.0F, -24.0F, 24.0F, 6.0F, 24.0F);
 	private boolean isRight = false;

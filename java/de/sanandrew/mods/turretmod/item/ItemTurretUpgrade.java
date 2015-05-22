@@ -11,12 +11,12 @@ package de.sanandrew.mods.turretmod.item;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
-import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
+import de.sanandrew.mods.turretmod.api.Turret;
+import de.sanandrew.mods.turretmod.api.TurretUpgrade;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TurretInfo;
 import de.sanandrew.mods.turretmod.util.TurretMod;
 import de.sanandrew.mods.turretmod.util.TurretRegistry;
-import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgrade;
 import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgradeRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -59,7 +59,7 @@ public class ItemTurretUpgrade
 
         this.itemIcon = iconRegister.registerIcon(TurretMod.MOD_ID + ":upgrades/empty");
         for( TurretUpgrade upgrade : upgrades ) {
-            this.upgIcons.put(upgrade, iconRegister.registerIcon(upgrade.getItemTextureLoc()));
+            this.upgIcons.put(upgrade, iconRegister.registerIcon(TurretUpgradeRegistry.getItemTextureLoc(upgrade)));
         }
     }
 
@@ -96,7 +96,7 @@ public class ItemTurretUpgrade
     public void addInformation(ItemStack stack, EntityPlayer player, List lines, boolean advTooltip) {
         TurretUpgrade stackUpgrade = this.getUpgradeFromStack(stack);
         String unlocName = this.getUnlocalizedName(stack);
-        String upgName = stackUpgrade == null ? "empty" : stackUpgrade.name;
+        String upgName = stackUpgrade == null ? "empty" : stackUpgrade.getName();
 
         lines.add(EnumChatFormatting.AQUA + SAPUtils.translatePreFormat("%s.%s.name", unlocName, upgName));
 
@@ -106,15 +106,15 @@ public class ItemTurretUpgrade
             }
 
             if( stackUpgrade != null ) {
-                if( stackUpgrade.dependantOn != null ) {
+                if( stackUpgrade.getDependantOn() != null ) {
                     lines.add(EnumChatFormatting.YELLOW + SAPUtils.translatePreFormat("%s.requires", unlocName));
-                    lines.add("  " + SAPUtils.translatePreFormat("%s.%s.name", unlocName, stackUpgrade.dependantOn.name));
+                    lines.add("  " + SAPUtils.translatePreFormat("%s.%s.name", unlocName, stackUpgrade.getDependantOn().getName()));
                 }
 
-                List<Class<? extends AEntityTurretBase>> applicables = stackUpgrade.getApplicableTurrets();
+                List<Class<? extends Turret>> applicables = stackUpgrade.getApplicableTurrets();
                 if( applicables.size() > 0 ) {
                     lines.add(EnumChatFormatting.RED + SAPUtils.translatePreFormat("%s.applicableTo", unlocName));
-                    for( Class<? extends AEntityTurretBase> cls : applicables ) {
+                    for( Class<? extends Turret> cls : applicables ) {
                         TurretInfo<?> info = TurretRegistry.getTurretInfo(cls);
                         if( info != null ) {
                             String entityName = cls != null ? (String) EntityList.classToStringMapping.get(cls) : "UNKNOWN";
@@ -131,7 +131,7 @@ public class ItemTurretUpgrade
     public ItemStack getStackWithUpgrade(TurretUpgrade upgrade, int stackSize) {
         ItemStack stack = new ItemStack(this, stackSize);
         NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setString("turretUpgrade", upgrade.getRegistrationName());
+        nbt.setString("turretUpgrade", TurretUpgradeRegistry.getRegistrationName(upgrade));
         stack.setTagCompound(nbt);
         return stack;
     }

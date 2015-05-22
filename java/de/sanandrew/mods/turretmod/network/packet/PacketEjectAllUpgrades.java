@@ -12,10 +12,10 @@ import de.sanandrew.core.manpack.network.IPacket;
 import de.sanandrew.core.manpack.util.helpers.InventoryUtils;
 import de.sanandrew.core.manpack.util.javatuples.Tuple;
 import de.sanandrew.core.manpack.util.javatuples.Unit;
-import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
+import de.sanandrew.mods.turretmod.api.TurretUpgrade;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.network.PacketManager;
 import de.sanandrew.mods.turretmod.util.TmrItems;
-import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgrade;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
@@ -35,7 +35,7 @@ public class PacketEjectAllUpgrades
     public void process(ByteBufInputStream stream, ByteBuf rawData, INetHandler iNetHandler) throws IOException {
         if( iNetHandler instanceof NetHandlerPlayServer ) {
             EntityPlayer player = ((NetHandlerPlayServer) iNetHandler).playerEntity;
-            AEntityTurretBase turret = (AEntityTurretBase) player.worldObj.getEntityByID(stream.readInt());
+            EntityTurretBase turret = (EntityTurretBase) player.worldObj.getEntityByID(stream.readInt());
 
             List<TurretUpgrade> allUpgrades = turret.getUpgradeList();
             Iterator<TurretUpgrade> itUpgrades = allUpgrades.iterator();
@@ -57,7 +57,7 @@ public class PacketEjectAllUpgrades
         stream.writeInt((Integer) data.getValue(0));
     }
 
-    public static void sendToServer(AEntityTurretBase turret) {
+    public static void sendToServer(EntityTurretBase turret) {
         PacketManager.sendToServer(PacketManager.EJECT_ALL_UPGRADES, Unit.with(turret.getEntityId()));
     }
 }

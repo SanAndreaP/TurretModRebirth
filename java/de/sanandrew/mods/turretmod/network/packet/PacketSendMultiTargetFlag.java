@@ -11,7 +11,7 @@ package de.sanandrew.mods.turretmod.network.packet;
 import de.sanandrew.core.manpack.network.IPacket;
 import de.sanandrew.core.manpack.util.javatuples.Pair;
 import de.sanandrew.core.manpack.util.javatuples.Tuple;
-import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.network.PacketManager;
 import de.sanandrew.mods.turretmod.util.TurretMod;
 import io.netty.buffer.ByteBuf;
@@ -33,7 +33,7 @@ public class PacketSendMultiTargetFlag
     @Override
     public void process(ByteBufInputStream stream, ByteBuf rawData, INetHandler iNetHandler) throws IOException {
         if( iNetHandler instanceof NetHandlerPlayServer ) {
-            AEntityTurretBase turret = (AEntityTurretBase) ((NetHandlerPlayServer) iNetHandler).playerEntity.worldObj.getEntityByID(stream.readInt());
+            EntityTurretBase turret = (EntityTurretBase) ((NetHandlerPlayServer) iNetHandler).playerEntity.worldObj.getEntityByID(stream.readInt());
             try {
                 for( int i = 0, count = stream.readInt(); i < count; i++ ) {
                     @SuppressWarnings("unchecked")
@@ -64,7 +64,7 @@ public class PacketSendMultiTargetFlag
         }
     }
 
-    public static void sendToServer(AEntityTurretBase turret, Map<Class<? extends EntityLiving>, Boolean> newTargetStg) {
+    public static void sendToServer(EntityTurretBase turret, Map<Class<? extends EntityLiving>, Boolean> newTargetStg) {
         PacketManager.sendToServer(PacketManager.SEND_MULTI_TARGET_FLAG, Pair.with(turret.getEntityId(), newTargetStg));
     }
 }

@@ -13,7 +13,7 @@ import com.google.common.collect.Collections2;
 import de.sanandrew.core.manpack.network.IPacket;
 import de.sanandrew.core.manpack.util.javatuples.Pair;
 import de.sanandrew.core.manpack.util.javatuples.Tuple;
-import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.network.PacketManager;
 import de.sanandrew.mods.turretmod.util.TurretMod;
 import io.netty.buffer.ByteBuf;
@@ -47,7 +47,7 @@ public class PacketTargetList
         }
     }
 
-    public static void sendPacket(AEntityTurretBase turret) {
+    public static void sendPacket(EntityTurretBase turret) {
         final Map<Class<? extends EntityLiving>, Boolean> targets = turret.getTargetList();
         List<Class<? extends EntityLiving>> applicableTargets = new ArrayList<>(Collections2.filter(targets.keySet(), new Predicate<Class<? extends EntityLiving>>() {
                                                                                         @Override public boolean apply(Class<? extends EntityLiving> input) {

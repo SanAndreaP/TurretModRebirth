@@ -8,7 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.entity.projectile;
 
-import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.util.ReflectionManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -175,7 +175,7 @@ public class EntityTurretProjectile
 
         this.onEntityUpdate();
 
-        if( !this.worldObj.isRemote && this.shootingEntity != null && (this.shootingEntity instanceof AEntityTurretBase)
+        if( !this.worldObj.isRemote && this.shootingEntity != null && (this.shootingEntity instanceof EntityTurretBase)
             && this.getDistanceToEntity(this.shootingEntity) > 128.0D )
         {
             this.motionX = 0.0D;
@@ -247,9 +247,9 @@ public class EntityTurretProjectile
             Entity hitEntity = null;
             List<Entity> collidedEntities;
             AxisAlignedBB entityColBB = this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D);
-            if( this.shootingEntity instanceof AEntityTurretBase ) {
+            if( this.shootingEntity instanceof EntityTurretBase ) {
                 collidedEntities = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, entityColBB,
-                                                                                      ((AEntityTurretBase) this.shootingEntity).getParentTargetSelector()
+                                                                                      ((EntityTurretBase) this.shootingEntity).getParentTargetSelector()
                 );
             } else {
                 collidedEntities = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, entityColBB);
@@ -329,8 +329,8 @@ public class EntityTurretProjectile
                     } else if( currHitObj.entityHit.attackEntityFrom(dmgSrc, (float) this.getDamage()) ) {
                         if( currHitObj.entityHit instanceof EntityLiving ) {
                             EntityLiving living = (EntityLiving) currHitObj.entityHit;
-                            if( this.shootingEntity != null && this.shootingEntity instanceof AEntityTurretBase ) {
-                                AEntityTurretBase turret = (AEntityTurretBase) this.shootingEntity;
+                            if( this.shootingEntity != null && this.shootingEntity instanceof EntityTurretBase ) {
+                                EntityTurretBase turret = (EntityTurretBase) this.shootingEntity;
 //                        		if (turret.getDistanceToEntity(living) <= 16.0F) {
                                 living.setRevengeTarget(turret);
                                 living.setAttackTarget(turret);
@@ -358,8 +358,8 @@ public class EntityTurretProjectile
 //                            this.shouldTargetOneType() ? (this.targetedEntity != null
 //                    		&& this.targetedEntity.getClass().isAssignableFrom(currHitObj.entityHit.getClass()))
 //                    	:
-                            this.shootingEntity != null && currHitObj.entityHit != null && this.shootingEntity instanceof AEntityTurretBase
-                                    && ((AEntityTurretBase) this.shootingEntity).getParentTargetSelector().isEntityApplicable(currHitObj.entityHit) ) {
+                            this.shootingEntity != null && currHitObj.entityHit != null && this.shootingEntity instanceof EntityTurretBase
+                                    && ((EntityTurretBase) this.shootingEntity).getParentTargetSelector().isEntityApplicable(currHitObj.entityHit) ) {
                         this.processFailedHit(currHitObj.entityHit);
                     }
                 } else {

@@ -12,7 +12,7 @@ import com.google.common.collect.Maps;
 import de.sanandrew.core.manpack.util.client.helpers.GuiUtils;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiSlimButton;
-import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.network.packet.PacketSendMultiTargetFlag;
 import de.sanandrew.mods.turretmod.network.packet.PacketSendTargetFlag;
 import de.sanandrew.mods.turretmod.util.EnumTextures;
@@ -56,7 +56,7 @@ public class GuiTcuTargets
     private GuiButton selectAnimals;
     private GuiButton selectOther;
 
-    public GuiTcuTargets(AEntityTurretBase turret) {
+    public GuiTcuTargets(EntityTurretBase turret) {
         super(turret);
     }
 

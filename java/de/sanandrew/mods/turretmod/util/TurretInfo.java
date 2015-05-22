@@ -9,10 +9,12 @@
 package de.sanandrew.mods.turretmod.util;
 
 import de.sanandrew.core.manpack.util.helpers.ItemUtils;
-import de.sanandrew.mods.turretmod.entity.turret.AEntityTurretBase;
+import de.sanandrew.mods.turretmod.api.Turret;
+import de.sanandrew.mods.turretmod.util.TurretRegistry.AmmoInfo;
+import de.sanandrew.mods.turretmod.util.TurretRegistry.HealInfo;
 import net.minecraft.item.ItemStack;
 
-public class TurretInfo<T extends AEntityTurretBase>
+public class TurretInfo<T extends Turret>
 {
     private final Class<T> turretEntityCls;
     private final String iconName;
@@ -91,60 +93,18 @@ public class TurretInfo<T extends AEntityTurretBase>
         AmmoInfo minAmmoType = null;
 
         for( AmmoInfo info : this.ammoItems ) {
-            if( info.getAmount() < minAmmo ) {
-                minAmmo = info.getAmount();
+            if( info.amount < minAmmo ) {
+                minAmmo = info.amount;
                 minAmmoType = info;
             }
         }
 
         if( minAmmoType != null ) {
-            ItemStack stack = minAmmoType.getItem().copy();
+            ItemStack stack = minAmmoType.item.copy();
             stack.stackSize = ammoCount / minAmmo;
             return ItemUtils.getGoodItemStacks(stack);
         }
 
         return null;
-    }
-
-    public static class HealInfo {
-        private ItemStack item;
-        private float amount;
-
-        public HealInfo(ItemStack ammoItem, float givesAmount) {
-            this.item = ammoItem;
-            this.amount = givesAmount;
-        }
-
-        public ItemStack getItem() {
-            return this.item.copy();
-        }
-
-        public float getAmount() {
-            return this.amount;
-        }
-    }
-
-    public static class AmmoInfo {
-        private ItemStack item;
-        private ItemStack type;
-        private int amount;
-
-        public AmmoInfo(ItemStack ammoItem, ItemStack typeItem, int givesAmount) {
-            this.item = ammoItem;
-            this.type = typeItem;
-            this.amount = givesAmount;
-        }
-
-        public ItemStack getItem() {
-            return this.item.copy();
-        }
-
-        public ItemStack getTypeItem() {
-            return this.type.copy();
-        }
-
-        public int getAmount() {
-            return this.amount;
-        }
     }
 }
