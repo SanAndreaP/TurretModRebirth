@@ -43,10 +43,10 @@ public class EntityTurretCrossbow
         return this.targetSelector;
     }
 
-    @Override
-    protected EntityTurretProjectile getProjectile() {
-        return new EntityProjectileArrow(this.worldObj);
-    }
+//    @Override
+//    protected EntityTurretProjectile getProjectile() {
+//        return new EntityProjectileArrow(this.worldObj);
+//    }
 
     @Override
     protected String getShootSound() {

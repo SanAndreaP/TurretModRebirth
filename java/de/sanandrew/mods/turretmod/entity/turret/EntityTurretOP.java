@@ -38,17 +38,17 @@ public class EntityTurretOP
 		this.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).setBaseValue(15.0F);
     }
 
-	@Override
-	public EntityTurretProjectile getProjectile() {
-		return new EntityProjectileBullet(this.worldObj) {
-			@Override public double getDamage() { return 100.0D; }
-
-			@Override
-			public float getCurveCorrector() {
-				return 0.015F;
-			}
-		};
-	}
+//	@Override
+//	public EntityTurretProjectile getProjectile() {
+//		return new EntityProjectileBullet(this.worldObj) {
+//			@Override public double getDamage() { return 100.0D; }
+//
+//			@Override
+//			public float getCurveCorrector() {
+//				return 0.015F;
+//			}
+//		};
+//	}
 
 	@Override
 	public void shoot(boolean isRidden) {

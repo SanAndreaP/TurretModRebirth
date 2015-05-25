@@ -15,14 +15,14 @@ import com.mojang.authlib.GameProfile;
 import de.sanandrew.core.manpack.util.helpers.InventoryUtils;
 import de.sanandrew.core.manpack.util.helpers.ItemUtils;
 import de.sanandrew.mods.turretmod.api.Turret;
+import de.sanandrew.mods.turretmod.api.TurretAmmo;
+import de.sanandrew.mods.turretmod.api.TurretProjectile;
 import de.sanandrew.mods.turretmod.api.TurretUpgrade;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.network.packet.PacketTargetList;
 import de.sanandrew.mods.turretmod.network.packet.PacketTargetListRequest;
 import de.sanandrew.mods.turretmod.network.packet.PacketUpgradeList;
 import de.sanandrew.mods.turretmod.network.packet.PacketUpgradeListRequest;
 import de.sanandrew.mods.turretmod.util.*;
-import de.sanandrew.mods.turretmod.util.TurretRegistry.AmmoInfo;
 import de.sanandrew.mods.turretmod.util.TurretRegistry.HealInfo;
 import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgradeRegistry;
 import net.minecraft.block.Block;
@@ -33,6 +33,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -504,11 +505,12 @@ public abstract class EntityTurretBase
     }
 
     public void shootProjectile(boolean isRidden) {
-        EntityTurretProjectile proj = this.getProjectile();
+        TurretProjectile<? extends EntityArrow> proj = this.getProjectile();
+        if( this.getProjectile() != null ) {
 //        EntityArrow arrow = new EntityArrow(this.worldObj, this, (EntityLivingBase) this.currentTarget, 1.0F, 10.0F);
 //        arrow.setDamage(40.0D);
-        proj.isPickupable = true;//!TurretUpgrades.hasUpgrade(TUpgInfAmmo.class, this.upgrades) && !this.isEconomied;
-        proj.ammoType = 0;//this.getAmmoType();
+//        proj.isPickupable = true;//!TurretUpgrades.hasUpgrade(TUpgInfAmmo.class, this.upgrades) && !this.isEconomied;
+//        proj.ammoType = 0;//this.getAmmoType();
 //        if( isRidden ) {
 //            EntityPlayer player = (EntityPlayer) this.riddenByEntity;
 //            proj.hasNoTarget = proj.isActingAsMeelee = true;
@@ -524,14 +526,15 @@ public abstract class EntityTurretBase
 //            proj.setHeading(proj.motionX, proj.motionY, proj.motionZ, 1F * 1.5F, 1.0F);
 //            proj.shootingEntity = this;
 //        } else {
-        proj.setTarget(this, this.currentTarget, 1.4F, 0.0F);
+            proj.setTarget(this, this.currentTarget, 1.4F, 0.0F);
 //        }
-        proj.isActingAsMeelee = false;//TurretUpgrades.hasUpgrade(TUpgEnderHitting.class, this.upgrades);
-        if( this.getShootSound() != null ) {
-            this.playSound(this.getShootSound(), this.getShootSoundRng(), 1.0F / (this.getRNG().nextFloat() * 0.4F + 0.8F));
+//        proj.isActingAsMeelee = false;//TurretUpgrades.hasUpgrade(TUpgEnderHitting.class, this.upgrades);
+            if (this.getShootSound() != null) {
+                this.playSound(this.getShootSound(), this.getShootSoundRng(), 1.0F / (this.getRNG().nextFloat() * 0.4F + 0.8F));
+            }
+            this.worldObj.spawnEntityInWorld(proj.getEntity());
         }
-        this.worldObj.spawnEntityInWorld(proj);
-        proj.isMoving = true;
+//        proj.isMoving = true;
     }
 
     public String getDefaultName() {
@@ -614,8 +617,15 @@ public abstract class EntityTurretBase
     public abstract ResourceLocation getStandardTexture();
     public abstract ResourceLocation getGlowTexture();
     protected abstract IEntitySelector getTargetSelector();
-    protected abstract EntityTurretProjectile getProjectile();
     protected abstract String getShootSound();
+
+    private TurretProjectile<? extends EntityArrow> getProjectile() {
+        if( this.getAmmoType() != null ) {
+            return this.getAmmoType().getProjectile(this.worldObj);
+        }
+
+        return null;
+    }
 
     // GETTERS
     public int getExperience() {
@@ -690,7 +700,7 @@ public abstract class EntityTurretBase
         return this.myInfo;
     }
 
-    public AmmoInfo getAmmoType() {
+    public TurretAmmo getAmmoType() {
         ItemStack stack = this.dataWatcher.getWatchableObjectItemStack(DW_AMMO_TYPE);
         if( stack != null ) {
             return this.myInfo.getAmmo(stack);
@@ -704,25 +714,28 @@ public abstract class EntityTurretBase
     }
 
     public int addAmmo(ItemStack stack) {
-        AmmoInfo ammoInfo = this.getAmmoType();
-        if( ammoInfo != null ) {
-            ItemStack typeItem = ammoInfo.type;
-            AmmoInfo newType = this.myInfo.getAmmo(stack);
-            if( newType != null && ItemUtils.areStacksEqual(newType.type, typeItem, typeItem.hasTagCompound()) ) {
+        TurretAmmo currType = this.getAmmoType();
+        if( currType != null ) {
+            ItemStack typeItem = currType.getTypeItem();
+            TurretAmmo newType = this.myInfo.getAmmo(stack);
+            if( newType != null && ItemUtils.areStacksEqual(newType.getTypeItem(), typeItem, typeItem.hasTagCompound()) ) {
                 int remainAmount = this.getMaxAmmo() - this.getAmmo();
                 if( remainAmount > 0 ) {
-                    int stackSubtract = Math.min(stack.stackSize, MathHelper.floor_double(remainAmount / (double) newType.amount));
-                    this.dataWatcher.updateObject(DW_AMMO, this.getAmmo() + newType.amount * stackSubtract);
+                    int amount = newType.getAmount();
+                    int stackSubtract = Math.min(stack.stackSize, MathHelper.floor_double(remainAmount / (double) amount));
+                    this.dataWatcher.updateObject(DW_AMMO, this.getAmmo() + amount * stackSubtract);
                     return stackSubtract;
                 }
             }
         } else {
-            AmmoInfo newInfo = this.myInfo.getAmmo(stack);
-            if( newInfo != null ) {
-                this.dataWatcher.updateObject(DW_AMMO_TYPE, newInfo.type);
+            TurretAmmo newType = this.myInfo.getAmmo(stack);
+            if( newType != null ) {
+                int amount = newType.getAmount();
 
-                int stackSubtract = Math.min(stack.stackSize, MathHelper.floor_double(this.getMaxAmmo() / (double) newInfo.amount));
-                this.dataWatcher.updateObject(DW_AMMO, newInfo.amount * stackSubtract);
+                this.dataWatcher.updateObject(DW_AMMO_TYPE, newType.getTypeItem());
+
+                int stackSubtract = Math.min(stack.stackSize, MathHelper.floor_double(this.getMaxAmmo() / (double) amount));
+                this.dataWatcher.updateObject(DW_AMMO, amount * stackSubtract);
                 return stackSubtract;
             }
         }

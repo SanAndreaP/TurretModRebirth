@@ -10,16 +10,19 @@ package de.sanandrew.mods.turretmod.util;
 
 import de.sanandrew.core.manpack.util.helpers.ItemUtils;
 import de.sanandrew.mods.turretmod.api.Turret;
-import de.sanandrew.mods.turretmod.util.TurretRegistry.AmmoInfo;
+import de.sanandrew.mods.turretmod.api.TurretAmmo;
 import de.sanandrew.mods.turretmod.util.TurretRegistry.HealInfo;
 import net.minecraft.item.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TurretInfo<T extends Turret>
 {
     private final Class<T> turretEntityCls;
     private final String iconName;
     private final String turretName;
-    private AmmoInfo[] ammoItems;
+    private List<TurretAmmo> ammoTypes = new ArrayList<>();
     private HealInfo[] healItems;
 
     protected TurretInfo(Class<T> turretCls, String tName, String icoName) {
@@ -40,9 +43,9 @@ public class TurretInfo<T extends Turret>
         return this.iconName;
     }
 
-    public TurretInfo<T> applyAmmoItems(AmmoInfo... ammoTypes) {
-        if( ammoTypes != null && this.ammoItems == null && ammoTypes.length > 0 ) {
-            this.ammoItems = ammoTypes;
+    public TurretInfo<T> addAmmoType(TurretAmmo ammoType) {
+        if( ammoType != null ) {
+            this.ammoTypes.add(ammoType);
         }
 
         return this;
@@ -56,14 +59,15 @@ public class TurretInfo<T extends Turret>
         return this;
     }
 
-    public AmmoInfo getAmmo(ItemStack stack) {
-        if( this.ammoItems == null ) {
+    public TurretAmmo getAmmo(ItemStack stack) {
+        if( this.ammoTypes == null ) {
             return null;
         }
 
-        for( AmmoInfo info : this.ammoItems ) {
-            if( ItemUtils.areStacksEqual(stack, info.item, info.item.hasTagCompound()) ) {
-                return info;
+        for( TurretAmmo type : this.ammoTypes) {
+            ItemStack ammoItem = type.getAmmoItem();
+            if( ItemUtils.areStacksEqual(stack, ammoItem, ammoItem.hasTagCompound()) ) {
+                return type;
             }
         }
 
@@ -85,22 +89,23 @@ public class TurretInfo<T extends Turret>
     }
 
     public ItemStack[] getDepletedAmmoStacks(int ammoCount) {
-        if( this.ammoItems == null || ammoCount <= 0 ) {
+        if( this.ammoTypes == null || ammoCount <= 0 ) {
             return null;
         }
 
         int minAmmo = Integer.MAX_VALUE;
-        AmmoInfo minAmmoType = null;
+        TurretAmmo minAmmoType = null;
 
-        for( AmmoInfo info : this.ammoItems ) {
-            if( info.amount < minAmmo ) {
-                minAmmo = info.amount;
-                minAmmoType = info;
+        for( TurretAmmo type : this.ammoTypes) {
+            int typeAmount = type.getAmount();
+            if( typeAmount < minAmmo ) {
+                minAmmo = typeAmount;
+                minAmmoType = type;
             }
         }
 
         if( minAmmoType != null ) {
-            ItemStack stack = minAmmoType.item.copy();
+            ItemStack stack = minAmmoType.getAmmoItem().copy();
             stack.stackSize = ammoCount / minAmmo;
             return ItemUtils.getGoodItemStacks(stack);
         }

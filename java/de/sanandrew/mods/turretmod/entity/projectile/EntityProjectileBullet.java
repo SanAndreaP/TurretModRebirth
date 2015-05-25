@@ -57,7 +57,7 @@ public class EntityProjectileBullet
     }
 
     @Override
-    protected boolean shouldTargetOneType() {
+    public boolean shouldTargetOneType() {
         return true;
     }
 

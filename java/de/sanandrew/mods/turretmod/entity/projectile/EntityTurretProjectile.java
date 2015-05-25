@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.entity.projectile;
 
+import de.sanandrew.mods.turretmod.api.TurretProjectile;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.util.ReflectionManager;
 import net.minecraft.block.Block;
@@ -32,8 +33,9 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class EntityTurretProjectile
+public abstract class EntityTurretProjectile
         extends EntityArrow
+        implements TurretProjectile<EntityTurretProjectile>
 {
     protected int xTile = -1;
     protected int yTile = -1;
@@ -49,24 +51,22 @@ public class EntityTurretProjectile
 
     public Entity targetedEntity;
     public boolean hasNoTarget;
-    public boolean isMoving;
+//    public boolean isMoving;
     public boolean isPickupable = true;
-    public boolean isActingAsMeelee;
+
+    public DamageSource defaultDmgSrc = null;
 
     public EntityTurretProjectile(World par1World) {
         super(par1World);
         this.renderDistanceWeight = 10.0D;
-        this.hasNoTarget = isActingAsMeelee = true;
     }
 
     public EntityTurretProjectile(World par1World, double par2, double par4, double par6) {
         super(par1World, par2, par4, par6);
-        this.hasNoTarget = isActingAsMeelee = true;
         this.renderDistanceWeight = 10.0D;
     }
 
     public void setTarget(EntityLivingBase shooter, Entity target, float par4, float par5) {
-        this.hasNoTarget = isActingAsMeelee = false;
         this.shootingEntity = shooter;
         this.targetedEntity = target;
 
@@ -169,9 +169,9 @@ public class EntityTurretProjectile
             return;
         }
 
-        if( !this.isMoving && !this.worldObj.isRemote ) {
-            return;
-        }
+//        if( !this.isMoving && !this.worldObj.isRemote ) {
+//            return;
+//        }
 
         this.onEntityUpdate();
 
@@ -248,9 +248,7 @@ public class EntityTurretProjectile
             List<Entity> collidedEntities;
             AxisAlignedBB entityColBB = this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D);
             if( this.shootingEntity instanceof EntityTurretBase ) {
-                collidedEntities = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, entityColBB,
-                                                                                      ((EntityTurretBase) this.shootingEntity).getParentTargetSelector()
-                );
+                collidedEntities = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, entityColBB, ((EntityTurretBase) this.shootingEntity).getParentTargetSelector());
             } else {
                 collidedEntities = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, entityColBB);
             }
@@ -306,18 +304,10 @@ public class EntityTurretProjectile
             if( currHitObj != null ) {
                 if( currHitObj.entityHit != null ) {
 
-                    DamageSource dmgSrc;
-
-                    if( this.shootingEntity == null ) {
-                        dmgSrc = DamageSource.causeArrowDamage(this, this);
-                    } else if( this.isActingAsMeelee && this.shootingEntity != null && this.shootingEntity instanceof EntityLiving ) {
-                        dmgSrc = DamageSource.causeMobDamage((EntityLiving) this.shootingEntity);
-                    } else {
-                        dmgSrc = DamageSource.causeArrowDamage(this, this.shootingEntity);
-                    }
+                    DamageSource dmgSrc = this.getDamageSource(currHitObj.entityHit);
 
                     if( currHitObj.entityHit instanceof EntityDragon && dragonPart != null ) {
-                        if( ((EntityDragon) currHitObj.entityHit).attackEntityFromPart(dragonPart, DamageSource.generic.setExplosion(), (float) this.getDamage()) ) {
+                        if( ((EntityDragon) currHitObj.entityHit).attackEntityFromPart(dragonPart, dmgSrc, (float) this.getDamage()) ) {
                             processHit(currHitObj);
                             onEntityHit((EntityDragon) currHitObj.entityHit);
                             this.playSound(getHitSound(), 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
@@ -349,7 +339,7 @@ public class EntityTurretProjectile
 
                         this.playSound(getHitSound(), 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
 
-                        if( !(currHitObj.entityHit instanceof EntityEnderman) || this.isActingAsMeelee ) {
+                        if( !(currHitObj.entityHit instanceof EntityEnderman) ) {
                             if( this.shouldDieOnImpact() ) {
                                 this.setDead();
                             }
@@ -441,7 +431,7 @@ public class EntityTurretProjectile
         }
     }
 
-    protected void processFailedHit(Entity hit) {
+    public void processFailedHit(Entity hit) {
         if( this.isArrow() ) {
             this.motionX *= -0.10000000149011612D;
             this.motionY *= -0.10000000149011612D;
@@ -452,8 +442,13 @@ public class EntityTurretProjectile
         }
     }
 
-    protected boolean shouldTargetOneType() {
+    public boolean shouldTargetOneType() {
         return true;
+    }
+
+    @Override
+    public EntityTurretProjectile getEntity() {
+        return this;
     }
 
     @Override
@@ -474,7 +469,7 @@ public class EntityTurretProjectile
         nbt.setByte("inGround", (byte) (this.inGround ? 1 : 0));
         nbt.setByte("pickup", (byte) this.canBePickedUp);
         nbt.setBoolean("dispensed", this.hasNoTarget);
-        nbt.setBoolean("move", this.isMoving);
+//        nbt.setBoolean("move", this.isMoving);
         nbt.setBoolean("isPickupable", this.isPickupable);
         nbt.setInteger("ammoType", this.ammoType);
     }
@@ -489,7 +484,7 @@ public class EntityTurretProjectile
         this.arrowShake = nbt.getByte("shake") & 255;
         this.inGround = nbt.getByte("inGround") == 1;
         this.hasNoTarget = nbt.getBoolean("dispensed");
-        this.isMoving = nbt.getBoolean("move");
+//        this.isMoving = nbt.getBoolean("move");
         this.isPickupable = nbt.getBoolean("isPickupable");
         this.ammoType = nbt.getInteger("ammoType");
     }
@@ -525,7 +520,23 @@ public class EntityTurretProjectile
         return 2.0D;
     }
 
+    public float getKnockbackStrengthFloat() {
+        return this.knockbackStrength;
+    }
+
     public void setKnockbackStrengthFloat(float par1) {
         this.knockbackStrength = par1;
+    }
+
+    public DamageSource getDamageSource(Entity entity) {
+        if( this.shootingEntity == null ) {
+            return DamageSource.causeArrowDamage(this, this);
+        } else if( entity instanceof EntityDragon ) {
+            return DamageSource.generic.setExplosion();
+        } else if( /**this.isActingAsMeelee**/false && this.shootingEntity instanceof EntityLiving ) {
+            return DamageSource.causeMobDamage((EntityLiving) this.shootingEntity);
+        } else {
+            return DamageSource.causeArrowDamage(this, this.shootingEntity);
+        }
     }
 }

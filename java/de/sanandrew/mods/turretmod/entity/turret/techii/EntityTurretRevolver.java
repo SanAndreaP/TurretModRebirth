@@ -51,10 +51,10 @@ public class EntityTurretRevolver
 		this.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).setBaseValue(15.0F);
     }
 
-	@Override
-	public EntityTurretProjectile getProjectile() {
-		return new EntityProjectileBullet(this.worldObj);
-	}
+//	@Override
+//	public EntityTurretProjectile getProjectile() {
+//		return new EntityProjectileBullet(this.worldObj);
+//	}
 
 	@Override
 	public void shoot(boolean isRidden) {
