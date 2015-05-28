@@ -8,27 +8,24 @@
  */
 package de.sanandrew.mods.turretmod.api;
 
-import net.minecraft.command.IEntitySelector;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.player.EntityPlayer;
+import de.sanandrew.mods.turretmod.util.TurretRegistry.HealInfo;
+import net.minecraft.item.ItemStack;
 
-public interface Turret
+public interface TurretInfo<T extends Turret>
 {
-    EntityLiving getEntity();
+    Class<T> getTurretClass();
 
-    void setOwner(EntityPlayer player);
+    String getName();
 
-    int getAmmo();
+    String getIcon();
 
-    int getMaxAmmo();
+    TurretInfo<T> addAmmoType(TurretAmmo ammoType);
 
-    float getHealth();
+    TurretInfo<T> applyHealItems(HealInfo... healTypes);
 
-    float getMaxHealth();
+    TurretAmmo getAmmo(ItemStack stack);
 
-    TurretInfo<? extends Turret> getInfo();
+    HealInfo getHeal(ItemStack stack);
 
-    void depleteAmmo(int amount);
-
-    IEntitySelector getParentTargetSelector();
+    ItemStack[] getDepletedAmmoStacks(int ammoCount);
 }

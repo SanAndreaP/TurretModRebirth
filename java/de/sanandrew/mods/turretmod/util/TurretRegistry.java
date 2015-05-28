@@ -9,11 +9,11 @@
 package de.sanandrew.mods.turretmod.util;
 
 import de.sanandrew.mods.turretmod.api.Turret;
+import de.sanandrew.mods.turretmod.api.TurretInfo;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretOP;
 import de.sanandrew.mods.turretmod.entity.turret.techi.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.entity.turret.techii.EntityTurretRevolver;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import de.sanandrew.mods.turretmod.util.ammo.AmmoArrow;
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public final class TurretRegistry
     private static final List<String> REG_SORTED_TURRET_NAME_LIST = new ArrayList<>();
 
     public static <T extends Turret> TurretInfo<T> registerNewTurret(Class<T> turretCls, String turretName, String iconName) {
-        TurretInfo<T> turret = new TurretInfo<>(turretCls, turretName, iconName);
+        TurretInfo<T> turret = new TurretInfoInst<>(turretCls, turretName, iconName);
         CLASS_MAP.put(turretCls, turret);
         NAME_MAP.put(turretName, turret);
         REG_SORTED_TURRET_NAME_LIST.add(turretName);
@@ -37,7 +37,7 @@ public final class TurretRegistry
     }
 
     public static void initialize() {
-        registerNewTurret(EntityTurretCrossbow.class, "turretCrossbow", TurretMod.MOD_ID + ":turret_crossbow");
+        registerNewTurret(EntityTurretCrossbow.class, "turretCrossbow", TurretMod.MOD_ID + ":turret_crossbow").addAmmoType(new AmmoArrow());
 //                .applyAmmoItems(new AmmoInfo(new ItemStack(Items.arrow), new ItemStack(Items.arrow), 1),
 //                                new AmmoInfo(new ItemStack(Blocks.bedrock), new ItemStack(Items.arrow), 128))
 //                .applyHealItems(new HealInfo(new ItemStack(Blocks.cobblestone), 10.0F));

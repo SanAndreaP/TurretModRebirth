@@ -36,22 +36,22 @@ public class TurretUpgradeRegistry
     private static final List<TurretUpgrade> REG_SORTED_UPGRADE_LIST = new ArrayList<>();
     public static final EventBus EVENT_BUS = new EventBus("TurretUpgradesEvtBus");
 
-    public static final TurretUpgradeBase HEALTH_INCR_I   = new TUpgradeHealthI();
-    public static final TurretUpgradeBase HEALTH_INCR_II  = new TUpgradeHealthII(HEALTH_INCR_I);
-    public static final TurretUpgradeBase HEALTH_INCR_III = new TUpgradeHealthIII(HEALTH_INCR_II);
-    public static final TurretUpgradeBase HEALTH_INCR_IV  = new TUpgradeHealthIV(HEALTH_INCR_III);
-    public static final TurretUpgradeBase RELOAD_TIME_I = new TUpgradeReloadTimeI();
-    public static final TurretUpgradeBase RELOAD_TIME_II = new TUpgradeReloadTimeII(RELOAD_TIME_I);
-    public static final TurretUpgradeBase UPG_STORAGE_I = new TUpgradeUpgStorageI();
-    public static final TurretUpgradeBase UPG_STORAGE_II = new TUpgradeUpgStorageII(UPG_STORAGE_I);
-    public static final TurretUpgradeBase UPG_STORAGE_III = new TUpgradeUpgStorageIII(UPG_STORAGE_II);
-    public static final TurretUpgradeBase AMMO_STORAGE = new TUpgradeAmmoStorage();
+    public static final TurretUpgrade HEALTH_INCR_I   = new TUpgradeHealthI();
+    public static final TurretUpgrade HEALTH_INCR_II  = new TUpgradeHealthII(HEALTH_INCR_I);
+    public static final TurretUpgrade HEALTH_INCR_III = new TUpgradeHealthIII(HEALTH_INCR_II);
+    public static final TUpgradeHealthIV HEALTH_INCR_IV  = new TUpgradeHealthIV(HEALTH_INCR_III);
+    public static final TurretUpgrade RELOAD_TIME_I = new TUpgradeReloadTimeI();
+    public static final TurretUpgrade RELOAD_TIME_II = new TUpgradeReloadTimeII(RELOAD_TIME_I);
+    public static final TurretUpgrade UPG_STORAGE_I = new TUpgradeUpgStorageI();
+    public static final TurretUpgrade UPG_STORAGE_II = new TUpgradeUpgStorageII(UPG_STORAGE_I);
+    public static final TurretUpgrade UPG_STORAGE_III = new TUpgradeUpgStorageIII(UPG_STORAGE_II);
+    public static final TurretUpgrade AMMO_STORAGE = new TUpgradeAmmoStorage();
 
     static {
         try {
             Field[] upgFields = TurretUpgradeRegistry.class.getFields();
             for( Field fld : upgFields ) {
-                if( fld.getType().equals(TurretUpgrade.class) ) {
+                if( TurretUpgrade.class.isAssignableFrom(fld.getType()) ) {
                     registerUpgrade((TurretUpgrade) fld.get(null));
                 }
             }

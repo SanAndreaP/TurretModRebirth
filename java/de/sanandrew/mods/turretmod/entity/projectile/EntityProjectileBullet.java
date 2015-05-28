@@ -1,7 +1,7 @@
 /**
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
- * Copyright: SanAndreasP, SilverChiren and CliffracerX
+ * Copyright: SanAndreasP
  * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
@@ -21,11 +21,6 @@ public class EntityProjectileBullet
         this.setKnockbackStrengthFloat(0.9F);
     }
 
-    public EntityProjectileBullet(World par1World, double par2, double par4, double par6) {
-        super(par1World, par2, par4, par6);
-        this.setKnockbackStrengthFloat(0.9F);
-    }
-
     @Override
     public String getHitSound() {
         return TurretMod.MOD_ID + ":ricochet.bullet";
@@ -38,7 +33,7 @@ public class EntityProjectileBullet
 
     @Override
     public float getSpeedVal() {
-        return 3F;
+        return 3.0F;
     }
 
     @Override
@@ -53,7 +48,7 @@ public class EntityProjectileBullet
 
     @Override
     public double getDamage() {
-        return 4D;
+        return 4.0D;
     }
 
     @Override

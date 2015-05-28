@@ -14,7 +14,7 @@ public interface TurretAmmo
 
     ItemStack getAmmoItem();
 
-    Turret getApplicableTurret();
+    boolean isApplicablToTurret(Turret turret);
 
     TurretProjectile<? extends EntityArrow> getProjectile(World world);
 

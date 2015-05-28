@@ -14,10 +14,8 @@ import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
 import de.sanandrew.core.manpack.util.helpers.InventoryUtils;
 import de.sanandrew.core.manpack.util.helpers.ItemUtils;
-import de.sanandrew.mods.turretmod.api.Turret;
-import de.sanandrew.mods.turretmod.api.TurretAmmo;
-import de.sanandrew.mods.turretmod.api.TurretProjectile;
-import de.sanandrew.mods.turretmod.api.TurretUpgrade;
+import de.sanandrew.core.manpack.util.helpers.SAPUtils;
+import de.sanandrew.mods.turretmod.api.*;
 import de.sanandrew.mods.turretmod.network.packet.PacketTargetList;
 import de.sanandrew.mods.turretmod.network.packet.PacketTargetListRequest;
 import de.sanandrew.mods.turretmod.network.packet.PacketUpgradeList;
@@ -398,8 +396,6 @@ public abstract class EntityTurretBase
             }
         }
 
-//        player.addChatMessage(new ChatComponentText("max. slots: " + this.getMaxUpgradeSlots()));
-
         return super.interact(player);
     }
 
@@ -457,8 +453,8 @@ public abstract class EntityTurretBase
         for( int i = 0; i < targetList.tagCount(); i++ ) {
             Class entityCls = (Class) EntityList.stringToClassMapping.get(targetList.getStringTagAt(i));
             if( EntityLiving.class.isAssignableFrom(entityCls) && this.activeTargets.containsKey(entityCls) ) {
-                //noinspection unchecked
-                this.activeTargets.put(entityCls, true);
+                Class<? extends EntityLiving> casted = SAPUtils.getCasted(entityCls);
+                this.activeTargets.put(casted, true);
             }
         }
 

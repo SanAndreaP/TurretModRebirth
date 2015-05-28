@@ -8,19 +8,18 @@
  */
 package de.sanandrew.mods.turretmod.entity.projectile;
 
+import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.api.TurretProjectile;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.util.ReflectionManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IEntityMultiPart;
+import net.minecraft.entity.*;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.monster.EntityEnderman;
+import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -28,6 +27,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.S2BPacketChangeGameState;
+import net.minecraft.pathfinding.PathEntity;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 
@@ -50,19 +50,12 @@ public abstract class EntityTurretProjectile
     public int ammoType = 0;
 
     public Entity targetedEntity;
-    public boolean hasNoTarget;
-//    public boolean isMoving;
     public boolean isPickupable = true;
 
     public DamageSource defaultDmgSrc = null;
 
     public EntityTurretProjectile(World par1World) {
         super(par1World);
-        this.renderDistanceWeight = 10.0D;
-    }
-
-    public EntityTurretProjectile(World par1World, double par2, double par4, double par6) {
-        super(par1World, par2, par4, par6);
         this.renderDistanceWeight = 10.0D;
     }
 
@@ -169,10 +162,6 @@ public abstract class EntityTurretProjectile
             return;
         }
 
-//        if( !this.isMoving && !this.worldObj.isRemote ) {
-//            return;
-//        }
-
         this.onEntityUpdate();
 
         if( !this.worldObj.isRemote && this.shootingEntity != null && (this.shootingEntity instanceof EntityTurretBase)
@@ -247,8 +236,8 @@ public abstract class EntityTurretProjectile
             Entity hitEntity = null;
             List<Entity> collidedEntities;
             AxisAlignedBB entityColBB = this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D);
-            if( this.shootingEntity instanceof EntityTurretBase ) {
-                collidedEntities = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, entityColBB, ((EntityTurretBase) this.shootingEntity).getParentTargetSelector());
+            if( this.shootingEntity instanceof Turret ) {
+                collidedEntities = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, entityColBB, ((Turret) this.shootingEntity).getParentTargetSelector());
             } else {
                 collidedEntities = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, entityColBB);
             }
@@ -266,22 +255,20 @@ public abstract class EntityTurretProjectile
                     }
                 }
 
-
                 boolean isShootEntityValid = !(this.shootingEntity == null || this.shootingEntity == this);
-                boolean isDispensed = this.hasNoTarget && !isShootEntityValid;
                 boolean isShootingEntity = isShootEntityValid && collidedEntity == this.shootingEntity;
-                boolean isNotRider = (isShootEntityValid && this.shootingEntity.riddenByEntity != collidedEntity) || isDispensed;
-                boolean isHostRidden = isShootEntityValid && this.hasNoTarget && this.shootingEntity.riddenByEntity != null && this.shootingEntity.riddenByEntity instanceof EntityPlayer;
-//                boolean isTargetValid = isHostRidden;/* || this.shouldTargetOneType()*/;
-//                				? this.targetedEntity != null && collidedEntity != null && this.targetedEntity.getClass().isAssignableFrom(collidedEntity.getClass())
-//                				: this.shootingEntity instanceof AEntityTurretBase && collidedEntity instanceof EntityLiving
-//                						&& ((AEntityTurretBase)this.shootingEntity).get((EntityLiving) collidedEntity)
-//                						);
-                boolean cannotBeHit = (collidedEntity instanceof EntityLiving) && ((EntityLiving) collidedEntity).hurtResistantTime > ((EntityLiving) collidedEntity).maxHurtResistantTime / 2.0F || collidedEntity.isDead;
+                boolean isNotRider = isShootEntityValid && this.shootingEntity.riddenByEntity != collidedEntity;
+                boolean isHostRidden = isShootEntityValid && this.shootingEntity.riddenByEntity != null && this.shootingEntity.riddenByEntity instanceof EntityPlayer;
+                boolean isCollidable = collidedEntity.canBeCollidedWith() || (collidedEntity instanceof EntityDragon);
+                boolean cannotBeHit = collidedEntity.isDead;
+
+                if( collidedEntity instanceof EntityLiving ) {
+                    EntityLiving collidedLiving = (EntityLiving) collidedEntity;
+                    cannotBeHit = cannotBeHit || collidedLiving.hurtResistantTime > collidedLiving.maxHurtResistantTime / 2.0F;
+                }
 
 
-                if( (collidedEntity.canBeCollidedWith() || (collidedEntity instanceof EntityDragon))
-                        && !isShootingEntity && isNotRider && /*(isDispensed || isHostRidden) &&*/ (!cannotBeHit || !shouldFlyThroughOnEntityHit()) ) {
+                if( isCollidable && !isShootingEntity && isNotRider && isHostRidden && (!cannotBeHit || !shouldFlyThroughOnEntityHit()) ) {
                     float expandBB = 0.3F;
                     AxisAlignedBB var12 = collidedEntity.boundingBox.expand(expandBB, expandBB, expandBB);
                     MovingObjectPosition interceptObj = var12.calculateIntercept(posVec, motionVec);
@@ -321,17 +308,16 @@ public abstract class EntityTurretProjectile
                             EntityLiving living = (EntityLiving) currHitObj.entityHit;
                             if( this.shootingEntity != null && this.shootingEntity instanceof EntityTurretBase ) {
                                 EntityTurretBase turret = (EntityTurretBase) this.shootingEntity;
-//                        		if (turret.getDistanceToEntity(living) <= 16.0F) {
-                                living.setRevengeTarget(turret);
-                                living.setAttackTarget(turret);
-                                living.setLastAttacker(turret);
-                                ReflectionManager.setCurrentTarget(living, turret, 10 + this.rand.nextInt(20));
-//	                        		ObfuscationReflectionHelper.setPrivateValue(EntityLiving.class, living, turret, "currentTarget", "field_70776_bF");
-//                        		} else if( living instanceof EntityCreature && living instanceof IMob ) {
-//                        			PathEntity path = this.worldObj.getEntityPathToXYZ(living, (int)turret.posX, (int)turret.posY, (int)turret.posZ, (float) turret.wdtRange* 2.0F, true, false, false, true);
-//                        			living.getNavigator().setPath(path, 0.35F);
-//                        			((EntityCreature)living).setPathToEntity(path);
-//                        		}
+                        		if (turret.getDistanceToEntity(living) <= 16.0F) {
+                                    living.setRevengeTarget(turret);
+                                    living.setAttackTarget(turret);
+                                    living.setLastAttacker(turret);
+                                    ReflectionManager.setCurrentTarget(living, turret, 10 + this.rand.nextInt(20));
+                        		} else if( living instanceof EntityCreature && living instanceof IMob ) {
+                        			PathEntity path = this.worldObj.getEntityPathToXYZ(living, (int)turret.posX, (int)turret.posY + 1, (int)turret.posZ, 64.0F, true, false, false, true);
+                        			living.getNavigator().setPath(path, 1.0D);
+                        			((EntityCreature)living).setPathToEntity(path);
+                        		}
                             }
                             processHit(currHitObj);
                             onEntityHit(living);
@@ -344,11 +330,7 @@ public abstract class EntityTurretProjectile
                                 this.setDead();
                             }
                         }
-                    } else if(
-//                            this.shouldTargetOneType() ? (this.targetedEntity != null
-//                    		&& this.targetedEntity.getClass().isAssignableFrom(currHitObj.entityHit.getClass()))
-//                    	:
-                            this.shootingEntity != null && currHitObj.entityHit != null && this.shootingEntity instanceof EntityTurretBase
+                    } else if(this.shootingEntity != null && currHitObj.entityHit != null && this.shootingEntity instanceof EntityTurretBase
                                     && ((EntityTurretBase) this.shootingEntity).getParentTargetSelector().isEntityApplicable(currHitObj.entityHit) ) {
                         this.processFailedHit(currHitObj.entityHit);
                     }
@@ -439,6 +421,8 @@ public abstract class EntityTurretProjectile
             this.rotationYaw += 180.0F;
             this.prevRotationYaw += 180.0F;
             this.ticksInAir = 0;
+        } else if( this.shouldDieOnImpact() ) {
+            this.setDead();
         }
     }
 
@@ -468,8 +452,6 @@ public abstract class EntityTurretProjectile
         nbt.setByte("shake", (byte) this.arrowShake);
         nbt.setByte("inGround", (byte) (this.inGround ? 1 : 0));
         nbt.setByte("pickup", (byte) this.canBePickedUp);
-        nbt.setBoolean("dispensed", this.hasNoTarget);
-//        nbt.setBoolean("move", this.isMoving);
         nbt.setBoolean("isPickupable", this.isPickupable);
         nbt.setInteger("ammoType", this.ammoType);
     }
@@ -483,8 +465,6 @@ public abstract class EntityTurretProjectile
         this.inData = nbt.getByte("inData") & 255;
         this.arrowShake = nbt.getByte("shake") & 255;
         this.inGround = nbt.getByte("inGround") == 1;
-        this.hasNoTarget = nbt.getBoolean("dispensed");
-//        this.isMoving = nbt.getBoolean("move");
         this.isPickupable = nbt.getBoolean("isPickupable");
         this.ammoType = nbt.getInteger("ammoType");
     }

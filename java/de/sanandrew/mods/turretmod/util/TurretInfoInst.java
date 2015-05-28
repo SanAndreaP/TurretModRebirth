@@ -11,13 +11,15 @@ package de.sanandrew.mods.turretmod.util;
 import de.sanandrew.core.manpack.util.helpers.ItemUtils;
 import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.api.TurretAmmo;
+import de.sanandrew.mods.turretmod.api.TurretInfo;
 import de.sanandrew.mods.turretmod.util.TurretRegistry.HealInfo;
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TurretInfo<T extends Turret>
+public class TurretInfoInst<T extends Turret>
+        implements TurretInfo<T>
 {
     private final Class<T> turretEntityCls;
     private final String iconName;
@@ -25,7 +27,7 @@ public class TurretInfo<T extends Turret>
     private List<TurretAmmo> ammoTypes = new ArrayList<>();
     private HealInfo[] healItems;
 
-    protected TurretInfo(Class<T> turretCls, String tName, String icoName) {
+    protected TurretInfoInst(Class<T> turretCls, String tName, String icoName) {
         this.turretEntityCls = turretCls;
         this.turretName = tName;
         this.iconName = icoName;
