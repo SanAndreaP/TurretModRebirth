@@ -6,7 +6,7 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-@API(owner = TurretModAPI_Props.API_OWNER, provides = TurretModAPI_Props.API_NAME, apiVersion = TurretModAPI_Props.API_VERSION)
+@API(owner = TurretModApiProps.API_OWNER, provides = TurretModApiProps.API_NAME, apiVersion = TurretModApiProps.API_VERSION)
 package de.sanandrew.mods.turretmod.api;
 
 import cpw.mods.fml.common.API;

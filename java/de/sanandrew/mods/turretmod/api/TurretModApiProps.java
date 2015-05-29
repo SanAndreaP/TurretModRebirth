@@ -8,9 +8,13 @@
  */
 package de.sanandrew.mods.turretmod.api;
 
-public final class TurretModAPI_Props
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+public final class TurretModApiProps
 {
     public static final String API_OWNER = "TurretMod";
     public static final String API_VERSION = "1.0.0-alpha.1";
     public static final String API_NAME = "TurretModAPI";
+    public static final Logger API_LOG = LogManager.getLogger(API_NAME);
 }

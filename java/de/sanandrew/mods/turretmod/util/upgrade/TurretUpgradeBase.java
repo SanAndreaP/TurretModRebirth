@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.util.upgrade;
 
 import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.api.TurretUpgrade;
+import de.sanandrew.mods.turretmod.api.registry.TurretUpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.TurretMod;
 
 import java.util.ArrayList;

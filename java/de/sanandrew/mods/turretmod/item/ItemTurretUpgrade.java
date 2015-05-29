@@ -17,7 +17,7 @@ import de.sanandrew.mods.turretmod.api.TurretUpgrade;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TurretMod;
 import de.sanandrew.mods.turretmod.util.TurretRegistry;
-import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgradeRegistry;
+import de.sanandrew.mods.turretmod.api.registry.TurretUpgradeRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;

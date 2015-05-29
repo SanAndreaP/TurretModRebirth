@@ -22,7 +22,7 @@ import de.sanandrew.mods.turretmod.network.packet.PacketUpgradeList;
 import de.sanandrew.mods.turretmod.network.packet.PacketUpgradeListRequest;
 import de.sanandrew.mods.turretmod.util.*;
 import de.sanandrew.mods.turretmod.util.TurretRegistry.HealInfo;
-import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgradeRegistry;
+import de.sanandrew.mods.turretmod.api.registry.TurretUpgradeRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
@@ -370,7 +370,7 @@ public abstract class EntityTurretBase
                     TurretMod.proxy.openGui(player, EnumGui.GUI_TCU_INFO, this.getEntityId(), 0, 0);
                     return true;
                 }
-                if( this.myInfo.getAmmo(heldItem) != null ) {
+                if( TurretInfoApi.getAmmo(heldItem) != null ) {
                     int amount = this.addAmmo(heldItem);
                     if( amount > 0 ) {
                         InventoryUtils.decrPlayerHeldStackSize(player, amount);
@@ -378,7 +378,7 @@ public abstract class EntityTurretBase
                         return true;
                     }
                 }
-                if( (healInfo = this.myInfo.getHeal(heldItem)) != null && this.getHealth() < this.getMaxHealth() ) {
+                if( (healInfo = TurretInfoApi.getHeal(heldItem)) != null && this.getHealth() < this.getMaxHealth() ) {
                     this.heal(healInfo.amount);
                     InventoryUtils.decrPlayerHeldStackSize(player, 1);
                     this.playSound(TurretMod.MOD_ID + ":collect.ia_get", 1.0F, 1.0F);
@@ -699,7 +699,7 @@ public abstract class EntityTurretBase
     public TurretAmmo getAmmoType() {
         ItemStack stack = this.dataWatcher.getWatchableObjectItemStack(DW_AMMO_TYPE);
         if( stack != null ) {
-            return this.myInfo.getAmmo(stack);
+            return TurretInfoApi.getAmmo(stack);
         }
 
         return null;
@@ -713,7 +713,7 @@ public abstract class EntityTurretBase
         TurretAmmo currType = this.getAmmoType();
         if( currType != null ) {
             ItemStack typeItem = currType.getTypeItem();
-            TurretAmmo newType = this.myInfo.getAmmo(stack);
+            TurretAmmo newType = TurretInfoApi.getAmmo(stack);
             if( newType != null && ItemUtils.areStacksEqual(newType.getTypeItem(), typeItem, typeItem.hasTagCompound()) ) {
                 int remainAmount = this.getMaxAmmo() - this.getAmmo();
                 if( remainAmount > 0 ) {
@@ -724,7 +724,7 @@ public abstract class EntityTurretBase
                 }
             }
         } else {
-            TurretAmmo newType = this.myInfo.getAmmo(stack);
+            TurretAmmo newType = TurretInfoApi.getAmmo(stack);
             if( newType != null ) {
                 int amount = newType.getAmount();
 
