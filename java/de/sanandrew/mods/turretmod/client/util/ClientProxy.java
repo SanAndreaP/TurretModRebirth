@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.client.util;
 
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.api.TurretUpgrade;
+import de.sanandrew.mods.turretmod.client.event.RenderForcefieldHandler;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuInfo;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuTargets;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuUpgrades;
@@ -23,6 +24,7 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.Level;
 
 import java.io.IOException;
@@ -32,11 +34,15 @@ import java.util.List;
 public class ClientProxy
         extends CommonProxy
 {
+
+
     @Override
     public void init() {
         super.init();
 
         TmrEntities.registerRenderers();
+
+        MinecraftForge.EVENT_BUS.register(new RenderForcefieldHandler());
     }
 
     @Override

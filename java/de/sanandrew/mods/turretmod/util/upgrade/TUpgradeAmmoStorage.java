@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.util.upgrade;
 import de.sanandrew.core.manpack.util.EnumAttrModifierOperation;
 import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.entity.turret.TurretAttributes;
+import de.sanandrew.mods.turretmod.util.TurretInfoApi;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.ItemStack;
 
@@ -38,7 +39,7 @@ public class TUpgradeAmmoStorage
             turret.getEntity().getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY).removeModifier(modifier);
 
             int decrAmmo = turret.getAmmo() - turret.getMaxAmmo();
-            ItemStack[] removedAmmo = turret.getInfo().getDepletedAmmoStacks(decrAmmo);
+            ItemStack[] removedAmmo = TurretInfoApi.getDepletedAmmoStacks(decrAmmo);
             if( removedAmmo != null && removedAmmo.length > 0 ) {
                 for( ItemStack droppedStack : removedAmmo ) {
                     turret.getEntity().entityDropItem(droppedStack, 0.0F);
