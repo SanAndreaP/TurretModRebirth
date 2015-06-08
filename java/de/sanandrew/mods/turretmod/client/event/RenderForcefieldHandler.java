@@ -9,12 +9,10 @@
 package de.sanandrew.mods.turretmod.client.event;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
-import de.sanandrew.core.manpack.util.javatuples.Quartet;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -72,7 +70,7 @@ public class RenderForcefieldHandler
             Cube cube = new Cube(Vec3.createVectorHelper(entityX - renderX, entityY - renderY, entityZ - renderZ), 4.0D);
             for( Cube intfCube : cubes ) {
                 cube.interfere(intfCube);
-//                intfCube.interfere(cube);
+                intfCube.interfere(cube);
             }
             cubes.add(cube);
 //
@@ -192,7 +190,7 @@ public class RenderForcefieldHandler
             }
 
             if( newCubes.size() == 0 ) {
-                return new CubeFace[] {new CubeFace(this.facing, Vec3.createVectorHelper(0, 0, 0), Vec3.createVectorHelper(0, 0, 0))};
+                return new CubeFace[0];
             }
 
             return newCubes.toArray(new CubeFace[newCubes.size()]);
@@ -249,7 +247,8 @@ public class RenderForcefieldHandler
         }
     }
 
-    private static class Cube {
+    private static class Cube
+    {
         public Map<ForgeDirection, CubeFace[]> faces = new EnumMap<>(ForgeDirection.class);
         private final Vec3 center;
         private final double radius;
@@ -260,59 +259,65 @@ public class RenderForcefieldHandler
 
             CubeFace face;
             face = new CubeFace(ForgeDirection.NORTH, Vec3.createVectorHelper(center.xCoord + mpRadius, center.yCoord + mpRadius, center.zCoord - mpRadius),
-                                                      Vec3.createVectorHelper(center.xCoord + mpRadius, center.yCoord - mpRadius, center.zCoord + mpRadius));
+                                Vec3.createVectorHelper(center.xCoord + mpRadius, center.yCoord - mpRadius, center.zCoord + mpRadius)
+            );
 //            faces.put(ForgeDirection.NORTH, new CubeFace[] {face});
             face = new CubeFace(ForgeDirection.EAST, Vec3.createVectorHelper(center.xCoord - mpRadius, center.yCoord + mpRadius, center.zCoord + mpRadius),
-                                                     Vec3.createVectorHelper(center.xCoord + mpRadius, center.yCoord - mpRadius, center.zCoord + mpRadius));
+                                Vec3.createVectorHelper(center.xCoord + mpRadius, center.yCoord - mpRadius, center.zCoord + mpRadius)
+            );
 //            faces.put(ForgeDirection.EAST, new CubeFace[] {face});
             face = new CubeFace(ForgeDirection.SOUTH, Vec3.createVectorHelper(center.xCoord - mpRadius, center.yCoord + mpRadius, center.zCoord - mpRadius),
-                                                      Vec3.createVectorHelper(center.xCoord - mpRadius, center.yCoord - mpRadius, center.zCoord + mpRadius));
-            faces.put(ForgeDirection.SOUTH, new CubeFace[] {face});
+                                Vec3.createVectorHelper(center.xCoord - mpRadius, center.yCoord - mpRadius, center.zCoord + mpRadius)
+            );
+            faces.put(ForgeDirection.SOUTH, new CubeFace[]{face});
             face = new CubeFace(ForgeDirection.WEST, Vec3.createVectorHelper(center.xCoord - mpRadius, center.yCoord + mpRadius, center.zCoord - mpRadius),
-                                                     Vec3.createVectorHelper(center.xCoord + mpRadius, center.yCoord - mpRadius, center.zCoord - mpRadius));
+                                Vec3.createVectorHelper(center.xCoord + mpRadius, center.yCoord - mpRadius, center.zCoord - mpRadius)
+            );
 //            faces.put(ForgeDirection.WEST, new CubeFace[] {face});
             face = new CubeFace(ForgeDirection.UP, Vec3.createVectorHelper(center.xCoord - mpRadius, center.yCoord + mpRadius, center.zCoord + mpRadius),
-                                                   Vec3.createVectorHelper(center.xCoord + mpRadius, center.yCoord + mpRadius, center.zCoord - mpRadius));
+                                Vec3.createVectorHelper(center.xCoord + mpRadius, center.yCoord + mpRadius, center.zCoord - mpRadius)
+            );
 //            faces.put(ForgeDirection.UP, new CubeFace[] {face});
             face = new CubeFace(ForgeDirection.DOWN, Vec3.createVectorHelper(center.xCoord - mpRadius, center.yCoord - mpRadius, center.zCoord + mpRadius),
-                                                     Vec3.createVectorHelper(center.xCoord + mpRadius, center.yCoord - mpRadius, center.zCoord - mpRadius));
+                                Vec3.createVectorHelper(center.xCoord + mpRadius, center.yCoord - mpRadius, center.zCoord - mpRadius)
+            );
 //            faces.put(ForgeDirection.DOWN, new CubeFace[] {face});
         }
 
         public void draw(Tessellator tess) {
             for( CubeFace[] faceList : faces.values() ) {
                 for( CubeFace facePart : faceList ) {
-                    if( facePart.facing == ForgeDirection.NORTH ) {
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord);
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.endPt.zCoord);
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord);
-                    } else if( facePart.facing == ForgeDirection.EAST ) {
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.endPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord);
-                    } else if( facePart.facing == ForgeDirection.SOUTH ) {
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord);
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.endPt.zCoord);
-                    } else if( facePart.facing == ForgeDirection.WEST ) {
-                        tess.addVertex(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.endPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord);
-                    } else if( facePart.facing == ForgeDirection.UP ) {
-                        tess.addVertex(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord);
-                        tess.addVertex(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord);
-                    } else if( facePart.facing == ForgeDirection.DOWN ) {
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord);
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord);
-                    }
+//                    if( facePart.facing == ForgeDirection.NORTH ) {
+//                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
+//                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord);
+//                        tess.addVertex(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.endPt.zCoord);
+//                        tess.addVertex(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord);
+//                    } else if( facePart.facing == ForgeDirection.EAST ) {
+//                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
+//                        tess.addVertex(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
+//                        tess.addVertex(facePart.endPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord);
+//                        tess.addVertex(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord);
+//                    } else if( facePart.facing == ForgeDirection.SOUTH ) {
+                    tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord);
+                    tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
+                    tess.addVertex(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord);
+                    tess.addVertex(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.endPt.zCoord);
+//                    } else if( facePart.facing == ForgeDirection.WEST ) {
+//                        tess.addVertex(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
+//                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
+//                        tess.addVertex(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord);
+//                        tess.addVertex(facePart.endPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord);
+//                    } else if( facePart.facing == ForgeDirection.UP ) {
+//                        tess.addVertex(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
+//                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
+//                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord);
+//                        tess.addVertex(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord);
+//                    } else if( facePart.facing == ForgeDirection.DOWN ) {
+//                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
+//                        tess.addVertex(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
+//                        tess.addVertex(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord);
+//                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord);
+//                    }
                 }
             }
         }
@@ -322,119 +327,63 @@ public class RenderForcefieldHandler
 //
             List<CubeFace> newFaces = new ArrayList<>();
             Map<ForgeDirection, CubeFace[]> newFaceMap = new EnumMap<>(ForgeDirection.class);
+
             for( Map.Entry<ForgeDirection, CubeFace[]> myFaceEntry : faces.entrySet() ) {
                 for( Map.Entry<ForgeDirection, CubeFace[]> intfFaceEntry : interfered.faces.entrySet() ) {
                     if( myFaceEntry.getKey() == intfFaceEntry.getKey() ) {
                         newFaces.clear();
-                        for( CubeFace myFace : myFaceEntry.getValue() ) {
-                            for( CubeFace intfFace : intfFaceEntry.getValue() ) {
-//                                newFace = myFace;
-                                boolean intersectXPos = this.center.xCoord + radius > interfered.center.xCoord - radius && this.center.xCoord + radius < interfered.center.xCoord + radius;
-                                boolean intersectYPos = this.center.yCoord + radius > interfered.center.yCoord - radius && this.center.yCoord + radius < interfered.center.yCoord + radius;
-                                boolean intersectZPos = this.center.zCoord + radius > interfered.center.zCoord - radius && this.center.zCoord + radius < interfered.center.zCoord + radius;
-
-                                boolean intersectXNeg = this.center.xCoord - radius <= interfered.center.xCoord + radius && this.center.xCoord - radius >= interfered.center.xCoord - radius;
-                                boolean intersectYNeg = this.center.yCoord - radius < interfered.center.yCoord + radius && this.center.yCoord - radius > interfered.center.yCoord - radius;
-                                boolean intersectZNeg = this.center.zCoord - radius < interfered.center.zCoord + radius && this.center.zCoord - radius > interfered.center.zCoord - radius;
-
-                                if( myFace.facing == ForgeDirection.NORTH /**&& !intersectXPos**/ ) {
-                                    continue;
-                                }
-                                else if( myFace.facing == ForgeDirection.SOUTH && !intersectXNeg ) {
-                                    continue;
-                                }
-                                else if( myFace.facing == ForgeDirection.EAST/* && !intersectZPos*/ ) {
-                                    continue;
-                                }
-                                else if( myFace.facing == ForgeDirection.WEST/* && !intersectZNeg*/ ) {
-                                    continue;
-                                }
-                                else if( myFace.facing == ForgeDirection.UP/* && !intersectYPos*/ ) {
-                                    continue;
-                                }
-                                else if( myFace.facing == ForgeDirection.DOWN/* && !intersectYNeg*/ ) {
-                                    continue;
-                                }
-
-                                CubeFace[] newFacesArr = myFace.intersect(intfFace);
-
-                                if( newFacesArr != null ) {
-                                    Collections.addAll(newFaces, newFacesArr);
-                                }
-
-//
-//                                boolean hasNewFaces;
-//                                do {
-//                                    hasNewFaces = false;
-//
-////                                    if (intfFace.beginPt.zCoord < newFace.endPt.zCoord && intfFace.beginPt.zCoord > newFace.beginPt.zCoord) {
-////                                        newFaces.add(new CubeFace(newFace.facing, newFace.beginPt, Vec3.createVectorHelper(newFace.endPt.xCoord, newFace.endPt.yCoord, intfFace.beginPt.zCoord)));
-////                                        newFace = new CubeFace(newFace.facing, Vec3.createVectorHelper(newFace.beginPt.xCoord, newFace.beginPt.yCoord, intfFace.beginPt.zCoord), newFace.endPt);
-////                                        hasNewFaces = true;
-////                                    }
-////                                    if (intfFace.beginPt.zCoord > newFace.beginPt.zCoord && intfFace.beginPt.zCoord < newFace.endPt.zCoord) {
-////                                        newFaces.add(new CubeFace(newFace.facing, newFace.beginPt, Vec3.createVectorHelper(newFace.beginPt.xCoord, newFace.beginPt.yCoord, intfFace.beginPt.zCoord)));
-////                                        newFace = new CubeFace(newFace.facing, Vec3.createVectorHelper(newFace.beginPt.xCoord, intfFace.beginPt.yCoord, newFace.beginPt.zCoord), newFace.endPt);
-////                                        hasNewFaces = true;
-////                                    }
-////                                    if( newFace.endPt.zCoord < intfFace.beginPt.zCoord && newFace.endPt.zCoord < intfFace.endPt.zCoord ) {
-////                                        newFaces.add(newFace);
-////                                    }
-////                                    if( newFace.beginPt.zCoord > intfFace.beginPt.zCoord && newFace.beginPt.zCoord > intfFace.endPt.zCoord ) {
-////                                        newFaces.add(newFace);
-////                                    }
-//
-//
-//                                    if (intfFace.endPt.zCoord < newFace.endPt.zCoord && intfFace.endPt.zCoord > newFace.beginPt.zCoord ) {
-//                                        newFaces.add(new CubeFace(newFace.facing, Vec3.createVectorHelper(newFace.beginPt.xCoord, newFace.beginPt.yCoord, intfFace.endPt.zCoord), newFace.endPt));
-//                                        newFace = new CubeFace(newFace.facing, newFace.beginPt, Vec3.createVectorHelper(newFace.endPt.xCoord, newFace.endPt.yCoord, intfFace.beginPt.zCoord));
-//                                        hasNewFaces = true;
-//                                    }
-//                                    if (intfFace.beginPt.zCoord > newFace.beginPt.zCoord && intfFace.beginPt.zCoord < newFace.endPt.zCoord) {
-//                                        newFaces.add(new CubeFace(newFace.facing, newFace.beginPt, Vec3.createVectorHelper(newFace.endPt.xCoord, newFace.endPt.yCoord, intfFace.beginPt.zCoord)));
-//                                        newFace = new CubeFace(newFace.facing, Vec3.createVectorHelper(newFace.beginPt.xCoord, newFace.beginPt.yCoord, intfFace.beginPt.zCoord), newFace.endPt);
-//                                        hasNewFaces = true;
-//                                    }
-//                                    if( newFace.endPt.zCoord > intfFace.beginPt.zCoord && newFace.endPt.zCoord > intfFace.endPt.zCoord ) {
-//                                        newFaces.add(newFace);
-//                                    }
-//
-//
-//
-//                                    if (intfFace.endPt.yCoord < newFace.endPt.yCoord && intfFace.endPt.yCoord > newFace.beginPt.yCoord ) {
-//                                        newFaces.add(new CubeFace(newFace.facing, Vec3.createVectorHelper(newFace.beginPt.xCoord, intfFace.endPt.yCoord, newFace.beginPt.zCoord), newFace.endPt));
-//                                        newFace = new CubeFace(newFace.facing, newFace.beginPt, Vec3.createVectorHelper(newFace.endPt.xCoord, intfFace.beginPt.yCoord, newFace.endPt.zCoord));
-//                                        hasNewFaces = true;
-//                                    }
-//                                    if (intfFace.beginPt.yCoord > newFace.beginPt.yCoord && intfFace.beginPt.yCoord < newFace.endPt.yCoord) {
-//                                        newFaces.add(new CubeFace(newFace.facing, newFace.beginPt, Vec3.createVectorHelper(newFace.endPt.xCoord, intfFace.beginPt.yCoord, newFace.endPt.zCoord)));
-//                                        newFace = new CubeFace(newFace.facing, Vec3.createVectorHelper(newFace.beginPt.xCoord, intfFace.beginPt.yCoord, newFace.beginPt.zCoord), newFace.endPt);
-//                                        hasNewFaces = true;
-//                                    }
-//                                    if( newFace.beginPt.zCoord < intfFace.beginPt.zCoord && newFace.beginPt.zCoord < intfFace.endPt.zCoord ) {
-////                                        newFaces.add(new CubeFace(newFace.facing, newFace.beginPt, Vec3.createVectorHelper(newFace.endPt.xCoord, newFace.endPt.yCoord, intfFace.beginPt.zCoord)));
-//                                        newFaces.add(newFace);
-//                                    }
-//                                    if( newFace.endPt.yCoord < intfFace.beginPt.yCoord && newFace.endPt.yCoord < intfFace.endPt.yCoord ) {
-//                                        newFaces.add(newFace);
-//                                    }
-//                                    if( newFace.beginPt.yCoord > intfFace.beginPt.yCoord && newFace.beginPt.yCoord > intfFace.endPt.yCoord ) {
-//                                        newFaces.add(newFace);
-//                                    }
-//                                } while( hasNewFaces );
-                            }
+                        for( CubeFace intfFace : intfFaceEntry.getValue() ) {
+                            Collections.addAll(newFaces, intersectFacePart(myFaceEntry.getValue(), intfFace, interfered));
                         }
-//
+
                         if( newFaces.size() > 0 ) {
                             newFaceMap.put(myFaceEntry.getKey(), newFaces.toArray(new CubeFace[newFaces.size()]));
                         } else {
-                            newFaceMap.put(myFaceEntry.getKey(), myFaceEntry.getValue());
+//                            newFaceMap.put(myFaceEntry.getKey(), myFaceEntry.getValue());
                         }
                     }
                 }
             }
-//
+
             this.faces = newFaceMap;
+        }
+
+        private CubeFace[] intersectFacePart(CubeFace[] faces, CubeFace intfFace, Cube interfered) {
+            List<CubeFace> newFaces = new ArrayList<>();
+            for( CubeFace myFace : faces ) {
+                boolean intersectXPos = this.center.xCoord + radius > interfered.center.xCoord - radius && this.center.xCoord + radius < interfered.center.xCoord + radius;
+                boolean intersectYPos = this.center.yCoord + radius > interfered.center.yCoord - radius && this.center.yCoord + radius < interfered.center.yCoord + radius;
+                boolean intersectZPos = this.center.zCoord + radius > interfered.center.zCoord - radius && this.center.zCoord + radius < interfered.center.zCoord + radius;
+
+                boolean intersectXNeg = this.center.xCoord - radius <= interfered.center.xCoord + radius && this.center.xCoord - radius >= interfered.center.xCoord - radius;
+                boolean intersectYNeg = this.center.yCoord - radius < interfered.center.yCoord + radius && this.center.yCoord - radius > interfered.center.yCoord - radius;
+                boolean intersectZNeg = this.center.zCoord - radius < interfered.center.zCoord + radius && this.center.zCoord - radius > interfered.center.zCoord - radius;
+
+                if( myFace.facing == ForgeDirection.NORTH /**&& !intersectXPos**/ ) {
+                    continue;
+                } else if( myFace.facing == ForgeDirection.SOUTH && !intersectXNeg ) {
+                    continue;
+                } else if( myFace.facing == ForgeDirection.EAST/* && !intersectZPos*/ ) {
+                    continue;
+                } else if( myFace.facing == ForgeDirection.WEST/* && !intersectZNeg*/ ) {
+                    continue;
+                } else if( myFace.facing == ForgeDirection.UP/* && !intersectYPos*/ ) {
+                    continue;
+                } else if( myFace.facing == ForgeDirection.DOWN/* && !intersectYNeg*/ ) {
+                    continue;
+                }
+
+                CubeFace[] newFacesArr = myFace.intersect(intfFace);
+
+                if( newFacesArr != null ) {
+//                Collections.addAll(newFaces, newFacesArr);
+                    Collections.addAll(newFaces, intersectFacePart(newFacesArr, intfFace, interfered));
+                } else {
+                    newFaces.add(myFace);
+                }
+            }
+
+            return newFaces.toArray(new CubeFace[newFaces.size()]);
         }
     }
 }
