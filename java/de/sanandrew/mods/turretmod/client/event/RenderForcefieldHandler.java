@@ -326,10 +326,11 @@ public class RenderForcefieldHandler
 //            CubeFace newFace;
 //
             List<CubeFace> newFaces = new ArrayList<>();
+            List<CubeFace> newFaces2 = new ArrayList<>();
             Map<ForgeDirection, CubeFace[]> newFaceMap = new EnumMap<>(ForgeDirection.class);
 
-            for( Map.Entry<ForgeDirection, CubeFace[]> myFaceEntry : faces.entrySet() ) {
-                for( Map.Entry<ForgeDirection, CubeFace[]> intfFaceEntry : interfered.faces.entrySet() ) {
+            for( Map.Entry<ForgeDirection, CubeFace[]> intfFaceEntry : interfered.faces.entrySet() ) {
+                for( Map.Entry<ForgeDirection, CubeFace[]> myFaceEntry : this.faces.entrySet() ) {
                     if( myFaceEntry.getKey() == intfFaceEntry.getKey() ) {
                         newFaces.clear();
                         for( CubeFace intfFace : intfFaceEntry.getValue() ) {
@@ -339,13 +340,13 @@ public class RenderForcefieldHandler
                         if( newFaces.size() > 0 ) {
                             newFaceMap.put(myFaceEntry.getKey(), newFaces.toArray(new CubeFace[newFaces.size()]));
                         } else {
-//                            newFaceMap.put(myFaceEntry.getKey(), myFaceEntry.getValue());
+                            newFaceMap.put(myFaceEntry.getKey(), myFaceEntry.getValue());
                         }
                     }
                 }
-            }
 
-            this.faces = newFaceMap;
+                this.faces = newFaceMap;
+            }
         }
 
         private CubeFace[] intersectFacePart(CubeFace[] faces, CubeFace intfFace, Cube interfered) {
@@ -376,8 +377,8 @@ public class RenderForcefieldHandler
                 CubeFace[] newFacesArr = myFace.intersect(intfFace);
 
                 if( newFacesArr != null ) {
-//                Collections.addAll(newFaces, newFacesArr);
-                    Collections.addAll(newFaces, intersectFacePart(newFacesArr, intfFace, interfered));
+                    Collections.addAll(newFaces, newFacesArr);
+//                    Collections.addAll(newFaces, intersectFacePart(newFacesArr, intfFace, interfered));
                 } else {
                     newFaces.add(myFace);
                 }
