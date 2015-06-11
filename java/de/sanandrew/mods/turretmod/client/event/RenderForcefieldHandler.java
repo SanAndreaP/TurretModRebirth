@@ -46,35 +46,35 @@ public class RenderForcefieldHandler
                                              ));
 
         EntityLivingBase renderEntity = Minecraft.getMinecraft().renderViewEntity;
-        double renderX = renderEntity.lastTickPosX + (renderEntity.posX - renderEntity.lastTickPosX) * (double)event.partialTicks;
-        double renderY = renderEntity.lastTickPosY + (renderEntity.posY - renderEntity.lastTickPosY) * (double)event.partialTicks;
-        double renderZ = renderEntity.lastTickPosZ + (renderEntity.posZ - renderEntity.lastTickPosZ) * (double)event.partialTicks;
+        double renderX = renderEntity.lastTickPosX + (renderEntity.posX - renderEntity.lastTickPosX) * event.partialTicks;
+        double renderY = renderEntity.lastTickPosY + (renderEntity.posY - renderEntity.lastTickPosY) * event.partialTicks;
+        double renderZ = renderEntity.lastTickPosZ + (renderEntity.posZ - renderEntity.lastTickPosZ) * event.partialTicks;
 
         ArrayList<Cube> cubes = new ArrayList<>();
 
         for( Entity e : renderedTurrets ) {
-            double entityX = e.lastTickPosX + (e.posX - e.lastTickPosX) * (double)event.partialTicks;
-            double entityY = e.lastTickPosY + (e.posY - e.lastTickPosY) * (double)event.partialTicks;
-            double entityZ = e.lastTickPosZ + (e.posZ - e.lastTickPosZ) * (double)event.partialTicks;
+            double entityX = e.lastTickPosX + (e.posX - e.lastTickPosX) * event.partialTicks;
+            double entityY = e.lastTickPosY + (e.posY - e.lastTickPosY) * event.partialTicks;
+            double entityZ = e.lastTickPosZ + (e.posZ - e.lastTickPosZ) * event.partialTicks;
 
             Cube cube = new Cube(Vec3.createVectorHelper(entityX - renderX, entityY - renderY, entityZ - renderZ), 4.0D);
             for( Cube intfCube : cubes ) {
-                cube.interfere(intfCube);
-                intfCube.interfere(cube);
+                cube.interfere(intfCube, false);
+                intfCube.interfere(cube, true);
             }
             cubes.add(cube);
         }
 
         Tessellator tess = Tessellator.instance;
         tess.startDrawingQuads();
-        tess.setColorRGBA_F(1.0F, 1.0F, 1.0F, 0.5F);
+        tess.setColorRGBA_F(0.5F, 0.5F, 0.5F, 0.2F);
 
         for( Cube cube : cubes ) {
             cube.draw(tess);
         }
 
         GL11.glEnable(GL11.GL_BLEND);
-        OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+        OpenGlHelper.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_CULL_FACE);
 
@@ -274,7 +274,7 @@ public class RenderForcefieldHandler
             }
         }
 
-        public void interfere(Cube interfered) {
+        public void interfere(Cube interfered, boolean isRecessive) {
             Iterator<Entry<ForgeDirection, CubeFace[]>> faceIterator = this.faces.entrySet().iterator();
             Map<ForgeDirection, CubeFace[]> newFaceMap = new EnumMap<>(ForgeDirection.class);
 
@@ -285,22 +285,28 @@ public class RenderForcefieldHandler
 
                 switch( myFace.getKey() ) {
                     case NORTH:
-                        intersects = this.center.xCoord + radius - 0.001D >= interfered.center.xCoord - radius && this.center.xCoord + radius - 0.001D <= interfered.center.xCoord + radius;
+                        intersects = this.center.xCoord + radius + (isRecessive ? 0.001D : 0) >= interfered.center.xCoord - radius
+                                && this.center.xCoord + radius + (isRecessive ? 0.001D : 0) <= interfered.center.xCoord + radius;
                         break;
                     case SOUTH:
-                        intersects = this.center.xCoord - radius + 0.001D <= interfered.center.xCoord + radius && this.center.xCoord - radius + 0.001D >= interfered.center.xCoord - radius;
+                        intersects = this.center.xCoord - radius - (isRecessive ? 0.001D : 0) <= interfered.center.xCoord + radius
+                                && this.center.xCoord - radius - (isRecessive ? 0.001D : 0) >= interfered.center.xCoord - radius;
                         break;
                     case EAST:
-                        intersects = this.center.zCoord + radius - 0.001D >= interfered.center.zCoord - radius && this.center.zCoord + radius - 0.001D <= interfered.center.zCoord + radius;
+                        intersects = this.center.zCoord + radius + (isRecessive ? 0.001D : 0) >= interfered.center.zCoord - radius
+                                && this.center.zCoord + radius + (isRecessive ? 0.001D : 0) <= interfered.center.zCoord + radius;
                         break;
                     case WEST:
-                        intersects = this.center.zCoord - radius + 0.001D <= interfered.center.zCoord + radius && this.center.zCoord - radius + 0.001D >= interfered.center.zCoord - radius;
+                        intersects = this.center.zCoord - radius - (isRecessive ? 0.001D : 0) <= interfered.center.zCoord + radius
+                                && this.center.zCoord - radius - (isRecessive ? 0.001D : 0) >= interfered.center.zCoord - radius;
                         break;
                     case UP:
-                        intersects = this.center.yCoord + radius - 0.001D >= interfered.center.yCoord - radius && this.center.yCoord + radius - 0.001D <= interfered.center.yCoord + radius;
+                        intersects = this.center.yCoord + radius + (isRecessive ? 0.001D : 0) >= interfered.center.yCoord - radius
+                                     && this.center.yCoord + radius + (isRecessive ? 0.001D : 0) <= interfered.center.yCoord + radius;
                         break;
                     case DOWN:
-                        intersects = this.center.yCoord - radius + 0.001D <= interfered.center.yCoord + radius && this.center.yCoord - radius + 0.001D >= interfered.center.yCoord - radius;
+                        intersects = this.center.yCoord - radius - (isRecessive ? 0.001D : 0) <= interfered.center.yCoord + radius
+                                     && this.center.yCoord - radius - (isRecessive ? 0.001D : 0) >= interfered.center.yCoord - radius;
                         break;
                     default:
                         continue;
@@ -309,32 +315,26 @@ public class RenderForcefieldHandler
                 Collections.addAll(newFaces, myFace.getValue());
 
                 if( newFaces.size() > 0 && intersects ) {
-                    List<CubeFace> intfFaces = new ArrayList<>();
-                    Collections.addAll(intfFaces, interfered.faces.get(myFace.getKey()));
-                    Collections.addAll(intfFaces, interfered.faces.get(myFace.getKey().getOpposite()));
 
-                    if( intfFaces.size() > 0 ) {
-                        CubeFace myFacePart;
-                        CubeFace[] newFaceParts;
-                        for( CubeFace intfFace : intfFaces ) {
-                            for( int i = 0, j = 0; i < newFaces.size(); i++, j++ ) {
-                                myFacePart = newFaces.get(i);
-                                newFaceParts = myFacePart.intersect(intfFace);
+                    CubeFace myFacePart;
+                    CubeFace[] newFaceParts;
+                        CubeFace intfFace = new CubeFace(myFace.getKey().getOpposite(), interfered.center, interfered.radius);
+                        for( int i = 0, j = 0; i < newFaces.size(); i++, j++ ) {
+                            myFacePart = newFaces.get(i);
+                            newFaceParts = myFacePart.intersect(intfFace);
 
-                                if( newFaceParts != null ) {
-                                    newFaces.remove(i);
-                                    Collections.addAll(newFaces, newFaceParts);
-                                    i--;
-                                }
+                            if( newFaceParts != null ) {
+                                newFaces.remove(i);
+                                Collections.addAll(newFaces, newFaceParts);
+                                i--;
+                            }
 
-                                if( j >= 10000 ) {
-                                    TurretMod.MOD_LOG.log(Level.ERROR, "Too many face parts for shield! Max. of 10000 is exceeded! Removing Face!");
-                                    newFaces.clear();
-                                    break;
-                                }
+                            if( j >= 10000 ) {
+                                TurretMod.MOD_LOG.log(Level.ERROR, "Too many face parts for shield! Max. of 10000 is exceeded! Removing Face!");
+                                newFaces.clear();
+                                break;
                             }
                         }
-                    }
                 }
 
                 newFaceMap.put(myFace.getKey(), newFaces.toArray(new CubeFace[newFaces.size()]));
