@@ -16,7 +16,7 @@ import java.util.Random;
 
 public class RenderTurretForcefield extends RenderTurret_Base {
 	private static long rndSeed = 0L;
-    public static final ResourceLocation TEX_SHIELD		= new ResourceLocation("turretmod3:textures/entities/shield.png");
+    public static final ResourceLocation TEX_SHIELD		= new ResourceLocation("turretmod3:textures/entities/shield_1.png");
 
 	public RenderTurretForcefield(ModelBase par1ModelBase) {
 		super(par1ModelBase);

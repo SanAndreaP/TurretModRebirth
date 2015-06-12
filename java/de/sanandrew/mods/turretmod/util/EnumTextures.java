@@ -22,19 +22,24 @@ public enum EnumTextures
     GUI_BUTTONS("textures/gui/buttons.png"),
     GUI_TCU_TARGETS("textures/gui/tcu/page_targets.png"),
     GUI_TCU_UPGRADES("textures/gui/tcu/page_upgrades.png"),
-    GUI_TCU_INFO("textures/gui/tcu/page_info.png");
+    GUI_TCU_INFO("textures/gui/tcu/page_info.png"),
 
-    private final ResourceLocation tex;
+    TURRET_FORCEFIELD_P1("textures/entities/shield_1.png"),
+    TURRET_FORCEFIELD_P2("textures/entities/shield_2.png"),
+    TURRET_FORCEFIELD_P3("textures/entities/shield_3.png"),
+    TURRET_FORCEFIELD_P4("textures/entities/shield_4.png");
+
+    private final ResourceLocation location;
 
     EnumTextures(String texture) {
-        this.tex = new ResourceLocation(TurretMod.MOD_ID, texture);
+        this.location = new ResourceLocation(TurretMod.MOD_ID, texture);
     }
 
     public ResourceLocation getResource() {
-        return this.tex;
+        return this.location;
     }
 
     public String getTexture() {
-        return this.tex.toString();
+        return this.location.toString();
     }
 }

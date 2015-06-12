@@ -14,6 +14,7 @@ import com.google.common.collect.Lists;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
+import de.sanandrew.mods.turretmod.util.EnumTextures;
 import de.sanandrew.mods.turretmod.util.TurretMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -52,7 +53,13 @@ public class RenderForcefieldHandler
 
         ArrayList<Cube> cubes = new ArrayList<>();
 
+        int ticksExisted = -1;
+
         for( Entity e : renderedTurrets ) {
+            if( ticksExisted < 0 ) {
+                ticksExisted = e.ticksExisted;
+            }
+
             double entityX = e.lastTickPosX + (e.posX - e.lastTickPosX) * event.partialTicks;
             double entityY = e.lastTickPosY + (e.posY - e.lastTickPosY) * event.partialTicks;
             double entityZ = e.lastTickPosZ + (e.posZ - e.lastTickPosZ) * event.partialTicks;
@@ -66,30 +73,70 @@ public class RenderForcefieldHandler
         }
 
         Tessellator tess = Tessellator.instance;
-        tess.startDrawingQuads();
-        tess.setColorRGBA_F(0.5F, 0.5F, 0.5F, 0.2F);
+        for( int pass = 1; pass <= 5; pass++ ) {
+            tess.startDrawingQuads();
+            tess.setColorRGBA_F(0.2F, 0.8F, 1.0F, 0.75F);
 
-        for( Cube cube : cubes ) {
-            cube.draw(tess);
+            for( Cube cube : cubes ) {
+                cube.draw(tess);
+            }
+
+            GL11.glEnable(GL11.GL_BLEND);
+            OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+            GL11.glDepthMask(false);
+            GL11.glDisable(GL11.GL_CULL_FACE);
+
+            float transformTexAmount = ticksExisted + event.partialTicks;
+            float texTranslateX = 0.0F;
+            float texTranslateY = 0.0F;
+
+            switch( pass ) {
+                case 1:
+                    texTranslateX = transformTexAmount * -0.011F;
+                    texTranslateY = transformTexAmount * 0.011F;
+                    Minecraft.getMinecraft().renderEngine.bindTexture(EnumTextures.TURRET_FORCEFIELD_P1.getResource());
+                    break;
+                case 2:
+                    texTranslateX = transformTexAmount * 0.009F;
+                    texTranslateY = transformTexAmount * 0.009F;
+                    Minecraft.getMinecraft().renderEngine.bindTexture(EnumTextures.TURRET_FORCEFIELD_P2.getResource());
+                    break;
+                case 3:
+                    texTranslateX = transformTexAmount * -0.007F;
+                    texTranslateY = transformTexAmount * 0.007F;
+                    Minecraft.getMinecraft().renderEngine.bindTexture(EnumTextures.TURRET_FORCEFIELD_P1.getResource());
+                    break;
+                case 4:
+                    texTranslateX = transformTexAmount * 0.005F;
+                    texTranslateY = transformTexAmount * 0.005F;
+                    Minecraft.getMinecraft().renderEngine.bindTexture(EnumTextures.TURRET_FORCEFIELD_P2.getResource());
+                    break;
+                case 5:
+                    texTranslateX = transformTexAmount * 0.00F;
+                    texTranslateY = transformTexAmount * 0.00F;
+                    Minecraft.getMinecraft().renderEngine.bindTexture(EnumTextures.TURRET_FORCEFIELD_P3.getResource());
+                    break;
+            }
+
+            GL11.glMatrixMode(GL11.GL_TEXTURE);
+            GL11.glLoadIdentity();
+            GL11.glTranslatef(texTranslateX, texTranslateY, 0.0F);
+            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+
+            tess.draw();
+
+            GL11.glMatrixMode(GL11.GL_TEXTURE);
+            GL11.glLoadIdentity();
+            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+
+            GL11.glDisable(GL11.GL_BLEND);
+            GL11.glDepthMask(true);
+            GL11.glEnable(GL11.GL_CULL_FACE);
         }
-
-        GL11.glEnable(GL11.GL_BLEND);
-        OpenGlHelper.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_CULL_FACE);
-
-//        GL11.glDepthFunc(GL11.GL_NOTEQUAL);
-
-        tess.draw();
-
-//        GL11.glDepthFunc(GL11.GL_LEQUAL);
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_BLEND);
-//        GL11.glDepthMask(true);
-        GL11.glEnable(GL11.GL_CULL_FACE);
     }
 
-    private static class CubeFace {
+    private static class CubeFace
+    {
         public final ForgeDirection facing;
         public final Vec3 beginPt;
         public final Vec3 endPt;
@@ -203,7 +250,8 @@ public class RenderForcefieldHandler
         }
     }
 
-    private static class RectCoords {
+    private static class RectCoords
+    {
         public final double beginX;
         public final double beginY;
         public final double endX;
@@ -240,35 +288,35 @@ public class RenderForcefieldHandler
             for( CubeFace[] faceList : faces.values() ) {
                 for( CubeFace facePart : faceList ) {
                     if( facePart.facing == ForgeDirection.NORTH ) {
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord);
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.endPt.zCoord);
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord, 1.0D, 0.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord, 0.0D, 0.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.endPt.zCoord, 0.0D, 1.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord, 1.0D, 1.0D);
                     } else if( facePart.facing == ForgeDirection.EAST ) {
-                        tess.addVertex(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.endPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord);
+                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord, 1.0D, 0.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord, 0.0D, 0.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord, 0.0D, 1.0D);
+                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord, 1.0D, 1.0D);
                     } else if( facePart.facing == ForgeDirection.SOUTH ) {
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord);
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.endPt.zCoord);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord, 1.0D, 0.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord, 0.0D, 0.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord, 0.0D, 1.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.endPt.zCoord, 1.0D, 1.0D);
                     } else if( facePart.facing == ForgeDirection.WEST ) {
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.endPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord, 1.0D, 0.0D);
+                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord, 0.0D, 0.0D);
+                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord, 0.0D, 1.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord, 1.0D, 1.0D);
                     } else if( facePart.facing == ForgeDirection.UP ) {
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord);
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord, 1.0D, 1.0D);
+                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord, 1.0D, 0.0D);
+                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord, 0.0D, 0.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord, 0.0D, 1.0D);
                     } else if( facePart.facing == ForgeDirection.DOWN ) {
-                        tess.addVertex(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord);
-                        tess.addVertex(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord);
-                        tess.addVertex(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord);
+                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord, 1.0D, 1.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord, 1.0D, 0.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord, 0.0D, 0.0D);
+                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord, 0.0D, 1.0D);
                     }
                 }
             }
