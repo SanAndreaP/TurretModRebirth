@@ -288,35 +288,35 @@ public class RenderForcefieldHandler
             for( CubeFace[] faceList : faces.values() ) {
                 for( CubeFace facePart : faceList ) {
                     if( facePart.facing == ForgeDirection.NORTH ) {
-                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord, 1.0D, 0.0D);
-                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord, 0.0D, 0.0D);
-                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.endPt.zCoord, 0.0D, 1.0D);
-                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord, 1.0D, 1.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord - 0.0005D, facePart.beginPt.yCoord, facePart.beginPt.zCoord, 1.0D, 0.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord - 0.0005D, facePart.beginPt.yCoord, facePart.endPt.zCoord, 0.0D, 0.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord - 0.0005D, facePart.endPt.yCoord, facePart.endPt.zCoord, 0.0D, 1.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord - 0.0005D, facePart.endPt.yCoord, facePart.beginPt.zCoord, 1.0D, 1.0D);
                     } else if( facePart.facing == ForgeDirection.EAST ) {
-                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord, 1.0D, 0.0D);
-                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord, 0.0D, 0.0D);
-                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord, 0.0D, 1.0D);
-                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord, 1.0D, 1.0D);
+                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord - 0.0005D, 1.0D, 0.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord - 0.0005D, 0.0D, 0.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord - 0.0005D, 0.0D, 1.0D);
+                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord - 0.0005D, 1.0D, 1.0D);
                     } else if( facePart.facing == ForgeDirection.SOUTH ) {
-                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord, 1.0D, 0.0D);
-                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord, 0.0D, 0.0D);
-                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord, 0.0D, 1.0D);
-                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.endPt.zCoord, 1.0D, 1.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord + 0.0005D, facePart.beginPt.yCoord, facePart.endPt.zCoord, 1.0D, 0.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord + 0.0005D, facePart.beginPt.yCoord, facePart.beginPt.zCoord, 0.0D, 0.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord + 0.0005D, facePart.endPt.yCoord, facePart.beginPt.zCoord, 0.0D, 1.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord + 0.0005D, facePart.endPt.yCoord, facePart.endPt.zCoord, 1.0D, 1.0D);
                     } else if( facePart.facing == ForgeDirection.WEST ) {
-                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord, 1.0D, 0.0D);
-                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord, 0.0D, 0.0D);
-                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord, 0.0D, 1.0D);
-                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord, 1.0D, 1.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord + 0.0005D, 1.0D, 0.0D);
+                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord + 0.0005D, 0.0D, 0.0D);
+                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord + 0.0005D, 0.0D, 1.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord + 0.0005D, 1.0D, 1.0D);
                     } else if( facePart.facing == ForgeDirection.UP ) {
-                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord, 1.0D, 1.0D);
-                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord, 1.0D, 0.0D);
-                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord, 0.0D, 0.0D);
-                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord, 0.0D, 1.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord - 0.0005D, facePart.beginPt.zCoord, 1.0D, 1.0D);
+                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord - 0.0005D, facePart.beginPt.zCoord, 1.0D, 0.0D);
+                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord - 0.0005D, facePart.endPt.zCoord, 0.0D, 0.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord - 0.0005D, facePart.endPt.zCoord, 0.0D, 1.0D);
                     } else if( facePart.facing == ForgeDirection.DOWN ) {
-                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord, 1.0D, 1.0D);
-                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord, 1.0D, 0.0D);
-                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord, 0.0D, 0.0D);
-                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.endPt.zCoord, 0.0D, 1.0D);
+                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord + 0.0005D, facePart.beginPt.zCoord, 1.0D, 1.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord + 0.0005D, facePart.beginPt.zCoord, 1.0D, 0.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord + 0.0005D, facePart.endPt.zCoord, 0.0D, 0.0D);
+                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord + 0.0005D, facePart.endPt.zCoord, 0.0D, 1.0D);
                     }
                 }
             }
