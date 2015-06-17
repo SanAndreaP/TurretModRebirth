@@ -13,7 +13,8 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
+import de.sanandrew.core.manpack.util.helpers.SAPUtils.RGBAValues;
+import de.sanandrew.mods.turretmod.api.ShieldedTurret;
 import de.sanandrew.mods.turretmod.util.EnumTextures;
 import de.sanandrew.mods.turretmod.util.TurretMod;
 import net.minecraft.client.Minecraft;
@@ -22,6 +23,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -41,7 +43,7 @@ public class RenderForcefieldHandler
                                                               {
                                                                   @Override
                                                                   public boolean apply(Entity input) {
-                                                                      return input instanceof EntityTurretBase && input.isInRangeToRender3d(playerSP.posX, playerSP.posY, playerSP.posZ);
+                                                                      return input instanceof ShieldedTurret && input.isInRangeToRender3d(playerSP.posX, playerSP.posY, playerSP.posZ);
                                                                   }
                                                               }
                                              ));
@@ -56,6 +58,8 @@ public class RenderForcefieldHandler
         int ticksExisted = -1;
 
         for( Entity e : renderedTurrets ) {
+            ShieldedTurret shieldedEntity = (ShieldedTurret) e;
+
             if( ticksExisted < 0 ) {
                 ticksExisted = e.ticksExisted;
             }
@@ -64,7 +68,8 @@ public class RenderForcefieldHandler
             double entityY = e.lastTickPosY + (e.posY - e.lastTickPosY) * event.partialTicks;
             double entityZ = e.lastTickPosZ + (e.posZ - e.lastTickPosZ) * event.partialTicks;
 
-            Cube cube = new Cube(Vec3.createVectorHelper(entityX - renderX, entityY - renderY, entityZ - renderZ), 4.0D);
+            Cube cube = new Cube(Vec3.createVectorHelper(entityX - renderX, entityY - renderY, entityZ - renderZ), shieldedEntity.getShieldBoundingBox(),
+                                 SAPUtils.getRgbaFromColorInt(shieldedEntity.getShieldColor()));
             for( Cube intfCube : cubes ) {
                 cube.interfere(intfCube, false);
                 intfCube.interfere(cube, true);
@@ -75,7 +80,7 @@ public class RenderForcefieldHandler
         Tessellator tess = Tessellator.instance;
         for( int pass = 1; pass <= 5; pass++ ) {
             tess.startDrawingQuads();
-            tess.setColorRGBA_F(0.2F, 0.8F, 1.0F, 0.75F);
+//            tess.setColorRGBA_F(0.2F, 0.8F, 1.0F, 0.75F);
 
             for( Cube cube : cubes ) {
                 cube.draw(tess);
@@ -140,39 +145,42 @@ public class RenderForcefieldHandler
         public final ForgeDirection facing;
         public final Vec3 beginPt;
         public final Vec3 endPt;
+        public final RGBAValues color;
 
-        public CubeFace(ForgeDirection direction, Vec3 begin, Vec3 end) {
+        public CubeFace(ForgeDirection direction, Vec3 begin, Vec3 end, RGBAValues faceColor) {
             this.facing = direction;
             this.beginPt = begin;
             this.endPt = end;
+            this.color = faceColor;
         }
 
-        public CubeFace(ForgeDirection direction, Vec3 center, double radius) {
+        public CubeFace(ForgeDirection direction, Vec3 center, AxisAlignedBB boxBB, RGBAValues faceColor) {
             this.facing = direction;
+            this.color = faceColor;
             switch( direction ) {
                 case NORTH:
-                    this.beginPt = Vec3.createVectorHelper(center.xCoord + radius, center.yCoord + radius, center.zCoord - radius);
-                    this.endPt = Vec3.createVectorHelper(center.xCoord + radius, center.yCoord - radius, center.zCoord + radius);
+                    this.beginPt = Vec3.createVectorHelper(center.xCoord + boxBB.maxX, center.yCoord + boxBB.maxY, center.zCoord + boxBB.minZ);
+                    this.endPt = Vec3.createVectorHelper(center.xCoord + boxBB.maxX, center.yCoord + boxBB.minY, center.zCoord + boxBB.maxZ);
                     break;
                 case SOUTH:
-                    this.beginPt = Vec3.createVectorHelper(center.xCoord - radius, center.yCoord + radius, center.zCoord - radius);
-                    this.endPt = Vec3.createVectorHelper(center.xCoord - radius, center.yCoord - radius, center.zCoord + radius);
+                    this.beginPt = Vec3.createVectorHelper(center.xCoord + boxBB.minX, center.yCoord + boxBB.maxY, center.zCoord + boxBB.minZ);
+                    this.endPt = Vec3.createVectorHelper(center.xCoord + boxBB.minX, center.yCoord + boxBB.minY, center.zCoord + boxBB.maxZ);
                     break;
                 case EAST:
-                    this.beginPt = Vec3.createVectorHelper(center.xCoord - radius, center.yCoord + radius, center.zCoord + radius);
-                    this.endPt = Vec3.createVectorHelper(center.xCoord + radius, center.yCoord - radius, center.zCoord + radius);
+                    this.beginPt = Vec3.createVectorHelper(center.xCoord + boxBB.minX, center.yCoord + boxBB.maxY, center.zCoord + boxBB.maxZ);
+                    this.endPt = Vec3.createVectorHelper(center.xCoord + boxBB.maxX, center.yCoord + boxBB.minY, center.zCoord + boxBB.maxZ);
                     break;
                 case WEST:
-                    this.beginPt = Vec3.createVectorHelper(center.xCoord - radius, center.yCoord + radius, center.zCoord - radius);
-                    this.endPt = Vec3.createVectorHelper(center.xCoord + radius, center.yCoord - radius, center.zCoord - radius);
+                    this.beginPt = Vec3.createVectorHelper(center.xCoord + boxBB.minX, center.yCoord + boxBB.maxY, center.zCoord + boxBB.minZ);
+                    this.endPt = Vec3.createVectorHelper(center.xCoord + boxBB.maxX, center.yCoord + boxBB.minY, center.zCoord + boxBB.minZ);
                     break;
                 case UP:
-                    this.beginPt = Vec3.createVectorHelper(center.xCoord - radius, center.yCoord + radius, center.zCoord + radius);
-                    this.endPt = Vec3.createVectorHelper(center.xCoord + radius, center.yCoord + radius, center.zCoord - radius);
+                    this.beginPt = Vec3.createVectorHelper(center.xCoord + boxBB.minX, center.yCoord + boxBB.maxY, center.zCoord + boxBB.maxZ);
+                    this.endPt = Vec3.createVectorHelper(center.xCoord + boxBB.maxX, center.yCoord + boxBB.maxY, center.zCoord + boxBB.minZ);
                     break;
                 case DOWN:
-                    this.beginPt = Vec3.createVectorHelper(center.xCoord - radius, center.yCoord - radius, center.zCoord + radius);
-                    this.endPt = Vec3.createVectorHelper(center.xCoord + radius, center.yCoord - radius, center.zCoord - radius);
+                    this.beginPt = Vec3.createVectorHelper(center.xCoord + boxBB.minX, center.yCoord + boxBB.minY, center.zCoord + boxBB.maxZ);
+                    this.endPt = Vec3.createVectorHelper(center.xCoord + boxBB.maxX, center.yCoord + boxBB.minY, center.zCoord + boxBB.minZ);
                     break;
                 default:
                     throw new RuntimeException(String.format("Invalid direction for Forcefield Face: %s", direction.toString()));
@@ -235,15 +243,15 @@ public class RenderForcefieldHandler
                 case NORTH:
                 case SOUTH:
                     return new CubeFace(this.facing, Vec3.createVectorHelper(this.beginPt.xCoord, newRect.beginY, newRect.beginX),
-                                        Vec3.createVectorHelper(this.endPt.xCoord, newRect.endY, newRect.endX));
+                                        Vec3.createVectorHelper(this.endPt.xCoord, newRect.endY, newRect.endX), this.color);
                 case EAST:
                 case WEST:
                     return new CubeFace(this.facing, Vec3.createVectorHelper(newRect.beginX, newRect.beginY, this.beginPt.zCoord),
-                                        Vec3.createVectorHelper(newRect.endX, newRect.endY, this.endPt.zCoord));
+                                        Vec3.createVectorHelper(newRect.endX, newRect.endY, this.endPt.zCoord), this.color);
                 case UP:
                 case DOWN:
                     return new CubeFace(this.facing, Vec3.createVectorHelper(newRect.beginX, this.beginPt.yCoord, newRect.beginY),
-                                        Vec3.createVectorHelper(newRect.endX, this.endPt.yCoord, newRect.endY));
+                                        Vec3.createVectorHelper(newRect.endX, this.endPt.yCoord, newRect.endY), this.color);
                 default:
                     return null;
             }
@@ -273,25 +281,30 @@ public class RenderForcefieldHandler
     {
         public Map<ForgeDirection, CubeFace[]> faces = new EnumMap<>(ForgeDirection.class);
         private final Vec3 center;
-        private final double radius;
+        private final AxisAlignedBB boxAABB;
+        private final RGBAValues boxColor;
 
-        public Cube(Vec3 mpCenter, double mpRadius) {
+        public Cube(Vec3 mpCenter, AxisAlignedBB cubeBox, RGBAValues color) {
             this.center = mpCenter;
-            this.radius = mpRadius;
+            this.boxAABB = cubeBox;
+            this.boxColor = color;
 
             for( ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS ) {
-                faces.put(direction, new CubeFace[]{new CubeFace(direction, mpCenter, mpRadius)});
+                this.faces.put(direction, new CubeFace[]{new CubeFace(direction, mpCenter, cubeBox, color)});
             }
         }
 
         public void draw(Tessellator tess) {
             for( CubeFace[] faceList : faces.values() ) {
                 for( CubeFace facePart : faceList ) {
+                    tess.setColorRGBA(facePart.color.getRed(), facePart.color.getGreen(), facePart.color.getBlue(), facePart.color.getAlpha());
                     if( facePart.facing == ForgeDirection.NORTH ) {
-                        tess.addVertexWithUV(facePart.beginPt.xCoord - 0.0005D, facePart.beginPt.yCoord, facePart.beginPt.zCoord, 1.0D, 0.0D);
+                        double maxV = (facePart.beginPt.yCoord - facePart.endPt.yCoord) / 8.0D;
+                        double maxU = (facePart.endPt.zCoord - facePart.beginPt.zCoord) / 8.0D;
+                        tess.addVertexWithUV(facePart.beginPt.xCoord - 0.0005D, facePart.beginPt.yCoord, facePart.beginPt.zCoord, maxU, 0.0D);
                         tess.addVertexWithUV(facePart.beginPt.xCoord - 0.0005D, facePart.beginPt.yCoord, facePart.endPt.zCoord, 0.0D, 0.0D);
-                        tess.addVertexWithUV(facePart.beginPt.xCoord - 0.0005D, facePart.endPt.yCoord, facePart.endPt.zCoord, 0.0D, 1.0D);
-                        tess.addVertexWithUV(facePart.beginPt.xCoord - 0.0005D, facePart.endPt.yCoord, facePart.beginPt.zCoord, 1.0D, 1.0D);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord - 0.0005D, facePart.endPt.yCoord, facePart.endPt.zCoord, 0.0D, maxV);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord - 0.0005D, facePart.endPt.yCoord, facePart.beginPt.zCoord, maxU, maxV);
                     } else if( facePart.facing == ForgeDirection.EAST ) {
                         tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord - 0.0005D, 1.0D, 0.0D);
                         tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord - 0.0005D, 0.0D, 0.0D);
@@ -313,10 +326,12 @@ public class RenderForcefieldHandler
                         tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord - 0.0005D, facePart.endPt.zCoord, 0.0D, 0.0D);
                         tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord - 0.0005D, facePart.endPt.zCoord, 0.0D, 1.0D);
                     } else if( facePart.facing == ForgeDirection.DOWN ) {
-                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord + 0.0005D, facePart.beginPt.zCoord, 1.0D, 1.0D);
-                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord + 0.0005D, facePart.beginPt.zCoord, 1.0D, 0.0D);
+                        double maxU = (facePart.endPt.zCoord - facePart.beginPt.zCoord) / 8.0D;
+                        double maxV = (facePart.endPt.xCoord - facePart.beginPt.xCoord) / 8.0D;
+                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord + 0.0005D, facePart.beginPt.zCoord, maxU, maxV);
+                        tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord + 0.0005D, facePart.beginPt.zCoord, maxU, 0.0D);
                         tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord + 0.0005D, facePart.endPt.zCoord, 0.0D, 0.0D);
-                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord + 0.0005D, facePart.endPt.zCoord, 0.0D, 1.0D);
+                        tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord + 0.0005D, facePart.endPt.zCoord, 0.0D, maxV);
                     }
                 }
             }
@@ -333,28 +348,28 @@ public class RenderForcefieldHandler
 
                 switch( myFace.getKey() ) {
                     case NORTH:
-                        intersects = this.center.xCoord + radius + (isRecessive ? 0.001D : 0) >= interfered.center.xCoord - radius
-                                && this.center.xCoord + radius + (isRecessive ? 0.001D : 0) <= interfered.center.xCoord + radius;
+                        intersects = this.center.xCoord + this.boxAABB.maxX + (isRecessive ? 0.001D : 0) >= interfered.center.xCoord + interfered.boxAABB.minX
+                                && this.center.xCoord + this.boxAABB.maxX + (isRecessive ? 0.001D : 0) <= interfered.center.xCoord + interfered.boxAABB.maxX;
                         break;
                     case SOUTH:
-                        intersects = this.center.xCoord - radius - (isRecessive ? 0.001D : 0) <= interfered.center.xCoord + radius
-                                && this.center.xCoord - radius - (isRecessive ? 0.001D : 0) >= interfered.center.xCoord - radius;
+                        intersects = this.center.xCoord + this.boxAABB.minX - (isRecessive ? 0.001D : 0) <= interfered.center.xCoord + interfered.boxAABB.maxX
+                                && this.center.xCoord + this.boxAABB.minX - (isRecessive ? 0.001D : 0) >= interfered.center.xCoord + interfered.boxAABB.minX;
                         break;
                     case EAST:
-                        intersects = this.center.zCoord + radius + (isRecessive ? 0.001D : 0) >= interfered.center.zCoord - radius
-                                && this.center.zCoord + radius + (isRecessive ? 0.001D : 0) <= interfered.center.zCoord + radius;
+                        intersects = this.center.zCoord + this.boxAABB.maxZ + (isRecessive ? 0.001D : 0) >= interfered.center.zCoord + interfered.boxAABB.minZ
+                                && this.center.zCoord + this.boxAABB.maxZ + (isRecessive ? 0.001D : 0) <= interfered.center.zCoord + interfered.boxAABB.maxZ;
                         break;
                     case WEST:
-                        intersects = this.center.zCoord - radius - (isRecessive ? 0.001D : 0) <= interfered.center.zCoord + radius
-                                && this.center.zCoord - radius - (isRecessive ? 0.001D : 0) >= interfered.center.zCoord - radius;
+                        intersects = this.center.zCoord + this.boxAABB.minZ - (isRecessive ? 0.001D : 0) <= interfered.center.zCoord + interfered.boxAABB.maxZ
+                                && this.center.zCoord + this.boxAABB.minZ - (isRecessive ? 0.001D : 0) >= interfered.center.zCoord + interfered.boxAABB.minZ;
                         break;
                     case UP:
-                        intersects = this.center.yCoord + radius + (isRecessive ? 0.001D : 0) >= interfered.center.yCoord - radius
-                                     && this.center.yCoord + radius + (isRecessive ? 0.001D : 0) <= interfered.center.yCoord + radius;
+                        intersects = this.center.yCoord + this.boxAABB.maxY + (isRecessive ? 0.001D : 0) >= interfered.center.yCoord + interfered.boxAABB.minY
+                                     && this.center.yCoord + this.boxAABB.maxY + (isRecessive ? 0.001D : 0) <= interfered.center.yCoord + interfered.boxAABB.maxY;
                         break;
                     case DOWN:
-                        intersects = this.center.yCoord - radius - (isRecessive ? 0.001D : 0) <= interfered.center.yCoord + radius
-                                     && this.center.yCoord - radius - (isRecessive ? 0.001D : 0) >= interfered.center.yCoord - radius;
+                        intersects = this.center.yCoord + this.boxAABB.minY - (isRecessive ? 0.001D : 0) <= interfered.center.yCoord + interfered.boxAABB.maxY
+                                     && this.center.yCoord + this.boxAABB.minY - (isRecessive ? 0.001D : 0) >= interfered.center.yCoord + interfered.boxAABB.minY;
                         break;
                     default:
                         continue;
@@ -366,7 +381,7 @@ public class RenderForcefieldHandler
 
                     CubeFace myFacePart;
                     CubeFace[] newFaceParts;
-                        CubeFace intfFace = new CubeFace(myFace.getKey().getOpposite(), interfered.center, interfered.radius);
+                        CubeFace intfFace = new CubeFace(myFace.getKey().getOpposite(), interfered.center, interfered.boxAABB, interfered.boxColor);
                         for( int i = 0, j = 0; i < newFaces.size(); i++, j++ ) {
                             myFacePart = newFaces.get(i);
                             newFaceParts = myFacePart.intersect(intfFace);

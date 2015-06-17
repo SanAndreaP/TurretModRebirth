@@ -1,7 +1,6 @@
 package de.sanandrew.mods.turretmod.entity.turret.techii;
 
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
+import de.sanandrew.mods.turretmod.api.ShieldedTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.entity.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.util.EnumTextures;
@@ -15,6 +14,7 @@ import net.minecraft.world.World;
 
 public class EntityTurretRevolver
 		extends EntityTurretBase
+		implements ShieldedTurret
 {
 	private static final AxisAlignedBB RANGE_AABB = AxisAlignedBB.getBoundingBox(-24.0F, -6.0F, -24.0F, 24.0F, 6.0F, 24.0F);
 	private boolean isRight = false;
@@ -128,7 +128,23 @@ public class EntityTurretRevolver
 		return new TargetSelector();
 	}
 
-	public class TargetSelector implements IEntitySelector
+    @Override
+    public boolean hasShieldActive() {
+        return true;
+    }
+
+    private static final AxisAlignedBB SHIELD_BB = AxisAlignedBB.getBoundingBox(-8.0D, 0.0D, -2.0D, 4.0D, 6.0D, 6.0D);
+    @Override
+    public AxisAlignedBB getShieldBoundingBox() {
+        return SHIELD_BB;
+    }
+
+    @Override
+    public int getShieldColor() {
+        return 0xFF0040FF;
+    }
+
+    public class TargetSelector implements IEntitySelector
 	{
 		@Override
 		public boolean isEntityApplicable(Entity entity) {
