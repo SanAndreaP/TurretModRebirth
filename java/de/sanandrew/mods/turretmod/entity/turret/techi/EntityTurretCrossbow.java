@@ -8,7 +8,6 @@
  */
 package de.sanandrew.mods.turretmod.entity.turret.techi;
 
-import de.sanandrew.mods.turretmod.api.ShieldedTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.util.EnumTextures;
 import net.minecraft.command.IEntitySelector;
@@ -19,7 +18,6 @@ import net.minecraft.world.World;
 
 public class EntityTurretCrossbow
         extends EntityTurretBase
-        implements ShieldedTurret
 {
     private static final AxisAlignedBB RANGE_AABB = AxisAlignedBB.getBoundingBox(-16.0F, -4.0F, -16.0F, 16.0F, 4.0F, 16.0F);
     private final TargetSelector targetSelector = new TargetSelector();
@@ -61,22 +59,6 @@ public class EntityTurretCrossbow
     @Override
     public ResourceLocation getGlowTexture() {
         return EnumTextures.TURRET_T1_CROSSBOW_GLOW.getResource();
-    }
-
-    @Override
-    public boolean hasShieldActive() {
-        return true;
-    }
-
-    private static final AxisAlignedBB SHIELD_BB = AxisAlignedBB.getBoundingBox(-2.0D, -2.0D, -2.0D, 2.0D, 2.0D, 2.0D);
-    @Override
-    public AxisAlignedBB getShieldBoundingBox() {
-        return SHIELD_BB;
-    }
-
-    @Override
-    public int getShieldColor() {
-        return 0xFFFF0000;
     }
 
     public class TargetSelector implements IEntitySelector

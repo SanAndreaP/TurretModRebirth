@@ -268,7 +268,7 @@ public abstract class EntityTurretProjectile
                 }
 
 
-                if( isCollidable && !isShootingEntity && isNotRider && isHostRidden && (!cannotBeHit || !shouldFlyThroughOnEntityHit()) ) {
+                if( isCollidable && !isShootingEntity && isNotRider && /*isHostRidden &&*/ (!cannotBeHit || !shouldFlyThroughOnEntityHit()) ) {
                     float expandBB = 0.3F;
                     AxisAlignedBB var12 = collidedEntity.boundingBox.expand(expandBB, expandBB, expandBB);
                     MovingObjectPosition interceptObj = var12.calculateIntercept(posVec, motionVec);

@@ -40,15 +40,7 @@ public final class TurretRegistry
 
     public static void initialize() {
         registerNewTurret(EntityTurretCrossbow.class, "turretCrossbow", TurretMod.MOD_ID + ":turret_crossbow");
-//                .applyAmmoItems(new AmmoInfo(new ItemStack(Items.arrow), new ItemStack(Items.arrow), 1),
-//                                new AmmoInfo(new ItemStack(Blocks.bedrock), new ItemStack(Items.arrow), 128))
-//                .applyHealItems(new HealInfo(new ItemStack(Blocks.cobblestone), 10.0F));
         registerNewTurret(EntityTurretRevolver.class, "turretRevolver", TurretMod.MOD_ID + ":turret_revolver");
-//                .applyAmmoItems(new AmmoInfo(new ItemStack(Items.arrow), new ItemStack(Items.arrow), 1),
-//                                new AmmoInfo(new ItemStack(Blocks.bedrock), new ItemStack(Items.arrow), 128)) //TODO: add bullets!
-//                .applyHealItems(new HealInfo(new ItemStack(Items.iron_ingot), 4.0F),
-//                                new HealInfo(new ItemStack(Blocks.iron_block), 36.0F)
-//                );
         registerNewTurret(EntityTurretOP.class, "turretOP", TurretMod.MOD_ID + ":turret_op");
 
         TurretAmmo.AMMO_TYPES.add(new AmmoArrow());

@@ -30,8 +30,8 @@ public class RenderTurretArrow
         float shake = arrow.arrowShake - partTicks;
 
         if( shake > 0.0F ) {
-            float f12 = -MathHelper.sin(shake * 3.0F) * shake;
-            GL11.glRotatef(f12, 0.0F, 0.0F, 1.0F);
+            float shakeVal = -MathHelper.sin(shake * 3.0F) * shake;
+            GL11.glRotatef(shakeVal, 0.0F, 0.0F, 1.0F);
         }
 
         float scale = 0.03625F;
@@ -39,6 +39,7 @@ public class RenderTurretArrow
         GL11.glScalef(scale, scale, scale);
         GL11.glTranslatef(4.0F, 0.0F, 0.0F);
         GL11.glNormal3f(scale, 0.0F, 0.0F);
+
         tessellator.startDrawingQuads();
         tessellator.addVertexWithUV(-7.0D, -2.0D, -2.0D, 0.0F, 0.15625F);
         tessellator.addVertexWithUV(-7.0D, -2.0D, 2.0D, 0.15625F, 0.15625F);
@@ -53,8 +54,7 @@ public class RenderTurretArrow
         tessellator.addVertexWithUV(-7.0D, -2.0D, -2.0D, 0.0F, 0.3125F);
         tessellator.draw();
 
-        for (int i = 0; i < 4; ++i)
-        {
+        for( int i = 0; i < 4; ++i ) {
             GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
             GL11.glNormal3f(0.0F, 0.0F, scale);
             tessellator.startDrawingQuads();

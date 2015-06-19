@@ -53,9 +53,9 @@ public class ClientProxy
         if( e instanceof EntityTurretBase ) {
             List<Class<?extends EntityLiving>> applicableTargets = new ArrayList<>(listSize);
             for( int i = 0; i < listSize; i++ ) {
-                    String clsName = stream.readUTF();
-                    //noinspection unchecked
-                    applicableTargets.add((Class<? extends EntityLiving>) EntityList.stringToClassMapping.get(clsName));
+                String clsName = stream.readUTF();
+                Class<? extends EntityLiving> entityCls = SAPUtils.getCasted(EntityList.stringToClassMapping.get(clsName));
+                applicableTargets.add(entityCls);
             }
 
             ((EntityTurretBase) e).setTargetList(applicableTargets);

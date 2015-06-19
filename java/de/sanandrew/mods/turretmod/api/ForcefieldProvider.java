@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.api;
 
 import net.minecraft.util.AxisAlignedBB;
 
-public interface ShieldedTurret
+public interface ForcefieldProvider
 {
     /**
      * Checks whether the shield is currently active

@@ -49,12 +49,7 @@ public class AmmoBullet
     }
 
     @Override
-    public TurretProjectile<? extends EntityArrow> getProjectile(World world) {
+    public TurretProjectile<? extends EntityArrow> getProjectile(World world, Turret turret) {
         return new EntityProjectileBullet(world);
-    }
-
-    @Override
-    public void onShooting(Turret turret) {
-
     }
 }

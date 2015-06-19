@@ -42,19 +42,28 @@ public interface TurretAmmo
      * <li>The turret will treat every ammo implementation returning the same item like one implementation: The first one to be registered, which returns 1 in
      * {@link TurretAmmo#getAmount()}</li>
      * </ul>
-     * @return
+     * @return the ammo type as ItemStack
      */
     ItemStack getTypeItem();
 
     /**
      * Returns the item used by the registry to determine the ammo implementation. This must be unique for every implementation!
-     * @return
+     * @return the ammo item
      */
     ItemStack getAmmoItem();
 
+    /**
+     * Checks whether the turret can hold this type of ammo.
+     * @param turret The turret
+     * @return true, if it's applicable, false otherwise
+     */
     boolean isApplicablToTurret(Turret turret);
 
-    TurretProjectile<? extends EntityArrow> getProjectile(World world);
-
-    void onShooting(Turret turret);
+    /**
+     * Creates a new projectile instance to be fired by the turret.
+     * @param world The world the projectile spawns in
+     * @param turret The turret shooting the projectile
+     * @return A new instance of a projectile entity
+     */
+    TurretProjectile<? extends EntityArrow> getProjectile(World world, Turret turret);
 }

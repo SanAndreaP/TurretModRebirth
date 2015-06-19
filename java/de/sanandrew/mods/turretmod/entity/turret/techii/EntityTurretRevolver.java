@@ -1,6 +1,5 @@
 package de.sanandrew.mods.turretmod.entity.turret.techii;
 
-import de.sanandrew.mods.turretmod.api.ShieldedTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.entity.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.util.EnumTextures;
@@ -14,7 +13,6 @@ import net.minecraft.world.World;
 
 public class EntityTurretRevolver
 		extends EntityTurretBase
-		implements ShieldedTurret
 {
 	private static final AxisAlignedBB RANGE_AABB = AxisAlignedBB.getBoundingBox(-24.0F, -6.0F, -24.0F, 24.0F, 6.0F, 24.0F);
 	private boolean isRight = false;
@@ -51,15 +49,12 @@ public class EntityTurretRevolver
 		this.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).setBaseValue(15.0F);
     }
 
-//	@Override
-//	public EntityTurretProjectile getProjectile() {
-//		return new EntityProjectileBullet(this.worldObj);
-//	}
+	private int prevShootTicks = Integer.MAX_VALUE;
 
 	@Override
 	public void shoot(boolean isRidden) {
 		if( this.worldObj.isRemote ) {
-			if( this.getShootTicks() == 0 && this.getHealth() > 0 && (isRidden || this.hasTarget()) && this.getAmmo() > 0 ) {
+			if( (this.prevShootTicks < this.getShootTicks() || this.getShootTicks() == 0) && this.getHealth() > 0 && (isRidden || this.hasTarget()) && this.getAmmo() > 0 ) {
 				if( !this.prevShooting ) {
 					if( this.isRight ) {
 						this.rightBarrelOffset = getMaxShootTicks();
@@ -74,6 +69,8 @@ public class EntityTurretRevolver
 			} else {
 				this.prevShooting = false;
 			}
+
+            this.prevShootTicks = this.getShootTicks();
 		}
 
 		super.shoot(isRidden);
@@ -127,22 +124,6 @@ public class EntityTurretRevolver
 	protected IEntitySelector getTargetSelector() {
 		return new TargetSelector();
 	}
-
-    @Override
-    public boolean hasShieldActive() {
-        return true;
-    }
-
-    private static final AxisAlignedBB SHIELD_BB = AxisAlignedBB.getBoundingBox(-8.0D, 0.0D, -2.0D, 4.0D, 6.0D, 6.0D);
-    @Override
-    public AxisAlignedBB getShieldBoundingBox() {
-        return SHIELD_BB;
-    }
-
-    @Override
-    public int getShieldColor() {
-        return 0xFF0040FF;
-    }
 
     public class TargetSelector implements IEntitySelector
 	{

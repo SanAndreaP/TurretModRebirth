@@ -363,6 +363,7 @@ public abstract class EntityTurretBase
         ItemStack heldItem = player.getHeldItem();
         if( heldItem != null ) {
             if( !this.worldObj.isRemote ) {
+                TurretAmmo ammoInfo;
                 HealInfo healInfo;
                 TurretUpgrade upgrade;
 
@@ -370,7 +371,7 @@ public abstract class EntityTurretBase
                     TurretMod.proxy.openGui(player, EnumGui.GUI_TCU_INFO, this.getEntityId(), 0, 0);
                     return true;
                 }
-                if( TurretInfoApi.getAmmo(heldItem) != null ) {
+                if( (ammoInfo = TurretInfoApi.getAmmo(heldItem)) != null && ammoInfo.isApplicablToTurret(this) ) {
                     int amount = this.addAmmo(heldItem);
                     if( amount > 0 ) {
                         InventoryUtils.decrPlayerHeldStackSize(player, amount);
@@ -617,7 +618,7 @@ public abstract class EntityTurretBase
 
     private TurretProjectile<? extends EntityArrow> getProjectile() {
         if( this.getAmmoType() != null ) {
-            return this.getAmmoType().getProjectile(this.worldObj);
+            return this.getAmmoType().getProjectile(this.worldObj, this);
         }
 
         return null;
