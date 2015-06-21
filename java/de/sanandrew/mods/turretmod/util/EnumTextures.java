@@ -26,7 +26,9 @@ public enum EnumTextures
 
     TURRET_FORCEFIELD_P1("textures/entities/shield_1.png"),
     TURRET_FORCEFIELD_P2("textures/entities/shield_2.png"),
-    TURRET_FORCEFIELD_P3("textures/entities/shield_3.png");
+    TURRET_FORCEFIELD_P3("textures/entities/shield_3.png"),
+    TILE_ITEM_TRANSMITTER("textures/blocks/item_transmitter.png"),
+    TILE_ITEM_TRANSMITTER_GLOW("textures/blocks/item_transmitter_glow.png");
 
     private final ResourceLocation location;
 

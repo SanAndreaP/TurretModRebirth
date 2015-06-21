@@ -81,7 +81,7 @@ public class ItemTurret
     public ItemTurret() {
         super();
         this.setCreativeTab(TmrCreativeTabs.TURRETS);
-        this.setUnlocalizedName(TurretMod.MOD_ID + ":turretPlacer");
+        this.setUnlocalizedName(TurretMod.MOD_ID + ":turret_placer");
     }
 
     public static String getTurretName(ItemStack stack) {

@@ -15,11 +15,13 @@ import com.mojang.authlib.GameProfile;
 import de.sanandrew.core.manpack.util.helpers.InventoryUtils;
 import de.sanandrew.core.manpack.util.helpers.ItemUtils;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
+import de.sanandrew.core.manpack.util.javatuples.Pair;
 import de.sanandrew.mods.turretmod.api.*;
 import de.sanandrew.mods.turretmod.network.packet.PacketTargetList;
 import de.sanandrew.mods.turretmod.network.packet.PacketTargetListRequest;
 import de.sanandrew.mods.turretmod.network.packet.PacketUpgradeList;
 import de.sanandrew.mods.turretmod.network.packet.PacketUpgradeListRequest;
+import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter;
 import de.sanandrew.mods.turretmod.util.*;
 import de.sanandrew.mods.turretmod.util.TurretRegistry.HealInfo;
 import de.sanandrew.mods.turretmod.api.registry.TurretUpgradeRegistry;
@@ -32,15 +34,18 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.Constants.NBT;
 import org.apache.logging.log4j.Level;
 
@@ -88,6 +93,8 @@ public abstract class EntityTurretBase
     // upgrades
     protected List<TurretUpgrade> upgrades = new ArrayList<>(36);
     protected Integer upgradeListHash = null;
+
+    protected Map<TurretUpgrade, UpgrateQueueData> upgradeUpdQueues = new HashMap<>();
 
     public EntityTurretBase(World par1World) {
         super(par1World);
@@ -302,11 +309,7 @@ public abstract class EntityTurretBase
             this.rotationYaw = this.prevRotationYaw = this.renderYawOffset = this.prevRenderYawOffset = 0.0F;
         }
 
-//        if( !this.worldObj.isRemote ) {
-//            if (this.ticksExisted % 5 == 0 && TurretUpgrades.hasUpgrade(TUpgChestGrabbing.class, this.upgrades))
-//                this.grabContentFromChests();
-//            this.dataWatcher.updateObject(21, this.getHealth());
-//        }
+
 
         if( this.ridingEntity == null ) {
             if (this.posX > Math.floor(posX) + 0.501F || this.posX < Math.floor(posX) + 0.499F) {
@@ -317,6 +320,10 @@ public abstract class EntityTurretBase
                 this.posZ = Math.floor(posZ) + 0.5;
                 this.setPositionAndUpdate(this.posX, this.posY, this.posZ);
             }
+        }
+
+        for( Entry<TurretUpgrade, UpgrateQueueData> queue : this.upgradeUpdQueues.entrySet() ) {
+            queue.getKey().onUpdateQueue(this, queue.getValue());
         }
     }
 
@@ -386,9 +393,7 @@ public abstract class EntityTurretBase
 
                     return true;
                 }
-                if( heldItem.getItem() == TmrItems.turretUpgrade && (upgrade = TmrItems.turretUpgrade.getUpgradeFromStack(heldItem)) != null
-                    && this.applyUpgrade(upgrade) )
-                {
+                if( heldItem.getItem() == TmrItems.turretUpgrade && (upgrade = TmrItems.turretUpgrade.getUpgradeFromStack(heldItem)) != null && this.applyUpgrade(upgrade) ) {
                     InventoryUtils.decrPlayerHeldStackSize(player, 1);
                     this.playSound(TurretMod.MOD_ID + ":collect.ia_get", 1.0F, 1.0F);
 
@@ -411,7 +416,7 @@ public abstract class EntityTurretBase
         nbt.setByte("frequency", this.dataWatcher.getWatchableObjectByte(DW_FREQUENCY));
         nbt.setByte("boolFlags", this.dataWatcher.getWatchableObjectByte(DW_BOOLEANS));
 
-        ItemStack ammoStack = this.dataWatcher.getWatchableObjectItemStack(DW_AMMO_TYPE);
+        ItemStack ammoStack = getAmmoTypeItem();
         if( ammoStack != null ) {
             NBTTagCompound itemNBT = new NBTTagCompound();
             ammoStack.writeToNBT(itemNBT);
@@ -575,9 +580,7 @@ public abstract class EntityTurretBase
 
     public boolean applyUpgrade(TurretUpgrade upg) {
         boolean hasDependency = upg.getDependantOn() == null || this.hasUpgrade(upg.getDependantOn());
-        if( this.upgrades.size() < this.getMaxUpgradeSlots() && !this.hasUpgrade(upg) && hasDependency
-            && TurretUpgradeRegistry.isApplicableToCls(upg, this.getClass()) )
-        {
+        if( this.upgrades.size() < this.getMaxUpgradeSlots() && !this.hasUpgrade(upg) && hasDependency && TurretUpgradeRegistry.isApplicableToCls(upg, this.getClass()) ) {
             this.upgrades.add(upg);
             upg.onApply(this);
             return true;
@@ -610,7 +613,11 @@ public abstract class EntityTurretBase
         return this;
     }
 
-    public abstract AxisAlignedBB getRangeBB();
+    @Override
+    public void registerUpgradeToUpdateQueue(TurretUpgrade upgrade, UpgrateQueueData queueData) {
+        this.upgradeUpdQueues.put(upgrade, queueData);
+    }
+
     public abstract ResourceLocation getStandardTexture();
     public abstract ResourceLocation getGlowTexture();
     protected abstract IEntitySelector getTargetSelector();
@@ -697,8 +704,13 @@ public abstract class EntityTurretBase
         return this.myInfo;
     }
 
+    @Override
+    public ItemStack getAmmoTypeItem() {
+        return this.dataWatcher.getWatchableObjectItemStack(DW_AMMO_TYPE);
+    }
+
     public TurretAmmo getAmmoType() {
-        ItemStack stack = this.dataWatcher.getWatchableObjectItemStack(DW_AMMO_TYPE);
+        ItemStack stack = getAmmoTypeItem();
         if( stack != null ) {
             return TurretInfoApi.getAmmo(stack);
         }

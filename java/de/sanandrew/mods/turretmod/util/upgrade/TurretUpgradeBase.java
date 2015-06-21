@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.util.upgrade;
 
 import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.api.TurretUpgrade;
+import de.sanandrew.mods.turretmod.api.UpgrateQueueData;
 import de.sanandrew.mods.turretmod.api.registry.TurretUpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.TurretMod;
 
@@ -65,6 +66,7 @@ public class TurretUpgradeBase
         return this.dependantOn;
     }
 
+    @Override
     public final List<Class<? extends Turret>> getApplicableTurrets() {
         return new ArrayList<>(this.applicableTurrets);
     }
@@ -73,11 +75,18 @@ public class TurretUpgradeBase
         this.applicableTurrets.add(turretCls);
     }
 
+    @Override
     public void onApply(Turret turret) { }
 
+    @Override
     public void onLoad(Turret turret) { }
 
+    @Override
     public void onSave(Turret turret) { }
 
+    @Override
     public void onRemove(Turret turret) { }
+
+    @Override
+    public void onUpdateQueue(Turret turret, UpgrateQueueData queueData) { }
 }

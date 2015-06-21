@@ -16,6 +16,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import de.sanandrew.mods.turretmod.network.PacketManager;
+import de.sanandrew.mods.turretmod.util.upgrade.TurretUpgradeList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,6 +38,7 @@ public class TurretMod
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        TmrBlocks.initialize();
         TmrItems.initialize();
 
         PacketManager.initialize();
@@ -49,6 +51,7 @@ public class TurretMod
         TmrEntities.registerEntities();
 
         TurretRegistry.initialize();
+        TurretUpgradeList.initialize();
 
         proxy.init();
     }

@@ -9,6 +9,8 @@
 package de.sanandrew.mods.turretmod.block;
 
 import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter;
+import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
+import de.sanandrew.mods.turretmod.util.TurretMod;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
@@ -17,8 +19,10 @@ import net.minecraft.world.World;
 public class BlockItemTransmitter
         extends Block
 {
-    protected BlockItemTransmitter() {
+    public BlockItemTransmitter() {
         super(Material.iron);
+        this.setBlockName(TurretMod.MOD_ID + ":item_transmitter");
+        this.setCreativeTab(TmrCreativeTabs.MISC);
     }
 
     @Override
@@ -29,5 +33,20 @@ public class BlockItemTransmitter
     @Override
     public TileEntity createTileEntity(World world, int metadata) {
         return new TileEntityItemTransmitter();
+    }
+
+    @Override
+    public int getRenderBlockPass() {
+        return -1;
+    }
+
+    @Override
+    public boolean isOpaqueCube() {
+        return false;
+    }
+
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
     }
 }

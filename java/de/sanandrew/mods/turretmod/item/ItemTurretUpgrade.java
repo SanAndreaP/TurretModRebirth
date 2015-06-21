@@ -42,7 +42,7 @@ public class ItemTurretUpgrade
 
     public ItemTurretUpgrade() {
         super();
-        this.setUnlocalizedName(TurretMod.MOD_ID + ":turretUpgrade");
+        this.setUnlocalizedName(TurretMod.MOD_ID + ":turret_upgrade");
         this.setCreativeTab(TmrCreativeTabs.UPGRADES);
     }
 

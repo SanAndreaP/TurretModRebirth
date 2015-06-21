@@ -41,6 +41,7 @@ public class ClientProxy
         super.init();
 
         TmrEntities.registerRenderers();
+        TmrBlocks.registerBlockAndTeRenderers();
 
         MinecraftForge.EVENT_BUS.register(new RenderForcefieldHandler());
     }

@@ -36,8 +36,9 @@ public final class TurretUpgradeList
     public static final TurretUpgrade UPG_STORAGE_II = new TUpgradeUpgStorageII(UPG_STORAGE_I);
     public static final TurretUpgrade UPG_STORAGE_III = new TUpgradeUpgStorageIII(UPG_STORAGE_II);
     public static final TurretUpgrade AMMO_STORAGE = new TUpgradeAmmoStorage();
+    public static final TurretUpgrade ITEM_RECEIVER = new TUpgradeItemReceiver();
 
-    static {
+    public static void initialize() {
         try {
             Field[] upgFields = TurretUpgradeList.class.getFields();
             for( Field fld : upgFields ) {

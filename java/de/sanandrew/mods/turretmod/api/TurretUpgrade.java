@@ -50,4 +50,6 @@ public interface TurretUpgrade
      * @param turret The turret which loads this upgrade
      */
     void onRemove(Turret turret);
+
+    void onUpdateQueue(Turret turret, UpgrateQueueData queueData);
 }
