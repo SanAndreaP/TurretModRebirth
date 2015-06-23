@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.util;
 
+import de.sanandrew.core.manpack.mod.client.particle.SAPEffectRenderer;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.api.TurretUpgrade;
 import de.sanandrew.mods.turretmod.client.event.RenderForcefieldHandler;
@@ -23,6 +24,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.Level;
@@ -34,7 +36,7 @@ import java.util.List;
 public class ClientProxy
         extends CommonProxy
 {
-
+    public static int PARTICLE_FX_LAYER_1;
 
     @Override
     public void init() {
@@ -44,6 +46,8 @@ public class ClientProxy
         TmrBlocks.registerBlockAndTeRenderers();
 
         MinecraftForge.EVENT_BUS.register(new RenderForcefieldHandler());
+
+        PARTICLE_FX_LAYER_1 = SAPEffectRenderer.INSTANCE.registerFxLayer(new ResourceLocation(TurretMod.MOD_ID, "textures/particles/particle_1.png"), true);
     }
 
     @Override
