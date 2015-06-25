@@ -11,8 +11,11 @@ package de.sanandrew.mods.turretmod.tileentity;
 import de.sanandrew.core.manpack.util.helpers.InventoryUtils;
 import de.sanandrew.core.manpack.util.helpers.ItemUtils;
 import de.sanandrew.core.manpack.util.javatuples.Quartet;
+import de.sanandrew.core.manpack.util.javatuples.Triplet;
 import de.sanandrew.mods.turretmod.api.Turret;
+import de.sanandrew.mods.turretmod.util.ParticleProxy;
 import de.sanandrew.mods.turretmod.util.TurretMod;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -64,6 +67,10 @@ public class TileEntityItemTransmitter
                             case AMMO:
                                 int removed = this.request.getValue0().addAmmo(this.bufItem);
                                 this.updateRequestAndItem(removed);
+                                EntityLiving el = this.request.getValue0().getEntity();
+                                TurretMod.particleProxy.spawnParticle(this.xCoord, this.yCoord, this.zCoord, this.worldObj.provider.dimensionId,
+                                                                      ParticleProxy.ITEM_TRANSMITTER, Triplet.with(el.posX, el.posY, el.posZ)
+                                );
                                 break;
                         }
                     }

@@ -30,11 +30,15 @@ public class TurretMod
 
     private static final String MOD_PROXY_CLIENT = "de.sanandrew.mods.turretmod.client.util.ClientProxy";
     private static final String MOD_PROXY_COMMON = "de.sanandrew.mods.turretmod.util.CommonProxy";
+    private static final String PARTICLE_PROXY_CLIENT = "de.sanandrew.mods.turretmod.client.util.ClientParticleProxy";
+    private static final String PARTICLE_PROXY_COMMON = "de.sanandrew.mods.turretmod.util.ParticleProxy";
 
     @Instance(TurretMod.MOD_ID)
     public static TurretMod instance;
     @SidedProxy(modId = TurretMod.MOD_ID, clientSide = TurretMod.MOD_PROXY_CLIENT, serverSide = TurretMod.MOD_PROXY_COMMON)
     public static CommonProxy proxy;
+    @SidedProxy(modId = TurretMod.MOD_ID, clientSide = TurretMod.PARTICLE_PROXY_CLIENT, serverSide = TurretMod.PARTICLE_PROXY_COMMON)
+    public static ParticleProxy particleProxy;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {

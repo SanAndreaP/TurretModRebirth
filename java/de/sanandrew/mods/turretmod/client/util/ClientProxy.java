@@ -12,6 +12,7 @@ import de.sanandrew.core.manpack.mod.client.particle.SAPEffectRenderer;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.api.TurretUpgrade;
 import de.sanandrew.mods.turretmod.client.event.RenderForcefieldHandler;
+import de.sanandrew.mods.turretmod.client.event.RenderFxLayerHandler;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuInfo;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuTargets;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuUpgrades;
@@ -46,8 +47,9 @@ public class ClientProxy
         TmrBlocks.registerBlockAndTeRenderers();
 
         MinecraftForge.EVENT_BUS.register(new RenderForcefieldHandler());
+        SAPUtils.EVENT_BUS.register(new RenderFxLayerHandler());
 
-        PARTICLE_FX_LAYER_1 = SAPEffectRenderer.INSTANCE.registerFxLayer(new ResourceLocation(TurretMod.MOD_ID, "textures/particles/particle_1.png"), true);
+        PARTICLE_FX_LAYER_1 = SAPEffectRenderer.INSTANCE.registerFxLayer(new ResourceLocation(TurretMod.MOD_ID, "textures/particles/particles_1.png"), true);
     }
 
     @Override
