@@ -13,6 +13,7 @@ import de.sanandrew.core.manpack.util.javatuples.Tuple;
 import de.sanandrew.mods.turretmod.client.particle.ParticleItemTransmitterAction;
 import de.sanandrew.mods.turretmod.util.ParticleProxy;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 public class ClientParticleProxy
@@ -24,11 +25,23 @@ public class ClientParticleProxy
 
         switch( particleId ) {
             case ITEM_TRANSMITTER:
-                SAPClientUtils.spawnParticle(new ParticleItemTransmitterAction(worldObj, posX + 0.5D, posY + 1, posZ + 0.5D));
-                SAPClientUtils.spawnParticle(new ParticleItemTransmitterAction(worldObj, posX + 0.2D, posY + 1, posZ + 0.2D));
-                SAPClientUtils.spawnParticle(new ParticleItemTransmitterAction(worldObj, posX + 0.2D, posY + 1, posZ + 0.8D));
-                SAPClientUtils.spawnParticle(new ParticleItemTransmitterAction(worldObj, posX + 0.8D, posY + 1, posZ + 0.2D));
-                SAPClientUtils.spawnParticle(new ParticleItemTransmitterAction(worldObj, posX + 0.8D, posY + 1, posZ + 0.8D));
+                double destX = (double) data.getValue(0);
+                double destY = (double) data.getValue(1);
+                double destZ = (double) data.getValue(2);
+
+                Vec3 dirVec = Vec3.createVectorHelper(destX - posX, destY - posY, destZ - posZ);
+                Vec3 dirVecNorm = dirVec.normalize();
+
+                double dist = Math.abs(dirVec.lengthVector());
+                for( double d = 0; d < dist; d += 0.25D ) {
+                    SAPClientUtils.spawnParticle(new ParticleItemTransmitterAction(worldObj, posX + dirVecNorm.xCoord * d, posY + dirVecNorm.yCoord * d, posZ + dirVecNorm.zCoord * d));
+                }
+
+//                SAPClientUtils.spawnParticle(new ParticleItemTransmitterAction(worldObj, posX + 0.5D, posY + 1, posZ + 0.5D));
+//                SAPClientUtils.spawnParticle(new ParticleItemTransmitterAction(worldObj, posX + 0.2D, posY + 1, posZ + 0.2D));
+//                SAPClientUtils.spawnParticle(new ParticleItemTransmitterAction(worldObj, posX + 0.2D, posY + 1, posZ + 0.8D));
+//                SAPClientUtils.spawnParticle(new ParticleItemTransmitterAction(worldObj, posX + 0.8D, posY + 1, posZ + 0.2D));
+//                SAPClientUtils.spawnParticle(new ParticleItemTransmitterAction(worldObj, posX + 0.8D, posY + 1, posZ + 0.8D));
                 break;
         }
     }

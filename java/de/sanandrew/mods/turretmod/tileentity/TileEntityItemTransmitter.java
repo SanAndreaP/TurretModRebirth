@@ -65,12 +65,11 @@ public class TileEntityItemTransmitter
                     } else {
                         switch( this.request.getValue1() ) {
                             case AMMO:
+                                EntityLiving el = this.request.getValue0().getEntity();
+                                TurretMod.particleProxy.spawnParticle(this.xCoord + 0.5D, this.yCoord + 0.8D, this.zCoord + 0.5D, this.worldObj.provider.dimensionId, ParticleProxy.ITEM_TRANSMITTER,
+                                                                      Triplet.with(el.posX, el.posY + el.getEyeHeight(), el.posZ));
                                 int removed = this.request.getValue0().addAmmo(this.bufItem);
                                 this.updateRequestAndItem(removed);
-                                EntityLiving el = this.request.getValue0().getEntity();
-                                TurretMod.particleProxy.spawnParticle(this.xCoord, this.yCoord, this.zCoord, this.worldObj.provider.dimensionId,
-                                                                      ParticleProxy.ITEM_TRANSMITTER, Triplet.with(el.posX, el.posY, el.posZ)
-                                );
                                 break;
                         }
                     }
