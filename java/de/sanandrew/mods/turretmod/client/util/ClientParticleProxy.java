@@ -37,11 +37,6 @@ public class ClientParticleProxy
                     SAPClientUtils.spawnParticle(new ParticleItemTransmitterAction(worldObj, posX + dirVecNorm.xCoord * d, posY + dirVecNorm.yCoord * d, posZ + dirVecNorm.zCoord * d));
                 }
 
-//                SAPClientUtils.spawnParticle(new ParticleItemTransmitterAction(worldObj, posX + 0.5D, posY + 1, posZ + 0.5D));
-//                SAPClientUtils.spawnParticle(new ParticleItemTransmitterAction(worldObj, posX + 0.2D, posY + 1, posZ + 0.2D));
-//                SAPClientUtils.spawnParticle(new ParticleItemTransmitterAction(worldObj, posX + 0.2D, posY + 1, posZ + 0.8D));
-//                SAPClientUtils.spawnParticle(new ParticleItemTransmitterAction(worldObj, posX + 0.8D, posY + 1, posZ + 0.2D));
-//                SAPClientUtils.spawnParticle(new ParticleItemTransmitterAction(worldObj, posX + 0.8D, posY + 1, posZ + 0.8D));
                 break;
         }
     }

@@ -20,6 +20,7 @@ public class ParticleItemTransmitterAction
     private static final IIcon ICON = new IconParticle("itemTransmitter", 256, 256, 0, 0, 32, 32);
 
     private int lastParticleAge;
+    private final float particleScaleRnd;
 
     public ParticleItemTransmitterAction(World world, double x, double y, double z) {
         super(world, x, y, z);
@@ -33,6 +34,8 @@ public class ParticleItemTransmitterAction
         this.particleBlue = 0.5F;
 
         this.motionY = 0.01F;
+
+        this.particleScaleRnd = this.rand.nextFloat() * 0.3F;
     }
 
     @Override
@@ -53,7 +56,10 @@ public class ParticleItemTransmitterAction
 
         this.particleScale = (float) Math.sin(Math.pow(10.0F, 0.49715988F - (x / 20.0F)));
         this.particleScale *= 4.0F;
-        //this.particleScale = sin(10^(0.49715988-(x/4)));
+        this.particleScale -= this.particleScaleRnd;
+        if( this.particleScale < 0.0F ) {
+            this.particleScale = 0.0F;
+        }
 
         super.renderParticle(tess, partTicks, viewRotX, viewRotXZ, viewRotZ, viewRotYZ, viewRotXY);
     }
