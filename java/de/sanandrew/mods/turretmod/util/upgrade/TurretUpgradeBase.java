@@ -13,6 +13,7 @@ import de.sanandrew.mods.turretmod.api.TurretUpgrade;
 import de.sanandrew.mods.turretmod.api.UpgrateQueueData;
 import de.sanandrew.mods.turretmod.api.registry.TurretUpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.TurretMod;
+import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,10 +80,10 @@ public class TurretUpgradeBase
     public void onApply(Turret turret) { }
 
     @Override
-    public void onLoad(Turret turret) { }
+    public void onLoad(Turret turret, NBTTagCompound nbt) { }
 
     @Override
-    public void onSave(Turret turret) { }
+    public void onSave(Turret turret, NBTTagCompound nbt) { }
 
     @Override
     public void onRemove(Turret turret) { }

@@ -8,6 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.api;
 
+import net.minecraft.nbt.NBTTagCompound;
+
 import java.util.List;
 
 public interface TurretUpgrade
@@ -34,15 +36,16 @@ public interface TurretUpgrade
      * Called when the upgrade gets loaded from the turrets NBTCompound.
      * This is called server side!
      * @param turret The turret which loads this upgrade
+     * @param nbt The NBT the turret saves
      */
-    void onLoad(Turret turret); // TODO: possibly add NBTTagCompound
+    void onLoad(Turret turret, NBTTagCompound nbt); // TODO: possibly add NBTTagCompound
 
     /**
      * Called when the upgrade gets loaded from the turrets NBTCompound.
      * This is called server side!
      * @param turret The turret which loads this upgrade
      */
-    void onSave(Turret turret); // TODO: possibly add NBTTagCompound
+    void onSave(Turret turret, NBTTagCompound nbt); // TODO: possibly add NBTTagCompound
 
     /**
      * Called when this upgrade gets removed from the turret.

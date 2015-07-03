@@ -15,16 +15,14 @@ import com.mojang.authlib.GameProfile;
 import de.sanandrew.core.manpack.util.helpers.InventoryUtils;
 import de.sanandrew.core.manpack.util.helpers.ItemUtils;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
-import de.sanandrew.core.manpack.util.javatuples.Pair;
 import de.sanandrew.mods.turretmod.api.*;
+import de.sanandrew.mods.turretmod.api.registry.TurretUpgradeRegistry;
 import de.sanandrew.mods.turretmod.network.packet.PacketTargetList;
 import de.sanandrew.mods.turretmod.network.packet.PacketTargetListRequest;
 import de.sanandrew.mods.turretmod.network.packet.PacketUpgradeList;
 import de.sanandrew.mods.turretmod.network.packet.PacketUpgradeListRequest;
-import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter;
 import de.sanandrew.mods.turretmod.util.*;
 import de.sanandrew.mods.turretmod.util.TurretRegistry.HealInfo;
-import de.sanandrew.mods.turretmod.api.registry.TurretUpgradeRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
@@ -34,18 +32,15 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.Constants.NBT;
 import org.apache.logging.log4j.Level;
 
@@ -425,15 +420,16 @@ public abstract class EntityTurretBase
 
         NBTTagList targetList = new NBTTagList();
         for( Entry<Class<? extends EntityLiving>, Boolean> entry : this.activeTargets.entrySet() ) {
-            if( entry.getValue() ) {
-                targetList.appendTag(new NBTTagString((String) EntityList.classToStringMapping.get(entry.getKey())));
-            }
+            NBTTagCompound targetNBT = new NBTTagCompound();
+            targetNBT.setString("entityClass", (String) EntityList.classToStringMapping.get(entry.getKey()));
+            targetNBT.setBoolean("isActive", entry.getValue());
+            targetList.appendTag(targetNBT);
         }
         nbt.setTag("targetList", targetList);
 
         NBTTagList upgradeList = new NBTTagList();
         for( TurretUpgrade upgrade : this.upgrades ) {
-            upgrade.onSave(this);
+            upgrade.onSave(this, nbt);
             upgradeList.appendTag(new NBTTagString(TurretUpgradeRegistry.getRegistrationName(upgrade)));
         }
         nbt.setTag("upgradeList", upgradeList);
@@ -455,12 +451,12 @@ public abstract class EntityTurretBase
             this.dataWatcher.updateObject(DW_AMMO_TYPE, ItemStack.loadItemStackFromNBT(itemNBT));
         }
 
-        NBTTagList targetList = nbt.getTagList("targetList", NBT.TAG_STRING);
+        NBTTagList targetList = nbt.getTagList("targetList", NBT.TAG_COMPOUND);
         for( int i = 0; i < targetList.tagCount(); i++ ) {
-            Class entityCls = (Class) EntityList.stringToClassMapping.get(targetList.getStringTagAt(i));
+            NBTTagCompound targetNBT = targetList.getCompoundTagAt(i);
+            Class entityCls = (Class) EntityList.stringToClassMapping.get(targetNBT.getString("entityClass"));
             if( EntityLiving.class.isAssignableFrom(entityCls) && this.activeTargets.containsKey(entityCls) ) {
-                Class<? extends EntityLiving> casted = SAPUtils.getCasted(entityCls);
-                this.activeTargets.put(casted, true);
+                this.activeTargets.put(SAPUtils.<Class<? extends EntityLiving>>getCasted(entityCls), targetNBT.getBoolean("isActive"));
             }
         }
 
@@ -470,7 +466,7 @@ public abstract class EntityTurretBase
             TurretUpgrade upgrade = TurretUpgradeRegistry.getUpgrade(upgradeName);
             if( upgrade != null ) {
                 this.upgrades.add(upgrade);
-                upgrade.onLoad(this);
+                upgrade.onLoad(this, nbt);
             } else {
                 TurretMod.MOD_LOG.printf(Level.WARN, "Skipped loading upgrade %s, because it wasn't registered!", upgradeName);
             }
@@ -605,6 +601,9 @@ public abstract class EntityTurretBase
         if( this.hasUpgrade(upg) ) {
             upg.onRemove(this);
             this.upgrades.remove(upg);
+            if( this.upgradeUpdQueues.containsKey(upg) ) {
+                this.upgradeUpdQueues.remove(upg);
+            }
         }
     }
 

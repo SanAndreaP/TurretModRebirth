@@ -118,14 +118,22 @@ public class TileEntityItemTransmitter
 
             this.request.getValue0().getEntity().playSound(TurretMod.MOD_ID + ":collect.ia_get", 1.0F, 1.0F);
             this.bufItem.stackSize -= removed;
+            this.request.getValue2().stackSize -= removed;
             if( this.bufItem.stackSize <= 0 ) {
                 this.bufItem = null;
             } else {
                 this.request.getValue3().setValue(MAX_TICKS_REQUEST_STAY);
             }
+            if( this.request.getValue2().stackSize <= 0 ) {
+                this.request = null;
+            }
         } else {
             if( this.bufItem != null ) {
                 for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS ) {
+                    if( dir == ForgeDirection.UP ) {
+                        continue;
+                    }
+
                     TileEntity te = this.worldObj.getTileEntity(this.xCoord + dir.offsetX, this.yCoord + dir.offsetY, this.zCoord + dir.offsetZ);
                     if( te instanceof IInventory ) {
                         this.bufItem = InventoryUtils.addStackToInventory(this.bufItem, (IInventory) te);

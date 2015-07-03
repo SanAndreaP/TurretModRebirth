@@ -14,6 +14,7 @@ import de.sanandrew.mods.turretmod.api.UpgrateQueueData;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
@@ -34,7 +35,7 @@ public class TUpgradeItemReceiver
     }
 
     @Override
-    public void onLoad(Turret turret) {
+    public void onLoad(Turret turret, NBTTagCompound nbt) {
         turret.registerUpgradeToUpdateQueue(this, new ReceiverData());
     }
 
