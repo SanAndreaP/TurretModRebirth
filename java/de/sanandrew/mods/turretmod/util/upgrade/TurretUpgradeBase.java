@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.util.upgrade;
 
 import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.api.TurretUpgrade;
-import de.sanandrew.mods.turretmod.api.UpgrateQueueData;
+import de.sanandrew.mods.turretmod.api.UpgradeQueueData;
 import de.sanandrew.mods.turretmod.api.registry.TurretUpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.TurretMod;
 import net.minecraft.nbt.NBTTagCompound;
@@ -89,5 +89,5 @@ public class TurretUpgradeBase
     public void onRemove(Turret turret) { }
 
     @Override
-    public void onUpdateQueue(Turret turret, UpgrateQueueData queueData) { }
+    public void onUpdateQueue(Turret turret, UpgradeQueueData queueData) { }
 }

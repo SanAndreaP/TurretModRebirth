@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.util.upgrade;
 
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.api.Turret;
-import de.sanandrew.mods.turretmod.api.UpgrateQueueData;
+import de.sanandrew.mods.turretmod.api.UpgradeQueueData;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
@@ -40,7 +40,15 @@ public class TUpgradeItemReceiver
     }
 
     @Override
-    public void onUpdateQueue(Turret turret, UpgrateQueueData queueData) {
+    public void onRemove(Turret turret) {
+        ReceiverData data = SAPUtils.getCasted(turret.getUpgradeQueueData(this));
+        if( data != null && data.currRequestHolder != null ) {
+            data.currRequestHolder.removeRequest();
+        }
+    }
+
+    @Override
+    public void onUpdateQueue(Turret turret, UpgradeQueueData queueData) {
         ReceiverData data = SAPUtils.getCasted(queueData);
         EntityLiving entity = turret.getEntity();
 
@@ -81,7 +89,7 @@ public class TUpgradeItemReceiver
     }
 
     public static class ReceiverData
-            implements UpgrateQueueData
+            implements UpgradeQueueData
     {
         public TileEntityItemTransmitter currRequestHolder;
     }

@@ -34,7 +34,9 @@ public interface Turret
 
     IEntitySelector getParentTargetSelector();
 
-    void registerUpgradeToUpdateQueue(TurretUpgrade upgrade, UpgrateQueueData queueData);
+    void registerUpgradeToUpdateQueue(TurretUpgrade upgrade, UpgradeQueueData queueData);
+
+    UpgradeQueueData getUpgradeQueueData(TurretUpgrade upgrade);
 
     AxisAlignedBB getRangeBB();
 

@@ -54,5 +54,5 @@ public interface TurretUpgrade
      */
     void onRemove(Turret turret);
 
-    void onUpdateQueue(Turret turret, UpgrateQueueData queueData);
+    void onUpdateQueue(Turret turret, UpgradeQueueData queueData);
 }

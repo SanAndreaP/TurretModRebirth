@@ -10,7 +10,6 @@ package de.sanandrew.mods.turretmod.tileentity;
 
 import de.sanandrew.core.manpack.util.helpers.InventoryUtils;
 import de.sanandrew.core.manpack.util.helpers.ItemUtils;
-import de.sanandrew.core.manpack.util.javatuples.Quartet;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
 import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.util.ParticleProxy;
@@ -24,7 +23,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import org.apache.commons.lang3.mutable.MutableInt;
 
 public class TileEntityItemTransmitter
         extends TileEntity
@@ -32,53 +30,61 @@ public class TileEntityItemTransmitter
 {
     private static final int MAX_TICKS_REQUEST_STAY = 100;
 
-    private Quartet<Turret, RequestType, ItemStack, MutableInt> request;
+    private Turret requestingTurret;
+    private RequestType requestType = RequestType.NONE;
+    private ItemStack requestItem;
+    private int requestTimeout;
+
     private ItemStack bufItem;
     private int ticksExisted = 0;
 
     public boolean hasRequest() {
-        return this.request != null;
+        return this.requestType != RequestType.NONE;
     }
 
     public boolean isMyRequest(Turret turret) {
-        return this.request != null && this.request.getValue0() == turret;
+        return this.hasRequest() && this.requestingTurret == turret;
     }
 
     public boolean requestItem(Turret turret, RequestType requestType, ItemStack stack) {
-        if( this.request == null ) {
-            this.request = Quartet.with(turret, requestType, stack, new MutableInt(MAX_TICKS_REQUEST_STAY));
+        if( !this.hasRequest() ) {
+            this.requestingTurret = turret;
+            this.requestType = requestType;
+            this.requestItem = stack;
+            this.requestTimeout = MAX_TICKS_REQUEST_STAY;
+
             return true;
         }
 
         return false;
     }
 
+    public void removeRequest() {
+        this.updateRequestAndItem(0);
+    }
+
     @Override
     public void updateEntity() {
         if( !this.worldObj.isRemote ) {
-            if( this.ticksExisted % 20 == 0 && this.request != null ) {
-                this.request.getValue3().decrement();
+            if( this.ticksExisted % 20 == 0 && this.hasRequest() ) {
+                this.requestTimeout--;
 
-                if( this.bufItem != null ) {
-                    if( this.request.getValue3().getValue() <= 0 || this.request.getValue0() == null || !this.request.getValue0().getEntity().isEntityAlive() ) {
-                        this.updateRequestAndItem(0);
-                    } else {
-                        switch( this.request.getValue1() ) {
-                            case AMMO:
-                                EntityLiving el = this.request.getValue0().getEntity();
-                                TurretMod.particleProxy.spawnParticle(this.xCoord + 0.5D, this.yCoord + 0.8D, this.zCoord + 0.5D, this.worldObj.provider.dimensionId, ParticleProxy.ITEM_TRANSMITTER,
-                                                                      Triplet.with(el.posX, el.posY + el.getEyeHeight(), el.posZ));
-                                int removed = this.request.getValue0().addAmmo(this.bufItem);
-                                this.updateRequestAndItem(removed);
-                                break;
-                        }
-                    }
-                } else {
-                    if( this.request.getValue3().getValue() <= 0 || this.request.getValue0() == null || !this.request.getValue0().getEntity().isEntityAlive() ) {
-                        this.request = null;
+                if( this.requestTimeout <= 0 || this.requestingTurret == null || !this.requestingTurret.getEntity().isEntityAlive() ) {
+                    this.updateRequestAndItem(0);
+                } else if( this.bufItem != null ) {
+                    switch( this.requestType ) {
+                        case AMMO:
+                            EntityLiving el = this.requestingTurret.getEntity();
+                            TurretMod.particleProxy.spawnParticle(this.xCoord + 0.5D, this.yCoord + 0.8D, this.zCoord + 0.5D, this.worldObj.provider.dimensionId,
+                                                                  ParticleProxy.ITEM_TRANSMITTER, Triplet.with(el.posX, el.posY + el.getEyeHeight(), el.posZ));
+                            int removed = this.requestingTurret.addAmmo(this.bufItem);
+                            this.updateRequestAndItem(removed);
+                            break;
+                        default:
+                            this.updateRequestAndItem(0);
                     }
                 }
-            } else if( this.request == null && this.bufItem != null ) {
+            } else if( !this.hasRequest() && this.bufItem != null ) {
                 this.updateRequestAndItem(0);
             }
         }
@@ -111,21 +117,23 @@ public class TileEntityItemTransmitter
 
     private void updateRequestAndItem(int removed) {
         if( removed > 0 ) {
-            if( this.request == null ) {
+            if( !this.hasRequest() ) {
                 this.updateRequestAndItem(0);
                 return;
             }
 
-            this.request.getValue0().getEntity().playSound(TurretMod.MOD_ID + ":collect.ia_get", 1.0F, 1.0F);
+            this.requestingTurret.getEntity().playSound(TurretMod.MOD_ID + ":collect.ia_get", 1.0F, 1.0F);
             this.bufItem.stackSize -= removed;
-            this.request.getValue2().stackSize -= removed;
+            this.requestItem.stackSize -= removed;
             if( this.bufItem.stackSize <= 0 ) {
                 this.bufItem = null;
-            } else {
-                this.request.getValue3().setValue(MAX_TICKS_REQUEST_STAY);
             }
-            if( this.request.getValue2().stackSize <= 0 ) {
-                this.request = null;
+
+            this.requestTimeout = MAX_TICKS_REQUEST_STAY;
+
+            if( this.requestItem.stackSize <= 0 ) {
+                this.requestType = RequestType.NONE;
+                this.requestingTurret = null;
             }
         } else {
             if( this.bufItem != null ) {
@@ -167,7 +175,8 @@ public class TileEntityItemTransmitter
                 }
             }
 
-            this.request = null;
+            this.requestType = RequestType.NONE;
+            this.requestingTurret = null;
         }
     }
 
@@ -193,7 +202,7 @@ public class TileEntityItemTransmitter
 
     @Override
     public void setInventorySlotContents(int slot, ItemStack stack) {
-        if( stack != null && this.request != null ) {
+        if( stack != null && this.hasRequest() ) {
             this.bufItem = stack;
             if( stack.stackSize > this.getInventoryStackLimit() ) {
                 stack.stackSize = this.getInventoryStackLimit();
@@ -213,7 +222,7 @@ public class TileEntityItemTransmitter
 
     @Override
     public int getInventoryStackLimit() {
-        return this.request != null ? this.request.getValue2().stackSize : 0;
+        return this.hasRequest() ? this.requestItem.stackSize : 0;
     }
 
     @Override
@@ -231,7 +240,7 @@ public class TileEntityItemTransmitter
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack) {
-        return this.request != null && ItemUtils.areStacksEqual(stack, this.request.getValue2(), true) && this.request.getValue2().stackSize > 0;
+        return this.hasRequest() && ItemUtils.areStacksEqual(stack, this.requestItem, true) && this.requestItem.stackSize > 0;
     }
 
     @Override
@@ -252,6 +261,6 @@ public class TileEntityItemTransmitter
 
     public enum RequestType
     {
-        AMMO, HEALTH
+        AMMO, HEALTH, NONE
     }
 }

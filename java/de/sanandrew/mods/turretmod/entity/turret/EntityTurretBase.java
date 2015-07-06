@@ -89,7 +89,7 @@ public abstract class EntityTurretBase
     protected List<TurretUpgrade> upgrades = new ArrayList<>(36);
     protected Integer upgradeListHash = null;
 
-    protected Map<TurretUpgrade, UpgrateQueueData> upgradeUpdQueues = new HashMap<>();
+    protected Map<TurretUpgrade, UpgradeQueueData> upgradeUpdQueues = new HashMap<>();
 
     public EntityTurretBase(World par1World) {
         super(par1World);
@@ -317,7 +317,7 @@ public abstract class EntityTurretBase
             }
         }
 
-        for( Entry<TurretUpgrade, UpgrateQueueData> queue : this.upgradeUpdQueues.entrySet() ) {
+        for( Entry<TurretUpgrade, UpgradeQueueData> queue : this.upgradeUpdQueues.entrySet() ) {
             queue.getKey().onUpdateQueue(this, queue.getValue());
         }
     }
@@ -608,12 +608,17 @@ public abstract class EntityTurretBase
     }
 
     @Override
+    public UpgradeQueueData getUpgradeQueueData(TurretUpgrade upgrade) {
+        return this.upgradeUpdQueues.get(upgrade);
+    }
+
+    @Override
     public EntityLiving getEntity() {
         return this;
     }
 
     @Override
-    public void registerUpgradeToUpdateQueue(TurretUpgrade upgrade, UpgrateQueueData queueData) {
+    public void registerUpgradeToUpdateQueue(TurretUpgrade upgrade, UpgradeQueueData queueData) {
         this.upgradeUpdQueues.put(upgrade, queueData);
     }
 
