@@ -82,6 +82,8 @@ public class TUpgradeItemReceiver
                         }
                     }
                 }
+            } else if( data.currRequestHolder.isInvalid() ) {
+                data.currRequestHolder = null;
             } else if( !data.currRequestHolder.isMyRequest(turret) ) {
                 data.currRequestHolder = null;
             }

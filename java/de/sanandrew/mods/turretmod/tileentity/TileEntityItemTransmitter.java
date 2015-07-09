@@ -21,6 +21,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -38,6 +41,10 @@ public class TileEntityItemTransmitter
     private ItemStack bufItem;
     private int ticksExisted = 0;
 
+    public float scaleTooltip = 0.0F;
+    public float lengthTooltipRod = 0.0F;
+    public long timestampLastRendered = 0;
+
     public boolean hasRequest() {
         return this.requestType != RequestType.NONE;
     }
@@ -52,6 +59,8 @@ public class TileEntityItemTransmitter
             this.requestType = requestType;
             this.requestItem = stack;
             this.requestTimeout = MAX_TICKS_REQUEST_STAY;
+
+            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
 
             return true;
         }
@@ -90,6 +99,32 @@ public class TileEntityItemTransmitter
         }
 
         this.ticksExisted++;
+    }
+
+    @Override
+    public Packet getDescriptionPacket() {
+        NBTTagCompound packetNBT = new NBTTagCompound();
+        packetNBT.setByte("requestType", (byte) this.requestType.ordinal());
+        if( this.requestType != RequestType.NONE ) {
+            NBTTagCompound itemNbt = new NBTTagCompound();
+            requestItem.writeToNBT(itemNbt);
+            packetNBT.setInteger("turretId", this.requestingTurret.getEntity().getEntityId());
+            packetNBT.setInteger("timeout", this.requestTimeout);
+            packetNBT.setTag("item", itemNbt);
+        }
+
+        return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, packetNBT);
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+        NBTTagCompound data = pkt.func_148857_g();
+        this.requestType = RequestType.VALUES[data.getByte("requestType")];
+        if( this.requestType != RequestType.NONE ) {
+            this.requestingTurret = (Turret) this.worldObj.getEntityByID(data.getInteger("turretId"));
+            this.requestTimeout = data.getInteger("timeout");
+            this.requestItem = ItemStack.loadItemStackFromNBT(data.getCompoundTag("item"));
+        }
     }
 
     @Override
@@ -178,6 +213,8 @@ public class TileEntityItemTransmitter
             this.requestType = RequestType.NONE;
             this.requestingTurret = null;
         }
+
+        this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
     }
 
     @Override
@@ -259,8 +296,18 @@ public class TileEntityItemTransmitter
         return false;
     }
 
+    public ItemStack getRequestItem() {
+        return this.requestItem;
+    }
+
+    public RequestType getRequestType() {
+        return this.requestType;
+    }
+
     public enum RequestType
     {
-        AMMO, HEALTH, NONE
+        AMMO, HEALTH, NONE;
+
+        public static final RequestType[] VALUES = values();
     }
 }
