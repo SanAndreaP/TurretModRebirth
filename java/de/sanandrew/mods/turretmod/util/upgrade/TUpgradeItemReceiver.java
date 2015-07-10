@@ -71,8 +71,7 @@ public class TUpgradeItemReceiver
                                     if( tile instanceof TileEntityItemTransmitter && tile.yCoord >= rangeBB.minY && tile.yCoord <= rangeBB.maxY ) {
                                         TileEntityItemTransmitter transmitter = (TileEntityItemTransmitter) tile;
 
-                                        if( !transmitter.hasRequest() ) {
-                                            transmitter.requestItem(turret, TileEntityItemTransmitter.RequestType.AMMO, myAmmo);
+                                        if( transmitter.requestItem(turret, TileEntityItemTransmitter.RequestType.AMMO, myAmmo) ) {
                                             data.currRequestHolder = transmitter;
                                             break chunkLoop;
                                         }

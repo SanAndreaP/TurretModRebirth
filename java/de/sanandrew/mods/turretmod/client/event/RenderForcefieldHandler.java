@@ -16,7 +16,7 @@ import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils.RGBAValues;
 import de.sanandrew.mods.turretmod.api.ForcefieldProvider;
 import de.sanandrew.mods.turretmod.client.render.ForcefieldCube;
-import de.sanandrew.mods.turretmod.util.EnumTextures;
+import de.sanandrew.mods.turretmod.util.Textures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -126,27 +126,27 @@ public class RenderForcefieldHandler
                 case 1:
                     texTranslateX = transformTexAmount * -0.011F;
                     texTranslateY = transformTexAmount * 0.011F;
-                    Minecraft.getMinecraft().renderEngine.bindTexture(EnumTextures.TURRET_FORCEFIELD_P1.getResource());
+                    Minecraft.getMinecraft().renderEngine.bindTexture(Textures.TURRET_FORCEFIELD_P1.getResource());
                     break;
                 case 2:
                     texTranslateX = transformTexAmount * 0.009F;
                     texTranslateY = transformTexAmount * 0.009F;
-                    Minecraft.getMinecraft().renderEngine.bindTexture(EnumTextures.TURRET_FORCEFIELD_P2.getResource());
+                    Minecraft.getMinecraft().renderEngine.bindTexture(Textures.TURRET_FORCEFIELD_P2.getResource());
                     break;
                 case 3:
                     texTranslateX = transformTexAmount * -0.007F;
                     texTranslateY = transformTexAmount * 0.007F;
-                    Minecraft.getMinecraft().renderEngine.bindTexture(EnumTextures.TURRET_FORCEFIELD_P1.getResource());
+                    Minecraft.getMinecraft().renderEngine.bindTexture(Textures.TURRET_FORCEFIELD_P1.getResource());
                     break;
                 case 4:
                     texTranslateX = transformTexAmount * 0.005F;
                     texTranslateY = transformTexAmount * 0.005F;
-                    Minecraft.getMinecraft().renderEngine.bindTexture(EnumTextures.TURRET_FORCEFIELD_P2.getResource());
+                    Minecraft.getMinecraft().renderEngine.bindTexture(Textures.TURRET_FORCEFIELD_P2.getResource());
                     break;
                 case 5:
                     texTranslateX = transformTexAmount * 0.00F;
                     texTranslateY = transformTexAmount * 0.00F;
-                    Minecraft.getMinecraft().renderEngine.bindTexture(EnumTextures.TURRET_FORCEFIELD_P3.getResource());
+                    Minecraft.getMinecraft().renderEngine.bindTexture(Textures.TURRET_FORCEFIELD_P3.getResource());
                     break;
             }
 

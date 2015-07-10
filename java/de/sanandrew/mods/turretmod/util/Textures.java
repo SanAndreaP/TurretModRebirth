@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.util;
 
 import net.minecraft.util.ResourceLocation;
 
-public enum EnumTextures
+public enum Textures
 {
     TURRET_T1_CROSSBOW("textures/entities/turrets/t1_crossbow.png"),
     TURRET_T1_CROSSBOW_GLOW("textures/entities/turrets/t1_crossbow_glow.png"),
@@ -23,6 +23,7 @@ public enum EnumTextures
     GUI_TCU_TARGETS("textures/gui/tcu/page_targets.png"),
     GUI_TCU_UPGRADES("textures/gui/tcu/page_upgrades.png"),
     GUI_TCU_INFO("textures/gui/tcu/page_info.png"),
+    GUI_TOOLTIP_HOLOGRAPH("textures/gui/holo_tooltip.png"),
 
     TURRET_FORCEFIELD_P1("textures/entities/shield_1.png"),
     TURRET_FORCEFIELD_P2("textures/entities/shield_2.png"),
@@ -32,7 +33,7 @@ public enum EnumTextures
 
     private final ResourceLocation location;
 
-    EnumTextures(String texture) {
+    Textures(String texture) {
         this.location = new ResourceLocation(TurretMod.MOD_ID, texture);
     }
 

@@ -26,6 +26,7 @@ public final class PacketManager
     public static final short EJECT_UPGRADE = 7;
     public static final short EJECT_ALL_UPGRADES = 8;
     public static final short SPAWN_PARTICLE = 9;
+    public static final short UPDATE_TRANSMITTER_EXP_TIME = 10;
 
     public static void initialize() {
         NetworkManager.registerModHandler(TurretMod.MOD_ID, TurretMod.MOD_CHANNEL);
@@ -40,6 +41,7 @@ public final class PacketManager
         NetworkManager.registerModPacketCls(TurretMod.MOD_ID, EJECT_UPGRADE, PacketEjectUpgrade.class);
         NetworkManager.registerModPacketCls(TurretMod.MOD_ID, EJECT_ALL_UPGRADES, PacketEjectAllUpgrades.class);
         NetworkManager.registerModPacketCls(TurretMod.MOD_ID, SPAWN_PARTICLE, PacketSpawnParticle.class);
+        NetworkManager.registerModPacketCls(TurretMod.MOD_ID, UPDATE_TRANSMITTER_EXP_TIME, PacketSendTransmitterExpTime.class);
     }
 
     public static void sendToServer(short packet, Tuple data) {

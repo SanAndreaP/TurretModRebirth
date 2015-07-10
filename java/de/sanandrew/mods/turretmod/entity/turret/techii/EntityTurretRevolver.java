@@ -2,7 +2,7 @@ package de.sanandrew.mods.turretmod.entity.turret.techii;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.entity.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.util.EnumTextures;
+import de.sanandrew.mods.turretmod.util.Textures;
 import de.sanandrew.mods.turretmod.util.TurretMod;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
@@ -112,12 +112,12 @@ public class EntityTurretRevolver
 
 	@Override
 	public ResourceLocation getStandardTexture() {
-		return EnumTextures.TURRET_T2_REVOLVER.getResource();
+		return Textures.TURRET_T2_REVOLVER.getResource();
 	}
 
 	@Override
 	public ResourceLocation getGlowTexture() {
-		return EnumTextures.TURRET_T2_REVOLVER_GLOW.getResource();
+		return Textures.TURRET_T2_REVOLVER_GLOW.getResource();
 	}
 
 	@Override

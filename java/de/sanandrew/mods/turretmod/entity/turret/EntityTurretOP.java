@@ -1,8 +1,6 @@
 package de.sanandrew.mods.turretmod.entity.turret;
 
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
-import de.sanandrew.mods.turretmod.util.EnumTextures;
+import de.sanandrew.mods.turretmod.util.Textures;
 import de.sanandrew.mods.turretmod.util.TurretMod;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
@@ -89,12 +87,12 @@ public class EntityTurretOP
 
 	@Override
 	public ResourceLocation getStandardTexture() {
-		return EnumTextures.TURRET_T1_CROSSBOW.getResource();
+		return Textures.TURRET_T1_CROSSBOW.getResource();
 	}
 
 	@Override
 	public ResourceLocation getGlowTexture() {
-		return EnumTextures.TURRET_T2_REVOLVER_GLOW.getResource();
+		return Textures.TURRET_T2_REVOLVER_GLOW.getResource();
 	}
 
 	@Override

@@ -17,14 +17,14 @@ public class RenderFxLayerHandler
 {
     @SubscribeEvent
     public void onRenderFxPre(SAPFxLayerRenderEvent.Pre event) {
-        if( event.layerId == ClientProxy.PARTICLE_FX_LAYER_1 ) {
+        if( event.layerId == ClientProxy.particleFxLayer1 ) {
             GL11.glDepthMask(false);
         }
     }
 
     @SubscribeEvent
     public void onRenderFxPost(SAPFxLayerRenderEvent.Post event) {
-        if( event.layerId == ClientProxy.PARTICLE_FX_LAYER_1 ) {
+        if( event.layerId == ClientProxy.particleFxLayer1 ) {
             GL11.glDepthMask(true);
         }
     }

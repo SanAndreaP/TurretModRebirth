@@ -17,6 +17,7 @@ import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuInfo;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuTargets;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuUpgrades;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
+import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter;
 import de.sanandrew.mods.turretmod.util.*;
 import de.sanandrew.mods.turretmod.api.registry.TurretUpgradeRegistry;
 import io.netty.buffer.ByteBufInputStream;
@@ -25,6 +26,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -37,7 +39,7 @@ import java.util.List;
 public class ClientProxy
         extends CommonProxy
 {
-    public static int PARTICLE_FX_LAYER_1;
+    public static int particleFxLayer1;
 
     @Override
     public void init() {
@@ -49,7 +51,7 @@ public class ClientProxy
         MinecraftForge.EVENT_BUS.register(new RenderForcefieldHandler());
         SAPUtils.EVENT_BUS.register(new RenderFxLayerHandler());
 
-        PARTICLE_FX_LAYER_1 = SAPEffectRenderer.INSTANCE.registerFxLayer(new ResourceLocation(TurretMod.MOD_ID, "textures/particles/particles_1.png"), true);
+        particleFxLayer1 = SAPEffectRenderer.INSTANCE.registerFxLayer(new ResourceLocation(TurretMod.MOD_ID, "textures/particles/particles_1.png"), true);
     }
 
     @Override
@@ -96,6 +98,14 @@ public class ClientProxy
             for( TurretUpgrade addingUpgrade : addUpgList ) {
                 turret.applyUpgrade(addingUpgrade);
             }
+        }
+    }
+
+    @Override
+    public void processTransmitterExpTime(ByteBufInputStream stream) throws IOException {
+        TileEntity tileEntity = getMinecraft().theWorld.getTileEntity(stream.readInt(), stream.readInt(), stream.readInt());
+        if( tileEntity instanceof TileEntityItemTransmitter ) {
+            ((TileEntityItemTransmitter) tileEntity).requestTimeout = stream.readInt();
         }
     }
 

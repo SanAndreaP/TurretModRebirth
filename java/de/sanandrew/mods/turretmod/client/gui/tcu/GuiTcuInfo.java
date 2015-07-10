@@ -12,7 +12,7 @@ import de.sanandrew.core.manpack.util.client.helpers.GuiUtils;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiSlimButton;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
-import de.sanandrew.mods.turretmod.util.EnumTextures;
+import de.sanandrew.mods.turretmod.util.Textures;
 import de.sanandrew.mods.turretmod.util.TurretMod;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -50,7 +50,7 @@ public class GuiTcuInfo
 
     @Override
     public void drawScreenPostBkg(int mouseX, int mouseY, float partTicks) {
-        this.mc.renderEngine.bindTexture(EnumTextures.GUI_TCU_INFO.getResource());
+        this.mc.renderEngine.bindTexture(Textures.GUI_TCU_INFO.getResource());
 
         GL11.glColor3f(1.0F, 1.0F, 1.0F);
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);

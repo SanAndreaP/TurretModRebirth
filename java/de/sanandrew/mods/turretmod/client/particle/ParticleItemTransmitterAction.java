@@ -66,6 +66,6 @@ public class ParticleItemTransmitterAction
 
     @Override
     public int getFXLayer() {
-        return ClientProxy.PARTICLE_FX_LAYER_1;
+        return ClientProxy.particleFxLayer1;
     }
 }

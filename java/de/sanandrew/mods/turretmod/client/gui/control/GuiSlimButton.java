@@ -8,7 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.control;
 
-import de.sanandrew.mods.turretmod.util.EnumTextures;
+import de.sanandrew.mods.turretmod.util.Textures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -41,7 +41,7 @@ public class GuiSlimButton
                 textColor = 0xFFFFA0;
             }
 
-            mc.getTextureManager().bindTexture(EnumTextures.GUI_BUTTONS.getResource());
+            mc.getTextureManager().bindTexture(Textures.GUI_BUTTONS.getResource());
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             GL11.glEnable(GL11.GL_BLEND);
             OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);

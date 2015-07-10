@@ -8,7 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.render.entity;
 
-import de.sanandrew.mods.turretmod.util.EnumTextures;
+import de.sanandrew.mods.turretmod.util.Textures;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.util.ResourceLocation;
 
@@ -17,6 +17,6 @@ public class RenderBullet
 {
     @Override
     protected ResourceLocation getEntityTexture(EntityArrow arrowEntity) {
-        return EnumTextures.PROJECTILE_BULLET.getResource();
+        return Textures.PROJECTILE_BULLET.getResource();
     }
 }

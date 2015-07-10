@@ -12,31 +12,38 @@ import de.sanandrew.core.manpack.util.helpers.InventoryUtils;
 import de.sanandrew.core.manpack.util.helpers.ItemUtils;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
 import de.sanandrew.mods.turretmod.api.Turret;
+import de.sanandrew.mods.turretmod.network.packet.PacketSendTransmitterExpTime;
 import de.sanandrew.mods.turretmod.util.ParticleProxy;
 import de.sanandrew.mods.turretmod.util.TurretMod;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntityItemTransmitter
         extends TileEntity
         implements ISidedInventory
 {
-    private static final int MAX_TICKS_REQUEST_STAY = 100;
+    private static final int MAX_SEC_TIMEOUT = 5;
 
     private Turret requestingTurret;
     private RequestType requestType = RequestType.NONE;
     private ItemStack requestItem;
-    private int requestTimeout;
+    public int requestTimeout;
+
+    private Turret bannedTurret;
+    private int banTimeout;
 
     private ItemStack bufItem;
     private int ticksExisted = 0;
@@ -54,11 +61,12 @@ public class TileEntityItemTransmitter
     }
 
     public boolean requestItem(Turret turret, RequestType requestType, ItemStack stack) {
-        if( !this.hasRequest() ) {
+        if( !this.hasRequest() && this.bannedTurret != turret ) {
             this.requestingTurret = turret;
             this.requestType = requestType;
             this.requestItem = stack;
-            this.requestTimeout = MAX_TICKS_REQUEST_STAY;
+            this.requestTimeout = MAX_SEC_TIMEOUT;
+            this.bannedTurret = null;
 
             this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
 
@@ -69,32 +77,45 @@ public class TileEntityItemTransmitter
     }
 
     public void removeRequest() {
-        this.updateRequestAndItem(0);
+        this.updateRequestAndItem(0, 0);
     }
 
     @Override
     public void updateEntity() {
         if( !this.worldObj.isRemote ) {
-            if( this.ticksExisted % 20 == 0 && this.hasRequest() ) {
-                this.requestTimeout--;
+            if( this.ticksExisted % 20 == 0 ) {
+                if( this.hasRequest() ) {
+                    this.requestTimeout--;
 
-                if( this.requestTimeout <= 0 || this.requestingTurret == null || !this.requestingTurret.getEntity().isEntityAlive() ) {
-                    this.updateRequestAndItem(0);
-                } else if( this.bufItem != null ) {
-                    switch( this.requestType ) {
-                        case AMMO:
-                            EntityLiving el = this.requestingTurret.getEntity();
-                            TurretMod.particleProxy.spawnParticle(this.xCoord + 0.5D, this.yCoord + 0.8D, this.zCoord + 0.5D, this.worldObj.provider.dimensionId,
-                                                                  ParticleProxy.ITEM_TRANSMITTER, Triplet.with(el.posX, el.posY + el.getEyeHeight(), el.posZ));
-                            int removed = this.requestingTurret.addAmmo(this.bufItem);
-                            this.updateRequestAndItem(removed);
-                            break;
-                        default:
-                            this.updateRequestAndItem(0);
+                    if( this.requestTimeout <= 0 || this.requestingTurret == null || !this.requestingTurret.getEntity().isEntityAlive() ) {
+                        this.bannedTurret = this.requestingTurret;
+                        this.banTimeout = MAX_SEC_TIMEOUT;
+                        this.updateRequestAndItem(0, 0);
+                    } else if( this.bufItem != null ) {
+                        switch( this.requestType ) {
+                            case AMMO:
+                                EntityLiving el = this.requestingTurret.getEntity();
+                                TurretMod.particleProxy.spawnParticle(this.xCoord + 0.5D, this.yCoord + 0.8D, this.zCoord + 0.5D, this.worldObj.provider.dimensionId,
+                                                                      ParticleProxy.ITEM_TRANSMITTER, Triplet.with(el.posX, el.posY + el.getEyeHeight(), el.posZ)
+                                                                     );
+                                int removed = this.requestingTurret.addAmmo(this.bufItem);
+                                this.updateRequestAndItem(removed, this.requestingTurret.getMaxAmmo() - this.requestingTurret.getAmmo());
+                                break;
+                            default:
+                                this.updateRequestAndItem(0, 0);
+                        }
+                    } else {
+                        this.updateRequestAndItem(0, this.requestingTurret.getMaxAmmo() - this.requestingTurret.getAmmo());
                     }
+
+                    PacketSendTransmitterExpTime.sendToAllAround(this);
+                } else if( !this.hasRequest() && this.bufItem != null ) {
+                    this.updateRequestAndItem(0, 0);
                 }
-            } else if( !this.hasRequest() && this.bufItem != null ) {
-                this.updateRequestAndItem(0);
+
+                if( --this.banTimeout <= 0 ) {
+                    this.bannedTurret = null;
+                }
             }
         }
 
@@ -107,7 +128,7 @@ public class TileEntityItemTransmitter
         packetNBT.setByte("requestType", (byte) this.requestType.ordinal());
         if( this.requestType != RequestType.NONE ) {
             NBTTagCompound itemNbt = new NBTTagCompound();
-            requestItem.writeToNBT(itemNbt);
+            saveStack(itemNbt, this.requestItem);
             packetNBT.setInteger("turretId", this.requestingTurret.getEntity().getEntityId());
             packetNBT.setInteger("timeout", this.requestTimeout);
             packetNBT.setTag("item", itemNbt);
@@ -123,7 +144,7 @@ public class TileEntityItemTransmitter
         if( this.requestType != RequestType.NONE ) {
             this.requestingTurret = (Turret) this.worldObj.getEntityByID(data.getInteger("turretId"));
             this.requestTimeout = data.getInteger("timeout");
-            this.requestItem = ItemStack.loadItemStackFromNBT(data.getCompoundTag("item"));
+            this.requestItem = readStack(data.getCompoundTag("item"));
         }
     }
 
@@ -150,21 +171,24 @@ public class TileEntityItemTransmitter
         return true;
     }
 
-    private void updateRequestAndItem(int removed) {
-        if( removed > 0 ) {
+    private void updateRequestAndItem(int removed, int stillNeeded) {
+        if( removed > 0 || stillNeeded > 0 ) {
             if( !this.hasRequest() ) {
-                this.updateRequestAndItem(0);
+                this.updateRequestAndItem(0, 0);
                 return;
             }
 
-            this.requestingTurret.getEntity().playSound(TurretMod.MOD_ID + ":collect.ia_get", 1.0F, 1.0F);
-            this.bufItem.stackSize -= removed;
-            this.requestItem.stackSize -= removed;
-            if( this.bufItem.stackSize <= 0 ) {
-                this.bufItem = null;
+            if( removed > 0 ) {
+                this.requestingTurret.getEntity().playSound(TurretMod.MOD_ID + ":collect.ia_get", 1.0F, 1.0F);
+                this.bufItem.stackSize -= removed;
+                if( this.bufItem.stackSize <= 0 ) {
+                    this.bufItem = null;
+                }
+
+                this.requestTimeout = MAX_SEC_TIMEOUT;
             }
 
-            this.requestTimeout = MAX_TICKS_REQUEST_STAY;
+            this.requestItem.stackSize = stillNeeded;
 
             if( this.requestItem.stackSize <= 0 ) {
                 this.requestType = RequestType.NONE;
@@ -302,6 +326,43 @@ public class TileEntityItemTransmitter
 
     public RequestType getRequestType() {
         return this.requestType;
+    }
+
+    public Turret getRequestingTurret() {
+        return this.requestingTurret;
+    }
+
+    /**
+     * Taken from {@link ItemStack#writeToNBT(NBTTagCompound)} - {@link ItemStack#stackSize} will be written as short instead of byte here.
+     * @param nbt the NBTTagCompound the item will be saved in
+     * @param stack the stack to be saved
+     */
+    private static void saveStack(NBTTagCompound nbt, ItemStack stack) {
+        nbt.setShort("id", (short) Item.getIdFromItem(stack.getItem()));
+        nbt.setShort("Count", (short) stack.stackSize);
+        nbt.setShort("Damage", (short) stack.getItemDamage());
+
+        if( stack.stackTagCompound != null ) {
+            nbt.setTag("tag", stack.stackTagCompound);
+        }
+    }
+
+    /**
+     * Taken from {@link ItemStack#readFromNBT(NBTTagCompound)} - {@link ItemStack#stackSize} will be read as short instead of byte here.
+     * @param nbt the NBTTagCompound the item will be loaded from
+     * @return the loaded stack
+     */
+    private static ItemStack readStack(NBTTagCompound nbt) {
+        ItemStack stack = new ItemStack(Blocks.air);
+        stack.func_150996_a(Item.getItemById(nbt.getShort("id")));
+        stack.stackSize = nbt.getShort("Count");
+        stack.setItemDamage(nbt.getShort("Damage"));
+
+        if( nbt.hasKey("tag", NBT.TAG_COMPOUND) ) {
+            stack.stackTagCompound = nbt.getCompoundTag("tag");
+        }
+
+        return stack;
     }
 
     public enum RequestType

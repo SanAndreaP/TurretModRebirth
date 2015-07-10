@@ -43,4 +43,6 @@ public interface Turret
     ItemStack getAmmoTypeItem();
 
     int addAmmo(ItemStack stack);
+
+    String getTurretName();
 }

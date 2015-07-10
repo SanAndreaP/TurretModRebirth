@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.entity.turret.techi;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
-import de.sanandrew.mods.turretmod.util.EnumTextures;
+import de.sanandrew.mods.turretmod.util.Textures;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
@@ -53,12 +53,12 @@ public class EntityTurretCrossbow
 
     @Override
     public ResourceLocation getStandardTexture() {
-        return EnumTextures.TURRET_T1_CROSSBOW.getResource();
+        return Textures.TURRET_T1_CROSSBOW.getResource();
     }
 
     @Override
     public ResourceLocation getGlowTexture() {
-        return EnumTextures.TURRET_T1_CROSSBOW_GLOW.getResource();
+        return Textures.TURRET_T1_CROSSBOW_GLOW.getResource();
     }
 
     public class TargetSelector implements IEntitySelector

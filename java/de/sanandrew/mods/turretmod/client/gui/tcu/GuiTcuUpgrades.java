@@ -16,7 +16,7 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.entity.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.network.packet.PacketEjectAllUpgrades;
 import de.sanandrew.mods.turretmod.network.packet.PacketEjectUpgrade;
-import de.sanandrew.mods.turretmod.util.EnumTextures;
+import de.sanandrew.mods.turretmod.util.Textures;
 import de.sanandrew.mods.turretmod.util.TmrItems;
 import de.sanandrew.mods.turretmod.util.TurretMod;
 import net.minecraft.client.gui.FontRenderer;
@@ -71,7 +71,7 @@ public class GuiTcuUpgrades
     public void drawScreenPostBkg(int mouseX, int mouseY, float partTicks) {
         boolean isLmbDown = Mouse.isButtonDown(0);
 
-        this.mc.renderEngine.bindTexture(EnumTextures.GUI_TCU_UPGRADES.getResource());
+        this.mc.renderEngine.bindTexture(Textures.GUI_TCU_UPGRADES.getResource());
 
         GL11.glColor3f(1.0F, 1.0F, 1.0F);
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
@@ -95,7 +95,7 @@ public class GuiTcuUpgrades
                 GuiUtils.drawGuiIcon(TmrItems.turretUpgrade.getIcon(currStack, 1), this.guiLeft + 7 + col * 18, this.guiTop + 25 + row * 26);
 
                 GL11.glEnable(GL11.GL_BLEND);
-                this.mc.renderEngine.bindTexture(EnumTextures.GUI_TCU_UPGRADES.getResource());
+                this.mc.renderEngine.bindTexture(Textures.GUI_TCU_UPGRADES.getResource());
                 boolean isHoveringOverEject = GuiUtils.isMouseInRect(mouseX, mouseY, this.guiLeft + 6 + col * 18, this.guiTop + 18 + row * 26, 5, 6);
                 this.drawTexturedModalRect(this.guiLeft + 6 + col * 18, this.guiTop + 18 + row * 26, 176, (isHoveringOverEject ? 0 : 6), 5, 6);
                 if( isHoveringOverEject && isLmbDown && !this.prevIsLmbDown ) {
@@ -116,7 +116,7 @@ public class GuiTcuUpgrades
             if( col == 0 ) {
                 if( row >= this.rowsVisible ) {
                     GL11.glEnable(GL11.GL_BLEND);
-                    this.mc.renderEngine.bindTexture(EnumTextures.GUI_TCU_UPGRADES.getResource());
+                    this.mc.renderEngine.bindTexture(Textures.GUI_TCU_UPGRADES.getResource());
                     this.drawTexturedModalRect(this.guiLeft + 6, this.guiTop + 18 + row * 26, 0, 222, 162, 24);
                     GL11.glDisable(GL11.GL_BLEND);
                 }

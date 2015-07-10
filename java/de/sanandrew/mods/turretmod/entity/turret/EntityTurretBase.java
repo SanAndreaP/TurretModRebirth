@@ -664,6 +664,7 @@ public abstract class EntityTurretBase
         return name.isEmpty() ? null : name;
     }
 
+    @Override
     public String getTurretName() {
         String customName = this.getCustomNameTag();
         return customName.isEmpty() ? this.getDefaultName() : customName;//this.dataWatcher.getWatchableObjectString(DW_TURRET_NAME);
