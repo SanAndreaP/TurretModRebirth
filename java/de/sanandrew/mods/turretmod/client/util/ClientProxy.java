@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.util;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import de.sanandrew.core.manpack.mod.client.particle.SAPEffectRenderer;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.api.TurretUpgrade;
@@ -49,6 +50,7 @@ public class ClientProxy
         TmrBlocks.registerBlockAndTeRenderers();
 
         MinecraftForge.EVENT_BUS.register(new RenderForcefieldHandler());
+        FMLCommonHandler.instance().bus().register(ClientSideStateCheatPropertyManagerFactoryKeyResponseInterceptorInterpreter.INSTANCE);
         SAPUtils.EVENT_BUS.register(new RenderFxLayerHandler());
 
         particleFxLayer1 = SAPEffectRenderer.INSTANCE.registerFxLayer(new ResourceLocation(TurretMod.MOD_ID, "textures/particles/particles_1.png"), true);
