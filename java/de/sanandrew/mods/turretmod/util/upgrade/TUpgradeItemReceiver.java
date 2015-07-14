@@ -31,17 +31,17 @@ public class TUpgradeItemReceiver
 
     @Override
     public void onApply(Turret turret) {
-        turret.registerUpgradeToUpdateQueue(this, new ReceiverData());
+        turret.getUpgradeHandler().registerUpgradeToUpdateQueue(this, new ReceiverData());
     }
 
     @Override
     public void onLoad(Turret turret, NBTTagCompound nbt) {
-        turret.registerUpgradeToUpdateQueue(this, new ReceiverData());
+        turret.getUpgradeHandler().registerUpgradeToUpdateQueue(this, new ReceiverData());
     }
 
     @Override
     public void onRemove(Turret turret) {
-        ReceiverData data = SAPUtils.getCasted(turret.getUpgradeQueueData(this));
+        ReceiverData data = SAPUtils.getCasted(turret.getUpgradeHandler().getUpgradeQueueData(this));
         if( data != null && data.currRequestHolder != null ) {
             data.currRequestHolder.removeRequest();
         }

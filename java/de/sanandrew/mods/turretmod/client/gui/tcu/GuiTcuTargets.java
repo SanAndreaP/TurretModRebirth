@@ -81,7 +81,7 @@ public class GuiTcuTargets
 
         TreeMap<Class<? extends EntityLiving>, Boolean> btwSortMapNm = new TreeMap<>(new TargetComparatorName());
         TreeMap<Class<? extends EntityLiving>, Boolean> btwSortMapCl = new TreeMap<>(new TargetComparatorClass());
-        btwSortMapNm.putAll(this.myTurret.getTargetList());
+        btwSortMapNm.putAll(this.myTurret.getTargetHandler().getTargetList());
         btwSortMapCl.putAll(btwSortMapNm);
         this.tempTargetList = btwSortMapCl;
 

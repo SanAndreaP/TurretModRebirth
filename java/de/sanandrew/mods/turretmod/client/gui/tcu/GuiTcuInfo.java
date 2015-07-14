@@ -78,7 +78,9 @@ public class GuiTcuInfo
         value = this.myTurret.getAmmoType() != null ? this.myTurret.getAmmoType().getTypeItem().getDisplayName() : "-n/a-";
         this.fontRendererObj.drawString(value, this.guiLeft + 42, this.guiTop + 48, 0x000000);
 //
-        value = this.myTurret.hasTarget() ? SAPUtils.translatePreFormat("entity.%s.name", this.myTurret.getTargetName()) : "-n/a-";
+        value = this.myTurret.getTargetHandler().hasTarget(this.myTurret)
+                ? SAPUtils.translatePreFormat("entity.%s.name", this.myTurret.getTargetHandler().getTargetName(this.myTurret))
+                : "-n/a-";
         this.fontRendererObj.drawString(value, this.guiLeft + 20, this.guiTop + 71, 0x000000);
 
         value = this.myTurret.getOwnerName();

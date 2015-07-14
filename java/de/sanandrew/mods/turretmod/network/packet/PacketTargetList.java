@@ -48,7 +48,7 @@ public class PacketTargetList
     }
 
     public static void sendPacket(EntityTurretBase turret) {
-        final Map<Class<? extends EntityLiving>, Boolean> targets = turret.getTargetList();
+        final Map<Class<? extends EntityLiving>, Boolean> targets = turret.getTargetHandler().getTargetList();
         List<Class<? extends EntityLiving>> applicableTargets = new ArrayList<>(Collections2.filter(targets.keySet(), new Predicate<Class<? extends EntityLiving>>() {
                                                                                         @Override public boolean apply(Class<? extends EntityLiving> input) {
                                                                                             return targets.get(input);

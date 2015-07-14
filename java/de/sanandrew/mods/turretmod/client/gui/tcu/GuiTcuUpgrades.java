@@ -61,10 +61,10 @@ public class GuiTcuUpgrades
     public void updateScreen() {
         super.updateScreen();
 
-        this.tempUpgradeList = this.myTurret.getUpgradeList();
+        this.tempUpgradeList = this.myTurret.getUpgradeHandler().getUpgradeList();
         this.ejectAll.enabled = this.tempUpgradeList.size() > 0;
 
-        this.rowsVisible = this.myTurret.getMaxUpgradeSlots() / 9;
+        this.rowsVisible = this.myTurret.getUpgradeHandler().getMaxUpgradeSlots(this.myTurret) / 9;
     }
 
     @Override

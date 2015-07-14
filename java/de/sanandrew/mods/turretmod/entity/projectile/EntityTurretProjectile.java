@@ -237,7 +237,8 @@ public abstract class EntityTurretProjectile
             List<Entity> collidedEntities;
             AxisAlignedBB entityColBB = this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D);
             if( this.shootingEntity instanceof Turret ) {
-                collidedEntities = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, entityColBB, ((Turret) this.shootingEntity).getParentTargetSelector());
+                collidedEntities = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, entityColBB, ((Turret) this.shootingEntity).getTargetHandler()
+                                                                                                                                       .getParentTargetSelector());
             } else {
                 collidedEntities = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, entityColBB);
             }
@@ -331,7 +332,8 @@ public abstract class EntityTurretProjectile
                             }
                         }
                     } else if(this.shootingEntity != null && currHitObj.entityHit != null && this.shootingEntity instanceof EntityTurretBase
-                                    && ((EntityTurretBase) this.shootingEntity).getParentTargetSelector().isEntityApplicable(currHitObj.entityHit) ) {
+                              && ((EntityTurretBase) this.shootingEntity).getTargetHandler().getParentTargetSelector().isEntityApplicable(currHitObj.entityHit) )
+                    {
                         this.processFailedHit(currHitObj.entityHit);
                     }
                 } else {

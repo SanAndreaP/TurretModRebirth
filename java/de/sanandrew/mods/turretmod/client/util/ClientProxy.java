@@ -69,7 +69,7 @@ public class ClientProxy
                 applicableTargets.add(entityCls);
             }
 
-            ((EntityTurretBase) e).setTargetList(applicableTargets);
+            ((EntityTurretBase) e).getTargetHandler().setTargetList(applicableTargets);
         }
     }
 
@@ -78,28 +78,15 @@ public class ClientProxy
         int entityId = stream.readInt();
         int listSize = stream.readInt();
         Entity e = getMinecraft().theWorld.getEntityByID(entityId);
-        List<TurretUpgrade> currUpgList = new ArrayList<>(listSize);
-        for( int i = 0; i < listSize; i++ ) {
-            String regName = stream.readUTF();
-            currUpgList.add(TurretUpgradeRegistry.getUpgrade(regName));
-        }
 
         if( e instanceof EntityTurretBase ) {
+            List<TurretUpgrade> currUpgList = new ArrayList<>(listSize);
+            for( int i = 0; i < listSize; i++ ) {
+                String regName = stream.readUTF();
+                currUpgList.add(TurretUpgradeRegistry.getUpgrade(regName));
+            }
             EntityTurretBase turret = (EntityTurretBase) e;
-            List<TurretUpgrade> oldUpgList = turret.getUpgradeList();
-
-            List<TurretUpgrade> remUpgList = turret.getUpgradeList();
-            remUpgList.removeAll(currUpgList);
-            List<TurretUpgrade> addUpgList = new ArrayList<>(currUpgList);
-            addUpgList.removeAll(oldUpgList);
-
-            for( TurretUpgrade removingUpgrade : remUpgList ) {
-                turret.removeUpgrade(removingUpgrade);
-            }
-
-            for( TurretUpgrade addingUpgrade : addUpgList ) {
-                turret.applyUpgrade(addingUpgrade);
-            }
+            turret.getUpgradeHandler().applyUpgradeList(turret, currUpgList);
         }
     }
 

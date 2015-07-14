@@ -42,10 +42,10 @@ public class PacketEjectUpgrade
             String upgradeName = stream.readUTF();
             TurretUpgrade upgrade = TurretUpgradeRegistry.getUpgrade(upgradeName);
             if( upgrade != null ) {
-                List<TurretUpgrade> ejectingUpgrades = getRcurDepUpgrades(upgrade, turret.getUpgradeList());
+                List<TurretUpgrade> ejectingUpgrades = getRcurDepUpgrades(upgrade, turret.getUpgradeHandler().getUpgradeList());
                 for( TurretUpgrade ejectUpg : ejectingUpgrades ) {
                     ItemStack stack = TmrItems.turretUpgrade.getStackWithUpgrade(ejectUpg, 1);
-                    turret.removeUpgrade(ejectUpg);
+                    turret.getUpgradeHandler().removeUpgrade(turret, ejectUpg);
                     if( (stack = InventoryUtils.addStackToInventory(stack, player.inventory)) != null ) {
                         turret.entityDropItem(stack, 0.0F);
                     }

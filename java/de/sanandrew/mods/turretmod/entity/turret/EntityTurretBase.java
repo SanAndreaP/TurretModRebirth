@@ -8,44 +8,32 @@
  */
 package de.sanandrew.mods.turretmod.entity.turret;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
 import de.sanandrew.core.manpack.util.helpers.InventoryUtils;
 import de.sanandrew.core.manpack.util.helpers.ItemUtils;
-import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.api.*;
-import de.sanandrew.mods.turretmod.api.registry.TurretUpgradeRegistry;
-import de.sanandrew.mods.turretmod.network.packet.PacketTargetList;
-import de.sanandrew.mods.turretmod.network.packet.PacketTargetListRequest;
-import de.sanandrew.mods.turretmod.network.packet.PacketUpgradeList;
-import de.sanandrew.mods.turretmod.network.packet.PacketUpgradeListRequest;
+import de.sanandrew.mods.turretmod.entity.turret.handler.TurretTargetHandler;
+import de.sanandrew.mods.turretmod.entity.turret.handler.TurretUpgradeHandler;
 import de.sanandrew.mods.turretmod.util.*;
 import de.sanandrew.mods.turretmod.util.TurretRegistry.HealInfo;
 import net.minecraft.block.Block;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants.NBT;
 import org.apache.logging.log4j.Level;
 
-import java.util.*;
-import java.util.Map.Entry;
+import java.util.List;
+import java.util.UUID;
 
 public abstract class EntityTurretBase
         extends EntityLiving
@@ -59,7 +47,6 @@ public abstract class EntityTurretBase
     private static final int DW_EXPERIENCE = 22; /* INT */
     private static final int DW_OWNER_UUID = 23; /* STRING */
     private static final int DW_OWNER_NAME = 24; /* STRING */
-    private static final int DW_TARGET = 25; /* STRING */
     private static final int DW_SHOOT_TICKS = 26; /* INT */
     private static final int DW_FREQUENCY = 27; /* BYTE */
     private static final int DW_BOOLEANS = 28; /* BYTE */
@@ -67,68 +54,34 @@ public abstract class EntityTurretBase
     // info
     public final TurretInfo<? extends Turret> myInfo = TurretRegistry.getTurretInfo(this.getClass());
 
-    // targeting
-    protected Entity currentTarget;
-
-    private final IEntitySelector parentTargetSelector = new IEntitySelector() {
-        @Override public boolean isEntityApplicable(Entity entity) {
-            return entity instanceof EntityLiving && this.isTargetApplicable((EntityLiving) entity);
-        }
-
-        private boolean isTargetApplicable(EntityLiving living) {
-            Boolean isTargetClsActive = EntityTurretBase.this.activeTargets.get(living.getClass());
-            return EntityTurretBase.this.activeTargets != null && isTargetClsActive != null && isTargetClsActive
-                    && living.isEntityAlive() && !living.isEntityInvulnerable() && EntityTurretBase.this.getTargetSelector().isEntityApplicable(living);
-        }
-    };
-
-    protected Map<Class<? extends EntityLiving>, Boolean> activeTargets = new HashMap<>();
-    protected Integer targetMapHash = null;
-
-    // upgrades
-    protected List<TurretUpgrade> upgrades = new ArrayList<>(36);
-    protected Integer upgradeListHash = null;
-
-    protected Map<TurretUpgrade, UpgradeQueueData> upgradeUpdQueues = new HashMap<>();
+    protected TurretTargetHandler tgtHandler;
+    protected TurretUpgradeHandler upgHandler;
 
     public EntityTurretBase(World par1World) {
         super(par1World);
         this.setSize(0.3F, 1.8F);
 
-        Predicate<Class> entityTargetPredicate = new Predicate<Class>()
-        {
-            @Override
-            public boolean apply(Class input) {
-                return EntityLiving.class.isAssignableFrom(input) && input != EntityLivingBase.class && input != EntityLiving.class
-                       && !EntityTurretBase.class.isAssignableFrom(input);
-            }
-        };
-        @SuppressWarnings("unchecked")
-        Collection<Class<? extends EntityLiving>> livingClsList = Collections2.filter(EntityList.stringToClassMapping.values(), entityTargetPredicate);
-
-        for( Class<? extends EntityLiving> livingCls : livingClsList ) {
-            this.activeTargets.put(livingCls, IMob.class.isAssignableFrom(livingCls));
-        }
-
-        if( !this.worldObj.isRemote ) {
-            this.targetMapHash = this.activeTargets.hashCode();
-            this.upgradeListHash = this.upgrades.hashCode();
-        }
+        this.tgtHandler.onTurretConstruct(this);
+        this.upgHandler.onTurretConstruct(this);
     }
 
     @Override
     protected void entityInit() {
         super.entityInit();
 
+        this.tgtHandler = new TurretTargetHandler();
+        this.upgHandler = new TurretUpgradeHandler();
+
         this.dataWatcher.addObject(DW_AMMO, 0); // Ammo Count
         this.dataWatcher.addObjectByDataType(DW_AMMO_TYPE, 5 /*ITEM_STACK*/); // Ammo Count
         this.dataWatcher.addObject(DW_EXPERIENCE, 0); // Experience
         this.dataWatcher.addObject(DW_OWNER_UUID, ""); // Player UUID
         this.dataWatcher.addObject(DW_OWNER_NAME, ""); // Player name
-        this.dataWatcher.addObject(DW_TARGET, ""); // Target name
         this.dataWatcher.addObject(DW_SHOOT_TICKS, 0); // shootTicks
         this.dataWatcher.addObject(DW_FREQUENCY, (byte) 0); // frequency
         this.dataWatcher.addObject(DW_BOOLEANS, (byte) 0);   // boolean stuff
+
+        this.tgtHandler.onTurretInit(this.dataWatcher);
 
         this.setActiveState(true);
     }
@@ -139,7 +92,7 @@ public abstract class EntityTurretBase
 
         this.getAttributeMap().registerAttribute(TurretAttributes.MAX_AMMO_CAPACITY);
         this.getAttributeMap().registerAttribute(TurretAttributes.MAX_RELOAD_TICKS);
-        this.getAttributeMap().registerAttribute(TurretAttributes.MAX_UPGRADE_SLOTS);
+        this.upgHandler.onApplyAttributes(this.getAttributeMap());
     }
 
     @Override
@@ -225,7 +178,7 @@ public abstract class EntityTurretBase
 
         this.worldObj.theProfiler.endSection();
 
-        if( this.isActive() && !(this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlayer) && !this.hasTarget() ) {
+        if( this.isActive() && !(this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlayer) && !this.tgtHandler.hasTarget(this) ) {
             this.rotationYawHead += 1.0F;
             this.rotationPitch = 0.0F;
         }
@@ -233,25 +186,8 @@ public abstract class EntityTurretBase
 
     @Override
     public void onUpdate() {
-        int currTargetHash = this.activeTargets.hashCode();
-        if( this.targetMapHash == null || this.targetMapHash != currTargetHash ) {
-            if( this.worldObj.isRemote ) {
-                PacketTargetListRequest.sendPacket(this);
-            } else {
-                PacketTargetList.sendPacket(this);
-            }
-            this.targetMapHash = currTargetHash; // prevent resending packet until it arrives
-        }
-
-        int currUpgradeHash = this.upgrades.hashCode();
-        if( this.upgradeListHash == null || this.upgradeListHash != currUpgradeHash ) {
-            if( this.worldObj.isRemote ) {
-                PacketUpgradeListRequest.sendPacket(this);
-            } else {
-                PacketUpgradeList.sendPacket(this);
-            }
-            this.upgradeListHash = currUpgradeHash; // prevent resending packet until it arrives
-        }
+        this.tgtHandler.onTurretUpdate(this);
+        this.upgHandler.onTurretUpdate(this);
 
         this.motionY -= 0.045F;
         Block belowBlock = this.worldObj.getBlock(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.posY) - 1, MathHelper.floor_double(this.posZ));
@@ -297,14 +233,12 @@ public abstract class EntityTurretBase
             this.rotationYawHead = riddenPlayer.rotationYawHead;
             if (!this.worldObj.isRemote) this.dataWatcher.updateObject(26, "");
         } else {
-            updateTarget();
+            this.tgtHandler.updateTarget(this);
 
             shoot(false);
 
             this.rotationYaw = this.prevRotationYaw = this.renderYawOffset = this.prevRenderYawOffset = 0.0F;
         }
-
-
 
         if( this.ridingEntity == null ) {
             if (this.posX > Math.floor(posX) + 0.501F || this.posX < Math.floor(posX) + 0.499F) {
@@ -315,10 +249,6 @@ public abstract class EntityTurretBase
                 this.posZ = Math.floor(posZ) + 0.5;
                 this.setPositionAndUpdate(this.posX, this.posY, this.posZ);
             }
-        }
-
-        for( Entry<TurretUpgrade, UpgradeQueueData> queue : this.upgradeUpdQueues.entrySet() ) {
-            queue.getKey().onUpdateQueue(this, queue.getValue());
         }
     }
 
@@ -332,8 +262,8 @@ public abstract class EntityTurretBase
             return;
         }
 
-        if( this.currentTarget != null ) {
-            this.faceEntity(this.currentTarget, 10.0F, this.getVerticalFaceSpeed());
+        if( this.tgtHandler.getCurrentTarget() != null ) {
+            this.faceEntity(this.tgtHandler.getCurrentTarget(), 10.0F, this.getVerticalFaceSpeed());
         } else if( this.worldObj.isRemote && !(this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlayer) ) {
             this.rotationYawHead += 1.0F;
             this.rotationPitch = 0.0F;
@@ -388,7 +318,9 @@ public abstract class EntityTurretBase
 
                     return true;
                 }
-                if( heldItem.getItem() == TmrItems.turretUpgrade && (upgrade = TmrItems.turretUpgrade.getUpgradeFromStack(heldItem)) != null && this.applyUpgrade(upgrade) ) {
+                if( heldItem.getItem() == TmrItems.turretUpgrade && (upgrade = TmrItems.turretUpgrade.getUpgradeFromStack(heldItem)) != null
+                    && this.upgHandler.applyUpgrade(this, upgrade) )
+                {
                     InventoryUtils.decrPlayerHeldStackSize(player, 1);
                     this.playSound(TurretMod.MOD_ID + ":collect.ia_get", 1.0F, 1.0F);
 
@@ -418,21 +350,8 @@ public abstract class EntityTurretBase
             nbt.setTag("ammoItem", itemNBT);
         }
 
-        NBTTagList targetList = new NBTTagList();
-        for( Entry<Class<? extends EntityLiving>, Boolean> entry : this.activeTargets.entrySet() ) {
-            NBTTagCompound targetNBT = new NBTTagCompound();
-            targetNBT.setString("entityClass", (String) EntityList.classToStringMapping.get(entry.getKey()));
-            targetNBT.setBoolean("isActive", entry.getValue());
-            targetList.appendTag(targetNBT);
-        }
-        nbt.setTag("targetList", targetList);
-
-        NBTTagList upgradeList = new NBTTagList();
-        for( TurretUpgrade upgrade : this.upgrades ) {
-            upgrade.onSave(this, nbt);
-            upgradeList.appendTag(new NBTTagString(TurretUpgradeRegistry.getRegistrationName(upgrade)));
-        }
-        nbt.setTag("upgradeList", upgradeList);
+        this.tgtHandler.writeToNbt(this, nbt);
+        this.upgHandler.writeToNbt(this, nbt);
     }
 
     @Override
@@ -451,26 +370,8 @@ public abstract class EntityTurretBase
             this.dataWatcher.updateObject(DW_AMMO_TYPE, ItemStack.loadItemStackFromNBT(itemNBT));
         }
 
-        NBTTagList targetList = nbt.getTagList("targetList", NBT.TAG_COMPOUND);
-        for( int i = 0; i < targetList.tagCount(); i++ ) {
-            NBTTagCompound targetNBT = targetList.getCompoundTagAt(i);
-            Class entityCls = (Class) EntityList.stringToClassMapping.get(targetNBT.getString("entityClass"));
-            if( EntityLiving.class.isAssignableFrom(entityCls) && this.activeTargets.containsKey(entityCls) ) {
-                this.activeTargets.put(SAPUtils.<Class<? extends EntityLiving>>getCasted(entityCls), targetNBT.getBoolean("isActive"));
-            }
-        }
-
-        NBTTagList upgradeList = nbt.getTagList("upgradeList", NBT.TAG_STRING);
-        for( int i = 0; i < upgradeList.tagCount(); i++ ) {
-            String upgradeName = upgradeList.getStringTagAt(i);
-            TurretUpgrade upgrade = TurretUpgradeRegistry.getUpgrade(upgradeName);
-            if( upgrade != null ) {
-                this.upgrades.add(upgrade);
-                upgrade.onLoad(this, nbt);
-            } else {
-                TurretMod.MOD_LOG.printf(Level.WARN, "Skipped loading upgrade %s, because it wasn't registered!", upgradeName);
-            }
-        }
+        this.tgtHandler.readFromNbt(this, nbt);
+        this.upgHandler.readFromNbt(this, nbt);
     }
 
     @Override
@@ -479,7 +380,7 @@ public abstract class EntityTurretBase
     }
 
     public void shoot(boolean isRidden) {
-        if( !this.worldObj.isRemote && this.getHealth() > 0 && (isRidden || this.hasTarget()) ) {
+        if( !this.worldObj.isRemote && this.getHealth() > 0 && (isRidden || this.tgtHandler.hasTarget(this)) ) {
             if( this.getShootTicks() == 0 ) {
                 if( this.getAmmo() > 0 ) {
                     this.depleteAmmo(1);
@@ -524,7 +425,7 @@ public abstract class EntityTurretBase
 //            proj.setHeading(proj.motionX, proj.motionY, proj.motionZ, 1F * 1.5F, 1.0F);
 //            proj.shootingEntity = this;
 //        } else {
-            proj.setTarget(this, this.currentTarget, 1.4F, 0.0F);
+            proj.setTarget(this, this.tgtHandler.getCurrentTarget(), 1.4F, 0.0F);
 //        }
 //        proj.isActingAsMeelee = false;//TurretUpgrades.hasUpgrade(TUpgEnderHitting.class, this.upgrades);
             if (this.getShootSound() != null) {
@@ -540,29 +441,8 @@ public abstract class EntityTurretBase
     }
 
     @SuppressWarnings("unchecked")
-    protected List<Entity> getValidTargets() {
-        return this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.getRangeBB(), this.parentTargetSelector);
-    }
-
-    public final IEntitySelector getParentTargetSelector() {
-        return this.parentTargetSelector;
-    }
-
-    protected void updateTarget() {
-        if( !this.worldObj.isRemote ) {
-            if( this.currentTarget == null ) {
-                List<Entity> targets = this.getValidTargets();
-                if( targets.size() > 0 ) {
-                    this.currentTarget = targets.get(this.rand.nextInt(targets.size()));
-                    this.dataWatcher.updateObject(DW_TARGET, EntityList.getEntityString(this.currentTarget));
-                }
-            } else {
-                if( !this.parentTargetSelector.isEntityApplicable(this.currentTarget) ) {
-                    this.currentTarget = null;
-                    this.dataWatcher.updateObject(DW_TARGET, "");
-                }
-            }
-        }
+    public List<Entity> getValidTargets() {
+        return this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.getRangeBB(), this.tgtHandler.getParentTargetSelector());
     }
 
     protected float updateRotation(float prevRotation, float newRotation) {
@@ -574,42 +454,14 @@ public abstract class EntityTurretBase
         return 1.5F;
     }
 
-    public boolean applyUpgrade(TurretUpgrade upg) {
-        boolean hasDependency = upg.getDependantOn() == null || this.hasUpgrade(upg.getDependantOn());
-        if( this.upgrades.size() < this.getMaxUpgradeSlots() && !this.hasUpgrade(upg) && hasDependency && TurretUpgradeRegistry.isApplicableToCls(upg, this.getClass()) ) {
-            this.upgrades.add(upg);
-            upg.onApply(this);
-            return true;
-        }
-
-        return false;
-    }
-
-    public boolean hasUpgrade(TurretUpgrade upg) {
-        return this.upgrades.contains(upg);
-    }
-
-    public final List<TurretUpgrade> getUpgradeList() {
-        return new ArrayList<>(this.upgrades);
-    }
-
-    public final int getMaxUpgradeSlots() {
-        return MathHelper.ceiling_double_int(this.getEntityAttribute(TurretAttributes.MAX_UPGRADE_SLOTS).getAttributeValue());
-    }
-
-    public void removeUpgrade(TurretUpgrade upg) {
-        if( this.hasUpgrade(upg) ) {
-            upg.onRemove(this);
-            this.upgrades.remove(upg);
-            if( this.upgradeUpdQueues.containsKey(upg) ) {
-                this.upgradeUpdQueues.remove(upg);
-            }
-        }
+    @Override
+    public TurretUpgradeHandler getUpgradeHandler() {
+        return this.upgHandler;
     }
 
     @Override
-    public UpgradeQueueData getUpgradeQueueData(TurretUpgrade upgrade) {
-        return this.upgradeUpdQueues.get(upgrade);
+    public TurretTargetHandler getTargetHandler() {
+        return this.tgtHandler;
     }
 
     @Override
@@ -617,14 +469,9 @@ public abstract class EntityTurretBase
         return this;
     }
 
-    @Override
-    public void registerUpgradeToUpdateQueue(TurretUpgrade upgrade, UpgradeQueueData queueData) {
-        this.upgradeUpdQueues.put(upgrade, queueData);
-    }
-
     public abstract ResourceLocation getStandardTexture();
     public abstract ResourceLocation getGlowTexture();
-    protected abstract IEntitySelector getTargetSelector();
+    public abstract IEntitySelector getTargetSelector();
     protected abstract String getShootSound();
 
     private TurretProjectile<? extends EntityArrow> getProjectile() {
@@ -670,29 +517,12 @@ public abstract class EntityTurretBase
         return customName.isEmpty() ? this.getDefaultName() : customName;//this.dataWatcher.getWatchableObjectString(DW_TURRET_NAME);
     }
 
-    public String getTargetName() {
-        return this.dataWatcher.getWatchableObjectString(DW_TARGET);
-    }
-
     public int getShootTicks() {
         return this.dataWatcher.getWatchableObjectInt(DW_SHOOT_TICKS);
     }
 
     public boolean isActive() {
         return (this.dataWatcher.getWatchableObjectByte(DW_BOOLEANS) & 1) == 1;
-    }
-
-    public boolean hasTarget() {
-        if( !this.worldObj.isRemote ) {
-            return this.currentTarget != null;
-        } else {
-            String targetName = this.getTargetName();
-            return targetName != null && !targetName.isEmpty();
-        }
-    }
-
-    public Map<Class<? extends EntityLiving>, Boolean> getTargetList() {
-        return Maps.newHashMap(this.activeTargets);
     }
 
     @Override
@@ -772,17 +602,6 @@ public abstract class EntityTurretBase
 
     public void setActiveState(boolean isActive) {
         this.setDwBoolean(1, isActive);
-    }
-
-    public void setTargetList(List<Class<? extends EntityLiving>> activeTargetClsList) {
-        for( Class<? extends EntityLiving> cls : this.activeTargets.keySet() ) {
-            this.activeTargets.put(cls, activeTargetClsList.contains(cls));
-        }
-        this.targetMapHash = this.activeTargets.hashCode();
-    }
-
-    public void toggleTarget(Class<? extends EntityLiving> entityCls, boolean flag) {
-        this.activeTargets.put(entityCls, flag);
     }
 
     private void setDwBoolean(int flag, boolean state) {

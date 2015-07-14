@@ -36,7 +36,7 @@ public class PacketSendTargetFlag
             try {
                 @SuppressWarnings("unchecked")
                 Class<? extends EntityLiving> entityCls = (Class<? extends EntityLiving>) EntityList.stringToClassMapping.get(entityName);
-                turret.toggleTarget(entityCls, stream.readBoolean());
+                turret.getTargetHandler().toggleTarget(entityCls, stream.readBoolean());
             } catch( ClassCastException ex ) {
                 TurretMod.MOD_LOG.printf(Level.WARN, "Cannot apply target %s! This is an invalid entity name!", entityName);
                 throw new IOException(ex);

@@ -38,7 +38,7 @@ public class PacketSendMultiTargetFlag
                 for( int i = 0, count = stream.readInt(); i < count; i++ ) {
                     @SuppressWarnings("unchecked")
                     Class<? extends EntityLiving> entityCls = (Class<? extends EntityLiving>) EntityList.stringToClassMapping.get(stream.readUTF());
-                    turret.toggleTarget(entityCls, stream.readBoolean());
+                    turret.getTargetHandler().toggleTarget(entityCls, stream.readBoolean());
                 }
             } catch( ClassCastException ex ) {
                 TurretMod.MOD_LOG.log(Level.WARN, "Cannot apply multi-target list! An entry is invalid!");

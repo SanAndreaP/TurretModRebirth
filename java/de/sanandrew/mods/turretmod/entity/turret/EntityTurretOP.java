@@ -50,7 +50,7 @@ public class EntityTurretOP
 
 	@Override
 	public void shoot(boolean isRidden) {
-		if( !this.worldObj.isRemote && this.getHealth() > 0 && (isRidden || this.hasTarget()) ) {
+		if( !this.worldObj.isRemote && this.getHealth() > 0 && (isRidden || this.getTargetHandler().hasTarget(this)) ) {
 			this.shootProjectile(isRidden);
 		}
 	}
@@ -96,7 +96,7 @@ public class EntityTurretOP
 	}
 
 	@Override
-	protected IEntitySelector getTargetSelector() {
+	public IEntitySelector getTargetSelector() {
 		return new TargetSelector();
 	}
 

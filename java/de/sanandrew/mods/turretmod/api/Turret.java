@@ -8,7 +8,6 @@
  */
 package de.sanandrew.mods.turretmod.api;
 
-import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -32,12 +31,6 @@ public interface Turret
 
     void depleteAmmo(int amount);
 
-    IEntitySelector getParentTargetSelector();
-
-    void registerUpgradeToUpdateQueue(TurretUpgrade upgrade, UpgradeQueueData queueData);
-
-    UpgradeQueueData getUpgradeQueueData(TurretUpgrade upgrade);
-
     AxisAlignedBB getRangeBB();
 
     ItemStack getAmmoTypeItem();
@@ -45,4 +38,8 @@ public interface Turret
     int addAmmo(ItemStack stack);
 
     String getTurretName();
+
+    UpgradeHandler<? extends Turret> getUpgradeHandler();
+
+    TargetHandler<? extends Turret> getTargetHandler();
 }

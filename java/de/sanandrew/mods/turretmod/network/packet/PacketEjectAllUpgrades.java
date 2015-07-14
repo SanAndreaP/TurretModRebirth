@@ -37,12 +37,12 @@ public class PacketEjectAllUpgrades
             EntityPlayer player = ((NetHandlerPlayServer) iNetHandler).playerEntity;
             EntityTurretBase turret = (EntityTurretBase) player.worldObj.getEntityByID(stream.readInt());
 
-            List<TurretUpgrade> allUpgrades = turret.getUpgradeList();
+            List<TurretUpgrade> allUpgrades = turret.getUpgradeHandler().getUpgradeList();
             Iterator<TurretUpgrade> itUpgrades = allUpgrades.iterator();
             while( itUpgrades.hasNext() ) {
                 TurretUpgrade upgrade = itUpgrades.next();
                 ItemStack stack = TmrItems.turretUpgrade.getStackWithUpgrade(upgrade, 1);
-                turret.removeUpgrade(upgrade);
+                turret.getUpgradeHandler().removeUpgrade(turret, upgrade);
                 itUpgrades.remove();
                 if( (stack = InventoryUtils.addStackToInventory(stack, player.inventory)) != null ) {
                     turret.entityDropItem(stack, 0.0F);

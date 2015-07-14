@@ -44,7 +44,7 @@ public class PacketUpgradeList
     }
 
     public static void sendPacket(EntityTurretBase turret) {
-        final List<TurretUpgrade> upgrades = turret.getUpgradeList();
+        final List<TurretUpgrade> upgrades = turret.getUpgradeHandler().getUpgradeList();
 
         Tuple data = Pair.with(turret.getEntityId(), upgrades);
         PacketManager.sendToAllAround(PacketManager.TURRET_UPGRADE_SYNC, turret.dimension, turret.posX, turret.posY, turret.posZ, 128.0D, data);

@@ -37,7 +37,7 @@ public class EntityTurretCrossbow
     }
 
     @Override
-    protected IEntitySelector getTargetSelector() {
+    public IEntitySelector getTargetSelector() {
         return this.targetSelector;
     }
 
