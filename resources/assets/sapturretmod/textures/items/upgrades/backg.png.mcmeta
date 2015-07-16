@@ -3,11 +3,11 @@
         "frames": [
             {
                 "index": 0,
-                "time": 120
+                "time": 60
             },
             {
                 "index": 1,
-                "time": 4
+                "time": 1
             },
             {
                 "index": 0,
@@ -15,7 +15,7 @@
             },
             {
                 "index": 1,
-                "time": 4
+                "time": 1
             }
         ]
     }

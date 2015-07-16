@@ -14,8 +14,8 @@ import de.sanandrew.core.manpack.util.helpers.ItemUtils;
 import de.sanandrew.mods.turretmod.api.*;
 import de.sanandrew.mods.turretmod.entity.turret.handler.TurretTargetHandler;
 import de.sanandrew.mods.turretmod.entity.turret.handler.TurretUpgradeHandler;
+import de.sanandrew.mods.turretmod.item.ItemTurret;
 import de.sanandrew.mods.turretmod.util.*;
-import de.sanandrew.mods.turretmod.util.TurretRegistry.HealInfo;
 import net.minecraft.block.Block;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
@@ -28,6 +28,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.Level;
@@ -296,7 +297,7 @@ public abstract class EntityTurretBase
         if( heldItem != null ) {
             if( !this.worldObj.isRemote ) {
                 TurretAmmo ammoInfo;
-                HealInfo healInfo;
+                TurretHealItem healInfo;
                 TurretUpgrade upgrade;
 
                 if( heldItem.getItem() == TmrItems.turretCtrlUnit ) {
@@ -311,8 +312,8 @@ public abstract class EntityTurretBase
                         return true;
                     }
                 }
-                if( (healInfo = TurretInfoApi.getHeal(heldItem)) != null && this.getHealth() < this.getMaxHealth() ) {
-                    this.heal(healInfo.amount);
+                if( (healInfo = TurretInfoApi.getHeal(heldItem)) != null && healInfo.isApplicablToTurret(this) && this.getHealth() < this.getMaxHealth() ) {
+                    this.heal(healInfo.getAmount());
                     InventoryUtils.decrPlayerHeldStackSize(player, 1);
                     this.playSound(TurretMod.MOD_ID + ":collect.ia_get", 1.0F, 1.0F);
 
@@ -473,6 +474,14 @@ public abstract class EntityTurretBase
     public abstract ResourceLocation getGlowTexture();
     public abstract IEntitySelector getTargetSelector();
     protected abstract String getShootSound();
+
+
+    @Override
+    public ItemStack getPickedResult(MovingObjectPosition target) {
+        ItemStack stack = new ItemStack(TmrItems.turretItem, 1);
+        ItemTurret.setTurretName(stack, this.myInfo.getName());
+        return stack;
+    }
 
     private TurretProjectile<? extends EntityArrow> getProjectile() {
         if( this.getAmmoType() != null ) {

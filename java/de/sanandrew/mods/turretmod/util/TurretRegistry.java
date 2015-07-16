@@ -10,13 +10,14 @@ package de.sanandrew.mods.turretmod.util;
 
 import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.api.TurretAmmo;
+import de.sanandrew.mods.turretmod.api.TurretHealItem;
 import de.sanandrew.mods.turretmod.api.TurretInfo;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretOP;
 import de.sanandrew.mods.turretmod.entity.turret.techi.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.entity.turret.techii.EntityTurretRevolver;
 import de.sanandrew.mods.turretmod.util.ammo.AmmoArrow;
 import de.sanandrew.mods.turretmod.util.ammo.AmmoBullet;
-import net.minecraft.item.ItemStack;
+import de.sanandrew.mods.turretmod.util.healitems.HealItemCobble;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,6 +46,8 @@ public final class TurretRegistry
 
         TurretAmmo.AMMO_TYPES.add(new AmmoArrow());
         TurretAmmo.AMMO_TYPES.add(new AmmoBullet());
+
+        TurretHealItem.HEAL_TYPES.add(new HealItemCobble());
     }
 
     public static TurretInfo<? extends Turret> getTurretInfo(Class<? extends Turret> clazz) {
@@ -57,15 +60,5 @@ public final class TurretRegistry
 
     public static List<String> getAllTurretNamesSorted() {
         return new ArrayList<>(REG_SORTED_TURRET_NAME_LIST);
-    }
-
-    public static class HealInfo {
-        public final ItemStack item;
-        public final float amount;
-
-        public HealInfo(ItemStack ammoItem, float givesAmount) {
-            this.item = ammoItem;
-            this.amount = givesAmount;
-        }
     }
 }

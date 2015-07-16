@@ -11,8 +11,8 @@ package de.sanandrew.mods.turretmod.util;
 import de.sanandrew.core.manpack.util.helpers.ItemUtils;
 import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.api.TurretAmmo;
+import de.sanandrew.mods.turretmod.api.TurretHealItem;
 import de.sanandrew.mods.turretmod.api.TurretInfo;
-import de.sanandrew.mods.turretmod.util.TurretRegistry.HealInfo;
 import net.minecraft.item.ItemStack;
 
 public class TurretInfoApi<T extends Turret>
@@ -21,7 +21,6 @@ public class TurretInfoApi<T extends Turret>
     private final Class<T> turretEntityCls;
     private final String iconName;
     private final String turretName;
-    private static HealInfo[] healItems;
 
     protected TurretInfoApi(Class<T> turretCls, String tName, String icoName) {
         this.turretEntityCls = turretCls;
@@ -40,7 +39,6 @@ public class TurretInfoApi<T extends Turret>
     public String getIcon() {
         return this.iconName;
     }
-
 
     public static ItemStack[] getDepletedAmmoStacks(int ammoCount) {
         if( ammoCount <= 0 ) {
@@ -68,6 +66,10 @@ public class TurretInfoApi<T extends Turret>
     }
 
     public static TurretAmmo getAmmo(ItemStack stack) {
+        if( stack == null ) {
+            return null;
+        }
+
         for( TurretAmmo type : TurretAmmo.AMMO_TYPES ) {
             ItemStack ammoItem = type.getAmmoItem();
             if( ItemUtils.areStacksEqual(stack, ammoItem, ammoItem.hasTagCompound()) ) {
@@ -78,20 +80,15 @@ public class TurretInfoApi<T extends Turret>
         return null;
     }
 
-    public static void applyHealItems(HealInfo... healTypes) {
-        if( healTypes != null && healItems == null && healTypes.length > 0 ) {
-            healItems = healTypes;
-        }
-    }
-
-    public static HealInfo getHeal(ItemStack stack) {
-        if( healItems == null ) {
+    public static TurretHealItem getHeal(ItemStack stack) {
+        if( stack == null ) {
             return null;
         }
 
-        for( HealInfo info : healItems ) {
-            if( ItemUtils.areStacksEqual(stack, info.item, info.item.hasTagCompound()) ) {
-                return info;
+        for( TurretHealItem type : TurretHealItem.HEAL_TYPES ) {
+            ItemStack healItem = type.getHealItem();
+            if( ItemUtils.areStacksEqual(stack, healItem, healItem.hasTagCompound()) ) {
+                return type;
             }
         }
 

@@ -36,7 +36,7 @@ public class BlockItemTransmitter
     }
 
     @Override
-    public int getRenderBlockPass() {
+    public int getRenderType() {
         return -1;
     }
 
