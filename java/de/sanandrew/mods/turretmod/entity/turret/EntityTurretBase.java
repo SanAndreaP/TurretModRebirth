@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.entity.turret;
 
 import com.mojang.authlib.GameProfile;
+import de.sanandrew.core.manpack.util.UsedByReflection;
 import de.sanandrew.core.manpack.util.helpers.InventoryUtils;
 import de.sanandrew.core.manpack.util.helpers.ItemUtils;
 import de.sanandrew.mods.turretmod.api.*;
@@ -564,6 +565,21 @@ public abstract class EntityTurretBase
 
     public final int getMaxShootTicks() {
         return MathHelper.ceiling_double_int(this.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).getAttributeValue());
+    }
+
+//    @Override
+//    public AxisAlignedBB getCollisionBox(Entity p_70114_1_) {
+//        return p_70114_1_ instanceof EntityPlayer ? null : p_70114_1_.boundingBox;
+//    }
+//
+//    @Override
+//    public boolean canBeCollidedWith() {
+//        return !this.isDead;
+//    }
+
+    @UsedByReflection
+    public AxisAlignedBB _SAP_getBoundingBox(Entity entity, AxisAlignedBB oldBB) {
+        return entity instanceof EntityPlayer ? this.boundingBox : null;
     }
 
     public int addAmmo(ItemStack stack) {
