@@ -12,17 +12,16 @@ import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.api.TurretAmmo;
 import de.sanandrew.mods.turretmod.api.TurretHealItem;
 import de.sanandrew.mods.turretmod.api.TurretInfo;
+import de.sanandrew.mods.turretmod.api.registry.TurretAmmoRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretOP;
 import de.sanandrew.mods.turretmod.entity.turret.techi.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.entity.turret.techii.EntityTurretRevolver;
+import de.sanandrew.mods.turretmod.item.ItemTurretAmmo;
 import de.sanandrew.mods.turretmod.util.ammo.AmmoArrow;
 import de.sanandrew.mods.turretmod.util.ammo.AmmoBullet;
 import de.sanandrew.mods.turretmod.util.healitems.HealItemCobble;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public final class TurretRegistry
 {
@@ -40,12 +39,14 @@ public final class TurretRegistry
     }
 
     public static void initialize() {
+        TurretAmmo currType;
+
         registerNewTurret(EntityTurretCrossbow.class, "turretCrossbow", TurretMod.MOD_ID + ":turret_crossbow");
         registerNewTurret(EntityTurretRevolver.class, "turretRevolver", TurretMod.MOD_ID + ":turret_revolver");
         registerNewTurret(EntityTurretOP.class, "turretOP", TurretMod.MOD_ID + ":turret_op");
 
-        TurretAmmo.AMMO_TYPES.add(new AmmoArrow());
-        TurretAmmo.AMMO_TYPES.add(new AmmoBullet());
+        registerAmmo(new AmmoArrow(), UUID.fromString("90A6A271-A4CC-4576-91BD-1EEF9D3C09A4"), "arrow", "ammo/arrow");
+        registerAmmo(new AmmoBullet(), UUID.fromString("1F47C905-F5D6-4491-B1CA-04D35ED1A07F"), "bullet", "ammo/bullet");
 
         TurretHealItem.HEAL_TYPES.add(new HealItemCobble());
     }
@@ -60,5 +61,11 @@ public final class TurretRegistry
 
     public static List<String> getAllTurretNamesSorted() {
         return new ArrayList<>(REG_SORTED_TURRET_NAME_LIST);
+    }
+
+    private static void registerAmmo(TurretAmmo instance, UUID id, String name, String icon, String... desc) {
+        TurretAmmoRegistry.registerAmmoType(id, instance);
+        ItemTurretAmmo.registerAmmoItem(instance, name, TurretMod.MOD_ID + ':' + icon);
+        instance.initializeItem();
     }
 }

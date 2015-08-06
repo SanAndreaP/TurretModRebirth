@@ -50,84 +50,95 @@ public class RenderItemTransmitter
         GL11.glTranslatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         GL11.glRotatef(180.0F, 1.0F, 0.0F, 0.0F);
 
-        GL11.glPushMatrix();
-        this.bindTexture(Textures.TILE_ITEM_TRANSMITTER.getResource());
-        this.modelBlock.render(0.0625F);
-        this.bindTexture(Textures.TILE_ITEM_TRANSMITTER_GLOW.getResource());
-
-        float prevBrightX = OpenGlHelper.lastBrightnessX;
-        float prevBrightY = OpenGlHelper.lastBrightnessY;
-        int bright = 0xF0;
-        int brightX = bright % 65536;
-        int brightY = bright / 65536;
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightX / 1.0F, brightY / 1.0F);
-        this.modelBlock.render(0.0625F);
-        GL11.glPopMatrix();
-
-        MovingObjectPosition objPos = mc.objectMouseOver;
-        if( objPos.typeOfHit == MovingObjectType.BLOCK && mc.theWorld.getTileEntity(objPos.blockX, objPos.blockY, objPos.blockZ) == te ) {
+        if( te.getRenderPass() == 0 ) {
             GL11.glPushMatrix();
-            setupTooltipRenderer(mc, te, partTicks);
+            this.bindTexture(Textures.TILE_ITEM_TRANSMITTER.getResource());
+            this.modelBlock.render(0.0625F);
+            this.bindTexture(Textures.TILE_ITEM_TRANSMITTER_GLOW.getResource());
 
-            if( te.scaleTooltip < 1.0F ) {
-                te.scaleTooltip += 0.1F;
-            } else {
-                te.scaleTooltip = 1.01F;
-            }
-            renderTooltipBg(Tessellator.instance, te.scaleTooltip);
-
-            if( te.scaleTooltip >= 1.0F ) {
-                if( te.lengthTooltipRod < 1.0F ) {
-                    te.lengthTooltipRod += 0.05F;
-                } else {
-                    te.lengthTooltipRod = 1.01F;
-                }
-                renderTooltipRod(Tessellator.instance, te.lengthTooltipRod);
-            }
-            finishTooltipRenderer();
-
-            if( te.scaleTooltip >= 1.0F ) {
-                renderTooltipText(this.tooltipFR, te, 0xFFFFFF, te.lengthTooltipRod);
-            }
-
+            float prevBrightX = OpenGlHelper.lastBrightnessX;
+            float prevBrightY = OpenGlHelper.lastBrightnessY;
+            int bright = 0xF0;
+            int brightX = bright % 65536;
+            int brightY = bright / 65536;
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightX / 1.0F, brightY / 1.0F);
+            this.modelBlock.render(0.0625F);
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, prevBrightX, prevBrightY);
             GL11.glPopMatrix();
         } else {
-            if( te.timestampLastRendered < mc.theWorld.getTotalWorldTime() - 2 ) {
-                te.scaleTooltip = 0.0F;
-                te.lengthTooltipRod = 0.0F;
-            } else if( te.scaleTooltip > 0.0F ) {
+            MovingObjectPosition objPos = mc.objectMouseOver;
+
+            float prevBrightX = OpenGlHelper.lastBrightnessX;
+            float prevBrightY = OpenGlHelper.lastBrightnessY;
+            int bright = 0xF0;
+            int brightX = bright % 65536;
+            int brightY = bright / 65536;
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightX / 1.0F, brightY / 1.0F);
+
+            if( objPos.typeOfHit == MovingObjectType.BLOCK && mc.theWorld.getTileEntity(objPos.blockX, objPos.blockY, objPos.blockZ) == te ) {
                 GL11.glPushMatrix();
                 setupTooltipRenderer(mc, te, partTicks);
-                if( te.lengthTooltipRod > 0.0F ) {
-                    te.lengthTooltipRod -= 0.05F;
-                    renderTooltipRod(Tessellator.instance, te.lengthTooltipRod);
-                } else {
-                    te.lengthTooltipRod = -0.01F;
-                }
 
-                if( te.lengthTooltipRod <= 0.0F ) {
-                    if( te.scaleTooltip > 0.0F ) {
-                        te.scaleTooltip -= 0.1F;
-                    } else {
-                        te.scaleTooltip = -0.01F;
-                    }
+                if( te.scaleTooltip < 1.0F ) {
+                    te.scaleTooltip += 0.2F;
+                } else {
+                    te.scaleTooltip = 1.01F;
                 }
                 renderTooltipBg(Tessellator.instance, te.scaleTooltip);
 
+                if( te.scaleTooltip >= 1.0F ) {
+                    if( te.lengthTooltipRod < 1.0F ) {
+                        te.lengthTooltipRod += 0.1F;
+                    } else {
+                        te.lengthTooltipRod = 1.01F;
+                    }
+                    renderTooltipRod(Tessellator.instance, te.lengthTooltipRod);
+                }
                 finishTooltipRenderer();
 
-                if( te.lengthTooltipRod > 0.0F ) {
+                if( te.scaleTooltip >= 1.0F ) {
                     renderTooltipText(this.tooltipFR, te, 0xFFFFFF, te.lengthTooltipRod);
                 }
+
                 GL11.glPopMatrix();
+            } else {
+                if( te.timestampLastRendered < mc.theWorld.getTotalWorldTime() - 2 ) {
+                    te.scaleTooltip = 0.0F;
+                    te.lengthTooltipRod = 0.0F;
+                } else if( te.scaleTooltip > 0.0F ) {
+                    GL11.glPushMatrix();
+                    setupTooltipRenderer(mc, te, partTicks);
+                    if( te.lengthTooltipRod > 0.0F ) {
+                        te.lengthTooltipRod -= 0.1F;
+                        renderTooltipRod(Tessellator.instance, te.lengthTooltipRod);
+                    } else {
+                        te.lengthTooltipRod = -0.01F;
+                    }
+
+                    if( te.lengthTooltipRod <= 0.0F ) {
+                        if( te.scaleTooltip > 0.0F ) {
+                            te.scaleTooltip -= 0.2F;
+                        } else {
+                            te.scaleTooltip = -0.01F;
+                        }
+                    }
+                    renderTooltipBg(Tessellator.instance, te.scaleTooltip);
+
+                    finishTooltipRenderer();
+
+                    if( te.lengthTooltipRod > 0.0F ) {
+                        renderTooltipText(this.tooltipFR, te, 0xFFFFFF, te.lengthTooltipRod);
+                    }
+                    GL11.glPopMatrix();
+                }
             }
+
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, prevBrightX, prevBrightY);
+
+            te.timestampLastRendered = mc.theWorld.getTotalWorldTime();
         }
 
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, prevBrightX, prevBrightY);
-
         GL11.glPopMatrix();
-
-        te.timestampLastRendered = mc.theWorld.getTotalWorldTime();
     }
 
     private static void setupTooltipRenderer(Minecraft mc, TileEntityItemTransmitter te, float partTicks) {
@@ -157,6 +168,8 @@ public class RenderItemTransmitter
     private static void renderTooltipBg(Tessellator tessellator, float scale) {
         Minecraft.getMinecraft().renderEngine.bindTexture(Textures.GUI_TOOLTIP_HOLOGRAPH.getResource());
         tessellator.startDrawingQuads();
+        tessellator.setColorRGBA_F(1.0F, 1.0F, 1.0F, scale);
+        scale = 1.0F;
         tessellator.addVertexWithUV(-0.5D * scale, -0.3125D * scale + 0.3125D, 0.0D, TEXTURE_ICON.getMinU(), TEXTURE_ICON.getMinV());
         tessellator.addVertexWithUV(0.5D * scale, -0.3125D * scale + 0.3125D, 0.0D, TEXTURE_ICON.getMaxU(), TEXTURE_ICON.getMinV());
         tessellator.addVertexWithUV(0.5D * scale, 0.3125D * scale + 0.3125D, 0.0D, TEXTURE_ICON.getMaxU(), TEXTURE_ICON.getMaxV());

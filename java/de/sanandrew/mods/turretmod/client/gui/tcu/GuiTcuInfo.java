@@ -69,7 +69,7 @@ public class GuiTcuInfo
 
         if( this.myTurret.getAmmoType() != null ) {
             GL11.glColor3f(1.0F, 1.0F, 1.0F);
-            GuiUtils.drawGuiIcon(this.myTurret.getAmmoType().getTypeItem().getIconIndex(), this.guiLeft + 21, this.guiTop + 49);
+            GuiUtils.drawGuiIcon(this.myTurret.getAmmoType().getTypeItem().getItem().getIcon(this.myTurret.getAmmoType().getTypeItem(), 0), this.guiLeft + 21, this.guiTop + 49);
             GL11.glTranslated(0.0D, 0.0D, 300.0D);
             this.frAmmoItem.drawStringWithShadow(value, this.guiLeft + 38 - this.frAmmoItem.getStringWidth(value), this.guiTop + 58, 0xFFFFFFFF);
             GL11.glTranslated(0.0D, 0.0D, -300.0D);

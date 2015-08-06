@@ -13,15 +13,15 @@ import de.sanandrew.mods.turretmod.api.TurretAmmo;
 import de.sanandrew.mods.turretmod.api.TurretProjectile;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
 import de.sanandrew.mods.turretmod.entity.turret.techii.EntityTurretRevolver;
+import de.sanandrew.mods.turretmod.item.ItemTurretAmmo;
 import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class AmmoBullet
         implements TurretAmmo
 {
-    private static final ItemStack ITEM = new ItemStack(Items.arrow);
+    private ItemStack ammoItm;
 
     @Override
     public String getName() {
@@ -35,12 +35,12 @@ public class AmmoBullet
 
     @Override
     public ItemStack getTypeItem() {
-        return ITEM;
+        return ammoItm;
     }
 
     @Override
     public ItemStack getAmmoItem() {
-        return ITEM;
+        return ammoItm;
     }
 
     @Override
@@ -51,5 +51,10 @@ public class AmmoBullet
     @Override
     public TurretProjectile<? extends EntityArrow> getProjectile(World world, Turret turret) {
         return new EntityProjectileBullet(world);
+    }
+
+    public TurretAmmo initializeItem() {
+        this.ammoItm = ItemTurretAmmo.getItemFromType(this, 1);
+        return this;
     }
 }

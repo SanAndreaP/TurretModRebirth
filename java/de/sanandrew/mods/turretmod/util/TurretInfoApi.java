@@ -13,6 +13,7 @@ import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.api.TurretAmmo;
 import de.sanandrew.mods.turretmod.api.TurretHealItem;
 import de.sanandrew.mods.turretmod.api.TurretInfo;
+import de.sanandrew.mods.turretmod.api.registry.TurretAmmoRegistry;
 import net.minecraft.item.ItemStack;
 
 public class TurretInfoApi<T extends Turret>
@@ -48,7 +49,7 @@ public class TurretInfoApi<T extends Turret>
         int minAmmo = Integer.MAX_VALUE;
         TurretAmmo minAmmoType = null;
 
-        for( TurretAmmo type : TurretAmmo.AMMO_TYPES ) {
+        for( TurretAmmo type : TurretAmmoRegistry.getTypes() ) {
             int typeAmount = type.getAmount();
             if( typeAmount < minAmmo ) {
                 minAmmo = typeAmount;
@@ -70,7 +71,7 @@ public class TurretInfoApi<T extends Turret>
             return null;
         }
 
-        for( TurretAmmo type : TurretAmmo.AMMO_TYPES ) {
+        for( TurretAmmo type : TurretAmmoRegistry.getTypes() ) {
             ItemStack ammoItem = type.getAmmoItem();
             if( ItemUtils.areStacksEqual(stack, ammoItem, ammoItem.hasTagCompound()) ) {
                 return type;

@@ -22,4 +22,6 @@ public interface TargetHandler<T extends Turret>
     Map<Class<? extends EntityLiving>, Boolean> getTargetList();
     void setTargetList(List<Class<? extends EntityLiving>> activeTargetClsList);
     void toggleTarget(Class<? extends EntityLiving> entityCls, boolean flag);
+    boolean isTargetActive(EntityLiving entity);
+    boolean isTargetActive(Class<? extends EntityLiving> entityCls);
 }

@@ -153,6 +153,16 @@ public final class TurretTargetHandler
         this.activeTargets.put(entityCls, flag);
     }
 
+    @Override
+    public boolean isTargetActive(EntityLiving entity) {
+        return this.isTargetActive(entity.getClass());
+    }
+
+    @Override
+    public boolean isTargetActive(Class<? extends EntityLiving> entityCls) {
+        return this.activeTargets.containsKey(entityCls) && this.activeTargets.get(entityCls);
+    }
+
     private static final class EntityLivingPredicate implements Predicate<Class>
     {
         @Override

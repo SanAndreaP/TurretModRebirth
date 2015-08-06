@@ -55,7 +55,7 @@ public class EntityTurretRevolver
 	public void shoot(boolean isRidden) {
 		if( this.worldObj.isRemote ) {
 			if( (this.prevShootTicks < this.getShootTicks() || this.getShootTicks() == 0) && this.getHealth() > 0
-					&& (isRidden || this.getTargetHandler().hasTarget(this)) && this.getAmmo() > 0 )
+				&& (isRidden || this.getTargetHandler().hasTarget(this)) && this.getAmmo() > 0 )
 			{
 				if( !this.prevShooting ) {
 					if( this.isRight ) {

@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TurretUpgradeRegistry
+public final class TurretUpgradeRegistry
 {
     private static final Map<String, TurretUpgrade> NAME_TO_UPGRADE_MAP = new HashMap<>();
     private static final List<TurretUpgrade> REG_SORTED_UPGRADE_LIST = new ArrayList<>();

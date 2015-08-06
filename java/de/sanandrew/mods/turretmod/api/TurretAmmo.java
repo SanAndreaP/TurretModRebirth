@@ -4,22 +4,16 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
 /**
  * Holds info about turret ammunition. Users of this interface can add custom ammo for turrets.<br>
- * To add new custom ammo, you need to implement this in a class and use the {@link TurretAmmo#AMMO_TYPES} list to add a new instance
+ * To add new custom ammo, you need to implement this in a class and use the
+ * {@link de.sanandrew.mods.turretmod.api.registry.TurretAmmoRegistry#registerAmmoType(UUID, TurretAmmo)} method to add a new instance
  * of your custom ammo implementation.
  */
 public interface TurretAmmo
 {
-    /**
-     * The list of available ammo types.<br>
-     * If you want to add your own ammo, insert a new {@link TurretAmmo} instance here via {@code TurretAmmo.AMMO_TYPES.add(TurretAmmo)}
-     */
-    List<TurretAmmo> AMMO_TYPES = new ArrayList<>();
-
     /**
      * Returns the ammo name. Can be non-unique, but it's preferred.
      * @return the name of the ammunition
@@ -66,4 +60,6 @@ public interface TurretAmmo
      * @return A new instance of a projectile entity
      */
     TurretProjectile<? extends EntityArrow> getProjectile(World world, Turret turret);
+
+    TurretAmmo initializeItem();
 }

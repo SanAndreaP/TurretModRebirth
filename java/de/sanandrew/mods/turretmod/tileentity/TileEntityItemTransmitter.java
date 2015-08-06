@@ -8,6 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.tileentity;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.util.helpers.InventoryUtils;
 import de.sanandrew.core.manpack.util.helpers.ItemUtils;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
@@ -51,6 +53,7 @@ public class TileEntityItemTransmitter
     public float scaleTooltip = 0.0F;
     public float lengthTooltipRod = 0.0F;
     public long timestampLastRendered = 0;
+    private int currentRenderPass = 0;
 
     public boolean hasRequest() {
         return this.requestType != RequestType.NONE;
@@ -363,6 +366,17 @@ public class TileEntityItemTransmitter
         }
 
         return stack;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean shouldRenderInPass(int pass) {
+        this.currentRenderPass = pass;
+        return pass <= 1;
+    }
+
+    public int getRenderPass() {
+        return this.currentRenderPass;
     }
 
     public enum RequestType
