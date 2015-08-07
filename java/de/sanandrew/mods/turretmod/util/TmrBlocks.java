@@ -9,18 +9,17 @@
 package de.sanandrew.mods.turretmod.util;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.block.BlockItemTransmitter;
+import de.sanandrew.mods.turretmod.client.render.item.ItemRendererTile;
 import de.sanandrew.mods.turretmod.client.render.tileentity.RenderItemTransmitter;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.MinecraftForge;
 
 public class TmrBlocks
 {
@@ -46,6 +45,8 @@ public class TmrBlocks
 
     @SideOnly(Side.CLIENT)
     public static void registerBlockAndTeRenderers() {
+        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(TmrBlocks.itemTransmitter), new ItemRendererTile(new TileEntityItemTransmitter()));
+
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityItemTransmitter.class, new RenderItemTransmitter());
     }
 }

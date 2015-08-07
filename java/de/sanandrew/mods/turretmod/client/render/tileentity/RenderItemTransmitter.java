@@ -15,6 +15,7 @@ import de.sanandrew.mods.turretmod.client.model.ModelItemTransmitter;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter.RequestType;
 import de.sanandrew.mods.turretmod.util.Textures;
+import de.sanandrew.mods.turretmod.util.TmrItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -50,7 +51,7 @@ public class RenderItemTransmitter
         GL11.glTranslatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         GL11.glRotatef(180.0F, 1.0F, 0.0F, 0.0F);
 
-        if( te.getRenderPass() == 0 ) {
+        if( te.renderPass == 0 ) {
             GL11.glPushMatrix();
             this.bindTexture(Textures.TILE_ITEM_TRANSMITTER.getResource());
             this.modelBlock.render(0.0625F);
@@ -75,7 +76,9 @@ public class RenderItemTransmitter
             int brightY = bright / 65536;
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightX / 1.0F, brightY / 1.0F);
 
-            if( objPos.typeOfHit == MovingObjectType.BLOCK && mc.theWorld.getTileEntity(objPos.blockX, objPos.blockY, objPos.blockZ) == te ) {
+            if( objPos.typeOfHit == MovingObjectType.BLOCK && mc.theWorld.getTileEntity(objPos.blockX, objPos.blockY, objPos.blockZ) == te
+                && mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() == TmrItems.turretCtrlUnit )
+            {
                 GL11.glPushMatrix();
                 setupTooltipRenderer(mc, te, partTicks);
 

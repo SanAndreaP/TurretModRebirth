@@ -53,7 +53,9 @@ public class TileEntityItemTransmitter
     public float scaleTooltip = 0.0F;
     public float lengthTooltipRod = 0.0F;
     public long timestampLastRendered = 0;
-    private int currentRenderPass = 0;
+
+    @SideOnly(Side.CLIENT)
+    public int renderPass;
 
     public boolean hasRequest() {
         return this.requestType != RequestType.NONE;
@@ -371,12 +373,8 @@ public class TileEntityItemTransmitter
     @Override
     @SideOnly(Side.CLIENT)
     public boolean shouldRenderInPass(int pass) {
-        this.currentRenderPass = pass;
+        this.renderPass = pass;
         return pass <= 1;
-    }
-
-    public int getRenderPass() {
-        return this.currentRenderPass;
     }
 
     public enum RequestType

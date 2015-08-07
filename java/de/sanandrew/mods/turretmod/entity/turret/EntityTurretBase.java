@@ -9,6 +9,8 @@
 package de.sanandrew.mods.turretmod.entity.turret;
 
 import com.mojang.authlib.GameProfile;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.util.helpers.InventoryUtils;
 import de.sanandrew.core.manpack.util.helpers.ItemUtils;
 import de.sanandrew.mods.turretmod.api.*;
@@ -57,6 +59,9 @@ public abstract class EntityTurretBase
 
     protected TurretTargetHandler tgtHandler;
     protected TurretUpgradeHandler upgHandler;
+
+    @SideOnly(Side.CLIENT)
+    public int renderPass;
 
     public EntityTurretBase(World par1World) {
         super(par1World);
@@ -614,5 +619,11 @@ public abstract class EntityTurretBase
     private void setDwBoolean(int flag, boolean state) {
         byte dwVal = this.dataWatcher.getWatchableObjectByte(DW_BOOLEANS);
         this.dataWatcher.updateObject(DW_BOOLEANS, (byte) (state ? (dwVal | flag) : (dwVal & ~flag)));
+    }
+
+    @Override
+    public boolean shouldRenderInPass(int pass) {
+        this.renderPass = pass;
+        return pass <= 1;
     }
 }

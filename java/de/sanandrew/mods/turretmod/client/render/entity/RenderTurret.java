@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
@@ -39,6 +40,26 @@ public class RenderTurret
             TurretMod.MOD_LOG.log(Level.ERROR, "Could not instanciate model class! Make sure it has a constructor with a one float parameter (scale)!" +
                                           " Glowmap disabled.", ex);
             this.glowModel = null;
+        }
+    }
+
+    @Override
+    public void doRender(EntityLiving living, double x, double y, double z, float yaw, float partTicks) {
+        if( living instanceof EntityTurretBase ) {
+            EntityTurretBase turret = (EntityTurretBase) living;
+            if( turret.renderPass == 0 ) {
+                super.doRender(living, x, y, z, yaw, partTicks);
+            } else {
+                float prevBrightX = OpenGlHelper.lastBrightnessX;
+                float prevBrightY = OpenGlHelper.lastBrightnessY;
+
+                int bright = 0xF0;
+                int brightX = bright % 65536;
+                int brightY = bright / 65536;
+                OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightX / 1.0F, brightY / 1.0F);
+                this.renderStats((EntityTurretBase) living, x, y, z);
+                OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, prevBrightX, prevBrightY);
+            }
         }
     }
 
@@ -81,6 +102,7 @@ public class RenderTurret
         } else if( pass == 1 ) {
             this.setRenderPassModel(this.mainModel);
             GL11.glDepthMask(true);
+            GL11.glDisable(GL11.GL_BLEND);
         }
 
         return 0;
@@ -122,10 +144,7 @@ public class RenderTurret
     }
 
     @Override
-    protected void passSpecialRender(EntityLivingBase par1EntityLiving, double par2, double par4, double par6)
-    {
-        this.renderStats((EntityTurretBase)par1EntityLiving, par2, par4, par6);
-    }
+    protected void passSpecialRender(EntityLivingBase par1EntityLiving, double par2, double par4, double par6) { }
 
     protected void renderStats(EntityTurretBase turret, double x, double y, double z) {
         if( MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Specials.Pre(turret, this, x, y, z)) ) {
@@ -148,9 +167,6 @@ public class RenderTurret
                 GL11.glScalef(-scale, -scale, scale);
                 GL11.glDisable(GL11.GL_LIGHTING);
                 GL11.glTranslatef(0.0F, 0.25F / scale, 0.0F);
-                GL11.glDepthMask(false);
-                GL11.glEnable(GL11.GL_BLEND);
-                OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
                 Tessellator tessellator = Tessellator.instance;
                 GL11.glDisable(GL11.GL_TEXTURE_2D);
                 tessellator.startDrawingQuads();
@@ -185,10 +201,8 @@ public class RenderTurret
                 tessellator.addVertex((turret.getAmmo() / (float) turret.getMaxAmmo()) * 38.0F - 19.0F, 10.0F, 0.0F);
                 tessellator.draw();
                 GL11.glEnable(GL11.GL_TEXTURE_2D);
-                GL11.glDepthMask(true);
                 fontrenderer.drawString(s, -fontrenderer.getStringWidth(s) / 2, 0, 0xFFFFFF);
                 GL11.glEnable(GL11.GL_LIGHTING);
-                GL11.glDisable(GL11.GL_BLEND);
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                 GL11.glPopMatrix();
             }
