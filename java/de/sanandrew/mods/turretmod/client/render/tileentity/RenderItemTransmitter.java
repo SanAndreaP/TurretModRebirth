@@ -15,7 +15,6 @@ import de.sanandrew.mods.turretmod.client.model.ModelItemTransmitter;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter.RequestType;
 import de.sanandrew.mods.turretmod.util.Textures;
-import de.sanandrew.mods.turretmod.util.TmrItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -23,8 +22,10 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Vec3;
 import org.lwjgl.opengl.GL11;
 
 public class RenderItemTransmitter
@@ -66,80 +67,81 @@ public class RenderItemTransmitter
             this.modelBlock.render(0.0625F);
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, prevBrightX, prevBrightY);
             GL11.glPopMatrix();
-        } else {
-            MovingObjectPosition objPos = mc.objectMouseOver;
-
-            float prevBrightX = OpenGlHelper.lastBrightnessX;
-            float prevBrightY = OpenGlHelper.lastBrightnessY;
-            int bright = 0xF0;
-            int brightX = bright % 65536;
-            int brightY = bright / 65536;
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightX / 1.0F, brightY / 1.0F);
-
-            if( objPos.typeOfHit == MovingObjectType.BLOCK && mc.theWorld.getTileEntity(objPos.blockX, objPos.blockY, objPos.blockZ) == te
-                && mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() == TmrItems.turretCtrlUnit )
-            {
-                GL11.glPushMatrix();
-                setupTooltipRenderer(mc, te, partTicks);
-
-                if( te.scaleTooltip < 1.0F ) {
-                    te.scaleTooltip += 0.2F;
-                } else {
-                    te.scaleTooltip = 1.01F;
-                }
-                renderTooltipBg(Tessellator.instance, te.scaleTooltip);
-
-                if( te.scaleTooltip >= 1.0F ) {
-                    if( te.lengthTooltipRod < 1.0F ) {
-                        te.lengthTooltipRod += 0.1F;
-                    } else {
-                        te.lengthTooltipRod = 1.01F;
-                    }
-                    renderTooltipRod(Tessellator.instance, te.lengthTooltipRod);
-                }
-                finishTooltipRenderer();
-
-                if( te.scaleTooltip >= 1.0F ) {
-                    renderTooltipText(this.tooltipFR, te, 0xFFFFFF, te.lengthTooltipRod);
-                }
-
-                GL11.glPopMatrix();
-            } else {
-                if( te.timestampLastRendered < mc.theWorld.getTotalWorldTime() - 2 ) {
-                    te.scaleTooltip = 0.0F;
-                    te.lengthTooltipRod = 0.0F;
-                } else if( te.scaleTooltip > 0.0F ) {
-                    GL11.glPushMatrix();
-                    setupTooltipRenderer(mc, te, partTicks);
-                    if( te.lengthTooltipRod > 0.0F ) {
-                        te.lengthTooltipRod -= 0.1F;
-                        renderTooltipRod(Tessellator.instance, te.lengthTooltipRod);
-                    } else {
-                        te.lengthTooltipRod = -0.01F;
-                    }
-
-                    if( te.lengthTooltipRod <= 0.0F ) {
-                        if( te.scaleTooltip > 0.0F ) {
-                            te.scaleTooltip -= 0.2F;
-                        } else {
-                            te.scaleTooltip = -0.01F;
-                        }
-                    }
-                    renderTooltipBg(Tessellator.instance, te.scaleTooltip);
-
-                    finishTooltipRenderer();
-
-                    if( te.lengthTooltipRod > 0.0F ) {
-                        renderTooltipText(this.tooltipFR, te, 0xFFFFFF, te.lengthTooltipRod);
-                    }
-                    GL11.glPopMatrix();
-                }
-            }
-
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, prevBrightX, prevBrightY);
-
-            te.timestampLastRendered = mc.theWorld.getTotalWorldTime();
         }
+//        else {
+//            MovingObjectPosition objPos = mc.objectMouseOver;
+//
+//            float prevBrightX = OpenGlHelper.lastBrightnessX;
+//            float prevBrightY = OpenGlHelper.lastBrightnessY;
+//            int bright = 0xF0;
+//            int brightX = bright % 65536;
+//            int brightY = bright / 65536;
+//            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightX / 1.0F, brightY / 1.0F);
+//
+//            if( objPos.typeOfHit == MovingObjectType.BLOCK && mc.theWorld.getTileEntity(objPos.blockX, objPos.blockY, objPos.blockZ) == te
+//                && mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() == TmrItems.turretCtrlUnit )
+//            {
+//                GL11.glPushMatrix();
+//                setupTooltipRenderer(mc, te, partTicks);
+//
+//                if( te.scaleTooltip < 1.0F ) {
+//                    te.scaleTooltip += 0.2F;
+//                } else {
+//                    te.scaleTooltip = 1.01F;
+//                }
+//                renderTooltipBg(Tessellator.instance, te.scaleTooltip);
+//
+//                if( te.scaleTooltip >= 1.0F ) {
+//                    if( te.lengthTooltipRod < 1.0F ) {
+//                        te.lengthTooltipRod += 0.1F;
+//                    } else {
+//                        te.lengthTooltipRod = 1.01F;
+//                    }
+//                    renderTooltipRod(Tessellator.instance, te.lengthTooltipRod);
+//                }
+//                finishTooltipRenderer();
+//
+//                if( te.scaleTooltip >= 1.0F ) {
+//                    renderTooltipText(this.tooltipFR, te, 0xFFFFFF, te.lengthTooltipRod);
+//                }
+//
+//                GL11.glPopMatrix();
+//            } else {
+//                if( te.timestampLastRendered < mc.theWorld.getTotalWorldTime() - 2 ) {
+//                    te.scaleTooltip = 0.0F;
+//                    te.lengthTooltipRod = 0.0F;
+//                } else if( te.scaleTooltip > 0.0F ) {
+//                    GL11.glPushMatrix();
+//                    setupTooltipRenderer(mc, te, partTicks);
+//                    if( te.lengthTooltipRod > 0.0F ) {
+//                        te.lengthTooltipRod -= 0.1F;
+//                        renderTooltipRod(Tessellator.instance, te.lengthTooltipRod);
+//                    } else {
+//                        te.lengthTooltipRod = -0.01F;
+//                    }
+//
+//                    if( te.lengthTooltipRod <= 0.0F ) {
+//                        if( te.scaleTooltip > 0.0F ) {
+//                            te.scaleTooltip -= 0.2F;
+//                        } else {
+//                            te.scaleTooltip = -0.01F;
+//                        }
+//                    }
+//                    renderTooltipBg(Tessellator.instance, te.scaleTooltip);
+//
+//                    finishTooltipRenderer();
+//
+//                    if( te.lengthTooltipRod > 0.0F ) {
+//                        renderTooltipText(this.tooltipFR, te, 0xFFFFFF, te.lengthTooltipRod);
+//                    }
+//                    GL11.glPopMatrix();
+//                }
+//            }
+//
+//            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, prevBrightX, prevBrightY);
+//
+//            te.timestampLastRendered = mc.theWorld.getTotalWorldTime();
+//        }
 
         GL11.glPopMatrix();
     }

@@ -14,6 +14,7 @@ import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.api.TurretUpgrade;
 import de.sanandrew.mods.turretmod.client.event.RenderForcefieldHandler;
 import de.sanandrew.mods.turretmod.client.event.RenderFxLayerHandler;
+import de.sanandrew.mods.turretmod.client.gui.tcu.GuiIngameTcuInfos;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuInfo;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuTargets;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuUpgrades;
@@ -50,6 +51,7 @@ public class ClientProxy
         TmrBlocks.registerBlockAndTeRenderers();
 
         MinecraftForge.EVENT_BUS.register(new RenderForcefieldHandler());
+        MinecraftForge.EVENT_BUS.register(new GuiIngameTcuInfos());
         FMLCommonHandler.instance().bus().register(ClientSideStateCheatPropertyManagerFactoryKeyResponseInterceptorInterpreter.INSTANCE);
         SAPUtils.EVENT_BUS.register(new RenderFxLayerHandler());
 
