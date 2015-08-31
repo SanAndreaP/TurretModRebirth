@@ -60,9 +60,6 @@ public abstract class EntityTurretBase
     protected TurretTargetHandler tgtHandler;
     protected TurretUpgradeHandler upgHandler;
 
-    @SideOnly(Side.CLIENT)
-    public int renderPass;
-
     public EntityTurretBase(World par1World) {
         super(par1World);
         this.setSize(0.3F, 1.8F);
@@ -619,11 +616,5 @@ public abstract class EntityTurretBase
     private void setDwBoolean(int flag, boolean state) {
         byte dwVal = this.dataWatcher.getWatchableObjectByte(DW_BOOLEANS);
         this.dataWatcher.updateObject(DW_BOOLEANS, (byte) (state ? (dwVal | flag) : (dwVal & ~flag)));
-    }
-
-    @Override
-    public boolean shouldRenderInPass(int pass) {
-        this.renderPass = pass;
-        return pass <= 1;
     }
 }

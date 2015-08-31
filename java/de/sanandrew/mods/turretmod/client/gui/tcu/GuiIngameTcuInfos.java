@@ -82,18 +82,7 @@ public class GuiIngameTcuInfos
                         lines.add(SAPUtils.translatePostFormat("Expiration time: %d", transmitter.requestTimeout));
                     }
 
-                    int maxLength = this.tooltipFR.getStringWidth(new OrderingStringLength().max(lines));
-                    int maxHeight = lines.size() * 9;
-
-                    Gui.drawRect(-3, -2, maxLength + 2, -1, 0xA085C96F);
-                    Gui.drawRect(-3, maxHeight + 1, maxLength + 2, maxHeight + 2, 0xA0649454);
-                    this.drawGradientRect(-3, -1, -2, maxHeight + 1, 0xA085C96F, 0xA0649454);
-                    this.drawGradientRect(maxLength + 1, -1, maxLength + 2, maxHeight + 1, 0xA085C96F, 0xA0649454);
-                    Gui.drawRect(-2, -1, maxLength + 1, maxHeight + 1, 0xA0000000);
-
-                    for( int i = 0, max = lines.size(); i < max; i++ ) {
-                        this.tooltipFR.drawString(lines.get(i), 0, 9 * i, 0xFFFFFFFF);
-                    }
+                    this.drawTooltip(lines, -3, -3, 0xA085C96F);
                 }
             } else if( objPos.typeOfHit == MovingObjectType.ENTITY ) {
                 Entity e = objPos.entityHit;
@@ -101,36 +90,49 @@ public class GuiIngameTcuInfos
                     EntityTurretBase turret = (EntityTurretBase) e;
                     RGBAValues clr;
                     try {
-                        IResource res = Minecraft.getMinecraft().getResourceManager().getResource(Textures.TURRET_T1_CROSSBOW_GLOW.getResource());
-                        clr = AverageColorHelper.getAverageColor(res.getInputStream());
+                        IResource res = Minecraft.getMinecraft().getResourceManager().getResource(turret.getGlowTexture());
+                        clr = AverageColorHelper.getAverageColor(res.getInputStream(), new RGBAValues(0xFF000000));
                     } catch( IOException ex ) {
                         clr = new RGBAValues(0, 0, 0, 255);
                     }
 
-                    int bClr = (0xA0 << 24) | (clr.getRed() << 16) | (clr.getGreen() << 8) | clr.getBlue();
-                    int dClr = (0xA0 << 24) | ((clr.getRed()-20) << 16) | ((clr.getGreen()-20) << 8) | (clr.getBlue()-20);
-
                     List<String> lines = new ArrayList<>();
 
-                    lines.add(SAPUtils.translatePostFormat("Turret: none"));
+                    lines.add(SAPUtils.translatePostFormat("Turret: %s", turret.getTurretName()));
+                    lines.add(SAPUtils.translatePostFormat("Frequency: %s", turret.getFrequency()));
+                    lines.add(SAPUtils.translatePostFormat("Health: %s", turret.getHealth()));
 
-                    int maxLength = this.tooltipFR.getStringWidth(new OrderingStringLength().max(lines));
-                    int maxHeight = lines.size() * 9;
-
-                    Gui.drawRect(-3, -2, maxLength + 2, -1, bClr);
-                    Gui.drawRect(-3, maxHeight + 1, maxLength + 2, maxHeight + 2, dClr);
-                    this.drawGradientRect(-3, -1, -2, maxHeight + 1, bClr, dClr);
-                    this.drawGradientRect(maxLength + 1, -1, maxLength + 2, maxHeight + 1, bClr, dClr);
-                    Gui.drawRect(-2, -1, maxLength + 1, maxHeight + 1, 0xA0000000);
-
-                    for( int i = 0, max = lines.size(); i < max; i++ ) {
-                        this.tooltipFR.drawString(lines.get(i), 0, 9 * i, 0xFFFFFFFF);
-                    }
+                    this.drawTooltip(lines, -3, -3, (0xA0 << 24) | (clr.getRed() << 16) | (clr.getGreen() << 8) | clr.getBlue());
                 }
             }
 
             GL11.glPopMatrix();
         }
+    }
+
+    private void drawTooltip(List<String> lines, int x, int y, int frameClr) {
+        int maxLength = this.tooltipFR.getStringWidth(new OrderingStringLength().max(lines));
+        int maxHeight = lines.size() * 9;
+
+        int darkFrameClr = subtractClrRel(frameClr, 128);
+
+        Gui.drawRect(x, y, x + maxLength + 5, y + 1, frameClr);
+        Gui.drawRect(x, y + maxHeight + 3, x + maxLength + 5, y + maxHeight + 4, darkFrameClr);
+        this.drawGradientRect(x, y + 1, x + 1, y + maxHeight + 3, frameClr, darkFrameClr);
+        this.drawGradientRect(x + maxLength + 4, y + 1, x + maxLength + 5, y + maxHeight + 3, frameClr, darkFrameClr);
+        Gui.drawRect(x + 1, y + 1, x + maxLength + 4, y + maxHeight + 3, 0xA0000000);
+
+        for( int i = 0, max = lines.size(); i < max; i++ ) {
+            this.tooltipFR.drawString(lines.get(i), x + 3, y + 2 + 9 * i, 0xFFFFFFFF);
+        }
+    }
+
+    private int subtractClrRel(int color, int subt) {
+        RGBAValues clr = new RGBAValues(color);
+        int red = clr.getRed() - (int) ((clr.getRed() / (float) 0xFF) * subt);
+        int green = clr.getGreen() - (int) ((clr.getGreen() / (float) 0xFF) * subt);
+        int blue = clr.getBlue() - (int) ((clr.getBlue() / (float) 0xFF) * subt);
+        return new RGBAValues(red, green, blue, clr.getAlpha()).getColorInt();
     }
 
     private static class OrderingStringLength
