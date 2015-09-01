@@ -14,7 +14,7 @@ import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.api.TurretUpgrade;
 import de.sanandrew.mods.turretmod.client.event.RenderForcefieldHandler;
 import de.sanandrew.mods.turretmod.client.event.RenderFxLayerHandler;
-import de.sanandrew.mods.turretmod.client.gui.tcu.GuiIngameTcuInfos;
+import de.sanandrew.mods.turretmod.client.gui.tcu.tooltip.GuiIngameTcuInfos;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuInfo;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuTargets;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuUpgrades;

@@ -4,7 +4,7 @@
  * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  *******************************************************************************************************************/
-package de.sanandrew.mods.turretmod.client.gui.tcu;
+package de.sanandrew.mods.turretmod.client.gui.tcu.tooltip;
 
 import com.google.common.collect.Ordering;
 import com.google.common.primitives.Ints;
@@ -16,19 +16,16 @@ import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter.RequestType;
-import de.sanandrew.mods.turretmod.util.Textures;
 import de.sanandrew.mods.turretmod.util.TmrBlocks;
 import de.sanandrew.mods.turretmod.util.TmrItems;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import org.lwjgl.opengl.GL11;
@@ -41,7 +38,6 @@ public class GuiIngameTcuInfos
         extends Gui
 {
     private Minecraft mc;
-    private FontRenderer tooltipFR;
 
     @SubscribeEvent
     public void onRenderIngame(RenderGameOverlayEvent.Pre event) {
@@ -51,13 +47,6 @@ public class GuiIngameTcuInfos
 
         if( this.mc.thePlayer == null || this.mc.thePlayer.getHeldItem() == null || this.mc.thePlayer.getHeldItem().getItem() != TmrItems.turretCtrlUnit ) {
             return;
-        }
-
-        if( this.tooltipFR == null ) {
-            this.tooltipFR = new FontRenderer(this.mc.gameSettings, new ResourceLocation("textures/font/ascii.png"), this.mc.renderEngine, true);
-            if( this.mc.gameSettings.language != null ) {
-                this.tooltipFR.setBidiFlag(this.mc.getLanguageManager().isCurrentLanguageBidirectional());
-            }
         }
 
         if( event.type == ElementType.CROSSHAIRS ) {
@@ -72,17 +61,17 @@ public class GuiIngameTcuInfos
                     TileEntityItemTransmitter transmitter = (TileEntityItemTransmitter) this.mc.theWorld.getTileEntity(objPos.blockX, objPos.blockY, objPos.blockZ);
                     ItemStack stack = transmitter.getRequestItem();
                     Turret turret = transmitter.getRequestingTurret();
-                    List<String> lines = new ArrayList<>();
+                    List<TooltipLine<TileEntityItemTransmitter>> lines = new ArrayList<>();
 
-                    lines.add(SAPUtils.translatePostFormat("Requesting: %s", transmitter.getRequestType().name()));
+                    lines.add(new LineString<TileEntityItemTransmitter>(SAPUtils.translatePostFormat("Requesting: %s", transmitter.getRequestType().name())));
                     if( transmitter.getRequestType() != RequestType.NONE && turret != null && stack != null ) {
-                        lines.add(SAPUtils.translatePostFormat("Item: %s x%d", stack.getDisplayName(), stack.stackSize));
-                        lines.add(SAPUtils.translatePostFormat("Turret: %s", turret.getTurretName()));
-                        lines.add(SAPUtils.translatePostFormat("  @ x:%.0f y:%.0f z:%.0f", turret.getEntity().posX, turret.getEntity().posY, turret.getEntity().posZ));
-                        lines.add(SAPUtils.translatePostFormat("Expiration time: %d", transmitter.requestTimeout));
+                        lines.add(new LineString<TileEntityItemTransmitter>(SAPUtils.translatePostFormat("Item: %s x%d", stack.getDisplayName(), stack.stackSize)));
+                        lines.add(new LineString<TileEntityItemTransmitter>(SAPUtils.translatePostFormat("Turret: %s", turret.getTurretName())));
+                        lines.add(new LineString<TileEntityItemTransmitter>(SAPUtils.translatePostFormat("  @ x:%.0f y:%.0f z:%.0f", turret.getEntity().posX, turret.getEntity().posY, turret.getEntity().posZ)));
+                        lines.add(new LineString<TileEntityItemTransmitter>(SAPUtils.translatePostFormat("Expiration time: %d", transmitter.requestTimeout)));
                     }
 
-                    this.drawTooltip(lines, -3, -3, 0xA085C96F);
+                    this.drawTooltip(lines, transmitter, -3, -3, 0xA085C96F);
                 }
             } else if( objPos.typeOfHit == MovingObjectType.ENTITY ) {
                 Entity e = objPos.entityHit;
@@ -96,13 +85,17 @@ public class GuiIngameTcuInfos
                         clr = new RGBAValues(0, 0, 0, 255);
                     }
 
-                    List<String> lines = new ArrayList<>();
+                    List<TooltipLine<EntityTurretBase>> lines = new ArrayList<>();
 
-                    lines.add(SAPUtils.translatePostFormat("Turret: %s", turret.getTurretName()));
-                    lines.add(SAPUtils.translatePostFormat("Frequency: %s", turret.getFrequency()));
-                    lines.add(SAPUtils.translatePostFormat("Health: %s", turret.getHealth()));
+                    lines.add(new LineString<EntityTurretBase>(SAPUtils.translatePostFormat("Turret: %s", turret.getTurretName())));
+                    lines.add(new LineString<EntityTurretBase>(SAPUtils.translatePostFormat("Frequency: %s", turret.getFrequency())));
+                    lines.add(new LineString<EntityTurretBase>(SAPUtils.translatePostFormat("Health: %s", turret.getHealth())));
+                    lines.add(new LineTestBox<EntityTurretBase>());
+                    lines.add(new LineTestBox<EntityTurretBase>());
+                    lines.add(new LineTestBox<EntityTurretBase>());
+                    lines.add(new LineTestBox<EntityTurretBase>());
 
-                    this.drawTooltip(lines, -3, -3, (0xA0 << 24) | (clr.getRed() << 16) | (clr.getGreen() << 8) | clr.getBlue());
+                    this.drawTooltip(lines, turret, -3, -3, (0xA0 << 24) | (clr.getRed() << 16) | (clr.getGreen() << 8) | clr.getBlue());
                 }
             }
 
@@ -110,20 +103,32 @@ public class GuiIngameTcuInfos
         }
     }
 
-    private void drawTooltip(List<String> lines, int x, int y, int frameClr) {
-        int maxLength = this.tooltipFR.getStringWidth(new OrderingStringLength().max(lines));
-        int maxHeight = lines.size() * 9;
+    private <T> void drawTooltip(List<TooltipLine<T>> lines, T obj, int x, int y, int frameClr) {
+        OrderingLineLength<T> orderLines = new OrderingLineLength<>(obj);
+        int maxWidth = 0;
+        int maxHeight = 0;
+
+        for( TooltipLine<T> line : lines ) {
+            int wdt = line.getWidth(obj);
+            if( maxWidth < wdt ) {
+                maxWidth = wdt;
+            }
+
+            maxHeight += line.getHeight(obj) + (maxHeight == 0 ? 0 : 1);
+        }
 
         int darkFrameClr = subtractClrRel(frameClr, 128);
 
-        Gui.drawRect(x, y, x + maxLength + 5, y + 1, frameClr);
-        Gui.drawRect(x, y + maxHeight + 3, x + maxLength + 5, y + maxHeight + 4, darkFrameClr);
-        this.drawGradientRect(x, y + 1, x + 1, y + maxHeight + 3, frameClr, darkFrameClr);
-        this.drawGradientRect(x + maxLength + 4, y + 1, x + maxLength + 5, y + maxHeight + 3, frameClr, darkFrameClr);
-        Gui.drawRect(x + 1, y + 1, x + maxLength + 4, y + maxHeight + 3, 0xA0000000);
+        Gui.drawRect(x, y, x + maxWidth + 6, y + 1, frameClr);
+        Gui.drawRect(x, y + maxHeight + 5, x + maxWidth + 6, y + maxHeight + 6, darkFrameClr);
+        this.drawGradientRect(x, y + 1, x + 1, y + maxHeight + 5, frameClr, darkFrameClr);
+        this.drawGradientRect(x + maxWidth + 5, y + 1, x + maxWidth + 6, y + maxHeight + 5, frameClr, darkFrameClr);
+        Gui.drawRect(x + 1, y + 1, x + maxWidth + 5, y + maxHeight + 5, 0xA0000000);
 
-        for( int i = 0, max = lines.size(); i < max; i++ ) {
-            this.tooltipFR.drawString(lines.get(i), x + 3, y + 2 + 9 * i, 0xFFFFFFFF);
+        int currHgt = 0;
+        for( TooltipLine<T> line : lines ) {
+            line.renderLine(x + 3, y + 3 + currHgt, 0xFFFFFFFF);
+            currHgt += 1 + line.getHeight(obj);
         }
     }
 
@@ -135,12 +140,18 @@ public class GuiIngameTcuInfos
         return new RGBAValues(red, green, blue, clr.getAlpha()).getColorInt();
     }
 
-    private static class OrderingStringLength
-            extends Ordering<String>
+    private static class OrderingLineLength<T>
+            extends Ordering<TooltipLine<T>>
     {
+        private T dataObj;
+
+        public OrderingLineLength(T dataObj) {
+            this.dataObj = dataObj;
+        }
+
         @Override
-        public int compare(String left, String right) {
-            return Ints.compare(left.length(), right.length());
+        public int compare(TooltipLine<T> left, TooltipLine<T> right) {
+            return Ints.compare(left.getWidth(this.dataObj), right.getWidth(this.dataObj));
         }
     }
 }
