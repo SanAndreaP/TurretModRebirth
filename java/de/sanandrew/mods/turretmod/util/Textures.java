@@ -23,6 +23,7 @@ public enum Textures
     GUI_TCU_TARGETS("textures/gui/tcu/page_targets.png"),
     GUI_TCU_UPGRADES("textures/gui/tcu/page_upgrades.png"),
     GUI_TCU_INFO("textures/gui/tcu/page_info.png"),
+    GUI_TCU_HUD("textures/gui/tcu/hud.png"),
     GUI_TOOLTIP_HOLOGRAPH("textures/gui/holo_tooltip.png"),
 
     TURRET_FORCEFIELD_P1("textures/entities/shield_1.png"),

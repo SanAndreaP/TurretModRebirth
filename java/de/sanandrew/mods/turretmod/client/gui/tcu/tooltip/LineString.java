@@ -6,6 +6,7 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.gui.tcu.tooltip;
 
+import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.ResourceLocation;
@@ -16,8 +17,9 @@ public class LineString<T>
     private static FontRenderer tooltipFR;
 
     private String line;
+    private Object[] formatData;
 
-    public LineString(String line) {
+    public LineString(String line, Object... data) {
         if( tooltipFR == null ) {
             Minecraft mc = Minecraft.getMinecraft();
             tooltipFR = new FontRenderer(mc.gameSettings, new ResourceLocation("textures/font/ascii.png"), mc.renderEngine, true);
@@ -27,6 +29,7 @@ public class LineString<T>
         }
 
         this.line = line;
+        this.formatData = data;
     }
 
     @Override
@@ -41,6 +44,6 @@ public class LineString<T>
 
     @Override
     public void renderLine(int x, int y, float partTicks) {
-        tooltipFR.drawString(this.line, x, y, 0xFFFFFFFF);
+        tooltipFR.drawString(SAPUtils.translatePostFormat(this.line, this.formatData), x, y, 0xFFFFFFFF);
     }
 }

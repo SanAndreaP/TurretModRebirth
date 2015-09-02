@@ -13,6 +13,8 @@ import de.sanandrew.core.manpack.util.client.helpers.AverageColorHelper;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils.RGBAValues;
 import de.sanandrew.mods.turretmod.api.Turret;
+import de.sanandrew.mods.turretmod.client.gui.tcu.tooltip.LineInfoBar.LineAmmoBar;
+import de.sanandrew.mods.turretmod.client.gui.tcu.tooltip.LineInfoBar.LineHealthBar;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter.RequestType;
@@ -87,13 +89,10 @@ public class GuiIngameTcuInfos
 
                     List<TooltipLine<EntityTurretBase>> lines = new ArrayList<>();
 
-                    lines.add(new LineString<EntityTurretBase>(SAPUtils.translatePostFormat("Turret: %s", turret.getTurretName())));
-                    lines.add(new LineString<EntityTurretBase>(SAPUtils.translatePostFormat("Frequency: %s", turret.getFrequency())));
-                    lines.add(new LineString<EntityTurretBase>(SAPUtils.translatePostFormat("Health: %s", turret.getHealth())));
-                    lines.add(new LineTestBox<EntityTurretBase>());
-                    lines.add(new LineTestBox<EntityTurretBase>());
-                    lines.add(new LineTestBox<EntityTurretBase>());
-                    lines.add(new LineTestBox<EntityTurretBase>());
+                    lines.add(new LineString<EntityTurretBase>("Turret: %s", turret.getTurretName()));
+                    lines.add(new LineString<EntityTurretBase>("Frequency: %s", turret.getFrequency()));
+                    lines.add(new LineHealthBar<EntityTurretBase>(turret.getHealth(), turret.getMaxHealth()));
+                    lines.add(new LineAmmoBar<EntityTurretBase>(turret.getAmmo(), turret.getMaxAmmo()));
 
                     this.drawTooltip(lines, turret, -3, -3, (0xA0 << 24) | (clr.getRed() << 16) | (clr.getGreen() << 8) | clr.getBlue());
                 }
