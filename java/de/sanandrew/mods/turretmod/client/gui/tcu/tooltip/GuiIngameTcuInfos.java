@@ -6,8 +6,6 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.gui.tcu.tooltip;
 
-import com.google.common.collect.Ordering;
-import com.google.common.primitives.Ints;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import de.sanandrew.core.manpack.util.client.helpers.AverageColorHelper;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
@@ -53,8 +51,7 @@ public class GuiIngameTcuInfos
 
         if( event.type == ElementType.CROSSHAIRS ) {
             GL11.glPushMatrix();
-            //noinspection IntegerDivisionInFloatingPointContext
-            GL11.glTranslatef(event.resolution.getScaledWidth() / 2 + 6, event.resolution.getScaledHeight() / 2 + 6, 0.0F);
+            GL11.glTranslatef(event.resolution.getScaledWidth() / 2.0F + 6.0F, event.resolution.getScaledHeight() / 2.0F + 6.0F, 0.0F);
             MovingObjectPosition objPos = this.mc.objectMouseOver;
 
             if( objPos.typeOfHit == MovingObjectType.BLOCK ) {
@@ -103,7 +100,6 @@ public class GuiIngameTcuInfos
     }
 
     private <T> void drawTooltip(List<TooltipLine<T>> lines, T obj, int x, int y, int frameClr) {
-        OrderingLineLength<T> orderLines = new OrderingLineLength<>(obj);
         int maxWidth = 0;
         int maxHeight = 0;
 
@@ -131,26 +127,11 @@ public class GuiIngameTcuInfos
         }
     }
 
-    private int subtractClrRel(int color, int subt) {
+    private static int subtractClrRel(int color, int subt) {
         RGBAValues clr = new RGBAValues(color);
         int red = clr.getRed() - (int) ((clr.getRed() / (float) 0xFF) * subt);
         int green = clr.getGreen() - (int) ((clr.getGreen() / (float) 0xFF) * subt);
         int blue = clr.getBlue() - (int) ((clr.getBlue() / (float) 0xFF) * subt);
         return new RGBAValues(red, green, blue, clr.getAlpha()).getColorInt();
-    }
-
-    private static class OrderingLineLength<T>
-            extends Ordering<TooltipLine<T>>
-    {
-        private T dataObj;
-
-        public OrderingLineLength(T dataObj) {
-            this.dataObj = dataObj;
-        }
-
-        @Override
-        public int compare(TooltipLine<T> left, TooltipLine<T> right) {
-            return Ints.compare(left.getWidth(this.dataObj), right.getWidth(this.dataObj));
-        }
     }
 }

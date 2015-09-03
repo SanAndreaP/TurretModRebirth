@@ -14,7 +14,6 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
-import org.lwjgl.opengl.GL11;
 
 public class ModelTurretCrossbow
 		extends ModelBase
@@ -142,22 +141,8 @@ public class ModelTurretCrossbow
 		turretThroatV.render(f5);
 		turretAntennaI.render(f5);
 		turretAntennaII.render(f5);
-
-		GL11.glPushMatrix();
-//		if( this.isGlowTexture ) {
-//			GL11.glScalef(1.1F, 1.1F, 1.1F);
-//			GL11.glTranslatef(0.010F, -0.11F, -0.00F);
-//		}
 		healthBar.render(f5);
-		GL11.glPopMatrix();
-
-		GL11.glPushMatrix();
-//		if (this.isGlowTexture) {
-//			GL11.glScalef(1.1F, 1.1F, 1.1F);
-//			GL11.glTranslatef(-0.010F, -0.11F, -0.00F);
-//		}
 		ammoBar.render(f5);
-		GL11.glPopMatrix();
 	}
 
 	@Override
@@ -171,14 +156,8 @@ public class ModelTurretCrossbow
 
         EntityTurretBase turret = (EntityTurretBase)entity;
 
-        float healthRot = -((float)Math.PI / 2.0F) * ((turret.getMaxHealth() - turret.getHealth()) / turret.getMaxHealth());
-        this.healthBar.rotateAngleZ = healthRot;
-//        float ammoRot = ((float)Math.PI / 2.0F) * ((float)(turret.getMaxAmmo() - turret.getAmmo()) / (float)turret.getMaxAmmo());
-
-//        if (TurretUpgrades.hasUpgrade(TUpgInfAmmo.class, turret.upgrades) && turret.getAmmo() > 0) {
-//        	ammoRot = 0.0F;
-//        }
-//        this.ammoBar.rotateAngleZ = ammoRot;
+        this.healthBar.rotateAngleZ = -((float)Math.PI / 2.0F) * ((turret.getMaxHealth() - turret.getHealth()) / turret.getMaxHealth());
+        this.ammoBar.rotateAngleZ = ((float)Math.PI / 2.0F) * ((turret.getMaxAmmo() - turret.getAmmo()) / (float) turret.getMaxAmmo());
 	}
 
 	private void setStaticBody(float f) {

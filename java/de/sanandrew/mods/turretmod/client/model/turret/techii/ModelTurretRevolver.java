@@ -5,7 +5,6 @@ import de.sanandrew.mods.turretmod.entity.turret.techii.EntityTurretRevolver;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
-import org.lwjgl.opengl.GL11;
 
 public class ModelTurretRevolver
 		extends ModelBase
@@ -148,22 +147,8 @@ public class ModelTurretRevolver
 		TurretAntennaII.render(f5);
 		RightBarrel.render(f5);
 		LeftBarrel.render(f5);
-
-		GL11.glPushMatrix();
-//		if (this.isGlowTexture) {
-//			GL11.glScalef(1.1F, 1.1F, 1.1F);
-//			GL11.glTranslatef(0.010F, -0.11F, -0.00F);
-//		}
 		HealthBar.render(f5);
-		GL11.glPopMatrix();
-
-		GL11.glPushMatrix();
-//		if (this.isGlowTexture) {
-//			GL11.glScalef(1.1F, 1.1F, 1.1F);
-//			GL11.glTranslatef(-0.010F, -0.11F, -0.00F);
-//		}
 		AmmoBar.render(f5);
-		GL11.glPopMatrix();
 	}
 
 	@Override
@@ -187,14 +172,8 @@ public class ModelTurretRevolver
 
 		EntityTurretRevolver turret = (EntityTurretRevolver)entity;
 
-        float healthRot = -((float)Math.PI / 2F) * ((float)(turret.getMaxHealth() - turret.getHealth()) / turret.getMaxHealth());
-        this.HealthBar.rotateAngleZ = healthRot;
-//        float ammoRot = ((float)Math.PI / 2F) * ((float)(turret.getMaxAmmo() - turret.getAmmo()) / (float)turret.getMaxAmmo());
-//
-//        if (TurretUpgrades.hasUpgrade(TUpgInfAmmo.class, turret.upgrades) && turret.getAmmo() > 0) {
-//        	ammoRot = 0F;
-//        }
-//        this.AmmoBar.rotateAngleZ = ammoRot;
+        this.HealthBar.rotateAngleZ = -((float)Math.PI / 2F) * ((turret.getMaxHealth() - turret.getHealth()) / turret.getMaxHealth());
+        this.AmmoBar.rotateAngleZ = ((float)Math.PI / 2F) * ((turret.getMaxAmmo() - turret.getAmmo()) / (float)turret.getMaxAmmo());
 
         double xR = Math.sin(turret.rotationYawHead / (180D / Math.PI)) * ((double)(turret.getRightBarrelOffset()) / (double)turret.getMaxShootTicks());
         double zR = Math.cos(turret.rotationYawHead / (180D / Math.PI)) * ((double)(turret.getRightBarrelOffset()) / (double)turret.getMaxShootTicks());
