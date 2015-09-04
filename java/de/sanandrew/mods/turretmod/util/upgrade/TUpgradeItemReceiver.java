@@ -12,6 +12,7 @@ import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.api.UpgradeQueueData;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter;
+import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter.RequestType;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -80,6 +81,8 @@ public class TUpgradeItemReceiver
                             }
                         }
                     }
+                } else if( turret.getHealth() < turret.getMaxHealth() ) {
+
                 }
             } else if( data.currRequestHolder.isInvalid() ) {
                 data.currRequestHolder = null;
@@ -87,6 +90,10 @@ public class TUpgradeItemReceiver
                 data.currRequestHolder = null;
             }
         }
+    }
+
+    private void requestToTile(ReceiverData data, Turret turret, RequestType type, ItemStack reqItem) {
+
     }
 
     public static class ReceiverData

@@ -11,9 +11,10 @@ package de.sanandrew.mods.turretmod.util;
 import de.sanandrew.core.manpack.util.helpers.ItemUtils;
 import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.api.TurretAmmo;
-import de.sanandrew.mods.turretmod.api.TurretHealItem;
+import de.sanandrew.mods.turretmod.api.TurretHealthpack;
 import de.sanandrew.mods.turretmod.api.TurretInfo;
 import de.sanandrew.mods.turretmod.api.registry.TurretAmmoRegistry;
+import de.sanandrew.mods.turretmod.api.registry.TurretHealthpackRegistry;
 import net.minecraft.item.ItemStack;
 
 public class TurretInfoApi<T extends Turret>
@@ -81,12 +82,12 @@ public class TurretInfoApi<T extends Turret>
         return null;
     }
 
-    public static TurretHealItem getHeal(ItemStack stack) {
+    public static TurretHealthpack getHeal(ItemStack stack) {
         if( stack == null ) {
             return null;
         }
 
-        for( TurretHealItem type : TurretHealItem.HEAL_TYPES ) {
+        for( TurretHealthpack type : TurretHealthpackRegistry.getTypes() ) {
             ItemStack healItem = type.getHealItem();
             if( ItemUtils.areStacksEqual(stack, healItem, healItem.hasTagCompound()) ) {
                 return type;

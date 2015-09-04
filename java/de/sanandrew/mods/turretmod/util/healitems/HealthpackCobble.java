@@ -7,13 +7,13 @@
 package de.sanandrew.mods.turretmod.util.healitems;
 
 import de.sanandrew.mods.turretmod.api.Turret;
-import de.sanandrew.mods.turretmod.api.TurretHealItem;
+import de.sanandrew.mods.turretmod.api.TurretHealthpack;
 import de.sanandrew.mods.turretmod.entity.turret.techi.EntityTurretCrossbow;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
-public class HealItemCobble
-        implements TurretHealItem
+public class HealthpackCobble
+        implements TurretHealthpack
 {
     private static final ItemStack ITEM = new ItemStack(Blocks.cobblestone);
 
@@ -23,7 +23,7 @@ public class HealItemCobble
     }
 
     @Override
-    public int getAmount() {
+    public float getAmount() {
         return 10;
     }
 

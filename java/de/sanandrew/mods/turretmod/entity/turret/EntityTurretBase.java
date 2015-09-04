@@ -9,8 +9,6 @@
 package de.sanandrew.mods.turretmod.entity.turret;
 
 import com.mojang.authlib.GameProfile;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.util.helpers.InventoryUtils;
 import de.sanandrew.core.manpack.util.helpers.ItemUtils;
 import de.sanandrew.mods.turretmod.api.*;
@@ -299,7 +297,7 @@ public abstract class EntityTurretBase
         if( heldItem != null ) {
             if( !this.worldObj.isRemote ) {
                 TurretAmmo ammoInfo;
-                TurretHealItem healInfo;
+                TurretHealthpack healInfo;
                 TurretUpgrade upgrade;
 
                 if( heldItem.getItem() == TmrItems.turretCtrlUnit ) {

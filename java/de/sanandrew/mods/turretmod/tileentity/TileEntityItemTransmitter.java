@@ -33,6 +33,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.util.UUID;
+
 public class TileEntityItemTransmitter
         extends TileEntity
         implements ISidedInventory
@@ -40,8 +42,7 @@ public class TileEntityItemTransmitter
     private static final int MAX_SEC_TIMEOUT = 5;
 
     private Turret requestingTurret;
-    private RequestType requestType = RequestType.NONE;
-    private ItemStack requestItem;
+    private RequestType requestType = null;
     public int requestTimeout;
 
     private Turret bannedTurret;
@@ -58,18 +59,17 @@ public class TileEntityItemTransmitter
     public int renderPass;
 
     public boolean hasRequest() {
-        return this.requestType != RequestType.NONE;
+        return this.requestType != null;
     }
 
     public boolean isMyRequest(Turret turret) {
         return this.hasRequest() && this.requestingTurret == turret;
     }
 
-    public boolean requestItem(Turret turret, RequestType requestType, ItemStack stack) {
+    public boolean requestItem(Turret turret, RequestType requestType) {
         if( !this.hasRequest() && this.bannedTurret != turret ) {
             this.requestingTurret = turret;
             this.requestType = requestType;
-            this.requestItem = stack;
             this.requestTimeout = MAX_SEC_TIMEOUT;
             this.bannedTurret = null;
 
@@ -97,8 +97,8 @@ public class TileEntityItemTransmitter
                         this.banTimeout = MAX_SEC_TIMEOUT;
                         this.updateRequestAndItem(0, 0);
                     } else if( this.bufItem != null ) {
-                        switch( this.requestType ) {
-                            case AMMO:
+                        switch( this.requestType.group ) {
+                            case RequestType.AMMO:
                                 EntityLiving el = this.requestingTurret.getEntity();
                                 TurretMod.particleProxy.spawnParticle(this.xCoord + 0.5D, this.yCoord + 0.8D, this.zCoord + 0.5D, this.worldObj.provider.dimensionId,
                                                                       ParticleProxy.ITEM_TRANSMITTER, Triplet.with(el.posX, el.posY + el.getEyeHeight(), el.posZ)
@@ -176,7 +176,7 @@ public class TileEntityItemTransmitter
         return true;
     }
 
-    private void updateRequestAndItem(int removed, int stillNeeded) {
+    private void updateRequestAndItem(int removed, Number stillNeeded) {
         if( removed > 0 || stillNeeded > 0 ) {
             if( !this.hasRequest() ) {
                 this.updateRequestAndItem(0, 0);
@@ -377,10 +377,35 @@ public class TileEntityItemTransmitter
         return pass <= 1;
     }
 
-    public enum RequestType
+    public abstract static class RequestType<T extends Number>
     {
-        AMMO, HEALTH, NONE;
+        public static final int AMMO = 0;
+        public static final int HEAL = 1;
 
-        public static final RequestType[] VALUES = values();
+        public final UUID type;
+        public final int group;
+        public T amount;
+
+        private RequestType(int group, UUID type, T amount) {
+            this.type = type;
+            this.group = group;
+            this.amount = amount;
+        }
+
+        public static class RequestAmmo
+                extends RequestType<Integer>
+        {
+            public RequestAmmo(UUID type, int amount) {
+                super(AMMO, type, amount);
+            }
+        }
+
+        public static class RequestHeal
+                extends RequestType<Float>
+        {
+            public RequestHeal(UUID type, float amount) {
+                super(AMMO, type, amount);
+            }
+        }
     }
 }

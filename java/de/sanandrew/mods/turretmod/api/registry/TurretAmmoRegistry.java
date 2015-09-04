@@ -14,10 +14,6 @@ import java.util.*;
 
 public final class TurretAmmoRegistry
 {
-    /**
-     * The list of available ammo types.<br>
-     * If you want to add your own ammo, insert a new {@link TurretAmmo} instance here via {@code TurretAmmo.AMMO_TYPES.add(TurretAmmo)}
-     */
     private static final List<TurretAmmo> AMMO_TYPES = new ArrayList<>();
     private static final Map<UUID, TurretAmmo> UUID_TO_AMMO_TYPE_MAP = new HashMap<>();
     private static final Map<TurretAmmo, UUID> AMMO_TYPE_TO_UUID_MAP = new HashMap<>();
