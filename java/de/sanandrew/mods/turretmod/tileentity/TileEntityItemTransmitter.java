@@ -12,6 +12,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.util.helpers.InventoryUtils;
 import de.sanandrew.core.manpack.util.helpers.ItemUtils;
+import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
 import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.network.packet.PacketSendTransmitterExpTime;
@@ -33,6 +34,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.UUID;
 
 public class TileEntityItemTransmitter
@@ -130,13 +137,15 @@ public class TileEntityItemTransmitter
     @Override
     public Packet getDescriptionPacket() {
         NBTTagCompound packetNBT = new NBTTagCompound();
-        packetNBT.setByte("requestType", (byte) this.requestType.ordinal());
-        if( this.requestType != RequestType.NONE ) {
-            NBTTagCompound itemNbt = new NBTTagCompound();
-            saveStack(itemNbt, this.requestItem);
-            packetNBT.setInteger("turretId", this.requestingTurret.getEntity().getEntityId());
-            packetNBT.setInteger("timeout", this.requestTimeout);
-            packetNBT.setTag("item", itemNbt);
+        if( this.requestType == null ) {
+            packetNBT.setByte(RequestType.NBT_REQ_GROUP, (byte) -1);
+        } else {
+            RequestType.writeToNbt(packetNBT, this.requestType);
+//                NBTTagCompound itemNbt = new NBTTagCompound();
+//                saveStack(itemNbt, this.requestItem);
+//                packetNBT.setInteger("turretId", this.requestingTurret.getEntity().getEntityId());
+//                packetNBT.setInteger("timeout", this.requestTimeout);
+//                packetNBT.setTag("item", itemNbt);
         }
 
         return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, packetNBT);
@@ -145,12 +154,17 @@ public class TileEntityItemTransmitter
     @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
         NBTTagCompound data = pkt.func_148857_g();
-        this.requestType = RequestType.VALUES[data.getByte("requestType")];
-        if( this.requestType != RequestType.NONE ) {
-            this.requestingTurret = (Turret) this.worldObj.getEntityByID(data.getInteger("turretId"));
-            this.requestTimeout = data.getInteger("timeout");
-            this.requestItem = readStack(data.getCompoundTag("item"));
+        if( data.getByte(RequestType.NBT_REQ_GROUP) != -1 ) {
+            this.requestType = RequestType.readFromNbt(data);
+        } else {
+            this.requestType = null;
         }
+        //RequestType.VALUES[data.getByte("requestType")];
+//        if( this.requestType != RequestType.NONE ) {
+//            this.requestingTurret = (Turret) this.worldObj.getEntityByID(data.getInteger("turretId"));
+//            this.requestTimeout = data.getInteger("timeout");
+//            this.requestItem = readStack(data.getCompoundTag("item"));
+//        }
     }
 
     @Override
@@ -377,19 +391,54 @@ public class TileEntityItemTransmitter
         return pass <= 1;
     }
 
-    public abstract static class RequestType<T extends Number>
+    public static class RequestType<T extends Number>
     {
-        public static final int AMMO = 0;
-        public static final int HEAL = 1;
+        public static final String NBT_REQ_GROUP = "requestType";
+
+        public static final byte AMMO = 0;
+        public static final byte HEAL = 1;
 
         public final UUID type;
-        public final int group;
+        public final byte group;
         public T amount;
 
-        private RequestType(int group, UUID type, T amount) {
+        private RequestType(byte group, UUID type, T amount) {
             this.type = type;
             this.group = group;
             this.amount = amount;
+        }
+
+        public static void writeToNbt(NBTTagCompound nbt, RequestType<?> type) {
+            nbt.setByte(NBT_REQ_GROUP, type.group);
+            nbt.setString("requestType", type.type.toString());
+            try( ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                 ObjectOutputStream oos = new ObjectOutputStream(bos);
+            ) {
+                oos.writeObject(type.amount);
+                nbt.setByteArray("requestValue", bos.toByteArray());
+            } catch( IOException e ) {
+                e.printStackTrace();
+            }
+        }
+
+        public static <T extends Number> RequestType<?> readFromNbt(NBTTagCompound nbt) {
+            byte group = nbt.getByte(NBT_REQ_GROUP);
+            UUID type = UUID.fromString(nbt.getString("requestType"));
+            T val = null;
+
+            try( ByteArrayInputStream bis = new ByteArrayInputStream(nbt.getByteArray("requestValue"));
+                 ObjectInputStream ois = new ObjectInputStream(bis);
+            ) {
+                val = SAPUtils.getCasted(ois.readObject());
+            } catch( IOException | ClassNotFoundException e ) {
+                e.printStackTrace();
+            }
+
+            if( val == null ) {
+                return null;
+            }
+
+            return new RequestType<>(group, type, val);
         }
 
         public static class RequestAmmo
@@ -404,7 +453,7 @@ public class TileEntityItemTransmitter
                 extends RequestType<Float>
         {
             public RequestHeal(UUID type, float amount) {
-                super(AMMO, type, amount);
+                super(HEAL, type, amount);
             }
         }
     }
