@@ -15,7 +15,7 @@ import de.sanandrew.mods.turretmod.client.gui.tcu.tooltip.LineInfoBar.LineAmmoBa
 import de.sanandrew.mods.turretmod.client.gui.tcu.tooltip.LineInfoBar.LineHealthBar;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter;
-import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter.RequestType;
+import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter.Request;
 import de.sanandrew.mods.turretmod.util.TmrBlocks;
 import de.sanandrew.mods.turretmod.util.TmrItems;
 import net.minecraft.block.Block;
@@ -62,8 +62,8 @@ public class GuiIngameTcuInfos
                     Turret turret = transmitter.getRequestingTurret();
                     List<TooltipLine<TileEntityItemTransmitter>> lines = new ArrayList<>();
 
-                    lines.add(new LineString<TileEntityItemTransmitter>(SAPUtils.translatePostFormat("Requesting: %s", transmitter.getRequestType().name())));
-                    if( transmitter.getRequestType() != RequestType.NONE && turret != null && stack != null ) {
+                    lines.add(new LineString<TileEntityItemTransmitter>(SAPUtils.translatePostFormat("Requesting: %s", transmitter.getRequest().name())));
+                    if( transmitter.getRequest() != Request.NONE && turret != null && stack != null ) {
                         lines.add(new LineString<TileEntityItemTransmitter>(SAPUtils.translatePostFormat("Item: %s x%d", stack.getDisplayName(), stack.stackSize)));
                         lines.add(new LineString<TileEntityItemTransmitter>(SAPUtils.translatePostFormat("Turret: %s", turret.getTurretName())));
                         lines.add(new LineString<TileEntityItemTransmitter>(SAPUtils.translatePostFormat("  @ x:%.0f y:%.0f z:%.0f", turret.getEntity().posX, turret.getEntity().posY, turret.getEntity().posZ)));

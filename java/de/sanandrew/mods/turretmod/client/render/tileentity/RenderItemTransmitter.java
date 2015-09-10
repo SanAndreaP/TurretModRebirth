@@ -13,7 +13,7 @@ import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.client.model.ModelItemTransmitter;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter;
-import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter.RequestType;
+import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter.Request;
 import de.sanandrew.mods.turretmod.util.Textures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -205,9 +205,9 @@ public class RenderItemTransmitter
         Turret turret = te.getRequestingTurret();
         String s;
 
-        s = SAPUtils.translatePostFormat("Requesting: %s", te.getRequestType().name());
-        fontRenderer.drawString(s, 0, te.getRequestType() == RequestType.NONE ? 18 : 0, color | (alphaInt << 24));
-        if( te.getRequestType() != RequestType.NONE && turret != null && stack != null ) {
+        s = SAPUtils.translatePostFormat("Requesting: %s", te.getRequest().name());
+        fontRenderer.drawString(s, 0, te.getRequest() == Request.NONE ? 18 : 0, color | (alphaInt << 24));
+        if( te.getRequest() != Request.NONE && turret != null && stack != null ) {
             s = SAPUtils.translatePostFormat("Item: %s x%d", stack.getDisplayName(), stack.stackSize);
             fontRenderer.drawString(s, 0, 9, color | (alphaInt << 24));
             s = SAPUtils.translatePostFormat("Turret: %s", turret.getTurretName());

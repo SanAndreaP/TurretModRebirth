@@ -12,7 +12,6 @@ import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.api.UpgradeQueueData;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter;
-import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter.RequestType;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -72,7 +71,7 @@ public class TUpgradeItemReceiver
                                     if( tile instanceof TileEntityItemTransmitter && tile.yCoord >= rangeBB.minY && tile.yCoord <= rangeBB.maxY ) {
                                         TileEntityItemTransmitter transmitter = (TileEntityItemTransmitter) tile;
 
-                                        if( transmitter.requestItem(turret, TileEntityItemTransmitter.RequestType.AMMO, myAmmo) ) {
+                                        if( transmitter.requestItem(turret, TileEntityItemTransmitter.Request.AMMO, myAmmo) ) {
                                             data.currRequestHolder = transmitter;
                                             break chunkLoop;
                                         }
@@ -92,7 +91,7 @@ public class TUpgradeItemReceiver
         }
     }
 
-    private void requestToTile(ReceiverData data, Turret turret, RequestType type, ItemStack reqItem) {
+    private void requestToTile(ReceiverData data, Turret turret, TileEntityItemTransmitter.Request type, ItemStack reqItem) {
 
     }
 

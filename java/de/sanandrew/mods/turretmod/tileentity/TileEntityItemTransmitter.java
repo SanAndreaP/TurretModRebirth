@@ -8,9 +8,10 @@
  */
 package de.sanandrew.mods.turretmod.tileentity;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import de.sanandrew.core.manpack.util.helpers.InventoryUtils;
 import de.sanandrew.core.manpack.util.helpers.ItemUtils;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.core.manpack.util.javatuples.Triplet;
@@ -19,10 +20,8 @@ import de.sanandrew.mods.turretmod.network.packet.PacketSendTransmitterExpTime;
 import de.sanandrew.mods.turretmod.util.ParticleProxy;
 import de.sanandrew.mods.turretmod.util.TurretMod;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -39,7 +38,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 import java.util.UUID;
 
 public class TileEntityItemTransmitter
@@ -48,37 +51,34 @@ public class TileEntityItemTransmitter
 {
     private static final int MAX_SEC_TIMEOUT = 5;
 
-    private Turret requestingTurret;
-    private RequestType requestType = null;
-    public int requestTimeout;
+    private Request<?> currentRequest = null;
+    private int currRequestIndex = -1;
+    private int currRequestTimeout = 0;
 
-    private Turret bannedTurret;
-    private int banTimeout;
+//    private Table<Integer, Turret, Request<?>> requestQueue = HashBasedTable.create();
+    private RequestQueueMap<Turret, Request> requestQueue = new RequestQueueMap<>();
 
     private ItemStack bufItem;
     private int ticksExisted = 0;
 
-    public float scaleTooltip = 0.0F;
-    public float lengthTooltipRod = 0.0F;
-    public long timestampLastRendered = 0;
-
     @SideOnly(Side.CLIENT)
     public int renderPass;
 
-    public boolean hasRequest() {
-        return this.requestType != null;
+    public boolean hasRequests() {
+        return this.requestQueue.size() > 0;
     }
 
-    public boolean isMyRequest(Turret turret) {
-        return this.hasRequest() && this.requestingTurret == turret;
+    public boolean hasTurretRequested(Turret turret) {
+        return this.hasRequests() && this.requestQueue.containsKey(turret);
     }
 
-    public boolean requestItem(Turret turret, RequestType requestType) {
-        if( !this.hasRequest() && this.bannedTurret != turret ) {
-            this.requestingTurret = turret;
-            this.requestType = requestType;
-            this.requestTimeout = MAX_SEC_TIMEOUT;
-            this.bannedTurret = null;
+    public boolean requestItem(Turret turret, Request request) {
+        if( !this.hasTurretRequested(turret) ) {
+            this.requestQueue.put(turret, request);
+//            this.requestingTurret = turret;
+//            this.currentRequest = request;
+//            this.requestTimeout = MAX_SEC_TIMEOUT;
+//            this.bannedTurret = null;
 
             this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
 
@@ -88,46 +88,64 @@ public class TileEntityItemTransmitter
         return false;
     }
 
-    public void removeRequest() {
-        this.updateRequestAndItem(0, 0);
+    public void removeRequest(Turret turret) {
+        if( this.hasTurretRequested(turret) ) {
+            this.requestQueue.remove(turret);
+        }
     }
 
     @Override
     public void updateEntity() {
         if( !this.worldObj.isRemote ) {
             if( this.ticksExisted % 20 == 0 ) {
-                if( this.hasRequest() ) {
-                    this.requestTimeout--;
+                if( this.requestQueue.size() > 0 ) {
+                    if( this.currRequestIndex >= 0 && this.currentRequest != null ) {
+                        this.currRequestTimeout--;
+                        if( this.currRequestTimeout <= 0 || this.currentRequest.turret == null || !this.currentRequest.turret.getEntity().isEntityAlive() ) {
+                            this.currRequestIndex += 1;
+                            if( this.currRequestIndex >= this.requestQueue.size() ) {
+                                this.currRequestIndex = 0;
+                            }
 
-                    if( this.requestTimeout <= 0 || this.requestingTurret == null || !this.requestingTurret.getEntity().isEntityAlive() ) {
-                        this.bannedTurret = this.requestingTurret;
-                        this.banTimeout = MAX_SEC_TIMEOUT;
-                        this.updateRequestAndItem(0, 0);
-                    } else if( this.bufItem != null ) {
-                        switch( this.requestType.group ) {
-                            case RequestType.AMMO:
-                                EntityLiving el = this.requestingTurret.getEntity();
-                                TurretMod.particleProxy.spawnParticle(this.xCoord + 0.5D, this.yCoord + 0.8D, this.zCoord + 0.5D, this.worldObj.provider.dimensionId,
-                                                                      ParticleProxy.ITEM_TRANSMITTER, Triplet.with(el.posX, el.posY + el.getEyeHeight(), el.posZ)
-                                                                     );
-                                int removed = this.requestingTurret.addAmmo(this.bufItem);
-                                this.updateRequestAndItem(removed, this.requestingTurret.getMaxAmmo() - this.requestingTurret.getAmmo());
-                                break;
-                            default:
-                                this.updateRequestAndItem(0, 0);
+                            this.currentRequest = this.requestQueue.getValue(this.currRequestIndex);
+                            this.currRequestTimeout = MAX_SEC_TIMEOUT;
                         }
-                    } else {
-                        this.updateRequestAndItem(0, this.requestingTurret.getMaxAmmo() - this.requestingTurret.getAmmo());
+                    } else if( this.bufItem != null ) {
+
                     }
-
-                    PacketSendTransmitterExpTime.sendToAllAround(this);
-                } else if( !this.hasRequest() && this.bufItem != null ) {
-                    this.updateRequestAndItem(0, 0);
                 }
-
-                if( --this.banTimeout <= 0 ) {
-                    this.bannedTurret = null;
-                }
+//                if( this.hasRequest() ) {
+//                    this.requestTimeout--;
+//
+//                    if( this.requestTimeout <= 0 || this.requestingTurret == null || !this.requestingTurret.getEntity().isEntityAlive() ) {
+//                        this.bannedTurret = this.requestingTurret;
+//                        this.banTimeout = MAX_SEC_TIMEOUT;
+//                        this.updateRequestAndItem(0, 0);
+//                    } else if( this.bufItem != null ) {
+//                        switch( this.currentRequest.group ) {
+//                            case Request.AMMO:
+//                                EntityLiving el = this.requestingTurret.getEntity();
+//                                TurretMod.particleProxy.spawnParticle(this.xCoord + 0.5D, this.yCoord + 0.8D, this.zCoord + 0.5D, this.worldObj.provider.dimensionId,
+//                                                                      ParticleProxy.ITEM_TRANSMITTER, Triplet.with(el.posX, el.posY + el.getEyeHeight(), el.posZ)
+//                                                                     );
+//                                int removed = this.requestingTurret.addAmmo(this.bufItem);
+//                                this.updateRequestAndItem(removed, this.requestingTurret.getMaxAmmo() - this.requestingTurret.getAmmo());
+//                                break;
+//                            default:
+//                                this.updateRequestAndItem(0, 0);
+//                        }
+//                    } else {
+//                        this.updateRequestAndItem(0, this.requestingTurret.getMaxAmmo() - this.requestingTurret.getAmmo());
+//                    }
+//
+//                    PacketSendTransmitterExpTime.sendToAllAround(this);
+//                } else if( !this.hasRequest() && this.bufItem != null ) {
+//                    this.updateRequestAndItem(0, 0);
+//                }
+//
+//                if( --this.banTimeout <= 0 ) {
+//                    this.bannedTurret = null;
+//                }
             }
         }
 
@@ -137,10 +155,10 @@ public class TileEntityItemTransmitter
     @Override
     public Packet getDescriptionPacket() {
         NBTTagCompound packetNBT = new NBTTagCompound();
-        if( this.requestType == null ) {
-            packetNBT.setByte(RequestType.NBT_REQ_GROUP, (byte) -1);
+        if( this.currentRequest == null ) {
+            packetNBT.setByte(Request.NBT_REQ_GROUP, (byte) -1);
         } else {
-            RequestType.writeToNbt(packetNBT, this.requestType);
+            Request.writeToNbt(packetNBT, this.currentRequest);
 //                NBTTagCompound itemNbt = new NBTTagCompound();
 //                saveStack(itemNbt, this.requestItem);
 //                packetNBT.setInteger("turretId", this.requestingTurret.getEntity().getEntityId());
@@ -154,13 +172,13 @@ public class TileEntityItemTransmitter
     @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
         NBTTagCompound data = pkt.func_148857_g();
-        if( data.getByte(RequestType.NBT_REQ_GROUP) != -1 ) {
-            this.requestType = RequestType.readFromNbt(data);
+        if( data.getByte(Request.NBT_REQ_GROUP) != -1 ) {
+            this.currentRequest = Request.readFromNbt(data);
         } else {
-            this.requestType = null;
+            this.currentRequest = null;
         }
-        //RequestType.VALUES[data.getByte("requestType")];
-//        if( this.requestType != RequestType.NONE ) {
+        //Request.VALUES[data.getByte("currentRequest")];
+//        if( this.currentRequest != Request.NONE ) {
 //            this.requestingTurret = (Turret) this.worldObj.getEntityByID(data.getInteger("turretId"));
 //            this.requestTimeout = data.getInteger("timeout");
 //            this.requestItem = readStack(data.getCompoundTag("item"));
@@ -190,75 +208,75 @@ public class TileEntityItemTransmitter
         return true;
     }
 
-    private void updateRequestAndItem(int removed, Number stillNeeded) {
-        if( removed > 0 || stillNeeded > 0 ) {
-            if( !this.hasRequest() ) {
-                this.updateRequestAndItem(0, 0);
-                return;
-            }
-
-            if( removed > 0 ) {
-                this.requestingTurret.getEntity().playSound(TurretMod.MOD_ID + ":collect.ia_get", 1.0F, 1.0F);
-                this.bufItem.stackSize -= removed;
-                if( this.bufItem.stackSize <= 0 ) {
-                    this.bufItem = null;
-                }
-
-                this.requestTimeout = MAX_SEC_TIMEOUT;
-            }
-
-            this.requestItem.stackSize = stillNeeded;
-
-            if( this.requestItem.stackSize <= 0 ) {
-                this.requestType = RequestType.NONE;
-                this.requestingTurret = null;
-            }
-        } else {
-            if( this.bufItem != null ) {
-                for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS ) {
-                    if( dir == ForgeDirection.UP ) {
-                        continue;
-                    }
-
-                    TileEntity te = this.worldObj.getTileEntity(this.xCoord + dir.offsetX, this.yCoord + dir.offsetY, this.zCoord + dir.offsetZ);
-                    if( te instanceof IInventory ) {
-                        this.bufItem = InventoryUtils.addStackToInventory(this.bufItem, (IInventory) te);
-                        if( this.bufItem == null ) {
-                            break;
-                        }
-                    }
-                }
-
-                if( this.bufItem != null ) {
-                    for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS ) {
-                        if( dir == ForgeDirection.UP ) {
-                            continue;
-                        }
-
-                        int blockX = this.xCoord + dir.offsetX;
-                        int blockY = this.yCoord + dir.offsetY;
-                        int blockZ = this.zCoord + dir.offsetZ;
-
-                        if( !this.worldObj.getBlock(blockX, blockY, blockZ).isNormalCube(this.worldObj, blockX, blockY, blockZ) ) {
-                            this.worldObj.spawnEntityInWorld(new EntityItem(this.worldObj, blockX + 0.5D, blockY + 0.5D, blockZ + 0.5D, this.bufItem));
-                            this.bufItem = null;
-                            break;
-                        }
-                    }
-
-                    if( this.bufItem != null ) {
-                        this.worldObj.spawnEntityInWorld(new EntityItem(this.worldObj, this.xCoord + 0.5D, this.yCoord + 1.5D, this.zCoord + 0.5D, this.bufItem));
-                        this.bufItem = null;
-                    }
-                }
-            }
-
-            this.requestType = RequestType.NONE;
-            this.requestingTurret = null;
-        }
-
-        this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-    }
+//    private void updateRequestAndItem(int removed, Number stillNeeded) {
+//        if( removed > 0 || stillNeeded > 0 ) {
+//            if( !this.hasRequest() ) {
+//                this.updateRequestAndItem(0, 0);
+//                return;
+//            }
+//
+//            if( removed > 0 ) {
+//                this.requestingTurret.getEntity().playSound(TurretMod.MOD_ID + ":collect.ia_get", 1.0F, 1.0F);
+//                this.bufItem.stackSize -= removed;
+//                if( this.bufItem.stackSize <= 0 ) {
+//                    this.bufItem = null;
+//                }
+//
+//                this.requestTimeout = MAX_SEC_TIMEOUT;
+//            }
+//
+//            this.requestItem.stackSize = stillNeeded;
+//
+//            if( this.requestItem.stackSize <= 0 ) {
+//                this.currentRequest = Request.NONE;
+//                this.requestingTurret = null;
+//            }
+//        } else {
+//            if( this.bufItem != null ) {
+//                for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS ) {
+//                    if( dir == ForgeDirection.UP ) {
+//                        continue;
+//                    }
+//
+//                    TileEntity te = this.worldObj.getTileEntity(this.xCoord + dir.offsetX, this.yCoord + dir.offsetY, this.zCoord + dir.offsetZ);
+//                    if( te instanceof IInventory ) {
+//                        this.bufItem = InventoryUtils.addStackToInventory(this.bufItem, (IInventory) te);
+//                        if( this.bufItem == null ) {
+//                            break;
+//                        }
+//                    }
+//                }
+//
+//                if( this.bufItem != null ) {
+//                    for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS ) {
+//                        if( dir == ForgeDirection.UP ) {
+//                            continue;
+//                        }
+//
+//                        int blockX = this.xCoord + dir.offsetX;
+//                        int blockY = this.yCoord + dir.offsetY;
+//                        int blockZ = this.zCoord + dir.offsetZ;
+//
+//                        if( !this.worldObj.getBlock(blockX, blockY, blockZ).isNormalCube(this.worldObj, blockX, blockY, blockZ) ) {
+//                            this.worldObj.spawnEntityInWorld(new EntityItem(this.worldObj, blockX + 0.5D, blockY + 0.5D, blockZ + 0.5D, this.bufItem));
+//                            this.bufItem = null;
+//                            break;
+//                        }
+//                    }
+//
+//                    if( this.bufItem != null ) {
+//                        this.worldObj.spawnEntityInWorld(new EntityItem(this.worldObj, this.xCoord + 0.5D, this.yCoord + 1.5D, this.zCoord + 0.5D, this.bufItem));
+//                        this.bufItem = null;
+//                    }
+//                }
+//            }
+//
+//            this.currentRequest = Request.NONE;
+//            this.requestingTurret = null;
+//        }
+//
+//        this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+//    }
 
     @Override
     public int getSizeInventory() {
@@ -343,8 +361,8 @@ public class TileEntityItemTransmitter
         return this.requestItem;
     }
 
-    public RequestType getRequestType() {
-        return this.requestType;
+    public Request getRequest() {
+        return this.currentRequest;
     }
 
     public Turret getRequestingTurret() {
@@ -391,7 +409,32 @@ public class TileEntityItemTransmitter
         return pass <= 1;
     }
 
-    public static class RequestType<T extends Number>
+    private static class RequestQueueMap<K, V>
+            extends LinkedHashMap<K, V>
+    {
+        public V getValue(int i) {
+            Map.Entry<K, V>entry = this.getEntry(i);
+            if(entry == null) return null;
+
+            return entry.getValue();
+        }
+
+        public Map.Entry<K, V> getEntry(int i) {
+            // check if negetive index provided
+            Set<Map.Entry<K,V>> entries = entrySet();
+            int j = 0;
+
+            for( Map.Entry<K, V> entry : entries ) {
+                if( j++ == i ) {
+                    return entry;
+                }
+            }
+
+            return null;
+        }
+    }
+
+    public static class Request<T extends Number>
     {
         public static final String NBT_REQ_GROUP = "requestType";
 
@@ -400,17 +443,23 @@ public class TileEntityItemTransmitter
 
         public final UUID type;
         public final byte group;
+        public final Turret turret;
         public T amount;
 
-        private RequestType(byte group, UUID type, T amount) {
+        private Request(byte group, UUID type, Turret turret, T amount) {
             this.type = type;
             this.group = group;
             this.amount = amount;
+            this.turret = turret;
         }
 
-        public static void writeToNbt(NBTTagCompound nbt, RequestType<?> type) {
+        public void sendRequestedItem(ItemStack stack) {
+
+        }
+
+        public static void writeToNbt(NBTTagCompound nbt, Request<?> type) {
             nbt.setByte(NBT_REQ_GROUP, type.group);
-            nbt.setString("requestType", type.type.toString());
+            nbt.setString("request", type.type.toString());
             try( ByteArrayOutputStream bos = new ByteArrayOutputStream();
                  ObjectOutputStream oos = new ObjectOutputStream(bos);
             ) {
@@ -421,7 +470,7 @@ public class TileEntityItemTransmitter
             }
         }
 
-        public static <T extends Number> RequestType<?> readFromNbt(NBTTagCompound nbt) {
+        public static <T extends Number> Request<?> readFromNbt(NBTTagCompound nbt) {
             byte group = nbt.getByte(NBT_REQ_GROUP);
             UUID type = UUID.fromString(nbt.getString("requestType"));
             T val = null;
@@ -438,21 +487,21 @@ public class TileEntityItemTransmitter
                 return null;
             }
 
-            return new RequestType<>(group, type, val);
+            return new Request<>(group, type, val);
         }
 
         public static class RequestAmmo
-                extends RequestType<Integer>
+                extends Request<Integer>
         {
-            public RequestAmmo(UUID type, int amount) {
-                super(AMMO, type, amount);
+            public RequestAmmo(UUID type, Turret turret, int amount) {
+                super(AMMO, type, turret, amount);
             }
         }
 
         public static class RequestHeal
-                extends RequestType<Float>
+                extends Request<Float>
         {
-            public RequestHeal(UUID type, float amount) {
+            public RequestHeal(UUID type, Turret turret, float amount) {
                 super(HEAL, type, amount);
             }
         }
