@@ -8,18 +8,11 @@
  */
 package de.sanandrew.mods.turretmod.tileentity;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.util.helpers.ItemUtils;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
-import de.sanandrew.core.manpack.util.javatuples.Triplet;
 import de.sanandrew.mods.turretmod.api.Turret;
-import de.sanandrew.mods.turretmod.network.packet.PacketSendTransmitterExpTime;
-import de.sanandrew.mods.turretmod.util.ParticleProxy;
-import de.sanandrew.mods.turretmod.util.TurretMod;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ISidedInventory;
@@ -30,6 +23,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -38,10 +32,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 
@@ -441,13 +433,13 @@ public class TileEntityItemTransmitter
         public static final byte AMMO = 0;
         public static final byte HEAL = 1;
 
-        public final UUID type;
+        public final UUID uuid;
         public final byte group;
         public final Turret turret;
         public T amount;
 
-        private Request(byte group, UUID type, Turret turret, T amount) {
-            this.type = type;
+        private Request(byte group, UUID uuid, Turret turret, T amount) {
+            this.uuid = uuid;
             this.group = group;
             this.amount = amount;
             this.turret = turret;
@@ -457,9 +449,17 @@ public class TileEntityItemTransmitter
 
         }
 
-        public static void writeToNbt(NBTTagCompound nbt, Request<?> type) {
+        public static void writePacket(S35PacketUpdateTileEntity packet, Request<?> type) {
+            NBTTagCompound nbt = packet.func_148857_g();
+
+            if( nbt == null ) {
+                return;
+            }
+
             nbt.setByte(NBT_REQ_GROUP, type.group);
-            nbt.setString("request", type.type.toString());
+            nbt.setString("requestUuid", type.uuid.toString());
+            nbt.setInteger("turretEID", type.turret.getEntity().getEntityId());
+
             try( ByteArrayOutputStream bos = new ByteArrayOutputStream();
                  ObjectOutputStream oos = new ObjectOutputStream(bos);
             ) {
@@ -470,9 +470,16 @@ public class TileEntityItemTransmitter
             }
         }
 
-        public static <T extends Number> Request<?> readFromNbt(NBTTagCompound nbt) {
+        public static <T extends Number> Request<?> readPacket(S35PacketUpdateTileEntity packet, World world) {
+            NBTTagCompound nbt = packet.func_148857_g();
+
+            if( nbt == null ) {
+                return null;
+            }
+
             byte group = nbt.getByte(NBT_REQ_GROUP);
-            UUID type = UUID.fromString(nbt.getString("requestType"));
+            UUID uuid = UUID.fromString(nbt.getString("requestUuid"));
+            Turret turret = (Turret) world.getEntityByID(nbt.getInteger("rturretEID"))
             T val = null;
 
             try( ByteArrayInputStream bis = new ByteArrayInputStream(nbt.getByteArray("requestValue"));
@@ -487,7 +494,7 @@ public class TileEntityItemTransmitter
                 return null;
             }
 
-            return new Request<>(group, type, val);
+            return new Request<>(group, uuid, turret, val);
         }
 
         public static class RequestAmmo
@@ -496,13 +503,18 @@ public class TileEntityItemTransmitter
             public RequestAmmo(UUID type, Turret turret, int amount) {
                 super(AMMO, type, turret, amount);
             }
+
+            @Override
+            public void sendRequestedItem(ItemStack stack) {
+                super.sendRequestedItem(stack);
+            }
         }
 
         public static class RequestHeal
                 extends Request<Float>
         {
             public RequestHeal(UUID type, Turret turret, float amount) {
-                super(HEAL, type, amount);
+                super(HEAL, type, turret, amount);
             }
         }
     }
