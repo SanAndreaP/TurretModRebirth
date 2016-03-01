@@ -40,7 +40,7 @@ public abstract class EntityTurretBase
         extends EntityLiving
         implements Turret
 {
-    // TODO test dummy, command: /summon Zombie ~ ~ ~ {Attributes: [{Name: generic.maxHealth, Base: 1024}]}
+    //TODO: test dummy, command: /summon Zombie ~ ~ ~ {Attributes: [{Name: generic.maxHealth, Base: 1024}]}
 
     // data watcher IDs
     private static final int DW_AMMO = 20; /* INT */
