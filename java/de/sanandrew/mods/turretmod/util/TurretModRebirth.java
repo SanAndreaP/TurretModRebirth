@@ -9,8 +9,10 @@
 package de.sanandrew.mods.turretmod.util;
 
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,21 +25,19 @@ public class TurretModRebirth
     public static final Logger LOG = LogManager.getLogger(ID);
 //        public static final String MOD_CHANNEL = "SapTurretModNWCH";
 
-//        private static final String MOD_PROXY_CLIENT = "de.sanandrew.mods.turretmod.client.util.ClientProxy";
-//        private static final String MOD_PROXY_COMMON = "de.sanandrew.mods.turretmod.util.CommonProxy";
-//        private static final String PARTICLE_PROXY_CLIENT = "de.sanandrew.mods.turretmod.client.util.ClientParticleProxy";
-//        private static final String PARTICLE_PROXY_COMMON = "de.sanandrew.mods.turretmod.util.ParticleProxy";
+        private static final String MOD_PROXY_CLIENT = "de.sanandrew.mods.turretmod.client.util.ClientProxy";
+        private static final String MOD_PROXY_COMMON = "de.sanandrew.mods.turretmod.util.CommonProxy";
 
     @Mod.Instance(TurretModRebirth.ID)
     public static TurretModRebirth instance;
-//        @SidedProxy(modId = TurretMod.MOD_ID, clientSide = TurretMod.MOD_PROXY_CLIENT, serverSide = TurretMod.MOD_PROXY_COMMON)
-//        public static CommonProxy proxy;
-//        @SidedProxy(modId = TurretMod.MOD_ID, clientSide = TurretMod.PARTICLE_PROXY_CLIENT, serverSide = TurretMod.PARTICLE_PROXY_COMMON)
-//        public static ParticleProxy particleProxy;
+    @SidedProxy(modId = TurretModRebirth.ID, clientSide = TurretModRebirth.MOD_PROXY_CLIENT, serverSide = TurretModRebirth.MOD_PROXY_COMMON)
+    public static CommonProxy proxy;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         AmmoRegistry.INSTANCE.initialize();
+        proxy.preInit(event);
+        ItemRegistry.initialize();
 //        TmrBlocks.initialize();
 //        TmrItems.initialize();
 //
@@ -54,5 +54,6 @@ public class TurretModRebirth
 //        TurretUpgradeList.initialize();
 //
 //        proxy.init();
+        proxy.init(event);
     }
 }

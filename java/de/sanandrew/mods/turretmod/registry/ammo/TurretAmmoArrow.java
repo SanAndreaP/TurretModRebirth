@@ -8,8 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.registry.ammo;
 
-import de.sanandrew.mods.turretmod.entity.EntityTurret;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import net.minecraft.entity.IProjectile;
 
 import java.util.UUID;
