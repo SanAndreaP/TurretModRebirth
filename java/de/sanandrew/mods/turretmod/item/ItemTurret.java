@@ -46,17 +46,20 @@ public class ItemTurret
                 shiftY = 0.5D;
             }
 
-            EntityTurret turret = spawnTurret(world, ""/*getTurretName(stack)*/, x + 0.5D, y + shiftY, z + 0.5D);
-            if( turret != null ) {
-                if( stack.hasDisplayName() ) {
-                    turret.setCustomNameTag(stack.getDisplayName());
-                }
+            if( EntityTurret.canTurretBePlaced(world, x, y, z, false) ) {
 
-                if( !player.capabilities.isCreativeMode ) {
-                    stack.stackSize--;
-                }
+                EntityTurret turret = spawnTurret(world, ""/*getTurretName(stack)*/, x + 0.5D, y + shiftY, z + 0.5D);
+                if( turret != null ) {
+                    if( stack.hasDisplayName() ) {
+                        turret.setCustomNameTag(stack.getDisplayName());
+                    }
+
+                    if( !player.capabilities.isCreativeMode ) {
+                        stack.stackSize--;
+                    }
 
 //                turret.setOwner(player);
+                }
             }
         }
 

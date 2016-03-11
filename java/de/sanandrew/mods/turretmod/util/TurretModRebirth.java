@@ -11,8 +11,13 @@ package de.sanandrew.mods.turretmod.util;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,10 +28,12 @@ public class TurretModRebirth
     public static final String ID = "sapturretmod";
     public static final String VERSION = "4.0.0-alpha.1";
     public static final Logger LOG = LogManager.getLogger(ID);
-//        public static final String MOD_CHANNEL = "SapTurretModNWCH";
+    public static final String CHANNEL = "SapTurretModNWCH";
 
-        private static final String MOD_PROXY_CLIENT = "de.sanandrew.mods.turretmod.client.util.ClientProxy";
-        private static final String MOD_PROXY_COMMON = "de.sanandrew.mods.turretmod.util.CommonProxy";
+    public static SimpleNetworkWrapper network;
+
+    private static final String MOD_PROXY_CLIENT = "de.sanandrew.mods.turretmod.client.util.ClientProxy";
+    private static final String MOD_PROXY_COMMON = "de.sanandrew.mods.turretmod.util.CommonProxy";
 
     @Mod.Instance(TurretModRebirth.ID)
     public static TurretModRebirth instance;
@@ -35,6 +42,10 @@ public class TurretModRebirth
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        network = NetworkRegistry.INSTANCE.newSimpleChannel(CHANNEL);
+
+        PacketRegistry.initialize(network);
+
         AmmoRegistry.INSTANCE.initialize();
         proxy.preInit(event);
         ItemRegistry.initialize();
@@ -55,5 +66,10 @@ public class TurretModRebirth
 //
 //        proxy.init();
         proxy.init(event);
+    }
+
+    @Mod.EventHandler
+    public void postInit(FMLPostInitializationEvent event) {
+        TargetProcessor.initialize();
     }
 }

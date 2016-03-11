@@ -8,21 +8,32 @@
  */
 package de.sanandrew.mods.turretmod.entity.turret;
 
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
+import io.netty.buffer.ByteBuf;
+import net.darkhax.bookshelf.lib.javatuples.Triplet;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.tuple.Triple;
+import scala.Int;
 
 import java.util.List;
 
 public abstract class EntityTurret
         extends EntityLiving
+        implements IEntityAdditionalSpawnData
 {
     private boolean isInitialized = false;
 
@@ -36,7 +47,9 @@ public abstract class EntityTurret
     private static final int DW_FREQUENCY = 27; /* BYTE */
     private static final int DW_BOOLEANS = 28; /* BYTE */
 
-    private Entity entityToAttack;
+    private Triplet<Integer, Integer, Integer> blockPos = null;
+
+    protected TargetProcessor targetProc;
 
     public EntityTurret(World world) {
         super(world);
@@ -85,32 +98,19 @@ public abstract class EntityTurret
     public void onLivingUpdate() {
         this.rotationYaw = 0.0F;
 
-        if( this.newPosRotationIncrements > 0 ) {
-//            double newX = this.posX + (this.newPosX - this.posX) / this.newPosRotationIncrements;
-//            double newY = this.posY + (this.newPosY - this.posY) / this.newPosRotationIncrements;
-//            double newZ = this.posZ + (this.newPosZ - this.posZ) / this.newPosRotationIncrements;
-
-            this.rotationPitch = (float) (this.rotationPitch + (this.newRotationPitch - this.rotationPitch) / (float) this.newPosRotationIncrements);
-            this.newPosRotationIncrements--;
-//            this.setPosition(newX, newY, newZ);
-            this.setRotation(this.rotationYaw, this.rotationPitch);
-        } else if( this.worldObj.isRemote ) {
-//            this.motionX *= 0.98D;
-//            this.motionY *= 0.98D;
-//            this.motionZ *= 0.98D;
+        if( this.blockPos == null ) {
+            this.blockPos = Triplet.with((int) Math.floor(this.posX), (int)Math.floor(this.posY), (int)Math.floor(this.posZ));
         }
 
-//        if( Math.abs(this.motionX) < 0.005D ) {
-//            this.motionX = 0.0D;
-//        }
-//
-//        if( Math.abs(this.motionY) < 0.005D ) {
-//            this.motionY = 0.0D;
-//        }
-//
-//        if( Math.abs(this.motionZ) < 0.005D ) {
-//            this.motionZ = 0.0D;
-//        }
+        if( !canTurretBePlaced(this.worldObj, this.blockPos.getValue0(), this.blockPos.getValue1(), this.blockPos.getValue2(), true) ) {
+            setDead();
+        }
+
+        if( this.newPosRotationIncrements > 0 ) {
+            this.rotationPitch = (float) (this.rotationPitch + (this.newRotationPitch - this.rotationPitch) / (float) this.newPosRotationIncrements);
+            this.newPosRotationIncrements--;
+            this.setRotation(this.rotationYaw, this.rotationPitch);
+        }
 
         this.worldObj.theProfiler.startSection("ai");
 
@@ -125,32 +125,45 @@ public abstract class EntityTurret
             this.worldObj.theProfiler.endSection();
         }
 
-        if( this.entityToAttack == null ) {
-            List entities = this.worldObj.getEntitiesWithinAABB(IMob.class, this.boundingBox.expand(16.0D, 16.0D, 16.0D));
-            for( Object e : entities ) {
-                Entity entity = (Entity) e;
-                if( !(entity.isDead || entity.isEntityInvulnerable()) ) {
-                    this.entityToAttack = entity;
-                    break;
-                }
-            }
-
-//            this.entityToAttack = this.worldObj.getClosestPlayer(this.posX, this.posY, this.posZ, 16.0D);
-        } else if( !this.worldObj.isRemote && this.ticksExisted % 20 == 0 ) {
-            EntityTurretProjectile projectile = new EntityTurretProjectile(this.worldObj, this, this.entityToAttack);
-            this.worldObj.spawnEntityInWorld(projectile);
+        if( !this.worldObj.isRemote ) {
+            this.targetProc.onTick();
         }
-
-        if( this.entityToAttack != null && (this.entityToAttack.isDead || this.entityToAttack.isEntityInvulnerable() || this.getDistanceToEntity(this.entityToAttack) > 16.0D) ) {
-            this.entityToAttack = null;
-        }
+//        if( this.entityToAttack == null ) {
+//            List entities = this.worldObj.getEntitiesWithinAABB(IMob.class, this.boundingBox.expand(16.0D, 16.0D, 16.0D));
+//            for( Object e : entities ) {
+//                Entity entity = (Entity) e;
+//                if( !(entity.isDead || entity.isEntityInvulnerable()) ) {
+//                    this.entityToAttack = entity;
+//                    break;
+//                }
+//            }
+//
+////            this.entityToAttack = this.worldObj.getClosestPlayer(this.posX, this.posY, this.posZ, 16.0D);
+//        } else if( !this.worldObj.isRemote && this.ticksExisted % 20 == 0 ) {
+//            EntityTurretProjectile projectile = new EntityTurretProjectile(this.worldObj, this, this.entityToAttack);
+//            this.worldObj.spawnEntityInWorld(projectile);
+//        }
+//
+//        if( this.entityToAttack != null && (this.entityToAttack.isDead || this.entityToAttack.isEntityInvulnerable() || this.getDistanceToEntity(this.entityToAttack) > 16.0D) ) {
+//            this.entityToAttack = null;
+//        }
 
         this.worldObj.theProfiler.endSection();
 
-//        if( this.isActive() && !(this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlayer) && !this.tgtHandler.hasTarget(this) ) {
-//            this.rotationYawHead += 1.0F;
-//            this.rotationPitch = 0.0F;
-//        }
+        if( this.targetProc.hasTarget() ) {
+            this.faceEntity(this.targetProc.getTarget(), 10.0F, this.getVerticalFaceSpeed());
+        } else if( this.worldObj.isRemote && !(this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlayer) ) {
+            this.rotationYawHead += 1.0F;
+            this.rotationPitch = 0.0F;
+        }
+    }
+
+    @Override
+    public void onDeath(DamageSource dmgSrc) {
+        super.onDeath(dmgSrc);
+
+        //just insta-kill it
+        this.setDead();
     }
 
     @Override
@@ -158,22 +171,15 @@ public abstract class EntityTurret
         ++this.entityAge;
         this.moveStrafing = 0.0F;
         this.moveForward = 0.0F;
-
-//        if( !this.isActive() ) {
-//            return;
-//        }
-
     }
 
-    public void onRenderTick(float partTickTime) {
-//        if( this.isInitialized ) {
-            if( this.entityToAttack != null ) {
-                this.faceEntity(this.entityToAttack, 10.0F, this.getVerticalFaceSpeed());
-            } else if( this.worldObj.isRemote && !(this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlayer) ) {
-                this.rotationYawHead += 1.0F;
-                this.rotationPitch = 0.0F;
-            }
-//        }
+    public TargetProcessor getTargetProcessor() {
+        return this.targetProc;
+    }
+
+    @Override
+    public void writeSpawnData(ByteBuf buffer) {
+
     }
 
     @Override
@@ -202,4 +208,19 @@ public abstract class EntityTurret
     public abstract ResourceLocation getStandardTexture();
 
     public abstract ResourceLocation getGlowTexture();
+
+    public static boolean canTurretBePlaced(World world, int x, int y, int z, boolean doBlockCheckOnly) {
+        if( !Blocks.wooden_door.canPlaceBlockAt(world, x, y, z) ) {
+            return false;
+        }
+
+        if( !doBlockCheckOnly ) {
+            AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(x, y, z, x + 1.0D, y + 1.0D, z + 1.0D);
+            if( !world.getEntitiesWithinAABB(EntityTurret.class, aabb).isEmpty() ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

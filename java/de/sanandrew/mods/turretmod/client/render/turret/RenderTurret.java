@@ -44,7 +44,6 @@ public class RenderTurret
 
     @Override
     public void doRender(Entity entity, double x, double y, double z, float yaw, float partTicks) {
-        ((EntityTurret) entity).onRenderTick(partTicks);
         super.doRender(entity, x, y, z, yaw, partTicks);
     }
 
