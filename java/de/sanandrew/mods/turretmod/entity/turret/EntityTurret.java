@@ -8,8 +8,12 @@
  */
 package de.sanandrew.mods.turretmod.entity.turret;
 
+import codechicken.lib.inventory.InventoryUtils;
+import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
+import de.sanandrew.mods.turretmod.network.PacketRegistry;
+import de.sanandrew.mods.turretmod.network.PacketUpdateTurretState;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import io.netty.buffer.ByteBuf;
 import net.darkhax.bookshelf.lib.javatuples.Triplet;
@@ -20,6 +24,8 @@ import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
@@ -37,9 +43,11 @@ public abstract class EntityTurret
 {
     private boolean isInitialized = false;
 
+    public boolean isUpsideDown;
+
     // data watcher IDs
-    private static final int DW_AMMO = 20; /* INT */
-    private static final int DW_AMMO_TYPE = 21; /* ITEM_STACK */
+//    private static final int DW_AMMO = 20; /* INT */
+//    private static final int DW_AMMO_TYPE = 21; /* ITEM_STACK */
     private static final int DW_EXPERIENCE = 22; /* INT */
     private static final int DW_OWNER_UUID = 23; /* STRING */
     private static final int DW_OWNER_NAME = 24; /* STRING */
@@ -53,6 +61,11 @@ public abstract class EntityTurret
 
     public EntityTurret(World world) {
         super(world);
+    }
+
+    public EntityTurret(World world, boolean isUpsideDown) {
+        this(world);
+        this.isUpsideDown = isUpsideDown;
     }
 
     @Override
@@ -81,10 +94,15 @@ public abstract class EntityTurret
         } else {
             deltaY = (entity.boundingBox.minY + entity.boundingBox.maxY) / 2.0D - (this.posY + this.getEyeHeight());
         }
+        deltaY *= this.isUpsideDown ? -1.0D : 1.0D;
+
+//        deltaX *= this.isUpsideDown ? -1.0D : 1.0D;
+//        deltaZ *= this.isUpsideDown ? -1.0D : 1.0D;
 
         double distVecXZ = MathHelper.sqrt_double(deltaX * deltaX + deltaZ * deltaZ);
-        float yawRotation = (float) (Math.atan2(deltaZ, deltaX) * 180.0D / Math.PI) - 90.0F;
+        float yawRotation = (float) ((this.isUpsideDown ? -1.0D : 1.0D) * (Math.atan2(deltaZ, deltaX) * 180.0D / Math.PI)) - 90.0F;
         float pitchRotation = (float) -(Math.atan2(deltaY, distVecXZ) * 180.0D / Math.PI);
+//        yawRotation -= this.isUpsideDown ? 180.0F : 0.0F;
         this.rotationPitch = -this.updateRotation(this.rotationPitch, pitchRotation);
         this.rotationYawHead = this.updateRotation(this.rotationYawHead, yawRotation);
     }
@@ -99,11 +117,11 @@ public abstract class EntityTurret
         this.rotationYaw = 0.0F;
 
         if( this.blockPos == null ) {
-            this.blockPos = Triplet.with((int) Math.floor(this.posX), (int)Math.floor(this.posY), (int)Math.floor(this.posZ));
+            this.blockPos = Triplet.with((int) Math.floor(this.posX), (int)Math.floor(this.posY) + (this.isUpsideDown ? 3 : 0), (int)Math.floor(this.posZ));
         }
 
-        if( !canTurretBePlaced(this.worldObj, this.blockPos.getValue0(), this.blockPos.getValue1(), this.blockPos.getValue2(), true) ) {
-            setDead();
+        if( !canTurretBePlaced(this.worldObj, this.blockPos.getValue0(), this.blockPos.getValue1(), this.blockPos.getValue2(), true, this.isUpsideDown) ) {
+            this.attackEntityFrom(DamageSource.magic, Float.MAX_VALUE);
         }
 
         if( this.newPosRotationIncrements > 0 ) {
@@ -159,8 +177,39 @@ public abstract class EntityTurret
     }
 
     @Override
+    protected boolean interact(EntityPlayer player) {
+        if( this.worldObj.isRemote ) {
+            return false;
+        }
+
+        ItemStack heldItem = player.getCurrentEquippedItem();
+
+        if( heldItem != null ) {
+            if( this.targetProc.isAmmoApplicable(heldItem) ) {
+                boolean succeed = this.targetProc.addAmmo(heldItem);
+                if( succeed ) {
+                    if( heldItem.stackSize == 0 ) {
+                        player.destroyCurrentEquippedItem();
+                    } else {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, heldItem.copy());
+                    }
+                    this.updateState();
+                    player.inventoryContainer.detectAndSendChanges();
+                }
+                return succeed;
+            }
+        }
+
+        return super.interact(player);
+    }
+
+    @Override
     public void onDeath(DamageSource dmgSrc) {
         super.onDeath(dmgSrc);
+
+        if( !this.worldObj.isRemote ) {
+            this.targetProc.dropAmmo();
+        }
 
         //just insta-kill it
         this.setDead();
@@ -179,7 +228,34 @@ public abstract class EntityTurret
 
     @Override
     public void writeSpawnData(ByteBuf buffer) {
+        NBTTagCompound targetNbt = new NBTTagCompound();
+        this.targetProc.writeToNbt(targetNbt);
+        ByteBufUtils.writeTag(buffer, targetNbt);
+        buffer.writeBoolean(this.isUpsideDown);
+    }
 
+    @Override
+    public void readSpawnData(ByteBuf buffer) {
+        this.targetProc.readFromNbt(ByteBufUtils.readTag(buffer));
+        this.isUpsideDown = buffer.readBoolean();
+    }
+
+    @Override
+    public void writeEntityToNBT(NBTTagCompound nbt) {
+        super.writeEntityToNBT(nbt);
+
+        this.targetProc.writeToNbt(nbt);
+
+        nbt.setBoolean("isUpsideDown", this.isUpsideDown);
+    }
+
+    @Override
+    public void readEntityFromNBT(NBTTagCompound nbt) {
+        super.readEntityFromNBT(nbt);
+
+        this.targetProc.readFromNbt(nbt);
+
+        this.isUpsideDown = nbt.getBoolean("isUpsideDown");
     }
 
     @Override
@@ -209,13 +285,17 @@ public abstract class EntityTurret
 
     public abstract ResourceLocation getGlowTexture();
 
-    public static boolean canTurretBePlaced(World world, int x, int y, int z, boolean doBlockCheckOnly) {
-        if( !Blocks.wooden_door.canPlaceBlockAt(world, x, y, z) ) {
+    public void updateState() {
+        PacketRegistry.sendToAllAround(new PacketUpdateTurretState(this), this.dimension, this.posX, this.posY, this.posZ, 64.0D);
+    }
+
+    public static boolean canTurretBePlaced(World world, int x, int y, int z, boolean doBlockCheckOnly, boolean updideDown) {
+        if( !Blocks.lever.canPlaceBlockAt(world, x, y, z) ) {
             return false;
         }
 
         if( !doBlockCheckOnly ) {
-            AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(x, y, z, x + 1.0D, y + 1.0D, z + 1.0D);
+            AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(x, y, z, x + 1.0D, y + (updideDown ? - 1.0D : 1.0D), z + 1.0D);
             if( !world.getEntitiesWithinAABB(EntityTurret.class, aabb).isEmpty() ) {
                 return false;
             }

@@ -14,11 +14,15 @@ import net.minecraft.item.Item;
 public class ItemRegistry
 {
     public static ItemTurret turret;
+    public static ItemAmmo ammo;
+    public static ItemTurretControlUnit tcu;
 
     public static void initialize() {
         turret = new ItemTurret();
+        ammo = new ItemAmmo();
+        tcu = new ItemTurretControlUnit();
 
-        registerItems(turret);
+        registerItems(turret, ammo, tcu);
     }
 
     private static void registerItems(Item... items) {

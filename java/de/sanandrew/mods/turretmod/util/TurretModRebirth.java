@@ -44,7 +44,7 @@ public class TurretModRebirth
     public void preInit(FMLPreInitializationEvent event) {
         network = NetworkRegistry.INSTANCE.newSimpleChannel(CHANNEL);
 
-        PacketRegistry.initialize(network);
+        PacketRegistry.initialize();
 
         AmmoRegistry.INSTANCE.initialize();
         proxy.preInit(event);

@@ -61,7 +61,11 @@ public class PacketUpdateTargets
         }
         this.playerTargets = new UUID[buf.readInt()];
         for( int i = 0; i < this.playerTargets.length; i++ ) {
-            this.playerTargets[i] = UUID.fromString(ByteBufUtils.readUTF8String(buf));
+            try {
+                this.playerTargets[i] = UUID.fromString(ByteBufUtils.readUTF8String(buf));
+            } catch( IllegalArgumentException ex ) {
+                this.playerTargets[i] = null;
+            }
         }
     }
 

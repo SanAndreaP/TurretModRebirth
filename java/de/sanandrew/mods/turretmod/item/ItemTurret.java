@@ -17,6 +17,7 @@ import net.minecraft.block.BlockLiquid;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Facing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
@@ -42,14 +43,15 @@ public class ItemTurret
             y += Facing.offsetsYForSide[side];
             z += Facing.offsetsZForSide[side];
             double shiftY = 0.0D;
-            if( side == 1 && block.getRenderType() == 11 ) {
+            if( side == EnumFacing.UP.ordinal() && block.getRenderType() == 11 ) {
                 shiftY = 0.5D;
             }
 
-            if( EntityTurret.canTurretBePlaced(world, x, y, z, false) ) {
+            if( EntityTurret.canTurretBePlaced(world, x, y, z, false, side == EnumFacing.DOWN.ordinal()) ) {
 
-                EntityTurret turret = spawnTurret(world, ""/*getTurretName(stack)*/, x + 0.5D, y + shiftY, z + 0.5D);
+                EntityTurret turret = spawnTurret(world, ""/*getTurretName(stack)*/, x + 0.5D, y + shiftY, z + 0.5D, side == EnumFacing.DOWN.ordinal());
                 if( turret != null ) {
+
                     if( stack.hasDisplayName() ) {
                         turret.setCustomNameTag(stack.getDisplayName());
                     }
@@ -84,7 +86,7 @@ public class ItemTurret
                         return stack;
                     }
                     if( world.getBlock(x, y, z) instanceof BlockLiquid ) {
-                        EntityTurret turret = spawnTurret(world, ""/*getTurretName(stack)*/, x, y, z);
+                        EntityTurret turret = spawnTurret(world, ""/*getTurretName(stack)*/, x, y, z, false);
                         if( turret != null ) {
                             if( stack.hasDisplayName() ) {
                                 turret.setCustomNameTag(stack.getDisplayName());
@@ -104,10 +106,10 @@ public class ItemTurret
     }
 
 
-    public static EntityTurret spawnTurret(World world, String name, double x, double y, double z) {
-        EntityTurret turret = createEntity(name, world);
+    public static EntityTurret spawnTurret(World world, String name, double x, double y, double z, boolean isUpsideDown) {
+        EntityTurret turret = createEntity(name, world, isUpsideDown);
         if (turret != null) {
-            turret.setLocationAndAngles(x, y, z, MathHelper.wrapAngleTo180_float(world.rand.nextFloat() * 360.0F), 0.0F);
+            turret.setLocationAndAngles(x, y - (isUpsideDown ? 1.0D : 0.0D), z, MathHelper.wrapAngleTo180_float(world.rand.nextFloat() * 360.0F), 0.0F);
             turret.rotationYawHead = turret.rotationYaw;
             turret.renderYawOffset = turret.rotationYaw;
             turret.onSpawnWithEgg(null);
@@ -118,12 +120,12 @@ public class ItemTurret
         return turret;
     }
 
-    private static EntityTurret createEntity(String name, World world) {
+    private static EntityTurret createEntity(String name, World world, boolean isUpsideDown) {
         EntityTurret entity = null;
         try {
             Class<? extends EntityTurret> entityClass = EntityTurretCrossbow.class;//TurretRegistry.getTurretInfo(name).getTurretClass();
             if( entityClass != null ) {
-                entity = entityClass.getConstructor(World.class).newInstance(world);
+                entity = entityClass.getConstructor(World.class, boolean.class).newInstance(world, isUpsideDown);
             }
         } catch( InvocationTargetException | IllegalAccessException | InstantiationException | NoSuchMethodException ex ) {
             TurretModRebirth.LOG.log(Level.ERROR, "Cannot instanciate turret!", ex);

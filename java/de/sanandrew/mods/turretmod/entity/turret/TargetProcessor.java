@@ -6,6 +6,9 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
+import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
+import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmo;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.darkhax.bookshelf.lib.util.NBTUtils;
@@ -14,6 +17,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -21,6 +25,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
@@ -58,20 +63,23 @@ public abstract class TargetProcessor
 
     public boolean addAmmo(ItemStack stack) {
         if( stack != null && this.isAmmoApplicable(stack) ) {
+            TurretAmmo type = ItemRegistry.ammo.getAmmoType(stack);
             int maxCapacity = this.getMaxAmmoCapacity() - this.ammoCount;
             if( maxCapacity > 0 ) {
                 if( !this.hasAmmo() ) {
-                    this.ammoStack = stack.copy();
-                } else if( !ItemStackUtils.areStacksEqual(stack, this.ammoStack, this.ammoStack.hasTagCompound()) ) {
+                    this.ammoStack = type.getStoringAmmoItem();
+                } else if( !AmmoRegistry.INSTANCE.areAmmoItemsEqual(stack, this.ammoStack) ) {
                     return false;
                 }
 
-                int maxDiff = stack.stackSize - maxCapacity;
-                if( maxDiff > 0 ) {
-                    this.ammoCount += maxCapacity;
-                    stack.stackSize -= maxCapacity;
+                int provided = type.getAmmoCapacity();
+                int providedStack = stack.stackSize * provided; //provides 4*16=64, needs 56 = 56 / 64 * 4
+                if( providedStack - maxCapacity > 0 ) {
+                    int stackSub = MathHelper.floor_double(maxCapacity / (double)providedStack * stack.stackSize);
+                    this.ammoCount += stackSub * provided;
+                    stack.stackSize -= stackSub;
                 } else {
-                    this.ammoCount += stack.stackSize;
+                    this.ammoCount += providedStack;
                     stack.stackSize = 0;
                 }
                 return true;
@@ -81,29 +89,59 @@ public abstract class TargetProcessor
         return false;
     }
 
+    public int getAmmoCount() {
+        return this.ammoCount;
+    }
+
+    public ItemStack getAmmoStack() {
+        if( this.ammoStack != null ) {
+            return this.ammoStack.copy();
+        } else {
+            return null;
+        }
+    }
+
     public boolean hasAmmo() {
         return ItemStackUtils.isValidStack(this.ammoStack) && this.ammoCount > 0;
     }
 
-    public ItemStack[] dropAmmo() {
+    public void dropAmmo() {
         if( this.hasAmmo() ) {
             List<ItemStack> items = new ArrayList<>();
             int maxStackSize = this.ammoStack.getMaxStackSize();
-            while( this.ammoCount > 0 ) {
+            TurretAmmo type = ItemRegistry.ammo.getAmmoType(this.ammoStack);
+            while( this.ammoCount > 0 && type != null ) {
                 ItemStack stack = this.ammoStack.copy();
-                this.ammoCount -= (stack.stackSize = Math.min(this.ammoCount, maxStackSize));
+                this.ammoCount -= (stack.stackSize = Math.min(this.ammoCount / type.getAmmoCapacity(), maxStackSize)) * type.getAmmoCapacity();
+                if( stack.stackSize <= 0 ) {
+                    this.ammoCount = 0;
+                    break;
+                }
                 items.add(stack);
             }
             this.ammoStack = null;
             if( !items.isEmpty() ) {
-                return items.toArray(new ItemStack[items.size()]);
+                for( ItemStack stack : items ) {
+                    EntityItem item = new EntityItem(this.turret.worldObj, this.turret.posX, this.turret.posY, this.turret.posZ, stack);
+                    this.turret.worldObj.spawnEntityInWorld(item);
+                }
+            }
+        }
+    }
+
+    public boolean isAmmoApplicable(ItemStack stack) {
+        if( stack != null && this.ammoCount < this.getMaxAmmoCapacity() ) {
+            TurretAmmo stackType = ItemRegistry.ammo.getAmmoType(stack);
+            if( stackType != null ) {
+                List<TurretAmmo> types = AmmoRegistry.INSTANCE.getTypesForTurret(this.turret.getClass());
+                if( types.contains(stackType) ) {
+                    return true;
+                }
             }
         }
 
-        return null;
+        return false;
     }
-
-    public abstract boolean isAmmoApplicable(ItemStack stack);
 
     public abstract int getMaxAmmoCapacity();
 
@@ -114,11 +152,19 @@ public abstract class TargetProcessor
     public abstract double getRange();
 
     public void shootProjectile() {
-        EntityTurretProjectile projectile = this.getProjectile();
-        this.turret.worldObj.spawnEntityInWorld(projectile);
+        if( this.hasAmmo() ) {
+            EntityTurretProjectile projectile = this.getProjectile();
+            this.turret.worldObj.spawnEntityInWorld(projectile);
+            this.turret.worldObj.playSoundAtEntity(this.turret, "random.bow", 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
+            this.ammoCount--;
+        } else {
+            this.turret.worldObj.playSoundAtEntity(this.turret, "random.click", 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
+        }
     }
 
     public void onTick() {
+        boolean changed = false;
+
         if( this.shootTicks > 0 ) {
             this.shootTicks--;
         }
@@ -135,24 +181,31 @@ public abstract class TargetProcessor
                 if( turret.canEntityBeSeen(livingBase) ) {
                     this.entityToAttack = livingBase;
                     this.entityToAttackUUID = livingBase.getUniqueID();
+                    changed = true;
                     break;
                 }
             }
         }
 
         if( this.entityToAttack != null ) {
-            if( turret.canEntityBeSeen(this.entityToAttack) && !this.entityToAttack.isDead
+            if( turret.canEntityBeSeen(this.entityToAttack) && this.entityToAttack.isEntityAlive()
                 && (Boolean.TRUE.equals(this.entityTargetList.get(this.entityToAttack.getClass()))
                     || Boolean.TRUE.equals(this.playerTargetList.get(this.entityToAttack.getUniqueID()))) )
             {
                 if( this.shootTicks == 0 ) {
                     shootProjectile();
                     this.shootTicks = this.getMaxShootTicks();
+                    changed = true;
                 }
             } else {
                 this.entityToAttack = null;
                 this.entityToAttackUUID = null;
+                changed = true;
             }
+        }
+
+        if( changed ) {
+            this.turret.updateState();
         }
     }
 
@@ -208,10 +261,23 @@ public abstract class TargetProcessor
             this.entityToAttackUUID = UUID.fromString(nbt.getString("targetUUID"));
         }
 
+        List<Class> entityTgt = new ArrayList<>();
         NBTTagList list = nbt.getTagList("entityTargets", Constants.NBT.TAG_STRING);
         for( int i = 0; i < list.tagCount(); i++ ) {
-
+            try {
+                entityTgt.add(Class.forName(list.getStringTagAt(i)));
+            } catch( ClassNotFoundException ignored ) { }
         }
+        this.updateEntityTargets(entityTgt.toArray(new Class[entityTgt.size()]));
+
+        List<UUID> playerTgt = new ArrayList<>();
+        list = nbt.getTagList("playerTargets", Constants.NBT.TAG_STRING);
+        for( int i = 0; i < list.tagCount(); i++ ) {
+            try {
+                playerTgt.add(UUID.fromString(list.getStringTagAt(i)));
+            } catch( IllegalArgumentException ignored ) { }
+        }
+        this.updatePlayerTargets(playerTgt.toArray(new UUID[playerTgt.size()]));
     }
 
     public Class[] getEnabledEntityTargets() {
@@ -257,6 +323,14 @@ public abstract class TargetProcessor
             if( uuid != null ) {
                 this.playerTargetList.put(uuid, true);
             }
+        }
+    }
+
+    public void updateClientState(int targetId, int ammoCount, ItemStack ammoStack) {
+        if( this.turret.worldObj.isRemote ) {
+            this.entityToAttack = targetId < 0 ? null : this.turret.worldObj.getEntityByID(targetId);
+            this.ammoCount = ammoCount;
+            this.ammoStack = ammoStack;
         }
     }
 

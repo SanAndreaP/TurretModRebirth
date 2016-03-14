@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.entity.turret;
 
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.util.Textures;
 import net.minecraft.init.Items;
@@ -21,7 +22,13 @@ public class EntityTurretCrossbow
     public EntityTurretCrossbow(World world) {
         super(world);
 
-        this.targetProc = new MyTargetProc(this);
+        this.targetProc = new MyTargetProc();
+    }
+
+    public EntityTurretCrossbow(World world, boolean isUpsideDown) {
+        this(world);
+
+        this.isUpsideDown = isUpsideDown;
     }
 
     @Override
@@ -37,13 +44,8 @@ public class EntityTurretCrossbow
     private class MyTargetProc
             extends TargetProcessor
     {
-        public MyTargetProc(EntityTurret turret) {
-            super(turret);
-        }
-
-        @Override
-        public boolean isAmmoApplicable(ItemStack stack) {
-            return stack != null && stack.getItem() == Items.arrow;
+        public MyTargetProc() {
+            super(EntityTurretCrossbow.this);
         }
 
         @Override
@@ -53,8 +55,7 @@ public class EntityTurretCrossbow
 
         @Override
         public EntityTurretProjectile getProjectile() {
-            EntityTurret turret = this.getTurret();
-            return new EntityTurretProjectile(turret.worldObj, turret, turret.targetProc.getTarget());
+            return new EntityProjectileCrossbowBolt(EntityTurretCrossbow.this.worldObj, EntityTurretCrossbow.this, EntityTurretCrossbow.this.targetProc.getTarget());
         }
 
         @Override

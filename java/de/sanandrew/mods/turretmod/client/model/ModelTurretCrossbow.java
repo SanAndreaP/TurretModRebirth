@@ -154,8 +154,11 @@ public class ModelTurretCrossbow
 
         EntityTurret turret = (EntityTurret)entity;
 
+		int maxAmmo = turret.getTargetProcessor().getMaxAmmoCapacity();
+		int ammo = turret.getTargetProcessor().getAmmoCount();
+
         this.healthBar.rotateAngleZ = -((float)Math.PI / 2.0F) * ((turret.getMaxHealth() - turret.getHealth()) / turret.getMaxHealth());
-//        this.ammoBar.rotateAngleZ = ((float)Math.PI / 2.0F) * ((turret.getMaxAmmo() - turret.getAmmo()) / (float) turret.getMaxAmmo());
+        this.ammoBar.rotateAngleZ = ((float)Math.PI / 2.0F) * ((maxAmmo - ammo) / (float) maxAmmo);
 	}
 
 	private void setStaticBody(float f) {
