@@ -33,8 +33,8 @@ public class AmmoRegistry
 {
     public static final AmmoRegistry INSTANCE = new AmmoRegistry();
 
-    private Map<UUID, TurretAmmo> ammoTypesFromUUID;
-    private Multimap<Class<? extends EntityTurret>, TurretAmmo> ammoTypesFromTurret;
+    private final Map<UUID, TurretAmmo> ammoTypesFromUUID;
+    private final Multimap<Class<? extends EntityTurret>, TurretAmmo> ammoTypesFromTurret;
 
     private AmmoRegistry() {
         this.ammoTypesFromUUID = new HashMap<>();
