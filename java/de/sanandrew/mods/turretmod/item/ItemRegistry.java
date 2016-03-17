@@ -16,13 +16,15 @@ public class ItemRegistry
     public static ItemTurret turret;
     public static ItemAmmo ammo;
     public static ItemTurretControlUnit tcu;
+    public static ItemRepairKit repairKit;
 
     public static void initialize() {
         turret = new ItemTurret();
         ammo = new ItemAmmo();
         tcu = new ItemTurretControlUnit();
+        repairKit = new ItemRepairKit();
 
-        registerItems(turret, ammo, tcu);
+        registerItems(turret, ammo, tcu, repairKit);
     }
 
     private static void registerItems(Item... items) {

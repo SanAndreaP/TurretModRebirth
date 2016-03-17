@@ -68,7 +68,7 @@ public class ItemRepairKit
         List<TurretRepairKit> types = RepairKitRegistry.INSTANCE.getRegisteredTypes();
         this.iconMap = new HashMap<>(types.size());
         for( TurretRepairKit type : types ) {
-            this.iconMap.put(type.getUUID(), iconRegister.registerIcon(String.format("%s:ammo/%s", TurretModRebirth.ID, type.getIcon())));
+            this.iconMap.put(type.getUUID(), iconRegister.registerIcon(String.format("%s:repair_kits/%s", TurretModRebirth.ID, type.getIcon())));
         }
     }
 

@@ -189,6 +189,7 @@ public abstract class TargetProcessor
 
         if( this.entityToAttack != null ) {
             if( turret.canEntityBeSeen(this.entityToAttack) && this.entityToAttack.isEntityAlive()
+                && turret.getDistanceToEntity(this.entityToAttack) <= range
                 && (Boolean.TRUE.equals(this.entityTargetList.get(this.entityToAttack.getClass()))
                     || Boolean.TRUE.equals(this.playerTargetList.get(this.entityToAttack.getUniqueID()))) )
             {

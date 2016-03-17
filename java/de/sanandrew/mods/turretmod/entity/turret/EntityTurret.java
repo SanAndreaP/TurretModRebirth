@@ -12,8 +12,10 @@ import codechicken.lib.inventory.InventoryUtils;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
+import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketUpdateTurretState;
+import de.sanandrew.mods.turretmod.registry.medpack.TurretRepairKit;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import io.netty.buffer.ByteBuf;
 import net.darkhax.bookshelf.lib.javatuples.Triplet;
@@ -197,6 +199,20 @@ public abstract class EntityTurret
                     player.inventoryContainer.detectAndSendChanges();
                 }
                 return succeed;
+            } else if( heldItem.getItem() == ItemRegistry.repairKit ) {
+                TurretRepairKit repKit = ItemRegistry.repairKit.getRepKitType(heldItem);
+                if( repKit != null && repKit.isApplicable(this) ) {
+                    this.heal(repKit.getHealAmount());
+                    repKit.onHeal(this);
+                    heldItem.stackSize--;
+                    if( heldItem.stackSize == 0 ) {
+                        player.destroyCurrentEquippedItem();
+                    } else {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, heldItem.copy());
+                    }
+                    player.inventoryContainer.detectAndSendChanges();
+                    return true;
+                }
             }
         }
 
@@ -265,8 +281,8 @@ public abstract class EntityTurret
 
     /**turrets are machines, they aren't affected by potions*/
     @Override
-    public boolean isPotionApplicable(PotionEffect par1PotionEffect) {
-        return false;
+    public boolean isPotionApplicable(PotionEffect effect) {
+        return effect != null && effect.getIsAmbient();
     }
 
     /**turrets are immobile, leave empty*/

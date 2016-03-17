@@ -17,6 +17,7 @@ import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -46,6 +47,14 @@ public class TmrUtils
         }
 
         return ReflectionUtils.invokeCachedMethod(EntityLivingBase.class, entity, "isAIEnabled", "func_70650_aV", null, null);
+    }
+
+    public static boolean getIsPotionSplash(PotionEffect potionEffect) {
+        if( potionEffect == null ) {
+            return false;
+        }
+
+        return ReflectionUtils.getCachedFieldValue(PotionEffect.class, potionEffect, "isSplashPotion", "field_82723_d");
     }
 
     public static EntityAIBase getAIFromTaskList(List<?> taskList, Class<?> cls) {
