@@ -6,6 +6,8 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.darkhax.bookshelf.lib.util.Utilities;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 /**
  * ****************************************************************************************************************
@@ -25,5 +27,13 @@ public class PacketRegistry
 
     public static void sendToAllAround(IMessage message, int dim, double x, double y, double z, double range) {
         TurretModRebirth.network.sendToAllAround(message, new NetworkRegistry.TargetPoint(dim, x, y, z, range));
+    }
+
+    public static void sendToServer(IMessage message) {
+        TurretModRebirth.network.sendToServer(message);
+    }
+
+    public static void sendToPlayer(IMessage message, EntityPlayerMP player) {
+        TurretModRebirth.network.sendTo(message, player);
     }
 }

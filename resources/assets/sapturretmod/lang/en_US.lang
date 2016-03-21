@@ -5,6 +5,16 @@ item.sapturretmod:turret_control_unit.name.3=TCU (Trigger Capacity Uranus)
 item.sapturretmod:turret_control_unit.name.4=TCU (Timmy Cleans Utilities)
 item.sapturretmod:turret_control_unit.name.5=TCU (Transient Colossal Uppercut)
 
+entity.sapturretmod.turret_crossbow.name=Crossbow Turret (T1)
+entity.sapturretmod.turret_revolver.name=Revolver Turret (T2)
+
+tinfo.turret.desc.turret_crossbow=Turret which shoots arrows. It's relatively cheap, so it's ideal as your basic defense.
+
+
+
+
+
+
 item.sapturretmod:turret_upgrade.name=Turret Upgrade
 item.sapturretmod:turret_upgrade.requires=Requires:
 item.sapturretmod:turret_upgrade.applicableTo=Only Applicable On:
@@ -32,9 +42,6 @@ item.sapturretmod:turret_upgrade.upgStorageIII.desc=Increases the available upgr
 item.sapturretmod:turret_upgrade.ammoStorage.name=Ammunition Storage
 item.sapturretmod:turret_upgrade.ammoStorage.desc=Increases the available ammo storage by 320 units.
 
-entity.sapturretmod.turretCrossbow.name=Crossbow Turret (T1)
-entity.sapturretmod.turretRevolver.name=Revolver Turret (T2)
-
 gui.sapturretmod.tcu.page.info.title=TCU - Turret Info
 gui.sapturretmod.tcu.page.info.tab=Turret Info
 gui.sapturretmod.tcu.page.targets.title=TCU - Target Settings
@@ -52,7 +59,6 @@ itemGroup.sapturretmod:turrets=Turret Mod: Turrets
 itemGroup.sapturretmod:misc=Turret Mod: Items
 itemGroup.sapturretmod:upgrades=Turret Mod: Upgrades
 
-turret.desct1a=Turret which shoots arrows. It's relatively cheap, so it's ideal as your basic defense.
 turret.amtp0t1a=Arrows
 turret.desct1s=Turret which shoots pebbles. It has the same stats as the T1 turret, but makes the lowest damage. Ideal for hitting multiple targets at once.
 turret.amtp0t1s=Pebbles

@@ -67,5 +67,15 @@ public class EntityTurretCrossbow
         public double getRange() {
             return 16;
         }
+
+        @Override
+        public String getShootSound() {
+            return "random.bow";
+        }
+
+        @Override
+        public String getLowAmmoSound() {
+            return "random.click";
+        }
     }
 }

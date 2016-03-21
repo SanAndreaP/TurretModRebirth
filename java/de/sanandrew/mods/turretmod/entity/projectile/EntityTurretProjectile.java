@@ -227,6 +227,9 @@ public abstract class EntityTurretProjectile
                     damagesource = DamageSource.causeThrownDamage(this, this);
                 } else {
                     damagesource = DamageSource.causeThrownDamage(this, this.shooterCache);
+                    if( EntityTurret.class.isAssignableFrom(hitObj.entityHit.getClass()) ) {
+                        return;
+                    }
                 }
 
                 if( this.isBurning() && !(hitObj.entityHit instanceof EntityEnderman) ) {

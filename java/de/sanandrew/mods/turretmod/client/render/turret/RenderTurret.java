@@ -19,6 +19,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -104,56 +105,61 @@ public class RenderTurret
 
     @Override
     protected void passSpecialRender(EntityLivingBase entity, double x, double y, double z) {
-//        if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Specials.Pre(entity, this, x, y, z))) return;
-//        GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
-////        GL11.glDepthMask(true);
-////        GL11.glDepthFunc(GL11.GL_NEVER);
-//
-//        double d3 = entity.getDistanceSqToEntity(this.renderManager.livingPlayer);
-//
-//        if (d3 <= (double)(64 * 64))
-//        {
-//            FontRenderer fontrenderer = this.getFontRendererFromRenderManager();
-//            float f = 1.6F;
-//            float f1 = 0.016666668F * f;
-//            GL11.glPushMatrix();
-//            GL11.glTranslatef((float)x + 0.0F, (float)y + entity.height + 0.5F, (float)z);
-//            GL11.glNormal3f(0.0F, 1.0F, 0.0F);
-//            GL11.glRotatef(-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
-//            GL11.glRotatef(this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
-//            GL11.glScalef(-f1, -f1, f1);
-//            GL11.glDisable(GL11.GL_LIGHTING);
-//            GL11.glDepthMask(false);
-//            GL11.glDisable(GL11.GL_DEPTH_TEST);
-//            GL11.glEnable(GL11.GL_BLEND);
-//            OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-//            Tessellator tessellator = Tessellator.instance;
-//            byte b0 = 0;
-//
-//            String s = "test";
-//
-//            GL11.glDisable(GL11.GL_TEXTURE_2D);
-//            tessellator.startDrawingQuads();
-//            int j = fontrenderer.getStringWidth(s) / 2;
-//            tessellator.setColorRGBA_F(0.0F, 0.0F, 0.0F, 0.95F);
-//            tessellator.addVertex((double)(-j - 1), (double)(-1 + b0), 0.0D);
-//            tessellator.addVertex((double)(-j - 1), (double)(8 + b0), 0.0D);
-//            tessellator.addVertex((double)(j + 1), (double)(8 + b0), 0.0D);
-//            tessellator.addVertex((double)(j + 1), (double)(-1 + b0), 0.0D);
-//            tessellator.draw();
-//            GL11.glEnable(GL11.GL_TEXTURE_2D);
-//            fontrenderer.drawString(s, -fontrenderer.getStringWidth(s) / 2, b0, 553648127);
-//            GL11.glEnable(GL11.GL_DEPTH_TEST);
-//            GL11.glDepthMask(true);
-//            fontrenderer.drawString(s, -fontrenderer.getStringWidth(s) / 2, b0, -1);
-//            GL11.glEnable(GL11.GL_LIGHTING);
-//            GL11.glDisable(GL11.GL_BLEND);
-//            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-//            GL11.glPopMatrix();
-//        }
-//
-////        GL11.glDepthFunc(GL11.GL_LEQUAL);
-////        GL11.glDepthMask(true);
-//        MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Specials.Post(entity, this, x, y, z));
+        renderTurretRange((EntityTurret) entity, x, y, z);
+    }
+
+    private static void renderTurretRange(EntityTurret turret, double x, double y, double z) {
+        if( turret.showRange ) {
+            GL11.glDisable(GL11.GL_LIGHTING);
+            GL11.glEnable(GL11.GL_BLEND);
+            OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+
+            Tessellator tess = Tessellator.instance;
+
+            int range = MathHelper.floor_double(turret.getTargetProcessor().getRange());
+
+            GL11.glLineWidth(0.1F);
+            for( double j = -range; j <= range; j += 1.0D ) {
+                tess.startDrawing(GL11.GL_LINE_LOOP);
+                tess.setColorRGBA(255, 0, 0, 64);
+                for( int i = 0; i <= 360; i+=5 ) {
+                    double neg = Math.sin(Math.acos(j / range)) * range;
+                    double xC = neg * Math.sin(i * Math.PI * 2.0D / 360.0D);
+                    double yC = neg * Math.cos(i * Math.PI * 2.0D / 360.0D);
+
+
+                    tess.addVertex(x + xC, y + yC, z + j);
+                }
+                tess.draw();
+
+                tess.startDrawing(GL11.GL_LINE_LOOP);
+                tess.setColorRGBA(255, 0, 0, 64);
+                for( int i = 0; i <= 360; i+=5 ) {
+                    double neg = Math.sin(Math.acos(j / range)) * range;
+                    double zC = neg * Math.sin(i * Math.PI * 2.0D / 360.0D);
+                    double yC = neg * Math.cos(i * Math.PI * 2.0D / 360.0D);
+
+                    tess.addVertex(x + j, y + yC, z + zC);
+                }
+                tess.draw();
+
+                tess.startDrawing(GL11.GL_LINE_LOOP);
+                tess.setColorRGBA(255, 0, 0, 64);
+                for( int i = 0; i <= 360; i+=5 ) {
+                    double neg = Math.sin(Math.acos(j / range)) * range;
+                    double xC = neg * Math.sin(i * Math.PI * 2.0D / 360.0D);
+                    double zC = neg * Math.cos(i * Math.PI * 2.0D / 360.0D);
+
+                    tess.addVertex(x + xC, y + j, z + zC);
+                }
+                tess.draw();
+            }
+
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            GL11.glEnable(GL11.GL_LIGHTING);
+            GL11.glDisable(GL11.GL_BLEND);
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        }
     }
 }

@@ -6,7 +6,7 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.client.model.event;
+package de.sanandrew.mods.turretmod.client.event;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import org.lwjgl.opengl.GL11;
 
@@ -31,7 +32,7 @@ public class RenderWorldLastHandler
         Entity pointedEntity = Minecraft.getMinecraft().pointedEntity;
         ItemStack equippedItem = Minecraft.getMinecraft().thePlayer.getCurrentEquippedItem();
 
-        if( pointedEntity instanceof EntityTurret && ItemStackUtils.isValidStack(equippedItem) && equippedItem.getItem() == ItemRegistry.tcu ) {
+        if( pointedEntity instanceof EntityTurret /*&& ItemStackUtils.isValidStack(equippedItem) && equippedItem.getItem() == ItemRegistry.tcu*/ ) {
             double renderX = renderEntity.lastTickPosX + (renderEntity.posX - renderEntity.lastTickPosX) * event.partialTicks;
             double renderY = renderEntity.lastTickPosY + (renderEntity.posY - renderEntity.lastTickPosY) * event.partialTicks;
             double renderZ = renderEntity.lastTickPosZ + (renderEntity.posZ - renderEntity.lastTickPosZ) * event.partialTicks;
@@ -41,6 +42,7 @@ public class RenderWorldLastHandler
             double entityZ = pointedEntity.lastTickPosZ + (pointedEntity.posZ - pointedEntity.lastTickPosZ) * event.partialTicks;
 
             renderTurretLabel((EntityTurret) pointedEntity, entityX - renderX, entityY - renderY, entityZ - renderZ);
+//            renderTurretRange((EntityTurret) pointedEntity, entityX - renderX, entityY - renderY, entityZ - renderZ);
         }
     }
 

@@ -16,9 +16,12 @@ import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketUpdateTurretState;
 import de.sanandrew.mods.turretmod.registry.medpack.TurretRepairKit;
+import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import io.netty.buffer.ByteBuf;
 import net.darkhax.bookshelf.lib.javatuples.Triplet;
+import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -46,6 +49,7 @@ public abstract class EntityTurret
     private boolean isInitialized = false;
 
     public boolean isUpsideDown;
+    public boolean showRange;
 
     // data watcher IDs
 //    private static final int DW_AMMO = 20; /* INT */
@@ -180,13 +184,17 @@ public abstract class EntityTurret
 
     @Override
     protected boolean interact(EntityPlayer player) {
-        if( this.worldObj.isRemote ) {
-            return false;
-        }
-
         ItemStack heldItem = player.getCurrentEquippedItem();
+        if( this.worldObj.isRemote ) {
+            if( ItemStackUtils.isValidStack(heldItem) && heldItem.getItem() == ItemRegistry.tcu ) {
+//                this.showRange = !this.showRange;
+//                this.ignoreFrustumCheck = this.showRange;
+                TurretModRebirth.proxy.openGui(player, EnumGui.GUI_TCU_TARGETS, this.getEntityId(), 0, 0);
+                return true;
+            }
 
-        if( heldItem != null ) {
+            return false;
+        } else if( ItemStackUtils.isValidStack(heldItem) ) {
             if( this.targetProc.isAmmoApplicable(heldItem) ) {
                 boolean succeed = this.targetProc.addAmmo(heldItem);
                 if( succeed ) {
@@ -197,6 +205,7 @@ public abstract class EntityTurret
                     }
                     this.updateState();
                     player.inventoryContainer.detectAndSendChanges();
+                    this.worldObj.playSoundAtEntity(this, TurretModRebirth.ID + ":collect.ia_get", 1.0F, 1.0F);
                 }
                 return succeed;
             } else if( heldItem.getItem() == ItemRegistry.repairKit ) {
@@ -211,6 +220,7 @@ public abstract class EntityTurret
                         player.inventory.setInventorySlotContents(player.inventory.currentItem, heldItem.copy());
                     }
                     player.inventoryContainer.detectAndSendChanges();
+                    this.worldObj.playSoundAtEntity(this, TurretModRebirth.ID + ":collect.ia_get", 1.0F, 1.0F);
                     return true;
                 }
             }

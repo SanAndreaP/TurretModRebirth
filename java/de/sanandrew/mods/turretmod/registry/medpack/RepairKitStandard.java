@@ -9,7 +9,6 @@
 package de.sanandrew.mods.turretmod.registry.medpack;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 
 import java.util.UUID;
 

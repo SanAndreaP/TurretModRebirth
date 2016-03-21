@@ -1,17 +1,14 @@
 package de.sanandrew.mods.turretmod.entity.turret;
 
-import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import com.google.common.primitives.Booleans;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmo;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
-import net.darkhax.bookshelf.lib.util.NBTUtils;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -28,7 +25,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.Constants;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -76,8 +72,12 @@ public abstract class TargetProcessor
                 int providedStack = stack.stackSize * provided; //provides 4*16=64, needs 56 = 56 / 64 * 4
                 if( providedStack - maxCapacity > 0 ) {
                     int stackSub = MathHelper.floor_double(maxCapacity / (double)providedStack * stack.stackSize);
-                    this.ammoCount += stackSub * provided;
-                    stack.stackSize -= stackSub;
+                    if( stackSub > 0 ) {
+                        this.ammoCount += stackSub * provided;
+                        stack.stackSize -= stackSub;
+                    } else {
+                        return false;
+                    }
                 } else {
                     this.ammoCount += providedStack;
                     stack.stackSize = 0;
@@ -151,14 +151,18 @@ public abstract class TargetProcessor
 
     public abstract double getRange();
 
+    public abstract String getShootSound();
+
+    public abstract String getLowAmmoSound();
+
     public void shootProjectile() {
         if( this.hasAmmo() ) {
             EntityTurretProjectile projectile = this.getProjectile();
             this.turret.worldObj.spawnEntityInWorld(projectile);
-            this.turret.worldObj.playSoundAtEntity(this.turret, "random.bow", 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
+            this.turret.worldObj.playSoundAtEntity(this.turret, this.getShootSound(), 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
             this.ammoCount--;
         } else {
-            this.turret.worldObj.playSoundAtEntity(this.turret, "random.click", 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
+            this.turret.worldObj.playSoundAtEntity(this.turret, this.getLowAmmoSound(), 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
         }
     }
 
@@ -213,7 +217,9 @@ public abstract class TargetProcessor
     public static void initialize() {
         for( Object clsObj : EntityList.classToStringMapping.keySet() ) {
             Class cls = (Class) clsObj;
-            ENTITY_TARGET_LIST_STD.put(cls, IMob.class.isAssignableFrom(cls));
+            if( EntityLiving.class.isAssignableFrom(cls) && !EntityTurret.class.isAssignableFrom(cls) && !EntityLiving.class.equals(cls) ) {
+                ENTITY_TARGET_LIST_STD.put(cls, IMob.class.isAssignableFrom(cls));
+            }
         }
     }
 
@@ -284,7 +290,7 @@ public abstract class TargetProcessor
     public Class[] getEnabledEntityTargets() {
         Collection<Class> enabledClasses = Maps.filterEntries(this.entityTargetList, new Predicate<Map.Entry<Class, Boolean>>() {
             @Override
-            public boolean apply(@Nullable Map.Entry<Class, Boolean> input) {
+            public boolean apply(Map.Entry<Class, Boolean> input) {
                 return input != null && input.getValue();
             }
         }).keySet();
@@ -295,12 +301,22 @@ public abstract class TargetProcessor
     public UUID[] getEnabledPlayerTargets() {
         Collection<UUID> enabledUUIDs = Maps.filterEntries(this.playerTargetList, new Predicate<Map.Entry<UUID, Boolean>>() {
             @Override
-            public boolean apply(@Nullable Map.Entry<UUID, Boolean> input) {
+            public boolean apply(Map.Entry<UUID, Boolean> input) {
                 return input != null && input.getValue();
             }
         }).keySet();
 
         return enabledUUIDs.toArray(new UUID[enabledUUIDs.size()]);
+    }
+
+    public Map<Class, Boolean> getEntityTargets() {
+        return new HashMap<>(this.entityTargetList);
+    }
+
+    public void updateEntityTarget(Class cls, boolean active) {
+        if( ENTITY_TARGET_LIST_STD.containsKey(cls) ) {
+            this.entityTargetList.put(cls, active);
+        }
     }
 
     public void updateEntityTargets(Class[] classes) {
@@ -309,7 +325,7 @@ public abstract class TargetProcessor
         }
 
         for( Class cls : classes ) {
-            if( cls != null ) {
+            if( cls != null && ENTITY_TARGET_LIST_STD.containsKey(cls) ) {
                 this.entityTargetList.put(cls, true);
             }
         }

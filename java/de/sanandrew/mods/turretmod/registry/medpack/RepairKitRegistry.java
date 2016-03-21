@@ -1,12 +1,8 @@
 package de.sanandrew.mods.turretmod.registry.medpack;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import org.apache.logging.log4j.Level;
 
-import java.lang.reflect.InvocationTargetException;
 import java.security.InvalidParameterException;
 import java.util.*;
 
@@ -67,6 +63,6 @@ public class RepairKitRegistry
         this.registerMedpack(new RepairKitStandard("standard_2", UUID.fromString("36477c40-3eb3-4997-a2ec-3a9a37be86d5"), 10.0F, "repair_kit_std2"));
         this.registerMedpack(new RepairKitStandard("standard_3", UUID.fromString("c9ecc3ea-8bfa-4e42-b401-e0475a23d7f6"), 15.0F, "repair_kit_std3"));
         this.registerMedpack(new RepairKitStandard("standard_4", UUID.fromString("6b3cbd27-1efa-4ee2-b8c8-35d2988361b9"), 20.0F, "repair_kit_std4"));
-        this.registerMedpack(new RepairKitRegeneration("regen_1", UUID.fromString("4c44ca3d-4f32-44e6-bf2e-11189ec88a73"), 1.0F, "repair_kit_reg1", 0, 300));
+        this.registerMedpack(new RepairKitRegeneration("regen_1", UUID.fromString("4c44ca3d-4f32-44e6-bf2e-11189ec88a73"), 1.0F, "repair_kit_reg1", 0, 800));
     }
 }

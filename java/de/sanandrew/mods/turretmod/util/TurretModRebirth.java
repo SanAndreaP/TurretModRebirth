@@ -56,7 +56,7 @@ public class TurretModRebirth
 //
 //        PacketManager.initialize();
 //
-//        NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
     }
 
     @Mod.EventHandler

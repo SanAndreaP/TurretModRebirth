@@ -62,6 +62,6 @@ public class EntityProjectileCrossbowBolt
 
     @Override
     public float getKnockbackStrengthV() {
-        return 0.2F;
+        return -0.1F;
     }
 }
