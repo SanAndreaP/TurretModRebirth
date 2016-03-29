@@ -119,6 +119,13 @@ public class RenderTurret
 
             int range = MathHelper.floor_double(turret.getTargetProcessor().getRange());
 
+            GL11.glLineWidth(5.0F);
+            tess.startDrawing(GL11.GL_LINE_LOOP);
+            tess.setColorRGBA(255, 0, 0, 64);
+            tess.addVertex(x, y, z);
+            tess.addVertex(x, y + range, z);
+            tess.draw();
+
             GL11.glLineWidth(0.1F);
             for( double j = -range; j <= range; j += 1.0D ) {
                 tess.startDrawing(GL11.GL_LINE_LOOP);

@@ -13,13 +13,16 @@ import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.network.PacketDismantle;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketUpdateTurretState;
 import de.sanandrew.mods.turretmod.registry.medpack.TurretRepairKit;
+import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import io.netty.buffer.ByteBuf;
+import net.darkhax.bookshelf.lib.javatuples.Pair;
 import net.darkhax.bookshelf.lib.javatuples.Triplet;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.entity.Entity;
@@ -29,25 +32,29 @@ import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Direction;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import org.apache.commons.lang3.tuple.Triple;
 import scala.Int;
 
 import java.util.List;
+import java.util.UUID;
 
 public abstract class EntityTurret
         extends EntityLiving
         implements IEntityAdditionalSpawnData
 {
-    private boolean isInitialized = false;
-
     public boolean isUpsideDown;
     public boolean showRange;
 
@@ -55,8 +62,6 @@ public abstract class EntityTurret
 //    private static final int DW_AMMO = 20; /* INT */
 //    private static final int DW_AMMO_TYPE = 21; /* ITEM_STACK */
     private static final int DW_EXPERIENCE = 22; /* INT */
-    private static final int DW_OWNER_UUID = 23; /* STRING */
-    private static final int DW_OWNER_NAME = 24; /* STRING */
     private static final int DW_SHOOT_TICKS = 26; /* INT */
     private static final int DW_FREQUENCY = 27; /* BYTE */
     private static final int DW_BOOLEANS = 28; /* BYTE */
@@ -65,13 +70,19 @@ public abstract class EntityTurret
 
     protected TargetProcessor targetProc;
 
+    protected UUID ownerUUID;
+    protected String ownerName;
+
     public EntityTurret(World world) {
         super(world);
     }
 
-    public EntityTurret(World world, boolean isUpsideDown) {
+    public EntityTurret(World world, boolean isUpsideDown, EntityPlayer owner) {
         this(world);
         this.isUpsideDown = isUpsideDown;
+
+        this.ownerUUID = owner.getUniqueID();
+        this.ownerName = owner.getCommandSenderName();
     }
 
     @Override
@@ -127,7 +138,7 @@ public abstract class EntityTurret
         }
 
         if( !canTurretBePlaced(this.worldObj, this.blockPos.getValue0(), this.blockPos.getValue1(), this.blockPos.getValue2(), true, this.isUpsideDown) ) {
-            this.attackEntityFrom(DamageSource.magic, Float.MAX_VALUE);
+            this.kill();
         }
 
         if( this.newPosRotationIncrements > 0 ) {
@@ -187,9 +198,7 @@ public abstract class EntityTurret
         ItemStack heldItem = player.getCurrentEquippedItem();
         if( this.worldObj.isRemote ) {
             if( ItemStackUtils.isValidStack(heldItem) && heldItem.getItem() == ItemRegistry.tcu ) {
-//                this.showRange = !this.showRange;
-//                this.ignoreFrustumCheck = this.showRange;
-                TurretModRebirth.proxy.openGui(player, EnumGui.GUI_TCU_TARGETS, this.getEntityId(), 0, 0);
+                TurretModRebirth.proxy.openGui(player, EnumGui.GUI_TCU_INFO, this.getEntityId(), 0, 0);
                 return true;
             }
 
@@ -258,12 +267,25 @@ public abstract class EntityTurret
         this.targetProc.writeToNbt(targetNbt);
         ByteBufUtils.writeTag(buffer, targetNbt);
         buffer.writeBoolean(this.isUpsideDown);
+
+        if( this.ownerUUID != null ) {
+            ByteBufUtils.writeUTF8String(buffer, this.ownerUUID.toString());
+            ByteBufUtils.writeUTF8String(buffer, this.ownerName);
+        } else {
+            ByteBufUtils.writeUTF8String(buffer, "[UNKNOWN_OWNER]");
+        }
     }
 
     @Override
     public void readSpawnData(ByteBuf buffer) {
         this.targetProc.readFromNbt(ByteBufUtils.readTag(buffer));
         this.isUpsideDown = buffer.readBoolean();
+
+        String ownerUUIDStr = ByteBufUtils.readUTF8String(buffer);
+        if( !ownerUUIDStr.equals("[UNKNOWN_OWNER]") ) {
+            this.ownerUUID = UUID.fromString(ownerUUIDStr);
+            this.ownerName = ByteBufUtils.readUTF8String(buffer);
+        }
     }
 
     @Override
@@ -273,6 +295,10 @@ public abstract class EntityTurret
         this.targetProc.writeToNbt(nbt);
 
         nbt.setBoolean("isUpsideDown", this.isUpsideDown);
+        if( this.ownerUUID != null ) {
+            nbt.setString("ownerUUID", this.ownerUUID.toString());
+            nbt.setString("ownerName", this.ownerName);
+        }
     }
 
     @Override
@@ -282,6 +308,10 @@ public abstract class EntityTurret
         this.targetProc.readFromNbt(nbt);
 
         this.isUpsideDown = nbt.getBoolean("isUpsideDown");
+        if( nbt.hasKey("ownerUUID") ) {
+            this.ownerUUID = UUID.fromString(nbt.getString("ownerUUID"));
+            this.ownerName = nbt.getString("ownerName");
+        }
     }
 
     @Override
@@ -328,5 +358,53 @@ public abstract class EntityTurret
         }
 
         return true;
+    }
+
+    public String getOwnerName() {
+        return this.ownerName;
+    }
+
+    public boolean tryDismantle(EntityPlayer player) {
+        Pair<Integer, ItemStack> chestItm = TmrUtils.getSimilarStackFromInventory(new ItemStack(Blocks.chest), player.inventory, null);
+        if( chestItm != null && ItemStackUtils.isValidStack(chestItm.getValue1()) ) {
+            ItemStack chestStack = chestItm.getValue1();
+            if( this.worldObj.isRemote ) {
+                PacketRegistry.sendToServer(new PacketDismantle(this));
+                return true;
+            } else {
+                this.posY += 2048.0F;
+                this.setPosition(this.posX, this.posY, this.posZ);
+                int y = this.isUpsideDown ? this.blockPos.getValue1() - 2 : this.blockPos.getValue1();
+                if( chestStack.getItem().onItemUse(chestStack, player, this.worldObj, this.blockPos.getValue0(), y, this.blockPos.getValue2(),
+                                                   (this.isUpsideDown ? ForgeDirection.DOWN : ForgeDirection.UP).ordinal(), 0.5F, 1.0F, 0.5F) )
+                {
+                    TileEntity te = this.worldObj.getTileEntity(this.blockPos.getValue0(), y, this.blockPos.getValue2());
+                    if( te instanceof TileEntityChest ) {
+                        this.posY -= 2048.0F;
+                        this.setPosition(this.posX, this.posY, this.posZ);
+
+                        TileEntityChest chest = (TileEntityChest) te;
+                        chest.setInventorySlotContents(0, ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(this.getClass()), this));
+                        this.targetProc.putAmmoInInventory(chest);
+
+                        if( chestStack.stackSize < 1 ) {
+                            player.inventory.setInventorySlotContents(chestItm.getValue0(), null);
+                        }
+                        player.inventoryContainer.detectAndSendChanges();
+                        this.kill();
+                        return true;
+                    }
+                }
+                this.posY -= 2048.0F;
+                this.setPosition(this.posX, this.posY, this.posZ);
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    protected void kill() {
+        this.attackEntityFrom(DamageSource.magic, Float.MAX_VALUE);
     }
 }

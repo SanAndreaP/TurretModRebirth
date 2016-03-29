@@ -25,12 +25,14 @@ public enum Textures
     GUI_TCU_INFO("textures/gui/tcu/page_info.png"),
     GUI_TCU_HUD("textures/gui/tcu/hud.png"),
     GUI_TOOLTIP_HOLOGRAPH("textures/gui/holo_tooltip.png"),
+    GUI_ASSEMBLY_CRF("textures/gui/turretassembly/manual.png"),
 
     TURRET_FORCEFIELD_P1("textures/entities/shield_1.png"),
     TURRET_FORCEFIELD_P2("textures/entities/shield_2.png"),
     TURRET_FORCEFIELD_P3("textures/entities/shield_3.png"),
     TILE_ITEM_TRANSMITTER("textures/blocks/item_transmitter.png"),
-    TILE_ITEM_TRANSMITTER_GLOW("textures/blocks/item_transmitter_glow.png");
+    TILE_ITEM_TRANSMITTER_GLOW("textures/blocks/item_transmitter_glow.png"),
+    TILE_TURRET_ASSEMBLY("textures/blocks/turret_assembly.png");
 
     private final ResourceLocation location;
 

@@ -15,11 +15,13 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
+import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,8 +51,11 @@ public class TurretModRebirth
 
         AmmoRegistry.INSTANCE.initialize();
         RepairKitRegistry.INSTANCE.initialize();
+        TurretRegistry.INSTANCE.initialize();
         proxy.preInit(event);
+        BlockRegistry.initialize();
         ItemRegistry.initialize();
+        TurretAssemblyRecipes.initialize();
 //        TmrBlocks.initialize();
 //        TmrItems.initialize();
 //

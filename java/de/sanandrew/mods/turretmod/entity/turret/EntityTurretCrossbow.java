@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.entity.turret;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.util.Textures;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -19,16 +20,16 @@ import net.minecraft.world.World;
 public class EntityTurretCrossbow
         extends EntityTurret
 {
-    public EntityTurretCrossbow(World world) {
-        super(world);
-
+    {
         this.targetProc = new MyTargetProc();
     }
 
-    public EntityTurretCrossbow(World world, boolean isUpsideDown) {
-        this(world);
+    public EntityTurretCrossbow(World world) {
+        super(world);
+    }
 
-        this.isUpsideDown = isUpsideDown;
+    public EntityTurretCrossbow(World world, boolean isUpsideDown, EntityPlayer player) {
+        super(world, isUpsideDown, player);
     }
 
     @Override

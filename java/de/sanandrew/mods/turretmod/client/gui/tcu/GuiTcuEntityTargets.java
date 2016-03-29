@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-public class GuiTcuTargets
+public class GuiTcuEntityTargets
         extends GuiTurretControlUnit
 {
     private Map<Class, Boolean> tempTargetList = new HashMap<>();
@@ -54,7 +54,7 @@ public class GuiTcuTargets
     private GuiButton selectAnimals;
     private GuiButton selectOther;
 
-    public GuiTcuTargets(EntityTurret turret) {
+    public GuiTcuEntityTargets(EntityTurret turret) {
         super(turret);
     }
 
@@ -70,18 +70,14 @@ public class GuiTcuTargets
         this.buttonList.add(this.selectAnimals = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 177, 150, translateBtn("selectAnimals")));
         this.buttonList.add(this.selectOther = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 190, 150, translateBtn("selectOther")));
 
-        this.pageTargets.enabled = false;
+        this.pageEntityTargets.enabled = false;
+
+        this.updateList();
     }
 
     @Override
     public void updateScreen() {
         super.updateScreen();
-
-        TreeMap<Class, Boolean> btwSortMapNm = new TreeMap<>(new TargetComparatorName());
-        TreeMap<Class, Boolean> btwSortMapCl = new TreeMap<>(new TargetComparatorClass());
-        btwSortMapNm.putAll(this.myTurret.getTargetProcessor().getEntityTargets());
-        btwSortMapCl.putAll(btwSortMapNm);
-        this.tempTargetList = btwSortMapCl;
 
         this.canScroll = this.tempTargetList.size() >= 11;
         this.scrollAmount = Math.max(0.0F, 1.0F / (this.tempTargetList.size() - 11.0F));
@@ -177,7 +173,8 @@ public class GuiTcuTargets
         this.doSelectOther = false;
 
         if( targetListChanged ) {
-            updateTargets();
+            this.updateTargets();
+            this.updateList();
         }
 
         this.prevIsLmbDown = isLmbDown;
@@ -228,7 +225,7 @@ public class GuiTcuTargets
     }
 
     private static String translateBtn(String s) {
-        return StatCollector.translateToLocal(String.format("gui.%s.tcu.page.targets.button.%s", TurretModRebirth.ID, s));
+        return StatCollector.translateToLocal(String.format("gui.%s.tcu.page.targetsEntity.button.%s", TurretModRebirth.ID, s));
     }
 
     private static final class TargetComparatorClass
@@ -253,5 +250,13 @@ public class GuiTcuTargets
         public int compare(Class o1, Class o2) {
             return getTranslatedEntityName(o2).compareTo(getTranslatedEntityName(o1));
         }
+    }
+
+    private void updateList() {
+        TreeMap<Class, Boolean> btwSortMapNm = new TreeMap<>(new TargetComparatorName());
+        TreeMap<Class, Boolean> btwSortMapCl = new TreeMap<>(new TargetComparatorClass());
+        btwSortMapNm.putAll(this.myTurret.getTargetProcessor().getEntityTargets());
+        btwSortMapCl.putAll(btwSortMapNm);
+        this.tempTargetList = btwSortMapCl;
     }
 }

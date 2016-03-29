@@ -32,7 +32,7 @@ public class RenderWorldLastHandler
         Entity pointedEntity = Minecraft.getMinecraft().pointedEntity;
         ItemStack equippedItem = Minecraft.getMinecraft().thePlayer.getCurrentEquippedItem();
 
-        if( pointedEntity instanceof EntityTurret /*&& ItemStackUtils.isValidStack(equippedItem) && equippedItem.getItem() == ItemRegistry.tcu*/ ) {
+        if( pointedEntity instanceof EntityTurret && ItemStackUtils.isValidStack(equippedItem) && equippedItem.getItem() == ItemRegistry.tcu ) {
             double renderX = renderEntity.lastTickPosX + (renderEntity.posX - renderEntity.lastTickPosX) * event.partialTicks;
             double renderY = renderEntity.lastTickPosY + (renderEntity.posY - renderEntity.lastTickPosY) * event.partialTicks;
             double renderZ = renderEntity.lastTickPosZ + (renderEntity.posZ - renderEntity.lastTickPosZ) * event.partialTicks;
@@ -42,7 +42,6 @@ public class RenderWorldLastHandler
             double entityZ = pointedEntity.lastTickPosZ + (pointedEntity.posZ - pointedEntity.lastTickPosZ) * event.partialTicks;
 
             renderTurretLabel((EntityTurret) pointedEntity, entityX - renderX, entityY - renderY, entityZ - renderZ);
-//            renderTurretRange((EntityTurret) pointedEntity, entityX - renderX, entityY - renderY, entityZ - renderZ);
         }
     }
 
@@ -95,8 +94,6 @@ public class RenderWorldLastHandler
         tessellator.addVertex((1 + 126.0F * ammoRel), (38), 0.0D);
         tessellator.draw();
         GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glDepthMask(true);
 
         String s = "Turret";
         fontrenderer.drawString(s, 1, 1, -1);
@@ -107,7 +104,8 @@ public class RenderWorldLastHandler
         s = String.format("Target: %s", turret.getTargetProcessor().getTarget() == null ? "n/a" : turret.getTargetProcessor().getTarget().getClass().getSimpleName());
         fontrenderer.drawString(s, 1, 44, 0xFFFFFFA0);
 
-        GL11.glEnable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glDepthMask(true);
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glPopMatrix();

@@ -9,7 +9,11 @@
 package de.sanandrew.mods.turretmod.registry.turret;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import org.apache.logging.log4j.Level;
 
+import java.lang.reflect.InvocationTargetException;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,23 +24,59 @@ public class TurretRegistry
 {
     public static final TurretRegistry INSTANCE = new TurretRegistry();
 
-    private final Map<UUID, TurretInfo> uuidTurretInfoMap;
-    private final Map<Class<? extends EntityTurret>, TurretInfo> classTurretInfoMap;
+    private final Map<UUID, TurretInfo> infoFromUUID;
+    private final Map<Class<? extends EntityTurret>, TurretInfo> infoFromClass;
 
     private TurretRegistry() {
-        this.uuidTurretInfoMap = new HashMap<>();
-        this.classTurretInfoMap = new HashMap<>();
+        this.infoFromUUID = new HashMap<>();
+        this.infoFromClass = new HashMap<>();
     }
 
     public List<TurretInfo> getRegisteredInfos() {
-        return new ArrayList<>(this.uuidTurretInfoMap.values());
+        return new ArrayList<>(this.infoFromUUID.values());
     }
 
     public TurretInfo getInfo(UUID uuid) {
-        return this.uuidTurretInfoMap.get(uuid);
+        return this.infoFromUUID.get(uuid);
     }
 
     public TurretInfo getInfo(Class<? extends EntityTurret> clazz) {
-        return this.classTurretInfoMap.get(clazz);
+        return this.infoFromClass.get(clazz);
+    }
+
+    public boolean registerTurretInfo(TurretInfo type) {
+        if( type == null ) {
+            TurretModRebirth.LOG.log(Level.ERROR, "Cannot register NULL as Turret-Info!", new InvalidParameterException());
+            return false;
+        }
+
+        if( type.getName() == null || type.getName().isEmpty() ) {
+            TurretModRebirth.LOG.log(Level.ERROR, String.format("Turret-Info %s has an empty/NULL name! Cannot register the Void.", type.getClass().getName()), new InvalidParameterException());
+            return false;
+        }
+
+        if( type.getUUID() == null ) {
+            TurretModRebirth.LOG.log(Level.ERROR, String.format("Turret-Info %s has no UUID! How am I supposed to differentiate all the turrets?", type.getName()), new InvalidParameterException());
+            return false;
+        }
+
+        if( this.infoFromUUID.containsKey(type.getUUID()) ) {
+            TurretModRebirth.LOG.log(Level.ERROR, String.format("The UUID of Turret-Info %s is already registered! Use another UUID. JUST DO IT!", type.getName()), new InvalidParameterException());
+            return false;
+        }
+
+        if( type.getTurretClass() == null ) {
+            TurretModRebirth.LOG.log(Level.ERROR, String.format("Turret-Info %s has no turret! wat?", type.getName()), new InvalidParameterException());
+            return false;
+        }
+
+        this.infoFromUUID.put(type.getUUID(), type);
+        this.infoFromClass.put(type.getTurretClass(), type);
+
+        return true;
+    }
+
+    public void initialize() {
+        this.registerTurretInfo(new TurretInfoT1Crossbow());
     }
 }

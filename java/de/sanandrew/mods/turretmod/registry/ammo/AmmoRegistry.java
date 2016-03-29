@@ -53,53 +53,46 @@ public class AmmoRegistry
         return new ArrayList<>(this.ammoTypesFromTurret.get(turret));
     }
 
-    public boolean registerAmmoType(Class<? extends TurretAmmo> typeCls) {
-        if( typeCls == null ) {
+    public boolean registerAmmoType(TurretAmmo type) {
+        if( type == null ) {
             TurretModRebirth.LOG.log(Level.ERROR, "Cannot register NULL as Ammo-Type!", new InvalidParameterException());
             return false;
         }
 
-        try {
-            TurretAmmo type = typeCls.getConstructor().newInstance();
-
-            if( type.getName() == null || type.getName().isEmpty() ) {
-                TurretModRebirth.LOG.log(Level.ERROR, String.format("Ammo-Type %s has an empty/NULL name! Cannot register the Void.", typeCls.getName()), new InvalidParameterException());
-                return false;
-            }
-
-            if( type.getUUID() == null ) {
-                TurretModRebirth.LOG.log(Level.ERROR, String.format("Ammo-Type %s has no UUID! How am I supposed to differentiate all the cartridges?", typeCls.getName()), new InvalidParameterException());
-                return false;
-            }
-
-            if( this.ammoTypesFromUUID.containsKey(type.getUUID()) ) {
-                TurretModRebirth.LOG.log(Level.ERROR, String.format("The UUID of Ammo-Type %s is already registered! Use another UUID. JUST DO IT!", typeCls.getName()), new InvalidParameterException());
-                return false;
-            }
-
-            if( type.getAmmoCapacity() < 1 ) {
-                TurretModRebirth.LOG.log(Level.ERROR, String.format("Ammo-Type %s provides less than 1 round! At least give it SOMETHING...", typeCls.getName()), new InvalidParameterException());
-                return false;
-            }
-
-            if( type.getEntity() == null ) {
-                TurretModRebirth.LOG.log(Level.ERROR, String.format("Ammo-Type %s has no projectile entity! Turrets can't shoot emptiness, can they!?", typeCls.getName()), new InvalidParameterException());
-                return false;
-            }
-
-            if( type.getTurret() == null ) {
-                TurretModRebirth.LOG.log(Level.ERROR, String.format("Ammo-Type %s has no turret! Ammo is pretty useless without something to shoot it with.", typeCls.getName()), new InvalidParameterException());
-                return false;
-            }
-
-            this.ammoTypesFromUUID.put(type.getUUID(), type);
-            this.ammoTypesFromTurret.put(type.getTurret(), type);
-
-            return true;
-        } catch( NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException e ) {
-            TurretModRebirth.LOG.log(Level.ERROR, String.format("Cannot instanciate Ammo-Type %s! It should have a public standard constructor with no parameters.", typeCls.getName()), e);
+        if( type.getName() == null || type.getName().isEmpty() ) {
+            TurretModRebirth.LOG.log(Level.ERROR, String.format("Ammo-Type %s has an empty/NULL name! Cannot register the Void.", type.getName()), new InvalidParameterException());
             return false;
         }
+
+        if( type.getUUID() == null ) {
+            TurretModRebirth.LOG.log(Level.ERROR, String.format("Ammo-Type %s has no UUID! How am I supposed to differentiate all the cartridges?", type.getName()), new InvalidParameterException());
+            return false;
+        }
+
+        if( this.ammoTypesFromUUID.containsKey(type.getUUID()) ) {
+            TurretModRebirth.LOG.log(Level.ERROR, String.format("The UUID of Ammo-Type %s is already registered! Use another UUID. JUST DO IT!", type.getName()), new InvalidParameterException());
+            return false;
+        }
+
+        if( type.getAmmoCapacity() < 1 ) {
+            TurretModRebirth.LOG.log(Level.ERROR, String.format("Ammo-Type %s provides less than 1 round! At least give it SOMETHING...", type.getName()), new InvalidParameterException());
+            return false;
+        }
+
+        if( type.getEntity() == null ) {
+            TurretModRebirth.LOG.log(Level.ERROR, String.format("Ammo-Type %s has no projectile entity! Turrets can't shoot emptiness, can they!?", type.getName()), new InvalidParameterException());
+            return false;
+        }
+
+        if( type.getTurret() == null ) {
+            TurretModRebirth.LOG.log(Level.ERROR, String.format("Ammo-Type %s has no turret! Ammo is pretty useless without something to shoot it with.", type.getName()), new InvalidParameterException());
+            return false;
+        }
+
+        this.ammoTypesFromUUID.put(type.getUUID(), type);
+        this.ammoTypesFromTurret.put(type.getTurret(), type);
+
+        return true;
     }
 
     public boolean areAmmoItemsEqual(ItemStack firstStack, ItemStack secondStack) {
@@ -107,24 +100,13 @@ public class AmmoRegistry
             TurretAmmo firstType = ItemRegistry.ammo.getAmmoType(firstStack);
             TurretAmmo secondType = ItemRegistry.ammo.getAmmoType(secondStack);
             return firstType != null && secondType != null && firstType.getTypeUUID().equals(secondType.getTypeUUID());
-//            Item firstItem = firstStack.getItem();
-//            Item secondItem = secondStack.getItem();
-//            return firstItem != null && secondItem != null
-//                    ? (firstItem == secondItem
-//                    && (comparator.compare(firstStack.getTagCompound(), secondStack.getTagCompound()) == 0
-//                    && (firstStack.getItemDamage() == OreDictionary.WILDCARD_VALUE
-//                    || secondStack.getItemDamage() == OreDictionary.WILDCARD_VALUE
-//                    || firstStack.getItemDamage() == secondStack.getItemDamage())
-//            )
-//            )
-//                    : firstItem == secondItem;
         } else {
             return firstStack == secondStack;
         }
     }
 
     public void initialize() {
-        this.registerAmmoType(TurretAmmoArrow.Single.class);
-        this.registerAmmoType(TurretAmmoArrow.Quiver.class);
+        this.registerAmmoType(new TurretAmmoArrow.Single());
+        this.registerAmmoType(new TurretAmmoArrow.Quiver());
     }
 }
