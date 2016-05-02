@@ -17,14 +17,16 @@ public class ItemRegistry
     public static ItemAmmo ammo;
     public static ItemTurretControlUnit tcu;
     public static ItemRepairKit repairKit;
+    public static ItemAssemblyAutomate asbAuto;
 
     public static void initialize() {
         turret = new ItemTurret();
         ammo = new ItemAmmo();
         tcu = new ItemTurretControlUnit();
         repairKit = new ItemRepairKit();
+        asbAuto = new ItemAssemblyAutomate();
 
-        registerItems(turret, ammo, tcu, repairKit);
+        registerItems(turret, ammo, tcu, repairKit, asbAuto);
     }
 
     private static void registerItems(Item... items) {

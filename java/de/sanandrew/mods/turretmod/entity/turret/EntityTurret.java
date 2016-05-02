@@ -8,10 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.entity.turret;
 
-import codechicken.lib.inventory.InventoryUtils;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketDismantle;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
@@ -28,11 +26,8 @@ import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
@@ -40,15 +35,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import org.apache.commons.lang3.tuple.Triple;
-import scala.Int;
 
-import java.util.List;
 import java.util.UUID;
 
 public abstract class EntityTurret

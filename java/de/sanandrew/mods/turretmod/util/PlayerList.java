@@ -9,9 +9,7 @@
 package de.sanandrew.mods.turretmod.util;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.relauncher.Side;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncPlayerList;

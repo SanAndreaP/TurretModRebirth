@@ -11,14 +11,17 @@ package de.sanandrew.mods.turretmod.client.render.tileentity;
 import de.sanandrew.mods.turretmod.client.model.block.ModelTurretAssembly;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.Textures;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import org.lwjgl.opengl.ContextCapabilities;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL14;
+import org.lwjgl.opengl.GLContext;
 
 public class RenderTurretAssembly
         extends TileEntitySpecialRenderer
@@ -42,8 +45,12 @@ public class RenderTurretAssembly
     }
 
     private static void renderItem(TileEntityTurretAssembly assembly) {
-        ItemStack itemstack = assembly.currentlyCraftingItem;
-        if( itemstack == null ) {
+        ContextCapabilities glCapabilities = GLContext.getCapabilities();
+
+        ItemStack itemstack;
+        if( assembly.currCrafting != null ) {
+            itemstack = assembly.currCrafting.getValue1();
+        } else {
             itemstack = assembly.getStackInSlot(0);
         }
 
@@ -60,8 +67,19 @@ public class RenderTurretAssembly
             GL11.glScalef(0.73F, 0.73F, 1.0F);
 
             RenderItem.renderInFrame = true;
-            RenderManager.instance.renderEntityWithPosYaw(entityitem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
+            float scale = Math.max(0.0F, (assembly.ticksCrafted - 15.0F) / (assembly.maxTicksCrafted - 15.0F));
+
+            if( glCapabilities.OpenGL14 && glCapabilities.GL_EXT_blend_color ) {
+                GL11.glEnable(GL11.GL_BLEND);
+                OpenGlHelper.glBlendFunc(GL11.GL_CONSTANT_ALPHA, GL11.GL_ONE_MINUS_CONSTANT_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+                GL14.glBlendColor(1.0f, 1.0f, 1.0f, scale);
+                RenderManager.instance.renderEntityWithPosYaw(entityitem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
+                GL11.glDisable(GL11.GL_BLEND);
+            } else {
+                RenderManager.instance.renderEntityWithPosYaw(entityitem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
+            }
             RenderItem.renderInFrame = false;
+
 
             GL11.glPopMatrix();
         }

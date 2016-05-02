@@ -8,7 +8,6 @@
  */
 package de.sanandrew.mods.turretmod.network;
 
-import cpw.mods.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.darkhax.bookshelf.common.network.AbstractMessage;

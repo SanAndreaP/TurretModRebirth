@@ -1,8 +1,6 @@
 package de.sanandrew.mods.turretmod.registry.turret;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
-import net.minecraft.entity.IProjectile;
-import net.minecraft.item.ItemStack;
 
 import java.util.UUID;
 

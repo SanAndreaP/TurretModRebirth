@@ -8,7 +8,6 @@
  */
 package de.sanandrew.mods.turretmod.client.particle;
 
-import net.minecraft.client.particle.EntityAuraFX;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.world.World;
 

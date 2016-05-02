@@ -10,7 +10,6 @@ package de.sanandrew.mods.turretmod.util;
 
 import net.darkhax.bookshelf.lib.javatuples.Pair;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
-import net.darkhax.bookshelf.lib.util.NBTUtils;
 import net.darkhax.bookshelf.lib.util.ReflectionUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -27,7 +26,6 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
@@ -39,7 +37,7 @@ public class TmrUtils
 
     public static final Comparator<NBTTagCompound> NBT_COMPARATOR_FIXD = new Comparator<NBTTagCompound>() {
         public int compare(NBTTagCompound firstTag, NBTTagCompound secondTag) {
-            return firstTag != null && firstTag.equals(secondTag) ? 1 : (secondTag != null ? -1 : 0);
+            return firstTag != null && firstTag.equals(secondTag) ? 0 : (secondTag != null ? -1 : 1);
         }
     };
 

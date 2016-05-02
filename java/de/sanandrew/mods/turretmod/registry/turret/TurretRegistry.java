@@ -12,7 +12,6 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import org.apache.logging.log4j.Level;
 
-import java.lang.reflect.InvocationTargetException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;

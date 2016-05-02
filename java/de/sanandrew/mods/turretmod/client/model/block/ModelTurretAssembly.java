@@ -1,7 +1,6 @@
 package de.sanandrew.mods.turretmod.client.model.block;
 
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
-import net.darkhax.bookshelf.lib.VanillaParticle;
 import net.darkhax.bookshelf.lib.javatuples.Triplet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
@@ -76,7 +75,7 @@ public class ModelTurretAssembly
 
             this.base.render(f5);
 
-            if( te.active && te.robotArmX >= 4.0F && te.robotArmX <= 10.0F && te.robotArmY <= -3.5F && te.robotArmY >= -9.5F ) {
+            if( te.isActive && te.robotArmX >= 4.0F && te.robotArmX <= 10.0F && te.robotArmY <= -3.5F && te.robotArmY >= -9.5F ) {
                 float dist = (float) Minecraft.getMinecraft().thePlayer.getDistance(te.xCoord + 0.5F, te.yCoord + 0.5F, te.zCoord + 0.5F);
                 Tessellator tess = Tessellator.instance;
 

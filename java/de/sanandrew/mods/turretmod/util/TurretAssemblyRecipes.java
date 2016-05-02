@@ -8,12 +8,13 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
-import codechicken.lib.inventory.InventoryUtils;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
+import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoArrow;
+import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import net.darkhax.bookshelf.lib.javatuples.Pair;
-import net.darkhax.bookshelf.lib.javatuples.Triplet;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -24,7 +25,9 @@ import org.apache.logging.log4j.Level;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -91,28 +94,62 @@ public class TurretAssemblyRecipes
         INSTANCE.registerRecipe(UUID.fromString("21f88959-c157-44e3-815b-dd956b065052"), ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCrossbow.class)),
                                 10, 100,
                                 new ItemStack(Blocks.cobblestone, 12), new ItemStack(Items.bow, 1), new ItemStack(Items.redstone, 4), new ItemStack(Blocks.planks, 4, OreDictionary.WILDCARD_VALUE));
+        INSTANCE.registerRecipe(UUID.fromString("1a011825-2e5b-4f17-925e-f734e6a732b9"), ItemRegistry.ammo.getAmmoItem(4, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.ARROW_UUID)),
+                                5, 60,
+                                new ItemStack(Items.arrow, 1));
+        INSTANCE.registerRecipe(UUID.fromString("c079d29a-e6e2-4be8-8478-326bdfede08b"), ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.QUIVER_UUID)),
+                                5, 120,
+                                ItemRegistry.ammo.getAmmoItem(16, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.ARROW_UUID)), new ItemStack(Items.leather, 1));
+        INSTANCE.registerRecipe(UUID.fromString("47b68be0-30d6-4849-b995-74c147c8cc5d"), new ItemStack(ItemRegistry.tcu, 1), 10, 180,
+                                new ItemStack(Items.iron_ingot, 5), new ItemStack(Items.redstone, 2), new ItemStack(Blocks.glass_pane, 1));
+        INSTANCE.registerRecipe(UUID.fromString("531f0b05-5bb8-45fc-a899-226a3f52d5b7"),
+                                ItemRegistry.repairKit.getRepKitItem(6, RepairKitRegistry.INSTANCE.getRepairKit(RepairKitRegistry.REGEN_MK1)), 25, 600,
+                                new ItemStack(Items.leather, 2), new ItemStack(Items.potionitem, 3, 0),
+                                new ItemStack(Items.nether_wart, 1), new ItemStack(Items.ghast_tear, 1));
     }
 
     public boolean checkAndConsumeResources(IInventory inv, UUID uuid) {
         RecipeEntry entry = this.getRecipeEntry(uuid);
+        List<Pair<Integer, Integer>> resourceOnSlotList = new ArrayList<>();
+        List<ItemStack> resourceStacks = new ArrayList<>(Arrays.asList(entry.resources));
 
-        List<Pair<Integer, ItemStack>> resourceOnSlotList = new ArrayList<>();
-
-        for( ItemStack resource : entry.resources ) {
+        Iterator<ItemStack> resourceStacksIt = resourceStacks.iterator();
+        int invSize = inv.getSizeInventory();
+        while( resourceStacksIt.hasNext() ) {
+            ItemStack resource = resourceStacksIt.next();
             if( !ItemStackUtils.isValidStack(resource) ) {
                 return false;
             }
 
-            Pair<Integer, ItemStack> similarStackInv = TmrUtils.getSimilarStackFromInventory(resource, inv, resource.hasTagCompound() ? TmrUtils.NBT_COMPARATOR_FIXD : null);
-            if( similarStackInv == null || similarStackInv.getValue1().stackSize < resource.stackSize ) {
-                return false;
-            }
+            for( int i = invSize - 1; i >= 2; i-- ) {
+                ItemStack invStack = inv.getStackInSlot(i);
+                if( ItemStackUtils.isValidStack(invStack) ) {
+                    ItemStack validStack = null;
+                    if( (resource.hasTagCompound() && TmrUtils.areStacksEqual(resource, invStack, TmrUtils.NBT_COMPARATOR_FIXD))
+                        || (!resource.hasTagCompound() && ItemStackUtils.areStacksEqual(resource, invStack, false)) )
+                    {
+                        validStack = invStack;
+                    }
 
-            resourceOnSlotList.add(Pair.with(similarStackInv.getValue0(), resource));
+                    if( validStack != null ) {
+                        resourceOnSlotList.add(Pair.with(i, Math.min(validStack.stackSize, resource.stackSize)));
+                        resource.stackSize -= validStack.stackSize;
+                    }
+
+                    if( resource.stackSize <= 0 ) {
+                        resourceStacksIt.remove();
+                        break;
+                    }
+                }
+            }
         }
 
-        for( Pair<Integer, ItemStack> resourceSlot : resourceOnSlotList ) {
-            inv.decrStackSize(resourceSlot.getValue0(), resourceSlot.getValue1().stackSize);
+        if( resourceStacks.size() > 0 ) {
+            return false;
+        }
+
+        for( Pair<Integer, Integer> resourceSlot : resourceOnSlotList ) {
+            inv.decrStackSize(resourceSlot.getValue0(), resourceSlot.getValue1());
         }
 
         return true;

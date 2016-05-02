@@ -2,7 +2,6 @@ package de.sanandrew.mods.turretmod.entity.turret;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
-import com.google.common.primitives.Booleans;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
@@ -27,7 +26,12 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.Constants;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * ****************************************************************************************************************

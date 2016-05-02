@@ -15,10 +15,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -76,7 +73,7 @@ public class GuiItemTab
         int yPos = mouseY - 12;
         byte height = 8;
 
-        this.zLevel = 300.0F;
+        this.zLevel = 400.0F;
         itemRenderer.zLevel = 300.0F;
         int bkgColor = 0xF0100010;
         int lightBg = 0x505000FF;

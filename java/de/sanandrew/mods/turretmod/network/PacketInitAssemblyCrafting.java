@@ -24,14 +24,24 @@ public class PacketInitAssemblyCrafting
     private int y;
     private int z;
     private String crfUUID;
+    private int count;
 
     public PacketInitAssemblyCrafting() { }
 
-    public PacketInitAssemblyCrafting(TileEntityTurretAssembly assembly, UUID uuid) {
+    public PacketInitAssemblyCrafting(TileEntityTurretAssembly assembly, UUID uuid, int count) {
         this.x = assembly.xCoord;
         this.y = assembly.yCoord;
         this.z = assembly.zCoord;
-        this.crfUUID = uuid.toString();
+        this.crfUUID = uuid == null ? null : uuid.toString();
+        this.count = count;
+    }
+
+    public PacketInitAssemblyCrafting(TileEntityTurretAssembly assembly) {
+        this.x = assembly.xCoord;
+        this.y = assembly.yCoord;
+        this.z = assembly.zCoord;
+        this.crfUUID = null;
+        this.count = 0;
     }
 
     @Override
@@ -43,7 +53,11 @@ public class PacketInitAssemblyCrafting
     public void handleServerMessage(PacketInitAssemblyCrafting packet, EntityPlayer player) {
         TileEntity te = player.worldObj.getTileEntity(packet.x, packet.y, packet.z);
         if( te instanceof TileEntityTurretAssembly ) {
-            ((TileEntityTurretAssembly) te).addRecipeToQueue(UUID.fromString(packet.crfUUID), 1);
+            if( packet.crfUUID.equals("[CANCEL]") ) {
+                ((TileEntityTurretAssembly) te).cancelCrafting();
+            } else {
+                ((TileEntityTurretAssembly) te).beginCrafting(UUID.fromString(packet.crfUUID), packet.count);
+            }
         }
     }
 
@@ -53,6 +67,7 @@ public class PacketInitAssemblyCrafting
         this.y = buf.readInt();
         this.z = buf.readInt();
         this.crfUUID = ByteBufUtils.readUTF8String(buf);
+        this.count = buf.readByte();
     }
 
     @Override
@@ -60,6 +75,11 @@ public class PacketInitAssemblyCrafting
         buf.writeInt(this.x);
         buf.writeInt(this.y);
         buf.writeInt(this.z);
-        ByteBufUtils.writeUTF8String(buf, this.crfUUID);
+        if( this.crfUUID == null ) {
+            ByteBufUtils.writeUTF8String(buf, "[CANCEL]");
+        } else {
+            ByteBufUtils.writeUTF8String(buf, this.crfUUID);
+        }
+        buf.writeByte(this.count);
     }
 }

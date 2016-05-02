@@ -2,11 +2,9 @@ package de.sanandrew.mods.turretmod.network;
 
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.darkhax.bookshelf.lib.util.Utilities;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 /**
@@ -27,6 +25,7 @@ public class PacketRegistry
         Utilities.registerMessage(TurretModRebirth.network, PacketSyncPlayerList.class, 3, Side.CLIENT);
         Utilities.registerMessage(TurretModRebirth.network, PacketSyncTileEntity.class, 4, Side.CLIENT);
         Utilities.registerMessage(TurretModRebirth.network, PacketInitAssemblyCrafting.class, 5, Side.SERVER);
+        Utilities.registerMessage(TurretModRebirth.network, PacketAssemblyToggleAutomate.class, 6, Side.SERVER);
     }
 
     public static void sendToAllAround(IMessage message, int dim, double x, double y, double z, double range) {

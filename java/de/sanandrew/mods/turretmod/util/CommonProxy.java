@@ -8,7 +8,6 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -16,7 +15,6 @@ import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
 import de.sanandrew.mods.turretmod.network.PacketOpenGui;

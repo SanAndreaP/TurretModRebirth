@@ -8,7 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.inventory;
 
+import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
+import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -23,11 +25,12 @@ public class ContainerTurretAssembly
     public ContainerTurretAssembly(IInventory playerInv, TileEntityTurretAssembly assembly) {
         this.tile = assembly;
 
-        this.addSlotToContainer(new SlotOutput(assembly, 0, 162, 10));
+        this.addSlotToContainer(new SlotOutput(assembly, 0, 172, 10));
+        this.addSlotToContainer(new SlotAutoUpgrade(assembly, 1, 14, 100));
 
         for( int i = 0; i < 2; i++ ) {
             for( int j = 0; j < 9; j++ ) {
-                this.addSlotToContainer(new Slot(assembly, j + i * 9 + 1, 36 + j * 18, 100 + i * 18));
+                this.addSlotToContainer(new Slot(assembly, j + i * 9 + 2, 36 + j * 18, 100 + i * 18));
             }
         }
 
@@ -43,8 +46,7 @@ public class ContainerTurretAssembly
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer player)
-    {
+    public boolean canInteractWith(EntityPlayer player) {
         return this.tile.isUseableByPlayer(player);
     }
 
@@ -57,11 +59,23 @@ public class ContainerTurretAssembly
             ItemStack slotStack = slot.getStack();
             origStack = slotStack.copy();
 
-            if( slotId < 19 ) { // if clicked stack is from TileEntity
-                if( !this.mergeItemStack(slotStack, 19, 55, true) ) {
+            if( slotId < 20 ) { // if clicked stack is from TileEntity
+                if( !this.mergeItemStack(slotStack, 20, 55, true) ) {
                     return null;
                 }
-            } else if( !this.mergeItemStack(slotStack, 1, 18, false) ) { // if clicked stack is from player and also merge to input slots is sucessful
+            } else if( origStack.getItem() == ItemRegistry.asbAuto ) {
+                int origStackSize = ItemRegistry.asbAuto.getItemStackLimit(origStack);
+                ItemRegistry.asbAuto.setMaxStackSize(1);
+                slotStack.stackSize = 1;
+                if( !this.mergeItemStack(slotStack, 1, 2, false) ) {
+                    slotStack.stackSize = origStack.stackSize;
+                    ItemRegistry.asbAuto.setMaxStackSize(origStackSize);
+                    return null;
+                } else {
+                    slotStack.stackSize = origStack.stackSize - 1;
+                }
+                ItemRegistry.asbAuto.setMaxStackSize(origStackSize);
+            } else if( !this.mergeItemStack(slotStack, 2, 20, false) ) { // if clicked stack is from player and also merge to input slots is sucessful
                 return null;
             }
 
@@ -91,6 +105,22 @@ public class ContainerTurretAssembly
         @Override
         public boolean isItemValid(ItemStack stack) {
             return false;
+        }
+    }
+
+    public static class SlotAutoUpgrade
+            extends Slot
+    {
+        private final TileEntityTurretAssembly assembly;
+
+        public SlotAutoUpgrade(TileEntityTurretAssembly assembly, int id, int x, int y) {
+            super(assembly, id, x, y);
+            this.assembly = assembly;
+        }
+
+        @Override
+        public boolean isItemValid(ItemStack stack) {
+            return stack != null && stack.getItem() == ItemRegistry.asbAuto && !ItemStackUtils.isValidStack(assembly.getStackInSlot(1));
         }
     }
 }

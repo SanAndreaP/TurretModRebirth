@@ -42,6 +42,9 @@ gui.sapturretmod.tcu.page.targetsPlayer.tab=Player Target Settings
 gui.sapturretmod.tcu.page.upgrades.title=TCU - Upgrades
 gui.sapturretmod.tcu.page.upgrades.tab=Upgrades
 gui.sapturretmod.tcu.page.upgrades.button.ejectAll=Eject All Upgrades
+gui.sapturretmod.tassembly.cancel=Cancel
+gui.sapturretmod.tassembly.automate.enable=Automate
+gui.sapturretmod.tassembly.automate.disable=Manual
 
 
 

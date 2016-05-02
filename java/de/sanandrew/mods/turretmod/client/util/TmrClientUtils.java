@@ -13,8 +13,17 @@ import org.lwjgl.opengl.GL11;
 
 public class TmrClientUtils
 {
+    private static Minecraft mc;
+
+    public static Minecraft getMc() {
+        if( mc == null ) {
+            mc = Minecraft.getMinecraft();
+        }
+        return mc;
+    }
+
     public static void doGlScissor(int x, int y, int width, int height) {
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = getMc();
         int scaleFactor = 1;
         int guiScale = mc.gameSettings.guiScale;
 
