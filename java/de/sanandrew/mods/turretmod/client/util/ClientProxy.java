@@ -8,96 +8,59 @@
  */
 package de.sanandrew.mods.turretmod.client.util;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import de.sanandrew.core.manpack.mod.client.particle.SAPEffectRenderer;
-import de.sanandrew.core.manpack.util.helpers.SAPUtils;
-import de.sanandrew.mods.turretmod.api.TurretUpgrade;
-import de.sanandrew.mods.turretmod.client.event.RenderForcefieldHandler;
-import de.sanandrew.mods.turretmod.client.event.RenderFxLayerHandler;
-import de.sanandrew.mods.turretmod.client.gui.tcu.tooltip.GuiIngameTcuInfos;
+import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import de.sanandrew.mods.turretmod.block.BlockRegistry;
+import de.sanandrew.mods.turretmod.client.event.RenderWorldLastHandler;
+import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
+import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuEntityTargets;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuInfo;
-import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuTargets;
-import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuUpgrades;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
-import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter;
-import de.sanandrew.mods.turretmod.util.*;
-import de.sanandrew.mods.turretmod.api.registry.TurretUpgradeRegistry;
-import io.netty.buffer.ByteBufInputStream;
+import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuPlayerTargets;
+import de.sanandrew.mods.turretmod.client.model.ModelTurretCrossbow;
+import de.sanandrew.mods.turretmod.client.particle.ParticleAssemblySpark;
+import de.sanandrew.mods.turretmod.client.render.item.ItemRendererTile;
+import de.sanandrew.mods.turretmod.client.render.projectile.RenderTurretArrow;
+import de.sanandrew.mods.turretmod.client.render.tileentity.RenderTurretAssembly;
+import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
+import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
+import de.sanandrew.mods.turretmod.util.CommonProxy;
+import de.sanandrew.mods.turretmod.util.EnumGui;
+import de.sanandrew.mods.turretmod.util.EnumParticle;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import net.darkhax.bookshelf.lib.Tuple;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.Level;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ClientProxy
         extends CommonProxy
 {
-    public static int particleFxLayer1;
-
     @Override
-    public void init() {
-        super.init();
+    public void preInit(FMLPreInitializationEvent event) {
+        super.preInit(event);
 
-        TmrEntities.registerRenderers();
-        TmrBlocks.registerBlockAndTeRenderers();
-
-        MinecraftForge.EVENT_BUS.register(new RenderForcefieldHandler());
-        MinecraftForge.EVENT_BUS.register(new GuiIngameTcuInfos());
-        FMLCommonHandler.instance().bus().register(ClientSideStateCheatPropertyManagerFactoryKeyResponseInterceptorInterpreter.INSTANCE);
-        SAPUtils.EVENT_BUS.register(new RenderFxLayerHandler());
-
-        particleFxLayer1 = SAPEffectRenderer.INSTANCE.registerFxLayer(new ResourceLocation(TurretMod.MOD_ID, "textures/particles/particles_1.png"), true);
+        MinecraftForge.EVENT_BUS.register(new RenderWorldLastHandler());
     }
 
     @Override
-    public void processTargetListClt(ByteBufInputStream stream) throws IOException {
-        int entityId = stream.readInt();
-        int listSize = stream.readInt();
-        Entity e = getMinecraft().theWorld.getEntityByID(entityId);
-        if( e instanceof EntityTurretBase ) {
-            List<Class<?extends EntityLiving>> applicableTargets = new ArrayList<>(listSize);
-            for( int i = 0; i < listSize; i++ ) {
-                String clsName = stream.readUTF();
-                Class<? extends EntityLiving> entityCls = SAPUtils.getCasted(EntityList.stringToClassMapping.get(clsName));
-                applicableTargets.add(entityCls);
-            }
+    public void init(FMLInitializationEvent event) {
+        super.init(event);
 
-            ((EntityTurretBase) e).getTargetHandler().setTargetList(applicableTargets);
-        }
-    }
+        RenderingRegistry.registerEntityRenderingHandler(EntityTurretCrossbow.class, new RenderTurret(new ModelTurretCrossbow(0.0F)));
+        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCrossbowBolt.class, new RenderTurretArrow());
 
-    @Override
-    public void processUpgradeListClt(ByteBufInputStream stream) throws IOException {
-        int entityId = stream.readInt();
-        int listSize = stream.readInt();
-        Entity e = getMinecraft().theWorld.getEntityByID(entityId);
-
-        if( e instanceof EntityTurretBase ) {
-            List<TurretUpgrade> currUpgList = new ArrayList<>(listSize);
-            for( int i = 0; i < listSize; i++ ) {
-                String regName = stream.readUTF();
-                currUpgList.add(TurretUpgradeRegistry.getUpgrade(regName));
-            }
-            EntityTurretBase turret = (EntityTurretBase) e;
-            turret.getUpgradeHandler().applyUpgradeList(turret, currUpgList);
-        }
-    }
-
-    @Override
-    public void processTransmitterExpTime(ByteBufInputStream stream) throws IOException {
-        TileEntity tileEntity = getMinecraft().theWorld.getTileEntity(stream.readInt(), stream.readInt(), stream.readInt());
-        if( tileEntity instanceof TileEntityItemTransmitter ) {
-            ((TileEntityItemTransmitter) tileEntity).requestTimeout = stream.readInt();
-        }
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurretAssembly.class, new RenderTurretAssembly());
+        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlockRegistry.turretAssembly), new ItemRendererTile(new TileEntityTurretAssembly(true)));
     }
 
     @Override
@@ -111,23 +74,36 @@ public class ClientProxy
 
     @Override
     public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
-        if( SAPUtils.isIndexInRange(EnumGui.VALUES, id) ) {
+        if( id >= 0 && id < EnumGui.VALUES.length ) {
             switch( EnumGui.VALUES[id] ) {
                 case GUI_TCU_INFO:
-                    return new GuiTcuInfo((EntityTurretBase) getMinecraft().theWorld.getEntityByID(x));
-                case GUI_TCU_TARGETS:
-                    return new GuiTcuTargets((EntityTurretBase) getMinecraft().theWorld.getEntityByID(x));
-                case GUI_TCU_UPGRADES:
-                    return new GuiTcuUpgrades((EntityTurretBase) getMinecraft().theWorld.getEntityByID(x));
+                    return new GuiTcuInfo((EntityTurret) world.getEntityByID(x));
+                case GUI_TCU_ENTITY_TARGETS:
+                    return new GuiTcuEntityTargets((EntityTurret) world.getEntityByID(x));
+                case GUI_TCU_PLAYER_TARGETS:
+                    return new GuiTcuPlayerTargets((EntityTurret) world.getEntityByID(x));
+//                case GUI_TCU_UPGRADES:
+//                    return new GuiTcuUpgrades((EntityTurret) Minecraft.getMinecraft().theWorld.getEntityByID(x));
+                case GUI_TASSEMBLY_MAN:
+                    TileEntity te = world.getTileEntity(x, y, z);
+                    if( te instanceof TileEntityTurretAssembly ) {
+                        return new GuiTurretAssembly(player.inventory, (TileEntityTurretAssembly) te);
+                    }
+                    break;
             }
         } else {
-            TurretMod.MOD_LOG.printf(Level.WARN, "Gui ID %d cannot be opened as it isn't a valid index in EnumGui!", id);
+            TurretModRebirth.LOG.log(Level.WARN, "Gui ID %d cannot be opened as it isn't a valid index in EnumGui!", id);
         }
 
         return null;
     }
 
-    private static Minecraft getMinecraft() {
-        return Minecraft.getMinecraft();
+    @Override
+    public void spawnParticle(EnumParticle particle, double x, double y, double z, Tuple data) {
+        Minecraft mc = Minecraft.getMinecraft();
+        switch( particle ) {
+            case ASSEMBLY_SPARK:
+                mc.effectRenderer.addEffect(new ParticleAssemblySpark(mc.theWorld, x, y, z, 0.0F, 0.0F, 0.0F));
+        }
     }
 }

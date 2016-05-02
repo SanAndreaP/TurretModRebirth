@@ -8,107 +8,95 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
-import com.google.common.collect.Maps;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import de.sanandrew.core.manpack.util.helpers.SAPUtils;
-import de.sanandrew.mods.turretmod.api.Turret;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
+import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
-import de.sanandrew.mods.turretmod.util.TurretMod;
-import de.sanandrew.mods.turretmod.util.TurretRegistry;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Facing;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.Level;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class ItemTurret
         extends Item
 {
     @SideOnly(Side.CLIENT)
-    private Map<String, IIcon> turretIcons;
-
-    private static final String NBT_TURRET = "turretName";
-
-    public static Turret spawnTurret(World world, String name, double x, double y, double z) {
-        Turret turret = createEntity(name, world);
-        if (turret != null) {
-            EntityLiving turretEntity = turret.getEntity();
-            turretEntity.setLocationAndAngles(x, y, z, MathHelper.wrapAngleTo180_float(world.rand.nextFloat() * 360.0F), 0.0F);
-            turretEntity.rotationYawHead = turretEntity.rotationYaw;
-            turretEntity.renderYawOffset = turretEntity.rotationYaw;
-            turretEntity.onSpawnWithEgg(null);
-            world.spawnEntityInWorld(turretEntity);
-            turretEntity.playLivingSound();
-        }
-
-        return turret;
-    }
-
-    private static Turret createEntity(String name, World world) {
-        Turret entity = null;
-        try {
-            Class<? extends Turret> entityClass = TurretRegistry.getTurretInfo(name).getTurretClass();
-            if( entityClass != null ) {
-                entity = entityClass.getConstructor(World.class).newInstance(world);
-            }
-        } catch( InvocationTargetException | IllegalAccessException | InstantiationException | NoSuchMethodException ex ) {
-            TurretMod.MOD_LOG.log(Level.ERROR, "Cannot instanciate turret!", ex);
-        }
-
-        if( entity == null ) {
-            TurretMod.MOD_LOG.printf(Level.WARN, "Skipping turret with name %s", name);
-        }
-
-        return entity;
-    }
+    private Map<UUID, IIcon> iconMap;
 
     public ItemTurret() {
         super();
         this.setCreativeTab(TmrCreativeTabs.TURRETS);
-        this.setUnlocalizedName(TurretMod.MOD_ID + ":turret_placer");
-    }
-
-    public static String getTurretName(ItemStack stack) {
-        if( stack != null && stack.hasTagCompound() && stack.getTagCompound().hasKey(NBT_TURRET) ) {
-            return stack.getTagCompound().getString(NBT_TURRET);
-        }
-
-        return null;
-    }
-
-    public static void setTurretName(ItemStack stack, String name) {
-        NBTTagCompound nbt;
-        if( stack.hasTagCompound() ) {
-            nbt = stack.getTagCompound();
-        } else {
-            nbt = new NBTTagCompound();
-            stack.setTagCompound(nbt);
-        }
-
-        nbt.setString(NBT_TURRET, name);
+        this.setUnlocalizedName(TurretModRebirth.ID + ":turret_placer");
     }
 
     @Override
-    public String getItemStackDisplayName(ItemStack stack) {
-        Class<? extends Turret> cls = TurretRegistry.getTurretInfo(getTurretName(stack)).getTurretClass();
-        String entityName = cls != null ? (String) EntityList.classToStringMapping.get(cls) : "UNKNOWN";
-        return SAPUtils.translate("entity." + entityName + ".name");
+    @SideOnly(Side.CLIENT)
+    public IIcon getIcon(ItemStack stack, int pass) {
+        TurretInfo type = getTurretInfo(stack);
+        if( type != null ) {
+            return iconMap.get(type.getUUID());
+        }
+        return super.getIcon(stack, pass);
+    }
+
+    @Override
+    public boolean requiresMultipleRenderPasses() {
+        return true;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerIcons(IIconRegister iconRegister) {
+        List<TurretInfo> types = TurretRegistry.INSTANCE.getRegisteredInfos();
+        this.iconMap = new HashMap<>(types.size());
+        for( TurretInfo type : types ) {
+            IIcon icon = iconRegister.registerIcon(String.format("%s:turrets/%s", TurretModRebirth.ID, type.getIcon()));
+            if( this.itemIcon == null ) {
+                this.itemIcon = icon;
+            }
+            this.iconMap.put(type.getUUID(), icon);
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void addInformation(ItemStack stack, EntityPlayer player, List lines, boolean advInfo) {
+        super.addInformation(stack, player, lines, advInfo);
+        TurretInfo info = getTurretInfo(stack);
+        if( info != null ) {
+            lines.add(StatCollector.translateToLocal(String.format("entity.%s.%s.name", TurretModRebirth.ID, info.getName())));
+        }
+
+        String name = getTurretName(stack);
+        if( name != null ) {
+            lines.add(String.format(StatCollector.translateToLocal(String.format("%s.turret_name", this.getUnlocalizedName())), name));
+        }
+
+        Float health = getTurretHealth(stack);
+        if( health != null ) {
+            lines.add(String.format(StatCollector.translateToLocal(String.format("%s.health", this.getUnlocalizedName())), health));
+        }
     }
 
     @Override
@@ -119,21 +107,27 @@ public class ItemTurret
             y += Facing.offsetsYForSide[side];
             z += Facing.offsetsZForSide[side];
             double shiftY = 0.0D;
-            if( side == 1 && block.getRenderType() == 11 ) {
+            if( side == EnumFacing.UP.ordinal() && block.getRenderType() == 11 ) {
                 shiftY = 0.5D;
             }
 
-            Turret turret = spawnTurret(world, getTurretName(stack), x + 0.5D, y + shiftY, z + 0.5D);
-            if( turret != null ) {
-                if( stack.hasDisplayName() ) {
-                    turret.getEntity().setCustomNameTag(stack.getDisplayName());
-                }
+            if( EntityTurret.canTurretBePlaced(world, x, y, z, false, side == EnumFacing.DOWN.ordinal()) ) {
+                EntityTurret turret = spawnTurret(world, getTurretInfo(stack), x + 0.5D, y + shiftY, z + 0.5D, side == EnumFacing.DOWN.ordinal(), player);
+                if( turret != null ) {
+                    Float initHealth = getTurretHealth(stack);
+                    if( initHealth != null ) {
+                        turret.setHealth(initHealth);
+                    }
 
-                if( !player.capabilities.isCreativeMode ) {
-                    stack.stackSize--;
-                }
+                    String name = getTurretName(stack);
+                    if( name != null ) {
+                        turret.setCustomNameTag(name);
+                    }
 
-                turret.setOwner(player);
+                    if( !player.capabilities.isCreativeMode ) {
+                        stack.stackSize--;
+                    }
+                }
             }
         }
 
@@ -158,17 +152,21 @@ public class ItemTurret
                         return stack;
                     }
                     if( world.getBlock(x, y, z) instanceof BlockLiquid ) {
-                        Turret turret = spawnTurret(world, getTurretName(stack), x, y, z);
+                        EntityTurret turret = spawnTurret(world, getTurretInfo(stack), x, y, z, false, player);
                         if( turret != null ) {
-                            if( stack.hasDisplayName() ) {
-                                turret.getEntity().setCustomNameTag(stack.getDisplayName());
+                            Float initHealth = getTurretHealth(stack);
+                            if( initHealth != null ) {
+                                turret.setHealth(initHealth);
+                            }
+
+                            String name = getTurretName(stack);
+                            if( name != null ) {
+                                turret.setCustomNameTag(name);
                             }
 
                             if( !player.capabilities.isCreativeMode ) {
                                 stack.stackSize--;
                             }
-
-                            turret.setOwner(player);
                         }
                     }
                 }
@@ -178,38 +176,96 @@ public class ItemTurret
     }
 
     @Override
-    public IIcon getIcon(ItemStack stack, int pass) {
-        return this.turretIcons.get(getTurretName(stack));
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
     @SuppressWarnings("unchecked")
-    public void getSubItems(Item item, CreativeTabs tab, List items) {
-        List<String> turrets = TurretRegistry.getAllTurretNamesSorted();
-        for( String name : turrets ) {
-            ItemStack newStack = new ItemStack(this);
-            setTurretName(newStack, name);
-            items.add(newStack);
+    public void getSubItems(Item item, CreativeTabs tab, List list) {
+        for( TurretInfo type : TurretRegistry.INSTANCE.getRegisteredInfos() ) {
+            list.add(this.getTurretItem(1, type));
         }
     }
 
-    @Override
-    public boolean requiresMultipleRenderPasses() {
-        return true;
-    }
-
-    @Override
-    public int getRenderPasses(int metadata) {
-        return 1;
-    }
-
-    @Override
-    public void registerIcons(IIconRegister iconRegister) {
-        this.turretIcons = Maps.newHashMap();
-        List<String> turrets = TurretRegistry.getAllTurretNamesSorted();
-        for( String name : turrets ) {
-            this.turretIcons.put(name, iconRegister.registerIcon(TurretRegistry.getTurretInfo(name).getIcon()));
+    public static TurretInfo getTurretInfo(ItemStack stack) {
+        NBTTagCompound nbt = stack.getTagCompound();
+        if( nbt != null && nbt.hasKey("turretInfoUUID") ) {
+            return TurretRegistry.INSTANCE.getInfo(UUID.fromString(nbt.getString("turretInfoUUID")));
         }
+
+        return null;
+    }
+
+    public static Float getTurretHealth(ItemStack stack) {
+        NBTTagCompound nbt = stack.getTagCompound();
+        if( nbt != null && nbt.hasKey("turretHealth") ) {
+            return nbt.getFloat("turretHealth");
+        }
+
+        return null;
+    }
+
+    public static String getTurretName(ItemStack stack) {
+        NBTTagCompound nbt = stack.getTagCompound();
+        if( nbt != null && nbt.hasKey("turretName") ) {
+            return nbt.getString("turretName");
+        }
+
+        if( stack.hasDisplayName() ) {
+            return stack.getDisplayName();
+        }
+
+        return null;
+    }
+
+    public ItemStack getTurretItem(int stackSize, TurretInfo type) {
+        if( type == null ) {
+            throw new IllegalArgumentException("Cannot get turret item with NULL type!");
+        }
+
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setString("turretInfoUUID", type.getUUID().toString());
+        ItemStack stack = new ItemStack(this, stackSize);
+        stack.setTagCompound(nbt);
+
+        return stack;
+    }
+
+    public ItemStack getTurretItem(int stackSize, TurretInfo type, EntityTurret turret) {
+        ItemStack stack = this.getTurretItem(stackSize, type);
+        stack.getTagCompound().setFloat("turretHealth", turret.getHealth());
+        if( turret.hasCustomNameTag() ) {
+            stack.getTagCompound().setString("turretName", turret.getCustomNameTag());
+        }
+
+        return stack;
+    }
+
+    public static EntityTurret spawnTurret(World world, TurretInfo info, double x, double y, double z, boolean isUpsideDown, EntityPlayer owner) {
+        EntityTurret turret = createEntity(info, world, isUpsideDown, owner);
+        if (turret != null) {
+            turret.setLocationAndAngles(x, y - (isUpsideDown ? 1.0D : 0.0D), z, MathHelper.wrapAngleTo180_float(world.rand.nextFloat() * 360.0F), 0.0F);
+            turret.rotationYawHead = turret.rotationYaw;
+            turret.renderYawOffset = turret.rotationYaw;
+            turret.onSpawnWithEgg(null);
+            world.spawnEntityInWorld(turret);
+            turret.playLivingSound();
+        }
+
+        return turret;
+    }
+
+    private static EntityTurret createEntity(TurretInfo info, World world, boolean isUpsideDown, EntityPlayer owner) {
+        EntityTurret entity = null;
+        try {
+            Class<? extends EntityTurret> entityClass = info.getTurretClass();
+            if( entityClass != null ) {
+                entity = entityClass.getConstructor(World.class, boolean.class, EntityPlayer.class).newInstance(world, isUpsideDown, owner);
+            }
+        } catch( InvocationTargetException | IllegalAccessException | InstantiationException | NoSuchMethodException ex ) {
+            TurretModRebirth.LOG.log(Level.ERROR, "Cannot instanciate turret!", ex);
+        }
+
+        if( entity == null ) {
+            TurretModRebirth.LOG.printf(Level.WARN, "Skipping turret with name %s", info.getName());
+        }
+
+        return entity;
     }
 }

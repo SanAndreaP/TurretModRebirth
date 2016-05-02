@@ -8,12 +8,13 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
-import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
-import de.sanandrew.mods.turretmod.util.TurretMod;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.StatCollector;
 
 public class ItemTurretControlUnit
         extends Item
@@ -23,10 +24,9 @@ public class ItemTurretControlUnit
 
     public ItemTurretControlUnit() {
         super();
-
-        this.setUnlocalizedName(TurretMod.MOD_ID + ":turret_control_unit");
-        this.setTextureName(TurretMod.MOD_ID + ":tcu");
-        this.setCreativeTab(TmrCreativeTabs.MISC);
+        this.setCreativeTab(TmrCreativeTabs.TURRETS);
+        this.setUnlocalizedName(TurretModRebirth.ID + ":turret_control_unit");
+        this.setTextureName(TurretModRebirth.ID + ":tcu");
     }
 
     @Override
@@ -34,10 +34,10 @@ public class ItemTurretControlUnit
         long currDisplayNameTime = System.currentTimeMillis();
         if( this.prevDisplayNameTime + 1000 < currDisplayNameTime ) {
             final int count = 5;
-            double indFloat = SAPUtils.RNG.nextInt(20) != 0 ? 1 : SAPUtils.RNG.nextInt(count - 1) + 2;
+            double indFloat = TmrUtils.RNG.nextInt(20) != 0 ? 1 : TmrUtils.RNG.nextInt(count - 1) + 2;
             this.nameId = MathHelper.ceiling_double_int(indFloat);
         }
         this.prevDisplayNameTime = currDisplayNameTime;
-        return SAPUtils.translatePreFormat("%s.name.%d", this.getUnlocalizedName(), this.nameId);
+        return StatCollector.translateToLocal(String.format("%s.name.%d", this.getUnlocalizedName(), this.nameId));
     }
 }

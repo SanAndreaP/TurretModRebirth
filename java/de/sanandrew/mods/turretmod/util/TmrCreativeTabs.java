@@ -10,8 +10,9 @@ package de.sanandrew.mods.turretmod.util;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import de.sanandrew.core.manpack.util.helpers.ItemUtils;
+import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -26,77 +27,26 @@ public class TmrCreativeTabs
     private static final Comparator<ItemStack> ITM_TYPE_COMP = new ItemTypeComparator();
     private static final Comparator<ItemStack> ITM_NAME_COMP = new ItemNameComparator();
 
-    public static final CreativeTabs TURRETS = new CreativeTabs(TurretMod.MOD_ID + ":turrets") {
+    public static final CreativeTabs TURRETS = new CreativeTabs(TurretModRebirth.ID + ":turrets") {
         private ItemStack[] tabIcons;
 
         @Override
         @SideOnly(Side.CLIENT)
         public Item getTabIconItem() {
-            return TmrItems.turretItem;
+            return Items.blaze_powder;
         }
 
-        @Override
-        @SideOnly(Side.CLIENT)
-        public ItemStack getIconItemStack() {
-            if( this.tabIcons == null ) {
-                List<ItemStack> subItms = new ArrayList<>();
-                TmrItems.turretItem.getSubItems(TmrItems.turretItem, this, subItms);
-                this.tabIcons = subItms.toArray(new ItemStack[subItms.size()]);
-            }
-
-            return this.tabIcons[(int) (System.currentTimeMillis() / 4250) % this.tabIcons.length];
-        }
-
-        @Override
-        @SideOnly(Side.CLIENT)
-        @SuppressWarnings("unchecked")
-        public void displayAllReleventItems(List itmList) {
-            super.displayAllReleventItems(itmList);
-
-            sortItemsByName(itmList);
-            sortItemsBySubItems(itmList, this);
-        }
-    };
-
-    public static final CreativeTabs MISC = new CreativeTabs(TurretMod.MOD_ID + ":misc") {
-        @Override
-        @SideOnly(Side.CLIENT)
-        public Item getTabIconItem() {
-            return TmrItems.turretCtrlUnit;
-        }
-
-        @Override
-        @SideOnly(Side.CLIENT)
-        @SuppressWarnings("unchecked")
-        public void displayAllReleventItems(List itmList) {
-            super.displayAllReleventItems(itmList);
-
-            sortItemsByName(itmList);
-            sortItemsBySubItems(itmList, this);
-            sortItemsByType(itmList);
-        }
-    };
-
-    public static final CreativeTabs UPGRADES = new CreativeTabs(TurretMod.MOD_ID + ":upgrades") {
-        private ItemStack[] tabIcons;
-
-        @Override
-        @SideOnly(Side.CLIENT)
-        public Item getTabIconItem() {
-            return TmrItems.turretUpgrade;
-        }
-
-        @Override
-        @SideOnly(Side.CLIENT)
-        public ItemStack getIconItemStack() {
-            if( this.tabIcons == null ) {
-                List<ItemStack> subItms = new ArrayList<>();
-                TmrItems.turretUpgrade.getSubItems(TmrItems.turretUpgrade, this, subItms);
-                this.tabIcons = subItms.toArray(new ItemStack[subItms.size()]);
-            }
-
-            return this.tabIcons[(int) (System.currentTimeMillis() / 4250) % this.tabIcons.length];
-        }
+//        @Override
+//        @SideOnly(Side.CLIENT)
+//        public ItemStack getIconItemStack() {
+//            if( this.tabIcons == null ) {
+//                List<ItemStack> subItms = new ArrayList<>();
+//                TmrItems.turretItem.getSubItems(TmrItems.turretItem, this, subItms);
+//                this.tabIcons = subItms.toArray(new ItemStack[subItms.size()]);
+//            }
+//
+//            return this.tabIcons[(int) (System.currentTimeMillis() / 4250) % this.tabIcons.length];
+//        }
 
         @Override
         @SideOnly(Side.CLIENT)
@@ -108,6 +58,57 @@ public class TmrCreativeTabs
             sortItemsBySubItems(itmList, this);
         }
     };
+
+//    public static final CreativeTabs MISC = new CreativeTabs(TurretMod.MOD_ID + ":misc") {
+//        @Override
+//        @SideOnly(Side.CLIENT)
+//        public Item getTabIconItem() {
+//            return TmrItems.turretCtrlUnit;
+//        }
+//
+//        @Override
+//        @SideOnly(Side.CLIENT)
+//        @SuppressWarnings("unchecked")
+//        public void displayAllReleventItems(List itmList) {
+//            super.displayAllReleventItems(itmList);
+//
+//            sortItemsByName(itmList);
+//            sortItemsBySubItems(itmList, this);
+//            sortItemsByType(itmList);
+//        }
+//    };
+//
+//    public static final CreativeTabs UPGRADES = new CreativeTabs(TurretMod.MOD_ID + ":upgrades") {
+//        private ItemStack[] tabIcons;
+//
+//        @Override
+//        @SideOnly(Side.CLIENT)
+//        public Item getTabIconItem() {
+//            return TmrItems.turretUpgrade;
+//        }
+//
+//        @Override
+//        @SideOnly(Side.CLIENT)
+//        public ItemStack getIconItemStack() {
+//            if( this.tabIcons == null ) {
+//                List<ItemStack> subItms = new ArrayList<>();
+//                TmrItems.turretUpgrade.getSubItems(TmrItems.turretUpgrade, this, subItms);
+//                this.tabIcons = subItms.toArray(new ItemStack[subItms.size()]);
+//            }
+//
+//            return this.tabIcons[(int) (System.currentTimeMillis() / 4250) % this.tabIcons.length];
+//        }
+//
+//        @Override
+//        @SideOnly(Side.CLIENT)
+//        @SuppressWarnings("unchecked")
+//        public void displayAllReleventItems(List itmList) {
+//            super.displayAllReleventItems(itmList);
+//
+//            sortItemsByName(itmList);
+//            sortItemsBySubItems(itmList, this);
+//        }
+//    };
 
     protected static void sortItemsByType(List<ItemStack> items) {
         Collections.sort(items, ITM_TYPE_COMP);
@@ -159,7 +160,7 @@ public class TmrCreativeTabs
 
         private static int getStackIndexInList(ItemStack stack, List<ItemStack> stackArray) {
             for( ItemStack stackElem : stackArray ) {
-                if( ItemUtils.areStacksEqual(stack, stackElem, true) ) {
+                if( ItemStackUtils.areStacksEqual(stack, stackElem, true) ) {
                     return stackArray.indexOf(stackElem);
                 }
             }

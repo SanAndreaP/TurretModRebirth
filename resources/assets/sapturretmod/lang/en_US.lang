@@ -1,9 +1,54 @@
-item.sapturretmod:turret_placer.name=Turret Item
+item.sapturretmod:turret_placer.name=Turret
+item.sapturretmod:turret_placer.turret_name=Name: %s
+item.sapturretmod:turret_placer.health=Health: %.1f HP
+
 item.sapturretmod:turret_control_unit.name.1=TCU (Turret Control Unit)
 item.sapturretmod:turret_control_unit.name.2=TCU (Turret Corrosion Unity)
 item.sapturretmod:turret_control_unit.name.3=TCU (Trigger Capacity Uranus)
 item.sapturretmod:turret_control_unit.name.4=TCU (Timmy Cleans Utilities)
 item.sapturretmod:turret_control_unit.name.5=TCU (Transient Colossal Uppercut)
+
+item.sapturretmod:turret_ammo.arrow_sng.name=Turret Arrow
+item.sapturretmod:turret_ammo.arrow_lrg.name=Turret Arrow Pack
+
+item.sapturretmod:turret_repair_kit.standard_1.name=Repair Kit 05HS
+item.sapturretmod:turret_repair_kit.standard_2.name=Repair Kit 10HS
+item.sapturretmod:turret_repair_kit.standard_3.name=Repair Kit 15HS
+item.sapturretmod:turret_repair_kit.standard_4.name=Repair Kit 20HS
+item.sapturretmod:turret_repair_kit.regen_1.name=Repair Kit 01H40R
+
+entity.sapturretmod.turret_crossbow.name=Crossbow Turret (T1)
+entity.sapturretmod.turret_revolver.name=Revolver Turret (T2)
+
+tinfo.turret.desc.turret_crossbow=Turret which shoots arrows. It's relatively cheap, so it's ideal as your basic defense.
+
+gui.sapturretmod.tcu.page.info.title=TCU - Turret Info
+gui.sapturretmod.tcu.page.info.tab=Turret Info
+gui.sapturretmod.tcu.page.info.button.dismantle=Dismantle Turret
+gui.sapturretmod.tcu.page.info.button.dismantle.error=You need a chest in your inventory to dismantle!
+gui.sapturretmod.tcu.page.info.button.toggleActive.enable=Activate Turret
+gui.sapturretmod.tcu.page.info.button.toggleActive.disable=Deactivate Turret
+gui.sapturretmod.tcu.page.info.button.range.enable=Show Range
+gui.sapturretmod.tcu.page.info.button.range.disable=Hide Range
+gui.sapturretmod.tcu.page.targetsEntity.title=TCU - Entity Target Settings
+gui.sapturretmod.tcu.page.targetsEntity.tab=Entity Target Settings
+gui.sapturretmod.tcu.page.targetsEntity.button.selectAll=Select All
+gui.sapturretmod.tcu.page.targetsEntity.button.deselectAll=Deselect All
+gui.sapturretmod.tcu.page.targetsEntity.button.selectMobs=Select Monster
+gui.sapturretmod.tcu.page.targetsEntity.button.selectAnimals=Select Animals
+gui.sapturretmod.tcu.page.targetsEntity.button.selectOther=Select Other
+gui.sapturretmod.tcu.page.targetsPlayer.title=TCU - Player Target Settings
+gui.sapturretmod.tcu.page.targetsPlayer.tab=Player Target Settings
+gui.sapturretmod.tcu.page.upgrades.title=TCU - Upgrades
+gui.sapturretmod.tcu.page.upgrades.tab=Upgrades
+gui.sapturretmod.tcu.page.upgrades.button.ejectAll=Eject All Upgrades
+gui.sapturretmod.tassembly.cancel=Cancel
+gui.sapturretmod.tassembly.automate.enable=Automate
+gui.sapturretmod.tassembly.automate.disable=Manual
+
+
+
+
 
 item.sapturretmod:turret_upgrade.name=Turret Upgrade
 item.sapturretmod:turret_upgrade.requires=Requires:
@@ -32,27 +77,10 @@ item.sapturretmod:turret_upgrade.upgStorageIII.desc=Increases the available upgr
 item.sapturretmod:turret_upgrade.ammoStorage.name=Ammunition Storage
 item.sapturretmod:turret_upgrade.ammoStorage.desc=Increases the available ammo storage by 320 units.
 
-entity.sapturretmod.turretCrossbow.name=Crossbow Turret (T1)
-entity.sapturretmod.turretRevolver.name=Revolver Turret (T2)
-
-gui.sapturretmod.tcu.page.info.title=TCU - Turret Info
-gui.sapturretmod.tcu.page.info.tab=Turret Info
-gui.sapturretmod.tcu.page.targets.title=TCU - Target Settings
-gui.sapturretmod.tcu.page.targets.tab=Target Settings
-gui.sapturretmod.tcu.page.targets.button.selectAll=Select All
-gui.sapturretmod.tcu.page.targets.button.deselectAll=Deselect All
-gui.sapturretmod.tcu.page.targets.button.selectMobs=Select Monster
-gui.sapturretmod.tcu.page.targets.button.selectAnimals=Select Animals
-gui.sapturretmod.tcu.page.targets.button.selectOther=Select Other
-gui.sapturretmod.tcu.page.upgrades.title=TCU - Upgrades
-gui.sapturretmod.tcu.page.upgrades.tab=Upgrades
-gui.sapturretmod.tcu.page.upgrades.button.ejectAll=Eject All Upgrades
-
 itemGroup.sapturretmod:turrets=Turret Mod: Turrets
 itemGroup.sapturretmod:misc=Turret Mod: Items
 itemGroup.sapturretmod:upgrades=Turret Mod: Upgrades
 
-turret.desct1a=Turret which shoots arrows. It's relatively cheap, so it's ideal as your basic defense.
 turret.amtp0t1a=Arrows
 turret.desct1s=Turret which shoots pebbles. It has the same stats as the T1 turret, but makes the lowest damage. Ideal for hitting multiple targets at once.
 turret.amtp0t1s=Pebbles

@@ -1,3 +1,35 @@
+package de.sanandrew.mods.turretmod.entity.projectile;
+
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.command.IEntitySelector;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.ai.EntityAIAttackOnCollide;
+import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.ai.EntityAIMoveTowardsTarget;
+import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.monster.EntityEnderman;
+import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
+
+import java.util.List;
+import java.util.UUID;
+
 /**
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
@@ -6,519 +38,360 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.entity.projectile;
-
-import de.sanandrew.mods.turretmod.api.Turret;
-import de.sanandrew.mods.turretmod.api.TurretProjectile;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
-import de.sanandrew.mods.turretmod.util.ReflectionManager;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.*;
-import net.minecraft.entity.boss.EntityDragon;
-import net.minecraft.entity.boss.EntityDragonPart;
-import net.minecraft.entity.monster.EntityEnderman;
-import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.play.server.S2BPacketChangeGameState;
-import net.minecraft.pathfinding.PathEntity;
-import net.minecraft.util.*;
-import net.minecraft.world.World;
-
-import java.util.List;
-
 public abstract class EntityTurretProjectile
-        extends EntityArrow
-        implements TurretProjectile<EntityTurretProjectile>
+        extends Entity
+        implements IProjectile, IEntityAdditionalSpawnData
 {
-    protected int xTile = -1;
-    protected int yTile = -1;
-    protected int zTile = -1;
-    protected Block inTile = Blocks.air;
-    protected int inData = 0;
-    protected boolean inGround = false;
-    protected int ticksInGround;
-    protected int ticksInAir = 0;
-    protected float knockbackStrength = 1.25F;
+    private UUID shooterUUID;
+    private Entity shooterCache;
+    private UUID targetUUID;
+    private Entity targetCache;
 
-    public int ammoType = 0;
-
-    public Entity targetedEntity;
-    public boolean isPickupable = true;
-
-    public DamageSource defaultDmgSrc = null;
-
-    public EntityTurretProjectile(World par1World) {
-        super(par1World);
+    public EntityTurretProjectile(World world) {
+        super(world);
+        this.setSize(0.5F, 0.5F);
         this.renderDistanceWeight = 10.0D;
+        this.yOffset = 0.0F;
     }
 
-    public void setTarget(EntityLivingBase shooter, Entity target, float par4, float par5) {
-        this.shootingEntity = shooter;
-        this.targetedEntity = target;
+    public EntityTurretProjectile(World world, Entity shooter, Entity target) {
+        this(world);
 
-        this.posY = shooter.posY + shooter.getEyeHeight() - 0.1D;
-        double deltaX = target.posX - shooter.posX;
-        double deltaY = target.posY + target.getEyeHeight() - 0.7D - this.posY;
-        double deltaZ = target.posZ - shooter.posZ;
-        double distanceXZ = MathHelper.sqrt_double(deltaX * deltaX + deltaZ * deltaZ);
+        double y = shooter.posY + shooter.getEyeHeight() - 0.1D;
 
-        if( distanceXZ >= 0.0D ) {
-            float yaw = (float) (Math.atan2(deltaZ, deltaX) * 180.0D / Math.PI) - 90.0F;
-            float pitch = (float) (-(Math.atan2(deltaY, distanceXZ) * 180.0D / Math.PI));
-            this.setLocationAndAngles(shooter.posX, this.posY, shooter.posZ, yaw, pitch);
-            this.yOffset = 0.0F;
-            float curveAngle = (float) distanceXZ * this.getCurveCorrector();
-            this.setHeading(deltaX, deltaY + curveAngle, deltaZ, par4, par5);
-        }
-    }
-
-    public void setHeading(double d1, double d2, double d3, float rngMulti1, float rngMulti2) {
-        this.setThrowableHeading(d1, d2, d3, rngMulti1, rngMulti2);
-        this.motionX *= this.getSpeedVal();
-        this.motionY *= this.getSpeedVal();
-        this.motionZ *= this.getSpeedVal();
-    }
-
-    public float getCurveCorrector() {
-        return 0.20F;
-    }
-
-    public boolean isArrow() {
-        return true;
-    }
-
-    public boolean shouldDieOnImpact() {
-        return true;
-    }
-
-    public void processHit(MovingObjectPosition moving) {
-        EntityLivingBase entity = (EntityLivingBase) moving.entityHit;
-
-        if( !this.worldObj.isRemote && this.isArrow() ) {
-            entity.setArrowCountInEntity(entity.getArrowCountInEntity() + 1);
+        if( shooter instanceof EntityTurret && ((EntityTurret) shooter).isUpsideDown ) {
+            y -= 1.0D;
         }
 
-        ReflectionManager.setRecentlyHit(entity, 0);
+        this.setPosition(shooter.posX, y, shooter.posZ);
 
-        float motionNormal = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
-        moving.entityHit.motionX *= this.knockbackStrength * 0.6000000238418579D / motionNormal;
-        moving.entityHit.motionZ *= this.knockbackStrength * 0.6000000238418579D / motionNormal;
+        this.shooterUUID = shooter.getUniqueID();
+        this.shooterCache = shooter;
 
-        if( moving.entityHit.onGround ) {
-            moving.entityHit.motionY = this.knockbackStrength / 3.0F;
-            moving.entityHit.isAirBorne = true;
-        }
+        this.targetUUID = target.getUniqueID();
+        this.targetCache = target;
 
-        if( this.shootingEntity instanceof EntityLivingBase ) {
-            Enchantment.thorns.func_151367_b((EntityLivingBase) this.shootingEntity, entity, 1);
+        Vec3 targetVec = Vec3.createVectorHelper(target.posX - this.posX, target.boundingBox.minY + target.height / 1.4F - this.posY, target.posZ - this.posZ);
+        this.setHeadingFromVec(targetVec.normalize());
 
-            if( moving.entityHit != this.shootingEntity && moving.entityHit instanceof EntityPlayer && this.shootingEntity instanceof EntityPlayerMP ) {
-                ((EntityPlayerMP) this.shootingEntity).playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(6, 0.0F));
-            }
-        }
+        this.motionY += this.getArc() * Math.sqrt(targetVec.xCoord * targetVec.xCoord + targetVec.zCoord * targetVec.zCoord) * 0.05;
     }
 
-    public void onEntityHit(EntityLivingBase living) {
+    public EntityTurretProjectile(World world, Entity shooter, Vec3 shootingVec) {
+        this(world, shooter, (Entity) null);
+        this.setHeadingFromVec(shootingVec.normalize());
     }
 
-    public boolean shouldFlyThroughOnEntityHit() {
-        return false;
-    }
+    private void setHeadingFromVec(Vec3 vector) {
+        this.motionX = vector.xCoord;
+        this.motionZ = vector.zCoord;
+        this.motionY = vector.yCoord;
 
-    public String getHitSound() {
-        return "random.bowhit";
-    }
+        float vecPlaneNormal = MathHelper.sqrt_double(vector.xCoord * vector.xCoord + vector.zCoord * vector.zCoord);
 
-    public void spawnTail() {
-    }
-
-    public float getGravityVal() {
-        return 0.04F;
-    }
-
-    public float getSpeedVal() {
-        return 1.0F;
-    }
-
-    public float getMotionMulti() {
-        return 0.99F;
+        this.prevRotationYaw = this.rotationYaw = (float)(Math.atan2(vector.xCoord, vector.zCoord) * 180.0D / Math.PI);
+        this.prevRotationPitch = this.rotationPitch = (float)(Math.atan2(vector.yCoord, vecPlaneNormal) * 180.0D / Math.PI);
     }
 
     @Override
-    @SuppressWarnings({"SuspiciousNameCombination", "unchecked", "NonReproducibleMathCall"})
+    protected void entityInit() {
+        if( this.shooterUUID != null && this.shooterCache == null ) {
+            this.shooterCache = TmrUtils.getEntityByUUID(this.worldObj, this.shooterUUID);
+        }
+        if( this.targetUUID != null && this.targetCache == null ) {
+            this.targetCache = TmrUtils.getEntityByUUID(this.worldObj, this.targetUUID);
+        }
+    }
+
+    /**
+     * Sets the position and rotation. Only difference from the other one is no bounding on the rotation. Args: posX,
+     * posY, posZ, yaw, pitch
+     */
+    @SideOnly(Side.CLIENT)
+    public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch, int its3EveryTime) {
+        this.setPosition(x, y, z);
+        this.setRotation(yaw, pitch);
+    }
+
+    @Override
     public void onUpdate() {
-        if( this.ticksExisted == 1 ) {
-            this.lastTickPosX = this.posX;
-            this.lastTickPosY = this.posY;
-            this.lastTickPosZ = this.posZ;
+        this.isAirBorne = true;
 
-            return;
+        if( !this.worldObj.isRemote ) {
+            this.doCollisionCheck();
         }
 
-        this.onEntityUpdate();
+        this.posX += this.motionX;
+        this.posY += this.motionY;
+        this.posZ += this.motionZ;
+        float f2 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
+        this.rotationYaw = (float)(Math.atan2(this.motionX, this.motionZ) * 180.0D / Math.PI);
 
-        if( !this.worldObj.isRemote && this.shootingEntity != null && (this.shootingEntity instanceof EntityTurretBase)
-            && this.getDistanceToEntity(this.shootingEntity) > 128.0D )
-        {
-            this.motionX = 0.0D;
-            this.motionY = 0.0D;
-            this.motionZ = 0.0D;
-            this.setDead();
-            return;
+        this.rotationPitch = (float)(Math.atan2(this.motionY, f2) * 180.0D / Math.PI);
+        while( this.rotationPitch - this.prevRotationPitch < -180.0F ) {
+            this.prevRotationPitch -= 360.0F;
         }
 
-        if( this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F ) {
-            float motionNormal = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
-            this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0D / Math.PI);
-            this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(this.motionY, motionNormal) * 180.0D / Math.PI);
+        while( this.rotationPitch - this.prevRotationPitch >= 180.0F ) {
+            this.prevRotationPitch += 360.0F;
         }
 
-        Block collidedBlock = this.worldObj.getBlock(this.xTile, this.yTile, this.zTile);
+        while( this.rotationYaw - this.prevRotationYaw < -180.0F ) {
+            this.prevRotationYaw -= 360.0F;
+        }
 
-        if( collidedBlock.getMaterial() != Material.air ) {
-            collidedBlock.setBlockBoundsBasedOnState(this.worldObj, this.xTile, this.yTile, this.zTile);
-            AxisAlignedBB colBlockBB = collidedBlock.getCollisionBoundingBoxFromPool(this.worldObj, this.xTile, this.yTile, this.zTile);
+        while( this.rotationYaw - this.prevRotationYaw >= 180.0F ) {
+            this.prevRotationYaw += 360.0F;
+        }
 
-            if( colBlockBB != null && colBlockBB.isVecInside(Vec3.createVectorHelper(this.posX, this.posY, this.posZ)) ) {
-                this.inGround = true;
+        this.rotationPitch = this.prevRotationPitch + (this.rotationPitch - this.prevRotationPitch) * 0.2F;
+        this.rotationYaw = this.prevRotationYaw + (this.rotationYaw - this.prevRotationYaw) * 0.2F;
+        float speed = this.getSpeedMultiplierAir();
+
+        if( this.isInWater() ) {
+            for( int i = 0; i < 4; i++ ) {
+                float disPos = 0.25F;
+                this.worldObj.spawnParticle("bubble", this.posX - this.motionX * disPos, this.posY - this.motionY * disPos, this.posZ - this.motionZ * disPos, this.motionX, this.motionY, this.motionZ);
+            }
+
+            speed = this.getSpeedMultiplierLiquid();
+        }
+
+        if( this.isWet() ) {
+            this.extinguish();
+        }
+
+        this.motionX *= speed;
+        this.motionY *= speed;
+        this.motionZ *= speed;
+        this.motionY -= this.getArc() * 0.1F;
+        this.setPosition(this.posX, this.posY, this.posZ);
+        this.func_145775_I();
+    }
+
+    private void doCollisionCheck() {
+        Vec3 posVec = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
+        Vec3 futurePosVec = Vec3.createVectorHelper(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+        MovingObjectPosition hitObj = this.worldObj.func_147447_a(posVec, futurePosVec, false, true, false);
+
+        posVec = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
+        futurePosVec = Vec3.createVectorHelper(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+
+        if( hitObj != null ) {
+            futurePosVec = Vec3.createVectorHelper(hitObj.hitVec.xCoord, hitObj.hitVec.yCoord, hitObj.hitVec.zCoord);
+        }
+
+        Entity entity = null;
+        List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
+        double minDist = 0.0D;
+        float collisionRange;
+
+        for( Object entityObj : list ) {
+            Entity collidedEntity = (Entity) entityObj;
+
+            if( collidedEntity.canBeCollidedWith() && collidedEntity != this.shooterCache ) {
+                collisionRange = 0.3F;
+                AxisAlignedBB collisionAABB = collidedEntity.boundingBox.expand(collisionRange, collisionRange, collisionRange);
+                MovingObjectPosition interceptObj = collisionAABB.calculateIntercept(posVec, futurePosVec);
+
+                if( interceptObj != null ) {
+                    double vecDistance = posVec.distanceTo(interceptObj.hitVec);
+
+                    if( vecDistance < minDist || minDist == 0.0D ) {
+                        entity = collidedEntity;
+                        minDist = vecDistance;
+                    }
+                }
             }
         }
 
-        if( this.arrowShake > 0 ) {
-            --this.arrowShake;
+        if( entity != null ) {
+            hitObj = new MovingObjectPosition(entity);
         }
 
-        if( this.inGround ) {
-            Block groundBlock = this.worldObj.getBlock(this.xTile, this.yTile, this.zTile);
-            int groundBlockMeta = this.worldObj.getBlockMetadata(this.xTile, this.yTile, this.zTile);
+        if( hitObj != null && hitObj.entityHit != null && hitObj.entityHit instanceof EntityPlayer ) {
+            EntityPlayer player = (EntityPlayer)hitObj.entityHit;
 
-            if( groundBlock == this.inTile && groundBlockMeta == this.inData ) {
-                if( this.shouldDieOnGround() ) {
-                    this.setDead();
+            if( player.capabilities.disableDamage ) {
+                hitObj = null;
+            }
+        }
+
+        if( hitObj != null ) {
+            if( hitObj.entityHit != null ) {
+                float dmg = this.getDamage();
+
+                DamageSource damagesource;
+
+                if( this.shooterCache == null ) {
+                    damagesource = DamageSource.causeThrownDamage(this, this);
+                } else {
+                    damagesource = DamageSource.causeThrownDamage(this, this.shooterCache);
+                    if( EntityTurret.class.isAssignableFrom(hitObj.entityHit.getClass()) ) {
+                        return;
+                    }
                 }
 
-                ++this.ticksInGround;
+                if( this.isBurning() && !(hitObj.entityHit instanceof EntityEnderman) ) {
+                    hitObj.entityHit.setFire(5);
+                }
 
-                if( this.ticksInGround == 1200 ) {
-                    this.setDead();
+                if( hitObj.entityHit.attackEntityFrom(damagesource, dmg) ) {
+                    if( hitObj.entityHit instanceof EntityLivingBase ) {
+                        EntityLivingBase living = (EntityLivingBase) hitObj.entityHit;
+
+                        if( !this.worldObj.isRemote ) {
+                            living.setArrowCountInEntity(living.getArrowCountInEntity() + 1);
+                        }
+
+                        if( living instanceof EntityCreature && TmrUtils.getIsAIEnabled(living) && this.shooterCache instanceof EntityLivingBase ) {
+                            EntityCreature creature = (EntityCreature) living;
+                            EntityAIBase ai = TmrUtils.getAIFromTaskList(creature.targetTasks.taskEntries, EntityAIAttackTurret.class);
+                            if( ai == null ) {
+                                ai = new EntityAIAttackTurret(creature, new RevengeEntitySelector(this.shooterCache));
+                                creature.targetTasks.taskEntries.clear();
+                                creature.targetTasks.addTask(0, ai);
+                            } else {
+                                ((EntityAIAttackTurret) ai).overrideTarget(this.shooterCache);
+                            }
+                            ((EntityCreature) living).setAttackTarget((EntityLivingBase) this.shooterCache);
+
+                            if( creature instanceof EntityZombie ) {
+                                EntityAIBase aiTgtFollow = TmrUtils.getAIFromTaskList(creature.tasks.taskEntries, EntityAIMoveTowardsTarget.class);
+                                if( aiTgtFollow == null ) {
+                                    creature.tasks.addTask(2, new EntityAIMoveTowardsTarget(creature, 0.9D, 32.0F));
+                                    creature.tasks.addTask(1, new EntityAIAttackOnCollide(creature, EntityTurret.class, 1.0D, true));
+                                }
+                            }
+                        }
+
+                        float knockback = this.getKnockbackStrengthH();
+                            double horizMotion = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
+
+                            if( horizMotion > 0.0F ) {
+                                hitObj.entityHit.addVelocity(this.motionX * knockback * 0.6D / horizMotion, this.getKnockbackStrengthV(), this.motionZ * knockback * 0.6D / horizMotion);
+                            }
+
+                        if( this.shooterCache instanceof EntityLivingBase ) {
+                            EnchantmentHelper.func_151384_a(living, this.shooterCache);
+                            EnchantmentHelper.func_151385_b((EntityLivingBase) this.shooterCache, living);
+                        }
+                    }
                 }
             } else {
-                this.inGround = false;
-                this.motionX *= (this.rand.nextFloat() * 0.2F);
-                if( this.isArrow() ) {
-                    this.motionY *= (this.rand.nextFloat() * 0.2F);
-                } else {
-                    this.motionY = -this.getSpeedVal();
-                }
-                this.motionZ *= (this.rand.nextFloat() * 0.2F);
-                this.ticksInGround = 0;
-                this.ticksInAir = 0;
-            }
-        } else {
-            ++this.ticksInAir;
-            Vec3 posVec = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
-            Vec3 motionVec = Vec3.createVectorHelper(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
-            MovingObjectPosition currHitObj = this.worldObj.func_147447_a(posVec, motionVec, false, true, false);//raytrace
-            posVec = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
-            motionVec = Vec3.createVectorHelper(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
-
-            if( currHitObj != null ) {
-                motionVec = Vec3.createVectorHelper(currHitObj.hitVec.xCoord, currHitObj.hitVec.yCoord, currHitObj.hitVec.zCoord);
+                this.onBlockHit(hitObj.blockX, hitObj.blockY, hitObj.blockZ);
             }
 
-            Entity hitEntity = null;
-            List<Entity> collidedEntities;
-            AxisAlignedBB entityColBB = this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D);
-            if( this.shootingEntity instanceof Turret ) {
-                collidedEntities = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, entityColBB, ((Turret) this.shootingEntity).getTargetHandler()
-                                                                                                                                       .getParentTargetSelector());
-            } else {
-                collidedEntities = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, entityColBB);
-            }
-
-            Double minDistIntercept = null;
-
-            EntityDragonPart dragonPart = null;
-
-            for( Entity collidedEntity : collidedEntities ) {
-                if( collidedEntity instanceof EntityDragonPart ) {
-                    IEntityMultiPart multiEntity = ((EntityDragonPart) collidedEntity).entityDragonObj;
-                    if( multiEntity instanceof EntityDragon ) {
-                        dragonPart = (EntityDragonPart) collidedEntity;
-                        collidedEntity = (EntityDragon) multiEntity;
-                    }
-                }
-
-                boolean isShootEntityValid = !(this.shootingEntity == null || this.shootingEntity == this);
-                boolean isShootingEntity = isShootEntityValid && collidedEntity == this.shootingEntity;
-                boolean isNotRider = isShootEntityValid && this.shootingEntity.riddenByEntity != collidedEntity;
-                boolean isHostRidden = isShootEntityValid && this.shootingEntity.riddenByEntity != null && this.shootingEntity.riddenByEntity instanceof EntityPlayer;
-                boolean isCollidable = collidedEntity.canBeCollidedWith() || (collidedEntity instanceof EntityDragon);
-                boolean cannotBeHit = collidedEntity.isDead;
-
-                if( collidedEntity instanceof EntityLiving ) {
-                    EntityLiving collidedLiving = (EntityLiving) collidedEntity;
-                    cannotBeHit = cannotBeHit || collidedLiving.hurtResistantTime > collidedLiving.maxHurtResistantTime / 2.0F;
-                }
-
-
-                if( isCollidable && !isShootingEntity && isNotRider && /*isHostRidden &&*/ (!cannotBeHit || !shouldFlyThroughOnEntityHit()) ) {
-                    float expandBB = 0.3F;
-                    AxisAlignedBB var12 = collidedEntity.boundingBox.expand(expandBB, expandBB, expandBB);
-                    MovingObjectPosition interceptObj = var12.calculateIntercept(posVec, motionVec);
-
-                    if( interceptObj != null ) {
-                        double distIntercept = posVec.distanceTo(interceptObj.hitVec);
-
-                        if( minDistIntercept == null || distIntercept < minDistIntercept ) {
-                            hitEntity = collidedEntity;
-                            minDistIntercept = distIntercept;
-                        }
-                    }
-                }
-            }
-
-            if( hitEntity != null ) {
-                currHitObj = new MovingObjectPosition(hitEntity);
-            }
-
-            if( currHitObj != null ) {
-                if( currHitObj.entityHit != null ) {
-
-                    DamageSource dmgSrc = this.getDamageSource(currHitObj.entityHit);
-
-                    if( currHitObj.entityHit instanceof EntityDragon && dragonPart != null ) {
-                        if( ((EntityDragon) currHitObj.entityHit).attackEntityFromPart(dragonPart, dmgSrc, (float) this.getDamage()) ) {
-                            processHit(currHitObj);
-                            onEntityHit((EntityDragon) currHitObj.entityHit);
-                            this.playSound(getHitSound(), 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
-
-                            if( this.shouldDieOnImpact() ) {
-                                this.setDead();
-                            }
-                        }
-                    } else if( currHitObj.entityHit.attackEntityFrom(dmgSrc, (float) this.getDamage()) ) {
-                        if( currHitObj.entityHit instanceof EntityLiving ) {
-                            EntityLiving living = (EntityLiving) currHitObj.entityHit;
-                            if( this.shootingEntity != null && this.shootingEntity instanceof EntityTurretBase ) {
-                                EntityTurretBase turret = (EntityTurretBase) this.shootingEntity;
-                        		if (turret.getDistanceToEntity(living) <= 16.0F) {
-                                    living.setRevengeTarget(turret);
-                                    living.setAttackTarget(turret);
-                                    living.setLastAttacker(turret);
-                                    ReflectionManager.setCurrentTarget(living, turret, 10 + this.rand.nextInt(20));
-                        		} else if( living instanceof EntityCreature && living instanceof IMob ) {
-                        			PathEntity path = this.worldObj.getEntityPathToXYZ(living, (int)turret.posX, (int)turret.posY + 1, (int)turret.posZ, 64.0F, true, false, false, true);
-                        			living.getNavigator().setPath(path, 1.0D);
-                        			((EntityCreature)living).setPathToEntity(path);
-                        		}
-                            }
-                            processHit(currHitObj);
-                            onEntityHit(living);
-                        }
-
-                        this.playSound(getHitSound(), 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
-
-                        if( !(currHitObj.entityHit instanceof EntityEnderman) ) {
-                            if( this.shouldDieOnImpact() ) {
-                                this.setDead();
-                            }
-                        }
-                    } else if(this.shootingEntity != null && currHitObj.entityHit != null && this.shootingEntity instanceof EntityTurretBase
-                              && ((EntityTurretBase) this.shootingEntity).getTargetHandler().getParentTargetSelector().isEntityApplicable(currHitObj.entityHit) )
-                    {
-                        this.processFailedHit(currHitObj.entityHit);
-                    }
-                } else {
-                    this.xTile = currHitObj.blockX;
-                    this.yTile = currHitObj.blockY;
-                    this.zTile = currHitObj.blockZ;
-                    this.inTile = this.worldObj.getBlock(this.xTile, this.yTile, this.zTile);
-                    this.inData = this.worldObj.getBlockMetadata(this.xTile, this.yTile, this.zTile);
-                    this.motionX = ((float) (currHitObj.hitVec.xCoord - this.posX));
-                    this.motionY = ((float) (currHitObj.hitVec.yCoord - this.posY));
-                    this.motionZ = ((float) (currHitObj.hitVec.zCoord - this.posZ));
-                    float motionVecNormal = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
-                    this.posX -= this.motionX / motionVecNormal * 0.05D;
-                    this.posY -= this.motionY / motionVecNormal * 0.05D;
-                    this.posZ -= this.motionZ / motionVecNormal * 0.05D;
-                    this.playSound(getHitSound(), 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
-                    this.inGround = true;
-                    if( this.isArrow() ) {
-                        this.arrowShake = 7;
-                    }
-
-                    this.setIsCritical(false);
-
-                    if( this.inTile != Blocks.air ) {
-                        this.inTile.onEntityCollidedWithBlock(this.worldObj, this.xTile, this.yTile, this.zTile, this);
-                    }
-                }
-            }
-
-            for( int i = 0; i < 4; ++i ) {
-                spawnTail();
-            }
-
-            this.posX += this.motionX;
-            this.posY += this.motionY;
-            this.posZ += this.motionZ;
-            float motionXZNormal = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
-            this.rotationYaw = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0D / Math.PI);
-            this.rotationPitch = (float) (Math.atan2(this.motionY, motionXZNormal) * 180.0D / Math.PI);
-
-            while( this.rotationPitch - this.prevRotationPitch < -180.0F ) {
-                this.prevRotationPitch -= 360.0F;
-            }
-
-            while( this.rotationPitch - this.prevRotationPitch >= 180.0F ) {
-                this.prevRotationPitch += 360.0F;
-            }
-
-            while( this.rotationYaw - this.prevRotationYaw < -180.0F ) {
-                this.prevRotationYaw -= 360.0F;
-            }
-
-            while( this.rotationYaw - this.prevRotationYaw >= 180.0F ) {
-                this.prevRotationYaw += 360.0F;
-            }
-
-            this.rotationPitch = this.prevRotationPitch + (this.rotationPitch - this.prevRotationPitch) * 0.2F;
-            this.rotationYaw = this.prevRotationYaw + (this.rotationYaw - this.prevRotationYaw) * 0.2F;
-            float motionMulti = getMotionMulti();
-            float gravityVal = getGravityVal();
-
-            if( this.isInWater() ) {
-                for( int i = 0; i < 4; ++i ) {
-                    float motReduction = 0.25F;
-                    this.worldObj.spawnParticle("bubble", this.posX - this.motionX * motReduction, this.posY - this.motionY * motReduction,
-                                                this.posZ - this.motionZ * motReduction, this.motionX, this.motionY, this.motionZ
-                    );
-                }
-
-                motionMulti = 0.8F;
-            }
-
-            this.motionX *= motionMulti;
-            this.motionY *= motionMulti;
-            this.motionZ *= motionMulti;
-            this.motionY -= gravityVal;
-            this.setPosition(this.posX, this.posY, this.posZ);
-            this.func_145775_I();//collide with block
+            this.processHit(hitObj);
         }
     }
 
-    public void processFailedHit(Entity hit) {
-        if( this.isArrow() ) {
-            this.motionX *= -0.10000000149011612D;
-            this.motionY *= -0.10000000149011612D;
-            this.motionZ *= -0.10000000149011612D;
-            this.rotationYaw += 180.0F;
-            this.prevRotationYaw += 180.0F;
-            this.ticksInAir = 0;
-        } else if( this.shouldDieOnImpact() ) {
-            this.setDead();
+    protected void processHit(MovingObjectPosition hitObj) {
+        this.setDead();
+    }
+
+    private void onBlockHit(int blockX, int blockY, int blockZ) { }
+
+    public abstract float getSpeedMultiplierAir();
+
+    public abstract float getSpeedMultiplierLiquid();
+
+    public abstract float getDamage();
+
+    public abstract float getKnockbackStrengthH();
+
+    public abstract float getKnockbackStrengthV();
+
+    @Override
+    protected void readEntityFromNBT(NBTTagCompound nbt) {
+        if( nbt.hasKey("shooter") ) {
+            this.shooterUUID = UUID.fromString(nbt.getString("shooter"));
+            this.shooterCache = TmrUtils.getEntityByUUID(this.worldObj, this.shooterUUID);
         }
-    }
 
-    public boolean shouldTargetOneType() {
-        return true;
-    }
-
-    @Override
-    public EntityTurretProjectile getEntity() {
-        return this;
-    }
-
-    @Override
-    public void playSound(String sound, float volume, float pitch) {
-        if( sound != null && !sound.isEmpty() ) {
-            super.playSound(sound, volume, pitch);
+        if( nbt.hasKey("target") ) {
+            this.targetUUID = UUID.fromString(nbt.getString("target"));
+            this.targetCache = TmrUtils.getEntityByUUID(this.worldObj, this.targetUUID);
         }
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound nbt) {
-        nbt.setShort("xTile", (short) this.xTile);
-        nbt.setShort("yTile", (short) this.yTile);
-        nbt.setShort("zTile", (short) this.zTile);
-        nbt.setByte("inTile", (byte) Block.getIdFromBlock(this.inTile));
-        nbt.setByte("inData", (byte) this.inData);
-        nbt.setByte("shake", (byte) this.arrowShake);
-        nbt.setByte("inGround", (byte) (this.inGround ? 1 : 0));
-        nbt.setByte("pickup", (byte) this.canBePickedUp);
-        nbt.setBoolean("isPickupable", this.isPickupable);
-        nbt.setInteger("ammoType", this.ammoType);
-    }
+    protected void writeEntityToNBT(NBTTagCompound nbt) {
+        if( this.shooterUUID != null ) {
+            nbt.setString("shooter", this.shooterUUID.toString());
+        }
 
-    @Override
-    public void readEntityFromNBT(NBTTagCompound nbt) {
-        this.xTile = nbt.getShort("xTile");
-        this.yTile = nbt.getShort("yTile");
-        this.zTile = nbt.getShort("zTile");
-        this.inTile = Block.getBlockById(nbt.getByte("inTile") & 255);
-        this.inData = nbt.getByte("inData") & 255;
-        this.arrowShake = nbt.getByte("shake") & 255;
-        this.inGround = nbt.getByte("inGround") == 1;
-        this.isPickupable = nbt.getBoolean("isPickupable");
-        this.ammoType = nbt.getInteger("ammoType");
-    }
-
-    public ItemStack getPickupItem() {
-        return null;
-    }
-
-    public boolean shouldDieOnGround() {
-        return true;
-    }
-
-    @Override
-    public void onCollideWithPlayer(EntityPlayer par1EntityPlayer) {
-        ItemStack is = this.getPickupItem();
-        if( !this.worldObj.isRemote && is != null && this.inGround && this.arrowShake <= 0 && this.isPickupable ) {
-            boolean doPickup = true;
-
-            if( !par1EntityPlayer.inventory.addItemStackToInventory(is) ) {
-                doPickup = false;
-            }
-
-            if( doPickup ) {
-                this.playSound("random.pop", 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                par1EntityPlayer.onItemPickup(this, 1);
-                this.setDead();
-            }
+        if( this.targetUUID != null ) {
+            nbt.setString("target", this.targetUUID.toString());
         }
     }
 
     @Override
-    public double getDamage() {
-        return 2.0D;
+    public void setThrowableHeading(double x, double y, double z, float recoil, float randMulti) {
+        float vecNormal = MathHelper.sqrt_double(x * x + y * y + z * z);
+        x /= vecNormal;
+        y /= vecNormal;
+        z /= vecNormal;
+        x += this.rand.nextGaussian() * (this.rand.nextBoolean() ? -1 : 1) * 0.007499999832361937D * randMulti;
+        y += this.rand.nextGaussian() * (this.rand.nextBoolean() ? -1 : 1) * 0.007499999832361937D * randMulti;
+        z += this.rand.nextGaussian() * (this.rand.nextBoolean() ? -1 : 1) * 0.007499999832361937D * randMulti;
+        x *= recoil;
+        y *= recoil;
+        z *= recoil;
+        this.motionX = x;
+        this.motionY = y;
+        this.motionZ = z;
+        float vecPlaneNormal = MathHelper.sqrt_double(x * x + z * z);
+        this.prevRotationYaw = this.rotationYaw = (float)(Math.atan2(x, z) * 180.0D / Math.PI);
+        this.prevRotationPitch = this.rotationPitch = (float)(Math.atan2(y, vecPlaneNormal) * 180.0D / Math.PI);
     }
 
-    public float getKnockbackStrengthFloat() {
-        return this.knockbackStrength;
+    @Override
+    public void writeSpawnData(ByteBuf buffer) {
+        buffer.writeFloat(this.rotationYaw);
+        buffer.writeFloat(this.rotationPitch);
     }
 
-    public void setKnockbackStrengthFloat(float par1) {
-        this.knockbackStrength = par1;
+    @Override
+    public void readSpawnData(ByteBuf buffer) {
+        this.rotationYaw = buffer.readFloat();
+        this.rotationPitch = buffer.readFloat();
     }
 
-    public DamageSource getDamageSource(Entity entity) {
-        if( this.shootingEntity == null ) {
-            return DamageSource.causeArrowDamage(this, this);
-        } else if( entity instanceof EntityDragon ) {
-            return DamageSource.generic.setExplosion();
-        } else if( /**this.isActingAsMeelee**/false && this.shootingEntity instanceof EntityLiving ) {
-            return DamageSource.causeMobDamage((EntityLiving) this.shootingEntity);
-        } else {
-            return DamageSource.causeArrowDamage(this, this.shootingEntity);
+    public abstract float getArc();
+
+    private static final class RevengeEntitySelector
+            implements IEntitySelector
+    {
+        public Entity target;
+
+        public RevengeEntitySelector(Entity target) {
+            this.target = target;
+        }
+
+        @Override
+        public boolean isEntityApplicable(Entity entity) {
+            return entity == this.target;
+        }
+    }
+
+    private static final class EntityAIAttackTurret
+            extends EntityAINearestAttackableTarget
+    {
+        private RevengeEntitySelector selector;
+
+        public EntityAIAttackTurret(EntityCreature creature, RevengeEntitySelector selector) {
+            super(creature, EntityTurret.class, 0, false, false, selector);
+            this.selector = selector;
+        }
+
+        public void overrideTarget(Entity target) {
+            this.selector.target = target;
+        }
+
+        @Override
+        public void startExecuting() {
+            super.startExecuting();
         }
     }
 }

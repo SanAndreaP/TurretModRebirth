@@ -8,36 +8,56 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import de.sanandrew.core.manpack.util.helpers.SAPUtils;
-import de.sanandrew.core.manpack.util.javatuples.Quartet;
-import de.sanandrew.mods.turretmod.network.PacketManager;
-import io.netty.buffer.ByteBufInputStream;
+import cpw.mods.fml.common.registry.EntityRegistry;
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
+import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
+import de.sanandrew.mods.turretmod.network.PacketOpenGui;
+import de.sanandrew.mods.turretmod.network.PacketRegistry;
+import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
+import net.darkhax.bookshelf.lib.Tuple;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.Level;
-
-import java.io.IOException;
 
 public class CommonProxy
         implements IGuiHandler
 {
-    public void init() {}
+    public void preInit(FMLPreInitializationEvent event) {
+        MinecraftForge.EVENT_BUS.register(PlayerList.INSTANCE);
+//        FMLCommonHandler.instance().bus().register(PlayerList.INSTANCE);
+    }
 
-    public void processTargetListClt(ByteBufInputStream stream) throws IOException {}
+    public void init(FMLInitializationEvent event) {
+        EntityRegistry.registerModEntity(EntityTurretCrossbow.class, "turret_mkI_crossbow", 0, TurretModRebirth.instance, 128, 1, false);
+        EntityRegistry.registerModEntity(EntityProjectileCrossbowBolt.class, "turret_proj_arrow", 1, TurretModRebirth.instance, 128, 1, true);
+    }
 
-    public void processUpgradeListClt(ByteBufInputStream stream) throws IOException {}
+    public void postInit(FMLPostInitializationEvent event) {
 
-    public void processTransmitterExpTime(ByteBufInputStream stream) throws IOException {}
+    }
 
     @Override
-    public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
-        if( SAPUtils.isIndexInRange(EnumGui.VALUES, id) ) {
-
+    public final Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
+        if( id >= 0 && id < EnumGui.VALUES.length ) {
+            switch( EnumGui.VALUES[id] ) {
+                case GUI_TASSEMBLY_MAN:
+                    TileEntity te = world.getTileEntity(x, y, z);
+                    if( te instanceof TileEntityTurretAssembly ) {
+                        return new ContainerTurretAssembly(player.inventory, (TileEntityTurretAssembly) te);
+                    }
+                    break;
+            }
         } else {
-            TurretMod.MOD_LOG.printf(Level.WARN, "Container ID %d cannot be opened as it isn't a valid index in EnumGui!", id);
+            TurretModRebirth.LOG.log(Level.WARN, "Gui ID %d cannot be opened as it isn't a valid index in EnumGui!", id);
         }
 
         return null;
@@ -52,9 +72,13 @@ public class CommonProxy
         int guiId = id.ordinal();
 
         if( player instanceof EntityPlayerMP && getServerGuiElement(guiId, player, player.worldObj, x, y, z) == null ) {
-            PacketManager.sendToPlayer(PacketManager.OPEN_CLIENT_GUI, (EntityPlayerMP) player, Quartet.with((byte) guiId, x, y, z));
+            PacketRegistry.sendToPlayer(new PacketOpenGui((byte) guiId, x, y, z), (EntityPlayerMP) player);
         } else {
-            FMLNetworkHandler.openGui(player, TurretMod.instance, guiId, player.worldObj, x, y, z);
+            FMLNetworkHandler.openGui(player, TurretModRebirth.instance, guiId, player.worldObj, x, y, z);
         }
+    }
+
+    public void spawnParticle(EnumParticle particle, double x, double y, double z, Tuple data) {
+
     }
 }
