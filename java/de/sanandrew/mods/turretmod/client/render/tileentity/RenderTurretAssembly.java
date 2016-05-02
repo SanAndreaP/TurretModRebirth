@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.client.render.tileentity;
 import de.sanandrew.mods.turretmod.client.model.block.ModelTurretAssembly;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.Textures;
+import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -47,26 +48,23 @@ public class RenderTurretAssembly
     private static void renderItem(TileEntityTurretAssembly assembly) {
         ContextCapabilities glCapabilities = GLContext.getCapabilities();
 
-        ItemStack itemstack;
-        if( assembly.currCrafting != null ) {
-            itemstack = assembly.currCrafting.getValue1();
-        } else {
-            itemstack = assembly.getStackInSlot(0);
-        }
+        ItemStack crfStack = assembly.currCrafting != null ? assembly.currCrafting.getValue1() : assembly.getStackInSlot(0);
+        ItemStack upgStack = assembly.getStackInSlot(1);
 
-        if( itemstack != null ) {
-            EntityItem entityitem = new EntityItem(assembly.getWorldObj(), 0.0D, 0.0D, 0.0D, itemstack.copy());
+        GL11.glPushMatrix();
+        GL11.glTranslatef(0.0F, 0.795F, -0.2125F);
+        GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
+        GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+        GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
+        GL11.glScalef(0.75F, 0.75F, 1.0F);
 
+        RenderItem.renderInFrame = true;
+
+        if( ItemStackUtils.isValidStack(crfStack) ) {
+            EntityItem entityitem = new EntityItem(assembly.getWorldObj(), 0.0D, 0.0D, 0.0D, crfStack.copy());
             entityitem.getEntityItem().stackSize = 1;
             entityitem.hoverStart = 0.0F;
-            GL11.glPushMatrix();
-            GL11.glTranslatef(0.0F, 0.795F, -0.2125F);
-            GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
-            GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-            GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
-            GL11.glScalef(0.73F, 0.73F, 1.0F);
 
-            RenderItem.renderInFrame = true;
             float scale = Math.max(0.0F, (assembly.ticksCrafted - 15.0F) / (assembly.maxTicksCrafted - 15.0F));
 
             if( glCapabilities.OpenGL14 && glCapabilities.GL_EXT_blend_color ) {
@@ -78,10 +76,22 @@ public class RenderTurretAssembly
             } else {
                 RenderManager.instance.renderEntityWithPosYaw(entityitem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
             }
-            RenderItem.renderInFrame = false;
-
-
-            GL11.glPopMatrix();
         }
+
+        if( ItemStackUtils.isValidStack(upgStack) ) {
+            EntityItem entityitem = new EntityItem(assembly.getWorldObj(), 0.0D, 0.0D, 0.0D, upgStack.copy());
+            entityitem.getEntityItem().stackSize = 1;
+            entityitem.hoverStart = 0.0F;
+
+            GL11.glScalef(1.0F / 0.75F, 1.0F / 0.75F, 1.0F);
+            GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
+            GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
+            GL11.glTranslatef(-0.05F, -0.2F, -0.4F);
+            GL11.glScalef(0.5F, 0.5F, 0.5F);
+            RenderManager.instance.renderEntityWithPosYaw(entityitem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
+        }
+
+        RenderItem.renderInFrame = false;
+        GL11.glPopMatrix();
     }
 }

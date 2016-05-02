@@ -88,7 +88,7 @@ public class TileEntityTurretAssembly
         if( this.currCrafting != null && recipe.equals(this.currCrafting.getValue0()) && !this.automate ) {
             if( this.currCrafting.getValue1().stackSize + count < 1 ) {
                 this.cancelCrafting();
-            } else if( this.currCrafting.getValue1().stackSize + count <= this.currCrafting.getValue1().getMaxStackSize() ) {
+            } else if( this.currCrafting.getValue1().stackSize + count * TurretAssemblyRecipes.INSTANCE.getRecipeResult(recipe).stackSize <= this.currCrafting.getValue1().getMaxStackSize() ) {
                 this.currCrafting.getValue1().stackSize += count;
                 this.doSync = true;
             } else {
@@ -155,7 +155,7 @@ public class TileEntityTurretAssembly
                             this.assemblyStacks[0] = stack.copy();
                         }
 
-                        if( this.assemblyStacks[0].stackSize >= this.assemblyStacks[0].getMaxStackSize() ) {
+                        if( this.assemblyStacks[0].stackSize + stack.stackSize > this.assemblyStacks[0].getMaxStackSize() ) {
                             this.isActive = false;
                             this.isActiveClient = false;
                         }
@@ -173,6 +173,7 @@ public class TileEntityTurretAssembly
                             this.maxTicksCrafted = 0;
                             this.isActive = false;
                             this.isActiveClient = false;
+                            this.fluxConsumption = 0;
                         }
                         this.ticksCrafted = 0;
 
