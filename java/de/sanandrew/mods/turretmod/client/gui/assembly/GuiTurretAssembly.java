@@ -17,6 +17,7 @@ import de.sanandrew.mods.turretmod.network.PacketInitAssemblyCrafting;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.Textures;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretAssemblyRecipes;
 import net.darkhax.bookshelf.lib.javatuples.Pair;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
@@ -36,12 +37,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class GuiTurretAssembly
         extends GuiContainer
@@ -50,11 +46,13 @@ public class GuiTurretAssembly
 
     private TileEntityTurretAssembly assembly;
     private List<Pair<UUID, ItemStack>> cacheRecipes;
-    private Map<GuiAssemblyCategoryTab, TurretAssemblyRecipes.RecipeGroup> groupBtns;
     private FontRenderer frDetails;
     private boolean shiftPressed;
 
-    private int scrollPos = 0;
+    private int scrollPos;
+
+    private static int scrollGroupPos;
+    private static int currOpenTab;
 
     private boolean prevIsLmbDown;
     private boolean prevIsRmbDown;
@@ -62,6 +60,9 @@ public class GuiTurretAssembly
 
     private GuiSlimButton cancelTask;
     private GuiSlimButton automate;
+    private GuiAssemblyTabNav groupUp;
+    private GuiAssemblyTabNav groupDown;
+    private Map<GuiAssemblyCategoryTab, TurretAssemblyRecipes.RecipeGroup> groupBtns;
     private int posY;
     private int posX;
 
@@ -90,19 +91,38 @@ public class GuiTurretAssembly
         this.buttonList.add(this.cancelTask = new GuiSlimButton(this.buttonList.size(), this.posX + 156, this.posY + 55, 50, StatCollector.translateToLocal("gui.sapturretmod.tassembly.cancel")));
         this.buttonList.add(this.automate = new GuiSlimButton(this.buttonList.size(), this.posX + 156, this.posY + 68, 50, StatCollector.translateToLocal("gui.sapturretmod.tassembly.automate.enable")));
 
-        int pos = 0;
+        this.buttonList.add(this.groupUp = new GuiAssemblyTabNav(this.buttonList.size(), this.posX + 13, this.posY + 9, false));
 
+        int pos = 0;
         TurretAssemblyRecipes.RecipeGroup[] groups = TurretAssemblyRecipes.INSTANCE.getGroups();
+        Arrays.sort(groups, new Comparator<TurretAssemblyRecipes.RecipeGroup>() {
+            @Override
+            public int compare(TurretAssemblyRecipes.RecipeGroup o1, TurretAssemblyRecipes.RecipeGroup o2) {
+                return o1.name.compareTo(o2.name);
+            }
+        });
         this.groupBtns = new HashMap<>(1 + (int) (groups.length / 0.75F));
         for( TurretAssemblyRecipes.RecipeGroup grp : groups ) {
-            GuiAssemblyCategoryTab tab = new GuiAssemblyCategoryTab(this.buttonList.size(), this.posX + 9, 19 + pos, grp.icon, grp.name);
+            GuiAssemblyCategoryTab tab = new GuiAssemblyCategoryTab(this.buttonList.size(), this.posX + 9, this.posY + 19 + pos * 15 - 15 * scrollGroupPos, grp.icon, grp.name);
             this.groupBtns.put(tab, grp);
             this.buttonList.add(tab);
-            if( pos == 0 ) {
+
+            tab.visible = pos >= scrollGroupPos && pos < scrollGroupPos + 4;
+
+            if( pos == currOpenTab ) {
                 tab.enabled = false;
                 loadGroupRecipes(grp);
             }
-            pos += 15;
+            pos++;
+        }
+
+        this.buttonList.add(this.groupDown = new GuiAssemblyTabNav(this.buttonList.size(), this.posX + 13, this.posY + 79, true));
+
+        if( scrollGroupPos + 4 >= groups.length ) {
+            this.groupDown.visible = false;
+        }
+        if( scrollGroupPos <= 0 ) {
+            this.groupUp.visible = false;
         }
     }
 
@@ -110,7 +130,6 @@ public class GuiTurretAssembly
         this.cacheRecipes = new ArrayList<>();
         for( UUID recipe : group.recipes ) {
             this.cacheRecipes.add(Pair.with(recipe, TurretAssemblyRecipes.INSTANCE.getRecipeResult(recipe)));
-            //TurretAssemblyRecipes.INSTANCE.getRecipeList();
         }
     }
 
@@ -161,6 +180,8 @@ public class GuiTurretAssembly
             for( int i = 0; i < maxSz; i++) {
                 int index = this.scrollPos + i;
                 ItemStack stack = this.cacheRecipes.get(index).getValue1();
+                boolean isActive = this.assembly.currCrafting == null
+                        || (!this.assembly.isAutomated() && TmrUtils.areStacksEqual(this.assembly.currCrafting.getValue1(), stack, TmrUtils.NBT_COMPARATOR_FIXD));
 
                 GL11.glEnable(GL12.GL_RESCALE_NORMAL);
                 RenderHelper.enableGUIStandardItemLighting();
@@ -174,7 +195,7 @@ public class GuiTurretAssembly
                     this.frDetails.drawString(tooltip.get(1).toString(), this.posX + 57, this.posY + 19 + 21 * i, 0xFF808080);
                 }
 
-                if( this.assembly.currCrafting == null ) {
+                if( isActive ) {
                     if( mouseX >= this.posX + 35 && mouseX < this.posX + 143 && mouseY >= this.posY + 9 + 21 * i && mouseY < this.posY + 27 + 21 * i ) {
                         GL11.glDisable(GL11.GL_DEPTH_TEST);
                         GL11.glColorMask(true, true, true, false);
@@ -189,16 +210,18 @@ public class GuiTurretAssembly
                             PacketRegistry.sendToServer(new PacketInitAssemblyCrafting(this.assembly, this.cacheRecipes.get(index).getValue0(), this.shiftPressed ? -16 : -1));
                         }
                     }
+                } else {
+                    this.mc.getTextureManager().bindTexture(Textures.GUI_ASSEMBLY_CRF.getResource());
+
+                    GL11.glDisable(GL11.GL_DEPTH_TEST);
+                    GL11.glEnable(GL11.GL_BLEND);
+                    OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+                    GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.6F);
+                    this.drawTexturedModalRect(this.posX + 35, this.posY + 9 + 21 * i, 35, 9 + 21 * i, 108, 18);
+                    GL11.glDisable(GL11.GL_BLEND);
+                    GL11.glEnable(GL11.GL_DEPTH_TEST);
                 }
             }
-        }
-
-        if( this.assembly.currCrafting != null ) {
-            GL11.glDisable(GL11.GL_DEPTH_TEST);
-            GL11.glColorMask(true, true, true, false);
-            this.drawGradientRect(this.posX + 33, this.posY + 8, this.posX + 143, this.posY + 91, 0xA0303030, 0xA0303030);
-            GL11.glColorMask(true, true, true, true);
-            GL11.glEnable(GL11.GL_DEPTH_TEST);
         }
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
@@ -499,6 +522,19 @@ public class GuiTurretAssembly
         }
     }
 
+    private GuiAssemblyCategoryTab[] getSortedTabs() {
+        GuiAssemblyCategoryTab[] tabs = this.groupBtns.keySet().toArray(new GuiAssemblyCategoryTab[this.groupBtns.size()]);
+
+        Arrays.sort(tabs, new Comparator<GuiAssemblyCategoryTab>() {
+            @Override
+            public int compare(GuiAssemblyCategoryTab o1, GuiAssemblyCategoryTab o2) {
+                return o1.id - o2.id;
+            }
+        });
+
+        return tabs;
+    }
+
     @Override
     protected void actionPerformed(GuiButton btn) {
         if( btn.id == this.cancelTask.id ) {
@@ -507,11 +543,43 @@ public class GuiTurretAssembly
             PacketRegistry.sendToServer(new PacketAssemblyToggleAutomate(this.assembly));
         } else if( btn instanceof GuiAssemblyCategoryTab && this.groupBtns.containsKey(btn) ) {
             TurretAssemblyRecipes.RecipeGroup grp = this.groupBtns.get(btn);
-            for( Map.Entry<GuiAssemblyCategoryTab, TurretAssemblyRecipes.RecipeGroup> tab : this.groupBtns.entrySet() ) {
-                tab.getKey().enabled = true;
+            GuiAssemblyCategoryTab[] tabs = getSortedTabs();
+            for( int i = 0; i < tabs.length; i++ ) {
+                tabs[i].enabled = true;
+                if( tabs[i] == btn ) {
+                    currOpenTab = i;
+                }
             }
             btn.enabled = false;
             this.loadGroupRecipes(grp);
+        } else if( btn.id == this.groupDown.id ) {
+            GuiAssemblyCategoryTab[] tabs = this.getSortedTabs();
+            if( scrollGroupPos + 4 < tabs.length ) {
+                scrollGroupPos++;
+                for( int i = 0; i < tabs.length; i++ ) {
+                    tabs[i].yPosition -= 15;
+                    tabs[i].visible = i >= scrollGroupPos && i < scrollGroupPos + 4;
+                }
+
+                this.groupUp.visible = true;
+                if( scrollGroupPos + 4 >= tabs.length ) {
+                    this.groupDown.visible = false;
+                }
+            }
+        } else if( btn.id == this.groupUp.id ) {
+            GuiAssemblyCategoryTab[] tabs = this.getSortedTabs();
+            if( scrollGroupPos > 0 ) {
+                scrollGroupPos--;
+                for( int i = 0; i < tabs.length; i++ ) {
+                    tabs[i].yPosition += 15;
+                    tabs[i].visible = i >= scrollGroupPos && i < scrollGroupPos + 4;
+                }
+
+                this.groupDown.visible = true;
+                if( scrollGroupPos <= 0 ) {
+                    this.groupUp.visible = false;
+                }
+            }
         } else {
             super.actionPerformed(btn);
         }
