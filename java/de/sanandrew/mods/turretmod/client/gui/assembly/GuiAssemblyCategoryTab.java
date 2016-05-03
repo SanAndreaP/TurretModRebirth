@@ -6,7 +6,7 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.client.gui.control;
+package de.sanandrew.mods.turretmod.client.gui.assembly;
 
 import de.sanandrew.mods.turretmod.util.Textures;
 import net.minecraft.client.Minecraft;
@@ -19,19 +19,17 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-public class GuiItemTab
+public class GuiAssemblyCategoryTab
         extends GuiButton
 {
 	protected ItemStack renderedItem;
     protected static RenderItem itemRenderer = new RenderItem();
-    protected boolean isRight;
 
-	public GuiItemTab(int id, int posX, int posY, ItemStack renderedItem, String hoverText, boolean onTheRight) {
+	public GuiAssemblyCategoryTab(int id, int posX, int posY, ItemStack renderedItem, String hoverText) {
 		super(id, posX, posY, hoverText);
-		this.width = 26;
-		this.height = 26;
+		this.width = 20;
+		this.height = 14;
 		this.renderedItem = renderedItem;
-		this.isRight = onTheRight;
 	}
 
     @Override
@@ -40,18 +38,26 @@ public class GuiItemTab
             GL11.glEnable(GL11.GL_BLEND);
             OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
-            mc.renderEngine.bindTexture(Textures.GUI_BUTTONS.getResource());
+            mc.renderEngine.bindTexture(Textures.GUI_ASSEMBLY_CRF.getResource());
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
             this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
             int hoverState = this.getHoverState(this.field_146123_n);
-            this.drawTexturedModalRect(this.xPosition, this.yPosition, 26 * (isRight ? 0 : 1), hoverState * 26, this.width, this.height);
+
+            this.drawTexturedModalRect(this.xPosition, this.yPosition, 50 + 20 * hoverState, 222, this.width, this.height);
+
             this.mouseDragged(mc, mouseX, mouseY);
 
-            this.drawItemStack(this.renderedItem, this.xPosition + 5, this.yPosition + 5, mc);
+            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            RenderHelper.enableGUIStandardItemLighting();
+
+            this.drawItemStack(this.renderedItem, this.xPosition + 9, this.yPosition + 3, mc);
+
+            RenderHelper.disableStandardItemLighting();
+            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 
             if( this.field_146123_n ) {
-                this.drawTabHoveringText(this.displayString, this.xPosition - (this.isRight ? mc.fontRenderer.getStringWidth(this.displayString) + 5 : -5),
-                                         this.yPosition + 21, mc.fontRenderer);
+                this.drawTabHoveringText(this.displayString, this.xPosition + 5, this.yPosition + 15, mc.fontRenderer);
             }
 
             GL11.glDisable(GL11.GL_BLEND);
@@ -104,7 +110,9 @@ public class GuiItemTab
         GL11.glTranslatef(0.0F, 0.0F, 32.0F);
         this.zLevel = 200.0F;
         itemRenderer.zLevel = 200.0F;
-        itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), stack, x, y);
+        GL11.glScalef(0.5F, 0.5F, 1.0F);
+        itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), stack, x * 2, y * 2);
+        GL11.glScalef(2.0F, 2.0F, 1.0F);
         this.zLevel = 0.0F;
         itemRenderer.zLevel = 0.0F;
         GL11.glTranslatef(0.0F, 0.0F, -32.0F);

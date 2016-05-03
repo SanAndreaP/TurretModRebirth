@@ -50,6 +50,7 @@ public class GuiTurretAssembly
 
     private TileEntityTurretAssembly assembly;
     private List<Pair<UUID, ItemStack>> cacheRecipes;
+    private Map<GuiAssemblyCategoryTab, TurretAssemblyRecipes.RecipeGroup> groupBtns;
     private FontRenderer frDetails;
     private boolean shiftPressed;
 
@@ -84,11 +85,33 @@ public class GuiTurretAssembly
         this.posX = (this.width - this.xSize) / 2;
         this.posY = (this.height - this.ySize) / 2;
 
-        this.cacheRecipes = TurretAssemblyRecipes.INSTANCE.getRecipeList();
         this.frDetails = new FontRenderer(this.mc.gameSettings, new ResourceLocation("textures/font/ascii.png"), this.mc.getTextureManager(), true);
 
         this.buttonList.add(this.cancelTask = new GuiSlimButton(this.buttonList.size(), this.posX + 156, this.posY + 55, 50, StatCollector.translateToLocal("gui.sapturretmod.tassembly.cancel")));
         this.buttonList.add(this.automate = new GuiSlimButton(this.buttonList.size(), this.posX + 156, this.posY + 68, 50, StatCollector.translateToLocal("gui.sapturretmod.tassembly.automate.enable")));
+
+        int pos = 0;
+
+        TurretAssemblyRecipes.RecipeGroup[] groups = TurretAssemblyRecipes.INSTANCE.getGroups();
+        this.groupBtns = new HashMap<>(1 + (int) (groups.length / 0.75F));
+        for( TurretAssemblyRecipes.RecipeGroup grp : groups ) {
+            GuiAssemblyCategoryTab tab = new GuiAssemblyCategoryTab(this.buttonList.size(), this.posX + 9, 19 + pos, grp.icon, grp.name);
+            this.groupBtns.put(tab, grp);
+            this.buttonList.add(tab);
+            if( pos == 0 ) {
+                tab.enabled = false;
+                loadGroupRecipes(grp);
+            }
+            pos += 15;
+        }
+    }
+
+    private void loadGroupRecipes(TurretAssemblyRecipes.RecipeGroup group) {
+        this.cacheRecipes = new ArrayList<>();
+        for( UUID recipe : group.recipes ) {
+            this.cacheRecipes.add(Pair.with(recipe, TurretAssemblyRecipes.INSTANCE.getRecipeResult(recipe)));
+            //TurretAssemblyRecipes.INSTANCE.getRecipeList();
+        }
     }
 
     @Override
@@ -134,7 +157,8 @@ public class GuiTurretAssembly
         TmrClientUtils.doGlScissor(this.posX + 33, this.posY + 8, 110, 83);
 
         if( this.cacheRecipes != null ) {
-            for( int i = 0; i < 4; i++) {
+            int maxSz = Math.min(4, this.cacheRecipes.size());
+            for( int i = 0; i < maxSz; i++) {
                 int index = this.scrollPos + i;
                 ItemStack stack = this.cacheRecipes.get(index).getValue1();
 
@@ -236,11 +260,12 @@ public class GuiTurretAssembly
         }
 
         if( this.cacheRecipes != null ) {
-            for( int i = 0; i < 4; i++) {
+            int maxSz = Math.min(4, this.cacheRecipes.size());
+            for( int i = 0; i < maxSz; i++) {
                 int index = this.scrollPos + i;
 
                 if( this.assembly.currCrafting == null ) {
-                    if( mouseX >= this.posX + 13 && mouseX < this.posX + 121 && mouseY >= this.posY + 9 + 21 * i && mouseY < this.posY + 27 + 21 * i ) {
+                    if( mouseX >= this.posX + 35 && mouseX < this.posX + 143 && mouseY >= this.posY + 9 + 21 * i && mouseY < this.posY + 27 + 21 * i ) {
                         if( this.shiftPressed ) {
                             this.drawIngredientsDetail(mouseX - this.posX, mouseY - posY, this.cacheRecipes.get(index).getValue0());
                         } else {
@@ -480,6 +505,13 @@ public class GuiTurretAssembly
             PacketRegistry.sendToServer(new PacketInitAssemblyCrafting(this.assembly));
         } else if( btn.id == this.automate.id ) {
             PacketRegistry.sendToServer(new PacketAssemblyToggleAutomate(this.assembly));
+        } else if( btn instanceof GuiAssemblyCategoryTab && this.groupBtns.containsKey(btn) ) {
+            TurretAssemblyRecipes.RecipeGroup grp = this.groupBtns.get(btn);
+            for( Map.Entry<GuiAssemblyCategoryTab, TurretAssemblyRecipes.RecipeGroup> tab : this.groupBtns.entrySet() ) {
+                tab.getKey().enabled = true;
+            }
+            btn.enabled = false;
+            this.loadGroupRecipes(grp);
         } else {
             super.actionPerformed(btn);
         }

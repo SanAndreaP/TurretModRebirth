@@ -39,7 +39,9 @@ public class TurretAssemblyRecipes
     private Map<UUID, ItemStack> recipeResults = new HashMap<>();
     private Map<UUID, RecipeEntry> recipeResources = new HashMap<>();
 
-    public boolean registerRecipe(UUID uuid, ItemStack result, int fluxPerTick, int ticksProcessing, ItemStack... resources) {
+    private Map<String, RecipeGroup> groups = new HashMap<>();
+
+    public boolean registerRecipe(UUID uuid, RecipeGroup group, ItemStack result, int fluxPerTick, int ticksProcessing, ItemStack... resources) {
         if( uuid == null ) {
             TurretModRebirth.LOG.log(Level.ERROR, "UUID for assembly recipe cannot be null!", new InvalidParameterException());
             return false;
@@ -68,7 +70,23 @@ public class TurretAssemblyRecipes
         this.recipeResults.put(uuid, result);
         this.recipeResources.put(uuid, new RecipeEntry(resources, fluxPerTick, ticksProcessing));
 
+        group.addRecipe(uuid);
+
         return true;
+    }
+
+    public RecipeGroup registerGroup(String name, ItemStack stack) {
+        RecipeGroup group = new RecipeGroup(name, stack);
+        this.groups.put(name, group);
+        return group;
+    }
+
+    public RecipeGroup getGroupByName(String name) {
+        return this.groups.get(name);
+    }
+
+    public RecipeGroup[] getGroups() {
+        return this.groups.values().toArray(new RecipeGroup[this.groups.size()]);
     }
 
     public RecipeEntry getRecipeEntry(UUID uuid) {
@@ -91,21 +109,37 @@ public class TurretAssemblyRecipes
     }
 
     public static void initialize() {
-        INSTANCE.registerRecipe(UUID.fromString("21f88959-c157-44e3-815b-dd956b065052"), ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCrossbow.class)),
-                                10, 100,
-                                new ItemStack(Blocks.cobblestone, 12), new ItemStack(Items.bow, 1), new ItemStack(Items.redstone, 4), new ItemStack(Blocks.planks, 4, OreDictionary.WILDCARD_VALUE));
-        INSTANCE.registerRecipe(UUID.fromString("1a011825-2e5b-4f17-925e-f734e6a732b9"), ItemRegistry.ammo.getAmmoItem(4, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.ARROW_UUID)),
-                                5, 60,
-                                new ItemStack(Items.arrow, 1));
-        INSTANCE.registerRecipe(UUID.fromString("c079d29a-e6e2-4be8-8478-326bdfede08b"), ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.QUIVER_UUID)),
-                                5, 120,
-                                ItemRegistry.ammo.getAmmoItem(16, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.ARROW_UUID)), new ItemStack(Items.leather, 1));
-        INSTANCE.registerRecipe(UUID.fromString("47b68be0-30d6-4849-b995-74c147c8cc5d"), new ItemStack(ItemRegistry.tcu, 1), 10, 180,
-                                new ItemStack(Items.iron_ingot, 5), new ItemStack(Items.redstone, 2), new ItemStack(Blocks.glass_pane, 1));
-        INSTANCE.registerRecipe(UUID.fromString("531f0b05-5bb8-45fc-a899-226a3f52d5b7"),
-                                ItemRegistry.repairKit.getRepKitItem(6, RepairKitRegistry.INSTANCE.getRepairKit(RepairKitRegistry.REGEN_MK1)), 25, 600,
-                                new ItemStack(Items.leather, 2), new ItemStack(Items.potionitem, 3, 0),
-                                new ItemStack(Items.nether_wart, 1), new ItemStack(Items.ghast_tear, 1));
+        RecipeGroup defaultGrp = INSTANCE.registerGroup("DEFAULT", new ItemStack(ItemRegistry.tcu));
+        RecipeGroup turretGrp = INSTANCE.registerGroup("TURRET", ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCrossbow.class)));
+        RecipeGroup medpackGrp = INSTANCE.registerGroup("MEDPACK", ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getRepairKit(RepairKitRegistry.STANDARD_MK1)));
+        RecipeGroup ammoGrp = INSTANCE.registerGroup("AMMO", ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.QUIVER_UUID)));
+
+        ItemStack res = ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCrossbow.class));
+        ItemStack[] ingredients = new ItemStack[] {new ItemStack(Blocks.cobblestone, 12),
+                                                   new ItemStack(Items.bow, 1),
+                                                   new ItemStack(Items.redstone, 4),
+                                                   new ItemStack(Blocks.planks, 4, OreDictionary.WILDCARD_VALUE)};
+        INSTANCE.registerRecipe(TURRET_MK1_CB, turretGrp, res, 10, 100, ingredients);
+
+        res = ItemRegistry.ammo.getAmmoItem(4, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.ARROW_UUID));
+        ingredients = new ItemStack[] {new ItemStack(Items.arrow, 1)};
+        INSTANCE.registerRecipe(ARROW_SNG, ammoGrp, res, 5, 60, ingredients);
+
+        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.QUIVER_UUID));
+        ingredients = new ItemStack[] {ItemRegistry.ammo.getAmmoItem(16, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.ARROW_UUID)),
+                                       new ItemStack(Items.leather, 1)};
+        INSTANCE.registerRecipe(ARROW_MTP, ammoGrp, res, 5, 120, ingredients);
+
+        res = new ItemStack(ItemRegistry.tcu, 1);
+        ingredients = new ItemStack[] {new ItemStack(Items.iron_ingot, 5), new ItemStack(Items.redstone, 2), new ItemStack(Blocks.glass_pane, 1)};
+        INSTANCE.registerRecipe(TCU, defaultGrp, res, 10, 180, ingredients);
+
+        res = ItemRegistry.repairKit.getRepKitItem(6, RepairKitRegistry.INSTANCE.getRepairKit(RepairKitRegistry.REGEN_MK1));
+        ingredients = new ItemStack[] {new ItemStack(Items.leather, 2),
+                                       new ItemStack(Items.potionitem, 3, 0),
+                                       new ItemStack(Items.nether_wart, 1),
+                                       new ItemStack(Items.ghast_tear, 1)};
+        INSTANCE.registerRecipe(REGEN_MK1, medpackGrp, res, 25, 600, ingredients);
     }
 
     public boolean checkAndConsumeResources(IInventory inv, UUID uuid) {
@@ -155,6 +189,15 @@ public class TurretAssemblyRecipes
         return true;
     }
 
+    private static final UUID TURRET_MK1_CB = UUID.fromString("21f88959-c157-44e3-815b-dd956b065052");
+
+    private static final UUID ARROW_SNG = UUID.fromString("1a011825-2e5b-4f17-925e-f734e6a732b9");
+    private static final UUID ARROW_MTP = UUID.fromString("c079d29a-e6e2-4be8-8478-326bdfede08b");
+
+    private static final UUID TCU = UUID.fromString("47b68be0-30d6-4849-b995-74c147c8cc5d");
+
+    private static final UUID REGEN_MK1 = UUID.fromString("531f0b05-5bb8-45fc-a899-226a3f52d5b7");
+
     public static class RecipeEntry {
         public final ItemStack[] resources;
         public final int fluxPerTick;
@@ -172,6 +215,21 @@ public class TurretAssemblyRecipes
                 stacks.add(stack.copy());
             }
             return new RecipeEntry(stacks.toArray(new ItemStack[stacks.size()]), this.fluxPerTick, this.ticksProcessing);
+        }
+    }
+
+    public static class RecipeGroup {
+        public final String name;
+        public final ItemStack icon;
+        public final List<UUID> recipes = new ArrayList<>();
+
+        RecipeGroup(String name, ItemStack icon) {
+            this.name = name;
+            this.icon = icon;
+        }
+
+        public void addRecipe(UUID recipe) {
+            this.recipes.add(recipe);
         }
     }
 }
