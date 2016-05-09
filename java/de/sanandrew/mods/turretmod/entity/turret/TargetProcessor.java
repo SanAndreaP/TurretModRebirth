@@ -6,6 +6,7 @@ import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmo;
+import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.util.PlayerList;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
@@ -111,6 +112,35 @@ public abstract class TargetProcessor
         return ItemStackUtils.isValidStack(this.ammoStack) && this.ammoCount > 0;
     }
 
+    public void dropExcessAmmo() {
+        if( this.hasAmmo() ) {
+            int decrAmmo = this.ammoCount - this.getMaxAmmoCapacity();
+            if( decrAmmo > 0 ) {
+                List<ItemStack> items = new ArrayList<>();
+                TurretAmmo type = ItemRegistry.ammo.getAmmoType(this.ammoStack);
+                int maxStackSize = this.ammoStack.getMaxStackSize();
+
+                while( decrAmmo > 0 && type != null ) {
+                    ItemStack stack = this.ammoStack.copy();
+                    decrAmmo -= (stack.stackSize = Math.min(decrAmmo / type.getAmmoCapacity(), maxStackSize)) * type.getAmmoCapacity();
+                    if( stack.stackSize <= 0 ) {
+                        break;
+                    }
+                    items.add(stack);
+                }
+
+                this.ammoCount = this.getMaxAmmoCapacity();
+
+                if( !items.isEmpty() ) {
+                    for( ItemStack stack : items ) {
+                        EntityItem item = new EntityItem(this.turret.worldObj, this.turret.posX, this.turret.posY, this.turret.posZ, stack);
+                        this.turret.worldObj.spawnEntityInWorld(item);
+                    }
+                }
+            }
+        }
+    }
+
     public void dropAmmo() {
         if( this.hasAmmo() ) {
             List<ItemStack> items = new ArrayList<>();
@@ -180,11 +210,15 @@ public abstract class TargetProcessor
         return false;
     }
 
-    public abstract int getMaxAmmoCapacity();
+    public final int getMaxAmmoCapacity() {
+        return MathHelper.ceiling_double_int(this.turret.getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY).getAttributeValue());
+    }
+
+    public final int getMaxShootTicks() {
+        return MathHelper.ceiling_double_int(this.turret.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).getAttributeValue());
+    }
 
     public abstract EntityTurretProjectile getProjectile();
-
-    public abstract int getMaxShootTicks();
 
     public abstract double getRange();
 

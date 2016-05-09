@@ -9,10 +9,12 @@
 package de.sanandrew.mods.turretmod.client.model;
 
 
+import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
+import org.lwjgl.opengl.GL11;
 
 public class ModelTurretCrossbow
 		extends ModelBase
@@ -114,15 +116,6 @@ public class ModelTurretCrossbow
 		setRotation(ammoBar, 0.0F, 0.0F, 0.0F);
 	}
 
-//	@Override
-//	public void renderBase() {
-//		turretFeetI.render(0.0625F);
-//		turretFeetII.render(0.0625F);
-//		turretFeetIII.render(0.0625F);
-//		turretFeetIV.render(0.0625F);
-//		turretFeetV.render(0.0625F);
-//	}
-
 	public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
 		super.render(entity, f, f1, f2, f3, f4, f5);
 		setRotationAngles(f, f1, f2, f3, f4, f5, entity);
@@ -141,6 +134,14 @@ public class ModelTurretCrossbow
 		turretAntennaII.render(f5);
 		healthBar.render(f5);
 		ammoBar.render(f5);
+
+		GL11.glPushMatrix();
+		if( entity instanceof EntityTurret ) {
+			GL11.glRotated((turretHead.rotateAngleY * 180.0D / Math.PI + 90.0D), 0.0F, 1.0F, 0.0F);
+			GL11.glRotated((turretHead.rotateAngleX * 180.0D / Math.PI), 0.0F, 0.0F, 1.0F);
+			RenderTurret.renderUpgrades((EntityTurret) entity);
+		}
+		GL11.glPopMatrix();
 	}
 
 	@Override

@@ -26,6 +26,8 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
@@ -35,9 +37,13 @@ public class TmrUtils
 {
     public static final Random RNG = new Random();
 
+    public static final int ATTR_ADD_VAL_TO_BASE = 0;
+    public static final int ATTR_ADD_PERC_VAL_TO_SUM = 1;
+    public static final int RISE_SUM_WITH_PERC_VAL = 2;
+
     public static final Comparator<NBTTagCompound> NBT_COMPARATOR_FIXD = new Comparator<NBTTagCompound>() {
         public int compare(NBTTagCompound firstTag, NBTTagCompound secondTag) {
-            return firstTag != null && firstTag.equals(secondTag) ? 0 : (secondTag != null ? -1 : 1);
+            return firstTag != null ? (firstTag.equals(secondTag) ? 0 : 1) : (secondTag != null ? -1 : 0);
         }
     };
 
@@ -96,6 +102,16 @@ public class TmrUtils
         } else {
             return firstStack == secondStack;
         }
+    }
+
+    public static boolean isStackInArray(ItemStack stack, ItemStack... stacks) {
+        for( ItemStack currentStack : stacks ) {
+            if( areStacksEqual(stack, currentStack, NBT_COMPARATOR_FIXD) ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static Pair<Integer, ItemStack> getSimilarStackFromInventory(ItemStack stack, IInventory inv, Comparator<NBTTagCompound> comparator) {
@@ -204,17 +220,34 @@ SOFTWARE.
     }
 
     public static NBTTagList writeItemStacksToTag(ItemStack[] items, int maxQuantity) {
+        return writeItemStacksToTag(items, maxQuantity, null, null);
+    }
+
+    public static NBTTagList writeItemStacksToTag(ItemStack[] items, int maxQuantity, Object caller, String callbackMethod) {
         NBTTagList tagList = new NBTTagList();
 
-        for(int i = 0; i < items.length; ++i) {
-            if(items[i] != null) {
+        for( int i = 0; i < items.length; i++ ) {
+            if( items[i] != null ) {
                 NBTTagCompound tag = new NBTTagCompound();
-                tag.setShort("Slot", (short)i);
+                tag.setShort("Slot", (short) i);
                 items[i].writeToNBT(tag);
-                if(maxQuantity > 32767) {
-                    tag.setInteger("Quantity", items[i].stackSize);
-                } else if(maxQuantity > 127) {
-                    tag.setShort("Quantity", (short)items[i].stackSize);
+                if( maxQuantity > Short.MAX_VALUE ) {
+                    tag.setInteger("Quantity", Math.min(items[i].stackSize, maxQuantity));
+                } else if( maxQuantity > Byte.MAX_VALUE ) {
+                    tag.setShort("Quantity", (short) Math.min(items[i].stackSize, maxQuantity));
+                } else {
+                    tag.setByte("Quantity", (byte) Math.min(items[i].stackSize, maxQuantity));
+                }
+
+                if( callbackMethod != null ) {
+                    try {
+                        Method callback = ReflectionUtils.getCachedMethod(caller.getClass(), callbackMethod, callbackMethod, ItemStack.class, NBTTagCompound.class);
+                        NBTTagCompound stackNbt = new NBTTagCompound();
+                        callback.invoke(caller, items[i], stackNbt);
+                        tag.setTag("StackNBT", stackNbt);
+                    } catch( IllegalAccessException | InvocationTargetException e ) {
+                        throw new RuntimeException("Cannot call callback method for writeItemStacksToTag()!", e);
+                    }
                 }
 
                 tagList.appendTag(tag);
@@ -225,12 +258,25 @@ SOFTWARE.
     }
 
     public static void readItemStacksFromTag(ItemStack[] items, NBTTagList tagList) {
-        for(int i = 0; i < tagList.tagCount(); ++i) {
+        readItemStacksFromTag(items, tagList, null, null);
+    }
+
+    public static void readItemStacksFromTag(ItemStack[] items, NBTTagList tagList, Object caller, String callbackMethod) {
+        for( int i = 0; i < tagList.tagCount(); i++ ) {
             NBTTagCompound tag = tagList.getCompoundTagAt(i);
             short b = tag.getShort("Slot");
             items[b] = ItemStack.loadItemStackFromNBT(tag);
             if(tag.hasKey("Quantity")) {
                 items[b].stackSize = ((NBTBase.NBTPrimitive)tag.getTag("Quantity")).func_150287_d();
+            }
+
+            if( callbackMethod != null && tag.hasKey("StackNBT") ) {
+                try {
+                    Method callback = ReflectionUtils.getCachedMethod(caller.getClass(), callbackMethod, callbackMethod, ItemStack.class, NBTTagCompound.class);
+                    callback.invoke(caller, items[b], tag.getTag("StackNBT"));
+                } catch( IllegalAccessException | InvocationTargetException e ) {
+                    throw new RuntimeException("Cannot call callback method for readItemStacksFromTag()!", e);
+                }
             }
         }
     }

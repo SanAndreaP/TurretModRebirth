@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.entity.turret;
 
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
+import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.util.Textures;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -31,6 +32,13 @@ public class EntityTurretCrossbow
     }
 
     @Override
+    protected void applyEntityAttributes() {
+        super.applyEntityAttributes();
+
+        this.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).setBaseValue(20.0D);
+    }
+
+    @Override
     public ResourceLocation getStandardTexture() {
         return Textures.TURRET_T1_CROSSBOW.getResource();
     }
@@ -48,18 +56,8 @@ public class EntityTurretCrossbow
         }
 
         @Override
-        public int getMaxAmmoCapacity() {
-            return 256;
-        }
-
-        @Override
         public EntityTurretProjectile getProjectile() {
             return new EntityProjectileCrossbowBolt(EntityTurretCrossbow.this.worldObj, EntityTurretCrossbow.this, EntityTurretCrossbow.this.targetProc.getTarget());
-        }
-
-        @Override
-        public int getMaxShootTicks() {
-            return 20;
         }
 
         @Override

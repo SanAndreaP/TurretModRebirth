@@ -26,6 +26,9 @@ public class PacketRegistry
         Utilities.registerMessage(TurretModRebirth.network, PacketSyncTileEntity.class, 4, Side.CLIENT);
         Utilities.registerMessage(TurretModRebirth.network, PacketInitAssemblyCrafting.class, 5, Side.SERVER);
         Utilities.registerMessage(TurretModRebirth.network, PacketAssemblyToggleAutomate.class, 6, Side.SERVER);
+        Utilities.registerMessage(TurretModRebirth.network, PacketOpenGui.class, 7, Side.CLIENT);
+        Utilities.registerMessage(TurretModRebirth.network, PacketOpenGui.class, 7, Side.SERVER);
+        Utilities.registerMessage(TurretModRebirth.network, PacketUpdateUgradeSlot.class, 8, Side.CLIENT);
     }
 
     public static void sendToAllAround(IMessage message, int dim, double x, double y, double z, double range) {

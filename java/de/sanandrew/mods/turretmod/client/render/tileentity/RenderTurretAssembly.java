@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.render.tileentity;
 
+import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.client.model.block.ModelTurretAssembly;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.Textures;
@@ -49,9 +50,10 @@ public class RenderTurretAssembly
         ContextCapabilities glCapabilities = GLContext.getCapabilities();
 
         ItemStack crfStack = assembly.currCrafting != null ? assembly.currCrafting.getValue1() : assembly.getStackInSlot(0);
-        ItemStack upgStack = assembly.getStackInSlot(1);
+        int meta = assembly.hasWorldObj() ? BlockRegistry.turretAssembly.getDirection(assembly.getBlockMetadata()) - 2 : 0;
 
         GL11.glPushMatrix();
+        GL11.glRotatef(90.0F * meta, 0.0F, 1.0F, 0.0F);
         GL11.glTranslatef(0.0F, 0.795F, -0.2125F);
         GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
         GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
@@ -78,17 +80,49 @@ public class RenderTurretAssembly
             }
         }
 
-        if( ItemStackUtils.isValidStack(upgStack) ) {
-            EntityItem entityitem = new EntityItem(assembly.getWorldObj(), 0.0D, 0.0D, 0.0D, upgStack.copy());
+        if( assembly.hasAutoUpgrade() ) {
+            EntityItem entityitem = new EntityItem(assembly.getWorldObj(), 0.0D, 0.0D, 0.0D, assembly.getStackInSlot(1).copy());
             entityitem.getEntityItem().stackSize = 1;
             entityitem.hoverStart = 0.0F;
 
+            GL11.glPushMatrix();
+            GL11.glScalef(1.0F / 0.75F, 1.0F / 0.75F, 1.0F);
+            GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
+            GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
+            GL11.glTranslatef(-0.05F, -0.2F, -0.35F);
+            GL11.glScalef(0.5F, 0.5F, 0.5F);
+            RenderManager.instance.renderEntityWithPosYaw(entityitem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
+            GL11.glPopMatrix();
+        }
+
+        if( assembly.hasSpeedUpgrade() ) {
+            EntityItem entityitem = new EntityItem(assembly.getWorldObj(), 0.0D, 0.0D, 0.0D, assembly.getStackInSlot(2).copy());
+            entityitem.getEntityItem().stackSize = 1;
+            entityitem.hoverStart = 0.0F;
+
+            GL11.glPushMatrix();
             GL11.glScalef(1.0F / 0.75F, 1.0F / 0.75F, 1.0F);
             GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
             GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
             GL11.glTranslatef(-0.05F, -0.2F, -0.4F);
             GL11.glScalef(0.5F, 0.5F, 0.5F);
             RenderManager.instance.renderEntityWithPosYaw(entityitem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
+            GL11.glPopMatrix();
+        }
+
+        if( assembly.hasFilterUpgrade() ) {
+            EntityItem entityitem = new EntityItem(assembly.getWorldObj(), 0.0D, 0.0D, 0.0D, assembly.getStackInSlot(3).copy());
+            entityitem.getEntityItem().stackSize = 1;
+            entityitem.hoverStart = 0.0F;
+
+            GL11.glPushMatrix();
+            GL11.glScalef(1.0F / 0.75F, 1.0F / 0.75F, 1.0F);
+            GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
+            GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
+            GL11.glTranslatef(-0.05F, -0.2F, -0.45F);
+            GL11.glScalef(0.5F, 0.5F, 0.5F);
+            RenderManager.instance.renderEntityWithPosYaw(entityitem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
+            GL11.glPopMatrix();
         }
 
         RenderItem.renderInFrame = false;

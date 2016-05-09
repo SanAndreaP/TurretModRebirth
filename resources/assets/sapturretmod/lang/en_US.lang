@@ -1,4 +1,11 @@
-item.sapturretmod:turret_placer.name=Turret
+tile.sapturretmod:turret_assembly.name=Turret Assembly Table
+tile.sapturretmod:turret_assembly.group0=Misc Stuff
+tile.sapturretmod:turret_assembly.group1=Turrets
+tile.sapturretmod:turret_assembly.group2=Ammunition
+tile.sapturretmod:turret_assembly.group3=Repair Kits
+tile.sapturretmod:turret_assembly.group4=Upgrades
+
+item.sapturretmod:turret_placer.name=Defense Turret
 item.sapturretmod:turret_placer.turret_name=Name: %s
 item.sapturretmod:turret_placer.health=Health: %.1f HP
 
@@ -8,6 +15,15 @@ item.sapturretmod:turret_control_unit.name.3=TCU (Trigger Capacity Uranus)
 item.sapturretmod:turret_control_unit.name.4=TCU (Timmy Cleans Utilities)
 item.sapturretmod:turret_control_unit.name.5=TCU (Transient Colossal Uppercut)
 
+item.sapturretmod:turret_assembly_auto.name=Automation Upgrade
+item.sapturretmod:turret_assembly_auto.desc=Used in the Turret Assembly Table
+item.sapturretmod:turret_assembly_speed.name=Speed Upgrade
+item.sapturretmod:turret_assembly_speed.desc=Used in the Turret Assembly Table
+item.sapturretmod:turret_assembly_filter.name=Filter Upgrade
+item.sapturretmod:turret_assembly_filter.desc=Used in the Turret Assembly Table
+item.sapturretmod:turret_assembly_filter.conf=Configured
+item.sapturretmod:turret_assembly_filter.inst=Right-click to configure, Shift-right-click to clear config.
+
 item.sapturretmod:turret_ammo.arrow_sng.name=Turret Arrow
 item.sapturretmod:turret_ammo.arrow_lrg.name=Turret Arrow Pack
 
@@ -16,6 +32,29 @@ item.sapturretmod:turret_repair_kit.standard_2.name=Repair Kit 10HS
 item.sapturretmod:turret_repair_kit.standard_3.name=Repair Kit 15HS
 item.sapturretmod:turret_repair_kit.standard_4.name=Repair Kit 20HS
 item.sapturretmod:turret_repair_kit.regen_1.name=Repair Kit 01H40R
+
+item.sapturretmod:turret_upgrade.empty.name=Empty
+item.sapturretmod:turret_upgrade.empty.desc=Base for further upgrades. Not applicable to anything.
+item.sapturretmod:turret_upgrade.health_i.name=Health I
+item.sapturretmod:turret_upgrade.health_i.desc=Increases the turret health by 25%.
+item.sapturretmod:turret_upgrade.health_ii.name=Health II
+item.sapturretmod:turret_upgrade.health_ii.desc=Increases the turret health by an additional 25% (50% overall).
+item.sapturretmod:turret_upgrade.health_iii.name=Health III
+item.sapturretmod:turret_upgrade.health_iii.desc=Increases the turret health by an additional 25% (75% overall).
+item.sapturretmod:turret_upgrade.health_iv.name=Health IV
+item.sapturretmod:turret_upgrade.health_iv.desc=Increases the turret health by an additional 25% (100% overall).
+item.sapturretmod:turret_upgrade.reload_i.name=Reload I
+item.sapturretmod:turret_upgrade.reload_i.desc=Decreases the reload time by 15%.
+item.sapturretmod:turret_upgrade.reload_ii.name=Reload II
+item.sapturretmod:turret_upgrade.reload_ii.desc=Decreases the reload time by an additional 35% (50% overall).
+item.sapturretmod:turret_upgrade.upg_storage_i.name=Upgrade Storage I
+item.sapturretmod:turret_upgrade.upg_storage_i.desc=Increases the available upgrade slots by 9.
+item.sapturretmod:turret_upgrade.upg_storage_ii.name=Upgrade Storage II
+item.sapturretmod:turret_upgrade.upg_storage_ii.desc=Increases the available upgrade slots by 9.
+item.sapturretmod:turret_upgrade.upg_storage_iii.name=Upgrade Storage III
+item.sapturretmod:turret_upgrade.upg_storage_iii.desc=Increases the available upgrade slots by 9.
+item.sapturretmod:turret_upgrade.ammo_storage.name=Ammunition Storage
+item.sapturretmod:turret_upgrade.ammo_storage.desc=Increases the available ammo storage by 320 units.
 
 entity.sapturretmod.turret_crossbow.name=Crossbow Turret (T1)
 entity.sapturretmod.turret_revolver.name=Revolver Turret (T2)
@@ -42,6 +81,7 @@ gui.sapturretmod.tcu.page.targetsPlayer.tab=Player Target Settings
 gui.sapturretmod.tcu.page.upgrades.title=TCU - Upgrades
 gui.sapturretmod.tcu.page.upgrades.tab=Upgrades
 gui.sapturretmod.tcu.page.upgrades.button.ejectAll=Eject All Upgrades
+
 gui.sapturretmod.tassembly.cancel=Cancel
 gui.sapturretmod.tassembly.automate.enable=Automate
 gui.sapturretmod.tassembly.automate.disable=Manual

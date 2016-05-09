@@ -40,7 +40,9 @@ public class PacketOpenGui
 
     @Override
     public void handleServerMessage(PacketOpenGui packet, EntityPlayer player) {
-
+        if( packet.guiId >= 0 && packet.guiId < EnumGui.VALUES.length ) {
+            TurretModRebirth.proxy.openGui(player, EnumGui.VALUES[packet.guiId], packet.x, packet.y, packet.z);
+        }
     }
 
     @Override

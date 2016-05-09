@@ -15,14 +15,20 @@ import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
+import de.sanandrew.mods.turretmod.inventory.ContainerAssemblyFilter;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
+import de.sanandrew.mods.turretmod.inventory.ContainerTurretUpgrades;
+import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketOpenGui;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import net.darkhax.bookshelf.lib.Tuple;
+import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -33,7 +39,6 @@ public class CommonProxy
 {
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(PlayerList.INSTANCE);
-//        FMLCommonHandler.instance().bus().register(PlayerList.INSTANCE);
     }
 
     public void init(FMLInitializationEvent event) {
@@ -49,10 +54,22 @@ public class CommonProxy
     public final Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
         if( id >= 0 && id < EnumGui.VALUES.length ) {
             switch( EnumGui.VALUES[id] ) {
+                case GUI_TCU_UPGRADES:
+//                    TileEntity te = world.getTileEntity(x, y, z);
+//                    if( te instanceof TileEntityTurretAssembly ) {
+                        return new ContainerTurretUpgrades(player.inventory, ((EntityTurret) world.getEntityByID(x)).getUpgradeProcessor());
+//                    }
+//                    break;
                 case GUI_TASSEMBLY_MAN:
                     TileEntity te = world.getTileEntity(x, y, z);
                     if( te instanceof TileEntityTurretAssembly ) {
                         return new ContainerTurretAssembly(player.inventory, (TileEntityTurretAssembly) te);
+                    }
+                    break;
+                case GUI_TASSEMBLY_FLT:
+                    ItemStack stack = player.getCurrentEquippedItem();
+                    if( ItemStackUtils.isValidStack(stack) && stack.getItem() == ItemRegistry.asbFilter ) {
+                        return new ContainerAssemblyFilter(player.inventory, stack, player.inventory.currentItem);
                     }
                     break;
             }
@@ -71,10 +88,18 @@ public class CommonProxy
     public void openGui(EntityPlayer player, EnumGui id, int x, int y, int z) {
         int guiId = id.ordinal();
 
-        if( player instanceof EntityPlayerMP && getServerGuiElement(guiId, player, player.worldObj, x, y, z) == null ) {
-            PacketRegistry.sendToPlayer(new PacketOpenGui((byte) guiId, x, y, z), (EntityPlayerMP) player);
+        if( player instanceof EntityPlayerMP ) {
+            if( getServerGuiElement(guiId, player, player.worldObj, x, y, z) == null ) {
+                PacketRegistry.sendToPlayer(new PacketOpenGui((byte) guiId, x, y, z), (EntityPlayerMP) player);
+            } else {
+                FMLNetworkHandler.openGui(player, TurretModRebirth.instance, guiId, player.worldObj, x, y, z);
+            }
         } else {
-            FMLNetworkHandler.openGui(player, TurretModRebirth.instance, guiId, player.worldObj, x, y, z);
+            if( getServerGuiElement(guiId, player, player.worldObj, x, y, z) == null ) {
+                FMLNetworkHandler.openGui(player, TurretModRebirth.instance, guiId, player.worldObj, x, y, z);
+            } else {
+                PacketRegistry.sendToServer(new PacketOpenGui((byte) guiId, x, y, z));
+            }
         }
     }
 

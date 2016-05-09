@@ -22,6 +22,7 @@ import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
+import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -52,6 +53,7 @@ public class TurretModRebirth
         AmmoRegistry.INSTANCE.initialize();
         RepairKitRegistry.INSTANCE.initialize();
         TurretRegistry.INSTANCE.initialize();
+        UpgradeRegistry.INSTANCE.initialize();
         proxy.preInit(event);
         BlockRegistry.initialize();
         ItemRegistry.initialize();

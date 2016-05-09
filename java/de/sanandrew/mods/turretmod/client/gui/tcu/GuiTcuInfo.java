@@ -14,16 +14,26 @@ import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import de.sanandrew.mods.turretmod.util.Textures;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
+import java.util.List;
+
 public class GuiTcuInfo
-        extends GuiTurretControlUnit
+        extends GuiScreen
+        implements GuiTurretCtrlUnit
 {
+    private EntityTurret turret;
+
+    private int guiLeft;
+    private int guiTop;
+
     private int specOwnerHead;
 
     private FontRenderer frAmmoItem;
@@ -36,20 +46,23 @@ public class GuiTcuInfo
     private long infoTimeShown;
 
     public GuiTcuInfo(EntityTurret turret) {
-        super(turret);
+        this.turret = turret;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void initGui() {
         super.initGui();
+        this.guiLeft = (this.width - GuiTCUHelper.X_SIZE) / 2;
+        this.guiTop = (this.height - GuiTCUHelper.Y_SIZE) / 2;
 
-        this.pageInfo.enabled = false;
+        GuiTCUHelper.initGui(this);
+
         this.specOwnerHead = TmrUtils.RNG.nextInt(3) == 0 ? TmrUtils.RNG.nextInt(3) : -1;
 
         this.frAmmoItem = new FontRenderer(this.mc.gameSettings, new ResourceLocation("textures/font/ascii.png"), this.mc.getTextureManager(), true);
 
-        int center = this.guiLeft + (this.xSize - 150) / 2;
+        int center = this.guiLeft + (GuiTCUHelper.X_SIZE - 150) / 2;
         this.buttonList.add(this.dismantle = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 138, 150, translateBtn("dismantle")));
         this.buttonList.add(this.toggleActive = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 151, 150, translateBtn("toggleActive")));
         this.buttonList.add(this.toggleRange = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 164, 150, translateBtn("range")));
@@ -60,31 +73,45 @@ public class GuiTcuInfo
             this.toggleActive.displayString = translateBtn("toggleActive.enable");
         }
 
-        if( this.myTurret.showRange ) {
+        if( this.turret.showRange ) {
             this.toggleRange.displayString = translateBtn("range.disable");
         } else {
             this.toggleRange.displayString = translateBtn("range.enable");
         }
+
+        GuiTCUHelper.pageInfo.enabled = false;
     }
 
     @Override
-    public void drawScreenPostBkg(int mouseX, int mouseY, float partTicks) {
+    public void updateScreen() {
+        super.updateScreen();
+
+        if( this.turret.isDead ) {
+            this.mc.thePlayer.closeScreen();
+        }
+    }
+
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partTicks) {
+        GL11.glColor3f(1.0F, 1.0F, 1.0F);
+        this.drawDefaultBackground();
+
         this.mc.renderEngine.bindTexture(Textures.GUI_TCU_INFO.getResource());
 
         GL11.glColor3f(1.0F, 1.0F, 1.0F);
-        this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
+        this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, GuiTCUHelper.X_SIZE, GuiTCUHelper.Y_SIZE);
 
         if( this.specOwnerHead >= 0 ) {
-            this.drawTexturedModalRect(this.guiLeft + 7, this.guiTop + 95, this.xSize, this.specOwnerHead * 8, 10, 8);
+            this.drawTexturedModalRect(this.guiLeft + 7, this.guiTop + 95, GuiTCUHelper.X_SIZE, this.specOwnerHead * 8, 10, 8);
         }
 
-        String value = this.myTurret.hasCustomNameTag() ? this.myTurret.getCustomNameTag() : "-n/a-";
+        String value = this.turret.hasCustomNameTag() ? this.turret.getCustomNameTag() : "-n/a-";
         this.fontRendererObj.drawString(value, this.guiLeft + 20, this.guiTop + 23, 0x000000);
 
-        value = String.format("%.1f / %.1f HP", this.myTurret.getHealth(), this.myTurret.getMaxHealth());
+        value = String.format("%.1f / %.1f HP", this.turret.getHealth(), this.turret.getMaxHealth());
         this.fontRendererObj.drawString(value, this.guiLeft + 20, this.guiTop + 35, 0x000000);
 
-        TargetProcessor tgtProc = this.myTurret.getTargetProcessor();
+        TargetProcessor tgtProc = this.turret.getTargetProcessor();
         value = String.format("%d", tgtProc.getAmmoCount());
 
         if( tgtProc.hasAmmo() ) {
@@ -102,37 +129,42 @@ public class GuiTcuInfo
         value = tgtProc.hasTarget() ? StatCollector.translateToLocal(String.format("entity.%s.name", tgtProc.getTargetName())) : "-n/a-";
         this.fontRendererObj.drawString(value, this.guiLeft + 20, this.guiTop + 71, 0x000000);
 
-        value = this.myTurret.getOwnerName();
+        value = this.turret.getOwnerName();
         this.fontRendererObj.drawString(value, this.guiLeft + 20, this.guiTop + 95, 0x000000);
 
         if( this.infoStr != null && this.infoTimeShown >= System.currentTimeMillis() - 5000L ) {
             String err = StatCollector.translateToLocal(this.infoStr);
-            this.fontRendererObj.drawSplitString(err, this.guiLeft + 10 + (this.xSize - 20 - Math.min(this.xSize - 20, this.fontRendererObj.getStringWidth(err))) / 2, this.guiTop + 178, this.xSize - 25, 0xFFFF0000);
+            this.fontRendererObj.drawSplitString(err, this.guiLeft + 10 + (GuiTCUHelper.X_SIZE - 20 - Math.min(GuiTCUHelper.X_SIZE - 20, this.fontRendererObj.getStringWidth(err))) / 2,
+                                                 this.guiTop + 178, GuiTCUHelper.X_SIZE - 25, 0xFFFF0000);
         } else {
             this.infoStr = null;
         }
+
+        GuiTCUHelper.drawScreen(this);
+
+        super.drawScreen(mouseX, mouseY, partTicks);
     }
 
     @Override
     protected void actionPerformed(GuiButton button) {
         if( button == this.dismantle ) {
-            if( !this.myTurret.tryDismantle(this.mc.thePlayer) ) {
+            if( !this.turret.tryDismantle(this.mc.thePlayer) ) {
                 this.infoStr = String.format("gui.%s.tcu.page.info.button.dismantle.error", TurretModRebirth.ID);
                 this.infoTimeShown = System.currentTimeMillis();
             } else {
                 this.infoStr = null;
-                this.closeGui();
+                this.mc.thePlayer.closeScreen();
             }
         } else if( button == this.toggleRange ) {
-            this.myTurret.showRange = !this.myTurret.showRange;
-            this.myTurret.ignoreFrustumCheck = this.myTurret.showRange;
+            this.turret.showRange = !this.turret.showRange;
+            this.turret.ignoreFrustumCheck = this.turret.showRange;
 
-            if( this.myTurret.showRange ) {
+            if( this.turret.showRange ) {
                 this.toggleRange.displayString = translateBtn("range.disable");
             } else {
                 this.toggleRange.displayString = translateBtn("range.enable");
             }
-        } else {
+        } else if( !GuiTCUHelper.actionPerformed(button, this) ) {
             super.actionPerformed(button);
         }
     }
@@ -150,5 +182,40 @@ public class GuiTcuInfo
         itemRender.zLevel = 0.0F;
         GL11.glTranslatef(0.0F, 0.0F, -32.0F);
         GL11.glDisable(GL11.GL_LIGHTING);
+    }
+
+    @Override
+    public int getGuiLeft() {
+        return this.guiLeft;
+    }
+
+    @Override
+    public int getGuiTop() {
+        return this.guiTop;
+    }
+
+    @Override
+    public List getButtonList() {
+        return this.buttonList;
+    }
+
+    @Override
+    public EntityTurret getTurret() {
+        return this.turret;
+    }
+
+    @Override
+    public FontRenderer getFontRenderer() {
+        return this.fontRendererObj;
+    }
+
+    @Override
+    public Minecraft getMc() {
+        return this.mc;
+    }
+
+    @Override
+    public boolean doesGuiPauseGame() {
+        return false;
     }
 }

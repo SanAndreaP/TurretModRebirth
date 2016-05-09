@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.tileentity;
 
 import cofh.api.energy.IEnergyHandler;
 import cpw.mods.fml.common.network.ByteBufUtils;
+import de.sanandrew.mods.turretmod.item.ItemAssemblyFilter;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
 import de.sanandrew.mods.turretmod.network.TileClientSync;
@@ -40,7 +41,7 @@ public class TileEntityTurretAssembly
 {
     public static final int MAX_FLUX_STORAGE = 75_000;
     public static final int MAX_FLUX_INSERT = 500;
-    private static final int[] SLOTS_INSERT = new int[] {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
+    private static final int[] SLOTS_INSERT = new int[] {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22};
     private static final int[] SLOTS_EXTRACT =  new int[] {0};
 
     public float robotArmX = 2.0F;
@@ -60,17 +61,14 @@ public class TileEntityTurretAssembly
     private boolean isActiveClient;
 
     private int fluxAmount;
-    private ItemStack[] assemblyStacks = new ItemStack[20];
+    private ItemStack[] assemblyStacks = new ItemStack[23];
 
     public boolean syncStacks = true;
 
-//    private Map<UUID, Integer> craftingQueue = new HashMap<>();
-//    private List<UUID> craftingOrder = new ArrayList<>();
     public Pair<UUID, ItemStack> currCrafting;
     public int ticksCrafted = 0;
     public int maxTicksCrafted = 0;
     public int fluxConsumption = 0;
-//    public ItemStack currentlyCraftingItem;
 
     private boolean doSync = false;
 
@@ -132,62 +130,91 @@ public class TileEntityTurretAssembly
         }
     }
 
+    public boolean hasAutoUpgrade() {
+        return ItemStackUtils.isValidStack(this.assemblyStacks[1]) && this.assemblyStacks[1].getItem() == ItemRegistry.asbAuto;
+    }
+
+    public boolean hasSpeedUpgrade() {
+        return ItemStackUtils.isValidStack(this.assemblyStacks[2]) && this.assemblyStacks[2].getItem() == ItemRegistry.asbSpeed;
+    }
+
+    public boolean hasFilterUpgrade() {
+        return ItemStackUtils.isValidStack(this.assemblyStacks[3]) && this.assemblyStacks[3].getItem() == ItemRegistry.asbFilter;
+    }
+
+    public ItemStack[] getFilterStacks() {
+        if( this.hasFilterUpgrade() ) {
+            return ItemRegistry.asbFilter.getFilterStacks(this.assemblyStacks[3], false);
+        } else {
+            return ItemAssemblyFilter.EMPTY_INV;
+        }
+    }
+
     @Override
     public void updateEntity() {
         super.updateEntity();
 
         if( !this.worldObj.isRemote ) {
-            if( this.automate && (!ItemStackUtils.isValidStack(this.assemblyStacks[1]) || this.assemblyStacks[1].getItem() != ItemRegistry.asbAuto) ) {
+            if( this.automate && !this.hasAutoUpgrade() ) {
                 this.automate = false;
                 this.cancelCrafting();
             }
 
-            this.isActiveClient = this.isActive;
-            if( this.isActive && this.currCrafting != null ) {
-                if( this.fluxAmount >= this.fluxConsumption ) {
-                    this.fluxAmount -= this.fluxConsumption;
-                    if( ++this.ticksCrafted >= this.maxTicksCrafted ) {
-                        ItemStack stack = TurretAssemblyRecipes.INSTANCE.getRecipeResult(this.currCrafting.getValue0());
+            int maxLoop = this.hasSpeedUpgrade() ? 4 : 1;
+            boolean markDirty = false;
 
-                        if( this.assemblyStacks[0] != null ) {
-                            this.assemblyStacks[0].stackSize += stack.stackSize;
-                        } else {
-                            this.assemblyStacks[0] = stack.copy();
-                        }
+            for( int i = 0; i < maxLoop; i++ ) {
+                this.isActiveClient = this.isActive;
+                if( this.isActive && this.currCrafting != null ) {
+                    if( this.fluxAmount >= this.fluxConsumption && !this.worldObj.isBlockIndirectlyGettingPowered(this.xCoord, this.yCoord, this.zCoord) ) {
+                        this.fluxAmount -= this.fluxConsumption;
+                        if( ++this.ticksCrafted >= this.maxTicksCrafted ) {
+                            ItemStack stack = TurretAssemblyRecipes.INSTANCE.getRecipeResult(this.currCrafting.getValue0());
 
-                        if( this.assemblyStacks[0].stackSize + stack.stackSize > this.assemblyStacks[0].getMaxStackSize() ) {
-                            this.isActive = false;
-                            this.isActiveClient = false;
-                        }
-                        if( !TurretAssemblyRecipes.INSTANCE.checkAndConsumeResources(this, this.currCrafting.getValue0()) ) {
-                            this.isActive = false;
-                            this.isActiveClient = false;
-                        }
-
-                        if( this.currCrafting.getValue1().stackSize > 1 ) {
-                            if( !this.automate ) {
-                                this.currCrafting.getValue1().stackSize--;
+                            if( this.assemblyStacks[0] != null ) {
+                                this.assemblyStacks[0].stackSize += stack.stackSize;
+                            } else {
+                                this.assemblyStacks[0] = stack.copy();
                             }
-                        } else if( !this.automate ) {
-                            this.currCrafting = null;
-                            this.maxTicksCrafted = 0;
-                            this.isActive = false;
-                            this.isActiveClient = false;
-                            this.fluxConsumption = 0;
+
+                            if( this.assemblyStacks[0].stackSize + stack.stackSize > this.assemblyStacks[0].getMaxStackSize() ) {
+                                this.isActive = false;
+                                this.isActiveClient = false;
+                            }
+                            if( !TurretAssemblyRecipes.INSTANCE.checkAndConsumeResources(this, this.currCrafting.getValue0()) ) {
+                                this.isActive = false;
+                                this.isActiveClient = false;
+                            }
+
+                            if( this.currCrafting.getValue1().stackSize > 1 ) {
+                                if( !this.automate ) {
+                                    this.currCrafting.getValue1().stackSize--;
+                                }
+                            } else if( !this.automate ) {
+                                this.currCrafting = null;
+                                this.maxTicksCrafted = 0;
+                                this.isActive = false;
+                                this.isActiveClient = false;
+                                this.fluxConsumption = 0;
+                            }
+                            this.ticksCrafted = 0;
+
+                            markDirty = true;
                         }
-                        this.ticksCrafted = 0;
 
-                        this.markDirty();
+                        this.doSync = true;
+                    } else {
+                        this.isActiveClient = false;
+                        this.doSync = true;
                     }
-
-                    this.doSync = true;
                 } else {
+                    this.initCrafting();
                     this.isActiveClient = false;
-                    this.doSync = true;
                 }
-            } else {
-                this.initCrafting();
-                this.isActiveClient = false;
+            }
+
+            if( markDirty ) {
+                this.markDirty();
             }
 
             if( this.doSync ) {
@@ -296,14 +323,6 @@ public class TileEntityTurretAssembly
         nbt.setInteger("flux", this.fluxAmount);
         nbt.setTag("inventory", TmrUtils.writeItemStacksToTag(this.assemblyStacks, 64));
 
-//        NBTTagList crfQueue = new NBTTagList();
-//        for( UUID queue : this.craftingOrder ) {
-//            NBTTagCompound nbtQueue = new NBTTagCompound();
-//            nbtQueue.setString("queueUUID", queue.toString());
-//            nbtQueue.setInteger("queueCount", this.craftingQueue.get(queue));
-//            crfQueue.appendTag(nbtQueue);
-//        }
-//        nbt.setTag("crfQueue", crfQueue);
         if( this.currCrafting != null ) {
             nbt.setString("craftingUUID", this.currCrafting.getValue0().toString());
             ItemStackUtils.writeStackToTag(this.currCrafting.getValue1(), nbt, "craftingStack");
@@ -313,9 +332,6 @@ public class TileEntityTurretAssembly
         nbt.setInteger("maxTicksCrafted", this.maxTicksCrafted);
         nbt.setInteger("fluxConsumption", this.fluxConsumption);
         nbt.setBoolean("automate", this.automate);
-//        if( this.currentlyCraftingItem != null ) {
-//            ItemStackUtils.writeStackToTag(this.currentlyCraftingItem, nbt, "currentlyCraftingItem");
-//        }
     }
 
     private void readNBT(NBTTagCompound nbt) {
@@ -323,14 +339,6 @@ public class TileEntityTurretAssembly
         this.fluxAmount = nbt.getInteger("flux");
         TmrUtils.readItemStacksFromTag(this.assemblyStacks, nbt.getTagList("inventory", Constants.NBT.TAG_COMPOUND));
 
-//        NBTTagList crfQueue = nbt.getTagList("crfQueue", Constants.NBT.TAG_COMPOUND);
-//        for( int i = 0; i < crfQueue.tagCount(); i++ ) {
-//            NBTTagCompound nbtQueue = crfQueue.getCompoundTagAt(i);
-//            UUID queue = UUID.fromString(nbtQueue.getString("queueUUID"));
-//            int count = nbtQueue.getInteger("queueCount");
-//            this.craftingOrder.add(queue);
-//            this.craftingQueue.put(queue, count);
-//        }
         if( nbt.hasKey("craftingUUID") && nbt.hasKey("craftingStack") ) {
             this.currCrafting = Pair.with(UUID.fromString(nbt.getString("craftingUUID")), ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("craftingStack")));
         }
@@ -339,14 +347,24 @@ public class TileEntityTurretAssembly
         this.maxTicksCrafted = nbt.getInteger("maxTicksCrafted");
         this.fluxConsumption = nbt.getInteger("fluxConsumption");
         this.automate = nbt.getBoolean("automate");
-//        if( nbt.hasKey("currentlyCraftingItem") ) {
-//            this.currentlyCraftingItem = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("currentlyCraftingItem"));
-//        }
+    }
+
+    private boolean isStackAcceptable(ItemStack stack, int insrtSlot) {
+        if( this.hasFilterUpgrade() ) {
+            ItemStack[] filter = this.getFilterStacks();
+            if( TmrUtils.isStackInArray(stack, filter) ) {
+                return TmrUtils.areStacksEqual(stack, filter[insrtSlot], TmrUtils.NBT_COMPARATOR_FIXD);
+            } else {
+                return !ItemStackUtils.isValidStack(filter[insrtSlot]);
+            }
+        }
+
+        return true;
     }
 
     @Override
     public int[] getAccessibleSlotsFromSide(int side) {
-        return side == ForgeDirection.DOWN.ordinal() ? SLOTS_EXTRACT : SLOTS_INSERT;
+        return side == ForgeDirection.DOWN.ordinal() ? SLOTS_EXTRACT : (side == ForgeDirection.UP.ordinal() ? new int[0] : SLOTS_INSERT);
     }
 
     @Override
@@ -433,14 +451,17 @@ public class TileEntityTurretAssembly
     }
 
     @Override
-    public void openInventory() { }
+    public void openInventory() {}
 
     @Override
-    public void closeInventory() { }
+    public void closeInventory() {}
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack) {
-        return slot != 0;
+        return slot != 0 && ItemStackUtils.isValidStack(stack)
+                         && ( (slot > 4 && this.isStackAcceptable(stack, slot - 5)) || (slot == 1 && stack.getItem() == ItemRegistry.asbAuto)
+                                                                                    || (slot == 2 && stack.getItem() == ItemRegistry.asbSpeed)
+                                                                                    || (slot == 3 && stack.getItem() == ItemRegistry.asbFilter) );
     }
 
     @Override
@@ -492,6 +513,8 @@ public class TileEntityTurretAssembly
         }
         ByteBufUtils.writeItemStack(buf, this.assemblyStacks[0]);
         ByteBufUtils.writeItemStack(buf, this.assemblyStacks[1]);
+        ByteBufUtils.writeItemStack(buf, this.assemblyStacks[2]);
+        ByteBufUtils.writeItemStack(buf, this.assemblyStacks[3]);
     }
 
     @Override
@@ -513,6 +536,8 @@ public class TileEntityTurretAssembly
         if( this.syncStacks ) {
             this.assemblyStacks[0] = ByteBufUtils.readItemStack(buf);
             this.assemblyStacks[1] = ByteBufUtils.readItemStack(buf);
+            this.assemblyStacks[2] = ByteBufUtils.readItemStack(buf);
+            this.assemblyStacks[3] = ByteBufUtils.readItemStack(buf);
         }
     }
 

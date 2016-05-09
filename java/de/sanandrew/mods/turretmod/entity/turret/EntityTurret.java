@@ -15,6 +15,7 @@ import de.sanandrew.mods.turretmod.network.PacketDismantle;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketUpdateTurretState;
 import de.sanandrew.mods.turretmod.registry.medpack.TurretRepairKit;
+import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
@@ -50,8 +51,6 @@ public abstract class EntityTurret
     public boolean showRange;
 
     // data watcher IDs
-//    private static final int DW_AMMO = 20; /* INT */
-//    private static final int DW_AMMO_TYPE = 21; /* ITEM_STACK */
     private static final int DW_EXPERIENCE = 22; /* INT */
     private static final int DW_SHOOT_TICKS = 26; /* INT */
     private static final int DW_FREQUENCY = 27; /* BYTE */
@@ -60,12 +59,14 @@ public abstract class EntityTurret
     private Triplet<Integer, Integer, Integer> blockPos = null;
 
     protected TargetProcessor targetProc;
+    protected UpgradeProcessor upgProc;
 
     protected UUID ownerUUID;
     protected String ownerName;
 
     public EntityTurret(World world) {
         super(world);
+        this.upgProc = new UpgradeProcessor(this);
     }
 
     public EntityTurret(World world, boolean isUpsideDown, EntityPlayer owner) {
@@ -74,6 +75,15 @@ public abstract class EntityTurret
 
         this.ownerUUID = owner.getUniqueID();
         this.ownerName = owner.getCommandSenderName();
+    }
+
+    @Override
+    protected void applyEntityAttributes() {
+        super.applyEntityAttributes();
+
+        this.getAttributeMap().registerAttribute(TurretAttributes.MAX_AMMO_CAPACITY);
+        this.getAttributeMap().registerAttribute(TurretAttributes.MAX_RELOAD_TICKS);
+//        this.upgHandler.onApplyAttributes(this.getAttributeMap());
     }
 
     @Override
@@ -104,13 +114,9 @@ public abstract class EntityTurret
         }
         deltaY *= this.isUpsideDown ? -1.0D : 1.0D;
 
-//        deltaX *= this.isUpsideDown ? -1.0D : 1.0D;
-//        deltaZ *= this.isUpsideDown ? -1.0D : 1.0D;
-
         double distVecXZ = MathHelper.sqrt_double(deltaX * deltaX + deltaZ * deltaZ);
         float yawRotation = (float) ((this.isUpsideDown ? -1.0D : 1.0D) * (Math.atan2(deltaZ, deltaX) * 180.0D / Math.PI)) - 90.0F;
         float pitchRotation = (float) -(Math.atan2(deltaY, distVecXZ) * 180.0D / Math.PI);
-//        yawRotation -= this.isUpsideDown ? 180.0F : 0.0F;
         this.rotationPitch = -this.updateRotation(this.rotationPitch, pitchRotation);
         this.rotationYawHead = this.updateRotation(this.rotationYawHead, yawRotation);
     }
@@ -154,25 +160,8 @@ public abstract class EntityTurret
         if( !this.worldObj.isRemote ) {
             this.targetProc.onTick();
         }
-//        if( this.entityToAttack == null ) {
-//            List entities = this.worldObj.getEntitiesWithinAABB(IMob.class, this.boundingBox.expand(16.0D, 16.0D, 16.0D));
-//            for( Object e : entities ) {
-//                Entity entity = (Entity) e;
-//                if( !(entity.isDead || entity.isEntityInvulnerable()) ) {
-//                    this.entityToAttack = entity;
-//                    break;
-//                }
-//            }
-//
-////            this.entityToAttack = this.worldObj.getClosestPlayer(this.posX, this.posY, this.posZ, 16.0D);
-//        } else if( !this.worldObj.isRemote && this.ticksExisted % 20 == 0 ) {
-//            EntityTurretProjectile projectile = new EntityTurretProjectile(this.worldObj, this, this.entityToAttack);
-//            this.worldObj.spawnEntityInWorld(projectile);
-//        }
-//
-//        if( this.entityToAttack != null && (this.entityToAttack.isDead || this.entityToAttack.isEntityInvulnerable() || this.getDistanceToEntity(this.entityToAttack) > 16.0D) ) {
-//            this.entityToAttack = null;
-//        }
+
+        this.upgProc.onTick();
 
         this.worldObj.theProfiler.endSection();
 
@@ -182,6 +171,16 @@ public abstract class EntityTurret
             this.rotationYawHead += 1.0F;
             this.rotationPitch = 0.0F;
         }
+    }
+    private void onInteractSucceed(ItemStack heldItem, EntityPlayer player) {
+        if( heldItem.stackSize == 0 ) {
+            player.destroyCurrentEquippedItem();
+        } else {
+            player.inventory.setInventorySlotContents(player.inventory.currentItem, heldItem.copy());
+        }
+        this.updateState();
+        player.inventoryContainer.detectAndSendChanges();
+        this.worldObj.playSoundAtEntity(this, TurretModRebirth.ID + ":collect.ia_get", 1.0F, 1.0F);
     }
 
     @Override
@@ -195,34 +194,23 @@ public abstract class EntityTurret
 
             return false;
         } else if( ItemStackUtils.isValidStack(heldItem) ) {
-            if( this.targetProc.isAmmoApplicable(heldItem) ) {
-                boolean succeed = this.targetProc.addAmmo(heldItem);
-                if( succeed ) {
-                    if( heldItem.stackSize == 0 ) {
-                        player.destroyCurrentEquippedItem();
-                    } else {
-                        player.inventory.setInventorySlotContents(player.inventory.currentItem, heldItem.copy());
-                    }
-                    this.updateState();
-                    player.inventoryContainer.detectAndSendChanges();
-                    this.worldObj.playSoundAtEntity(this, TurretModRebirth.ID + ":collect.ia_get", 1.0F, 1.0F);
-                }
-                return succeed;
+            if( this.targetProc.isAmmoApplicable(heldItem) && this.targetProc.addAmmo(heldItem) ) {
+                this.onInteractSucceed(heldItem, player);
+                return true;
             } else if( heldItem.getItem() == ItemRegistry.repairKit ) {
                 TurretRepairKit repKit = ItemRegistry.repairKit.getRepKitType(heldItem);
                 if( repKit != null && repKit.isApplicable(this) ) {
                     this.heal(repKit.getHealAmount());
                     repKit.onHeal(this);
                     heldItem.stackSize--;
-                    if( heldItem.stackSize == 0 ) {
-                        player.destroyCurrentEquippedItem();
-                    } else {
-                        player.inventory.setInventorySlotContents(player.inventory.currentItem, heldItem.copy());
-                    }
-                    player.inventoryContainer.detectAndSendChanges();
-                    this.worldObj.playSoundAtEntity(this, TurretModRebirth.ID + ":collect.ia_get", 1.0F, 1.0F);
+                    this.onInteractSucceed(heldItem, player);
+
                     return true;
                 }
+            } else if( heldItem.getItem() == ItemRegistry.turretUpgrade && this.upgProc.tryApplyUpgrade(heldItem.copy()) ) {
+                heldItem.stackSize--;
+                this.onInteractSucceed(heldItem, player);
+                return true;
             }
         }
 
@@ -252,11 +240,20 @@ public abstract class EntityTurret
         return this.targetProc;
     }
 
+    public UpgradeProcessor getUpgradeProcessor() {
+        return this.upgProc;
+    }
+
     @Override
     public void writeSpawnData(ByteBuf buffer) {
         NBTTagCompound targetNbt = new NBTTagCompound();
         this.targetProc.writeToNbt(targetNbt);
         ByteBufUtils.writeTag(buffer, targetNbt);
+
+        NBTTagCompound upgNbt = new NBTTagCompound();
+        this.upgProc.writeToNbt(upgNbt);
+        ByteBufUtils.writeTag(buffer, upgNbt);
+
         buffer.writeBoolean(this.isUpsideDown);
 
         if( this.ownerUUID != null ) {
@@ -270,6 +267,7 @@ public abstract class EntityTurret
     @Override
     public void readSpawnData(ByteBuf buffer) {
         this.targetProc.readFromNbt(ByteBufUtils.readTag(buffer));
+        this.upgProc.readFromNbt(ByteBufUtils.readTag(buffer));
         this.isUpsideDown = buffer.readBoolean();
 
         String ownerUUIDStr = ByteBufUtils.readUTF8String(buffer);
@@ -284,6 +282,7 @@ public abstract class EntityTurret
         super.writeEntityToNBT(nbt);
 
         this.targetProc.writeToNbt(nbt);
+        this.upgProc.writeToNbt(nbt);
 
         nbt.setBoolean("isUpsideDown", this.isUpsideDown);
         if( this.ownerUUID != null ) {
@@ -297,6 +296,7 @@ public abstract class EntityTurret
         super.readEntityFromNBT(nbt);
 
         this.targetProc.readFromNbt(nbt);
+        this.upgProc.readFromNbt(nbt);
 
         this.isUpsideDown = nbt.getBoolean("isUpsideDown");
         if( nbt.hasKey("ownerUUID") ) {
@@ -318,15 +318,15 @@ public abstract class EntityTurret
 
     /**turrets are immobile, leave empty*/
     @Override
-    public void knockBack(Entity entity, float unknown, double motionXAmount, double motionZAmount) { }
+    public final void knockBack(Entity entity, float unknown, double motionXAmount, double motionZAmount) {}
 
     /**turrets are immobile, leave empty*/
     @Override
-    public void moveEntity(double motionX, double motionY, double motionZ) { }
+    public final void moveEntity(double motionX, double motionY, double motionZ) {}
 
     /**turrets are immobile, leave empty*/
     @Override
-    public void moveEntityWithHeading(float strafe, float forward) { }
+    public final void moveEntityWithHeading(float strafe, float forward) {}
 
     public abstract ResourceLocation getStandardTexture();
 

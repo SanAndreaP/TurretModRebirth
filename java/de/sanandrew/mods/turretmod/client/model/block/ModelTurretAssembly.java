@@ -1,5 +1,6 @@
 package de.sanandrew.mods.turretmod.client.model.block;
 
+import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import net.darkhax.bookshelf.lib.javatuples.Triplet;
 import net.minecraft.client.Minecraft;
@@ -64,6 +65,9 @@ public class ModelTurretAssembly
     }
 
     public void render(float f5, float partTicks, TileEntityTurretAssembly te) {
+        int meta = te.hasWorldObj() ? BlockRegistry.turretAssembly.getDirection(te.getBlockMetadata()) - 2 : 0;
+        this.base.rotateAngleY = (float)(90.0D * meta / 180.0D * Math.PI);
+
         if( te.isItemRendered ) {
             this.robotBinding.rotationPointX = 3.0F;
             this.robotArm.rotationPointZ = -9.0F;
@@ -72,6 +76,22 @@ public class ModelTurretAssembly
         } else {
             this.robotBinding.rotationPointX = Math.max(2.0F, Math.min(12.0F, te.prevRobotArmX + (te.robotArmX - te.prevRobotArmX) * partTicks));
             this.robotArm.rotationPointZ = Math.max(-11.0F, Math.min(-3.0F, te.prevRobotArmY + (te.robotArmY - te.prevRobotArmY) * partTicks));
+
+            float laserX = ((this.robotBinding.rotationPointX - 7.0F) / 16.0F);
+            float laserZ = ((this.robotArm.rotationPointZ + 5.5F) / 16.0F);
+
+            if( meta == 1 ) {
+                float lx = laserX;
+                laserX = laserZ;
+                laserZ = -lx;
+            } else if( meta == -2 ) {
+                laserX = -laserX;
+                laserZ = -laserZ;
+            } else if( meta == -1 ) {
+                float lx = laserX;
+                laserX = -laserZ;
+                laserZ = lx;
+            }
 
             this.base.render(f5);
 
@@ -82,7 +102,7 @@ public class ModelTurretAssembly
                 GL11.glPushMatrix();
                 GL11.glDisable(GL11.GL_TEXTURE_2D);
                 GL11.glDisable(GL11.GL_LIGHTING);
-                GL11.glTranslatef((this.robotBinding.rotationPointX - 7.0F) / 16.0F, 0.5F, (this.robotArm.rotationPointZ + 5.5F) / 16.0F);
+                GL11.glTranslatef(laserX, 0.5F, laserZ);
                 GL11.glEnable(GL11.GL_BLEND);
                 OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
@@ -114,9 +134,9 @@ public class ModelTurretAssembly
                 GL11.glEnable(GL11.GL_LIGHTING);
                 GL11.glPopMatrix();
 
-                te.spawnParticle = Triplet.with(te.xCoord + 0.48F + (this.robotBinding.rotationPointX - 7.0F) / 16.0F,
+                te.spawnParticle = Triplet.with(te.xCoord + 0.50F + laserX,
                                                 te.yCoord + 0.65F,
-                                                te.zCoord + 0.50F - (this.robotArm.rotationPointZ + 5.5F) / 16.0F);
+                                                te.zCoord + 0.50F - laserZ);
             }
         }
     }

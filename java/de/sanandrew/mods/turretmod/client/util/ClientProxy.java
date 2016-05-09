@@ -14,10 +14,12 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.client.event.RenderWorldLastHandler;
+import de.sanandrew.mods.turretmod.client.gui.assembly.GuiAssemblyFilter;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuEntityTargets;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuInfo;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuPlayerTargets;
+import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuUpgrades;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretCrossbow;
 import de.sanandrew.mods.turretmod.client.particle.ParticleAssemblySpark;
 import de.sanandrew.mods.turretmod.client.render.item.ItemRendererTile;
@@ -27,15 +29,18 @@ import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
+import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.CommonProxy;
 import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.darkhax.bookshelf.lib.Tuple;
+import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -82,12 +87,18 @@ public class ClientProxy
                     return new GuiTcuEntityTargets((EntityTurret) world.getEntityByID(x));
                 case GUI_TCU_PLAYER_TARGETS:
                     return new GuiTcuPlayerTargets((EntityTurret) world.getEntityByID(x));
-//                case GUI_TCU_UPGRADES:
-//                    return new GuiTcuUpgrades((EntityTurret) Minecraft.getMinecraft().theWorld.getEntityByID(x));
+                case GUI_TCU_UPGRADES:
+                    return new GuiTcuUpgrades(player.inventory, (EntityTurret) world.getEntityByID(x));
                 case GUI_TASSEMBLY_MAN:
                     TileEntity te = world.getTileEntity(x, y, z);
                     if( te instanceof TileEntityTurretAssembly ) {
                         return new GuiTurretAssembly(player.inventory, (TileEntityTurretAssembly) te);
+                    }
+                    break;
+                case GUI_TASSEMBLY_FLT:
+                    ItemStack stack = player.getCurrentEquippedItem();
+                    if( ItemStackUtils.isValidStack(stack) && stack.getItem() == ItemRegistry.asbFilter ) {
+                        return new GuiAssemblyFilter(player.inventory, stack);
                     }
                     break;
             }

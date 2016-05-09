@@ -26,6 +26,7 @@ public enum Textures
     GUI_TCU_HUD("textures/gui/tcu/hud.png"),
     GUI_TOOLTIP_HOLOGRAPH("textures/gui/holo_tooltip.png"),
     GUI_ASSEMBLY_CRF("textures/gui/turretassembly/manual.png"),
+    GUI_ASSEMBLY_FLT("textures/gui/turretassembly/filter.png"),
 
     TURRET_FORCEFIELD_P1("textures/entities/shield_1.png"),
     TURRET_FORCEFIELD_P2("textures/entities/shield_2.png"),

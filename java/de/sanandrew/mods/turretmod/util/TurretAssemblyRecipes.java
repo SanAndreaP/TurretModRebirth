@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
+import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
@@ -76,6 +77,7 @@ public class TurretAssemblyRecipes
     }
 
     public RecipeGroup registerGroup(String name, ItemStack stack) {
+        name = BlockRegistry.turretAssembly.getUnlocalizedName() + '.' + name;
         RecipeGroup group = new RecipeGroup(name, stack);
         this.groups.put(name, group);
         return group;
@@ -109,11 +111,12 @@ public class TurretAssemblyRecipes
     }
 
     public static void initialize() {
-        RecipeGroup defaultGrp = INSTANCE.registerGroup("DEFAULT", new ItemStack(ItemRegistry.tcu));
-        RecipeGroup turretGrp = INSTANCE.registerGroup("TURRET", ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCrossbow.class)));
-        RecipeGroup medpackGrp = INSTANCE.registerGroup("MEDPACK", ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getRepairKit(RepairKitRegistry.STANDARD_MK1)));
-        RecipeGroup ammoGrp = INSTANCE.registerGroup("AMMO", ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.QUIVER_UUID)));
+        RecipeGroup defaultGrp = INSTANCE.registerGroup("group0", new ItemStack(ItemRegistry.tcu));
+        RecipeGroup turretGrp = INSTANCE.registerGroup("group1", ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCrossbow.class)));
+        RecipeGroup repkitGrp = INSTANCE.registerGroup("group3", ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getRepairKit(RepairKitRegistry.STANDARD_MK1)));
+        RecipeGroup ammoGrp = INSTANCE.registerGroup("group2", ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.QUIVER_UUID)));
 
+    // turrets
         ItemStack res = ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCrossbow.class));
         ItemStack[] ingredients = new ItemStack[] {new ItemStack(Blocks.cobblestone, 12),
                                                    new ItemStack(Items.bow, 1),
@@ -121,6 +124,7 @@ public class TurretAssemblyRecipes
                                                    new ItemStack(Blocks.planks, 4, OreDictionary.WILDCARD_VALUE)};
         INSTANCE.registerRecipe(TURRET_MK1_CB, turretGrp, res, 10, 100, ingredients);
 
+    // ammo
         res = ItemRegistry.ammo.getAmmoItem(4, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.ARROW_UUID));
         ingredients = new ItemStack[] {new ItemStack(Items.arrow, 1)};
         INSTANCE.registerRecipe(ARROW_SNG, ammoGrp, res, 5, 60, ingredients);
@@ -130,16 +134,38 @@ public class TurretAssemblyRecipes
                                        new ItemStack(Items.leather, 1)};
         INSTANCE.registerRecipe(ARROW_MTP, ammoGrp, res, 5, 120, ingredients);
 
+    // miscellaneous
         res = new ItemStack(ItemRegistry.tcu, 1);
         ingredients = new ItemStack[] {new ItemStack(Items.iron_ingot, 5), new ItemStack(Items.redstone, 2), new ItemStack(Blocks.glass_pane, 1)};
         INSTANCE.registerRecipe(TCU, defaultGrp, res, 10, 180, ingredients);
+
+    // medkits
+        res = ItemRegistry.repairKit.getRepKitItem(3, RepairKitRegistry.INSTANCE.getRepairKit(RepairKitRegistry.STANDARD_MK1));
+        ingredients = new ItemStack[] {new ItemStack(Items.leather, 2),
+                                       new ItemStack(Items.potionitem, 1, 8197)};
+        INSTANCE.registerRecipe(HEAL_MK1, repkitGrp, res, 25, 600, ingredients);
+        res = ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getRepairKit(RepairKitRegistry.STANDARD_MK2));
+        ingredients = new ItemStack[] {new ItemStack(Items.leather, 2),
+                                       new ItemStack(Items.potionitem, 1, 8197),
+                                       ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getRepairKit(RepairKitRegistry.STANDARD_MK1))};
+        INSTANCE.registerRecipe(HEAL_MK2, repkitGrp, res, 25, 600, ingredients);
+        res = ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getRepairKit(RepairKitRegistry.STANDARD_MK3));
+        ingredients = new ItemStack[] {new ItemStack(Items.leather, 2),
+                                       new ItemStack(Items.potionitem, 1, 8197),
+                                       ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getRepairKit(RepairKitRegistry.STANDARD_MK2))};
+        INSTANCE.registerRecipe(HEAL_MK3, repkitGrp, res, 25, 600, ingredients);
+        res = ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getRepairKit(RepairKitRegistry.STANDARD_MK4));
+        ingredients = new ItemStack[] {new ItemStack(Items.leather, 2),
+                                       new ItemStack(Items.potionitem, 1, 8197),
+                                       ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getRepairKit(RepairKitRegistry.STANDARD_MK3))};
+        INSTANCE.registerRecipe(HEAL_MK4, repkitGrp, res, 25, 600, ingredients);
 
         res = ItemRegistry.repairKit.getRepKitItem(6, RepairKitRegistry.INSTANCE.getRepairKit(RepairKitRegistry.REGEN_MK1));
         ingredients = new ItemStack[] {new ItemStack(Items.leather, 2),
                                        new ItemStack(Items.potionitem, 3, 0),
                                        new ItemStack(Items.nether_wart, 1),
                                        new ItemStack(Items.ghast_tear, 1)};
-        INSTANCE.registerRecipe(REGEN_MK1, medpackGrp, res, 25, 600, ingredients);
+        INSTANCE.registerRecipe(REGEN_MK1, repkitGrp, res, 25, 600, ingredients);
     }
 
     public boolean checkAndConsumeResources(IInventory inv, UUID uuid) {
@@ -196,6 +222,10 @@ public class TurretAssemblyRecipes
 
     private static final UUID TCU = UUID.fromString("47b68be0-30d6-4849-b995-74c147c8cc5d");
 
+    private static final UUID HEAL_MK1 = UUID.fromString("816758d6-7f00-4acb-bd94-f7a8a0f86016");
+    private static final UUID HEAL_MK2 = UUID.fromString("39a1a9c8-ceca-40ca-bcf7-abd2b1a26c82");
+    private static final UUID HEAL_MK3 = UUID.fromString("a70314be-1709-4ae4-8ff7-69f3a69acca2");
+    private static final UUID HEAL_MK4 = UUID.fromString("6fd0927f-61e0-49a0-b615-4b3e28a63ee4");
     private static final UUID REGEN_MK1 = UUID.fromString("531f0b05-5bb8-45fc-a899-226a3f52d5b7");
 
     public static class RecipeEntry {

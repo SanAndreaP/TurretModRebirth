@@ -13,9 +13,13 @@ import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Level;
@@ -163,5 +167,32 @@ public class RenderTurret
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         }
+    }
+
+    public static void renderUpgrades(EntityTurret turret) {
+        int cnt = turret.getUpgradeProcessor().getSizeInventory();
+        RenderItem.renderInFrame = true;
+        for( int i = 0; i < cnt; i++ ) {
+            ItemStack slotStack = turret.getUpgradeProcessor().getStackInSlot(i);
+            if( slotStack != null ) {
+                EntityItem entityitem = new EntityItem(turret.worldObj, 0.0D, 0.0D, 0.0D, slotStack.copy());
+                entityitem.getEntityItem().stackSize = 1;
+                entityitem.hoverStart = 0.0F;
+
+                int x = i / 18;
+                int y = i % 18;
+
+                GL11.glPushMatrix();
+                GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
+                GL11.glScalef(0.5F, 0.5F, 0.5F);
+                GL11.glTranslatef(-0.25F + 0.5F * x, 0.15F + 0.05F, -0.425F + 0.05F * y);
+                GL11.glEnable(GL11.GL_BLEND);
+                OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+                RenderManager.instance.renderEntityWithPosYaw(entityitem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
+                GL11.glDisable(GL11.GL_BLEND);
+                GL11.glPopMatrix();
+            }
+        }
+        RenderItem.renderInFrame = false;
     }
 }

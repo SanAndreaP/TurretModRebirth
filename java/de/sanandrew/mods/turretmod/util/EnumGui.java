@@ -14,7 +14,8 @@ public enum EnumGui
     GUI_TCU_ENTITY_TARGETS,
     GUI_TCU_PLAYER_TARGETS,
     GUI_TCU_UPGRADES,
-    GUI_TASSEMBLY_MAN;
+    GUI_TASSEMBLY_MAN,
+    GUI_TASSEMBLY_FLT;
 
     public static final EnumGui[] VALUES = values();
 }
