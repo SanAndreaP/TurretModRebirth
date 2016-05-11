@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.tileentity;
 
 import cofh.api.energy.IEnergyProvider;
+import cofh.api.energy.IEnergyReceiver;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
 import de.sanandrew.mods.turretmod.network.TileClientSync;
@@ -98,6 +99,34 @@ public class TileEntityPotatoGenerator
 
             if( effectiveness > 0.1F ) {
                 this.fluxAmount += StrictMath.round(StrictMath.pow(1.6D, effectiveness) / (68.0D + (127433.0D / 177119.0D)) * 80.0D);
+            }
+        }
+
+
+        if( this.fluxExtractPerTick > 0 ) {
+            for( ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS ) {
+                if( direction == ForgeDirection.UP ) {
+                    continue;
+                }
+
+                TileEntity te = this.worldObj.getTileEntity(this.xCoord + direction.offsetX, this.yCoord + direction.offsetY, this.zCoord + direction.offsetZ);
+
+                if( te instanceof IEnergyReceiver ) {
+                    IEnergyReceiver receiver = (IEnergyReceiver) te;
+
+                    if( !receiver.canConnectEnergy(direction) ) {
+                        continue;
+                    }
+
+                    int extractable = this.extractEnergy(direction, MAX_FLUX_EXTRACT, true);
+                    int receivable = receiver.receiveEnergy(direction.getOpposite(), extractable, false);
+
+                    this.extractEnergy(direction, receivable, false);
+                }
+
+                if( this.fluxExtractPerTick <= 0 ) {
+                    break;
+                }
             }
         }
 

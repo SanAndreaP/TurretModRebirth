@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.block;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import de.sanandrew.mods.turretmod.tileentity.TileEntityPotatoGenerator;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.block.Block;
@@ -16,13 +17,16 @@ import net.minecraft.block.Block;
 public class BlockRegistry
 {
     public static BlockTurretAssembly turretAssembly;
+    public static BlockPotatoGenerator potatoGenerator;
 
     public static void initialize() {
         turretAssembly = new BlockTurretAssembly();
+        potatoGenerator = new BlockPotatoGenerator();
 
-        registerBlocks(turretAssembly);
+        registerBlocks(turretAssembly, potatoGenerator);
 
         GameRegistry.registerTileEntity(TileEntityTurretAssembly.class, TurretModRebirth.ID + ":te_turret_assembly");
+        GameRegistry.registerTileEntity(TileEntityPotatoGenerator.class, TurretModRebirth.ID + ":te_potato_generator");
     }
 
     private static void registerBlocks(Block... blocks) {
