@@ -9,31 +9,49 @@
 package de.sanandrew.mods.turretmod.tileentity;
 
 import cofh.api.energy.IEnergyProvider;
+import de.sanandrew.mods.turretmod.network.PacketRegistry;
+import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
 import de.sanandrew.mods.turretmod.network.TileClientSync;
 import io.netty.buffer.ByteBuf;
+import net.darkhax.bookshelf.lib.javatuples.Triplet;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.ForgeDirection;
+import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class TileEntityPotatoGenerator
         extends TileEntity
         implements ISidedInventory, TileClientSync, IEnergyProvider
 {
     public static final int MAX_FLUX_STORAGE = 150_000;
-    public static final int MAX_FLUX_EXTRACT = 500;
+    public static final int MAX_FLUX_EXTRACT = 750;
 
     public int fluxExtractPerTick;
 
-    private ItemStack[] invStacks = new ItemStack[18];
+    private ItemStack[] invStacks = new ItemStack[23];
     private static final int[] SLOTS_INSERT = new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8};
-    private float[] progress = new float[9];
+    private static final int[] SLOTS_PROCESSING = new int[] {9, 10, 11, 12, 13, 14, 15, 16, 17};
+    private static final int[] SLOTS_EXTRACT = new int[] {18, 19, 20, 21, 22};
+    private int[] progress = new int[9];
 
     private int fluxAmount;
+    private int prevFluxAmount;
+    private boolean doSync;
+
+    private static final Map<Item, Triplet<Float, ItemStack, ItemStack>> FUELS = new HashMap<>(3);
+
+    public static void initializeRecipes() {
+        FUELS.put(Items.potato, Triplet.with(1.0F, new ItemStack(Items.sugar, 1), new ItemStack(Items.baked_potato, 1)));
+        FUELS.put(Items.poisonous_potato, Triplet.with(1.2F, new ItemStack(Items.sugar, 1), new ItemStack(Items.gunpowder)));
+    }
 
     @Override
     public boolean canUpdate() {
@@ -42,7 +60,7 @@ public class TileEntityPotatoGenerator
 
     @Override
     public int[] getAccessibleSlotsFromSide(int side) {
-        return side == ForgeDirection.DOWN.ordinal() || side == ForgeDirection.UP.ordinal() ? new int[0] : SLOTS_INSERT;
+        return side == ForgeDirection.DOWN.ordinal() ? SLOTS_EXTRACT : side == ForgeDirection.UP.ordinal() ? new int[0] : SLOTS_INSERT;
     }
 
     @Override
@@ -54,34 +72,49 @@ public class TileEntityPotatoGenerator
     public void updateEntity() {
         this.fluxExtractPerTick = Math.min(this.fluxAmount, MAX_FLUX_EXTRACT);
 
-        int effectiveness = 0;
-
         if( this.fluxAmount + 65 < MAX_FLUX_STORAGE ) {
-            for( int i = 0; i < 9; i++ ) {
-                if( this.invStacks[i + 9] != null ) {
-                    this.progress[i] -= 0.1F;
-                    if( this.progress[i] <= 0.0F ) {
-                        this.invStacks[i + 9] = null;
+            float effectiveness = 0.0F;
+
+            for( int i = 0; i < SLOTS_PROCESSING.length; i++ ) {
+                if( this.invStacks[SLOTS_PROCESSING[i]] != null ) {
+                    if( --this.progress[i] < 1 ) {
+                        this.invStacks[SLOTS_PROCESSING[i]] = null;
+                        this.markDirty();
                     } else {
-                        effectiveness++;
+                        effectiveness += FUELS.get(this.invStacks[SLOTS_PROCESSING[i]].getItem()).getValue0();
                     }
-                } else if( this.invStacks[i] != null ) {
-                    this.invStacks[i + 9] = this.invStacks[i].copy();
-                    this.invStacks[i + 9].stackSize = 1;
-                    if( --this.invStacks[i].stackSize <= 0 ) {
-                        this.invStacks[i] = null;
+                    this.doSync = true;
+                } else if( this.invStacks[SLOTS_INSERT[i]] != null ) {
+                    this.invStacks[SLOTS_PROCESSING[i]] = this.invStacks[SLOTS_INSERT[i]].copy();
+                    this.invStacks[SLOTS_PROCESSING[i]].stackSize = 1;
+                    if( --this.invStacks[SLOTS_INSERT[i]].stackSize < 1 ) {
+                        this.invStacks[SLOTS_INSERT[i]] = null;
                     }
-                    this.progress[i] = 10.0F;
+                    this.progress[i] = 200;
+                    this.markDirty();
+                    this.doSync = true;
                 }
             }
 
-            this.fluxAmount += MathHelper.floor_double(StrictMath.pow(10.0D, effectiveness / 5.0D));
+            if( effectiveness > 0.1F ) {
+                this.fluxAmount += StrictMath.round(StrictMath.pow(1.6D, effectiveness) / (68.0D + (127433.0D / 177119.0D)) * 80.0D);
+            }
         }
+
+        if( this.prevFluxAmount != this.fluxAmount ) {
+            this.doSync = true;
+        }
+
+        if( this.doSync ) {
+            PacketRegistry.sendToAllAround(new PacketSyncTileEntity(this), this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 64.0D);
+        }
+
+        this.prevFluxAmount = this.fluxAmount;
     }
 
     @Override
     public boolean canExtractItem(int slot, ItemStack stack, int side) {
-        return false;
+        return side == ForgeDirection.DOWN.ordinal() && ArrayUtils.contains(SLOTS_EXTRACT, slot);
     }
 
     @Override
@@ -165,7 +198,8 @@ public class TileEntityPotatoGenerator
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack) {
-        return ItemStackUtils.isValidStack(stack) && (stack.getItem() == Items.potato || stack.getItem() == Items.poisonous_potato) && slot < 9 && this.invStacks[slot + 9] == null;
+        return ItemStackUtils.isValidStack(stack) && (stack.getItem() == Items.potato || stack.getItem() == Items.poisonous_potato)
+               && ArrayUtils.contains(SLOTS_INSERT, slot) && this.invStacks[SLOTS_PROCESSING[ArrayUtils.indexOf(SLOTS_INSERT, slot)]] == null;
     }
 
     @Override
@@ -190,7 +224,6 @@ public class TileEntityPotatoGenerator
         if( !simulate ) {
             this.fluxAmount -= energyExtracted;
             this.fluxExtractPerTick -= energyExtracted;
-//            this.doSync = true;
         }
 
         return energyExtracted;
@@ -208,6 +241,6 @@ public class TileEntityPotatoGenerator
 
     @Override
     public boolean canConnectEnergy(ForgeDirection from) {
-        return false;
+        return from != ForgeDirection.UP;
     }
 }
