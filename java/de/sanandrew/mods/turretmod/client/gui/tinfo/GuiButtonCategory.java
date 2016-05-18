@@ -15,7 +15,9 @@ import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.ARBMultitexture;
 import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.GL11;
@@ -34,27 +36,33 @@ public class GuiButtonCategory
 
         @Override
         public void call(int shader) {
-            TextureManager r = Minecraft.getMinecraft().renderEngine;
+            TextureManager texMgr = Minecraft.getMinecraft().renderEngine;
             int heightMatchUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "heightMatch");
             int imageUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "image");
             int maskUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "mask");
 
             float heightMatch = GuiButtonCategory.this.ticksHovered / GuiButtonCategory.this.time;
             OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, r.getTexture(GuiButtonCategory.this.texture.getResource()).getGlTextureId());
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, texMgr.getTexture(GuiButtonCategory.this.texture.getResource()).getGlTextureId());
             ARBShaderObjects.glUniform1iARB(imageUniform, 0);
 
             //TODO: add config option for the "7" <glSecondaryTextureUnit>
             OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + 7);
             GL11.glEnable(GL11.GL_TEXTURE_2D);
             GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, r.getTexture(Resources.TINFO_GRP_STENCIL2.getResource()).getGlTextureId());
+            ResourceLocation stencil = Resources.TINFO_GRP_STENCIL2.getResource();
+            ITextureObject stencilTex = texMgr.getTexture(stencil);
+            if( stencilTex == null ) {
+                texMgr.bindTexture(stencil);
+                stencilTex = texMgr.getTexture(stencil);
+            }
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, stencilTex.getGlTextureId());
             ARBShaderObjects.glUniform1iARB(maskUniform, 7);
 
             ARBShaderObjects.glUniform1fARB(heightMatchUniform, heightMatch);
         }
     };
-    static boolean boundStencil = false;
+//    static boolean boundStencil = false;
 
 //    GuiLexicon gui;
 //    LexiconCategory category;
@@ -101,10 +109,10 @@ public class GuiButtonCategory
 //        GL11.glTranslatef(-this.xPosition, -this.yPosition, 0.0F);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-        if(!boundStencil) { // Allow for the texture manager to take care of the ResourceLocation before we use it directly with gl
-            mc.renderEngine.bindTexture(Resources.TINFO_GRP_STENCIL2.getResource());
-            boundStencil = true;
-        }
+//        if(!boundStencil) { // Allow for the texture manager to take care of the ResourceLocation before we use it directly with gl
+//            mc.renderEngine.bindTexture(Resources.TINFO_GRP_STENCIL.getResource());
+//            boundStencil = true;
+//        }
 
         mc.renderEngine.bindTexture(this.texture.getResource());
 

@@ -51,11 +51,9 @@ public final class ShaderHelper
 
         ARBShaderObjects.glUseProgramObjectARB(shader);
 
-        Minecraft.getMinecraft().runTick();
-
         if(shader != 0) {
             int time = ARBShaderObjects.glGetUniformLocationARB(shader, "time");
-            ARBShaderObjects.glUniform1iARB(time, (int)ClientTickHandler.ticksInGame);
+            ARBShaderObjects.glUniform1iARB(time, ClientTickHandler.ticksInGame);
 
             if(callback != null)
                 callback.call(shader);
