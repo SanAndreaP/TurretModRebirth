@@ -86,6 +86,8 @@ gui.sapturretmod.tassembly.cancel=Cancel
 gui.sapturretmod.tassembly.automate.enable=Automate
 gui.sapturretmod.tassembly.automate.disable=Manual
 
+gui.sapturretmod.electrogen.effective=Effectiveness:
+gui.sapturretmod.electrogen.powergen=Power generated:
 
 
 

@@ -14,7 +14,7 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketUpdateTargets;
 import de.sanandrew.mods.turretmod.util.PlayerList;
-import de.sanandrew.mods.turretmod.util.Textures;
+import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -111,7 +111,7 @@ public class GuiTcuPlayerTargets
             this.scroll = Math.max(0.0F, Math.min(1.0F, (mouseY - 2 - scrollMinY) / 109.0F));
         }
 
-        this.mc.renderEngine.bindTexture(Textures.GUI_TCU_TARGETS.getResource());
+        this.mc.renderEngine.bindTexture(Resources.GUI_TCU_TARGETS.getResource());
 
         GL11.glColor3f(1.0F, 1.0F, 1.0F);
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, GuiTCUHelper.X_SIZE, GuiTCUHelper.Y_SIZE);
@@ -147,7 +147,7 @@ public class GuiTcuPlayerTargets
             }
 
             GL11.glColor3f(1.0F, 1.0F, 1.0F);
-            this.mc.renderEngine.bindTexture(Textures.GUI_TCU_TARGETS.getResource());
+            this.mc.renderEngine.bindTexture(Resources.GUI_TCU_TARGETS.getResource());
             this.drawTexturedModalRect(this.guiLeft + 10, this.guiTop + 20 + offsetY, 176, btnTexOffY, 8, 8);
 
             int textColor = 0xFFFFFF;

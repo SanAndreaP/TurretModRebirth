@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.util;
 
 import net.minecraft.util.ResourceLocation;
 
-public enum Textures
+public enum Resources
 {
     TURRET_T1_CROSSBOW("textures/entities/turrets/t1_crossbow.png"),
     TURRET_T1_CROSSBOW_GLOW("textures/entities/turrets/t1_crossbow_glow.png"),
@@ -27,17 +27,29 @@ public enum Textures
     GUI_TOOLTIP_HOLOGRAPH("textures/gui/holo_tooltip.png"),
     GUI_ASSEMBLY_CRF("textures/gui/turretassembly/manual.png"),
     GUI_ASSEMBLY_FLT("textures/gui/turretassembly/filter.png"),
+    GUI_POTATOGEN("textures/gui/potatogen.png"),
+    GUI_TURRETINFO("textures/gui/turretinfo/backg.png"),
+
+    TINFO_GRP_AMMO("textures/gui/turretinfo/groups/ammo.png"),
+    TINFO_GRP_INFO("textures/gui/turretinfo/groups/info.png"),
+    TINFO_GRP_MISC("textures/gui/turretinfo/groups/misc.png"),
+    TINFO_GRP_TURRET("textures/gui/turretinfo/groups/turrets.png"),
+    TINFO_GRP_UPGRADE("textures/gui/turretinfo/groups/upgrades.png"),
+    TINFO_GRP_STENCIL("textures/gui/stencil.png"),
+    TINFO_GRP_STENCIL2("textures/gui/stencil2.png"),
 
     TURRET_FORCEFIELD_P1("textures/entities/shield_1.png"),
     TURRET_FORCEFIELD_P2("textures/entities/shield_2.png"),
     TURRET_FORCEFIELD_P3("textures/entities/shield_3.png"),
     TILE_ITEM_TRANSMITTER("textures/blocks/item_transmitter.png"),
     TILE_ITEM_TRANSMITTER_GLOW("textures/blocks/item_transmitter_glow.png"),
-    TILE_TURRET_ASSEMBLY("textures/blocks/turret_assembly.png");
+    TILE_TURRET_ASSEMBLY("textures/blocks/turret_assembly.png"),
+
+    SHADER_CATEGORY_BUTTON_FRAG("shader/categorybtn.frag");
 
     private final ResourceLocation location;
 
-    Textures(String texture) {
+    Resources(String texture) {
         this.location = new ResourceLocation(TurretModRebirth.ID, texture);
     }
 
@@ -45,7 +57,8 @@ public enum Textures
         return this.location;
     }
 
-    public String getTexture() {
+    @Override
+    public String toString() {
         return this.location.toString();
     }
 }

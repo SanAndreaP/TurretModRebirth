@@ -11,7 +11,7 @@ package de.sanandrew.mods.turretmod.client.gui.tcu;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiSlimButton;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
-import de.sanandrew.mods.turretmod.util.Textures;
+import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
@@ -96,7 +96,7 @@ public class GuiTcuInfo
         GL11.glColor3f(1.0F, 1.0F, 1.0F);
         this.drawDefaultBackground();
 
-        this.mc.renderEngine.bindTexture(Textures.GUI_TCU_INFO.getResource());
+        this.mc.renderEngine.bindTexture(Resources.GUI_TCU_INFO.getResource());
 
         GL11.glColor3f(1.0F, 1.0F, 1.0F);
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, GuiTCUHelper.X_SIZE, GuiTCUHelper.Y_SIZE);

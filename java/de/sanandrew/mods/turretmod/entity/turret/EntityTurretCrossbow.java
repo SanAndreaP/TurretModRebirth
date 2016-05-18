@@ -11,7 +11,7 @@ package de.sanandrew.mods.turretmod.entity.turret;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.util.Textures;
+import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -40,12 +40,12 @@ public class EntityTurretCrossbow
 
     @Override
     public ResourceLocation getStandardTexture() {
-        return Textures.TURRET_T1_CROSSBOW.getResource();
+        return Resources.TURRET_T1_CROSSBOW.getResource();
     }
 
     @Override
     public ResourceLocation getGlowTexture() {
-        return Textures.TURRET_T1_CROSSBOW_GLOW.getResource();
+        return Resources.TURRET_T1_CROSSBOW_GLOW.getResource();
     }
 
     private class MyTargetProc

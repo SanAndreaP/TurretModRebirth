@@ -18,11 +18,13 @@ import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBol
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.inventory.ContainerAssemblyFilter;
+import de.sanandrew.mods.turretmod.inventory.ContainerPotatoGenerator;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretUpgrades;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketOpenGui;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
+import de.sanandrew.mods.turretmod.tileentity.TileEntityPotatoGenerator;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import net.darkhax.bookshelf.lib.Tuple;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
@@ -53,6 +55,7 @@ public class CommonProxy
     @Override
     public final Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
         if( id >= 0 && id < EnumGui.VALUES.length ) {
+            TileEntity te;
             switch( EnumGui.VALUES[id] ) {
                 case GUI_TCU_UPGRADES:
 //                    TileEntity te = world.getTileEntity(x, y, z);
@@ -61,7 +64,7 @@ public class CommonProxy
 //                    }
 //                    break;
                 case GUI_TASSEMBLY_MAN:
-                    TileEntity te = world.getTileEntity(x, y, z);
+                    te = world.getTileEntity(x, y, z);
                     if( te instanceof TileEntityTurretAssembly ) {
                         return new ContainerTurretAssembly(player.inventory, (TileEntityTurretAssembly) te);
                     }
@@ -72,6 +75,12 @@ public class CommonProxy
                         return new ContainerAssemblyFilter(player.inventory, stack, player.inventory.currentItem);
                     }
                     break;
+                case GUI_POTATOGEN:
+                    te = world.getTileEntity(x, y, z);
+                    if( te instanceof TileEntityPotatoGenerator ) {
+                        return new ContainerPotatoGenerator(player.inventory, (TileEntityPotatoGenerator) te);
+                    }
+
             }
         } else {
             TurretModRebirth.LOG.log(Level.WARN, "Gui ID %d cannot be opened as it isn't a valid index in EnumGui!", id);

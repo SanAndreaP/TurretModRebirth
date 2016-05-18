@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.client.gui.assembly;
 
 import de.sanandrew.mods.turretmod.inventory.ContainerAssemblyFilter;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.util.Textures;
+import de.sanandrew.mods.turretmod.util.Resources;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -44,7 +44,7 @@ public class GuiAssemblyFilter
     protected void drawGuiContainerBackgroundLayer(float partTicks, int mouseX, int mouseY) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-        this.mc.getTextureManager().bindTexture(Textures.GUI_ASSEMBLY_FLT.getResource());
+        this.mc.getTextureManager().bindTexture(Resources.GUI_ASSEMBLY_FLT.getResource());
 
         this.drawTexturedModalRect(this.posX, this.posY, 0, 0, this.xSize, this.ySize);
 

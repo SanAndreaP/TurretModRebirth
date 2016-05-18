@@ -21,6 +21,7 @@ public class ItemRegistry
     public static ItemAssemblyUpgrade asbSpeed;
     public static ItemAssemblyFilter asbFilter;
     public static ItemTurretUpgrade turretUpgrade;
+    public static ItemTurretInfo turretInfo;
 
     public static void initialize() {
         turret = new ItemTurret();
@@ -31,8 +32,9 @@ public class ItemRegistry
         asbSpeed = new ItemAssemblyUpgrade("speed");
         asbFilter = new ItemAssemblyFilter();
         turretUpgrade = new ItemTurretUpgrade();
+        turretInfo = new ItemTurretInfo();
 
-        registerItems(turret, ammo, tcu, repairKit, asbAuto, asbSpeed, asbFilter, turretUpgrade);
+        registerItems(turret, ammo, tcu, repairKit, asbAuto, asbSpeed, asbFilter, turretUpgrade, turretInfo);
     }
 
     private static void registerItems(Item... items) {

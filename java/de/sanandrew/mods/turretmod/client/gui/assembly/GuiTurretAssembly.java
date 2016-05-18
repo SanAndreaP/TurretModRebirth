@@ -16,7 +16,7 @@ import de.sanandrew.mods.turretmod.network.PacketAssemblyToggleAutomate;
 import de.sanandrew.mods.turretmod.network.PacketInitAssemblyCrafting;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
-import de.sanandrew.mods.turretmod.util.Textures;
+import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretAssemblyRecipes;
 import net.darkhax.bookshelf.lib.javatuples.Pair;
@@ -74,8 +74,6 @@ public class GuiTurretAssembly
     private GuiAssemblyTabNav groupUp;
     private GuiAssemblyTabNav groupDown;
     private Map<GuiAssemblyCategoryTab, TurretAssemblyRecipes.RecipeGroup> groupBtns;
-    private int posY;
-    private int posX;
 
     public GuiTurretAssembly(InventoryPlayer invPlayer, TileEntityTurretAssembly tile) {
         super(new ContainerTurretAssembly(invPlayer, tile));
@@ -96,15 +94,12 @@ public class GuiTurretAssembly
     public void initGui() {
         super.initGui();
 
-        this.posX = (this.width - this.xSize) / 2;
-        this.posY = (this.height - this.ySize) / 2;
-
         this.frDetails = new FontRenderer(this.mc.gameSettings, new ResourceLocation("textures/font/ascii.png"), this.mc.getTextureManager(), true);
 
-        this.buttonList.add(this.cancelTask = new GuiSlimButton(this.buttonList.size(), this.posX + 156, this.posY + 55, 50, StatCollector.translateToLocal("gui.sapturretmod.tassembly.cancel")));
-        this.buttonList.add(this.automate = new GuiSlimButton(this.buttonList.size(), this.posX + 156, this.posY + 68, 50, StatCollector.translateToLocal("gui.sapturretmod.tassembly.automate.enable")));
+        this.buttonList.add(this.cancelTask = new GuiSlimButton(this.buttonList.size(), this.guiLeft + 156, this.guiTop + 55, 50, StatCollector.translateToLocal("gui.sapturretmod.tassembly.cancel")));
+        this.buttonList.add(this.automate = new GuiSlimButton(this.buttonList.size(), this.guiLeft + 156, this.guiTop + 68, 50, StatCollector.translateToLocal("gui.sapturretmod.tassembly.automate.enable")));
 
-        this.buttonList.add(this.groupUp = new GuiAssemblyTabNav(this.buttonList.size(), this.posX + 13, this.posY + 9, false));
+        this.buttonList.add(this.groupUp = new GuiAssemblyTabNav(this.buttonList.size(), this.guiLeft + 13, this.guiTop + 9, false));
 
         int pos = 0;
         TurretAssemblyRecipes.RecipeGroup[] groups = TurretAssemblyRecipes.INSTANCE.getGroups();
@@ -116,7 +111,7 @@ public class GuiTurretAssembly
         });
         this.groupBtns = new HashMap<>(1 + (int) (groups.length / 0.75F));
         for( TurretAssemblyRecipes.RecipeGroup grp : groups ) {
-            GuiAssemblyCategoryTab tab = new GuiAssemblyCategoryTab(this.buttonList.size(), this.posX + 9, this.posY + 19 + pos * 15 - 15 * scrollGroupPos, grp.icon, StatCollector.translateToLocal(grp.name));
+            GuiAssemblyCategoryTab tab = new GuiAssemblyCategoryTab(this.buttonList.size(), this.guiLeft + 9, this.guiTop + 19 + pos * 15 - 15 * scrollGroupPos, grp.icon, StatCollector.translateToLocal(grp.name));
             this.groupBtns.put(tab, grp);
             this.buttonList.add(tab);
 
@@ -129,7 +124,7 @@ public class GuiTurretAssembly
             pos++;
         }
 
-        this.buttonList.add(this.groupDown = new GuiAssemblyTabNav(this.buttonList.size(), this.posX + 13, this.posY + 79, true));
+        this.buttonList.add(this.groupDown = new GuiAssemblyTabNav(this.buttonList.size(), this.guiLeft + 13, this.guiTop + 79, true));
 
         if( scrollGroupPos + 4 >= groups.length ) {
             this.groupDown.visible = false;
@@ -153,9 +148,9 @@ public class GuiTurretAssembly
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-        this.mc.getTextureManager().bindTexture(Textures.GUI_ASSEMBLY_CRF.getResource());
+        this.mc.getTextureManager().bindTexture(Resources.GUI_ASSEMBLY_CRF.getResource());
 
-        this.drawTexturedModalRect(this.posX, this.posY, 0, 0, this.xSize, this.ySize);
+        this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
 
         int energy = this.assembly.getEnergyStored(ForgeDirection.DOWN);
         int maxEnergy = TileEntityTurretAssembly.MAX_FLUX_STORAGE;
@@ -163,30 +158,30 @@ public class GuiTurretAssembly
         double energyPerc = energy / (double) maxEnergy;
         int energyBarY = Math.max(0, Math.min(82, MathHelper.ceiling_double_int((1.0D - energyPerc) * 82.0D)));
 
-        this.drawTexturedModalRect(this.posX + 210, this.posY + 8 + energyBarY, 230, 12 + energyBarY, 12, 82 - energyBarY);
+        this.drawTexturedModalRect(this.guiLeft + 210, this.guiTop + 8 + energyBarY, 230, 12 + energyBarY, 12, 82 - energyBarY);
 
         double procPerc = this.assembly.isActive ? this.assembly.ticksCrafted / (double) this.assembly.maxTicksCrafted : 0.0D;
         int procBarX = Math.max(0, Math.min(50, MathHelper.ceiling_double_int(procPerc * 50.0D)));
 
-        this.drawTexturedModalRect(this.posX + 156, this.posY + 30, 0, 222, procBarX, 5);
+        this.drawTexturedModalRect(this.guiLeft + 156, this.guiTop + 30, 0, 222, procBarX, 5);
 
         int maxScroll = this.cacheRecipes.size() - 4;
         if( maxScroll > 0 && this.assembly.currCrafting == null ) {
             int scrollBtnPos = MathHelper.floor_double(79.0D / maxScroll * this.scrollPos);
 
-            if( (mouseX >= this.posX + 144 && mouseX < this.posX + 150 && mouseY >= this.posY + 7 && mouseY < this.posY + 92) || this.isScrolling ) {
+            if( (mouseX >= this.guiLeft + 144 && mouseX < this.guiLeft + 150 && mouseY >= this.guiTop + 7 && mouseY < this.guiTop + 92) || this.isScrolling ) {
                 if( isLmbDown ) {
-                    scrollBtnPos = Math.min(79, Math.max(0, mouseY - 7 - this.posY));
+                    scrollBtnPos = Math.min(79, Math.max(0, mouseY - 7 - this.guiTop));
                     this.scrollPos = MathHelper.floor_double(scrollBtnPos / 78.0D * maxScroll);
                     this.isScrolling = true;
                 }
             }
 
-            this.drawTexturedModalRect(this.posX + 144, this.posY + 7 + scrollBtnPos, 230, 6, 6, 6);
+            this.drawTexturedModalRect(this.guiLeft + 144, this.guiTop + 7 + scrollBtnPos, 230, 6, 6, 6);
         }
 
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
-        TmrClientUtils.doGlScissor(this.posX + 33, this.posY + 8, 110, 83);
+        TmrClientUtils.doGlScissor(this.guiLeft + 33, this.guiTop + 8, 110, 83);
 
         if( this.cacheRecipes != null ) {
             int maxSz = Math.min(4, this.cacheRecipes.size());
@@ -198,21 +193,21 @@ public class GuiTurretAssembly
 
                 GL11.glEnable(GL12.GL_RESCALE_NORMAL);
                 RenderHelper.enableGUIStandardItemLighting();
-                this.drawItemStack(stack, this.posX + 36, this.posY + 10 + 21 * i, 200.0F);
+                this.drawItemStack(stack, this.guiLeft + 36, this.guiTop + 10 + 21 * i, 200.0F);
                 GL11.glDisable(GL12.GL_RESCALE_NORMAL);
                 RenderHelper.disableStandardItemLighting();
 
                 List tooltip = this.getTooltipWithoutShift(stack);
-                this.frDetails.drawString(tooltip.get(0).toString(), this.posX + 57, this.posY + 10 + 21 * i, 0xFFFFFFFF);
+                this.frDetails.drawString(tooltip.get(0).toString(), this.guiLeft + 57, this.guiTop + 10 + 21 * i, 0xFFFFFFFF);
                 if( tooltip.size() > 1 ) {
-                    this.frDetails.drawString(tooltip.get(1).toString(), this.posX + 57, this.posY + 19 + 21 * i, 0xFF808080);
+                    this.frDetails.drawString(tooltip.get(1).toString(), this.guiLeft + 57, this.guiTop + 19 + 21 * i, 0xFF808080);
                 }
 
                 if( isActive ) {
-                    if( mouseX >= this.posX + 35 && mouseX < this.posX + 143 && mouseY >= this.posY + 9 + 21 * i && mouseY < this.posY + 27 + 21 * i ) {
+                    if( mouseX >= this.guiLeft + 35 && mouseX < this.guiLeft + 143 && mouseY >= this.guiTop + 9 + 21 * i && mouseY < this.guiTop + 27 + 21 * i ) {
                         GL11.glDisable(GL11.GL_DEPTH_TEST);
                         GL11.glColorMask(true, true, true, false);
-                        this.drawGradientRect(this.posX + 35, this.posY + 9 + 21 * i, this.posX + 143, this.posY + 27 + 21 * i, 0x2AFFFFFF, 0x2AFFFFFF);
+                        this.drawGradientRect(this.guiLeft + 35, this.guiTop + 9 + 21 * i, this.guiLeft + 143, this.guiTop + 27 + 21 * i, 0x2AFFFFFF, 0x2AFFFFFF);
                         GL11.glColorMask(true, true, true, true);
                         GL11.glEnable(GL11.GL_DEPTH_TEST);
 
@@ -224,13 +219,13 @@ public class GuiTurretAssembly
                         }
                     }
                 } else {
-                    this.mc.getTextureManager().bindTexture(Textures.GUI_ASSEMBLY_CRF.getResource());
+                    this.mc.getTextureManager().bindTexture(Resources.GUI_ASSEMBLY_CRF.getResource());
 
                     GL11.glDisable(GL11.GL_DEPTH_TEST);
                     GL11.glEnable(GL11.GL_BLEND);
                     OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
                     GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.75F);
-                    this.drawTexturedModalRect(this.posX + 35, this.posY + 9 + 21 * i, 35, 9 + 21 * i, 108, 18);
+                    this.drawTexturedModalRect(this.guiLeft + 35, this.guiTop + 9 + 21 * i, 35, 9 + 21 * i, 108, 18);
                     GL11.glDisable(GL11.GL_BLEND);
                     GL11.glEnable(GL11.GL_DEPTH_TEST);
                 }
@@ -245,7 +240,7 @@ public class GuiTurretAssembly
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.25F);
             RenderHelper.disableStandardItemLighting();
             this.mc.renderEngine.bindTexture(this.mc.renderEngine.getResourceLocation(this.upgIconAuto.getItemSpriteNumber()));
-            this.drawTexturedModelRectFromIcon(this.posX + 14, this.posY + 100, this.upgIconAuto.getIconIndex(), 16, 16);
+            this.drawTexturedModelRectFromIcon(this.guiLeft + 14, this.guiTop + 100, this.upgIconAuto.getIconIndex(), 16, 16);
             GL11.glDisable(GL11.GL_BLEND);
         }
         if( !this.assembly.hasSpeedUpgrade() ) {
@@ -254,7 +249,7 @@ public class GuiTurretAssembly
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.25F);
             RenderHelper.disableStandardItemLighting();
             this.mc.renderEngine.bindTexture(this.mc.renderEngine.getResourceLocation(this.upgIconSpeed.getItemSpriteNumber()));
-            this.drawTexturedModelRectFromIcon(this.posX + 14, this.posY + 118, this.upgIconSpeed.getIconIndex(), 16, 16);
+            this.drawTexturedModelRectFromIcon(this.guiLeft + 14, this.guiTop + 118, this.upgIconSpeed.getIconIndex(), 16, 16);
             GL11.glDisable(GL11.GL_BLEND);
         }
         if( this.assembly.hasFilterUpgrade() ) {
@@ -268,16 +263,16 @@ public class GuiTurretAssembly
 
                     GL11.glEnable(GL12.GL_RESCALE_NORMAL);
                     RenderHelper.enableGUIStandardItemLighting();
-                    this.drawItemStack(filterStack, this.posX + 36 + x * 18, this.posY + 100 + y * 18, 200.0F);
+                    this.drawItemStack(filterStack, this.guiLeft + 36 + x * 18, this.guiTop + 100 + y * 18, 200.0F);
                     GL11.glDisable(GL12.GL_RESCALE_NORMAL);
                     RenderHelper.disableStandardItemLighting();
 
-                    this.mc.getTextureManager().bindTexture(Textures.GUI_ASSEMBLY_CRF.getResource());
+                    this.mc.getTextureManager().bindTexture(Resources.GUI_ASSEMBLY_CRF.getResource());
                     GL11.glDisable(GL11.GL_DEPTH_TEST);
                     GL11.glEnable(GL11.GL_BLEND);
                     OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
                     GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.75F);
-                    this.drawTexturedModalRect(this.posX + 35 + x * 18, this.posY + 99 + y * 18, 35 + x * 18, 99 + 18 * y, 18, 18);
+                    this.drawTexturedModalRect(this.guiLeft + 35 + x * 18, this.guiTop + 99 + y * 18, 35 + x * 18, 99 + 18 * y, 18, 18);
                     GL11.glDisable(GL11.GL_BLEND);
                     GL11.glEnable(GL11.GL_DEPTH_TEST);
 //                    GL11.glEnable(GL11.GL_BLEND);
@@ -286,7 +281,7 @@ public class GuiTurretAssembly
 //                    RenderHelper.disableStandardItemLighting();
 //                    this.mc.renderEngine.bindTexture(this.mc.renderEngine.getResourceLocation(filterStack.getItemSpriteNumber()));
 //
-//                    this.drawTexturedModelRectFromIcon(this.posX + 36 + x * 18, this.posY + 100 + y * 18, filterStack.getIconIndex(), 16, 16);
+//                    this.drawTexturedModelRectFromIcon(this.guiLeft + 36 + x * 18, this.guiTop + 100 + y * 18, filterStack.getIconIndex(), 16, 16);
 //                    GL11.glDisable(GL11.GL_BLEND);
                 }
             }
@@ -296,7 +291,7 @@ public class GuiTurretAssembly
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.25F);
             RenderHelper.disableStandardItemLighting();
             this.mc.renderEngine.bindTexture(this.mc.renderEngine.getResourceLocation(this.upgIconFilter.getItemSpriteNumber()));
-            this.drawTexturedModelRectFromIcon(this.posX + 202, this.posY + 100, this.upgIconFilter.getIconIndex(), 16, 16);
+            this.drawTexturedModelRectFromIcon(this.guiLeft + 202, this.guiTop + 100, this.upgIconFilter.getIconIndex(), 16, 16);
             GL11.glDisable(GL11.GL_BLEND);
         }
 
@@ -306,15 +301,15 @@ public class GuiTurretAssembly
                 cnt = String.valueOf('\u221E');
             }
 
-            this.frDetails.drawString("Crafting:", this.posX + 156, this.posY + 40, 0xFF303030);
+            this.frDetails.drawString("Crafting:", this.guiLeft + 156, this.guiTop + 40, 0xFF303030);
             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
             RenderHelper.enableGUIStandardItemLighting();
-            this.drawItemStack(this.assembly.currCrafting.getValue1(), this.posX + 190, this.posY + 36, 200.0F);
+            this.drawItemStack(this.assembly.currCrafting.getValue1(), this.guiLeft + 190, this.guiTop + 36, 200.0F);
             GL11.glDisable(GL12.GL_RESCALE_NORMAL);
             RenderHelper.disableStandardItemLighting();
             GL11.glDisable(GL11.GL_DEPTH_TEST);
-            this.fontRendererObj.drawString(cnt, this.posX + 191 + 18 - this.fontRendererObj.getStringWidth(cnt), this.posY + 37 + 18 - this.fontRendererObj.FONT_HEIGHT, 0xFF303030);
-            this.fontRendererObj.drawString(cnt, this.posX + 190 + 18 - this.fontRendererObj.getStringWidth(cnt), this.posY + 36 + 18 - this.fontRendererObj.FONT_HEIGHT, 0xFFFFFFFF);
+            this.fontRendererObj.drawString(cnt, this.guiLeft + 191 + 18 - this.fontRendererObj.getStringWidth(cnt), this.guiTop + 37 + 18 - this.fontRendererObj.FONT_HEIGHT, 0xFF303030);
+            this.fontRendererObj.drawString(cnt, this.guiLeft + 190 + 18 - this.fontRendererObj.getStringWidth(cnt), this.guiTop + 36 + 18 - this.fontRendererObj.FONT_HEIGHT, 0xFFFFFFFF);
 
             this.cancelTask.enabled = true;
             this.automate.enabled = false;
@@ -342,8 +337,8 @@ public class GuiTurretAssembly
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-        if( mouseX >= this.posX + 210 && mouseX < this.posX + 222 && mouseY >= this.posY + 8 && mouseY < this.posY + 90 ) {
-            this.drawRFluxLabel(mouseX - this.posX, mouseY - posY);
+        if( mouseX >= this.guiLeft + 210 && mouseX < this.guiLeft + 222 && mouseY >= this.guiTop + 8 && mouseY < this.guiTop + 90 ) {
+            this.drawRFluxLabel(mouseX - this.guiLeft, mouseY - this.guiTop);
         }
 
         if( this.cacheRecipes != null ) {
@@ -352,11 +347,11 @@ public class GuiTurretAssembly
                 int index = this.scrollPos + i;
 
                 if( this.assembly.currCrafting == null ) {
-                    if( mouseX >= this.posX + 35 && mouseX < this.posX + 143 && mouseY >= this.posY + 9 + 21 * i && mouseY < this.posY + 27 + 21 * i ) {
+                    if( mouseX >= this.guiLeft + 35 && mouseX < this.guiLeft + 143 && mouseY >= this.guiTop + 9 + 21 * i && mouseY < this.guiTop + 27 + 21 * i ) {
                         if( this.shiftPressed ) {
-                            this.drawIngredientsDetail(mouseX - this.posX, mouseY - posY, this.cacheRecipes.get(index).getValue0());
+                            this.drawIngredientsDetail(mouseX - this.guiLeft, mouseY - this.guiTop, this.cacheRecipes.get(index).getValue0());
                         } else {
-                            this.drawIngredientsSmall(mouseX - this.posX, mouseY - posY, this.cacheRecipes.get(index).getValue0());
+                            this.drawIngredientsSmall(mouseX - this.guiLeft, mouseY - this.guiTop, this.cacheRecipes.get(index).getValue0());
                         }
                     }
                 }

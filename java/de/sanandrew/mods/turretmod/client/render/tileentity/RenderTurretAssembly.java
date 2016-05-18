@@ -11,7 +11,7 @@ package de.sanandrew.mods.turretmod.client.render.tileentity;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.client.model.block.ModelTurretAssembly;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
-import de.sanandrew.mods.turretmod.util.Textures;
+import de.sanandrew.mods.turretmod.util.Resources;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -38,7 +38,7 @@ public class RenderTurretAssembly
         GL11.glTranslatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         GL11.glRotatef(180.0F, 1.0F, 0.0F, 0.0F);
 
-        this.bindTexture(Textures.TILE_TURRET_ASSEMBLY.getResource());
+        this.bindTexture(Resources.TILE_TURRET_ASSEMBLY.getResource());
         this.modelBlock.render(0.0625F, partTicks, te);
 
         renderItem(te);

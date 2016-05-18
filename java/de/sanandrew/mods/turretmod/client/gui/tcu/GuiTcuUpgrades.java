@@ -12,7 +12,7 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretUpgrades;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
-import de.sanandrew.mods.turretmod.util.Textures;
+import de.sanandrew.mods.turretmod.util.Resources;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -59,7 +59,7 @@ public class GuiTcuUpgrades
     protected void drawGuiContainerBackgroundLayer(float partTicks, int mouseX, int mouseY) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-        this.mc.getTextureManager().bindTexture(Textures.GUI_TCU_UPGRADES.getResource());
+        this.mc.getTextureManager().bindTexture(Resources.GUI_TCU_UPGRADES.getResource());
 
         this.drawTexturedModalRect(this.posX, this.posY, 0, 0, this.xSize, this.ySize);
 

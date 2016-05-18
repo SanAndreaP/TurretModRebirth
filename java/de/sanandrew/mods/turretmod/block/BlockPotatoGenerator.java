@@ -45,7 +45,7 @@ public class BlockPotatoGenerator
                 int meta = (world.getBlockMetadata(x, y, z) + 1) & 3;
                 world.setBlockMetadataWithNotify(x, y, z, meta, 2);
             } else {
-//                TurretModRebirth.proxy.openGui(player, EnumGui.GUI_TASSEMBLY_MAN, x, y, z);
+                TurretModRebirth.proxy.openGui(player, EnumGui.GUI_POTATOGEN, x, y, z);
             }
         }
 
@@ -100,7 +100,7 @@ public class BlockPotatoGenerator
 
     @Override
     public int getRenderType() {
-        return -1;
+        return 0;//-1;
     }
 
     @Override

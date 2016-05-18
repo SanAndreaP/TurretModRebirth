@@ -8,7 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.control;
 
-import de.sanandrew.mods.turretmod.util.Textures;
+import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -42,7 +42,7 @@ public class GuiIconTab
             GL11.glEnable(GL11.GL_BLEND);
             OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
-            mc.renderEngine.bindTexture(Textures.GUI_BUTTONS.getResource());
+            mc.renderEngine.bindTexture(Resources.GUI_BUTTONS.getResource());
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
             int hoverState = this.getHoverState(this.field_146123_n);

@@ -10,16 +10,20 @@ package de.sanandrew.mods.turretmod.client.util;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
+import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import de.sanandrew.mods.turretmod.client.event.RenderWorldLastHandler;
+import de.sanandrew.mods.turretmod.client.gui.GuiPotatoGenerator;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiAssemblyFilter;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuEntityTargets;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuInfo;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuPlayerTargets;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuUpgrades;
+import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretCrossbow;
 import de.sanandrew.mods.turretmod.client.particle.ParticleAssemblySpark;
 import de.sanandrew.mods.turretmod.client.render.item.ItemRendererTile;
@@ -30,6 +34,7 @@ import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBol
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.tileentity.TileEntityPotatoGenerator;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.CommonProxy;
 import de.sanandrew.mods.turretmod.util.EnumGui;
@@ -66,6 +71,10 @@ public class ClientProxy
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurretAssembly.class, new RenderTurretAssembly());
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlockRegistry.turretAssembly), new ItemRendererTile(new TileEntityTurretAssembly(true)));
+
+        FMLCommonHandler.instance().bus().register(new ClientTickHandler());
+
+        ShaderHelper.initShaders();
     }
 
     @Override
@@ -80,6 +89,7 @@ public class ClientProxy
     @Override
     public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
         if( id >= 0 && id < EnumGui.VALUES.length ) {
+            TileEntity te;
             switch( EnumGui.VALUES[id] ) {
                 case GUI_TCU_INFO:
                     return new GuiTcuInfo((EntityTurret) world.getEntityByID(x));
@@ -90,7 +100,7 @@ public class ClientProxy
                 case GUI_TCU_UPGRADES:
                     return new GuiTcuUpgrades(player.inventory, (EntityTurret) world.getEntityByID(x));
                 case GUI_TASSEMBLY_MAN:
-                    TileEntity te = world.getTileEntity(x, y, z);
+                    te = world.getTileEntity(x, y, z);
                     if( te instanceof TileEntityTurretAssembly ) {
                         return new GuiTurretAssembly(player.inventory, (TileEntityTurretAssembly) te);
                     }
@@ -101,6 +111,13 @@ public class ClientProxy
                         return new GuiAssemblyFilter(player.inventory, stack);
                     }
                     break;
+                case GUI_POTATOGEN:
+                    te = world.getTileEntity(x, y, z);
+                    if( te instanceof TileEntityPotatoGenerator ) {
+                        return new GuiPotatoGenerator(player.inventory, (TileEntityPotatoGenerator) te);
+                    }
+                case GUI_TINFO:
+                    return new GuiTurretInfo();
             }
         } else {
             TurretModRebirth.LOG.log(Level.WARN, "Gui ID %d cannot be opened as it isn't a valid index in EnumGui!", id);

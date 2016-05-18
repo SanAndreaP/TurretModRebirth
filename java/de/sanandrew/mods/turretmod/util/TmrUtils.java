@@ -22,8 +22,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagShort;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.lang.reflect.InvocationTargetException;
@@ -71,6 +73,17 @@ public class TmrUtils
         }
 
         return ReflectionUtils.getCachedFieldValue(PotionEffect.class, potionEffect, "isSplashPotion", "field_82723_d");
+    }
+
+    public static short getShortTagAt(NBTTagList list, int index) {
+        List tagList = ReflectionUtils.getCachedFieldValue(NBTTagList.class, list, "tagList", "field_74747_a");
+
+        if( index >= 0 && index < tagList.size() ) {
+            NBTBase nbtbase = (NBTBase)tagList.get(index);
+            return nbtbase.getId() == Constants.NBT.TAG_SHORT ? ((NBTTagShort)nbtbase).func_150289_e() : 0;
+        } else {
+            return 0;
+        }
     }
 
     public static EntityAIBase getAIFromTaskList(List<?> taskList, Class<?> cls) {
@@ -146,7 +159,39 @@ public class TmrUtils
         return addStackToInventory(is, inv, true);
     }
 
+    public static boolean canStackFitInInventory(ItemStack is, IInventory inv, boolean checkNBT, int maxStackSize) {
+        return canStackFitInInventory(is, inv, checkNBT, maxStackSize, 0, inv.getSizeInventory() - (inv instanceof InventoryPlayer ? 4 : 0));
+    }
+
+    public static boolean canStackFitInInventory(ItemStack is, IInventory inv, boolean checkNBT, int maxStackSize, int begin, int end) {
+        ItemStack stack = is.copy();
+
+        for( int i = begin; i < end; i++ ) {
+            ItemStack invIS = inv.getStackInSlot(i);
+            if( invIS != null && ((checkNBT && areStacksEqual(is, invIS, NBT_COMPARATOR_FIXD)) || (!checkNBT && ItemStackUtils.areStacksEqual(is, invIS, false))) ) {
+                int fit = StrictMath.min(invIS.getMaxStackSize(), maxStackSize) - invIS.stackSize;
+                if( fit >= stack.stackSize ) {
+                    return true;
+                } else {
+                    stack.stackSize -= fit;
+                }
+            } else if( invIS == null && inv.isItemValidForSlot(i, stack) ) {
+                int max = StrictMath.min(stack.getMaxStackSize(), maxStackSize);
+                if( stack.stackSize - max <= 0 ) {
+                    return true;
+                } else {
+                    stack.stackSize -= max;
+                }
+            }
+        }
+
+        return false;
+    }
     public static ItemStack addStackToInventory(ItemStack is, IInventory inv, boolean checkNBT) {
+        return addStackToInventory(is, inv, checkNBT, inv.getInventoryStackLimit());
+    }
+
+    public static ItemStack addStackToInventory(ItemStack is, IInventory inv, boolean checkNBT, int maxStackSize) {
         int invSize = inv.getSizeInventory() - (inv instanceof InventoryPlayer ? 4 : 0);
 
         ItemStack invIS;
@@ -155,7 +200,7 @@ public class TmrUtils
             invIS = inv.getStackInSlot(i);
             if( invIS != null && ((checkNBT && areStacksEqual(is, invIS, NBT_COMPARATOR_FIXD)) || (!checkNBT && ItemStackUtils.areStacksEqual(is, invIS, false))) ) {
                 rest = is.stackSize + invIS.stackSize;
-                int maxStack = Math.min(invIS.getMaxStackSize(), inv.getInventoryStackLimit());
+                int maxStack = Math.min(invIS.getMaxStackSize(), maxStackSize);
                 if( rest <= maxStack ) {
                     invIS.stackSize = rest;
                     inv.setInventorySlotContents(i, invIS.copy());
@@ -168,14 +213,14 @@ public class TmrUtils
                 inv.setInventorySlotContents(i, invIS.copy());
                 is.stackSize = rest1;
             } else if( invIS == null && inv.isItemValidForSlot(i, is) ) {
-                if( is.stackSize <= inv.getInventoryStackLimit() ) {
+                if( is.stackSize <= maxStackSize ) {
                     inv.setInventorySlotContents(i, is.copy());
                     is = null;
                     break;
                 }
 
-                rest = is.stackSize - inv.getInventoryStackLimit();
-                is.stackSize = inv.getInventoryStackLimit();
+                rest = is.stackSize - maxStackSize;
+                is.stackSize = maxStackSize;
                 inv.setInventorySlotContents(i, is.copy());
                 is.stackSize = rest;
             }
