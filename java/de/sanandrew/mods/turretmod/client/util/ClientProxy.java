@@ -117,7 +117,7 @@ public class ClientProxy
                         return new GuiPotatoGenerator(player.inventory, (TileEntityPotatoGenerator) te);
                     }
                 case GUI_TINFO:
-                    return new GuiTurretInfo();
+                    return new GuiTurretInfo(x, y);
             }
         } else {
             TurretModRebirth.LOG.log(Level.WARN, "Gui ID %d cannot be opened as it isn't a valid index in EnumGui!", id);

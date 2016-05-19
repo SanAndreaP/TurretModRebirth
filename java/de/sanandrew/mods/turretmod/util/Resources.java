@@ -35,8 +35,7 @@ public enum Resources
     TINFO_GRP_MISC("textures/gui/turretinfo/groups/misc.png"),
     TINFO_GRP_TURRET("textures/gui/turretinfo/groups/turrets.png"),
     TINFO_GRP_UPGRADE("textures/gui/turretinfo/groups/upgrades.png"),
-    TINFO_GRP_STENCIL("textures/gui/stencil.png"),
-    TINFO_GRP_STENCIL2("textures/gui/stencil2.png"),
+    TINFO_GRP_STENCIL("textures/gui/turretinfo/stencil_grp.png"),
 
     TURRET_FORCEFIELD_P1("textures/entities/shield_1.png"),
     TURRET_FORCEFIELD_P2("textures/entities/shield_2.png"),

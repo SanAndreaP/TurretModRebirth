@@ -39,14 +39,14 @@ public final class ShaderHelper
     public static int categoryButton = 0;
 
     public static void initShaders() {
-        if(!useShaders())
+        if(!areShadersEnabled())
             return;
 
         categoryButton = createProgram(null, Resources.SHADER_CATEGORY_BUTTON_FRAG.getResource());
     }
 
     public static void useShader(int shader, ShaderCallback callback) {
-        if(!useShaders())
+        if(!areShadersEnabled())
             return;
 
         ARBShaderObjects.glUseProgramObjectARB(shader);
@@ -68,7 +68,7 @@ public final class ShaderHelper
         useShader(0);
     }
 
-    public static boolean useShaders() {
+    public static boolean areShadersEnabled() {
         return OpenGlHelper.shadersSupported;
     }
 
@@ -76,29 +76,36 @@ public final class ShaderHelper
     // http://lwjgl.org/wiki/index.php?title=GLSL_Shaders_with_LWJGL
 
     private static int createProgram(ResourceLocation vert, ResourceLocation frag) {
-        int vertId = 0, fragId = 0, program = 0;
-        if(vert != null)
+        int vertId = 0;
+        int fragId = 0;
+        int program;
+        if( vert != null ) {
             vertId = createShader(vert, VERT);
-        if(frag != null)
+        }
+        if( frag != null ) {
             fragId = createShader(frag, FRAG);
+        }
 
         program = ARBShaderObjects.glCreateProgramObjectARB();
-        if(program == 0)
+        if( program == 0 ) {
             return 0;
+        }
 
-        if(vert != null)
+        if( vert != null ) {
             ARBShaderObjects.glAttachObjectARB(program, vertId);
-        if(frag != null)
+        }
+        if( frag != null ) {
             ARBShaderObjects.glAttachObjectARB(program, fragId);
+        }
 
         ARBShaderObjects.glLinkProgramARB(program);
-        if(ARBShaderObjects.glGetObjectParameteriARB(program, ARBShaderObjects.GL_OBJECT_LINK_STATUS_ARB) == GL11.GL_FALSE) {
+        if( ARBShaderObjects.glGetObjectParameteriARB(program, ARBShaderObjects.GL_OBJECT_LINK_STATUS_ARB) == GL11.GL_FALSE ) {
             FMLLog.log(Level.ERROR, getLogInfo(program));
             return 0;
         }
 
         ARBShaderObjects.glValidateProgramARB(program);
-        if (ARBShaderObjects.glGetObjectParameteriARB(program, ARBShaderObjects.GL_OBJECT_VALIDATE_STATUS_ARB) == GL11.GL_FALSE) {
+        if( ARBShaderObjects.glGetObjectParameteriARB(program, ARBShaderObjects.GL_OBJECT_VALIDATE_STATUS_ARB) == GL11.GL_FALSE ) {
             FMLLog.log(Level.ERROR, getLogInfo(program));
             return 0;
         }
@@ -111,14 +118,16 @@ public final class ShaderHelper
         try {
             shader = ARBShaderObjects.glCreateShaderObjectARB(shaderType);
 
-            if(shader == 0)
+            if( shader == 0 ) {
                 return 0;
+            }
 
             ARBShaderObjects.glShaderSourceARB(shader, readFileAsString(file));
             ARBShaderObjects.glCompileShaderARB(shader);
 
-            if (ARBShaderObjects.glGetObjectParameteriARB(shader, ARBShaderObjects.GL_OBJECT_COMPILE_STATUS_ARB) == GL11.GL_FALSE)
+            if( ARBShaderObjects.glGetObjectParameteriARB(shader, ARBShaderObjects.GL_OBJECT_COMPILE_STATUS_ARB) == GL11.GL_FALSE ) {
                 throw new RuntimeException("Error creating shader: " + getLogInfo(shader));
+            }
 
             return shader;
         } catch(Exception e) {
@@ -135,8 +144,9 @@ public final class ShaderHelper
     private static String readFileAsString(ResourceLocation file) throws Exception {
         StringBuilder source = new StringBuilder();
         try( InputStream in = Minecraft.getMinecraft().getResourceManager().getResource(file).getInputStream() ) {
-            if( in == null )
+            if( in == null ) {
                 return "";
+            }
 
             try( BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8")) ) {
                 String line;

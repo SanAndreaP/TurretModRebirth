@@ -29,7 +29,7 @@ public class ItemTurretInfo
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         if( world.isRemote ) {
-            TurretModRebirth.proxy.openGui(player, EnumGui.GUI_TINFO, 0, 0, 0);
+            TurretModRebirth.proxy.openGui(player, EnumGui.GUI_TINFO, -1, -1, 0);
         }
 
         return super.onItemRightClick(stack, world, player);

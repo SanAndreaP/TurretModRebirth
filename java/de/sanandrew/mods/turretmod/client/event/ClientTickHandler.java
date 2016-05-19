@@ -15,7 +15,7 @@ import net.minecraft.client.gui.GuiScreen;
 
 public class ClientTickHandler
 {
-    public static float ticksInGame;
+    public static int ticksInGame;
 
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {

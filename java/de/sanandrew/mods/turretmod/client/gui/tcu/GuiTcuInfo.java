@@ -56,6 +56,8 @@ public class GuiTcuInfo
         this.guiLeft = (this.width - GuiTCUHelper.X_SIZE) / 2;
         this.guiTop = (this.height - GuiTCUHelper.Y_SIZE) / 2;
 
+        this.buttonList.clear();
+
         GuiTCUHelper.initGui(this);
 
         this.specOwnerHead = TmrUtils.RNG.nextInt(3) == 0 ? TmrUtils.RNG.nextInt(3) : -1;

@@ -75,6 +75,8 @@ public final class GuiTcuEntityTargets
         this.guiLeft = (this.width - GuiTCUHelper.X_SIZE) / 2;
         this.guiTop = (this.height - GuiTCUHelper.Y_SIZE) / 2;
 
+        this.buttonList.clear();
+
         GuiTCUHelper.initGui(this);
 
         int center = this.guiLeft + (GuiTCUHelper.X_SIZE - 150) / 2;

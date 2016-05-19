@@ -94,6 +94,8 @@ public class GuiTurretAssembly
     public void initGui() {
         super.initGui();
 
+        this.buttonList.clear();
+
         this.frDetails = new FontRenderer(this.mc.gameSettings, new ResourceLocation("textures/font/ascii.png"), this.mc.getTextureManager(), true);
 
         this.buttonList.add(this.cancelTask = new GuiSlimButton(this.buttonList.size(), this.guiLeft + 156, this.guiTop + 55, 50, StatCollector.translateToLocal("gui.sapturretmod.tassembly.cancel")));

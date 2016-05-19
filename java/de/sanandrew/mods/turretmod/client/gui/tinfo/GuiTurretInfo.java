@@ -9,30 +9,53 @@
 package de.sanandrew.mods.turretmod.client.gui.tinfo;
 
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
+import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.Resources;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.opengl.GL11;
 
 public class GuiTurretInfo
         extends GuiScreen
 {
+    private static final int X_SIZE = 192;
+    private static final int Y_SIZE = 236;
+
     private int guiLeft;
     private int guiTop;
 
     public float timeDelta;
     private float lastTime;
 
+    public final TurretInfoCategory category;
+    public final TurretInfoEntry entry;
+
+    public GuiTurretInfo(int category, int entry) {
+        this.category = category < 0 ? null : TurretInfoCategory.getCategory(category);
+        this.entry = entry < 0 ? null : (this.category != null ? this.category.getEntry(entry) : null);
+    }
+
+    @SuppressWarnings("unchecked")
     public void initGui() {
         super.initGui();
 
-        this.guiLeft = (this.width - 192) / 2;
-        this.guiTop = (this.height - 256) / 2;
+        this.guiLeft = (this.width - X_SIZE) / 2;
+        this.guiTop = (this.height - Y_SIZE) / 2;
 
-        this.buttonList.add(new GuiButtonCategory(this.buttonList.size(), this.guiLeft + 12, this.guiTop + 24, Resources.TINFO_GRP_TURRET, this));
-        this.buttonList.add(new GuiButtonCategory(this.buttonList.size(), this.guiLeft + 12 + 32, this.guiTop + 24, Resources.TINFO_GRP_AMMO, this));
-        this.buttonList.add(new GuiButtonCategory(this.buttonList.size(), this.guiLeft + 12 + 32*2, this.guiTop + 24, Resources.TINFO_GRP_UPGRADE, this));
-        this.buttonList.add(new GuiButtonCategory(this.buttonList.size(), this.guiLeft + 12 + 32*3, this.guiTop + 24, Resources.TINFO_GRP_MISC, this));
-        this.buttonList.add(new GuiButtonCategory(this.buttonList.size(), this.guiLeft + 12 + 32*4, this.guiTop + 24, Resources.TINFO_GRP_INFO, this));
+        this.buttonList.clear();
+
+        if( this.category == null ) {
+            int catLng = TurretInfoCategory.getCategoryCount();
+            for( int i = 0; i < catLng; i++ ) {
+                this.buttonList.add(new GuiButtonCategory(this.buttonList.size(), i, this.guiLeft + 12 + 32 * i, this.guiTop + 24, this));
+            }
+        } else if( this.entry == null ) {
+            int entLng = this.category.getEntryCount();
+            for( int i = 0; i < entLng; i++ ) {
+                this.buttonList.add(new GuiButtonEntry(this.buttonList.size(), i, this.guiLeft + 14, this.guiTop + 24 + 20 * i, this));
+            }
+        }
     }
 
     @Override
@@ -47,9 +70,19 @@ public class GuiTurretInfo
         this.mc.renderEngine.bindTexture(Resources.GUI_TURRETINFO.getResource());
 
         GL11.glColor3f(1.0F, 1.0F, 1.0F);
-        this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, 192, 256);
+        this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, X_SIZE, Y_SIZE);
 
         super.drawScreen(mouseX, mouseY, partTicks);
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton button) {
+        if( button instanceof GuiButtonCategory ) {
+            TurretModRebirth.proxy.openGui(this.mc.thePlayer, EnumGui.GUI_TINFO, ((GuiButtonCategory) button).catIndex, -1, 0);
+            return;
+        }
+
+        super.actionPerformed(button);
     }
 
     @Override

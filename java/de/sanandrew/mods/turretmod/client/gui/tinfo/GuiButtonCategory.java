@@ -25,13 +25,11 @@ import org.lwjgl.opengl.GL11;
 public class GuiButtonCategory
         extends GuiButton
 {
+    public final int catIndex;
 
-    private Resources texture;
+    private ResourceLocation texture;
     private GuiTurretInfo tinfo;
 
-//    private static final ResourceLocation fallbackResource = new ResourceLocation(LibResources.CATEGORY_INDEX);
-//    private static final ResourceLocation stencilResource = new ResourceLocation(LibResources.GUI_STENCIL);
-//
     private ShaderCallback shaderCallback = new ShaderCallback() {
 
         @Override
@@ -43,14 +41,14 @@ public class GuiButtonCategory
 
             float heightMatch = GuiButtonCategory.this.ticksHovered / GuiButtonCategory.this.time;
             OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, texMgr.getTexture(GuiButtonCategory.this.texture.getResource()).getGlTextureId());
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, texMgr.getTexture(GuiButtonCategory.this.texture).getGlTextureId());
             ARBShaderObjects.glUniform1iARB(imageUniform, 0);
 
             //TODO: add config option for the "7" <glSecondaryTextureUnit>
             OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + 7);
             GL11.glEnable(GL11.GL_TEXTURE_2D);
             GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
-            ResourceLocation stencil = Resources.TINFO_GRP_STENCIL2.getResource();
+            ResourceLocation stencil = Resources.TINFO_GRP_STENCIL.getResource();
             ITextureObject stencilTex = texMgr.getTexture(stencil);
             if( stencilTex == null ) {
                 texMgr.bindTexture(stencil);
@@ -62,28 +60,17 @@ public class GuiButtonCategory
             ARBShaderObjects.glUniform1fARB(heightMatchUniform, heightMatch);
         }
     };
-//    static boolean boundStencil = false;
 
-//    GuiLexicon gui;
-//    LexiconCategory category;
-//    ResourceLocation resource = null;
     float ticksHovered = 0.0F;
     float time = 12.0F;
-//    int activeTex = 0;
 
-    public GuiButtonCategory(int id, int x, int y, Resources texture, GuiTurretInfo gui) {
+    public GuiButtonCategory(int id, int catId, int x, int y, GuiTurretInfo gui) {
         super(id, x, y, 32, 32, "");
-        this.texture = texture;
         this.tinfo = gui;
+        this.catIndex = catId;
+        this.texture = TurretInfoCategory.getCategories()[catId].getIcon();
     }
 
-//
-//    public GuiButtonCategory(int id, int x, int y, GuiLexicon gui, LexiconCategory category) {
-//        super(id, x, y, 16, 16, "");
-//        this.gui = gui;
-//        this.category = category;
-//    }
-//
     @Override
     public void drawButton(Minecraft mc, int mx, int my) {
         boolean inside = mx >= xPosition && my >= yPosition && mx < xPosition + width && my < yPosition + height;
@@ -105,19 +92,12 @@ public class GuiButtonCategory
         GL11.glPushMatrix();
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-//        GL11.glScalef(0.5F, 0.5F, 0.5F);
-//        GL11.glTranslatef(-this.xPosition, -this.yPosition, 0.0F);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-//        if(!boundStencil) { // Allow for the texture manager to take care of the ResourceLocation before we use it directly with gl
-//            mc.renderEngine.bindTexture(Resources.TINFO_GRP_STENCIL.getResource());
-//            boundStencil = true;
-//        }
-
-        mc.renderEngine.bindTexture(this.texture.getResource());
+        mc.renderEngine.bindTexture(this.texture);
 
         int texture = 0;
-        boolean shaders = ShaderHelper.useShaders();
+        boolean shaders = ShaderHelper.areShadersEnabled();
 
         if(shaders) {
             //TODO: add config for "7" <glSecondaryTextureUnit>

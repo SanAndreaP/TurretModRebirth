@@ -50,6 +50,8 @@ public class GuiTcuUpgrades
         this.posX = (this.width - this.xSize) / 2;
         this.posY = (this.height - this.ySize) / 2;
 
+        this.buttonList.clear();
+
         GuiTCUHelper.initGui(this);
 
         GuiTCUHelper.pageUpgrades.enabled = false;

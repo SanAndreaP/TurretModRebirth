@@ -20,6 +20,7 @@ public class TmrClientUtils
         if( mc == null ) {
             mc = Minecraft.getMinecraft();
         }
+
         return mc;
     }
 
