@@ -62,7 +62,7 @@ public class GuiButtonCategory
     };
 
     float ticksHovered = 0.0F;
-    float time = 12.0F;
+    float time = 6.0F;
 
     public GuiButtonCategory(int id, int catId, int x, int y, GuiTurretInfo gui) {
         super(id, x, y, 32, 32, "");
@@ -77,7 +77,7 @@ public class GuiButtonCategory
         if( inside ) {
             this.ticksHovered = Math.min(this.time, this.ticksHovered + this.tinfo.timeDelta);
         } else {
-            this.ticksHovered = Math.max(0.0F, this.ticksHovered - this.tinfo.timeDelta);
+            this.ticksHovered = Math.max(-1.0F, this.ticksHovered - this.tinfo.timeDelta);
         }
 
         if( this.texture == null ) {

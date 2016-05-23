@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.client.gui.tinfo;
 
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
+import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
@@ -21,6 +22,7 @@ public class GuiTurretInfo
 {
     private static final int X_SIZE = 192;
     private static final int Y_SIZE = 236;
+    private static final int MAX_ENTRY_HEIGHT = 183;
 
     private int guiLeft;
     private int guiTop;
@@ -30,6 +32,8 @@ public class GuiTurretInfo
 
     public final TurretInfoCategory category;
     public final TurretInfoEntry entry;
+
+    public float scroll = 0.0F;
 
     public GuiTurretInfo(int category, int entry) {
         this.category = category < 0 ? null : TurretInfoCategory.getCategory(category);
@@ -72,6 +76,18 @@ public class GuiTurretInfo
         GL11.glColor3f(1.0F, 1.0F, 1.0F);
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, X_SIZE, Y_SIZE);
 
+        if( this.entry != null ) {
+            GL11.glPushMatrix();
+            GL11.glEnable(GL11.GL_SCISSOR_TEST);
+            TmrClientUtils.doGlScissor(this.guiLeft + 9, this.guiTop + 19, TurretInfoEntry.MAX_ENTRY_WIDTH, MAX_ENTRY_HEIGHT);
+            GL11.glTranslatef(this.guiLeft + 9.0F, this.guiTop + 19.0F, 0.0F);
+
+            this.entry.drawPage(this, mouseX, mouseY, partTicks);
+
+            GL11.glDisable(GL11.GL_SCISSOR_TEST);
+            GL11.glPopMatrix();
+        }
+
         super.drawScreen(mouseX, mouseY, partTicks);
     }
 
@@ -79,6 +95,9 @@ public class GuiTurretInfo
     protected void actionPerformed(GuiButton button) {
         if( button instanceof GuiButtonCategory ) {
             TurretModRebirth.proxy.openGui(this.mc.thePlayer, EnumGui.GUI_TINFO, ((GuiButtonCategory) button).catIndex, -1, 0);
+            return;
+        } else if( button instanceof GuiButtonEntry ) {
+            TurretModRebirth.proxy.openGui(this.mc.thePlayer, EnumGui.GUI_TINFO, this.category.index, ((GuiButtonEntry) button).entIndex, 0);
             return;
         }
 

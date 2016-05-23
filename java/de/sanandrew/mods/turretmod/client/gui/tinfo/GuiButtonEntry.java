@@ -15,15 +15,19 @@ import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.ARBMultitexture;
 import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 public class GuiButtonEntry
         extends GuiButton
@@ -44,6 +48,7 @@ public class GuiButtonEntry
         this.entIndex = entryId;
         TurretInfoEntry entry = gui.category.getEntry(id);
         this.icon = entry.getIcon();
+        this.displayString = StatCollector.translateToLocal(entry.getTitle());
     }
 
     @Override
@@ -56,11 +61,7 @@ public class GuiButtonEntry
         }
 
         if( this.icon == null ) {
-//            if(category == null)
-//                resource = fallbackResource;
-//            else resource = category.getIcon();
-//            if(resource == null)
-//                resource = fallbackResource;
+            this.icon = new ItemStack(Blocks.fire);
         }
 
 
@@ -69,45 +70,34 @@ public class GuiButtonEntry
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-//        mc.renderEngine.bindTexture(this.icon.texture);
+        float alphaMulti = this.ticksHovered / this.time;
+        int color1 = 0x0066cc66 | ((Math.max(0x00, Math.min(0xC0, StrictMath.round(0xC0 * alphaMulti))) << 24) & 0xFF000000);
+        int color2 = 0x0066cc66 | ((Math.max(0x00, Math.min(0x80, StrictMath.round(0x80 * alphaMulti))) << 24) & 0xFF000000);
+        this.drawGradientRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + 1, color1, color2);
+        this.drawGradientRect(this.xPosition, this.yPosition + this.height - 1, this.xPosition + this.width, this.yPosition + this.height, color1, color2);
+        this.drawGradientRect(this.xPosition, this.yPosition + 1, this.xPosition + 1, this.yPosition + this.height - 1, color1, color1);
+        this.drawGradientRect(this.xPosition + this.width - 1, this.yPosition + 1, this.xPosition + this.width, this.yPosition + this.height - 1, color2, color2);
 
-//        TmrClientUtils.drawTexturedModalRect(xPosition, yPosition, zLevel * 2, this.icon.iconX, this.icon.iconY, 16, 16, s, s);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        RenderHelper.enableGUIStandardItemLighting();
+        this.drawItemStack(mc, this.icon, xPosition + 2, yPosition + 2);
+        RenderHelper.disableStandardItemLighting();
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 
-//        if( inside ) {
-            float alphaMulti = this.ticksHovered / this.time;
-            int color1 = 0x0066cc66 | ((Math.max(0x00, Math.min(0xC0, StrictMath.round(0xC0 * alphaMulti))) << 24) & 0xFF000000);
-            int color2 = 0x0066cc66 | ((Math.max(0x00, Math.min(0x80, StrictMath.round(0x80 * alphaMulti))) << 24) & 0xFF000000);
-            this.drawGradientRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + 1, color1, color2);
-            this.drawGradientRect(this.xPosition, this.yPosition + this.height - 1, this.xPosition + this.width, this.yPosition + this.height, color1, color2);
-            this.drawGradientRect(this.xPosition, this.yPosition + 1, this.xPosition + 1, this.yPosition + this.height - 1, color1, color1);
-            this.drawGradientRect(this.xPosition + this.width - 1, this.yPosition + 1, this.xPosition + this.width, this.yPosition + this.height - 1, color2, color2);
-//        }
-        this.drawItemStack(this.icon, xPosition + 2, yPosition + 2);
+        mc.fontRenderer.drawString(this.displayString, this.xPosition + 20, this.yPosition + 6, 0xFF000000, false);
 
         GL11.glPopMatrix();
-
-//        if(inside)
-//            gui.categoryHighlight = StatCollector.translateToLocal(getTooltipText());
     }
 
-    private void drawItemStack(ItemStack stack, int x, int y) {
+    private void drawItemStack(Minecraft mc, ItemStack stack, int x, int y) {
         GL11.glTranslatef(0.0F, 0.0F, 32.0F);
         this.zLevel = 200.0F;
         itemRender.zLevel = 200.0F;
-        itemRender.renderItemAndEffectIntoGUI(Minecraft.getMinecraft().fontRenderer, Minecraft.getMinecraft().getTextureManager(), stack, x, y);
+        itemRender.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), stack, x, y);
         this.zLevel = 0.0F;
         itemRender.zLevel = 0.0F;
         GL11.glTranslatef(0.0F, 0.0F, -32.0F);
         GL11.glDisable(GL11.GL_LIGHTING);
     }
-//
-//    String getTooltipText() {
-//        if(category == null)
-//            return "botaniamisc.lexiconIndex";
-//        return category.getUnlocalizedName();
-//    }
-//
-//    public LexiconCategory getCategory() {
-//        return category;
-//    }
 }
