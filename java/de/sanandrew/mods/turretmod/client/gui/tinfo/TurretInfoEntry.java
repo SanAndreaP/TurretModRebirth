@@ -14,7 +14,8 @@ import net.minecraft.util.ResourceLocation;
 
 public abstract class TurretInfoEntry
 {
-    public static final int MAX_ENTRY_WIDTH = 160;
+    public static final int MAX_ENTRY_WIDTH = 168;
+    public static final int MAX_ENTRY_HEIGHT = 183;
     private ItemStack icon;
     private String title;
 
@@ -31,7 +32,7 @@ public abstract class TurretInfoEntry
         return title;
     }
 
-    public abstract void drawPage(GuiTurretInfo gui, int mouseX, int mouseY, float partTicks);
+    public abstract void drawPage(GuiTurretInfo gui, int mouseX, int mouseY, int scrollY, float partTicks);
 
     public abstract int getPageHeight();
 
@@ -43,7 +44,7 @@ public abstract class TurretInfoEntry
         }
 
         @Override
-        public void drawPage(GuiTurretInfo gui, int mouseX, int mouseY, float partTicks) { }
+        public void drawPage(GuiTurretInfo gui, int mouseX, int mouseY, int scrollY, float partTicks) { }
 
         @Override
         public int getPageHeight() {

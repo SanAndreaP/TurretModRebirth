@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.registry.turret;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
+import de.sanandrew.mods.turretmod.util.TurretAssemblyRecipes;
 
 import java.util.UUID;
 
@@ -46,5 +47,10 @@ public class TurretInfoT1Crossbow
     @Override
     public String getIcon() {
         return "turret_crossbow";
+    }
+
+    @Override
+    public UUID getRecipeId() {
+        return TurretAssemblyRecipes.TURRET_MK1_CB;
     }
 }

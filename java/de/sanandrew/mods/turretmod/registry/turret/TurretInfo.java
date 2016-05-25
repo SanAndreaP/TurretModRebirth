@@ -12,4 +12,5 @@ public interface TurretInfo
     float getHealth();
     int getBaseAmmoCapacity();
     String getIcon();
+    UUID getRecipeId();
 }

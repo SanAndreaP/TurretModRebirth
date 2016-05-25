@@ -56,13 +56,15 @@ public abstract class EntityTurret
     private static final int DW_FREQUENCY = 27; /* BYTE */
     private static final int DW_BOOLEANS = 28; /* BYTE */
 
-    private Triplet<Integer, Integer, Integer> blockPos = null;
+    private Triplet<Integer, Integer, Integer> blockPos;
 
     protected TargetProcessor targetProc;
     protected UpgradeProcessor upgProc;
 
     protected UUID ownerUUID;
     protected String ownerName;
+
+    public boolean inGui;
 
     public EntityTurret(World world) {
         super(world);
@@ -124,6 +126,13 @@ public abstract class EntityTurret
     protected float updateRotation(float prevRotation, float newRotation) {
         float var4 = MathHelper.wrapAngleTo180_float(newRotation - prevRotation);
         return prevRotation + var4;
+    }
+
+    @Override
+    public void onUpdate() {
+        if( !this.inGui ) {
+            super.onUpdate();
+        }
     }
 
     @Override

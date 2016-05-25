@@ -215,18 +215,18 @@ public class TurretAssemblyRecipes
         return true;
     }
 
-    private static final UUID TURRET_MK1_CB = UUID.fromString("21f88959-c157-44e3-815b-dd956b065052");
+    public static final UUID TURRET_MK1_CB = UUID.fromString("21f88959-c157-44e3-815b-dd956b065052");
 
-    private static final UUID ARROW_SNG = UUID.fromString("1a011825-2e5b-4f17-925e-f734e6a732b9");
-    private static final UUID ARROW_MTP = UUID.fromString("c079d29a-e6e2-4be8-8478-326bdfede08b");
+    public static final UUID ARROW_SNG = UUID.fromString("1a011825-2e5b-4f17-925e-f734e6a732b9");
+    public static final UUID ARROW_MTP = UUID.fromString("c079d29a-e6e2-4be8-8478-326bdfede08b");
 
-    private static final UUID TCU = UUID.fromString("47b68be0-30d6-4849-b995-74c147c8cc5d");
+    public static final UUID TCU = UUID.fromString("47b68be0-30d6-4849-b995-74c147c8cc5d");
 
-    private static final UUID HEAL_MK1 = UUID.fromString("816758d6-7f00-4acb-bd94-f7a8a0f86016");
-    private static final UUID HEAL_MK2 = UUID.fromString("39a1a9c8-ceca-40ca-bcf7-abd2b1a26c82");
-    private static final UUID HEAL_MK3 = UUID.fromString("a70314be-1709-4ae4-8ff7-69f3a69acca2");
-    private static final UUID HEAL_MK4 = UUID.fromString("6fd0927f-61e0-49a0-b615-4b3e28a63ee4");
-    private static final UUID REGEN_MK1 = UUID.fromString("531f0b05-5bb8-45fc-a899-226a3f52d5b7");
+    public static final UUID HEAL_MK1 = UUID.fromString("816758d6-7f00-4acb-bd94-f7a8a0f86016");
+    public static final UUID HEAL_MK2 = UUID.fromString("39a1a9c8-ceca-40ca-bcf7-abd2b1a26c82");
+    public static final UUID HEAL_MK3 = UUID.fromString("a70314be-1709-4ae4-8ff7-69f3a69acca2");
+    public static final UUID HEAL_MK4 = UUID.fromString("6fd0927f-61e0-49a0-b615-4b3e28a63ee4");
+    public static final UUID REGEN_MK1 = UUID.fromString("531f0b05-5bb8-45fc-a899-226a3f52d5b7");
 
     public static class RecipeEntry {
         public final ItemStack[] resources;
