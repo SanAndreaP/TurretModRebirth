@@ -17,6 +17,7 @@ import cpw.mods.fml.common.registry.EntityRegistry;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
 import de.sanandrew.mods.turretmod.inventory.ContainerAssemblyFilter;
 import de.sanandrew.mods.turretmod.inventory.ContainerPotatoGenerator;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
@@ -44,8 +45,9 @@ public class CommonProxy
     }
 
     public void init(FMLInitializationEvent event) {
-        EntityRegistry.registerModEntity(EntityTurretCrossbow.class, "turret_mkI_crossbow", 0, TurretModRebirth.instance, 128, 1, false);
-        EntityRegistry.registerModEntity(EntityProjectileCrossbowBolt.class, "turret_proj_arrow", 1, TurretModRebirth.instance, 128, 1, true);
+        EntityRegistry.registerModEntity(EntityTurretCrossbow.class, "turret_i_crossbow", 0, TurretModRebirth.instance, 128, 1, false);
+        EntityRegistry.registerModEntity(EntityTurretShotgun.class, "turret_i_shotgun", 1, TurretModRebirth.instance, 128, 1, false);
+        EntityRegistry.registerModEntity(EntityProjectileCrossbowBolt.class, "turret_proj_arrow", 2, TurretModRebirth.instance, 128, 1, true);
     }
 
     public void postInit(FMLPostInitializationEvent event) {
@@ -58,11 +60,7 @@ public class CommonProxy
             TileEntity te;
             switch( EnumGui.VALUES[id] ) {
                 case GUI_TCU_UPGRADES:
-//                    TileEntity te = world.getTileEntity(x, y, z);
-//                    if( te instanceof TileEntityTurretAssembly ) {
-                        return new ContainerTurretUpgrades(player.inventory, ((EntityTurret) world.getEntityByID(x)).getUpgradeProcessor());
-//                    }
-//                    break;
+                    return new ContainerTurretUpgrades(player.inventory, ((EntityTurret) world.getEntityByID(x)).getUpgradeProcessor());
                 case GUI_TASSEMBLY_MAN:
                     te = world.getTileEntity(x, y, z);
                     if( te instanceof TileEntityTurretAssembly ) {

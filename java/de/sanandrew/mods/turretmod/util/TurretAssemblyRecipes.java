@@ -116,13 +116,22 @@ public class TurretAssemblyRecipes
         RecipeGroup repkitGrp = INSTANCE.registerGroup("group3", ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getRepairKit(RepairKitRegistry.STANDARD_MK1)));
         RecipeGroup ammoGrp = INSTANCE.registerGroup("group2", ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.QUIVER_UUID)));
 
+        ItemStack res;
+        ItemStack[] ingredients;
+
     // turrets
-        ItemStack res = ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCrossbow.class));
-        ItemStack[] ingredients = new ItemStack[] {new ItemStack(Blocks.cobblestone, 12),
-                                                   new ItemStack(Items.bow, 1),
-                                                   new ItemStack(Items.redstone, 4),
-                                                   new ItemStack(Blocks.planks, 4, OreDictionary.WILDCARD_VALUE)};
+        res = ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCrossbow.class));
+        ingredients = new ItemStack[] {new ItemStack(Blocks.cobblestone, 12),
+                                       new ItemStack(Items.bow, 1),
+                                       new ItemStack(Items.redstone, 4),
+                                       new ItemStack(Blocks.planks, 4, OreDictionary.WILDCARD_VALUE)};
         INSTANCE.registerRecipe(TURRET_MK1_CB, turretGrp, res, 10, 100, ingredients);
+        res = ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCrossbow.class));
+        ingredients = new ItemStack[] {new ItemStack(Blocks.cobblestone, 12),
+                                       new ItemStack(Items.bow, 1),
+                                       new ItemStack(Items.redstone, 4),
+                                        new ItemStack(Blocks.planks, 4, OreDictionary.WILDCARD_VALUE)};
+        INSTANCE.registerRecipe(TURRET_MK1_SG, turretGrp, res, 10, 100, ingredients);
 
     // ammo
         res = ItemRegistry.ammo.getAmmoItem(4, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.ARROW_UUID));
@@ -216,6 +225,7 @@ public class TurretAssemblyRecipes
     }
 
     public static final UUID TURRET_MK1_CB = UUID.fromString("21f88959-c157-44e3-815b-dd956b065052");
+    public static final UUID TURRET_MK1_SG = UUID.fromString("21f88959-c157-44e3-815b-dd956b065052");
 
     public static final UUID ARROW_SNG = UUID.fromString("1a011825-2e5b-4f17-925e-f734e6a732b9");
     public static final UUID ARROW_MTP = UUID.fromString("c079d29a-e6e2-4be8-8478-326bdfede08b");

@@ -15,7 +15,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
 
-public class ModelTurretCrossbow
+public class ModelTurretShotgun
 		extends ModelBase
 {
 	public ModelRenderer turretBase;
@@ -23,8 +23,9 @@ public class ModelTurretCrossbow
 	public ModelRenderer turretThroat;
 	public ModelRenderer healthBar;
 	public ModelRenderer ammoBar;
+	public ModelRenderer barrel;
 
-	public ModelTurretCrossbow(float scale) {
+	public ModelTurretShotgun(float scale) {
 		this.textureWidth = 128;
 		this.textureHeight = 64;
 
@@ -49,6 +50,13 @@ public class ModelTurretCrossbow
 		this.ammoBar.setRotationPoint(2.0F, 19.0F, 0.0F);
 		this.ammoBar.setTextureSize(128, 64);
 		this.ammoBar.addBox(-0.5F, -4.0F, -0.5F, 1, 5, 1, scale);
+
+		this.barrel = new ModelRenderer(this, 24, 0);
+		this.barrel.addBox(-2.0F, 0.0F, -9.0F, 4, 2, 6);
+		this.barrel.setRotationPoint(0.0F, 0.5F, 0.0F);
+		this.barrel.setTextureSize(128, 64);
+		this.barrel.addBox(-0.5F, -4.0F, -0.5F, 1, 5, 1, scale);
+		this.turretHead.addChild(this.barrel);
 
 		ModelRenderer turretFeetII = new ModelRenderer(this, 0, 36);
 		turretFeetII.setTextureSize(128, 64);

@@ -9,7 +9,7 @@ public interface TurretInfo
     String getName();
     UUID getUUID();
     Class<? extends EntityTurret> getTurretClass();
-    float getHealth();
+    float getTurretHealth();
     int getBaseAmmoCapacity();
     String getIcon();
     UUID getRecipeId();

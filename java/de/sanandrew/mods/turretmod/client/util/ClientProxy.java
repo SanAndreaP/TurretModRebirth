@@ -25,6 +25,7 @@ import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuPlayerTargets;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuUpgrades;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretCrossbow;
+import de.sanandrew.mods.turretmod.client.model.ModelTurretShotgun;
 import de.sanandrew.mods.turretmod.client.particle.ParticleAssemblySpark;
 import de.sanandrew.mods.turretmod.client.render.item.ItemRendererTile;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderTurretArrow;
@@ -33,6 +34,7 @@ import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityPotatoGenerator;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
@@ -67,6 +69,7 @@ public class ClientProxy
         super.init(event);
 
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretCrossbow.class, new RenderTurret(new ModelTurretCrossbow(0.0F)));
+        RenderingRegistry.registerEntityRenderingHandler(EntityTurretShotgun.class, new RenderTurret(new ModelTurretShotgun(0.0F)));
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCrossbowBolt.class, new RenderTurretArrow());
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurretAssembly.class, new RenderTurretAssembly());

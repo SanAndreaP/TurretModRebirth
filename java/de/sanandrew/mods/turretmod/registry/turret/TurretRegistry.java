@@ -9,6 +9,8 @@
 package de.sanandrew.mods.turretmod.registry.turret;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import org.apache.logging.log4j.Level;
 
@@ -76,6 +78,7 @@ public class TurretRegistry
     }
 
     public void initialize() {
-        this.registerTurretInfo(new TurretInfoT1Crossbow());
+        this.registerTurretInfo(EntityTurretCrossbow.TINFO);
+        this.registerTurretInfo(EntityTurretShotgun.TINFO);
     }
 }
