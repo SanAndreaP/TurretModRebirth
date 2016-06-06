@@ -24,14 +24,17 @@ import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuInfo;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuPlayerTargets;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuUpgrades;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
+import de.sanandrew.mods.turretmod.client.gui.tinfo.TurretInfoCategory;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretCrossbow;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretShotgun;
 import de.sanandrew.mods.turretmod.client.particle.ParticleAssemblySpark;
 import de.sanandrew.mods.turretmod.client.render.item.ItemRendererTile;
+import de.sanandrew.mods.turretmod.client.render.projectile.RenderPebble;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderTurretArrow;
 import de.sanandrew.mods.turretmod.client.render.tileentity.RenderTurretAssembly;
 import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectilePebble;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
@@ -41,10 +44,15 @@ import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.CommonProxy;
 import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.darkhax.bookshelf.lib.Tuple;
+import net.darkhax.bookshelf.lib.javatuples.Tuple;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.particle.EntityFlameFX;
+import net.minecraft.client.particle.EntitySmokeFX;
+import net.minecraft.client.renderer.entity.RenderFallingBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -68,9 +76,12 @@ public class ClientProxy
     public void init(FMLInitializationEvent event) {
         super.init(event);
 
+        TurretInfoCategory.initialize();
+
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretCrossbow.class, new RenderTurret(new ModelTurretCrossbow(0.0F)));
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretShotgun.class, new RenderTurret(new ModelTurretShotgun(0.0F)));
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCrossbowBolt.class, new RenderTurretArrow());
+        RenderingRegistry.registerEntityRenderingHandler(EntityProjectilePebble.class, new RenderPebble());
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurretAssembly.class, new RenderTurretAssembly());
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlockRegistry.turretAssembly), new ItemRendererTile(new TileEntityTurretAssembly(true)));
@@ -135,6 +146,29 @@ public class ClientProxy
         switch( particle ) {
             case ASSEMBLY_SPARK:
                 mc.effectRenderer.addEffect(new ParticleAssemblySpark(mc.theWorld, x, y, z, 0.0F, 0.0F, 0.0F));
+                break;
+            case SHOTGUN_SHOT: {
+                float rotXZ = -(float) data.getValue(0) / 180.0F * (float) Math.PI;
+                float rotY = -(float) data.getValue(1) / 180.0F * (float) Math.PI - 0.1F;
+                double yShift = Math.sin(rotY) * 0.6F;
+                double xShift = Math.sin(rotXZ) * 0.6F * Math.cos(rotY);
+                double zShift = Math.cos(rotXZ) * 0.6F * Math.cos(rotY);
+                boolean isUpsideDown = (boolean) data.getValue(2);
+
+                xShift *= isUpsideDown ? -1.0F : 1.0F;
+                yShift *= isUpsideDown ? -1.0F : 1.0F;
+                zShift *= isUpsideDown ? -1.0F : 1.0F;
+                y -= isUpsideDown ? 1.0F : 0.0F;
+
+                for( int i = 0; i < 8; i++ ) {
+                    double xDist = TmrUtils.RNG.nextDouble() * 0.05 - 0.025;
+                    double yDist = TmrUtils.RNG.nextDouble() * 0.05 - 0.025;
+                    double zDist = TmrUtils.RNG.nextDouble() * 0.05 - 0.025;
+                    EntityFX fx = new EntitySmokeFX(mc.theWorld, x + xShift, y + yShift, z + zShift, xShift * 0.1F + xDist, yShift * 0.1F + yDist, zShift * 0.1F + zDist);
+                    mc.effectRenderer.addEffect(fx);
+                }
+                break;
+            }
         }
     }
 }

@@ -6,21 +6,22 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.client.gui.tinfo;
+package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
+import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmo;
+import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntryItem;
 import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
-import de.sanandrew.mods.turretmod.util.TurretAssemblyRecipes;
+import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -36,10 +37,9 @@ import java.util.List;
 public class TurretInfoEntryTurret
         extends TurretInfoEntry
 {
-    private static final RenderItem ITEM_RENDER = new RenderItem();
-
     private int drawHeight;
     private float rotation;
+    private long lastTimestamp;
     private Class<? extends EntityTurret> turretClass;
     private WeakReference<EntityTurret> turretRenderCache;
     private TurretInfoValues values;
@@ -57,45 +57,49 @@ public class TurretInfoEntryTurret
     @Override
     public void drawPage(GuiTurretInfo gui, int mouseX, int mouseY, int scrollY, float partTicks) {
         int turretHeight = 82;
-        int valueHeight = 100;
+        int valueHeight = 113;
         int descStart;
         int descHeight;
 
-        gui.mc.fontRenderer.drawString(EnumChatFormatting.BOLD + StatCollector.translateToLocal(this.values.name), 2, 2, 0xFF0080BB);
+        gui.mc.fontRenderer.drawString(EnumChatFormatting.ITALIC + StatCollector.translateToLocal(this.values.name), 2, 2, 0xFF0080BB);
         Gui.drawRect(2, 12, MAX_ENTRY_WIDTH - 2, 13, 0xFF0080BB);
 
-        gui.doEntryScissoring(2, 16, 54, 92);
+        gui.doEntryScissoring(2, 15, 54, 82);
 
-        Gui.drawRect(2, 16, 56, 98, 0xFF000000);
+        Gui.drawRect(0, 0, MAX_ENTRY_WIDTH, MAX_ENTRY_HEIGHT, 0xFF000000);
         this.drawTurret(gui.mc, 28, 35);
 
         gui.doEntryScissoring();
 
-        GL11.glPushMatrix();
-        gui.mc.fontRenderer.drawString("Health:", 60, 16, 0xFF6A6A6A, false);
-        gui.mc.fontRenderer.drawString(this.values.health, 63, 25, 0xFF000000, false);
-        gui.mc.fontRenderer.drawString("Ammo Capacity:", 60, 37, 0xFF6A6A6A, false);
-        gui.mc.fontRenderer.drawString(this.values.ammoCap, 63, 46, 0xFF000000, false);
-        gui.mc.fontRenderer.drawString("Ammo Usable:", 60, 59, 0xFF6A6A6A, false);
-        gui.mc.fontRenderer.drawString("Crafting:", 60, 80, 0xFF6A6A6A, false);
-
-        GL11.glPopMatrix();
+        gui.mc.fontRenderer.drawString(StatCollector.translateToLocal(String.format("gui.%s.tinfo.health", TurretModRebirth.ID)), 60, 15, 0xFF6A6A6A, false);
+        gui.mc.fontRenderer.drawString(String.format(StatCollector.translateToLocal(String.format("gui.%s.tinfo.healthVal", TurretModRebirth.ID)), this.values.health), 63, 24, 0xFF000000, false);
+        gui.mc.fontRenderer.drawString(StatCollector.translateToLocal(String.format("gui.%s.tinfo.range", TurretModRebirth.ID)), 60, 35, 0xFF6A6A6A, false);
+        gui.mc.fontRenderer.drawString(String.format(StatCollector.translateToLocal(String.format("gui.%s.tinfo.rangeVal", TurretModRebirth.ID)), this.values.range), 63, 44, 0xFF000000, false);
+        gui.mc.fontRenderer.drawString(StatCollector.translateToLocal(String.format("gui.%s.tinfo.ammocap", TurretModRebirth.ID)), 60, 55, 0xFF6A6A6A, false);
+        gui.mc.fontRenderer.drawString(String.format(StatCollector.translateToLocal(String.format("gui.%s.tinfo.roundsVal", TurretModRebirth.ID)), this.values.ammoCap), 63, 64, 0xFF000000, false);
+        gui.mc.fontRenderer.drawString(StatCollector.translateToLocal(String.format("gui.%s.tinfo.ammouse", TurretModRebirth.ID)), 60, 75, 0xFF6A6A6A, false);
+        gui.mc.fontRenderer.drawString(StatCollector.translateToLocal(String.format("gui.%s.tinfo.crafting", TurretModRebirth.ID)), 60, 95, 0xFF6A6A6A, false);
 
         descStart = Math.max(turretHeight, valueHeight);
 
         Gui.drawRect(2, 2 + descStart, MAX_ENTRY_WIDTH - 2, 3 + descStart, 0xFF0080BB);
         String text = StatCollector.translateToLocal(this.values.desc).replace("\\n", "\n");
-        gui.mc.fontRenderer.drawSplitString(text, 2, 6 + descStart, MAX_ENTRY_WIDTH - 2, 0xFF000000);
+        gui.mc.fontRenderer.drawSplitString(text, 2, 5 + descStart, MAX_ENTRY_WIDTH - 2, 0xFF000000);
         descHeight = gui.mc.fontRenderer.splitStringWidth(text, MAX_ENTRY_WIDTH - 4) + 7;
 
         for( int i = 0; i < this.values.ammoStacks.length; i++ ) {
-            drawItem(gui.mc, 63 + 10 * i, 68, mouseX, mouseY, scrollY, this.values.ammoStacks[i]);
+            drawMiniItem(gui, 63 + 10 * i, 84, mouseX, mouseY, scrollY, this.values.ammoStacks[i], true);
         }
         for( int i = 0; i < this.values.recipeStacks.length; i++ ) {
-            drawItem(gui.mc, 63 + 10 * i, 89, mouseX, mouseY, scrollY, this.values.recipeStacks[i]);
+            this.drawItemRecipe(gui, 63 + 10 * i, 104, mouseX, mouseY, scrollY, this.values.recipeStacks[i]);
         }
 
         this.drawHeight = descStart + descHeight;
+
+        long time = System.currentTimeMillis();
+        if( this.lastTimestamp + 1000 < time ) {
+            this.lastTimestamp = time;
+        }
     }
 
     @Override
@@ -147,52 +151,20 @@ public class TurretInfoEntryTurret
         OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
     }
 
-    private static void drawItem(Minecraft mc, int x, int y, int mouseX, int mouseY, int scrollY, ItemStack stack) {
-        GL11.glPushMatrix();
-        if( mouseY >= 0 && mouseY < MAX_ENTRY_HEIGHT && mouseX >= x && mouseX < x + 9 && mouseY >= y - scrollY && mouseY < y + 9 - scrollY ) {
-            Gui.drawRect(x, y, x + 9, y + 9, 0xFFD0D0D0);
-            GL11.glPushMatrix();
-            GL11.glTranslatef(0.0F, MAX_ENTRY_HEIGHT - 20 + scrollY, 32.0F);
-            Gui.drawRect(0, 0, MAX_ENTRY_WIDTH, 20, 0xD0000000);
-
-            mc.fontRenderer.drawString(stack.getDisplayName(), 22, 2, 0xFFFFFFFF, false);
-
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-            RenderHelper.enableGUIStandardItemLighting();
-            ITEM_RENDER.zLevel = 300.0F;
-            ITEM_RENDER.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), stack, 2, 2);
-            ITEM_RENDER.renderItemOverlayIntoGUI(mc.fontRenderer, mc.getTextureManager(), stack, 2, 2);
-            ITEM_RENDER.zLevel = 0.0F;
-            RenderHelper.disableStandardItemLighting();
-            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-
-            GL11.glPopMatrix();
-        } else {
-            Gui.drawRect(x, y, x + 9, y + 9, 0xFFA0A0A0);
-        }
-
-        GL11.glTranslatef(0.0F, 0.0F, 32.0F);
-
-        GL11.glScalef(0.5F, 0.5F, 1.0F);
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        RenderHelper.enableGUIStandardItemLighting();
-        ITEM_RENDER.zLevel = 200.0F;
-        ITEM_RENDER.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), stack, x*2 + 1, y*2 + 1);
-        ITEM_RENDER.renderItemOverlayIntoGUI(mc.fontRenderer, mc.getTextureManager(), stack, x*2 + 1, y*2 + 1);
-        ITEM_RENDER.zLevel = 0.0F;
-        RenderHelper.disableStandardItemLighting();
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-
-        GL11.glPopMatrix();
+    private void drawItemRecipe(GuiTurretInfo gui, int x, int y, int mouseX, int mouseY, int scrollY, RecipeEntryItem entryItem) {
+        ItemStack[] entryStacks = entryItem.getEntryItemStacks();
+        ItemStack stack = entryStacks[(int)((this.lastTimestamp / 1000L) % entryStacks.length)];
+        drawMiniItem(gui, x, y, mouseX, mouseY, scrollY, stack, entryItem.shouldDrawTooltip());
     }
 
     private static final class TurretInfoValues
     {
         public final String name;
         public final String desc;
-        public final String health;
-        public final String ammoCap;
-        public final ItemStack[] recipeStacks;
+        public final float health;
+        public final int ammoCap;
+        public final String range;
+        public final RecipeEntryItem[] recipeStacks;
         public final ItemStack[] ammoStacks;
 
         public TurretInfoValues(TurretInfo info) {
@@ -200,15 +172,16 @@ public class TurretInfoEntryTurret
 
             this.name = String.format("entity.%s.%s.name", TurretModRebirth.ID, info.getName());
             this.desc = String.format("entity.%s.%s.desc", TurretModRebirth.ID, info.getName());
-            this.health = String.format("%.2f HP", info.getTurretHealth());
-            this.ammoCap = String.format("%d Rounds", info.getBaseAmmoCapacity());
+            this.range = info.getInfoRange();
+            this.health = info.getTurretHealth();
+            this.ammoCap = info.getBaseAmmoCapacity();
 
             List<TurretAmmo> ammos = AmmoRegistry.INSTANCE.getTypesForTurret(info.getTurretClass());
             for( TurretAmmo ammo : ammos ) {
                 ammoItms.add(ItemRegistry.ammo.getAmmoItem(1, ammo));
             }
 
-            this.recipeStacks = TurretAssemblyRecipes.INSTANCE.getRecipeEntry(info.getRecipeId()).resources.clone();
+            this.recipeStacks = TurretAssemblyRecipes.INSTANCE.getRecipeEntry(info.getRecipeId()).resources;
 
             this.ammoStacks = ammoItms.toArray(new ItemStack[ammoItms.size()]);
         }

@@ -12,6 +12,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.item.ItemStack;
 import org.apache.logging.log4j.Level;
@@ -29,14 +30,21 @@ public class AmmoRegistry
 
     private final Map<UUID, TurretAmmo> ammoTypesFromUUID;
     private final Multimap<Class<? extends EntityTurret>, TurretAmmo> ammoTypesFromTurret;
+    private final Map<UUID, List<TurretAmmo>> ammoGroupsFromUUID;
 
     private AmmoRegistry() {
         this.ammoTypesFromUUID = new HashMap<>();
         this.ammoTypesFromTurret = ArrayListMultimap.create();
+        this.ammoGroupsFromUUID = new HashMap<>();
     }
 
     public List<TurretAmmo> getRegisteredTypes() {
         return new ArrayList<>(this.ammoTypesFromUUID.values());
+    }
+
+    public TurretAmmo[] getTypes(UUID groupId) {
+        List<TurretAmmo> ammoList = TmrUtils.valueOrDefault(this.ammoGroupsFromUUID.get(groupId), new ArrayList<TurretAmmo>(0));
+        return ammoList.toArray(new TurretAmmo[ammoList.size()]);
     }
 
     public TurretAmmo getType(UUID typeId) {
@@ -58,12 +66,12 @@ public class AmmoRegistry
             return false;
         }
 
-        if( type.getUUID() == null ) {
+        if( type.getId() == null ) {
             TurretModRebirth.LOG.log(Level.ERROR, String.format("Ammo-Type %s has no UUID! How am I supposed to differentiate all the cartridges?", type.getName()), new InvalidParameterException());
             return false;
         }
 
-        if( this.ammoTypesFromUUID.containsKey(type.getUUID()) ) {
+        if( this.ammoTypesFromUUID.containsKey(type.getId()) ) {
             TurretModRebirth.LOG.log(Level.ERROR, String.format("The UUID of Ammo-Type %s is already registered! Use another UUID. JUST DO IT!", type.getName()), new InvalidParameterException());
             return false;
         }
@@ -83,8 +91,14 @@ public class AmmoRegistry
             return false;
         }
 
-        this.ammoTypesFromUUID.put(type.getUUID(), type);
+        this.ammoTypesFromUUID.put(type.getId(), type);
         this.ammoTypesFromTurret.put(type.getTurret(), type);
+
+        List<TurretAmmo> groupList = this.ammoGroupsFromUUID.get(type.getGroupId());
+        if( groupList == null ) {
+            this.ammoGroupsFromUUID.put(type.getGroupId(), groupList = new ArrayList<>());
+        }
+        groupList.add(type);
 
         return true;
     }
@@ -93,7 +107,7 @@ public class AmmoRegistry
         if(firstStack != null && secondStack != null && firstStack.getItem() == ItemRegistry.ammo && secondStack.getItem() == ItemRegistry.ammo) {
             TurretAmmo firstType = ItemRegistry.ammo.getAmmoType(firstStack);
             TurretAmmo secondType = ItemRegistry.ammo.getAmmoType(secondStack);
-            return firstType != null && secondType != null && firstType.getTypeUUID().equals(secondType.getTypeUUID());
+            return firstType != null && secondType != null && firstType.getTypeId().equals(secondType.getTypeId());
         } else {
             return firstStack == secondStack;
         }
@@ -102,5 +116,7 @@ public class AmmoRegistry
     public void initialize() {
         this.registerAmmoType(new TurretAmmoArrow.Single());
         this.registerAmmoType(new TurretAmmoArrow.Quiver());
+        this.registerAmmoType(new TurretAmmoShotgunShell.Single());
+        this.registerAmmoType(new TurretAmmoShotgunShell.Multi());
     }
 }

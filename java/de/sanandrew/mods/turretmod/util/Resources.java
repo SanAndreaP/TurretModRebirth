@@ -46,7 +46,8 @@ public enum Resources
     TILE_ITEM_TRANSMITTER_GLOW("textures/blocks/item_transmitter_glow.png"),
     TILE_TURRET_ASSEMBLY("textures/blocks/turret_assembly.png"),
 
-    SHADER_CATEGORY_BUTTON_FRAG("shader/categorybtn.frag");
+    SHADER_CATEGORY_BUTTON_FRAG("shader/categorybtn.frag"),
+    SHADER_GRAYSCALE_FRAG("shader/grayscale.frag");
 
     private final ResourceLocation location;
 

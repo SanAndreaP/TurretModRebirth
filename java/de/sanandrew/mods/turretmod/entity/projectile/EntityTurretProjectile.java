@@ -83,9 +83,12 @@ public abstract class EntityTurretProjectile
     }
 
     private void setHeadingFromVec(Vec3 vector) {
-        this.motionX = vector.xCoord;
-        this.motionZ = vector.zCoord;
-        this.motionY = vector.yCoord;
+        double scatterVal = getScatterValue();
+        float initSpeed = getInitialSpeedMultiplier();
+
+        this.motionX = vector.xCoord * initSpeed + (TmrUtils.RNG.nextDouble() * 2.0D - 1.0D) * scatterVal;
+        this.motionZ = vector.zCoord * initSpeed + (TmrUtils.RNG.nextDouble() * 2.0D - 1.0D) * scatterVal;
+        this.motionY = vector.yCoord * initSpeed + (TmrUtils.RNG.nextDouble() * 2.0D - 1.0D) * scatterVal;
 
         float vecPlaneNormal = MathHelper.sqrt_double(vector.xCoord * vector.xCoord + vector.zCoord * vector.zCoord);
 
@@ -117,9 +120,12 @@ public abstract class EntityTurretProjectile
     public void onUpdate() {
         this.isAirBorne = true;
 
-        if( !this.worldObj.isRemote ) {
-            this.doCollisionCheck();
+        if( this.shooterCache instanceof EntityTurret && this.getDistanceToEntity(this.shooterCache) > ((EntityTurret) this.shooterCache).getTargetProcessor().getRange() * 4 ) {
+            this.setDead();
+            return;
         }
+
+        this.doCollisionCheck();
 
         this.posX += this.motionX;
         this.posY += this.motionY;
@@ -161,6 +167,7 @@ public abstract class EntityTurretProjectile
             this.extinguish();
         }
 
+
         this.motionX *= speed;
         this.motionY *= speed;
         this.motionZ *= speed;
@@ -182,7 +189,9 @@ public abstract class EntityTurretProjectile
         }
 
         Entity entity = null;
-        List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
+        AxisAlignedBB checkBB = this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D);
+//        if( this.boundingBox. )
+        List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, checkBB);
         double minDist = 0.0D;
         float collisionRange;
 
@@ -236,7 +245,8 @@ public abstract class EntityTurretProjectile
                     hitObj.entityHit.setFire(5);
                 }
 
-                if( hitObj.entityHit.attackEntityFrom(damagesource, dmg) ) {
+                if( this.onPreHit(hitObj.entityHit, damagesource, dmg) && hitObj.entityHit.attackEntityFrom(damagesource, dmg) ) {
+                    this.onPostHit(hitObj.entityHit, damagesource);
                     if( hitObj.entityHit instanceof EntityLivingBase ) {
                         EntityLivingBase living = (EntityLivingBase) hitObj.entityHit;
 
@@ -265,12 +275,12 @@ public abstract class EntityTurretProjectile
                             }
                         }
 
-                        float knockback = this.getKnockbackStrengthH();
-                            double horizMotion = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
+                        float knockback = this.getKnockbackStrengthH() - 0.6F;
+                        double horizMotion = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
 
-                            if( horizMotion > 0.0F ) {
-                                hitObj.entityHit.addVelocity(this.motionX * knockback * 0.6D / horizMotion, this.getKnockbackStrengthV(), this.motionZ * knockback * 0.6D / horizMotion);
-                            }
+                        if( horizMotion > 0.0F ) {
+                            hitObj.entityHit.addVelocity(this.motionX * knockback * 0.6D / horizMotion, this.getKnockbackStrengthV() - 0.4F, this.motionZ * knockback * 0.6D / horizMotion);
+                        }
 
                         if( this.shooterCache instanceof EntityLivingBase ) {
                             EnchantmentHelper.func_151384_a(living, this.shooterCache);
@@ -292,15 +302,31 @@ public abstract class EntityTurretProjectile
 
     private void onBlockHit(int blockX, int blockY, int blockZ) { }
 
-    public abstract float getSpeedMultiplierAir();
-
-    public abstract float getSpeedMultiplierLiquid();
+    public abstract float getInitialSpeedMultiplier();
 
     public abstract float getDamage();
 
     public abstract float getKnockbackStrengthH();
 
     public abstract float getKnockbackStrengthV();
+
+    public double getScatterValue() {
+        return 0.0F;
+    }
+
+    public float getSpeedMultiplierAir() {
+        return 1.0F;
+    }
+
+    public float getSpeedMultiplierLiquid() {
+        return 0.8F;
+    }
+
+    public boolean onPreHit(Entity e, DamageSource dmgSource, float dmg) {
+        return true;
+    }
+
+    public void onPostHit(Entity e, DamageSource dmg) { }
 
     @Override
     protected void readEntityFromNBT(NBTTagCompound nbt) {
@@ -350,12 +376,40 @@ public abstract class EntityTurretProjectile
     public void writeSpawnData(ByteBuf buffer) {
         buffer.writeFloat(this.rotationYaw);
         buffer.writeFloat(this.rotationPitch);
+        buffer.writeBoolean(this.shooterCache != null);
+        if( this.shooterCache != null ) {
+            buffer.writeInt(this.shooterCache.getEntityId());
+        }
+        buffer.writeBoolean(this.targetCache != null);
+        if( this.targetCache != null ) {
+            buffer.writeInt(this.targetCache.getEntityId());
+        }
     }
 
     @Override
     public void readSpawnData(ByteBuf buffer) {
         this.rotationYaw = buffer.readFloat();
         this.rotationPitch = buffer.readFloat();
+//        int eId = buffer.readInt();
+        if( buffer.readBoolean() ) {
+            this.shooterCache = this.worldObj.getEntityByID(buffer.readInt());
+//            if( this.shooterCache != null ) {
+//                this.shooterUUID = this.shooterCache.getUniqueID();
+//            }
+        }
+        if( buffer.readBoolean() ) {
+            this.targetCache = this.worldObj.getEntityByID(buffer.readInt());
+//            if( this.targetCache != null ) {
+//                this.targetUUID = this.targetCache.getUniqueID();
+//            }
+        }
+//        try {
+//            this.shooterUUID = UUID.fromString(ByteBufUtils.readUTF8String(buffer));
+//        } catch( IllegalArgumentException ignored ) { }
+//        try {
+//            this.targetUUID = UUID.fromString(ByteBufUtils.readUTF8String(buffer));
+//        } catch( IllegalArgumentException ignored ) { }
+//        this.entityInit();
     }
 
     public abstract float getArc();

@@ -5,6 +5,9 @@ tile.sapturretmod:turret_assembly.group2=Ammunition
 tile.sapturretmod:turret_assembly.group3=Repair Kits
 tile.sapturretmod:turret_assembly.group4=Upgrades
 
+item.sapturretmod:turret_info.name=Turret Info Tablet
+item.sapturretmod:turret_info.desc=Gives information about the\nitems in the Turret Mod.
+
 item.sapturretmod:turret_placer.name=Defense Turret
 item.sapturretmod:turret_placer.turret_name=Name: %s
 item.sapturretmod:turret_placer.health=Health: %.1f HP
@@ -24,8 +27,10 @@ item.sapturretmod:turret_assembly_filter.desc=Used in the Turret Assembly Table
 item.sapturretmod:turret_assembly_filter.conf=Configured
 item.sapturretmod:turret_assembly_filter.inst=Right-click to configure, Shift-right-click to clear config.
 
-item.sapturretmod:turret_ammo.arrow_sng.name=Turret Arrow
-item.sapturretmod:turret_ammo.arrow_lrg.name=Turret Arrow Pack
+item.sapturretmod:turret_ammo.arrow_sng.name=Arrow Bolt
+item.sapturretmod:turret_ammo.arrow_lrg.name=Arrow Bolt Pack
+item.sapturretmod:turret_ammo.sgshell_sng.name=Shotgun Shell
+item.sapturretmod:turret_ammo.sgshell_lrg.name=Shotgun Shell Pack
 
 item.sapturretmod:turret_repair_kit.standard_1.name=Repair Kit 05HS
 item.sapturretmod:turret_repair_kit.standard_2.name=Repair Kit 10HS
@@ -33,18 +38,19 @@ item.sapturretmod:turret_repair_kit.standard_3.name=Repair Kit 15HS
 item.sapturretmod:turret_repair_kit.standard_4.name=Repair Kit 20HS
 item.sapturretmod:turret_repair_kit.regen_1.name=Repair Kit 01H40R
 
+item.sapturretmod:turret_upgrade.name=Turret Upgrade
 item.sapturretmod:turret_upgrade.empty.name=Empty
-item.sapturretmod:turret_upgrade.empty.desc=Base for further upgrades. Not applicable to anything.
+item.sapturretmod:turret_upgrade.empty.desc=Base for all other upgrades. Not applicable to anything.
 item.sapturretmod:turret_upgrade.health_i.name=Health I
-item.sapturretmod:turret_upgrade.health_i.desc=Increases the turret health by 25%.
+item.sapturretmod:turret_upgrade.health_i.desc=Increases the maximum turret health by 25%.\nIt will not increase the turrets health automatically! You must heal it afterwards.
 item.sapturretmod:turret_upgrade.health_ii.name=Health II
-item.sapturretmod:turret_upgrade.health_ii.desc=Increases the turret health by an additional 25% (50% overall).
+item.sapturretmod:turret_upgrade.health_ii.desc=Increases the maximum turret health by 25% for 50% total increase.
 item.sapturretmod:turret_upgrade.health_iii.name=Health III
-item.sapturretmod:turret_upgrade.health_iii.desc=Increases the turret health by an additional 25% (75% overall).
+item.sapturretmod:turret_upgrade.health_iii.desc=Increases the maximum turret health by 25% for 75% total increase.
 item.sapturretmod:turret_upgrade.health_iv.name=Health IV
-item.sapturretmod:turret_upgrade.health_iv.desc=Increases the turret health by an additional 25% (100% overall).
+item.sapturretmod:turret_upgrade.health_iv.desc=Increases the maximum turret health by 25% for 100% total increase.
 item.sapturretmod:turret_upgrade.reload_i.name=Reload I
-item.sapturretmod:turret_upgrade.reload_i.desc=Decreases the reload time by 15%.
+item.sapturretmod:turret_upgrade.reload_i.desc=Decreases the reload time by 15%.\nBe careful with faster shooting turrets, the immunity time caused by damage on targets may last longer than the time to reload, thus wasting ammunition.
 item.sapturretmod:turret_upgrade.reload_ii.name=Reload II
 item.sapturretmod:turret_upgrade.reload_ii.desc=Decreases the reload time by an additional 35% (50% overall).
 item.sapturretmod:turret_upgrade.upg_storage_i.name=Upgrade Storage I
@@ -54,15 +60,31 @@ item.sapturretmod:turret_upgrade.upg_storage_ii.desc=Increases the available upg
 item.sapturretmod:turret_upgrade.upg_storage_iii.name=Upgrade Storage III
 item.sapturretmod:turret_upgrade.upg_storage_iii.desc=Increases the available upgrade slots by 9.
 item.sapturretmod:turret_upgrade.ammo_storage.name=Ammunition Storage
-item.sapturretmod:turret_upgrade.ammo_storage.desc=Increases the available ammo storage by 320 units.
+item.sapturretmod:turret_upgrade.ammo_storage.desc=Increases the available ammo storage by 320 rounds.
 
 entity.sapturretmod.turret_i_crossbow.name=Crossbow Turret (T1)
-entity.sapturretmod.turret_i_crossbow.desc=A turret meant for basic defense and beginners. Not very strong but it's the cheapest one.\nIt takes arrow bolts as ammunition.\n\nBe careful around creepers and skeletons, they may be able to reach it!
+entity.sapturretmod.turret_i_crossbow.desc=A turret meant for basic defense and beginners. Not very strong but one of the cheapest to make.
 entity.sapturretmod.turret_i_shotgun.name=Shotgun Turret (T1)
-entity.sapturretmod.turret_i_shotgun.desc=A turret meant for basic crowd control. Very weak but can hit multiple targets at once.\nIt takes pebbles as ammunition.\nThe turret shoots multiple projectiles at once, which on their own are very weak, but won't cause any immunity like (mostly) every other attack.\n\nMake sure to use other turrets for ranged enemies.
+entity.sapturretmod.turret_i_shotgun.desc=A turret meant for basic crowd control. Very weak but can hit §3multiple targets§0 at once, due to its ammo dispersing into multiple projectiles.
 entity.sapturretmod.turret_ii_revolver.name=Revolver Turret (T2)
 
-tinfo.turret.desc.turret_crossbow=Turret which shoots arrows. It's relatively cheap, so it's ideal as your basic defense.
+sapturretmod.tinfo.ammo.arrow.name=Arrow Bolt
+sapturretmod.tinfo.ammo.arrow.desc=The standard ammo for the §3Crossbow Turret§0. Has a tiny knockback effect and acts like a standard arrow, just smaller. Very precise.\nCan be packaged, whose items will provide 16x ammo.
+sapturretmod.tinfo.ammo.sgshell.name=Shotgun Shell
+sapturretmod.tinfo.ammo.sgshell.desc=The standard ammo for the §3Shotgun Turret§0. Has no knockback effect and turns into 6 dispersed pebble projectiles when shot.\nDoes not apply any immunity to the target, thus targets hit by multiple pebbles will take damage from all of them.\nCan be packaged, whose items will provide 16x ammo.
+
+gui.sapturretmod.tinfo.health=Health
+gui.sapturretmod.tinfo.range=Range
+gui.sapturretmod.tinfo.ammocap=Ammo Capacity
+gui.sapturretmod.tinfo.ammouse=Ammo Useable
+gui.sapturretmod.tinfo.crafting=Crafted With
+gui.sapturretmod.tinfo.dps=Damage Per Projectile
+gui.sapturretmod.tinfo.turret=Turret Applicable
+gui.sapturretmod.tinfo.rounds=Rounds Provided
+gui.sapturretmod.tinfo.prereq=Upgrade Prerequisite
+gui.sapturretmod.tinfo.healthVal=%.1f HP
+gui.sapturretmod.tinfo.roundsVal=%d Rounds
+gui.sapturretmod.tinfo.rangeVal=%s Blocks
 
 gui.sapturretmod.tcu.page.info.title=TCU - Turret Info
 gui.sapturretmod.tcu.page.info.tab=Turret Info

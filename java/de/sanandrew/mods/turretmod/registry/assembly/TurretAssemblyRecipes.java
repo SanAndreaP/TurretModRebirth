@@ -1,0 +1,405 @@
+/**
+ * ****************************************************************************************************************
+ * Authors:   SanAndreasP
+ * Copyright: SanAndreasP
+ * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+ * http://creativecommons.org/licenses/by-nc-sa/4.0/
+ * *****************************************************************************************************************
+ */
+package de.sanandrew.mods.turretmod.registry.assembly;
+
+import de.sanandrew.mods.turretmod.block.BlockRegistry;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
+import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
+import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoArrow;
+import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoShotgunShell;
+import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
+import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
+import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import net.darkhax.bookshelf.lib.javatuples.Pair;
+import net.darkhax.bookshelf.lib.util.ItemStackUtils;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import org.apache.logging.log4j.Level;
+
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+public class TurretAssemblyRecipes
+{
+    public static final TurretAssemblyRecipes INSTANCE = new TurretAssemblyRecipes();
+
+    public static final UUID TURRET_MK1_CB = UUID.fromString("21F88959-C157-44E3-815B-DD956B065052");
+    public static final UUID TURRET_MK1_SG = UUID.fromString("870EA4DD-0C1E-44B1-BE91-4DD33FC00EF8");
+
+    public static final UUID ARROW_SNG = UUID.fromString("1A011825-2E5B-4F17-925E-F734E6A732B9");
+    public static final UUID ARROW_MTP = UUID.fromString("C079D29A-E6E2-4BE8-8478-326BDFEDE08B");
+    public static final UUID SGSHELL_SNG = UUID.fromString("AB37D601-993D-41FE-B698-8AAC99D296EA");
+    public static final UUID SGSHELL_MTP = UUID.fromString("D17EC4A1-BDAA-4C80-B1F5-0C111EC13954");
+
+    public static final UUID TCU = UUID.fromString("47B68BE0-30D6-4849-B995-74C147C8CC5D");
+    public static final UUID TINFO = UUID.fromString("5A8C8AE3-878A-4580-9F84-2C8602B4275D");
+
+    public static final UUID HEAL_MK1 = UUID.fromString("816758D6-7F00-4ACB-BD94-F7A8A0F86016");
+    public static final UUID HEAL_MK2 = UUID.fromString("39A1A9C8-CECA-40CA-BCF7-ABD2B1A26C82");
+    public static final UUID HEAL_MK3 = UUID.fromString("A70314BE-1709-4AE4-8FF7-69F3A69ACCA2");
+    public static final UUID HEAL_MK4 = UUID.fromString("6FD0927F-61E0-49A0-B615-4B3E28A63EE4");
+    public static final UUID REGEN_MK1 = UUID.fromString("531F0B05-5BB8-45FC-A899-226A3F52D5B7");
+
+    public static final UUID UPG_EMPTY = UUID.fromString("BC775E0D-7732-4E4E-8FA3-33B299CAF19D");
+    public static final UUID UPG_HEALTH_MK1 = UUID.fromString("EF5192F1-0422-444D-B2D3-98540D962AE9");
+    public static final UUID UPG_HEALTH_MK2 = UUID.fromString("185AB41E-BD30-47C8-BD42-A9D5C8749ECF");
+    public static final UUID UPG_HEALTH_MK3 = UUID.fromString("AF3E8F87-DD88-4665-B3A9-314D4077CD00");
+    public static final UUID UPG_HEALTH_MK4 = UUID.fromString("E14C4925-0C35-44CE-9626-490A7774A9FD");
+    public static final UUID UPG_STORAGE_1 = UUID.fromString("FAF60679-5BC6-4B82-BB34-323988B56FFA");
+    public static final UUID UPG_STORAGE_2 = UUID.fromString("2F90D6BC-0869-45DE-9527-396CCE547ECE");
+    public static final UUID UPG_STORAGE_3 = UUID.fromString("9B7BA1F9-286E-43E4-8147-891DA0C243DC");
+    public static final UUID UPG_RELOAD_1 = UUID.fromString("A891752D-AA2E-40D1-8E22-50DF0AF43490");
+    public static final UUID UPG_RELOAD_2 = UUID.fromString("72BDED08-78DC-4A25-9460-6F5B8AEEE3A5");
+    public static final UUID UPG_AMMO_STG = UUID.fromString("56546F99-5612-4052-9A77-B81A6F1EB5DF");
+
+    public static void initialize() {
+        registerTurrets();
+        registerAmmo();
+        registerMisc();
+        registerMedkits();
+        registerUpgrades();
+    }
+
+    private static void registerTurrets() {
+        RecipeGroup group = INSTANCE.registerGroup("group1", ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCrossbow.class)));
+
+        ItemStack res;
+        RecipeEntryItem[] ingredients;
+
+        res = ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCrossbow.class));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(12).put(Blocks.cobblestone),
+                                             new RecipeEntryItem(1).put(Items.bow),
+                                             new RecipeEntryItem(4).put("dustRedstone"),
+                                             new RecipeEntryItem(4).put("plankWood")};
+        INSTANCE.registerRecipe(TURRET_MK1_CB, group, res, 10, 100, ingredients);
+
+        res = ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretShotgun.class));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(12).put(Blocks.stone),
+                                             new RecipeEntryItem(2).put("ingotIron"),
+                                             new RecipeEntryItem(4).put("dustRedstone"),
+                                             new RecipeEntryItem(4).put("logWood")};
+        INSTANCE.registerRecipe(TURRET_MK1_SG, group, res, 10, 100, ingredients);
+    }
+
+    private static void registerAmmo() {
+        RecipeGroup group = INSTANCE.registerGroup("group2", ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.QUIVER_UUID)));
+
+        ItemStack res;
+        RecipeEntryItem[] ingredients;
+
+        res = ItemRegistry.ammo.getAmmoItem(4, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.ARROW_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(Items.arrow)};
+        INSTANCE.registerRecipe(ARROW_SNG, group, res, 5, 60, ingredients);
+
+        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.QUIVER_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.ARROW_UUID))),
+                                             new RecipeEntryItem(1).put(Items.leather)};
+        INSTANCE.registerRecipe(ARROW_MTP, group, res, 5, 120, ingredients);
+
+        res = ItemRegistry.ammo.getAmmoItem(12, AmmoRegistry.INSTANCE.getType(TurretAmmoShotgunShell.SHELL_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put("ingotIron"),
+                                             new RecipeEntryItem(1).put(Blocks.gravel),
+                                             new RecipeEntryItem(1).put(Items.gunpowder).put("dustGunpowder"),
+                                             new RecipeEntryItem(1).put("dustRedstone")};
+        INSTANCE.registerRecipe(SGSHELL_SNG, group, res, 10, 60, ingredients);
+
+        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoShotgunShell.PACK_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoShotgunShell.SHELL_UUID))),
+                                             new RecipeEntryItem(1).put(Items.leather)};
+        INSTANCE.registerRecipe(SGSHELL_MTP, group, res, 5, 120, ingredients);
+    }
+
+    private static void registerMisc() {
+        RecipeGroup group = INSTANCE.registerGroup("group0", new ItemStack(ItemRegistry.tcu));
+
+        ItemStack res;
+        RecipeEntryItem[] ingredients;
+
+        res = new ItemStack(ItemRegistry.turretInfo, 1);
+        ingredients = new RecipeEntryItem[0];
+        INSTANCE.registerRecipe(TINFO, group, res, 7_500, 10, ingredients);
+
+        res = new ItemStack(ItemRegistry.tcu, 1);
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(5).put("ingotIron"),
+                                             new RecipeEntryItem(2).put(Items.redstone),
+                                             new RecipeEntryItem(1).put("paneGlass")};
+        INSTANCE.registerRecipe(TCU, group, res, 10, 180, ingredients);
+    }
+
+    private static void registerMedkits() {
+        RecipeGroup group = INSTANCE.registerGroup("group3", ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getRepairKit(RepairKitRegistry.STANDARD_MK1)));
+
+        ItemStack res;
+        RecipeEntryItem[] ingredients;
+
+        res = ItemRegistry.repairKit.getRepKitItem(3, RepairKitRegistry.INSTANCE.getRepairKit(RepairKitRegistry.STANDARD_MK1));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.leather),
+                                             new RecipeEntryItem(1).put(new ItemStack(Items.potionitem, 1, 8197)).drawTooltip()};
+        INSTANCE.registerRecipe(HEAL_MK1, group, res, 25, 600, ingredients);
+
+        res = ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getRepairKit(RepairKitRegistry.STANDARD_MK2));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.leather),
+                                             new RecipeEntryItem(1).put(new ItemStack(Items.potionitem, 1, 8197)).drawTooltip(),
+                                             new RecipeEntryItem(1).put(ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getRepairKit(RepairKitRegistry.STANDARD_MK1)))};
+        INSTANCE.registerRecipe(HEAL_MK2, group, res, 25, 600, ingredients);
+
+        res = ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getRepairKit(RepairKitRegistry.STANDARD_MK3));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.leather),
+                                             new RecipeEntryItem(1).put(new ItemStack(Items.potionitem, 1, 8197)).drawTooltip(),
+                                             new RecipeEntryItem(1).put(ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getRepairKit(RepairKitRegistry.STANDARD_MK2)))};
+        INSTANCE.registerRecipe(HEAL_MK3, group, res, 25, 600, ingredients);
+
+        res = ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getRepairKit(RepairKitRegistry.STANDARD_MK4));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.leather),
+                                             new RecipeEntryItem(1).put(new ItemStack(Items.potionitem, 1, 8197)).drawTooltip(),
+                                             new RecipeEntryItem(1).put(ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getRepairKit(RepairKitRegistry.STANDARD_MK3)))};
+        INSTANCE.registerRecipe(HEAL_MK4, group, res, 25, 600, ingredients);
+
+        res = ItemRegistry.repairKit.getRepKitItem(6, RepairKitRegistry.INSTANCE.getRepairKit(RepairKitRegistry.REGEN_MK1));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.leather),
+                                             new RecipeEntryItem(1).put(new ItemStack(Items.potionitem, 1, 8193)).drawTooltip()};
+        INSTANCE.registerRecipe(REGEN_MK1, group, res, 25, 600, ingredients);
+    }
+
+    private static void registerUpgrades() {
+        RecipeGroup group = INSTANCE.registerGroup("group4", UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY));
+
+        ItemStack res;
+        RecipeEntryItem[] ingredients;
+
+        res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY);
+        res.stackSize = 3;
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("paneGlass"),
+                                             new RecipeEntryItem(2).put("dustRedstone"),
+                                             new RecipeEntryItem(1).put("ingotGold"),
+                                             new RecipeEntryItem(1).put(new ItemStack(Blocks.stone_slab, 1, 0))};
+        INSTANCE.registerRecipe(UPG_EMPTY, group, res, 80, 400, ingredients);
+
+        res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.HEALTH_I);
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+                                             new RecipeEntryItem(8).put(Items.speckled_melon)};
+        INSTANCE.registerRecipe(UPG_HEALTH_MK1, group, res, 20, 600, ingredients);
+
+        res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.HEALTH_II);
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+                                             new RecipeEntryItem(8).put(Items.speckled_melon),
+                                             new RecipeEntryItem(1).put(Items.golden_apple)};
+        INSTANCE.registerRecipe(UPG_HEALTH_MK2, group, res, 20, 600, ingredients);
+
+        res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.HEALTH_III);
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+                                             new RecipeEntryItem(16).put(Items.speckled_melon),
+                                             new RecipeEntryItem(2).put(Items.golden_apple)};
+        INSTANCE.registerRecipe(UPG_HEALTH_MK3, group, res, 20, 600, ingredients);
+
+        res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.HEALTH_IV);
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+                                             new RecipeEntryItem(16).put(Items.speckled_melon),
+                                             new RecipeEntryItem(4).put(Items.golden_apple)};
+        INSTANCE.registerRecipe(UPG_HEALTH_MK4, group, res, 20, 600, ingredients);
+
+        res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.UPG_STORAGE_I);
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+                                             new RecipeEntryItem(1).put(Blocks.trapped_chest)};
+        INSTANCE.registerRecipe(UPG_STORAGE_1, group, res, 20, 600, ingredients);
+
+        res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.UPG_STORAGE_II);
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+                                             new RecipeEntryItem(1).put(Blocks.trapped_chest),
+                                             new RecipeEntryItem(1).put(Items.gold_ingot)};
+        INSTANCE.registerRecipe(UPG_STORAGE_2, group, res, 20, 600, ingredients);
+
+        res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.UPG_STORAGE_III);
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+                                             new RecipeEntryItem(1).put(Blocks.trapped_chest),
+                                             new RecipeEntryItem(1).put(Items.diamond)};
+        INSTANCE.registerRecipe(UPG_STORAGE_3, group, res, 20, 600, ingredients);
+
+        res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.RELOAD_I);
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+                                             new RecipeEntryItem(1).put(Blocks.ice)};
+        INSTANCE.registerRecipe(UPG_RELOAD_1, group, res, 20, 600, ingredients);
+
+        res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.RELOAD_II);
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+                                             new RecipeEntryItem(1).put(Blocks.packed_ice)};
+        INSTANCE.registerRecipe(UPG_RELOAD_2, group, res, 20, 600, ingredients);
+
+        res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.AMMO_STORAGE);
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+                                             new RecipeEntryItem(1).put(Blocks.hopper)};
+        INSTANCE.registerRecipe(UPG_AMMO_STG, group, res, 20, 600, ingredients);
+    }
+
+    private Map<UUID, ItemStack> recipeResults = new HashMap<>();
+    private Map<UUID, RecipeEntry> recipeResources = new HashMap<>();
+
+    private Map<String, RecipeGroup> groups = new HashMap<>();
+
+    public boolean registerRecipe(UUID uuid, RecipeGroup group, ItemStack result, int fluxPerTick, int ticksProcessing, RecipeEntryItem... resources) {
+        if( uuid == null ) {
+            TurretModRebirth.LOG.log(Level.ERROR, "UUID for assembly recipe cannot be null!", new InvalidParameterException());
+            return false;
+        }
+        if( this.recipeResults.containsKey(uuid) ) {
+            TurretModRebirth.LOG.log(Level.ERROR, String.format("UUID %s for assembly recipe cannot be registered twice!", uuid), new InvalidParameterException());
+            return false;
+        }
+        if( !ItemStackUtils.isValidStack(result) ) {
+            TurretModRebirth.LOG.log(Level.ERROR, String.format("Result stack of UUID %s is not valid!", uuid), new InvalidParameterException());
+            return false;
+        }
+        if( fluxPerTick < 0 ) {
+            TurretModRebirth.LOG.log(Level.ERROR, String.format("Flux usage cannot be smaller than 0 for UUID %s!", uuid), new InvalidParameterException());
+            return false;
+        }
+        if( ticksProcessing < 0 ) {
+            TurretModRebirth.LOG.log(Level.ERROR, String.format("Ticks processing cannot be smaller than 0 for UUID %s!", uuid), new InvalidParameterException());
+            return false;
+        }
+        if( resources == null ) {
+            resources = new RecipeEntryItem[0];
+        }
+
+        this.recipeResults.put(uuid, result);
+        this.recipeResources.put(uuid, new RecipeEntry(resources, fluxPerTick, ticksProcessing));
+
+        group.addRecipe(uuid);
+
+        return true;
+    }
+
+    public RecipeGroup registerGroup(String name, ItemStack stack) {
+        name = BlockRegistry.turretAssembly.getUnlocalizedName() + '.' + name;
+        RecipeGroup group = new RecipeGroup(name, stack);
+        this.groups.put(name, group);
+        return group;
+    }
+
+    public RecipeGroup getGroupByName(String name) {
+        return this.groups.get(name);
+    }
+
+    public RecipeGroup[] getGroups() {
+        return this.groups.values().toArray(new RecipeGroup[this.groups.size()]);
+    }
+
+    public RecipeEntry getRecipeEntry(UUID uuid) {
+        RecipeEntry entry = this.recipeResources.get(uuid);
+        return entry == null ? null : entry;
+    }
+
+    public ItemStack getRecipeResult(UUID uuid) {
+        ItemStack stack = this.recipeResults.get(uuid);
+        return stack == null ? null : stack.copy();
+    }
+
+    public List<Pair<UUID, ItemStack>> getRecipeList() {
+        List<Pair<UUID, ItemStack>> ret = new ArrayList<>(this.recipeResults.size());
+        for( UUID key : this.recipeResults.keySet() ) {
+            ret.add(Pair.with(key, this.getRecipeResult(key)));
+        }
+
+        return ret;
+    }
+
+    public boolean checkAndConsumeResources(IInventory inv, UUID uuid) {
+        RecipeEntry entry = this.getRecipeEntry(uuid).copy();
+        List<Pair<Integer, Integer>> resourceOnSlotList = new ArrayList<>();
+        List<RecipeEntryItem> resourceStacks = new ArrayList<>(Arrays.asList(entry.resources));
+
+        Iterator<RecipeEntryItem> resourceStacksIt = resourceStacks.iterator();
+        int invSize = inv.getSizeInventory();
+        while( resourceStacksIt.hasNext() ) {
+            RecipeEntryItem resource = resourceStacksIt.next();
+            if( resource == null ) {
+                return false;
+            }
+
+            for( int i = invSize - 1; i >= 2; i-- ) {
+                ItemStack invStack = inv.getStackInSlot(i);
+                if( ItemStackUtils.isValidStack(invStack) ) {
+                    ItemStack validStack = null;
+                    if( resource.isItemFitting(invStack) )
+                    {
+                        validStack = invStack;
+                    }
+
+                    if( validStack != null ) {
+                        resourceOnSlotList.add(Pair.with(i, Math.min(validStack.stackSize, resource.stackSize)));
+                        resource.stackSize -= validStack.stackSize;
+                    }
+
+                    if( resource.stackSize <= 0 ) {
+                        resourceStacksIt.remove();
+                        break;
+                    }
+                }
+            }
+        }
+
+        if( resourceStacks.size() > 0 ) {
+            return false;
+        }
+
+        for( Pair<Integer, Integer> resourceSlot : resourceOnSlotList ) {
+            inv.decrStackSize(resourceSlot.getValue0(), resourceSlot.getValue1());
+        }
+
+        return true;
+    }
+
+    public static class RecipeEntry
+    {
+        public final RecipeEntryItem[] resources;
+        public final int fluxPerTick;
+        public final int ticksProcessing;
+
+        RecipeEntry(RecipeEntryItem[] resources, int fluxPerTick, int ticksProcessing) {
+            this.resources = resources;
+            this.fluxPerTick = fluxPerTick;
+            this.ticksProcessing = ticksProcessing;
+        }
+
+        public RecipeEntry copy() {
+            List<RecipeEntryItem> stacks = new ArrayList<>();
+            for( RecipeEntryItem stack : this.resources ) {
+                stacks.add(stack.copy());
+            }
+            return new RecipeEntry(stacks.toArray(new RecipeEntryItem[stacks.size()]), this.fluxPerTick, this.ticksProcessing);
+        }
+    }
+
+    public static class RecipeGroup
+    {
+        public final String name;
+        public final ItemStack icon;
+        public final List<UUID> recipes = new ArrayList<>();
+
+        RecipeGroup(String name, ItemStack icon) {
+            this.name = name;
+            this.icon = icon;
+        }
+
+        public void addRecipe(UUID recipe) {
+            this.recipes.add(recipe);
+        }
+    }
+}

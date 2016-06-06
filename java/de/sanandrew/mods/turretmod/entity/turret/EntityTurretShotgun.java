@@ -9,11 +9,17 @@
 package de.sanandrew.mods.turretmod.entity.turret;
 
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectilePebble;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
+import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.Resources;
-import de.sanandrew.mods.turretmod.util.TurretAssemblyRecipes;
+import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import net.darkhax.bookshelf.lib.javatuples.Pair;
+import net.darkhax.bookshelf.lib.javatuples.Triplet;
+import net.darkhax.bookshelf.lib.javatuples.Unit;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -60,7 +66,16 @@ public class EntityTurretShotgun
         public UUID getRecipeId() {
             return TurretAssemblyRecipes.TURRET_MK1_SG;
         }
+
+        @Override
+        public String getInfoRange() {
+            return "16";
+        }
     };
+
+    public float barrelPos = 1.0F;
+    public float prevBarrelPos = 1.0F;
+    public int prevAmmoVal;
 
     {
         this.targetProc = new MyTargetProc();
@@ -82,6 +97,29 @@ public class EntityTurretShotgun
     }
 
     @Override
+    public void onUpdate() {
+        this.prevBarrelPos = this.barrelPos;
+
+        super.onUpdate();
+
+        int currAmmoVal = this.targetProc.getAmmoCount();
+
+        if( this.worldObj.isRemote ) {
+            if( this.barrelPos < 1.0F ) {
+                this.barrelPos += 0.06F * 20.0F / this.targetProc.getMaxShootTicks();
+            } else {
+                this.barrelPos = 1.0F;
+            }
+
+            if( this.prevAmmoVal > currAmmoVal ) {
+                this.barrelPos = 0.0F;
+                TurretModRebirth.proxy.spawnParticle(EnumParticle.SHOTGUN_SHOT, this.posX, this.posY + 1.5F, this.posZ, Triplet.with(this.rotationYawHead, this.rotationPitch, this.isUpsideDown));
+            }
+        }
+        this.prevAmmoVal = currAmmoVal;
+    }
+
+    @Override
     public ResourceLocation getStandardTexture() {
         return Resources.TURRET_T1_SHOTGUN.getResource();
     }
@@ -100,7 +138,7 @@ public class EntityTurretShotgun
 
         @Override
         public EntityTurretProjectile getProjectile() {
-            return new EntityProjectileCrossbowBolt(EntityTurretShotgun.this.worldObj, EntityTurretShotgun.this, EntityTurretShotgun.this.targetProc.getTarget());
+            return new EntityProjectilePebble(EntityTurretShotgun.this.worldObj, EntityTurretShotgun.this, EntityTurretShotgun.this.targetProc.getTarget());
         }
 
         @Override
@@ -110,12 +148,25 @@ public class EntityTurretShotgun
 
         @Override
         public String getShootSound() {
-            return "random.bow";
+            return TurretModRebirth.ID + ":shoot.shotgun";
         }
 
         @Override
         public String getLowAmmoSound() {
             return "random.click";
+        }
+
+        public void shootProjectile() {
+            if( this.hasAmmo() ) {
+                for( int i = 0; i < 6; i++ ) {
+                    EntityTurretProjectile projectile = this.getProjectile();
+                    this.turret.worldObj.spawnEntityInWorld(projectile);
+                    this.turret.worldObj.playSoundAtEntity(this.turret, this.getShootSound(), 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
+                }
+                this.ammoCount--;
+            } else {
+                this.turret.worldObj.playSoundAtEntity(this.turret, this.getLowAmmoSound(), 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
+            }
         }
     }
 }

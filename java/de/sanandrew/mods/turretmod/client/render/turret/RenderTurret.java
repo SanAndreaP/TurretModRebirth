@@ -43,8 +43,34 @@ public class RenderTurret
     }
 
     @Override
-    public void doRender(Entity entity, double x, double y, double z, float yaw, float partTicks) {
-        super.doRender(entity, x, y, z, yaw, partTicks);
+    protected void renderModel(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float rotFloat, float rotYaw, float rotPitch, float scale) {
+        super.renderModel(entity, limbSwing, limbSwingAmount, rotFloat, rotYaw, rotPitch, scale);
+
+        GL11.glPushMatrix();
+        if( entity instanceof EntityTurret ) {
+            EntityTurret turret = (EntityTurret) entity;
+
+            GL11.glRotated((rotYaw + 90.0D), 0.0F, 1.0F, 0.0F);
+            GL11.glRotated(rotPitch, 0.0F, 0.0F, 1.0F);
+
+            RenderTurret.renderUpgrades(turret);
+            if( turret.hurtTime > 0 ) {
+                GL11.glDisable(GL11.GL_TEXTURE_2D);
+                GL11.glDisable(GL11.GL_ALPHA_TEST);
+                GL11.glEnable(GL11.GL_BLEND);
+                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                GL11.glDepthFunc(GL11.GL_EQUAL);
+                GL11.glColor4f(0.4F, 0.0F, 0.0F, 1.0F);
+
+                RenderTurret.renderUpgrades(turret);
+
+                GL11.glDepthFunc(GL11.GL_LEQUAL);
+                GL11.glDisable(GL11.GL_BLEND);
+                GL11.glEnable(GL11.GL_ALPHA_TEST);
+                GL11.glEnable(GL11.GL_TEXTURE_2D);
+            }
+        }
+        GL11.glPopMatrix();
     }
 
     @Override
@@ -75,6 +101,11 @@ public class RenderTurret
         return null;
     }
 
+    @Override
+    protected void passSpecialRender(EntityLivingBase entity, double x, double y, double z) {
+        renderTurretRange((EntityTurret) entity, x, y, z);
+    }
+
     private int renderGlowMap(EntityTurret turret, int pass) {
         if( pass == 0 ) {
             this.setRenderPassModel(this.glowModel);
@@ -100,11 +131,6 @@ public class RenderTurret
         }
 
         return -1;
-    }
-
-    @Override
-    protected void passSpecialRender(EntityLivingBase entity, double x, double y, double z) {
-        renderTurretRange((EntityTurret) entity, x, y, z);
     }
 
     private static void renderTurretRange(EntityTurret turret, double x, double y, double z) {
@@ -195,4 +221,19 @@ public class RenderTurret
         }
         RenderItem.renderInFrame = false;
     }
+
+    private static float interpolateRotation(float rot1, float rot2, float partTicks) {
+        float rotDelta = rot2 - rot1;
+
+        while( rotDelta < -180.0F ) {
+            rotDelta += 360.0F;
+        }
+
+        while( rotDelta >= 180.0F ) {
+            rotDelta -= 360.0F;
+        }
+
+        return rot1 + partTicks * rotDelta;
+    }
+
 }

@@ -115,14 +115,6 @@ public class ModelTurretCrossbow
 		this.turretThroat.render(partTicks);
 		this.healthBar.render(partTicks);
 		this.ammoBar.render(partTicks);
-
-		GL11.glPushMatrix();
-		if( entity instanceof EntityTurret ) {
-			GL11.glRotated((this.turretHead.rotateAngleY * 180.0D / Math.PI + 90.0D), 0.0F, 1.0F, 0.0F);
-			GL11.glRotated((this.turretHead.rotateAngleX * 180.0D / Math.PI), 0.0F, 0.0F, 1.0F);
-			RenderTurret.renderUpgrades((EntityTurret) entity);
-		}
-		GL11.glPopMatrix();
 	}
 
 	@Override

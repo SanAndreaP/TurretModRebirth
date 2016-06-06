@@ -13,7 +13,7 @@ import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.util.Resources;
-import de.sanandrew.mods.turretmod.util.TurretAssemblyRecipes;
+import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -59,6 +59,11 @@ public class EntityTurretCrossbow
         @Override
         public UUID getRecipeId() {
             return TurretAssemblyRecipes.TURRET_MK1_CB;
+        }
+
+        @Override
+        public String getInfoRange() {
+            return "16";
         }
     };
 

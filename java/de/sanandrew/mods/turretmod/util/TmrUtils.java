@@ -59,6 +59,10 @@ public class TmrUtils
         return null;
     }
 
+    public static <T> T valueOrDefault(T val, T def) {
+        return val != null ? val : def;
+    }
+
     public static boolean getIsAIEnabled(EntityLivingBase entity) {
         if( entity == null ) {
             return false;

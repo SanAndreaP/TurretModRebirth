@@ -51,7 +51,7 @@ public class ItemAmmo
     public IIcon getIcon(ItemStack stack, int pass) {
         TurretAmmo type = this.getAmmoType(stack);
         if( type != null ) {
-            return iconMap.get(type.getUUID());
+            return iconMap.get(type.getId());
         }
         return super.getIcon(stack, pass);
     }
@@ -67,7 +67,7 @@ public class ItemAmmo
         List<TurretAmmo> types = AmmoRegistry.INSTANCE.getRegisteredTypes();
         this.iconMap = new HashMap<>(types.size());
         for( TurretAmmo type : types ) {
-            this.iconMap.put(type.getUUID(), iconRegister.registerIcon(String.format("%s:ammo/%s", TurretModRebirth.ID, type.getIcon())));
+            this.iconMap.put(type.getId(), iconRegister.registerIcon(String.format("%s:ammo/%s", TurretModRebirth.ID, type.getIcon())));
         }
     }
 
@@ -93,7 +93,7 @@ public class ItemAmmo
         }
 
         NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setString("ammoType", type.getUUID().toString());
+        nbt.setString("ammoType", type.getId().toString());
         ItemStack stack = new ItemStack(this, stackSize);
         stack.setTagCompound(nbt);
 

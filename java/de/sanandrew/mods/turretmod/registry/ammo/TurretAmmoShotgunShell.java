@@ -9,8 +9,10 @@
 package de.sanandrew.mods.turretmod.registry.ammo;
 
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectilePebble;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import net.minecraft.entity.IProjectile;
@@ -18,21 +20,21 @@ import net.minecraft.item.ItemStack;
 
 import java.util.UUID;
 
-public abstract class TurretAmmoArrow
+public abstract class TurretAmmoShotgunShell
         implements TurretAmmo
 {
-    public static final UUID ARROW_UUID = UUID.fromString("7b497e61-4e8d-4e49-ac71-414751e399e8");
-    public static final UUID QUIVER_UUID = UUID.fromString("e6d51120-b52a-42ea-bf78-bebbc7d41c09");
-    private static final UUID TYPE_UUID = ARROW_UUID;
+    public static final UUID SHELL_UUID = UUID.fromString("3B3AA3F7-DA37-4B92-8F18-53694361447F");
+    public static final UUID PACK_UUID = UUID.fromString("6F3DB2C0-E881-462A-AC3A-6358EA7A1FE8");
+    private static final UUID TYPE_UUID = SHELL_UUID;
 
     private final String name;
     private final UUID uuid;
     private final int capacity;
 
-    public TurretAmmoArrow(boolean quiver) {
-        this.name = quiver ? "arrow_lrg" : "arrow_sng";
-        this.uuid = quiver ? QUIVER_UUID : ARROW_UUID;
-        this.capacity = quiver ? 16 : 1;
+    public TurretAmmoShotgunShell(boolean isMulti) {
+        this.name = isMulti ? "sgshell_lrg" : "sgshell_sng";
+        this.uuid = isMulti ? PACK_UUID : SHELL_UUID;
+        this.capacity = isMulti ? 16 : 1;
     }
 
     @Override
@@ -57,17 +59,17 @@ public abstract class TurretAmmoArrow
 
     @Override
     public Class<? extends IProjectile> getEntity() {
-        return EntityProjectileCrossbowBolt.class;
+        return EntityProjectilePebble.class;
     }
 
     @Override
     public Class<? extends EntityTurret> getTurret() {
-        return EntityTurretCrossbow.class;
+        return EntityTurretShotgun.class;
     }
 
     @Override
     public float getInfoDamage() {
-        return 3.0F;
+        return 0.5F;
     }
 
     @Override
@@ -82,16 +84,16 @@ public abstract class TurretAmmoArrow
 
     @Override
     public String getInfoName() {
-        return "arrow";
+        return "sgshell";
     }
 
     @Override
     public ItemStack getStoringAmmoItem() {
-        return ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(ARROW_UUID));
+        return ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(SHELL_UUID));
     }
 
     public static class Single
-            extends TurretAmmoArrow
+            extends TurretAmmoShotgunShell
     {
         public Single() {
             super(false);
@@ -99,30 +101,30 @@ public abstract class TurretAmmoArrow
 
         @Override
         public String getIcon() {
-            return "arrow";
+            return "shotgun_shell";
         }
 
         @Override
         public UUID getRecipeId() {
-            return TurretAssemblyRecipes.ARROW_SNG;
+            return TurretAssemblyRecipes.SGSHELL_SNG;
         }
     }
 
-    public static class Quiver
-            extends TurretAmmoArrow
+    public static class Multi
+            extends TurretAmmoShotgunShell
     {
-        public Quiver() {
+        public Multi() {
             super(true);
         }
 
         @Override
         public String getIcon() {
-            return "arrow_pack";
+            return "shotgun_shell_pack";
         }
 
         @Override
         public UUID getRecipeId() {
-            return TurretAssemblyRecipes.ARROW_MTP;
+            return TurretAssemblyRecipes.SGSHELL_MTP;
         }
     }
 }

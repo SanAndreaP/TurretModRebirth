@@ -16,14 +16,22 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
+import de.sanandrew.mods.turretmod.client.gui.tinfo.TurretInfoCategory;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
+import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
+import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityPotatoGenerator;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.RecipesIngots;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -61,27 +69,28 @@ public class TurretModRebirth
         TurretAssemblyRecipes.initialize();
 
         TileEntityPotatoGenerator.initializeRecipes();
-//        TmrBlocks.initialize();
-//        TmrItems.initialize();
-//
-//        PacketManager.initialize();
-//
+
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-//        TmrEntities.registerEntities();
-//
-//        TurretRegistry.initialize();
-//        TurretUpgradeList.initialize();
-//
-//        proxy.init();
         proxy.init(event);
+
+        CraftingManager.getInstance().addRecipe(new ItemStack(BlockRegistry.turretAssembly, 1),
+                "ROR", "IAI", "CFC",
+                'R', new ItemStack(Items.repeater),
+                'O', new ItemStack(Blocks.obsidian),
+                'I', new ItemStack(Items.iron_ingot),
+                'A', new ItemStack(Blocks.anvil, 1, 0),
+                'C', new ItemStack(Blocks.cobblestone),
+                'F', new ItemStack(Blocks.furnace));
     }
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         TargetProcessor.initialize();
+
+        proxy.postInit(event);
     }
 }

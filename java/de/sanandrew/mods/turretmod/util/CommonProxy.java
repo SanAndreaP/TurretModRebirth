@@ -15,6 +15,7 @@ import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectilePebble;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
@@ -27,7 +28,7 @@ import de.sanandrew.mods.turretmod.network.PacketOpenGui;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityPotatoGenerator;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
-import net.darkhax.bookshelf.lib.Tuple;
+import net.darkhax.bookshelf.lib.javatuples.Tuple;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -45,9 +46,12 @@ public class CommonProxy
     }
 
     public void init(FMLInitializationEvent event) {
-        EntityRegistry.registerModEntity(EntityTurretCrossbow.class, "turret_i_crossbow", 0, TurretModRebirth.instance, 128, 1, false);
-        EntityRegistry.registerModEntity(EntityTurretShotgun.class, "turret_i_shotgun", 1, TurretModRebirth.instance, 128, 1, false);
-        EntityRegistry.registerModEntity(EntityProjectileCrossbowBolt.class, "turret_proj_arrow", 2, TurretModRebirth.instance, 128, 1, true);
+        int entityCnt = 0;
+        EntityRegistry.registerModEntity(EntityTurretCrossbow.class, "turret_i_crossbow", entityCnt++, TurretModRebirth.instance, 128, 1, false);
+        EntityRegistry.registerModEntity(EntityTurretShotgun.class, "turret_i_shotgun", entityCnt++, TurretModRebirth.instance, 128, 1, false);
+
+        EntityRegistry.registerModEntity(EntityProjectileCrossbowBolt.class, "turret_proj_arrow", entityCnt++, TurretModRebirth.instance, 128, 1, true);
+        EntityRegistry.registerModEntity(EntityProjectilePebble.class, "turret_proj_pebble", entityCnt++, TurretModRebirth.instance, 128, 1, true);
     }
 
     public void postInit(FMLPostInitializationEvent event) {
@@ -108,6 +112,10 @@ public class CommonProxy
                 PacketRegistry.sendToServer(new PacketOpenGui((byte) guiId, x, y, z));
             }
         }
+    }
+
+    public void spawnParticle(EnumParticle particle, double x, double y, double z) {
+        this.spawnParticle(particle, x, y, z, null);
     }
 
     public void spawnParticle(EnumParticle particle, double x, double y, double z, Tuple data) {

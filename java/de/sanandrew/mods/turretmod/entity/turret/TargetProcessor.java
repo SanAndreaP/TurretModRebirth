@@ -44,19 +44,19 @@ import java.util.UUID;
  */
 public abstract class TargetProcessor
 {
-    private static final Map<Class, Boolean> ENTITY_TARGET_LIST_STD = new HashMap<>();
+    protected static final Map<Class, Boolean> ENTITY_TARGET_LIST_STD = new HashMap<>();
 
-    private final Map<Class, Boolean> entityTargetList;
-    private final Map<UUID, Boolean> playerTargetList;
+    protected final Map<Class, Boolean> entityTargetList;
+    protected final Map<UUID, Boolean> playerTargetList;
 
-    private int ammoCount;
-    private ItemStack ammoStack;
-    private int shootTicks;
-    private Entity entityToAttack;
-    private UUID entityToAttackUUID;
-    private EntityTurret turret;
+    protected int ammoCount;
+    protected ItemStack ammoStack;
+    protected int shootTicks;
+    protected Entity entityToAttack;
+    protected UUID entityToAttackUUID;
+    protected EntityTurret turret;
 
-    private EntityTargetSelector selector = new EntityTargetSelector();
+    protected EntityTargetSelector selector = new EntityTargetSelector();
 
     public TargetProcessor(EntityTurret turret) {
         this.entityTargetList = new HashMap<>(ENTITY_TARGET_LIST_STD);
@@ -250,10 +250,11 @@ public abstract class TargetProcessor
 
         double range = this.getRange();
         if( this.entityToAttack == null ) {
-            AxisAlignedBB aabb = turret.boundingBox.expand(range, range, range);
-            for( Object entityObj : turret.worldObj.getEntitiesWithinAABBExcludingEntity(turret, aabb, this.selector) ) {
+            AxisAlignedBB aabb = this.turret.boundingBox.expand(range, range, range);
+            for( Object entityObj : this.turret.worldObj.getEntitiesWithinAABBExcludingEntity(turret, aabb, this.selector) ) {
                 EntityLivingBase livingBase = (EntityLivingBase) entityObj;
-                if( turret.canEntityBeSeen(livingBase) ) {
+                boolean isEntityValid = this.turret.canEntityBeSeen(livingBase) && livingBase.isEntityAlive() && turret.getDistanceToEntity(livingBase) <= range;
+                if( isEntityValid ) {
                     this.entityToAttack = livingBase;
                     this.entityToAttackUUID = livingBase.getUniqueID();
                     changed = true;
@@ -263,7 +264,7 @@ public abstract class TargetProcessor
         }
 
         if( this.entityToAttack != null ) {
-            boolean isEntityValid = turret.canEntityBeSeen(this.entityToAttack) && this.entityToAttack.isEntityAlive() && turret.getDistanceToEntity(this.entityToAttack) <= range;
+            boolean isEntityValid = this.turret.canEntityBeSeen(this.entityToAttack) && this.entityToAttack.isEntityAlive() && turret.getDistanceToEntity(this.entityToAttack) <= range;
             boolean isTargetValid = Boolean.TRUE.equals(this.entityTargetList.get(this.entityToAttack.getClass()));
             boolean isPlayerValid = Boolean.TRUE.equals(this.playerTargetList.get(this.entityToAttack.getUniqueID())) || Boolean.TRUE.equals(this.playerTargetList.get(PlayerList.EMPTY_UUID));
             if( isEntityValid && (isTargetValid || isPlayerValid) ) {

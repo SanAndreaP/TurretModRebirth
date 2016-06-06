@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
@@ -77,6 +78,11 @@ public class UpgradeAmmoStorage
                 turret.updateState();
             }
         }
+    }
+
+    @Override
+    public UUID getRecipeId() {
+        return TurretAssemblyRecipes.UPG_AMMO_STG;
     }
 
     @Override

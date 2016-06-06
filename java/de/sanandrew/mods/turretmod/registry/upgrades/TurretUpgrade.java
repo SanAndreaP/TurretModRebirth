@@ -3,6 +3,8 @@ package de.sanandrew.mods.turretmod.registry.upgrades;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import net.minecraft.nbt.NBTTagCompound;
 
+import java.util.UUID;
+
 public interface TurretUpgrade
 {
     String getName();
@@ -12,6 +14,8 @@ public interface TurretUpgrade
     String getIconTexture();
 
     TurretUpgrade getDependantOn();
+
+    UUID getRecipeId();
 
     boolean isTurretApplicable(Class<? extends EntityTurret> turretCls);
 

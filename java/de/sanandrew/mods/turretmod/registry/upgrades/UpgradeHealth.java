@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -90,6 +91,11 @@ public abstract class UpgradeHealth
         public TurretUpgrade getDependantOn() {
             return null;
         }
+
+        @Override
+        public UUID getRecipeId() {
+            return TurretAssemblyRecipes.UPG_HEALTH_MK1;
+        }
     }
 
     public static class UpgradeHealthMK2
@@ -105,6 +111,11 @@ public abstract class UpgradeHealth
         @Override
         public TurretUpgrade getDependantOn() {
             return this.dependant;
+        }
+
+        @Override
+        public UUID getRecipeId() {
+            return TurretAssemblyRecipes.UPG_HEALTH_MK2;
         }
     }
 
@@ -122,6 +133,11 @@ public abstract class UpgradeHealth
         public TurretUpgrade getDependantOn() {
             return this.dependant;
         }
+
+        @Override
+        public UUID getRecipeId() {
+            return TurretAssemblyRecipes.UPG_HEALTH_MK3;
+        }
     }
 
     public static class UpgradeHealthMK4
@@ -137,6 +153,11 @@ public abstract class UpgradeHealth
         @Override
         public TurretUpgrade getDependantOn() {
             return this.dependant;
+        }
+
+        @Override
+        public UUID getRecipeId() {
+            return TurretAssemblyRecipes.UPG_HEALTH_MK4;
         }
     }
 }

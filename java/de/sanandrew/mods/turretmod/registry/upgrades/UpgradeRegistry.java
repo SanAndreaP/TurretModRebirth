@@ -8,8 +8,14 @@
  */
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import org.apache.logging.log4j.Level;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +25,7 @@ import java.util.UUID;
 
 public class UpgradeRegistry
 {
+    public static final UUID EMPTY = new UUID(0L, 0L);
     public static final UUID UPG_STORAGE_I = UUID.fromString("1749478F-2A8E-4C56-BC03-6C76CB5DE921");
     public static final UUID UPG_STORAGE_II = UUID.fromString("DEFFE281-A2F5-488A-95C1-E9A3BB6E0DD1");
     public static final UUID UPG_STORAGE_III = UUID.fromString("50DB1AC3-1CCD-4CB0-AD5A-0777C548655D");
@@ -36,6 +43,8 @@ public class UpgradeRegistry
     private Map<TurretUpgrade, UUID> uuidToUpgradeMap = new HashMap<>();
     private List<TurretUpgrade> upgradeList = new ArrayList<>();
 
+    private static TurretUpgrade emptyInst;
+
     public void registerUpgrade(UUID uuid, TurretUpgrade upgrade) {
         if( this.upgradeToUuidMap.containsKey(uuid) ) {
             this.upgradeList.set(this.upgradeList.indexOf(this.upgradeToUuidMap.get(uuid)), upgrade);
@@ -47,32 +56,25 @@ public class UpgradeRegistry
     }
 
     public TurretUpgrade getUpgrade(UUID uuid) {
-        return this.upgradeToUuidMap.get(uuid);
-    }
-
-    public TurretUpgrade getUpgrade(int index) {
-        return this.upgradeList.get(index);
+        return TmrUtils.valueOrDefault(this.upgradeToUuidMap.get(uuid), emptyInst);
     }
 
     public UUID getUpgradeUUID(TurretUpgrade upg) {
-        return this.uuidToUpgradeMap.get(upg);
+        return TmrUtils.valueOrDefault(this.uuidToUpgradeMap.get(upg), EMPTY);
     }
 
     public TurretUpgrade getUpgrade(ItemStack stack) {
         if( stack == null ) {
-            return null;
+            return emptyInst;
         }
 
-        int dmg = stack.getItemDamage() - 1;
-        if( dmg >= 0 && dmg < this.upgradeList.size() ) {
-            return this.upgradeList.get(dmg);
-        } else {
-            return null;
+        String uid = TmrUtils.valueOrDefault(stack.getTagCompound(), new NBTTagCompound()).getString("upgradeId");
+        try {
+            return this.getUpgrade(UUID.fromString(uid));
+        } catch( IllegalArgumentException ex ) {
+            TurretModRebirth.LOG.log(Level.WARN, "There was an error at parsing the UUID for a turret upgrade item!", ex);
+            return emptyInst;
         }
-    }
-
-    public int getRegisteredCount() {
-        return this.upgradeList.size();
     }
 
     public TurretUpgrade[] getRegisteredUpgrades() {
@@ -80,6 +82,7 @@ public class UpgradeRegistry
     }
 
     public void initialize() {
+        this.registerUpgrade(EMPTY, new EmptyUpgrade());
         this.registerUpgrade(UPG_STORAGE_I, new UpgradeUpgStorage.UpgradeStorageMK1());
         this.registerUpgrade(UPG_STORAGE_II, new UpgradeUpgStorage.UpgradeStorageMK2());
         this.registerUpgrade(UPG_STORAGE_III, new UpgradeUpgStorage.UpgradeStorageMK3());
@@ -90,13 +93,71 @@ public class UpgradeRegistry
         this.registerUpgrade(HEALTH_IV, new UpgradeHealth.UpgradeHealthMK4());
         this.registerUpgrade(RELOAD_I, new UpgradeReloadTime.UpgradeReloadTimeMK1());
         this.registerUpgrade(RELOAD_II, new UpgradeReloadTime.UpgradeReloadTimeMK2());
+
+        emptyInst = this.upgradeToUuidMap.get(EMPTY);
     }
 
     public ItemStack getUpgradeItem(UUID uuid) {
-        return new ItemStack(ItemRegistry.turretUpgrade, 1, this.upgradeList.indexOf(this.upgradeToUuidMap.get(uuid)) + 1);
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setString("upgradeId", uuid.toString());
+        ItemStack stack = new ItemStack(ItemRegistry.turretUpgrade, 1);
+        stack.setTagCompound(nbt);
+
+        return stack;
     }
 
     public ItemStack getUpgradeItem(TurretUpgrade upgrade) {
-        return new ItemStack(ItemRegistry.turretUpgrade, 1, this.upgradeList.indexOf(upgrade) + 1);
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setString("upgradeId", this.getUpgradeUUID(upgrade).toString());
+        ItemStack stack = new ItemStack(ItemRegistry.turretUpgrade, 1);
+        stack.setTagCompound(nbt);
+
+        return stack;
+    }
+
+    private static final class EmptyUpgrade
+            implements TurretUpgrade
+    {
+        @Override
+        public String getName() {
+            return "empty";
+        }
+
+        @Override
+        public String getModId() {
+            return TurretModRebirth.ID;
+        }
+
+        @Override
+        public String getIconTexture() {
+            return TurretModRebirth.ID + ":upgrades/empty";
+        }
+
+        @Override
+        public TurretUpgrade getDependantOn() {
+            return null;
+        }
+
+        @Override
+        public UUID getRecipeId() {
+            return TurretAssemblyRecipes.UPG_EMPTY;
+        }
+
+        @Override
+        public boolean isTurretApplicable(Class<? extends EntityTurret> turretCls) {
+            return false;
+        }
+
+        @Override
+        public void onApply(EntityTurret turret) { }
+
+        @Override
+        public void onLoad(EntityTurret turret, NBTTagCompound nbt) { }
+
+        @Override
+        public void onSave(EntityTurret turret, NBTTagCompound nbt) { }
+
+        @Override
+        public void onRemove(EntityTurret turret) { }
     }
 }

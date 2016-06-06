@@ -10,5 +10,6 @@ package de.sanandrew.mods.turretmod.util;
 
 public enum EnumParticle
 {
-    ASSEMBLY_SPARK
+    ASSEMBLY_SPARK,
+    SHOTGUN_SHOT
 }

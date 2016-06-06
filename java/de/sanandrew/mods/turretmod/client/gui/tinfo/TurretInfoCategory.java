@@ -9,18 +9,27 @@
 package de.sanandrew.mods.turretmod.client.gui.tinfo;
 
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
-import de.sanandrew.mods.turretmod.item.ItemAmmo;
+import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntry;
+import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryAmmo;
+import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryTurret;
+import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryUpgrade;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
-import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoArrow;
+import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmo;
+import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
+import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
+import de.sanandrew.mods.turretmod.registry.upgrades.TurretUpgrade;
+import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class TurretInfoCategory
 {
@@ -91,13 +100,38 @@ public class TurretInfoCategory
         return this.entries.size();
     }
 
-    static {
-        register(Resources.TINFO_GRP_TURRET.getResource(), "Turrets", "info about turrets",
-                new TurretInfoEntryTurret(EntityTurretCrossbow.class));
-        register(Resources.TINFO_GRP_AMMO.getResource(), "Ammunition", "info about turret ammo",
-                 new TurretInfoEntry.EntryEmpty(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.ARROW_UUID)), "single_arrows"),
-                 new TurretInfoEntry.EntryEmpty(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.QUIVER_UUID)), "multi_arrows"));
-        register(Resources.TINFO_GRP_UPGRADE.getResource(), "Upgrades", "info about turret upgrades");
+    public static void initialize() {
+        {
+            List<TurretInfo> infos = TurretRegistry.INSTANCE.getRegisteredInfos();
+            TurretInfoEntry[] entries = new TurretInfoEntry[infos.size()];
+            for( int i = 0, cnt = infos.size(); i < cnt; i++ ) {
+                entries[i] = new TurretInfoEntryTurret(infos.get(i).getTurretClass());
+            }
+            register(Resources.TINFO_GRP_TURRET.getResource(), "Turrets", "info about turrets", entries);
+        }
+
+        {
+            List<TurretAmmo> infos = AmmoRegistry.INSTANCE.getRegisteredTypes();
+            List<UUID> idEntries = new ArrayList<>();
+            List<TurretInfoEntry> entries = new ArrayList<>();
+            for( TurretAmmo ammo : infos ) {
+                UUID groupId = ammo.getGroupId();
+                if( !idEntries.contains(groupId) ) {
+                    idEntries.add(groupId);
+                    entries.add(new TurretInfoEntryAmmo(groupId));
+                }
+            }
+            register(Resources.TINFO_GRP_AMMO.getResource(), "Ammunition", "info about turret ammo", entries.toArray(new TurretInfoEntry[entries.size()]));
+        }
+
+        {
+            TurretUpgrade[] infos = UpgradeRegistry.INSTANCE.getRegisteredUpgrades();
+            TurretInfoEntry[] entries = new TurretInfoEntry[infos.length];
+            for( int i = 0; i < infos.length; i++ ) {
+                entries[i] = new TurretInfoEntryUpgrade(UpgradeRegistry.INSTANCE.getUpgradeUUID(infos[i]));
+            }
+            register(Resources.TINFO_GRP_UPGRADE.getResource(), "Upgrades", "info about turret upgrades", entries);
+        }
         register(Resources.TINFO_GRP_MISC.getResource(), "Misc", "info about misc stuff",
                 new TurretInfoEntry.EntryEmpty(new ItemStack(BlockRegistry.turretAssembly), "assembly"),
                 new TurretInfoEntry.EntryEmpty(new ItemStack(ItemRegistry.tcu), "tcu"));

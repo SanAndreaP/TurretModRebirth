@@ -10,9 +10,11 @@ package de.sanandrew.mods.turretmod.client.model;
 
 import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import org.lwjgl.opengl.GL11;
 
 public class ModelTurretShotgun
@@ -115,27 +117,31 @@ public class ModelTurretShotgun
 	}
 
 	@Override
-	public void render(Entity entity, float limbSwing, float limbSwingAmount, float rotFloat, float rotYaw, float rotPitch, float partTicks) {
-		super.render(entity, limbSwing, limbSwingAmount, rotFloat, rotYaw, rotPitch, partTicks);
-		this.setRotationAngles(limbSwing, limbSwingAmount, rotFloat, rotYaw, rotPitch, partTicks, entity);
-		this.turretBase.render(partTicks);
-		this.turretHead.render(partTicks);
-		this.turretThroat.render(partTicks);
-		this.healthBar.render(partTicks);
-		this.ammoBar.render(partTicks);
+	public void render(Entity entity, float limbSwing, float limbSwingAmount, float rotFloat, float rotYaw, float rotPitch, float scale) {
+		super.render(entity, limbSwing, limbSwingAmount, rotFloat, rotYaw, rotPitch, scale);
+		this.setRotationAngles(limbSwing, limbSwingAmount, rotFloat, rotYaw, rotPitch, scale, entity);
 
-		GL11.glPushMatrix();
-		if( entity instanceof EntityTurret ) {
-			GL11.glRotated((this.turretHead.rotateAngleY * 180.0D / Math.PI + 90.0D), 0.0F, 1.0F, 0.0F);
-			GL11.glRotated((this.turretHead.rotateAngleX * 180.0D / Math.PI), 0.0F, 0.0F, 1.0F);
-			RenderTurret.renderUpgrades((EntityTurret) entity);
-		}
-		GL11.glPopMatrix();
+		this.turretBase.render(scale);
+		this.turretHead.render(scale);
+		this.turretThroat.render(scale);
+		this.healthBar.render(scale);
+		this.ammoBar.render(scale);
 	}
 
 	@Override
-	public void setRotationAngles(float limbSwing, float limbSwingAmount, float rotFloat, float rotYaw, float rotPitch, float partTicks, Entity entity) {
-		super.setRotationAngles(limbSwing, limbSwingAmount, rotFloat, rotYaw, rotPitch, partTicks, entity);
+	public void setLivingAnimations(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partTicks) {
+		super.setLivingAnimations(entity, limbSwing, limbSwingAmount, partTicks);
+
+		if( entity instanceof EntityTurretShotgun ) {
+			EntityTurretShotgun shotgun = (EntityTurretShotgun) entity;
+			float barrelDelta = shotgun.prevBarrelPos + (shotgun.barrelPos - shotgun.prevBarrelPos) * partTicks;
+			this.barrel.rotationPointZ = 3.0F - 3.0F * barrelDelta;
+		}
+	}
+
+	@Override
+	public void setRotationAngles(float limbSwing, float limbSwingAmount, float rotFloat, float rotYaw, float rotPitch, float scale, Entity entity) {
+		super.setRotationAngles(limbSwing, limbSwingAmount, rotFloat, rotYaw, rotPitch, scale, entity);
 
         this.turretHead.rotateAngleY = rotYaw / (180.0F / (float)Math.PI);
         this.turretHead.rotateAngleX = rotPitch / (180.0F / (float)Math.PI);

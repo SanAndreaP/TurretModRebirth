@@ -16,7 +16,7 @@ import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
 import de.sanandrew.mods.turretmod.network.TileClientSync;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
-import de.sanandrew.mods.turretmod.util.TurretAssemblyRecipes;
+import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import io.netty.buffer.ByteBuf;
 import net.darkhax.bookshelf.lib.javatuples.Pair;
@@ -118,14 +118,19 @@ public class TileEntityTurretAssembly
         if( this.currCrafting != null && (this.assemblyStacks[0] == null || this.assemblyStacks[0].stackSize < this.assemblyStacks[0].getMaxStackSize()) ) {
             UUID currCrfUUID = this.currCrafting.getValue0();
             ItemStack addStacks = this.currCrafting.getValue1().copy();
-            addStacks.stackSize = TurretAssemblyRecipes.INSTANCE.getRecipeResult(currCrfUUID).stackSize;
-            if( TmrUtils.canStack(this.assemblyStacks[0], addStacks, true) && TurretAssemblyRecipes.INSTANCE.checkAndConsumeResources(this, currCrfUUID) ) {
-                TurretAssemblyRecipes.RecipeEntry currentlyCrafted = TurretAssemblyRecipes.INSTANCE.getRecipeEntry(currCrfUUID);
-                this.maxTicksCrafted = currentlyCrafted.ticksProcessing;
-                this.fluxConsumption = currentlyCrafted.fluxPerTick;
-                this.ticksCrafted = 0;
-                this.isActive = true;
-                this.doSync = true;
+            ItemStack recipe = TurretAssemblyRecipes.INSTANCE.getRecipeResult(currCrfUUID);
+            if( recipe != null ) {
+                addStacks.stackSize = recipe.stackSize;
+                if( TmrUtils.canStack(this.assemblyStacks[0], addStacks, true) && TurretAssemblyRecipes.INSTANCE.checkAndConsumeResources(this, currCrfUUID) ) {
+                    TurretAssemblyRecipes.RecipeEntry currentlyCrafted = TurretAssemblyRecipes.INSTANCE.getRecipeEntry(currCrfUUID);
+                    this.maxTicksCrafted = currentlyCrafted.ticksProcessing;
+                    this.fluxConsumption = currentlyCrafted.fluxPerTick;
+                    this.ticksCrafted = 0;
+                    this.isActive = true;
+                    this.doSync = true;
+                }
+            } else {
+                this.cancelCrafting();
             }
         }
     }

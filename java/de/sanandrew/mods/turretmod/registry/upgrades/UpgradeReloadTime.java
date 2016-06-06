@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
@@ -89,6 +90,11 @@ public abstract class UpgradeReloadTime
         public TurretUpgrade getDependantOn() {
             return null;
         }
+
+        @Override
+        public UUID getRecipeId() {
+            return TurretAssemblyRecipes.UPG_RELOAD_1;
+        }
     }
 
     public static class UpgradeReloadTimeMK2
@@ -104,6 +110,11 @@ public abstract class UpgradeReloadTime
         @Override
         public TurretUpgrade getDependantOn() {
             return this.dependant;
+        }
+
+        @Override
+        public UUID getRecipeId() {
+            return TurretAssemblyRecipes.UPG_RELOAD_2;
         }
     }
 }

@@ -14,7 +14,11 @@ import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class ItemTurretInfo
         extends Item
@@ -23,7 +27,16 @@ public class ItemTurretInfo
         super();
         this.setCreativeTab(TmrCreativeTabs.TURRETS);
         this.setUnlocalizedName(TurretModRebirth.ID + ":turret_info");
-//        this.setTextureName(TurretModRebirth.ID + ":upgrades/assembly_filter");
+        this.setTextureName(TurretModRebirth.ID + ":turret_info");
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean advInfo) {
+        String[] lines = StatCollector.translateToLocal(this.getUnlocalizedName() + ".desc").split("\\\\n");
+        list.addAll(Arrays.asList(lines));
+
+        super.addInformation(stack, player, list, advInfo);
     }
 
     @Override

@@ -13,4 +13,5 @@ public interface TurretInfo
     int getBaseAmmoCapacity();
     String getIcon();
     UUID getRecipeId();
+    String getInfoRange();
 }

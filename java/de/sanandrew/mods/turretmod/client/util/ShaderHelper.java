@@ -37,12 +37,14 @@ public final class ShaderHelper
     private static final int FRAG = ARBFragmentShader.GL_FRAGMENT_SHADER_ARB;
 
     public static int categoryButton = 0;
+    public static int grayscaleItem = 0;
 
     public static void initShaders() {
         if(!areShadersEnabled())
             return;
 
         categoryButton = createProgram(null, Resources.SHADER_CATEGORY_BUTTON_FRAG.getResource());
+        grayscaleItem = createProgram(null, Resources.SHADER_GRAYSCALE_FRAG.getResource());
     }
 
     public static void useShader(int shader, ShaderCallback callback) {
