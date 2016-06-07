@@ -50,7 +50,7 @@ public class RenderTurretAssembly
         ContextCapabilities glCapabilities = GLContext.getCapabilities();
 
         ItemStack crfStack = assembly.currCrafting != null ? assembly.currCrafting.getValue1() : assembly.getStackInSlot(0);
-        int meta = assembly.hasWorldObj() ? BlockRegistry.turretAssembly.getDirection(assembly.getBlockMetadata()) - 2 : 0;
+        int meta = assembly.hasWorldObj() ? BlockRegistry.assemblyTable.getDirection(assembly.getBlockMetadata()) - 2 : 0;
 
         GL11.glPushMatrix();
         GL11.glRotatef(90.0F * meta, 0.0F, 1.0F, 0.0F);

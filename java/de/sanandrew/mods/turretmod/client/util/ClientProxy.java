@@ -12,6 +12,7 @@ import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
@@ -50,9 +51,7 @@ import net.darkhax.bookshelf.lib.javatuples.Tuple;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.particle.EntityFlameFX;
 import net.minecraft.client.particle.EntitySmokeFX;
-import net.minecraft.client.renderer.entity.RenderFallingBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -76,19 +75,24 @@ public class ClientProxy
     public void init(FMLInitializationEvent event) {
         super.init(event);
 
-        TurretInfoCategory.initialize();
-
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretCrossbow.class, new RenderTurret(new ModelTurretCrossbow(0.0F)));
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretShotgun.class, new RenderTurret(new ModelTurretShotgun(0.0F)));
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCrossbowBolt.class, new RenderTurretArrow());
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectilePebble.class, new RenderPebble());
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurretAssembly.class, new RenderTurretAssembly());
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlockRegistry.turretAssembly), new ItemRendererTile(new TileEntityTurretAssembly(true)));
+        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlockRegistry.assemblyTable), new ItemRendererTile(new TileEntityTurretAssembly(true)));
 
         FMLCommonHandler.instance().bus().register(new ClientTickHandler());
 
         ShaderHelper.initShaders();
+    }
+
+    @Override
+    public void postInit(FMLPostInitializationEvent event) {
+        super.postInit(event);
+
+        TurretInfoCategory.initialize();
     }
 
     @Override

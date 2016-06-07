@@ -81,7 +81,7 @@ public class GuiTurretInfo
         } else if( this.entry == null ) {
             int entLng = this.category.getEntryCount();
             for( int i = 0; i < entLng; i++ ) {
-                this.buttonEntries.add(new GuiButtonEntry(this.buttonEntries.size(), i, 5, 19 + 20 * i, this));
+                this.buttonEntries.add(new GuiButtonEntry(this.buttonEntries.size(), i, 5, 19 + 14 * i, this));
             }
         } else {
             this.entry.initEntry(this);
@@ -122,7 +122,7 @@ public class GuiTurretInfo
             this.dHeight = this.entry.getPageHeight() - TurretInfoEntry.MAX_ENTRY_HEIGHT;
             this.entry.drawPage(this, mouseX - this.entryX, mouseY - this.entryY, Math.round(this.scroll * this.dHeight), partTicks);
         } else if( this.category != null ) {
-            this.dHeight = this.buttonEntries.size() * 20 + 20 - TurretInfoEntry.MAX_ENTRY_HEIGHT;
+            this.dHeight = this.buttonEntries.size() * 14 + 20 - TurretInfoEntry.MAX_ENTRY_HEIGHT;
             this.fontRendererObj.drawString(EnumChatFormatting.ITALIC + this.category.getTitle(), 2, 2, 0xFF33AA33, false);
             Gui.drawRect(2, 12, TurretInfoEntry.MAX_ENTRY_WIDTH - 2, 13, 0xFF33AA33);
 

@@ -19,6 +19,9 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -27,6 +30,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -79,6 +83,22 @@ public class TmrUtils
         return ReflectionUtils.getCachedFieldValue(PotionEffect.class, potionEffect, "isSplashPotion", "field_82723_d");
     }
 
+    public static int getOreRecipeWidth(ShapedOreRecipe recipe) {
+        if( recipe == null ) {
+            return 0;
+        }
+
+        return ReflectionUtils.getCachedFieldValue(ShapedOreRecipe.class, recipe, "width", "width");
+    }
+
+    public static int getOreRecipeHeight(ShapedOreRecipe recipe) {
+        if( recipe == null ) {
+            return 0;
+        }
+
+        return ReflectionUtils.getCachedFieldValue(ShapedOreRecipe.class, recipe, "height", "height");
+    }
+
     public static short getShortTagAt(NBTTagList list, int index) {
         List tagList = ReflectionUtils.getCachedFieldValue(NBTTagList.class, list, "tagList", "field_74747_a");
 
@@ -88,6 +108,51 @@ public class TmrUtils
         } else {
             return 0;
         }
+    }
+
+    public static ShapedRecipes findShapedRecipe(ItemStack result) {
+        List recipes = CraftingManager.getInstance().getRecipeList();
+        for( Object recipe : recipes ) {
+            if( recipe instanceof ShapedRecipes ) {
+                ShapedRecipes sRecipe = ((ShapedRecipes) recipe);
+                ItemStack recipeResult = sRecipe.getRecipeOutput();
+                if( areStacksEqual(recipeResult, result, result.hasTagCompound() ? NBT_COMPARATOR_FIXD : null) ) {
+                    return sRecipe;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public static ShapedOreRecipe findShapedOreRecipe(ItemStack result) {
+        List recipes = CraftingManager.getInstance().getRecipeList();
+        for( Object recipe : recipes ) {
+            if( recipe instanceof ShapedOreRecipe ) {
+                ShapedOreRecipe sRecipe = ((ShapedOreRecipe) recipe);
+                ItemStack recipeResult = sRecipe.getRecipeOutput();
+                if( areStacksEqual(recipeResult, result, result.hasTagCompound() ? NBT_COMPARATOR_FIXD : null) ) {
+                    return sRecipe;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public static ShapelessRecipes findShapelessRecipe(ItemStack result) {
+        List recipes = CraftingManager.getInstance().getRecipeList();
+        for( Object recipe : recipes ) {
+            if( recipe instanceof ShapelessRecipes ) {
+                ShapelessRecipes sRecipe = ((ShapelessRecipes) recipe);
+                ItemStack recipeResult = sRecipe.getRecipeOutput();
+                if( areStacksEqual(recipeResult, result, result.hasTagCompound() ? NBT_COMPARATOR_FIXD : null) ) {
+                    return sRecipe;
+                }
+            }
+        }
+
+        return null;
     }
 
     public static EntityAIBase getAIFromTaskList(List<?> taskList, Class<?> cls) {
@@ -109,12 +174,12 @@ public class TmrUtils
             Item secondItem = secondStack.getItem();
             return firstItem != null && secondItem != null
                     ? (firstItem == secondItem
-                        && (comparator.compare(firstStack.getTagCompound(), secondStack.getTagCompound()) == 0
+                        && ((comparator == null || comparator.compare(firstStack.getTagCompound(), secondStack.getTagCompound()) == 0)
                             && (firstStack.getItemDamage() == OreDictionary.WILDCARD_VALUE
                                 || secondStack.getItemDamage() == OreDictionary.WILDCARD_VALUE
                                 || firstStack.getItemDamage() == secondStack.getItemDamage())
-                               )
                            )
+                       )
                     : firstItem == secondItem;
         } else {
             return firstStack == secondStack;

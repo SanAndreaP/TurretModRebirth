@@ -1,23 +1,25 @@
+# assembly table
 tile.sapturretmod:turret_assembly.name=Turret Assembly Table
 tile.sapturretmod:turret_assembly.group0=Misc Stuff
 tile.sapturretmod:turret_assembly.group1=Turrets
 tile.sapturretmod:turret_assembly.group2=Ammunition
 tile.sapturretmod:turret_assembly.group3=Repair Kits
 tile.sapturretmod:turret_assembly.group4=Upgrades
+tile.sapturretmod:turret_assembly.desc=This assembly table is an essential part for your turret cravings, as it §3crafts§0 any item and turret you need or want.\n\nTo operate it you need §3power§0 as well as the items required for the item you want to craft. It currently only accepts §3Redstone Flux§0 as energy.\n\nIf you think it's too slow or you want to automate it, there are a couple of §3upgrades§0 available.
+# potato generator
+tile.sapturretmod:potato_generator.name=Electrolyte Generator
+tile.sapturretmod:potato_generator.desc=This machine §3creates energy§0 from items (mostly food) with high enough acid or base by reacting with the electrolyte within them.\nThe more items are put in it, the higher the efficiency of the generator.\n\nEach item has its own §3effectiveness§0 and §3decay time§0, which dictate how much power can be generated in total. The effectiveness level also influences the amount of power the generator can produce in a moment, but there is only so much the generator can transfer internally, so there is a §3cap of 200 RF/t§0.\n\nItems used up in the generator may produce §3byproducts§0, which could be trash or rarely something valuable.
 
 item.sapturretmod:turret_info.name=Turret Info Tablet
 item.sapturretmod:turret_info.desc=Gives information about the\nitems in the Turret Mod.
-
 item.sapturretmod:turret_placer.name=Defense Turret
 item.sapturretmod:turret_placer.turret_name=Name: %s
 item.sapturretmod:turret_placer.health=Health: %.1f HP
-
 item.sapturretmod:turret_control_unit.name.1=TCU (Turret Control Unit)
 item.sapturretmod:turret_control_unit.name.2=TCU (Turret Corrosion Unity)
 item.sapturretmod:turret_control_unit.name.3=TCU (Trigger Capacity Uranus)
 item.sapturretmod:turret_control_unit.name.4=TCU (Timmy Cleans Utilities)
 item.sapturretmod:turret_control_unit.name.5=TCU (Transient Colossal Uppercut)
-
 item.sapturretmod:turret_assembly_auto.name=Automation Upgrade
 item.sapturretmod:turret_assembly_auto.desc=Used in the Turret Assembly Table
 item.sapturretmod:turret_assembly_speed.name=Speed Upgrade

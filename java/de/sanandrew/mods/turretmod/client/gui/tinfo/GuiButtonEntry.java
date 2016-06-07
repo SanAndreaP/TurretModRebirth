@@ -33,7 +33,7 @@ public class GuiButtonEntry
     float time = 6.0F;
 
     public GuiButtonEntry(int id, int entryId, int x, int y, GuiTurretInfo gui) {
-        super(id, x, y, 156, 20, "");
+        super(id, x, y, 156, 14, "");
         this.tinfo = gui;
         this.entIndex = entryId;
         TurretInfoEntry entry = gui.category.getEntry(id);
@@ -70,25 +70,28 @@ public class GuiButtonEntry
             this.drawGradientRect(this.xPosition, this.yPosition + 1, this.xPosition + 1, this.yPosition + this.height - 1, color1, color1);
             this.drawGradientRect(this.xPosition + this.width - 1, this.yPosition + 1, this.xPosition + this.width, this.yPosition + this.height - 1, color2, color2);
 
+            GL11.glPushMatrix();
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GL11.glTranslatef(this.xPosition + 2, this.yPosition + 2, 0.0F);
+            GL11.glScalef(0.5F, 0.5F, 1.0F);
+            GL11.glTranslatef(0.0F, 1.0F, 0.0F);
             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
             RenderHelper.enableGUIStandardItemLighting();
-            this.drawItemStack(mc, this.icon, xPosition + 2, yPosition + 2);
+            drawItemStack(mc, this.icon, 0, 0);
             RenderHelper.disableStandardItemLighting();
             GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+            GL11.glPopMatrix();
 
-            mc.fontRenderer.drawString(this.displayString, this.xPosition + 20, this.yPosition + 6, 0xFF000000, false);
+            mc.fontRenderer.drawString(this.displayString, this.xPosition + 12, this.yPosition + 3, 0xFF000000, false);
 
             GL11.glPopMatrix();
         }
     }
 
-    private void drawItemStack(Minecraft mc, ItemStack stack, int x, int y) {
+    private static void drawItemStack(Minecraft mc, ItemStack stack, int x, int y) {
         GL11.glTranslatef(0.0F, 0.0F, 32.0F);
-        this.zLevel = 200.0F;
-        itemRender.zLevel = 200.0F;
+        itemRender.zLevel = -50.0F;
         itemRender.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), stack, x, y);
-        this.zLevel = 0.0F;
         itemRender.zLevel = 0.0F;
         GL11.glTranslatef(0.0F, 0.0F, -32.0F);
         GL11.glDisable(GL11.GL_LIGHTING);

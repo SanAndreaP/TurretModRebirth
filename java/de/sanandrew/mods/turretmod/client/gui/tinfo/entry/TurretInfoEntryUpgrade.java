@@ -49,7 +49,6 @@ public class TurretInfoEntryUpgrade
         gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         gui.drawTexturedModalRect(2, 16, 192, 18, 34, 34);
-//        Gui.drawRect(2, 16, 38, 52, 0xFF808080);
 
         drawItem(gui.mc, 3, 17, UpgradeRegistry.INSTANCE.getUpgradeItem(this.upgrade), 2.0F);
 

@@ -11,24 +11,25 @@ package de.sanandrew.mods.turretmod.client.gui.tinfo;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntry;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryAmmo;
+import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryGenerator;
+import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryMiscCraftable;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryTurret;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryUpgrade;
-import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmo;
 import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.TurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.turretmod.util.CraftingRecipes;
 import de.sanandrew.mods.turretmod.util.Resources;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class TurretInfoCategory
@@ -133,8 +134,8 @@ public class TurretInfoCategory
             register(Resources.TINFO_GRP_UPGRADE.getResource(), "Upgrades", "info about turret upgrades", entries);
         }
         register(Resources.TINFO_GRP_MISC.getResource(), "Misc", "info about misc stuff",
-                new TurretInfoEntry.EntryEmpty(new ItemStack(BlockRegistry.turretAssembly), "assembly"),
-                new TurretInfoEntry.EntryEmpty(new ItemStack(ItemRegistry.tcu), "tcu"));
+                new TurretInfoEntryMiscCraftable(CraftingRecipes.assemblyTable),
+                new TurretInfoEntryGenerator());
         register(Resources.TINFO_GRP_INFO.getResource(), "Info", "about this mod");
     }
 }

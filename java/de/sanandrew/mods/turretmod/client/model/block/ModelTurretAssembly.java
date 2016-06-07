@@ -65,7 +65,7 @@ public class ModelTurretAssembly
     }
 
     public void render(float f5, float partTicks, TileEntityTurretAssembly te) {
-        int meta = te.hasWorldObj() ? BlockRegistry.turretAssembly.getDirection(te.getBlockMetadata()) - 2 : 0;
+        int meta = te.hasWorldObj() ? BlockRegistry.assemblyTable.getDirection(te.getBlockMetadata()) - 2 : 0;
         this.base.rotateAngleY = (float)(90.0D * meta / 180.0D * Math.PI);
 
         if( te.isItemRendered ) {

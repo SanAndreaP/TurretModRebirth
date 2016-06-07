@@ -32,6 +32,8 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.RecipesIngots;
+import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -63,7 +65,6 @@ public class TurretModRebirth
         RepairKitRegistry.INSTANCE.initialize();
         TurretRegistry.INSTANCE.initialize();
         UpgradeRegistry.INSTANCE.initialize();
-        proxy.preInit(event);
         BlockRegistry.initialize();
         ItemRegistry.initialize();
         TurretAssemblyRecipes.initialize();
@@ -71,20 +72,18 @@ public class TurretModRebirth
         TileEntityPotatoGenerator.initializeRecipes();
 
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
+
+        proxy.preInit(event);
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
+        CraftingRecipes.initialize();
+//        CraftingManager.getInstance().addRecipe(new ItemStack(BlockRegistry.potatoGenerator, 1)) {
+//            "IBG", "RCR", "BPB",
+//            'I', new ItemStack(Items.iron_ingot),
+//        }
         proxy.init(event);
-
-        CraftingManager.getInstance().addRecipe(new ItemStack(BlockRegistry.turretAssembly, 1),
-                "ROR", "IAI", "CFC",
-                'R', new ItemStack(Items.repeater),
-                'O', new ItemStack(Blocks.obsidian),
-                'I', new ItemStack(Items.iron_ingot),
-                'A', new ItemStack(Blocks.anvil, 1, 0),
-                'C', new ItemStack(Blocks.cobblestone),
-                'F', new ItemStack(Blocks.furnace));
     }
 
     @Mod.EventHandler

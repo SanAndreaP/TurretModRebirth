@@ -16,7 +16,6 @@ import de.sanandrew.mods.turretmod.network.TileClientSync;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import io.netty.buffer.ByteBuf;
 import net.darkhax.bookshelf.lib.javatuples.Quartet;
-import net.darkhax.bookshelf.lib.javatuples.Triplet;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -43,6 +42,7 @@ public class TileEntityPotatoGenerator
 {
     public static final int MAX_FLUX_STORAGE = 500_000;
     public static final int MAX_FLUX_EXTRACT = 1_000;
+    public static final int MAX_FLUX_GENERATED = 200;
 
     public int fluxExtractPerTick;
     public short[] progress = new short[9];
@@ -59,13 +59,19 @@ public class TileEntityPotatoGenerator
     private int prevFluxAmount;
     private boolean doSync;
 
-    private static final Map<Item, Quartet<Float, Short, ItemStack, ItemStack>> FUELS = new HashMap<>(3);
+    private int fluxBuffer;
+
+    private static final Map<Item, Fuel> FUELS = new HashMap<>(3);
 
     public static void initializeRecipes() {
-        FUELS.put(Items.potato, Quartet.with(1.0F, (short) 200, new ItemStack(Items.sugar, 1), new ItemStack(Items.baked_potato, 1)));
-        FUELS.put(Items.carrot, Quartet.with(1.0F, (short) 200, new ItemStack(Items.sugar, 1), new ItemStack(Items.redstone, 1)));
-        FUELS.put(Items.poisonous_potato, Quartet.with(1.2F, (short) 150, new ItemStack(Items.sugar, 1), new ItemStack(Items.nether_wart, 1)));
-        FUELS.put(Items.apple, Quartet.with(1.3F, (short) 220, new ItemStack(Items.wheat_seeds, 1), new ItemStack(Items.gold_nugget, 1)));
+        FUELS.put(Items.potato, new Fuel(1.0F, (short) 200, new ItemStack(Items.sugar, 1), new ItemStack(Items.baked_potato, 1)));
+        FUELS.put(Items.carrot, new Fuel(1.0F, (short) 200, new ItemStack(Items.sugar, 1), new ItemStack(Items.redstone, 1)));
+        FUELS.put(Items.poisonous_potato, new Fuel(1.2F, (short) 150, new ItemStack(Items.sugar, 1), new ItemStack(Items.nether_wart, 1)));
+        FUELS.put(Items.apple, new Fuel(1.3F, (short) 220, new ItemStack(Items.wheat_seeds, 1), new ItemStack(Items.gold_nugget, 1)));
+    }
+
+    public static Map<Item, Fuel> getFuels() {
+        return new HashMap<>(FUELS);
     }
 
     @Override
@@ -83,8 +89,8 @@ public class TileEntityPotatoGenerator
         return this.isItemValidForSlot(slot, stack) && side != ForgeDirection.DOWN.ordinal() && side != ForgeDirection.UP.ordinal();
     }
 
-    public long getGeneratedFlux() {
-        return this.effectiveness < 0.1F ? 0 : StrictMath.round(StrictMath.pow(1.6D, this.effectiveness) / (68.0D + (127433.0D / 177119.0D)) * 80.0D);
+    public int getGeneratedFlux() {
+        return this.effectiveness < 0.1F ? 0 : (int) Math.round(Math.pow(1.6D, this.effectiveness) / (68.0D + (127433.0D / 177119.0D)) * 80.0D);
     }
 
     @Override
@@ -93,8 +99,16 @@ public class TileEntityPotatoGenerator
             this.fluxExtractPerTick = Math.min(this.fluxAmount, MAX_FLUX_EXTRACT);
 
             float prevEffective = this.effectiveness;
-            long fluxEff = this.getGeneratedFlux();
-            if( this.fluxAmount + fluxEff < MAX_FLUX_STORAGE || this.fluxAmount <= 0 ) {
+
+            if( this.fluxBuffer > 0 ) {
+                int fluxSubtracted = Math.min(MAX_FLUX_STORAGE - this.fluxAmount, Math.min(MAX_FLUX_GENERATED, this.fluxBuffer));
+                this.fluxBuffer -= fluxSubtracted;
+                this.fluxAmount += fluxSubtracted;
+            }
+
+            if( this.fluxBuffer <= MAX_FLUX_GENERATED && this.fluxAmount < MAX_FLUX_STORAGE ) {
+                int fluxEff = this.getGeneratedFlux();
+
                 this.effectiveness = 0.0F;
 
                 for( int i = 0; i < SLOTS_PROCESSING.length; i++ ) {
@@ -116,7 +130,7 @@ public class TileEntityPotatoGenerator
                             this.invStacks[SLOTS_PROCESSING[i]] = null;
                             this.markDirty();
                         } else {
-                            this.effectiveness += FUELS.get(this.invStacks[SLOTS_PROCESSING[i]].getItem()).getValue0();
+                            this.effectiveness += FUELS.get(this.invStacks[SLOTS_PROCESSING[i]].getItem()).effect;
                         }
                         this.doSync = true;
                     }
@@ -128,10 +142,10 @@ public class TileEntityPotatoGenerator
                             this.invStacks[SLOTS_INSERT[i]] = null;
                         }
 
-                        Quartet<Float, Short, ItemStack, ItemStack> fuel = FUELS.get(this.invStacks[SLOTS_PROCESSING[i]].getItem());
-                        this.progress[i] = fuel.getValue1();
-                        this.progExcessComm[i] = TmrUtils.RNG.nextInt(10) == 0 ? fuel.getValue2() : null;
-                        this.progExcessRare[i] = TmrUtils.RNG.nextInt(100) == 0 ? fuel.getValue3() : null;
+                        Fuel fuel = FUELS.get(this.invStacks[SLOTS_PROCESSING[i]].getItem());
+                        this.progress[i] = fuel.ticksProc;
+                        this.progExcessComm[i] = TmrUtils.RNG.nextInt(10) == 0 ? fuel.trash.copy() : null;
+                        this.progExcessRare[i] = TmrUtils.RNG.nextInt(100) == 0 ? fuel.treasure.copy() : null;
 
                         this.markDirty();
                         this.doSync = true;
@@ -139,10 +153,7 @@ public class TileEntityPotatoGenerator
                 }
 
                 if( this.effectiveness > 0.1F ) {
-                    this.fluxAmount += fluxEff;
-                    if( this.fluxAmount > MAX_FLUX_STORAGE ) {
-                        this.fluxAmount = MAX_FLUX_STORAGE;
-                    }
+                    this.fluxBuffer += fluxEff;
                 }
             }
 
@@ -248,6 +259,7 @@ public class TileEntityPotatoGenerator
 
     private void writeNbt(NBTTagCompound nbt) {
         nbt.setInteger("fluxAmount", this.fluxAmount);
+        nbt.setInteger("fluxBuffer", this.fluxBuffer);
         NBTTagList progress = new NBTTagList();
         for( short s : this.progress ) {
             progress.appendTag(new NBTTagShort(s));
@@ -265,15 +277,16 @@ public class TileEntityPotatoGenerator
 
         for( int i = 0; i < this.progress.length; i++ ) {
             if( this.invStacks[SLOTS_PROCESSING[i]] != null ) {
-                Quartet<Float, Short, ItemStack, ItemStack> fuel = FUELS.get(this.invStacks[SLOTS_PROCESSING[i]].getItem());
-                this.progExcessComm[i] = TmrUtils.RNG.nextInt(100) == 0 ? fuel.getValue2() : null;
-                this.progExcessRare[i] = TmrUtils.RNG.nextInt(100) == 0 ? fuel.getValue3() : null;
+                Fuel fuel = FUELS.get(this.invStacks[SLOTS_PROCESSING[i]].getItem());
+                this.progExcessComm[i] = TmrUtils.RNG.nextInt(100) == 0 ? fuel.trash.copy() : null;
+                this.progExcessRare[i] = TmrUtils.RNG.nextInt(100) == 0 ? fuel.treasure.copy() : null;
             }
         }
     }
 
     private void readNbt(NBTTagCompound nbt) {
         this.fluxAmount = nbt.getInteger("fluxAmount");
+        this.fluxBuffer = nbt.getInteger("fluxBuffer");
         NBTTagList progress = nbt.getTagList("progress", Constants.NBT.TAG_SHORT);
         for( int i = 0; i < this.progress.length; i++ ) {
             this.progress[i] = TmrUtils.getShortTagAt(progress, i);
@@ -390,5 +403,20 @@ public class TileEntityPotatoGenerator
     @Override
     public boolean canConnectEnergy(ForgeDirection from) {
         return from != ForgeDirection.UP;
+    }
+
+    public static final class Fuel
+    {
+        public final float effect;
+        public final short ticksProc;
+        public final ItemStack trash;
+        public final ItemStack treasure;
+
+        public Fuel(float effectiveness, int ticksProcessing, ItemStack trash, ItemStack treasure) {
+            this.effect = effectiveness;
+            this.ticksProc = (short) ticksProcessing;
+            this.trash = trash;
+            this.treasure = treasure;
+        }
     }
 }

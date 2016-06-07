@@ -16,14 +16,14 @@ import net.minecraft.block.Block;
 
 public class BlockRegistry
 {
-    public static BlockTurretAssembly turretAssembly;
+    public static BlockTurretAssembly assemblyTable;
     public static BlockPotatoGenerator potatoGenerator;
 
     public static void initialize() {
-        turretAssembly = new BlockTurretAssembly();
+        assemblyTable = new BlockTurretAssembly();
         potatoGenerator = new BlockPotatoGenerator();
 
-        registerBlocks(turretAssembly, potatoGenerator);
+        registerBlocks(assemblyTable, potatoGenerator);
 
         GameRegistry.registerTileEntity(TileEntityTurretAssembly.class, TurretModRebirth.ID + ":te_turret_assembly");
         GameRegistry.registerTileEntity(TileEntityPotatoGenerator.class, TurretModRebirth.ID + ":te_potato_generator");

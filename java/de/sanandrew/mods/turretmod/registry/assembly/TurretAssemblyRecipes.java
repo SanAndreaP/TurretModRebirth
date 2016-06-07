@@ -287,7 +287,7 @@ public class TurretAssemblyRecipes
     }
 
     public RecipeGroup registerGroup(String name, ItemStack stack) {
-        name = BlockRegistry.turretAssembly.getUnlocalizedName() + '.' + name;
+        name = BlockRegistry.assemblyTable.getUnlocalizedName() + '.' + name;
         RecipeGroup group = new RecipeGroup(name, stack);
         this.groups.put(name, group);
         return group;
