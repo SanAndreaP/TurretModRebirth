@@ -13,6 +13,7 @@ import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityPotatoGenerator;
 import de.sanandrew.mods.turretmod.util.CraftingRecipes;
 import de.sanandrew.mods.turretmod.util.Resources;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.RenderHelper;
@@ -41,9 +42,6 @@ public class TurretInfoEntryGenerator
 
         Map<Item, TileEntityPotatoGenerator.Fuel> fuels = TileEntityPotatoGenerator.getFuels();
         List<Item> fuelItems = new ArrayList<>(fuels.keySet());
-        fuelItems.addAll(fuelItems);
-        fuelItems.addAll(fuelItems);
-        fuelItems.addAll(fuelItems);
 
         this.drawHeight = super.getPageHeight() + 3;
 
@@ -64,30 +62,34 @@ public class TurretInfoEntryGenerator
             drawTooltipFuel(gui.mc, scrollY);
         }
 
-        this.drawHeight += (fuelItems.size() / maxItems) * 18 + 42;
-
-//        for( Item itm : fuelItems ) {
-//            drawItem(gui.mc, 3, this.drawHeight, new ItemStack(itm), 1.0F);
-//            this.drawHeight += 25;
-//        }
+        this.drawHeight += (fuelItems.size() / maxItems) * 18 + 20 + 48;
     }
 
     private static void drawTooltipFuel(Minecraft mc, int scrollY) {
         GL11.glPushMatrix();
-        GL11.glTranslatef(0.0F, MAX_ENTRY_HEIGHT - 20 + scrollY, 64.0F);
-        Gui.drawRect(0, 0, MAX_ENTRY_WIDTH, 20, 0xD0000000);
+        GL11.glTranslatef(0.0F, MAX_ENTRY_HEIGHT - 48 + scrollY, 64.0F);
+        Gui.drawRect(0, 0, MAX_ENTRY_WIDTH, 48, 0xD0000000);
 
-        List tooltip = TmrClientUtils.getTooltipWithoutShift(tooltipItem);
-        mc.fontRenderer.drawString(tooltip.get(0).toString(), 22, 2, 0xFFFFFFFF, false);
-        if( tooltip.size() > 1 ) {
-            mc.fontRenderer.drawString(tooltip.get(1).toString(), 22, 11, 0xFF808080, false);
-        }
+        mc.fontRenderer.drawString(String.format("§e%s", TmrClientUtils.getTooltipWithoutShift(tooltipItem).get(0)), 22, 2, 0xFFFFFFFF, false);
+        TileEntityPotatoGenerator.Fuel fuel = TileEntityPotatoGenerator.getFuel(tooltipItem.getItem());
+        mc.fontRenderer.drawString(String.format("%.2fx efficiency", fuel.effect), 22, 11, 0xFFFFFFFF, false);
+        mc.fontRenderer.drawString(String.format("decays in %s", TmrClientUtils.getTimeFromTicks(fuel.ticksProc)), 22, 20, 0xFFFFFFFF, false);
+        mc.fontRenderer.drawString(String.format("§a%s", TmrClientUtils.getTooltipWithoutShift(fuel.trash).get(0)), 32, 29, 0xFFFFFFFF, false);
+        mc.fontRenderer.drawString(String.format("§d%s", TmrClientUtils.getTooltipWithoutShift(fuel.treasure).get(0)), 32, 38, 0xFFFFFFFF, false);
 
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         RenderHelper.enableGUIStandardItemLighting();
         ITEM_RENDER.zLevel = -50.0F;
-        ITEM_RENDER.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), tooltipItem, 2, 2);
-        ITEM_RENDER.renderItemOverlayIntoGUI(mc.fontRenderer, mc.getTextureManager(), tooltipItem, 2, 2);
+        ITEM_RENDER.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), tooltipItem, 2, 12);
+
+        GL11.glPushMatrix();
+        GL11.glTranslatef(22.0F, 28.0F, 0.0F);
+        GL11.glScalef(0.5F, 0.5F, 1.0F);
+        ITEM_RENDER.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), fuel.trash, 0, 0);
+        ITEM_RENDER.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), fuel.treasure, 0, 18);
+        GL11.glPopMatrix();
+
+        ITEM_RENDER.renderItemOverlayIntoGUI(mc.fontRenderer, mc.getTextureManager(), tooltipItem, 12, 2);
         ITEM_RENDER.zLevel = 0.0F;
         RenderHelper.disableStandardItemLighting();
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
@@ -98,9 +100,7 @@ public class TurretInfoEntryGenerator
     private static void drawFuelItem(GuiTurretInfo gui, int x, int y, int mouseX, int mouseY, int scrollY, ItemStack stack, boolean drawTooltip) {
         gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glPushMatrix();
-        GL11.glTranslatef(x, y, 0.0F);
-        GL11.glPopMatrix();
+        gui.drawTexturedModalRect(x, y, 192, 0, 18, 18);
 
         GL11.glPushMatrix();
         boolean mouseOver = mouseY >= 0 && mouseY < MAX_ENTRY_HEIGHT && mouseX >= x && mouseX < x + 18 && mouseY >= y - scrollY && mouseY < y + 18 - scrollY;

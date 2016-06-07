@@ -405,6 +405,10 @@ public class TileEntityPotatoGenerator
         return from != ForgeDirection.UP;
     }
 
+    public static Fuel getFuel(Item item) {
+        return FUELS.get(item);
+    }
+
     public static final class Fuel
     {
         public final float effect;

@@ -165,9 +165,6 @@ public class TurretInfoEntryMiscCraftable
     private static void drawCrfItem(GuiTurretInfo gui, int x, int y, int mouseX, int mouseY, int scrollY, ItemStack stack, boolean drawTooltip) {
         gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glPushMatrix();
-        GL11.glTranslatef(x, y, 0.0F);
-        GL11.glPopMatrix();
 
         GL11.glPushMatrix();
         boolean mouseOver = mouseY >= 0 && mouseY < MAX_ENTRY_HEIGHT && mouseX >= x && mouseX < x + 18 && mouseY >= y - scrollY && mouseY < y + 18 - scrollY;
