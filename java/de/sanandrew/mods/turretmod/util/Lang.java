@@ -21,6 +21,7 @@ public final class Lang
     public static final String TINFO_ENTRY_HEALTHVAL = String.format("gui.%s.tinfo.healthVal", TurretModRebirth.ID);
     public static final String TINFO_ENTRY_TURRET = String.format("gui.%s.tinfo.turret", TurretModRebirth.ID);
     public static final String TINFO_ENTRY_CRAFTING = String.format("gui.%s.tinfo.crafting", TurretModRebirth.ID);
+    public static final String TINFO_ENTRY_WORKBENCH = String.format("gui.%s.tinfo.workbench", TurretModRebirth.ID);
     public static final String TINFO_ENTRY_PREREQ = String.format("gui.%s.tinfo.prereq", TurretModRebirth.ID);
     public static final String TINFO_ENTRY_RANGE = String.format("gui.%s.tinfo.range", TurretModRebirth.ID);
     public static final String TINFO_ENTRY_RANGEVAL = String.format("gui.%s.tinfo.rangeVal", TurretModRebirth.ID);

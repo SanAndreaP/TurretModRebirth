@@ -131,11 +131,13 @@ public class TurretInfoEntryMiscCraftable
 
         gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        gui.drawTexturedModalRect(2, 15, 192, 18, 34, 34);
+        gui.drawTexturedModalRect(2, 16, 192, 18, 34, 34);
 
-        drawItem(gui.mc, 3, 16, this.getIcon(), 2.0F);
+        drawItem(gui.mc, 3, 17, this.getIcon(), 2.0F);
 
-        this.drawHeight = 17 + 18 * this.crafting.getValue2();
+        gui.mc.fontRenderer.drawString(this.txtWorkbench, 42, 16, 0xFF6A6A6A, false);
+
+        this.drawHeight = 27 + 9 * this.crafting.getValue2();
 
         Gui.drawRect(2, this.drawHeight, MAX_ENTRY_WIDTH - 2, this.drawHeight + 1, 0xFF0080BB);
 
@@ -145,13 +147,10 @@ public class TurretInfoEntryMiscCraftable
 
         for( int i = 0, maxI = this.crafting.getValue1(); i < maxI; i++ ) {
             for( int j = 0, maxJ = this.crafting.getValue2(); j < maxJ; j++ ) {
-                gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
-                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-                gui.drawTexturedModalRect(42 + 18 * j, 15 + 18 * i, 192, 0, 18, 18);
 
                 ItemStack crfStack[] = this.crafting.getValue0()[i*3 + j];
                 if( crfStack != null && crfStack.length > 0 ) {
-                    drawCrfItem(gui, 42 + 18 * j, 15 + 18 * i, mouseX, mouseY, scrollY, crfStack[(int)(this.lastTimestamp / 1000L % crfStack.length)], true);
+                    drawCrfItem(gui, 42 + 9 * j, 25 + 9 * i, mouseX, mouseY, scrollY, crfStack[(int)(this.lastTimestamp / 1000L % crfStack.length)], true);
                 }
             }
         }
@@ -163,11 +162,7 @@ public class TurretInfoEntryMiscCraftable
     }
 
     private static void drawCrfItem(GuiTurretInfo gui, int x, int y, int mouseX, int mouseY, int scrollY, ItemStack stack, boolean drawTooltip) {
-        gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-
-        GL11.glPushMatrix();
-        boolean mouseOver = mouseY >= 0 && mouseY < MAX_ENTRY_HEIGHT && mouseX >= x && mouseX < x + 18 && mouseY >= y - scrollY && mouseY < y + 18 - scrollY;
+        boolean mouseOver = mouseY >= 0 && mouseY < MAX_ENTRY_HEIGHT && mouseX >= x && mouseX < x + 9 && mouseY >= y - scrollY && mouseY < y + 9 - scrollY;
         if( mouseOver ) {
             GL11.glPushMatrix();
             GL11.glTranslatef(0.0F, MAX_ENTRY_HEIGHT - 20 + scrollY, 64.0F);
@@ -191,8 +186,12 @@ public class TurretInfoEntryMiscCraftable
             GL11.glPopMatrix();
         }
 
+        GL11.glPushMatrix();
         GL11.glTranslatef(x, y, 32.0F);
-
+        GL11.glScalef(0.5F, 0.5F, 0.5F);
+        gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        gui.drawTexturedModalRect(0, 0, 192, 0, 18, 18);
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         RenderHelper.enableGUIStandardItemLighting();
         ITEM_RENDER.zLevel = -50.0F;

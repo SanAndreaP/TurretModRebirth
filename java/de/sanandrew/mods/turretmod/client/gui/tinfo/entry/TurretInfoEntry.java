@@ -36,6 +36,7 @@ public abstract class TurretInfoEntry
     protected final String txtHealthVal;
     protected final String txtTurret;
     protected final String txtCrft;
+    protected final String txtWorkbench;
     protected final String txtPrereq;
     protected final String txtRange;
     protected final String txtAmmoCap;
@@ -53,6 +54,7 @@ public abstract class TurretInfoEntry
         this.txtHealthVal = Lang.translate(Lang.TINFO_ENTRY_HEALTHVAL);
         this.txtTurret = Lang.translate(Lang.TINFO_ENTRY_TURRET);
         this.txtCrft = Lang.translate(Lang.TINFO_ENTRY_CRAFTING);
+        this.txtWorkbench = Lang.translate(Lang.TINFO_ENTRY_WORKBENCH);
         this.txtPrereq = Lang.translate(Lang.TINFO_ENTRY_PREREQ);
         this.txtRange = Lang.translate(Lang.TINFO_ENTRY_RANGE);
         this.txtAmmoCap = Lang.translate(Lang.TINFO_ENTRY_AMMOCAP);
