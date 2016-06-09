@@ -14,11 +14,13 @@ import de.sanandrew.mods.turretmod.tileentity.TileEntityPotatoGenerator;
 import de.sanandrew.mods.turretmod.util.CraftingRecipes;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -72,8 +74,8 @@ public class TurretInfoEntryGenerator
 
         mc.fontRenderer.drawString(String.format("§e%s", TmrClientUtils.getTooltipWithoutShift(tooltipItem).get(0)), 22, 2, 0xFFFFFFFF, false);
         TileEntityPotatoGenerator.Fuel fuel = TileEntityPotatoGenerator.getFuel(tooltipItem.getItem());
-        mc.fontRenderer.drawString(String.format("%.2fx efficiency", fuel.effect), 22, 11, 0xFFFFFFFF, false);
-        mc.fontRenderer.drawString(String.format("decays in %s", TmrClientUtils.getTimeFromTicks(fuel.ticksProc)), 22, 20, 0xFFFFFFFF, false);
+        mc.fontRenderer.drawString(String.format(StatCollector.translateToLocal(String.format("gui.%s.tinfo.efficiency", TurretModRebirth.ID)), fuel.effect), 22, 11, 0xFFFFFFFF, false);
+        mc.fontRenderer.drawString(String.format(StatCollector.translateToLocal(String.format("gui.%s.tinfo.decay", TurretModRebirth.ID)), TmrClientUtils.getTimeFromTicks(fuel.ticksProc)), 22, 20, 0xFFFFFFFF, false);
         mc.fontRenderer.drawString(String.format("§a%s", TmrClientUtils.getTooltipWithoutShift(fuel.trash).get(0)), 32, 29, 0xFFFFFFFF, false);
         mc.fontRenderer.drawString(String.format("§d%s", TmrClientUtils.getTooltipWithoutShift(fuel.treasure).get(0)), 32, 38, 0xFFFFFFFF, false);
 

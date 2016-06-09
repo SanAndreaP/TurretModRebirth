@@ -8,7 +8,7 @@ tile.sapturretmod:turret_assembly.group4=Upgrades
 tile.sapturretmod:turret_assembly.desc=This assembly table is an essential part for your turret cravings, as it §3crafts§0 any item and turret you need or want.\n\nTo operate it you need §3power§0 as well as the items required for the item you want to craft. It currently only accepts §3Redstone Flux§0 as energy.\n\nIf you think it's too slow or you want to automate it, there are a couple of §3upgrades§0 available.
 # potato generator
 tile.sapturretmod:potato_generator.name=Electrolyte Generator
-tile.sapturretmod:potato_generator.desc=This machine §3creates energy§0 from items (mostly food) with high enough acid or base by reacting with the electrolyte within them.\nThe more items are put in it, the higher the efficiency of the generator.\n\nEach item has its own §3effectiveness§0 and §3decay time§0, which dictate how much power can be generated in total. The effectiveness level also influences the amount of power the generator can produce in a moment, but there is only so much the generator can transfer internally, so there is a §3cap of 200 RF/t§0.\n\nItems used up in the generator may produce §3byproducts§0, which could be trash or rarely something valuable.
+tile.sapturretmod:potato_generator.desc=This machine §3creates energy§0 from items (mostly food) with high enough acid or base by reacting with the electrolyte within them.\nThe more items are put in it, the higher the efficiency of the generator.\n\nEach item has its own §3effectiveness§0 and §3decay time§0, which dictate how much power can be generated in total. The effectiveness level also influences the amount of power the generator can produce in a moment, but there is only so much the generator can transfer internally, so there is a §3cap of 200 RF/t§0.\n\nItems used up in the generator may produce §3byproducts§0, which could be §2trash§0 or rarely something §dvaluable§0.
 
 item.sapturretmod:turret_info.name=Turret Info Tablet
 item.sapturretmod:turret_info.desc=Gives information about the\nitems in the Turret Mod.
@@ -42,27 +42,27 @@ item.sapturretmod:turret_repair_kit.regen_1.name=Repair Kit 01H40R
 
 item.sapturretmod:turret_upgrade.name=Turret Upgrade
 item.sapturretmod:turret_upgrade.empty.name=Empty
-item.sapturretmod:turret_upgrade.empty.desc=Base for all other upgrades. Not applicable to anything.
+item.sapturretmod:turret_upgrade.empty.desc=This is the §3crafting base§0 for all other upgrades. Not applicable to anything.
 item.sapturretmod:turret_upgrade.health_i.name=Health I
-item.sapturretmod:turret_upgrade.health_i.desc=Increases the maximum turret health by 25%.\nIt will not increase the turrets health automatically! You must heal it afterwards.
+item.sapturretmod:turret_upgrade.health_i.desc=Increases the maximum turret §3health by 25%§0.\nIt will not increase the turrets health automatically! You must heal it afterwards.
 item.sapturretmod:turret_upgrade.health_ii.name=Health II
-item.sapturretmod:turret_upgrade.health_ii.desc=Increases the maximum turret health by 25% for 50% total increase.
+item.sapturretmod:turret_upgrade.health_ii.desc=Increases the maximum turret §3health by 25%§0 for 50% total increase.
 item.sapturretmod:turret_upgrade.health_iii.name=Health III
-item.sapturretmod:turret_upgrade.health_iii.desc=Increases the maximum turret health by 25% for 75% total increase.
+item.sapturretmod:turret_upgrade.health_iii.desc=Increases the maximum turret §3health by 25%§0 for 75% total increase.
 item.sapturretmod:turret_upgrade.health_iv.name=Health IV
-item.sapturretmod:turret_upgrade.health_iv.desc=Increases the maximum turret health by 25% for 100% total increase.
+item.sapturretmod:turret_upgrade.health_iv.desc=Increases the maximum turret §3health by 25%§0 for 100% total increase.
 item.sapturretmod:turret_upgrade.reload_i.name=Reload I
-item.sapturretmod:turret_upgrade.reload_i.desc=Decreases the reload time by 15%.\nBe careful with faster shooting turrets, the immunity time caused by damage on targets may last longer than the time to reload, thus wasting ammunition.
+item.sapturretmod:turret_upgrade.reload_i.desc=When the turret shoots too slow, use this! It decreases the §3reload time by 15%§0.\nBe careful with faster shooting turrets, the immunity time caused by damage on targets may last longer than the time to reload, thus wasting ammunition.
 item.sapturretmod:turret_upgrade.reload_ii.name=Reload II
-item.sapturretmod:turret_upgrade.reload_ii.desc=Decreases the reload time by an additional 35% (50% overall).
+item.sapturretmod:turret_upgrade.reload_ii.desc=This decreases the §3reload time§0 by an additional §335%§0 (50% overall) for an even faster shooting turret.
 item.sapturretmod:turret_upgrade.upg_storage_i.name=Upgrade Storage I
-item.sapturretmod:turret_upgrade.upg_storage_i.desc=Increases the available upgrade slots by 9.
+item.sapturretmod:turret_upgrade.upg_storage_i.desc=Need more upgrades for your turret but don't have any space? Use this, as it will increases the available §3upgrade slots by 9§0.
 item.sapturretmod:turret_upgrade.upg_storage_ii.name=Upgrade Storage II
-item.sapturretmod:turret_upgrade.upg_storage_ii.desc=Increases the available upgrade slots by 9.
+item.sapturretmod:turret_upgrade.upg_storage_ii.desc=Increases the available §3upgrade slots by 9§0, if you need even more upgrades.
 item.sapturretmod:turret_upgrade.upg_storage_iii.name=Upgrade Storage III
-item.sapturretmod:turret_upgrade.upg_storage_iii.desc=Increases the available upgrade slots by 9.
+item.sapturretmod:turret_upgrade.upg_storage_iii.desc=Increases the available §3upgrade slots by 9§0 for maximum upgradeability.
 item.sapturretmod:turret_upgrade.ammo_storage.name=Ammunition Storage
-item.sapturretmod:turret_upgrade.ammo_storage.desc=Increases the available ammo storage by 320 rounds.
+item.sapturretmod:turret_upgrade.ammo_storage.desc=If you're tired of your turrets running out of ammo too fast, this will increases the available §3ammo storage by 320 rounds§0.
 
 entity.sapturretmod.turret_i_crossbow.name=Crossbow Turret (T1)
 entity.sapturretmod.turret_i_crossbow.desc=A turret meant for basic defense and beginners. Not very strong but one of the cheapest to make.
@@ -75,11 +75,12 @@ sapturretmod.tinfo.ammo.arrow.desc=The standard ammo for the §3Crossbow Turret�
 sapturretmod.tinfo.ammo.sgshell.name=Shotgun Shell
 sapturretmod.tinfo.ammo.sgshell.desc=The standard ammo for the §3Shotgun Turret§0. Has no knockback effect and turns into 6 dispersed pebble projectiles when shot.\nDoes not apply any immunity to the target, thus targets hit by multiple pebbles will take damage from all of them.\nCan be packaged, whose items will provide 16x ammo.
 
+gui.sapturretmod.tinfo.infoTitle=Info about this mod
 gui.sapturretmod.tinfo.health=Health
 gui.sapturretmod.tinfo.range=Range
 gui.sapturretmod.tinfo.ammocap=Ammo Capacity
 gui.sapturretmod.tinfo.ammouse=Ammo Useable
-gui.sapturretmod.tinfo.crafting=Crafted With
+gui.sapturretmod.tinfo.crafting=Assembly Crafting
 gui.sapturretmod.tinfo.dps=Damage Per Projectile
 gui.sapturretmod.tinfo.turret=Turret Applicable
 gui.sapturretmod.tinfo.rounds=Rounds Provided
@@ -87,6 +88,13 @@ gui.sapturretmod.tinfo.prereq=Upgrade Prerequisite
 gui.sapturretmod.tinfo.healthVal=%.1f HP
 gui.sapturretmod.tinfo.roundsVal=%d Rounds
 gui.sapturretmod.tinfo.rangeVal=%s Blocks
+gui.sapturretmod.tinfo.efficiency=%.2fx efficiency
+gui.sapturretmod.tinfo.decay=decays in %s
+
+gui.sapturretmod.tinfo.modName=Name:
+gui.sapturretmod.tinfo.modVersion=Version:
+gui.sapturretmod.tinfo.modAuthor=Author:
+gui.sapturretmod.tinfo.modCredits=Credits:
 
 gui.sapturretmod.tcu.page.info.title=TCU - Turret Info
 gui.sapturretmod.tcu.page.info.tab=Turret Info

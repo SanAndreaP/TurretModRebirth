@@ -12,12 +12,11 @@ import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.registry.upgrades.TurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
 import java.util.UUID;
@@ -34,7 +33,7 @@ public class TurretInfoEntryUpgrade
     }
 
     private TurretInfoEntryUpgrade(TurretUpgrade upgrade) {
-        super(UpgradeRegistry.INSTANCE.getUpgradeItem(upgrade), String.format("item.%s:turret_upgrade.%s.name", TurretModRebirth.ID, upgrade.getName()));
+        super(UpgradeRegistry.INSTANCE.getUpgradeItem(upgrade), String.format(Lang.ITEM_UPGRADE_NAME, upgrade.getName()));
         this.upgrade = upgrade;
     }
 
@@ -43,7 +42,7 @@ public class TurretInfoEntryUpgrade
         TurretUpgrade prereq = this.upgrade.getDependantOn();
         int infoHeight = 54;
 
-        gui.mc.fontRenderer.drawString(EnumChatFormatting.ITALIC + StatCollector.translateToLocal(this.getTitle()), 2, 2, 0xFF0080BB);
+        gui.mc.fontRenderer.drawString(EnumChatFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 2, 0xFF0080BB);
         Gui.drawRect(2, 12, MAX_ENTRY_WIDTH - 2, 13, 0xFF0080BB);
 
         gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
@@ -52,15 +51,15 @@ public class TurretInfoEntryUpgrade
 
         drawItem(gui.mc, 3, 17, UpgradeRegistry.INSTANCE.getUpgradeItem(this.upgrade), 2.0F);
 
-        gui.mc.fontRenderer.drawString(StatCollector.translateToLocal(String.format("gui.%s.tinfo.crafting", TurretModRebirth.ID)), 42, 16, 0xFF6A6A6A, false);
+        gui.mc.fontRenderer.drawString(this.txtCrft, 42, 16, 0xFF6A6A6A, false);
         if( prereq != null ) {
-            gui.mc.fontRenderer.drawString(StatCollector.translateToLocal(String.format("gui.%s.tinfo.prereq", TurretModRebirth.ID)), 42, 36, 0xFF6A6A6A, false);
+            gui.mc.fontRenderer.drawString(this.txtPrereq, 42, 36, 0xFF6A6A6A, false);
             infoHeight = 56;
         }
 
         Gui.drawRect(2, infoHeight, MAX_ENTRY_WIDTH - 2, infoHeight + 1, 0xFF0080BB);
 
-        String text = StatCollector.translateToLocal(String.format("item.%s:turret_upgrade.%s.desc", TurretModRebirth.ID, upgrade.getName())).replace("\\n", "\n");
+        String text = Lang.translate(Lang.ITEM_UPGRADE_DESC, upgrade.getName()).replace("\\n", "\n");
         gui.mc.fontRenderer.drawSplitString(text, 2, infoHeight + 3, MAX_ENTRY_WIDTH - 2, 0xFF000000);
         this.drawHeight = gui.mc.fontRenderer.splitStringWidth(text, MAX_ENTRY_WIDTH - 2) + infoHeight + 3 + 2;
 

@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
+import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -17,8 +18,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -31,11 +30,33 @@ public abstract class TurretInfoEntry
     private ItemStack icon;
     private String title;
 
+    protected final String txtRounds;
+    protected final String txtDps;
+    protected final String txtHealth;
+    protected final String txtHealthVal;
+    protected final String txtTurret;
+    protected final String txtCrft;
+    protected final String txtPrereq;
+    protected final String txtRange;
+    protected final String txtAmmoCap;
+    protected final String txtAmmoUse;
+
     protected static final RenderItem ITEM_RENDER = new RenderItem();
 
     protected TurretInfoEntry(ItemStack icon, String title) {
         this.icon = icon;
         this.title = title;
+
+        this.txtRounds = Lang.translate(Lang.TINFO_ENTRY_ROUNDS);
+        this.txtDps = Lang.translate(Lang.TINFO_ENTRY_DPS);
+        this.txtHealth = Lang.translate(Lang.TINFO_ENTRY_HEALTH);
+        this.txtHealthVal = Lang.translate(Lang.TINFO_ENTRY_HEALTHVAL);
+        this.txtTurret = Lang.translate(Lang.TINFO_ENTRY_TURRET);
+        this.txtCrft = Lang.translate(Lang.TINFO_ENTRY_CRAFTING);
+        this.txtPrereq = Lang.translate(Lang.TINFO_ENTRY_PREREQ);
+        this.txtRange = Lang.translate(Lang.TINFO_ENTRY_RANGE);
+        this.txtAmmoCap = Lang.translate(Lang.TINFO_ENTRY_AMMOCAP);
+        this.txtAmmoUse = Lang.translate(Lang.TINFO_ENTRY_AMMOUSE);
     }
 
     public final ItemStack getIcon() {
@@ -120,22 +141,6 @@ public abstract class TurretInfoEntry
     public abstract void drawPage(GuiTurretInfo gui, int mouseX, int mouseY, int scrollY, float partTicks);
 
     public abstract int getPageHeight();
-
-    public static class EntryEmpty
-            extends TurretInfoEntry
-    {
-        public EntryEmpty(ItemStack icon, String title) {
-            super(icon, title);
-        }
-
-        @Override
-        public void drawPage(GuiTurretInfo gui, int mouseX, int mouseY, int scrollY, float partTicks) { }
-
-        @Override
-        public int getPageHeight() {
-            return 0;
-        }
-    }
 
     public boolean actionPerformed(GuiButton btn) {
         return false;

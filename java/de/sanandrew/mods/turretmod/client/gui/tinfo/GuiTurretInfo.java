@@ -17,18 +17,24 @@ import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.EnumChatFormatting;
 
+import org.apache.logging.log4j.Level;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GuiTurretInfo
         extends GuiScreen
+        implements GuiYesNoCallback
 {
     private static final int X_SIZE = 192;
     private static final int Y_SIZE = 236;
@@ -47,13 +53,14 @@ public class GuiTurretInfo
     private boolean isScrolling;
     public int entryX;
     public int entryY;
+    private URI clickedURI;
 
-    private List<GuiButtonEntry> buttonEntries;
+    public List<GuiButton> entryButtons;
 
     public GuiTurretInfo(int category, int entry) {
         this.category = category < 0 ? null : TurretInfoCategory.getCategory(category);
         this.entry = entry < 0 ? null : (this.category != null ? this.category.getEntry(entry) : null);
-        this.buttonEntries = new ArrayList<>();
+        this.entryButtons = new ArrayList<>();
     }
 
     @SuppressWarnings("unchecked")
@@ -67,7 +74,7 @@ public class GuiTurretInfo
         this.entryY = this.guiTop + 19;
 
         this.buttonList.clear();
-        this.buttonEntries.clear();
+        this.entryButtons.clear();
 
         this.buttonList.add(new GuiButtonNav(this.buttonList.size(), this.guiLeft + 53, this.guiTop + 206, 0));
         this.buttonList.add(new GuiButtonNav(this.buttonList.size(), this.guiLeft + 83, this.guiTop + 206, 1));
@@ -81,7 +88,7 @@ public class GuiTurretInfo
         } else if( this.entry == null ) {
             int entLng = this.category.getEntryCount();
             for( int i = 0; i < entLng; i++ ) {
-                this.buttonEntries.add(new GuiButtonEntry(this.buttonEntries.size(), i, 5, 19 + 14 * i, this));
+                this.entryButtons.add(new GuiButtonEntry(this.entryButtons.size(), i, 5, 19 + 14 * i, this));
             }
         } else {
             this.entry.initEntry(this);
@@ -122,15 +129,16 @@ public class GuiTurretInfo
             this.dHeight = this.entry.getPageHeight() - TurretInfoEntry.MAX_ENTRY_HEIGHT;
             this.entry.drawPage(this, mouseX - this.entryX, mouseY - this.entryY, Math.round(this.scroll * this.dHeight), partTicks);
         } else if( this.category != null ) {
-            this.dHeight = this.buttonEntries.size() * 14 + 20 - TurretInfoEntry.MAX_ENTRY_HEIGHT;
+            this.dHeight = this.entryButtons.size() * 14 + 20 - TurretInfoEntry.MAX_ENTRY_HEIGHT;
             this.fontRendererObj.drawString(EnumChatFormatting.ITALIC + this.category.getTitle(), 2, 2, 0xFF33AA33, false);
             Gui.drawRect(2, 12, TurretInfoEntry.MAX_ENTRY_WIDTH - 2, 13, 0xFF33AA33);
 
-            for( GuiButtonEntry btn : this.buttonEntries ) {
-                btn.enabled = btn.yPosition - Math.round(this.scroll * this.dHeight) > 0
-                           && btn.yPosition - Math.round(this.scroll * this.dHeight) + btn.height < TurretInfoEntry.MAX_ENTRY_HEIGHT;
-                btn.drawButton(this.mc, mouseX - this.entryX, mouseY - this.entryY + Math.round(this.scroll * this.dHeight));
-            }
+        }
+
+        for( GuiButton btn : this.entryButtons ) {
+            btn.enabled = btn.yPosition - Math.round(this.scroll * this.dHeight) > 0
+                    && btn.yPosition - Math.round(this.scroll * this.dHeight) + btn.height < TurretInfoEntry.MAX_ENTRY_HEIGHT;
+            btn.drawButton(this.mc, mouseX - this.entryX, mouseY - this.entryY + Math.round(this.scroll * this.dHeight));
         }
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
@@ -141,7 +149,7 @@ public class GuiTurretInfo
         } else if( mouseDown && !this.isScrolling ) {
             if( mouseY >= this.entryY && mouseY < this.entryY + TurretInfoEntry.MAX_ENTRY_HEIGHT ) {
                 if( mouseX >= this.entryX + TurretInfoEntry.MAX_ENTRY_WIDTH && mouseX < this.entryX + TurretInfoEntry.MAX_ENTRY_WIDTH + 6 ) {
-                    this.isScrolling = true;
+                    this.isScrolling = this.dHeight > 0;
                 }
             }
         }
@@ -192,7 +200,11 @@ public class GuiTurretInfo
             switch( ((GuiButtonNav) button).buttonType ) {
                 case 0:
                     if( this.entry != null && this.category != null ) {
-                        TurretModRebirth.proxy.openGui(this.mc.thePlayer, EnumGui.GUI_TINFO, this.category.index, -1, 0);
+                        if( this.category.getEntryCount() == 1 ) {
+                            TurretModRebirth.proxy.openGui(this.mc.thePlayer, EnumGui.GUI_TINFO, -1, -1, 0);
+                        } else {
+                            TurretModRebirth.proxy.openGui(this.mc.thePlayer, EnumGui.GUI_TINFO, this.category.index, -1, 0);
+                        }
                     } else if( this.entry == null && this.category != null ) {
                         TurretModRebirth.proxy.openGui(this.mc.thePlayer, EnumGui.GUI_TINFO, -1, -1, 0);
                     }
@@ -212,8 +224,32 @@ public class GuiTurretInfo
             }
         } else if( button instanceof GuiButtonEntry ) {
             TurretModRebirth.proxy.openGui(this.mc.thePlayer, EnumGui.GUI_TINFO, this.category.index, ((GuiButtonEntry) button).entIndex, 0);
+        } else if( button instanceof GuiButtonLink ) {
+            try {
+                this.clickedURI = new URI(((GuiButtonLink) button).link);
+                if (this.mc.gameSettings.chatLinksPrompt) {
+                    this.mc.displayGuiScreen(new GuiConfirmOpenLink(this, this.clickedURI.toString(), 0, false));
+                } else {
+                    this.openLink(this.clickedURI);
+                }
+            } catch( URISyntaxException e ) {
+                TurretModRebirth.LOG.log(Level.ERROR, "Cannot create invalid URI", e);
+                this.clickedURI = null;
+            }
         } else if( this.entry == null || !this.entry.actionPerformed(button) ) {
             super.actionPerformed(button);
+        }
+    }
+
+    @Override
+    public void confirmClicked(boolean isYes, int id) {
+        if( id == 0 ) {
+            if( isYes ) {
+                this.openLink(this.clickedURI);
+            }
+
+            this.clickedURI = null;
+            this.mc.displayGuiScreen(this);
         }
     }
 
@@ -222,7 +258,7 @@ public class GuiTurretInfo
         super.mouseClicked(mouseX, mouseY, mouseBtn);
 
         if( mouseBtn == 0 ) {
-            for( GuiButtonEntry btn : this.buttonEntries ) {
+            for( GuiButton btn : this.entryButtons ) {
                 if( btn.mousePressed(this.mc, mouseX - this.entryX, mouseY - this.entryY + Math.round(this.scroll * this.dHeight)) ) {
                     btn.func_146113_a(this.mc.getSoundHandler());
                     this.actionPerformed(btn);
@@ -238,6 +274,35 @@ public class GuiTurretInfo
     @Override
     public boolean doesGuiPauseGame() {
         return false;
+    }
+
+    public void openLink(URI uri) {
+        try {
+            Class<?> clsDesktop = Class.forName("java.awt.Desktop");
+            Object objDesktop = clsDesktop.getMethod("getDesktop", new Class[0]).invoke(null);
+            clsDesktop.getMethod("browse", new Class[] {URI.class}).invoke(objDesktop, uri);
+        } catch( Throwable throwable ) {
+            TurretModRebirth.LOG.log(Level.ERROR, "Couldn\'t open link", throwable);
+        }
+    }
+
+    public static class GuiButtonLink
+            extends GuiButton
+    {
+        public final String link;
+
+        public GuiButtonLink(int id, int x, int y, String text, String link) {
+            super(id, x, y, Minecraft.getMinecraft().fontRenderer.getStringWidth(text), Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT, text);
+            this.link = link;
+        }
+
+        @Override
+        public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+            if( this.visible ) {
+                String clrCode = (this.enabled ? EnumChatFormatting.BLUE : EnumChatFormatting.GRAY).toString();
+                mc.fontRenderer.drawString(clrCode + EnumChatFormatting.UNDERLINE + this.displayString, this.xPosition, this.yPosition, 0xFF000000, false);
+            }
+        }
     }
 
     private static final class GuiButtonNav

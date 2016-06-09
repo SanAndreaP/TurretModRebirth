@@ -17,15 +17,15 @@ import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntryItem;
 import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.entity.EntityList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -50,7 +50,7 @@ public class TurretInfoEntryTurret
     }
 
     private TurretInfoEntryTurret(TurretInfo info) {
-        super(ItemRegistry.turret.getTurretItem(1, info), String.format("entity.%s.%s.name", TurretModRebirth.ID, info.getName()));
+        super(ItemRegistry.turret.getTurretItem(1, info), Lang.translate(Lang.ENTITY_NAME, EntityList.classToStringMapping.get(info.getTurretClass())));
         this.values = new TurretInfoValues(info);
     }
 
@@ -61,7 +61,7 @@ public class TurretInfoEntryTurret
         int descStart;
         int descHeight;
 
-        gui.mc.fontRenderer.drawString(EnumChatFormatting.ITALIC + StatCollector.translateToLocal(this.values.name), 2, 2, 0xFF0080BB);
+        gui.mc.fontRenderer.drawString(EnumChatFormatting.ITALIC + this.values.name, 2, 2, 0xFF0080BB);
         Gui.drawRect(2, 12, MAX_ENTRY_WIDTH - 2, 13, 0xFF0080BB);
 
         gui.doEntryScissoring(2, 15, 54, 82);
@@ -71,21 +71,20 @@ public class TurretInfoEntryTurret
 
         gui.doEntryScissoring();
 
-        gui.mc.fontRenderer.drawString(StatCollector.translateToLocal(String.format("gui.%s.tinfo.health", TurretModRebirth.ID)), 60, 15, 0xFF6A6A6A, false);
-        gui.mc.fontRenderer.drawString(String.format(StatCollector.translateToLocal(String.format("gui.%s.tinfo.healthVal", TurretModRebirth.ID)), this.values.health), 63, 24, 0xFF000000, false);
-        gui.mc.fontRenderer.drawString(StatCollector.translateToLocal(String.format("gui.%s.tinfo.range", TurretModRebirth.ID)), 60, 35, 0xFF6A6A6A, false);
-        gui.mc.fontRenderer.drawString(String.format(StatCollector.translateToLocal(String.format("gui.%s.tinfo.rangeVal", TurretModRebirth.ID)), this.values.range), 63, 44, 0xFF000000, false);
-        gui.mc.fontRenderer.drawString(StatCollector.translateToLocal(String.format("gui.%s.tinfo.ammocap", TurretModRebirth.ID)), 60, 55, 0xFF6A6A6A, false);
-        gui.mc.fontRenderer.drawString(String.format(StatCollector.translateToLocal(String.format("gui.%s.tinfo.roundsVal", TurretModRebirth.ID)), this.values.ammoCap), 63, 64, 0xFF000000, false);
-        gui.mc.fontRenderer.drawString(StatCollector.translateToLocal(String.format("gui.%s.tinfo.ammouse", TurretModRebirth.ID)), 60, 75, 0xFF6A6A6A, false);
-        gui.mc.fontRenderer.drawString(StatCollector.translateToLocal(String.format("gui.%s.tinfo.crafting", TurretModRebirth.ID)), 60, 95, 0xFF6A6A6A, false);
+        gui.mc.fontRenderer.drawString(this.txtHealth, 60, 15, 0xFF6A6A6A, false);
+        gui.mc.fontRenderer.drawString(String.format(Lang.translate(Lang.TINFO_ENTRY_HEALTHVAL), this.values.health), 63, 24, 0xFF000000, false);
+        gui.mc.fontRenderer.drawString(this.txtRange, 60, 35, 0xFF6A6A6A, false);
+        gui.mc.fontRenderer.drawString(String.format(Lang.translate(Lang.TINFO_ENTRY_RANGEVAL), this.values.range), 63, 44, 0xFF000000, false);
+        gui.mc.fontRenderer.drawString(this.txtAmmoCap, 60, 55, 0xFF6A6A6A, false);
+        gui.mc.fontRenderer.drawString(String.format(Lang.translate(Lang.TINFO_ENTRY_ROUNDSVAL), this.values.ammoCap), 63, 64, 0xFF000000, false);
+        gui.mc.fontRenderer.drawString(this.txtAmmoUse, 60, 75, 0xFF6A6A6A, false);
+        gui.mc.fontRenderer.drawString(this.txtCrft, 60, 95, 0xFF6A6A6A, false);
 
         descStart = Math.max(turretHeight, valueHeight);
 
         Gui.drawRect(2, 2 + descStart, MAX_ENTRY_WIDTH - 2, 3 + descStart, 0xFF0080BB);
-        String text = StatCollector.translateToLocal(this.values.desc).replace("\\n", "\n");
-        gui.mc.fontRenderer.drawSplitString(text, 2, 5 + descStart, MAX_ENTRY_WIDTH - 2, 0xFF000000);
-        descHeight = gui.mc.fontRenderer.splitStringWidth(text, MAX_ENTRY_WIDTH - 4) + 7;
+        gui.mc.fontRenderer.drawSplitString(this.values.desc, 2, 5 + descStart, MAX_ENTRY_WIDTH - 2, 0xFF000000);
+        descHeight = gui.mc.fontRenderer.splitStringWidth(this.values.desc, MAX_ENTRY_WIDTH - 4) + 7;
 
         for( int i = 0; i < this.values.ammoStacks.length; i++ ) {
             drawMiniItem(gui, 63 + 10 * i, 84, mouseX, mouseY, scrollY, this.values.ammoStacks[i], true);
@@ -170,8 +169,8 @@ public class TurretInfoEntryTurret
         public TurretInfoValues(TurretInfo info) {
             List<ItemStack> ammoItms = new ArrayList<>();
 
-            this.name = String.format("entity.%s.%s.name", TurretModRebirth.ID, info.getName());
-            this.desc = String.format("entity.%s.%s.desc", TurretModRebirth.ID, info.getName());
+            this.name = Lang.translate(Lang.ENTITY_NAME, EntityList.classToStringMapping.get(info.getTurretClass()));
+            this.desc = Lang.translate(Lang.ENTITY_DESC, EntityList.classToStringMapping.get(info.getTurretClass())).replace("\\n", "\n");
             this.range = info.getInfoRange();
             this.health = info.getTurretHealth();
             this.ammoCap = info.getBaseAmmoCapacity();

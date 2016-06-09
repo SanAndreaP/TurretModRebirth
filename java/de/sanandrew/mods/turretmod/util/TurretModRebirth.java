@@ -37,13 +37,14 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = TurretModRebirth.ID, version = TurretModRebirth.VERSION, name = "Turret Mod Rebirth")
+@Mod(modid = TurretModRebirth.ID, version = TurretModRebirth.VERSION, name = TurretModRebirth.NAME)
 public class TurretModRebirth
 {
     public static final String ID = "sapturretmod";
     public static final String VERSION = "4.0.0-alpha.1";
     public static final Logger LOG = LogManager.getLogger(ID);
     public static final String CHANNEL = "SapTurretModNWCH";
+    public static final String NAME = "Turret Mod Rebirth";
 
     public static SimpleNetworkWrapper network;
 
@@ -79,10 +80,7 @@ public class TurretModRebirth
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         CraftingRecipes.initialize();
-//        CraftingManager.getInstance().addRecipe(new ItemStack(BlockRegistry.potatoGenerator, 1)) {
-//            "IBG", "RCR", "BPB",
-//            'I', new ItemStack(Items.iron_ingot),
-//        }
+
         proxy.init(event);
     }
 

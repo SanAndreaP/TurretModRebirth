@@ -8,10 +8,10 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tinfo;
 
-import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntry;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryAmmo;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryGenerator;
+import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryInfo;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryMiscCraftable;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryTurret;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryUpgrade;
@@ -23,8 +23,6 @@ import de.sanandrew.mods.turretmod.registry.upgrades.TurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.CraftingRecipes;
 import de.sanandrew.mods.turretmod.util.Resources;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
@@ -134,8 +132,8 @@ public class TurretInfoCategory
             register(Resources.TINFO_GRP_UPGRADE.getResource(), "Upgrades", "info about turret upgrades", entries);
         }
         register(Resources.TINFO_GRP_MISC.getResource(), "Misc", "info about misc stuff",
-                new TurretInfoEntryMiscCraftable(CraftingRecipes.assemblyTable),
-                new TurretInfoEntryGenerator());
-        register(Resources.TINFO_GRP_INFO.getResource(), "Info", "about this mod");
+                 new TurretInfoEntryMiscCraftable(CraftingRecipes.assemblyTable),
+                 new TurretInfoEntryGenerator());
+        register(Resources.TINFO_GRP_INFO.getResource(), "Info", "about this mod", new TurretInfoEntryInfo());
     }
 }

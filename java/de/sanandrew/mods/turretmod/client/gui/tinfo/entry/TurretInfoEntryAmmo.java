@@ -15,8 +15,8 @@ import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmo;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
+import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
@@ -49,7 +49,7 @@ public class TurretInfoEntryAmmo
     }
 
     private TurretInfoEntryAmmo(TurretAmmo[] ammos) {
-        super(ammos[0].getStoringAmmoItem(), String.format("%s.tinfo.ammo.%s.name", TurretModRebirth.ID, ammos[0].getInfoName()));
+        super(ammos[0].getStoringAmmoItem(), Lang.translate(Lang.TINFO_ENTRY_AMMO_NAME, ammos[0].getInfoName()));
         this.ammos = ammos;
     }
 
@@ -70,7 +70,7 @@ public class TurretInfoEntryAmmo
 
     @Override
     public void drawPage(GuiTurretInfo gui, int mouseX, int mouseY, int scrollY, float partTicks) {
-        TurretAmmo ammo = this.ammos[shownAmmo];
+        TurretAmmo ammo = this.ammos[this.shownAmmo];
 
         gui.mc.fontRenderer.drawString(EnumChatFormatting.ITALIC + StatCollector.translateToLocal(this.getTitle()), 2, 20, 0xFF0080BB);
         Gui.drawRect(2, 30, MAX_ENTRY_WIDTH - 2, 31, 0xFF0080BB);
@@ -81,15 +81,15 @@ public class TurretInfoEntryAmmo
 
         drawItem(gui.mc, 3, 35, ItemRegistry.ammo.getAmmoItem(1, ammo), 2.0F);
 
-        gui.mc.fontRenderer.drawString(StatCollector.translateToLocal(String.format("gui.%s.tinfo.rounds", TurretModRebirth.ID)), 42, 34, 0xFF6A6A6A, false);
+        gui.mc.fontRenderer.drawString(this.txtRounds, 42, 34, 0xFF6A6A6A, false);
         gui.mc.fontRenderer.drawString(String.format("%d", ammo.getAmmoCapacity()), 45, 43, 0xFF000000, false);
-        gui.mc.fontRenderer.drawString(StatCollector.translateToLocal(String.format("gui.%s.tinfo.dps", TurretModRebirth.ID)), 42, 54, 0xFF6A6A6A, false);
-        gui.mc.fontRenderer.drawString(String.format(StatCollector.translateToLocal(String.format("gui.%s.tinfo.healthVal", TurretModRebirth.ID)), ammo.getInfoDamage()), 45, 63, 0xFF000000, false);
-        gui.mc.fontRenderer.drawString(StatCollector.translateToLocal(String.format("gui.%s.tinfo.turret", TurretModRebirth.ID)), 42, 74, 0xFF6A6A6A, false);
-        gui.mc.fontRenderer.drawString(StatCollector.translateToLocal(String.format("entity.%s.name", EntityList.classToStringMapping.get(ammo.getTurret()))), 45, 83, 0xFF000000, false);
-        gui.mc.fontRenderer.drawString(StatCollector.translateToLocal(String.format("gui.%s.tinfo.crafting", TurretModRebirth.ID)), 42, 94, 0xFF6A6A6A, false);
+        gui.mc.fontRenderer.drawString(this.txtDps, 42, 54, 0xFF6A6A6A, false);
+        gui.mc.fontRenderer.drawString(String.format(this.txtHealthVal, ammo.getInfoDamage()), 45, 63, 0xFF000000, false);
+        gui.mc.fontRenderer.drawString(this.txtTurret, 42, 74, 0xFF6A6A6A, false);
+        gui.mc.fontRenderer.drawString(Lang.translate(Lang.ENTITY_NAME, EntityList.classToStringMapping.get(ammo.getTurret())), 45, 83, 0xFF000000, false);
+        gui.mc.fontRenderer.drawString(this.txtCrft, 42, 94, 0xFF6A6A6A, false);
 
-        String text = StatCollector.translateToLocal(String.format("%s.tinfo.ammo.%s.desc", TurretModRebirth.ID, ammo.getInfoName())).replace("\\n", "\n");
+        String text = Lang.translate(Lang.TINFO_ENTRY_AMMO_DESC, ammo.getInfoName()).replace("\\n", "\n");
         gui.mc.fontRenderer.drawSplitString(text, 2, 117, MAX_ENTRY_WIDTH - 2, 0xFF000000);
         this.drawHeight = gui.mc.fontRenderer.splitStringWidth(text, MAX_ENTRY_WIDTH - 2) + 2;
 
