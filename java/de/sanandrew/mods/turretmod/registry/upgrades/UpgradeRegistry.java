@@ -36,6 +36,7 @@ public class UpgradeRegistry
     public static final UUID HEALTH_IV = UUID.fromString("FF6CC60F-EEC7-40C5-92D8-A614DFA06777");
     public static final UUID RELOAD_I = UUID.fromString("4ED4E813-E2D8-43E9-B499-9911E214C5E9");
     public static final UUID RELOAD_II = UUID.fromString("80877F84-F03D-4ED8-A9D3-BAF6DF4F3BF1");
+    public static final UUID SMART_TGT = UUID.fromString("12435AB9-5AA3-4DB9-9B76-7943BA71597A");
 
     public static final UpgradeRegistry INSTANCE = new UpgradeRegistry();
 
@@ -44,6 +45,8 @@ public class UpgradeRegistry
     private List<TurretUpgrade> upgradeList = new ArrayList<>();
 
     private static TurretUpgrade emptyInst;
+
+    private List<String> errored = new ArrayList<>();
 
     public void registerUpgrade(UUID uuid, TurretUpgrade upgrade) {
         if( this.upgradeToUuidMap.containsKey(uuid) ) {
@@ -72,7 +75,10 @@ public class UpgradeRegistry
         try {
             return this.getUpgrade(UUID.fromString(uid));
         } catch( IllegalArgumentException ex ) {
-            TurretModRebirth.LOG.log(Level.WARN, "There was an error at parsing the UUID for a turret upgrade item!", ex);
+            if( !this.errored.contains(uid) ) {
+                TurretModRebirth.LOG.log(Level.WARN, "There was an error at parsing the UUID for a turret upgrade item!", ex);
+                this.errored.add(uid);
+            }
             return emptyInst;
         }
     }
@@ -93,6 +99,7 @@ public class UpgradeRegistry
         this.registerUpgrade(HEALTH_IV, new UpgradeHealth.UpgradeHealthMK4());
         this.registerUpgrade(RELOAD_I, new UpgradeReloadTime.UpgradeReloadTimeMK1());
         this.registerUpgrade(RELOAD_II, new UpgradeReloadTime.UpgradeReloadTimeMK2());
+        this.registerUpgrade(SMART_TGT, new UpgradeSmartTargeting());
 
         emptyInst = this.upgradeToUuidMap.get(EMPTY);
     }

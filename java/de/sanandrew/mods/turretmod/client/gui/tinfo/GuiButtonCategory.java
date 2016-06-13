@@ -12,6 +12,7 @@ import de.sanandrew.mods.turretmod.client.shader.ShaderCallback;
 import de.sanandrew.mods.turretmod.client.util.ShaderHelper;
 import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.util.Resources;
+import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -44,8 +45,7 @@ public class GuiButtonCategory
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, texMgr.getTexture(GuiButtonCategory.this.texture).getGlTextureId());
             ARBShaderObjects.glUniform1iARB(imageUniform, 0);
 
-            //TODO: add config option for the "7" <glSecondaryTextureUnit>
-            OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + 7);
+            OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + TmrConfiguration.glSecondaryTextureUnit);
             GL11.glEnable(GL11.GL_TEXTURE_2D);
             GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
             ResourceLocation stencil = Resources.TINFO_GRP_STENCIL.getResource();
@@ -100,8 +100,7 @@ public class GuiButtonCategory
         boolean shaders = ShaderHelper.areShadersEnabled();
 
         if(shaders) {
-            //TODO: add config for "7" <glSecondaryTextureUnit>
-            OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + 7);
+            OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + TmrConfiguration.glSecondaryTextureUnit);
             texture = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
         }
 
@@ -110,7 +109,7 @@ public class GuiButtonCategory
         ShaderHelper.releaseShader();
 
         if(shaders) {
-            OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + 7);
+            OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + TmrConfiguration.glSecondaryTextureUnit);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
             OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB);
         }

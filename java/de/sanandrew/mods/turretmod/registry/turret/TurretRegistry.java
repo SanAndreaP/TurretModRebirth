@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.registry.turret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import org.apache.logging.log4j.Level;
 
@@ -27,14 +28,16 @@ public class TurretRegistry
 
     private final Map<UUID, TurretInfo> infoFromUUID;
     private final Map<Class<? extends EntityTurret>, TurretInfo> infoFromClass;
+    private final List<TurretInfo> infos;
 
     private TurretRegistry() {
         this.infoFromUUID = new HashMap<>();
         this.infoFromClass = new HashMap<>();
+        this.infos = new ArrayList<>();
     }
 
     public List<TurretInfo> getRegisteredInfos() {
-        return new ArrayList<>(this.infoFromUUID.values());
+        return new ArrayList<>(this.infos);
     }
 
     public TurretInfo getInfo(UUID uuid) {
@@ -73,6 +76,7 @@ public class TurretRegistry
 
         this.infoFromUUID.put(type.getUUID(), type);
         this.infoFromClass.put(type.getTurretClass(), type);
+        this.infos.add(type);
 
         return true;
     }
@@ -80,5 +84,6 @@ public class TurretRegistry
     public void initialize() {
         this.registerTurretInfo(EntityTurretCrossbow.TINFO);
         this.registerTurretInfo(EntityTurretShotgun.TINFO);
+        this.registerTurretInfo(EntityTurretCryolator.TINFO);
     }
 }

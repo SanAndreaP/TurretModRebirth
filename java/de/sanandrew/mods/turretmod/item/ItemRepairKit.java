@@ -34,7 +34,7 @@ public class ItemRepairKit
 
     public ItemRepairKit() {
         super();
-        this.setCreativeTab(TmrCreativeTabs.TURRETS);
+        this.setCreativeTab(TmrCreativeTabs.MISC);
         this.setUnlocalizedName(TurretModRebirth.ID + ":turret_repair_kit");
         this.setMaxDamage(0);
         this.setHasSubtypes(true);

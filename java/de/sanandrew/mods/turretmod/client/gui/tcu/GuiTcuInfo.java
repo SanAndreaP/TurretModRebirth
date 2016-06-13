@@ -11,6 +11,9 @@ package de.sanandrew.mods.turretmod.client.gui.tcu;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiSlimButton;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
+import de.sanandrew.mods.turretmod.network.PacketPlayerTurretAction;
+import de.sanandrew.mods.turretmod.network.PacketRegistry;
+import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
@@ -69,18 +72,6 @@ public class GuiTcuInfo
         this.buttonList.add(this.toggleActive = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 151, 150, translateBtn("toggleActive")));
         this.buttonList.add(this.toggleRange = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 164, 150, translateBtn("range")));
 
-        if( true ) { //TODO: check for turret activation
-            this.toggleActive.displayString = translateBtn("toggleActive.disable");
-        } else {
-            this.toggleActive.displayString = translateBtn("toggleActive.enable");
-        }
-
-        if( this.turret.showRange ) {
-            this.toggleRange.displayString = translateBtn("range.disable");
-        } else {
-            this.toggleRange.displayString = translateBtn("range.enable");
-        }
-
         GuiTCUHelper.pageInfo.enabled = false;
     }
 
@@ -95,6 +86,18 @@ public class GuiTcuInfo
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partTicks) {
+        if( this.turret.isActive() ) {
+            this.toggleActive.displayString = translateBtn("toggleActive.disable");
+        } else {
+            this.toggleActive.displayString = translateBtn("toggleActive.enable");
+        }
+
+        if( this.turret.showRange ) {
+            this.toggleRange.displayString = translateBtn("range.disable");
+        } else {
+            this.toggleRange.displayString = translateBtn("range.enable");
+        }
+
         GL11.glColor3f(1.0F, 1.0F, 1.0F);
         this.drawDefaultBackground();
 
@@ -166,13 +169,15 @@ public class GuiTcuInfo
             } else {
                 this.toggleRange.displayString = translateBtn("range.enable");
             }
+        } else if( button == this.toggleActive ) {
+            PacketRegistry.sendToServer(new PacketPlayerTurretAction(this.turret, PacketPlayerTurretAction.TOGGLE_ACTIVE));
         } else if( !GuiTCUHelper.actionPerformed(button, this) ) {
             super.actionPerformed(button);
         }
     }
 
     private static String translateBtn(String s) {
-        return StatCollector.translateToLocal(String.format("gui.%s.tcu.page.info.button.%s", TurretModRebirth.ID, s));
+        return Lang.translate(String.format(Lang.TCU_BTN, s));
     }
 
     private void drawItemStack(ItemStack stack, int x, int y) {

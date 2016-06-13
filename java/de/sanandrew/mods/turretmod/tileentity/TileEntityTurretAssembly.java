@@ -30,6 +30,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -124,7 +125,7 @@ public class TileEntityTurretAssembly
                 if( TmrUtils.canStack(this.assemblyStacks[0], addStacks, true) && TurretAssemblyRecipes.INSTANCE.checkAndConsumeResources(this, currCrfUUID) ) {
                     TurretAssemblyRecipes.RecipeEntry currentlyCrafted = TurretAssemblyRecipes.INSTANCE.getRecipeEntry(currCrfUUID);
                     this.maxTicksCrafted = currentlyCrafted.ticksProcessing;
-                    this.fluxConsumption = currentlyCrafted.fluxPerTick;
+                    this.fluxConsumption = MathHelper.ceiling_float_int(currentlyCrafted.fluxPerTick * (this.hasSpeedUpgrade() ? 1.1F : 1.0F));
                     this.ticksCrafted = 0;
                     this.isActive = true;
                     this.doSync = true;
@@ -394,6 +395,10 @@ public class TileEntityTurretAssembly
 
     @Override
     public ItemStack decrStackSize(int slot, int size) {
+        if( !this.hasAutoUpgrade() ) {
+            this.automate = false;
+        }
+
         if( this.assemblyStacks[slot] != null ) {
             ItemStack itemstack;
 
@@ -428,6 +433,10 @@ public class TileEntityTurretAssembly
 
     @Override
     public void setInventorySlotContents(int slot, ItemStack stack) {
+        if( !this.hasAutoUpgrade() ) {
+            this.automate = false;
+        }
+
         this.assemblyStacks[slot] = stack;
 
         if( stack != null && stack.stackSize > this.getInventoryStackLimit() ) {

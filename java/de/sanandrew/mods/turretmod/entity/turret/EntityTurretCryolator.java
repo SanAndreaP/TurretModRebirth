@@ -8,37 +8,40 @@
  */
 package de.sanandrew.mods.turretmod.entity.turret;
 
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCryoCell;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
+import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.util.Resources;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import java.util.UUID;
 
-public class EntityTurretCrossbow
+public class EntityTurretCryolator
         extends EntityTurret
 {
-    public static final UUID TI_UUID = UUID.fromString("50E1E69C-395C-486C-BB9D-41E82C8B22E2");
+    public static final UUID TI_UUID = UUID.fromString("3AF4D8C3-FCFC-42B0-98A3-BFB669AA7CE6");
     public static final TurretInfo TINFO = new TurretInfo()
     {
         @Override
         public String getName() {
-            return "turret_i_crossbow";
+            return "turret_i_snowball";
         }
 
         @Override
         public UUID getUUID() {
-            return EntityTurretCrossbow.TI_UUID;
+            return EntityTurretCryolator.TI_UUID;
         }
 
         @Override
         public Class<? extends EntityTurret> getTurretClass() {
-            return EntityTurretCrossbow.class;
+            return EntityTurretCryolator.class;
         }
 
         @Override
@@ -53,12 +56,12 @@ public class EntityTurretCrossbow
 
         @Override
         public String getIcon() {
-            return "turret_crossbow";
+            return "turret_snowball";
         }
 
         @Override
         public UUID getRecipeId() {
-            return TurretAssemblyRecipes.TURRET_MK1_CB;
+            return TurretAssemblyRecipes.TURRET_MK1_SB;
         }
 
         @Override
@@ -71,11 +74,11 @@ public class EntityTurretCrossbow
         this.targetProc = new MyTargetProc();
     }
 
-    public EntityTurretCrossbow(World world) {
+    public EntityTurretCryolator(World world) {
         super(world);
     }
 
-    public EntityTurretCrossbow(World world, boolean isUpsideDown, EntityPlayer player) {
+    public EntityTurretCryolator(World world, boolean isUpsideDown, EntityPlayer player) {
         super(world, isUpsideDown, player);
     }
 
@@ -88,19 +91,19 @@ public class EntityTurretCrossbow
 
     @Override
     public ResourceLocation getStandardTexture() {
-        return Resources.TURRET_T1_CROSSBOW.getResource();
+        return Resources.TURRET_T1_SNOWBALL.getResource();
     }
 
     @Override
     public ResourceLocation getGlowTexture() {
-        return Resources.TURRET_T1_CROSSBOW_GLOW.getResource();
+        return Resources.TURRET_T1_SNOWBALL_GLOW.getResource();
     }
 
     private class MyTargetProc
             extends TargetProcessor
     {
         public MyTargetProc() {
-            super(EntityTurretCrossbow.this);
+            super(EntityTurretCryolator.this);
         }
 
         @Override
@@ -116,6 +119,15 @@ public class EntityTurretCrossbow
         @Override
         public String getLowAmmoSound() {
             return "random.click";
+        }
+
+        @Override
+        public boolean doAllowTarget(Entity e) {
+            if( e instanceof EntityLivingBase ) {
+                return !((EntityLivingBase) e).isPotionActive(Potion.moveSlowdown) &&  super.doAllowTarget(e);
+            }
+
+            return super.doAllowTarget(e);
         }
     }
 }

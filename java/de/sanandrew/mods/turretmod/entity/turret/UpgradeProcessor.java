@@ -14,6 +14,7 @@ import de.sanandrew.mods.turretmod.network.PacketUpdateUgradeSlot;
 import de.sanandrew.mods.turretmod.registry.upgrades.TurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
+import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -21,6 +22,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class UpgradeProcessor
@@ -280,6 +283,27 @@ public class UpgradeProcessor
         }
 
         return false;
+    }
+
+    public void dropUpgrades() {
+        for( int i = 0; i < this.getSizeInventory(); i++ ) {
+            ItemStack stack = this.getStackInSlotOnClosing(i);
+
+            if( ItemStackUtils.isValidStack(stack) ) {
+                float xOff = TmrUtils.RNG.nextFloat() * 0.8F + 0.1F;
+                float yOff = TmrUtils.RNG.nextFloat() * 0.8F + 0.1F;
+                float zOff = TmrUtils.RNG.nextFloat() * 0.8F + 0.1F;
+
+                EntityItem entityitem = new EntityItem(this.turret.worldObj, (this.turret.posX + xOff), (this.turret.posY + yOff), (this.turret.posZ + zOff), stack);
+
+                float motionSpeed = 0.05F;
+                entityitem.motionX = ((float)TmrUtils.RNG.nextGaussian() * motionSpeed);
+                entityitem.motionY = ((float)TmrUtils.RNG.nextGaussian() * motionSpeed + 0.2F);
+                entityitem.motionZ = ((float)TmrUtils.RNG.nextGaussian() * motionSpeed);
+
+                this.turret.worldObj.spawnEntityInWorld(entityitem);
+            }
+        }
     }
 
     public void writeToNbt(NBTTagCompound nbt) {

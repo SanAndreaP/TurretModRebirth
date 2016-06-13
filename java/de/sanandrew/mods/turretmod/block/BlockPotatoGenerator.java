@@ -10,7 +10,6 @@ package de.sanandrew.mods.turretmod.block;
 
 import cofh.api.item.IToolHammer;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityPotatoGenerator;
-import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
@@ -23,6 +22,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
@@ -33,7 +34,9 @@ public class BlockPotatoGenerator
 {
     protected BlockPotatoGenerator() {
         super(Material.rock);
-        setCreativeTab(TmrCreativeTabs.TURRETS);
+        this.setCreativeTab(TmrCreativeTabs.TURRETS);
+        this.setHardness(4.25F);
+        this.setStepSound(soundTypePiston);
         this.setBlockName(TurretModRebirth.ID + ":potato_generator");
     }
 
@@ -57,6 +60,10 @@ public class BlockPotatoGenerator
         int dir = MathHelper.floor_double((livingBase.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 
         world.setBlockMetadataWithNotify(x, y, z, dir, 2);
+
+        if( stack.hasDisplayName() ) {
+            ((TileEntityPotatoGenerator) world.getTileEntity(x, y, z)).setCustomName(stack.getDisplayName());
+        }
     }
 
     @Override
@@ -65,6 +72,10 @@ public class BlockPotatoGenerator
 
         if( potatoGen != null ) {
             for( int i = 0; i < potatoGen.getSizeInventory(); i++ ) {
+                if( TileEntityPotatoGenerator.isSlotProcessing(i) ) {
+                    continue;
+                }
+
                 ItemStack stack = potatoGen.getStackInSlot(i);
 
                 if( ItemStackUtils.isValidStack(stack) ) {
@@ -116,6 +127,16 @@ public class BlockPotatoGenerator
     @Override
     public void registerBlockIcons(IIconRegister iconRegister) {
         this.blockIcon = Blocks.anvil.getIcon(0, 0);
+    }
+
+    @Override
+    public boolean hasComparatorInputOverride() {
+        return true;
+    }
+
+    @Override
+    public int getComparatorInputOverride(World world, int x, int y, int z, int side) {
+        return Container.calcRedstoneFromInventory((IInventory) world.getTileEntity(x, y, z));
     }
 
     public int getDirection(int meta) {

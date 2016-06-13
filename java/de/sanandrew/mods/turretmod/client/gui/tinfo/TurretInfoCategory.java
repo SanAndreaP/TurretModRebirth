@@ -12,17 +12,21 @@ import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntry;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryAmmo;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryGenerator;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryInfo;
+import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryMiscAssembleable;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryMiscCraftable;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryTurret;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryUpgrade;
+import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmo;
+import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.TurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.CraftingRecipes;
 import de.sanandrew.mods.turretmod.util.Resources;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
@@ -125,15 +129,22 @@ public class TurretInfoCategory
 
         {
             TurretUpgrade[] infos = UpgradeRegistry.INSTANCE.getRegisteredUpgrades();
-            TurretInfoEntry[] entries = new TurretInfoEntry[infos.length];
+            TurretInfoEntry[] entries = new TurretInfoEntry[infos.length + 3];
+
+            entries[0] = new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.asbAuto), TurretAssemblyRecipes.UPG_AT_AUTO);
+            entries[1] = new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.asbFilter), TurretAssemblyRecipes.UPG_AT_FILTER);
+            entries[2] = new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.asbSpeed), TurretAssemblyRecipes.UPG_AT_SPEED);
+
             for( int i = 0; i < infos.length; i++ ) {
-                entries[i] = new TurretInfoEntryUpgrade(UpgradeRegistry.INSTANCE.getUpgradeUUID(infos[i]));
+                entries[i + 3] = new TurretInfoEntryUpgrade(UpgradeRegistry.INSTANCE.getUpgradeUUID(infos[i]));
             }
             register(Resources.TINFO_GRP_UPGRADE.getResource(), "Upgrades", "info about turret upgrades", entries);
+
         }
         register(Resources.TINFO_GRP_MISC.getResource(), "Misc", "info about misc stuff",
                  new TurretInfoEntryMiscCraftable(CraftingRecipes.assemblyTable),
-                 new TurretInfoEntryGenerator());
+                 new TurretInfoEntryGenerator(),
+                 new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.tcu), TurretAssemblyRecipes.TCU));
         register(Resources.TINFO_GRP_INFO.getResource(), "Info", "about this mod", new TurretInfoEntryInfo());
     }
 }

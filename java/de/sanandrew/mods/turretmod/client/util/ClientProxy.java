@@ -28,17 +28,22 @@ import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.TurretInfoCategory;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretCrossbow;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretShotgun;
+import de.sanandrew.mods.turretmod.client.model.ModelTurretSnowball;
 import de.sanandrew.mods.turretmod.client.particle.ParticleAssemblySpark;
+import de.sanandrew.mods.turretmod.client.particle.ParticleCryoTrail;
 import de.sanandrew.mods.turretmod.client.render.item.ItemRendererTile;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderPebble;
+import de.sanandrew.mods.turretmod.client.render.projectile.RenderSnowball;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderTurretArrow;
 import de.sanandrew.mods.turretmod.client.render.tileentity.RenderTurretAssembly;
 import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectilePebble;
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCryoCell;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityPotatoGenerator;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
@@ -77,8 +82,10 @@ public class ClientProxy
 
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretCrossbow.class, new RenderTurret(new ModelTurretCrossbow(0.0F)));
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretShotgun.class, new RenderTurret(new ModelTurretShotgun(0.0F)));
+        RenderingRegistry.registerEntityRenderingHandler(EntityTurretCryolator.class, new RenderTurret(new ModelTurretSnowball(0.0F)));
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCrossbowBolt.class, new RenderTurretArrow());
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectilePebble.class, new RenderPebble());
+        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCryoCell.class, new RenderSnowball());
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurretAssembly.class, new RenderTurretAssembly());
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlockRegistry.assemblyTable), new ItemRendererTile(new TileEntityTurretAssembly(true)));
@@ -149,7 +156,7 @@ public class ClientProxy
         Minecraft mc = Minecraft.getMinecraft();
         switch( particle ) {
             case ASSEMBLY_SPARK:
-                mc.effectRenderer.addEffect(new ParticleAssemblySpark(mc.theWorld, x, y, z, 0.0F, 0.0F, 0.0F));
+                mc.effectRenderer.addEffect(new ParticleAssemblySpark(mc.theWorld, x, y, z, 0.0D, 0.0D, 0.0D));
                 break;
             case SHOTGUN_SHOT: {
                 float rotXZ = -(float) data.getValue(0) / 180.0F * (float) Math.PI;
@@ -173,6 +180,9 @@ public class ClientProxy
                 }
                 break;
             }
+            case CRYO_PARTICLE:
+                mc.effectRenderer.addEffect(new ParticleCryoTrail(mc.theWorld, x, y, z, 0.0D, -0.01D, 0.0D));
+                break;
         }
     }
 }

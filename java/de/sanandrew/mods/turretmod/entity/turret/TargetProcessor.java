@@ -2,6 +2,7 @@ package de.sanandrew.mods.turretmod.entity.turret;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
+import com.google.common.collect.TreeMultimap;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
@@ -15,6 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,6 +34,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.UUID;
 
 /**
@@ -52,21 +56,33 @@ public abstract class TargetProcessor
     protected int ammoCount;
     protected ItemStack ammoStack;
     protected int shootTicks;
+    protected int initShootTicks;
     protected Entity entityToAttack;
     protected UUID entityToAttackUUID;
     protected EntityTurret turret;
 
-    protected EntityTargetSelector selector = new EntityTargetSelector();
+    protected EntityTargetSelector selector;
+
+    protected final SortedMap<Integer, List<TargetingListener>> tgtListeners;
 
     public TargetProcessor(EntityTurret turret) {
         this.entityTargetList = new HashMap<>(ENTITY_TARGET_LIST_STD);
         this.playerTargetList = new HashMap<>();
         this.turret = turret;
+        this.selector = new EntityTargetSelector();
+        this.tgtListeners = new TreeMap<>();
+        this.initShootTicks = 20;
     }
 
     public boolean addAmmo(ItemStack stack) {
         if( stack != null && this.isAmmoApplicable(stack) ) {
             TurretAmmo type = ItemRegistry.ammo.getAmmoType(stack);
+            UUID currType = this.ammoStack == null ? null : ItemRegistry.ammo.getAmmoType(this.ammoStack).getTypeId();
+
+            if( currType != null && !currType.equals(type.getTypeId()) ) {
+                this.dropAmmo();
+            }
+
             int maxCapacity = this.getMaxAmmoCapacity() - this.ammoCount;
             if( maxCapacity > 0 ) {
                 if( !this.hasAmmo() ) {
@@ -197,12 +213,16 @@ public abstract class TargetProcessor
     }
 
     public boolean isAmmoApplicable(ItemStack stack) {
-        if( stack != null && this.ammoCount < this.getMaxAmmoCapacity() ) {
+        if( stack != null ) {
             TurretAmmo stackType = ItemRegistry.ammo.getAmmoType(stack);
             if( stackType != null ) {
-                List<TurretAmmo> types = AmmoRegistry.INSTANCE.getTypesForTurret(this.turret.getClass());
-                if( types.contains(stackType) ) {
-                    return true;
+                if( this.ammoStack == null || ItemRegistry.ammo.getAmmoType(this.ammoStack).getTypeId().equals(stackType.getTypeId()) ) {
+                    return this.ammoCount < this.getMaxAmmoCapacity();
+                } else {
+                    List<TurretAmmo> types = AmmoRegistry.INSTANCE.getTypesForTurret(this.turret.getClass());
+                    if( types.contains(stackType) ) {
+                        return true;
+                    }
                 }
             }
         }
@@ -218,7 +238,14 @@ public abstract class TargetProcessor
         return MathHelper.ceiling_double_int(this.turret.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).getAttributeValue());
     }
 
-    public abstract EntityTurretProjectile getProjectile();
+    public final IProjectile getProjectile() {
+        TurretAmmo ammo = ItemRegistry.ammo.getAmmoType(this.ammoStack);
+        if( ammo != null ) {
+            return ammo.getEntity(this.turret);
+        }
+
+        return null;
+    }
 
     public abstract double getRange();
 
@@ -226,9 +253,29 @@ public abstract class TargetProcessor
 
     public abstract String getLowAmmoSound();
 
+    public void addTargetingListener(TargetingListener listener) {
+        int p = listener.getPriority();
+        List<TargetingListener> listenerList = TmrUtils.valueOrDefault(this.tgtListeners.get(p), new ArrayList<TargetingListener>());
+        if( !listenerList.contains(listener) ) {
+            listenerList.add(listener);
+        }
+        this.tgtListeners.put(p, listenerList);
+    }
+
+    public boolean doAllowTarget(Entity e) {
+        boolean ret = true;
+        for( Map.Entry<Integer, List<TargetingListener>> listenerEntries : this.tgtListeners.entrySet() ) {
+            for( TargetingListener listener : listenerEntries.getValue() ) {
+                ret = listener.isTargetApplicable(this.turret, e, ret);
+            }
+        }
+
+        return ret;
+    }
+
     public void shootProjectile() {
         if( this.hasAmmo() ) {
-            EntityTurretProjectile projectile = this.getProjectile();
+            Entity projectile = (Entity) this.getProjectile();
             this.turret.worldObj.spawnEntityInWorld(projectile);
             this.turret.worldObj.playSoundAtEntity(this.turret, this.getShootSound(), 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
             this.ammoCount--;
@@ -251,10 +298,10 @@ public abstract class TargetProcessor
         double range = this.getRange();
         if( this.entityToAttack == null ) {
             AxisAlignedBB aabb = this.turret.boundingBox.expand(range, range, range);
-            for( Object entityObj : this.turret.worldObj.getEntitiesWithinAABBExcludingEntity(turret, aabb, this.selector) ) {
+            for( Object entityObj : this.turret.worldObj.getEntitiesWithinAABBExcludingEntity(this.turret, aabb, this.selector) ) {
                 EntityLivingBase livingBase = (EntityLivingBase) entityObj;
-                boolean isEntityValid = this.turret.canEntityBeSeen(livingBase) && livingBase.isEntityAlive() && turret.getDistanceToEntity(livingBase) <= range;
-                if( isEntityValid ) {
+                boolean isEntityValid = this.turret.canEntityBeSeen(livingBase) && livingBase.isEntityAlive() && this.turret.getDistanceToEntity(livingBase) <= range;
+                if( isEntityValid && doAllowTarget(livingBase) ) {
                     this.entityToAttack = livingBase;
                     this.entityToAttackUUID = livingBase.getUniqueID();
                     changed = true;
@@ -264,16 +311,17 @@ public abstract class TargetProcessor
         }
 
         if( this.entityToAttack != null ) {
-            boolean isEntityValid = this.turret.canEntityBeSeen(this.entityToAttack) && this.entityToAttack.isEntityAlive() && turret.getDistanceToEntity(this.entityToAttack) <= range;
+            boolean isEntityValid = this.turret.canEntityBeSeen(this.entityToAttack) && this.entityToAttack.isEntityAlive() && this.turret.getDistanceToEntity(this.entityToAttack) <= range;
             boolean isTargetValid = Boolean.TRUE.equals(this.entityTargetList.get(this.entityToAttack.getClass()));
             boolean isPlayerValid = Boolean.TRUE.equals(this.playerTargetList.get(this.entityToAttack.getUniqueID())) || Boolean.TRUE.equals(this.playerTargetList.get(PlayerList.EMPTY_UUID));
-            if( isEntityValid && (isTargetValid || isPlayerValid) ) {
-                if( this.shootTicks == 0 ) {
+            if( isEntityValid && (isTargetValid || isPlayerValid) && doAllowTarget(this.entityToAttack) ) {
+                if( this.shootTicks == 0 && --this.initShootTicks <= 0 ) {
                     shootProjectile();
                     this.shootTicks = this.getMaxShootTicks();
                     changed = true;
                 }
             } else {
+                this.initShootTicks = 15;
                 this.entityToAttack = null;
                 this.entityToAttackUUID = null;
                 changed = true;

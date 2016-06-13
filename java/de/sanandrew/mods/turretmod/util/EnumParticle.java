@@ -11,5 +11,6 @@ package de.sanandrew.mods.turretmod.util;
 public enum EnumParticle
 {
     ASSEMBLY_SPARK,
-    SHOTGUN_SHOT
+    SHOTGUN_SHOT,
+    CRYO_PARTICLE
 }

@@ -11,9 +11,11 @@ package de.sanandrew.mods.turretmod.registry.assembly;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoArrow;
+import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoCryoCell;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoShotgunShell;
 import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
@@ -42,11 +44,18 @@ public class TurretAssemblyRecipes
 
     public static final UUID TURRET_MK1_CB = UUID.fromString("21F88959-C157-44E3-815B-DD956B065052");
     public static final UUID TURRET_MK1_SG = UUID.fromString("870EA4DD-0C1E-44B1-BE91-4DD33FC00EF8");
+    public static final UUID TURRET_MK1_SB = UUID.fromString("6743974B-5552-45F7-9124-FDCF844BB56C");
 
     public static final UUID ARROW_SNG = UUID.fromString("1A011825-2E5B-4F17-925E-F734E6A732B9");
     public static final UUID ARROW_MTP = UUID.fromString("C079D29A-E6E2-4BE8-8478-326BDFEDE08B");
     public static final UUID SGSHELL_SNG = UUID.fromString("AB37D601-993D-41FE-B698-8AAC99D296EA");
     public static final UUID SGSHELL_MTP = UUID.fromString("D17EC4A1-BDAA-4C80-B1F5-0C111EC13954");
+    public static final UUID CRYOCELL_1_SNG = UUID.fromString("EBF1AEAA-C4EC-46CA-9B0F-B818FF7D0770");
+    public static final UUID CRYOCELL_1_MTP = UUID.fromString("5CBDE28A-52B2-45EB-B169-4A81F94EC690");
+    public static final UUID CRYOCELL_2_SNG = UUID.fromString("BACB5D75-B408-4D34-AF6C-2F6C4048B82C");
+    public static final UUID CRYOCELL_2_MTP = UUID.fromString("08528F4F-3D3E-4501-A1BE-A508E5C23DC5");
+    public static final UUID CRYOCELL_3_SNG = UUID.fromString("081CA2A5-FB0C-4749-9359-12D680B58FAC");
+    public static final UUID CRYOCELL_3_MTP = UUID.fromString("052D31C1-05AD-45AF-9C36-D380A78F7E87");
 
     public static final UUID TCU = UUID.fromString("47B68BE0-30D6-4849-B995-74C147C8CC5D");
     public static final UUID TINFO = UUID.fromString("5A8C8AE3-878A-4580-9F84-2C8602B4275D");
@@ -68,6 +77,11 @@ public class TurretAssemblyRecipes
     public static final UUID UPG_RELOAD_1 = UUID.fromString("A891752D-AA2E-40D1-8E22-50DF0AF43490");
     public static final UUID UPG_RELOAD_2 = UUID.fromString("72BDED08-78DC-4A25-9460-6F5B8AEEE3A5");
     public static final UUID UPG_AMMO_STG = UUID.fromString("56546F99-5612-4052-9A77-B81A6F1EB5DF");
+    public static final UUID UPG_SMART_TGT = UUID.fromString("A4750C8C-A0A0-4E73-8378-59345124A1FA");
+
+    public static final UUID UPG_AT_AUTO = UUID.fromString("40EEE46D-835D-42F8-8005-764A00C90365");
+    public static final UUID UPG_AT_FILTER = UUID.fromString("BD48EB98-94A2-4516-90E0-4DC20E843490");
+    public static final UUID UPG_AT_SPEED = UUID.fromString("DF388B34-64ED-4D94-BEE0-C1A4AAB8E701");
 
     public static void initialize() {
         registerTurrets();
@@ -96,6 +110,13 @@ public class TurretAssemblyRecipes
                                              new RecipeEntryItem(4).put("dustRedstone"),
                                              new RecipeEntryItem(4).put("logWood")};
         INSTANCE.registerRecipe(TURRET_MK1_SG, group, res, 10, 100, ingredients);
+
+        res = ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCryolator.class));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(12).put(Blocks.snow),
+                                             new RecipeEntryItem(1).put(Items.bow),
+                                             new RecipeEntryItem(4).put("dustRedstone"),
+                                             new RecipeEntryItem(4).put("plankWood")};
+        INSTANCE.registerRecipe(TURRET_MK1_SB, group, res, 10, 100, ingredients);
     }
 
     private static void registerAmmo() {
@@ -104,6 +125,7 @@ public class TurretAssemblyRecipes
         ItemStack res;
         RecipeEntryItem[] ingredients;
 
+        // arrow
         res = ItemRegistry.ammo.getAmmoItem(4, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.ARROW_UUID));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(Items.arrow)};
         INSTANCE.registerRecipe(ARROW_SNG, group, res, 5, 60, ingredients);
@@ -113,6 +135,7 @@ public class TurretAssemblyRecipes
                                              new RecipeEntryItem(1).put(Items.leather)};
         INSTANCE.registerRecipe(ARROW_MTP, group, res, 5, 120, ingredients);
 
+        // shotgun shell
         res = ItemRegistry.ammo.getAmmoItem(12, AmmoRegistry.INSTANCE.getType(TurretAmmoShotgunShell.SHELL_UUID));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put("ingotIron"),
                                              new RecipeEntryItem(1).put(Blocks.gravel),
@@ -124,6 +147,39 @@ public class TurretAssemblyRecipes
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoShotgunShell.SHELL_UUID))),
                                              new RecipeEntryItem(1).put(Items.leather)};
         INSTANCE.registerRecipe(SGSHELL_MTP, group, res, 5, 120, ingredients);
+
+        // cryo cell
+        res = ItemRegistry.ammo.getAmmoItem(4, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK1_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("blockGlass"),
+                                             new RecipeEntryItem(1).put(Blocks.snow),
+                                             new RecipeEntryItem(1).put(Items.gunpowder).put("dustGunpowder"),
+                                             new RecipeEntryItem(1).put("dustRedstone")};
+        INSTANCE.registerRecipe(CRYOCELL_1_SNG, group, res, 10, 60, ingredients);
+
+        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.PACK_MK1_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK1_UUID))),
+                                             new RecipeEntryItem(1).put(Items.leather)};
+        INSTANCE.registerRecipe(CRYOCELL_1_MTP, group, res, 5, 120, ingredients);
+
+        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK2_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK1_UUID))),
+                                             new RecipeEntryItem(1).put(Blocks.snow)};
+        INSTANCE.registerRecipe(CRYOCELL_2_SNG, group, res, 5, 40, ingredients);
+
+        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.PACK_MK2_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK2_UUID))),
+                                             new RecipeEntryItem(1).put(Items.leather)};
+        INSTANCE.registerRecipe(CRYOCELL_2_MTP, group, res, 5, 120, ingredients);
+
+        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK3_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK2_UUID))),
+                                             new RecipeEntryItem(1).put(Blocks.snow)};
+        INSTANCE.registerRecipe(CRYOCELL_3_SNG, group, res, 5, 40, ingredients);
+
+        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.PACK_MK3_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK3_UUID))),
+                                             new RecipeEntryItem(1).put(Items.leather)};
+        INSTANCE.registerRecipe(CRYOCELL_3_MTP, group, res, 5, 120, ingredients);
     }
 
     private static void registerMisc() {
@@ -183,6 +239,26 @@ public class TurretAssemblyRecipes
 
         ItemStack res;
         RecipeEntryItem[] ingredients;
+
+        res = new ItemStack(ItemRegistry.asbAuto, 1);
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("gemEmerald"),
+                                             new RecipeEntryItem(1).put("nuggetGold"),
+                                             new RecipeEntryItem(1).put(Items.comparator)};
+        INSTANCE.registerRecipe(UPG_AT_AUTO, group, res, 60, 300, ingredients);
+
+        res = new ItemStack(ItemRegistry.asbFilter, 1);
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("gemEmerald"),
+                                             new RecipeEntryItem(1).put("nuggetGold"),
+                                             new RecipeEntryItem(1).put("dustRedstone"),
+                                             new RecipeEntryItem(1).put(Blocks.hopper)};
+        INSTANCE.registerRecipe(UPG_AT_FILTER, group, res, 60, 300, ingredients);
+
+        res = new ItemStack(ItemRegistry.asbSpeed, 1);
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("gemEmerald"),
+                                             new RecipeEntryItem(1).put("nuggetGold"),
+                                             new RecipeEntryItem(1).put("dustRedstone"),
+                                             new RecipeEntryItem(1).put(new ItemStack(Items.potionitem, 1, 8194)).drawTooltip()};
+        INSTANCE.registerRecipe(UPG_AT_SPEED, group, res, 60, 300, ingredients);
 
         res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY);
         res.stackSize = 3;
@@ -246,6 +322,12 @@ public class TurretAssemblyRecipes
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
                                              new RecipeEntryItem(1).put(Blocks.hopper)};
         INSTANCE.registerRecipe(UPG_AMMO_STG, group, res, 20, 600, ingredients);
+
+        res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.SMART_TGT);
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+                                             new RecipeEntryItem(1).put(Items.spider_eye),
+                                             new RecipeEntryItem(1).put(Items.ender_pearl)};
+        INSTANCE.registerRecipe(UPG_SMART_TGT, group, res, 20, 600, ingredients);
     }
 
     private Map<UUID, ItemStack> recipeResults = new HashMap<>();

@@ -33,7 +33,7 @@ public class ItemTurretUpgrade
 
     public ItemTurretUpgrade() {
         super();
-        this.setCreativeTab(TmrCreativeTabs.TURRETS);
+        this.setCreativeTab(TmrCreativeTabs.UPGRADES);
         this.setUnlocalizedName(TurretModRebirth.ID + ":turret_upgrade");
         this.setTextureName(TurretModRebirth.ID + ":upgrades/empty");
         this.setHasSubtypes(true);

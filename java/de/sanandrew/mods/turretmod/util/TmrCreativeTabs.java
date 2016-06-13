@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.util;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
@@ -18,6 +19,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -36,17 +38,75 @@ public class TmrCreativeTabs
             return Items.blaze_powder;
         }
 
-//        @Override
-//        @SideOnly(Side.CLIENT)
-//        public ItemStack getIconItemStack() {
-//            if( this.tabIcons == null ) {
-//                List<ItemStack> subItms = new ArrayList<>();
-//                TmrItems.turretItem.getSubItems(TmrItems.turretItem, this, subItms);
-//                this.tabIcons = subItms.toArray(new ItemStack[subItms.size()]);
-//            }
-//
-//            return this.tabIcons[(int) (System.currentTimeMillis() / 4250) % this.tabIcons.length];
-//        }
+        @Override
+        @SideOnly(Side.CLIENT)
+        public ItemStack getIconItemStack() {
+            if( this.tabIcons == null ) {
+                List<ItemStack> subItms = new ArrayList<>();
+                ItemRegistry.turret.getSubItems(ItemRegistry.turret, this, subItms);
+                this.tabIcons = subItms.toArray(new ItemStack[subItms.size()]);
+            }
+
+            return this.tabIcons[(int) (System.currentTimeMillis() / 4250) % this.tabIcons.length];
+        }
+
+        @Override
+        @SideOnly(Side.CLIENT)
+        @SuppressWarnings("unchecked")
+        public void displayAllReleventItems(List itmList) {
+            super.displayAllReleventItems(itmList);
+
+            Collections.sort(itmList, new Comparator<ItemStack>()
+            {
+                @Override
+                public int compare(ItemStack o1, ItemStack o2) {
+                    return o1 != null && o1.getItem() == ItemRegistry.turret ? 1 : o2 != null && o2.getItem() == ItemRegistry.turret ? -1 : 0;
+                }
+            });
+
+            sortItemsBySubItems(itmList, this);
+        }
+    };
+
+    public static final CreativeTabs MISC = new CreativeTabs(TurretModRebirth.ID + ":misc") {
+        @Override
+        @SideOnly(Side.CLIENT)
+        public Item getTabIconItem() {
+            return ItemRegistry.tcu;
+        }
+
+        @Override
+        @SideOnly(Side.CLIENT)
+        @SuppressWarnings("unchecked")
+        public void displayAllReleventItems(List itmList) {
+            super.displayAllReleventItems(itmList);
+
+//            sortItemsByName(itmList);
+            sortItemsBySubItems(itmList, this);
+//            sortItemsByType(itmList);
+        }
+    };
+
+    public static final CreativeTabs UPGRADES = new CreativeTabs(TurretModRebirth.ID + ":upgrades") {
+        private ItemStack[] tabIcons;
+
+        @Override
+        @SideOnly(Side.CLIENT)
+        public Item getTabIconItem() {
+            return ItemRegistry.turretUpgrade;
+        }
+
+        @Override
+        @SideOnly(Side.CLIENT)
+        public ItemStack getIconItemStack() {
+            if( this.tabIcons == null ) {
+                List<ItemStack> subItms = new ArrayList<>();
+                ItemRegistry.turretUpgrade.getSubItems(ItemRegistry.turretUpgrade, this, subItms);
+                this.tabIcons = subItms.toArray(new ItemStack[subItms.size()]);
+            }
+
+            return this.tabIcons[(int) (System.currentTimeMillis() / 4250) % this.tabIcons.length];
+        }
 
         @Override
         @SideOnly(Side.CLIENT)
@@ -58,57 +118,6 @@ public class TmrCreativeTabs
             sortItemsBySubItems(itmList, this);
         }
     };
-
-//    public static final CreativeTabs MISC = new CreativeTabs(TurretMod.MOD_ID + ":misc") {
-//        @Override
-//        @SideOnly(Side.CLIENT)
-//        public Item getTabIconItem() {
-//            return TmrItems.turretCtrlUnit;
-//        }
-//
-//        @Override
-//        @SideOnly(Side.CLIENT)
-//        @SuppressWarnings("unchecked")
-//        public void displayAllReleventItems(List itmList) {
-//            super.displayAllReleventItems(itmList);
-//
-//            sortItemsByName(itmList);
-//            sortItemsBySubItems(itmList, this);
-//            sortItemsByType(itmList);
-//        }
-//    };
-//
-//    public static final CreativeTabs UPGRADES = new CreativeTabs(TurretMod.MOD_ID + ":upgrades") {
-//        private ItemStack[] tabIcons;
-//
-//        @Override
-//        @SideOnly(Side.CLIENT)
-//        public Item getTabIconItem() {
-//            return TmrItems.turretUpgrade;
-//        }
-//
-//        @Override
-//        @SideOnly(Side.CLIENT)
-//        public ItemStack getIconItemStack() {
-//            if( this.tabIcons == null ) {
-//                List<ItemStack> subItms = new ArrayList<>();
-//                TmrItems.turretUpgrade.getSubItems(TmrItems.turretUpgrade, this, subItms);
-//                this.tabIcons = subItms.toArray(new ItemStack[subItms.size()]);
-//            }
-//
-//            return this.tabIcons[(int) (System.currentTimeMillis() / 4250) % this.tabIcons.length];
-//        }
-//
-//        @Override
-//        @SideOnly(Side.CLIENT)
-//        @SuppressWarnings("unchecked")
-//        public void displayAllReleventItems(List itmList) {
-//            super.displayAllReleventItems(itmList);
-//
-//            sortItemsByName(itmList);
-//            sortItemsBySubItems(itmList, this);
-//        }
-//    };
 
     protected static void sortItemsByType(List<ItemStack> items) {
         Collections.sort(items, ITM_TYPE_COMP);

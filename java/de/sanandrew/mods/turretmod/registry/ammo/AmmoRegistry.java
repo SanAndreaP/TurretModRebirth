@@ -31,15 +31,17 @@ public class AmmoRegistry
     private final Map<UUID, TurretAmmo> ammoTypesFromUUID;
     private final Multimap<Class<? extends EntityTurret>, TurretAmmo> ammoTypesFromTurret;
     private final Map<UUID, List<TurretAmmo>> ammoGroupsFromUUID;
+    private final List<TurretAmmo> ammoTypes;
 
     private AmmoRegistry() {
         this.ammoTypesFromUUID = new HashMap<>();
         this.ammoTypesFromTurret = ArrayListMultimap.create();
         this.ammoGroupsFromUUID = new HashMap<>();
+        this.ammoTypes = new ArrayList<>();
     }
 
     public List<TurretAmmo> getRegisteredTypes() {
-        return new ArrayList<>(this.ammoTypesFromUUID.values());
+        return new ArrayList<>(this.ammoTypes);
     }
 
     public TurretAmmo[] getTypes(UUID groupId) {
@@ -81,7 +83,7 @@ public class AmmoRegistry
             return false;
         }
 
-        if( type.getEntity() == null ) {
+        if( type.getEntityClass() == null ) {
             TurretModRebirth.LOG.log(Level.ERROR, String.format("Ammo-Type %s has no projectile entity! Turrets can't shoot emptiness, can they!?", type.getName()), new InvalidParameterException());
             return false;
         }
@@ -93,6 +95,7 @@ public class AmmoRegistry
 
         this.ammoTypesFromUUID.put(type.getId(), type);
         this.ammoTypesFromTurret.put(type.getTurret(), type);
+        this.ammoTypes.add(type);
 
         List<TurretAmmo> groupList = this.ammoGroupsFromUUID.get(type.getGroupId());
         if( groupList == null ) {
@@ -118,5 +121,11 @@ public class AmmoRegistry
         this.registerAmmoType(new TurretAmmoArrow.Quiver());
         this.registerAmmoType(new TurretAmmoShotgunShell.Single());
         this.registerAmmoType(new TurretAmmoShotgunShell.Multi());
+        this.registerAmmoType(new TurretAmmoCryoCell.SingleMK1());
+        this.registerAmmoType(new TurretAmmoCryoCell.MultiMK1());
+        this.registerAmmoType(new TurretAmmoCryoCell.SingleMK2());
+        this.registerAmmoType(new TurretAmmoCryoCell.MultiMK2());
+        this.registerAmmoType(new TurretAmmoCryoCell.SingleMK3());
+        this.registerAmmoType(new TurretAmmoCryoCell.MultiMK3());
     }
 }

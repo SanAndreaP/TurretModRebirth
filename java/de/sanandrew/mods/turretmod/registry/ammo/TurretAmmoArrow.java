@@ -56,7 +56,7 @@ public abstract class TurretAmmoArrow
     }
 
     @Override
-    public Class<? extends IProjectile> getEntity() {
+    public Class<? extends IProjectile> getEntityClass() {
         return EntityProjectileCrossbowBolt.class;
     }
 
@@ -88,6 +88,11 @@ public abstract class TurretAmmoArrow
     @Override
     public ItemStack getStoringAmmoItem() {
         return ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(ARROW_UUID));
+    }
+
+    @Override
+    public IProjectile getEntity(EntityTurret turret) {
+        return new EntityProjectileCrossbowBolt(turret.worldObj, turret, turret.getTargetProcessor().getTarget());
     }
 
     public static class Single

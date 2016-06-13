@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.tileentity;
 
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
+import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
 import de.sanandrew.mods.turretmod.network.TileClientSync;
@@ -46,6 +47,7 @@ public class TileEntityPotatoGenerator
 
     public int fluxExtractPerTick;
     public short[] progress = new short[9];
+    public short[] maxProgress = new short[this.progress.length];
     public float effectiveness;
 
     private ItemStack[] invStacks = new ItemStack[23];
@@ -62,6 +64,8 @@ public class TileEntityPotatoGenerator
     private int fluxBuffer;
 
     private static final Map<Item, Fuel> FUELS = new HashMap<>(3);
+
+    private String customName;
 
     public static void initializeRecipes() {
         FUELS.put(Items.potato, new Fuel(1.0F, (short) 200, new ItemStack(Items.sugar, 1), new ItemStack(Items.baked_potato, 1)));
@@ -90,7 +94,7 @@ public class TileEntityPotatoGenerator
     }
 
     public int getGeneratedFlux() {
-        return this.effectiveness < 0.1F ? 0 : (int) Math.round(Math.pow(1.6D, this.effectiveness) / (68.0D + (127433.0D / 177119.0D)) * 80.0D);
+        return this.effectiveness < 0.1F ? 0 : Math.min(200, (int) Math.round(Math.pow(1.6D, this.effectiveness) / (68.0D + (127433.0D / 177119.0D)) * 80.0D));
     }
 
     @Override
@@ -120,7 +124,7 @@ public class TileEntityPotatoGenerator
                             continue;
                         }
 
-                        if( this.progress[i]-- < 0 ) {
+                        if( this.progress[i] <= 0 ) {
                             if( this.progExcessComm[i] != null ) {
                                 TmrUtils.addStackToInventory(this.progExcessComm[i], this, true, 64);
                             }
@@ -131,6 +135,7 @@ public class TileEntityPotatoGenerator
                             this.markDirty();
                         } else {
                             this.effectiveness += FUELS.get(this.invStacks[SLOTS_PROCESSING[i]].getItem()).effect;
+                            this.progress[i]--;
                         }
                         this.doSync = true;
                     }
@@ -144,6 +149,7 @@ public class TileEntityPotatoGenerator
 
                         Fuel fuel = FUELS.get(this.invStacks[SLOTS_PROCESSING[i]].getItem());
                         this.progress[i] = fuel.ticksProc;
+                        this.maxProgress[i] = fuel.ticksProc;
                         this.progExcessComm[i] = TmrUtils.RNG.nextInt(10) == 0 ? fuel.trash.copy() : null;
                         this.progExcessRare[i] = TmrUtils.RNG.nextInt(100) == 0 ? fuel.treasure.copy() : null;
 
@@ -264,9 +270,16 @@ public class TileEntityPotatoGenerator
         for( short s : this.progress ) {
             progress.appendTag(new NBTTagShort(s));
         }
+        for( short s : this.maxProgress ) {
+            progress.appendTag(new NBTTagShort(s));
+        }
         nbt.setTag("progress", progress);
 
         nbt.setTag("inventory", TmrUtils.writeItemStacksToTag(this.invStacks, 64));
+
+        if( this.hasCustomInventoryName() ) {
+            nbt.setString("customName", this.customName);
+        }
     }
 
     @Override
@@ -291,8 +304,15 @@ public class TileEntityPotatoGenerator
         for( int i = 0; i < this.progress.length; i++ ) {
             this.progress[i] = TmrUtils.getShortTagAt(progress, i);
         }
+        for( int i = 0; i < this.maxProgress.length; i++ ) {
+            this.maxProgress[i] = TmrUtils.getShortTagAt(progress, i + this.progress.length);
+        }
 
         TmrUtils.readItemStacksFromTag(this.invStacks, nbt.getTagList("inventory", Constants.NBT.TAG_COMPOUND));
+
+        if( nbt.hasKey("customName", Constants.NBT.TAG_STRING) ) {
+            this.customName = nbt.getString("customName");
+        }
     }
 
     @Override
@@ -318,12 +338,12 @@ public class TileEntityPotatoGenerator
 
     @Override
     public String getInventoryName() {
-        return "";
+        return this.hasCustomInventoryName() ? this.customName : BlockRegistry.potatoGenerator.getUnlocalizedName() + ".name";
     }
 
     @Override
     public boolean hasCustomInventoryName() {
-        return false;
+        return this.customName != null && !this.customName.isEmpty();
     }
 
     @Override
@@ -362,6 +382,9 @@ public class TileEntityPotatoGenerator
         for( short s : this.progress ) {
             buf.writeShort(s);
         }
+        for( short s : this.maxProgress ) {
+            buf.writeShort(s);
+        }
     }
 
     @Override
@@ -370,6 +393,9 @@ public class TileEntityPotatoGenerator
         this.effectiveness = buf.readFloat();
         for( int i = 0; i < this.progress.length; i++ ) {
             this.progress[i] = buf.readShort();
+        }
+        for( int i = 0; i < this.maxProgress.length; i++ ) {
+            this.maxProgress[i] = buf.readShort();
         }
     }
 
@@ -403,6 +429,14 @@ public class TileEntityPotatoGenerator
     @Override
     public boolean canConnectEnergy(ForgeDirection from) {
         return from != ForgeDirection.UP;
+    }
+
+    public static boolean isSlotProcessing(int slot) {
+        return ArrayUtils.contains(SLOTS_PROCESSING, slot);
+    }
+
+    public void setCustomName(String name) {
+        this.customName = name;
     }
 
     public static Fuel getFuel(Item item) {

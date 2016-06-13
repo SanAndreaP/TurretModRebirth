@@ -23,9 +23,11 @@ public class RepairKitRegistry
     public static final RepairKitRegistry INSTANCE = new RepairKitRegistry();
 
     private final Map<UUID, TurretRepairKit> kitsFromUUID;
+    private final List<TurretRepairKit> kits;
 
     private RepairKitRegistry() {
         this.kitsFromUUID = new HashMap<>();
+        this.kits = new ArrayList<>();
     }
 
     public boolean registerMedpack(TurretRepairKit type) {
@@ -50,12 +52,13 @@ public class RepairKitRegistry
         }
 
         this.kitsFromUUID.put(type.getUUID(), type);
+        this.kits.add(type);
 
         return true;
     }
 
     public List<TurretRepairKit> getRegisteredTypes() {
-        return new ArrayList<>(this.kitsFromUUID.values());
+        return new ArrayList<>(this.kits);
     }
 
     public TurretRepairKit getRepairKit(UUID uuid) {

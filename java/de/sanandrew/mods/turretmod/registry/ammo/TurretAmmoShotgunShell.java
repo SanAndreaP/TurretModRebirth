@@ -58,7 +58,7 @@ public abstract class TurretAmmoShotgunShell
     }
 
     @Override
-    public Class<? extends IProjectile> getEntity() {
+    public Class<? extends IProjectile> getEntityClass() {
         return EntityProjectilePebble.class;
     }
 
@@ -90,6 +90,11 @@ public abstract class TurretAmmoShotgunShell
     @Override
     public ItemStack getStoringAmmoItem() {
         return ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(SHELL_UUID));
+    }
+
+    @Override
+    public IProjectile getEntity(EntityTurret turret) {
+        return new EntityProjectilePebble(turret.worldObj, turret, turret.getTargetProcessor().getTarget());
     }
 
     public static class Single

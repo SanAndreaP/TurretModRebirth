@@ -11,12 +11,13 @@ package de.sanandrew.mods.turretmod.entity.turret;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.network.PacketDismantle;
+import de.sanandrew.mods.turretmod.network.PacketPlayerTurretAction;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketUpdateTurretState;
 import de.sanandrew.mods.turretmod.registry.medpack.TurretRepairKit;
 import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
+import de.sanandrew.mods.turretmod.util.DataWatcherBooleans;
 import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
@@ -52,7 +53,6 @@ public abstract class EntityTurret
 
     // data watcher IDs
     private static final int DW_EXPERIENCE = 22; /* INT */
-    private static final int DW_SHOOT_TICKS = 26; /* INT */
     private static final int DW_FREQUENCY = 27; /* BYTE */
     private static final int DW_BOOLEANS = 28; /* BYTE */
 
@@ -65,6 +65,8 @@ public abstract class EntityTurret
     protected String ownerName;
 
     public boolean inGui;
+
+    private DataWatcherBooleans dwBools;
 
     public EntityTurret(World world) {
         super(world);
@@ -85,12 +87,16 @@ public abstract class EntityTurret
 
         this.getAttributeMap().registerAttribute(TurretAttributes.MAX_AMMO_CAPACITY);
         this.getAttributeMap().registerAttribute(TurretAttributes.MAX_RELOAD_TICKS);
-//        this.upgHandler.onApplyAttributes(this.getAttributeMap());
     }
 
     @Override
     protected void entityInit() {
         super.entityInit();
+
+        this.dwBools = new DataWatcherBooleans(this, DW_BOOLEANS);
+        this.dwBools.registerDwValue();
+
+        this.setActive(true);
     }
 
     @Override
@@ -110,7 +116,7 @@ public abstract class EntityTurret
 
         if( entity instanceof EntityLivingBase ) {
             EntityLivingBase livingBase = (EntityLivingBase)entity;
-            deltaY = this.posY + this.getEyeHeight() - (livingBase.posY + livingBase.getEyeHeight());
+            deltaY = (livingBase.posY + livingBase.getEyeHeight()) - (this.posY + this.getEyeHeight());
         } else {
             deltaY = (entity.boundingBox.minY + entity.boundingBox.maxY) / 2.0D - (this.posY + this.getEyeHeight());
         }
@@ -119,13 +125,28 @@ public abstract class EntityTurret
         double distVecXZ = MathHelper.sqrt_double(deltaX * deltaX + deltaZ * deltaZ);
         float yawRotation = (float) ((this.isUpsideDown ? -1.0D : 1.0D) * (Math.atan2(deltaZ, deltaX) * 180.0D / Math.PI)) - 90.0F;
         float pitchRotation = (float) -(Math.atan2(deltaY, distVecXZ) * 180.0D / Math.PI);
-        this.rotationPitch = -this.updateRotation(this.rotationPitch, pitchRotation);
-        this.rotationYawHead = this.updateRotation(this.rotationYawHead, yawRotation);
+        this.rotationPitch = this.updateRotation(this.rotationPitch, pitchRotation, 20.0F);
+        this.rotationYawHead = this.updateRotation(this.rotationYawHead, yawRotation, 20.0F);
     }
 
-    protected float updateRotation(float prevRotation, float newRotation) {
-        float var4 = MathHelper.wrapAngleTo180_float(newRotation - prevRotation);
-        return prevRotation + var4;
+    /**
+     * LEAVE EMPTY! Or else this causes visual glitches...
+     */
+    @Override
+    public void setRotationYawHead(float rotation) { }
+
+    protected float updateRotation(float prevRotation, float newRotation, float speed) {
+        float part = MathHelper.wrapAngleTo180_float(newRotation - prevRotation);
+
+        if( part > speed ) {
+            part = speed;
+        }
+
+        if( part < -speed ) {
+            part = -speed;
+        }
+
+        return prevRotation + part;
     }
 
     @Override
@@ -147,12 +168,6 @@ public abstract class EntityTurret
             this.kill();
         }
 
-        if( this.newPosRotationIncrements > 0 ) {
-            this.rotationPitch = (float) (this.rotationPitch + (this.newRotationPitch - this.rotationPitch) / (float) this.newPosRotationIncrements);
-            this.newPosRotationIncrements--;
-            this.setRotation(this.rotationYaw, this.rotationPitch);
-        }
-
         this.worldObj.theProfiler.startSection("ai");
 
         if( this.isMovementBlocked() ) {
@@ -166,21 +181,24 @@ public abstract class EntityTurret
             this.worldObj.theProfiler.endSection();
         }
 
-        if( !this.worldObj.isRemote ) {
-            this.targetProc.onTick();
-        }
+        if( this.isActive() ) {
+            if( !this.worldObj.isRemote ) {
+                this.targetProc.onTick();
+            }
 
-        this.upgProc.onTick();
+            this.upgProc.onTick();
+
+            if( this.targetProc.hasTarget() ) {
+                this.faceEntity(this.targetProc.getTarget(), 10.0F, this.getVerticalFaceSpeed());
+            } else if( this.worldObj.isRemote && !(this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlayer) ) {
+                this.rotationYawHead += 1.0F;
+                this.rotationPitch = 0.0F;
+            }
+        }
 
         this.worldObj.theProfiler.endSection();
-
-        if( this.targetProc.hasTarget() ) {
-            this.faceEntity(this.targetProc.getTarget(), 10.0F, this.getVerticalFaceSpeed());
-        } else if( this.worldObj.isRemote && !(this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlayer) ) {
-            this.rotationYawHead += 1.0F;
-            this.rotationPitch = 0.0F;
-        }
     }
+
     private void onInteractSucceed(ItemStack heldItem, EntityPlayer player) {
         if( heldItem.stackSize == 0 ) {
             player.destroyCurrentEquippedItem();
@@ -203,7 +221,7 @@ public abstract class EntityTurret
 
             return false;
         } else if( ItemStackUtils.isValidStack(heldItem) ) {
-            if( this.targetProc.isAmmoApplicable(heldItem) && this.targetProc.addAmmo(heldItem) ) {
+            if( this.targetProc.addAmmo(heldItem) ) {
                 this.onInteractSucceed(heldItem, player);
                 return true;
             } else if( heldItem.getItem() == ItemRegistry.repairKit ) {
@@ -232,6 +250,7 @@ public abstract class EntityTurret
 
         if( !this.worldObj.isRemote ) {
             this.targetProc.dropAmmo();
+            this.upgProc.dropUpgrades();
         }
 
         //just insta-kill it
@@ -292,6 +311,7 @@ public abstract class EntityTurret
 
         this.targetProc.writeToNbt(nbt);
         this.upgProc.writeToNbt(nbt);
+        this.dwBools.writeToNbt(nbt);
 
         nbt.setBoolean("isUpsideDown", this.isUpsideDown);
         if( this.ownerUUID != null ) {
@@ -306,6 +326,7 @@ public abstract class EntityTurret
 
         this.targetProc.readFromNbt(nbt);
         this.upgProc.readFromNbt(nbt);
+        this.dwBools.readFromNbt(nbt);
 
         this.isUpsideDown = nbt.getBoolean("isUpsideDown");
         if( nbt.hasKey("ownerUUID") ) {
@@ -316,7 +337,7 @@ public abstract class EntityTurret
 
     @Override
     public int getVerticalFaceSpeed() {
-        return 5;
+        return 50;
     }
 
     /**turrets are machines, they aren't affected by potions*/
@@ -345,6 +366,14 @@ public abstract class EntityTurret
         PacketRegistry.sendToAllAround(new PacketUpdateTurretState(this), this.dimension, this.posX, this.posY, this.posZ, 64.0D);
     }
 
+    public boolean isActive() {
+        return this.dwBools.getBit(DataWatcherBooleans.Turret.ACTIVE.bit);
+    }
+
+    public void setActive(boolean active) {
+        this.dwBools.setBit(DataWatcherBooleans.Turret.ACTIVE.bit, active);
+    }
+
     public static boolean canTurretBePlaced(World world, int x, int y, int z, boolean doBlockCheckOnly, boolean updideDown) {
         if( !Blocks.lever.canPlaceBlockAt(world, x, y, z) ) {
             return false;
@@ -369,7 +398,7 @@ public abstract class EntityTurret
         if( chestItm != null && ItemStackUtils.isValidStack(chestItm.getValue1()) ) {
             ItemStack chestStack = chestItm.getValue1();
             if( this.worldObj.isRemote ) {
-                PacketRegistry.sendToServer(new PacketDismantle(this));
+                PacketRegistry.sendToServer(new PacketPlayerTurretAction(this, PacketPlayerTurretAction.DISMANTLE));
                 return true;
             } else {
                 this.posY += 2048.0F;
@@ -391,6 +420,8 @@ public abstract class EntityTurret
                             player.inventory.setInventorySlotContents(chestItm.getValue0(), null);
                         }
                         player.inventoryContainer.detectAndSendChanges();
+                        //TODO: make custom container for turrets and put upgrades in it
+                        this.upgProc.dropUpgrades();
                         this.kill();
                         return true;
                     }

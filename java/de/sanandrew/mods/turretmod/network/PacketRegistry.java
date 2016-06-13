@@ -21,7 +21,7 @@ public class PacketRegistry
         Utilities.registerMessage(TurretModRebirth.network, PacketUpdateTargets.class, 0, Side.CLIENT);
         Utilities.registerMessage(TurretModRebirth.network, PacketUpdateTargets.class, 0, Side.SERVER);
         Utilities.registerMessage(TurretModRebirth.network, PacketUpdateTurretState.class, 1, Side.CLIENT);
-        Utilities.registerMessage(TurretModRebirth.network, PacketDismantle.class, 2, Side.SERVER);
+        Utilities.registerMessage(TurretModRebirth.network, PacketPlayerTurretAction.class, 2, Side.SERVER);
         Utilities.registerMessage(TurretModRebirth.network, PacketSyncPlayerList.class, 3, Side.CLIENT);
         Utilities.registerMessage(TurretModRebirth.network, PacketSyncTileEntity.class, 4, Side.CLIENT);
         Utilities.registerMessage(TurretModRebirth.network, PacketInitAssemblyCrafting.class, 5, Side.SERVER);

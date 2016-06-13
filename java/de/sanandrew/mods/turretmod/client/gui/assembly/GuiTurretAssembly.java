@@ -17,13 +17,13 @@ import de.sanandrew.mods.turretmod.network.PacketInitAssemblyCrafting;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntryItem;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
+import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import net.darkhax.bookshelf.lib.javatuples.Pair;
 import net.darkhax.bookshelf.lib.javatuples.Triplet;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
-import net.darkhax.bookshelf.lib.util.ReflectionUtils;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -33,14 +33,12 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -73,6 +71,7 @@ public class GuiTurretAssembly
 
     private GuiSlimButton cancelTask;
     private GuiSlimButton automate;
+    private GuiSlimButton manual;
     private GuiAssemblyTabNav groupUp;
     private GuiAssemblyTabNav groupDown;
     private Map<GuiAssemblyCategoryTab, TurretAssemblyRecipes.RecipeGroup> groupBtns;
@@ -102,8 +101,9 @@ public class GuiTurretAssembly
 
         this.frDetails = new FontRenderer(this.mc.gameSettings, new ResourceLocation("textures/font/ascii.png"), this.mc.getTextureManager(), true);
 
-        this.buttonList.add(this.cancelTask = new GuiSlimButton(this.buttonList.size(), this.guiLeft + 156, this.guiTop + 55, 50, StatCollector.translateToLocal("gui.sapturretmod.tassembly.cancel")));
-        this.buttonList.add(this.automate = new GuiSlimButton(this.buttonList.size(), this.guiLeft + 156, this.guiTop + 68, 50, StatCollector.translateToLocal("gui.sapturretmod.tassembly.automate.enable")));
+        this.buttonList.add(this.cancelTask = new GuiSlimButton(this.buttonList.size(), this.guiLeft + 156, this.guiTop + 55, 50, Lang.translate(Lang.TASSEMBLY_BTN_CANCEL)));
+        this.buttonList.add(this.automate = new GuiSlimButton(this.buttonList.size(), this.guiLeft + 156, this.guiTop + 68, 50, Lang.translate(Lang.TASSEMBLY_BTN_AUTOENABLE)));
+        this.buttonList.add(this.manual = new GuiSlimButton(this.buttonList.size(), this.guiLeft + 156, this.guiTop + 81, 50, Lang.translate(Lang.TASSEMBLY_BTN_AUTODISABLE)));
 
         this.buttonList.add(this.groupUp = new GuiAssemblyTabNav(this.buttonList.size(), this.guiLeft + 13, this.guiTop + 9, false));
 
@@ -117,7 +117,7 @@ public class GuiTurretAssembly
         });
         this.groupBtns = new HashMap<>(1 + (int) (groups.length / 0.75F));
         for( TurretAssemblyRecipes.RecipeGroup grp : groups ) {
-            GuiAssemblyCategoryTab tab = new GuiAssemblyCategoryTab(this.buttonList.size(), this.guiLeft + 9, this.guiTop + 19 + pos * 15 - 15 * scrollGroupPos, grp.icon, StatCollector.translateToLocal(grp.name));
+            GuiAssemblyCategoryTab tab = new GuiAssemblyCategoryTab(this.buttonList.size(), this.guiLeft + 9, this.guiTop + 19 + pos * 15 - 15 * scrollGroupPos, grp.icon, Lang.translate(grp.name));
             this.groupBtns.put(tab, grp);
             this.buttonList.add(tab);
 
@@ -195,7 +195,7 @@ public class GuiTurretAssembly
                 int index = this.scrollPos + i;
                 ItemStack stack = this.cacheRecipes.get(index).getValue1();
                 boolean isActive = this.assembly.currCrafting == null
-                        || (!this.assembly.isAutomated() && TmrUtils.areStacksEqual(this.assembly.currCrafting.getValue1(), stack, TmrUtils.NBT_COMPARATOR_FIXD));
+                                   || (!this.assembly.isAutomated() && TmrUtils.areStacksEqual(this.assembly.currCrafting.getValue1(), stack, TmrUtils.NBT_COMPARATOR_FIXD));
 
                 GL11.glEnable(GL12.GL_RESCALE_NORMAL);
                 RenderHelper.enableGUIStandardItemLighting();
@@ -310,18 +310,15 @@ public class GuiTurretAssembly
 
             this.cancelTask.enabled = true;
             this.automate.enabled = false;
+            this.manual.enabled = false;
         } else {
             this.cancelTask.enabled = false;
-            this.automate.enabled = true;
-
-            if( this.assembly.isAutomated() ) {
-                this.automate.displayString = StatCollector.translateToLocal("gui.sapturretmod.tassembly.automate.disable");
-            } else {
-                this.automate.displayString = StatCollector.translateToLocal("gui.sapturretmod.tassembly.automate.enable");
-            }
+            this.automate.enabled = !this.assembly.isAutomated();
+            this.manual.enabled = !this.automate.enabled;
         }
 
         this.automate.visible = ItemStackUtils.isValidStack(this.assembly.getStackInSlot(1));
+        this.manual.visible = this.automate.visible;
         this.prevIsLmbDown = isLmbDown;
         this.prevIsRmbDown = isRmbDown;
 
@@ -466,7 +463,7 @@ public class GuiTurretAssembly
         TurretAssemblyRecipes.RecipeEntry recipeEntry = TurretAssemblyRecipes.INSTANCE.getRecipeEntry(recipe);
         RecipeEntryItem[] ingredients = recipeEntry.resources;
 
-        String rf = String.format("%d RF/t", recipeEntry.fluxPerTick);
+        String rf = String.format("%d RF/t", MathHelper.ceiling_float_int(recipeEntry.fluxPerTick * (this.assembly.hasSpeedUpgrade() ? 1.1F : 1.0F)));
         String ticks = TmrClientUtils.getTimeFromTicks(recipeEntry.ticksProcessing);
 
         int textWidth = Math.max(Math.max(ingredients.length * 9, this.frDetails.getStringWidth(rf) + 10), this.frDetails.getStringWidth(ticks) + 10);
@@ -640,7 +637,7 @@ public class GuiTurretAssembly
     protected void actionPerformed(GuiButton btn) {
         if( btn.id == this.cancelTask.id ) {
             PacketRegistry.sendToServer(new PacketInitAssemblyCrafting(this.assembly));
-        } else if( btn.id == this.automate.id ) {
+        } else if( btn.id == this.automate.id || btn.id == this.manual.id ) {
             PacketRegistry.sendToServer(new PacketAssemblyToggleAutomate(this.assembly));
         } else if( btn instanceof GuiAssemblyCategoryTab && this.groupBtns.containsKey(btn) ) {
             this.scrollPos = 0;

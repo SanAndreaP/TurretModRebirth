@@ -20,6 +20,7 @@ import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.darkhax.bookshelf.lib.javatuples.Pair;
 import net.darkhax.bookshelf.lib.javatuples.Triplet;
 import net.darkhax.bookshelf.lib.javatuples.Unit;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -137,11 +138,6 @@ public class EntityTurretShotgun
         }
 
         @Override
-        public EntityTurretProjectile getProjectile() {
-            return new EntityProjectilePebble(EntityTurretShotgun.this.worldObj, EntityTurretShotgun.this, EntityTurretShotgun.this.targetProc.getTarget());
-        }
-
-        @Override
         public double getRange() {
             return 16;
         }
@@ -159,7 +155,7 @@ public class EntityTurretShotgun
         public void shootProjectile() {
             if( this.hasAmmo() ) {
                 for( int i = 0; i < 6; i++ ) {
-                    EntityTurretProjectile projectile = this.getProjectile();
+                    Entity projectile = (Entity) this.getProjectile();
                     this.turret.worldObj.spawnEntityInWorld(projectile);
                     this.turret.worldObj.playSoundAtEntity(this.turret, this.getShootSound(), 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
                 }

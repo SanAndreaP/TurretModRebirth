@@ -1,0 +1,57 @@
+/**
+ * ****************************************************************************************************************
+ * Authors:   SanAndreasP
+ * Copyright: SanAndreasP
+ * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+ * http://creativecommons.org/licenses/by-nc-sa/4.0/
+ * *****************************************************************************************************************
+ */
+package de.sanandrew.mods.turretmod.util;
+
+import cpw.mods.fml.client.event.ConfigChangedEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.common.config.ConfigCategory;
+import net.minecraftforge.common.config.Configuration;
+
+public final class TmrConfiguration
+{
+    public static final String CAT_CLIENT = "Client";
+
+    private static Configuration config;
+
+    public static int glSecondaryTextureUnit = 7;
+    public static boolean renderUpgrades = true;
+
+    public static void initConfiguration(FMLPreInitializationEvent event) {
+        config = new Configuration(event.getSuggestedConfigurationFile(), "1.0.0", true);
+        FMLCommonHandler.instance().bus().register(new TmrConfiguration());
+        syncConfig();
+    }
+
+    public static void syncConfig() {
+        String desc;
+
+        desc = "The GL Texture Unit to use for the secondary sampler passed in to some of the shaders. DO NOT TOUCH THIS IF YOU DON'T KNOW WHAT YOU'RE DOING";
+        glSecondaryTextureUnit = config.getInt("glSecondaryTextureUnit", CAT_CLIENT, glSecondaryTextureUnit, Integer.MIN_VALUE, Integer.MAX_VALUE, desc);
+
+        desc = "Render the upgrades on the turret. Disable this for more performance";
+        renderUpgrades = config.getBoolean("renderUpgrades", CAT_CLIENT, renderUpgrades, desc);
+
+        if( config.hasChanged() ) {
+            config.save();
+        }
+    }
+
+    public static ConfigCategory getCategory(String category) {
+        return config.getCategory(category);
+    }
+
+    @SubscribeEvent
+    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
+        if( eventArgs.modID.equals(TurretModRebirth.ID) ) {
+            syncConfig();
+        }
+    }
+}

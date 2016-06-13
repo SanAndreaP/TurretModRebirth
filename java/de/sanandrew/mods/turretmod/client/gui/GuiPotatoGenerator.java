@@ -10,12 +10,12 @@ package de.sanandrew.mods.turretmod.client.gui;
 
 import de.sanandrew.mods.turretmod.inventory.ContainerPotatoGenerator;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityPotatoGenerator;
+import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -43,7 +43,7 @@ public class GuiPotatoGenerator
         this.drawTexturedModalRect(0, 0, 0, 0, this.xSize, this.ySize);
 
         for( int i = 0; i < this.generator.progress.length; i++ ) {
-            this.drawTexturedModalRect(8 + i*18, 61, 176, 59, (int) StrictMath.round(this.generator.progress[i] / 200.0D * 16.0D), 3);
+            this.drawTexturedModalRect(8 + i*18, 61, 176, 59, (int) StrictMath.round(this.generator.progress[i] / (float)this.generator.maxProgress[i] * 16.0D), 3);
         }
 
 
@@ -56,10 +56,10 @@ public class GuiPotatoGenerator
         this.drawTexturedModalRect(156, 75 + energyBarY, 176, energyBarY, 12, 59 - energyBarY);
 
         String eff = String.format("%.2f%%", this.generator.effectiveness / 9.0F * 100.0F);
-        this.fontRendererObj.drawString(StatCollector.translateToLocal("gui.sapturretmod.electrogen.effective"), 8, 100, 0xFF606060, false);
+        this.fontRendererObj.drawString(Lang.translate(Lang.ELECTROGEN_EFFECTIVE), 8, 100, 0xFF606060, false);
         this.fontRendererObj.drawString(eff, 150 - this.fontRendererObj.getStringWidth(eff), 100, 0xFF606060, false);
         String rft = String.format("%d RF/t", this.generator.getGeneratedFlux());
-        this.fontRendererObj.drawString(StatCollector.translateToLocal("gui.sapturretmod.electrogen.powergen"), 8, 110, 0xFF606060, false);
+        this.fontRendererObj.drawString(Lang.translate(Lang.ELECTROGEN_POWERGEN), 8, 110, 0xFF606060, false);
         this.fontRendererObj.drawString(rft, 150 - this.fontRendererObj.getStringWidth(rft), 110, 0xFF606060, false);
 
         GL11.glPopMatrix();
@@ -68,6 +68,10 @@ public class GuiPotatoGenerator
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+
+        String s = this.generator.hasCustomInventoryName() ? this.generator.getInventoryName() : Lang.translate(this.generator.getInventoryName());
+        this.fontRendererObj.drawString(s, this.xSize / 2 - this.fontRendererObj.getStringWidth(s) / 2, 6, 0x404040);
+        this.fontRendererObj.drawString(Lang.translate(Lang.CONTAINER_INV), 8, this.ySize - 96 + 2, 0x404040);
 
         if( mouseX >= this.guiLeft + 156 && mouseX < this.guiLeft + 168 && mouseY >= this.guiTop + 75 && mouseY < this.guiTop + 134 ) {
             this.drawRFluxLabel(mouseX - this.guiLeft, mouseY - guiTop);

@@ -22,7 +22,7 @@ public class ItemAssemblyUpgrade
 {
     public ItemAssemblyUpgrade(String type) {
         super();
-        this.setCreativeTab(TmrCreativeTabs.TURRETS);
+        this.setCreativeTab(TmrCreativeTabs.UPGRADES);
         this.setUnlocalizedName(TurretModRebirth.ID + ":turret_assembly_" + type);
         this.setTextureName(TurretModRebirth.ID + ":upgrades/assembly_" + type);
     }
@@ -32,6 +32,6 @@ public class ItemAssemblyUpgrade
     public void addInformation(ItemStack stack, EntityPlayer player, List lines, boolean advInfo) {
         super.addInformation(stack, player, lines, advInfo);
 
-        lines.add(StatCollector.translateToLocal(this.getUnlocalizedName() + ".desc"));
+        lines.add(StatCollector.translateToLocal(this.getUnlocalizedName() + ".ttip"));
     }
 }

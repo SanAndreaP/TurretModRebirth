@@ -106,6 +106,5 @@ public class ItemAmmo
         for( TurretAmmo type : AmmoRegistry.INSTANCE.getRegisteredTypes() ) {
             list.add(this.getAmmoItem(1, type));
         }
-//        super.getSubItems(item, tab, list);
     }
 }

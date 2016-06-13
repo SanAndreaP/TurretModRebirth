@@ -31,7 +31,7 @@ public class ItemAssemblyFilter
 
     public ItemAssemblyFilter() {
         super();
-        this.setCreativeTab(TmrCreativeTabs.TURRETS);
+        this.setCreativeTab(TmrCreativeTabs.UPGRADES);
         this.setUnlocalizedName(TurretModRebirth.ID + ":turret_assembly_filter");
         this.setTextureName(TurretModRebirth.ID + ":upgrades/assembly_filter");
     }
@@ -41,7 +41,7 @@ public class ItemAssemblyFilter
     public void addInformation(ItemStack stack, EntityPlayer player, List lines, boolean advInfo) {
         super.addInformation(stack, player, lines, advInfo);
 
-        lines.add(StatCollector.translateToLocal(this.getUnlocalizedName() + ".desc"));
+        lines.add(StatCollector.translateToLocal(this.getUnlocalizedName() + ".ttip"));
         lines.add(StatCollector.translateToLocal(this.getUnlocalizedName() + ".inst"));
         NBTTagCompound nbt = stack.getTagCompound();
         if( nbt != null && nbt.hasKey("filterStacks") ) {

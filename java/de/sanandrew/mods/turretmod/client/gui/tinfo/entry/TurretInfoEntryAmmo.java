@@ -17,6 +17,7 @@ import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmo;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
+import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
@@ -167,8 +168,7 @@ public class TurretInfoEntryAmmo
                     boolean shaders = ShaderHelper.areShadersEnabled();
 
                     if(shaders) {
-                        //TODO: add config for "7" <glSecondaryTextureUnit>
-                        OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + 7);
+                        OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + TmrConfiguration.glSecondaryTextureUnit);
                         texture = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
                     }
 
@@ -177,7 +177,7 @@ public class TurretInfoEntryAmmo
                     ShaderHelper.releaseShader();
 
                     if(shaders) {
-                        OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + 7);
+                        OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + TmrConfiguration.glSecondaryTextureUnit);
                         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
                         OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB);
                     }

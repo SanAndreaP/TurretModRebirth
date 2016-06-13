@@ -43,7 +43,7 @@ public class ParticleAssemblySpark
 
         this.moveEntity(this.motionX, this.motionY, this.motionZ);
 
-        if( this.particleMaxAge-- <= 0 ) {
+        if( this.particleAge++ >= this.particleMaxAge ) {
             this.setDead();
         }
     }

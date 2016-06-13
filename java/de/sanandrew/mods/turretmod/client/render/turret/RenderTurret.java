@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.client.render.turret;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -46,31 +47,33 @@ public class RenderTurret
     protected void renderModel(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float rotFloat, float rotYaw, float rotPitch, float scale) {
         super.renderModel(entity, limbSwing, limbSwingAmount, rotFloat, rotYaw, rotPitch, scale);
 
-        GL11.glPushMatrix();
-        if( entity instanceof EntityTurret ) {
-            EntityTurret turret = (EntityTurret) entity;
+        if( TmrConfiguration.renderUpgrades ) {
+            GL11.glPushMatrix();
+            if( entity instanceof EntityTurret ) {
+                EntityTurret turret = (EntityTurret) entity;
 
-            GL11.glRotated((rotYaw + 90.0D), 0.0F, 1.0F, 0.0F);
-            GL11.glRotated(rotPitch, 0.0F, 0.0F, 1.0F);
-
-            RenderTurret.renderUpgrades(turret);
-            if( turret.hurtTime > 0 ) {
-                GL11.glDisable(GL11.GL_TEXTURE_2D);
-                GL11.glDisable(GL11.GL_ALPHA_TEST);
-                GL11.glEnable(GL11.GL_BLEND);
-                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                GL11.glDepthFunc(GL11.GL_EQUAL);
-                GL11.glColor4f(0.4F, 0.0F, 0.0F, 1.0F);
+                GL11.glRotated((rotYaw + 90.0D), 0.0F, 1.0F, 0.0F);
+                GL11.glRotated(rotPitch, 0.0F, 0.0F, 1.0F);
 
                 RenderTurret.renderUpgrades(turret);
+                if( turret.hurtTime > 0 ) {
+                    GL11.glDisable(GL11.GL_TEXTURE_2D);
+                    GL11.glDisable(GL11.GL_ALPHA_TEST);
+                    GL11.glEnable(GL11.GL_BLEND);
+                    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                    GL11.glDepthFunc(GL11.GL_EQUAL);
+                    GL11.glColor4f(0.4F, 0.0F, 0.0F, 1.0F);
 
-                GL11.glDepthFunc(GL11.GL_LEQUAL);
-                GL11.glDisable(GL11.GL_BLEND);
-                GL11.glEnable(GL11.GL_ALPHA_TEST);
-                GL11.glEnable(GL11.GL_TEXTURE_2D);
+                    RenderTurret.renderUpgrades(turret);
+
+                    GL11.glDepthFunc(GL11.GL_LEQUAL);
+                    GL11.glDisable(GL11.GL_BLEND);
+                    GL11.glEnable(GL11.GL_ALPHA_TEST);
+                    GL11.glEnable(GL11.GL_TEXTURE_2D);
+                }
             }
+            GL11.glPopMatrix();
         }
-        GL11.glPopMatrix();
     }
 
     @Override

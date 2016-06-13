@@ -26,7 +26,8 @@ public interface TurretAmmo
     float getInfoDamage();
     UUID getRecipeId();
     int getAmmoCapacity();
-    Class<? extends IProjectile> getEntity();
+    Class<? extends IProjectile> getEntityClass();
+    IProjectile getEntity(EntityTurret turret);
     Class<? extends EntityTurret> getTurret();
     String getIcon();
     ItemStack getStoringAmmoItem();

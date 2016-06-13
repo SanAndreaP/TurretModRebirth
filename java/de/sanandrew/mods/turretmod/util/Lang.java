@@ -12,6 +12,8 @@ import net.minecraft.util.StatCollector;
 
 public final class Lang
 {
+    public static final String TCU_BTN = String.format("gui.%s.tcu.page.info.button.%%s", TurretModRebirth.ID);
+
     public static final String TINFO_ENTRY_INFO_TITLE = String.format("gui.%s.tinfo.infoTitle", TurretModRebirth.ID);
     public static final String TINFO_ENTRY_AMMO_NAME = String.format("%s.tinfo.ammo.%%s.name", TurretModRebirth.ID);
     public static final String TINFO_ENTRY_AMMO_DESC = String.format("%s.tinfo.ammo.%%s.desc", TurretModRebirth.ID);
@@ -33,8 +35,16 @@ public final class Lang
     public static final String TINFO_ENTRY_INFO_AUTHOR = String.format("gui.%s.tinfo.modAuthor", TurretModRebirth.ID);
     public static final String TINFO_ENTRY_INFO_CREDITS = String.format("gui.%s.tinfo.modCredits", TurretModRebirth.ID);
 
+    public static final String TASSEMBLY_BTN_CANCEL = String.format("gui.%s.tassembly.cancel", TurretModRebirth.ID);
+    public static final String TASSEMBLY_BTN_AUTOENABLE = String.format("gui.%s.tassembly.automate.enable", TurretModRebirth.ID);
+    public static final String TASSEMBLY_BTN_AUTODISABLE = String.format("gui.%s.tassembly.automate.disable", TurretModRebirth.ID);
+
+    public static final String ELECTROGEN_EFFECTIVE = String.format("gui.%s.electrogen.effective", TurretModRebirth.ID);
+    public static final String ELECTROGEN_POWERGEN = String.format("gui.%s.electrogen.powergen", TurretModRebirth.ID);
+
     public static final String ENTITY_NAME = "entity.%s.name";
     public static final String ENTITY_DESC = "entity.%s.desc";
+    public static final String CONTAINER_INV = "container.inventory";
 
     public static final String ITEM_UPGRADE_NAME = String.format("item.%s:turret_upgrade.%%s.name", TurretModRebirth.ID);
     public static final String ITEM_UPGRADE_DESC = String.format("item.%s:turret_upgrade.%%s.desc", TurretModRebirth.ID);
