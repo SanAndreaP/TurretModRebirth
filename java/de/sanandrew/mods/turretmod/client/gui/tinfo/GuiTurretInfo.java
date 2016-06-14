@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.client.gui.tinfo;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntry;
 import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
+import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
@@ -46,6 +47,7 @@ public class GuiTurretInfo
     private float lastTime;
 
     public final TurretInfoCategory category;
+    public TurretInfoCategory categoryHighlight;
     public final TurretInfoEntry entry;
 
     public float scroll = 0.0F;
@@ -136,8 +138,7 @@ public class GuiTurretInfo
         }
 
         for( GuiButton btn : this.entryButtons ) {
-            btn.enabled = btn.yPosition - Math.round(this.scroll * this.dHeight) > 0
-                    && btn.yPosition - Math.round(this.scroll * this.dHeight) + btn.height < TurretInfoEntry.MAX_ENTRY_HEIGHT;
+            btn.enabled = btn.yPosition - Math.round(this.scroll * this.dHeight) > 0 && btn.yPosition - Math.round(this.scroll * this.dHeight) + btn.height < TurretInfoEntry.MAX_ENTRY_HEIGHT;
             btn.drawButton(this.mc, mouseX - this.entryX, mouseY - this.entryY + Math.round(this.scroll * this.dHeight));
         }
 
@@ -159,7 +160,18 @@ public class GuiTurretInfo
             this.scroll = mouseDelta / (TurretInfoEntry.MAX_ENTRY_HEIGHT - 16.0F);
         }
 
+
         super.drawScreen(mouseX, mouseY, partTicks);
+
+        if( this.categoryHighlight != null ) {
+            GL11.glPushMatrix();
+            GL11.glTranslatef(this.entryX, this.entryY, 32.0F);
+            Gui.drawRect(0, TurretInfoEntry.MAX_ENTRY_HEIGHT / 2, TurretInfoEntry.MAX_ENTRY_WIDTH, TurretInfoEntry.MAX_ENTRY_HEIGHT, 0x80000000);
+            this.fontRendererObj.drawString(this.categoryHighlight.getTitle(), 2, TurretInfoEntry.MAX_ENTRY_HEIGHT / 2 + 2, 0xFFFF80A0);
+            this.fontRendererObj.drawSplitString(this.categoryHighlight.getDesc(), 2, TurretInfoEntry.MAX_ENTRY_HEIGHT / 2 + 2 + 9, TurretInfoEntry.MAX_ENTRY_WIDTH - 4, 0xFFFF80A0);
+            GL11.glPopMatrix();
+            this.categoryHighlight = null;
+        }
     }
 
     public void doEntryScissoring(int x, int y, int width, int height) {

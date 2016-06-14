@@ -108,7 +108,8 @@ public class GuiButtonCategory
 
         GL11.glPopMatrix();
 
-//        if(inside)
-//            gui.categoryHighlight = Lang.translate(getTooltipText());
+        if(inside) {
+            this.tinfo.categoryHighlight = TurretInfoCategory.getCategory(this.catIndex);
+        }
     }
 }
