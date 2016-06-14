@@ -13,6 +13,7 @@ import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketUpdateTargets;
+import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.PlayerList;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
@@ -21,7 +22,6 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -72,8 +72,8 @@ public class GuiTcuPlayerTargets
         GuiTCUHelper.initGui(this);
 
         int center = this.guiLeft + (GuiTCUHelper.X_SIZE - 150) / 2;
-        this.buttonList.add(this.selectAll = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 138, 150, translateBtn("selectAll")));
-        this.buttonList.add(this.deselectAll = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 151, 150, translateBtn("deselectAll")));
+        this.buttonList.add(this.selectAll = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 138, 150, Lang.translate(Lang.TCU_TARGET_BTN, "selectAll")));
+        this.buttonList.add(this.deselectAll = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 151, 150, Lang.translate(Lang.TCU_TARGET_BTN, "deselectAll")));
 
         GuiTCUHelper.pagePlayerTargets.enabled = false;
 
@@ -202,10 +202,6 @@ public class GuiTcuPlayerTargets
 
     private void updateTargets() {
         PacketRegistry.sendToServer(new PacketUpdateTargets(this.turret.getTargetProcessor()));
-    }
-
-    private static String translateBtn(String s) {
-        return StatCollector.translateToLocal(String.format("gui.%s.tcu.page.targetsEntity.button.%s", TurretModRebirth.ID, s));
     }
 
     @Override

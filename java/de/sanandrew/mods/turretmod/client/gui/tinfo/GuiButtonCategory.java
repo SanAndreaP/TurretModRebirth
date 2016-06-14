@@ -80,14 +80,6 @@ public class GuiButtonCategory
             this.ticksHovered = Math.max(-1.0F, this.ticksHovered - this.tinfo.timeDelta);
         }
 
-        if( this.texture == null ) {
-//            if(category == null)
-//                resource = fallbackResource;
-//            else resource = category.getIcon();
-//            if(resource == null)
-//                resource = fallbackResource;
-        }
-
         float s = 1.0F / 32.0F;
         GL11.glPushMatrix();
         GL11.glEnable(GL11.GL_BLEND);
@@ -117,16 +109,6 @@ public class GuiButtonCategory
         GL11.glPopMatrix();
 
 //        if(inside)
-//            gui.categoryHighlight = StatCollector.translateToLocal(getTooltipText());
+//            gui.categoryHighlight = Lang.translate(getTooltipText());
     }
-//
-//    String getTooltipText() {
-//        if(category == null)
-//            return "botaniamisc.lexiconIndex";
-//        return category.getUnlocalizedName();
-//    }
-//
-//    public LexiconCategory getCategory() {
-//        return category;
-//    }
 }

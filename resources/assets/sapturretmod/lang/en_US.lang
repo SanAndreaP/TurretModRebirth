@@ -135,6 +135,8 @@ gui.sapturretmod.tcu.page.upgrades.button.ejectAll=Eject All Upgrades
 gui.sapturretmod.tassembly.cancel=Cancel
 gui.sapturretmod.tassembly.automate.enable=Automate
 gui.sapturretmod.tassembly.automate.disable=Manual
+gui.sapturretmod.tassembly.crafting=Crafting:
+gui.sapturretmod.tassembly.rfUsing=using %d RF/t
 
 gui.sapturretmod.electrogen.effective=Effectiveness:
 gui.sapturretmod.electrogen.powergen=Power generated:

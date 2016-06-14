@@ -8,11 +8,16 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.util.StatCollector;
 
 public final class Lang
 {
     public static final String TCU_BTN = String.format("gui.%s.tcu.page.info.button.%%s", TurretModRebirth.ID);
+    public static final String TCU_TARGET_BTN = String.format("gui.%s.tcu.page.targetsEntity.button.%%s", TurretModRebirth.ID);
+    public static final String TCU_PAGE_TITLE = String.format("gui.%s.tcu.page.%%s.title", TurretModRebirth.ID);
+    public static final String TCU_PAGE_TAB = String.format("gui.%s.tcu.page.%%s.tab", TurretModRebirth.ID);
 
     public static final String TINFO_ENTRY_INFO_TITLE = String.format("gui.%s.tinfo.infoTitle", TurretModRebirth.ID);
     public static final String TINFO_ENTRY_AMMO_NAME = String.format("%s.tinfo.ammo.%%s.name", TurretModRebirth.ID);
@@ -30,6 +35,8 @@ public final class Lang
     public static final String TINFO_ENTRY_AMMOCAP = String.format("gui.%s.tinfo.ammocap", TurretModRebirth.ID);
     public static final String TINFO_ENTRY_AMMOUSE = String.format("gui.%s.tinfo.ammouse", TurretModRebirth.ID);
     public static final String TINFO_ENTRY_ROUNDSVAL = String.format("gui.%s.tinfo.roundsVal", TurretModRebirth.ID);
+    public static final String TINFO_ENTRY_EFFICIENCY = String.format("gui.%s.tinfo.efficiency", TurretModRebirth.ID);
+    public static final String TINFO_ENTRY_DECAY = String.format("gui.%s.tinfo.decay", TurretModRebirth.ID);
     public static final String TINFO_ENTRY_INFO_NAME = String.format("gui.%s.tinfo.modName", TurretModRebirth.ID);
     public static final String TINFO_ENTRY_INFO_VERSION = String.format("gui.%s.tinfo.modVersion", TurretModRebirth.ID);
     public static final String TINFO_ENTRY_INFO_AUTHOR = String.format("gui.%s.tinfo.modAuthor", TurretModRebirth.ID);
@@ -38,6 +45,8 @@ public final class Lang
     public static final String TASSEMBLY_BTN_CANCEL = String.format("gui.%s.tassembly.cancel", TurretModRebirth.ID);
     public static final String TASSEMBLY_BTN_AUTOENABLE = String.format("gui.%s.tassembly.automate.enable", TurretModRebirth.ID);
     public static final String TASSEMBLY_BTN_AUTODISABLE = String.format("gui.%s.tassembly.automate.disable", TurretModRebirth.ID);
+    public static final String TASSEMBLY_CRAFTING = String.format("gui.%s.tassembly.crafting", TurretModRebirth.ID);
+    public static final String TASSEMBLY_RF_USING = String.format("gui.%s.tassembly.rfUsing", TurretModRebirth.ID);
 
     public static final String ELECTROGEN_EFFECTIVE = String.format("gui.%s.electrogen.effective", TurretModRebirth.ID);
     public static final String ELECTROGEN_POWERGEN = String.format("gui.%s.electrogen.powergen", TurretModRebirth.ID);
@@ -67,5 +76,17 @@ public final class Lang
      */
     public static String translate(String langKey, Object... args) {
         return translate(String.format(langKey, args));
+    }
+
+    public static String translateOrDefault(String langKey, String defaultVal) {
+        return StatCollector.canTranslate(langKey) ? translate(langKey) : defaultVal;
+    }
+
+    public static String translateEntityCls(Class<? extends Entity> eClass) {
+        if( EntityList.classToStringMapping.containsKey(eClass) ) {
+            return translate(String.format(ENTITY_NAME, EntityList.classToStringMapping.get(eClass)));
+        }
+
+        return "[UNKNOWN] " + eClass.getName();
     }
 }

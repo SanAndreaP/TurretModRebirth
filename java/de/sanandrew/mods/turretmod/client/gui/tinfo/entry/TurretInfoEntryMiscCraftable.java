@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
+import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.darkhax.bookshelf.lib.javatuples.Triplet;
@@ -20,7 +21,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.lwjgl.opengl.GL11;
@@ -126,7 +126,7 @@ public class TurretInfoEntryMiscCraftable
 
     @Override
     public void drawPage(GuiTurretInfo gui, int mouseX, int mouseY, int scrollY, float partTicks) {
-        gui.mc.fontRenderer.drawString(EnumChatFormatting.ITALIC + StatCollector.translateToLocal(this.getTitle()), 2, 2, 0xFF0080BB);
+        gui.mc.fontRenderer.drawString(EnumChatFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 2, 0xFF0080BB);
         Gui.drawRect(2, 12, MAX_ENTRY_WIDTH - 2, 13, 0xFF0080BB);
 
         gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
@@ -141,7 +141,7 @@ public class TurretInfoEntryMiscCraftable
 
         Gui.drawRect(2, this.drawHeight, MAX_ENTRY_WIDTH - 2, this.drawHeight + 1, 0xFF0080BB);
 
-        String text = StatCollector.translateToLocal(this.desc).replace("\\n", "\n");
+        String text = Lang.translate(this.desc).replace("\\n", "\n");
         gui.mc.fontRenderer.drawSplitString(text, 2, this.drawHeight + 3, MAX_ENTRY_WIDTH - 2, 0xFF000000);
         this.drawHeight = gui.mc.fontRenderer.splitStringWidth(text, MAX_ENTRY_WIDTH - 2) + this.drawHeight + 3 + 2;
 

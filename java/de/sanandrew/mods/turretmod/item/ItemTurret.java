@@ -13,6 +13,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
+import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.block.Block;
@@ -28,7 +29,6 @@ import net.minecraft.util.Facing;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.Level;
 
@@ -85,17 +85,17 @@ public class ItemTurret
         super.addInformation(stack, player, lines, advInfo);
         TurretInfo info = getTurretInfo(stack);
         if( info != null ) {
-            lines.add(StatCollector.translateToLocal(String.format("entity.%s.%s.name", TurretModRebirth.ID, info.getName())));
+            lines.add(Lang.translateEntityCls(info.getTurretClass()));
         }
 
         String name = getTurretName(stack);
         if( name != null ) {
-            lines.add(String.format(StatCollector.translateToLocal(String.format("%s.turret_name", this.getUnlocalizedName())), name));
+            lines.add(String.format(Lang.translate("%s.turret_name", this.getUnlocalizedName()), name));
         }
 
         Float health = getTurretHealth(stack);
         if( health != null ) {
-            lines.add(String.format(StatCollector.translateToLocal(String.format("%s.health", this.getUnlocalizedName())), health));
+            lines.add(String.format(Lang.translate("%s.health", this.getUnlocalizedName()), health));
         }
     }
 

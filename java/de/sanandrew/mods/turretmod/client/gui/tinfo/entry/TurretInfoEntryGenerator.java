@@ -12,15 +12,13 @@ import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityPotatoGenerator;
 import de.sanandrew.mods.turretmod.util.CraftingRecipes;
+import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -57,7 +55,7 @@ public class TurretInfoEntryGenerator
             int x = i % maxItems;
             int y = i / maxItems;
 
-            drawFuelItem(gui, 3 + 18 * x, this.drawHeight + 18 * y, mouseX, mouseY, scrollY, new ItemStack(fuelItems.get(i)), true);
+            drawFuelItem(gui, 3 + 18 * x, this.drawHeight + 18 * y, mouseX, mouseY, scrollY, new ItemStack(fuelItems.get(i)));
         }
 
         if( tooltipItem != null ) {
@@ -74,8 +72,8 @@ public class TurretInfoEntryGenerator
 
         mc.fontRenderer.drawString(String.format("§e%s", TmrClientUtils.getTooltipWithoutShift(tooltipItem).get(0)), 22, 2, 0xFFFFFFFF, false);
         TileEntityPotatoGenerator.Fuel fuel = TileEntityPotatoGenerator.getFuel(tooltipItem.getItem());
-        mc.fontRenderer.drawString(String.format(StatCollector.translateToLocal(String.format("gui.%s.tinfo.efficiency", TurretModRebirth.ID)), fuel.effect), 22, 11, 0xFFFFFFFF, false);
-        mc.fontRenderer.drawString(String.format(StatCollector.translateToLocal(String.format("gui.%s.tinfo.decay", TurretModRebirth.ID)), TmrClientUtils.getTimeFromTicks(fuel.ticksProc)), 22, 20, 0xFFFFFFFF, false);
+        mc.fontRenderer.drawString(String.format(Lang.translate(Lang.TINFO_ENTRY_EFFICIENCY), fuel.effect), 22, 11, 0xFFFFFFFF, false);
+        mc.fontRenderer.drawString(String.format(Lang.translate(Lang.TINFO_ENTRY_DECAY), TmrClientUtils.getTimeFromTicks(fuel.ticksProc)), 22, 20, 0xFFFFFFFF, false);
         mc.fontRenderer.drawString(String.format("§a%s", TmrClientUtils.getTooltipWithoutShift(fuel.trash).get(0)), 32, 29, 0xFFFFFFFF, false);
         mc.fontRenderer.drawString(String.format("§d%s", TmrClientUtils.getTooltipWithoutShift(fuel.treasure).get(0)), 32, 38, 0xFFFFFFFF, false);
 
@@ -99,7 +97,7 @@ public class TurretInfoEntryGenerator
         GL11.glPopMatrix();
     }
 
-    private static void drawFuelItem(GuiTurretInfo gui, int x, int y, int mouseX, int mouseY, int scrollY, ItemStack stack, boolean drawTooltip) {
+    private static void drawFuelItem(GuiTurretInfo gui, int x, int y, int mouseX, int mouseY, int scrollY, ItemStack stack) {
         gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         gui.drawTexturedModalRect(x, y, 192, 0, 18, 18);

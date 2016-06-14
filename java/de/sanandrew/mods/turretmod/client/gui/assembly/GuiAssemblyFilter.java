@@ -10,12 +10,12 @@ package de.sanandrew.mods.turretmod.client.gui.assembly;
 
 import de.sanandrew.mods.turretmod.inventory.ContainerAssemblyFilter;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
 public class GuiAssemblyFilter
@@ -57,8 +57,8 @@ public class GuiAssemblyFilter
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-        String s = StatCollector.translateToLocal(ItemRegistry.asbFilter.getUnlocalizedName() + ".name");
+        String s = Lang.translate(ItemRegistry.asbFilter.getUnlocalizedName() + ".name");
         this.fontRendererObj.drawString(s, this.xSize / 2 - this.fontRendererObj.getStringWidth(s) / 2, 6, 4210752);
-        this.fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 3, 4210752);
+        this.fontRendererObj.drawString(Lang.translate(Lang.CONTAINER_INV), 8, this.ySize - 96 + 3, 4210752);
     }
 }

@@ -8,12 +8,12 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
+import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 
 import java.util.List;
 
@@ -32,6 +32,6 @@ public class ItemAssemblyUpgrade
     public void addInformation(ItemStack stack, EntityPlayer player, List lines, boolean advInfo) {
         super.addInformation(stack, player, lines, advInfo);
 
-        lines.add(StatCollector.translateToLocal(this.getUnlocalizedName() + ".ttip"));
+        lines.add(Lang.translate(this.getUnlocalizedName() + ".ttip"));
     }
 }

@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.item;
 
 import de.sanandrew.mods.turretmod.util.EnumGui;
+import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
@@ -18,7 +19,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
@@ -41,11 +41,11 @@ public class ItemAssemblyFilter
     public void addInformation(ItemStack stack, EntityPlayer player, List lines, boolean advInfo) {
         super.addInformation(stack, player, lines, advInfo);
 
-        lines.add(StatCollector.translateToLocal(this.getUnlocalizedName() + ".ttip"));
-        lines.add(StatCollector.translateToLocal(this.getUnlocalizedName() + ".inst"));
+        lines.add(Lang.translate(this.getUnlocalizedName() + ".ttip"));
+        lines.add(Lang.translate(this.getUnlocalizedName() + ".inst"));
         NBTTagCompound nbt = stack.getTagCompound();
         if( nbt != null && nbt.hasKey("filterStacks") ) {
-            lines.add(EnumChatFormatting.ITALIC + StatCollector.translateToLocal(this.getUnlocalizedName() + ".conf"));
+            lines.add(EnumChatFormatting.ITALIC + Lang.translate(this.getUnlocalizedName() + ".conf"));
         }
     }
 

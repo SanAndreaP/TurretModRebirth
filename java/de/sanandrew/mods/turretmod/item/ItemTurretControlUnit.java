@@ -8,13 +8,13 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
+import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.StatCollector;
 
 public class ItemTurretControlUnit
         extends Item
@@ -38,6 +38,6 @@ public class ItemTurretControlUnit
             this.nameId = MathHelper.ceiling_double_int(indFloat);
         }
         this.prevDisplayNameTime = currDisplayNameTime;
-        return StatCollector.translateToLocal(String.format("%s.name.%d", this.getUnlocalizedName(), this.nameId));
+        return Lang.translate("%s.name.%d", this.getUnlocalizedName(), this.nameId);
     }
 }

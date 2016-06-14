@@ -27,7 +27,6 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.ARBMultitexture;
 import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.GL11;
@@ -73,7 +72,7 @@ public class TurretInfoEntryAmmo
     public void drawPage(GuiTurretInfo gui, int mouseX, int mouseY, int scrollY, float partTicks) {
         TurretAmmo ammo = this.ammos[this.shownAmmo];
 
-        gui.mc.fontRenderer.drawString(EnumChatFormatting.ITALIC + StatCollector.translateToLocal(this.getTitle()), 2, 20, 0xFF0080BB);
+        gui.mc.fontRenderer.drawString(EnumChatFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 20, 0xFF0080BB);
         Gui.drawRect(2, 30, MAX_ENTRY_WIDTH - 2, 31, 0xFF0080BB);
 
         gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());

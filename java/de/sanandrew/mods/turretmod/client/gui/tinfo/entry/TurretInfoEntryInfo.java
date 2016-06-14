@@ -30,6 +30,7 @@ public class TurretInfoEntryInfo
     public void initEntry(GuiTurretInfo gui) {
         super.initEntry(gui);
 
+        gui.entryButtons.add(new GuiTurretInfo.GuiButtonLink(gui.getButtonList().size(), 4, 65, "SanAndreasP", "https://twitter.com/SanAndreasP"));
         gui.entryButtons.add(new GuiTurretInfo.GuiButtonLink(gui.getButtonList().size(), 4, 85, "Darkhax", "https://twitter.com/Darkh4x"));
         gui.entryButtons.add(new GuiTurretInfo.GuiButtonLink(gui.getButtonList().size(), 4, 96, "Drullkus", "https://twitter.com/Drullkus"));
         gui.entryButtons.add(new GuiTurretInfo.GuiButtonLink(gui.getButtonList().size(), 4, 107, "Vazkii", "https://twitter.com/Vazkii"));
@@ -50,7 +51,6 @@ public class TurretInfoEntryInfo
         gui.mc.fontRenderer.drawString(TurretModRebirth.VERSION, 4, 45, 0xFF000000, false);
 
         gui.mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_INFO_AUTHOR), 2, 56, 0xFF808080, false);
-        gui.mc.fontRenderer.drawString("SanAndreasP", 4, 65, 0xFF000000, false);
 
         gui.mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_INFO_CREDITS), 2, 76, 0xFF808080, false);
 

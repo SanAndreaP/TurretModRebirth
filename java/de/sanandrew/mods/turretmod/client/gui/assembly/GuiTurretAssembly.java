@@ -298,7 +298,7 @@ public class GuiTurretAssembly
                 cnt = String.valueOf('\u221E');
             }
 
-            this.frDetails.drawString("Crafting:", this.guiLeft + 156, this.guiTop + 40, 0xFF303030);
+            this.frDetails.drawString(Lang.TASSEMBLY_CRAFTING, this.guiLeft + 156, this.guiTop + 40, 0xFF303030);
             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
             RenderHelper.enableGUIStandardItemLighting();
             this.drawItemStack(this.assembly.currCrafting.getValue1(), this.guiLeft + 190, this.guiTop + 36, 200.0F, false);
@@ -536,7 +536,7 @@ public class GuiTurretAssembly
 
     private void drawRFluxLabel(int mouseX, int mouseY) {
         String amount = String.format("%d / %d RF", this.assembly.getEnergyStored(ForgeDirection.DOWN), this.assembly.getMaxEnergyStored(ForgeDirection.DOWN));
-        String consumption = String.format("using %d RF/t", this.assembly.fluxConsumption * (this.assembly.hasSpeedUpgrade() ? 4 : 1));
+        String consumption = String.format(Lang.translate(Lang.TASSEMBLY_RF_USING), this.assembly.fluxConsumption * (this.assembly.hasSpeedUpgrade() ? 4 : 1));
 
         int textWidth = Math.max(this.fontRendererObj.getStringWidth(amount), this.fontRendererObj.getStringWidth(consumption));
         int xPos = mouseX + 12;

@@ -12,6 +12,7 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretUpgrades;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.client.Minecraft;
@@ -19,7 +20,6 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
@@ -74,7 +74,7 @@ public class GuiTcuUpgrades
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-        this.fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 126 + 3, 4210752);
+        this.fontRendererObj.drawString(Lang.translate(Lang.CONTAINER_INV), 8, this.ySize - 126 + 3, 4210752);
 
         GL11.glPushMatrix();
         GL11.glTranslatef(-this.posX, -this.posY, 0.0F);

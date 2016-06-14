@@ -13,8 +13,8 @@ import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketUpdateTargets;
+import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -24,7 +24,6 @@ import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.IAnimals;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -80,11 +79,11 @@ public final class GuiTcuEntityTargets
         GuiTCUHelper.initGui(this);
 
         int center = this.guiLeft + (GuiTCUHelper.X_SIZE - 150) / 2;
-        this.buttonList.add(this.selectAll = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 138, 150, translateBtn("selectAll")));
-        this.buttonList.add(this.deselectAll = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 151, 150, translateBtn("deselectAll")));
-        this.buttonList.add(this.selectMobs = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 164, 150, translateBtn("selectMobs")));
-        this.buttonList.add(this.selectAnimals = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 177, 150, translateBtn("selectAnimals")));
-        this.buttonList.add(this.selectOther = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 190, 150, translateBtn("selectOther")));
+        this.buttonList.add(this.selectAll = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 138, 150, Lang.translate(Lang.TCU_TARGET_BTN, "selectAll")));
+        this.buttonList.add(this.deselectAll = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 151, 150, Lang.translate(Lang.TCU_TARGET_BTN, "deselectAll")));
+        this.buttonList.add(this.selectMobs = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 164, 150, Lang.translate(Lang.TCU_TARGET_BTN, "selectMobs")));
+        this.buttonList.add(this.selectAnimals = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 177, 150, Lang.translate(Lang.TCU_TARGET_BTN, "selectAnimals")));
+        this.buttonList.add(this.selectOther = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 190, 150, Lang.translate(Lang.TCU_TARGET_BTN, "selectOther")));
 
         GuiTCUHelper.pageEntityTargets.enabled = false;
 
@@ -243,16 +242,8 @@ public final class GuiTcuEntityTargets
 
     static String getTranslatedEntityName(Class<?> entityCls) {
         String namedEntry = EntityList.classToStringMapping.get(entityCls).toString();
-        String name = "entity." + namedEntry + ".name";
-        if( !StatCollector.canTranslate(name) ) {
-            name = namedEntry;
-        }
 
-        return StatCollector.translateToLocal(name);
-    }
-
-    private static String translateBtn(String s) {
-        return StatCollector.translateToLocal(String.format("gui.%s.tcu.page.targetsEntity.button.%s", TurretModRebirth.ID, s));
+        return Lang.translateOrDefault(String.format(Lang.ENTITY_NAME, namedEntry), namedEntry);
     }
 
     @Override

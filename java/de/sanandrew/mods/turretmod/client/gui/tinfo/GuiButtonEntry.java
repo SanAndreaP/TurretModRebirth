@@ -16,7 +16,6 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -55,7 +54,6 @@ public class GuiButtonEntry
             if( this.icon == null ) {
                 this.icon = new ItemStack(Blocks.fire);
             }
-
 
             GL11.glPushMatrix();
             GL11.glEnable(GL11.GL_BLEND);

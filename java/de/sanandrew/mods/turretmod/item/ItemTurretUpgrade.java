@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.item;
 
 import de.sanandrew.mods.turretmod.registry.upgrades.TurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -18,7 +19,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.StatCollector;
 
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +44,7 @@ public class ItemTurretUpgrade
     @SuppressWarnings("unchecked")
     public void addInformation(ItemStack stack, EntityPlayer player, List lines, boolean advInfo) {
         TurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(stack);
-        lines.add(StatCollector.translateToLocal(String.format("%s.%s.name", this.getUnlocalizedName(stack), upg.getName())));
+        lines.add(Lang.translate("%s.%s.name", this.getUnlocalizedName(stack), upg.getName()));
         super.addInformation(stack, player, lines, advInfo);
     }
 

@@ -10,8 +10,6 @@ package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
-import de.sanandrew.mods.turretmod.registry.upgrades.TurretUpgrade;
-import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.gui.Gui;
@@ -41,7 +39,6 @@ public class TurretInfoEntryMiscAssembleable
 
     @Override
     public void drawPage(GuiTurretInfo gui, int mouseX, int mouseY, int scrollY, float partTicks) {
-//        TurretUpgrade prereq = this.upgrade.getDependantOn();
         int infoHeight = 54;
 
         gui.mc.fontRenderer.drawString(EnumChatFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 2, 0xFF0080BB);
@@ -54,10 +51,6 @@ public class TurretInfoEntryMiscAssembleable
         drawItem(gui.mc, 3, 17, this.getIcon(), 2.0F);
 
         gui.mc.fontRenderer.drawString(this.txtCrft, 42, 16, 0xFF6A6A6A, false);
-//        if( prereq != null ) {
-//            gui.mc.fontRenderer.drawString(this.txtPrereq, 42, 36, 0xFF6A6A6A, false);
-//            infoHeight = 56;
-//        }
 
         Gui.drawRect(2, infoHeight, MAX_ENTRY_WIDTH - 2, infoHeight + 1, 0xFF0080BB);
 
@@ -65,15 +58,10 @@ public class TurretInfoEntryMiscAssembleable
         gui.mc.fontRenderer.drawSplitString(text, 2, infoHeight + 3, MAX_ENTRY_WIDTH - 2, 0xFF000000);
         this.drawHeight = gui.mc.fontRenderer.splitStringWidth(text, MAX_ENTRY_WIDTH - 2) + infoHeight + 3 + 2;
 
-//        TurretAssemblyRecipes.RecipeEntry recipeEntry = TurretAssemblyRecipes.INSTANCE.getRecipeEntry(this.upgrade.getRecipeId());
         for( int i = 0; i < this.recipe.resources.length; i++ ) {
             ItemStack[] stacks = this.recipe.resources[i].getEntryItemStacks();
             drawMiniItem(gui, 45 + 10 * i, 25, mouseX, mouseY, scrollY, stacks[(int)(this.lastTimestamp / 1000L % stacks.length)], this.recipe.resources[i].shouldDrawTooltip());
         }
-
-//        if( prereq != null ) {
-//            drawMiniItem(gui, 45, 45, mouseX, mouseY, scrollY, UpgradeRegistry.INSTANCE.getUpgradeItem(prereq), true);
-//        }
 
         long time = System.currentTimeMillis();
         if( this.lastTimestamp + 1000 < time ) {
