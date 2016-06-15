@@ -87,7 +87,7 @@ sapturretmod.tinfo.ammo.arrow.desc=The standard ammo for the §3Crossbow Turret�
 sapturretmod.tinfo.ammo.sgshell.name=Shotgun Shell
 sapturretmod.tinfo.ammo.sgshell.desc=The standard ammo for the §3Shotgun Turret§0. Has no knockback effect and turns into 6 dispersed pebble projectiles when shot.\nDoes not apply any immunity to the target, thus targets hit by multiple pebbles will take damage from all of them.\n\nCan be packaged, whose items will provide 16x ammo.
 sapturretmod.tinfo.ammo.cryocell.name=Cryo Cell
-sapturretmod.tinfo.ammo.cryocell.desc=This ammunition used by the §3Cryolator Turret§0 comes in 3 versions, which applies different slowness effects:\n§3Cell SG1§0: Slowness II for 15s\n§3Cell SG2§0: Slowness IV for 10s\n§3Cell SG3§0: Slowness VI for 5s.\n\nDoes not apply immunity and any damage to the target.\n\nCan be packaged, whose items will provide 16x ammo.
+sapturretmod.tinfo.ammo.cryocell.desc=This ammunition used by the §3Cryolator Turret§0 comes in 3 versions, which applies different slowness effects:\n§3Cell SG1§0: Slowness I for 15s\n§3Cell SG2§0: Slowness III for 10s\n§3Cell SG3§0: Slowness V for 5s.\n\nDoes not apply immunity and any damage to the target.\n\nCan be packaged, whose items will provide 16x ammo.
 
 gui.sapturretmod.tinfo.infoTitle=Info about this mod
 gui.sapturretmod.tinfo.health=Health

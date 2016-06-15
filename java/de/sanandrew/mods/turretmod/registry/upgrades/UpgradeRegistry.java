@@ -67,7 +67,7 @@ public class UpgradeRegistry
     }
 
     public TurretUpgrade getUpgrade(ItemStack stack) {
-        if( stack == null ) {
+        if( stack == null || !stack.hasTagCompound() ) {
             return emptyInst;
         }
 

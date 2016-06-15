@@ -99,6 +99,14 @@ public class TmrUtils
         return ReflectionUtils.getCachedFieldValue(ShapedOreRecipe.class, recipe, "height", "height");
     }
 
+    public static float getLastDamage(EntityLivingBase entity) {
+        if( entity == null ) {
+            return 0.0F;
+        }
+
+        return ReflectionUtils.getCachedFieldValue(EntityLivingBase.class, entity, "lastDamage", "field_110153_bc");
+    }
+
     public static short getShortTagAt(NBTTagList list, int index) {
         List tagList = ReflectionUtils.getCachedFieldValue(NBTTagList.class, list, "tagList", "field_74747_a");
 

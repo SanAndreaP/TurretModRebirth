@@ -8,10 +8,7 @@ import de.sanandrew.mods.turretmod.util.TmrUtils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.EntityAIAttackOnCollide;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAIMoveTowardsTarget;
@@ -245,7 +242,18 @@ public abstract class EntityTurretProjectile
                     hitObj.entityHit.setFire(5);
                 }
 
+                boolean preHitVelocityChanged = hitObj.entityHit.velocityChanged;
+                boolean preHitAirBorne = hitObj.entityHit.isAirBorne;
+                double preHitMotionX = hitObj.entityHit.motionX;
+                double preHitMotionY = hitObj.entityHit.motionY;
+                double preHitMotionZ = hitObj.entityHit.motionZ;
                 if( this.onPreHit(hitObj.entityHit, damagesource, dmg) && hitObj.entityHit.attackEntityFrom(damagesource, dmg) ) {
+                    hitObj.entityHit.velocityChanged = preHitVelocityChanged;
+                    hitObj.entityHit.isAirBorne = preHitAirBorne;
+                    hitObj.entityHit.motionX = preHitMotionX;
+                    hitObj.entityHit.motionY = preHitMotionY;
+                    hitObj.entityHit.motionZ = preHitMotionZ;
+
                     this.onPostHit(hitObj.entityHit, damagesource);
                     if( hitObj.entityHit instanceof EntityLivingBase ) {
                         EntityLivingBase living = (EntityLivingBase) hitObj.entityHit;
@@ -275,12 +283,29 @@ public abstract class EntityTurretProjectile
                             }
                         }
 
-                        float knockback = this.getKnockbackStrengthH() - 0.6F;
-                        double horizMotion = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
+                        double deltaX = this.posX - living.posX;
+                        double deltaZ = this.posZ - living.posZ;
 
-                        if( horizMotion > 0.0F ) {
-                            hitObj.entityHit.addVelocity(this.motionX * knockback * 0.6D / horizMotion, this.getKnockbackStrengthV() - 0.4F, this.motionZ * knockback * 0.6D / horizMotion);
+                        while( deltaX * deltaX + deltaZ * deltaZ < 0.0001D ) {
+                            deltaZ = (Math.random() - Math.random()) * 0.01D;
+                            deltaX = (Math.random() - Math.random()) * 0.01D;
                         }
+
+                        this.knockBackEntity(living, deltaX, deltaZ);
+
+//                        float kbStrengthXZ = this.getKnockbackStrengthH();
+//                        float kbStrengthY = this.getKnockbackStrengthV();
+//                        if( kbStrengthXZ > 0.0001 ) {
+//                            this.knockBackEntity(living, deltaX * kbStrengthXZ, deltaZ * kbStrengthXZ);
+//                        }
+//                        living.motionY = preHitMotionY + kbStrengthY;
+
+//                        float knockback = this.getKnockbackStrengthH() - 0.6F;
+//                        double horizMotion = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
+//
+//                        if( horizMotion > 0.0F ) {
+//                            hitObj.entityHit.addVelocity(this.motionX * knockback * 0.6D / horizMotion, this.getKnockbackStrengthV() - 0.4F, this.motionZ * knockback * 0.6D / horizMotion);
+//                        }
 
                         if( this.shooterCache instanceof EntityLivingBase ) {
                             EnchantmentHelper.func_151384_a(living, this.shooterCache);
@@ -293,6 +318,26 @@ public abstract class EntityTurretProjectile
             }
 
             this.processHit(hitObj);
+        }
+    }
+
+
+    public void knockBackEntity(EntityLivingBase living, double deltaX, double deltaZ) {
+        if( this.rand.nextDouble() >= living.getEntityAttribute(SharedMonsterAttributes.knockbackResistance).getAttributeValue() ) {
+            living.isAirBorne = true;
+            double normXZ = MathHelper.sqrt_double(deltaX * deltaX + deltaZ * deltaZ);
+            double kbStrengthXZ = this.getKnockbackStrengthH();
+            double kbStrengthY = this.getKnockbackStrengthV();
+            living.motionX /= 2.0D;
+            living.motionY /= 2.0D;
+            living.motionZ /= 2.0D;
+            living.motionX -= deltaX / normXZ * kbStrengthXZ;
+            living.motionY += kbStrengthY;
+            living.motionZ -= deltaZ / normXZ * kbStrengthXZ;
+
+            if( living.motionY > 0.4000000059604645D ) {
+                living.motionY = 0.4000000059604645D;
+            }
         }
     }
 
