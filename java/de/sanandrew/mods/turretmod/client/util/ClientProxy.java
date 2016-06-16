@@ -33,7 +33,7 @@ import de.sanandrew.mods.turretmod.client.particle.ParticleAssemblySpark;
 import de.sanandrew.mods.turretmod.client.particle.ParticleCryoTrail;
 import de.sanandrew.mods.turretmod.client.render.item.ItemRendererTile;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderPebble;
-import de.sanandrew.mods.turretmod.client.render.projectile.RenderSnowball;
+import de.sanandrew.mods.turretmod.client.render.projectile.RenderNothingness;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderTurretArrow;
 import de.sanandrew.mods.turretmod.client.render.tileentity.RenderTurretAssembly;
 import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
@@ -85,7 +85,7 @@ public class ClientProxy
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretCryolator.class, new RenderTurret(new ModelTurretSnowball(0.0F)));
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCrossbowBolt.class, new RenderTurretArrow());
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectilePebble.class, new RenderPebble());
-        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCryoCell.class, new RenderSnowball());
+        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCryoCell.class, new RenderNothingness());
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurretAssembly.class, new RenderTurretAssembly());
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlockRegistry.assemblyTable), new ItemRendererTile(new TileEntityTurretAssembly(true)));
@@ -180,9 +180,20 @@ public class ClientProxy
                 }
                 break;
             }
-            case CRYO_PARTICLE:
-                mc.effectRenderer.addEffect(new ParticleCryoTrail(mc.theWorld, x, y, z, 0.0D, -0.01D, 0.0D));
+            case CRYO_PARTICLE: {
+                int max = 10;
+                for( int i = 0; i < max; i++ ) {
+                    double diffMotionX = (double) data.getValue(0) / max;
+                    double diffMotionY = (double) data.getValue(1) / max;
+                    double diffMotionZ = (double) data.getValue(2) / max;
+
+                    double partMotionX = diffMotionX + TmrUtils.RNG.nextDouble() * 0.05D - 0.025D;
+                    double partMotionY = -TmrUtils.RNG.nextDouble() * 0.025D;
+                    double partMotionZ = diffMotionZ + TmrUtils.RNG.nextDouble() * 0.05D - 0.025D;
+                    mc.effectRenderer.addEffect(new ParticleCryoTrail(mc.theWorld, x - diffMotionX * i, y - diffMotionY * i, z - diffMotionZ * i, partMotionX, partMotionY, partMotionZ));
+                }
                 break;
+            }
         }
     }
 }

@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.entity.projectile;
 
 import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import net.darkhax.bookshelf.lib.javatuples.Triplet;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.Potion;
@@ -45,7 +46,7 @@ public class EntityProjectileCryoCell
 
     @Override
     public float getArc() {
-        return 0.2F;
+        return 0.05F;
     }
 
     @Override
@@ -53,13 +54,7 @@ public class EntityProjectileCryoCell
         super.onUpdate();
 
         if( this.worldObj.isRemote ) {
-            int max = 10;
-            for( int i = 0; i < max; i++ ) {
-                double diffMotionX = this.motionX / max;
-                double diffMotionY = this.motionY / max;
-                double diffMotionZ = this.motionZ / max;
-                TurretModRebirth.proxy.spawnParticle(EnumParticle.CRYO_PARTICLE, this.posX - diffMotionX * i, this.posY - diffMotionY * i, this.posZ - diffMotionZ * i);
-            }
+            TurretModRebirth.proxy.spawnParticle(EnumParticle.CRYO_PARTICLE, this.posX, this.posY, this.posZ, Triplet.with(this.motionX, this.motionY, this.motionZ));
         }
     }
 
@@ -77,7 +72,7 @@ public class EntityProjectileCryoCell
 
     @Override
     public float getDamage() {
-        return 0.01F;
+        return 0.0F;
     }
 
     @Override
@@ -94,6 +89,8 @@ public class EntityProjectileCryoCell
     public boolean onPreHit(Entity e, DamageSource dmgSource, float dmg) {
         if( !this.worldObj.isRemote && e instanceof EntityLivingBase ) {
             ((EntityLivingBase) e).addPotionEffect(new PotionEffect(Potion.moveSlowdown.getId(), this.duration, this.level));
+            this.setDead();
+            return false;
         }
 
         return super.onPreHit(e, dmgSource, dmg);

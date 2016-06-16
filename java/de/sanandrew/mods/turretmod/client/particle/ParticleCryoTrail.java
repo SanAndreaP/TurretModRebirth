@@ -17,20 +17,24 @@ public class ParticleCryoTrail
     public ParticleCryoTrail(World world, double x, double y, double z, double datX, double datY, double datZ) {
         super(world, x, y, z, datX, datY, datZ);
 
+        this.motionX = datX;
+        this.motionY = datY;
+        this.motionZ = datZ;
+
         float f = this.rand.nextFloat() * 0.1F + 0.2F;
         this.particleRed = f + 0.2F;
         this.particleGreen = f + 0.5F;
         this.particleBlue = f + 0.7F;
 
-        this.motionY = -0.1F;
+//        this.motionY = -0.002F;
 
         this.setParticleTextureIndex(65);
         this.setSize(0.02F, 0.02F);
 
         this.particleScale = 1.25F - (float) this.rand.nextGaussian() * 0.25F;
-        this.motionX *= 0.02D;
-        this.motionY *= 0.02D;
-        this.motionZ *= 0.02D;
+//        this.motionX *= 0.02D + datX;
+//        this.motionY *= 0.02D + datY;
+//        this.motionZ *= 0.02D + datZ;
         this.particleMaxAge = 30;
     }
 
