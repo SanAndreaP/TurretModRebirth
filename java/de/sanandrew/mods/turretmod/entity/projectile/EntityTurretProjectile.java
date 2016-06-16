@@ -293,20 +293,6 @@ public abstract class EntityTurretProjectile
 
                         this.knockBackEntity(living, deltaX, deltaZ);
 
-//                        float kbStrengthXZ = this.getKnockbackStrengthH();
-//                        float kbStrengthY = this.getKnockbackStrengthV();
-//                        if( kbStrengthXZ > 0.0001 ) {
-//                            this.knockBackEntity(living, deltaX * kbStrengthXZ, deltaZ * kbStrengthXZ);
-//                        }
-//                        living.motionY = preHitMotionY + kbStrengthY;
-
-//                        float knockback = this.getKnockbackStrengthH() - 0.6F;
-//                        double horizMotion = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
-//
-//                        if( horizMotion > 0.0F ) {
-//                            hitObj.entityHit.addVelocity(this.motionX * knockback * 0.6D / horizMotion, this.getKnockbackStrengthV() - 0.4F, this.motionZ * knockback * 0.6D / horizMotion);
-//                        }
-
                         if( this.shooterCache instanceof EntityLivingBase ) {
                             EnchantmentHelper.func_151384_a(living, this.shooterCache);
                             EnchantmentHelper.func_151385_b((EntityLivingBase) this.shooterCache, living);

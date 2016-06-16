@@ -14,6 +14,7 @@ import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.util.Resources;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -113,7 +114,7 @@ public class EntityTurretCryolator
 
         @Override
         public String getShootSound() {
-            return "random.bow";
+            return TurretModRebirth.ID + ":shoot.cryolator";
         }
 
         @Override

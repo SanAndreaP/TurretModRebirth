@@ -277,7 +277,7 @@ public abstract class TargetProcessor
         if( this.hasAmmo() ) {
             Entity projectile = (Entity) this.getProjectile();
             this.turret.worldObj.spawnEntityInWorld(projectile);
-            this.turret.worldObj.playSoundAtEntity(this.turret, this.getShootSound(), 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
+            this.turret.worldObj.playSoundAtEntity(this.turret, this.getShootSound(), 1.8F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
             this.ammoCount--;
         } else {
             this.turret.worldObj.playSoundAtEntity(this.turret, this.getLowAmmoSound(), 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);

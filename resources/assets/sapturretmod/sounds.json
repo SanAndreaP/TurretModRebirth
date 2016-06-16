@@ -35,6 +35,10 @@
     "category": "neutral",
     "sounds": ["shoot/shotgun"]
 },
+"shoot.cryolator": {
+  "category": "neutral",
+  "sounds": ["shoot/cryolator"]
+},
 "shoot.minigun": {
     "category": "neutral",
     "sounds": ["shoot/minigun"]
