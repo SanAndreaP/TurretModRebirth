@@ -11,7 +11,6 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.EntityAIAttackOnCollide;
 import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.ai.EntityAIMoveTowardsTarget;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntityZombie;
@@ -39,10 +38,10 @@ public abstract class EntityTurretProjectile
         extends Entity
         implements IProjectile, IEntityAdditionalSpawnData
 {
-    private UUID shooterUUID;
-    private Entity shooterCache;
-    private UUID targetUUID;
-    private Entity targetCache;
+    protected UUID shooterUUID;
+    protected Entity shooterCache;
+    protected UUID targetUUID;
+    protected Entity targetCache;
 
     public EntityTurretProjectile(World world) {
         super(world);
@@ -187,7 +186,7 @@ public abstract class EntityTurretProjectile
 
         Entity entity = null;
         AxisAlignedBB checkBB = this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D);
-//        if( this.boundingBox. )
+
         List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, checkBB);
         double minDist = 0.0D;
         float collisionRange;
@@ -262,25 +261,8 @@ public abstract class EntityTurretProjectile
                             living.setArrowCountInEntity(living.getArrowCountInEntity() + 1);
                         }
 
-                        if( living instanceof EntityCreature && TmrUtils.getIsAIEnabled(living) && this.shooterCache instanceof EntityLivingBase ) {
-                            EntityCreature creature = (EntityCreature) living;
-                            EntityAIBase ai = TmrUtils.getAIFromTaskList(creature.targetTasks.taskEntries, EntityAIAttackTurret.class);
-                            if( ai == null ) {
-                                ai = new EntityAIAttackTurret(creature, new RevengeEntitySelector(this.shooterCache));
-                                creature.targetTasks.taskEntries.clear();
-                                creature.targetTasks.addTask(0, ai);
-                            } else {
-                                ((EntityAIAttackTurret) ai).overrideTarget(this.shooterCache);
-                            }
-                            ((EntityCreature) living).setAttackTarget((EntityLivingBase) this.shooterCache);
-
-                            if( creature instanceof EntityZombie ) {
-                                EntityAIBase aiTgtFollow = TmrUtils.getAIFromTaskList(creature.tasks.taskEntries, EntityAIMoveTowardsTarget.class);
-                                if( aiTgtFollow == null ) {
-                                    creature.tasks.addTask(2, new EntityAIMoveTowardsTarget(creature, 0.9D, 32.0F));
-                                    creature.tasks.addTask(1, new EntityAIAttackOnCollide(creature, EntityTurret.class, 1.0D, true));
-                                }
-                            }
+                        if( living instanceof EntityCreature && this.shooterCache instanceof EntityTurret ) {
+                            setEntityTarget((EntityCreature) living, (EntityTurret) this.shooterCache);
                         }
 
                         double deltaX = this.posX - living.posX;
@@ -307,6 +289,31 @@ public abstract class EntityTurretProjectile
         }
     }
 
+    public static void setEntityTarget(EntityCreature target, EntityTurret attacker) {
+        if( TmrUtils.getIsAIEnabled(target) ) {
+            EntityAIBase ai = TmrUtils.getAIFromTaskList(target.targetTasks.taskEntries, EntityAIAttackTurret.class);
+            if( ai == null ) {
+                ai = new EntityAIAttackTurret(target, new RevengeEntitySelector(attacker));
+                target.targetTasks.taskEntries.clear();
+                target.targetTasks.addTask(0, ai);
+            } else if( !ai.continueExecuting() ) {
+                ((EntityAIAttackTurret) ai).overrideTarget(attacker);
+            }
+            target.setAttackTarget(attacker);
+
+            if( target instanceof EntityZombie ) {
+                EntityAIBase aiTgtFollow = TmrUtils.getAIFromTaskList(target.tasks.taskEntries, EntityAIMoveTowardsTurret.class);
+                if( aiTgtFollow == null ) {
+                    target.tasks.addTask(2, new EntityAIMoveTowardsTurret(target, attacker, 0.9D, 32.0F));
+                    target.tasks.addTask(1, new EntityAIAttackOnCollide(target, EntityTurret.class, 1.0D, true));
+                } else if( !aiTgtFollow.continueExecuting() ) {
+                    ((EntityAIMoveTowardsTurret) aiTgtFollow).setNewTurret(attacker);
+                }
+            }
+        } else {
+            target.setTarget(attacker);
+        }
+    }
 
     public void knockBackEntity(EntityLivingBase living, double deltaX, double deltaZ) {
         if( this.rand.nextDouble() >= living.getEntityAttribute(SharedMonsterAttributes.knockbackResistance).getAttributeValue() ) {
@@ -328,6 +335,7 @@ public abstract class EntityTurretProjectile
     }
 
     protected void processHit(MovingObjectPosition hitObj) {
+        this.playSound(this.getRicochetSound(), 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
         this.setDead();
     }
 
@@ -340,6 +348,8 @@ public abstract class EntityTurretProjectile
     public abstract float getKnockbackStrengthH();
 
     public abstract float getKnockbackStrengthV();
+
+    public abstract String getRicochetSound();
 
     public double getScatterValue() {
         return 0.0F;
@@ -421,26 +431,13 @@ public abstract class EntityTurretProjectile
     public void readSpawnData(ByteBuf buffer) {
         this.rotationYaw = buffer.readFloat();
         this.rotationPitch = buffer.readFloat();
-//        int eId = buffer.readInt();
+
         if( buffer.readBoolean() ) {
             this.shooterCache = this.worldObj.getEntityByID(buffer.readInt());
-//            if( this.shooterCache != null ) {
-//                this.shooterUUID = this.shooterCache.getUniqueID();
-//            }
         }
         if( buffer.readBoolean() ) {
             this.targetCache = this.worldObj.getEntityByID(buffer.readInt());
-//            if( this.targetCache != null ) {
-//                this.targetUUID = this.targetCache.getUniqueID();
-//            }
         }
-//        try {
-//            this.shooterUUID = UUID.fromString(ByteBufUtils.readUTF8String(buffer));
-//        } catch( IllegalArgumentException ignored ) { }
-//        try {
-//            this.targetUUID = UUID.fromString(ByteBufUtils.readUTF8String(buffer));
-//        } catch( IllegalArgumentException ignored ) { }
-//        this.entityInit();
     }
 
     public abstract float getArc();
@@ -472,11 +469,6 @@ public abstract class EntityTurretProjectile
 
         public void overrideTarget(Entity target) {
             this.selector.target = target;
-        }
-
-        @Override
-        public void startExecuting() {
-            super.startExecuting();
         }
     }
 }

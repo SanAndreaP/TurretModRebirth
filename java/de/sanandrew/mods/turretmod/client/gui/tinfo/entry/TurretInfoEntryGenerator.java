@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
-import de.sanandrew.mods.turretmod.tileentity.TileEntityPotatoGenerator;
+import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.util.CraftingRecipes;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -40,7 +40,7 @@ public class TurretInfoEntryGenerator
     public void drawPage(GuiTurretInfo gui, int mouseX, int mouseY, int scrollY, float partTicks) {
         super.drawPage(gui, mouseX, mouseY, scrollY, partTicks);
 
-        Map<Item, TileEntityPotatoGenerator.Fuel> fuels = TileEntityPotatoGenerator.getFuels();
+        Map<Item, TileEntityElectrolyteGenerator.Fuel> fuels = TileEntityElectrolyteGenerator.getFuels();
         List<Item> fuelItems = new ArrayList<>(fuels.keySet());
 
         this.drawHeight = super.getPageHeight() + 3;
@@ -71,7 +71,7 @@ public class TurretInfoEntryGenerator
         Gui.drawRect(0, 0, MAX_ENTRY_WIDTH, 48, 0xD0000000);
 
         mc.fontRenderer.drawString(String.format("§e%s", TmrClientUtils.getTooltipWithoutShift(tooltipItem).get(0)), 22, 2, 0xFFFFFFFF, false);
-        TileEntityPotatoGenerator.Fuel fuel = TileEntityPotatoGenerator.getFuel(tooltipItem.getItem());
+        TileEntityElectrolyteGenerator.Fuel fuel = TileEntityElectrolyteGenerator.getFuel(tooltipItem.getItem());
         mc.fontRenderer.drawString(String.format(Lang.translate(Lang.TINFO_ENTRY_EFFICIENCY), fuel.effect), 22, 11, 0xFFFFFFFF, false);
         mc.fontRenderer.drawString(String.format(Lang.translate(Lang.TINFO_ENTRY_DECAY), TmrClientUtils.getTimeFromTicks(fuel.ticksProc)), 22, 20, 0xFFFFFFFF, false);
         mc.fontRenderer.drawString(String.format("§a%s", TmrClientUtils.getTooltipWithoutShift(fuel.trash).get(0)), 32, 29, 0xFFFFFFFF, false);

@@ -24,7 +24,7 @@ import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
-import de.sanandrew.mods.turretmod.tileentity.TileEntityPotatoGenerator;
+import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -66,7 +66,7 @@ public class TurretModRebirth
         ItemRegistry.initialize();
         TurretAssemblyRecipes.initialize();
 
-        TileEntityPotatoGenerator.initializeRecipes();
+        TileEntityElectrolyteGenerator.initializeRecipes();
 
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
 

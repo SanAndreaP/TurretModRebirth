@@ -298,7 +298,7 @@ public class GuiTurretAssembly
                 cnt = String.valueOf('\u221E');
             }
 
-            this.frDetails.drawString(Lang.TASSEMBLY_CRAFTING, this.guiLeft + 156, this.guiTop + 40, 0xFF303030);
+            this.frDetails.drawString(Lang.translate(Lang.TASSEMBLY_CRAFTING), this.guiLeft + 156, this.guiTop + 40, 0xFF303030);
             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
             RenderHelper.enableGUIStandardItemLighting();
             this.drawItemStack(this.assembly.currCrafting.getValue1(), this.guiLeft + 190, this.guiTop + 36, 200.0F, false);

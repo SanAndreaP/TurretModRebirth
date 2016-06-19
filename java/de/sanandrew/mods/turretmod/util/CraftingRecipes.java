@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.util;
 
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
+import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -42,5 +43,7 @@ public final class CraftingRecipes
                 'C', Items.cauldron,
                 'P', Items.repeater);
         CraftingManager.getInstance().getRecipeList().add(potatoGenerator);
+
+        CraftingManager.getInstance().addShapelessRecipe(new ItemStack(ItemRegistry.turretInfo, 1), Items.writable_book, Blocks.dispenser);
     }
 }

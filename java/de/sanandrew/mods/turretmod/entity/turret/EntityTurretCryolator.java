@@ -8,6 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.entity.turret;
 
+import de.sanandrew.mods.turretmod.client.event.RenderForcefieldHandler;
+import de.sanandrew.mods.turretmod.client.util.ForcefieldProvider;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCryoCell;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
@@ -15,10 +17,12 @@ import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import net.darkhax.bookshelf.lib.ColorObject;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -88,6 +92,11 @@ public class EntityTurretCryolator
         super.applyEntityAttributes();
 
         this.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).setBaseValue(20.0D);
+    }
+
+    @Override
+    public void onUpdate() {
+        super.onUpdate();
     }
 
     @Override

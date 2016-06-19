@@ -21,6 +21,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -120,10 +121,12 @@ public class GuiTcuInfo
 
         if( tgtProc.hasAmmo() ) {
             GL11.glColor3f(1.0F, 1.0F, 1.0F);
+            RenderHelper.enableGUIStandardItemLighting();
             this.drawItemStack(tgtProc.getAmmoStack(), this.guiLeft + 21, this.guiTop + 49);
-            GL11.glTranslated(0.0D, 0.0D, 300.0D);
+            RenderHelper.disableStandardItemLighting();
+            GL11.glTranslated(0.0D, 0.0D, 32.0D);
             this.frAmmoItem.drawStringWithShadow(value, this.guiLeft + 38 - this.frAmmoItem.getStringWidth(value), this.guiTop + 58, 0xFFFFFFFF);
-            GL11.glTranslated(0.0D, 0.0D, -300.0D);
+            GL11.glTranslated(0.0D, 0.0D, -32.0D);
             GL11.glColor3f(1.0F, 1.0F, 1.0F);
         }
 
@@ -177,13 +180,10 @@ public class GuiTcuInfo
 
     private void drawItemStack(ItemStack stack, int x, int y) {
         GL11.glTranslatef(0.0F, 0.0F, 32.0F);
-        this.zLevel = 200.0F;
-        itemRender.zLevel = 200.0F;
+        itemRender.zLevel = -50.0F;
         itemRender.renderItemAndEffectIntoGUI(this.frAmmoItem, this.mc.getTextureManager(), stack, x, y);
-        this.zLevel = 0.0F;
         itemRender.zLevel = 0.0F;
         GL11.glTranslatef(0.0F, 0.0F, -32.0F);
-        GL11.glDisable(GL11.GL_LIGHTING);
     }
 
     @Override

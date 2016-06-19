@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.entity.projectile;
 
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
@@ -36,10 +37,8 @@ public class EntityProjectilePebble
     }
 
     @Override
-    protected void processHit(MovingObjectPosition hitObj) {
-        super.processHit(hitObj);
-
-//        this.playSound("random.bowhit", 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
+    public String getRicochetSound() {
+        return TurretModRebirth.ID + ":ricochet.bullet";
     }
 
     @Override

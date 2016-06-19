@@ -16,6 +16,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
+import de.sanandrew.mods.turretmod.client.event.RenderForcefieldHandler;
 import de.sanandrew.mods.turretmod.client.event.RenderWorldLastHandler;
 import de.sanandrew.mods.turretmod.client.gui.GuiPotatoGenerator;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiAssemblyFilter;
@@ -35,6 +36,7 @@ import de.sanandrew.mods.turretmod.client.render.item.ItemRendererTile;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderPebble;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderNothingness;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderTurretArrow;
+import de.sanandrew.mods.turretmod.client.render.tileentity.RenderElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.client.render.tileentity.RenderTurretAssembly;
 import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
@@ -45,7 +47,7 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.tileentity.TileEntityPotatoGenerator;
+import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.CommonProxy;
 import de.sanandrew.mods.turretmod.util.EnumGui;
@@ -88,7 +90,11 @@ public class ClientProxy
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCryoCell.class, new RenderNothingness());
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurretAssembly.class, new RenderTurretAssembly());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityElectrolyteGenerator.class, new RenderElectrolyteGenerator());
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlockRegistry.assemblyTable), new ItemRendererTile(new TileEntityTurretAssembly(true)));
+        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlockRegistry.potatoGenerator), new ItemRendererTile(new TileEntityElectrolyteGenerator(true), 0.8F));
+
+        MinecraftForge.EVENT_BUS.register(RenderForcefieldHandler.INSTANCE);
 
         FMLCommonHandler.instance().bus().register(new ClientTickHandler());
 
@@ -138,8 +144,8 @@ public class ClientProxy
                     break;
                 case GUI_POTATOGEN:
                     te = world.getTileEntity(x, y, z);
-                    if( te instanceof TileEntityPotatoGenerator ) {
-                        return new GuiPotatoGenerator(player.inventory, (TileEntityPotatoGenerator) te);
+                    if( te instanceof TileEntityElectrolyteGenerator ) {
+                        return new GuiPotatoGenerator(player.inventory, (TileEntityElectrolyteGenerator) te);
                     }
                 case GUI_TINFO:
                     return new GuiTurretInfo(x, y);

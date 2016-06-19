@@ -90,6 +90,11 @@ sapturretmod.tinfo.ammo.cryocell.name=Cryo Cell
 sapturretmod.tinfo.ammo.cryocell.desc=This ammunition used by the §3Cryolator Turret§0 comes in 3 versions, which applies different slowness effects:\n§3Cell SG1§0: Slowness I for 15s\n§3Cell SG2§0: Slowness III for 10s\n§3Cell SG3§0: Slowness V for 5s.\n\nDoes not apply immunity and any damage to the target.\n\nCan be packaged, whose items will provide 16x ammo.
 
 gui.sapturretmod.tinfo.infoTitle=Info about this mod
+gui.sapturretmod.tinfo.category.turrets.name=Turrets
+gui.sapturretmod.tinfo.category.ammo.name=Ammunition
+gui.sapturretmod.tinfo.category.upgrades.name=Upgrades
+gui.sapturretmod.tinfo.category.upgrades.name=Upgrades
+gui.sapturretmod.tinfo.category.upgrades.name=Upgrades
 gui.sapturretmod.tinfo.health=Health
 gui.sapturretmod.tinfo.range=Range
 gui.sapturretmod.tinfo.ammocap=Ammo Capacity

@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.tileentity;
 
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
+import cpw.mods.fml.common.network.ByteBufUtils;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
@@ -37,7 +38,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TileEntityPotatoGenerator
+public class TileEntityElectrolyteGenerator
         extends TileEntity
         implements ISidedInventory, TileClientSync, IEnergyProvider
 {
@@ -49,10 +50,11 @@ public class TileEntityPotatoGenerator
     public short[] progress = new short[9];
     public short[] maxProgress = new short[this.progress.length];
     public float effectiveness;
+    public boolean isItemRendered;
 
     private ItemStack[] invStacks = new ItemStack[23];
     private static final int[] SLOTS_INSERT = new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8};
-    private static final int[] SLOTS_PROCESSING = new int[] {9, 10, 11, 12, 13, 14, 15, 16, 17};
+    public static final int[] SLOTS_PROCESSING = new int[] {9, 10, 11, 12, 13, 14, 15, 16, 17};
     private static final int[] SLOTS_EXTRACT = new int[] {18, 19, 20, 21, 22};
     private ItemStack[] progExcessComm = new ItemStack[this.progress.length];
     private ItemStack[] progExcessRare = new ItemStack[this.progress.length];
@@ -66,6 +68,14 @@ public class TileEntityPotatoGenerator
     private static final Map<Item, Fuel> FUELS = new HashMap<>(3);
 
     private String customName;
+
+    public TileEntityElectrolyteGenerator() {
+        this.isItemRendered = false;
+    }
+
+    public TileEntityElectrolyteGenerator(boolean itemRendered) {
+        this.isItemRendered = itemRendered;
+    }
 
     public static void initializeRecipes() {
         FUELS.put(Items.potato, new Fuel(1.0F, (short) 200, new ItemStack(Items.sugar, 1), new ItemStack(Items.baked_potato, 1)));
@@ -172,18 +182,19 @@ public class TileEntityPotatoGenerator
                     if( direction == ForgeDirection.UP ) {
                         continue;
                     }
+                    ForgeDirection otherDir = direction.getOpposite();
 
                     TileEntity te = this.worldObj.getTileEntity(this.xCoord + direction.offsetX, this.yCoord + direction.offsetY, this.zCoord + direction.offsetZ);
 
                     if( te instanceof IEnergyReceiver ) {
                         IEnergyReceiver receiver = (IEnergyReceiver) te;
 
-                        if( !receiver.canConnectEnergy(direction) ) {
+                        if( !receiver.canConnectEnergy(otherDir) ) {
                             continue;
                         }
 
                         int extractable = this.extractEnergy(direction, MAX_FLUX_EXTRACT, true);
-                        int receivable = receiver.receiveEnergy(direction.getOpposite(), extractable, false);
+                        int receivable = receiver.receiveEnergy(otherDir, extractable, false);
 
                         this.extractEnergy(direction, receivable, false);
                     }
@@ -385,6 +396,9 @@ public class TileEntityPotatoGenerator
         for( short s : this.maxProgress ) {
             buf.writeShort(s);
         }
+        for( int slot : SLOTS_PROCESSING ) {
+            ByteBufUtils.writeItemStack(buf, this.getStackInSlot(slot));
+        }
     }
 
     @Override
@@ -396,6 +410,9 @@ public class TileEntityPotatoGenerator
         }
         for( int i = 0; i < this.maxProgress.length; i++ ) {
             this.maxProgress[i] = buf.readShort();
+        }
+        for( int slot : SLOTS_PROCESSING ) {
+            this.setInventorySlotContents(slot, ByteBufUtils.readItemStack(buf));
         }
     }
 

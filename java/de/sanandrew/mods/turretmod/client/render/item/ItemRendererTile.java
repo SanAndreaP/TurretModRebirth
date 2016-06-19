@@ -17,9 +17,16 @@ public class ItemRendererTile
         implements IItemRenderer
 {
     private TileEntity tile;
+    private float blockScale;
 
     public ItemRendererTile(TileEntity renderedTile) {
         this.tile = renderedTile;
+        this.blockScale = 1.0F;
+    }
+
+    public ItemRendererTile(TileEntity renderedTile, float scale) {
+        this.tile = renderedTile;
+        this.blockScale = scale;
     }
 
     @Override
@@ -43,6 +50,8 @@ public class ItemRendererTile
             GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
         }
 
+        GL11.glScalef(this.blockScale, this.blockScale, this.blockScale);
+        GL11.glTranslatef((1.0F - blockScale) * 1.2F, -1.0F + blockScale, 0.0F);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
         TileEntityRendererDispatcher.instance.renderTileEntityAt(this.tile, 0.0D, 0.0D, 0.0D, 0.0F);
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);

@@ -19,6 +19,7 @@ public final class Lang
     public static final String TCU_PAGE_TITLE = String.format("gui.%s.tcu.page.%%s.title", TurretModRebirth.ID);
     public static final String TCU_PAGE_TAB = String.format("gui.%s.tcu.page.%%s.tab", TurretModRebirth.ID);
 
+    public static final String TINFO_CATEGORY_NAME = String.format("gui.%s.tinfo.category.%%s.name", TurretModRebirth.ID);
     public static final String TINFO_ENTRY_INFO_TITLE = String.format("gui.%s.tinfo.infoTitle", TurretModRebirth.ID);
     public static final String TINFO_ENTRY_AMMO_NAME = String.format("%s.tinfo.ammo.%%s.name", TurretModRebirth.ID);
     public static final String TINFO_ENTRY_AMMO_DESC = String.format("%s.tinfo.ammo.%%s.desc", TurretModRebirth.ID);

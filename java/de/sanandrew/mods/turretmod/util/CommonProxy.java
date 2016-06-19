@@ -28,7 +28,7 @@ import de.sanandrew.mods.turretmod.inventory.ContainerTurretUpgrades;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketOpenGui;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
-import de.sanandrew.mods.turretmod.tileentity.TileEntityPotatoGenerator;
+import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import net.darkhax.bookshelf.lib.javatuples.Tuple;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
@@ -83,8 +83,8 @@ public class CommonProxy
                     break;
                 case GUI_POTATOGEN:
                     te = world.getTileEntity(x, y, z);
-                    if( te instanceof TileEntityPotatoGenerator ) {
-                        return new ContainerPotatoGenerator(player.inventory, (TileEntityPotatoGenerator) te);
+                    if( te instanceof TileEntityElectrolyteGenerator ) {
+                        return new ContainerPotatoGenerator(player.inventory, (TileEntityElectrolyteGenerator) te);
                     }
 
             }

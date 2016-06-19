@@ -13,6 +13,7 @@ import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntry;
 import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.util.EnumGui;
+import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
@@ -132,7 +133,7 @@ public class GuiTurretInfo
             this.entry.drawPage(this, mouseX - this.entryX, mouseY - this.entryY, Math.round(this.scroll * this.dHeight), partTicks);
         } else if( this.category != null ) {
             this.dHeight = this.entryButtons.size() * 14 + 20 - TurretInfoEntry.MAX_ENTRY_HEIGHT;
-            this.fontRendererObj.drawString(EnumChatFormatting.ITALIC + this.category.getTitle(), 2, 2, 0xFF33AA33, false);
+            this.fontRendererObj.drawString(EnumChatFormatting.ITALIC + Lang.translate(this.category.getTitle()), 2, 2, 0xFF33AA33, false);
             Gui.drawRect(2, 12, TurretInfoEntry.MAX_ENTRY_WIDTH - 2, 13, 0xFF33AA33);
 
         }
@@ -165,10 +166,27 @@ public class GuiTurretInfo
 
         if( this.categoryHighlight != null ) {
             GL11.glPushMatrix();
-            GL11.glTranslatef(this.entryX, this.entryY, 32.0F);
-            Gui.drawRect(0, TurretInfoEntry.MAX_ENTRY_HEIGHT / 2, TurretInfoEntry.MAX_ENTRY_WIDTH, TurretInfoEntry.MAX_ENTRY_HEIGHT, 0x80000000);
-            this.fontRendererObj.drawString(this.categoryHighlight.getTitle(), 2, TurretInfoEntry.MAX_ENTRY_HEIGHT / 2 + 2, 0xFFFF80A0);
-            this.fontRendererObj.drawSplitString(this.categoryHighlight.getDesc(), 2, TurretInfoEntry.MAX_ENTRY_HEIGHT / 2 + 2 + 9, TurretInfoEntry.MAX_ENTRY_WIDTH - 4, 0xFFFF80A0);
+            GL11.glTranslatef(mouseX + 12, mouseY - 12, 32.0F);
+
+            String title = Lang.translate(this.categoryHighlight.getTitle());
+            int bkgColor = 0xF0101000;
+            int lightBg = 0x5050FF00;
+            int darkBg = (lightBg & 0xFEFEFE) >> 1 | lightBg & 0xFF000000;
+            int textWidth = this.fontRendererObj.getStringWidth(title);
+            int tHeight = 8;
+
+            this.drawGradientRect(-3, -4, textWidth + 3, -3, bkgColor, bkgColor);
+            this.drawGradientRect(-3, tHeight + 3, textWidth + 3,  tHeight + 4, bkgColor, bkgColor);
+            this.drawGradientRect(-3, -3, textWidth + 3, tHeight + 3, bkgColor, bkgColor);
+            this.drawGradientRect(-4, -3, -3, tHeight + 3, bkgColor, bkgColor);
+            this.drawGradientRect(textWidth + 3, -3,  textWidth + 4,  tHeight + 3, bkgColor, bkgColor);
+
+            this.drawGradientRect(-3, -3 + 1, -3 + 1, tHeight + 3 - 1, lightBg, darkBg);
+            this.drawGradientRect(textWidth + 2, -3 + 1, textWidth + 3, tHeight + 3 - 1, lightBg, darkBg);
+            this.drawGradientRect(-3, -3,  textWidth + 3, -3 + 1, lightBg, lightBg);
+            this.drawGradientRect(-3, tHeight + 2, textWidth + 3, tHeight + 3, darkBg, darkBg);
+
+            this.fontRendererObj.drawString(title, 0, 0, 0xFFFFFFFF, true);
             GL11.glPopMatrix();
             this.categoryHighlight = null;
         }

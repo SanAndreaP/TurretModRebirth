@@ -73,16 +73,16 @@
   "category": "neutral",
   "sounds": ["shoot/artillery"]
 },
- "ricochet.bullet": {
-   "category": "neutral",
-   "sounds": [
-     "ricochet/bullet1",
-     "ricochet/bullet2",
-     "ricochet/bullet3",
-     "ricochet/bullet4",
-     "ricochet/bullet5"
-   ]
- },
+"ricochet.bullet": {
+  "category": "neutral",
+  "sounds": [
+    "ricochet/bullet1",
+    "ricochet/bullet2",
+    "ricochet/bullet3",
+    "ricochet/bullet4",
+    "ricochet/bullet5"
+  ]
+},
 "ricochet.splash": {
     "category": "neutral",
     "sounds": ["ricochet/splash1"]

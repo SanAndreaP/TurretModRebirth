@@ -8,10 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.inventory;
 
-import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.tileentity.TileEntityPotatoGenerator;
-import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
+import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -22,9 +19,9 @@ import net.minecraft.item.ItemStack;
 public class ContainerPotatoGenerator
         extends Container
 {
-    private TileEntityPotatoGenerator tile;
+    private TileEntityElectrolyteGenerator tile;
 
-    public ContainerPotatoGenerator(IInventory playerInv, TileEntityPotatoGenerator generator) {
+    public ContainerPotatoGenerator(IInventory playerInv, TileEntityElectrolyteGenerator generator) {
         this.tile = generator;
 
         for( int i = 0; i < 9; i++ ) {
@@ -175,9 +172,9 @@ public class ContainerPotatoGenerator
     public static class SlotIngredients
             extends Slot
     {
-        private final TileEntityPotatoGenerator generator;
+        private final TileEntityElectrolyteGenerator generator;
 
-        public SlotIngredients(TileEntityPotatoGenerator generator, int id, int x, int y) {
+        public SlotIngredients(TileEntityElectrolyteGenerator generator, int id, int x, int y) {
             super(generator, id, x, y);
             this.generator = generator;
         }

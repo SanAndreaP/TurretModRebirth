@@ -47,6 +47,7 @@ public enum Resources
     TILE_ITEM_TRANSMITTER("textures/blocks/item_transmitter.png"),
     TILE_ITEM_TRANSMITTER_GLOW("textures/blocks/item_transmitter_glow.png"),
     TILE_TURRET_ASSEMBLY("textures/blocks/turret_assembly.png"),
+    TILE_ELECTROLYTE_GEN("textures/blocks/electrolyte_gen.png"),
 
     SHADER_CATEGORY_BUTTON_FRAG("shader/categorybtn.frag"),
     SHADER_GRAYSCALE_FRAG("shader/grayscale.frag");

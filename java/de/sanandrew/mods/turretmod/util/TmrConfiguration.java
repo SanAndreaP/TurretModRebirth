@@ -23,6 +23,7 @@ public final class TmrConfiguration
 
     public static int glSecondaryTextureUnit = 7;
     public static boolean renderUpgrades = true;
+    public static boolean calcForcefieldIntf = true;
 
     public static void initConfiguration(FMLPreInitializationEvent event) {
         config = new Configuration(event.getSuggestedConfigurationFile(), "1.0.0", true);
@@ -38,6 +39,9 @@ public final class TmrConfiguration
 
         desc = "Render the upgrades on the turret. Disable this for more performance";
         renderUpgrades = config.getBoolean("renderUpgrades", CAT_CLIENT, renderUpgrades, desc);
+
+        desc = "Calculate Interceptions of adjacent forcefields. Disable this to gain a performance boost, but be aware it might clutter the screen if many forcefields are operating.";
+        calcForcefieldIntf = config.getBoolean("calcForcefieldIntf", CAT_CLIENT, calcForcefieldIntf, desc);
 
         if( config.hasChanged() ) {
             config.save();

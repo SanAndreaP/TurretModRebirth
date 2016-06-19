@@ -14,6 +14,7 @@ import net.darkhax.bookshelf.lib.util.ReflectionUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.ai.EntityAIMoveTowardsTarget;
 import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
@@ -105,6 +106,10 @@ public class TmrUtils
         }
 
         return ReflectionUtils.getCachedFieldValue(EntityLivingBase.class, entity, "lastDamage", "field_110153_bc");
+    }
+
+    public static void setAiMoveTowardsTargetEntity(EntityAIMoveTowardsTarget ai, EntityLivingBase e) {
+        ReflectionUtils.setCachedFieldValue(EntityAIMoveTowardsTarget.class, ai, "targetEntity", "field_75429_b", e);
     }
 
     public static short getShortTagAt(NBTTagList list, int index) {

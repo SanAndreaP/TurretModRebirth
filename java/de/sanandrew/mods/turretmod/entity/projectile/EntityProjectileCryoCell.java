@@ -8,10 +8,12 @@
  */
 package de.sanandrew.mods.turretmod.entity.projectile;
 
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.darkhax.bookshelf.lib.javatuples.Triplet;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -89,11 +91,20 @@ public class EntityProjectileCryoCell
     public boolean onPreHit(Entity e, DamageSource dmgSource, float dmg) {
         if( !this.worldObj.isRemote && e instanceof EntityLivingBase ) {
             ((EntityLivingBase) e).addPotionEffect(new PotionEffect(Potion.moveSlowdown.getId(), this.duration, this.level));
+            if( e instanceof EntityCreature && this.shooterCache instanceof EntityTurret ) {
+                setEntityTarget((EntityCreature) e, (EntityTurret) this.shooterCache);
+            }
+            this.playSound(this.getRicochetSound(), 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
             this.setDead();
             return false;
         }
 
         return super.onPreHit(e, dmgSource, dmg);
+    }
+
+    @Override
+    public String getRicochetSound() {
+        return TurretModRebirth.ID + ":ricochet.splash";
     }
 
     @Override

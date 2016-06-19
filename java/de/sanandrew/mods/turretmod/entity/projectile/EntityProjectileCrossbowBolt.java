@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.entity.projectile;
 
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -34,10 +35,8 @@ public class EntityProjectileCrossbowBolt
     }
 
     @Override
-    protected void processHit(MovingObjectPosition hitObj) {
-        super.processHit(hitObj);
-
-        this.playSound("random.bowhit", 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
+    public String getRicochetSound() {
+        return "random.bowhit";
     }
 
     @Override

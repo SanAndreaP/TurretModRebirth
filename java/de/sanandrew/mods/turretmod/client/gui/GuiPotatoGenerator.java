@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.client.gui;
 
 import de.sanandrew.mods.turretmod.inventory.ContainerPotatoGenerator;
-import de.sanandrew.mods.turretmod.tileentity.TileEntityPotatoGenerator;
+import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -23,9 +23,9 @@ import org.lwjgl.opengl.GL12;
 public class GuiPotatoGenerator
         extends GuiContainer
 {
-    TileEntityPotatoGenerator generator;
+    TileEntityElectrolyteGenerator generator;
 
-    public GuiPotatoGenerator(InventoryPlayer invPlayer, TileEntityPotatoGenerator tile) {
+    public GuiPotatoGenerator(InventoryPlayer invPlayer, TileEntityElectrolyteGenerator tile) {
         super(new ContainerPotatoGenerator(invPlayer, tile));
 
         this.generator = tile;
@@ -48,7 +48,7 @@ public class GuiPotatoGenerator
 
 
         int energy = this.generator.getEnergyStored(ForgeDirection.DOWN);
-        int maxEnergy = TileEntityPotatoGenerator.MAX_FLUX_STORAGE;
+        int maxEnergy = TileEntityElectrolyteGenerator.MAX_FLUX_STORAGE;
 
         double energyPerc = energy / (double) maxEnergy;
         int energyBarY = Math.max(0, Math.min(59, MathHelper.ceiling_double_int((1.0D - energyPerc) * 59.0D)));

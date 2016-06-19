@@ -100,6 +100,16 @@ public abstract class EntityTurret
     }
 
     @Override
+    protected String getHurtSound() {
+        return TurretModRebirth.ID + ":hit.turrethit";
+    }
+
+    @Override
+    protected String getDeathSound() {
+        return TurretModRebirth.ID + ":hit.turretDeath";
+    }
+
+    @Override
     protected boolean canDespawn() {
         return false;
     }
