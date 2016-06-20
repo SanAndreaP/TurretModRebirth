@@ -30,14 +30,14 @@ public class GuiSlimButton
             int center = this.width / 2;
             int textColor = 0xE0E0E0;
 
-            this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-            int hoverState = this.getHoverState(this.field_146123_n);
+            this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+            int hoverState = this.getHoverState(this.hovered);
 
             if( this.packedFGColour != 0 ) {
                 textColor = this.packedFGColour;
             } else if( !this.enabled ) {
                 textColor = 0xA0A0A0;
-            } else if( this.field_146123_n ) {
+            } else if( this.hovered ) {
                 textColor = 0xFFFFA0;
             }
 
@@ -48,7 +48,7 @@ public class GuiSlimButton
             this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 78 + hoverState * 12, center, this.height);
             this.drawTexturedModalRect(this.xPosition + center, this.yPosition, 158 - center, 78 + hoverState * 12, center, this.height);
             this.mouseDragged(mc, mouseX, mouseY);
-            this.drawCenteredString(mc.fontRenderer, this.displayString, this.xPosition + center, this.yPosition + (this.height - 8) / 2, textColor);
+            this.drawCenteredString(mc.fontRendererObj, this.displayString, this.xPosition + center, this.yPosition + (this.height - 8) / 2, textColor);
             GL11.glDisable(GL11.GL_BLEND);
         }
     }

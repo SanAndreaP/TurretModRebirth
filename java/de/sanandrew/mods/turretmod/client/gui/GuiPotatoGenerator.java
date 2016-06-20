@@ -15,8 +15,8 @@ import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.MathHelper;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -47,7 +47,7 @@ public class GuiPotatoGenerator
         }
 
 
-        int energy = this.generator.getEnergyStored(ForgeDirection.DOWN);
+        int energy = this.generator.getEnergyStored(EnumFacing.DOWN);
         int maxEnergy = TileEntityElectrolyteGenerator.MAX_FLUX_STORAGE;
 
         double energyPerc = energy / (double) maxEnergy;
@@ -69,7 +69,7 @@ public class GuiPotatoGenerator
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-        String s = this.generator.hasCustomInventoryName() ? this.generator.getInventoryName() : Lang.translate(this.generator.getInventoryName());
+        String s = this.generator.hasCustomName() ? this.generator.getName() : Lang.translate(this.generator.getName());
         this.fontRendererObj.drawString(s, this.xSize / 2 - this.fontRendererObj.getStringWidth(s) / 2, 6, 0x404040);
         this.fontRendererObj.drawString(Lang.translate(Lang.CONTAINER_INV), 8, this.ySize - 96 + 2, 0x404040);
 
@@ -79,7 +79,7 @@ public class GuiPotatoGenerator
     }
 
     private void drawRFluxLabel(int mouseX, int mouseY) {
-        String amount = String.format("%d / %d RF", this.generator.getEnergyStored(ForgeDirection.DOWN), this.generator.getMaxEnergyStored(ForgeDirection.DOWN));
+        String amount = String.format("%d / %d RF", this.generator.getEnergyStored(EnumFacing.DOWN), this.generator.getMaxEnergyStored(EnumFacing.DOWN));
 
         int textWidth = this.fontRendererObj.getStringWidth(amount);
         int xPos = mouseX + 12;

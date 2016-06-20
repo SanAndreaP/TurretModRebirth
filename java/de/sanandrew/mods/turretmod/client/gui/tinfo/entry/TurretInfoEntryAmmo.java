@@ -23,10 +23,11 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.EntityList;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.ARBMultitexture;
 import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.GL11;
@@ -72,7 +73,7 @@ public class TurretInfoEntryAmmo
     public void drawPage(GuiTurretInfo gui, int mouseX, int mouseY, int scrollY, float partTicks) {
         TurretAmmo ammo = this.ammos[this.shownAmmo];
 
-        gui.mc.fontRenderer.drawString(EnumChatFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 20, 0xFF0080BB);
+        gui.mc.fontRendererObj.drawString(TextFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 20, 0xFF0080BB);
         Gui.drawRect(2, 30, MAX_ENTRY_WIDTH - 2, 31, 0xFF0080BB);
 
         gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
@@ -81,17 +82,17 @@ public class TurretInfoEntryAmmo
 
         drawItem(gui.mc, 3, 35, ItemRegistry.ammo.getAmmoItem(1, ammo), 2.0F);
 
-        gui.mc.fontRenderer.drawString(this.txtRounds, 42, 34, 0xFF6A6A6A, false);
-        gui.mc.fontRenderer.drawString(String.format("%d", ammo.getAmmoCapacity()), 45, 43, 0xFF000000, false);
-        gui.mc.fontRenderer.drawString(this.txtDps, 42, 54, 0xFF6A6A6A, false);
-        gui.mc.fontRenderer.drawString(String.format(this.txtHealthVal, ammo.getInfoDamage()), 45, 63, 0xFF000000, false);
-        gui.mc.fontRenderer.drawString(this.txtTurret, 42, 74, 0xFF6A6A6A, false);
-        gui.mc.fontRenderer.drawString(Lang.translate(Lang.ENTITY_NAME, EntityList.classToStringMapping.get(ammo.getTurret())), 45, 83, 0xFF000000, false);
-        gui.mc.fontRenderer.drawString(this.txtCrft, 42, 94, 0xFF6A6A6A, false);
+        gui.mc.fontRendererObj.drawString(this.txtRounds, 42, 34, 0xFF6A6A6A, false);
+        gui.mc.fontRendererObj.drawString(String.format("%d", ammo.getAmmoCapacity()), 45, 43, 0xFF000000, false);
+        gui.mc.fontRendererObj.drawString(this.txtDps, 42, 54, 0xFF6A6A6A, false);
+        gui.mc.fontRendererObj.drawString(String.format(this.txtHealthVal, ammo.getInfoDamage()), 45, 63, 0xFF000000, false);
+        gui.mc.fontRendererObj.drawString(this.txtTurret, 42, 74, 0xFF6A6A6A, false);
+        gui.mc.fontRendererObj.drawString(Lang.translate(Lang.ENTITY_NAME, EntityList.CLASS_TO_NAME.get(ammo.getTurret())), 45, 83, 0xFF000000, false);
+        gui.mc.fontRendererObj.drawString(this.txtCrft, 42, 94, 0xFF6A6A6A, false);
 
         String text = Lang.translate(Lang.TINFO_ENTRY_AMMO_DESC, ammo.getInfoName()).replace("\\n", "\n");
-        gui.mc.fontRenderer.drawSplitString(text, 2, 117, MAX_ENTRY_WIDTH - 2, 0xFF000000);
-        this.drawHeight = gui.mc.fontRenderer.splitStringWidth(text, MAX_ENTRY_WIDTH - 2) + 2;
+        gui.mc.fontRendererObj.drawSplitString(text, 2, 117, MAX_ENTRY_WIDTH - 2, 0xFF000000);
+        this.drawHeight = gui.mc.fontRendererObj.splitStringWidth(text, MAX_ENTRY_WIDTH - 2) + 2;
 
         Gui.drawRect(2, 114, MAX_ENTRY_WIDTH - 2, 115, 0xFF0080BB);
 
@@ -142,7 +143,7 @@ public class TurretInfoEntryAmmo
                 int imageUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "image");
 
                 OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB);
-                GL11.glBindTexture(GL11.GL_TEXTURE_2D, texMgr.getTexture(texMgr.getResourceLocation(stack.getItemSpriteNumber())).getGlTextureId());
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, texMgr.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).getGlTextureId());
                 ARBShaderObjects.glUniform1iARB(imageUniform, 0);
             }
         };

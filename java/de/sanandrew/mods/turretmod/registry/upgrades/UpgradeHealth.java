@@ -53,7 +53,7 @@ public abstract class UpgradeHealth
     @Override
     public void onApply(EntityTurret turret) {
         if( !turret.worldObj.isRemote ) {
-            IAttributeInstance attrib = turret.getEntityAttribute(SharedMonsterAttributes.maxHealth);
+            IAttributeInstance attrib = turret.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH);
             if( attrib.getModifier(this.modifier.getID()) != null ) {
                 attrib.removeModifier(this.modifier);
             }
@@ -65,7 +65,7 @@ public abstract class UpgradeHealth
     @Override
     public void onRemove(EntityTurret turret) {
         if( !turret.worldObj.isRemote ) {
-            IAttributeInstance attrib = turret.getEntityAttribute(SharedMonsterAttributes.maxHealth);
+            IAttributeInstance attrib = turret.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH);
             if( attrib.getModifier(this.modifier.getID()) != null ) {
                 attrib.removeModifier(this.modifier);
                 turret.setHealth(Math.min(turret.getHealth(), turret.getMaxHealth()));

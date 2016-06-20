@@ -10,23 +10,19 @@ package de.sanandrew.mods.turretmod.network;
 
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import io.netty.buffer.ByteBuf;
-import net.darkhax.bookshelf.common.network.AbstractMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 
 public class PacketAssemblyToggleAutomate
-        extends AbstractMessage<PacketAssemblyToggleAutomate>
+        extends PacketRegistry.AbstractMessage<PacketAssemblyToggleAutomate>
 {
-    private int x;
-    private int y;
-    private int z;
+    private BlockPos pos;
 
     public PacketAssemblyToggleAutomate() { }
 
     public PacketAssemblyToggleAutomate(TileEntityTurretAssembly assembly) {
-        this.x = assembly.xCoord;
-        this.y = assembly.yCoord;
-        this.z = assembly.zCoord;
+        this.pos = assembly.getPos();
     }
 
     @Override
@@ -36,7 +32,7 @@ public class PacketAssemblyToggleAutomate
 
     @Override
     public void handleServerMessage(PacketAssemblyToggleAutomate packet, EntityPlayer player) {
-        TileEntity te = player.worldObj.getTileEntity(packet.x, packet.y, packet.z);
+        TileEntity te = player.worldObj.getTileEntity(packet.pos);
         if( te instanceof TileEntityTurretAssembly ) {
             ((TileEntityTurretAssembly) te).setAutomated(!((TileEntityTurretAssembly) te).isAutomated());
         }
@@ -44,15 +40,13 @@ public class PacketAssemblyToggleAutomate
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        this.x = buf.readInt();
-        this.y = buf.readInt();
-        this.z = buf.readInt();
+        this.pos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeInt(this.x);
-        buf.writeInt(this.y);
-        buf.writeInt(this.z);
+        buf.writeInt(this.pos.getX());
+        buf.writeInt(this.pos.getY());
+        buf.writeInt(this.pos.getZ());
     }
 }

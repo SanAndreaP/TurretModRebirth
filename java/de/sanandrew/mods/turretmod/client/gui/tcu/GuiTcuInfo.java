@@ -26,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
+import java.io.IOException;
 import java.util.List;
 
 public class GuiTcuInfo
@@ -110,7 +111,7 @@ public class GuiTcuInfo
             this.drawTexturedModalRect(this.guiLeft + 7, this.guiTop + 95, GuiTCUHelper.X_SIZE, this.specOwnerHead * 8, 10, 8);
         }
 
-        String value = this.turret.hasCustomNameTag() ? this.turret.getCustomNameTag() : "-n/a-";
+        String value = this.turret.hasCustomName() ? this.turret.getCustomNameTag() : "-n/a-";
         this.fontRendererObj.drawString(value, this.guiLeft + 20, this.guiTop + 23, 0x000000);
 
         value = String.format("%.1f / %.1f HP", this.turret.getHealth(), this.turret.getMaxHealth());
@@ -153,7 +154,7 @@ public class GuiTcuInfo
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) {
+    protected void actionPerformed(GuiButton button) throws IOException {
         if( button == this.dismantle ) {
             if( !this.turret.tryDismantle(this.mc.thePlayer) ) {
                 this.infoStr = String.format("gui.%s.tcu.page.info.button.dismantle.error", TurretModRebirth.ID);
@@ -181,7 +182,7 @@ public class GuiTcuInfo
     private void drawItemStack(ItemStack stack, int x, int y) {
         GL11.glTranslatef(0.0F, 0.0F, 32.0F);
         itemRender.zLevel = -50.0F;
-        itemRender.renderItemAndEffectIntoGUI(this.frAmmoItem, this.mc.getTextureManager(), stack, x, y);
+        itemRender.renderItemAndEffectIntoGUI(stack, x, y);
         itemRender.zLevel = 0.0F;
         GL11.glTranslatef(0.0F, 0.0F, -32.0F);
     }

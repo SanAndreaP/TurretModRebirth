@@ -13,7 +13,7 @@ import de.sanandrew.mods.turretmod.util.TurretMod;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import org.apache.logging.log4j.Level;
 
 import java.util.*;
@@ -21,7 +21,7 @@ import java.util.Map.Entry;
 
 public class ForcefieldCube
 {
-    public Map<ForgeDirection, CubeFace[]> faces = new EnumMap<>(ForgeDirection.class);
+    public Map<EnumFacing, CubeFace[]> faces = new EnumMap<>(EnumFacing.class);
     private final Vec3 center;
     private final AxisAlignedBB boxAABB;
     public RGBAValues boxColor;
@@ -31,7 +31,7 @@ public class ForcefieldCube
         this.boxAABB = cubeBox;
         this.boxColor = color;
 
-        for( ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS ) {
+        for( EnumFacing direction : EnumFacing.VALID_DIRECTIONS ) {
             this.faces.put(direction, new CubeFace[]{new CubeFace(direction, mpCenter, cubeBox, color)});
         }
     }
@@ -45,42 +45,42 @@ public class ForcefieldCube
         for( CubeFace[] faceList : faces.values() ) {
             for( CubeFace facePart : faceList ) {
                 tess.setColorRGBA(facePart.color.getRed(), facePart.color.getGreen(), facePart.color.getBlue(), facePart.color.getAlpha());
-                if( facePart.facing == ForgeDirection.NORTH ) {
+                if( facePart.facing == EnumFacing.NORTH ) {
                     double maxU = (facePart.endPt.zCoord - facePart.beginPt.zCoord) / 8.0D;
                     double maxV = (facePart.beginPt.yCoord - facePart.endPt.yCoord) / 8.0D;
                     tess.addVertexWithUV(facePart.beginPt.xCoord - 0.0005D, facePart.beginPt.yCoord, facePart.beginPt.zCoord, maxU, 0.0D);
                     tess.addVertexWithUV(facePart.beginPt.xCoord - 0.0005D, facePart.beginPt.yCoord, facePart.endPt.zCoord, 0.0D, 0.0D);
                     tess.addVertexWithUV(facePart.beginPt.xCoord - 0.0005D, facePart.endPt.yCoord, facePart.endPt.zCoord, 0.0D, maxV);
                     tess.addVertexWithUV(facePart.beginPt.xCoord - 0.0005D, facePart.endPt.yCoord, facePart.beginPt.zCoord, maxU, maxV);
-                } else if( facePart.facing == ForgeDirection.EAST ) {
+                } else if( facePart.facing == EnumFacing.EAST ) {
                     double maxU = (facePart.endPt.xCoord - facePart.beginPt.xCoord) / 8.0D;
                     double maxV = (facePart.beginPt.yCoord - facePart.endPt.yCoord) / 8.0D;
                     tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord - 0.0005D, maxU, 0.0D);
                     tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord - 0.0005D, 0.0D, 0.0D);
                     tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord - 0.0005D, 0.0D, maxV);
                     tess.addVertexWithUV(facePart.endPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord - 0.0005D, maxU, maxV);
-                } else if( facePart.facing == ForgeDirection.SOUTH ) {
+                } else if( facePart.facing == EnumFacing.SOUTH ) {
                     double maxU = (facePart.endPt.zCoord - facePart.beginPt.zCoord) / 8.0D;
                     double maxV = (facePart.beginPt.yCoord - facePart.endPt.yCoord) / 8.0D;
                     tess.addVertexWithUV(facePart.beginPt.xCoord + 0.0005D, facePart.beginPt.yCoord, facePart.endPt.zCoord, maxU, 0.0D);
                     tess.addVertexWithUV(facePart.beginPt.xCoord + 0.0005D, facePart.beginPt.yCoord, facePart.beginPt.zCoord, 0.0D, 0.0D);
                     tess.addVertexWithUV(facePart.beginPt.xCoord + 0.0005D, facePart.endPt.yCoord, facePart.beginPt.zCoord, 0.0D, maxV);
                     tess.addVertexWithUV(facePart.beginPt.xCoord + 0.0005D, facePart.endPt.yCoord, facePart.endPt.zCoord, maxU, maxV);
-                } else if( facePart.facing == ForgeDirection.WEST ) {
+                } else if( facePart.facing == EnumFacing.WEST ) {
                     double maxU = (facePart.endPt.xCoord - facePart.beginPt.xCoord) / 8.0D;
                     double maxV = (facePart.beginPt.yCoord - facePart.endPt.yCoord) / 8.0D;
                     tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord + 0.0005D, maxU, 0.0D);
                     tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord + 0.0005D, 0.0D, 0.0D);
                     tess.addVertexWithUV(facePart.endPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord + 0.0005D, 0.0D, maxV);
                     tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord + 0.0005D, maxU, maxV);
-                } else if( facePart.facing == ForgeDirection.UP ) {
+                } else if( facePart.facing == EnumFacing.UP ) {
                     double maxU = (facePart.beginPt.zCoord - facePart.endPt.zCoord) / 8.0D;
                     double maxV = (facePart.endPt.xCoord - facePart.beginPt.xCoord) / 8.0D;
                     tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord - 0.0005D, facePart.beginPt.zCoord, maxU, maxV);
                     tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord - 0.0005D, facePart.beginPt.zCoord, maxU, 0.0D);
                     tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord - 0.0005D, facePart.endPt.zCoord, 0.0D, 0.0D);
                     tess.addVertexWithUV(facePart.beginPt.xCoord, facePart.beginPt.yCoord - 0.0005D, facePart.endPt.zCoord, 0.0D, maxV);
-                } else if( facePart.facing == ForgeDirection.DOWN ) {
+                } else if( facePart.facing == EnumFacing.DOWN ) {
                     double maxU = (facePart.endPt.zCoord - facePart.beginPt.zCoord) / 8.0D;
                     double maxV = (facePart.endPt.xCoord - facePart.beginPt.xCoord) / 8.0D;
                     tess.addVertexWithUV(facePart.endPt.xCoord, facePart.beginPt.yCoord + 0.0005D, facePart.beginPt.zCoord, maxU, maxV);
@@ -93,11 +93,11 @@ public class ForcefieldCube
     }
 
     public void interfere(ForcefieldCube interfered, boolean isRecessive) {
-        Iterator<Entry<ForgeDirection, CubeFace[]>> faceIterator = this.faces.entrySet().iterator();
-        Map<ForgeDirection, CubeFace[]> newFaceMap = new EnumMap<>(ForgeDirection.class);
+        Iterator<Entry<EnumFacing, CubeFace[]>> faceIterator = this.faces.entrySet().iterator();
+        Map<EnumFacing, CubeFace[]> newFaceMap = new EnumMap<>(EnumFacing.class);
 
         while( faceIterator.hasNext() ) {
-            Entry<ForgeDirection, CubeFace[]> myFace = faceIterator.next();
+            Entry<EnumFacing, CubeFace[]> myFace = faceIterator.next();
             List<CubeFace> newFaces = new ArrayList<>();
             boolean intersects;
 
@@ -163,19 +163,19 @@ public class ForcefieldCube
 
     private static class CubeFace
     {
-        public final ForgeDirection facing;
+        public final EnumFacing facing;
         public final Vec3 beginPt;
         public final Vec3 endPt;
         public final RGBAValues color;
 
-        public CubeFace(ForgeDirection direction, Vec3 begin, Vec3 end, RGBAValues faceColor) {
+        public CubeFace(EnumFacing direction, Vec3 begin, Vec3 end, RGBAValues faceColor) {
             this.facing = direction;
             this.beginPt = begin;
             this.endPt = end;
             this.color = faceColor;
         }
 
-        public CubeFace(ForgeDirection direction, Vec3 center, AxisAlignedBB boxBB, RGBAValues faceColor) {
+        public CubeFace(EnumFacing direction, Vec3 center, AxisAlignedBB boxBB, RGBAValues faceColor) {
             this.facing = direction;
             this.color = faceColor;
             switch( direction ) {

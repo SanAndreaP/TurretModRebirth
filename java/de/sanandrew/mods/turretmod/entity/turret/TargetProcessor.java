@@ -2,8 +2,6 @@ package de.sanandrew.mods.turretmod.entity.turret;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
-import com.google.common.collect.TreeMultimap;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmo;
@@ -11,7 +9,6 @@ import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.util.PlayerList;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
-import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -25,8 +22,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.ArrayList;
@@ -48,9 +47,9 @@ import java.util.UUID;
  */
 public abstract class TargetProcessor
 {
-    protected static final Map<Class, Boolean> ENTITY_TARGET_LIST_STD = new HashMap<>();
+    protected static final Map<Class<? extends Entity>, Boolean> ENTITY_TARGET_LIST_STD = new HashMap<>();
 
-    protected final Map<Class, Boolean> entityTargetList;
+    protected final Map<Class<? extends Entity>, Boolean> entityTargetList;
     protected final Map<UUID, Boolean> playerTargetList;
 
     protected int ammoCount;
@@ -249,9 +248,9 @@ public abstract class TargetProcessor
 
     public abstract double getRange();
 
-    public abstract String getShootSound();
+    public abstract SoundEvent getShootSound();
 
-    public abstract String getLowAmmoSound();
+    public abstract SoundEvent getLowAmmoSound();
 
     public void addTargetingListener(TargetingListener listener) {
         int p = listener.getPriority();
@@ -277,10 +276,10 @@ public abstract class TargetProcessor
         if( this.hasAmmo() ) {
             Entity projectile = (Entity) this.getProjectile();
             this.turret.worldObj.spawnEntityInWorld(projectile);
-            this.turret.worldObj.playSoundAtEntity(this.turret, this.getShootSound(), 1.8F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
+            this.turret.worldObj.playSound(this.turret.posX, this.turret.posY, this.turret.posZ, this.getShootSound(), SoundCategory.NEUTRAL, 1.8F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F, true);
             this.ammoCount--;
         } else {
-            this.turret.worldObj.playSoundAtEntity(this.turret, this.getLowAmmoSound(), 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
+            this.turret.worldObj.playSound(this.turret.posX, this.turret.posY, this.turret.posZ, this.getLowAmmoSound(), SoundCategory.NEUTRAL, 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F, true);
         }
     }
 
@@ -297,8 +296,8 @@ public abstract class TargetProcessor
 
         double range = this.getRange();
         if( this.entityToAttack == null ) {
-            AxisAlignedBB aabb = this.turret.boundingBox.expand(range, range, range);
-            for( Object entityObj : this.turret.worldObj.getEntitiesWithinAABBExcludingEntity(this.turret, aabb, this.selector) ) {
+            AxisAlignedBB aabb = this.turret.getEntityBoundingBox().expand(range, range, range);
+            for( Object entityObj : this.turret.worldObj.getEntitiesInAABBexcluding(this.turret, aabb, this.selector) ) {
                 EntityLivingBase livingBase = (EntityLivingBase) entityObj;
                 boolean isEntityValid = this.turret.canEntityBeSeen(livingBase) && livingBase.isEntityAlive() && this.turret.getDistanceToEntity(livingBase) <= range;
                 if( isEntityValid && doAllowTarget(livingBase) ) {
@@ -334,7 +333,7 @@ public abstract class TargetProcessor
     }
 
     public static void initialize() {
-        for( Object clsObj : EntityList.classToStringMapping.keySet() ) {
+        for( Object clsObj : EntityList.CLASS_TO_NAME.keySet() ) {
             Class cls = (Class) clsObj;
             if( EntityLiving.class.isAssignableFrom(cls) && !EntityTurret.class.isAssignableFrom(cls) && !EntityLiving.class.equals(cls) ) {
                 ENTITY_TARGET_LIST_STD.put(cls, IMob.class.isAssignableFrom(cls));
@@ -387,14 +386,16 @@ public abstract class TargetProcessor
             this.entityToAttackUUID = UUID.fromString(nbt.getString("targetUUID"));
         }
 
-        List<Class> entityTgt = new ArrayList<>();
+        List<Class<? extends Entity>> entityTgt = new ArrayList<>();
         NBTTagList list = nbt.getTagList("entityTargets", Constants.NBT.TAG_STRING);
         for( int i = 0; i < list.tagCount(); i++ ) {
             try {
-                entityTgt.add(Class.forName(list.getStringTagAt(i)));
-            } catch( ClassNotFoundException ignored ) { }
+                Class cls = Class.forName(list.getStringTagAt(i));
+                //noinspection unchecked
+                entityTgt.add(cls);
+            } catch( ClassNotFoundException | ClassCastException ignored ) { }
         }
-        this.updateEntityTargets(entityTgt.toArray(new Class[entityTgt.size()]));
+        this.updateEntityTargets(entityTgt);
 
         List<UUID> playerTgt = new ArrayList<>();
         list = nbt.getTagList("playerTargets", Constants.NBT.TAG_STRING);
@@ -407,28 +408,18 @@ public abstract class TargetProcessor
     }
 
     public Class[] getEnabledEntityTargets() {
-        Collection<Class> enabledClasses = Maps.filterEntries(this.entityTargetList, new Predicate<Map.Entry<Class, Boolean>>() {
-            @Override
-            public boolean apply(Map.Entry<Class, Boolean> input) {
-                return input != null && input.getValue();
-            }
-        }).keySet();
+        Collection<Class<? extends Entity>> enabledClasses = Maps.filterEntries(this.entityTargetList, input -> input != null && input.getValue()).keySet();
 
         return enabledClasses.toArray(new Class[enabledClasses.size()]);
     }
 
     public UUID[] getEnabledPlayerTargets() {
-        Collection<UUID> enabledUUIDs = Maps.filterEntries(this.playerTargetList, new Predicate<Map.Entry<UUID, Boolean>>() {
-            @Override
-            public boolean apply(Map.Entry<UUID, Boolean> input) {
-                return input != null && input.getValue();
-            }
-        }).keySet();
+        Collection<UUID> enabledUUIDs = Maps.filterEntries(this.playerTargetList, input -> input != null && input.getValue()).keySet();
 
         return enabledUUIDs.toArray(new UUID[enabledUUIDs.size()]);
     }
 
-    public Map<Class, Boolean> getEntityTargets() {
+    public Map<Class<? extends Entity>, Boolean> getEntityTargets() {
         return new HashMap<>(this.entityTargetList);
     }
 
@@ -436,7 +427,7 @@ public abstract class TargetProcessor
         return new HashMap<>(this.playerTargetList);
     }
 
-    public void updateEntityTarget(Class cls, boolean active) {
+    public void updateEntityTarget(Class<? extends Entity> cls, boolean active) {
         if( ENTITY_TARGET_LIST_STD.containsKey(cls) ) {
             this.entityTargetList.put(cls, active);
         }
@@ -446,12 +437,12 @@ public abstract class TargetProcessor
         this.playerTargetList.put(uid, active);
     }
 
-    public void updateEntityTargets(Class[] classes) {
-        for( Map.Entry<Class, Boolean> entry : this.entityTargetList.entrySet() ) {
+    public void updateEntityTargets(List<Class<? extends Entity>> classes) {
+        for( Map.Entry<Class<? extends Entity>, Boolean> entry : this.entityTargetList.entrySet() ) {
             entry.setValue(false);
         }
 
-        for( Class cls : classes ) {
+        for( Class<? extends Entity> cls : classes ) {
             if( cls != null && ENTITY_TARGET_LIST_STD.containsKey(cls) ) {
                 this.entityTargetList.put(cls, true);
             }
@@ -483,10 +474,10 @@ public abstract class TargetProcessor
     }
 
     private class EntityTargetSelector
-            implements IEntitySelector
+            implements Predicate<Entity>
     {
         @Override
-        public boolean isEntityApplicable(Entity entity) {
+        public boolean apply(Entity entity) {
             if( entity instanceof EntityLiving ) {
                 if( Boolean.TRUE.equals(TargetProcessor.this.entityTargetList.get(entity.getClass()))  ) {
                     return !entity.isDead;

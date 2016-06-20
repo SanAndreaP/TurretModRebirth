@@ -18,7 +18,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
@@ -45,7 +45,7 @@ public class ItemAssemblyFilter
         lines.add(Lang.translate(this.getUnlocalizedName() + ".inst"));
         NBTTagCompound nbt = stack.getTagCompound();
         if( nbt != null && nbt.hasKey("filterStacks") ) {
-            lines.add(EnumChatFormatting.ITALIC + Lang.translate(this.getUnlocalizedName() + ".conf"));
+            lines.add(TextFormatting.ITALIC + Lang.translate(this.getUnlocalizedName() + ".conf"));
         }
     }
 

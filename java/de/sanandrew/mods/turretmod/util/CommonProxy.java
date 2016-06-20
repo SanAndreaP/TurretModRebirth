@@ -8,12 +8,14 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.IGuiHandler;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.common.registry.EntityRegistry;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectilePebble;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCryoCell;
@@ -67,22 +69,27 @@ public class CommonProxy
         if( id >= 0 && id < EnumGui.VALUES.length ) {
             TileEntity te;
             switch( EnumGui.VALUES[id] ) {
-                case GUI_TCU_UPGRADES:
-                    return new ContainerTurretUpgrades(player.inventory, ((EntityTurret) world.getEntityByID(x)).getUpgradeProcessor());
+                case GUI_TCU_UPGRADES: {
+                    Entity e = world.getEntityByID(x);
+                    if( e instanceof EntityTurret ) {
+                        return new ContainerTurretUpgrades(player.inventory, ((EntityTurret) e).getUpgradeProcessor());
+                    }
+                    break;
+                }
                 case GUI_TASSEMBLY_MAN:
-                    te = world.getTileEntity(x, y, z);
+                    te = world.getTileEntity(new BlockPos(x, y, z));
                     if( te instanceof TileEntityTurretAssembly ) {
                         return new ContainerTurretAssembly(player.inventory, (TileEntityTurretAssembly) te);
                     }
                     break;
                 case GUI_TASSEMBLY_FLT:
-                    ItemStack stack = player.getCurrentEquippedItem();
+                    ItemStack stack = player.getHeldItemMainhand();
                     if( ItemStackUtils.isValidStack(stack) && stack.getItem() == ItemRegistry.asbFilter ) {
                         return new ContainerAssemblyFilter(player.inventory, stack, player.inventory.currentItem);
                     }
                     break;
                 case GUI_POTATOGEN:
-                    te = world.getTileEntity(x, y, z);
+                    te = world.getTileEntity(new BlockPos(x, y, z));
                     if( te instanceof TileEntityElectrolyteGenerator ) {
                         return new ContainerPotatoGenerator(player.inventory, (TileEntityElectrolyteGenerator) te);
                     }

@@ -3,7 +3,7 @@ package sanandreasp.mods.TurretMod3.entity.turret;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import sanandreasp.mods.turretmod3.entity.projectile.TurretProj_Flame;
 import sanandreasp.mods.turretmod3.entity.projectile.TurretProjectile;

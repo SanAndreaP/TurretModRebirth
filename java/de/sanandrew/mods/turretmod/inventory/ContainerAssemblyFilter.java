@@ -52,7 +52,7 @@ public class ContainerAssemblyFilter
 
     @Override
     public void onContainerClosed(EntityPlayer player) {
-        if( !player.worldObj.isRemote && ItemStackUtils.isValidStack(player.getHeldItem()) && player.getHeldItem().getItem() == ItemRegistry.asbFilter ) {
+        if( !player.worldObj.isRemote && ItemStackUtils.isValidStack(player.getHeldItemMainhand()) && player.getHeldItemMainhand().getItem() == ItemRegistry.asbFilter ) {
             ItemRegistry.asbFilter.setFilterStacks(this.filterStack, this.filterInv.invStacks);
             player.inventory.setInventorySlotContents(this.filterStackSlot, this.filterStack.copy());
             player.inventoryContainer.detectAndSendChanges();
@@ -63,17 +63,18 @@ public class ContainerAssemblyFilter
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slotId) {
-        Slot slot = (Slot) this.inventorySlots.get(slotId);
+        Slot slot = this.inventorySlots.get(slotId);
 
         if( slot != null && slot.getHasStack() ) {
             ItemStack slotStack = slot.getStack();
+            assert slotStack != null;
             ItemStack origStack = slotStack.copy();
 
             if( slotId < 18 ) {
                 slot.putStack(null);
             } else {
                 for( int i = 0; i < 18; i++ ) {
-                    Slot fltSlot = (Slot) this.inventorySlots.get(i);
+                    Slot fltSlot = this.inventorySlots.get(i);
                     if( !fltSlot.getHasStack() ) {
                         origStack.stackSize = 1;
                         fltSlot.putStack(origStack);

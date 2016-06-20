@@ -8,21 +8,20 @@
  */
 package de.sanandrew.mods.turretmod.entity.turret;
 
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectilePebble;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
+import de.sanandrew.mods.turretmod.util.Sounds;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.darkhax.bookshelf.lib.javatuples.Pair;
 import net.darkhax.bookshelf.lib.javatuples.Triplet;
-import net.darkhax.bookshelf.lib.javatuples.Unit;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 
 import java.util.UUID;
@@ -143,25 +142,26 @@ public class EntityTurretShotgun
         }
 
         @Override
-        public String getShootSound() {
-            return TurretModRebirth.ID + ":shoot.shotgun";
+        public SoundEvent getShootSound() {
+            return Sounds.SHOOT_SHOTGUN;
         }
 
         @Override
-        public String getLowAmmoSound() {
-            return "random.click";
+        public SoundEvent getLowAmmoSound() {
+            return SoundEvents.BLOCK_DISPENSER_FAIL;
         }
 
         public void shootProjectile() {
             if( this.hasAmmo() ) {
                 for( int i = 0; i < 6; i++ ) {
                     Entity projectile = (Entity) this.getProjectile();
+                    assert projectile != null;
                     this.turret.worldObj.spawnEntityInWorld(projectile);
-                    this.turret.worldObj.playSoundAtEntity(this.turret, this.getShootSound(), 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
+                    this.turret.worldObj.playSound(this.turret.posX, this.turret.posY, this.turret.posZ, this.getShootSound(), SoundCategory.NEUTRAL, 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F, true);
                 }
                 this.ammoCount--;
             } else {
-                this.turret.worldObj.playSoundAtEntity(this.turret, this.getLowAmmoSound(), 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
+                this.turret.worldObj.playSound(this.turret.posX, this.turret.posY, this.turret.posZ, this.getLowAmmoSound(), SoundCategory.NEUTRAL, 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F, true);
             }
         }
     }

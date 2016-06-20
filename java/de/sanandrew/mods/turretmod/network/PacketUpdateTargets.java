@@ -1,10 +1,9 @@
 package de.sanandrew.mods.turretmod.network;
 
-import cpw.mods.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import io.netty.buffer.ByteBuf;
-import net.darkhax.bookshelf.common.network.AbstractMessage;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -19,7 +18,7 @@ import java.util.UUID;
  * *****************************************************************************************************************
  */
 public class PacketUpdateTargets
-        extends AbstractMessage<PacketUpdateTargets>
+        extends PacketRegistry.AbstractMessage<PacketUpdateTargets>
 {
     private Class[] entityTargets;
     private UUID[] playerTargets;

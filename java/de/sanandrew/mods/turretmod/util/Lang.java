@@ -8,9 +8,11 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
-import net.minecraft.util.StatCollector;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public final class Lang
 {
@@ -60,13 +62,14 @@ public final class Lang
     public static final String ITEM_UPGRADE_DESC = String.format("item.%s:turret_upgrade.%%s.desc", TurretModRebirth.ID);
 
     /**
-     * Wrapper method to {@link StatCollector#translateToLocal(String)} for abbreviation.
-     * Also tries to translate with {@link StatCollector#translateToFallback(String)} to en_US if the translation fails
+     * Wrapper method to {@link I18n#format(String, Object...)} for abbreviation.
+     * <s>Also tries to translate with [NONE] to en_US if the translation fails</s>
      * @param langKey language key to be translated
      * @return translated key or langKey, if translation fails
      */
+    @SideOnly(Side.CLIENT)
     public static String translate(String langKey) {
-        return StatCollector.canTranslate(langKey) ? StatCollector.translateToLocal(langKey) : StatCollector.translateToFallback(langKey);
+        return I18n.hasKey(langKey) ? I18n.format(langKey) : langKey;//Minecraft.getMinecraft().getLanguageManager().translateToFallback(langKey);
     }
 
     /**
@@ -75,17 +78,20 @@ public final class Lang
      * @param args formatting arguments to be applied to the key
      * @return translated key or langKey, if translation fails
      */
+    @SideOnly(Side.CLIENT)
     public static String translate(String langKey, Object... args) {
         return translate(String.format(langKey, args));
     }
 
+    @SideOnly(Side.CLIENT)
     public static String translateOrDefault(String langKey, String defaultVal) {
-        return StatCollector.canTranslate(langKey) ? translate(langKey) : defaultVal;
+        return I18n.hasKey(langKey) ? translate(langKey) : defaultVal;
     }
 
+    @SideOnly(Side.CLIENT)
     public static String translateEntityCls(Class<? extends Entity> eClass) {
-        if( EntityList.classToStringMapping.containsKey(eClass) ) {
-            return translate(String.format(ENTITY_NAME, EntityList.classToStringMapping.get(eClass)));
+        if( EntityList.CLASS_TO_NAME.containsKey(eClass) ) {
+            return translate(String.format(ENTITY_NAME, EntityList.CLASS_TO_NAME.get(eClass)));
         }
 
         return "[UNKNOWN] " + eClass.getName();

@@ -10,14 +10,20 @@ package de.sanandrew.mods.turretmod.tileentity;
 
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
-import cpw.mods.fml.common.network.ByteBufUtils;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
 import de.sanandrew.mods.turretmod.network.TileClientSync;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import io.netty.buffer.ByteBuf;
-import net.darkhax.bookshelf.lib.javatuples.Quartet;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -29,18 +35,17 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagShort;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.ForgeDirection;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
+//TODO: make it TileEntityLockable
 public class TileEntityElectrolyteGenerator
         extends TileEntity
-        implements ISidedInventory, TileClientSync, IEnergyProvider
+        implements ISidedInventory, TileClientSync, IEnergyProvider, ITickable
 {
     public static final int MAX_FLUX_STORAGE = 500_000;
     public static final int MAX_FLUX_EXTRACT = 1_000;
@@ -78,10 +83,10 @@ public class TileEntityElectrolyteGenerator
     }
 
     public static void initializeRecipes() {
-        FUELS.put(Items.potato, new Fuel(1.0F, (short) 200, new ItemStack(Items.sugar, 1), new ItemStack(Items.baked_potato, 1)));
-        FUELS.put(Items.carrot, new Fuel(1.0F, (short) 200, new ItemStack(Items.sugar, 1), new ItemStack(Items.redstone, 1)));
-        FUELS.put(Items.poisonous_potato, new Fuel(1.2F, (short) 150, new ItemStack(Items.sugar, 1), new ItemStack(Items.nether_wart, 1)));
-        FUELS.put(Items.apple, new Fuel(1.3F, (short) 220, new ItemStack(Items.wheat_seeds, 1), new ItemStack(Items.gold_nugget, 1)));
+        FUELS.put(Items.POTATO, new Fuel(1.0F, (short) 200, new ItemStack(Items.SUGAR, 1), new ItemStack(Items.BAKED_POTATO, 1)));
+        FUELS.put(Items.CARROT, new Fuel(1.0F, (short) 200, new ItemStack(Items.SUGAR, 1), new ItemStack(Items.REDSTONE, 1)));
+        FUELS.put(Items.POISONOUS_POTATO, new Fuel(1.2F, (short) 150, new ItemStack(Items.SUGAR, 1), new ItemStack(Items.NETHER_WART, 1)));
+        FUELS.put(Items.APPLE, new Fuel(1.3F, (short) 220, new ItemStack(Items.WHEAT_SEEDS, 1), new ItemStack(Items.GOLD_NUGGET, 1)));
     }
 
     public static Map<Item, Fuel> getFuels() {
@@ -89,18 +94,13 @@ public class TileEntityElectrolyteGenerator
     }
 
     @Override
-    public boolean canUpdate() {
-        return true;
+    public int[] getSlotsForFace(EnumFacing side) {
+        return side == EnumFacing.DOWN ? SLOTS_EXTRACT : side == EnumFacing.UP ? new int[0] : SLOTS_INSERT;
     }
 
     @Override
-    public int[] getAccessibleSlotsFromSide(int side) {
-        return side == ForgeDirection.DOWN.ordinal() ? SLOTS_EXTRACT : side == ForgeDirection.UP.ordinal() ? new int[0] : SLOTS_INSERT;
-    }
-
-    @Override
-    public boolean canInsertItem(int slot, ItemStack stack, int side) {
-        return this.isItemValidForSlot(slot, stack) && side != ForgeDirection.DOWN.ordinal() && side != ForgeDirection.UP.ordinal();
+    public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
+        return this.isItemValidForSlot(slot, stack) && side != EnumFacing.DOWN && side != EnumFacing.UP;
     }
 
     public int getGeneratedFlux() {
@@ -108,7 +108,7 @@ public class TileEntityElectrolyteGenerator
     }
 
     @Override
-    public void updateEntity() {
+    public void update() {
         if( !this.worldObj.isRemote ) {
             this.fluxExtractPerTick = Math.min(this.fluxAmount, MAX_FLUX_EXTRACT);
 
@@ -178,13 +178,14 @@ public class TileEntityElectrolyteGenerator
             }
 
             if( this.fluxExtractPerTick > 0 ) {
-                for( ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS ) {
-                    if( direction == ForgeDirection.UP ) {
+                for( EnumFacing direction : EnumFacing.VALUES ) {
+                    if( direction == EnumFacing.UP ) {
                         continue;
                     }
-                    ForgeDirection otherDir = direction.getOpposite();
+                    EnumFacing otherDir = direction.getOpposite();
 
-                    TileEntity te = this.worldObj.getTileEntity(this.xCoord + direction.offsetX, this.yCoord + direction.offsetY, this.zCoord + direction.offsetZ);
+                    BlockPos adjPos = this.pos.add(direction.getFrontOffsetX(), direction.getFrontOffsetY(), direction.getFrontOffsetZ());
+                    TileEntity te = this.worldObj.getTileEntity(adjPos);
 
                     if( te instanceof IEnergyReceiver ) {
                         IEnergyReceiver receiver = (IEnergyReceiver) te;
@@ -210,7 +211,7 @@ public class TileEntityElectrolyteGenerator
             }
 
             if( this.doSync ) {
-                PacketRegistry.sendToAllAround(new PacketSyncTileEntity(this), this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 64.0D);
+                PacketRegistry.sendToAllAround(new PacketSyncTileEntity(this), this.worldObj.provider.getDimension(), this.pos, 64.0D);
             }
 
             this.prevFluxAmount = this.fluxAmount;
@@ -218,8 +219,8 @@ public class TileEntityElectrolyteGenerator
     }
 
     @Override
-    public boolean canExtractItem(int slot, ItemStack stack, int side) {
-        return side == ForgeDirection.DOWN.ordinal() && ArrayUtils.contains(SLOTS_EXTRACT, slot);
+    public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
+        return side == EnumFacing.DOWN && ArrayUtils.contains(SLOTS_EXTRACT, slot);
     }
 
     @Override
@@ -256,22 +257,24 @@ public class TileEntityElectrolyteGenerator
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
-        this.readNbt(pkt.func_148857_g());
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+        this.readNbt(pkt.getNbtCompound());
     }
 
     @Override
-    public Packet getDescriptionPacket() {
+    public SPacketUpdateTileEntity getUpdatePacket() {
         NBTTagCompound nbt = new NBTTagCompound();
         this.writeNbt(nbt);
-        return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, nbt);
+        return new SPacketUpdateTileEntity(this.pos, 0, nbt);
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) {
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
 
         this.writeNbt(nbt);
+
+        return nbt;
     }
 
     private void writeNbt(NBTTagCompound nbt) {
@@ -288,7 +291,7 @@ public class TileEntityElectrolyteGenerator
 
         nbt.setTag("inventory", TmrUtils.writeItemStacksToTag(this.invStacks, 64));
 
-        if( this.hasCustomInventoryName() ) {
+        if( this.hasCustomName() ) {
             nbt.setString("customName", this.customName);
         }
     }
@@ -327,7 +330,7 @@ public class TileEntityElectrolyteGenerator
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int slot) {
+    public ItemStack removeStackFromSlot(int slot) {
         if( this.invStacks[slot] != null ) {
             ItemStack itemstack = this.invStacks[slot];
             this.invStacks[slot] = null;
@@ -348,13 +351,17 @@ public class TileEntityElectrolyteGenerator
     }
 
     @Override
-    public String getInventoryName() {
-        return this.hasCustomInventoryName() ? this.customName : BlockRegistry.potatoGenerator.getUnlocalizedName() + ".name";
+    public String getName() {
+        return this.hasCustomName() ? this.customName : BlockRegistry.potatoGenerator.getUnlocalizedName() + ".name";
     }
 
     @Override
-    public boolean hasCustomInventoryName() {
+    public boolean hasCustomName() {
         return this.customName != null && !this.customName.isEmpty();
+    }
+
+    public ITextComponent getDisplayName() {
+        return this.hasCustomName() ? new TextComponentString(this.getName()) : new TextComponentTranslation(this.getName());
     }
 
     @Override
@@ -364,14 +371,14 @@ public class TileEntityElectrolyteGenerator
 
     @Override
     public boolean isUseableByPlayer(EntityPlayer player) {
-        return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) == this && player.getDistanceSq(this.xCoord + 0.5D, this.yCoord + 0.5D, this.zCoord + 0.5D) <= 64.0D;
+        return this.worldObj.getTileEntity(this.pos) == this && player.getDistanceSq(this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D) <= 64.0D;
     }
 
     @Override
-    public void openInventory() {}
+    public void openInventory(EntityPlayer player) {}
 
     @Override
-    public void closeInventory() {}
+    public void closeInventory(EntityPlayer player) {}
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack) {
@@ -384,6 +391,26 @@ public class TileEntityElectrolyteGenerator
         }
 
         return ArrayUtils.contains(SLOTS_EXTRACT, slot);
+    }
+
+    @Override
+    public int getField(int id) {
+        return 0;
+    }
+
+    @Override
+    public void setField(int id, int value) { }
+
+    @Override
+    public int getFieldCount() {
+        return 0;
+    }
+
+    @Override
+    public void clear() {
+        for( int i = 0; i < this.invStacks.length; i++ ) {
+            this.invStacks[i] = null;
+        }
     }
 
     @Override
@@ -422,7 +449,7 @@ public class TileEntityElectrolyteGenerator
     }
 
     @Override
-    public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
+    public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
         int energyExtracted = Math.min(this.fluxExtractPerTick, Math.min(MAX_FLUX_EXTRACT, maxExtract));
 
         if( !simulate ) {
@@ -434,18 +461,18 @@ public class TileEntityElectrolyteGenerator
     }
 
     @Override
-    public int getEnergyStored(ForgeDirection from) {
+    public int getEnergyStored(EnumFacing from) {
         return this.fluxAmount;
     }
 
     @Override
-    public int getMaxEnergyStored(ForgeDirection from) {
+    public int getMaxEnergyStored(EnumFacing from) {
         return MAX_FLUX_STORAGE;
     }
 
     @Override
-    public boolean canConnectEnergy(ForgeDirection from) {
-        return from != ForgeDirection.UP;
+    public boolean canConnectEnergy(EnumFacing from) {
+        return from != EnumFacing.UP;
     }
 
     public static boolean isSlotProcessing(int slot) {

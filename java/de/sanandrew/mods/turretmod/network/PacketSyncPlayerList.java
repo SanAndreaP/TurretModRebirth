@@ -8,18 +8,18 @@
  */
 package de.sanandrew.mods.turretmod.network;
 
-import cpw.mods.fml.common.network.ByteBufUtils;
 import de.sanandrew.mods.turretmod.util.PlayerList;
 import io.netty.buffer.ByteBuf;
-import net.darkhax.bookshelf.common.network.AbstractMessage;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class PacketSyncPlayerList
-        extends AbstractMessage<PacketSyncPlayerList>
+        extends PacketRegistry.AbstractMessage<PacketSyncPlayerList>
 {
     private Map<UUID, String> players;
 

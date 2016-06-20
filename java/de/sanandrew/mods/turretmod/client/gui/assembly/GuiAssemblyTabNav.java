@@ -35,8 +35,8 @@ public class GuiAssemblyTabNav
             mc.renderEngine.bindTexture(Resources.GUI_ASSEMBLY_CRF.getResource());
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-            this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-            int hoverState = this.getHoverState(this.field_146123_n);
+            this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+            int hoverState = this.getHoverState(this.hovered);
 
             this.drawTexturedModalRect(this.xPosition, this.yPosition, 50 + (this.isDown ? 16 : 0), 227 + 9 * hoverState, this.width, this.height);
 

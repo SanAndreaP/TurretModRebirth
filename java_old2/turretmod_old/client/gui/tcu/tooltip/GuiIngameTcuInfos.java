@@ -6,7 +6,7 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.gui.tcu.tooltip;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import de.sanandrew.core.manpack.util.client.helpers.AverageColorHelper;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils.RGBAValues;

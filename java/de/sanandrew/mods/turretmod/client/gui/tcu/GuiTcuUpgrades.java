@@ -22,6 +22,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import org.lwjgl.opengl.GL11;
 
+import java.io.IOException;
 import java.util.List;
 
 public class GuiTcuUpgrades
@@ -65,7 +66,7 @@ public class GuiTcuUpgrades
 
         this.drawTexturedModalRect(this.posX, this.posY, 0, 0, this.xSize, this.ySize);
 
-        if( !ItemStackUtils.isValidStack(this.mc.thePlayer.getHeldItem()) || this.mc.thePlayer.getHeldItem().getItem() != ItemRegistry.tcu ) {
+        if( !ItemStackUtils.isValidStack(this.mc.thePlayer.getHeldItemMainhand()) || this.mc.thePlayer.getHeldItemMainhand().getItem() != ItemRegistry.tcu ) {
             this.mc.thePlayer.closeScreen();
         }
     }
@@ -101,7 +102,7 @@ public class GuiTcuUpgrades
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) {
+    protected void actionPerformed(GuiButton button) throws IOException {
         if( !GuiTCUHelper.actionPerformed(button, this) ) {
             super.actionPerformed(button);
         }

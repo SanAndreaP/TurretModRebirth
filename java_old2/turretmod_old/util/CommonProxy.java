@@ -8,8 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
-import cpw.mods.fml.common.network.IGuiHandler;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
+import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.core.manpack.util.javatuples.Quartet;
 import de.sanandrew.mods.turretmod.network.PacketManager;

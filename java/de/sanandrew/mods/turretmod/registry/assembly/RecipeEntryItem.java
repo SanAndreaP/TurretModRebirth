@@ -141,7 +141,7 @@ public class RecipeEntryItem
             List<ItemStack> fltStacks = new ArrayList<>();
             for( ItemStack stack : this.normalAlternatives ) {
                 if( stack.getItemDamage() == OreDictionary.WILDCARD_VALUE ) {
-                    stack.getItem().getSubItems(stack.getItem(), CreativeTabs.tabAllSearch, stacks);
+                    stack.getItem().getSubItems(stack.getItem(), CreativeTabs.SEARCH, stacks);
                 } else {
                     stacks.add(stack);
                 }
@@ -150,7 +150,7 @@ public class RecipeEntryItem
             for( String oreDictName : this.oreDictAlternatives ) {
                 for( ItemStack stack : OreDictionary.getOres(oreDictName) ) {
                     if( stack.getItemDamage() == OreDictionary.WILDCARD_VALUE ) {
-                        stack.getItem().getSubItems(stack.getItem(), CreativeTabs.tabAllSearch, stacks);
+                        stack.getItem().getSubItems(stack.getItem(), CreativeTabs.SEARCH, stacks);
                     } else {
                         stacks.add(stack);
                     }

@@ -70,27 +70,28 @@ public class TurretInfoEntryGenerator
         GL11.glTranslatef(0.0F, MAX_ENTRY_HEIGHT - 48 + scrollY, 64.0F);
         Gui.drawRect(0, 0, MAX_ENTRY_WIDTH, 48, 0xD0000000);
 
-        mc.fontRenderer.drawString(String.format("§e%s", TmrClientUtils.getTooltipWithoutShift(tooltipItem).get(0)), 22, 2, 0xFFFFFFFF, false);
+        mc.fontRendererObj.drawString(String.format("§e%s", TmrClientUtils.getTooltipWithoutShift(tooltipItem).get(0)), 22, 2, 0xFFFFFFFF, false);
         TileEntityElectrolyteGenerator.Fuel fuel = TileEntityElectrolyteGenerator.getFuel(tooltipItem.getItem());
-        mc.fontRenderer.drawString(String.format(Lang.translate(Lang.TINFO_ENTRY_EFFICIENCY), fuel.effect), 22, 11, 0xFFFFFFFF, false);
-        mc.fontRenderer.drawString(String.format(Lang.translate(Lang.TINFO_ENTRY_DECAY), TmrClientUtils.getTimeFromTicks(fuel.ticksProc)), 22, 20, 0xFFFFFFFF, false);
-        mc.fontRenderer.drawString(String.format("§a%s", TmrClientUtils.getTooltipWithoutShift(fuel.trash).get(0)), 32, 29, 0xFFFFFFFF, false);
-        mc.fontRenderer.drawString(String.format("§d%s", TmrClientUtils.getTooltipWithoutShift(fuel.treasure).get(0)), 32, 38, 0xFFFFFFFF, false);
+        mc.fontRendererObj.drawString(String.format(Lang.translate(Lang.TINFO_ENTRY_EFFICIENCY), fuel.effect), 22, 11, 0xFFFFFFFF, false);
+        mc.fontRendererObj.drawString(String.format(Lang.translate(Lang.TINFO_ENTRY_DECAY), TmrClientUtils.getTimeFromTicks(fuel.ticksProc)), 22, 20, 0xFFFFFFFF, false);
+        mc.fontRendererObj.drawString(String.format("§a%s", TmrClientUtils.getTooltipWithoutShift(fuel.trash).get(0)), 32, 29, 0xFFFFFFFF, false);
+        mc.fontRendererObj.drawString(String.format("§d%s", TmrClientUtils.getTooltipWithoutShift(fuel.treasure).get(0)), 32, 38, 0xFFFFFFFF, false);
 
+        //TODO: enable item renderer!
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         RenderHelper.enableGUIStandardItemLighting();
-        ITEM_RENDER.zLevel = -50.0F;
-        ITEM_RENDER.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), tooltipItem, 2, 12);
+//        ITEM_RENDER.zLevel = -50.0F;
+//        ITEM_RENDER.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), tooltipItem, 2, 12);
 
         GL11.glPushMatrix();
         GL11.glTranslatef(22.0F, 28.0F, 0.0F);
         GL11.glScalef(0.5F, 0.5F, 1.0F);
-        ITEM_RENDER.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), fuel.trash, 0, 0);
-        ITEM_RENDER.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), fuel.treasure, 0, 18);
+//        ITEM_RENDER.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), fuel.trash, 0, 0);
+//        ITEM_RENDER.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), fuel.treasure, 0, 18);
         GL11.glPopMatrix();
 
-        ITEM_RENDER.renderItemOverlayIntoGUI(mc.fontRenderer, mc.getTextureManager(), tooltipItem, 12, 2);
-        ITEM_RENDER.zLevel = 0.0F;
+//        ITEM_RENDER.renderItemOverlayIntoGUI(mc.fontRenderer, mc.getTextureManager(), tooltipItem, 12, 2);
+//        ITEM_RENDER.zLevel = 0.0F;
         RenderHelper.disableStandardItemLighting();
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 
@@ -113,10 +114,11 @@ public class TurretInfoEntryGenerator
 
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         RenderHelper.enableGUIStandardItemLighting();
-        ITEM_RENDER.zLevel = -50.0F;
-        ITEM_RENDER.renderItemAndEffectIntoGUI(gui.mc.fontRenderer, gui.mc.getTextureManager(), stack, 1, 1);
-        ITEM_RENDER.renderItemOverlayIntoGUI(gui.mc.fontRenderer, gui.mc.getTextureManager(), stack, 1, 1);
-        ITEM_RENDER.zLevel = 0.0F;
+        //TODO: enable item renderer!
+//        ITEM_RENDER.zLevel = -50.0F;
+//        ITEM_RENDER.renderItemAndEffectIntoGUI(gui.mc.fontRenderer, gui.mc.getTextureManager(), stack, 1, 1);
+//        ITEM_RENDER.renderItemOverlayIntoGUI(gui.mc.fontRenderer, gui.mc.getTextureManager(), stack, 1, 1);
+//        ITEM_RENDER.zLevel = 0.0F;
         RenderHelper.disableStandardItemLighting();
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 

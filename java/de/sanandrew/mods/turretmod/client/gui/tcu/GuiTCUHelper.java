@@ -35,11 +35,11 @@ public class GuiTCUHelper
     public static void initGui(GuiTurretCtrlUnit gui) {
         List btnList = gui.getButtonList();
         btnList.add(pageInfo = new GuiItemTab(btnList.size(), gui.getGuiLeft() - 23, gui.getGuiTop() + 5,
-                new ItemStack(Items.sign), Lang.translate(Lang.TCU_PAGE_TAB, "info"), false));
+                new ItemStack(Items.SIGN), Lang.translate(Lang.TCU_PAGE_TAB, "info"), false));
         btnList.add(pageEntityTargets = new GuiItemTab(btnList.size(), gui.getGuiLeft() - 23, gui.getGuiTop() + 33,
-                new ItemStack(Items.skull, 1, 2), Lang.translate(Lang.TCU_PAGE_TAB, "targetsEntity"), false));
+                new ItemStack(Items.SKULL, 1, 2), Lang.translate(Lang.TCU_PAGE_TAB, "targetsEntity"), false));
         btnList.add(pagePlayerTargets = new GuiItemTab(btnList.size(), gui.getGuiLeft() - 23, gui.getGuiTop() + 61,
-                new ItemStack(Items.skull, 1, 3), Lang.translate(Lang.TCU_PAGE_TAB, "targetsPlayer"), false));
+                new ItemStack(Items.SKULL, 1, 3), Lang.translate(Lang.TCU_PAGE_TAB, "targetsPlayer"), false));
         btnList.add(pageUpgrades = new GuiItemTab(btnList.size(), gui.getGuiLeft() - 23, gui.getGuiTop() + 89,
                 new ItemStack(ItemRegistry.turretUpgrade), Lang.translate(Lang.TCU_PAGE_TAB, "upgrades"), false));
     }
@@ -62,7 +62,7 @@ public class GuiTCUHelper
         fRender.drawString(pageName, gui.getGuiLeft() + 8, gui.getGuiTop() + 6, 0x404040);
 
         String turretName = Lang.translate(Lang.translateEntityCls(gui.getTurret().getClass()));
-        fRender.drawString(turretName, gui.getGuiLeft() + (X_SIZE - fRender.getStringWidth(turretName)) / 2, gui.getGuiTop() + Y_SIZE - 15, 0x00FF00, false);
+        fRender.drawString(turretName, gui.getGuiLeft() + (X_SIZE - fRender.getStringWidth(turretName)) / 2.0F, gui.getGuiTop() + Y_SIZE - 15, 0x00FF00, false);
     }
 
     public static boolean actionPerformed(GuiButton button, GuiTurretCtrlUnit gui) {

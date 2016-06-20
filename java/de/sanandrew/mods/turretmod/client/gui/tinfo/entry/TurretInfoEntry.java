@@ -16,7 +16,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -42,7 +41,7 @@ public abstract class TurretInfoEntry
     protected final String txtAmmoCap;
     protected final String txtAmmoUse;
 
-    protected static final RenderItem ITEM_RENDER = new RenderItem();
+//    protected static final RenderItem ITEM_RENDER = new RenderItem();
 
     protected TurretInfoEntry(ItemStack icon, String title) {
         this.icon = icon;
@@ -76,10 +75,11 @@ public abstract class TurretInfoEntry
         GL11.glScalef(scale, scale, 1.0F);
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         RenderHelper.enableGUIStandardItemLighting();
-        ITEM_RENDER.zLevel = -50.0F;
-        ITEM_RENDER.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), stack, 0, 0);
-        ITEM_RENDER.renderItemOverlayIntoGUI(mc.fontRenderer, mc.getTextureManager(), stack, 0, 0);
-        ITEM_RENDER.zLevel = 0.0F;
+        //TODO: enable item renderer
+//        ITEM_RENDER.zLevel = -50.0F;
+//        ITEM_RENDER.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), stack, 0, 0);
+//        ITEM_RENDER.renderItemOverlayIntoGUI(mc.fontRenderer, mc.getTextureManager(), stack, 0, 0);
+//        ITEM_RENDER.zLevel = 0.0F;
         RenderHelper.disableStandardItemLighting();
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 
@@ -103,17 +103,18 @@ public abstract class TurretInfoEntry
             Gui.drawRect(0, 0, MAX_ENTRY_WIDTH, 20, 0xD0000000);
 
             List tooltip = TmrClientUtils.getTooltipWithoutShift(stack);
-            gui.mc.fontRenderer.drawString(tooltip.get(0).toString(), 22, 2, 0xFFFFFFFF, false);
+            gui.mc.fontRendererObj.drawString(tooltip.get(0).toString(), 22, 2, 0xFFFFFFFF, false);
             if( drawTooltip && tooltip.size() > 1 ) {
-                gui.mc.fontRenderer.drawString(tooltip.get(1).toString(), 22, 11, 0xFF808080, false);
+                gui.mc.fontRendererObj.drawString(tooltip.get(1).toString(), 22, 11, 0xFF808080, false);
             }
 
             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
             RenderHelper.enableGUIStandardItemLighting();
-            ITEM_RENDER.zLevel = -50.0F;
-            ITEM_RENDER.renderItemAndEffectIntoGUI(gui.mc.fontRenderer, gui.mc.getTextureManager(), stack, 2, 2);
-            ITEM_RENDER.renderItemOverlayIntoGUI(gui.mc.fontRenderer, gui.mc.getTextureManager(), stack, 2, 2);
-            ITEM_RENDER.zLevel = 0.0F;
+            //TODO: enable item renderer
+//            ITEM_RENDER.zLevel = -50.0F;
+//            ITEM_RENDER.renderItemAndEffectIntoGUI(gui.mc.fontRenderer, gui.mc.getTextureManager(), stack, 2, 2);
+//            ITEM_RENDER.renderItemOverlayIntoGUI(gui.mc.fontRenderer, gui.mc.getTextureManager(), stack, 2, 2);
+//            ITEM_RENDER.zLevel = 0.0F;
             RenderHelper.disableStandardItemLighting();
             GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 
@@ -125,10 +126,11 @@ public abstract class TurretInfoEntry
         GL11.glScalef(0.5F, 0.5F, 1.0F);
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         RenderHelper.enableGUIStandardItemLighting();
-        ITEM_RENDER.zLevel = -50.0F;
-        ITEM_RENDER.renderItemAndEffectIntoGUI(gui.mc.fontRenderer, gui.mc.getTextureManager(), stack, 1, 1);
-        ITEM_RENDER.renderItemOverlayIntoGUI(gui.mc.fontRenderer, gui.mc.getTextureManager(), stack, 1, 1);
-        ITEM_RENDER.zLevel = 0.0F;
+        //TODO: enable item renderer
+//        ITEM_RENDER.zLevel = -50.0F;
+//        ITEM_RENDER.renderItemAndEffectIntoGUI(gui.mc.fontRenderer, gui.mc.getTextureManager(), stack, 1, 1);
+//        ITEM_RENDER.renderItemOverlayIntoGUI(gui.mc.fontRenderer, gui.mc.getTextureManager(), stack, 1, 1);
+//        ITEM_RENDER.zLevel = 0.0F;
         RenderHelper.disableStandardItemLighting();
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 

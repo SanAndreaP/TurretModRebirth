@@ -1,7 +1,7 @@
 package sanandreasp.mods.TurretMod3.item;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.ItemRecord;
 import net.minecraft.util.ResourceLocation;

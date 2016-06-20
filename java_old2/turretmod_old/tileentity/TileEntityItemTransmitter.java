@@ -8,8 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.tileentity;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.util.helpers.ItemUtils;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.api.Turret;
@@ -25,7 +25,7 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -225,8 +225,8 @@ public class TileEntityItemTransmitter
 //            }
 //        } else {
 //            if( this.bufItem != null ) {
-//                for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS ) {
-//                    if( dir == ForgeDirection.UP ) {
+//                for( EnumFacing dir : EnumFacing.VALID_DIRECTIONS ) {
+//                    if( dir == EnumFacing.UP ) {
 //                        continue;
 //                    }
 //
@@ -240,8 +240,8 @@ public class TileEntityItemTransmitter
 //                }
 //
 //                if( this.bufItem != null ) {
-//                    for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS ) {
-//                        if( dir == ForgeDirection.UP ) {
+//                    for( EnumFacing dir : EnumFacing.VALID_DIRECTIONS ) {
+//                        if( dir == EnumFacing.UP ) {
 //                            continue;
 //                        }
 //
@@ -335,13 +335,13 @@ public class TileEntityItemTransmitter
 
     @Override
     public int[] getAccessibleSlotsFromSide(int side) {
-        ForgeDirection dir = ForgeDirection.getOrientation(side);
-        return dir != ForgeDirection.UP ? new int[]{0} : new int[0];
+        EnumFacing dir = EnumFacing.getOrientation(side);
+        return dir != EnumFacing.UP ? new int[]{0} : new int[0];
     }
 
     @Override
     public boolean canInsertItem(int slot, ItemStack stack, int side) {
-        return ForgeDirection.getOrientation(side) != ForgeDirection.UP && isItemValidForSlot(slot, stack);
+        return EnumFacing.getOrientation(side) != EnumFacing.UP && isItemValidForSlot(slot, stack);
     }
 
     @Override

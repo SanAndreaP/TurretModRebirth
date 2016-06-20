@@ -1,7 +1,7 @@
 package de.sanandrew.mods.turretmod.item;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.medpack.TurretRepairKit;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;

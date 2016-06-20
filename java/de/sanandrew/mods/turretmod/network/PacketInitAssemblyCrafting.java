@@ -8,38 +8,32 @@
  */
 package de.sanandrew.mods.turretmod.network;
 
-import cpw.mods.fml.common.network.ByteBufUtils;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import io.netty.buffer.ByteBuf;
-import net.darkhax.bookshelf.common.network.AbstractMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 
 import java.util.UUID;
 
 public class PacketInitAssemblyCrafting
-        extends AbstractMessage<PacketInitAssemblyCrafting>
+        extends PacketRegistry.AbstractMessage<PacketInitAssemblyCrafting>
 {
-    private int x;
-    private int y;
-    private int z;
+    private BlockPos pos;
     private String crfUUID;
     private int count;
 
     public PacketInitAssemblyCrafting() { }
 
     public PacketInitAssemblyCrafting(TileEntityTurretAssembly assembly, UUID uuid, int count) {
-        this.x = assembly.xCoord;
-        this.y = assembly.yCoord;
-        this.z = assembly.zCoord;
+        this.pos = assembly.getPos();
         this.crfUUID = uuid == null ? null : uuid.toString();
         this.count = count;
     }
 
     public PacketInitAssemblyCrafting(TileEntityTurretAssembly assembly) {
-        this.x = assembly.xCoord;
-        this.y = assembly.yCoord;
-        this.z = assembly.zCoord;
+        this.pos = assembly.getPos();
         this.crfUUID = null;
         this.count = 0;
     }
@@ -51,7 +45,7 @@ public class PacketInitAssemblyCrafting
 
     @Override
     public void handleServerMessage(PacketInitAssemblyCrafting packet, EntityPlayer player) {
-        TileEntity te = player.worldObj.getTileEntity(packet.x, packet.y, packet.z);
+        TileEntity te = player.worldObj.getTileEntity(packet.pos);
         if( te instanceof TileEntityTurretAssembly ) {
             if( packet.crfUUID.equals("[CANCEL]") ) {
                 ((TileEntityTurretAssembly) te).cancelCrafting();
@@ -63,18 +57,16 @@ public class PacketInitAssemblyCrafting
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        this.x = buf.readInt();
-        this.y = buf.readInt();
-        this.z = buf.readInt();
+        this.pos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
         this.crfUUID = ByteBufUtils.readUTF8String(buf);
         this.count = buf.readByte();
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeInt(this.x);
-        buf.writeInt(this.y);
-        buf.writeInt(this.z);
+        buf.writeInt(this.pos.getX());
+        buf.writeInt(this.pos.getY());
+        buf.writeInt(this.pos.getZ());
         if( this.crfUUID == null ) {
             ByteBufUtils.writeUTF8String(buf, "[CANCEL]");
         } else {

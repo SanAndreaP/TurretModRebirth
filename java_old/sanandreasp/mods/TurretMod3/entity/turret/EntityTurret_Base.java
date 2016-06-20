@@ -1,8 +1,8 @@
 package sanandreasp.mods.TurretMod3.entity.turret;
 
 import com.google.common.collect.Maps;
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.EntityXPOrb;

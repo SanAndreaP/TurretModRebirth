@@ -14,7 +14,6 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -23,7 +22,7 @@ public class GuiItemTab
         extends GuiButton
 {
 	protected ItemStack renderedItem;
-    protected static RenderItem itemRenderer = new RenderItem();
+//    protected static RenderItem itemRenderer = new RenderItem();
     protected boolean isRight;
 
 	public GuiItemTab(int id, int posX, int posY, ItemStack renderedItem, String hoverText, boolean onTheRight) {
@@ -41,16 +40,16 @@ public class GuiItemTab
             OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
             mc.renderEngine.bindTexture(Resources.GUI_BUTTONS.getResource());
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-            int hoverState = this.getHoverState(this.field_146123_n);
+            this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+            int hoverState = this.getHoverState(this.hovered);
             this.drawTexturedModalRect(this.xPosition, this.yPosition, 26 * (isRight ? 0 : 1), hoverState * 26, this.width, this.height);
             GL11.glDisable(GL11.GL_BLEND);
 
             drawItemStack(this.renderedItem, this.xPosition + 5, this.yPosition + 5, mc);
 
-            if( this.field_146123_n ) {
-                this.drawTabHoveringText(this.displayString, this.xPosition - (this.isRight ? mc.fontRenderer.getStringWidth(this.displayString) + 5 : -5),
-                                         this.yPosition + 21, mc.fontRenderer);
+            if( this.hovered ) {
+                this.drawTabHoveringText(this.displayString, this.xPosition - (this.isRight ? mc.fontRendererObj.getStringWidth(this.displayString) + 5 : -5),
+                                         this.yPosition + 21, mc.fontRendererObj);
             }
         }
     }
@@ -91,9 +90,10 @@ public class GuiItemTab
     private static void drawItemStack(ItemStack stack, int x, int y, Minecraft mc) {
         GL11.glTranslatef(0.0F, 0.0F, 32.0F);
         RenderHelper.enableGUIStandardItemLighting();
-        itemRenderer.zLevel = -50.0F;
-        itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), stack, x, y);
-        itemRenderer.zLevel = 0.0F;
+        //TODO: re-enable item rendering
+//        itemRenderer.zLevel = -50.0F;
+//        itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), stack, x, y);
+//        itemRenderer.zLevel = 0.0F;
         RenderHelper.disableStandardItemLighting();
         GL11.glTranslatef(0.0F, 0.0F, -32.0F);
     }

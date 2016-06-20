@@ -8,13 +8,14 @@
  */
 package de.sanandrew.mods.turretmod.client.util;
 
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import de.sanandrew.mods.turretmod.block.BlockRegistry;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleSmokeNormal;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import de.sanandrew.mods.turretmod.client.event.RenderForcefieldHandler;
 import de.sanandrew.mods.turretmod.client.event.RenderWorldLastHandler;
@@ -32,7 +33,6 @@ import de.sanandrew.mods.turretmod.client.model.ModelTurretShotgun;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretSnowball;
 import de.sanandrew.mods.turretmod.client.particle.ParticleAssemblySpark;
 import de.sanandrew.mods.turretmod.client.particle.ParticleCryoTrail;
-import de.sanandrew.mods.turretmod.client.render.item.ItemRendererTile;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderPebble;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderNothingness;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderTurretArrow;
@@ -57,14 +57,10 @@ import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.darkhax.bookshelf.lib.javatuples.Tuple;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.particle.EntitySmokeFX;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.Level;
 
@@ -82,21 +78,21 @@ public class ClientProxy
     public void init(FMLInitializationEvent event) {
         super.init(event);
 
-        RenderingRegistry.registerEntityRenderingHandler(EntityTurretCrossbow.class, new RenderTurret(new ModelTurretCrossbow(0.0F)));
-        RenderingRegistry.registerEntityRenderingHandler(EntityTurretShotgun.class, new RenderTurret(new ModelTurretShotgun(0.0F)));
-        RenderingRegistry.registerEntityRenderingHandler(EntityTurretCryolator.class, new RenderTurret(new ModelTurretSnowball(0.0F)));
-        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCrossbowBolt.class, new RenderTurretArrow());
-        RenderingRegistry.registerEntityRenderingHandler(EntityProjectilePebble.class, new RenderPebble());
-        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCryoCell.class, new RenderNothingness());
+        RenderingRegistry.registerEntityRenderingHandler(EntityTurretCrossbow.class, manager -> { return new RenderTurret(new ModelTurretCrossbow(0.0F)); });
+        RenderingRegistry.registerEntityRenderingHandler(EntityTurretShotgun.class, manager -> { return new RenderTurret(new ModelTurretShotgun(0.0F)); });
+        RenderingRegistry.registerEntityRenderingHandler(EntityTurretCryolator.class, manager -> { return new RenderTurret(new ModelTurretSnowball(0.0F)); });
+        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCrossbowBolt.class, manager -> { return new RenderTurretArrow<>(); });
+        RenderingRegistry.registerEntityRenderingHandler(EntityProjectilePebble.class, manager -> { return new RenderPebble(); });
+        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCryoCell.class, manager -> { return new RenderNothingness(); });
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurretAssembly.class, new RenderTurretAssembly());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityElectrolyteGenerator.class, new RenderElectrolyteGenerator());
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlockRegistry.assemblyTable), new ItemRendererTile(new TileEntityTurretAssembly(true)));
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlockRegistry.potatoGenerator), new ItemRendererTile(new TileEntityElectrolyteGenerator(true), 0.8F));
+//        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlockRegistry.assemblyTable), new ItemRendererTile(new TileEntityTurretAssembly(true)));
+//        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlockRegistry.potatoGenerator), new ItemRendererTile(new TileEntityElectrolyteGenerator(true), 0.8F));
 
         MinecraftForge.EVENT_BUS.register(RenderForcefieldHandler.INSTANCE);
 
-        FMLCommonHandler.instance().bus().register(new ClientTickHandler());
+        MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
 
         ShaderHelper.initShaders();
     }
@@ -131,19 +127,19 @@ public class ClientProxy
                 case GUI_TCU_UPGRADES:
                     return new GuiTcuUpgrades(player.inventory, (EntityTurret) world.getEntityByID(x));
                 case GUI_TASSEMBLY_MAN:
-                    te = world.getTileEntity(x, y, z);
+                    te = world.getTileEntity(new BlockPos(x, y, z));
                     if( te instanceof TileEntityTurretAssembly ) {
                         return new GuiTurretAssembly(player.inventory, (TileEntityTurretAssembly) te);
                     }
                     break;
                 case GUI_TASSEMBLY_FLT:
-                    ItemStack stack = player.getCurrentEquippedItem();
+                    ItemStack stack = player.getHeldItemMainhand();
                     if( ItemStackUtils.isValidStack(stack) && stack.getItem() == ItemRegistry.asbFilter ) {
                         return new GuiAssemblyFilter(player.inventory, stack);
                     }
                     break;
                 case GUI_POTATOGEN:
-                    te = world.getTileEntity(x, y, z);
+                    te = world.getTileEntity(new BlockPos(x, y, z));
                     if( te instanceof TileEntityElectrolyteGenerator ) {
                         return new GuiPotatoGenerator(player.inventory, (TileEntityElectrolyteGenerator) te);
                     }
@@ -181,7 +177,7 @@ public class ClientProxy
                     double xDist = TmrUtils.RNG.nextDouble() * 0.05 - 0.025;
                     double yDist = TmrUtils.RNG.nextDouble() * 0.05 - 0.025;
                     double zDist = TmrUtils.RNG.nextDouble() * 0.05 - 0.025;
-                    EntityFX fx = new EntitySmokeFX(mc.theWorld, x + xShift, y + yShift, z + zShift, xShift * 0.1F + xDist, yShift * 0.1F + yDist, zShift * 0.1F + zDist);
+                    Particle fx = new ParticleSmokeNormal.Factory().getEntityFX(0, mc.theWorld, x + xShift, y + yShift, z + zShift, xShift * 0.1F + xDist, yShift * 0.1F + yDist, zShift * 0.1F + zDist);
                     mc.effectRenderer.addEffect(fx);
                 }
                 break;

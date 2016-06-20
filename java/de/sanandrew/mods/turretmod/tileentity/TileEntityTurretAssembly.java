@@ -9,7 +9,14 @@
 package de.sanandrew.mods.turretmod.tileentity;
 
 import cofh.api.energy.IEnergyHandler;
-import cpw.mods.fml.common.network.ByteBufUtils;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import de.sanandrew.mods.turretmod.item.ItemAssemblyFilter;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
@@ -27,18 +34,15 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.UUID;
 
+//TODO: make it TileEntityLockable
 public class TileEntityTurretAssembly
         extends TileEntity
-        implements ISidedInventory, IEnergyHandler, TileClientSync
+        implements ISidedInventory, IEnergyHandler, TileClientSync, ITickable
 {
     public static final int MAX_FLUX_STORAGE = 75_000;
     public static final int MAX_FLUX_INSERT = 500;
@@ -67,9 +71,9 @@ public class TileEntityTurretAssembly
     public boolean syncStacks = true;
 
     public Pair<UUID, ItemStack> currCrafting;
-    public int ticksCrafted = 0;
-    public int maxTicksCrafted = 0;
-    public int fluxConsumption = 0;
+    private int ticksCrafted = 0;
+    private int maxTicksCrafted = 0;
+    private int fluxConsumption = 0;
 
     private boolean doSync = false;
 
@@ -157,9 +161,7 @@ public class TileEntityTurretAssembly
     }
 
     @Override
-    public void updateEntity() {
-        super.updateEntity();
-
+    public void update() {
         if( !this.worldObj.isRemote ) {
             if( this.automate && !this.hasAutoUpgrade() ) {
                 this.automate = false;
@@ -172,7 +174,7 @@ public class TileEntityTurretAssembly
             for( int i = 0; i < maxLoop; i++ ) {
                 this.isActiveClient = this.isActive;
                 if( this.isActive && this.currCrafting != null ) {
-                    if( this.fluxAmount >= this.fluxConsumption && !this.worldObj.isBlockIndirectlyGettingPowered(this.xCoord, this.yCoord, this.zCoord) ) {
+                    if( this.fluxAmount >= this.fluxConsumption && this.worldObj.isBlockIndirectlyGettingPowered(this.pos) == 0 ) {
                         this.fluxAmount -= this.fluxConsumption;
                         if( ++this.ticksCrafted >= this.maxTicksCrafted ) {
                             ItemStack stack = TurretAssemblyRecipes.INSTANCE.getRecipeResult(this.currCrafting.getValue0());
@@ -292,27 +294,24 @@ public class TileEntityTurretAssembly
     }
 
     @Override
-    public boolean canUpdate() {
-        return true;
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+        this.readNBT(pkt.getNbtCompound());
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
-        this.readNBT(pkt.func_148857_g());
-    }
-
-    @Override
-    public Packet getDescriptionPacket() {
+    public SPacketUpdateTileEntity getUpdatePacket() {
         NBTTagCompound nbt = new NBTTagCompound();
         this.writeNBT(nbt);
-        return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, nbt);
+        return new SPacketUpdateTileEntity(this.pos, 0, nbt);
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) {
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
 
         this.writeNBT(nbt);
+
+        return nbt;
     }
 
     @Override
@@ -369,18 +368,18 @@ public class TileEntityTurretAssembly
     }
 
     @Override
-    public int[] getAccessibleSlotsFromSide(int side) {
-        return side == ForgeDirection.DOWN.ordinal() ? SLOTS_EXTRACT : (side == ForgeDirection.UP.ordinal() ? new int[0] : SLOTS_INSERT);
+    public int[] getSlotsForFace(EnumFacing side) {
+        return side == EnumFacing.DOWN ? SLOTS_EXTRACT : (side == EnumFacing.UP ? new int[0] : SLOTS_INSERT);
     }
 
     @Override
-    public boolean canInsertItem(int slot, ItemStack stack, int side) {
-        return this.isItemValidForSlot(slot, stack) && side != ForgeDirection.DOWN.ordinal() && side != ForgeDirection.UP.ordinal();
+    public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
+        return this.isItemValidForSlot(slot, stack) && side != EnumFacing.DOWN && side != EnumFacing.UP;
     }
 
     @Override
-    public boolean canExtractItem(int slot, ItemStack stack, int side) {
-        return slot == 0 && side == ForgeDirection.DOWN.ordinal();
+    public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
+        return slot == 0 && side == EnumFacing.DOWN;
     }
 
     @Override
@@ -421,7 +420,7 @@ public class TileEntityTurretAssembly
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int slot) {
+    public ItemStack removeStackFromSlot(int slot) {
         if( this.assemblyStacks[slot] != null ) {
             ItemStack itemstack = this.assemblyStacks[slot];
             this.assemblyStacks[slot] = null;
@@ -445,13 +444,17 @@ public class TileEntityTurretAssembly
     }
 
     @Override
-    public String getInventoryName() {
+    public String getName() {
         return "";
     }
 
     @Override
-    public boolean hasCustomInventoryName() {
+    public boolean hasCustomName() {
         return false;
+    }
+
+    public ITextComponent getDisplayName() {
+        return this.hasCustomName() ? new TextComponentString(this.getName()) : new TextComponentTranslation(this.getName());
     }
 
     @Override
@@ -461,14 +464,14 @@ public class TileEntityTurretAssembly
 
     @Override
     public boolean isUseableByPlayer(EntityPlayer player) {
-        return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) == this && player.getDistanceSq(this.xCoord + 0.5D, this.yCoord + 0.5D, this.zCoord + 0.5D) <= 64.0D;
+        return this.worldObj.getTileEntity(this.pos) == this && player.getDistanceSq(this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D) <= 64.0D;
     }
 
     @Override
-    public void openInventory() {}
+    public void openInventory(EntityPlayer player) {}
 
     @Override
-    public void closeInventory() {}
+    public void closeInventory(EntityPlayer player) {}
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack) {
@@ -478,8 +481,53 @@ public class TileEntityTurretAssembly
                                                                                     || (slot == 3 && stack.getItem() == ItemRegistry.asbFilter) );
     }
 
+    public static final int FIELD_TICKS_CRAFTED = 0;
+    public static final int FIELD_MAX_TICKS_CRAFTED = 1;
+    public static final int FIELD_FLUX_CONSUMPTION = 2;
+
     @Override
-    public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
+    public int getField(int id) {
+        switch( id ) {
+            case FIELD_TICKS_CRAFTED:
+                return this.ticksCrafted;
+            case FIELD_MAX_TICKS_CRAFTED:
+                return this.maxTicksCrafted;
+            case FIELD_FLUX_CONSUMPTION:
+                return this.fluxConsumption;
+            default:
+                return 0;
+        }
+    }
+
+    @Override
+    public void setField(int id, int value) {
+        switch( id ) {
+            case FIELD_TICKS_CRAFTED:
+                this.ticksCrafted = value;
+                break;
+            case FIELD_MAX_TICKS_CRAFTED:
+                this.maxTicksCrafted = value;
+                break;
+            case FIELD_FLUX_CONSUMPTION:
+                this.fluxConsumption = value;
+                break;
+        }
+    }
+
+    @Override
+    public int getFieldCount() {
+        return 3;
+    }
+
+    @Override
+    public void clear() {
+        for( int i = 0; i < this.assemblyStacks.length; i++ ) {
+            this.assemblyStacks[i] = null;
+        }
+    }
+
+    @Override
+    public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
         int energyReceived = Math.min(this.getMaxEnergyStored(from) - this.fluxAmount, Math.min(MAX_FLUX_INSERT, maxReceive));
 
         if( !simulate ) {
@@ -491,23 +539,23 @@ public class TileEntityTurretAssembly
     }
 
     @Override
-    public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
+    public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
         return 0;
     }
 
     @Override
-    public int getEnergyStored(ForgeDirection from) {
+    public int getEnergyStored(EnumFacing from) {
         return this.fluxAmount;
     }
 
     @Override
-    public int getMaxEnergyStored(ForgeDirection from) {
+    public int getMaxEnergyStored(EnumFacing from) {
         return MAX_FLUX_STORAGE;
     }
 
     @Override
-    public boolean canConnectEnergy(ForgeDirection from) {
-        return from != ForgeDirection.UP;
+    public boolean canConnectEnergy(EnumFacing from) {
+        return from != EnumFacing.UP;
     }
 
     @Override
@@ -569,5 +617,22 @@ public class TileEntityTurretAssembly
     @Override
     public TileEntity getTile() {
         return this;
+    }
+
+    net.minecraftforge.items.IItemHandler handlerBottom = new net.minecraftforge.items.wrapper.SidedInvWrapper(this, net.minecraft.util.EnumFacing.DOWN);
+    net.minecraftforge.items.IItemHandler handlerSide = new net.minecraftforge.items.wrapper.SidedInvWrapper(this, net.minecraft.util.EnumFacing.WEST);
+
+    @Override
+    @SuppressWarnings({"unchecked", "ConstantConditions"})
+    public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, net.minecraft.util.EnumFacing facing) {
+        if( facing != null && capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ) {
+            if( facing == EnumFacing.DOWN ) {
+                return (T) handlerBottom;
+            } else {
+                return (T) handlerSide;
+            }
+        }
+
+        return super.getCapability(capability, facing);
     }
 }

@@ -8,36 +8,28 @@
  */
 package de.sanandrew.mods.turretmod.client.event;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import de.sanandrew.mods.turretmod.client.render.ForcefieldCube;
 import de.sanandrew.mods.turretmod.client.util.ForcefieldProvider;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import net.darkhax.bookshelf.lib.ColorObject;
-import net.darkhax.bookshelf.lib.javatuples.Triplet;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Vec3;
-import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 public class RenderForcefieldHandler
 {
@@ -48,10 +40,11 @@ public class RenderForcefieldHandler
 
     @SubscribeEvent
     public void onRenderWorldLast(RenderWorldLastEvent event) {
-        EntityLivingBase renderEntity = Minecraft.getMinecraft().renderViewEntity;
-        double renderX = renderEntity.lastTickPosX + (renderEntity.posX - renderEntity.lastTickPosX) * event.partialTicks;
-        double renderY = renderEntity.lastTickPosY + (renderEntity.posY - renderEntity.lastTickPosY) * event.partialTicks;
-        double renderZ = renderEntity.lastTickPosZ + (renderEntity.posZ - renderEntity.lastTickPosZ) * event.partialTicks;
+        Entity renderEntity = Minecraft.getMinecraft().getRenderViewEntity();
+        final float partialTicks = event.getPartialTicks();
+        double renderX = renderEntity.lastTickPosX + (renderEntity.posX - renderEntity.lastTickPosX) * partialTicks;
+        double renderY = renderEntity.lastTickPosY + (renderEntity.posY - renderEntity.lastTickPosY) * partialTicks;
+        double renderZ = renderEntity.lastTickPosZ + (renderEntity.posZ - renderEntity.lastTickPosZ) * partialTicks;
 
         List<ForcefieldCube> cubes = new ArrayList<>();
 
@@ -72,11 +65,11 @@ public class RenderForcefieldHandler
                 this.fadeOutFields.add(new ForcefieldFadeOut(entity.posX, entity.posY, entity.posZ, ffProvider.getShieldColor(), ffProvider.getShieldBoundingBox()));
                 it.remove();
             } else {
-                double entityX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * event.partialTicks;
-                double entityY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * event.partialTicks;
-                double entityZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * event.partialTicks;
+                double entityX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
+                double entityY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;
+                double entityZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks;
 
-                ForcefieldCube cube = new ForcefieldCube(Vec3.createVectorHelper(entityX - renderX, entityY - renderY, entityZ - renderZ), ffProvider.getShieldBoundingBox(), ffProvider.getShieldColor());
+                ForcefieldCube cube = new ForcefieldCube(new Vec3d(entityX - renderX, entityY - renderY, entityZ - renderZ), ffProvider.getShieldBoundingBox(), ffProvider.getShieldColor());
 
                 if( TmrConfiguration.calcForcefieldIntf ) {
                     for( ForcefieldCube intfCube : cubes ) {
@@ -95,7 +88,7 @@ public class RenderForcefieldHandler
             if( shield.color.getAlpha() <= 0.0F ) {
                 fadeOutIt.remove();
             } else {
-                ForcefieldCube cube = new ForcefieldCube(Vec3.createVectorHelper(shield.posX - renderX, shield.posY - renderY, shield.posZ - renderZ), shield.shieldBB, shield.color);
+                ForcefieldCube cube = new ForcefieldCube(new Vec3d(shield.posX - renderX, shield.posY - renderY, shield.posZ - renderZ), shield.shieldBB, shield.color);
 
                 cubes.add(cube);
 
@@ -103,11 +96,11 @@ public class RenderForcefieldHandler
             }
         }
 
-        Tessellator tess = Tessellator.instance;
+        Tessellator tess = Tessellator.getInstance();
         for( int pass = 1; pass <= 5; pass++ ) {
 
 
-            float transformTexAmount = worldTicks % 400 + event.partialTicks;
+            float transformTexAmount = worldTicks % 400 + event.getPartialTicks();
             float texTranslateX = 0.0F;
             float texTranslateY = 0.0F;
 
@@ -148,7 +141,7 @@ public class RenderForcefieldHandler
             OpenGlHelper.glBlendFunc(GL11.GL_CONSTANT_ALPHA, GL11.GL_ONE_MINUS_CONSTANT_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
             for( ForcefieldCube cube : cubes ) {
-                tess.startDrawingQuads();
+                tess.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
 
                 cube.draw(tess);
 

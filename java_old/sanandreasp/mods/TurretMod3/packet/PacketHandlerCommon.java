@@ -1,9 +1,9 @@
 package sanandreasp.mods.TurretMod3.packet;
 
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.network.FMLEmbeddedChannel;
-import cpw.mods.fml.common.network.simpleimpl.*;
-import cpw.mods.fml.relauncher.Side;
+import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.network.FMLEmbeddedChannel;
+import net.minecraftforge.fml.common.network.simpleimpl.*;
+import net.minecraftforge.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayer;
 import sanandreasp.mods.turretmod3.client.packet.PacketRecvPlayerNBT;
 import sanandreasp.mods.turretmod3.client.packet.PacketRecvSpawnParticle;

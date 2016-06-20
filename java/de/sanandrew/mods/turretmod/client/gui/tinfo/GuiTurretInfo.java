@@ -23,12 +23,13 @@ import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.util.EnumChatFormatting;
 
+import net.minecraft.util.text.TextFormatting;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -133,7 +134,7 @@ public class GuiTurretInfo
             this.entry.drawPage(this, mouseX - this.entryX, mouseY - this.entryY, Math.round(this.scroll * this.dHeight), partTicks);
         } else if( this.category != null ) {
             this.dHeight = this.entryButtons.size() * 14 + 20 - TurretInfoEntry.MAX_ENTRY_HEIGHT;
-            this.fontRendererObj.drawString(EnumChatFormatting.ITALIC + Lang.translate(this.category.getTitle()), 2, 2, 0xFF33AA33, false);
+            this.fontRendererObj.drawString(TextFormatting.ITALIC + Lang.translate(this.category.getTitle()), 2, 2, 0xFF33AA33, false);
             Gui.drawRect(2, 12, TurretInfoEntry.MAX_ENTRY_WIDTH - 2, 13, 0xFF33AA33);
 
         }
@@ -213,7 +214,7 @@ public class GuiTurretInfo
     }
 
     @Override
-    public void handleMouseInput() {
+    public void handleMouseInput() throws IOException {
         if( this.dHeight > 0 ) {
             int dwheel = Mouse.getEventDWheel() / 120;
             if( dwheel != 0 ) {
@@ -225,7 +226,7 @@ public class GuiTurretInfo
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) {
+    protected void actionPerformed(GuiButton button) throws IOException {
         if( button instanceof GuiButtonNav ) {
             switch( ((GuiButtonNav) button).buttonType ) {
                 case 0:
@@ -284,13 +285,13 @@ public class GuiTurretInfo
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseBtn) {
+    protected void mouseClicked(int mouseX, int mouseY, int mouseBtn) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseBtn);
 
         if( mouseBtn == 0 ) {
             for( GuiButton btn : this.entryButtons ) {
                 if( btn.mousePressed(this.mc, mouseX - this.entryX, mouseY - this.entryY + Math.round(this.scroll * this.dHeight)) ) {
-                    btn.func_146113_a(this.mc.getSoundHandler());
+                    btn.playPressSound(this.mc.getSoundHandler());
                     this.actionPerformed(btn);
                 }
             }
@@ -322,15 +323,15 @@ public class GuiTurretInfo
         public final String link;
 
         public GuiButtonLink(int id, int x, int y, String text, String link) {
-            super(id, x, y, Minecraft.getMinecraft().fontRenderer.getStringWidth(text), Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT, text);
+            super(id, x, y, Minecraft.getMinecraft().fontRendererObj.getStringWidth(text), Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT, text);
             this.link = link;
         }
 
         @Override
         public void drawButton(Minecraft mc, int mouseX, int mouseY) {
             if( this.visible ) {
-                String clrCode = (this.enabled ? EnumChatFormatting.BLUE : EnumChatFormatting.GRAY).toString();
-                mc.fontRenderer.drawString(clrCode + EnumChatFormatting.UNDERLINE + this.displayString, this.xPosition, this.yPosition, 0xFF000000, false);
+                String clrCode = (this.enabled ? TextFormatting.BLUE : TextFormatting.GRAY).toString();
+                mc.fontRendererObj.drawString(clrCode + TextFormatting.UNDERLINE + this.displayString, this.xPosition, this.yPosition, 0xFF000000, false);
             }
         }
     }

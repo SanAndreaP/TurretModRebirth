@@ -12,7 +12,7 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.RandomPositionGenerator;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 
 final class EntityAIMoveTowardsTurret
         extends EntityAIBase
@@ -45,8 +45,8 @@ final class EntityAIMoveTowardsTurret
         } else if( this.targetTurret.getDistanceSqToEntity(this.theEntity) > this.maxDistance * this.maxDistance ) {
             return false;
         } else {
-            Vec3 targetPosVec = Vec3.createVectorHelper(this.targetTurret.posX, this.targetTurret.posY, this.targetTurret.posZ);
-            Vec3 pathBlockVec = RandomPositionGenerator.findRandomTargetBlockTowards(this.theEntity, 16, 7, targetPosVec);
+            Vec3d targetPosVec = new Vec3d(this.targetTurret.posX, this.targetTurret.posY, this.targetTurret.posZ);
+            Vec3d pathBlockVec = RandomPositionGenerator.findRandomTargetBlockTowards(this.theEntity, 16, 7, targetPosVec);
 
             if( pathBlockVec == null ) {
                 return false;

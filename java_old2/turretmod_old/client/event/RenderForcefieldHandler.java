@@ -11,7 +11,7 @@ package de.sanandrew.mods.turretmod.client.event;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils.RGBAValues;
 import de.sanandrew.mods.turretmod.api.ForcefieldProvider;

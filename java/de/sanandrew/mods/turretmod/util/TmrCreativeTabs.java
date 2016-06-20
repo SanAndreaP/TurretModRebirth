@@ -8,8 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.creativetab.CreativeTabs;
@@ -35,7 +35,7 @@ public class TmrCreativeTabs
         @Override
         @SideOnly(Side.CLIENT)
         public Item getTabIconItem() {
-            return Items.blaze_powder;
+            return Items.BLAZE_POWDER;
         }
 
         @Override
@@ -52,17 +52,10 @@ public class TmrCreativeTabs
 
         @Override
         @SideOnly(Side.CLIENT)
-        @SuppressWarnings("unchecked")
-        public void displayAllReleventItems(List itmList) {
-            super.displayAllReleventItems(itmList);
+        public void displayAllRelevantItems(List<ItemStack> itmList) {
+            super.displayAllRelevantItems(itmList);
 
-            Collections.sort(itmList, new Comparator<ItemStack>()
-            {
-                @Override
-                public int compare(ItemStack o1, ItemStack o2) {
-                    return o1 != null && o1.getItem() == ItemRegistry.turret ? 1 : o2 != null && o2.getItem() == ItemRegistry.turret ? -1 : 0;
-                }
-            });
+            Collections.sort(itmList, (o1, o2) -> o1 != null && o1.getItem() == ItemRegistry.turret ? 1 : o2 != null && o2.getItem() == ItemRegistry.turret ? -1 : 0);
 
             sortItemsBySubItems(itmList, this);
         }
@@ -77,9 +70,8 @@ public class TmrCreativeTabs
 
         @Override
         @SideOnly(Side.CLIENT)
-        @SuppressWarnings("unchecked")
-        public void displayAllReleventItems(List itmList) {
-            super.displayAllReleventItems(itmList);
+        public void displayAllRelevantItems(List<ItemStack> itmList) {
+            super.displayAllRelevantItems(itmList);
 
 //            sortItemsByName(itmList);
             sortItemsBySubItems(itmList, this);
@@ -110,9 +102,8 @@ public class TmrCreativeTabs
 
         @Override
         @SideOnly(Side.CLIENT)
-        @SuppressWarnings("unchecked")
-        public void displayAllReleventItems(List itmList) {
-            super.displayAllReleventItems(itmList);
+        public void displayAllRelevantItems(List<ItemStack> itmList) {
+            super.displayAllRelevantItems(itmList);
 
             sortItemsByName(itmList);
             sortItemsBySubItems(itmList, this);

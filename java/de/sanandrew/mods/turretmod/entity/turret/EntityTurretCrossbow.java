@@ -8,14 +8,14 @@
  */
 package de.sanandrew.mods.turretmod.entity.turret;
 
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 
 import java.util.UUID;
@@ -109,13 +109,13 @@ public class EntityTurretCrossbow
         }
 
         @Override
-        public String getShootSound() {
-            return "random.bow";
+        public SoundEvent getShootSound() {
+            return SoundEvents.BLOCK_DISPENSER_LAUNCH;
         }
 
         @Override
-        public String getLowAmmoSound() {
-            return "random.click";
+        public SoundEvent getLowAmmoSound() {
+            return SoundEvents.BLOCK_DISPENSER_FAIL;
         }
     }
 }

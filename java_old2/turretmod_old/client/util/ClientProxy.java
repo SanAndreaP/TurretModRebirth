@@ -8,7 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.util;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import de.sanandrew.core.manpack.mod.client.particle.SAPEffectRenderer;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.api.TurretUpgrade;

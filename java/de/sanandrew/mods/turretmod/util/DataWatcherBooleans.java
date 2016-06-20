@@ -10,41 +10,44 @@ package de.sanandrew.mods.turretmod.util;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 
-public final class DataWatcherBooleans
+public final class DataWatcherBooleans<T extends Entity>
 {
-    private final int id;
-    private final Entity entity;
+    private final T entity;
+    private final DataParameter<Integer> param;
 
-    public DataWatcherBooleans(Entity e, int id) {
-        this.id = id;
+    public DataWatcherBooleans(T e) {
         this.entity = e;
+        this.param =  EntityDataManager.<Integer>createKey(e.getClass(), DataSerializers.VARINT);
     }
 
     public void registerDwValue() {
-        this.entity.getDataWatcher().addObject(this.id, 0);
+        this.entity.getDataManager().register(this.param, 0);
     }
 
     public void setBit(int bit, boolean value) {
-        int dwVal = this.entity.getDataWatcher().getWatchableObjectInt(this.id);
+        int dwVal = this.entity.getDataManager().get(this.param);
         if( value ) {
             dwVal = dwVal | (1 << bit);
         } else {
             dwVal = dwVal & ~( 1 << bit );
         }
-        this.entity.getDataWatcher().updateObject(this.id, dwVal);
+        this.entity.getDataManager().set(this.param, dwVal);
     }
 
     public boolean getBit(int bit) {
-        return (((this.entity.getDataWatcher().getWatchableObjectInt(this.id) & (1 << bit)) >> bit) & 1) == 1;
+        return (((this.entity.getDataManager().get(this.param) & (1 << bit)) >> bit) & 1) == 1;
     }
 
     public void writeToNbt(NBTTagCompound nbt) {
-        nbt.setInteger("dataWatcherBools", this.entity.getDataWatcher().getWatchableObjectInt(this.id));
+        nbt.setInteger("dataWatcherBools", this.entity.getDataManager().get(this.param));
     }
 
     public void readFromNbt(NBTTagCompound nbt) {
-        this.entity.getDataWatcher().updateObject(this.id, nbt.getInteger("dataWatcherBools"));
+        this.entity.getDataManager().set(this.param, nbt.getInteger("dataWatcherBools"));
     }
 
     public enum Turret {

@@ -5,9 +5,10 @@ import cofh.api.tileentity.ITileInfo;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentBase;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Implement this interface on blocks which can provide information about themselves. If the block contains Tile Entities, then it is recommended that this
@@ -23,12 +24,8 @@ public interface IBlockInfo {
 	 * 
 	 * @param world
 	 *            Reference to the world.
-	 * @param x
-	 *            X coordinate of the block.
-	 * @param y
-	 *            Y coordinate of the block.
-	 * @param z
-	 *            Z coordinate of the block.
+	 * @param pos
+	 *            coordinates of the block.
 	 * @param side
 	 *            The side of the block that is being queried.
 	 * @param player
@@ -38,6 +35,6 @@ public interface IBlockInfo {
 	 * @param debug
 	 *            If true, the block should return "debug" information.
 	 */
-	void getBlockInfo(IBlockAccess world, int x, int y, int z, ForgeDirection side, EntityPlayer player, List<IChatComponent> info, boolean debug);
+	void getBlockInfo(IBlockAccess world, BlockPos pos, EnumFacing side, EntityPlayer player, List<TextComponentBase> info, boolean debug);
 
 }

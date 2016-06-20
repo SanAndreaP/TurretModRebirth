@@ -8,8 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.api.TurretInfo;
@@ -26,7 +26,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.IIcon;
 import org.lwjgl.input.Keyboard;
 
@@ -105,7 +105,7 @@ public class ItemTurretUpgrade
         String unlocName = this.getUnlocalizedName(stack);
         String upgName = stackUpgrade == null ? "empty" : stackUpgrade.getName();
 
-        lines.add(EnumChatFormatting.AQUA + SAPUtils.translatePreFormat("%s.%s.name", unlocName, upgName));
+        lines.add(TextFormatting.AQUA + SAPUtils.translatePreFormat("%s.%s.name", unlocName, upgName));
 
         if( Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) ) {
             for( Object line : Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(SAPUtils.translatePreFormat("%s.%s.desc", unlocName, upgName), 200) ) {
@@ -114,13 +114,13 @@ public class ItemTurretUpgrade
 
             if( stackUpgrade != null ) {
                 if( stackUpgrade.getDependantOn() != null ) {
-                    lines.add(EnumChatFormatting.YELLOW + SAPUtils.translatePreFormat("%s.requires", unlocName));
+                    lines.add(TextFormatting.YELLOW + SAPUtils.translatePreFormat("%s.requires", unlocName));
                     lines.add("  " + SAPUtils.translatePreFormat("%s.%s.name", unlocName, stackUpgrade.getDependantOn().getName()));
                 }
 
                 List<Class<? extends Turret>> applicables = stackUpgrade.getApplicableTurrets();
                 if( applicables.size() > 0 ) {
-                    lines.add(EnumChatFormatting.RED + SAPUtils.translatePreFormat("%s.applicableTo", unlocName));
+                    lines.add(TextFormatting.RED + SAPUtils.translatePreFormat("%s.applicableTo", unlocName));
                     for( Class<? extends Turret> cls : applicables ) {
                         TurretInfo<?> info = TurretRegistry.getTurretInfo(cls);
                         if( info != null ) {
@@ -131,7 +131,7 @@ public class ItemTurretUpgrade
                 }
             }
         } else {
-            lines.add(EnumChatFormatting.ITALIC + SAPUtils.translatePreFormat("%s.shdetails", unlocName));
+            lines.add(TextFormatting.ITALIC + SAPUtils.translatePreFormat("%s.shdetails", unlocName));
         }
     }
 

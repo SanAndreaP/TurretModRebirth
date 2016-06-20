@@ -11,6 +11,8 @@ package de.sanandrew.mods.turretmod.inventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 
 public class InventoryAssemblyFilter
         implements IInventory
@@ -52,7 +54,7 @@ public class InventoryAssemblyFilter
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int slot) {
+    public ItemStack removeStackFromSlot(int slot) {
         if( this.invStacks[slot] != null ) {
             ItemStack itemstack = this.invStacks[slot];
             this.invStacks[slot] = null;
@@ -79,13 +81,18 @@ public class InventoryAssemblyFilter
     }
 
     @Override
-    public String getInventoryName() {
+    public String getName() {
         return "Assembly Filter";
     }
 
     @Override
-    public boolean hasCustomInventoryName() {
+    public boolean hasCustomName() {
         return false;
+    }
+
+    @Override
+    public ITextComponent getDisplayName() {
+        return new TextComponentString(this.getName());
     }
 
     @Override
@@ -102,14 +109,34 @@ public class InventoryAssemblyFilter
     }
 
     @Override
-    public void openInventory() {}
+    public void openInventory(EntityPlayer player) {}
 
     @Override
-    public void closeInventory() {}
+    public void closeInventory(EntityPlayer player) {}
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
         return true;
+    }
+
+    @Override
+    public int getField(int id) {
+        return 0;
+    }
+
+    @Override
+    public void setField(int id, int value) { }
+
+    @Override
+    public int getFieldCount() {
+        return 0;
+    }
+
+    @Override
+    public void clear() {
+        for( int i = 0; i < this.invStacks.length; i++ ) {
+            this.invStacks[i] = null;
+        }
     }
 }

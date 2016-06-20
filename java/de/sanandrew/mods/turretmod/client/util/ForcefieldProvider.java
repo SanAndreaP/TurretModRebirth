@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.client.util;
 
 import net.darkhax.bookshelf.lib.ColorObject;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.math.AxisAlignedBB;
 
 public interface ForcefieldProvider
 {

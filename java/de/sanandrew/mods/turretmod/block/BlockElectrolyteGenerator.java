@@ -15,8 +15,9 @@ import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,25 +26,29 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
 
 public class BlockElectrolyteGenerator
         extends Block
 {
     protected BlockElectrolyteGenerator() {
-        super(Material.rock);
+        super(Material.ROCK);
+        this.blockHardness = 4.25F;
+        this.blockSoundType = SoundType.STONE;
         this.setCreativeTab(TmrCreativeTabs.TURRETS);
-        this.setHardness(4.25F);
-        this.setStepSound(soundTypePiston);
-        this.setBlockName(TurretModRebirth.ID + ":potato_generator");
+        this.setUnlocalizedName(TurretModRebirth.ID + ":potato_generator");
     }
 
     @Override
     @SuppressWarnings("TailRecursion")
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float offX, float offY, float offZ) {
-        if( !world.isRemote ) {
-            if( world.getBlockMetadata(x, y, z) != 0 ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+        if( !worldIn.isRemote ) {
+            if( worldIn.getBlockMetadata(x, y, z) != 0 ) {
                 return this.onBlockActivated(world, x, y - 1, z, player, side, offX, offY, offZ);
             } else {
                 //            ItemStack held = player.getHeldItem();
@@ -152,11 +157,6 @@ public class BlockElectrolyteGenerator
     @Override
     public boolean renderAsNormalBlock() {
         return false;
-    }
-
-    @Override
-    public void registerBlockIcons(IIconRegister iconRegister) {
-        this.blockIcon = Blocks.anvil.getIcon(0, 0);
     }
 
     @Override

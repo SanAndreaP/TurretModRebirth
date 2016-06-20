@@ -16,7 +16,7 @@ import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
 import java.util.UUID;
@@ -42,7 +42,7 @@ public class TurretInfoEntryUpgrade
         TurretUpgrade prereq = this.upgrade.getDependantOn();
         int infoHeight = 54;
 
-        gui.mc.fontRenderer.drawString(EnumChatFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 2, 0xFF0080BB);
+        gui.mc.fontRendererObj.drawString(TextFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 2, 0xFF0080BB);
         Gui.drawRect(2, 12, MAX_ENTRY_WIDTH - 2, 13, 0xFF0080BB);
 
         gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
@@ -51,17 +51,17 @@ public class TurretInfoEntryUpgrade
 
         drawItem(gui.mc, 3, 17, UpgradeRegistry.INSTANCE.getUpgradeItem(this.upgrade), 2.0F);
 
-        gui.mc.fontRenderer.drawString(this.txtCrft, 42, 16, 0xFF6A6A6A, false);
+        gui.mc.fontRendererObj.drawString(this.txtCrft, 42, 16, 0xFF6A6A6A, false);
         if( prereq != null ) {
-            gui.mc.fontRenderer.drawString(this.txtPrereq, 42, 36, 0xFF6A6A6A, false);
+            gui.mc.fontRendererObj.drawString(this.txtPrereq, 42, 36, 0xFF6A6A6A, false);
             infoHeight = 56;
         }
 
         Gui.drawRect(2, infoHeight, MAX_ENTRY_WIDTH - 2, infoHeight + 1, 0xFF0080BB);
 
         String text = Lang.translate(Lang.ITEM_UPGRADE_DESC, upgrade.getName()).replace("\\n", "\n");
-        gui.mc.fontRenderer.drawSplitString(text, 2, infoHeight + 3, MAX_ENTRY_WIDTH - 2, 0xFF000000);
-        this.drawHeight = gui.mc.fontRenderer.splitStringWidth(text, MAX_ENTRY_WIDTH - 2) + infoHeight + 3 + 2;
+        gui.mc.fontRendererObj.drawSplitString(text, 2, infoHeight + 3, MAX_ENTRY_WIDTH - 2, 0xFF000000);
+        this.drawHeight = gui.mc.fontRendererObj.splitStringWidth(text, MAX_ENTRY_WIDTH - 2) + infoHeight + 3 + 2;
 
         TurretAssemblyRecipes.RecipeEntry recipeEntry = TurretAssemblyRecipes.INSTANCE.getRecipeEntry(this.upgrade.getRecipeId());
         for( int i = 0; i < recipeEntry.resources.length; i++ ) {

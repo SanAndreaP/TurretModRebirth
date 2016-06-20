@@ -8,7 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.event;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import de.sanandrew.core.manpack.util.client.event.SAPFxLayerRenderEvent;
 import de.sanandrew.mods.turretmod.client.util.ClientProxy;
 import org.lwjgl.opengl.GL11;

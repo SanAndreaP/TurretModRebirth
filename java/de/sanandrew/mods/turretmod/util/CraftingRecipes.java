@@ -26,12 +26,12 @@ public final class CraftingRecipes
     public static void initialize() {
         assemblyTable = CraftingManager.getInstance().addRecipe(new ItemStack(BlockRegistry.assemblyTable, 1),
                 "ROR", "IAI", "CFC",
-                'R', new ItemStack(Items.repeater),
-                'O', new ItemStack(Blocks.obsidian),
-                'I', new ItemStack(Items.iron_ingot),
-                'A', new ItemStack(Blocks.anvil, 1, 0),
-                'C', new ItemStack(Blocks.cobblestone),
-                'F', new ItemStack(Blocks.furnace));
+                'R', new ItemStack(Items.REPEATER),
+                'O', new ItemStack(Blocks.OBSIDIAN),
+                'I', new ItemStack(Items.IRON_INGOT),
+                'A', new ItemStack(Blocks.ANVIL, 1, 0),
+                'C', new ItemStack(Blocks.COBBLESTONE),
+                'F', new ItemStack(Blocks.FURNACE));
 
         potatoGenerator = new ShapedOreRecipe(BlockRegistry.potatoGenerator,
                 true,
@@ -40,10 +40,10 @@ public final class CraftingRecipes
                 'B', "ingotBrick",
                 'G', "ingotGold",
                 'R', "dustRedstone",
-                'C', Items.cauldron,
-                'P', Items.repeater);
+                'C', Items.CAULDRON,
+                'P', Items.REPEATER);
         CraftingManager.getInstance().getRecipeList().add(potatoGenerator);
 
-        CraftingManager.getInstance().addShapelessRecipe(new ItemStack(ItemRegistry.turretInfo, 1), Items.writable_book, Blocks.dispenser);
+        CraftingManager.getInstance().addShapelessRecipe(new ItemStack(ItemRegistry.turretInfo, 1), Items.WRITABLE_BOOK, Blocks.DISPENSER);
     }
 }

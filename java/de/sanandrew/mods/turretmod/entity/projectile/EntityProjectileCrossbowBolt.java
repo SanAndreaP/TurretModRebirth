@@ -8,10 +8,10 @@
  */
 package de.sanandrew.mods.turretmod.entity.projectile;
 
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class EntityProjectileCrossbowBolt
@@ -25,7 +25,7 @@ public class EntityProjectileCrossbowBolt
         super(world, shooter, target);
     }
 
-    public EntityProjectileCrossbowBolt(World world, Entity shooter, Vec3 shootingVec) {
+    public EntityProjectileCrossbowBolt(World world, Entity shooter, Vec3d shootingVec) {
         super(world, shooter, shootingVec);
     }
 
@@ -35,8 +35,8 @@ public class EntityProjectileCrossbowBolt
     }
 
     @Override
-    public String getRicochetSound() {
-        return "random.bowhit";
+    public SoundEvent getRicochetSound() {
+        return SoundEvents.ENTITY_ARROW_HIT;
     }
 
     @Override

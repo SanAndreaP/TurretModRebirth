@@ -13,7 +13,6 @@ import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
@@ -22,7 +21,7 @@ import org.lwjgl.opengl.GL12;
 public class GuiButtonEntry
         extends GuiButton
 {
-    protected static RenderItem itemRender = new RenderItem();
+//    protected static RenderItem itemRender = new RenderItem();
 
     public final int entIndex;
 
@@ -52,7 +51,7 @@ public class GuiButtonEntry
             }
 
             if( this.icon == null ) {
-                this.icon = new ItemStack(Blocks.fire);
+                this.icon = new ItemStack(Blocks.FIRE);
             }
 
             GL11.glPushMatrix();
@@ -81,18 +80,19 @@ public class GuiButtonEntry
             GL11.glDisable(GL12.GL_RESCALE_NORMAL);
             GL11.glPopMatrix();
 
-            mc.fontRenderer.drawString(this.displayString, this.xPosition + 12, this.yPosition + 3, 0xFF000000, false);
+            mc.fontRendererObj.drawString(this.displayString, this.xPosition + 12, this.yPosition + 3, 0xFF000000, false);
 
             GL11.glPopMatrix();
         }
     }
 
+    //TODO: re-enable item renderer!
     private static void drawItemStack(Minecraft mc, ItemStack stack, int x, int y) {
-        GL11.glTranslatef(0.0F, 0.0F, 32.0F);
-        itemRender.zLevel = -50.0F;
-        itemRender.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), stack, x, y);
-        itemRender.zLevel = 0.0F;
-        GL11.glTranslatef(0.0F, 0.0F, -32.0F);
-        GL11.glDisable(GL11.GL_LIGHTING);
+//        GL11.glTranslatef(0.0F, 0.0F, 32.0F);
+//        itemRender.zLevel = -50.0F;
+//        itemRender.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), stack, x, y);
+//        itemRender.zLevel = 0.0F;
+//        GL11.glTranslatef(0.0F, 0.0F, -32.0F);
+//        GL11.glDisable(GL11.GL_LIGHTING);
     }
 }

@@ -9,4 +9,4 @@
 @API(owner = TurretModApiProps.API_OWNER, provides = TurretModApiProps.API_NAME, apiVersion = TurretModApiProps.API_VERSION)
 package de.sanandrew.mods.turretmod.api;
 
-import cpw.mods.fml.common.API;
+import net.minecraftforge.fml.common.API;

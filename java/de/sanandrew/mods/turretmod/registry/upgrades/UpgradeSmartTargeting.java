@@ -18,7 +18,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.math.AxisAlignedBB;
 
 import java.util.List;
 import java.util.UUID;
@@ -31,7 +31,7 @@ public class UpgradeSmartTargeting
         @Override
         public boolean isTargetApplicable(EntityTurret turret, Entity target, boolean currValue) {
             double range = turret.getTargetProcessor().getRange();
-            AxisAlignedBB rangeAABB = turret.boundingBox.expand(range, range, range);
+            AxisAlignedBB rangeAABB = turret.getEntityBoundingBox().expand(range, range, range);
             List entities = turret.worldObj.getEntitiesWithinAABB(turret.getClass(), rangeAABB);
 
             for( Object eObj : entities ) {

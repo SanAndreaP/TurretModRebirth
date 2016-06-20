@@ -20,10 +20,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.util.Constants;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class UpgradeProcessor
@@ -165,7 +165,7 @@ public class UpgradeProcessor
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int slot) {
+    public ItemStack removeStackFromSlot(int slot) {
         if( this.upgradeStacks[slot] != null ) {
             ItemStack itemstack = this.upgradeStacks[slot];
             this.upgradeStacks[slot] = null;
@@ -201,13 +201,18 @@ public class UpgradeProcessor
     }
 
     @Override
-    public String getInventoryName() {
+    public String getName() {
         return "Upgrades";
     }
 
     @Override
-    public boolean hasCustomInventoryName() {
+    public boolean hasCustomName() {
         return false;
+    }
+
+    @Override
+    public ITextComponent getDisplayName() {
+        return new TextComponentString(this.getName());
     }
 
     @Override
@@ -226,10 +231,10 @@ public class UpgradeProcessor
     }
 
     @Override
-    public void openInventory() {}
+    public void openInventory(EntityPlayer player) {}
 
     @Override
-    public void closeInventory() {}
+    public void closeInventory(EntityPlayer player) {}
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack) {
@@ -267,6 +272,26 @@ public class UpgradeProcessor
 
     }
 
+    @Override
+    public int getField(int id) {
+        return 0;
+    }
+
+    @Override
+    public void setField(int id, int value) { }
+
+    @Override
+    public int getFieldCount() {
+        return 0;
+    }
+
+    @Override
+    public void clear() {
+        for( int i = 0; i < this.upgradeStacks.length; i++ ) {
+            this.upgradeStacks[i] = null;
+        }
+    }
+
     public boolean tryApplyUpgrade(ItemStack upgStack) {
         TurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(upgStack);
         if( upg != null && !this.hasUpgrade(upg) ) {
@@ -287,7 +312,7 @@ public class UpgradeProcessor
 
     public void dropUpgrades() {
         for( int i = 0; i < this.getSizeInventory(); i++ ) {
-            ItemStack stack = this.getStackInSlotOnClosing(i);
+            ItemStack stack = this.removeStackFromSlot(i);
 
             if( ItemStackUtils.isValidStack(stack) ) {
                 float xOff = TmrUtils.RNG.nextFloat() * 0.8F + 0.1F;

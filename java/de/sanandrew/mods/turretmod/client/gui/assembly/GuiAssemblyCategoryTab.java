@@ -14,7 +14,6 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -23,7 +22,7 @@ public class GuiAssemblyCategoryTab
         extends GuiButton
 {
 	protected ItemStack renderedItem;
-    protected static RenderItem itemRenderer = new RenderItem();
+//    protected static RenderItem itemRenderer = new RenderItem();
 
 	public GuiAssemblyCategoryTab(int id, int posX, int posY, ItemStack renderedItem, String hoverText) {
 		super(id, posX, posY, hoverText);
@@ -41,8 +40,8 @@ public class GuiAssemblyCategoryTab
             mc.renderEngine.bindTexture(Resources.GUI_ASSEMBLY_CRF.getResource());
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-            this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-            int hoverState = this.getHoverState(this.field_146123_n);
+            this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+            int hoverState = this.getHoverState(this.hovered);
 
             this.drawTexturedModalRect(this.xPosition, this.yPosition, 50 + 20 * hoverState, 222, this.width, this.height);
 
@@ -56,8 +55,8 @@ public class GuiAssemblyCategoryTab
             RenderHelper.disableStandardItemLighting();
             GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 
-            if( this.field_146123_n ) {
-                this.drawTabHoveringText(this.displayString, this.xPosition + 5, this.yPosition + 15, mc.fontRenderer);
+            if( this.hovered ) {
+                this.drawTabHoveringText(this.displayString, this.xPosition + 5, this.yPosition + 15, mc.fontRendererObj);
             }
 
             GL11.glDisable(GL11.GL_BLEND);
@@ -77,7 +76,7 @@ public class GuiAssemblyCategoryTab
         byte height = 8;
 
         this.zLevel = 400.0F;
-        itemRenderer.zLevel = 300.0F;
+//        itemRenderer.zLevel = 300.0F;
         int bkgColor = 0xF0100010;
         int lightBg = 0x505000FF;
         int darkBg = (lightBg & 0xFEFEFE) >> 1 | lightBg & 0xFF000000;
@@ -98,7 +97,7 @@ public class GuiAssemblyCategoryTab
         fontRenderer.drawStringWithShadow(text, xPos, yPos, -1);
 
         this.zLevel = 0.0F;
-        itemRenderer.zLevel = 0.0F;
+//        itemRenderer.zLevel = 0.0F;
 
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glEnable(GL11.GL_LIGHTING);
@@ -108,13 +107,14 @@ public class GuiAssemblyCategoryTab
 
     private void drawItemStack(ItemStack stack, int x, int y, Minecraft mc) {
         GL11.glTranslatef(0.0F, 0.0F, 32.0F);
-        this.zLevel = 200.0F;
-        itemRenderer.zLevel = 200.0F;
-        GL11.glScalef(0.5F, 0.5F, 1.0F);
-        itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), stack, x * 2, y * 2);
-        GL11.glScalef(2.0F, 2.0F, 1.0F);
-        this.zLevel = 0.0F;
-        itemRenderer.zLevel = 0.0F;
+//        this.zLevel = 200.0F;
+        //TODO: re-enable item srendering
+//        itemRenderer.zLevel = 200.0F;
+//        GL11.glScalef(0.5F, 0.5F, 1.0F);
+//        itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), stack, x * 2, y * 2);
+//        GL11.glScalef(2.0F, 2.0F, 1.0F);
+//        this.zLevel = 0.0F;
+//        itemRenderer.zLevel = 0.0F;
         GL11.glTranslatef(0.0F, 0.0F, -32.0F);
         GL11.glDisable(GL11.GL_LIGHTING);
     }

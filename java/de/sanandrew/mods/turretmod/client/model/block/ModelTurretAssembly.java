@@ -6,8 +6,11 @@ import net.darkhax.bookshelf.lib.javatuples.Triplet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -96,47 +99,47 @@ public class ModelTurretAssembly
             this.base.render(f5);
 
             if( te.isActive && te.robotArmX >= 4.0F && te.robotArmX <= 10.0F && te.robotArmY <= -3.5F && te.robotArmY >= -9.5F ) {
-                float dist = (float) Minecraft.getMinecraft().thePlayer.getDistance(te.xCoord + 0.5F, te.yCoord + 0.5F, te.zCoord + 0.5F);
-                Tessellator tess = Tessellator.instance;
+                int tileX = te.getPos().getX();
+                int tileY = te.getPos().getY();
+                int tileZ = te.getPos().getZ();
+                float dist = (float) Minecraft.getMinecraft().thePlayer.getDistance(tileX + 0.5F, tileY + 0.5F, tileZ + 0.5F);
+                Tessellator tess = Tessellator.getInstance();
+                VertexBuffer buf = tess.getBuffer();
 
-                GL11.glPushMatrix();
-                GL11.glDisable(GL11.GL_TEXTURE_2D);
-                GL11.glDisable(GL11.GL_LIGHTING);
-                GL11.glTranslatef(laserX, 0.5F, laserZ);
-                GL11.glEnable(GL11.GL_BLEND);
-                OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+                GlStateManager.pushMatrix();
+                GlStateManager.disableTexture2D();
+                GlStateManager.disableLighting();
+                GlStateManager.translate(laserX, 0.5F, laserZ);
+                GlStateManager.enableBlend();
+                GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
                 float prevBrightX = OpenGlHelper.lastBrightnessX;
                 float prevBrightY = OpenGlHelper.lastBrightnessY;
-                int bright = 0xF0;
+                int bright = 0xF0F0;
                 int brightX = bright % 65536;
                 int brightY = bright / 65536;
-                OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightX / 1.0F, brightY / 1.0F);
+                OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightX, brightY);
 
-                GL11.glLineWidth(Math.min(20.0F, 20.0F / (dist)));
-                tess.startDrawing(GL11.GL_LINE_LOOP);
-                tess.setColorRGBA(255, 0, 0, 64);
-                tess.addVertex(0.0F, 0.1F, 0.0F);
-                tess.addVertex(0.0F, 1.0F, 0.0F);
+                GlStateManager.glLineWidth(Math.min(20.0F, 20.0F / (dist)));
+                buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION);
+                buf.pos(0.0F, 0.1F, 0.0F).color(255, 0, 0, 64).endVertex();
+                buf.pos(0.0F, 1.0F, 0.0F).color(255, 0, 0, 64).endVertex();
                 tess.draw();
 
-                GL11.glLineWidth(Math.min(5.0F, 5.0F / (dist)));
-                tess.startDrawing(GL11.GL_LINE_LOOP);
-                tess.setColorRGBA(255, 0, 0, 128);
-                tess.addVertex(0.0F, 0.1F, 0.0F);
-                tess.addVertex(0.0F, 1.0F, 0.0F);
+                GlStateManager.glLineWidth(Math.min(5.0F, 5.0F / (dist)));
+                buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION);
+                buf.pos(0.0F, 0.1F, 0.0F).color(255, 0, 0, 128).endVertex();
+                buf.pos(0.0F, 1.0F, 0.0F).color(255, 0, 0, 128).endVertex();
                 tess.draw();
 
                 OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, prevBrightX, prevBrightY);
 
-                GL11.glDisable(GL11.GL_BLEND);
-                GL11.glEnable(GL11.GL_TEXTURE_2D);
-                GL11.glEnable(GL11.GL_LIGHTING);
-                GL11.glPopMatrix();
+                GlStateManager.disableBlend();
+                GlStateManager.enableTexture2D();
+                GlStateManager.enableLighting();
+                GlStateManager.popMatrix();
 
-                te.spawnParticle = Triplet.with(te.xCoord + 0.50F + laserX,
-                                                te.yCoord + 0.65F,
-                                                te.zCoord + 0.50F - laserZ);
+                te.spawnParticle = Triplet.with(tileX + 0.50F + laserX, tileY + 0.65F, tileZ + 0.50F - laserZ);
             }
         }
     }

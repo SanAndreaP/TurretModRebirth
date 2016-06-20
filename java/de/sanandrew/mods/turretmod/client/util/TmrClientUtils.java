@@ -11,6 +11,8 @@ package de.sanandrew.mods.turretmod.client.util;
 import net.darkhax.bookshelf.lib.util.ReflectionUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -89,12 +91,13 @@ public class TmrClientUtils
     }
 
     public static void drawTexturedModalRect(int xPos, int yPos, float z, int u, int v, int width, int height, float resScaleX, float resScaleY) {
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV(xPos, yPos + height, z, u * resScaleX, (v + height) * resScaleY);
-        tessellator.addVertexWithUV(xPos + width, yPos + height, z, (u + width) * resScaleX, (v + height) * resScaleY);
-        tessellator.addVertexWithUV(xPos + width, yPos, z, (u + width) * resScaleX, v * resScaleY);
-        tessellator.addVertexWithUV(xPos, yPos, z, u * resScaleX, v * resScaleY);
+        Tessellator tessellator = Tessellator.getInstance();
+        VertexBuffer buffer = tessellator.getBuffer();
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+        buffer.pos(xPos, yPos + height, z).tex(u * resScaleX, (v + height) * resScaleY).endVertex();
+        buffer.pos(xPos + width, yPos + height, z).tex((u + width) * resScaleX, (v + height) * resScaleY).endVertex();
+        buffer.pos(xPos + width, yPos, z).tex((u + width) * resScaleX, v * resScaleY).endVertex();
+        buffer.pos(xPos, yPos, z).tex(u * resScaleX, v * resScaleY).endVertex();
         tessellator.draw();
     }
 }

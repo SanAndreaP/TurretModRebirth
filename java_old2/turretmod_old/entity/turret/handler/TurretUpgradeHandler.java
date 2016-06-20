@@ -19,7 +19,7 @@ import net.minecraft.entity.ai.attributes.BaseAttributeMap;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.util.Constants.NBT;
 import org.apache.logging.log4j.Level;
 

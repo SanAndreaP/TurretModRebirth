@@ -8,8 +8,16 @@
  */
 package de.sanandrew.mods.turretmod.entity.turret;
 
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
+import de.sanandrew.mods.turretmod.util.Sounds;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketPlayerTurretAction;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
@@ -23,7 +31,6 @@ import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import io.netty.buffer.ByteBuf;
 import net.darkhax.bookshelf.lib.javatuples.Pair;
-import net.darkhax.bookshelf.lib.javatuples.Triplet;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -35,13 +42,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public abstract class EntityTurret
@@ -56,7 +62,7 @@ public abstract class EntityTurret
     private static final int DW_FREQUENCY = 27; /* BYTE */
     private static final int DW_BOOLEANS = 28; /* BYTE */
 
-    private Triplet<Integer, Integer, Integer> blockPos;
+    private BlockPos blockPos;
 
     protected TargetProcessor targetProc;
     protected UpgradeProcessor upgProc;
@@ -66,7 +72,7 @@ public abstract class EntityTurret
 
     public boolean inGui;
 
-    private DataWatcherBooleans dwBools;
+    private DataWatcherBooleans<EntityTurret> dwBools;
 
     public EntityTurret(World world) {
         super(world);
@@ -78,7 +84,7 @@ public abstract class EntityTurret
         this.isUpsideDown = isUpsideDown;
 
         this.ownerUUID = owner.getUniqueID();
-        this.ownerName = owner.getCommandSenderName();
+        this.ownerName = owner.getName();
     }
 
     @Override
@@ -93,20 +99,20 @@ public abstract class EntityTurret
     protected void entityInit() {
         super.entityInit();
 
-        this.dwBools = new DataWatcherBooleans(this, DW_BOOLEANS);
+        this.dwBools = new DataWatcherBooleans<>(this);
         this.dwBools.registerDwValue();
 
         this.setActive(true);
     }
 
     @Override
-    protected String getHurtSound() {
-        return TurretModRebirth.ID + ":hit.turrethit";
+    protected SoundEvent getHurtSound() {
+        return Sounds.TURRET_HIT;
     }
 
     @Override
-    protected String getDeathSound() {
-        return TurretModRebirth.ID + ":hit.turretDeath";
+    protected SoundEvent getDeathSound() {
+        return Sounds.TURRET_DEATH;
     }
 
     @Override
@@ -116,7 +122,7 @@ public abstract class EntityTurret
 
     @Override
     public void faceEntity(Entity entity, float yawSpeed, float pitchSpeed) {
-        if( entity == null || entity.boundingBox == null ) {
+        if( entity == null ) {
             return;
         }
 
@@ -128,7 +134,7 @@ public abstract class EntityTurret
             EntityLivingBase livingBase = (EntityLivingBase)entity;
             deltaY = (livingBase.posY + livingBase.getEyeHeight()) - (this.posY + this.getEyeHeight());
         } else {
-            deltaY = (entity.boundingBox.minY + entity.boundingBox.maxY) / 2.0D - (this.posY + this.getEyeHeight());
+            deltaY = (entity.getEntityBoundingBox().minY + entity.getEntityBoundingBox().maxY) / 2.0D - (this.posY + this.getEyeHeight());
         }
         deltaY *= this.isUpsideDown ? -1.0D : 1.0D;
 
@@ -146,7 +152,7 @@ public abstract class EntityTurret
     public void setRotationYawHead(float rotation) { }
 
     protected float updateRotation(float prevRotation, float newRotation, float speed) {
-        float part = MathHelper.wrapAngleTo180_float(newRotation - prevRotation);
+        float part = MathHelper.wrapDegrees(newRotation - prevRotation);
 
         if( part > speed ) {
             part = speed;
@@ -171,10 +177,10 @@ public abstract class EntityTurret
         this.rotationYaw = 0.0F;
 
         if( this.blockPos == null ) {
-            this.blockPos = Triplet.with((int) Math.floor(this.posX), (int)Math.floor(this.posY) + (this.isUpsideDown ? 3 : 0), (int)Math.floor(this.posZ));
+            this.blockPos = new BlockPos((int) Math.floor(this.posX), (int)Math.floor(this.posY) + (this.isUpsideDown ? 3 : 0), (int)Math.floor(this.posZ));
         }
 
-        if( !canTurretBePlaced(this.worldObj, this.blockPos.getValue0(), this.blockPos.getValue1(), this.blockPos.getValue2(), true, this.isUpsideDown) ) {
+        if( !canTurretBePlaced(this.worldObj, this.blockPos, true, this.isUpsideDown) ) {
             this.kill();
         }
 
@@ -187,7 +193,7 @@ public abstract class EntityTurret
             this.randomYawVelocity = 0.0F;
         } else if( !this.worldObj.isRemote ) {
             this.worldObj.theProfiler.startSection("oldAi");
-            this.updateEntityActionState();
+            this.updateMyEntityActionState();
             this.worldObj.theProfiler.endSection();
         }
 
@@ -200,7 +206,7 @@ public abstract class EntityTurret
 
             if( this.targetProc.hasTarget() ) {
                 this.faceEntity(this.targetProc.getTarget(), 10.0F, this.getVerticalFaceSpeed());
-            } else if( this.worldObj.isRemote && !(this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlayer) ) {
+            } else if( this.worldObj.isRemote && TmrUtils.getFirstPassengerOfClass(this, EntityPlayer.class) != null ) {
                 this.rotationYawHead += 1.0F;
                 this.rotationPitch = 0.0F;
             }
@@ -210,48 +216,48 @@ public abstract class EntityTurret
     }
 
     private void onInteractSucceed(ItemStack heldItem, EntityPlayer player) {
-        if( heldItem.stackSize == 0 ) {
-            player.destroyCurrentEquippedItem();
-        } else {
-            player.inventory.setInventorySlotContents(player.inventory.currentItem, heldItem.copy());
-        }
+//        if( heldItem.stackSize == 0 ) {
+//            player.consumeItemFromStack(player, heldItem);
+//        } else {
+//            player.inventory.setInventorySlotContents(player.inventory.currentItem, heldItem.copy());
+//        }
         this.updateState();
         player.inventoryContainer.detectAndSendChanges();
-        this.worldObj.playSoundAtEntity(this, TurretModRebirth.ID + ":collect.ia_get", 1.0F, 1.0F);
+        this.worldObj.playSound(this.posX, this.posY, this.posZ, Sounds.TURRET_COLLECT, SoundCategory.NEUTRAL, 1.0F, 1.0F, true);
     }
 
     @Override
-    protected boolean interact(EntityPlayer player) {
-        ItemStack heldItem = player.getCurrentEquippedItem();
+    protected boolean processInteract(EntityPlayer player, EnumHand hand, @Nullable ItemStack stack) {
+//        ItemStack heldItem = player.getCurrentEquippedItem();
         if( this.worldObj.isRemote ) {
-            if( ItemStackUtils.isValidStack(heldItem) && heldItem.getItem() == ItemRegistry.tcu ) {
+            if( ItemStackUtils.isValidStack(stack) && stack.getItem() == ItemRegistry.tcu ) {
                 TurretModRebirth.proxy.openGui(player, EnumGui.GUI_TCU_INFO, this.getEntityId(), 0, 0);
                 return true;
             }
 
             return false;
-        } else if( ItemStackUtils.isValidStack(heldItem) ) {
-            if( this.targetProc.addAmmo(heldItem) ) {
-                this.onInteractSucceed(heldItem, player);
+        } else if( ItemStackUtils.isValidStack(stack) ) {
+            if( this.targetProc.addAmmo(stack) ) {
+                this.onInteractSucceed(stack, player);
                 return true;
-            } else if( heldItem.getItem() == ItemRegistry.repairKit ) {
-                TurretRepairKit repKit = ItemRegistry.repairKit.getRepKitType(heldItem);
+            } else if( stack.getItem() == ItemRegistry.repairKit ) {
+                TurretRepairKit repKit = ItemRegistry.repairKit.getRepKitType(stack);
                 if( repKit != null && repKit.isApplicable(this) ) {
                     this.heal(repKit.getHealAmount());
                     repKit.onHeal(this);
-                    heldItem.stackSize--;
-                    this.onInteractSucceed(heldItem, player);
+                    stack.stackSize--;
+                    this.onInteractSucceed(stack, player);
 
                     return true;
                 }
-            } else if( heldItem.getItem() == ItemRegistry.turretUpgrade && this.upgProc.tryApplyUpgrade(heldItem.copy()) ) {
-                heldItem.stackSize--;
-                this.onInteractSucceed(heldItem, player);
+            } else if( stack.getItem() == ItemRegistry.turretUpgrade && this.upgProc.tryApplyUpgrade(stack.copy()) ) {
+                stack.stackSize--;
+                this.onInteractSucceed(stack, player);
                 return true;
             }
         }
 
-        return super.interact(player);
+        return super.processInteract(player, hand, stack);
     }
 
     @Override
@@ -267,8 +273,7 @@ public abstract class EntityTurret
         this.setDead();
     }
 
-    @Override
-    protected void updateEntityActionState() {
+    protected void updateMyEntityActionState() {
         ++this.entityAge;
         this.moveStrafing = 0.0F;
         this.moveForward = 0.0F;
@@ -384,13 +389,13 @@ public abstract class EntityTurret
         this.dwBools.setBit(DataWatcherBooleans.Turret.ACTIVE.bit, active);
     }
 
-    public static boolean canTurretBePlaced(World world, int x, int y, int z, boolean doBlockCheckOnly, boolean updideDown) {
-        if( !Blocks.lever.canPlaceBlockAt(world, x, y, z) ) {
+    public static boolean canTurretBePlaced(World world, BlockPos pos, boolean doBlockCheckOnly, boolean updideDown) {
+        if( !Blocks.LEVER.canPlaceBlockAt(world, pos) ) {
             return false;
         }
 
         if( !doBlockCheckOnly ) {
-            AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(x, y, z, x + 1.0D, y + (updideDown ? - 1.0D : 1.0D), z + 1.0D);
+            AxisAlignedBB aabb = new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1.0D, pos.getY() + (updideDown ? - 1.0D : 1.0D), pos.getZ() + 1.0D);
             if( !world.getEntitiesWithinAABB(EntityTurret.class, aabb).isEmpty() ) {
                 return false;
             }
@@ -404,7 +409,7 @@ public abstract class EntityTurret
     }
 
     public boolean tryDismantle(EntityPlayer player) {
-        Pair<Integer, ItemStack> chestItm = TmrUtils.getSimilarStackFromInventory(new ItemStack(Blocks.chest), player.inventory, null);
+        Pair<Integer, ItemStack> chestItm = TmrUtils.getSimilarStackFromInventory(new ItemStack(Blocks.CHEST), player.inventory, null);
         if( chestItm != null && ItemStackUtils.isValidStack(chestItm.getValue1()) ) {
             ItemStack chestStack = chestItm.getValue1();
             if( this.worldObj.isRemote ) {
@@ -413,11 +418,11 @@ public abstract class EntityTurret
             } else {
                 this.posY += 2048.0F;
                 this.setPosition(this.posX, this.posY, this.posZ);
-                int y = this.isUpsideDown ? this.blockPos.getValue1() - 2 : this.blockPos.getValue1();
-                if( chestStack.getItem().onItemUse(chestStack, player, this.worldObj, this.blockPos.getValue0(), y, this.blockPos.getValue2(),
-                                                   (this.isUpsideDown ? ForgeDirection.DOWN : ForgeDirection.UP).ordinal(), 0.5F, 1.0F, 0.5F) )
+                int y = this.isUpsideDown ? 2 : 0;
+                if( chestStack.getItem().onItemUse(chestStack, player, this.worldObj, this.blockPos.offset(EnumFacing.DOWN, y), EnumHand.MAIN_HAND,
+                                                   this.isUpsideDown ? EnumFacing.DOWN : EnumFacing.UP, 0.5F, 1.0F, 0.5F) == EnumActionResult.SUCCESS )
                 {
-                    TileEntity te = this.worldObj.getTileEntity(this.blockPos.getValue0(), y, this.blockPos.getValue2());
+                    TileEntity te = this.worldObj.getTileEntity(this.blockPos.offset(EnumFacing.DOWN, y));
                     if( te instanceof TileEntityChest ) {
                         this.posY -= 2048.0F;
                         this.setPosition(this.posX, this.posY, this.posZ);

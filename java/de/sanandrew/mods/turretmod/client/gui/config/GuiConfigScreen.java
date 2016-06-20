@@ -8,8 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.config;
 
-import cpw.mods.fml.client.config.GuiConfig;
-import cpw.mods.fml.client.config.IConfigElement;
+import net.minecraftforge.fml.client.config.GuiConfig;
+import net.minecraftforge.fml.client.config.IConfigElement;
 import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.gui.GuiScreen;

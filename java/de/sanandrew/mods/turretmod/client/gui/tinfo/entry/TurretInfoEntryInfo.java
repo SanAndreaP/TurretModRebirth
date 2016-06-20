@@ -14,7 +14,7 @@ import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 
 public class TurretInfoEntryInfo
         extends TurretInfoEntry
@@ -22,7 +22,7 @@ public class TurretInfoEntryInfo
     private int drawHeight;
 
     public TurretInfoEntryInfo() {
-        super(new ItemStack(Blocks.grass), Lang.TINFO_ENTRY_INFO_TITLE);
+        super(new ItemStack(Blocks.GRASS), Lang.TINFO_ENTRY_INFO_TITLE);
     }
 
     @Override
@@ -41,18 +41,18 @@ public class TurretInfoEntryInfo
 
     @Override
     public void drawPage(GuiTurretInfo gui, int mouseX, int mouseY, int scrollY, float partTicks) {
-        gui.mc.fontRenderer.drawString(EnumChatFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 2, 0xFF0080BB);
+        gui.mc.fontRendererObj.drawString(TextFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 2, 0xFF0080BB);
         Gui.drawRect(2, 12, MAX_ENTRY_WIDTH - 2, 13, 0xFF0080BB);
 
-        gui.mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_INFO_NAME), 2, 16, 0xFF808080, false);
-        gui.mc.fontRenderer.drawString(TurretModRebirth.NAME, 4, 25, 0xFF000000, false);
+        gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_INFO_NAME), 2, 16, 0xFF808080, false);
+        gui.mc.fontRendererObj.drawString(TurretModRebirth.NAME, 4, 25, 0xFF000000, false);
 
-        gui.mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_INFO_VERSION), 2, 36, 0xFF808080, false);
-        gui.mc.fontRenderer.drawString(TurretModRebirth.VERSION, 4, 45, 0xFF000000, false);
+        gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_INFO_VERSION), 2, 36, 0xFF808080, false);
+        gui.mc.fontRendererObj.drawString(TurretModRebirth.VERSION, 4, 45, 0xFF000000, false);
 
-        gui.mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_INFO_AUTHOR), 2, 56, 0xFF808080, false);
+        gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_INFO_AUTHOR), 2, 56, 0xFF808080, false);
 
-        gui.mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_INFO_CREDITS), 2, 76, 0xFF808080, false);
+        gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_INFO_CREDITS), 2, 76, 0xFF808080, false);
 
         this.drawHeight = 147;
     }

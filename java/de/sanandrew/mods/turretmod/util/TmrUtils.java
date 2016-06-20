@@ -38,8 +38,10 @@ import java.lang.reflect.Method;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 
+@SuppressWarnings("unused")
 public class TmrUtils
 {
     public static final Random RNG = new Random();
@@ -48,11 +50,7 @@ public class TmrUtils
     public static final int ATTR_ADD_PERC_VAL_TO_SUM = 1;
     public static final int RISE_SUM_WITH_PERC_VAL = 2;
 
-    public static final Comparator<NBTTagCompound> NBT_COMPARATOR_FIXD = new Comparator<NBTTagCompound>() {
-        public int compare(NBTTagCompound firstTag, NBTTagCompound secondTag) {
-            return firstTag != null ? (firstTag.equals(secondTag) ? 0 : 1) : (secondTag != null ? -1 : 0);
-        }
-    };
+    public static final Comparator<NBTTagCompound> NBT_COMPARATOR_FIXD = (firstTag, secondTag) -> firstTag != null ? (firstTag.equals(secondTag) ? 0 : 1) : (secondTag != null ? -1 : 0);
 
     public static Entity getEntityByUUID(World worldObj, UUID uuid) {
         for( Object entity : worldObj.loadedEntityList ) {
@@ -68,12 +66,22 @@ public class TmrUtils
         return val != null ? val : def;
     }
 
-    public static boolean getIsAIEnabled(EntityLivingBase entity) {
-        if( entity == null ) {
-            return false;
+//    public static boolean getIsAIEnabled(EntityLivingBase entity) {
+//        if( entity == null ) {
+//            return false;
+//        }
+//
+//        return ReflectionUtils.invokeCachedMethod(EntityLivingBase.class, entity, "isAIEnabled", "func_70650_aV", null, null);
+//    }
+
+    public static Entity getFirstPassengerOfClass(Entity e, Class<? extends Entity> psgClass) {
+        for( Entity psg : e.getPassengers() ) {
+            if( psgClass.isInstance(psg.getClass()) ) {
+                return psg;
+            }
         }
 
-        return ReflectionUtils.invokeCachedMethod(EntityLivingBase.class, entity, "isAIEnabled", "func_70650_aV", null, null);
+        return null;
     }
 
     public static boolean getIsPotionSplash(PotionEffect potionEffect) {
@@ -117,7 +125,7 @@ public class TmrUtils
 
         if( index >= 0 && index < tagList.size() ) {
             NBTBase nbtbase = (NBTBase)tagList.get(index);
-            return nbtbase.getId() == Constants.NBT.TAG_SHORT ? ((NBTTagShort)nbtbase).func_150289_e() : 0;
+            return nbtbase.getId() == Constants.NBT.TAG_SHORT ? ((NBTTagShort)nbtbase).getShort() : 0;
         } else {
             return 0;
         }
@@ -168,7 +176,7 @@ public class TmrUtils
         return null;
     }
 
-    public static EntityAIBase getAIFromTaskList(List<?> taskList, Class<?> cls) {
+    public static EntityAIBase getAIFromTaskList(Set<EntityAITasks.EntityAITaskEntry> taskList, Class<? extends EntityAIBase> cls) {
         for( Object obj : taskList ) {
             if( obj instanceof EntityAITasks.EntityAITaskEntry ) {
                 EntityAITasks.EntityAITaskEntry entry = (EntityAITasks.EntityAITaskEntry) obj;
@@ -185,15 +193,9 @@ public class TmrUtils
         if(firstStack != null && secondStack != null) {
             Item firstItem = firstStack.getItem();
             Item secondItem = secondStack.getItem();
-            return firstItem != null && secondItem != null
-                    ? (firstItem == secondItem
-                        && ((comparator == null || comparator.compare(firstStack.getTagCompound(), secondStack.getTagCompound()) == 0)
-                            && (firstStack.getItemDamage() == OreDictionary.WILDCARD_VALUE
-                                || secondStack.getItemDamage() == OreDictionary.WILDCARD_VALUE
-                                || firstStack.getItemDamage() == secondStack.getItemDamage())
-                           )
-                       )
-                    : firstItem == secondItem;
+            return (firstItem == secondItem && ((comparator == null || comparator.compare(firstStack.getTagCompound(), secondStack.getTagCompound()) == 0) && (firstStack
+                    .getItemDamage() == OreDictionary.WILDCARD_VALUE || secondStack.getItemDamage() == OreDictionary.WILDCARD_VALUE || firstStack.getItemDamage() == secondStack.getItemDamage()))
+               );
         } else {
             return firstStack == secondStack;
         }
@@ -394,7 +396,7 @@ SOFTWARE.
             short b = tag.getShort("Slot");
             items[b] = ItemStack.loadItemStackFromNBT(tag);
             if(tag.hasKey("Quantity")) {
-                items[b].stackSize = ((NBTBase.NBTPrimitive)tag.getTag("Quantity")).func_150287_d();
+                items[b].stackSize = ((NBTBase.NBTPrimitive)tag.getTag("Quantity")).getInt();
             }
 
             if( callbackMethod != null && tag.hasKey("StackNBT") ) {

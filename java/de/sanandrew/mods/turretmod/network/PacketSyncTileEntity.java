@@ -10,25 +10,21 @@ package de.sanandrew.mods.turretmod.network;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import net.darkhax.bookshelf.common.network.AbstractMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 
 public class PacketSyncTileEntity
-        extends AbstractMessage<PacketSyncTileEntity>
+        extends PacketRegistry.AbstractMessage<PacketSyncTileEntity>
 {
-    private int x;
-    private int y;
-    private int z;
+    private BlockPos pos;
 
     private byte[] tileBytes;
 
     public PacketSyncTileEntity() { }
 
     public PacketSyncTileEntity(TileClientSync tile) {
-        this.x = tile.getTile().xCoord;
-        this.y = tile.getTile().yCoord;
-        this.z = tile.getTile().zCoord;
+        this.pos = tile.getTile().getPos();
 
         ByteBuf buf = Unpooled.buffer();
         tile.toBytes(buf);
@@ -37,7 +33,7 @@ public class PacketSyncTileEntity
 
     @Override
     public void handleClientMessage(PacketSyncTileEntity packet, EntityPlayer player) {
-        TileEntity te = player.worldObj.getTileEntity(packet.x, packet.y, packet.z);
+        TileEntity te = player.worldObj.getTileEntity(new BlockPos(packet.pos));
         if( te instanceof TileClientSync ) {
             ByteBuf buf = Unpooled.wrappedBuffer(packet.tileBytes);
             ((TileClientSync) te).fromBytes(buf);
@@ -49,9 +45,7 @@ public class PacketSyncTileEntity
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        this.x = buf.readInt();
-        this.y = buf.readInt();
-        this.z = buf.readInt();
+        this.pos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
         int arrSz = buf.readInt();
         this.tileBytes = new byte[arrSz];
         buf.readBytes(this.tileBytes, 0, arrSz);
@@ -59,15 +53,15 @@ public class PacketSyncTileEntity
 
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeInt(this.x);
-        buf.writeInt(this.y);
-        buf.writeInt(this.z);
+        buf.writeInt(this.pos.getX());
+        buf.writeInt(this.pos.getY());
+        buf.writeInt(this.pos.getZ());
         buf.writeInt(this.tileBytes.length);
         buf.writeBytes(this.tileBytes);
     }
 
     public static void sync(TileClientSync te) {
         TileEntity tile = te.getTile();
-        PacketRegistry.sendToAllAround(new PacketSyncTileEntity(te), tile.getWorldObj().provider.dimensionId, tile.xCoord, tile.yCoord, tile.zCoord, 64.0D);
+        PacketRegistry.sendToAllAround(new PacketSyncTileEntity(te), tile.getWorld().provider.getDimension(), tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), 64.0D);
     }
 }

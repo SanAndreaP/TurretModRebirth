@@ -10,16 +10,17 @@ package de.sanandrew.mods.turretmod.entity.projectile;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
+import de.sanandrew.mods.turretmod.util.Sounds;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.darkhax.bookshelf.lib.javatuples.Triplet;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.potion.Potion;
+import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class EntityProjectileCryoCell
@@ -36,7 +37,7 @@ public class EntityProjectileCryoCell
         super(world, shooter, target);
     }
 
-    public EntityProjectileCryoCell(World world, Entity shooter, Vec3 shootingVec) {
+    public EntityProjectileCryoCell(World world, Entity shooter, Vec3d shootingVec) {
         super(world, shooter, shootingVec);
     }
 
@@ -58,13 +59,6 @@ public class EntityProjectileCryoCell
         if( this.worldObj.isRemote ) {
             TurretModRebirth.proxy.spawnParticle(EnumParticle.CRYO_PARTICLE, this.posX, this.posY, this.posZ, Triplet.with(this.motionX, this.motionY, this.motionZ));
         }
-    }
-
-    @Override
-    protected void processHit(MovingObjectPosition hitObj) {
-        super.processHit(hitObj);
-
-//        this.playSound("random.bowhit", 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
     }
 
     @Override
@@ -90,7 +84,7 @@ public class EntityProjectileCryoCell
     @Override
     public boolean onPreHit(Entity e, DamageSource dmgSource, float dmg) {
         if( !this.worldObj.isRemote && e instanceof EntityLivingBase ) {
-            ((EntityLivingBase) e).addPotionEffect(new PotionEffect(Potion.moveSlowdown.getId(), this.duration, this.level));
+            ((EntityLivingBase) e).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, this.duration, this.level));
             if( e instanceof EntityCreature && this.shooterCache instanceof EntityTurret ) {
                 setEntityTarget((EntityCreature) e, (EntityTurret) this.shooterCache);
             }
@@ -103,8 +97,8 @@ public class EntityProjectileCryoCell
     }
 
     @Override
-    public String getRicochetSound() {
-        return TurretModRebirth.ID + ":ricochet.splash";
+    public SoundEvent getRicochetSound() {
+        return Sounds.RICOCHET_SPLASH;
     }
 
     @Override

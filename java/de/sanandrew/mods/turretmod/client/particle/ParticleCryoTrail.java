@@ -8,11 +8,11 @@
  */
 package de.sanandrew.mods.turretmod.client.particle;
 
-import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.world.World;
 
 public class ParticleCryoTrail
-        extends EntityFX
+        extends Particle
 {
     public ParticleCryoTrail(World world, double x, double y, double z, double datX, double datY, double datZ) {
         super(world, x, y, z, datX, datY, datZ);
@@ -52,7 +52,7 @@ public class ParticleCryoTrail
         this.particleScale -= 0.1F;
 
         if( this.particleAge++ > this.particleMaxAge || this.particleScale <= 0 ) {
-            this.setDead();
+            this.setExpired();
         }
     }
 
@@ -82,19 +82,19 @@ public class ParticleCryoTrail
         return blockLight | skyLight << 16;
     }
 
-    @Override
-    public float getBrightness(float partTicks) {
-        float ageDelta = (this.particleAge + partTicks) / this.particleMaxAge;
-
-        if( ageDelta < 0.0F ) {
-            ageDelta = 0.0F;
-        }
-
-        if( ageDelta > 1.0F ) {
-            ageDelta = 1.0F;
-        }
-
-        float currBrightness = super.getBrightness(partTicks);
-        return currBrightness * ageDelta + (1.0F - ageDelta);
-    }
+//    @Override
+//    public float getBrightness(float partTicks) {
+//        float ageDelta = (this.particleAge + partTicks) / this.particleMaxAge;
+//
+//        if( ageDelta < 0.0F ) {
+//            ageDelta = 0.0F;
+//        }
+//
+//        if( ageDelta > 1.0F ) {
+//            ageDelta = 1.0F;
+//        }
+//
+//        float currBrightness = super.getBrightness(partTicks);
+//        return currBrightness * ageDelta + (1.0F - ageDelta);
+//    }
 }

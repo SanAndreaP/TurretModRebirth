@@ -8,12 +8,12 @@
  */
 package de.sanandrew.mods.turretmod.entity.projectile;
 
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import de.sanandrew.mods.turretmod.util.Sounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class EntityProjectilePebble
@@ -27,7 +27,7 @@ public class EntityProjectilePebble
         super(world, shooter, target);
     }
 
-    public EntityProjectilePebble(World world, Entity shooter, Vec3 shootingVec) {
+    public EntityProjectilePebble(World world, Entity shooter, Vec3d shootingVec) {
         super(world, shooter, shootingVec);
     }
 
@@ -37,8 +37,8 @@ public class EntityProjectilePebble
     }
 
     @Override
-    public String getRicochetSound() {
-        return TurretModRebirth.ID + ":ricochet.bullet";
+    public SoundEvent getRicochetSound() {
+        return Sounds.RICOCHET_BULLET;
     }
 
     @Override

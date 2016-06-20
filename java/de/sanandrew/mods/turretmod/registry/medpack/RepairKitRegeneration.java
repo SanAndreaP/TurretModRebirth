@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.registry.medpack;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
-import net.minecraft.potion.Potion;
+import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
 
 import java.util.UUID;
@@ -50,12 +50,12 @@ public class RepairKitRegeneration
 
     @Override
     public final void onHeal(EntityTurret turret) {
-        turret.addPotionEffect(new PotionEffect(Potion.regeneration.getId(), this.regenTime, this.regenLvl, true));
+        turret.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, this.regenTime, this.regenLvl, true, false));
     }
 
     @Override
     public boolean isApplicable(EntityTurret turret) {
-        return turret.getHealth() <= turret.getMaxHealth() - this.heal && turret.getActivePotionEffect(Potion.regeneration) == null;
+        return turret.getHealth() <= turret.getMaxHealth() - this.heal && turret.getActivePotionEffect(MobEffects.REGENERATION) == null;
     }
 
     @Override

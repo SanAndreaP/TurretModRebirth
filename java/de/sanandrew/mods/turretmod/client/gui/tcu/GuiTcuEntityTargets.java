@@ -19,14 +19,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
-import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.IAnimals;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +44,7 @@ public final class GuiTcuEntityTargets
     private int guiLeft;
     private int guiTop;
 
-    private Map<Class, Boolean> tempTargetList = new HashMap<>();
+    private Map<Class<? extends Entity>, Boolean> tempTargetList = new HashMap<>();
 
     private float scroll = 0.0F;
     private float scrollAmount = 0.0F;
@@ -135,7 +136,7 @@ public final class GuiTcuEntityTargets
         int offsetY = Math.round(-this.scroll * (this.tempTargetList.size() - 11)) * (this.fontRendererObj.FONT_HEIGHT + 1);
         boolean targetListChanged = false;
 
-        for( Entry<Class, Boolean> entry : this.tempTargetList.entrySet() ) {
+        for( Entry<Class<? extends Entity>, Boolean> entry : this.tempTargetList.entrySet() ) {
             int btnTexOffY = 12 + (entry.getValue() ? 16 : 0);
             int btnMinOffY = this.guiTop + 20;
             int btnMaxOffY = this.guiTop + 20 + 110;
@@ -172,10 +173,10 @@ public final class GuiTcuEntityTargets
             this.drawTexturedModalRect(this.guiLeft + 10, this.guiTop + 20 + offsetY, 176, btnTexOffY, 8, 8);
 
             int textColor = 0xFFFFFF;
-
-            if( IBossDisplayData.class.isAssignableFrom(entry.getKey()) ) {
-                textColor = 0xFF3333;
-            } else if( IMob.class.isAssignableFrom(entry.getKey()) ) {
+//            if( BossInfo.class.isAssignableFrom(entry.getKey()) ) {
+//                textColor = 0xFF3333;
+//            } else
+            if( IMob.class.isAssignableFrom(entry.getKey()) ) {
                 textColor = 0xFFAAAA;
             } else if( IAnimals.class.isAssignableFrom(entry.getKey()) ) {
                 textColor = 0xAAFFAA;
@@ -207,7 +208,7 @@ public final class GuiTcuEntityTargets
     }
 
     @Override
-    public void handleMouseInput() {
+    public void handleMouseInput() throws IOException {
         super.handleMouseInput();
         if( this.canScroll ) {
             int dWheelDir = Mouse.getEventDWheel();
@@ -220,7 +221,7 @@ public final class GuiTcuEntityTargets
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) {
+    protected void actionPerformed(GuiButton button) throws IOException {
         if( button.id == this.selectAll.id ) {
             this.doSelectAll = true;
         } else if( button.id == this.deselectAll.id ) {
@@ -240,8 +241,8 @@ public final class GuiTcuEntityTargets
         PacketRegistry.sendToServer(new PacketUpdateTargets(this.turret.getTargetProcessor()));
     }
 
-    static String getTranslatedEntityName(Class<?> entityCls) {
-        String namedEntry = EntityList.classToStringMapping.get(entityCls).toString();
+    static String getTranslatedEntityName(Class<? extends Entity> entityCls) {
+        String namedEntry = EntityList.CLASS_TO_NAME.get(entityCls);
 
         return Lang.translateOrDefault(String.format(Lang.ENTITY_NAME, namedEntry), namedEntry);
     }
@@ -306,8 +307,8 @@ public final class GuiTcuEntityTargets
     }
 
     private void updateList() {
-        TreeMap<Class, Boolean> btwSortMapNm = new TreeMap<>(new TargetComparatorName());
-        TreeMap<Class, Boolean> btwSortMapCl = new TreeMap<>(new TargetComparatorClass());
+        TreeMap<Class<? extends Entity>, Boolean> btwSortMapNm = new TreeMap<>(new TargetComparatorName());
+        TreeMap<Class<? extends Entity>, Boolean> btwSortMapCl = new TreeMap<>(new TargetComparatorClass());
         btwSortMapNm.putAll(this.turret.getTargetProcessor().getEntityTargets());
         btwSortMapCl.putAll(btwSortMapNm);
         this.tempTargetList = btwSortMapCl;

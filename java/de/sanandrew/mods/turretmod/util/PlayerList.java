@@ -8,9 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.Side;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncPlayerList;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,6 +21,9 @@ import net.minecraft.world.storage.MapStorage;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -85,8 +88,8 @@ public class PlayerList
 
     @SubscribeEvent
     public void onEntitySpawn(EntityJoinWorldEvent event) {
-        if( event.entity instanceof EntityPlayer && !event.world.isRemote ) {
-            this.playerMap.put(event.entity.getUniqueID(), event.entity.getCommandSenderName());
+        if( event.getEntity() instanceof EntityPlayer && !event.getWorld().isRemote ) {
+            this.playerMap.put(event.getEntity().getUniqueID(), event.getEntity().getName());
             this.syncList();
             this.markDirty();
         }
@@ -94,15 +97,17 @@ public class PlayerList
 
     @SubscribeEvent
     public void onWorldLoad(WorldEvent.Load event) {
-        MapStorage storage = event.world.mapStorage;
-        PlayerList result = (PlayerList) storage.loadData(PlayerList.class, WSD_NAME);
-        if( result == null ) {
-            result = this;
-        }
+        MapStorage storage = event.getWorld().getMapStorage();
+        if( storage != null ) {
+            PlayerList result = (PlayerList) storage.getOrLoadData(PlayerList.class, WSD_NAME);
+            if( result == null ) {
+                result = this;
+            }
 
-        this.playerMap.putAll(result.playerMap);
-        storage.setData(WSD_NAME, this);
-        this.syncList();
+            this.playerMap.putAll(result.playerMap);
+            storage.setData(WSD_NAME, this);
+            this.syncList();
+        }
     }
 
     @Override
@@ -122,7 +127,7 @@ public class PlayerList
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) {
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         NBTTagCompound tmrNBT = new NBTTagCompound();
         NBTTagList nbtList = new NBTTagList();
         for( Map.Entry<UUID, String> player : this.playerMap.entrySet() ) {
@@ -133,5 +138,7 @@ public class PlayerList
         }
         tmrNBT.setTag("players", nbtList);
         nbt.setTag(WSD_NAME, tmrNBT);
+
+        return nbt;
     }
 }

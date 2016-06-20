@@ -11,11 +11,10 @@ package de.sanandrew.mods.turretmod.network;
 import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import io.netty.buffer.ByteBuf;
-import net.darkhax.bookshelf.common.network.AbstractMessage;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class PacketOpenGui
-        extends AbstractMessage<PacketOpenGui>
+        extends PacketRegistry.AbstractMessage<PacketOpenGui>
 {
     private byte guiId;
     private int x;

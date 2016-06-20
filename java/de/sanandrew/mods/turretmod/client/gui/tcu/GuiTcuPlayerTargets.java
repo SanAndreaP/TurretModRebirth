@@ -21,10 +21,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -177,7 +178,7 @@ public class GuiTcuPlayerTargets
     }
 
     @Override
-    public void handleMouseInput() {
+    public void handleMouseInput() throws IOException {
         super.handleMouseInput();
         if( this.canScroll ) {
             int dWheelDir = Mouse.getEventDWheel();
@@ -190,7 +191,7 @@ public class GuiTcuPlayerTargets
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) {
+    protected void actionPerformed(GuiButton button) throws IOException {
         if( button == this.selectAll ) {
             this.doSelectAll = true;
         } else if( button == this.deselectAll ) {

@@ -1,7 +1,7 @@
 package sanandreasp.mods.TurretMod3.registry.TurretInfo;
 
 import com.google.common.collect.Maps;
-import cpw.mods.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import sanandreasp.mods.turretmod3.entity.turret.EntityTurret_Base;

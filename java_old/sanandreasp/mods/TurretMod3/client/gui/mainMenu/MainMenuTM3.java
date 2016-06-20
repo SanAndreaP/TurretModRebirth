@@ -26,8 +26,8 @@ package sanandreasp.mods.TurretMod3.client.gui.mainMenu;
 //import net.minecraft.client.gui.GuiYesNo;
 //import net.minecraft.client.gui.ScaledResolution;
 //import net.minecraft.client.renderer.Tessellator;
-//import net.minecraft.util.EnumChatFormatting;
-//import net.minecraft.util.MathHelper;
+//import net.minecraft.util.text.TextFormatting;
+//import net.minecraft.util.math.MathHelper;
 //import net.minecraft.util.StringTranslate;
 //import net.minecraft.world.demo.DemoWorldServer;
 //import net.minecraft.world.storage.ISaveFormat;
@@ -39,10 +39,10 @@ package sanandreasp.mods.TurretMod3.client.gui.mainMenu;
 //import com.google.common.base.Strings;
 //import com.google.common.collect.Lists;
 //
-//import cpw.mods.fml.client.GuiModList;
-//import cpw.mods.fml.common.FMLCommonHandler;
-//import cpw.mods.fml.relauncher.Side;
-//import cpw.mods.fml.relauncher.SideOnly;
+//import net.minecraftforge.fml.client.GuiModList;
+//import net.minecraftforge.fml.common.FMLCommonHandler;
+//import net.minecraftforge.fml.relauncher.Side;
+//import net.minecraftforge.fml.relauncher.SideOnly;
 //import sanandreasp.mods.managers.SAP_LanguageManager;
 //
 //@SideOnly(Side.CLIENT)
@@ -93,7 +93,7 @@ package sanandreasp.mods.TurretMod3.client.gui.mainMenu;
 //    private String field_92025_p;
 //
 //    /** An array of all the paths to the panorama pictures. */
-//    public static final String field_96138_a = "Please click " + EnumChatFormatting.UNDERLINE + "here" + EnumChatFormatting.RESET + " for more information.";
+//    public static final String field_96138_a = "Please click " + TextFormatting.UNDERLINE + "here" + TextFormatting.RESET + " for more information.";
 //    private int field_92024_r;
 //    private int field_92023_s;
 //    private int field_92022_t;
@@ -237,11 +237,11 @@ package sanandreasp.mods.TurretMod3.client.gui.mainMenu;
 //
 //        if ("ppc".equalsIgnoreCase(s))
 //        {
-//            this.field_92025_p = "" + EnumChatFormatting.BOLD + "Notice!" + EnumChatFormatting.RESET + " PowerPC compatibility will be dropped in Minecraft 1.6";
+//            this.field_92025_p = "" + TextFormatting.BOLD + "Notice!" + TextFormatting.RESET + " PowerPC compatibility will be dropped in Minecraft 1.6";
 //        }
 //        else if (s1 != null && s1.startsWith("1.5"))
 //        {
-//            this.field_92025_p = "" + EnumChatFormatting.BOLD + "Notice!" + EnumChatFormatting.RESET + " Java 1.5 compatibility will be dropped in Minecraft 1.6";
+//            this.field_92025_p = "" + TextFormatting.BOLD + "Notice!" + TextFormatting.RESET + " Java 1.5 compatibility will be dropped in Minecraft 1.6";
 //        }
 //
 //        this.field_92023_s = this.fontRenderer.getStringWidth(this.field_92025_p);

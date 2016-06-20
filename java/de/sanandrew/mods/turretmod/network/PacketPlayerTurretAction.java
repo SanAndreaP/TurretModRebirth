@@ -10,12 +10,11 @@ package de.sanandrew.mods.turretmod.network;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import io.netty.buffer.ByteBuf;
-import net.darkhax.bookshelf.common.network.AbstractMessage;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class PacketPlayerTurretAction
-        extends AbstractMessage<PacketPlayerTurretAction>
+        extends PacketRegistry.AbstractMessage<PacketPlayerTurretAction>
 {
     public static final byte TOGGLE_ACTIVE = 0;
     public static final byte DISMANTLE = 1;

@@ -8,11 +8,11 @@
  */
 package de.sanandrew.mods.turretmod.client.particle;
 
-import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.world.World;
 
 public class ParticleAssemblySpark
-        extends EntityFX
+        extends Particle
 {
     public ParticleAssemblySpark(World world, double x, double y, double z, double datX, double datY, double datZ) {
         super(world, x, y, z, datX, datY, datZ);
@@ -30,7 +30,7 @@ public class ParticleAssemblySpark
         this.motionY *= 0.02D;
         this.motionZ *= 0.02D;
         this.particleMaxAge = (int)(20.0D / (Math.random() * 0.8D + 0.2D));
-        this.noClip = true;
+        this.isCollided = false;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class ParticleAssemblySpark
         this.moveEntity(this.motionX, this.motionY, this.motionZ);
 
         if( this.particleAge++ >= this.particleMaxAge ) {
-            this.setDead();
+            this.setExpired();
         }
     }
 }

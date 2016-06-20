@@ -48,7 +48,7 @@ public class GuiAssemblyFilter
 
         this.drawTexturedModalRect(this.posX, this.posY, 0, 0, this.xSize, this.ySize);
 
-        if( !ItemStackUtils.isValidStack(this.mc.thePlayer.getHeldItem()) || this.mc.thePlayer.getHeldItem().getItem() != ItemRegistry.asbFilter ) {
+        if( !ItemStackUtils.isValidStack(this.mc.thePlayer.getHeldItemMainhand()) || this.mc.thePlayer.getHeldItemMainhand().getItem() != ItemRegistry.asbFilter ) {
             this.mc.thePlayer.closeScreen();
         }
     }

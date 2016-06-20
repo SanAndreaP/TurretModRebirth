@@ -1,7 +1,7 @@
 package sanandreasp.mods.TurretMod3.client.render;
 
 import com.google.common.collect.Maps;
-import cpw.mods.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.entity.Render;

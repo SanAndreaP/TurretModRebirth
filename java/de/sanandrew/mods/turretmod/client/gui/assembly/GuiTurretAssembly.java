@@ -31,14 +31,15 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -158,7 +159,7 @@ public class GuiTurretAssembly
 
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
 
-        int energy = this.assembly.getEnergyStored(ForgeDirection.DOWN);
+        int energy = this.assembly.getEnergyStored(EnumFacing.DOWN);
         int maxEnergy = TileEntityTurretAssembly.MAX_FLUX_STORAGE;
 
         double energyPerc = energy / (double) maxEnergy;
@@ -166,7 +167,7 @@ public class GuiTurretAssembly
 
         this.drawTexturedModalRect(this.guiLeft + 210, this.guiTop + 8 + energyBarY, 230, 12 + energyBarY, 12, 82 - energyBarY);
 
-        double procPerc = this.assembly.isActive ? this.assembly.ticksCrafted / (double) this.assembly.maxTicksCrafted : 0.0D;
+        double procPerc = this.assembly.isActive ? this.assembly.getField(TileEntityTurretAssembly.FIELD_TICKS_CRAFTED) / (double) this.assembly.getField(TileEntityTurretAssembly.FIELD_MAX_TICKS_CRAFTED) : 0.0D;
         int procBarX = Math.max(0, Math.min(50, MathHelper.ceiling_double_int(procPerc * 50.0D)));
 
         this.drawTexturedModalRect(this.guiLeft + 156, this.guiTop + 30, 0, 222, procBarX, 5);
@@ -245,8 +246,9 @@ public class GuiTurretAssembly
             OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.25F);
             RenderHelper.disableStandardItemLighting();
-            this.mc.renderEngine.bindTexture(this.mc.renderEngine.getResourceLocation(this.upgIconAuto.getItemSpriteNumber()));
-            this.drawTexturedModelRectFromIcon(this.guiLeft + 14, this.guiTop + 100, this.upgIconAuto.getIconIndex(), 16, 16);
+            //TODO: re-enable item rendering
+//            this.mc.renderEngine.bindTexture(this.mc.renderEngine.getResourceLocation(this.upgIconAuto.getItemSpriteNumber()));
+//            this.drawTexturedModelRectFromIcon(this.guiLeft + 14, this.guiTop + 100, this.upgIconAuto.getIconIndex(), 16, 16);
             GL11.glDisable(GL11.GL_BLEND);
         }
         if( !this.assembly.hasSpeedUpgrade() ) {
@@ -254,8 +256,9 @@ public class GuiTurretAssembly
             OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.25F);
             RenderHelper.disableStandardItemLighting();
-            this.mc.renderEngine.bindTexture(this.mc.renderEngine.getResourceLocation(this.upgIconSpeed.getItemSpriteNumber()));
-            this.drawTexturedModelRectFromIcon(this.guiLeft + 14, this.guiTop + 118, this.upgIconSpeed.getIconIndex(), 16, 16);
+            //TODO: re-enable item rendering
+//            this.mc.renderEngine.bindTexture(this.mc.renderEngine.getResourceLocation(this.upgIconSpeed.getItemSpriteNumber()));
+//            this.drawTexturedModelRectFromIcon(this.guiLeft + 14, this.guiTop + 118, this.upgIconSpeed.getIconIndex(), 16, 16);
             GL11.glDisable(GL11.GL_BLEND);
         }
         if( this.assembly.hasFilterUpgrade() ) {
@@ -287,8 +290,9 @@ public class GuiTurretAssembly
             OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.25F);
             RenderHelper.disableStandardItemLighting();
-            this.mc.renderEngine.bindTexture(this.mc.renderEngine.getResourceLocation(this.upgIconFilter.getItemSpriteNumber()));
-            this.drawTexturedModelRectFromIcon(this.guiLeft + 202, this.guiTop + 100, this.upgIconFilter.getIconIndex(), 16, 16);
+            //TODO: re-enable item rendering
+//            this.mc.renderEngine.bindTexture(this.mc.renderEngine.getResourceLocation(this.upgIconFilter.getItemSpriteNumber()));
+//            this.drawTexturedModelRectFromIcon(this.guiLeft + 202, this.guiTop + 100, this.upgIconFilter.getIconIndex(), 16, 16);
             GL11.glDisable(GL11.GL_BLEND);
         }
 
@@ -362,10 +366,11 @@ public class GuiTurretAssembly
         GL11.glTranslatef(0.0F, 0.0F, 32.0F);
         this.zLevel = z;
         itemRender.zLevel = z;
-        itemRender.renderItemAndEffectIntoGUI(this.fontRendererObj, this.mc.getTextureManager(), stack, x, y);
-        if( drawText ) {
-            itemRender.renderItemOverlayIntoGUI(this.mc.fontRenderer, this.mc.getTextureManager(), stack, x, y);
-        }
+        //TODO: re-enable item rendering
+//        itemRender.renderItemAndEffectIntoGUI(this.fontRendererObj, this.mc.getTextureManager(), stack, x, y);
+//        if( drawText ) {
+//            itemRender.renderItemOverlayIntoGUI(this.mc.fontRenderer, this.mc.getTextureManager(), stack, x, y);
+//        }
         this.zLevel = 0.0F;
         itemRender.zLevel = 0.0F;
         GL11.glTranslatef(0.0F, 0.0F, -32.0F);
@@ -535,8 +540,8 @@ public class GuiTurretAssembly
     }
 
     private void drawRFluxLabel(int mouseX, int mouseY) {
-        String amount = String.format("%d / %d RF", this.assembly.getEnergyStored(ForgeDirection.DOWN), this.assembly.getMaxEnergyStored(ForgeDirection.DOWN));
-        String consumption = String.format(Lang.translate(Lang.TASSEMBLY_RF_USING), this.assembly.fluxConsumption * (this.assembly.hasSpeedUpgrade() ? 4 : 1));
+        String amount = String.format("%d / %d RF", this.assembly.getEnergyStored(EnumFacing.DOWN), this.assembly.getMaxEnergyStored(EnumFacing.DOWN));
+        String consumption = String.format(Lang.translate(Lang.TASSEMBLY_RF_USING), this.assembly.getField(TileEntityTurretAssembly.FIELD_FLUX_CONSUMPTION) * (this.assembly.hasSpeedUpgrade() ? 4 : 1));
 
         int textWidth = Math.max(this.fontRendererObj.getStringWidth(amount), this.fontRendererObj.getStringWidth(consumption));
         int xPos = mouseX + 12;
@@ -588,7 +593,7 @@ public class GuiTurretAssembly
     }
 
     @Override
-    public void handleKeyboardInput() {
+    public void handleKeyboardInput() throws IOException {
         this.shiftPressed = false;
 
         super.handleKeyboardInput();
@@ -601,14 +606,14 @@ public class GuiTurretAssembly
     }
 
     @Override
-    protected void keyTyped(char keyChar, int keyCode) {
+    protected void keyTyped(char keyChar, int keyCode) throws IOException {
         this.shiftPressed = keyCode == Keyboard.KEY_LSHIFT;
 
         super.keyTyped(keyChar, keyCode);
     }
 
     @Override
-    public void handleMouseInput() {
+    public void handleMouseInput() throws IOException {
         super.handleMouseInput();
         if( this.cacheRecipes.size() > 4 && this.assembly.currCrafting == null ) {
             int dWheelDir = Mouse.getEventDWheel();
@@ -634,7 +639,7 @@ public class GuiTurretAssembly
     }
 
     @Override
-    protected void actionPerformed(GuiButton btn) {
+    protected void actionPerformed(GuiButton btn) throws IOException {
         if( btn.id == this.cancelTask.id ) {
             PacketRegistry.sendToServer(new PacketInitAssemblyCrafting(this.assembly));
         } else if( btn.id == this.automate.id || btn.id == this.manual.id ) {

@@ -1,26 +1,29 @@
 package de.sanandrew.mods.turretmod.entity.projectile;
 
-import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import com.google.common.base.Predicate;
+import net.minecraft.entity.ai.EntityAIAttackMelee;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.command.IEntitySelector;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.EntityAIAttackOnCollide;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -46,8 +49,8 @@ public abstract class EntityTurretProjectile
     public EntityTurretProjectile(World world) {
         super(world);
         this.setSize(0.5F, 0.5F);
-        this.renderDistanceWeight = 10.0D;
-        this.yOffset = 0.0F;
+//        this.renderDistanceWeight = 10.0D;
+//        this.yOffset = 0.0F;
     }
 
     public EntityTurretProjectile(World world, Entity shooter, Entity target) {
@@ -67,18 +70,18 @@ public abstract class EntityTurretProjectile
         this.targetUUID = target.getUniqueID();
         this.targetCache = target;
 
-        Vec3 targetVec = Vec3.createVectorHelper(target.posX - this.posX, target.boundingBox.minY + target.height / 1.4F - this.posY, target.posZ - this.posZ);
+        Vec3d targetVec = new Vec3d(target.posX - this.posX, target.getEntityBoundingBox().minY + target.height / 1.4F - this.posY, target.posZ - this.posZ);
         this.setHeadingFromVec(targetVec.normalize());
 
         this.motionY += this.getArc() * Math.sqrt(targetVec.xCoord * targetVec.xCoord + targetVec.zCoord * targetVec.zCoord) * 0.05;
     }
 
-    public EntityTurretProjectile(World world, Entity shooter, Vec3 shootingVec) {
+    public EntityTurretProjectile(World world, Entity shooter, Vec3d shootingVec) {
         this(world, shooter, (Entity) null);
         this.setHeadingFromVec(shootingVec.normalize());
     }
 
-    private void setHeadingFromVec(Vec3 vector) {
+    private void setHeadingFromVec(Vec3d vector) {
         double scatterVal = getScatterValue();
         float initSpeed = getInitialSpeedMultiplier();
 
@@ -153,7 +156,7 @@ public abstract class EntityTurretProjectile
         if( this.isInWater() ) {
             for( int i = 0; i < 4; i++ ) {
                 float disPos = 0.25F;
-                this.worldObj.spawnParticle("bubble", this.posX - this.motionX * disPos, this.posY - this.motionY * disPos, this.posZ - this.motionZ * disPos, this.motionX, this.motionY, this.motionZ);
+                this.worldObj.spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.posX - this.motionX * disPos, this.posY - this.motionY * disPos, this.posZ - this.motionZ * disPos, this.motionX, this.motionY, this.motionZ);
             }
 
             speed = this.getSpeedMultiplierLiquid();
@@ -169,23 +172,23 @@ public abstract class EntityTurretProjectile
         this.motionZ *= speed;
         this.motionY -= this.getArc() * 0.1F;
         this.setPosition(this.posX, this.posY, this.posZ);
-        this.func_145775_I();
+        this.doBlockCollisions();
     }
 
     private void doCollisionCheck() {
-        Vec3 posVec = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
-        Vec3 futurePosVec = Vec3.createVectorHelper(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
-        MovingObjectPosition hitObj = this.worldObj.func_147447_a(posVec, futurePosVec, false, true, false);
+        Vec3d posVec = new Vec3d(this.posX, this.posY, this.posZ);
+        Vec3d futurePosVec = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+        RayTraceResult hitObj = this.worldObj.rayTraceBlocks(posVec, futurePosVec, false, true, false);
 
-        posVec = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
-        futurePosVec = Vec3.createVectorHelper(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+        posVec = new Vec3d(this.posX, this.posY, this.posZ);
+        futurePosVec = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
 
         if( hitObj != null ) {
-            futurePosVec = Vec3.createVectorHelper(hitObj.hitVec.xCoord, hitObj.hitVec.yCoord, hitObj.hitVec.zCoord);
+            futurePosVec = new Vec3d(hitObj.hitVec.xCoord, hitObj.hitVec.yCoord, hitObj.hitVec.zCoord);
         }
 
         Entity entity = null;
-        AxisAlignedBB checkBB = this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D);
+        AxisAlignedBB checkBB = this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D);
 
         List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, checkBB);
         double minDist = 0.0D;
@@ -196,8 +199,8 @@ public abstract class EntityTurretProjectile
 
             if( collidedEntity.canBeCollidedWith() && collidedEntity != this.shooterCache ) {
                 collisionRange = 0.3F;
-                AxisAlignedBB collisionAABB = collidedEntity.boundingBox.expand(collisionRange, collisionRange, collisionRange);
-                MovingObjectPosition interceptObj = collisionAABB.calculateIntercept(posVec, futurePosVec);
+                AxisAlignedBB collisionAABB = collidedEntity.getEntityBoundingBox().expand(collisionRange, collisionRange, collisionRange);
+                RayTraceResult interceptObj = collisionAABB.calculateIntercept(posVec, futurePosVec);
 
                 if( interceptObj != null ) {
                     double vecDistance = posVec.distanceTo(interceptObj.hitVec);
@@ -211,7 +214,7 @@ public abstract class EntityTurretProjectile
         }
 
         if( entity != null ) {
-            hitObj = new MovingObjectPosition(entity);
+            hitObj = new RayTraceResult(entity);
         }
 
         if( hitObj != null && hitObj.entityHit != null && hitObj.entityHit instanceof EntityPlayer ) {
@@ -276,13 +279,13 @@ public abstract class EntityTurretProjectile
                         this.knockBackEntity(living, deltaX, deltaZ);
 
                         if( this.shooterCache instanceof EntityLivingBase ) {
-                            EnchantmentHelper.func_151384_a(living, this.shooterCache);
-                            EnchantmentHelper.func_151385_b((EntityLivingBase) this.shooterCache, living);
+                            EnchantmentHelper.applyThornEnchantments(living, this.shooterCache);
+                            EnchantmentHelper.applyArthropodEnchantments((EntityLivingBase) this.shooterCache, living);
                         }
                     }
                 }
             } else {
-                this.onBlockHit(hitObj.blockX, hitObj.blockY, hitObj.blockZ);
+                this.onBlockHit(hitObj.getBlockPos());
             }
 
             this.processHit(hitObj);
@@ -290,7 +293,7 @@ public abstract class EntityTurretProjectile
     }
 
     public static void setEntityTarget(EntityCreature target, EntityTurret attacker) {
-        if( TmrUtils.getIsAIEnabled(target) ) {
+//        if( TmrUtils.getIsAIEnabled(target) ) {
             EntityAIBase ai = TmrUtils.getAIFromTaskList(target.targetTasks.taskEntries, EntityAIAttackTurret.class);
             if( ai == null ) {
                 ai = new EntityAIAttackTurret(target, new RevengeEntitySelector(attacker));
@@ -305,18 +308,18 @@ public abstract class EntityTurretProjectile
                 EntityAIBase aiTgtFollow = TmrUtils.getAIFromTaskList(target.tasks.taskEntries, EntityAIMoveTowardsTurret.class);
                 if( aiTgtFollow == null ) {
                     target.tasks.addTask(2, new EntityAIMoveTowardsTurret(target, attacker, 0.9D, 32.0F));
-                    target.tasks.addTask(1, new EntityAIAttackOnCollide(target, EntityTurret.class, 1.0D, true));
+                    target.tasks.addTask(1, new EntityAIAttackMelee(target, 0.9D, true));
                 } else if( !aiTgtFollow.continueExecuting() ) {
                     ((EntityAIMoveTowardsTurret) aiTgtFollow).setNewTurret(attacker);
                 }
             }
-        } else {
-            target.setTarget(attacker);
-        }
+//        } else {
+//            target.setTarget(attacker);
+//        }
     }
 
     public void knockBackEntity(EntityLivingBase living, double deltaX, double deltaZ) {
-        if( this.rand.nextDouble() >= living.getEntityAttribute(SharedMonsterAttributes.knockbackResistance).getAttributeValue() ) {
+        if( this.rand.nextDouble() >= living.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).getAttributeValue() ) {
             living.isAirBorne = true;
             double normXZ = MathHelper.sqrt_double(deltaX * deltaX + deltaZ * deltaZ);
             double kbStrengthXZ = this.getKnockbackStrengthH();
@@ -334,12 +337,12 @@ public abstract class EntityTurretProjectile
         }
     }
 
-    protected void processHit(MovingObjectPosition hitObj) {
+    protected void processHit(RayTraceResult hitObj) {
         this.playSound(this.getRicochetSound(), 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
         this.setDead();
     }
 
-    private void onBlockHit(int blockX, int blockY, int blockZ) { }
+    private void onBlockHit(BlockPos pos) { }
 
     public abstract float getInitialSpeedMultiplier();
 
@@ -349,7 +352,7 @@ public abstract class EntityTurretProjectile
 
     public abstract float getKnockbackStrengthV();
 
-    public abstract String getRicochetSound();
+    public abstract SoundEvent getRicochetSound();
 
     public double getScatterValue() {
         return 0.0F;
@@ -443,7 +446,7 @@ public abstract class EntityTurretProjectile
     public abstract float getArc();
 
     private static final class RevengeEntitySelector
-            implements IEntitySelector
+            implements Predicate<Entity>
     {
         public Entity target;
 
@@ -452,13 +455,13 @@ public abstract class EntityTurretProjectile
         }
 
         @Override
-        public boolean isEntityApplicable(Entity entity) {
+        public boolean apply(Entity entity) {
             return entity == this.target;
         }
     }
 
     private static final class EntityAIAttackTurret
-            extends EntityAINearestAttackableTarget
+            extends EntityAINearestAttackableTarget<EntityTurret>
     {
         private RevengeEntitySelector selector;
 
