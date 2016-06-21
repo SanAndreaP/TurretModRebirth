@@ -47,9 +47,6 @@ public class CommonProxy
 {
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(PlayerList.INSTANCE);
-    }
-
-    public void init(FMLInitializationEvent event) {
         int entityCnt = 0;
         EntityRegistry.registerModEntity(EntityTurretCrossbow.class, "turret_i_crossbow", entityCnt++, TurretModRebirth.instance, 128, 1, false);
         EntityRegistry.registerModEntity(EntityTurretShotgun.class, "turret_i_shotgun", entityCnt++, TurretModRebirth.instance, 128, 1, false);
@@ -58,6 +55,9 @@ public class CommonProxy
         EntityRegistry.registerModEntity(EntityProjectileCrossbowBolt.class, "turret_proj_arrow", entityCnt++, TurretModRebirth.instance, 128, 1, true);
         EntityRegistry.registerModEntity(EntityProjectilePebble.class, "turret_proj_pebble", entityCnt++, TurretModRebirth.instance, 128, 1, true);
         EntityRegistry.registerModEntity(EntityProjectileCryoCell.class, "turret_proj_snowball", entityCnt++, TurretModRebirth.instance, 128, 1, true);
+    }
+
+    public void init(FMLInitializationEvent event) {
     }
 
     public void postInit(FMLPostInitializationEvent event) {

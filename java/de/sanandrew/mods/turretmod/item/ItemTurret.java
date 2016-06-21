@@ -8,8 +8,10 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
@@ -18,31 +20,26 @@ import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Facing;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.Level;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class ItemTurret
         extends Item
 {
-    @SideOnly(Side.CLIENT)
-    private Map<UUID, IIcon> iconMap;
+//    @SideOnly(Side.CLIENT)
+//    private Map<UUID, IIcon> iconMap;
 
     public ItemTurret() {
         super();
@@ -50,34 +47,34 @@ public class ItemTurret
         this.setUnlocalizedName(TurretModRebirth.ID + ":turret_placer");
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(ItemStack stack, int pass) {
-        TurretInfo type = getTurretInfo(stack);
-        if( type != null ) {
-            return iconMap.get(type.getUUID());
-        }
-        return super.getIcon(stack, pass);
-    }
+//    @Override
+//    @SideOnly(Side.CLIENT)
+//    public IIcon getIcon(ItemStack stack, int pass) {
+//        TurretInfo type = getTurretInfo(stack);
+//        if( type != null ) {
+//            return iconMap.get(type.getUUID());
+//        }
+//        return super.getIcon(stack, pass);
+//    }
 
-    @Override
-    public boolean requiresMultipleRenderPasses() {
-        return true;
-    }
+//    @Override
+//    public boolean requiresMultipleRenderPasses() {
+//        return true;
+//    }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
-        List<TurretInfo> types = TurretRegistry.INSTANCE.getRegisteredInfos();
-        this.iconMap = new HashMap<>(types.size());
-        for( TurretInfo type : types ) {
-            IIcon icon = iconRegister.registerIcon(String.format("%s:turrets/%s", TurretModRebirth.ID, type.getIcon()));
-            if( this.itemIcon == null ) {
-                this.itemIcon = icon;
-            }
-            this.iconMap.put(type.getUUID(), icon);
-        }
-    }
+//    @Override
+//    @SideOnly(Side.CLIENT)
+//    public void registerIcons(IIconRegister iconRegister) {
+//        List<TurretInfo> types = TurretRegistry.INSTANCE.getRegisteredInfos();
+//        this.iconMap = new HashMap<>(types.size());
+//        for( TurretInfo type : types ) {
+//            IIcon icon = iconRegister.registerIcon(String.format("%s:turrets/%s", TurretModRebirth.ID, type.getIcon()));
+//            if( this.itemIcon == null ) {
+//                this.itemIcon = icon;
+//            }
+//            this.iconMap.put(type.getUUID(), icon);
+//        }
+//    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -100,19 +97,17 @@ public class ItemTurret
     }
 
     @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float offX, float offY, float offZ) {
+    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if( !world.isRemote ) {
-            Block block = world.getBlock(x, y, z);
-            x += Facing.offsetsXForSide[side];
-            y += Facing.offsetsYForSide[side];
-            z += Facing.offsetsZForSide[side];
+            Block block = world.getBlockState(pos).getBlock();
+            BlockPos offPos = pos.add(facing.getFrontOffsetX(), facing.getFrontOffsetY(), facing.getFrontOffsetZ());
             double shiftY = 0.0D;
-            if( side == EnumFacing.UP.ordinal() && block.getRenderType() == 11 ) {
-                shiftY = 0.5D;
-            }
+//            if( facing == EnumFacing.UP && block ) {
+//                shiftY = 0.5D;
+//            }
 
-            if( EntityTurret.canTurretBePlaced(world, x, y, z, false, side == EnumFacing.DOWN.ordinal()) ) {
-                EntityTurret turret = spawnTurret(world, getTurretInfo(stack), x + 0.5D, y + shiftY, z + 0.5D, side == EnumFacing.DOWN.ordinal(), player);
+            if( EntityTurret.canTurretBePlaced(world, pos, false, facing == EnumFacing.DOWN) ) {
+                EntityTurret turret = spawnTurret(world, getTurretInfo(stack), pos.getX() + 0.5D, pos.getY() + shiftY, pos.getZ() + 0.5D, facing == EnumFacing.DOWN, player);
                 if( turret != null ) {
                     Float initHealth = getTurretHealth(stack);
                     if( initHealth != null ) {
@@ -131,28 +126,25 @@ public class ItemTurret
             }
         }
 
-        return true;
+        return EnumActionResult.SUCCESS;
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+    public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
         if( !world.isRemote ) {
-            MovingObjectPosition movingobjectposition = this.getMovingObjectPositionFromPlayer(world, player, true);
-            if( movingobjectposition == null ) {
-                return stack;
-            } else {
-                if( movingobjectposition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK ) {
-                    int x = movingobjectposition.blockX;
-                    int y = movingobjectposition.blockY;
-                    int z = movingobjectposition.blockZ;
-                    if( !world.canMineBlock(player, x, y, z) ) {
-                        return stack;
+            RayTraceResult traceResult = this.rayTrace(world, player, true);
+                if( traceResult.typeOfHit == RayTraceResult.Type.BLOCK ) {
+                    BlockPos blockPos = traceResult.getBlockPos();
+                    if( !world.isBlockModifiable(player, blockPos) ) {
+                        return new ActionResult<>(EnumActionResult.FAIL, stack);
                     }
-                    if( !player.canPlayerEdit(x, y, z, movingobjectposition.sideHit, stack) ) {
-                        return stack;
+
+                    if( !player.canPlayerEdit(blockPos, traceResult.sideHit, stack) ) {
+                        return new ActionResult<>(EnumActionResult.FAIL, stack);
                     }
-                    if( world.getBlock(x, y, z) instanceof BlockLiquid ) {
-                        EntityTurret turret = spawnTurret(world, getTurretInfo(stack), x, y, z, false, player);
+
+                    if( world.getBlockState(blockPos).getBlock() instanceof BlockLiquid ) {
+                        EntityTurret turret = spawnTurret(world, getTurretInfo(stack), blockPos, false, player);
                         if( turret != null ) {
                             Float initHealth = getTurretHealth(stack);
                             if( initHealth != null ) {
@@ -171,8 +163,7 @@ public class ItemTurret
                     }
                 }
             }
-        }
-        return stack;
+        return new ActionResult<>(EnumActionResult.SUCCESS, stack);
     }
 
     @Override
@@ -229,21 +220,26 @@ public class ItemTurret
 
     public ItemStack getTurretItem(int stackSize, TurretInfo type, EntityTurret turret) {
         ItemStack stack = this.getTurretItem(stackSize, type);
+        assert stack.getTagCompound() != null;
         stack.getTagCompound().setFloat("turretHealth", turret.getHealth());
-        if( turret.hasCustomNameTag() ) {
+        if( turret.hasCustomName() ) {
             stack.getTagCompound().setString("turretName", turret.getCustomNameTag());
         }
 
         return stack;
     }
 
+    public static EntityTurret spawnTurret(World world, TurretInfo info, BlockPos pos, boolean isUpsideDown, EntityPlayer owner) {
+        return spawnTurret(world, info, pos.getX(), pos.getY(), pos.getZ(), isUpsideDown, owner);
+    }
+
     public static EntityTurret spawnTurret(World world, TurretInfo info, double x, double y, double z, boolean isUpsideDown, EntityPlayer owner) {
         EntityTurret turret = createEntity(info, world, isUpsideDown, owner);
         if (turret != null) {
-            turret.setLocationAndAngles(x, y - (isUpsideDown ? 1.0D : 0.0D), z, MathHelper.wrapAngleTo180_float(world.rand.nextFloat() * 360.0F), 0.0F);
+            turret.setLocationAndAngles(x, y - (isUpsideDown ? 1.0D : 0.0D), z, MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
             turret.rotationYawHead = turret.rotationYaw;
             turret.renderYawOffset = turret.rotationYaw;
-            turret.onSpawnWithEgg(null);
+//            turret.onSpawnWithEgg(null);
             world.spawnEntityInWorld(turret);
             turret.playLivingSound();
         }

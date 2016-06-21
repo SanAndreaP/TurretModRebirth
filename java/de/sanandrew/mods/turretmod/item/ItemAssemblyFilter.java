@@ -18,6 +18,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -33,7 +35,6 @@ public class ItemAssemblyFilter
         super();
         this.setCreativeTab(TmrCreativeTabs.UPGRADES);
         this.setUnlocalizedName(TurretModRebirth.ID + ":turret_assembly_filter");
-        this.setTextureName(TurretModRebirth.ID + ":upgrades/assembly_filter");
     }
 
     @Override
@@ -50,7 +51,7 @@ public class ItemAssemblyFilter
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+    public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
         if( !world.isRemote ) {
             if( player.isSneaking() ) {
                 this.setFilterStacks(stack, EMPTY_INV);
@@ -60,7 +61,7 @@ public class ItemAssemblyFilter
             }
         }
 
-        return super.onItemRightClick(stack, world, player);
+        return super.onItemRightClick(stack, world, player, hand);
     }
 
     public ItemStack[] getFilterStacks(ItemStack stack, boolean configure) {

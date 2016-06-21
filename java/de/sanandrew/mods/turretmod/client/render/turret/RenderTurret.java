@@ -37,8 +37,8 @@ import java.lang.reflect.InvocationTargetException;
 public class RenderTurret
         extends RenderLiving<EntityTurret>
 {
-    public RenderTurret(ModelBase standardModel) {
-        super(Minecraft.getMinecraft().getRenderManager(), standardModel, 0.5F);
+    public RenderTurret(RenderManager manager, ModelBase standardModel) {
+        super(manager, standardModel, 0.5F);
 
         this.addLayer(new LayerTurretGlow<>(this));
 //        try {

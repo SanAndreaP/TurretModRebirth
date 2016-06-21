@@ -26,8 +26,8 @@ public class RenderTurretArrow<T extends EntityTurretProjectile>
 {
     private static final ResourceLocation ARROW_TEXTURES = new ResourceLocation("textures/entity/arrow.png");
 
-    public RenderTurretArrow() {
-        super(Minecraft.getMinecraft().getRenderManager());
+    public RenderTurretArrow(RenderManager manager) {
+        super(manager);
     }
 
     @Override

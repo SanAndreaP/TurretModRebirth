@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.client.render.projectile;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.util.ResourceLocation;
 
@@ -19,8 +20,8 @@ public class RenderPebble<T extends EntityTurretProjectile>
 {
     private EntityItem gravelItem;
 
-    public RenderPebble() {
-        super(Minecraft.getMinecraft().getRenderManager());
+    public RenderPebble(RenderManager manager) {
+        super(manager);
     }
 
     //TODO: enable item rendering

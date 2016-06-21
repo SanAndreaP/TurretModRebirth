@@ -407,10 +407,10 @@ public abstract class TargetProcessor
         this.updatePlayerTargets(playerTgt.toArray(new UUID[playerTgt.size()]));
     }
 
-    public Class[] getEnabledEntityTargets() {
+    public List<Class<? extends Entity>> getEnabledEntityTargets() {
         Collection<Class<? extends Entity>> enabledClasses = Maps.filterEntries(this.entityTargetList, input -> input != null && input.getValue()).keySet();
 
-        return enabledClasses.toArray(new Class[enabledClasses.size()]);
+        return new ArrayList<>(enabledClasses);
     }
 
     public UUID[] getEnabledPlayerTargets() {

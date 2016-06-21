@@ -14,13 +14,13 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public final class Sounds
 {
-    public static final SoundEvent RICOCHET_SPLASH = new SoundEvent(new ResourceLocation("ricochet.splash"));
-    public static final SoundEvent RICOCHET_BULLET = new SoundEvent(new ResourceLocation("ricochet.bullet"));
-    public static final SoundEvent SHOOT_CRYOLATOR = new SoundEvent(new ResourceLocation("shoot.cryolator"));
-    public static final SoundEvent SHOOT_SHOTGUN = new SoundEvent(new ResourceLocation("shoot.shotgun"));
-    public static final SoundEvent TURRET_HIT = new SoundEvent(new ResourceLocation("hit.turrethit"));
-    public static final SoundEvent TURRET_DEATH = new SoundEvent(new ResourceLocation("hit.turretDeath"));
-    public static final SoundEvent TURRET_COLLECT = new SoundEvent(new ResourceLocation("collect.ia_get"));
+    public static final SoundEvent RICOCHET_SPLASH = new SoundEvent(new ResourceLocation(TurretModRebirth.ID, "ricochet.splash"));
+    public static final SoundEvent RICOCHET_BULLET = new SoundEvent(new ResourceLocation(TurretModRebirth.ID, "ricochet.bullet"));
+    public static final SoundEvent SHOOT_CRYOLATOR = new SoundEvent(new ResourceLocation(TurretModRebirth.ID, "shoot.cryolator"));
+    public static final SoundEvent SHOOT_SHOTGUN = new SoundEvent(new ResourceLocation(TurretModRebirth.ID, "shoot.shotgun"));
+    public static final SoundEvent TURRET_HIT = new SoundEvent(new ResourceLocation(TurretModRebirth.ID, "hit.turrethit"));
+    public static final SoundEvent TURRET_DEATH = new SoundEvent(new ResourceLocation(TurretModRebirth.ID, "hit.turretDeath"));
+    public static final SoundEvent TURRET_COLLECT = new SoundEvent(new ResourceLocation(TurretModRebirth.ID, "collect.ia_get"));
 
     public static void initialize() {
         register(RICOCHET_SPLASH);

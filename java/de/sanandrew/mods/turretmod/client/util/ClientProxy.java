@@ -72,18 +72,18 @@ public class ClientProxy
         super.preInit(event);
 
         MinecraftForge.EVENT_BUS.register(new RenderWorldLastHandler());
+
+        RenderingRegistry.registerEntityRenderingHandler(EntityTurretCrossbow.class, manager -> { return new RenderTurret(manager, new ModelTurretCrossbow(0.0F)); });
+        RenderingRegistry.registerEntityRenderingHandler(EntityTurretShotgun.class, manager -> { return new RenderTurret(manager, new ModelTurretShotgun(0.0F)); });
+        RenderingRegistry.registerEntityRenderingHandler(EntityTurretCryolator.class, manager -> { return new RenderTurret(manager, new ModelTurretSnowball(0.0F)); });
+        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCrossbowBolt.class, RenderTurretArrow::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityProjectilePebble.class, RenderPebble::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCryoCell.class, RenderNothingness::new);
     }
 
     @Override
     public void init(FMLInitializationEvent event) {
         super.init(event);
-
-        RenderingRegistry.registerEntityRenderingHandler(EntityTurretCrossbow.class, manager -> { return new RenderTurret(new ModelTurretCrossbow(0.0F)); });
-        RenderingRegistry.registerEntityRenderingHandler(EntityTurretShotgun.class, manager -> { return new RenderTurret(new ModelTurretShotgun(0.0F)); });
-        RenderingRegistry.registerEntityRenderingHandler(EntityTurretCryolator.class, manager -> { return new RenderTurret(new ModelTurretSnowball(0.0F)); });
-        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCrossbowBolt.class, manager -> { return new RenderTurretArrow<>(); });
-        RenderingRegistry.registerEntityRenderingHandler(EntityProjectilePebble.class, manager -> { return new RenderPebble(); });
-        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCryoCell.class, manager -> { return new RenderNothingness(); });
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurretAssembly.class, new RenderTurretAssembly());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityElectrolyteGenerator.class, new RenderElectrolyteGenerator());

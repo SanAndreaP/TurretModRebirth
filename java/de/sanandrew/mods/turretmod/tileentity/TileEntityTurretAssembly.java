@@ -78,6 +78,7 @@ public class TileEntityTurretAssembly
     private boolean doSync = false;
 
     private long ticksExisted = 0L;
+    private String customName;
 
     public TileEntityTurretAssembly() {
         this.isItemRendered = false;
@@ -634,5 +635,9 @@ public class TileEntityTurretAssembly
         }
 
         return super.getCapability(capability, facing);
+    }
+
+    public void setCustomName(String customName) {
+        this.customName = customName;
     }
 }

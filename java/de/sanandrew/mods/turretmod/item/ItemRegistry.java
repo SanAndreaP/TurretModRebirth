@@ -41,7 +41,8 @@ public class ItemRegistry
         for(Item item : items) {
             String unlocName = item.getUnlocalizedName();
             unlocName = unlocName.substring(unlocName.indexOf(':') + 1);
-            GameRegistry.registerItem(item, unlocName);
+            item.setRegistryName(unlocName);
+            GameRegistry.register(item);
         }
     }
 }

@@ -6,12 +6,10 @@ import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.medpack.TurretRepairKit;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IIcon;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,9 +27,6 @@ import java.util.UUID;
 public class ItemRepairKit
         extends Item
 {
-    @SideOnly(Side.CLIENT)
-    private Map<UUID, IIcon> iconMap;
-
     public ItemRepairKit() {
         super();
         this.setCreativeTab(TmrCreativeTabs.MISC);
@@ -47,30 +42,30 @@ public class ItemRepairKit
         return String.format("%s.%s", super.getUnlocalizedName(stack), type == null ? "unknown" : type.getName());
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(ItemStack stack, int pass) {
-        TurretRepairKit type = this.getRepKitType(stack);
-        if( type != null ) {
-            return iconMap.get(type.getUUID());
-        }
-        return super.getIcon(stack, pass);
-    }
+//    @Override
+//    @SideOnly(Side.CLIENT)
+//    public IIcon getIcon(ItemStack stack, int pass) {
+//        TurretRepairKit type = this.getRepKitType(stack);
+//        if( type != null ) {
+//            return iconMap.get(type.getUUID());
+//        }
+//        return super.getIcon(stack, pass);
+//    }
 
-    @Override
-    public boolean requiresMultipleRenderPasses() {
-        return true;
-    }
+//    @Override
+//    public boolean requiresMultipleRenderPasses() {
+//        return true;
+//    }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
-        List<TurretRepairKit> types = RepairKitRegistry.INSTANCE.getRegisteredTypes();
-        this.iconMap = new HashMap<>(types.size());
-        for( TurretRepairKit type : types ) {
-            this.iconMap.put(type.getUUID(), iconRegister.registerIcon(String.format("%s:repair_kits/%s", TurretModRebirth.ID, type.getIcon())));
-        }
-    }
+//    @Override
+//    @SideOnly(Side.CLIENT)
+//    public void registerIcons(IIconRegister iconRegister) {
+//        List<TurretRepairKit> types = RepairKitRegistry.INSTANCE.getRegisteredTypes();
+//        this.iconMap = new HashMap<>(types.size());
+//        for( TurretRepairKit type : types ) {
+//            this.iconMap.put(type.getUUID(), iconRegister.registerIcon(String.format("%s:repair_kits/%s", TurretModRebirth.ID, type.getIcon())));
+//        }
+//    }
 
     public TurretRepairKit getRepKitType(ItemStack stack) {
         NBTTagCompound nbt = stack.getTagCompound();

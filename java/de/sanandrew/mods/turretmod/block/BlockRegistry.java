@@ -8,6 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.block;
 
+import net.darkhax.bookshelf.lib.util.BlockUtils;
+import net.darkhax.bookshelf.lib.util.ModUtils;
+import net.minecraft.item.ItemBlock;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
@@ -33,7 +36,11 @@ public class BlockRegistry
         for(Block block : blocks) {
             String unlocName = block.getUnlocalizedName();
             unlocName = unlocName.substring(unlocName.indexOf(':') + 1);
-            GameRegistry.registerBlock(block, unlocName);
+            block.setRegistryName(unlocName);
+            GameRegistry.register(block);
+            ItemBlock blockItm = new ItemBlock(block);
+            blockItm.setRegistryName(unlocName);
+            GameRegistry.register(blockItm);
         }
     }
 }

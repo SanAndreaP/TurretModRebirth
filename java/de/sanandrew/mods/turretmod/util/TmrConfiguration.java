@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -27,7 +28,7 @@ public final class TmrConfiguration
 
     public static void initConfiguration(FMLPreInitializationEvent event) {
         config = new Configuration(event.getSuggestedConfigurationFile(), "1.0.0", true);
-        FMLCommonHandler.instance().bus().register(new TmrConfiguration());
+        MinecraftForge.EVENT_BUS.register(new TmrConfiguration());
         syncConfig();
     }
 

@@ -17,8 +17,8 @@ import net.minecraft.util.ResourceLocation;
 public class RenderNothingness
         extends Render<Entity>
 {
-    public RenderNothingness() {
-        super(Minecraft.getMinecraft().getRenderManager());
+    public RenderNothingness(RenderManager manager) {
+        super(manager);
     }
 
     @Override

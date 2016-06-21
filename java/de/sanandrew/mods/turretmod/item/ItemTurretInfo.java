@@ -15,6 +15,8 @@ import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
 import java.util.Arrays;
@@ -27,7 +29,7 @@ public class ItemTurretInfo
         super();
         this.setCreativeTab(TmrCreativeTabs.MISC);
         this.setUnlocalizedName(TurretModRebirth.ID + ":turret_info");
-        this.setTextureName(TurretModRebirth.ID + ":turret_info");
+//        this.setTextureName(TurretModRebirth.ID + ":turret_info");
     }
 
     @Override
@@ -40,11 +42,11 @@ public class ItemTurretInfo
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+    public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
         if( world.isRemote ) {
             TurretModRebirth.proxy.openGui(player, EnumGui.GUI_TINFO, -1, -1, 0);
         }
 
-        return super.onItemRightClick(stack, world, player);
+        return super.onItemRightClick(itemStack, world, player, hand);
     }
 }

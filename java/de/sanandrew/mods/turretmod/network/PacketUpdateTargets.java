@@ -7,6 +7,8 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -20,7 +22,7 @@ import java.util.UUID;
 public class PacketUpdateTargets
         extends PacketRegistry.AbstractMessage<PacketUpdateTargets>
 {
-    private Class[] entityTargets;
+    private List<Class<? extends Entity>> entityTargets;
     private UUID[] playerTargets;
     private int turretID;
 
@@ -48,14 +50,15 @@ public class PacketUpdateTargets
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void fromBytes(ByteBuf buf) {
         this.turretID = buf.readInt();
-        this.entityTargets = new Class[buf.readInt()];
-        for( int i = 0; i < this.entityTargets.length; i++ ) {
+        this.entityTargets = new ArrayList<>();
+        for( int i = 0, max = buf.readInt(); i < max; i++ ) {
             try {
-                this.entityTargets[i] = Class.forName(ByteBufUtils.readUTF8String(buf));
+                this.entityTargets.add((Class<? extends Entity>) Class.forName(ByteBufUtils.readUTF8String(buf)));
             } catch( ClassNotFoundException ex ) {
-                this.entityTargets[i] = null;
+//                this.entityTargets[i] = null;
             }
         }
         this.playerTargets = new UUID[buf.readInt()];
@@ -71,7 +74,7 @@ public class PacketUpdateTargets
     @Override
     public void toBytes(ByteBuf buf) {
         buf.writeInt(this.turretID);
-        buf.writeInt(this.entityTargets.length);
+        buf.writeInt(this.entityTargets.size());
         for( Class entityTarget : this.entityTargets ) {
             ByteBufUtils.writeUTF8String(buf, entityTarget.getName());
         }

@@ -24,7 +24,6 @@ public class ItemAssemblyUpgrade
         super();
         this.setCreativeTab(TmrCreativeTabs.UPGRADES);
         this.setUnlocalizedName(TurretModRebirth.ID + ":turret_assembly_" + type);
-        this.setTextureName(TurretModRebirth.ID + ":upgrades/assembly_" + type);
     }
 
     @Override
