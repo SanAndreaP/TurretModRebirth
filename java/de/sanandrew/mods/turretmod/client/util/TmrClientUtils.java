@@ -10,16 +10,16 @@ package de.sanandrew.mods.turretmod.client.util;
 
 import net.darkhax.bookshelf.lib.util.ReflectionUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -90,7 +90,35 @@ public class TmrClientUtils
         return tooltip;
     }
 
-    public static void renderStackInWorld(ItemStack stack, double posX, double posY, double posZ, double rotateX, double rotateY, double rotateZ, double scale) {
+    public static void renderStackInGui(ItemStack stack, int posX, int posY, double scale) {
+        renderStackInGui(stack, posX, posY, scale, null, null);
+    }
+
+    public static void renderStackInGui(ItemStack stack, int posX, int posY, double scale, @Nullable FontRenderer fontRenderer) {
+        renderStackInGui(stack, posX, posY, scale, fontRenderer, null);
+    }
+
+    public static void renderStackInGui(ItemStack stack, int posX, int posY, double scale, @Nullable FontRenderer fontRenderer, @Nullable String customTxt) {
+        if( renderItem == null ) {
+            renderItem = getMc().getRenderItem();
+        }
+
+        renderItem.zLevel -= 50.0F;
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(posX, posY, 0.0F);
+        GlStateManager.scale(scale, scale, 1.0F);
+        RenderHelper.enableGUIStandardItemLighting();
+        renderItem.renderItemIntoGUI(stack, 0, 0);
+        RenderHelper.disableStandardItemLighting();
+        if( fontRenderer != null ) {
+            renderItem.renderItemOverlayIntoGUI(fontRenderer, stack, 0, 0, customTxt);
+            GlStateManager.disableLighting();
+        }
+        GlStateManager.popMatrix();
+        renderItem.zLevel += 50.0F;
+    }
+
+    public static void renderStackInWorld(ItemStack stack, double posX, double posY, double posZ, float rotateX, float rotateY, float rotateZ, double scale) {
         if( renderItem == null ) {
             renderItem = getMc().getRenderItem();
         }
@@ -98,9 +126,9 @@ public class TmrClientUtils
         GlStateManager.pushMatrix();
         GlStateManager.translate(posX, posY, posZ);
         GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
-        GlStateManager.rotate((float) rotateX, 1.0F, 0.0F, 0.0F);
-        GlStateManager.rotate((float) rotateY, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate((float) rotateZ, 0.0F, 0.0F, 1.0F);
+        GlStateManager.rotate(rotateX, 1.0F, 0.0F, 0.0F);
+        GlStateManager.rotate(rotateY, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(rotateZ, 0.0F, 0.0F, 1.0F);
         GlStateManager.scale(scale, scale, scale);
 
         renderItem.renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
@@ -115,7 +143,7 @@ public class TmrClientUtils
     public static void drawTexturedModalRect(int xPos, int yPos, float z, int u, int v, int width, int height, float resScaleX, float resScaleY) {
         Tessellator tessellator = Tessellator.getInstance();
         VertexBuffer buffer = tessellator.getBuffer();
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         buffer.pos(xPos, yPos + height, z).tex(u * resScaleX, (v + height) * resScaleY).endVertex();
         buffer.pos(xPos + width, yPos + height, z).tex((u + width) * resScaleX, (v + height) * resScaleY).endVertex();
         buffer.pos(xPos + width, yPos, z).tex((u + width) * resScaleX, v * resScaleY).endVertex();

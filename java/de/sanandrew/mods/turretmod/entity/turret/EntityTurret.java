@@ -228,7 +228,7 @@ public abstract class EntityTurret
 
         this.updateState();
         player.inventoryContainer.detectAndSendChanges();
-        this.worldObj.playSound(this.posX, this.posY, this.posZ, Sounds.TURRET_COLLECT, SoundCategory.NEUTRAL, 1.0F, 1.0F, true);
+        this.worldObj.playSound(null, this.posX, this.posY, this.posZ, Sounds.TURRET_COLLECT, SoundCategory.NEUTRAL, 1.0F, 1.0F);
     }
 
     @Override

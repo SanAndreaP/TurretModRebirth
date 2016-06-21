@@ -33,6 +33,8 @@ public class PacketSyncTileEntity
 
     @Override
     public void handleClientMessage(PacketSyncTileEntity packet, EntityPlayer player) {
+        assert player != null;
+        assert player.worldObj != null;
         TileEntity te = player.worldObj.getTileEntity(new BlockPos(packet.pos));
         if( te instanceof TileClientSync ) {
             ByteBuf buf = Unpooled.wrappedBuffer(packet.tileBytes);

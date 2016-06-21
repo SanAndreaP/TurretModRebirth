@@ -50,7 +50,8 @@ public enum Resources
     TILE_ELECTROLYTE_GEN("textures/blocks/electrolyte_gen.png"),
 
     SHADER_CATEGORY_BUTTON_FRAG("shader/categorybtn.frag"),
-    SHADER_GRAYSCALE_FRAG("shader/grayscale.frag");
+    SHADER_GRAYSCALE_FRAG("shader/grayscale.frag"),
+    SHADER_ALPHA_OVERRIDE_FRAG("shader/alpha_override.frag");
 
     private final ResourceLocation location;
 

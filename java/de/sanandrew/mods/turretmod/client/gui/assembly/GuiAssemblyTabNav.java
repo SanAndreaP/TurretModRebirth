@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.client.gui.assembly;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import org.lwjgl.opengl.GL11;
 
@@ -29,11 +30,11 @@ public class GuiAssemblyTabNav
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if( this.visible && this.enabled ) {
-            GL11.glEnable(GL11.GL_BLEND);
-            OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
             mc.renderEngine.bindTexture(Resources.GUI_ASSEMBLY_CRF.getResource());
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
             this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
             int hoverState = this.getHoverState(this.hovered);
@@ -42,7 +43,7 @@ public class GuiAssemblyTabNav
 
             this.mouseDragged(mc, mouseX, mouseY);
 
-            GL11.glDisable(GL11.GL_BLEND);
+            GlStateManager.disableBlend();
         }
     }
 }

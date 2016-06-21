@@ -254,7 +254,7 @@ public abstract class TargetProcessor
 
     public void addTargetingListener(TargetingListener listener) {
         int p = listener.getPriority();
-        List<TargetingListener> listenerList = TmrUtils.valueOrDefault(this.tgtListeners.get(p), new ArrayList<TargetingListener>());
+        List<TargetingListener> listenerList = TmrUtils.valueOrDefault(this.tgtListeners.get(p), new ArrayList<>());
         if( !listenerList.contains(listener) ) {
             listenerList.add(listener);
         }
@@ -275,11 +275,12 @@ public abstract class TargetProcessor
     public void shootProjectile() {
         if( this.hasAmmo() ) {
             Entity projectile = (Entity) this.getProjectile();
+            assert projectile != null;
             this.turret.worldObj.spawnEntityInWorld(projectile);
-            this.turret.worldObj.playSound(this.turret.posX, this.turret.posY, this.turret.posZ, this.getShootSound(), SoundCategory.NEUTRAL, 1.8F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F, true);
+            this.turret.worldObj.playSound(null, this.turret.posX, this.turret.posY, this.turret.posZ, this.getShootSound(), SoundCategory.NEUTRAL, 1.8F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
             this.ammoCount--;
         } else {
-            this.turret.worldObj.playSound(this.turret.posX, this.turret.posY, this.turret.posZ, this.getLowAmmoSound(), SoundCategory.NEUTRAL, 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F, true);
+            this.turret.worldObj.playSound(null, this.turret.posX, this.turret.posY, this.turret.posZ, this.getLowAmmoSound(), SoundCategory.NEUTRAL, 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
         }
     }
 
@@ -333,12 +334,9 @@ public abstract class TargetProcessor
     }
 
     public static void initialize() {
-        for( Object clsObj : EntityList.CLASS_TO_NAME.keySet() ) {
-            Class cls = (Class) clsObj;
-            if( EntityLiving.class.isAssignableFrom(cls) && !EntityTurret.class.isAssignableFrom(cls) && !EntityLiving.class.equals(cls) ) {
-                ENTITY_TARGET_LIST_STD.put(cls, IMob.class.isAssignableFrom(cls));
-            }
-        }
+        EntityList.CLASS_TO_NAME.keySet().stream()
+                .filter(cls -> EntityLiving.class.isAssignableFrom(cls) && !EntityTurret.class.isAssignableFrom(cls) && !EntityLiving.class.equals(cls))
+                .forEach(cls -> ENTITY_TARGET_LIST_STD.put(cls, IMob.class.isAssignableFrom(cls)));
     }
 
     public EntityTurret getTurret() {
@@ -438,21 +436,13 @@ public abstract class TargetProcessor
     }
 
     public void updateEntityTargets(List<Class<? extends Entity>> classes) {
-        for( Map.Entry<Class<? extends Entity>, Boolean> entry : this.entityTargetList.entrySet() ) {
-            entry.setValue(false);
-        }
+        this.entityTargetList.entrySet().stream().forEach(entry -> entry.setValue(false));
 
-        for( Class<? extends Entity> cls : classes ) {
-            if( cls != null && ENTITY_TARGET_LIST_STD.containsKey(cls) ) {
-                this.entityTargetList.put(cls, true);
-            }
-        }
+        classes.stream().filter(cls -> cls != null && ENTITY_TARGET_LIST_STD.containsKey(cls)).forEach(cls -> this.entityTargetList.put(cls, true));
     }
 
     public void updatePlayerTargets(UUID[] uuids) {
-        for( Map.Entry<UUID, Boolean> entry : this.playerTargetList.entrySet() ) {
-            entry.setValue(false);
-        }
+        this.playerTargetList.entrySet().stream().forEach(entry ->entry.setValue(false));
 
         for( UUID uuid : uuids ) {
             if( uuid != null ) {

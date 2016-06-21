@@ -9,6 +9,9 @@
 package de.sanandrew.mods.turretmod.client.gui.assembly;
 
 import de.sanandrew.mods.turretmod.client.gui.control.GuiSlimButton;
+import de.sanandrew.mods.turretmod.client.shader.ShaderAlphaOverride;
+import de.sanandrew.mods.turretmod.client.shader.ShaderCallback;
+import de.sanandrew.mods.turretmod.client.util.ShaderHelper;
 import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
@@ -19,16 +22,22 @@ import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntryItem;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
+import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import net.darkhax.bookshelf.lib.javatuples.Pair;
 import net.darkhax.bookshelf.lib.javatuples.Triplet;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.texture.ITextureObject;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
@@ -36,8 +45,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.EnumFacing;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -79,6 +87,8 @@ public class GuiTurretAssembly
 
     private long lastTimestamp;
 
+    private ShaderAlphaOverride shaderCallback = new ShaderAlphaOverride();
+
     public GuiTurretAssembly(InventoryPlayer invPlayer, TileEntityTurretAssembly tile) {
         super(new ContainerTurretAssembly(invPlayer, tile));
         this.assembly = tile;
@@ -110,12 +120,7 @@ public class GuiTurretAssembly
 
         int pos = 0;
         TurretAssemblyRecipes.RecipeGroup[] groups = TurretAssemblyRecipes.INSTANCE.getGroups();
-        Arrays.sort(groups, new Comparator<TurretAssemblyRecipes.RecipeGroup>() {
-            @Override
-            public int compare(TurretAssemblyRecipes.RecipeGroup o1, TurretAssemblyRecipes.RecipeGroup o2) {
-                return o1.name.compareTo(o2.name);
-            }
-        });
+        Arrays.sort(groups, (o1, o2) -> o1.name.compareTo(o2.name));
         this.groupBtns = new HashMap<>(1 + (int) (groups.length / 0.75F));
         for( TurretAssemblyRecipes.RecipeGroup grp : groups ) {
             GuiAssemblyCategoryTab tab = new GuiAssemblyCategoryTab(this.buttonList.size(), this.guiLeft + 9, this.guiTop + 19 + pos * 15 - 15 * scrollGroupPos, grp.icon, Lang.translate(grp.name));
@@ -153,7 +158,7 @@ public class GuiTurretAssembly
         boolean isLmbDown = Mouse.isButtonDown(0);
         boolean isRmbDown = Mouse.isButtonDown(1);
 
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
         this.mc.getTextureManager().bindTexture(Resources.GUI_ASSEMBLY_CRF.getResource());
 
@@ -198,11 +203,7 @@ public class GuiTurretAssembly
                 boolean isActive = this.assembly.currCrafting == null
                                    || (!this.assembly.isAutomated() && TmrUtils.areStacksEqual(this.assembly.currCrafting.getValue1(), stack, TmrUtils.NBT_COMPARATOR_FIXD));
 
-                GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-                RenderHelper.enableGUIStandardItemLighting();
-                this.drawItemStack(stack, this.guiLeft + 36, this.guiTop + 10 + 21 * i, 200.0F, true);
-                GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-                RenderHelper.disableStandardItemLighting();
+                TmrClientUtils.renderStackInGui(stack, this.guiLeft + 36, this.guiTop + 10 + 21 * i, 1.0F);
 
                 List tooltip = TmrClientUtils.getTooltipWithoutShift(stack);
                 this.frDetails.drawString(tooltip.get(0).toString(), this.guiLeft + 57, this.guiTop + 10 + 21 * i, 0xFFFFFFFF);
@@ -212,11 +213,11 @@ public class GuiTurretAssembly
 
                 if( isActive ) {
                     if( mouseX >= this.guiLeft + 35 && mouseX < this.guiLeft + 143 && mouseY >= this.guiTop + 9 + 21 * i && mouseY < this.guiTop + 27 + 21 * i ) {
-                        GL11.glDisable(GL11.GL_DEPTH_TEST);
-                        GL11.glColorMask(true, true, true, false);
+                        GlStateManager.disableDepth();
+                        GlStateManager.colorMask(true, true, true, false);
                         this.drawGradientRect(this.guiLeft + 35, this.guiTop + 9 + 21 * i, this.guiLeft + 143, this.guiTop + 27 + 21 * i, 0x2AFFFFFF, 0x2AFFFFFF);
-                        GL11.glColorMask(true, true, true, true);
-                        GL11.glEnable(GL11.GL_DEPTH_TEST);
+                        GlStateManager.colorMask(true, true, true, true);
+                        GlStateManager.enableDepth();
 
                         if( isLmbDown && !this.prevIsLmbDown ) {
                             PacketRegistry.sendToServer(new PacketInitAssemblyCrafting(this.assembly, this.cacheRecipes.get(index).getValue0(), this.shiftPressed ? 16 : 1));
@@ -228,13 +229,13 @@ public class GuiTurretAssembly
                 } else {
                     this.mc.getTextureManager().bindTexture(Resources.GUI_ASSEMBLY_CRF.getResource());
 
-                    GL11.glDisable(GL11.GL_DEPTH_TEST);
-                    GL11.glEnable(GL11.GL_BLEND);
+                    GlStateManager.disableDepth();
+                    GlStateManager.enableBlend();
                     OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
                     GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.75F);
                     this.drawTexturedModalRect(this.guiLeft + 35, this.guiTop + 9 + 21 * i, 35, 9 + 21 * i, 108, 18);
-                    GL11.glDisable(GL11.GL_BLEND);
-                    GL11.glEnable(GL11.GL_DEPTH_TEST);
+                    GlStateManager.disableBlend();
+                    GlStateManager.enableDepth();
                 }
             }
         }
@@ -242,24 +243,16 @@ public class GuiTurretAssembly
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
         if( !this.assembly.hasAutoUpgrade() ) {
-            GL11.glEnable(GL11.GL_BLEND);
-            OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.25F);
-            RenderHelper.disableStandardItemLighting();
-            //TODO: re-enable item rendering
-//            this.mc.renderEngine.bindTexture(this.mc.renderEngine.getResourceLocation(this.upgIconAuto.getItemSpriteNumber()));
-//            this.drawTexturedModelRectFromIcon(this.guiLeft + 14, this.guiTop + 100, this.upgIconAuto.getIconIndex(), 16, 16);
-            GL11.glDisable(GL11.GL_BLEND);
+            this.shaderCallback.alphaMulti = 0.35F;
+            ShaderHelper.useShader(ShaderHelper.alphaOverride, this.shaderCallback);
+            TmrClientUtils.renderStackInGui(this.upgIconAuto, this.guiLeft + 14, this.guiTop + 100, 1.0F);
+            ShaderHelper.releaseShader();
         }
         if( !this.assembly.hasSpeedUpgrade() ) {
-            GL11.glEnable(GL11.GL_BLEND);
-            OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.25F);
-            RenderHelper.disableStandardItemLighting();
-            //TODO: re-enable item rendering
-//            this.mc.renderEngine.bindTexture(this.mc.renderEngine.getResourceLocation(this.upgIconSpeed.getItemSpriteNumber()));
-//            this.drawTexturedModelRectFromIcon(this.guiLeft + 14, this.guiTop + 118, this.upgIconSpeed.getIconIndex(), 16, 16);
-            GL11.glDisable(GL11.GL_BLEND);
+            this.shaderCallback.alphaMulti = 0.35F;
+            ShaderHelper.useShader(ShaderHelper.alphaOverride, this.shaderCallback);
+            TmrClientUtils.renderStackInGui(this.upgIconSpeed, this.guiLeft + 14, this.guiTop + 118, 1.0F);
+            ShaderHelper.releaseShader();
         }
         if( this.assembly.hasFilterUpgrade() ) {
             ItemStack[] filteredStacks = this.assembly.getFilterStacks();
@@ -269,31 +262,21 @@ public class GuiTurretAssembly
                     int x = i % 9;
                     int y = i / 9;
 
-                    GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-                    RenderHelper.enableGUIStandardItemLighting();
-                    this.drawItemStack(filterStack, this.guiLeft + 36 + x * 18, this.guiTop + 100 + y * 18, 200.0F, false);
-                    GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-                    RenderHelper.disableStandardItemLighting();
-
                     this.mc.getTextureManager().bindTexture(Resources.GUI_ASSEMBLY_CRF.getResource());
-                    GL11.glDisable(GL11.GL_DEPTH_TEST);
-                    GL11.glEnable(GL11.GL_BLEND);
-                    OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-                    GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.75F);
+                    GlStateManager.disableDepth();
+                    GlStateManager.enableBlend();
+                    GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+                    GlStateManager.color(1.0F, 1.0F, 1.0F, 0.75F);
                     this.drawTexturedModalRect(this.guiLeft + 35 + x * 18, this.guiTop + 99 + y * 18, 35 + x * 18, 99 + 18 * y, 18, 18);
-                    GL11.glDisable(GL11.GL_BLEND);
-                    GL11.glEnable(GL11.GL_DEPTH_TEST);
+                    GlStateManager.disableBlend();
+                    GlStateManager.enableDepth();
                 }
             }
         } else {
-            GL11.glEnable(GL11.GL_BLEND);
-            OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.25F);
-            RenderHelper.disableStandardItemLighting();
-            //TODO: re-enable item rendering
-//            this.mc.renderEngine.bindTexture(this.mc.renderEngine.getResourceLocation(this.upgIconFilter.getItemSpriteNumber()));
-//            this.drawTexturedModelRectFromIcon(this.guiLeft + 202, this.guiTop + 100, this.upgIconFilter.getIconIndex(), 16, 16);
-            GL11.glDisable(GL11.GL_BLEND);
+            this.shaderCallback.alphaMulti = 0.35F;
+            ShaderHelper.useShader(ShaderHelper.alphaOverride, this.shaderCallback);
+            TmrClientUtils.renderStackInGui(this.upgIconFilter, this.guiLeft + 202, this.guiTop + 100, 1.0F);
+            ShaderHelper.releaseShader();
         }
 
         if( this.assembly.currCrafting != null ) {
@@ -303,14 +286,7 @@ public class GuiTurretAssembly
             }
 
             this.frDetails.drawString(Lang.translate(Lang.TASSEMBLY_CRAFTING), this.guiLeft + 156, this.guiTop + 40, 0xFF303030);
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-            RenderHelper.enableGUIStandardItemLighting();
-            this.drawItemStack(this.assembly.currCrafting.getValue1(), this.guiLeft + 190, this.guiTop + 36, 200.0F, false);
-            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-            RenderHelper.disableStandardItemLighting();
-            GL11.glDisable(GL11.GL_DEPTH_TEST);
-            this.fontRendererObj.drawString(cnt, this.guiLeft + 191 + 18 - this.fontRendererObj.getStringWidth(cnt), this.guiTop + 37 + 18 - this.fontRendererObj.FONT_HEIGHT, 0xFF303030);
-            this.fontRendererObj.drawString(cnt, this.guiLeft + 190 + 18 - this.fontRendererObj.getStringWidth(cnt), this.guiTop + 36 + 18 - this.fontRendererObj.FONT_HEIGHT, 0xFFFFFFFF);
+            TmrClientUtils.renderStackInGui(this.assembly.currCrafting.getValue1(), this.guiLeft + 190, this.guiTop + 36, 1.0F, this.fontRendererObj, cnt);
 
             this.cancelTask.enabled = true;
             this.automate.enabled = false;
@@ -362,20 +338,6 @@ public class GuiTurretAssembly
         }
     }
 
-    private void drawItemStack(ItemStack stack, int x, int y, float z, boolean drawText) {
-        GL11.glTranslatef(0.0F, 0.0F, 32.0F);
-        this.zLevel = z;
-        itemRender.zLevel = z;
-        //TODO: re-enable item rendering
-//        itemRender.renderItemAndEffectIntoGUI(this.fontRendererObj, this.mc.getTextureManager(), stack, x, y);
-//        if( drawText ) {
-//            itemRender.renderItemOverlayIntoGUI(this.mc.fontRenderer, this.mc.getTextureManager(), stack, x, y);
-//        }
-        this.zLevel = 0.0F;
-        itemRender.zLevel = 0.0F;
-        GL11.glTranslatef(0.0F, 0.0F, -32.0F);
-    }
-
     private void drawIngredientsDetail(int mouseX, int mouseY, UUID recipe) {
         TurretAssemblyRecipes.RecipeEntry recipeEntry = TurretAssemblyRecipes.INSTANCE.getRecipeEntry(recipe);
         RecipeEntryItem[] ingredients = recipeEntry.resources;
@@ -410,11 +372,12 @@ public class GuiTurretAssembly
         int xPos = mouseX + 12;
         int yPos = mouseY - 12;
 
-        this.zLevel = 300.0F;
-        itemRender.zLevel = 300.0F;
         int bkgColor = 0xF0100010;
         int lightBg = 0x505000FF;
         int darkBg = (lightBg & 0xFEFEFE) >> 1 | lightBg & 0xFF000000;
+
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0.0F, 0.0F, 100.0F);
 
         this.drawGradientRect(xPos - 3, yPos - 4, xPos + textWidth + 3, yPos - 3, bkgColor, bkgColor);
         this.drawGradientRect(xPos - 3, yPos + tHeight + 3, xPos + textWidth + 3, yPos + tHeight + 4, bkgColor, bkgColor);
@@ -430,38 +393,22 @@ public class GuiTurretAssembly
         for( int i = 0, j = 0; i < ingredients.length; i++, j++ ) {
             Triplet<ItemStack, String, String> descIng = desc.get(ingredients[i]);
 
-            GL11.glPushMatrix();
-            GL11.glTranslatef(xPos, yPos + j * 9, 0.0F);
-            GL11.glScalef(0.5F, 0.5F, 1.0F);
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-            RenderHelper.enableGUIStandardItemLighting();
+            TmrClientUtils.renderStackInGui(descIng.getValue0(), xPos, yPos + j * 9, 0.5F);
+            GlStateManager.disableDepth();
 
-            this.drawItemStack(descIng.getValue0(), 0, 0, 500.0F, false);
-
-            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-            RenderHelper.disableStandardItemLighting();
-            GL11.glDisable(GL11.GL_DEPTH_TEST);
-            GL11.glScalef(2.0F, 2.0F, 1.0F);
-            GL11.glTranslatef(0.5F, 0.5F, 0.0F);
-
-            this.frDetails.drawString(descIng.getValue1(), 10, 0, 0xFF3F3F3F);
-            GL11.glTranslatef(-0.5F, -0.5F, 0.0F);
-            this.frDetails.drawString(descIng.getValue1(), 10, 0, 0xFFFFFFFF);
+            this.frDetails.drawString(descIng.getValue1(), xPos + 10, yPos + j * 9, 0xFF3F3F3F);
+            this.frDetails.drawString(descIng.getValue1(), xPos + 10, yPos + j * 9, 0xFFFFFFFF);
             if( descIng.getValue2() != null ) {
-                this.frDetails.drawString(descIng.getValue2(), 10, 9, 0xFF6F6F6F);
+                this.frDetails.drawString(descIng.getValue2(), xPos + 10, yPos + j * 9 + 9, 0xFF6F6F6F);
                 j++;
             }
 
-            GL11.glEnable(GL11.GL_DEPTH_TEST);
-
-            GL11.glPopMatrix();
+            GlStateManager.enableDepth();
         }
 
         RenderHelper.enableGUIStandardItemLighting();
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-
-        this.zLevel = 0.0F;
-        itemRender.zLevel = 0.0F;
+//        GlStateManager.enableRescaleNormal();
+        GlStateManager.popMatrix();
     }
 
     private void drawIngredientsSmall(int mouseX, int mouseY, UUID recipe) {
@@ -477,7 +424,6 @@ public class GuiTurretAssembly
         int height = ingredients.length > 0 ? 31 : 18;
 
         this.zLevel = 300.0F;
-        itemRender.zLevel = 300.0F;
         int bkgColor = 0xF0100010;
         int lightBg = 0x505000FF;
         int darkBg = (lightBg & 0xFEFEFE) >> 1 | lightBg & 0xFF000000;
@@ -521,21 +467,12 @@ public class GuiTurretAssembly
         for( int i = 0; i < ingredients.length; i++ ) {
             ItemStack[] entryStacks = ingredients[i].getEntryItemStacks();
             ItemStack stack = entryStacks[(int)((this.lastTimestamp / 1000L) % entryStacks.length)];
-            GL11.glPushMatrix();
-            GL11.glTranslatef(xPos + i * 9, yPos, 0.0F);
-            GL11.glScalef(0.5F, 0.5F, 1.0F);
-
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-            RenderHelper.enableGUIStandardItemLighting();
-            this.drawItemStack(stack, 0, 0, 500.0F, true);
-
-            GL11.glPopMatrix();
+            TmrClientUtils.renderStackInGui(stack, xPos + i * 9, yPos, 0.5F);
         }
 
         RenderHelper.enableGUIStandardItemLighting();
 
         this.zLevel = 0.0F;
-        itemRender.zLevel = 0.0F;
 
     }
 
@@ -544,7 +481,7 @@ public class GuiTurretAssembly
         String consumption = String.format(Lang.translate(Lang.TASSEMBLY_RF_USING), this.assembly.getField(TileEntityTurretAssembly.FIELD_FLUX_CONSUMPTION) * (this.assembly.hasSpeedUpgrade() ? 4 : 1));
 
         int textWidth = Math.max(this.fontRendererObj.getStringWidth(amount), this.fontRendererObj.getStringWidth(consumption));
-        int xPos = mouseX + 12;
+        int xPos = mouseX - 12 - textWidth;
         int yPos = mouseY - 12;
         byte height = 18;
 
@@ -553,12 +490,11 @@ public class GuiTurretAssembly
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
 
-        this.zLevel = 400.0F;
-        itemRender.zLevel = 300.0F;
         int bkgColor = 0xF0100010;
         int lightBg = 0x505000FF;
         int darkBg = (lightBg & 0xFEFEFE) >> 1 | lightBg & 0xFF000000;
 
+        this.zLevel = 400.0F;
         this.drawGradientRect(xPos - 3, yPos - 4, xPos + textWidth + 3, yPos - 3, bkgColor, bkgColor);
         this.drawGradientRect(xPos - 3, yPos + height + 3, xPos + textWidth + 3, yPos + height + 4, bkgColor, bkgColor);
         this.drawGradientRect(xPos - 3, yPos - 3, xPos + textWidth + 3, yPos + height + 3, bkgColor, bkgColor);
@@ -569,10 +505,7 @@ public class GuiTurretAssembly
         this.drawGradientRect(xPos + textWidth + 2, yPos - 3 + 1, xPos + textWidth + 3, yPos + height + 3 - 1, lightBg, darkBg);
         this.drawGradientRect(xPos - 3, yPos - 3, xPos + textWidth + 3, yPos - 3 + 1, lightBg, lightBg);
         this.drawGradientRect(xPos - 3, yPos + height + 2, xPos + textWidth + 3, yPos + height + 3, darkBg, darkBg);
-
         this.zLevel = 0.0F;
-        itemRender.zLevel = 0.0F;
-
 
         GL11.glPushMatrix();
         GL11.glTranslatef(xPos, yPos, 0.0F);

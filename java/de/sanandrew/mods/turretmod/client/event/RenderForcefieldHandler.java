@@ -98,8 +98,6 @@ public class RenderForcefieldHandler
 
         Tessellator tess = Tessellator.getInstance();
         for( int pass = 1; pass <= 5; pass++ ) {
-
-
             float transformTexAmount = worldTicks % 400 + event.getPartialTicks();
             float texTranslateX = 0.0F;
             float texTranslateY = 0.0F;
@@ -149,9 +147,11 @@ public class RenderForcefieldHandler
                 GL11.glDepthMask(false);
                 GL11.glDisable(GL11.GL_CULL_FACE);
                 tess.draw();
+                GL14.glBlendColor(1.0f, 1.0f, 1.0f, 1.0f);
                 GL11.glDepthMask(true);
                 GL11.glEnable(GL11.GL_CULL_FACE);
             }
+            GL14.glBlendColor(1.0F, 1.0F, 1.0F, 1.0F);
 
             GL11.glDisable(GL11.GL_BLEND);
 

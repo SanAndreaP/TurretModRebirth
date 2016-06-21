@@ -8,10 +8,12 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.assembly;
 
+import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
@@ -22,7 +24,6 @@ public class GuiAssemblyCategoryTab
         extends GuiButton
 {
 	protected ItemStack renderedItem;
-//    protected static RenderItem itemRenderer = new RenderItem();
 
 	public GuiAssemblyCategoryTab(int id, int posX, int posY, ItemStack renderedItem, String hoverText) {
 		super(id, posX, posY, hoverText);
@@ -34,11 +35,11 @@ public class GuiAssemblyCategoryTab
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if( this.visible ) {
-            GL11.glEnable(GL11.GL_BLEND);
-            OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
             mc.renderEngine.bindTexture(Resources.GUI_ASSEMBLY_CRF.getResource());
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
             this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
             int hoverState = this.getHoverState(this.hovered);
@@ -47,40 +48,37 @@ public class GuiAssemblyCategoryTab
 
             this.mouseDragged(mc, mouseX, mouseY);
 
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            GlStateManager.enableRescaleNormal();
             RenderHelper.enableGUIStandardItemLighting();
 
-            this.drawItemStack(this.renderedItem, this.xPosition + 9, this.yPosition + 3, mc);
+            TmrClientUtils.renderStackInGui(this.renderedItem, this.xPosition + 9, this.yPosition + 3, 0.5F);
 
             RenderHelper.disableStandardItemLighting();
-            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+            GlStateManager.disableRescaleNormal();
 
             if( this.hovered ) {
                 this.drawTabHoveringText(this.displayString, this.xPosition + 5, this.yPosition + 15, mc.fontRendererObj);
             }
 
-            GL11.glDisable(GL11.GL_BLEND);
-            RenderHelper.disableStandardItemLighting();
+            GlStateManager.disableBlend();
+            RenderHelper.enableGUIStandardItemLighting();
         }
     }
 
     protected void drawTabHoveringText(String text, int mouseX, int mouseY, FontRenderer fontRenderer) {
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-        RenderHelper.disableStandardItemLighting();
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GlStateManager.disableLighting();
+        GlStateManager.enableDepth();
 
         int textWidth = fontRenderer.getStringWidth(text);
         int xPos = mouseX + 12;
         int yPos = mouseY - 12;
         byte height = 8;
 
-        this.zLevel = 400.0F;
-//        itemRenderer.zLevel = 300.0F;
         int bkgColor = 0xF0100010;
         int lightBg = 0x505000FF;
         int darkBg = (lightBg & 0xFEFEFE) >> 1 | lightBg & 0xFF000000;
 
+        this.zLevel = 300.0F;
         this.drawGradientRect(xPos - 3, yPos - 4, xPos + textWidth + 3, yPos - 3, bkgColor, bkgColor);
         this.drawGradientRect(xPos - 3, yPos + height + 3, xPos + textWidth + 3, yPos + height + 4, bkgColor, bkgColor);
         this.drawGradientRect(xPos - 3, yPos - 3, xPos + textWidth + 3, yPos + height + 3, bkgColor, bkgColor);
@@ -91,31 +89,13 @@ public class GuiAssemblyCategoryTab
         this.drawGradientRect(xPos + textWidth + 2, yPos - 3 + 1, xPos + textWidth + 3, yPos + height + 3 - 1, lightBg, darkBg);
         this.drawGradientRect(xPos - 3, yPos - 3, xPos + textWidth + 3, yPos - 3 + 1, lightBg, lightBg);
         this.drawGradientRect(xPos - 3, yPos + height + 2, xPos + textWidth + 3, yPos + height + 3, darkBg, darkBg);
+        this.zLevel = 0.0F;
 
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GlStateManager.disableDepth();
 
         fontRenderer.drawStringWithShadow(text, xPos, yPos, -1);
 
-        this.zLevel = 0.0F;
-//        itemRenderer.zLevel = 0.0F;
-
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glEnable(GL11.GL_LIGHTING);
-        RenderHelper.enableGUIStandardItemLighting();
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-    }
-
-    private void drawItemStack(ItemStack stack, int x, int y, Minecraft mc) {
-        GL11.glTranslatef(0.0F, 0.0F, 32.0F);
-//        this.zLevel = 200.0F;
-        //TODO: re-enable item srendering
-//        itemRenderer.zLevel = 200.0F;
-//        GL11.glScalef(0.5F, 0.5F, 1.0F);
-//        itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), stack, x * 2, y * 2);
-//        GL11.glScalef(2.0F, 2.0F, 1.0F);
-//        this.zLevel = 0.0F;
-//        itemRenderer.zLevel = 0.0F;
-        GL11.glTranslatef(0.0F, 0.0F, -32.0F);
-        GL11.glDisable(GL11.GL_LIGHTING);
+        GlStateManager.enableDepth();
+        GlStateManager.enableLighting();
     }
 }

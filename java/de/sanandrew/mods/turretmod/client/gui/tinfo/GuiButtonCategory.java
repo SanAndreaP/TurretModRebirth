@@ -15,6 +15,7 @@ import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -32,7 +33,6 @@ public class GuiButtonCategory
     private GuiTurretInfo tinfo;
 
     private ShaderCallback shaderCallback = new ShaderCallback() {
-
         @Override
         public void call(int shader) {
             TextureManager texMgr = Minecraft.getMinecraft().renderEngine;
@@ -49,11 +49,10 @@ public class GuiButtonCategory
             GL11.glEnable(GL11.GL_TEXTURE_2D);
             GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
             ResourceLocation stencil = Resources.TINFO_GRP_STENCIL.getResource();
-            ITextureObject stencilTex = texMgr.getTexture(stencil);
-            if( stencilTex == null ) {
-                texMgr.bindTexture(stencil);
-                stencilTex = texMgr.getTexture(stencil);
-            }
+            texMgr.getTexture(stencil);
+            ITextureObject stencilTex;
+            texMgr.bindTexture(stencil);
+            stencilTex = texMgr.getTexture(stencil);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, stencilTex.getGlTextureId());
             ARBShaderObjects.glUniform1iARB(maskUniform, 7);
 
@@ -81,10 +80,10 @@ public class GuiButtonCategory
         }
 
         float s = 1.0F / 32.0F;
-        GL11.glPushMatrix();
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.pushMatrix();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
         mc.renderEngine.bindTexture(this.texture);
 
@@ -93,7 +92,7 @@ public class GuiButtonCategory
 
         if(shaders) {
             OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + TmrConfiguration.glSecondaryTextureUnit);
-            texture = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
+            texture = GlStateManager.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
         }
 
         ShaderHelper.useShader(ShaderHelper.categoryButton, shaderCallback);
@@ -101,12 +100,12 @@ public class GuiButtonCategory
         ShaderHelper.releaseShader();
 
         if(shaders) {
-            OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + TmrConfiguration.glSecondaryTextureUnit);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
-            OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB);
+            GlStateManager.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + TmrConfiguration.glSecondaryTextureUnit);
+            GlStateManager.bindTexture(texture);
+            GlStateManager.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB);
         }
 
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
 
         if(inside) {
             this.tinfo.categoryHighlight = TurretInfoCategory.getCategory(this.catIndex);

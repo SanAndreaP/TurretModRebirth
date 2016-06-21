@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu;
 
 import de.sanandrew.mods.turretmod.client.gui.control.GuiSlimButton;
+import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import de.sanandrew.mods.turretmod.network.PacketPlayerTurretAction;
@@ -121,14 +122,7 @@ public class GuiTcuInfo
         value = String.format("%d", tgtProc.getAmmoCount());
 
         if( tgtProc.hasAmmo() ) {
-            GL11.glColor3f(1.0F, 1.0F, 1.0F);
-            RenderHelper.enableGUIStandardItemLighting();
-            this.drawItemStack(tgtProc.getAmmoStack(), this.guiLeft + 21, this.guiTop + 49);
-            RenderHelper.disableStandardItemLighting();
-            GL11.glTranslated(0.0D, 0.0D, 32.0D);
-            this.frAmmoItem.drawStringWithShadow(value, this.guiLeft + 38 - this.frAmmoItem.getStringWidth(value), this.guiTop + 58, 0xFFFFFFFF);
-            GL11.glTranslated(0.0D, 0.0D, -32.0D);
-            GL11.glColor3f(1.0F, 1.0F, 1.0F);
+            TmrClientUtils.renderStackInGui(tgtProc.getAmmoStack(), this.guiLeft + 21, this.guiTop + 49, 1.0D, frAmmoItem, value);
         }
 
         value = tgtProc.hasAmmo() ? tgtProc.getAmmoStack().getDisplayName() : "-n/a-";
@@ -177,14 +171,6 @@ public class GuiTcuInfo
         } else if( !GuiTCUHelper.actionPerformed(button, this) ) {
             super.actionPerformed(button);
         }
-    }
-
-    private void drawItemStack(ItemStack stack, int x, int y) {
-        GL11.glTranslatef(0.0F, 0.0F, 32.0F);
-        itemRender.zLevel = -50.0F;
-        itemRender.renderItemAndEffectIntoGUI(stack, x, y);
-        itemRender.zLevel = 0.0F;
-        GL11.glTranslatef(0.0F, 0.0F, -32.0F);
     }
 
     @Override

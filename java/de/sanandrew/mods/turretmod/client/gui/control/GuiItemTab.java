@@ -8,10 +8,12 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.control;
 
+import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
@@ -22,7 +24,6 @@ public class GuiItemTab
         extends GuiButton
 {
 	protected ItemStack renderedItem;
-//    protected static RenderItem itemRenderer = new RenderItem();
     protected boolean isRight;
 
 	public GuiItemTab(int id, int posX, int posY, ItemStack renderedItem, String hoverText, boolean onTheRight) {
@@ -36,16 +37,18 @@ public class GuiItemTab
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if( this.visible ) {
-            GL11.glEnable(GL11.GL_BLEND);
-            OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            GlStateManager.disableLighting();
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             mc.renderEngine.bindTexture(Resources.GUI_BUTTONS.getResource());
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
             int hoverState = this.getHoverState(this.hovered);
             this.drawTexturedModalRect(this.xPosition, this.yPosition, 26 * (isRight ? 0 : 1), hoverState * 26, this.width, this.height);
-            GL11.glDisable(GL11.GL_BLEND);
+            GlStateManager.disableBlend();
 
-            drawItemStack(this.renderedItem, this.xPosition + 5, this.yPosition + 5, mc);
+            GlStateManager.enableDepth();
+            TmrClientUtils.renderStackInGui(this.renderedItem, this.xPosition + 5, this.yPosition + 5, 1.0F);
 
             if( this.hovered ) {
                 this.drawTabHoveringText(this.displayString, this.xPosition - (this.isRight ? mc.fontRendererObj.getStringWidth(this.displayString) + 5 : -5),
@@ -55,10 +58,10 @@ public class GuiItemTab
     }
 
     protected void drawTabHoveringText(String text, int mouseX, int mouseY, FontRenderer fontRenderer) {
-        GL11.glPushMatrix();
-        GL11.glTranslatef(0.0F, 0.0F, 64.0F);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0.0F, 0.0F, 64.0F);
 
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GlStateManager.enableDepth();
 
         int textWidth = fontRenderer.getStringWidth(text);
         int xPos = mouseX + 12;
@@ -80,21 +83,10 @@ public class GuiItemTab
         this.drawGradientRect(xPos - 3, yPos - 3, xPos + textWidth + 3, yPos - 3 + 1, lightBg, lightBg);
         this.drawGradientRect(xPos - 3, yPos + height + 2, xPos + textWidth + 3, yPos + height + 3, darkBg, darkBg);
 
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-
+        GlStateManager.disableDepth();
         fontRenderer.drawStringWithShadow(text, xPos, yPos, -1);
+        GlStateManager.enableDepth();
 
-        GL11.glPopMatrix();
-    }
-
-    private static void drawItemStack(ItemStack stack, int x, int y, Minecraft mc) {
-        GL11.glTranslatef(0.0F, 0.0F, 32.0F);
-        RenderHelper.enableGUIStandardItemLighting();
-        //TODO: re-enable item rendering
-//        itemRenderer.zLevel = -50.0F;
-//        itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), stack, x, y);
-//        itemRenderer.zLevel = 0.0F;
-        RenderHelper.disableStandardItemLighting();
-        GL11.glTranslatef(0.0F, 0.0F, -32.0F);
+        GlStateManager.popMatrix();
     }
 }

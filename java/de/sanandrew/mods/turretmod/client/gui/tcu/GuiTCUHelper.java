@@ -16,6 +16,8 @@ import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
@@ -45,7 +47,8 @@ public class GuiTCUHelper
     }
 
     public static void drawScreen(GuiTurretCtrlUnit gui) {
-        GL11.glColor3f(1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderHelper.disableStandardItemLighting();
 
         FontRenderer fRender = gui.getFontRenderer();
         String pageName = "";
@@ -59,10 +62,11 @@ public class GuiTCUHelper
             pageName = "upgrades";
         }
         pageName = Lang.translate(String.format(Lang.TCU_PAGE_TITLE, pageName));
-        fRender.drawString(pageName, gui.getGuiLeft() + 8, gui.getGuiTop() + 6, 0x404040);
+        fRender.drawString(pageName, gui.getGuiLeft() + 8, gui.getGuiTop() + 6, 0xFF404040);
 
         String turretName = Lang.translate(Lang.translateEntityCls(gui.getTurret().getClass()));
-        fRender.drawString(turretName, gui.getGuiLeft() + (X_SIZE - fRender.getStringWidth(turretName)) / 2.0F, gui.getGuiTop() + Y_SIZE - 15, 0x00FF00, false);
+        fRender.drawString(turretName, gui.getGuiLeft() + (X_SIZE - fRender.getStringWidth(turretName)) / 2.0F, gui.getGuiTop() + Y_SIZE - 15, 0xFF00FF00, false);
+        RenderHelper.enableGUIStandardItemLighting();
     }
 
     public static boolean actionPerformed(GuiButton button, GuiTurretCtrlUnit gui) {

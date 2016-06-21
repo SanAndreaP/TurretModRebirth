@@ -19,6 +19,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import org.lwjgl.opengl.GL11;
 
@@ -75,12 +77,13 @@ public class GuiTcuUpgrades
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-        this.fontRendererObj.drawString(Lang.translate(Lang.CONTAINER_INV), 8, this.ySize - 126 + 3, 4210752);
+        RenderHelper.disableStandardItemLighting();
+        this.fontRendererObj.drawString(Lang.translate(Lang.CONTAINER_INV), 8, this.ySize - 126 + 3, 0xFF404040);
 
-        GL11.glPushMatrix();
-        GL11.glTranslatef(-this.posX, -this.posY, 0.0F);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(-this.posX, -this.posY, 0.0F);
         GuiTCUHelper.drawScreen(this);
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
 
         if( !this.turret.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_STORAGE_I) ) {
             for( int j = 0; j < 9; j++ ) {
@@ -99,6 +102,8 @@ public class GuiTcuUpgrades
                 this.drawGradientRect(7 + j * 18, 25 + 54, 7 + 16 + j * 18, 25 + 54 + 16, 0x80FFFFFF, 0x80FFFFFF);
             }
         }
+
+        RenderHelper.enableGUIStandardItemLighting();
     }
 
     @Override

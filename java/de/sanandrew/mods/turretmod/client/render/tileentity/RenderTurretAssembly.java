@@ -13,6 +13,7 @@ import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import org.lwjgl.opengl.GL14;
 
 public class RenderTurretAssembly
         extends TileEntitySpecialRenderer<TileEntityTurretAssembly>
@@ -59,7 +60,7 @@ public class RenderTurretAssembly
 //            if( glCapabilities.OpenGL14 && glCapabilities.GL_EXT_blend_color ) {
 //                GL11.glEnable(GL11.GL_BLEND);
 //                OpenGlHelper.glBlendFunc(GL11.GL_CONSTANT_ALPHA, GL11.GL_ONE_MINUS_CONSTANT_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-//                GL14.glBlendColor(1.0f, 1.0f, 1.0f, scale);
+//                GL14.glBlendColor(1.0f, 1.0f, 1.0f, 1.0F);
 //                RenderManager.instance.renderEntityWithPosYaw(entityitem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
 //                GL11.glDisable(GL11.GL_BLEND);
 //            } else {

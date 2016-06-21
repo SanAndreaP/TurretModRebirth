@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import de.sanandrew.mods.turretmod.client.shader.ShaderCallback;
 import de.sanandrew.mods.turretmod.util.Resources;
+import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 
@@ -38,6 +39,7 @@ public final class ShaderHelper
 
     public static int categoryButton = 0;
     public static int grayscaleItem = 0;
+    public static int alphaOverride = 0;
 
     public static void initShaders() {
         if(!areShadersEnabled())
@@ -45,6 +47,7 @@ public final class ShaderHelper
 
         categoryButton = createProgram(null, Resources.SHADER_CATEGORY_BUTTON_FRAG.getResource());
         grayscaleItem = createProgram(null, Resources.SHADER_GRAYSCALE_FRAG.getResource());
+        alphaOverride = createProgram(null, Resources.SHADER_ALPHA_OVERRIDE_FRAG.getResource());
     }
 
     public static void useShader(int shader, ShaderCallback callback) {

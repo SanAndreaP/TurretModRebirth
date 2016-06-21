@@ -115,19 +115,19 @@ public class ModelTurretAssembly
 
                 float prevBrightX = OpenGlHelper.lastBrightnessX;
                 float prevBrightY = OpenGlHelper.lastBrightnessY;
-                int bright = 0xF0F0;
+                int bright = 0xF0;
                 int brightX = bright % 65536;
                 int brightY = bright / 65536;
                 OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightX, brightY);
 
                 GlStateManager.glLineWidth(Math.min(20.0F, 20.0F / (dist)));
-                buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION);
+                buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
                 buf.pos(0.0F, 0.1F, 0.0F).color(255, 0, 0, 64).endVertex();
                 buf.pos(0.0F, 1.0F, 0.0F).color(255, 0, 0, 64).endVertex();
                 tess.draw();
 
                 GlStateManager.glLineWidth(Math.min(5.0F, 5.0F / (dist)));
-                buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION);
+                buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
                 buf.pos(0.0F, 0.1F, 0.0F).color(255, 0, 0, 128).endVertex();
                 buf.pos(0.0F, 1.0F, 0.0F).color(255, 0, 0, 128).endVertex();
                 tess.draw();
