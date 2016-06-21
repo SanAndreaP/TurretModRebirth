@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.registry.medpack;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
@@ -18,13 +19,13 @@ public class RepairKitStandard
     private final String name;
     private final UUID uuid;
     private final float heal;
-    private final String icon;
+    private final ResourceLocation itemModel;
 
-    public RepairKitStandard(String name, UUID uuid, float heal, String icon) {
+    public RepairKitStandard(String name, UUID uuid, float heal, ResourceLocation model) {
         this.name = name;
         this.uuid = uuid;
         this.heal = heal;
-        this.icon = icon;
+        this.itemModel = model;
     }
 
     @Override
@@ -51,7 +52,7 @@ public class RepairKitStandard
     }
 
     @Override
-    public String getIcon() {
-        return this.icon;
+    public ResourceLocation getModel() {
+        return this.itemModel;
     }
 }

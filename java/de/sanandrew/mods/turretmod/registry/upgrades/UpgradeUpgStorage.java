@@ -12,16 +12,19 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
 public abstract class UpgradeUpgStorage
         implements TurretUpgrade
 {
+    private final ResourceLocation itemModel;
     private final String name;
 
     public UpgradeUpgStorage(String name) {
         this.name = name;
+        this.itemModel = new ResourceLocation(TurretModRebirth.ID, "upgrades/" + name);
     }
 
     @Override
@@ -35,8 +38,8 @@ public abstract class UpgradeUpgStorage
     }
 
     @Override
-    public String getIconTexture() {
-        return TurretModRebirth.ID + ":upgrades/" + this.name;
+    public ResourceLocation getModel() {
+        return this.itemModel;
     }
 
     @Override

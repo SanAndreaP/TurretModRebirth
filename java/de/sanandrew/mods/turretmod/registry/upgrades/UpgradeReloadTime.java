@@ -16,18 +16,22 @@ import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
 public abstract class UpgradeReloadTime
         implements TurretUpgrade
 {
+    private final ResourceLocation itemModel;
+
     private final String name;
     private AttributeModifier modifier;
 
     public UpgradeReloadTime(String name, String modUUID, double value) {
         this.name = name;
         this.modifier = new AttributeModifier(UUID.fromString(modUUID), String.format("%s:%s", TurretModRebirth.ID, name), value, TmrUtils.ATTR_ADD_PERC_VAL_TO_SUM);
+        this.itemModel = new ResourceLocation(TurretModRebirth.ID, "upgrades/" + name);
     }
 
     @Override
@@ -41,8 +45,8 @@ public abstract class UpgradeReloadTime
     }
 
     @Override
-    public String getIconTexture() {
-        return TurretModRebirth.ID + ":upgrades/" + this.name;
+    public ResourceLocation getModel() {
+        return this.itemModel;
     }
 
     @Override

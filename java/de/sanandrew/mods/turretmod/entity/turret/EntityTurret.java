@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.entity.turret;
 
+import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.util.Sounds;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
@@ -77,6 +78,7 @@ public abstract class EntityTurret
     public EntityTurret(World world) {
         super(world);
         this.upgProc = new UpgradeProcessor(this);
+        this.rotationYaw = 0.0F;
     }
 
     public EntityTurret(World world, boolean isUpsideDown, EntityPlayer owner) {
@@ -169,12 +171,14 @@ public abstract class EntityTurret
     public void onUpdate() {
         if( !this.inGui ) {
             super.onUpdate();
+
+            this.rotationYaw = 0.0F;
+            this.renderYawOffset = 0.0F;
         }
     }
 
     @Override
     public void onLivingUpdate() {
-        this.rotationYaw = 0.0F;
 
         if( this.blockPos == null ) {
             this.blockPos = new BlockPos((int) Math.floor(this.posX), (int)Math.floor(this.posY) + (this.isUpsideDown ? 3 : 0), (int)Math.floor(this.posZ));
@@ -206,7 +210,7 @@ public abstract class EntityTurret
 
             if( this.targetProc.hasTarget() ) {
                 this.faceEntity(this.targetProc.getTarget(), 10.0F, this.getVerticalFaceSpeed());
-            } else if( this.worldObj.isRemote && TmrUtils.getFirstPassengerOfClass(this, EntityPlayer.class) != null ) {
+            } else if( this.worldObj.isRemote && TmrUtils.getFirstPassengerOfClass(this, EntityPlayer.class) == null ) {
                 this.rotationYawHead += 1.0F;
                 this.rotationPitch = 0.0F;
             }
@@ -216,11 +220,12 @@ public abstract class EntityTurret
     }
 
     private void onInteractSucceed(ItemStack heldItem, EntityPlayer player) {
-//        if( heldItem.stackSize == 0 ) {
-//            player.consumeItemFromStack(player, heldItem);
-//        } else {
-//            player.inventory.setInventorySlotContents(player.inventory.currentItem, heldItem.copy());
-//        }
+        if( heldItem.stackSize == 0 ) {
+            player.inventory.removeStackFromSlot(player.inventory.currentItem);
+        } else {
+            player.inventory.setInventorySlotContents(player.inventory.currentItem, heldItem.copy());
+        }
+
         this.updateState();
         player.inventoryContainer.detectAndSendChanges();
         this.worldObj.playSound(this.posX, this.posY, this.posZ, Sounds.TURRET_COLLECT, SoundCategory.NEUTRAL, 1.0F, 1.0F, true);
@@ -228,7 +233,6 @@ public abstract class EntityTurret
 
     @Override
     protected boolean processInteract(EntityPlayer player, EnumHand hand, @Nullable ItemStack stack) {
-//        ItemStack heldItem = player.getCurrentEquippedItem();
         if( this.worldObj.isRemote ) {
             if( ItemStackUtils.isValidStack(stack) && stack.getItem() == ItemRegistry.tcu ) {
                 TurretModRebirth.proxy.openGui(player, EnumGui.GUI_TCU_INFO, this.getEntityId(), 0, 0);
@@ -236,12 +240,12 @@ public abstract class EntityTurret
             }
 
             return false;
-        } else if( ItemStackUtils.isValidStack(stack) ) {
+        } else if( ItemStackUtils.isValidStack(stack) && hand == EnumHand.MAIN_HAND ) {
             if( this.targetProc.addAmmo(stack) ) {
                 this.onInteractSucceed(stack, player);
                 return true;
             } else if( stack.getItem() == ItemRegistry.repairKit ) {
-                TurretRepairKit repKit = ItemRegistry.repairKit.getRepKitType(stack);
+                TurretRepairKit repKit = RepairKitRegistry.INSTANCE.getType(stack);
                 if( repKit != null && repKit.isApplicable(this) ) {
                     this.heal(repKit.getHealAmount());
                     repKit.onHeal(this);
@@ -277,6 +281,7 @@ public abstract class EntityTurret
         ++this.entityAge;
         this.moveStrafing = 0.0F;
         this.moveForward = 0.0F;
+        this.rotationYaw = 0.0F;
     }
 
     public TargetProcessor getTargetProcessor() {

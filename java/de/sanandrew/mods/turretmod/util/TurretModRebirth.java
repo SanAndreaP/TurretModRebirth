@@ -57,6 +57,7 @@ public class TurretModRebirth
         network = NetworkRegistry.INSTANCE.newSimpleChannel(CHANNEL);
 
         PacketRegistry.initialize();
+        Sounds.initialize();
 
         AmmoRegistry.INSTANCE.initialize();
         RepairKitRegistry.INSTANCE.initialize();
@@ -76,7 +77,6 @@ public class TurretModRebirth
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         CraftingRecipes.initialize();
-        Sounds.initialize();
 
         proxy.init(event);
     }

@@ -15,8 +15,10 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
@@ -30,11 +32,13 @@ public abstract class TurretAmmoShotgunShell
     private final String name;
     private final UUID uuid;
     private final int capacity;
+    private final ResourceLocation itemModel;
 
-    public TurretAmmoShotgunShell(boolean isMulti) {
+    public TurretAmmoShotgunShell(boolean isMulti, String modelName) {
         this.name = isMulti ? "sgshell_lrg" : "sgshell_sng";
         this.uuid = isMulti ? PACK_UUID : SHELL_UUID;
         this.capacity = isMulti ? 16 : 1;
+        this.itemModel = new ResourceLocation(TurretModRebirth.ID, "ammo/" + modelName);
     }
 
     @Override
@@ -97,16 +101,16 @@ public abstract class TurretAmmoShotgunShell
         return new EntityProjectilePebble(turret.worldObj, turret, turret.getTargetProcessor().getTarget());
     }
 
+    @Override
+    public ResourceLocation getModel() {
+        return this.itemModel;
+    }
+
     public static class Single
             extends TurretAmmoShotgunShell
     {
         public Single() {
-            super(false);
-        }
-
-        @Override
-        public String getIcon() {
-            return "shotgun_shell";
+            super(false, "shotgun_shell");
         }
 
         @Override
@@ -119,12 +123,7 @@ public abstract class TurretAmmoShotgunShell
             extends TurretAmmoShotgunShell
     {
         public Multi() {
-            super(true);
-        }
-
-        @Override
-        public String getIcon() {
-            return "shotgun_shell_pack";
+            super(true, "shotgun_shell_pack");
         }
 
         @Override

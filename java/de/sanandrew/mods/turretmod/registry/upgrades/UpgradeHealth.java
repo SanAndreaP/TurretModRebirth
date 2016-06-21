@@ -16,18 +16,21 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
 public abstract class UpgradeHealth
         implements TurretUpgrade
 {
+    private final ResourceLocation itemModel;
     private final String name;
     private AttributeModifier modifier;
 
     public UpgradeHealth(String name, String modUUID) {
         this.name = name;
         this.modifier = new AttributeModifier(UUID.fromString(modUUID), String.format("%s:%s", TurretModRebirth.ID, name), 0.25D, TmrUtils.ATTR_ADD_PERC_VAL_TO_SUM);
+        this.itemModel = new ResourceLocation(TurretModRebirth.ID, "upgrades/" + name);
     }
 
     @Override
@@ -41,8 +44,8 @@ public abstract class UpgradeHealth
     }
 
     @Override
-    public String getIconTexture() {
-        return TurretModRebirth.ID + ":upgrades/" + this.name;
+    public ResourceLocation getModel() {
+        return this.itemModel;
     }
 
     @Override

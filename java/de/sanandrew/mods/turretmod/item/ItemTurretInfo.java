@@ -28,8 +28,7 @@ public class ItemTurretInfo
     public ItemTurretInfo() {
         super();
         this.setCreativeTab(TmrCreativeTabs.MISC);
-        this.setUnlocalizedName(TurretModRebirth.ID + ":turret_info");
-//        this.setTextureName(TurretModRebirth.ID + ":turret_info");
+        this.setRegistryName("turret_info");
     }
 
     @Override

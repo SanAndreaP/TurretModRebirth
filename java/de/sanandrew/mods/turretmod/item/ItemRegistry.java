@@ -8,6 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraft.item.Item;
 
@@ -39,9 +41,8 @@ public class ItemRegistry
 
     private static void registerItems(Item... items) {
         for(Item item : items) {
-            String unlocName = item.getUnlocalizedName();
-            unlocName = unlocName.substring(unlocName.indexOf(':') + 1);
-            item.setRegistryName(unlocName);
+            ResourceLocation regName = item.getRegistryName();
+            item.setUnlocalizedName(TurretModRebirth.ID + ':' + regName.getResourcePath());
             GameRegistry.register(item);
         }
     }

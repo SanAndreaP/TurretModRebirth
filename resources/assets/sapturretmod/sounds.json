@@ -1,103 +1,120 @@
 {
-"idle.turretidle": {
+  "idle.turretidle": {
     "category": "neutral",
     "sounds": [
-      "idle/turretidle1",
-      "idle/turretidle2",
-      "idle/turretidle3",
-      "idle/turretidle4"
-    ]
+      "sapturretmod:idle/turretidle1",
+      "sapturretmod:idle/turretidle2",
+      "sapturretmod:idle/turretidle3",
+      "sapturretmod:idle/turretidle4"
+    ],
+    "subtitle": "subtitles.sapturretmod.turretIdle"
   },
-"idle.turretexp": {
+  "idle.turretexp": {
     "category": "neutral",
     "sounds": [
-      "idle/turretexp1",
-      "idle/turretexp2"
+      "sapturretmod:idle/turretexp1",
+      "sapturretmod:idle/turretexp2"
     ]
   },
-"collect.chest": {
+  "collect.chest": {
     "category": "neutral",
-    "sounds": ["collect/chest"]
+    "sounds": ["sapturretmod:collect/chest"]
   },
-"collect.ia_get": {
+  "collect.ia_get": {
     "category": "neutral",
-    "sounds": ["collect/ia_get"]
+    "sounds": ["sapturretmod:collect/ia_get"],
+    "subtitle": "subtitles.sapturretmod.turretGather"
   },
-"hit.turretDeath": {
+  "hit.turretDeath": {
     "category": "neutral",
-    "sounds": ["hit/turretDeath"]
+    "sounds": ["sapturretmod:hit/turretDeath"],
+    "subtitle": "subtitles.sapturretmod.turretDeath"
   },
-"hit.turrethit": {
-   "category": "neutral",
-   "sounds": ["hit/turrethit"]
- },
-"shoot.shotgun": {
+  "hit.turrethit": {
     "category": "neutral",
-    "sounds": ["shoot/shotgun"]
-},
-"shoot.cryolator": {
-  "category": "neutral",
-  "sounds": ["shoot/cryolator"]
-},
-"shoot.minigun": {
+    "sounds": ["sapturretmod:hit/turrethit"],
+    "subtitle": "subtitles.sapturretmod.turretHit"
+  },
+  "shoot.shotgun": {
     "category": "neutral",
-    "sounds": ["shoot/minigun"]
-},
-"shoot.pistol": {
+    "sounds": ["sapturretmod:shoot/shotgun"],
+    "subtitle": "subtitles.sapturretmod.turretShoot.shotgun"
+  },
+  "shoot.cryolator": {
     "category": "neutral",
-    "sounds": ["shoot/pistol"]
-},
-"shoot.laser": {
+    "sounds": ["sapturretmod:shoot/cryolator"],
+    "subtitle": "subtitles.sapturretmod.turretShoot.cryolator"
+  },
+  "shoot.minigun": {
     "category": "neutral",
-    "sounds": ["shoot/laser"]
-},
-"shoot.flamethrower": {
-  "category": "neutral",
-  "sounds": [
-    "shoot/flamethrower"
-  ]
-},
-"shoot.sniper": {
+    "sounds": ["sapturretmod:shoot/minigun"],
+    "subtitle": "subtitles.sapturretmod.turretShoot.minigun"
+  },
+  "shoot.pistol": {
     "category": "neutral",
-    "sounds": ["shoot/sniper"]
-},
-"shoot.healBeam": {
+    "sounds": ["sapturretmod:shoot/pistol"],
+    "subtitle": "subtitles.sapturretmod.turretShoot.pistol"
+  },
+  "shoot.laser": {
     "category": "neutral",
-    "sounds": ["shoot/healBeam"]
-},
-"shoot.flak": {
+    "sounds": ["sapturretmod:shoot/laser"],
+    "subtitle": "subtitles.sapturretmod.turretShoot.laser"
+  },
+  "shoot.flamethrower": {
     "category": "neutral",
-    "sounds": ["shoot/flak"]
-},
-"shoot.artillery": {
-  "category": "neutral",
-  "sounds": ["shoot/artillery"]
-},
-"ricochet.bullet": {
-  "category": "neutral",
-  "sounds": [
-    "ricochet/bullet1",
-    "ricochet/bullet2",
-    "ricochet/bullet3",
-    "ricochet/bullet4",
-    "ricochet/bullet5"
-  ]
-},
-"ricochet.splash": {
+    "sounds": [
+      "sapturretmod:shoot/flamethrower"
+    ],
+    "subtitle": "subtitles.sapturretmod.turretShoot.flamethrower"
+  },
+  "shoot.sniper": {
     "category": "neutral",
-    "sounds": ["ricochet/splash1"]
-},
-"misc.shieldActive": {
+    "sounds": ["sapturretmod:shoot/sniper"],
+    "subtitle": "subtitles.sapturretmod.turretShoot.sniper"
+  },
+  "shoot.healBeam": {
     "category": "neutral",
-    "sounds": ["misc/shieldActive"]
-},
-"records.tidalForce": {
- "category": "record",
- "sounds": [
-     {
-        "name":"misc/Tidal Force",
+    "sounds": ["sapturretmod:shoot/healBeam"],
+    "subtitle": "subtitles.sapturretmod.turretShoot.healer"
+  },
+  "shoot.flak": {
+    "category": "neutral",
+    "sounds": ["sapturretmod:shoot/flak"],
+    "subtitle": "subtitles.sapturretmod.turretShoot.flak"
+  },
+  "shoot.artillery": {
+    "category": "neutral",
+    "sounds": ["sapturretmod:shoot/artillery"],
+    "subtitle": "subtitles.sapturretmod.turretShoot.artillery"
+  },
+  "ricochet.bullet": {
+    "category": "neutral",
+    "sounds": [
+      "sapturretmod:ricochet/bullet1",
+      "sapturretmod:ricochet/bullet2",
+      "sapturretmod:ricochet/bullet3",
+      "sapturretmod:ricochet/bullet4",
+      "sapturretmod:ricochet/bullet5"
+    ],
+    "subtitle": "subtitles.sapturretmod.turretRicochet.bullet"
+  },
+  "ricochet.splash": {
+    "category": "neutral",
+    "sounds": ["sapturretmod:ricochet/splash1"],
+    "subtitle": "subtitles.sapturretmod.turretRicochet.splash"
+  },
+  "misc.shieldActive": {
+    "category": "neutral",
+    "sounds": ["sapturretmod:misc/shieldActive"],
+    "subtitle": "subtitles.sapturretmod.turretShield.active"
+  },
+  "records.tidalForce": {
+    "category": "record",
+    "sounds": [
+      {
+        "name":"sapturretmod:misc/Tidal Force",
         "stream":true
-    }
- ]
-}
+      }
+    ]
+  }
 }

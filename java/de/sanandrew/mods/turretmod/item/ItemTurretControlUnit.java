@@ -25,8 +25,7 @@ public class ItemTurretControlUnit
     public ItemTurretControlUnit() {
         super();
         this.setCreativeTab(TmrCreativeTabs.MISC);
-        this.setUnlocalizedName(TurretModRebirth.ID + ":turret_control_unit");
-//        this.setTextureName(TurretModRebirth.ID + ":tcu");
+        this.setRegistryName("turret_control_unit");
     }
 
     @Override

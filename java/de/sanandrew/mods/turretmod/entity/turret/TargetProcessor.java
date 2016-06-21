@@ -75,8 +75,8 @@ public abstract class TargetProcessor
 
     public boolean addAmmo(ItemStack stack) {
         if( stack != null && this.isAmmoApplicable(stack) ) {
-            TurretAmmo type = ItemRegistry.ammo.getAmmoType(stack);
-            UUID currType = this.ammoStack == null ? null : ItemRegistry.ammo.getAmmoType(this.ammoStack).getTypeId();
+            TurretAmmo type = AmmoRegistry.INSTANCE.getType(stack);
+            UUID currType = this.ammoStack == null ? null : AmmoRegistry.INSTANCE.getType(this.ammoStack).getTypeId();
 
             if( currType != null && !currType.equals(type.getTypeId()) ) {
                 this.dropAmmo();
@@ -132,7 +132,7 @@ public abstract class TargetProcessor
             int decrAmmo = this.ammoCount - this.getMaxAmmoCapacity();
             if( decrAmmo > 0 ) {
                 List<ItemStack> items = new ArrayList<>();
-                TurretAmmo type = ItemRegistry.ammo.getAmmoType(this.ammoStack);
+                TurretAmmo type = AmmoRegistry.INSTANCE.getType(this.ammoStack);
                 int maxStackSize = this.ammoStack.getMaxStackSize();
 
                 while( decrAmmo > 0 && type != null ) {
@@ -160,7 +160,7 @@ public abstract class TargetProcessor
         if( this.hasAmmo() ) {
             List<ItemStack> items = new ArrayList<>();
             int maxStackSize = this.ammoStack.getMaxStackSize();
-            TurretAmmo type = ItemRegistry.ammo.getAmmoType(this.ammoStack);
+            TurretAmmo type = AmmoRegistry.INSTANCE.getType(this.ammoStack);
             while( this.ammoCount > 0 && type != null ) {
                 ItemStack stack = this.ammoStack.copy();
                 this.ammoCount -= (stack.stackSize = Math.min(this.ammoCount / type.getAmmoCapacity(), maxStackSize)) * type.getAmmoCapacity();
@@ -186,7 +186,7 @@ public abstract class TargetProcessor
         if( this.hasAmmo() ) {
             List<ItemStack> items = new ArrayList<>();
             int maxStackSize = this.ammoStack.getMaxStackSize();
-            TurretAmmo type = ItemRegistry.ammo.getAmmoType(this.ammoStack);
+            TurretAmmo type = AmmoRegistry.INSTANCE.getType(this.ammoStack);
             while( this.ammoCount > 0 && type != null ) {
                 ItemStack stack = this.ammoStack.copy();
                 this.ammoCount -= (stack.stackSize = Math.min(this.ammoCount / type.getAmmoCapacity(), maxStackSize)) * type.getAmmoCapacity();
@@ -213,9 +213,9 @@ public abstract class TargetProcessor
 
     public boolean isAmmoApplicable(ItemStack stack) {
         if( stack != null ) {
-            TurretAmmo stackType = ItemRegistry.ammo.getAmmoType(stack);
+            TurretAmmo stackType = AmmoRegistry.INSTANCE.getType(stack);
             if( stackType != null ) {
-                if( this.ammoStack == null || ItemRegistry.ammo.getAmmoType(this.ammoStack).getTypeId().equals(stackType.getTypeId()) ) {
+                if( this.ammoStack == null || AmmoRegistry.INSTANCE.getType(this.ammoStack).getTypeId().equals(stackType.getTypeId()) ) {
                     return this.ammoCount < this.getMaxAmmoCapacity();
                 } else {
                     List<TurretAmmo> types = AmmoRegistry.INSTANCE.getTypesForTurret(this.turret.getClass());
@@ -238,7 +238,7 @@ public abstract class TargetProcessor
     }
 
     public final IProjectile getProjectile() {
-        TurretAmmo ammo = ItemRegistry.ammo.getAmmoType(this.ammoStack);
+        TurretAmmo ammo = AmmoRegistry.INSTANCE.getType(this.ammoStack);
         if( ammo != null ) {
             return ammo.getEntity(this.turret);
         }

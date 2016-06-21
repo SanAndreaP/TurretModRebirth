@@ -125,7 +125,7 @@ public class TurretInfoCategory
         }
 
         {
-            TurretUpgrade[] infos = UpgradeRegistry.INSTANCE.getRegisteredUpgrades();
+            TurretUpgrade[] infos = UpgradeRegistry.INSTANCE.getRegisteredTypes();
             TurretInfoEntry[] entries = new TurretInfoEntry[infos.length + 3];
 
             entries[0] = new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.asbAuto), TurretAssemblyRecipes.UPG_AT_AUTO);

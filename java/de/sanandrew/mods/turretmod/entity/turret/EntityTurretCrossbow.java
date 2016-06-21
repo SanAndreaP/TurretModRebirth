@@ -12,6 +12,7 @@ import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
@@ -23,6 +24,7 @@ import java.util.UUID;
 public class EntityTurretCrossbow
         extends EntityTurret
 {
+    public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TurretModRebirth.ID, "turrets/turret_crossbow");
     public static final UUID TI_UUID = UUID.fromString("50E1E69C-395C-486C-BB9D-41E82C8B22E2");
     public static final TurretInfo TINFO = new TurretInfo()
     {
@@ -52,8 +54,8 @@ public class EntityTurretCrossbow
         }
 
         @Override
-        public String getIcon() {
-            return "turret_crossbow";
+        public ResourceLocation getModel() {
+            return ITEM_MODEL;
         }
 
         @Override

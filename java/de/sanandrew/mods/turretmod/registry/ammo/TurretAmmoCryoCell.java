@@ -13,8 +13,10 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
@@ -34,11 +36,13 @@ public abstract class TurretAmmoCryoCell
     private final String name;
     private final UUID uuid;
     private final int capacity;
+    private final ResourceLocation itemModel;
 
     public TurretAmmoCryoCell(String name, UUID uuid, int capacity) {
         this.name = name;
         this.uuid = uuid;
         this.capacity = capacity;
+        this.itemModel = new ResourceLocation(TurretModRebirth.ID, "ammo/" + name);
     }
 
     @Override
@@ -91,16 +95,16 @@ public abstract class TurretAmmoCryoCell
         return ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(this.getTypeId()));
     }
 
+    @Override
+    public ResourceLocation getModel() {
+        return this.itemModel;
+    }
+
     public static class SingleMK1
             extends TurretAmmoCryoCell
     {
         public SingleMK1() {
             super("cryocell_1", CELL_MK1_UUID, 1);
-        }
-
-        @Override
-        public String getIcon() {
-            return "cryocell_1";
         }
 
         @Override
@@ -132,11 +136,6 @@ public abstract class TurretAmmoCryoCell
         }
 
         @Override
-        public String getIcon() {
-            return "cryocell_pack_1";
-        }
-
-        @Override
         public UUID getRecipeId() {
             return TurretAssemblyRecipes.CRYOCELL_1_MTP;
         }
@@ -152,11 +151,6 @@ public abstract class TurretAmmoCryoCell
     {
         public SingleMK2() {
             super("cryocell_2", CELL_MK2_UUID, 1);
-        }
-
-        @Override
-        public String getIcon() {
-            return "cryocell_2";
         }
 
         @Override
@@ -188,11 +182,6 @@ public abstract class TurretAmmoCryoCell
         }
 
         @Override
-        public String getIcon() {
-            return "cryocell_pack_2";
-        }
-
-        @Override
         public UUID getRecipeId() {
             return TurretAssemblyRecipes.CRYOCELL_2_MTP;
         }
@@ -208,11 +197,6 @@ public abstract class TurretAmmoCryoCell
     {
         public SingleMK3() {
             super("cryocell_3", CELL_MK3_UUID, 1);
-        }
-
-        @Override
-        public String getIcon() {
-            return "cryocell_3";
         }
 
         @Override
@@ -241,11 +225,6 @@ public abstract class TurretAmmoCryoCell
         @Override
         public UUID getTypeId() {
             return TYPE_MK3_UUID;
-        }
-
-        @Override
-        public String getIcon() {
-            return "cryocell_pack_3";
         }
 
         @Override

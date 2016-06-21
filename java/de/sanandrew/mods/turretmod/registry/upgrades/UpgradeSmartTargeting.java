@@ -11,13 +11,10 @@ package de.sanandrew.mods.turretmod.registry.upgrades;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.TargetingListener;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
-import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import java.util.List;
@@ -26,6 +23,8 @@ import java.util.UUID;
 public class UpgradeSmartTargeting
         implements TurretUpgrade
 {
+    private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TurretModRebirth.ID, "upgrades/smart_tgt");
+
     private final TargetingListener targetingListener = new TargetingListener()
     {
         @Override
@@ -68,8 +67,8 @@ public class UpgradeSmartTargeting
     }
 
     @Override
-    public String getIconTexture() {
-        return TurretModRebirth.ID + ":upgrades/" + this.name;
+    public ResourceLocation getModel() {
+        return ITEM_MODEL;
     }
 
     @Override

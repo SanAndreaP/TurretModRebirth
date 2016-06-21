@@ -32,6 +32,7 @@ public final class Sounds
     }
 
     private static void register(SoundEvent event) {
-        GameRegistry.register(event, new ResourceLocation(TurretModRebirth.ID, event.getSoundName().getResourcePath()));
+        event.setRegistryName(event.getSoundName());
+        GameRegistry.register(event);
     }
 }

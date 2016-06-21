@@ -15,6 +15,7 @@ import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Level;
 
 import java.util.ArrayList;
@@ -83,7 +84,7 @@ public class UpgradeRegistry
         }
     }
 
-    public TurretUpgrade[] getRegisteredUpgrades() {
+    public TurretUpgrade[] getRegisteredTypes() {
         return this.upgradeList.toArray(new TurretUpgrade[this.upgradeList.size()]);
     }
 
@@ -125,6 +126,8 @@ public class UpgradeRegistry
     private static final class EmptyUpgrade
             implements TurretUpgrade
     {
+        private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TurretModRebirth.ID, "upgrades/empty");
+
         @Override
         public String getName() {
             return "empty";
@@ -136,8 +139,8 @@ public class UpgradeRegistry
         }
 
         @Override
-        public String getIconTexture() {
-            return TurretModRebirth.ID + ":upgrades/empty";
+        public ResourceLocation getModel() {
+            return ITEM_MODEL;
         }
 
         @Override

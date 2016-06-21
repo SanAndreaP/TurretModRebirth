@@ -13,8 +13,10 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
@@ -28,11 +30,13 @@ public abstract class TurretAmmoArrow
     private final String name;
     private final UUID uuid;
     private final int capacity;
+    private final ResourceLocation itemModel;
 
     public TurretAmmoArrow(boolean quiver) {
         this.name = quiver ? "arrow_lrg" : "arrow_sng";
         this.uuid = quiver ? QUIVER_UUID : ARROW_UUID;
         this.capacity = quiver ? 16 : 1;
+        this.itemModel = new ResourceLocation(TurretModRebirth.ID, "ammo/" + (quiver ? "arrow_pack" : "arrow"));
     }
 
     @Override
@@ -95,16 +99,16 @@ public abstract class TurretAmmoArrow
         return new EntityProjectileCrossbowBolt(turret.worldObj, turret, turret.getTargetProcessor().getTarget());
     }
 
+    @Override
+    public ResourceLocation getModel() {
+        return itemModel;
+    }
+
     public static class Single
             extends TurretAmmoArrow
     {
         public Single() {
             super(false);
-        }
-
-        @Override
-        public String getIcon() {
-            return "arrow";
         }
 
         @Override
@@ -118,11 +122,6 @@ public abstract class TurretAmmoArrow
     {
         public Quiver() {
             super(true);
-        }
-
-        @Override
-        public String getIcon() {
-            return "arrow_pack";
         }
 
         @Override

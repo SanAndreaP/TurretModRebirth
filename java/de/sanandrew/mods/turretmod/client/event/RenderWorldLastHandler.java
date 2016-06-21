@@ -33,7 +33,6 @@ public class RenderWorldLastHandler
         Minecraft mc = Minecraft.getMinecraft();
         Entity renderEntity = mc.getRenderViewEntity();
         Entity pointedEntity = mc.pointedEntity;
-        ItemStack equippedItem = mc.thePlayer.getHeldItemMainhand();
 
         if( pointedEntity instanceof EntityTurret ) {
             if( isItemTCU(mc.thePlayer.getHeldItemMainhand()) || isItemTCU(mc.thePlayer.getHeldItemOffhand()) ) {
@@ -59,47 +58,40 @@ public class RenderWorldLastHandler
         Minecraft mc = Minecraft.getMinecraft();
         FontRenderer fontrenderer = mc.fontRendererObj;
         float f1 = 0.005F;
-        GL11.glPushMatrix();
-        GL11.glTranslatef((float)x + 0.0F, (float)y + turret.height + 0.5F, (float)z);
-        GL11.glNormal3f(0.0F, 1.0F, 0.0F);
-        GL11.glRotatef(-mc.getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
-        GL11.glScalef(-f1, -f1, f1);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glDepthMask(false);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glEnable(GL11.GL_BLEND);
-        OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate((float)x + 0.0F, (float)y + turret.height + 0.5F, (float)z);
+        GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(-mc.getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
+        GlStateManager.scale(-f1, -f1, f1);
+        GlStateManager.disableLighting();
+        GlStateManager.depthMask(false);
+        GlStateManager.disableDepth();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         Tessellator tessellator = Tessellator.getInstance();
         VertexBuffer buffer = tessellator.getBuffer();
 
-
-//        GL11.glDisable(GL11.GL_TEXTURE_2D);
         GlStateManager.disableTexture2D();
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-        buffer.color(0.0F, 0.0F, 0.0F, 0.25F);
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
         buffer.pos(0, (0), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
         buffer.pos(0, (64), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
         buffer.pos(128, (64), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
         buffer.pos(128, (0), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
         //health
-//        tessellator.setColorRGBA_F(0.0F, 0.0F, 0.0F, 1.0F);
         buffer.pos((1), (22), 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
         buffer.pos((1), (24), 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
         buffer.pos((127), (24), 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
         buffer.pos((127), (22), 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
-//        tessellator.setColorRGBA_F(1.0F, 0.0F, 0.0F, 1.0F);
         float healthRel = turret.getHealth() / turret.getMaxHealth();
         buffer.pos((1), (22), 0.0D).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
         buffer.pos((1), (24), 0.0D).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
         buffer.pos((1 + 126.0F * healthRel), (24), 0.0D).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
         buffer.pos((1 + 126.0F * healthRel), (22), 0.0D).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
         //ammo
-//        tessellator.setColorRGBA_F(0.0F, 0.0F, 0.0F, 1.0F);
         buffer.pos((1), (38), 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
         buffer.pos((1), (40), 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
         buffer.pos((127), (40), 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
         buffer.pos((127), (38), 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
-//        tessellator.setColorRGBA_F(0.4F, 0.4F, 1.0F, 1.0F);
         float ammoRel = turret.getTargetProcessor().getAmmoCount() / (float)turret.getTargetProcessor().getMaxAmmoCapacity();
         buffer.pos((1), (38), 0.0D).color(0.4F, 0.4F, 1.0F, 1.0F).endVertex();
         buffer.pos((1), (40), 0.0D).color(0.4F, 0.4F, 1.0F, 1.0F).endVertex();
@@ -107,7 +99,6 @@ public class RenderWorldLastHandler
         buffer.pos((1 + 126.0F * ammoRel), (38), 0.0D).color(0.4F, 0.4F, 1.0F, 1.0F).endVertex();
         tessellator.draw();
         GlStateManager.enableTexture2D();
-//        GL11.glEnable(GL11.GL_TEXTURE_2D);
 
         String s = "Turret";
         fontrenderer.drawString(s, 1, 1, -1);
@@ -118,10 +109,10 @@ public class RenderWorldLastHandler
         s = String.format("Target: %s", turret.getTargetProcessor().getTarget() == null ? "n/a" : turret.getTargetProcessor().getTarget().getClass().getSimpleName());
         fontrenderer.drawString(s, 1, 44, 0xFFFFFFA0);
 
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glDepthMask(true);
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glPopMatrix();
+        GlStateManager.enableDepth();
+        GlStateManager.depthMask(true);
+        GlStateManager.disableBlend();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.popMatrix();
     }
 }

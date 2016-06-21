@@ -4,6 +4,7 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
@@ -13,7 +14,7 @@ public interface TurretUpgrade
 
     String getModId();
 
-    String getIconTexture();
+    ResourceLocation getModel();
 
     TurretUpgrade getDependantOn();
 

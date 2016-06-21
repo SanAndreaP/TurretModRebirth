@@ -34,7 +34,7 @@ public class ItemAssemblyFilter
     public ItemAssemblyFilter() {
         super();
         this.setCreativeTab(TmrCreativeTabs.UPGRADES);
-        this.setUnlocalizedName(TurretModRebirth.ID + ":turret_assembly_filter");
+        this.setRegistryName("turret_assembly_filter");
     }
 
     @Override

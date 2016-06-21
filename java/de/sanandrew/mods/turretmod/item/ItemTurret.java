@@ -8,9 +8,12 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
@@ -31,6 +34,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.Level;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.UUID;
@@ -38,43 +42,14 @@ import java.util.UUID;
 public class ItemTurret
         extends Item
 {
-//    @SideOnly(Side.CLIENT)
-//    private Map<UUID, IIcon> iconMap;
+    private static final IItemPropertyGetter TURRET_TEX_ID = (stack, worldIn, entityIn) -> TurretRegistry.INSTANCE.getRegisteredInfos().indexOf(ItemTurret.getTurretInfo(stack));
 
     public ItemTurret() {
         super();
         this.setCreativeTab(TmrCreativeTabs.TURRETS);
-        this.setUnlocalizedName(TurretModRebirth.ID + ":turret_placer");
+        this.setRegistryName("turret_placer");
+        this.addPropertyOverride(new ResourceLocation("turretId"), TURRET_TEX_ID);
     }
-
-//    @Override
-//    @SideOnly(Side.CLIENT)
-//    public IIcon getIcon(ItemStack stack, int pass) {
-//        TurretInfo type = getTurretInfo(stack);
-//        if( type != null ) {
-//            return iconMap.get(type.getUUID());
-//        }
-//        return super.getIcon(stack, pass);
-//    }
-
-//    @Override
-//    public boolean requiresMultipleRenderPasses() {
-//        return true;
-//    }
-
-//    @Override
-//    @SideOnly(Side.CLIENT)
-//    public void registerIcons(IIconRegister iconRegister) {
-//        List<TurretInfo> types = TurretRegistry.INSTANCE.getRegisteredInfos();
-//        this.iconMap = new HashMap<>(types.size());
-//        for( TurretInfo type : types ) {
-//            IIcon icon = iconRegister.registerIcon(String.format("%s:turrets/%s", TurretModRebirth.ID, type.getIcon()));
-//            if( this.itemIcon == null ) {
-//                this.itemIcon = icon;
-//            }
-//            this.iconMap.put(type.getUUID(), icon);
-//        }
-//    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -102,6 +77,9 @@ public class ItemTurret
             Block block = world.getBlockState(pos).getBlock();
             BlockPos offPos = pos.add(facing.getFrontOffsetX(), facing.getFrontOffsetY(), facing.getFrontOffsetZ());
             double shiftY = 0.0D;
+            if( facing == EnumFacing.UP ) {
+                shiftY = 1.0F;
+            }
 //            if( facing == EnumFacing.UP && block ) {
 //                shiftY = 0.5D;
 //            }

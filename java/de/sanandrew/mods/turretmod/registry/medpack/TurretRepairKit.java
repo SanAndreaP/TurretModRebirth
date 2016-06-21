@@ -1,6 +1,7 @@
 package de.sanandrew.mods.turretmod.registry.medpack;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
@@ -19,5 +20,5 @@ public interface TurretRepairKit
     float getHealAmount();
     void onHeal(EntityTurret turret);
     boolean isApplicable(EntityTurret turret);
-    String getIcon();
+    ResourceLocation getModel();
 }

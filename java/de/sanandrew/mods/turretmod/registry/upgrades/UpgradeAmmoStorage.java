@@ -16,12 +16,14 @@ import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
 public class UpgradeAmmoStorage
         implements TurretUpgrade
 {
+    private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TurretModRebirth.ID, "upgrades/ammo_storage");
     private AttributeModifier modifier = new AttributeModifier(UUID.fromString("3D3C0F11-E31A-4472-92BB-E1BE0354844E"), String.format("%s:%s", TurretModRebirth.ID, "ammoCapacityUpg"), 320.0D,
                                                                TmrUtils.ATTR_ADD_VAL_TO_BASE);
 
@@ -42,8 +44,8 @@ public class UpgradeAmmoStorage
     }
 
     @Override
-    public String getIconTexture() {
-        return TurretModRebirth.ID + ":upgrades/" + this.name;
+    public ResourceLocation getModel() {
+        return ITEM_MODEL;
     }
 
     @Override

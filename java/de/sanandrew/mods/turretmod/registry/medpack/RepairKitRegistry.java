@@ -1,6 +1,10 @@
 package de.sanandrew.mods.turretmod.registry.medpack;
 
+import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Level;
 
 import java.security.InvalidParameterException;
@@ -23,10 +27,12 @@ public class RepairKitRegistry
     public static final RepairKitRegistry INSTANCE = new RepairKitRegistry();
 
     private final Map<UUID, TurretRepairKit> kitsFromUUID;
+    private final Map<TurretRepairKit, UUID> uuidFromKits;
     private final List<TurretRepairKit> kits;
 
     private RepairKitRegistry() {
         this.kitsFromUUID = new HashMap<>();
+        this.uuidFromKits = new HashMap<>();
         this.kits = new ArrayList<>();
     }
 
@@ -52,6 +58,7 @@ public class RepairKitRegistry
         }
 
         this.kitsFromUUID.put(type.getUUID(), type);
+        this.uuidFromKits.put(type, type.getUUID());
         this.kits.add(type);
 
         return true;
@@ -61,16 +68,36 @@ public class RepairKitRegistry
         return new ArrayList<>(this.kits);
     }
 
-    public TurretRepairKit getRepairKit(UUID uuid) {
+    public TurretRepairKit getType(UUID uuid) {
         return this.kitsFromUUID.get(uuid);
     }
 
+    public UUID getTypeId(TurretRepairKit type) {
+        return this.uuidFromKits.get(type);
+    }
+
+    public TurretRepairKit getType(ItemStack stack) {
+        NBTTagCompound nbt = stack.getTagCompound();
+        if( nbt != null ) {
+            if( nbt.hasKey("repKitType") ) {
+                String typeUUID = nbt.getString("repKitType");
+                try {
+                    return this.getType(UUID.fromString(typeUUID));
+                } catch( IllegalArgumentException ex ) {
+                    return null;
+                }
+            }
+        }
+
+        return null;
+    }
+
     public void initialize() {
-        this.registerMedpack(new RepairKitStandard("standard_1", STANDARD_MK1, 5.0F, "repair_kit_std1"));
-        this.registerMedpack(new RepairKitStandard("standard_2", STANDARD_MK2, 10.0F, "repair_kit_std2"));
-        this.registerMedpack(new RepairKitStandard("standard_3", STANDARD_MK3, 15.0F, "repair_kit_std3"));
-        this.registerMedpack(new RepairKitStandard("standard_4", STANDARD_MK4, 20.0F, "repair_kit_std4"));
-        this.registerMedpack(new RepairKitRegeneration("regen_1", REGEN_MK1, 0.5F, "repair_kit_reg1", 0, 900));
+        this.registerMedpack(new RepairKitStandard("standard_1", STANDARD_MK1, 5.0F, new ResourceLocation(TurretModRebirth.ID, "repair_kits/repair_kit_std1")));
+        this.registerMedpack(new RepairKitStandard("standard_2", STANDARD_MK2, 10.0F, new ResourceLocation(TurretModRebirth.ID, "repair_kits/repair_kit_std2")));
+        this.registerMedpack(new RepairKitStandard("standard_3", STANDARD_MK3, 15.0F, new ResourceLocation(TurretModRebirth.ID, "repair_kits/repair_kit_std3")));
+        this.registerMedpack(new RepairKitStandard("standard_4", STANDARD_MK4, 20.0F, new ResourceLocation(TurretModRebirth.ID, "repair_kits/repair_kit_std4")));
+        this.registerMedpack(new RepairKitRegeneration("regen_1", REGEN_MK1, 0.5F, new ResourceLocation(TurretModRebirth.ID, "repair_kits/repair_kit_reg1"), 0, 900));
     }
 
     public static final UUID STANDARD_MK1 = UUID.fromString("89db7dd5-2ded-4e58-96dd-07e47bffa919");

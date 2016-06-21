@@ -23,7 +23,7 @@ public class ItemAssemblyUpgrade
     public ItemAssemblyUpgrade(String type) {
         super();
         this.setCreativeTab(TmrCreativeTabs.UPGRADES);
-        this.setUnlocalizedName(TurretModRebirth.ID + ":turret_assembly_" + type);
+        this.setRegistryName("turret_assembly_" + type);
     }
 
     @Override

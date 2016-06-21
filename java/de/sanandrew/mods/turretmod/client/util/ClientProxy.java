@@ -85,10 +85,10 @@ public class ClientProxy
     public void init(FMLInitializationEvent event) {
         super.init(event);
 
+        ModelRegistry.registerItemModels();
+
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurretAssembly.class, new RenderTurretAssembly());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityElectrolyteGenerator.class, new RenderElectrolyteGenerator());
-//        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlockRegistry.assemblyTable), new ItemRendererTile(new TileEntityTurretAssembly(true)));
-//        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlockRegistry.potatoGenerator), new ItemRendererTile(new TileEntityElectrolyteGenerator(true), 0.8F));
 
         MinecraftForge.EVENT_BUS.register(RenderForcefieldHandler.INSTANCE);
 

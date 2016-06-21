@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * ****************************************************************************************************************
@@ -30,57 +31,15 @@ public class ItemRepairKit
     public ItemRepairKit() {
         super();
         this.setCreativeTab(TmrCreativeTabs.MISC);
-        this.setUnlocalizedName(TurretModRebirth.ID + ":turret_repair_kit");
+        this.setRegistryName("turret_repair_kit");
         this.setMaxDamage(0);
         this.setHasSubtypes(true);
     }
 
-
     @Override
     public String getUnlocalizedName(ItemStack stack) {
-        TurretRepairKit type = this.getRepKitType(stack);
+        TurretRepairKit type = RepairKitRegistry.INSTANCE.getType(stack);
         return String.format("%s.%s", super.getUnlocalizedName(stack), type == null ? "unknown" : type.getName());
-    }
-
-//    @Override
-//    @SideOnly(Side.CLIENT)
-//    public IIcon getIcon(ItemStack stack, int pass) {
-//        TurretRepairKit type = this.getRepKitType(stack);
-//        if( type != null ) {
-//            return iconMap.get(type.getUUID());
-//        }
-//        return super.getIcon(stack, pass);
-//    }
-
-//    @Override
-//    public boolean requiresMultipleRenderPasses() {
-//        return true;
-//    }
-
-//    @Override
-//    @SideOnly(Side.CLIENT)
-//    public void registerIcons(IIconRegister iconRegister) {
-//        List<TurretRepairKit> types = RepairKitRegistry.INSTANCE.getRegisteredTypes();
-//        this.iconMap = new HashMap<>(types.size());
-//        for( TurretRepairKit type : types ) {
-//            this.iconMap.put(type.getUUID(), iconRegister.registerIcon(String.format("%s:repair_kits/%s", TurretModRebirth.ID, type.getIcon())));
-//        }
-//    }
-
-    public TurretRepairKit getRepKitType(ItemStack stack) {
-        NBTTagCompound nbt = stack.getTagCompound();
-        if( nbt != null ) {
-            if( nbt.hasKey("repKitType") ) {
-                String typeUUID = nbt.getString("repKitType");
-                try {
-                    return RepairKitRegistry.INSTANCE.getRepairKit(UUID.fromString(typeUUID));
-                } catch( IllegalArgumentException ex ) {
-                    return null;
-                }
-            }
-        }
-
-        return null;
     }
 
     public ItemStack getRepKitItem(int stackSize, TurretRepairKit type) {
@@ -99,9 +58,6 @@ public class ItemRepairKit
     @Override
     @SuppressWarnings("unchecked")
     public void getSubItems(Item item, CreativeTabs tab, List list) {
-        for( TurretRepairKit type : RepairKitRegistry.INSTANCE.getRegisteredTypes() ) {
-            list.add(this.getRepKitItem(1, type));
-        }
-//        super.getSubItems(item, tab, list);
+        list.addAll(RepairKitRegistry.INSTANCE.getRegisteredTypes().stream().map(type -> this.getRepKitItem(1, type)).collect(Collectors.toList()));
     }
 }

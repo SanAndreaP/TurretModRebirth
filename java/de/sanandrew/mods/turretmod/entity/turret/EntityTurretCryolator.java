@@ -13,6 +13,7 @@ import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.Sounds;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,6 +28,7 @@ import java.util.UUID;
 public class EntityTurretCryolator
         extends EntityTurret
 {
+    public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TurretModRebirth.ID, "turrets/turret_cryolator");
     public static final UUID TI_UUID = UUID.fromString("3AF4D8C3-FCFC-42B0-98A3-BFB669AA7CE6");
     public static final TurretInfo TINFO = new TurretInfo()
     {
@@ -56,8 +58,8 @@ public class EntityTurretCryolator
         }
 
         @Override
-        public String getIcon() {
-            return "turret_snowball";
+        public ResourceLocation getModel() {
+            return ITEM_MODEL;
         }
 
         @Override

@@ -10,8 +10,11 @@ package de.sanandrew.mods.turretmod.client.util;
 
 import net.darkhax.bookshelf.lib.util.ReflectionUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
@@ -23,6 +26,7 @@ import java.util.List;
 public class TmrClientUtils
 {
     private static Minecraft mc;
+    private static RenderItem renderItem;
 
     public static Minecraft getMc() {
         if( mc == null ) {
@@ -84,6 +88,24 @@ public class TmrClientUtils
         keyDownBuffer.put(Keyboard.KEY_RSHIFT, rShift);
 
         return tooltip;
+    }
+
+    public static void renderStackInWorld(ItemStack stack, double posX, double posY, double posZ, double rotateX, double rotateY, double rotateZ, double scale) {
+        if( renderItem == null ) {
+            renderItem = getMc().getRenderItem();
+        }
+
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(posX, posY, posZ);
+        GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
+        GlStateManager.rotate((float) rotateX, 1.0F, 0.0F, 0.0F);
+        GlStateManager.rotate((float) rotateY, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate((float) rotateZ, 0.0F, 0.0F, 1.0F);
+        GlStateManager.scale(scale, scale, scale);
+
+        renderItem.renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
+
+        GlStateManager.popMatrix();
     }
 
     public static void drawTexturedModalRect(int xPos, int yPos, float z, int u, int v, int width, int height) {

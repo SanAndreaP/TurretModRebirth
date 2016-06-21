@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.registry.medpack;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
@@ -20,15 +21,15 @@ public class RepairKitRegeneration
     private final String name;
     private final UUID uuid;
     private final float heal;
-    private final String icon;
+    private final ResourceLocation itemModel;
     private final int regenLvl;
     private final int regenTime;
 
-    public RepairKitRegeneration(String name, UUID uuid, float heal, String icon, int level, int time) {
+    public RepairKitRegeneration(String name, UUID uuid, float heal, ResourceLocation model, int level, int time) {
         this.name = name;
         this.uuid = uuid;
         this.heal = heal;
-        this.icon = icon;
+        this.itemModel = model;
         this.regenLvl = level;
         this.regenTime = time;
     }
@@ -59,7 +60,7 @@ public class RepairKitRegeneration
     }
 
     @Override
-    public String getIcon() {
-        return this.icon;
+    public ResourceLocation getModel() {
+        return this.itemModel;
     }
 }

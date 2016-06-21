@@ -12,6 +12,7 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
@@ -29,6 +30,6 @@ public interface TurretAmmo
     Class<? extends IProjectile> getEntityClass();
     IProjectile getEntity(EntityTurret turret);
     Class<? extends EntityTurret> getTurret();
-    String getIcon();
+    ResourceLocation getModel();
     ItemStack getStoringAmmoItem();
 }

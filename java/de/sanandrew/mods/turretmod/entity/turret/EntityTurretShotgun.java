@@ -29,6 +29,7 @@ import java.util.UUID;
 public class EntityTurretShotgun
         extends EntityTurret
 {
+    public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TurretModRebirth.ID, "turrets/turret_shotgun");
     public static final UUID TI_UUID = UUID.fromString("F7991EC5-2A89-49A6-B8EA-80775973C4C5");
     public static final TurretInfo TINFO = new TurretInfo()
     {
@@ -58,8 +59,8 @@ public class EntityTurretShotgun
         }
 
         @Override
-        public String getIcon() {
-            return "turret_shotgun";
+        public ResourceLocation getModel() {
+            return ITEM_MODEL;
         }
 
         @Override

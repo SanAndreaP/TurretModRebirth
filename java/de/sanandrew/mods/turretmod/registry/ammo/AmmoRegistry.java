@@ -15,6 +15,7 @@ import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import org.apache.logging.log4j.Level;
 
 import java.security.InvalidParameterException;
@@ -51,6 +52,22 @@ public class AmmoRegistry
 
     public TurretAmmo getType(UUID typeId) {
         return this.ammoTypesFromUUID.get(typeId);
+    }
+
+    public TurretAmmo getType(ItemStack stack) {
+        NBTTagCompound nbt = stack.getTagCompound();
+        if( nbt != null ) {
+            if( nbt.hasKey("ammoType") ) {
+                String typeUUID = nbt.getString("ammoType");
+                try {
+                    return this.getType(UUID.fromString(typeUUID));
+                } catch( IllegalArgumentException ex ) {
+                    return null;
+                }
+            }
+        }
+
+        return null;
     }
 
     public List<TurretAmmo> getTypesForTurret(Class<? extends EntityTurret> turret) {
@@ -108,8 +125,8 @@ public class AmmoRegistry
 
     public boolean areAmmoItemsEqual(ItemStack firstStack, ItemStack secondStack) {
         if(firstStack != null && secondStack != null && firstStack.getItem() == ItemRegistry.ammo && secondStack.getItem() == ItemRegistry.ammo) {
-            TurretAmmo firstType = ItemRegistry.ammo.getAmmoType(firstStack);
-            TurretAmmo secondType = ItemRegistry.ammo.getAmmoType(secondStack);
+            TurretAmmo firstType = this.getType(firstStack);
+            TurretAmmo secondType = this.getType(secondStack);
             return firstType != null && secondType != null && firstType.getTypeId().equals(secondType.getTypeId());
         } else {
             return firstStack == secondStack;

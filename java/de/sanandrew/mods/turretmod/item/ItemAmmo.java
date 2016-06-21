@@ -23,62 +23,18 @@ import java.util.UUID;
 public class ItemAmmo
         extends Item
 {
-//    @SideOnly(Side.CLIENT)
-//    private Map<UUID, IIcon> iconMap;
-
     public ItemAmmo() {
         super();
         this.setCreativeTab(TmrCreativeTabs.TURRETS);
-        this.setUnlocalizedName(TurretModRebirth.ID + ":turret_ammo");
+        this.setRegistryName("turret_ammo");
         this.setMaxDamage(0);
         this.setHasSubtypes(true);
     }
 
     @Override
     public String getUnlocalizedName(ItemStack stack) {
-        TurretAmmo type = this.getAmmoType(stack);
+        TurretAmmo type = AmmoRegistry.INSTANCE.getType(stack);
         return String.format("%s.%s", super.getUnlocalizedName(stack), type == null ? "unknown" : type.getName());
-    }
-
-//    @Override
-//    @SideOnly(Side.CLIENT)
-//    public IIcon getIcon(ItemStack stack, int pass) {
-//        TurretAmmo type = this.getAmmoType(stack);
-//        if( type != null ) {
-//            return iconMap.get(type.getId());
-//        }
-//        return super.getIcon(stack, pass);
-//    }
-//
-//    @Override
-//    public boolean requiresMultipleRenderPasses() {
-//        return true;
-//    }
-
-//    @Override
-//    @SideOnly(Side.CLIENT)
-//    public void registerIcons(IIconRegister iconRegister) {
-//        List<TurretAmmo> types = AmmoRegistry.INSTANCE.getRegisteredTypes();
-//        this.iconMap = new HashMap<>(types.size());
-//        for( TurretAmmo type : types ) {
-//            this.iconMap.put(type.getId(), iconRegister.registerIcon(String.format("%s:ammo/%s", TurretModRebirth.ID, type.getIcon())));
-//        }
-//    }
-
-    public TurretAmmo getAmmoType(ItemStack stack) {
-        NBTTagCompound nbt = stack.getTagCompound();
-        if( nbt != null ) {
-            if( nbt.hasKey("ammoType") ) {
-                String typeUUID = nbt.getString("ammoType");
-                try {
-                    return AmmoRegistry.INSTANCE.getType(UUID.fromString(typeUUID));
-                } catch( IllegalArgumentException ex ) {
-                    return null;
-                }
-            }
-        }
-
-        return null;
     }
 
     public ItemStack getAmmoItem(int stackSize, TurretAmmo type) {
