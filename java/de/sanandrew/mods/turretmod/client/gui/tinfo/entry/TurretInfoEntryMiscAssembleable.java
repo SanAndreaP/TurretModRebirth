@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
+import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -48,7 +49,8 @@ public class TurretInfoEntryMiscAssembleable
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         gui.drawTexturedModalRect(2, 16, 192, 18, 34, 34);
 
-        drawItem(gui.mc, 3, 17, this.getIcon(), 2.0F);
+        TmrClientUtils.renderStackInGui(this.getIcon(), 3, 17, 2.0F);
+//        drawItem(gui.mc, 3, 17, this.getIcon(), 2.0F);
 
         gui.mc.fontRendererObj.drawString(this.txtCrft, 42, 16, 0xFF6A6A6A, false);
 

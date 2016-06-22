@@ -36,7 +36,7 @@ public class ItemTurretUpgrade
     @SuppressWarnings("unchecked")
     public void addInformation(ItemStack stack, EntityPlayer player, List lines, boolean advInfo) {
         TurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(stack);
-        lines.add(Lang.translate("%s.%s.name", this.getUnlocalizedName(stack), upg.getName()));
+        lines.add(Lang.translate(String.format("%s.%s.name", this.getUnlocalizedName(stack), upg.getName())));
         super.addInformation(stack, player, lines, advInfo);
     }
 

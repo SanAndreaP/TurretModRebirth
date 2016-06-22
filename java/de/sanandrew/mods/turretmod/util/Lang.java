@@ -11,55 +11,56 @@ package de.sanandrew.mods.turretmod.util;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.world.gen.structure.StructureNetherBridgePieces;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public final class Lang
 {
-    public static final String TCU_BTN = String.format("gui.%s.tcu.page.info.button.%%s", TurretModRebirth.ID);
-    public static final String TCU_TARGET_BTN = String.format("gui.%s.tcu.page.targetsEntity.button.%%s", TurretModRebirth.ID);
-    public static final String TCU_PAGE_TITLE = String.format("gui.%s.tcu.page.%%s.title", TurretModRebirth.ID);
-    public static final String TCU_PAGE_TAB = String.format("gui.%s.tcu.page.%%s.tab", TurretModRebirth.ID);
+    public static final TranslateKey TCU_BTN = new TranslateKey("gui.%s.tcu.page.info.button.%%s", TurretModRebirth.ID);
+    public static final TranslateKey TCU_TARGET_BTN = new TranslateKey("gui.%s.tcu.page.targetsEntity.button.%%s", TurretModRebirth.ID);
+    public static final TranslateKey TCU_PAGE_TITLE = new TranslateKey("gui.%s.tcu.page.%%s.title", TurretModRebirth.ID);
+    public static final TranslateKey TCU_PAGE_TAB = new TranslateKey("gui.%s.tcu.page.%%s.tab", TurretModRebirth.ID);
 
-    public static final String TINFO_CATEGORY_NAME = String.format("gui.%s.tinfo.category.%%s.name", TurretModRebirth.ID);
-    public static final String TINFO_ENTRY_INFO_TITLE = String.format("gui.%s.tinfo.infoTitle", TurretModRebirth.ID);
-    public static final String TINFO_ENTRY_AMMO_NAME = String.format("%s.tinfo.ammo.%%s.name", TurretModRebirth.ID);
-    public static final String TINFO_ENTRY_AMMO_DESC = String.format("%s.tinfo.ammo.%%s.desc", TurretModRebirth.ID);
-    public static final String TINFO_ENTRY_ROUNDS = String.format("gui.%s.tinfo.rounds", TurretModRebirth.ID);
-    public static final String TINFO_ENTRY_DPS = String.format("gui.%s.tinfo.dps", TurretModRebirth.ID);
-    public static final String TINFO_ENTRY_HEALTH = String.format("gui.%s.tinfo.health", TurretModRebirth.ID);
-    public static final String TINFO_ENTRY_HEALTHVAL = String.format("gui.%s.tinfo.healthVal", TurretModRebirth.ID);
-    public static final String TINFO_ENTRY_TURRET = String.format("gui.%s.tinfo.turret", TurretModRebirth.ID);
-    public static final String TINFO_ENTRY_CRAFTING = String.format("gui.%s.tinfo.crafting", TurretModRebirth.ID);
-    public static final String TINFO_ENTRY_WORKBENCH = String.format("gui.%s.tinfo.workbench", TurretModRebirth.ID);
-    public static final String TINFO_ENTRY_PREREQ = String.format("gui.%s.tinfo.prereq", TurretModRebirth.ID);
-    public static final String TINFO_ENTRY_RANGE = String.format("gui.%s.tinfo.range", TurretModRebirth.ID);
-    public static final String TINFO_ENTRY_RANGEVAL = String.format("gui.%s.tinfo.rangeVal", TurretModRebirth.ID);
-    public static final String TINFO_ENTRY_AMMOCAP = String.format("gui.%s.tinfo.ammocap", TurretModRebirth.ID);
-    public static final String TINFO_ENTRY_AMMOUSE = String.format("gui.%s.tinfo.ammouse", TurretModRebirth.ID);
-    public static final String TINFO_ENTRY_ROUNDSVAL = String.format("gui.%s.tinfo.roundsVal", TurretModRebirth.ID);
-    public static final String TINFO_ENTRY_EFFICIENCY = String.format("gui.%s.tinfo.efficiency", TurretModRebirth.ID);
-    public static final String TINFO_ENTRY_DECAY = String.format("gui.%s.tinfo.decay", TurretModRebirth.ID);
-    public static final String TINFO_ENTRY_INFO_NAME = String.format("gui.%s.tinfo.modName", TurretModRebirth.ID);
-    public static final String TINFO_ENTRY_INFO_VERSION = String.format("gui.%s.tinfo.modVersion", TurretModRebirth.ID);
-    public static final String TINFO_ENTRY_INFO_AUTHOR = String.format("gui.%s.tinfo.modAuthor", TurretModRebirth.ID);
-    public static final String TINFO_ENTRY_INFO_CREDITS = String.format("gui.%s.tinfo.modCredits", TurretModRebirth.ID);
+    public static final TranslateKey TINFO_CATEGORY_NAME = new TranslateKey("gui.%s.tinfo.category.%%s.name", TurretModRebirth.ID);
+    public static final TranslateKey TINFO_ENTRY_INFO_TITLE = new TranslateKey("gui.%s.tinfo.infoTitle", TurretModRebirth.ID);
+    public static final TranslateKey TINFO_ENTRY_AMMO_NAME = new TranslateKey("%s.tinfo.ammo.%%s.name", TurretModRebirth.ID);
+    public static final TranslateKey TINFO_ENTRY_AMMO_DESC = new TranslateKey("%s.tinfo.ammo.%%s.desc", TurretModRebirth.ID);
+    public static final TranslateKey TINFO_ENTRY_ROUNDS = new TranslateKey("gui.%s.tinfo.rounds", TurretModRebirth.ID);
+    public static final TranslateKey TINFO_ENTRY_DPS = new TranslateKey("gui.%s.tinfo.dps", TurretModRebirth.ID);
+    public static final TranslateKey TINFO_ENTRY_HEALTH = new TranslateKey("gui.%s.tinfo.health", TurretModRebirth.ID);
+    public static final TranslateKey TINFO_ENTRY_HEALTHVAL = new TranslateKey("gui.%s.tinfo.healthVal", TurretModRebirth.ID);
+    public static final TranslateKey TINFO_ENTRY_TURRET = new TranslateKey("gui.%s.tinfo.turret", TurretModRebirth.ID);
+    public static final TranslateKey TINFO_ENTRY_CRAFTING = new TranslateKey("gui.%s.tinfo.crafting", TurretModRebirth.ID);
+    public static final TranslateKey TINFO_ENTRY_WORKBENCH = new TranslateKey("gui.%s.tinfo.workbench", TurretModRebirth.ID);
+    public static final TranslateKey TINFO_ENTRY_PREREQ = new TranslateKey("gui.%s.tinfo.prereq", TurretModRebirth.ID);
+    public static final TranslateKey TINFO_ENTRY_RANGE = new TranslateKey("gui.%s.tinfo.range", TurretModRebirth.ID);
+    public static final TranslateKey TINFO_ENTRY_RANGEVAL = new TranslateKey("gui.%s.tinfo.rangeVal", TurretModRebirth.ID);
+    public static final TranslateKey TINFO_ENTRY_AMMOCAP = new TranslateKey("gui.%s.tinfo.ammocap", TurretModRebirth.ID);
+    public static final TranslateKey TINFO_ENTRY_AMMOUSE = new TranslateKey("gui.%s.tinfo.ammouse", TurretModRebirth.ID);
+    public static final TranslateKey TINFO_ENTRY_ROUNDSVAL = new TranslateKey("gui.%s.tinfo.roundsVal", TurretModRebirth.ID);
+    public static final TranslateKey TINFO_ENTRY_EFFICIENCY = new TranslateKey("gui.%s.tinfo.efficiency", TurretModRebirth.ID);
+    public static final TranslateKey TINFO_ENTRY_DECAY = new TranslateKey("gui.%s.tinfo.decay", TurretModRebirth.ID);
+    public static final TranslateKey TINFO_ENTRY_INFO_NAME = new TranslateKey("gui.%s.tinfo.modName", TurretModRebirth.ID);
+    public static final TranslateKey TINFO_ENTRY_INFO_VERSION = new TranslateKey("gui.%s.tinfo.modVersion", TurretModRebirth.ID);
+    public static final TranslateKey TINFO_ENTRY_INFO_AUTHOR = new TranslateKey("gui.%s.tinfo.modAuthor", TurretModRebirth.ID);
+    public static final TranslateKey TINFO_ENTRY_INFO_CREDITS = new TranslateKey("gui.%s.tinfo.modCredits", TurretModRebirth.ID);
 
-    public static final String TASSEMBLY_BTN_CANCEL = String.format("gui.%s.tassembly.cancel", TurretModRebirth.ID);
-    public static final String TASSEMBLY_BTN_AUTOENABLE = String.format("gui.%s.tassembly.automate.enable", TurretModRebirth.ID);
-    public static final String TASSEMBLY_BTN_AUTODISABLE = String.format("gui.%s.tassembly.automate.disable", TurretModRebirth.ID);
-    public static final String TASSEMBLY_CRAFTING = String.format("gui.%s.tassembly.crafting", TurretModRebirth.ID);
-    public static final String TASSEMBLY_RF_USING = String.format("gui.%s.tassembly.rfUsing", TurretModRebirth.ID);
+    public static final TranslateKey TASSEMBLY_BTN_CANCEL = new TranslateKey("gui.%s.tassembly.cancel", TurretModRebirth.ID);
+    public static final TranslateKey TASSEMBLY_BTN_AUTOENABLE = new TranslateKey("gui.%s.tassembly.automate.enable", TurretModRebirth.ID);
+    public static final TranslateKey TASSEMBLY_BTN_AUTODISABLE = new TranslateKey("gui.%s.tassembly.automate.disable", TurretModRebirth.ID);
+    public static final TranslateKey TASSEMBLY_CRAFTING = new TranslateKey("gui.%s.tassembly.crafting", TurretModRebirth.ID);
+    public static final TranslateKey TASSEMBLY_RF_USING = new TranslateKey("gui.%s.tassembly.rfUsing", TurretModRebirth.ID);
 
-    public static final String ELECTROGEN_EFFECTIVE = String.format("gui.%s.electrogen.effective", TurretModRebirth.ID);
-    public static final String ELECTROGEN_POWERGEN = String.format("gui.%s.electrogen.powergen", TurretModRebirth.ID);
+    public static final TranslateKey ELECTROGEN_EFFECTIVE = new TranslateKey("gui.%s.electrogen.effective", TurretModRebirth.ID);
+    public static final TranslateKey ELECTROGEN_POWERGEN = new TranslateKey("gui.%s.electrogen.powergen", TurretModRebirth.ID);
 
-    public static final String ENTITY_NAME = "entity.%s.name";
-    public static final String ENTITY_DESC = "entity.%s.desc";
-    public static final String CONTAINER_INV = "container.inventory";
+    public static final TranslateKey ENTITY_NAME = new TranslateKey("entity.%s.name");
+    public static final TranslateKey ENTITY_DESC = new TranslateKey("entity.%s.desc");
+    public static final TranslateKey CONTAINER_INV = new TranslateKey("container.inventory");
 
-    public static final String ITEM_UPGRADE_NAME = String.format("item.%s:turret_upgrade.%%s.name", TurretModRebirth.ID);
-    public static final String ITEM_UPGRADE_DESC = String.format("item.%s:turret_upgrade.%%s.desc", TurretModRebirth.ID);
+    public static final TranslateKey ITEM_UPGRADE_NAME = new TranslateKey("item.%s:turret_upgrade.%%s.name", TurretModRebirth.ID);
+    public static final TranslateKey ITEM_UPGRADE_DESC = new TranslateKey("item.%s:turret_upgrade.%%s.desc", TurretModRebirth.ID);
 
     /**
      * Wrapper method to {@link I18n#format(String, Object...)} for abbreviation.
@@ -68,19 +69,8 @@ public final class Lang
      * @return translated key or langKey, if translation fails
      */
     @SideOnly(Side.CLIENT)
-    public static String translate(String langKey) {
-        return I18n.hasKey(langKey) ? I18n.format(langKey) : langKey;//Minecraft.getMinecraft().getLanguageManager().translateToFallback(langKey);
-    }
-
-    /**
-     * Formats the language key before it gets translated with {@link Lang#translate(String)}
-     * @param langKey language key to be translated
-     * @param args formatting arguments to be applied to the key
-     * @return translated key or langKey, if translation fails
-     */
-    @SideOnly(Side.CLIENT)
     public static String translate(String langKey, Object... args) {
-        return translate(String.format(langKey, args));
+        return I18n.hasKey(langKey) ? I18n.format(langKey, args) : langKey;//Minecraft.getMinecraft().getLanguageManager().translateToFallback(langKey);
     }
 
     @SideOnly(Side.CLIENT)
@@ -91,9 +81,39 @@ public final class Lang
     @SideOnly(Side.CLIENT)
     public static String translateEntityCls(Class<? extends Entity> eClass) {
         if( EntityList.CLASS_TO_NAME.containsKey(eClass) ) {
-            return translate(String.format(ENTITY_NAME, EntityList.CLASS_TO_NAME.get(eClass)));
+            return translate(ENTITY_NAME.get(EntityList.CLASS_TO_NAME.get(eClass)));
         }
 
         return "[UNKNOWN] " + eClass.getName();
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static String translateEntityClsDesc(Class<? extends Entity> eClass) {
+        if( EntityList.CLASS_TO_NAME.containsKey(eClass) ) {
+            return translate(ENTITY_DESC.get(EntityList.CLASS_TO_NAME.get(eClass)));
+        }
+
+        return "";
+    }
+
+    public static final class TranslateKey
+    {
+        private final String key;
+
+        TranslateKey(String key) {
+            this.key = key;
+        }
+
+        TranslateKey(String key, Object... args) {
+            this(String.format(key, args));
+        }
+
+        public String get() {
+            return this.key;
+        }
+
+        public String get(Object... args) {
+            return String.format(this.key, args);
+        }
     }
 }

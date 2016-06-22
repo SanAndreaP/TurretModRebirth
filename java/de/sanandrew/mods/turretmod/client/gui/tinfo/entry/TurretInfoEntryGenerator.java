@@ -16,6 +16,7 @@ import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -66,64 +67,42 @@ public class TurretInfoEntryGenerator
     }
 
     private static void drawTooltipFuel(Minecraft mc, int scrollY) {
-        GL11.glPushMatrix();
-        GL11.glTranslatef(0.0F, MAX_ENTRY_HEIGHT - 48 + scrollY, 64.0F);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0.0F, MAX_ENTRY_HEIGHT - 48 + scrollY, 64.0F);
         Gui.drawRect(0, 0, MAX_ENTRY_WIDTH, 48, 0xD0000000);
 
         mc.fontRendererObj.drawString(String.format("§e%s", TmrClientUtils.getTooltipWithoutShift(tooltipItem).get(0)), 22, 2, 0xFFFFFFFF, false);
         TileEntityElectrolyteGenerator.Fuel fuel = TileEntityElectrolyteGenerator.getFuel(tooltipItem.getItem());
-        mc.fontRendererObj.drawString(String.format(Lang.translate(Lang.TINFO_ENTRY_EFFICIENCY), fuel.effect), 22, 11, 0xFFFFFFFF, false);
-        mc.fontRendererObj.drawString(String.format(Lang.translate(Lang.TINFO_ENTRY_DECAY), TmrClientUtils.getTimeFromTicks(fuel.ticksProc)), 22, 20, 0xFFFFFFFF, false);
+        mc.fontRendererObj.drawString(String.format(Lang.translate(Lang.TINFO_ENTRY_EFFICIENCY.get()), fuel.effect), 22, 11, 0xFFFFFFFF, false);
+        mc.fontRendererObj.drawString(String.format(Lang.translate(Lang.TINFO_ENTRY_DECAY.get()), TmrClientUtils.getTimeFromTicks(fuel.ticksProc)), 22, 20, 0xFFFFFFFF, false);
         mc.fontRendererObj.drawString(String.format("§a%s", TmrClientUtils.getTooltipWithoutShift(fuel.trash).get(0)), 32, 29, 0xFFFFFFFF, false);
         mc.fontRendererObj.drawString(String.format("§d%s", TmrClientUtils.getTooltipWithoutShift(fuel.treasure).get(0)), 32, 38, 0xFFFFFFFF, false);
 
-        //TODO: enable item renderer!
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        RenderHelper.enableGUIStandardItemLighting();
-//        ITEM_RENDER.zLevel = -50.0F;
-//        ITEM_RENDER.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), tooltipItem, 2, 12);
+        TmrClientUtils.renderStackInGui(tooltipItem, 2, 12, 1.0F, mc.fontRendererObj);
+        TmrClientUtils.renderStackInGui(fuel.trash, 22, 28, 0.5F);
+        TmrClientUtils.renderStackInGui(fuel.treasure, 22, 37, 0.5F);
 
-        GL11.glPushMatrix();
-        GL11.glTranslatef(22.0F, 28.0F, 0.0F);
-        GL11.glScalef(0.5F, 0.5F, 1.0F);
-//        ITEM_RENDER.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), fuel.trash, 0, 0);
-//        ITEM_RENDER.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), fuel.treasure, 0, 18);
-        GL11.glPopMatrix();
-
-//        ITEM_RENDER.renderItemOverlayIntoGUI(mc.fontRenderer, mc.getTextureManager(), tooltipItem, 12, 2);
-//        ITEM_RENDER.zLevel = 0.0F;
-        RenderHelper.disableStandardItemLighting();
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
     }
 
     private static void drawFuelItem(GuiTurretInfo gui, int x, int y, int mouseX, int mouseY, int scrollY, ItemStack stack) {
         gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         gui.drawTexturedModalRect(x, y, 192, 0, 18, 18);
 
-        GL11.glPushMatrix();
+        GlStateManager.pushMatrix();
         boolean mouseOver = mouseY >= 0 && mouseY < MAX_ENTRY_HEIGHT && mouseX >= x && mouseX < x + 18 && mouseY >= y - scrollY && mouseY < y + 18 - scrollY;
 
         if( mouseOver ) {
             tooltipItem = stack;
         }
 
-        GL11.glTranslatef(x, y, 32.0F);
+        GlStateManager.translate(x, y, 32.0F);
 
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        RenderHelper.enableGUIStandardItemLighting();
-        //TODO: enable item renderer!
-//        ITEM_RENDER.zLevel = -50.0F;
-//        ITEM_RENDER.renderItemAndEffectIntoGUI(gui.mc.fontRenderer, gui.mc.getTextureManager(), stack, 1, 1);
-//        ITEM_RENDER.renderItemOverlayIntoGUI(gui.mc.fontRenderer, gui.mc.getTextureManager(), stack, 1, 1);
-//        ITEM_RENDER.zLevel = 0.0F;
-        RenderHelper.disableStandardItemLighting();
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        TmrClientUtils.renderStackInGui(stack, 1, 1, 1.0D, gui.mc.fontRendererObj);
 
         if( mouseOver ) {
-            GL11.glTranslatef(0, 0, 32.0F);
+            GlStateManager.translate(0, 0, 64.0F);
             Gui.drawRect(1, 1, 17, 17, 0x80FFFFFF);
         }
 

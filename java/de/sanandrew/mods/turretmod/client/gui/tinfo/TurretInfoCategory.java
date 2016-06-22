@@ -105,7 +105,7 @@ public class TurretInfoCategory
             for( int i = 0, cnt = infos.size(); i < cnt; i++ ) {
                 entries[i] = new TurretInfoEntryTurret(infos.get(i).getTurretClass());
             }
-            register(Resources.TINFO_GRP_TURRET.getResource(), String.format(Lang.TINFO_CATEGORY_NAME, "turrets"), entries);
+            register(Resources.TINFO_GRP_TURRET.getResource(), Lang.TINFO_CATEGORY_NAME.get("turrets"), entries);
         }
 
         {
@@ -121,7 +121,7 @@ public class TurretInfoCategory
                 }
             }
             entries = entriesList.toArray(new TurretInfoEntry[entriesList.size()]);
-            register(Resources.TINFO_GRP_AMMO.getResource(), String.format(Lang.TINFO_CATEGORY_NAME, "ammo"), entries);
+            register(Resources.TINFO_GRP_AMMO.getResource(), Lang.TINFO_CATEGORY_NAME.get("ammo"), entries);
         }
 
         {
@@ -135,13 +135,13 @@ public class TurretInfoCategory
             for( int i = 0; i < infos.length; i++ ) {
                 entries[i + 3] = new TurretInfoEntryUpgrade(UpgradeRegistry.INSTANCE.getUpgradeUUID(infos[i]));
             }
-            register(Resources.TINFO_GRP_UPGRADE.getResource(), String.format(Lang.TINFO_CATEGORY_NAME, "upgrades"), entries);
+            register(Resources.TINFO_GRP_UPGRADE.getResource(), Lang.TINFO_CATEGORY_NAME.get("upgrades"), entries);
 
         }
-        register(Resources.TINFO_GRP_MISC.getResource(), String.format(Lang.TINFO_CATEGORY_NAME, "misc"),
+        register(Resources.TINFO_GRP_MISC.getResource(), Lang.TINFO_CATEGORY_NAME.get("misc"),
                  new TurretInfoEntryMiscCraftable(CraftingRecipes.assemblyTable),
                  new TurretInfoEntryGenerator(),
                  new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.tcu), TurretAssemblyRecipes.TCU));
-        register(Resources.TINFO_GRP_INFO.getResource(), String.format(Lang.TINFO_CATEGORY_NAME, "info"), new TurretInfoEntryInfo());
+        register(Resources.TINFO_GRP_INFO.getResource(), Lang.TINFO_CATEGORY_NAME.get("info"), new TurretInfoEntryInfo());
     }
 }

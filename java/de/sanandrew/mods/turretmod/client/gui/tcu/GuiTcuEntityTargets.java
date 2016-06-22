@@ -80,11 +80,11 @@ public final class GuiTcuEntityTargets
         GuiTCUHelper.initGui(this);
 
         int center = this.guiLeft + (GuiTCUHelper.X_SIZE - 150) / 2;
-        this.buttonList.add(this.selectAll = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 138, 150, Lang.translate(Lang.TCU_TARGET_BTN, "selectAll")));
-        this.buttonList.add(this.deselectAll = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 151, 150, Lang.translate(Lang.TCU_TARGET_BTN, "deselectAll")));
-        this.buttonList.add(this.selectMobs = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 164, 150, Lang.translate(Lang.TCU_TARGET_BTN, "selectMobs")));
-        this.buttonList.add(this.selectAnimals = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 177, 150, Lang.translate(Lang.TCU_TARGET_BTN, "selectAnimals")));
-        this.buttonList.add(this.selectOther = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 190, 150, Lang.translate(Lang.TCU_TARGET_BTN, "selectOther")));
+        this.buttonList.add(this.selectAll = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 138, 150, Lang.translate(Lang.TCU_TARGET_BTN.get("selectAll"))));
+        this.buttonList.add(this.deselectAll = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 151, 150, Lang.translate(Lang.TCU_TARGET_BTN.get("deselectAll"))));
+        this.buttonList.add(this.selectMobs = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 164, 150, Lang.translate(Lang.TCU_TARGET_BTN.get("selectMobs"))));
+        this.buttonList.add(this.selectAnimals = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 177, 150, Lang.translate(Lang.TCU_TARGET_BTN.get("selectAnimals"))));
+        this.buttonList.add(this.selectOther = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 190, 150, Lang.translate(Lang.TCU_TARGET_BTN.get("selectOther"))));
 
         GuiTCUHelper.pageEntityTargets.enabled = false;
 
@@ -244,7 +244,7 @@ public final class GuiTcuEntityTargets
     static String getTranslatedEntityName(Class<? extends Entity> entityCls) {
         String namedEntry = EntityList.CLASS_TO_NAME.get(entityCls);
 
-        return Lang.translateOrDefault(String.format(Lang.ENTITY_NAME, namedEntry), namedEntry);
+        return Lang.translateOrDefault(Lang.ENTITY_NAME.get(namedEntry), namedEntry);
     }
 
     @Override

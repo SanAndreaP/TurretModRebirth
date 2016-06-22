@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.client.shader.ShaderCallback;
 import de.sanandrew.mods.turretmod.client.util.ShaderHelper;
+import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmo;
@@ -50,7 +51,7 @@ public class TurretInfoEntryAmmo
     }
 
     private TurretInfoEntryAmmo(TurretAmmo[] ammos) {
-        super(ammos[0].getStoringAmmoItem(), Lang.translate(Lang.TINFO_ENTRY_AMMO_NAME, ammos[0].getInfoName()));
+        super(ammos[0].getStoringAmmoItem(), Lang.TINFO_ENTRY_AMMO_NAME.get(ammos[0].getInfoName()));
         this.ammos = ammos;
     }
 
@@ -80,17 +81,17 @@ public class TurretInfoEntryAmmo
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         gui.drawTexturedModalRect(2, 34, 192, 18, 34, 34);
 
-        drawItem(gui.mc, 3, 35, ItemRegistry.ammo.getAmmoItem(1, ammo), 2.0F);
+        TmrClientUtils.renderStackInGui(ItemRegistry.ammo.getAmmoItem(1, ammo), 3, 35, 2.0F);
 
         gui.mc.fontRendererObj.drawString(this.txtRounds, 42, 34, 0xFF6A6A6A, false);
         gui.mc.fontRendererObj.drawString(String.format("%d", ammo.getAmmoCapacity()), 45, 43, 0xFF000000, false);
         gui.mc.fontRendererObj.drawString(this.txtDps, 42, 54, 0xFF6A6A6A, false);
         gui.mc.fontRendererObj.drawString(String.format(this.txtHealthVal, ammo.getInfoDamage()), 45, 63, 0xFF000000, false);
         gui.mc.fontRendererObj.drawString(this.txtTurret, 42, 74, 0xFF6A6A6A, false);
-        gui.mc.fontRendererObj.drawString(Lang.translate(Lang.ENTITY_NAME, EntityList.CLASS_TO_NAME.get(ammo.getTurret())), 45, 83, 0xFF000000, false);
+        gui.mc.fontRendererObj.drawString(Lang.translateEntityCls(ammo.getTurret()), 45, 83, 0xFF000000, false);
         gui.mc.fontRendererObj.drawString(this.txtCrft, 42, 94, 0xFF6A6A6A, false);
 
-        String text = Lang.translate(Lang.TINFO_ENTRY_AMMO_DESC, ammo.getInfoName()).replace("\\n", "\n");
+        String text = Lang.translate(Lang.TINFO_ENTRY_AMMO_DESC.get(ammo.getInfoName())).replace("\\n", "\n");
         gui.mc.fontRendererObj.drawSplitString(text, 2, 117, MAX_ENTRY_WIDTH - 2, 0xFF000000);
         this.drawHeight = gui.mc.fontRendererObj.splitStringWidth(text, MAX_ENTRY_WIDTH - 2) + 2;
 
@@ -173,7 +174,7 @@ public class TurretInfoEntryAmmo
                     }
 
                     ShaderHelper.useShader(ShaderHelper.grayscaleItem, shaderCallback);
-                    drawItem(mc, this.xPosition, this.yPosition, this.stack, 1.0F);
+                    TmrClientUtils.renderStackInGui(this.stack, this.xPosition, this.yPosition, 1.0F);
                     ShaderHelper.releaseShader();
 
                     if(shaders) {
@@ -183,7 +184,7 @@ public class TurretInfoEntryAmmo
                     }
                 } else {
                     Gui.drawRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, 0x80FFFFFF);
-                    drawItem(mc, this.xPosition, this.yPosition, this.stack, 1.0F);
+                    TmrClientUtils.renderStackInGui(this.stack, this.xPosition, this.yPosition, 1.0F);
                 }
             }
         }

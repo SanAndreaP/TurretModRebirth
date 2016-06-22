@@ -37,13 +37,13 @@ public class GuiTCUHelper
     public static void initGui(GuiTurretCtrlUnit gui) {
         List btnList = gui.getButtonList();
         btnList.add(pageInfo = new GuiItemTab(btnList.size(), gui.getGuiLeft() - 23, gui.getGuiTop() + 5,
-                new ItemStack(Items.SIGN), Lang.translate(Lang.TCU_PAGE_TAB, "info"), false));
+                new ItemStack(Items.SIGN), Lang.translate(Lang.TCU_PAGE_TAB.get("info")), false));
         btnList.add(pageEntityTargets = new GuiItemTab(btnList.size(), gui.getGuiLeft() - 23, gui.getGuiTop() + 33,
-                new ItemStack(Items.SKULL, 1, 2), Lang.translate(Lang.TCU_PAGE_TAB, "targetsEntity"), false));
+                new ItemStack(Items.SKULL, 1, 2), Lang.translate(Lang.TCU_PAGE_TAB.get("targetsEntity")), false));
         btnList.add(pagePlayerTargets = new GuiItemTab(btnList.size(), gui.getGuiLeft() - 23, gui.getGuiTop() + 61,
-                new ItemStack(Items.SKULL, 1, 3), Lang.translate(Lang.TCU_PAGE_TAB, "targetsPlayer"), false));
+                new ItemStack(Items.SKULL, 1, 3), Lang.translate(Lang.TCU_PAGE_TAB.get("targetsPlayer")), false));
         btnList.add(pageUpgrades = new GuiItemTab(btnList.size(), gui.getGuiLeft() - 23, gui.getGuiTop() + 89,
-                new ItemStack(ItemRegistry.turretUpgrade), Lang.translate(Lang.TCU_PAGE_TAB, "upgrades"), false));
+                new ItemStack(ItemRegistry.turretUpgrade), Lang.translate(Lang.TCU_PAGE_TAB.get("upgrades")), false));
     }
 
     public static void drawScreen(GuiTurretCtrlUnit gui) {
@@ -61,10 +61,10 @@ public class GuiTCUHelper
         } else if( !pageUpgrades.enabled ) {
             pageName = "upgrades";
         }
-        pageName = Lang.translate(String.format(Lang.TCU_PAGE_TITLE, pageName));
+        pageName = Lang.translate(Lang.TCU_PAGE_TITLE.get(pageName));
         fRender.drawString(pageName, gui.getGuiLeft() + 8, gui.getGuiTop() + 6, 0xFF404040);
 
-        String turretName = Lang.translate(Lang.translateEntityCls(gui.getTurret().getClass()));
+        String turretName = Lang.translateEntityCls(gui.getTurret().getClass());
         fRender.drawString(turretName, gui.getGuiLeft() + (X_SIZE - fRender.getStringWidth(turretName)) / 2.0F, gui.getGuiTop() + Y_SIZE - 15, 0xFF00FF00, false);
         RenderHelper.enableGUIStandardItemLighting();
     }

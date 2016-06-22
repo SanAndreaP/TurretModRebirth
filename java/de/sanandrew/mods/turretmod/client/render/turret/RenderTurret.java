@@ -78,7 +78,7 @@ public class RenderTurret
 
     private static void renderTurretRange(EntityTurret turret, double x, double y, double z) {
         if( turret.showRange ) {
-            GlStateManager.disableLighting();
+//            GlStateManager.disableLighting();
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             GlStateManager.disableTexture2D();
@@ -95,7 +95,7 @@ public class RenderTurret
 
             int range = MathHelper.floor_double(turret.getTargetProcessor().getRange());
 
-            GlStateManager.glLineWidth(5.0F);
+            GlStateManager.glLineWidth(500.0F);
             buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
             buf.pos(x, y, z).color(255, 0, 0, 64).endVertex();
             buf.pos(x, y + range, z).color(255, 0, 0, 64).endVertex();
@@ -138,8 +138,7 @@ public class RenderTurret
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, prevBrightX,prevBrightY);
 
             GlStateManager.enableTexture2D();
-            GlStateManager.enableLighting();
-            GlStateManager.disableLighting();
+            GlStateManager.disableBlend();
         }
     }
 }

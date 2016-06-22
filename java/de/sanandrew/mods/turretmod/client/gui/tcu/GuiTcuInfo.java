@@ -70,9 +70,9 @@ public class GuiTcuInfo
         this.frAmmoItem = new FontRenderer(this.mc.gameSettings, new ResourceLocation("textures/font/ascii.png"), this.mc.getTextureManager(), true);
 
         int center = this.guiLeft + (GuiTCUHelper.X_SIZE - 150) / 2;
-        this.buttonList.add(this.dismantle = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 138, 150, Lang.translate(Lang.TCU_BTN, "dismantle")));
-        this.buttonList.add(this.toggleActive = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 151, 150, Lang.translate(Lang.TCU_BTN, "toggleActive")));
-        this.buttonList.add(this.toggleRange = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 164, 150, Lang.translate(Lang.TCU_BTN, "range")));
+        this.buttonList.add(this.dismantle = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 138, 150, Lang.translate(Lang.TCU_BTN.get("dismantle"))));
+        this.buttonList.add(this.toggleActive = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 151, 150, Lang.translate(Lang.TCU_BTN.get("toggleActive"))));
+        this.buttonList.add(this.toggleRange = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 164, 150, Lang.translate(Lang.TCU_BTN.get("range"))));
 
         GuiTCUHelper.pageInfo.enabled = false;
     }
@@ -89,15 +89,15 @@ public class GuiTcuInfo
     @Override
     public void drawScreen(int mouseX, int mouseY, float partTicks) {
         if( this.turret.isActive() ) {
-            this.toggleActive.displayString = Lang.translate(Lang.TCU_BTN, "toggleActive.disable");
+            this.toggleActive.displayString = Lang.translate(Lang.TCU_BTN.get("toggleActive.disable"));
         } else {
-            this.toggleActive.displayString = Lang.translate(Lang.TCU_BTN, "toggleActive.enable");
+            this.toggleActive.displayString = Lang.translate(Lang.TCU_BTN.get("toggleActive.enable"));
         }
 
         if( this.turret.showRange ) {
-            this.toggleRange.displayString = Lang.translate(Lang.TCU_BTN, "range.disable");
+            this.toggleRange.displayString = Lang.translate(Lang.TCU_BTN.get("range.disable"));
         } else {
-            this.toggleRange.displayString = Lang.translate(Lang.TCU_BTN, "range.enable");
+            this.toggleRange.displayString = Lang.translate(Lang.TCU_BTN.get("range.enable"));
         }
 
         GL11.glColor3f(1.0F, 1.0F, 1.0F);
@@ -128,7 +128,7 @@ public class GuiTcuInfo
         value = tgtProc.hasAmmo() ? tgtProc.getAmmoStack().getDisplayName() : "-n/a-";
         this.fontRendererObj.drawString(value, this.guiLeft + 42, this.guiTop + 48, 0x000000);
 
-        value = tgtProc.hasTarget() ? Lang.translate(Lang.ENTITY_NAME, tgtProc.getTargetName()) : "-n/a-";
+        value = tgtProc.hasTarget() ? Lang.translate(Lang.ENTITY_NAME.get(tgtProc.getTargetName())) : "-n/a-";
         this.fontRendererObj.drawString(value, this.guiLeft + 20, this.guiTop + 71, 0x000000);
 
         value = this.turret.getOwnerName();
@@ -162,9 +162,9 @@ public class GuiTcuInfo
             this.turret.ignoreFrustumCheck = this.turret.showRange;
 
             if( this.turret.showRange ) {
-                this.toggleRange.displayString = Lang.translate(Lang.TCU_BTN, "range.disable");
+                this.toggleRange.displayString = Lang.translate(Lang.TCU_BTN.get("range.disable"));
             } else {
-                this.toggleRange.displayString = Lang.translate(Lang.TCU_BTN, "range.enable");
+                this.toggleRange.displayString = Lang.translate(Lang.TCU_BTN.get("range.enable"));
             }
         } else if( button == this.toggleActive ) {
             PacketRegistry.sendToServer(new PacketPlayerTurretAction(this.turret, PacketPlayerTurretAction.TOGGLE_ACTIVE));

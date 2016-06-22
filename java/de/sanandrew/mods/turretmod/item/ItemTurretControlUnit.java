@@ -37,6 +37,6 @@ public class ItemTurretControlUnit
             this.nameId = MathHelper.ceiling_double_int(indFloat);
         }
         this.prevDisplayNameTime = currDisplayNameTime;
-        return Lang.translate("%s.name.%d", this.getUnlocalizedName(), this.nameId);
+        return Lang.translate(String.format("%s.name.%d", this.getUnlocalizedName(), this.nameId));
     }
 }

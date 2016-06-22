@@ -15,6 +15,7 @@ import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.darkhax.bookshelf.lib.javatuples.Triplet;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
@@ -130,10 +131,10 @@ public class TurretInfoEntryMiscCraftable
         Gui.drawRect(2, 12, MAX_ENTRY_WIDTH - 2, 13, 0xFF0080BB);
 
         gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         gui.drawTexturedModalRect(2, 16, 192, 18, 34, 34);
 
-        drawItem(gui.mc, 3, 17, this.getIcon(), 2.0F);
+        TmrClientUtils.renderStackInGui(this.getIcon(), 3, 17, 2.0F);
 
         gui.mc.fontRendererObj.drawString(this.txtWorkbench, 42, 16, 0xFF6A6A6A, false);
 
@@ -149,9 +150,12 @@ public class TurretInfoEntryMiscCraftable
             for( int j = 0, maxJ = this.crafting.getValue2(); j < maxJ; j++ ) {
 
                 ItemStack crfStack[] = this.crafting.getValue0()[i*3 + j];
+                ItemStack drawnStack = null;
                 if( crfStack != null && crfStack.length > 0 ) {
-                    drawCrfItem(gui, 42 + 9 * j, 25 + 9 * i, mouseX, mouseY, scrollY, crfStack[(int)(this.lastTimestamp / 1000L % crfStack.length)], true);
+                    drawnStack = crfStack[(int)(this.lastTimestamp / 1000L % crfStack.length)];
                 }
+
+                drawMiniItem(gui, 42 + 9 * j, 25 + 9 * i, mouseX, mouseY, scrollY, drawnStack, true);
             }
         }
 
@@ -159,56 +163,6 @@ public class TurretInfoEntryMiscCraftable
         if( this.lastTimestamp + 1000 < time ) {
             this.lastTimestamp = time;
         }
-    }
-
-    private static void drawCrfItem(GuiTurretInfo gui, int x, int y, int mouseX, int mouseY, int scrollY, ItemStack stack, boolean drawTooltip) {
-        boolean mouseOver = mouseY >= 0 && mouseY < MAX_ENTRY_HEIGHT && mouseX >= x && mouseX < x + 9 && mouseY >= y - scrollY && mouseY < y + 9 - scrollY;
-        if( mouseOver ) {
-            GL11.glPushMatrix();
-            GL11.glTranslatef(0.0F, MAX_ENTRY_HEIGHT - 20 + scrollY, 64.0F);
-            Gui.drawRect(0, 0, MAX_ENTRY_WIDTH, 20, 0xD0000000);
-
-            List tooltip = TmrClientUtils.getTooltipWithoutShift(stack);
-            gui.mc.fontRendererObj.drawString(tooltip.get(0).toString(), 22, 2, 0xFFFFFFFF, false);
-            if( drawTooltip && tooltip.size() > 1 ) {
-                gui.mc.fontRendererObj.drawString(tooltip.get(1).toString(), 22, 11, 0xFF808080, false);
-            }
-
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-            RenderHelper.enableGUIStandardItemLighting();
-            //TODO: re-enable item rendering
-//            ITEM_RENDER.zLevel = -50.0F;
-//            ITEM_RENDER.renderItemAndEffectIntoGUI(gui.mc.fontRenderer, gui.mc.getTextureManager(), stack, 2, 2);
-//            ITEM_RENDER.renderItemOverlayIntoGUI(gui.mc.fontRenderer, gui.mc.getTextureManager(), stack, 2, 2);
-//            ITEM_RENDER.zLevel = 0.0F;
-            RenderHelper.disableStandardItemLighting();
-            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-
-            GL11.glPopMatrix();
-        }
-
-        GL11.glPushMatrix();
-        GL11.glTranslatef(x, y, 32.0F);
-        GL11.glScalef(0.5F, 0.5F, 0.5F);
-        gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        gui.drawTexturedModalRect(0, 0, 192, 0, 18, 18);
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        RenderHelper.enableGUIStandardItemLighting();
-        //TODO: re-enable item rendering
-//        ITEM_RENDER.zLevel = -50.0F;
-//        ITEM_RENDER.renderItemAndEffectIntoGUI(gui.mc.fontRenderer, gui.mc.getTextureManager(), stack, 1, 1);
-//        ITEM_RENDER.renderItemOverlayIntoGUI(gui.mc.fontRenderer, gui.mc.getTextureManager(), stack, 1, 1);
-//        ITEM_RENDER.zLevel = 0.0F;
-        RenderHelper.disableStandardItemLighting();
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-
-        if( mouseOver ) {
-            GL11.glTranslatef(0, 0, 32.0F);
-            Gui.drawRect(1, 1, 17, 17, 0x80FFFFFF);
-        }
-
-        GL11.glPopMatrix();
     }
 
     @Override

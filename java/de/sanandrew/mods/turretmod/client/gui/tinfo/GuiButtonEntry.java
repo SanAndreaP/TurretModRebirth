@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.client.gui.tinfo;
 
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntry;
+import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -21,8 +22,6 @@ import org.lwjgl.opengl.GL12;
 public class GuiButtonEntry
         extends GuiButton
 {
-//    protected static RenderItem itemRender = new RenderItem();
-
     public final int entIndex;
 
     private ItemStack icon;
@@ -68,31 +67,22 @@ public class GuiButtonEntry
             this.drawGradientRect(this.xPosition, this.yPosition + 1, this.xPosition + 1, this.yPosition + this.height - 1, color1, color1);
             this.drawGradientRect(this.xPosition + this.width - 1, this.yPosition + 1, this.xPosition + this.width, this.yPosition + this.height - 1, color2, color2);
 
-            GL11.glPushMatrix();
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            GL11.glTranslatef(this.xPosition + 2, this.yPosition + 2, 0.0F);
-            GL11.glScalef(0.5F, 0.5F, 1.0F);
-            GL11.glTranslatef(0.0F, 1.0F, 0.0F);
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-            RenderHelper.enableGUIStandardItemLighting();
-            drawItemStack(mc, this.icon, 0, 0);
-            RenderHelper.disableStandardItemLighting();
-            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-            GL11.glPopMatrix();
+            TmrClientUtils.renderStackInGui(this.icon, this.xPosition + 2, this.yPosition + 3, 0.5D);
+//            GL11.glPushMatrix();
+//            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+//            GL11.glTranslatef(this.xPosition + 2, this.yPosition + 2, 0.0F);
+//            GL11.glScalef(0.5F, 0.5F, 1.0F);
+//            GL11.glTranslatef(0.0F, 1.0F, 0.0F);
+////            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+////            RenderHelper.enableGUIStandardItemLighting();
+////            drawItemStack(mc, this.icon, 0, 0);
+////            RenderHelper.disableStandardItemLighting();
+////            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+//            GL11.glPopMatrix();
 
             mc.fontRendererObj.drawString(this.displayString, this.xPosition + 12, this.yPosition + 3, 0xFF000000, false);
 
             GL11.glPopMatrix();
         }
-    }
-
-    //TODO: re-enable item renderer!
-    private static void drawItemStack(Minecraft mc, ItemStack stack, int x, int y) {
-//        GL11.glTranslatef(0.0F, 0.0F, 32.0F);
-//        itemRender.zLevel = -50.0F;
-//        itemRender.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), stack, x, y);
-//        itemRender.zLevel = 0.0F;
-//        GL11.glTranslatef(0.0F, 0.0F, -32.0F);
-//        GL11.glDisable(GL11.GL_LIGHTING);
     }
 }

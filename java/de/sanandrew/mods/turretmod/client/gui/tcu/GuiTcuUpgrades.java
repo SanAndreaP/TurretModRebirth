@@ -78,7 +78,7 @@ public class GuiTcuUpgrades
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
         RenderHelper.disableStandardItemLighting();
-        this.fontRendererObj.drawString(Lang.translate(Lang.CONTAINER_INV), 8, this.ySize - 126 + 3, 0xFF404040);
+        this.fontRendererObj.drawString(Lang.translate(Lang.CONTAINER_INV.get()), 8, this.ySize - 126 + 3, 0xFF404040);
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(-this.posX, -this.posY, 0.0F);

@@ -152,16 +152,17 @@ public class RenderForcefieldHandler
                 GL11.glEnable(GL11.GL_CULL_FACE);
             }
             GL14.glBlendColor(1.0F, 1.0F, 1.0F, 1.0F);
+            OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
             GL11.glDisable(GL11.GL_BLEND);
 
             GL11.glMatrixMode(GL11.GL_TEXTURE);
             GL11.glLoadIdentity();
             GL11.glMatrixMode(GL11.GL_MODELVIEW);
-
-            GL11.glDisable(GL11.GL_BLEND);
-            GL11.glDepthMask(true);
-            GL11.glEnable(GL11.GL_CULL_FACE);
+//
+//            GL11.glDisable(GL11.GL_BLEND);
+//            GL11.glDepthMask(true);
+//            GL11.glEnable(GL11.GL_CULL_FACE);
         }
     }
 

@@ -60,6 +60,6 @@ public class GuiAssemblyFilter
 
         String s = Lang.translate(ItemRegistry.asbFilter.getUnlocalizedName() + ".name");
         this.fontRendererObj.drawString(s, this.xSize / 2 - this.fontRendererObj.getStringWidth(s) / 2, 6, 4210752);
-        this.fontRendererObj.drawString(Lang.translate(Lang.CONTAINER_INV), 8, this.ySize - 96 + 3, 4210752);
+        this.fontRendererObj.drawString(Lang.translate(Lang.CONTAINER_INV.get()), 8, this.ySize - 96 + 3, 4210752);
     }
 }

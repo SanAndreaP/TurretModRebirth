@@ -9,12 +9,14 @@
 package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
+import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.registry.upgrades.TurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
@@ -33,7 +35,7 @@ public class TurretInfoEntryUpgrade
     }
 
     private TurretInfoEntryUpgrade(TurretUpgrade upgrade) {
-        super(UpgradeRegistry.INSTANCE.getUpgradeItem(upgrade), String.format(Lang.ITEM_UPGRADE_NAME, upgrade.getName()));
+        super(UpgradeRegistry.INSTANCE.getUpgradeItem(upgrade), Lang.ITEM_UPGRADE_NAME.get(upgrade.getName()));
         this.upgrade = upgrade;
     }
 
@@ -46,10 +48,10 @@ public class TurretInfoEntryUpgrade
         Gui.drawRect(2, 12, MAX_ENTRY_WIDTH - 2, 13, 0xFF0080BB);
 
         gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         gui.drawTexturedModalRect(2, 16, 192, 18, 34, 34);
 
-        drawItem(gui.mc, 3, 17, UpgradeRegistry.INSTANCE.getUpgradeItem(this.upgrade), 2.0F);
+        TmrClientUtils.renderStackInGui(UpgradeRegistry.INSTANCE.getUpgradeItem(this.upgrade), 3, 17, 2.0F);
 
         gui.mc.fontRendererObj.drawString(this.txtCrft, 42, 16, 0xFF6A6A6A, false);
         if( prereq != null ) {
@@ -59,7 +61,7 @@ public class TurretInfoEntryUpgrade
 
         Gui.drawRect(2, infoHeight, MAX_ENTRY_WIDTH - 2, infoHeight + 1, 0xFF0080BB);
 
-        String text = Lang.translate(Lang.ITEM_UPGRADE_DESC, upgrade.getName()).replace("\\n", "\n");
+        String text = Lang.translate(Lang.ITEM_UPGRADE_DESC.get(), upgrade.getName()).replace("\\n", "\n");
         gui.mc.fontRendererObj.drawSplitString(text, 2, infoHeight + 3, MAX_ENTRY_WIDTH - 2, 0xFF000000);
         this.drawHeight = gui.mc.fontRendererObj.splitStringWidth(text, MAX_ENTRY_WIDTH - 2) + infoHeight + 3 + 2;
 

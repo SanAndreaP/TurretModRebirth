@@ -112,9 +112,9 @@ public class GuiTurretAssembly
 
         this.frDetails = new FontRenderer(this.mc.gameSettings, new ResourceLocation("textures/font/ascii.png"), this.mc.getTextureManager(), true);
 
-        this.buttonList.add(this.cancelTask = new GuiSlimButton(this.buttonList.size(), this.guiLeft + 156, this.guiTop + 55, 50, Lang.translate(Lang.TASSEMBLY_BTN_CANCEL)));
-        this.buttonList.add(this.automate = new GuiSlimButton(this.buttonList.size(), this.guiLeft + 156, this.guiTop + 68, 50, Lang.translate(Lang.TASSEMBLY_BTN_AUTOENABLE)));
-        this.buttonList.add(this.manual = new GuiSlimButton(this.buttonList.size(), this.guiLeft + 156, this.guiTop + 81, 50, Lang.translate(Lang.TASSEMBLY_BTN_AUTODISABLE)));
+        this.buttonList.add(this.cancelTask = new GuiSlimButton(this.buttonList.size(), this.guiLeft + 156, this.guiTop + 55, 50, Lang.translate(Lang.TASSEMBLY_BTN_CANCEL.get())));
+        this.buttonList.add(this.automate = new GuiSlimButton(this.buttonList.size(), this.guiLeft + 156, this.guiTop + 68, 50, Lang.translate(Lang.TASSEMBLY_BTN_AUTOENABLE.get())));
+        this.buttonList.add(this.manual = new GuiSlimButton(this.buttonList.size(), this.guiLeft + 156, this.guiTop + 81, 50, Lang.translate(Lang.TASSEMBLY_BTN_AUTODISABLE.get())));
 
         this.buttonList.add(this.groupUp = new GuiAssemblyTabNav(this.buttonList.size(), this.guiLeft + 13, this.guiTop + 9, false));
 
@@ -287,7 +287,7 @@ public class GuiTurretAssembly
                 cnt = String.valueOf('\u221E');
             }
 
-            this.frDetails.drawString(Lang.translate(Lang.TASSEMBLY_CRAFTING), this.guiLeft + 156, this.guiTop + 40, 0xFF303030);
+            this.frDetails.drawString(Lang.translate(Lang.TASSEMBLY_CRAFTING.get()), this.guiLeft + 156, this.guiTop + 40, 0xFF303030);
             TmrClientUtils.renderStackInGui(this.assembly.currCrafting.getValue1(), this.guiLeft + 190, this.guiTop + 36, 1.0F, this.fontRendererObj, cnt);
 
             this.cancelTask.enabled = true;
@@ -446,26 +446,26 @@ public class GuiTurretAssembly
             this.drawGradientRect(xPos - 2, yPos + 10, xPos + textWidth + 2, yPos + 11, lightBg, darkBg);
         }
 
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(Resources.GUI_ASSEMBLY_CRF.getResource());
-        GL11.glPushMatrix();
+        GlStateManager.pushMatrix();
         if( ingredients.length < 1 ) {
-            GL11.glTranslatef(0.0F, -10.0F, 0.0F);
+            GlStateManager.translate(0.0F, -10.0F, 0.0F);
         } else {
-            GL11.glTranslatef(0.0F, 3.0F, 0.0F);
+            GlStateManager.translate(0.0F, 3.0F, 0.0F);
         }
-        GL11.glPushMatrix();
-        GL11.glTranslatef(xPos, yPos, 0.0F);
-        GL11.glScalef(0.5F, 0.5F, 1.0F);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(xPos, yPos, 0.0F);
+        GlStateManager.scale(0.5F, 0.5F, 1.0F);
         this.drawTexturedModalRect(0, 20, 230, 94, 16, 16);
         this.drawTexturedModalRect(0, 40, 230, 110, 16, 16);
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
 
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GlStateManager.disableDepth();
         this.frDetails.drawString(rf, xPos + 10, yPos + 10, 0xFFFFFFFF);
         this.frDetails.drawString(ticks, xPos + 10, yPos + 20, 0xFFFFFFFF);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glPopMatrix();
+        GlStateManager.enableDepth();
+        GlStateManager.popMatrix();
 
         for( int i = 0; i < ingredients.length; i++ ) {
             ItemStack[] entryStacks = ingredients[i].getEntryItemStacks();
@@ -480,17 +480,14 @@ public class GuiTurretAssembly
 
     private void drawRFluxLabel(int mouseX, int mouseY) {
         String amount = String.format("%d / %d RF", this.assembly.getEnergyStored(EnumFacing.DOWN), this.assembly.getMaxEnergyStored(EnumFacing.DOWN));
-        String consumption = String.format(Lang.translate(Lang.TASSEMBLY_RF_USING), this.assembly.getField(TileEntityTurretAssembly.FIELD_FLUX_CONSUMPTION) * (this.assembly.hasSpeedUpgrade() ? 4 : 1));
+        String consumption = Lang.translate(Lang.TASSEMBLY_RF_USING.get(), this.assembly.getField(TileEntityTurretAssembly.FIELD_FLUX_CONSUMPTION) * (this.assembly.hasSpeedUpgrade() ? 4 : 1));
 
         int textWidth = Math.max(this.fontRendererObj.getStringWidth(amount), this.fontRendererObj.getStringWidth(consumption));
         int xPos = mouseX - 12 - textWidth;
         int yPos = mouseY - 12;
         byte height = 18;
 
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
         RenderHelper.disableStandardItemLighting();
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
 
         int bkgColor = 0xF0100010;
         int lightBg = 0x505000FF;
@@ -509,22 +506,20 @@ public class GuiTurretAssembly
         this.drawGradientRect(xPos - 3, yPos + height + 2, xPos + textWidth + 3, yPos + height + 3, darkBg, darkBg);
         this.zLevel = 0.0F;
 
-        GL11.glPushMatrix();
-        GL11.glTranslatef(xPos, yPos, 0.0F);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(xPos, yPos, 0.0F);
 
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glTranslatef(0.5F, 0.5F, 0.0F);
+        GlStateManager.disableDepth();
+        GlStateManager.translate(0.5F, 0.5F, 0.0F);
         this.fontRendererObj.drawString(amount, 0, 0, 0xFF3F3F3F);
         this.fontRendererObj.drawString(consumption, 0, 9, 0xFF3F3F3F);
-        GL11.glTranslatef(-0.5F, -0.5F, -0.0F);
+        GlStateManager.translate(-0.5F, -0.5F, -0.0F);
         this.fontRendererObj.drawString(amount, 0, 0, 0xFFFFFFFF);
         this.fontRendererObj.drawString(consumption, 0, 9, 0xFFFFFFFF);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glEnable(GL11.GL_LIGHTING);
+        GlStateManager.enableDepth();
         RenderHelper.enableGUIStandardItemLighting();
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
     }
 
     @Override
@@ -563,12 +558,7 @@ public class GuiTurretAssembly
     private GuiAssemblyCategoryTab[] getSortedTabs() {
         GuiAssemblyCategoryTab[] tabs = this.groupBtns.keySet().toArray(new GuiAssemblyCategoryTab[this.groupBtns.size()]);
 
-        Arrays.sort(tabs, new Comparator<GuiAssemblyCategoryTab>() {
-            @Override
-            public int compare(GuiAssemblyCategoryTab o1, GuiAssemblyCategoryTab o2) {
-                return o1.id > o2.id ? 1 : o1.id < o2.id ? -1 : 0;
-            }
-        });
+        Arrays.sort(tabs, (o1, o2) -> o1.id > o2.id ? 1 : o1.id < o2.id ? -1 : 0);
 
         return tabs;
     }
