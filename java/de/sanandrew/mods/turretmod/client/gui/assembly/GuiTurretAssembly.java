@@ -262,6 +262,8 @@ public class GuiTurretAssembly
                     int x = i % 9;
                     int y = i / 9;
 
+                    TmrClientUtils.renderStackInGui(filterStack, this.guiLeft + 36 + x * 18, this.guiTop + 100 + y * 18, 1.0D);
+
                     this.mc.getTextureManager().bindTexture(Resources.GUI_ASSEMBLY_CRF.getResource());
                     GlStateManager.disableDepth();
                     GlStateManager.enableBlend();
@@ -407,7 +409,6 @@ public class GuiTurretAssembly
         }
 
         RenderHelper.enableGUIStandardItemLighting();
-//        GlStateManager.enableRescaleNormal();
         GlStateManager.popMatrix();
     }
 
@@ -423,7 +424,9 @@ public class GuiTurretAssembly
         int yPos = mouseY - 12;
         int height = ingredients.length > 0 ? 31 : 18;
 
-        this.zLevel = 300.0F;
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0.0D, 0.0D, 300.0D);
+
         int bkgColor = 0xF0100010;
         int lightBg = 0x505000FF;
         int darkBg = (lightBg & 0xFEFEFE) >> 1 | lightBg & 0xFF000000;
@@ -472,8 +475,7 @@ public class GuiTurretAssembly
 
         RenderHelper.enableGUIStandardItemLighting();
 
-        this.zLevel = 0.0F;
-
+        GlStateManager.popMatrix();
     }
 
     private void drawRFluxLabel(int mouseX, int mouseY) {

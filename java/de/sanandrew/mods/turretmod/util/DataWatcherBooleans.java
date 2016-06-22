@@ -21,7 +21,7 @@ public final class DataWatcherBooleans<T extends Entity>
 
     public DataWatcherBooleans(T e) {
         this.entity = e;
-        this.param =  EntityDataManager.<Integer>createKey(e.getClass(), DataSerializers.VARINT);
+        this.param =  EntityDataManager.createKey(e.getClass(), DataSerializers.VARINT);
     }
 
     public void registerDwValue() {

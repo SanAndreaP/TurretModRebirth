@@ -58,11 +58,6 @@ public abstract class EntityTurret
     public boolean isUpsideDown;
     public boolean showRange;
 
-    // data watcher IDs
-    private static final int DW_EXPERIENCE = 22; /* INT */
-    private static final int DW_FREQUENCY = 27; /* BYTE */
-    private static final int DW_BOOLEANS = 28; /* BYTE */
-
     private BlockPos blockPos;
 
     protected TargetProcessor targetProc;

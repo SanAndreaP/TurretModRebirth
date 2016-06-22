@@ -25,14 +25,12 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -73,10 +71,10 @@ public class BlockTurretAssembly
 
     @Override
     public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
-        this.setDefaultFacing(worldIn, pos, state);
+        BlockTurretAssembly.setDefaultFacing(worldIn, pos, state);
     }
 
-    private void setDefaultFacing(World world, BlockPos pos, IBlockState state) {
+    private static void setDefaultFacing(World world, BlockPos pos, IBlockState state) {
         if( !world.isRemote ) {
             IBlockState northState = world.getBlockState(pos.north());
             IBlockState southState = world.getBlockState(pos.south());
@@ -241,7 +239,7 @@ public class BlockTurretAssembly
      */
     public int getMetaFromState(IBlockState state)
     {
-        return ((EnumFacing)state.getValue(FACING)).getIndex();
+        return state.getValue(FACING).getIndex();
     }
 
     /**
@@ -250,19 +248,21 @@ public class BlockTurretAssembly
      */
     public IBlockState withRotation(IBlockState state, Rotation rot)
     {
-        return state.withProperty(FACING, rot.rotate((EnumFacing)state.getValue(FACING)));
+        return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
     }
 
     /**
      * Returns the blockstate with the given mirror of the passed blockstate. If inapplicable, returns the passed
      * blockstate.
      */
+    @Override
+    @Deprecated
     public IBlockState withMirror(IBlockState state, Mirror mirrorIn)
     {
-        return state.withRotation(mirrorIn.toRotation((EnumFacing)state.getValue(FACING)));
+        return state.withRotation(mirrorIn.toRotation(state.getValue(FACING)));
     }
 
     public int getDirection(int meta) {
-        return meta & 3;
+        return getStateFromMeta(meta).getValue(FACING).getHorizontalIndex();
     }
 }

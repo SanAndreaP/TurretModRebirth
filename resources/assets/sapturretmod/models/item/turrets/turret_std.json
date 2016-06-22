@@ -1,8 +1,5 @@
 {
-  "parent": "sapturretmod:item/turrets/turret_std",
-  "textures": {
-    "0": "sapturretmod:items/turrets/turret_shotgun"
-  },
+  "__comment": "Model generated using MrCrayfish's Model Creator (http://mrcrayfish.com/modelcreator/)",
   "elements": [
     {
       "name": "head",
@@ -68,19 +65,25 @@
         "up": { "texture": "#0", "uv": [ 8.0, 0.0, 10.0, 2.0 ] },
         "down": { "texture": "#0", "uv": [ 8.0, 0.0, 10.0, 2.0 ] }
       }
-    },
-    {
-      "name": "barrel",
-      "from": [ 6.0, 12.0, 2.0 ],
-      "to": [ 10.0, 13.0, 5.0 ],
-      "faces": {
-        "north": { "texture": "#0", "uv": [ 8.0, 10.0, 12.0, 11.0 ] },
-        "east": { "texture": "#0", "uv": [ 8.0, 7.0, 9.0, 10.0 ], "rotation": 90 },
-        "south": { "texture": "#0", "uv": [ 8.0, 7.0, 12.0, 8.0 ] },
-        "west": { "texture": "#0", "uv": [ 12.0, 10.0, 11.0, 7.0 ], "rotation": 270 },
-        "up": { "texture": "#0", "uv": [ 8.0, 7.0, 12.0, 10.0 ] },
-        "down": { "texture": "#0", "uv": [ 8.0, 7.0, 12.0, 10.0 ] }
-      }
     }
-  ]
+  ],
+  "display": {
+    "thirdperson_righthand": {
+      "translation": [0, -3, 0],
+      "scale": [0.8, 0.8, 0.8]
+    },
+    "thirdperson_lefthand": {
+      "translation": [0, -3, 0],
+      "scale": [0.8, 0.8, 0.8]
+    },
+    "gui": {
+      "rotation": [30, 135, 0],
+      "translation": [0, 0.5, 0],
+      "scale": [0.8, 0.8, 0.8]
+    },
+    "ground": {
+      "translation": [0, 4, 0],
+      "scale": [0.5, 0.5, 0.5]
+    }
+  }
 }

@@ -111,7 +111,7 @@ public class ItemTurret
     public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
         if( !world.isRemote ) {
             RayTraceResult traceResult = this.rayTrace(world, player, true);
-                if( traceResult.typeOfHit == RayTraceResult.Type.BLOCK ) {
+                if( traceResult != null && traceResult.typeOfHit == RayTraceResult.Type.BLOCK ) {
                     BlockPos blockPos = traceResult.getBlockPos();
                     if( !world.isBlockModifiable(player, blockPos) ) {
                         return new ActionResult<>(EnumActionResult.FAIL, stack);

@@ -1,6 +1,6 @@
 {
-  "parent": "builtin/generated",
+  "parent": "sapturretmod:item/turrets/turret_std",
   "textures": {
-    "layer0": "sapturretmod:items/turrets/turret_cryolator"
+    "0": "sapturretmod:items/turrets/turret_cryolator"
   }
 }
