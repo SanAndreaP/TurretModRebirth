@@ -8,8 +8,6 @@
  */
 package de.sanandrew.mods.turretmod.block;
 
-import net.darkhax.bookshelf.lib.util.BlockUtils;
-import net.darkhax.bookshelf.lib.util.ModUtils;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;

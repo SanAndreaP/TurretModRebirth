@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.util;
 
+import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.ItemTurret;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
@@ -19,6 +20,7 @@ import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.TurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.RenderItem;
@@ -41,6 +43,7 @@ public final class ModelRegistry
         registerStandardModel(renderItem, ItemRegistry.asbFilter);
         registerStandardModel(renderItem, ItemRegistry.asbAuto);
         registerStandardModel(renderItem, ItemRegistry.asbSpeed);
+        registerStandardModel(renderItem, BlockRegistry.potatoGenerator);
 
         {
             MeshDefTurret meshDef = new MeshDefTurret();
@@ -85,6 +88,10 @@ public final class ModelRegistry
 
     private static void registerStandardModel(RenderItem renderItem, Item item) {
         renderItem.getItemModelMesher().register(item, 0, new ModelResourceLocation(TurretModRebirth.ID + ':' + item.getRegistryName().getResourcePath(), "inventory"));
+    }
+
+    private static void registerStandardModel(RenderItem renderItem, Block item) {
+        renderItem.getItemModelMesher().register(Item.getItemFromBlock(item), 0, new ModelResourceLocation(TurretModRebirth.ID + ':' + item.getRegistryName().getResourcePath(), "inventory"));
     }
 
     private static abstract class MeshDefUUID<T>

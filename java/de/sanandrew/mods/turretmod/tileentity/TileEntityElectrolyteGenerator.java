@@ -257,6 +257,17 @@ public class TileEntityElectrolyteGenerator
     }
 
     @Override
+    public NBTTagCompound getUpdateTag() {
+        return this.writeNbt(super.getUpdateTag());
+    }
+
+    @Override
+    public void handleUpdateTag(NBTTagCompound tag) {
+        super.handleUpdateTag(tag);
+        this.readNbt(tag);
+    }
+
+    @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
         this.readNbt(pkt.getNbtCompound());
     }
@@ -277,7 +288,7 @@ public class TileEntityElectrolyteGenerator
         return nbt;
     }
 
-    private void writeNbt(NBTTagCompound nbt) {
+    private NBTTagCompound writeNbt(NBTTagCompound nbt) {
         nbt.setInteger("fluxAmount", this.fluxAmount);
         nbt.setInteger("fluxBuffer", this.fluxBuffer);
         NBTTagList progress = new NBTTagList();
@@ -294,6 +305,8 @@ public class TileEntityElectrolyteGenerator
         if( this.hasCustomName() ) {
             nbt.setString("customName", this.customName);
         }
+
+        return nbt;
     }
 
     @Override

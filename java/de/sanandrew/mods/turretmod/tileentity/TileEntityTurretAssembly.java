@@ -300,10 +300,19 @@ public class TileEntityTurretAssembly
     }
 
     @Override
+    public NBTTagCompound getUpdateTag() {
+        return this.writeNBT(super.getUpdateTag());
+    }
+
+    @Override
+    public void handleUpdateTag(NBTTagCompound tag) {
+        super.handleUpdateTag(tag);
+        this.readFromNBT(tag);
+    }
+
+    @Override
     public SPacketUpdateTileEntity getUpdatePacket() {
-        NBTTagCompound nbt = new NBTTagCompound();
-        this.writeNBT(nbt);
-        return new SPacketUpdateTileEntity(this.pos, 0, nbt);
+        return new SPacketUpdateTileEntity(this.pos, 0, this.writeNBT(new NBTTagCompound()));
     }
 
     @Override
@@ -324,7 +333,7 @@ public class TileEntityTurretAssembly
         this.doSync = true;
     }
 
-    private void writeNBT(NBTTagCompound nbt) {
+    private NBTTagCompound writeNBT(NBTTagCompound nbt) {
         nbt.setBoolean("isActive", this.isActive);
         nbt.setInteger("flux", this.fluxAmount);
         nbt.setTag("inventory", TmrUtils.writeItemStacksToTag(this.assemblyStacks, 64));
@@ -338,6 +347,8 @@ public class TileEntityTurretAssembly
         nbt.setInteger("maxTicksCrafted", this.maxTicksCrafted);
         nbt.setInteger("fluxConsumption", this.fluxConsumption);
         nbt.setBoolean("automate", this.automate);
+
+        return nbt;
     }
 
     private void readNBT(NBTTagCompound nbt) {
