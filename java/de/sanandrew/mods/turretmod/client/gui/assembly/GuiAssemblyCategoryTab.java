@@ -39,11 +39,12 @@ public class GuiAssemblyCategoryTab
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
             mc.renderEngine.bindTexture(Resources.GUI_ASSEMBLY_CRF.getResource());
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
             this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
             int hoverState = this.getHoverState(this.hovered);
 
+            GlStateManager.disableLighting();
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             this.drawTexturedModalRect(this.xPosition, this.yPosition, 50 + 20 * hoverState, 222, this.width, this.height);
 
             this.mouseDragged(mc, mouseX, mouseY);
@@ -51,7 +52,9 @@ public class GuiAssemblyCategoryTab
             GlStateManager.enableRescaleNormal();
             RenderHelper.enableGUIStandardItemLighting();
 
+            GlStateManager.enableDepth();
             TmrClientUtils.renderStackInGui(this.renderedItem, this.xPosition + 9, this.yPosition + 3, 0.5F);
+            GlStateManager.disableDepth();
 
             RenderHelper.disableStandardItemLighting();
             GlStateManager.disableRescaleNormal();
