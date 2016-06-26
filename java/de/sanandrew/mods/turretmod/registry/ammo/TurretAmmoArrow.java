@@ -50,11 +50,6 @@ public abstract class TurretAmmoArrow
     }
 
     @Override
-    public String getItemDesc() {
-        return null;
-    }
-
-    @Override
     public int getAmmoCapacity() {
         return this.capacity;
     }

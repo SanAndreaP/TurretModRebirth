@@ -25,9 +25,10 @@ public final class TmrConfiguration
     public static int glSecondaryTextureUnit = 7;
     public static boolean renderUpgrades = true;
     public static boolean calcForcefieldIntf = true;
+    public static boolean useShaders = true;
 
     public static void initConfiguration(FMLPreInitializationEvent event) {
-        config = new Configuration(event.getSuggestedConfigurationFile(), "1.0.0", true);
+        config = new Configuration(event.getSuggestedConfigurationFile(), "1.0.1", true);
         MinecraftForge.EVENT_BUS.register(new TmrConfiguration());
         syncConfig();
     }
@@ -43,6 +44,9 @@ public final class TmrConfiguration
 
         desc = "Calculate Interceptions of adjacent forcefields. Disable this to gain a performance boost, but be aware it might clutter the screen if many forcefields are operating.";
         calcForcefieldIntf = config.getBoolean("calcForcefieldIntf", CAT_CLIENT, calcForcefieldIntf, desc);
+
+        desc = "Whether or not to use shaders. When disabled, some fancier rendering won't work. Only disable if there's incompatibilities with another mod!";
+        useShaders = config.getBoolean("useShaders", CAT_CLIENT, useShaders, desc);
 
         if( config.hasChanged() ) {
             config.save();

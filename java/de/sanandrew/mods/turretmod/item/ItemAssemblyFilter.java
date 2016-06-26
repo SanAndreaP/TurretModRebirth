@@ -54,7 +54,8 @@ public class ItemAssemblyFilter
     public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
         if( !world.isRemote ) {
             if( player.isSneaking() ) {
-                this.setFilterStacks(stack, EMPTY_INV);
+                //noinspection ConstantConditions
+                stack.setTagCompound(null);
                 player.inventoryContainer.detectAndSendChanges();
             } else {
                 TurretModRebirth.proxy.openGui(player, EnumGui.GUI_TASSEMBLY_FLT, 0, 0, 0);

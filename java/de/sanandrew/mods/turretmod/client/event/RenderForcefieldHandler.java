@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.event;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
@@ -130,39 +131,34 @@ public class RenderForcefieldHandler
                     break;
             }
 
-            GL11.glMatrixMode(GL11.GL_TEXTURE);
-            GL11.glLoadIdentity();
-            GL11.glTranslatef(texTranslateX, texTranslateY, 0.0F);
-            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+            GlStateManager.matrixMode(GL11.GL_TEXTURE);
+            GlStateManager.loadIdentity();
+            GlStateManager.translate(texTranslateX, texTranslateY, 0.0F);
+            GlStateManager.matrixMode(GL11.GL_MODELVIEW);
 
-            GL11.glEnable(GL11.GL_BLEND);
-            OpenGlHelper.glBlendFunc(GL11.GL_CONSTANT_ALPHA, GL11.GL_ONE_MINUS_CONSTANT_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(GlStateManager.SourceFactor.CONSTANT_ALPHA, GlStateManager.DestFactor.ONE_MINUS_CONSTANT_ALPHA);
 
             for( ForcefieldCube cube : cubes ) {
-                tess.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+                tess.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 
                 cube.draw(tess);
 
-                GL14.glBlendColor(1.0f, 1.0f, 1.0f, cube.boxColor.getAlpha());
-                GL11.glDepthMask(false);
-                GL11.glDisable(GL11.GL_CULL_FACE);
+                GL14.glBlendColor(1.0f, 1.0f, 1.0f, cube.boxColor.getAlpha() * 0.5F);
+                GlStateManager.depthMask(false);
+                GlStateManager.disableCull();
                 tess.draw();
-                GL14.glBlendColor(1.0f, 1.0f, 1.0f, 1.0f);
-                GL11.glDepthMask(true);
-                GL11.glEnable(GL11.GL_CULL_FACE);
+                GlStateManager.enableCull();
+                GlStateManager.depthMask(true);
+                GL14.glBlendColor(1.0F, 1.0F, 1.0F, 1.0F);
             }
-            GL14.glBlendColor(1.0F, 1.0F, 1.0F, 1.0F);
-            OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
-            GL11.glDisable(GL11.GL_BLEND);
+            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            GlStateManager.disableBlend();
 
-            GL11.glMatrixMode(GL11.GL_TEXTURE);
+            GlStateManager.matrixMode(GL11.GL_TEXTURE);
             GL11.glLoadIdentity();
-            GL11.glMatrixMode(GL11.GL_MODELVIEW);
-//
-//            GL11.glDisable(GL11.GL_BLEND);
-//            GL11.glDepthMask(true);
-//            GL11.glEnable(GL11.GL_CULL_FACE);
+            GlStateManager.matrixMode(GL11.GL_MODELVIEW);
         }
     }
 

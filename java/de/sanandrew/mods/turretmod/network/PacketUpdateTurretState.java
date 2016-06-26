@@ -24,6 +24,7 @@ public class PacketUpdateTurretState
     private int currAmmoCap;
     private ItemStack ammoStack;
 
+    @SuppressWarnings("unused")
     public PacketUpdateTurretState() { }
 
     public PacketUpdateTurretState(EntityTurret turret) {

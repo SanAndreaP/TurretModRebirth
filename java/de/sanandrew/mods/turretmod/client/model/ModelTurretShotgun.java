@@ -8,14 +8,12 @@
  */
 package de.sanandrew.mods.turretmod.client.model;
 
-import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import org.lwjgl.opengl.GL11;
 
 public class ModelTurretShotgun
 		extends ModelBase

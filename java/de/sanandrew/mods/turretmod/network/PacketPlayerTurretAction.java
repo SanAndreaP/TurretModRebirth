@@ -22,6 +22,7 @@ public class PacketPlayerTurretAction
     private int turretId;
     private byte actionId;
 
+    @SuppressWarnings("unused")
     public PacketPlayerTurretAction() { }
 
     public PacketPlayerTurretAction(EntityTurret turret, byte action) {

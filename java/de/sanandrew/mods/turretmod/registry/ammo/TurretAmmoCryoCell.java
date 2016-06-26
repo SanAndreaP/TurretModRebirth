@@ -56,11 +56,6 @@ public abstract class TurretAmmoCryoCell
     }
 
     @Override
-    public String getItemDesc() {
-        return null;
-    }
-
-    @Override
     public int getAmmoCapacity() {
         return this.capacity;
     }

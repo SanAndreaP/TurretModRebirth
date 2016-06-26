@@ -11,7 +11,6 @@ package de.sanandrew.mods.turretmod.client.gui.tinfo;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntry;
 import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
-import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -22,7 +21,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiYesNoCallback;
-import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.GlStateManager;
 
 import net.minecraft.util.text.TextFormatting;
 import org.apache.logging.log4j.Level;
@@ -107,27 +106,27 @@ public class GuiTurretInfo
         this.timeDelta = time - this.lastTime;
         this.lastTime = time;
 
-        GL11.glColor3f(1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.drawDefaultBackground();
 
         this.mc.renderEngine.bindTexture(Resources.GUI_TURRETINFO.getResource());
 
-        GL11.glColor3f(1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, X_SIZE, Y_SIZE);
 
-        GL11.glPushMatrix();
-        GL11.glTranslatef(this.entryX + TurretInfoEntry.MAX_ENTRY_WIDTH, this.entryY, 0.0F);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(this.entryX + TurretInfoEntry.MAX_ENTRY_WIDTH, this.entryY, 0.0F);
         drawRect(0, 0, 6, TurretInfoEntry.MAX_ENTRY_HEIGHT, 0x30000000);
         if( this.dHeight > 0 ) {
             drawRect(0, Math.round((TurretInfoEntry.MAX_ENTRY_HEIGHT - 16) * this.scroll), 6, Math.round((TurretInfoEntry.MAX_ENTRY_HEIGHT - 16) * this.scroll + 16), 0x800000FF);
         }
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
 
-        GL11.glPushMatrix();
+        GlStateManager.pushMatrix();
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
         this.doEntryScissoring();
-        GL11.glTranslatef(this.entryX, this.entryY, 0.0F);
-        GL11.glTranslatef(0.0F, Math.round(-this.scroll * this.dHeight), 0.0F);
+        GlStateManager.translate(this.entryX, this.entryY, 0.0F);
+        GlStateManager.translate(0.0F, Math.round(-this.scroll * this.dHeight), 0.0F);
 
         if( this.entry != null ) {
             this.dHeight = this.entry.getPageHeight() - TurretInfoEntry.MAX_ENTRY_HEIGHT;
@@ -145,7 +144,7 @@ public class GuiTurretInfo
         }
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
 
         if( !mouseDown && this.isScrolling ) {
             this.isScrolling = false;
@@ -166,8 +165,8 @@ public class GuiTurretInfo
         super.drawScreen(mouseX, mouseY, partTicks);
 
         if( this.categoryHighlight != null ) {
-            GL11.glPushMatrix();
-            GL11.glTranslatef(mouseX + 12, mouseY - 12, 32.0F);
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(mouseX + 12, mouseY - 12, 32.0F);
 
             String title = Lang.translate(this.categoryHighlight.getTitle());
             int bkgColor = 0xF0101000;
@@ -188,7 +187,7 @@ public class GuiTurretInfo
             this.drawGradientRect(-3, tHeight + 2, textWidth + 3, tHeight + 3, darkBg, darkBg);
 
             this.fontRendererObj.drawString(title, 0, 0, 0xFFFFFFFF, true);
-            GL11.glPopMatrix();
+            GlStateManager.popMatrix();
             this.categoryHighlight = null;
         }
     }
@@ -351,10 +350,10 @@ public class GuiTurretInfo
             if( this.visible ) {
                 boolean over = mouseX >= this.xPosition && mouseX < this.xPosition + this.width && mouseY >= this.yPosition && mouseY < this.yPosition + this.height;
 
-                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
-                GL11.glEnable(GL11.GL_BLEND);
-                OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+                GlStateManager.enableBlend();
+                GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
                 switch( this.buttonType ) {
                     case 0:
                         this.drawTexturedModalRect(this.xPosition + 5, this.yPosition + 8, 0, 236 + (over ? 0 : 10), 15, 9);
@@ -366,7 +365,7 @@ public class GuiTurretInfo
                         this.drawTexturedModalRect(this.xPosition + 8, this.yPosition + 8, 27, 236 + (over ? 0 : 10), 9, 9);
                         break;
                 }
-                GL11.glDisable(GL11.GL_BLEND);
+                GlStateManager.disableBlend();
             }
         }
     }

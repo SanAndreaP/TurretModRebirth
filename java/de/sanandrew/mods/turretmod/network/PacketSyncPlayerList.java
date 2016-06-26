@@ -12,7 +12,6 @@ import de.sanandrew.mods.turretmod.util.PlayerList;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +22,7 @@ public class PacketSyncPlayerList
 {
     private Map<UUID, String> players;
 
+    @SuppressWarnings("unused")
     public PacketSyncPlayerList() { }
 
     public PacketSyncPlayerList(PlayerList pList) {

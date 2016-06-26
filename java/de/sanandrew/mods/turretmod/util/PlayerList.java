@@ -21,9 +21,6 @@ import net.minecraft.world.storage.MapStorage;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +30,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PlayerList
         extends WorldSavedData
 {
-    public static final UUID EMPTY_UUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
     private static final String WSD_NAME = String.format("%s_%s", TurretModRebirth.ID, "playerList");
     public static final PlayerList INSTANCE = new PlayerList();
 
@@ -49,7 +45,7 @@ public class PlayerList
     }
 
     public String getPlayerName(UUID playerUUID) {
-        if( playerUUID.equals(EMPTY_UUID) ) {
+        if( playerUUID.equals(TmrUtils.EMPTY_UUID) ) {
             return "[all players]";
         }
 
@@ -68,7 +64,7 @@ public class PlayerList
     public Map<UUID, Boolean> getDefaultPlayerList() {
         Map<UUID, Boolean> players = new HashMap<>(this.playerMap.size());
 
-        players.put(EMPTY_UUID, false);
+        players.put(TmrUtils.EMPTY_UUID, false);
         for( UUID playerUUID : this.playerMap.keySet() ) {
             players.put(playerUUID, false);
         }

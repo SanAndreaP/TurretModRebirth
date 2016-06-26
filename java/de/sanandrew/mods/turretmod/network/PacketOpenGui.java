@@ -21,6 +21,7 @@ public class PacketOpenGui
     private int y;
     private int z;
 
+    @SuppressWarnings("unused")
     public PacketOpenGui() { }
 
     public PacketOpenGui(byte guiId, int x, int y, int z) {

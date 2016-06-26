@@ -19,6 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.monster.IMob;
@@ -111,7 +112,7 @@ public final class GuiTcuEntityTargets
         int scrollMinY = this.guiTop + 19;
         int scrollMaxY = this.guiTop + 134;
 
-        GL11.glColor3f(1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.drawDefaultBackground();
 
         if( !this.isScrolling && this.canScroll && isLmbDown && mouseX >= scrollMinX && mouseX < scrollMaxX && mouseY > scrollMinY && mouseY < scrollMaxY ) {
@@ -126,7 +127,7 @@ public final class GuiTcuEntityTargets
 
         this.mc.renderEngine.bindTexture(Resources.GUI_TCU_TARGETS.getResource());
 
-        GL11.glColor3f(1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, GuiTCUHelper.X_SIZE, GuiTCUHelper.Y_SIZE);
         this.drawTexturedModalRect(this.guiLeft + 163, this.guiTop + 19 + MathHelper.floor_float(scroll * 109.0F), 176, this.canScroll ? 0 : 6, 6, 6);
 
@@ -168,18 +169,15 @@ public final class GuiTcuEntityTargets
                 }
             }
 
-            GL11.glColor3f(1.0F, 1.0F, 1.0F);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             this.mc.renderEngine.bindTexture(Resources.GUI_TCU_TARGETS.getResource());
             this.drawTexturedModalRect(this.guiLeft + 10, this.guiTop + 20 + offsetY, 176, btnTexOffY, 8, 8);
 
-            int textColor = 0xFFFFFF;
-//            if( BossInfo.class.isAssignableFrom(entry.getKey()) ) {
-//                textColor = 0xFF3333;
-//            } else
+            int textColor = 0xFFFFFFFF;
             if( IMob.class.isAssignableFrom(entry.getKey()) ) {
-                textColor = 0xFFAAAA;
+                textColor = 0xFFFFAAAA;
             } else if( IAnimals.class.isAssignableFrom(entry.getKey()) ) {
-                textColor = 0xAAFFAA;
+                textColor = 0xFFAAFFAA;
             }
 
             this.fontRendererObj.drawString(getTranslatedEntityName(entry.getKey()), this.guiLeft + 20, this.guiTop + 20 + offsetY, textColor, false);
@@ -283,10 +281,10 @@ public final class GuiTcuEntityTargets
     }
 
     private static final class TargetComparatorClass
-            implements Comparator<Class>
+            implements Comparator<Class<? extends Entity>>
     {
         @Override
-        public int compare(Class o1, Class o2) {
+        public int compare(Class<? extends Entity> o1, Class<? extends Entity> o2) {
             if( IMob.class.isAssignableFrom(o1) && IAnimals.class.isAssignableFrom(o2) ) {
                 return -1;
             }
@@ -298,10 +296,10 @@ public final class GuiTcuEntityTargets
     }
 
     private static final class TargetComparatorName
-            implements Comparator<Class>
+            implements Comparator<Class<? extends Entity>>
     {
         @Override
-        public int compare(Class o1, Class o2) {
+        public int compare(Class<? extends Entity> o1, Class<? extends Entity> o2) {
             return getTranslatedEntityName(o2).compareTo(getTranslatedEntityName(o1));
         }
     }

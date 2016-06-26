@@ -14,14 +14,22 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public final class DataWatcherBooleans<T extends Entity>
 {
     private final T entity;
     private final DataParameter<Integer> param;
+    private static final Map<Class<? extends Entity>, DataParameter<Integer>> PARAMS = new HashMap<>();
 
     public DataWatcherBooleans(T e) {
         this.entity = e;
-        this.param =  EntityDataManager.createKey(e.getClass(), DataSerializers.VARINT);
+        Class<? extends Entity> entityCls = e.getClass();
+        if( !PARAMS.containsKey(entityCls) ) {
+            PARAMS.put(entityCls, EntityDataManager.createKey(e.getClass(), DataSerializers.VARINT));
+        }
+        this.param = PARAMS.get(entityCls);
     }
 
     public void registerDwValue() {

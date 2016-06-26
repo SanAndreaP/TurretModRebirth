@@ -22,10 +22,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 import java.util.List;
@@ -100,12 +98,12 @@ public class GuiTcuInfo
             this.toggleRange.displayString = Lang.translate(Lang.TCU_BTN.get("range.enable"));
         }
 
-        GL11.glColor3f(1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.drawDefaultBackground();
 
         this.mc.renderEngine.bindTexture(Resources.GUI_TCU_INFO.getResource());
 
-        GL11.glColor3f(1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, GuiTCUHelper.X_SIZE, GuiTCUHelper.Y_SIZE);
 
         if( this.specOwnerHead >= 0 ) {

@@ -24,7 +24,7 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
 import de.sanandrew.mods.turretmod.inventory.ContainerAssemblyFilter;
-import de.sanandrew.mods.turretmod.inventory.ContainerPotatoGenerator;
+import de.sanandrew.mods.turretmod.inventory.ContainerElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretUpgrades;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
@@ -32,7 +32,7 @@ import de.sanandrew.mods.turretmod.network.PacketOpenGui;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
-import net.darkhax.bookshelf.lib.javatuples.Tuple;
+import de.sanandrew.mods.turretmod.util.javatuples.Tuple;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -91,7 +91,7 @@ public class CommonProxy
                 case GUI_POTATOGEN:
                     te = world.getTileEntity(new BlockPos(x, y, z));
                     if( te instanceof TileEntityElectrolyteGenerator ) {
-                        return new ContainerPotatoGenerator(player.inventory, (TileEntityElectrolyteGenerator) te);
+                        return new ContainerElectrolyteGenerator(player.inventory, (TileEntityElectrolyteGenerator) te);
                     }
 
             }

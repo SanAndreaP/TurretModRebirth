@@ -1,3 +1,11 @@
+/**
+ * ****************************************************************************************************************
+ * Authors:   SanAndreasP
+ * Copyright: SanAndreasP
+ * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+ * http://creativecommons.org/licenses/by-nc-sa/4.0/
+ * *****************************************************************************************************************
+ */
 package de.sanandrew.mods.turretmod.network;
 
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -7,14 +15,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-/**
- * ****************************************************************************************************************
- * Authors:   SanAndreasP
- * Copyright: SanAndreasP
- * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
- * http://creativecommons.org/licenses/by-nc-sa/4.0/
- * *****************************************************************************************************************
- */
 public class PacketUpdateUgradeSlot
         extends PacketRegistry.AbstractMessage<PacketUpdateUgradeSlot>
 {
@@ -22,6 +22,7 @@ public class PacketUpdateUgradeSlot
     private byte slot;
     private ItemStack stack;
 
+    @SuppressWarnings("unused")
     public PacketUpdateUgradeSlot() {}
 
     public PacketUpdateUgradeSlot(EntityTurret turret, int slot, ItemStack stack) {

@@ -13,10 +13,9 @@ import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
-import net.darkhax.bookshelf.lib.javatuples.Triplet;
+import de.sanandrew.mods.turretmod.util.javatuples.Triplet;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -24,8 +23,6 @@ import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,16 +100,14 @@ public class TurretInfoEntryMiscCraftable
                             stacks.add(recpStack);
                         }
                     } else if( recpObj instanceof ArrayList ) {
-                        //noinspection unchecked
-                        for( ItemStack recpStack : (ArrayList<ItemStack>) recpObj ) {
-                            if( recpStack != null ) {
-                                if( recpStack.getItemDamage() == OreDictionary.WILDCARD_VALUE ) {
-                                    recpStack.getItem().getSubItems(recpStack.getItem(), CreativeTabs.SEARCH, stacks);
-                                } else {
-                                    stacks.add(recpStack);
-                                }
+//                        noinspection unchecked
+                        ((ArrayList<ItemStack>) recpObj).stream().filter(recpStack -> recpStack != null).forEach(recpStack -> {
+                            if( recpStack.getItemDamage() == OreDictionary.WILDCARD_VALUE ) {
+                                recpStack.getItem().getSubItems(recpStack.getItem(), CreativeTabs.SEARCH, stacks);
+                            } else {
+                                stacks.add(recpStack);
                             }
-                        }
+                        });
                     }
 
                     recpStacks = stacks.toArray(new ItemStack[stacks.size()]);

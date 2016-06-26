@@ -11,7 +11,6 @@ package de.sanandrew.mods.turretmod.util;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
-import net.minecraft.world.gen.structure.StructureNetherBridgePieces;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -70,7 +69,7 @@ public final class Lang
      */
     @SideOnly(Side.CLIENT)
     public static String translate(String langKey, Object... args) {
-        return I18n.hasKey(langKey) ? I18n.format(langKey, args) : langKey;//Minecraft.getMinecraft().getLanguageManager().translateToFallback(langKey);
+        return I18n.hasKey(langKey) ? I18n.format(langKey, args) : langKey;
     }
 
     @SideOnly(Side.CLIENT)

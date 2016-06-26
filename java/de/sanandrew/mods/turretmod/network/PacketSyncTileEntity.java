@@ -21,6 +21,7 @@ public class PacketSyncTileEntity
 
     private byte[] tileBytes;
 
+    @SuppressWarnings("unused")
     public PacketSyncTileEntity() { }
 
     public PacketSyncTileEntity(TileClientSync tile) {

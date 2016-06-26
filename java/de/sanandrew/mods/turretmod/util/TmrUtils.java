@@ -8,13 +8,10 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
-import net.darkhax.bookshelf.lib.javatuples.Pair;
+import de.sanandrew.mods.turretmod.util.javatuples.Pair;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
-import net.darkhax.bookshelf.lib.util.ReflectionUtils;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.ai.EntityAIMoveTowardsTarget;
 import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
@@ -26,12 +23,10 @@ import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagShort;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -45,6 +40,7 @@ import java.util.UUID;
 public class TmrUtils
 {
     public static final Random RNG = new Random();
+    public static final UUID EMPTY_UUID = new UUID(0, 0);
 
     public static final int ATTR_ADD_VAL_TO_BASE = 0;
     public static final int ATTR_ADD_PERC_VAL_TO_SUM = 1;
@@ -66,14 +62,6 @@ public class TmrUtils
         return val != null ? val : def;
     }
 
-//    public static boolean getIsAIEnabled(EntityLivingBase entity) {
-//        if( entity == null ) {
-//            return false;
-//        }
-//
-//        return ReflectionUtils.invokeCachedMethod(EntityLivingBase.class, entity, "isAIEnabled", "func_70650_aV", null, null);
-//    }
-
     public static Entity getFirstPassengerOfClass(Entity e, Class<? extends Entity> psgClass) {
         for( Entity psg : e.getPassengers() ) {
             if( psgClass.isInstance(psg.getClass()) ) {
@@ -82,14 +70,6 @@ public class TmrUtils
         }
 
         return null;
-    }
-
-    public static boolean getIsPotionSplash(PotionEffect potionEffect) {
-        if( potionEffect == null ) {
-            return false;
-        }
-
-        return ReflectionUtils.getCachedFieldValue(PotionEffect.class, potionEffect, "isSplashPotion", "field_82723_d");
     }
 
     public static int getOreRecipeWidth(ShapedOreRecipe recipe) {
@@ -106,29 +86,6 @@ public class TmrUtils
         }
 
         return ReflectionUtils.getCachedFieldValue(ShapedOreRecipe.class, recipe, "height", "height");
-    }
-
-    public static float getLastDamage(EntityLivingBase entity) {
-        if( entity == null ) {
-            return 0.0F;
-        }
-
-        return ReflectionUtils.getCachedFieldValue(EntityLivingBase.class, entity, "lastDamage", "field_110153_bc");
-    }
-
-    public static void setAiMoveTowardsTargetEntity(EntityAIMoveTowardsTarget ai, EntityLivingBase e) {
-        ReflectionUtils.setCachedFieldValue(EntityAIMoveTowardsTarget.class, ai, "targetEntity", "field_75429_b", e);
-    }
-
-    public static short getShortTagAt(NBTTagList list, int index) {
-        List tagList = ReflectionUtils.getCachedFieldValue(NBTTagList.class, list, "tagList", "field_74747_a");
-
-        if( index >= 0 && index < tagList.size() ) {
-            NBTBase nbtbase = (NBTBase)tagList.get(index);
-            return nbtbase.getId() == Constants.NBT.TAG_SHORT ? ((NBTTagShort)nbtbase).getShort() : 0;
-        } else {
-            return 0;
-        }
     }
 
     public static ShapedRecipes findShapedRecipe(ItemStack result) {
@@ -151,6 +108,21 @@ public class TmrUtils
         for( Object recipe : recipes ) {
             if( recipe instanceof ShapedOreRecipe ) {
                 ShapedOreRecipe sRecipe = ((ShapedOreRecipe) recipe);
+                ItemStack recipeResult = sRecipe.getRecipeOutput();
+                if( areStacksEqual(recipeResult, result, result.hasTagCompound() ? NBT_COMPARATOR_FIXD : null) ) {
+                    return sRecipe;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public static ShapelessOreRecipe findShapelessOreRecipe(ItemStack result) {
+        List recipes = CraftingManager.getInstance().getRecipeList();
+        for( Object recipe : recipes ) {
+            if( recipe instanceof ShapelessOreRecipe ) {
+                ShapelessOreRecipe sRecipe = ((ShapelessOreRecipe) recipe);
                 ItemStack recipeResult = sRecipe.getRecipeOutput();
                 if( areStacksEqual(recipeResult, result, result.hasTagCompound() ? NBT_COMPARATOR_FIXD : null) ) {
                     return sRecipe;

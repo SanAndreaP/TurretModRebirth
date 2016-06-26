@@ -19,7 +19,6 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
-import org.lwjgl.opengl.GL11;
 
 import java.util.UUID;
 
@@ -61,7 +60,7 @@ public class TurretInfoEntryUpgrade
 
         Gui.drawRect(2, infoHeight, MAX_ENTRY_WIDTH - 2, infoHeight + 1, 0xFF0080BB);
 
-        String text = Lang.translate(Lang.ITEM_UPGRADE_DESC.get(), upgrade.getName()).replace("\\n", "\n");
+        String text = Lang.translate(String.format(Lang.ITEM_UPGRADE_DESC.get(), upgrade.getName())).replace("\\n", "\n");
         gui.mc.fontRendererObj.drawSplitString(text, 2, infoHeight + 3, MAX_ENTRY_WIDTH - 2, 0xFF000000);
         this.drawHeight = gui.mc.fontRendererObj.splitStringWidth(text, MAX_ENTRY_WIDTH - 2) + infoHeight + 3 + 2;
 

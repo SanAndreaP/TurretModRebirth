@@ -8,7 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.gui;
 
-import de.sanandrew.mods.turretmod.inventory.ContainerPotatoGenerator;
+import de.sanandrew.mods.turretmod.inventory.ContainerElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -18,8 +18,6 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.MathHelper;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 public class GuiPotatoGenerator
         extends GuiContainer
@@ -27,7 +25,7 @@ public class GuiPotatoGenerator
     TileEntityElectrolyteGenerator generator;
 
     public GuiPotatoGenerator(InventoryPlayer invPlayer, TileEntityElectrolyteGenerator tile) {
-        super(new ContainerPotatoGenerator(invPlayer, tile));
+        super(new ContainerElectrolyteGenerator(invPlayer, tile));
 
         this.generator = tile;
         this.xSize = 176;
@@ -62,7 +60,7 @@ public class GuiPotatoGenerator
         this.fontRendererObj.drawString(Lang.translate(Lang.ELECTROGEN_POWERGEN.get()), 8, 110, 0xFF606060, false);
         this.fontRendererObj.drawString(rft, 150 - this.fontRendererObj.getStringWidth(rft), 110, 0xFF606060, false);
 
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
     }
 
     @Override

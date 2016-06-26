@@ -339,6 +339,7 @@ public class UpgradeProcessor
         TmrUtils.readItemStacksFromTag(this.upgradeStacks, nbt.getTagList("upgInventory", Constants.NBT.TAG_COMPOUND), this, "callbackReadUpgStack");
     }
 
+    @SuppressWarnings("unused")
     public void callbackWriteUpgStack(ItemStack upgStack, NBTTagCompound nbt) {
         if( upgStack != null ) {
             TurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(upgStack);
@@ -348,6 +349,7 @@ public class UpgradeProcessor
         }
     }
 
+    @SuppressWarnings("unused")
     public void callbackReadUpgStack(ItemStack upgStack, NBTTagCompound nbt) {
         if( upgStack != null ) {
             TurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(upgStack);

@@ -21,7 +21,7 @@ import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.darkhax.bookshelf.lib.javatuples.Pair;
+import de.sanandrew.mods.turretmod.util.javatuples.Pair;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -38,7 +38,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class TurretAssemblyRecipes
+@SuppressWarnings("unused")
+public final class TurretAssemblyRecipes
 {
     public static final TurretAssemblyRecipes INSTANCE = new TurretAssemblyRecipes();
 

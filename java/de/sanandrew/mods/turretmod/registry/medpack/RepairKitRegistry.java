@@ -1,6 +1,13 @@
+/**
+ * ****************************************************************************************************************
+ * Authors:   SanAndreasP
+ * Copyright: SanAndreasP
+ * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+ * http://creativecommons.org/licenses/by-nc-sa/4.0/
+ * *****************************************************************************************************************
+ */
 package de.sanandrew.mods.turretmod.registry.medpack;
 
-import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,15 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * ****************************************************************************************************************
- * Authors:   SanAndreasP
- * Copyright: SanAndreasP
- * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
- * http://creativecommons.org/licenses/by-nc-sa/4.0/
- * *****************************************************************************************************************
- */
-public class RepairKitRegistry
+public final class RepairKitRegistry
 {
     public static final RepairKitRegistry INSTANCE = new RepairKitRegistry();
 

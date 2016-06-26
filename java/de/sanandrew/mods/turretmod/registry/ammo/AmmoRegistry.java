@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class AmmoRegistry
+public final class AmmoRegistry
 {
     public static final AmmoRegistry INSTANCE = new AmmoRegistry();
 
@@ -46,7 +46,7 @@ public class AmmoRegistry
     }
 
     public TurretAmmo[] getTypes(UUID groupId) {
-        List<TurretAmmo> ammoList = TmrUtils.valueOrDefault(this.ammoGroupsFromUUID.get(groupId), new ArrayList<TurretAmmo>(0));
+        List<TurretAmmo> ammoList = TmrUtils.valueOrDefault(this.ammoGroupsFromUUID.get(groupId), new ArrayList<>(0));
         return ammoList.toArray(new TurretAmmo[ammoList.size()]);
     }
 

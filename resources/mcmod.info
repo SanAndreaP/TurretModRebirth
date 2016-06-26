@@ -1,0 +1,16 @@
+[
+{
+  "modid": "sapturretmod",
+  "name": "Turret Mod Rebirth",
+  "description": "A mod which adds defense turrets for protecting stuffs.",
+  "version": "4.0.0-alpha2",
+  "mcversion": "1.9",
+  "url": "",
+  "updateUrl": "",
+  "authors": ["SanAndreasP"],
+  "credits": "Darkhax, Drullkus, Vazkii",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

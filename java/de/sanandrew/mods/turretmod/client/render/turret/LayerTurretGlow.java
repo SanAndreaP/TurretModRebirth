@@ -27,6 +27,10 @@ public class LayerTurretGlow<T extends EntityTurret>
 
     @Override
     public void doRenderLayer(T turret, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        if( !turret.isActive() ) {
+            return;
+        }
+
         this.turretRenderer.bindTexture(turret.getGlowTexture());
         GlStateManager.enableBlend();
         GlStateManager.disableAlpha();

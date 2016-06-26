@@ -47,8 +47,8 @@ public class BlockElectrolyteGenerator
         super(Material.ROCK);
         this.blockHardness = 4.25F;
         this.blockSoundType = SoundType.STONE;
-        this.setCreativeTab(TmrCreativeTabs.TURRETS);
-        this.setUnlocalizedName(TurretModRebirth.ID + ":potato_generator");
+        this.setCreativeTab(TmrCreativeTabs.MISC);
+        this.setRegistryName("potato_generator");
         this.setLightOpacity(0);
         this.setDefaultState(this.blockState.getBaseState().withProperty(TILE_HOLDER, true));
     }

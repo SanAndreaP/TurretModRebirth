@@ -22,10 +22,10 @@ import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.entity.EntityList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.math.MathHelper;
@@ -78,7 +78,7 @@ public class TurretInfoEntryAmmo
         Gui.drawRect(2, 30, MAX_ENTRY_WIDTH - 2, 31, 0xFF0080BB);
 
         gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         gui.drawTexturedModalRect(2, 34, 192, 18, 34, 34);
 
         TmrClientUtils.renderStackInGui(ItemRegistry.ammo.getAmmoItem(1, ammo), 3, 35, 2.0F);
@@ -105,7 +105,10 @@ public class TurretInfoEntryAmmo
 
         this.drawHeight += 116;
 
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0.0F, 0.0F, 100.0F);
         Gui.drawRect(0, scrollY, MAX_ENTRY_WIDTH, 16 + scrollY, 0x80000000);
+        GlStateManager.popMatrix();
 
         long time = System.currentTimeMillis();
         if( this.lastTimestamp + 1000 < time ) {
@@ -137,16 +140,13 @@ public class TurretInfoEntryAmmo
         public final int ammoIndex;
         public final ItemStack stack;
 
-        private ShaderCallback shaderCallback = new ShaderCallback() {
-            @Override
-            public void call(int shader) {
-                TextureManager texMgr = Minecraft.getMinecraft().renderEngine;
-                int imageUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "image");
+        private ShaderCallback shaderCallback = shader -> {
+            TextureManager texMgr = Minecraft.getMinecraft().renderEngine;
+            int imageUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "image");
 
-                OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB);
-                GL11.glBindTexture(GL11.GL_TEXTURE_2D, texMgr.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).getGlTextureId());
-                ARBShaderObjects.glUniform1iARB(imageUniform, 0);
-            }
+            OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB);
+            GlStateManager.bindTexture(texMgr.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).getGlTextureId());
+            ARBShaderObjects.glUniform1iARB(imageUniform, 0);
         };
 
         public GuiButtonAmmoItem(int id, int x, int y, int index) {
@@ -158,6 +158,8 @@ public class TurretInfoEntryAmmo
         @Override
         public void drawButton(Minecraft mc, int mouseX, int mouseY) {
             if( this.visible ) {
+                GlStateManager.pushMatrix();
+                GlStateManager.translate(0.0F, 0.0F, 100.0F);
                 Gui.drawRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + 1, 0xA0000000);
                 Gui.drawRect(this.xPosition, this.yPosition + this.height - 1, this.xPosition + this.width, this.yPosition + this.height, 0xA0000000);
                 Gui.drawRect(this.xPosition, this.yPosition + 1, this.xPosition + 1, this.yPosition + this.height - 1, 0x40000000);
@@ -170,7 +172,7 @@ public class TurretInfoEntryAmmo
 
                     if(shaders) {
                         OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + TmrConfiguration.glSecondaryTextureUnit);
-                        texture = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
+                        texture = GlStateManager.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
                     }
 
                     ShaderHelper.useShader(ShaderHelper.grayscaleItem, shaderCallback);
@@ -179,13 +181,14 @@ public class TurretInfoEntryAmmo
 
                     if(shaders) {
                         OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + TmrConfiguration.glSecondaryTextureUnit);
-                        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
+                        GlStateManager.bindTexture(texture);
                         OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB);
                     }
                 } else {
                     Gui.drawRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, 0x80FFFFFF);
                     TmrClientUtils.renderStackInGui(this.stack, this.xPosition, this.yPosition, 1.0F);
                 }
+                GlStateManager.popMatrix();
             }
         }
     }

@@ -15,7 +15,7 @@ import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.Sounds;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.darkhax.bookshelf.lib.javatuples.Triplet;
+import de.sanandrew.mods.turretmod.util.javatuples.Triplet;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;

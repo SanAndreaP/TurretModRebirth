@@ -12,7 +12,7 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.Sounds;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.darkhax.bookshelf.lib.javatuples.Triplet;
+import de.sanandrew.mods.turretmod.util.javatuples.Triplet;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
@@ -29,6 +29,7 @@ public class EntityProjectileCryoCell
     private int level = 0;
     private int duration = 0;
 
+    @SuppressWarnings("unused")
     public EntityProjectileCryoCell(World world) {
         super(world);
     }
@@ -37,6 +38,7 @@ public class EntityProjectileCryoCell
         super(world, shooter, target);
     }
 
+    @SuppressWarnings("unused")
     public EntityProjectileCryoCell(World world, Entity shooter, Vec3d shootingVec) {
         super(world, shooter, shootingVec);
     }

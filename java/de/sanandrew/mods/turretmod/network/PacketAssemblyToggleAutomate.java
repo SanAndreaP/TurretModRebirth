@@ -19,6 +19,7 @@ public class PacketAssemblyToggleAutomate
 {
     private BlockPos pos;
 
+    @SuppressWarnings("unused")
     public PacketAssemblyToggleAutomate() { }
 
     public PacketAssemblyToggleAutomate(TileEntityTurretAssembly assembly) {

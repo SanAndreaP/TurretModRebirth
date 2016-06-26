@@ -17,11 +17,8 @@ import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,13 +65,13 @@ public class TurretInfoEntryGenerator
 
     private static void drawTooltipFuel(Minecraft mc, int scrollY) {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0.0F, MAX_ENTRY_HEIGHT - 48 + scrollY, 64.0F);
+        GlStateManager.translate(0.0F, MAX_ENTRY_HEIGHT - 48 + scrollY, 100.0F);
         Gui.drawRect(0, 0, MAX_ENTRY_WIDTH, 48, 0xD0000000);
 
         mc.fontRendererObj.drawString(String.format("§e%s", TmrClientUtils.getTooltipWithoutShift(tooltipItem).get(0)), 22, 2, 0xFFFFFFFF, false);
         TileEntityElectrolyteGenerator.Fuel fuel = TileEntityElectrolyteGenerator.getFuel(tooltipItem.getItem());
-        mc.fontRendererObj.drawString(String.format(Lang.translate(Lang.TINFO_ENTRY_EFFICIENCY.get()), fuel.effect), 22, 11, 0xFFFFFFFF, false);
-        mc.fontRendererObj.drawString(String.format(Lang.translate(Lang.TINFO_ENTRY_DECAY.get()), TmrClientUtils.getTimeFromTicks(fuel.ticksProc)), 22, 20, 0xFFFFFFFF, false);
+        mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_EFFICIENCY.get(), fuel.effect), 22, 11, 0xFFFFFFFF, false);
+        mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_DECAY.get(), TmrClientUtils.getTimeFromTicks(fuel.ticksProc)), 22, 20, 0xFFFFFFFF, false);
         mc.fontRendererObj.drawString(String.format("§a%s", TmrClientUtils.getTooltipWithoutShift(fuel.trash).get(0)), 32, 29, 0xFFFFFFFF, false);
         mc.fontRendererObj.drawString(String.format("§d%s", TmrClientUtils.getTooltipWithoutShift(fuel.treasure).get(0)), 32, 38, 0xFFFFFFFF, false);
 
@@ -106,7 +103,7 @@ public class TurretInfoEntryGenerator
             Gui.drawRect(1, 1, 17, 17, 0x80FFFFFF);
         }
 
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
     }
 
     @Override

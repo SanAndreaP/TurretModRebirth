@@ -21,7 +21,6 @@ public interface TurretAmmo
     String getName();
     UUID getId();
     UUID getTypeId();
-    String getItemDesc();
     UUID getGroupId();
     String getInfoName();
     float getInfoDamage();

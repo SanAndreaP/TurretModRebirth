@@ -73,30 +73,30 @@ public class RenderWorldLastHandler
 
         GlStateManager.disableTexture2D();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-        buffer.pos(0, (0), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-        buffer.pos(0, (64), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-        buffer.pos(128, (64), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-        buffer.pos(128, (0), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+        buffer.pos(0.0D, 0.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+        buffer.pos(0.0D, 64.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+        buffer.pos(128.0D, 64.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+        buffer.pos(128.0D, 0.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
         //health
-        buffer.pos((1), (22), 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
-        buffer.pos((1), (24), 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
-        buffer.pos((127), (24), 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
-        buffer.pos((127), (22), 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
+        buffer.pos(1.0D, 22.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
+        buffer.pos(1.0D, 24.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
+        buffer.pos(127.0D, 24.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
+        buffer.pos(127.0D, 22.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
         float healthRel = turret.getHealth() / turret.getMaxHealth();
-        buffer.pos((1), (22), 0.0D).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
-        buffer.pos((1), (24), 0.0D).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
-        buffer.pos((1 + 126.0F * healthRel), (24), 0.0D).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
-        buffer.pos((1 + 126.0F * healthRel), (22), 0.0D).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
+        buffer.pos(1.0D, 22.0D, 0.0D).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
+        buffer.pos(1.0D, 24.0D, 0.0D).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
+        buffer.pos((1 + 126.0F * healthRel), 24.0D, 0.0D).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
+        buffer.pos((1 + 126.0F * healthRel), 22.0D, 0.0D).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
         //ammo
-        buffer.pos((1), (38), 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
-        buffer.pos((1), (40), 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
-        buffer.pos((127), (40), 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
-        buffer.pos((127), (38), 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
+        buffer.pos(1.0D, 38.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
+        buffer.pos(1.0D, 40.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
+        buffer.pos(127.0D, 40.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
+        buffer.pos(127.0D, 38.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
         float ammoRel = turret.getTargetProcessor().getAmmoCount() / (float)turret.getTargetProcessor().getMaxAmmoCapacity();
-        buffer.pos((1), (38), 0.0D).color(0.4F, 0.4F, 1.0F, 1.0F).endVertex();
-        buffer.pos((1), (40), 0.0D).color(0.4F, 0.4F, 1.0F, 1.0F).endVertex();
-        buffer.pos((1 + 126.0F * ammoRel), (40), 0.0D).color(0.4F, 0.4F, 1.0F, 1.0F).endVertex();
-        buffer.pos((1 + 126.0F * ammoRel), (38), 0.0D).color(0.4F, 0.4F, 1.0F, 1.0F).endVertex();
+        buffer.pos(1.0D, 38.0D, 0.0D).color(0.4F, 0.4F, 1.0F, 1.0F).endVertex();
+        buffer.pos(1.0D, 40.0D, 0.0D).color(0.4F, 0.4F, 1.0F, 1.0F).endVertex();
+        buffer.pos((1 + 126.0F * ammoRel), 40.0D, 0.0D).color(0.4F, 0.4F, 1.0F, 1.0F).endVertex();
+        buffer.pos((1 + 126.0F * ammoRel), 38.0D, 0.0D).color(0.4F, 0.4F, 1.0F, 1.0F).endVertex();
         tessellator.draw();
         GlStateManager.enableTexture2D();
 

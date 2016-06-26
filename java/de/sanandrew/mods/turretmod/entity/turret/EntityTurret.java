@@ -17,6 +17,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
@@ -31,7 +32,7 @@ import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import io.netty.buffer.ByteBuf;
-import net.darkhax.bookshelf.lib.javatuples.Pair;
+import de.sanandrew.mods.turretmod.util.javatuples.Pair;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -174,9 +175,8 @@ public abstract class EntityTurret
 
     @Override
     public void onLivingUpdate() {
-
         if( this.blockPos == null ) {
-            this.blockPos = new BlockPos((int) Math.floor(this.posX), (int)Math.floor(this.posY) + (this.isUpsideDown ? 3 : 0), (int)Math.floor(this.posZ));
+            this.blockPos = new BlockPos((int) Math.floor(this.posX), (int)Math.floor(this.posY) + (this.isUpsideDown ? 2 : -1), (int)Math.floor(this.posZ));
         }
 
         if( !canTurretBePlaced(this.worldObj, this.blockPos, true, this.isUpsideDown) ) {
@@ -389,13 +389,26 @@ public abstract class EntityTurret
         this.dwBools.setBit(DataWatcherBooleans.Turret.ACTIVE.bit, active);
     }
 
+    private static boolean isAABBInside(AxisAlignedBB bb1, AxisAlignedBB bb2) {
+        return bb1.minX <= bb2.minX && bb1.minY <= bb2.minY && bb1.minZ <= bb2.minZ && bb1.maxX >= bb2.maxX && bb1.maxY >= bb2.maxY && bb1.maxZ >= bb2.maxZ;
+    }
+
+    private static final AxisAlignedBB UPWARDS_BLOCK = new AxisAlignedBB(0.1D, 0.99D, 0.1D, 1.0D, 1.0D, 1.0D);
+    private static final AxisAlignedBB DOWNWARDS_BLOCK = new AxisAlignedBB(0.1D, 0.0D, 0.1D, 1.0D, 0.01D, 1.0D);
     public static boolean canTurretBePlaced(World world, BlockPos pos, boolean doBlockCheckOnly, boolean updideDown) {
-        if( !Blocks.LEVER.canPlaceBlockAt(world, pos) ) {
+        AxisAlignedBB blockBB = world.getBlockState(pos).getCollisionBoundingBox(world, pos);
+        if( blockBB == null || !isAABBInside(blockBB, updideDown ? DOWNWARDS_BLOCK : UPWARDS_BLOCK) ) {
+            return false;
+        }
+
+        BlockPos posPlaced = pos.offset(updideDown ? EnumFacing.DOWN : EnumFacing.UP);
+        BlockPos posPlaced2 = pos.offset(updideDown ? EnumFacing.DOWN : EnumFacing.UP, 2);
+        if( !world.getBlockState(posPlaced).getBlock().isReplaceable(world, posPlaced) || !world.getBlockState(posPlaced2).getBlock().isReplaceable(world, posPlaced2) ) {
             return false;
         }
 
         if( !doBlockCheckOnly ) {
-            AxisAlignedBB aabb = new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1.0D, pos.getY() + (updideDown ? - 1.0D : 1.0D), pos.getZ() + 1.0D);
+            AxisAlignedBB aabb = new AxisAlignedBB(posPlaced.getX(), posPlaced.getY(), posPlaced.getZ(), posPlaced.getX() + 1.0D, posPlaced.getY() + (updideDown ? - 1.0D : 1.0D), posPlaced.getZ() + 1.0D);
             if( !world.getEntitiesWithinAABB(EntityTurret.class, aabb).isEmpty() ) {
                 return false;
             }

@@ -17,7 +17,6 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
-import org.lwjgl.opengl.GL11;
 
 public class GuiAssemblyFilter
         extends GuiContainer

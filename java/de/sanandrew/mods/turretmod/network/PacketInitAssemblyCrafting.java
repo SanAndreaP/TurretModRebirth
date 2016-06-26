@@ -24,6 +24,7 @@ public class PacketInitAssemblyCrafting
     private String crfUUID;
     private int count;
 
+    @SuppressWarnings("unused")
     public PacketInitAssemblyCrafting() { }
 
     public PacketInitAssemblyCrafting(TileEntityTurretAssembly assembly, UUID uuid, int count) {

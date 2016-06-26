@@ -1,3 +1,11 @@
+/**
+ * ****************************************************************************************************************
+ * Authors:   SanAndreasP
+ * Copyright: SanAndreasP
+ * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+ * http://creativecommons.org/licenses/by-nc-sa/4.0/
+ * *****************************************************************************************************************
+ */
 package de.sanandrew.mods.turretmod.entity.projectile;
 
 import com.google.common.base.Predicate;
@@ -10,8 +18,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import io.netty.buffer.ByteBuf;
@@ -29,14 +35,7 @@ import net.minecraft.world.World;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * ****************************************************************************************************************
- * Authors:   SanAndreasP
- * Copyright: SanAndreasP
- * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
- * http://creativecommons.org/licenses/by-nc-sa/4.0/
- * *****************************************************************************************************************
- */
+@SuppressWarnings({"SuspiciousNameCombination", "BooleanMethodNameMustStartWithQuestion"})
 public abstract class EntityTurretProjectile
         extends Entity
         implements IProjectile, IEntityAdditionalSpawnData
@@ -49,8 +48,6 @@ public abstract class EntityTurretProjectile
     public EntityTurretProjectile(World world) {
         super(world);
         this.setSize(0.5F, 0.5F);
-//        this.renderDistanceWeight = 10.0D;
-//        this.yOffset = 0.0F;
     }
 
     public EntityTurretProjectile(World world, Entity shooter, Entity target) {
@@ -103,16 +100,6 @@ public abstract class EntityTurretProjectile
         if( this.targetUUID != null && this.targetCache == null ) {
             this.targetCache = TmrUtils.getEntityByUUID(this.worldObj, this.targetUUID);
         }
-    }
-
-    /**
-     * Sets the position and rotation. Only difference from the other one is no bounding on the rotation. Args: posX,
-     * posY, posZ, yaw, pitch
-     */
-    @SideOnly(Side.CLIENT)
-    public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch, int its3EveryTime) {
-        this.setPosition(x, y, z);
-        this.setRotation(yaw, pitch);
     }
 
     @Override
@@ -293,29 +280,25 @@ public abstract class EntityTurretProjectile
     }
 
     public static void setEntityTarget(EntityCreature target, EntityTurret attacker) {
-//        if( TmrUtils.getIsAIEnabled(target) ) {
-            EntityAIBase ai = TmrUtils.getAIFromTaskList(target.targetTasks.taskEntries, EntityAIAttackTurret.class);
-            if( ai == null ) {
-                ai = new EntityAIAttackTurret(target, new RevengeEntitySelector(attacker));
-                target.targetTasks.taskEntries.clear();
-                target.targetTasks.addTask(0, ai);
-            } else if( !ai.continueExecuting() ) {
-                ((EntityAIAttackTurret) ai).overrideTarget(attacker);
-            }
-            target.setAttackTarget(attacker);
+        EntityAIBase ai = TmrUtils.getAIFromTaskList(target.targetTasks.taskEntries, EntityAIAttackTurret.class);
+        if( ai == null ) {
+            ai = new EntityAIAttackTurret(target, new RevengeEntitySelector(attacker));
+            target.targetTasks.taskEntries.clear();
+            target.targetTasks.addTask(0, ai);
+        } else if( !ai.continueExecuting() ) {
+            ((EntityAIAttackTurret) ai).overrideTarget(attacker);
+        }
+        target.setAttackTarget(attacker);
 
-            if( target instanceof EntityZombie ) {
-                EntityAIBase aiTgtFollow = TmrUtils.getAIFromTaskList(target.tasks.taskEntries, EntityAIMoveTowardsTurret.class);
-                if( aiTgtFollow == null ) {
-                    target.tasks.addTask(2, new EntityAIMoveTowardsTurret(target, attacker, 0.9D, 32.0F));
-                    target.tasks.addTask(1, new EntityAIAttackMelee(target, 0.9D, true));
-                } else if( !aiTgtFollow.continueExecuting() ) {
-                    ((EntityAIMoveTowardsTurret) aiTgtFollow).setNewTurret(attacker);
-                }
+        if( target instanceof EntityZombie ) {
+            EntityAIBase aiTgtFollow = TmrUtils.getAIFromTaskList(target.tasks.taskEntries, EntityAIMoveTowardsTurret.class);
+            if( aiTgtFollow == null ) {
+                target.tasks.addTask(2, new EntityAIMoveTowardsTurret(target, attacker, 0.9D, 32.0F));
+                target.tasks.addTask(1, new EntityAIAttackMelee(target, 0.9D, true));
+            } else if( !aiTgtFollow.continueExecuting() ) {
+                ((EntityAIMoveTowardsTurret) aiTgtFollow).setNewTurret(attacker);
             }
-//        } else {
-//            target.setTarget(attacker);
-//        }
+        }
     }
 
     public void knockBackEntity(EntityLivingBase living, double deltaX, double deltaZ) {
@@ -337,12 +320,12 @@ public abstract class EntityTurretProjectile
         }
     }
 
-    protected void processHit(RayTraceResult hitObj) {
+    protected void processHit(@SuppressWarnings("UnusedParameters") RayTraceResult hitObj) {
         this.playSound(this.getRicochetSound(), 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
         this.setDead();
     }
 
-    private void onBlockHit(BlockPos pos) { }
+    private void onBlockHit(@SuppressWarnings("UnusedParameters") BlockPos pos) { }
 
     public abstract float getInitialSpeedMultiplier();
 

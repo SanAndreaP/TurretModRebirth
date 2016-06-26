@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class UpgradeRegistry
+public final class UpgradeRegistry
 {
     public static final UUID EMPTY = new UUID(0L, 0L);
     public static final UUID UPG_STORAGE_I = UUID.fromString("1749478F-2A8E-4C56-BC03-6C76CB5DE921");

@@ -8,7 +8,6 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -21,7 +20,6 @@ import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,10 +32,10 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.Level;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class ItemTurret
         extends Item
@@ -74,18 +72,20 @@ public class ItemTurret
     @Override
     public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if( !world.isRemote ) {
-            Block block = world.getBlockState(pos).getBlock();
-            BlockPos offPos = pos.add(facing.getFrontOffsetX(), facing.getFrontOffsetY(), facing.getFrontOffsetZ());
-            double shiftY = 0.0D;
-            if( facing == EnumFacing.UP ) {
-                shiftY = 1.0F;
+            BlockPos placingOn = pos.add(facing.getFrontOffsetX(), 0, facing.getFrontOffsetZ());
+            if( facing.getFrontOffsetY() == 0 ) {
+                placingOn = placingOn.offset(EnumFacing.DOWN);
+                facing = EnumFacing.UP;
+                if( world.getBlockState(placingOn).getBlock().isReplaceable(world, placingOn) ) {
+                    placingOn = placingOn.offset(EnumFacing.UP, 2);
+                    facing = EnumFacing.DOWN;
+                }
             }
-//            if( facing == EnumFacing.UP && block ) {
-//                shiftY = 0.5D;
-//            }
 
-            if( EntityTurret.canTurretBePlaced(world, pos, false, facing == EnumFacing.DOWN) ) {
-                EntityTurret turret = spawnTurret(world, getTurretInfo(stack), pos.getX() + 0.5D, pos.getY() + shiftY, pos.getZ() + 0.5D, facing == EnumFacing.DOWN, player);
+            int shiftY = facing == EnumFacing.UP ? 1 : -1;
+
+            if( EntityTurret.canTurretBePlaced(world, placingOn, false, facing == EnumFacing.DOWN) ) {
+                EntityTurret turret = spawnTurret(world, getTurretInfo(stack), placingOn.getX() + 0.5D, placingOn.getY() + shiftY, placingOn.getZ() + 0.5D, facing == EnumFacing.DOWN, player);
                 if( turret != null ) {
                     Float initHealth = getTurretHealth(stack);
                     if( initHealth != null ) {
@@ -111,7 +111,8 @@ public class ItemTurret
     public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
         if( !world.isRemote ) {
             RayTraceResult traceResult = this.rayTrace(world, player, true);
-                if( traceResult != null && traceResult.typeOfHit == RayTraceResult.Type.BLOCK ) {
+            //noinspection ConstantConditions
+            if( traceResult != null && traceResult.typeOfHit == RayTraceResult.Type.BLOCK ) {
                     BlockPos blockPos = traceResult.getBlockPos();
                     if( !world.isBlockModifiable(player, blockPos) ) {
                         return new ActionResult<>(EnumActionResult.FAIL, stack);
@@ -147,9 +148,7 @@ public class ItemTurret
     @Override
     @SuppressWarnings("unchecked")
     public void getSubItems(Item item, CreativeTabs tab, List list) {
-        for( TurretInfo type : TurretRegistry.INSTANCE.getRegisteredInfos() ) {
-            list.add(this.getTurretItem(1, type));
-        }
+        list.addAll(TurretRegistry.INSTANCE.getRegisteredInfos().stream().map(type -> this.getTurretItem(1, type)).collect(Collectors.toList()));
     }
 
     public static TurretInfo getTurretInfo(ItemStack stack) {
@@ -217,7 +216,6 @@ public class ItemTurret
             turret.setLocationAndAngles(x, y - (isUpsideDown ? 1.0D : 0.0D), z, MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
             turret.rotationYawHead = turret.rotationYaw;
             turret.renderYawOffset = turret.rotationYaw;
-//            turret.onSpawnWithEgg(null);
             world.spawnEntityInWorld(turret);
             turret.playLivingSound();
         }

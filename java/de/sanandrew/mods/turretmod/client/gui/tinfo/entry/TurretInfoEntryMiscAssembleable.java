@@ -14,9 +14,9 @@ import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
-import org.lwjgl.opengl.GL11;
 
 import java.util.UUID;
 
@@ -46,11 +46,10 @@ public class TurretInfoEntryMiscAssembleable
         Gui.drawRect(2, 12, MAX_ENTRY_WIDTH - 2, 13, 0xFF0080BB);
 
         gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         gui.drawTexturedModalRect(2, 16, 192, 18, 34, 34);
 
         TmrClientUtils.renderStackInGui(this.getIcon(), 3, 17, 2.0F);
-//        drawItem(gui.mc, 3, 17, this.getIcon(), 2.0F);
 
         gui.mc.fontRendererObj.drawString(this.txtCrft, 42, 16, 0xFF6A6A6A, false);
 

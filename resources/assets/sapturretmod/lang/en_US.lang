@@ -146,7 +146,23 @@ gui.sapturretmod.tassembly.rfUsing=using %d RF/t
 gui.sapturretmod.electrogen.effective=Effectiveness:
 gui.sapturretmod.electrogen.powergen=Power generated:
 
-
+subtitles.sapturretmod.turretIdle=Turret idles
+subtitles.sapturretmod.turretGather=Turret gathers
+subtitles.sapturretmod.turretDeath=Turret breaks
+subtitles.sapturretmod.turretHit=Turret damaged
+subtitles.sapturretmod.turretShoot.shotgun=Shotgun Turret shoots
+subtitles.sapturretmod.turretShoot.cryolator=Cryolator Turret shoots
+subtitles.sapturretmod.turretShoot.minigun=Minigun Turret shoots
+subtitles.sapturretmod.turretShoot.pistol=Revolver Turret shoots
+subtitles.sapturretmod.turretShoot.laser=Laser Turret shoots
+subtitles.sapturretmod.turretShoot.flamethrower=Flamethrower Turret fires
+subtitles.sapturretmod.turretShoot.sniper=Sniper Turret shoots
+subtitles.sapturretmod.turretShoot.healer=Healer Turret heals
+subtitles.sapturretmod.turretShoot.flak=Flak Turret launches
+subtitles.sapturretmod.turretShoot.artillery=Artillery Turret shoots
+subtitles.sapturretmod.turretRicochet.bullet=Bullet ricochets
+subtitles.sapturretmod.turretRicochet.splash=Projectile splashes
+subtitles.sapturretmod.turretShield.active=Shield engages
 
 
 item.sapturretmod:turret_upgrade.name=Turret Upgrade

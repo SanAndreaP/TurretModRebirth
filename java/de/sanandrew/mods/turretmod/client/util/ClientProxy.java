@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.util;
 
+import de.sanandrew.mods.turretmod.client.world.ClientWorldEventListener;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleSmokeNormal;
 import net.minecraft.util.math.BlockPos;
@@ -30,7 +31,7 @@ import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.TurretInfoCategory;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretCrossbow;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretShotgun;
-import de.sanandrew.mods.turretmod.client.model.ModelTurretSnowball;
+import de.sanandrew.mods.turretmod.client.model.ModelTurretCryolator;
 import de.sanandrew.mods.turretmod.client.particle.ParticleAssemblySpark;
 import de.sanandrew.mods.turretmod.client.particle.ParticleCryoTrail;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderPebble;
@@ -54,7 +55,7 @@ import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.darkhax.bookshelf.lib.javatuples.Tuple;
+import de.sanandrew.mods.turretmod.util.javatuples.Tuple;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -72,10 +73,11 @@ public class ClientProxy
         super.preInit(event);
 
         MinecraftForge.EVENT_BUS.register(new RenderWorldLastHandler());
+        MinecraftForge.EVENT_BUS.register(new ClientWorldEventListener());
 
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretCrossbow.class, manager -> { return new RenderTurret(manager, new ModelTurretCrossbow(0.0F)); });
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretShotgun.class, manager -> { return new RenderTurret(manager, new ModelTurretShotgun(0.0F)); });
-        RenderingRegistry.registerEntityRenderingHandler(EntityTurretCryolator.class, manager -> { return new RenderTurret(manager, new ModelTurretSnowball(0.0F)); });
+        RenderingRegistry.registerEntityRenderingHandler(EntityTurretCryolator.class, manager -> { return new RenderTurret(manager, new ModelTurretCryolator(0.0F)); });
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCrossbowBolt.class, RenderTurretArrow::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectilePebble.class, RenderPebble::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCryoCell.class, RenderNothingness::new);

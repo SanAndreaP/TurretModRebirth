@@ -9,13 +9,19 @@
 package de.sanandrew.mods.turretmod.tileentity;
 
 import cofh.api.energy.IEnergyHandler;
+import cofh.api.energy.IEnergyReceiver;
+import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntityLockable;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import de.sanandrew.mods.turretmod.item.ItemAssemblyFilter;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
@@ -26,8 +32,8 @@ import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import io.netty.buffer.ByteBuf;
-import net.darkhax.bookshelf.lib.javatuples.Pair;
-import net.darkhax.bookshelf.lib.javatuples.Triplet;
+import de.sanandrew.mods.turretmod.util.javatuples.Pair;
+import de.sanandrew.mods.turretmod.util.javatuples.Triplet;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
@@ -36,13 +42,17 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
 import java.util.UUID;
 
 //TODO: make it TileEntityLockable
 public class TileEntityTurretAssembly
-        extends TileEntity
-        implements ISidedInventory, IEnergyHandler, TileClientSync, ITickable
+        extends TileEntityLockable
+        implements ISidedInventory, IEnergyHandler, IEnergyReceiver, TileClientSync, ITickable
 {
     public static final int MAX_FLUX_STORAGE = 75_000;
     public static final int MAX_FLUX_INSERT = 500;
@@ -57,7 +67,6 @@ public class TileEntityTurretAssembly
     public float robotMotionY = 0.0F;
     public float robotEndX;
     public float robotEndY;
-    public boolean isItemRendered = false;
     public Triplet<Float, Float, Float> spawnParticle = null;
 
     private boolean prevActive;
@@ -80,19 +89,14 @@ public class TileEntityTurretAssembly
     private long ticksExisted = 0L;
     private String customName;
 
-    public TileEntityTurretAssembly() {
-        this.isItemRendered = false;
-    }
-
-    public TileEntityTurretAssembly(boolean itemRendered) {
-        this.isItemRendered = itemRendered;
-    }
+    public TileEntityTurretAssembly() { }
 
     public void beginCrafting(UUID recipe, int count) {
         if( this.currCrafting != null && recipe.equals(this.currCrafting.getValue0()) && !this.automate ) {
+            ItemStack result = TurretAssemblyRecipes.INSTANCE.getRecipeResult(recipe);
             if( this.currCrafting.getValue1().stackSize + count < 1 ) {
                 this.cancelCrafting();
-            } else if( this.currCrafting.getValue1().stackSize + count * TurretAssemblyRecipes.INSTANCE.getRecipeResult(recipe).stackSize <= this.currCrafting.getValue1().getMaxStackSize() ) {
+            } else if( result != null && this.currCrafting.getValue1().stackSize + count * result.stackSize <= this.currCrafting.getValue1().getMaxStackSize() ) {
                 this.currCrafting.getValue1().stackSize += count;
                 this.doSync = true;
             } else {
@@ -101,11 +105,12 @@ public class TileEntityTurretAssembly
             }
         } else if( this.currCrafting == null ) {
             ItemStack stackRes = TurretAssemblyRecipes.INSTANCE.getRecipeResult(recipe);
-            if( stackRes != null ) {
+            TurretAssemblyRecipes.RecipeEntry entry = TurretAssemblyRecipes.INSTANCE.getRecipeEntry(recipe);
+            if( entry != null && stackRes != null ) {
                 stackRes = stackRes.copy();
                 stackRes.stackSize = this.automate ? 1 : count;
                 this.currCrafting = Pair.with(recipe, stackRes);
-                this.maxTicksCrafted = TurretAssemblyRecipes.INSTANCE.getRecipeEntry(recipe).ticksProcessing;
+                this.maxTicksCrafted = entry.ticksProcessing;
                 this.doSync = true;
             }
         }
@@ -117,6 +122,7 @@ public class TileEntityTurretAssembly
         this.fluxConsumption = 0;
         this.maxTicksCrafted = 0;
         this.isActive = false;
+        this.isActiveClient = false;
         this.doSync = true;
     }
 
@@ -129,11 +135,13 @@ public class TileEntityTurretAssembly
                 addStacks.stackSize = recipe.stackSize;
                 if( TmrUtils.canStack(this.assemblyStacks[0], addStacks, true) && TurretAssemblyRecipes.INSTANCE.checkAndConsumeResources(this, currCrfUUID) ) {
                     TurretAssemblyRecipes.RecipeEntry currentlyCrafted = TurretAssemblyRecipes.INSTANCE.getRecipeEntry(currCrfUUID);
-                    this.maxTicksCrafted = currentlyCrafted.ticksProcessing;
-                    this.fluxConsumption = MathHelper.ceiling_float_int(currentlyCrafted.fluxPerTick * (this.hasSpeedUpgrade() ? 1.1F : 1.0F));
-                    this.ticksCrafted = 0;
-                    this.isActive = true;
-                    this.doSync = true;
+                    if( currentlyCrafted != null ) {
+                        this.maxTicksCrafted = currentlyCrafted.ticksProcessing;
+                        this.fluxConsumption = MathHelper.ceiling_float_int(currentlyCrafted.fluxPerTick * (this.hasSpeedUpgrade() ? 1.1F : 1.0F));
+                        this.ticksCrafted = 0;
+                        this.isActive = true;
+                        this.doSync = true;
+                    }
                 }
             } else {
                 this.cancelCrafting();
@@ -179,6 +187,10 @@ public class TileEntityTurretAssembly
                         this.fluxAmount -= this.fluxConsumption;
                         if( ++this.ticksCrafted >= this.maxTicksCrafted ) {
                             ItemStack stack = TurretAssemblyRecipes.INSTANCE.getRecipeResult(this.currCrafting.getValue0());
+                            if( stack == null ) {
+                                this.cancelCrafting();
+                                return;
+                            }
 
                             if( this.assemblyStacks[0] != null ) {
                                 this.assemblyStacks[0].stackSize += stack.stackSize;
@@ -200,11 +212,7 @@ public class TileEntityTurretAssembly
                                     this.currCrafting.getValue1().stackSize--;
                                 }
                             } else if( !this.automate ) {
-                                this.currCrafting = null;
-                                this.maxTicksCrafted = 0;
-                                this.isActive = false;
-                                this.isActiveClient = false;
-                                this.fluxConsumption = 0;
+                                this.cancelCrafting();
                             }
                             this.ticksCrafted = 0;
 
@@ -348,6 +356,10 @@ public class TileEntityTurretAssembly
         nbt.setInteger("fluxConsumption", this.fluxConsumption);
         nbt.setBoolean("automate", this.automate);
 
+        if( this.hasCustomName() ) {
+            nbt.setString("customName", this.customName);
+        }
+
         return nbt;
     }
 
@@ -364,6 +376,10 @@ public class TileEntityTurretAssembly
         this.maxTicksCrafted = nbt.getInteger("maxTicksCrafted");
         this.fluxConsumption = nbt.getInteger("fluxConsumption");
         this.automate = nbt.getBoolean("automate");
+
+        if( nbt.hasKey("customName") ) {
+            this.customName = nbt.getString("customName");
+        }
     }
 
     private boolean isStackAcceptable(ItemStack stack, int insrtSlot) {
@@ -457,12 +473,12 @@ public class TileEntityTurretAssembly
 
     @Override
     public String getName() {
-        return "";
+        return this.hasCustomName() ? this.customName : TurretModRebirth.ID + ".container.assembly";
     }
 
     @Override
     public boolean hasCustomName() {
-        return false;
+        return this.customName != null;
     }
 
     public ITextComponent getDisplayName() {
@@ -551,11 +567,6 @@ public class TileEntityTurretAssembly
     }
 
     @Override
-    public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
-        return 0;
-    }
-
-    @Override
     public int getEnergyStored(EnumFacing from) {
         return this.fluxAmount;
     }
@@ -631,24 +642,34 @@ public class TileEntityTurretAssembly
         return this;
     }
 
-    net.minecraftforge.items.IItemHandler handlerBottom = new net.minecraftforge.items.wrapper.SidedInvWrapper(this, net.minecraft.util.EnumFacing.DOWN);
-    net.minecraftforge.items.IItemHandler handlerSide = new net.minecraftforge.items.wrapper.SidedInvWrapper(this, net.minecraft.util.EnumFacing.WEST);
+    IItemHandler itemHandlerBottom = new SidedInvWrapper(this, EnumFacing.DOWN);
+    IItemHandler itemHandlerSide = new SidedInvWrapper(this, EnumFacing.WEST);
 
     @Override
     @SuppressWarnings({"unchecked", "ConstantConditions"})
-    public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, net.minecraft.util.EnumFacing facing) {
-        if( facing != null && capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ) {
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if( facing != null && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ) {
             if( facing == EnumFacing.DOWN ) {
-                return (T) handlerBottom;
-            } else {
-                return (T) handlerSide;
+                return (T) itemHandlerBottom;
+            } else if( facing != EnumFacing.UP ) {
+                return (T) itemHandlerSide;
             }
         }
 
-        return super.getCapability(capability, facing);
+        return null;
     }
 
     public void setCustomName(String customName) {
         this.customName = customName;
+    }
+
+    @Override
+    public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
+        return new ContainerTurretAssembly(playerInventory, this);
+    }
+
+    @Override
+    public String getGuiID() {
+        return "7C1E3396-655F-43DB-BDDE-B7C481936495";
     }
 }

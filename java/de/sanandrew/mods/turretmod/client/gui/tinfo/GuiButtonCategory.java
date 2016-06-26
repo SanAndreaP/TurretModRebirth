@@ -32,32 +32,29 @@ public class GuiButtonCategory
     private ResourceLocation texture;
     private GuiTurretInfo tinfo;
 
-    private ShaderCallback shaderCallback = new ShaderCallback() {
-        @Override
-        public void call(int shader) {
-            TextureManager texMgr = Minecraft.getMinecraft().renderEngine;
-            int heightMatchUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "heightMatch");
-            int imageUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "image");
-            int maskUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "mask");
+    private ShaderCallback shaderCallback = shader -> {
+        TextureManager texMgr = Minecraft.getMinecraft().renderEngine;
+        int heightMatchUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "heightMatch");
+        int imageUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "image");
+        int maskUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "mask");
 
-            float heightMatch = GuiButtonCategory.this.ticksHovered / GuiButtonCategory.this.time;
-            OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, texMgr.getTexture(GuiButtonCategory.this.texture).getGlTextureId());
-            ARBShaderObjects.glUniform1iARB(imageUniform, 0);
+        float heightMatch = GuiButtonCategory.this.ticksHovered / GuiButtonCategory.this.time;
+        OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB);
+        GlStateManager.bindTexture(texMgr.getTexture(GuiButtonCategory.this.texture).getGlTextureId());
+        ARBShaderObjects.glUniform1iARB(imageUniform, 0);
 
-            OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + TmrConfiguration.glSecondaryTextureUnit);
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
-            GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
-            ResourceLocation stencil = Resources.TINFO_GRP_STENCIL.getResource();
-            texMgr.getTexture(stencil);
-            ITextureObject stencilTex;
-            texMgr.bindTexture(stencil);
-            stencilTex = texMgr.getTexture(stencil);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, stencilTex.getGlTextureId());
-            ARBShaderObjects.glUniform1iARB(maskUniform, 7);
+        OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + TmrConfiguration.glSecondaryTextureUnit);
+        GlStateManager.enableTexture2D();
+        GlStateManager.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
+        ResourceLocation stencil = Resources.TINFO_GRP_STENCIL.getResource();
+        texMgr.getTexture(stencil);
+        ITextureObject stencilTex;
+        texMgr.bindTexture(stencil);
+        stencilTex = texMgr.getTexture(stencil);
+        GlStateManager.bindTexture(stencilTex.getGlTextureId());
+        ARBShaderObjects.glUniform1iARB(maskUniform, 7);
 
-            ARBShaderObjects.glUniform1fARB(heightMatchUniform, heightMatch);
-        }
+        ARBShaderObjects.glUniform1fARB(heightMatchUniform, heightMatch);
     };
 
     float ticksHovered = 0.0F;

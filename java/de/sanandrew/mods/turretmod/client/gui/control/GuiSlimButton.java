@@ -12,8 +12,7 @@ import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.OpenGlHelper;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.GlStateManager;
 
 public class GuiSlimButton
         extends GuiButton
@@ -42,14 +41,14 @@ public class GuiSlimButton
             }
 
             mc.getTextureManager().bindTexture(Resources.GUI_BUTTONS.getResource());
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            GL11.glEnable(GL11.GL_BLEND);
-            OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 78 + hoverState * 12, center, this.height);
             this.drawTexturedModalRect(this.xPosition + center, this.yPosition, 158 - center, 78 + hoverState * 12, center, this.height);
             this.mouseDragged(mc, mouseX, mouseY);
             this.drawCenteredString(mc.fontRendererObj, this.displayString, this.xPosition + center, this.yPosition + (this.height - 8) / 2, textColor);
-            GL11.glDisable(GL11.GL_BLEND);
+            GlStateManager.disableBlend();
         }
     }
 }

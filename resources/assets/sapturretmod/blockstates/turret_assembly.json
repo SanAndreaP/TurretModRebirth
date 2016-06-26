@@ -1,0 +1,9 @@
+{
+    "variants": {
+        "facing=north": { "model": "sapturretmod:turret_assembly_main" },
+        "facing=south": { "model": "sapturretmod:turret_assembly_main", "y": 180 },
+        "facing=east": { "model": "sapturretmod:turret_assembly_main", "y": 90 },
+        "facing=west": { "model": "sapturretmod:turret_assembly_main", "y": 270 },
+        "inventory": { "model": "sapturretmod:turret_assembly_inv" }
+    }
+}

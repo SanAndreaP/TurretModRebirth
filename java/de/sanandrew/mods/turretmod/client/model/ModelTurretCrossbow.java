@@ -8,12 +8,10 @@
  */
 package de.sanandrew.mods.turretmod.client.model;
 
-import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
-import org.lwjgl.opengl.GL11;
 
 public class ModelTurretCrossbow
 		extends ModelBase

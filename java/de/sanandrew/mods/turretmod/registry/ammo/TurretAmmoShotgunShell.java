@@ -8,10 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.registry.ammo;
 
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectilePebble;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
@@ -49,11 +47,6 @@ public abstract class TurretAmmoShotgunShell
     @Override
     public UUID getId() {
         return this.uuid;
-    }
-
-    @Override
-    public String getItemDesc() {
-        return null;
     }
 
     @Override

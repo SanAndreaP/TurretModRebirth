@@ -26,15 +26,10 @@ public class ParticleCryoTrail
         this.particleGreen = f + 0.5F;
         this.particleBlue = f + 0.7F;
 
-//        this.motionY = -0.002F;
-
         this.setParticleTextureIndex(65);
         this.setSize(0.02F, 0.02F);
 
         this.particleScale = 1.25F - (float) this.rand.nextGaussian() * 0.25F;
-//        this.motionX *= 0.02D + datX;
-//        this.motionY *= 0.02D + datY;
-//        this.motionZ *= 0.02D + datZ;
         this.particleMaxAge = 30;
     }
 
@@ -81,20 +76,4 @@ public class ParticleCryoTrail
 
         return blockLight | skyLight << 16;
     }
-
-//    @Override
-//    public float getBrightness(float partTicks) {
-//        float ageDelta = (this.particleAge + partTicks) / this.particleMaxAge;
-//
-//        if( ageDelta < 0.0F ) {
-//            ageDelta = 0.0F;
-//        }
-//
-//        if( ageDelta > 1.0F ) {
-//            ageDelta = 1.0F;
-//        }
-//
-//        float currBrightness = super.getBrightness(partTicks);
-//        return currBrightness * ageDelta + (1.0F - ageDelta);
-//    }
 }

@@ -1,13 +1,12 @@
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
-import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
+@SuppressWarnings("unused")
 public interface TurretUpgrade
 {
     String getName();

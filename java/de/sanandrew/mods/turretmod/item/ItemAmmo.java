@@ -11,14 +11,12 @@ package de.sanandrew.mods.turretmod.item;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmo;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.List;
-import java.util.UUID;
 
 public class ItemAmmo
         extends Item

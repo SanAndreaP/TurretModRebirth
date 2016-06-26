@@ -78,7 +78,6 @@ public class RenderTurret
 
     private static void renderTurretRange(EntityTurret turret, double x, double y, double z) {
         if( turret.showRange ) {
-//            GlStateManager.disableLighting();
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             GlStateManager.disableTexture2D();

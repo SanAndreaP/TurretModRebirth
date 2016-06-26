@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class TurretRegistry
+public final class TurretRegistry
 {
     public static final TurretRegistry INSTANCE = new TurretRegistry();
 

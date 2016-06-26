@@ -22,7 +22,6 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
-import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 import java.util.List;
@@ -62,7 +61,7 @@ public class GuiTcuUpgrades
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partTicks, int mouseX, int mouseY) {
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
         this.mc.getTextureManager().bindTexture(Resources.GUI_TCU_UPGRADES.getResource());
 

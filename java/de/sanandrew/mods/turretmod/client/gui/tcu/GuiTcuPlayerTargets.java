@@ -16,11 +16,11 @@ import de.sanandrew.mods.turretmod.network.PacketUpdateTargets;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.PlayerList;
 import de.sanandrew.mods.turretmod.util.Resources;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -101,7 +101,7 @@ public class GuiTcuPlayerTargets
         int scrollMinY = this.guiTop + 19;
         int scrollMaxY = this.guiTop + 134;
 
-        GL11.glColor3f(1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.drawDefaultBackground();
 
         if( !this.isScrolling && this.canScroll && isLmbDown && mouseX >= scrollMinX && mouseX < scrollMaxX && mouseY > scrollMinY && mouseY < scrollMaxY ) {
@@ -116,7 +116,7 @@ public class GuiTcuPlayerTargets
 
         this.mc.renderEngine.bindTexture(Resources.GUI_TCU_TARGETS.getResource());
 
-        GL11.glColor3f(1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, GuiTCUHelper.X_SIZE, GuiTCUHelper.Y_SIZE);
         this.drawTexturedModalRect(this.guiLeft + 163, this.guiTop + 19 + MathHelper.floor_float(scroll * 109.0F), 176, this.canScroll ? 0 : 6, 6, 6);
 
@@ -149,7 +149,7 @@ public class GuiTcuPlayerTargets
                 }
             }
 
-            GL11.glColor3f(1.0F, 1.0F, 1.0F);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             this.mc.renderEngine.bindTexture(Resources.GUI_TCU_TARGETS.getResource());
             this.drawTexturedModalRect(this.guiLeft + 10, this.guiTop + 20 + offsetY, 176, btnTexOffY, 8, 8);
 

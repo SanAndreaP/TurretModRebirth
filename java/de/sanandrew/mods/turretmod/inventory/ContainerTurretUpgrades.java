@@ -54,7 +54,7 @@ public class ContainerTurretUpgrades
 
         if( stack.isStackable() ) {
             while( stack.stackSize > 0 && (!reverse && start < endSlot || reverse && start >= beginSlot) ) {
-                slot = (Slot)this.inventorySlots.get(start);
+                slot = this.inventorySlots.get(start);
                 slotStack = slot.getStack();
 
                 if( slotStack != null && TmrUtils.areStacksEqual(slotStack, stack, TmrUtils.NBT_COMPARATOR_FIXD) && slot.isItemValid(stack) ) {
@@ -89,7 +89,7 @@ public class ContainerTurretUpgrades
             }
 
             while( !reverse && start < endSlot || reverse && start >= beginSlot ) {
-                slot = (Slot)this.inventorySlots.get(start);
+                slot = this.inventorySlots.get(start);
                 slotStack = slot.getStack();
 
                 if( slotStack == null && slot.isItemValid(stack) ) {
@@ -131,10 +131,11 @@ public class ContainerTurretUpgrades
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slotId) {
         ItemStack origStack = null;
-        Slot slot = (Slot) this.inventorySlots.get(slotId);
+        Slot slot = this.inventorySlots.get(slotId);
 
         if( slot != null && slot.getHasStack() ) {
             ItemStack slotStack = slot.getStack();
+            assert slotStack != null;
             origStack = slotStack.copy();
 
             if( slotId < 36 ) { // if clicked stack is from Processor

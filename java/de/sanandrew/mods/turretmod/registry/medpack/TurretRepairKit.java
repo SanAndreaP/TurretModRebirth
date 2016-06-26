@@ -1,10 +1,3 @@
-package de.sanandrew.mods.turretmod.registry.medpack;
-
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
-import net.minecraft.util.ResourceLocation;
-
-import java.util.UUID;
-
 /**
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
@@ -13,6 +6,13 @@ import java.util.UUID;
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
+package de.sanandrew.mods.turretmod.registry.medpack;
+
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import net.minecraft.util.ResourceLocation;
+
+import java.util.UUID;
+
 public interface TurretRepairKit
 {
     String getName();

@@ -32,8 +32,6 @@ public interface ForcefieldProvider
 
     /**
      * Returns the color of the shield. This includes the Alpha value.<br>
-     * The format of the Integer returned as hex value is as follows:<br>
-     * {@code 0xAARRGGBB}, where {@code AA} = Alpha, {@code RR} = red, {@code GG} = green, {@code BB} = blue
      * @return the color of the shield.
      */
     ColorObject getShieldColor();

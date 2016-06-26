@@ -12,8 +12,6 @@ import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import org.lwjgl.opengl.GL11;
 
 public class GuiAssemblyTabNav
         extends GuiButton

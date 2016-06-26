@@ -13,11 +13,9 @@ import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 public class GuiButtonEntry
         extends GuiButton
@@ -53,10 +51,10 @@ public class GuiButtonEntry
                 this.icon = new ItemStack(Blocks.FIRE);
             }
 
-            GL11.glPushMatrix();
-            GL11.glEnable(GL11.GL_BLEND);
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.pushMatrix();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
             float alphaMulti = this.ticksHovered / this.time;
             int color1 = 0x0066cc66 | ((Math.max(0x00, Math.min(0xC0, StrictMath.round(0xC0 * alphaMulti))) << 24) & 0xFF000000);
@@ -68,21 +66,10 @@ public class GuiButtonEntry
             this.drawGradientRect(this.xPosition + this.width - 1, this.yPosition + 1, this.xPosition + this.width, this.yPosition + this.height - 1, color2, color2);
 
             TmrClientUtils.renderStackInGui(this.icon, this.xPosition + 2, this.yPosition + 3, 0.5D);
-//            GL11.glPushMatrix();
-//            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-//            GL11.glTranslatef(this.xPosition + 2, this.yPosition + 2, 0.0F);
-//            GL11.glScalef(0.5F, 0.5F, 1.0F);
-//            GL11.glTranslatef(0.0F, 1.0F, 0.0F);
-////            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-////            RenderHelper.enableGUIStandardItemLighting();
-////            drawItemStack(mc, this.icon, 0, 0);
-////            RenderHelper.disableStandardItemLighting();
-////            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-//            GL11.glPopMatrix();
 
             mc.fontRendererObj.drawString(this.displayString, this.xPosition + 12, this.yPosition + 3, 0xFF000000, false);
 
-            GL11.glPopMatrix();
+            GlStateManager.popMatrix();
         }
     }
 }

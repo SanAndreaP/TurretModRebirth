@@ -8,7 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.shader;
 
-public abstract class ShaderCallback
+public interface ShaderCallback
 {
-    public abstract void call(int shader);
+    void call(int shader);
 }

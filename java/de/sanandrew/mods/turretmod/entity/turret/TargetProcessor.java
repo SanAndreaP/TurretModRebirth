@@ -1,8 +1,15 @@
+/**
+ * ****************************************************************************************************************
+ * Authors:   SanAndreasP
+ * Copyright: SanAndreasP
+ * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+ * http://creativecommons.org/licenses/by-nc-sa/4.0/
+ * *****************************************************************************************************************
+ */
 package de.sanandrew.mods.turretmod.entity.turret;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
-import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmo;
 import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
@@ -37,14 +44,6 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
 
-/**
- * ****************************************************************************************************************
- * Authors:   SanAndreasP
- * Copyright: SanAndreasP
- * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
- * http://creativecommons.org/licenses/by-nc-sa/4.0/
- * *****************************************************************************************************************
- */
 public abstract class TargetProcessor
 {
     protected static final Map<Class<? extends Entity>, Boolean> ENTITY_TARGET_LIST_STD = new HashMap<>();
@@ -313,7 +312,7 @@ public abstract class TargetProcessor
         if( this.entityToAttack != null ) {
             boolean isEntityValid = this.turret.canEntityBeSeen(this.entityToAttack) && this.entityToAttack.isEntityAlive() && this.turret.getDistanceToEntity(this.entityToAttack) <= range;
             boolean isTargetValid = Boolean.TRUE.equals(this.entityTargetList.get(this.entityToAttack.getClass()));
-            boolean isPlayerValid = Boolean.TRUE.equals(this.playerTargetList.get(this.entityToAttack.getUniqueID())) || Boolean.TRUE.equals(this.playerTargetList.get(PlayerList.EMPTY_UUID));
+            boolean isPlayerValid = Boolean.TRUE.equals(this.playerTargetList.get(this.entityToAttack.getUniqueID())) || Boolean.TRUE.equals(this.playerTargetList.get(TmrUtils.EMPTY_UUID));
             if( isEntityValid && (isTargetValid || isPlayerValid) && doAllowTarget(this.entityToAttack) ) {
                 if( this.shootTicks == 0 && --this.initShootTicks <= 0 ) {
                     shootProjectile();
@@ -473,7 +472,7 @@ public abstract class TargetProcessor
                     return !entity.isDead;
                 }
             } else if( entity instanceof EntityPlayer ) {
-                if( Boolean.TRUE.equals(TargetProcessor.this.playerTargetList.get(entity.getUniqueID()))  || Boolean.TRUE.equals(TargetProcessor.this.playerTargetList.get(PlayerList.EMPTY_UUID))) {
+                if( Boolean.TRUE.equals(TargetProcessor.this.playerTargetList.get(entity.getUniqueID()))  || Boolean.TRUE.equals(TargetProcessor.this.playerTargetList.get(TmrUtils.EMPTY_UUID))) {
                     return !entity.isDead;
                 }
             }

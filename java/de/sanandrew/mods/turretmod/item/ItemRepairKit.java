@@ -1,22 +1,3 @@
-package de.sanandrew.mods.turretmod.item;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
-import de.sanandrew.mods.turretmod.registry.medpack.TurretRepairKit;
-import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 /**
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
@@ -25,6 +6,19 @@ import java.util.stream.Collectors;
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
+package de.sanandrew.mods.turretmod.item;
+
+import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
+import de.sanandrew.mods.turretmod.registry.medpack.TurretRepairKit;
+import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class ItemRepairKit
         extends Item
 {

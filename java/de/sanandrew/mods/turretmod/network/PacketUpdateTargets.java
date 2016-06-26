@@ -1,3 +1,11 @@
+/**
+ * ****************************************************************************************************************
+ * Authors:   SanAndreasP
+ * Copyright: SanAndreasP
+ * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+ * http://creativecommons.org/licenses/by-nc-sa/4.0/
+ * *****************************************************************************************************************
+ */
 package de.sanandrew.mods.turretmod.network;
 
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -11,14 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * ****************************************************************************************************************
- * Authors:   SanAndreasP
- * Copyright: SanAndreasP
- * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
- * http://creativecommons.org/licenses/by-nc-sa/4.0/
- * *****************************************************************************************************************
- */
 public class PacketUpdateTargets
         extends PacketRegistry.AbstractMessage<PacketUpdateTargets>
 {
@@ -26,6 +26,7 @@ public class PacketUpdateTargets
     private UUID[] playerTargets;
     private int turretID;
 
+    @SuppressWarnings("unused")
     public PacketUpdateTargets() {}
 
     public PacketUpdateTargets(TargetProcessor processor) {
@@ -57,9 +58,7 @@ public class PacketUpdateTargets
         for( int i = 0, max = buf.readInt(); i < max; i++ ) {
             try {
                 this.entityTargets.add((Class<? extends Entity>) Class.forName(ByteBufUtils.readUTF8String(buf)));
-            } catch( ClassNotFoundException ex ) {
-//                this.entityTargets[i] = null;
-            }
+            } catch( ClassNotFoundException ignored ) { }
         }
         this.playerTargets = new UUID[buf.readInt()];
         for( int i = 0; i < this.playerTargets.length; i++ ) {

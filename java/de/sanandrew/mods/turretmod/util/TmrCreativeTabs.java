@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
+import de.sanandrew.mods.turretmod.item.ItemTurret;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
@@ -26,7 +27,6 @@ import java.util.List;
 
 public class TmrCreativeTabs
 {
-    private static final Comparator<ItemStack> ITM_TYPE_COMP = new ItemTypeComparator();
     private static final Comparator<ItemStack> ITM_NAME_COMP = new ItemNameComparator();
 
     public static final CreativeTabs TURRETS = new CreativeTabs(TurretModRebirth.ID + ":turrets") {
@@ -55,9 +55,19 @@ public class TmrCreativeTabs
         public void displayAllRelevantItems(List<ItemStack> itmList) {
             super.displayAllRelevantItems(itmList);
 
-            Collections.sort(itmList, (o1, o2) -> o1 != null && o1.getItem() == ItemRegistry.turret ? 1 : o2 != null && o2.getItem() == ItemRegistry.turret ? -1 : 0);
+            Collections.sort(itmList, (itm1, itm2) -> {
+                if( itm1 != null && itm1.getItem() == ItemRegistry.turret ) {
+                    return itm2 != null && itm2.getItem() == ItemRegistry.turret ? 0 : -2;
+                } else if( itm2 != null && itm2.getItem() == ItemRegistry.turret ) {
+                    return 2;
+                } else if( itm1 != null && itm1.getItem() == ItemRegistry.ammo ) {
+                    return itm2 != null && itm2.getItem() == ItemRegistry.ammo ? 0 : -1;
+                } else if( itm2 != null && itm2.getItem() == ItemRegistry.ammo ) {
+                    return 1;
+                }
 
-            sortItemsBySubItems(itmList, this);
+                return 0;
+            });
         }
     };
 
@@ -73,9 +83,19 @@ public class TmrCreativeTabs
         public void displayAllRelevantItems(List<ItemStack> itmList) {
             super.displayAllRelevantItems(itmList);
 
-//            sortItemsByName(itmList);
-            sortItemsBySubItems(itmList, this);
-//            sortItemsByType(itmList);
+            Collections.sort(itmList, (itm1, itm2) -> {
+                if( itm1 != null && itm1.getItem() instanceof ItemBlock ) {
+                    return itm2 != null && itm2.getItem() instanceof ItemBlock ? 0 : -2;
+                } else if( itm2 != null && itm2.getItem() instanceof ItemBlock ) {
+                    return 2;
+                } else if( itm1 != null && itm1.getItem() == ItemRegistry.repairKit ) {
+                    return itm2 != null && itm2.getItem() == ItemRegistry.repairKit ? 0 : 1;
+                } else if( itm2 != null && itm2.getItem() == ItemRegistry.repairKit ) {
+                    return -1;
+                }
+
+                return 0;
+            });
         }
     };
 
@@ -110,24 +130,12 @@ public class TmrCreativeTabs
         }
     };
 
-    protected static void sortItemsByType(List<ItemStack> items) {
-        Collections.sort(items, ITM_TYPE_COMP);
-    }
-
     protected static void sortItemsByName(List<ItemStack> items) {
         Collections.sort(items, ITM_NAME_COMP);
     }
 
     protected static void sortItemsBySubItems(final List<ItemStack> items, final CreativeTabs tab) {
         Collections.sort(items, new ItemSubComparator(tab));
-    }
-
-    private static class ItemTypeComparator implements Comparator<ItemStack>
-    {
-        @Override
-        public int compare(ItemStack stack1, ItemStack stack2) {
-            return ItemBlock.class.isAssignableFrom(stack1.getItem().getClass()) && !ItemBlock.class.isAssignableFrom(stack2.getItem().getClass()) ? -1 : 1;
-        }
     }
 
     private static class ItemNameComparator implements Comparator<ItemStack>

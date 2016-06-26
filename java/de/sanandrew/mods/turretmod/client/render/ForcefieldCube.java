@@ -46,49 +46,52 @@ public class ForcefieldCube
         VertexBuffer buffer = tess.getBuffer();
         for( CubeFace[] faceList : faces.values() ) {
             for( CubeFace facePart : faceList ) {
-//                buffer.setColorRGBA_F(facePart.color.getRed(), facePart.color.getGreen(), facePart.color.getBlue(), facePart.color.getAlpha());
+                float red = facePart.color.getRed();
+                float green = facePart.color.getGreen();
+                float blue = facePart.color.getBlue();
+                float alpha = 1.0F;
                 if( facePart.facing == EnumFacing.NORTH ) {
                     double maxU = (facePart.endPt.zCoord - facePart.beginPt.zCoord) / 8.0D;
                     double maxV = (facePart.beginPt.yCoord - facePart.endPt.yCoord) / 8.0D;
-                    buffer.pos(facePart.beginPt.xCoord - 0.0005D, facePart.beginPt.yCoord, facePart.beginPt.zCoord).tex(maxU, 0.0D).endVertex();
-                    buffer.pos(facePart.beginPt.xCoord - 0.0005D, facePart.beginPt.yCoord, facePart.endPt.zCoord).tex(0.0D, 0.0D).endVertex();
-                    buffer.pos(facePart.beginPt.xCoord - 0.0005D, facePart.endPt.yCoord, facePart.endPt.zCoord).tex(0.0D, maxV).endVertex();
-                    buffer.pos(facePart.beginPt.xCoord - 0.0005D, facePart.endPt.yCoord, facePart.beginPt.zCoord).tex(maxU, maxV).endVertex();
+                    buffer.pos(facePart.beginPt.xCoord - 0.0005D, facePart.beginPt.yCoord, facePart.beginPt.zCoord).tex(maxU, 0.0D).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.beginPt.xCoord - 0.0005D, facePart.beginPt.yCoord, facePart.endPt.zCoord).tex(0.0D, 0.0D).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.beginPt.xCoord - 0.0005D, facePart.endPt.yCoord, facePart.endPt.zCoord).tex(0.0D, maxV).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.beginPt.xCoord - 0.0005D, facePart.endPt.yCoord, facePart.beginPt.zCoord).tex(maxU, maxV).color(red, green, blue, alpha).endVertex();
                 } else if( facePart.facing == EnumFacing.EAST ) {
                     double maxU = (facePart.endPt.xCoord - facePart.beginPt.xCoord) / 8.0D;
                     double maxV = (facePart.beginPt.yCoord - facePart.endPt.yCoord) / 8.0D;
-                    buffer.pos(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord - 0.0005D).tex(maxU, 0.0D).endVertex();
-                    buffer.pos(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord - 0.0005D).tex(0.0D, 0.0D).endVertex();
-                    buffer.pos(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord - 0.0005D).tex(0.0D, maxV).endVertex();
-                    buffer.pos(facePart.endPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord - 0.0005D).tex(maxU, maxV).endVertex();
+                    buffer.pos(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord - 0.0005D).tex(maxU, 0.0D).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord - 0.0005D).tex(0.0D, 0.0D).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord - 0.0005D).tex(0.0D, maxV).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.endPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord - 0.0005D).tex(maxU, maxV).color(red, green, blue, alpha).endVertex();
                 } else if( facePart.facing == EnumFacing.SOUTH ) {
                     double maxU = (facePart.endPt.zCoord - facePart.beginPt.zCoord) / 8.0D;
                     double maxV = (facePart.beginPt.yCoord - facePart.endPt.yCoord) / 8.0D;
-                    buffer.pos(facePart.beginPt.xCoord + 0.0005D, facePart.beginPt.yCoord, facePart.endPt.zCoord).tex(maxU, 0.0D).endVertex();
-                    buffer.pos(facePart.beginPt.xCoord + 0.0005D, facePart.beginPt.yCoord, facePart.beginPt.zCoord).tex(0.0D, 0.0D).endVertex();
-                    buffer.pos(facePart.beginPt.xCoord + 0.0005D, facePart.endPt.yCoord, facePart.beginPt.zCoord).tex(0.0D, maxV).endVertex();
-                    buffer.pos(facePart.beginPt.xCoord + 0.0005D, facePart.endPt.yCoord, facePart.endPt.zCoord).tex(maxU, maxV).endVertex();
+                    buffer.pos(facePart.beginPt.xCoord + 0.0005D, facePart.beginPt.yCoord, facePart.endPt.zCoord).tex(maxU, 0.0D).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.beginPt.xCoord + 0.0005D, facePart.beginPt.yCoord, facePart.beginPt.zCoord).tex(0.0D, 0.0D).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.beginPt.xCoord + 0.0005D, facePart.endPt.yCoord, facePart.beginPt.zCoord).tex(0.0D, maxV).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.beginPt.xCoord + 0.0005D, facePart.endPt.yCoord, facePart.endPt.zCoord).tex(maxU, maxV).color(red, green, blue, alpha).endVertex();
                 } else if( facePart.facing == EnumFacing.WEST ) {
                     double maxU = (facePart.endPt.xCoord - facePart.beginPt.xCoord) / 8.0D;
                     double maxV = (facePart.beginPt.yCoord - facePart.endPt.yCoord) / 8.0D;
-                    buffer.pos(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord + 0.0005D).tex(maxU, 0.0D).endVertex();
-                    buffer.pos(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord + 0.0005D).tex(0.0D, 0.0D).endVertex();
-                    buffer.pos(facePart.endPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord + 0.0005D).tex(0.0D, maxV).endVertex();
-                    buffer.pos(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord + 0.0005D).tex(maxU, maxV).endVertex();
+                    buffer.pos(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord + 0.0005D).tex(maxU, 0.0D).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord + 0.0005D).tex(0.0D, 0.0D).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.endPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord + 0.0005D).tex(0.0D, maxV).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord + 0.0005D).tex(maxU, maxV).color(red, green, blue, alpha).endVertex();
                 } else if( facePart.facing == EnumFacing.UP ) {
                     double maxU = (facePart.beginPt.zCoord - facePart.endPt.zCoord) / 8.0D;
                     double maxV = (facePart.endPt.xCoord - facePart.beginPt.xCoord) / 8.0D;
-                    buffer.pos(facePart.beginPt.xCoord, facePart.beginPt.yCoord - 0.0005D, facePart.beginPt.zCoord).tex(maxU, maxV).endVertex();
-                    buffer.pos(facePart.endPt.xCoord, facePart.beginPt.yCoord - 0.0005D, facePart.beginPt.zCoord).tex(maxU, 0.0D).endVertex();
-                    buffer.pos(facePart.endPt.xCoord, facePart.beginPt.yCoord - 0.0005D, facePart.endPt.zCoord).tex(0.0D, 0.0D).endVertex();
-                    buffer.pos(facePart.beginPt.xCoord, facePart.beginPt.yCoord - 0.0005D, facePart.endPt.zCoord).tex(0.0D, maxV).endVertex();
+                    buffer.pos(facePart.beginPt.xCoord, facePart.beginPt.yCoord - 0.0005D, facePart.beginPt.zCoord).tex(maxU, maxV).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.endPt.xCoord, facePart.beginPt.yCoord - 0.0005D, facePart.beginPt.zCoord).tex(maxU, 0.0D).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.endPt.xCoord, facePart.beginPt.yCoord - 0.0005D, facePart.endPt.zCoord).tex(0.0D, 0.0D).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.beginPt.xCoord, facePart.beginPt.yCoord - 0.0005D, facePart.endPt.zCoord).tex(0.0D, maxV).color(red, green, blue, alpha).endVertex();
                 } else if( facePart.facing == EnumFacing.DOWN ) {
                     double maxU = (facePart.endPt.zCoord - facePart.beginPt.zCoord) / 8.0D;
                     double maxV = (facePart.endPt.xCoord - facePart.beginPt.xCoord) / 8.0D;
-                    buffer.pos(facePart.endPt.xCoord, facePart.beginPt.yCoord + 0.0005D, facePart.beginPt.zCoord).tex(maxU, maxV).endVertex();
-                    buffer.pos(facePart.beginPt.xCoord, facePart.beginPt.yCoord + 0.0005D, facePart.beginPt.zCoord).tex(maxU, 0.0D).endVertex();
-                    buffer.pos(facePart.beginPt.xCoord, facePart.beginPt.yCoord + 0.0005D, facePart.endPt.zCoord).tex(0.0D, 0.0D).endVertex();
-                    buffer.pos(facePart.endPt.xCoord, facePart.beginPt.yCoord + 0.0005D, facePart.endPt.zCoord).tex(0.0D, maxV).endVertex();
+                    buffer.pos(facePart.endPt.xCoord, facePart.beginPt.yCoord + 0.0005D, facePart.beginPt.zCoord).tex(maxU, maxV).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.beginPt.xCoord, facePart.beginPt.yCoord + 0.0005D, facePart.beginPt.zCoord).tex(maxU, 0.0D).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.beginPt.xCoord, facePart.beginPt.yCoord + 0.0005D, facePart.endPt.zCoord).tex(0.0D, 0.0D).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.endPt.xCoord, facePart.beginPt.yCoord + 0.0005D, facePart.endPt.zCoord).tex(0.0D, maxV).color(red, green, blue, alpha).endVertex();
                 }
             }
         }
@@ -105,28 +108,28 @@ public class ForcefieldCube
 
             switch( myFace.getKey() ) {
                 case NORTH:
-                    intersects = this.center.xCoord + this.boxAABB.maxX + (isRecessive ? 0.001D : 0) >= interfered.center.xCoord + interfered.boxAABB.minX
-                            && this.center.xCoord + this.boxAABB.maxX + (isRecessive ? 0.001D : 0) <= interfered.center.xCoord + interfered.boxAABB.maxX;
+                    intersects = this.center.xCoord + this.boxAABB.maxX + (isRecessive ? 0.001D : 0.0D) >= interfered.center.xCoord + interfered.boxAABB.minX
+                            && this.center.xCoord + this.boxAABB.maxX + (isRecessive ? 0.001D : 0.0D) <= interfered.center.xCoord + interfered.boxAABB.maxX;
                     break;
                 case SOUTH:
-                    intersects = this.center.xCoord + this.boxAABB.minX - (isRecessive ? 0.001D : 0) <= interfered.center.xCoord + interfered.boxAABB.maxX
-                            && this.center.xCoord + this.boxAABB.minX - (isRecessive ? 0.001D : 0) >= interfered.center.xCoord + interfered.boxAABB.minX;
+                    intersects = this.center.xCoord + this.boxAABB.minX - (isRecessive ? 0.001D : 0.0D) <= interfered.center.xCoord + interfered.boxAABB.maxX
+                            && this.center.xCoord + this.boxAABB.minX - (isRecessive ? 0.001D : 0.0D) >= interfered.center.xCoord + interfered.boxAABB.minX;
                     break;
                 case EAST:
-                    intersects = this.center.zCoord + this.boxAABB.maxZ + (isRecessive ? 0.001D : 0) >= interfered.center.zCoord + interfered.boxAABB.minZ
-                            && this.center.zCoord + this.boxAABB.maxZ + (isRecessive ? 0.001D : 0) <= interfered.center.zCoord + interfered.boxAABB.maxZ;
+                    intersects = this.center.zCoord + this.boxAABB.maxZ + (isRecessive ? 0.001D : 0.0D) >= interfered.center.zCoord + interfered.boxAABB.minZ
+                            && this.center.zCoord + this.boxAABB.maxZ + (isRecessive ? 0.001D : 0.0D) <= interfered.center.zCoord + interfered.boxAABB.maxZ;
                     break;
                 case WEST:
-                    intersects = this.center.zCoord + this.boxAABB.minZ - (isRecessive ? 0.001D : 0) <= interfered.center.zCoord + interfered.boxAABB.maxZ
-                            && this.center.zCoord + this.boxAABB.minZ - (isRecessive ? 0.001D : 0) >= interfered.center.zCoord + interfered.boxAABB.minZ;
+                    intersects = this.center.zCoord + this.boxAABB.minZ - (isRecessive ? 0.001D : 0.0D) <= interfered.center.zCoord + interfered.boxAABB.maxZ
+                            && this.center.zCoord + this.boxAABB.minZ - (isRecessive ? 0.001D : 0.0D) >= interfered.center.zCoord + interfered.boxAABB.minZ;
                     break;
                 case UP:
-                    intersects = this.center.yCoord + this.boxAABB.maxY + (isRecessive ? 0.001D : 0) >= interfered.center.yCoord + interfered.boxAABB.minY
-                            && this.center.yCoord + this.boxAABB.maxY + (isRecessive ? 0.001D : 0) <= interfered.center.yCoord + interfered.boxAABB.maxY;
+                    intersects = this.center.yCoord + this.boxAABB.maxY + (isRecessive ? 0.001D : 0.0D) >= interfered.center.yCoord + interfered.boxAABB.minY
+                            && this.center.yCoord + this.boxAABB.maxY + (isRecessive ? 0.001D : 0.0D) <= interfered.center.yCoord + interfered.boxAABB.maxY;
                     break;
                 case DOWN:
-                    intersects = this.center.yCoord + this.boxAABB.minY - (isRecessive ? 0.001D : 0) <= interfered.center.yCoord + interfered.boxAABB.maxY
-                            && this.center.yCoord + this.boxAABB.minY - (isRecessive ? 0.001D : 0) >= interfered.center.yCoord + interfered.boxAABB.minY;
+                    intersects = this.center.yCoord + this.boxAABB.minY - (isRecessive ? 0.001D : 0.0D) <= interfered.center.yCoord + interfered.boxAABB.maxY
+                            && this.center.yCoord + this.boxAABB.minY - (isRecessive ? 0.001D : 0.0D) >= interfered.center.yCoord + interfered.boxAABB.minY;
                     break;
                 default:
                     continue;

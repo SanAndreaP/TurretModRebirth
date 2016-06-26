@@ -9,8 +9,7 @@
 package de.sanandrew.mods.turretmod.client.gui.assembly;
 
 import de.sanandrew.mods.turretmod.client.gui.control.GuiSlimButton;
-import de.sanandrew.mods.turretmod.client.shader.ShaderAlphaOverride;
-import de.sanandrew.mods.turretmod.client.shader.ShaderCallback;
+import de.sanandrew.mods.turretmod.client.shader.ShaderItemAlphaOverride;
 import de.sanandrew.mods.turretmod.client.util.ShaderHelper;
 import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
@@ -22,22 +21,16 @@ import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntryItem;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
-import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
-import net.darkhax.bookshelf.lib.javatuples.Pair;
-import net.darkhax.bookshelf.lib.javatuples.Triplet;
+import de.sanandrew.mods.turretmod.util.javatuples.Pair;
+import de.sanandrew.mods.turretmod.util.javatuples.Triplet;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.texture.ITextureObject;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
@@ -45,13 +38,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.EnumFacing;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +79,7 @@ public class GuiTurretAssembly
 
     private long lastTimestamp;
 
-    private ShaderAlphaOverride shaderCallback = new ShaderAlphaOverride();
+    private ShaderItemAlphaOverride shaderCallback = new ShaderItemAlphaOverride();
 
     public GuiTurretAssembly(InventoryPlayer invPlayer, TileEntityTurretAssembly tile) {
         super(new ContainerTurretAssembly(invPlayer, tile));
@@ -231,8 +223,8 @@ public class GuiTurretAssembly
 
                     GlStateManager.disableDepth();
                     GlStateManager.enableBlend();
-                    OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-                    GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.75F);
+                    GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+                    GlStateManager.color(1.0F, 1.0F, 1.0F, 0.75F);
                     this.drawTexturedModalRect(this.guiLeft + 35, this.guiTop + 9 + 21 * i, 35, 9 + 21 * i, 108, 18);
                     GlStateManager.disableBlend();
                     GlStateManager.enableDepth();

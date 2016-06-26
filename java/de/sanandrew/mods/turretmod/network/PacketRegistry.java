@@ -1,6 +1,15 @@
+/**
+ * ****************************************************************************************************************
+ * Authors:   SanAndreasP
+ * Copyright: SanAndreasP
+ * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+ * http://creativecommons.org/licenses/by-nc-sa/4.0/
+ * *****************************************************************************************************************
+ */
 package de.sanandrew.mods.turretmod.network;
 
 import net.darkhax.bookshelf.lib.util.PlayerUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -13,14 +22,6 @@ import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-/**
- * ****************************************************************************************************************
- * Authors:   SanAndreasP
- * Copyright: SanAndreasP
- * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
- * http://creativecommons.org/licenses/by-nc-sa/4.0/
- * *****************************************************************************************************************
- */
 public class PacketRegistry
 {
     public static void initialize() {
@@ -67,9 +68,9 @@ public class PacketRegistry
         @Override
         public IMessage onMessage(M message, MessageContext ctx) {
             if( ctx.side.isClient() ) {
-                handleClientMessage(message, PlayerUtils.getClientPlayer());
-            } else {
-                handleServerMessage(message, ctx.getServerHandler().playerEntity);
+                Minecraft.getMinecraft().addScheduledTask(() -> handleClientMessage(message, PlayerUtils.getClientPlayer()));
+            } else if( ctx.getServerHandler().playerEntity.getServer() != null ) {
+                ctx.getServerHandler().playerEntity.getServer().addScheduledTask(() -> handleServerMessage(message, ctx.getServerHandler().playerEntity));
             }
 
             return null;

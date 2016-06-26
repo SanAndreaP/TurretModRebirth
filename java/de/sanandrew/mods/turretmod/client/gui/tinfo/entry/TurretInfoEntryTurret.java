@@ -20,15 +20,11 @@ import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.EntityList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -122,32 +118,28 @@ public class TurretInfoEntryTurret
 
         turret.inGui = true;
 
-        GL11.glColor3f(1.0F, 1.0F, 1.0F);
-        GL11.glEnable(GL11.GL_COLOR_MATERIAL);
-        GL11.glPushMatrix();
-        GL11.glTranslatef(x, y, 50.0F);
-        GL11.glScalef(30.0F, 30.0F, 30.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.enableColorMaterial();
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(x, y, 50.0F);
+        GlStateManager.scale(30.0F, 30.0F, 30.0F);
 
-        GL11.glTranslatef(0.0F, turret.height, 0.0F);
+        GlStateManager.translate(0.0F, turret.height, 0.0F);
 
-        GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glRotatef(135.0F + rotation, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+        GlStateManager.rotate(135.0F + this.rotation, 0.0F, 1.0F, 0.0F);
         RenderHelper.enableStandardItemLighting();
-        GL11.glRotatef(-135.0F, 0.0F, 1.0F, 0.0F);
-        rotation += 0.2F;
+        GlStateManager.rotate(-135.0F, 0.0F, 1.0F, 0.0F);
+        this.rotation += 0.2F;
 
         turret.prevRotationPitch = turret.rotationPitch = 0.0F;
         turret.prevRotationYaw = turret.rotationYaw = 0.0F;
         turret.prevRotationYawHead = turret.rotationYawHead = 0.0F;
 
-        Minecraft.getMinecraft().getRenderManager().playerViewY = 180.0F;
         Minecraft.getMinecraft().getRenderManager().doRenderEntity(turret, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, true);
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
         RenderHelper.disableStandardItemLighting();
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-        OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
+        GlStateManager.disableColorMaterial();
     }
 
     private void drawItemRecipe(GuiTurretInfo gui, int x, int y, int mouseX, int mouseY, int scrollY, RecipeEntryItem entryItem) {

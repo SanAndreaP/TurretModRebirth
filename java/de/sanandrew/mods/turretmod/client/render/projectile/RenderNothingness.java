@@ -8,7 +8,6 @@
  */
 package de.sanandrew.mods.turretmod.client.render.projectile;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;

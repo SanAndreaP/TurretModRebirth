@@ -10,13 +10,18 @@ package de.sanandrew.mods.turretmod.tileentity;
 
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
+import de.sanandrew.mods.turretmod.inventory.ContainerElectrolyteGenerator;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntityLockable;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
@@ -34,9 +39,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagShort;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.HashMap;
@@ -44,7 +52,7 @@ import java.util.Map;
 
 //TODO: make it TileEntityLockable
 public class TileEntityElectrolyteGenerator
-        extends TileEntity
+        extends TileEntityLockable
         implements ISidedInventory, TileClientSync, IEnergyProvider, ITickable
 {
     public static final int MAX_FLUX_STORAGE = 500_000;
@@ -329,10 +337,10 @@ public class TileEntityElectrolyteGenerator
         this.fluxBuffer = nbt.getInteger("fluxBuffer");
         NBTTagList progress = nbt.getTagList("progress", Constants.NBT.TAG_SHORT);
         for( int i = 0; i < this.progress.length; i++ ) {
-            this.progress[i] = TmrUtils.getShortTagAt(progress, i);
+            this.progress[i] = ((NBTTagShort) progress.get(i)).getShort();
         }
         for( int i = 0; i < this.maxProgress.length; i++ ) {
-            this.maxProgress[i] = TmrUtils.getShortTagAt(progress, i + this.progress.length);
+            this.maxProgress[i] = ((NBTTagShort) progress.get(i + this.progress.length)).getShort();
         }
 
         TmrUtils.readItemStacksFromTag(this.invStacks, nbt.getTagList("inventory", Constants.NBT.TAG_COMPOUND));
@@ -498,6 +506,33 @@ public class TileEntityElectrolyteGenerator
 
     public static Fuel getFuel(Item item) {
         return FUELS.get(item);
+    }
+
+    IItemHandler itemHandlerBottom = new SidedInvWrapper(this, EnumFacing.DOWN);
+    IItemHandler itemHandlerSide = new SidedInvWrapper(this, EnumFacing.WEST);
+
+    @Override
+    @SuppressWarnings({"unchecked", "ConstantConditions"})
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if( facing != null && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ) {
+            if( facing == EnumFacing.DOWN ) {
+                return (T) itemHandlerBottom;
+            } else if( facing != EnumFacing.UP ) {
+                return (T) itemHandlerSide;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
+        return new ContainerElectrolyteGenerator(playerInventory, this);
+    }
+
+    @Override
+    public String getGuiID() {
+        return "CA1169C7-56D3-4E10-8F09-3016C52D570A";
     }
 
     public static final class Fuel

@@ -41,10 +41,10 @@ public class BlockTurretAssembly
 
     protected BlockTurretAssembly() {
         super(Material.ROCK);
-        this.setCreativeTab(TmrCreativeTabs.TURRETS);
+        this.setCreativeTab(TmrCreativeTabs.MISC);
         this.setHardness(4.25F);
         this.blockSoundType = SoundType.STONE;
-        this.setUnlocalizedName(TurretModRebirth.ID + ":turret_assembly");
+        this.setRegistryName("turret_assembly");
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
     }
 
@@ -149,7 +149,7 @@ public class BlockTurretAssembly
     @Override
     @SuppressWarnings("deprecation")
     public EnumBlockRenderType getRenderType(IBlockState state) {
-        return EnumBlockRenderType.INVISIBLE;
+        return EnumBlockRenderType.MODEL;
     }
 
     @Override
@@ -206,7 +206,13 @@ public class BlockTurretAssembly
         return state.withRotation(mirrorIn.toRotation(state.getValue(FACING)));
     }
 
-    public int getDirection(int meta) {
-        return getStateFromMeta(meta).getValue(FACING).getHorizontalIndex();
+    @Override
+    @SuppressWarnings("deprecation")
+    public boolean isFullCube(IBlockState state) {
+        return false;
+    }
+
+    public EnumFacing getDirection(int meta) {
+        return this.getStateFromMeta(meta).getValue(FACING);
     }
 }
