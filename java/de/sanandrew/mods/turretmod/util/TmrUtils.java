@@ -21,6 +21,7 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTPrimitive;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
@@ -368,7 +369,7 @@ SOFTWARE.
             short b = tag.getShort("Slot");
             items[b] = ItemStack.loadItemStackFromNBT(tag);
             if(tag.hasKey("Quantity")) {
-                items[b].stackSize = ((NBTBase.NBTPrimitive)tag.getTag("Quantity")).getInt();
+                items[b].stackSize = ((NBTPrimitive)tag.getTag("Quantity")).getInt();
             }
 
             if( callbackMethod != null && tag.hasKey("StackNBT") ) {
