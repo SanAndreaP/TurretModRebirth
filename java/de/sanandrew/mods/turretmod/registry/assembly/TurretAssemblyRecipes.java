@@ -25,8 +25,12 @@ import de.sanandrew.mods.turretmod.util.javatuples.Pair;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionType;
+import net.minecraft.potion.PotionUtils;
 import org.apache.logging.log4j.Level;
 
 import java.security.InvalidParameterException;
@@ -205,33 +209,38 @@ public final class TurretAssemblyRecipes
 
         ItemStack res;
         RecipeEntryItem[] ingredients;
+        ItemStack potion;
 
         res = ItemRegistry.repairKit.getRepKitItem(3, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.STANDARD_MK1));
+        //noinspection ConstantConditions
+        potion = PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM, 1), PotionType.getPotionTypeForName("healing"));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.LEATHER),
-                                             new RecipeEntryItem(1).put(new ItemStack(Items.POTIONITEM, 1, 8197)).drawTooltip()};
+                                             new RecipeEntryItem(1).put(potion.copy()).drawTooltip()};
         INSTANCE.registerRecipe(HEAL_MK1, group, res, 25, 600, ingredients);
 
         res = ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.STANDARD_MK2));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.LEATHER),
-                                             new RecipeEntryItem(1).put(new ItemStack(Items.POTIONITEM, 1, 8197)).drawTooltip(),
+                                             new RecipeEntryItem(1).put(potion.copy()).drawTooltip(),
                                              new RecipeEntryItem(1).put(ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.STANDARD_MK1)))};
         INSTANCE.registerRecipe(HEAL_MK2, group, res, 25, 600, ingredients);
 
         res = ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.STANDARD_MK3));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.LEATHER),
-                                             new RecipeEntryItem(1).put(new ItemStack(Items.POTIONITEM, 1, 8197)).drawTooltip(),
+                                             new RecipeEntryItem(1).put(potion.copy()).drawTooltip(),
                                              new RecipeEntryItem(1).put(ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.STANDARD_MK2)))};
         INSTANCE.registerRecipe(HEAL_MK3, group, res, 25, 600, ingredients);
 
         res = ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.STANDARD_MK4));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.LEATHER),
-                                             new RecipeEntryItem(1).put(new ItemStack(Items.POTIONITEM, 1, 8197)).drawTooltip(),
+                                             new RecipeEntryItem(1).put(potion.copy()).drawTooltip(),
                                              new RecipeEntryItem(1).put(ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.STANDARD_MK3)))};
         INSTANCE.registerRecipe(HEAL_MK4, group, res, 25, 600, ingredients);
 
+        //noinspection ConstantConditions
+        potion = PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM, 1), PotionType.getPotionTypeForName("regeneration"));
         res = ItemRegistry.repairKit.getRepKitItem(6, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.REGEN_MK1));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.LEATHER),
-                                             new RecipeEntryItem(1).put(new ItemStack(Items.POTIONITEM, 1, 8193)).drawTooltip()};
+                                             new RecipeEntryItem(1).put(potion).drawTooltip()};
         INSTANCE.registerRecipe(REGEN_MK1, group, res, 25, 600, ingredients);
     }
 
@@ -404,7 +413,11 @@ public final class TurretAssemblyRecipes
     }
 
     public boolean checkAndConsumeResources(IInventory inv, UUID uuid) {
-        RecipeEntry entry = this.getRecipeEntry(uuid).copy();
+        RecipeEntry entry = this.getRecipeEntry(uuid);
+        if( entry == null ) {
+            return false;
+        }
+        entry = entry.copy();
         List<Pair<Integer, Integer>> resourceOnSlotList = new ArrayList<>();
         List<RecipeEntryItem> resourceStacks = new ArrayList<>(Arrays.asList(entry.resources));
 

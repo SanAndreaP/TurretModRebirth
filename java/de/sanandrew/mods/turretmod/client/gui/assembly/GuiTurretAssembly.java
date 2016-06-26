@@ -195,7 +195,7 @@ public class GuiTurretAssembly
                 boolean isActive = this.assembly.currCrafting == null
                                    || (!this.assembly.isAutomated() && TmrUtils.areStacksEqual(this.assembly.currCrafting.getValue1(), stack, TmrUtils.NBT_COMPARATOR_FIXD));
 
-                TmrClientUtils.renderStackInGui(stack, this.guiLeft + 36, this.guiTop + 10 + 21 * i, 1.0F);
+                TmrClientUtils.renderStackInGui(stack, this.guiLeft + 36, this.guiTop + 10 + 21 * i, 1.0F, this.fontRendererObj);
 
                 List tooltip = TmrClientUtils.getTooltipWithoutShift(stack);
                 this.frDetails.drawString(tooltip.get(0).toString(), this.guiLeft + 57, this.guiTop + 10 + 21 * i, 0xFFFFFFFF);
