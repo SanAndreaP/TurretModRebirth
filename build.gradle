@@ -24,7 +24,7 @@ idea {
     }
 }
 
-version = "1.9.4-4.0.0-alpha.3"
+version = "1.10-4.0.0-alpha.3"
 group = "de.sanandrew.mods"
 archivesBaseName = "TurretMod"
 
