@@ -34,7 +34,7 @@ public class RenderWorldLastHandler
         Entity renderEntity = mc.getRenderViewEntity();
         Entity pointedEntity = mc.pointedEntity;
 
-        if( pointedEntity instanceof EntityTurret ) {
+        if( pointedEntity instanceof EntityTurret && renderEntity != null ) {
             if( isItemTCU(mc.thePlayer.getHeldItemMainhand()) || isItemTCU(mc.thePlayer.getHeldItemOffhand()) ) {
                 float partTicks = event.getPartialTicks();
                 double renderX = renderEntity.lastTickPosX + (renderEntity.posX - renderEntity.lastTickPosX) * partTicks;
@@ -73,10 +73,10 @@ public class RenderWorldLastHandler
 
         GlStateManager.disableTexture2D();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-        buffer.pos(0.0D, 0.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-        buffer.pos(0.0D, 64.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-        buffer.pos(128.0D, 64.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-        buffer.pos(128.0D, 0.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+        buffer.pos(0.0D, 0.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 0.5F).endVertex();
+        buffer.pos(0.0D, 64.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 0.5F).endVertex();
+        buffer.pos(128.0D, 64.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 0.5F).endVertex();
+        buffer.pos(128.0D, 0.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 0.5F).endVertex();
         //health
         buffer.pos(1.0D, 22.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
         buffer.pos(1.0D, 24.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
