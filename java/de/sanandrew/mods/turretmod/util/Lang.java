@@ -8,11 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.text.translation.I18n;
 
 public final class Lang
 {
@@ -62,22 +60,19 @@ public final class Lang
     public static final TranslateKey ITEM_UPGRADE_DESC = new TranslateKey("item.%s:turret_upgrade.%%s.desc", TurretModRebirth.ID);
 
     /**
-     * Wrapper method to {@link I18n#format(String, Object...)} for abbreviation.
+     * Wrapper method to {@link I18n#canTranslate(String)} for abbreviation.
      * <s>Also tries to translate with [NONE] to en_US if the translation fails</s>
      * @param langKey language key to be translated
      * @return translated key or langKey, if translation fails
      */
-    @SideOnly(Side.CLIENT)
     public static String translate(String langKey, Object... args) {
-        return I18n.hasKey(langKey) ? I18n.format(langKey, args) : langKey;
+        return I18n.canTranslate(langKey) ? I18n.translateToLocalFormatted(langKey, args) : langKey;
     }
 
-    @SideOnly(Side.CLIENT)
     public static String translateOrDefault(String langKey, String defaultVal) {
-        return I18n.hasKey(langKey) ? translate(langKey) : defaultVal;
+        return I18n.canTranslate(langKey) ? translate(langKey) : defaultVal;
     }
 
-    @SideOnly(Side.CLIENT)
     public static String translateEntityCls(Class<? extends Entity> eClass) {
         if( EntityList.CLASS_TO_NAME.containsKey(eClass) ) {
             return translate(ENTITY_NAME.get(EntityList.CLASS_TO_NAME.get(eClass)));
@@ -86,7 +81,6 @@ public final class Lang
         return "[UNKNOWN] " + eClass.getName();
     }
 
-    @SideOnly(Side.CLIENT)
     public static String translateEntityClsDesc(Class<? extends Entity> eClass) {
         if( EntityList.CLASS_TO_NAME.containsKey(eClass) ) {
             return translate(ENTITY_DESC.get(EntityList.CLASS_TO_NAME.get(eClass)));

@@ -14,25 +14,33 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public final class Sounds
 {
-    public static final SoundEvent RICOCHET_SPLASH = new SoundEvent(new ResourceLocation(TurretModRebirth.ID, "ricochet.splash"));
-    public static final SoundEvent RICOCHET_BULLET = new SoundEvent(new ResourceLocation(TurretModRebirth.ID, "ricochet.bullet"));
-    public static final SoundEvent SHOOT_CRYOLATOR = new SoundEvent(new ResourceLocation(TurretModRebirth.ID, "shoot.cryolator"));
-    public static final SoundEvent SHOOT_SHOTGUN = new SoundEvent(new ResourceLocation(TurretModRebirth.ID, "shoot.shotgun"));
-    public static final SoundEvent TURRET_HIT = new SoundEvent(new ResourceLocation(TurretModRebirth.ID, "hit.turrethit"));
-    public static final SoundEvent TURRET_DEATH = new SoundEvent(new ResourceLocation(TurretModRebirth.ID, "hit.turretDeath"));
-    public static final SoundEvent TURRET_COLLECT = new SoundEvent(new ResourceLocation(TurretModRebirth.ID, "collect.ia_get"));
+    private static final ResourceLocation R_RICOCHET_SPLASH = new ResourceLocation(TurretModRebirth.ID, "ricochet.splash");
+    private static final ResourceLocation R_RICOCHET_BULLET = new ResourceLocation(TurretModRebirth.ID, "ricochet.bullet");
+    private static final ResourceLocation R_SHOOT_CRYOLATOR = new ResourceLocation(TurretModRebirth.ID, "shoot.cryolator");
+    private static final ResourceLocation R_SHOOT_SHOTGUN = new ResourceLocation(TurretModRebirth.ID, "shoot.shotgun");
+    private static final ResourceLocation R_TURRET_HIT = new ResourceLocation(TurretModRebirth.ID, "hit.turrethit");
+    private static final ResourceLocation R_TURRET_DEATH = new ResourceLocation(TurretModRebirth.ID, "hit.turretDeath");
+    private static final ResourceLocation R_TURRET_COLLECT = new ResourceLocation(TurretModRebirth.ID, "collect.ia_get");
+
+    public static final SoundEvent RICOCHET_SPLASH = new SoundEvent(R_RICOCHET_SPLASH);
+    public static final SoundEvent RICOCHET_BULLET = new SoundEvent(R_RICOCHET_BULLET);
+    public static final SoundEvent SHOOT_CRYOLATOR = new SoundEvent(R_SHOOT_CRYOLATOR);
+    public static final SoundEvent SHOOT_SHOTGUN = new SoundEvent(R_SHOOT_SHOTGUN);
+    public static final SoundEvent TURRET_HIT = new SoundEvent(R_TURRET_HIT);
+    public static final SoundEvent TURRET_DEATH = new SoundEvent(R_TURRET_DEATH);
+    public static final SoundEvent TURRET_COLLECT = new SoundEvent(R_TURRET_COLLECT);
 
     public static void initialize() {
-        register(RICOCHET_SPLASH);
-        register(RICOCHET_BULLET);
-        register(SHOOT_CRYOLATOR);
-        register(TURRET_HIT);
-        register(TURRET_DEATH);
-        register(TURRET_COLLECT);
+        register(RICOCHET_SPLASH, R_RICOCHET_SPLASH);
+        register(RICOCHET_BULLET, R_RICOCHET_BULLET);
+        register(SHOOT_CRYOLATOR, R_SHOOT_CRYOLATOR);
+        register(TURRET_HIT, R_TURRET_HIT);
+        register(TURRET_DEATH, R_TURRET_DEATH);
+        register(TURRET_COLLECT, R_TURRET_COLLECT);
     }
 
-    private static void register(SoundEvent event) {
-        event.setRegistryName(event.getSoundName());
+    private static void register(SoundEvent event, ResourceLocation regName) {
+        event.setRegistryName(regName);
         GameRegistry.register(event);
     }
 }
