@@ -8,6 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretRevolver;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -51,18 +53,17 @@ public class CommonProxy
         EntityRegistry.registerModEntity(EntityTurretCrossbow.class, "turret_i_crossbow", entityCnt++, TurretModRebirth.instance, 128, 1, false);
         EntityRegistry.registerModEntity(EntityTurretShotgun.class, "turret_i_shotgun", entityCnt++, TurretModRebirth.instance, 128, 1, false);
         EntityRegistry.registerModEntity(EntityTurretCryolator.class, "turret_i_snowball", entityCnt++, TurretModRebirth.instance, 128, 1, false);
+        EntityRegistry.registerModEntity(EntityTurretRevolver.class, "turret_ii_revolver", entityCnt++, TurretModRebirth.instance, 128, 1, false);
 
         EntityRegistry.registerModEntity(EntityProjectileCrossbowBolt.class, "turret_proj_arrow", entityCnt++, TurretModRebirth.instance, 128, 1, true);
         EntityRegistry.registerModEntity(EntityProjectilePebble.class, "turret_proj_pebble", entityCnt++, TurretModRebirth.instance, 128, 1, true);
         EntityRegistry.registerModEntity(EntityProjectileCryoCell.class, "turret_proj_snowball", entityCnt++, TurretModRebirth.instance, 128, 1, true);
+        EntityRegistry.registerModEntity(EntityProjectileBullet.class, "turret_proj_bullet", entityCnt++, TurretModRebirth.instance, 128, 1, true);
     }
 
-    public void init(FMLInitializationEvent event) {
-    }
+    public void init(FMLInitializationEvent event) { }
 
-    public void postInit(FMLPostInitializationEvent event) {
-
-    }
+    public void postInit(FMLPostInitializationEvent event) { }
 
     @Override
     public final Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
@@ -129,7 +130,5 @@ public class CommonProxy
         this.spawnParticle(particle, x, y, z, null);
     }
 
-    public void spawnParticle(EnumParticle particle, double x, double y, double z, Tuple data) {
-
-    }
+    public void spawnParticle(EnumParticle particle, double x, double y, double z, Tuple data) { }
 }

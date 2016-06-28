@@ -15,6 +15,7 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoArrow;
+import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoBullet;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoCryoCell;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoShotgunShell;
 import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
@@ -25,10 +26,8 @@ import de.sanandrew.mods.turretmod.util.javatuples.Pair;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
 import org.apache.logging.log4j.Level;
@@ -55,6 +54,8 @@ public final class TurretAssemblyRecipes
     public static final UUID ARROW_MTP = UUID.fromString("C079D29A-E6E2-4BE8-8478-326BDFEDE08B");
     public static final UUID SGSHELL_SNG = UUID.fromString("AB37D601-993D-41FE-B698-8AAC99D296EA");
     public static final UUID SGSHELL_MTP = UUID.fromString("D17EC4A1-BDAA-4C80-B1F5-0C111EC13954");
+    public static final UUID BULLET_SNG = UUID.fromString("9F528407-8134-49CB-8FA8-23CF88E8CE4A");
+    public static final UUID BULLET_MTP = UUID.fromString("2933D4D6-6111-45E5-AD09-09D81CF03DA9");
     public static final UUID CRYOCELL_1_SNG = UUID.fromString("EBF1AEAA-C4EC-46CA-9B0F-B818FF7D0770");
     public static final UUID CRYOCELL_1_MTP = UUID.fromString("5CBDE28A-52B2-45EB-B169-4A81F94EC690");
     public static final UUID CRYOCELL_2_SNG = UUID.fromString("BACB5D75-B408-4D34-AF6C-2F6C4048B82C");
@@ -152,6 +153,18 @@ public final class TurretAssemblyRecipes
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoShotgunShell.SHELL_UUID))),
                                              new RecipeEntryItem(1).put(Items.LEATHER)};
         INSTANCE.registerRecipe(SGSHELL_MTP, group, res, 5, 120, ingredients);
+
+        // revolver bullet
+        res = ItemRegistry.ammo.getAmmoItem(6, AmmoRegistry.INSTANCE.getType(TurretAmmoBullet.BULLET_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(3).put("ingotIron"),
+                                             new RecipeEntryItem(1).put(Items.GUNPOWDER).put("dustGunpowder"),
+                                             new RecipeEntryItem(1).put("dustRedstone")};
+        INSTANCE.registerRecipe(BULLET_SNG, group, res, 10, 60, ingredients);
+
+        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoBullet.PACK_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoBullet.BULLET_UUID))),
+                                             new RecipeEntryItem(1).put(Items.LEATHER)};
+        INSTANCE.registerRecipe(BULLET_MTP, group, res, 5, 120, ingredients);
 
         // cryo cell
         res = ItemRegistry.ammo.getAmmoItem(4, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK1_UUID));

@@ -8,7 +8,11 @@
  */
 package de.sanandrew.mods.turretmod.client.util;
 
+import de.sanandrew.mods.turretmod.client.model.ModelTurretRevolver;
+import de.sanandrew.mods.turretmod.client.render.projectile.RenderBullet;
 import de.sanandrew.mods.turretmod.client.world.ClientWorldEventListener;
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretRevolver;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleSmokeNormal;
 import net.minecraft.util.math.BlockPos;
@@ -78,9 +82,10 @@ public class ClientProxy
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretCrossbow.class, manager -> { return new RenderTurret(manager, new ModelTurretCrossbow(0.0F)); });
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretShotgun.class, manager -> { return new RenderTurret(manager, new ModelTurretShotgun(0.0F)); });
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretCryolator.class, manager -> { return new RenderTurret(manager, new ModelTurretCryolator(0.0F)); });
+        RenderingRegistry.registerEntityRenderingHandler(EntityTurretRevolver.class, manager -> { return new RenderTurret(manager, new ModelTurretRevolver(0.0F)); });
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCrossbowBolt.class, RenderTurretArrow::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectilePebble.class, RenderPebble::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCryoCell.class, RenderNothingness::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileBullet.class, RenderBullet::new);
     }
 
     @Override

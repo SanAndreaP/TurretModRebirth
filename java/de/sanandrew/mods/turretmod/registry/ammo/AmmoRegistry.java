@@ -138,6 +138,8 @@ public final class AmmoRegistry
         this.registerAmmoType(new TurretAmmoArrow.Quiver());
         this.registerAmmoType(new TurretAmmoShotgunShell.Single());
         this.registerAmmoType(new TurretAmmoShotgunShell.Multi());
+        this.registerAmmoType(new TurretAmmoBullet.Single());
+        this.registerAmmoType(new TurretAmmoBullet.Multi());
         this.registerAmmoType(new TurretAmmoCryoCell.SingleMK1());
         this.registerAmmoType(new TurretAmmoCryoCell.MultiMK1());
         this.registerAmmoType(new TurretAmmoCryoCell.SingleMK2());
