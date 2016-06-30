@@ -20,7 +20,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTPrimitive;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -38,7 +37,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @SuppressWarnings("unused")
-public class TmrUtils
+public final class TmrUtils
 {
     public static final Random RNG = new Random();
     public static final UUID EMPTY_UUID = new UUID(0, 0);

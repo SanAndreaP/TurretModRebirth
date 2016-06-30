@@ -61,7 +61,7 @@ public class EntityProjectileBullet
 
     @Override
     public float getDamage() {
-        return 1.75F;
+        return 2.75F;
     }
 
     @Override

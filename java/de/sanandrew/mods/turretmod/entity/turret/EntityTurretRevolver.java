@@ -16,11 +16,10 @@ import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.Sounds;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import de.sanandrew.mods.turretmod.util.javatuples.Triplet;
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 
@@ -30,17 +29,17 @@ public class EntityTurretRevolver
         extends EntityTurret
 {
     public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TurretModRebirth.ID, "turrets/turret_revolver");
-    public static final UUID TI_UUID = UUID.fromString("4449D836-F122-409A-8E6C-D7B7438FD08C");
+    public static final UUID TII_UUID = UUID.fromString("4449D836-F122-409A-8E6C-D7B7438FD08C");
     public static final TurretInfo TINFO = new TurretInfo()
     {
         @Override
         public String getName() {
-            return "turret_i_shotgun";
+            return "turret_ii_revolver";
         }
 
         @Override
         public UUID getUUID() {
-            return EntityTurretRevolver.TI_UUID;
+            return EntityTurretRevolver.TII_UUID;
         }
 
         @Override
@@ -50,7 +49,7 @@ public class EntityTurretRevolver
 
         @Override
         public float getTurretHealth() {
-            return 20.0F;
+            return 30.0F;
         }
 
         @Override
@@ -70,7 +69,7 @@ public class EntityTurretRevolver
 
         @Override
         public String getInfoRange() {
-            return "16";
+            return "20";
         }
     };
 
@@ -98,6 +97,7 @@ public class EntityTurretRevolver
         super.applyEntityAttributes();
 
         this.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).setBaseValue(15.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30.0D);
     }
 
     @Override
@@ -158,7 +158,7 @@ public class EntityTurretRevolver
 
         @Override
         public double getRange() {
-            return 16;
+            return 20;
         }
 
         @Override

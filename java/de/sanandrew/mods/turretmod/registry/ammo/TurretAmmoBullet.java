@@ -68,7 +68,7 @@ public abstract class TurretAmmoBullet
 
     @Override
     public float getInfoDamage() {
-        return 1.75F;
+        return 2.75F;
     }
 
     @Override

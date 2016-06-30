@@ -45,7 +45,7 @@ public abstract class TurretInfoEntry
         this.txtRounds = Lang.translate(Lang.TINFO_ENTRY_ROUNDS.get());
         this.txtDps = Lang.translate(Lang.TINFO_ENTRY_DPS.get());
         this.txtHealth = Lang.translate(Lang.TINFO_ENTRY_HEALTH.get());
-        this.txtHealthVal = Lang.translate(Lang.TINFO_ENTRY_HEALTHVAL.get());
+        this.txtHealthVal = Lang.TINFO_ENTRY_HEALTHVAL.get();
         this.txtTurret = Lang.translate(Lang.TINFO_ENTRY_TURRET.get());
         this.txtCrft = Lang.translate(Lang.TINFO_ENTRY_CRAFTING.get());
         this.txtWorkbench = Lang.translate(Lang.TINFO_ENTRY_WORKBENCH.get());

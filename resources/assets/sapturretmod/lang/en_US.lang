@@ -41,6 +41,8 @@ item.sapturretmod:turret_ammo.cryocell_2.name=Cryo Cell SG2
 item.sapturretmod:turret_ammo.cryocell_pack_2.name=Cryo Cell SN2 Pack
 item.sapturretmod:turret_ammo.cryocell_3.name=Cryo Cell SG3
 item.sapturretmod:turret_ammo.cryocell_pack_3.name=Cryo Cell SN3 Pack
+item.sapturretmod:turret_ammo.bullet_sng.name=Revolver Bullets
+item.sapturretmod:turret_ammo.bullet_lrg.name=Revolver Bullet Pack
 
 item.sapturretmod:turret_repair_kit.standard_1.name=Repair Kit 05HS
 item.sapturretmod:turret_repair_kit.standard_2.name=Repair Kit 10HS
@@ -81,6 +83,7 @@ entity.sapturretmod.turret_i_shotgun.desc=A turret meant for basic crowd control
 entity.sapturretmod.turret_i_snowball.name=Cryolator Turret (T1)
 entity.sapturretmod.turret_i_snowball.desc=This turret is of the §3supporting§0 kind, as its not dealing any damage, but will §3slow down§0 any target that it hits. It'll only attack a target if it's not already slowed down, though.
 entity.sapturretmod.turret_ii_revolver.name=Revolver Turret (T2)
+entity.sapturretmod.turret_ii_revolver.desc=This turret can be seen as the upgraded version of the Crossbow Turret, as it has more range, greater health and deals more damage, although with less knockback effect.
 
 sapturretmod.tinfo.ammo.arrow.name=Arrow Bolt
 sapturretmod.tinfo.ammo.arrow.desc=The standard ammo for the §3Crossbow Turret§0. Has a tiny knockback effect and acts like a standard arrow, just smaller. Very precise.\n\nCan be packaged, whose items will provide 16x ammo.
@@ -88,6 +91,8 @@ sapturretmod.tinfo.ammo.sgshell.name=Shotgun Shell
 sapturretmod.tinfo.ammo.sgshell.desc=The standard ammo for the §3Shotgun Turret§0. Has no knockback effect and turns into 6 dispersed pebble projectiles when shot.\nDoes not apply any immunity to the target, thus targets hit by multiple pebbles will take damage from all of them.\n\nCan be packaged, whose items will provide 16x ammo.
 sapturretmod.tinfo.ammo.cryocell.name=Cryo Cell
 sapturretmod.tinfo.ammo.cryocell.desc=This ammunition used by the §3Cryolator Turret§0 comes in 3 versions, which applies different slowness effects:\n§3Cell SG1§0: Slowness I for 15s\n§3Cell SG2§0: Slowness III for 10s\n§3Cell SG3§0: Slowness V for 5s.\n\nDoes not apply immunity and any damage to the target.\n\nCan be packaged, whose items will provide 16x ammo.
+sapturretmod.tinfo.ammo.bullet.name=Revolver Bullets
+sapturretmod.tinfo.ammo.bullet.desc=Used by the §3Revolver Turret§0, it has the same knockback effect like the Shotgun projectiles, but do more damage than the Arrow bolts from the Crossbow Turret. Unlike other ammo types, this provides double the rounds.
 
 gui.sapturretmod.tinfo.infoTitle=Info about this mod
 gui.sapturretmod.tinfo.category.turrets.name=Turrets

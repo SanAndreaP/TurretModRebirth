@@ -84,6 +84,7 @@ public class ClientProxy
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretCryolator.class, manager -> { return new RenderTurret(manager, new ModelTurretCryolator(0.0F)); });
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretRevolver.class, manager -> { return new RenderTurret(manager, new ModelTurretRevolver(0.0F)); });
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCrossbowBolt.class, RenderTurretArrow::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCryoCell.class, RenderNothingness::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectilePebble.class, RenderPebble::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectileBullet.class, RenderBullet::new);
     }

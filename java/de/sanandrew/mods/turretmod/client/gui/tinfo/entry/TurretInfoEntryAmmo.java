@@ -86,7 +86,7 @@ public class TurretInfoEntryAmmo
         gui.mc.fontRendererObj.drawString(this.txtRounds, 42, 34, 0xFF6A6A6A, false);
         gui.mc.fontRendererObj.drawString(String.format("%d", ammo.getAmmoCapacity()), 45, 43, 0xFF000000, false);
         gui.mc.fontRendererObj.drawString(this.txtDps, 42, 54, 0xFF6A6A6A, false);
-        gui.mc.fontRendererObj.drawString(String.format(this.txtHealthVal, ammo.getInfoDamage()), 45, 63, 0xFF000000, false);
+        gui.mc.fontRendererObj.drawString(Lang.translate(this.txtHealthVal, ammo.getInfoDamage()), 45, 63, 0xFF000000, false);
         gui.mc.fontRendererObj.drawString(this.txtTurret, 42, 74, 0xFF6A6A6A, false);
         gui.mc.fontRendererObj.drawString(Lang.translateEntityCls(ammo.getTurret()), 45, 83, 0xFF000000, false);
         gui.mc.fontRendererObj.drawString(this.txtCrft, 42, 94, 0xFF6A6A6A, false);

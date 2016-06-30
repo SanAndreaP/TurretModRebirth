@@ -50,7 +50,7 @@
     "sounds": ["sapturretmod:shoot/minigun"],
     "subtitle": "subtitles.sapturretmod.turretShoot.minigun"
   },
-  "shoot.pistol": {
+  "shoot.revolver": {
     "category": "neutral",
     "sounds": ["sapturretmod:shoot/pistol"],
     "subtitle": "subtitles.sapturretmod.turretShoot.pistol"
