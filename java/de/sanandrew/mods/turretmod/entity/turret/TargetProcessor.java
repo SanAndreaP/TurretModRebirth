@@ -13,7 +13,6 @@ import com.google.common.collect.Maps;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmo;
 import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.util.PlayerList;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.entity.Entity;
@@ -62,6 +61,7 @@ public abstract class TargetProcessor
     protected EntityTargetSelector selector;
 
     protected final SortedMap<Integer, List<TargetingListener>> tgtListeners;
+    protected final List<ConsumptionListener> cnsListeners;
 
     public TargetProcessor(EntityTurret turret) {
         this.entityTargetList = new HashMap<>(ENTITY_TARGET_LIST_STD);
@@ -69,6 +69,7 @@ public abstract class TargetProcessor
         this.turret = turret;
         this.selector = new EntityTargetSelector();
         this.tgtListeners = new TreeMap<>();
+        this.cnsListeners = new ArrayList<>();
         this.initShootTicks = 20;
     }
 
@@ -134,7 +135,7 @@ public abstract class TargetProcessor
                 TurretAmmo type = AmmoRegistry.INSTANCE.getType(this.ammoStack);
                 int maxStackSize = this.ammoStack.getMaxStackSize();
 
-                while( decrAmmo > 0 && type != null ) {
+                while( decrAmmo > 0 && type != AmmoRegistry.NULL_TYPE ) {
                     ItemStack stack = this.ammoStack.copy();
                     decrAmmo -= (stack.stackSize = Math.min(decrAmmo / type.getAmmoCapacity(), maxStackSize)) * type.getAmmoCapacity();
                     if( stack.stackSize <= 0 ) {
@@ -155,12 +156,23 @@ public abstract class TargetProcessor
         }
     }
 
+    public void decrAmmo() {
+        boolean shouldConsume = true;
+        for( ConsumptionListener lst : this.cnsListeners ) {
+            shouldConsume = lst.consume(shouldConsume, this.turret);
+        }
+
+        if( shouldConsume ) {
+            this.ammoCount--;
+        }
+    }
+
     public void dropAmmo() {
         if( this.hasAmmo() ) {
             List<ItemStack> items = new ArrayList<>();
             int maxStackSize = this.ammoStack.getMaxStackSize();
             TurretAmmo type = AmmoRegistry.INSTANCE.getType(this.ammoStack);
-            while( this.ammoCount > 0 && type != null ) {
+            while( this.ammoCount > 0 && type != AmmoRegistry.NULL_TYPE ) {
                 ItemStack stack = this.ammoStack.copy();
                 this.ammoCount -= (stack.stackSize = Math.min(this.ammoCount / type.getAmmoCapacity(), maxStackSize)) * type.getAmmoCapacity();
                 if( stack.stackSize <= 0 ) {
@@ -186,7 +198,7 @@ public abstract class TargetProcessor
             List<ItemStack> items = new ArrayList<>();
             int maxStackSize = this.ammoStack.getMaxStackSize();
             TurretAmmo type = AmmoRegistry.INSTANCE.getType(this.ammoStack);
-            while( this.ammoCount > 0 && type != null ) {
+            while( this.ammoCount > 0 && type != AmmoRegistry.NULL_TYPE ) {
                 ItemStack stack = this.ammoStack.copy();
                 this.ammoCount -= (stack.stackSize = Math.min(this.ammoCount / type.getAmmoCapacity(), maxStackSize)) * type.getAmmoCapacity();
                 if( stack.stackSize <= 0 ) {
@@ -213,8 +225,8 @@ public abstract class TargetProcessor
     public boolean isAmmoApplicable(ItemStack stack) {
         if( stack != null ) {
             TurretAmmo stackType = AmmoRegistry.INSTANCE.getType(stack);
-            if( stackType != null ) {
-                if( this.ammoStack == null || AmmoRegistry.INSTANCE.getType(this.ammoStack).getTypeId().equals(stackType.getTypeId()) ) {
+            if( stackType != AmmoRegistry.NULL_TYPE ) {
+                if( this.ammoStack != null && AmmoRegistry.INSTANCE.getType(this.ammoStack).getTypeId().equals(stackType.getTypeId()) ) {
                     return this.ammoCount < this.getMaxAmmoCapacity();
                 } else {
                     List<TurretAmmo> types = AmmoRegistry.INSTANCE.getTypesForTurret(this.turret.getClass());
@@ -238,7 +250,7 @@ public abstract class TargetProcessor
 
     public final IProjectile getProjectile() {
         TurretAmmo ammo = AmmoRegistry.INSTANCE.getType(this.ammoStack);
-        if( ammo != null ) {
+        if( ammo != AmmoRegistry.NULL_TYPE ) {
             return ammo.getEntity(this.turret);
         }
 
@@ -260,6 +272,21 @@ public abstract class TargetProcessor
         this.tgtListeners.put(p, listenerList);
     }
 
+    public void removeTargetingListener(TargetingListener targetingListener) {
+        List<TargetingListener> listenerList = this.tgtListeners.get(targetingListener.getPriority());
+        if( listenerList != null ) {
+            listenerList.remove(targetingListener);
+        }
+    }
+
+    public void addConsumptionListener(ConsumptionListener listener) {
+        this.cnsListeners.add(listener);
+    }
+
+    public void removeConsumptionListener(ConsumptionListener listener) {
+        this.cnsListeners.remove(listener);
+    }
+
     public boolean doAllowTarget(Entity e) {
         boolean ret = true;
         for( Map.Entry<Integer, List<TargetingListener>> listenerEntries : this.tgtListeners.entrySet() ) {
@@ -277,7 +304,8 @@ public abstract class TargetProcessor
             assert projectile != null;
             this.turret.worldObj.spawnEntityInWorld(projectile);
             this.turret.worldObj.playSound(null, this.turret.posX, this.turret.posY, this.turret.posZ, this.getShootSound(), SoundCategory.NEUTRAL, 1.8F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
-            this.ammoCount--;
+            this.turret.setShooting();
+            this.decrAmmo();
         } else {
             this.turret.worldObj.playSound(null, this.turret.posX, this.turret.posY, this.turret.posZ, this.getLowAmmoSound(), SoundCategory.NEUTRAL, 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
         }

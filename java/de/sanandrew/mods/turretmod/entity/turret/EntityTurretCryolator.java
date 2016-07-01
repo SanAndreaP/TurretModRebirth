@@ -30,8 +30,7 @@ public class EntityTurretCryolator
 {
     public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TurretModRebirth.ID, "turrets/turret_cryolator");
     public static final UUID TI_UUID = UUID.fromString("3AF4D8C3-FCFC-42B0-98A3-BFB669AA7CE6");
-    public static final TurretInfo TINFO = new TurretInfo()
-    {
+    public static final TurretInfo TINFO = new TurretInfo() {
         @Override
         public String getName() {
             return "turret_i_snowball";
@@ -90,11 +89,6 @@ public class EntityTurretCryolator
         super.applyEntityAttributes();
 
         this.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).setBaseValue(20.0D);
-    }
-
-    @Override
-    public void onUpdate() {
-        super.onUpdate();
     }
 
     @Override

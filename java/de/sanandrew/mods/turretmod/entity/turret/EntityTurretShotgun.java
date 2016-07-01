@@ -31,8 +31,7 @@ public class EntityTurretShotgun
 {
     public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TurretModRebirth.ID, "turrets/turret_shotgun");
     public static final UUID TI_UUID = UUID.fromString("F7991EC5-2A89-49A6-B8EA-80775973C4C5");
-    public static final TurretInfo TINFO = new TurretInfo()
-    {
+    public static final TurretInfo TINFO = new TurretInfo() {
         @Override
         public String getName() {
             return "turret_i_shotgun";
@@ -76,7 +75,6 @@ public class EntityTurretShotgun
 
     public float barrelPos = 1.0F;
     public float prevBarrelPos = 1.0F;
-    public int prevAmmoVal;
 
     {
         this.targetProc = new MyTargetProc();
@@ -103,8 +101,6 @@ public class EntityTurretShotgun
 
         super.onUpdate();
 
-        int currAmmoVal = this.targetProc.getAmmoCount();
-
         if( this.worldObj.isRemote ) {
             if( this.barrelPos < 1.0F ) {
                 this.barrelPos += 0.06F * 20.0F / this.targetProc.getMaxShootTicks();
@@ -112,12 +108,11 @@ public class EntityTurretShotgun
                 this.barrelPos = 1.0F;
             }
 
-            if( this.prevAmmoVal > currAmmoVal ) {
+            if( this.wasShooting() ) {
                 this.barrelPos = 0.0F;
                 TurretModRebirth.proxy.spawnParticle(EnumParticle.SHOTGUN_SHOT, this.posX, this.posY + 1.5F, this.posZ, Triplet.with(this.rotationYawHead, this.rotationPitch, this.isUpsideDown));
             }
         }
-        this.prevAmmoVal = currAmmoVal;
     }
 
     @Override
@@ -160,7 +155,8 @@ public class EntityTurretShotgun
                     this.turret.worldObj.spawnEntityInWorld(projectile);
                     this.turret.worldObj.playSound(null, this.turret.posX, this.turret.posY, this.turret.posZ, this.getShootSound(), SoundCategory.NEUTRAL, 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
                 }
-                this.ammoCount--;
+                this.turret.setShooting();
+                this.decrAmmo();
             } else {
                 this.turret.worldObj.playSound(null, this.turret.posX, this.turret.posY, this.turret.posZ, this.getLowAmmoSound(), SoundCategory.NEUTRAL, 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
             }

@@ -30,8 +30,7 @@ public class EntityTurretRevolver
 {
     public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TurretModRebirth.ID, "turrets/turret_revolver");
     public static final UUID TII_UUID = UUID.fromString("4449D836-F122-409A-8E6C-D7B7438FD08C");
-    public static final TurretInfo TINFO = new TurretInfo()
-    {
+    public static final TurretInfo TINFO = new TurretInfo() {
         @Override
         public String getName() {
             return "turret_ii_revolver";
@@ -78,7 +77,6 @@ public class EntityTurretRevolver
     public float barrelPosRight = 1.0F;
     public float prevBarrelPosRight = 1.0F;
     public boolean leftShot;
-    public int prevAmmoVal;
 
     {
         this.targetProc = new MyTargetProc();
@@ -107,8 +105,6 @@ public class EntityTurretRevolver
 
         super.onUpdate();
 
-        int currAmmoVal = this.targetProc.getAmmoCount();
-
         if( this.worldObj.isRemote ) {
             if( this.barrelPosLeft < 1.0F ) {
                 this.barrelPosLeft += 0.06F * 20.0F / this.targetProc.getMaxShootTicks();
@@ -121,7 +117,7 @@ public class EntityTurretRevolver
                 this.barrelPosRight = 1.0F;
             }
 
-            if( this.prevAmmoVal > currAmmoVal ) {
+            if( this.wasShooting() ) {
                 float partShift;
                 if( this.leftShot ) {
                     this.barrelPosRight = 0.0F;
@@ -136,7 +132,6 @@ public class EntityTurretRevolver
                 TurretModRebirth.proxy.spawnParticle(EnumParticle.SHOTGUN_SHOT, this.posX, this.posY + 1.5F, this.posZ, Triplet.with(this.rotationYawHead + partShift, this.rotationPitch, this.isUpsideDown));
             }
         }
-        this.prevAmmoVal = currAmmoVal;
     }
 
     @Override

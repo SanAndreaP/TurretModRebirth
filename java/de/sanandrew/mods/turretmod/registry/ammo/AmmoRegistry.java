@@ -14,10 +14,14 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Level;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +37,73 @@ public final class AmmoRegistry
     private final Multimap<Class<? extends EntityTurret>, TurretAmmo> ammoTypesFromTurret;
     private final Map<UUID, List<TurretAmmo>> ammoGroupsFromUUID;
     private final List<TurretAmmo> ammoTypes;
+
+    public static final TurretAmmo NULL_TYPE = new TurretAmmo() {
+        @Override
+        public String getName() {
+            return "";
+        }
+
+        @Override
+        public UUID getId() {
+            return TmrUtils.EMPTY_UUID;
+        }
+
+        @Override
+        public UUID getTypeId() {
+            return TmrUtils.EMPTY_UUID;
+        }
+
+        @Override
+        public UUID getGroupId() {
+            return TmrUtils.EMPTY_UUID;
+        }
+
+        @Override
+        public String getInfoName() {
+            return "";
+        }
+
+        @Override
+        public float getInfoDamage() {
+            return 0;
+        }
+
+        @Override
+        public UUID getRecipeId() {
+            return TmrUtils.EMPTY_UUID;
+        }
+
+        @Override
+        public int getAmmoCapacity() {
+            return 0;
+        }
+
+        @Override
+        public Class<? extends IProjectile> getEntityClass() {
+            return null;
+        }
+
+        @Override
+        public IProjectile getEntity(EntityTurret turret) {
+            return null;
+        }
+
+        @Override
+        public Class<? extends EntityTurret> getTurret() {
+            return null;
+        }
+
+        @Override
+        public ResourceLocation getModel() {
+            return null;
+        }
+
+        @Override
+        public ItemStack getStoringAmmoItem() {
+            return null;
+        }
+    };
 
     private AmmoRegistry() {
         this.ammoTypesFromUUID = new HashMap<>();
@@ -51,9 +122,10 @@ public final class AmmoRegistry
     }
 
     public TurretAmmo getType(UUID typeId) {
-        return this.ammoTypesFromUUID.get(typeId);
+        return TmrUtils.valueOrDefault(this.ammoTypesFromUUID.get(typeId), NULL_TYPE);
     }
 
+    @Nonnull
     public TurretAmmo getType(ItemStack stack) {
         NBTTagCompound nbt = stack.getTagCompound();
         if( nbt != null ) {
@@ -62,12 +134,12 @@ public final class AmmoRegistry
                 try {
                     return this.getType(UUID.fromString(typeUUID));
                 } catch( IllegalArgumentException ex ) {
-                    return null;
+                    return NULL_TYPE;
                 }
             }
         }
 
-        return null;
+        return NULL_TYPE;
     }
 
     public List<TurretAmmo> getTypesForTurret(Class<? extends EntityTurret> turret) {
@@ -127,7 +199,7 @@ public final class AmmoRegistry
         if(firstStack != null && secondStack != null && firstStack.getItem() == ItemRegistry.ammo && secondStack.getItem() == ItemRegistry.ammo) {
             TurretAmmo firstType = this.getType(firstStack);
             TurretAmmo secondType = this.getType(secondStack);
-            return firstType != null && secondType != null && firstType.getTypeId().equals(secondType.getTypeId());
+            return firstType != NULL_TYPE && secondType != NULL_TYPE && firstType.getTypeId().equals(secondType.getTypeId());
         } else {
             return firstStack == secondStack;
         }

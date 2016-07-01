@@ -86,10 +86,4 @@ public class UpgradeAmmoStorage
     public UUID getRecipeId() {
         return TurretAssemblyRecipes.UPG_AMMO_STG;
     }
-
-    @Override
-    public void onLoad(EntityTurret turret, NBTTagCompound nbt) {}
-
-    @Override
-    public void onSave(EntityTurret turret, NBTTagCompound nbt) {}
 }

@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
+import de.sanandrew.mods.turretmod.entity.turret.ConsumptionListener;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
@@ -20,17 +21,17 @@ import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
-public abstract class UpgradeHealth
+public abstract class UpgradeAmmoUsage
         implements TurretUpgrade
 {
     private final ResourceLocation itemModel;
     private final String name;
-    private AttributeModifier modifier;
+    private final ConsumptionListener listener;
 
-    public UpgradeHealth(String name, String modUUID) {
+    public UpgradeAmmoUsage(String name, ConsumptionListener listener) {
         this.name = name;
-        this.modifier = new AttributeModifier(UUID.fromString(modUUID), String.format("%s:%s", TurretModRebirth.ID, name), 0.25D, TmrUtils.ATTR_ADD_PERC_VAL_TO_SUM);
         this.itemModel = new ResourceLocation(TurretModRebirth.ID, "upgrades/" + name);
+        this.listener = listener;
     }
 
     @Override
@@ -55,33 +56,24 @@ public abstract class UpgradeHealth
 
     @Override
     public void onApply(EntityTurret turret) {
-        if( !turret.worldObj.isRemote ) {
-            IAttributeInstance attrib = turret.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH);
-            if( attrib.getModifier(this.modifier.getID()) != null ) {
-                attrib.removeModifier(this.modifier);
-            }
-
-            attrib.applyModifier(this.modifier);
-        }
+        turret.getTargetProcessor().addConsumptionListener(this.listener);
     }
 
     @Override
     public void onRemove(EntityTurret turret) {
-        if( !turret.worldObj.isRemote ) {
-            IAttributeInstance attrib = turret.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH);
-            if( attrib.getModifier(this.modifier.getID()) != null ) {
-                attrib.removeModifier(this.modifier);
-                turret.setHealth(Math.min(turret.getHealth(), turret.getMaxHealth()));
-            }
-        }
+        turret.getTargetProcessor().removeConsumptionListener(this.listener);
     }
 
-    public static class UpgradeHealthMK1
-            extends UpgradeHealth
-    {
+    @Override
+    public void onLoad(EntityTurret turret, NBTTagCompound nbt) {
+        turret.getTargetProcessor().addConsumptionListener(this.listener);
+    }
 
-        public UpgradeHealthMK1() {
-            super("health_i", "673176FC-51F9-4CBC-BA12-5073B6867644");
+    public static class UpgradeAmmoUseI
+            extends UpgradeAmmoUsage
+    {
+        public UpgradeAmmoUseI() {
+            super("use_decr_i", (canConsumePrev, turret) -> TmrUtils.RNG.nextFloat() >= 0.1F);
         }
 
         @Override
@@ -95,14 +87,14 @@ public abstract class UpgradeHealth
         }
     }
 
-    public static class UpgradeHealthMK2
-            extends UpgradeHealth
+    public static class UpgradeAmmoUseII
+            extends UpgradeAmmoUsage
     {
         private final TurretUpgrade dependant;
 
-        public UpgradeHealthMK2() {
-            super("health_ii", "B7E5ADFA-517C-4167-A2FD-E0D31FA6E9BE");
-            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(UpgradeRegistry.HEALTH_I);
+        public UpgradeAmmoUseII() {
+            super("use_decr_ii", (canConsumePrev, turret) -> TmrUtils.RNG.nextFloat() >= 0.35F);
+            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(UpgradeRegistry.UPG_USAGE_I);
         }
 
         @Override
@@ -116,14 +108,14 @@ public abstract class UpgradeHealth
         }
     }
 
-    public static class UpgradeHealthMK3
-            extends UpgradeHealth
+    public static class UpgradeAmmoUseInf
+            extends UpgradeAmmoUsage
     {
         private final TurretUpgrade dependant;
 
-        public UpgradeHealthMK3() {
-            super("health_iii", "D49F43AE-5EA4-4DD2-B08A-9B5F1966C091");
-            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(UpgradeRegistry.HEALTH_II);
+        public UpgradeAmmoUseInf() {
+            super("use_decr_inf", (canConsumePrev, turret) -> turret.getTargetProcessor().getAmmoCount() != turret.getTargetProcessor().getMaxAmmoCapacity() && canConsumePrev);
+            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(UpgradeRegistry.UPG_USAGE_II);
         }
 
         @Override
@@ -134,27 +126,6 @@ public abstract class UpgradeHealth
         @Override
         public UUID getRecipeId() {
             return TurretAssemblyRecipes.UPG_HEALTH_MK3;
-        }
-    }
-
-    public static class UpgradeHealthMK4
-            extends UpgradeHealth
-    {
-        private final TurretUpgrade dependant;
-
-        public UpgradeHealthMK4() {
-            super("health_iv", "9431A60C-B995-4547-B143-2BEDC67467E1");
-            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(UpgradeRegistry.HEALTH_III);
-        }
-
-        @Override
-        public TurretUpgrade getDependantOn() {
-            return this.dependant;
-        }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.UPG_HEALTH_MK4;
         }
     }
 }

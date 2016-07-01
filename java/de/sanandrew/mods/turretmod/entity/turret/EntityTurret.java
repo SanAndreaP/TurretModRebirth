@@ -10,6 +10,9 @@ package de.sanandrew.mods.turretmod.entity.turret;
 
 import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.util.Sounds;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
@@ -56,10 +59,13 @@ public abstract class EntityTurret
         extends EntityLiving
         implements IEntityAdditionalSpawnData
 {
+    public static final DataParameter<Boolean> SHOT_CHNG = EntityDataManager.createKey(EntityTurret.class, DataSerializers.BOOLEAN);
+
     public boolean isUpsideDown;
     public boolean showRange;
 
     private BlockPos blockPos;
+    private boolean prevShotChng;
 
     protected TargetProcessor targetProc;
     protected UpgradeProcessor upgProc;
@@ -99,6 +105,8 @@ public abstract class EntityTurret
 
         this.dwBools = new DataWatcherBooleans<>(this);
         this.dwBools.registerDwValue();
+
+        this.dataManager.register(SHOT_CHNG, false);
 
         this.setActive(true);
     }
@@ -171,6 +179,16 @@ public abstract class EntityTurret
             this.rotationYaw = 0.0F;
             this.renderYawOffset = 0.0F;
         }
+    }
+
+    public boolean wasShooting() {
+        boolean shot = this.dataManager.get(SHOT_CHNG) != this.prevShotChng;
+        this.prevShotChng = this.dataManager.get(SHOT_CHNG);
+        return shot;
+    }
+
+    public void setShooting() {
+        this.dataManager.set(SHOT_CHNG, !this.dataManager.get(SHOT_CHNG));
     }
 
     @Override

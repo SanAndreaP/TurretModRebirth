@@ -47,18 +47,6 @@ public abstract class UpgradeUpgStorage
         return true;
     }
 
-    @Override
-    public void onApply(EntityTurret turret) {}
-
-    @Override
-    public void onRemove(EntityTurret turret) {}
-
-    @Override
-    public void onLoad(EntityTurret turret, NBTTagCompound nbt) {}
-
-    @Override
-    public void onSave(EntityTurret turret, NBTTagCompound nbt) {}
-
     public static class UpgradeStorageMK1
             extends UpgradeUpgStorage
     {

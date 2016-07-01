@@ -77,12 +77,6 @@ public abstract class UpgradeReloadTime
         }
     }
 
-    @Override
-    public void onLoad(EntityTurret turret, NBTTagCompound nbt) {}
-
-    @Override
-    public void onSave(EntityTurret turret, NBTTagCompound nbt) {}
-
     public static class UpgradeReloadTimeMK1
             extends UpgradeReloadTime
     {

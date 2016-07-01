@@ -38,6 +38,9 @@ public final class UpgradeRegistry
     public static final UUID RELOAD_I = UUID.fromString("4ED4E813-E2D8-43E9-B499-9911E214C5E9");
     public static final UUID RELOAD_II = UUID.fromString("80877F84-F03D-4ED8-A9D3-BAF6DF4F3BF1");
     public static final UUID SMART_TGT = UUID.fromString("12435AB9-5AA3-4DB9-9B76-7943BA71597A");
+    public static final UUID UPG_USAGE_I = UUID.fromString("A8F29058-C8B7-400D-A7F4-4CEDE627A7E8");
+    public static final UUID UPG_USAGE_II = UUID.fromString("2A76A2EB-0EA3-4EB0-9EC2-61E579361306");
+    public static final UUID UPG_USAGE_INF = UUID.fromString("C3CF3EE9-8314-4766-A5E0-6033DB3EE9DB");
 
     public static final UpgradeRegistry INSTANCE = new UpgradeRegistry();
 
@@ -101,6 +104,9 @@ public final class UpgradeRegistry
         this.registerUpgrade(RELOAD_I, new UpgradeReloadTime.UpgradeReloadTimeMK1());
         this.registerUpgrade(RELOAD_II, new UpgradeReloadTime.UpgradeReloadTimeMK2());
         this.registerUpgrade(SMART_TGT, new UpgradeSmartTargeting());
+        this.registerUpgrade(UPG_USAGE_I, new UpgradeAmmoUsage.UpgradeAmmoUseI());
+        this.registerUpgrade(UPG_USAGE_II, new UpgradeAmmoUsage.UpgradeAmmoUseII());
+        this.registerUpgrade(UPG_USAGE_INF, new UpgradeAmmoUsage.UpgradeAmmoUseInf());
 
         emptyInst = this.upgradeToUuidMap.get(EMPTY);
     }

@@ -89,7 +89,9 @@ public class UpgradeSmartTargeting
     }
 
     @Override
-    public void onRemove(EntityTurret turret) { }
+    public void onRemove(EntityTurret turret) {
+        turret.getTargetProcessor().removeTargetingListener(this.targetingListener);
+    }
 
     @Override
     public UUID getRecipeId() {
@@ -102,7 +104,4 @@ public class UpgradeSmartTargeting
             turret.getTargetProcessor().addTargetingListener(this.targetingListener);
         }
     }
-
-    @Override
-    public void onSave(EntityTurret turret, NBTTagCompound nbt) {}
 }
