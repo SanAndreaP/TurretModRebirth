@@ -57,26 +57,65 @@ public class RenderWorldLastHandler
     private static void renderTurretLabel(EntityTurret turret, double x, double y, double z) {
         Minecraft mc = Minecraft.getMinecraft();
         FontRenderer fontrenderer = mc.fontRendererObj;
-        float f1 = 0.005F;
+        float scale = 0.010F;
+
         GlStateManager.pushMatrix();
-        GlStateManager.translate((float)x + 0.0F, (float)y + turret.height + 0.5F, (float)z);
+        GlStateManager.translate(x, y + (turret.isUpsideDown ? turret.height / 2.0F : turret.height), z);
         GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(-mc.getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
-        GlStateManager.scale(-f1, -f1, f1);
+        GlStateManager.scale(-scale, -scale, scale);
+        GlStateManager.translate(-64.0D, 0.0D, 0.0D);
         GlStateManager.disableLighting();
         GlStateManager.depthMask(false);
         GlStateManager.disableDepth();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        GlStateManager.disableTexture2D();
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+
         Tessellator tessellator = Tessellator.getInstance();
         VertexBuffer buffer = tessellator.getBuffer();
 
-        GlStateManager.disableTexture2D();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-        buffer.pos(0.0D, 0.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 0.5F).endVertex();
-        buffer.pos(0.0D, 64.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 0.5F).endVertex();
-        buffer.pos(128.0D, 64.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 0.5F).endVertex();
-        buffer.pos(128.0D, 0.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 0.5F).endVertex();
+        buffer.pos(0.0D, 0.0D, 0.0D).color(0.0F, 0.0625F, 0.0F, 0.5F).endVertex();
+        buffer.pos(0.0D, 64.0D, 0.0D).color(0.0F, 0.0625F, 0.0F, 0.5F).endVertex();
+        buffer.pos(128.0D, 64.0D, 0.0D).color(0.0F, 0.0625F, 0.0F, 0.5F).endVertex();
+        buffer.pos(128.0D, 0.0D, 0.0D).color(0.0F, 0.0625F, 0.0F, 0.5F).endVertex();
+
+        buffer.pos(-1.0D, -1.0D, 0.0D).color(0.3125F, 1.0F, 0.0F, 0.8F).endVertex();
+        buffer.pos(-1.0D, 0.0D, 0.0D).color(0.3125F, 1.0F, 0.0F, 0.8F).endVertex();
+        buffer.pos(129.0D, 0.0D, 0.0D).color(0.3125F, 1.0F, 0.0F, 0.8F).endVertex();
+        buffer.pos(129.0D, -1.0D, 0.0D).color(0.3125F, 1.0F, 0.0F, 0.8F).endVertex();
+        buffer.pos(-1.0D, 64.0D, 0.0D).color(0.15625F, 0.5F, 0.0F, 0.8F).endVertex();
+        buffer.pos(-1.0D, 65.0D, 0.0D).color(0.15625F, 0.5F, 0.0F, 0.8F).endVertex();
+        buffer.pos(129.0D, 65.0D, 0.0D).color(0.15625F, 0.5F, 0.0F, 0.8F).endVertex();
+        buffer.pos(129.0D, 64.0D, 0.0D).color(0.15625F, 0.5F, 0.0F, 0.8F).endVertex();
+        buffer.pos(-1.0D, 0.0D, 0.0D).color(0.3125F, 1.0F, 0.0F, 0.8F).endVertex();
+        buffer.pos(-1.0D, 64.0D, 0.0D).color(0.15625F, 0.5F, 0.0F, 0.8F).endVertex();
+        buffer.pos(0.0D, 64.0D, 0.0D).color(0.15625F, 0.5F, 0.0F, 0.8F).endVertex();
+        buffer.pos(0.0D, 0.0D, 0.0D).color(0.3125F, 1.0F, 0.0F, 0.8F).endVertex();
+        buffer.pos(128.0D, 0.0D, 0.0D).color(0.3125F, 1.0F, 0.0F, 0.8F).endVertex();
+        buffer.pos(128.0D, 64.0D, 0.0D).color(0.15625F, 0.5F, 0.0F, 0.8F).endVertex();
+        buffer.pos(129.0D, 64.0D, 0.0D).color(0.15625F, 0.5F, 0.0F, 0.8F).endVertex();
+        buffer.pos(129.0D, 0.0D, 0.0D).color(0.3125F, 1.0F, 0.0F, 0.8F).endVertex();
+
+        buffer.pos(-1.0D, -2.0D, 0.0D).color(0.0F, 0.0625F, 0.0F, 0.5F).endVertex();
+        buffer.pos(-1.0D, -1.0D, 0.0D).color(0.0F, 0.0625F, 0.0F, 0.5F).endVertex();
+        buffer.pos(129.0D, -1.0D, 0.0D).color(0.0F, 0.0625F, 0.0F, 0.5F).endVertex();
+        buffer.pos(129.0D, -2.0D, 0.0D).color(0.0F, 0.0625F, 0.0F, 0.5F).endVertex();
+        buffer.pos(-1.0D, 65.0D, 0.0D).color(0.0F, 0.0625F, 0.0F, 0.5F).endVertex();
+        buffer.pos(-1.0D, 66.0D, 0.0D).color(0.0F, 0.0625F, 0.0F, 0.5F).endVertex();
+        buffer.pos(129.0D, 66.0D, 0.0D).color(0.0F, 0.0625F, 0.0F, 0.5F).endVertex();
+        buffer.pos(129.0D, 65.0D, 0.0D).color(0.0F, 0.0625F, 0.0F, 0.5F).endVertex();
+        buffer.pos(-2.0D, -1.0D, 0.0D).color(0.0F, 0.0625F, 0.0F, 0.5F).endVertex();
+        buffer.pos(-2.0D, 65.0D, 0.0D).color(0.0F, 0.0625F, 0.0F, 0.5F).endVertex();
+        buffer.pos(-1.0D, 65.0D, 0.0D).color(0.0F, 0.0625F, 0.0F, 0.5F).endVertex();
+        buffer.pos(-1.0D, -1.0D, 0.0D).color(0.0F, 0.0625F, 0.0F, 0.5F).endVertex();
+        buffer.pos(129.0D, -1.0D, 0.0D).color(0.0F, 0.0625F, 0.0F, 0.5F).endVertex();
+        buffer.pos(129.0D, 65.0D, 0.0D).color(0.0F, 0.0625F, 0.0F, 0.5F).endVertex();
+        buffer.pos(130.0D, 65.0D, 0.0D).color(0.0F, 0.0625F, 0.0F, 0.5F).endVertex();
+        buffer.pos(130.0D, -1.0D, 0.0D).color(0.0F, 0.0625F, 0.0F, 0.5F).endVertex();
+
         //health
         buffer.pos(1.0D, 22.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
         buffer.pos(1.0D, 24.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
@@ -87,6 +126,7 @@ public class RenderWorldLastHandler
         buffer.pos(1.0D, 24.0D, 0.0D).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
         buffer.pos((1 + 126.0F * healthRel), 24.0D, 0.0D).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
         buffer.pos((1 + 126.0F * healthRel), 22.0D, 0.0D).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
+
         //ammo
         buffer.pos(1.0D, 38.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
         buffer.pos(1.0D, 40.0D, 0.0D).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
@@ -98,6 +138,7 @@ public class RenderWorldLastHandler
         buffer.pos((1 + 126.0F * ammoRel), 40.0D, 0.0D).color(0.4F, 0.4F, 1.0F, 1.0F).endVertex();
         buffer.pos((1 + 126.0F * ammoRel), 38.0D, 0.0D).color(0.4F, 0.4F, 1.0F, 1.0F).endVertex();
         tessellator.draw();
+        GlStateManager.shadeModel(GL11.GL_FLAT);
         GlStateManager.enableTexture2D();
 
         String s = "Turret";
