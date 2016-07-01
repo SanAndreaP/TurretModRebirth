@@ -225,7 +225,47 @@ public abstract class EntityTurret
                 this.faceEntity(this.targetProc.getTarget(), 10.0F, this.getVerticalFaceSpeed());
             } else if( this.worldObj.isRemote && TmrUtils.getFirstPassengerOfClass(this, EntityPlayer.class) == null ) {
                 this.rotationYawHead += 1.0F;
-                this.rotationPitch = 0.0F;
+                if( this.rotationYawHead >= 360.0D ) {
+                    this.rotationYawHead -= 360.0D;
+                    this.prevRotationYawHead -= 360.0D;
+                }
+
+                if( this.rotationPitch < 0.0F ) {
+                    this.rotationPitch += 5.0F;
+                    if( this.rotationPitch > 0.0F ) {
+                        this.rotationPitch = 0.0F;
+                    }
+                } else if( this.rotationPitch > 0.0F ) {
+                    this.rotationPitch -= 5.0F;
+                    if( this.rotationPitch < 0.0F ) {
+                        this.rotationPitch = 0.0F;
+                    }
+                }
+            }
+        } else {
+            if( this.rotationYawHead > 0.0F ) {
+                this.rotationYawHead -= 5.0F;
+                if( this.rotationYawHead < 0.0F ) {
+                    this.rotationYawHead = 0.0F;
+                }
+            } else if( this.rotationYawHead < 0.0F ) {
+                this.rotationYawHead += 5.0F;
+                if( this.rotationYawHead > 0.0F ) {
+                    this.rotationYawHead = 0.0F;
+                }
+            }
+
+            final float lockedPitch = 30.0F;
+            if( this.rotationPitch < lockedPitch ) {
+                this.rotationPitch += 1.0F;
+                if( this.rotationPitch > lockedPitch ) {
+                    this.rotationPitch = lockedPitch;
+                }
+            } else if( this.rotationPitch > lockedPitch ) {
+                this.rotationPitch -= 1.0F;
+                if( this.rotationPitch < lockedPitch ) {
+                    this.rotationPitch = lockedPitch;
+                }
             }
         }
 

@@ -25,7 +25,7 @@ item.sapturretmod:turret_assembly_auto.ttip=Used in the Turret Assembly Table
 item.sapturretmod:turret_assembly_auto.desc=This enables automation of the assembly table. Once this is applied, a button will appear where you can toggle the assembly table between manual and automation mode.\n\nIn manual mode it will act like you're used to, crafting items on your command.\n\nIn automation mode, you can tell it to craft a specific item. Once the items and the power are sufficiently available, it'll start crafting and keep crafting it until it runs out of ingredients, energy or space in the output.\nYou cannot change the item crafted until you cancel it.
 item.sapturretmod:turret_assembly_speed.name=Speed Upgrade
 item.sapturretmod:turret_assembly_speed.ttip=Used in the Turret Assembly Table
-item.sapturretmod:turret_assembly_speed.desc=This optimizes the assembly process and makes the assembly table 4x faster. Since this optimization isn't free to come by, it'll increase the energy consumption of the current crafting operation by 10%.
+item.sapturretmod:turret_assembly_speed.desc=This optimizes the assembly process and makes the assembly table 4x faster. Since this optimization isn't free to come by, it'll increase the energy consumption of the current crafting operation by 10% .
 item.sapturretmod:turret_assembly_filter.name=Filter Upgrade
 item.sapturretmod:turret_assembly_filter.ttip=Used in the Turret Assembly Table
 item.sapturretmod:turret_assembly_filter.desc=With this upgrade you can §3filter§0 what's gointg into the assembly table.\nAfter §3right-clicking§0 you can configure the filter. In empty slots can go anything. In configured slots can only go the item configured (obviously), but those items §3won't go anywhere else§0, not even in empty configured slots.\n§3Shift-right-click§0 clears the filter.\n\nThe filter operates not only on the user-side of things (putting stuff into the table via GUI) but also with external insertion devices like the hopper.\n\nPlease note that you can't configure the stack size of items, thus it will always try to put a §3whole stack§0 in a slot. \n\nf you want to put in more than 1 stack into the table, it's advised to configure 2 or more slots with the same item.
@@ -75,6 +75,13 @@ item.sapturretmod:turret_upgrade.ammo_storage.name=Ammunition Storage
 item.sapturretmod:turret_upgrade.ammo_storage.desc=If you're tired of your turrets running out of ammo too fast, this will increases the available §3ammo storage by 320 rounds§0.
 item.sapturretmod:turret_upgrade.smart_tgt.name=Smart Targeting
 item.sapturretmod:turret_upgrade.smart_tgt.desc=Essentially, this upgrade makes turrets aware of the targets from others and not targeting those for themselves.\nTurrets within the range of the turret holding this upgrade will be accounted for.
+item.sapturretmod:turret_upgrade.use_decr_i.name=Economy I
+item.sapturretmod:turret_upgrade.use_decr_i.desc=If you think ammo is too expensive to make, then this upgrade will help you out! A turret with this upgrade has a chance of 10% of not consuming ammo (so on average, it uses 10% less ammo).
+item.sapturretmod:turret_upgrade.use_decr_ii.name=Economy II
+item.sapturretmod:turret_upgrade.use_decr_ii.desc=Like its required upgrade, this lets turrets preserve ammo. This increases the chance of doing so to 35% .
+item.sapturretmod:turret_upgrade.use_decr_inf.name=Infinitas Oeconomia
+item.sapturretmod:turret_upgrade.use_decr_inf.desc=You want unlimited ammo? This upgrade recreates ammo automatically and infinitely, so you'll never run out of it! There's a catch though: The turret must be filled to the max with rounds, or otherwise it will resort to the other Economy upgrades to reduce ammo usage.
+
 
 entity.sapturretmod.turret_i_crossbow.name=Crossbow Turret (T1)
 entity.sapturretmod.turret_i_crossbow.desc=A turret meant for basic defense and beginners. Not very strong but one of the cheapest to make.
@@ -170,6 +177,8 @@ subtitles.sapturretmod.turretRicochet.splash=Projectile splashes
 subtitles.sapturretmod.turretShield.active=Shield engages
 
 
+
+
 item.sapturretmod:turret_upgrade.name=Turret Upgrade
 item.sapturretmod:turret_upgrade.requires=Requires:
 item.sapturretmod:turret_upgrade.applicableTo=Only Applicable On:
@@ -177,7 +186,7 @@ item.sapturretmod:turret_upgrade.shdetails=<Hold Shift>
 item.sapturretmod:turret_upgrade.empty.name=Empty
 item.sapturretmod:turret_upgrade.empty.desc=Base for further upgrades. Not applicable to anything.
 item.sapturretmod:turret_upgrade.healthUpgradeI.name=Health I
-item.sapturretmod:turret_upgrade.healthUpgradeI.desc=Increases the turret health by 25%.
+item.sapturretmod:turret_upgrade.healthUpgradeI.desc=Increases the turret health by 25% .
 item.sapturretmod:turret_upgrade.healthUpgradeII.name=Health II
 item.sapturretmod:turret_upgrade.healthUpgradeII.desc=Increases the turret health by an additional 25% (50% overall).
 item.sapturretmod:turret_upgrade.healthUpgradeIII.name=Health III
@@ -185,7 +194,7 @@ item.sapturretmod:turret_upgrade.healthUpgradeIII.desc=Increases the turret heal
 item.sapturretmod:turret_upgrade.healthUpgradeIV.name=Health IV
 item.sapturretmod:turret_upgrade.healthUpgradeIV.desc=Increases the turret health by an additional 25% (100% overall).
 item.sapturretmod:turret_upgrade.reloadI.name=Reload I
-item.sapturretmod:turret_upgrade.reloadI.desc=Decreases the reload time by 15%.
+item.sapturretmod:turret_upgrade.reloadI.desc=Decreases the reload time by 15% .
 item.sapturretmod:turret_upgrade.reloadII.name=Reload II
 item.sapturretmod:turret_upgrade.reloadII.desc=Decreases the reload time by an additional 35% (50% overall).
 item.sapturretmod:turret_upgrade.upgStorageI.name=Upgrade Storage I

@@ -48,6 +48,7 @@ public class LayerTurretGlow<T extends EntityTurret>
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightX, brightY);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
+        this.glowModel.setLivingAnimations(turret, limbSwing, limbSwingAmount, partialTicks);
         this.glowModel.render(turret, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
         brightness = turret.getBrightnessForRender(partialTicks);
