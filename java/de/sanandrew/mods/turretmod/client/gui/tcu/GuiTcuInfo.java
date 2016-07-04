@@ -14,6 +14,7 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import de.sanandrew.mods.turretmod.network.PacketPlayerTurretAction;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
+import de.sanandrew.mods.turretmod.network.PacketTurretNaming;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
@@ -22,6 +23,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
@@ -44,6 +46,8 @@ public class GuiTcuInfo
     private GuiButton dismantle;
     private GuiButton toggleActive;
     private GuiButton toggleRange;
+
+    private GuiTextField turretName;
 
     private String infoStr;
     private long infoTimeShown;
@@ -72,6 +76,10 @@ public class GuiTcuInfo
         this.buttonList.add(this.toggleActive = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 151, 150, Lang.translate(Lang.TCU_BTN.get("toggleActive"))));
         this.buttonList.add(this.toggleRange = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 164, 150, Lang.translate(Lang.TCU_BTN.get("range"))));
 
+        this.turretName = new GuiTextField(this.buttonList.size(), this.fontRendererObj, this.guiLeft + 20, this.guiTop + 22, 150, 10);
+        this.turretName.setMaxStringLength(128);
+        this.turretName.setText(this.turret.hasCustomName() ? this.turret.getCustomNameTag() : "");
+
         GuiTCUHelper.pageInfo.enabled = false;
     }
 
@@ -82,6 +90,8 @@ public class GuiTcuInfo
         if( this.turret.isDead ) {
             this.mc.thePlayer.closeScreen();
         }
+
+        this.turretName.updateCursorCounter();
     }
 
     @Override
@@ -110,8 +120,11 @@ public class GuiTcuInfo
             this.drawTexturedModalRect(this.guiLeft + 7, this.guiTop + 95, GuiTCUHelper.X_SIZE, this.specOwnerHead * 8, 10, 8);
         }
 
-        String value = this.turret.hasCustomName() ? this.turret.getCustomNameTag() : "-n/a-";
-        this.fontRendererObj.drawString(value, this.guiLeft + 20, this.guiTop + 23, 0x000000);
+        this.turretName.drawTextBox();
+
+        String value;
+//        String value = this.turret.hasCustomName() ? this.turret.getCustomNameTag() : "-n/a-";
+//        this.fontRendererObj.drawString(value, this.guiLeft + 20, this.guiTop + 23, 0x000000);
 
         value = String.format("%.1f / %.1f HP", this.turret.getHealth(), this.turret.getMaxHealth());
         this.fontRendererObj.drawString(value, this.guiLeft + 20, this.guiTop + 35, 0x000000);
@@ -146,6 +159,19 @@ public class GuiTcuInfo
     }
 
     @Override
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+        this.turretName.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    @Override
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        if( !this.turretName.textboxKeyTyped(typedChar, keyCode) ) {
+            super.keyTyped(typedChar, keyCode);
+        }
+    }
+
+    @Override
     protected void actionPerformed(GuiButton button) throws IOException {
         if( button == this.dismantle ) {
             if( !this.turret.tryDismantle(this.mc.thePlayer) ) {
@@ -169,6 +195,13 @@ public class GuiTcuInfo
         } else if( !GuiTCUHelper.actionPerformed(button, this) ) {
             super.actionPerformed(button);
         }
+    }
+
+    @Override
+    public void onGuiClosed() {
+        PacketRegistry.sendToServer(new PacketTurretNaming(this.turret, this.turretName.getText()));
+
+        super.onGuiClosed();
     }
 
     @Override

@@ -218,5 +218,7 @@ public final class AmmoRegistry
         this.registerAmmoType(new TurretAmmoCryoCell.MultiMK2());
         this.registerAmmoType(new TurretAmmoCryoCell.SingleMK3());
         this.registerAmmoType(new TurretAmmoCryoCell.MultiMK3());
+        this.registerAmmoType(new TurretAmmoMinigunShell.Single());
+        this.registerAmmoType(new TurretAmmoMinigunShell.Multi());
     }
 }

@@ -12,5 +12,6 @@ public enum EnumParticle
 {
     ASSEMBLY_SPARK,
     SHOTGUN_SHOT,
-    CRYO_PARTICLE
+    CRYO_PARTICLE,
+    MINIGUN_SHOT
 }

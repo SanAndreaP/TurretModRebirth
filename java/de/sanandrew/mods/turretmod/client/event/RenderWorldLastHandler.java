@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.event;
 
+import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -141,13 +142,13 @@ public class RenderWorldLastHandler
         GlStateManager.shadeModel(GL11.GL_FLAT);
         GlStateManager.enableTexture2D();
 
-        String s = "Turret";
+        String s = turret.hasCustomName() ? turret.getCustomNameTag() : Lang.translateEntityCls(turret.getClass());
         fontrenderer.drawString(s, 1, 1, -1);
         s = String.format("Health: %.2f/%.2f", turret.getHealth(), turret.getMaxHealth());
         fontrenderer.drawString(s, 1, 12, 0xFFFF8080);
         s = String.format("Ammo: %d/%d", turret.getTargetProcessor().getAmmoCount(), turret.getTargetProcessor().getMaxAmmoCapacity());
         fontrenderer.drawString(s, 1, 28, 0xFFA0A0FF);
-        s = String.format("Target: %s", turret.getTargetProcessor().getTarget() == null ? "n/a" : turret.getTargetProcessor().getTarget().getClass().getSimpleName());
+        s = String.format("Target: %s", turret.getTargetProcessor().getTarget() == null ? "n/a" : Lang.translateEntityCls(turret.getTargetProcessor().getTarget().getClass()));
         fontrenderer.drawString(s, 1, 44, 0xFFFFFFA0);
 
         GlStateManager.enableDepth();

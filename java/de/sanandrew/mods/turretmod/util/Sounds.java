@@ -19,6 +19,7 @@ public final class Sounds
     private static final ResourceLocation R_SHOOT_CRYOLATOR = new ResourceLocation(TurretModRebirth.ID, "shoot.cryolator");
     private static final ResourceLocation R_SHOOT_SHOTGUN = new ResourceLocation(TurretModRebirth.ID, "shoot.shotgun");
     private static final ResourceLocation R_SHOOT_REVOLVER = new ResourceLocation(TurretModRebirth.ID, "shoot.revolver");
+    private static final ResourceLocation R_SHOOT_MINIGUN = new ResourceLocation(TurretModRebirth.ID, "shoot.minigun");
     private static final ResourceLocation R_TURRET_HIT = new ResourceLocation(TurretModRebirth.ID, "hit.turrethit");
     private static final ResourceLocation R_TURRET_DEATH = new ResourceLocation(TurretModRebirth.ID, "hit.turretDeath");
     private static final ResourceLocation R_TURRET_COLLECT = new ResourceLocation(TurretModRebirth.ID, "collect.ia_get");
@@ -28,6 +29,7 @@ public final class Sounds
     public static final SoundEvent SHOOT_CRYOLATOR = new SoundEvent(R_SHOOT_CRYOLATOR);
     public static final SoundEvent SHOOT_SHOTGUN = new SoundEvent(R_SHOOT_SHOTGUN);
     public static final SoundEvent SHOOT_REVOLVER = new SoundEvent(R_SHOOT_REVOLVER);
+    public static final SoundEvent SHOOT_MINIGUN = new SoundEvent(R_SHOOT_MINIGUN);
     public static final SoundEvent TURRET_HIT = new SoundEvent(R_TURRET_HIT);
     public static final SoundEvent TURRET_DEATH = new SoundEvent(R_TURRET_DEATH);
     public static final SoundEvent TURRET_COLLECT = new SoundEvent(R_TURRET_COLLECT);
@@ -38,6 +40,7 @@ public final class Sounds
         register(SHOOT_CRYOLATOR, R_SHOOT_CRYOLATOR);
         register(SHOOT_SHOTGUN, R_SHOOT_SHOTGUN);
         register(SHOOT_REVOLVER, R_SHOOT_REVOLVER);
+        register(SHOOT_MINIGUN, R_SHOOT_MINIGUN);
         register(TURRET_HIT, R_TURRET_HIT);
         register(TURRET_DEATH, R_TURRET_DEATH);
         register(TURRET_COLLECT, R_TURRET_COLLECT);

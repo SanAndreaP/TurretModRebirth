@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.registry.turret;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretMinigun;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretRevolver;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
@@ -87,5 +88,6 @@ public final class TurretRegistry
         this.registerTurretInfo(EntityTurretShotgun.TINFO);
         this.registerTurretInfo(EntityTurretCryolator.TINFO);
         this.registerTurretInfo(EntityTurretRevolver.TINFO);
+        this.registerTurretInfo(EntityTurretMinigun.TINFO);
     }
 }

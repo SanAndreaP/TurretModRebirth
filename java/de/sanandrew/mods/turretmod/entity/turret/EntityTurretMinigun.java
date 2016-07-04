@@ -15,7 +15,7 @@ import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.Sounds;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import de.sanandrew.mods.turretmod.util.javatuples.Triplet;
+import de.sanandrew.mods.turretmod.util.javatuples.Quartet;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -25,25 +25,25 @@ import net.minecraft.world.World;
 
 import java.util.UUID;
 
-public class EntityTurretRevolver
+public class EntityTurretMinigun
         extends EntityTurret
 {
-    public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TurretModRebirth.ID, "turrets/turret_revolver");
-    public static final UUID TII_UUID = UUID.fromString("4449D836-F122-409A-8E6C-D7B7438FD08C");
+    public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TurretModRebirth.ID, "turrets/turret_minigun");
+    public static final UUID TII_UUID = UUID.fromString("97E1FB65-EE36-43BA-A900-583B4BD7973A");
     public static final TurretInfo TINFO = new TurretInfo() {
         @Override
         public String getName() {
-            return "turret_ii_revolver";
+            return "turret_ii_minigun";
         }
 
         @Override
         public UUID getUUID() {
-            return EntityTurretRevolver.TII_UUID;
+            return EntityTurretMinigun.TII_UUID;
         }
 
         @Override
         public Class<? extends EntityTurret> getTurretClass() {
-            return EntityTurretRevolver.class;
+            return EntityTurretMinigun.class;
         }
 
         @Override
@@ -53,7 +53,7 @@ public class EntityTurretRevolver
 
         @Override
         public int getBaseAmmoCapacity() {
-            return 256;
+            return 512;
         }
 
         @Override
@@ -63,7 +63,7 @@ public class EntityTurretRevolver
 
         @Override
         public UUID getRecipeId() {
-            return TurretAssemblyRecipes.TURRET_MK2_RV;
+            return TurretAssemblyRecipes.TURRET_MK2_MG;
         }
 
         @Override
@@ -72,21 +72,23 @@ public class EntityTurretRevolver
         }
     };
 
-    public float barrelPosLeft = 1.0F;
-    public float prevBarrelPosLeft = 1.0F;
-    public float barrelPosRight = 1.0F;
-    public float prevBarrelPosRight = 1.0F;
+    public float maxBarrelLeft = 0.0F;
+    public float barrelLeft = 0.0F;
+    public float prevBarrelLeft = 0.0F;
+    public float maxBarrelRight = 0.0F;
+    public float barrelRight = 0.0F;
+    public float prevBarrelRight = 0.0F;
     public boolean leftShot;
 
     {
         this.targetProc = new MyTargetProc();
     }
 
-    public EntityTurretRevolver(World world) {
+    public EntityTurretMinigun(World world) {
         super(world);
     }
 
-    public EntityTurretRevolver(World world, boolean isUpsideDown, EntityPlayer player) {
+    public EntityTurretMinigun(World world, boolean isUpsideDown, EntityPlayer player) {
         super(world, isUpsideDown, player);
     }
 
@@ -94,61 +96,63 @@ public class EntityTurretRevolver
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
 
-        this.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).setBaseValue(15.0D);
+        this.getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY).setBaseValue(512.0D);
+        this.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).setBaseValue(3.0D);
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30.0D);
     }
 
     @Override
     public void onUpdate() {
-        this.prevBarrelPosLeft = this.barrelPosLeft;
-        this.prevBarrelPosRight = this.barrelPosRight;
+        this.prevBarrelLeft = this.barrelLeft;
+        this.prevBarrelRight = this.barrelRight;
 
         super.onUpdate();
 
+
+        if( this.wasShooting() ) {
+            if( this.leftShot ) {
+                this.maxBarrelRight += 90.0F;
+                this.leftShot = false;
+            } else {
+                this.maxBarrelLeft += 90.0F;
+                this.leftShot = true;
+            }
+
+            if( this.worldObj.isRemote ) {
+                TurretModRebirth.proxy.spawnParticle(EnumParticle.MINIGUN_SHOT, this.posX, this.posY + 1.5F, this.posZ, Quartet.with(this.rotationYawHead, this.rotationPitch - 7.5F, this.isUpsideDown, this.leftShot));
+            }
+        }
+
         if( this.worldObj.isRemote ) {
-            if( this.barrelPosLeft < 1.0F ) {
-                this.barrelPosLeft += 0.06F * 20.0F / this.targetProc.getMaxShootTicks();
+            if( this.barrelLeft < this.maxBarrelLeft ) {
+                this.barrelLeft += 90.0F / this.targetProc.getMaxShootTicks() * 2.0F;
             } else {
-                this.barrelPosLeft = 1.0F;
-            }
-            if( this.barrelPosRight < 1.0F ) {
-                this.barrelPosRight += 0.06F * 20.0F / this.targetProc.getMaxShootTicks();
-            } else {
-                this.barrelPosRight = 1.0F;
+                this.barrelLeft = this.maxBarrelLeft;
             }
 
-            if( this.wasShooting() ) {
-                float partShift;
-                if( this.leftShot ) {
-                    this.barrelPosRight = 0.0F;
-                    this.leftShot = false;
-                    partShift = 10.0F;
-                } else {
-                    this.barrelPosLeft = 0.0F;
-                    this.leftShot = true;
-                    partShift = -10.0F;
-                }
-
-                TurretModRebirth.proxy.spawnParticle(EnumParticle.SHOTGUN_SHOT, this.posX, this.posY + 1.5F, this.posZ, Triplet.with(this.rotationYawHead + partShift, this.rotationPitch, this.isUpsideDown));
+            if( this.barrelRight < this.maxBarrelRight ) {
+                this.barrelRight += 90.0F / this.targetProc.getMaxShootTicks() * 2.0F;
+            } else {
+                this.barrelRight = this.maxBarrelRight;
             }
         }
     }
 
     @Override
     public ResourceLocation getStandardTexture() {
-        return Resources.TURRET_T2_REVOLVER.getResource();
+        return (this.hasCustomName() && this.getCustomNameTag().equalsIgnoreCase("silverchiren") ? Resources.TURRET_T2_MINIGUN_SC : Resources.TURRET_T2_MINIGUN).getResource();
     }
 
     @Override
     public ResourceLocation getGlowTexture() {
-        return Resources.TURRET_T2_REVOLVER_GLOW.getResource();
+        return Resources.TURRET_T2_MINIGUN_GLOW.getResource();
     }
 
     private class MyTargetProc
             extends TargetProcessor
     {
         public MyTargetProc() {
-            super(EntityTurretRevolver.this);
+            super(EntityTurretMinigun.this);
         }
 
         @Override
@@ -158,7 +162,7 @@ public class EntityTurretRevolver
 
         @Override
         public SoundEvent getShootSound() {
-            return Sounds.SHOOT_REVOLVER;
+            return Sounds.SHOOT_MINIGUN;
         }
 
         @Override

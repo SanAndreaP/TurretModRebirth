@@ -76,6 +76,11 @@ public class RenderTurret
         return entity.getStandardTexture();
     }
 
+    @Override
+    protected boolean canRenderName(EntityTurret entity) {
+        return false;
+    }
+
     private static void renderTurretRange(EntityTurret turret, double x, double y, double z) {
         if( turret.showRange ) {
             GlStateManager.enableBlend();

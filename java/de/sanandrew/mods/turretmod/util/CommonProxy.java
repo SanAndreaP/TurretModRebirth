@@ -9,6 +9,8 @@
 package de.sanandrew.mods.turretmod.util;
 
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileMinigunPebble;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretMinigun;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretRevolver;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
@@ -54,11 +56,13 @@ public class CommonProxy
         EntityRegistry.registerModEntity(EntityTurretShotgun.class, "turret_i_shotgun", entityCnt++, TurretModRebirth.instance, 128, 1, false);
         EntityRegistry.registerModEntity(EntityTurretCryolator.class, "turret_i_snowball", entityCnt++, TurretModRebirth.instance, 128, 1, false);
         EntityRegistry.registerModEntity(EntityTurretRevolver.class, "turret_ii_revolver", entityCnt++, TurretModRebirth.instance, 128, 1, false);
+        EntityRegistry.registerModEntity(EntityTurretMinigun.class, "turret_ii_minigun", entityCnt++, TurretModRebirth.instance, 128, 1, false);
 
         EntityRegistry.registerModEntity(EntityProjectileCrossbowBolt.class, "turret_proj_arrow", entityCnt++, TurretModRebirth.instance, 128, 1, true);
         EntityRegistry.registerModEntity(EntityProjectilePebble.class, "turret_proj_pebble", entityCnt++, TurretModRebirth.instance, 128, 1, true);
         EntityRegistry.registerModEntity(EntityProjectileCryoCell.class, "turret_proj_snowball", entityCnt++, TurretModRebirth.instance, 128, 1, true);
         EntityRegistry.registerModEntity(EntityProjectileBullet.class, "turret_proj_bullet", entityCnt++, TurretModRebirth.instance, 128, 1, true);
+        EntityRegistry.registerModEntity(EntityProjectileMinigunPebble.class, "turret_proj_mgpebble", entityCnt++, TurretModRebirth.instance, 128, 1, true);
     }
 
     public void init(FMLInitializationEvent event) { }

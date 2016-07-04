@@ -9,11 +9,14 @@
 package de.sanandrew.mods.turretmod.client.model;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretMinigun;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 
-public class ModelTurretCryolator
+public class ModelTurretMinigun
 		extends ModelBase
 {
 	public ModelRenderer turretBase;
@@ -22,10 +25,17 @@ public class ModelTurretCryolator
 	public ModelRenderer healthBar;
 	public ModelRenderer ammoBar;
 
-	public ModelTurretCryolator(float scale) {
+	public ModelRenderer leftBarrelBase;
+	public ModelRenderer rightBarrelBase;
+
+	public ModelTurretMinigun(float scale) {
 		this.textureWidth = 128;
 		this.textureHeight = 64;
 
+		this.initModel(scale);
+	}
+
+	public void initModel(float scale) {
 		this.turretBase = new ModelRenderer(this, 0, 49);
 		this.turretBase.setTextureSize(128, 64);
 		this.turretBase.addBox(-7.0F, 23.0F, -7.0F, 14, 1, 14, scale);
@@ -102,6 +112,91 @@ public class ModelTurretCryolator
 		turretAntennaII.setTextureSize(128, 64);
 		turretAntennaII.addBox(-0.5F, -8.0F, 0.0F, 1, 5, 0, scale);
 		this.turretHead.addChild(turretAntennaII);
+
+
+		ModelRenderer rightBarrelArm = new ModelRenderer(this, 24, 0);
+		rightBarrelArm.addBox(-8.0F, -0.5F, -0.5F, 5, 1, 1);
+		rightBarrelArm.setRotationPoint(0.0F, 0.0F, 0.0F);
+		rightBarrelArm.setTextureSize(128, 64);
+		setRotation(rightBarrelArm, 0.0F, 0.0F, 0.0F);
+		this.turretHead.addChild(rightBarrelArm);
+
+		ModelRenderer leftBarrelArm = new ModelRenderer(this, 24, 0);
+		leftBarrelArm.addBox(3.0F, -0.5F, -0.5F, 5, 1, 1);
+		leftBarrelArm.setRotationPoint(0.0F, 0.0F, 0.0F);
+		leftBarrelArm.setTextureSize(128, 64);
+		setRotation(leftBarrelArm, 0.0F, 0.0F, 0.0F);
+		this.turretHead.addChild(leftBarrelArm);
+
+		this.leftBarrelBase = new ModelRenderer(this, 24, 2);
+		this.leftBarrelBase.addBox(-1.0F, -1.0F, -2.0F, 2, 2, 4);
+		this.leftBarrelBase.setRotationPoint(-8.0F, 0.0F, 0.0F);
+		this.leftBarrelBase.setTextureSize(128, 64);
+		setRotation(this.leftBarrelBase, 0.0F, 0.0F, 0.7853982F);
+		leftBarrelArm.addChild(this.leftBarrelBase);
+
+		ModelRenderer leftBarrelI = new ModelRenderer(this, 36, 0);
+		leftBarrelI.addBox(-0.5F, -2.0F, -7.0F, 1, 1, 6);
+		leftBarrelI.setRotationPoint(0.0F, 0.0F, 0.0F);
+		leftBarrelI.setTextureSize(128, 64);
+		setRotation(leftBarrelI, 0.0F, 0.0F, 0.0F);
+		this.leftBarrelBase.addChild(leftBarrelI);
+
+		ModelRenderer leftBarrelII = new ModelRenderer(this, 36, 0);
+		leftBarrelII.addBox(1.0F, -0.5F, -7.0F, 1, 1, 6);
+		leftBarrelII.setRotationPoint(0.0F, 0.0F, 0.0F);
+		leftBarrelII.setTextureSize(128, 64);
+		setRotation(leftBarrelII, 0.0F, 0.0F, 0.0F);
+		this.leftBarrelBase.addChild(leftBarrelII);
+
+		ModelRenderer leftBarrelIII = new ModelRenderer(this, 36, 0);
+		leftBarrelIII.addBox(-2.0F, -0.5F, -7.0F, 1, 1, 6);
+		leftBarrelIII.setRotationPoint(0.0F, 0.0F, 0.0F);
+		leftBarrelIII.setTextureSize(128, 64);
+		setRotation(leftBarrelIII, 0.0F, 0.0F, 0.0F);
+		this.leftBarrelBase.addChild(leftBarrelIII);
+
+		ModelRenderer leftBarrelIV = new ModelRenderer(this, 36, 0);
+		leftBarrelIV.addBox(-0.5F, 1.0F, -7.0F, 1, 1, 6);
+		leftBarrelIV.setRotationPoint(0.0F, 0.0F, 0.0F);
+		leftBarrelIV.setTextureSize(128, 64);
+		setRotation(leftBarrelIV, 0.0F, 0.0F, 0.0F);
+		this.leftBarrelBase.addChild(leftBarrelIV);
+
+		this.rightBarrelBase = new ModelRenderer(this, 24, 2);
+		this.rightBarrelBase.addBox(-1.0F, -1.0F, -2.0F, 2, 2, 4);
+		this.rightBarrelBase.setRotationPoint(8.0F, 0.0F, 0.0F);
+		this.rightBarrelBase.setTextureSize(128, 64);
+		setRotation(this.rightBarrelBase, 0.0F, 0.0F, 0.7853982F);
+		rightBarrelArm.addChild(this.rightBarrelBase);
+
+		ModelRenderer rightBarrelI = new ModelRenderer(this, 36, 0);
+		rightBarrelI.addBox(-0.5F, -2.0F, -7.0F, 1, 1, 6);
+		rightBarrelI.setRotationPoint(0.0F, 0.0F, 0.0F);
+		rightBarrelI.setTextureSize(128, 64);
+		setRotation(rightBarrelI, 0.0F, 0.0F, 0.0F);
+		this.rightBarrelBase.addChild(rightBarrelI);
+
+		ModelRenderer rightBarrelII = new ModelRenderer(this, 36, 0);
+		rightBarrelII.addBox(1.0F, -0.5F, -7.0F, 1, 1, 6);
+		rightBarrelII.setRotationPoint(0.0F, 0.0F, 0.0F);
+		rightBarrelII.setTextureSize(128, 64);
+		setRotation(rightBarrelII, 0.0F, 0.0F, 0.0F);
+		this.rightBarrelBase.addChild(rightBarrelII);
+
+		ModelRenderer rightBarrelIII = new ModelRenderer(this, 36, 0);
+		rightBarrelIII.addBox(-2.0F, -0.5F, -7.0F, 1, 1, 6);
+		rightBarrelIII.setRotationPoint(0.0F, 0.0F, 0.0F);
+		rightBarrelIII.setTextureSize(128, 64);
+		setRotation(rightBarrelIII, 0.0F, 0.0F, 0.0F);
+		this.rightBarrelBase.addChild(rightBarrelIII);
+
+		ModelRenderer rightBarrelIV = new ModelRenderer(this, 36, 0);
+		rightBarrelIV.addBox(-0.5F, 1.0F, -7.0F, 1, 1, 6);
+		rightBarrelIV.setRotationPoint(0.0F, 0.0F, 0.0F);
+		rightBarrelIV.setTextureSize(128, 64);
+		setRotation(rightBarrelIV, 0.0F, 0.0F, 0.0F);
+		this.rightBarrelBase.addChild(rightBarrelIV);
 	}
 
 	@Override
@@ -113,6 +208,19 @@ public class ModelTurretCryolator
 		this.turretThroat.render(partTicks);
 		this.healthBar.render(partTicks);
 		this.ammoBar.render(partTicks);
+	}
+
+	@Override
+	public void setLivingAnimations(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partTicks) {
+		super.setLivingAnimations(entity, limbSwing, limbSwingAmount, partTicks);
+
+		if( entity instanceof EntityTurretMinigun ) {
+			EntityTurretMinigun shotgun = (EntityTurretMinigun) entity;
+			float barrelDeltaL = shotgun.prevBarrelLeft + (shotgun.barrelLeft - shotgun.prevBarrelLeft) * partTicks;
+			float barrelDeltaR = shotgun.prevBarrelRight + (shotgun.barrelRight - shotgun.prevBarrelRight) * partTicks;
+			this.leftBarrelBase.rotateAngleZ = barrelDeltaL / 180.0F * (float) Math.PI;
+			this.rightBarrelBase.rotateAngleZ = barrelDeltaR / 180.0F * (float) Math.PI;
+		}
 	}
 
 	@Override

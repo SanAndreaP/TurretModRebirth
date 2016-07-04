@@ -109,12 +109,12 @@ public class ModelTurretRevolver
 		setRotation(turretThroatIV, -angle, 0.0F, angle);
 		this.turretThroat.addChild(turretThroatIV);
 
-		ModelRenderer turretAntennaI = new ModelRenderer(this, 14, 15);
+		ModelRenderer turretAntennaI = new ModelRendererCulled(this, 14, 15);
 		turretAntennaI.setTextureSize(128, 64);
 		turretAntennaI.addBox(0.0F, -8.0F, -0.5F, 0, 5, 1, scale);
 		this.turretHead.addChild(turretAntennaI);
 
-		ModelRenderer turretAntennaII = new ModelRenderer(this, 12, 16);
+		ModelRenderer turretAntennaII = new ModelRendererCulled(this, 12, 16);
 		turretAntennaII.setTextureSize(128, 64);
 		turretAntennaII.addBox(-0.5F, -8.0F, 0.0F, 1, 5, 0, scale);
 		this.turretHead.addChild(turretAntennaII);

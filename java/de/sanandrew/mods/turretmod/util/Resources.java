@@ -20,6 +20,9 @@ public enum Resources
     TURRET_T1_SNOWBALL_GLOW("textures/entities/turrets/t1_snowball_glow.png"),
     TURRET_T2_REVOLVER("textures/entities/turrets/t2_revolver.png"),
     TURRET_T2_REVOLVER_GLOW("textures/entities/turrets/t2_revolver_glow.png"),
+    TURRET_T2_MINIGUN("textures/entities/turrets/t2_minigun.png"),
+    TURRET_T2_MINIGUN_SC("textures/entities/turrets/t2_minigun_sc.png"),
+    TURRET_T2_MINIGUN_GLOW("textures/entities/turrets/t2_minigun_glow.png"),
 
     PROJECTILE_BULLET("textures/entities/projectiles/bullet.png"),
 
