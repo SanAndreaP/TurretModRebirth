@@ -13,9 +13,6 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
@@ -83,7 +80,7 @@ public abstract class UpgradeAmmoUsage
 
         @Override
         public UUID getRecipeId() {
-            return TurretAssemblyRecipes.UPG_HEALTH_MK1;
+            return TurretAssemblyRecipes.UPG_ECONOMY_I;
         }
     }
 
@@ -94,7 +91,7 @@ public abstract class UpgradeAmmoUsage
 
         public UpgradeAmmoUseII() {
             super("use_decr_ii", (canConsumePrev, turret) -> TmrUtils.RNG.nextFloat() >= 0.35F);
-            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(UpgradeRegistry.UPG_USAGE_I);
+            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(UpgradeRegistry.UPG_ECONOMY_I);
         }
 
         @Override
@@ -104,7 +101,7 @@ public abstract class UpgradeAmmoUsage
 
         @Override
         public UUID getRecipeId() {
-            return TurretAssemblyRecipes.UPG_HEALTH_MK2;
+            return TurretAssemblyRecipes.UPG_ECONOMY_II;
         }
     }
 
@@ -115,7 +112,7 @@ public abstract class UpgradeAmmoUsage
 
         public UpgradeAmmoUseInf() {
             super("use_decr_inf", (canConsumePrev, turret) -> turret.getTargetProcessor().getAmmoCount() != turret.getTargetProcessor().getMaxAmmoCapacity() && canConsumePrev);
-            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(UpgradeRegistry.UPG_USAGE_II);
+            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(UpgradeRegistry.UPG_ECONOMY_II);
         }
 
         @Override
@@ -125,7 +122,7 @@ public abstract class UpgradeAmmoUsage
 
         @Override
         public UUID getRecipeId() {
-            return TurretAssemblyRecipes.UPG_HEALTH_MK3;
+            return TurretAssemblyRecipes.UPG_ECONOMY_INF;
         }
     }
 }

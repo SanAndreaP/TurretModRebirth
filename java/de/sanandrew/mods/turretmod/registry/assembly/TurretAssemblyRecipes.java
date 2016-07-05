@@ -27,6 +27,7 @@ import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import de.sanandrew.mods.turretmod.util.javatuples.Pair;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -88,6 +89,9 @@ public final class TurretAssemblyRecipes
     public static final UUID UPG_RELOAD_2 = UUID.fromString("72BDED08-78DC-4A25-9460-6F5B8AEEE3A5");
     public static final UUID UPG_AMMO_STG = UUID.fromString("56546F99-5612-4052-9A77-B81A6F1EB5DF");
     public static final UUID UPG_SMART_TGT = UUID.fromString("A4750C8C-A0A0-4E73-8378-59345124A1FA");
+    public static final UUID UPG_ECONOMY_I = UUID.fromString("D8144A93-870F-4FBC-88F3-94CF8212EF84");
+    public static final UUID UPG_ECONOMY_II = UUID.fromString("1BDE1C44-9165-4BBC-A79D-2003CCE969D9");
+    public static final UUID UPG_ECONOMY_INF = UUID.fromString("7C5E0A1F-1BC3-4F72-A4A0-BB28A595CA0D");
 
     public static final UUID UPG_AT_AUTO = UUID.fromString("40EEE46D-835D-42F8-8005-764A00C90365");
     public static final UUID UPG_AT_FILTER = UUID.fromString("BD48EB98-94A2-4516-90E0-4DC20E843490");
@@ -369,6 +373,21 @@ public final class TurretAssemblyRecipes
                                              new RecipeEntryItem(1).put(Items.SPIDER_EYE),
                                              new RecipeEntryItem(1).put(Items.ENDER_PEARL)};
         INSTANCE.registerRecipe(UPG_SMART_TGT, group, res, 20, 600, ingredients);
+
+        res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.UPG_ECONOMY_I);
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+                                             new RecipeEntryItem(1).put(Items.EMERALD)};
+        INSTANCE.registerRecipe(UPG_ECONOMY_I, group, res, 20, 600, ingredients);
+
+        res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.UPG_ECONOMY_II);
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+                                             new RecipeEntryItem(1).put(Blocks.GOLD_BLOCK)};
+        INSTANCE.registerRecipe(UPG_ECONOMY_II, group, res, 20, 600, ingredients);
+
+        res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.UPG_ECONOMY_INF);
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+                                             new RecipeEntryItem(1).put(Pair.with(new ItemStack(Items.BOW), Enchantments.INFINITY)).drawTooltip()};
+        INSTANCE.registerRecipe(UPG_ECONOMY_INF, group, res, 20, 600, ingredients);
     }
 
     private Map<UUID, ItemStack> recipeResults = new HashMap<>();

@@ -8,10 +8,16 @@
  */
 package de.sanandrew.mods.turretmod.registry.assembly;
 
+import com.sun.javafx.UnmodifiableArrayList;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
+import de.sanandrew.mods.turretmod.util.javatuples.Pair;
+import net.darkhax.bookshelf.lib.util.EnchantmentUtils;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.init.Enchantments;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -20,6 +26,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class RecipeEntryItem
@@ -27,6 +35,7 @@ public class RecipeEntryItem
     public int stackSize;
     public ItemStack[] normalAlternatives;
     public String[] oreDictAlternatives;
+    public List<Pair<ItemStack, Enchantment>> enchAlternatives;
     private boolean drawTooltip;
 
     private WeakReference<ItemStack[]> cachedEntryStacks;
@@ -36,13 +45,15 @@ public class RecipeEntryItem
         this.drawTooltip = false;
         this.normalAlternatives = new ItemStack[0];
         this.oreDictAlternatives = new String[0];
+        this.enchAlternatives = new ArrayList<>();
     }
 
-    private RecipeEntryItem(int count, ItemStack[] normalAlternatives, String[] oreDictAlternatives) {
+    private RecipeEntryItem(int count, ItemStack[] normalAlternatives, String[] oreDictAlternatives, List<Pair<ItemStack, Enchantment>> enchAlternatives) {
         this.stackSize = count;
         this.drawTooltip = false;
         this.normalAlternatives = normalAlternatives;
         this.oreDictAlternatives = oreDictAlternatives;
+        this.enchAlternatives = enchAlternatives;
     }
 
     public RecipeEntryItem put(Item... items) {
@@ -97,6 +108,13 @@ public class RecipeEntryItem
         return this;
     }
 
+    @SafeVarargs
+    public final RecipeEntryItem put(Pair<ItemStack, Enchantment>... enchItems) {
+        this.enchAlternatives.addAll(Arrays.asList(enchItems));
+
+        return this;
+    }
+
     public RecipeEntryItem drawTooltip() {
         this.drawTooltip = true;
         return this;
@@ -112,10 +130,14 @@ public class RecipeEntryItem
             stacksToCopy[i] = this.normalAlternatives[i].copy();
         }
 
-        return new RecipeEntryItem(this.stackSize, stacksToCopy, this.oreDictAlternatives.clone());
+        return new RecipeEntryItem(this.stackSize, stacksToCopy, this.oreDictAlternatives.clone(), new ArrayList<>(this.enchAlternatives));
     }
 
     public boolean isItemFitting(ItemStack stack) {
+        if( stack == null ) {
+            return false;
+        }
+
         for( ItemStack nrmStack : this.normalAlternatives ) {
             if( (nrmStack.hasTagCompound() && TmrUtils.areStacksEqual(nrmStack, stack, TmrUtils.NBT_COMPARATOR_FIXD))
                     || (!nrmStack.hasTagCompound() && ItemStackUtils.areStacksEqual(nrmStack, stack, false)) )
@@ -128,6 +150,12 @@ public class RecipeEntryItem
         for( int oreId : stackOreIds ) {
             String oreIdName = OreDictionary.getOreName(oreId);
             if( ArrayUtils.contains(this.oreDictAlternatives, oreIdName) ) {
+                return true;
+            }
+        }
+
+        for( Pair<ItemStack, Enchantment> enchItem : this.enchAlternatives ) {
+            if( stack.isItemEnchanted() && ItemStackUtils.areStacksEqual(enchItem.getValue0(), stack, false) && EnchantmentHelper.getEnchantmentLevel(enchItem.getValue1(), stack) > 0 ) {
                 return true;
             }
         }
@@ -155,6 +183,12 @@ public class RecipeEntryItem
                         stacks.add(stack);
                     }
                 }
+            }
+
+            for( Pair<ItemStack, Enchantment> enchItem : this.enchAlternatives ) {
+                ItemStack newStack = enchItem.getValue0().copy();
+                EnchantmentHelper.setEnchantments(Collections.singletonMap(enchItem.getValue1(), 1), newStack);
+                stacks.add(newStack);
             }
 
             for( ItemStack stack : stacks ) {
