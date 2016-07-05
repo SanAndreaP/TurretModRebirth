@@ -8,8 +8,6 @@
  */
 package de.sanandrew.mods.turretmod.entity.projectile;
 
-import com.google.common.base.Predicate;
-import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -24,9 +22,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.monster.EntityEnderman;
-import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
@@ -280,24 +276,14 @@ public abstract class EntityTurretProjectile
     }
 
     public static void setEntityTarget(EntityCreature target, EntityTurret attacker) {
-        EntityAIBase ai = TmrUtils.getAIFromTaskList(target.targetTasks.taskEntries, EntityAIAttackTurret.class);
-        if( ai == null ) {
-            ai = new EntityAIAttackTurret(target, new RevengeEntitySelector(attacker));
-            target.targetTasks.taskEntries.clear();
-            target.targetTasks.addTask(0, ai);
-        } else if( !ai.continueExecuting() ) {
-            ((EntityAIAttackTurret) ai).overrideTarget(attacker);
-        }
         target.setAttackTarget(attacker);
+        target.setRevengeTarget(attacker);
 
-        if( target instanceof EntityZombie ) {
-            EntityAIBase aiTgtFollow = TmrUtils.getAIFromTaskList(target.tasks.taskEntries, EntityAIMoveTowardsTurret.class);
-            if( aiTgtFollow == null ) {
-                target.tasks.addTask(2, new EntityAIMoveTowardsTurret(target, attacker, 0.9D, 32.0F));
-                target.tasks.addTask(1, new EntityAIAttackMelee(target, 0.9D, true));
-            } else if( !aiTgtFollow.continueExecuting() ) {
-                ((EntityAIMoveTowardsTurret) aiTgtFollow).setNewTurret(attacker);
-            }
+        EntityAIBase aiTgtFollow = TmrUtils.getAIFromTaskList(target.tasks.taskEntries, EntityAIMoveTowardsTurret.class);
+        if( aiTgtFollow == null ) {
+            target.tasks.addTask(10, new EntityAIMoveTowardsTurret(target, attacker, 1.1D, 64.0F));
+        } else if( !aiTgtFollow.continueExecuting() ) {
+            ((EntityAIMoveTowardsTurret) aiTgtFollow).setNewTurret(attacker);
         }
     }
 
@@ -427,34 +413,4 @@ public abstract class EntityTurretProjectile
     }
 
     public abstract float getArc();
-
-    private static final class RevengeEntitySelector
-            implements Predicate<Entity>
-    {
-        public Entity target;
-
-        public RevengeEntitySelector(Entity target) {
-            this.target = target;
-        }
-
-        @Override
-        public boolean apply(Entity entity) {
-            return entity == this.target;
-        }
-    }
-
-    private static final class EntityAIAttackTurret
-            extends EntityAINearestAttackableTarget<EntityTurret>
-    {
-        private RevengeEntitySelector selector;
-
-        public EntityAIAttackTurret(EntityCreature creature, RevengeEntitySelector selector) {
-            super(creature, EntityTurret.class, 0, false, false, selector);
-            this.selector = selector;
-        }
-
-        public void overrideTarget(Entity target) {
-            this.selector.target = target;
-        }
-    }
 }

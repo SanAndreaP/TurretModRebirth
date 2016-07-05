@@ -10,8 +10,11 @@ package de.sanandrew.mods.turretmod.entity.projectile;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.RandomPositionGenerator;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.pathfinding.Path;
 import net.minecraft.util.math.Vec3d;
 
 final class EntityAIMoveTowardsTurret
@@ -20,9 +23,7 @@ final class EntityAIMoveTowardsTurret
     private EntityTurret targetTurret;
     private EntityCreature theEntity;
 
-    private double movePosX;
-    private double movePosY;
-    private double movePosZ;
+    private Path turretPath;
     private double speed;
     private float maxDistance;
 
@@ -40,20 +41,18 @@ final class EntityAIMoveTowardsTurret
 
     @Override
     public boolean shouldExecute() {
-        if( this.targetTurret == null ) {
+        if( this.targetTurret == null || !this.targetTurret.isEntityAlive() ) {
             return false;
         } else if( this.targetTurret.getDistanceSqToEntity(this.theEntity) > this.maxDistance * this.maxDistance ) {
             return false;
         } else {
             Vec3d targetPosVec = new Vec3d(this.targetTurret.posX, this.targetTurret.posY, this.targetTurret.posZ);
-            Vec3d pathBlockVec = RandomPositionGenerator.findRandomTargetBlockTowards(this.theEntity, 16, 7, targetPosVec);
+            Vec3d pathBlockVec = RandomPositionGenerator.findRandomTargetBlockTowards(this.theEntity, 8, 7, targetPosVec);
 
             if( pathBlockVec == null ) {
                 return false;
             } else {
-                this.movePosX = pathBlockVec.xCoord;
-                this.movePosY = pathBlockVec.yCoord;
-                this.movePosZ = pathBlockVec.zCoord;
+                this.turretPath = this.theEntity.getNavigator().getPathToXYZ(pathBlockVec.xCoord, pathBlockVec.yCoord, pathBlockVec.zCoord);
 
                 return true;
             }
@@ -72,6 +71,7 @@ final class EntityAIMoveTowardsTurret
 
     @Override
     public void startExecuting() {
-        this.theEntity.getNavigator().tryMoveToXYZ(this.movePosX, this.movePosY, this.movePosZ, this.speed);
+        this.theEntity.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).applyModifier(new AttributeModifier("turretRangeMod", this.targetTurret.getTargetProcessor().getRange(), 0));
+        this.theEntity.getNavigator().setPath(this.turretPath, this.speed);
     }
 }
