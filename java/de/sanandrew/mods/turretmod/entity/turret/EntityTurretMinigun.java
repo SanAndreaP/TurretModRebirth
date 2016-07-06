@@ -21,6 +21,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 
 import java.util.UUID;
@@ -140,7 +141,7 @@ public class EntityTurretMinigun
 
     @Override
     public ResourceLocation getStandardTexture() {
-        return (this.hasCustomName() && this.getCustomNameTag().equalsIgnoreCase("silverchiren") ? Resources.TURRET_T2_MINIGUN_SC : Resources.TURRET_T2_MINIGUN).getResource();
+        return (this.hasCustomName() && this.getCustomNameTag().equalsIgnoreCase("silverchiren") ? Resources.TURRET_T2_MINIGUN_EE : Resources.TURRET_T2_MINIGUN).getResource();
     }
 
     @Override
@@ -148,6 +149,8 @@ public class EntityTurretMinigun
         return Resources.TURRET_T2_MINIGUN_GLOW.getResource();
     }
 
+    private static final AxisAlignedBB UPPER_BB = new AxisAlignedBB(-20.0D, -4.0D, -20.0D, 20.0D, 20.0D, 20.0D);
+    private static final AxisAlignedBB LOWER_BB = new AxisAlignedBB(-20.0D, -20.0D, -20.0D, 20.0D, 4.0D, 20.0D);
     private class MyTargetProc
             extends TargetProcessor
     {
@@ -156,8 +159,8 @@ public class EntityTurretMinigun
         }
 
         @Override
-        public double getRange() {
-            return 20;
+        public AxisAlignedBB getRangeBB() {
+            return (this.turret.isUpsideDown ? LOWER_BB : UPPER_BB).offset(this.turret.posX, this.turret.posY, this.turret.posZ);
         }
 
         @Override

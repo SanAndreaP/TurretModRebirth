@@ -21,6 +21,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 
 import java.util.UUID;
@@ -144,6 +145,8 @@ public class EntityTurretRevolver
         return Resources.TURRET_T2_REVOLVER_GLOW.getResource();
     }
 
+    private static final AxisAlignedBB UPPER_BB = new AxisAlignedBB(-20.0D, -4.0D, -20.0D, 20.0D, 20.0D, 20.0D);
+    private static final AxisAlignedBB LOWER_BB = new AxisAlignedBB(-20.0D, -20.0D, -20.0D, 20.0D, 4.0D, 20.0D);
     private class MyTargetProc
             extends TargetProcessor
     {
@@ -152,8 +155,8 @@ public class EntityTurretRevolver
         }
 
         @Override
-        public double getRange() {
-            return 20;
+        public AxisAlignedBB getRangeBB() {
+            return (this.turret.isUpsideDown ? LOWER_BB : UPPER_BB).offset(this.turret.posX, this.turret.posY, this.turret.posZ);
         }
 
         @Override

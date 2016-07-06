@@ -257,7 +257,7 @@ public abstract class TargetProcessor
         return null;
     }
 
-    public abstract double getRange();
+    public abstract AxisAlignedBB getRangeBB();
 
     public abstract SoundEvent getShootSound();
 
@@ -322,12 +322,11 @@ public abstract class TargetProcessor
             this.entityToAttack = TmrUtils.getEntityByUUID(turret.worldObj, this.entityToAttackUUID);
         }
 
-        double range = this.getRange();
+        AxisAlignedBB aabb = this.getRangeBB();
         if( this.entityToAttack == null ) {
-            AxisAlignedBB aabb = this.turret.getEntityBoundingBox().expand(range, range, range);
             for( Object entityObj : this.turret.worldObj.getEntitiesInAABBexcluding(this.turret, aabb, this.selector) ) {
                 EntityLivingBase livingBase = (EntityLivingBase) entityObj;
-                boolean isEntityValid = this.turret.canEntityBeSeen(livingBase) && livingBase.isEntityAlive() && this.turret.getDistanceToEntity(livingBase) <= range;
+                boolean isEntityValid = this.turret.canEntityBeSeen(livingBase) && livingBase.isEntityAlive() && livingBase.getEntityBoundingBox().intersectsWith(aabb);
                 if( isEntityValid && doAllowTarget(livingBase) ) {
                     this.entityToAttack = livingBase;
                     this.entityToAttackUUID = livingBase.getUniqueID();
@@ -338,7 +337,7 @@ public abstract class TargetProcessor
         }
 
         if( this.entityToAttack != null ) {
-            boolean isEntityValid = this.turret.canEntityBeSeen(this.entityToAttack) && this.entityToAttack.isEntityAlive() && this.turret.getDistanceToEntity(this.entityToAttack) <= range;
+            boolean isEntityValid = this.turret.canEntityBeSeen(this.entityToAttack) && this.entityToAttack.isEntityAlive() && this.entityToAttack.getEntityBoundingBox().intersectsWith(aabb);
             boolean isTargetValid = Boolean.TRUE.equals(this.entityTargetList.get(this.entityToAttack.getClass()));
             boolean isPlayerValid = Boolean.TRUE.equals(this.playerTargetList.get(this.entityToAttack.getUniqueID())) || Boolean.TRUE.equals(this.playerTargetList.get(TmrUtils.EMPTY_UUID));
             if( isEntityValid && (isTargetValid || isPlayerValid) && doAllowTarget(this.entityToAttack) ) {
