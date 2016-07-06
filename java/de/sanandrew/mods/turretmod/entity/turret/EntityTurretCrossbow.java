@@ -99,8 +99,8 @@ public class EntityTurretCrossbow
         return Resources.TURRET_T1_CROSSBOW_GLOW.getResource();
     }
 
-    private static final AxisAlignedBB UPPER_BB = new AxisAlignedBB(-16.0D, -4.0D, -16.0D, 16.0D, 16.0D, 16.0D);
-    private static final AxisAlignedBB LOWER_BB = new AxisAlignedBB(-16.0D, -16.0D, -16.0D, 16.0D, 4.0D, 16.0D);
+    private static final AxisAlignedBB UPPER_BB = new AxisAlignedBB(-16.0D, -4.0D, -16.0D, 16.0D, 8.0D, 16.0D);
+    private static final AxisAlignedBB LOWER_BB = new AxisAlignedBB(-16.0D, -8.0D, -16.0D, 16.0D, 4.0D, 16.0D);
     private class MyTargetProc
             extends TargetProcessor
     {

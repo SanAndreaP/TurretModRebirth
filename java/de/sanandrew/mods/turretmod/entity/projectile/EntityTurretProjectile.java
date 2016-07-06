@@ -102,7 +102,7 @@ public abstract class EntityTurretProjectile
     public void onUpdate() {
         this.isAirBorne = true;
 
-        if( this.shooterCache instanceof EntityTurret && this.getDistanceToEntity(this.shooterCache) > ((EntityTurret) this.shooterCache).getTargetProcessor().getRange() * 4 ) {
+        if( this.shooterCache instanceof EntityTurret && this.getDistanceToEntity(this.shooterCache) > ((EntityTurret) this.shooterCache).getTargetProcessor().getRangeVal() * 4 ) {
             this.setDead();
             return;
         }

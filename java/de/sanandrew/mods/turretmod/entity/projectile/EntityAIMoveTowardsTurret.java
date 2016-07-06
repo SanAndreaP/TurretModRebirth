@@ -71,7 +71,7 @@ final class EntityAIMoveTowardsTurret
 
     @Override
     public void startExecuting() {
-        this.theEntity.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).applyModifier(new AttributeModifier("turretRangeMod", this.targetTurret.getTargetProcessor().getRange(), 0));
+        this.theEntity.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).applyModifier(new AttributeModifier("turretRangeMod", this.targetTurret.getTargetProcessor().getRangeVal(), 0));
         this.theEntity.getNavigator().setPath(this.turretPath, this.speed);
     }
 }

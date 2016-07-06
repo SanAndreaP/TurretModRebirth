@@ -149,8 +149,8 @@ public class EntityTurretMinigun
         return Resources.TURRET_T2_MINIGUN_GLOW.getResource();
     }
 
-    private static final AxisAlignedBB UPPER_BB = new AxisAlignedBB(-20.0D, -4.0D, -20.0D, 20.0D, 20.0D, 20.0D);
-    private static final AxisAlignedBB LOWER_BB = new AxisAlignedBB(-20.0D, -20.0D, -20.0D, 20.0D, 4.0D, 20.0D);
+    private static final AxisAlignedBB UPPER_BB = new AxisAlignedBB(-20.0D, -4.0D, -20.0D, 20.0D, 10.0D, 20.0D);
+    private static final AxisAlignedBB LOWER_BB = new AxisAlignedBB(-20.0D, -10.0D, -20.0D, 20.0D, 4.0D, 20.0D);
     private class MyTargetProc
             extends TargetProcessor
     {

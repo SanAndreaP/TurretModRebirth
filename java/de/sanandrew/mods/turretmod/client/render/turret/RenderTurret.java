@@ -28,6 +28,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.opengl.GL11;
@@ -88,7 +89,7 @@ public class RenderTurret
             GlStateManager.disableTexture2D();
 
             float prevBrightX = OpenGlHelper.lastBrightnessX;
-            float prevBrightY = OpenGlHelper.lastBrightnessX;
+            float prevBrightY = OpenGlHelper.lastBrightnessY;
             int brightness = 0xF0;
             int brightX = brightness % 65536;
             int brightY = brightness / 65536;
@@ -97,49 +98,45 @@ public class RenderTurret
             Tessellator tess = Tessellator.getInstance();
             VertexBuffer buf = tess.getBuffer();
 
-            int range = MathHelper.floor_double(turret.getTargetProcessor().getRange());
+            AxisAlignedBB aabb = turret.getTargetProcessor().getRangeBB().offset(-turret.posX, -turret.posY, -turret.posZ);
+//            int range = MathHelper.floor_double(turret.getTargetProcessor().getRangeVal());
 
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(x, y, z);
             GlStateManager.glLineWidth(500.0F);
             buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
-            buf.pos(x, y, z).color(255, 0, 0, 64).endVertex();
-            buf.pos(x, y + range, z).color(255, 0, 0, 64).endVertex();
+            buf.pos(0, aabb.minY, 0).color(255, 255, 255, 64).endVertex();
+            buf.pos(0, aabb.maxY, 0).color(255, 255, 255, 64).endVertex();
             tess.draw();
 
             GlStateManager.glLineWidth(0.1F);
-            for( double j = -range; j <= range; j += 1.0D ) {
+            for( double cx = aabb.minX; cx <= aabb.maxX; cx += 0.5F ) {
                 buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
-                for( int i = 0; i <= 360; i+=5 ) {
-                    double neg = Math.sin(Math.acos(j / range)) * range;
-                    double xC = neg * Math.sin(i * Math.PI * 2.0D / 360.0D);
-                    double yC = neg * Math.cos(i * Math.PI * 2.0D / 360.0D);
-
-
-                    buf.pos(x + xC, y + yC, z + j).color(255, 0, 0, 64).endVertex();
-                }
-                tess.draw();
-
-                buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
-                for( int i = 0; i <= 360; i+=5 ) {
-                    double neg = Math.sin(Math.acos(j / range)) * range;
-                    double zC = neg * Math.sin(i * Math.PI * 2.0D / 360.0D);
-                    double yC = neg * Math.cos(i * Math.PI * 2.0D / 360.0D);
-
-                    buf.pos(x + j, y + yC, z + zC).color(255, 0, 0, 64).endVertex();
-                }
-                tess.draw();
-
-                buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
-                for( int i = 0; i <= 360; i+=5 ) {
-                    double neg = Math.sin(Math.acos(j / range)) * range;
-                    double xC = neg * Math.sin(i * Math.PI * 2.0D / 360.0D);
-                    double zC = neg * Math.cos(i * Math.PI * 2.0D / 360.0D);
-
-                    buf.pos(x + xC, y + j, z + zC).color(255, 0, 0, 64).endVertex();
-                }
+                buf.pos(cx, aabb.minY, aabb.minZ).color(255, 255, 255, 64).endVertex();
+                buf.pos(cx, aabb.minY, aabb.maxZ).color(255, 255, 255, 64).endVertex();
+                buf.pos(cx, aabb.maxY, aabb.maxZ).color(255, 255, 255, 64).endVertex();
+                buf.pos(cx, aabb.maxY, aabb.minZ).color(255, 255, 255, 64).endVertex();
                 tess.draw();
             }
+            for( double cy = aabb.minY; cy <= aabb.maxY; cy += 0.5F ) {
+                buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
+                buf.pos(aabb.minX, cy, aabb.minZ).color(255, 255, 255, 64).endVertex();
+                buf.pos(aabb.minX, cy, aabb.maxZ).color(255, 255, 255, 64).endVertex();
+                buf.pos(aabb.maxX, cy, aabb.maxZ).color(255, 255, 255, 64).endVertex();
+                buf.pos(aabb.maxX, cy, aabb.minZ).color(255, 255, 255, 64).endVertex();
+                tess.draw();
+            }
+            for( double cz = aabb.minZ; cz <= aabb.maxZ; cz += 0.5F ) {
+                buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
+                buf.pos(aabb.minX, aabb.minY, cz).color(255, 255, 255, 64).endVertex();
+                buf.pos(aabb.minX, aabb.maxY, cz).color(255, 255, 255, 64).endVertex();
+                buf.pos(aabb.maxX, aabb.maxY, cz).color(255, 255, 255, 64).endVertex();
+                buf.pos(aabb.maxX, aabb.minY, cz).color(255, 255, 255, 64).endVertex();
+                tess.draw();
+            }
+            GlStateManager.popMatrix();
 
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, prevBrightX,prevBrightY);
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, prevBrightX, prevBrightY);
 
             GlStateManager.enableTexture2D();
             GlStateManager.disableBlend();

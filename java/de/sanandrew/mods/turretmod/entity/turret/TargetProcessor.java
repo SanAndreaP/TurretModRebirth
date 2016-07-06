@@ -257,6 +257,11 @@ public abstract class TargetProcessor
         return null;
     }
 
+    public double getRangeVal() {
+        AxisAlignedBB aabb = getRangeBB();
+        return Math.max(aabb.maxX - aabb.minX, Math.max(aabb.maxY - aabb.minY, aabb.maxZ - aabb.minZ)) / 2.0D;
+    }
+
     public abstract AxisAlignedBB getRangeBB();
 
     public abstract SoundEvent getShootSound();
