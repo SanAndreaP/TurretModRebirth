@@ -51,7 +51,7 @@ public final class TurretAssemblyRecipes
 
     public static final UUID TURRET_MK1_CB = UUID.fromString("21F88959-C157-44E3-815B-DD956B065052");
     public static final UUID TURRET_MK1_SG = UUID.fromString("870EA4DD-0C1E-44B1-BE91-4DD33FC00EF8");
-    public static final UUID TURRET_MK1_SB = UUID.fromString("6743974B-5552-45F7-9124-FDCF844BB56C");
+    public static final UUID TURRET_MK1_CL = UUID.fromString("6743974B-5552-45F7-9124-FDCF844BB56C");
     public static final UUID TURRET_MK2_RV = UUID.fromString("1A207F83-26E1-405A-A9A1-4AB6BB1C4C3A");
     public static final UUID TURRET_MK2_MG = UUID.fromString("7D21F126-56B5-44DB-A511-CFFADC0782F0");
 
@@ -129,21 +129,24 @@ public final class TurretAssemblyRecipes
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(12).put(Blocks.SNOW),
                                              new RecipeEntryItem(1).put(Items.BOW),
                                              new RecipeEntryItem(4).put("dustRedstone"),
-                                             new RecipeEntryItem(4).put("plankWood")};
-        INSTANCE.registerRecipe(TURRET_MK1_SB, group, res, 10, 100, ingredients);
+                                             new RecipeEntryItem(4).put("plankWood"),
+                                             new RecipeEntryItem(2).put(Blocks.ICE)};
+        INSTANCE.registerRecipe(TURRET_MK1_CL, group, res, 10, 100, ingredients);
 
         res = ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretRevolver.class));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Blocks.IRON_BLOCK),
                                              new RecipeEntryItem(1).put("ingotGold"),
                                              new RecipeEntryItem(4).put("dustRedstone"),
-                                             new RecipeEntryItem(4).put(Blocks.STONE)};
+                                             new RecipeEntryItem(4).put(Blocks.STONEBRICK),
+                                             new RecipeEntryItem(8).put(new ItemStack(Blocks.STONE_SLAB, 1, 0))};
         INSTANCE.registerRecipe(TURRET_MK2_RV, group, res, 15, 100, ingredients);
 
         res = ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretMinigun.class));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Blocks.IRON_BLOCK),
                                              new RecipeEntryItem(4).put("ingotGold"),
                                              new RecipeEntryItem(4).put("dustRedstone"),
-                                             new RecipeEntryItem(4).put(Blocks.STONEBRICK)};
+                                             new RecipeEntryItem(4).put(Blocks.STONEBRICK),
+                                             new RecipeEntryItem(8).put(new ItemStack(Blocks.STONE_SLAB, 1, 0))};
         INSTANCE.registerRecipe(TURRET_MK2_MG, group, res, 15, 100, ingredients);
     }
 

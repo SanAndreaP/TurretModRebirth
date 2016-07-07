@@ -64,7 +64,7 @@ public class EntityTurretCryolator
 
         @Override
         public UUID getRecipeId() {
-            return TurretAssemblyRecipes.TURRET_MK1_SB;
+            return TurretAssemblyRecipes.TURRET_MK1_CL;
         }
 
         @Override

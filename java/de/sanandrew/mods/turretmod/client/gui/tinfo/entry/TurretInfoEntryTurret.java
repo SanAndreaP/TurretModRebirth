@@ -21,6 +21,7 @@ import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
@@ -119,7 +120,6 @@ public class TurretInfoEntryTurret
         turret.inGui = true;
 
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        GlStateManager.enableColorMaterial();
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, 50.0F);
         GlStateManager.scale(30.0F, 30.0F, 30.0F);
@@ -136,10 +136,16 @@ public class TurretInfoEntryTurret
         turret.prevRotationYaw = turret.rotationYaw = 0.0F;
         turret.prevRotationYawHead = turret.rotationYawHead = 0.0F;
 
+        Minecraft.getMinecraft().getRenderManager().setRenderShadow(false);
         Minecraft.getMinecraft().getRenderManager().doRenderEntity(turret, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, true);
+        Minecraft.getMinecraft().getRenderManager().setRenderShadow(true);
         GlStateManager.popMatrix();
         RenderHelper.disableStandardItemLighting();
-        GlStateManager.disableColorMaterial();
+        GlStateManager.disableRescaleNormal();
+        GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+        GlStateManager.disableTexture2D();
+        GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     private void drawItemRecipe(GuiTurretInfo gui, int x, int y, int mouseX, int mouseY, int scrollY, RecipeEntryItem entryItem) {
