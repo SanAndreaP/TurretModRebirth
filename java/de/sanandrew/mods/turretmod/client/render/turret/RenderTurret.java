@@ -103,12 +103,42 @@ public class RenderTurret
 
             GlStateManager.pushMatrix();
             GlStateManager.translate(x, y, z);
-            GlStateManager.glLineWidth(500.0F);
+            GlStateManager.glLineWidth(5.0F);
+            buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
+            buf.pos(0, aabb.minY, 0).color(0, 0, 0, 64).endVertex();
+            buf.pos(0, aabb.maxY, 0).color(0, 0, 0, 64).endVertex();
+            tess.draw();
+            GlStateManager.glLineWidth(3.0F);
             buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
             buf.pos(0, aabb.minY, 0).color(255, 255, 255, 64).endVertex();
             buf.pos(0, aabb.maxY, 0).color(255, 255, 255, 64).endVertex();
             tess.draw();
 
+            GlStateManager.glLineWidth(0.2F);
+            for( double cx = aabb.minX; cx <= aabb.maxX; cx += 0.5F ) {
+                buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
+                buf.pos(cx, aabb.minY, aabb.minZ).color(0, 0, 0, 64).endVertex();
+                buf.pos(cx, aabb.minY, aabb.maxZ).color(0, 0, 0, 64).endVertex();
+                buf.pos(cx, aabb.maxY, aabb.maxZ).color(0, 0, 0, 64).endVertex();
+                buf.pos(cx, aabb.maxY, aabb.minZ).color(0, 0, 0, 64).endVertex();
+                tess.draw();
+            }
+            for( double cy = aabb.minY; cy <= aabb.maxY; cy += 0.5F ) {
+                buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
+                buf.pos(aabb.minX, cy, aabb.minZ).color(0, 0, 0, 64).endVertex();
+                buf.pos(aabb.minX, cy, aabb.maxZ).color(0, 0, 0, 64).endVertex();
+                buf.pos(aabb.maxX, cy, aabb.maxZ).color(0, 0, 0, 64).endVertex();
+                buf.pos(aabb.maxX, cy, aabb.minZ).color(0, 0, 0, 64).endVertex();
+                tess.draw();
+            }
+            for( double cz = aabb.minZ; cz <= aabb.maxZ; cz += 0.5F ) {
+                buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
+                buf.pos(aabb.minX, aabb.minY, cz).color(0, 0, 0, 64).endVertex();
+                buf.pos(aabb.minX, aabb.maxY, cz).color(0, 0, 0, 64).endVertex();
+                buf.pos(aabb.maxX, aabb.maxY, cz).color(0, 0, 0, 64).endVertex();
+                buf.pos(aabb.maxX, aabb.minY, cz).color(0, 0, 0, 64).endVertex();
+                tess.draw();
+            }
             GlStateManager.glLineWidth(0.1F);
             for( double cx = aabb.minX; cx <= aabb.maxX; cx += 0.5F ) {
                 buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
