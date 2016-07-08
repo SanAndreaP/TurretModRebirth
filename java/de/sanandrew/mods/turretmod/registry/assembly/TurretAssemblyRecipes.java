@@ -19,6 +19,7 @@ import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoArrow;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoBullet;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoCryoCell;
+import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoMinigunShell;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoShotgunShell;
 import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
@@ -67,6 +68,8 @@ public final class TurretAssemblyRecipes
     public static final UUID CRYOCELL_2_MTP = UUID.fromString("08528F4F-3D3E-4501-A1BE-A508E5C23DC5");
     public static final UUID CRYOCELL_3_SNG = UUID.fromString("081CA2A5-FB0C-4749-9359-12D680B58FAC");
     public static final UUID CRYOCELL_3_MTP = UUID.fromString("052D31C1-05AD-45AF-9C36-D380A78F7E87");
+    public static final UUID MGSHELL_SNG = UUID.fromString("EA5B683F-7D84-4BAE-BFC3-35F2EA48AB2B");
+    public static final UUID MGSHELL_MTP = UUID.fromString("C69B50D8-EB88-4CFC-BF9E-792C75924C22");
 
     public static final UUID TCU = UUID.fromString("47B68BE0-30D6-4849-B995-74C147C8CC5D");
     public static final UUID TINFO = UUID.fromString("5A8C8AE3-878A-4580-9F84-2C8602B4275D");
@@ -223,6 +226,19 @@ public final class TurretAssemblyRecipes
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK3_UUID))),
                                              new RecipeEntryItem(1).put(Items.LEATHER)};
         INSTANCE.registerRecipe(CRYOCELL_3_MTP, group, res, 5, 120, ingredients);
+
+        // minigun shells
+        res = ItemRegistry.ammo.getAmmoItem(2, AmmoRegistry.INSTANCE.getType(TurretAmmoMinigunShell.SHELL_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("ingotIron"),
+                                             new RecipeEntryItem(2).put("seed*").put(Items.WHEAT_SEEDS).put(Items.MELON_SEEDS).put(Items.PUMPKIN_SEEDS),
+                                             new RecipeEntryItem(1).put(Items.GUNPOWDER).put("dustGunpowder"),
+                                             new RecipeEntryItem(1).put("dustRedstone")};
+        INSTANCE.registerRecipe(MGSHELL_SNG, group, res, 10, 60, ingredients);
+
+        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoMinigunShell.PACK_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoMinigunShell.SHELL_UUID))),
+                                             new RecipeEntryItem(1).put(Items.IRON_INGOT)};
+        INSTANCE.registerRecipe(MGSHELL_MTP, group, res, 5, 120, ingredients);
     }
 
     private static void registerMisc() {
@@ -288,6 +304,7 @@ public final class TurretAssemblyRecipes
         ItemStack res;
         RecipeEntryItem[] ingredients;
 
+
         res = new ItemStack(ItemRegistry.asbAuto, 1);
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("gemEmerald"),
                                              new RecipeEntryItem(1).put("nuggetGold"),
@@ -302,10 +319,12 @@ public final class TurretAssemblyRecipes
         INSTANCE.registerRecipe(UPG_AT_FILTER, group, res, 60, 300, ingredients);
 
         res = new ItemStack(ItemRegistry.asbSpeed, 1);
+        //noinspection ConstantConditions
+        ItemStack speedPotion = PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM, 1), PotionType.getPotionTypeForName("swiftness"));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("gemEmerald"),
                                              new RecipeEntryItem(1).put("nuggetGold"),
                                              new RecipeEntryItem(1).put("dustRedstone"),
-                                             new RecipeEntryItem(1).put(new ItemStack(Items.POTIONITEM, 1, 8194)).drawTooltip()};
+                                             new RecipeEntryItem(1).put(speedPotion).drawTooltip()};
         INSTANCE.registerRecipe(UPG_AT_SPEED, group, res, 60, 300, ingredients);
 
         res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY);

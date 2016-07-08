@@ -84,6 +84,8 @@ public class GuiTcuUpgrades
         GuiTCUHelper.drawScreen(this);
         GlStateManager.popMatrix();
 
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0.0F, 0.0F, 300.0F);
         if( !this.turret.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_STORAGE_I) ) {
             for( int j = 0; j < 9; j++ ) {
                 this.drawGradientRect(7 + j * 18, 25 + 18, 7 + 16 + j * 18, 25 + 18 + 16, 0x80FFFFFF, 0x80FFFFFF);
@@ -101,6 +103,7 @@ public class GuiTcuUpgrades
                 this.drawGradientRect(7 + j * 18, 25 + 54, 7 + 16 + j * 18, 25 + 54 + 16, 0x80FFFFFF, 0x80FFFFFF);
             }
         }
+        GlStateManager.popMatrix();
 
         RenderHelper.enableGUIStandardItemLighting();
     }

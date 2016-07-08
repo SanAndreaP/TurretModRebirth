@@ -55,7 +55,7 @@ public class GuiItemTab
 
     protected void drawTabHoveringText(String text, int mouseX, int mouseY, FontRenderer fontRenderer) {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0.0F, 0.0F, 64.0F);
+        GlStateManager.translate(0.0F, 0.0F, 400.0F);
 
         GlStateManager.enableDepth();
 

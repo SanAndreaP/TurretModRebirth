@@ -8,16 +8,13 @@
  */
 package de.sanandrew.mods.turretmod.registry.assembly;
 
-import com.sun.javafx.UnmodifiableArrayList;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.javatuples.Pair;
-import net.darkhax.bookshelf.lib.util.EnchantmentUtils;
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.init.Enchantments;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -27,7 +24,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 public class RecipeEntryItem
@@ -101,7 +97,18 @@ public class RecipeEntryItem
     public RecipeEntryItem put(String... oreDictNames) {
         List<String> newNames = new ArrayList<>();
         newNames.addAll(Arrays.asList(this.oreDictAlternatives));
-        newNames.addAll(Arrays.asList(oreDictNames));
+        for( String name : oreDictNames ) {
+            if( name.endsWith("*") ) {
+                name = name.substring(0, name.lastIndexOf('*'));
+                for( String oreName : OreDictionary.getOreNames() ) {
+                    if( oreName.startsWith(name) ) {
+                        newNames.add(oreName);
+                    }
+                }
+            } else {
+                newNames.add(name);
+            }
+        }
 
         this.oreDictAlternatives = newNames.toArray(new String[newNames.size()]);
 

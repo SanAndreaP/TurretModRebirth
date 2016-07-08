@@ -68,7 +68,7 @@ public abstract class TurretAmmoMinigunShell
 
     @Override
     public float getInfoDamage() {
-        return 0.5F;
+        return 0.3F;
     }
 
     @Override
@@ -110,7 +110,7 @@ public abstract class TurretAmmoMinigunShell
 
         @Override
         public UUID getRecipeId() {
-            return TurretAssemblyRecipes.SGSHELL_SNG;
+            return TurretAssemblyRecipes.MGSHELL_SNG;
         }
     }
 
@@ -123,7 +123,7 @@ public abstract class TurretAmmoMinigunShell
 
         @Override
         public UUID getRecipeId() {
-            return TurretAssemblyRecipes.SGSHELL_MTP;
+            return TurretAssemblyRecipes.MGSHELL_MTP;
         }
     }
 }
