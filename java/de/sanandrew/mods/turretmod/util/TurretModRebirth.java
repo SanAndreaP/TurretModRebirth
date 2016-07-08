@@ -32,7 +32,7 @@ import org.apache.logging.log4j.Logger;
 public class TurretModRebirth
 {
     public static final String ID = "sapturretmod";
-    public static final String VERSION = "4.0.0-alpha.5";
+    public static final String VERSION = "4.0.0-alpha.6";
     public static final Logger LOG = LogManager.getLogger(ID);
     public static final String CHANNEL = "SapTurretModNWCH";
     public static final String NAME = "Turret Mod Rebirth";
