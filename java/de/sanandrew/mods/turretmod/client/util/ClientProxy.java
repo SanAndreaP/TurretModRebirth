@@ -8,14 +8,12 @@
  */
 package de.sanandrew.mods.turretmod.client.util;
 
-import de.sanandrew.mods.turretmod.client.model.ModelTurretMinigun;
-import de.sanandrew.mods.turretmod.client.model.ModelTurretRevolver;
+import de.sanandrew.mods.turretmod.client.model.*;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderBullet;
 import de.sanandrew.mods.turretmod.client.world.ClientWorldEventListener;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileMinigunPebble;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretMinigun;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretRevolver;
+import de.sanandrew.mods.turretmod.entity.turret.*;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleSmokeNormal;
 import net.minecraft.util.math.BlockPos;
@@ -36,9 +34,6 @@ import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuPlayerTargets;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuUpgrades;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.TurretInfoCategory;
-import de.sanandrew.mods.turretmod.client.model.ModelTurretCrossbow;
-import de.sanandrew.mods.turretmod.client.model.ModelTurretShotgun;
-import de.sanandrew.mods.turretmod.client.model.ModelTurretCryolator;
 import de.sanandrew.mods.turretmod.client.particle.ParticleAssemblySpark;
 import de.sanandrew.mods.turretmod.client.particle.ParticleCryoTrail;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderPebble;
@@ -50,10 +45,6 @@ import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectilePebble;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCryoCell;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
@@ -87,6 +78,7 @@ public class ClientProxy
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretCryolator.class, manager -> { return new RenderTurret(manager, new ModelTurretCryolator(0.0F)); });
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretRevolver.class, manager -> { return new RenderTurret(manager, new ModelTurretRevolver(0.0F)); });
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretMinigun.class, manager -> { return new RenderTurret(manager, new ModelTurretMinigun(0.0F)); });
+        RenderingRegistry.registerEntityRenderingHandler(EntityTurretLaser.class, manager -> { return new RenderTurret(manager, new ModelTurretLaser(0.0F)); });
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCrossbowBolt.class, RenderTurretArrow::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCryoCell.class, RenderNothingness::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectilePebble.class, RenderPebble::new);

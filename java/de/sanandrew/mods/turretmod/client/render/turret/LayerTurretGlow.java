@@ -36,11 +36,7 @@ public class LayerTurretGlow<T extends EntityTurret>
         GlStateManager.disableAlpha();
         GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
 
-        if( turret.isInvisible() ) {
-            GlStateManager.depthMask(false);
-        } else {
-            GlStateManager.depthMask(true);
-        }
+        GlStateManager.depthMask(false);
 
         int brightness = 0xF0;
         int brightX = brightness % 65536;
