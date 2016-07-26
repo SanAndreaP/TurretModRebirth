@@ -84,8 +84,6 @@ public class RenderTurret
 
     private static void renderTurretRange(EntityTurret turret, double x, double y, double z) {
         if( turret.showRange ) {
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             GlStateManager.disableTexture2D();
 
             float prevBrightX = OpenGlHelper.lastBrightnessX;
@@ -99,69 +97,68 @@ public class RenderTurret
             VertexBuffer buf = tess.getBuffer();
 
             AxisAlignedBB aabb = turret.getTargetProcessor().getRangeBB().offset(-turret.posX, -turret.posY, -turret.posZ);
-//            int range = MathHelper.floor_double(turret.getTargetProcessor().getRangeVal());
 
             GlStateManager.pushMatrix();
             GlStateManager.translate(x, y, z);
             GlStateManager.glLineWidth(5.0F);
             buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
-            buf.pos(0, aabb.minY, 0).color(0, 0, 0, 64).endVertex();
-            buf.pos(0, aabb.maxY, 0).color(0, 0, 0, 64).endVertex();
+            buf.pos(0, aabb.minY, 0).color(0, 0, 0, 255).endVertex();
+            buf.pos(0, aabb.maxY, 0).color(0, 0, 0, 255).endVertex();
             tess.draw();
             GlStateManager.glLineWidth(3.0F);
             buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
-            buf.pos(0, aabb.minY, 0).color(255, 255, 255, 64).endVertex();
-            buf.pos(0, aabb.maxY, 0).color(255, 255, 255, 64).endVertex();
+            buf.pos(0, aabb.minY, 0).color(255, 255, 255, 255).endVertex();
+            buf.pos(0, aabb.maxY, 0).color(255, 255, 255, 255).endVertex();
             tess.draw();
 
-            GlStateManager.glLineWidth(0.2F);
+            GlStateManager.glLineWidth(3.0F);
             for( double cx = aabb.minX; cx <= aabb.maxX; cx += 0.5F ) {
                 buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
-                buf.pos(cx, aabb.minY, aabb.minZ).color(0, 0, 0, 64).endVertex();
-                buf.pos(cx, aabb.minY, aabb.maxZ).color(0, 0, 0, 64).endVertex();
-                buf.pos(cx, aabb.maxY, aabb.maxZ).color(0, 0, 0, 64).endVertex();
-                buf.pos(cx, aabb.maxY, aabb.minZ).color(0, 0, 0, 64).endVertex();
+                buf.pos(cx, aabb.minY, aabb.minZ).color(0, 0, 0, 255).endVertex();
+                buf.pos(cx, aabb.minY, aabb.maxZ).color(0, 0, 0, 255).endVertex();
+                buf.pos(cx, aabb.maxY, aabb.maxZ).color(0, 0, 0, 255).endVertex();
+                buf.pos(cx, aabb.maxY, aabb.minZ).color(0, 0, 0, 255).endVertex();
                 tess.draw();
             }
             for( double cy = aabb.minY; cy <= aabb.maxY; cy += 0.5F ) {
                 buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
-                buf.pos(aabb.minX, cy, aabb.minZ).color(0, 0, 0, 64).endVertex();
-                buf.pos(aabb.minX, cy, aabb.maxZ).color(0, 0, 0, 64).endVertex();
-                buf.pos(aabb.maxX, cy, aabb.maxZ).color(0, 0, 0, 64).endVertex();
-                buf.pos(aabb.maxX, cy, aabb.minZ).color(0, 0, 0, 64).endVertex();
+                buf.pos(aabb.minX, cy, aabb.minZ).color(0, 0, 0, 255).endVertex();
+                buf.pos(aabb.minX, cy, aabb.maxZ).color(0, 0, 0, 255).endVertex();
+                buf.pos(aabb.maxX, cy, aabb.maxZ).color(0, 0, 0, 255).endVertex();
+                buf.pos(aabb.maxX, cy, aabb.minZ).color(0, 0, 0, 255).endVertex();
                 tess.draw();
             }
             for( double cz = aabb.minZ; cz <= aabb.maxZ; cz += 0.5F ) {
                 buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
-                buf.pos(aabb.minX, aabb.minY, cz).color(0, 0, 0, 64).endVertex();
-                buf.pos(aabb.minX, aabb.maxY, cz).color(0, 0, 0, 64).endVertex();
-                buf.pos(aabb.maxX, aabb.maxY, cz).color(0, 0, 0, 64).endVertex();
-                buf.pos(aabb.maxX, aabb.minY, cz).color(0, 0, 0, 64).endVertex();
+                buf.pos(aabb.minX, aabb.minY, cz).color(0, 0, 0, 255).endVertex();
+                buf.pos(aabb.minX, aabb.maxY, cz).color(0, 0, 0, 255).endVertex();
+                buf.pos(aabb.maxX, aabb.maxY, cz).color(0, 0, 0, 255).endVertex();
+                buf.pos(aabb.maxX, aabb.minY, cz).color(0, 0, 0, 255).endVertex();
                 tess.draw();
             }
             GlStateManager.glLineWidth(0.1F);
             for( double cx = aabb.minX; cx <= aabb.maxX; cx += 0.5F ) {
                 buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
-                buf.pos(cx, aabb.minY, aabb.minZ).color(255, 255, 255, 64).endVertex();
-                buf.pos(cx, aabb.minY, aabb.maxZ).color(255, 255, 255, 64).endVertex();
-                buf.pos(cx, aabb.maxY, aabb.maxZ).color(255, 255, 255, 64).endVertex();
-                buf.pos(cx, aabb.maxY, aabb.minZ).color(255, 255, 255, 64).endVertex();
+                buf.pos(cx, aabb.minY, aabb.minZ).color(255, 255, 255, 255).endVertex();
+                buf.pos(cx, aabb.minY, aabb.maxZ).color(255, 255, 255, 255).endVertex();
+                buf.pos(cx, aabb.maxY, aabb.maxZ).color(255, 255, 255, 255).endVertex();
+                buf.pos(cx, aabb.maxY, aabb.minZ).color(255, 255, 255, 255).endVertex();
                 tess.draw();
             }
             for( double cy = aabb.minY; cy <= aabb.maxY; cy += 0.5F ) {
                 buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
-                buf.pos(aabb.minX, cy, aabb.minZ).color(255, 255, 255, 64).endVertex();
-                buf.pos(aabb.minX, cy, aabb.maxZ).color(255, 255, 255, 64).endVertex();
-                buf.pos(aabb.maxX, cy, aabb.maxZ).color(255, 255, 255, 64).endVertex();
-                buf.pos(aabb.maxX, cy, aabb.minZ).color(255, 255, 255, 64).endVertex();
+                buf.pos(aabb.minX, cy, aabb.minZ).color(255, 255, 255, 255).endVertex();
+                buf.pos(aabb.minX, cy, aabb.maxZ).color(255, 255, 255, 255).endVertex();
+                buf.pos(aabb.maxX, cy, aabb.maxZ).color(255, 255, 255, 255).endVertex();
+                buf.pos(aabb.maxX, cy, aabb.minZ).color(255, 255, 255, 255).endVertex();
                 tess.draw();
             }
             for( double cz = aabb.minZ; cz <= aabb.maxZ; cz += 0.5F ) {
                 buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
-                buf.pos(aabb.minX, aabb.minY, cz).color(255, 255, 255, 64).endVertex();
-                buf.pos(aabb.minX, aabb.maxY, cz).color(255, 255, 255, 64).endVertex();
-                buf.pos(aabb.maxX, aabb.maxY, cz).color(255, 255, 255, 64).endVertex();
-                buf.pos(aabb.maxX, aabb.minY, cz).color(255, 255, 255, 64).endVertex();
+                buf.pos(aabb.minX, aabb.minY, cz).color(255, 255, 255, 255).endVertex();
+                buf.pos(aabb.minX, aabb.maxY, cz).color(255, 255, 255, 255).endVertex();
+                buf.pos(aabb.maxX, aabb.maxY, cz).color(255, 255, 255, 255).endVertex();
+                buf.pos(aabb.maxX, aabb.minY, cz).color(255, 255, 255, 255).endVertex();
                 tess.draw();
             }
             GlStateManager.popMatrix();
@@ -169,7 +166,6 @@ public class RenderTurret
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, prevBrightX, prevBrightY);
 
             GlStateManager.enableTexture2D();
-            GlStateManager.disableBlend();
         }
     }
 }

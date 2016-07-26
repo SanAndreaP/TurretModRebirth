@@ -105,22 +105,22 @@ public class ModelTurretLaser
 
         ModelRenderer barrelLeft1 = new ModelRendererCulled(this, 28, -2);
         barrelLeft1.setTextureSize(128, 64);
-        barrelLeft1.addBox(1.5F, 0.5F, -10F, 0, 2, 8);
+        barrelLeft1.addBox(1.5F, 0.5F, -10.0F, 0, 2, 8, scale);
         this.turretHead.addChild(barrelLeft1);
 
         ModelRenderer barrelLeft2 = new ModelRendererCulled(this, 16, 0);
         barrelLeft2.setTextureSize(128, 64);
-        barrelLeft2.addBox(0.5F, 1.5F, -10F, 2, 0, 8);
+        barrelLeft2.addBox(0.5F, 1.5F, -10.0F, 2, 0, 8, scale);
         this.turretHead.addChild(barrelLeft2);
 
         ModelRenderer barrelRight1 = new ModelRendererCulled(this, 16, 0);
         barrelRight1.setTextureSize(128, 64);
-        barrelRight1.addBox(-2.5F, 1.5F, -10F, 2, 0, 8);
+        barrelRight1.addBox(-2.5F, 1.5F, -10.0F, 2, 0, 8, scale);
         this.turretHead.addChild(barrelRight1);
 
         ModelRenderer barrelRight2 = new ModelRendererCulled(this, 28, -2);
         barrelRight2.setTextureSize(128, 64);
-        barrelRight2.addBox(-1.5F, 0.5F, -10F, 0, 2, 8);
+        barrelRight2.addBox(-1.5F, 0.5F, -10.0F, 0, 2, 8, scale);
         this.turretHead.addChild(barrelRight2);
     }
 
