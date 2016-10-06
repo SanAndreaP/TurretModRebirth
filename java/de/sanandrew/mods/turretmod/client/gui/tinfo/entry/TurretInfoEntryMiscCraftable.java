@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,12 +8,12 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
+import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
-import de.sanandrew.mods.turretmod.util.javatuples.Triplet;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.creativetab.CreativeTabs;
@@ -31,7 +31,7 @@ public class TurretInfoEntryMiscCraftable
         extends TurretInfoEntry
 {
     private final String desc;
-    private final Triplet<ItemStack[][], Integer, Integer> crafting;
+    private final Tuple crafting;
 
     private int drawHeight;
     private long lastTimestamp;
@@ -47,14 +47,14 @@ public class TurretInfoEntryMiscCraftable
             } else if( recipe instanceof ShapedRecipes ) {
                 this.crafting = getCrafting((ShapedRecipes) recipe);
             } else {
-                this.crafting = Triplet.with(null, 0, 0);
+                this.crafting = new Tuple(null, 0, 0);
             }
         } else {
-            this.crafting = Triplet.with(null, 0, 0);
+            this.crafting = new Tuple(null, 0, 0);
         }
     }
 
-    private static Triplet<ItemStack[][], Integer, Integer> getCrafting(ShapedRecipes cRecipe) {
+    private static Tuple getCrafting(ShapedRecipes cRecipe) {
         ItemStack[][] crfArray = new ItemStack[cRecipe.recipeWidth * cRecipe.recipeHeight][];
 
         for( int i = 0; i < cRecipe.recipeHeight; i++ ) {
@@ -77,10 +77,10 @@ public class TurretInfoEntryMiscCraftable
             }
         }
 
-        return Triplet.with(crfArray, cRecipe.recipeWidth, cRecipe.recipeHeight);
+        return new Tuple(crfArray, cRecipe.recipeWidth, cRecipe.recipeHeight);
     }
 
-    private static Triplet<ItemStack[][], Integer, Integer> getCrafting(ShapedOreRecipe cRecipe) {
+    private static Tuple getCrafting(ShapedOreRecipe cRecipe) {
         int recipeWidth = TmrUtils.getOreRecipeWidth(cRecipe);
         int recipeHeight = TmrUtils.getOreRecipeHeight(cRecipe);
         ItemStack[][] crfArray = new ItemStack[recipeWidth * recipeHeight][];
@@ -117,7 +117,7 @@ public class TurretInfoEntryMiscCraftable
             }
         }
 
-        return Triplet.with(crfArray, recipeWidth, recipeHeight);
+        return new Tuple(crfArray, recipeWidth, recipeHeight);
     }
 
     @Override
@@ -133,7 +133,7 @@ public class TurretInfoEntryMiscCraftable
 
         gui.mc.fontRendererObj.drawString(this.txtWorkbench, 42, 16, 0xFF6A6A6A, false);
 
-        this.drawHeight = 27 + 9 * this.crafting.getValue2();
+        this.drawHeight = 27 + 9 * this.crafting.<Integer>getValue(2);
 
         Gui.drawRect(2, this.drawHeight, MAX_ENTRY_WIDTH - 2, this.drawHeight + 1, 0xFF0080BB);
 
@@ -141,10 +141,10 @@ public class TurretInfoEntryMiscCraftable
         gui.mc.fontRendererObj.drawSplitString(text, 2, this.drawHeight + 3, MAX_ENTRY_WIDTH - 2, 0xFF000000);
         this.drawHeight = gui.mc.fontRendererObj.splitStringWidth(text, MAX_ENTRY_WIDTH - 2) + this.drawHeight + 3 + 2;
 
-        for( int i = 0, maxI = this.crafting.getValue1(); i < maxI; i++ ) {
-            for( int j = 0, maxJ = this.crafting.getValue2(); j < maxJ; j++ ) {
+        for( int i = 0, maxI = this.crafting.getValue(1); i < maxI; i++ ) {
+            for( int j = 0, maxJ = this.crafting.getValue(2); j < maxJ; j++ ) {
 
-                ItemStack crfStack[] = this.crafting.getValue0()[i*3 + j];
+                ItemStack crfStack[] = this.crafting.<ItemStack[][]>getValue(0)[i*3 + j];
                 ItemStack drawnStack = null;
                 if( crfStack != null && crfStack.length > 0 ) {
                     drawnStack = crfStack[(int)(this.lastTimestamp / 1000L % crfStack.length)];

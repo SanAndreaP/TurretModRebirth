@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,11 +8,11 @@
  */
 package de.sanandrew.mods.turretmod.entity.projectile;
 
+import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.Sounds;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import de.sanandrew.mods.turretmod.util.javatuples.Triplet;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
@@ -59,7 +59,7 @@ public class EntityProjectileCryoCell
         super.onUpdate();
 
         if( this.worldObj.isRemote ) {
-            TurretModRebirth.proxy.spawnParticle(EnumParticle.CRYO_PARTICLE, this.posX, this.posY, this.posZ, Triplet.with(this.motionX, this.motionY, this.motionZ));
+            TurretModRebirth.proxy.spawnParticle(EnumParticle.CRYO_PARTICLE, this.posX, this.posY, this.posZ, new Tuple(this.motionX, this.motionY, this.motionZ));
         }
     }
 

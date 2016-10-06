@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
+import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.turretmod.entity.projectile.*;
 import de.sanandrew.mods.turretmod.entity.turret.*;
 import net.minecraft.entity.Entity;
@@ -27,8 +28,7 @@ import de.sanandrew.mods.turretmod.network.PacketOpenGui;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
-import de.sanandrew.mods.turretmod.util.javatuples.Tuple;
-import net.darkhax.bookshelf.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -82,7 +82,7 @@ public class CommonProxy
                     break;
                 case GUI_TASSEMBLY_FLT:
                     ItemStack stack = player.getHeldItemMainhand();
-                    if( ItemStackUtils.isValidStack(stack) && stack.getItem() == ItemRegistry.asbFilter ) {
+                    if( ItemStackUtils.isValid(stack) && stack.getItem() == ItemRegistry.asbFilter ) {
                         return new ContainerAssemblyFilter(player.inventory, stack, player.inventory.currentItem);
                     }
                     break;

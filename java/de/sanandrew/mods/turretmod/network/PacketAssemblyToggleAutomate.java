@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.network;
 
+import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,7 +16,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 
 public class PacketAssemblyToggleAutomate
-        extends PacketRegistry.AbstractMessage<PacketAssemblyToggleAutomate>
+        extends AbstractMessage<PacketAssemblyToggleAutomate>
 {
     private BlockPos pos;
 

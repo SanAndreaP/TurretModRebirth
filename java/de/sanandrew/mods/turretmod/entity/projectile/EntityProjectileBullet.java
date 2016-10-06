@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,17 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.entity.projectile;
 
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.Sounds;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import de.sanandrew.mods.turretmod.util.javatuples.Triplet;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.MobEffects;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;

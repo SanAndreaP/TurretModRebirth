@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.network;
 
+import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
@@ -15,7 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 public class PacketTurretNaming
-        extends PacketRegistry.AbstractMessage<PacketTurretNaming>
+        extends AbstractMessage<PacketTurretNaming>
 {
     private int turretId;
     private String name;

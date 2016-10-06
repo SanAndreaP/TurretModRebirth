@@ -9,10 +9,7 @@
 package de.sanandrew.mods.turretmod.client.render.turret;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.darkhax.bookshelf.lib.util.RenderUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -20,16 +17,9 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.layers.LayerSpiderEyes;
-import net.minecraft.client.renderer.tileentity.RenderItemFrame;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.MathHelper;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.opengl.GL11;
 

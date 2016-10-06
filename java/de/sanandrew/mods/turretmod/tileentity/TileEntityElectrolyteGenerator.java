@@ -29,7 +29,7 @@ import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
 import de.sanandrew.mods.turretmod.network.TileClientSync;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import io.netty.buffer.ByteBuf;
-import net.darkhax.bookshelf.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ISidedInventory;
@@ -403,7 +403,7 @@ public class TileEntityElectrolyteGenerator
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack) {
-        if( !ItemStackUtils.isValidStack(stack) ) {
+        if( !ItemStackUtils.isValid(stack) ) {
             return stack == null;
         }
 

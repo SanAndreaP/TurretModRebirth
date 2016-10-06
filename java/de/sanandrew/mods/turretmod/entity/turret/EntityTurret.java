@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.entity.turret;
 
+import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.util.Sounds;
 import net.minecraft.network.datasync.DataParameter;
@@ -20,7 +21,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
@@ -35,8 +35,7 @@ import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import io.netty.buffer.ByteBuf;
-import de.sanandrew.mods.turretmod.util.javatuples.Pair;
-import net.darkhax.bookshelf.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -131,10 +130,6 @@ public abstract class EntityTurret
 
     @Override
     public void faceEntity(Entity entity, float yawSpeed, float pitchSpeed) {
-        if( entity == null ) {
-            return;
-        }
-
         double deltaX = entity.posX - this.posX;
         double deltaZ = entity.posZ - this.posZ;
         double deltaY;
@@ -290,13 +285,13 @@ public abstract class EntityTurret
     @Override
     protected boolean processInteract(EntityPlayer player, EnumHand hand, @Nullable ItemStack stack) {
         if( this.worldObj.isRemote ) {
-            if( ItemStackUtils.isValidStack(stack) && stack.getItem() == ItemRegistry.tcu ) {
+            if( ItemStackUtils.isValid(stack) && stack.getItem() == ItemRegistry.tcu ) {
                 TurretModRebirth.proxy.openGui(player, EnumGui.GUI_TCU_INFO, this.getEntityId(), 0, 0);
                 return true;
             }
 
             return false;
-        } else if( ItemStackUtils.isValidStack(stack) && hand == EnumHand.MAIN_HAND ) {
+        } else if( ItemStackUtils.isValid(stack) && hand == EnumHand.MAIN_HAND ) {
             if( this.targetProc.addAmmo(stack) ) {
                 this.onInteractSucceed(stack, player);
                 return true;
@@ -419,7 +414,7 @@ public abstract class EntityTurret
     /**turrets are machines, they aren't affected by potions*/
     @Override
     public boolean isPotionApplicable(PotionEffect effect) {
-        return effect != null && effect.getIsAmbient();
+        return effect.getIsAmbient();
     }
 
     /**turrets are immobile, leave empty*/
@@ -481,9 +476,9 @@ public abstract class EntityTurret
     }
 
     public boolean tryDismantle(EntityPlayer player) {
-        Pair<Integer, ItemStack> chestItm = TmrUtils.getSimilarStackFromInventory(new ItemStack(Blocks.CHEST), player.inventory, null);
-        if( chestItm != null && ItemStackUtils.isValidStack(chestItm.getValue1()) ) {
-            ItemStack chestStack = chestItm.getValue1();
+        Tuple chestItm = TmrUtils.getSimilarStackFromInventory(new ItemStack(Blocks.CHEST), player.inventory, null);
+        if( chestItm != null && ItemStackUtils.isValid(chestItm.getValue(1)) ) {
+            ItemStack chestStack = chestItm.getValue(1);
             if( this.worldObj.isRemote ) {
                 PacketRegistry.sendToServer(new PacketPlayerTurretAction(this, PacketPlayerTurretAction.DISMANTLE));
                 return true;
@@ -504,7 +499,7 @@ public abstract class EntityTurret
                         this.targetProc.putAmmoInInventory(chest);
 
                         if( chestStack.stackSize < 1 ) {
-                            player.inventory.setInventorySlotContents(chestItm.getValue0(), null);
+                            player.inventory.setInventorySlotContents(chestItm.getValue(0), null);
                         }
                         player.inventoryContainer.detectAndSendChanges();
                         //TODO: make custom container for turrets and put upgrades in it

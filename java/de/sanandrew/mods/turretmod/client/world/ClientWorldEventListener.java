@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,16 +8,11 @@
  */
 package de.sanandrew.mods.turretmod.client.world;
 
-import de.sanandrew.mods.turretmod.client.event.RenderForcefieldHandler;
-import de.sanandrew.mods.turretmod.client.util.ForcefieldProvider;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
-import net.darkhax.bookshelf.lib.ColorObject;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldEventListener;
 import net.minecraft.world.World;

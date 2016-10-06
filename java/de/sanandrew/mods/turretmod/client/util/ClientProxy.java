@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.util;
 
+import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.turretmod.client.model.*;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderBullet;
 import de.sanandrew.mods.turretmod.client.world.ClientWorldEventListener;
@@ -53,8 +54,7 @@ import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import de.sanandrew.mods.turretmod.util.javatuples.Tuple;
-import net.darkhax.bookshelf.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -73,12 +73,12 @@ public class ClientProxy
         MinecraftForge.EVENT_BUS.register(new RenderWorldLastHandler());
         MinecraftForge.EVENT_BUS.register(new ClientWorldEventListener());
 
-        RenderingRegistry.registerEntityRenderingHandler(EntityTurretCrossbow.class, manager -> { return new RenderTurret(manager, new ModelTurretCrossbow(0.0F)); });
-        RenderingRegistry.registerEntityRenderingHandler(EntityTurretShotgun.class, manager -> { return new RenderTurret(manager, new ModelTurretShotgun(0.0F)); });
-        RenderingRegistry.registerEntityRenderingHandler(EntityTurretCryolator.class, manager -> { return new RenderTurret(manager, new ModelTurretCryolator(0.0F)); });
-        RenderingRegistry.registerEntityRenderingHandler(EntityTurretRevolver.class, manager -> { return new RenderTurret(manager, new ModelTurretRevolver(0.0F)); });
-        RenderingRegistry.registerEntityRenderingHandler(EntityTurretMinigun.class, manager -> { return new RenderTurret(manager, new ModelTurretMinigun(0.0F)); });
-        RenderingRegistry.registerEntityRenderingHandler(EntityTurretLaser.class, manager -> { return new RenderTurret(manager, new ModelTurretLaser(0.0F)); });
+        RenderingRegistry.registerEntityRenderingHandler(EntityTurretCrossbow.class, manager -> new RenderTurret(manager, new ModelTurretCrossbow(0.0F)));
+        RenderingRegistry.registerEntityRenderingHandler(EntityTurretShotgun.class, manager -> new RenderTurret(manager, new ModelTurretShotgun(0.0F)));
+        RenderingRegistry.registerEntityRenderingHandler(EntityTurretCryolator.class, manager -> new RenderTurret(manager, new ModelTurretCryolator(0.0F)));
+        RenderingRegistry.registerEntityRenderingHandler(EntityTurretRevolver.class, manager -> new RenderTurret(manager, new ModelTurretRevolver(0.0F)));
+        RenderingRegistry.registerEntityRenderingHandler(EntityTurretMinigun.class, manager -> new RenderTurret(manager, new ModelTurretMinigun(0.0F)));
+        RenderingRegistry.registerEntityRenderingHandler(EntityTurretLaser.class, manager -> new RenderTurret(manager, new ModelTurretLaser(0.0F)));
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCrossbowBolt.class, RenderTurretArrow::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCryoCell.class, RenderNothingness::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectilePebble.class, RenderPebble::new);
@@ -139,7 +139,7 @@ public class ClientProxy
                     break;
                 case GUI_TASSEMBLY_FLT:
                     ItemStack stack = player.getHeldItemMainhand();
-                    if( ItemStackUtils.isValidStack(stack) && stack.getItem() == ItemRegistry.asbFilter ) {
+                    if( ItemStackUtils.isValid(stack) && stack.getItem() == ItemRegistry.asbFilter ) {
                         return new GuiAssemblyFilter(player.inventory, stack);
                     }
                     break;
@@ -166,12 +166,12 @@ public class ClientProxy
                 mc.effectRenderer.addEffect(new ParticleAssemblySpark(mc.theWorld, x, y, z, 0.0D, 0.0D, 0.0D));
                 break;
             case SHOTGUN_SHOT: {
-                float rotXZ = -(float) data.getValue(0) / 180.0F * (float) Math.PI;
-                float rotY = -(float) data.getValue(1) / 180.0F * (float) Math.PI - 0.1F;
+                float rotXZ = -data.<Float>getValue(0) / 180.0F * (float) Math.PI;
+                float rotY = -data.<Float>getValue(1) / 180.0F * (float) Math.PI - 0.1F;
                 double yShift = Math.sin(rotY) * 0.6F;
                 double xShift = Math.sin(rotXZ) * 0.6F * Math.cos(rotY);
                 double zShift = Math.cos(rotXZ) * 0.6F * Math.cos(rotY);
-                boolean isUpsideDown = (boolean) data.getValue(2);
+                boolean isUpsideDown = data.getValue(2);
 
                 xShift *= isUpsideDown ? -1.0F : 1.0F;
                 yShift *= isUpsideDown ? -1.0F : 1.0F;
@@ -182,7 +182,7 @@ public class ClientProxy
                     double xDist = TmrUtils.RNG.nextDouble() * 0.05 - 0.025;
                     double yDist = TmrUtils.RNG.nextDouble() * 0.05 - 0.025;
                     double zDist = TmrUtils.RNG.nextDouble() * 0.05 - 0.025;
-                    Particle fx = new ParticleSmokeNormal.Factory().getEntityFX(0, mc.theWorld, x + xShift, y + yShift, z + zShift, xShift * 0.1F + xDist, yShift * 0.1F + yDist, zShift * 0.1F + zDist);
+                    Particle fx = new ParticleSmokeNormal.Factory().createParticle(0, mc.theWorld, x + xShift, y + yShift, z + zShift, xShift * 0.1F + xDist, yShift * 0.1F + yDist, zShift * 0.1F + zDist);
                     mc.effectRenderer.addEffect(fx);
                 }
                 break;
@@ -202,14 +202,14 @@ public class ClientProxy
                 break;
             }
             case MINIGUN_SHOT: {
-                boolean isLeft = (boolean) data.getValue(3);
+                boolean isLeft = data.getValue(3);
                 float shift = (isLeft ? 45.0F : -45.0F) / 180.0F * (float) Math.PI;
                 float rotXZ = -(float) data.getValue(0) / 180.0F * (float) Math.PI;
                 float rotY = -(float) data.getValue(1) / 180.0F * (float) Math.PI - 0.1F;
                 double motionX = Math.sin(rotXZ) * 0.06F * Math.cos(rotY);
                 double motionY = Math.sin(rotY) * 0.06F;
                 double motionZ = Math.cos(rotXZ) * 0.06F * Math.cos(rotY);
-                boolean isUpsideDown = (boolean) data.getValue(2);
+                boolean isUpsideDown = data.getValue(2);
 
                 x += (Math.sin(rotXZ + shift) * 0.7F * Math.cos(rotY)) * (isUpsideDown ? -1.0F : 1.0F);
                 y += (Math.sin(rotY) * 0.6F) * (isUpsideDown ? -1.0F : 1.0F) - (isUpsideDown ? 1.0F : 0.0F);
@@ -219,7 +219,7 @@ public class ClientProxy
                     double xDist = TmrUtils.RNG.nextDouble() * 0.05 - 0.025;
                     double yDist = TmrUtils.RNG.nextDouble() * 0.05 - 0.025;
                     double zDist = TmrUtils.RNG.nextDouble() * 0.05 - 0.025;
-                    Particle fx = new ParticleSmokeNormal.Factory().getEntityFX(0, mc.theWorld, x, y, z, motionX + xDist, motionY + yDist, motionZ + zDist);
+                    Particle fx = new ParticleSmokeNormal.Factory().createParticle(0, mc.theWorld, x, y, z, motionX + xDist, motionY + yDist, motionZ + zDist);
                     mc.effectRenderer.addEffect(fx);
                 }
                 break;

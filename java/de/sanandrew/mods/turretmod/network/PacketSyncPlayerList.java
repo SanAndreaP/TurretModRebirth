@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.network;
 
+import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
 import de.sanandrew.mods.turretmod.util.PlayerList;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,7 +19,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class PacketSyncPlayerList
-        extends PacketRegistry.AbstractMessage<PacketSyncPlayerList>
+        extends AbstractMessage<PacketSyncPlayerList>
 {
     private Map<UUID, String> players;
 

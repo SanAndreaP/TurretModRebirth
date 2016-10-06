@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.network;
 
+import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
@@ -18,7 +19,7 @@ import net.minecraft.tileentity.TileEntity;
 import java.util.UUID;
 
 public class PacketInitAssemblyCrafting
-        extends PacketRegistry.AbstractMessage<PacketInitAssemblyCrafting>
+        extends AbstractMessage<PacketInitAssemblyCrafting>
 {
     private BlockPos pos;
     private String crfUUID;

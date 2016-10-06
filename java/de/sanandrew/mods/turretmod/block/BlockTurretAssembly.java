@@ -13,7 +13,7 @@ import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.darkhax.bookshelf.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.SoundType;
@@ -115,7 +115,7 @@ public class BlockTurretAssembly
             for( int i = 0; i < assembly.getSizeInventory(); i++ ) {
                 ItemStack stack = assembly.getStackInSlot(i);
 
-                if( ItemStackUtils.isValidStack(stack) ) {
+                if( ItemStackUtils.isValid(stack) ) {
                     float xOff = TmrUtils.RNG.nextFloat() * 0.8F + 0.1F;
                     float yOff = TmrUtils.RNG.nextFloat() * 0.8F + 0.1F;
                     float zOff = TmrUtils.RNG.nextFloat() * 0.8F + 0.1F;

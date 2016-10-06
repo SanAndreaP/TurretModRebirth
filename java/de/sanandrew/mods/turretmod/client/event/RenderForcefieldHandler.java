@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.event;
 
+import de.sanandrew.mods.sanlib.lib.client.ColorObj;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -17,9 +18,7 @@ import de.sanandrew.mods.turretmod.client.render.ForcefieldCube;
 import de.sanandrew.mods.turretmod.client.util.ForcefieldProvider;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TmrConfiguration;
-import net.darkhax.bookshelf.lib.ColorObject;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -42,6 +41,10 @@ public class RenderForcefieldHandler
     @SubscribeEvent
     public void onRenderWorldLast(RenderWorldLastEvent event) {
         Entity renderEntity = Minecraft.getMinecraft().getRenderViewEntity();
+        if( renderEntity == null ) {
+            return;
+        }
+
         final float partialTicks = event.getPartialTicks();
         double renderX = renderEntity.lastTickPosX + (renderEntity.posX - renderEntity.lastTickPosX) * partialTicks;
         double renderY = renderEntity.lastTickPosY + (renderEntity.posY - renderEntity.lastTickPosY) * partialTicks;
@@ -86,14 +89,14 @@ public class RenderForcefieldHandler
         Iterator<ForcefieldFadeOut> fadeOutIt = this.fadeOutFields.iterator();
         while( fadeOutIt.hasNext() ) {
             ForcefieldFadeOut shield = fadeOutIt.next();
-            if( shield.color.getAlpha() <= 0.0F ) {
+            if( shield.color.alpha() <= 0 ) {
                 fadeOutIt.remove();
             } else {
                 ForcefieldCube cube = new ForcefieldCube(new Vec3d(shield.posX - renderX, shield.posY - renderY, shield.posZ - renderZ), shield.shieldBB, shield.color);
 
                 cubes.add(cube);
 
-                shield.color.setAlpha(shield.color.getAlpha() - 0.01F);
+                shield.color.setAlpha(shield.color.alpha() - 3);
             }
         }
 
@@ -144,7 +147,7 @@ public class RenderForcefieldHandler
 
                 cube.draw(tess);
 
-                GL14.glBlendColor(1.0f, 1.0f, 1.0f, cube.boxColor.getAlpha() * 0.5F);
+                GL14.glBlendColor(1.0f, 1.0f, 1.0f, cube.boxColor.fAlpha() * 0.5F);
                 GlStateManager.depthMask(false);
                 GlStateManager.disableCull();
                 tess.draw();
@@ -168,14 +171,14 @@ public class RenderForcefieldHandler
 
     private static class ForcefieldFadeOut
     {
-        public ColorObject color;
+        public ColorObj color;
         public final AxisAlignedBB shieldBB;
 
         public double posX;
         public double posY;
         public double posZ;
 
-        public ForcefieldFadeOut(double posX, double posY, double posZ, ColorObject origRGBA, AxisAlignedBB origShieldBB) {
+        public ForcefieldFadeOut(double posX, double posY, double posZ, ColorObj origRGBA, AxisAlignedBB origShieldBB) {
             this.posX = posX;
             this.posY = posY;
             this.posZ = posZ;

@@ -8,13 +8,14 @@
  */
 package de.sanandrew.mods.turretmod.network;
 
+import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class PacketPlayerTurretAction
-        extends PacketRegistry.AbstractMessage<PacketPlayerTurretAction>
+        extends AbstractMessage<PacketPlayerTurretAction>
 {
     public static final byte TOGGLE_ACTIVE = 0;
     public static final byte DISMANTLE = 1;

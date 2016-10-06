@@ -12,7 +12,7 @@ import de.sanandrew.mods.turretmod.inventory.ContainerAssemblyFilter;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
-import net.darkhax.bookshelf.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -48,7 +48,7 @@ public class GuiAssemblyFilter
 
         this.drawTexturedModalRect(this.posX, this.posY, 0, 0, this.xSize, this.ySize);
 
-        if( !ItemStackUtils.isValidStack(this.mc.thePlayer.getHeldItemMainhand()) || this.mc.thePlayer.getHeldItemMainhand().getItem() != ItemRegistry.asbFilter ) {
+        if( !ItemStackUtils.isValid(this.mc.thePlayer.getHeldItemMainhand()) || this.mc.thePlayer.getHeldItemMainhand().getItem() != ItemRegistry.asbFilter ) {
             this.mc.thePlayer.closeScreen();
         }
     }

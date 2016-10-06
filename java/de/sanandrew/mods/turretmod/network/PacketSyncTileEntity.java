@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.network;
 
+import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,7 +16,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 
 public class PacketSyncTileEntity
-        extends PacketRegistry.AbstractMessage<PacketSyncTileEntity>
+        extends AbstractMessage<PacketSyncTileEntity>
 {
     private BlockPos pos;
 

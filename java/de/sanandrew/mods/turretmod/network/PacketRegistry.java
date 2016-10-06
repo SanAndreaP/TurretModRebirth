@@ -8,19 +8,15 @@
  */
 package de.sanandrew.mods.turretmod.network;
 
-import net.darkhax.bookshelf.lib.util.PlayerUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
+import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PacketRegistry
 {
@@ -61,25 +57,5 @@ public class PacketRegistry
 
     public static <T extends AbstractMessage<T> & IMessageHandler<T, IMessage>> void registerMessage (SimpleNetworkWrapper network, Class<T> clazz, int id, Side side) {
         network.registerMessage(clazz, clazz, id, side);
-    }
-
-    public static abstract class AbstractMessage<M extends AbstractMessage>
-            implements IMessage, IMessageHandler<M, IMessage>
-    {
-        @Override
-        public IMessage onMessage(M message, MessageContext ctx) {
-            if( ctx.side.isClient() ) {
-                Minecraft.getMinecraft().addScheduledTask(() -> handleClientMessage(message, PlayerUtils.getClientPlayer()));
-            } else if( ctx.getServerHandler().playerEntity.getServer() != null ) {
-                ctx.getServerHandler().playerEntity.getServer().addScheduledTask(() -> handleServerMessage(message, ctx.getServerHandler().playerEntity));
-            }
-
-            return null;
-        }
-
-        @SideOnly(Side.CLIENT)
-        public abstract void handleClientMessage(M packet, EntityPlayer player);
-
-        public abstract void handleServerMessage(M packet, EntityPlayer player);
     }
 }

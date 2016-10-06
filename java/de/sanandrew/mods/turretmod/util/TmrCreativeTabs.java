@@ -12,7 +12,7 @@ import de.sanandrew.mods.turretmod.item.ItemTurret;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import net.darkhax.bookshelf.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -168,7 +168,7 @@ public class TmrCreativeTabs
 
         private static int getStackIndexInList(ItemStack stack, List<ItemStack> stackArray) {
             for( ItemStack stackElem : stackArray ) {
-                if( ItemStackUtils.areStacksEqual(stack, stackElem, true) ) {
+                if( ItemStackUtils.areEqual(stack, stackElem, true) ) {
                     return stackArray.indexOf(stackElem);
                 }
             }

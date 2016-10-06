@@ -28,7 +28,7 @@ import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = TurretModRebirth.ID, version = TurretModRebirth.VERSION, name = TurretModRebirth.NAME, guiFactory = TurretModRebirth.GUI_FACTORY)
+@Mod(modid = TurretModRebirth.ID, version = TurretModRebirth.VERSION, name = TurretModRebirth.NAME, guiFactory = TurretModRebirth.GUI_FACTORY, dependencies = TurretModRebirth.DEPENDENCIES)
 public class TurretModRebirth
 {
     public static final String ID = "sapturretmod";
@@ -37,6 +37,7 @@ public class TurretModRebirth
     public static final String CHANNEL = "SapTurretModNWCH";
     public static final String NAME = "Turret Mod Rebirth";
     public static final String GUI_FACTORY = "de.sanandrew.mods.turretmod.client.gui.config.TmrGuiFactory";
+    public static final String DEPENDENCIES = "required-after:sanlib@[1.0.0,]";
 
     public static SimpleNetworkWrapper network;
 

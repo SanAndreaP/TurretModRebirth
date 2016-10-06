@@ -14,7 +14,7 @@ import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
-import net.darkhax.bookshelf.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -67,7 +67,7 @@ public class GuiTcuUpgrades
 
         this.drawTexturedModalRect(this.posX, this.posY, 0, 0, this.xSize, this.ySize);
 
-        if( !ItemStackUtils.isValidStack(this.mc.thePlayer.getHeldItemMainhand()) || this.mc.thePlayer.getHeldItemMainhand().getItem() != ItemRegistry.tcu ) {
+        if( !ItemStackUtils.isValid(this.mc.thePlayer.getHeldItemMainhand()) || this.mc.thePlayer.getHeldItemMainhand().getItem() != ItemRegistry.tcu ) {
             this.mc.thePlayer.closeScreen();
         }
     }

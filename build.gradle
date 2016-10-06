@@ -12,10 +12,10 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-task downloadBookshelf(type: LibDownloader) {
-	sourceUrl = 'http://minecraft.curseforge.com/projects/bookshelf/files/2317799/download'
-    target = file('libs/Bookshelf.jar')
-}
+//task downloadBookshelf(type: LibDownloader) {
+//	sourceUrl = 'http://minecraft.curseforge.com/projects/bookshelf/files/2317799/download'
+//    target = file('libs/Bookshelf.jar')
+//}
 
 apply plugin: 'idea'
 idea {
@@ -31,19 +31,32 @@ version = "1.10-4.0.0-alpha.6"
 group = "de.sanandrew.mods"
 archivesBaseName = "TurretMod"
 
-minecraft {
-    version = "1.10.2-12.18.1.2026"
-    runDir = "minecraft"
-	mappings = "snapshot_20160724"
+sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
+compileJava {
+    sourceCompatibility = targetCompatibility = "1.8"
 }
 
-setupDecompWorkspace.finalizedBy downloadBookshelf
-setupDevWorkspace.finalizedBy downloadBookshelf
+minecraft {
+    version = "1.10.2-12.18.1.2095"
+    runDir = "run"
+    mappings = "snapshot_20161005"
+}
+
+dependencies {
+
+}
+
+//setupDecompWorkspace.finalizedBy downloadBookshelf
+//setupDevWorkspace.finalizedBy downloadBookshelf
 
 processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-        expand 'version': project.version, 'mcversion':project.minecraft.version
+
+        expand 'version':project.version, 'mcversion':project.minecraft.version
     }
 
     from(sourceSets.main.resources.srcDirs) {
@@ -58,12 +71,8 @@ sourceSets {
     }
 }
 
-dependencies {
-
-}
-
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+//sourceCompatibility = JavaVersion.VERSION_1_8
+//targetCompatibility = JavaVersion.VERSION_1_8
 
 sourceJar {
     from sourceSets.main.java

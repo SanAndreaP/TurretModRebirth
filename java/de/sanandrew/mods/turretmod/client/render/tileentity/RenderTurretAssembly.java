@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.render.tileentity;
 
+import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.client.model.block.ModelTurretAssembly;
 import de.sanandrew.mods.turretmod.client.shader.ShaderItemAlphaOverride;
@@ -15,8 +16,7 @@ import de.sanandrew.mods.turretmod.client.util.ShaderHelper;
 import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.Resources;
-import de.sanandrew.mods.turretmod.util.javatuples.Triplet;
-import net.darkhax.bookshelf.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -60,7 +60,7 @@ public class RenderTurretAssembly
         GlStateManager.popMatrix();
     }
 
-    private Triplet<Float, Float, Float> renderLaser(EnumFacing facing, BlockPos pos) {
+    private Tuple renderLaser(EnumFacing facing, BlockPos pos) {
         float laserX = ((this.armX) / 16.0F);
         float laserZ = ((this.armZ + 5.5F) / 16.0F);
 
@@ -122,17 +122,17 @@ public class RenderTurretAssembly
         GlStateManager.enableLighting();
         GlStateManager.popMatrix();
 
-        return Triplet.with(tileX + 0.50F + laserX, tileY + 0.65F, tileZ + 0.50F - laserZ);
+        return new Tuple(tileX + 0.50F + laserX, tileY + 0.65F, tileZ + 0.50F - laserZ);
     }
 
     private void renderItem(TileEntityTurretAssembly assembly) {
         int xShift = 0;
-        ItemStack crfStack = assembly.currCrafting != null ? assembly.currCrafting.getValue1() : assembly.getStackInSlot(0);
+        ItemStack crfStack = assembly.currCrafting != null ? assembly.currCrafting.getValue(1) : assembly.getStackInSlot(0);
 
         GlStateManager.pushMatrix();
         GlStateManager.rotate((float)(90.0D * BlockRegistry.assemblyTable.getDirection(assembly.getBlockMetadata()).getHorizontalIndex()), 0.0F, 1.0F, 0.0F);
 
-        if( ItemStackUtils.isValidStack(crfStack) ) {
+        if( ItemStackUtils.isValid(crfStack) ) {
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             this.shaderCallback.alphaMulti = Math.max(0.0F, (assembly.getField(TileEntityTurretAssembly.FIELD_TICKS_CRAFTED) - 15.0F) / (assembly.getField(TileEntityTurretAssembly.FIELD_MAX_TICKS_CRAFTED) - 15.0F));

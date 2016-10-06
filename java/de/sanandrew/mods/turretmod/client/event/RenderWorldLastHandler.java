@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import net.darkhax.bookshelf.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -52,7 +52,7 @@ public class RenderWorldLastHandler
     }
 
     private static boolean isItemTCU(ItemStack stack) {
-        return ItemStackUtils.isValidStack(stack) && stack.getItem() == ItemRegistry.tcu;
+        return ItemStackUtils.isValid(stack) && stack.getItem() == ItemRegistry.tcu;
     }
 
     private static void renderTurretLabel(EntityTurret turret, double x, double y, double z) {

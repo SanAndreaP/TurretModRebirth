@@ -10,11 +10,12 @@ package de.sanandrew.mods.turretmod.entity.turret;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmo;
 import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
-import net.darkhax.bookshelf.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -124,7 +125,7 @@ public abstract class TargetProcessor
     }
 
     public boolean hasAmmo() {
-        return ItemStackUtils.isValidStack(this.ammoStack) && this.ammoCount > 0;
+        return ItemStackUtils.isValid(this.ammoStack) && this.ammoCount > 0;
     }
 
     public void dropExcessAmmo() {
@@ -270,7 +271,7 @@ public abstract class TargetProcessor
 
     public void addTargetingListener(TargetingListener listener) {
         int p = listener.getPriority();
-        List<TargetingListener> listenerList = TmrUtils.valueOrDefault(this.tgtListeners.get(p), new ArrayList<>());
+        List<TargetingListener> listenerList = MiscUtils.defIfNull(this.tgtListeners.get(p), new ArrayList<>());
         if( !listenerList.contains(listener) ) {
             listenerList.add(listener);
         }

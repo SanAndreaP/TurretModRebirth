@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
@@ -63,11 +64,11 @@ public final class UpgradeRegistry
     }
 
     public TurretUpgrade getUpgrade(UUID uuid) {
-        return TmrUtils.valueOrDefault(this.upgradeToUuidMap.get(uuid), emptyInst);
+        return MiscUtils.defIfNull(this.upgradeToUuidMap.get(uuid), emptyInst);
     }
 
     public UUID getUpgradeUUID(TurretUpgrade upg) {
-        return TmrUtils.valueOrDefault(this.uuidToUpgradeMap.get(upg), EMPTY);
+        return MiscUtils.defIfNull(this.uuidToUpgradeMap.get(upg), EMPTY);
     }
 
     public TurretUpgrade getUpgrade(ItemStack stack) {
@@ -75,7 +76,7 @@ public final class UpgradeRegistry
             return emptyInst;
         }
 
-        String uid = TmrUtils.valueOrDefault(stack.getTagCompound(), new NBTTagCompound()).getString("upgradeId");
+        String uid = MiscUtils.defIfNull(stack.getTagCompound(), new NBTTagCompound()).getString("upgradeId");
         try {
             return this.getUpgrade(UUID.fromString(uid));
         } catch( IllegalArgumentException ex ) {

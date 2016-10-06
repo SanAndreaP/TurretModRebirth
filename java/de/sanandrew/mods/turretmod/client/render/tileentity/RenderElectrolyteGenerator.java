@@ -12,7 +12,7 @@ import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.darkhax.bookshelf.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -40,7 +40,7 @@ public class RenderElectrolyteGenerator
             int slot = TileEntityElectrolyteGenerator.SLOTS_PROCESSING[i];
             ItemStack stack = tile.getStackInSlot(slot);
 
-            if( ItemStackUtils.isValidStack(stack) ) {
+            if( ItemStackUtils.isValid(stack) ) {
                 drawElectrolyteItem(i, stack);
             }
         }

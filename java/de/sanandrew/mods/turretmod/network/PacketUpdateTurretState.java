@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.network;
 
+import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
@@ -17,7 +18,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 public class PacketUpdateTurretState
-        extends PacketRegistry.AbstractMessage<PacketUpdateTurretState>
+        extends AbstractMessage<PacketUpdateTurretState>
 {
     private int turretId;
     private int entityToAttackId;

@@ -8,8 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.client.render;
 
+import de.sanandrew.mods.sanlib.lib.client.ColorObj;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.darkhax.bookshelf.lib.ColorObject;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.util.EnumFacing;
@@ -25,9 +25,9 @@ public class ForcefieldCube
     public Map<EnumFacing, CubeFace[]> faces = new EnumMap<>(EnumFacing.class);
     private final Vec3d center;
     private final AxisAlignedBB boxAABB;
-    public ColorObject boxColor;
+    public ColorObj boxColor;
 
-    public ForcefieldCube(Vec3d mpCenter, AxisAlignedBB cubeBox, ColorObject color) {
+    public ForcefieldCube(Vec3d mpCenter, AxisAlignedBB cubeBox, ColorObj color) {
         this.center = mpCenter;
         this.boxAABB = cubeBox;
         this.boxColor = color;
@@ -46,9 +46,9 @@ public class ForcefieldCube
         VertexBuffer buffer = tess.getBuffer();
         for( CubeFace[] faceList : faces.values() ) {
             for( CubeFace facePart : faceList ) {
-                float red = facePart.color.getRed();
-                float green = facePart.color.getGreen();
-                float blue = facePart.color.getBlue();
+                float red = facePart.color.fRed();
+                float green = facePart.color.fGreen();
+                float blue = facePart.color.fBlue();
                 float alpha = 1.0F;
                 if( facePart.facing == EnumFacing.NORTH ) {
                     double maxU = (facePart.endPt.zCoord - facePart.beginPt.zCoord) / 8.0D;
@@ -171,16 +171,16 @@ public class ForcefieldCube
         public final EnumFacing facing;
         public final Vec3d beginPt;
         public final Vec3d endPt;
-        public final ColorObject color;
+        public final ColorObj color;
 
-        public CubeFace(EnumFacing direction, Vec3d begin, Vec3d end, ColorObject faceColor) {
+        public CubeFace(EnumFacing direction, Vec3d begin, Vec3d end, ColorObj faceColor) {
             this.facing = direction;
             this.beginPt = begin;
             this.endPt = end;
             this.color = faceColor;
         }
 
-        public CubeFace(EnumFacing direction, Vec3d center, AxisAlignedBB boxBB, ColorObject faceColor) {
+        public CubeFace(EnumFacing direction, Vec3d center, AxisAlignedBB boxBB, ColorObj faceColor) {
             this.facing = direction;
             this.color = faceColor;
             switch( direction ) {

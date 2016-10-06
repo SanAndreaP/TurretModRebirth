@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.registry.assembly;
 
+import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretMinigun;
@@ -25,8 +26,7 @@ import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import de.sanandrew.mods.turretmod.util.javatuples.Pair;
-import net.darkhax.bookshelf.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
@@ -44,6 +44,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public final class TurretAssemblyRecipes
@@ -408,7 +409,7 @@ public final class TurretAssemblyRecipes
 
         res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.UPG_ECONOMY_INF);
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
-                                             new RecipeEntryItem(1).put(Pair.with(new ItemStack(Items.BOW), Enchantments.INFINITY)).drawTooltip()};
+                                             new RecipeEntryItem(1).put(new RecipeEntryItem.ItemEnchEntry(new ItemStack(Items.BOW), Enchantments.INFINITY)).drawTooltip()};
         INSTANCE.registerRecipe(UPG_ECONOMY_INF, group, res, 20, 600, ingredients);
     }
 
@@ -426,7 +427,7 @@ public final class TurretAssemblyRecipes
             TurretModRebirth.LOG.log(Level.ERROR, String.format("UUID %s for assembly recipe cannot be registered twice!", uuid), new InvalidParameterException());
             return false;
         }
-        if( !ItemStackUtils.isValidStack(result) ) {
+        if( !ItemStackUtils.isValid(result) ) {
             TurretModRebirth.LOG.log(Level.ERROR, String.format("Result stack of UUID %s is not valid!", uuid), new InvalidParameterException());
             return false;
         }
@@ -475,11 +476,9 @@ public final class TurretAssemblyRecipes
         return stack == null ? null : stack.copy();
     }
 
-    public List<Pair<UUID, ItemStack>> getRecipeList() {
-        List<Pair<UUID, ItemStack>> ret = new ArrayList<>(this.recipeResults.size());
-        for( UUID key : this.recipeResults.keySet() ) {
-            ret.add(Pair.with(key, this.getRecipeResult(key)));
-        }
+    public List<RecipeKeyEntry> getRecipeList() {
+        List<RecipeKeyEntry> ret = new ArrayList<>(this.recipeResults.size());
+        ret.addAll(this.recipeResults.keySet().stream().map(key -> new RecipeKeyEntry(key, this.getRecipeResult(key))).collect(Collectors.toList()));
 
         return ret;
     }
@@ -490,7 +489,7 @@ public final class TurretAssemblyRecipes
             return false;
         }
         entry = entry.copy();
-        List<Pair<Integer, Integer>> resourceOnSlotList = new ArrayList<>();
+        List<Tuple> resourceOnSlotList = new ArrayList<>();
         List<RecipeEntryItem> resourceStacks = new ArrayList<>(Arrays.asList(entry.resources));
 
         Iterator<RecipeEntryItem> resourceStacksIt = resourceStacks.iterator();
@@ -503,7 +502,7 @@ public final class TurretAssemblyRecipes
 
             for( int i = invSize - 1; i >= 2; i-- ) {
                 ItemStack invStack = inv.getStackInSlot(i);
-                if( ItemStackUtils.isValidStack(invStack) ) {
+                if( ItemStackUtils.isValid(invStack) ) {
                     ItemStack validStack = null;
                     if( resource.isItemFitting(invStack) )
                     {
@@ -511,7 +510,7 @@ public final class TurretAssemblyRecipes
                     }
 
                     if( validStack != null ) {
-                        resourceOnSlotList.add(Pair.with(i, Math.min(validStack.stackSize, resource.stackSize)));
+                        resourceOnSlotList.add(new Tuple(i, Math.min(validStack.stackSize, resource.stackSize)));
                         resource.stackSize -= validStack.stackSize;
                     }
 
@@ -527,8 +526,8 @@ public final class TurretAssemblyRecipes
             return false;
         }
 
-        for( Pair<Integer, Integer> resourceSlot : resourceOnSlotList ) {
-            inv.decrStackSize(resourceSlot.getValue0(), resourceSlot.getValue1());
+        for( Tuple resourceSlot : resourceOnSlotList ) {
+            inv.decrStackSize(resourceSlot.getValue(0), resourceSlot.getValue(1));
         }
 
         return true;
@@ -552,6 +551,24 @@ public final class TurretAssemblyRecipes
                 stacks.add(stack.copy());
             }
             return new RecipeEntry(stacks.toArray(new RecipeEntryItem[stacks.size()]), this.fluxPerTick, this.ticksProcessing);
+        }
+    }
+
+    public static class RecipeKeyEntry
+            extends Tuple
+    {
+        private static final long serialVersionUID = -8753128650338058635L;
+
+        public RecipeKeyEntry(UUID uuid, ItemStack stack) {
+            super(uuid, stack);
+        }
+
+        public UUID key() {
+            return this.getValue(0);
+        }
+
+        public ItemStack stack() {
+            return this.getValue(1);
         }
     }
 

@@ -8,8 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
-import de.sanandrew.mods.turretmod.util.javatuples.Pair;
-import net.darkhax.bookshelf.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.Tuple;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAITasks;
@@ -56,10 +56,6 @@ public final class TmrUtils
         }
 
         return null;
-    }
-
-    public static <T> T valueOrDefault(T val, T def) {
-        return val != null ? val : def;
     }
 
     public static Entity getFirstPassengerOfClass(Entity e, Class<? extends Entity> psgClass) {
@@ -161,21 +157,21 @@ public final class TmrUtils
         return null;
     }
 
-    public static boolean areStacksEqual(ItemStack firstStack, ItemStack secondStack, Comparator<NBTTagCompound> comparator) {
-        if(firstStack != null && secondStack != null) {
-            Item firstItem = firstStack.getItem();
-            Item secondItem = secondStack.getItem();
-            return (firstItem == secondItem && ((comparator == null || comparator.compare(firstStack.getTagCompound(), secondStack.getTagCompound()) == 0) && (firstStack
-                    .getItemDamage() == OreDictionary.WILDCARD_VALUE || secondStack.getItemDamage() == OreDictionary.WILDCARD_VALUE || firstStack.getItemDamage() == secondStack.getItemDamage()))
-               );
-        } else {
-            return firstStack == secondStack;
-        }
-    }
+//    public static boolean areStacksEqual(ItemStack firstStack, ItemStack secondStack, Comparator<NBTTagCompound> comparator) {
+//        if(firstStack != null && secondStack != null) {
+//            Item firstItem = firstStack.getItem();
+//            Item secondItem = secondStack.getItem();
+//            return (firstItem == secondItem && ((comparator == null || comparator.compare(firstStack.getTagCompound(), secondStack.getTagCompound()) == 0) && (firstStack
+//                    .getItemDamage() == OreDictionary.WILDCARD_VALUE || secondStack.getItemDamage() == OreDictionary.WILDCARD_VALUE || firstStack.getItemDamage() == secondStack.getItemDamage()))
+//               );
+//        } else {
+//            return firstStack == secondStack;
+//        }
+//    }
 
     public static boolean isStackInArray(ItemStack stack, ItemStack... stacks) {
         for( ItemStack currentStack : stacks ) {
-            if( areStacksEqual(stack, currentStack, NBT_COMPARATOR_FIXD) ) {
+            if( ItemStackUtils.areEqual(stack, currentStack) ) {
                 return true;
             }
         }
@@ -183,8 +179,8 @@ public final class TmrUtils
         return false;
     }
 
-    public static Pair<Integer, ItemStack> getSimilarStackFromInventory(ItemStack stack, IInventory inv, Comparator<NBTTagCompound> comparator) {
-        if( !ItemStackUtils.isValidStack(stack) ) {
+    public static Tuple getSimilarStackFromInventory(ItemStack stack, IInventory inv, Comparator<NBTTagCompound> comparator) {
+        if( !ItemStackUtils.isValid(stack) ) {
             return null;
         }
 
@@ -195,14 +191,14 @@ public final class TmrUtils
         int size = inv.getSizeInventory();
         for( int i = 0; i < size; i++ ) {
             ItemStack invStack = inv.getStackInSlot(i);
-            if( ItemStackUtils.isValidStack(invStack) ) {
+            if( ItemStackUtils.isValid(invStack) ) {
                 if( comparator == null ) {
-                    if( ItemStackUtils.areStacksEqual(stack, invStack, false) ) {
-                        return Pair.with(i, invStack);
+                    if( ItemStackUtils.areEqual(stack, invStack, false) ) {
+                        return new Tuple(i, invStack);
                     }
                 } else {
-                    if( areStacksEqual(stack, invStack, comparator) ) {
-                        return Pair.with(i, invStack);
+                    if( ItemStackUtils.areEqual(stack, invStack, comparator) ) {
+                        return new Tuple(i, invStack);
                     }
                 }
             }
@@ -224,7 +220,7 @@ public final class TmrUtils
 
         for( int i = begin; i < end; i++ ) {
             ItemStack invIS = inv.getStackInSlot(i);
-            if( invIS != null && ((checkNBT && areStacksEqual(is, invIS, NBT_COMPARATOR_FIXD)) || (!checkNBT && ItemStackUtils.areStacksEqual(is, invIS, false))) ) {
+            if( invIS != null && ((checkNBT && ItemStackUtils.areEqual(is, invIS)) || (!checkNBT && ItemStackUtils.areEqual(is, invIS, false))) ) {
                 int fit = StrictMath.min(invIS.getMaxStackSize(), maxStackSize) - invIS.stackSize;
                 if( fit >= stack.stackSize ) {
                     return true;
@@ -254,7 +250,7 @@ public final class TmrUtils
         int rest;
         for( int i = 0; i < invSize && is != null; ++i ) {
             invIS = inv.getStackInSlot(i);
-            if( invIS != null && ((checkNBT && areStacksEqual(is, invIS, NBT_COMPARATOR_FIXD)) || (!checkNBT && ItemStackUtils.areStacksEqual(is, invIS, false))) ) {
+            if( invIS != null && ((checkNBT && areStacksEqual(is, invIS, NBT_COMPARATOR_FIXD)) || (!checkNBT && ItemStackUtils.areEqual(is, invIS, false))) ) {
                 rest = is.stackSize + invIS.stackSize;
                 int maxStack = Math.min(invIS.getMaxStackSize(), maxStackSize);
                 if( rest <= maxStack ) {

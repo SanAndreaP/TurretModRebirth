@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.inventory;
 
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import net.darkhax.bookshelf.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -52,7 +52,7 @@ public class ContainerAssemblyFilter
 
     @Override
     public void onContainerClosed(EntityPlayer player) {
-        if( !player.worldObj.isRemote && ItemStackUtils.isValidStack(player.getHeldItemMainhand()) && player.getHeldItemMainhand().getItem() == ItemRegistry.asbFilter ) {
+        if( !player.worldObj.isRemote && ItemStackUtils.isValid(player.getHeldItemMainhand()) && player.getHeldItemMainhand().getItem() == ItemRegistry.asbFilter ) {
             ItemRegistry.asbFilter.setFilterStacks(this.filterStack, this.filterInv.invStacks);
             player.inventory.setInventorySlotContents(this.filterStackSlot, this.filterStack.copy());
             player.inventoryContainer.detectAndSendChanges();
@@ -102,7 +102,7 @@ public class ContainerAssemblyFilter
 
         @Override
         public boolean isItemValid(ItemStack stack) {
-            if( ItemStackUtils.isValidStack(stack) ) {
+            if( ItemStackUtils.isValid(stack) ) {
                 this.putStack(stack.copy());
             }
             return false;

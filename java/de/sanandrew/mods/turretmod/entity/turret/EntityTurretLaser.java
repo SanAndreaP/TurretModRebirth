@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -11,11 +11,9 @@ package de.sanandrew.mods.turretmod.entity.turret;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
-import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.Sounds;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import de.sanandrew.mods.turretmod.util.javatuples.Triplet;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;

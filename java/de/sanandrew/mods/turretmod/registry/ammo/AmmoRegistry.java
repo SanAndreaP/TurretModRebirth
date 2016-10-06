@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
@@ -117,12 +118,12 @@ public final class AmmoRegistry
     }
 
     public TurretAmmo[] getTypes(UUID groupId) {
-        List<TurretAmmo> ammoList = TmrUtils.valueOrDefault(this.ammoGroupsFromUUID.get(groupId), new ArrayList<>(0));
+        List<TurretAmmo> ammoList = MiscUtils.defIfNull(this.ammoGroupsFromUUID.get(groupId), new ArrayList<>(0));
         return ammoList.toArray(new TurretAmmo[ammoList.size()]);
     }
 
     public TurretAmmo getType(UUID typeId) {
-        return TmrUtils.valueOrDefault(this.ammoTypesFromUUID.get(typeId), NULL_TYPE);
+        return MiscUtils.defIfNull(this.ammoTypesFromUUID.get(typeId), NULL_TYPE);
     }
 
     @Nonnull

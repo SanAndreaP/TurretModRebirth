@@ -8,12 +8,12 @@
  */
 package de.sanandrew.mods.turretmod.block;
 
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -103,7 +103,7 @@ public class BlockElectrolyteGenerator
 
                     ItemStack stack = potatoGen.getStackInSlot(i);
 
-                    if( ItemStackUtils.isValidStack(stack) ) {
+                    if( ItemStackUtils.isValid(stack) ) {
                         float xOff = TmrUtils.RNG.nextFloat() * 0.8F + 0.1F;
                         float yOff = TmrUtils.RNG.nextFloat() * 0.8F + 0.1F;
                         float zOff = TmrUtils.RNG.nextFloat() * 0.8F + 0.1F;

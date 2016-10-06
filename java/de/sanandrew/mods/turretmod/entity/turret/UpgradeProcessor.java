@@ -14,7 +14,7 @@ import de.sanandrew.mods.turretmod.network.PacketUpdateUgradeSlot;
 import de.sanandrew.mods.turretmod.registry.upgrades.TurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
-import net.darkhax.bookshelf.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -314,7 +314,7 @@ public class UpgradeProcessor
         for( int i = 0; i < this.getSizeInventory(); i++ ) {
             ItemStack stack = this.removeStackFromSlot(i);
 
-            if( ItemStackUtils.isValidStack(stack) ) {
+            if( ItemStackUtils.isValid(stack) ) {
                 float xOff = TmrUtils.RNG.nextFloat() * 0.8F + 0.1F;
                 float yOff = TmrUtils.RNG.nextFloat() * 0.8F + 0.1F;
                 float zOff = TmrUtils.RNG.nextFloat() * 0.8F + 0.1F;

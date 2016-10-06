@@ -8,13 +8,14 @@
  */
 package de.sanandrew.mods.turretmod.network;
 
+import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
 import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class PacketOpenGui
-        extends PacketRegistry.AbstractMessage<PacketOpenGui>
+        extends AbstractMessage<PacketOpenGui>
 {
     private byte guiId;
     private int x;

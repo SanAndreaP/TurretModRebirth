@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,9 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.registry.assembly;
 
+import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
-import de.sanandrew.mods.turretmod.util.javatuples.Pair;
-import net.darkhax.bookshelf.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
@@ -31,7 +31,7 @@ public class RecipeEntryItem
     public int stackSize;
     public ItemStack[] normalAlternatives;
     public String[] oreDictAlternatives;
-    public List<Pair<ItemStack, Enchantment>> enchAlternatives;
+    public List<ItemEnchEntry> enchAlternatives;
     private boolean drawTooltip;
 
     private WeakReference<ItemStack[]> cachedEntryStacks;
@@ -44,7 +44,7 @@ public class RecipeEntryItem
         this.enchAlternatives = new ArrayList<>();
     }
 
-    private RecipeEntryItem(int count, ItemStack[] normalAlternatives, String[] oreDictAlternatives, List<Pair<ItemStack, Enchantment>> enchAlternatives) {
+    private RecipeEntryItem(int count, ItemStack[] normalAlternatives, String[] oreDictAlternatives, List<ItemEnchEntry> enchAlternatives) {
         this.stackSize = count;
         this.drawTooltip = false;
         this.normalAlternatives = normalAlternatives;
@@ -115,8 +115,7 @@ public class RecipeEntryItem
         return this;
     }
 
-    @SafeVarargs
-    public final RecipeEntryItem put(Pair<ItemStack, Enchantment>... enchItems) {
+    public final RecipeEntryItem put(ItemEnchEntry... enchItems) {
         this.enchAlternatives.addAll(Arrays.asList(enchItems));
 
         return this;
@@ -147,7 +146,7 @@ public class RecipeEntryItem
 
         for( ItemStack nrmStack : this.normalAlternatives ) {
             if( (nrmStack.hasTagCompound() && TmrUtils.areStacksEqual(nrmStack, stack, TmrUtils.NBT_COMPARATOR_FIXD))
-                    || (!nrmStack.hasTagCompound() && ItemStackUtils.areStacksEqual(nrmStack, stack, false)) )
+                    || (!nrmStack.hasTagCompound() && ItemStackUtils.areEqual(nrmStack, stack, false)) )
             {
                 return true;
             }
@@ -161,8 +160,8 @@ public class RecipeEntryItem
             }
         }
 
-        for( Pair<ItemStack, Enchantment> enchItem : this.enchAlternatives ) {
-            if( stack.isItemEnchanted() && ItemStackUtils.areStacksEqual(enchItem.getValue0(), stack, false) && EnchantmentHelper.getEnchantmentLevel(enchItem.getValue1(), stack) > 0 ) {
+        for( ItemEnchEntry enchItem : this.enchAlternatives ) {
+            if( stack.isItemEnchanted() && ItemStackUtils.areEqual(enchItem.stack(), stack, false) && EnchantmentHelper.getEnchantmentLevel(enchItem.enchantment(), stack) > 0 ) {
                 return true;
             }
         }
@@ -192,9 +191,9 @@ public class RecipeEntryItem
                 }
             }
 
-            for( Pair<ItemStack, Enchantment> enchItem : this.enchAlternatives ) {
-                ItemStack newStack = enchItem.getValue0().copy();
-                EnchantmentHelper.setEnchantments(Collections.singletonMap(enchItem.getValue1(), 1), newStack);
+            for( ItemEnchEntry enchItem : this.enchAlternatives ) {
+                ItemStack newStack = enchItem.stack().copy();
+                EnchantmentHelper.setEnchantments(Collections.singletonMap(enchItem.enchantment(), 1), newStack);
                 stacks.add(newStack);
             }
 
@@ -217,5 +216,23 @@ public class RecipeEntryItem
         }
 
         return this.cachedEntryStacks.get();
+    }
+
+    public static final class ItemEnchEntry
+            extends Tuple
+    {
+        private static final long serialVersionUID = 2146846913523392590L;
+
+        public ItemEnchEntry(ItemStack stack, Enchantment enchantment) {
+            super(stack, enchantment);
+        }
+
+        public ItemStack stack() {
+            return this.getValue(0);
+        }
+
+        public Enchantment enchantment() {
+            return this.getValue(1);
+        }
     }
 }

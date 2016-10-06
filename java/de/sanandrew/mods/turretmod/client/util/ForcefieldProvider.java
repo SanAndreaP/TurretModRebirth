@@ -8,7 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.util;
 
-import net.darkhax.bookshelf.lib.ColorObject;
+import de.sanandrew.mods.sanlib.lib.client.ColorObj;
 import net.minecraft.util.math.AxisAlignedBB;
 
 public interface ForcefieldProvider
@@ -34,5 +34,5 @@ public interface ForcefieldProvider
      * Returns the color of the shield. This includes the Alpha value.<br>
      * @return the color of the shield.
      */
-    ColorObject getShieldColor();
+    ColorObj getShieldColor();
 }

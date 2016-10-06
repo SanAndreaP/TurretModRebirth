@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -12,6 +12,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.util.text.translation.I18n;
 
+@SuppressWarnings("deprecation")
 public final class Lang
 {
     public static final TranslateKey TCU_BTN = new TranslateKey("gui.%s.tcu.page.info.button.%%s", TurretModRebirth.ID);

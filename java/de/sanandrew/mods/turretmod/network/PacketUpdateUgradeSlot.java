@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.network;
 
+import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import io.netty.buffer.ByteBuf;
@@ -16,7 +17,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 public class PacketUpdateUgradeSlot
-        extends PacketRegistry.AbstractMessage<PacketUpdateUgradeSlot>
+        extends AbstractMessage<PacketUpdateUgradeSlot>
 {
     private int turretID;
     private byte slot;
