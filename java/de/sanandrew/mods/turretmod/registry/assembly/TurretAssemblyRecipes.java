@@ -9,12 +9,13 @@
 package de.sanandrew.mods.turretmod.registry.assembly;
 
 import de.sanandrew.mods.sanlib.lib.Tuple;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretMinigun;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretRevolver;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoArrow;
@@ -26,7 +27,6 @@ import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;

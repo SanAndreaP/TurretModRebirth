@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -9,10 +9,10 @@
 package de.sanandrew.mods.turretmod.block;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -41,9 +41,9 @@ public class BlockElectrolyteGenerator
     private static final AxisAlignedBB MAIN_SEL_BB = new AxisAlignedBB(0, 0, 0, 1, 2, 1);
     private static final AxisAlignedBB UPPER_SEL_BB = new AxisAlignedBB(0, -1, 0, 1, 1, 1);
 
-    public static final PropertyBool TILE_HOLDER = PropertyBool.create("tile_main");
+    private static final PropertyBool TILE_HOLDER = PropertyBool.create("tile_main");
 
-    protected BlockElectrolyteGenerator() {
+    BlockElectrolyteGenerator() {
         super(Material.ROCK);
         this.blockHardness = 4.25F;
         this.blockSoundType = SoundType.STONE;
@@ -104,16 +104,16 @@ public class BlockElectrolyteGenerator
                     ItemStack stack = potatoGen.getStackInSlot(i);
 
                     if( ItemStackUtils.isValid(stack) ) {
-                        float xOff = TmrUtils.RNG.nextFloat() * 0.8F + 0.1F;
-                        float yOff = TmrUtils.RNG.nextFloat() * 0.8F + 0.1F;
-                        float zOff = TmrUtils.RNG.nextFloat() * 0.8F + 0.1F;
+                        float xOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
+                        float yOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
+                        float zOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
 
                         EntityItem entityitem = new EntityItem(world, (pos.getX() + xOff), (pos.getY() + yOff), (pos.getZ() + zOff), stack.copy());
 
                         float motionSpeed = 0.05F;
-                        entityitem.motionX = ((float) TmrUtils.RNG.nextGaussian() * motionSpeed);
-                        entityitem.motionY = ((float) TmrUtils.RNG.nextGaussian() * motionSpeed + 0.2F);
-                        entityitem.motionZ = ((float) TmrUtils.RNG.nextGaussian() * motionSpeed);
+                        entityitem.motionX = ((float) MiscUtils.RNG.randomGaussian() * motionSpeed);
+                        entityitem.motionY = ((float) MiscUtils.RNG.randomGaussian() * motionSpeed + 0.2F);
+                        entityitem.motionZ = ((float) MiscUtils.RNG.randomGaussian() * motionSpeed);
                         world.spawnEntityInWorld(entityitem);
                     }
                 }

@@ -9,7 +9,6 @@
 package de.sanandrew.mods.turretmod.registry.assembly;
 
 import de.sanandrew.mods.sanlib.lib.Tuple;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -145,9 +144,7 @@ public class RecipeEntryItem
         }
 
         for( ItemStack nrmStack : this.normalAlternatives ) {
-            if( (nrmStack.hasTagCompound() && TmrUtils.areStacksEqual(nrmStack, stack, TmrUtils.NBT_COMPARATOR_FIXD))
-                    || (!nrmStack.hasTagCompound() && ItemStackUtils.areEqual(nrmStack, stack, false)) )
-            {
+            if( ItemStackUtils.areEqual(nrmStack, stack) ) {
                 return true;
             }
         }

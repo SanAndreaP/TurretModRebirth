@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,9 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
@@ -32,9 +32,10 @@ public class ItemTurretControlUnit
         long currDisplayNameTime = System.currentTimeMillis();
         if( this.prevDisplayNameTime + 1000 < currDisplayNameTime ) {
             final int count = 5;
-            double indFloat = TmrUtils.RNG.nextInt(20) != 0 ? 1 : TmrUtils.RNG.nextInt(count - 1) + 2;
+            double indFloat = MiscUtils.RNG.randomInt(20) != 0 ? 1 : MiscUtils.RNG.randomInt(count - 1) + 2;
             this.nameId = MathHelper.ceiling_double_int(indFloat);
         }
+
         this.prevDisplayNameTime = currDisplayNameTime;
         return Lang.translate(String.format("%s.name.%d", this.getUnlocalizedName(), this.nameId));
     }

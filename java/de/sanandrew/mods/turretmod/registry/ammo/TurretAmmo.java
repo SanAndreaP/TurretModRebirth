@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -9,7 +9,6 @@
 package de.sanandrew.mods.turretmod.registry.ammo;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;

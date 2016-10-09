@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,12 +8,13 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.config;
 
-import net.minecraftforge.fml.client.IModGuiFactory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraftforge.fml.client.IModGuiFactory;
 
 import java.util.Set;
 
+@SuppressWarnings("unused")
 public class TmrGuiFactory
         implements IModGuiFactory
 {
@@ -31,6 +32,7 @@ public class TmrGuiFactory
     }
 
     @Override
+    @SuppressWarnings({"deprecation"})
     public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element) {
         return null;
     }

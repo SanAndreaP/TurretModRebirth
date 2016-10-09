@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,8 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tcu;
 
+import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiSlimButton;
-import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketUpdateTargets;
@@ -132,7 +132,7 @@ public final class GuiTcuEntityTargets
         this.drawTexturedModalRect(this.guiLeft + 163, this.guiTop + 19 + MathHelper.floor_float(scroll * 109.0F), 176, this.canScroll ? 0 : 6, 6, 6);
 
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
-        TmrClientUtils.doGlScissor(this.guiLeft + 6, this.guiTop + 19, GuiTCUHelper.X_SIZE - 23, 115);
+        GuiUtils.glScissor(this.guiLeft + 6, this.guiTop + 19, GuiTCUHelper.X_SIZE - 23, 115);
 
         int offsetY = Math.round(-this.scroll * (this.tempTargetList.size() - 11)) * (this.fontRendererObj.FONT_HEIGHT + 1);
         boolean targetListChanged = false;
@@ -239,7 +239,7 @@ public final class GuiTcuEntityTargets
         PacketRegistry.sendToServer(new PacketUpdateTargets(this.turret.getTargetProcessor()));
     }
 
-    static String getTranslatedEntityName(Class<? extends Entity> entityCls) {
+    private static String getTranslatedEntityName(Class<? extends Entity> entityCls) {
         String namedEntry = EntityList.CLASS_TO_NAME.get(entityCls);
 
         return Lang.translateOrDefault(Lang.ENTITY_NAME.get(namedEntry), namedEntry);

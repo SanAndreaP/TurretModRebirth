@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,7 +8,6 @@
  */
 package de.sanandrew.mods.turretmod.entity.projectile;
 
-import de.sanandrew.mods.turretmod.util.Sounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.SoundEvents;
@@ -50,7 +49,7 @@ public class EntityProjectileLaser
 
     @Override
     public float getInitialSpeedMultiplier() {
-        return 24.0F;
+        return 20.0F;
     }
 
     @Override

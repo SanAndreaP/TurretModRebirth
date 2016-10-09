@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,8 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tcu;
 
+import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiSlimButton;
-import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import de.sanandrew.mods.turretmod.network.PacketPlayerTurretAction;
@@ -17,7 +18,6 @@ import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketTurretNaming;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -67,7 +67,7 @@ public class GuiTcuInfo
 
         GuiTCUHelper.initGui(this);
 
-        this.specOwnerHead = TmrUtils.RNG.nextInt(3) == 0 ? TmrUtils.RNG.nextInt(3) : -1;
+        this.specOwnerHead = MiscUtils.RNG.randomInt(3) == 0 ? MiscUtils.RNG.randomInt(3) : -1;
 
         this.frAmmoItem = new FontRenderer(this.mc.gameSettings, new ResourceLocation("textures/font/ascii.png"), this.mc.getTextureManager(), true);
 
@@ -133,7 +133,7 @@ public class GuiTcuInfo
         value = String.format("%d", tgtProc.getAmmoCount());
 
         if( tgtProc.hasAmmo() ) {
-            TmrClientUtils.renderStackInGui(tgtProc.getAmmoStack(), this.guiLeft + 21, this.guiTop + 49, 1.0D, frAmmoItem, value);
+            RenderUtils.renderStackInGui(tgtProc.getAmmoStack(), this.guiLeft + 21, this.guiTop + 49, 1.0D, this.frAmmoItem, value, true);
         }
 
         value = tgtProc.hasAmmo() ? tgtProc.getAmmoStack().getDisplayName() : "-n/a-";

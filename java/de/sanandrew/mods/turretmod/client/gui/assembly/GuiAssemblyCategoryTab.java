@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,7 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.assembly;
 
-import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
+import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -17,12 +17,12 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 
-public class GuiAssemblyCategoryTab
+class GuiAssemblyCategoryTab
         extends GuiButton
 {
-	protected ItemStack renderedItem;
+	private ItemStack renderedItem;
 
-	public GuiAssemblyCategoryTab(int id, int posX, int posY, ItemStack renderedItem, String hoverText) {
+	GuiAssemblyCategoryTab(int id, int posX, int posY, ItemStack renderedItem, String hoverText) {
 		super(id, posX, posY, hoverText);
 		this.width = 20;
 		this.height = 14;
@@ -50,7 +50,7 @@ public class GuiAssemblyCategoryTab
             RenderHelper.enableGUIStandardItemLighting();
 
             GlStateManager.enableDepth();
-            TmrClientUtils.renderStackInGui(this.renderedItem, this.xPosition + 9, this.yPosition + 3, 0.5F);
+            RenderUtils.renderStackInGui(this.renderedItem, this.xPosition + 9, this.yPosition + 3, 0.5F);
             GlStateManager.disableDepth();
 
             RenderHelper.disableStandardItemLighting();
@@ -65,7 +65,7 @@ public class GuiAssemblyCategoryTab
         }
     }
 
-    protected void drawTabHoveringText(String text, int mouseX, int mouseY, FontRenderer fontRenderer) {
+    private void drawTabHoveringText(String text, int mouseX, int mouseY, FontRenderer fontRenderer) {
         GlStateManager.disableLighting();
         GlStateManager.enableDepth();
 

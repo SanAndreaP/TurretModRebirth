@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,12 +8,12 @@
  */
 package de.sanandrew.mods.turretmod.block;
 
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.SoundType;
@@ -28,7 +28,11 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -37,9 +41,9 @@ import javax.annotation.Nullable;
 public class BlockTurretAssembly
         extends Block
 {
-    public static final PropertyDirection FACING = BlockHorizontal.FACING;
+    private static final PropertyDirection FACING = BlockHorizontal.FACING;
 
-    protected BlockTurretAssembly() {
+    BlockTurretAssembly() {
         super(Material.ROCK);
         this.setCreativeTab(TmrCreativeTabs.MISC);
         this.setHardness(4.25F);
@@ -116,16 +120,16 @@ public class BlockTurretAssembly
                 ItemStack stack = assembly.getStackInSlot(i);
 
                 if( ItemStackUtils.isValid(stack) ) {
-                    float xOff = TmrUtils.RNG.nextFloat() * 0.8F + 0.1F;
-                    float yOff = TmrUtils.RNG.nextFloat() * 0.8F + 0.1F;
-                    float zOff = TmrUtils.RNG.nextFloat() * 0.8F + 0.1F;
+                    float xOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
+                    float yOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
+                    float zOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
 
                     EntityItem entityitem = new EntityItem(world, (pos.getX() + xOff), (pos.getY() + yOff), (pos.getZ() + zOff), stack.copy());
 
                     float motionSpeed = 0.05F;
-                    entityitem.motionX = ((float)TmrUtils.RNG.nextGaussian() * motionSpeed);
-                    entityitem.motionY = ((float)TmrUtils.RNG.nextGaussian() * motionSpeed + 0.2F);
-                    entityitem.motionZ = ((float)TmrUtils.RNG.nextGaussian() * motionSpeed);
+                    entityitem.motionX = ((float)MiscUtils.RNG.randomGaussian() * motionSpeed);
+                    entityitem.motionY = ((float)MiscUtils.RNG.randomGaussian() * motionSpeed + 0.2F);
+                    entityitem.motionZ = ((float)MiscUtils.RNG.randomGaussian() * motionSpeed);
                     world.spawnEntityInWorld(entityitem);
                 }
             }

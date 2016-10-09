@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,8 +8,10 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
+import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
+import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
-import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.util.CraftingRecipes;
 import de.sanandrew.mods.turretmod.util.Lang;
@@ -68,16 +70,16 @@ public class TurretInfoEntryGenerator
         GlStateManager.translate(0.0F, MAX_ENTRY_HEIGHT - 48 + scrollY, 100.0F);
         Gui.drawRect(0, 0, MAX_ENTRY_WIDTH, 48, 0xD0000000);
 
-        mc.fontRendererObj.drawString(String.format("§e%s", TmrClientUtils.getTooltipWithoutShift(tooltipItem).get(0)), 22, 2, 0xFFFFFFFF, false);
+        mc.fontRendererObj.drawString(String.format("§e%s", GuiUtils.getTooltipWithoutShift(tooltipItem).get(0)), 22, 2, 0xFFFFFFFF, false);
         TileEntityElectrolyteGenerator.Fuel fuel = TileEntityElectrolyteGenerator.getFuel(tooltipItem.getItem());
         mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_EFFICIENCY.get(), fuel.effect), 22, 11, 0xFFFFFFFF, false);
-        mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_DECAY.get(), TmrClientUtils.getTimeFromTicks(fuel.ticksProc)), 22, 20, 0xFFFFFFFF, false);
-        mc.fontRendererObj.drawString(String.format("§a%s", TmrClientUtils.getTooltipWithoutShift(fuel.trash).get(0)), 32, 29, 0xFFFFFFFF, false);
-        mc.fontRendererObj.drawString(String.format("§d%s", TmrClientUtils.getTooltipWithoutShift(fuel.treasure).get(0)), 32, 38, 0xFFFFFFFF, false);
+        mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_DECAY.get(), MiscUtils.getTimeFromTicks(fuel.ticksProc)), 22, 20, 0xFFFFFFFF, false);
+        mc.fontRendererObj.drawString(String.format("§a%s", GuiUtils.getTooltipWithoutShift(fuel.trash).get(0)), 32, 29, 0xFFFFFFFF, false);
+        mc.fontRendererObj.drawString(String.format("§d%s", GuiUtils.getTooltipWithoutShift(fuel.treasure).get(0)), 32, 38, 0xFFFFFFFF, false);
 
-        TmrClientUtils.renderStackInGui(tooltipItem, 2, 12, 1.0F, mc.fontRendererObj);
-        TmrClientUtils.renderStackInGui(fuel.trash, 22, 28, 0.5F);
-        TmrClientUtils.renderStackInGui(fuel.treasure, 22, 37, 0.5F);
+        RenderUtils.renderStackInGui(tooltipItem, 2, 12, 1.0F, mc.fontRendererObj);
+        RenderUtils.renderStackInGui(fuel.trash, 22, 28, 0.5F);
+        RenderUtils.renderStackInGui(fuel.treasure, 22, 37, 0.5F);
 
         GlStateManager.popMatrix();
     }
@@ -96,7 +98,7 @@ public class TurretInfoEntryGenerator
 
         GlStateManager.translate(x, y, 32.0F);
 
-        TmrClientUtils.renderStackInGui(stack, 1, 1, 1.0D, gui.mc.fontRendererObj);
+        RenderUtils.renderStackInGui(stack, 1, 1, 1.0D, gui.mc.fontRendererObj);
 
         if( mouseOver ) {
             GlStateManager.translate(0, 0, 64.0F);

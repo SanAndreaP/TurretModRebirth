@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,8 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tinfo;
 
+import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntry;
-import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -65,7 +65,7 @@ public class GuiButtonEntry
             this.drawGradientRect(this.xPosition, this.yPosition + 1, this.xPosition + 1, this.yPosition + this.height - 1, color1, color1);
             this.drawGradientRect(this.xPosition + this.width - 1, this.yPosition + 1, this.xPosition + this.width, this.yPosition + this.height - 1, color2, color2);
 
-            TmrClientUtils.renderStackInGui(this.icon, this.xPosition + 2, this.yPosition + 3, 0.5D);
+            RenderUtils.renderStackInGui(this.icon, this.xPosition + 2, this.yPosition + 3, 0.5D);
 
             mc.fontRendererObj.drawString(this.displayString, this.xPosition + 12, this.yPosition + 3, 0xFF000000, false);
 

@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,9 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tinfo;
 
-import de.sanandrew.mods.turretmod.client.shader.ShaderCallback;
+import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.turretmod.client.util.ShaderHelper;
-import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import net.minecraft.client.Minecraft;
@@ -32,7 +31,7 @@ public class GuiButtonCategory
     private ResourceLocation texture;
     private GuiTurretInfo tinfo;
 
-    private ShaderCallback shaderCallback = shader -> {
+    private void doBtnShader(int shader) {
         TextureManager texMgr = Minecraft.getMinecraft().renderEngine;
         int heightMatchUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "heightMatch");
         int imageUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "image");
@@ -55,7 +54,7 @@ public class GuiButtonCategory
         ARBShaderObjects.glUniform1iARB(maskUniform, 7);
 
         ARBShaderObjects.glUniform1fARB(heightMatchUniform, heightMatch);
-    };
+    }
 
     float ticksHovered = 0.0F;
     float time = 6.0F;
@@ -92,8 +91,8 @@ public class GuiButtonCategory
             texture = GlStateManager.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
         }
 
-        ShaderHelper.useShader(ShaderHelper.categoryButton, shaderCallback);
-        TmrClientUtils.drawTexturedModalRect(xPosition, yPosition, zLevel * 2, 0, 0, 32, 32, s, s);
+        ShaderHelper.useShader(ShaderHelper.categoryButton, this::doBtnShader);
+        GuiUtils.drawTexturedModalRect(xPosition, yPosition, zLevel * 2, 0, 0, 32, 32, s, s);
         ShaderHelper.releaseShader();
 
         if(shaders) {

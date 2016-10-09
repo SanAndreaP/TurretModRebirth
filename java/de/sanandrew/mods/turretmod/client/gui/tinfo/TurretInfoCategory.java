@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+@SuppressWarnings("unused")
 public class TurretInfoCategory
 {
     private static List<TurretInfoCategory> categories = new ArrayList<>();

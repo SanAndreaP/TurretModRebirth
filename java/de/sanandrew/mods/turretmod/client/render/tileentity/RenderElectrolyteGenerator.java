@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,11 +8,10 @@
  */
 package de.sanandrew.mods.turretmod.client.render.tileentity;
 
-import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
+import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.util.Resources;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -20,8 +19,6 @@ import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
 
@@ -53,7 +50,7 @@ public class RenderElectrolyteGenerator
         GlStateManager.rotate(40.0F * index, 0.0F, 1.0F, 0.0F);
         GlStateManager.translate(0.4F, 0.0F, 0.0F);
         for( int i = 0, max = 3; i < max; i++ ) {
-            TmrClientUtils.renderStackInWorld(stack, 0.0D, 0.0001D * i, 0.0D, 0.0F, (180.0F / max) * i, 0.0F, 0.3D);
+            RenderUtils.renderStackInWorld(stack, 0.0D, 0.0001D * i, 0.0D, 0.0F, (180.0F / max) * i, 0.0F, 0.3D);
         }
 
         GlStateManager.disableCull();

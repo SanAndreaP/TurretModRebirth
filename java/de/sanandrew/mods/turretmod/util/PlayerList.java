@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,9 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
+import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncPlayerList;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,6 +19,9 @@ import net.minecraft.world.storage.MapStorage;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +46,7 @@ public class PlayerList
     }
 
     public String getPlayerName(UUID playerUUID) {
-        if( playerUUID.equals(TmrUtils.EMPTY_UUID) ) {
+        if( playerUUID.equals(UuidUtils.EMPTY_UUID) ) {
             return "[all players]";
         }
 
@@ -64,7 +65,7 @@ public class PlayerList
     public Map<UUID, Boolean> getDefaultPlayerList() {
         Map<UUID, Boolean> players = new HashMap<>(this.playerMap.size());
 
-        players.put(TmrUtils.EMPTY_UUID, false);
+        players.put(UuidUtils.EMPTY_UUID, false);
         for( UUID playerUUID : this.playerMap.keySet() ) {
             players.put(playerUUID, false);
         }

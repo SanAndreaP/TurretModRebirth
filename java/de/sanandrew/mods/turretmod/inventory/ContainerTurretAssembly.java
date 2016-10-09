@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,9 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.inventory;
 
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -86,7 +86,7 @@ public class ContainerTurretAssembly
                 slot = this.inventorySlots.get(start);
                 slotStack = slot.getStack();
 
-                if( slotStack != null && TmrUtils.areStacksEqual(slotStack, stack, TmrUtils.NBT_COMPARATOR_FIXD) && slot.isItemValid(stack) ) {
+                if( slotStack != null && ItemStackUtils.areEqual(slotStack, stack) && slot.isItemValid(stack) ) {
                     int combStackSize = slotStack.stackSize + stack.stackSize;
 
                     if( combStackSize <= stack.getMaxStackSize() ) {

@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,10 +8,10 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -71,11 +71,11 @@ public class ItemAssemblyFilter
 
         if( nbt == null && configure ) {
             nbt = new NBTTagCompound();
-            NBTTagList list = TmrUtils.writeItemStacksToTag(stacks, 1);
+            NBTTagList list = ItemStackUtils.writeItemStacksToTag(stacks, 1);
             nbt.setTag("filterStacks", list);
             stack.setTagCompound(nbt);
         } else if( nbt != null && nbt.hasKey("filterStacks") ) {
-            TmrUtils.readItemStacksFromTag(stacks, nbt.getTagList("filterStacks", Constants.NBT.TAG_COMPOUND));
+            ItemStackUtils.readItemStacksFromTag(stacks, nbt.getTagList("filterStacks", Constants.NBT.TAG_COMPOUND));
         } else {
             return EMPTY_INV;
         }
@@ -89,7 +89,7 @@ public class ItemAssemblyFilter
             nbt = new NBTTagCompound();
         }
 
-        NBTTagList list = TmrUtils.writeItemStacksToTag(inv, 1);
+        NBTTagList list = ItemStackUtils.writeItemStacksToTag(inv, 1);
         nbt.setTag("filterStacks", list);
         stack.setTagCompound(nbt);
     }

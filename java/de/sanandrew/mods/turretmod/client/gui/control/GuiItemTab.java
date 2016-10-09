@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,7 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.control;
 
-import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
+import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -19,8 +19,8 @@ import net.minecraft.item.ItemStack;
 public class GuiItemTab
         extends GuiButton
 {
-	protected ItemStack renderedItem;
-    protected boolean isRight;
+	private ItemStack renderedItem;
+    private boolean isRight;
 
 	public GuiItemTab(int id, int posX, int posY, ItemStack renderedItem, String hoverText, boolean onTheRight) {
 		super(id, posX, posY, hoverText);
@@ -44,7 +44,7 @@ public class GuiItemTab
             GlStateManager.disableBlend();
 
             GlStateManager.enableDepth();
-            TmrClientUtils.renderStackInGui(this.renderedItem, this.xPosition + 5, this.yPosition + 5, 1.0F);
+            RenderUtils.renderStackInGui(this.renderedItem, this.xPosition + 5, this.yPosition + 5, 1.0F);
 
             if( this.hovered ) {
                 this.drawTabHoveringText(this.displayString, this.xPosition - (this.isRight ? mc.fontRendererObj.getStringWidth(this.displayString) + 5 : -5),
@@ -53,7 +53,7 @@ public class GuiItemTab
         }
     }
 
-    protected void drawTabHoveringText(String text, int mouseX, int mouseY, FontRenderer fontRenderer) {
+    private void drawTabHoveringText(String text, int mouseX, int mouseY, FontRenderer fontRenderer) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(0.0F, 0.0F, 400.0F);
 

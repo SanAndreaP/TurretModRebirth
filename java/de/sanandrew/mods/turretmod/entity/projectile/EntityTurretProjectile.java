@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,6 +8,20 @@
  */
 package de.sanandrew.mods.turretmod.entity.projectile;
 
+import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.monster.EntityEnderman;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -15,19 +29,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.monster.EntityEnderman;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -63,7 +68,7 @@ public abstract class EntityTurretProjectile
         this.targetUUID = target.getUniqueID();
         this.targetCache = target;
 
-        Vec3d targetVec = new Vec3d(target.posX - this.posX, target.getEntityBoundingBox().minY + target.height / 1.4F - this.posY, target.posZ - this.posZ);
+        Vec3d targetVec = new Vec3d(target.posX - shooter.posX, (target.getEntityBoundingBox().minY + target.height / 1.4D) - y, target.posZ - shooter.posZ);
         this.setHeadingFromVec(targetVec.normalize());
 
         this.motionY += this.getArc() * Math.sqrt(targetVec.xCoord * targetVec.xCoord + targetVec.zCoord * targetVec.zCoord) * 0.05;
@@ -78,9 +83,9 @@ public abstract class EntityTurretProjectile
         double scatterVal = getScatterValue();
         float initSpeed = getInitialSpeedMultiplier();
 
-        this.motionX = vector.xCoord * initSpeed + (TmrUtils.RNG.nextDouble() * 2.0D - 1.0D) * scatterVal;
-        this.motionZ = vector.zCoord * initSpeed + (TmrUtils.RNG.nextDouble() * 2.0D - 1.0D) * scatterVal;
-        this.motionY = vector.yCoord * initSpeed + (TmrUtils.RNG.nextDouble() * 2.0D - 1.0D) * scatterVal;
+        this.motionX = vector.xCoord * initSpeed + (MiscUtils.RNG.randomDouble() * 2.0D - 1.0D) * scatterVal;
+        this.motionZ = vector.zCoord * initSpeed + (MiscUtils.RNG.randomDouble() * 2.0D - 1.0D) * scatterVal;
+        this.motionY = vector.yCoord * initSpeed + (MiscUtils.RNG.randomDouble() * 2.0D - 1.0D) * scatterVal;
 
         float vecPlaneNormal = MathHelper.sqrt_double(vector.xCoord * vector.xCoord + vector.zCoord * vector.zCoord);
 
@@ -91,10 +96,10 @@ public abstract class EntityTurretProjectile
     @Override
     protected void entityInit() {
         if( this.shooterUUID != null && this.shooterCache == null ) {
-            this.shooterCache = TmrUtils.getEntityByUUID(this.worldObj, this.shooterUUID);
+            this.shooterCache = EntityUtils.getEntityByUUID(this.worldObj, this.shooterUUID);
         }
         if( this.targetUUID != null && this.targetCache == null ) {
-            this.targetCache = TmrUtils.getEntityByUUID(this.worldObj, this.targetUUID);
+            this.targetCache = EntityUtils.getEntityByUUID(this.worldObj, this.targetUUID);
         }
     }
 
@@ -188,7 +193,7 @@ public abstract class EntityTurretProjectile
                 if( interceptObj != null ) {
                     double vecDistance = posVec.distanceTo(interceptObj.hitVec);
 
-                    if( vecDistance < minDist || minDist == 0.0D ) {
+                    if( !EntityTurret.class.isAssignableFrom(collidedEntity.getClass()) && (vecDistance < minDist || minDist == 0.0D) ) {
                         entity = collidedEntity;
                         minDist = vecDistance;
                     }
@@ -218,9 +223,6 @@ public abstract class EntityTurretProjectile
                     damagesource = DamageSource.causeThrownDamage(this, this);
                 } else {
                     damagesource = DamageSource.causeThrownDamage(this, this.shooterCache);
-                    if( EntityTurret.class.isAssignableFrom(hitObj.entityHit.getClass()) ) {
-                        return;
-                    }
                 }
 
                 if( this.isBurning() && !(hitObj.entityHit instanceof EntityEnderman) ) {
@@ -275,15 +277,19 @@ public abstract class EntityTurretProjectile
         }
     }
 
-    public static void setEntityTarget(EntityCreature target, EntityTurret attacker) {
+    public static void setEntityTarget(EntityCreature target, final EntityTurret attacker) {
         target.setAttackTarget(attacker);
         target.setRevengeTarget(attacker);
 
-        EntityAIBase aiTgtFollow = TmrUtils.getAIFromTaskList(target.tasks.taskEntries, EntityAIMoveTowardsTurret.class);
-        if( aiTgtFollow == null ) {
+        List<EntityAIMoveTowardsTurret> aiLst = EntityUtils.getAisFromTaskList(target.tasks.taskEntries, EntityAIMoveTowardsTurret.class);
+        if( aiLst.size() < 1 ) {
             target.tasks.addTask(10, new EntityAIMoveTowardsTurret(target, attacker, 1.1D, 64.0F));
-        } else if( !aiTgtFollow.continueExecuting() ) {
-            ((EntityAIMoveTowardsTurret) aiTgtFollow).setNewTurret(attacker);
+        } else {
+            aiLst.forEach(aiTgtFollow -> {
+                if( !aiTgtFollow.continueExecuting() ) {
+                    aiTgtFollow.setNewTurret(attacker);
+                }
+            });
         }
     }
 
@@ -345,12 +351,12 @@ public abstract class EntityTurretProjectile
     protected void readEntityFromNBT(NBTTagCompound nbt) {
         if( nbt.hasKey("shooter") ) {
             this.shooterUUID = UUID.fromString(nbt.getString("shooter"));
-            this.shooterCache = TmrUtils.getEntityByUUID(this.worldObj, this.shooterUUID);
+            this.shooterCache = EntityUtils.getEntityByUUID(this.worldObj, this.shooterUUID);
         }
 
         if( nbt.hasKey("target") ) {
             this.targetUUID = UUID.fromString(nbt.getString("target"));
-            this.targetCache = TmrUtils.getEntityByUUID(this.worldObj, this.targetUUID);
+            this.targetCache = EntityUtils.getEntityByUUID(this.worldObj, this.targetUUID);
         }
     }
 

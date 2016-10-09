@@ -14,6 +14,7 @@ public enum Resources
 {
     TURRET_T1_CROSSBOW("textures/entities/turrets/t1_crossbow.png"),
     TURRET_T1_CROSSBOW_GLOW("textures/entities/turrets/t1_crossbow_glow.png"),
+    TURRET_T1_CROSSBOW_MODEL("models/entity/turret_base.json"),
     TURRET_T1_SHOTGUN("textures/entities/turrets/t1_shotgun.png"),
     TURRET_T1_SHOTGUN_GLOW("textures/entities/turrets/t1_shotgun_glow.png"),
     TURRET_T1_SNOWBALL("textures/entities/turrets/t1_snowball.png"),
@@ -52,6 +53,7 @@ public enum Resources
     TILE_ITEM_TRANSMITTER("textures/blocks/item_transmitter.png"),
     TILE_ITEM_TRANSMITTER_GLOW("textures/blocks/item_transmitter_glow.png"),
     TILE_TURRET_ASSEMBLY("textures/blocks/turret_assembly.png"),
+    TILE_TURRET_ASSEMBLY_MODEL("models/block/turret_assembly_tile.json"),
 //    TILE_ELECTROLYTE_GEN("textures/blocks/electrolyte_gen.png"),
     TILE_ELECTROLYTE_GEN_WIRE("textures/blocks/electrolyte_gen_cable.png"),
 

@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -9,14 +9,14 @@
 package de.sanandrew.mods.turretmod.network;
 
 import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.minecraft.entity.player.EntityPlayerMP;
 
 public class PacketRegistry
 {

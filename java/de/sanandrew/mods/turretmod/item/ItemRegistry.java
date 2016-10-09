@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -9,9 +9,9 @@
 package de.sanandrew.mods.turretmod.item;
 
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraft.item.Item;
 
 public class ItemRegistry
 {

@@ -9,11 +9,11 @@
 package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
 import de.sanandrew.mods.sanlib.lib.Tuple;
+import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
+import de.sanandrew.mods.sanlib.lib.util.CraftingUtils;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
-import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.creativetab.CreativeTabs;
@@ -81,8 +81,8 @@ public class TurretInfoEntryMiscCraftable
     }
 
     private static Tuple getCrafting(ShapedOreRecipe cRecipe) {
-        int recipeWidth = TmrUtils.getOreRecipeWidth(cRecipe);
-        int recipeHeight = TmrUtils.getOreRecipeHeight(cRecipe);
+        int recipeWidth = CraftingUtils.getOreRecipeWidth(cRecipe);
+        int recipeHeight = CraftingUtils.getOreRecipeHeight(cRecipe);
         ItemStack[][] crfArray = new ItemStack[recipeWidth * recipeHeight][];
 
         for( int i = 0; i < recipeHeight; i++ ) {
@@ -129,7 +129,7 @@ public class TurretInfoEntryMiscCraftable
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         gui.drawTexturedModalRect(2, 16, 192, 18, 34, 34);
 
-        TmrClientUtils.renderStackInGui(this.getIcon(), 3, 17, 2.0F);
+        RenderUtils.renderStackInGui(this.getIcon(), 3, 17, 2.0F);
 
         gui.mc.fontRendererObj.drawString(this.txtWorkbench, 42, 16, 0xFF6A6A6A, false);
 

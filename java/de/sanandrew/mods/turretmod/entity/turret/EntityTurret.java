@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -9,33 +9,22 @@
 package de.sanandrew.mods.turretmod.entity.turret;
 
 import de.sanandrew.mods.sanlib.lib.Tuple;
-import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
-import de.sanandrew.mods.turretmod.util.Sounds;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
+import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketPlayerTurretAction;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketUpdateTurretState;
+import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.medpack.TurretRepairKit;
 import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.DataWatcherBooleans;
 import de.sanandrew.mods.turretmod.util.EnumGui;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
+import de.sanandrew.mods.turretmod.util.Sounds;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import io.netty.buffer.ByteBuf;
-import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -43,13 +32,25 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -221,7 +222,7 @@ public abstract class EntityTurret
 
             if( this.targetProc.hasTarget() ) {
                 this.faceEntity(this.targetProc.getTarget(), 10.0F, this.getVerticalFaceSpeed());
-            } else if( this.worldObj.isRemote && TmrUtils.getFirstPassengerOfClass(this, EntityPlayer.class) == null ) {
+            } else if( this.worldObj.isRemote && EntityUtils.getPassengersOfClass(this, EntityPlayer.class).size() < 1 ) {
                 this.rotationYawHead += 1.0F;
                 if( this.rotationYawHead >= 360.0D ) {
                     this.rotationYawHead -= 360.0D;
@@ -476,7 +477,7 @@ public abstract class EntityTurret
     }
 
     public boolean tryDismantle(EntityPlayer player) {
-        Tuple chestItm = TmrUtils.getSimilarStackFromInventory(new ItemStack(Blocks.CHEST), player.inventory, null);
+        Tuple chestItm = InventoryUtils.getSimilarStackFromInventory(new ItemStack(Blocks.CHEST), player.inventory, true);
         if( chestItm != null && ItemStackUtils.isValid(chestItm.getValue(1)) ) {
             ItemStack chestStack = chestItm.getValue(1);
             if( this.worldObj.isRemote ) {

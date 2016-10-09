@@ -12,10 +12,25 @@ import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyReceiver;
 import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
+import de.sanandrew.mods.turretmod.item.ItemAssemblyFilter;
+import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
+import de.sanandrew.mods.turretmod.network.TileClientSync;
+import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
+import de.sanandrew.mods.turretmod.util.EnumParticle;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityLockable;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -24,23 +39,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import de.sanandrew.mods.turretmod.item.ItemAssemblyFilter;
-import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
-import de.sanandrew.mods.turretmod.network.TileClientSync;
-import de.sanandrew.mods.turretmod.util.EnumParticle;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
@@ -132,7 +132,7 @@ public class TileEntityTurretAssembly
             ItemStack recipe = TurretAssemblyRecipes.INSTANCE.getRecipeResult(currCrfUUID);
             if( recipe != null ) {
                 addStacks.stackSize = recipe.stackSize;
-                if( TmrUtils.canStack(this.assemblyStacks[0], addStacks, true) && TurretAssemblyRecipes.INSTANCE.checkAndConsumeResources(this, currCrfUUID) ) {
+                if( ItemStackUtils.canStack(this.assemblyStacks[0], addStacks, true) && TurretAssemblyRecipes.INSTANCE.checkAndConsumeResources(this, currCrfUUID) ) {
                     TurretAssemblyRecipes.RecipeEntry currentlyCrafted = TurretAssemblyRecipes.INSTANCE.getRecipeEntry(currCrfUUID);
                     if( currentlyCrafted != null ) {
                         this.maxTicksCrafted = currentlyCrafted.ticksProcessing;
@@ -276,17 +276,17 @@ public class TileEntityTurretAssembly
         }
 
         if( this.isActiveClient && this.spawnParticle != null ) {
-            TurretModRebirth.proxy.spawnParticle(EnumParticle.ASSEMBLY_SPARK, spawnParticle.getValue(0), spawnParticle.<Float>getValue(1) + 0.05F, spawnParticle.getValue(2), null);
+            TurretModRebirth.proxy.spawnParticle(EnumParticle.ASSEMBLY_SPARK, spawnParticle.getValue(0), spawnParticle.<Double>getValue(1) + 0.05D, spawnParticle.getValue(2), null);
             this.spawnParticle = null;
         }
     }
 
     private void animateRobotArmRng() {
-        float endX = 4.0F + TmrUtils.RNG.nextFloat() * 6.0F;
-        float endY = -3.5F + TmrUtils.RNG.nextFloat() * -6.0F;
+        float endX = 4.0F + MiscUtils.RNG.randomFloat() * 6.0F;
+        float endY = -3.5F + MiscUtils.RNG.randomFloat() * -6.0F;
 
-        this.robotMotionX = (0.1F + TmrUtils.RNG.nextFloat() * 0.1F) * (endX > this.robotArmX ? 1.0F : -1.0F);
-        this.robotMotionY = (0.1F + TmrUtils.RNG.nextFloat() * 0.1F) * (endY > this.robotArmY ? 1.0F : -1.0F);
+        this.robotMotionX = (0.1F + MiscUtils.RNG.randomFloat() * 0.1F) * (endX > this.robotArmX ? 1.0F : -1.0F);
+        this.robotMotionY = (0.1F + MiscUtils.RNG.randomFloat() * 0.1F) * (endY > this.robotArmY ? 1.0F : -1.0F);
         this.robotEndX = endX;
         this.robotEndY = endY;
     }
@@ -295,8 +295,8 @@ public class TileEntityTurretAssembly
         float endX = 2.0F;
         float endY = -9.0F;
 
-        this.robotMotionX = (0.1F + TmrUtils.RNG.nextFloat() * 0.1F) * (endX > this.robotArmX ? 1.0F : -1.0F);
-        this.robotMotionY = (0.1F + TmrUtils.RNG.nextFloat() * 0.1F) * (endY > this.robotArmY ? 1.0F : -1.0F);
+        this.robotMotionX = (0.1F + MiscUtils.RNG.randomFloat() * 0.1F) * (endX > this.robotArmX ? 1.0F : -1.0F);
+        this.robotMotionY = (0.1F + MiscUtils.RNG.randomFloat() * 0.1F) * (endY > this.robotArmY ? 1.0F : -1.0F);
         this.robotEndX = endX;
         this.robotEndY = endY;
     }
@@ -343,7 +343,7 @@ public class TileEntityTurretAssembly
     private NBTTagCompound writeNBT(NBTTagCompound nbt) {
         nbt.setBoolean("isActive", this.isActive);
         nbt.setInteger("flux", this.fluxAmount);
-        nbt.setTag("inventory", TmrUtils.writeItemStacksToTag(this.assemblyStacks, 64));
+        nbt.setTag("inventory", ItemStackUtils.writeItemStacksToTag(this.assemblyStacks, 64));
 
         if( this.currCrafting != null ) {
             nbt.setString("craftingUUID", this.currCrafting.getValue(0).toString());
@@ -365,7 +365,7 @@ public class TileEntityTurretAssembly
     private void readNBT(NBTTagCompound nbt) {
         this.isActive = nbt.getBoolean("isActive");
         this.fluxAmount = nbt.getInteger("flux");
-        TmrUtils.readItemStacksFromTag(this.assemblyStacks, nbt.getTagList("inventory", Constants.NBT.TAG_COMPOUND));
+        ItemStackUtils.readItemStacksFromTag(this.assemblyStacks, nbt.getTagList("inventory", Constants.NBT.TAG_COMPOUND));
 
         if( nbt.hasKey("craftingUUID") && nbt.hasKey("craftingStack") ) {
             this.currCrafting = new Tuple(UUID.fromString(nbt.getString("craftingUUID")), ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("craftingStack")));
@@ -384,8 +384,8 @@ public class TileEntityTurretAssembly
     private boolean isStackAcceptable(ItemStack stack, int insrtSlot) {
         if( this.hasFilterUpgrade() ) {
             ItemStack[] filter = this.getFilterStacks();
-            if( TmrUtils.isStackInArray(stack, filter) ) {
-                return TmrUtils.areStacksEqual(stack, filter[insrtSlot], TmrUtils.NBT_COMPARATOR_FIXD);
+            if( ItemStackUtils.isStackInArray(stack, filter) ) {
+                return ItemStackUtils.areEqual(stack, filter[insrtSlot]);
             } else {
                 return !ItemStackUtils.isValid(filter[insrtSlot]);
             }

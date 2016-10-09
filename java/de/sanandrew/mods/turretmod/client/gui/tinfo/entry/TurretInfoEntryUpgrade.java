@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,8 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
+import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
-import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.registry.upgrades.TurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
@@ -50,7 +50,7 @@ public class TurretInfoEntryUpgrade
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         gui.drawTexturedModalRect(2, 16, 192, 18, 34, 34);
 
-        TmrClientUtils.renderStackInGui(UpgradeRegistry.INSTANCE.getUpgradeItem(this.upgrade), 3, 17, 2.0F);
+        RenderUtils.renderStackInGui(UpgradeRegistry.INSTANCE.getUpgradeItem(this.upgrade), 3, 17, 2.0F);
 
         gui.mc.fontRendererObj.drawString(this.txtCrft, 42, 16, 0xFF6A6A6A, false);
         if( prereq != null ) {
@@ -65,9 +65,11 @@ public class TurretInfoEntryUpgrade
         this.drawHeight = gui.mc.fontRendererObj.splitStringWidth(text, MAX_ENTRY_WIDTH - 2) + infoHeight + 3 + 2;
 
         TurretAssemblyRecipes.RecipeEntry recipeEntry = TurretAssemblyRecipes.INSTANCE.getRecipeEntry(this.upgrade.getRecipeId());
-        for( int i = 0; i < recipeEntry.resources.length; i++ ) {
-            ItemStack[] stacks = recipeEntry.resources[i].getEntryItemStacks();
-            drawMiniItem(gui, 45 + 10 * i, 25, mouseX, mouseY, scrollY, stacks[(int)(this.lastTimestamp / 1000L % stacks.length)], recipeEntry.resources[i].shouldDrawTooltip());
+        if( recipeEntry != null ) {
+            for( int i = 0; i < recipeEntry.resources.length; i++ ) {
+                ItemStack[] stacks = recipeEntry.resources[i].getEntryItemStacks();
+                drawMiniItem(gui, 45 + 10 * i, 25, mouseX, mouseY, scrollY, stacks[(int) (this.lastTimestamp / 1000L % stacks.length)], recipeEntry.resources[i].shouldDrawTooltip());
+            }
         }
 
         if( prereq != null ) {

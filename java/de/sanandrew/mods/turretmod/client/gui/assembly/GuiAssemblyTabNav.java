@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -13,12 +13,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 
-public class GuiAssemblyTabNav
+class GuiAssemblyTabNav
         extends GuiButton
 {
     private boolean isDown;
 
-	public GuiAssemblyTabNav(int id, int posX, int posY, boolean isDown) {
+	GuiAssemblyTabNav(int id, int posX, int posY, boolean isDown) {
 		super(id, posX, posY, "");
 		this.width = 16;
 		this.height = 9;

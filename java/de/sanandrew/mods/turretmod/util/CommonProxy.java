@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -9,16 +9,20 @@
 package de.sanandrew.mods.turretmod.util;
 
 import de.sanandrew.mods.sanlib.lib.Tuple;
-import de.sanandrew.mods.turretmod.entity.projectile.*;
-import de.sanandrew.mods.turretmod.entity.turret.*;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.IGuiHandler;
-import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCryoCell;
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileLaser;
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileMinigunPebble;
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectilePebble;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretMinigun;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretRevolver;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
 import de.sanandrew.mods.turretmod.inventory.ContainerAssemblyFilter;
 import de.sanandrew.mods.turretmod.inventory.ContainerElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
@@ -28,13 +32,20 @@ import de.sanandrew.mods.turretmod.network.PacketOpenGui;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
-import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 import org.apache.logging.log4j.Level;
 
 public class CommonProxy

@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,17 +8,17 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.config;
 
-import net.minecraftforge.fml.client.config.GuiConfig;
-import net.minecraftforge.fml.client.config.IConfigElement;
 import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
+import net.minecraftforge.fml.client.config.GuiConfig;
+import net.minecraftforge.fml.client.config.IConfigElement;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuiConfigScreen
+class GuiConfigScreen
         extends GuiConfig
 {
     public GuiConfigScreen(GuiScreen parentScreen) {

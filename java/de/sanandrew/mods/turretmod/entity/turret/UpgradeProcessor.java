@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,13 +8,13 @@
  */
 package de.sanandrew.mods.turretmod.entity.turret;
 
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketUpdateUgradeSlot;
 import de.sanandrew.mods.turretmod.registry.upgrades.TurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
-import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -114,13 +114,13 @@ public class UpgradeProcessor
     public boolean hasUpgrade(UUID uuid) {
         ItemStack upgItemStack = UpgradeRegistry.INSTANCE.getUpgradeItem(uuid);
 
-        return TmrUtils.isStackInArray(upgItemStack, this.upgradeStacks);
+        return ItemStackUtils.isStackInArray(upgItemStack, this.upgradeStacks);
     }
 
     public boolean hasUpgrade(TurretUpgrade upg) {
         ItemStack upgItemStack = UpgradeRegistry.INSTANCE.getUpgradeItem(upg);
 
-        return TmrUtils.isStackInArray(upgItemStack, this.upgradeStacks);
+        return ItemStackUtils.isStackInArray(upgItemStack, this.upgradeStacks);
     }
 
     @Override
@@ -315,16 +315,16 @@ public class UpgradeProcessor
             ItemStack stack = this.removeStackFromSlot(i);
 
             if( ItemStackUtils.isValid(stack) ) {
-                float xOff = TmrUtils.RNG.nextFloat() * 0.8F + 0.1F;
-                float yOff = TmrUtils.RNG.nextFloat() * 0.8F + 0.1F;
-                float zOff = TmrUtils.RNG.nextFloat() * 0.8F + 0.1F;
+                float xOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
+                float yOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
+                float zOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
 
                 EntityItem entityitem = new EntityItem(this.turret.worldObj, (this.turret.posX + xOff), (this.turret.posY + yOff), (this.turret.posZ + zOff), stack);
 
                 float motionSpeed = 0.05F;
-                entityitem.motionX = ((float)TmrUtils.RNG.nextGaussian() * motionSpeed);
-                entityitem.motionY = ((float)TmrUtils.RNG.nextGaussian() * motionSpeed + 0.2F);
-                entityitem.motionZ = ((float)TmrUtils.RNG.nextGaussian() * motionSpeed);
+                entityitem.motionX = ((float)MiscUtils.RNG.randomGaussian() * motionSpeed);
+                entityitem.motionY = ((float)MiscUtils.RNG.randomGaussian() * motionSpeed + 0.2F);
+                entityitem.motionZ = ((float)MiscUtils.RNG.randomGaussian() * motionSpeed);
 
                 this.turret.worldObj.spawnEntityInWorld(entityitem);
             }
@@ -332,11 +332,11 @@ public class UpgradeProcessor
     }
 
     public void writeToNbt(NBTTagCompound nbt) {
-        nbt.setTag("upgInventory", TmrUtils.writeItemStacksToTag(this.upgradeStacks, 1, this, "callbackWriteUpgStack"));
+        nbt.setTag("upgInventory", ItemStackUtils.writeItemStacksToTag(this.upgradeStacks, 1, this::callbackWriteUpgStack));
     }
 
     public void readFromNbt(NBTTagCompound nbt) {
-        TmrUtils.readItemStacksFromTag(this.upgradeStacks, nbt.getTagList("upgInventory", Constants.NBT.TAG_COMPOUND), this, "callbackReadUpgStack");
+        ItemStackUtils.readItemStacksFromTag(this.upgradeStacks, nbt.getTagList("upgInventory", Constants.NBT.TAG_COMPOUND), this::callbackReadUpgStack);
     }
 
     @SuppressWarnings("unused")

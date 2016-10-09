@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,14 +8,13 @@
  */
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
+import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
@@ -29,7 +28,7 @@ public abstract class UpgradeHealth
 
     public UpgradeHealth(String name, String modUUID) {
         this.name = name;
-        this.modifier = new AttributeModifier(UUID.fromString(modUUID), String.format("%s:%s", TurretModRebirth.ID, name), 0.25D, TmrUtils.ATTR_ADD_PERC_VAL_TO_SUM);
+        this.modifier = new AttributeModifier(UUID.fromString(modUUID), String.format("%s:%s", TurretModRebirth.ID, name), 0.25D, EntityUtils.ATTR_ADD_PERC_VAL_TO_SUM);
         this.itemModel = new ResourceLocation(TurretModRebirth.ID, "upgrades/" + name);
     }
 

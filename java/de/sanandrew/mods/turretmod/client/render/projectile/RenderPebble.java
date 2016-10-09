@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,12 +8,10 @@
  */
 package de.sanandrew.mods.turretmod.client.render.projectile;
 
-import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
+import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -33,7 +31,7 @@ public class RenderPebble<T extends EntityTurretProjectile>
             this.gravelItem = new ItemStack(Blocks.GRAVEL, 1);
         }
 
-        TmrClientUtils.renderStackInWorld(this.gravelItem, x, y, z, 0.0F, 0.0F, 0.0F, 0.1D);
+        RenderUtils.renderStackInWorld(this.gravelItem, x, y, z, 0.0F, 0.0F, 0.0F, 0.1D);
     }
 
     @Override

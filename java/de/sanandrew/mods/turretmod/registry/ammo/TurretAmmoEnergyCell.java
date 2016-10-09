@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,11 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.registry.ammo;
 
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileLaser;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretRevolver;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;

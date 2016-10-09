@@ -9,20 +9,8 @@
 package de.sanandrew.mods.turretmod.client.util;
 
 import de.sanandrew.mods.sanlib.lib.Tuple;
-import de.sanandrew.mods.turretmod.client.model.*;
-import de.sanandrew.mods.turretmod.client.render.projectile.RenderBullet;
-import de.sanandrew.mods.turretmod.client.world.ClientWorldEventListener;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileMinigunPebble;
-import de.sanandrew.mods.turretmod.entity.turret.*;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleSmokeNormal;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import de.sanandrew.mods.turretmod.client.event.RenderForcefieldHandler;
 import de.sanandrew.mods.turretmod.client.event.RenderWorldLastHandler;
@@ -35,32 +23,55 @@ import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuPlayerTargets;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuUpgrades;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.TurretInfoCategory;
+import de.sanandrew.mods.turretmod.client.model.ModelTurretCrossbow;
+import de.sanandrew.mods.turretmod.client.model.ModelTurretCryolator;
+import de.sanandrew.mods.turretmod.client.model.ModelTurretLaser;
+import de.sanandrew.mods.turretmod.client.model.ModelTurretMinigun;
+import de.sanandrew.mods.turretmod.client.model.ModelTurretRevolver;
+import de.sanandrew.mods.turretmod.client.model.ModelTurretShotgun;
 import de.sanandrew.mods.turretmod.client.particle.ParticleAssemblySpark;
 import de.sanandrew.mods.turretmod.client.particle.ParticleCryoTrail;
-import de.sanandrew.mods.turretmod.client.render.projectile.RenderPebble;
+import de.sanandrew.mods.turretmod.client.render.projectile.RenderBullet;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderNothingness;
+import de.sanandrew.mods.turretmod.client.render.projectile.RenderPebble;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderTurretArrow;
 import de.sanandrew.mods.turretmod.client.render.tileentity.RenderElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.client.render.tileentity.RenderTurretAssembly;
 import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
+import de.sanandrew.mods.turretmod.client.world.ClientWorldEventListener;
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectilePebble;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCryoCell;
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileMinigunPebble;
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectilePebble;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretMinigun;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretRevolver;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.CommonProxy;
 import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleSmokeNormal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Level;
 
 public class ClientProxy
@@ -179,9 +190,9 @@ public class ClientProxy
                 y -= isUpsideDown ? 1.0F : 0.0F;
 
                 for( int i = 0; i < 8; i++ ) {
-                    double xDist = TmrUtils.RNG.nextDouble() * 0.05 - 0.025;
-                    double yDist = TmrUtils.RNG.nextDouble() * 0.05 - 0.025;
-                    double zDist = TmrUtils.RNG.nextDouble() * 0.05 - 0.025;
+                    double xDist = MiscUtils.RNG.randomDouble() * 0.05 - 0.025;
+                    double yDist = MiscUtils.RNG.randomDouble() * 0.05 - 0.025;
+                    double zDist = MiscUtils.RNG.randomDouble() * 0.05 - 0.025;
                     Particle fx = new ParticleSmokeNormal.Factory().createParticle(0, mc.theWorld, x + xShift, y + yShift, z + zShift, xShift * 0.1F + xDist, yShift * 0.1F + yDist, zShift * 0.1F + zDist);
                     mc.effectRenderer.addEffect(fx);
                 }
@@ -194,9 +205,9 @@ public class ClientProxy
                     double diffMotionY = (double) data.getValue(1) / max;
                     double diffMotionZ = (double) data.getValue(2) / max;
 
-                    double partMotionX = diffMotionX + TmrUtils.RNG.nextDouble() * 0.05D - 0.025D;
-                    double partMotionY = -TmrUtils.RNG.nextDouble() * 0.025D;
-                    double partMotionZ = diffMotionZ + TmrUtils.RNG.nextDouble() * 0.05D - 0.025D;
+                    double partMotionX = diffMotionX + MiscUtils.RNG.randomDouble() * 0.05D - 0.025D;
+                    double partMotionY = -MiscUtils.RNG.randomDouble() * 0.025D;
+                    double partMotionZ = diffMotionZ + MiscUtils.RNG.randomDouble() * 0.05D - 0.025D;
                     mc.effectRenderer.addEffect(new ParticleCryoTrail(mc.theWorld, x - diffMotionX * i, y - diffMotionY * i, z - diffMotionZ * i, partMotionX, partMotionY, partMotionZ));
                 }
                 break;
@@ -216,9 +227,9 @@ public class ClientProxy
                 z += (Math.cos(rotXZ + shift) * 0.7F * Math.cos(rotY)) * (isUpsideDown ? -1.0F : 1.0F);
 
                 for( int i = 0; i < 8; i++ ) {
-                    double xDist = TmrUtils.RNG.nextDouble() * 0.05 - 0.025;
-                    double yDist = TmrUtils.RNG.nextDouble() * 0.05 - 0.025;
-                    double zDist = TmrUtils.RNG.nextDouble() * 0.05 - 0.025;
+                    double xDist = MiscUtils.RNG.randomDouble() * 0.05 - 0.025;
+                    double yDist = MiscUtils.RNG.randomDouble() * 0.05 - 0.025;
+                    double zDist = MiscUtils.RNG.randomDouble() * 0.05 - 0.025;
                     Particle fx = new ParticleSmokeNormal.Factory().createParticle(0, mc.theWorld, x, y, z, motionX + xDist, motionY + yDist, motionZ + zDist);
                     mc.effectRenderer.addEffect(fx);
                 }

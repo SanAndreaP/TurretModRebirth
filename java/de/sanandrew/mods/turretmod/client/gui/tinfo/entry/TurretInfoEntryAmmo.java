@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,10 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
+import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
-import de.sanandrew.mods.turretmod.client.shader.ShaderCallback;
 import de.sanandrew.mods.turretmod.client.util.ShaderHelper;
-import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmo;
@@ -27,8 +26,8 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.ARBMultitexture;
 import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.GL11;
@@ -81,7 +80,7 @@ public class TurretInfoEntryAmmo
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         gui.drawTexturedModalRect(2, 34, 192, 18, 34, 34);
 
-        TmrClientUtils.renderStackInGui(ItemRegistry.ammo.getAmmoItem(1, ammo), 3, 35, 2.0F);
+        RenderUtils.renderStackInGui(ItemRegistry.ammo.getAmmoItem(1, ammo), 3, 35, 2.0F);
 
         gui.mc.fontRendererObj.drawString(this.txtRounds, 42, 34, 0xFF6A6A6A, false);
         gui.mc.fontRendererObj.drawString(String.format("%d", ammo.getAmmoCapacity()), 45, 43, 0xFF000000, false);
@@ -98,9 +97,11 @@ public class TurretInfoEntryAmmo
         Gui.drawRect(2, 114, MAX_ENTRY_WIDTH - 2, 115, 0xFF0080BB);
 
         TurretAssemblyRecipes.RecipeEntry recipeEntry = TurretAssemblyRecipes.INSTANCE.getRecipeEntry(ammo.getRecipeId());
-        for( int i = 0; i < recipeEntry.resources.length; i++ ) {
-            ItemStack[] stacks = recipeEntry.resources[i].getEntryItemStacks();
-            drawMiniItem(gui, 45 + 10 * i, 103, mouseX, mouseY, scrollY, stacks[(int)(this.lastTimestamp / 1000L % stacks.length)], recipeEntry.resources[i].shouldDrawTooltip());
+        if( recipeEntry != null ) {
+            for( int i = 0; i < recipeEntry.resources.length; i++ ) {
+                ItemStack[] stacks = recipeEntry.resources[i].getEntryItemStacks();
+                drawMiniItem(gui, 45 + 10 * i, 103, mouseX, mouseY, scrollY, stacks[(int) (this.lastTimestamp / 1000L % stacks.length)], recipeEntry.resources[i].shouldDrawTooltip());
+            }
         }
 
         this.drawHeight += 116;
@@ -140,14 +141,14 @@ public class TurretInfoEntryAmmo
         public final int ammoIndex;
         public final ItemStack stack;
 
-        private ShaderCallback shaderCallback = shader -> {
+        private void drawGrayscale(int shader) {
             TextureManager texMgr = Minecraft.getMinecraft().renderEngine;
             int imageUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "image");
 
             OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB);
             GlStateManager.bindTexture(texMgr.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).getGlTextureId());
             ARBShaderObjects.glUniform1iARB(imageUniform, 0);
-        };
+        }
 
         public GuiButtonAmmoItem(int id, int x, int y, int index) {
             super(id, x, y, 16, 16, "");
@@ -175,8 +176,8 @@ public class TurretInfoEntryAmmo
                         texture = GlStateManager.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
                     }
 
-                    ShaderHelper.useShader(ShaderHelper.grayscaleItem, shaderCallback);
-                    TmrClientUtils.renderStackInGui(this.stack, this.xPosition, this.yPosition, 1.0F);
+                    ShaderHelper.useShader(ShaderHelper.grayscaleItem, this::drawGrayscale);
+                    RenderUtils.renderStackInGui(this.stack, this.xPosition, this.yPosition, 1.0F);
                     ShaderHelper.releaseShader();
 
                     if(shaders) {
@@ -186,7 +187,7 @@ public class TurretInfoEntryAmmo
                     }
                 } else {
                     Gui.drawRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, 0x80FFFFFF);
-                    TmrClientUtils.renderStackInGui(this.stack, this.xPosition, this.yPosition, 1.0F);
+                    RenderUtils.renderStackInGui(this.stack, this.xPosition, this.yPosition, 1.0F);
                 }
                 GlStateManager.popMatrix();
             }

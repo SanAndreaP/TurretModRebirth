@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -10,10 +10,28 @@ package de.sanandrew.mods.turretmod.tileentity;
 
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
+import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.inventory.ContainerElectrolyteGenerator;
+import de.sanandrew.mods.turretmod.network.PacketRegistry;
+import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
+import de.sanandrew.mods.turretmod.network.TileClientSync;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagShort;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityLockable;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -22,28 +40,10 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import de.sanandrew.mods.turretmod.block.BlockRegistry;
-import de.sanandrew.mods.turretmod.network.PacketRegistry;
-import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
-import de.sanandrew.mods.turretmod.network.TileClientSync;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
-import io.netty.buffer.ByteBuf;
-import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagShort;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -135,19 +135,19 @@ public class TileEntityElectrolyteGenerator
 
                 for( int i = 0; i < SLOTS_PROCESSING.length; i++ ) {
                     if( this.invStacks[SLOTS_PROCESSING[i]] != null ) {
-                        if( this.progExcessComm[i] != null && !TmrUtils.canStackFitInInventory(this.progExcessComm[i], this, true, 64, SLOTS_EXTRACT[0], SLOTS_EXTRACT[SLOTS_EXTRACT.length - 1]) ) {
+                        if( this.progExcessComm[i] != null && !InventoryUtils.canStackFitInInventory(this.progExcessComm[i], this, true, 64, SLOTS_EXTRACT[0], SLOTS_EXTRACT[SLOTS_EXTRACT.length - 1]) ) {
                             continue;
                         }
-                        if( this.progExcessRare[i] != null && !TmrUtils.canStackFitInInventory(this.progExcessRare[i], this, true, 64, SLOTS_EXTRACT[0], SLOTS_EXTRACT[SLOTS_EXTRACT.length - 1]) ) {
+                        if( this.progExcessRare[i] != null && !InventoryUtils.canStackFitInInventory(this.progExcessRare[i], this, true, 64, SLOTS_EXTRACT[0], SLOTS_EXTRACT[SLOTS_EXTRACT.length - 1]) ) {
                             continue;
                         }
 
                         if( this.progress[i] <= 0 ) {
                             if( this.progExcessComm[i] != null ) {
-                                TmrUtils.addStackToInventory(this.progExcessComm[i], this, true, 64);
+                                InventoryUtils.addStackToInventory(this.progExcessComm[i], this, true, 64);
                             }
                             if( this.progExcessRare[i] != null ) {
-                                TmrUtils.addStackToInventory(this.progExcessRare[i], this, true, 64);
+                                InventoryUtils.addStackToInventory(this.progExcessRare[i], this, true, 64);
                             }
                             this.invStacks[SLOTS_PROCESSING[i]] = null;
                             this.markDirty();
@@ -168,8 +168,8 @@ public class TileEntityElectrolyteGenerator
                         Fuel fuel = FUELS.get(this.invStacks[SLOTS_PROCESSING[i]].getItem());
                         this.progress[i] = fuel.ticksProc;
                         this.maxProgress[i] = fuel.ticksProc;
-                        this.progExcessComm[i] = TmrUtils.RNG.nextInt(10) == 0 ? fuel.trash.copy() : null;
-                        this.progExcessRare[i] = TmrUtils.RNG.nextInt(100) == 0 ? fuel.treasure.copy() : null;
+                        this.progExcessComm[i] = MiscUtils.RNG.randomInt(10) == 0 ? fuel.trash.copy() : null;
+                        this.progExcessRare[i] = MiscUtils.RNG.randomInt(100) == 0 ? fuel.treasure.copy() : null;
 
                         this.markDirty();
                         this.doSync = true;
@@ -308,7 +308,7 @@ public class TileEntityElectrolyteGenerator
         }
         nbt.setTag("progress", progress);
 
-        nbt.setTag("inventory", TmrUtils.writeItemStacksToTag(this.invStacks, 64));
+        nbt.setTag("inventory", ItemStackUtils.writeItemStacksToTag(this.invStacks, 64));
 
         if( this.hasCustomName() ) {
             nbt.setString("customName", this.customName);
@@ -326,8 +326,8 @@ public class TileEntityElectrolyteGenerator
         for( int i = 0; i < this.progress.length; i++ ) {
             if( this.invStacks[SLOTS_PROCESSING[i]] != null ) {
                 Fuel fuel = FUELS.get(this.invStacks[SLOTS_PROCESSING[i]].getItem());
-                this.progExcessComm[i] = TmrUtils.RNG.nextInt(100) == 0 ? fuel.trash.copy() : null;
-                this.progExcessRare[i] = TmrUtils.RNG.nextInt(100) == 0 ? fuel.treasure.copy() : null;
+                this.progExcessComm[i] = MiscUtils.RNG.randomInt(100) == 0 ? fuel.trash.copy() : null;
+                this.progExcessRare[i] = MiscUtils.RNG.randomInt(100) == 0 ? fuel.treasure.copy() : null;
             }
         }
     }
@@ -343,7 +343,7 @@ public class TileEntityElectrolyteGenerator
             this.maxProgress[i] = ((NBTTagShort) progress.get(i + this.progress.length)).getShort();
         }
 
-        TmrUtils.readItemStacksFromTag(this.invStacks, nbt.getTagList("inventory", Constants.NBT.TAG_COMPOUND));
+        ItemStackUtils.readItemStacksFromTag(this.invStacks, nbt.getTagList("inventory", Constants.NBT.TAG_COMPOUND));
 
         if( nbt.hasKey("customName", Constants.NBT.TAG_STRING) ) {
             this.customName = nbt.getString("customName");
@@ -404,7 +404,7 @@ public class TileEntityElectrolyteGenerator
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack) {
         if( !ItemStackUtils.isValid(stack) ) {
-            return stack == null;
+            return false;
         }
 
         if( ArrayUtils.contains(SLOTS_INSERT, slot) ) {
@@ -508,13 +508,13 @@ public class TileEntityElectrolyteGenerator
         return FUELS.get(item);
     }
 
-    IItemHandler itemHandlerBottom = new SidedInvWrapper(this, EnumFacing.DOWN);
-    IItemHandler itemHandlerSide = new SidedInvWrapper(this, EnumFacing.WEST);
+    private IItemHandler itemHandlerBottom = new SidedInvWrapper(this, EnumFacing.DOWN);
+    private IItemHandler itemHandlerSide = new SidedInvWrapper(this, EnumFacing.WEST);
 
     @Override
-    @SuppressWarnings({"unchecked", "ConstantConditions"})
+    @SuppressWarnings("unchecked")
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if( facing != null && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ) {
+        if( capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ) {
             if( facing == EnumFacing.DOWN ) {
                 return (T) itemHandlerBottom;
             } else if( facing != EnumFacing.UP ) {

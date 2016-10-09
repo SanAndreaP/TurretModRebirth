@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,7 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.render.turret;
 
-import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
+import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import net.minecraft.client.renderer.GlStateManager;
@@ -31,7 +31,7 @@ public class LayerTurretUpgrades<T extends EntityTurret>
                     GlStateManager.pushMatrix();
                     GlStateManager.rotate(netHeadYaw + 180.0F, 0.0F, 1.0F, 0.0F);
                     GlStateManager.rotate(-headPitch, 1.0F, 0.0F, 0.0F);
-                    TmrClientUtils.renderStackInWorld(slotStack, -0.1915D + 0.0225F * x, -0.1D + 0.2F * y, -0.25D, 90.0F, 90.0F, 0.0F, 0.2D);
+                    RenderUtils.renderStackInWorld(slotStack, -0.1915D + 0.0225F * x, -0.1D + 0.2F * y, -0.25D, 90.0F, 90.0F, 0.0F, 0.2D);
                     GlStateManager.popMatrix();
                 }
             }

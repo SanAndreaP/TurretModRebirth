@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -9,13 +9,13 @@
 package de.sanandrew.mods.turretmod.network;
 
 import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 public class PacketUpdateTurretState
         extends AbstractMessage<PacketUpdateTurretState>
@@ -24,6 +24,7 @@ public class PacketUpdateTurretState
     private int entityToAttackId;
     private int currAmmoCap;
     private ItemStack ammoStack;
+    private boolean isShooting;
 
     @SuppressWarnings("unused")
     public PacketUpdateTurretState() { }
@@ -36,8 +37,9 @@ public class PacketUpdateTurretState
         } else {
             this.entityToAttackId = -1;
         }
-        this.currAmmoCap = turret.getTargetProcessor().getAmmoCount();
-        this.ammoStack = turret.getTargetProcessor().getAmmoStack();
+        this.currAmmoCap = tgtProc.getAmmoCount();
+        this.ammoStack = tgtProc.getAmmoStack();
+        this.isShooting = tgtProc.isShooting();
     }
 
     @Override
@@ -45,7 +47,7 @@ public class PacketUpdateTurretState
         Entity e = player.worldObj.getEntityByID(packet.turretId);
         if( e instanceof EntityTurret ) {
             EntityTurret turret = (EntityTurret) e;
-            turret.getTargetProcessor().updateClientState(packet.entityToAttackId, packet.currAmmoCap, packet.ammoStack);
+            turret.getTargetProcessor().updateClientState(packet.entityToAttackId, packet.currAmmoCap, packet.ammoStack, packet.isShooting);
         }
     }
 
@@ -59,6 +61,7 @@ public class PacketUpdateTurretState
         this.turretId = buf.readInt();
         this.entityToAttackId = buf.readInt();
         this.currAmmoCap = buf.readInt();
+        this.isShooting = buf.readBoolean();
         this.ammoStack = ByteBufUtils.readItemStack(buf);
     }
 
@@ -67,6 +70,7 @@ public class PacketUpdateTurretState
         buf.writeInt(this.turretId);
         buf.writeInt(this.entityToAttackId);
         buf.writeInt(this.currAmmoCap);
+        buf.writeBoolean(this.isShooting);
         ByteBufUtils.writeItemStack(buf, this.ammoStack);
     }
 }

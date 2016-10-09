@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -14,9 +14,9 @@ import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmo;
 import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntryItem;
+import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -178,7 +178,8 @@ public class TurretInfoEntryTurret
                 ammoItms.add(ItemRegistry.ammo.getAmmoItem(1, ammo));
             }
 
-            this.recipeStacks = TurretAssemblyRecipes.INSTANCE.getRecipeEntry(info.getRecipeId()).resources;
+            TurretAssemblyRecipes.RecipeEntry recipeEntry = TurretAssemblyRecipes.INSTANCE.getRecipeEntry(info.getRecipeId());
+            this.recipeStacks = recipeEntry == null ? new RecipeEntryItem[0] : recipeEntry.resources;
 
             this.ammoStacks = ammoItms.toArray(new ItemStack[ammoItms.size()]);
         }

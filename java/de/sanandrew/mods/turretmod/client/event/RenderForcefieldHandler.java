@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -9,19 +9,19 @@
 package de.sanandrew.mods.turretmod.client.event;
 
 import de.sanandrew.mods.sanlib.lib.client.ColorObj;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import de.sanandrew.mods.turretmod.client.render.ForcefieldCube;
 import de.sanandrew.mods.turretmod.client.util.ForcefieldProvider;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 
@@ -165,6 +165,7 @@ public class RenderForcefieldHandler
         }
     }
 
+    @SuppressWarnings("unused")
     public void addForcefieldRenderer(Entity entity, ForcefieldProvider provider) {
         this.fieldProviders.put(entity.getEntityId(), provider);
     }
@@ -172,13 +173,13 @@ public class RenderForcefieldHandler
     private static class ForcefieldFadeOut
     {
         public ColorObj color;
-        public final AxisAlignedBB shieldBB;
+        final AxisAlignedBB shieldBB;
 
         public double posX;
         public double posY;
         public double posZ;
 
-        public ForcefieldFadeOut(double posX, double posY, double posZ, ColorObj origRGBA, AxisAlignedBB origShieldBB) {
+        ForcefieldFadeOut(double posX, double posY, double posZ, ColorObj origRGBA, AxisAlignedBB origShieldBB) {
             this.posX = posX;
             this.posY = posY;
             this.posZ = posZ;

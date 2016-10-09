@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -25,15 +25,15 @@ import java.util.List;
 
 public class GuiTCUHelper
 {
-    public static final int X_SIZE = 176;
-    public static final int Y_SIZE = 222;
-    public static GuiItemTab pageInfo;
-    public static GuiItemTab pageEntityTargets;
-    public static GuiItemTab pagePlayerTargets;
-    public static GuiItemTab pageUpgrades;
+    static final int X_SIZE = 176;
+    static final int Y_SIZE = 222;
+    static GuiItemTab pageInfo;
+    static GuiItemTab pageEntityTargets;
+    static GuiItemTab pagePlayerTargets;
+    static GuiItemTab pageUpgrades;
 
     @SuppressWarnings("unchecked")
-    public static void initGui(GuiTurretCtrlUnit gui) {
+    static void initGui(GuiTurretCtrlUnit gui) {
         List btnList = gui.getButtonList();
         btnList.add(pageInfo = new GuiItemTab(btnList.size(), gui.getGuiLeft() - 23, gui.getGuiTop() + 5,
                 new ItemStack(Items.SIGN), Lang.translate(Lang.TCU_PAGE_TAB.get("info")), false));
@@ -45,7 +45,7 @@ public class GuiTCUHelper
                 new ItemStack(ItemRegistry.turretUpgrade), Lang.translate(Lang.TCU_PAGE_TAB.get("upgrades")), false));
     }
 
-    public static void drawScreen(GuiTurretCtrlUnit gui) {
+    static void drawScreen(GuiTurretCtrlUnit gui) {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         RenderHelper.disableStandardItemLighting();
 
@@ -68,7 +68,7 @@ public class GuiTCUHelper
         RenderHelper.enableGUIStandardItemLighting();
     }
 
-    public static boolean actionPerformed(GuiButton button, GuiTurretCtrlUnit gui) {
+    static boolean actionPerformed(GuiButton button, GuiTurretCtrlUnit gui) {
         Minecraft mc = gui.getMc();
         if( button == pageInfo ) {
             TurretModRebirth.proxy.openGui(mc.thePlayer, EnumGui.GUI_TCU_INFO, gui.getTurret().getEntityId(), 0, 0);

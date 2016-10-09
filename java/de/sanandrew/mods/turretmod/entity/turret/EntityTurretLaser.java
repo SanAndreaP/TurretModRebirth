@@ -159,7 +159,7 @@ public class EntityTurretLaser
 
         @Override
         public SoundEvent getShootSound() {
-            return Sounds.SHOOT_LASER;
+            return null;//Sounds.SHOOT_LASER;
         }
 
         @Override

@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,9 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tinfo;
 
+import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntry;
-import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -22,7 +22,6 @@ import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.renderer.GlStateManager;
-
 import net.minecraft.util.text.TextFormatting;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.input.Mouse;
@@ -205,11 +204,11 @@ public class GuiTurretInfo
         width = Math.max(0, Math.min(maxWidth, width + prevX));
         height = Math.max(0, Math.min(maxHeight, height + yShifted));
 
-        TmrClientUtils.doGlScissor(x, y, width, height);
+        GuiUtils.glScissor(x, y, width, height);
     }
 
     public void doEntryScissoring() {
-        TmrClientUtils.doGlScissor(this.entryX, this.entryY, TurretInfoEntry.MAX_ENTRY_WIDTH, TurretInfoEntry.MAX_ENTRY_HEIGHT);
+        GuiUtils.glScissor(this.entryX, this.entryY, TurretInfoEntry.MAX_ENTRY_WIDTH, TurretInfoEntry.MAX_ENTRY_HEIGHT);
     }
 
     @Override

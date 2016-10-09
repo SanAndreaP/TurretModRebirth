@@ -8,19 +8,12 @@
  */
 package de.sanandrew.mods.turretmod.client.util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
-import de.sanandrew.mods.turretmod.client.shader.ShaderCallback;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
-
 import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Level;
@@ -28,6 +21,12 @@ import org.lwjgl.opengl.ARBFragmentShader;
 import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.ARBVertexShader;
 import org.lwjgl.opengl.GL11;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.function.Consumer;
 
 public final class ShaderHelper
 {
@@ -48,7 +47,7 @@ public final class ShaderHelper
         alphaOverride = createProgram(null, Resources.SHADER_ALPHA_OVERRIDE_FRAG.getResource());
     }
 
-    public static void useShader(int shader, ShaderCallback callback) {
+    public static void useShader(int shader, Consumer<Integer> callback) {
         if( !areShadersEnabled() ) {
             return;
         }
@@ -60,7 +59,7 @@ public final class ShaderHelper
             ARBShaderObjects.glUniform1iARB(time, ClientTickHandler.ticksInGame);
 
             if( callback != null ) {
-                callback.call(shader);
+                callback.accept(shader);
             }
         }
     }
@@ -79,7 +78,6 @@ public final class ShaderHelper
 
     // Most of the code taken from the LWJGL wiki
     // http://lwjgl.org/wiki/index.php?title=GLSL_Shaders_with_LWJGL
-
     private static int createProgram(ResourceLocation vert, ResourceLocation frag) {
         int vertId = 0;
         int fragId = 0;

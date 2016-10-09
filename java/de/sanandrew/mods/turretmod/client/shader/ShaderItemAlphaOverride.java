@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -17,11 +17,9 @@ import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.GL11;
 
 public class ShaderItemAlphaOverride
-        implements ShaderCallback
 {
     public float alphaMulti = 1.0F;
 
-    @Override
     public void call(int shader) {
         TextureManager texMgr = Minecraft.getMinecraft().renderEngine;
         int alphaUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "alpha");

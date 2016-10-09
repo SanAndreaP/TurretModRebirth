@@ -1,0 +1,66 @@
+{
+  "cubes": [
+    {
+      "boxName": "base",
+      "textureX": 0,
+      "textureY": 0,
+      "textureWidth": 64,
+      "textureHeight": 64,
+      "rotationPointX": 0.0,
+      "rotationPointY": 14.0,
+      "rotationPointZ": 0.0
+    },
+    {
+      "boxName": "robotBinding",
+      "sizeX": 2,
+      "sizeY": 3,
+      "sizeZ": 2,
+      "textureX": 0,
+      "textureY": 9,
+      "textureWidth": 64,
+      "textureHeight": 64,
+      "rotationPointX": 2.0,
+      "rotationPointY": -4.0,
+      "rotationPointZ": 5.0,
+      "offsetX": -1.0,
+      "offsetY": -1.5,
+      "offsetZ": -1.5,
+      "parentBox": "base"
+    },
+    {
+      "boxName": "robotArm",
+      "sizeX": 1,
+      "sizeY": 1,
+      "sizeZ": 12,
+      "textureX": 0,
+      "textureY": 39,
+      "textureWidth": 64,
+      "textureHeight": 64,
+      "rotationPointX": -0.5,
+      "rotationPointY": 0.0,
+      "rotationPointZ": -9.0,
+      "offsetX": 0.0,
+      "offsetY": 0.0,
+      "offsetZ": 0.0,
+      "parentBox": "robotBinding"
+    },
+    {
+      "boxName": "robotHead",
+      "sizeX": 2,
+      "sizeY": 2,
+      "sizeZ": 2,
+      "textureX": 8,
+      "textureY": 10,
+      "textureWidth": 64,
+      "textureHeight": 64,
+      "rotationPointX": 0.5,
+      "rotationPointY": 0.5,
+      "rotationPointZ": 0.5,
+      "rotateAngleX": 0.7853981633974483,
+      "offsetX": -1.0,
+      "offsetY": -1.0,
+      "offsetZ": -1.0,
+      "parentBox": "robotArm"
+    }
+  ]
+}

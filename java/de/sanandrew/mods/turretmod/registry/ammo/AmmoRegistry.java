@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -11,9 +11,9 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
@@ -22,7 +22,6 @@ import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,17 +46,17 @@ public final class AmmoRegistry
 
         @Override
         public UUID getId() {
-            return TmrUtils.EMPTY_UUID;
+            return UuidUtils.EMPTY_UUID;
         }
 
         @Override
         public UUID getTypeId() {
-            return TmrUtils.EMPTY_UUID;
+            return UuidUtils.EMPTY_UUID;
         }
 
         @Override
         public UUID getGroupId() {
-            return TmrUtils.EMPTY_UUID;
+            return UuidUtils.EMPTY_UUID;
         }
 
         @Override
@@ -72,7 +71,7 @@ public final class AmmoRegistry
 
         @Override
         public UUID getRecipeId() {
-            return TmrUtils.EMPTY_UUID;
+            return UuidUtils.EMPTY_UUID;
         }
 
         @Override

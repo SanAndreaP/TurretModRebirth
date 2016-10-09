@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,10 +8,10 @@
  */
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.entity.turret.ConsumptionListener;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -70,7 +70,7 @@ public abstract class UpgradeAmmoUsage
             extends UpgradeAmmoUsage
     {
         public UpgradeAmmoUseI() {
-            super("use_decr_i", (canConsumePrev, turret) -> TmrUtils.RNG.nextFloat() >= 0.1F);
+            super("use_decr_i", (canConsumePrev, turret) -> MiscUtils.RNG.randomFloat() >= 0.1F);
         }
 
         @Override
@@ -90,7 +90,7 @@ public abstract class UpgradeAmmoUsage
         private final TurretUpgrade dependant;
 
         public UpgradeAmmoUseII() {
-            super("use_decr_ii", (canConsumePrev, turret) -> TmrUtils.RNG.nextFloat() >= 0.35F);
+            super("use_decr_ii", (canConsumePrev, turret) -> MiscUtils.RNG.randomFloat() >= 0.35F);
             this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(UpgradeRegistry.UPG_ECONOMY_I);
         }
 

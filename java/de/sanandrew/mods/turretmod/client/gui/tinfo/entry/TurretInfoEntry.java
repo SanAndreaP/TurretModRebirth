@@ -1,4 +1,4 @@
-/**
+/*
  * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
@@ -8,8 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
+import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
+import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
-import de.sanandrew.mods.turretmod.client.util.TmrClientUtils;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.gui.Gui;
@@ -78,19 +79,19 @@ public abstract class TurretInfoEntry
             GlStateManager.translate(0.0F, MAX_ENTRY_HEIGHT - 20 + scrollY, 32.0F);
             Gui.drawRect(0, 0, MAX_ENTRY_WIDTH, 20, 0xD0000000);
 
-            List tooltip = TmrClientUtils.getTooltipWithoutShift(stack);
+            List tooltip = GuiUtils.getTooltipWithoutShift(stack);
             gui.mc.fontRendererObj.drawString(tooltip.get(0).toString(), 22, 2, 0xFFFFFFFF, false);
             if( drawTooltip && tooltip.size() > 1 ) {
                 gui.mc.fontRendererObj.drawString(tooltip.get(1).toString(), 22, 11, 0xFF808080, false);
             }
 
-            TmrClientUtils.renderStackInGui(stack, 2, 2, 1.0F, gui.mc.fontRendererObj);
+            RenderUtils.renderStackInGui(stack, 2, 2, 1.0F, gui.mc.fontRendererObj);
 
             GlStateManager.popMatrix();
         }
 
         if( stack != null ) {
-            TmrClientUtils.renderStackInGui(stack, x, y, 0.5F);
+            RenderUtils.renderStackInGui(stack, x, y, 0.5F);
         }
 
         if( mouseOver ) {
