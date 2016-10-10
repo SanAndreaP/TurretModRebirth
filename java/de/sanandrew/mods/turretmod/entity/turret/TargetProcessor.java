@@ -254,7 +254,7 @@ public abstract class TargetProcessor
     }
 
     public final boolean isShooting() {
-        return this.initShootTicks <= 0;
+        return this.initShootTicks <= 0 || this.isShootingClt;
     }
 
     public final IProjectile getProjectile() {

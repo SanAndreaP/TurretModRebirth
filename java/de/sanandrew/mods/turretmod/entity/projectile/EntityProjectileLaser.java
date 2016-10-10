@@ -19,6 +19,8 @@ import net.minecraft.world.World;
 public class EntityProjectileLaser
         extends EntityTurretProjectile
 {
+    private int prevMaxHurtResistantTime;
+
     @SuppressWarnings("unused")
     public EntityProjectileLaser(World world) {
         super(world);
@@ -42,9 +44,9 @@ public class EntityProjectileLaser
     public void onUpdate() {
         super.onUpdate();
 
-//        if( this.worldObj.isRemote ) {
-//            TurretModRebirth.proxy.spawnParticle(EnumParticle.CRYO_PARTICLE, this.posX, this.posY, this.posZ, Triplet.with(this.motionX, this.motionY, this.motionZ));
-//        }
+        //        if( this.worldObj.isRemote ) {
+        //            TurretModRebirth.proxy.spawnParticle(EnumParticle.CRYO_PARTICLE, this.posX, this.posY, this.posZ, Triplet.with(this.motionX, this.motionY, this.motionZ));
+        //        }
     }
 
     @Override
@@ -54,7 +56,7 @@ public class EntityProjectileLaser
 
     @Override
     public float getDamage() {
-        return 1.5F;
+        return -1.5F;
     }
 
     @Override
@@ -67,24 +69,24 @@ public class EntityProjectileLaser
         return 0.0F;
     }
 
-//    @Override
-//    public boolean onPreHit(Entity e, DamageSource dmgSource, float dmg) {
-//        if( !this.worldObj.isRemote && e instanceof EntityLivingBase ) {
-//            ((EntityLivingBase) e).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, this.duration, this.level));
-//            if( e instanceof EntityCreature && this.shooterCache instanceof EntityTurret ) {
-//                setEntityTarget((EntityCreature) e, (EntityTurret) this.shooterCache);
-//            }
-//            this.playSound(this.getRicochetSound(), 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
-//            this.setDead();
-//            return false;
-//        }
-//
-//        return super.onPreHit(e, dmgSource, dmg);
-//    }
-
     @Override
     public SoundEvent getRicochetSound() {
         return SoundEvents.BLOCK_FIRE_EXTINGUISH;
+    }
+
+    @Override
+    public boolean onPreHit(Entity e, DamageSource dmgSource, float dmg) {
+        if( super.onPreHit(e, dmgSource, dmg) ) {
+            if( e instanceof EntityLivingBase ) {
+                EntityLivingBase elb = ((EntityLivingBase) e);
+                this.prevMaxHurtResistantTime = elb.maxHurtResistantTime;
+                elb.maxHurtResistantTime = 10;
+            }
+
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -92,7 +94,8 @@ public class EntityProjectileLaser
         super.onPostHit(e, dmg);
 
         if( e instanceof EntityLivingBase ) {
-            ((EntityLivingBase) e).hurtResistantTime /= 2;
+            ((EntityLivingBase) e).maxHurtResistantTime = this.prevMaxHurtResistantTime;
+//            e.setFire(2);
         }
     }
 }
