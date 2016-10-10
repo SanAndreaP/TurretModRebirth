@@ -41,22 +41,13 @@ public class EntityProjectileLaser
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-
-        //        if( this.worldObj.isRemote ) {
-        //            TurretModRebirth.proxy.spawnParticle(EnumParticle.CRYO_PARTICLE, this.posX, this.posY, this.posZ, Triplet.with(this.motionX, this.motionY, this.motionZ));
-        //        }
-    }
-
-    @Override
     public float getInitialSpeedMultiplier() {
         return 20.0F;
     }
 
     @Override
     public float getDamage() {
-        return -1.5F;
+        return 1.5F;
     }
 
     @Override
@@ -95,7 +86,7 @@ public class EntityProjectileLaser
 
         if( e instanceof EntityLivingBase ) {
             ((EntityLivingBase) e).maxHurtResistantTime = this.prevMaxHurtResistantTime;
-//            e.setFire(2);
+            e.setFire(2);
         }
     }
 }

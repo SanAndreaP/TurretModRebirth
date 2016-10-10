@@ -45,6 +45,7 @@ public class RenderWorldLastHandler
             double renderZ = renderEntity.lastTickPosZ + (renderEntity.posZ - renderEntity.lastTickPosZ) * partTicks;
 
             Entity pointedEntity = mc.pointedEntity;
+
             if( pointedEntity instanceof EntityTurret ) {
                 if( isItemTCU(mc.thePlayer.getHeldItemMainhand()) || isItemTCU(mc.thePlayer.getHeldItemOffhand()) ) {
                     double entityX = pointedEntity.lastTickPosX + (pointedEntity.posX - pointedEntity.lastTickPosX) * partTicks;
@@ -57,6 +58,7 @@ public class RenderWorldLastHandler
 
             Function<EntityTurret, TargetProcessor> tgtProc = EntityTurret::getTargetProcessor;
             Predicate<EntityTurretLaser> chk = turret -> turret != null && tgtProc.apply(turret).hasAmmo() && tgtProc.apply(turret).isShooting() && tgtProc.apply(turret).hasTarget();
+
             mc.theWorld.getEntities(EntityTurretLaser.class, chk::test).forEach(turret -> renderTurretLaser(turret, renderX, renderY, renderZ, partTicks));
         }
     }
@@ -82,20 +84,23 @@ public class RenderWorldLastHandler
     private static void renderTurretLaser(EntityTurretLaser turret, double renderX, double renderY, double renderZ, double partTicks) {
         Entity tgt = turret.getTargetProcessor().getTarget();
 
-        double entityX = tgt.lastTickPosX + (tgt.posX - tgt.lastTickPosX) * partTicks;
-        double entityY = tgt.lastTickPosY + (tgt.posY - tgt.lastTickPosY) * partTicks + tgt.height / 1.4F;
-        double entityZ = tgt.lastTickPosZ + (tgt.posZ - tgt.lastTickPosZ) * partTicks;
-
         double turretX = turret.lastTickPosX + (turret.posX - turret.lastTickPosX) * partTicks;
         double turretY = turret.lastTickPosY + (turret.posY - turret.lastTickPosY) * partTicks + turret.getEyeHeight() - 0.1D;
         double turretZ = turret.lastTickPosZ + (turret.posZ - turret.lastTickPosZ) * partTicks;
 
-//        Vec3d laserVec = new Vec3d(turret.getDistanceToEntity(tgt), 0.0D, 0.0D);
-        Vec3d laserVec = new Vec3d(entityX - turretX, entityY - turretY, entityZ - turretZ);
-        Vec3d psYawVec = laserVec.normalize().scale(1.05D).rotateYaw((float) (90.0F / 180.0F * Math.PI));
-        Vec3d ngYawVec = psYawVec.scale(-1.0F);
-//        Vec3d psYawVec2 = laserVec.normalize().scale(1.05D).rotateYaw((float) (90.0F / 180.0F * Math.PI)).rotatePitch((float) (135.0F / 180.0F * Math.PI));
-//        Vec3d ngYawVec2 = psYawVec2.scale(-1.0F);
+        double vecX = tgt.lastTickPosX + (tgt.posX - tgt.lastTickPosX) * partTicks - turretX;
+        double vecY = tgt.lastTickPosY + (tgt.posY - tgt.lastTickPosY) * partTicks + tgt.height / 1.4F - turretY;
+        double vecZ = tgt.lastTickPosZ + (tgt.posZ - tgt.lastTickPosZ) * partTicks - turretZ;
+
+        double dist = Math.sqrt(vecX * vecX + vecY * vecY + vecZ * vecZ);
+
+        double rotYaw = turret.prevRotationYawHead + (turret.rotationYawHead - turret.prevRotationYawHead) * partTicks;
+        double rotPtc = turret.prevRotationPitch + (turret.rotationPitch - turret.prevRotationPitch) * partTicks;
+
+        final double beamWidth = 0.0125D;
+
+        Tessellator tessellator = Tessellator.getInstance();
+        VertexBuffer buffer = tessellator.getBuffer();
 
         GlStateManager.pushMatrix();
         GlStateManager.disableLighting();
@@ -104,24 +109,20 @@ public class RenderWorldLastHandler
         GlStateManager.disableTexture2D();
         GlStateManager.disableCull();
 
-        Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer buffer = tessellator.getBuffer();
+        GlStateManager.translate(turretX - renderX, turretY - renderY, turretZ - renderZ);
+        GlStateManager.rotate(270.0F - (float) rotYaw, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate((float) -rotPtc, 0.0F, 0.0F, 1.0F);
 
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-        buffer.pos(turretX - renderX + ngYawVec.xCoord, turretY - renderY + ngYawVec.yCoord, turretZ - renderZ + ngYawVec.zCoord).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
-        buffer.pos(turretX - renderX + psYawVec.xCoord, turretY - renderY + psYawVec.yCoord, turretZ - renderZ + psYawVec.zCoord).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
-        buffer.pos(entityX - renderX + psYawVec.xCoord, entityY - renderY + psYawVec.yCoord, entityZ - renderZ + psYawVec.zCoord).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
-        buffer.pos(entityX - renderX + ngYawVec.xCoord, entityY - renderY + ngYawVec.yCoord, entityZ - renderZ + ngYawVec.zCoord).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
-
-//        buffer.pos(turretX - renderX + ngYawVec2.xCoord, turretY - renderY + ngYawVec2.yCoord, turretZ - renderZ + ngYawVec2.zCoord).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
-//        buffer.pos(turretX - renderX + psYawVec2.xCoord, turretY - renderY + psYawVec2.yCoord, turretZ - renderZ + psYawVec2.zCoord).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
-//        buffer.pos(entityX - renderX + psYawVec2.xCoord, entityY - renderY + psYawVec2.yCoord, entityZ - renderZ + psYawVec2.zCoord).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
-//        buffer.pos(entityX - renderX + ngYawVec2.xCoord, entityY - renderY + ngYawVec2.yCoord, entityZ - renderZ + ngYawVec2.zCoord).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
+        buffer.pos(0.0D, -beamWidth, -beamWidth).color(1.0F, 0.0F, 0.0F, 0.5F).endVertex();
+        buffer.pos(dist, -beamWidth, -beamWidth).color(1.0F, 0.0F, 0.0F, 0.5F).endVertex();
+        buffer.pos(dist, beamWidth, beamWidth).color(1.0F, 0.0F, 0.0F, 0.5F).endVertex();
+        buffer.pos(0.0D, beamWidth, beamWidth).color(1.0F, 0.0F, 0.0F, 0.5F).endVertex();
+        buffer.pos(0.0D, -beamWidth, beamWidth).color(1.0F, 0.0F, 0.0F, 0.5F).endVertex();
+        buffer.pos(dist, -beamWidth, beamWidth).color(1.0F, 0.0F, 0.0F, 0.5F).endVertex();
+        buffer.pos(dist, beamWidth, -beamWidth).color(1.0F, 0.0F, 0.0F, 0.5F).endVertex();
+        buffer.pos(0.0D, beamWidth, -beamWidth).color(1.0F, 0.0F, 0.0F, 0.5F).endVertex();
         tessellator.draw();
-        //        buffer.pos(entityX - renderX, entityY - renderY, entityZ - renderZ).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
-//        buffer.pos(turretX - renderX, turretY - renderY, turretZ - renderZ).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
-//        buffer.pos(entityX - renderX, entityY - renderY, entityZ - renderZ).color(1.0F, 0.0F, 0.0F, 1.0F).endVertex();
-//        tessellator.draw();
 
         GlStateManager.enableCull();
         GlStateManager.enableTexture2D();
@@ -138,6 +139,12 @@ public class RenderWorldLastHandler
         FontRenderer fontrenderer = mc.fontRendererObj;
         float scale = 0.010F;
 
+        Tessellator tessellator = Tessellator.getInstance();
+        VertexBuffer buffer = tessellator.getBuffer();
+
+        float healthRel = turret.getHealth() / turret.getMaxHealth();
+        float ammoRel = turret.getTargetProcessor().getAmmoCount() / (float)turret.getTargetProcessor().getMaxAmmoCapacity();
+
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y + (turret.isUpsideDown ? turret.height / 2.0F : turret.height), z);
         GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
@@ -151,9 +158,6 @@ public class RenderWorldLastHandler
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         GlStateManager.disableTexture2D();
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
-
-        Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer buffer = tessellator.getBuffer();
 
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
         addQuad(buffer, 0.0D, 0.0D, 128.0D, 64.0D, new ColorObj(0x80001000));
@@ -170,13 +174,12 @@ public class RenderWorldLastHandler
 
         //health
         addQuad(buffer, 1.0D, 22.0D, 127.0D, 24.0D, new ColorObj(0xFF000000));
-        float healthRel = turret.getHealth() / turret.getMaxHealth();
         addQuad(buffer, 1.0D, 22.0D, (1 + 126.0F * healthRel), 24.0D, new ColorObj(0xFFFF0000));
 
         //ammo
         addQuad(buffer, 1.0D, 38.0D, 127.0D, 40.0D, new ColorObj(0xFF000000));
-        float ammoRel = turret.getTargetProcessor().getAmmoCount() / (float)turret.getTargetProcessor().getMaxAmmoCapacity();
         addQuad(buffer, 1.0D, 38.0D, (1 + 126.0F * ammoRel), 40.0D, new ColorObj(0xFF6666FF));
+
         tessellator.draw();
         GlStateManager.shadeModel(GL11.GL_FLAT);
         GlStateManager.enableTexture2D();

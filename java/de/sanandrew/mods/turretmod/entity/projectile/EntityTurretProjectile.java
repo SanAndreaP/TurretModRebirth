@@ -313,6 +313,11 @@ public abstract class EntityTurretProjectile
     }
 
     protected void processHit(@SuppressWarnings("UnusedParameters") RayTraceResult hitObj) {
+        if( hitObj != null ) {
+            if( hitObj.typeOfHit == RayTraceResult.Type.BLOCK ) {
+            }
+        }
+        this.setPosition(hitObj.hitVec.xCoord, hitObj.hitVec.yCoord, hitObj.hitVec.zCoord);
         this.playSound(this.getRicochetSound(), 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
         this.setDead();
     }
