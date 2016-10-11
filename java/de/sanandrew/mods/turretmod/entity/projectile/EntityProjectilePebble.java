@@ -67,8 +67,8 @@ public class EntityProjectilePebble
     }
 
     @Override
-    public void onPostHit(Entity e, DamageSource dmg) {
-        super.onPostHit(e, dmg);
+    public void onPostHit(Entity e, DamageSource dmgSource) {
+        super.onPostHit(e, dmgSource);
 
         if( e instanceof EntityLivingBase ) {
             ((EntityLivingBase) e).hurtResistantTime = 0;

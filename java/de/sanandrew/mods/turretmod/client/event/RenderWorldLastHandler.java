@@ -14,6 +14,7 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -23,7 +24,6 @@ import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
@@ -99,6 +99,11 @@ public class RenderWorldLastHandler
 
         final double beamWidth = 0.0125D;
 
+        ColorObj laserClr = new ColorObj(1.0F, 0.0F, 0.0F, 0.25F);
+        if( turret.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_ENDER_LENS) ) {
+            laserClr = new ColorObj(0.0F, 0.5F, 1.0F, 0.25F);
+        }
+
         Tessellator tessellator = Tessellator.getInstance();
         VertexBuffer buffer = tessellator.getBuffer();
 
@@ -113,16 +118,39 @@ public class RenderWorldLastHandler
         GlStateManager.rotate(270.0F - (float) rotYaw, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate((float) -rotPtc, 0.0F, 0.0F, 1.0F);
 
+        GlStateManager.depthMask(false);
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-        buffer.pos(0.0D, -beamWidth, -beamWidth).color(1.0F, 0.0F, 0.0F, 0.5F).endVertex();
-        buffer.pos(dist, -beamWidth, -beamWidth).color(1.0F, 0.0F, 0.0F, 0.5F).endVertex();
-        buffer.pos(dist, beamWidth, beamWidth).color(1.0F, 0.0F, 0.0F, 0.5F).endVertex();
-        buffer.pos(0.0D, beamWidth, beamWidth).color(1.0F, 0.0F, 0.0F, 0.5F).endVertex();
-        buffer.pos(0.0D, -beamWidth, beamWidth).color(1.0F, 0.0F, 0.0F, 0.5F).endVertex();
-        buffer.pos(dist, -beamWidth, beamWidth).color(1.0F, 0.0F, 0.0F, 0.5F).endVertex();
-        buffer.pos(dist, beamWidth, -beamWidth).color(1.0F, 0.0F, 0.0F, 0.5F).endVertex();
-        buffer.pos(0.0D, beamWidth, -beamWidth).color(1.0F, 0.0F, 0.0F, 0.5F).endVertex();
+        buffer.pos(0.0D, -beamWidth, -beamWidth).color(laserClr.fRed(), laserClr.fGreen(), laserClr.fBlue(), laserClr.fAlpha()).endVertex();
+        buffer.pos(dist, -beamWidth, -beamWidth).color(laserClr.fRed(), laserClr.fGreen(), laserClr.fBlue(), laserClr.fAlpha()).endVertex();
+        buffer.pos(dist, beamWidth, beamWidth).color(laserClr.fRed(), laserClr.fGreen(), laserClr.fBlue(), laserClr.fAlpha()).endVertex();
+        buffer.pos(0.0D, beamWidth, beamWidth).color(laserClr.fRed(), laserClr.fGreen(), laserClr.fBlue(), laserClr.fAlpha()).endVertex();
+
+        buffer.pos(0.0D, -beamWidth, beamWidth).color(laserClr.fRed(), laserClr.fGreen(), laserClr.fBlue(), laserClr.fAlpha()).endVertex();
+        buffer.pos(dist, -beamWidth, beamWidth).color(laserClr.fRed(), laserClr.fGreen(), laserClr.fBlue(), laserClr.fAlpha()).endVertex();
+        buffer.pos(dist, beamWidth, -beamWidth).color(laserClr.fRed(), laserClr.fGreen(), laserClr.fBlue(), laserClr.fAlpha()).endVertex();
+        buffer.pos(0.0D, beamWidth, -beamWidth).color(laserClr.fRed(), laserClr.fGreen(), laserClr.fBlue(), laserClr.fAlpha()).endVertex();
+
+        buffer.pos(0.0D, -beamWidth, -beamWidth).color(laserClr.fRed(), laserClr.fGreen(), laserClr.fBlue(), laserClr.fAlpha()).endVertex();
+        buffer.pos(dist, -beamWidth, -beamWidth).color(laserClr.fRed(), laserClr.fGreen(), laserClr.fBlue(), laserClr.fAlpha()).endVertex();
+        buffer.pos(dist, -beamWidth, beamWidth).color(laserClr.fRed(), laserClr.fGreen(), laserClr.fBlue(), laserClr.fAlpha()).endVertex();
+        buffer.pos(0.0D, -beamWidth, beamWidth).color(laserClr.fRed(), laserClr.fGreen(), laserClr.fBlue(), laserClr.fAlpha()).endVertex();
+
+        buffer.pos(0.0D, beamWidth, -beamWidth).color(laserClr.fRed(), laserClr.fGreen(), laserClr.fBlue(), laserClr.fAlpha()).endVertex();
+        buffer.pos(dist, beamWidth, -beamWidth).color(laserClr.fRed(), laserClr.fGreen(), laserClr.fBlue(), laserClr.fAlpha()).endVertex();
+        buffer.pos(dist, beamWidth, beamWidth).color(laserClr.fRed(), laserClr.fGreen(), laserClr.fBlue(), laserClr.fAlpha()).endVertex();
+        buffer.pos(0.0D, beamWidth, beamWidth).color(laserClr.fRed(), laserClr.fGreen(), laserClr.fBlue(), laserClr.fAlpha()).endVertex();
+
+        buffer.pos(0.0D, -beamWidth, -beamWidth).color(laserClr.fRed(), laserClr.fGreen(), laserClr.fBlue(), laserClr.fAlpha()).endVertex();
+        buffer.pos(dist, -beamWidth, -beamWidth).color(laserClr.fRed(), laserClr.fGreen(), laserClr.fBlue(), laserClr.fAlpha()).endVertex();
+        buffer.pos(dist, beamWidth, -beamWidth).color(laserClr.fRed(), laserClr.fGreen(), laserClr.fBlue(), laserClr.fAlpha()).endVertex();
+        buffer.pos(0.0D, beamWidth, -beamWidth).color(laserClr.fRed(), laserClr.fGreen(), laserClr.fBlue(), laserClr.fAlpha()).endVertex();
+
+        buffer.pos(0.0D, -beamWidth, beamWidth).color(laserClr.fRed(), laserClr.fGreen(), laserClr.fBlue(), laserClr.fAlpha()).endVertex();
+        buffer.pos(dist, -beamWidth, beamWidth).color(laserClr.fRed(), laserClr.fGreen(), laserClr.fBlue(), laserClr.fAlpha()).endVertex();
+        buffer.pos(dist, beamWidth, beamWidth).color(laserClr.fRed(), laserClr.fGreen(), laserClr.fBlue(), laserClr.fAlpha()).endVertex();
+        buffer.pos(0.0D, beamWidth, beamWidth).color(laserClr.fRed(), laserClr.fGreen(), laserClr.fBlue(), laserClr.fAlpha()).endVertex();
         tessellator.draw();
+        GlStateManager.depthMask(true);
 
         GlStateManager.enableCull();
         GlStateManager.enableTexture2D();

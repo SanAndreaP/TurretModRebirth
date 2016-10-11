@@ -31,6 +31,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import org.apache.commons.lang3.mutable.MutableFloat;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -215,15 +216,9 @@ public abstract class EntityTurretProjectile
 
         if( hitObj != null ) {
             if( hitObj.entityHit != null ) {
-                float dmg = this.getDamage();
+                MutableFloat dmg = new MutableFloat(this.getDamage());
 
-                DamageSource damagesource;
-
-                if( this.shooterCache == null ) {
-                    damagesource = DamageSource.causeThrownDamage(this, this);
-                } else {
-                    damagesource = DamageSource.causeThrownDamage(this, this.shooterCache);
-                }
+                DamageSource damagesource = this.getProjDamageSource(hitObj.entityHit);
 
                 if( this.isBurning() && !(hitObj.entityHit instanceof EntityEnderman) ) {
                     hitObj.entityHit.setFire(5);
@@ -234,7 +229,7 @@ public abstract class EntityTurretProjectile
                 double preHitMotionX = hitObj.entityHit.motionX;
                 double preHitMotionY = hitObj.entityHit.motionY;
                 double preHitMotionZ = hitObj.entityHit.motionZ;
-                if( this.onPreHit(hitObj.entityHit, damagesource, dmg) && hitObj.entityHit.attackEntityFrom(damagesource, dmg) ) {
+                if( this.onPreHit(hitObj.entityHit, damagesource, dmg) && hitObj.entityHit.attackEntityFrom(damagesource, dmg.floatValue()) ) {
                     hitObj.entityHit.velocityChanged = preHitVelocityChanged;
                     hitObj.entityHit.isAirBorne = preHitAirBorne;
                     hitObj.entityHit.motionX = preHitMotionX;
@@ -277,6 +272,10 @@ public abstract class EntityTurretProjectile
         }
     }
 
+    public DamageSource getProjDamageSource(Entity hitEntity) {
+        return DamageSource.causeThrownDamage(this, this.shooterCache == null ? this : this.shooterCache);
+    }
+
     public static void setEntityTarget(EntityCreature target, final EntityTurret attacker) {
         target.setAttackTarget(attacker);
         target.setRevengeTarget(attacker);
@@ -313,10 +312,6 @@ public abstract class EntityTurretProjectile
     }
 
     protected void processHit(@SuppressWarnings("UnusedParameters") RayTraceResult hitObj) {
-        if( hitObj != null ) {
-            if( hitObj.typeOfHit == RayTraceResult.Type.BLOCK ) {
-            }
-        }
         this.setPosition(hitObj.hitVec.xCoord, hitObj.hitVec.yCoord, hitObj.hitVec.zCoord);
         this.playSound(this.getRicochetSound(), 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
         this.setDead();
@@ -346,11 +341,11 @@ public abstract class EntityTurretProjectile
         return 0.8F;
     }
 
-    public boolean onPreHit(Entity e, DamageSource dmgSource, float dmg) {
+    public boolean onPreHit(Entity e, DamageSource dmgSource, MutableFloat dmg) {
         return true;
     }
 
-    public void onPostHit(Entity e, DamageSource dmg) { }
+    public void onPostHit(Entity e, DamageSource dmgSource) { }
 
     @Override
     protected void readEntityFromNBT(NBTTagCompound nbt) {

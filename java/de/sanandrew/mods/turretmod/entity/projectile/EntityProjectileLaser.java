@@ -8,13 +8,21 @@
  */
 package de.sanandrew.mods.turretmod.entity.projectile;
 
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.mutable.MutableFloat;
 
 public class EntityProjectileLaser
         extends EntityTurretProjectile
@@ -66,10 +74,30 @@ public class EntityProjectileLaser
     }
 
     @Override
-    public boolean onPreHit(Entity e, DamageSource dmgSource, float dmg) {
+    public DamageSource getProjDamageSource(Entity hitEntity) {
+        DamageSource dmg = new EntityDamageSourceIndirect("thrown", this, this.shooterCache == null ? this : this.shooterCache);
+        if( !(this.shooterCache instanceof EntityTurret && ((EntityTurret) this.shooterCache).getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_ENDER_LENS)) ) {
+            dmg.setFireDamage();
+        }
+        return dmg;
+    }
+
+    @Override
+    public boolean onPreHit(Entity e, DamageSource dmgSource, MutableFloat dmg) {
         if( super.onPreHit(e, dmgSource, dmg) ) {
             if( e instanceof EntityLivingBase ) {
                 EntityLivingBase elb = ((EntityLivingBase) e);
+
+                if( !(this.shooterCache instanceof EntityTurret && ((EntityTurret) this.shooterCache).getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_ENDER_LENS)) ) {
+                    if( elb.isImmuneToFire() ) {
+                        return false;
+                    }
+                } else {
+                    if( !elb.isImmuneToFire() ) {
+                        dmg.setValue(dmg.floatValue() * 1.25F);
+                    }
+                }
+
                 this.prevMaxHurtResistantTime = elb.maxHurtResistantTime;
                 elb.maxHurtResistantTime = 10;
             }
@@ -81,8 +109,8 @@ public class EntityProjectileLaser
     }
 
     @Override
-    public void onPostHit(Entity e, DamageSource dmg) {
-        super.onPostHit(e, dmg);
+    public void onPostHit(Entity e, DamageSource dmgSource) {
+        super.onPostHit(e, dmgSource);
 
         if( e instanceof EntityLivingBase ) {
             ((EntityLivingBase) e).maxHurtResistantTime = this.prevMaxHurtResistantTime;

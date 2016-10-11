@@ -41,6 +41,7 @@ public final class UpgradeRegistry
     public static final UUID UPG_ECONOMY_I = UUID.fromString("A8F29058-C8B7-400D-A7F4-4CEDE627A7E8");
     public static final UUID UPG_ECONOMY_II = UUID.fromString("2A76A2EB-0EA3-4EB0-9EC2-61E579361306");
     public static final UUID UPG_ECONOMY_INF = UUID.fromString("C3CF3EE9-8314-4766-A5E0-6033DB3EE9DB");
+    public static final UUID UPG_ENDER_LENS = UUID.fromString("0ED3D861-F11D-4F6B-B9FC-67E22C8EB538");
 
     public static final UpgradeRegistry INSTANCE = new UpgradeRegistry();
 
@@ -107,6 +108,7 @@ public final class UpgradeRegistry
         this.registerUpgrade(UPG_ECONOMY_I, new UpgradeAmmoUsage.UpgradeAmmoUseI());
         this.registerUpgrade(UPG_ECONOMY_II, new UpgradeAmmoUsage.UpgradeAmmoUseII());
         this.registerUpgrade(UPG_ECONOMY_INF, new UpgradeAmmoUsage.UpgradeAmmoUseInf());
+        this.registerUpgrade(UPG_ENDER_LENS, new UpgradeEnderLens());
 
         emptyInst = this.upgradeToUuidMap.get(EMPTY);
     }

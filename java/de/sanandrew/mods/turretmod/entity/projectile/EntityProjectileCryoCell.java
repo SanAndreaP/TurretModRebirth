@@ -22,6 +22,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.mutable.MutableFloat;
 
 public class EntityProjectileCryoCell
         extends EntityTurretProjectile
@@ -84,7 +85,7 @@ public class EntityProjectileCryoCell
     }
 
     @Override
-    public boolean onPreHit(Entity e, DamageSource dmgSource, float dmg) {
+    public boolean onPreHit(Entity e, DamageSource dmgSource, MutableFloat dmg) {
         if( !this.worldObj.isRemote && e instanceof EntityLivingBase ) {
             ((EntityLivingBase) e).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, this.duration, this.level));
             if( e instanceof EntityCreature && this.shooterCache instanceof EntityTurret ) {
@@ -104,8 +105,8 @@ public class EntityProjectileCryoCell
     }
 
     @Override
-    public void onPostHit(Entity e, DamageSource dmg) {
-        super.onPostHit(e, dmg);
+    public void onPostHit(Entity e, DamageSource dmgSource) {
+        super.onPostHit(e, dmgSource);
 
         if( e instanceof EntityLivingBase ) {
             ((EntityLivingBase) e).hurtResistantTime = 0;
