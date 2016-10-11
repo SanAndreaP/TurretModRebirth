@@ -85,7 +85,7 @@ public class RenderWorldLastHandler
         Entity tgt = turret.getTargetProcessor().getTarget();
 
         double turretX = turret.lastTickPosX + (turret.posX - turret.lastTickPosX) * partTicks;
-        double turretY = turret.lastTickPosY + (turret.posY - turret.lastTickPosY) * partTicks + turret.getEyeHeight() - 0.1D;
+        double turretY = turret.lastTickPosY + (turret.posY - turret.lastTickPosY) * partTicks + turret.getEyeHeight() - (turret.isUpsideDown ? 0.95F : 0.1F);
         double turretZ = turret.lastTickPosZ + (turret.posZ - turret.lastTickPosZ) * partTicks;
 
         double vecX = tgt.lastTickPosX + (tgt.posX - tgt.lastTickPosX) * partTicks - turretX;
@@ -115,8 +115,8 @@ public class RenderWorldLastHandler
         GlStateManager.disableCull();
 
         GlStateManager.translate(turretX - renderX, turretY - renderY, turretZ - renderZ);
-        GlStateManager.rotate(270.0F - (float) rotYaw, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate((float) -rotPtc, 0.0F, 0.0F, 1.0F);
+        GlStateManager.rotate(270.0F - (float) rotYaw, 0.0F, (turret.isUpsideDown ? -1.0F : 1.0F), 0.0F);
+        GlStateManager.rotate((float) -rotPtc, 0.0F, 0.0F, (turret.isUpsideDown ? -1.0F : 1.0F));
 
         GlStateManager.depthMask(false);
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);

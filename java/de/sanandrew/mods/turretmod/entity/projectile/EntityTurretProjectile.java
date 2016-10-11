@@ -18,7 +18,9 @@ import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.monster.EntityEnderman;
+import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
@@ -342,7 +344,7 @@ public abstract class EntityTurretProjectile
     }
 
     public boolean onPreHit(Entity e, DamageSource dmgSource, MutableFloat dmg) {
-        return true;
+        return !(e instanceof EntityWither && ((EntityWither) e).isArmored() && dmgSource.isProjectile());
     }
 
     public void onPostHit(Entity e, DamageSource dmgSource) { }
