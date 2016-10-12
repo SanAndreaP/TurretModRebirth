@@ -23,8 +23,7 @@ import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuPlayerTargets;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuUpgrades;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.TurretInfoCategory;
-import de.sanandrew.mods.turretmod.client.model.ModelTurretCrossbow;
-import de.sanandrew.mods.turretmod.client.model.ModelTurretCryolator;
+import de.sanandrew.mods.turretmod.client.model.ModelTurretBase;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretLaser;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretMinigun;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretRevolver;
@@ -85,9 +84,9 @@ public class ClientProxy
         MinecraftForge.EVENT_BUS.register(new RenderWorldLastHandler());
         MinecraftForge.EVENT_BUS.register(new ClientWorldEventListener());
 
-        RenderingRegistry.registerEntityRenderingHandler(EntityTurretCrossbow.class, manager -> new RenderTurret(manager, new ModelTurretCrossbow(0.0F)));
+        RenderingRegistry.registerEntityRenderingHandler(EntityTurretCrossbow.class, manager -> new RenderTurret(manager, new ModelTurretBase(0.0F)));
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretShotgun.class, manager -> new RenderTurret(manager, new ModelTurretShotgun(0.0F)));
-        RenderingRegistry.registerEntityRenderingHandler(EntityTurretCryolator.class, manager -> new RenderTurret(manager, new ModelTurretCryolator(0.0F)));
+        RenderingRegistry.registerEntityRenderingHandler(EntityTurretCryolator.class, manager -> new RenderTurret(manager, new ModelTurretBase(0.0F)));
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretRevolver.class, manager -> new RenderTurret(manager, new ModelTurretRevolver(0.0F)));
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretMinigun.class, manager -> new RenderTurret(manager, new ModelTurretMinigun(0.0F)));
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretLaser.class, manager -> new RenderTurret(manager, new ModelTurretLaser(0.0F)));

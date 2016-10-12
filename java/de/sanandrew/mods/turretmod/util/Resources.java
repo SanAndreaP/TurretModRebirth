@@ -12,20 +12,24 @@ import net.minecraft.util.ResourceLocation;
 
 public enum Resources
 {
+    TURRET_T1_BASE_MODEL("models/entity/turret_base.json"),
     TURRET_T1_CROSSBOW("textures/entities/turrets/t1_crossbow.png"),
     TURRET_T1_CROSSBOW_GLOW("textures/entities/turrets/t1_crossbow_glow.png"),
-    TURRET_T1_CROSSBOW_MODEL("models/entity/turret_base.json"),
     TURRET_T1_SHOTGUN("textures/entities/turrets/t1_shotgun.png"),
     TURRET_T1_SHOTGUN_GLOW("textures/entities/turrets/t1_shotgun_glow.png"),
+    TURRET_T1_SHOTGUN_MODEL("models/entity/turret_shotgun.json"),
     TURRET_T1_SNOWBALL("textures/entities/turrets/t1_snowball.png"),
     TURRET_T1_SNOWBALL_GLOW("textures/entities/turrets/t1_snowball_glow.png"),
     TURRET_T2_REVOLVER("textures/entities/turrets/t2_revolver.png"),
     TURRET_T2_REVOLVER_GLOW("textures/entities/turrets/t2_revolver_glow.png"),
+    TURRET_T2_REVOLVER_MODEL("models/entity/turret_revolver.json"),
     TURRET_T2_MINIGUN("textures/entities/turrets/t2_minigun.png"),
     TURRET_T2_MINIGUN_EE("textures/entities/turrets/t2_minigun_sc.png"),
     TURRET_T2_MINIGUN_GLOW("textures/entities/turrets/t2_minigun_glow.png"),
+    TURRET_T2_MINIGUN_MODEL("models/entity/turret_minigun.json"),
     TURRET_T3_LASER("textures/entities/turrets/t3_laser.png"),
     TURRET_T3_LASER_GLOW("textures/entities/turrets/t3_laser_glow.png"),
+    TURRET_T3_LASER_MODEL("models/entity/turret_laser.json"),
 
     PROJECTILE_BULLET("textures/entities/projectiles/bullet.png"),
 

@@ -1,0 +1,22 @@
+{
+  "parent": "sapturretmod:models/entity/turret_base.json",
+  "cubes": [
+    {
+      "boxName": "barrel",
+      "sizeX": 4,
+      "sizeY": 2,
+      "sizeZ": 6,
+      "textureX": 24,
+      "textureY": 0,
+      "textureWidth": 128,
+      "textureHeight": 64,
+      "rotationPointX": 0.0,
+      "rotationPointY": 0.5,
+      "rotationPointZ": 0.0,
+      "offsetX": -2.0,
+      "offsetY": 0.0,
+      "offsetZ": -9.0,
+      "parentBox": "head"
+    }
+  ]
+}

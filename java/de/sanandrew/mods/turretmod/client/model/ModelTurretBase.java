@@ -16,12 +16,14 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.Arrays;
+import java.util.List;
 
-public class ModelTurretCrossbow
+public class ModelTurretBase
 		extends ModelBase
-		implements ModelJsonHandler<ModelTurretCrossbow, ModelJsonLoader.ModelJson>
+		implements ModelJsonHandler<ModelTurretBase, ModelJsonLoader.ModelJson>
 {
 	public ModelRenderer base;
 	public ModelRenderer head;
@@ -29,11 +31,11 @@ public class ModelTurretCrossbow
 	public ModelRenderer healthBar;
 	public ModelRenderer ammoBar;
 
-	private ModelJsonLoader<ModelTurretCrossbow, ModelJsonLoader.ModelJson> modelJson;
+	private ModelJsonLoader<ModelTurretBase, ModelJsonLoader.ModelJson> modelJson;
 	private final float scale;
 
-	public ModelTurretCrossbow(float scale) {
-		this.modelJson = ModelJsonLoader.create(this, Resources.TURRET_T1_CROSSBOW_MODEL.getResource(), "base", "head", "throat", "healthBar", "ammoBar");
+	public ModelTurretBase(float scale) {
+		this.modelJson = ModelJsonLoader.create(this, this.getModelLocation(), this.getMandatoryBoxes().stream().toArray(String[]::new));
 		this.scale = scale;
 	}
 
@@ -64,14 +66,8 @@ public class ModelTurretCrossbow
         this.ammoBar.rotateAngleZ = ((float)Math.PI / 2.0F) * ((maxAmmo - ammo) / (float) maxAmmo);
 	}
 
-	protected void setRotation(ModelRenderer model, float x, float y, float z) {
-		model.rotateAngleX = x;
-		model.rotateAngleY = y;
-		model.rotateAngleZ = z;
-	}
-
 	@Override
-	public void onReload(IResourceManager iResourceManager, ModelJsonLoader<ModelTurretCrossbow, ModelJsonLoader.ModelJson> loader) {
+	public void onReload(IResourceManager iResourceManager, ModelJsonLoader<ModelTurretBase, ModelJsonLoader.ModelJson> loader) {
 		loader.addCustomModelRenderer("antennaI", ModelRendererCulled.class);
 		loader.addCustomModelRenderer("antennaII", ModelRendererCulled.class);
 
@@ -90,5 +86,13 @@ public class ModelTurretCrossbow
 	@Override
 	public float getBaseScale() {
 		return this.scale;
+	}
+
+	public List<String> getMandatoryBoxes() {
+		return Arrays.asList("base", "head", "throat", "healthBar", "ammoBar");
+	}
+
+	public ResourceLocation getModelLocation() {
+		return Resources.TURRET_T1_BASE_MODEL.getResource();
 	}
 }
