@@ -10,13 +10,9 @@ package de.sanandrew.mods.turretmod.entity.projectile;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.SoundEvent;
@@ -76,7 +72,7 @@ public class EntityProjectileLaser
     @Override
     public DamageSource getProjDamageSource(Entity hitEntity) {
         DamageSource dmg = new EntityDamageSourceIndirect("thrown", this, this.shooterCache == null ? this : this.shooterCache);
-        if( !(this.shooterCache instanceof EntityTurret && ((EntityTurret) this.shooterCache).getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_ENDER_LENS)) ) {
+        if( !(this.shooterCache instanceof EntityTurret && ((EntityTurret) this.shooterCache).getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_ENDER_MEDIUM)) ) {
             dmg.setFireDamage();
         }
         return dmg;
@@ -88,7 +84,7 @@ public class EntityProjectileLaser
             if( e instanceof EntityLivingBase ) {
                 EntityLivingBase elb = ((EntityLivingBase) e);
 
-                if( !(this.shooterCache instanceof EntityTurret && ((EntityTurret) this.shooterCache).getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_ENDER_LENS)) ) {
+                if( !(this.shooterCache instanceof EntityTurret && ((EntityTurret) this.shooterCache).getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_ENDER_MEDIUM)) ) {
                     if( elb.isImmuneToFire() ) {
                         return false;
                     }

@@ -96,7 +96,7 @@ public final class TurretAssemblyRecipes
     public static final UUID UPG_ECONOMY_I = UUID.fromString("D8144A93-870F-4FBC-88F3-94CF8212EF84");
     public static final UUID UPG_ECONOMY_II = UUID.fromString("1BDE1C44-9165-4BBC-A79D-2003CCE969D9");
     public static final UUID UPG_ECONOMY_INF = UUID.fromString("7C5E0A1F-1BC3-4F72-A4A0-BB28A595CA0D");
-    public static final UUID UPG_ENDER_LENS = UUID.fromString("C6D6FA9C-9B3A-4DDD-B0D8-92CF5C2555F8");
+    public static final UUID UPG_ENDER_MEDIUM = UUID.fromString("C6D6FA9C-9B3A-4DDD-B0D8-92CF5C2555F8");
 
     public static final UUID UPG_AT_AUTO = UUID.fromString("40EEE46D-835D-42F8-8005-764A00C90365");
     public static final UUID UPG_AT_FILTER = UUID.fromString("BD48EB98-94A2-4516-90E0-4DC20E843490");
@@ -412,6 +412,11 @@ public final class TurretAssemblyRecipes
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
                                              new RecipeEntryItem(1).put(new RecipeEntryItem.ItemEnchEntry(new ItemStack(Items.BOW), Enchantments.INFINITY)).drawTooltip()};
         INSTANCE.registerRecipe(UPG_ECONOMY_INF, group, res, 20, 600, ingredients);
+
+        res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.UPG_ENDER_MEDIUM);
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+                                             new RecipeEntryItem(1).put(Items.ENDER_PEARL).drawTooltip()};
+        INSTANCE.registerRecipe(UPG_ENDER_MEDIUM, group, res, 20, 600, ingredients);
     }
 
     private Map<UUID, ItemStack> recipeResults = new HashMap<>();

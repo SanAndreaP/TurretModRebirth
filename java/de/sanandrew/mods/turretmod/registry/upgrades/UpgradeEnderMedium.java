@@ -10,25 +10,22 @@ package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
-import de.sanandrew.mods.turretmod.entity.turret.TargetingListener;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.List;
 import java.util.UUID;
 
-public class UpgradeEnderLens
+public class UpgradeEnderMedium
         implements TurretUpgrade
 {
     private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TurretModRebirth.ID, "upgrades/ender_lens");
 
     private final String name;
 
-    public UpgradeEnderLens() {
-        this.name = "ender_lens";
+    public UpgradeEnderMedium() {
+        this.name = "ender_medium";
     }
 
     @Override
@@ -64,7 +61,7 @@ public class UpgradeEnderLens
 
     @Override
     public UUID getRecipeId() {
-        return TurretAssemblyRecipes.UPG_ENDER_LENS;
+        return TurretAssemblyRecipes.UPG_ENDER_MEDIUM;
     }
 
     @Override

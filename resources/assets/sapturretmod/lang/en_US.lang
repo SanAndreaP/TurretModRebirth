@@ -83,6 +83,8 @@ item.sapturretmod:turret_upgrade.use_decr_ii.name=Economy II
 item.sapturretmod:turret_upgrade.use_decr_ii.desc=Like its required upgrade, this lets turrets preserve ammo. This increases the chance of doing so to 35%% .
 item.sapturretmod:turret_upgrade.use_decr_inf.name=Infinitas Oeconomia
 item.sapturretmod:turret_upgrade.use_decr_inf.desc=You want unlimited ammo? This upgrade recreates ammo automatically and infinitely, so you'll never run out of it! There's a catch though: The turret must be filled to the max with rounds, or otherwise it will resort to the other Economy upgrades to reduce ammo usage.
+item.sapturretmod:turret_upgrade.ender_medium.name=Ender Gain Medium
+item.sapturretmod:turret_upgrade.ender_medium.desc=Laser turrets are cool, but since they deal fire based damage, they can't damage anything that is immune to fire. This upgrade replaces the standard redstone based gain medium with an ender pearl based one.
 
 entity.sapturretmod.turret_i_crossbow.name=Crossbow Turret (T1)
 entity.sapturretmod.turret_i_crossbow.desc=A turret meant for basic defense and beginners. Not very strong but one of the cheapest to make.

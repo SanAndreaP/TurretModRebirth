@@ -100,7 +100,7 @@ public class RenderWorldLastHandler
         final double beamWidth = 0.0125D;
 
         ColorObj laserClr = new ColorObj(1.0F, 0.0F, 0.0F, 0.25F);
-        if( turret.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_ENDER_LENS) ) {
+        if( turret.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_ENDER_MEDIUM) ) {
             laserClr = new ColorObj(0.0F, 0.5F, 1.0F, 0.25F);
         }
 
