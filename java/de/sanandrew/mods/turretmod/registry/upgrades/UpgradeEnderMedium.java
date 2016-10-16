@@ -20,7 +20,7 @@ import java.util.UUID;
 public class UpgradeEnderMedium
         implements TurretUpgrade
 {
-    private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TurretModRebirth.ID, "upgrades/ender_lens");
+    private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TurretModRebirth.ID, "upgrades/ender_medium");
 
     private final String name;
 

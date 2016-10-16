@@ -32,7 +32,8 @@ public class UpgradeSmartTargeting
 
             for( Object eObj : entities ) {
                 if( eObj instanceof EntityTurret ) {
-                    if( eObj != turret && ((EntityTurret) eObj).getTargetProcessor().getTarget() == target ) {
+                    EntityTurret otherTurret = (EntityTurret) eObj;
+                    if( eObj != turret && otherTurret.getTargetProcessor().getTarget() == target && otherTurret.getTargetProcessor().hasAmmo() ) {
                         return false;
                     }
                 }

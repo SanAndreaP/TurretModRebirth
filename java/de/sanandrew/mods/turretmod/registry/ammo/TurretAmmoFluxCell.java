@@ -20,7 +20,7 @@ import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
-public abstract class TurretAmmoEnergyCell
+public abstract class TurretAmmoFluxCell
         implements TurretAmmo
 {
     public static final UUID CELL_UUID = UUID.fromString("48800C6A-9A31-4F45-8AD5-DD02B8B18BCB");
@@ -32,7 +32,7 @@ public abstract class TurretAmmoEnergyCell
     private final int capacity;
     private final ResourceLocation itemModel;
 
-    public TurretAmmoEnergyCell(boolean isMulti, String modelName) {
+    public TurretAmmoFluxCell(boolean isMulti, String modelName) {
         this.name = isMulti ? "ecell_lrg" : "ecell_sng";
         this.uuid = isMulti ? PACK_UUID : CELL_UUID;
         this.capacity = isMulti ? 16 : 1;
@@ -100,7 +100,7 @@ public abstract class TurretAmmoEnergyCell
     }
 
     public static class Single
-            extends TurretAmmoEnergyCell
+            extends TurretAmmoFluxCell
     {
         public Single() {
             super(false, "ecell");
@@ -113,7 +113,7 @@ public abstract class TurretAmmoEnergyCell
     }
 
     public static class Multi
-            extends TurretAmmoEnergyCell
+            extends TurretAmmoFluxCell
     {
         public Multi() {
             super(true, "ecell_pack");
