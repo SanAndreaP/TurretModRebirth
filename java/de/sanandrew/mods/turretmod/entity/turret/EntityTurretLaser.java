@@ -8,12 +8,17 @@
  */
 package de.sanandrew.mods.turretmod.entity.turret;
 
+import de.sanandrew.mods.turretmod.client.audio.SoundLaser;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
+import de.sanandrew.mods.turretmod.util.ReflectionUtils;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.Sounds;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ITickableSound;
+import net.minecraft.client.audio.SoundManager;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -21,7 +26,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.List;
 import java.util.UUID;
 
 public class EntityTurretLaser
@@ -62,7 +70,7 @@ public class EntityTurretLaser
 
         @Override
         public UUID getRecipeId() {
-            return TurretAssemblyRecipes.TURRET_MK2_RV;
+            return TurretAssemblyRecipes.TURRET_MK3_LR;
         }
 
         @Override
@@ -71,11 +79,8 @@ public class EntityTurretLaser
         }
     };
 
-//    public float barrelPosLeft = 1.0F;
-//    public float prevBarrelPosLeft = 1.0F;
-//    public float barrelPosRight = 1.0F;
-//    public float prevBarrelPosRight = 1.0F;
-//    public boolean leftShot;
+    @SideOnly(Side.CLIENT)
+    private SoundLaser laserSound;
 
     {
         this.targetProc = new MyTargetProc();
@@ -96,42 +101,6 @@ public class EntityTurretLaser
         this.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).setBaseValue(5.0D);
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(40.0D);
     }
-//
-//    @Override
-//    public void onUpdate() {
-//        this.prevBarrelPosLeft = this.barrelPosLeft;
-//        this.prevBarrelPosRight = this.barrelPosRight;
-//
-//        super.onUpdate();
-//
-//        if( this.worldObj.isRemote ) {
-//            if( this.barrelPosLeft < 1.0F ) {
-//                this.barrelPosLeft += 0.06F * 20.0F / this.targetProc.getMaxShootTicks();
-//            } else {
-//                this.barrelPosLeft = 1.0F;
-//            }
-//            if( this.barrelPosRight < 1.0F ) {
-//                this.barrelPosRight += 0.06F * 20.0F / this.targetProc.getMaxShootTicks();
-//            } else {
-//                this.barrelPosRight = 1.0F;
-//            }
-//
-//            if( this.wasShooting() ) {
-//                float partShift;
-//                if( this.leftShot ) {
-//                    this.barrelPosRight = 0.0F;
-//                    this.leftShot = false;
-//                    partShift = 10.0F;
-//                } else {
-//                    this.barrelPosLeft = 0.0F;
-//                    this.leftShot = true;
-//                    partShift = -10.0F;
-//                }
-//
-//                TurretModRebirth.proxy.spawnParticle(EnumParticle.SHOTGUN_SHOT, this.posX, this.posY + 1.5F, this.posZ, Triplet.with(this.rotationYawHead + partShift, this.rotationPitch, this.isUpsideDown));
-//            }
-//        }
-//    }
 
     @Override
     public ResourceLocation getStandardTexture() {
@@ -143,11 +112,26 @@ public class EntityTurretLaser
         return Resources.TURRET_T3_LASER_GLOW.getResource();
     }
 
+    @Override
+    public void onUpdate() {
+        super.onUpdate();
+
+        if( this.worldObj.isRemote ) {
+            if( this.laserSound == null ) {
+                this.laserSound = new SoundLaser(this);
+                Minecraft.getMinecraft().getSoundHandler().playSound(this.laserSound);
+            } else if( this.laserSound.isDonePlaying() || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(this.laserSound) ) {
+                this.laserSound = null;
+            }
+        }
+    }
+
     private static final AxisAlignedBB UPPER_BB = new AxisAlignedBB(-24.0D, -4.0D, -24.0D, 24.0D, 12.0D, 24.0D);
     private static final AxisAlignedBB LOWER_BB = new AxisAlignedBB(-24.0D, -12.0D, -24.0D, 24.0D, 4.0D, 24.0D);
     private class MyTargetProc
             extends TargetProcessor
     {
+
         public MyTargetProc() {
             super(EntityTurretLaser.this);
         }
@@ -159,7 +143,7 @@ public class EntityTurretLaser
 
         @Override
         public SoundEvent getShootSound() {
-            return null;//Sounds.SHOOT_LASER;
+            return null;
         }
 
         @Override

@@ -13,6 +13,7 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretMinigun;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretRevolver;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
@@ -21,6 +22,7 @@ import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoArrow;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoBullet;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoCryoCell;
+import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoFluxCell;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoMinigunShell;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoShotgunShell;
 import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
@@ -56,6 +58,7 @@ public final class TurretAssemblyRecipes
     public static final UUID TURRET_MK1_CL = UUID.fromString("6743974B-5552-45F7-9124-FDCF844BB56C");
     public static final UUID TURRET_MK2_RV = UUID.fromString("1A207F83-26E1-405A-A9A1-4AB6BB1C4C3A");
     public static final UUID TURRET_MK2_MG = UUID.fromString("7D21F126-56B5-44DB-A511-CFFADC0782F0");
+    public static final UUID TURRET_MK3_LR = UUID.fromString("94676B1E-8279-490C-A3F6-10983566FE3A");
 
     public static final UUID ARROW_SNG = UUID.fromString("1A011825-2E5B-4F17-925E-F734E6A732B9");
     public static final UUID ARROW_MTP = UUID.fromString("C079D29A-E6E2-4BE8-8478-326BDFEDE08B");
@@ -71,6 +74,8 @@ public final class TurretAssemblyRecipes
     public static final UUID CRYOCELL_3_MTP = UUID.fromString("052D31C1-05AD-45AF-9C36-D380A78F7E87");
     public static final UUID MGSHELL_SNG = UUID.fromString("EA5B683F-7D84-4BAE-BFC3-35F2EA48AB2B");
     public static final UUID MGSHELL_MTP = UUID.fromString("C69B50D8-EB88-4CFC-BF9E-792C75924C22");
+    public static final UUID FLUXCELL_SNG = UUID.fromString("78BA8E56-B161-49A0-8053-710083A39133");
+    public static final UUID FLUXCELL_MTP = UUID.fromString("8B4E5B02-A833-49BF-9E7A-3DF5676E3218");
 
     public static final UUID TCU = UUID.fromString("47B68BE0-30D6-4849-B995-74C147C8CC5D");
     public static final UUID TINFO = UUID.fromString("5A8C8AE3-878A-4580-9F84-2C8602B4275D");
@@ -117,14 +122,14 @@ public final class TurretAssemblyRecipes
         RecipeEntryItem[] ingredients;
 
         res = ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCrossbow.class));
-        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(12).put(Blocks.COBBLESTONE),
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(12).put("cobblestone"),
                                              new RecipeEntryItem(1).put(Items.BOW),
                                              new RecipeEntryItem(4).put("dustRedstone"),
                                              new RecipeEntryItem(4).put("plankWood")};
         INSTANCE.registerRecipe(TURRET_MK1_CB, group, res, 10, 100, ingredients);
 
         res = ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretShotgun.class));
-        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(12).put(Blocks.STONE),
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(12).put("stone"),
                                              new RecipeEntryItem(2).put("ingotIron"),
                                              new RecipeEntryItem(4).put("dustRedstone"),
                                              new RecipeEntryItem(4).put("logWood")};
@@ -139,7 +144,7 @@ public final class TurretAssemblyRecipes
         INSTANCE.registerRecipe(TURRET_MK1_CL, group, res, 10, 100, ingredients);
 
         res = ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretRevolver.class));
-        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Blocks.IRON_BLOCK),
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put("blockIron"),
                                              new RecipeEntryItem(1).put("ingotGold"),
                                              new RecipeEntryItem(4).put("dustRedstone"),
                                              new RecipeEntryItem(4).put(Blocks.STONEBRICK),
@@ -147,12 +152,20 @@ public final class TurretAssemblyRecipes
         INSTANCE.registerRecipe(TURRET_MK2_RV, group, res, 15, 100, ingredients);
 
         res = ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretMinigun.class));
-        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Blocks.IRON_BLOCK),
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put("blockIron"),
                                              new RecipeEntryItem(4).put("ingotGold"),
                                              new RecipeEntryItem(4).put("dustRedstone"),
                                              new RecipeEntryItem(4).put(Blocks.STONEBRICK),
                                              new RecipeEntryItem(8).put(new ItemStack(Blocks.STONE_SLAB, 1, 0))};
         INSTANCE.registerRecipe(TURRET_MK2_MG, group, res, 15, 100, ingredients);
+
+        res = ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretLaser.class));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put("obsidian"),
+                                             new RecipeEntryItem(1).put("blockRedstone"),
+                                             new RecipeEntryItem(1).put("blockIron"),
+                                             new RecipeEntryItem(2).put("ingotGold"),
+                                             new RecipeEntryItem(1).put("gemDiamond")};
+        INSTANCE.registerRecipe(TURRET_MK3_LR, group, res, 20, 100, ingredients);
     }
 
     private static void registerAmmo() {
@@ -241,6 +254,18 @@ public final class TurretAssemblyRecipes
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoMinigunShell.SHELL_UUID))),
                                              new RecipeEntryItem(1).put(Items.IRON_INGOT)};
         INSTANCE.registerRecipe(MGSHELL_MTP, group, res, 5, 120, ingredients);
+
+        // flux cells
+        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFluxCell.CELL_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("blockGlass"),
+                                             new RecipeEntryItem(1).put("ingotIron"),
+                                             new RecipeEntryItem(1).put("dustRedstone")};
+        INSTANCE.registerRecipe(FLUXCELL_SNG, group, res, 10, 60, ingredients);
+
+        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFluxCell.PACK_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFluxCell.CELL_UUID))),
+                                             new RecipeEntryItem(1).put(Items.IRON_INGOT)};
+        INSTANCE.registerRecipe(FLUXCELL_MTP, group, res, 5, 120, ingredients);
     }
 
     private static void registerMisc() {

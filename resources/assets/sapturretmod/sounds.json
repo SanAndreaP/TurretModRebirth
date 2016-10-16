@@ -57,7 +57,7 @@
   },
   "shoot.laser": {
     "category": "neutral",
-    "sounds": ["sapturretmod:shoot/laser"],
+    "sounds": ["sapturretmod:shoot/laser_const"],
     "subtitle": "subtitles.sapturretmod.turretShoot.laser"
   },
   "shoot.flamethrower": {
