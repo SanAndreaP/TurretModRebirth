@@ -180,13 +180,16 @@ public class ClientProxy
             case SHOTGUN_SHOT: {
                 float rotXZ = -data.<Float>getValue(0) / 180.0F * (float) Math.PI;
                 float rotY = -data.<Float>getValue(1) / 180.0F * (float) Math.PI - 0.1F;
+                boolean isUpsideDown = data.getValue(2);
+
+                rotXZ *= isUpsideDown ? -1.0F : 1.0F;
+                rotY *= isUpsideDown ? -1.0F : 1.0F;
+
                 double yShift = Math.sin(rotY) * 0.6F;
                 double xShift = Math.sin(rotXZ) * 0.6F * Math.cos(rotY);
                 double zShift = Math.cos(rotXZ) * 0.6F * Math.cos(rotY);
-                boolean isUpsideDown = data.getValue(2);
 
                 xShift *= isUpsideDown ? -1.0F : 1.0F;
-                yShift *= isUpsideDown ? -1.0F : 1.0F;
                 zShift *= isUpsideDown ? -1.0F : 1.0F;
                 y -= isUpsideDown ? 1.0F : 0.0F;
 
@@ -218,13 +221,17 @@ public class ClientProxy
                 float shift = (isLeft ? 45.0F : -45.0F) / 180.0F * (float) Math.PI;
                 float rotXZ = -(float) data.getValue(0) / 180.0F * (float) Math.PI;
                 float rotY = -(float) data.getValue(1) / 180.0F * (float) Math.PI - 0.1F;
-                double motionX = Math.sin(rotXZ) * 0.06F * Math.cos(rotY);
-                double motionY = Math.sin(rotY) * 0.06F;
-                double motionZ = Math.cos(rotXZ) * 0.06F * Math.cos(rotY);
                 boolean isUpsideDown = data.getValue(2);
 
+                rotXZ *= isUpsideDown ? -1.0F : 1.0F;
+                rotY *= isUpsideDown ? -1.0F : 1.0F;
+
+                double motionX = Math.sin(rotXZ) * 0.06F * Math.cos(rotY) * (isUpsideDown ? -1.0F : 1.0F);
+                double motionY = Math.sin(rotY) * 0.06F;
+                double motionZ = Math.cos(rotXZ) * 0.06F * Math.cos(rotY) * (isUpsideDown ? -1.0F : 1.0F);
+
                 x += (Math.sin(rotXZ + shift) * 0.7F * Math.cos(rotY)) * (isUpsideDown ? -1.0F : 1.0F);
-                y += (Math.sin(rotY) * 0.6F) * (isUpsideDown ? -1.0F : 1.0F) - (isUpsideDown ? 1.0F : 0.0F);
+                y += (Math.sin(rotY) * 0.6F) - (isUpsideDown ? 1.0F : 0.0F);
                 z += (Math.cos(rotXZ + shift) * 0.7F * Math.cos(rotY)) * (isUpsideDown ? -1.0F : 1.0F);
 
                 for( int i = 0; i < 8; i++ ) {
