@@ -21,7 +21,7 @@ import net.minecraft.util.ResourceLocation;
 import java.util.UUID;
 
 public abstract class TurretAmmoBullet
-        implements TurretAmmo
+        implements TurretAmmo<EntityProjectileBullet>
 {
     public static final UUID BULLET_UUID = UUID.fromString("E8CB6C41-00FE-4FA0-AD98-FC8DAD6609AC");
     public static final UUID PACK_UUID = UUID.fromString("FD7B2FBF-9BB7-437F-9FF0-A21842D3A94A");
@@ -55,7 +55,7 @@ public abstract class TurretAmmoBullet
     }
 
     @Override
-    public Class<? extends IProjectile> getEntityClass() {
+    public Class<EntityProjectileBullet> getEntityClass() {
         return EntityProjectileBullet.class;
     }
 
@@ -90,7 +90,7 @@ public abstract class TurretAmmoBullet
     }
 
     @Override
-    public IProjectile getEntity(EntityTurret turret) {
+    public EntityProjectileBullet getEntity(EntityTurret turret) {
         return new EntityProjectileBullet(turret.worldObj, turret, turret.getTargetProcessor().getTarget());
     }
 

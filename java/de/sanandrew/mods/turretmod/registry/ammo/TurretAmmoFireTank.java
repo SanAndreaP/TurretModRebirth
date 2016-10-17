@@ -8,9 +8,11 @@
  */
 package de.sanandrew.mods.turretmod.registry.ammo;
 
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileLaser;
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileFlame;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretFlamethrower;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretRevolver;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
@@ -20,22 +22,22 @@ import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
-public abstract class TurretAmmoFluxCell
-        implements TurretAmmo<EntityProjectileLaser>
+public abstract class TurretAmmoFireTank
+        implements TurretAmmo<EntityProjectileFlame>
 {
-    public static final UUID CELL_UUID = UUID.fromString("48800C6A-9A31-4F45-8AD5-DD02B8B18BCB");
-    public static final UUID PACK_UUID = UUID.fromString("1F427D47-1BED-41D4-8810-47FF274424B6");
-    private static final UUID TYPE_UUID = CELL_UUID;
+    public static final UUID TANK_UUID = UUID.fromString("0CA51FA8-FD33-4C3D-A9AB-BA29DFFF4ABA");
+    public static final UUID PACK_UUID = UUID.fromString("5C41DA09-8C7E-4191-8520-058E69C36DC0");
+    private static final UUID TYPE_UUID = TANK_UUID;
 
     private final String name;
     private final UUID uuid;
     private final int capacity;
     private final ResourceLocation itemModel;
 
-    public TurretAmmoFluxCell(boolean isMulti, String modelName) {
-        this.name = isMulti ? "ecell_lrg" : "ecell_sng";
-        this.uuid = isMulti ? PACK_UUID : CELL_UUID;
-        this.capacity = isMulti ? 16 : 1;
+    public TurretAmmoFireTank(boolean isMulti, String modelName) {
+        this.name = isMulti ? "tank_lrg" : "tank_sng";
+        this.uuid = isMulti ? PACK_UUID : TANK_UUID;
+        this.capacity = isMulti ? 256 : 16;
         this.itemModel = new ResourceLocation(TurretModRebirth.ID, "ammo/" + modelName);
     }
 
@@ -55,18 +57,18 @@ public abstract class TurretAmmoFluxCell
     }
 
     @Override
-    public Class<EntityProjectileLaser> getEntityClass() {
-        return EntityProjectileLaser.class;
+    public Class<EntityProjectileFlame> getEntityClass() {
+        return EntityProjectileFlame.class;
     }
 
     @Override
     public Class<? extends EntityTurret> getTurret() {
-        return EntityTurretLaser.class;
+        return EntityTurretFlamethrower.class;
     }
 
     @Override
     public float getInfoDamage() {
-        return 2.5F;
+        return 0.5F;
     }
 
     @Override
@@ -81,17 +83,17 @@ public abstract class TurretAmmoFluxCell
 
     @Override
     public String getInfoName() {
-        return "ecell";
+        return "tank";
     }
 
     @Override
     public ItemStack getStoringAmmoItem() {
-        return ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(CELL_UUID));
+        return ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TANK_UUID));
     }
 
     @Override
-    public EntityProjectileLaser getEntity(EntityTurret turret) {
-        return new EntityProjectileLaser(turret.worldObj, turret, turret.getTargetProcessor().getTarget());
+    public EntityProjectileFlame getEntity(EntityTurret turret) {
+        return new EntityProjectileFlame(turret.worldObj, turret, turret.getTargetProcessor().getTarget());
     }
 
     @Override
@@ -100,27 +102,29 @@ public abstract class TurretAmmoFluxCell
     }
 
     public static class Single
-            extends TurretAmmoFluxCell
+            extends TurretAmmoFireTank
     {
         public Single() {
-            super(false, "ecell");
+            super(false, "tank");
         }
 
         @Override
         public UUID getRecipeId() {
+            //TODO: change recipe
             return TurretAssemblyRecipes.BULLET_SNG;
         }
     }
 
     public static class Multi
-            extends TurretAmmoFluxCell
+            extends TurretAmmoFireTank
     {
         public Multi() {
-            super(true, "ecell_pack");
+            super(true, "tank_pack");
         }
 
         @Override
         public UUID getRecipeId() {
+            //TODO: change recipe
             return TurretAssemblyRecipes.BULLET_MTP;
         }
     }

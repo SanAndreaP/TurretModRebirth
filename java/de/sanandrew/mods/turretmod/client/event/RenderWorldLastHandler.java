@@ -85,7 +85,7 @@ public class RenderWorldLastHandler
         Entity tgt = turret.getTargetProcessor().getTarget();
 
         double turretX = turret.lastTickPosX + (turret.posX - turret.lastTickPosX) * partTicks;
-        double turretY = turret.lastTickPosY + (turret.posY - turret.lastTickPosY) * partTicks + turret.getEyeHeight() - (turret.isUpsideDown ? 0.95F : 0.1F);
+        double turretY = turret.lastTickPosY + (turret.posY - turret.lastTickPosY) * partTicks + turret.getEyeHeight() - (turret.isUpsideDown ? 0.95F : 0.13F);
         double turretZ = turret.lastTickPosZ + (turret.posZ - turret.lastTickPosZ) * partTicks;
 
         double vecX = tgt.lastTickPosX + (tgt.posX - tgt.lastTickPosX) * partTicks - turretX;

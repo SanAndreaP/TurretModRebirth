@@ -20,7 +20,6 @@ import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.monster.EntityEnderman;
-import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
@@ -35,7 +34,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import org.apache.commons.lang3.mutable.MutableFloat;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,9 +47,12 @@ public abstract class EntityTurretProjectile
     protected UUID targetUUID;
     protected Entity targetCache;
 
+    protected double maxDist;
+
     public EntityTurretProjectile(World world) {
         super(world);
         this.setSize(0.5F, 0.5F);
+        this.maxDist = Integer.MAX_VALUE;
     }
 
     public EntityTurretProjectile(World world, Entity shooter, Entity target) {
@@ -59,8 +60,12 @@ public abstract class EntityTurretProjectile
 
         double y = shooter.posY + shooter.getEyeHeight() - 0.1D;
 
-        if( shooter instanceof EntityTurret && ((EntityTurret) shooter).isUpsideDown ) {
-            y -= 1.0D;
+        if( shooter instanceof EntityTurret ) {
+            EntityTurret turret = (EntityTurret) shooter;
+            if( turret.isUpsideDown ) {
+                y -= 1.0D;
+            }
+            this.maxDist = turret.getTargetProcessor().getRangeVal() * 4.0D;
         }
 
         this.setPosition(shooter.posX, y, shooter.posZ);
@@ -110,7 +115,7 @@ public abstract class EntityTurretProjectile
     public void onUpdate() {
         this.isAirBorne = true;
 
-        if( this.shooterCache instanceof EntityTurret && this.getDistanceToEntity(this.shooterCache) > ((EntityTurret) this.shooterCache).getTargetProcessor().getRangeVal() * 4 ) {
+        if( this.shooterCache != null && this.getDistanceToEntity(this.shooterCache) > this.maxDist ) {
             this.setDead();
             return;
         }
@@ -349,6 +354,8 @@ public abstract class EntityTurretProjectile
 
     public void onPostHit(Entity e, DamageSource dmgSource) { }
 
+    public void onDeathUpdate() { }
+
     @Override
     protected void readEntityFromNBT(NBTTagCompound nbt) {
         if( nbt.hasKey("shooter") ) {
@@ -418,6 +425,11 @@ public abstract class EntityTurretProjectile
         if( buffer.readBoolean() ) {
             this.targetCache = this.worldObj.getEntityByID(buffer.readInt());
         }
+    }
+
+    @Override
+    public void moveEntity(double x, double y, double z) {
+        super.moveEntity(x, y, z);
     }
 
     public abstract float getArc();

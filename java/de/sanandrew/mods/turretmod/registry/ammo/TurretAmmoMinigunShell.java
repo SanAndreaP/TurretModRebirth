@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.registry.ammo;
 
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileMinigunPebble;
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectilePebble;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretMinigun;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
@@ -21,7 +22,7 @@ import net.minecraft.util.ResourceLocation;
 import java.util.UUID;
 
 public abstract class TurretAmmoMinigunShell
-        implements TurretAmmo
+        implements TurretAmmo<EntityProjectileMinigunPebble>
 {
     public static final UUID SHELL_UUID = UUID.fromString("3851173D-3AC3-4F17-A488-68C33716AF26");
     public static final UUID PACK_UUID = UUID.fromString("50634E1E-94C4-4EF6-8D76-7C8CADDCAE85");
@@ -55,7 +56,7 @@ public abstract class TurretAmmoMinigunShell
     }
 
     @Override
-    public Class<? extends IProjectile> getEntityClass() {
+    public Class<EntityProjectileMinigunPebble> getEntityClass() {
         return EntityProjectileMinigunPebble.class;
     }
 
@@ -90,7 +91,7 @@ public abstract class TurretAmmoMinigunShell
     }
 
     @Override
-    public IProjectile getEntity(EntityTurret turret) {
+    public EntityProjectileMinigunPebble getEntity(EntityTurret turret) {
         return new EntityProjectileMinigunPebble(turret.worldObj, turret, turret.getTargetProcessor().getTarget());
     }
 

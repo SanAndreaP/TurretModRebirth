@@ -8,6 +8,7 @@ package de.sanandrew.mods.turretmod.client.audio;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
 import de.sanandrew.mods.turretmod.util.Sounds;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.util.SoundCategory;
 
@@ -33,16 +34,11 @@ public class SoundLaser
             this.yPosF = (float)this.turret.posY;
             this.zPosF = (float)this.turret.posZ;
 
-            if( this.turret.getTargetProcessor().isShooting() && this.turret.getTargetProcessor().hasAmmo() ) {
+            if( this.turret.getTargetProcessor().isShooting() && this.turret.getTargetProcessor().hasAmmo() && !Minecraft.getMinecraft().isGamePaused() ) {
                 this.volume = 1.0F;
             } else {
-                this.volume = 0.0F;
+                this.donePlaying = true;
             }
         }
-    }
-
-    public SoundLaser reenable() {
-        this.donePlaying = true;
-        return this;
     }
 }

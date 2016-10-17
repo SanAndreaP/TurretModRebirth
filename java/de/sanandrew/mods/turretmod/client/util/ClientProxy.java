@@ -24,6 +24,7 @@ import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuUpgrades;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.TurretInfoCategory;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretBase;
+import de.sanandrew.mods.turretmod.client.model.ModelTurretFlamethrower;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretLaser;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretMinigun;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretRevolver;
@@ -31,6 +32,7 @@ import de.sanandrew.mods.turretmod.client.model.ModelTurretShotgun;
 import de.sanandrew.mods.turretmod.client.particle.ParticleAssemblySpark;
 import de.sanandrew.mods.turretmod.client.particle.ParticleCryoTrail;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderBullet;
+import de.sanandrew.mods.turretmod.client.render.projectile.RenderFlame;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderNothingness;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderPebble;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderTurretArrow;
@@ -41,12 +43,14 @@ import de.sanandrew.mods.turretmod.client.world.ClientWorldEventListener;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCryoCell;
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileFlame;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileLaser;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileMinigunPebble;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectilePebble;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretFlamethrower;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretMinigun;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretRevolver;
@@ -90,12 +94,14 @@ public class ClientProxy
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretRevolver.class, manager -> new RenderTurret(manager, new ModelTurretRevolver(0.0F)));
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretMinigun.class, manager -> new RenderTurret(manager, new ModelTurretMinigun(0.0F)));
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretLaser.class, manager -> new RenderTurret(manager, new ModelTurretLaser(0.0F)));
+        RenderingRegistry.registerEntityRenderingHandler(EntityTurretFlamethrower.class, manager -> new RenderTurret(manager, new ModelTurretFlamethrower(0.0F)));
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCrossbowBolt.class, RenderTurretArrow::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCryoCell.class, RenderNothingness::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectilePebble.class, RenderPebble::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectileBullet.class, RenderBullet::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectileMinigunPebble.class, RenderPebble::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectileLaser.class, RenderNothingness::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileFlame.class, RenderFlame::new);
     }
 
     @Override

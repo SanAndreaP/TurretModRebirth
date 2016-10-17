@@ -51,22 +51,24 @@ import org.apache.logging.log4j.Level;
 public class CommonProxy
         implements IGuiHandler
 {
+    public static int entityCount = 0;
+
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(PlayerList.INSTANCE);
-        int entityCnt = 0;
-        EntityRegistry.registerModEntity(EntityTurretCrossbow.class, "turret_i_crossbow", entityCnt++, TurretModRebirth.instance, 128, 1, false);
-        EntityRegistry.registerModEntity(EntityTurretShotgun.class, "turret_i_shotgun", entityCnt++, TurretModRebirth.instance, 128, 1, false);
-        EntityRegistry.registerModEntity(EntityTurretCryolator.class, "turret_i_snowball", entityCnt++, TurretModRebirth.instance, 128, 1, false);
-        EntityRegistry.registerModEntity(EntityTurretRevolver.class, "turret_ii_revolver", entityCnt++, TurretModRebirth.instance, 128, 1, false);
-        EntityRegistry.registerModEntity(EntityTurretMinigun.class, "turret_ii_minigun", entityCnt++, TurretModRebirth.instance, 128, 1, false);
-        EntityRegistry.registerModEntity(EntityTurretLaser.class, "turret_iii_laser", entityCnt++, TurretModRebirth.instance, 128, 1, false);
-
-        EntityRegistry.registerModEntity(EntityProjectileCrossbowBolt.class, "turret_proj_arrow", entityCnt++, TurretModRebirth.instance, 128, 1, true);
-        EntityRegistry.registerModEntity(EntityProjectilePebble.class, "turret_proj_pebble", entityCnt++, TurretModRebirth.instance, 128, 1, true);
-        EntityRegistry.registerModEntity(EntityProjectileCryoCell.class, "turret_proj_snowball", entityCnt++, TurretModRebirth.instance, 128, 1, true);
-        EntityRegistry.registerModEntity(EntityProjectileBullet.class, "turret_proj_bullet", entityCnt++, TurretModRebirth.instance, 128, 1, true);
-        EntityRegistry.registerModEntity(EntityProjectileMinigunPebble.class, "turret_proj_mgpebble", entityCnt++, TurretModRebirth.instance, 128, 1, true);
-        EntityRegistry.registerModEntity(EntityProjectileLaser.class, "turret_proj_laser", entityCnt++, TurretModRebirth.instance, 128, 1, true);
+//        int entityCnt = 0;
+//        EntityRegistry.registerModEntity(EntityTurretCrossbow.class, "turret_i_crossbow", entityCnt++, TurretModRebirth.instance, 128, 1, false);
+//        EntityRegistry.registerModEntity(EntityTurretShotgun.class, "turret_i_shotgun", entityCnt++, TurretModRebirth.instance, 128, 1, false);
+//        EntityRegistry.registerModEntity(EntityTurretCryolator.class, "turret_i_snowball", entityCnt++, TurretModRebirth.instance, 128, 1, false);
+//        EntityRegistry.registerModEntity(EntityTurretRevolver.class, "turret_ii_revolver", entityCnt++, TurretModRebirth.instance, 128, 1, false);
+//        EntityRegistry.registerModEntity(EntityTurretMinigun.class, "turret_ii_minigun", entityCnt++, TurretModRebirth.instance, 128, 1, false);
+//        EntityRegistry.registerModEntity(EntityTurretLaser.class, "turret_iii_laser", entityCnt++, TurretModRebirth.instance, 128, 1, false);
+//
+//        EntityRegistry.registerModEntity(EntityProjectileCrossbowBolt.class, "turret_proj_arrow", entityCnt++, TurretModRebirth.instance, 128, 1, true);
+//        EntityRegistry.registerModEntity(EntityProjectilePebble.class, "turret_proj_pebble", entityCnt++, TurretModRebirth.instance, 128, 1, true);
+//        EntityRegistry.registerModEntity(EntityProjectileCryoCell.class, "turret_proj_snowball", entityCnt++, TurretModRebirth.instance, 128, 1, true);
+//        EntityRegistry.registerModEntity(EntityProjectileBullet.class, "turret_proj_bullet", entityCnt++, TurretModRebirth.instance, 128, 1, true);
+//        EntityRegistry.registerModEntity(EntityProjectileMinigunPebble.class, "turret_proj_mgpebble", entityCnt++, TurretModRebirth.instance, 128, 1, true);
+//        EntityRegistry.registerModEntity(EntityProjectileLaser.class, "turret_proj_laser", entityCnt++, TurretModRebirth.instance, 128, 1, true);
     }
 
     public void init(FMLInitializationEvent event) { }

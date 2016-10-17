@@ -30,8 +30,13 @@ public enum Resources
     TURRET_T3_LASER("textures/entities/turrets/t3_laser.png"),
     TURRET_T3_LASER_GLOW("textures/entities/turrets/t3_laser_glow.png"),
     TURRET_T3_LASER_MODEL("models/entity/turret_laser.json"),
+    TURRET_T3_FTHROWER("textures/entities/turrets/t3_flamethrower.png"),
+    TURRET_T3_FTHROWER_GLOW("textures/entities/turrets/t3_flamethrower_glow.png"),
+    TURRET_T3_FTHROWER_MODEL("models/entity/turret_flamethrower.json"),
 
     PROJECTILE_BULLET("textures/entities/projectiles/bullet.png"),
+    PROJECTILE_FLAME_RED("textures/entities/projectiles/flame_red.png"),
+    PROJECTILE_FLAME_BLUE("textures/entities/projectiles/flame_blue.png"),
 
     GUI_BUTTONS("textures/gui/buttons.png"),
     GUI_TCU_TARGETS("textures/gui/tcu/page_targets.png"),

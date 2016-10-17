@@ -33,9 +33,6 @@ public class EntityProjectileMinigunPebble
             float shift = (turret.leftShot ? 45.0F : -45.0F) / 180.0F * (float) Math.PI;
             float rotXZ = -turret.rotationYawHead / 180.0F * (float) Math.PI;
             float rotY = -(turret.rotationPitch - 7.5F) / 180.0F * (float) Math.PI - 0.1F;
-            double motionX = Math.sin(rotXZ) * 0.06F * Math.cos(rotY);
-            double motionY = Math.sin(rotY) * 0.06F;
-            double motionZ = Math.cos(rotXZ) * 0.06F * Math.cos(rotY);
             boolean isUpsideDown = turret.isUpsideDown;
 
             this.posX += (Math.sin(rotXZ + shift) * 0.7F * Math.cos(rotY)) * (isUpsideDown ? -1.0F : 1.0F);

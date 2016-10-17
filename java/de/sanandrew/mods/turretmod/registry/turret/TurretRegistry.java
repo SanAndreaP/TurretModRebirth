@@ -11,11 +11,15 @@ package de.sanandrew.mods.turretmod.registry.turret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretFlamethrower;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretMinigun;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretRevolver;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
+import de.sanandrew.mods.turretmod.util.CommonProxy;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.logging.log4j.Level;
 
 import java.security.InvalidParameterException;
@@ -52,6 +56,10 @@ public final class TurretRegistry
     }
 
     public boolean registerTurretInfo(TurretInfo type) {
+        return this.registerTurretInfo(type, false);
+    }
+
+    private boolean registerTurretInfo(TurretInfo type, boolean registerEntity) {
         if( type == null ) {
             TurretModRebirth.LOG.log(Level.ERROR, "Cannot register NULL as Turret-Info!", new InvalidParameterException());
             return false;
@@ -81,15 +89,20 @@ public final class TurretRegistry
         this.infoFromClass.put(type.getTurretClass(), type);
         this.infos.add(type);
 
+        if( registerEntity ) {
+            EntityRegistry.registerModEntity(type.getTurretClass(), type.getName(), CommonProxy.entityCount++, TurretModRebirth.instance, 128, 1, false);
+        }
+
         return true;
     }
 
     public void initialize() {
-        this.registerTurretInfo(EntityTurretCrossbow.TINFO);
-        this.registerTurretInfo(EntityTurretShotgun.TINFO);
-        this.registerTurretInfo(EntityTurretCryolator.TINFO);
-        this.registerTurretInfo(EntityTurretRevolver.TINFO);
-        this.registerTurretInfo(EntityTurretMinigun.TINFO);
-        this.registerTurretInfo(EntityTurretLaser.TINFO);
+        this.registerTurretInfo(EntityTurretCrossbow.TINFO, true);
+        this.registerTurretInfo(EntityTurretShotgun.TINFO, true);
+        this.registerTurretInfo(EntityTurretCryolator.TINFO, true);
+        this.registerTurretInfo(EntityTurretRevolver.TINFO, true);
+        this.registerTurretInfo(EntityTurretMinigun.TINFO, true);
+        this.registerTurretInfo(EntityTurretLaser.TINFO, true);
+        this.registerTurretInfo(EntityTurretFlamethrower.TINFO, true);
     }
 }

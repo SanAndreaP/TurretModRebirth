@@ -9,13 +9,14 @@
 package de.sanandrew.mods.turretmod.registry.ammo;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
-public interface TurretAmmo
+public interface TurretAmmo<T extends Entity & IProjectile>
 {
     String getName();
     UUID getId();
@@ -25,8 +26,8 @@ public interface TurretAmmo
     float getInfoDamage();
     UUID getRecipeId();
     int getAmmoCapacity();
-    Class<? extends IProjectile> getEntityClass();
-    IProjectile getEntity(EntityTurret turret);
+    Class<T> getEntityClass();
+    T getEntity(EntityTurret turret);
     Class<? extends EntityTurret> getTurret();
     ResourceLocation getModel();
     ItemStack getStoringAmmoItem();

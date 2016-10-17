@@ -21,7 +21,7 @@ import net.minecraft.util.ResourceLocation;
 import java.util.UUID;
 
 public abstract class TurretAmmoArrow
-        implements TurretAmmo
+        implements TurretAmmo<EntityProjectileCrossbowBolt>
 {
     public static final UUID ARROW_UUID = UUID.fromString("7b497e61-4e8d-4e49-ac71-414751e399e8");
     public static final UUID QUIVER_UUID = UUID.fromString("e6d51120-b52a-42ea-bf78-bebbc7d41c09");
@@ -55,7 +55,7 @@ public abstract class TurretAmmoArrow
     }
 
     @Override
-    public Class<? extends IProjectile> getEntityClass() {
+    public Class<EntityProjectileCrossbowBolt> getEntityClass() {
         return EntityProjectileCrossbowBolt.class;
     }
 
@@ -90,7 +90,7 @@ public abstract class TurretAmmoArrow
     }
 
     @Override
-    public IProjectile getEntity(EntityTurret turret) {
+    public EntityProjectileCrossbowBolt getEntity(EntityTurret turret) {
         return new EntityProjectileCrossbowBolt(turret.worldObj, turret, turret.getTargetProcessor().getTarget());
     }
 

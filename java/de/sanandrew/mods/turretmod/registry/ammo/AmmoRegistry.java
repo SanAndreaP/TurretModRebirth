@@ -14,11 +14,14 @@ import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.util.CommonProxy;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
@@ -38,7 +41,7 @@ public final class AmmoRegistry
     private final Map<UUID, List<TurretAmmo>> ammoGroupsFromUUID;
     private final List<TurretAmmo> ammoTypes;
 
-    public static final TurretAmmo NULL_TYPE = new TurretAmmo() {
+    public static final TurretAmmo NULL_TYPE = new TurretAmmo<EntityArrow>() {
         @Override
         public String getName() {
             return "";
@@ -80,12 +83,12 @@ public final class AmmoRegistry
         }
 
         @Override
-        public Class<? extends IProjectile> getEntityClass() {
+        public Class<EntityArrow> getEntityClass() {
             return null;
         }
 
         @Override
-        public IProjectile getEntity(EntityTurret turret) {
+        public EntityArrow getEntity(EntityTurret turret) {
             return null;
         }
 
@@ -146,7 +149,11 @@ public final class AmmoRegistry
         return new ArrayList<>(this.ammoTypesFromTurret.get(turret));
     }
 
-    public boolean registerAmmoType(TurretAmmo type) {
+    public boolean registerAmmoType(TurretAmmo<?> type) {
+        return registerAmmoType(type, false);
+    }
+
+    private boolean registerAmmoType(TurretAmmo<?> type, boolean registerEntity) {
         if( type == null ) {
             TurretModRebirth.LOG.log(Level.ERROR, "Cannot register NULL as Ammo-Type!", new InvalidParameterException());
             return false;
@@ -186,6 +193,10 @@ public final class AmmoRegistry
         this.ammoTypesFromTurret.put(type.getTurret(), type);
         this.ammoTypes.add(type);
 
+        if( registerEntity ) {
+            EntityRegistry.registerModEntity(type.getEntityClass(), "turret_proj_".concat(type.getName()), CommonProxy.entityCount++, TurretModRebirth.instance, 128, 1, true);
+        }
+
         List<TurretAmmo> groupList = this.ammoGroupsFromUUID.get(type.getGroupId());
         if( groupList == null ) {
             this.ammoGroupsFromUUID.put(type.getGroupId(), groupList = new ArrayList<>());
@@ -206,21 +217,23 @@ public final class AmmoRegistry
     }
 
     public void initialize() {
-        this.registerAmmoType(new TurretAmmoArrow.Single());
-        this.registerAmmoType(new TurretAmmoArrow.Quiver());
-        this.registerAmmoType(new TurretAmmoShotgunShell.Single());
-        this.registerAmmoType(new TurretAmmoShotgunShell.Multi());
-        this.registerAmmoType(new TurretAmmoBullet.Single());
-        this.registerAmmoType(new TurretAmmoBullet.Multi());
-        this.registerAmmoType(new TurretAmmoCryoCell.SingleMK1());
-        this.registerAmmoType(new TurretAmmoCryoCell.MultiMK1());
-        this.registerAmmoType(new TurretAmmoCryoCell.SingleMK2());
-        this.registerAmmoType(new TurretAmmoCryoCell.MultiMK2());
-        this.registerAmmoType(new TurretAmmoCryoCell.SingleMK3());
-        this.registerAmmoType(new TurretAmmoCryoCell.MultiMK3());
-        this.registerAmmoType(new TurretAmmoMinigunShell.Single());
-        this.registerAmmoType(new TurretAmmoMinigunShell.Multi());
-        this.registerAmmoType(new TurretAmmoFluxCell.Single());
-        this.registerAmmoType(new TurretAmmoFluxCell.Multi());
+        this.registerAmmoType(new TurretAmmoArrow.Single(), true);
+        this.registerAmmoType(new TurretAmmoArrow.Quiver(), true);
+        this.registerAmmoType(new TurretAmmoShotgunShell.Single(), true);
+        this.registerAmmoType(new TurretAmmoShotgunShell.Multi(), true);
+        this.registerAmmoType(new TurretAmmoBullet.Single(), true);
+        this.registerAmmoType(new TurretAmmoBullet.Multi(), true);
+        this.registerAmmoType(new TurretAmmoCryoCell.SingleMK1(), true);
+        this.registerAmmoType(new TurretAmmoCryoCell.MultiMK1(), true);
+        this.registerAmmoType(new TurretAmmoCryoCell.SingleMK2(), true);
+        this.registerAmmoType(new TurretAmmoCryoCell.MultiMK2(), true);
+        this.registerAmmoType(new TurretAmmoCryoCell.SingleMK3(), true);
+        this.registerAmmoType(new TurretAmmoCryoCell.MultiMK3(), true);
+        this.registerAmmoType(new TurretAmmoMinigunShell.Single(), true);
+        this.registerAmmoType(new TurretAmmoMinigunShell.Multi(), true);
+        this.registerAmmoType(new TurretAmmoFluxCell.Single(), true);
+        this.registerAmmoType(new TurretAmmoFluxCell.Multi(), true);
+        this.registerAmmoType(new TurretAmmoFireTank.Single(), true);
+        this.registerAmmoType(new TurretAmmoFireTank.Multi(), true);
     }
 }

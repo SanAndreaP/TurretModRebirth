@@ -257,7 +257,7 @@ public abstract class TargetProcessor
         return this.initShootTicks <= 0 || this.isShootingClt;
     }
 
-    public final IProjectile getProjectile() {
+    public Entity getProjectile() {
         TurretAmmo ammo = AmmoRegistry.INSTANCE.getType(this.ammoStack);
         if( ammo != AmmoRegistry.NULL_TYPE ) {
             return ammo.getEntity(this.turret);
@@ -314,7 +314,7 @@ public abstract class TargetProcessor
 
     public void shootProjectile() {
         if( this.hasAmmo() ) {
-            Entity projectile = (Entity) this.getProjectile();
+            Entity projectile = this.getProjectile();
             assert projectile != null;
             this.turret.worldObj.spawnEntityInWorld(projectile);
             this.turret.worldObj.playSound(null, this.turret.posX, this.turret.posY, this.turret.posZ, this.getShootSound(), SoundCategory.NEUTRAL, 1.8F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);

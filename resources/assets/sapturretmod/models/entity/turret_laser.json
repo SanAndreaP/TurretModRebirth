@@ -10,9 +10,11 @@
       "textureY": -2,
       "textureWidth": 128,
       "textureHeight": 64,
-      "offsetX": 1.5,
-      "offsetY": 0.5,
-      "offsetZ": -10.0,
+      "rotationPointX": 0.0,
+      "rotationPointY": 1.5,
+      "rotationPointZ": -10.0,
+      "rotateAngleZ": 0.78539816339744830961566084581988,
+      "offsetY": -1.0,
       "parentBox": "head"
     },
     {
@@ -24,9 +26,11 @@
       "textureY": 0,
       "textureWidth": 128,
       "textureHeight": 64,
-      "offsetX": 0.5,
-      "offsetY": 1.5,
-      "offsetZ": -10.0,
+      "rotationPointX": 0.0,
+      "rotationPointY": 1.5,
+      "rotationPointZ": -10.0,
+      "rotateAngleZ": 0.78539816339744830961566084581988,
+      "offsetX": -1.0,
       "parentBox": "head"
     },
     {
@@ -38,9 +42,9 @@
       "textureY": -2,
       "textureWidth": 128,
       "textureHeight": 64,
-      "offsetX": -1.5,
-      "offsetY": 0.5,
-      "offsetZ": -10.0,
+      "rotationPointX": 0.0,
+      "rotationPointY": 0.5,
+      "rotationPointZ": -10.0,
       "parentBox": "head"
     },
     {
@@ -52,9 +56,9 @@
       "textureY": 0,
       "textureWidth": 128,
       "textureHeight": 64,
-      "offsetX": -2.5,
-      "offsetY": 1.5,
-      "offsetZ": -10.0,
+      "rotationPointX": -1.0,
+      "rotationPointY": 1.5,
+      "rotationPointZ": -10.0,
       "parentBox": "head"
     }
   ]
