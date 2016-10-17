@@ -33,6 +33,7 @@ public class EntityProjectileFlame
 
     public EntityProjectileFlame(World world, Entity shooter, Entity target) {
         super(world, shooter, target);
+        this.damage = 2.75F;
 
         if( shooter instanceof EntityTurretFlamethrower ) {
             EntityTurretFlamethrower turret = (EntityTurretFlamethrower) shooter;
@@ -101,10 +102,10 @@ public class EntityProjectileFlame
     public void onPostHit(Entity e, DamageSource dmgSource) {
         super.onPostHit(e, dmgSource);
 
-//        this.damage -= 0.5F;
-//        if( this.damage < 0.0F ) {
-//            this.setDead();
-//        }
+        this.damage -= 0.5F;
+        if( this.damage < 0.0F ) {
+            this.setDead();
+        }
     }
 
     @Override
