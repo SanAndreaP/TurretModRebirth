@@ -186,13 +186,11 @@ public abstract class EntityTurretProjectile
         Entity entity = null;
         AxisAlignedBB checkBB = this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D);
 
-        List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, checkBB);
+        List<Entity> list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, checkBB);
         double minDist = 0.0D;
         float collisionRange;
 
-        for( Object entityObj : list ) {
-            Entity collidedEntity = (Entity) entityObj;
-
+        for( Entity collidedEntity : list ) {
             if( collidedEntity.canBeCollidedWith() && collidedEntity != this.shooterCache ) {
                 collisionRange = 0.3F;
                 AxisAlignedBB collisionAABB = collidedEntity.getEntityBoundingBox().expand(collisionRange, collisionRange, collisionRange);
