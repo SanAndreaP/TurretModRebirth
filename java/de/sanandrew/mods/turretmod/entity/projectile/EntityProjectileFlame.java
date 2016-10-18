@@ -93,13 +93,15 @@ public class EntityProjectileFlame
 
     @Override
     protected void processHit(RayTraceResult hitObj) {
-        this.setPosition(hitObj.hitVec.xCoord, hitObj.hitVec.yCoord, hitObj.hitVec.zCoord);
         this.playSound(this.getRicochetSound(), 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
         if( hitObj.typeOfHit != RayTraceResult.Type.ENTITY ) {
             this.setDead();
-        } else if( hitObj.typeOfHit == RayTraceResult.Type.BLOCK && !this.worldObj.isRemote ) {
-            BlockPos fire = hitObj.getBlockPos().add(hitObj.sideHit.getFrontOffsetX(), hitObj.sideHit.getFrontOffsetY(), hitObj.sideHit.getFrontOffsetZ());
-            this.worldObj.setBlockState(fire, Blocks.FIRE.getActualState(Blocks.FIRE.getDefaultState(), this.worldObj, fire));
+            if (hitObj.typeOfHit == RayTraceResult.Type.BLOCK && !this.worldObj.isRemote) {
+                BlockPos fire = hitObj.getBlockPos().offset(hitObj.sideHit);
+                if (this.worldObj.isAirBlock(fire)) {
+                    this.worldObj.setBlockState(fire, Blocks.FIRE.getDefaultState(), 11); // 1 = block update, 2 = send to client, 8 = needs update
+                }
+            }
         }
     }
 
