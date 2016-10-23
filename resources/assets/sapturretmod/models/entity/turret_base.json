@@ -196,31 +196,17 @@
       "parentBox": "throat"
     },
     {
-      "boxName": "antennaI",
-      "sizeX": 0,
-      "sizeY": 5,
-      "sizeZ": 1,
-      "textureX": 14,
-      "textureY": 15,
-      "textureWidth": 128,
-      "textureHeight": 64,
-      "offsetX": 0.0,
-      "offsetY": -8.0,
-      "offsetZ": -0.5,
-      "parentBox": "head"
-    },
-    {
-      "boxName": "antennaII",
+      "boxName": "antenna",
       "sizeX": 1,
       "sizeY": 5,
-      "sizeZ": 0,
-      "textureX": 12,
+      "sizeZ": 1,
+      "textureX": 15,
       "textureY": 16,
       "textureWidth": 128,
       "textureHeight": 64,
       "offsetX": -0.5,
       "offsetY": -8.0,
-      "offsetZ": 0.0,
+      "offsetZ": -0.5,
       "parentBox": "head"
     }
   ]
