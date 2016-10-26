@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
@@ -26,7 +27,7 @@ import java.util.UUID;
 
 public final class UpgradeRegistry
 {
-    public static final UUID EMPTY = new UUID(0L, 0L);
+    public static final UUID EMPTY = UuidUtils.EMPTY_UUID;
     public static final UUID UPG_STORAGE_I = UUID.fromString("1749478F-2A8E-4C56-BC03-6C76CB5DE921");
     public static final UUID UPG_STORAGE_II = UUID.fromString("DEFFE281-A2F5-488A-95C1-E9A3BB6E0DD1");
     public static final UUID UPG_STORAGE_III = UUID.fromString("50DB1AC3-1CCD-4CB0-AD5A-0777C548655D");

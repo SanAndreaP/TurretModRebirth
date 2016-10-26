@@ -26,8 +26,10 @@ public final class TmrConfiguration
     public static boolean calcForcefieldIntf = true;
     public static boolean useShaders = true;
 
+    public static String[] electrolyteAdditRecipes = new String[0];
+
     public static void initConfiguration(FMLPreInitializationEvent event) {
-        config = new Configuration(event.getSuggestedConfigurationFile(), "1.0.1", true);
+        config = new Configuration(event.getSuggestedConfigurationFile(), "1.1.0", true);
         MinecraftForge.EVENT_BUS.register(new TmrConfiguration());
         syncConfig();
     }
@@ -46,6 +48,9 @@ public final class TmrConfiguration
 
         desc = "Whether or not to use shaders. When disabled, some fancier rendering won't work. Only disable if there's incompatibilities with another mod!";
         useShaders = config.getBoolean("useShaders", CAT_CLIENT, useShaders, desc);
+
+        desc = "A list of items and values for the electrolyte generator to be able to use.";
+        electrolyteAdditRecipes = config.getStringList("electrolyteItems", Configuration.CATEGORY_GENERAL, electrolyteAdditRecipes, "");
 
         if( config.hasChanged() ) {
             config.save();

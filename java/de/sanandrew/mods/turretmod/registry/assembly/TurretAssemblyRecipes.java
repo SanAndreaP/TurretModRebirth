@@ -13,6 +13,7 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretFlamethrower;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretMinigun;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretRevolver;
@@ -22,6 +23,7 @@ import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoArrow;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoBullet;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoCryoCell;
+import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoFireTank;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoFluxCell;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoMinigunShell;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoShotgunShell;
@@ -36,6 +38,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
+import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.Level;
 
 import java.security.InvalidParameterException;
@@ -59,6 +62,7 @@ public final class TurretAssemblyRecipes
     public static final UUID TURRET_MK2_RV = UUID.fromString("1A207F83-26E1-405A-A9A1-4AB6BB1C4C3A");
     public static final UUID TURRET_MK2_MG = UUID.fromString("7D21F126-56B5-44DB-A511-CFFADC0782F0");
     public static final UUID TURRET_MK3_LR = UUID.fromString("94676B1E-8279-490C-A3F6-10983566FE3A");
+    public static final UUID TURRET_MK3_FT = UUID.fromString("AFC33ABF-B973-4A91-A86E-24D0A78E58B2");
 
     public static final UUID ARROW_SNG = UUID.fromString("1A011825-2E5B-4F17-925E-F734E6A732B9");
     public static final UUID ARROW_MTP = UUID.fromString("C079D29A-E6E2-4BE8-8478-326BDFEDE08B");
@@ -76,6 +80,8 @@ public final class TurretAssemblyRecipes
     public static final UUID MGSHELL_MTP = UUID.fromString("C69B50D8-EB88-4CFC-BF9E-792C75924C22");
     public static final UUID FLUXCELL_SNG = UUID.fromString("78BA8E56-B161-49A0-8053-710083A39133");
     public static final UUID FLUXCELL_MTP = UUID.fromString("8B4E5B02-A833-49BF-9E7A-3DF5676E3218");
+    public static final UUID FUELTANK_SNG = UUID.fromString("3F1B7AE0-CEDD-46D0-B0F0-289446560F21");
+    public static final UUID FUELTANK_MTP = UUID.fromString("85F480FD-299B-45CE-9796-C3ECC8EF5868");
 
     public static final UUID TCU = UUID.fromString("47B68BE0-30D6-4849-B995-74C147C8CC5D");
     public static final UUID TINFO = UUID.fromString("5A8C8AE3-878A-4580-9F84-2C8602B4275D");
@@ -102,6 +108,7 @@ public final class TurretAssemblyRecipes
     public static final UUID UPG_ECONOMY_II = UUID.fromString("1BDE1C44-9165-4BBC-A79D-2003CCE969D9");
     public static final UUID UPG_ECONOMY_INF = UUID.fromString("7C5E0A1F-1BC3-4F72-A4A0-BB28A595CA0D");
     public static final UUID UPG_ENDER_MEDIUM = UUID.fromString("C6D6FA9C-9B3A-4DDD-B0D8-92CF5C2555F8");
+    public static final UUID UPG_FUEL_PURIFY = UUID.fromString("042E0949-E137-4646-A227-0620D2FB6A4D");
 
     public static final UUID UPG_AT_AUTO = UUID.fromString("40EEE46D-835D-42F8-8005-764A00C90365");
     public static final UUID UPG_AT_FILTER = UUID.fromString("BD48EB98-94A2-4516-90E0-4DC20E843490");
@@ -166,6 +173,13 @@ public final class TurretAssemblyRecipes
                                              new RecipeEntryItem(2).put("ingotGold"),
                                              new RecipeEntryItem(1).put("gemDiamond")};
         INSTANCE.registerRecipe(TURRET_MK3_LR, group, res, 20, 100, ingredients);
+
+        res = ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretFlamethrower.class));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(3).put("obsidian"),
+                                             new RecipeEntryItem(1).put("blockRedstone"),
+                                             new RecipeEntryItem(1).put("blockQuartz"),
+                                             new RecipeEntryItem(4).put("ingotGold")};
+        INSTANCE.registerRecipe(TURRET_MK3_FT, group, res, 20, 100, ingredients);
     }
 
     private static void registerAmmo() {
@@ -266,6 +280,18 @@ public final class TurretAssemblyRecipes
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFluxCell.CELL_UUID))),
                                              new RecipeEntryItem(1).put(Items.IRON_INGOT)};
         INSTANCE.registerRecipe(FLUXCELL_MTP, group, res, 5, 120, ingredients);
+
+        // fuel tanks
+        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFireTank.TANK_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(Items.LAVA_BUCKET),
+                                             new RecipeEntryItem(1).put("dustRedstone"),
+                                             new RecipeEntryItem(1).put(Items.RABBIT_HIDE)};
+        INSTANCE.registerRecipe(FUELTANK_SNG, group, res, 10, 60, ingredients);
+
+        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFireTank.PACK_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFireTank.TANK_UUID))),
+                                             new RecipeEntryItem(1).put(Items.IRON_INGOT)};
+        INSTANCE.registerRecipe(FUELTANK_MTP, group, res, 5, 120, ingredients);
     }
 
     private static void registerMisc() {
@@ -440,8 +466,14 @@ public final class TurretAssemblyRecipes
 
         res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.UPG_ENDER_MEDIUM);
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
-                                             new RecipeEntryItem(1).put(Items.ENDER_PEARL).drawTooltip()};
+                                             new RecipeEntryItem(4).put(Items.ENDER_PEARL)};
         INSTANCE.registerRecipe(UPG_ENDER_MEDIUM, group, res, 20, 600, ingredients);
+
+        res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.UPG_FUEL_PURIFY);
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+                                             new RecipeEntryItem(1).put(Blocks.LAPIS_BLOCK),
+                                             new RecipeEntryItem(2).put(Items.MAGMA_CREAM)};
+        INSTANCE.registerRecipe(UPG_FUEL_PURIFY, group, res, 20, 600, ingredients);
     }
 
     private Map<UUID, ItemStack> recipeResults = new HashMap<>();

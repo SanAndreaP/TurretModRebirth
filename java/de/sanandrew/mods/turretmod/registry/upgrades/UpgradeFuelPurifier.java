@@ -62,8 +62,7 @@ public class UpgradeFuelPurifier
 
     @Override
     public UUID getRecipeId() {
-        //TODO: add recipe
-        return TurretAssemblyRecipes.UPG_ENDER_MEDIUM;
+        return TurretAssemblyRecipes.UPG_FUEL_PURIFY;
     }
 
     @Override

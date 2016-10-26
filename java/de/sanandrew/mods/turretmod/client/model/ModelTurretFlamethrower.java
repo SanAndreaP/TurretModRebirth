@@ -23,9 +23,6 @@ import java.util.stream.Stream;
 public class ModelTurretFlamethrower
 		extends ModelTurretBase
 {
-	public ModelRenderer barrelBaseLeft;
-	public ModelRenderer barrelBaseRight;
-
 	public ModelTurretFlamethrower(float scale) {
 		super(scale);
 	}

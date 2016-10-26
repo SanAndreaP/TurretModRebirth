@@ -47,7 +47,6 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
 import java.util.UUID;
 
-//TODO: make it TileEntityLockable
 public class TileEntityTurretAssembly
         extends TileEntityLockable
         implements ISidedInventory, IEnergyHandler, IEnergyReceiver, TileClientSync, ITickable

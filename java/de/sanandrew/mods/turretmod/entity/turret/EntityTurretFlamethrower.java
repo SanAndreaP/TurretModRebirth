@@ -69,8 +69,7 @@ public class EntityTurretFlamethrower
 
         @Override
         public UUID getRecipeId() {
-            //TODO: change recipe
-            return TurretAssemblyRecipes.TURRET_MK3_LR;
+            return TurretAssemblyRecipes.TURRET_MK3_FT;
         }
 
         @Override
@@ -78,9 +77,6 @@ public class EntityTurretFlamethrower
             return "8";
         }
     };
-
-//    @SideOnly(Side.CLIENT)
-//    private SoundLaser laserSound;
 
     {
         this.targetProc = new MyTargetProc();
@@ -111,22 +107,6 @@ public class EntityTurretFlamethrower
     @Override
     public ResourceLocation getGlowTexture() {
         return Resources.TURRET_T3_FTHROWER_GLOW.getResource();
-    }
-
-    @Override
-    public void onUpdate() {
-        super.onUpdate();
-
-//        if( this.worldObj.isRemote ) {
-//            if( this.laserSound == null ) {
-//                if( this.getTargetProcessor().isShooting() ) {
-//                    this.laserSound = new SoundLaser(this);
-//                    Minecraft.getMinecraft().getSoundHandler().playSound(this.laserSound);
-//                }
-//            } else if( this.laserSound.isDonePlaying() || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(this.laserSound) ) {
-//                this.laserSound = null;
-//            }
-//        }
     }
 
     private static final AxisAlignedBB UPPER_BB = new AxisAlignedBB(-8.0D, -2.0D, -8.0D, 8.0D, 4.0D, 8.0D);

@@ -68,9 +68,6 @@ public class ModelTurretBase
 
 	@Override
 	public void onReload(IResourceManager iResourceManager, ModelJsonLoader<ModelTurretBase, ModelJsonLoader.ModelJson> loader) {
-		loader.addCustomModelRenderer("antennaI", ModelRendererCulled.class);
-		loader.addCustomModelRenderer("antennaII", ModelRendererCulled.class);
-
 		loader.load();
 
 		this.base = loader.getBox("base");

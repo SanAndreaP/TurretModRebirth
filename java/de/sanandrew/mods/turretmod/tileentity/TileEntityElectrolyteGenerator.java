@@ -50,7 +50,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.util.HashMap;
 import java.util.Map;
 
-//TODO: make it TileEntityLockable
 public class TileEntityElectrolyteGenerator
         extends TileEntityLockable
         implements ISidedInventory, TileClientSync, IEnergyProvider, ITickable

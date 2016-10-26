@@ -8,15 +8,12 @@
  */
 package de.sanandrew.mods.turretmod.registry.ammo;
 
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileFlame;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretFlamethrower;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretRevolver;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -110,8 +107,7 @@ public abstract class TurretAmmoFireTank
 
         @Override
         public UUID getRecipeId() {
-            //TODO: change recipe
-            return TurretAssemblyRecipes.BULLET_SNG;
+            return TurretAssemblyRecipes.FUELTANK_SNG;
         }
     }
 
@@ -124,8 +120,7 @@ public abstract class TurretAmmoFireTank
 
         @Override
         public UUID getRecipeId() {
-            //TODO: change recipe
-            return TurretAssemblyRecipes.BULLET_MTP;
+            return TurretAssemblyRecipes.FUELTANK_MTP;
         }
     }
 }
