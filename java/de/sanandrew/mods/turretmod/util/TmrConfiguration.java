@@ -49,8 +49,14 @@ public final class TmrConfiguration
         desc = "Whether or not to use shaders. When disabled, some fancier rendering won't work. Only disable if there's incompatibilities with another mod!";
         useShaders = config.getBoolean("useShaders", CAT_CLIENT, useShaders, desc);
 
-        desc = "A list of items and values for the electrolyte generator to be able to use.";
-        electrolyteAdditRecipes = config.getStringList("electrolyteItems", Configuration.CATEGORY_GENERAL, electrolyteAdditRecipes, "");
+        desc = "A list of items and values for the electrolyte generator to be able to use.\n" +
+                "An example of an entry would be: <minecraft:stick>, 2.0, 500, <minecraft:apple>, <minecraft:diamond>\n" +
+                "where <minecraft:stick> is the item used\n" +
+                "2.0 the efficiency as a floating point number\n" +
+                "500 the ticks it takes to decay\n" +
+                "<minecraft:apple> the \"trash\" result and\n" +
+                "<minecraft:diamond> the \"treasure\" result";
+        electrolyteAdditRecipes = config.getStringList("electrolyteItems", Configuration.CATEGORY_GENERAL, electrolyteAdditRecipes, desc);
 
         if( config.hasChanged() ) {
             config.save();

@@ -18,6 +18,8 @@ import de.sanandrew.mods.turretmod.inventory.ContainerElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
 import de.sanandrew.mods.turretmod.network.TileClientSync;
+import de.sanandrew.mods.turretmod.util.TmrConfiguration;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -46,6 +48,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.logging.log4j.Level;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,7 +65,6 @@ public class TileEntityElectrolyteGenerator
     public short[] progress = new short[9];
     public short[] maxProgress = new short[this.progress.length];
     public float effectiveness;
-    public boolean isItemRendered;
 
     private ItemStack[] invStacks = new ItemStack[23];
     private static final int[] SLOTS_INSERT = new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8};
@@ -81,19 +83,46 @@ public class TileEntityElectrolyteGenerator
 
     private String customName;
 
-    public TileEntityElectrolyteGenerator() {
-        this.isItemRendered = false;
-    }
+    public TileEntityElectrolyteGenerator() { }
 
-    public TileEntityElectrolyteGenerator(boolean itemRendered) {
-        this.isItemRendered = itemRendered;
-    }
-
+    @SuppressWarnings("ConstantConditions")
     public static void initializeRecipes() {
         FUELS.put(Items.POTATO, new Fuel(1.0F, (short) 200, new ItemStack(Items.SUGAR, 1), new ItemStack(Items.BAKED_POTATO, 1)));
         FUELS.put(Items.CARROT, new Fuel(1.0F, (short) 200, new ItemStack(Items.SUGAR, 1), new ItemStack(Items.REDSTONE, 1)));
         FUELS.put(Items.POISONOUS_POTATO, new Fuel(1.2F, (short) 150, new ItemStack(Items.SUGAR, 1), new ItemStack(Items.NETHER_WART, 1)));
         FUELS.put(Items.APPLE, new Fuel(1.3F, (short) 220, new ItemStack(Items.WHEAT_SEEDS, 1), new ItemStack(Items.GOLD_NUGGET, 1)));
+
+        int currInd = 0;
+        for( String recp : TmrConfiguration.electrolyteAdditRecipes ) {
+            String[] elem = recp.split(",");
+            if( elem.length == 5 ) {
+                Item result = Item.getByNameOrId(elem[0].trim().replaceAll("<(.*?)>", "$1"));
+                if( result != null ) {
+                    try {
+                        Item trash = Item.getByNameOrId(elem[3].trim().replaceAll("<(.*?)>", "$1"));
+                        if( trash != null ) {
+                            float multi = Float.valueOf(elem[1].trim());
+                            short decayTicks = Short.valueOf(elem[2].trim());
+                            Item treasure = Item.getByNameOrId(elem[4].trim().replaceAll("<(.*?)>", "$1"));
+
+                            FUELS.put(result, new Fuel(multi, decayTicks, new ItemStack(trash, 1),  new ItemStack(treasure, 1)));
+                        } else {
+                            TurretModRebirth.LOG.log(Level.WARN, String.format("Cannot add electrolyte item #%d from config! Cannot find trash item %s, skipping recipe.",
+                                                                               currInd, elem[3].trim()));
+                        }
+                    } catch( NumberFormatException ex ) {
+                        TurretModRebirth.LOG.log(Level.WARN, String.format("Cannot parse numbers for electrolyte item #%d in config! Skipping recipe.", currInd));
+                    }
+                } else {
+                    TurretModRebirth.LOG.log(Level.WARN, String.format("Cannot add electrolyte item #%d from config! Cannot find electrolyte item %s, skipping recipe.",
+                                                                       currInd, elem[0].trim()));
+                }
+            } else {
+                TurretModRebirth.LOG.log(Level.WARN, String.format("Cannot add electrolyte item #%d from config! Invalid parameter count: expected 5, got %d, skipping recipe.",
+                                                                   currInd, elem.length));
+            }
+            currInd++;
+        }
     }
 
     public static Map<Item, Fuel> getFuels() {
@@ -143,10 +172,10 @@ public class TileEntityElectrolyteGenerator
 
                         if( this.progress[i] <= 0 ) {
                             if( this.progExcessComm[i] != null ) {
-                                InventoryUtils.addStackToInventory(this.progExcessComm[i], this, true, 64);
+                                InventoryUtils.addStackToInventory(this.progExcessComm[i], this, true, 64, SLOTS_EXTRACT[0], SLOTS_EXTRACT[SLOTS_EXTRACT.length - 1]);
                             }
                             if( this.progExcessRare[i] != null ) {
-                                InventoryUtils.addStackToInventory(this.progExcessRare[i], this, true, 64);
+                                InventoryUtils.addStackToInventory(this.progExcessRare[i], this, true, 64, SLOTS_EXTRACT[0], SLOTS_EXTRACT[SLOTS_EXTRACT.length - 1]);
                             }
                             this.invStacks[SLOTS_PROCESSING[i]] = null;
                             this.markDirty();
@@ -168,7 +197,7 @@ public class TileEntityElectrolyteGenerator
                         this.progress[i] = fuel.ticksProc;
                         this.maxProgress[i] = fuel.ticksProc;
                         this.progExcessComm[i] = MiscUtils.RNG.randomInt(10) == 0 ? fuel.trash.copy() : null;
-                        this.progExcessRare[i] = MiscUtils.RNG.randomInt(100) == 0 ? fuel.treasure.copy() : null;
+                        this.progExcessRare[i] = fuel.treasure != null && MiscUtils.RNG.randomInt(100) == 0 ? fuel.treasure.copy() : null;
 
                         this.markDirty();
                         this.doSync = true;
@@ -326,7 +355,7 @@ public class TileEntityElectrolyteGenerator
             if( this.invStacks[SLOTS_PROCESSING[i]] != null ) {
                 Fuel fuel = FUELS.get(this.invStacks[SLOTS_PROCESSING[i]].getItem());
                 this.progExcessComm[i] = MiscUtils.RNG.randomInt(100) == 0 ? fuel.trash.copy() : null;
-                this.progExcessRare[i] = MiscUtils.RNG.randomInt(100) == 0 ? fuel.treasure.copy() : null;
+                this.progExcessRare[i] = fuel.treasure != null && MiscUtils.RNG.randomInt(100) == 0 ? fuel.treasure.copy() : null;
             }
         }
     }
