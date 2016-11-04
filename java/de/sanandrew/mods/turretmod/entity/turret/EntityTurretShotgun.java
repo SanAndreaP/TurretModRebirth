@@ -150,7 +150,8 @@ public class EntityTurretShotgun
             return SoundEvents.BLOCK_DISPENSER_FAIL;
         }
 
-        public void shootProjectile() {
+        @Override
+        public boolean shootProjectile() {
             if( this.hasAmmo() ) {
                 for( int i = 0; i < 6; i++ ) {
                     Entity projectile = (Entity) this.getProjectile();
@@ -160,8 +161,10 @@ public class EntityTurretShotgun
                 }
                 this.turret.setShooting();
                 this.decrAmmo();
+                return true;
             } else {
                 this.turret.worldObj.playSound(null, this.turret.posX, this.turret.posY, this.turret.posZ, this.getLowAmmoSound(), SoundCategory.NEUTRAL, 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
+                return false;
             }
         }
     }

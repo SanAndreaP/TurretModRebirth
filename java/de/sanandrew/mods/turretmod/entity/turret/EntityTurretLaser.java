@@ -118,7 +118,7 @@ public class EntityTurretLaser
 
         if( this.worldObj.isRemote ) {
             if( this.laserSound == null ) {
-                if( this.getTargetProcessor().isShooting() ) {
+                if( this.getTargetProcessor().isShooting() && this.getTargetProcessor().hasAmmo() ) {
                     this.laserSound = new SoundLaser(this);
                     Minecraft.getMinecraft().getSoundHandler().playSound(this.laserSound);
                 }

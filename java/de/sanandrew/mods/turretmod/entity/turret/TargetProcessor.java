@@ -312,7 +312,7 @@ public abstract class TargetProcessor
         return ret;
     }
 
-    public void shootProjectile() {
+    public boolean shootProjectile() {
         if( this.hasAmmo() ) {
             Entity projectile = this.getProjectile();
             assert projectile != null;
@@ -320,8 +320,10 @@ public abstract class TargetProcessor
             this.turret.worldObj.playSound(null, this.turret.posX, this.turret.posY, this.turret.posZ, this.getShootSound(), SoundCategory.NEUTRAL, 1.8F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
             this.turret.setShooting();
             this.decrAmmo();
+            return true;
         } else {
             this.turret.worldObj.playSound(null, this.turret.posX, this.turret.posY, this.turret.posZ, this.getLowAmmoSound(), SoundCategory.NEUTRAL, 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
+            return false;
         }
     }
 
@@ -356,8 +358,8 @@ public abstract class TargetProcessor
             boolean isPlayerValid = Boolean.TRUE.equals(this.playerTargetList.get(this.entityToAttack.getUniqueID())) || Boolean.TRUE.equals(this.playerTargetList.get(UuidUtils.EMPTY_UUID));
             if( isEntityValid && (isTargetValid || isPlayerValid) && doAllowTarget(this.entityToAttack) ) {
                 if( this.initShootTicks <= 0 && this.shootTicks == 0 ) {
-                    shootProjectile();
-                    this.shootTicks = this.getMaxShootTicks();
+                    boolean success = shootProjectile();
+                    this.shootTicks = success ? this.getMaxShootTicks() : MAX_INIT_SHOOT_TICKS;
                     changed = true;
                 } else if( this.initShootTicks > 0 ) {
                     this.initShootTicks--;
