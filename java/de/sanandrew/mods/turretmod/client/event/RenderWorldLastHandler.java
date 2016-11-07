@@ -24,6 +24,7 @@ import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
@@ -54,6 +55,8 @@ public class RenderWorldLastHandler
 
                     renderTurretLabel((EntityTurret) pointedEntity, entityX - renderX, entityY - renderY, entityZ - renderZ);
                 }
+
+                renderTurretBB((EntityTurret) pointedEntity, renderX, renderY, renderZ);
             }
 
             Function<EntityTurret, TargetProcessor> tgtProc = EntityTurret::getTargetProcessor;
@@ -72,6 +75,11 @@ public class RenderWorldLastHandler
         buf.pos(minX, maxY, 0.0D).color(clr.fRed(), clr.fGreen(), clr.fBlue(), clr.fAlpha()).endVertex();
         buf.pos(maxX, maxY, 0.0D).color(clr.fRed(), clr.fGreen(), clr.fBlue(), clr.fAlpha()).endVertex();
         buf.pos(maxX, minY, 0.0D).color(clr.fRed(), clr.fGreen(), clr.fBlue(), clr.fAlpha()).endVertex();
+    }
+
+    private static void addLine(VertexBuffer buf, double minX, double minY, double minZ, double maxX, double maxY, double maxZ, ColorObj clr) {
+        buf.pos(minX, minY, minZ).color(clr.fRed(), clr.fGreen(), clr.fBlue(), clr.fAlpha()).endVertex();
+        buf.pos(maxX, maxY, maxZ).color(clr.fRed(), clr.fGreen(), clr.fBlue(), clr.fAlpha()).endVertex();
     }
 
     private static void addQuad(VertexBuffer buf, double minX, double minY, double maxX, double maxY, ColorObj clr1, ColorObj clr2) {
@@ -159,6 +167,34 @@ public class RenderWorldLastHandler
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
         GlStateManager.enableLighting();
+        GlStateManager.popMatrix();
+    }
+
+    private static void renderTurretBB(EntityTurret turret, double renderX, double renderY, double renderZ) {
+        AxisAlignedBB renderBB = turret.getEntityBoundingBox().offset(-renderX, -renderY, -renderZ);
+
+        Tessellator tess = Tessellator.getInstance();
+        VertexBuffer buf = tess.getBuffer();
+
+        GlStateManager.pushMatrix();
+
+        GlStateManager.disableTexture2D();
+
+        GlStateManager.glLineWidth(1.0F);
+        buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
+        addLine(buf, renderBB.minX, renderBB.minY, renderBB.minZ, renderBB.minX, renderBB.maxY, renderBB.minZ, new ColorObj(0xFF000000));
+        addLine(buf, renderBB.maxX, renderBB.maxY, renderBB.minZ, renderBB.maxX, renderBB.minY, renderBB.minZ, new ColorObj(0xFF000000));
+        addLine(buf, renderBB.maxX, renderBB.minY, renderBB.maxZ, renderBB.maxX, renderBB.maxY, renderBB.maxZ, new ColorObj(0xFF000000));
+        addLine(buf, renderBB.minX, renderBB.maxY, renderBB.maxZ, renderBB.minX, renderBB.minY, renderBB.maxZ, new ColorObj(0xFF000000));
+
+        addLine(buf, renderBB.minX, renderBB.minY, renderBB.minZ, renderBB.minX, renderBB.maxY, renderBB.minZ, new ColorObj(0xFF000000));
+        addLine(buf, renderBB.minX, renderBB.maxY, renderBB.maxZ, renderBB.minX, renderBB.minY, renderBB.maxZ, new ColorObj(0xFF000000));
+        addLine(buf, renderBB.maxX, renderBB.minY, renderBB.maxZ, renderBB.maxX, renderBB.maxY, renderBB.maxZ, new ColorObj(0xFF000000));
+        addLine(buf, renderBB.maxX, renderBB.maxY, renderBB.minZ, renderBB.maxX, renderBB.minY, renderBB.minZ, new ColorObj(0xFF000000));
+        tess.draw();
+
+
+        GlStateManager.enableTexture2D();
         GlStateManager.popMatrix();
     }
 

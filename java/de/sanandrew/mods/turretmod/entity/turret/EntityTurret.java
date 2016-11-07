@@ -528,4 +528,14 @@ public abstract class EntityTurret
     protected void kill() {
         this.attackEntityFrom(DamageSource.magic, Float.MAX_VALUE);
     }
+
+    @Override
+    public AxisAlignedBB getCollisionBox(Entity entity) {
+        return entity.getEntityBoundingBox();
+    }
+
+    @Override
+    public AxisAlignedBB getCollisionBoundingBox() {
+        return this.getEntityBoundingBox();
+    }
 }
