@@ -43,8 +43,8 @@ public final class ModelRegistry
         registerStandardModel(renderItem, ItemRegistry.asbFilter);
         registerStandardModel(renderItem, ItemRegistry.asbAuto);
         registerStandardModel(renderItem, ItemRegistry.asbSpeed);
-        registerStandardModel(renderItem, BlockRegistry.potatoGenerator);
-        registerStandardModel(renderItem, BlockRegistry.assemblyTable);
+        registerStandardModel(renderItem, BlockRegistry.electrolyte_generator);
+        registerStandardModel(renderItem, BlockRegistry.turret_assembly);
 
         {
             MeshDefTurret meshDef = new MeshDefTurret();

@@ -8,7 +8,6 @@ import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
 
 import java.util.Arrays;
 
@@ -28,7 +27,7 @@ public class ModelTurretAssembly
     }
 
     public void render(float scale, TileEntityTurretAssembly te, float armX, float armZ) {
-        int meta = te.hasWorldObj() ? BlockRegistry.assemblyTable.getDirection(te.getBlockMetadata()).getHorizontalIndex() : 0;
+        int meta = te.hasWorldObj() ? BlockRegistry.turret_assembly.getDirection(te.getBlockMetadata()).getHorizontalIndex() : 0;
         this.base.rotateAngleY = (float)(90.0D * meta / 180.0D * Math.PI);
 
         this.robotBinding.rotationPointX = armX;

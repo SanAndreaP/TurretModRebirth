@@ -54,7 +54,7 @@ public class RenderTurretAssembly
         renderItem(tile);
 
         if( tile.isActive && tile.robotArmX >= 4.0F && tile.robotArmX <= 10.0F && tile.robotArmY <= -3.5F && tile.robotArmY >= -9.5F ) {
-            tile.spawnParticle = this.renderLaser(BlockRegistry.assemblyTable.getDirection(tile.getBlockMetadata()), tile.getPos());
+            tile.spawnParticle = this.renderLaser(BlockRegistry.turret_assembly.getDirection(tile.getBlockMetadata()), tile.getPos());
         }
 
         GlStateManager.popMatrix();
@@ -130,7 +130,7 @@ public class RenderTurretAssembly
         ItemStack crfStack = assembly.currCrafting != null ? assembly.currCrafting.getValue(1) : assembly.getStackInSlot(0);
 
         GlStateManager.pushMatrix();
-        GlStateManager.rotate((float)(90.0D * BlockRegistry.assemblyTable.getDirection(assembly.getBlockMetadata()).getHorizontalIndex()), 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate((float)(90.0D * BlockRegistry.turret_assembly.getDirection(assembly.getBlockMetadata()).getHorizontalIndex()), 0.0F, 1.0F, 0.0F);
 
         if( ItemStackUtils.isValid(crfStack) ) {
 

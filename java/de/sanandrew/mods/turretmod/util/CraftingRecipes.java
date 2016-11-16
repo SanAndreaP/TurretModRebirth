@@ -24,7 +24,7 @@ public final class CraftingRecipes
 
     @SuppressWarnings("unchecked")
     public static void initialize() {
-        assemblyTable = CraftingManager.getInstance().addRecipe(new ItemStack(BlockRegistry.assemblyTable, 1),
+        assemblyTable = CraftingManager.getInstance().addRecipe(new ItemStack(BlockRegistry.turret_assembly, 1),
                 "ROR", "IAI", "CFC",
                 'R', new ItemStack(Items.REPEATER),
                 'O', new ItemStack(Blocks.OBSIDIAN),
@@ -33,7 +33,7 @@ public final class CraftingRecipes
                 'C', new ItemStack(Blocks.COBBLESTONE),
                 'F', new ItemStack(Blocks.FURNACE));
 
-        potatoGenerator = new ShapedOreRecipe(BlockRegistry.potatoGenerator,
+        potatoGenerator = new ShapedOreRecipe(BlockRegistry.electrolyte_generator,
                 true,
                 "IBG", "RCR", "BPB",
                 'I', "ingotIron",

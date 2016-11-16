@@ -401,7 +401,7 @@ public class TileEntityElectrolyteGenerator
 
     @Override
     public String getName() {
-        return this.hasCustomName() ? this.customName : BlockRegistry.potatoGenerator.getUnlocalizedName() + ".name";
+        return this.hasCustomName() ? this.customName : BlockRegistry.electrolyte_generator.getUnlocalizedName() + ".name";
     }
 
     @Override

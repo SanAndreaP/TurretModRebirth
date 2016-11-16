@@ -64,11 +64,7 @@ public class TurretModRebirth
         RepairKitRegistry.INSTANCE.initialize();
         TurretRegistry.INSTANCE.initialize();
         UpgradeRegistry.INSTANCE.initialize();
-        BlockRegistry.initialize();
         ItemRegistry.initialize();
-        TurretAssemblyRecipes.initialize();
-
-        TileEntityElectrolyteGenerator.initializeRecipes();
 
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
 
@@ -77,6 +73,8 @@ public class TurretModRebirth
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
+        TurretAssemblyRecipes.initialize();
+        TileEntityElectrolyteGenerator.initializeRecipes();
         CraftingRecipes.initialize();
 
         proxy.init(event);

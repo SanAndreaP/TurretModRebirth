@@ -39,16 +39,14 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 
 public class BlockTurretAssembly
-        extends Block
+        extends BlockHorizontal
 {
-    private static final PropertyDirection FACING = BlockHorizontal.FACING;
-
     BlockTurretAssembly() {
         super(Material.ROCK);
         this.setCreativeTab(TmrCreativeTabs.MISC);
         this.setHardness(4.25F);
         this.blockSoundType = SoundType.STONE;
-        this.setRegistryName("turret_assembly");
+        this.setUnlocalizedName(TurretModRebirth.ID + ":turret_assembly");
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
     }
 

@@ -38,7 +38,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
-import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.Level;
 
 import java.security.InvalidParameterException;
@@ -515,7 +514,7 @@ public final class TurretAssemblyRecipes
     }
 
     public RecipeGroup registerGroup(String name, ItemStack stack) {
-        name = BlockRegistry.assemblyTable.getUnlocalizedName() + '.' + name;
+        name = BlockRegistry.turret_assembly.getUnlocalizedName() + '.' + name;
         RecipeGroup group = new RecipeGroup(name, stack);
         this.groups.put(name, group);
         return group;

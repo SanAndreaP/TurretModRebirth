@@ -12,33 +12,46 @@ import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
+@SuppressWarnings("ConstantNamingConvention")
+@Mod.EventBusSubscriber
+@GameRegistry.ObjectHolder(TurretModRebirth.ID)
 public class BlockRegistry
 {
-    public static BlockTurretAssembly assemblyTable;
-    public static BlockElectrolyteGenerator potatoGenerator;
+    public static final BlockTurretAssembly turret_assembly = nilBlock();
+    public static final BlockElectrolyteGenerator electrolyte_generator = nilBlock();
 
-    public static void initialize() {
-        assemblyTable = new BlockTurretAssembly();
-        potatoGenerator = new BlockElectrolyteGenerator();
-
-        registerBlocks(assemblyTable, potatoGenerator);
+    @SubscribeEvent
+    public static void registerBlocks(RegistryEvent.Register<Block> event)
+    {
+        event.getRegistry().registerAll(new BlockTurretAssembly().setRegistryName(TurretModRebirth.ID, "turret_assembly"),
+                                        new BlockElectrolyteGenerator().setRegistryName(TurretModRebirth.ID, "electrolyte_generator"));
+        //TODO: change registry from existing worlds to use "electrolyte_generator" instead of "potato_generator"
 
         GameRegistry.registerTileEntity(TileEntityTurretAssembly.class, TurretModRebirth.ID + ":te_turret_assembly");
         GameRegistry.registerTileEntity(TileEntityElectrolyteGenerator.class, TurretModRebirth.ID + ":te_potato_generator");
     }
 
-    private static void registerBlocks(Block... blocks) {
-        for(Block block : blocks) {
-            ResourceLocation regName = block.getRegistryName();
-            block.setUnlocalizedName(TurretModRebirth.ID + ':' + regName.getResourcePath());
-            GameRegistry.register(block);
-            ItemBlock blockItm = new ItemBlock(block);
-            blockItm.setRegistryName(regName);
-            GameRegistry.register(blockItm);
+    @SubscribeEvent
+    public static void registerItems(RegistryEvent.Register<Item> event)
+    {
+        Block[] blocks = {
+                turret_assembly, electrolyte_generator
+        };
+        for( Block block : blocks ) {
+            event.getRegistry().register(new ItemBlock(block).setRegistryName(block.getRegistryName()));
         }
+    }
+
+    /** prevents IDE from thinking the block fields are null */
+    private static <T> T nilBlock() {
+        return null;
     }
 }
