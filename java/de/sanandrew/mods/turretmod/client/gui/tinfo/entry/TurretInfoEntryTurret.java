@@ -26,11 +26,14 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+@SideOnly(Side.CLIENT)
 public class TurretInfoEntryTurret
         extends TurretInfoEntry
 {
@@ -47,7 +50,7 @@ public class TurretInfoEntryTurret
     }
 
     private TurretInfoEntryTurret(TurretInfo info) {
-        super(ItemRegistry.turret.getTurretItem(1, info), Lang.translateEntityCls(info.getTurretClass()));
+        super(ItemRegistry.turret_placer.getTurretItem(1, info), Lang.translateEntityCls(info.getTurretClass()));
         this.values = new TurretInfoValues(info);
     }
 
@@ -106,7 +109,7 @@ public class TurretInfoEntryTurret
     private void drawTurret(Minecraft mc, int x, int y) {
         if( this.turretRenderCache == null || this.turretRenderCache.get() == null || this.turretRenderCache.isEnqueued() ) {
             try {
-                this.turretRenderCache = new WeakReference<>(this.turretClass.getConstructor(World.class).newInstance(mc.theWorld));
+                this.turretRenderCache = new WeakReference<>(this.turretClass.getConstructor(World.class).newInstance(mc.world));
             } catch( Exception e ) {
                 return;
             }
@@ -175,7 +178,7 @@ public class TurretInfoEntryTurret
 
             List<TurretAmmo> ammos = AmmoRegistry.INSTANCE.getTypesForTurret(info.getTurretClass());
             for( TurretAmmo ammo : ammos ) {
-                ammoItms.add(ItemRegistry.ammo.getAmmoItem(1, ammo));
+                ammoItms.add(ItemRegistry.turret_ammo.getAmmoItem(1, ammo));
             }
 
             TurretAssemblyRecipes.RecipeEntry recipeEntry = TurretAssemblyRecipes.INSTANCE.getRecipeEntry(info.getRecipeId());

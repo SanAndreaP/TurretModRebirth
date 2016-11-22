@@ -11,12 +11,14 @@ package de.sanandrew.mods.turretmod.item;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmo;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ItemAmmo
         extends Item
@@ -24,7 +26,7 @@ public class ItemAmmo
     public ItemAmmo() {
         super();
         this.setCreativeTab(TmrCreativeTabs.TURRETS);
-        this.setRegistryName("turret_ammo");
+        this.setUnlocalizedName(TurretModRebirth.ID + ":turret_ammo");
         this.setMaxDamage(0);
         this.setHasSubtypes(true);
     }
@@ -32,12 +34,12 @@ public class ItemAmmo
     @Override
     public String getUnlocalizedName(ItemStack stack) {
         TurretAmmo type = AmmoRegistry.INSTANCE.getType(stack);
-        return String.format("%s.%s", super.getUnlocalizedName(stack), type == null ? "unknown" : type.getName());
+        return String.format("%s.%s", this.getUnlocalizedName(), type.getName());
     }
 
     public ItemStack getAmmoItem(int stackSize, TurretAmmo type) {
         if( type == null ) {
-            throw new IllegalArgumentException("Cannot get ammo item with NULL type!");
+            throw new IllegalArgumentException("Cannot get turret_ammo item with NULL type!");
         }
 
         NBTTagCompound nbt = new NBTTagCompound();
@@ -51,8 +53,6 @@ public class ItemAmmo
     @Override
     @SuppressWarnings("unchecked")
     public void getSubItems(Item item, CreativeTabs tab, List list) {
-        for( TurretAmmo type : AmmoRegistry.INSTANCE.getRegisteredTypes() ) {
-            list.add(this.getAmmoItem(1, type));
-        }
+        list.addAll(AmmoRegistry.INSTANCE.getRegisteredTypes().stream().map(type -> this.getAmmoItem(1, type)).collect(Collectors.toList()));
     }
 }

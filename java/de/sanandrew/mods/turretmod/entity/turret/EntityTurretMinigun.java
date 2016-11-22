@@ -119,12 +119,12 @@ public class EntityTurretMinigun
                 this.leftShot = true;
             }
 
-            if( this.worldObj.isRemote ) {
+            if( this.world.isRemote ) {
                 TurretModRebirth.proxy.spawnParticle(EnumParticle.MINIGUN_SHOT, this.posX, this.posY + 1.5F, this.posZ, new Tuple(this.rotationYawHead, this.rotationPitch - 7.5F, this.isUpsideDown, this.leftShot));
             }
         }
 
-        if( this.worldObj.isRemote ) {
+        if( this.world.isRemote ) {
             if( this.barrelLeft < this.maxBarrelLeft ) {
                 this.barrelLeft += 90.0F / this.targetProc.getMaxShootTicks() * 2.0F;
             } else {

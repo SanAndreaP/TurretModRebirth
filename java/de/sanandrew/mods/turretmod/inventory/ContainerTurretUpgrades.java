@@ -142,7 +142,7 @@ public class ContainerTurretUpgrades
                 if( !super.mergeItemStack(slotStack, 36, 72, true) ) {
                     return null;
                 }
-            } else if( origStack.getItem() == ItemRegistry.turretUpgrade ) {
+            } else if( origStack.getItem() == ItemRegistry.turret_upgrade ) {
                 if( transferUpgrade(origStack.getItem(), origStack, slotStack) ) {
                     return null;
                 }

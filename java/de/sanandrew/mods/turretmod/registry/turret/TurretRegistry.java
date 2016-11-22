@@ -81,7 +81,7 @@ public final class TurretRegistry
         }
 
         if( type.getTurretClass() == null ) {
-            TurretModRebirth.LOG.log(Level.ERROR, String.format("Turret-Info %s has no turret! wat?", type.getName()), new InvalidParameterException());
+            TurretModRebirth.LOG.log(Level.ERROR, String.format("Turret-Info %s has no turret_placer! wat?", type.getName()), new InvalidParameterException());
             return false;
         }
 

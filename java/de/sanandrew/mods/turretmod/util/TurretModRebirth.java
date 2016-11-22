@@ -18,15 +18,21 @@ import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.stream.Stream;
 
 @Mod(modid = TurretModRebirth.ID, version = TurretModRebirth.VERSION, name = TurretModRebirth.NAME, guiFactory = TurretModRebirth.GUI_FACTORY, dependencies = TurretModRebirth.DEPENDENCIES)
 public class TurretModRebirth
@@ -64,7 +70,6 @@ public class TurretModRebirth
         RepairKitRegistry.INSTANCE.initialize();
         TurretRegistry.INSTANCE.initialize();
         UpgradeRegistry.INSTANCE.initialize();
-        ItemRegistry.initialize();
 
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
 
@@ -85,5 +90,30 @@ public class TurretModRebirth
         TargetProcessor.initialize();
 
         proxy.postInit(event);
+    }
+
+    @Mod.EventHandler
+    public void onMissingMappings(FMLMissingMappingsEvent event) {
+        remap(event, BlockRegistry.electrolyte_generator, "sapturretmod:potato_generator");
+        remap(event, ItemRegistry.repair_kit, "sapturretmod:turret_repair_kit");
+        remap(event, ItemRegistry.assembly_upg_auto, "sapturretmod:turret_assembly_auto");
+        remap(event, ItemRegistry.assembly_upg_speed, "sapturretmod:turret_assembly_speed");
+        remap(event, ItemRegistry.assembly_upg_filter, "sapturretmod:turret_assembly_filter");
+    }
+
+    private static void remap(FMLMissingMappingsEvent event, final Block block, final String oldName) {
+        event.get().stream().filter(mapping -> mapping != null && mapping.name.equals(oldName) && mapping.type == GameRegistry.Type.BLOCK).forEach(mapping -> {
+            mapping.remap(block);
+        });
+        Item itm = Item.getItemFromBlock(block);
+        if( itm != null ) {
+            remap(event, itm, oldName);
+        }
+    }
+
+    private static void remap(FMLMissingMappingsEvent event, final Item item, final String oldName) {
+        event.get().stream().filter(mapping -> mapping != null && mapping.name.equals(oldName) && mapping.type == GameRegistry.Type.ITEM).forEach(mapping -> {
+            mapping.remap(item);
+        });
     }
 }

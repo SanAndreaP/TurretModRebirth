@@ -14,7 +14,6 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurretRevolver;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -36,7 +35,7 @@ public abstract class TurretAmmoBullet
         this.name = isMulti ? "bullet_lrg" : "bullet_sng";
         this.uuid = isMulti ? PACK_UUID : BULLET_UUID;
         this.capacity = isMulti ? 32 : 2;
-        this.itemModel = new ResourceLocation(TurretModRebirth.ID, "ammo/" + modelName);
+        this.itemModel = new ResourceLocation(TurretModRebirth.ID, "turret_ammo/" + modelName);
     }
 
     @Override
@@ -86,12 +85,12 @@ public abstract class TurretAmmoBullet
 
     @Override
     public ItemStack getStoringAmmoItem() {
-        return ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(BULLET_UUID));
+        return ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(BULLET_UUID));
     }
 
     @Override
     public EntityProjectileBullet getEntity(EntityTurret turret) {
-        return new EntityProjectileBullet(turret.worldObj, turret, turret.getTargetProcessor().getTarget());
+        return new EntityProjectileBullet(turret.world, turret, turret.getTargetProcessor().getTarget());
     }
 
     @Override

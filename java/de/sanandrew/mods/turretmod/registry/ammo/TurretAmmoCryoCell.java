@@ -14,7 +14,6 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -42,7 +41,7 @@ public abstract class TurretAmmoCryoCell
         this.name = name;
         this.uuid = uuid;
         this.capacity = capacity;
-        this.itemModel = new ResourceLocation(TurretModRebirth.ID, "ammo/" + name);
+        this.itemModel = new ResourceLocation(TurretModRebirth.ID, "turret_ammo/" + name);
     }
 
     @Override
@@ -87,7 +86,7 @@ public abstract class TurretAmmoCryoCell
 
     @Override
     public ItemStack getStoringAmmoItem() {
-        return ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(this.getTypeId()));
+        return ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(this.getTypeId()));
     }
 
     @Override
@@ -114,7 +113,7 @@ public abstract class TurretAmmoCryoCell
 
         @Override
         public EntityProjectileCryoCell getEntity(EntityTurret turret) {
-            return new EntityProjectileCryoCell(turret.worldObj, turret, turret.getTargetProcessor().getTarget()).setLevelAndDuration(0, 300);
+            return new EntityProjectileCryoCell(turret.world, turret, turret.getTargetProcessor().getTarget()).setLevelAndDuration(0, 300);
         }
     }
 
@@ -137,7 +136,7 @@ public abstract class TurretAmmoCryoCell
 
         @Override
         public EntityProjectileCryoCell getEntity(EntityTurret turret) {
-            return new EntityProjectileCryoCell(turret.worldObj, turret, turret.getTargetProcessor().getTarget()).setLevelAndDuration(0, 300);
+            return new EntityProjectileCryoCell(turret.world, turret, turret.getTargetProcessor().getTarget()).setLevelAndDuration(0, 300);
         }
     }
 
@@ -160,7 +159,7 @@ public abstract class TurretAmmoCryoCell
 
         @Override
         public EntityProjectileCryoCell getEntity(EntityTurret turret) {
-            return new EntityProjectileCryoCell(turret.worldObj, turret, turret.getTargetProcessor().getTarget()).setLevelAndDuration(2, 200);
+            return new EntityProjectileCryoCell(turret.world, turret, turret.getTargetProcessor().getTarget()).setLevelAndDuration(2, 200);
         }
     }
 
@@ -183,7 +182,7 @@ public abstract class TurretAmmoCryoCell
 
         @Override
         public EntityProjectileCryoCell getEntity(EntityTurret turret) {
-            return new EntityProjectileCryoCell(turret.worldObj, turret, turret.getTargetProcessor().getTarget()).setLevelAndDuration(2, 200);
+            return new EntityProjectileCryoCell(turret.world, turret, turret.getTargetProcessor().getTarget()).setLevelAndDuration(2, 200);
         }
     }
 
@@ -206,7 +205,7 @@ public abstract class TurretAmmoCryoCell
 
         @Override
         public EntityProjectileCryoCell getEntity(EntityTurret turret) {
-            return new EntityProjectileCryoCell(turret.worldObj, turret, turret.getTargetProcessor().getTarget()).setLevelAndDuration(4, 100);
+            return new EntityProjectileCryoCell(turret.world, turret, turret.getTargetProcessor().getTarget()).setLevelAndDuration(4, 100);
         }
     }
 
@@ -229,7 +228,7 @@ public abstract class TurretAmmoCryoCell
 
         @Override
         public EntityProjectileCryoCell getEntity(EntityTurret turret) {
-            return new EntityProjectileCryoCell(turret.worldObj, turret, turret.getTargetProcessor().getTarget()).setLevelAndDuration(4, 100);
+            return new EntityProjectileCryoCell(turret.world, turret, turret.getTargetProcessor().getTarget()).setLevelAndDuration(4, 100);
         }
     }
 }

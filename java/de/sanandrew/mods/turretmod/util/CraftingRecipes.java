@@ -20,7 +20,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 public final class CraftingRecipes
 {
     public static IRecipe assemblyTable;
-    public static IRecipe potatoGenerator;
+    public static IRecipe electrolyteGenerator;
 
     @SuppressWarnings("unchecked")
     public static void initialize() {
@@ -33,7 +33,7 @@ public final class CraftingRecipes
                 'C', new ItemStack(Blocks.COBBLESTONE),
                 'F', new ItemStack(Blocks.FURNACE));
 
-        potatoGenerator = new ShapedOreRecipe(BlockRegistry.electrolyte_generator,
+        electrolyteGenerator = new ShapedOreRecipe(BlockRegistry.electrolyte_generator,
                 true,
                 "IBG", "RCR", "BPB",
                 'I', "ingotIron",
@@ -42,8 +42,8 @@ public final class CraftingRecipes
                 'R', "dustRedstone",
                 'C', Items.CAULDRON,
                 'P', Items.REPEATER);
-        CraftingManager.getInstance().getRecipeList().add(potatoGenerator);
+        CraftingManager.getInstance().getRecipeList().add(electrolyteGenerator);
 
-        CraftingManager.getInstance().addShapelessRecipe(new ItemStack(ItemRegistry.turretInfo, 1), Items.WRITABLE_BOOK, Blocks.DISPENSER);
+        CraftingManager.getInstance().addShapelessRecipe(new ItemStack(ItemRegistry.turret_info, 1), Items.WRITABLE_BOOK, Blocks.DISPENSER);
     }
 }

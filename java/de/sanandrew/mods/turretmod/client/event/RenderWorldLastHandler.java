@@ -27,11 +27,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+@SideOnly(Side.CLIENT)
 public class RenderWorldLastHandler
 {
     @SubscribeEvent
@@ -48,7 +51,7 @@ public class RenderWorldLastHandler
             Entity pointedEntity = mc.pointedEntity;
 
             if( pointedEntity instanceof EntityTurret ) {
-                if( isItemTCU(mc.thePlayer.getHeldItemMainhand()) || isItemTCU(mc.thePlayer.getHeldItemOffhand()) ) {
+                if( isItemTCU(mc.player.getHeldItemMainhand()) || isItemTCU(mc.player.getHeldItemOffhand()) ) {
                     double entityX = pointedEntity.lastTickPosX + (pointedEntity.posX - pointedEntity.lastTickPosX) * partTicks;
                     double entityY = pointedEntity.lastTickPosY + (pointedEntity.posY - pointedEntity.lastTickPosY) * partTicks;
                     double entityZ = pointedEntity.lastTickPosZ + (pointedEntity.posZ - pointedEntity.lastTickPosZ) * partTicks;
@@ -62,12 +65,12 @@ public class RenderWorldLastHandler
             Function<EntityTurret, TargetProcessor> tgtProc = EntityTurret::getTargetProcessor;
             Predicate<EntityTurretLaser> chk = turret -> turret != null && tgtProc.apply(turret).hasAmmo() && tgtProc.apply(turret).isShooting() && tgtProc.apply(turret).hasTarget();
 
-            mc.theWorld.getEntities(EntityTurretLaser.class, chk::test).forEach(turret -> renderTurretLaser(turret, renderX, renderY, renderZ, partTicks));
+            mc.world.getEntities(EntityTurretLaser.class, chk::test).forEach(turret -> renderTurretLaser(turret, renderX, renderY, renderZ, partTicks));
         }
     }
 
     private static boolean isItemTCU(ItemStack stack) {
-        return ItemStackUtils.isItem(stack, ItemRegistry.tcu);
+        return ItemStackUtils.isItem(stack, ItemRegistry.turret_control_unit);
     }
 
     private static void addQuad(VertexBuffer buf, double minX, double minY, double maxX, double maxY, ColorObj clr) {
@@ -240,7 +243,7 @@ public class RenderWorldLastHandler
         addQuad(buffer, 1.0D, 22.0D, 127.0D, 24.0D, new ColorObj(0xFF000000));
         addQuad(buffer, 1.0D, 22.0D, (1 + 126.0F * healthRel), 24.0D, new ColorObj(0xFFFF0000));
 
-        //ammo
+        //turret_ammo
         addQuad(buffer, 1.0D, 38.0D, 127.0D, 40.0D, new ColorObj(0xFF000000));
         addQuad(buffer, 1.0D, 38.0D, (1 + 126.0F * ammoRel), 40.0D, new ColorObj(0xFF6666FF));
 

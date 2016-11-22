@@ -14,7 +14,7 @@ import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
-import de.sanandrew.mods.turretmod.item.ItemAssemblyFilter;
+import de.sanandrew.mods.turretmod.item.ItemAssemblyUpgrade;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
 import de.sanandrew.mods.turretmod.network.TileClientSync;
@@ -41,6 +41,8 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
@@ -148,28 +150,28 @@ public class TileEntityTurretAssembly
     }
 
     public boolean hasAutoUpgrade() {
-        return ItemStackUtils.isValid(this.assemblyStacks[1]) && this.assemblyStacks[1].getItem() == ItemRegistry.asbAuto;
+        return ItemStackUtils.isValid(this.assemblyStacks[1]) && this.assemblyStacks[1].getItem() == ItemRegistry.assembly_upg_auto;
     }
 
     public boolean hasSpeedUpgrade() {
-        return ItemStackUtils.isValid(this.assemblyStacks[2]) && this.assemblyStacks[2].getItem() == ItemRegistry.asbSpeed;
+        return ItemStackUtils.isValid(this.assemblyStacks[2]) && this.assemblyStacks[2].getItem() == ItemRegistry.assembly_upg_speed;
     }
 
     public boolean hasFilterUpgrade() {
-        return ItemStackUtils.isValid(this.assemblyStacks[3]) && this.assemblyStacks[3].getItem() == ItemRegistry.asbFilter;
+        return ItemStackUtils.isValid(this.assemblyStacks[3]) && this.assemblyStacks[3].getItem() == ItemRegistry.assembly_upg_filter;
     }
 
     public ItemStack[] getFilterStacks() {
         if( this.hasFilterUpgrade() ) {
-            return ItemRegistry.asbFilter.getFilterStacks(this.assemblyStacks[3], false);
+            return ItemAssemblyUpgrade.Filter.getFilterStacks(this.assemblyStacks[3]);
         } else {
-            return ItemAssemblyFilter.EMPTY_INV;
+            return ItemAssemblyUpgrade.Filter.getEmptyInv();
         }
     }
 
     @Override
     public void update() {
-        if( !this.worldObj.isRemote ) {
+        if( !this.world.isRemote ) {
             if( this.automate && !this.hasAutoUpgrade() ) {
                 this.automate = false;
                 this.cancelCrafting();
@@ -181,7 +183,7 @@ public class TileEntityTurretAssembly
             for( int i = 0; i < maxLoop; i++ ) {
                 this.isActiveClient = this.isActive;
                 if( this.isActive && this.currCrafting != null ) {
-                    if( this.fluxAmount >= this.fluxConsumption && this.worldObj.isBlockIndirectlyGettingPowered(this.pos) == 0 ) {
+                    if( this.fluxAmount >= this.fluxConsumption && this.world.isBlockIndirectlyGettingPowered(this.pos) == 0 ) {
                         this.fluxAmount -= this.fluxConsumption;
                         if( ++this.ticksCrafted >= this.maxTicksCrafted ) {
                             ItemStack stack = TurretAssemblyRecipes.INSTANCE.getRecipeResult(this.currCrafting.getValue(0));
@@ -301,6 +303,7 @@ public class TileEntityTurretAssembly
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
         this.readNBT(pkt.getNbtCompound());
     }
@@ -490,7 +493,7 @@ public class TileEntityTurretAssembly
 
     @Override
     public boolean isUseableByPlayer(EntityPlayer player) {
-        return this.worldObj.getTileEntity(this.pos) == this && player.getDistanceSq(this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D) <= 64.0D;
+        return this.world.getTileEntity(this.pos) == this && player.getDistanceSq(this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D) <= 64.0D;
     }
 
     @Override
@@ -502,9 +505,9 @@ public class TileEntityTurretAssembly
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack) {
         return slot != 0 && ItemStackUtils.isValid(stack)
-                         && ( (slot > 4 && this.isStackAcceptable(stack, slot - 5)) || (slot == 1 && stack.getItem() == ItemRegistry.asbAuto)
-                                                                                    || (slot == 2 && stack.getItem() == ItemRegistry.asbSpeed)
-                                                                                    || (slot == 3 && stack.getItem() == ItemRegistry.asbFilter) );
+                         && ( (slot > 4 && this.isStackAcceptable(stack, slot - 5)) || (slot == 1 && stack.getItem() == ItemRegistry.assembly_upg_auto)
+                                                                                    || (slot == 2 && stack.getItem() == ItemRegistry.assembly_upg_speed)
+                                                                                    || (slot == 3 && stack.getItem() == ItemRegistry.assembly_upg_filter) );
     }
 
     public static final int FIELD_TICKS_CRAFTED = 0;

@@ -12,6 +12,7 @@ import de.sanandrew.mods.turretmod.registry.upgrades.TurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -19,16 +20,13 @@ import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
-//import net.minecraft.client.renderer.texture.IIconRegister;
-//import net.minecraft.util.IIcon;
-
 public class ItemTurretUpgrade
         extends Item
 {
     public ItemTurretUpgrade() {
         super();
         this.setCreativeTab(TmrCreativeTabs.UPGRADES);
-        this.setRegistryName("turret_upgrade");
+        this.setUnlocalizedName(TurretModRebirth.ID + ":turret_upgrade");
         this.setHasSubtypes(true);
         this.setMaxDamage(0);
     }

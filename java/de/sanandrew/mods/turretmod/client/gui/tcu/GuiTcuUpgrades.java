@@ -67,8 +67,8 @@ public class GuiTcuUpgrades
 
         this.drawTexturedModalRect(this.posX, this.posY, 0, 0, this.xSize, this.ySize);
 
-        if( !ItemStackUtils.isValid(this.mc.thePlayer.getHeldItemMainhand()) || this.mc.thePlayer.getHeldItemMainhand().getItem() != ItemRegistry.tcu ) {
-            this.mc.thePlayer.closeScreen();
+        if( !ItemStackUtils.isValid(this.mc.player.getHeldItemMainhand()) || this.mc.player.getHeldItemMainhand().getItem() != ItemRegistry.turret_control_unit ) {
+            this.mc.player.closeScreen();
         }
     }
 

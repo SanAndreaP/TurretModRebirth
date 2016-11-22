@@ -10,40 +10,43 @@ package de.sanandrew.mods.turretmod.item;
 
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
+@SuppressWarnings("ConstantNamingConvention")
+@Mod.EventBusSubscriber
+@GameRegistry.ObjectHolder(TurretModRebirth.ID)
 public class ItemRegistry
 {
-    public static ItemTurret turret;
-    public static ItemAmmo ammo;
-    public static ItemTurretControlUnit tcu;
-    public static ItemRepairKit repairKit;
-    public static ItemAssemblyUpgrade asbAuto;
-    public static ItemAssemblyUpgrade asbSpeed;
-    public static ItemAssemblyFilter asbFilter;
-    public static ItemTurretUpgrade turretUpgrade;
-    public static ItemTurretInfo turretInfo;
+    public static final ItemTurret turret_placer = nilItem();
+    public static final ItemAmmo turret_ammo = nilItem();
+    public static final ItemTurretControlUnit turret_control_unit = nilItem();
+    public static final ItemRepairKit repair_kit = nilItem();
+    public static final ItemAssemblyUpgrade assembly_upg_auto = nilItem();
+    public static final ItemAssemblyUpgrade assembly_upg_speed = nilItem();
+    public static final ItemAssemblyUpgrade.Filter assembly_upg_filter = nilItem();
+    public static final ItemTurretUpgrade turret_upgrade = nilItem();
+    public static final ItemTurretInfo turret_info = nilItem();
 
-    public static void initialize() {
-        turret = new ItemTurret();
-        ammo = new ItemAmmo();
-        tcu = new ItemTurretControlUnit();
-        repairKit = new ItemRepairKit();
-        asbAuto = new ItemAssemblyUpgrade("auto");
-        asbSpeed = new ItemAssemblyUpgrade("speed");
-        asbFilter = new ItemAssemblyFilter();
-        turretUpgrade = new ItemTurretUpgrade();
-        turretInfo = new ItemTurretInfo();
-
-        registerItems(turret, ammo, tcu, repairKit, asbAuto, asbSpeed, asbFilter, turretUpgrade, turretInfo);
+    @SubscribeEvent
+    public static void registerItems(RegistryEvent.Register<Item> event) {
+        event.getRegistry().registerAll(
+            new ItemTurret().setRegistryName(TurretModRebirth.ID, "turret_placer"),
+            new ItemAmmo().setRegistryName(TurretModRebirth.ID, "turret_ammo"),
+            new ItemTurretControlUnit().setRegistryName(TurretModRebirth.ID, "turret_control_unit"),
+            new ItemRepairKit().setRegistryName(TurretModRebirth.ID, "repair_kit"),
+            new ItemAssemblyUpgrade.Automation().setRegistryName(TurretModRebirth.ID, "assembly_upg_auto"),
+            new ItemAssemblyUpgrade.Speed().setRegistryName(TurretModRebirth.ID, "assembly_upg_speed"),
+            new ItemAssemblyUpgrade.Filter().setRegistryName(TurretModRebirth.ID, "assembly_upg_filter"),
+            new ItemTurretUpgrade().setRegistryName(TurretModRebirth.ID, "turret_upgrade"),
+            new ItemTurretInfo().setRegistryName(TurretModRebirth.ID, "turret_info")
+        );
     }
 
-    private static void registerItems(Item... items) {
-        for(Item item : items) {
-            ResourceLocation regName = item.getRegistryName();
-            item.setUnlocalizedName(TurretModRebirth.ID + ':' + regName.getResourcePath());
-            GameRegistry.register(item);
-        }
+    /** prevents IDE from thinking the item fields are null */
+    private static <T> T nilItem() {
+        return null;
     }
 }

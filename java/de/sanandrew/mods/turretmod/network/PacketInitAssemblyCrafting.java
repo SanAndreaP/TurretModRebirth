@@ -47,7 +47,7 @@ public class PacketInitAssemblyCrafting
 
     @Override
     public void handleServerMessage(PacketInitAssemblyCrafting packet, EntityPlayer player) {
-        TileEntity te = player.worldObj.getTileEntity(packet.pos);
+        TileEntity te = player.world.getTileEntity(packet.pos);
         if( te instanceof TileEntityTurretAssembly ) {
             if( packet.crfUUID.equals("[CANCEL]") ) {
                 ((TileEntityTurretAssembly) te).cancelCrafting();

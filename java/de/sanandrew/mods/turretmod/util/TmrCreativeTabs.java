@@ -41,7 +41,7 @@ public class TmrCreativeTabs
         public ItemStack getIconItemStack() {
             if( this.tabIcons == null ) {
                 List<ItemStack> subItms = new ArrayList<>();
-                ItemRegistry.turret.getSubItems(ItemRegistry.turret, this, subItms);
+                ItemRegistry.turret_placer.getSubItems(ItemRegistry.turret_placer, this, subItms);
                 this.tabIcons = subItms.toArray(new ItemStack[subItms.size()]);
             }
 
@@ -54,13 +54,13 @@ public class TmrCreativeTabs
             super.displayAllRelevantItems(itmList);
 
             Collections.sort(itmList, (itm1, itm2) -> {
-                if( itm1 != null && itm1.getItem() == ItemRegistry.turret ) {
-                    return itm2 != null && itm2.getItem() == ItemRegistry.turret ? 0 : -2;
-                } else if( itm2 != null && itm2.getItem() == ItemRegistry.turret ) {
+                if( itm1 != null && itm1.getItem() == ItemRegistry.turret_placer ) {
+                    return itm2 != null && itm2.getItem() == ItemRegistry.turret_placer ? 0 : -2;
+                } else if( itm2 != null && itm2.getItem() == ItemRegistry.turret_placer ) {
                     return 2;
-                } else if( itm1 != null && itm1.getItem() == ItemRegistry.ammo ) {
-                    return itm2 != null && itm2.getItem() == ItemRegistry.ammo ? 0 : -1;
-                } else if( itm2 != null && itm2.getItem() == ItemRegistry.ammo ) {
+                } else if( itm1 != null && itm1.getItem() == ItemRegistry.turret_ammo ) {
+                    return itm2 != null && itm2.getItem() == ItemRegistry.turret_ammo ? 0 : -1;
+                } else if( itm2 != null && itm2.getItem() == ItemRegistry.turret_ammo ) {
                     return 1;
                 }
 
@@ -73,7 +73,7 @@ public class TmrCreativeTabs
         @Override
         @SideOnly(Side.CLIENT)
         public Item getTabIconItem() {
-            return ItemRegistry.tcu;
+            return ItemRegistry.turret_control_unit;
         }
 
         @Override
@@ -86,9 +86,9 @@ public class TmrCreativeTabs
                     return itm2 != null && itm2.getItem() instanceof ItemBlock ? 0 : -2;
                 } else if( itm2 != null && itm2.getItem() instanceof ItemBlock ) {
                     return 2;
-                } else if( itm1 != null && itm1.getItem() == ItemRegistry.repairKit ) {
-                    return itm2 != null && itm2.getItem() == ItemRegistry.repairKit ? 0 : 1;
-                } else if( itm2 != null && itm2.getItem() == ItemRegistry.repairKit ) {
+                } else if( itm1 != null && itm1.getItem() == ItemRegistry.repair_kit ) {
+                    return itm2 != null && itm2.getItem() == ItemRegistry.repair_kit ? 0 : 1;
+                } else if( itm2 != null && itm2.getItem() == ItemRegistry.repair_kit ) {
                     return -1;
                 }
 
@@ -103,7 +103,7 @@ public class TmrCreativeTabs
         @Override
         @SideOnly(Side.CLIENT)
         public Item getTabIconItem() {
-            return ItemRegistry.turretUpgrade;
+            return ItemRegistry.turret_upgrade;
         }
 
         @Override
@@ -111,7 +111,7 @@ public class TmrCreativeTabs
         public ItemStack getIconItemStack() {
             if( this.tabIcons == null ) {
                 List<ItemStack> subItms = new ArrayList<>();
-                ItemRegistry.turretUpgrade.getSubItems(ItemRegistry.turretUpgrade, this, subItms);
+                ItemRegistry.turret_upgrade.getSubItems(ItemRegistry.turret_upgrade, this, subItms);
                 this.tabIcons = subItms.toArray(new ItemStack[subItms.size()]);
             }
 

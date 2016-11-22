@@ -44,7 +44,7 @@ public class PacketUpdateTurretState
 
     @Override
     public void handleClientMessage(PacketUpdateTurretState packet, EntityPlayer player) {
-        Entity e = player.worldObj.getEntityByID(packet.turretId);
+        Entity e = player.world.getEntityByID(packet.turretId);
         if( e instanceof EntityTurret ) {
             EntityTurret turret = (EntityTurret) e;
             turret.getTargetProcessor().updateClientState(packet.entityToAttackId, packet.currAmmoCap, packet.ammoStack, packet.isShooting);

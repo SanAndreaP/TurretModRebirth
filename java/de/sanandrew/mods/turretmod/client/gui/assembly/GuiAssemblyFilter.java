@@ -48,8 +48,8 @@ public class GuiAssemblyFilter
 
         this.drawTexturedModalRect(this.posX, this.posY, 0, 0, this.xSize, this.ySize);
 
-        if( !ItemStackUtils.isValid(this.mc.thePlayer.getHeldItemMainhand()) || this.mc.thePlayer.getHeldItemMainhand().getItem() != ItemRegistry.asbFilter ) {
-            this.mc.thePlayer.closeScreen();
+        if( !ItemStackUtils.isValid(this.mc.player.getHeldItemMainhand()) || this.mc.player.getHeldItemMainhand().getItem() != ItemRegistry.assembly_upg_filter ) {
+            this.mc.player.closeScreen();
         }
     }
 
@@ -57,7 +57,7 @@ public class GuiAssemblyFilter
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-        String s = Lang.translate(ItemRegistry.asbFilter.getUnlocalizedName() + ".name");
+        String s = Lang.translate(ItemRegistry.assembly_upg_filter.getUnlocalizedName() + ".name");
         this.fontRendererObj.drawString(s, this.xSize / 2 - this.fontRendererObj.getStringWidth(s) / 2, 6, 4210752);
         this.fontRendererObj.drawString(Lang.translate(Lang.CONTAINER_INV.get()), 8, this.ySize - 96 + 3, 4210752);
     }

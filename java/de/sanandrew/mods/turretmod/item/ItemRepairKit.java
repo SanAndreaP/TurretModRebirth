@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.item;
 import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.medpack.TurretRepairKit;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -25,20 +26,20 @@ public class ItemRepairKit
     public ItemRepairKit() {
         super();
         this.setCreativeTab(TmrCreativeTabs.MISC);
-        this.setRegistryName("turret_repair_kit");
         this.setMaxDamage(0);
         this.setHasSubtypes(true);
+        this.setUnlocalizedName(TurretModRebirth.ID + ":turret_repair_kit");
     }
 
     @Override
     public String getUnlocalizedName(ItemStack stack) {
         TurretRepairKit type = RepairKitRegistry.INSTANCE.getType(stack);
-        return String.format("%s.%s", super.getUnlocalizedName(stack), type == null ? "unknown" : type.getName());
+        return String.format("%s.%s", this.getUnlocalizedName(), type == null ? "unknown" : type.getName());
     }
 
     public ItemStack getRepKitItem(int stackSize, TurretRepairKit type) {
         if( type == null ) {
-            throw new IllegalArgumentException("Cannot get ammo item with NULL type!");
+            throw new IllegalArgumentException("Cannot get turret_ammo item with NULL type!");
         }
 
         NBTTagCompound nbt = new NBTTagCompound();

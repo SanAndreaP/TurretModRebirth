@@ -33,7 +33,7 @@ public class TurretInfoEntryGenerator
     private static ItemStack tooltipItem;
 
     public TurretInfoEntryGenerator() {
-        super(CraftingRecipes.potatoGenerator);
+        super(CraftingRecipes.electrolyteGenerator);
     }
 
     @Override

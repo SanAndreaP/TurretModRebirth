@@ -102,7 +102,7 @@ public class EntityTurretShotgun
 
         super.onUpdate();
 
-        if( this.worldObj.isRemote ) {
+        if( this.world.isRemote ) {
             if( this.barrelPos < 1.0F ) {
                 this.barrelPos += 0.06F * 20.0F / this.targetProc.getMaxShootTicks();
             } else {
@@ -156,14 +156,14 @@ public class EntityTurretShotgun
                 for( int i = 0; i < 6; i++ ) {
                     Entity projectile = (Entity) this.getProjectile();
                     assert projectile != null;
-                    this.turret.worldObj.spawnEntityInWorld(projectile);
-                    this.turret.worldObj.playSound(null, this.turret.posX, this.turret.posY, this.turret.posZ, this.getShootSound(), SoundCategory.NEUTRAL, 1.8F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
+                    this.turret.world.spawnEntityInWorld(projectile);
+                    this.turret.world.playSound(null, this.turret.posX, this.turret.posY, this.turret.posZ, this.getShootSound(), SoundCategory.NEUTRAL, 1.8F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
                 }
                 this.turret.setShooting();
                 this.decrAmmo();
                 return true;
             } else {
-                this.turret.worldObj.playSound(null, this.turret.posX, this.turret.posY, this.turret.posZ, this.getLowAmmoSound(), SoundCategory.NEUTRAL, 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
+                this.turret.world.playSound(null, this.turret.posX, this.turret.posY, this.turret.posZ, this.getLowAmmoSound(), SoundCategory.NEUTRAL, 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
                 return false;
             }
         }

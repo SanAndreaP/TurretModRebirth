@@ -91,9 +91,9 @@ public class GuiTurretAssembly
 
         this.assembly.syncStacks = false;
 
-        this.upgIconAuto = new ItemStack(ItemRegistry.asbAuto);
-        this.upgIconSpeed = new ItemStack(ItemRegistry.asbSpeed);
-        this.upgIconFilter = new ItemStack(ItemRegistry.asbFilter);
+        this.upgIconAuto = new ItemStack(ItemRegistry.assembly_upg_auto);
+        this.upgIconSpeed = new ItemStack(ItemRegistry.assembly_upg_speed);
+        this.upgIconFilter = new ItemStack(ItemRegistry.assembly_upg_filter);
     }
 
     @SuppressWarnings("unchecked")

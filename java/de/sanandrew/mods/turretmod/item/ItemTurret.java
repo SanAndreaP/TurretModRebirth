@@ -30,6 +30,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
 
 import java.lang.reflect.InvocationTargetException;
@@ -45,12 +47,13 @@ public class ItemTurret
     public ItemTurret() {
         super();
         this.setCreativeTab(TmrCreativeTabs.TURRETS);
-        this.setRegistryName("turret_placer");
+        this.setUnlocalizedName(TurretModRebirth.ID + ":turret_placer");
         this.addPropertyOverride(new ResourceLocation("turretId"), TURRET_TEX_ID);
     }
 
     @Override
     @SuppressWarnings("unchecked")
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List lines, boolean advInfo) {
         super.addInformation(stack, player, lines, advInfo);
         TurretInfo info = getTurretInfo(stack);
@@ -184,7 +187,7 @@ public class ItemTurret
 
     public ItemStack getTurretItem(int stackSize, TurretInfo type) {
         if( type == null ) {
-            throw new IllegalArgumentException("Cannot get turret item with NULL type!");
+            throw new IllegalArgumentException("Cannot get turret_placer item with NULL type!");
         }
 
         NBTTagCompound nbt = new NBTTagCompound();
@@ -231,11 +234,11 @@ public class ItemTurret
                 entity = entityClass.getConstructor(World.class, boolean.class, EntityPlayer.class).newInstance(world, isUpsideDown, owner);
             }
         } catch( InvocationTargetException | IllegalAccessException | InstantiationException | NoSuchMethodException ex ) {
-            TurretModRebirth.LOG.log(Level.ERROR, "Cannot instanciate turret!", ex);
+            TurretModRebirth.LOG.log(Level.ERROR, "Cannot instanciate turret_placer!", ex);
         }
 
         if( entity == null ) {
-            TurretModRebirth.LOG.printf(Level.WARN, "Skipping turret with name %s", info.getName());
+            TurretModRebirth.LOG.printf(Level.WARN, "Skipping turret_placer with name %s", info.getName());
         }
 
         return entity;

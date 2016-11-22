@@ -34,7 +34,7 @@ public class PacketUpdateUgradeSlot
 
     @Override
     public void handleClientMessage(PacketUpdateUgradeSlot packet, EntityPlayer player) {
-        Entity e = player.worldObj.getEntityByID(packet.turretID);
+        Entity e = player.world.getEntityByID(packet.turretID);
         if( e instanceof EntityTurret ) {
             ((EntityTurret) e).getUpgradeProcessor().setInventorySlotContents(packet.slot, packet.stack);
         }

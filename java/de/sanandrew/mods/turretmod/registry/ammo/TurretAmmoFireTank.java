@@ -35,7 +35,7 @@ public abstract class TurretAmmoFireTank
         this.name = isMulti ? "tank_lrg" : "tank_sng";
         this.uuid = isMulti ? PACK_UUID : TANK_UUID;
         this.capacity = isMulti ? 256 : 16;
-        this.itemModel = new ResourceLocation(TurretModRebirth.ID, "ammo/" + modelName);
+        this.itemModel = new ResourceLocation(TurretModRebirth.ID, "turret_ammo/" + modelName);
     }
 
     @Override
@@ -85,12 +85,12 @@ public abstract class TurretAmmoFireTank
 
     @Override
     public ItemStack getStoringAmmoItem() {
-        return ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TANK_UUID));
+        return ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TANK_UUID));
     }
 
     @Override
     public EntityProjectileFlame getEntity(EntityTurret turret) {
-        return new EntityProjectileFlame(turret.worldObj, turret, turret.getTargetProcessor().getTarget());
+        return new EntityProjectileFlame(turret.world, turret, turret.getTargetProcessor().getTarget());
     }
 
     @Override

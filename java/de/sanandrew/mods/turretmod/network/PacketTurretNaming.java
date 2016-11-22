@@ -34,7 +34,7 @@ public class PacketTurretNaming
 
     @Override
     public void handleServerMessage(PacketTurretNaming packet, EntityPlayer player) {
-        Entity e = player.worldObj.getEntityByID(packet.turretId);
+        Entity e = player.world.getEntityByID(packet.turretId);
         if( e instanceof EntityTurret ) {
             EntityTurret turret = (EntityTurret) e;
             turret.setCustomNameTag(packet.name);

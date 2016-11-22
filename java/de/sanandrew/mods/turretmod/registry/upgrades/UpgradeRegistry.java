@@ -83,7 +83,7 @@ public final class UpgradeRegistry
             return this.getUpgrade(UUID.fromString(uid));
         } catch( IllegalArgumentException ex ) {
             if( !this.errored.contains(uid) ) {
-                TurretModRebirth.LOG.log(Level.WARN, "There was an error at parsing the UUID for a turret upgrade item!", ex);
+                TurretModRebirth.LOG.log(Level.WARN, "There was an error at parsing the UUID for a turret_placer upgrade item!", ex);
                 this.errored.add(uid);
             }
             return emptyInst;
@@ -119,7 +119,7 @@ public final class UpgradeRegistry
     public ItemStack getUpgradeItem(UUID uuid) {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setString("upgradeId", uuid.toString());
-        ItemStack stack = new ItemStack(ItemRegistry.turretUpgrade, 1);
+        ItemStack stack = new ItemStack(ItemRegistry.turret_upgrade, 1);
         stack.setTagCompound(nbt);
 
         return stack;
@@ -128,7 +128,7 @@ public final class UpgradeRegistry
     public ItemStack getUpgradeItem(TurretUpgrade upgrade) {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setString("upgradeId", this.getUpgradeUUID(upgrade).toString());
-        ItemStack stack = new ItemStack(ItemRegistry.turretUpgrade, 1);
+        ItemStack stack = new ItemStack(ItemRegistry.turret_upgrade, 1);
         stack.setTagCompound(nbt);
 
         return stack;

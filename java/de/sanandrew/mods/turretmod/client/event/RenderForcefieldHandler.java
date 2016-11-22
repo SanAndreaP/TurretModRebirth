@@ -22,6 +22,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 
@@ -31,6 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+@SideOnly(Side.CLIENT)
 public class RenderForcefieldHandler
 {
     public static final RenderForcefieldHandler INSTANCE = new RenderForcefieldHandler();
@@ -52,12 +55,12 @@ public class RenderForcefieldHandler
 
         List<ForcefieldCube> cubes = new ArrayList<>();
 
-        int worldTicks = (int) (Minecraft.getMinecraft().theWorld.getTotalWorldTime() % Integer.MAX_VALUE);
+        int worldTicks = (int) (Minecraft.getMinecraft().world.getTotalWorldTime() % Integer.MAX_VALUE);
 
         Iterator<Map.Entry<Integer, ForcefieldProvider>> it = fieldProviders.entrySet().iterator();
         while( it.hasNext() ) {
             Map.Entry<Integer, ForcefieldProvider> entry = it.next();
-            Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(entry.getKey());
+            Entity entity = Minecraft.getMinecraft().world.getEntityByID(entry.getKey());
             ForcefieldProvider ffProvider = entry.getValue();
 
             if( entity == null ) {
@@ -65,7 +68,7 @@ public class RenderForcefieldHandler
                 continue;
             }
 
-            if( entity.isDead || !entity.isEntityAlive() || !ffProvider.hasShieldActive() || !Minecraft.getMinecraft().theWorld.loadedEntityList.contains(entity) ) {
+            if( entity.isDead || !entity.isEntityAlive() || !ffProvider.hasShieldActive() || !Minecraft.getMinecraft().world.loadedEntityList.contains(entity) ) {
                 this.fadeOutFields.add(new ForcefieldFadeOut(entity.posX, entity.posY, entity.posZ, ffProvider.getShieldColor(), ffProvider.getShieldBoundingBox()));
                 it.remove();
             } else {

@@ -80,7 +80,7 @@ public class TurretInfoEntryAmmo
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         gui.drawTexturedModalRect(2, 34, 192, 18, 34, 34);
 
-        RenderUtils.renderStackInGui(ItemRegistry.ammo.getAmmoItem(1, ammo), 3, 35, 2.0F);
+        RenderUtils.renderStackInGui(ItemRegistry.turret_ammo.getAmmoItem(1, ammo), 3, 35, 2.0F);
 
         gui.mc.fontRendererObj.drawString(this.txtRounds, 42, 34, 0xFF6A6A6A, false);
         gui.mc.fontRendererObj.drawString(String.format("%d", ammo.getAmmoCapacity()), 45, 43, 0xFF000000, false);
@@ -153,7 +153,7 @@ public class TurretInfoEntryAmmo
         public GuiButtonAmmoItem(int id, int x, int y, int index) {
             super(id, x, y, 16, 16, "");
             this.ammoIndex = index;
-            this.stack = ItemRegistry.ammo.getAmmoItem(1,  TurretInfoEntryAmmo.this.ammos[this.ammoIndex]);
+            this.stack = ItemRegistry.turret_ammo.getAmmoItem(1,  TurretInfoEntryAmmo.this.ammos[this.ammoIndex]);
         }
 
         @Override

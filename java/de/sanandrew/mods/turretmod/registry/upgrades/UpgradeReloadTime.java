@@ -55,7 +55,7 @@ public abstract class UpgradeReloadTime
 
     @Override
     public void onApply(EntityTurret turret) {
-        if( !turret.worldObj.isRemote ) {
+        if( !turret.world.isRemote ) {
             IAttributeInstance attrib = turret.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS);
             if( attrib.getModifier(this.modifier.getID()) != null ) {
                 attrib.removeModifier(this.modifier);
@@ -67,7 +67,7 @@ public abstract class UpgradeReloadTime
 
     @Override
     public void onRemove(EntityTurret turret) {
-        if( !turret.worldObj.isRemote ) {
+        if( !turret.world.isRemote ) {
             IAttributeInstance attrib = turret.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS);
             if( attrib.getModifier(this.modifier.getID()) != null ) {
                 attrib.removeModifier(this.modifier);

@@ -9,13 +9,11 @@
 package de.sanandrew.mods.turretmod.registry.ammo;
 
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileMinigunPebble;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectilePebble;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretMinigun;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -37,7 +35,7 @@ public abstract class TurretAmmoMinigunShell
         this.name = isMulti ? "mgshell_lrg" : "mgshell_sng";
         this.uuid = isMulti ? PACK_UUID : SHELL_UUID;
         this.capacity = isMulti ? 64 : 4;
-        this.itemModel = new ResourceLocation(TurretModRebirth.ID, "ammo/" + modelName);
+        this.itemModel = new ResourceLocation(TurretModRebirth.ID, "turret_ammo/" + modelName);
     }
 
     @Override
@@ -87,12 +85,12 @@ public abstract class TurretAmmoMinigunShell
 
     @Override
     public ItemStack getStoringAmmoItem() {
-        return ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(SHELL_UUID));
+        return ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(SHELL_UUID));
     }
 
     @Override
     public EntityProjectileMinigunPebble getEntity(EntityTurret turret) {
-        return new EntityProjectileMinigunPebble(turret.worldObj, turret, turret.getTargetProcessor().getTarget());
+        return new EntityProjectileMinigunPebble(turret.world, turret, turret.getTargetProcessor().getTarget());
     }
 
     @Override

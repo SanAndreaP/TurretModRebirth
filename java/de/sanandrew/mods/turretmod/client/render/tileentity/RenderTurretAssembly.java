@@ -85,7 +85,7 @@ public class RenderTurretAssembly
         int tileX = pos.getX();
         int tileY = pos.getY();
         int tileZ = pos.getZ();
-        float dist = (float) Minecraft.getMinecraft().thePlayer.getDistance(tileX + 0.5F, tileY + 0.5F, tileZ + 0.5F);
+        float dist = (float) Minecraft.getMinecraft().player.getDistance(tileX + 0.5F, tileY + 0.5F, tileZ + 0.5F);
         Tessellator tess = Tessellator.getInstance();
         VertexBuffer buf = tess.getBuffer();
 

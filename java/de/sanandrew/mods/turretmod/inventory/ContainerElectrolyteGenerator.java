@@ -214,7 +214,7 @@ public class ContainerElectrolyteGenerator
 //
 //        @Override
 //        public boolean isItemValid(ItemStack stack) {
-//            return stack != null && !this.assembly.hasFilterUpgrade() && stack.getItem() == ItemRegistry.asbFilter;
+//            return stack != null && !this.assembly.hasFilterUpgrade() && stack.getItem() == ItemRegistry.assembly_upg_filter;
 //        }
 //    }
 }

@@ -145,7 +145,7 @@ public class TileEntityElectrolyteGenerator
 
     @Override
     public void update() {
-        if( !this.worldObj.isRemote ) {
+        if( !this.world.isRemote ) {
             this.fluxExtractPerTick = Math.min(this.fluxAmount, MAX_FLUX_EXTRACT);
 
             float prevEffective = this.effectiveness;
@@ -221,7 +221,7 @@ public class TileEntityElectrolyteGenerator
                     EnumFacing otherDir = direction.getOpposite();
 
                     BlockPos adjPos = this.pos.add(direction.getFrontOffsetX(), direction.getFrontOffsetY(), direction.getFrontOffsetZ());
-                    TileEntity te = this.worldObj.getTileEntity(adjPos);
+                    TileEntity te = this.world.getTileEntity(adjPos);
 
                     if( te instanceof IEnergyReceiver ) {
                         IEnergyReceiver receiver = (IEnergyReceiver) te;
@@ -247,7 +247,7 @@ public class TileEntityElectrolyteGenerator
             }
 
             if( this.doSync ) {
-                PacketRegistry.sendToAllAround(new PacketSyncTileEntity(this), this.worldObj.provider.getDimension(), this.pos, 64.0D);
+                PacketRegistry.sendToAllAround(new PacketSyncTileEntity(this), this.world.provider.getDimension(), this.pos, 64.0D);
             }
 
             this.prevFluxAmount = this.fluxAmount;
@@ -420,7 +420,7 @@ public class TileEntityElectrolyteGenerator
 
     @Override
     public boolean isUseableByPlayer(EntityPlayer player) {
-        return this.worldObj.getTileEntity(this.pos) == this && player.getDistanceSq(this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D) <= 64.0D;
+        return this.world.getTileEntity(this.pos) == this && player.getDistanceSq(this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D) <= 64.0D;
     }
 
     @Override

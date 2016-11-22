@@ -116,7 +116,7 @@ public class EntityTurretLaser
     public void onUpdate() {
         super.onUpdate();
 
-        if( this.worldObj.isRemote ) {
+        if( this.world.isRemote ) {
             if( this.laserSound == null ) {
                 if( this.getTargetProcessor().isShooting() && this.getTargetProcessor().hasAmmo() ) {
                     this.laserSound = new SoundLaser(this);

@@ -28,7 +28,7 @@ public class UpgradeSmartTargeting
     {
         @Override
         public boolean isTargetApplicable(EntityTurret turret, Entity target, boolean currValue) {
-            List entities = turret.worldObj.getEntitiesWithinAABB(turret.getClass(), turret.getTargetProcessor().getRangeBB());
+            List entities = turret.world.getEntitiesWithinAABB(turret.getClass(), turret.getTargetProcessor().getRangeBB());
 
             for( Object eObj : entities ) {
                 if( eObj instanceof EntityTurret ) {
@@ -81,7 +81,7 @@ public class UpgradeSmartTargeting
 
     @Override
     public void onApply(EntityTurret turret) {
-        if( !turret.worldObj.isRemote ) {
+        if( !turret.world.isRemote ) {
             turret.getTargetProcessor().addTargetingListener(this.targetingListener);
         }
     }
@@ -98,7 +98,7 @@ public class UpgradeSmartTargeting
 
     @Override
     public void onLoad(EntityTurret turret, NBTTagCompound nbt) {
-        if( !turret.worldObj.isRemote ) {
+        if( !turret.world.isRemote ) {
             turret.getTargetProcessor().addTargetingListener(this.targetingListener);
         }
     }

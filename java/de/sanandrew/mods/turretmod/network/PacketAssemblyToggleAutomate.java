@@ -34,7 +34,7 @@ public class PacketAssemblyToggleAutomate
 
     @Override
     public void handleServerMessage(PacketAssemblyToggleAutomate packet, EntityPlayer player) {
-        TileEntity te = player.worldObj.getTileEntity(packet.pos);
+        TileEntity te = player.world.getTileEntity(packet.pos);
         if( te instanceof TileEntityTurretAssembly ) {
             ((TileEntityTurretAssembly) te).setAutomated(!((TileEntityTurretAssembly) te).isAutomated());
         }

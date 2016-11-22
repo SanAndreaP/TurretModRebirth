@@ -76,8 +76,12 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
 
+@SideOnly(Side.CLIENT)
+@SuppressWarnings("MethodCallSideOnly")
 public class ClientProxy
         extends CommonProxy
 {
@@ -108,10 +112,8 @@ public class ClientProxy
     public void init(FMLInitializationEvent event) {
         super.init(event);
 
-        ModelRegistry.registerItemModels();
+        ModelRegistry.registerModelsInit();
 
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurretAssembly.class, new RenderTurretAssembly());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityElectrolyteGenerator.class, new RenderElectrolyteGenerator());
 
         MinecraftForge.EVENT_BUS.register(RenderForcefieldHandler.INSTANCE);
 
@@ -130,7 +132,7 @@ public class ClientProxy
     @Override
     public void openGui(EntityPlayer player, EnumGui id, int x, int y, int z) {
         if( player == null ) {
-            player = Minecraft.getMinecraft().thePlayer;
+            player = Minecraft.getMinecraft().player;
         }
 
         super.openGui(player, id, x, y, z);
@@ -157,7 +159,7 @@ public class ClientProxy
                     break;
                 case GUI_TASSEMBLY_FLT:
                     ItemStack stack = player.getHeldItemMainhand();
-                    if( ItemStackUtils.isValid(stack) && stack.getItem() == ItemRegistry.asbFilter ) {
+                    if( ItemStackUtils.isValid(stack) && stack.getItem() == ItemRegistry.assembly_upg_filter ) {
                         return new GuiAssemblyFilter(player.inventory, stack);
                     }
                     break;
@@ -181,7 +183,7 @@ public class ClientProxy
         Minecraft mc = Minecraft.getMinecraft();
         switch( particle ) {
             case ASSEMBLY_SPARK:
-                mc.effectRenderer.addEffect(new ParticleAssemblySpark(mc.theWorld, x, y, z, 0.0D, 0.0D, 0.0D));
+                mc.effectRenderer.addEffect(new ParticleAssemblySpark(mc.world, x, y, z, 0.0D, 0.0D, 0.0D));
                 break;
             case SHOTGUN_SHOT: {
                 float rotXZ = -data.<Float>getValue(0) / 180.0F * (float) Math.PI;
@@ -203,7 +205,7 @@ public class ClientProxy
                     double xDist = MiscUtils.RNG.randomDouble() * 0.05 - 0.025;
                     double yDist = MiscUtils.RNG.randomDouble() * 0.05 - 0.025;
                     double zDist = MiscUtils.RNG.randomDouble() * 0.05 - 0.025;
-                    Particle fx = new ParticleSmokeNormal.Factory().createParticle(0, mc.theWorld, x + xShift, y + yShift, z + zShift, xShift * 0.1F + xDist, yShift * 0.1F + yDist, zShift * 0.1F + zDist);
+                    Particle fx = new ParticleSmokeNormal.Factory().createParticle(0, mc.world, x + xShift, y + yShift, z + zShift, xShift * 0.1F + xDist, yShift * 0.1F + yDist, zShift * 0.1F + zDist);
                     mc.effectRenderer.addEffect(fx);
                 }
                 break;
@@ -218,7 +220,7 @@ public class ClientProxy
                     double partMotionX = diffMotionX + MiscUtils.RNG.randomDouble() * 0.05D - 0.025D;
                     double partMotionY = -MiscUtils.RNG.randomDouble() * 0.025D;
                     double partMotionZ = diffMotionZ + MiscUtils.RNG.randomDouble() * 0.05D - 0.025D;
-                    mc.effectRenderer.addEffect(new ParticleCryoTrail(mc.theWorld, x - diffMotionX * i, y - diffMotionY * i, z - diffMotionZ * i, partMotionX, partMotionY, partMotionZ));
+                    mc.effectRenderer.addEffect(new ParticleCryoTrail(mc.world, x - diffMotionX * i, y - diffMotionY * i, z - diffMotionZ * i, partMotionX, partMotionY, partMotionZ));
                 }
                 break;
             }
@@ -244,7 +246,7 @@ public class ClientProxy
                     double xDist = MiscUtils.RNG.randomDouble() * 0.05 - 0.025;
                     double yDist = MiscUtils.RNG.randomDouble() * 0.05 - 0.025;
                     double zDist = MiscUtils.RNG.randomDouble() * 0.05 - 0.025;
-                    Particle fx = new ParticleSmokeNormal.Factory().createParticle(0, mc.theWorld, x, y, z, motionX + xDist, motionY + yDist, motionZ + zDist);
+                    Particle fx = new ParticleSmokeNormal.Factory().createParticle(0, mc.world, x, y, z, motionX + xDist, motionY + yDist, motionZ + zDist);
                     mc.effectRenderer.addEffect(fx);
                 }
                 break;

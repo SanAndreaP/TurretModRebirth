@@ -40,7 +40,7 @@ public class EntityProjectileBullet
     public void onUpdate() {
         super.onUpdate();
 
-//        if( this.worldObj.isRemote ) {
+//        if( this.world.isRemote ) {
 //            TurretModRebirth.proxy.spawnParticle(EnumParticle.CRYO_PARTICLE, this.posX, this.posY, this.posZ, Triplet.with(this.motionX, this.motionY, this.motionZ));
 //        }
     }
@@ -67,7 +67,7 @@ public class EntityProjectileBullet
 
 //    @Override
 //    public boolean onPreHit(Entity e, DamageSource dmgSource, float dmg) {
-//        if( !this.worldObj.isRemote && e instanceof EntityLivingBase ) {
+//        if( !this.world.isRemote && e instanceof EntityLivingBase ) {
 //            ((EntityLivingBase) e).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, this.duration, this.level));
 //            if( e instanceof EntityCreature && this.shooterCache instanceof EntityTurret ) {
 //                setEntityTarget((EntityCreature) e, (EntityTurret) this.shooterCache);

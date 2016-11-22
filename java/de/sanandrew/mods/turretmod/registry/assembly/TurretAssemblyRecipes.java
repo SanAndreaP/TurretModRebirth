@@ -122,26 +122,26 @@ public final class TurretAssemblyRecipes
     }
 
     private static void registerTurrets() {
-        RecipeGroup group = INSTANCE.registerGroup("group1", ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCrossbow.class)));
+        RecipeGroup group = INSTANCE.registerGroup("group1", ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCrossbow.class)));
 
         ItemStack res;
         RecipeEntryItem[] ingredients;
 
-        res = ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCrossbow.class));
+        res = ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCrossbow.class));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(12).put("cobblestone"),
                                              new RecipeEntryItem(1).put(Items.BOW),
                                              new RecipeEntryItem(4).put("dustRedstone"),
                                              new RecipeEntryItem(4).put("plankWood")};
         INSTANCE.registerRecipe(TURRET_MK1_CB, group, res, 10, 100, ingredients);
 
-        res = ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretShotgun.class));
+        res = ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretShotgun.class));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(12).put("stone"),
                                              new RecipeEntryItem(2).put("ingotIron"),
                                              new RecipeEntryItem(4).put("dustRedstone"),
                                              new RecipeEntryItem(4).put("logWood")};
         INSTANCE.registerRecipe(TURRET_MK1_SG, group, res, 10, 100, ingredients);
 
-        res = ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCryolator.class));
+        res = ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCryolator.class));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(12).put(Blocks.SNOW),
                                              new RecipeEntryItem(1).put(Items.BOW),
                                              new RecipeEntryItem(4).put("dustRedstone"),
@@ -149,7 +149,7 @@ public final class TurretAssemblyRecipes
                                              new RecipeEntryItem(2).put(Blocks.ICE)};
         INSTANCE.registerRecipe(TURRET_MK1_CL, group, res, 10, 100, ingredients);
 
-        res = ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretRevolver.class));
+        res = ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretRevolver.class));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put("blockIron"),
                                              new RecipeEntryItem(1).put("ingotGold"),
                                              new RecipeEntryItem(4).put("dustRedstone"),
@@ -157,7 +157,7 @@ public final class TurretAssemblyRecipes
                                              new RecipeEntryItem(8).put(new ItemStack(Blocks.STONE_SLAB, 1, 0))};
         INSTANCE.registerRecipe(TURRET_MK2_RV, group, res, 15, 100, ingredients);
 
-        res = ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretMinigun.class));
+        res = ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretMinigun.class));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put("blockIron"),
                                              new RecipeEntryItem(4).put("ingotGold"),
                                              new RecipeEntryItem(4).put("dustRedstone"),
@@ -165,7 +165,7 @@ public final class TurretAssemblyRecipes
                                              new RecipeEntryItem(8).put(new ItemStack(Blocks.STONE_SLAB, 1, 0))};
         INSTANCE.registerRecipe(TURRET_MK2_MG, group, res, 15, 100, ingredients);
 
-        res = ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretLaser.class));
+        res = ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretLaser.class));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put("obsidian"),
                                              new RecipeEntryItem(1).put("blockRedstone"),
                                              new RecipeEntryItem(1).put("blockIron"),
@@ -173,7 +173,7 @@ public final class TurretAssemblyRecipes
                                              new RecipeEntryItem(1).put("gemDiamond")};
         INSTANCE.registerRecipe(TURRET_MK3_LR, group, res, 20, 100, ingredients);
 
-        res = ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretFlamethrower.class));
+        res = ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretFlamethrower.class));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(3).put("obsidian"),
                                              new RecipeEntryItem(1).put("blockRedstone"),
                                              new RecipeEntryItem(1).put("blockQuartz"),
@@ -182,128 +182,128 @@ public final class TurretAssemblyRecipes
     }
 
     private static void registerAmmo() {
-        RecipeGroup group = INSTANCE.registerGroup("group2", ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.QUIVER_UUID)));
+        RecipeGroup group = INSTANCE.registerGroup("group2", ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.QUIVER_UUID)));
 
         ItemStack res;
         RecipeEntryItem[] ingredients;
 
         // arrow
-        res = ItemRegistry.ammo.getAmmoItem(4, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.ARROW_UUID));
+        res = ItemRegistry.turret_ammo.getAmmoItem(4, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.ARROW_UUID));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(Items.ARROW)};
         INSTANCE.registerRecipe(ARROW_SNG, group, res, 5, 60, ingredients);
 
-        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.QUIVER_UUID));
-        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.ARROW_UUID))),
+        res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.QUIVER_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.ARROW_UUID))),
                                              new RecipeEntryItem(1).put(Items.LEATHER)};
         INSTANCE.registerRecipe(ARROW_MTP, group, res, 5, 120, ingredients);
 
         // shotgun shell
-        res = ItemRegistry.ammo.getAmmoItem(12, AmmoRegistry.INSTANCE.getType(TurretAmmoShotgunShell.SHELL_UUID));
+        res = ItemRegistry.turret_ammo.getAmmoItem(12, AmmoRegistry.INSTANCE.getType(TurretAmmoShotgunShell.SHELL_UUID));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put("ingotIron"),
                                              new RecipeEntryItem(1).put(Blocks.GRAVEL),
                                              new RecipeEntryItem(1).put(Items.GUNPOWDER).put("dustGunpowder"),
                                              new RecipeEntryItem(1).put("dustRedstone")};
         INSTANCE.registerRecipe(SGSHELL_SNG, group, res, 10, 60, ingredients);
 
-        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoShotgunShell.PACK_UUID));
-        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoShotgunShell.SHELL_UUID))),
+        res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoShotgunShell.PACK_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoShotgunShell.SHELL_UUID))),
                                              new RecipeEntryItem(1).put(Items.LEATHER)};
         INSTANCE.registerRecipe(SGSHELL_MTP, group, res, 5, 120, ingredients);
 
         // revolver bullet
-        res = ItemRegistry.ammo.getAmmoItem(6, AmmoRegistry.INSTANCE.getType(TurretAmmoBullet.BULLET_UUID));
+        res = ItemRegistry.turret_ammo.getAmmoItem(6, AmmoRegistry.INSTANCE.getType(TurretAmmoBullet.BULLET_UUID));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(3).put("ingotIron"),
                                              new RecipeEntryItem(1).put(Items.GUNPOWDER).put("dustGunpowder"),
                                              new RecipeEntryItem(1).put("dustRedstone")};
         INSTANCE.registerRecipe(BULLET_SNG, group, res, 10, 60, ingredients);
 
-        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoBullet.PACK_UUID));
-        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoBullet.BULLET_UUID))),
+        res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoBullet.PACK_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoBullet.BULLET_UUID))),
                                              new RecipeEntryItem(1).put(Items.LEATHER)};
         INSTANCE.registerRecipe(BULLET_MTP, group, res, 5, 120, ingredients);
 
         // cryo cell
-        res = ItemRegistry.ammo.getAmmoItem(4, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK1_UUID));
+        res = ItemRegistry.turret_ammo.getAmmoItem(4, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK1_UUID));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("blockGlass"),
                                              new RecipeEntryItem(1).put(Blocks.SNOW),
                                              new RecipeEntryItem(1).put(Items.GUNPOWDER).put("dustGunpowder"),
                                              new RecipeEntryItem(1).put("dustRedstone")};
         INSTANCE.registerRecipe(CRYOCELL_1_SNG, group, res, 10, 60, ingredients);
 
-        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.PACK_MK1_UUID));
-        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK1_UUID))),
+        res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.PACK_MK1_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK1_UUID))),
                                              new RecipeEntryItem(1).put(Items.LEATHER)};
         INSTANCE.registerRecipe(CRYOCELL_1_MTP, group, res, 5, 120, ingredients);
 
-        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK2_UUID));
-        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK1_UUID))),
+        res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK2_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK1_UUID))),
                                              new RecipeEntryItem(1).put(Blocks.SNOW)};
         INSTANCE.registerRecipe(CRYOCELL_2_SNG, group, res, 5, 40, ingredients);
 
-        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.PACK_MK2_UUID));
-        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK2_UUID))),
+        res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.PACK_MK2_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK2_UUID))),
                                              new RecipeEntryItem(1).put(Items.LEATHER)};
         INSTANCE.registerRecipe(CRYOCELL_2_MTP, group, res, 5, 120, ingredients);
 
-        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK3_UUID));
-        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK2_UUID))),
+        res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK3_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK2_UUID))),
                                              new RecipeEntryItem(1).put(Blocks.SNOW)};
         INSTANCE.registerRecipe(CRYOCELL_3_SNG, group, res, 5, 40, ingredients);
 
-        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.PACK_MK3_UUID));
-        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK3_UUID))),
+        res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.PACK_MK3_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK3_UUID))),
                                              new RecipeEntryItem(1).put(Items.LEATHER)};
         INSTANCE.registerRecipe(CRYOCELL_3_MTP, group, res, 5, 120, ingredients);
 
         // minigun shells
-        res = ItemRegistry.ammo.getAmmoItem(2, AmmoRegistry.INSTANCE.getType(TurretAmmoMinigunShell.SHELL_UUID));
+        res = ItemRegistry.turret_ammo.getAmmoItem(2, AmmoRegistry.INSTANCE.getType(TurretAmmoMinigunShell.SHELL_UUID));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("ingotIron"),
                                              new RecipeEntryItem(2).put("seed*").put(Items.WHEAT_SEEDS).put(Items.MELON_SEEDS).put(Items.PUMPKIN_SEEDS),
                                              new RecipeEntryItem(1).put(Items.GUNPOWDER).put("dustGunpowder"),
                                              new RecipeEntryItem(1).put("dustRedstone")};
         INSTANCE.registerRecipe(MGSHELL_SNG, group, res, 10, 60, ingredients);
 
-        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoMinigunShell.PACK_UUID));
-        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoMinigunShell.SHELL_UUID))),
+        res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoMinigunShell.PACK_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoMinigunShell.SHELL_UUID))),
                                              new RecipeEntryItem(1).put(Items.IRON_INGOT)};
         INSTANCE.registerRecipe(MGSHELL_MTP, group, res, 5, 120, ingredients);
 
         // flux cells
-        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFluxCell.CELL_UUID));
+        res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFluxCell.CELL_UUID));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("blockGlass"),
                                              new RecipeEntryItem(1).put("ingotIron"),
                                              new RecipeEntryItem(1).put("dustRedstone")};
         INSTANCE.registerRecipe(FLUXCELL_SNG, group, res, 10, 60, ingredients);
 
-        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFluxCell.PACK_UUID));
-        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFluxCell.CELL_UUID))),
+        res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFluxCell.PACK_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFluxCell.CELL_UUID))),
                                              new RecipeEntryItem(1).put(Items.IRON_INGOT)};
         INSTANCE.registerRecipe(FLUXCELL_MTP, group, res, 5, 120, ingredients);
 
         // fuel tanks
-        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFireTank.TANK_UUID));
+        res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFireTank.TANK_UUID));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(Items.LAVA_BUCKET),
                                              new RecipeEntryItem(1).put("dustRedstone"),
                                              new RecipeEntryItem(1).put(Items.RABBIT_HIDE)};
         INSTANCE.registerRecipe(FUELTANK_SNG, group, res, 10, 60, ingredients);
 
-        res = ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFireTank.PACK_UUID));
-        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFireTank.TANK_UUID))),
+        res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFireTank.PACK_UUID));
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFireTank.TANK_UUID))),
                                              new RecipeEntryItem(1).put(Items.IRON_INGOT)};
         INSTANCE.registerRecipe(FUELTANK_MTP, group, res, 5, 120, ingredients);
     }
 
     private static void registerMisc() {
-        RecipeGroup group = INSTANCE.registerGroup("group0", new ItemStack(ItemRegistry.tcu));
+        RecipeGroup group = INSTANCE.registerGroup("group0", new ItemStack(ItemRegistry.turret_control_unit));
 
         ItemStack res;
         RecipeEntryItem[] ingredients;
 
-        res = new ItemStack(ItemRegistry.turretInfo, 1);
+        res = new ItemStack(ItemRegistry.turret_info, 1);
         ingredients = new RecipeEntryItem[0];
         INSTANCE.registerRecipe(TINFO, group, res, 7_500, 10, ingredients);
 
-        res = new ItemStack(ItemRegistry.tcu, 1);
+        res = new ItemStack(ItemRegistry.turret_control_unit, 1);
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(5).put("ingotIron"),
                                              new RecipeEntryItem(2).put(Items.REDSTONE),
                                              new RecipeEntryItem(1).put("paneGlass")};
@@ -311,40 +311,40 @@ public final class TurretAssemblyRecipes
     }
 
     private static void registerMedkits() {
-        RecipeGroup group = INSTANCE.registerGroup("group3", ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.STANDARD_MK1)));
+        RecipeGroup group = INSTANCE.registerGroup("group3", ItemRegistry.repair_kit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.STANDARD_MK1)));
 
         ItemStack res;
         RecipeEntryItem[] ingredients;
         ItemStack potion;
 
-        res = ItemRegistry.repairKit.getRepKitItem(3, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.STANDARD_MK1));
+        res = ItemRegistry.repair_kit.getRepKitItem(3, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.STANDARD_MK1));
         //noinspection ConstantConditions
         potion = PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM, 1), PotionType.getPotionTypeForName("healing"));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.LEATHER),
                                              new RecipeEntryItem(1).put(potion.copy()).drawTooltip()};
         INSTANCE.registerRecipe(HEAL_MK1, group, res, 25, 600, ingredients);
 
-        res = ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.STANDARD_MK2));
+        res = ItemRegistry.repair_kit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.STANDARD_MK2));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.LEATHER),
                                              new RecipeEntryItem(1).put(potion.copy()).drawTooltip(),
-                                             new RecipeEntryItem(1).put(ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.STANDARD_MK1)))};
+                                             new RecipeEntryItem(1).put(ItemRegistry.repair_kit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.STANDARD_MK1)))};
         INSTANCE.registerRecipe(HEAL_MK2, group, res, 25, 600, ingredients);
 
-        res = ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.STANDARD_MK3));
+        res = ItemRegistry.repair_kit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.STANDARD_MK3));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.LEATHER),
                                              new RecipeEntryItem(1).put(potion.copy()).drawTooltip(),
-                                             new RecipeEntryItem(1).put(ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.STANDARD_MK2)))};
+                                             new RecipeEntryItem(1).put(ItemRegistry.repair_kit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.STANDARD_MK2)))};
         INSTANCE.registerRecipe(HEAL_MK3, group, res, 25, 600, ingredients);
 
-        res = ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.STANDARD_MK4));
+        res = ItemRegistry.repair_kit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.STANDARD_MK4));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.LEATHER),
                                              new RecipeEntryItem(1).put(potion.copy()).drawTooltip(),
-                                             new RecipeEntryItem(1).put(ItemRegistry.repairKit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.STANDARD_MK3)))};
+                                             new RecipeEntryItem(1).put(ItemRegistry.repair_kit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.STANDARD_MK3)))};
         INSTANCE.registerRecipe(HEAL_MK4, group, res, 25, 600, ingredients);
 
         //noinspection ConstantConditions
         potion = PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM, 1), PotionType.getPotionTypeForName("regeneration"));
-        res = ItemRegistry.repairKit.getRepKitItem(6, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.REGEN_MK1));
+        res = ItemRegistry.repair_kit.getRepKitItem(6, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.REGEN_MK1));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.LEATHER),
                                              new RecipeEntryItem(1).put(potion).drawTooltip()};
         INSTANCE.registerRecipe(REGEN_MK1, group, res, 25, 600, ingredients);
@@ -357,20 +357,20 @@ public final class TurretAssemblyRecipes
         RecipeEntryItem[] ingredients;
 
 
-        res = new ItemStack(ItemRegistry.asbAuto, 1);
+        res = new ItemStack(ItemRegistry.assembly_upg_auto, 1);
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("gemEmerald"),
                                              new RecipeEntryItem(1).put("nuggetGold"),
                                              new RecipeEntryItem(1).put(Items.COMPARATOR)};
         INSTANCE.registerRecipe(UPG_AT_AUTO, group, res, 60, 300, ingredients);
 
-        res = new ItemStack(ItemRegistry.asbFilter, 1);
+        res = new ItemStack(ItemRegistry.assembly_upg_filter, 1);
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("gemEmerald"),
                                              new RecipeEntryItem(1).put("nuggetGold"),
                                              new RecipeEntryItem(1).put("dustRedstone"),
                                              new RecipeEntryItem(1).put(Blocks.HOPPER)};
         INSTANCE.registerRecipe(UPG_AT_FILTER, group, res, 60, 300, ingredients);
 
-        res = new ItemStack(ItemRegistry.asbSpeed, 1);
+        res = new ItemStack(ItemRegistry.assembly_upg_speed, 1);
         //noinspection ConstantConditions
         ItemStack speedPotion = PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM, 1), PotionType.getPotionTypeForName("swiftness"));
         ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("gemEmerald"),

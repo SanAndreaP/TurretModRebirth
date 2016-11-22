@@ -59,7 +59,7 @@ public class UpgradeAmmoStorage
 
     @Override
     public void onApply(EntityTurret turret) {
-        if( !turret.worldObj.isRemote ) {
+        if( !turret.world.isRemote ) {
             IAttributeInstance attrib = turret.getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY);
             if( attrib.getModifier(modifier.getID()) != null ) {
                 attrib.removeModifier(modifier);
@@ -71,7 +71,7 @@ public class UpgradeAmmoStorage
 
     @Override
     public void onRemove(EntityTurret turret) {
-        if( !turret.worldObj.isRemote ) {
+        if( !turret.world.isRemote ) {
             IAttributeInstance attrib = turret.getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY);
             if( attrib.getModifier(modifier.getID()) != null ) {
                 attrib.removeModifier(modifier);

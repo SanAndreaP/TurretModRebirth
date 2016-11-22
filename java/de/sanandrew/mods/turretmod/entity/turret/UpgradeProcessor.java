@@ -47,9 +47,9 @@ public class UpgradeProcessor
                     if( upg != null ) {
                         TurretUpgrade dep = upg.getDependantOn();
                         if( dep != null && !this.hasUpgrade(dep) ) {
-                            if( !this.turret.worldObj.isRemote ) {
-                                EntityItem itm = new EntityItem(this.turret.worldObj, this.turret.posX, this.turret.posY, this.turret.posZ, invStack);
-                                this.turret.worldObj.spawnEntityInWorld(itm);
+                            if( !this.turret.world.isRemote ) {
+                                EntityItem itm = new EntityItem(this.turret.world, this.turret.posX, this.turret.posY, this.turret.posZ, invStack);
+                                this.turret.world.spawnEntityInWorld(itm);
                             }
                             upg.onRemove(this.turret);
                             this.upgradeStacks[i] = null;
@@ -62,9 +62,9 @@ public class UpgradeProcessor
                 for( int i = 27; i < this.upgradeStacks.length; i++ ) {
                     ItemStack invStack = this.upgradeStacks[i];
                     if( invStack != null ) {
-                        if( !this.turret.worldObj.isRemote ) {
-                            EntityItem itm = new EntityItem(this.turret.worldObj, this.turret.posX, this.turret.posY, this.turret.posZ, invStack);
-                            this.turret.worldObj.spawnEntityInWorld(itm);
+                        if( !this.turret.world.isRemote ) {
+                            EntityItem itm = new EntityItem(this.turret.world, this.turret.posX, this.turret.posY, this.turret.posZ, invStack);
+                            this.turret.world.spawnEntityInWorld(itm);
                         }
                         TurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(invStack);
                         if( upg != null ) {
@@ -79,9 +79,9 @@ public class UpgradeProcessor
                 for( int i = 18; i < 27; i++ ) {
                     ItemStack invStack = this.upgradeStacks[i];
                     if( invStack != null ) {
-                        if( !this.turret.worldObj.isRemote ) {
-                            EntityItem itm = new EntityItem(this.turret.worldObj, this.turret.posX, this.turret.posY, this.turret.posZ, invStack);
-                            this.turret.worldObj.spawnEntityInWorld(itm);
+                        if( !this.turret.world.isRemote ) {
+                            EntityItem itm = new EntityItem(this.turret.world, this.turret.posX, this.turret.posY, this.turret.posZ, invStack);
+                            this.turret.world.spawnEntityInWorld(itm);
                         }
                         TurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(invStack);
                         if( upg != null ) {
@@ -96,9 +96,9 @@ public class UpgradeProcessor
                 for( int i = 9; i < 18; i++ ) {
                     ItemStack invStack = this.upgradeStacks[i];
                     if( invStack != null ) {
-                        if( !this.turret.worldObj.isRemote ) {
-                            EntityItem itm = new EntityItem(this.turret.worldObj, this.turret.posX, this.turret.posY, this.turret.posZ, invStack);
-                            this.turret.worldObj.spawnEntityInWorld(itm);
+                        if( !this.turret.world.isRemote ) {
+                            EntityItem itm = new EntityItem(this.turret.world, this.turret.posX, this.turret.posY, this.turret.posZ, invStack);
+                            this.turret.world.spawnEntityInWorld(itm);
                         }
                         TurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(invStack);
                         if( upg != null ) {
@@ -139,7 +139,7 @@ public class UpgradeProcessor
             ItemStack itemstack;
 
             if( this.upgradeStacks[slot].stackSize <= amount ) {
-                if( !this.turret.worldObj.isRemote ) {
+                if( !this.turret.world.isRemote ) {
                     TurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(this.upgradeStacks[slot]);
                     if( upg != null ) {
                         upg.onRemove(this.turret);
@@ -177,7 +177,7 @@ public class UpgradeProcessor
 
     @Override
     public void setInventorySlotContents(int slot, ItemStack stack) {
-        if( !this.turret.worldObj.isRemote ) {
+        if( !this.turret.world.isRemote ) {
             if( this.upgradeStacks[slot] != null && stack == null ) {
                 TurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(this.upgradeStacks[slot]);
                 if( upg != null ) {
@@ -253,7 +253,7 @@ public class UpgradeProcessor
         }
 
         if( stack != null ) {
-            if( stack.getItem() == ItemRegistry.turretUpgrade ) {
+            if( stack.getItem() == ItemRegistry.turret_upgrade ) {
                 TurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(stack);
                 if( this.hasUpgrade(UpgradeRegistry.INSTANCE.getUpgradeUUID(upg)) ) {
                     return false;
@@ -319,14 +319,14 @@ public class UpgradeProcessor
                 float yOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
                 float zOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
 
-                EntityItem entityitem = new EntityItem(this.turret.worldObj, (this.turret.posX + xOff), (this.turret.posY + yOff), (this.turret.posZ + zOff), stack);
+                EntityItem entityitem = new EntityItem(this.turret.world, (this.turret.posX + xOff), (this.turret.posY + yOff), (this.turret.posZ + zOff), stack);
 
                 float motionSpeed = 0.05F;
                 entityitem.motionX = ((float)MiscUtils.RNG.randomGaussian() * motionSpeed);
                 entityitem.motionY = ((float)MiscUtils.RNG.randomGaussian() * motionSpeed + 0.2F);
                 entityitem.motionZ = ((float)MiscUtils.RNG.randomGaussian() * motionSpeed);
 
-                this.turret.worldObj.spawnEntityInWorld(entityitem);
+                this.turret.world.spawnEntityInWorld(entityitem);
             }
         }
     }

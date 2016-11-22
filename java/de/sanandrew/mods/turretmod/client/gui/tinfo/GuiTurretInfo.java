@@ -230,29 +230,29 @@ public class GuiTurretInfo
                 case 0:
                     if( this.entry != null && this.category != null ) {
                         if( this.category.getEntryCount() == 1 ) {
-                            TurretModRebirth.proxy.openGui(this.mc.thePlayer, EnumGui.GUI_TINFO, -1, -1, 0);
+                            TurretModRebirth.proxy.openGui(this.mc.player, EnumGui.GUI_TINFO, -1, -1, 0);
                         } else {
-                            TurretModRebirth.proxy.openGui(this.mc.thePlayer, EnumGui.GUI_TINFO, this.category.index, -1, 0);
+                            TurretModRebirth.proxy.openGui(this.mc.player, EnumGui.GUI_TINFO, this.category.index, -1, 0);
                         }
                     } else if( this.entry == null && this.category != null ) {
-                        TurretModRebirth.proxy.openGui(this.mc.thePlayer, EnumGui.GUI_TINFO, -1, -1, 0);
+                        TurretModRebirth.proxy.openGui(this.mc.player, EnumGui.GUI_TINFO, -1, -1, 0);
                     }
                     break;
                 case 1:
-                    TurretModRebirth.proxy.openGui(this.mc.thePlayer, EnumGui.GUI_TINFO, -1, -1, 0);
+                    TurretModRebirth.proxy.openGui(this.mc.player, EnumGui.GUI_TINFO, -1, -1, 0);
                     break;
                 case 2:
-                    this.mc.thePlayer.closeScreen();
+                    this.mc.player.closeScreen();
                     break;
             }
         } else if( button instanceof GuiButtonCategory ) {
             if( TurretInfoCategory.getCategory(((GuiButtonCategory) button).catIndex).getEntryCount() == 1 ) {
-                TurretModRebirth.proxy.openGui(this.mc.thePlayer, EnumGui.GUI_TINFO, ((GuiButtonCategory) button).catIndex, 0, 0);
+                TurretModRebirth.proxy.openGui(this.mc.player, EnumGui.GUI_TINFO, ((GuiButtonCategory) button).catIndex, 0, 0);
             } else {
-                TurretModRebirth.proxy.openGui(this.mc.thePlayer, EnumGui.GUI_TINFO, ((GuiButtonCategory) button).catIndex, -1, 0);
+                TurretModRebirth.proxy.openGui(this.mc.player, EnumGui.GUI_TINFO, ((GuiButtonCategory) button).catIndex, -1, 0);
             }
         } else if( button instanceof GuiButtonEntry ) {
-            TurretModRebirth.proxy.openGui(this.mc.thePlayer, EnumGui.GUI_TINFO, this.category.index, ((GuiButtonEntry) button).entIndex, 0);
+            TurretModRebirth.proxy.openGui(this.mc.player, EnumGui.GUI_TINFO, this.category.index, ((GuiButtonEntry) button).entIndex, 0);
         } else if( button instanceof GuiButtonLink ) {
             try {
                 this.clickedURI = new URI(((GuiButtonLink) button).link);

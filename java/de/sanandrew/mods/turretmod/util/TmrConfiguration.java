@@ -40,7 +40,7 @@ public final class TmrConfiguration
         desc = "The GL Texture Unit to use for the secondary sampler passed in to some of the shaders. DO NOT TOUCH THIS IF YOU DON'T KNOW WHAT YOU'RE DOING";
         glSecondaryTextureUnit = config.getInt("glSecondaryTextureUnit", CAT_CLIENT, glSecondaryTextureUnit, Integer.MIN_VALUE, Integer.MAX_VALUE, desc);
 
-        desc = "Render the upgrades on the turret. Disable this for more performance";
+        desc = "Render the upgrades on the turret_placer. Disable this for more performance";
         renderUpgrades = config.getBoolean("renderUpgrades", CAT_CLIENT, renderUpgrades, desc);
 
         desc = "Calculate Interceptions of adjacent forcefields. Disable this to gain a performance boost, but be aware it might clutter the screen if many forcefields are operating.";

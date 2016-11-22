@@ -88,7 +88,7 @@ public class GuiTcuInfo
         super.updateScreen();
 
         if( this.turret.isDead ) {
-            this.mc.thePlayer.closeScreen();
+            this.mc.player.closeScreen();
         }
 
         this.turretName.updateCursorCounter();
@@ -123,7 +123,7 @@ public class GuiTcuInfo
         this.turretName.drawTextBox();
 
         String value;
-//        String value = this.turret.hasCustomName() ? this.turret.getCustomNameTag() : "-n/a-";
+//        String value = this.turret_placer.hasCustomName() ? this.turret_placer.getCustomNameTag() : "-n/a-";
 //        this.fontRendererObj.drawString(value, this.guiLeft + 20, this.guiTop + 23, 0x000000);
 
         value = String.format("%.1f / %.1f HP", this.turret.getHealth(), this.turret.getMaxHealth());
@@ -174,12 +174,12 @@ public class GuiTcuInfo
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
         if( button == this.dismantle ) {
-            if( !this.turret.tryDismantle(this.mc.thePlayer) ) {
-                this.infoStr = String.format("gui.%s.tcu.page.info.button.dismantle.error", TurretModRebirth.ID);
+            if( !this.turret.tryDismantle(this.mc.player) ) {
+                this.infoStr = String.format("gui.%s.turret_control_unit.page.info.button.dismantle.error", TurretModRebirth.ID);
                 this.infoTimeShown = System.currentTimeMillis();
             } else {
                 this.infoStr = null;
-                this.mc.thePlayer.closeScreen();
+                this.mc.player.closeScreen();
             }
         } else if( button == this.toggleRange ) {
             this.turret.showRange = !this.turret.showRange;

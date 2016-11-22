@@ -122,16 +122,16 @@ public class TurretInfoCategory
                 }
             }
             entries = entriesList.toArray(new TurretInfoEntry[entriesList.size()]);
-            register(Resources.TINFO_GRP_AMMO.getResource(), Lang.TINFO_CATEGORY_NAME.get("ammo"), entries);
+            register(Resources.TINFO_GRP_AMMO.getResource(), Lang.TINFO_CATEGORY_NAME.get("turret_ammo"), entries);
         }
 
         {
             TurretUpgrade[] infos = UpgradeRegistry.INSTANCE.getRegisteredTypes();
             TurretInfoEntry[] entries = new TurretInfoEntry[infos.length + 3];
 
-            entries[0] = new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.asbAuto), TurretAssemblyRecipes.UPG_AT_AUTO);
-            entries[1] = new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.asbFilter), TurretAssemblyRecipes.UPG_AT_FILTER);
-            entries[2] = new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.asbSpeed), TurretAssemblyRecipes.UPG_AT_SPEED);
+            entries[0] = new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.assembly_upg_auto), TurretAssemblyRecipes.UPG_AT_AUTO);
+            entries[1] = new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.assembly_upg_filter), TurretAssemblyRecipes.UPG_AT_FILTER);
+            entries[2] = new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.assembly_upg_speed), TurretAssemblyRecipes.UPG_AT_SPEED);
 
             for( int i = 0; i < infos.length; i++ ) {
                 entries[i + 3] = new TurretInfoEntryUpgrade(UpgradeRegistry.INSTANCE.getUpgradeUUID(infos[i]));
@@ -142,7 +142,7 @@ public class TurretInfoCategory
         register(Resources.TINFO_GRP_MISC.getResource(), Lang.TINFO_CATEGORY_NAME.get("misc"),
                  new TurretInfoEntryMiscCraftable(CraftingRecipes.assemblyTable),
                  new TurretInfoEntryGenerator(),
-                 new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.tcu), TurretAssemblyRecipes.TCU));
+                 new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.turret_control_unit), TurretAssemblyRecipes.TCU));
         register(Resources.TINFO_GRP_INFO.getResource(), Lang.TINFO_CATEGORY_NAME.get("info"), new TurretInfoEntryInfo());
     }
 }

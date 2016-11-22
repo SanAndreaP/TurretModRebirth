@@ -33,7 +33,6 @@ public class BlockRegistry
     {
         event.getRegistry().registerAll(new BlockTurretAssembly().setRegistryName(TurretModRebirth.ID, "turret_assembly"),
                                         new BlockElectrolyteGenerator().setRegistryName(TurretModRebirth.ID, "electrolyte_generator"));
-        //TODO: change registry from existing worlds to use "electrolyte_generator" instead of "potato_generator"
 
         GameRegistry.registerTileEntity(TileEntityTurretAssembly.class, TurretModRebirth.ID + ":te_turret_assembly");
         GameRegistry.registerTileEntity(TileEntityElectrolyteGenerator.class, TurretModRebirth.ID + ":te_potato_generator");

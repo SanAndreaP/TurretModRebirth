@@ -86,7 +86,7 @@ public class GuiTcuPlayerTargets
         super.updateScreen();
 
         if( this.turret.isDead ) {
-            this.mc.thePlayer.closeScreen();
+            this.mc.player.closeScreen();
         }
 
         this.canScroll = this.tempTargetList.size() >= 11;

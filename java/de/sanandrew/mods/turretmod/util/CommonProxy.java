@@ -10,19 +10,7 @@ package de.sanandrew.mods.turretmod.util;
 
 import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCryoCell;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileLaser;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileMinigunPebble;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectilePebble;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretMinigun;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretRevolver;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
 import de.sanandrew.mods.turretmod.inventory.ContainerAssemblyFilter;
 import de.sanandrew.mods.turretmod.inventory.ContainerElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
@@ -45,7 +33,6 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
 import org.apache.logging.log4j.Level;
 
 public class CommonProxy
@@ -55,20 +42,6 @@ public class CommonProxy
 
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(PlayerList.INSTANCE);
-//        int entityCnt = 0;
-//        EntityRegistry.registerModEntity(EntityTurretCrossbow.class, "turret_i_crossbow", entityCnt++, TurretModRebirth.instance, 128, 1, false);
-//        EntityRegistry.registerModEntity(EntityTurretShotgun.class, "turret_i_shotgun", entityCnt++, TurretModRebirth.instance, 128, 1, false);
-//        EntityRegistry.registerModEntity(EntityTurretCryolator.class, "turret_i_snowball", entityCnt++, TurretModRebirth.instance, 128, 1, false);
-//        EntityRegistry.registerModEntity(EntityTurretRevolver.class, "turret_ii_revolver", entityCnt++, TurretModRebirth.instance, 128, 1, false);
-//        EntityRegistry.registerModEntity(EntityTurretMinigun.class, "turret_ii_minigun", entityCnt++, TurretModRebirth.instance, 128, 1, false);
-//        EntityRegistry.registerModEntity(EntityTurretLaser.class, "turret_iii_laser", entityCnt++, TurretModRebirth.instance, 128, 1, false);
-//
-//        EntityRegistry.registerModEntity(EntityProjectileCrossbowBolt.class, "turret_proj_arrow", entityCnt++, TurretModRebirth.instance, 128, 1, true);
-//        EntityRegistry.registerModEntity(EntityProjectilePebble.class, "turret_proj_pebble", entityCnt++, TurretModRebirth.instance, 128, 1, true);
-//        EntityRegistry.registerModEntity(EntityProjectileCryoCell.class, "turret_proj_snowball", entityCnt++, TurretModRebirth.instance, 128, 1, true);
-//        EntityRegistry.registerModEntity(EntityProjectileBullet.class, "turret_proj_bullet", entityCnt++, TurretModRebirth.instance, 128, 1, true);
-//        EntityRegistry.registerModEntity(EntityProjectileMinigunPebble.class, "turret_proj_mgpebble", entityCnt++, TurretModRebirth.instance, 128, 1, true);
-//        EntityRegistry.registerModEntity(EntityProjectileLaser.class, "turret_proj_laser", entityCnt++, TurretModRebirth.instance, 128, 1, true);
     }
 
     public void init(FMLInitializationEvent event) { }
@@ -95,7 +68,7 @@ public class CommonProxy
                     break;
                 case GUI_TASSEMBLY_FLT:
                     ItemStack stack = player.getHeldItemMainhand();
-                    if( ItemStackUtils.isValid(stack) && stack.getItem() == ItemRegistry.asbFilter ) {
+                    if( ItemStackUtils.isValid(stack) && stack.getItem() == ItemRegistry.assembly_upg_filter ) {
                         return new ContainerAssemblyFilter(player.inventory, stack, player.inventory.currentItem);
                     }
                     break;
@@ -122,14 +95,14 @@ public class CommonProxy
         int guiId = id.ordinal();
 
         if( player instanceof EntityPlayerMP ) {
-            if( getServerGuiElement(guiId, player, player.worldObj, x, y, z) == null ) {
+            if( getServerGuiElement(guiId, player, player.world, x, y, z) == null ) {
                 PacketRegistry.sendToPlayer(new PacketOpenGui((byte) guiId, x, y, z), (EntityPlayerMP) player);
             } else {
-                FMLNetworkHandler.openGui(player, TurretModRebirth.instance, guiId, player.worldObj, x, y, z);
+                FMLNetworkHandler.openGui(player, TurretModRebirth.instance, guiId, player.world, x, y, z);
             }
         } else {
-            if( getServerGuiElement(guiId, player, player.worldObj, x, y, z) == null ) {
-                FMLNetworkHandler.openGui(player, TurretModRebirth.instance, guiId, player.worldObj, x, y, z);
+            if( getServerGuiElement(guiId, player, player.world, x, y, z) == null ) {
+                FMLNetworkHandler.openGui(player, TurretModRebirth.instance, guiId, player.world, x, y, z);
             } else {
                 PacketRegistry.sendToServer(new PacketOpenGui((byte) guiId, x, y, z));
             }

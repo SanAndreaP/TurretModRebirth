@@ -16,7 +16,6 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.util.CommonProxy;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -185,7 +184,7 @@ public final class AmmoRegistry
         }
 
         if( type.getTurret() == null ) {
-            TurretModRebirth.LOG.log(Level.ERROR, String.format("Ammo-Type %s has no turret! Ammo is pretty useless without something to shoot it with.", type.getName()), new InvalidParameterException());
+            TurretModRebirth.LOG.log(Level.ERROR, String.format("Ammo-Type %s has no turret_placer! Ammo is pretty useless without something to shoot it with.", type.getName()), new InvalidParameterException());
             return false;
         }
 
@@ -207,7 +206,7 @@ public final class AmmoRegistry
     }
 
     public boolean areAmmoItemsEqual(ItemStack firstStack, ItemStack secondStack) {
-        if(firstStack != null && secondStack != null && firstStack.getItem() == ItemRegistry.ammo && secondStack.getItem() == ItemRegistry.ammo) {
+        if(firstStack != null && secondStack != null && firstStack.getItem() == ItemRegistry.turret_ammo && secondStack.getItem() == ItemRegistry.turret_ammo ) {
             TurretAmmo firstType = this.getType(firstStack);
             TurretAmmo secondType = this.getType(secondStack);
             return firstType != NULL_TYPE && secondType != NULL_TYPE && firstType.getTypeId().equals(secondType.getTypeId());

@@ -106,7 +106,7 @@ public class EntityTurretRevolver
 
         super.onUpdate();
 
-        if( this.worldObj.isRemote ) {
+        if( this.world.isRemote ) {
             if( this.barrelPosLeft < 1.0F ) {
                 this.barrelPosLeft += 0.06F * 20.0F / this.targetProc.getMaxShootTicks();
             } else {

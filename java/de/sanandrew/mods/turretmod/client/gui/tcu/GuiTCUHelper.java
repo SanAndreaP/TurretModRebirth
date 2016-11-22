@@ -42,7 +42,7 @@ public class GuiTCUHelper
         btnList.add(pagePlayerTargets = new GuiItemTab(btnList.size(), gui.getGuiLeft() - 23, gui.getGuiTop() + 61,
                 new ItemStack(Items.SKULL, 1, 3), Lang.translate(Lang.TCU_PAGE_TAB.get("targetsPlayer")), false));
         btnList.add(pageUpgrades = new GuiItemTab(btnList.size(), gui.getGuiLeft() - 23, gui.getGuiTop() + 89,
-                new ItemStack(ItemRegistry.turretUpgrade), Lang.translate(Lang.TCU_PAGE_TAB.get("upgrades")), false));
+                new ItemStack(ItemRegistry.turret_upgrade), Lang.translate(Lang.TCU_PAGE_TAB.get("upgrades")), false));
     }
 
     static void drawScreen(GuiTurretCtrlUnit gui) {
@@ -71,16 +71,16 @@ public class GuiTCUHelper
     static boolean actionPerformed(GuiButton button, GuiTurretCtrlUnit gui) {
         Minecraft mc = gui.getMc();
         if( button == pageInfo ) {
-            TurretModRebirth.proxy.openGui(mc.thePlayer, EnumGui.GUI_TCU_INFO, gui.getTurret().getEntityId(), 0, 0);
+            TurretModRebirth.proxy.openGui(mc.player, EnumGui.GUI_TCU_INFO, gui.getTurret().getEntityId(), 0, 0);
             return true;
         } else if( button == pageEntityTargets ) {
-            TurretModRebirth.proxy.openGui(mc.thePlayer, EnumGui.GUI_TCU_ENTITY_TARGETS, gui.getTurret().getEntityId(), 0, 0);
+            TurretModRebirth.proxy.openGui(mc.player, EnumGui.GUI_TCU_ENTITY_TARGETS, gui.getTurret().getEntityId(), 0, 0);
             return true;
         } else if( button == pagePlayerTargets ) {
-            TurretModRebirth.proxy.openGui(mc.thePlayer, EnumGui.GUI_TCU_PLAYER_TARGETS, gui.getTurret().getEntityId(), 0, 0);
+            TurretModRebirth.proxy.openGui(mc.player, EnumGui.GUI_TCU_PLAYER_TARGETS, gui.getTurret().getEntityId(), 0, 0);
             return true;
         } else if( button == pageUpgrades ) {
-            TurretModRebirth.proxy.openGui(mc.thePlayer, EnumGui.GUI_TCU_UPGRADES, gui.getTurret().getEntityId(), 0, 0);
+            TurretModRebirth.proxy.openGui(mc.player, EnumGui.GUI_TCU_UPGRADES, gui.getTurret().getEntityId(), 0, 0);
             return true;
         }
         return false;

@@ -97,10 +97,10 @@ public class EntityProjectileFlame
         this.playSound(this.getRicochetSound(), 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
         if( hitObj.typeOfHit != RayTraceResult.Type.ENTITY ) {
             this.setDead();
-            if( this.purifying && hitObj.typeOfHit == RayTraceResult.Type.BLOCK && !this.worldObj.isRemote && MiscUtils.RNG.randomInt(10) == 0 ) {
+            if( this.purifying && hitObj.typeOfHit == RayTraceResult.Type.BLOCK && !this.world.isRemote && MiscUtils.RNG.randomInt(10) == 0 ) {
                 BlockPos fire = hitObj.getBlockPos().offset(hitObj.sideHit);
-                if (this.worldObj.isAirBlock(fire)) {
-                    this.worldObj.setBlockState(fire, Blocks.FIRE.getDefaultState(), 11); // 1 = block update, 2 = send to client, 8 = needs update
+                if (this.world.isAirBlock(fire)) {
+                    this.world.setBlockState(fire, Blocks.FIRE.getDefaultState(), 11); // 1 = block update, 2 = send to client, 8 = needs update
                 }
             }
         }

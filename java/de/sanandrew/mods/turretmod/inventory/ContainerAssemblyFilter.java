@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.inventory;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.turretmod.item.ItemAssemblyUpgrade;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -26,7 +27,7 @@ public class ContainerAssemblyFilter
     public ContainerAssemblyFilter(IInventory playerInv, ItemStack stack, int slot) {
         this.filterStack = stack;
         this.filterStackSlot = slot;
-        this.filterInv = new InventoryAssemblyFilter(ItemRegistry.asbFilter.getFilterStacks(stack, true));
+        this.filterInv = new InventoryAssemblyFilter(ItemAssemblyUpgrade.Filter.getFilterStacks(stack));
 
         for( int i = 0; i < 2; i++ ) {
             for( int j = 0; j < 9; j++ ) {
@@ -52,8 +53,8 @@ public class ContainerAssemblyFilter
 
     @Override
     public void onContainerClosed(EntityPlayer player) {
-        if( !player.worldObj.isRemote && ItemStackUtils.isValid(player.getHeldItemMainhand()) && player.getHeldItemMainhand().getItem() == ItemRegistry.asbFilter ) {
-            ItemRegistry.asbFilter.setFilterStacks(this.filterStack, this.filterInv.invStacks);
+        if( !player.world.isRemote && ItemStackUtils.isValid(player.getHeldItemMainhand()) && player.getHeldItemMainhand().getItem() == ItemRegistry.assembly_upg_filter ) {
+            ItemAssemblyUpgrade.Filter.setFilterStacks(this.filterStack, this.filterInv.invStacks);
             player.inventory.setInventorySlotContents(this.filterStackSlot, this.filterStack.copy());
             player.inventoryContainer.detectAndSendChanges();
         }

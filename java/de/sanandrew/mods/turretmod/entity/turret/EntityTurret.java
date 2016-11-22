@@ -13,7 +13,6 @@ import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.item.ItemTurret;
 import de.sanandrew.mods.turretmod.network.PacketPlayerTurretAction;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketUpdateTurretState;
@@ -198,25 +197,25 @@ public abstract class EntityTurret
             this.blockPos = new BlockPos((int) Math.floor(this.posX), (int)Math.floor(this.posY) + (this.isUpsideDown ? 2 : -1), (int)Math.floor(this.posZ));
         }
 
-        if( !canTurretBePlaced(this.worldObj, this.blockPos, true, this.isUpsideDown) ) {
+        if( !canTurretBePlaced(this.world, this.blockPos, true, this.isUpsideDown) ) {
             this.kill();
         }
 
-        this.worldObj.theProfiler.startSection("ai");
+        this.world.theProfiler.startSection("ai");
 
         if( this.isMovementBlocked() ) {
             this.isJumping = false;
             this.moveStrafing = 0.0F;
             this.moveForward = 0.0F;
             this.randomYawVelocity = 0.0F;
-        } else if( !this.worldObj.isRemote ) {
-            this.worldObj.theProfiler.startSection("oldAi");
+        } else if( !this.world.isRemote ) {
+            this.world.theProfiler.startSection("oldAi");
             this.updateMyEntityActionState();
-            this.worldObj.theProfiler.endSection();
+            this.world.theProfiler.endSection();
         }
 
         if( this.isActive() ) {
-            if( !this.worldObj.isRemote ) {
+            if( !this.world.isRemote ) {
                 this.targetProc.onTick();
             }
 
@@ -224,7 +223,7 @@ public abstract class EntityTurret
 
             if( this.targetProc.hasTarget() ) {
                 this.faceEntity(this.targetProc.getTarget(), 10.0F, this.getVerticalFaceSpeed());
-            } else if( this.worldObj.isRemote && EntityUtils.getPassengersOfClass(this, EntityPlayer.class).size() < 1 ) {
+            } else if( this.world.isRemote && EntityUtils.getPassengersOfClass(this, EntityPlayer.class).size() < 1 ) {
                 this.rotationYawHead += 1.0F;
                 if( this.rotationYawHead >= 360.0D ) {
                     this.rotationYawHead -= 360.0D;
@@ -270,7 +269,7 @@ public abstract class EntityTurret
             }
         }
 
-        this.worldObj.theProfiler.endSection();
+        this.world.theProfiler.endSection();
     }
 
     private void onInteractSucceed(ItemStack heldItem, EntityPlayer player) {
@@ -282,13 +281,13 @@ public abstract class EntityTurret
 
         this.updateState();
         player.inventoryContainer.detectAndSendChanges();
-        this.worldObj.playSound(null, this.posX, this.posY, this.posZ, Sounds.TURRET_COLLECT, SoundCategory.NEUTRAL, 1.0F, 1.0F);
+        this.world.playSound(null, this.posX, this.posY, this.posZ, Sounds.TURRET_COLLECT, SoundCategory.NEUTRAL, 1.0F, 1.0F);
     }
 
     @Override
     protected boolean processInteract(EntityPlayer player, EnumHand hand, @Nullable ItemStack stack) {
-        if( this.worldObj.isRemote ) {
-            if( ItemStackUtils.isValid(stack) && stack.getItem() == ItemRegistry.tcu ) {
+        if( this.world.isRemote ) {
+            if( ItemStackUtils.isValid(stack) && stack.getItem() == ItemRegistry.turret_control_unit ) {
                 TurretModRebirth.proxy.openGui(player, EnumGui.GUI_TCU_INFO, this.getEntityId(), 0, 0);
                 return true;
             }
@@ -298,7 +297,7 @@ public abstract class EntityTurret
             if( this.targetProc.addAmmo(stack) ) {
                 this.onInteractSucceed(stack, player);
                 return true;
-            } else if( stack.getItem() == ItemRegistry.repairKit ) {
+            } else if( stack.getItem() == ItemRegistry.repair_kit ) {
                 TurretRepairKit repKit = RepairKitRegistry.INSTANCE.getType(stack);
                 if( repKit != null && repKit.isApplicable(this) ) {
                     this.heal(repKit.getHealAmount());
@@ -308,7 +307,7 @@ public abstract class EntityTurret
 
                     return true;
                 }
-            } else if( stack.getItem() == ItemRegistry.turretUpgrade && this.upgProc.tryApplyUpgrade(stack.copy()) ) {
+            } else if( stack.getItem() == ItemRegistry.turret_upgrade && this.upgProc.tryApplyUpgrade(stack.copy()) ) {
                 stack.stackSize--;
                 this.onInteractSucceed(stack, player);
                 return true;
@@ -322,7 +321,7 @@ public abstract class EntityTurret
     public void onDeath(DamageSource dmgSrc) {
         super.onDeath(dmgSrc);
 
-        if( !this.worldObj.isRemote ) {
+        if( !this.world.isRemote ) {
             this.targetProc.dropAmmo();
             this.upgProc.dropUpgrades();
         }
@@ -482,23 +481,23 @@ public abstract class EntityTurret
         Tuple chestItm = InventoryUtils.getSimilarStackFromInventory(new ItemStack(Blocks.CHEST), player.inventory, true);
         if( chestItm != null && ItemStackUtils.isValid(chestItm.getValue(1)) ) {
             ItemStack chestStack = chestItm.getValue(1);
-            if( this.worldObj.isRemote ) {
+            if( this.world.isRemote ) {
                 PacketRegistry.sendToServer(new PacketPlayerTurretAction(this, PacketPlayerTurretAction.DISMANTLE));
                 return true;
             } else {
                 this.posY += 2048.0F;
                 this.setPosition(this.posX, this.posY, this.posZ);
                 int y = this.isUpsideDown ? 2 : 0;
-                if( chestStack.getItem().onItemUse(chestStack, player, this.worldObj, this.blockPos.offset(EnumFacing.DOWN, y), EnumHand.MAIN_HAND,
+                if( chestStack.getItem().onItemUse(chestStack, player, this.world, this.blockPos.offset(EnumFacing.DOWN, y), EnumHand.MAIN_HAND,
                                                    this.isUpsideDown ? EnumFacing.DOWN : EnumFacing.UP, 0.5F, 1.0F, 0.5F) == EnumActionResult.SUCCESS )
                 {
-                    TileEntity te = this.worldObj.getTileEntity(this.blockPos.offset(EnumFacing.DOWN, y));
+                    TileEntity te = this.world.getTileEntity(this.blockPos.offset(EnumFacing.DOWN, y));
                     if( te instanceof TileEntityChest ) {
                         this.posY -= 2048.0F;
                         this.setPosition(this.posX, this.posY, this.posZ);
 
                         TileEntityChest chest = (TileEntityChest) te;
-                        chest.setInventorySlotContents(0, ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(this.getClass()), this));
+                        chest.setInventorySlotContents(0, ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(this.getClass()), this));
                         this.targetProc.putAmmoInInventory(chest);
 
                         if( chestStack.stackSize < 1 ) {
@@ -521,7 +520,7 @@ public abstract class EntityTurret
 
     @Override
     public ItemStack getPickedResult(RayTraceResult target) {
-        return ItemRegistry.turret.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(this.getClass()));
+        return ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(this.getClass()));
     }
 
     @Override

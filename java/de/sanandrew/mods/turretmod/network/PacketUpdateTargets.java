@@ -43,7 +43,7 @@ public class PacketUpdateTargets
 
     @Override
     public void handleServerMessage(PacketUpdateTargets packet, EntityPlayer player) {
-        Entity e = player.worldObj.getEntityByID(packet.turretID);
+        Entity e = player.world.getEntityByID(packet.turretID);
         if( e instanceof EntityTurret ) {
             TargetProcessor processor = ((EntityTurret) e).getTargetProcessor();
             processor.updateEntityTargets(packet.entityTargets);

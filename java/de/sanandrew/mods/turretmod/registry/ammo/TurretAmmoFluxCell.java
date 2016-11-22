@@ -14,7 +14,6 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -36,7 +35,7 @@ public abstract class TurretAmmoFluxCell
         this.name = isMulti ? "ecell_lrg" : "ecell_sng";
         this.uuid = isMulti ? PACK_UUID : CELL_UUID;
         this.capacity = isMulti ? 16 : 1;
-        this.itemModel = new ResourceLocation(TurretModRebirth.ID, "ammo/" + modelName);
+        this.itemModel = new ResourceLocation(TurretModRebirth.ID, "turret_ammo/" + modelName);
     }
 
     @Override
@@ -86,12 +85,12 @@ public abstract class TurretAmmoFluxCell
 
     @Override
     public ItemStack getStoringAmmoItem() {
-        return ItemRegistry.ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(CELL_UUID));
+        return ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(CELL_UUID));
     }
 
     @Override
     public EntityProjectileLaser getEntity(EntityTurret turret) {
-        return new EntityProjectileLaser(turret.worldObj, turret, turret.getTargetProcessor().getTarget());
+        return new EntityProjectileLaser(turret.world, turret, turret.getTargetProcessor().getTarget());
     }
 
     @Override
