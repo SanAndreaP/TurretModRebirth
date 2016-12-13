@@ -114,9 +114,7 @@ public class ClientProxy
 
         ModelRegistry.registerModelsInit();
 
-
         MinecraftForge.EVENT_BUS.register(RenderForcefieldHandler.INSTANCE);
-
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
 
         ShaderHelper.initShaders();
