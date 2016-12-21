@@ -64,13 +64,6 @@ processResources {
     }
 }
 
-sourceSets {
-    main {
-        java { srcDir 'java' }
-        resources { srcDir 'resources' }
-    }
-}
-
 //sourceCompatibility = JavaVersion.VERSION_1_8
 //targetCompatibility = JavaVersion.VERSION_1_8
 
