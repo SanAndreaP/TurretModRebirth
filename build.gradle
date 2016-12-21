@@ -12,11 +12,6 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-//task downloadBookshelf(type: LibDownloader) {
-//	sourceUrl = 'http://minecraft.curseforge.com/projects/bookshelf/files/2317799/download'
-//    target = file('libs/Bookshelf.jar')
-//}
-
 apply plugin: 'idea'
 idea {
     module {
@@ -46,9 +41,6 @@ dependencies {
 
 }
 
-//setupDecompWorkspace.finalizedBy downloadBookshelf
-//setupDevWorkspace.finalizedBy downloadBookshelf
-
 processResources {
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
@@ -63,9 +55,6 @@ processResources {
         exclude 'mcmod.info'
     }
 }
-
-//sourceCompatibility = JavaVersion.VERSION_1_8
-//targetCompatibility = JavaVersion.VERSION_1_8
 
 sourceJar {
     from sourceSets.main.java
@@ -93,14 +82,6 @@ artifacts {
 project.ext {
     releaseRepoUrl = "file://${project(':').projectDir}/maven-repo/"
 }
-
-//uploadDeployDev {
-//    repositories.mavenDeployer {
-//        pom.artifactId = project.name
-//        pom.version = project.version + '-deobf'
-//        repository(url: project.releaseRepoUrl)
-//    }
-//}
 
 class LibDownloader extends DefaultTask {
     @Input
