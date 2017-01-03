@@ -27,6 +27,7 @@ import de.sanandrew.mods.turretmod.util.Sounds;
 import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -86,6 +87,7 @@ public abstract class EntityTurret
     public boolean inGui;
 
     private DataWatcherBooleans<EntityTurret> dwBools;
+    private boolean isPushedByPiston;
 
     public EntityTurret(World world) {
         super(world);
@@ -205,9 +207,14 @@ public abstract class EntityTurret
             this.blockPos = new BlockPos((int) Math.floor(this.posX), (int)Math.floor(this.posY) + (this.isUpsideDown ? 2 : -1), (int)Math.floor(this.posZ));
         }
 
-        if( this.checkBlock && !canTurretBePlaced(this.world, this.blockPos, true, this.isUpsideDown) ) {
+        if( !this.isUpsideDown ) {
+            this.motionY -= 0.0325F;
+            super.moveEntity(0.0F, this.motionY, 0.0F);
+        } else if( this.checkBlock && !canTurretBePlaced(this.world, this.blockPos, true, this.isUpsideDown) ) {
             this.kill();
         }
+
+        this.isPushedByPiston = false;
 
         this.world.theProfiler.startSection("ai");
 
@@ -431,9 +438,12 @@ public abstract class EntityTurret
     @Override
     public final void knockBack(Entity entity, float unknown, double motionXAmount, double motionZAmount) {}
 
-    /**turrets are immobile, leave empty*/
     @Override
-    public final void moveEntity(double motionX, double motionY, double motionZ) {}
+    public final void moveEntity(double motionX, double motionY, double motionZ) {
+        if( this.isPushedByPiston ) {
+            super.moveEntity(motionX, motionY, motionZ);
+        }
+    }
 
     /**turrets are immobile, leave empty*/
     @Override
@@ -551,6 +561,13 @@ public abstract class EntityTurret
         }
 
         return false;
+    }
+
+    @Override
+    public EnumPushReaction getPushReaction() {
+        this.isPushedByPiston = true;
+
+        return EnumPushReaction.NORMAL;
     }
 
     @Override

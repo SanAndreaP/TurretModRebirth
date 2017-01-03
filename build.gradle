@@ -37,8 +37,15 @@ minecraft {
     mappings = "snapshot_20161115"
 }
 
-dependencies {
+repositories {
+  maven {
+    url = "http://dvs1.progwml6.com/files/maven"
+  }
+}
 
+dependencies {
+  deobfCompile "mezz.jei:jei_1.10.2:3.14.2.401:api"
+  runtime "mezz.jei:jei_1.10.2:3.14.2.401"
 }
 
 processResources {
