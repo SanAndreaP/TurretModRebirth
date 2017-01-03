@@ -148,6 +148,7 @@ public final class AmmoRegistry
         return new ArrayList<>(this.ammoTypesFromTurret.get(turret));
     }
 
+    @SuppressWarnings("unused")
     public boolean registerAmmoType(TurretAmmo<?> type) {
         return registerAmmoType(type, false);
     }

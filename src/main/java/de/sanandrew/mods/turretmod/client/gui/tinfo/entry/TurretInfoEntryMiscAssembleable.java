@@ -51,7 +51,7 @@ public class TurretInfoEntryMiscAssembleable
 
         RenderUtils.renderStackInGui(this.getIcon(), 3, 17, 2.0F);
 
-        gui.mc.fontRendererObj.drawString(this.txtCrft, 42, 16, 0xFF6A6A6A, false);
+        gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_CRAFTING.get()), 42, 16, 0xFF6A6A6A, false);
 
         Gui.drawRect(2, infoHeight, MAX_ENTRY_WIDTH - 2, infoHeight + 1, 0xFF0080BB);
 

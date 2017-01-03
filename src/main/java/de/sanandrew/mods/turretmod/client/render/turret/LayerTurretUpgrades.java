@@ -14,7 +14,10 @@ import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class LayerTurretUpgrades<T extends EntityTurret>
         implements LayerRenderer<T>
 {

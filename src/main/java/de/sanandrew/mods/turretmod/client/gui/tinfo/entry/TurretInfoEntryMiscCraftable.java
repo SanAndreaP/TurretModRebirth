@@ -26,6 +26,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class TurretInfoEntryMiscCraftable
         extends TurretInfoEntry
@@ -101,7 +102,7 @@ public class TurretInfoEntryMiscCraftable
                         }
                     } else if( recpObj instanceof ArrayList ) {
 //                        noinspection unchecked
-                        ((ArrayList<ItemStack>) recpObj).stream().filter(recpStack -> recpStack != null).forEach(recpStack -> {
+                        ((ArrayList<ItemStack>) recpObj).stream().filter(Objects::nonNull).forEach(recpStack -> {
                             if( recpStack.getItemDamage() == OreDictionary.WILDCARD_VALUE ) {
                                 recpStack.getItem().getSubItems(recpStack.getItem(), CreativeTabs.SEARCH, stacks);
                             } else {
@@ -131,7 +132,7 @@ public class TurretInfoEntryMiscCraftable
 
         RenderUtils.renderStackInGui(this.getIcon(), 3, 17, 2.0F);
 
-        gui.mc.fontRendererObj.drawString(this.txtWorkbench, 42, 16, 0xFF6A6A6A, false);
+        gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_WORKBENCH.get()), 42, 16, 0xFF6A6A6A, false);
 
         this.drawHeight = 27 + 9 * this.crafting.<Integer>getValue(2);
 

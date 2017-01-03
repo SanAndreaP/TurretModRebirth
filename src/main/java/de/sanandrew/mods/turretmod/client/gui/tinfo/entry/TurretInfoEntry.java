@@ -11,7 +11,6 @@ package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
-import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
@@ -27,33 +26,9 @@ public abstract class TurretInfoEntry
     private ItemStack icon;
     private String title;
 
-    protected final String txtRounds;
-    protected final String txtDps;
-    protected final String txtHealth;
-    protected final String txtHealthVal;
-    protected final String txtTurret;
-    protected final String txtCrft;
-    protected final String txtWorkbench;
-    protected final String txtPrereq;
-    protected final String txtRange;
-    protected final String txtAmmoCap;
-    protected final String txtAmmoUse;
-
     protected TurretInfoEntry(ItemStack icon, String title) {
         this.icon = icon;
         this.title = title;
-
-        this.txtRounds = Lang.translate(Lang.TINFO_ENTRY_ROUNDS.get());
-        this.txtDps = Lang.translate(Lang.TINFO_ENTRY_DPS.get());
-        this.txtHealth = Lang.translate(Lang.TINFO_ENTRY_HEALTH.get());
-        this.txtHealthVal = Lang.TINFO_ENTRY_HEALTHVAL.get();
-        this.txtTurret = Lang.translate(Lang.TINFO_ENTRY_TURRET.get());
-        this.txtCrft = Lang.translate(Lang.TINFO_ENTRY_CRAFTING.get());
-        this.txtWorkbench = Lang.translate(Lang.TINFO_ENTRY_WORKBENCH.get());
-        this.txtPrereq = Lang.translate(Lang.TINFO_ENTRY_PREREQ.get());
-        this.txtRange = Lang.translate(Lang.TINFO_ENTRY_RANGE.get());
-        this.txtAmmoCap = Lang.translate(Lang.TINFO_ENTRY_AMMOCAP.get());
-        this.txtAmmoUse = Lang.translate(Lang.TINFO_ENTRY_AMMOUSE.get());
     }
 
     public final ItemStack getIcon() {

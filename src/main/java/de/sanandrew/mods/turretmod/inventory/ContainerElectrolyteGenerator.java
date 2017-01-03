@@ -12,8 +12,14 @@ import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
+
+import javax.annotation.Nullable;
 
 public class ContainerElectrolyteGenerator
         extends Container
@@ -24,13 +30,13 @@ public class ContainerElectrolyteGenerator
         this.tile = generator;
 
         for( int i = 0; i < 9; i++ ) {
-            this.addSlotToContainer(new SlotIngredients(generator, i, 8 + i*18, 17));
+            this.addSlotToContainer(new SlotItemHandler(generator.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN), i, 8 + i*18, 17));
         }
         for( int i = 0; i < 9; i++ ) {
-            this.addSlotToContainer(new SlotProcessing(generator, i+9, 8 + i*18, 43));
+            this.addSlotToContainer(new SlotProcessing(generator, i, 8 + i*18, 43));
         }
         for( int i = 0; i < 5; i++ ) {
-            this.addSlotToContainer(new SlotOutput(generator, i+18, 44 + i*18, 76));
+            this.addSlotToContainer(new SlotItemHandler(generator.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN), i+9, 44 + i*18, 76));
         }
 
         for( int i = 0; i < 3; i++ ) {
@@ -118,29 +124,17 @@ public class ContainerElectrolyteGenerator
         return origStack;
     }
 
-    public static class SlotOutput
-            extends Slot
-    {
-        public SlotOutput(IInventory inventory, int id, int x, int y) {
-            super(inventory, id, x, y);
-        }
-
-        @Override
-        public boolean isItemValid(ItemStack stack) {
-            return false;
-        }
-
-        @Override
-        public int getSlotStackLimit() {
-            return 64;
-        }
-    }
-
     public static class SlotProcessing
             extends Slot
     {
-        public SlotProcessing(IInventory inventory, int id, int x, int y) {
-            super(inventory, id, x, y);
+        private static final IInventory EMPTY_INV = new InventoryBasic("[Null]", true, 0);
+        private final TileEntityElectrolyteGenerator generator;
+        private final int index;
+
+        public SlotProcessing(TileEntityElectrolyteGenerator generator, int id, int x, int y) {
+            super(EMPTY_INV, id, x, y);
+            this.generator = generator;
+            this.index = id;
         }
 
         @Override
@@ -152,69 +146,32 @@ public class ContainerElectrolyteGenerator
         public boolean canTakeStack(EntityPlayer player) {
             return false;
         }
-    }
 
-    public static class SlotIngredients
-            extends Slot
-    {
-        private final TileEntityElectrolyteGenerator generator;
-
-        public SlotIngredients(TileEntityElectrolyteGenerator generator, int id, int x, int y) {
-            super(generator, id, x, y);
-            this.generator = generator;
+        @Nullable
+        @Override
+        public ItemStack getStack() {
+            return generator.processStacks[this.index];
         }
 
         @Override
-        public boolean isItemValid(ItemStack stack) {
-            return super.isItemValid(stack) && this.generator.isItemValidForSlot(this.getSlotIndex(), stack);
+        public void putStack(@Nullable ItemStack stack) { }
+
+        @Override
+        public void onSlotChange(ItemStack stack1, ItemStack stack2) { }
+
+        @Override
+        public int getItemStackLimit(ItemStack stack) {
+            return 1;
+        }
+
+        @Override
+        public ItemStack decrStackSize(int amount) {
+            return null;
+        }
+
+        @Override
+        public boolean isSameInventory(Slot other) {
+            return other instanceof SlotProcessing && ((SlotProcessing) other).generator == this.generator;
         }
     }
-
-//    public static class SlotAutoUpgrade
-//            extends Slot
-//    {
-//        private final TileEntityTurretAssembly assembly;
-//
-//        public SlotAutoUpgrade(TileEntityTurretAssembly assembly, int id, int x, int y) {
-//            super(assembly, id, x, y);
-//            this.assembly = assembly;
-//        }
-//
-//        @Override
-//        public boolean isItemValid(ItemStack stack) {
-//            return stack != null && !this.assembly.hasAutoUpgrade() && stack.getItem() == ItemRegistry.asbAuto;
-//        }
-//    }
-//
-//    public static class SlotSpeedUpgrade
-//            extends Slot
-//    {
-//        private final TileEntityTurretAssembly assembly;
-//
-//        public SlotSpeedUpgrade(TileEntityTurretAssembly assembly, int id, int x, int y) {
-//            super(assembly, id, x, y);
-//            this.assembly = assembly;
-//        }
-//
-//        @Override
-//        public boolean isItemValid(ItemStack stack) {
-//            return stack != null && !this.assembly.hasSpeedUpgrade() && stack.getItem() == ItemRegistry.asbSpeed;
-//        }
-//    }
-//
-//    public static class SlotFilterUpgrade
-//            extends Slot
-//    {
-//        private final TileEntityTurretAssembly assembly;
-//
-//        public SlotFilterUpgrade(TileEntityTurretAssembly assembly, int id, int x, int y) {
-//            super(assembly, id, x, y);
-//            this.assembly = assembly;
-//        }
-//
-//        @Override
-//        public boolean isItemValid(ItemStack stack) {
-//            return stack != null && !this.assembly.hasFilterUpgrade() && stack.getItem() == ItemRegistry.assembly_upg_filter;
-//        }
-//    }
 }

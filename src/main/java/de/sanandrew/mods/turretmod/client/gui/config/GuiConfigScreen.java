@@ -12,13 +12,14 @@ import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.IConfigElement;
 
 import java.util.ArrayList;
 import java.util.List;
 
-class GuiConfigScreen
+public class GuiConfigScreen
         extends GuiConfig
 {
     public GuiConfigScreen(GuiScreen parentScreen) {
@@ -28,7 +29,9 @@ class GuiConfigScreen
     @SuppressWarnings("unchecked")
     private static List<IConfigElement> getCfgElements() {
         List<IConfigElement> configElements = new ArrayList<>();
-        configElements.addAll(new ConfigElement(TmrConfiguration.getCategory(TmrConfiguration.CAT_CLIENT)).getChildElements());
+        configElements.add(new ConfigElement(TmrConfiguration.getCategory(Configuration.CATEGORY_CLIENT)));
+        configElements.add(new ConfigElement(TmrConfiguration.getCategory(Configuration.CATEGORY_GENERAL)));
+        configElements.add(new ConfigElement(TmrConfiguration.getCategory(TmrConfiguration.CAT_SERVER)));
         return configElements;
     }
 }

@@ -12,7 +12,6 @@ import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.event.RegistryEvent;
@@ -29,8 +28,7 @@ public class BlockRegistry
     public static final BlockElectrolyteGenerator electrolyte_generator = nilBlock();
 
     @SubscribeEvent
-    public static void registerBlocks(RegistryEvent.Register<Block> event)
-    {
+    public static void registerBlocks(RegistryEvent.Register<Block> event) {
         event.getRegistry().registerAll(new BlockTurretAssembly().setRegistryName(TurretModRebirth.ID, "turret_assembly"),
                                         new BlockElectrolyteGenerator().setRegistryName(TurretModRebirth.ID, "electrolyte_generator"));
 
@@ -39,8 +37,7 @@ public class BlockRegistry
     }
 
     @SubscribeEvent
-    public static void registerItems(RegistryEvent.Register<Item> event)
-    {
+    public static void registerItems(RegistryEvent.Register<Item> event) {
         Block[] blocks = {
                 turret_assembly, electrolyte_generator
         };

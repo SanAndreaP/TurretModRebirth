@@ -174,16 +174,16 @@ public class GuiTurretInfo
             int textWidth = this.fontRendererObj.getStringWidth(title);
             int tHeight = 8;
 
-            this.drawGradientRect(-3, -4, textWidth + 3, -3, bkgColor, bkgColor);
-            this.drawGradientRect(-3, tHeight + 3, textWidth + 3,  tHeight + 4, bkgColor, bkgColor);
-            this.drawGradientRect(-3, -3, textWidth + 3, tHeight + 3, bkgColor, bkgColor);
-            this.drawGradientRect(-4, -3, -3, tHeight + 3, bkgColor, bkgColor);
-            this.drawGradientRect(textWidth + 3, -3,  textWidth + 4,  tHeight + 3, bkgColor, bkgColor);
+            this.drawGradientRect(-3,            -4,          textWidth + 3, -3,          bkgColor, bkgColor);
+            this.drawGradientRect(-3,            tHeight + 3, textWidth + 3, tHeight + 4, bkgColor, bkgColor);
+            this.drawGradientRect(-3,            -3,          textWidth + 3, tHeight + 3, bkgColor, bkgColor);
+            this.drawGradientRect(-4,            -3,          -3,            tHeight + 3, bkgColor, bkgColor);
+            this.drawGradientRect(textWidth + 3, -3,          textWidth + 4, tHeight + 3, bkgColor, bkgColor);
 
-            this.drawGradientRect(-3, -3 + 1, -3 + 1, tHeight + 3 - 1, lightBg, darkBg);
-            this.drawGradientRect(textWidth + 2, -3 + 1, textWidth + 3, tHeight + 3 - 1, lightBg, darkBg);
-            this.drawGradientRect(-3, -3,  textWidth + 3, -3 + 1, lightBg, lightBg);
-            this.drawGradientRect(-3, tHeight + 2, textWidth + 3, tHeight + 3, darkBg, darkBg);
+            this.drawGradientRect(-3,            -3 + 1,      -3 + 1,        tHeight + 3 - 1, lightBg, darkBg);
+            this.drawGradientRect(textWidth + 2, -3 + 1,      textWidth + 3, tHeight + 3 - 1, lightBg, darkBg);
+            this.drawGradientRect(-3,            -3,          textWidth + 3, -3 + 1,          lightBg, lightBg);
+            this.drawGradientRect(-3,            tHeight + 2, textWidth + 3, tHeight + 3,     darkBg,  darkBg);
 
             this.fontRendererObj.drawString(title, 0, 0, 0xFFFFFFFF, true);
             GlStateManager.popMatrix();

@@ -14,4 +14,5 @@ public interface GuiTurretCtrlUnit
     EntityTurret getTurret();
     FontRenderer getFontRenderer();
     Minecraft getMc();
+    default boolean hasPermision() { return true; };
 }

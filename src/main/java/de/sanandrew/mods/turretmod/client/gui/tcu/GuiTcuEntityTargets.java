@@ -160,7 +160,7 @@ public final class GuiTcuEntityTargets
             }
 
             if( mouseY >= btnMinOffY && mouseY < btnMaxOffY ) {
-                if( mouseX >= this.guiLeft + 10 && mouseX < this.guiLeft + 18 && mouseY >= this.guiTop + 20 + offsetY && mouseY < this.guiTop + 28 + offsetY ) {
+                if( mouseX >= this.guiLeft + 8 && mouseX < this.guiLeft + 16 && mouseY >= this.guiTop + 20 + offsetY && mouseY < this.guiTop + 28 + offsetY ) {
                     btnTexOffY += 8;
                     if( isLmbDown && !this.prevIsLmbDown ) {
                         this.turret.getTargetProcessor().updateEntityTarget(entry.getKey(), !entry.getValue());
@@ -171,7 +171,7 @@ public final class GuiTcuEntityTargets
 
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             this.mc.renderEngine.bindTexture(Resources.GUI_TCU_TARGETS.getResource());
-            this.drawTexturedModalRect(this.guiLeft + 10, this.guiTop + 20 + offsetY, 176, btnTexOffY, 8, 8);
+            this.drawTexturedModalRect(this.guiLeft + 8, this.guiTop + 20 + offsetY, 176, btnTexOffY, 8, 8);
 
             int textColor = 0xFFFFFFFF;
             if( IMob.class.isAssignableFrom(entry.getKey()) ) {
@@ -180,7 +180,7 @@ public final class GuiTcuEntityTargets
                 textColor = 0xFFAAFFAA;
             }
 
-            this.fontRendererObj.drawString(getTranslatedEntityName(entry.getKey()), this.guiLeft + 20, this.guiTop + 20 + offsetY, textColor, false);
+            this.fontRendererObj.drawString(getTranslatedEntityName(entry.getKey()), this.guiLeft + 20, this.guiTop + 21 + offsetY, textColor, false);
 
             offsetY += this.fontRendererObj.FONT_HEIGHT + 1;
         }

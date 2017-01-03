@@ -12,8 +12,8 @@ import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
-import de.sanandrew.mods.turretmod.client.event.RenderForcefieldHandler;
 import de.sanandrew.mods.turretmod.client.event.RenderEventHandler;
+import de.sanandrew.mods.turretmod.client.event.RenderForcefieldHandler;
 import de.sanandrew.mods.turretmod.client.gui.GuiCameras;
 import de.sanandrew.mods.turretmod.client.gui.GuiPotatoGenerator;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiAssemblyFilter;
@@ -140,7 +140,7 @@ public class ClientProxy
             TileEntity te;
             switch( EnumGui.VALUES[id] ) {
                 case GUI_TCU_INFO:
-                    return new GuiTcuInfo((EntityTurret) world.getEntityByID(x));
+                    return new GuiTcuInfo((EntityTurret) world.getEntityByID(x), y == 1);
                 case GUI_TCU_ENTITY_TARGETS:
                     return new GuiTcuEntityTargets((EntityTurret) world.getEntityByID(x));
                 case GUI_TCU_PLAYER_TARGETS:

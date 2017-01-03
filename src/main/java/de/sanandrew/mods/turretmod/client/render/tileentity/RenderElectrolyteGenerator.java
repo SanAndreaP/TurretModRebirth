@@ -33,9 +33,8 @@ public class RenderElectrolyteGenerator
         GlStateManager.translate((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
 
-        for( int i = 0; i < TileEntityElectrolyteGenerator.SLOTS_PROCESSING.length; i++ ) {
-            int slot = TileEntityElectrolyteGenerator.SLOTS_PROCESSING[i];
-            ItemStack stack = tile.getStackInSlot(slot);
+        for( int i = 0; i < tile.processStacks.length; i++ ) {
+            ItemStack stack = tile.processStacks[i];
 
             if( ItemStackUtils.isValid(stack) ) {
                 drawElectrolyteItem(i, stack);

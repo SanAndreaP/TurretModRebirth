@@ -37,8 +37,12 @@ public class PacketPlayerTurretAction
     @Override
     public void handleServerMessage(PacketPlayerTurretAction packet, EntityPlayer player) {
         Entity e = player.world.getEntityByID(packet.turretId);
-        if( e instanceof EntityTurret ) {
+        if( e instanceof EntityTurret) {
             EntityTurret turret = (EntityTurret) e;
+            if( !turret.hasPlayerPermission(player) ) {
+                return;
+            }
+
             switch( packet.actionId ) {
                 case DISMANTLE:
                     turret.tryDismantle(player);

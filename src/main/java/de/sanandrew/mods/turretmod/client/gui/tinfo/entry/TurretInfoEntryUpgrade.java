@@ -52,9 +52,9 @@ public class TurretInfoEntryUpgrade
 
         RenderUtils.renderStackInGui(UpgradeRegistry.INSTANCE.getUpgradeItem(this.upgrade), 3, 17, 2.0F);
 
-        gui.mc.fontRendererObj.drawString(this.txtCrft, 42, 16, 0xFF6A6A6A, false);
+        gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_CRAFTING.get()), 42, 16, 0xFF6A6A6A, false);
         if( prereq != null ) {
-            gui.mc.fontRendererObj.drawString(this.txtPrereq, 42, 36, 0xFF6A6A6A, false);
+            gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_WORKBENCH.get()), 42, 36, 0xFF6A6A6A, false);
             infoHeight = 56;
         }
 

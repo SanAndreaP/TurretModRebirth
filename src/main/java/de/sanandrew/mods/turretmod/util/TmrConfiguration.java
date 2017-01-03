@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public final class TmrConfiguration
 {
-    public static final String CAT_CLIENT = "Client";
+    public static final String CAT_SERVER = "server";
 
     private static Configuration config;
 
@@ -25,11 +25,13 @@ public final class TmrConfiguration
     public static boolean renderUpgrades = true;
     public static boolean calcForcefieldIntf = true;
     public static boolean useShaders = true;
+    public static boolean opCanEditAll = true;
+    public static boolean playerCanEditAll = false;
 
     public static String[] electrolyteAdditRecipes = new String[0];
 
     public static void initConfiguration(FMLPreInitializationEvent event) {
-        config = new Configuration(event.getSuggestedConfigurationFile(), "1.1.0", true);
+        config = new Configuration(event.getSuggestedConfigurationFile(), "1.2.0", true);
         MinecraftForge.EVENT_BUS.register(new TmrConfiguration());
         syncConfig();
     }
@@ -38,16 +40,25 @@ public final class TmrConfiguration
         String desc;
 
         desc = "The GL Texture Unit to use for the secondary sampler passed in to some of the shaders. DO NOT TOUCH THIS IF YOU DON'T KNOW WHAT YOU'RE DOING";
-        glSecondaryTextureUnit = config.getInt("glSecondaryTextureUnit", CAT_CLIENT, glSecondaryTextureUnit, Integer.MIN_VALUE, Integer.MAX_VALUE, desc);
+        glSecondaryTextureUnit = config.getInt("glSecondaryTextureUnit", Configuration.CATEGORY_CLIENT, glSecondaryTextureUnit, Integer.MIN_VALUE, Integer.MAX_VALUE, desc);
 
         desc = "Render the upgrades on the turret_placer. Disable this for more performance";
-        renderUpgrades = config.getBoolean("renderUpgrades", CAT_CLIENT, renderUpgrades, desc);
+        renderUpgrades = config.getBoolean("renderUpgrades", Configuration.CATEGORY_CLIENT, renderUpgrades, desc);
 
         desc = "Calculate Interceptions of adjacent forcefields. Disable this to gain a performance boost, but be aware it might clutter the screen if many forcefields are operating.";
-        calcForcefieldIntf = config.getBoolean("calcForcefieldIntf", CAT_CLIENT, calcForcefieldIntf, desc);
+        calcForcefieldIntf = config.getBoolean("calcForcefieldIntf", Configuration.CATEGORY_CLIENT, calcForcefieldIntf, desc);
 
         desc = "Whether or not to use shaders. When disabled, some fancier rendering won't work. Only disable if there's incompatibilities with another mod!";
-        useShaders = config.getBoolean("useShaders", CAT_CLIENT, useShaders, desc);
+        useShaders = config.getBoolean("useShaders", Configuration.CATEGORY_CLIENT, useShaders, desc);
+
+        desc = "Whether or not an Operator can manipulate anyones turrets. When disabled, OPs can only edit their own turrets and are treated like everyone else\n" +
+                "(the playerCanEditAll option is checked instead).\n" +
+                "Ignored in singleplayer.";
+        opCanEditAll = config.getBoolean("opCanEditAll", CAT_SERVER, opCanEditAll, desc);
+
+        desc = "Whether or not any player can manipulate anyones turrets. When disabled, players can only edit their own turrets.\n" +
+                "Ignored in singleplayer.";
+        playerCanEditAll = config.getBoolean("playerCanEditAll", CAT_SERVER, playerCanEditAll, desc);
 
         desc = "A list of items and values for the electrolyte generator to be able to use.\n" +
                 "An example of an entry would be: <minecraft:stick>, 2.0, 500, <minecraft:apple>, <minecraft:diamond>\n" +

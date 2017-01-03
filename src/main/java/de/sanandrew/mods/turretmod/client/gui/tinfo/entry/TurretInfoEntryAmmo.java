@@ -71,7 +71,7 @@ public class TurretInfoEntryAmmo
 
     @Override
     public void drawPage(GuiTurretInfo gui, int mouseX, int mouseY, int scrollY, float partTicks) {
-        TurretAmmo ammo = this.ammos[this.shownAmmo];
+        TurretAmmo<?> ammo = this.ammos[this.shownAmmo];
 
         gui.mc.fontRendererObj.drawString(TextFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 20, 0xFF0080BB);
         Gui.drawRect(2, 30, MAX_ENTRY_WIDTH - 2, 31, 0xFF0080BB);
@@ -82,13 +82,13 @@ public class TurretInfoEntryAmmo
 
         RenderUtils.renderStackInGui(ItemRegistry.turret_ammo.getAmmoItem(1, ammo), 3, 35, 2.0F);
 
-        gui.mc.fontRendererObj.drawString(this.txtRounds, 42, 34, 0xFF6A6A6A, false);
-        gui.mc.fontRendererObj.drawString(String.format("%d", ammo.getAmmoCapacity()), 45, 43, 0xFF000000, false);
-        gui.mc.fontRendererObj.drawString(this.txtDps, 42, 54, 0xFF6A6A6A, false);
-        gui.mc.fontRendererObj.drawString(Lang.translate(this.txtHealthVal, ammo.getInfoDamage()), 45, 63, 0xFF000000, false);
-        gui.mc.fontRendererObj.drawString(this.txtTurret, 42, 74, 0xFF6A6A6A, false);
-        gui.mc.fontRendererObj.drawString(Lang.translateEntityCls(ammo.getTurret()), 45, 83, 0xFF000000, false);
-        gui.mc.fontRendererObj.drawString(this.txtCrft, 42, 94, 0xFF6A6A6A, false);
+        gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_ROUNDS.get()),                          42, 34, 0xFF6A6A6A, false);
+        gui.mc.fontRendererObj.drawString(String.format("%d", ammo.getAmmoCapacity()),                            45, 43, 0xFF000000, false);
+        gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_DPS.get()),                             42, 54, 0xFF6A6A6A, false);
+        gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_HEALTHVAL.get(), ammo.getInfoDamage()), 45, 63, 0xFF000000, false);
+        gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_TURRET.get()),                          42, 74, 0xFF6A6A6A, false);
+        gui.mc.fontRendererObj.drawString(Lang.translateEntityCls(ammo.getTurret()),                              45, 83, 0xFF000000, false);
+        gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_CRAFTING.get()),                        42, 94, 0xFF6A6A6A, false);
 
         String text = Lang.translate(Lang.TINFO_ENTRY_AMMO_DESC.get(ammo.getInfoName())).replace("\\n", "\n");
         gui.mc.fontRendererObj.drawSplitString(text, 2, 117, MAX_ENTRY_WIDTH - 2, 0xFF000000);

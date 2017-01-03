@@ -10,7 +10,6 @@ package de.sanandrew.mods.turretmod.entity.projectile;
 
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretFlamethrower;
-import de.sanandrew.mods.turretmod.util.Sounds;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
@@ -97,7 +96,7 @@ public class EntityProjectileFlame
         this.playSound(this.getRicochetSound(), 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
         if( hitObj.typeOfHit != RayTraceResult.Type.ENTITY ) {
             this.setDead();
-            if( this.purifying && hitObj.typeOfHit == RayTraceResult.Type.BLOCK && !this.world.isRemote && MiscUtils.RNG.randomInt(10) == 0 ) {
+            if( this.purifying && hitObj.typeOfHit == RayTraceResult.Type.BLOCK && !this.world.isRemote && MiscUtils.RNG.randomInt(100) == 0 ) {
                 BlockPos fire = hitObj.getBlockPos().offset(hitObj.sideHit);
                 if (this.world.isAirBlock(fire)) {
                     this.world.setBlockState(fire, Blocks.FIRE.getDefaultState(), 11); // 1 = block update, 2 = send to client, 8 = needs update

@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.entity.turret;
 
+import com.mojang.authlib.GameProfile;
 import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
@@ -23,6 +24,7 @@ import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.DataWatcherBooleans;
 import de.sanandrew.mods.turretmod.util.EnumGui;
 import de.sanandrew.mods.turretmod.util.Sounds;
+import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
@@ -36,6 +38,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.DamageSource;
@@ -52,6 +55,8 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -70,6 +75,7 @@ public abstract class EntityTurret
 
     private BlockPos blockPos;
     private boolean prevShotChng;
+    private boolean checkBlock;
 
     protected TargetProcessor targetProc;
     protected UpgradeProcessor upgProc;
@@ -85,6 +91,7 @@ public abstract class EntityTurret
         super(world);
         this.upgProc = new UpgradeProcessor(this);
         this.rotationYaw = 0.0F;
+        this.checkBlock = true;
     }
 
     public EntityTurret(World world, boolean isUpsideDown, EntityPlayer owner) {
@@ -198,7 +205,7 @@ public abstract class EntityTurret
             this.blockPos = new BlockPos((int) Math.floor(this.posX), (int)Math.floor(this.posY) + (this.isUpsideDown ? 2 : -1), (int)Math.floor(this.posZ));
         }
 
-        if( !canTurretBePlaced(this.world, this.blockPos, true, this.isUpsideDown) ) {
+        if( this.checkBlock && !canTurretBePlaced(this.world, this.blockPos, true, this.isUpsideDown) ) {
             this.kill();
         }
 
@@ -289,7 +296,7 @@ public abstract class EntityTurret
     protected boolean processInteract(EntityPlayer player, EnumHand hand, @Nullable ItemStack stack) {
         if( this.world.isRemote ) {
             if( ItemStackUtils.isValid(stack) && stack.getItem() == ItemRegistry.turret_control_unit ) {
-                TurretModRebirth.proxy.openGui(player, player.isSneaking() ? EnumGui.GUI_DEBUG_CAMERA : EnumGui.GUI_TCU_INFO, this.getEntityId(), 0, 0);
+                TurretModRebirth.proxy.openGui(player, player.isSneaking() ? EnumGui.GUI_DEBUG_CAMERA : EnumGui.GUI_TCU_INFO, this.getEntityId(), this.hasPlayerPermission(player) ? 1 : 0, 0);
                 return true;
             }
 
@@ -478,6 +485,30 @@ public abstract class EntityTurret
         return this.ownerName;
     }
 
+    @SuppressWarnings("SimplifiableIfStatement")
+    public boolean hasPlayerPermission(EntityPlayer player) {
+        if( player == null ) {
+            return false;
+        }
+
+        if( this.ownerUUID == null ) {
+            return true;
+        }
+
+        MinecraftServer mcSrv = this.world.getMinecraftServer();
+        GameProfile profile = player.getGameProfile();
+
+        if( mcSrv != null && mcSrv.isSinglePlayer() && mcSrv.getServerOwner().equals(profile.getName()) ) {
+            return true;
+        }
+
+        if( TmrConfiguration.playerCanEditAll || this.ownerUUID.equals(profile.getId()) ) {
+            return true;
+        }
+
+        return player.canCommandSenderUseCommand(2, "") && TmrConfiguration.opCanEditAll;
+    }
+
     public boolean tryDismantle(EntityPlayer player) {
         Tuple chestItm = InventoryUtils.getSimilarStackFromInventory(new ItemStack(Blocks.CHEST), player.inventory, true);
         if( chestItm != null && ItemStackUtils.isValid(chestItm.getValue(1)) ) {
@@ -486,13 +517,15 @@ public abstract class EntityTurret
                 PacketRegistry.sendToServer(new PacketPlayerTurretAction(this, PacketPlayerTurretAction.DISMANTLE));
                 return true;
             } else {
+                this.checkBlock = false;
                 this.posY += 2048.0F;
                 this.setPosition(this.posX, this.posY, this.posZ);
-                int y = this.isUpsideDown ? 2 : 0;
+                int y = this.isUpsideDown ? 2 : -1;
                 if( chestStack.getItem().onItemUse(chestStack, player, this.world, this.blockPos.offset(EnumFacing.DOWN, y), EnumHand.MAIN_HAND,
                                                    this.isUpsideDown ? EnumFacing.DOWN : EnumFacing.UP, 0.5F, 1.0F, 0.5F) == EnumActionResult.SUCCESS )
                 {
                     TileEntity te = this.world.getTileEntity(this.blockPos.offset(EnumFacing.DOWN, y));
+
                     if( te instanceof TileEntityChest ) {
                         this.posY -= 2048.0F;
                         this.setPosition(this.posX, this.posY, this.posZ);
@@ -511,6 +544,7 @@ public abstract class EntityTurret
                         return true;
                     }
                 }
+                this.checkBlock = true;
                 this.posY -= 2048.0F;
                 this.setPosition(this.posX, this.posY, this.posZ);
             }

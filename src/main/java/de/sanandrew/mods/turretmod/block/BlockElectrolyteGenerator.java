@@ -8,6 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.block;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableMap;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
@@ -17,6 +19,7 @@ import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -34,6 +37,9 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 public class BlockElectrolyteGenerator
         extends Block
@@ -96,25 +102,24 @@ public class BlockElectrolyteGenerator
             TileEntityElectrolyteGenerator potatoGen = (TileEntityElectrolyteGenerator) world.getTileEntity(pos);
 
             if( potatoGen != null ) {
-                for( int i = 0; i < potatoGen.getSizeInventory(); i++ ) {
-                    if( TileEntityElectrolyteGenerator.isSlotProcessing(i) ) {
-                        continue;
-                    }
+                IItemHandler handler = potatoGen.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
+                if( handler != null ) {
+                    for( int i = 0, max = handler.getSlots(); i < max; i++ ) {
+                        ItemStack stack = handler.getStackInSlot(i);
 
-                    ItemStack stack = potatoGen.getStackInSlot(i);
+                        if( ItemStackUtils.isValid(stack) ) {
+                            float xOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
+                            float yOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
+                            float zOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
 
-                    if( ItemStackUtils.isValid(stack) ) {
-                        float xOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
-                        float yOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
-                        float zOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
+                            EntityItem entityitem = new EntityItem(world, (pos.getX() + xOff), (pos.getY() + yOff), (pos.getZ() + zOff), stack.copy());
 
-                        EntityItem entityitem = new EntityItem(world, (pos.getX() + xOff), (pos.getY() + yOff), (pos.getZ() + zOff), stack.copy());
-
-                        float motionSpeed = 0.05F;
-                        entityitem.motionX = ((float) MiscUtils.RNG.randomGaussian() * motionSpeed);
-                        entityitem.motionY = ((float) MiscUtils.RNG.randomGaussian() * motionSpeed + 0.2F);
-                        entityitem.motionZ = ((float) MiscUtils.RNG.randomGaussian() * motionSpeed);
-                        world.spawnEntityInWorld(entityitem);
+                            float motionSpeed = 0.05F;
+                            entityitem.motionX = ((float) MiscUtils.RNG.randomGaussian() * motionSpeed);
+                            entityitem.motionY = ((float) MiscUtils.RNG.randomGaussian() * motionSpeed + 0.2F);
+                            entityitem.motionZ = ((float) MiscUtils.RNG.randomGaussian() * motionSpeed);
+                            world.spawnEntityInWorld(entityitem);
+                        }
                     }
                 }
 
@@ -155,12 +160,6 @@ public class BlockElectrolyteGenerator
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public boolean isFullCube(IBlockState state) {
-        return false;
-    }
-
-    @Override
     public TileEntity createTileEntity(World world, IBlockState state) {
         return new TileEntityElectrolyteGenerator();
     }
@@ -172,25 +171,7 @@ public class BlockElectrolyteGenerator
 
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, TILE_HOLDER);
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos) {
-        return (state.getValue(TILE_HOLDER) ? MAIN_SEL_BB : UPPER_SEL_BB).offset(pos);
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public EnumBlockRenderType getRenderType(IBlockState state) {
-        return state.getValue(TILE_HOLDER) ? EnumBlockRenderType.MODEL : EnumBlockRenderType.INVISIBLE;
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public boolean isOpaqueCube(IBlockState state) {
-        return false;
+        return new MyBlockStateContainer(this, TILE_HOLDER);
     }
 
     @Override
@@ -198,21 +179,54 @@ public class BlockElectrolyteGenerator
         return false;
     }
 
-    @Override
-    @SuppressWarnings("deprecation")
-    public boolean isNormalCube(IBlockState state) {
-        return false;
+    private static final class MyBlockStateContainer
+            extends BlockStateContainer
+    {
+        public MyBlockStateContainer(Block blockIn, IProperty<?>... properties) {
+            super(blockIn, properties);
+        }
+
+        @Override
+        protected StateImplementation createState(Block block, ImmutableMap<IProperty<?>, Comparable<?>> properties, ImmutableMap<IUnlistedProperty<?>, Optional<?>> unlistedProperties) {
+            return new MyStateImplementation(block, properties);
+        }
     }
 
-    @Override
-    @SuppressWarnings("deprecation")
-    public boolean hasComparatorInputOverride(IBlockState state) {
-        return true;
-    }
+    private static final class MyStateImplementation
+            extends BlockStateContainer.StateImplementation
+    {
+        protected MyStateImplementation(Block blockIn, ImmutableMap<IProperty<?>, Comparable<?>> propertiesIn) {
+            super(blockIn, propertiesIn);
+        }
 
-    @Override
-    @SuppressWarnings("deprecation")
-    public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos) {
-        return state.getValue(TILE_HOLDER) ? Container.calcRedstoneFromInventory((IInventory) world.getTileEntity(pos)) : 0;
+        @Override
+        public boolean hasComparatorInputOverride() {
+            return true;
+        }
+
+        @Override
+        public int getComparatorInputOverride(World worldIn, BlockPos pos) {
+            return this.getValue(TILE_HOLDER) ? Container.calcRedstoneFromInventory((IInventory) worldIn.getTileEntity(pos)) : 0;
+        }
+
+        @Override
+        public boolean isOpaqueCube() {
+            return false;
+        }
+
+        @Override
+        public EnumBlockRenderType getRenderType() {
+            return this.getValue(TILE_HOLDER) ? EnumBlockRenderType.MODEL : EnumBlockRenderType.INVISIBLE;
+        }
+
+        @Override
+        public AxisAlignedBB getSelectedBoundingBox(World worldIn, BlockPos pos) {
+            return (this.getValue(TILE_HOLDER) ? MAIN_SEL_BB : UPPER_SEL_BB).offset(pos);
+        }
+
+        @Override
+        public boolean isFullCube() {
+            return false;
+        }
     }
 }

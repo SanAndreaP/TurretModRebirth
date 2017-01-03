@@ -35,6 +35,7 @@ public class GuiTcuInfo
         implements GuiTurretCtrlUnit
 {
     private EntityTurret turret;
+    private boolean hasPermission;
 
     private int guiLeft;
     private int guiTop;
@@ -52,8 +53,9 @@ public class GuiTcuInfo
     private String infoStr;
     private long infoTimeShown;
 
-    public GuiTcuInfo(EntityTurret turret) {
+    public GuiTcuInfo(EntityTurret turret, boolean hasPerm) {
         this.turret = turret;
+        this.hasPermission = hasPerm;
     }
 
     @Override
@@ -72,9 +74,11 @@ public class GuiTcuInfo
         this.frAmmoItem = new FontRenderer(this.mc.gameSettings, new ResourceLocation("textures/font/ascii.png"), this.mc.getTextureManager(), true);
 
         int center = this.guiLeft + (GuiTCUHelper.X_SIZE - 150) / 2;
-        this.buttonList.add(this.dismantle = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 138, 150, Lang.translate(Lang.TCU_BTN.get("dismantle"))));
-        this.buttonList.add(this.toggleActive = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 151, 150, Lang.translate(Lang.TCU_BTN.get("toggleActive"))));
-        this.buttonList.add(this.toggleRange = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 164, 150, Lang.translate(Lang.TCU_BTN.get("range"))));
+        if( this.hasPermission ) {
+            this.buttonList.add(this.dismantle = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 138, 150, Lang.translate(Lang.TCU_BTN.get("dismantle"))));
+            this.buttonList.add(this.toggleActive = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 151, 150, Lang.translate(Lang.TCU_BTN.get("toggleActive"))));
+            this.buttonList.add(this.toggleRange = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 164, 150, Lang.translate(Lang.TCU_BTN.get("range"))));
+        }
 
         this.turretName = new GuiTextField(this.buttonList.size(), this.fontRendererObj, this.guiLeft + 20, this.guiTop + 22, 150, 10);
         this.turretName.setMaxStringLength(128);
@@ -96,16 +100,20 @@ public class GuiTcuInfo
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partTicks) {
-        if( this.turret.isActive() ) {
-            this.toggleActive.displayString = Lang.translate(Lang.TCU_BTN.get("toggleActive.disable"));
-        } else {
-            this.toggleActive.displayString = Lang.translate(Lang.TCU_BTN.get("toggleActive.enable"));
+        if( this.toggleActive != null ) {
+            if( this.turret.isActive() ) {
+                this.toggleActive.displayString = Lang.translate(Lang.TCU_BTN.get("toggleActive.disable"));
+            } else {
+                this.toggleActive.displayString = Lang.translate(Lang.TCU_BTN.get("toggleActive.enable"));
+            }
         }
 
-        if( this.turret.showRange ) {
-            this.toggleRange.displayString = Lang.translate(Lang.TCU_BTN.get("range.disable"));
-        } else {
-            this.toggleRange.displayString = Lang.translate(Lang.TCU_BTN.get("range.enable"));
+        if( this.toggleRange != null ) {
+            if( this.turret.showRange ) {
+                this.toggleRange.displayString = Lang.translate(Lang.TCU_BTN.get("range.disable"));
+            } else {
+                this.toggleRange.displayString = Lang.translate(Lang.TCU_BTN.get("range.enable"));
+            }
         }
 
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -237,5 +245,10 @@ public class GuiTcuInfo
     @Override
     public boolean doesGuiPauseGame() {
         return false;
+    }
+
+    @Override
+    public boolean hasPermision() {
+        return this.hasPermission;
     }
 }

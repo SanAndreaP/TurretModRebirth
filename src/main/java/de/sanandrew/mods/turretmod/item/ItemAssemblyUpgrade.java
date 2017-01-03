@@ -103,16 +103,6 @@ public abstract class ItemAssemblyUpgrade
             ItemStack[] stacks = getEmptyInv();
             NBTTagCompound nbt = stack.getTagCompound();
 
-//            if( nbt == null && configure ) {
-//                nbt = new NBTTagCompound();
-//                NBTTagList list = ItemStackUtils.writeItemStacksToTag(stacks, 1);
-//                nbt.setTag("filterStacks", list);
-//                stack.setTagCompound(nbt);
-//            } else if( nbt != null && nbt.hasKey("filterStacks") ) {
-//                ItemStackUtils.readItemStacksFromTag(stacks, nbt.getTagList("filterStacks", Constants.NBT.TAG_COMPOUND));
-//            } else {
-//                return EMPTY_INV;
-//            }
             if( nbt != null && nbt.hasKey("filteredStacks") ) {
                 ItemStackUtils.readItemStacksFromTag(stacks, nbt.getTagList("filterStacks", Constants.NBT.TAG_COMPOUND));
             }

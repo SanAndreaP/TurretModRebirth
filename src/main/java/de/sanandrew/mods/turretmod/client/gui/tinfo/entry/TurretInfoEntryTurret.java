@@ -71,14 +71,14 @@ public class TurretInfoEntryTurret
 
         gui.doEntryScissoring();
 
-        gui.mc.fontRendererObj.drawString(this.txtHealth, 60, 15, 0xFF6A6A6A, false);
-        gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_HEALTHVAL.get(), this.values.health), 63, 24, 0xFF000000, false);
-        gui.mc.fontRendererObj.drawString(this.txtRange, 60, 35, 0xFF6A6A6A, false);
-        gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_RANGEVAL.get(), this.values.range), 63, 44, 0xFF000000, false);
-        gui.mc.fontRendererObj.drawString(this.txtAmmoCap, 60, 55, 0xFF6A6A6A, false);
+        gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_HEALTH.get()),                         60, 15, 0xFF6A6A6A, false);
+        gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_HEALTHVAL.get(), this.values.health),  63, 24, 0xFF000000, false);
+        gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_RANGE.get()),                          60, 35, 0xFF6A6A6A, false);
+        gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_RANGEVAL.get(), this.values.range),    63, 44, 0xFF000000, false);
+        gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_AMMOCAP.get()),                        60, 55, 0xFF6A6A6A, false);
         gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_ROUNDSVAL.get(), this.values.ammoCap), 63, 64, 0xFF000000, false);
-        gui.mc.fontRendererObj.drawString(this.txtAmmoUse, 60, 75, 0xFF6A6A6A, false);
-        gui.mc.fontRendererObj.drawString(this.txtCrft, 60, 95, 0xFF6A6A6A, false);
+        gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_AMMOUSE.get()),                        60, 75, 0xFF6A6A6A, false);
+        gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_CRAFTING.get()),                       60, 95, 0xFF6A6A6A, false);
 
         descStart = Math.max(turretHeight, valueHeight);
 

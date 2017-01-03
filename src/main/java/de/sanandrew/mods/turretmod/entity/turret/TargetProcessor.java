@@ -14,6 +14,7 @@ import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.sanlib.lib.util.ReflectionUtils;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmo;
@@ -22,7 +23,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
@@ -431,11 +431,10 @@ public abstract class TargetProcessor
         List<Class<? extends Entity>> entityTgt = new ArrayList<>();
         NBTTagList list = nbt.getTagList("entityTargets", Constants.NBT.TAG_STRING);
         for( int i = 0; i < list.tagCount(); i++ ) {
-            try {
-                Class cls = Class.forName(list.getStringTagAt(i));
-                //noinspection unchecked
+            Class<? extends Entity> cls = ReflectionUtils.getClass(list.getStringTagAt(i));
+            if( cls != null ) {
                 entityTgt.add(cls);
-            } catch( ClassNotFoundException | ClassCastException ignored ) { }
+            }
         }
         this.updateEntityTargets(entityTgt);
 
