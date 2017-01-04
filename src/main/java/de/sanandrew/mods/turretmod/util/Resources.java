@@ -68,7 +68,9 @@ public enum Resources
 
     SHADER_CATEGORY_BUTTON_FRAG("shader/categorybtn.frag"),
     SHADER_GRAYSCALE_FRAG("shader/grayscale.frag"),
-    SHADER_ALPHA_OVERRIDE_FRAG("shader/alpha_override.frag");
+    SHADER_ALPHA_OVERRIDE_FRAG("shader/alpha_override.frag"),
+
+    JEI_ASSEMBLY_BKG("textures/gui/turretassembly/jei_crafting.png");
 
     private final ResourceLocation location;
 

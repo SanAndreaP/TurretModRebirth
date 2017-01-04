@@ -193,7 +193,9 @@ subtitles.sapturretmod.turretRicochet.bullet=Bullet ricochets
 subtitles.sapturretmod.turretRicochet.splash=Projectile splashes
 subtitles.sapturretmod.turretShield.active=Shield engages
 
-
+jei.sapturretmod.assembly.title=Turret Assembly Table
+jei.sapturretmod.assembly.energy=Energy consumed:
+jei.sapturretmod.assembly.time=Processing time:
 
 
 item.sapturretmod:turret_upgrade.name=Turret Upgrade

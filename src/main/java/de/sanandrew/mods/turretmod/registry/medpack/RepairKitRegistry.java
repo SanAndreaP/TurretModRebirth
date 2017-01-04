@@ -8,6 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.registry.medpack;
 
+import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -83,12 +85,12 @@ public final class RepairKitRegistry
                 try {
                     return this.getType(UUID.fromString(typeUUID));
                 } catch( IllegalArgumentException ex ) {
-                    return null;
+                    return EMPTY_REPKIT;
                 }
             }
         }
 
-        return null;
+        return EMPTY_REPKIT;
     }
 
     public void initialize() {
@@ -99,9 +101,20 @@ public final class RepairKitRegistry
         this.registerMedpack(new RepairKitRegeneration("regen_1", REGEN_MK1, 0.5F, new ResourceLocation(TurretModRebirth.ID, "repair_kits/repair_kit_reg1"), 0, 900));
     }
 
+    private static final UUID EMPTY = UuidUtils.EMPTY_UUID;
     public static final UUID STANDARD_MK1 = UUID.fromString("89db7dd5-2ded-4e58-96dd-07e47bffa919");
     public static final UUID STANDARD_MK2 = UUID.fromString("36477c40-3eb3-4997-a2ec-3a9a37be86d5");
     public static final UUID STANDARD_MK3 = UUID.fromString("c9ecc3ea-8bfa-4e42-b401-e0475a23d7f6");
     public static final UUID STANDARD_MK4 = UUID.fromString("6b3cbd27-1efa-4ee2-b8c8-35d2988361b9");
     public static final UUID REGEN_MK1 = UUID.fromString("4c44ca3d-4f32-44e6-bf2e-11189ec88a73");
+
+    private static final TurretRepairKit EMPTY_REPKIT = new TurretRepairKit()
+    {
+        @Override public String getName() { return "EMPTY"; }
+        @Override public UUID getUUID() { return EMPTY; }
+        @Override public float getHealAmount() { return 0; }
+        @Override public void onHeal(EntityTurret turret) { }
+        @Override public boolean isApplicable(EntityTurret turret) { return false; }
+        @Override public ResourceLocation getModel() { return null; }
+    };
 }

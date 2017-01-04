@@ -73,21 +73,29 @@ public final class UpgradeRegistry
         return MiscUtils.defIfNull(this.uuidToUpgradeMap.get(upg), EMPTY);
     }
 
-    public TurretUpgrade getUpgrade(ItemStack stack) {
+    public UUID getUpgradeUUID(ItemStack stack) {
         if( stack == null || !stack.hasTagCompound() ) {
-            return emptyInst;
+            return EMPTY;
         }
 
         String uid = MiscUtils.defIfNull(stack.getTagCompound(), new NBTTagCompound()).getString("upgradeId");
         try {
-            return this.getUpgrade(UUID.fromString(uid));
+            return UUID.fromString(uid);
         } catch( IllegalArgumentException ex ) {
             if( !this.errored.contains(uid) ) {
                 TurretModRebirth.LOG.log(Level.WARN, "There was an error at parsing the UUID for a turret_placer upgrade item!", ex);
                 this.errored.add(uid);
             }
+            return EMPTY;
+        }
+    }
+
+    public TurretUpgrade getUpgrade(ItemStack stack) {
+        if( stack == null || !stack.hasTagCompound() ) {
             return emptyInst;
         }
+
+        return this.getUpgrade(this.getUpgradeUUID(stack));
     }
 
     public TurretUpgrade[] getRegisteredTypes() {
