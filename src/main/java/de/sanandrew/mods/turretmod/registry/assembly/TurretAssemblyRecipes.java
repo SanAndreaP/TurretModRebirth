@@ -300,7 +300,7 @@ public final class TurretAssemblyRecipes
         RecipeEntryItem[] ingredients;
 
         res = new ItemStack(ItemRegistry.turret_info, 1);
-        ingredients = new RecipeEntryItem[0];
+        ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(Items.BOOK)};
         INSTANCE.registerRecipe(TINFO, group, res, 7_500, 10, ingredients);
 
         res = new ItemStack(ItemRegistry.turret_control_unit, 1);
