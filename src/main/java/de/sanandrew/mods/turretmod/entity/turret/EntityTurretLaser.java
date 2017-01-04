@@ -75,7 +75,7 @@ public class EntityTurretLaser
     };
 
     @SideOnly(Side.CLIENT)
-    private SoundLaser laserSound;
+    public SoundLaser laserSound;
 
     {
         this.targetProc = new MyTargetProc();
@@ -112,14 +112,7 @@ public class EntityTurretLaser
         super.onUpdate();
 
         if( this.world.isRemote ) {
-            if( this.laserSound == null ) {
-                if( this.getTargetProcessor().isShooting() && this.getTargetProcessor().hasAmmo() ) {
-                    this.laserSound = new SoundLaser(this);
-                    Minecraft.getMinecraft().getSoundHandler().playSound(this.laserSound);
-                }
-            } else if( this.laserSound.isDonePlaying() || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(this.laserSound) ) {
-                this.laserSound = null;
-            }
+            TurretModRebirth.proxy.playTurretLaser(this);
         }
     }
 

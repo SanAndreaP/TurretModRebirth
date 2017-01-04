@@ -44,7 +44,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @SideOnly(Side.CLIENT)
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(Side.CLIENT)
 public final class ModelRegistry
 {
     @SubscribeEvent

@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.util;
 import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
 import de.sanandrew.mods.turretmod.inventory.ContainerAssemblyFilter;
 import de.sanandrew.mods.turretmod.inventory.ContainerElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
@@ -114,4 +115,6 @@ public class CommonProxy
     }
 
     public void spawnParticle(EnumParticle particle, double x, double y, double z, Tuple data) { }
+
+    public void playTurretLaser(EntityTurretLaser turretLaser) { }
 }

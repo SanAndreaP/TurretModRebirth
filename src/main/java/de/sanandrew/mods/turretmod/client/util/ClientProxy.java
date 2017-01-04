@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.client.util;
 import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.client.audio.SoundLaser;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import de.sanandrew.mods.turretmod.client.event.RenderEventHandler;
 import de.sanandrew.mods.turretmod.client.event.RenderForcefieldHandler;
@@ -249,6 +250,18 @@ public class ClientProxy
                 }
                 break;
             }
+        }
+    }
+
+    @Override
+    public void playTurretLaser(EntityTurretLaser turretLaser) {
+        if( turretLaser.laserSound == null ) {
+            if( turretLaser.getTargetProcessor().isShooting() && turretLaser.getTargetProcessor().hasAmmo() ) {
+                turretLaser.laserSound = new SoundLaser(turretLaser);
+                Minecraft.getMinecraft().getSoundHandler().playSound(turretLaser.laserSound);
+            }
+        } else if( turretLaser.laserSound.isDonePlaying() || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(turretLaser.laserSound) ) {
+            turretLaser.laserSound = null;
         }
     }
 }
