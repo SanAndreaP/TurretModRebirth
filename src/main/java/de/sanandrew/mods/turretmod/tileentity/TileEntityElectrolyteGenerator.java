@@ -378,6 +378,7 @@ public class TileEntityElectrolyteGenerator
     }
 
     private MyItemStackHandler itemHandler = new MyItemStackHandler();
+    public ContainerItemStackHandler containerItemHandler = new ContainerItemStackHandler(itemHandler);
     private MyEnergyStorageGen energyStorage = new MyEnergyStorageGen();
 
     @Override
@@ -474,7 +475,34 @@ public class TileEntityElectrolyteGenerator
         }
     }
 
-    private static final class MyItemStackHandler
+    private static final class ContainerItemStackHandler
+            extends ItemStackHandler
+    {
+        private final MyItemStackHandler parentHandler;
+
+        public ContainerItemStackHandler(MyItemStackHandler handler) {
+            super(handler.getStacksArray());
+            this.parentHandler = handler;
+        }
+
+        @Override
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+            return this.parentHandler.insertItem(slot, stack, simulate);
+        }
+
+        @Override
+        protected int getStackLimit(int slot, ItemStack stack) {
+            return this.parentHandler.getStackLimit(slot, stack);
+        }
+
+        @Override
+        public void onLoad() {
+            super.onLoad();
+            this.stacks = this.parentHandler.getStacksArray();
+        }
+    }
+
+    private final class MyItemStackHandler
             extends ItemStackHandler
     {
         public MyItemStackHandler() {
@@ -489,6 +517,11 @@ public class TileEntityElectrolyteGenerator
             }
 
             return stack;
+        }
+
+        @Override
+        protected int getStackLimit(int slot, ItemStack stack) {
+            return slot < 9 ? 1 : super.getStackLimit(slot, stack);
         }
 
         @Override
@@ -522,6 +555,16 @@ public class TileEntityElectrolyteGenerator
             }
 
             return null;
+        }
+
+        ItemStack[] getStacksArray() {
+            return this.stacks;
+        }
+
+        @Override
+        protected void onLoad() {
+            super.onLoad();
+            TileEntityElectrolyteGenerator.this.containerItemHandler.onLoad();
         }
     }
 }

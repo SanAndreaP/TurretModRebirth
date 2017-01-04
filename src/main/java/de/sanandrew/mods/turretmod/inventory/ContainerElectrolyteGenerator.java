@@ -30,13 +30,13 @@ public class ContainerElectrolyteGenerator
         this.tile = generator;
 
         for( int i = 0; i < 9; i++ ) {
-            this.addSlotToContainer(new SlotItemHandler(generator.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN), i, 8 + i*18, 17));
+            this.addSlotToContainer(new SlotItemHandler(generator.containerItemHandler, i, 8 + i*18, 17));
         }
         for( int i = 0; i < 9; i++ ) {
             this.addSlotToContainer(new SlotProcessing(generator, i, 8 + i*18, 43));
         }
         for( int i = 0; i < 5; i++ ) {
-            this.addSlotToContainer(new SlotItemHandler(generator.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN), i+9, 44 + i*18, 76));
+            this.addSlotToContainer(new SlotItemHandler(generator.containerItemHandler, i+9, 44 + i*18, 76));
         }
 
         for( int i = 0; i < 3; i++ ) {
