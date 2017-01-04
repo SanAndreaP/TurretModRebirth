@@ -11,16 +11,13 @@ package de.sanandrew.mods.turretmod.compat.jei;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.ItemTurret;
-import de.sanandrew.mods.turretmod.item.ItemTurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
+import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import mezz.jei.api.*;
-import mezz.jei.api.ingredients.IModIngredientRegistration;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -35,7 +32,7 @@ public class JeiPlugin extends BlankModPlugin {
 
         registry.addRecipeHandlers(new AssemblyRecipeHandler());
 
-        registry.addRecipes(TurretAssemblyRecipes.INSTANCE.getRecipeList());
+        registry.addRecipes(TurretAssemblyRegistry.INSTANCE.getRecipeList());
 
         registry.addRecipeCategoryCraftingItem(new ItemStack(BlockRegistry.turret_assembly), AssemblyRecipeCategory.UID);
     }

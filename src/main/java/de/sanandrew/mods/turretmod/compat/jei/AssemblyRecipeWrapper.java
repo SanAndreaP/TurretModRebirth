@@ -10,8 +10,8 @@ package de.sanandrew.mods.turretmod.compat.jei;
 
 import com.google.common.collect.ImmutableList;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
-import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntryItem;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
+import de.sanandrew.mods.turretmod.api.assembly.IRecipeEntry;
+import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
@@ -20,12 +20,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
-import java.util.StringJoiner;
 
 @SideOnly(Side.CLIENT)
 public class AssemblyRecipeWrapper
@@ -36,12 +34,12 @@ public class AssemblyRecipeWrapper
     private final int fluxPerTick;
     private final int timeInTicks;
 
-    public AssemblyRecipeWrapper(TurretAssemblyRecipes.RecipeKeyEntry keyEntry) {
-        TurretAssemblyRecipes.RecipeEntry entry = TurretAssemblyRecipes.INSTANCE.getRecipeEntry(keyEntry.key());
+    public AssemblyRecipeWrapper(TurretAssemblyRegistry.RecipeKeyEntry keyEntry) {
+        TurretAssemblyRegistry.RecipeEntry entry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(keyEntry.key());
         assert entry != null : "Recipe Entry should not be null!";
 
         ImmutableList.Builder<List<ItemStack>> inputBuilder = ImmutableList.builder();
-        for( RecipeEntryItem item : entry.resources ) {
+        for( IRecipeEntry item : entry.resources ) {
             inputBuilder.add(Arrays.asList(item.getEntryItemStacks()));
         }
         this.input = inputBuilder.build();
@@ -83,9 +81,9 @@ public class AssemblyRecipeWrapper
     @Override
     public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
         String s = Lang.translate(Lang.JEI_ASSEMBLY_ENERGY) + ' ' + this.fluxPerTick * this.timeInTicks + " RF";
-        minecraft.fontRendererObj.drawString(s, 0, 90, 0xFFA0A0A0);
+        minecraft.fontRendererObj.drawString(s, 0, 90, 0xFF808080);
         s = Lang.translate(Lang.JEI_ASSEMBLY_TIME) + ' ' + MiscUtils.getTimeFromTicks(this.timeInTicks);
-        minecraft.fontRendererObj.drawString(s, 0, 100, 0xFFA0A0A0);
+        minecraft.fontRendererObj.drawString(s, 0, 100, 0xFF808080);
     }
 
     @Override

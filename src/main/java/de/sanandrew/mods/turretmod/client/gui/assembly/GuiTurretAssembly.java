@@ -13,6 +13,7 @@ import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.api.assembly.IRecipeGroup;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiSlimButton;
 import de.sanandrew.mods.turretmod.client.shader.ShaderItemAlphaOverride;
 import de.sanandrew.mods.turretmod.client.util.ShaderHelper;
@@ -21,8 +22,8 @@ import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketAssemblyToggleAutomate;
 import de.sanandrew.mods.turretmod.network.PacketInitAssemblyCrafting;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
-import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntryItem;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
+import de.sanandrew.mods.turretmod.api.assembly.IRecipeEntry;
+import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -79,7 +80,7 @@ public class GuiTurretAssembly
     private GuiSlimButton manual;
     private GuiAssemblyTabNav groupUp;
     private GuiAssemblyTabNav groupDown;
-    private Map<GuiAssemblyCategoryTab, TurretAssemblyRecipes.RecipeGroup> groupBtns;
+    private Map<GuiAssemblyCategoryTab, IRecipeGroup> groupBtns;
 
     private long lastTimestamp;
 
@@ -115,11 +116,11 @@ public class GuiTurretAssembly
         this.buttonList.add(this.groupUp = new GuiAssemblyTabNav(this.buttonList.size(), this.guiLeft + 13, this.guiTop + 9, false));
 
         int pos = 0;
-        TurretAssemblyRecipes.RecipeGroup[] groups = TurretAssemblyRecipes.INSTANCE.getGroups();
-        Arrays.sort(groups, Comparator.comparing(o -> o.name));
+        IRecipeGroup[] groups = TurretAssemblyRegistry.INSTANCE.getGroups();
+        Arrays.sort(groups, Comparator.comparing(IRecipeGroup::getName));
         this.groupBtns = new HashMap<>(1 + (int) (groups.length / 0.75F));
-        for( TurretAssemblyRecipes.RecipeGroup grp : groups ) {
-            GuiAssemblyCategoryTab tab = new GuiAssemblyCategoryTab(this.buttonList.size(), this.guiLeft + 9, this.guiTop + 19 + pos * 15 - 15 * scrollGroupPos, grp.icon, Lang.translate(grp.name));
+        for( IRecipeGroup grp : groups ) {
+            GuiAssemblyCategoryTab tab = new GuiAssemblyCategoryTab(this.buttonList.size(), this.guiLeft + 9, this.guiTop + 19 + pos * 15 - 15 * scrollGroupPos, grp.getIcon(), Lang.translate(grp.getName()));
             this.groupBtns.put(tab, grp);
             this.buttonList.add(tab);
 
@@ -142,9 +143,9 @@ public class GuiTurretAssembly
         }
     }
 
-    private void loadGroupRecipes(TurretAssemblyRecipes.RecipeGroup group) {
+    private void loadGroupRecipes(IRecipeGroup group) {
         this.cacheRecipes = new ArrayList<>();
-        this.cacheRecipes.addAll(group.recipes.stream().map(recipe -> new Tuple(recipe, TurretAssemblyRecipes.INSTANCE.getRecipeResult(recipe))).collect(Collectors.toList()));
+        this.cacheRecipes.addAll(group.getRecipeIdList().stream().map(recipe -> new Tuple(recipe, TurretAssemblyRegistry.INSTANCE.getRecipeResult(recipe))).collect(Collectors.toList()));
     }
 
     @Override
@@ -171,25 +172,25 @@ public class GuiTurretAssembly
 
         this.drawTexturedModalRect(this.guiLeft + 156, this.guiTop + 30, 0, 222, procBarX, 5);
 
-        int maxScroll = this.cacheRecipes.size() - 4;
-        if( maxScroll > 0 && this.assembly.currCrafting == null ) {
-            int scrollBtnPos = MathHelper.floor_double(79.0D / maxScroll * this.scrollPos);
+        if( this.cacheRecipes != null ) {
+            int maxScroll = this.cacheRecipes.size() - 4;
+            if( maxScroll > 0 && this.assembly.currCrafting == null ) {
+                int scrollBtnPos = MathHelper.floor_double(79.0D / maxScroll * this.scrollPos);
 
-            if( (mouseX >= this.guiLeft + 144 && mouseX < this.guiLeft + 150 && mouseY >= this.guiTop + 7 && mouseY < this.guiTop + 92) || this.isScrolling ) {
-                if( isLmbDown ) {
-                    scrollBtnPos = Math.min(79, Math.max(0, mouseY - 7 - this.guiTop));
-                    this.scrollPos = MathHelper.floor_double(scrollBtnPos / 78.0D * maxScroll);
-                    this.isScrolling = true;
+                if( (mouseX >= this.guiLeft + 144 && mouseX < this.guiLeft + 150 && mouseY >= this.guiTop + 7 && mouseY < this.guiTop + 92) || this.isScrolling ) {
+                    if( isLmbDown ) {
+                        scrollBtnPos = Math.min(79, Math.max(0, mouseY - 7 - this.guiTop));
+                        this.scrollPos = MathHelper.floor_double(scrollBtnPos / 78.0D * maxScroll);
+                        this.isScrolling = true;
+                    }
                 }
+
+                this.drawTexturedModalRect(this.guiLeft + 144, this.guiTop + 7 + scrollBtnPos, 230, 6, 6, 6);
             }
 
-            this.drawTexturedModalRect(this.guiLeft + 144, this.guiTop + 7 + scrollBtnPos, 230, 6, 6, 6);
-        }
+            GL11.glEnable(GL11.GL_SCISSOR_TEST);
+            GuiUtils.glScissor(this.guiLeft + 33, this.guiTop + 8, 110, 83);
 
-        GL11.glEnable(GL11.GL_SCISSOR_TEST);
-        GuiUtils.glScissor(this.guiLeft + 33, this.guiTop + 8, 110, 83);
-
-        if( this.cacheRecipes != null ) {
             int maxSz = Math.min(4, this.cacheRecipes.size());
             for( int i = 0; i < maxSz; i++) {
                 int index = this.scrollPos + i;
@@ -231,9 +232,9 @@ public class GuiTurretAssembly
                     GlStateManager.enableDepth();
                 }
             }
-        }
 
-        GL11.glDisable(GL11.GL_SCISSOR_TEST);
+            GL11.glDisable(GL11.GL_SCISSOR_TEST);
+        }
 
         if( !this.assembly.hasAutoUpgrade() ) {
             this.shaderCallback.alphaMulti = 0.35F;
@@ -342,22 +343,22 @@ public class GuiTurretAssembly
     }
 
     private void drawIngredientsDetail(int mouseX, int mouseY, UUID recipe, boolean showOnLeft) {
-        TurretAssemblyRecipes.RecipeEntry recipeEntry = TurretAssemblyRecipes.INSTANCE.getRecipeEntry(recipe);
+        TurretAssemblyRegistry.RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(recipe);
         if( recipeEntry == null ) {
             return;
         }
 
-        RecipeEntryItem[] ingredients = recipeEntry.resources;
+        IRecipeEntry[] ingredients = recipeEntry.resources;
         if( ingredients.length < 1 ) {
             this.drawIngredientsSmall(mouseX, mouseY, recipe, showOnLeft);
             return;
         }
 
-        Map<RecipeEntryItem, Tuple> desc = new HashMap<>(ingredients.length);
+        Map<IRecipeEntry, Tuple> desc = new HashMap<>(ingredients.length);
         List<Integer> lngth = new ArrayList<>(ingredients.length);
         int tHeight = 0;
 
-        for( RecipeEntryItem entry : ingredients ) {
+        for( IRecipeEntry entry : ingredients ) {
             ItemStack[] entryStacks = entry.getEntryItemStacks();
             ItemStack stack = entryStacks[(int)((this.lastTimestamp / 1000L) % entryStacks.length)];
             List<?> tooltip = GuiUtils.getTooltipWithoutShift(stack);
@@ -418,12 +419,12 @@ public class GuiTurretAssembly
     }
 
     private void drawIngredientsSmall(int mouseX, int mouseY, UUID recipe, boolean showOnLeft) {
-        TurretAssemblyRecipes.RecipeEntry recipeEntry = TurretAssemblyRecipes.INSTANCE.getRecipeEntry(recipe);
+        TurretAssemblyRegistry.RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(recipe);
         if( recipeEntry == null ) {
             return;
         }
 
-        RecipeEntryItem[] ingredients = recipeEntry.resources;
+        IRecipeEntry[] ingredients = recipeEntry.resources;
 
         String rf = String.format("%d RF/t", MathHelper.ceiling_float_int(recipeEntry.fluxPerTick * (this.assembly.hasSpeedUpgrade() ? 1.1F : 1.0F)));
         String ticks = MiscUtils.getTimeFromTicks(recipeEntry.ticksProcessing);
@@ -581,7 +582,7 @@ public class GuiTurretAssembly
             PacketRegistry.sendToServer(new PacketAssemblyToggleAutomate(this.assembly));
         } else if( btn instanceof GuiAssemblyCategoryTab && this.groupBtns.containsKey(btn) ) {
             this.scrollPos = 0;
-            TurretAssemblyRecipes.RecipeGroup grp = this.groupBtns.get(btn);
+            IRecipeGroup grp = this.groupBtns.get(btn);
             GuiAssemblyCategoryTab[] tabs = getSortedTabs();
             for( int i = 0; i < tabs.length; i++ ) {
                 tabs[i].enabled = true;

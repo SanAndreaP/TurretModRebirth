@@ -16,7 +16,7 @@ import de.sanandrew.mods.turretmod.item.ItemAssemblyUpgrade;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
 import de.sanandrew.mods.turretmod.network.TileClientSync;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
+import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import io.netty.buffer.ByteBuf;
@@ -92,7 +92,7 @@ public class TileEntityTurretAssembly
 
     public void beginCrafting(UUID recipe, int count) {
         if( this.currCrafting != null && recipe.equals(this.currCrafting.getValue(0)) && !this.automate ) {
-            ItemStack result = TurretAssemblyRecipes.INSTANCE.getRecipeResult(recipe);
+            ItemStack result = TurretAssemblyRegistry.INSTANCE.getRecipeResult(recipe);
             ItemStack currCrfStack = this.currCrafting.getValue(1);
             if( currCrfStack.stackSize + count < 1 ) {
                 this.cancelCrafting();
@@ -104,8 +104,8 @@ public class TileEntityTurretAssembly
                 this.doSync = true;
             }
         } else if( this.currCrafting == null ) {
-            ItemStack stackRes = TurretAssemblyRecipes.INSTANCE.getRecipeResult(recipe);
-            TurretAssemblyRecipes.RecipeEntry entry = TurretAssemblyRecipes.INSTANCE.getRecipeEntry(recipe);
+            ItemStack stackRes = TurretAssemblyRegistry.INSTANCE.getRecipeResult(recipe);
+            TurretAssemblyRegistry.RecipeEntry entry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(recipe);
             if( entry != null && stackRes != null ) {
                 stackRes = stackRes.copy();
                 stackRes.stackSize = this.automate ? 1 : count;
@@ -130,11 +130,11 @@ public class TileEntityTurretAssembly
         if( this.currCrafting != null && (this.assemblyStacks[0] == null || this.assemblyStacks[0].stackSize < this.assemblyStacks[0].getMaxStackSize()) ) {
             UUID currCrfUUID = this.currCrafting.getValue(0);
             ItemStack addStacks = this.currCrafting.<ItemStack>getValue(1).copy();
-            ItemStack recipe = TurretAssemblyRecipes.INSTANCE.getRecipeResult(currCrfUUID);
+            ItemStack recipe = TurretAssemblyRegistry.INSTANCE.getRecipeResult(currCrfUUID);
             if( recipe != null ) {
                 addStacks.stackSize = recipe.stackSize;
-                if( ItemStackUtils.canStack(this.assemblyStacks[0], addStacks, true) && TurretAssemblyRecipes.INSTANCE.checkAndConsumeResources(this, currCrfUUID) ) {
-                    TurretAssemblyRecipes.RecipeEntry currentlyCrafted = TurretAssemblyRecipes.INSTANCE.getRecipeEntry(currCrfUUID);
+                if( ItemStackUtils.canStack(this.assemblyStacks[0], addStacks, true) && TurretAssemblyRegistry.INSTANCE.checkAndConsumeResources(this, currCrfUUID) ) {
+                    TurretAssemblyRegistry.RecipeEntry currentlyCrafted = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(currCrfUUID);
                     if( currentlyCrafted != null ) {
                         this.maxTicksCrafted = currentlyCrafted.ticksProcessing;
                         this.fluxConsumption = MathHelper.ceiling_float_int(currentlyCrafted.fluxPerTick * (this.hasSpeedUpgrade() ? 1.1F : 1.0F));
@@ -186,7 +186,7 @@ public class TileEntityTurretAssembly
                     if( this.fluxAmount >= this.fluxConsumption && this.world.isBlockIndirectlyGettingPowered(this.pos) == 0 ) {
                         this.fluxAmount -= this.fluxConsumption;
                         if( ++this.ticksCrafted >= this.maxTicksCrafted ) {
-                            ItemStack stack = TurretAssemblyRecipes.INSTANCE.getRecipeResult(this.currCrafting.getValue(0));
+                            ItemStack stack = TurretAssemblyRegistry.INSTANCE.getRecipeResult(this.currCrafting.getValue(0));
                             if( stack == null ) {
                                 this.cancelCrafting();
                                 return;
@@ -202,7 +202,7 @@ public class TileEntityTurretAssembly
                                 this.isActive = false;
                                 this.isActiveClient = false;
                             }
-                            if( !TurretAssemblyRecipes.INSTANCE.checkAndConsumeResources(this, this.currCrafting.getValue(0)) ) {
+                            if( !TurretAssemblyRegistry.INSTANCE.checkAndConsumeResources(this, this.currCrafting.getValue(0)) ) {
                                 this.isActive = false;
                                 this.isActiveClient = false;
                             }

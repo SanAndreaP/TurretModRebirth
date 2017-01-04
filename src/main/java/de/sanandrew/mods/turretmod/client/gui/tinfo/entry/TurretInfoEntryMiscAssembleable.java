@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
+import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.gui.Gui;
@@ -24,15 +24,15 @@ public class TurretInfoEntryMiscAssembleable
         extends TurretInfoEntry
 {
     private int drawHeight;
-    private TurretAssemblyRecipes.RecipeEntry recipe;
+    private TurretAssemblyRegistry.RecipeEntry recipe;
     private String desc;
     private long lastTimestamp;
 
     public TurretInfoEntryMiscAssembleable(ItemStack stack, UUID recipeId) {
-        this(stack, TurretAssemblyRecipes.INSTANCE.getRecipeEntry(recipeId));
+        this(stack, TurretAssemblyRegistry.INSTANCE.getRecipeEntry(recipeId));
     }
 
-    private TurretInfoEntryMiscAssembleable(ItemStack stack, TurretAssemblyRecipes.RecipeEntry recipeEntry) {
+    private TurretInfoEntryMiscAssembleable(ItemStack stack, TurretAssemblyRegistry.RecipeEntry recipeEntry) {
         super(stack, stack.getUnlocalizedName() + ".name");
         this.recipe = recipeEntry;
         this.desc = stack.getUnlocalizedName() + ".desc";

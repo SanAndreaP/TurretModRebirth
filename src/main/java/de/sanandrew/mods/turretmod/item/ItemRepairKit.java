@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ItemRepairKit
@@ -37,17 +38,21 @@ public class ItemRepairKit
         return String.format("%s.%s", this.getUnlocalizedName(), type == null ? "unknown" : type.getName());
     }
 
+    public ItemStack getRepKitItem(int stackSize, UUID typeId) {
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setString("repKitType", typeId.toString());
+        ItemStack stack = new ItemStack(this, stackSize);
+        stack.setTagCompound(nbt);
+
+        return stack;
+    }
+
     public ItemStack getRepKitItem(int stackSize, TurretRepairKit type) {
         if( type == null ) {
             throw new IllegalArgumentException("Cannot get turret_ammo item with NULL type!");
         }
 
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setString("repKitType", type.getUUID().toString());
-        ItemStack stack = new ItemStack(this, stackSize);
-        stack.setTagCompound(nbt);
-
-        return stack;
+        return this.getRepKitItem(stackSize, type.getUUID());
     }
 
     @Override
