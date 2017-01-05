@@ -86,7 +86,7 @@ public class RenderTurret
             Tessellator tess = Tessellator.getInstance();
             VertexBuffer buf = tess.getBuffer();
 
-            AxisAlignedBB aabb = turret.getTargetProcessor().getRangeBB().offset(-turret.posX, -turret.posY, -turret.posZ);
+            AxisAlignedBB aabb = turret.getTargetProcessor().getAdjustedRange(false);
 
             GlStateManager.pushMatrix();
             GlStateManager.translate(x, y, z);

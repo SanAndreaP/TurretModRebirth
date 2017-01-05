@@ -73,6 +73,8 @@ public class EntityTurretCryolator
         }
     };
 
+    private static final AxisAlignedBB RANGE_BB = new AxisAlignedBB(-16.0D, -4.0D, -16.0D, 16.0D, 16.0D, 16.0D);
+
     {
         this.targetProc = new MyTargetProc();
     }
@@ -102,18 +104,16 @@ public class EntityTurretCryolator
         return Resources.TURRET_T1_SNOWBALL_GLOW.getResource();
     }
 
-    private static final AxisAlignedBB UPPER_BB = new AxisAlignedBB(-16.0D, -4.0D, -16.0D, 16.0D, 16.0D, 16.0D);
-    private static final AxisAlignedBB LOWER_BB = new AxisAlignedBB(-16.0D, -16.0D, -16.0D, 16.0D, 4.0D, 16.0D);
+    @Override
+    public AxisAlignedBB getRangeBB() {
+        return RANGE_BB;
+    }
+
     private class MyTargetProc
             extends TargetProcessor
     {
         public MyTargetProc() {
             super(EntityTurretCryolator.this);
-        }
-
-        @Override
-        public AxisAlignedBB getRangeBB() {
-            return (this.turret.isUpsideDown ? LOWER_BB : UPPER_BB).offset(this.turret.posX, this.turret.posY, this.turret.posZ);
         }
 
         @Override

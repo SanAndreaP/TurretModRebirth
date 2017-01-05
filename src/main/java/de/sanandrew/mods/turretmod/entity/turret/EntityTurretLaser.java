@@ -73,6 +73,8 @@ public class EntityTurretLaser
         }
     };
 
+    private static final AxisAlignedBB RANGE_BB = new AxisAlignedBB(-24.0D, -4.0D, -24.0D, 24.0D, 12.0D, 24.0D);
+
     @SideOnly(Side.CLIENT)
     public SoundLaser laserSound;
 
@@ -115,19 +117,17 @@ public class EntityTurretLaser
         }
     }
 
-    private static final AxisAlignedBB UPPER_BB = new AxisAlignedBB(-24.0D, -4.0D, -24.0D, 24.0D, 12.0D, 24.0D);
-    private static final AxisAlignedBB LOWER_BB = new AxisAlignedBB(-24.0D, -12.0D, -24.0D, 24.0D, 4.0D, 24.0D);
+    @Override
+    public AxisAlignedBB getRangeBB() {
+        return RANGE_BB;
+    }
+
     private class MyTargetProc
             extends TargetProcessor
     {
 
         public MyTargetProc() {
             super(EntityTurretLaser.this);
-        }
-
-        @Override
-        public AxisAlignedBB getRangeBB() {
-            return (this.turret.isUpsideDown ? LOWER_BB : UPPER_BB).offset(this.turret.posX, this.turret.posY, this.turret.posZ);
         }
 
         @Override

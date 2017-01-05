@@ -267,11 +267,17 @@ public abstract class TargetProcessor
     }
 
     public double getRangeVal() {
-        AxisAlignedBB aabb = getRangeBB();
+        AxisAlignedBB aabb = getAdjustedRange(false);
         return Math.max(aabb.maxX - aabb.minX, Math.max(aabb.maxY - aabb.minY, aabb.maxZ - aabb.minZ)) / 2.0D;
     }
 
-    public abstract AxisAlignedBB getRangeBB();
+    public AxisAlignedBB getAdjustedRange(boolean doOffset) {
+        AxisAlignedBB aabb = this.turret.getRangeBB();
+        if( this.turret.isUpsideDown ) {
+            aabb = new AxisAlignedBB(aabb.minX, -aabb.maxY, aabb.minZ, aabb.maxX, -aabb.minY, aabb.maxZ);
+        }
+        return doOffset ? aabb.offset(this.turret.posX, this.turret.posY, this.turret.posZ) : aabb;
+    }
 
     public abstract SoundEvent getShootSound();
 
@@ -338,7 +344,7 @@ public abstract class TargetProcessor
             this.entityToAttack = EntityUtils.getEntityByUUID(turret.world, this.entityToAttackUUID);
         }
 
-        AxisAlignedBB aabb = this.getRangeBB();
+        AxisAlignedBB aabb = this.getAdjustedRange(true);
         if( this.entityToAttack == null ) {
             for( Object entityObj : this.turret.world.getEntitiesInAABBexcluding(this.turret, aabb, this.selector) ) {
                 EntityLivingBase livingBase = (EntityLivingBase) entityObj;

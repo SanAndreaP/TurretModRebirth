@@ -73,6 +73,8 @@ public class EntityTurretRevolver
         }
     };
 
+    private static final AxisAlignedBB RANGE_BB = new AxisAlignedBB(-20.0D, -4.0D, -20.0D, 20.0D, 10.0D, 20.0D);
+
     public float barrelPosLeft = 1.0F;
     public float prevBarrelPosLeft = 1.0F;
     public float barrelPosRight = 1.0F;
@@ -145,18 +147,16 @@ public class EntityTurretRevolver
         return Resources.TURRET_T2_REVOLVER_GLOW.getResource();
     }
 
-    private static final AxisAlignedBB UPPER_BB = new AxisAlignedBB(-20.0D, -4.0D, -20.0D, 20.0D, 10.0D, 20.0D);
-    private static final AxisAlignedBB LOWER_BB = new AxisAlignedBB(-20.0D, -10.0D, -20.0D, 20.0D, 4.0D, 20.0D);
+    @Override
+    public AxisAlignedBB getRangeBB() {
+        return RANGE_BB;
+    }
+
     private class MyTargetProc
             extends TargetProcessor
     {
         public MyTargetProc() {
             super(EntityTurretRevolver.this);
-        }
-
-        @Override
-        public AxisAlignedBB getRangeBB() {
-            return (this.turret.isUpsideDown ? LOWER_BB : UPPER_BB).offset(this.turret.posX, this.turret.posY, this.turret.posZ);
         }
 
         @Override

@@ -589,4 +589,6 @@ public abstract class EntityTurret
     public AxisAlignedBB getCollisionBoundingBox() {
         return this.getEntityBoundingBox();
     }
+
+    public abstract AxisAlignedBB getRangeBB();
 }

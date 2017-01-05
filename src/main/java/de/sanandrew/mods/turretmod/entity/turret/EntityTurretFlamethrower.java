@@ -72,6 +72,7 @@ public class EntityTurretFlamethrower
             return "8";
         }
     };
+    private static final AxisAlignedBB RANGE_BB = new AxisAlignedBB(-8.0D, -2.0D, -8.0D, 8.0D, 4.0D, 8.0D);
 
     {
         this.targetProc = new MyTargetProc();
@@ -104,19 +105,17 @@ public class EntityTurretFlamethrower
         return Resources.TURRET_T3_FTHROWER_GLOW.getResource();
     }
 
-    private static final AxisAlignedBB UPPER_BB = new AxisAlignedBB(-8.0D, -2.0D, -8.0D, 8.0D, 4.0D, 8.0D);
-    private static final AxisAlignedBB LOWER_BB = new AxisAlignedBB(-8.0D, -4.0D, -8.0D, 8.0D, 2.0D, 8.0D);
+    @Override
+    public AxisAlignedBB getRangeBB() {
+        return RANGE_BB;
+    }
+
     private class MyTargetProc
             extends TargetProcessor
     {
 
         public MyTargetProc() {
             super(EntityTurretFlamethrower.this);
-        }
-
-        @Override
-        public AxisAlignedBB getRangeBB() {
-            return (this.turret.isUpsideDown ? LOWER_BB : UPPER_BB).offset(this.turret.posX, this.turret.posY, this.turret.posZ);
         }
 
         @Override

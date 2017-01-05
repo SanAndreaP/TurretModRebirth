@@ -73,6 +73,8 @@ public class EntityTurretMinigun
         }
     };
 
+    private static final AxisAlignedBB RANGE_BB = new AxisAlignedBB(-20.0D, -4.0D, -20.0D, 20.0D, 10.0D, 20.0D);
+
     public float maxBarrelLeft = 0.0F;
     public float barrelLeft = 0.0F;
     public float prevBarrelLeft = 0.0F;
@@ -149,18 +151,16 @@ public class EntityTurretMinigun
         return Resources.TURRET_T2_MINIGUN_GLOW.getResource();
     }
 
-    private static final AxisAlignedBB UPPER_BB = new AxisAlignedBB(-20.0D, -4.0D, -20.0D, 20.0D, 10.0D, 20.0D);
-    private static final AxisAlignedBB LOWER_BB = new AxisAlignedBB(-20.0D, -10.0D, -20.0D, 20.0D, 4.0D, 20.0D);
+    @Override
+    public AxisAlignedBB getRangeBB() {
+        return RANGE_BB;
+    }
+
     private class MyTargetProc
             extends TargetProcessor
     {
         public MyTargetProc() {
             super(EntityTurretMinigun.this);
-        }
-
-        @Override
-        public AxisAlignedBB getRangeBB() {
-            return (this.turret.isUpsideDown ? LOWER_BB : UPPER_BB).offset(this.turret.posX, this.turret.posY, this.turret.posZ);
         }
 
         @Override

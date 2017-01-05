@@ -28,7 +28,7 @@ public class UpgradeSmartTargeting
     {
         @Override
         public boolean isTargetApplicable(EntityTurret turret, Entity target, boolean currValue) {
-            List entities = turret.world.getEntitiesWithinAABB(turret.getClass(), turret.getTargetProcessor().getRangeBB());
+            List entities = turret.world.getEntitiesWithinAABB(turret.getClass(), turret.getTargetProcessor().getAdjustedRange(true));
 
             for( Object eObj : entities ) {
                 if( eObj instanceof EntityTurret ) {
