@@ -35,7 +35,7 @@ public class AssemblyRecipeWrapper
     private final int timeInTicks;
 
     public AssemblyRecipeWrapper(TurretAssemblyRegistry.RecipeKeyEntry keyEntry) {
-        TurretAssemblyRegistry.RecipeEntry entry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(keyEntry.key());
+        TurretAssemblyRegistry.RecipeEntry entry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(keyEntry.id);
         assert entry != null : "Recipe Entry should not be null!";
 
         ImmutableList.Builder<List<ItemStack>> inputBuilder = ImmutableList.builder();
@@ -45,7 +45,7 @@ public class AssemblyRecipeWrapper
         this.input = inputBuilder.build();
         this.fluxPerTick = entry.fluxPerTick;
         this.timeInTicks = entry.ticksProcessing;
-        this.output = ImmutableList.of(keyEntry.stack());
+        this.output = ImmutableList.of(keyEntry.stack);
     }
 
     @Override

@@ -29,12 +29,15 @@ import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+@SideOnly(Side.CLIENT)
 @SuppressWarnings("unused")
 public class TurretInfoCategory
 {

@@ -15,33 +15,9 @@ import de.sanandrew.mods.turretmod.api.assembly.IRecipeEntry;
 import de.sanandrew.mods.turretmod.api.assembly.IRecipeGroup;
 import de.sanandrew.mods.turretmod.api.assembly.ITurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretFlamethrower;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretMinigun;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretRevolver;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
-import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
-import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoArrow;
-import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoBullet;
-import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoCryoCell;
-import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoFireTank;
-import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoFluxCell;
-import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoMinigunShell;
-import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoShotgunShell;
-import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
-import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
-import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Enchantments;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionType;
-import net.minecraft.potion.PotionUtils;
 import org.apache.logging.log4j.Level;
 
 import java.security.InvalidParameterException;
@@ -52,45 +28,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-@SuppressWarnings("unused")
 public final class TurretAssemblyRegistry
         implements ITurretAssemblyRegistry
 {
     public static final TurretAssemblyRegistry INSTANCE = new TurretAssemblyRegistry();
 
-    private static void registerAmmo() {
-        IRecipeGroup group = INSTANCE.registerGroup("group2", ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.QUIVER_UUID)));
-
-        ItemStack res;
-        RecipeEntryItem[] ingredients;
-
-    }
-
-    private static void registerMedkits() {
-        IRecipeGroup group = INSTANCE.registerGroup("group3", ItemRegistry.repair_kit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.STANDARD_MK1)));
-
-        ItemStack res;
-        RecipeEntryItem[] ingredients;
-        ItemStack potion;
-
-    }
-
-    private static void registerUpgrades() {
-        IRecipeGroup group = INSTANCE.registerGroup("group4", UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY));
-
-        ItemStack res;
-        RecipeEntryItem[] ingredients;
-
-
-    }
-
     private Map<UUID, ItemStack> recipeResults = new HashMap<>();
     private Map<UUID, RecipeEntry> recipeResources = new HashMap<>();
     private List<RecipeKeyEntry> recipeEntries = new ArrayList<>();
 
-    private Map<String, IRecipeGroup> groups = new HashMap<>();
     private List<IRecipeGroup> groupsList = new ArrayList<>();
 
     @Override
@@ -132,13 +79,8 @@ public final class TurretAssemblyRegistry
     public IRecipeGroup registerGroup(String name, ItemStack stack) {
         name = BlockRegistry.turret_assembly.getUnlocalizedName() + '.' + name;
         IRecipeGroup group = new RecipeGroup(name, stack);
-        this.groups.put(name, group);
         this.groupsList.add(group);
         return group;
-    }
-
-    public IRecipeGroup getGroupByName(String name) {
-        return this.groups.get(name);
     }
 
     public IRecipeGroup[] getGroups() {
@@ -230,20 +172,13 @@ public final class TurretAssemblyRegistry
     }
 
     public static class RecipeKeyEntry
-            extends Tuple
     {
-        private static final long serialVersionUID = -8753128650338058635L;
+        public final UUID id;
+        public final ItemStack stack;
 
-        public RecipeKeyEntry(UUID uuid, ItemStack stack) {
-            super(uuid, stack);
-        }
-
-        public UUID key() {
-            return this.getValue(0);
-        }
-
-        public ItemStack stack() {
-            return this.getValue(1);
+        public RecipeKeyEntry(UUID id, ItemStack stack) {
+            this.id = id;
+            this.stack = stack;
         }
     }
 

@@ -42,6 +42,6 @@ public class AssemblyRecipeHandler
 
     @Override
     public boolean isRecipeValid(TurretAssemblyRegistry.RecipeKeyEntry recipe) {
-        return ItemStackUtils.isValid(recipe.stack());
+        return ItemStackUtils.isValid(recipe.stack);
     }
 }
