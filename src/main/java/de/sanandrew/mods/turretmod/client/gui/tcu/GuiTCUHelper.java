@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.client.gui.tcu;
 
 import de.sanandrew.mods.turretmod.client.gui.control.GuiItemTab;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.util.EnumGui;
+import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;

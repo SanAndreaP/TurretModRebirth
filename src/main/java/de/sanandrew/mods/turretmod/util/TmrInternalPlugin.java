@@ -9,7 +9,11 @@ package de.sanandrew.mods.turretmod.util;
 import de.sanandrew.mods.turretmod.api.ITmrPlugin;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
 import de.sanandrew.mods.turretmod.api.assembly.ITurretAssemblyRegistry;
+import de.sanandrew.mods.turretmod.api.repairkit.IRepairKitRegistry;
+import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
+import de.sanandrew.mods.turretmod.event.TargetingEvents;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
+import de.sanandrew.mods.turretmod.registry.repairkit.RepairKits;
 
 @TmrPlugin
 public class TmrInternalPlugin
@@ -18,5 +22,15 @@ public class TmrInternalPlugin
     @Override
     public void registerAssemblyRecipes(ITurretAssemblyRegistry registry) {
         TurretAssemblyRecipes.initialize(registry);
+    }
+
+    @Override
+    public void registerRepairKits(IRepairKitRegistry registry) {
+        RepairKits.initialize(registry);
+    }
+
+    @Override
+    public void postInit() {
+        ITargetProcessor.TARGET_BUS.register(new TargetingEvents());
     }
 }

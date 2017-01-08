@@ -8,12 +8,12 @@
  */
 package de.sanandrew.mods.turretmod.registry.ammo;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileMinigunPebble;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretMinigun;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -35,7 +35,7 @@ public abstract class TurretAmmoMinigunShell
         this.name = isMulti ? "mgshell_lrg" : "mgshell_sng";
         this.uuid = isMulti ? PACK_UUID : SHELL_UUID;
         this.capacity = isMulti ? 64 : 4;
-        this.itemModel = new ResourceLocation(TurretModRebirth.ID, "turret_ammo/" + modelName);
+        this.itemModel = new ResourceLocation(TmrConstants.ID, "turret_ammo/" + modelName);
     }
 
     @Override

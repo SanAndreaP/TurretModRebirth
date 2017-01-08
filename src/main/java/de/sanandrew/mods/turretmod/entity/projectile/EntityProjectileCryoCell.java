@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.entity.projectile;
 
 import de.sanandrew.mods.sanlib.lib.Tuple;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.Sounds;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;

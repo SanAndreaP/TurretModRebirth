@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.tileentity;
 import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
 import de.sanandrew.mods.turretmod.item.ItemAssemblyUpgrade;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
@@ -479,7 +480,7 @@ public class TileEntityTurretAssembly
 
     @Override
     public String getName() {
-        return this.hasCustomName() ? this.customName : TurretModRebirth.ID + ".container.assembly";
+        return this.hasCustomName() ? this.customName : TmrConstants.ID + ".container.assembly";
     }
 
     @Override

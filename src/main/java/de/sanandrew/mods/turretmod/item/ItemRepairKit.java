@@ -8,10 +8,10 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
-import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
-import de.sanandrew.mods.turretmod.registry.medpack.TurretRepairKit;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
+import de.sanandrew.mods.turretmod.api.repairkit.TurretRepairKit;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -29,7 +29,7 @@ public class ItemRepairKit
         this.setCreativeTab(TmrCreativeTabs.MISC);
         this.setMaxDamage(0);
         this.setHasSubtypes(true);
-        this.setUnlocalizedName(TurretModRebirth.ID + ":turret_repair_kit");
+        this.setUnlocalizedName(TmrConstants.ID + ":turret_repair_kit");
     }
 
     @Override

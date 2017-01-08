@@ -13,12 +13,15 @@ import com.google.common.collect.Maps;
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.sanlib.lib.util.ReflectionUtils;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
+import de.sanandrew.mods.turretmod.api.event.TargetingEvent;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmo;
-import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
+import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -36,17 +39,17 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.UUID;
 
-public abstract class TargetProcessor
+public final class TargetProcessor
+        implements ITargetProcessor
 {
     protected static final Map<Class<? extends Entity>, Boolean> ENTITY_TARGET_LIST_STD = new HashMap<>();
     protected static final int MAX_INIT_SHOOT_TICKS = 20;
@@ -65,19 +68,15 @@ public abstract class TargetProcessor
 
     protected EntityTargetSelector selector;
 
-    protected final SortedMap<Integer, List<TargetingListener>> tgtListeners;
-    protected final List<ConsumptionListener> cnsListeners;
-
     public TargetProcessor(EntityTurret turret) {
         this.entityTargetList = new HashMap<>(ENTITY_TARGET_LIST_STD);
         this.playerTargetList = new HashMap<>();
         this.turret = turret;
         this.selector = new EntityTargetSelector();
-        this.tgtListeners = new TreeMap<>();
-        this.cnsListeners = new ArrayList<>();
         this.initShootTicks = 20;
     }
 
+    @Override
     public boolean addAmmo(ItemStack stack) {
         if( stack != null && this.isAmmoApplicable(stack) ) {
             TurretAmmo type = AmmoRegistry.INSTANCE.getType(stack);
@@ -116,10 +115,12 @@ public abstract class TargetProcessor
         return false;
     }
 
+    @Override
     public int getAmmoCount() {
         return this.ammoCount;
     }
 
+    @Override
     public ItemStack getAmmoStack() {
         if( this.ammoStack != null ) {
             return this.ammoStack.copy();
@@ -128,10 +129,12 @@ public abstract class TargetProcessor
         }
     }
 
+    @Override
     public boolean hasAmmo() {
         return ItemStackUtils.isValid(this.ammoStack) && this.ammoCount > 0;
     }
 
+    @Override
     public void dropExcessAmmo() {
         if( this.hasAmmo() ) {
             int decrAmmo = this.ammoCount - this.getMaxAmmoCapacity();
@@ -161,14 +164,14 @@ public abstract class TargetProcessor
         }
     }
 
+    @Override
     public void decrAmmo() {
-        boolean shouldConsume = true;
-        for( ConsumptionListener lst : this.cnsListeners ) {
-            shouldConsume = lst.consume(shouldConsume, this.turret);
-        }
-
-        if( shouldConsume ) {
-            this.ammoCount--;
+        TargetingEvent.ConsumeAmmo event = new TargetingEvent.ConsumeAmmo(this, this.ammoStack, 1);
+        if( !TARGET_BUS.post(event) && event.getResult() != Event.Result.DENY ) {
+            this.ammoCount -= event.consumeAmount;
+            if( this.ammoCount < 0 ) {
+                this.ammoCount = 0;
+            }
         }
     }
 
@@ -227,6 +230,7 @@ public abstract class TargetProcessor
         }
     }
 
+    @Override
     public boolean isAmmoApplicable(ItemStack stack) {
         if( stack != null ) {
             TurretAmmo stackType = AmmoRegistry.INSTANCE.getType(stack);
@@ -245,18 +249,22 @@ public abstract class TargetProcessor
         return false;
     }
 
+    @Override
     public final int getMaxAmmoCapacity() {
         return MathHelper.ceiling_double_int(this.turret.getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY).getAttributeValue());
     }
 
+    @Override
     public final int getMaxShootTicks() {
         return MathHelper.ceiling_double_int(this.turret.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).getAttributeValue());
     }
 
+    @Override
     public final boolean isShooting() {
         return this.initShootTicks <= 0 || this.isShootingClt;
     }
 
+    @Override
     public Entity getProjectile() {
         TurretAmmo ammo = AmmoRegistry.INSTANCE.getType(this.ammoStack);
         if( ammo != AmmoRegistry.NULL_TYPE ) {
@@ -266,11 +274,13 @@ public abstract class TargetProcessor
         return null;
     }
 
+    @Override
     public double getRangeVal() {
         AxisAlignedBB aabb = getAdjustedRange(false);
         return Math.max(aabb.maxX - aabb.minX, Math.max(aabb.maxY - aabb.minY, aabb.maxZ - aabb.minZ)) / 2.0D;
     }
 
+    @Override
     public AxisAlignedBB getAdjustedRange(boolean doOffset) {
         AxisAlignedBB aabb = this.turret.getRangeBB();
         if( this.turret.isUpsideDown ) {
@@ -279,60 +289,39 @@ public abstract class TargetProcessor
         return doOffset ? aabb.offset(this.turret.posX, this.turret.posY, this.turret.posZ) : aabb;
     }
 
-    public abstract SoundEvent getShootSound();
-
-    public abstract SoundEvent getLowAmmoSound();
-
-    public void addTargetingListener(TargetingListener listener) {
-        int p = listener.getPriority();
-        List<TargetingListener> listenerList = MiscUtils.defIfNull(this.tgtListeners.get(p), new ArrayList<>());
-        if( !listenerList.contains(listener) ) {
-            listenerList.add(listener);
-        }
-        this.tgtListeners.put(p, listenerList);
+    private boolean checkTargetListeners(Entity e) {
+        TargetingEvent.TargetCheck event = new TargetingEvent.TargetCheck(this, e);
+        return !TARGET_BUS.post(event) && event.getResult() != Event.Result.DENY;
     }
 
-    public void removeTargetingListener(TargetingListener targetingListener) {
-        List<TargetingListener> listenerList = this.tgtListeners.get(targetingListener.getPriority());
-        if( listenerList != null ) {
-            listenerList.remove(targetingListener);
-        }
-    }
-
-    public void addConsumptionListener(ConsumptionListener listener) {
-        this.cnsListeners.add(listener);
-    }
-
-    public void removeConsumptionListener(ConsumptionListener listener) {
-        this.cnsListeners.remove(listener);
-    }
-
-    public boolean doAllowTarget(Entity e) {
-        boolean ret = true;
-        for( Map.Entry<Integer, List<TargetingListener>> listenerEntries : this.tgtListeners.entrySet() ) {
-            for( TargetingListener listener : listenerEntries.getValue() ) {
-                ret = listener.isTargetApplicable(this.turret, e, ret);
-            }
-        }
-
-        return ret;
-    }
-
+    @Override
     public boolean shootProjectile() {
+        TargetingEvent.Shooting event = new TargetingEvent.Shooting(this);
+        if( TARGET_BUS.post(event) ) {
+            return event.getResult() != Event.Result.DENY;
+        }
+
         if( this.hasAmmo() ) {
             Entity projectile = this.getProjectile();
             assert projectile != null;
             this.turret.world.spawnEntityInWorld(projectile);
-            this.turret.world.playSound(null, this.turret.posX, this.turret.posY, this.turret.posZ, this.getShootSound(), SoundCategory.NEUTRAL, 1.8F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
+            this.playSound(this.turret.getShootSound(), 1.8F);
             this.turret.setShooting();
             this.decrAmmo();
-            return true;
+            return event.getResult() != Event.Result.DENY;
         } else {
-            this.turret.world.playSound(null, this.turret.posX, this.turret.posY, this.turret.posZ, this.getLowAmmoSound(), SoundCategory.NEUTRAL, 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
-            return false;
+            this.playSound(this.turret.getNoAmmoSound(), 1.0F);
+            return event.getResult() != Event.Result.ALLOW;
         }
     }
 
+    @Override
+    public void playSound(SoundEvent sound, float volume) {
+        final float pitch = 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F;
+        this.turret.world.playSound(null, this.turret.posX, this.turret.posY, this.turret.posZ, sound, SoundCategory.NEUTRAL, volume, pitch);
+    }
+
+    @Override
     public void onTick() {
         boolean changed = false;
 
@@ -349,7 +338,7 @@ public abstract class TargetProcessor
             for( Object entityObj : this.turret.world.getEntitiesInAABBexcluding(this.turret, aabb, this.selector) ) {
                 EntityLivingBase livingBase = (EntityLivingBase) entityObj;
                 boolean isEntityValid = this.turret.canEntityBeSeen(livingBase) && livingBase.isEntityAlive() && livingBase.getEntityBoundingBox().intersectsWith(aabb);
-                if( isEntityValid && doAllowTarget(livingBase) ) {
+                if( isEntityValid && checkTargetListeners(livingBase) ) {
                     this.entityToAttack = livingBase;
                     this.entityToAttackUUID = livingBase.getUniqueID();
                     changed = true;
@@ -362,7 +351,7 @@ public abstract class TargetProcessor
             boolean isEntityValid = this.turret.canEntityBeSeen(this.entityToAttack) && this.entityToAttack.isEntityAlive() && this.entityToAttack.getEntityBoundingBox().intersectsWith(aabb);
             boolean isTargetValid = Boolean.TRUE.equals(this.entityTargetList.get(this.entityToAttack.getClass()));
             boolean isPlayerValid = Boolean.TRUE.equals(this.playerTargetList.get(this.entityToAttack.getUniqueID())) || Boolean.TRUE.equals(this.playerTargetList.get(UuidUtils.EMPTY_UUID));
-            if( isEntityValid && (isTargetValid || isPlayerValid) && doAllowTarget(this.entityToAttack) ) {
+            if( isEntityValid && (isTargetValid || isPlayerValid) && checkTargetListeners(this.entityToAttack) ) {
                 if( this.initShootTicks <= 0 && this.shootTicks == 0 ) {
                     boolean success = shootProjectile();
                     this.shootTicks = success ? this.getMaxShootTicks() : MAX_INIT_SHOOT_TICKS;
@@ -379,7 +368,7 @@ public abstract class TargetProcessor
         }
 
         if( changed ) {
-            this.turret.updateState();
+            TmrConstants.utils.updateTurretState(this.turret);
         }
     }
 
@@ -389,18 +378,22 @@ public abstract class TargetProcessor
                 .forEach(cls -> ENTITY_TARGET_LIST_STD.put(cls, IMob.class.isAssignableFrom(cls)));
     }
 
+    @Override
     public EntityTurret getTurret() {
         return this.turret;
     }
 
+    @Override
     public boolean hasTarget() {
         return this.entityToAttack != null;
     }
 
+    @Override
     public Entity getTarget() {
         return this.entityToAttack;
     }
 
+    @Override
     public void writeToNbt(NBTTagCompound nbt) {
         nbt.setInteger("ammoCount", this.ammoCount);
         if( this.ammoStack != null ) {
@@ -425,6 +418,7 @@ public abstract class TargetProcessor
         nbt.setTag("playerTargets", playerTargets);
     }
 
+    @Override
     public void readFromNbt(NBTTagCompound nbt) {
         this.ammoCount = nbt.getInteger("ammoCount");
         if( nbt.hasKey("ammoStack") ) {
@@ -454,42 +448,50 @@ public abstract class TargetProcessor
         this.updatePlayerTargets(playerTgt.toArray(new UUID[playerTgt.size()]));
     }
 
+    @Override
     public List<Class<? extends Entity>> getEnabledEntityTargets() {
         Collection<Class<? extends Entity>> enabledClasses = Maps.filterEntries(this.entityTargetList, input -> input != null && input.getValue()).keySet();
 
         return new ArrayList<>(enabledClasses);
     }
 
+    @Override
     public UUID[] getEnabledPlayerTargets() {
         Collection<UUID> enabledUUIDs = Maps.filterEntries(this.playerTargetList, input -> input != null && input.getValue()).keySet();
 
         return enabledUUIDs.toArray(new UUID[enabledUUIDs.size()]);
     }
 
+    @Override
     public Map<Class<? extends Entity>, Boolean> getEntityTargets() {
         return new HashMap<>(this.entityTargetList);
     }
 
+    @Override
     public Map<UUID, Boolean> getPlayerTargets() {
         return new HashMap<>(this.playerTargetList);
     }
 
+    @Override
     public void updateEntityTarget(Class<? extends Entity> cls, boolean active) {
         if( ENTITY_TARGET_LIST_STD.containsKey(cls) ) {
             this.entityTargetList.put(cls, active);
         }
     }
 
+    @Override
     public void updatePlayerTarget(UUID uid, boolean active) {
         this.playerTargetList.put(uid, active);
     }
 
+    @Override
     public void updateEntityTargets(List<Class<? extends Entity>> classes) {
         this.entityTargetList.entrySet().forEach(entry -> entry.setValue(false));
 
         classes.stream().filter(cls -> cls != null && ENTITY_TARGET_LIST_STD.containsKey(cls)).forEach(cls -> this.entityTargetList.put(cls, true));
     }
 
+    @Override
     public void updatePlayerTargets(UUID[] uuids) {
         this.playerTargetList.entrySet().forEach(entry -> entry.setValue(false));
 
@@ -509,6 +511,7 @@ public abstract class TargetProcessor
         }
     }
 
+    @Override
     public String getTargetName() {
         return this.hasTarget() ? EntityList.getEntityString(this.entityToAttack) : "";
     }

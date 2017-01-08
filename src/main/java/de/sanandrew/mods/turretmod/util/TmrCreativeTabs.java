@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.util;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
@@ -27,7 +28,7 @@ public class TmrCreativeTabs
 {
     private static final Comparator<ItemStack> ITM_NAME_COMP = new ItemNameComparator();
 
-    public static final CreativeTabs TURRETS = new CreativeTabs(TurretModRebirth.ID + ":turrets") {
+    public static final CreativeTabs TURRETS = new CreativeTabs(TmrConstants.ID + ":turrets") {
         private ItemStack[] tabIcons;
 
         @Override
@@ -69,7 +70,7 @@ public class TmrCreativeTabs
         }
     };
 
-    public static final CreativeTabs MISC = new CreativeTabs(TurretModRebirth.ID + ":misc") {
+    public static final CreativeTabs MISC = new CreativeTabs(TmrConstants.ID + ":misc") {
         @Override
         @SideOnly(Side.CLIENT)
         public Item getTabIconItem() {
@@ -97,7 +98,7 @@ public class TmrCreativeTabs
         }
     };
 
-    public static final CreativeTabs UPGRADES = new CreativeTabs(TurretModRebirth.ID + ":upgrades") {
+    public static final CreativeTabs UPGRADES = new CreativeTabs(TmrConstants.ID + ":upgrades") {
         private ItemStack[] tabIcons;
 
         @Override

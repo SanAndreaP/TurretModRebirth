@@ -8,7 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 @SuppressWarnings("ConstantNamingConvention")
 @Mod.EventBusSubscriber
-@GameRegistry.ObjectHolder(TurretModRebirth.ID)
+@GameRegistry.ObjectHolder(TmrConstants.ID)
 public class ItemRegistry
 {
     public static final ItemTurret turret_placer = nilItem();
@@ -33,15 +33,15 @@ public class ItemRegistry
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
         event.getRegistry().registerAll(
-            new ItemTurret().setRegistryName(TurretModRebirth.ID, "turret_placer"),
-            new ItemAmmo().setRegistryName(TurretModRebirth.ID, "turret_ammo"),
-            new ItemTurretControlUnit().setRegistryName(TurretModRebirth.ID, "turret_control_unit"),
-            new ItemRepairKit().setRegistryName(TurretModRebirth.ID, "repair_kit"),
-            new ItemAssemblyUpgrade.Automation().setRegistryName(TurretModRebirth.ID, "assembly_upg_auto"),
-            new ItemAssemblyUpgrade.Speed().setRegistryName(TurretModRebirth.ID, "assembly_upg_speed"),
-            new ItemAssemblyUpgrade.Filter().setRegistryName(TurretModRebirth.ID, "assembly_upg_filter"),
-            new ItemTurretUpgrade().setRegistryName(TurretModRebirth.ID, "turret_upgrade"),
-            new ItemTurretInfo().setRegistryName(TurretModRebirth.ID, "turret_info")
+            new ItemTurret().setRegistryName(TmrConstants.ID, "turret_placer"),
+            new ItemAmmo().setRegistryName(TmrConstants.ID, "turret_ammo"),
+            new ItemTurretControlUnit().setRegistryName(TmrConstants.ID, "turret_control_unit"),
+            new ItemRepairKit().setRegistryName(TmrConstants.ID, "repair_kit"),
+            new ItemAssemblyUpgrade.Automation().setRegistryName(TmrConstants.ID, "assembly_upg_auto"),
+            new ItemAssemblyUpgrade.Speed().setRegistryName(TmrConstants.ID, "assembly_upg_speed"),
+            new ItemAssemblyUpgrade.Filter().setRegistryName(TmrConstants.ID, "assembly_upg_filter"),
+            new ItemTurretUpgrade().setRegistryName(TmrConstants.ID, "turret_upgrade"),
+            new ItemTurretInfo().setRegistryName(TmrConstants.ID, "turret_info")
         );
     }
 

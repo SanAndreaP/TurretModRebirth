@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.client.render;
 
 import de.sanandrew.mods.sanlib.lib.client.ColorObj;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.util.EnumFacing;
@@ -158,7 +158,7 @@ public class ForcefieldCube
                     }
 
                     if( j >= 10000 ) {
-                        TurretModRebirth.LOG.log(Level.ERROR, "Too many face parts for shield! Max. of 10000 is exceeded! Removing Face!");
+                        TmrConstants.LOG.log(Level.ERROR, "Too many face parts for shield! Max. of 10000 is exceeded! Removing Face!");
                         newFaces.clear();
                         break;
                     }

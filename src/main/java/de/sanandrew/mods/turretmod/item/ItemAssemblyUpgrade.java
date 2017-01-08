@@ -9,7 +9,8 @@
 package de.sanandrew.mods.turretmod.item;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.turretmod.util.EnumGui;
+import de.sanandrew.mods.turretmod.api.EnumGui;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
@@ -50,7 +51,7 @@ public abstract class ItemAssemblyUpgrade
     {
         public Automation() {
             super();
-            this.setUnlocalizedName(TurretModRebirth.ID + ":turret_assembly_auto");
+            this.setUnlocalizedName(TmrConstants.ID + ":turret_assembly_auto");
         }
     }
 
@@ -59,7 +60,7 @@ public abstract class ItemAssemblyUpgrade
     {
         public Speed() {
             super();
-            this.setUnlocalizedName(TurretModRebirth.ID + ":turret_assembly_speed");
+            this.setUnlocalizedName(TmrConstants.ID + ":turret_assembly_speed");
         }
     }
 
@@ -68,7 +69,7 @@ public abstract class ItemAssemblyUpgrade
     {
         public Filter() {
             super();
-            this.setUnlocalizedName(TurretModRebirth.ID + ":turret_assembly_filter");
+            this.setUnlocalizedName(TmrConstants.ID + ":turret_assembly_filter");
         }
 
         @Override

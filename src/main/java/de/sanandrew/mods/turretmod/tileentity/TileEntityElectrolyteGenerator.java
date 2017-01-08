@@ -11,12 +11,12 @@ package de.sanandrew.mods.turretmod.tileentity;
 import de.sanandrew.mods.sanlib.lib.power.EnergyHelper;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
 import de.sanandrew.mods.turretmod.network.TileClientSync;
 import de.sanandrew.mods.turretmod.util.TmrConfiguration;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -97,18 +97,18 @@ public class TileEntityElectrolyteGenerator
 
                             FUELS.put(result, new Fuel(multi, decayTicks, new ItemStack(trash, 1),  new ItemStack(treasure, 1)));
                         } else {
-                            TurretModRebirth.LOG.log(Level.WARN, String.format("Cannot add electrolyte item #%d from config! Cannot find trash item %s, skipping recipe.",
+                            TmrConstants.LOG.log(Level.WARN, String.format("Cannot add electrolyte item #%d from config! Cannot find trash item %s, skipping recipe.",
                                                                                currInd, elem[3].trim()));
                         }
                     } catch( NumberFormatException ex ) {
-                        TurretModRebirth.LOG.log(Level.WARN, String.format("Cannot parse numbers for electrolyte item #%d in config! Skipping recipe.", currInd));
+                        TmrConstants.LOG.log(Level.WARN, String.format("Cannot parse numbers for electrolyte item #%d in config! Skipping recipe.", currInd));
                     }
                 } else {
-                    TurretModRebirth.LOG.log(Level.WARN, String.format("Cannot add electrolyte item #%d from config! Cannot find electrolyte item %s, skipping recipe.",
+                    TmrConstants.LOG.log(Level.WARN, String.format("Cannot add electrolyte item #%d from config! Cannot find electrolyte item %s, skipping recipe.",
                                                                        currInd, elem[0].trim()));
                 }
             } else {
-                TurretModRebirth.LOG.log(Level.WARN, String.format("Cannot add electrolyte item #%d from config! Invalid parameter count: expected 5, got %d, skipping recipe.",
+                TmrConstants.LOG.log(Level.WARN, String.format("Cannot add electrolyte item #%d from config! Invalid parameter count: expected 5, got %d, skipping recipe.",
                                                                    currInd, elem.length));
             }
             currInd++;

@@ -10,8 +10,11 @@ package de.sanandrew.mods.turretmod.util;
 
 import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.EnumGui;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
+import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
 import de.sanandrew.mods.turretmod.inventory.ContainerAssemblyFilter;
 import de.sanandrew.mods.turretmod.inventory.ContainerElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
@@ -57,7 +60,7 @@ public class CommonProxy
                 case GUI_TCU_UPGRADES: {
                     Entity e = world.getEntityByID(x);
                     if( e instanceof EntityTurret ) {
-                        return new ContainerTurretUpgrades(player.inventory, ((EntityTurret) e).getUpgradeProcessor());
+                        return new ContainerTurretUpgrades(player.inventory, ((UpgradeProcessor) ((EntityTurret) e).getUpgradeProcessor()));
                     }
                     break;
                 }
@@ -81,7 +84,7 @@ public class CommonProxy
 
             }
         } else {
-            TurretModRebirth.LOG.log(Level.WARN, "Gui ID %d cannot be opened as it isn't a valid index in EnumGui!", id);
+            TmrConstants.LOG.log(Level.WARN, "Gui ID %d cannot be opened as it isn't a valid index in EnumGui!", id);
         }
 
         return null;

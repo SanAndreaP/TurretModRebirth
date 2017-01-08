@@ -8,9 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.compat.jei;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IDrawableStatic;
@@ -30,7 +30,7 @@ import java.util.List;
 public class AssemblyRecipeCategory<T extends IRecipeWrapper>
         implements IRecipeCategory<T>
 {
-    static final String UID = TurretModRebirth.ID + ".assemblytbl";
+    static final String UID = TmrConstants.ID + ".assemblytbl";
     private final IDrawableStatic background;
 
     public AssemblyRecipeCategory(IGuiHelper guiHelper) {

@@ -8,12 +8,12 @@
  */
 package de.sanandrew.mods.turretmod.registry.ammo;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -35,7 +35,7 @@ public abstract class TurretAmmoArrow
         this.name = quiver ? "arrow_lrg" : "arrow_sng";
         this.uuid = quiver ? QUIVER_UUID : ARROW_UUID;
         this.capacity = quiver ? 16 : 1;
-        this.itemModel = new ResourceLocation(TurretModRebirth.ID, "turret_ammo/" + (quiver ? "arrow_pack" : "arrow"));
+        this.itemModel = new ResourceLocation(TmrConstants.ID, "turret_ammo/" + (quiver ? "arrow_pack" : "arrow"));
     }
 
     @Override

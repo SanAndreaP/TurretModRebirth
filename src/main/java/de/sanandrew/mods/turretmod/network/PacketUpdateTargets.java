@@ -9,8 +9,8 @@
 package de.sanandrew.mods.turretmod.network;
 
 import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
+import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,7 +30,7 @@ public class PacketUpdateTargets
     @SuppressWarnings("unused")
     public PacketUpdateTargets() {}
 
-    public PacketUpdateTargets(TargetProcessor processor) {
+    public PacketUpdateTargets(ITargetProcessor processor) {
         this.entityTargets = processor.getEnabledEntityTargets();
         this.playerTargets = processor.getEnabledPlayerTargets();
         this.turretID = processor.getTurret().getEntityId();
@@ -45,7 +45,7 @@ public class PacketUpdateTargets
     public void handleServerMessage(PacketUpdateTargets packet, EntityPlayer player) {
         Entity e = player.world.getEntityByID(packet.turretID);
         if( e instanceof EntityTurret ) {
-            TargetProcessor processor = ((EntityTurret) e).getTargetProcessor();
+            ITargetProcessor processor = ((EntityTurret) e).getTargetProcessor();
             processor.updateEntityTargets(packet.entityTargets);
             processor.updatePlayerTargets(packet.playerTargets);
         }

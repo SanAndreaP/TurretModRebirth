@@ -12,8 +12,9 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
-import de.sanandrew.mods.turretmod.util.EnumGui;
+import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.block.Block;
@@ -54,7 +55,7 @@ public class BlockElectrolyteGenerator
         this.blockHardness = 4.25F;
         this.blockSoundType = SoundType.STONE;
         this.setCreativeTab(TmrCreativeTabs.MISC);
-        this.setUnlocalizedName(TurretModRebirth.ID + ":potato_generator");
+        this.setUnlocalizedName(TmrConstants.ID + ":potato_generator");
         this.setLightOpacity(0);
         this.setDefaultState(this.blockState.getBaseState().withProperty(TILE_HOLDER, true));
     }

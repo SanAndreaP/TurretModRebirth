@@ -8,8 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.config;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.util.TmrConfiguration;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
@@ -23,7 +23,7 @@ public class GuiConfigScreen
         extends GuiConfig
 {
     public GuiConfigScreen(GuiScreen parentScreen) {
-        super(parentScreen, getCfgElements(), TurretModRebirth.ID, "configMain", false, false, "Turret Mod Configuration");
+        super(parentScreen, getCfgElements(), TmrConstants.ID, "configMain", false, false, "Turret Mod Configuration");
     }
 
     @SuppressWarnings("unchecked")

@@ -9,16 +9,17 @@
 package de.sanandrew.mods.turretmod.entity.turret;
 
 import de.sanandrew.mods.sanlib.lib.Tuple;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
-import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
+import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
+import de.sanandrew.mods.turretmod.api.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.Sounds;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -29,7 +30,7 @@ import java.util.UUID;
 public class EntityTurretMinigun
         extends EntityTurret
 {
-    public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TurretModRebirth.ID, "turrets/turret_minigun");
+    public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "turrets/turret_minigun");
     public static final UUID TII_UUID = UUID.fromString("97E1FB65-EE36-43BA-A900-583B4BD7973A");
     public static final TurretInfo TINFO = new TurretInfo() {
         @Override
@@ -82,10 +83,6 @@ public class EntityTurretMinigun
     public float barrelRight = 0.0F;
     public float prevBarrelRight = 0.0F;
     public boolean leftShot;
-
-    {
-        this.targetProc = new MyTargetProc();
-    }
 
     public EntityTurretMinigun(World world) {
         super(world);
@@ -156,21 +153,8 @@ public class EntityTurretMinigun
         return RANGE_BB;
     }
 
-    private class MyTargetProc
-            extends TargetProcessor
-    {
-        public MyTargetProc() {
-            super(EntityTurretMinigun.this);
-        }
-
-        @Override
-        public SoundEvent getShootSound() {
-            return Sounds.SHOOT_MINIGUN;
-        }
-
-        @Override
-        public SoundEvent getLowAmmoSound() {
-            return SoundEvents.BLOCK_DISPENSER_FAIL;
-        }
+    @Override
+    public SoundEvent getShootSound() {
+        return Sounds.SHOOT_MINIGUN;
     }
 }

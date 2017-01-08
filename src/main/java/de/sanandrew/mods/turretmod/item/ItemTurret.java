@@ -8,12 +8,12 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -47,7 +47,7 @@ public class ItemTurret
     public ItemTurret() {
         super();
         this.setCreativeTab(TmrCreativeTabs.TURRETS);
-        this.setUnlocalizedName(TurretModRebirth.ID + ":turret_placer");
+        this.setUnlocalizedName(TmrConstants.ID + ":turret_placer");
         this.addPropertyOverride(new ResourceLocation("turretId"), TURRET_TEX_ID);
     }
 
@@ -234,11 +234,11 @@ public class ItemTurret
                 entity = entityClass.getConstructor(World.class, boolean.class, EntityPlayer.class).newInstance(world, isUpsideDown, owner);
             }
         } catch( InvocationTargetException | IllegalAccessException | InstantiationException | NoSuchMethodException ex ) {
-            TurretModRebirth.LOG.log(Level.ERROR, "Cannot instanciate turret_placer!", ex);
+            TmrConstants.LOG.log(Level.ERROR, "Cannot instanciate turret_placer!", ex);
         }
 
         if( entity == null ) {
-            TurretModRebirth.LOG.printf(Level.WARN, "Skipping turret_placer with name %s", info.getName());
+            TmrConstants.LOG.printf(Level.WARN, "Skipping turret_placer with name %s", info.getName());
         }
 
         return entity;

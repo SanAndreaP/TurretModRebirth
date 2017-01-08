@@ -6,7 +6,6 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.registry.assembly;
 
-import de.sanandrew.mods.turretmod.api.assembly.IRecipeEntry;
 import de.sanandrew.mods.turretmod.api.assembly.IRecipeGroup;
 import de.sanandrew.mods.turretmod.api.assembly.ITurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
@@ -25,7 +24,8 @@ import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoFireTank;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoFluxCell;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoMinigunShell;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoShotgunShell;
-import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
+import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
+import de.sanandrew.mods.turretmod.registry.repairkit.RepairKits;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import net.minecraft.init.Blocks;
@@ -96,7 +96,7 @@ public final class TurretAssemblyRecipes
         IRecipeGroup miscGroup = registry.registerGroup("group0", new ItemStack(ItemRegistry.turret_control_unit));
         IRecipeGroup turretGroup = registry.registerGroup("group1", ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCrossbow.class)));
         IRecipeGroup ammoGroup = registry.registerGroup("group2", ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.QUIVER_UUID)));
-        IRecipeGroup repKitGroup = registry.registerGroup("group3", ItemRegistry.repair_kit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKitRegistry.STANDARD_MK1)));
+        IRecipeGroup repKitGroup = registry.registerGroup("group3", ItemRegistry.repair_kit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKits.STANDARD_MK1)));
         IRecipeGroup upgradeGroup = registry.registerGroup("group4", UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY));
 
         ItemStack res;
@@ -298,30 +298,30 @@ public final class TurretAssemblyRecipes
             //noinspection ConstantConditions
             ItemStack regenPotion = PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM, 1), PotionType.getPotionTypeForName("regeneration"));
 
-            res = ItemRegistry.repair_kit.getRepKitItem(3, RepairKitRegistry.STANDARD_MK1);
+            res = ItemRegistry.repair_kit.getRepKitItem(3, RepairKits.STANDARD_MK1);
             ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.LEATHER),
                                                  new RecipeEntryItem(1).put(healingPotion.copy()).drawTooltip()};
             registry.registerRecipe(TurretAssemblyRecipes.HEAL_MK1, repKitGroup, res, 25, 600, ingredients);
 
-            res = ItemRegistry.repair_kit.getRepKitItem(1, RepairKitRegistry.STANDARD_MK2);
+            res = ItemRegistry.repair_kit.getRepKitItem(1, RepairKits.STANDARD_MK2);
             ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.LEATHER),
                                                  new RecipeEntryItem(1).put(healingPotion.copy()).drawTooltip(),
-                                                 new RecipeEntryItem(1).put(ItemRegistry.repair_kit.getRepKitItem(1, RepairKitRegistry.STANDARD_MK1))};
+                                                 new RecipeEntryItem(1).put(ItemRegistry.repair_kit.getRepKitItem(1, RepairKits.STANDARD_MK1))};
             registry.registerRecipe(TurretAssemblyRecipes.HEAL_MK2, repKitGroup, res, 25, 600, ingredients);
 
-            res = ItemRegistry.repair_kit.getRepKitItem(1, RepairKitRegistry.STANDARD_MK3);
+            res = ItemRegistry.repair_kit.getRepKitItem(1, RepairKits.STANDARD_MK3);
             ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.LEATHER),
                                                  new RecipeEntryItem(1).put(healingPotion.copy()).drawTooltip(),
-                                                 new RecipeEntryItem(1).put(ItemRegistry.repair_kit.getRepKitItem(1, RepairKitRegistry.STANDARD_MK2))};
+                                                 new RecipeEntryItem(1).put(ItemRegistry.repair_kit.getRepKitItem(1, RepairKits.STANDARD_MK2))};
             registry.registerRecipe(TurretAssemblyRecipes.HEAL_MK3, repKitGroup, res, 25, 600, ingredients);
 
-            res = ItemRegistry.repair_kit.getRepKitItem(1, RepairKitRegistry.STANDARD_MK4);
+            res = ItemRegistry.repair_kit.getRepKitItem(1, RepairKits.STANDARD_MK4);
             ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.LEATHER),
                                                  new RecipeEntryItem(1).put(healingPotion.copy()).drawTooltip(),
-                                                 new RecipeEntryItem(1).put(ItemRegistry.repair_kit.getRepKitItem(1, RepairKitRegistry.STANDARD_MK3))};
+                                                 new RecipeEntryItem(1).put(ItemRegistry.repair_kit.getRepKitItem(1, RepairKits.STANDARD_MK3))};
             registry.registerRecipe(TurretAssemblyRecipes.HEAL_MK4, repKitGroup, res, 25, 600, ingredients);
 
-            res = ItemRegistry.repair_kit.getRepKitItem(6, RepairKitRegistry.REGEN_MK1);
+            res = ItemRegistry.repair_kit.getRepKitItem(6, RepairKits.REGEN_MK1);
             ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.LEATHER),
                                                  new RecipeEntryItem(1).put(regenPotion.copy()).drawTooltip()};
             registry.registerRecipe(TurretAssemblyRecipes.REGEN_MK1, repKitGroup, res, 25, 600, ingredients);
@@ -421,27 +421,27 @@ public final class TurretAssemblyRecipes
                                                  new RecipeEntryItem(1).put(Items.ENDER_PEARL)};
             registry.registerRecipe(TurretAssemblyRecipes.UPG_SMART_TGT, upgradeGroup, res, 20, 600, ingredients);
 
-            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.UPG_ECONOMY_I);
+            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.ECONOMY_I);
             ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
                                                  new RecipeEntryItem(1).put(Items.EMERALD)};
             registry.registerRecipe(TurretAssemblyRecipes.UPG_ECONOMY_I, upgradeGroup, res, 20, 600, ingredients);
 
-            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.UPG_ECONOMY_II);
+            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.ECONOMY_II);
             ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
                                                  new RecipeEntryItem(1).put(Blocks.GOLD_BLOCK)};
             registry.registerRecipe(TurretAssemblyRecipes.UPG_ECONOMY_II, upgradeGroup, res, 20, 600, ingredients);
 
-            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.UPG_ECONOMY_INF);
+            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.ECONOMY_INF);
             ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
                                                  new RecipeEntryItem(1).put(new RecipeEntryItem.EnchantmentEntry(new ItemStack(Items.BOW), Enchantments.INFINITY)).drawTooltip()};
             registry.registerRecipe(TurretAssemblyRecipes.UPG_ECONOMY_INF, upgradeGroup, res, 20, 600, ingredients);
 
-            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.UPG_ENDER_MEDIUM);
+            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.ENDER_MEDIUM);
             ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
                                                  new RecipeEntryItem(4).put(Items.ENDER_PEARL)};
             registry.registerRecipe(TurretAssemblyRecipes.UPG_ENDER_MEDIUM, upgradeGroup, res, 20, 600, ingredients);
 
-            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.UPG_FUEL_PURIFY);
+            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.FUEL_PURIFY);
             ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
                                                  new RecipeEntryItem(1).put(Blocks.LAPIS_BLOCK),
                                                  new RecipeEntryItem(2).put(Items.MAGMA_CREAM)};

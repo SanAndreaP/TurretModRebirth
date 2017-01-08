@@ -8,10 +8,10 @@
  */
 package de.sanandrew.mods.turretmod.client.util;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TmrConfiguration;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.resources.IResource;
@@ -103,13 +103,13 @@ public final class ShaderHelper
 
         ARBShaderObjects.glLinkProgramARB(program);
         if( ARBShaderObjects.glGetObjectParameteriARB(program, ARBShaderObjects.GL_OBJECT_LINK_STATUS_ARB) == GL11.GL_FALSE ) {
-            TurretModRebirth.LOG.log(Level.ERROR, getLogInfo(program));
+            TmrConstants.LOG.log(Level.ERROR, getLogInfo(program));
             return 0;
         }
 
         ARBShaderObjects.glValidateProgramARB(program);
         if( ARBShaderObjects.glGetObjectParameteriARB(program, ARBShaderObjects.GL_OBJECT_VALIDATE_STATUS_ARB) == GL11.GL_FALSE ) {
-            TurretModRebirth.LOG.log(Level.ERROR, getLogInfo(program));
+            TmrConstants.LOG.log(Level.ERROR, getLogInfo(program));
             return 0;
         }
 
@@ -135,7 +135,7 @@ public final class ShaderHelper
             return shader;
         } catch( IOException | NullPointerException e ) {
             ARBShaderObjects.glDeleteObjectARB(shader);
-            TurretModRebirth.LOG.log(Level.ERROR, "Cannot create Shader!", e);
+            TmrConstants.LOG.log(Level.ERROR, "Cannot create Shader!", e);
             return -1;
         }
     }

@@ -8,17 +8,14 @@
  */
 package de.sanandrew.mods.turretmod.entity.turret;
 
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileFlame;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
-import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
-import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
+import de.sanandrew.mods.turretmod.api.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.util.Resources;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -29,7 +26,7 @@ import java.util.UUID;
 public class EntityTurretFlamethrower
         extends EntityTurret
 {
-    public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TurretModRebirth.ID, "turrets/turret_flamethrower");
+    public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "turrets/turret_flamethrower");
     public static final UUID TIII_UUID = UUID.fromString("0C61E401-A5F9-44E9-8B29-3A3DC7762C73");
     public static final TurretInfo TINFO = new TurretInfo() {
         @Override
@@ -74,10 +71,6 @@ public class EntityTurretFlamethrower
     };
     private static final AxisAlignedBB RANGE_BB = new AxisAlignedBB(-8.0D, -2.0D, -8.0D, 8.0D, 4.0D, 8.0D);
 
-    {
-        this.targetProc = new MyTargetProc();
-    }
-
     public EntityTurretFlamethrower(World world) {
         super(world);
     }
@@ -110,31 +103,8 @@ public class EntityTurretFlamethrower
         return RANGE_BB;
     }
 
-    private class MyTargetProc
-            extends TargetProcessor
-    {
-
-        public MyTargetProc() {
-            super(EntityTurretFlamethrower.this);
-        }
-
-        @Override
-        public SoundEvent getShootSound() {
-            return null;
-        }
-
-        @Override
-        public SoundEvent getLowAmmoSound() {
-            return SoundEvents.BLOCK_DISPENSER_FAIL;
-        }
-
-        @Override
-        public Entity getProjectile() {
-            Entity proj = super.getProjectile();
-            if( proj instanceof EntityProjectileFlame ) {
-                ((EntityProjectileFlame) proj).purifying = this.turret.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_FUEL_PURIFY);
-            }
-            return proj;
-        }
+    @Override
+    public SoundEvent getShootSound() {
+        return null;
     }
 }

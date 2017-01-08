@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
@@ -80,7 +81,7 @@ public final class TmrConfiguration
 
     @SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-        if( eventArgs.getModID().equals(TurretModRebirth.ID) ) {
+        if( eventArgs.getModID().equals(TmrConstants.ID) ) {
             syncConfig();
         }
     }

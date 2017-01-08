@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.util;
 
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncPlayerList;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PlayerList
         extends WorldSavedData
 {
-    private static final String WSD_NAME = String.format("%s_%s", TurretModRebirth.ID, "playerList");
+    private static final String WSD_NAME = String.format("%s_%s", TmrConstants.ID, "playerList");
     public static final PlayerList INSTANCE = new PlayerList();
 
     //concurrent hash map to prevent different dimension altering this list at the same time

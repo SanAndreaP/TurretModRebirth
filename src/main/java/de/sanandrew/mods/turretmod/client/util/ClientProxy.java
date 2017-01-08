@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.client.util;
 import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.client.audio.SoundLaser;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import de.sanandrew.mods.turretmod.client.event.RenderEventHandler;
@@ -47,7 +48,7 @@ import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileFlame;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileLaser;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileMinigunPebble;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectilePebble;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretFlamethrower;
@@ -59,9 +60,8 @@ import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.CommonProxy;
-import de.sanandrew.mods.turretmod.util.EnumGui;
+import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleSmokeNormal;
@@ -171,7 +171,7 @@ public class ClientProxy
                     return new GuiCameras(world.getEntityByID(x));
             }
         } else {
-            TurretModRebirth.LOG.log(Level.WARN, "Gui ID %d cannot be opened as it isn't a valid index in EnumGui!", id);
+            TmrConstants.LOG.log(Level.WARN, "Gui ID %d cannot be opened as it isn't a valid index in EnumGui!", id);
         }
 
         return null;

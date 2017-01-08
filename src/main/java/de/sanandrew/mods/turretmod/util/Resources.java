@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import net.minecraft.util.ResourceLocation;
 
 public enum Resources
@@ -75,7 +76,7 @@ public enum Resources
     private final ResourceLocation location;
 
     Resources(String texture) {
-        this.location = new ResourceLocation(TurretModRebirth.ID, texture);
+        this.location = new ResourceLocation(TmrConstants.ID, texture);
     }
 
     public ResourceLocation getResource() {

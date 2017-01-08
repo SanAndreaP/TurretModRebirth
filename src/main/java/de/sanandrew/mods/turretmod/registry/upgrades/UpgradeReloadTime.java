@@ -9,10 +9,10 @@
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
-import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.util.ResourceLocation;
@@ -29,8 +29,8 @@ public abstract class UpgradeReloadTime
 
     public UpgradeReloadTime(String name, String modUUID, double value) {
         this.name = name;
-        this.modifier = new AttributeModifier(UUID.fromString(modUUID), String.format("%s:%s", TurretModRebirth.ID, name), value, EntityUtils.ATTR_ADD_PERC_VAL_TO_SUM);
-        this.itemModel = new ResourceLocation(TurretModRebirth.ID, "upgrades/" + name);
+        this.modifier = new AttributeModifier(UUID.fromString(modUUID), String.format("%s:%s", TmrConstants.ID, name), value, EntityUtils.ATTR_ADD_PERC_VAL_TO_SUM);
+        this.itemModel = new ResourceLocation(TmrConstants.ID, "upgrades/" + name);
     }
 
     @Override
@@ -40,7 +40,7 @@ public abstract class UpgradeReloadTime
 
     @Override
     public String getModId() {
-        return TurretModRebirth.ID;
+        return TmrConstants.ID;
     }
 
     @Override

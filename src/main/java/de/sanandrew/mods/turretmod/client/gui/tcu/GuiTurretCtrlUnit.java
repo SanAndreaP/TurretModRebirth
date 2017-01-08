@@ -1,6 +1,6 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu;
 
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 

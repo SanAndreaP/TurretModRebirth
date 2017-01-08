@@ -10,6 +10,8 @@ package de.sanandrew.mods.turretmod.entity.turret;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketUpdateUgradeSlot;
@@ -24,10 +26,11 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 
-public class UpgradeProcessor
-        implements IInventory
+public final class UpgradeProcessor
+        implements IInventory, IUpgradeProcessor
 {
     private ItemStack[] upgradeStacks = new ItemStack[36];
     private boolean hasChanged = false;
@@ -38,6 +41,7 @@ public class UpgradeProcessor
         this.turret = turret;
     }
 
+    @Override
     public void onTick() {
         if( this.hasChanged ) {
             for( int i = 0; i < this.upgradeStacks.length; i++ ) {
@@ -111,12 +115,14 @@ public class UpgradeProcessor
         }
     }
 
+    @Override
     public boolean hasUpgrade(UUID uuid) {
         ItemStack upgItemStack = UpgradeRegistry.INSTANCE.getUpgradeItem(uuid);
 
         return ItemStackUtils.isStackInArray(upgItemStack, this.upgradeStacks);
     }
 
+    @Override
     public boolean hasUpgrade(TurretUpgrade upg) {
         ItemStack upgItemStack = UpgradeRegistry.INSTANCE.getUpgradeItem(upg);
 
@@ -237,7 +243,7 @@ public class UpgradeProcessor
     public void closeInventory(EntityPlayer player) {}
 
     @Override
-    public boolean isItemValidForSlot(int slot, ItemStack stack) {
+    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
         if( slot >= 9 && !this.hasUpgrade(UpgradeRegistry.UPG_STORAGE_I) ) {
             return false;
         }
@@ -252,20 +258,16 @@ public class UpgradeProcessor
             return false;
         }
 
-        if( stack != null ) {
-            if( stack.getItem() == ItemRegistry.turret_upgrade ) {
-                TurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(stack);
-                if( this.hasUpgrade(UpgradeRegistry.INSTANCE.getUpgradeUUID(upg)) ) {
-                    return false;
-                }
-
-                if( upg != null ) {
-                    TurretUpgrade dep = upg.getDependantOn();
-                    return dep == null || this.hasUpgrade(dep);
-                }
+        if( stack.getItem() == ItemRegistry.turret_upgrade ) {
+            TurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(stack);
+            if( this.hasUpgrade(UpgradeRegistry.INSTANCE.getUpgradeUUID(upg)) ) {
+                return false;
             }
-        } else {
-            return true;
+
+            if( upg != null ) {
+                TurretUpgrade dep = upg.getDependantOn();
+                return dep == null || this.hasUpgrade(dep);
+            }
         }
 
         return false;
@@ -292,6 +294,7 @@ public class UpgradeProcessor
         }
     }
 
+    @Override
     public boolean tryApplyUpgrade(ItemStack upgStack) {
         TurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(upgStack);
         if( upg != null && !this.hasUpgrade(upg) ) {
@@ -331,16 +334,17 @@ public class UpgradeProcessor
         }
     }
 
+    @Override
     public void writeToNbt(NBTTagCompound nbt) {
         nbt.setTag("upgInventory", ItemStackUtils.writeItemStacksToTag(this.upgradeStacks, 1, this::callbackWriteUpgStack));
     }
 
+    @Override
     public void readFromNbt(NBTTagCompound nbt) {
         ItemStackUtils.readItemStacksFromTag(this.upgradeStacks, nbt.getTagList("upgInventory", Constants.NBT.TAG_COMPOUND), this::callbackReadUpgStack);
     }
 
-    @SuppressWarnings("unused")
-    public void callbackWriteUpgStack(ItemStack upgStack, NBTTagCompound nbt) {
+    private void callbackWriteUpgStack(ItemStack upgStack, NBTTagCompound nbt) {
         if( upgStack != null ) {
             TurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(upgStack);
             if( upg != null ) {
@@ -349,8 +353,7 @@ public class UpgradeProcessor
         }
     }
 
-    @SuppressWarnings("unused")
-    public void callbackReadUpgStack(ItemStack upgStack, NBTTagCompound nbt) {
+    private void callbackReadUpgStack(ItemStack upgStack, NBTTagCompound nbt) {
         if( upgStack != null ) {
             TurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(upgStack);
             if( upg != null ) {

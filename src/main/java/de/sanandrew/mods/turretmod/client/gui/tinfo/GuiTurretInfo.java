@@ -9,9 +9,10 @@
 package de.sanandrew.mods.turretmod.client.gui.tinfo;
 
 import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntry;
-import de.sanandrew.mods.turretmod.util.EnumGui;
+import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
@@ -262,7 +263,7 @@ public class GuiTurretInfo
                     this.openLink(this.clickedURI);
                 }
             } catch( URISyntaxException e ) {
-                TurretModRebirth.LOG.log(Level.ERROR, "Cannot create invalid URI", e);
+                TmrConstants.LOG.log(Level.ERROR, "Cannot create invalid URI", e);
                 this.clickedURI = null;
             }
         } else if( this.entry == null || !this.entry.actionPerformed(button) ) {
@@ -311,7 +312,7 @@ public class GuiTurretInfo
             Object objDesktop = clsDesktop.getMethod("getDesktop", new Class[0]).invoke(null);
             clsDesktop.getMethod("browse", new Class[] {URI.class}).invoke(objDesktop, uri);
         } catch( Throwable throwable ) {
-            TurretModRebirth.LOG.log(Level.ERROR, "Couldn\'t open link", throwable);
+            TmrConstants.LOG.log(Level.ERROR, "Couldn\'t open link", throwable);
         }
     }
 

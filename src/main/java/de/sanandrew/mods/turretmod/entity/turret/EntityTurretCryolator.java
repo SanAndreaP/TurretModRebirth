@@ -8,17 +8,14 @@
  */
 package de.sanandrew.mods.turretmod.entity.turret;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
-import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
+import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
+import de.sanandrew.mods.turretmod.api.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.Sounds;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.MobEffects;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -29,7 +26,7 @@ import java.util.UUID;
 public class EntityTurretCryolator
         extends EntityTurret
 {
-    public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TurretModRebirth.ID, "turrets/turret_cryolator");
+    public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "turrets/turret_cryolator");
     public static final UUID TI_UUID = UUID.fromString("3AF4D8C3-FCFC-42B0-98A3-BFB669AA7CE6");
     public static final TurretInfo TINFO = new TurretInfo() {
         @Override
@@ -75,12 +72,9 @@ public class EntityTurretCryolator
 
     private static final AxisAlignedBB RANGE_BB = new AxisAlignedBB(-16.0D, -4.0D, -16.0D, 16.0D, 16.0D, 16.0D);
 
-    {
-        this.targetProc = new MyTargetProc();
-    }
-
     public EntityTurretCryolator(World world) {
         super(world);
+
     }
 
     public EntityTurretCryolator(World world, boolean isUpsideDown, EntityPlayer player) {
@@ -109,30 +103,8 @@ public class EntityTurretCryolator
         return RANGE_BB;
     }
 
-    private class MyTargetProc
-            extends TargetProcessor
-    {
-        public MyTargetProc() {
-            super(EntityTurretCryolator.this);
-        }
-
-        @Override
-        public SoundEvent getShootSound() {
-            return Sounds.SHOOT_CRYOLATOR;
-        }
-
-        @Override
-        public SoundEvent getLowAmmoSound() {
-            return SoundEvents.BLOCK_DISPENSER_FAIL;
-        }
-
-        @Override
-        public boolean doAllowTarget(Entity e) {
-            if( e instanceof EntityLivingBase ) {
-                return !((EntityLivingBase) e).isPotionActive(MobEffects.SLOWNESS) &&  super.doAllowTarget(e);
-            }
-
-            return super.doAllowTarget(e);
-        }
+    @Override
+    public SoundEvent getShootSound() {
+        return Sounds.SHOOT_CRYOLATOR;
     }
 }

@@ -8,11 +8,11 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.registry.upgrades.TurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -28,7 +28,7 @@ public class ItemTurretUpgrade
     public ItemTurretUpgrade() {
         super();
         this.setCreativeTab(TmrCreativeTabs.UPGRADES);
-        this.setUnlocalizedName(TurretModRebirth.ID + ":turret_upgrade");
+        this.setUnlocalizedName(TmrConstants.ID + ":turret_upgrade");
         this.setHasSubtypes(true);
         this.setMaxDamage(0);
     }

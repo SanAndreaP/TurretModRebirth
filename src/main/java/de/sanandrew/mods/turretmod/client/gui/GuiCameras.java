@@ -7,7 +7,7 @@
 package de.sanandrew.mods.turretmod.client.gui;
 
 import de.sanandrew.mods.turretmod.client.render.world.RenderTurretCam;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;

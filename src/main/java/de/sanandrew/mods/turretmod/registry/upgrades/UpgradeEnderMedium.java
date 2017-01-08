@@ -8,10 +8,10 @@
  */
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
@@ -20,7 +20,7 @@ import java.util.UUID;
 public class UpgradeEnderMedium
         implements TurretUpgrade
 {
-    private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TurretModRebirth.ID, "upgrades/ender_medium");
+    private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "upgrades/ender_medium");
 
     private final String name;
 
@@ -35,7 +35,7 @@ public class UpgradeEnderMedium
 
     @Override
     public String getModId() {
-        return TurretModRebirth.ID;
+        return TmrConstants.ID;
     }
 
     @Override

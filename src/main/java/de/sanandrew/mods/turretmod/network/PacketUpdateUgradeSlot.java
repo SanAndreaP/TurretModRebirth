@@ -9,7 +9,8 @@
 package de.sanandrew.mods.turretmod.network;
 
 import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -36,7 +37,7 @@ public class PacketUpdateUgradeSlot
     public void handleClientMessage(PacketUpdateUgradeSlot packet, EntityPlayer player) {
         Entity e = player.world.getEntityByID(packet.turretID);
         if( e instanceof EntityTurret ) {
-            ((EntityTurret) e).getUpgradeProcessor().setInventorySlotContents(packet.slot, packet.stack);
+            ((UpgradeProcessor) ((EntityTurret) e).getUpgradeProcessor()).setInventorySlotContents(packet.slot, packet.stack);
         }
     }
 

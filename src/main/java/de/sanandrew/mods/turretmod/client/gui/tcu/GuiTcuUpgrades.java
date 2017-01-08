@@ -9,7 +9,8 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretUpgrades;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
@@ -36,7 +37,7 @@ public class GuiTcuUpgrades
     private int posX;
 
     public GuiTcuUpgrades(InventoryPlayer invPlayer, EntityTurret turret) {
-        super(new ContainerTurretUpgrades(invPlayer, turret.getUpgradeProcessor()));
+        super(new ContainerTurretUpgrades(invPlayer, ((UpgradeProcessor) turret.getUpgradeProcessor())));
 
         this.turret = turret;
 

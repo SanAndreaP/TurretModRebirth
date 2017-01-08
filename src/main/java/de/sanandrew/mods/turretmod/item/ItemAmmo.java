@@ -8,10 +8,10 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmo;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -26,7 +26,7 @@ public class ItemAmmo
     public ItemAmmo() {
         super();
         this.setCreativeTab(TmrCreativeTabs.TURRETS);
-        this.setUnlocalizedName(TurretModRebirth.ID + ":turret_ammo");
+        this.setUnlocalizedName(TmrConstants.ID + ":turret_ammo");
         this.setMaxDamage(0);
         this.setHasSubtypes(true);
     }

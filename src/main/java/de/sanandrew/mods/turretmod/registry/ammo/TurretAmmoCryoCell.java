@@ -8,12 +8,12 @@
  */
 package de.sanandrew.mods.turretmod.registry.ammo;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCryoCell;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -41,7 +41,7 @@ public abstract class TurretAmmoCryoCell
         this.name = name;
         this.uuid = uuid;
         this.capacity = capacity;
-        this.itemModel = new ResourceLocation(TurretModRebirth.ID, "turret_ammo/" + name);
+        this.itemModel = new ResourceLocation(TmrConstants.ID, "turret_ammo/" + name);
     }
 
     @Override

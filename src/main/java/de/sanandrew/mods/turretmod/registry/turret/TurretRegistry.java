@@ -8,7 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.registry.turret;
 
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretFlamethrower;
@@ -60,27 +62,27 @@ public final class TurretRegistry
 
     private boolean registerTurretInfo(TurretInfo type, boolean registerEntity) {
         if( type == null ) {
-            TurretModRebirth.LOG.log(Level.ERROR, "Cannot register NULL as Turret-Info!", new InvalidParameterException());
+            TmrConstants.LOG.log(Level.ERROR, "Cannot register NULL as Turret-Info!", new InvalidParameterException());
             return false;
         }
 
         if( type.getName() == null || type.getName().isEmpty() ) {
-            TurretModRebirth.LOG.log(Level.ERROR, String.format("Turret-Info %s has an empty/NULL name! Cannot register the Void.", type.getClass().getName()), new InvalidParameterException());
+            TmrConstants.LOG.log(Level.ERROR, String.format("Turret-Info %s has an empty/NULL name! Cannot register the Void.", type.getClass().getName()), new InvalidParameterException());
             return false;
         }
 
         if( type.getUUID() == null ) {
-            TurretModRebirth.LOG.log(Level.ERROR, String.format("Turret-Info %s has no UUID! How am I supposed to differentiate all the turrets?", type.getName()), new InvalidParameterException());
+            TmrConstants.LOG.log(Level.ERROR, String.format("Turret-Info %s has no UUID! How am I supposed to differentiate all the turrets?", type.getName()), new InvalidParameterException());
             return false;
         }
 
         if( this.infoFromUUID.containsKey(type.getUUID()) ) {
-            TurretModRebirth.LOG.log(Level.ERROR, String.format("The UUID of Turret-Info %s is already registered! Use another UUID. JUST DO IT!", type.getName()), new InvalidParameterException());
+            TmrConstants.LOG.log(Level.ERROR, String.format("The UUID of Turret-Info %s is already registered! Use another UUID. JUST DO IT!", type.getName()), new InvalidParameterException());
             return false;
         }
 
         if( type.getTurretClass() == null ) {
-            TurretModRebirth.LOG.log(Level.ERROR, String.format("Turret-Info %s has no turret_placer! wat?", type.getName()), new InvalidParameterException());
+            TmrConstants.LOG.log(Level.ERROR, String.format("Turret-Info %s has no turret_placer! wat?", type.getName()), new InvalidParameterException());
             return false;
         }
 

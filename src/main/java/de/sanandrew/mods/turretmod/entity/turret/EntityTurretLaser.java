@@ -8,15 +8,16 @@
  */
 package de.sanandrew.mods.turretmod.entity.turret;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.client.audio.SoundLaser;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
-import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
+import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
+import de.sanandrew.mods.turretmod.api.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -29,7 +30,7 @@ import java.util.UUID;
 public class EntityTurretLaser
         extends EntityTurret
 {
-    public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TurretModRebirth.ID, "turrets/turret_laser");
+    public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "turrets/turret_laser");
     public static final UUID TIII_UUID = UUID.fromString("F6196022-3F9D-4D3F-B3C1-9ED644DB436B");
     public static final TurretInfo TINFO = new TurretInfo() {
         @Override
@@ -78,10 +79,6 @@ public class EntityTurretLaser
     @SideOnly(Side.CLIENT)
     public SoundLaser laserSound;
 
-    {
-        this.targetProc = new MyTargetProc();
-    }
-
     public EntityTurretLaser(World world) {
         super(world);
     }
@@ -122,22 +119,8 @@ public class EntityTurretLaser
         return RANGE_BB;
     }
 
-    private class MyTargetProc
-            extends TargetProcessor
-    {
-
-        public MyTargetProc() {
-            super(EntityTurretLaser.this);
-        }
-
-        @Override
-        public SoundEvent getShootSound() {
-            return null;
-        }
-
-        @Override
-        public SoundEvent getLowAmmoSound() {
-            return SoundEvents.BLOCK_DISPENSER_FAIL;
-        }
+    @Override
+    public SoundEvent getShootSound() {
+        return null;
     }
 }

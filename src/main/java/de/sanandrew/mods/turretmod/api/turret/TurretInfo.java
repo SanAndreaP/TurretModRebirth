@@ -1,6 +1,6 @@
-package de.sanandrew.mods.turretmod.registry.turret;
+package de.sanandrew.mods.turretmod.api.turret;
 
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;

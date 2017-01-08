@@ -8,9 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.util.Lang;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -45,10 +45,10 @@ public class TurretInfoEntryInfo
         Gui.drawRect(2, 12, MAX_ENTRY_WIDTH - 2, 13, 0xFF0080BB);
 
         gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_INFO_NAME.get()), 2, 16, 0xFF808080, false);
-        gui.mc.fontRendererObj.drawString(TurretModRebirth.NAME, 4, 25, 0xFF000000, false);
+        gui.mc.fontRendererObj.drawString(TmrConstants.NAME, 4, 25, 0xFF000000, false);
 
         gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_INFO_VERSION.get()), 2, 36, 0xFF808080, false);
-        gui.mc.fontRendererObj.drawString(TurretModRebirth.VERSION, 4, 45, 0xFF000000, false);
+        gui.mc.fontRendererObj.drawString(TmrConstants.VERSION, 4, 45, 0xFF000000, false);
 
         gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_INFO_AUTHOR.get()), 2, 56, 0xFF808080, false);
 

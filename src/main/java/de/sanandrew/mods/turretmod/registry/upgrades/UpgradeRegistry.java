@@ -8,12 +8,13 @@
  */
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -39,11 +40,11 @@ public final class UpgradeRegistry
     public static final UUID RELOAD_I = UUID.fromString("4ED4E813-E2D8-43E9-B499-9911E214C5E9");
     public static final UUID RELOAD_II = UUID.fromString("80877F84-F03D-4ED8-A9D3-BAF6DF4F3BF1");
     public static final UUID SMART_TGT = UUID.fromString("12435AB9-5AA3-4DB9-9B76-7943BA71597A");
-    public static final UUID UPG_ECONOMY_I = UUID.fromString("A8F29058-C8B7-400D-A7F4-4CEDE627A7E8");
-    public static final UUID UPG_ECONOMY_II = UUID.fromString("2A76A2EB-0EA3-4EB0-9EC2-61E579361306");
-    public static final UUID UPG_ECONOMY_INF = UUID.fromString("C3CF3EE9-8314-4766-A5E0-6033DB3EE9DB");
-    public static final UUID UPG_ENDER_MEDIUM = UUID.fromString("0ED3D861-F11D-4F6B-B9FC-67E22C8EB538");
-    public static final UUID UPG_FUEL_PURIFY = UUID.fromString("677FA826-DA2D-40E9-9D86-7FAD7DE398CC");
+    public static final UUID ECONOMY_I = UUID.fromString("A8F29058-C8B7-400D-A7F4-4CEDE627A7E8");
+    public static final UUID ECONOMY_II = UUID.fromString("2A76A2EB-0EA3-4EB0-9EC2-61E579361306");
+    public static final UUID ECONOMY_INF = UUID.fromString("C3CF3EE9-8314-4766-A5E0-6033DB3EE9DB");
+    public static final UUID ENDER_MEDIUM = UUID.fromString("0ED3D861-F11D-4F6B-B9FC-67E22C8EB538");
+    public static final UUID FUEL_PURIFY = UUID.fromString("677FA826-DA2D-40E9-9D86-7FAD7DE398CC");
 
     public static final UpgradeRegistry INSTANCE = new UpgradeRegistry();
 
@@ -83,7 +84,7 @@ public final class UpgradeRegistry
             return UUID.fromString(uid);
         } catch( IllegalArgumentException ex ) {
             if( !this.errored.contains(uid) ) {
-                TurretModRebirth.LOG.log(Level.WARN, "There was an error at parsing the UUID for a turret_placer upgrade item!", ex);
+                TmrConstants.LOG.log(Level.WARN, "There was an error at parsing the UUID for a turret_placer upgrade item!", ex);
                 this.errored.add(uid);
             }
             return EMPTY;
@@ -91,7 +92,7 @@ public final class UpgradeRegistry
     }
 
     public TurretUpgrade getUpgrade(ItemStack stack) {
-        if( stack == null || !stack.hasTagCompound() ) {
+        if( !ItemStackUtils.isItem(stack, ItemRegistry.turret_upgrade) || !stack.hasTagCompound() ) {
             return emptyInst;
         }
 
@@ -115,11 +116,11 @@ public final class UpgradeRegistry
         this.registerUpgrade(RELOAD_I, new UpgradeReloadTime.UpgradeReloadTimeMK1());
         this.registerUpgrade(RELOAD_II, new UpgradeReloadTime.UpgradeReloadTimeMK2());
         this.registerUpgrade(SMART_TGT, new UpgradeSmartTargeting());
-        this.registerUpgrade(UPG_ECONOMY_I, new UpgradeAmmoUsage.UpgradeAmmoUseI());
-        this.registerUpgrade(UPG_ECONOMY_II, new UpgradeAmmoUsage.UpgradeAmmoUseII());
-        this.registerUpgrade(UPG_ECONOMY_INF, new UpgradeAmmoUsage.UpgradeAmmoUseInf());
-        this.registerUpgrade(UPG_ENDER_MEDIUM, new UpgradeEnderMedium());
-        this.registerUpgrade(UPG_FUEL_PURIFY, new UpgradeFuelPurifier());
+        this.registerUpgrade(ECONOMY_I, new UpgradeAmmoUsage.UpgradeAmmoUseI());
+        this.registerUpgrade(ECONOMY_II, new UpgradeAmmoUsage.UpgradeAmmoUseII());
+        this.registerUpgrade(ECONOMY_INF, new UpgradeAmmoUsage.UpgradeAmmoUseInf());
+        this.registerUpgrade(ENDER_MEDIUM, new UpgradeEnderMedium());
+        this.registerUpgrade(FUEL_PURIFY, new UpgradeFuelPurifier());
 
         emptyInst = this.upgradeToUuidMap.get(EMPTY);
     }
@@ -145,7 +146,7 @@ public final class UpgradeRegistry
     private static final class EmptyUpgrade
             implements TurretUpgrade
     {
-        private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TurretModRebirth.ID, "upgrades/empty");
+        private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "upgrades/empty");
 
         @Override
         public String getName() {
@@ -154,7 +155,7 @@ public final class UpgradeRegistry
 
         @Override
         public String getModId() {
-            return TurretModRebirth.ID;
+            return TmrConstants.ID;
         }
 
         @Override

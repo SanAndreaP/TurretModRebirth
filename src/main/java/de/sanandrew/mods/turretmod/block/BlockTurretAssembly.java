@@ -10,8 +10,9 @@ package de.sanandrew.mods.turretmod.block;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
-import de.sanandrew.mods.turretmod.util.EnumGui;
+import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.block.BlockHorizontal;
@@ -44,7 +45,7 @@ public class BlockTurretAssembly
         this.setCreativeTab(TmrCreativeTabs.MISC);
         this.setHardness(4.25F);
         this.blockSoundType = SoundType.STONE;
-        this.setUnlocalizedName(TurretModRebirth.ID + ":turret_assembly");
+        this.setUnlocalizedName(TmrConstants.ID + ":turret_assembly");
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
     }
 

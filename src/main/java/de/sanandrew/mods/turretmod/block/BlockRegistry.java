@@ -8,9 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.block;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 @SuppressWarnings("ConstantNamingConvention")
 @Mod.EventBusSubscriber
-@GameRegistry.ObjectHolder(TurretModRebirth.ID)
+@GameRegistry.ObjectHolder(TmrConstants.ID)
 public class BlockRegistry
 {
     public static final BlockTurretAssembly turret_assembly = nilBlock();
@@ -29,11 +29,11 @@ public class BlockRegistry
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
-        event.getRegistry().registerAll(new BlockTurretAssembly().setRegistryName(TurretModRebirth.ID, "turret_assembly"),
-                                        new BlockElectrolyteGenerator().setRegistryName(TurretModRebirth.ID, "electrolyte_generator"));
+        event.getRegistry().registerAll(new BlockTurretAssembly().setRegistryName(TmrConstants.ID, "turret_assembly"),
+                                        new BlockElectrolyteGenerator().setRegistryName(TmrConstants.ID, "electrolyte_generator"));
 
-        GameRegistry.registerTileEntity(TileEntityTurretAssembly.class, TurretModRebirth.ID + ":te_turret_assembly");
-        GameRegistry.registerTileEntity(TileEntityElectrolyteGenerator.class, TurretModRebirth.ID + ":te_potato_generator");
+        GameRegistry.registerTileEntity(TileEntityTurretAssembly.class, TmrConstants.ID + ":te_turret_assembly");
+        GameRegistry.registerTileEntity(TileEntityElectrolyteGenerator.class, TmrConstants.ID + ":te_potato_generator");
     }
 
     @SubscribeEvent

@@ -9,18 +9,17 @@
 package de.sanandrew.mods.turretmod.entity.turret;
 
 import de.sanandrew.mods.sanlib.lib.Tuple;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
-import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
+import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
+import de.sanandrew.mods.turretmod.api.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.Sounds;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -30,7 +29,7 @@ import java.util.UUID;
 public class EntityTurretShotgun
         extends EntityTurret
 {
-    public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TurretModRebirth.ID, "turrets/turret_shotgun");
+    public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "turrets/turret_shotgun");
     public static final UUID TI_UUID = UUID.fromString("F7991EC5-2A89-49A6-B8EA-80775973C4C5");
     public static final TurretInfo TINFO = new TurretInfo() {
         @Override
@@ -78,10 +77,6 @@ public class EntityTurretShotgun
 
     public float barrelPos = 1.0F;
     public float prevBarrelPos = 1.0F;
-
-    {
-        this.targetProc = new MyTargetProc();
-    }
 
     public EntityTurretShotgun(World world) {
         super(world);
@@ -133,39 +128,8 @@ public class EntityTurretShotgun
         return RANGE_BB;
     }
 
-    private class MyTargetProc
-            extends TargetProcessor
-    {
-        public MyTargetProc() {
-            super(EntityTurretShotgun.this);
-        }
-
-        @Override
-        public SoundEvent getShootSound() {
-            return Sounds.SHOOT_SHOTGUN;
-        }
-
-        @Override
-        public SoundEvent getLowAmmoSound() {
-            return SoundEvents.BLOCK_DISPENSER_FAIL;
-        }
-
-        @Override
-        public boolean shootProjectile() {
-            if( this.hasAmmo() ) {
-                for( int i = 0; i < 6; i++ ) {
-                    Entity projectile = (Entity) this.getProjectile();
-                    assert projectile != null;
-                    this.turret.world.spawnEntityInWorld(projectile);
-                    this.turret.world.playSound(null, this.turret.posX, this.turret.posY, this.turret.posZ, this.getShootSound(), SoundCategory.NEUTRAL, 1.8F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
-                }
-                this.turret.setShooting();
-                this.decrAmmo();
-                return true;
-            } else {
-                this.turret.world.playSound(null, this.turret.posX, this.turret.posY, this.turret.posZ, this.getLowAmmoSound(), SoundCategory.NEUTRAL, 1.0F, 1.0F / (this.turret.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F);
-                return false;
-            }
-        }
+    @Override
+    public SoundEvent getShootSound() {
+        return Sounds.SHOOT_SHOTGUN;
     }
 }

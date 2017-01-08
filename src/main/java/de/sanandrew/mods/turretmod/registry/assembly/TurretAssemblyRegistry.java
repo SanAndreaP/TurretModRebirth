@@ -11,11 +11,11 @@ package de.sanandrew.mods.turretmod.registry.assembly;
 import com.google.common.collect.ImmutableList;
 import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.assembly.IRecipeEntry;
 import de.sanandrew.mods.turretmod.api.assembly.IRecipeGroup;
 import de.sanandrew.mods.turretmod.api.assembly.ITurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import org.apache.logging.log4j.Level;
@@ -43,23 +43,23 @@ public final class TurretAssemblyRegistry
     @Override
     public boolean registerRecipe(UUID uuid, IRecipeGroup group, ItemStack result, int fluxPerTick, int ticksProcessing, IRecipeEntry... resources) {
         if( uuid == null ) {
-            TurretModRebirth.LOG.log(Level.ERROR, "UUID for assembly recipe cannot be null!", new InvalidParameterException());
+            TmrConstants.LOG.log(Level.ERROR, "UUID for assembly recipe cannot be null!", new InvalidParameterException());
             return false;
         }
         if( this.recipeResults.containsKey(uuid) ) {
-            TurretModRebirth.LOG.log(Level.ERROR, String.format("UUID %s for assembly recipe cannot be registered twice!", uuid), new InvalidParameterException());
+            TmrConstants.LOG.log(Level.ERROR, String.format("UUID %s for assembly recipe cannot be registered twice!", uuid), new InvalidParameterException());
             return false;
         }
         if( !ItemStackUtils.isValid(result) ) {
-            TurretModRebirth.LOG.log(Level.ERROR, String.format("Result stack of UUID %s is not valid!", uuid), new InvalidParameterException());
+            TmrConstants.LOG.log(Level.ERROR, String.format("Result stack of UUID %s is not valid!", uuid), new InvalidParameterException());
             return false;
         }
         if( fluxPerTick < 0 ) {
-            TurretModRebirth.LOG.log(Level.ERROR, String.format("Flux usage cannot be smaller than 0 for UUID %s!", uuid), new InvalidParameterException());
+            TmrConstants.LOG.log(Level.ERROR, String.format("Flux usage cannot be smaller than 0 for UUID %s!", uuid), new InvalidParameterException());
             return false;
         }
         if( ticksProcessing < 0 ) {
-            TurretModRebirth.LOG.log(Level.ERROR, String.format("Ticks processing cannot be smaller than 0 for UUID %s!", uuid), new InvalidParameterException());
+            TmrConstants.LOG.log(Level.ERROR, String.format("Ticks processing cannot be smaller than 0 for UUID %s!", uuid), new InvalidParameterException());
             return false;
         }
         if( resources == null ) {

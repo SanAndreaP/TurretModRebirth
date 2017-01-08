@@ -9,7 +9,8 @@
 package de.sanandrew.mods.turretmod.network;
 
 import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
@@ -31,7 +32,7 @@ public class PacketUpdateTurretState
 
     public PacketUpdateTurretState(EntityTurret turret) {
         this.turretId = turret.getEntityId();
-        TargetProcessor tgtProc = turret.getTargetProcessor();
+        ITargetProcessor tgtProc = turret.getTargetProcessor();
         if( tgtProc.hasTarget() ) {
             this.entityToAttackId = tgtProc.getTarget().getEntityId();
         } else {
@@ -47,7 +48,7 @@ public class PacketUpdateTurretState
         Entity e = player.world.getEntityByID(packet.turretId);
         if( e instanceof EntityTurret ) {
             EntityTurret turret = (EntityTurret) e;
-            turret.getTargetProcessor().updateClientState(packet.entityToAttackId, packet.currAmmoCap, packet.ammoStack, packet.isShooting);
+            ((TargetProcessor) turret.getTargetProcessor()).updateClientState(packet.entityToAttackId, packet.currAmmoCap, packet.ammoStack, packet.isShooting);
         }
     }
 

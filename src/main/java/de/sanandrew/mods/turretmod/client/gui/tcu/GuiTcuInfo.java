@@ -10,15 +10,15 @@ package de.sanandrew.mods.turretmod.client.gui.tcu;
 
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiSlimButton;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.network.PacketPlayerTurretAction;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketTurretNaming;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -137,7 +137,7 @@ public class GuiTcuInfo
         value = String.format("%.1f / %.1f HP", this.turret.getHealth(), this.turret.getMaxHealth());
         this.fontRendererObj.drawString(value, this.guiLeft + 20, this.guiTop + 35, 0x000000);
 
-        TargetProcessor tgtProc = this.turret.getTargetProcessor();
+        ITargetProcessor tgtProc = this.turret.getTargetProcessor();
         value = String.format("%d", tgtProc.getAmmoCount());
 
         if( tgtProc.hasAmmo() ) {
@@ -182,8 +182,8 @@ public class GuiTcuInfo
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
         if( button == this.dismantle ) {
-            if( !this.turret.tryDismantle(this.mc.player) ) {
-                this.infoStr = String.format("gui.%s.turret_control_unit.page.info.button.dismantle.error", TurretModRebirth.ID);
+            if( !PacketPlayerTurretAction.tryDismantle(this.mc.player, this.turret) ) {
+                this.infoStr = String.format("gui.%s.turret_control_unit.page.info.button.dismantle.error", TmrConstants.ID);
                 this.infoTimeShown = System.currentTimeMillis();
             } else {
                 this.infoStr = null;

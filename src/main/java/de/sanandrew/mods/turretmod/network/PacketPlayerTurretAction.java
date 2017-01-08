@@ -8,11 +8,23 @@
  */
 package de.sanandrew.mods.turretmod.network;
 
+import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
+import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
+import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.util.math.BlockPos;
 
 public class PacketPlayerTurretAction
         extends AbstractMessage<PacketPlayerTurretAction>
@@ -45,12 +57,57 @@ public class PacketPlayerTurretAction
 
             switch( packet.actionId ) {
                 case DISMANTLE:
-                    turret.tryDismantle(player);
+                    tryDismantle(player, turret);
                     break;
                 case TOGGLE_ACTIVE:
                     turret.setActive(!turret.isActive());
             }
         }
+    }
+
+    public static boolean tryDismantle(EntityPlayer player, EntityTurret turret) {
+        Tuple chestItm = InventoryUtils.getSimilarStackFromInventory(new ItemStack(Blocks.CHEST), player.inventory, true);
+        if( chestItm != null && ItemStackUtils.isValid(chestItm.getValue(1)) ) {
+            ItemStack chestStack = chestItm.getValue(1);
+            if( turret.world.isRemote ) {
+                PacketRegistry.sendToServer(new PacketPlayerTurretAction(turret, PacketPlayerTurretAction.DISMANTLE));
+                return true;
+            } else {
+//                turret.checkBlock = false;
+//                turret.posY += 2048.0F;
+//                turret.setPosition(turret.posX, turret.posY, turret.posZ);
+//                turret.world.loadedEntityList.remove(turret);
+                int y = turret.isUpsideDown ? 3 : 0;
+                BlockPos chestPos = turret.getPosition();
+                if( turret.world.setBlockState(chestPos, Blocks.CHEST.getDefaultState(), 3) )
+                {
+                    TileEntity te = turret.world.getTileEntity(chestPos);
+
+                    if( te instanceof TileEntityChest ) {
+//                        turret.world.loadedEntityList.add(turret);
+
+                        TileEntityChest chest = (TileEntityChest) te;
+                        chest.setInventorySlotContents(0, ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(turret.getClass()), turret));
+                        ((TargetProcessor) turret.getTargetProcessor()).putAmmoInInventory(chest);
+
+                        if( chestStack.stackSize < 1 ) {
+                            player.inventory.setInventorySlotContents(chestItm.getValue(0), null);
+                        }
+                        player.inventoryContainer.detectAndSendChanges();
+                        //TODO: make custom container for turrets and put upgrades in it
+                        ((UpgradeProcessor) turret.getUpgradeProcessor()).dropUpgrades();
+                        turret.kill();
+                        return true;
+                    }
+                }
+//                this.checkBlock = true;
+//                this.posY -= 2048.0F;
+//                this.setPosition(this.posX, this.posY, this.posZ);
+//                turret.world.loadedEntityList.add(turret);
+            }
+        }
+
+        return false;
     }
 
     @Override

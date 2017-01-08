@@ -8,59 +8,60 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 
 public final class Lang
 {
-    public static final TranslateKey TCU_BTN        = new TranslateKey("gui.%s.tcu.page.info.button.%%s", TurretModRebirth.ID);
-    public static final TranslateKey TCU_TARGET_BTN = new TranslateKey("gui.%s.tcu.page.targetsEntity.button.%%s", TurretModRebirth.ID);
-    public static final TranslateKey TCU_PAGE_TITLE = new TranslateKey("gui.%s.tcu.page.%%s.title", TurretModRebirth.ID);
-    public static final TranslateKey TCU_PAGE_TAB   = new TranslateKey("gui.%s.tcu.page.%%s.tab", TurretModRebirth.ID);
+    public static final TranslateKey TCU_BTN        = new TranslateKey("gui.%s.tcu.page.info.button.%%s", TmrConstants.ID);
+    public static final TranslateKey TCU_TARGET_BTN = new TranslateKey("gui.%s.tcu.page.targetsEntity.button.%%s", TmrConstants.ID);
+    public static final TranslateKey TCU_PAGE_TITLE = new TranslateKey("gui.%s.tcu.page.%%s.title", TmrConstants.ID);
+    public static final TranslateKey TCU_PAGE_TAB   = new TranslateKey("gui.%s.tcu.page.%%s.tab", TmrConstants.ID);
 
-    public static final TranslateKey TINFO_CATEGORY_NAME      = new TranslateKey("gui.%s.tinfo.category.%%s.name", TurretModRebirth.ID);
-    public static final TranslateKey TINFO_ENTRY_INFO_TITLE   = new TranslateKey("gui.%s.tinfo.infoTitle", TurretModRebirth.ID);
-    public static final TranslateKey TINFO_ENTRY_AMMO_NAME    = new TranslateKey("%s.tinfo.ammo.%%s.name", TurretModRebirth.ID);
-    public static final TranslateKey TINFO_ENTRY_AMMO_DESC    = new TranslateKey("%s.tinfo.ammo.%%s.desc", TurretModRebirth.ID);
-    public static final TranslateKey TINFO_ENTRY_ROUNDS       = new TranslateKey("gui.%s.tinfo.rounds", TurretModRebirth.ID);
-    public static final TranslateKey TINFO_ENTRY_DPS          = new TranslateKey("gui.%s.tinfo.dps", TurretModRebirth.ID);
-    public static final TranslateKey TINFO_ENTRY_HEALTH       = new TranslateKey("gui.%s.tinfo.health", TurretModRebirth.ID);
-    public static final TranslateKey TINFO_ENTRY_HEALTHVAL    = new TranslateKey("gui.%s.tinfo.healthVal", TurretModRebirth.ID);
-    public static final TranslateKey TINFO_ENTRY_TURRET       = new TranslateKey("gui.%s.tinfo.turret", TurretModRebirth.ID);
-    public static final TranslateKey TINFO_ENTRY_CRAFTING     = new TranslateKey("gui.%s.tinfo.crafting", TurretModRebirth.ID);
-    public static final TranslateKey TINFO_ENTRY_WORKBENCH    = new TranslateKey("gui.%s.tinfo.workbench", TurretModRebirth.ID);
-    public static final TranslateKey TINFO_ENTRY_PREREQ       = new TranslateKey("gui.%s.tinfo.prereq", TurretModRebirth.ID);
-    public static final TranslateKey TINFO_ENTRY_RANGE        = new TranslateKey("gui.%s.tinfo.range", TurretModRebirth.ID);
-    public static final TranslateKey TINFO_ENTRY_RANGEVAL     = new TranslateKey("gui.%s.tinfo.rangeVal", TurretModRebirth.ID);
-    public static final TranslateKey TINFO_ENTRY_AMMOCAP      = new TranslateKey("gui.%s.tinfo.ammocap", TurretModRebirth.ID);
-    public static final TranslateKey TINFO_ENTRY_AMMOUSE      = new TranslateKey("gui.%s.tinfo.ammouse", TurretModRebirth.ID);
-    public static final TranslateKey TINFO_ENTRY_ROUNDSVAL    = new TranslateKey("gui.%s.tinfo.roundsVal", TurretModRebirth.ID);
-    public static final TranslateKey TINFO_ENTRY_EFFICIENCY   = new TranslateKey("gui.%s.tinfo.efficiency", TurretModRebirth.ID);
-    public static final TranslateKey TINFO_ENTRY_DECAY        = new TranslateKey("gui.%s.tinfo.decay", TurretModRebirth.ID);
-    public static final TranslateKey TINFO_ENTRY_INFO_NAME    = new TranslateKey("gui.%s.tinfo.modName", TurretModRebirth.ID);
-    public static final TranslateKey TINFO_ENTRY_INFO_VERSION = new TranslateKey("gui.%s.tinfo.modVersion", TurretModRebirth.ID);
-    public static final TranslateKey TINFO_ENTRY_INFO_AUTHOR  = new TranslateKey("gui.%s.tinfo.modAuthor", TurretModRebirth.ID);
-    public static final TranslateKey TINFO_ENTRY_INFO_CREDITS = new TranslateKey("gui.%s.tinfo.modCredits", TurretModRebirth.ID);
+    public static final TranslateKey TINFO_CATEGORY_NAME      = new TranslateKey("gui.%s.tinfo.category.%%s.name", TmrConstants.ID);
+    public static final TranslateKey TINFO_ENTRY_INFO_TITLE   = new TranslateKey("gui.%s.tinfo.infoTitle", TmrConstants.ID);
+    public static final TranslateKey TINFO_ENTRY_AMMO_NAME    = new TranslateKey("%s.tinfo.ammo.%%s.name", TmrConstants.ID);
+    public static final TranslateKey TINFO_ENTRY_AMMO_DESC    = new TranslateKey("%s.tinfo.ammo.%%s.desc", TmrConstants.ID);
+    public static final TranslateKey TINFO_ENTRY_ROUNDS       = new TranslateKey("gui.%s.tinfo.rounds", TmrConstants.ID);
+    public static final TranslateKey TINFO_ENTRY_DPS          = new TranslateKey("gui.%s.tinfo.dps", TmrConstants.ID);
+    public static final TranslateKey TINFO_ENTRY_HEALTH       = new TranslateKey("gui.%s.tinfo.health", TmrConstants.ID);
+    public static final TranslateKey TINFO_ENTRY_HEALTHVAL    = new TranslateKey("gui.%s.tinfo.healthVal", TmrConstants.ID);
+    public static final TranslateKey TINFO_ENTRY_TURRET       = new TranslateKey("gui.%s.tinfo.turret", TmrConstants.ID);
+    public static final TranslateKey TINFO_ENTRY_CRAFTING     = new TranslateKey("gui.%s.tinfo.crafting", TmrConstants.ID);
+    public static final TranslateKey TINFO_ENTRY_WORKBENCH    = new TranslateKey("gui.%s.tinfo.workbench", TmrConstants.ID);
+    public static final TranslateKey TINFO_ENTRY_PREREQ       = new TranslateKey("gui.%s.tinfo.prereq", TmrConstants.ID);
+    public static final TranslateKey TINFO_ENTRY_RANGE        = new TranslateKey("gui.%s.tinfo.range", TmrConstants.ID);
+    public static final TranslateKey TINFO_ENTRY_RANGEVAL     = new TranslateKey("gui.%s.tinfo.rangeVal", TmrConstants.ID);
+    public static final TranslateKey TINFO_ENTRY_AMMOCAP      = new TranslateKey("gui.%s.tinfo.ammocap", TmrConstants.ID);
+    public static final TranslateKey TINFO_ENTRY_AMMOUSE      = new TranslateKey("gui.%s.tinfo.ammouse", TmrConstants.ID);
+    public static final TranslateKey TINFO_ENTRY_ROUNDSVAL    = new TranslateKey("gui.%s.tinfo.roundsVal", TmrConstants.ID);
+    public static final TranslateKey TINFO_ENTRY_EFFICIENCY   = new TranslateKey("gui.%s.tinfo.efficiency", TmrConstants.ID);
+    public static final TranslateKey TINFO_ENTRY_DECAY        = new TranslateKey("gui.%s.tinfo.decay", TmrConstants.ID);
+    public static final TranslateKey TINFO_ENTRY_INFO_NAME    = new TranslateKey("gui.%s.tinfo.modName", TmrConstants.ID);
+    public static final TranslateKey TINFO_ENTRY_INFO_VERSION = new TranslateKey("gui.%s.tinfo.modVersion", TmrConstants.ID);
+    public static final TranslateKey TINFO_ENTRY_INFO_AUTHOR  = new TranslateKey("gui.%s.tinfo.modAuthor", TmrConstants.ID);
+    public static final TranslateKey TINFO_ENTRY_INFO_CREDITS = new TranslateKey("gui.%s.tinfo.modCredits", TmrConstants.ID);
 
-    public static final TranslateKey TASSEMBLY_BTN_CANCEL      = new TranslateKey("gui.%s.tassembly.cancel", TurretModRebirth.ID);
-    public static final TranslateKey TASSEMBLY_BTN_AUTOENABLE  = new TranslateKey("gui.%s.tassembly.automate.enable", TurretModRebirth.ID);
-    public static final TranslateKey TASSEMBLY_BTN_AUTODISABLE = new TranslateKey("gui.%s.tassembly.automate.disable", TurretModRebirth.ID);
-    public static final TranslateKey TASSEMBLY_CRAFTING        = new TranslateKey("gui.%s.tassembly.crafting", TurretModRebirth.ID);
-    public static final TranslateKey TASSEMBLY_RF_USING        = new TranslateKey("gui.%s.tassembly.rfUsing", TurretModRebirth.ID);
+    public static final TranslateKey TASSEMBLY_BTN_CANCEL      = new TranslateKey("gui.%s.tassembly.cancel", TmrConstants.ID);
+    public static final TranslateKey TASSEMBLY_BTN_AUTOENABLE  = new TranslateKey("gui.%s.tassembly.automate.enable", TmrConstants.ID);
+    public static final TranslateKey TASSEMBLY_BTN_AUTODISABLE = new TranslateKey("gui.%s.tassembly.automate.disable", TmrConstants.ID);
+    public static final TranslateKey TASSEMBLY_CRAFTING        = new TranslateKey("gui.%s.tassembly.crafting", TmrConstants.ID);
+    public static final TranslateKey TASSEMBLY_RF_USING        = new TranslateKey("gui.%s.tassembly.rfUsing", TmrConstants.ID);
 
-    public static final TranslateKey ELECTROGEN_EFFECTIVE = new TranslateKey("gui.%s.electrogen.effective", TurretModRebirth.ID);
-    public static final TranslateKey ELECTROGEN_POWERGEN  = new TranslateKey("gui.%s.electrogen.powergen", TurretModRebirth.ID);
+    public static final TranslateKey ELECTROGEN_EFFECTIVE = new TranslateKey("gui.%s.electrogen.effective", TmrConstants.ID);
+    public static final TranslateKey ELECTROGEN_POWERGEN  = new TranslateKey("gui.%s.electrogen.powergen", TmrConstants.ID);
 
     public static final TranslateKey ENTITY_NAME   = new TranslateKey("entity.%s.name");
     public static final TranslateKey ENTITY_DESC   = new TranslateKey("entity.%s.desc");
     public static final TranslateKey CONTAINER_INV = new TranslateKey("container.inventory");
 
-    public static final TranslateKey ITEM_UPGRADE_NAME = new TranslateKey("item.%s:turret_upgrade.%%s.name", TurretModRebirth.ID);
-    public static final TranslateKey ITEM_UPGRADE_DESC = new TranslateKey("item.%s:turret_upgrade.%%s.desc", TurretModRebirth.ID);
+    public static final TranslateKey ITEM_UPGRADE_NAME = new TranslateKey("item.%s:turret_upgrade.%%s.name", TmrConstants.ID);
+    public static final TranslateKey ITEM_UPGRADE_DESC = new TranslateKey("item.%s:turret_upgrade.%%s.desc", TmrConstants.ID);
 
-    public static final TranslateKey JEI_ASSEMBLY_TITLE  = new TranslateKey("jei.%s.assembly.title", TurretModRebirth.ID);
-    public static final TranslateKey JEI_ASSEMBLY_ENERGY = new TranslateKey("jei.%s.assembly.energy", TurretModRebirth.ID);
-    public static final TranslateKey JEI_ASSEMBLY_TIME   = new TranslateKey("jei.%s.assembly.time", TurretModRebirth.ID);
+    public static final TranslateKey JEI_ASSEMBLY_TITLE  = new TranslateKey("jei.%s.assembly.title", TmrConstants.ID);
+    public static final TranslateKey JEI_ASSEMBLY_ENERGY = new TranslateKey("jei.%s.assembly.energy", TmrConstants.ID);
+    public static final TranslateKey JEI_ASSEMBLY_TIME   = new TranslateKey("jei.%s.assembly.time", TmrConstants.ID);
 
     /**
      * Wrapper method to {@link net.minecraft.util.text.translation.I18n#canTranslate(String)} for abbreviation.

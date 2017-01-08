@@ -6,33 +6,21 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.entity.turret;
+package de.sanandrew.mods.turretmod.api.turret;
 
 import com.mojang.authlib.GameProfile;
-import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
-import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.network.PacketPlayerTurretAction;
-import de.sanandrew.mods.turretmod.network.PacketRegistry;
-import de.sanandrew.mods.turretmod.network.PacketUpdateTurretState;
-import de.sanandrew.mods.turretmod.registry.medpack.RepairKitRegistry;
-import de.sanandrew.mods.turretmod.registry.medpack.TurretRepairKit;
-import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
-import de.sanandrew.mods.turretmod.util.DataWatcherBooleans;
-import de.sanandrew.mods.turretmod.util.EnumGui;
-import de.sanandrew.mods.turretmod.util.Sounds;
-import de.sanandrew.mods.turretmod.util.TmrConfiguration;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.repairkit.TurretRepairKit;
+import de.sanandrew.mods.turretmod.api.EnumGui;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -40,10 +28,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -56,8 +41,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -71,27 +54,30 @@ public abstract class EntityTurret
 
     public static final DataParameter<Boolean> SHOT_CHNG = EntityDataManager.createKey(EntityTurret.class, DataSerializers.BOOLEAN);
 
+    public static SoundEvent hurtSound;
+    public static SoundEvent deathSound;
+    public static SoundEvent collectSound;
+
     public boolean isUpsideDown;
     public boolean showRange;
+    public boolean inGui;
 
-    private BlockPos blockPos;
-    private boolean prevShotChng;
-    private boolean checkBlock;
-
-    protected TargetProcessor targetProc;
-    protected UpgradeProcessor upgProc;
+    protected final ITargetProcessor targetProc;
+    protected final IUpgradeProcessor upgProc;
 
     protected UUID ownerUUID;
     protected String ownerName;
 
-    public boolean inGui;
-
     private DataWatcherBooleans<EntityTurret> dwBools;
     private boolean isPushedByPiston;
+    private BlockPos blockPos;
+    private boolean prevShotChng;
+    private boolean checkBlock;
 
     public EntityTurret(World world) {
         super(world);
-        this.upgProc = new UpgradeProcessor(this);
+        this.targetProc = TmrConstants.utils.getNewTargetProcInstance(this);
+        this.upgProc = TmrConstants.utils.getNewUpgradeProcInstance(this);
         this.rotationYaw = 0.0F;
         this.checkBlock = true;
     }
@@ -126,12 +112,12 @@ public abstract class EntityTurret
 
     @Override
     protected SoundEvent getHurtSound() {
-        return Sounds.TURRET_HIT;
+        return hurtSound;
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return Sounds.TURRET_DEATH;
+        return deathSound;
     }
 
     @Override
@@ -204,12 +190,13 @@ public abstract class EntityTurret
     @Override
     public void onLivingUpdate() {
         if( this.blockPos == null ) {
-            this.blockPos = new BlockPos((int) Math.floor(this.posX), (int)Math.floor(this.posY) + (this.isUpsideDown ? 2 : -1), (int)Math.floor(this.posZ));
+            this.blockPos = this.getPosition().up(this.isUpsideDown ? 2 : -1);
         }
 
         if( !this.isUpsideDown ) {
             this.motionY -= 0.0325F;
             super.moveEntity(0.0F, this.motionY, 0.0F);
+            this.blockPos = this.getPosition().down(1);
         } else if( this.checkBlock && !canTurretBePlaced(this.world, this.blockPos, true, this.isUpsideDown) ) {
             this.kill();
         }
@@ -294,35 +281,34 @@ public abstract class EntityTurret
             player.inventory.setInventorySlotContents(player.inventory.currentItem, heldItem.copy());
         }
 
-        this.updateState();
+        TmrConstants.utils.updateTurretState(this);
         player.inventoryContainer.detectAndSendChanges();
-        this.world.playSound(null, this.posX, this.posY, this.posZ, Sounds.TURRET_COLLECT, SoundCategory.NEUTRAL, 1.0F, 1.0F);
+        this.world.playSound(null, this.posX, this.posY, this.posZ, collectSound, SoundCategory.NEUTRAL, 1.0F, 1.0F);
     }
 
     @Override
     protected boolean processInteract(EntityPlayer player, EnumHand hand, @Nullable ItemStack stack) {
         if( this.world.isRemote ) {
-            if( ItemStackUtils.isValid(stack) && stack.getItem() == ItemRegistry.turret_control_unit ) {
-                TurretModRebirth.proxy.openGui(player, player.isSneaking() ? EnumGui.GUI_DEBUG_CAMERA : EnumGui.GUI_TCU_INFO, this.getEntityId(), this.hasPlayerPermission(player) ? 1 : 0, 0);
+            if( TmrConstants.utils.isTCUItem(stack) ) {
+                TmrConstants.utils.openGui(player, player.isSneaking() ? EnumGui.GUI_DEBUG_CAMERA : EnumGui.GUI_TCU_INFO, this.getEntityId(), this.hasPlayerPermission(player) ? 1 : 0, 0);
                 return true;
             }
 
             return false;
         } else if( ItemStackUtils.isValid(stack) && hand == EnumHand.MAIN_HAND ) {
+            TurretRepairKit repKit;
+
             if( this.targetProc.addAmmo(stack) ) {
                 this.onInteractSucceed(stack, player);
                 return true;
-            } else if( stack.getItem() == ItemRegistry.repair_kit ) {
-                TurretRepairKit repKit = RepairKitRegistry.INSTANCE.getType(stack);
-                if( repKit != null && repKit.isApplicable(this) ) {
+            } else if( (repKit = TmrConstants.repkitRegistry.getType(stack)).isApplicable(this) ) {
                     this.heal(repKit.getHealAmount());
                     repKit.onHeal(this);
                     stack.stackSize--;
                     this.onInteractSucceed(stack, player);
 
                     return true;
-                }
-            } else if( stack.getItem() == ItemRegistry.turret_upgrade && this.upgProc.tryApplyUpgrade(stack.copy()) ) {
+            } else if( this.upgProc.tryApplyUpgrade(stack.copy()) ) {
                 stack.stackSize--;
                 this.onInteractSucceed(stack, player);
                 return true;
@@ -337,8 +323,7 @@ public abstract class EntityTurret
         super.onDeath(dmgSrc);
 
         if( !this.world.isRemote ) {
-            this.targetProc.dropAmmo();
-            this.upgProc.dropUpgrades();
+            TmrConstants.utils.onTurretDeath(this);
         }
 
         //just insta-kill it
@@ -352,11 +337,11 @@ public abstract class EntityTurret
         this.rotationYaw = 0.0F;
     }
 
-    public TargetProcessor getTargetProcessor() {
+    public ITargetProcessor getTargetProcessor() {
         return this.targetProc;
     }
 
-    public UpgradeProcessor getUpgradeProcessor() {
+    public IUpgradeProcessor getUpgradeProcessor() {
         return this.upgProc;
     }
 
@@ -453,8 +438,10 @@ public abstract class EntityTurret
 
     public abstract ResourceLocation getGlowTexture();
 
-    public void updateState() {
-        PacketRegistry.sendToAllAround(new PacketUpdateTurretState(this), this.dimension, this.posX, this.posY, this.posZ, 64.0D);
+    public abstract SoundEvent getShootSound();
+
+    public SoundEvent getNoAmmoSound() {
+        return SoundEvents.BLOCK_DISPENSER_FAIL;
     }
 
     public boolean isActive() {
@@ -512,55 +499,11 @@ public abstract class EntityTurret
             return true;
         }
 
-        if( TmrConfiguration.playerCanEditAll || this.ownerUUID.equals(profile.getId()) ) {
+        if( TmrConstants.utils.canPlayerEditAll() || this.ownerUUID.equals(profile.getId()) ) {
             return true;
         }
 
-        return player.canCommandSenderUseCommand(2, "") && TmrConfiguration.opCanEditAll;
-    }
-
-    public boolean tryDismantle(EntityPlayer player) {
-        Tuple chestItm = InventoryUtils.getSimilarStackFromInventory(new ItemStack(Blocks.CHEST), player.inventory, true);
-        if( chestItm != null && ItemStackUtils.isValid(chestItm.getValue(1)) ) {
-            ItemStack chestStack = chestItm.getValue(1);
-            if( this.world.isRemote ) {
-                PacketRegistry.sendToServer(new PacketPlayerTurretAction(this, PacketPlayerTurretAction.DISMANTLE));
-                return true;
-            } else {
-                this.checkBlock = false;
-                this.posY += 2048.0F;
-                this.setPosition(this.posX, this.posY, this.posZ);
-                int y = this.isUpsideDown ? 2 : -1;
-                if( chestStack.getItem().onItemUse(chestStack, player, this.world, this.blockPos.offset(EnumFacing.DOWN, y), EnumHand.MAIN_HAND,
-                                                   this.isUpsideDown ? EnumFacing.DOWN : EnumFacing.UP, 0.5F, 1.0F, 0.5F) == EnumActionResult.SUCCESS )
-                {
-                    TileEntity te = this.world.getTileEntity(this.blockPos.offset(EnumFacing.DOWN, y));
-
-                    if( te instanceof TileEntityChest ) {
-                        this.posY -= 2048.0F;
-                        this.setPosition(this.posX, this.posY, this.posZ);
-
-                        TileEntityChest chest = (TileEntityChest) te;
-                        chest.setInventorySlotContents(0, ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(this.getClass()), this));
-                        this.targetProc.putAmmoInInventory(chest);
-
-                        if( chestStack.stackSize < 1 ) {
-                            player.inventory.setInventorySlotContents(chestItm.getValue(0), null);
-                        }
-                        player.inventoryContainer.detectAndSendChanges();
-                        //TODO: make custom container for turrets and put upgrades in it
-                        this.upgProc.dropUpgrades();
-                        this.kill();
-                        return true;
-                    }
-                }
-                this.checkBlock = true;
-                this.posY -= 2048.0F;
-                this.setPosition(this.posX, this.posY, this.posZ);
-            }
-        }
-
-        return false;
+        return player.canCommandSenderUseCommand(2, "") && TmrConstants.utils.canOpEditAll();
     }
 
     @Override
@@ -572,11 +515,11 @@ public abstract class EntityTurret
 
     @Override
     public ItemStack getPickedResult(RayTraceResult target) {
-        return ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(this.getClass()));
+        return TmrConstants.utils.getPickedTurretResult(target, this);
     }
 
     @Override
-    protected void kill() {
+    public void kill() {
         this.attackEntityFrom(DamageSource.magic, Float.MAX_VALUE);
     }
 

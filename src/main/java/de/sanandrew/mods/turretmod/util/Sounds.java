@@ -8,22 +8,24 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public final class Sounds
 {
-    private static final ResourceLocation R_RICOCHET_SPLASH = new ResourceLocation(TurretModRebirth.ID, "ricochet.splash");
-    private static final ResourceLocation R_RICOCHET_BULLET = new ResourceLocation(TurretModRebirth.ID, "ricochet.bullet");
-    private static final ResourceLocation R_SHOOT_CRYOLATOR = new ResourceLocation(TurretModRebirth.ID, "shoot.cryolator");
-    private static final ResourceLocation R_SHOOT_SHOTGUN = new ResourceLocation(TurretModRebirth.ID, "shoot.shotgun");
-    private static final ResourceLocation R_SHOOT_REVOLVER = new ResourceLocation(TurretModRebirth.ID, "shoot.revolver");
-    private static final ResourceLocation R_SHOOT_MINIGUN = new ResourceLocation(TurretModRebirth.ID, "shoot.minigun");
-    private static final ResourceLocation R_SHOOT_LASER = new ResourceLocation(TurretModRebirth.ID, "shoot.laser");
-    private static final ResourceLocation R_TURRET_HIT = new ResourceLocation(TurretModRebirth.ID, "hit.turrethit");
-    private static final ResourceLocation R_TURRET_DEATH = new ResourceLocation(TurretModRebirth.ID, "hit.turretDeath");
-    private static final ResourceLocation R_TURRET_COLLECT = new ResourceLocation(TurretModRebirth.ID, "collect.ia_get");
+    private static final ResourceLocation R_RICOCHET_SPLASH = new ResourceLocation(TmrConstants.ID, "ricochet.splash");
+    private static final ResourceLocation R_RICOCHET_BULLET = new ResourceLocation(TmrConstants.ID, "ricochet.bullet");
+    private static final ResourceLocation R_SHOOT_CRYOLATOR = new ResourceLocation(TmrConstants.ID, "shoot.cryolator");
+    private static final ResourceLocation R_SHOOT_SHOTGUN = new ResourceLocation(TmrConstants.ID, "shoot.shotgun");
+    private static final ResourceLocation R_SHOOT_REVOLVER = new ResourceLocation(TmrConstants.ID, "shoot.revolver");
+    private static final ResourceLocation R_SHOOT_MINIGUN = new ResourceLocation(TmrConstants.ID, "shoot.minigun");
+    private static final ResourceLocation R_SHOOT_LASER = new ResourceLocation(TmrConstants.ID, "shoot.laser");
+    private static final ResourceLocation R_TURRET_HIT = new ResourceLocation(TmrConstants.ID, "hit.turrethit");
+    private static final ResourceLocation R_TURRET_DEATH = new ResourceLocation(TmrConstants.ID, "hit.turretDeath");
+    private static final ResourceLocation R_TURRET_COLLECT = new ResourceLocation(TmrConstants.ID, "collect.ia_get");
 
     public static final SoundEvent RICOCHET_SPLASH = new SoundEvent(R_RICOCHET_SPLASH);
     public static final SoundEvent RICOCHET_BULLET = new SoundEvent(R_RICOCHET_BULLET);
@@ -47,6 +49,10 @@ public final class Sounds
         register(TURRET_HIT, R_TURRET_HIT);
         register(TURRET_DEATH, R_TURRET_DEATH);
         register(TURRET_COLLECT, R_TURRET_COLLECT);
+
+        EntityTurret.hurtSound = TURRET_HIT;
+        EntityTurret.deathSound = TURRET_DEATH;
+        EntityTurret.collectSound = TURRET_COLLECT;
     }
 
     private static void register(SoundEvent event, ResourceLocation regName) {

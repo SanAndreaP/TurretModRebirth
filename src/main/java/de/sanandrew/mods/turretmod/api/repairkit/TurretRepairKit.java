@@ -6,20 +6,24 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.util;
+package de.sanandrew.mods.turretmod.api.repairkit;
 
-public enum EnumGui
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import net.minecraft.util.ResourceLocation;
+
+import java.util.UUID;
+
+public interface TurretRepairKit
 {
-    GUI_TCU_INFO,
-    GUI_TCU_ENTITY_TARGETS,
-    GUI_TCU_PLAYER_TARGETS,
-    GUI_TCU_UPGRADES,
-    GUI_TASSEMBLY_MAN,
-    GUI_TASSEMBLY_FLT,
-    GUI_POTATOGEN,
-    GUI_TINFO,
+    String getName();
 
-    GUI_DEBUG_CAMERA;
+    UUID getUUID();
 
-    public static final EnumGui[] VALUES = values();
+    float getHealAmount();
+
+    boolean isApplicable(EntityTurret turret);
+
+    ResourceLocation getModel();
+
+    default void onHeal(EntityTurret turret) {}
 }

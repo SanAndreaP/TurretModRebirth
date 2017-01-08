@@ -8,9 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
@@ -23,7 +23,7 @@ public abstract class UpgradeUpgStorage
 
     public UpgradeUpgStorage(String name) {
         this.name = name;
-        this.itemModel = new ResourceLocation(TurretModRebirth.ID, "upgrades/" + name);
+        this.itemModel = new ResourceLocation(TmrConstants.ID, "upgrades/" + name);
     }
 
     @Override
@@ -33,7 +33,7 @@ public abstract class UpgradeUpgStorage
 
     @Override
     public String getModId() {
-        return TurretModRebirth.ID;
+        return TmrConstants.ID;
     }
 
     @Override

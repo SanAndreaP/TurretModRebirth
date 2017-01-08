@@ -8,11 +8,12 @@
  */
 package de.sanandrew.mods.turretmod.entity.turret;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
-import de.sanandrew.mods.turretmod.registry.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.registry.turret.TurretInfo;
+import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
+import de.sanandrew.mods.turretmod.api.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.util.Resources;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
@@ -25,7 +26,7 @@ import java.util.UUID;
 public class EntityTurretCrossbow
         extends EntityTurret
 {
-    public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TurretModRebirth.ID, "turrets/turret_crossbow");
+    public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "turrets/turret_crossbow");
     public static final UUID TI_UUID = UUID.fromString("50E1E69C-395C-486C-BB9D-41E82C8B22E2");
     public static final TurretInfo TINFO = new TurretInfo()
     {
@@ -72,10 +73,6 @@ public class EntityTurretCrossbow
 
     private static final AxisAlignedBB RANGE_BB = new AxisAlignedBB(-16.0D, -4.0D, -16.0D, 16.0D, 8.0D, 16.0D);
 
-    {
-        this.targetProc = new MyTargetProc();
-    }
-
     public EntityTurretCrossbow(World world) {
         super(world);
     }
@@ -106,22 +103,8 @@ public class EntityTurretCrossbow
         return RANGE_BB;
     }
 
-    private class MyTargetProc
-            extends TargetProcessor
-    {
-
-        public MyTargetProc() {
-            super(EntityTurretCrossbow.this);
-        }
-
-        @Override
-        public SoundEvent getShootSound() {
-            return SoundEvents.BLOCK_DISPENSER_LAUNCH;
-        }
-
-        @Override
-        public SoundEvent getLowAmmoSound() {
-            return SoundEvents.BLOCK_DISPENSER_FAIL;
-        }
+    @Override
+    public SoundEvent getShootSound() {
+        return SoundEvents.BLOCK_DISPENSER_LAUNCH;
     }
 }

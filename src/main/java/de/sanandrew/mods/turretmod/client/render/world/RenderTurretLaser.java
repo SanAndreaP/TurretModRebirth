@@ -7,8 +7,8 @@
 package de.sanandrew.mods.turretmod.client.render.world;
 
 import de.sanandrew.mods.sanlib.lib.client.ColorObj;
+import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
-import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -28,7 +28,7 @@ public final class RenderTurretLaser
     public static void render(Minecraft mc, double x, double y, double z, double partTicks) {
         Predicate<EntityTurretLaser> chk = turret -> {
             if( turret != null ) {
-                TargetProcessor tgtProc = turret.getTargetProcessor();
+                ITargetProcessor tgtProc = turret.getTargetProcessor();
                 return tgtProc.hasAmmo() && tgtProc.isShooting() && tgtProc.hasTarget();
             }
             return false;
@@ -55,7 +55,7 @@ public final class RenderTurretLaser
         final double beamWidth = 0.0125D;
 
         ColorObj laserClr = new ColorObj(1.0F, 0.0F, 0.0F, 0.25F);
-        if( turret.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_ENDER_MEDIUM) ) {
+        if( turret.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.ENDER_MEDIUM) ) {
             laserClr = new ColorObj(0.0F, 0.5F, 1.0F, 0.25F);
         }
 

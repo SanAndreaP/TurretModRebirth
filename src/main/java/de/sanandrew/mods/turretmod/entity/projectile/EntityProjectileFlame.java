@@ -30,12 +30,12 @@ public class EntityProjectileFlame
     @SuppressWarnings("unused")
     public EntityProjectileFlame(World world) {
         super(world);
-        this.damage = 2.75F;
+        this.damage = 3.00F;
     }
 
     public EntityProjectileFlame(World world, Entity shooter, Entity target) {
         super(world, shooter, target);
-        this.damage = 2.75F;
+        this.damage = 3.00F;
 
         if( shooter instanceof EntityTurretFlamethrower ) {
             EntityTurretFlamethrower turret = (EntityTurretFlamethrower) shooter;
@@ -102,6 +102,8 @@ public class EntityProjectileFlame
                     this.world.setBlockState(fire, Blocks.FIRE.getDefaultState(), 11); // 1 = block update, 2 = send to client, 8 = needs update
                 }
             }
+        } else if( hitObj.entityHit != null ) {
+            hitObj.entityHit.setFire(5);
         }
     }
 

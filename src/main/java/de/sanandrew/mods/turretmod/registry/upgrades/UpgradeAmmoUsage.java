@@ -8,12 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
-import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
-import de.sanandrew.mods.turretmod.entity.turret.ConsumptionListener;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
@@ -23,12 +20,10 @@ public abstract class UpgradeAmmoUsage
 {
     private final ResourceLocation itemModel;
     private final String name;
-    private final ConsumptionListener listener;
 
-    public UpgradeAmmoUsage(String name, ConsumptionListener listener) {
+    public UpgradeAmmoUsage(String name) {
         this.name = name;
-        this.itemModel = new ResourceLocation(TurretModRebirth.ID, "upgrades/" + name);
-        this.listener = listener;
+        this.itemModel = new ResourceLocation(TmrConstants.ID, "upgrades/" + name);
     }
 
     @Override
@@ -38,7 +33,7 @@ public abstract class UpgradeAmmoUsage
 
     @Override
     public String getModId() {
-        return TurretModRebirth.ID;
+        return TmrConstants.ID;
     }
 
     @Override
@@ -51,26 +46,11 @@ public abstract class UpgradeAmmoUsage
         return true;
     }
 
-    @Override
-    public void onApply(EntityTurret turret) {
-        turret.getTargetProcessor().addConsumptionListener(this.listener);
-    }
-
-    @Override
-    public void onRemove(EntityTurret turret) {
-        turret.getTargetProcessor().removeConsumptionListener(this.listener);
-    }
-
-    @Override
-    public void onLoad(EntityTurret turret, NBTTagCompound nbt) {
-        turret.getTargetProcessor().addConsumptionListener(this.listener);
-    }
-
     public static class UpgradeAmmoUseI
             extends UpgradeAmmoUsage
     {
         public UpgradeAmmoUseI() {
-            super("use_decr_i", (canConsumePrev, turret) -> MiscUtils.RNG.randomFloat() >= 0.1F);
+            super("use_decr_i");
         }
 
         @Override
@@ -90,8 +70,8 @@ public abstract class UpgradeAmmoUsage
         private final TurretUpgrade dependant;
 
         public UpgradeAmmoUseII() {
-            super("use_decr_ii", (canConsumePrev, turret) -> MiscUtils.RNG.randomFloat() >= 0.35F);
-            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(UpgradeRegistry.UPG_ECONOMY_I);
+            super("use_decr_ii");
+            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(UpgradeRegistry.ECONOMY_I);
         }
 
         @Override
@@ -111,8 +91,8 @@ public abstract class UpgradeAmmoUsage
         private final TurretUpgrade dependant;
 
         public UpgradeAmmoUseInf() {
-            super("use_decr_inf", (canConsumePrev, turret) -> turret.getTargetProcessor().getAmmoCount() != turret.getTargetProcessor().getMaxAmmoCapacity() && canConsumePrev);
-            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(UpgradeRegistry.UPG_ECONOMY_II);
+            super("use_decr_inf");
+            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(UpgradeRegistry.ECONOMY_II);
         }
 
         @Override

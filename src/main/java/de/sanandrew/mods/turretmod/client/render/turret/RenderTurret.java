@@ -8,8 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.client.render.turret;
 
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -34,7 +34,7 @@ public class RenderTurret
         try {
             this.addLayer(new LayerTurretGlow<>(this, standardModel.getClass().getConstructor(float.class).newInstance(0.001F)));
         } catch( NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException ex ) {
-            TurretModRebirth.LOG.log(Level.ERROR, "Could not instanciate model class! Make sure it has a constructor with a one float parameter (scale)! Glowmap disabled.", ex);
+            TmrConstants.LOG.log(Level.ERROR, "Could not instanciate model class! Make sure it has a constructor with a one float parameter (scale)! Glowmap disabled.", ex);
         }
 
         this.addLayer(new LayerTurretUpgrades<>());
