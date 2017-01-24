@@ -133,7 +133,7 @@ public final class TurretAssemblyRecipes
             ingredients = new RecipeEntryItem[] {new RecipeEntryItem(12).put("stone"),
                                                  new RecipeEntryItem(2).put("ingotIron"),
                                                  new RecipeEntryItem(4).put("dustRedstone"),
-                                                 new RecipeEntryItem(4).put("logWood")};
+                                                 new RecipeEntryItem(1).put("logWood")};
             registry.registerRecipe(TurretAssemblyRecipes.TURRET_MK1_SG, turretGroup, res, 10, 100, ingredients);
 
             // TS - CRYOLATOR
@@ -147,20 +147,20 @@ public final class TurretAssemblyRecipes
 
             // T2 - REVOLVER
             res = ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretRevolver.class));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put("blockIron"),
+            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("blockIron"),
                                                  new RecipeEntryItem(1).put("ingotGold"),
                                                  new RecipeEntryItem(4).put("dustRedstone"),
-                                                 new RecipeEntryItem(4).put(Blocks.STONEBRICK),
-                                                 new RecipeEntryItem(8).put(new ItemStack(Blocks.STONE_SLAB, 1, 0))};
+                                                 new RecipeEntryItem(2).put(Blocks.STONEBRICK),
+                                                 new RecipeEntryItem(4).put(new ItemStack(Blocks.STONE_SLAB, 1, 0))};
             registry.registerRecipe(TurretAssemblyRecipes.TURRET_MK2_RV, turretGroup, res, 15, 100, ingredients);
 
             // T2 - MINIGUN
             res = ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretMinigun.class));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put("blockIron"),
+            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("blockIron"),
                                                  new RecipeEntryItem(4).put("ingotGold"),
                                                  new RecipeEntryItem(4).put("dustRedstone"),
-                                                 new RecipeEntryItem(4).put(Blocks.STONEBRICK),
-                                                 new RecipeEntryItem(8).put(new ItemStack(Blocks.STONE_SLAB, 1, 0))};
+                                                 new RecipeEntryItem(2).put(Blocks.STONEBRICK),
+                                                 new RecipeEntryItem(4).put(new ItemStack(Blocks.STONE_SLAB, 1, 0))};
             registry.registerRecipe(TurretAssemblyRecipes.TURRET_MK2_MG, turretGroup, res, 15, 100, ingredients);
 
             // T3 - LASER
@@ -174,10 +174,11 @@ public final class TurretAssemblyRecipes
 
             // T3 - FLAMETHROWER
             res = ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretFlamethrower.class));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(3).put("obsidian"),
+            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put("obsidian"),
                                                  new RecipeEntryItem(1).put("blockRedstone"),
-                                                 new RecipeEntryItem(1).put("blockQuartz"),
-                                                 new RecipeEntryItem(4).put("ingotGold")};
+                                                 new RecipeEntryItem(1).put("blockIron"),
+                                                 new RecipeEntryItem(4).put("ingotGold"),
+                                                 new RecipeEntryItem(1).put("blockQuartz")};
             registry.registerRecipe(TurretAssemblyRecipes.TURRET_MK3_FT, turretGroup, res, 20, 100, ingredients);
         }
         //endregion
