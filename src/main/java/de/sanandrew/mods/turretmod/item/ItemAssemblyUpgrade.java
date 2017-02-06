@@ -79,7 +79,7 @@ public abstract class ItemAssemblyUpgrade
             super.addInformation(stack, player, lines, advInfo);
 
             NBTTagCompound nbt = stack.getTagCompound();
-            if( nbt != null && nbt.hasKey("filterStacks") ) {
+            if( nbt != null && nbt.hasKey("filteredStacks") ) {
                 lines.add(TextFormatting.ITALIC + Lang.translate(this.getUnlocalizedName() + ".conf"));
             } else {
                 lines.add(Lang.translate(this.getUnlocalizedName() + ".inst"));
@@ -105,7 +105,7 @@ public abstract class ItemAssemblyUpgrade
             NBTTagCompound nbt = stack.getTagCompound();
 
             if( nbt != null && nbt.hasKey("filteredStacks") ) {
-                ItemStackUtils.readItemStacksFromTag(stacks, nbt.getTagList("filterStacks", Constants.NBT.TAG_COMPOUND));
+                ItemStackUtils.readItemStacksFromTag(stacks, nbt.getTagList("filteredStacks", Constants.NBT.TAG_COMPOUND));
             }
 
             return stacks;
@@ -118,12 +118,12 @@ public abstract class ItemAssemblyUpgrade
             }
 
             if( inv == null || inv.length < 1 ) {
-                if( nbt.hasKey("filterStacks") ) {
-                    nbt.removeTag("filterStacks");
+                if( nbt.hasKey("filteredStacks") ) {
+                    nbt.removeTag("filteredStacks");
                 }
             } else {
                 NBTTagList list = ItemStackUtils.writeItemStacksToTag(inv, 1);
-                nbt.setTag("filterStacks", list);
+                nbt.setTag("filteredStacks", list);
             }
             stack.setTagCompound(nbt);
         }

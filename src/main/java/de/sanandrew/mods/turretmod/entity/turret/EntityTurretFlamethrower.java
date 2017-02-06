@@ -14,8 +14,10 @@ import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.api.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.util.Resources;
+import de.sanandrew.mods.turretmod.util.Sounds;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -70,6 +72,7 @@ public class EntityTurretFlamethrower
         }
     };
     private static final AxisAlignedBB RANGE_BB = new AxisAlignedBB(-8.0D, -2.0D, -8.0D, 8.0D, 4.0D, 8.0D);
+    private boolean doShootSound;
 
     public EntityTurretFlamethrower(World world) {
         super(world);
@@ -105,6 +108,6 @@ public class EntityTurretFlamethrower
 
     @Override
     public SoundEvent getShootSound() {
-        return null;
+        return (doShootSound = !doShootSound) ? Sounds.SHOOT_FTHROWER : null;
     }
 }

@@ -27,7 +27,7 @@ public class SoundLaser
 
     @Override
     public void update() {
-        if( this.turret.isDead ) {
+        if( this.turret.isDead || Minecraft.getMinecraft().isGamePaused() ) {
             this.donePlaying = true;
         } else {
             this.xPosF = (float)this.turret.posX;
@@ -37,6 +37,7 @@ public class SoundLaser
             if( this.turret.getTargetProcessor().isShooting() && this.turret.getTargetProcessor().hasAmmo() && !Minecraft.getMinecraft().isGamePaused() ) {
                 this.volume = 1.0F;
             } else {
+                this.volume = 0.0F;
                 this.donePlaying = true;
             }
         }

@@ -2,7 +2,35 @@
   "parent": "sapturretmod:models/entity/turret_base.json",
   "cubes": [
     {
-      "boxName": "barrelLeftI",
+      "boxName": "barrelI",
+      "sizeX": 0,
+      "sizeY": 2,
+      "sizeZ": 8,
+      "textureX": 28,
+      "textureY": -2,
+      "textureWidth": 128,
+      "textureHeight": 64,
+      "rotationPointX": 0.0,
+      "rotationPointY": 0.5,
+      "rotationPointZ": -10.0,
+      "parentBox": "head"
+    },
+    {
+      "boxName": "barrelII",
+      "sizeX": 2,
+      "sizeY": 0,
+      "sizeZ": 8,
+      "textureX": 16,
+      "textureY": 0,
+      "textureWidth": 128,
+      "textureHeight": 64,
+      "rotationPointX": -1.0,
+      "rotationPointY": 1.5,
+      "rotationPointZ": -10.0,
+      "parentBox": "head"
+    },
+    {
+      "boxName": "barrelIII",
       "sizeX": 0,
       "sizeY": 2,
       "sizeZ": 8,
@@ -18,7 +46,7 @@
       "parentBox": "head"
     },
     {
-      "boxName": "barrelLeftII",
+      "boxName": "barrelIV",
       "sizeX": 2,
       "sizeY": 0,
       "sizeZ": 8,
@@ -31,34 +59,6 @@
       "rotationPointZ": -10.0,
       "rotateAngleZ": 0.78539816339744830961566084581988,
       "offsetX": -1.0,
-      "parentBox": "head"
-    },
-    {
-      "boxName": "barrelRightI",
-      "sizeX": 0,
-      "sizeY": 2,
-      "sizeZ": 8,
-      "textureX": 28,
-      "textureY": -2,
-      "textureWidth": 128,
-      "textureHeight": 64,
-      "rotationPointX": 0.0,
-      "rotationPointY": 0.5,
-      "rotationPointZ": -10.0,
-      "parentBox": "head"
-    },
-    {
-      "boxName": "barrelRightII",
-      "sizeX": 2,
-      "sizeY": 0,
-      "sizeZ": 8,
-      "textureX": 16,
-      "textureY": 0,
-      "textureWidth": 128,
-      "textureHeight": 64,
-      "rotationPointX": -1.0,
-      "rotationPointY": 1.5,
-      "rotationPointZ": -10.0,
       "parentBox": "head"
     }
   ]
