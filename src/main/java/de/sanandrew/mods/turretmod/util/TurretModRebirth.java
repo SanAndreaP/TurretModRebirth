@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
+import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.EnumGui;
@@ -30,6 +31,7 @@ import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -192,5 +194,15 @@ public class TurretModRebirth
     @Override
     public boolean canOpEditAll() {
         return TmrConfiguration.opCanEditAll;
+    }
+
+    @Override
+    public <T extends Entity> List<T> getPassengersOfClass(Entity e, Class<T> psgClass) {
+        return EntityUtils.getPassengersOfClass(e, psgClass);
+    }
+
+    @Override
+    public boolean isStackValid(ItemStack stack) {
+        return ItemStackUtils.isValid(stack);
     }
 }

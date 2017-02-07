@@ -17,7 +17,6 @@ import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.Sounds;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;

@@ -9,8 +9,6 @@
 package de.sanandrew.mods.turretmod.api.turret;
 
 import com.mojang.authlib.GameProfile;
-import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
-import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.repairkit.TurretRepairKit;
 import de.sanandrew.mods.turretmod.api.EnumGui;
@@ -42,7 +40,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public abstract class EntityTurret
@@ -225,7 +223,7 @@ public abstract class EntityTurret
 
             if( this.targetProc.hasTarget() ) {
                 this.faceEntity(this.targetProc.getTarget(), 10.0F, this.getVerticalFaceSpeed());
-            } else if( this.world.isRemote && EntityUtils.getPassengersOfClass(this, EntityPlayer.class).size() < 1 ) {
+            } else if( this.world.isRemote && TmrConstants.utils.getPassengersOfClass(this, EntityPlayer.class).size() < 1 ) {
                 this.rotationYawHead += 1.0F;
                 if( this.rotationYawHead >= 360.0D ) {
                     this.rotationYawHead -= 360.0D;
@@ -287,7 +285,7 @@ public abstract class EntityTurret
     }
 
     @Override
-    protected boolean processInteract(EntityPlayer player, EnumHand hand, @Nullable ItemStack stack) {
+    protected boolean processInteract(EntityPlayer player, EnumHand hand, @Nonnull ItemStack stack) {
         if( this.world.isRemote ) {
             if( TmrConstants.utils.isTCUItem(stack) ) {
                 TmrConstants.utils.openGui(player, player.isSneaking() ? EnumGui.GUI_DEBUG_CAMERA : EnumGui.GUI_TCU_INFO, this.getEntityId(), this.hasPlayerPermission(player) ? 1 : 0, 0);
@@ -295,7 +293,7 @@ public abstract class EntityTurret
             }
 
             return false;
-        } else if( ItemStackUtils.isValid(stack) && hand == EnumHand.MAIN_HAND ) {
+        } else if( TmrConstants.utils.isStackValid(stack) && hand == EnumHand.MAIN_HAND ) {
             TurretRepairKit repKit;
 
             if( this.targetProc.addAmmo(stack) ) {
