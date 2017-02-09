@@ -14,10 +14,11 @@ import net.minecraft.entity.EntityList;
 
 public final class Lang
 {
-    public static final TranslateKey TCU_BTN        = new TranslateKey("gui.%s.tcu.page.info.button.%%s", TmrConstants.ID);
-    public static final TranslateKey TCU_TARGET_BTN = new TranslateKey("gui.%s.tcu.page.targetsEntity.button.%%s", TmrConstants.ID);
-    public static final TranslateKey TCU_PAGE_TITLE = new TranslateKey("gui.%s.tcu.page.%%s.title", TmrConstants.ID);
-    public static final TranslateKey TCU_PAGE_TAB   = new TranslateKey("gui.%s.tcu.page.%%s.tab", TmrConstants.ID);
+    public static final TranslateKey TCU_BTN             = new TranslateKey("gui.%s.tcu.page.info.button.%%s", TmrConstants.ID);
+    public static final TranslateKey TCU_TARGET_BTN      = new TranslateKey("gui.%s.tcu.page.targetsEntity.button.%%s", TmrConstants.ID);
+    public static final TranslateKey TCU_PAGE_TITLE      = new TranslateKey("gui.%s.tcu.page.%%s.title", TmrConstants.ID);
+    public static final TranslateKey TCU_PAGE_TAB        = new TranslateKey("gui.%s.tcu.page.%%s.tab", TmrConstants.ID);
+    public static final TranslateKey TCU_DISMANTLE_ERROR = new TranslateKey("gui.%s.tcu.page.info.button.dismantle.error", TmrConstants.ID);
 
     public static final TranslateKey TINFO_CATEGORY_NAME      = new TranslateKey("gui.%s.tinfo.category.%%s.name", TmrConstants.ID);
     public static final TranslateKey TINFO_ENTRY_INFO_TITLE   = new TranslateKey("gui.%s.tinfo.infoTitle", TmrConstants.ID);

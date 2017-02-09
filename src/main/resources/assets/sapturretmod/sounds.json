@@ -107,14 +107,5 @@
     "category": "neutral",
     "sounds": ["sapturretmod:misc/shieldActive"],
     "subtitle": "subtitles.sapturretmod.turretShield.active"
-  },
-  "records.tidalForce": {
-    "category": "record",
-    "sounds": [
-      {
-        "name":"sapturretmod:misc/Tidal Force",
-        "stream":true
-      }
-    ]
   }
 }

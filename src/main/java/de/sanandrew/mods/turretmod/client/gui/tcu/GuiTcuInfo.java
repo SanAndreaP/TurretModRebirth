@@ -183,7 +183,7 @@ public class GuiTcuInfo
     protected void actionPerformed(GuiButton button) throws IOException {
         if( button == this.dismantle ) {
             if( !PacketPlayerTurretAction.tryDismantle(this.mc.player, this.turret) ) {
-                this.infoStr = String.format("gui.%s.turret_control_unit.page.info.button.dismantle.error", TmrConstants.ID);
+                this.infoStr = Lang.TCU_DISMANTLE_ERROR.get();
                 this.infoTimeShown = System.currentTimeMillis();
             } else {
                 this.infoStr = null;

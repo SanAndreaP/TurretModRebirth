@@ -669,6 +669,15 @@ public class TileEntityTurretAssembly
         return null;
     }
 
+    @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        if( facing != EnumFacing.UP ) {
+            return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || capability == CapabilityEnergy.ENERGY || super.hasCapability(capability, facing);
+        }
+
+        return super.hasCapability(capability, facing);
+    }
+
     public void setCustomName(String customName) {
         this.customName = customName;
     }
