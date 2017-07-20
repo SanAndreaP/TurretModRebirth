@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.inventory;
 
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -19,6 +20,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class ContainerElectrolyteGenerator
@@ -55,7 +57,7 @@ public class ContainerElectrolyteGenerator
         return this.tile.isUseableByPlayer(player);
     }
 
-    protected boolean mergeItemStackInput(ItemStack stack, int beginSlot, int endSlot, boolean reverse) {
+    protected boolean mergeItemStackInput(@Nonnull ItemStack stack, int beginSlot, int endSlot, boolean reverse) {
         boolean slotChanged = false;
         int start;
         Slot slot;
@@ -69,11 +71,10 @@ public class ContainerElectrolyteGenerator
 
         while( !reverse && start < endSlot || reverse && start >= beginSlot ) {
             slot = this.inventorySlots.get(start);
-            slotStack = slot.getStack();
 
-            if( slotStack == null && slot.isItemValid(stack) ) {
+            if( !ItemStackUtils.isValid(slot.getStack()) && slot.isItemValid(stack) ) {
                 slot.putStack(stack.copy());
-                slot.getStack().stackSize = 1;
+                slot.getStack().setCount(1);
                 slot.onSlotChanged();
                 stack.shrink(1);
                 slotChanged = true;
@@ -91,34 +92,34 @@ public class ContainerElectrolyteGenerator
     }
 
     @Override
+    @Nonnull
     public ItemStack transferStackInSlot(EntityPlayer player, int slotId) {
-        ItemStack origStack = null;
+        ItemStack origStack = ItemStack.EMPTY;
         Slot slot = this.inventorySlots.get(slotId);
 
         if( slot != null && slot.getHasStack() ) {
             ItemStack slotStack = slot.getStack();
-            assert slotStack != null;
             origStack = slotStack.copy();
 
             if( slotId < 23 ) { // if clicked stack is from TileEntity
                 if( !this.mergeItemStack(slotStack, 22, 58, true) ) {
-                    return null;
+                    return ItemStack.EMPTY;
                 }
             } else if( !this.mergeItemStackInput(slotStack, 0, 9, false) ) { // if clicked stack is from player and also merge to input slots is sucessful
-                return null;
+                return ItemStack.EMPTY;
             }
 
-            if( slotStack.stackSize == 0 ) { // if stackSize of slot got to 0
-                slot.putStack(null);
+            if( slotStack.getCount() == 0 ) { // if stackSize of slot got to 0
+                slot.putStack(ItemStack.EMPTY);
             } else { // update changed slot stack state
                 slot.onSlotChanged();
             }
 
-            if( slotStack.stackSize == origStack.stackSize ) { // if nothing changed stackSize-wise
-                return null;
+            if( slotStack.getCount() == origStack.getCount() ) { // if nothing changed stackSize-wise
+                return ItemStack.EMPTY;
             }
 
-            slot.onPickupFromSlot(player, slotStack);
+            slot.onTake(player, slotStack);
         }
 
         return origStack;
@@ -138,7 +139,7 @@ public class ContainerElectrolyteGenerator
         }
 
         @Override
-        public boolean isItemValid(ItemStack stack) {
+        public boolean isItemValid(@Nonnull ItemStack stack) {
             return false;
         }
 
@@ -147,20 +148,20 @@ public class ContainerElectrolyteGenerator
             return false;
         }
 
-        @Nullable
+        @Nonnull
         @Override
         public ItemStack getStack() {
             return generator.processStacks[this.index];
         }
 
         @Override
-        public void putStack(@Nullable ItemStack stack) { }
+        public void putStack(@Nonnull ItemStack stack) { }
 
         @Override
-        public void onSlotChange(ItemStack stack1, ItemStack stack2) { }
+        public void onSlotChange(@Nonnull ItemStack stack1, ItemStack stack2) { }
 
         @Override
-        public int getItemStackLimit(ItemStack stack) {
+        public int getItemStackLimit(@Nonnull ItemStack stack) {
             return 1;
         }
 

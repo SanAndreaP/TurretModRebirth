@@ -96,7 +96,7 @@ public abstract class EntityTurretProjectile
         this.motionZ = vector.z * initSpeed + (MiscUtils.RNG.randomDouble() * 2.0D - 1.0D) * scatterVal;
         this.motionY = vector.y * initSpeed + (MiscUtils.RNG.randomDouble() * 2.0D - 1.0D) * scatterVal;
 
-        float vecPlaneNormal = MathHelper.sqrt_double(vector.x * vector.x + vector.z * vector.z);
+        float vecPlaneNormal = MathHelper.sqrt(vector.x * vector.x + vector.z * vector.z);
 
         this.prevRotationYaw = this.rotationYaw = (float)(Math.atan2(vector.x, vector.z) * 180.0D / Math.PI);
         this.prevRotationPitch = this.rotationPitch = (float)(Math.atan2(vector.y, vecPlaneNormal) * 180.0D / Math.PI);
@@ -126,7 +126,7 @@ public abstract class EntityTurretProjectile
         this.posX += this.motionX;
         this.posY += this.motionY;
         this.posZ += this.motionZ;
-        float f2 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
+        float f2 = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
         this.rotationYaw = (float)(Math.atan2(this.motionX, this.motionZ) * 180.0D / Math.PI);
 
         this.rotationPitch = (float)(Math.atan2(this.motionY, f2) * 180.0D / Math.PI);
@@ -185,7 +185,7 @@ public abstract class EntityTurretProjectile
         }
 
         Entity entity = null;
-        AxisAlignedBB checkBB = this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D);
+        AxisAlignedBB checkBB = this.getEntityBoundingBox().offset(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D);
 
         List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, checkBB);
         double minDist = 0.0D;
@@ -291,7 +291,7 @@ public abstract class EntityTurretProjectile
             target.tasks.addTask(10, new EntityAIMoveTowardsTurret(target, attacker, 1.1D, 64.0F));
         } else {
             aiLst.forEach(aiTgtFollow -> {
-                if( !aiTgtFollow.continueExecuting() ) {
+                if( !aiTgtFollow.shouldContinueExecuting() ) {
                     aiTgtFollow.setNewTurret(attacker);
                 }
             });
@@ -301,7 +301,7 @@ public abstract class EntityTurretProjectile
     public void knockBackEntity(EntityLivingBase living, double deltaX, double deltaZ) {
         if( this.rand.nextDouble() >= living.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).getAttributeValue() ) {
             living.isAirBorne = true;
-            double normXZ = MathHelper.sqrt_double(deltaX * deltaX + deltaZ * deltaZ);
+            double normXZ = MathHelper.sqrt(deltaX * deltaX + deltaZ * deltaZ);
             double kbStrengthXZ = this.getKnockbackStrengthH();
             double kbStrengthY = this.getKnockbackStrengthV();
             living.motionX /= 2.0D;
@@ -379,7 +379,7 @@ public abstract class EntityTurretProjectile
 
     @Override
     public void setThrowableHeading(double x, double y, double z, float recoil, float randMulti) {
-        float vecNormal = MathHelper.sqrt_double(x * x + y * y + z * z);
+        float vecNormal = MathHelper.sqrt(x * x + y * y + z * z);
         x /= vecNormal;
         y /= vecNormal;
         z /= vecNormal;
@@ -392,7 +392,7 @@ public abstract class EntityTurretProjectile
         this.motionX = x;
         this.motionY = y;
         this.motionZ = z;
-        float vecPlaneNormal = MathHelper.sqrt_double(x * x + z * z);
+        float vecPlaneNormal = MathHelper.sqrt(x * x + z * z);
         this.prevRotationYaw = this.rotationYaw = (float)(Math.atan2(x, z) * 180.0D / Math.PI);
         this.prevRotationPitch = this.rotationPitch = (float)(Math.atan2(y, vecPlaneNormal) * 180.0D / Math.PI);
     }
@@ -424,10 +424,10 @@ public abstract class EntityTurretProjectile
         }
     }
 
-    @Override
-    public void moveEntity(double x, double y, double z) {
-        super.moveEntity(x, y, z);
-    }
+//    @Override
+//    public void moveEntity(double x, double y, double z) {
+//        super.move(x, y, z);
+//    }
 
     public abstract float getArc();
 }

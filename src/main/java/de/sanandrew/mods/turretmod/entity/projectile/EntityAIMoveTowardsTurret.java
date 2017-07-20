@@ -60,7 +60,7 @@ final class EntityAIMoveTowardsTurret
     }
 
     @Override
-    public boolean continueExecuting() {
+    public boolean shouldContinueExecuting() {
         return !this.theEntity.getNavigator().noPath() && this.targetTurret != null && this.targetTurret.isEntityAlive() && this.targetTurret.getDistanceSqToEntity(this.theEntity) < this.maxDistance * this.maxDistance;
     }
 

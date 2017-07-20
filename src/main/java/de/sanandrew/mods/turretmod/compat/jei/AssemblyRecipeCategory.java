@@ -48,6 +48,11 @@ public class AssemblyRecipeCategory<T extends IRecipeWrapper>
     }
 
     @Override
+    public String getModName() {
+        return TmrConstants.NAME;
+    }
+
+    @Override
     public IDrawable getBackground() {
         return this.background;
     }
@@ -60,18 +65,6 @@ public class AssemblyRecipeCategory<T extends IRecipeWrapper>
 
     @Override
     public void drawExtras(Minecraft minecraft) {
-
-    }
-
-    @Override
-    @Deprecated
-    public void drawAnimations(Minecraft minecraft) {
-
-    }
-
-    @Override
-    @Deprecated
-    public void setRecipe(IRecipeLayout recipeLayout, T recipeWrapper) {
 
     }
 
@@ -99,6 +92,7 @@ public class AssemblyRecipeCategory<T extends IRecipeWrapper>
         }
 
         recipeLayout.getItemStacks().init(inputSize, false, 73, 66);
-        recipeLayout.getItemStacks().set(inputSize, ingredients.getOutputs(ItemStack.class));
+        recipeLayout.getItemStacks().set(ingredients);
+//        recipeLayout.getItemStacks().set(inputSize, ingredients.getOutputs(ItemStack.class));
     }
 }

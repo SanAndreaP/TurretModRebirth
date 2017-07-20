@@ -41,6 +41,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -58,6 +59,7 @@ public final class TargetProcessor
     protected final Map<UUID, Boolean> playerTargetList;
 
     protected int ammoCount;
+    @Nonnull
     protected ItemStack ammoStack;
     protected int shootTicks;
     protected int initShootTicks;
@@ -77,10 +79,10 @@ public final class TargetProcessor
     }
 
     @Override
-    public boolean addAmmo(ItemStack stack) {
-        if( stack != null && this.isAmmoApplicable(stack) ) {
+    public boolean addAmmo(@Nonnull ItemStack stack) {
+        if( this.isAmmoApplicable(stack) ) {
             TurretAmmo type = AmmoRegistry.INSTANCE.getType(stack);
-            UUID currType = this.ammoStack == null ? null : AmmoRegistry.INSTANCE.getType(this.ammoStack).getTypeId();
+            UUID currType = ItemStackUtils.isValid(this.ammoStack) ? AmmoRegistry.INSTANCE.getType(this.ammoStack).getTypeId() : null;
 
             if( currType != null && !currType.equals(type.getTypeId()) ) {
                 this.dropAmmo();
@@ -95,18 +97,18 @@ public final class TargetProcessor
                 }
 
                 int provided = type.getAmmoCapacity();
-                int providedStack = stack.stackSize * provided; //provides 4*16=64, needs 56 = 56 / 64 * 4
+                int providedStack = stack.getCount() * provided; //provides 4*16=64, needs 56 = 56 / 64 * 4
                 if( providedStack - maxCapacity > 0 ) {
-                    int stackSub = MathHelper.floor_double(maxCapacity / (double)providedStack * stack.stackSize);
+                    int stackSub = MathHelper.floor(maxCapacity / (double)providedStack * stack.getCount());
                     if( stackSub > 0 ) {
                         this.ammoCount += stackSub * provided;
-                        stack.stackSize -= stackSub;
+                        stack.shrink(stackSub);
                     } else {
                         return false;
                     }
                 } else {
                     this.ammoCount += providedStack;
-                    stack.stackSize = 0;
+                    stack.setCount(0);
                 }
                 return true;
             }
@@ -121,11 +123,12 @@ public final class TargetProcessor
     }
 
     @Override
+    @Nonnull
     public ItemStack getAmmoStack() {
-        if( this.ammoStack != null ) {
+        if( ItemStackUtils.isValid(this.ammoStack) ) {
             return this.ammoStack.copy();
         } else {
-            return null;
+            return ItemStack.EMPTY;
         }
     }
 
@@ -145,8 +148,9 @@ public final class TargetProcessor
 
                 while( decrAmmo > 0 && type != AmmoRegistry.NULL_TYPE ) {
                     ItemStack stack = this.ammoStack.copy();
-                    decrAmmo -= (stack.stackSize = Math.min(decrAmmo / type.getAmmoCapacity(), maxStackSize)) * type.getAmmoCapacity();
-                    if( stack.stackSize <= 0 ) {
+                    stack.setCount(Math.min(decrAmmo / type.getAmmoCapacity(), maxStackSize));
+                    decrAmmo -= stack.getCount() * type.getAmmoCapacity();
+                    if( stack.getCount() <= 0 ) {
                         break;
                     }
                     items.add(stack);
@@ -157,7 +161,7 @@ public final class TargetProcessor
                 if( !items.isEmpty() ) {
                     for( ItemStack stack : items ) {
                         EntityItem item = new EntityItem(this.turret.world, this.turret.posX, this.turret.posY, this.turret.posZ, stack);
-                        this.turret.world.spawnEntityInWorld(item);
+                        this.turret.world.spawnEntity(item);
                     }
                 }
             }
@@ -182,20 +186,21 @@ public final class TargetProcessor
             TurretAmmo type = AmmoRegistry.INSTANCE.getType(this.ammoStack);
             while( this.ammoCount > 0 && type != AmmoRegistry.NULL_TYPE ) {
                 ItemStack stack = this.ammoStack.copy();
-                this.ammoCount -= (stack.stackSize = Math.min(this.ammoCount / type.getAmmoCapacity(), maxStackSize)) * type.getAmmoCapacity();
-                if( stack.stackSize <= 0 ) {
+                stack.setCount(Math.min(this.ammoCount / type.getAmmoCapacity(), maxStackSize));
+                this.ammoCount -= stack.getCount() * type.getAmmoCapacity();
+                if( stack.getCount() <= 0 ) {
                     this.ammoCount = 0;
                     break;
                 }
                 items.add(stack);
             }
 
-            this.ammoStack = null;
+            this.ammoStack = ItemStack.EMPTY;
 
             if( !items.isEmpty() ) {
                 for( ItemStack stack : items ) {
                     EntityItem item = new EntityItem(this.turret.world, this.turret.posX, this.turret.posY, this.turret.posZ, stack);
-                    this.turret.world.spawnEntityInWorld(item);
+                    this.turret.world.spawnEntity(item);
                 }
             }
         }
@@ -208,22 +213,23 @@ public final class TargetProcessor
             TurretAmmo type = AmmoRegistry.INSTANCE.getType(this.ammoStack);
             while( this.ammoCount > 0 && type != AmmoRegistry.NULL_TYPE ) {
                 ItemStack stack = this.ammoStack.copy();
-                this.ammoCount -= (stack.stackSize = Math.min(this.ammoCount / type.getAmmoCapacity(), maxStackSize)) * type.getAmmoCapacity();
-                if( stack.stackSize <= 0 ) {
+                stack.setCount(Math.min(this.ammoCount / type.getAmmoCapacity(), maxStackSize));
+                this.ammoCount -= stack.getCount() * type.getAmmoCapacity();
+                if( stack.getCount() <= 0 ) {
                     this.ammoCount = 0;
                     break;
                 }
                 items.add(stack);
             }
 
-            this.ammoStack = null;
+            this.ammoStack = ItemStack.EMPTY;
 
             if( !items.isEmpty() ) {
                 for( ItemStack stack : items ) {
                     stack = InventoryUtils.addStackToInventory(stack, inventory);
-                    if( stack != null ) {
+                    if( ItemStackUtils.isValid(stack) ) {
                         EntityItem item = new EntityItem(this.turret.world, this.turret.posX, this.turret.posY, this.turret.posZ, stack);
-                        this.turret.world.spawnEntityInWorld(item);
+                        this.turret.world.spawnEntity(item);
                     }
                 }
             }
@@ -235,7 +241,7 @@ public final class TargetProcessor
         if( stack != null ) {
             TurretAmmo stackType = AmmoRegistry.INSTANCE.getType(stack);
             if( stackType != AmmoRegistry.NULL_TYPE ) {
-                if( this.ammoStack != null && AmmoRegistry.INSTANCE.getType(this.ammoStack).getTypeId().equals(stackType.getTypeId()) ) {
+                if( AmmoRegistry.INSTANCE.getType(this.ammoStack).getTypeId().equals(stackType.getTypeId()) ) {
                     return this.ammoCount < this.getMaxAmmoCapacity();
                 } else {
                     List<TurretAmmo> types = AmmoRegistry.INSTANCE.getTypesForTurret(this.turret.getClass());
@@ -251,12 +257,12 @@ public final class TargetProcessor
 
     @Override
     public final int getMaxAmmoCapacity() {
-        return MathHelper.ceiling_double_int(this.turret.getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY).getAttributeValue());
+        return MathHelper.ceil(this.turret.getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY).getAttributeValue());
     }
 
     @Override
     public final int getMaxShootTicks() {
-        return MathHelper.ceiling_double_int(this.turret.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).getAttributeValue());
+        return MathHelper.ceil(this.turret.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).getAttributeValue());
     }
 
     @Override
@@ -304,7 +310,7 @@ public final class TargetProcessor
         if( this.hasAmmo() ) {
             Entity projectile = this.getProjectile();
             assert projectile != null;
-            this.turret.world.spawnEntityInWorld(projectile);
+            this.turret.world.spawnEntity(projectile);
             this.playSound(this.turret.getShootSound(), 1.8F);
             this.turret.setShooting();
             this.decrAmmo();
@@ -337,7 +343,7 @@ public final class TargetProcessor
         if( this.entityToAttack == null ) {
             for( Object entityObj : this.turret.world.getEntitiesInAABBexcluding(this.turret, aabb, this.selector) ) {
                 EntityLivingBase livingBase = (EntityLivingBase) entityObj;
-                boolean isEntityValid = this.turret.canEntityBeSeen(livingBase) && livingBase.isEntityAlive() && livingBase.getEntityBoundingBox().intersectsWith(aabb);
+                boolean isEntityValid = this.turret.canEntityBeSeen(livingBase) && livingBase.isEntityAlive() && livingBase.getEntityBoundingBox().intersects(aabb);
                 if( isEntityValid && checkTargetListeners(livingBase) ) {
                     this.entityToAttack = livingBase;
                     this.entityToAttackUUID = livingBase.getUniqueID();
@@ -348,7 +354,7 @@ public final class TargetProcessor
         }
 
         if( this.entityToAttack != null ) {
-            boolean isEntityValid = this.turret.canEntityBeSeen(this.entityToAttack) && this.entityToAttack.isEntityAlive() && this.entityToAttack.getEntityBoundingBox().intersectsWith(aabb);
+            boolean isEntityValid = this.turret.canEntityBeSeen(this.entityToAttack) && this.entityToAttack.isEntityAlive() && this.entityToAttack.getEntityBoundingBox().intersects(aabb);
             boolean isTargetValid = Boolean.TRUE.equals(this.entityTargetList.get(this.entityToAttack.getClass()));
             boolean isPlayerValid = Boolean.TRUE.equals(this.playerTargetList.get(this.entityToAttack.getUniqueID())) || Boolean.TRUE.equals(this.playerTargetList.get(UuidUtils.EMPTY_UUID));
             if( isEntityValid && (isTargetValid || isPlayerValid) && checkTargetListeners(this.entityToAttack) ) {
@@ -373,7 +379,7 @@ public final class TargetProcessor
     }
 
     public static void initialize() {
-        EntityList.CLASS_TO_NAME.keySet().stream()
+        EntityList.getEntityNameList().stream().map(EntityList::getClass)
                 .filter(cls -> EntityLiving.class.isAssignableFrom(cls) && !EntityTurret.class.isAssignableFrom(cls) && !EntityLiving.class.equals(cls))
                 .forEach(cls -> ENTITY_TARGET_LIST_STD.put(cls, IMob.class.isAssignableFrom(cls)));
     }
@@ -396,7 +402,7 @@ public final class TargetProcessor
     @Override
     public void writeToNbt(NBTTagCompound nbt) {
         nbt.setInteger("ammoCount", this.ammoCount);
-        if( this.ammoStack != null ) {
+        if( ItemStackUtils.isValid(this.ammoStack) ) {
             NBTTagCompound stackTag = new NBTTagCompound();
             this.ammoStack.writeToNBT(stackTag);
             nbt.setTag("ammoStack", stackTag);
@@ -422,7 +428,7 @@ public final class TargetProcessor
     public void readFromNbt(NBTTagCompound nbt) {
         this.ammoCount = nbt.getInteger("ammoCount");
         if( nbt.hasKey("ammoStack") ) {
-            this.ammoStack = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("ammoStack"));
+            this.ammoStack = new ItemStack(nbt.getCompoundTag("ammoStack"));
         }
         if( nbt.hasKey("targetUUID") ) {
             this.entityToAttackUUID = UUID.fromString(nbt.getString("targetUUID"));

@@ -52,7 +52,7 @@ public class TargetingEvents
                 for( int i = 0; i < 6; i++ ) {
                     Entity projectile = event.processor.getProjectile();
                     assert projectile != null;
-                    event.processor.getTurret().world.spawnEntityInWorld(projectile);
+                    event.processor.getTurret().world.spawnEntity(projectile);
                 }
                 event.processor.playSound(event.processor.getTurret().getShootSound(), 1.8F);
                 event.processor.getTurret().setShooting();

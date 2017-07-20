@@ -17,9 +17,12 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class ContainerAssemblyFilter
         extends Container
 {
+    @Nonnull
     private ItemStack filterStack;
     private int filterStackSlot;
     private InventoryAssemblyFilter filterInv;
@@ -63,29 +66,29 @@ public class ContainerAssemblyFilter
     }
 
     @Override
+    @Nonnull
     public ItemStack transferStackInSlot(EntityPlayer player, int slotId) {
         Slot slot = this.inventorySlots.get(slotId);
 
         if( slot != null && slot.getHasStack() ) {
             ItemStack slotStack = slot.getStack();
-            assert slotStack != null;
             ItemStack origStack = slotStack.copy();
 
             if( slotId < 18 ) {
-                slot.putStack(null);
+                slot.putStack(ItemStack.EMPTY);
             } else {
                 for( int i = 0; i < 18; i++ ) {
                     Slot fltSlot = this.inventorySlots.get(i);
                     if( !fltSlot.getHasStack() ) {
-                        origStack.stackSize = 1;
+                        origStack.setCount(1);
                         fltSlot.putStack(origStack);
-                        return null;
+                        return ItemStack.EMPTY;
                     }
                 }
             }
         }
 
-        return null;
+        return ItemStack.EMPTY;
     }
 
     public static class SlotFilter
@@ -97,7 +100,7 @@ public class ContainerAssemblyFilter
 
         @Override
         public boolean canTakeStack(EntityPlayer player) {
-            this.putStack(null);
+            this.putStack(ItemStack.EMPTY);
             return false;
         }
 

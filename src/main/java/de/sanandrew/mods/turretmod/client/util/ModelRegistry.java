@@ -28,6 +28,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -69,12 +70,15 @@ public final class ModelRegistry
     }
 
     private static void setStandardModel(Item item) {
-        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
+        ResourceLocation regName = item.getRegistryName();
+        if( regName != null ) {
+            ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(regName, "inventory"));
+        }
     }
 
     private static void setStandardModel(Block item) {
         Item itm = Item.getItemFromBlock(item);
-        if( itm != null ) {
+        if( itm != Items.AIR ) {
             setStandardModel(itm);
         }
     }
@@ -92,7 +96,12 @@ public final class ModelRegistry
         @Override
         public ModelResourceLocation getModelLocation(ItemStack stack) {
             T type = getType(stack);
-            return type != null ? this.modelRes.get(getId(type)) : new ModelResourceLocation(stack.getItem().getRegistryName(), "inventory");
+            ResourceLocation regName = stack.getItem().getRegistryName();
+            if( regName != null ) {
+                return type != null ? this.modelRes.get(getId(type)) : new ModelResourceLocation(regName, "inventory");
+            } else {
+                return null;
+            }
         }
 
         public abstract T getType(ItemStack stack);

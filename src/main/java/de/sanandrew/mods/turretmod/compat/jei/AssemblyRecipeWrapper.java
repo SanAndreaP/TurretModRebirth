@@ -15,6 +15,7 @@ import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
+import mezz.jei.api.recipe.IRecipeWrapperFactory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -55,41 +56,11 @@ public class AssemblyRecipeWrapper
     }
 
     @Override
-    @Deprecated
-    public List getInputs() {
-        return this.input;
-    }
-
-    @Override
-    @Deprecated
-    public List getOutputs() {
-        return this.output;
-    }
-
-    @Override
-    @Deprecated
-    public List<FluidStack> getFluidInputs() {
-        return ImmutableList.of();
-    }
-
-    @Override
-    @Deprecated
-    public List<FluidStack> getFluidOutputs() {
-        return ImmutableList.of();
-    }
-
-    @Override
     public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
         String s = Lang.translate(Lang.JEI_ASSEMBLY_ENERGY) + ' ' + this.fluxPerTick * this.timeInTicks + " RF";
         minecraft.fontRenderer.drawString(s, 0, 90, 0xFF808080);
         s = Lang.translate(Lang.JEI_ASSEMBLY_TIME) + ' ' + MiscUtils.getTimeFromTicks(this.timeInTicks);
         minecraft.fontRenderer.drawString(s, 0, 100, 0xFF808080);
-    }
-
-    @Override
-    @Deprecated
-    public void drawAnimations(Minecraft minecraft, int recipeWidth, int recipeHeight) {
-
     }
 
     @Nullable
@@ -101,5 +72,14 @@ public class AssemblyRecipeWrapper
     @Override
     public boolean handleClick(Minecraft minecraft, int mouseX, int mouseY, int mouseButton) {
         return false;
+    }
+
+    public static class Factory
+            implements IRecipeWrapperFactory<TurretAssemblyRegistry.RecipeKeyEntry>
+    {
+        @Override
+        public IRecipeWrapper getRecipeWrapper(TurretAssemblyRegistry.RecipeKeyEntry recipe) {
+            return new AssemblyRecipeWrapper(recipe);
+        }
     }
 }
