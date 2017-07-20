@@ -19,9 +19,12 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.UUID;
 
+@SideOnly(Side.CLIENT)
 public class TurretInfoEntryUpgrade
         extends TurretInfoEntry
 {
@@ -43,7 +46,7 @@ public class TurretInfoEntryUpgrade
         TurretUpgrade prereq = this.upgrade.getDependantOn();
         int infoHeight = 54;
 
-        gui.mc.fontRendererObj.drawString(TextFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 2, 0xFF0080BB);
+        gui.mc.fontRenderer.drawString(TextFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 2, 0xFF0080BB);
         Gui.drawRect(2, 12, MAX_ENTRY_WIDTH - 2, 13, 0xFF0080BB);
 
         gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
@@ -52,17 +55,17 @@ public class TurretInfoEntryUpgrade
 
         RenderUtils.renderStackInGui(UpgradeRegistry.INSTANCE.getUpgradeItem(this.upgrade), 3, 17, 2.0F);
 
-        gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_CRAFTING.get()), 42, 16, 0xFF6A6A6A, false);
+        gui.mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_CRAFTING.get()), 42, 16, 0xFF6A6A6A, false);
         if( prereq != null ) {
-            gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_WORKBENCH.get()), 42, 36, 0xFF6A6A6A, false);
+            gui.mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_WORKBENCH.get()), 42, 36, 0xFF6A6A6A, false);
             infoHeight = 56;
         }
 
         Gui.drawRect(2, infoHeight, MAX_ENTRY_WIDTH - 2, infoHeight + 1, 0xFF0080BB);
 
         String text = Lang.translate(String.format(Lang.ITEM_UPGRADE_DESC.get(), upgrade.getName())).replace("\\n", "\n");
-        gui.mc.fontRendererObj.drawSplitString(text, 2, infoHeight + 3, MAX_ENTRY_WIDTH - 2, 0xFF000000);
-        this.drawHeight = gui.mc.fontRendererObj.splitStringWidth(text, MAX_ENTRY_WIDTH - 2) + infoHeight + 3 + 2;
+        gui.mc.fontRenderer.drawSplitString(text, 2, infoHeight + 3, MAX_ENTRY_WIDTH - 2, 0xFF000000);
+        this.drawHeight = gui.mc.fontRenderer.getWordWrappedHeight(text, MAX_ENTRY_WIDTH - 2) + infoHeight + 3 + 2;
 
         TurretAssemblyRegistry.RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(this.upgrade.getRecipeId());
         if( recipeEntry != null ) {

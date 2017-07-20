@@ -4,6 +4,7 @@ import de.sanandrew.mods.turretmod.registry.upgrades.TurretUpgrade;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public interface IUpgradeProcessor
@@ -14,7 +15,7 @@ public interface IUpgradeProcessor
 
     boolean hasUpgrade(TurretUpgrade upg);
 
-    boolean tryApplyUpgrade(ItemStack upgStack);
+    boolean tryApplyUpgrade(@Nonnull ItemStack upgStack);
 
     void writeToNbt(NBTTagCompound nbt);
 

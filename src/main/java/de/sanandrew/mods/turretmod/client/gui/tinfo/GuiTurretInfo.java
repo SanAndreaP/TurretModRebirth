@@ -24,6 +24,8 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -34,6 +36,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+@SideOnly(Side.CLIENT)
 public class GuiTurretInfo
         extends GuiScreen
         implements GuiYesNoCallback
@@ -133,14 +136,14 @@ public class GuiTurretInfo
             this.entry.drawPage(this, mouseX - this.entryX, mouseY - this.entryY, Math.round(this.scroll * this.dHeight), partTicks);
         } else if( this.category != null ) {
             this.dHeight = this.entryButtons.size() * 14 + 20 - TurretInfoEntry.MAX_ENTRY_HEIGHT;
-            this.fontRendererObj.drawString(TextFormatting.ITALIC + Lang.translate(this.category.getTitle()), 2, 2, 0xFF33AA33, false);
+            this.fontRenderer.drawString(TextFormatting.ITALIC + Lang.translate(this.category.getTitle()), 2, 2, 0xFF33AA33, false);
             Gui.drawRect(2, 12, TurretInfoEntry.MAX_ENTRY_WIDTH - 2, 13, 0xFF33AA33);
 
         }
 
         for( GuiButton btn : this.entryButtons ) {
-            btn.enabled = btn.yPosition - Math.round(this.scroll * this.dHeight) > 0 && btn.yPosition - Math.round(this.scroll * this.dHeight) + btn.height < TurretInfoEntry.MAX_ENTRY_HEIGHT;
-            btn.drawButton(this.mc, mouseX - this.entryX, mouseY - this.entryY + Math.round(this.scroll * this.dHeight));
+            btn.enabled = btn.y - Math.round(this.scroll * this.dHeight) > 0 && btn.y - Math.round(this.scroll * this.dHeight) + btn.height < TurretInfoEntry.MAX_ENTRY_HEIGHT;
+            btn.drawButton(this.mc, mouseX - this.entryX, mouseY - this.entryY + Math.round(this.scroll * this.dHeight), partTicks);
         }
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
@@ -172,7 +175,7 @@ public class GuiTurretInfo
             int bkgColor = 0xF0101000;
             int lightBg = 0x5050FF00;
             int darkBg = (lightBg & 0xFEFEFE) >> 1 | lightBg & 0xFF000000;
-            int textWidth = this.fontRendererObj.getStringWidth(title);
+            int textWidth = this.fontRenderer.getStringWidth(title);
             int tHeight = 8;
 
             this.drawGradientRect(-3,            -4,          textWidth + 3, -3,          bkgColor, bkgColor);
@@ -186,7 +189,7 @@ public class GuiTurretInfo
             this.drawGradientRect(-3,            -3,          textWidth + 3, -3 + 1,          lightBg, lightBg);
             this.drawGradientRect(-3,            tHeight + 2, textWidth + 3, tHeight + 3,     darkBg,  darkBg);
 
-            this.fontRendererObj.drawString(title, 0, 0, 0xFFFFFFFF, true);
+            this.fontRenderer.drawString(title, 0, 0, 0xFFFFFFFF, true);
             GlStateManager.popMatrix();
             this.categoryHighlight = null;
         }
@@ -322,15 +325,15 @@ public class GuiTurretInfo
         public final String link;
 
         public GuiButtonLink(int id, int x, int y, String text, String link) {
-            super(id, x, y, Minecraft.getMinecraft().fontRendererObj.getStringWidth(text), Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT, text);
+            super(id, x, y, Minecraft.getMinecraft().fontRenderer.getStringWidth(text), Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT, text);
             this.link = link;
         }
 
         @Override
-        public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+        public void drawButton(Minecraft mc, int mouseX, int mouseY, float partTicks) {
             if( this.visible ) {
                 String clrCode = (this.enabled ? TextFormatting.BLUE : TextFormatting.GRAY).toString();
-                mc.fontRendererObj.drawString(clrCode + TextFormatting.UNDERLINE + this.displayString, this.xPosition, this.yPosition, 0xFF000000, false);
+                mc.fontRenderer.drawString(clrCode + TextFormatting.UNDERLINE + this.displayString, this.x, this.y, 0xFF000000, false);
             }
         }
     }
@@ -346,9 +349,9 @@ public class GuiTurretInfo
         }
 
         @Override
-        public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+        public void drawButton(Minecraft mc, int mouseX, int mouseY, float partTicks) {
             if( this.visible ) {
-                boolean over = mouseX >= this.xPosition && mouseX < this.xPosition + this.width && mouseY >= this.yPosition && mouseY < this.yPosition + this.height;
+                boolean over = mouseX >= this.x && mouseX < this.x + this.width && mouseY >= this.y && mouseY < this.y + this.height;
 
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
@@ -356,13 +359,13 @@ public class GuiTurretInfo
                 GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
                 switch( this.buttonType ) {
                     case 0:
-                        this.drawTexturedModalRect(this.xPosition + 5, this.yPosition + 8, 0, 236 + (over ? 0 : 10), 15, 9);
+                        this.drawTexturedModalRect(this.x + 5, this.y + 8, 0, 236 + (over ? 0 : 10), 15, 9);
                         break;
                     case 1:
-                        this.drawTexturedModalRect(this.xPosition + 8, this.yPosition + 8, 16, 236 + (over ? 0 : 10), 10, 9);
+                        this.drawTexturedModalRect(this.x + 8, this.y + 8, 16, 236 + (over ? 0 : 10), 10, 9);
                         break;
                     case 2:
-                        this.drawTexturedModalRect(this.xPosition + 8, this.yPosition + 8, 27, 236 + (over ? 0 : 10), 9, 9);
+                        this.drawTexturedModalRect(this.x + 8, this.y + 8, 27, 236 + (over ? 0 : 10), 9, 9);
                         break;
                 }
                 GlStateManager.disableBlend();

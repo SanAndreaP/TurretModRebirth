@@ -18,5 +18,5 @@ public interface IRepairKitRegistry
     UUID getTypeId(TurretRepairKit type);
 
     @Nonnull
-    TurretRepairKit getType(ItemStack stack);
+    TurretRepairKit getType(@Nonnull ItemStack stack);
 }

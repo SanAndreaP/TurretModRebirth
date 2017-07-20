@@ -11,10 +11,13 @@ package de.sanandrew.mods.turretmod.client.gui.config;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.IModGuiFactory;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Set;
 
 @SuppressWarnings("unused")
+@SideOnly(Side.CLIENT)
 public class TmrGuiFactory
         implements IModGuiFactory
 {
@@ -22,18 +25,17 @@ public class TmrGuiFactory
     public void initialize(Minecraft mc) { }
 
     @Override
-    public Class<? extends GuiScreen> mainConfigGuiClass() {
-        return GuiConfigScreen.class;
+    public boolean hasConfigGui() {
+        return false;
+    }
+
+    @Override
+    public GuiScreen createConfigGui(GuiScreen parentScreen) {
+        return new GuiConfigScreen(parentScreen);
     }
 
     @Override
     public Set<RuntimeOptionCategoryElement> runtimeGuiCategories() {
-        return null;
-    }
-
-    @Override
-    @SuppressWarnings({"deprecation"})
-    public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element) {
         return null;
     }
 }

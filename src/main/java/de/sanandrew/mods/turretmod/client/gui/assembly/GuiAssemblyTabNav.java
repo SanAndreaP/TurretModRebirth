@@ -12,7 +12,10 @@ import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 class GuiAssemblyTabNav
         extends GuiButton
 {
@@ -26,7 +29,7 @@ class GuiAssemblyTabNav
 	}
 
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partTicks) {
         if( this.visible && this.enabled ) {
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
@@ -34,10 +37,10 @@ class GuiAssemblyTabNav
             mc.renderEngine.bindTexture(Resources.GUI_ASSEMBLY_CRF.getResource());
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
-            this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+            this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             int hoverState = this.getHoverState(this.hovered);
 
-            this.drawTexturedModalRect(this.xPosition, this.yPosition, 50 + (this.isDown ? 16 : 0), 227 + 9 * hoverState, this.width, this.height);
+            this.drawTexturedModalRect(this.x, this.y, 50 + (this.isDown ? 16 : 0), 227 + 9 * hoverState, this.width, this.height);
 
             this.mouseDragged(mc, mouseX, mouseY);
 

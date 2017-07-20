@@ -19,10 +19,13 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.ARBMultitexture;
 import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.GL11;
 
+@SideOnly(Side.CLIENT)
 public class GuiButtonCategory
         extends GuiButton
 {
@@ -67,8 +70,8 @@ public class GuiButtonCategory
     }
 
     @Override
-    public void drawButton(Minecraft mc, int mx, int my) {
-        boolean inside = mx >= xPosition && my >= yPosition && mx < xPosition + width && my < yPosition + height;
+    public void drawButton(Minecraft mc, int mx, int my, float partTicks) {
+        boolean inside = mx >= x && my >= y && mx < x + width && my < y + height;
         if( inside ) {
             this.ticksHovered = Math.min(this.time, this.ticksHovered + this.tinfo.timeDelta);
         } else {
@@ -92,7 +95,7 @@ public class GuiButtonCategory
         }
 
         ShaderHelper.useShader(ShaderHelper.categoryButton, this::doBtnShader);
-        GuiUtils.drawTexturedModalRect(xPosition, yPosition, zLevel * 2, 0, 0, 32, 32, s, s);
+        GuiUtils.drawTexturedModalRect(x, y, zLevel * 2, 0, 0, 32, 32, s, s);
         ShaderHelper.releaseShader();
 
         if(shaders) {

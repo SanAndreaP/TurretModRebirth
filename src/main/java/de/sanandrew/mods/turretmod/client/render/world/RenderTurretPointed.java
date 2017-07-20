@@ -15,7 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
@@ -106,11 +106,11 @@ public final class RenderTurretPointed
 
     private static void renderLabel(EntityTurret turret, double x, double y, double z, LabelEntry lbl) {
         Minecraft mc = Minecraft.getMinecraft();
-        FontRenderer fontrenderer = mc.fontRendererObj;
+        FontRenderer fontrenderer = mc.fontRenderer;
         float scale = 0.010F;
 
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer buffer = tessellator.getBuffer();
+        BufferBuilder buffer = tessellator.getBuffer();
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y + (turret.isUpsideDown ? 1.4F : 0.7F), z);
@@ -181,7 +181,7 @@ public final class RenderTurretPointed
         AxisAlignedBB renderBB = turret.getEntityBoundingBox().offset(-renderX, -renderY, -renderZ);
 
         Tessellator tess = Tessellator.getInstance();
-        VertexBuffer buf = tess.getBuffer();
+        BufferBuilder buf = tess.getBuffer();
 
         GlStateManager.pushMatrix();
         GlStateManager.disableTexture2D();
@@ -203,19 +203,19 @@ public final class RenderTurretPointed
         GlStateManager.popMatrix();
     }
 
-    private static void addLine(VertexBuffer buf, double minX, double minY, double minZ, double maxX, double maxY, double maxZ, ColorObj clr) {
+    private static void addLine(BufferBuilder buf, double minX, double minY, double minZ, double maxX, double maxY, double maxZ, ColorObj clr) {
         buf.pos(minX, minY, minZ).color(clr.fRed(), clr.fGreen(), clr.fBlue(), clr.fAlpha()).endVertex();
         buf.pos(maxX, maxY, maxZ).color(clr.fRed(), clr.fGreen(), clr.fBlue(), clr.fAlpha()).endVertex();
     }
 
-    private static void addQuad(VertexBuffer buf, double minX, double minY, double maxX, double maxY, ColorObj clr1, ColorObj clr2) {
+    private static void addQuad(BufferBuilder buf, double minX, double minY, double maxX, double maxY, ColorObj clr1, ColorObj clr2) {
         buf.pos(minX, minY, 0.0D).color(clr1.fRed(), clr1.fGreen(), clr1.fBlue(), clr1.fAlpha()).endVertex();
         buf.pos(minX, maxY, 0.0D).color(clr2.fRed(), clr2.fGreen(), clr2.fBlue(), clr2.fAlpha()).endVertex();
         buf.pos(maxX, maxY, 0.0D).color(clr2.fRed(), clr2.fGreen(), clr2.fBlue(), clr2.fAlpha()).endVertex();
         buf.pos(maxX, minY, 0.0D).color(clr1.fRed(), clr1.fGreen(), clr1.fBlue(), clr1.fAlpha()).endVertex();
     }
 
-    private static void addQuad(VertexBuffer buf, double minX, double minY, double maxX, double maxY, ColorObj clr) {
+    private static void addQuad(BufferBuilder buf, double minX, double minY, double maxX, double maxY, ColorObj clr) {
         addQuad(buf, minX, minY, maxX, maxY, clr, clr);
     }
 

@@ -23,10 +23,13 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.io.IOException;
 import java.util.List;
 
+@SideOnly(Side.CLIENT)
 public class GuiTcuUpgrades
         extends GuiContainer
         implements GuiTurretCtrlUnit
@@ -78,7 +81,7 @@ public class GuiTcuUpgrades
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
         RenderHelper.disableStandardItemLighting();
-        this.fontRendererObj.drawString(Lang.translate(Lang.CONTAINER_INV.get()), 8, this.ySize - 126 + 3, 0xFF404040);
+        this.fontRenderer.drawString(Lang.translate(Lang.CONTAINER_INV.get()), 8, this.ySize - 126 + 3, 0xFF404040);
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(-this.posX, -this.posY, 0.0F);
@@ -138,7 +141,7 @@ public class GuiTcuUpgrades
 
     @Override
     public FontRenderer getFontRenderer() {
-        return this.fontRendererObj;
+        return this.fontRenderer;
     }
 
     @Override

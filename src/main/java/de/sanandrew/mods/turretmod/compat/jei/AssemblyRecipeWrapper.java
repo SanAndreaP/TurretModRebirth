@@ -81,9 +81,9 @@ public class AssemblyRecipeWrapper
     @Override
     public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
         String s = Lang.translate(Lang.JEI_ASSEMBLY_ENERGY) + ' ' + this.fluxPerTick * this.timeInTicks + " RF";
-        minecraft.fontRendererObj.drawString(s, 0, 90, 0xFF808080);
+        minecraft.fontRenderer.drawString(s, 0, 90, 0xFF808080);
         s = Lang.translate(Lang.JEI_ASSEMBLY_TIME) + ' ' + MiscUtils.getTimeFromTicks(this.timeInTicks);
-        minecraft.fontRendererObj.drawString(s, 0, 100, 0xFF808080);
+        minecraft.fontRenderer.drawString(s, 0, 100, 0xFF808080);
     }
 
     @Override

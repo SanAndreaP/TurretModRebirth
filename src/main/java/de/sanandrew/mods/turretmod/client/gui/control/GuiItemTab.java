@@ -31,24 +31,23 @@ public class GuiItemTab
 	}
 
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partTicks) {
         if( this.visible ) {
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             GlStateManager.disableLighting();
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             mc.renderEngine.bindTexture(Resources.GUI_BUTTONS.getResource());
-            this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+            this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             int hoverState = this.getHoverState(this.hovered);
-            this.drawTexturedModalRect(this.xPosition, this.yPosition, 26 * (isRight ? 0 : 1), hoverState * 26, this.width, this.height);
+            this.drawTexturedModalRect(this.x, this.y, 26 * (isRight ? 0 : 1), hoverState * 26, this.width, this.height);
             GlStateManager.disableBlend();
 
             GlStateManager.enableDepth();
-            RenderUtils.renderStackInGui(this.renderedItem, this.xPosition + 5, this.yPosition + 5, 1.0F);
+            RenderUtils.renderStackInGui(this.renderedItem, this.x + 5, this.y + 5, 1.0F);
 
             if( this.hovered ) {
-                this.drawTabHoveringText(this.displayString, this.xPosition - (this.isRight ? mc.fontRendererObj.getStringWidth(this.displayString) + 5 : -5),
-                                         this.yPosition + 21, mc.fontRendererObj);
+                this.drawTabHoveringText(this.displayString, this.x - (this.isRight ? mc.fontRenderer.getStringWidth(this.displayString) + 5 : -5), this.y + 21, mc.fontRenderer);
             }
         }
     }

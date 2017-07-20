@@ -16,18 +16,15 @@ import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
+@SideOnly(Side.CLIENT)
 public class TurretInfoEntryMiscCraftable
         extends TurretInfoEntry
 {
@@ -60,19 +57,19 @@ public class TurretInfoEntryMiscCraftable
 
         for( int i = 0; i < cRecipe.recipeHeight; i++ ) {
             for( int j = 0; j < cRecipe.recipeWidth; j++ ) {
-                ItemStack recpStack = cRecipe.recipeItems[i * cRecipe.recipeWidth + j];
-                ItemStack[] recpStacks = null;
-                if( recpStack != null ) {
-                    List<ItemStack> stacks = new ArrayList<>();
-
-                    if( recpStack.getItemDamage() == OreDictionary.WILDCARD_VALUE ) {
-                        recpStack.getItem().getSubItems(recpStack.getItem(), CreativeTabs.SEARCH, stacks);
-                    } else {
-                        stacks.add(recpStack);
-                    }
-
-                    recpStacks = stacks.toArray(new ItemStack[stacks.size()]);
-                }
+                ItemStack[] recpStacks = cRecipe.recipeItems.get(i * cRecipe.recipeWidth + j).getMatchingStacks();
+//                ItemStack[] recpStacks = null;
+//                if( recpStack != null ) {
+//                    NonNullList<ItemStack> stacks = NonNullList.create();
+//
+//                    if( recpStack.getItemDamage() == OreDictionary.WILDCARD_VALUE ) {
+//                        recpStack.getItem().getSubItems(CreativeTabs.SEARCH, stacks);
+//                    } else {
+//                        stacks.add(recpStack);
+//                    }
+//
+//                    recpStacks = stacks.toArray(new ItemStack[stacks.size()]);
+//                }
 
                 crfArray[i * cRecipe.recipeWidth + j] = recpStacks;
             }
@@ -88,31 +85,31 @@ public class TurretInfoEntryMiscCraftable
 
         for( int i = 0; i < recipeHeight; i++ ) {
             for( int j = 0; j < recipeWidth; j++ ) {
-                Object recpObj = cRecipe.getInput()[i * recipeWidth + j];
-                ItemStack[] recpStacks = null;
-                if( recpObj != null ) {
-                    List<ItemStack> stacks = new ArrayList<>();
-
-                    if( recpObj instanceof ItemStack ) {
-                        ItemStack recpStack = (ItemStack) recpObj;
-                        if( recpStack.getItemDamage() == OreDictionary.WILDCARD_VALUE ) {
-                            recpStack.getItem().getSubItems(recpStack.getItem(), CreativeTabs.SEARCH, stacks);
-                        } else {
-                            stacks.add(recpStack);
-                        }
-                    } else if( recpObj instanceof ArrayList ) {
-//                        noinspection unchecked
-                        ((ArrayList<ItemStack>) recpObj).stream().filter(Objects::nonNull).forEach(recpStack -> {
-                            if( recpStack.getItemDamage() == OreDictionary.WILDCARD_VALUE ) {
-                                recpStack.getItem().getSubItems(recpStack.getItem(), CreativeTabs.SEARCH, stacks);
-                            } else {
-                                stacks.add(recpStack);
-                            }
-                        });
-                    }
-
-                    recpStacks = stacks.toArray(new ItemStack[stacks.size()]);
-                }
+                ItemStack[] recpStacks = cRecipe.getIngredients().get(i * recipeWidth + j).getMatchingStacks();
+//                ItemStack[] recpStacks = null;
+//                if( recpObj != null ) {
+//                    List<ItemStack> stacks = new ArrayList<>();
+//
+//                    if( recpObj instanceof ItemStack ) {
+//                        ItemStack recpStack = (ItemStack) recpObj;
+//                        if( recpStack.getItemDamage() == OreDictionary.WILDCARD_VALUE ) {
+//                            recpStack.getItem().getSubItems(recpStack.getItem(), CreativeTabs.SEARCH, stacks);
+//                        } else {
+//                            stacks.add(recpStack);
+//                        }
+//                    } else if( recpObj instanceof ArrayList ) {
+////                        noinspection unchecked
+//                        ((ArrayList<ItemStack>) recpObj).stream().filter(Objects::nonNull).forEach(recpStack -> {
+//                            if( recpStack.getItemDamage() == OreDictionary.WILDCARD_VALUE ) {
+//                                recpStack.getItem().getSubItems(recpStack.getItem(), CreativeTabs.SEARCH, stacks);
+//                            } else {
+//                                stacks.add(recpStack);
+//                            }
+//                        });
+//                    }
+//
+//                    recpStacks = stacks.toArray(new ItemStack[stacks.size()]);
+//                }
 
                 crfArray[i * recipeWidth + j] = recpStacks;
             }
@@ -123,7 +120,7 @@ public class TurretInfoEntryMiscCraftable
 
     @Override
     public void drawPage(GuiTurretInfo gui, int mouseX, int mouseY, int scrollY, float partTicks) {
-        gui.mc.fontRendererObj.drawString(TextFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 2, 0xFF0080BB);
+        gui.mc.fontRenderer.drawString(TextFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 2, 0xFF0080BB);
         Gui.drawRect(2, 12, MAX_ENTRY_WIDTH - 2, 13, 0xFF0080BB);
 
         gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
@@ -132,15 +129,15 @@ public class TurretInfoEntryMiscCraftable
 
         RenderUtils.renderStackInGui(this.getIcon(), 3, 17, 2.0F);
 
-        gui.mc.fontRendererObj.drawString(Lang.translate(Lang.TINFO_ENTRY_WORKBENCH.get()), 42, 16, 0xFF6A6A6A, false);
+        gui.mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_WORKBENCH.get()), 42, 16, 0xFF6A6A6A, false);
 
         this.drawHeight = 27 + 9 * this.crafting.<Integer>getValue(2);
 
         Gui.drawRect(2, this.drawHeight, MAX_ENTRY_WIDTH - 2, this.drawHeight + 1, 0xFF0080BB);
 
         String text = Lang.translate(this.desc).replace("\\n", "\n");
-        gui.mc.fontRendererObj.drawSplitString(text, 2, this.drawHeight + 3, MAX_ENTRY_WIDTH - 2, 0xFF000000);
-        this.drawHeight = gui.mc.fontRendererObj.splitStringWidth(text, MAX_ENTRY_WIDTH - 2) + this.drawHeight + 3 + 2;
+        gui.mc.fontRenderer.drawSplitString(text, 2, this.drawHeight + 3, MAX_ENTRY_WIDTH - 2, 0xFF000000);
+        this.drawHeight = gui.mc.fontRenderer.getWordWrappedHeight(text, MAX_ENTRY_WIDTH - 2) + this.drawHeight + 3 + 2;
 
         for( int i = 0, maxI = this.crafting.getValue(1); i < maxI; i++ ) {
             for( int j = 0, maxJ = this.crafting.getValue(2); j < maxJ; j++ ) {

@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.block;
 
+import com.google.common.collect.ImmutableMap;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
@@ -15,9 +16,11 @@ import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -32,10 +35,14 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.IUnlistedProperty;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 public class BlockTurretAssembly
         extends BlockHorizontal
@@ -50,12 +57,7 @@ public class BlockTurretAssembly
     }
 
     @Override
-    protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, FACING);
-    }
-
-    @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if( !world.isRemote ) {
             TurretModRebirth.proxy.openGui(player, EnumGui.GUI_TASSEMBLY_MAN, pos.getX(), pos.getY(), pos.getZ());
         }
@@ -91,7 +93,7 @@ public class BlockTurretAssembly
     }
 
     @Override
-    public IBlockState onBlockPlaced(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
         return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
     }
 
@@ -127,7 +129,7 @@ public class BlockTurretAssembly
                     entityitem.motionX = ((float)MiscUtils.RNG.randomGaussian() * motionSpeed);
                     entityitem.motionY = ((float)MiscUtils.RNG.randomGaussian() * motionSpeed + 0.2F);
                     entityitem.motionZ = ((float)MiscUtils.RNG.randomGaussian() * motionSpeed);
-                    world.spawnEntityInWorld(entityitem);
+                    world.spawnEntity(entityitem);
                 }
             }
 
@@ -148,33 +150,18 @@ public class BlockTurretAssembly
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public EnumBlockRenderType getRenderType(IBlockState state) {
-        return EnumBlockRenderType.MODEL;
+    protected BlockStateContainer createBlockState() {
+        return new MyBlockStateContainer(this, FACING);
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public boolean isOpaqueCube(IBlockState state) {
+    public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos) {
         return false;
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public boolean isNormalCube(IBlockState state) {
-        return false;
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public boolean hasComparatorInputOverride(IBlockState state) {
-        return true;
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public int getComparatorInputOverride(IBlockState blockState, World world, BlockPos pos) {
-        return Container.calcRedstoneFromInventory((IInventory) world.getTileEntity(pos));
+    public int getMetaFromState(IBlockState state) {
+        return state.getValue(FACING).getIndex();
     }
 
     @Override
@@ -191,12 +178,6 @@ public class BlockTurretAssembly
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getMetaFromState(IBlockState state) {
-        return state.getValue(FACING).getIndex();
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
     public IBlockState withRotation(IBlockState state, Rotation rot) {
         return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
     }
@@ -207,13 +188,53 @@ public class BlockTurretAssembly
         return state.withRotation(mirrorIn.toRotation(state.getValue(FACING)));
     }
 
-    @Override
-    @SuppressWarnings("deprecation")
-    public boolean isFullCube(IBlockState state) {
-        return false;
-    }
-
     public EnumFacing getDirection(int meta) {
         return this.getStateFromMeta(meta).getValue(FACING);
+    }
+
+    private static final class MyBlockStateContainer
+            extends BlockStateContainer
+    {
+        public MyBlockStateContainer(Block blockIn, IProperty<?>... properties) {
+            super(blockIn, properties);
+        }
+
+        @Override
+        protected StateImplementation createState(Block block, ImmutableMap<IProperty<?>, Comparable<?>> properties, @Nullable ImmutableMap<IUnlistedProperty<?>, Optional<?>> unlistedProperties) {
+            return new MyStateImplementation(block, properties);
+        }
+    }
+
+    private static final class MyStateImplementation
+            extends BlockStateContainer.StateImplementation
+    {
+        protected MyStateImplementation(Block blockIn, ImmutableMap<IProperty<?>, Comparable<?>> propertiesIn) {
+            super(blockIn, propertiesIn);
+        }
+
+        @Override
+        public boolean hasComparatorInputOverride() {
+            return true;
+        }
+
+        @Override
+        public int getComparatorInputOverride(World worldIn, BlockPos pos) {
+            return Container.calcRedstoneFromInventory((IInventory) worldIn.getTileEntity(pos));
+        }
+
+        @Override
+        public boolean isOpaqueCube() {
+            return false;
+        }
+
+        @Override
+        public EnumBlockRenderType getRenderType() {
+            return EnumBlockRenderType.MODEL;
+        }
+
+        @Override
+        public boolean isFullCube() {
+            return false;
+        }
     }
 }

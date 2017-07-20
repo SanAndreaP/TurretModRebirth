@@ -30,7 +30,7 @@ public class ModelTurretAssembly
     }
 
     public void render(float scale, TileEntityTurretAssembly te, float armX, float armZ) {
-        int meta = te.hasWorldObj() ? BlockRegistry.turret_assembly.getDirection(te.getBlockMetadata()).getHorizontalIndex() : 0;
+        int meta = te.hasWorld() ? BlockRegistry.turret_assembly.getDirection(te.getBlockMetadata()).getHorizontalIndex() : 0;
         this.base.rotateAngleY = (float)(90.0D * meta / 180.0D * Math.PI);
 
         this.robotBinding.rotationPointX = armX;

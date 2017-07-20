@@ -17,7 +17,6 @@ import de.sanandrew.mods.turretmod.api.ITmrUtils;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
-import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
@@ -30,22 +29,18 @@ import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -114,26 +109,26 @@ public class TurretModRebirth
         proxy.postInit(event);
     }
 
-    @Mod.EventHandler
-    public void onMissingMappings(FMLMissingMappingsEvent event) {
-        remap(event, BlockRegistry.electrolyte_generator, "sapturretmod:potato_generator");
-        remap(event, ItemRegistry.repair_kit, "sapturretmod:turret_repair_kit");
-        remap(event, ItemRegistry.assembly_upg_auto, "sapturretmod:turret_assembly_auto");
-        remap(event, ItemRegistry.assembly_upg_speed, "sapturretmod:turret_assembly_speed");
-        remap(event, ItemRegistry.assembly_upg_filter, "sapturretmod:turret_assembly_filter");
-    }
-
-    private static void remap(FMLMissingMappingsEvent event, final Block block, final String oldName) {
-        event.get().stream().filter(mapping -> mapping != null && mapping.name.equals(oldName) && mapping.type == GameRegistry.Type.BLOCK).forEach(mapping -> mapping.remap(block));
-        Item itm = Item.getItemFromBlock(block);
-        if( itm != null ) {
-            remap(event, itm, oldName);
-        }
-    }
-
-    private static void remap(FMLMissingMappingsEvent event, final Item item, final String oldName) {
-        event.get().stream().filter(mapping -> mapping != null && mapping.name.equals(oldName) && mapping.type == GameRegistry.Type.ITEM).forEach(mapping -> mapping.remap(item));
-    }
+//    @Mod.EventHandler
+//    public void onMissingMappings(RegistryEvent.MissingMappings event) {
+//        remap(event, BlockRegistry.electrolyte_generator, "sapturretmod:potato_generator");
+//        remap(event, ItemRegistry.repair_kit, "sapturretmod:turret_repair_kit");
+//        remap(event, ItemRegistry.assembly_upg_auto, "sapturretmod:turret_assembly_auto");
+//        remap(event, ItemRegistry.assembly_upg_speed, "sapturretmod:turret_assembly_speed");
+//        remap(event, ItemRegistry.assembly_upg_filter, "sapturretmod:turret_assembly_filter");
+//    }
+//
+//    private static void remap(FMLMissingMappingsEvent event, final Block block, final String oldName) {
+//        event.get().stream().filter(mapping -> mapping != null && mapping.name.equals(oldName) && mapping.type == GameRegistry.Type.BLOCK).forEach(mapping -> mapping.remap(block));
+//        Item itm = Item.getItemFromBlock(block);
+//        if( itm != null ) {
+//            remap(event, itm, oldName);
+//        }
+//    }
+//
+//    private static void remap(FMLMissingMappingsEvent event, final Item item, final String oldName) {
+//        event.get().stream().filter(mapping -> mapping != null && mapping.name.equals(oldName) && mapping.type == GameRegistry.Type.ITEM).forEach(mapping -> mapping.remap(item));
+//    }
 
     private static void loadPlugins(ASMDataTable dataTable) {
         String annotationClassName = TmrPlugin.class.getCanonicalName();

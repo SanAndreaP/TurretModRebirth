@@ -16,9 +16,12 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
+@SideOnly(Side.CLIENT)
 public abstract class TurretInfoEntry
 {
     public static final int MAX_ENTRY_WIDTH = 168;
@@ -55,12 +58,12 @@ public abstract class TurretInfoEntry
             Gui.drawRect(0, 0, MAX_ENTRY_WIDTH, 20, 0xD0000000);
 
             List tooltip = GuiUtils.getTooltipWithoutShift(stack);
-            gui.mc.fontRendererObj.drawString(tooltip.get(0).toString(), 22, 2, 0xFFFFFFFF, false);
+            gui.mc.fontRenderer.drawString(tooltip.get(0).toString(), 22, 2, 0xFFFFFFFF, false);
             if( drawTooltip && tooltip.size() > 1 ) {
-                gui.mc.fontRendererObj.drawString(tooltip.get(1).toString(), 22, 11, 0xFF808080, false);
+                gui.mc.fontRenderer.drawString(tooltip.get(1).toString(), 22, 11, 0xFF808080, false);
             }
 
-            RenderUtils.renderStackInGui(stack, 2, 2, 1.0F, gui.mc.fontRendererObj);
+            RenderUtils.renderStackInGui(stack, 2, 2, 1.0F, gui.mc.fontRenderer);
 
             GlStateManager.popMatrix();
         }

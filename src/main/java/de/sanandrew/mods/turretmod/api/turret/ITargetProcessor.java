@@ -7,6 +7,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.common.eventhandler.EventBus;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -15,11 +16,11 @@ public interface ITargetProcessor
 {
     EventBus TARGET_BUS = new EventBus();
 
-    boolean addAmmo(ItemStack stack);
+    boolean addAmmo(@Nonnull ItemStack stack);
 
     int getAmmoCount();
 
-    ItemStack getAmmoStack();
+    @Nonnull ItemStack getAmmoStack();
 
     boolean hasAmmo();
 
@@ -27,7 +28,7 @@ public interface ITargetProcessor
 
     void decrAmmo();
 
-    boolean isAmmoApplicable(ItemStack stack);
+    boolean isAmmoApplicable(@Nonnull ItemStack stack);
 
     int getMaxAmmoCapacity();
 

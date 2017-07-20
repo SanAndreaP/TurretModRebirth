@@ -22,6 +22,8 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -34,6 +36,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.UUID;
 
+@SideOnly(Side.CLIENT)
 public class GuiTcuPlayerTargets
         extends GuiScreen
         implements GuiTurretCtrlUnit
@@ -118,12 +121,12 @@ public class GuiTcuPlayerTargets
 
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, GuiTCUHelper.X_SIZE, GuiTCUHelper.Y_SIZE);
-        this.drawTexturedModalRect(this.guiLeft + 163, this.guiTop + 19 + MathHelper.floor_float(scroll * 109.0F), 176, this.canScroll ? 0 : 6, 6, 6);
+        this.drawTexturedModalRect(this.guiLeft + 163, this.guiTop + 19 + MathHelper.floor(scroll * 109.0F), 176, this.canScroll ? 0 : 6, 6, 6);
 
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
         GuiUtils.glScissor(this.guiLeft + 6, this.guiTop + 19, GuiTCUHelper.X_SIZE - 23, 115);
 
-        int offsetY = Math.round(-this.scroll * (this.tempTargetList.size() - 11)) * (this.fontRendererObj.FONT_HEIGHT + 1);
+        int offsetY = Math.round(-this.scroll * (this.tempTargetList.size() - 11)) * (this.fontRenderer.FONT_HEIGHT + 1);
         boolean targetListChanged = false;
 
         for( Entry<UUID, Boolean> entry : this.tempTargetList.entrySet() ) {
@@ -155,9 +158,9 @@ public class GuiTcuPlayerTargets
 
             int textColor = 0xFFFFFF;
 
-            this.fontRendererObj.drawString(PlayerList.INSTANCE.getPlayerName(entry.getKey()), this.guiLeft + 18, this.guiTop + 21 + offsetY, textColor, false);
+            this.fontRenderer.drawString(PlayerList.INSTANCE.getPlayerName(entry.getKey()), this.guiLeft + 18, this.guiTop + 21 + offsetY, textColor, false);
 
-            offsetY += this.fontRendererObj.FONT_HEIGHT + 1;
+            offsetY += this.fontRenderer.FONT_HEIGHT + 1;
         }
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
@@ -227,7 +230,7 @@ public class GuiTcuPlayerTargets
 
     @Override
     public FontRenderer getFontRenderer() {
-        return this.fontRendererObj;
+        return this.fontRenderer;
     }
 
     @Override

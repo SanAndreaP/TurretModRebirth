@@ -21,14 +21,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
+@SideOnly(Side.CLIENT)
 public class RenderTurretAssembly
         extends TileEntitySpecialRenderer<TileEntityTurretAssembly>
 {
@@ -40,7 +43,7 @@ public class RenderTurretAssembly
     private ShaderItemAlphaOverride shaderCallback = new ShaderItemAlphaOverride();
 
     @Override
-    public void renderTileEntityAt(TileEntityTurretAssembly tile, double x, double y, double z, float partTicks, int destroyStage) {
+    public void render(TileEntityTurretAssembly tile, double x, double y, double z, float partTicks, int destroyStage, float alpha) {
         GlStateManager.pushMatrix();
         GlStateManager.translate((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
@@ -87,7 +90,7 @@ public class RenderTurretAssembly
         int tileZ = pos.getZ();
         float dist = (float) Minecraft.getMinecraft().player.getDistance(tileX + 0.5F, tileY + 0.5F, tileZ + 0.5F);
         Tessellator tess = Tessellator.getInstance();
-        VertexBuffer buf = tess.getBuffer();
+        BufferBuilder buf = tess.getBuffer();
 
         GlStateManager.pushMatrix();
         GlStateManager.disableTexture2D();

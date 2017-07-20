@@ -80,7 +80,7 @@ public abstract class EntityTurretProjectile
         Vec3d targetVec = new Vec3d(target.posX - shooter.posX, (target.getEntityBoundingBox().minY + target.height / 1.4D) - y, target.posZ - shooter.posZ);
         this.setHeadingFromVec(targetVec.normalize());
 
-        this.motionY += this.getArc() * Math.sqrt(targetVec.xCoord * targetVec.xCoord + targetVec.zCoord * targetVec.zCoord) * 0.05;
+        this.motionY += this.getArc() * Math.sqrt(targetVec.x * targetVec.x + targetVec.z * targetVec.z) * 0.05;
     }
 
     public EntityTurretProjectile(World world, Entity shooter, Vec3d shootingVec) {
@@ -92,14 +92,14 @@ public abstract class EntityTurretProjectile
         double scatterVal = getScatterValue();
         float initSpeed = getInitialSpeedMultiplier();
 
-        this.motionX = vector.xCoord * initSpeed + (MiscUtils.RNG.randomDouble() * 2.0D - 1.0D) * scatterVal;
-        this.motionZ = vector.zCoord * initSpeed + (MiscUtils.RNG.randomDouble() * 2.0D - 1.0D) * scatterVal;
-        this.motionY = vector.yCoord * initSpeed + (MiscUtils.RNG.randomDouble() * 2.0D - 1.0D) * scatterVal;
+        this.motionX = vector.x * initSpeed + (MiscUtils.RNG.randomDouble() * 2.0D - 1.0D) * scatterVal;
+        this.motionZ = vector.z * initSpeed + (MiscUtils.RNG.randomDouble() * 2.0D - 1.0D) * scatterVal;
+        this.motionY = vector.y * initSpeed + (MiscUtils.RNG.randomDouble() * 2.0D - 1.0D) * scatterVal;
 
-        float vecPlaneNormal = MathHelper.sqrt_double(vector.xCoord * vector.xCoord + vector.zCoord * vector.zCoord);
+        float vecPlaneNormal = MathHelper.sqrt_double(vector.x * vector.x + vector.z * vector.z);
 
-        this.prevRotationYaw = this.rotationYaw = (float)(Math.atan2(vector.xCoord, vector.zCoord) * 180.0D / Math.PI);
-        this.prevRotationPitch = this.rotationPitch = (float)(Math.atan2(vector.yCoord, vecPlaneNormal) * 180.0D / Math.PI);
+        this.prevRotationYaw = this.rotationYaw = (float)(Math.atan2(vector.x, vector.z) * 180.0D / Math.PI);
+        this.prevRotationPitch = this.rotationPitch = (float)(Math.atan2(vector.y, vecPlaneNormal) * 180.0D / Math.PI);
     }
 
     @Override
@@ -181,7 +181,7 @@ public abstract class EntityTurretProjectile
         futurePosVec = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
 
         if( hitObj != null ) {
-            futurePosVec = new Vec3d(hitObj.hitVec.xCoord, hitObj.hitVec.yCoord, hitObj.hitVec.zCoord);
+            futurePosVec = new Vec3d(hitObj.hitVec.x, hitObj.hitVec.y, hitObj.hitVec.z);
         }
 
         Entity entity = null;
@@ -318,7 +318,7 @@ public abstract class EntityTurretProjectile
     }
 
     protected void processHit(@SuppressWarnings("UnusedParameters") RayTraceResult hitObj) {
-        this.setPosition(hitObj.hitVec.xCoord, hitObj.hitVec.yCoord, hitObj.hitVec.zCoord);
+        this.setPosition(hitObj.hitVec.x, hitObj.hitVec.y, hitObj.hitVec.z);
         this.playSound(this.getRicochetSound(), 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
         this.setDead();
     }

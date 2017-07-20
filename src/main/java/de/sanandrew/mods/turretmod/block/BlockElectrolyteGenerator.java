@@ -8,7 +8,6 @@
  */
 package de.sanandrew.mods.turretmod.block;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
@@ -42,6 +41,9 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nullable;
+import java.util.Optional;
+
 public class BlockElectrolyteGenerator
         extends Block
 {
@@ -62,12 +64,12 @@ public class BlockElectrolyteGenerator
 
     @Override
     @SuppressWarnings("TailRecursion")
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if( !world.isRemote ) {
             if( state.getValue(TILE_HOLDER) ) {
                 TurretModRebirth.proxy.openGui(player, EnumGui.GUI_POTATOGEN, pos.getX(), pos.getY(), pos.getZ());
             } else {
-                return this.onBlockActivated(world, pos.down(1), world.getBlockState(pos.down(1)), player, hand, heldItem, side, hitX, hitY, hitZ);
+                return this.onBlockActivated(world, pos.down(1), world.getBlockState(pos.down(1)), player, hand, side, hitX, hitY, hitZ);
             }
         }
 
@@ -119,7 +121,7 @@ public class BlockElectrolyteGenerator
                             entityitem.motionX = ((float) MiscUtils.RNG.randomGaussian() * motionSpeed);
                             entityitem.motionY = ((float) MiscUtils.RNG.randomGaussian() * motionSpeed + 0.2F);
                             entityitem.motionZ = ((float) MiscUtils.RNG.randomGaussian() * motionSpeed);
-                            world.spawnEntityInWorld(entityitem);
+                            world.spawnEntity(entityitem);
                         }
                     }
                 }
@@ -188,7 +190,7 @@ public class BlockElectrolyteGenerator
         }
 
         @Override
-        protected StateImplementation createState(Block block, ImmutableMap<IProperty<?>, Comparable<?>> properties, ImmutableMap<IUnlistedProperty<?>, Optional<?>> unlistedProperties) {
+        protected StateImplementation createState(Block block, ImmutableMap<IProperty<?>, Comparable<?>> properties, @Nullable ImmutableMap<IUnlistedProperty<?>, Optional<?>> unlistedProperties) {
             return new MyStateImplementation(block, properties);
         }
     }

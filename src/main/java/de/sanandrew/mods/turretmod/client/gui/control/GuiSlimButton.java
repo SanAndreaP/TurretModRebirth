@@ -13,7 +13,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class GuiSlimButton
         extends GuiButton
 {
@@ -24,12 +27,12 @@ public class GuiSlimButton
     }
 
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partTicks) {
         if( this.visible ) {
             int center = this.width / 2;
             int textColor = 0xE0E0E0;
 
-            this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+            this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             int hoverState = this.getHoverState(this.hovered);
 
             if( this.packedFGColour != 0 ) {
@@ -44,10 +47,10 @@ public class GuiSlimButton
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 78 + hoverState * 12, center, this.height);
-            this.drawTexturedModalRect(this.xPosition + center, this.yPosition, 158 - center, 78 + hoverState * 12, center, this.height);
+            this.drawTexturedModalRect(this.x, this.y, 0, 78 + hoverState * 12, center, this.height);
+            this.drawTexturedModalRect(this.x + center, this.y, 158 - center, 78 + hoverState * 12, center, this.height);
             this.mouseDragged(mc, mouseX, mouseY);
-            this.drawCenteredString(mc.fontRendererObj, this.displayString, this.xPosition + center, this.yPosition + (this.height - 8) / 2, textColor);
+            this.drawCenteredString(mc.fontRenderer, this.displayString, this.x + center, this.y + (this.height - 8) / 2, textColor);
             GlStateManager.disableBlend();
         }
     }

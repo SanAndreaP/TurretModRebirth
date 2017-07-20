@@ -10,7 +10,10 @@ package de.sanandrew.mods.turretmod.client.particle;
 
 import net.minecraft.client.particle.Particle;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class ParticleAssemblySpark
         extends Particle
 {
@@ -30,7 +33,7 @@ public class ParticleAssemblySpark
         this.motionY *= 0.02D;
         this.motionZ *= 0.02D;
         this.particleMaxAge = (int)(20.0D / (Math.random() * 0.8D + 0.2D));
-        this.isCollided = false;
+        this.canCollide = false;
     }
 
     @Override
@@ -41,7 +44,7 @@ public class ParticleAssemblySpark
         this.prevPosY = this.posY;
         this.prevPosZ = this.posZ;
 
-        this.moveEntity(this.motionX, this.motionY, this.motionZ);
+        this.move(this.motionX, this.motionY, this.motionZ);
 
         if( this.particleAge++ >= this.particleMaxAge ) {
             this.setExpired();

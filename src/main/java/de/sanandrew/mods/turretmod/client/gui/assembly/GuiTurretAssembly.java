@@ -159,28 +159,29 @@ public class GuiTurretAssembly
 
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
 
-        int energy = this.assembly.getCapability(CapabilityEnergy.ENERGY, EnumFacing.DOWN).getEnergyStored();
+        IEnergyStorage energyCap = this.assembly.getCapability(CapabilityEnergy.ENERGY, EnumFacing.DOWN);
+        int energy = energyCap == null ? 0 : energyCap.getEnergyStored();
         int maxEnergy = TileEntityTurretAssembly.MAX_FLUX_STORAGE;
 
         double energyPerc = energy / (double) maxEnergy;
-        int energyBarY = Math.max(0, Math.min(82, MathHelper.ceiling_double_int((1.0D - energyPerc) * 82.0D)));
+        int energyBarY = Math.max(0, Math.min(82, MathHelper.ceil((1.0D - energyPerc) * 82.0D)));
 
         this.drawTexturedModalRect(this.guiLeft + 210, this.guiTop + 8 + energyBarY, 230, 12 + energyBarY, 12, 82 - energyBarY);
 
         double procPerc = this.assembly.isActive ? this.assembly.getField(TileEntityTurretAssembly.FIELD_TICKS_CRAFTED) / (double) this.assembly.getField(TileEntityTurretAssembly.FIELD_MAX_TICKS_CRAFTED) : 0.0D;
-        int procBarX = Math.max(0, Math.min(50, MathHelper.ceiling_double_int(procPerc * 50.0D)));
+        int procBarX = Math.max(0, Math.min(50, MathHelper.ceil(procPerc * 50.0D)));
 
         this.drawTexturedModalRect(this.guiLeft + 156, this.guiTop + 30, 0, 222, procBarX, 5);
 
         if( this.cacheRecipes != null ) {
             int maxScroll = this.cacheRecipes.size() - 4;
             if( maxScroll > 0 && this.assembly.currCrafting == null ) {
-                int scrollBtnPos = MathHelper.floor_double(79.0D / maxScroll * this.scrollPos);
+                int scrollBtnPos = MathHelper.floor(79.0D / maxScroll * this.scrollPos);
 
                 if( (mouseX >= this.guiLeft + 144 && mouseX < this.guiLeft + 150 && mouseY >= this.guiTop + 7 && mouseY < this.guiTop + 92) || this.isScrolling ) {
                     if( isLmbDown ) {
                         scrollBtnPos = Math.min(79, Math.max(0, mouseY - 7 - this.guiTop));
-                        this.scrollPos = MathHelper.floor_double(scrollBtnPos / 78.0D * maxScroll);
+                        this.scrollPos = MathHelper.floor(scrollBtnPos / 78.0D * maxScroll);
                         this.isScrolling = true;
                     }
                 }
@@ -197,7 +198,7 @@ public class GuiTurretAssembly
                 ItemStack stack = this.cacheRecipes.get(index).getValue(1);
                 boolean isActive = this.assembly.currCrafting == null || (!this.assembly.isAutomated() && ItemStackUtils.areEqual(this.assembly.currCrafting.getValue(1), stack));
 
-                RenderUtils.renderStackInGui(stack, this.guiLeft + 36, this.guiTop + 10 + 21 * i, 1.0F, this.fontRendererObj);
+                RenderUtils.renderStackInGui(stack, this.guiLeft + 36, this.guiTop + 10 + 21 * i, 1.0F, this.fontRenderer);
 
                 List tooltip = GuiUtils.getTooltipWithoutShift(stack);
                 this.frDetails.drawString(tooltip.get(0).toString(), this.guiLeft + 57, this.guiTop + 10 + 21 * i, 0xFFFFFFFF);
@@ -276,13 +277,13 @@ public class GuiTurretAssembly
         }
 
         if( this.assembly.currCrafting != null ) {
-            String cnt = String.format("%d", this.assembly.currCrafting.<ItemStack>getValue(1).stackSize);
+            String cnt = String.format("%d", this.assembly.currCrafting.<ItemStack>getValue(1).getCount());
             if( this.assembly.isAutomated() ) {
                 cnt = String.valueOf('\u221E');
             }
 
             this.frDetails.drawString(Lang.translate(Lang.TASSEMBLY_CRAFTING.get()), this.guiLeft + 156, this.guiTop + 40, 0xFF303030);
-            RenderUtils.renderStackInGui(this.assembly.currCrafting.getValue(1), this.guiLeft + 190, this.guiTop + 36, 1.0F, this.fontRendererObj, cnt, true);
+            RenderUtils.renderStackInGui(this.assembly.currCrafting.getValue(1), this.guiLeft + 190, this.guiTop + 36, 1.0F, this.fontRenderer, cnt, true);
 
             this.cancelTask.enabled = true;
             this.automate.enabled = false;
@@ -363,7 +364,7 @@ public class GuiTurretAssembly
             ItemStack stack = entryStacks[(int)((this.lastTimestamp / 1000L) % entryStacks.length)];
             List<?> tooltip = GuiUtils.getTooltipWithoutShift(stack);
 
-            String dscL1 = String.format("%dx %s", stack.stackSize, tooltip.get(0));
+            String dscL1 = String.format("%dx %s", stack.getCount(), tooltip.get(0));
             String dscL2 = null;
             tHeight+=9;
 
@@ -426,7 +427,7 @@ public class GuiTurretAssembly
 
         IRecipeEntry[] ingredients = recipeEntry.resources;
 
-        String rf = String.format("%d RF/t", MathHelper.ceiling_float_int(recipeEntry.fluxPerTick * (this.assembly.hasSpeedUpgrade() ? 1.1F : 1.0F)));
+        String rf = String.format("%d RF/t", MathHelper.ceil(recipeEntry.fluxPerTick * (this.assembly.hasSpeedUpgrade() ? 1.1F : 1.0F)));
         String ticks = MiscUtils.getTimeFromTicks(recipeEntry.ticksProcessing);
 
         int textWidth = Math.max(Math.max(ingredients.length * 9, this.frDetails.getStringWidth(rf) + 10), this.frDetails.getStringWidth(ticks) + 10);
@@ -490,10 +491,13 @@ public class GuiTurretAssembly
 
     private void drawRFluxLabel(int mouseX, int mouseY) {
         IEnergyStorage stg = this.assembly.getCapability(CapabilityEnergy.ENERGY, EnumFacing.DOWN);
+        if( stg == null ) {
+            return;
+        }
         String amount = String.format("%d / %d RF", stg.getEnergyStored(), stg.getMaxEnergyStored());
         String consumption = Lang.translate(Lang.TASSEMBLY_RF_USING.get(), this.assembly.getField(TileEntityTurretAssembly.FIELD_FLUX_CONSUMPTION) * (this.assembly.hasSpeedUpgrade() ? 4 : 1));
 
-        int textWidth = Math.max(this.fontRendererObj.getStringWidth(amount), this.fontRendererObj.getStringWidth(consumption));
+        int textWidth = Math.max(this.fontRenderer.getStringWidth(amount), this.fontRenderer.getStringWidth(consumption));
         int xPos = mouseX - 12 - textWidth;
         int yPos = mouseY - 12;
         byte height = 18;
@@ -522,11 +526,11 @@ public class GuiTurretAssembly
 
         GlStateManager.disableDepth();
         GlStateManager.translate(0.5F, 0.5F, 0.0F);
-        this.fontRendererObj.drawString(amount, 0, 0, 0xFF3F3F3F);
-        this.fontRendererObj.drawString(consumption, 0, 9, 0xFF3F3F3F);
+        this.fontRenderer.drawString(amount, 0, 0, 0xFF3F3F3F);
+        this.fontRenderer.drawString(consumption, 0, 9, 0xFF3F3F3F);
         GlStateManager.translate(-0.5F, -0.5F, -0.0F);
-        this.fontRendererObj.drawString(amount, 0, 0, 0xFFFFFFFF);
-        this.fontRendererObj.drawString(consumption, 0, 9, 0xFFFFFFFF);
+        this.fontRenderer.drawString(amount, 0, 0, 0xFFFFFFFF);
+        this.fontRenderer.drawString(consumption, 0, 9, 0xFFFFFFFF);
         GlStateManager.enableDepth();
         RenderHelper.enableGUIStandardItemLighting();
 
@@ -597,7 +601,7 @@ public class GuiTurretAssembly
             if( scrollGroupPos + 4 < tabs.length ) {
                 scrollGroupPos++;
                 for( int i = 0; i < tabs.length; i++ ) {
-                    tabs[i].yPosition -= 15;
+                    tabs[i].y -= 15;
                     tabs[i].visible = i >= scrollGroupPos && i < scrollGroupPos + 4;
                 }
 
@@ -611,7 +615,7 @@ public class GuiTurretAssembly
             if( scrollGroupPos > 0 ) {
                 scrollGroupPos--;
                 for( int i = 0; i < tabs.length; i++ ) {
-                    tabs[i].yPosition += 15;
+                    tabs[i].y += 15;
                     tabs[i].visible = i >= scrollGroupPos && i < scrollGroupPos + 4;
                 }
 

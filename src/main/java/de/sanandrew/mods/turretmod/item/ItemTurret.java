@@ -101,7 +101,7 @@ public class ItemTurret
                     }
 
                     if( !player.capabilities.isCreativeMode ) {
-                        stack.stackSize--;
+                        stack.shrink(1);
                     }
                 }
             }
@@ -139,7 +139,7 @@ public class ItemTurret
                             }
 
                             if( !player.capabilities.isCreativeMode ) {
-                                stack.stackSize--;
+                                stack.shrink(1);
                             }
                         }
                     }

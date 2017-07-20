@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.RayTraceResult;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public interface ITmrUtils
@@ -16,7 +17,7 @@ public interface ITmrUtils
 
     IUpgradeProcessor getNewUpgradeProcInstance(EntityTurret turret);
 
-    boolean isTCUItem(ItemStack stack);
+    boolean isTCUItem(@Nonnull ItemStack stack);
 
     void onTurretDeath(EntityTurret turret);
 
@@ -32,5 +33,5 @@ public interface ITmrUtils
 
     <T extends Entity> List<T> getPassengersOfClass(Entity e, Class<T> psgClass);
 
-    boolean isStackValid(ItemStack stack);
+    boolean isStackValid(@Nonnull ItemStack stack);
 }

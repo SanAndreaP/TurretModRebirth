@@ -52,7 +52,7 @@ final class EntityAIMoveTowardsTurret
             if( pathBlockVec == null ) {
                 return false;
             } else {
-                this.turretPath = this.theEntity.getNavigator().getPathToXYZ(pathBlockVec.xCoord, pathBlockVec.yCoord, pathBlockVec.zCoord);
+                this.turretPath = this.theEntity.getNavigator().getPathToXYZ(pathBlockVec.x, pathBlockVec.y, pathBlockVec.z);
 
                 return true;
             }

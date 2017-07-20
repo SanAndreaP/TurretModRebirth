@@ -14,10 +14,12 @@ import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import org.apache.logging.log4j.Level;
 
 @SuppressWarnings("ConstantNamingConvention")
 @Mod.EventBusSubscriber
@@ -42,7 +44,12 @@ public class BlockRegistry
                 turret_assembly, electrolyte_generator
         };
         for( Block block : blocks ) {
-            event.getRegistry().register(new ItemBlock(block).setRegistryName(block.getRegistryName()));
+            ResourceLocation regName = block.getRegistryName();
+            if( regName != null ) {
+                event.getRegistry().register(new ItemBlock(block).setRegistryName(regName));
+            } else {
+                TmrConstants.LOG.log(Level.ERROR, String.format("Cannot register Item for Block %s as it does not have a registry name!", block));
+            }
         }
     }
 

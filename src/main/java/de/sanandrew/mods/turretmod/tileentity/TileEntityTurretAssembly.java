@@ -210,7 +210,7 @@ public class TileEntityTurretAssembly
 
                             if( this.currCrafting.<ItemStack>getValue(1).stackSize > 1 ) {
                                 if( !this.automate ) {
-                                    this.currCrafting.<ItemStack>getValue(1).stackSize--;
+                                    this.currCrafting.<ItemStack>getValue(1).shrink(1);
                                 }
                             } else if( !this.automate ) {
                                 this.cancelCrafting();

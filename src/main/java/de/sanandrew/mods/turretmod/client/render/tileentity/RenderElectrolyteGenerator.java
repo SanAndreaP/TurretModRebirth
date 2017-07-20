@@ -15,20 +15,23 @@ import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
+@SideOnly(Side.CLIENT)
 public class RenderElectrolyteGenerator
         extends TileEntitySpecialRenderer<TileEntityElectrolyteGenerator>
 {
     private static int wireCallList;
 
     @Override
-    public void renderTileEntityAt(TileEntityElectrolyteGenerator tile, double x, double y, double z, float partTicks, int destroyStage) {
+    public void render(TileEntityElectrolyteGenerator tile, double x, double y, double z, float partTicks, int destroyStage, float alpha) {
         GlStateManager.pushMatrix();
         GlStateManager.translate((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
@@ -104,22 +107,22 @@ public class RenderElectrolyteGenerator
             GlStateManager.glNewList(wireCallList, GL11.GL_COMPILE);
 
             Tessellator tess = Tessellator.getInstance();
-            VertexBuffer buf = tess.getBuffer();
+            BufferBuilder buf = tess.getBuffer();
 
             buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
             for( int i = 0; i < builtVecA.length - 1; i++ ) {
                 final double u = Math.abs(builtVecA[i+1].subtract(builtVecA[i]).lengthVector()) * 4.5D;
 
-                buf.pos(builtVecA[i].xCoord, builtVecA[i].yCoord, -scale).tex(0.0D, 1.0D).endVertex();
-                buf.pos(builtVecA[i+1].xCoord, builtVecA[i+1].yCoord, -scale).tex(u, 1.0D).endVertex();
-                buf.pos(builtVecB[i+1].xCoord, builtVecB[i+1].yCoord, scale).tex(u, 0.0D).endVertex();
-                buf.pos(builtVecB[i].xCoord, builtVecB[i].yCoord, scale).tex(0.0D, 0.0D).endVertex();
+                buf.pos(builtVecA[i].x, builtVecA[i].y, -scale).tex(0.0D, 1.0D).endVertex();
+                buf.pos(builtVecA[i+1].x, builtVecA[i+1].y, -scale).tex(u, 1.0D).endVertex();
+                buf.pos(builtVecB[i+1].x, builtVecB[i+1].y, scale).tex(u, 0.0D).endVertex();
+                buf.pos(builtVecB[i].x, builtVecB[i].y, scale).tex(0.0D, 0.0D).endVertex();
 
-                buf.pos(builtVecA[i].xCoord, builtVecA[i].yCoord, scale).tex(0.0D, 1.0D).endVertex();
-                buf.pos(builtVecA[i+1].xCoord, builtVecA[i+1].yCoord, scale).tex(u, 1.0D).endVertex();
-                buf.pos(builtVecB[i+1].xCoord, builtVecB[i+1].yCoord, -scale).tex(u, 0.0D).endVertex();
-                buf.pos(builtVecB[i].xCoord, builtVecB[i].yCoord, -scale).tex(0.0D, 0.0D).endVertex();
+                buf.pos(builtVecA[i].x, builtVecA[i].y, scale).tex(0.0D, 1.0D).endVertex();
+                buf.pos(builtVecA[i+1].x, builtVecA[i+1].y, scale).tex(u, 1.0D).endVertex();
+                buf.pos(builtVecB[i+1].x, builtVecB[i+1].y, -scale).tex(u, 0.0D).endVertex();
+                buf.pos(builtVecB[i].x, builtVecB[i].y, -scale).tex(0.0D, 0.0D).endVertex();
             }
 
             tess.draw();
@@ -138,9 +141,9 @@ public class RenderElectrolyteGenerator
     private static Vec3d rotateVecXY(Vec3d vec, double yaw) {
         double cos = Math.cos(yaw);
         double sin = Math.sin(yaw);
-        double d0 = vec.xCoord * cos - vec.yCoord * sin;
-        double d1 = vec.yCoord * cos + vec.xCoord * sin;
-        double d2 = vec.zCoord;
+        double d0 = vec.x * cos - vec.y * sin;
+        double d1 = vec.y * cos + vec.x * sin;
+        double d2 = vec.z;
         return new Vec3d(d0, d1, d2);
     }
 }

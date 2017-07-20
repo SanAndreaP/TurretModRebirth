@@ -14,17 +14,20 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.opengl.GL11;
 
 import java.lang.reflect.InvocationTargetException;
 
+@SideOnly(Side.CLIENT)
 public class RenderTurret
         extends RenderLiving<EntityTurret>
 {
@@ -53,8 +56,8 @@ public class RenderTurret
     }
 
     @Override
-    protected void rotateCorpse(EntityTurret turret, float x, float y, float z) {
-        super.rotateCorpse(turret, x, y, z);
+    protected void applyRotations(EntityTurret turret, float x, float y, float z) {
+        super.applyRotations(turret, x, y, z);
 
         if( turret.isUpsideDown ) {
             GlStateManager.translate(0.0F, turret.height + 0.2F, 0.0F);
@@ -84,7 +87,7 @@ public class RenderTurret
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightX, brightY);
 
             Tessellator tess = Tessellator.getInstance();
-            VertexBuffer buf = tess.getBuffer();
+            BufferBuilder buf = tess.getBuffer();
 
             AxisAlignedBB aabb = turret.getTargetProcessor().getAdjustedRange(false);
 

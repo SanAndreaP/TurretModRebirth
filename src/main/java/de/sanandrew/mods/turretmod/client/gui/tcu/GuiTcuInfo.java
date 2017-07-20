@@ -10,7 +10,6 @@ package de.sanandrew.mods.turretmod.client.gui.tcu;
 
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
-import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiSlimButton;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
@@ -26,10 +25,13 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.io.IOException;
 import java.util.List;
 
+@SideOnly(Side.CLIENT)
 public class GuiTcuInfo
         extends GuiScreen
         implements GuiTurretCtrlUnit
@@ -80,7 +82,7 @@ public class GuiTcuInfo
             this.buttonList.add(this.toggleRange = new GuiSlimButton(this.buttonList.size(), center, this.guiTop + 164, 150, Lang.translate(Lang.TCU_BTN.get("range"))));
         }
 
-        this.turretName = new GuiTextField(this.buttonList.size(), this.fontRendererObj, this.guiLeft + 20, this.guiTop + 22, 150, 10);
+        this.turretName = new GuiTextField(this.buttonList.size(), this.fontRenderer, this.guiLeft + 20, this.guiTop + 22, 150, 10);
         this.turretName.setMaxStringLength(128);
         this.turretName.setText(this.turret.hasCustomName() ? this.turret.getCustomNameTag() : "");
 
@@ -132,10 +134,10 @@ public class GuiTcuInfo
 
         String value;
 //        String value = this.turret_placer.hasCustomName() ? this.turret_placer.getCustomNameTag() : "-n/a-";
-//        this.fontRendererObj.drawString(value, this.guiLeft + 20, this.guiTop + 23, 0x000000);
+//        this.fontRenderer.drawString(value, this.guiLeft + 20, this.guiTop + 23, 0x000000);
 
         value = String.format("%.1f / %.1f HP", this.turret.getHealth(), this.turret.getMaxHealth());
-        this.fontRendererObj.drawString(value, this.guiLeft + 20, this.guiTop + 35, 0x000000);
+        this.fontRenderer.drawString(value, this.guiLeft + 20, this.guiTop + 35, 0x000000);
 
         ITargetProcessor tgtProc = this.turret.getTargetProcessor();
         value = String.format("%d", tgtProc.getAmmoCount());
@@ -145,17 +147,17 @@ public class GuiTcuInfo
         }
 
         value = tgtProc.hasAmmo() ? tgtProc.getAmmoStack().getDisplayName() : "-n/a-";
-        this.fontRendererObj.drawString(value, this.guiLeft + 42, this.guiTop + 48, 0x000000);
+        this.fontRenderer.drawString(value, this.guiLeft + 42, this.guiTop + 48, 0x000000);
 
         value = tgtProc.hasTarget() ? Lang.translate(Lang.ENTITY_NAME.get(tgtProc.getTargetName())) : "-n/a-";
-        this.fontRendererObj.drawString(value, this.guiLeft + 20, this.guiTop + 71, 0x000000);
+        this.fontRenderer.drawString(value, this.guiLeft + 20, this.guiTop + 71, 0x000000);
 
         value = this.turret.getOwnerName();
-        this.fontRendererObj.drawString(value, this.guiLeft + 20, this.guiTop + 95, 0x000000);
+        this.fontRenderer.drawString(value, this.guiLeft + 20, this.guiTop + 95, 0x000000);
 
         if( this.infoStr != null && this.infoTimeShown >= System.currentTimeMillis() - 5000L ) {
             String err = Lang.translate(this.infoStr);
-            this.fontRendererObj.drawSplitString(err, this.guiLeft + 10 + (GuiTCUHelper.X_SIZE - 20 - Math.min(GuiTCUHelper.X_SIZE - 20, this.fontRendererObj.getStringWidth(err))) / 2,
+            this.fontRenderer.drawSplitString(err, this.guiLeft + 10 + (GuiTCUHelper.X_SIZE - 20 - Math.min(GuiTCUHelper.X_SIZE - 20, this.fontRenderer.getStringWidth(err))) / 2,
                                                  this.guiTop + 178, GuiTCUHelper.X_SIZE - 25, 0xFFFF0000);
         } else {
             this.infoStr = null;
@@ -234,7 +236,7 @@ public class GuiTcuInfo
 
     @Override
     public FontRenderer getFontRenderer() {
-        return this.fontRendererObj;
+        return this.fontRenderer;
     }
 
     @Override

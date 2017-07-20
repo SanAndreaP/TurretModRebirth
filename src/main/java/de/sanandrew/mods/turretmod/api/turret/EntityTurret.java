@@ -17,6 +17,7 @@ import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -67,7 +68,6 @@ public abstract class EntityTurret
     protected String ownerName;
 
     private DataWatcherBooleans<EntityTurret> dwBools;
-    private boolean isPushedByPiston;
     private BlockPos blockPos;
     private boolean prevShotChng;
     private boolean checkBlock;
@@ -109,7 +109,7 @@ public abstract class EntityTurret
     }
 
     @Override
-    protected SoundEvent getHurtSound() {
+    protected SoundEvent getHurtSound(DamageSource dmgSrc) {
         return hurtSound;
     }
 
@@ -137,7 +137,7 @@ public abstract class EntityTurret
         }
         deltaY *= this.isUpsideDown ? -1.0D : 1.0D;
 
-        double distVecXZ = MathHelper.sqrt_double(deltaX * deltaX + deltaZ * deltaZ);
+        double distVecXZ = MathHelper.sqrt(deltaX * deltaX + deltaZ * deltaZ);
         float yawRotation = (float) ((this.isUpsideDown ? -1.0D : 1.0D) * (Math.atan2(deltaZ, deltaX) * 180.0D / Math.PI)) - 90.0F;
         float pitchRotation = (float) -(Math.atan2(deltaY, distVecXZ) * 180.0D / Math.PI);
         this.rotationPitch = this.updateRotation(this.rotationPitch, pitchRotation);
@@ -193,15 +193,13 @@ public abstract class EntityTurret
 
         if( !this.isUpsideDown ) {
             this.motionY -= 0.0325F;
-            super.moveEntity(0.0F, this.motionY, 0.0F);
+            super.move(MoverType.SELF, 0.0F, this.motionY, 0.0F);
             this.blockPos = this.getPosition().down(1);
         } else if( this.checkBlock && !canTurretBePlaced(this.world, this.blockPos, true, this.isUpsideDown) ) {
-            this.kill();
+            this.onKillCommand();
         }
 
-        this.isPushedByPiston = false;
-
-        this.world.theProfiler.startSection("ai");
+        this.world.profiler.startSection("ai");
 
         if( this.isMovementBlocked() ) {
             this.isJumping = false;
@@ -209,9 +207,9 @@ public abstract class EntityTurret
             this.moveForward = 0.0F;
             this.randomYawVelocity = 0.0F;
         } else if( !this.world.isRemote ) {
-            this.world.theProfiler.startSection("oldAi");
+            this.world.profiler.startSection("oldAi");
             this.updateMyEntityActionState();
-            this.world.theProfiler.endSection();
+            this.world.profiler.endSection();
         }
 
         if( this.isActive() ) {
@@ -269,11 +267,11 @@ public abstract class EntityTurret
             }
         }
 
-        this.world.theProfiler.endSection();
+        this.world.profiler.endSection();
     }
 
-    private void onInteractSucceed(ItemStack heldItem, EntityPlayer player) {
-        if( heldItem.stackSize == 0 ) {
+    private void onInteractSucceed(@Nonnull ItemStack heldItem, EntityPlayer player) {
+        if( heldItem.getCount() == 0 ) {
             player.inventory.removeStackFromSlot(player.inventory.currentItem);
         } else {
             player.inventory.setInventorySlotContents(player.inventory.currentItem, heldItem.copy());
@@ -285,7 +283,9 @@ public abstract class EntityTurret
     }
 
     @Override
-    protected boolean processInteract(EntityPlayer player, EnumHand hand, @Nonnull ItemStack stack) {
+    protected boolean processInteract(EntityPlayer player, EnumHand hand) {
+        ItemStack stack = player.getHeldItem(hand);
+
         if( this.world.isRemote ) {
             if( TmrConstants.utils.isTCUItem(stack) ) {
                 TmrConstants.utils.openGui(player, player.isSneaking() ? EnumGui.GUI_DEBUG_CAMERA : EnumGui.GUI_TCU_INFO, this.getEntityId(), this.hasPlayerPermission(player) ? 1 : 0, 0);
@@ -302,18 +302,18 @@ public abstract class EntityTurret
             } else if( (repKit = TmrConstants.repkitRegistry.getType(stack)).isApplicable(this) ) {
                     this.heal(repKit.getHealAmount());
                     repKit.onHeal(this);
-                    stack.stackSize--;
+                    stack.shrink(1);
                     this.onInteractSucceed(stack, player);
 
                     return true;
             } else if( this.upgProc.tryApplyUpgrade(stack.copy()) ) {
-                stack.stackSize--;
+                stack.shrink(1);
                 this.onInteractSucceed(stack, player);
                 return true;
             }
         }
 
-        return super.processInteract(player, hand, stack);
+        return super.processInteract(player, hand);
     }
 
     @Override
@@ -329,7 +329,7 @@ public abstract class EntityTurret
     }
 
     protected void updateMyEntityActionState() {
-        ++this.entityAge;
+        this.idleTime++;
         this.moveStrafing = 0.0F;
         this.moveForward = 0.0F;
         this.rotationYaw = 0.0F;
@@ -422,15 +422,15 @@ public abstract class EntityTurret
     public final void knockBack(Entity entity, float unknown, double motionXAmount, double motionZAmount) {}
 
     @Override
-    public final void moveEntity(double motionX, double motionY, double motionZ) {
-        if( this.isPushedByPiston ) {
-            super.moveEntity(motionX, motionY, motionZ);
+    public final void move(MoverType type, double motionX, double motionY, double motionZ) {
+        if( type == MoverType.PISTON ) {
+            super.move(type, motionX, motionY, motionZ);
         }
     }
 
     /**turrets are immobile, leave empty*/
     @Override
-    public final void moveEntityWithHeading(float strafe, float forward) {}
+    public final void travel(float strafe, float vertical, float forward) {}
 
     public abstract ResourceLocation getStandardTexture();
 
@@ -501,24 +501,18 @@ public abstract class EntityTurret
             return true;
         }
 
-        return player.canCommandSenderUseCommand(2, "") && TmrConstants.utils.canOpEditAll();
+        return player.canUseCommand(2, "") && TmrConstants.utils.canOpEditAll();
     }
 
     @Override
-    public EnumPushReaction getPushReaction() {
-        this.isPushedByPiston = true;
-
-        return EnumPushReaction.NORMAL;
-    }
-
-    @Override
+    @Nonnull
     public ItemStack getPickedResult(RayTraceResult target) {
         return TmrConstants.utils.getPickedTurretResult(target, this);
     }
 
     @Override
-    public void kill() {
-        this.attackEntityFrom(DamageSource.magic, Float.MAX_VALUE);
+    public void onKillCommand() {
+        this.attackEntityFrom(DamageSource.MAGIC, Float.MAX_VALUE);
     }
 
     @Override

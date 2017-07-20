@@ -16,7 +16,10 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class GuiButtonEntry
         extends GuiButton
 {
@@ -38,9 +41,9 @@ public class GuiButtonEntry
     }
 
     @Override
-    public void drawButton(Minecraft mc, int mx, int my) {
+    public void drawButton(Minecraft mc, int mx, int my, float partTicks) {
         if( this.visible ) {
-            boolean inside = this.enabled && mx >= xPosition && my >= yPosition && mx < xPosition + width && my < yPosition + height;
+            boolean inside = this.enabled && mx >= x && my >= y && mx < x + width && my < y + height;
             if( inside ) {
                 this.ticksHovered = Math.min(this.time, this.ticksHovered + this.tinfo.timeDelta);
             } else {
@@ -60,14 +63,14 @@ public class GuiButtonEntry
             int color1 = 0x0066cc66 | ((Math.max(0x00, Math.min(0xC0, StrictMath.round(0xC0 * alphaMulti))) << 24) & 0xFF000000);
             int color2 = 0x0066cc66 | ((Math.max(0x00, Math.min(0x80, StrictMath.round(0x80 * alphaMulti))) << 24) & 0xFF000000);
 
-            this.drawGradientRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + 1, color1, color2);
-            this.drawGradientRect(this.xPosition, this.yPosition + this.height - 1, this.xPosition + this.width, this.yPosition + this.height, color1, color2);
-            this.drawGradientRect(this.xPosition, this.yPosition + 1, this.xPosition + 1, this.yPosition + this.height - 1, color1, color1);
-            this.drawGradientRect(this.xPosition + this.width - 1, this.yPosition + 1, this.xPosition + this.width, this.yPosition + this.height - 1, color2, color2);
+            this.drawGradientRect(this.x, this.y, this.x + this.width, this.y + 1, color1, color2);
+            this.drawGradientRect(this.x, this.y + this.height - 1, this.x + this.width, this.y + this.height, color1, color2);
+            this.drawGradientRect(this.x, this.y + 1, this.x + 1, this.y + this.height - 1, color1, color1);
+            this.drawGradientRect(this.x + this.width - 1, this.y + 1, this.x + this.width, this.y + this.height - 1, color2, color2);
 
-            RenderUtils.renderStackInGui(this.icon, this.xPosition + 2, this.yPosition + 3, 0.5D);
+            RenderUtils.renderStackInGui(this.icon, this.x + 2, this.y + 3, 0.5D);
 
-            mc.fontRendererObj.drawString(this.displayString, this.xPosition + 12, this.yPosition + 3, 0xFF000000, false);
+            mc.fontRenderer.drawString(this.displayString, this.x + 12, this.y + 3, 0xFF000000, false);
 
             GlStateManager.popMatrix();
         }

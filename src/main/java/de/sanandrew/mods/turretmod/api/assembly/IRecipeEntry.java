@@ -9,13 +9,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public interface IRecipeEntry
 {
     RecipeEntryItem put(Item... items);
 
     RecipeEntryItem put(Block... blocks);
 
-    RecipeEntryItem put(ItemStack... stacks);
+    RecipeEntryItem put(@Nonnull ItemStack... stacks);
 
     RecipeEntryItem put(String... oreDictNames);
 
@@ -27,7 +29,7 @@ public interface IRecipeEntry
 
     RecipeEntryItem copy();
 
-    boolean isItemFitting(ItemStack stack);
+    boolean isItemFitting(@Nonnull ItemStack stack);
 
     @SideOnly(Side.CLIENT)
     ItemStack[] getEntryItemStacks();
@@ -37,7 +39,7 @@ public interface IRecipeEntry
     void decreaseItemCount(int amount);
 
     interface IEnchantmentEntry {
-        ItemStack stack();
+        @Nonnull ItemStack stack();
         Enchantment enchantment();
     }
 }

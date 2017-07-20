@@ -75,7 +75,7 @@ public class ContainerElectrolyteGenerator
                 slot.putStack(stack.copy());
                 slot.getStack().stackSize = 1;
                 slot.onSlotChanged();
-                stack.stackSize--;
+                stack.shrink(1);
                 slotChanged = true;
                 break;
             }

@@ -91,16 +91,18 @@ public final class Lang
     }
 
     public static String translateEntityCls(Class<? extends Entity> eClass) {
-        if( EntityList.CLASS_TO_NAME.containsKey(eClass) ) {
-            return translate(ENTITY_NAME.get(EntityList.CLASS_TO_NAME.get(eClass)));
+        String namedEntry = EntityList.getTranslationName(EntityList.getKey(eClass));
+        if( namedEntry != null ) {
+            return translate(ENTITY_NAME.get(namedEntry));
         }
 
         return "[UNKNOWN] " + eClass.getName();
     }
 
     public static String translateEntityClsDesc(Class<? extends Entity> eClass) {
-        if( EntityList.CLASS_TO_NAME.containsKey(eClass) ) {
-            return translate(ENTITY_DESC.get(EntityList.CLASS_TO_NAME.get(eClass)));
+        String namedEntry = EntityList.getTranslationName(EntityList.getKey(eClass));
+        if( namedEntry != null ) {
+            return translate(ENTITY_DESC.get(namedEntry));
         }
 
         return "";

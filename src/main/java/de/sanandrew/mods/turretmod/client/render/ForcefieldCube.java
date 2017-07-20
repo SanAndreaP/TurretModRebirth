@@ -10,11 +10,13 @@ package de.sanandrew.mods.turretmod.client.render;
 
 import de.sanandrew.mods.sanlib.lib.client.ColorObj;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
 
 import java.util.ArrayList;
@@ -25,7 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+@SideOnly(Side.CLIENT)
 public class ForcefieldCube
+        implements Cloneable
 {
     public Map<EnumFacing, CubeFace[]> faces = new EnumMap<>(EnumFacing.class);
     private final Vec3d center;
@@ -48,7 +52,7 @@ public class ForcefieldCube
     }
 
     public void draw(Tessellator tess) {
-        VertexBuffer buffer = tess.getBuffer();
+        BufferBuilder buffer = tess.getBuffer();
         for( CubeFace[] faceList : faces.values() ) {
             for( CubeFace facePart : faceList ) {
                 float red = facePart.color.fRed();
@@ -56,47 +60,47 @@ public class ForcefieldCube
                 float blue = facePart.color.fBlue();
                 float alpha = 1.0F;
                 if( facePart.facing == EnumFacing.NORTH ) {
-                    double maxU = (facePart.endPt.zCoord - facePart.beginPt.zCoord) / 8.0D;
-                    double maxV = (facePart.beginPt.yCoord - facePart.endPt.yCoord) / 8.0D;
-                    buffer.pos(facePart.beginPt.xCoord - 0.0005D, facePart.beginPt.yCoord, facePart.beginPt.zCoord).tex(maxU, 0.0D).color(red, green, blue, alpha).endVertex();
-                    buffer.pos(facePart.beginPt.xCoord - 0.0005D, facePart.beginPt.yCoord, facePart.endPt.zCoord).tex(0.0D, 0.0D).color(red, green, blue, alpha).endVertex();
-                    buffer.pos(facePart.beginPt.xCoord - 0.0005D, facePart.endPt.yCoord, facePart.endPt.zCoord).tex(0.0D, maxV).color(red, green, blue, alpha).endVertex();
-                    buffer.pos(facePart.beginPt.xCoord - 0.0005D, facePart.endPt.yCoord, facePart.beginPt.zCoord).tex(maxU, maxV).color(red, green, blue, alpha).endVertex();
+                    double maxU = (facePart.endPt.z - facePart.beginPt.z) / 8.0D;
+                    double maxV = (facePart.beginPt.y - facePart.endPt.y) / 8.0D;
+                    buffer.pos(facePart.beginPt.x - 0.0005D, facePart.beginPt.y, facePart.beginPt.z).tex(maxU, 0.0D).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.beginPt.x - 0.0005D, facePart.beginPt.y, facePart.endPt.z).tex(0.0D, 0.0D).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.beginPt.x - 0.0005D, facePart.endPt.y, facePart.endPt.z).tex(0.0D, maxV).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.beginPt.x - 0.0005D, facePart.endPt.y, facePart.beginPt.z).tex(maxU, maxV).color(red, green, blue, alpha).endVertex();
                 } else if( facePart.facing == EnumFacing.EAST ) {
-                    double maxU = (facePart.endPt.xCoord - facePart.beginPt.xCoord) / 8.0D;
-                    double maxV = (facePart.beginPt.yCoord - facePart.endPt.yCoord) / 8.0D;
-                    buffer.pos(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord - 0.0005D).tex(maxU, 0.0D).color(red, green, blue, alpha).endVertex();
-                    buffer.pos(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord - 0.0005D).tex(0.0D, 0.0D).color(red, green, blue, alpha).endVertex();
-                    buffer.pos(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord - 0.0005D).tex(0.0D, maxV).color(red, green, blue, alpha).endVertex();
-                    buffer.pos(facePart.endPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord - 0.0005D).tex(maxU, maxV).color(red, green, blue, alpha).endVertex();
+                    double maxU = (facePart.endPt.x - facePart.beginPt.x) / 8.0D;
+                    double maxV = (facePart.beginPt.y - facePart.endPt.y) / 8.0D;
+                    buffer.pos(facePart.endPt.x, facePart.beginPt.y, facePart.beginPt.z - 0.0005D).tex(maxU, 0.0D).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.beginPt.x, facePart.beginPt.y, facePart.beginPt.z - 0.0005D).tex(0.0D, 0.0D).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.beginPt.x, facePart.endPt.y, facePart.beginPt.z - 0.0005D).tex(0.0D, maxV).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.endPt.x, facePart.endPt.y, facePart.beginPt.z - 0.0005D).tex(maxU, maxV).color(red, green, blue, alpha).endVertex();
                 } else if( facePart.facing == EnumFacing.SOUTH ) {
-                    double maxU = (facePart.endPt.zCoord - facePart.beginPt.zCoord) / 8.0D;
-                    double maxV = (facePart.beginPt.yCoord - facePart.endPt.yCoord) / 8.0D;
-                    buffer.pos(facePart.beginPt.xCoord + 0.0005D, facePart.beginPt.yCoord, facePart.endPt.zCoord).tex(maxU, 0.0D).color(red, green, blue, alpha).endVertex();
-                    buffer.pos(facePart.beginPt.xCoord + 0.0005D, facePart.beginPt.yCoord, facePart.beginPt.zCoord).tex(0.0D, 0.0D).color(red, green, blue, alpha).endVertex();
-                    buffer.pos(facePart.beginPt.xCoord + 0.0005D, facePart.endPt.yCoord, facePart.beginPt.zCoord).tex(0.0D, maxV).color(red, green, blue, alpha).endVertex();
-                    buffer.pos(facePart.beginPt.xCoord + 0.0005D, facePart.endPt.yCoord, facePart.endPt.zCoord).tex(maxU, maxV).color(red, green, blue, alpha).endVertex();
+                    double maxU = (facePart.endPt.z - facePart.beginPt.z) / 8.0D;
+                    double maxV = (facePart.beginPt.y - facePart.endPt.y) / 8.0D;
+                    buffer.pos(facePart.beginPt.x + 0.0005D, facePart.beginPt.y, facePart.endPt.z).tex(maxU, 0.0D).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.beginPt.x + 0.0005D, facePart.beginPt.y, facePart.beginPt.z).tex(0.0D, 0.0D).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.beginPt.x + 0.0005D, facePart.endPt.y, facePart.beginPt.z).tex(0.0D, maxV).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.beginPt.x + 0.0005D, facePart.endPt.y, facePart.endPt.z).tex(maxU, maxV).color(red, green, blue, alpha).endVertex();
                 } else if( facePart.facing == EnumFacing.WEST ) {
-                    double maxU = (facePart.endPt.xCoord - facePart.beginPt.xCoord) / 8.0D;
-                    double maxV = (facePart.beginPt.yCoord - facePart.endPt.yCoord) / 8.0D;
-                    buffer.pos(facePart.beginPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord + 0.0005D).tex(maxU, 0.0D).color(red, green, blue, alpha).endVertex();
-                    buffer.pos(facePart.endPt.xCoord, facePart.beginPt.yCoord, facePart.beginPt.zCoord + 0.0005D).tex(0.0D, 0.0D).color(red, green, blue, alpha).endVertex();
-                    buffer.pos(facePart.endPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord + 0.0005D).tex(0.0D, maxV).color(red, green, blue, alpha).endVertex();
-                    buffer.pos(facePart.beginPt.xCoord, facePart.endPt.yCoord, facePart.beginPt.zCoord + 0.0005D).tex(maxU, maxV).color(red, green, blue, alpha).endVertex();
+                    double maxU = (facePart.endPt.x - facePart.beginPt.x) / 8.0D;
+                    double maxV = (facePart.beginPt.y - facePart.endPt.y) / 8.0D;
+                    buffer.pos(facePart.beginPt.x, facePart.beginPt.y, facePart.beginPt.z + 0.0005D).tex(maxU, 0.0D).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.endPt.x, facePart.beginPt.y, facePart.beginPt.z + 0.0005D).tex(0.0D, 0.0D).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.endPt.x, facePart.endPt.y, facePart.beginPt.z + 0.0005D).tex(0.0D, maxV).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.beginPt.x, facePart.endPt.y, facePart.beginPt.z + 0.0005D).tex(maxU, maxV).color(red, green, blue, alpha).endVertex();
                 } else if( facePart.facing == EnumFacing.UP ) {
-                    double maxU = (facePart.beginPt.zCoord - facePart.endPt.zCoord) / 8.0D;
-                    double maxV = (facePart.endPt.xCoord - facePart.beginPt.xCoord) / 8.0D;
-                    buffer.pos(facePart.beginPt.xCoord, facePart.beginPt.yCoord - 0.0005D, facePart.beginPt.zCoord).tex(maxU, maxV).color(red, green, blue, alpha).endVertex();
-                    buffer.pos(facePart.endPt.xCoord, facePart.beginPt.yCoord - 0.0005D, facePart.beginPt.zCoord).tex(maxU, 0.0D).color(red, green, blue, alpha).endVertex();
-                    buffer.pos(facePart.endPt.xCoord, facePart.beginPt.yCoord - 0.0005D, facePart.endPt.zCoord).tex(0.0D, 0.0D).color(red, green, blue, alpha).endVertex();
-                    buffer.pos(facePart.beginPt.xCoord, facePart.beginPt.yCoord - 0.0005D, facePart.endPt.zCoord).tex(0.0D, maxV).color(red, green, blue, alpha).endVertex();
+                    double maxU = (facePart.beginPt.z - facePart.endPt.z) / 8.0D;
+                    double maxV = (facePart.endPt.x - facePart.beginPt.x) / 8.0D;
+                    buffer.pos(facePart.beginPt.x, facePart.beginPt.y - 0.0005D, facePart.beginPt.z).tex(maxU, maxV).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.endPt.x, facePart.beginPt.y - 0.0005D, facePart.beginPt.z).tex(maxU, 0.0D).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.endPt.x, facePart.beginPt.y - 0.0005D, facePart.endPt.z).tex(0.0D, 0.0D).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.beginPt.x, facePart.beginPt.y - 0.0005D, facePart.endPt.z).tex(0.0D, maxV).color(red, green, blue, alpha).endVertex();
                 } else if( facePart.facing == EnumFacing.DOWN ) {
-                    double maxU = (facePart.endPt.zCoord - facePart.beginPt.zCoord) / 8.0D;
-                    double maxV = (facePart.endPt.xCoord - facePart.beginPt.xCoord) / 8.0D;
-                    buffer.pos(facePart.endPt.xCoord, facePart.beginPt.yCoord + 0.0005D, facePart.beginPt.zCoord).tex(maxU, maxV).color(red, green, blue, alpha).endVertex();
-                    buffer.pos(facePart.beginPt.xCoord, facePart.beginPt.yCoord + 0.0005D, facePart.beginPt.zCoord).tex(maxU, 0.0D).color(red, green, blue, alpha).endVertex();
-                    buffer.pos(facePart.beginPt.xCoord, facePart.beginPt.yCoord + 0.0005D, facePart.endPt.zCoord).tex(0.0D, 0.0D).color(red, green, blue, alpha).endVertex();
-                    buffer.pos(facePart.endPt.xCoord, facePart.beginPt.yCoord + 0.0005D, facePart.endPt.zCoord).tex(0.0D, maxV).color(red, green, blue, alpha).endVertex();
+                    double maxU = (facePart.endPt.z - facePart.beginPt.z) / 8.0D;
+                    double maxV = (facePart.endPt.x - facePart.beginPt.x) / 8.0D;
+                    buffer.pos(facePart.endPt.x, facePart.beginPt.y + 0.0005D, facePart.beginPt.z).tex(maxU, maxV).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.beginPt.x, facePart.beginPt.y + 0.0005D, facePart.beginPt.z).tex(maxU, 0.0D).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.beginPt.x, facePart.beginPt.y + 0.0005D, facePart.endPt.z).tex(0.0D, 0.0D).color(red, green, blue, alpha).endVertex();
+                    buffer.pos(facePart.endPt.x, facePart.beginPt.y + 0.0005D, facePart.endPt.z).tex(0.0D, maxV).color(red, green, blue, alpha).endVertex();
                 }
             }
         }
@@ -113,28 +117,28 @@ public class ForcefieldCube
 
             switch( myFace.getKey() ) {
                 case NORTH:
-                    intersects = this.center.xCoord + this.boxAABB.maxX + (isRecessive ? 0.001D : 0.0D) >= interfered.center.xCoord + interfered.boxAABB.minX
-                            && this.center.xCoord + this.boxAABB.maxX + (isRecessive ? 0.001D : 0.0D) <= interfered.center.xCoord + interfered.boxAABB.maxX;
+                    intersects = this.center.x + this.boxAABB.maxX + (isRecessive ? 0.001D : 0.0D) >= interfered.center.x + interfered.boxAABB.minX
+                            && this.center.x + this.boxAABB.maxX + (isRecessive ? 0.001D : 0.0D) <= interfered.center.x + interfered.boxAABB.maxX;
                     break;
                 case SOUTH:
-                    intersects = this.center.xCoord + this.boxAABB.minX - (isRecessive ? 0.001D : 0.0D) <= interfered.center.xCoord + interfered.boxAABB.maxX
-                            && this.center.xCoord + this.boxAABB.minX - (isRecessive ? 0.001D : 0.0D) >= interfered.center.xCoord + interfered.boxAABB.minX;
+                    intersects = this.center.x + this.boxAABB.minX - (isRecessive ? 0.001D : 0.0D) <= interfered.center.x + interfered.boxAABB.maxX
+                            && this.center.x + this.boxAABB.minX - (isRecessive ? 0.001D : 0.0D) >= interfered.center.x + interfered.boxAABB.minX;
                     break;
                 case EAST:
-                    intersects = this.center.zCoord + this.boxAABB.maxZ + (isRecessive ? 0.001D : 0.0D) >= interfered.center.zCoord + interfered.boxAABB.minZ
-                            && this.center.zCoord + this.boxAABB.maxZ + (isRecessive ? 0.001D : 0.0D) <= interfered.center.zCoord + interfered.boxAABB.maxZ;
+                    intersects = this.center.z + this.boxAABB.maxZ + (isRecessive ? 0.001D : 0.0D) >= interfered.center.z + interfered.boxAABB.minZ
+                            && this.center.z + this.boxAABB.maxZ + (isRecessive ? 0.001D : 0.0D) <= interfered.center.z + interfered.boxAABB.maxZ;
                     break;
                 case WEST:
-                    intersects = this.center.zCoord + this.boxAABB.minZ - (isRecessive ? 0.001D : 0.0D) <= interfered.center.zCoord + interfered.boxAABB.maxZ
-                            && this.center.zCoord + this.boxAABB.minZ - (isRecessive ? 0.001D : 0.0D) >= interfered.center.zCoord + interfered.boxAABB.minZ;
+                    intersects = this.center.z + this.boxAABB.minZ - (isRecessive ? 0.001D : 0.0D) <= interfered.center.z + interfered.boxAABB.maxZ
+                            && this.center.z + this.boxAABB.minZ - (isRecessive ? 0.001D : 0.0D) >= interfered.center.z + interfered.boxAABB.minZ;
                     break;
                 case UP:
-                    intersects = this.center.yCoord + this.boxAABB.maxY + (isRecessive ? 0.001D : 0.0D) >= interfered.center.yCoord + interfered.boxAABB.minY
-                            && this.center.yCoord + this.boxAABB.maxY + (isRecessive ? 0.001D : 0.0D) <= interfered.center.yCoord + interfered.boxAABB.maxY;
+                    intersects = this.center.y + this.boxAABB.maxY + (isRecessive ? 0.001D : 0.0D) >= interfered.center.y + interfered.boxAABB.minY
+                            && this.center.y + this.boxAABB.maxY + (isRecessive ? 0.001D : 0.0D) <= interfered.center.y + interfered.boxAABB.maxY;
                     break;
                 case DOWN:
-                    intersects = this.center.yCoord + this.boxAABB.minY - (isRecessive ? 0.001D : 0.0D) <= interfered.center.yCoord + interfered.boxAABB.maxY
-                            && this.center.yCoord + this.boxAABB.minY - (isRecessive ? 0.001D : 0.0D) >= interfered.center.yCoord + interfered.boxAABB.minY;
+                    intersects = this.center.y + this.boxAABB.minY - (isRecessive ? 0.001D : 0.0D) <= interfered.center.y + interfered.boxAABB.maxY
+                            && this.center.y + this.boxAABB.minY - (isRecessive ? 0.001D : 0.0D) >= interfered.center.y + interfered.boxAABB.minY;
                     break;
                 default:
                     continue;
@@ -190,28 +194,28 @@ public class ForcefieldCube
             this.color = faceColor;
             switch( direction ) {
                 case NORTH:
-                    this.beginPt = new Vec3d(center.xCoord + boxBB.maxX, center.yCoord + boxBB.maxY, center.zCoord + boxBB.minZ);
-                    this.endPt = new Vec3d(center.xCoord + boxBB.maxX, center.yCoord + boxBB.minY, center.zCoord + boxBB.maxZ);
+                    this.beginPt = new Vec3d(center.x + boxBB.maxX, center.y + boxBB.maxY, center.z + boxBB.minZ);
+                    this.endPt = new Vec3d(center.x + boxBB.maxX, center.y + boxBB.minY, center.z + boxBB.maxZ);
                     break;
                 case SOUTH:
-                    this.beginPt = new Vec3d(center.xCoord + boxBB.minX, center.yCoord + boxBB.maxY, center.zCoord + boxBB.minZ);
-                    this.endPt = new Vec3d(center.xCoord + boxBB.minX, center.yCoord + boxBB.minY, center.zCoord + boxBB.maxZ);
+                    this.beginPt = new Vec3d(center.x + boxBB.minX, center.y + boxBB.maxY, center.z + boxBB.minZ);
+                    this.endPt = new Vec3d(center.x + boxBB.minX, center.y + boxBB.minY, center.z + boxBB.maxZ);
                     break;
                 case EAST:
-                    this.beginPt = new Vec3d(center.xCoord + boxBB.minX, center.yCoord + boxBB.maxY, center.zCoord + boxBB.maxZ);
-                    this.endPt = new Vec3d(center.xCoord + boxBB.maxX, center.yCoord + boxBB.minY, center.zCoord + boxBB.maxZ);
+                    this.beginPt = new Vec3d(center.x + boxBB.minX, center.y + boxBB.maxY, center.z + boxBB.maxZ);
+                    this.endPt = new Vec3d(center.x + boxBB.maxX, center.y + boxBB.minY, center.z + boxBB.maxZ);
                     break;
                 case WEST:
-                    this.beginPt = new Vec3d(center.xCoord + boxBB.minX, center.yCoord + boxBB.maxY, center.zCoord + boxBB.minZ);
-                    this.endPt = new Vec3d(center.xCoord + boxBB.maxX, center.yCoord + boxBB.minY, center.zCoord + boxBB.minZ);
+                    this.beginPt = new Vec3d(center.x + boxBB.minX, center.y + boxBB.maxY, center.z + boxBB.minZ);
+                    this.endPt = new Vec3d(center.x + boxBB.maxX, center.y + boxBB.minY, center.z + boxBB.minZ);
                     break;
                 case UP:
-                    this.beginPt = new Vec3d(center.xCoord + boxBB.minX, center.yCoord + boxBB.maxY, center.zCoord + boxBB.maxZ);
-                    this.endPt = new Vec3d(center.xCoord + boxBB.maxX, center.yCoord + boxBB.maxY, center.zCoord + boxBB.minZ);
+                    this.beginPt = new Vec3d(center.x + boxBB.minX, center.y + boxBB.maxY, center.z + boxBB.maxZ);
+                    this.endPt = new Vec3d(center.x + boxBB.maxX, center.y + boxBB.maxY, center.z + boxBB.minZ);
                     break;
                 case DOWN:
-                    this.beginPt = new Vec3d(center.xCoord + boxBB.minX, center.yCoord + boxBB.minY, center.zCoord + boxBB.maxZ);
-                    this.endPt = new Vec3d(center.xCoord + boxBB.maxX, center.yCoord + boxBB.minY, center.zCoord + boxBB.minZ);
+                    this.beginPt = new Vec3d(center.x + boxBB.minX, center.y + boxBB.minY, center.z + boxBB.maxZ);
+                    this.endPt = new Vec3d(center.x + boxBB.maxX, center.y + boxBB.minY, center.z + boxBB.minZ);
                     break;
                 default:
                     throw new RuntimeException(String.format("Invalid direction for Forcefield Face: %s", direction.toString()));
@@ -219,19 +223,19 @@ public class ForcefieldCube
         }
 
         public CubeFace[] intersect(CubeFace intersector) {
-            RectCoords myCoord = this.get2DCoords();
+            RectCoords my = this.get2DCoords();
             RectCoords intsCoord = intersector.get2DCoords();
 
-            if( myCoord.endX <= intsCoord.beginX || myCoord.beginX >= intsCoord.endX || myCoord.beginY <= intsCoord.endY || myCoord.endY >= intsCoord.beginY ) {
+            if( my.endX <= intsCoord.beginX || my.beginX >= intsCoord.endX || my.beginY <= intsCoord.endY || my.endY >= intsCoord.beginY ) {
                 return null;
             }
 
             List<CubeFace> newCubes = new ArrayList<>(4);
 
-            RectCoords topRect = new RectCoords(myCoord.beginX, myCoord.beginY, myCoord.endX, Math.max(intsCoord.beginY, myCoord.endY));
-            RectCoords btmRect = new RectCoords(myCoord.beginX, Math.max(intsCoord.endY, myCoord.endY), myCoord.endX, myCoord.endY);
-            RectCoords lftRect = new RectCoords(myCoord.beginX, Math.min(intsCoord.beginY, myCoord.beginY), Math.max(intsCoord.beginX, myCoord.beginX), Math.max(intsCoord.endY, myCoord.endY));
-            RectCoords rgtRect = new RectCoords(Math.min(intsCoord.endX, myCoord.endX), Math.min(intsCoord.beginY, myCoord.beginY), myCoord.endX, Math.max(intsCoord.endY, myCoord.endY));
+            RectCoords topRect = new RectCoords(my.beginX, my.beginY, my.endX, Math.max(intsCoord.beginY, my.endY));
+            RectCoords btmRect = new RectCoords(my.beginX, Math.max(intsCoord.endY, my.endY), my.endX, my.endY);
+            RectCoords lftRect = new RectCoords(my.beginX, Math.min(intsCoord.beginY, my.beginY), Math.max(intsCoord.beginX, my.beginX), Math.max(intsCoord.endY, my.endY));
+            RectCoords rgtRect = new RectCoords(Math.min(intsCoord.endX, my.endX), Math.min(intsCoord.beginY, my.beginY), my.endX, Math.max(intsCoord.endY, my.endY));
 
             if( !topRect.isEmptyOrNegative() ) {
                 newCubes.add(this.get3DCoords(topRect));
@@ -257,13 +261,13 @@ public class ForcefieldCube
             switch( this.facing ) {
                 case NORTH:
                 case SOUTH:
-                    return new RectCoords(this.beginPt.zCoord, this.beginPt.yCoord, this.endPt.zCoord, this.endPt.yCoord);
+                    return new RectCoords(this.beginPt.z, this.beginPt.y, this.endPt.z, this.endPt.y);
                 case EAST:
                 case WEST:
-                    return new RectCoords(this.beginPt.xCoord, this.beginPt.yCoord, this.endPt.xCoord, this.endPt.yCoord);
+                    return new RectCoords(this.beginPt.x, this.beginPt.y, this.endPt.x, this.endPt.y);
                 case UP:
                 case DOWN:
-                    return new RectCoords(this.beginPt.xCoord, this.beginPt.zCoord, this.endPt.xCoord, this.endPt.zCoord);
+                    return new RectCoords(this.beginPt.x, this.beginPt.z, this.endPt.x, this.endPt.z);
                 default:
                     return new RectCoords(0.0D, 0.0D, 0.0D, 0.0D);
             }
@@ -273,16 +277,16 @@ public class ForcefieldCube
             switch( this.facing ) {
                 case NORTH:
                 case SOUTH:
-                    return new CubeFace(this.facing, new Vec3d(this.beginPt.xCoord, newRect.beginY, newRect.beginX),
-                                        new Vec3d(this.endPt.xCoord, newRect.endY, newRect.endX), this.color);
+                    return new CubeFace(this.facing, new Vec3d(this.beginPt.x, newRect.beginY, newRect.beginX),
+                                        new Vec3d(this.endPt.x, newRect.endY, newRect.endX), this.color);
                 case EAST:
                 case WEST:
-                    return new CubeFace(this.facing, new Vec3d(newRect.beginX, newRect.beginY, this.beginPt.zCoord),
-                                        new Vec3d(newRect.endX, newRect.endY, this.endPt.zCoord), this.color);
+                    return new CubeFace(this.facing, new Vec3d(newRect.beginX, newRect.beginY, this.beginPt.z),
+                                        new Vec3d(newRect.endX, newRect.endY, this.endPt.z), this.color);
                 case UP:
                 case DOWN:
-                    return new CubeFace(this.facing, new Vec3d(newRect.beginX, this.beginPt.yCoord, newRect.beginY),
-                                        new Vec3d(newRect.endX, this.endPt.yCoord, newRect.endY), this.color);
+                    return new CubeFace(this.facing, new Vec3d(newRect.beginX, this.beginPt.y, newRect.beginY),
+                                        new Vec3d(newRect.endX, this.endPt.y, newRect.endY), this.color);
                 default:
                     return null;
             }
