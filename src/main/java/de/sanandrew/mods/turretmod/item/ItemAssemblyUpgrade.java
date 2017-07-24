@@ -14,6 +14,7 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -21,12 +22,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public abstract class ItemAssemblyUpgrade
@@ -38,12 +42,11 @@ public abstract class ItemAssemblyUpgrade
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List lines, boolean advInfo) {
-        super.addInformation(stack, player, lines, advInfo);
+    public void addInformation(@Nonnull ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        super.addInformation(stack, worldIn, tooltip, flagIn);
 
-        lines.add(Lang.translate(this.getUnlocalizedName() + ".ttip"));
+        tooltip.add(Lang.translate(this.getUnlocalizedName() + ".ttip"));
     }
 
     public static class Automation
@@ -73,35 +76,34 @@ public abstract class ItemAssemblyUpgrade
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         @SideOnly(Side.CLIENT)
-        public void addInformation(ItemStack stack, EntityPlayer player, List lines, boolean advInfo) {
-            super.addInformation(stack, player, lines, advInfo);
+        public void addInformation(@Nonnull ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+            super.addInformation(stack, worldIn, tooltip, flagIn);
 
             NBTTagCompound nbt = stack.getTagCompound();
             if( nbt != null && nbt.hasKey("filteredStacks") ) {
-                lines.add(TextFormatting.ITALIC + Lang.translate(this.getUnlocalizedName() + ".conf"));
+                tooltip.add(TextFormatting.ITALIC + Lang.translate(this.getUnlocalizedName() + ".conf"));
             } else {
-                lines.add(Lang.translate(this.getUnlocalizedName() + ".inst"));
+                tooltip.add(Lang.translate(this.getUnlocalizedName() + ".inst"));
             }
         }
 
         @Override
-        public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+        public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
             if( !world.isRemote ) {
                 if( player.isSneaking() ) {
-                    setFilterStacks(stack, null);
+                    setFilterStacks(player.getHeldItem(hand), null);
                     player.inventoryContainer.detectAndSendChanges();
                 } else {
                     TurretModRebirth.proxy.openGui(player, EnumGui.GUI_TASSEMBLY_FLT, 0, 0, 0);
                 }
             }
 
-            return super.onItemRightClick(stack, world, player, hand);
+            return super.onItemRightClick(world, player, hand);
         }
 
-        public static ItemStack[] getFilterStacks(ItemStack stack) {
-            ItemStack[] stacks = getEmptyInv();
+        public static NonNullList<ItemStack> getFilterStacks(@Nonnull ItemStack stack) {
+            NonNullList<ItemStack> stacks = getEmptyInv();
             NBTTagCompound nbt = stack.getTagCompound();
 
             if( nbt != null && nbt.hasKey("filteredStacks") ) {
@@ -111,13 +113,13 @@ public abstract class ItemAssemblyUpgrade
             return stacks;
         }
 
-        public static void setFilterStacks(ItemStack stack, ItemStack[] inv) {
+        public static void setFilterStacks(@Nonnull ItemStack stack, NonNullList<ItemStack> inv) {
             NBTTagCompound nbt = stack.getTagCompound();
             if( nbt == null ) {
                 nbt = new NBTTagCompound();
             }
 
-            if( inv == null || inv.length < 1 ) {
+            if( inv == null || inv.size() < 1 ) {
                 if( nbt.hasKey("filteredStacks") ) {
                     nbt.removeTag("filteredStacks");
                 }
@@ -128,8 +130,8 @@ public abstract class ItemAssemblyUpgrade
             stack.setTagCompound(nbt);
         }
 
-        public static ItemStack[] getEmptyInv() {
-            return new ItemStack[18];
+        public static NonNullList<ItemStack> getEmptyInv() {
+            return NonNullList.withSize(18, ItemStack.EMPTY);
         }
     }
 }

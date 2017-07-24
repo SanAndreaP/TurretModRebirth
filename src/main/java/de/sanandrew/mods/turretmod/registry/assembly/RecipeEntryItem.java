@@ -17,11 +17,13 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.ArrayUtils;
 
+import javax.annotation.Nonnull;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -143,8 +145,8 @@ public class RecipeEntryItem
     }
 
     @Override
-    public boolean isItemFitting(ItemStack stack) {
-        if( stack == null ) {
+    public boolean isItemFitting(@Nonnull ItemStack stack) {
+        if( !ItemStackUtils.isValid(stack) ) {
             return false;
         }
 
@@ -175,11 +177,11 @@ public class RecipeEntryItem
     @SideOnly(Side.CLIENT)
     public ItemStack[] getEntryItemStacks() {
         if( this.cachedEntryStacks == null || this.cachedEntryStacks.get() == null ) {
-            List<ItemStack> stacks = new ArrayList<>();
-            List<ItemStack> fltStacks = new ArrayList<>();
+            NonNullList<ItemStack> stacks = NonNullList.create();
+            NonNullList<ItemStack> fltStacks = NonNullList.create();
             for( ItemStack stack : this.normalAlternatives ) {
                 if( stack.getItemDamage() == OreDictionary.WILDCARD_VALUE ) {
-                    stack.getItem().getSubItems(stack.getItem(), CreativeTabs.SEARCH, stacks);
+                    stack.getItem().getSubItems(CreativeTabs.SEARCH, stacks);
                 } else {
                     stacks.add(stack);
                 }
@@ -188,7 +190,7 @@ public class RecipeEntryItem
             for( String oreDictName : this.oreDictAlternatives ) {
                 OreDictionary.getOres(oreDictName).forEach(stack -> {
                     if( stack.getItemDamage() == OreDictionary.WILDCARD_VALUE ) {
-                        stack.getItem().getSubItems(stack.getItem(), CreativeTabs.SEARCH, stacks);
+                        stack.getItem().getSubItems(CreativeTabs.SEARCH, stacks);
                     }else {
                         stacks.add(stack);
                     }
@@ -211,7 +213,7 @@ public class RecipeEntryItem
                 }
 
                 if( valid != null ) {
-                    valid.stackSize = this.stackSize;
+                    valid.setCount(this.stackSize);
                     fltStacks.add(valid);
                 }
             }
@@ -240,10 +242,11 @@ public class RecipeEntryItem
     {
         private static final long serialVersionUID = 2146846913523392590L;
 
-        public EnchantmentEntry(ItemStack stack, Enchantment enchantment) {
+        public EnchantmentEntry(@Nonnull ItemStack stack, Enchantment enchantment) {
             super(stack, enchantment);
         }
 
+        @Nonnull
         public ItemStack stack() {
             return this.getValue(0);
         }

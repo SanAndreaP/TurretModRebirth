@@ -16,7 +16,9 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,11 +34,12 @@ public class ItemAmmo
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack) {
+    public String getUnlocalizedName(@Nonnull ItemStack stack) {
         TurretAmmo type = AmmoRegistry.INSTANCE.getType(stack);
         return String.format("%s.%s", this.getUnlocalizedName(), type.getName());
     }
 
+    @Nonnull
     public ItemStack getAmmoItem(int stackSize, TurretAmmo type) {
         if( type == null ) {
             throw new IllegalArgumentException("Cannot get turret_ammo item with NULL type!");
@@ -52,7 +55,9 @@ public class ItemAmmo
 
     @Override
     @SuppressWarnings("unchecked")
-    public void getSubItems(Item item, CreativeTabs tab, List list) {
-        list.addAll(AmmoRegistry.INSTANCE.getRegisteredTypes().stream().map(type -> this.getAmmoItem(1, type)).collect(Collectors.toList()));
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
+        if( this.isInCreativeTab(tab) ) {
+            list.addAll(AmmoRegistry.INSTANCE.getRegisteredTypes().stream().map(type -> this.getAmmoItem(1, type)).collect(Collectors.toList()));
+        }
     }
 }

@@ -38,8 +38,8 @@ public class ModelTurretBase
 	private final float scale;
 
 	public ModelTurretBase(float scale) {
-		this.modelJson = ModelJsonLoader.create(this, this.getModelLocation(), this.getMandatoryBoxes().stream().toArray(String[]::new));
 		this.scale = scale;
+		this.modelJson = ModelJsonLoader.create(this, this.getModelLocation(), this.getMandatoryBoxes().stream().toArray(String[]::new));
 	}
 
 	@Override

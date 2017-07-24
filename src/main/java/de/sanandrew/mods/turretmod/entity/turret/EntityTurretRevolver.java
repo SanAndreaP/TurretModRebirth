@@ -151,6 +151,6 @@ public class EntityTurretRevolver
 
     @Override
     public SoundEvent getShootSound() {
-        return Sounds.SHOOT_REVOLVER;
+        return Sounds.shoot_revolver;
     }
 }

@@ -91,7 +91,7 @@ public final class RepairKitRegistry
 
     @Override
     @Nonnull
-    public TurretRepairKit getType(ItemStack stack) {
+    public TurretRepairKit getType(@Nonnull ItemStack stack) {
         if( ItemStackUtils.isItem(stack, ItemRegistry.repair_kit) ) {
             NBTTagCompound nbt = stack.getTagCompound();
             if( nbt != null ) {

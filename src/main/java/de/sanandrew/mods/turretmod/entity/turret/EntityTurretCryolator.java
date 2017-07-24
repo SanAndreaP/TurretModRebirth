@@ -105,6 +105,6 @@ public class EntityTurretCryolator
 
     @Override
     public SoundEvent getShootSound() {
-        return Sounds.SHOOT_CRYOLATOR;
+        return Sounds.shoot_cryolator;
     }
 }

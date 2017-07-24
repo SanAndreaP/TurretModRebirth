@@ -42,6 +42,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,7 @@ public class TurretModRebirth
         TmrConstants.repkitRegistry = RepairKitRegistry.INSTANCE;
 
         PacketRegistry.initialize();
-        Sounds.initialize();
+//        Sounds.initialize();
 
         AmmoRegistry.INSTANCE.initialize();
         PLUGINS.forEach(plugin -> plugin.registerRepairKits(RepairKitRegistry.INSTANCE));
@@ -95,7 +96,6 @@ public class TurretModRebirth
     public void init(FMLInitializationEvent event) {
         PLUGINS.forEach(plugin -> plugin.registerAssemblyRecipes(TurretAssemblyRegistry.INSTANCE));
         TileEntityElectrolyteGenerator.initializeRecipes();
-        CraftingRecipes.initialize();
 
         proxy.init(event);
     }
@@ -156,7 +156,7 @@ public class TurretModRebirth
     }
 
     @Override
-    public boolean isTCUItem(ItemStack stack) {
+    public boolean isTCUItem(@Nonnull ItemStack stack) {
         return ItemStackUtils.isItem(stack, ItemRegistry.turret_control_unit);
     }
 
@@ -172,6 +172,7 @@ public class TurretModRebirth
     }
 
     @Override
+    @Nonnull
     public ItemStack getPickedTurretResult(RayTraceResult target, EntityTurret turret) {
         return ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(turret.getClass()));
     }
@@ -197,7 +198,7 @@ public class TurretModRebirth
     }
 
     @Override
-    public boolean isStackValid(ItemStack stack) {
+    public boolean isStackValid(@Nonnull ItemStack stack) {
         return ItemStackUtils.isValid(stack);
     }
 }

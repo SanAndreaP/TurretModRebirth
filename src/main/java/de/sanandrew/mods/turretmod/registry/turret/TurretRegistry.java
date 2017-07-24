@@ -20,6 +20,7 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurretRevolver;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
 import de.sanandrew.mods.turretmod.util.CommonProxy;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import org.apache.logging.log4j.Level;
 
@@ -71,11 +72,6 @@ public final class TurretRegistry
             return false;
         }
 
-        if( type.getUUID() == null ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("Turret-Info %s has no UUID! How am I supposed to differentiate all the turrets?", type.getName()), new InvalidParameterException());
-            return false;
-        }
-
         if( this.infoFromUUID.containsKey(type.getUUID()) ) {
             TmrConstants.LOG.log(Level.ERROR, String.format("The UUID of Turret-Info %s is already registered! Use another UUID. JUST DO IT!", type.getName()), new InvalidParameterException());
             return false;
@@ -91,7 +87,8 @@ public final class TurretRegistry
         this.infos.add(type);
 
         if( registerEntity ) {
-            EntityRegistry.registerModEntity(type.getTurretClass(), type.getName(), CommonProxy.entityCount++, TurretModRebirth.instance, 128, 1, false);
+            String name = type.getName();
+            EntityRegistry.registerModEntity(new ResourceLocation(TmrConstants.ID, name), type.getTurretClass(), TmrConstants.ID + '.' + name, CommonProxy.entityCount++, TurretModRebirth.instance, 128, 1, false);
         }
 
         return true;

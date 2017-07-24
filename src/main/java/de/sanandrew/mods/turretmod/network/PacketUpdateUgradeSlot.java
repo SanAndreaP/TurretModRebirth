@@ -17,17 +17,20 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
+import javax.annotation.Nonnull;
+
 public class PacketUpdateUgradeSlot
         extends AbstractMessage<PacketUpdateUgradeSlot>
 {
     private int turretID;
     private byte slot;
+    @Nonnull
     private ItemStack stack;
 
     @SuppressWarnings("unused")
     public PacketUpdateUgradeSlot() {}
 
-    public PacketUpdateUgradeSlot(EntityTurret turret, int slot, ItemStack stack) {
+    public PacketUpdateUgradeSlot(EntityTurret turret, int slot, @Nonnull ItemStack stack) {
         this.turretID = turret.getEntityId();
         this.slot = (byte) slot;
         this.stack = stack;

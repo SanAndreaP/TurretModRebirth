@@ -14,10 +14,11 @@ import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nonnull;
 
 @SideOnly(Side.CLIENT)
 public class GuiButtonEntry
@@ -25,6 +26,7 @@ public class GuiButtonEntry
 {
     public final int entIndex;
 
+    @Nonnull
     private ItemStack icon;
     private GuiTurretInfo tinfo;
 
@@ -48,10 +50,6 @@ public class GuiButtonEntry
                 this.ticksHovered = Math.min(this.time, this.ticksHovered + this.tinfo.timeDelta);
             } else {
                 this.ticksHovered = Math.max(0.0F, this.ticksHovered - this.tinfo.timeDelta);
-            }
-
-            if( this.icon == null ) {
-                this.icon = new ItemStack(Blocks.FIRE);
             }
 
             GlStateManager.pushMatrix();

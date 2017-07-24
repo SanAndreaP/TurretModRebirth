@@ -50,7 +50,11 @@ public class CommonProxy
 
     public void init(FMLInitializationEvent event) { }
 
-    public void postInit(FMLPostInitializationEvent event) { }
+    public void postInit(FMLPostInitializationEvent event) {
+        EntityTurret.hurtSound = Sounds.hit_turrethit;
+        EntityTurret.deathSound = Sounds.hit_turretdeath;
+        EntityTurret.collectSound = Sounds.collect_ia_get;
+    }
 
     @Override
     public final Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {

@@ -20,6 +20,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 @SideOnly(Side.CLIENT)
 public class GuiAssemblyFilter
         extends GuiContainer
@@ -27,7 +29,7 @@ public class GuiAssemblyFilter
     private int posY;
     private int posX;
 
-    public GuiAssemblyFilter(InventoryPlayer invPlayer, ItemStack assemblyFilter) {
+    public GuiAssemblyFilter(InventoryPlayer invPlayer, @Nonnull ItemStack assemblyFilter) {
         super(new ContainerAssemblyFilter(invPlayer, assemblyFilter, 0));
 
         this.xSize = 176;

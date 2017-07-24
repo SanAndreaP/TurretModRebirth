@@ -16,12 +16,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class ContainerElectrolyteGenerator
         extends Container
@@ -61,7 +58,6 @@ public class ContainerElectrolyteGenerator
         boolean slotChanged = false;
         int start;
         Slot slot;
-        ItemStack slotStack;
 
         if( reverse ) {
             start = endSlot - 1;
@@ -148,17 +144,17 @@ public class ContainerElectrolyteGenerator
             return false;
         }
 
-        @Nonnull
         @Override
+        @Nonnull
         public ItemStack getStack() {
-            return generator.processStacks[this.index];
+            return generator.processStacks.get(this.index);
         }
 
         @Override
         public void putStack(@Nonnull ItemStack stack) { }
 
         @Override
-        public void onSlotChange(@Nonnull ItemStack stack1, ItemStack stack2) { }
+        public void onSlotChange(@Nonnull ItemStack stack1, @Nonnull ItemStack stack2) { }
 
         @Override
         public int getItemStackLimit(@Nonnull ItemStack stack) {
@@ -166,8 +162,9 @@ public class ContainerElectrolyteGenerator
         }
 
         @Override
+        @Nonnull
         public ItemStack decrStackSize(int amount) {
-            return null;
+            return ItemStack.EMPTY;
         }
 
         @Override

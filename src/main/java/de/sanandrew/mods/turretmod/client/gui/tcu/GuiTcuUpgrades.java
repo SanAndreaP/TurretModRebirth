@@ -39,6 +39,10 @@ public class GuiTcuUpgrades
     private int posY;
     private int posX;
 
+    private boolean hasUpgStgI;
+    private boolean hasUpgStgII;
+    private boolean hasUpgStgIII;
+
     public GuiTcuUpgrades(InventoryPlayer invPlayer, EntityTurret turret) {
         super(new ContainerTurretUpgrades(invPlayer, ((UpgradeProcessor) turret.getUpgradeProcessor())));
 
@@ -46,6 +50,19 @@ public class GuiTcuUpgrades
 
         this.xSize = GuiTCUHelper.X_SIZE;
         this.ySize = GuiTCUHelper.Y_SIZE;
+    }
+
+    @Override
+    public void updateScreen() {
+        super.updateScreen();
+
+        if( !ItemStackUtils.isValid(this.mc.player.getHeldItemMainhand()) || this.mc.player.getHeldItemMainhand().getItem() != ItemRegistry.turret_control_unit ) {
+            this.mc.player.closeScreen();
+        }
+
+        this.hasUpgStgI = this.turret.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_STORAGE_I);
+        this.hasUpgStgII = this.turret.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_STORAGE_II);
+        this.hasUpgStgIII = this.turret.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_STORAGE_III);
     }
 
     @Override
@@ -64,22 +81,21 @@ public class GuiTcuUpgrades
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partTicks, int mouseX, int mouseY) {
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        this.drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        this.renderHoveredToolTip(mouseX, mouseY);
+    }
 
+    @Override
+    protected void drawGuiContainerBackgroundLayer(float partTicks, int mouseX, int mouseY) {
         this.mc.getTextureManager().bindTexture(Resources.GUI_TCU_UPGRADES.getResource());
 
         this.drawTexturedModalRect(this.posX, this.posY, 0, 0, this.xSize, this.ySize);
-
-        if( !ItemStackUtils.isValid(this.mc.player.getHeldItemMainhand()) || this.mc.player.getHeldItemMainhand().getItem() != ItemRegistry.turret_control_unit ) {
-            this.mc.player.closeScreen();
-        }
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-
         RenderHelper.disableStandardItemLighting();
         this.fontRenderer.drawString(Lang.translate(Lang.CONTAINER_INV.get()), 8, this.ySize - 126 + 3, 0xFF404040);
 
@@ -90,19 +106,19 @@ public class GuiTcuUpgrades
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(0.0F, 0.0F, 300.0F);
-        if( !this.turret.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_STORAGE_I) ) {
+        if( !this.hasUpgStgI ) {
             for( int j = 0; j < 9; j++ ) {
                 this.drawGradientRect(7 + j * 18, 25 + 18, 7 + 16 + j * 18, 25 + 18 + 16, 0x80FFFFFF, 0x80FFFFFF);
             }
         }
 
-        if( !this.turret.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_STORAGE_II) ) {
+        if( !this.hasUpgStgII ) {
             for( int j = 0; j < 9; j++ ) {
                 this.drawGradientRect(7 + j * 18, 25 + 36, 7 + 16 + j * 18, 25 + 36 + 16, 0x80FFFFFF, 0x80FFFFFF);
             }
         }
 
-        if( !this.turret.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_STORAGE_III) ) {
+        if( !this.hasUpgStgIII ) {
             for( int j = 0; j < 9; j++ ) {
                 this.drawGradientRect(7 + j * 18, 25 + 54, 7 + 16 + j * 18, 25 + 54 + 16, 0x80FFFFFF, 0x80FFFFFF);
             }

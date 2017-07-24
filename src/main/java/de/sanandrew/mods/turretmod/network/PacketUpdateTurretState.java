@@ -18,12 +18,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
+import javax.annotation.Nonnull;
+
 public class PacketUpdateTurretState
         extends AbstractMessage<PacketUpdateTurretState>
 {
     private int turretId;
     private int entityToAttackId;
     private int currAmmoCap;
+    @Nonnull
     private ItemStack ammoStack;
     private boolean isShooting;
 

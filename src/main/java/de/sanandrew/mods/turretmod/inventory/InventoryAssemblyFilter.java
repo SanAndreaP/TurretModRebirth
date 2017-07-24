@@ -8,68 +8,75 @@
  */
 package de.sanandrew.mods.turretmod.inventory;
 
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+
+import javax.annotation.Nonnull;
 
 public class InventoryAssemblyFilter
         implements IInventory
 {
-    public ItemStack[] invStacks;
+    public NonNullList<ItemStack> invStacks;
 
-    public InventoryAssemblyFilter(ItemStack[] stacks) {
+    public InventoryAssemblyFilter(@Nonnull NonNullList<ItemStack> stacks) {
         this.invStacks = stacks;
     }
 
     @Override
+    @Nonnull
     public ItemStack getStackInSlot(int slot) {
-        return slot >= 0 && slot < this.invStacks.length ? this.invStacks[slot] : null;
+        return slot >= 0 && slot < this.invStacks.size() ? this.invStacks.get(slot) : ItemStack.EMPTY;
     }
 
     @Override
+    @Nonnull
     public ItemStack decrStackSize(int slot, int amount) {
-        if( this.invStacks[slot] != null ) {
+        if( ItemStackUtils.isValid(this.invStacks.get(slot)) ) {
             ItemStack itemstack;
 
-            if( this.invStacks[slot].stackSize <= amount ) {
-                itemstack = this.invStacks[slot];
-                this.invStacks[slot] = null;
+            if( this.invStacks.get(slot).getCount() <= amount ) {
+                itemstack = this.invStacks.get(slot);
+                this.invStacks.set(slot, ItemStack.EMPTY);
                 this.markDirty();
                 return itemstack;
             } else {
-                itemstack = this.invStacks[slot].splitStack(amount);
+                itemstack = this.invStacks.get(slot).splitStack(amount);
 
-                if( this.invStacks[slot].stackSize == 0 ) {
-                    this.invStacks[slot] = null;
+                if( this.invStacks.get(slot).getCount() == 0 ) {
+                    this.invStacks.set(slot, ItemStack.EMPTY);
                 }
 
                 this.markDirty();
                 return itemstack;
             }
         } else {
-            return null;
+            return ItemStack.EMPTY;
         }
     }
 
     @Override
+    @Nonnull
     public ItemStack removeStackFromSlot(int slot) {
-        if( this.invStacks[slot] != null ) {
-            ItemStack itemstack = this.invStacks[slot];
-            this.invStacks[slot] = null;
+        if( ItemStackUtils.isValid(this.invStacks.get(slot)) ) {
+            ItemStack itemstack = this.invStacks.get(slot);
+            this.invStacks.set(slot, ItemStack.EMPTY);
             return itemstack;
         } else {
-            return null;
+            return ItemStack.EMPTY;
         }
     }
 
     @Override
-    public void setInventorySlotContents(int slot, ItemStack stack) {
-        this.invStacks[slot] = stack;
+    public void setInventorySlotContents(int slot, @Nonnull ItemStack stack) {
+        this.invStacks.set(slot, stack);
 
-        if( stack != null && stack.stackSize > this.getInventoryStackLimit() ) {
-            stack.stackSize = this.getInventoryStackLimit();
+        if( ItemStackUtils.isValid(stack) && stack.getCount() > this.getInventoryStackLimit() ) {
+            stack.setCount(this.getInventoryStackLimit());
         }
 
         this.markDirty();
@@ -77,7 +84,12 @@ public class InventoryAssemblyFilter
 
     @Override
     public int getSizeInventory() {
-        return this.invStacks.length;
+        return this.invStacks.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return this.invStacks.stream().noneMatch(ItemStackUtils::isValid);
     }
 
     @Override
@@ -104,7 +116,7 @@ public class InventoryAssemblyFilter
     public void markDirty() {}
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player) {
+    public boolean isUsableByPlayer(EntityPlayer player) {
         return true;
     }
 
@@ -115,7 +127,7 @@ public class InventoryAssemblyFilter
     public void closeInventory(EntityPlayer player) {}
 
     @Override
-    public boolean isItemValidForSlot(int slot, ItemStack stack)
+    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack)
     {
         return true;
     }
@@ -135,8 +147,6 @@ public class InventoryAssemblyFilter
 
     @Override
     public void clear() {
-        for( int i = 0; i < this.invStacks.length; i++ ) {
-            this.invStacks[i] = null;
-        }
+        this.invStacks.replaceAll(stack -> ItemStack.EMPTY);
     }
 }

@@ -12,15 +12,13 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import javax.annotation.Nonnull;
 import java.util.Comparator;
 import java.util.List;
 
@@ -29,32 +27,32 @@ public class TmrCreativeTabs
     private static final Comparator<ItemStack> ITM_NAME_COMP = new ItemNameComparator();
 
     public static final CreativeTabs TURRETS = new CreativeTabs(TmrConstants.ID + ":turrets") {
-        private ItemStack[] tabIcons;
+        private NonNullList<ItemStack> tabIcons = null;
 
         @Override
         @SideOnly(Side.CLIENT)
-        public Item getTabIconItem() {
-            return Items.BLAZE_POWDER;
+        public ItemStack getTabIconItem() {
+            return ItemStack.EMPTY;
         }
 
         @Override
         @SideOnly(Side.CLIENT)
+        @Nonnull
         public ItemStack getIconItemStack() {
             if( this.tabIcons == null ) {
-                List<ItemStack> subItms = new ArrayList<>();
-                ItemRegistry.turret_placer.getSubItems(ItemRegistry.turret_placer, this, subItms);
-                this.tabIcons = subItms.toArray(new ItemStack[subItms.size()]);
+                this.tabIcons = NonNullList.create();
+                ItemRegistry.turret_placer.getSubItems(this, this.tabIcons);
             }
 
-            return this.tabIcons[(int) (System.currentTimeMillis() / 4250) % this.tabIcons.length];
+            return this.tabIcons.get((int) (System.currentTimeMillis() / 4250L) % this.tabIcons.size());
         }
 
         @Override
         @SideOnly(Side.CLIENT)
-        public void displayAllRelevantItems(List<ItemStack> itmList) {
+        public void displayAllRelevantItems(NonNullList<ItemStack> itmList) {
             super.displayAllRelevantItems(itmList);
 
-            Collections.sort(itmList, (itm1, itm2) -> {
+            itmList.sort((itm1, itm2) -> {
                 if( itm1 != null && itm1.getItem() == ItemRegistry.turret_placer ) {
                     return itm2 != null && itm2.getItem() == ItemRegistry.turret_placer ? 0 : -2;
                 } else if( itm2 != null && itm2.getItem() == ItemRegistry.turret_placer ) {
@@ -71,18 +69,25 @@ public class TmrCreativeTabs
     };
 
     public static final CreativeTabs MISC = new CreativeTabs(TmrConstants.ID + ":misc") {
+        @Nonnull
+        private ItemStack currTabIcon = ItemStack.EMPTY;
+
         @Override
         @SideOnly(Side.CLIENT)
-        public Item getTabIconItem() {
-            return ItemRegistry.turret_control_unit;
+        public ItemStack getTabIconItem() {
+            if( !ItemStackUtils.isValid(this.currTabIcon) ) {
+                this.currTabIcon = new ItemStack(ItemRegistry.turret_control_unit, 1);
+            }
+
+            return this.currTabIcon;
         }
 
         @Override
         @SideOnly(Side.CLIENT)
-        public void displayAllRelevantItems(List<ItemStack> itmList) {
+        public void displayAllRelevantItems(NonNullList<ItemStack> itmList) {
             super.displayAllRelevantItems(itmList);
 
-            Collections.sort(itmList, (itm1, itm2) -> {
+            itmList.sort((itm1, itm2) -> {
                 if( itm1 != null && itm1.getItem() instanceof ItemBlock ) {
                     return itm2 != null && itm2.getItem() instanceof ItemBlock ? 0 : -2;
                 } else if( itm2 != null && itm2.getItem() instanceof ItemBlock ) {
@@ -99,29 +104,29 @@ public class TmrCreativeTabs
     };
 
     public static final CreativeTabs UPGRADES = new CreativeTabs(TmrConstants.ID + ":upgrades") {
-        private ItemStack[] tabIcons;
+        private NonNullList<ItemStack> tabIcons = null;
 
         @Override
         @SideOnly(Side.CLIENT)
-        public Item getTabIconItem() {
-            return ItemRegistry.turret_upgrade;
+        public ItemStack getTabIconItem() {
+            return ItemStack.EMPTY;
         }
 
         @Override
         @SideOnly(Side.CLIENT)
+        @Nonnull
         public ItemStack getIconItemStack() {
             if( this.tabIcons == null ) {
-                List<ItemStack> subItms = new ArrayList<>();
-                ItemRegistry.turret_upgrade.getSubItems(ItemRegistry.turret_upgrade, this, subItms);
-                this.tabIcons = subItms.toArray(new ItemStack[subItms.size()]);
+                this.tabIcons = NonNullList.create();
+                ItemRegistry.turret_upgrade.getSubItems(this, this.tabIcons);
             }
 
-            return this.tabIcons[(int) (System.currentTimeMillis() / 4250) % this.tabIcons.length];
+            return this.tabIcons.get((int) (System.currentTimeMillis() / 4250L) % this.tabIcons.size());
         }
 
         @Override
         @SideOnly(Side.CLIENT)
-        public void displayAllRelevantItems(List<ItemStack> itmList) {
+        public void displayAllRelevantItems(NonNullList<ItemStack> itmList) {
             super.displayAllRelevantItems(itmList);
 
             sortItemsByName(itmList);
@@ -129,18 +134,18 @@ public class TmrCreativeTabs
         }
     };
 
-    protected static void sortItemsByName(List<ItemStack> items) {
-        Collections.sort(items, ITM_NAME_COMP);
+    protected static void sortItemsByName(NonNullList<ItemStack> items) {
+        items.sort(ITM_NAME_COMP);
     }
 
-    protected static void sortItemsBySubItems(final List<ItemStack> items, final CreativeTabs tab) {
-        Collections.sort(items, new ItemSubComparator(tab));
+    protected static void sortItemsBySubItems(final NonNullList<ItemStack> items, final CreativeTabs tab) {
+        items.sort(new ItemSubComparator(tab));
     }
 
     private static class ItemNameComparator implements Comparator<ItemStack>
     {
         @Override
-        public int compare(ItemStack stack1, ItemStack stack2) {
+        public int compare(@Nonnull ItemStack stack1, @Nonnull ItemStack stack2) {
             return stack2.getUnlocalizedName().compareTo(stack1.getUnlocalizedName());
         }
     }
@@ -154,18 +159,18 @@ public class TmrCreativeTabs
         }
 
         @Override
-        public int compare(ItemStack o1, ItemStack o2) {
+        public int compare(@Nonnull ItemStack o1, @Nonnull ItemStack o2) {
             if( o1.getItem() != o2.getItem() ) {
                 return -1;
             }
 
-            List<ItemStack> subItms = new ArrayList<>();
-            o1.getItem().getSubItems(o1.getItem(), this.tab, subItms);
+            NonNullList<ItemStack> subItms = NonNullList.create();
+            o1.getItem().getSubItems(this.tab, subItms);
 
             return getStackIndexInList(o2, subItms) > getStackIndexInList(o1, subItms) ? -1 : 1;
         }
 
-        private static int getStackIndexInList(ItemStack stack, List<ItemStack> stackArray) {
+        private static int getStackIndexInList(@Nonnull ItemStack stack, List<ItemStack> stackArray) {
             for( ItemStack stackElem : stackArray ) {
                 if( ItemStackUtils.areEqual(stack, stackElem, true) ) {
                     return stackArray.indexOf(stackElem);

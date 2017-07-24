@@ -13,6 +13,7 @@ import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -22,6 +23,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,19 +38,19 @@ public class ItemTurretInfo
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advInfo) {
+    public void addInformation(@Nonnull ItemStack stack, World world, List<String> list, ITooltipFlag advInfo) {
         String[] lines = Lang.translate(this.getUnlocalizedName() + ".desc").split("\\\\n");
         list.addAll(Arrays.asList(lines));
 
-        super.addInformation(stack, player, list, advInfo);
+        super.addInformation(stack, world, list, advInfo);
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         if( world.isRemote ) {
             TurretModRebirth.proxy.openGui(player, EnumGui.GUI_TINFO, -1, -1, 0);
         }
 
-        return super.onItemRightClick(itemStack, world, player, hand);
+        return super.onItemRightClick(world, player, hand);
     }
 }

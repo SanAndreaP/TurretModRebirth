@@ -16,6 +16,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 
+import javax.annotation.Nonnull;
+
 public class ItemTurretControlUnit
         extends Item
 {
@@ -29,12 +31,12 @@ public class ItemTurretControlUnit
     }
 
     @Override
-    public String getItemStackDisplayName(ItemStack stack) {
+    public String getItemStackDisplayName(@Nonnull ItemStack stack) {
         long currDisplayNameTime = System.currentTimeMillis();
         if( this.prevDisplayNameTime + 1000 < currDisplayNameTime ) {
             final int count = 5;
             double indFloat = MiscUtils.RNG.randomInt(20) != 0 ? 1 : MiscUtils.RNG.randomInt(count - 1) + 2;
-            this.nameId = MathHelper.ceiling_double_int(indFloat);
+            this.nameId = MathHelper.ceil(indFloat);
         }
 
         this.prevDisplayNameTime = currDisplayNameTime;

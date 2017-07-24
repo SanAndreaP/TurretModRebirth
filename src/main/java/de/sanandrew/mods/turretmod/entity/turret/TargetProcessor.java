@@ -76,6 +76,7 @@ public final class TargetProcessor
         this.turret = turret;
         this.selector = new EntityTargetSelector();
         this.initShootTicks = 20;
+        this.ammoStack = ItemStack.EMPTY;
     }
 
     @Override
@@ -237,8 +238,8 @@ public final class TargetProcessor
     }
 
     @Override
-    public boolean isAmmoApplicable(ItemStack stack) {
-        if( stack != null ) {
+    public boolean isAmmoApplicable(@Nonnull ItemStack stack) {
+        if( ItemStackUtils.isValid(stack) ) {
             TurretAmmo stackType = AmmoRegistry.INSTANCE.getType(stack);
             if( stackType != AmmoRegistry.NULL_TYPE ) {
                 if( AmmoRegistry.INSTANCE.getType(this.ammoStack).getTypeId().equals(stackType.getTypeId()) ) {
@@ -380,7 +381,7 @@ public final class TargetProcessor
 
     public static void initialize() {
         EntityList.getEntityNameList().stream().map(EntityList::getClass)
-                .filter(cls -> EntityLiving.class.isAssignableFrom(cls) && !EntityTurret.class.isAssignableFrom(cls) && !EntityLiving.class.equals(cls))
+                .filter(cls -> cls != null && EntityLiving.class.isAssignableFrom(cls) && !EntityTurret.class.isAssignableFrom(cls) && !EntityLiving.class.equals(cls))
                 .forEach(cls -> ENTITY_TARGET_LIST_STD.put(cls, IMob.class.isAssignableFrom(cls)));
     }
 
@@ -508,7 +509,7 @@ public final class TargetProcessor
         }
     }
 
-    public void updateClientState(int targetId, int ammoCount, ItemStack ammoStack, boolean isShooting) {
+    public void updateClientState(int targetId, int ammoCount, @Nonnull ItemStack ammoStack, boolean isShooting) {
         if( this.turret.world.isRemote ) {
             this.entityToAttack = targetId < 0 ? null : this.turret.world.getEntityByID(targetId);
             this.ammoCount = ammoCount;

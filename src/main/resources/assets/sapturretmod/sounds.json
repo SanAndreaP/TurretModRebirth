@@ -25,9 +25,9 @@
     "sounds": ["sapturretmod:collect/ia_get"],
     "subtitle": "subtitles.sapturretmod.turretGather"
   },
-  "hit.turretDeath": {
+  "hit.turretdeath": {
     "category": "neutral",
-    "sounds": ["sapturretmod:hit/turretDeath"],
+    "sounds": ["sapturretmod:hit/turretdeath"],
     "subtitle": "subtitles.sapturretmod.turretDeath"
   },
   "hit.turrethit": {

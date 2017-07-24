@@ -27,7 +27,7 @@ public class ContainerAssemblyFilter
     private int filterStackSlot;
     private InventoryAssemblyFilter filterInv;
 
-    public ContainerAssemblyFilter(IInventory playerInv, ItemStack stack, int slot) {
+    public ContainerAssemblyFilter(IInventory playerInv, @Nonnull ItemStack stack, int slot) {
         this.filterStack = stack;
         this.filterStackSlot = slot;
         this.filterInv = new InventoryAssemblyFilter(ItemAssemblyUpgrade.Filter.getFilterStacks(stack));
@@ -51,7 +51,7 @@ public class ContainerAssemblyFilter
 
     @Override
     public boolean canInteractWith(EntityPlayer player) {
-        return this.filterInv.isUseableByPlayer(player);
+        return this.filterInv.isUsableByPlayer(player);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class ContainerAssemblyFilter
         }
 
         @Override
-        public boolean isItemValid(ItemStack stack) {
+        public boolean isItemValid(@Nonnull ItemStack stack) {
             if( ItemStackUtils.isValid(stack) ) {
                 this.putStack(stack.copy());
             }

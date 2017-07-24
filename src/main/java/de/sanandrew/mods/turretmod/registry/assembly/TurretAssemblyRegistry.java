@@ -20,6 +20,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import org.apache.logging.log4j.Level;
 
+import javax.annotation.Nonnull;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,7 +42,7 @@ public final class TurretAssemblyRegistry
     private List<IRecipeGroup> groupsList = new ArrayList<>();
 
     @Override
-    public boolean registerRecipe(UUID uuid, IRecipeGroup group, ItemStack result, int fluxPerTick, int ticksProcessing, IRecipeEntry... resources) {
+    public boolean registerRecipe(UUID uuid, IRecipeGroup group, @Nonnull ItemStack result, int fluxPerTick, int ticksProcessing, IRecipeEntry... resources) {
         if( uuid == null ) {
             TmrConstants.LOG.log(Level.ERROR, "UUID for assembly recipe cannot be null!", new InvalidParameterException());
             return false;
@@ -76,7 +77,7 @@ public final class TurretAssemblyRegistry
     }
 
     @Override
-    public IRecipeGroup registerGroup(String name, ItemStack stack) {
+    public IRecipeGroup registerGroup(String name, @Nonnull ItemStack stack) {
         name = BlockRegistry.turret_assembly.getUnlocalizedName() + '.' + name;
         IRecipeGroup group = new RecipeGroup(name, stack);
         this.groupsList.add(group);
@@ -91,9 +92,10 @@ public final class TurretAssemblyRegistry
         return this.recipeResources.get(uuid);
     }
 
+    @Nonnull
     public ItemStack getRecipeResult(UUID uuid) {
         ItemStack stack = this.recipeResults.get(uuid);
-        return stack == null ? null : stack.copy();
+        return stack.copy();
     }
 
     public List<RecipeKeyEntry> getRecipeList() {
@@ -127,8 +129,8 @@ public final class TurretAssemblyRegistry
                     }
 
                     if( validStack != null ) {
-                        resourceOnSlotList.add(new Tuple(i, Math.min(validStack.stackSize, resource.getItemCount())));
-                        resource.decreaseItemCount(validStack.stackSize);
+                        resourceOnSlotList.add(new Tuple(i, Math.min(validStack.getCount(), resource.getItemCount())));
+                        resource.decreaseItemCount(validStack.getCount());
                     }
 
                     if( resource.getItemCount() <= 0 ) {
@@ -174,9 +176,10 @@ public final class TurretAssemblyRegistry
     public static class RecipeKeyEntry
     {
         public final UUID id;
+        @Nonnull
         public final ItemStack stack;
 
-        public RecipeKeyEntry(UUID id, ItemStack stack) {
+        public RecipeKeyEntry(UUID id, @Nonnull ItemStack stack) {
             this.id = id;
             this.stack = stack;
         }
@@ -186,10 +189,11 @@ public final class TurretAssemblyRegistry
             implements IRecipeGroup
     {
         private final String name;
+        @Nonnull
         private final ItemStack icon;
         private final ImmutableList.Builder<UUID> recipes = new ImmutableList.Builder<>();
 
-        RecipeGroup(String name, ItemStack icon) {
+        RecipeGroup(String name, @Nonnull ItemStack icon) {
             this.name = name;
             this.icon = icon;
         }
@@ -204,6 +208,7 @@ public final class TurretAssemblyRegistry
         }
 
         @Override
+        @Nonnull
         public ItemStack getIcon() {
             return this.icon;
         }

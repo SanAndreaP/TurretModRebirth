@@ -103,8 +103,9 @@ public final class AmmoRegistry
         }
 
         @Override
+        @Nonnull
         public ItemStack getStoringAmmoItem() {
-            return null;
+            return ItemStack.EMPTY;
         }
     };
 
@@ -129,7 +130,7 @@ public final class AmmoRegistry
     }
 
     @Nonnull
-    public TurretAmmo getType(ItemStack stack) {
+    public TurretAmmo getType(@Nonnull ItemStack stack) {
         NBTTagCompound nbt = stack.getTagCompound();
         if( nbt != null ) {
             if( nbt.hasKey("ammoType") ) {
@@ -195,7 +196,8 @@ public final class AmmoRegistry
         this.ammoTypes.add(type);
 
         if( registerEntity ) {
-            EntityRegistry.registerModEntity(type.getEntityClass(), "turret_proj_".concat(type.getName()), CommonProxy.entityCount++, TurretModRebirth.instance, 128, 1, true);
+            String name = "turret_proj_".concat(type.getName());
+            EntityRegistry.registerModEntity(new ResourceLocation(TmrConstants.ID, name), type.getEntityClass(), TmrConstants.ID + '.' + name, CommonProxy.entityCount++, TurretModRebirth.instance, 128, 1, true);
         }
 
         List<TurretAmmo> groupList = this.ammoGroupsFromUUID.get(type.getGroupId());
@@ -207,8 +209,8 @@ public final class AmmoRegistry
         return true;
     }
 
-    public boolean areAmmoItemsEqual(ItemStack firstStack, ItemStack secondStack) {
-        if(firstStack != null && secondStack != null && firstStack.getItem() == ItemRegistry.turret_ammo && secondStack.getItem() == ItemRegistry.turret_ammo ) {
+    public boolean areAmmoItemsEqual(@Nonnull ItemStack firstStack, @Nonnull ItemStack secondStack) {
+        if( firstStack.getItem() == ItemRegistry.turret_ammo && secondStack.getItem() == ItemRegistry.turret_ammo ) {
             TurretAmmo firstType = this.getType(firstStack);
             TurretAmmo secondType = this.getType(secondStack);
             return firstType != NULL_TYPE && secondType != NULL_TYPE && firstType.getTypeId().equals(secondType.getTypeId());

@@ -27,7 +27,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class GuiPotatoGenerator
         extends GuiContainer
 {
-    TileEntityElectrolyteGenerator generator;
+    private TileEntityElectrolyteGenerator generator;
+    private int currEnergy;
+    private int maxEnergy;
+    private float currEffective;
+    private int generatedEnergy;
 
     public GuiPotatoGenerator(InventoryPlayer invPlayer, TileEntityElectrolyteGenerator tile) {
         super(new ContainerElectrolyteGenerator(invPlayer, tile));
@@ -38,11 +42,31 @@ public class GuiPotatoGenerator
     }
 
     @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        this.drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        this.renderHoveredToolTip(mouseX, mouseY);
+    }
+
+    @Override
+    public void updateScreen() {
+        super.updateScreen();
+
+        IEnergyStorage stg = this.generator.getCapability(CapabilityEnergy.ENERGY, EnumFacing.DOWN);
+        if( stg != null ) {
+            this.currEnergy = stg.getEnergyStored();
+            this.maxEnergy = stg.getMaxEnergyStored();
+        }
+
+        this.currEffective = this.generator.effectiveness;
+        this.generatedEnergy = this.generator.getGeneratedFlux();
+    }
+
+    @Override
     protected void drawGuiContainerBackgroundLayer(float partTicks, int mouseX, int mouseY) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(this.guiLeft, this.guiTop, 0.0F);
 
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(Resources.GUI_POTATOGEN.getResource());
         this.drawTexturedModalRect(0, 0, 0, 0, this.xSize, this.ySize);
 
@@ -50,28 +74,24 @@ public class GuiPotatoGenerator
             this.drawTexturedModalRect(8 + i*18, 61, 176, 59, (int) StrictMath.round(this.generator.progress[i] / (float)this.generator.maxProgress[i] * 16.0D), 3);
         }
 
-        IEnergyStorage stg = this.generator.getCapability(CapabilityEnergy.ENERGY, EnumFacing.DOWN);
-        int energy = stg == null ? 0 : stg.getEnergyStored();
-        int maxEnergy = stg == null ? 0 : stg.getMaxEnergyStored();
-
-        double energyPerc = energy / (double) maxEnergy;
+        double energyPerc = this.currEnergy / (double) this.maxEnergy;
         int energyBarY = Math.max(0, Math.min(59, MathHelper.ceil((1.0D - energyPerc) * 59.0D)));
 
         this.drawTexturedModalRect(156, 75 + energyBarY, 176, energyBarY, 12, 59 - energyBarY);
-
-        String eff = String.format("%.2f%%", this.generator.effectiveness / 9.0F * 100.0F);
-        this.fontRenderer.drawString(Lang.translate(Lang.ELECTROGEN_EFFECTIVE.get()), 8, 100, 0xFF606060, false);
-        this.fontRenderer.drawString(eff, 150 - this.fontRenderer.getStringWidth(eff), 100, 0xFF606060, false);
-        String rft = String.format("%d RF/t", this.generator.getGeneratedFlux());
-        this.fontRenderer.drawString(Lang.translate(Lang.ELECTROGEN_POWERGEN.get()), 8, 110, 0xFF606060, false);
-        this.fontRenderer.drawString(rft, 150 - this.fontRenderer.getStringWidth(rft), 110, 0xFF606060, false);
 
         GlStateManager.popMatrix();
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+        RenderHelper.disableStandardItemLighting();
+
+        String eff = String.format("%.2f%%", this.currEffective / 9.0F * 100.0F);
+        this.fontRenderer.drawString(Lang.translate(Lang.ELECTROGEN_EFFECTIVE.get()), 8, 100, 0xFF606060, false);
+        this.fontRenderer.drawString(eff, 150 - this.fontRenderer.getStringWidth(eff), 100, 0xFF606060, false);
+        String rft = String.format("%d RF/t", this.generatedEnergy);
+        this.fontRenderer.drawString(Lang.translate(Lang.ELECTROGEN_POWERGEN.get()), 8, 110, 0xFF606060, false);
+        this.fontRenderer.drawString(rft, 150 - this.fontRenderer.getStringWidth(rft), 110, 0xFF606060, false);
 
         String s = this.generator.hasCustomName() ? this.generator.getName() : Lang.translate(this.generator.getName());
         this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 6, 0x404040);
@@ -80,6 +100,8 @@ public class GuiPotatoGenerator
         if( mouseX >= this.guiLeft + 156 && mouseX < this.guiLeft + 168 && mouseY >= this.guiTop + 75 && mouseY < this.guiTop + 134 ) {
             this.drawRFluxLabel(mouseX - this.guiLeft, mouseY - guiTop);
         }
+
+        RenderHelper.enableGUIStandardItemLighting();
     }
 
     private void drawRFluxLabel(int mouseX, int mouseY) {
@@ -90,8 +112,6 @@ public class GuiPotatoGenerator
         int xPos = mouseX - 12 - textWidth;
         int yPos = mouseY - 12;
         byte height = 7;
-
-        RenderHelper.disableStandardItemLighting();
 
         int bkgColor = 0xF0100010;
         int lightBg = 0x505000FF;
@@ -119,7 +139,6 @@ public class GuiPotatoGenerator
         GlStateManager.translate(-0.5F, -0.5F, -0.0F);
         this.fontRenderer.drawString(amount, 0, 0, 0xFFFFFFFF);
         GlStateManager.enableDepth();
-        RenderHelper.enableGUIStandardItemLighting();
 
         GlStateManager.popMatrix();
     }

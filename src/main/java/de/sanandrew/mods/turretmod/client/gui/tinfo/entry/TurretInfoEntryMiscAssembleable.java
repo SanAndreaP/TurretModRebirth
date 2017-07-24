@@ -20,6 +20,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 
 @SideOnly(Side.CLIENT)
@@ -31,11 +32,11 @@ public class TurretInfoEntryMiscAssembleable
     private String desc;
     private long lastTimestamp;
 
-    public TurretInfoEntryMiscAssembleable(ItemStack stack, UUID recipeId) {
+    public TurretInfoEntryMiscAssembleable(@Nonnull ItemStack stack, UUID recipeId) {
         this(stack, TurretAssemblyRegistry.INSTANCE.getRecipeEntry(recipeId));
     }
 
-    private TurretInfoEntryMiscAssembleable(ItemStack stack, TurretAssemblyRegistry.RecipeEntry recipeEntry) {
+    private TurretInfoEntryMiscAssembleable(@Nonnull ItemStack stack, TurretAssemblyRegistry.RecipeEntry recipeEntry) {
         super(stack, stack.getUnlocalizedName() + ".name");
         this.recipe = recipeEntry;
         this.desc = stack.getUnlocalizedName() + ".desc";

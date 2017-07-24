@@ -34,6 +34,7 @@ import org.lwjgl.opengl.ARBMultitexture;
 import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -142,6 +143,7 @@ public class TurretInfoEntryAmmo
             extends GuiButton
     {
         public final int ammoIndex;
+        @Nonnull
         public final ItemStack stack;
 
         private void drawGrayscale(int shader) {

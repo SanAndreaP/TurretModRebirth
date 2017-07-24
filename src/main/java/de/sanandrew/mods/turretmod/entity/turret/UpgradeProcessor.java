@@ -28,7 +28,6 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
-import java.util.Arrays;
 import java.util.UUID;
 
 public final class UpgradeProcessor
@@ -147,6 +146,7 @@ public final class UpgradeProcessor
     }
 
     @Override
+    @Nonnull
     public ItemStack decrStackSize(int slot, int amount) {
         ItemStack slotStack = this.upgradeStacks.get(slot);
         if( ItemStackUtils.isValid(slotStack) ) {
@@ -174,7 +174,7 @@ public final class UpgradeProcessor
                 return itemstack;
             }
         } else {
-            return null;
+            return ItemStack.EMPTY;
         }
     }
 
@@ -301,7 +301,7 @@ public final class UpgradeProcessor
     }
 
     @Override
-    public boolean tryApplyUpgrade(ItemStack upgStack) {
+    public boolean tryApplyUpgrade(@Nonnull ItemStack upgStack) {
         TurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(upgStack);
         if( upg != null && !this.hasUpgrade(upg) ) {
             TurretUpgrade dep = upg.getDependantOn();
@@ -350,7 +350,7 @@ public final class UpgradeProcessor
         ItemStackUtils.readItemStacksFromTag(this.upgradeStacks, nbt.getTagList("upgInventory", Constants.NBT.TAG_COMPOUND), this::callbackReadUpgStack);
     }
 
-    private void callbackWriteUpgStack(ItemStack upgStack, NBTTagCompound nbt) {
+    private void callbackWriteUpgStack(@Nonnull ItemStack upgStack, NBTTagCompound nbt) {
         if( upgStack != null ) {
             TurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(upgStack);
             if( upg != null ) {
@@ -359,7 +359,7 @@ public final class UpgradeProcessor
         }
     }
 
-    private void callbackReadUpgStack(ItemStack upgStack, NBTTagCompound nbt) {
+    private void callbackReadUpgStack(@Nonnull ItemStack upgStack, NBTTagCompound nbt) {
         if( upgStack != null ) {
             TurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(upgStack);
             if( upg != null ) {

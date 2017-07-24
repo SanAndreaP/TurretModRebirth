@@ -90,15 +90,16 @@ public class PacketPlayerTurretAction
                         chest.setInventorySlotContents(0, ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(turret.getClass()), turret));
                         ((TargetProcessor) turret.getTargetProcessor()).putAmmoInInventory(chest);
 
-                        if( --chestStack.stackSize < 1 ) {
-                            player.inventory.setInventorySlotContents(chestItm.getValue(0), null);
+                        chestStack.shrink(1);
+                        if( chestStack.getCount() < 1 ) {
+                            player.inventory.setInventorySlotContents(chestItm.getValue(0), ItemStack.EMPTY);
                         } else {
                             player.inventory.setInventorySlotContents(chestItm.getValue(0), chestStack.copy());
                         }
                         player.inventoryContainer.detectAndSendChanges();
                         //TODO: make custom container for turrets and put upgrades in it
                         ((UpgradeProcessor) turret.getUpgradeProcessor()).dropUpgrades();
-                        turret.kill();
+                        turret.onKillCommand();
                         return true;
                     }
                 }

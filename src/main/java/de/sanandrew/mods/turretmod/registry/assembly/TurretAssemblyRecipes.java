@@ -354,7 +354,7 @@ public final class TurretAssemblyRecipes
             registry.registerRecipe(TurretAssemblyRecipes.UPG_AT_SPEED, upgradeGroup, res, 60, 300, ingredients);
 
             res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY);
-            res.stackSize = 3;
+            res.setCount(3);
             ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("paneGlass"),
                                                  new RecipeEntryItem(2).put("dustRedstone"),
                                                  new RecipeEntryItem(1).put("ingotGold"),

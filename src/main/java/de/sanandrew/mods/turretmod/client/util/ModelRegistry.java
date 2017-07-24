@@ -40,6 +40,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -58,15 +59,13 @@ public final class ModelRegistry
         setStandardModel(BlockRegistry.electrolyte_generator);
         setStandardModel(BlockRegistry.turret_assembly);
 
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurretAssembly.class, new RenderTurretAssembly());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityElectrolyteGenerator.class, new RenderElectrolyteGenerator());
-    }
-
-    public static void registerModelsInit() {
         setCustomMeshModel(ItemRegistry.turret_placer, new MeshDefUUID.Turret());
         setCustomMeshModel(ItemRegistry.turret_ammo, new MeshDefUUID.Ammo());
         setCustomMeshModel(ItemRegistry.turret_upgrade, new MeshDefUUID.Upgrade());
         setCustomMeshModel(ItemRegistry.repair_kit, new MeshDefUUID.Repkit());
+
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurretAssembly.class, new RenderTurretAssembly());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityElectrolyteGenerator.class, new RenderElectrolyteGenerator());
     }
 
     private static void setStandardModel(Item item) {
@@ -84,7 +83,7 @@ public final class ModelRegistry
     }
 
     private static void setCustomMeshModel(Item item, MeshDefUUID<?> mesher) {
-        Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, mesher);
+        ModelLoader.setCustomMeshDefinition(item, mesher);
         ModelBakery.registerItemVariants(item, mesher.getResLocations());
     }
 
@@ -94,7 +93,7 @@ public final class ModelRegistry
         public final Map<UUID, ModelResourceLocation> modelRes = new HashMap<>();
 
         @Override
-        public ModelResourceLocation getModelLocation(ItemStack stack) {
+        public ModelResourceLocation getModelLocation(@Nonnull ItemStack stack) {
             T type = getType(stack);
             ResourceLocation regName = stack.getItem().getRegistryName();
             if( regName != null ) {
@@ -104,7 +103,7 @@ public final class ModelRegistry
             }
         }
 
-        public abstract T getType(ItemStack stack);
+        public abstract T getType(@Nonnull ItemStack stack);
         public abstract UUID getId(T type);
 
         public ResourceLocation[] getResLocations() {
@@ -122,7 +121,7 @@ public final class ModelRegistry
             }
 
             @Override
-            public TurretInfo getType(ItemStack stack) { return ItemTurret.getTurretInfo(stack); }
+            public TurretInfo getType(@Nonnull ItemStack stack) { return ItemTurret.getTurretInfo(stack); }
 
             @Override
             public UUID getId(TurretInfo type) { return type.getUUID(); }
@@ -139,7 +138,7 @@ public final class ModelRegistry
             }
 
             @Override
-            public TurretAmmo getType(ItemStack stack) { return AmmoRegistry.INSTANCE.getType(stack); }
+            public TurretAmmo getType(@Nonnull ItemStack stack) { return AmmoRegistry.INSTANCE.getType(stack); }
 
             @Override
             public UUID getId(TurretAmmo type) { return type.getId(); }
@@ -156,7 +155,7 @@ public final class ModelRegistry
             }
 
             @Override
-            public TurretUpgrade getType(ItemStack stack) { return UpgradeRegistry.INSTANCE.getUpgrade(stack); }
+            public TurretUpgrade getType(@Nonnull ItemStack stack) { return UpgradeRegistry.INSTANCE.getUpgrade(stack); }
 
             @Override
             public UUID getId(TurretUpgrade type) { return UpgradeRegistry.INSTANCE.getUpgradeUUID(type); }
@@ -173,7 +172,7 @@ public final class ModelRegistry
             }
 
             @Override
-            public TurretRepairKit getType(ItemStack stack) { return RepairKitRegistry.INSTANCE.getType(stack); }
+            public TurretRepairKit getType(@Nonnull ItemStack stack) { return RepairKitRegistry.INSTANCE.getType(stack); }
 
             @Override
             public UUID getId(TurretRepairKit type) { return RepairKitRegistry.INSTANCE.getTypeId(type); }

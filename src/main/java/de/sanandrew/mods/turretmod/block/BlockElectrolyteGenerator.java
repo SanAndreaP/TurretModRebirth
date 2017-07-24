@@ -41,6 +41,7 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
@@ -91,7 +92,7 @@ public class BlockElectrolyteGenerator
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, @Nonnull ItemStack stack) {
         if( stack.hasDisplayName() && state.getValue(TILE_HOLDER) ) {
             TileEntity te = world.getTileEntity(pos);
             assert te != null;

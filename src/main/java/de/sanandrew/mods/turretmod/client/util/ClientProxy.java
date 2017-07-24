@@ -62,6 +62,7 @@ import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.CommonProxy;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
+import de.sanandrew.mods.turretmod.util.Sounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleSmokeNormal;
@@ -110,8 +111,6 @@ public class ClientProxy
     @Override
     public void init(FMLInitializationEvent event) {
         super.init(event);
-
-        ModelRegistry.registerModelsInit();
 
         MinecraftForge.EVENT_BUS.register(RenderForcefieldHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());

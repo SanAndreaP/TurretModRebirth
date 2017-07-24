@@ -24,6 +24,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
+import javax.annotation.Nonnull;
+
 @SideOnly(Side.CLIENT)
 public class TurretInfoEntryMiscCraftable
         extends TurretInfoEntry
@@ -34,9 +36,9 @@ public class TurretInfoEntryMiscCraftable
     private int drawHeight;
     private long lastTimestamp;
 
-    public TurretInfoEntryMiscCraftable(IRecipe recipe) { this(recipe.getRecipeOutput(), recipe); }
+    public TurretInfoEntryMiscCraftable(IRecipe recipe) { this(recipe != null ? recipe.getRecipeOutput() : ItemStack.EMPTY, recipe); }
 
-    private TurretInfoEntryMiscCraftable(ItemStack stack, IRecipe recipe) {
+    private TurretInfoEntryMiscCraftable(@Nonnull ItemStack stack, IRecipe recipe) {
         super(stack, String.format("%s.name", stack.getUnlocalizedName()));
         this.desc = String.format("%s.desc", stack.getUnlocalizedName());
         if( recipe != null ) {
@@ -143,7 +145,7 @@ public class TurretInfoEntryMiscCraftable
             for( int j = 0, maxJ = this.crafting.getValue(2); j < maxJ; j++ ) {
 
                 ItemStack crfStack[] = this.crafting.<ItemStack[][]>getValue(0)[i*3 + j];
-                ItemStack drawnStack = null;
+                ItemStack drawnStack = ItemStack.EMPTY;
                 if( crfStack != null && crfStack.length > 0 ) {
                     drawnStack = crfStack[(int)(this.lastTimestamp / 1000L % crfStack.length)];
                 }

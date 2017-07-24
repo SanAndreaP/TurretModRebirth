@@ -10,10 +10,10 @@ package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
 import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
-import de.sanandrew.mods.turretmod.util.CraftingRecipes;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
@@ -24,6 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,10 +34,11 @@ public class TurretInfoEntryGenerator
         extends TurretInfoEntryMiscCraftable
 {
     private int drawHeight;
+    @Nonnull
     private static ItemStack tooltipItem;
 
     public TurretInfoEntryGenerator() {
-        super(CraftingRecipes.electrolyteGenerator);
+        super(null);
     }
 
     @Override
@@ -53,7 +55,7 @@ public class TurretInfoEntryGenerator
         this.drawHeight += 3;
 
         int maxItems = 9;
-        tooltipItem = null;
+        tooltipItem = ItemStack.EMPTY;
         for( int i = 0, cnt = fuelItems.size(); i < cnt; i++ ) {
             int x = i % maxItems;
             int y = i / maxItems;
@@ -61,7 +63,7 @@ public class TurretInfoEntryGenerator
             drawFuelItem(gui, 3 + 18 * x, this.drawHeight + 18 * y, mouseX, mouseY, scrollY, new ItemStack(fuelItems.get(i)));
         }
 
-        if( tooltipItem != null ) {
+        if( ItemStackUtils.isValid(tooltipItem) ) {
             drawTooltipFuel(gui.mc, scrollY);
         }
 
@@ -87,7 +89,7 @@ public class TurretInfoEntryGenerator
         GlStateManager.popMatrix();
     }
 
-    private static void drawFuelItem(GuiTurretInfo gui, int x, int y, int mouseX, int mouseY, int scrollY, ItemStack stack) {
+    private static void drawFuelItem(GuiTurretInfo gui, int x, int y, int mouseX, int mouseY, int scrollY, @Nonnull ItemStack stack) {
         gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         gui.drawTexturedModalRect(x, y, 192, 0, 18, 18);

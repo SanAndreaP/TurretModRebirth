@@ -23,7 +23,8 @@ public interface ITmrUtils
 
     void updateTurretState(EntityTurret turret);
 
-    ItemStack getPickedTurretResult(RayTraceResult target, EntityTurret turret);
+    @Nonnull
+    ItemStack getPickedTurretResult (RayTraceResult target,EntityTurret turret );
 
     void openGui(EntityPlayer player, EnumGui id, int x, int y, int z);
 

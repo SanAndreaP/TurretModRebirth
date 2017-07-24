@@ -35,6 +35,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -43,6 +44,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,8 +59,11 @@ import java.util.stream.Collectors;
 public class GuiTurretAssembly
         extends GuiContainer
 {
+    @Nonnull
     private final ItemStack upgIconAuto;
+    @Nonnull
     private final ItemStack upgIconSpeed;
+    @Nonnull
     private final ItemStack upgIconFilter;
 
     private TileEntityTurretAssembly assembly;
@@ -66,14 +71,13 @@ public class GuiTurretAssembly
     private FontRenderer frDetails;
     private boolean shiftPressed;
 
-    private int scrollPos;
-
     private static int scrollGroupPos;
     private static int currOpenTab;
 
     private boolean prevIsLmbDown;
     private boolean prevIsRmbDown;
     private boolean isScrolling;
+    private int scrollPos;
 
     private GuiSlimButton cancelTask;
     private GuiSlimButton automate;
@@ -83,6 +87,13 @@ public class GuiTurretAssembly
     private Map<GuiAssemblyCategoryTab, IRecipeGroup> groupBtns;
 
     private long lastTimestamp;
+    private int maxEnergy;
+    private int currEnergy;
+    private int ticksCrafted;
+    private int maxTicksCraft;
+    private boolean hasCrafting;
+    private UUID currCrfUUID;
+    private ItemStack currCrfItem;
 
     private ShaderItemAlphaOverride shaderCallback = new ShaderItemAlphaOverride();
 
@@ -149,33 +160,56 @@ public class GuiTurretAssembly
     }
 
     @Override
+    public void updateScreen() {
+        super.updateScreen();
+
+        IEnergyStorage energyCap = this.assembly.getCapability(CapabilityEnergy.ENERGY, EnumFacing.DOWN);
+        if( energyCap != null ) {
+            this.currEnergy = energyCap.getEnergyStored();
+            this.maxEnergy = energyCap.getMaxEnergyStored();
+        }
+
+        if( this.assembly.isActive ) {
+            this.ticksCrafted = this.assembly.getField(TileEntityTurretAssembly.FIELD_TICKS_CRAFTED);
+        } else {
+            this.ticksCrafted = 0;
+        }
+
+        this.maxTicksCraft = this.assembly.getField(TileEntityTurretAssembly.FIELD_MAX_TICKS_CRAFTED);
+        this.hasCrafting = this.assembly.currCrafting != null;
+        if( this.hasCrafting ) {
+            this.currCrfUUID = this.assembly.currCrafting.getValue(0);
+            this.currCrfItem = this.assembly.currCrafting.getValue(1);
+        }
+    }
+
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        this.drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        this.renderHoveredToolTip(mouseX, mouseY);
+    }
+
+    @Override
     protected void drawGuiContainerBackgroundLayer(float partTicks, int mouseX, int mouseY) {
         boolean isLmbDown = Mouse.isButtonDown(0);
         boolean isRmbDown = Mouse.isButtonDown(1);
-
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
         this.mc.getTextureManager().bindTexture(Resources.GUI_ASSEMBLY_CRF.getResource());
 
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
 
-        IEnergyStorage energyCap = this.assembly.getCapability(CapabilityEnergy.ENERGY, EnumFacing.DOWN);
-        int energy = energyCap == null ? 0 : energyCap.getEnergyStored();
-        int maxEnergy = TileEntityTurretAssembly.MAX_FLUX_STORAGE;
-
-        double energyPerc = energy / (double) maxEnergy;
-        int energyBarY = Math.max(0, Math.min(82, MathHelper.ceil((1.0D - energyPerc) * 82.0D)));
-
+        int energyBarY = Math.max(0, Math.min(82, MathHelper.ceil((1.0D - (this.currEnergy / (double) this.maxEnergy)) * 82.0D)));
         this.drawTexturedModalRect(this.guiLeft + 210, this.guiTop + 8 + energyBarY, 230, 12 + energyBarY, 12, 82 - energyBarY);
 
-        double procPerc = this.assembly.isActive ? this.assembly.getField(TileEntityTurretAssembly.FIELD_TICKS_CRAFTED) / (double) this.assembly.getField(TileEntityTurretAssembly.FIELD_MAX_TICKS_CRAFTED) : 0.0D;
+        double procPerc = this.ticksCrafted / (double) this.maxTicksCraft;
         int procBarX = Math.max(0, Math.min(50, MathHelper.ceil(procPerc * 50.0D)));
 
         this.drawTexturedModalRect(this.guiLeft + 156, this.guiTop + 30, 0, 222, procBarX, 5);
 
         if( this.cacheRecipes != null ) {
             int maxScroll = this.cacheRecipes.size() - 4;
-            if( maxScroll > 0 && this.assembly.currCrafting == null ) {
+            if( maxScroll > 0 && !this.hasCrafting ) {
                 int scrollBtnPos = MathHelper.floor(79.0D / maxScroll * this.scrollPos);
 
                 if( (mouseX >= this.guiLeft + 144 && mouseX < this.guiLeft + 150 && mouseY >= this.guiTop + 7 && mouseY < this.guiTop + 92) || this.isScrolling ) {
@@ -196,7 +230,7 @@ public class GuiTurretAssembly
             for( int i = 0; i < maxSz; i++) {
                 int index = this.scrollPos + i;
                 ItemStack stack = this.cacheRecipes.get(index).getValue(1);
-                boolean isActive = this.assembly.currCrafting == null || (!this.assembly.isAutomated() && ItemStackUtils.areEqual(this.assembly.currCrafting.getValue(1), stack));
+                boolean isActive = !this.hasCrafting || (!this.assembly.isAutomated() && ItemStackUtils.areEqual(this.currCrfItem, stack));
 
                 RenderUtils.renderStackInGui(stack, this.guiLeft + 36, this.guiTop + 10 + 21 * i, 1.0F, this.fontRenderer);
 
@@ -250,9 +284,9 @@ public class GuiTurretAssembly
             ShaderHelper.releaseShader();
         }
         if( this.assembly.hasFilterUpgrade() ) {
-            ItemStack[] filteredStacks = this.assembly.getFilterStacks();
-            for( int i = 0; i < filteredStacks.length; i++ ) {
-                ItemStack filterStack = filteredStacks[i];
+            NonNullList<ItemStack> filteredStacks = this.assembly.getFilterStacks();
+            for( int i = 0; i < filteredStacks.size(); i++ ) {
+                ItemStack filterStack = filteredStacks.get(i);
                 if( ItemStackUtils.isValid(filterStack) && !ItemStackUtils.isValid(this.assembly.getStackInSlot(i + 5)) ) {
                     int x = i % 9;
                     int y = i / 9;
@@ -276,14 +310,14 @@ public class GuiTurretAssembly
             ShaderHelper.releaseShader();
         }
 
-        if( this.assembly.currCrafting != null ) {
-            String cnt = String.format("%d", this.assembly.currCrafting.<ItemStack>getValue(1).getCount());
+        if( this.hasCrafting ) {
+            String cnt = String.format("%d", this.currCrfItem.getCount());
             if( this.assembly.isAutomated() ) {
                 cnt = String.valueOf('\u221E');
             }
 
             this.frDetails.drawString(Lang.translate(Lang.TASSEMBLY_CRAFTING.get()), this.guiLeft + 156, this.guiTop + 40, 0xFF303030);
-            RenderUtils.renderStackInGui(this.assembly.currCrafting.getValue(1), this.guiLeft + 190, this.guiTop + 36, 1.0F, this.fontRenderer, cnt, true);
+            RenderUtils.renderStackInGui(this.currCrfItem, this.guiLeft + 190, this.guiTop + 36, 1.0F, this.fontRenderer, cnt, true);
 
             this.cancelTask.enabled = true;
             this.automate.enabled = false;
@@ -306,7 +340,7 @@ public class GuiTurretAssembly
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+        RenderHelper.disableStandardItemLighting();
 
         if( mouseX >= this.guiLeft + 210 && mouseX < this.guiLeft + 222 && mouseY >= this.guiTop + 8 && mouseY < this.guiTop + 90 ) {
             this.drawRFluxLabel(mouseX - this.guiLeft, mouseY - this.guiTop);
@@ -317,7 +351,7 @@ public class GuiTurretAssembly
             for( int i = 0; i < maxSz; i++) {
                 int index = this.scrollPos + i;
 
-                if( this.assembly.currCrafting == null ) {
+                if( !this.hasCrafting ) {
                     if( mouseX >= this.guiLeft + 35 && mouseX < this.guiLeft + 143 && mouseY >= this.guiTop + 9 + 21 * i && mouseY < this.guiTop + 27 + 21 * i ) {
                         if( this.shiftPressed ) {
                             this.drawIngredientsDetail(mouseX - this.guiLeft, mouseY - this.guiTop, this.cacheRecipes.get(index).getValue(0), false);
@@ -329,11 +363,11 @@ public class GuiTurretAssembly
             }
         }
 
-        if( this.assembly.currCrafting != null && mouseX >= this.guiLeft + 190 && mouseX < this.guiLeft + 206 && mouseY >= this.guiTop + 36 && mouseY < this.guiTop + 52 ) {
+        if( this.hasCrafting && mouseX >= this.guiLeft + 190 && mouseX < this.guiLeft + 206 && mouseY >= this.guiTop + 36 && mouseY < this.guiTop + 52 ) {
             if( this.shiftPressed ) {
-                this.drawIngredientsDetail(mouseX - this.guiLeft, mouseY - this.guiTop, this.assembly.currCrafting.getValue(0), true);
+                this.drawIngredientsDetail(mouseX - this.guiLeft, mouseY - this.guiTop, this.currCrfUUID, true);
             } else {
-                this.drawIngredientsSmall(mouseX - this.guiLeft, mouseY - this.guiTop, this.assembly.currCrafting.getValue(0), true);
+                this.drawIngredientsSmall(mouseX - this.guiLeft, mouseY - this.guiTop, this.currCrfUUID, true);
             }
         }
 
@@ -341,6 +375,8 @@ public class GuiTurretAssembly
         if( this.lastTimestamp + 1000 < time ) {
             this.lastTimestamp = time;
         }
+
+        RenderHelper.enableGUIStandardItemLighting();
     }
 
     private void drawIngredientsDetail(int mouseX, int mouseY, UUID recipe, boolean showOnLeft) {
@@ -402,7 +438,9 @@ public class GuiTurretAssembly
         for( int i = 0, j = 0; i < ingredients.length; i++, j++ ) {
             Tuple descIng = desc.get(ingredients[i]);
 
+            RenderHelper.enableGUIStandardItemLighting();
             RenderUtils.renderStackInGui(descIng.getValue(0), xPos, yPos + j * 9, 0.5F);
+            RenderHelper.disableStandardItemLighting();
             GlStateManager.disableDepth();
 
             this.frDetails.drawString(descIng.getValue(1), xPos + 10, yPos + j * 9, 0xFF3F3F3F);
@@ -415,7 +453,6 @@ public class GuiTurretAssembly
             GlStateManager.enableDepth();
         }
 
-        RenderHelper.enableGUIStandardItemLighting();
         GlStateManager.popMatrix();
     }
 
@@ -478,13 +515,13 @@ public class GuiTurretAssembly
         GlStateManager.enableDepth();
         GlStateManager.popMatrix();
 
+        RenderHelper.enableGUIStandardItemLighting();
         for( int i = 0; i < ingredients.length; i++ ) {
             ItemStack[] entryStacks = ingredients[i].getEntryItemStacks();
             ItemStack stack = entryStacks[(int)((this.lastTimestamp / 1000L) % entryStacks.length)];
             RenderUtils.renderStackInGui(stack, xPos + i * 9, yPos, 0.5F);
         }
-
-        RenderHelper.enableGUIStandardItemLighting();
+        RenderHelper.disableStandardItemLighting();
 
         GlStateManager.popMatrix();
     }
@@ -560,7 +597,7 @@ public class GuiTurretAssembly
     @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
-        if( this.cacheRecipes.size() > 4 && this.assembly.currCrafting == null ) {
+        if( this.cacheRecipes.size() > 4 && !this.hasCrafting ) {
             int dWheelDir = Mouse.getEventDWheel();
             if( dWheelDir < 0 ) {
                 this.scrollPos = Math.min(this.cacheRecipes.size() - 4, this.scrollPos + 1);

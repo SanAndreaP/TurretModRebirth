@@ -34,6 +34,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import org.apache.commons.lang3.mutable.MutableFloat;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -163,7 +164,6 @@ public abstract class EntityTurretProjectile
             this.extinguish();
         }
 
-
         this.motionX *= speed;
         this.motionY *= speed;
         this.motionZ *= speed;
@@ -185,16 +185,14 @@ public abstract class EntityTurretProjectile
         }
 
         Entity entity = null;
-        AxisAlignedBB checkBB = this.getEntityBoundingBox().offset(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D);
-
+        AxisAlignedBB checkBB = this.getEntityBoundingBox().expand(this.motionX, this.motionY, this.motionZ).grow(1.0D);
         List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, checkBB);
         double minDist = 0.0D;
-        float collisionRange;
 
+//        System.out.println(checkBB);
         for( Entity collidedEntity : list ) {
             if( collidedEntity.canBeCollidedWith() && collidedEntity != this.shooterCache ) {
-                collisionRange = 0.3F;
-                AxisAlignedBB collisionAABB = collidedEntity.getEntityBoundingBox().expand(collisionRange, collisionRange, collisionRange);
+                AxisAlignedBB collisionAABB = collidedEntity.getEntityBoundingBox().grow(0.3D);
                 RayTraceResult interceptObj = collisionAABB.calculateIntercept(posVec, futurePosVec);
 
                 if( interceptObj != null ) {

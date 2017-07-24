@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
 import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.gui.Gui;
@@ -19,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
@@ -26,14 +28,16 @@ public abstract class TurretInfoEntry
 {
     public static final int MAX_ENTRY_WIDTH = 168;
     public static final int MAX_ENTRY_HEIGHT = 183;
+    @Nonnull
     private ItemStack icon;
     private String title;
 
-    protected TurretInfoEntry(ItemStack icon, String title) {
+    protected TurretInfoEntry(@Nonnull ItemStack icon, String title) {
         this.icon = icon;
         this.title = title;
     }
 
+    @Nonnull
     public final ItemStack getIcon() {
         return this.icon.copy();
     }
@@ -42,7 +46,7 @@ public abstract class TurretInfoEntry
         return this.title;
     }
 
-    protected static void drawMiniItem(GuiTurretInfo gui, int x, int y, int mouseX, int mouseY, int scrollY, ItemStack stack, boolean drawTooltip) {
+    protected static void drawMiniItem(GuiTurretInfo gui, int x, int y, int mouseX, int mouseY, int scrollY, @Nonnull ItemStack stack, boolean drawTooltip) {
         gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.pushMatrix();
@@ -52,7 +56,7 @@ public abstract class TurretInfoEntry
         GlStateManager.popMatrix();
 
         boolean mouseOver = mouseY >= 0 && mouseY < MAX_ENTRY_HEIGHT && mouseX >= x && mouseX < x + 8 && mouseY >= y - scrollY && mouseY < y + 8 - scrollY;
-        if( mouseOver && stack != null ) {
+        if( mouseOver && ItemStackUtils.isValid(stack) ) {
             GlStateManager.pushMatrix();
             GlStateManager.translate(0.0F, MAX_ENTRY_HEIGHT - 20 + scrollY, 32.0F);
             Gui.drawRect(0, 0, MAX_ENTRY_WIDTH, 20, 0xD0000000);
@@ -68,7 +72,7 @@ public abstract class TurretInfoEntry
             GlStateManager.popMatrix();
         }
 
-        if( stack != null ) {
+        if( ItemStackUtils.isValid(stack) ) {
             RenderUtils.renderStackInGui(stack, x, y, 0.5F);
         }
 

@@ -21,7 +21,7 @@ public class SoundLaser
     private final EntityTurretLaser turret;
 
     public SoundLaser(EntityTurretLaser laser) {
-        super(Sounds.SHOOT_LASER, SoundCategory.NEUTRAL);
+        super(Sounds.shoot_laser, SoundCategory.NEUTRAL);
         this.turret = laser;
         this.repeat = true;
         this.repeatDelay = 0;

@@ -33,6 +33,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityLockable;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -48,6 +49,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public class TileEntityTurretAssembly
@@ -75,7 +77,7 @@ public class TileEntityTurretAssembly
     private boolean isActiveClient;
 
     private int fluxAmount;
-    private ItemStack[] assemblyStacks = new ItemStack[23];
+    private NonNullList<ItemStack> assemblyStacks = NonNullList.withSize(23, ItemStack.EMPTY);
 
     public boolean syncStacks = true;
 
@@ -95,21 +97,21 @@ public class TileEntityTurretAssembly
         if( this.currCrafting != null && recipe.equals(this.currCrafting.getValue(0)) && !this.automate ) {
             ItemStack result = TurretAssemblyRegistry.INSTANCE.getRecipeResult(recipe);
             ItemStack currCrfStack = this.currCrafting.getValue(1);
-            if( currCrfStack.stackSize + count < 1 ) {
+            if( currCrfStack.getCount() + count < 1 ) {
                 this.cancelCrafting();
-            } else if( result != null && currCrfStack.stackSize + count * result.stackSize <= currCrfStack.getMaxStackSize() ) {
-                currCrfStack.stackSize += count;
+            } else if( ItemStackUtils.isValid(result) && currCrfStack.getCount() + count * result.getCount() <= currCrfStack.getMaxStackSize() ) {
+                currCrfStack.grow(count);
                 this.doSync = true;
             } else {
-                currCrfStack.stackSize = currCrfStack.getMaxStackSize();
+                currCrfStack.setCount(currCrfStack.getMaxStackSize());
                 this.doSync = true;
             }
         } else if( this.currCrafting == null ) {
             ItemStack stackRes = TurretAssemblyRegistry.INSTANCE.getRecipeResult(recipe);
             TurretAssemblyRegistry.RecipeEntry entry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(recipe);
-            if( entry != null && stackRes != null ) {
+            if( entry != null && ItemStackUtils.isValid(stackRes) ) {
                 stackRes = stackRes.copy();
-                stackRes.stackSize = this.automate ? 1 : count;
+                stackRes.setCount(this.automate ? 1 : count);
                 this.currCrafting = new Tuple(recipe, stackRes);
                 this.maxTicksCrafted = entry.ticksProcessing;
                 this.doSync = true;
@@ -128,17 +130,17 @@ public class TileEntityTurretAssembly
     }
 
     private void initCrafting() {
-        if( this.currCrafting != null && (this.assemblyStacks[0] == null || this.assemblyStacks[0].stackSize < this.assemblyStacks[0].getMaxStackSize()) ) {
+        if( this.currCrafting != null && (!ItemStackUtils.isValid(this.assemblyStacks.get(0)) || this.assemblyStacks.get(0).getCount() < this.assemblyStacks.get(0).getMaxStackSize()) ) {
             UUID currCrfUUID = this.currCrafting.getValue(0);
             ItemStack addStacks = this.currCrafting.<ItemStack>getValue(1).copy();
             ItemStack recipe = TurretAssemblyRegistry.INSTANCE.getRecipeResult(currCrfUUID);
-            if( recipe != null ) {
-                addStacks.stackSize = recipe.stackSize;
-                if( ItemStackUtils.canStack(this.assemblyStacks[0], addStacks, true) && TurretAssemblyRegistry.INSTANCE.checkAndConsumeResources(this, currCrfUUID) ) {
+            if( ItemStackUtils.isValid(recipe) ) {
+                addStacks.setCount(recipe.getCount());
+                if( ItemStackUtils.canStack(this.assemblyStacks.get(0), addStacks, true) && TurretAssemblyRegistry.INSTANCE.checkAndConsumeResources(this, currCrfUUID) ) {
                     TurretAssemblyRegistry.RecipeEntry currentlyCrafted = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(currCrfUUID);
                     if( currentlyCrafted != null ) {
                         this.maxTicksCrafted = currentlyCrafted.ticksProcessing;
-                        this.fluxConsumption = MathHelper.ceiling_float_int(currentlyCrafted.fluxPerTick * (this.hasSpeedUpgrade() ? 1.1F : 1.0F));
+                        this.fluxConsumption = MathHelper.ceil(currentlyCrafted.fluxPerTick * (this.hasSpeedUpgrade() ? 1.1F : 1.0F));
                         this.ticksCrafted = 0;
                         this.isActive = true;
                         this.doSync = true;
@@ -151,20 +153,20 @@ public class TileEntityTurretAssembly
     }
 
     public boolean hasAutoUpgrade() {
-        return ItemStackUtils.isValid(this.assemblyStacks[1]) && this.assemblyStacks[1].getItem() == ItemRegistry.assembly_upg_auto;
+        return ItemStackUtils.isValid(this.assemblyStacks.get(1)) && this.assemblyStacks.get(1).getItem() == ItemRegistry.assembly_upg_auto;
     }
 
     public boolean hasSpeedUpgrade() {
-        return ItemStackUtils.isValid(this.assemblyStacks[2]) && this.assemblyStacks[2].getItem() == ItemRegistry.assembly_upg_speed;
+        return ItemStackUtils.isValid(this.assemblyStacks.get(2)) && this.assemblyStacks.get(2).getItem() == ItemRegistry.assembly_upg_speed;
     }
 
     public boolean hasFilterUpgrade() {
-        return ItemStackUtils.isValid(this.assemblyStacks[3]) && this.assemblyStacks[3].getItem() == ItemRegistry.assembly_upg_filter;
+        return ItemStackUtils.isValid(this.assemblyStacks.get(3)) && this.assemblyStacks.get(3).getItem() == ItemRegistry.assembly_upg_filter;
     }
 
-    public ItemStack[] getFilterStacks() {
+    public NonNullList<ItemStack> getFilterStacks() {
         if( this.hasFilterUpgrade() ) {
-            return ItemAssemblyUpgrade.Filter.getFilterStacks(this.assemblyStacks[3]);
+            return ItemAssemblyUpgrade.Filter.getFilterStacks(this.assemblyStacks.get(3));
         } else {
             return ItemAssemblyUpgrade.Filter.getEmptyInv();
         }
@@ -188,18 +190,18 @@ public class TileEntityTurretAssembly
                         this.fluxAmount -= this.fluxConsumption;
                         if( ++this.ticksCrafted >= this.maxTicksCrafted ) {
                             ItemStack stack = TurretAssemblyRegistry.INSTANCE.getRecipeResult(this.currCrafting.getValue(0));
-                            if( stack == null ) {
+                            if( !ItemStackUtils.isValid(stack) ) {
                                 this.cancelCrafting();
                                 return;
                             }
 
-                            if( this.assemblyStacks[0] != null ) {
-                                this.assemblyStacks[0].stackSize += stack.stackSize;
+                            if( ItemStackUtils.isValid(this.assemblyStacks.get(0)) ) {
+                                this.assemblyStacks.get(0).grow(stack.getCount());
                             } else {
-                                this.assemblyStacks[0] = stack.copy();
+                                this.assemblyStacks.set(0, stack.copy());
                             }
 
-                            if( this.assemblyStacks[0].stackSize + stack.stackSize > this.assemblyStacks[0].getMaxStackSize() ) {
+                            if( this.assemblyStacks.get(0).getCount() + stack.getCount() > this.assemblyStacks.get(0).getMaxStackSize() ) {
                                 this.isActive = false;
                                 this.isActiveClient = false;
                             }
@@ -208,7 +210,7 @@ public class TileEntityTurretAssembly
                                 this.isActiveClient = false;
                             }
 
-                            if( this.currCrafting.<ItemStack>getValue(1).stackSize > 1 ) {
+                            if( this.currCrafting.<ItemStack>getValue(1).getCount() > 1 ) {
                                 if( !this.automate ) {
                                     this.currCrafting.<ItemStack>getValue(1).shrink(1);
                                 }
@@ -348,7 +350,6 @@ public class TileEntityTurretAssembly
     }
 
     private NBTTagCompound writeNBT(NBTTagCompound nbt) {
-        nbt.setBoolean("isActive", this.isActive);
         nbt.setTag("inventory", ItemStackUtils.writeItemStacksToTag(this.assemblyStacks, 64));
 
         if( this.currCrafting != null ) {
@@ -356,6 +357,8 @@ public class TileEntityTurretAssembly
             ItemStackUtils.writeStackToTag(this.currCrafting.getValue(1), nbt, "craftingStack");
         }
 
+        nbt.setBoolean("isActive", this.isActive);
+        nbt.setInteger("fluxAmount", this.fluxAmount);
         nbt.setInteger("ticksCrafted", this.ticksCrafted);
         nbt.setInteger("maxTicksCrafted", this.maxTicksCrafted);
         nbt.setInteger("fluxConsumption", this.fluxConsumption);
@@ -369,16 +372,14 @@ public class TileEntityTurretAssembly
     }
 
     private void readNBT(NBTTagCompound nbt) {
-        this.isActive = nbt.getBoolean("isActive");
-        if( nbt.hasKey("flux") ) {
-            this.fluxAmount = nbt.getInteger("flux");
-        }
         ItemStackUtils.readItemStacksFromTag(this.assemblyStacks, nbt.getTagList("inventory", Constants.NBT.TAG_COMPOUND));
 
         if( nbt.hasKey("craftingUUID") && nbt.hasKey("craftingStack") ) {
-            this.currCrafting = new Tuple(UUID.fromString(nbt.getString("craftingUUID")), ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("craftingStack")));
+            this.currCrafting = new Tuple(UUID.fromString(nbt.getString("craftingUUID")), new ItemStack(nbt.getCompoundTag("craftingStack")));
         }
 
+        this.isActive = nbt.getBoolean("isActive");
+        this.fluxAmount = nbt.getInteger("fluxAmount");
         this.ticksCrafted = nbt.getInteger("ticksCrafted");
         this.maxTicksCrafted = nbt.getInteger("maxTicksCrafted");
         this.fluxConsumption = nbt.getInteger("fluxConsumption");
@@ -389,13 +390,13 @@ public class TileEntityTurretAssembly
         }
     }
 
-    private boolean isStackAcceptable(ItemStack stack, int insrtSlot) {
+    private boolean isStackAcceptable(@Nonnull ItemStack stack, int insrtSlot) {
         if( this.hasFilterUpgrade() ) {
-            ItemStack[] filter = this.getFilterStacks();
-            if( ItemStackUtils.isStackInArray(stack, filter) ) {
-                return ItemStackUtils.areEqual(stack, filter[insrtSlot]);
+            NonNullList<ItemStack> filter = this.getFilterStacks();
+            if( ItemStackUtils.isStackInList(stack, filter) ) {
+                return ItemStackUtils.areEqual(stack, filter.get(insrtSlot));
             } else {
-                return !ItemStackUtils.isValid(filter[insrtSlot]);
+                return !ItemStackUtils.isValid(filter.get(insrtSlot));
             }
         }
 
@@ -408,73 +409,81 @@ public class TileEntityTurretAssembly
     }
 
     @Override
-    public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
+    public boolean canInsertItem(int slot, @Nonnull ItemStack stack, EnumFacing side) {
         return this.isItemValidForSlot(slot, stack) && side != EnumFacing.DOWN && side != EnumFacing.UP;
     }
 
     @Override
-    public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
+    public boolean canExtractItem(int slot, @Nonnull ItemStack stack, EnumFacing side) {
         return slot == 0 && side == EnumFacing.DOWN;
     }
 
     @Override
     public int getSizeInventory() {
-        return this.assemblyStacks.length;
+        return this.assemblyStacks.size();
     }
 
     @Override
+    public boolean isEmpty() {
+        return this.assemblyStacks.stream().noneMatch(ItemStackUtils::isValid);
+    }
+
+    @Override
+    @Nonnull
     public ItemStack getStackInSlot(int slot) {
-        return this.assemblyStacks[slot];
+        return this.assemblyStacks.get(slot);
     }
 
     @Override
+    @Nonnull
     public ItemStack decrStackSize(int slot, int size) {
         if( !this.hasAutoUpgrade() ) {
             this.automate = false;
         }
 
-        if( this.assemblyStacks[slot] != null ) {
+        if( ItemStackUtils.isValid(this.assemblyStacks.get(slot)) ) {
             ItemStack itemstack;
 
-            if( this.assemblyStacks[slot].stackSize <= size ) {
-                itemstack = this.assemblyStacks[slot];
-                this.assemblyStacks[slot] = null;
+            if( this.assemblyStacks.get(slot).getCount() <= size ) {
+                itemstack = this.assemblyStacks.get(slot);
+                this.assemblyStacks.set(slot, ItemStack.EMPTY);
                 return itemstack;
             } else {
-                itemstack = this.assemblyStacks[slot].splitStack(size);
+                itemstack = this.assemblyStacks.get(slot).splitStack(size);
 
-                if( this.assemblyStacks[slot].stackSize == 0 ) {
-                    this.assemblyStacks[slot] = null;
+                if( this.assemblyStacks.get(slot).getCount() == 0 ) {
+                    this.assemblyStacks.set(slot, ItemStack.EMPTY);
                 }
 
                 return itemstack;
             }
         } else {
-            return null;
+            return ItemStack.EMPTY;
         }
     }
 
     @Override
+    @Nonnull
     public ItemStack removeStackFromSlot(int slot) {
-        if( this.assemblyStacks[slot] != null ) {
-            ItemStack itemstack = this.assemblyStacks[slot];
-            this.assemblyStacks[slot] = null;
+        if( ItemStackUtils.isValid(this.assemblyStacks.get(slot)) ) {
+            ItemStack itemstack = this.assemblyStacks.get(slot);
+            this.assemblyStacks.set(slot, ItemStack.EMPTY);
             return itemstack;
         } else {
-            return null;
+            return ItemStack.EMPTY;
         }
     }
 
     @Override
-    public void setInventorySlotContents(int slot, ItemStack stack) {
+    public void setInventorySlotContents(int slot, @Nonnull ItemStack stack) {
         if( !this.hasAutoUpgrade() ) {
             this.automate = false;
         }
 
-        this.assemblyStacks[slot] = stack;
+        this.assemblyStacks.set(slot, stack);
 
-        if( stack != null && stack.stackSize > this.getInventoryStackLimit() ) {
-            stack.stackSize = this.getInventoryStackLimit();
+        if( ItemStackUtils.isValid(stack) && stack.getCount() > this.getInventoryStackLimit() ) {
+            stack.setCount(this.getInventoryStackLimit());
         }
     }
 
@@ -498,7 +507,7 @@ public class TileEntityTurretAssembly
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player) {
+    public boolean isUsableByPlayer(EntityPlayer player) {
         return this.world.getTileEntity(this.pos) == this && player.getDistanceSq(this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D) <= 64.0D;
     }
 
@@ -509,7 +518,7 @@ public class TileEntityTurretAssembly
     public void closeInventory(EntityPlayer player) {}
 
     @Override
-    public boolean isItemValidForSlot(int slot, ItemStack stack) {
+    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
         return slot != 0 && ItemStackUtils.isValid(stack)
                          && ( (slot > 4 && this.isStackAcceptable(stack, slot - 5)) || (slot == 1 && stack.getItem() == ItemRegistry.assembly_upg_auto)
                                                                                     || (slot == 2 && stack.getItem() == ItemRegistry.assembly_upg_speed)
@@ -556,8 +565,8 @@ public class TileEntityTurretAssembly
 
     @Override
     public void clear() {
-        for( int i = 0; i < this.assemblyStacks.length; i++ ) {
-            this.assemblyStacks[i] = null;
+        for( int i = 0; i < this.assemblyStacks.size(); i++ ) {
+            this.assemblyStacks.set(i, ItemStack.EMPTY);
         }
     }
 
@@ -601,12 +610,12 @@ public class TileEntityTurretAssembly
             ByteBufUtils.writeItemStack(buf, this.currCrafting.getValue(1));
             ByteBufUtils.writeUTF8String(buf, this.currCrafting.getValue(0).toString());
         } else {
-            ByteBufUtils.writeItemStack(buf, null);
+            ByteBufUtils.writeItemStack(buf, ItemStack.EMPTY);
         }
-        ByteBufUtils.writeItemStack(buf, this.assemblyStacks[0]);
-        ByteBufUtils.writeItemStack(buf, this.assemblyStacks[1]);
-        ByteBufUtils.writeItemStack(buf, this.assemblyStacks[2]);
-        ByteBufUtils.writeItemStack(buf, this.assemblyStacks[3]);
+        ByteBufUtils.writeItemStack(buf, this.assemblyStacks.get(0));
+        ByteBufUtils.writeItemStack(buf, this.assemblyStacks.get(1));
+        ByteBufUtils.writeItemStack(buf, this.assemblyStacks.get(2));
+        ByteBufUtils.writeItemStack(buf, this.assemblyStacks.get(3));
     }
 
     @Override
@@ -619,17 +628,17 @@ public class TileEntityTurretAssembly
         this.automate = buf.readBoolean();
         this.isActiveClient = buf.readBoolean();
         ItemStack crfStack = ByteBufUtils.readItemStack(buf);
-        if( crfStack != null ) {
+        if( ItemStackUtils.isValid(crfStack) ) {
             this.currCrafting = new Tuple(UUID.fromString(ByteBufUtils.readUTF8String(buf)), crfStack);
         } else {
             this.currCrafting = null;
         }
 
         if( this.syncStacks ) {
-            this.assemblyStacks[0] = ByteBufUtils.readItemStack(buf);
-            this.assemblyStacks[1] = ByteBufUtils.readItemStack(buf);
-            this.assemblyStacks[2] = ByteBufUtils.readItemStack(buf);
-            this.assemblyStacks[3] = ByteBufUtils.readItemStack(buf);
+            this.assemblyStacks.set(0, ByteBufUtils.readItemStack(buf));
+            this.assemblyStacks.set(1, ByteBufUtils.readItemStack(buf));
+            this.assemblyStacks.set(2, ByteBufUtils.readItemStack(buf));
+            this.assemblyStacks.set(3, ByteBufUtils.readItemStack(buf));
         }
     }
 

@@ -101,7 +101,7 @@ public class EntityProjectileCryoCell
 
     @Override
     public SoundEvent getRicochetSound() {
-        return Sounds.RICOCHET_SPLASH;
+        return Sounds.ricochet_splash;
     }
 
     @Override

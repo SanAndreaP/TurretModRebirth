@@ -20,7 +20,8 @@ public interface ITargetProcessor
 
     int getAmmoCount();
 
-    @Nonnull ItemStack getAmmoStack();
+    @Nonnull
+    ItemStack getAmmoStack();
 
     boolean hasAmmo();
 

@@ -1,0 +1,35 @@
+{
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "ROR",
+    "IAI",
+    "CFC"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:repeater"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    },
+    "I": {
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
+    },
+    "A": {
+      "item": "minecraft:anvil",
+      "data": 0
+    },
+    "C": {
+      "type": "forge:ore_dict",
+      "ore": "cobblestone"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    }
+  },
+  "result": {
+    "item": "sapturretmod:turret_assembly",
+    "count": 1
+  }
+}

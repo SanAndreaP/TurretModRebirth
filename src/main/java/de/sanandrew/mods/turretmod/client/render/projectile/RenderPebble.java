@@ -18,11 +18,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 @SideOnly(Side.CLIENT)
 public class RenderPebble<T extends EntityTurretProjectile>
         extends Render<T>
 {
-    private ItemStack gravelItem;
+    @Nonnull
+    private ItemStack gravelItem = ItemStack.EMPTY;
 
     public RenderPebble(RenderManager manager) {
         super(manager);
@@ -30,7 +33,7 @@ public class RenderPebble<T extends EntityTurretProjectile>
 
     @Override
     public void doRender(T entity, double x, double y, double z, float yaw, float partTicks) {
-        if( this.gravelItem == null ) {
+        if( this.gravelItem.isEmpty() ) {
             this.gravelItem = new ItemStack(Blocks.GRAVEL, 1);
         }
 

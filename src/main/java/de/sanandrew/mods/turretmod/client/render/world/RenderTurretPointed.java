@@ -24,6 +24,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nonnull;
 import java.util.WeakHashMap;
 
 @SideOnly(Side.CLIENT)
@@ -100,7 +101,7 @@ public final class RenderTurretPointed
         }
     }
 
-    private static boolean isItemTCU(ItemStack stack) {
+    private static boolean isItemTCU(@Nonnull ItemStack stack) {
         return ItemStackUtils.isItem(stack, ItemRegistry.turret_control_unit);
     }
 

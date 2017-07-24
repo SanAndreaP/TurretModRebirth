@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.client.render.turret;
 
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
 import de.sanandrew.mods.turretmod.util.TmrConfiguration;
@@ -29,7 +30,7 @@ public class LayerTurretUpgrades<T extends EntityTurret>
             int cnt = proc.getSizeInventory();
             for( int i = 0; i < cnt; i++ ) {
                 ItemStack slotStack = proc.getStackInSlot(i);
-                if( slotStack != null ) {
+                if( ItemStackUtils.isValid(slotStack) ) {
                     int x = i % 18;
                     int y = i / 18;
 

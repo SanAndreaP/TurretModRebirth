@@ -15,6 +15,7 @@ import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import net.minecraft.block.BlockLiquid;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.IItemPropertyGetter;
@@ -25,6 +26,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -34,6 +36,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.UUID;
@@ -52,28 +56,28 @@ public class ItemTurret
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List lines, boolean advInfo) {
-        super.addInformation(stack, player, lines, advInfo);
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        super.addInformation(stack, worldIn, tooltip, flagIn);
+
         TurretInfo info = getTurretInfo(stack);
         if( info != null ) {
-            lines.add(Lang.translateEntityCls(info.getTurretClass()));
+            tooltip.add(Lang.translateEntityCls(info.getTurretClass()));
         }
 
         String name = getTurretName(stack);
         if( name != null ) {
-            lines.add(String.format(Lang.translate("%s.turret_name", this.getUnlocalizedName()), name));
+            tooltip.add(String.format(Lang.translate("%s.turret_name", this.getUnlocalizedName()), name));
         }
 
         Float health = getTurretHealth(stack);
         if( health != null ) {
-            lines.add(String.format(Lang.translate("%s.health", this.getUnlocalizedName()), health));
+            tooltip.add(String.format(Lang.translate("%s.health", this.getUnlocalizedName()), health));
         }
     }
 
     @Override
-    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if( !world.isRemote ) {
             BlockPos placingOn = pos.add(facing.getFrontOffsetX(), 0, facing.getFrontOffsetZ());
             if( facing.getFrontOffsetY() == 0 ) {
@@ -88,6 +92,7 @@ public class ItemTurret
             int shiftY = facing == EnumFacing.UP ? 1 : -1;
 
             if( EntityTurret.canTurretBePlaced(world, placingOn, false, facing == EnumFacing.DOWN) ) {
+                ItemStack stack = player.getHeldItem(hand);
                 EntityTurret turret = spawnTurret(world, getTurretInfo(stack), placingOn.getX() + 0.5D, placingOn.getY() + shiftY, placingOn.getZ() + 0.5D, facing == EnumFacing.DOWN, player);
                 if( turret != null ) {
                     Float initHealth = getTurretHealth(stack);
@@ -111,50 +116,55 @@ public class ItemTurret
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+        ItemStack stack = player.getHeldItem(hand);
+
         if( !world.isRemote ) {
             RayTraceResult traceResult = this.rayTrace(world, player, true);
             //noinspection ConstantConditions
             if( traceResult != null && traceResult.typeOfHit == RayTraceResult.Type.BLOCK ) {
-                    BlockPos blockPos = traceResult.getBlockPos();
-                    if( !world.isBlockModifiable(player, blockPos) ) {
-                        return new ActionResult<>(EnumActionResult.FAIL, stack);
-                    }
+                BlockPos blockPos = traceResult.getBlockPos();
+                if( !world.isBlockModifiable(player, blockPos) ) {
+                    return new ActionResult<>(EnumActionResult.FAIL, stack);
+                }
 
-                    if( !player.canPlayerEdit(blockPos, traceResult.sideHit, stack) ) {
-                        return new ActionResult<>(EnumActionResult.FAIL, stack);
-                    }
+                if( !player.canPlayerEdit(blockPos, traceResult.sideHit, stack) ) {
+                    return new ActionResult<>(EnumActionResult.FAIL, stack);
+                }
 
-                    if( world.getBlockState(blockPos).getBlock() instanceof BlockLiquid ) {
-                        EntityTurret turret = spawnTurret(world, getTurretInfo(stack), blockPos, false, player);
-                        if( turret != null ) {
-                            Float initHealth = getTurretHealth(stack);
-                            if( initHealth != null ) {
-                                turret.setHealth(initHealth);
-                            }
+                if( world.getBlockState(blockPos).getBlock() instanceof BlockLiquid ) {
+                    EntityTurret turret = spawnTurret(world, getTurretInfo(stack), blockPos, false, player);
+                    if( turret != null ) {
+                        Float initHealth = getTurretHealth(stack);
+                        if( initHealth != null ) {
+                            turret.setHealth(initHealth);
+                        }
 
-                            String name = getTurretName(stack);
-                            if( name != null ) {
-                                turret.setCustomNameTag(name);
-                            }
+                        String name = getTurretName(stack);
+                        if( name != null ) {
+                            turret.setCustomNameTag(name);
+                        }
 
-                            if( !player.capabilities.isCreativeMode ) {
-                                stack.shrink(1);
-                            }
+                        if( !player.capabilities.isCreativeMode ) {
+                            stack.shrink(1);
                         }
                     }
                 }
             }
+        }
+
         return new ActionResult<>(EnumActionResult.SUCCESS, stack);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void getSubItems(Item item, CreativeTabs tab, List list) {
-        list.addAll(TurretRegistry.INSTANCE.getRegisteredInfos().stream().map(type -> this.getTurretItem(1, type)).collect(Collectors.toList()));
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
+        if( this.isInCreativeTab(tab) ) {
+            items.addAll(TurretRegistry.INSTANCE.getRegisteredInfos().stream().map(type -> this.getTurretItem(1, type)).collect(Collectors.toList()));
+        }
     }
 
-    public static TurretInfo getTurretInfo(ItemStack stack) {
+    public static TurretInfo getTurretInfo(@Nonnull ItemStack stack) {
         NBTTagCompound nbt = stack.getTagCompound();
         if( nbt != null && nbt.hasKey("turretInfoUUID") ) {
             return TurretRegistry.INSTANCE.getInfo(UUID.fromString(nbt.getString("turretInfoUUID")));
@@ -163,7 +173,7 @@ public class ItemTurret
         return null;
     }
 
-    public static Float getTurretHealth(ItemStack stack) {
+    public static Float getTurretHealth(@Nonnull ItemStack stack) {
         NBTTagCompound nbt = stack.getTagCompound();
         if( nbt != null && nbt.hasKey("turretHealth") ) {
             return nbt.getFloat("turretHealth");
@@ -172,7 +182,7 @@ public class ItemTurret
         return null;
     }
 
-    public static String getTurretName(ItemStack stack) {
+    public static String getTurretName(@Nonnull ItemStack stack) {
         NBTTagCompound nbt = stack.getTagCompound();
         if( nbt != null && nbt.hasKey("turretName") ) {
             return nbt.getString("turretName");
@@ -185,6 +195,7 @@ public class ItemTurret
         return null;
     }
 
+    @Nonnull
     public ItemStack getTurretItem(int stackSize, TurretInfo type) {
         if( type == null ) {
             throw new IllegalArgumentException("Cannot get turret_placer item with NULL type!");
@@ -198,6 +209,7 @@ public class ItemTurret
         return stack;
     }
 
+    @Nonnull
     public ItemStack getTurretItem(int stackSize, TurretInfo type, EntityTurret turret) {
         ItemStack stack = this.getTurretItem(stackSize, type);
         assert stack.getTagCompound() != null;
@@ -219,7 +231,7 @@ public class ItemTurret
             turret.setLocationAndAngles(x, y - (isUpsideDown ? 1.0D : 0.0D), z, MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
             turret.rotationYawHead = turret.rotationYaw;
             turret.renderYawOffset = turret.rotationYaw;
-            world.spawnEntityInWorld(turret);
+            world.spawnEntity(turret);
             turret.playLivingSound();
         }
 

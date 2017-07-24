@@ -19,13 +19,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 @SideOnly(Side.CLIENT)
 class GuiAssemblyCategoryTab
         extends GuiButton
 {
+	@Nonnull
 	private ItemStack renderedItem;
 
-	GuiAssemblyCategoryTab(int id, int posX, int posY, ItemStack renderedItem, String hoverText) {
+	GuiAssemblyCategoryTab(int id, int posX, int posY, @Nonnull ItemStack renderedItem, String hoverText) {
 		super(id, posX, posY, hoverText);
 		this.width = 20;
 		this.height = 14;

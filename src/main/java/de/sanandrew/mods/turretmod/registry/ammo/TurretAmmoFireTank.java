@@ -18,6 +18,7 @@ import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public abstract class TurretAmmoFireTank
@@ -85,6 +86,7 @@ public abstract class TurretAmmoFireTank
     }
 
     @Override
+    @Nonnull
     public ItemStack getStoringAmmoItem() {
         return ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TANK_UUID));
     }

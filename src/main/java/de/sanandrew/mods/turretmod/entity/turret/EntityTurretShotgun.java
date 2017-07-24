@@ -130,6 +130,6 @@ public class EntityTurretShotgun
 
     @Override
     public SoundEvent getShootSound() {
-        return Sounds.SHOOT_SHOTGUN;
+        return Sounds.shoot_shotgun;
     }
 }

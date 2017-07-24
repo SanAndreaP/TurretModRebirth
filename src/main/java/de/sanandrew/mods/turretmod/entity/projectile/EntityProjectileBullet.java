@@ -82,7 +82,7 @@ public class EntityProjectileBullet
 
     @Override
     public SoundEvent getRicochetSound() {
-        return Sounds.RICOCHET_BULLET;
+        return Sounds.ricochet_bullet;
     }
 
 //    @Override

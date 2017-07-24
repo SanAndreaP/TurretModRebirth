@@ -24,7 +24,6 @@ import de.sanandrew.mods.turretmod.api.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.TurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
-import de.sanandrew.mods.turretmod.util.CraftingRecipes;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.item.ItemStack;
@@ -143,7 +142,7 @@ public class TurretInfoCategory
 
         }
         register(Resources.TINFO_GRP_MISC.getResource(), Lang.TINFO_CATEGORY_NAME.get("misc"),
-                 new TurretInfoEntryMiscCraftable(CraftingRecipes.assemblyTable),
+//                 new TurretInfoEntryMiscCraftable(CraftingRecipes.assembly_table),
                  new TurretInfoEntryGenerator(),
                  new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.turret_control_unit), TurretAssemblyRecipes.TCU));
         register(Resources.TINFO_GRP_INFO.getResource(), Lang.TINFO_CATEGORY_NAME.get("info"), new TurretInfoEntryInfo());

@@ -136,7 +136,6 @@ public class RenderTurretAssembly
         GlStateManager.rotate((float)(90.0D * BlockRegistry.turret_assembly.getDirection(assembly.getBlockMetadata()).getHorizontalIndex()), 0.0F, 1.0F, 0.0F);
 
         if( ItemStackUtils.isValid(crfStack) ) {
-
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             this.shaderCallback.alphaMulti = Math.max(0.0F, (assembly.getField(TileEntityTurretAssembly.FIELD_TICKS_CRAFTED) - 15.0F) / (assembly.getField(TileEntityTurretAssembly.FIELD_MAX_TICKS_CRAFTED) - 15.0F));

@@ -29,6 +29,7 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -45,6 +46,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.logging.log4j.Level;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,13 +59,13 @@ public class TileEntityElectrolyteGenerator
     public static final int MAX_FLUX_GENERATED = 200;
 
     public int fluxExtractPerTick;
-    public ItemStack[] processStacks = new ItemStack[9];
-    public short[] progress = new short[this.processStacks.length];
-    public short[] maxProgress = new short[this.processStacks.length];
+    public NonNullList<ItemStack> processStacks = NonNullList.withSize(9, ItemStack.EMPTY);
+    public short[] progress = new short[this.processStacks.size()];
+    public short[] maxProgress = new short[this.processStacks.size()];
     public float effectiveness;
 
-    private ItemStack[] progExcessComm = new ItemStack[this.processStacks.length];
-    private ItemStack[] progExcessRare = new ItemStack[this.processStacks.length];
+    private NonNullList<ItemStack> progExcessComm = NonNullList.withSize(this.processStacks.size(), ItemStack.EMPTY);
+    private NonNullList<ItemStack> progExcessRare = NonNullList.withSize(this.processStacks.size(), ItemStack.EMPTY);
 
     private int fluxAmount;
     private int prevFluxAmount;
@@ -141,40 +143,40 @@ public class TileEntityElectrolyteGenerator
 
                 this.effectiveness = 0.0F;
 
-                for( int i = 0; i < processStacks.length; i++ ) {
-                    if( this.processStacks[i] != null ) {
-                        if( this.progExcessComm[i] != null && !this.itemHandler.canAddExtraction(this.progExcessComm[i]) ) {
+                for( int i = 0; i < processStacks.size(); i++ ) {
+                    if( ItemStackUtils.isValid(this.processStacks.get(i)) ) {
+                        if( ItemStackUtils.isValid(this.progExcessComm.get(i)) && !this.itemHandler.canAddExtraction(this.progExcessComm.get(i)) ) {
                             continue;
                         }
-                        if( this.progExcessRare[i] != null && !this.itemHandler.canAddExtraction(this.progExcessRare[i]) ) {
+                        if( ItemStackUtils.isValid(this.progExcessRare.get(i)) && !this.itemHandler.canAddExtraction(this.progExcessRare.get(i)) ) {
                             continue;
                         }
 
                         if( this.progress[i] <= 0 ) {
-                            if( this.progExcessComm[i] != null ) {
-                                this.itemHandler.addExtraction(this.progExcessComm[i]);
+                            if( ItemStackUtils.isValid(this.progExcessComm.get(i)) ) {
+                                this.itemHandler.addExtraction(this.progExcessComm.get(i));
                             }
-                            if( this.progExcessRare[i] != null ) {
-                                this.itemHandler.addExtraction(this.progExcessRare[i]);
+                            if( ItemStackUtils.isValid(this.progExcessRare.get(i)) ) {
+                                this.itemHandler.addExtraction(this.progExcessRare.get(i));
                             }
-                            this.processStacks[i] = null;
+                            this.processStacks.set(i, ItemStack.EMPTY);
                             this.markDirty();
                         } else {
-                            this.effectiveness += FUELS.get(this.processStacks[i].getItem()).effect;
+                            this.effectiveness += FUELS.get(this.processStacks.get(i).getItem()).effect;
                             this.progress[i]--;
                         }
                         this.doSync = true;
                     }
 
                     ItemStack insrtStack = this.itemHandler.extractInsertItem(i, true);
-                    if( this.processStacks[i] == null && ItemStackUtils.isValid(insrtStack) ) {
-                        this.processStacks[i] = this.itemHandler.extractInsertItem(i, false);
+                    if( !ItemStackUtils.isValid(this.processStacks.get(i)) && ItemStackUtils.isValid(insrtStack) ) {
+                        this.processStacks.set(i, this.itemHandler.extractInsertItem(i, false));
 
-                        Fuel fuel = FUELS.get(this.processStacks[i].getItem());
+                        Fuel fuel = FUELS.get(this.processStacks.get(i).getItem());
                         this.progress[i] = fuel.ticksProc;
                         this.maxProgress[i] = fuel.ticksProc;
-                        this.progExcessComm[i] = MiscUtils.RNG.randomInt(10) == 0 ? fuel.trash.copy() : null;
-                        this.progExcessRare[i] = fuel.treasure != null && MiscUtils.RNG.randomInt(100) == 0 ? fuel.treasure.copy() : null;
+                        this.progExcessComm.set(i, MiscUtils.RNG.randomInt(10) == 0 ? fuel.trash.copy() : ItemStack.EMPTY);
+                        this.progExcessRare.set(i, MiscUtils.RNG.randomInt(100) == 0 ? fuel.treasure.copy() : ItemStack.EMPTY);
 
                         this.markDirty();
                         this.doSync = true;
@@ -268,19 +270,21 @@ public class TileEntityElectrolyteGenerator
     }
 
     private NBTTagCompound writeNbt(NBTTagCompound nbt) {
-        nbt.setInteger("fluxBuffer", this.fluxBuffer);
         NBTTagList progress = new NBTTagList();
-        for( int i = 0; i < this.processStacks.length; i++ ) {
-            if( ItemStackUtils.isValid(this.processStacks[i]) ) {
+        for( int i = 0; i < this.processStacks.size(); i++ ) {
+            if( ItemStackUtils.isValid(this.processStacks.get(i)) ) {
                 NBTTagCompound progNbt = new NBTTagCompound();
                 progNbt.setByte("progressSlot", (byte) i);
                 progNbt.setShort("progress", this.progress[i]);
                 progNbt.setShort("progressMax", this.maxProgress[i]);
-                ItemStackUtils.writeStackToTag(this.processStacks[i], progNbt, "progressItem");
+                ItemStackUtils.writeStackToTag(this.processStacks.get(i), progNbt, "progressItem");
                 progress.appendTag(progNbt);
             }
         }
         nbt.setTag("progress", progress);
+
+        nbt.setInteger("fluxAmount", this.fluxAmount);
+        nbt.setInteger("fluxBuffer", this.fluxBuffer);
 
         if( this.hasCustomName() ) {
             nbt.setString("customName", this.customName);
@@ -298,28 +302,27 @@ public class TileEntityElectrolyteGenerator
         this.itemHandler.deserializeNBT(nbt.getCompoundTag("cap_inventory"));
         this.energyStorage.deserializeNBT(nbt.getCompoundTag("cap_energy"));
 
-        for( int i = 0; i < this.processStacks.length; i++ ) {
-            if( ItemStackUtils.isValid(this.processStacks[i]) ) {
-                Fuel fuel = FUELS.get(this.processStacks[i].getItem());
-                this.progExcessComm[i] = MiscUtils.RNG.randomInt(100) == 0 ? fuel.trash.copy() : null;
-                this.progExcessRare[i] = fuel.treasure != null && MiscUtils.RNG.randomInt(100) == 0 ? fuel.treasure.copy() : null;
+        for( int i = 0; i < this.processStacks.size(); i++ ) {
+            if( ItemStackUtils.isValid(this.processStacks.get(i)) ) {
+                Fuel fuel = FUELS.get(this.processStacks.get(i).getItem());
+                this.progExcessComm.set(i, MiscUtils.RNG.randomInt(100) == 0 ? fuel.trash.copy() : ItemStack.EMPTY);
+                this.progExcessRare.set(i, MiscUtils.RNG.randomInt(100) == 0 ? fuel.treasure.copy() : ItemStack.EMPTY);
             }
         }
     }
 
     private void readNbt(NBTTagCompound nbt) {
-        if( nbt.hasKey("fluxAmount") ) {
-            this.fluxAmount = nbt.getInteger("fluxAmount");
-        }
-        this.fluxBuffer = nbt.getInteger("fluxBuffer");
         NBTTagList progress = nbt.getTagList("progress", Constants.NBT.TAG_COMPOUND);
         for( int i = 0, max = progress.tagCount(); i < max; i++ ) {
             NBTTagCompound progNbt = progress.getCompoundTagAt(i);
             byte slot = progNbt.getByte("progressSlot");
             this.progress[slot] = progNbt.getShort("progress");
             this.maxProgress[slot] = progNbt.getShort("progressMax");
-            this.processStacks[slot] = ItemStack.loadItemStackFromNBT(progNbt.getCompoundTag("progressItem"));
+            this.processStacks.set(slot, new ItemStack(progNbt.getCompoundTag("progressItem")));
         }
+
+        this.fluxAmount = nbt.getInteger("fluxAmount");
+        this.fluxBuffer = nbt.getInteger("fluxBuffer");
 
         if( nbt.hasKey("customName", Constants.NBT.TAG_STRING) ) {
             this.customName = nbt.getString("customName");
@@ -346,10 +349,10 @@ public class TileEntityElectrolyteGenerator
     public void toBytes(ByteBuf buf) {
         buf.writeInt(this.fluxAmount);
         buf.writeFloat(this.effectiveness);
-        for( int i = 0; i < this.processStacks.length; i++ ) {
+        for( int i = 0; i < this.processStacks.size(); i++ ) {
             buf.writeShort(this.progress[i]);
             buf.writeShort(this.maxProgress[i]);
-            ByteBufUtils.writeItemStack(buf, this.processStacks[i]);
+            ByteBufUtils.writeItemStack(buf, this.processStacks.get(i));
         }
     }
 
@@ -357,10 +360,10 @@ public class TileEntityElectrolyteGenerator
     public void fromBytes(ByteBuf buf) {
         this.fluxAmount = buf.readInt();
         this.effectiveness = buf.readFloat();
-        for( int i = 0; i < this.processStacks.length; i++ ) {
+        for( int i = 0; i < this.processStacks.size(); i++ ) {
             this.progress[i] = buf.readShort();
             this.maxProgress[i] = buf.readShort();
-            this.processStacks[i] = ByteBufUtils.readItemStack(buf);
+            this.processStacks.set(i, ByteBufUtils.readItemStack(buf));
         }
     }
 
@@ -410,10 +413,12 @@ public class TileEntityElectrolyteGenerator
     {
         public final float effect;
         public final short ticksProc;
+        @Nonnull
         public final ItemStack trash;
+        @Nonnull
         public final ItemStack treasure;
 
-        public Fuel(float effectiveness, int ticksProcessing, ItemStack trash, ItemStack treasure) {
+        public Fuel(float effectiveness, int ticksProcessing, @Nonnull ItemStack trash, @Nonnull ItemStack treasure) {
             this.effect = effectiveness;
             this.ticksProc = (short) ticksProcessing;
             this.trash = trash;
@@ -486,12 +491,13 @@ public class TileEntityElectrolyteGenerator
         }
 
         @Override
-        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+        @Nonnull
+        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
             return this.parentHandler.insertItem(slot, stack, simulate);
         }
 
         @Override
-        protected int getStackLimit(int slot, ItemStack stack) {
+        protected int getStackLimit(int slot, @Nonnull ItemStack stack) {
             return this.parentHandler.getStackLimit(slot, stack);
         }
 
@@ -510,9 +516,10 @@ public class TileEntityElectrolyteGenerator
         }
 
         @Override
-        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+        @Nonnull
+        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
             this.validateSlotIndex(slot);
-            if( slot < 9 && FUELS.containsKey(stack.getItem()) && this.stacks[slot] == null ) {
+            if( slot < 9 && FUELS.containsKey(stack.getItem()) && !ItemStackUtils.isValid(this.stacks.get(slot)) ) {
                 return super.insertItem(slot, stack, simulate);
             }
 
@@ -520,20 +527,21 @@ public class TileEntityElectrolyteGenerator
         }
 
         @Override
-        protected int getStackLimit(int slot, ItemStack stack) {
+        protected int getStackLimit(int slot, @Nonnull ItemStack stack) {
             return slot < 9 ? 1 : super.getStackLimit(slot, stack);
         }
 
         @Override
+        @Nonnull
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
             if( slot > 8 ) {
                 return super.extractItem(slot, amount, simulate);
             }
 
-            return null;
+            return ItemStack.EMPTY;
         }
 
-        private boolean canAddExtraction(ItemStack stack) {
+        private boolean canAddExtraction(@Nonnull ItemStack stack) {
             ItemStack myStack = stack.copy();
             for( int i = 9; i < 14 && ItemStackUtils.isValid(myStack); i++ ) {
                 myStack = super.insertItem(i, myStack, true);
@@ -542,22 +550,23 @@ public class TileEntityElectrolyteGenerator
             return !ItemStackUtils.isValid(myStack);
         }
 
-        private void addExtraction(ItemStack stack) {
+        private void addExtraction(@Nonnull ItemStack stack) {
             ItemStack myStack = stack.copy();
             for( int i = 9; i < 14 && ItemStackUtils.isValid(myStack); i++ ) {
                 myStack = super.insertItem(i, myStack, false);
             }
         }
 
+        @Nonnull
         private ItemStack extractInsertItem(int slot, boolean simulate) {
             if( slot < 9 ) {
                 return super.extractItem(slot, 1, simulate);
             }
 
-            return null;
+            return ItemStack.EMPTY;
         }
 
-        ItemStack[] getStacksArray() {
+        NonNullList<ItemStack> getStacksArray() {
             return this.stacks;
         }
 

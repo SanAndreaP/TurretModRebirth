@@ -24,6 +24,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nonnull;
+
 @SideOnly(Side.CLIENT)
 public class RenderElectrolyteGenerator
         extends TileEntitySpecialRenderer<TileEntityElectrolyteGenerator>
@@ -36,8 +38,8 @@ public class RenderElectrolyteGenerator
         GlStateManager.translate((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
 
-        for( int i = 0; i < tile.processStacks.length; i++ ) {
-            ItemStack stack = tile.processStacks[i];
+        for( int i = 0; i < tile.processStacks.size(); i++ ) {
+            ItemStack stack = tile.processStacks.get(i);
 
             if( ItemStackUtils.isValid(stack) ) {
                 drawElectrolyteItem(i, stack);
@@ -47,7 +49,7 @@ public class RenderElectrolyteGenerator
         GlStateManager.popMatrix();
     }
 
-    private static void drawElectrolyteItem(int index, ItemStack stack) {
+    private static void drawElectrolyteItem(int index, @Nonnull ItemStack stack) {
         GlStateManager.pushMatrix();
         GlStateManager.rotate(40.0F * index, 0.0F, 1.0F, 0.0F);
         GlStateManager.translate(0.4F, 0.0F, 0.0F);

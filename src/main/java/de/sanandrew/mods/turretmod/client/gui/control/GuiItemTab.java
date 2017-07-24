@@ -16,13 +16,16 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class GuiItemTab
         extends GuiButton
 {
+	@Nonnull
 	private ItemStack renderedItem;
     private boolean isRight;
 
-	public GuiItemTab(int id, int posX, int posY, ItemStack renderedItem, String hoverText, boolean onTheRight) {
+	public GuiItemTab(int id, int posX, int posY, @Nonnull ItemStack renderedItem, String hoverText, boolean onTheRight) {
 		super(id, posX, posY, hoverText);
 		this.width = 26;
 		this.height = 26;

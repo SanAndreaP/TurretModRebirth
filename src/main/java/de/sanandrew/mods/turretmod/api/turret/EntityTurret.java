@@ -13,7 +13,6 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.repairkit.TurretRepairKit;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;

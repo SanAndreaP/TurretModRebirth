@@ -107,6 +107,6 @@ public class EntityTurretFlamethrower
 
     @Override
     public SoundEvent getShootSound() {
-        return (doShootSound = !doShootSound) ? Sounds.SHOOT_FTHROWER : null;
+        return (doShootSound = !doShootSound) ? Sounds.shoot_flamethrower : null;
     }
 }

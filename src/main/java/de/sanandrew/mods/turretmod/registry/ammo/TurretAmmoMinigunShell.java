@@ -17,6 +17,7 @@ import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public abstract class TurretAmmoMinigunShell
@@ -84,6 +85,7 @@ public abstract class TurretAmmoMinigunShell
     }
 
     @Override
+    @Nonnull
     public ItemStack getStoringAmmoItem() {
         return ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(SHELL_UUID));
     }

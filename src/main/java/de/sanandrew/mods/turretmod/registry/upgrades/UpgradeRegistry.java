@@ -20,6 +20,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Level;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -74,8 +75,8 @@ public final class UpgradeRegistry
         return MiscUtils.defIfNull(this.uuidToUpgradeMap.get(upg), EMPTY);
     }
 
-    public UUID getUpgradeUUID(ItemStack stack) {
-        if( stack == null || !stack.hasTagCompound() ) {
+    public UUID getUpgradeUUID(@Nonnull ItemStack stack) {
+        if( !stack.hasTagCompound() ) {
             return EMPTY;
         }
 
@@ -91,7 +92,7 @@ public final class UpgradeRegistry
         }
     }
 
-    public TurretUpgrade getUpgrade(ItemStack stack) {
+    public TurretUpgrade getUpgrade(@Nonnull ItemStack stack) {
         if( !ItemStackUtils.isItem(stack, ItemRegistry.turret_upgrade) || !stack.hasTagCompound() ) {
             return emptyInst;
         }
@@ -125,6 +126,7 @@ public final class UpgradeRegistry
         emptyInst = this.upgradeToUuidMap.get(EMPTY);
     }
 
+    @Nonnull
     public ItemStack getUpgradeItem(UUID uuid) {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setString("upgradeId", uuid.toString());
@@ -134,6 +136,7 @@ public final class UpgradeRegistry
         return stack;
     }
 
+    @Nonnull
     public ItemStack getUpgradeItem(TurretUpgrade upgrade) {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setString("upgradeId", this.getUpgradeUUID(upgrade).toString());

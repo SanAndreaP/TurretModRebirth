@@ -16,7 +16,9 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -33,11 +35,12 @@ public class ItemRepairKit
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack) {
+    public String getUnlocalizedName(@Nonnull ItemStack stack) {
         TurretRepairKit type = RepairKitRegistry.INSTANCE.getType(stack);
-        return String.format("%s.%s", this.getUnlocalizedName(), type == null ? "unknown" : type.getName());
+        return String.format("%s.%s", this.getUnlocalizedName(), type.getName());
     }
 
+    @Nonnull
     public ItemStack getRepKitItem(int stackSize, UUID typeId) {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setString("repKitType", typeId.toString());
@@ -47,6 +50,7 @@ public class ItemRepairKit
         return stack;
     }
 
+    @Nonnull
     public ItemStack getRepKitItem(int stackSize, TurretRepairKit type) {
         if( type == null ) {
             throw new IllegalArgumentException("Cannot get turret_ammo item with NULL type!");
@@ -56,8 +60,9 @@ public class ItemRepairKit
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public void getSubItems(Item item, CreativeTabs tab, List list) {
-        list.addAll(RepairKitRegistry.INSTANCE.getRegisteredTypes().stream().map(type -> this.getRepKitItem(1, type)).collect(Collectors.toList()));
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
+        if( this.isInCreativeTab(tab) ) {
+            items.addAll(RepairKitRegistry.INSTANCE.getRegisteredTypes().stream().map(type -> this.getRepKitItem(1, type)).collect(Collectors.toList()));
+        }
     }
 }
