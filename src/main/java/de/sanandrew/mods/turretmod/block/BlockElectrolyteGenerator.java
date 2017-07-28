@@ -11,9 +11,9 @@ package de.sanandrew.mods.turretmod.block;
 import com.google.common.collect.ImmutableMap;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
-import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.block.Block;
@@ -64,22 +64,15 @@ public class BlockElectrolyteGenerator
     }
 
     @Override
-    @SuppressWarnings("TailRecursion")
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-        if( !world.isRemote ) {
-            if( state.getValue(TILE_HOLDER) ) {
-                TurretModRebirth.proxy.openGui(player, EnumGui.GUI_POTATOGEN, pos.getX(), pos.getY(), pos.getZ());
-            } else {
-                return this.onBlockActivated(world, pos.down(1), world.getBlockState(pos.down(1)), player, hand, side, hitX, hitY, hitZ);
-            }
-        }
-
-        return true;
+    @SuppressWarnings("deprecation")
+    public IBlockState getStateFromMeta(int meta) {
+        return getDefaultState().withProperty(TILE_HOLDER, meta == 0);
     }
 
     @Override
-    public boolean canPlaceBlockAt(World world, BlockPos pos) {
-        return super.canPlaceBlockAt(world, pos) && world.getBlockState(pos.up(1)).getBlock().isReplaceable(world, pos.up(1));
+    public int getMetaFromState(IBlockState state) {
+        boolean type = state.getValue(TILE_HOLDER);
+        return type ? 0 : 1;
     }
 
     @Override
@@ -88,15 +81,6 @@ public class BlockElectrolyteGenerator
 
         if( state.getValue(TILE_HOLDER) ) {
             worldIn.setBlockState(pos.up(1), this.blockState.getBaseState().withProperty(TILE_HOLDER, false));
-        }
-    }
-
-    @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, @Nonnull ItemStack stack) {
-        if( stack.hasDisplayName() && state.getValue(TILE_HOLDER) ) {
-            TileEntity te = world.getTileEntity(pos);
-            assert te != null;
-            ((TileEntityElectrolyteGenerator) te).setCustomName(stack.getDisplayName());
         }
     }
 
@@ -147,30 +131,36 @@ public class BlockElectrolyteGenerator
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public IBlockState getStateFromMeta(int meta) {
-        return getDefaultState().withProperty(TILE_HOLDER, meta == 0);
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state) {
-        boolean type = state.getValue(TILE_HOLDER);
-        return type ? 0 : 1;
-    }
-
-    @Override
-    public boolean hasTileEntity(IBlockState state) {
-        return state.getValue(TILE_HOLDER);
-    }
-
-    @Override
-    public TileEntity createTileEntity(World world, IBlockState state) {
-        return new TileEntityElectrolyteGenerator();
-    }
-
-    @Override
     public int damageDropped(IBlockState state) {
         return 0;
+    }
+
+    @Override
+    public boolean canPlaceBlockAt(World world, BlockPos pos) {
+        return super.canPlaceBlockAt(world, pos) && world.getBlockState(pos.up(1)).getBlock().isReplaceable(world, pos.up(1));
+    }
+
+    @Override
+    @SuppressWarnings("TailRecursion")
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+        if( !world.isRemote ) {
+            if( state.getValue(TILE_HOLDER) ) {
+                TurretModRebirth.proxy.openGui(player, EnumGui.GUI_POTATOGEN, pos.getX(), pos.getY(), pos.getZ());
+            } else {
+                return this.onBlockActivated(world, pos.down(1), world.getBlockState(pos.down(1)), player, hand, side, hitX, hitY, hitZ);
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, @Nonnull ItemStack stack) {
+        if( stack.hasDisplayName() && state.getValue(TILE_HOLDER) ) {
+            TileEntity te = world.getTileEntity(pos);
+            assert te != null;
+            ((TileEntityElectrolyteGenerator) te).setCustomName(stack.getDisplayName());
+        }
     }
 
     @Override
@@ -181,6 +171,16 @@ public class BlockElectrolyteGenerator
     @Override
     public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos) {
         return false;
+    }
+
+    @Override
+    public boolean hasTileEntity(IBlockState state) {
+        return state.getValue(TILE_HOLDER);
+    }
+
+    @Override
+    public TileEntity createTileEntity(World world, IBlockState state) {
+        return new TileEntityElectrolyteGenerator();
     }
 
     private static final class MyBlockStateContainer
@@ -204,6 +204,16 @@ public class BlockElectrolyteGenerator
         }
 
         @Override
+        public boolean isFullCube() {
+            return false;
+        }
+
+        @Override
+        public EnumBlockRenderType getRenderType() {
+            return this.getValue(TILE_HOLDER) ? EnumBlockRenderType.MODEL : EnumBlockRenderType.INVISIBLE;
+        }
+
+        @Override
         public boolean hasComparatorInputOverride() {
             return true;
         }
@@ -214,22 +224,12 @@ public class BlockElectrolyteGenerator
         }
 
         @Override
-        public boolean isOpaqueCube() {
-            return false;
-        }
-
-        @Override
-        public EnumBlockRenderType getRenderType() {
-            return this.getValue(TILE_HOLDER) ? EnumBlockRenderType.MODEL : EnumBlockRenderType.INVISIBLE;
-        }
-
-        @Override
         public AxisAlignedBB getSelectedBoundingBox(World worldIn, BlockPos pos) {
             return (this.getValue(TILE_HOLDER) ? MAIN_SEL_BB : UPPER_SEL_BB).offset(pos);
         }
 
         @Override
-        public boolean isFullCube() {
+        public boolean isOpaqueCube() {
             return false;
         }
     }

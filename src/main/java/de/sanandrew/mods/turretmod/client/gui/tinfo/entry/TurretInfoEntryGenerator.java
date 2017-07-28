@@ -13,6 +13,7 @@ import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
+import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteHelper;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -21,11 +22,13 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -45,8 +48,8 @@ public class TurretInfoEntryGenerator
     public void drawPage(GuiTurretInfo gui, int mouseX, int mouseY, int scrollY, float partTicks) {
         super.drawPage(gui, mouseX, mouseY, scrollY, partTicks);
 
-        Map<Item, TileEntityElectrolyteGenerator.Fuel> fuels = TileEntityElectrolyteGenerator.getFuels();
-        List<Item> fuelItems = new ArrayList<>(fuels.keySet());
+        Map<ItemStack, ElectrolyteHelper.Fuel> fuels = ElectrolyteHelper.getFuelMap();
+        NonNullList<ItemStack> fuelItems = NonNullList.from(ItemStack.EMPTY, E.keySet());
 
         this.drawHeight = super.getPageHeight() + 3;
 

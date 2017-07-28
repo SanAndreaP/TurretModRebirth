@@ -1,6 +1,5 @@
 package de.sanandrew.mods.turretmod.api.assembly;
 
-import de.sanandrew.mods.turretmod.api.assembly.IRecipeEntry;
 import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntryItem;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
@@ -38,8 +37,11 @@ public interface IRecipeEntry
 
     void decreaseItemCount(int amount);
 
-    interface IEnchantmentEntry {
-        @Nonnull ItemStack stack();
+    interface IEnchantmentEntry
+    {
+        @Nonnull
+        ItemStack stack();
+
         Enchantment enchantment();
     }
 }

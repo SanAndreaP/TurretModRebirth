@@ -11,16 +11,13 @@ package de.sanandrew.mods.turretmod.tileentity;
 import de.sanandrew.mods.sanlib.lib.power.EnergyHelper;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
-import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
 import de.sanandrew.mods.turretmod.network.TileClientSync;
-import de.sanandrew.mods.turretmod.util.TmrConfiguration;
+import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -44,11 +41,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
-import java.util.Map;
 
 public class TileEntityElectrolyteGenerator
         extends TileEntity
@@ -57,69 +51,21 @@ public class TileEntityElectrolyteGenerator
     public static final int MAX_FLUX_STORAGE = 500_000;
     public static final int MAX_FLUX_EXTRACT = 1_000;
     public static final int MAX_FLUX_GENERATED = 200;
-
     public int fluxExtractPerTick;
     public NonNullList<ItemStack> processStacks = NonNullList.withSize(9, ItemStack.EMPTY);
     public short[] progress = new short[this.processStacks.size()];
     public short[] maxProgress = new short[this.processStacks.size()];
     public float effectiveness;
-
     private NonNullList<ItemStack> progExcessComm = NonNullList.withSize(this.processStacks.size(), ItemStack.EMPTY);
     private NonNullList<ItemStack> progExcessRare = NonNullList.withSize(this.processStacks.size(), ItemStack.EMPTY);
-
     private int fluxAmount;
     private int prevFluxAmount;
     private int fluxBuffer;
-
     private boolean doSync;
-
-    private static final Map<Item, Fuel> FUELS = new HashMap<>(6);
-
     private String customName;
-
-    @SuppressWarnings("ConstantConditions")
-    public static void initializeRecipes() {
-        FUELS.put(Items.POTATO, new Fuel(1.0F, (short) 200, new ItemStack(Items.SUGAR, 1), new ItemStack(Items.BAKED_POTATO, 1)));
-        FUELS.put(Items.CARROT, new Fuel(1.0F, (short) 200, new ItemStack(Items.SUGAR, 1), new ItemStack(Items.REDSTONE, 1)));
-        FUELS.put(Items.POISONOUS_POTATO, new Fuel(1.2F, (short) 150, new ItemStack(Items.SUGAR, 1), new ItemStack(Items.NETHER_WART, 1)));
-        FUELS.put(Items.APPLE, new Fuel(1.3F, (short) 220, new ItemStack(Items.WHEAT_SEEDS, 1), new ItemStack(Items.GOLD_NUGGET, 1)));
-
-        int currInd = 0;
-        for( String recp : TmrConfiguration.electrolyteAdditRecipes ) {
-            String[] elem = recp.split(",");
-            if( elem.length == 5 ) {
-                Item result = Item.getByNameOrId(elem[0].trim().replaceAll("<(.*?)>", "$1"));
-                if( result != null ) {
-                    try {
-                        Item trash = Item.getByNameOrId(elem[3].trim().replaceAll("<(.*?)>", "$1"));
-                        if( trash != null ) {
-                            float multi = Float.valueOf(elem[1].trim());
-                            short decayTicks = Short.valueOf(elem[2].trim());
-                            Item treasure = Item.getByNameOrId(elem[4].trim().replaceAll("<(.*?)>", "$1"));
-
-                            FUELS.put(result, new Fuel(multi, decayTicks, new ItemStack(trash, 1),  new ItemStack(treasure, 1)));
-                        } else {
-                            TmrConstants.LOG.log(Level.WARN, String.format("Cannot add electrolyte item #%d from config! Cannot find trash item %s, skipping recipe.",
-                                                                               currInd, elem[3].trim()));
-                        }
-                    } catch( NumberFormatException ex ) {
-                        TmrConstants.LOG.log(Level.WARN, String.format("Cannot parse numbers for electrolyte item #%d in config! Skipping recipe.", currInd));
-                    }
-                } else {
-                    TmrConstants.LOG.log(Level.WARN, String.format("Cannot add electrolyte item #%d from config! Cannot find electrolyte item %s, skipping recipe.",
-                                                                       currInd, elem[0].trim()));
-                }
-            } else {
-                TmrConstants.LOG.log(Level.WARN, String.format("Cannot add electrolyte item #%d from config! Invalid parameter count: expected 5, got %d, skipping recipe.",
-                                                                   currInd, elem.length));
-            }
-            currInd++;
-        }
-    }
-
-    public static Map<Item, Fuel> getFuels() {
-        return new HashMap<>(FUELS);
-    }
+    private MyItemStackHandler itemHandler = new MyItemStackHandler();
+    public ContainerItemStackHandler containerItemHandler = new ContainerItemStackHandler(itemHandler);
+    private MyEnergyStorageGen energyStorage = new MyEnergyStorageGen();
 
     public int getGeneratedFlux() {
         return this.effectiveness < 0.1F ? 0 : Math.min(200, (int) Math.round(Math.pow(1.6D, this.effectiveness) / (68.0D + (127433.0D / 177119.0D)) * 80.0D));
@@ -162,7 +108,7 @@ public class TileEntityElectrolyteGenerator
                             this.processStacks.set(i, ItemStack.EMPTY);
                             this.markDirty();
                         } else {
-                            this.effectiveness += FUELS.get(this.processStacks.get(i).getItem()).effect;
+                            this.effectiveness += ElectrolyteHelper.getFuel(this.processStacks.get(i)).effect;
                             this.progress[i]--;
                         }
                         this.doSync = true;
@@ -172,7 +118,7 @@ public class TileEntityElectrolyteGenerator
                     if( !ItemStackUtils.isValid(this.processStacks.get(i)) && ItemStackUtils.isValid(insrtStack) ) {
                         this.processStacks.set(i, this.itemHandler.extractInsertItem(i, false));
 
-                        Fuel fuel = FUELS.get(this.processStacks.get(i).getItem());
+                        ElectrolyteHelper.Fuel fuel = ElectrolyteHelper.getFuel(this.processStacks.get(i));
                         this.progress[i] = fuel.ticksProc;
                         this.maxProgress[i] = fuel.ticksProc;
                         this.progExcessComm.set(i, MiscUtils.RNG.randomInt(10) == 0 ? fuel.trash.copy() : ItemStack.EMPTY);
@@ -229,46 +175,6 @@ public class TileEntityElectrolyteGenerator
         }
     }
 
-    @Override
-    public NBTTagCompound getUpdateTag() {
-        NBTTagCompound nbt = super.getUpdateTag();
-        nbt.setInteger("fluxAmount", this.fluxAmount);
-        return this.writeNbt(super.getUpdateTag());
-    }
-
-    @Override
-    public void handleUpdateTag(NBTTagCompound tag) {
-        super.handleUpdateTag(tag);
-        this.readNbt(tag);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-        NBTTagCompound nbt = pkt.getNbtCompound();
-        this.readNbt(nbt);
-    }
-
-    @Override
-    public SPacketUpdateTileEntity getUpdatePacket() {
-        NBTTagCompound nbt = new NBTTagCompound();
-        this.writeNbt(nbt);
-        nbt.setInteger("fluxAmount", this.fluxAmount);
-        return new SPacketUpdateTileEntity(this.pos, 0, nbt);
-    }
-
-    @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        super.writeToNBT(nbt);
-
-        nbt.setTag("cap_inventory", this.itemHandler.serializeNBT());
-        nbt.setTag("cap_energy", this.energyStorage.serializeNBT());
-
-        this.writeNbt(nbt);
-
-        return nbt;
-    }
-
     private NBTTagCompound writeNbt(NBTTagCompound nbt) {
         NBTTagList progress = new NBTTagList();
         for( int i = 0; i < this.processStacks.size(); i++ ) {
@@ -304,11 +210,80 @@ public class TileEntityElectrolyteGenerator
 
         for( int i = 0; i < this.processStacks.size(); i++ ) {
             if( ItemStackUtils.isValid(this.processStacks.get(i)) ) {
-                Fuel fuel = FUELS.get(this.processStacks.get(i).getItem());
+                ElectrolyteHelper.Fuel fuel = ElectrolyteHelper.getFuel(this.processStacks.get(i));
                 this.progExcessComm.set(i, MiscUtils.RNG.randomInt(100) == 0 ? fuel.trash.copy() : ItemStack.EMPTY);
                 this.progExcessRare.set(i, MiscUtils.RNG.randomInt(100) == 0 ? fuel.treasure.copy() : ItemStack.EMPTY);
             }
         }
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+        super.writeToNBT(nbt);
+
+        nbt.setTag("cap_inventory", this.itemHandler.serializeNBT());
+        nbt.setTag("cap_energy", this.energyStorage.serializeNBT());
+
+        this.writeNbt(nbt);
+
+        return nbt;
+    }
+
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        NBTTagCompound nbt = new NBTTagCompound();
+        this.writeNbt(nbt);
+        nbt.setInteger("fluxAmount", this.fluxAmount);
+        return new SPacketUpdateTileEntity(this.pos, 0, nbt);
+    }
+
+    @Override
+    public NBTTagCompound getUpdateTag() {
+        NBTTagCompound nbt = super.getUpdateTag();
+        nbt.setInteger("fluxAmount", this.fluxAmount);
+        return this.writeNbt(super.getUpdateTag());
+    }
+
+    public ITextComponent getDisplayName() {
+        return this.hasCustomName() ? new TextComponentString(this.getName()) : new TextComponentTranslation(this.getName());
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+        NBTTagCompound nbt = pkt.getNbtCompound();
+        this.readNbt(nbt);
+    }
+
+    @Override
+    public void handleUpdateTag(NBTTagCompound tag) {
+        super.handleUpdateTag(tag);
+        this.readNbt(tag);
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        if( facing != EnumFacing.UP ) {
+            return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || capability == CapabilityEnergy.ENERGY || super.hasCapability(capability, facing);
+        }
+
+        return super.hasCapability(capability, facing);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if( capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ) {
+            if( facing != EnumFacing.UP ) {
+                return (T) itemHandler;
+            }
+        } else if( capability == CapabilityEnergy.ENERGY ) {
+            if( facing != EnumFacing.UP ) {
+                return (T) energyStorage;
+            }
+        }
+
+        return null;
     }
 
     private void readNbt(NBTTagCompound nbt) {
@@ -335,10 +310,6 @@ public class TileEntityElectrolyteGenerator
 
     public boolean hasCustomName() {
         return this.customName != null && !this.customName.isEmpty();
-    }
-
-    public ITextComponent getDisplayName() {
-        return this.hasCustomName() ? new TextComponentString(this.getName()) : new TextComponentTranslation(this.getName());
     }
 
     public boolean isUseableByPlayer(EntityPlayer player) {
@@ -376,53 +347,31 @@ public class TileEntityElectrolyteGenerator
         this.customName = name;
     }
 
-    public static Fuel getFuel(Item item) {
-        return FUELS.get(item);
-    }
-
-    private MyItemStackHandler itemHandler = new MyItemStackHandler();
-    public ContainerItemStackHandler containerItemHandler = new ContainerItemStackHandler(itemHandler);
-    private MyEnergyStorageGen energyStorage = new MyEnergyStorageGen();
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if( capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ) {
-            if( facing != EnumFacing.UP ) {
-                return (T) itemHandler;
-            }
-        } else if( capability == CapabilityEnergy.ENERGY ) {
-            if( facing != EnumFacing.UP ) {
-                return (T) energyStorage;
-            }
-        }
-
-        return null;
-    }
-
-    @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        if( facing != EnumFacing.UP ) {
-            return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || capability == CapabilityEnergy.ENERGY || super.hasCapability(capability, facing);
-        }
-
-        return super.hasCapability(capability, facing);
-    }
-
-    public static final class Fuel
+    private static final class ContainerItemStackHandler
+            extends ItemStackHandler
     {
-        public final float effect;
-        public final short ticksProc;
-        @Nonnull
-        public final ItemStack trash;
-        @Nonnull
-        public final ItemStack treasure;
+        private final MyItemStackHandler parentHandler;
 
-        public Fuel(float effectiveness, int ticksProcessing, @Nonnull ItemStack trash, @Nonnull ItemStack treasure) {
-            this.effect = effectiveness;
-            this.ticksProc = (short) ticksProcessing;
-            this.trash = trash;
-            this.treasure = treasure;
+        public ContainerItemStackHandler(MyItemStackHandler handler) {
+            super(handler.getStacksArray());
+            this.parentHandler = handler;
+        }
+
+        @Override
+        @Nonnull
+        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+            return this.parentHandler.insertItem(slot, stack, simulate);
+        }
+
+        @Override
+        protected int getStackLimit(int slot, @Nonnull ItemStack stack) {
+            return this.parentHandler.getStackLimit(slot, stack);
+        }
+
+        @Override
+        public void onLoad() {
+            super.onLoad();
+            this.stacks = this.parentHandler.getStacksArray();
         }
     }
 
@@ -480,65 +429,11 @@ public class TileEntityElectrolyteGenerator
         }
     }
 
-    private static final class ContainerItemStackHandler
-            extends ItemStackHandler
-    {
-        private final MyItemStackHandler parentHandler;
-
-        public ContainerItemStackHandler(MyItemStackHandler handler) {
-            super(handler.getStacksArray());
-            this.parentHandler = handler;
-        }
-
-        @Override
-        @Nonnull
-        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            return this.parentHandler.insertItem(slot, stack, simulate);
-        }
-
-        @Override
-        protected int getStackLimit(int slot, @Nonnull ItemStack stack) {
-            return this.parentHandler.getStackLimit(slot, stack);
-        }
-
-        @Override
-        public void onLoad() {
-            super.onLoad();
-            this.stacks = this.parentHandler.getStacksArray();
-        }
-    }
-
     private final class MyItemStackHandler
             extends ItemStackHandler
     {
         public MyItemStackHandler() {
             super(14);
-        }
-
-        @Override
-        @Nonnull
-        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            this.validateSlotIndex(slot);
-            if( slot < 9 && FUELS.containsKey(stack.getItem()) && !ItemStackUtils.isValid(this.stacks.get(slot)) ) {
-                return super.insertItem(slot, stack, simulate);
-            }
-
-            return stack;
-        }
-
-        @Override
-        protected int getStackLimit(int slot, @Nonnull ItemStack stack) {
-            return slot < 9 ? 1 : super.getStackLimit(slot, stack);
-        }
-
-        @Override
-        @Nonnull
-        public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if( slot > 8 ) {
-                return super.extractItem(slot, amount, simulate);
-            }
-
-            return ItemStack.EMPTY;
         }
 
         private boolean canAddExtraction(@Nonnull ItemStack stack) {
@@ -550,6 +445,17 @@ public class TileEntityElectrolyteGenerator
             return !ItemStackUtils.isValid(myStack);
         }
 
+        @Override
+        @Nonnull
+        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+            this.validateSlotIndex(slot);
+            if( slot < 9 && !ElectrolyteHelper.getFuel(stack).isNull() && !ItemStackUtils.isValid(this.stacks.get(slot)) ) {
+                return super.insertItem(slot, stack, simulate);
+            }
+
+            return stack;
+        }
+
         private void addExtraction(@Nonnull ItemStack stack) {
             ItemStack myStack = stack.copy();
             for( int i = 9; i < 14 && ItemStackUtils.isValid(myStack); i++ ) {
@@ -557,10 +463,25 @@ public class TileEntityElectrolyteGenerator
             }
         }
 
+        @Override
+        protected int getStackLimit(int slot, @Nonnull ItemStack stack) {
+            return slot < 9 ? 1 : super.getStackLimit(slot, stack);
+        }
+
         @Nonnull
         private ItemStack extractInsertItem(int slot, boolean simulate) {
             if( slot < 9 ) {
                 return super.extractItem(slot, 1, simulate);
+            }
+
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        @Nonnull
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            if( slot > 8 ) {
+                return super.extractItem(slot, amount, simulate);
             }
 
             return ItemStack.EMPTY;

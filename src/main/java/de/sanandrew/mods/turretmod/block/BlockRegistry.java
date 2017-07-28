@@ -53,7 +53,9 @@ public class BlockRegistry
         }
     }
 
-    /** prevents IDE from thinking the block fields are null */
+    /**
+     * prevents IDE from thinking the block fields are null
+     */
     private static <T> T nilBlock() {
         return null;
     }

@@ -25,6 +25,7 @@ import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketUpdateTurretState;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
+import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteHelper;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
@@ -50,7 +51,6 @@ import java.util.Set;
 
 @Mod(modid = TmrConstants.ID, version = TmrConstants.VERSION, name = TmrConstants.NAME, guiFactory = TurretModRebirth.GUI_FACTORY, dependencies = TmrConstants.DEPENDENCIES)
 public class TurretModRebirth
-        implements ITmrUtils
 {
     public static final String GUI_FACTORY = "de.sanandrew.mods.turretmod.client.gui.config.TmrGuiFactory";
 
@@ -76,11 +76,10 @@ public class TurretModRebirth
 
         network = NetworkRegistry.INSTANCE.newSimpleChannel(TmrConstants.CHANNEL);
 
-        TmrConstants.utils = instance;
+        TmrConstants.utils = TmrUtils.INSTANCE;
         TmrConstants.repkitRegistry = RepairKitRegistry.INSTANCE;
 
         PacketRegistry.initialize();
-//        Sounds.initialize();
 
         AmmoRegistry.INSTANCE.initialize();
         PLUGINS.forEach(plugin -> plugin.registerRepairKits(RepairKitRegistry.INSTANCE));
@@ -95,7 +94,8 @@ public class TurretModRebirth
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         PLUGINS.forEach(plugin -> plugin.registerAssemblyRecipes(TurretAssemblyRegistry.INSTANCE));
-        TileEntityElectrolyteGenerator.initializeRecipes();
+
+        ElectrolyteHelper.initialize();
 
         proxy.init(event);
     }
@@ -108,27 +108,6 @@ public class TurretModRebirth
 
         proxy.postInit(event);
     }
-
-//    @Mod.EventHandler
-//    public void onMissingMappings(RegistryEvent.MissingMappings event) {
-//        remap(event, BlockRegistry.electrolyte_generator, "sapturretmod:potato_generator");
-//        remap(event, ItemRegistry.repair_kit, "sapturretmod:turret_repair_kit");
-//        remap(event, ItemRegistry.assembly_upg_auto, "sapturretmod:turret_assembly_auto");
-//        remap(event, ItemRegistry.assembly_upg_speed, "sapturretmod:turret_assembly_speed");
-//        remap(event, ItemRegistry.assembly_upg_filter, "sapturretmod:turret_assembly_filter");
-//    }
-//
-//    private static void remap(FMLMissingMappingsEvent event, final Block block, final String oldName) {
-//        event.get().stream().filter(mapping -> mapping != null && mapping.name.equals(oldName) && mapping.type == GameRegistry.Type.BLOCK).forEach(mapping -> mapping.remap(block));
-//        Item itm = Item.getItemFromBlock(block);
-//        if( itm != null ) {
-//            remap(event, itm, oldName);
-//        }
-//    }
-//
-//    private static void remap(FMLMissingMappingsEvent event, final Item item, final String oldName) {
-//        event.get().stream().filter(mapping -> mapping != null && mapping.name.equals(oldName) && mapping.type == GameRegistry.Type.ITEM).forEach(mapping -> mapping.remap(item));
-//    }
 
     private static void loadPlugins(ASMDataTable dataTable) {
         String annotationClassName = TmrPlugin.class.getCanonicalName();
@@ -145,60 +124,5 @@ public class TurretModRebirth
         }
     }
 
-    @Override
-    public ITargetProcessor getNewTargetProcInstance(EntityTurret turret) {
-        return new TargetProcessor(turret);
-    }
 
-    @Override
-    public IUpgradeProcessor getNewUpgradeProcInstance(EntityTurret turret) {
-        return new UpgradeProcessor(turret);
-    }
-
-    @Override
-    public boolean isTCUItem(@Nonnull ItemStack stack) {
-        return ItemStackUtils.isItem(stack, ItemRegistry.turret_control_unit);
-    }
-
-    @Override
-    public void onTurretDeath(EntityTurret turret) {
-        ((TargetProcessor) turret.getTargetProcessor()).dropAmmo();
-        ((UpgradeProcessor) turret.getUpgradeProcessor()).dropUpgrades();
-    }
-
-    @Override
-    public void updateTurretState(EntityTurret turret) {
-        PacketRegistry.sendToAllAround(new PacketUpdateTurretState(turret), turret.dimension, turret.posX, turret.posY, turret.posZ, 64.0D);
-    }
-
-    @Override
-    @Nonnull
-    public ItemStack getPickedTurretResult(RayTraceResult target, EntityTurret turret) {
-        return ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(turret.getClass()));
-    }
-
-    @Override
-    public void openGui(EntityPlayer player, EnumGui id, int x, int y, int z) {
-        proxy.openGui(player, id, x, y, z);
-    }
-
-    @Override
-    public boolean canPlayerEditAll() {
-        return TmrConfiguration.playerCanEditAll;
-    }
-
-    @Override
-    public boolean canOpEditAll() {
-        return TmrConfiguration.opCanEditAll;
-    }
-
-    @Override
-    public <T extends Entity> List<T> getPassengersOfClass(Entity e, Class<T> psgClass) {
-        return EntityUtils.getPassengersOfClass(e, psgClass);
-    }
-
-    @Override
-    public boolean isStackValid(@Nonnull ItemStack stack) {
-        return ItemStackUtils.isValid(stack);
-    }
 }

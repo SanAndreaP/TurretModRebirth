@@ -1,0 +1,13 @@
+{
+  "electrolytes": {
+    "item": "minecraft:apple"
+  },
+  "effectiveness": 1.3,
+  "timeProcessing": 220,
+  "trash": {
+    "item": "minecraft:sugar"
+  },
+  "treasure": {
+    "item": "minecraft:gold_nugget"
+  }
+}
