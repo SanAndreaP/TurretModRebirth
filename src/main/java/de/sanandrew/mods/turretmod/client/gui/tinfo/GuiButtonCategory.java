@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.client.gui.tinfo;
 
 import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
+import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import de.sanandrew.mods.turretmod.client.util.ShaderHelper;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TmrConfiguration;
@@ -29,10 +30,15 @@ import org.lwjgl.opengl.GL11;
 public class GuiButtonCategory
         extends GuiButton
 {
+    private static final float TIME = 6.0F;
+
     public final int catIndex;
 
     private ResourceLocation texture;
     private GuiTurretInfo tinfo;
+
+    private float lastTime;
+    private float ticksHovered = 0.0F;
 
     private void doBtnShader(int shader) {
         TextureManager texMgr = Minecraft.getMinecraft().renderEngine;
@@ -40,9 +46,9 @@ public class GuiButtonCategory
         int imageUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "image");
         int maskUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "mask");
 
-        float heightMatch = GuiButtonCategory.this.ticksHovered / GuiButtonCategory.this.time;
+        float heightMatch = this.ticksHovered / TIME;
         OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB);
-        GlStateManager.bindTexture(texMgr.getTexture(GuiButtonCategory.this.texture).getGlTextureId());
+        GlStateManager.bindTexture(texMgr.getTexture(this.texture).getGlTextureId());
         ARBShaderObjects.glUniform1iARB(imageUniform, 0);
 
         OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + TmrConfiguration.glSecondaryTextureUnit);
@@ -59,9 +65,6 @@ public class GuiButtonCategory
         ARBShaderObjects.glUniform1fARB(heightMatchUniform, heightMatch);
     }
 
-    float ticksHovered = 0.0F;
-    float time = 6.0F;
-
     public GuiButtonCategory(int id, int catId, int x, int y, GuiTurretInfo gui) {
         super(id, x, y, 32, 32, "");
         this.tinfo = gui;
@@ -71,11 +74,15 @@ public class GuiButtonCategory
 
     @Override
     public void drawButton(Minecraft mc, int mx, int my, float partTicks) {
+        float time = ClientTickHandler.ticksInGame + partTicks;
+        float timeDelta = time - this.lastTime;
+        this.lastTime = time;
+
         boolean inside = mx >= x && my >= y && mx < x + width && my < y + height;
         if( inside ) {
-            this.ticksHovered = Math.min(this.time, this.ticksHovered + this.tinfo.timeDelta);
+            this.ticksHovered = Math.min(TIME, this.ticksHovered + timeDelta);
         } else {
-            this.ticksHovered = Math.max(-1.0F, this.ticksHovered - this.tinfo.timeDelta);
+            this.ticksHovered = Math.max(-1.0F, this.ticksHovered - timeDelta);
         }
 
         float s = 1.0F / 32.0F;

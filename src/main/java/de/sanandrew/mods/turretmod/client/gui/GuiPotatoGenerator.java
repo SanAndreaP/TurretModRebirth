@@ -64,10 +64,12 @@ public class GuiPotatoGenerator
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partTicks, int mouseX, int mouseY) {
+        this.mc.getTextureManager().bindTexture(Resources.GUI_POTATOGEN.getResource());
+
         GlStateManager.pushMatrix();
         GlStateManager.translate(this.guiLeft, this.guiTop, 0.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
-        this.mc.getTextureManager().bindTexture(Resources.GUI_POTATOGEN.getResource());
         this.drawTexturedModalRect(0, 0, 0, 0, this.xSize, this.ySize);
 
         for( int i = 0; i < this.generator.progress.length; i++ ) {

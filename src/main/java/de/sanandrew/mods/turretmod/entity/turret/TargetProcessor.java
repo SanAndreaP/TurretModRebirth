@@ -318,7 +318,7 @@ public final class TargetProcessor
             return event.getResult() != Event.Result.DENY;
         } else {
             this.playSound(this.turret.getNoAmmoSound(), 1.0F);
-            return event.getResult() != Event.Result.ALLOW;
+            return event.getResult() == Event.Result.ALLOW;
         }
     }
 
