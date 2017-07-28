@@ -21,6 +21,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -37,8 +38,8 @@ public class TurretInfoEntryGenerator
     @Nonnull
     private static ItemStack tooltipItem;
 
-    public TurretInfoEntryGenerator() {
-        super(null);
+    public TurretInfoEntryGenerator(IRecipe recipe) {
+        super(recipe);
     }
 
     @Override

@@ -8,6 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tinfo;
 
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntry;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryAmmo;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryGenerator;
@@ -27,12 +30,15 @@ import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -141,10 +147,24 @@ public class TurretInfoCategory
             register(Resources.TINFO_GRP_UPGRADE.getResource(), Lang.TINFO_CATEGORY_NAME.get("upgrades"), entries);
 
         }
+
         register(Resources.TINFO_GRP_MISC.getResource(), Lang.TINFO_CATEGORY_NAME.get("misc"),
-//                 new TurretInfoEntryMiscCraftable(CraftingRecipes.assembly_table),
-                 new TurretInfoEntryGenerator(),
+                 new TurretInfoEntryMiscCraftable(getRecipe(new ItemStack(BlockRegistry.turret_assembly))),
+                 new TurretInfoEntryGenerator(getRecipe(new ItemStack(BlockRegistry.electrolyte_generator))),
                  new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.turret_control_unit), TurretAssemblyRecipes.TCU));
         register(Resources.TINFO_GRP_INFO.getResource(), Lang.TINFO_CATEGORY_NAME.get("info"), new TurretInfoEntryInfo());
+    }
+
+    private static IRecipe getRecipe(ItemStack stack) {
+        IRecipe rcp;
+        for( ResourceLocation key : CraftingManager.REGISTRY.getKeys() ) {
+                rcp = CraftingManager.REGISTRY.getObject(key);
+
+                if (rcp != null && ItemStackUtils.isValid(rcp.getRecipeOutput()) && ItemStackUtils.areEqual(rcp.getRecipeOutput(), stack, false, false, false)) {
+                    return rcp;
+                }
+        }
+
+        return null;
     }
 }

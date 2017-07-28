@@ -194,17 +194,16 @@ public class GuiTurretAssembly
     protected void drawGuiContainerBackgroundLayer(float partTicks, int mouseX, int mouseY) {
         boolean isLmbDown = Mouse.isButtonDown(0);
         boolean isRmbDown = Mouse.isButtonDown(1);
-
-        this.mc.getTextureManager().bindTexture(Resources.GUI_ASSEMBLY_CRF.getResource());
-
-        this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
-
         int energyBarY = Math.max(0, Math.min(82, MathHelper.ceil((1.0D - (this.currEnergy / (double) this.maxEnergy)) * 82.0D)));
-        this.drawTexturedModalRect(this.guiLeft + 210, this.guiTop + 8 + energyBarY, 230, 12 + energyBarY, 12, 82 - energyBarY);
-
         double procPerc = this.ticksCrafted / (double) this.maxTicksCraft;
         int procBarX = Math.max(0, Math.min(50, MathHelper.ceil(procPerc * 50.0D)));
 
+        this.mc.getTextureManager().bindTexture(Resources.GUI_ASSEMBLY_CRF.getResource());
+
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+
+        this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
+        this.drawTexturedModalRect(this.guiLeft + 210, this.guiTop + 8 + energyBarY, 230, 12 + energyBarY, 12, 82 - energyBarY);
         this.drawTexturedModalRect(this.guiLeft + 156, this.guiTop + 30, 0, 222, procBarX, 5);
 
         if( this.cacheRecipes != null ) {

@@ -10,7 +10,6 @@ package de.sanandrew.mods.turretmod.client.gui.tinfo;
 
 import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntry;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.util.Lang;
@@ -46,9 +45,6 @@ public class GuiTurretInfo
 
     private int guiLeft;
     private int guiTop;
-
-    public float timeDelta;
-    private float lastTime;
 
     public final TurretInfoCategory category;
     public TurretInfoCategory categoryHighlight;
@@ -104,10 +100,6 @@ public class GuiTurretInfo
     @Override
     public void drawScreen(int mouseX, int mouseY, float partTicks) {
         boolean mouseDown = Mouse.isButtonDown(0);
-
-        float time = ClientTickHandler.ticksInGame + partTicks;
-        this.timeDelta = time - this.lastTime;
-        this.lastTime = time;
 
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.drawDefaultBackground();
@@ -195,6 +187,7 @@ public class GuiTurretInfo
         }
     }
 
+    @SuppressWarnings("SameParameterValue")
     public void doEntryScissoring(int x, int y, int width, int height) {
         int prevX = x;
         int yShifted = y - Math.round(this.scroll * this.dHeight);

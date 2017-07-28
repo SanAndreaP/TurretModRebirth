@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.client.gui.tinfo;
 
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
+import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.Minecraft;
@@ -24,18 +25,17 @@ import javax.annotation.Nonnull;
 public class GuiButtonEntry
         extends GuiButton
 {
+    private static final float TIME = 6.0F;
     public final int entIndex;
 
     @Nonnull
     private ItemStack icon;
-    private GuiTurretInfo tinfo;
 
-    float ticksHovered = 0.0F;
-    float time = 6.0F;
+    private float ticksHovered = 0.0F;
+    private float lastTime;
 
     public GuiButtonEntry(int id, int entryId, int x, int y, GuiTurretInfo gui) {
         super(id, x, y, 156, 14, "");
-        this.tinfo = gui;
         this.entIndex = entryId;
         TurretInfoEntry entry = gui.category.getEntry(id);
         this.icon = entry.getIcon();
@@ -44,12 +44,16 @@ public class GuiButtonEntry
 
     @Override
     public void drawButton(Minecraft mc, int mx, int my, float partTicks) {
+        float time = ClientTickHandler.ticksInGame + partTicks;
+        float timeDelta = time - this.lastTime;
+        this.lastTime = time;
+
         if( this.visible ) {
             boolean inside = this.enabled && mx >= x && my >= y && mx < x + width && my < y + height;
             if( inside ) {
-                this.ticksHovered = Math.min(this.time, this.ticksHovered + this.tinfo.timeDelta);
+                this.ticksHovered = Math.min(TIME, this.ticksHovered + timeDelta);
             } else {
-                this.ticksHovered = Math.max(0.0F, this.ticksHovered - this.tinfo.timeDelta);
+                this.ticksHovered = Math.max(0.0F, this.ticksHovered - timeDelta);
             }
 
             GlStateManager.pushMatrix();
@@ -57,7 +61,7 @@ public class GuiButtonEntry
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
-            float alphaMulti = this.ticksHovered / this.time;
+            float alphaMulti = this.ticksHovered / TIME;
             int color1 = 0x0066cc66 | ((Math.max(0x00, Math.min(0xC0, StrictMath.round(0xC0 * alphaMulti))) << 24) & 0xFF000000);
             int color2 = 0x0066cc66 | ((Math.max(0x00, Math.min(0x80, StrictMath.round(0x80 * alphaMulti))) << 24) & 0xFF000000);
 

@@ -90,7 +90,7 @@ public class GuiTcuUpgrades
     @Override
     protected void drawGuiContainerBackgroundLayer(float partTicks, int mouseX, int mouseY) {
         this.mc.getTextureManager().bindTexture(Resources.GUI_TCU_UPGRADES.getResource());
-
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.drawTexturedModalRect(this.posX, this.posY, 0, 0, this.xSize, this.ySize);
     }
 
