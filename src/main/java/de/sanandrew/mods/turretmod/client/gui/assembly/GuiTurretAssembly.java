@@ -24,7 +24,7 @@ import de.sanandrew.mods.turretmod.network.PacketInitAssemblyCrafting;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.api.assembly.IRecipeEntry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
-import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
+import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.gui.FontRenderer;
@@ -104,7 +104,7 @@ public class GuiTurretAssembly
         this.xSize = 230;
         this.ySize = 222;
 
-        this.assembly.syncStacks = false;
+//        this.assembly.syncStacks = false;
 
         this.upgIconAuto = new ItemStack(ItemRegistry.assembly_upg_auto);
         this.upgIconSpeed = new ItemStack(ItemRegistry.assembly_upg_speed);
@@ -170,12 +170,12 @@ public class GuiTurretAssembly
         }
 
         if( this.assembly.isActive ) {
-            this.ticksCrafted = this.assembly.getField(TileEntityTurretAssembly.FIELD_TICKS_CRAFTED);
+            this.ticksCrafted = this.assembly.getTicksCrafted();
         } else {
             this.ticksCrafted = 0;
         }
 
-        this.maxTicksCraft = this.assembly.getField(TileEntityTurretAssembly.FIELD_MAX_TICKS_CRAFTED);
+        this.maxTicksCraft = this.assembly.getMaxTicksCrafted();
         this.hasCrafting = this.assembly.currCrafting != null;
         if( this.hasCrafting ) {
             this.currCrfUUID = this.assembly.currCrafting.getValue(0);
@@ -286,7 +286,7 @@ public class GuiTurretAssembly
             NonNullList<ItemStack> filteredStacks = this.assembly.getFilterStacks();
             for( int i = 0; i < filteredStacks.size(); i++ ) {
                 ItemStack filterStack = filteredStacks.get(i);
-                if( ItemStackUtils.isValid(filterStack) && !ItemStackUtils.isValid(this.assembly.getStackInSlot(i + 5)) ) {
+                if( ItemStackUtils.isValid(filterStack) && !ItemStackUtils.isValid(this.assembly.getInventory().getStackInSlot(i + 5)) ) {
                     int x = i % 9;
                     int y = i / 9;
 
@@ -327,7 +327,7 @@ public class GuiTurretAssembly
             this.manual.enabled = !this.automate.enabled;
         }
 
-        this.automate.visible = ItemStackUtils.isValid(this.assembly.getStackInSlot(1));
+        this.automate.visible = ItemStackUtils.isValid(this.assembly.getInventory().getStackInSlot(1));
         this.manual.visible = this.automate.visible;
         this.prevIsLmbDown = isLmbDown;
         this.prevIsRmbDown = isRmbDown;
@@ -531,7 +531,7 @@ public class GuiTurretAssembly
             return;
         }
         String amount = String.format("%d / %d RF", stg.getEnergyStored(), stg.getMaxEnergyStored());
-        String consumption = Lang.translate(Lang.TASSEMBLY_RF_USING.get(), this.assembly.getField(TileEntityTurretAssembly.FIELD_FLUX_CONSUMPTION) * (this.assembly.hasSpeedUpgrade() ? 4 : 1));
+        String consumption = Lang.translate(Lang.TASSEMBLY_RF_USING.get(), this.assembly.getFluxConsumption() * (this.assembly.hasSpeedUpgrade() ? 4 : 1));
 
         int textWidth = Math.max(this.fontRenderer.getStringWidth(amount), this.fontRenderer.getStringWidth(consumption));
         int xPos = mouseX - 12 - textWidth;
@@ -582,7 +582,7 @@ public class GuiTurretAssembly
 
     @Override
     public void onGuiClosed() {
-        this.assembly.syncStacks = true;
+//        this.assembly.syncStacks = true;
         super.onGuiClosed();
     }
 

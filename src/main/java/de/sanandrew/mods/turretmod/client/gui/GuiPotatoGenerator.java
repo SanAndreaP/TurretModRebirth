@@ -9,7 +9,8 @@
 package de.sanandrew.mods.turretmod.client.gui;
 
 import de.sanandrew.mods.turretmod.inventory.ContainerElectrolyteGenerator;
-import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
+import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteProcess;
+import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -72,8 +73,11 @@ public class GuiPotatoGenerator
 
         this.drawTexturedModalRect(0, 0, 0, 0, this.xSize, this.ySize);
 
-        for( int i = 0; i < this.generator.progress.length; i++ ) {
-            this.drawTexturedModalRect(8 + i*18, 61, 176, 59, (int) StrictMath.round(this.generator.progress[i] / (float)this.generator.maxProgress[i] * 16.0D), 3);
+        for( int i = 0, max = this.generator.processes.length; i < max; i++ ) {
+            ElectrolyteProcess proc = this.generator.processes[i];
+            if( proc != null ) {
+                this.drawTexturedModalRect(8 + i * 18, 61, 176, 59, 16 - (int) Math.round(proc.getProgress() / (float) proc.maxProgress * 16.0D), 3);
+            }
         }
 
         double energyPerc = this.currEnergy / (double) this.maxEnergy;

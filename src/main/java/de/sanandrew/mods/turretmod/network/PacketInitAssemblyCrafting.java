@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.network;
 
 import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
-import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
+import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;

@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.inventory;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
+import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -23,20 +23,22 @@ import javax.annotation.Nonnull;
 public class ContainerTurretAssembly
         extends Container
 {
+    private IInventory inventory;
     private TileEntityTurretAssembly tile;
 
     public ContainerTurretAssembly(IInventory playerInv, TileEntityTurretAssembly assembly) {
         this.tile = assembly;
+        this.inventory = this.tile.getInventory();
 
-        this.addSlotToContainer(new SlotOutput(assembly, 0, 172, 10));
-        this.addSlotToContainer(new SlotAutoUpgrade(assembly, 1, 14, 100));
-        this.addSlotToContainer(new SlotSpeedUpgrade(assembly, 2, 14, 118));
-        this.addSlotToContainer(new SlotFilterUpgrade(assembly, 3, 202, 100));
-        this.addSlotToContainer(new SlotOutput(assembly, 4, 202, 118));
+        this.addSlotToContainer(new SlotOutput(0, 172, 10));
+        this.addSlotToContainer(new SlotAutoUpgrade(1, 14, 100));
+        this.addSlotToContainer(new SlotSpeedUpgrade(2, 14, 118));
+        this.addSlotToContainer(new SlotFilterUpgrade(3, 202, 100));
+        this.addSlotToContainer(new SlotOutput(4, 202, 118));
 
         for( int i = 0; i < 2; i++ ) {
             for( int j = 0; j < 9; j++ ) {
-                this.addSlotToContainer(new SlotIngredients(assembly, j + i * 9 + 5, 36 + j * 18, 100 + i * 18));
+                this.addSlotToContainer(new SlotIngredients(j + i * 9 + 5, 36 + j * 18, 100 + i * 18));
             }
         }
 
@@ -53,7 +55,7 @@ public class ContainerTurretAssembly
 
     @Override
     public boolean canInteractWith(EntityPlayer player) {
-        return this.tile.isUsableByPlayer(player);
+        return this.inventory.isUsableByPlayer(player);
     }
 
     private boolean transferUpgrade(Item desiredItm, @Nonnull ItemStack origStack, @Nonnull ItemStack slotStack, int upgSlot) {
@@ -187,11 +189,11 @@ public class ContainerTurretAssembly
         return origStack;
     }
 
-    public static class SlotOutput
+    private class SlotOutput
             extends Slot
     {
-        public SlotOutput(IInventory inventory, int id, int x, int y) {
-            super(inventory, id, x, y);
+        public SlotOutput(int id, int x, int y) {
+            super(ContainerTurretAssembly.this.inventory, id, x, y);
         }
 
         @Override
@@ -200,67 +202,55 @@ public class ContainerTurretAssembly
         }
     }
 
-    public static class SlotIngredients
+    private class SlotIngredients
             extends Slot
     {
-        private final TileEntityTurretAssembly assembly;
-
-        public SlotIngredients(TileEntityTurretAssembly assembly, int id, int x, int y) {
-            super(assembly, id, x, y);
-            this.assembly = assembly;
+        public SlotIngredients(int id, int x, int y) {
+            super(ContainerTurretAssembly.this.inventory, id, x, y);
         }
 
         @Override
         public boolean isItemValid(@Nonnull ItemStack stack) {
-            return super.isItemValid(stack) && this.assembly.isItemValidForSlot(this.getSlotIndex(), stack);
+            return super.isItemValid(stack) && ContainerTurretAssembly.this.inventory.isItemValidForSlot(this.getSlotIndex(), stack);
         }
     }
 
-    public static class SlotAutoUpgrade
+    private class SlotAutoUpgrade
             extends Slot
     {
-        private final TileEntityTurretAssembly assembly;
-
-        public SlotAutoUpgrade(TileEntityTurretAssembly assembly, int id, int x, int y) {
-            super(assembly, id, x, y);
-            this.assembly = assembly;
+        public SlotAutoUpgrade(int id, int x, int y) {
+            super(ContainerTurretAssembly.this.inventory, id, x, y);
         }
 
         @Override
         public boolean isItemValid(@Nonnull ItemStack stack) {
-            return !this.assembly.hasAutoUpgrade() && stack.getItem() == ItemRegistry.assembly_upg_auto;
+            return !ContainerTurretAssembly.this.tile.hasAutoUpgrade() && stack.getItem() == ItemRegistry.assembly_upg_auto;
         }
     }
 
-    public static class SlotSpeedUpgrade
+    private class SlotSpeedUpgrade
             extends Slot
     {
-        private final TileEntityTurretAssembly assembly;
-
-        public SlotSpeedUpgrade(TileEntityTurretAssembly assembly, int id, int x, int y) {
-            super(assembly, id, x, y);
-            this.assembly = assembly;
+        public SlotSpeedUpgrade(int id, int x, int y) {
+            super(ContainerTurretAssembly.this.inventory, id, x, y);
         }
 
         @Override
         public boolean isItemValid(@Nonnull ItemStack stack) {
-            return !this.assembly.hasSpeedUpgrade() && stack.getItem() == ItemRegistry.assembly_upg_speed;
+            return !ContainerTurretAssembly.this.tile.hasSpeedUpgrade() && stack.getItem() == ItemRegistry.assembly_upg_speed;
         }
     }
 
-    public static class SlotFilterUpgrade
+    private class SlotFilterUpgrade
             extends Slot
     {
-        private final TileEntityTurretAssembly assembly;
-
-        public SlotFilterUpgrade(TileEntityTurretAssembly assembly, int id, int x, int y) {
-            super(assembly, id, x, y);
-            this.assembly = assembly;
+        public SlotFilterUpgrade(int id, int x, int y) {
+            super(ContainerTurretAssembly.this.inventory, id, x, y);
         }
 
         @Override
         public boolean isItemValid(@Nonnull ItemStack stack) {
-            return !this.assembly.hasFilterUpgrade() && stack.getItem() == ItemRegistry.assembly_upg_filter;
+            return !ContainerTurretAssembly.this.tile.hasFilterUpgrade() && stack.getItem() == ItemRegistry.assembly_upg_filter;
         }
     }
 }

@@ -9,7 +9,8 @@
 package de.sanandrew.mods.turretmod.inventory;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
+import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteProcess;
+import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -147,7 +148,8 @@ public class ContainerElectrolyteGenerator
         @Override
         @Nonnull
         public ItemStack getStack() {
-            return generator.processStacks.get(this.index);
+            ElectrolyteProcess proc = this.generator.processes[this.index];
+            return proc == null ? ItemStack.EMPTY : proc.processStack;
         }
 
         @Override

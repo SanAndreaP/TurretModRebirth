@@ -65,7 +65,7 @@ public class TurretInfoCategory
     }
 
     public static TurretInfoCategory[] getCategories() {
-        return categories.toArray(new TurretInfoCategory[categories.size()]);
+        return categories.stream().toArray(TurretInfoCategory[]::new);
     }
 
     public static TurretInfoCategory getCategory(int index) {
@@ -158,11 +158,11 @@ public class TurretInfoCategory
     private static IRecipe getRecipe(ItemStack stack) {
         IRecipe rcp;
         for( ResourceLocation key : CraftingManager.REGISTRY.getKeys() ) {
-                rcp = CraftingManager.REGISTRY.getObject(key);
+            rcp = CraftingManager.REGISTRY.getObject(key);
 
-                if (rcp != null && ItemStackUtils.isValid(rcp.getRecipeOutput()) && ItemStackUtils.areEqual(rcp.getRecipeOutput(), stack, false, false, false)) {
-                    return rcp;
-                }
+            if( rcp != null && ItemStackUtils.isValid(rcp.getRecipeOutput()) && ItemStackUtils.areEqual(rcp.getRecipeOutput(), stack, false, false, false) ) {
+                return rcp;
+            }
         }
 
         return null;

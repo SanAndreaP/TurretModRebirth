@@ -13,7 +13,7 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
+import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.block.Block;
@@ -117,8 +117,8 @@ public class BlockTurretAssembly
         TileEntityTurretAssembly assembly = (TileEntityTurretAssembly) world.getTileEntity(pos);
 
         if( assembly != null ) {
-            for( int i = 0; i < assembly.getSizeInventory(); i++ ) {
-                ItemStack stack = assembly.getStackInSlot(i);
+            for( int i = 0; i < assembly.getInventory().getSizeInventory(); i++ ) {
+                ItemStack stack = assembly.getInventory().getStackInSlot(i);
 
                 if( ItemStackUtils.isValid(stack) ) {
                     float xOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;

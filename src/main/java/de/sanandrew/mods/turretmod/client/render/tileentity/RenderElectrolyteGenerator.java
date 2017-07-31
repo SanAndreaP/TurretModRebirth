@@ -9,8 +9,8 @@
 package de.sanandrew.mods.turretmod.client.render.tileentity;
 
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
-import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
+import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteProcess;
+import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -38,11 +38,10 @@ public class RenderElectrolyteGenerator
         GlStateManager.translate((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
 
-        for( int i = 0; i < tile.processStacks.size(); i++ ) {
-            ItemStack stack = tile.processStacks.get(i);
-
-            if( ItemStackUtils.isValid(stack) ) {
-                drawElectrolyteItem(i, stack);
+        for( int i = 0, max = tile.processes.length; i < max; i++ ) {
+            ElectrolyteProcess proc = tile.processes[i];
+            if( proc != null ) {
+                drawElectrolyteItem(i, proc.processStack);
             }
         }
 

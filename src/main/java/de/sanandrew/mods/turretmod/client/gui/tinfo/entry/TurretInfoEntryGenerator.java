@@ -13,41 +13,38 @@ import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
-import de.sanandrew.mods.turretmod.tileentity.TileEntityElectrolyteGenerator;
+import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteHelper;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @SideOnly(Side.CLIENT)
 public class TurretInfoEntryGenerator
         extends TurretInfoEntryMiscCraftable
 {
     private int drawHeight;
-    @Nonnull
-    private static ItemStack tooltipItem;
 
     public TurretInfoEntryGenerator(IRecipe recipe) {
         super(recipe);
     }
 
+    @Nonnull
+    private NonNullList<ItemStack> fuelItems;
+    @Nonnull
+    private ItemStack tooltipItem;
+
     @Override
     public void drawPage(GuiTurretInfo gui, int mouseX, int mouseY, int scrollY, float partTicks) {
         super.drawPage(gui, mouseX, mouseY, scrollY, partTicks);
-
-        Map<Item, TileEntityElectrolyteGenerator.Fuel> fuels = TileEntityElectrolyteGenerator.getFuels();
-        List<Item> fuelItems = new ArrayList<>(fuels.keySet());
 
         this.drawHeight = super.getPageHeight() + 3;
 
@@ -56,28 +53,28 @@ public class TurretInfoEntryGenerator
         this.drawHeight += 3;
 
         int maxItems = 9;
-        tooltipItem = ItemStack.EMPTY;
-        for( int i = 0, cnt = fuelItems.size(); i < cnt; i++ ) {
+        this.tooltipItem = ItemStack.EMPTY;
+        for( int i = 0, cnt = this.fuelItems.size(); i < cnt; i++ ) {
             int x = i % maxItems;
             int y = i / maxItems;
 
-            drawFuelItem(gui, 3 + 18 * x, this.drawHeight + 18 * y, mouseX, mouseY, scrollY, new ItemStack(fuelItems.get(i)));
+            this.drawFuelItem(gui, 3 + 18 * x, this.drawHeight + 18 * y, mouseX, mouseY, scrollY, this.fuelItems.get(i));
         }
 
-        if( ItemStackUtils.isValid(tooltipItem) ) {
-            drawTooltipFuel(gui.mc, scrollY);
+        if( ItemStackUtils.isValid(this.tooltipItem) ) {
+            this.drawTooltipFuel(gui.mc, scrollY);
         }
 
         this.drawHeight += (fuelItems.size() / maxItems) * 18 + 20 + 48;
     }
 
-    private static void drawTooltipFuel(Minecraft mc, int scrollY) {
+    private void drawTooltipFuel(Minecraft mc, int scrollY) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(0.0F, MAX_ENTRY_HEIGHT - 48 + scrollY, 100.0F);
         Gui.drawRect(0, 0, MAX_ENTRY_WIDTH, 48, 0xD0000000);
 
         mc.fontRenderer.drawString(String.format("§e%s", GuiUtils.getTooltipWithoutShift(tooltipItem).get(0)), 22, 2, 0xFFFFFFFF, false);
-        TileEntityElectrolyteGenerator.Fuel fuel = TileEntityElectrolyteGenerator.getFuel(tooltipItem.getItem());
+        ElectrolyteHelper.Fuel fuel = ElectrolyteHelper.getFuel(tooltipItem);
         mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_EFFICIENCY.get(), fuel.effect), 22, 11, 0xFFFFFFFF, false);
         mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_DECAY.get(), MiscUtils.getTimeFromTicks(fuel.ticksProc)), 22, 20, 0xFFFFFFFF, false);
         mc.fontRenderer.drawString(String.format("§a%s", GuiUtils.getTooltipWithoutShift(fuel.trash).get(0)), 32, 29, 0xFFFFFFFF, false);
@@ -90,7 +87,7 @@ public class TurretInfoEntryGenerator
         GlStateManager.popMatrix();
     }
 
-    private static void drawFuelItem(GuiTurretInfo gui, int x, int y, int mouseX, int mouseY, int scrollY, @Nonnull ItemStack stack) {
+    private void drawFuelItem(GuiTurretInfo gui, int x, int y, int mouseX, int mouseY, int scrollY, @Nonnull ItemStack stack) {
         gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         gui.drawTexturedModalRect(x, y, 192, 0, 18, 18);
@@ -99,7 +96,7 @@ public class TurretInfoEntryGenerator
         boolean mouseOver = mouseY >= 0 && mouseY < MAX_ENTRY_HEIGHT && mouseX >= x && mouseX < x + 18 && mouseY >= y - scrollY && mouseY < y + 18 - scrollY;
 
         if( mouseOver ) {
-            tooltipItem = stack;
+            this.tooltipItem = stack;
         }
 
         GlStateManager.translate(x, y, 32.0F);
@@ -112,6 +109,13 @@ public class TurretInfoEntryGenerator
         }
 
         GlStateManager.popMatrix();
+    }
+
+    @Override
+    public void initEntry(GuiTurretInfo gui) {
+        super.initEntry(gui);
+
+        this.fuelItems = NonNullList.from(ItemStack.EMPTY, ElectrolyteHelper.getFuelMap().keySet().stream().toArray(ItemStack[]::new));
     }
 
     @Override

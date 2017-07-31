@@ -38,10 +38,8 @@ import net.minecraft.util.JsonUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
@@ -122,18 +120,21 @@ public class TmrUtils
     public static boolean findFiles(ModContainer mod, String base, Function<Path, Boolean> preprocessor, BiFunction<Path, Path, Boolean> processor) {
         File source = mod.getSource();
 
-        Path root = null;
         if( source.isFile() ) {
             try( FileSystem fs = FileSystems.newFileSystem(source.toPath(), null) ) {
-                root = fs.getPath('/' + base);
+                return findFilesIntrn(fs.getPath('/' + base), mod, preprocessor, processor);
             } catch( IOException e ) {
                 TmrConstants.LOG.log(Level.ERROR, "Error loading FileSystem from jar: ", e);
                 return false;
             }
         } else if( source.isDirectory() ) {
-            root = source.toPath().resolve(base);
+            return findFilesIntrn(source.toPath().resolve(base), mod, preprocessor, processor);
         }
 
+        return false;
+    }
+
+    private static boolean findFilesIntrn(Path root, ModContainer mod, Function<Path, Boolean> preprocessor, BiFunction<Path, Path, Boolean> processor) {
         if( root == null || !Files.exists(root) ) {
             return false;
         }
@@ -194,9 +195,7 @@ public class TmrUtils
             if( allowMultiple ) {
                 NonNullList<ItemStack> stacks = NonNullList.create();
 
-                json.getAsJsonArray().forEach(elem -> {
-                    stacks.addAll(getItemStacks(elem, true));
-                });
+                json.getAsJsonArray().forEach(elem -> stacks.addAll(getItemStacks(elem, true)));
 
                 return stacks;
             } else {
@@ -213,11 +212,11 @@ public class TmrUtils
         Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemName));
 
         if( item == null ) {
-            throw new JsonParseException("Unknown item '" + itemName + '\'');
+            throw new JsonParseException(String.format("Unknown item '%s'", itemName));
         }
 
         if( item.getHasSubtypes() && !jsonObj.has("data") ) {
-            throw new JsonParseException("Missing data for item '" + itemName + '\'');
+            throw new JsonParseException(String.format("Missing data for item '%s'", itemName));
         }
 
         ItemStack stack;

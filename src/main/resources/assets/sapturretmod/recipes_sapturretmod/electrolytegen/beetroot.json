@@ -1,0 +1,14 @@
+{
+  "electrolytes": {
+    "item": "minecraft:beetroot"
+  },
+  "effectiveness": 1.0,
+  "timeProcessing": 200,
+  "trash": {
+    "item": "minecraft:dye",
+    "data": 1
+  },
+  "treasure": {
+    "item": "minecraft:redstone"
+  }
+}

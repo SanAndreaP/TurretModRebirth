@@ -15,7 +15,7 @@ import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.client.model.block.ModelTurretAssembly;
 import de.sanandrew.mods.turretmod.client.shader.ShaderItemAlphaOverride;
 import de.sanandrew.mods.turretmod.client.util.ShaderHelper;
-import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretAssembly;
+import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -130,7 +130,7 @@ public class RenderTurretAssembly
 
     private void renderItem(TileEntityTurretAssembly assembly) {
         int xShift = 0;
-        ItemStack crfStack = assembly.currCrafting != null ? assembly.currCrafting.getValue(1) : assembly.getStackInSlot(0);
+        ItemStack crfStack = assembly.currCrafting != null ? assembly.currCrafting.getValue(1) : assembly.getInventory().getStackInSlot(0);
 
         GlStateManager.pushMatrix();
         GlStateManager.rotate((float)(90.0D * BlockRegistry.turret_assembly.getDirection(assembly.getBlockMetadata()).getHorizontalIndex()), 0.0F, 1.0F, 0.0F);
@@ -138,7 +138,7 @@ public class RenderTurretAssembly
         if( ItemStackUtils.isValid(crfStack) ) {
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            this.shaderCallback.alphaMulti = Math.max(0.0F, (assembly.getField(TileEntityTurretAssembly.FIELD_TICKS_CRAFTED) - 15.0F) / (assembly.getField(TileEntityTurretAssembly.FIELD_MAX_TICKS_CRAFTED) - 15.0F));
+            this.shaderCallback.alphaMulti = Math.max(0.0F, (assembly.getTicksCrafted() - 15.0F) / (assembly.getMaxTicksCrafted() - 15.0F));
             ShaderHelper.useShader(ShaderHelper.alphaOverride, this.shaderCallback::call);
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, OpenGlHelper.lastBrightnessX, OpenGlHelper.lastBrightnessY);
             RenderUtils.renderStackInWorld(crfStack, 0.0D, 0.802D, 0.0D, -90.0F, 180.0F, 0.0F, 0.35D);
@@ -147,13 +147,13 @@ public class RenderTurretAssembly
         }
 
         if( assembly.hasAutoUpgrade() ) {
-            RenderUtils.renderStackInWorld(assembly.getStackInSlot(1), -0.425D + xShift++ * 0.025D, 0.85D, -0.35D, 0.0F, 90.0F, 0.0F, 0.15D);
+            RenderUtils.renderStackInWorld(assembly.getInventory().getStackInSlot(1), -0.425D + xShift++ * 0.025D, 0.85D, -0.35D, 0.0F, 90.0F, 0.0F, 0.15D);
         }
         if( assembly.hasSpeedUpgrade() ) {
-            RenderUtils.renderStackInWorld(assembly.getStackInSlot(2), -0.425D + xShift++ * 0.025D, 0.85D, -0.35D, 0.0F, 90.0F, 0.0F, 0.15D);
+            RenderUtils.renderStackInWorld(assembly.getInventory().getStackInSlot(2), -0.425D + xShift++ * 0.025D, 0.85D, -0.35D, 0.0F, 90.0F, 0.0F, 0.15D);
         }
         if( assembly.hasFilterUpgrade() ) {
-            RenderUtils.renderStackInWorld(assembly.getStackInSlot(3), -0.425D + xShift * 0.025D, 0.85D, -0.35D, 0.0F, 90.0F, 0.0F, 0.15D);
+            RenderUtils.renderStackInWorld(assembly.getInventory().getStackInSlot(3), -0.425D + xShift * 0.025D, 0.85D, -0.35D, 0.0F, 90.0F, 0.0F, 0.15D);
         }
         GlStateManager.popMatrix();
     }

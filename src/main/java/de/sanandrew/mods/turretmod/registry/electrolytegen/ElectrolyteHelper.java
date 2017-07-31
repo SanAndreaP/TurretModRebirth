@@ -26,10 +26,13 @@ import javax.annotation.Nonnull;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public class ElectrolyteHelper
 {
     private static final Map<ItemStack, Fuel> FUELS_INTRN = new HashMap<>();
@@ -37,56 +40,54 @@ public class ElectrolyteHelper
     public static final Fuel NULL_FUEL = new Fuel(-1, -1, ItemStack.EMPTY, ItemStack.EMPTY);
 
     public static void initialize() {
-        Loader.instance().getActiveModList().forEach(ElectrolyteHelper::loadRecipes);
+        TmrConstants.LOG.log(Level.INFO, "Initializing Electrolyte Generator recipes...");
+        long prevTime = System.nanoTime();
+        Loader.instance().getActiveModList().forEach(ElectrolyteHelper::loadJsonRecipes);
+        long timeDelta = (System.nanoTime() - prevTime) / 1_000_000;
+        TmrConstants.LOG.log(Level.INFO, String.format("Initializing Electrolyte Generator recipes done in %d ms. Found %d recipes.", timeDelta, ElectrolyteHelper.getFuelMap().size()));
     }
 
-    private static boolean loadRecipes(ModContainer mod) {
-        return TmrUtils.findFiles(mod, "assets/" + mod.getModId() + "/recipes/sapturretmod/electrolytegen/", null,
-                (root, file) -> {
-                    if( !"json".equals(FilenameUtils.getExtension(file.toString())) || root.relativize(file).toString().startsWith("_") ) {
-                        return true;
-                    }
+    private static boolean loadJsonRecipes(ModContainer mod) {
+        return TmrUtils.findFiles(mod, "assets/" + mod.getModId() + "/recipes_sapturretmod/electrolytegen/", null, ElectrolyteHelper::processJson);
+    }
 
-                    try( BufferedReader reader = Files.newBufferedReader(file) ) {
-                        JsonObject json = JsonUtils.fromJson(TmrUtils.GSON, reader, JsonObject.class);
+    private static boolean processJson(Path root, Path file) {
+        if( !"json".equals(FilenameUtils.getExtension(file.toString())) || root.relativize(file).toString().startsWith("_") ) {
+            return true;
+        }
 
-                        if( json == null || json.isJsonNull() ) {
-                            throw new JsonSyntaxException("Json cannot be null");
-                        }
+        try( BufferedReader reader = Files.newBufferedReader(file) ) {
+            JsonObject json = JsonUtils.fromJson(TmrUtils.GSON, reader, JsonObject.class);
 
-                        NonNullList<ItemStack> inputItems = TmrUtils.getItemStacks(json.get("electrolytes"), true);
-                        float effectiveness = TmrUtils.getFloatVal(json.get("effectiveness"));
-                        if( effectiveness < 1.0F ) {
-                            throw new JsonParseException("Cannot have an effectiveness of less than 1.0");
-                        }
+            if( json == null || json.isJsonNull() ) {
+                throw new JsonSyntaxException("Json cannot be null");
+            }
 
-                        int ticksProcessing = TmrUtils.getIntVal(json.get("timeProcessing"));
-                        if( ticksProcessing < 1 ) {
-                            throw new JsonParseException("Cannot have a time less than 1 tick");
-                        }
+            NonNullList<ItemStack> inputItems = TmrUtils.getItemStacks(json.get("electrolytes"), true);
+            float effectiveness = TmrUtils.getFloatVal(json.get("effectiveness"));
+            int ticksProcessing = TmrUtils.getIntVal(json.get("timeProcessing"));
+            ItemStack trash = ItemStack.EMPTY;
+            ItemStack treasure = ItemStack.EMPTY;
 
-                        ItemStack trash = TmrUtils.getItemStacks(json.get("trash"), false).get(0);
+            JsonElement elem = json.get("trash");
+            if( elem != null && !elem.isJsonNull() ) {
+                trash = TmrUtils.getItemStacks(elem, false).get(0);
+            }
+            elem = json.get("treasure");
+            if( elem != null && !elem.isJsonNull() ) {
+                treasure = TmrUtils.getItemStacks(elem, false).get(0);
+            }
 
-                        ItemStack treasure = ItemStack.EMPTY;
+            registerFuels(inputItems, effectiveness, ticksProcessing, trash, treasure);
+        } catch( JsonParseException e ) {
+            TmrConstants.LOG.log(Level.ERROR, String.format("Parsing error loading electrolyte generator recipe from %s", file), e);
+            return false;
+        } catch( IOException e ) {
+            TmrConstants.LOG.log(Level.ERROR, String.format("Couldn't read recipe from %s", file), e);
+            return false;
+        }
 
-                        JsonElement treasureElem = json.get("treasure");
-                        if( treasureElem != null && !treasureElem.isJsonNull() ) {
-                            treasure = TmrUtils.getItemStacks(treasureElem, false).get(0);
-                        }
-
-                        Fuel fuelInst = new Fuel(effectiveness, ticksProcessing, trash, treasure);
-                        inputItems.forEach(item -> FUELS_INTRN.put(item, fuelInst));
-                    } catch( JsonParseException e ) {
-                        TmrConstants.LOG.log(Level.ERROR, String.format("Parsing error loading electrolyte generator recipe from %s", file), e);
-                        return false;
-                    } catch( IOException e ) {
-                        TmrConstants.LOG.log(Level.ERROR, String.format("Couldn't read recipe from %s", file), e);
-                        return false;
-                    }
-
-                    return true;
-                }
-        );
+        return true;
     }
 
     public static Map<ItemStack, Fuel> getFuelMap() {
@@ -95,6 +96,10 @@ public class ElectrolyteHelper
 
     @Nonnull
     public static Fuel getFuel(ItemStack stack) {
+        if( !ItemStackUtils.isValid(stack) ) {
+            return NULL_FUEL;
+        }
+
         for( Map.Entry<ItemStack, Fuel> entry : FUELS_INTRN.entrySet() ) {
             ItemStack key = entry.getKey();
             if( ItemStackUtils.areEqual(key, stack, key.hasTagCompound(), false, key.getItemDamage() == OreDictionary.WILDCARD_VALUE) ) {
@@ -103,6 +108,45 @@ public class ElectrolyteHelper
         }
 
         return NULL_FUEL;
+    }
+
+    public static boolean isFuel(ItemStack stack) {
+        return !getFuel(stack).isNull();
+    }
+
+    public static boolean registerFuels(NonNullList<ItemStack> electrolytes, float effectiveness, int ticksProcessing, @Nonnull ItemStack trash, @Nonnull ItemStack treasure) {
+        if( effectiveness < 1.0F ) {
+            TmrConstants.LOG.log(Level.ERROR, "Cannot have an effectiveness of less than 1.0");
+            return false;
+        }
+
+        if( ticksProcessing < 1 ) {
+            TmrConstants.LOG.log(Level.ERROR, "Cannot have a time less than 1 tick");
+            return false;
+        }
+
+        if( electrolytes.stream().anyMatch(item -> !getFuel(item).isNull()) ) {
+            TmrConstants.LOG.log(Level.ERROR, "Electrolyte item is already registered");
+            return false;
+        }
+
+        Fuel fuelInst = new Fuel(effectiveness, ticksProcessing, trash, treasure);
+        electrolytes.forEach(item -> FUELS_INTRN.put(item, fuelInst));
+
+        return true;
+    }
+
+    public static boolean removeFuel(ItemStack stack) {
+        for( Iterator<Map.Entry<ItemStack, Fuel>> it = FUELS_INTRN.entrySet().iterator(); it.hasNext(); ) {
+            Map.Entry<ItemStack, Fuel> entry = it.next();
+            ItemStack key = entry.getKey();
+            if( ItemStackUtils.areEqual(key, stack, key.hasTagCompound(), false, key.getItemDamage() == OreDictionary.WILDCARD_VALUE) ) {
+                it.remove();
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static final class Fuel
