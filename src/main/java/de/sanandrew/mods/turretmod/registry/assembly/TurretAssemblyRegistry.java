@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 public final class TurretAssemblyRegistry
@@ -82,6 +83,12 @@ public final class TurretAssemblyRegistry
         IRecipeGroup group = new RecipeGroup(name, stack);
         this.groupsList.add(group);
         return group;
+    }
+
+    @Override
+    public IRecipeGroup getGroup(String name) {
+        final String fullName = BlockRegistry.turret_assembly.getUnlocalizedName() + '.' + name;
+        return this.groupsList.stream().filter(group -> group.getName().equals(fullName)).findFirst().orElse(null);
     }
 
     public IRecipeGroup[] getGroups() {

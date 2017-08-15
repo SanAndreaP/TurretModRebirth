@@ -20,8 +20,6 @@ public interface IRecipeEntry
 
     RecipeEntryItem put(String... oreDictNames);
 
-    RecipeEntryItem put(IEnchantmentEntry... enchItems);
-
     RecipeEntryItem drawTooltip();
 
     boolean shouldDrawTooltip();
@@ -36,12 +34,4 @@ public interface IRecipeEntry
     int getItemCount();
 
     void decreaseItemCount(int amount);
-
-    interface IEnchantmentEntry
-    {
-        @Nonnull
-        ItemStack stack();
-
-        Enchantment enchantment();
-    }
 }

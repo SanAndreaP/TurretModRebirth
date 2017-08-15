@@ -187,9 +187,9 @@ public class TileEntityTurretAssembly
             int maxLoop = this.hasSpeedUpgrade() ? 4 : 1;
             boolean markDirty = false;
 
-            for( int i = 0; i < maxLoop; i++ ) {
-                this.isActiveClient = this.isActive;
-                if( this.isActive && this.currCrafting != null ) {
+            this.isActiveClient = this.isActive;
+            if( this.isActive && this.currCrafting != null ) {
+                for( int i = 0; i < maxLoop; i++ ) {
                     if( this.energyStorage.fluxAmount >= this.fluxConsumption && this.world.isBlockIndirectlyGettingPowered(this.pos) == 0 ) {
                         this.energyStorage.fluxAmount -= this.fluxConsumption;
                         if( ++this.ticksCrafted >= this.maxTicksCrafted ) {
@@ -228,10 +228,14 @@ public class TileEntityTurretAssembly
                         this.isActiveClient = false;
                         this.doSync = true;
                     }
-                } else {
-                    this.initCrafting();
-                    this.isActiveClient = false;
+
+                    if( !this.isActive || this.currCrafting == null ) {
+                        break;
+                    }
                 }
+            } else {
+                this.initCrafting();
+                this.isActiveClient = false;
             }
 
             if( markDirty ) {

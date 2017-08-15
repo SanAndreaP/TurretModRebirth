@@ -6,6 +6,15 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.registry.assembly;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
+import de.sanandrew.mods.sanlib.lib.function.Ex2Function;
+import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.assembly.IRecipeEntry;
 import de.sanandrew.mods.turretmod.api.assembly.IRecipeGroup;
 import de.sanandrew.mods.turretmod.api.assembly.ITurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
@@ -24,18 +33,32 @@ import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoFireTank;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoFluxCell;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoMinigunShell;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoShotgunShell;
+import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteHelper;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKits;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
+import net.minecraft.util.NonNullList;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.logging.log4j.Level;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 
 public final class TurretAssemblyRecipes
 {
@@ -92,362 +115,467 @@ public final class TurretAssemblyRecipes
     public static final UUID UPG_AT_FILTER    = UUID.fromString("BD48EB98-94A2-4516-90E0-4DC20E843490");
     public static final UUID UPG_AT_SPEED     = UUID.fromString("DF388B34-64ED-4D94-BEE0-C1A4AAB8E701");
 
-    public static void initialize(ITurretAssemblyRegistry registry) {
-        IRecipeGroup miscGroup = registry.registerGroup("group0", new ItemStack(ItemRegistry.turret_control_unit));
-        IRecipeGroup turretGroup = registry.registerGroup("group1", ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCrossbow.class)));
-        IRecipeGroup ammoGroup = registry.registerGroup("group2", ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.QUIVER_UUID)));
-        IRecipeGroup repKitGroup = registry.registerGroup("group3", ItemRegistry.repair_kit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKits.STANDARD_MK1)));
-        IRecipeGroup upgradeGroup = registry.registerGroup("group4", UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY));
+//    public static void initialize(ITurretAssemblyRegistry registry) {
+//        IRecipeGroup miscGroup = registry.registerGroup("group0", new ItemStack(ItemRegistry.turret_control_unit));
+//        IRecipeGroup turretGroup = registry.registerGroup("group1", ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCrossbow.class)));
+//        IRecipeGroup ammoGroup = registry.registerGroup("group2", ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.QUIVER_UUID)));
+//        IRecipeGroup repKitGroup = registry.registerGroup("group3", ItemRegistry.repair_kit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKits.STANDARD_MK1)));
+//        IRecipeGroup upgradeGroup = registry.registerGroup("group4", UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY));
+//
+//        ItemStack res;
+//        RecipeEntryItem[] ingredients;
+//
+//        //region misc
+//        {
+//            // TURRET INFO
+//            res = new ItemStack(ItemRegistry.turret_info, 1);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(Items.BOOK)};
+//            registry.registerRecipe(TurretAssemblyRecipes.TINFO, miscGroup, res, 7_500, 10, ingredients);
+//
+//            // TURRET CONTROL UNIT
+//            res = new ItemStack(ItemRegistry.turret_control_unit, 1);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(5).put("ingotIron"),
+//                                                 new RecipeEntryItem(2).put(Items.REDSTONE),
+//                                                 new RecipeEntryItem(1).put("paneGlass")};
+//            registry.registerRecipe(TurretAssemblyRecipes.TCU, miscGroup, res, 10, 180, ingredients);
+//        }
+//        //endregion
+//
+//        //region turrets
+//        {
+//            // T1 - CROSSBOW
+//            res = ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCrossbow.class));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(12).put("cobblestone"),
+//                                                 new RecipeEntryItem(1).put(Items.BOW),
+//                                                 new RecipeEntryItem(4).put("dustRedstone"),
+//                                                 new RecipeEntryItem(4).put("plankWood")};
+//            registry.registerRecipe(TurretAssemblyRecipes.TURRET_MK1_CB, turretGroup, res, 10, 100, ingredients);
+//
+//            // T1 - SHOTGUN
+//            res = ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretShotgun.class));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(12).put("stone"),
+//                                                 new RecipeEntryItem(2).put("ingotIron"),
+//                                                 new RecipeEntryItem(4).put("dustRedstone"),
+//                                                 new RecipeEntryItem(1).put("logWood")};
+//            registry.registerRecipe(TurretAssemblyRecipes.TURRET_MK1_SG, turretGroup, res, 10, 100, ingredients);
+//
+//            // TS - CRYOLATOR
+//            res = ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCryolator.class));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(12).put(Blocks.SNOW),
+//                                                 new RecipeEntryItem(1).put(Items.BOW),
+//                                                 new RecipeEntryItem(4).put("dustRedstone"),
+//                                                 new RecipeEntryItem(4).put("plankWood"),
+//                                                 new RecipeEntryItem(2).put(Blocks.ICE)};
+//            registry.registerRecipe(TurretAssemblyRecipes.TURRET_MK1_CL, turretGroup, res, 10, 100, ingredients);
+//
+//            // T2 - REVOLVER
+//            res = ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretRevolver.class));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("blockIron"),
+//                                                 new RecipeEntryItem(1).put("ingotGold"),
+//                                                 new RecipeEntryItem(4).put("dustRedstone"),
+//                                                 new RecipeEntryItem(2).put(Blocks.STONEBRICK),
+//                                                 new RecipeEntryItem(4).put(new ItemStack(Blocks.STONE_SLAB, 1, 0))};
+//            registry.registerRecipe(TurretAssemblyRecipes.TURRET_MK2_RV, turretGroup, res, 15, 100, ingredients);
+//
+//            // T2 - MINIGUN
+//            res = ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretMinigun.class));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("blockIron"),
+//                                                 new RecipeEntryItem(4).put("ingotGold"),
+//                                                 new RecipeEntryItem(4).put("dustRedstone"),
+//                                                 new RecipeEntryItem(2).put(Blocks.STONEBRICK),
+//                                                 new RecipeEntryItem(4).put(new ItemStack(Blocks.STONE_SLAB, 1, 0))};
+//            registry.registerRecipe(TurretAssemblyRecipes.TURRET_MK2_MG, turretGroup, res, 15, 100, ingredients);
+//
+//            // T3 - LASER
+//            res = ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretLaser.class));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put("obsidian"),
+//                                                 new RecipeEntryItem(1).put("blockRedstone"),
+//                                                 new RecipeEntryItem(1).put("blockIron"),
+//                                                 new RecipeEntryItem(2).put("ingotGold"),
+//                                                 new RecipeEntryItem(1).put("gemDiamond")};
+//            registry.registerRecipe(TurretAssemblyRecipes.TURRET_MK3_LR, turretGroup, res, 20, 100, ingredients);
+//
+//            // T3 - FLAMETHROWER
+//            res = ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretFlamethrower.class));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put("obsidian"),
+//                                                 new RecipeEntryItem(1).put("blockRedstone"),
+//                                                 new RecipeEntryItem(1).put("blockIron"),
+//                                                 new RecipeEntryItem(4).put("ingotGold"),
+//                                                 new RecipeEntryItem(1).put("blockQuartz")};
+//            registry.registerRecipe(TurretAssemblyRecipes.TURRET_MK3_FT, turretGroup, res, 20, 100, ingredients);
+//        }
+//        //endregion
+//
+//        //region ammo
+//        {
+//            // ARROWS
+//            res = ItemRegistry.turret_ammo.getAmmoItem(4, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.ARROW_UUID));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(Items.ARROW)};
+//            registry.registerRecipe(TurretAssemblyRecipes.ARROW_SNG, ammoGroup, res, 5, 60, ingredients);
+//
+//            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.QUIVER_UUID));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.ARROW_UUID))),
+//                                                 new RecipeEntryItem(1).put(Items.LEATHER)};
+//            registry.registerRecipe(TurretAssemblyRecipes.ARROW_MTP, ammoGroup, res, 5, 120, ingredients);
+//
+//            // SHOTGUN SHELLS
+//            res = ItemRegistry.turret_ammo.getAmmoItem(12, AmmoRegistry.INSTANCE.getType(TurretAmmoShotgunShell.SHELL_UUID));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put("ingotIron"),
+//                                                 new RecipeEntryItem(1).put(Blocks.GRAVEL),
+//                                                 new RecipeEntryItem(1).put(Items.GUNPOWDER).put("dustGunpowder"),
+//                                                 new RecipeEntryItem(1).put("dustRedstone")};
+//            registry.registerRecipe(TurretAssemblyRecipes.SGSHELL_SNG, ammoGroup, res, 10, 60, ingredients);
+//
+//            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoShotgunShell.PACK_UUID));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoShotgunShell.SHELL_UUID))),
+//                                                 new RecipeEntryItem(1).put(Items.LEATHER)};
+//            registry.registerRecipe(TurretAssemblyRecipes.SGSHELL_MTP, ammoGroup, res, 5, 120, ingredients);
+//
+//            // REVOLVER BULLETS
+//            res = ItemRegistry.turret_ammo.getAmmoItem(6, AmmoRegistry.INSTANCE.getType(TurretAmmoBullet.BULLET_UUID));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(3).put("ingotIron"),
+//                                                 new RecipeEntryItem(1).put(Items.GUNPOWDER).put("dustGunpowder"),
+//                                                 new RecipeEntryItem(1).put("dustRedstone")};
+//            registry.registerRecipe(TurretAssemblyRecipes.BULLET_SNG, ammoGroup, res, 10, 60, ingredients);
+//
+//            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoBullet.PACK_UUID));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoBullet.BULLET_UUID))),
+//                                                 new RecipeEntryItem(1).put(Items.LEATHER)};
+//            registry.registerRecipe(TurretAssemblyRecipes.BULLET_MTP, ammoGroup, res, 5, 120, ingredients);
+//
+//            // CRYO CELLS
+//            res = ItemRegistry.turret_ammo.getAmmoItem(4, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK1_UUID));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("blockGlass"),
+//                                                 new RecipeEntryItem(1).put(Blocks.SNOW),
+//                                                 new RecipeEntryItem(1).put(Items.GUNPOWDER).put("dustGunpowder"),
+//                                                 new RecipeEntryItem(1).put("dustRedstone")};
+//            registry.registerRecipe(TurretAssemblyRecipes.CRYOCELL_1_SNG, ammoGroup, res, 10, 60, ingredients);
+//
+//            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.PACK_MK1_UUID));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK1_UUID))),
+//                                                 new RecipeEntryItem(1).put(Items.LEATHER)};
+//            registry.registerRecipe(TurretAssemblyRecipes.CRYOCELL_1_MTP, ammoGroup, res, 5, 120, ingredients);
+//
+//            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK2_UUID));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK1_UUID))),
+//                                                 new RecipeEntryItem(1).put(Blocks.SNOW)};
+//            registry.registerRecipe(TurretAssemblyRecipes.CRYOCELL_2_SNG, ammoGroup, res, 5, 40, ingredients);
+//
+//            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.PACK_MK2_UUID));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK2_UUID))),
+//                                                 new RecipeEntryItem(1).put(Items.LEATHER)};
+//            registry.registerRecipe(TurretAssemblyRecipes.CRYOCELL_2_MTP, ammoGroup, res, 5, 120, ingredients);
+//
+//            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK3_UUID));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK2_UUID))),
+//                                                 new RecipeEntryItem(1).put(Blocks.SNOW)};
+//            registry.registerRecipe(TurretAssemblyRecipes.CRYOCELL_3_SNG, ammoGroup, res, 5, 40, ingredients);
+//
+//            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.PACK_MK3_UUID));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK3_UUID))),
+//                                                 new RecipeEntryItem(1).put(Items.LEATHER)};
+//            registry.registerRecipe(TurretAssemblyRecipes.CRYOCELL_3_MTP, ammoGroup, res, 5, 120, ingredients);
+//
+//            // MINIGUN SHELLS
+//            res = ItemRegistry.turret_ammo.getAmmoItem(2, AmmoRegistry.INSTANCE.getType(TurretAmmoMinigunShell.SHELL_UUID));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("ingotIron"),
+//                                                 new RecipeEntryItem(2).put("seed*").put(Items.WHEAT_SEEDS).put(Items.MELON_SEEDS).put(Items.PUMPKIN_SEEDS),
+//                                                 new RecipeEntryItem(1).put(Items.GUNPOWDER).put("dustGunpowder"),
+//                                                 new RecipeEntryItem(1).put("dustRedstone")};
+//            registry.registerRecipe(TurretAssemblyRecipes.MGSHELL_SNG, ammoGroup, res, 10, 60, ingredients);
+//
+//            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoMinigunShell.PACK_UUID));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoMinigunShell.SHELL_UUID))),
+//                                                 new RecipeEntryItem(1).put(Items.IRON_INGOT)};
+//            registry.registerRecipe(TurretAssemblyRecipes.MGSHELL_MTP, ammoGroup, res, 5, 120, ingredients);
+//
+//            // FLUX CELLS
+//            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFluxCell.CELL_UUID));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("blockGlass"),
+//                                                 new RecipeEntryItem(1).put("ingotIron"),
+//                                                 new RecipeEntryItem(1).put("dustRedstone")};
+//            registry.registerRecipe(TurretAssemblyRecipes.FLUXCELL_SNG, ammoGroup, res, 10, 60, ingredients);
+//
+//            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFluxCell.PACK_UUID));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFluxCell.CELL_UUID))),
+//                                                 new RecipeEntryItem(1).put(Items.IRON_INGOT)};
+//            registry.registerRecipe(TurretAssemblyRecipes.FLUXCELL_MTP, ammoGroup, res, 5, 120, ingredients);
+//
+//            // FUEL TANKS
+//            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFireTank.TANK_UUID));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(Items.LAVA_BUCKET),
+//                                                 new RecipeEntryItem(1).put("dustRedstone"),
+//                                                 new RecipeEntryItem(1).put(Items.RABBIT_HIDE)};
+//            registry.registerRecipe(TurretAssemblyRecipes.FUELTANK_SNG, ammoGroup, res, 10, 60, ingredients);
+//
+//            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFireTank.PACK_UUID));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFireTank.TANK_UUID))),
+//                                                 new RecipeEntryItem(1).put(Items.IRON_INGOT)};
+//            registry.registerRecipe(TurretAssemblyRecipes.FUELTANK_MTP, ammoGroup, res, 5, 120, ingredients);
+//        }
+//        //endregion
+//
+//        //region repairkits
+//        {
+//            //noinspection ConstantConditions
+//            ItemStack healingPotion = PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM, 1), PotionType.getPotionTypeForName("healing"));
+//            //noinspection ConstantConditions
+//            ItemStack regenPotion = PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM, 1), PotionType.getPotionTypeForName("regeneration"));
+//
+//            res = ItemRegistry.repair_kit.getRepKitItem(3, RepairKits.STANDARD_MK1);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.LEATHER),
+//                                                 new RecipeEntryItem(1).put(healingPotion.copy()).drawTooltip()};
+//            registry.registerRecipe(TurretAssemblyRecipes.HEAL_MK1, repKitGroup, res, 25, 600, ingredients);
+//
+//            res = ItemRegistry.repair_kit.getRepKitItem(1, RepairKits.STANDARD_MK2);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.LEATHER),
+//                                                 new RecipeEntryItem(1).put(healingPotion.copy()).drawTooltip(),
+//                                                 new RecipeEntryItem(1).put(ItemRegistry.repair_kit.getRepKitItem(1, RepairKits.STANDARD_MK1))};
+//            registry.registerRecipe(TurretAssemblyRecipes.HEAL_MK2, repKitGroup, res, 25, 600, ingredients);
+//
+//            res = ItemRegistry.repair_kit.getRepKitItem(1, RepairKits.STANDARD_MK3);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.LEATHER),
+//                                                 new RecipeEntryItem(1).put(healingPotion.copy()).drawTooltip(),
+//                                                 new RecipeEntryItem(1).put(ItemRegistry.repair_kit.getRepKitItem(1, RepairKits.STANDARD_MK2))};
+//            registry.registerRecipe(TurretAssemblyRecipes.HEAL_MK3, repKitGroup, res, 25, 600, ingredients);
+//
+//            res = ItemRegistry.repair_kit.getRepKitItem(1, RepairKits.STANDARD_MK4);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.LEATHER),
+//                                                 new RecipeEntryItem(1).put(healingPotion.copy()).drawTooltip(),
+//                                                 new RecipeEntryItem(1).put(ItemRegistry.repair_kit.getRepKitItem(1, RepairKits.STANDARD_MK3))};
+//            registry.registerRecipe(TurretAssemblyRecipes.HEAL_MK4, repKitGroup, res, 25, 600, ingredients);
+//
+//            res = ItemRegistry.repair_kit.getRepKitItem(6, RepairKits.REGEN_MK1);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.LEATHER),
+//                                                 new RecipeEntryItem(1).put(regenPotion.copy()).drawTooltip()};
+//            registry.registerRecipe(TurretAssemblyRecipes.REGEN_MK1, repKitGroup, res, 25, 600, ingredients);
+//        }
+//        //endregion
+//
+//        //region upgrades
+//        {
+//            res = new ItemStack(ItemRegistry.assembly_upg_auto, 1);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("gemEmerald"),
+//                                                 new RecipeEntryItem(1).put("nuggetGold"),
+//                                                 new RecipeEntryItem(1).put(Items.COMPARATOR)};
+//            registry.registerRecipe(TurretAssemblyRecipes.UPG_AT_AUTO, upgradeGroup, res, 60, 300, ingredients);
+//
+//            res = new ItemStack(ItemRegistry.assembly_upg_filter, 1);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("gemEmerald"),
+//                                                 new RecipeEntryItem(1).put("nuggetGold"),
+//                                                 new RecipeEntryItem(1).put("dustRedstone"),
+//                                                 new RecipeEntryItem(1).put(Blocks.HOPPER)};
+//            registry.registerRecipe(TurretAssemblyRecipes.UPG_AT_FILTER, upgradeGroup, res, 60, 300, ingredients);
+//
+//            res = new ItemStack(ItemRegistry.assembly_upg_speed, 1);
+//            //noinspection ConstantConditions
+//            ItemStack speedPotion = PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM, 1), PotionType.getPotionTypeForName("swiftness"));
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("gemEmerald"),
+//                                                 new RecipeEntryItem(1).put("nuggetGold"),
+//                                                 new RecipeEntryItem(1).put("dustRedstone"),
+//                                                 new RecipeEntryItem(1).put(speedPotion).drawTooltip()};
+//            registry.registerRecipe(TurretAssemblyRecipes.UPG_AT_SPEED, upgradeGroup, res, 60, 300, ingredients);
+//
+//            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY);
+//            res.setCount(3);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("paneGlass"),
+//                                                 new RecipeEntryItem(2).put("dustRedstone"),
+//                                                 new RecipeEntryItem(1).put("ingotGold"),
+//                                                 new RecipeEntryItem(1).put(new ItemStack(Blocks.STONE_SLAB, 1, 0))};
+//            registry.registerRecipe(TurretAssemblyRecipes.UPG_EMPTY, upgradeGroup, res, 80, 400, ingredients);
+//
+//            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.HEALTH_I);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+//                                                 new RecipeEntryItem(8).put(Items.SPECKLED_MELON)};
+//            registry.registerRecipe(TurretAssemblyRecipes.UPG_HEALTH_MK1, upgradeGroup, res, 20, 600, ingredients);
+//
+//            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.HEALTH_II);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+//                                                 new RecipeEntryItem(8).put(Items.SPECKLED_MELON),
+//                                                 new RecipeEntryItem(1).put(Items.GOLDEN_APPLE)};
+//            registry.registerRecipe(TurretAssemblyRecipes.UPG_HEALTH_MK2, upgradeGroup, res, 20, 600, ingredients);
+//
+//            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.HEALTH_III);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+//                                                 new RecipeEntryItem(16).put(Items.SPECKLED_MELON),
+//                                                 new RecipeEntryItem(2).put(Items.GOLDEN_APPLE)};
+//            registry.registerRecipe(TurretAssemblyRecipes.UPG_HEALTH_MK3, upgradeGroup, res, 20, 600, ingredients);
+//
+//            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.HEALTH_IV);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+//                                                 new RecipeEntryItem(16).put(Items.SPECKLED_MELON),
+//                                                 new RecipeEntryItem(4).put(Items.GOLDEN_APPLE)};
+//            registry.registerRecipe(TurretAssemblyRecipes.UPG_HEALTH_MK4, upgradeGroup, res, 20, 600, ingredients);
+//
+//            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.UPG_STORAGE_I);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+//                                                 new RecipeEntryItem(1).put(Blocks.TRAPPED_CHEST)};
+//            registry.registerRecipe(TurretAssemblyRecipes.UPG_STORAGE_1, upgradeGroup, res, 20, 600, ingredients);
+//
+//            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.UPG_STORAGE_II);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+//                                                 new RecipeEntryItem(1).put(Blocks.TRAPPED_CHEST),
+//                                                 new RecipeEntryItem(1).put(Items.GOLD_INGOT)};
+//            registry.registerRecipe(TurretAssemblyRecipes.UPG_STORAGE_2, upgradeGroup, res, 20, 600, ingredients);
+//
+//            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.UPG_STORAGE_III);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+//                                                 new RecipeEntryItem(1).put(Blocks.TRAPPED_CHEST),
+//                                                 new RecipeEntryItem(1).put(Items.DIAMOND)};
+//            registry.registerRecipe(TurretAssemblyRecipes.UPG_STORAGE_3, upgradeGroup, res, 20, 600, ingredients);
+//
+//            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.RELOAD_I);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+//                                                 new RecipeEntryItem(1).put(Blocks.ICE)};
+//            registry.registerRecipe(TurretAssemblyRecipes.UPG_RELOAD_1, upgradeGroup, res, 20, 600, ingredients);
+//
+//            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.RELOAD_II);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+//                                                 new RecipeEntryItem(1).put(Blocks.PACKED_ICE)};
+//            registry.registerRecipe(TurretAssemblyRecipes.UPG_RELOAD_2, upgradeGroup, res, 20, 600, ingredients);
+//
+//            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.AMMO_STORAGE);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+//                                                 new RecipeEntryItem(1).put(Blocks.HOPPER)};
+//            registry.registerRecipe(TurretAssemblyRecipes.UPG_AMMO_STG, upgradeGroup, res, 20, 600, ingredients);
+//
+//            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.SMART_TGT);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+//                                                 new RecipeEntryItem(1).put(Items.SPIDER_EYE),
+//                                                 new RecipeEntryItem(1).put(Items.ENDER_PEARL)};
+//            registry.registerRecipe(TurretAssemblyRecipes.UPG_SMART_TGT, upgradeGroup, res, 20, 600, ingredients);
+//
+//            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.ECONOMY_I);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+//                                                 new RecipeEntryItem(1).put(Items.EMERALD)};
+//            registry.registerRecipe(TurretAssemblyRecipes.UPG_ECONOMY_I, upgradeGroup, res, 20, 600, ingredients);
+//
+//            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.ECONOMY_II);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+//                                                 new RecipeEntryItem(1).put(Blocks.GOLD_BLOCK)};
+//            registry.registerRecipe(TurretAssemblyRecipes.UPG_ECONOMY_II, upgradeGroup, res, 20, 600, ingredients);
+//
+//            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.ECONOMY_INF);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+//                                                 new RecipeEntryItem(1).put(new RecipeEntryItem.EnchantmentEntry(new ItemStack(Items.BOW), Enchantments.INFINITY)).drawTooltip()};
+//            registry.registerRecipe(TurretAssemblyRecipes.UPG_ECONOMY_INF, upgradeGroup, res, 20, 600, ingredients);
+//
+//            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.ENDER_MEDIUM);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+//                                                 new RecipeEntryItem(4).put(Items.ENDER_PEARL)};
+//            registry.registerRecipe(TurretAssemblyRecipes.UPG_ENDER_MEDIUM, upgradeGroup, res, 20, 600, ingredients);
+//
+//            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.FUEL_PURIFY);
+//            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
+//                                                 new RecipeEntryItem(1).put(Blocks.LAPIS_BLOCK),
+//                                                 new RecipeEntryItem(2).put(Items.MAGMA_CREAM)};
+//            registry.registerRecipe(TurretAssemblyRecipes.UPG_FUEL_PURIFY, upgradeGroup, res, 20, 600, ingredients);
+//        }
+//        //endregion
+//    }
 
-        ItemStack res;
-        RecipeEntryItem[] ingredients;
+    public static void initialize(final ITurretAssemblyRegistry registry) {
+        TmrConstants.LOG.log(Level.INFO, "Initializing Turret Assembly recipes...");
+        long prevTime = System.nanoTime();
 
-        //region misc
-        {
-            // TURRET INFO
-            res = new ItemStack(ItemRegistry.turret_info, 1);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(Items.BOOK)};
-            registry.registerRecipe(TurretAssemblyRecipes.TINFO, miscGroup, res, 7_500, 10, ingredients);
+//        IRecipeGroup miscGroup = registry.registerGroup("group0", new ItemStack(ItemRegistry.turret_control_unit));
+//        IRecipeGroup turretGroup = registry.registerGroup("group1", ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCrossbow.class)));
+//        IRecipeGroup ammoGroup = registry.registerGroup("group2", ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.QUIVER_UUID)));
+//        IRecipeGroup repKitGroup = registry.registerGroup("group3", ItemRegistry.repair_kit.getRepKitItem(1, RepairKitRegistry.INSTANCE.getType(RepairKits.STANDARD_MK1)));
+//        IRecipeGroup upgradeGroup = registry.registerGroup("group4", UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY));
 
-            // TURRET CONTROL UNIT
-            res = new ItemStack(ItemRegistry.turret_control_unit, 1);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(5).put("ingotIron"),
-                                                 new RecipeEntryItem(2).put(Items.REDSTONE),
-                                                 new RecipeEntryItem(1).put("paneGlass")};
-            registry.registerRecipe(TurretAssemblyRecipes.TCU, miscGroup, res, 10, 180, ingredients);
+        Loader.instance().getActiveModList().forEach(mod -> loadJsonRecipes(mod, registry));
+        long timeDelta = (System.nanoTime() - prevTime) / 1_000_000;
+        TmrConstants.LOG.log(Level.INFO, String.format("Initializing Turret Assembly recipes done in %d ms. Found %%d recipes.", timeDelta));
+    }
+
+    private static boolean loadJsonRecipes(ModContainer mod, final ITurretAssemblyRegistry registry) {
+        return MiscUtils.findFiles(mod, "assets/" + mod.getModId() + "/recipes_sapturretmod/assembly/",
+                                   root -> preProcessJson(root, registry),
+                                   (root, file) -> root.relativize(file).toString().startsWith("group_") || processJson(root, file, json -> registerJsonRecipes(json, registry)));
+    }
+
+    private static boolean preProcessJson(Path root, final ITurretAssemblyRegistry registry) {
+        if( Files.exists(root) ) {
+            try {
+                //Files.walk(root).forEach(file -> {
+                Files.find(root, Integer.MAX_VALUE, (filePth, attr) -> root.relativize(filePth).toString().startsWith("group_")).forEach(file -> {
+                    processJson(root, file, json -> registerJsonGroup(json, registry));
+                });
+            } catch( IOException ex ) {
+                TmrConstants.LOG.log(Level.ERROR, String.format("Couldn't read recipe group from irectory %s", root), ex);
+                return false;
+            }
         }
-        //endregion
 
-        //region turrets
-        {
-            // T1 - CROSSBOW
-            res = ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCrossbow.class));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(12).put("cobblestone"),
-                                                 new RecipeEntryItem(1).put(Items.BOW),
-                                                 new RecipeEntryItem(4).put("dustRedstone"),
-                                                 new RecipeEntryItem(4).put("plankWood")};
-            registry.registerRecipe(TurretAssemblyRecipes.TURRET_MK1_CB, turretGroup, res, 10, 100, ingredients);
+        return true;
+    }
 
-            // T1 - SHOTGUN
-            res = ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretShotgun.class));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(12).put("stone"),
-                                                 new RecipeEntryItem(2).put("ingotIron"),
-                                                 new RecipeEntryItem(4).put("dustRedstone"),
-                                                 new RecipeEntryItem(1).put("logWood")};
-            registry.registerRecipe(TurretAssemblyRecipes.TURRET_MK1_SG, turretGroup, res, 10, 100, ingredients);
-
-            // TS - CRYOLATOR
-            res = ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretCryolator.class));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(12).put(Blocks.SNOW),
-                                                 new RecipeEntryItem(1).put(Items.BOW),
-                                                 new RecipeEntryItem(4).put("dustRedstone"),
-                                                 new RecipeEntryItem(4).put("plankWood"),
-                                                 new RecipeEntryItem(2).put(Blocks.ICE)};
-            registry.registerRecipe(TurretAssemblyRecipes.TURRET_MK1_CL, turretGroup, res, 10, 100, ingredients);
-
-            // T2 - REVOLVER
-            res = ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretRevolver.class));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("blockIron"),
-                                                 new RecipeEntryItem(1).put("ingotGold"),
-                                                 new RecipeEntryItem(4).put("dustRedstone"),
-                                                 new RecipeEntryItem(2).put(Blocks.STONEBRICK),
-                                                 new RecipeEntryItem(4).put(new ItemStack(Blocks.STONE_SLAB, 1, 0))};
-            registry.registerRecipe(TurretAssemblyRecipes.TURRET_MK2_RV, turretGroup, res, 15, 100, ingredients);
-
-            // T2 - MINIGUN
-            res = ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretMinigun.class));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("blockIron"),
-                                                 new RecipeEntryItem(4).put("ingotGold"),
-                                                 new RecipeEntryItem(4).put("dustRedstone"),
-                                                 new RecipeEntryItem(2).put(Blocks.STONEBRICK),
-                                                 new RecipeEntryItem(4).put(new ItemStack(Blocks.STONE_SLAB, 1, 0))};
-            registry.registerRecipe(TurretAssemblyRecipes.TURRET_MK2_MG, turretGroup, res, 15, 100, ingredients);
-
-            // T3 - LASER
-            res = ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretLaser.class));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put("obsidian"),
-                                                 new RecipeEntryItem(1).put("blockRedstone"),
-                                                 new RecipeEntryItem(1).put("blockIron"),
-                                                 new RecipeEntryItem(2).put("ingotGold"),
-                                                 new RecipeEntryItem(1).put("gemDiamond")};
-            registry.registerRecipe(TurretAssemblyRecipes.TURRET_MK3_LR, turretGroup, res, 20, 100, ingredients);
-
-            // T3 - FLAMETHROWER
-            res = ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(EntityTurretFlamethrower.class));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put("obsidian"),
-                                                 new RecipeEntryItem(1).put("blockRedstone"),
-                                                 new RecipeEntryItem(1).put("blockIron"),
-                                                 new RecipeEntryItem(4).put("ingotGold"),
-                                                 new RecipeEntryItem(1).put("blockQuartz")};
-            registry.registerRecipe(TurretAssemblyRecipes.TURRET_MK3_FT, turretGroup, res, 20, 100, ingredients);
+    private static boolean processJson(Path root, Path file, Ex2Function<JsonObject, Boolean, JsonParseException, IOException> callback) {
+        if( !"json".equals(FilenameUtils.getExtension(file.toString())) || root.relativize(file).toString().startsWith("_") ) {
+            return true;
         }
-        //endregion
 
-        //region ammo
-        {
-            // ARROWS
-            res = ItemRegistry.turret_ammo.getAmmoItem(4, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.ARROW_UUID));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(Items.ARROW)};
-            registry.registerRecipe(TurretAssemblyRecipes.ARROW_SNG, ammoGroup, res, 5, 60, ingredients);
+        try( BufferedReader reader = Files.newBufferedReader(file) ) {
+            JsonObject json = JsonUtils.fromJson(reader, JsonObject.class);
 
-            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.QUIVER_UUID));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoArrow.ARROW_UUID))),
-                                                 new RecipeEntryItem(1).put(Items.LEATHER)};
-            registry.registerRecipe(TurretAssemblyRecipes.ARROW_MTP, ammoGroup, res, 5, 120, ingredients);
+            if( json == null || json.isJsonNull() ) {
+                throw new JsonSyntaxException("Json cannot be null");
+            }
 
-            // SHOTGUN SHELLS
-            res = ItemRegistry.turret_ammo.getAmmoItem(12, AmmoRegistry.INSTANCE.getType(TurretAmmoShotgunShell.SHELL_UUID));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put("ingotIron"),
-                                                 new RecipeEntryItem(1).put(Blocks.GRAVEL),
-                                                 new RecipeEntryItem(1).put(Items.GUNPOWDER).put("dustGunpowder"),
-                                                 new RecipeEntryItem(1).put("dustRedstone")};
-            registry.registerRecipe(TurretAssemblyRecipes.SGSHELL_SNG, ammoGroup, res, 10, 60, ingredients);
+            callback.apply(json);
 
-            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoShotgunShell.PACK_UUID));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoShotgunShell.SHELL_UUID))),
-                                                 new RecipeEntryItem(1).put(Items.LEATHER)};
-            registry.registerRecipe(TurretAssemblyRecipes.SGSHELL_MTP, ammoGroup, res, 5, 120, ingredients);
-
-            // REVOLVER BULLETS
-            res = ItemRegistry.turret_ammo.getAmmoItem(6, AmmoRegistry.INSTANCE.getType(TurretAmmoBullet.BULLET_UUID));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(3).put("ingotIron"),
-                                                 new RecipeEntryItem(1).put(Items.GUNPOWDER).put("dustGunpowder"),
-                                                 new RecipeEntryItem(1).put("dustRedstone")};
-            registry.registerRecipe(TurretAssemblyRecipes.BULLET_SNG, ammoGroup, res, 10, 60, ingredients);
-
-            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoBullet.PACK_UUID));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoBullet.BULLET_UUID))),
-                                                 new RecipeEntryItem(1).put(Items.LEATHER)};
-            registry.registerRecipe(TurretAssemblyRecipes.BULLET_MTP, ammoGroup, res, 5, 120, ingredients);
-
-            // CRYO CELLS
-            res = ItemRegistry.turret_ammo.getAmmoItem(4, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK1_UUID));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("blockGlass"),
-                                                 new RecipeEntryItem(1).put(Blocks.SNOW),
-                                                 new RecipeEntryItem(1).put(Items.GUNPOWDER).put("dustGunpowder"),
-                                                 new RecipeEntryItem(1).put("dustRedstone")};
-            registry.registerRecipe(TurretAssemblyRecipes.CRYOCELL_1_SNG, ammoGroup, res, 10, 60, ingredients);
-
-            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.PACK_MK1_UUID));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK1_UUID))),
-                                                 new RecipeEntryItem(1).put(Items.LEATHER)};
-            registry.registerRecipe(TurretAssemblyRecipes.CRYOCELL_1_MTP, ammoGroup, res, 5, 120, ingredients);
-
-            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK2_UUID));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK1_UUID))),
-                                                 new RecipeEntryItem(1).put(Blocks.SNOW)};
-            registry.registerRecipe(TurretAssemblyRecipes.CRYOCELL_2_SNG, ammoGroup, res, 5, 40, ingredients);
-
-            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.PACK_MK2_UUID));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK2_UUID))),
-                                                 new RecipeEntryItem(1).put(Items.LEATHER)};
-            registry.registerRecipe(TurretAssemblyRecipes.CRYOCELL_2_MTP, ammoGroup, res, 5, 120, ingredients);
-
-            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK3_UUID));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK2_UUID))),
-                                                 new RecipeEntryItem(1).put(Blocks.SNOW)};
-            registry.registerRecipe(TurretAssemblyRecipes.CRYOCELL_3_SNG, ammoGroup, res, 5, 40, ingredients);
-
-            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.PACK_MK3_UUID));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoCryoCell.CELL_MK3_UUID))),
-                                                 new RecipeEntryItem(1).put(Items.LEATHER)};
-            registry.registerRecipe(TurretAssemblyRecipes.CRYOCELL_3_MTP, ammoGroup, res, 5, 120, ingredients);
-
-            // MINIGUN SHELLS
-            res = ItemRegistry.turret_ammo.getAmmoItem(2, AmmoRegistry.INSTANCE.getType(TurretAmmoMinigunShell.SHELL_UUID));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("ingotIron"),
-                                                 new RecipeEntryItem(2).put("seed*").put(Items.WHEAT_SEEDS).put(Items.MELON_SEEDS).put(Items.PUMPKIN_SEEDS),
-                                                 new RecipeEntryItem(1).put(Items.GUNPOWDER).put("dustGunpowder"),
-                                                 new RecipeEntryItem(1).put("dustRedstone")};
-            registry.registerRecipe(TurretAssemblyRecipes.MGSHELL_SNG, ammoGroup, res, 10, 60, ingredients);
-
-            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoMinigunShell.PACK_UUID));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoMinigunShell.SHELL_UUID))),
-                                                 new RecipeEntryItem(1).put(Items.IRON_INGOT)};
-            registry.registerRecipe(TurretAssemblyRecipes.MGSHELL_MTP, ammoGroup, res, 5, 120, ingredients);
-
-            // FLUX CELLS
-            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFluxCell.CELL_UUID));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("blockGlass"),
-                                                 new RecipeEntryItem(1).put("ingotIron"),
-                                                 new RecipeEntryItem(1).put("dustRedstone")};
-            registry.registerRecipe(TurretAssemblyRecipes.FLUXCELL_SNG, ammoGroup, res, 10, 60, ingredients);
-
-            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFluxCell.PACK_UUID));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFluxCell.CELL_UUID))),
-                                                 new RecipeEntryItem(1).put(Items.IRON_INGOT)};
-            registry.registerRecipe(TurretAssemblyRecipes.FLUXCELL_MTP, ammoGroup, res, 5, 120, ingredients);
-
-            // FUEL TANKS
-            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFireTank.TANK_UUID));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(Items.LAVA_BUCKET),
-                                                 new RecipeEntryItem(1).put("dustRedstone"),
-                                                 new RecipeEntryItem(1).put(Items.RABBIT_HIDE)};
-            registry.registerRecipe(TurretAssemblyRecipes.FUELTANK_SNG, ammoGroup, res, 10, 60, ingredients);
-
-            res = ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFireTank.PACK_UUID));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(16).put(ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TurretAmmoFireTank.TANK_UUID))),
-                                                 new RecipeEntryItem(1).put(Items.IRON_INGOT)};
-            registry.registerRecipe(TurretAssemblyRecipes.FUELTANK_MTP, ammoGroup, res, 5, 120, ingredients);
+            return true;
+        } catch( JsonParseException e ) {
+            TmrConstants.LOG.log(Level.ERROR, String.format("Parsing error loading electrolyte generator recipe from %s", file), e);
+            return false;
+        } catch( IOException e ) {
+            TmrConstants.LOG.log(Level.ERROR, String.format("Couldn't read recipe from %s", file), e);
+            return false;
         }
-        //endregion
+    }
 
-        //region repairkits
-        {
-            //noinspection ConstantConditions
-            ItemStack healingPotion = PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM, 1), PotionType.getPotionTypeForName("healing"));
-            //noinspection ConstantConditions
-            ItemStack regenPotion = PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM, 1), PotionType.getPotionTypeForName("regeneration"));
+    private static boolean registerJsonGroup(JsonObject json, final ITurretAssemblyRegistry registry) throws JsonParseException, IOException {
+        String groupName = JsonUtils.getStringVal(json.get("name"));
+        ItemStack groupIcon = JsonUtils.getItemStack(json.get("item"));
 
-            res = ItemRegistry.repair_kit.getRepKitItem(3, RepairKits.STANDARD_MK1);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.LEATHER),
-                                                 new RecipeEntryItem(1).put(healingPotion.copy()).drawTooltip()};
-            registry.registerRecipe(TurretAssemblyRecipes.HEAL_MK1, repKitGroup, res, 25, 600, ingredients);
+        registry.registerGroup(groupName, groupIcon);
 
-            res = ItemRegistry.repair_kit.getRepKitItem(1, RepairKits.STANDARD_MK2);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.LEATHER),
-                                                 new RecipeEntryItem(1).put(healingPotion.copy()).drawTooltip(),
-                                                 new RecipeEntryItem(1).put(ItemRegistry.repair_kit.getRepKitItem(1, RepairKits.STANDARD_MK1))};
-            registry.registerRecipe(TurretAssemblyRecipes.HEAL_MK2, repKitGroup, res, 25, 600, ingredients);
+        return true;
+    }
 
-            res = ItemRegistry.repair_kit.getRepKitItem(1, RepairKits.STANDARD_MK3);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.LEATHER),
-                                                 new RecipeEntryItem(1).put(healingPotion.copy()).drawTooltip(),
-                                                 new RecipeEntryItem(1).put(ItemRegistry.repair_kit.getRepKitItem(1, RepairKits.STANDARD_MK2))};
-            registry.registerRecipe(TurretAssemblyRecipes.HEAL_MK3, repKitGroup, res, 25, 600, ingredients);
+    private static boolean registerJsonRecipes(JsonObject json, final ITurretAssemblyRegistry registry) throws JsonParseException, IOException {
+        String id = JsonUtils.getStringVal(json.get("id"));
+        String group = JsonUtils.getStringVal(json.get("group"));
+        int fluxPerTick = JsonUtils.getIntVal(json.get("fluxPerTick"));
+        int ticksProcessing = JsonUtils.getIntVal(json.get("ticksProcessing"));
+        ItemStack result = JsonUtils.getItemStack(json.get("result"));
 
-            res = ItemRegistry.repair_kit.getRepKitItem(1, RepairKits.STANDARD_MK4);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.LEATHER),
-                                                 new RecipeEntryItem(1).put(healingPotion.copy()).drawTooltip(),
-                                                 new RecipeEntryItem(1).put(ItemRegistry.repair_kit.getRepKitItem(1, RepairKits.STANDARD_MK3))};
-            registry.registerRecipe(TurretAssemblyRecipes.HEAL_MK4, repKitGroup, res, 25, 600, ingredients);
-
-            res = ItemRegistry.repair_kit.getRepKitItem(6, RepairKits.REGEN_MK1);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(2).put(Items.LEATHER),
-                                                 new RecipeEntryItem(1).put(regenPotion.copy()).drawTooltip()};
-            registry.registerRecipe(TurretAssemblyRecipes.REGEN_MK1, repKitGroup, res, 25, 600, ingredients);
+        JsonElement ingredients = json.get("ingredients");
+        if( !ingredients.isJsonArray() ) {
+            throw new JsonSyntaxException("Ingredients must be an array");
         }
-        //endregion
+        List<IRecipeEntry> entries = new ArrayList<>();
+        ingredients.getAsJsonArray().forEach(elem -> {
+            if( elem != null && elem.isJsonObject() ) {
+                JsonObject elemObj = elem.getAsJsonObject();
+                int count = JsonUtils.getIntVal(elemObj.get("count"));
+                boolean showTooltipText = JsonUtils.getBoolVal(elemObj.get("showTooltipText"), false);
+                NonNullList<ItemStack> items = JsonUtils.getItemStacks(elemObj.get("items"));
 
-        //region upgrades
-        {
-            res = new ItemStack(ItemRegistry.assembly_upg_auto, 1);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("gemEmerald"),
-                                                 new RecipeEntryItem(1).put("nuggetGold"),
-                                                 new RecipeEntryItem(1).put(Items.COMPARATOR)};
-            registry.registerRecipe(TurretAssemblyRecipes.UPG_AT_AUTO, upgradeGroup, res, 60, 300, ingredients);
+                int sz = items.size();
+                if( sz > 0 ) {
+                    IRecipeEntry entry = new RecipeEntryItem(count).put(items.toArray(new ItemStack[sz]));
+                    if( showTooltipText ) {
+                        entry.drawTooltip();
+                    }
 
-            res = new ItemStack(ItemRegistry.assembly_upg_filter, 1);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("gemEmerald"),
-                                                 new RecipeEntryItem(1).put("nuggetGold"),
-                                                 new RecipeEntryItem(1).put("dustRedstone"),
-                                                 new RecipeEntryItem(1).put(Blocks.HOPPER)};
-            registry.registerRecipe(TurretAssemblyRecipes.UPG_AT_FILTER, upgradeGroup, res, 60, 300, ingredients);
+                    entries.add(entry);
+                }
+            }
+        });
 
-            res = new ItemStack(ItemRegistry.assembly_upg_speed, 1);
-            //noinspection ConstantConditions
-            ItemStack speedPotion = PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM, 1), PotionType.getPotionTypeForName("swiftness"));
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("gemEmerald"),
-                                                 new RecipeEntryItem(1).put("nuggetGold"),
-                                                 new RecipeEntryItem(1).put("dustRedstone"),
-                                                 new RecipeEntryItem(1).put(speedPotion).drawTooltip()};
-            registry.registerRecipe(TurretAssemblyRecipes.UPG_AT_SPEED, upgradeGroup, res, 60, 300, ingredients);
-
-            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY);
-            res.setCount(3);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put("paneGlass"),
-                                                 new RecipeEntryItem(2).put("dustRedstone"),
-                                                 new RecipeEntryItem(1).put("ingotGold"),
-                                                 new RecipeEntryItem(1).put(new ItemStack(Blocks.STONE_SLAB, 1, 0))};
-            registry.registerRecipe(TurretAssemblyRecipes.UPG_EMPTY, upgradeGroup, res, 80, 400, ingredients);
-
-            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.HEALTH_I);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
-                                                 new RecipeEntryItem(8).put(Items.SPECKLED_MELON)};
-            registry.registerRecipe(TurretAssemblyRecipes.UPG_HEALTH_MK1, upgradeGroup, res, 20, 600, ingredients);
-
-            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.HEALTH_II);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
-                                                 new RecipeEntryItem(8).put(Items.SPECKLED_MELON),
-                                                 new RecipeEntryItem(1).put(Items.GOLDEN_APPLE)};
-            registry.registerRecipe(TurretAssemblyRecipes.UPG_HEALTH_MK2, upgradeGroup, res, 20, 600, ingredients);
-
-            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.HEALTH_III);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
-                                                 new RecipeEntryItem(16).put(Items.SPECKLED_MELON),
-                                                 new RecipeEntryItem(2).put(Items.GOLDEN_APPLE)};
-            registry.registerRecipe(TurretAssemblyRecipes.UPG_HEALTH_MK3, upgradeGroup, res, 20, 600, ingredients);
-
-            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.HEALTH_IV);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
-                                                 new RecipeEntryItem(16).put(Items.SPECKLED_MELON),
-                                                 new RecipeEntryItem(4).put(Items.GOLDEN_APPLE)};
-            registry.registerRecipe(TurretAssemblyRecipes.UPG_HEALTH_MK4, upgradeGroup, res, 20, 600, ingredients);
-
-            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.UPG_STORAGE_I);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
-                                                 new RecipeEntryItem(1).put(Blocks.TRAPPED_CHEST)};
-            registry.registerRecipe(TurretAssemblyRecipes.UPG_STORAGE_1, upgradeGroup, res, 20, 600, ingredients);
-
-            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.UPG_STORAGE_II);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
-                                                 new RecipeEntryItem(1).put(Blocks.TRAPPED_CHEST),
-                                                 new RecipeEntryItem(1).put(Items.GOLD_INGOT)};
-            registry.registerRecipe(TurretAssemblyRecipes.UPG_STORAGE_2, upgradeGroup, res, 20, 600, ingredients);
-
-            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.UPG_STORAGE_III);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
-                                                 new RecipeEntryItem(1).put(Blocks.TRAPPED_CHEST),
-                                                 new RecipeEntryItem(1).put(Items.DIAMOND)};
-            registry.registerRecipe(TurretAssemblyRecipes.UPG_STORAGE_3, upgradeGroup, res, 20, 600, ingredients);
-
-            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.RELOAD_I);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
-                                                 new RecipeEntryItem(1).put(Blocks.ICE)};
-            registry.registerRecipe(TurretAssemblyRecipes.UPG_RELOAD_1, upgradeGroup, res, 20, 600, ingredients);
-
-            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.RELOAD_II);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
-                                                 new RecipeEntryItem(1).put(Blocks.PACKED_ICE)};
-            registry.registerRecipe(TurretAssemblyRecipes.UPG_RELOAD_2, upgradeGroup, res, 20, 600, ingredients);
-
-            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.AMMO_STORAGE);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
-                                                 new RecipeEntryItem(1).put(Blocks.HOPPER)};
-            registry.registerRecipe(TurretAssemblyRecipes.UPG_AMMO_STG, upgradeGroup, res, 20, 600, ingredients);
-
-            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.SMART_TGT);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
-                                                 new RecipeEntryItem(1).put(Items.SPIDER_EYE),
-                                                 new RecipeEntryItem(1).put(Items.ENDER_PEARL)};
-            registry.registerRecipe(TurretAssemblyRecipes.UPG_SMART_TGT, upgradeGroup, res, 20, 600, ingredients);
-
-            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.ECONOMY_I);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
-                                                 new RecipeEntryItem(1).put(Items.EMERALD)};
-            registry.registerRecipe(TurretAssemblyRecipes.UPG_ECONOMY_I, upgradeGroup, res, 20, 600, ingredients);
-
-            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.ECONOMY_II);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
-                                                 new RecipeEntryItem(1).put(Blocks.GOLD_BLOCK)};
-            registry.registerRecipe(TurretAssemblyRecipes.UPG_ECONOMY_II, upgradeGroup, res, 20, 600, ingredients);
-
-            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.ECONOMY_INF);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
-                                                 new RecipeEntryItem(1).put(new RecipeEntryItem.EnchantmentEntry(new ItemStack(Items.BOW), Enchantments.INFINITY)).drawTooltip()};
-            registry.registerRecipe(TurretAssemblyRecipes.UPG_ECONOMY_INF, upgradeGroup, res, 20, 600, ingredients);
-
-            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.ENDER_MEDIUM);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
-                                                 new RecipeEntryItem(4).put(Items.ENDER_PEARL)};
-            registry.registerRecipe(TurretAssemblyRecipes.UPG_ENDER_MEDIUM, upgradeGroup, res, 20, 600, ingredients);
-
-            res = UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.FUEL_PURIFY);
-            ingredients = new RecipeEntryItem[] {new RecipeEntryItem(1).put(UpgradeRegistry.INSTANCE.getUpgradeItem(UpgradeRegistry.EMPTY)).drawTooltip(),
-                                                 new RecipeEntryItem(1).put(Blocks.LAPIS_BLOCK),
-                                                 new RecipeEntryItem(2).put(Items.MAGMA_CREAM)};
-            registry.registerRecipe(TurretAssemblyRecipes.UPG_FUEL_PURIFY, upgradeGroup, res, 20, 600, ingredients);
-        }
-        //endregion
+        return registry.registerRecipe(UUID.fromString(id), registry.getGroup(group), result, fluxPerTick, ticksProcessing,
+                                       entries.toArray(new IRecipeEntry[entries.size()]));
     }
 }

@@ -11,10 +11,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.JsonUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
@@ -48,7 +49,7 @@ public class ElectrolyteHelper
     }
 
     private static boolean loadJsonRecipes(ModContainer mod) {
-        return TmrUtils.findFiles(mod, "assets/" + mod.getModId() + "/recipes_sapturretmod/electrolytegen/", null, ElectrolyteHelper::processJson);
+        return MiscUtils.findFiles(mod, "assets/" + mod.getModId() + "/recipes_sapturretmod/electrolytegen/", null, ElectrolyteHelper::processJson);
     }
 
     private static boolean processJson(Path root, Path file) {
@@ -57,25 +58,25 @@ public class ElectrolyteHelper
         }
 
         try( BufferedReader reader = Files.newBufferedReader(file) ) {
-            JsonObject json = JsonUtils.fromJson(TmrUtils.GSON, reader, JsonObject.class);
+            JsonObject json = JsonUtils.fromJson(reader, JsonObject.class);
 
             if( json == null || json.isJsonNull() ) {
                 throw new JsonSyntaxException("Json cannot be null");
             }
 
-            NonNullList<ItemStack> inputItems = TmrUtils.getItemStacks(json.get("electrolytes"), true);
-            float effectiveness = TmrUtils.getFloatVal(json.get("effectiveness"));
-            int ticksProcessing = TmrUtils.getIntVal(json.get("timeProcessing"));
+            NonNullList<ItemStack> inputItems = JsonUtils.getItemStacks(json.get("electrolytes"));
+            float effectiveness = JsonUtils.getFloatVal(json.get("effectiveness"));
+            int ticksProcessing = JsonUtils.getIntVal(json.get("timeProcessing"));
             ItemStack trash = ItemStack.EMPTY;
             ItemStack treasure = ItemStack.EMPTY;
 
             JsonElement elem = json.get("trash");
             if( elem != null && !elem.isJsonNull() ) {
-                trash = TmrUtils.getItemStacks(elem, false).get(0);
+                trash = JsonUtils.getItemStack(elem);
             }
             elem = json.get("treasure");
             if( elem != null && !elem.isJsonNull() ) {
-                treasure = TmrUtils.getItemStacks(elem, false).get(0);
+                treasure = JsonUtils.getItemStack(elem);
             }
 
             registerFuels(inputItems, effectiveness, ticksProcessing, trash, treasure);

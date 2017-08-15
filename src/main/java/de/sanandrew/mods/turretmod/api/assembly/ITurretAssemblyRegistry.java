@@ -16,4 +16,6 @@ public interface ITurretAssemblyRegistry
     boolean registerRecipe(UUID uuid, IRecipeGroup group, @Nonnull ItemStack result, int fluxPerTick, int ticksProcessing, IRecipeEntry... resources);
 
     IRecipeGroup registerGroup(String name, @Nonnull ItemStack stack);
+
+    IRecipeGroup getGroup(String name);
 }

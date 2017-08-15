@@ -58,7 +58,6 @@ public class TmrUtils
         implements ITmrUtils
 {
     public static final TmrUtils INSTANCE = new TmrUtils();
-    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
     @Override
     public ITargetProcessor getNewTargetProcInstance(EntityTurret turret) {
@@ -117,135 +116,7 @@ public class TmrUtils
         return ItemStackUtils.isValid(stack);
     }
 
-    public static boolean findFiles(ModContainer mod, String base, Function<Path, Boolean> preprocessor, BiFunction<Path, Path, Boolean> processor) {
-        File source = mod.getSource();
 
-        if( source.isFile() ) {
-            try( FileSystem fs = FileSystems.newFileSystem(source.toPath(), null) ) {
-                return findFilesIntrn(fs.getPath('/' + base), mod, preprocessor, processor);
-            } catch( IOException e ) {
-                TmrConstants.LOG.log(Level.ERROR, "Error loading FileSystem from jar: ", e);
-                return false;
-            }
-        } else if( source.isDirectory() ) {
-            return findFilesIntrn(source.toPath().resolve(base), mod, preprocessor, processor);
-        }
 
-        return false;
-    }
 
-    private static boolean findFilesIntrn(Path root, ModContainer mod, Function<Path, Boolean> preprocessor, BiFunction<Path, Path, Boolean> processor) {
-        if( root == null || !Files.exists(root) ) {
-            return false;
-        }
-
-        if( preprocessor != null && !MiscUtils.defIfNull(preprocessor.apply(root), false) ) {
-            return false;
-        }
-
-        if( processor != null ) {
-            Iterator<Path> itr;
-            try {
-                itr = Files.walk(root).iterator();
-            } catch( IOException e ) {
-                TmrConstants.LOG.log(Level.ERROR, String.format("Error iterating filesystem for: %s", mod.getModId()), e);
-                return false;
-            }
-
-            while( itr != null && itr.hasNext() ) {
-                if( !MiscUtils.defIfNull(processor.apply(root, itr.next()), false) ) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    public static float getFloatVal(JsonElement json) {
-        if( json == null || json.isJsonNull() ) {
-            throw new JsonSyntaxException("Json cannot be null");
-        }
-
-        if( !json.isJsonPrimitive() ) {
-            throw new JsonSyntaxException("Expected value to be a floating point number");
-        }
-
-        return json.getAsFloat();
-    }
-
-    public static int getIntVal(JsonElement json) {
-        if( json == null || json.isJsonNull() ) {
-            throw new JsonSyntaxException("Json cannot be null");
-        }
-
-        if( !json.isJsonPrimitive() ) {
-            throw new JsonSyntaxException("Expected value to be an Integer");
-        }
-
-        return json.getAsInt();
-    }
-
-    public static NonNullList<ItemStack> getItemStacks(JsonElement json, boolean allowMultiple) {
-        if( json == null || json.isJsonNull() ) {
-            throw new JsonSyntaxException("Json cannot be null");
-        }
-
-        if( json.isJsonArray() ) {
-            if( allowMultiple ) {
-                NonNullList<ItemStack> stacks = NonNullList.create();
-
-                json.getAsJsonArray().forEach(elem -> stacks.addAll(getItemStacks(elem, true)));
-
-                return stacks;
-            } else {
-                throw new JsonSyntaxException("Expected stack to be an object, not an array");
-            }
-        }
-
-        if( !json.isJsonObject() ) {
-            throw new JsonSyntaxException("Expcted stack to be an object or array of objects");
-        }
-
-        JsonObject jsonObj = (JsonObject) json;
-        String itemName = JsonUtils.getString(jsonObj, "item");
-        Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemName));
-
-        if( item == null ) {
-            throw new JsonParseException(String.format("Unknown item '%s'", itemName));
-        }
-
-        if( item.getHasSubtypes() && !jsonObj.has("data") ) {
-            throw new JsonParseException(String.format("Missing data for item '%s'", itemName));
-        }
-
-        ItemStack stack;
-        if( jsonObj.has("nbt") ) {
-            try {
-                NBTTagCompound nbt = JsonToNBT.getTagFromJson(GSON.toJson(jsonObj.get("nbt")));
-                NBTTagCompound tmp = new NBTTagCompound();
-                if( nbt.hasKey("ForgeCaps") ) {
-                    tmp.setTag("ForgeCaps", nbt.getTag("ForgeCaps"));
-                    nbt.removeTag("ForgeCaps");
-                }
-
-                tmp.setTag("tag", nbt);
-                tmp.setString("id", itemName);
-                tmp.setInteger("Count", JsonUtils.getInt(jsonObj, "count", 1));
-                tmp.setInteger("Damage", JsonUtils.getInt(jsonObj, "data", 0));
-
-                stack = new ItemStack(tmp);
-            } catch( NBTException e ) {
-                throw new JsonParseException("Invalid NBT Entry: " + e.toString());
-            }
-        } else {
-            stack = new ItemStack(item, JsonUtils.getInt(jsonObj, "count", 1), JsonUtils.getInt(jsonObj, "data", 0));
-        }
-
-        if( !ItemStackUtils.isValid(stack) ) {
-            throw new JsonParseException("Invalid Item: " + stack.toString());
-        }
-
-        return NonNullList.from(ItemStack.EMPTY, stack);
-    }
 }

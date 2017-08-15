@@ -36,7 +36,6 @@ public class RecipeEntryItem
     public int stackSize;
     public ItemStack[] normalAlternatives;
     public String[] oreDictAlternatives;
-    public List<IEnchantmentEntry> enchAlternatives;
     private boolean drawTooltip;
 
     private WeakReference<ItemStack[]> cachedEntryStacks;
@@ -46,15 +45,13 @@ public class RecipeEntryItem
         this.drawTooltip = false;
         this.normalAlternatives = new ItemStack[0];
         this.oreDictAlternatives = new String[0];
-        this.enchAlternatives = new ArrayList<>();
     }
 
-    private RecipeEntryItem(int count, ItemStack[] normalAlternatives, String[] oreDictAlternatives, List<IEnchantmentEntry> enchAlternatives) {
+    private RecipeEntryItem(int count, ItemStack[] normalAlternatives, String[] oreDictAlternatives) {
         this.stackSize = count;
         this.drawTooltip = false;
         this.normalAlternatives = normalAlternatives;
         this.oreDictAlternatives = oreDictAlternatives;
-        this.enchAlternatives = enchAlternatives;
     }
 
     @Override
@@ -117,13 +114,6 @@ public class RecipeEntryItem
     }
 
     @Override
-    public final RecipeEntryItem put(IEnchantmentEntry... enchItems) {
-        this.enchAlternatives.addAll(Arrays.asList(enchItems));
-
-        return this;
-    }
-
-    @Override
     public RecipeEntryItem drawTooltip() {
         this.drawTooltip = true;
         return this;
@@ -141,7 +131,7 @@ public class RecipeEntryItem
             stacksToCopy[i] = this.normalAlternatives[i].copy();
         }
 
-        return new RecipeEntryItem(this.stackSize, stacksToCopy, this.oreDictAlternatives.clone(), new ArrayList<>(this.enchAlternatives));
+        return new RecipeEntryItem(this.stackSize, stacksToCopy, this.oreDictAlternatives.clone());
     }
 
     @Override
@@ -151,7 +141,7 @@ public class RecipeEntryItem
         }
 
         for( ItemStack nrmStack : this.normalAlternatives ) {
-            if( ItemStackUtils.areEqual(nrmStack, stack) ) {
+            if( ItemStackUtils.areEqualNbtFit(nrmStack, stack, false, true) ) {
                 return true;
             }
         }
@@ -160,12 +150,6 @@ public class RecipeEntryItem
         for( int oreId : stackOreIds ) {
             String oreIdName = OreDictionary.getOreName(oreId);
             if( ArrayUtils.contains(this.oreDictAlternatives, oreIdName) ) {
-                return true;
-            }
-        }
-
-        for( IEnchantmentEntry enchItem : this.enchAlternatives ) {
-            if( stack.isItemEnchanted() && ItemStackUtils.areEqual(enchItem.stack(), stack, false) && EnchantmentHelper.getEnchantmentLevel(enchItem.enchantment(), stack) > 0 ) {
                 return true;
             }
         }
@@ -195,12 +179,6 @@ public class RecipeEntryItem
                         stacks.add(stack);
                     }
                 });
-            }
-
-            for( IEnchantmentEntry enchItem : this.enchAlternatives ) {
-                ItemStack newStack = enchItem.stack().copy();
-                EnchantmentHelper.setEnchantments(Collections.singletonMap(enchItem.enchantment(), 1), newStack);
-                stacks.add(newStack);
             }
 
             for( ItemStack stack : stacks ) {
@@ -234,25 +212,5 @@ public class RecipeEntryItem
         assert amount <= 0 : "Amount must be greater than 0!";
         assert this.stackSize - amount < 0 : "Item count cannot become less than 0!";
         this.stackSize -= amount;
-    }
-
-    public static final class EnchantmentEntry
-            extends Tuple
-            implements IEnchantmentEntry
-    {
-        private static final long serialVersionUID = 2146846913523392590L;
-
-        public EnchantmentEntry(@Nonnull ItemStack stack, Enchantment enchantment) {
-            super(stack, enchantment);
-        }
-
-        @Nonnull
-        public ItemStack stack() {
-            return this.getValue(0);
-        }
-
-        public Enchantment enchantment() {
-            return this.getValue(1);
-        }
     }
 }

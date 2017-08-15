@@ -1,0 +1,20 @@
+{
+  "id": "21F88959-C157-44E3-815B-DD956B065052",
+  "group": "group0",
+  "fluxPerTick": 7500,
+  "ticksProcessing": 10,
+  "ingredients": [
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:book"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret_info",
+    "count": 1
+  }
+}
