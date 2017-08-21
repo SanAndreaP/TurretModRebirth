@@ -36,8 +36,6 @@ public class ItemTurretUpgrade
         super();
         this.setCreativeTab(TmrCreativeTabs.UPGRADES);
         this.setUnlocalizedName(TmrConstants.ID + ":turret_upgrade");
-        this.setHasSubtypes(true);
-        this.setMaxDamage(0);
     }
 
     @Override

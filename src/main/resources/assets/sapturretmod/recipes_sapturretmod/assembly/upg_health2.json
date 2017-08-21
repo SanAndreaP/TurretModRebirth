@@ -1,0 +1,44 @@
+{
+  "id": "185ab41e-bd30-47c8-bd42-a9d5c8749ecf",
+  "group": "group4",
+  "fluxPerTick": 20,
+  "ticksProcessing": 600,
+  "ingredients": [
+    {
+      "count": 1,
+      "showTooltipText": true,
+      "items": [
+        {
+          "item": "sapturretmod:turret_upgrade",
+          "nbt": {
+            "upgradeId": "00000000-0000-0000-0000-000000000000"
+          }
+        }
+      ]
+    },
+    {
+      "count": 8,
+      "items": [
+        {
+          "item": "minecraft:speckled_melon"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:golden_apple",
+          "data": 0
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret_upgrade",
+    "count": 1,
+    "nbt": {
+      "upgradeId": "612a78cb-ed0c-4990-b1f3-041be8171b1a"
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "id": "1bde1c44-9165-4bbc-a79d-2003cce969d9",
+  "group": "group4",
+  "fluxPerTick": 20,
+  "ticksProcessing": 600,
+  "ingredients": [
+    {
+      "count": 1,
+      "showTooltipText": true,
+      "items": [
+        {
+          "item": "sapturretmod:turret_upgrade",
+          "nbt": {
+            "upgradeId": "00000000-0000-0000-0000-000000000000"
+          }
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:gold_block"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret_upgrade",
+    "count": 1,
+    "nbt": {
+      "upgradeId": "2a76a2eb-0ea3-4eb0-9ec2-61e579361306"
+    }
+  }
+}

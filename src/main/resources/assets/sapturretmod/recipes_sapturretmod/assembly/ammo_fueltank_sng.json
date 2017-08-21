@@ -1,0 +1,40 @@
+{
+  "id": "3f1b7ae0-cedd-46d0-b0f0-289446560f21",
+  "group": "group2",
+  "fluxPerTick": 10,
+  "ticksProcessing": 60,
+  "ingredients": [
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:lava_bucket"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:rabbit_hide"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret_ammo",
+    "count": 1,
+    "nbt": {
+      "ammoType": "0ca51fa8-fd33-4c3d-a9ab-ba29dfff4aba"
+    }
+  }
+}

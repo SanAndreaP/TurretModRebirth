@@ -1,0 +1,35 @@
+{
+  "id": "d8144a93-870f-4fbc-88f3-94cf8212ef84",
+  "group": "group4",
+  "fluxPerTick": 20,
+  "ticksProcessing": 600,
+  "ingredients": [
+    {
+      "count": 1,
+      "showTooltipText": true,
+      "items": [
+        {
+          "item": "sapturretmod:turret_upgrade",
+          "nbt": {
+            "upgradeId": "00000000-0000-0000-0000-000000000000"
+          }
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:emerald"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret_upgrade",
+    "count": 1,
+    "nbt": {
+      "upgradeId": "a8f29058-c8b7-400d-a7f4-4cede627a7e8"
+    }
+  }
+}

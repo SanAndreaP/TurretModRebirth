@@ -1,0 +1,35 @@
+{
+  "id": "816758d6-7f00-4acb-bd94-f7a8a0f86016",
+  "group": "group3",
+  "fluxPerTick": 25,
+  "ticksProcessing": 600,
+  "ingredients": [
+    {
+      "count": 2,
+      "items": [
+        {
+          "item": "minecraft:leather"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "showTooltipText": true,
+      "items": [
+        {
+          "item": "minecraft:potion",
+          "nbt": {
+            "Potion": "minecraft:healing"
+          }
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:repair_kit",
+    "count": 3,
+    "nbt": {
+      "repKitType": "89db7dd5-2ded-4e58-96dd-07e47bffa919"
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "id": "78ba8e56-b161-49a0-8053-710083a39133",
+  "group": "group2",
+  "fluxPerTick": 10,
+  "ticksProcessing": 60,
+  "ingredients": [
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "blockGlass"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotIron"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret_ammo",
+    "count": 1,
+    "nbt": {
+      "ammoType": "48800c6a-9a31-4f45-8ad5-dd02b8b18bcb"
+    }
+  }
+}

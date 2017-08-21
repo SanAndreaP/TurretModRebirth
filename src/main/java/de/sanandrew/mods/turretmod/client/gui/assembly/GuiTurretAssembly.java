@@ -596,7 +596,7 @@ public class GuiTurretAssembly
     @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
-        if( this.cacheRecipes.size() > 4 && !this.hasCrafting ) {
+        if( this.cacheRecipes != null && this.cacheRecipes.size() > 4 && !this.hasCrafting ) {
             int dWheelDir = Mouse.getEventDWheel();
             if( dWheelDir < 0 ) {
                 this.scrollPos = Math.min(this.cacheRecipes.size() - 4, this.scrollPos + 1);

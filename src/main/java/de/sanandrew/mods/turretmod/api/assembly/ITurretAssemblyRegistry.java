@@ -6,9 +6,11 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.api.assembly;
 
+import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.UUID;
 
 public interface ITurretAssemblyRegistry
@@ -18,4 +20,6 @@ public interface ITurretAssemblyRegistry
     IRecipeGroup registerGroup(String name, @Nonnull ItemStack stack);
 
     IRecipeGroup getGroup(String name);
+
+    List<TurretAssemblyRegistry.RecipeKeyEntry> getRecipeList();
 }

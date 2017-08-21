@@ -1,0 +1,43 @@
+{
+  "id": "a4750c8c-a0a0-4e73-8378-59345124a1fa",
+  "group": "group4",
+  "fluxPerTick": 20,
+  "ticksProcessing": 600,
+  "ingredients": [
+    {
+      "count": 1,
+      "showTooltipText": true,
+      "items": [
+        {
+          "item": "sapturretmod:turret_upgrade",
+          "nbt": {
+            "upgradeId": "00000000-0000-0000-0000-000000000000"
+          }
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:spider_eye"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:ender_pearl"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret_upgrade",
+    "count": 1,
+    "nbt": {
+      "upgradeId": "12435ab9-5aa3-4db9-9b76-7943ba71597a"
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "id": "1a207f83-26e1-405a-a9a1-4ab6bb1c4c3a",
+  "group": "group1",
+  "fluxPerTick": 15,
+  "ticksProcessing": 100,
+  "ingredients": [
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "blockIron"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotGold"
+        }
+      ]
+    },
+    {
+      "count": 4,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        }
+      ]
+    },
+    {
+      "count": 2,
+      "items": [
+        {
+          "item": "minecraft:stonebrick",
+          "data": 0
+        }
+      ]
+    },
+    {
+      "count": 4,
+      "items": [
+        {
+          "item": "minecraft:stone_slab",
+          "data": 0
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret_placer",
+    "count": 1,
+    "nbt": {
+      "turretInfoUUID": "4449d836-f122-409a-8e6c-d7b7438fd08c"
+    }
+  }
+}

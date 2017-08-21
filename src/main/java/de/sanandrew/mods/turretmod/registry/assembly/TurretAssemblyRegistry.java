@@ -105,6 +105,7 @@ public final class TurretAssemblyRegistry
         return stack.copy();
     }
 
+    @Override
     public List<RecipeKeyEntry> getRecipeList() {
         return new ArrayList<>(this.recipeEntries);
     }
@@ -200,7 +201,7 @@ public final class TurretAssemblyRegistry
         private final ItemStack icon;
         private final ImmutableList.Builder<UUID> recipes = new ImmutableList.Builder<>();
 
-        RecipeGroup(String name, @Nonnull ItemStack icon) {
+        public RecipeGroup(String name, @Nonnull ItemStack icon) {
             this.name = name;
             this.icon = icon;
         }

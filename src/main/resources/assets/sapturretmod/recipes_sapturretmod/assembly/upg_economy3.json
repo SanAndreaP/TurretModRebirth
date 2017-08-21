@@ -1,0 +1,44 @@
+{
+  "id": "7c5e0a1f-1bc3-4f72-a4a0-bb28a595ca0d",
+  "group": "group4",
+  "fluxPerTick": 20,
+  "ticksProcessing": 600,
+  "ingredients": [
+    {
+      "count": 1,
+      "showTooltipText": true,
+      "items": [
+        {
+          "item": "sapturretmod:turret_upgrade",
+          "nbt": {
+            "upgradeId": "00000000-0000-0000-0000-000000000000"
+          }
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "showTooltipText": true,
+      "items": [
+        {
+          "item": "minecraft:bow",
+          "nbt": {
+            "ench": [
+              {
+                "id": 51,
+                "lvl": 1
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret_upgrade",
+    "count": 1,
+    "nbt": {
+      "upgradeId": "c3cf3ee9-8314-4766-a5e0-6033db3ee9db"
+    }
+  }
+}

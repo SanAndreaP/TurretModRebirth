@@ -1,0 +1,51 @@
+{
+  "id": "df388b34-64ed-4d94-bee0-c1a4aab8e701",
+  "group": "group4",
+  "fluxPerTick": 60,
+  "ticksProcessing": 300,
+  "ingredients": [
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "gemEmerald"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "nuggetGold"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "showTooltipText": true,
+      "items": [
+        {
+          "item": "minecraft:potion",
+          "nbt": {
+            "Potion": "minecraft:swiftness"
+          }
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:assembly_upg_speed",
+    "count": 1
+  }
+}

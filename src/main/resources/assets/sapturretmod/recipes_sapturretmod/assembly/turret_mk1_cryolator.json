@@ -1,0 +1,57 @@
+{
+  "id": "6743974b-5552-45f7-9124-fdcf844bb56c",
+  "group": "group1",
+  "fluxPerTick": 10,
+  "ticksProcessing": 100,
+  "ingredients": [
+    {
+      "count": 12,
+      "items": [
+        {
+          "item": "minecraft:snow"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:bow"
+        }
+      ]
+    },
+    {
+      "count": 4,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        }
+      ]
+    },
+    {
+      "count": 4,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "plankWood"
+        }
+      ]
+    },
+    {
+      "count": 2,
+      "items": [
+        {
+          "item": "minecraft:ice"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret_placer",
+    "count": 1,
+    "nbt": {
+      "turretInfoUUID": "3af4d8c3-fcfc-42b0-98a3-bfb669aa7ce6"
+    }
+  }
+}

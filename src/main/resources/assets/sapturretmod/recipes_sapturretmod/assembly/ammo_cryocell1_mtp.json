@@ -1,0 +1,34 @@
+{
+  "id": "5cbde28a-52b2-45eb-b169-4a81f94ec690",
+  "group": "group2",
+  "fluxPerTick": 5,
+  "ticksProcessing": 120,
+  "ingredients": [
+    {
+      "count": 16,
+      "items": [
+        {
+          "item": "sapturretmod:turret_ammo",
+          "nbt": {
+            "ammoType": "0b567594-e5ca-48b5-a538-e87c213f439c"
+          }
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:leather"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret_ammo",
+    "count": 1,
+    "nbt": {
+      "ammoType": "7de80386-ce9e-4039-ada6-f7131996e522"
+    }
+  }
+}

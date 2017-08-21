@@ -1,0 +1,23 @@
+{
+  "id": "1a011825-2e5b-4f17-925e-f734e6a732b9",
+  "group": "group2",
+  "fluxPerTick": 5,
+  "ticksProcessing": 60,
+  "ingredients": [
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:arrow"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret_ammo",
+    "count": 4,
+    "nbt": {
+      "ammoType": "7b497e61-4e8d-4e49-ac71-414751e399e8"
+    }
+  }
+}

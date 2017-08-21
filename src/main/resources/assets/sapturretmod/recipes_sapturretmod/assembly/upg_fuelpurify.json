@@ -1,0 +1,43 @@
+{
+  "id": "042e0949-e137-4646-a227-0620d2fb6a4d",
+  "group": "group4",
+  "fluxPerTick": 20,
+  "ticksProcessing": 600,
+  "ingredients": [
+    {
+      "count": 1,
+      "showTooltipText": true,
+      "items": [
+        {
+          "item": "sapturretmod:turret_upgrade",
+          "nbt": {
+            "upgradeId": "00000000-0000-0000-0000-000000000000"
+          }
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:lapis_block"
+        }
+      ]
+    },
+    {
+      "count": 2,
+      "items": [
+        {
+          "item": "minecraft:magma_cream"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret_upgrade",
+    "count": 1,
+    "nbt": {
+      "upgradeId": "677fa826-da2d-40e9-9d86-7fad7de398cc"
+    }
+  }
+}

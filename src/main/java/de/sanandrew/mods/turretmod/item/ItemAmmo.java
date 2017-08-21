@@ -29,8 +29,6 @@ public class ItemAmmo
         super();
         this.setCreativeTab(TmrCreativeTabs.TURRETS);
         this.setUnlocalizedName(TmrConstants.ID + ":turret_ammo");
-        this.setMaxDamage(0);
-        this.setHasSubtypes(true);
     }
 
     @Override

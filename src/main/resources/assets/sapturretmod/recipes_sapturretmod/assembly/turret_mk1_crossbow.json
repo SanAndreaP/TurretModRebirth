@@ -1,0 +1,50 @@
+{
+  "id": "21f88959-c157-44e3-815b-dd956b065052",
+  "group": "group1",
+  "fluxPerTick": 10,
+  "ticksProcessing": 100,
+  "ingredients": [
+    {
+      "count": 12,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "cobblestone"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:bow"
+        }
+      ]
+    },
+    {
+      "count": 4,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        }
+      ]
+    },
+    {
+      "count": 4,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "plankWood"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret_placer",
+    "count": 1,
+    "nbt": {
+      "turretInfoUUID": "50e1e69c-395c-486c-bb9d-41e82c8b22e2"
+    }
+  }
+}

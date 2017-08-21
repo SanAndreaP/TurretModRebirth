@@ -1,0 +1,9 @@
+{
+  "name": "group4",
+  "item": {
+    "item": "sapturretmod:turret_upgrade",
+    "nbt": {
+      "upgradeId": "00000000-0000-0000-0000-000000000000"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "id": "85f480fd-299b-45ce-9796-c3ecc8ef5868",
+  "group": "group2",
+  "fluxPerTick": 5,
+  "ticksProcessing": 120,
+  "ingredients": [
+    {
+      "count": 16,
+      "items": [
+        {
+          "item": "sapturretmod:turret_ammo",
+          "nbt": {
+            "ammoType": "0ca51fa8-fd33-4c3d-a9ab-ba29dfff4aba"
+          }
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:iron_ingot"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret_ammo",
+    "count": 1,
+    "nbt": {
+      "ammoType": "5c41da09-8c7e-4191-8520-058e69c36dc0"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "group3",
+  "item": {
+    "item": "sapturretmod:repair_kit",
+    "nbt": {
+      "repKitType": "89db7dd5-2ded-4e58-96dd-07e47bffa919"
+    }
+  }
+}

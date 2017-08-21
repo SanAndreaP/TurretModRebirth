@@ -1,0 +1,9 @@
+{
+  "name": "group2",
+  "item": {
+    "item": "sapturretmod:turret_ammo",
+    "nbt": {
+      "ammoType": "e6d51120-b52a-42ea-bf78-bebbc7d41c09"
+    }
+  }
+}

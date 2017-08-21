@@ -1,0 +1,59 @@
+{
+  "id": "ea5b683f-7d84-4bae-bfc3-35f2ea48ab2b",
+  "group": "group2",
+  "fluxPerTick": 10,
+  "ticksProcessing": 60,
+  "ingredients": [
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotIron"
+        }
+      ]
+    },
+    {
+      "count": 2,
+      "items": [
+        {
+          "item": "minecraft:wheat_seeds"
+        },
+        {
+          "item": "minecraft:melon_seeds"
+        },
+        {
+          "item": "minecraft:pumpkin_seeds"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:gunpowder"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustGunpowder"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret_ammo",
+    "count": 2,
+    "nbt": {
+      "ammoType": "3851173d-3ac3-4f17-a488-68c33716af26"
+    }
+  }
+}
