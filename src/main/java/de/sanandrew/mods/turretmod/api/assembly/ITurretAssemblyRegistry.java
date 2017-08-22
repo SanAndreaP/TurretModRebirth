@@ -13,6 +13,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.UUID;
 
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 public interface ITurretAssemblyRegistry
 {
     boolean registerRecipe(UUID uuid, IRecipeGroup group, @Nonnull ItemStack result, int fluxPerTick, int ticksProcessing, IRecipeEntry... resources);

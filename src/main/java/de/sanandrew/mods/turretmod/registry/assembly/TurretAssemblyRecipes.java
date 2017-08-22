@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@SuppressWarnings("unused")
+//@SuppressWarnings("unused")
 public final class TurretAssemblyRecipes
 {
     public static final UUID TURRET_MK1_CB    = UUID.fromString("21F88959-C157-44E3-815B-DD956B065052");
@@ -170,7 +170,7 @@ public final class TurretAssemblyRecipes
 
                 int sz = items.size();
                 if( sz > 0 ) {
-                    IRecipeEntry entry = new RecipeEntryItem(count).put(items.toArray(new ItemStack[sz]));
+                    IRecipeEntry entry = new RecipeEntry(count).put(items.toArray(new ItemStack[sz]));
                     if( showTooltipText ) {
                         entry.drawTooltip();
                     }

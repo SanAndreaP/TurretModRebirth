@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.registry.ammo;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretRevolver;
@@ -21,12 +22,8 @@ import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public abstract class TurretAmmoBullet
-        implements TurretAmmo<EntityProjectileBullet>
+        implements ITurretAmmo<EntityProjectileBullet>
 {
-    public static final UUID BULLET_UUID = UUID.fromString("E8CB6C41-00FE-4FA0-AD98-FC8DAD6609AC");
-    public static final UUID PACK_UUID = UUID.fromString("FD7B2FBF-9BB7-437F-9FF0-A21842D3A94A");
-    private static final UUID TYPE_UUID = BULLET_UUID;
-
     private final String name;
     private final UUID uuid;
     private final int capacity;
@@ -34,7 +31,7 @@ public abstract class TurretAmmoBullet
 
     public TurretAmmoBullet(boolean isMulti, String modelName) {
         this.name = isMulti ? "bullet_lrg" : "bullet_sng";
-        this.uuid = isMulti ? PACK_UUID : BULLET_UUID;
+        this.uuid = isMulti ? TurretAmmunitions.BULLET_PACK : TurretAmmunitions.BULLET;
         this.capacity = isMulti ? 32 : 2;
         this.itemModel = new ResourceLocation(TmrConstants.ID, "turret_ammo/" + modelName);
     }
@@ -71,12 +68,12 @@ public abstract class TurretAmmoBullet
 
     @Override
     public UUID getTypeId() {
-        return TYPE_UUID;
+        return TurretAmmunitions.BULLET;
     }
 
     @Override
     public UUID getGroupId() {
-        return TYPE_UUID;
+        return TurretAmmunitions.BULLET;
     }
 
     @Override
@@ -87,7 +84,7 @@ public abstract class TurretAmmoBullet
     @Override
     @Nonnull
     public ItemStack getStoringAmmoItem() {
-        return ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(BULLET_UUID));
+        return ItemRegistry.turret_ammo.getAmmoItem(1, TurretAmmoRegistry.INSTANCE.getType(TurretAmmunitions.BULLET));
     }
 
     @Override

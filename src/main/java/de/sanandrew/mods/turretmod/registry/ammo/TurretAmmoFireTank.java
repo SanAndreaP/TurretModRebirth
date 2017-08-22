@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.registry.ammo;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileFlame;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretFlamethrower;
@@ -22,12 +23,8 @@ import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public abstract class TurretAmmoFireTank
-        implements TurretAmmo<EntityProjectileFlame>
+        implements ITurretAmmo<EntityProjectileFlame>
 {
-    public static final UUID TANK_UUID = UUID.fromString("0CA51FA8-FD33-4C3D-A9AB-BA29DFFF4ABA");
-    public static final UUID PACK_UUID = UUID.fromString("5C41DA09-8C7E-4191-8520-058E69C36DC0");
-    private static final UUID TYPE_UUID = TANK_UUID;
-
     private final String name;
     private final UUID uuid;
     private final int capacity;
@@ -35,7 +32,7 @@ public abstract class TurretAmmoFireTank
 
     public TurretAmmoFireTank(boolean isMulti, String modelName) {
         this.name = isMulti ? "tank_lrg" : "tank_sng";
-        this.uuid = isMulti ? PACK_UUID : TANK_UUID;
+        this.uuid = isMulti ? TurretAmmunitions.FUELTANK_PACK : TurretAmmunitions.FUELTANK;
         this.capacity = isMulti ? 256 : 16;
         this.itemModel = new ResourceLocation(TmrConstants.ID, "turret_ammo/" + modelName);
     }
@@ -72,12 +69,12 @@ public abstract class TurretAmmoFireTank
 
     @Override
     public UUID getTypeId() {
-        return TYPE_UUID;
+        return TurretAmmunitions.FUELTANK;
     }
 
     @Override
     public UUID getGroupId() {
-        return TYPE_UUID;
+        return TurretAmmunitions.FUELTANK;
     }
 
     @Override
@@ -88,7 +85,7 @@ public abstract class TurretAmmoFireTank
     @Override
     @Nonnull
     public ItemStack getStoringAmmoItem() {
-        return ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(TANK_UUID));
+        return ItemRegistry.turret_ammo.getAmmoItem(1, TurretAmmoRegistry.INSTANCE.getType(TurretAmmunitions.FUELTANK));
     }
 
     @Override

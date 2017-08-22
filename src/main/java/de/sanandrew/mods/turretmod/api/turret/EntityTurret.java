@@ -9,7 +9,9 @@
 package de.sanandrew.mods.turretmod.api.turret;
 
 import com.mojang.authlib.GameProfile;
+import de.sanandrew.mods.turretmod.api.ITmrUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.repairkit.IRepairKitRegistry;
 import de.sanandrew.mods.turretmod.api.repairkit.TurretRepairKit;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import io.netty.buffer.ByteBuf;
@@ -55,6 +57,8 @@ public abstract class EntityTurret
     public static SoundEvent hurtSound;
     public static SoundEvent deathSound;
     public static SoundEvent collectSound;
+    public static IRepairKitRegistry repairKitRegistry;
+    public static ITmrUtils utils;
 
     public boolean isUpsideDown;
     public boolean showRange;
@@ -73,8 +77,8 @@ public abstract class EntityTurret
 
     public EntityTurret(World world) {
         super(world);
-        this.targetProc = TmrConstants.utils.getNewTargetProcInstance(this);
-        this.upgProc = TmrConstants.utils.getNewUpgradeProcInstance(this);
+        this.targetProc = utils.getNewTargetProcInstance(this);
+        this.upgProc = utils.getNewUpgradeProcInstance(this);
         this.rotationYaw = 0.0F;
         this.checkBlock = true;
     }
@@ -220,7 +224,7 @@ public abstract class EntityTurret
 
             if( this.targetProc.hasTarget() ) {
                 this.faceEntity(this.targetProc.getTarget(), 10.0F, this.getVerticalFaceSpeed());
-            } else if( this.world.isRemote && TmrConstants.utils.getPassengersOfClass(this, EntityPlayer.class).size() < 1 ) {
+            } else if( this.world.isRemote && utils.getPassengersOfClass(this, EntityPlayer.class).size() < 1 ) {
                 this.rotationYawHead += 1.0F;
                 if( this.rotationYawHead >= 360.0D ) {
                     this.rotationYawHead -= 360.0D;
@@ -276,7 +280,7 @@ public abstract class EntityTurret
             player.inventory.setInventorySlotContents(player.inventory.currentItem, heldItem.copy());
         }
 
-        TmrConstants.utils.updateTurretState(this);
+        utils.updateTurretState(this);
         player.inventoryContainer.detectAndSendChanges();
         this.world.playSound(null, this.posX, this.posY, this.posZ, collectSound, SoundCategory.NEUTRAL, 1.0F, 1.0F);
     }
@@ -286,19 +290,19 @@ public abstract class EntityTurret
         ItemStack stack = player.getHeldItem(hand);
 
         if( this.world.isRemote ) {
-            if( TmrConstants.utils.isTCUItem(stack) ) {
-                TmrConstants.utils.openGui(player, player.isSneaking() ? EnumGui.GUI_DEBUG_CAMERA : EnumGui.GUI_TCU_INFO, this.getEntityId(), this.hasPlayerPermission(player) ? 1 : 0, 0);
+            if( utils.isTCUItem(stack) ) {
+                utils.openGui(player, player.isSneaking() ? EnumGui.GUI_DEBUG_CAMERA : EnumGui.GUI_TCU_INFO, this.getEntityId(), this.hasPlayerPermission(player) ? 1 : 0, 0);
                 return true;
             }
 
             return false;
-        } else if( TmrConstants.utils.isStackValid(stack) && hand == EnumHand.MAIN_HAND ) {
+        } else if( utils.isStackValid(stack) && hand == EnumHand.MAIN_HAND ) {
             TurretRepairKit repKit;
 
             if( this.targetProc.addAmmo(stack) ) {
                 this.onInteractSucceed(stack, player);
                 return true;
-            } else if( (repKit = TmrConstants.repkitRegistry.getType(stack)).isApplicable(this) ) {
+            } else if( (repKit = repairKitRegistry.getType(stack)).isApplicable(this) ) {
                     this.heal(repKit.getHealAmount());
                     repKit.onHeal(this);
                     stack.shrink(1);
@@ -320,7 +324,7 @@ public abstract class EntityTurret
         super.onDeath(dmgSrc);
 
         if( !this.world.isRemote ) {
-            TmrConstants.utils.onTurretDeath(this);
+            utils.onTurretDeath(this);
         }
 
         //just insta-kill it
@@ -496,17 +500,17 @@ public abstract class EntityTurret
             return true;
         }
 
-        if( TmrConstants.utils.canPlayerEditAll() || this.ownerUUID.equals(profile.getId()) ) {
+        if( utils.canPlayerEditAll() || this.ownerUUID.equals(profile.getId()) ) {
             return true;
         }
 
-        return player.canUseCommand(2, "") && TmrConstants.utils.canOpEditAll();
+        return player.canUseCommand(2, "") && utils.canOpEditAll();
     }
 
     @Override
     @Nonnull
     public ItemStack getPickedResult(RayTraceResult target) {
-        return TmrConstants.utils.getPickedTurretResult(target, this);
+        return utils.getPickedTurretResult(target, this);
     }
 
     @Override

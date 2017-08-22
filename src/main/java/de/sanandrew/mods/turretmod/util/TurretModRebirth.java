@@ -13,7 +13,7 @@ import de.sanandrew.mods.turretmod.api.ITmrPlugin;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
-import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
+import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteHelper;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
@@ -60,12 +60,11 @@ public class TurretModRebirth
 
         network = NetworkRegistry.INSTANCE.newSimpleChannel(TmrConstants.CHANNEL);
 
-        TmrConstants.utils = TmrUtils.INSTANCE;
-        TmrConstants.repkitRegistry = RepairKitRegistry.INSTANCE;
+        PLUGINS.forEach(plugin -> plugin.preInit(TmrUtils.INSTANCE));
 
         PacketRegistry.initialize();
 
-        AmmoRegistry.INSTANCE.initialize();
+        PLUGINS.forEach(plugin -> plugin.registerAmmo(TurretAmmoRegistry.INSTANCE));
         PLUGINS.forEach(plugin -> plugin.registerRepairKits(RepairKitRegistry.INSTANCE));
         TurretRegistry.INSTANCE.initialize();
         UpgradeRegistry.INSTANCE.initialize();
@@ -107,6 +106,4 @@ public class TurretModRebirth
             }
         }
     }
-
-
 }

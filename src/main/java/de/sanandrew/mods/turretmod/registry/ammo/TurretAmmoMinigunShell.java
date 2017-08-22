@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.registry.ammo;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileMinigunPebble;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretMinigun;
@@ -21,12 +22,8 @@ import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public abstract class TurretAmmoMinigunShell
-        implements TurretAmmo<EntityProjectileMinigunPebble>
+        implements ITurretAmmo<EntityProjectileMinigunPebble>
 {
-    public static final UUID SHELL_UUID = UUID.fromString("3851173D-3AC3-4F17-A488-68C33716AF26");
-    public static final UUID PACK_UUID = UUID.fromString("50634E1E-94C4-4EF6-8D76-7C8CADDCAE85");
-    private static final UUID TYPE_UUID = SHELL_UUID;
-
     private final String name;
     private final UUID uuid;
     private final int capacity;
@@ -34,7 +31,7 @@ public abstract class TurretAmmoMinigunShell
 
     public TurretAmmoMinigunShell(boolean isMulti, String modelName) {
         this.name = isMulti ? "mgshell_lrg" : "mgshell_sng";
-        this.uuid = isMulti ? PACK_UUID : SHELL_UUID;
+        this.uuid = isMulti ? TurretAmmunitions.MGSHELL_PACK : TurretAmmunitions.MGSHELL;
         this.capacity = isMulti ? 64 : 4;
         this.itemModel = new ResourceLocation(TmrConstants.ID, "turret_ammo/" + modelName);
     }
@@ -71,12 +68,12 @@ public abstract class TurretAmmoMinigunShell
 
     @Override
     public UUID getTypeId() {
-        return TYPE_UUID;
+        return TurretAmmunitions.MGSHELL;
     }
 
     @Override
     public UUID getGroupId() {
-        return TYPE_UUID;
+        return TurretAmmunitions.MGSHELL;
     }
 
     @Override
@@ -87,7 +84,7 @@ public abstract class TurretAmmoMinigunShell
     @Override
     @Nonnull
     public ItemStack getStoringAmmoItem() {
-        return ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(SHELL_UUID));
+        return ItemRegistry.turret_ammo.getAmmoItem(1, TurretAmmoRegistry.INSTANCE.getType(TurretAmmunitions.MGSHELL));
     }
 
     @Override

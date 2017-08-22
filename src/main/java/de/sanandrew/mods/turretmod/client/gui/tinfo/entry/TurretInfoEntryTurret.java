@@ -11,8 +11,8 @@ package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
-import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmo;
+import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoRegistry;
+import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
 import de.sanandrew.mods.turretmod.api.assembly.IRecipeEntry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.api.turret.TurretInfo;
@@ -176,8 +176,8 @@ public class TurretInfoEntryTurret
             this.health = info.getTurretHealth();
             this.ammoCap = info.getBaseAmmoCapacity();
 
-            List<TurretAmmo> ammos = AmmoRegistry.INSTANCE.getTypesForTurret(info.getTurretClass());
-            for( TurretAmmo ammo : ammos ) {
+            List<ITurretAmmo> ammos = TurretAmmoRegistry.INSTANCE.getTypesForTurret(info.getTurretClass());
+            for( ITurretAmmo ammo : ammos ) {
                 ammoItms.add(ItemRegistry.turret_ammo.getAmmoItem(1, ammo));
             }
 

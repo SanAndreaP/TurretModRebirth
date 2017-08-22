@@ -11,17 +11,15 @@ import com.google.gson.stream.JsonWriter;
 import de.sanandrew.mods.turretmod.api.assembly.IRecipeEntry;
 import de.sanandrew.mods.turretmod.api.assembly.IRecipeGroup;
 import de.sanandrew.mods.turretmod.api.assembly.ITurretAssemblyRegistry;
-import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntryItem;
+import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTPrimitive;
-import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagByteArray;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagLongArray;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraftforge.common.util.Constants;
 
@@ -46,7 +44,7 @@ public class RecipeDump
             jw.name("ticksProcessing").value(ticksProcessing);
             jw.name("ingredients").beginArray();
             for( IRecipeEntry entry : resources ) {
-                RecipeEntryItem entryCst = (RecipeEntryItem) entry;
+                RecipeEntry entryCst = (RecipeEntry) entry;
                 jw.beginObject();
                 jw.name("count").value(entry.getItemCount());
                 if( entry.shouldDrawTooltip() ) {

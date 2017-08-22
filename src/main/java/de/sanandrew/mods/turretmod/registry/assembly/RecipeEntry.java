@@ -8,13 +8,10 @@
  */
 package de.sanandrew.mods.turretmod.registry.assembly;
 
-import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.assembly.IRecipeEntry;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -27,10 +24,9 @@ import javax.annotation.Nonnull;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-public class RecipeEntryItem
+public class RecipeEntry
         implements IRecipeEntry
 {
     public int stackSize;
@@ -40,14 +36,14 @@ public class RecipeEntryItem
 
     private WeakReference<ItemStack[]> cachedEntryStacks;
 
-    public RecipeEntryItem(int count) {
+    public RecipeEntry(int count) {
         this.stackSize = count;
         this.drawTooltip = false;
         this.normalAlternatives = new ItemStack[0];
         this.oreDictAlternatives = new String[0];
     }
 
-    private RecipeEntryItem(int count, ItemStack[] normalAlternatives, String[] oreDictAlternatives) {
+    private RecipeEntry(int count, ItemStack[] normalAlternatives, String[] oreDictAlternatives) {
         this.stackSize = count;
         this.drawTooltip = false;
         this.normalAlternatives = normalAlternatives;
@@ -55,7 +51,7 @@ public class RecipeEntryItem
     }
 
     @Override
-    public RecipeEntryItem put(Item... items) {
+    public RecipeEntry put(Item... items) {
         List<ItemStack> newStacks = new ArrayList<>();
         newStacks.addAll(Arrays.asList(this.normalAlternatives));
         for( Item item : items ) {
@@ -68,7 +64,7 @@ public class RecipeEntryItem
     }
 
     @Override
-    public RecipeEntryItem put(Block... blocks) {
+    public RecipeEntry put(Block... blocks) {
         List<ItemStack> newStacks = new ArrayList<>();
         newStacks.addAll(Arrays.asList(this.normalAlternatives));
         for( Block block : blocks ) {
@@ -81,7 +77,7 @@ public class RecipeEntryItem
     }
 
     @Override
-    public RecipeEntryItem put(ItemStack... stacks) {
+    public RecipeEntry put(ItemStack... stacks) {
         List<ItemStack> newStacks = new ArrayList<>();
         newStacks.addAll(Arrays.asList(this.normalAlternatives));
         newStacks.addAll(Arrays.asList(stacks));
@@ -92,7 +88,7 @@ public class RecipeEntryItem
     }
 
     @Override
-    public RecipeEntryItem put(String... oreDictNames) {
+    public RecipeEntry put(String... oreDictNames) {
         List<String> newNames = new ArrayList<>();
         newNames.addAll(Arrays.asList(this.oreDictAlternatives));
         for( String name : oreDictNames ) {
@@ -114,7 +110,7 @@ public class RecipeEntryItem
     }
 
     @Override
-    public RecipeEntryItem drawTooltip() {
+    public RecipeEntry drawTooltip() {
         this.drawTooltip = true;
         return this;
     }
@@ -125,13 +121,13 @@ public class RecipeEntryItem
     }
 
     @Override
-    public RecipeEntryItem copy() {
+    public RecipeEntry copy() {
         ItemStack[] stacksToCopy = new ItemStack[this.normalAlternatives.length];
         for( int i = 0; i < stacksToCopy.length; i++ ) {
             stacksToCopy[i] = this.normalAlternatives[i].copy();
         }
 
-        return new RecipeEntryItem(this.stackSize, stacksToCopy, this.oreDictAlternatives.clone());
+        return new RecipeEntry(this.stackSize, stacksToCopy, this.oreDictAlternatives.clone());
     }
 
     @Override

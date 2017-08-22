@@ -11,13 +11,12 @@ package de.sanandrew.mods.turretmod.compat.jei;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.ItemTurret;
-import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
+import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.api.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import mezz.jei.api.*;
-import mezz.jei.api.ingredients.IModIngredientRegistration;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -53,7 +52,7 @@ public class JeiPlugin
 
         subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.turret_upgrade, itemStack -> UpgradeRegistry.INSTANCE.getUpgradeUUID(itemStack).toString());
 
-        subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.turret_ammo, itemStack -> AmmoRegistry.INSTANCE.getType(itemStack).getId().toString());
+        subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.turret_ammo, itemStack -> TurretAmmoRegistry.INSTANCE.getType(itemStack).getId().toString());
 
         subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.repair_kit, itemStack -> RepairKitRegistry.INSTANCE.getType(itemStack).getUUID().toString());
     }

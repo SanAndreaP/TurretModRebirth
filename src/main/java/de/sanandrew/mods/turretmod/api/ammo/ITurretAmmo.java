@@ -6,7 +6,7 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.registry.ammo;
+package de.sanandrew.mods.turretmod.api.ammo;
 
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import net.minecraft.entity.Entity;
@@ -16,7 +16,7 @@ import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
-public interface TurretAmmo<T extends Entity & IProjectile>
+public interface ITurretAmmo<T extends Entity & IProjectile>
 {
     String getName();
     UUID getId();

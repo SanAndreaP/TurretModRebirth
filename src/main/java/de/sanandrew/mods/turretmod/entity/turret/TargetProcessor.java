@@ -19,8 +19,8 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.event.TargetingEvent;
-import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
-import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmo;
+import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoRegistry;
+import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -82,8 +82,8 @@ public final class TargetProcessor
     @Override
     public boolean addAmmo(@Nonnull ItemStack stack) {
         if( this.isAmmoApplicable(stack) ) {
-            TurretAmmo type = AmmoRegistry.INSTANCE.getType(stack);
-            UUID currType = ItemStackUtils.isValid(this.ammoStack) ? AmmoRegistry.INSTANCE.getType(this.ammoStack).getTypeId() : null;
+            ITurretAmmo type = TurretAmmoRegistry.INSTANCE.getType(stack);
+            UUID currType = ItemStackUtils.isValid(this.ammoStack) ? TurretAmmoRegistry.INSTANCE.getType(this.ammoStack).getTypeId() : null;
 
             if( currType != null && !currType.equals(type.getTypeId()) ) {
                 this.dropAmmo();
@@ -93,7 +93,7 @@ public final class TargetProcessor
             if( maxCapacity > 0 ) {
                 if( !this.hasAmmo() ) {
                     this.ammoStack = type.getStoringAmmoItem();
-                } else if( !AmmoRegistry.INSTANCE.areAmmoItemsEqual(stack, this.ammoStack) ) {
+                } else if( !TurretAmmoRegistry.INSTANCE.areAmmoItemsEqual(stack, this.ammoStack) ) {
                     return false;
                 }
 
@@ -144,10 +144,10 @@ public final class TargetProcessor
             int decrAmmo = this.ammoCount - this.getMaxAmmoCapacity();
             if( decrAmmo > 0 ) {
                 List<ItemStack> items = new ArrayList<>();
-                TurretAmmo type = AmmoRegistry.INSTANCE.getType(this.ammoStack);
+                ITurretAmmo type = TurretAmmoRegistry.INSTANCE.getType(this.ammoStack);
                 int maxStackSize = this.ammoStack.getMaxStackSize();
 
-                while( decrAmmo > 0 && type != AmmoRegistry.NULL_TYPE ) {
+                while( decrAmmo > 0 && type != TurretAmmoRegistry.NULL_TYPE ) {
                     ItemStack stack = this.ammoStack.copy();
                     stack.setCount(Math.min(decrAmmo / type.getAmmoCapacity(), maxStackSize));
                     decrAmmo -= stack.getCount() * type.getAmmoCapacity();
@@ -184,8 +184,8 @@ public final class TargetProcessor
         if( this.hasAmmo() ) {
             List<ItemStack> items = new ArrayList<>();
             int maxStackSize = this.ammoStack.getMaxStackSize();
-            TurretAmmo type = AmmoRegistry.INSTANCE.getType(this.ammoStack);
-            while( this.ammoCount > 0 && type != AmmoRegistry.NULL_TYPE ) {
+            ITurretAmmo type = TurretAmmoRegistry.INSTANCE.getType(this.ammoStack);
+            while( this.ammoCount > 0 && type != TurretAmmoRegistry.NULL_TYPE ) {
                 ItemStack stack = this.ammoStack.copy();
                 stack.setCount(Math.min(this.ammoCount / type.getAmmoCapacity(), maxStackSize));
                 this.ammoCount -= stack.getCount() * type.getAmmoCapacity();
@@ -211,8 +211,8 @@ public final class TargetProcessor
         if( this.hasAmmo() ) {
             List<ItemStack> items = new ArrayList<>();
             int maxStackSize = this.ammoStack.getMaxStackSize();
-            TurretAmmo type = AmmoRegistry.INSTANCE.getType(this.ammoStack);
-            while( this.ammoCount > 0 && type != AmmoRegistry.NULL_TYPE ) {
+            ITurretAmmo type = TurretAmmoRegistry.INSTANCE.getType(this.ammoStack);
+            while( this.ammoCount > 0 && type != TurretAmmoRegistry.NULL_TYPE ) {
                 ItemStack stack = this.ammoStack.copy();
                 stack.setCount(Math.min(this.ammoCount / type.getAmmoCapacity(), maxStackSize));
                 this.ammoCount -= stack.getCount() * type.getAmmoCapacity();
@@ -240,12 +240,12 @@ public final class TargetProcessor
     @Override
     public boolean isAmmoApplicable(@Nonnull ItemStack stack) {
         if( ItemStackUtils.isValid(stack) ) {
-            TurretAmmo stackType = AmmoRegistry.INSTANCE.getType(stack);
-            if( stackType != AmmoRegistry.NULL_TYPE ) {
-                if( AmmoRegistry.INSTANCE.getType(this.ammoStack).getTypeId().equals(stackType.getTypeId()) ) {
+            ITurretAmmo stackType = TurretAmmoRegistry.INSTANCE.getType(stack);
+            if( stackType != TurretAmmoRegistry.NULL_TYPE ) {
+                if( TurretAmmoRegistry.INSTANCE.getType(this.ammoStack).getTypeId().equals(stackType.getTypeId()) ) {
                     return this.ammoCount < this.getMaxAmmoCapacity();
                 } else {
-                    List<TurretAmmo> types = AmmoRegistry.INSTANCE.getTypesForTurret(this.turret.getClass());
+                    List<ITurretAmmo> types = TurretAmmoRegistry.INSTANCE.getTypesForTurret(this.turret.getClass());
                     if( types.contains(stackType) ) {
                         return true;
                     }
@@ -273,8 +273,8 @@ public final class TargetProcessor
 
     @Override
     public Entity getProjectile() {
-        TurretAmmo ammo = AmmoRegistry.INSTANCE.getType(this.ammoStack);
-        if( ammo != AmmoRegistry.NULL_TYPE ) {
+        ITurretAmmo ammo = TurretAmmoRegistry.INSTANCE.getType(this.ammoStack);
+        if( ammo != TurretAmmoRegistry.NULL_TYPE ) {
             return ammo.getEntity(this.turret);
         }
 

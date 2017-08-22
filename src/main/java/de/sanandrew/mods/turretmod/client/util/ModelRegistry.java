@@ -13,8 +13,8 @@ import de.sanandrew.mods.turretmod.client.render.tileentity.RenderElectrolyteGen
 import de.sanandrew.mods.turretmod.client.render.tileentity.RenderTurretAssembly;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.ItemTurret;
-import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
-import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmo;
+import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoRegistry;
+import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.api.repairkit.TurretRepairKit;
 import de.sanandrew.mods.turretmod.api.turret.TurretInfo;
@@ -127,20 +127,20 @@ public final class ModelRegistry
         }
 
         static final class Ammo
-                extends MeshDefUUID<TurretAmmo>
+                extends MeshDefUUID<ITurretAmmo>
         {
             public Ammo() {
-                for( TurretAmmo ammo : AmmoRegistry.INSTANCE.getRegisteredTypes() ) {
+                for( ITurretAmmo ammo : TurretAmmoRegistry.INSTANCE.getRegisteredTypes() ) {
                     ModelResourceLocation modelRes = new ModelResourceLocation(ammo.getModel(), "inventory");
                     this.modelRes.put(ammo.getId(), modelRes);
                 }
             }
 
             @Override
-            public TurretAmmo getType(@Nonnull ItemStack stack) { return AmmoRegistry.INSTANCE.getType(stack); }
+            public ITurretAmmo getType(@Nonnull ItemStack stack) { return TurretAmmoRegistry.INSTANCE.getType(stack); }
 
             @Override
-            public UUID getId(TurretAmmo type) { return type.getId(); }
+            public UUID getId(ITurretAmmo type) { return type.getId(); }
         }
 
         static final class Upgrade

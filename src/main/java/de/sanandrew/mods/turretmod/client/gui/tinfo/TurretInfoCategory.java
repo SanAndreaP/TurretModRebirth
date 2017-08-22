@@ -9,7 +9,6 @@
 package de.sanandrew.mods.turretmod.client.gui.tinfo;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntry;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryAmmo;
@@ -20,8 +19,7 @@ import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryMiscCra
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryTurret;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryUpgrade;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.registry.ammo.AmmoRegistry;
-import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmo;
+import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.api.turret.TurretInfo;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
@@ -29,6 +27,7 @@ import de.sanandrew.mods.turretmod.registry.upgrades.TurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
+import de.sanandrew.mods.turretmod.util.TmrInternalPlugin;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -38,7 +37,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -65,7 +63,7 @@ public class TurretInfoCategory
     }
 
     public static TurretInfoCategory[] getCategories() {
-        return categories.stream().toArray(TurretInfoCategory[]::new);
+        return categories.toArray(new TurretInfoCategory[categories.size()]);
     }
 
     public static TurretInfoCategory getCategory(int index) {
@@ -118,11 +116,11 @@ public class TurretInfoCategory
         }
 
         {
-            List<TurretAmmo> infos = AmmoRegistry.INSTANCE.getRegisteredTypes();
+            List<ITurretAmmo> infos = TmrInternalPlugin.ammoRegistry.getRegisteredTypes();
             List<UUID> idEntries = new ArrayList<>();
             List<TurretInfoEntry> entriesList = new ArrayList<>();
             TurretInfoEntry[] entries;
-            for( TurretAmmo ammo : infos ) {
+            for( ITurretAmmo ammo : infos ) {
                 UUID groupId = ammo.getGroupId();
                 if( !idEntries.contains(groupId) ) {
                     idEntries.add(groupId);

@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.registry.ammo;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileLaser;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
@@ -21,12 +22,8 @@ import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public abstract class TurretAmmoFluxCell
-        implements TurretAmmo<EntityProjectileLaser>
+        implements ITurretAmmo<EntityProjectileLaser>
 {
-    public static final UUID CELL_UUID = UUID.fromString("48800C6A-9A31-4F45-8AD5-DD02B8B18BCB");
-    public static final UUID PACK_UUID = UUID.fromString("1F427D47-1BED-41D4-8810-47FF274424B6");
-    private static final UUID TYPE_UUID = CELL_UUID;
-
     private final String name;
     private final UUID uuid;
     private final int capacity;
@@ -34,7 +31,7 @@ public abstract class TurretAmmoFluxCell
 
     public TurretAmmoFluxCell(boolean isMulti, String modelName) {
         this.name = isMulti ? "ecell_lrg" : "ecell_sng";
-        this.uuid = isMulti ? PACK_UUID : CELL_UUID;
+        this.uuid = isMulti ? TurretAmmunitions.FLUXCELL_PACK : TurretAmmunitions.FLUXCELL;
         this.capacity = isMulti ? 16 : 1;
         this.itemModel = new ResourceLocation(TmrConstants.ID, "turret_ammo/" + modelName);
     }
@@ -71,12 +68,12 @@ public abstract class TurretAmmoFluxCell
 
     @Override
     public UUID getTypeId() {
-        return TYPE_UUID;
+        return TurretAmmunitions.FLUXCELL;
     }
 
     @Override
     public UUID getGroupId() {
-        return TYPE_UUID;
+        return TurretAmmunitions.FLUXCELL;
     }
 
     @Override
@@ -87,7 +84,7 @@ public abstract class TurretAmmoFluxCell
     @Override
     @Nonnull
     public ItemStack getStoringAmmoItem() {
-        return ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(CELL_UUID));
+        return ItemRegistry.turret_ammo.getAmmoItem(1, TurretAmmoRegistry.INSTANCE.getType(TurretAmmunitions.FLUXCELL));
     }
 
     @Override
@@ -109,7 +106,7 @@ public abstract class TurretAmmoFluxCell
 
         @Override
         public UUID getRecipeId() {
-            return TurretAssemblyRecipes.BULLET_SNG;
+            return TurretAssemblyRecipes.FLUXCELL_SNG;
         }
     }
 
@@ -122,7 +119,7 @@ public abstract class TurretAmmoFluxCell
 
         @Override
         public UUID getRecipeId() {
-            return TurretAssemblyRecipes.BULLET_MTP;
+            return TurretAssemblyRecipes.FLUXCELL_MTP;
         }
     }
 }

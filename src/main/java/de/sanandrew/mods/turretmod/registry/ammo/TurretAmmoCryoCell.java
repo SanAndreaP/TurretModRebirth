@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.registry.ammo;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCryoCell;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
@@ -21,19 +22,8 @@ import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public abstract class TurretAmmoCryoCell
-        implements TurretAmmo<EntityProjectileCryoCell>
-{
-    public static final UUID CELL_MK1_UUID = UUID.fromString("0B567594-E5CA-48B5-A538-E87C213F439C");
-    public static final UUID PACK_MK1_UUID = UUID.fromString("7DE80386-CE9E-4039-ADA6-F7131996E522");
-    public static final UUID CELL_MK2_UUID = UUID.fromString("CB5BE826-0480-4D30-AF1F-23BE19329B37");
-    public static final UUID PACK_MK2_UUID = UUID.fromString("82D1E748-ABDE-4911-96B3-B43E5AA716CB");
-    public static final UUID CELL_MK3_UUID = UUID.fromString("3181E328-0151-44E0-ADD2-5FCB6B724AEC");
-    public static final UUID PACK_MK3_UUID = UUID.fromString("399B8468-B68F-40FD-B442-156760161283");
-    public static final UUID TYPE_MK1_UUID = CELL_MK1_UUID;
-    public static final UUID TYPE_MK2_UUID = CELL_MK2_UUID;
-    public static final UUID TYPE_MK3_UUID = CELL_MK3_UUID;
-
-    private final String name;
+        implements ITurretAmmo<EntityProjectileCryoCell>
+{private final String name;
     private final UUID uuid;
     private final int capacity;
     private final ResourceLocation itemModel;
@@ -77,7 +67,7 @@ public abstract class TurretAmmoCryoCell
 
     @Override
     public UUID getGroupId() {
-        return TYPE_MK1_UUID;
+        return TurretAmmunitions.CRYOCELL_MK1;
     }
 
     @Override
@@ -88,7 +78,7 @@ public abstract class TurretAmmoCryoCell
     @Override
     @Nonnull
     public ItemStack getStoringAmmoItem() {
-        return ItemRegistry.turret_ammo.getAmmoItem(1, AmmoRegistry.INSTANCE.getType(this.getTypeId()));
+        return ItemRegistry.turret_ammo.getAmmoItem(1, TurretAmmoRegistry.INSTANCE.getType(this.getTypeId()));
     }
 
     @Override
@@ -100,12 +90,12 @@ public abstract class TurretAmmoCryoCell
             extends TurretAmmoCryoCell
     {
         public SingleMK1() {
-            super("cryocell_1", CELL_MK1_UUID, 1);
+            super("cryocell_1", TurretAmmunitions.CRYOCELL_MK1, 1);
         }
 
         @Override
         public UUID getTypeId() {
-            return TYPE_MK1_UUID;
+            return TurretAmmunitions.CRYOCELL_MK1;
         }
 
         @Override
@@ -123,12 +113,12 @@ public abstract class TurretAmmoCryoCell
             extends TurretAmmoCryoCell
     {
         public MultiMK1() {
-            super("cryocell_pack_1", PACK_MK1_UUID, 16);
+            super("cryocell_pack_1", TurretAmmunitions.CRYOCELL_PACK_MK1, 16);
         }
 
         @Override
         public UUID getTypeId() {
-            return TYPE_MK1_UUID;
+            return TurretAmmunitions.CRYOCELL_MK1;
         }
 
         @Override
@@ -146,12 +136,12 @@ public abstract class TurretAmmoCryoCell
             extends TurretAmmoCryoCell
     {
         public SingleMK2() {
-            super("cryocell_2", CELL_MK2_UUID, 1);
+            super("cryocell_2", TurretAmmunitions.CRYOCELL_MK2, 1);
         }
 
         @Override
         public UUID getTypeId() {
-            return TYPE_MK2_UUID;
+            return TurretAmmunitions.CRYOCELL_MK2;
         }
 
         @Override
@@ -169,12 +159,12 @@ public abstract class TurretAmmoCryoCell
             extends TurretAmmoCryoCell
     {
         public MultiMK2() {
-            super("cryocell_pack_2", PACK_MK2_UUID, 16);
+            super("cryocell_pack_2", TurretAmmunitions.CRYOCELL_PACK_MK2, 16);
         }
 
         @Override
         public UUID getTypeId() {
-            return TYPE_MK2_UUID;
+            return TurretAmmunitions.CRYOCELL_MK2;
         }
 
         @Override
@@ -192,12 +182,12 @@ public abstract class TurretAmmoCryoCell
             extends TurretAmmoCryoCell
     {
         public SingleMK3() {
-            super("cryocell_3", CELL_MK3_UUID, 1);
+            super("cryocell_3", TurretAmmunitions.CRYOCELL_MK3, 1);
         }
 
         @Override
         public UUID getTypeId() {
-            return TYPE_MK3_UUID;
+            return TurretAmmunitions.CRYOCELL_MK3;
         }
 
         @Override
@@ -215,12 +205,12 @@ public abstract class TurretAmmoCryoCell
             extends TurretAmmoCryoCell
     {
         public MultiMK3() {
-            super("cryocell_pack_3", PACK_MK3_UUID, 16);
+            super("cryocell_pack_3", TurretAmmunitions.CRYOCELL_PACK_MK3, 16);
         }
 
         @Override
         public UUID getTypeId() {
-            return TYPE_MK3_UUID;
+            return TurretAmmunitions.CRYOCELL_MK3;
         }
 
         @Override

@@ -1,8 +1,7 @@
 package de.sanandrew.mods.turretmod.api.assembly;
 
-import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntryItem;
+import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntry;
 import net.minecraft.block.Block;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -12,19 +11,19 @@ import javax.annotation.Nonnull;
 
 public interface IRecipeEntry
 {
-    RecipeEntryItem put(Item... items);
+    RecipeEntry put(Item... items);
 
-    RecipeEntryItem put(Block... blocks);
+    RecipeEntry put(Block... blocks);
 
-    RecipeEntryItem put(@Nonnull ItemStack... stacks);
+    RecipeEntry put(@Nonnull ItemStack... stacks);
 
-    RecipeEntryItem put(String... oreDictNames);
+    RecipeEntry put(String... oreDictNames);
 
-    RecipeEntryItem drawTooltip();
+    RecipeEntry drawTooltip();
 
     boolean shouldDrawTooltip();
 
-    RecipeEntryItem copy();
+    RecipeEntry copy();
 
     boolean isItemFitting(@Nonnull ItemStack stack);
 

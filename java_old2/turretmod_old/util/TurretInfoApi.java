@@ -13,7 +13,6 @@ import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.api.TurretAmmo;
 import de.sanandrew.mods.turretmod.api.TurretHealthpack;
 import de.sanandrew.mods.turretmod.api.TurretInfo;
-import de.sanandrew.mods.turretmod.api.registry.TurretAmmoRegistry;
 import de.sanandrew.mods.turretmod.api.registry.TurretHealthpackRegistry;
 import net.minecraft.item.ItemStack;
 
