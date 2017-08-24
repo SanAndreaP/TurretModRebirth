@@ -76,7 +76,7 @@ public class UpgradeAmmoStorage
             if( attrib.getModifier(modifier.getID()) != null ) {
                 attrib.removeModifier(modifier);
                 turret.getTargetProcessor().dropExcessAmmo();
-                TmrConstants.utils.updateTurretState(turret);
+                EntityTurret.utils.updateTurretState(turret);
             }
         }
     }

@@ -9,8 +9,8 @@
 package de.sanandrew.mods.turretmod.client.gui.tinfo;
 
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
+import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
-import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -37,7 +37,7 @@ public class GuiButtonEntry
     public GuiButtonEntry(int id, int entryId, int x, int y, GuiTurretInfo gui) {
         super(id, x, y, 156, 14, "");
         this.entIndex = entryId;
-        TurretInfoEntry entry = gui.category.getEntry(id);
+        ITurretInfoEntry entry = gui.category.getEntry(id);
         this.icon = entry.getIcon();
         this.displayString = Lang.translate(entry.getTitle());
     }

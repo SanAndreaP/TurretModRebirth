@@ -43,7 +43,7 @@ public class TurretModRebirth
     private static final String MOD_PROXY_CLIENT = "de.sanandrew.mods.turretmod.client.util.ClientProxy";
     private static final String MOD_PROXY_COMMON = "de.sanandrew.mods.turretmod.util.CommonProxy";
 
-    private static final List<ITmrPlugin> PLUGINS = new ArrayList<>();
+    public static final List<ITmrPlugin> PLUGINS = new ArrayList<>();
 
     @Mod.Instance(TmrConstants.ID)
     public static TurretModRebirth instance;
@@ -105,5 +105,7 @@ public class TurretModRebirth
                 TmrConstants.LOG.error("Failed to load: {}", asmData.getClassName(), e);
             }
         }
+
+        PLUGINS.sort((p1, p2) -> p1 instanceof TmrInternalPlugin ? 1 : p2 instanceof TmrInternalPlugin ? -1 : 0);
     }
 }

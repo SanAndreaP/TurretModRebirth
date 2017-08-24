@@ -49,8 +49,8 @@ public final class UpgradeRegistry
 
     public static final UpgradeRegistry INSTANCE = new UpgradeRegistry();
 
-    private Map<UUID, TurretUpgrade> upgradeToUuidMap = new HashMap<>();
-    private Map<TurretUpgrade, UUID> uuidToUpgradeMap = new HashMap<>();
+    private Map<UUID, TurretUpgrade> uuidToUpgradeMap = new HashMap<>();
+    private Map<TurretUpgrade, UUID> upgradeToUuidMap = new HashMap<>();
     private List<TurretUpgrade> upgradeList = new ArrayList<>();
 
     private static TurretUpgrade emptyInst;
@@ -58,21 +58,21 @@ public final class UpgradeRegistry
     private List<String> errored = new ArrayList<>();
 
     public void registerUpgrade(UUID uuid, TurretUpgrade upgrade) {
-        if( this.upgradeToUuidMap.containsKey(uuid) ) {
-            this.upgradeList.set(this.upgradeList.indexOf(this.upgradeToUuidMap.get(uuid)), upgrade);
+        if( this.uuidToUpgradeMap.containsKey(uuid) ) {
+            this.upgradeList.set(this.upgradeList.indexOf(this.uuidToUpgradeMap.get(uuid)), upgrade);
         } else {
             this.upgradeList.add(upgrade);
         }
-        this.upgradeToUuidMap.put(uuid, upgrade);
-        this.uuidToUpgradeMap.put(upgrade, uuid);
+        this.uuidToUpgradeMap.put(uuid, upgrade);
+        this.upgradeToUuidMap.put(upgrade, uuid);
     }
 
     public TurretUpgrade getUpgrade(UUID uuid) {
-        return MiscUtils.defIfNull(this.upgradeToUuidMap.get(uuid), emptyInst);
+        return MiscUtils.defIfNull(this.uuidToUpgradeMap.get(uuid), emptyInst);
     }
 
     public UUID getUpgradeUUID(TurretUpgrade upg) {
-        return MiscUtils.defIfNull(this.uuidToUpgradeMap.get(upg), EMPTY);
+        return MiscUtils.defIfNull(this.upgradeToUuidMap.get(upg), EMPTY);
     }
 
     public UUID getUpgradeUUID(@Nonnull ItemStack stack) {
@@ -100,8 +100,8 @@ public final class UpgradeRegistry
         return this.getUpgrade(this.getUpgradeUUID(stack));
     }
 
-    public TurretUpgrade[] getRegisteredTypes() {
-        return this.upgradeList.toArray(new TurretUpgrade[this.upgradeList.size()]);
+    public List<TurretUpgrade> getRegisteredTypes() {
+        return new ArrayList<>(this.upgradeList);
     }
 
     public void initialize() {
@@ -123,7 +123,7 @@ public final class UpgradeRegistry
         this.registerUpgrade(ENDER_MEDIUM, new UpgradeEnderMedium());
         this.registerUpgrade(FUEL_PURIFY, new UpgradeFuelPurifier());
 
-        emptyInst = this.upgradeToUuidMap.get(EMPTY);
+        emptyInst = this.uuidToUpgradeMap.get(EMPTY);
     }
 
     @Nonnull

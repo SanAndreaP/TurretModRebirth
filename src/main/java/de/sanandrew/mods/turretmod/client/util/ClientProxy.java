@@ -26,6 +26,7 @@ import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuPlayerTargets;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuUpgrades;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.TurretInfoCategory;
+import de.sanandrew.mods.turretmod.client.gui.tinfo.TurretInfoCategoryRegistry;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretBase;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretFlamethrower;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretLaser;
@@ -62,6 +63,7 @@ import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.CommonProxy;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleSmokeNormal;
@@ -121,7 +123,7 @@ public class ClientProxy
     public void postInit(FMLPostInitializationEvent event) {
         super.postInit(event);
 
-        TurretInfoCategory.initialize();
+        TurretModRebirth.PLUGINS.forEach(plugin -> plugin.registerTurretInfoCategories(TurretInfoCategoryRegistry.INSTANCE));
     }
 
     @Override

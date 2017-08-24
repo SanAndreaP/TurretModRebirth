@@ -12,7 +12,7 @@ import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
-import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
+import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
 import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteHelper;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -26,6 +26,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import java.util.Set;
 
 @SideOnly(Side.CLIENT)
 public class TurretInfoEntryGenerator
@@ -43,8 +44,8 @@ public class TurretInfoEntryGenerator
     private ItemStack tooltipItem;
 
     @Override
-    public void drawPage(GuiTurretInfo gui, int mouseX, int mouseY, int scrollY, float partTicks) {
-        super.drawPage(gui, mouseX, mouseY, scrollY, partTicks);
+    public void drawPage(int mouseX, int mouseY, int scrollY, float partTicks) {
+        super.drawPage(mouseX, mouseY, scrollY, partTicks);
 
         this.drawHeight = super.getPageHeight() + 3;
 
@@ -58,11 +59,11 @@ public class TurretInfoEntryGenerator
             int x = i % maxItems;
             int y = i / maxItems;
 
-            this.drawFuelItem(gui, 3 + 18 * x, this.drawHeight + 18 * y, mouseX, mouseY, scrollY, this.fuelItems.get(i));
+            this.drawFuelItem(3 + 18 * x, this.drawHeight + 18 * y, mouseX, mouseY, scrollY, this.fuelItems.get(i));
         }
 
         if( ItemStackUtils.isValid(this.tooltipItem) ) {
-            this.drawTooltipFuel(gui.mc, scrollY);
+            this.drawTooltipFuel(this.guiInfo.__getMc(), scrollY);
         }
 
         this.drawHeight += (fuelItems.size() / maxItems) * 18 + 20 + 48;
@@ -87,10 +88,10 @@ public class TurretInfoEntryGenerator
         GlStateManager.popMatrix();
     }
 
-    private void drawFuelItem(GuiTurretInfo gui, int x, int y, int mouseX, int mouseY, int scrollY, @Nonnull ItemStack stack) {
-        gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
+    private void drawFuelItem(int x, int y, int mouseX, int mouseY, int scrollY, @Nonnull ItemStack stack) {
+        this.guiInfo.__getMc().getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        gui.drawTexturedModalRect(x, y, 192, 0, 18, 18);
+        this.guiInfo.__drawTexturedRect(x, y, 192, 0, 18, 18);
 
         GlStateManager.pushMatrix();
         boolean mouseOver = mouseY >= 0 && mouseY < MAX_ENTRY_HEIGHT && mouseX >= x && mouseX < x + 18 && mouseY >= y - scrollY && mouseY < y + 18 - scrollY;
@@ -101,7 +102,7 @@ public class TurretInfoEntryGenerator
 
         GlStateManager.translate(x, y, 32.0F);
 
-        RenderUtils.renderStackInGui(stack, 1, 1, 1.0D, gui.mc.fontRenderer);
+        RenderUtils.renderStackInGui(stack, 1, 1, 1.0D, this.guiInfo.__getMc().fontRenderer);
 
         if( mouseOver ) {
             GlStateManager.translate(0, 0, 64.0F);
@@ -112,10 +113,11 @@ public class TurretInfoEntryGenerator
     }
 
     @Override
-    public void initEntry(GuiTurretInfo gui) {
+    public void initEntry(IGuiTurretInfo gui) {
         super.initEntry(gui);
 
-        this.fuelItems = NonNullList.from(ItemStack.EMPTY, ElectrolyteHelper.getFuelMap().keySet().stream().toArray(ItemStack[]::new));
+        Set<ItemStack> fuelList = ElectrolyteHelper.getFuelMap().keySet();
+        this.fuelItems = NonNullList.from(ItemStack.EMPTY, fuelList.toArray(new ItemStack[fuelList.size()]));
     }
 
     @Override

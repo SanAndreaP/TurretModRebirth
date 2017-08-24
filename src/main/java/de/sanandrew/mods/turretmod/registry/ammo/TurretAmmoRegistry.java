@@ -125,6 +125,11 @@ public final class TurretAmmoRegistry
     }
 
     @Override
+    public List<UUID> getRegisteredGroups() {
+        return new ArrayList<>(this.ammoGroupsFromUUID.keySet());
+    }
+
+    @Override
     public ITurretAmmo[] getTypes(UUID groupId) {
         List<ITurretAmmo> ammoList = MiscUtils.defIfNull(this.ammoGroupsFromUUID.get(groupId), new ArrayList<>(0));
         return ammoList.toArray(new ITurretAmmo[ammoList.size()]);

@@ -10,7 +10,6 @@ package de.sanandrew.mods.turretmod.api.turret;
 
 import com.mojang.authlib.GameProfile;
 import de.sanandrew.mods.turretmod.api.ITmrUtils;
-import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.repairkit.IRepairKitRegistry;
 import de.sanandrew.mods.turretmod.api.repairkit.TurretRepairKit;
 import de.sanandrew.mods.turretmod.api.EnumGui;
@@ -44,6 +43,7 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
+import java.util.function.Function;
 
 public abstract class EntityTurret
         extends EntityLiving
@@ -54,11 +54,11 @@ public abstract class EntityTurret
 
     public static final DataParameter<Boolean> SHOT_CHNG = EntityDataManager.createKey(EntityTurret.class, DataSerializers.BOOLEAN);
 
-    public static SoundEvent hurtSound;
-    public static SoundEvent deathSound;
-    public static SoundEvent collectSound;
-    public static IRepairKitRegistry repairKitRegistry;
-    public static ITmrUtils utils;
+    public static SoundEvent hurtSound; // populte by internal plugin
+    public static SoundEvent deathSound; // populte by internal plugin
+    public static SoundEvent collectSound; // populte by internal plugin
+    public static IRepairKitRegistry repairKitRegistry; // populte by internal plugin
+    public static ITmrUtils utils; // populte by internal plugin
 
     public boolean isUpsideDown;
     public boolean showRange;
@@ -215,6 +215,7 @@ public abstract class EntityTurret
             this.world.profiler.endSection();
         }
 
+        Function<Float, Float> wrap360 = rot -> (rot < 0.0F ? 360.0F - Math.abs(rot) : rot) % 360.0F;
         if( this.isActive() ) {
             if( !this.world.isRemote ) {
                 this.targetProc.onTick();
@@ -226,10 +227,8 @@ public abstract class EntityTurret
                 this.faceEntity(this.targetProc.getTarget(), 10.0F, this.getVerticalFaceSpeed());
             } else if( this.world.isRemote && utils.getPassengersOfClass(this, EntityPlayer.class).size() < 1 ) {
                 this.rotationYawHead += 1.0F;
-                if( this.rotationYawHead >= 360.0D ) {
-                    this.rotationYawHead -= 360.0D;
-                    this.prevRotationYawHead -= 360.0D;
-                }
+                this.rotationYawHead = wrap360.apply(this.rotationYawHead);
+                this.prevRotationYawHead = wrap360.apply(this.prevRotationYawHead);
 
                 if( this.rotationPitch < 0.0F ) {
                     this.rotationPitch += 5.0F;
@@ -244,15 +243,18 @@ public abstract class EntityTurret
                 }
             }
         } else {
-            if( this.rotationYawHead > 0.0F ) {
+            this.rotationYawHead = wrap360.apply(this.rotationYawHead);
+            this.prevRotationYawHead = wrap360.apply(this.prevRotationYawHead);
+            float closestRot = (MathHelper.ceil(this.rotationYawHead) / 90) * 90.0F;
+            if( this.rotationYawHead > closestRot ) {
                 this.rotationYawHead -= 5.0F;
-                if( this.rotationYawHead < 0.0F ) {
-                    this.rotationYawHead = 0.0F;
+                if( this.rotationYawHead < closestRot ) {
+                    this.rotationYawHead = closestRot;
                 }
-            } else if( this.rotationYawHead < 0.0F ) {
+            } else if( this.rotationYawHead < closestRot ) {
                 this.rotationYawHead += 5.0F;
-                if( this.rotationYawHead > 0.0F ) {
-                    this.rotationYawHead = 0.0F;
+                if( this.rotationYawHead > closestRot ) {
+                    this.rotationYawHead = closestRot;
                 }
             }
 

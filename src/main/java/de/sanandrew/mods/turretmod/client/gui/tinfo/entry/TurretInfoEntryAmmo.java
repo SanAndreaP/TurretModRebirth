@@ -8,8 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
-import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
-import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
+import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
+import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
 import de.sanandrew.mods.turretmod.client.util.ShaderHelper;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoRegistry;
@@ -41,7 +41,7 @@ import java.util.UUID;
 
 @SideOnly(Side.CLIENT)
 public class TurretInfoEntryAmmo
-        extends TurretInfoEntry
+        implements ITurretInfoEntry
 {
     private int drawHeight;
     private int shownAmmo;
@@ -49,54 +49,68 @@ public class TurretInfoEntryAmmo
     private List<GuiButtonAmmoItem> ammoBtn;
     private long lastTimestamp;
 
+    private IGuiTurretInfo guiInfo;
+    private final ItemStack icon;
+    private final String title;
+
     public TurretInfoEntryAmmo(UUID groupId) {
-        this(TurretAmmoRegistry.INSTANCE.getTypes(groupId));
+        ITurretAmmo[] ammos = TurretAmmoRegistry.INSTANCE.getTypes(groupId);
+
+        this.ammos = ammos;
+        this.title = ammos[0].getInfoName();
+        this.icon = this.ammos[0].getStoringAmmoItem();
     }
 
-    private TurretInfoEntryAmmo(ITurretAmmo[] ammos) {
-        super(ammos[0].getStoringAmmoItem(), Lang.TINFO_ENTRY_AMMO_NAME.get(ammos[0].getInfoName()));
-        this.ammos = ammos;
+    @Nonnull
+    @Override
+    public ItemStack getIcon() {
+        return this.icon;
+    }
+
+    @Override
+    public String getTitle() {
+        return Lang.TINFO_ENTRY_AMMO_NAME.get(this.title);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void initEntry(GuiTurretInfo gui) {
-        super.initEntry(gui);
-
+    public void initEntry(IGuiTurretInfo gui) {
+        this.guiInfo = gui;
         this.ammoBtn = new ArrayList<>(MathHelper.ceil(this.ammos.length * (1/0.75D)));
         this.shownAmmo = 0;
         for( int i = 0; i < this.ammos.length; i++ ) {
-            GuiButtonAmmoItem btn = new GuiButtonAmmoItem(gui.getButtonList().size(), gui.entryX + i*16, gui.entryY, i);
+            GuiButtonAmmoItem btn = new GuiButtonAmmoItem(gui.__getButtons().size(), gui.getEntryX() + i*16, gui.getEntryY(), i);
             this.ammoBtn.add(btn);
             btn.enabled = i != this.shownAmmo;
-            gui.getButtonList().add(btn);
+            gui.__getButtons().add(btn);
         }
     }
 
     @Override
-    public void drawPage(GuiTurretInfo gui, int mouseX, int mouseY, int scrollY, float partTicks) {
+    public void drawPage(int mouseX, int mouseY, int scrollY, float partTicks) {
         ITurretAmmo<?> ammo = this.ammos[this.shownAmmo];
+        Minecraft mc = this.guiInfo.__getMc();
 
-        gui.mc.fontRenderer.drawString(TextFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 20, 0xFF0080BB);
+        mc.fontRenderer.drawString(TextFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 20, 0xFF0080BB);
         Gui.drawRect(2, 30, MAX_ENTRY_WIDTH - 2, 31, 0xFF0080BB);
 
-        gui.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
+        mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        gui.drawTexturedModalRect(2, 34, 192, 18, 34, 34);
+        this.guiInfo.__drawTexturedRect(2, 34, 192, 18, 34, 34);
 
-        RenderUtils.renderStackInGui(ItemRegistry.turret_ammo.getAmmoItem(1, ammo), 3, 35, 2.0F);
+        this.guiInfo.renderStack(ItemRegistry.turret_ammo.getAmmoItem(1, ammo), 3, 35, 2.0F);
 
-        gui.mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_ROUNDS.get()),                          42, 34, 0xFF6A6A6A, false);
-        gui.mc.fontRenderer.drawString(String.format("%d", ammo.getAmmoCapacity()),                            45, 43, 0xFF000000, false);
-        gui.mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_DPS.get()),                             42, 54, 0xFF6A6A6A, false);
-        gui.mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_HEALTHVAL.get(), ammo.getInfoDamage()), 45, 63, 0xFF000000, false);
-        gui.mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_TURRET.get()),                          42, 74, 0xFF6A6A6A, false);
-        gui.mc.fontRenderer.drawString(Lang.translateEntityCls(ammo.getTurret()),                              45, 83, 0xFF000000, false);
-        gui.mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_CRAFTING.get()),                        42, 94, 0xFF6A6A6A, false);
+        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_ROUNDS.get()),                          42, 34, 0xFF6A6A6A, false);
+        mc.fontRenderer.drawString(String.format("%d", ammo.getAmmoCapacity()),                            45, 43, 0xFF000000, false);
+        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_DPS.get()),                             42, 54, 0xFF6A6A6A, false);
+        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_HEALTHVAL.get(), ammo.getInfoDamage()), 45, 63, 0xFF000000, false);
+        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_TURRET.get()),                          42, 74, 0xFF6A6A6A, false);
+        mc.fontRenderer.drawString(Lang.translateEntityCls(ammo.getTurret()),                              45, 83, 0xFF000000, false);
+        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_CRAFTING.get()),                        42, 94, 0xFF6A6A6A, false);
 
         String text = Lang.translate(Lang.TINFO_ENTRY_AMMO_DESC.get(ammo.getInfoName())).replace("\\n", "\n");
-        gui.mc.fontRenderer.drawSplitString(text, 2, 117, MAX_ENTRY_WIDTH - 2, 0xFF000000);
-        this.drawHeight = gui.mc.fontRenderer.getWordWrappedHeight(text, MAX_ENTRY_WIDTH - 2) + 2;
+        mc.fontRenderer.drawSplitString(text, 2, 117, MAX_ENTRY_WIDTH - 2, 0xFF000000);
+        this.drawHeight = mc.fontRenderer.getWordWrappedHeight(text, MAX_ENTRY_WIDTH - 2) + 2;
 
         Gui.drawRect(2, 114, MAX_ENTRY_WIDTH - 2, 115, 0xFF0080BB);
 
@@ -104,7 +118,7 @@ public class TurretInfoEntryAmmo
         if( recipeEntry != null ) {
             for( int i = 0; i < recipeEntry.resources.length; i++ ) {
                 ItemStack[] stacks = recipeEntry.resources[i].getEntryItemStacks();
-                drawMiniItem(gui, 45 + 10 * i, 103, mouseX, mouseY, scrollY, stacks[(int) (this.lastTimestamp / 1000L % stacks.length)], recipeEntry.resources[i].shouldDrawTooltip());
+                this.guiInfo.drawMiniItem(45 + 10 * i, 103, mouseX, mouseY, scrollY, stacks[(int) (this.lastTimestamp / 1000L % stacks.length)], recipeEntry.resources[i].shouldDrawTooltip());
             }
         }
 
@@ -133,10 +147,11 @@ public class TurretInfoEntryAmmo
             for( GuiButtonAmmoItem ammoBtn : this.ammoBtn ) {
                 ammoBtn.enabled = ammoBtn.ammoIndex != this.shownAmmo;
             }
+
             return true;
         }
 
-        return super.actionPerformed(btn);
+        return false;
     }
 
     private class GuiButtonAmmoItem
@@ -182,7 +197,7 @@ public class TurretInfoEntryAmmo
                     }
 
                     ShaderHelper.useShader(ShaderHelper.grayscaleItem, this::drawGrayscale);
-                    RenderUtils.renderStackInGui(this.stack, this.x, this.y, 1.0F);
+                    TurretInfoEntryAmmo.this.guiInfo.renderStack(this.stack, this.x, this.y, 1.0F);
                     ShaderHelper.releaseShader();
 
                     if(shaders) {
@@ -192,7 +207,7 @@ public class TurretInfoEntryAmmo
                     }
                 } else {
                     Gui.drawRect(this.x, this.y, this.x + this.width, this.y + this.height, 0x80FFFFFF);
-                    RenderUtils.renderStackInGui(this.stack, this.x, this.y, 1.0F);
+                    TurretInfoEntryAmmo.this.guiInfo.renderStack(this.stack, this.x, this.y, 1.0F);
                 }
                 GlStateManager.popMatrix();
             }

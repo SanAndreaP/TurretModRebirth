@@ -51,7 +51,7 @@ public class ItemTurretUpgrade
     @SuppressWarnings("unchecked")
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
         if( this.isInCreativeTab(tab) ) {
-            items.addAll(Arrays.stream(UpgradeRegistry.INSTANCE.getRegisteredTypes()).map(UpgradeRegistry.INSTANCE::getUpgradeItem).collect(Collectors.toList()));
+            items.addAll(UpgradeRegistry.INSTANCE.getRegisteredTypes().stream().map(UpgradeRegistry.INSTANCE::getUpgradeItem).collect(Collectors.toList()));
         }
     }
 }

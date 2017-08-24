@@ -8,7 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
-import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
+import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
+import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoRegistry;
@@ -29,13 +30,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class TurretInfoEntryTurret
-        extends TurretInfoEntry
+        implements ITurretInfoEntry
 {
     private int drawHeight;
     private float rotation;
@@ -44,53 +46,73 @@ public class TurretInfoEntryTurret
     private WeakReference<EntityTurret> turretRenderCache;
     private TurretInfoValues values;
 
+    private IGuiTurretInfo guiInfo;
+    private final ItemStack icon;
+
     public TurretInfoEntryTurret(Class<? extends EntityTurret> turret) {
         this(TurretRegistry.INSTANCE.getInfo(turret));
         this.turretClass = turret;
     }
 
     private TurretInfoEntryTurret(TurretInfo info) {
-        super(ItemRegistry.turret_placer.getTurretItem(1, info), Lang.translateEntityCls(info.getTurretClass()));
         this.values = new TurretInfoValues(info);
+        this.icon = ItemRegistry.turret_placer.getTurretItem(1, info);
     }
 
     @Override
-    public void drawPage(GuiTurretInfo gui, int mouseX, int mouseY, int scrollY, float partTicks) {
+    public void initEntry(IGuiTurretInfo gui) {
+        this.guiInfo = gui;
+    }
+
+    @Override
+    public String getTitle() {
+        return Lang.translateEntityCls(this.turretClass);
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack getIcon() {
+        return this.icon;
+    }
+
+    @Override
+    public void drawPage(int mouseX, int mouseY, int scrollY, float partTicks) {
         int turretHeight = 82;
         int valueHeight = 113;
         int descStart;
         int descHeight;
+        Minecraft mc = guiInfo.__getMc();
 
-        gui.mc.fontRenderer.drawString(TextFormatting.ITALIC + this.values.name, 2, 2, 0xFF0080BB);
+        mc.fontRenderer.drawString(TextFormatting.ITALIC + this.values.name, 2, 2, 0xFF0080BB);
         Gui.drawRect(2, 12, MAX_ENTRY_WIDTH - 2, 13, 0xFF0080BB);
 
-        gui.doEntryScissoring(2, 15, 54, 82);
+        this.guiInfo.doEntryScissoring(2, 15, 54, 82);
 
         Gui.drawRect(0, 0, MAX_ENTRY_WIDTH, MAX_ENTRY_HEIGHT, 0xFF000000);
-        this.drawTurret(gui.mc, 28, 35);
+        this.drawTurret(mc, 28, 35);
 
-        gui.doEntryScissoring();
+        this.guiInfo.doEntryScissoring();
 
-        gui.mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_HEALTH.get()),                         60, 15, 0xFF6A6A6A, false);
-        gui.mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_HEALTHVAL.get(), this.values.health),  63, 24, 0xFF000000, false);
-        gui.mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_RANGE.get()),                          60, 35, 0xFF6A6A6A, false);
-        gui.mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_RANGEVAL.get(), this.values.range),    63, 44, 0xFF000000, false);
-        gui.mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_AMMOCAP.get()),                        60, 55, 0xFF6A6A6A, false);
-        gui.mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_ROUNDSVAL.get(), this.values.ammoCap), 63, 64, 0xFF000000, false);
-        gui.mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_AMMOUSE.get()),                        60, 75, 0xFF6A6A6A, false);
-        gui.mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_CRAFTING.get()),                       60, 95, 0xFF6A6A6A, false);
+        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_HEALTH.get()),                         60, 15, 0xFF6A6A6A, false);
+        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_HEALTHVAL.get(), this.values.health),  63, 24, 0xFF000000, false);
+        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_RANGE.get()),                          60, 35, 0xFF6A6A6A, false);
+        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_RANGEVAL.get(), this.values.range),    63, 44, 0xFF000000, false);
+        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_AMMOCAP.get()),                        60, 55, 0xFF6A6A6A, false);
+        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_ROUNDSVAL.get(), this.values.ammoCap), 63, 64, 0xFF000000, false);
+        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_AMMOUSE.get()),                        60, 75, 0xFF6A6A6A, false);
+        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_CRAFTING.get()),                       60, 95, 0xFF6A6A6A, false);
 
         descStart = Math.max(turretHeight, valueHeight);
 
         Gui.drawRect(2, 2 + descStart, MAX_ENTRY_WIDTH - 2, 3 + descStart, 0xFF0080BB);
-        gui.mc.fontRenderer.drawSplitString(this.values.desc, 2, 5 + descStart, MAX_ENTRY_WIDTH - 2, 0xFF000000);
-        descHeight = gui.mc.fontRenderer.getWordWrappedHeight(this.values.desc, MAX_ENTRY_WIDTH - 4) + 7;
+        mc.fontRenderer.drawSplitString(this.values.desc, 2, 5 + descStart, MAX_ENTRY_WIDTH - 2, 0xFF000000);
+        descHeight = mc.fontRenderer.getWordWrappedHeight(this.values.desc, MAX_ENTRY_WIDTH - 4) + 7;
 
         for( int i = 0; i < this.values.ammoStacks.length; i++ ) {
-            drawMiniItem(gui, 63 + 10 * i, 84, mouseX, mouseY, scrollY, this.values.ammoStacks[i], true);
+            this.guiInfo.drawMiniItem(63 + 10 * i, 84, mouseX, mouseY, scrollY, this.values.ammoStacks[i], true);
         }
         for( int i = 0; i < this.values.recipeStacks.length; i++ ) {
-            this.drawItemRecipe(gui, 63 + 10 * i, 104, mouseX, mouseY, scrollY, this.values.recipeStacks[i]);
+            this.drawItemRecipe(63 + 10 * i, 104, mouseX, mouseY, scrollY, this.values.recipeStacks[i]);
         }
 
         this.drawHeight = descStart + descHeight;
@@ -151,10 +173,10 @@ public class TurretInfoEntryTurret
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
-    private void drawItemRecipe(GuiTurretInfo gui, int x, int y, int mouseX, int mouseY, int scrollY, IRecipeEntry entryItem) {
+    private void drawItemRecipe(int x, int y, int mouseX, int mouseY, int scrollY, IRecipeEntry entryItem) {
         ItemStack[] entryStacks = entryItem.getEntryItemStacks();
         ItemStack stack = entryStacks[(int)((this.lastTimestamp / 1000L) % entryStacks.length)];
-        drawMiniItem(gui, x, y, mouseX, mouseY, scrollY, stack, entryItem.shouldDrawTooltip());
+        this.guiInfo.drawMiniItem(x, y, mouseX, mouseY, scrollY, stack, entryItem.shouldDrawTooltip());
     }
 
     private static final class TurretInfoValues

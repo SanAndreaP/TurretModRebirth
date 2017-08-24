@@ -9,8 +9,12 @@
 package de.sanandrew.mods.turretmod.client.gui.tinfo;
 
 import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
+import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntry;
+import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
+import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoCategory;
+import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -22,6 +26,7 @@ import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -29,6 +34,7 @@ import org.apache.logging.log4j.Level;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -38,7 +44,7 @@ import java.util.List;
 @SideOnly(Side.CLIENT)
 public class GuiTurretInfo
         extends GuiScreen
-        implements GuiYesNoCallback
+        implements GuiYesNoCallback, IGuiTurretInfo
 {
     private static final int X_SIZE = 192;
     private static final int Y_SIZE = 236;
@@ -46,9 +52,9 @@ public class GuiTurretInfo
     private int guiLeft;
     private int guiTop;
 
-    public final TurretInfoCategory category;
-    public TurretInfoCategory categoryHighlight;
-    public final TurretInfoEntry entry;
+    public final ITurretInfoCategory category;
+    public ITurretInfoCategory categoryHighlight;
+    public final ITurretInfoEntry entry;
 
     public float scroll = 0.0F;
     private int dHeight;
@@ -60,7 +66,7 @@ public class GuiTurretInfo
     public List<GuiButton> entryButtons;
 
     public GuiTurretInfo(int category, int entry) {
-        this.category = category < 0 ? null : TurretInfoCategory.getCategory(category);
+        this.category = category < 0 ? null : TurretInfoCategoryRegistry.INSTANCE.getCategory(category);
         this.entry = entry < 0 ? null : (this.category != null ? this.category.getEntry(entry) : null);
         this.entryButtons = new ArrayList<>();
     }
@@ -83,7 +89,7 @@ public class GuiTurretInfo
         this.buttonList.add(new GuiButtonNav(this.buttonList.size(), this.guiLeft + 114, this.guiTop + 206, 2));
 
         if( this.category == null ) {
-            int catLng = TurretInfoCategory.getCategoryCount();
+            int catLng = TurretInfoCategoryRegistry.INSTANCE.getCategoryCount();
             for( int i = 0; i < catLng; i++ ) {
                 this.buttonList.add(new GuiButtonCategory(this.buttonList.size(), i, this.guiLeft + 12 + 32 * i, this.guiTop + 24, this));
             }
@@ -110,10 +116,10 @@ public class GuiTurretInfo
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, X_SIZE, Y_SIZE);
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(this.entryX + TurretInfoEntry.MAX_ENTRY_WIDTH, this.entryY, 0.0F);
-        drawRect(0, 0, 6, TurretInfoEntry.MAX_ENTRY_HEIGHT, 0x30000000);
+        GlStateManager.translate(this.entryX + ITurretInfoEntry.MAX_ENTRY_WIDTH, this.entryY, 0.0F);
+        drawRect(0, 0, 6, ITurretInfoEntry.MAX_ENTRY_HEIGHT, 0x30000000);
         if( this.dHeight > 0 ) {
-            drawRect(0, Math.round((TurretInfoEntry.MAX_ENTRY_HEIGHT - 16) * this.scroll), 6, Math.round((TurretInfoEntry.MAX_ENTRY_HEIGHT - 16) * this.scroll + 16), 0x800000FF);
+            drawRect(0, Math.round((ITurretInfoEntry.MAX_ENTRY_HEIGHT - 16) * this.scroll), 6, Math.round((ITurretInfoEntry.MAX_ENTRY_HEIGHT - 16) * this.scroll + 16), 0x800000FF);
         }
         GlStateManager.popMatrix();
 
@@ -124,17 +130,17 @@ public class GuiTurretInfo
         GlStateManager.translate(0.0F, Math.round(-this.scroll * this.dHeight), 0.0F);
 
         if( this.entry != null ) {
-            this.dHeight = this.entry.getPageHeight() - TurretInfoEntry.MAX_ENTRY_HEIGHT;
-            this.entry.drawPage(this, mouseX - this.entryX, mouseY - this.entryY, Math.round(this.scroll * this.dHeight), partTicks);
+            this.dHeight = this.entry.getPageHeight() - ITurretInfoEntry.MAX_ENTRY_HEIGHT;
+            this.entry.drawPage(mouseX - this.entryX, mouseY - this.entryY, Math.round(this.scroll * this.dHeight), partTicks);
         } else if( this.category != null ) {
-            this.dHeight = this.entryButtons.size() * 14 + 20 - TurretInfoEntry.MAX_ENTRY_HEIGHT;
+            this.dHeight = this.entryButtons.size() * 14 + 20 - ITurretInfoEntry.MAX_ENTRY_HEIGHT;
             this.fontRenderer.drawString(TextFormatting.ITALIC + Lang.translate(this.category.getTitle()), 2, 2, 0xFF33AA33, false);
-            Gui.drawRect(2, 12, TurretInfoEntry.MAX_ENTRY_WIDTH - 2, 13, 0xFF33AA33);
+            Gui.drawRect(2, 12, ITurretInfoEntry.MAX_ENTRY_WIDTH - 2, 13, 0xFF33AA33);
 
         }
 
         for( GuiButton btn : this.entryButtons ) {
-            btn.enabled = btn.y - Math.round(this.scroll * this.dHeight) > 0 && btn.y - Math.round(this.scroll * this.dHeight) + btn.height < TurretInfoEntry.MAX_ENTRY_HEIGHT;
+            btn.enabled = btn.y - Math.round(this.scroll * this.dHeight) > 0 && btn.y - Math.round(this.scroll * this.dHeight) + btn.height < ITurretInfoEntry.MAX_ENTRY_HEIGHT;
             btn.drawButton(this.mc, mouseX - this.entryX, mouseY - this.entryY + Math.round(this.scroll * this.dHeight), partTicks);
         }
 
@@ -144,16 +150,16 @@ public class GuiTurretInfo
         if( !mouseDown && this.isScrolling ) {
             this.isScrolling = false;
         } else if( mouseDown && !this.isScrolling ) {
-            if( mouseY >= this.entryY && mouseY < this.entryY + TurretInfoEntry.MAX_ENTRY_HEIGHT ) {
-                if( mouseX >= this.entryX + TurretInfoEntry.MAX_ENTRY_WIDTH && mouseX < this.entryX + TurretInfoEntry.MAX_ENTRY_WIDTH + 6 ) {
+            if( mouseY >= this.entryY && mouseY < this.entryY + ITurretInfoEntry.MAX_ENTRY_HEIGHT ) {
+                if( mouseX >= this.entryX + ITurretInfoEntry.MAX_ENTRY_WIDTH && mouseX < this.entryX + ITurretInfoEntry.MAX_ENTRY_WIDTH + 6 ) {
                     this.isScrolling = this.dHeight > 0;
                 }
             }
         }
 
         if( this.isScrolling ) {
-            int mouseDelta = Math.min(TurretInfoEntry.MAX_ENTRY_HEIGHT - 16, Math.max(0, mouseY - (this.entryY + 8)));
-            this.scroll = mouseDelta / (TurretInfoEntry.MAX_ENTRY_HEIGHT - 16.0F);
+            int mouseDelta = Math.min(ITurretInfoEntry.MAX_ENTRY_HEIGHT - 16, Math.max(0, mouseY - (this.entryY + 8)));
+            this.scroll = mouseDelta / (ITurretInfoEntry.MAX_ENTRY_HEIGHT - 16.0F);
         }
 
 
@@ -187,13 +193,13 @@ public class GuiTurretInfo
         }
     }
 
-    @SuppressWarnings("SameParameterValue")
+    @Override
     public void doEntryScissoring(int x, int y, int width, int height) {
         int prevX = x;
         int yShifted = y - Math.round(this.scroll * this.dHeight);
 
-        int maxWidth = Math.min(width, width - (x + width - TurretInfoEntry.MAX_ENTRY_WIDTH));
-        int maxHeight = Math.min(height, height - (y + height - TurretInfoEntry.MAX_ENTRY_HEIGHT) + Math.round(this.scroll * this.dHeight));
+        int maxWidth = Math.min(width, width - (x + width - ITurretInfoEntry.MAX_ENTRY_WIDTH));
+        int maxHeight = Math.min(height, height - (y + height - ITurretInfoEntry.MAX_ENTRY_HEIGHT) + Math.round(this.scroll * this.dHeight));
 
         x = this.entryX + Math.max(0, prevX);
         y = this.entryY + Math.max(0, yShifted);
@@ -204,8 +210,9 @@ public class GuiTurretInfo
         GuiUtils.glScissor(x, y, width, height);
     }
 
+    @Override
     public void doEntryScissoring() {
-        GuiUtils.glScissor(this.entryX, this.entryY, TurretInfoEntry.MAX_ENTRY_WIDTH, TurretInfoEntry.MAX_ENTRY_HEIGHT);
+        GuiUtils.glScissor(this.entryX, this.entryY, ITurretInfoEntry.MAX_ENTRY_WIDTH, ITurretInfoEntry.MAX_ENTRY_HEIGHT);
     }
 
     @Override
@@ -229,7 +236,7 @@ public class GuiTurretInfo
                         if( this.category.getEntryCount() == 1 ) {
                             TurretModRebirth.proxy.openGui(this.mc.player, EnumGui.GUI_TINFO, -1, -1, 0);
                         } else {
-                            TurretModRebirth.proxy.openGui(this.mc.player, EnumGui.GUI_TINFO, this.category.index, -1, 0);
+                            TurretModRebirth.proxy.openGui(this.mc.player, EnumGui.GUI_TINFO, this.category.getIndex(), -1, 0);
                         }
                     } else if( this.entry == null && this.category != null ) {
                         TurretModRebirth.proxy.openGui(this.mc.player, EnumGui.GUI_TINFO, -1, -1, 0);
@@ -243,13 +250,13 @@ public class GuiTurretInfo
                     break;
             }
         } else if( button instanceof GuiButtonCategory ) {
-            if( TurretInfoCategory.getCategory(((GuiButtonCategory) button).catIndex).getEntryCount() == 1 ) {
+            if( TurretInfoCategoryRegistry.INSTANCE.getCategory(((GuiButtonCategory) button).catIndex).getEntryCount() == 1 ) {
                 TurretModRebirth.proxy.openGui(this.mc.player, EnumGui.GUI_TINFO, ((GuiButtonCategory) button).catIndex, 0, 0);
             } else {
                 TurretModRebirth.proxy.openGui(this.mc.player, EnumGui.GUI_TINFO, ((GuiButtonCategory) button).catIndex, -1, 0);
             }
         } else if( button instanceof GuiButtonEntry ) {
-            TurretModRebirth.proxy.openGui(this.mc.player, EnumGui.GUI_TINFO, this.category.index, ((GuiButtonEntry) button).entIndex, 0);
+            TurretModRebirth.proxy.openGui(this.mc.player, EnumGui.GUI_TINFO, this.category.getIndex(), ((GuiButtonEntry) button).entIndex, 0);
         } else if( button instanceof GuiButtonLink ) {
             try {
                 this.clickedURI = new URI(((GuiButtonLink) button).link);
@@ -293,10 +300,6 @@ public class GuiTurretInfo
         }
     }
 
-    public List getButtonList() {
-        return this.buttonList;
-    }
-
     @Override
     public boolean doesGuiPauseGame() {
         return false;
@@ -304,12 +307,82 @@ public class GuiTurretInfo
 
     public void openLink(URI uri) {
         try {
-            Class<?> clsDesktop = Class.forName("java.awt.Desktop");
-            Object objDesktop = clsDesktop.getMethod("getDesktop", new Class[0]).invoke(null);
-            clsDesktop.getMethod("browse", new Class[] {URI.class}).invoke(objDesktop, uri);
+            java.awt.Desktop.getDesktop().browse(uri);
+//            Class<?> clsDesktop = Class.forName("java.awt.Desktop");
+//            Object objDesktop = clsDesktop.getMethod("getDesktop").invoke(null);
+//            clsDesktop.getMethod("browse", URI.class).invoke(objDesktop, uri);
         } catch( Throwable throwable ) {
             TmrConstants.LOG.log(Level.ERROR, "Couldn\'t open link", throwable);
         }
+    }
+
+    @Override
+    public void drawMiniItem(int x, int y, int mouseX, int mouseY, int scrollY, @Nonnull ItemStack stack, boolean drawTooltip) {
+        this.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(x - 0.5F, y - 0.5F, 0.0F);
+        GlStateManager.scale(0.5F, 0.5F, 1.0F);
+        this.drawTexturedModalRect(0, 0, 192, 0, 18, 18);
+        GlStateManager.popMatrix();
+
+        boolean mouseOver = mouseY >= 0 && mouseY < ITurretInfoEntry.MAX_ENTRY_HEIGHT && mouseX >= x && mouseX < x + 8 && mouseY >= y - scrollY && mouseY < y + 8 - scrollY;
+        if( mouseOver && ItemStackUtils.isValid(stack) ) {
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(0.0F, ITurretInfoEntry.MAX_ENTRY_HEIGHT - 20 + scrollY, 32.0F);
+            Gui.drawRect(0, 0, ITurretInfoEntry.MAX_ENTRY_WIDTH, 20, 0xD0000000);
+
+            List tooltip = GuiUtils.getTooltipWithoutShift(stack);
+            this.mc.fontRenderer.drawString(tooltip.get(0).toString(), 22, 2, 0xFFFFFFFF, false);
+            if( drawTooltip && tooltip.size() > 1 ) {
+                this.mc.fontRenderer.drawString(tooltip.get(1).toString(), 22, 11, 0xFF808080, false);
+            }
+
+            RenderUtils.renderStackInGui(stack, 2, 2, 1.0F, this.mc.fontRenderer);
+
+            GlStateManager.popMatrix();
+        }
+
+        if( ItemStackUtils.isValid(stack) ) {
+            RenderUtils.renderStackInGui(stack, x, y, 0.5F);
+        }
+
+        if( mouseOver ) {
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(0.0F, 0.0F, 64.0F);
+            Gui.drawRect(x, y, x + 8, y + 8, 0x80FFFFFF);
+            GlStateManager.popMatrix();
+        }
+    }
+
+    @Override
+    public int getEntryX() {
+        return this.entryX;
+    }
+
+    @Override
+    public int getEntryY() {
+        return this.entryY;
+    }
+
+    @Override
+    public List<GuiButton> __getButtons() {
+        return this.buttonList;
+    }
+
+    @Override
+    public Minecraft __getMc() {
+        return this.mc;
+    }
+
+    @Override
+    public void __drawTexturedRect(int x, int y, int u, int v, int w, int h) {
+        this.drawTexturedModalRect(x, y, u, v, w, h);
+    }
+
+    @Override
+    public void renderStack(@Nonnull ItemStack stack, int x, int y, double scale) {
+        RenderUtils.renderStackInGui(stack, x, y, scale);
     }
 
     public static class GuiButtonLink

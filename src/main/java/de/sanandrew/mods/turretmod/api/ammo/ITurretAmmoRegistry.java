@@ -11,6 +11,8 @@ public interface ITurretAmmoRegistry
 {
     List<ITurretAmmo> getRegisteredTypes();
 
+    List<UUID> getRegisteredGroups();
+
     ITurretAmmo[] getTypes(UUID groupId);
 
     ITurretAmmo getType(UUID typeId);

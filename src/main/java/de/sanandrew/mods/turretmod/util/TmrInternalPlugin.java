@@ -11,13 +11,18 @@ import de.sanandrew.mods.turretmod.api.ITmrUtils;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmoRegistry;
 import de.sanandrew.mods.turretmod.api.assembly.ITurretAssemblyRegistry;
+import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoCategory;
+import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoCategoryRegistry;
 import de.sanandrew.mods.turretmod.api.repairkit.IRepairKitRegistry;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
+import de.sanandrew.mods.turretmod.client.gui.tinfo.TurretInfoCategoryRegistry;
 import de.sanandrew.mods.turretmod.event.TargetingEvents;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmunitions;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKits;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @TmrPlugin
 public class TmrInternalPlugin
@@ -50,5 +55,11 @@ public class TmrInternalPlugin
     @Override
     public void postInit() {
         ITargetProcessor.TARGET_BUS.register(new TargetingEvents());
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerTurretInfoCategories(ITurretInfoCategoryRegistry registry) {
+        TurretInfoCategoryRegistry.initialize(registry);
     }
 }

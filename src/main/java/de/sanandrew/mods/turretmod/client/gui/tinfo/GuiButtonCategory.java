@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.client.gui.tinfo;
 
 import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
+import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoCategoryRegistry;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import de.sanandrew.mods.turretmod.client.util.ShaderHelper;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -69,7 +70,7 @@ public class GuiButtonCategory
         super(id, x, y, 32, 32, "");
         this.tinfo = gui;
         this.catIndex = catId;
-        this.texture = TurretInfoCategory.getCategories()[catId].getIcon();
+        this.texture = TurretInfoCategoryRegistry.INSTANCE.getCategories()[catId].getIcon();
     }
 
     @Override
@@ -114,7 +115,7 @@ public class GuiButtonCategory
         GlStateManager.popMatrix();
 
         if(inside) {
-            this.tinfo.categoryHighlight = TurretInfoCategory.getCategory(this.catIndex);
+            this.tinfo.categoryHighlight = TurretInfoCategoryRegistry.INSTANCE.getCategory(this.catIndex);
         }
     }
 }

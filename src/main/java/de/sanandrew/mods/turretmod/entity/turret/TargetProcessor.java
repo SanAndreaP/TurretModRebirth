@@ -375,7 +375,7 @@ public final class TargetProcessor
         }
 
         if( changed ) {
-            TmrConstants.utils.updateTurretState(this.turret);
+            EntityTurret.utils.updateTurretState(this.turret);
         }
     }
 
