@@ -11,16 +11,19 @@ import de.sanandrew.mods.turretmod.api.ITmrUtils;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmoRegistry;
 import de.sanandrew.mods.turretmod.api.assembly.ITurretAssemblyRegistry;
-import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoCategory;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoCategoryRegistry;
 import de.sanandrew.mods.turretmod.api.repairkit.IRepairKitRegistry;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
+import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
+import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.TurretInfoCategoryRegistry;
-import de.sanandrew.mods.turretmod.event.TargetingEvents;
+import de.sanandrew.mods.turretmod.event.TargetingEventHandler;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmunitions;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKits;
+import de.sanandrew.mods.turretmod.registry.turret.Turrets;
+import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -41,6 +44,11 @@ public class TmrInternalPlugin
     }
 
     @Override
+    public void registerTurrets(ITurretRegistry registry) {
+        Turrets.initialize(registry);
+    }
+
+    @Override
     public void registerRepairKits(IRepairKitRegistry registry) {
         EntityTurret.repairKitRegistry = registry;
         RepairKits.initialize(registry);
@@ -53,8 +61,13 @@ public class TmrInternalPlugin
     }
 
     @Override
+    public void registerUpgrades(IUpgradeRegistry registry) {
+        UpgradeRegistry.initialize(registry);
+    }
+
+    @Override
     public void postInit() {
-        ITargetProcessor.TARGET_BUS.register(new TargetingEvents());
+        ITargetProcessor.TARGET_BUS.register(new TargetingEventHandler());
     }
 
     @Override

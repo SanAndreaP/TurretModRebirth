@@ -6,7 +6,7 @@ import net.minecraft.util.ResourceLocation;
 import javax.annotation.Nonnull;
 import java.util.UUID;
 
-public interface TurretInfo
+public interface ITurretInfo
 {
     String getName();
     @Nonnull UUID getUUID();

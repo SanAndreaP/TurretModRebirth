@@ -14,7 +14,7 @@ import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
 import de.sanandrew.mods.turretmod.network.TileClientSync;
-import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteHelper;
+import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteRegistry;
 import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteProcess;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -133,7 +133,7 @@ public class TileEntityElectrolyteGenerator
             this.doSync = true;
         }
 
-        if( this.processes[slot] == null && ElectrolyteHelper.isFuel(this.itemHandler.extractInsertItem(slot, true)) ) {
+        if( this.processes[slot] == null && ElectrolyteRegistry.isFuel(this.itemHandler.extractInsertItem(slot, true)) ) {
             this.processes[slot] = new ElectrolyteProcess(this.itemHandler.extractInsertItem(slot, false));
 
             markAsDirty = true;

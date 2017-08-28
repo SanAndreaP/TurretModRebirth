@@ -11,9 +11,9 @@ package de.sanandrew.mods.turretmod.entity.turret;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.client.audio.SoundLaser;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.api.turret.TurretInfo;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
+import de.sanandrew.mods.turretmod.registry.turret.TurretInfoLaser;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -32,57 +32,18 @@ public class EntityTurretLaser
 {
     public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "turrets/turret_laser");
     public static final UUID TIII_UUID = UUID.fromString("F6196022-3F9D-4D3F-B3C1-9ED644DB436B");
-    public static final TurretInfo TINFO = new TurretInfo() {
-        @Override
-        public String getName() {
-            return "turret_iii_laser";
-        }
-
-        @Override
-        public UUID getUUID() {
-            return EntityTurretLaser.TIII_UUID;
-        }
-
-        @Override
-        public Class<? extends EntityTurret> getTurretClass() {
-            return EntityTurretLaser.class;
-        }
-
-        @Override
-        public float getTurretHealth() {
-            return 40.0F;
-        }
-
-        @Override
-        public int getBaseAmmoCapacity() {
-            return 256;
-        }
-
-        @Override
-        public ResourceLocation getModel() {
-            return ITEM_MODEL;
-        }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.TURRET_MK3_LR;
-        }
-
-        @Override
-        public String getInfoRange() {
-            return "24";
-        }
-    };
 
     private static final AxisAlignedBB RANGE_BB = new AxisAlignedBB(-24.0D, -4.0D, -24.0D, 24.0D, 12.0D, 24.0D);
 
     @SideOnly(Side.CLIENT)
     public SoundLaser laserSound;
 
+    @SuppressWarnings("unused")
     public EntityTurretLaser(World world) {
         super(world);
     }
 
+    @SuppressWarnings("unused")
     public EntityTurretLaser(World world, boolean isUpsideDown, EntityPlayer player) {
         super(world, isUpsideDown, player);
     }

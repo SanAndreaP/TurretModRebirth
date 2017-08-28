@@ -11,8 +11,11 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.ITmrUtils;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
+import de.sanandrew.mods.turretmod.client.event.RenderForcefieldHandler;
+import de.sanandrew.mods.turretmod.client.util.ClientProxy;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
@@ -23,6 +26,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -87,5 +92,10 @@ public class TmrUtils
     @Override
     public boolean isStackValid(@Nonnull ItemStack stack) {
         return ItemStackUtils.isValid(stack);
+    }
+
+    @Override
+    public void addForcefield(Entity e, IForcefieldProvider provider) {
+        TurretModRebirth.proxy.addForcefield(e, provider);
     }
 }

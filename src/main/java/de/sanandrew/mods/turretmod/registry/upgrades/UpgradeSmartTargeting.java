@@ -10,13 +10,14 @@ package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
 public class UpgradeSmartTargeting
-        implements TurretUpgrade
+        implements ITurretUpgrade
 {
     private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "upgrades/smart_tgt");
 
@@ -32,17 +33,12 @@ public class UpgradeSmartTargeting
     }
 
     @Override
-    public String getModId() {
-        return TmrConstants.ID;
-    }
-
-    @Override
     public ResourceLocation getModel() {
         return ITEM_MODEL;
     }
 
     @Override
-    public TurretUpgrade getDependantOn() {
+    public ITurretUpgrade getDependantOn() {
         return null;
     }
 

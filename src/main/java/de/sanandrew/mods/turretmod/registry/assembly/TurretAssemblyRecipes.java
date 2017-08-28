@@ -90,7 +90,6 @@ public final class TurretAssemblyRecipes
     public static void initialize(final ITurretAssemblyRegistry registry) {
         TmrConstants.LOG.log(Level.INFO, "Initializing Turret Assembly recipes...");
         long prevTime = System.nanoTime();
-
         Loader.instance().getActiveModList().forEach(mod -> loadJsonRecipes(mod, registry));
         long timeDelta = (System.nanoTime() - prevTime) / 1_000_000;
         TmrConstants.LOG.log(Level.INFO, String.format("Initializing Turret Assembly recipes done in %d ms. Found %d recipes.", timeDelta, registry.getRecipeList().size()));

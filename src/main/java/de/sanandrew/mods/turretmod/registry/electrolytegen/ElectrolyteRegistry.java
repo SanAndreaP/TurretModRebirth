@@ -14,7 +14,6 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.Loader;
@@ -34,7 +33,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 @SuppressWarnings("unused")
-public class ElectrolyteHelper
+public class ElectrolyteRegistry
 {
     private static final Map<ItemStack, Fuel> FUELS_INTRN = new HashMap<>();
     private static final Map<ItemStack, Fuel> FUELS_UNMODIFY = Collections.unmodifiableMap(FUELS_INTRN);
@@ -43,13 +42,13 @@ public class ElectrolyteHelper
     public static void initialize() {
         TmrConstants.LOG.log(Level.INFO, "Initializing Electrolyte Generator recipes...");
         long prevTime = System.nanoTime();
-        Loader.instance().getActiveModList().forEach(ElectrolyteHelper::loadJsonRecipes);
+        Loader.instance().getActiveModList().forEach(ElectrolyteRegistry::loadJsonRecipes);
         long timeDelta = (System.nanoTime() - prevTime) / 1_000_000;
-        TmrConstants.LOG.log(Level.INFO, String.format("Initializing Electrolyte Generator recipes done in %d ms. Found %d recipes.", timeDelta, ElectrolyteHelper.getFuelMap().size()));
+        TmrConstants.LOG.log(Level.INFO, String.format("Initializing Electrolyte Generator recipes done in %d ms. Found %d recipes.", timeDelta, ElectrolyteRegistry.getFuelMap().size()));
     }
 
     private static boolean loadJsonRecipes(ModContainer mod) {
-        return MiscUtils.findFiles(mod, "assets/" + mod.getModId() + "/recipes_sapturretmod/electrolytegen/", null, ElectrolyteHelper::processJson);
+        return MiscUtils.findFiles(mod, "assets/" + mod.getModId() + "/recipes_sapturretmod/electrolytegen/", null, ElectrolyteRegistry::processJson);
     }
 
     private static boolean processJson(Path root, Path file) {

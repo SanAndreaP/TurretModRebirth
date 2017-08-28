@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.registry.upgrades;
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -20,7 +21,7 @@ import net.minecraft.util.ResourceLocation;
 import java.util.UUID;
 
 public abstract class UpgradeHealth
-        implements TurretUpgrade
+        implements ITurretUpgrade
 {
     private final ResourceLocation itemModel;
     private final String name;
@@ -35,11 +36,6 @@ public abstract class UpgradeHealth
     @Override
     public String getName() {
         return this.name;
-    }
-
-    @Override
-    public String getModId() {
-        return TmrConstants.ID;
     }
 
     @Override
@@ -84,7 +80,7 @@ public abstract class UpgradeHealth
         }
 
         @Override
-        public TurretUpgrade getDependantOn() {
+        public ITurretUpgrade getDependantOn() {
             return null;
         }
 
@@ -97,7 +93,7 @@ public abstract class UpgradeHealth
     public static class UpgradeHealthMK2
             extends UpgradeHealth
     {
-        private final TurretUpgrade dependant;
+        private final ITurretUpgrade dependant;
 
         public UpgradeHealthMK2() {
             super("health_ii", "B7E5ADFA-517C-4167-A2FD-E0D31FA6E9BE");
@@ -105,7 +101,7 @@ public abstract class UpgradeHealth
         }
 
         @Override
-        public TurretUpgrade getDependantOn() {
+        public ITurretUpgrade getDependantOn() {
             return this.dependant;
         }
 
@@ -118,7 +114,7 @@ public abstract class UpgradeHealth
     public static class UpgradeHealthMK3
             extends UpgradeHealth
     {
-        private final TurretUpgrade dependant;
+        private final ITurretUpgrade dependant;
 
         public UpgradeHealthMK3() {
             super("health_iii", "D49F43AE-5EA4-4DD2-B08A-9B5F1966C091");
@@ -126,7 +122,7 @@ public abstract class UpgradeHealth
         }
 
         @Override
-        public TurretUpgrade getDependantOn() {
+        public ITurretUpgrade getDependantOn() {
             return this.dependant;
         }
 
@@ -139,7 +135,7 @@ public abstract class UpgradeHealth
     public static class UpgradeHealthMK4
             extends UpgradeHealth
     {
-        private final TurretUpgrade dependant;
+        private final ITurretUpgrade dependant;
 
         public UpgradeHealthMK4() {
             super("health_iv", "9431A60C-B995-4547-B143-2BEDC67467E1");
@@ -147,7 +143,7 @@ public abstract class UpgradeHealth
         }
 
         @Override
-        public TurretUpgrade getDependantOn() {
+        public ITurretUpgrade getDependantOn() {
             return this.dependant;
         }
 

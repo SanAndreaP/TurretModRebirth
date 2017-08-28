@@ -10,14 +10,8 @@ package de.sanandrew.mods.turretmod.registry.turret;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.api.turret.TurretInfo;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretFlamethrower;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretMinigun;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretRevolver;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
+import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
 import de.sanandrew.mods.turretmod.util.CommonProxy;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.util.ResourceLocation;
@@ -32,12 +26,13 @@ import java.util.Map;
 import java.util.UUID;
 
 public final class TurretRegistry
+        implements ITurretRegistry
 {
     public static final TurretRegistry INSTANCE = new TurretRegistry();
 
-    private final Map<UUID, TurretInfo> infoFromUUID;
-    private final Map<Class<? extends EntityTurret>, TurretInfo> infoFromClass;
-    private final List<TurretInfo> infos;
+    private final Map<UUID, ITurretInfo> infoFromUUID;
+    private final Map<Class<? extends EntityTurret>, ITurretInfo> infoFromClass;
+    private final List<ITurretInfo> infos;
 
     private TurretRegistry() {
         this.infoFromUUID = new HashMap<>();
@@ -45,23 +40,27 @@ public final class TurretRegistry
         this.infos = new ArrayList<>();
     }
 
-    public List<TurretInfo> getRegisteredInfos() {
+    @Override
+    public List<ITurretInfo> getRegisteredInfos() {
         return new ArrayList<>(this.infos);
     }
 
-    public TurretInfo getInfo(UUID uuid) {
+    @Override
+    public ITurretInfo getInfo(UUID uuid) {
         return this.infoFromUUID.get(uuid);
     }
 
-    public TurretInfo getInfo(Class<? extends EntityTurret> clazz) {
+    @Override
+    public ITurretInfo getInfo(Class<? extends EntityTurret> clazz) {
         return this.infoFromClass.get(clazz);
     }
 
-    public boolean registerTurretInfo(TurretInfo type) {
+    @Override
+    public boolean registerTurretInfo(ITurretInfo type) {
         return this.registerTurretInfo(type, false);
     }
 
-    private boolean registerTurretInfo(TurretInfo type, boolean registerEntity) {
+    boolean registerTurretInfo(ITurretInfo type, boolean registerEntity) {
         if( type == null ) {
             TmrConstants.LOG.log(Level.ERROR, "Cannot register NULL as Turret-Info!", new InvalidParameterException());
             return false;
@@ -92,15 +91,5 @@ public final class TurretRegistry
         }
 
         return true;
-    }
-
-    public void initialize() {
-        this.registerTurretInfo(EntityTurretCrossbow.TINFO, true);
-        this.registerTurretInfo(EntityTurretShotgun.TINFO, true);
-        this.registerTurretInfo(EntityTurretCryolator.TINFO, true);
-        this.registerTurretInfo(EntityTurretRevolver.TINFO, true);
-        this.registerTurretInfo(EntityTurretMinigun.TINFO, true);
-        this.registerTurretInfo(EntityTurretLaser.TINFO, true);
-        this.registerTurretInfo(EntityTurretFlamethrower.TINFO, true);
     }
 }

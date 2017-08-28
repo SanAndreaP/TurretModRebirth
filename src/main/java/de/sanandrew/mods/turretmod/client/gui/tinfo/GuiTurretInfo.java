@@ -308,9 +308,6 @@ public class GuiTurretInfo
     public void openLink(URI uri) {
         try {
             java.awt.Desktop.getDesktop().browse(uri);
-//            Class<?> clsDesktop = Class.forName("java.awt.Desktop");
-//            Object objDesktop = clsDesktop.getMethod("getDesktop").invoke(null);
-//            clsDesktop.getMethod("browse", URI.class).invoke(objDesktop, uri);
         } catch( Throwable throwable ) {
             TmrConstants.LOG.log(Level.ERROR, "Couldn\'t open link", throwable);
         }

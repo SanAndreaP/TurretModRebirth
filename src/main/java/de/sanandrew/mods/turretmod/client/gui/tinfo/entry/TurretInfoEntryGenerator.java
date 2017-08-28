@@ -13,7 +13,7 @@ import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
-import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteHelper;
+import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
@@ -75,7 +75,7 @@ public class TurretInfoEntryGenerator
         Gui.drawRect(0, 0, MAX_ENTRY_WIDTH, 48, 0xD0000000);
 
         mc.fontRenderer.drawString(String.format("§e%s", GuiUtils.getTooltipWithoutShift(tooltipItem).get(0)), 22, 2, 0xFFFFFFFF, false);
-        ElectrolyteHelper.Fuel fuel = ElectrolyteHelper.getFuel(tooltipItem);
+        ElectrolyteRegistry.Fuel fuel = ElectrolyteRegistry.getFuel(tooltipItem);
         mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_EFFICIENCY.get(), fuel.effect), 22, 11, 0xFFFFFFFF, false);
         mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_DECAY.get(), MiscUtils.getTimeFromTicks(fuel.ticksProc)), 22, 20, 0xFFFFFFFF, false);
         mc.fontRenderer.drawString(String.format("§a%s", GuiUtils.getTooltipWithoutShift(fuel.trash).get(0)), 32, 29, 0xFFFFFFFF, false);
@@ -116,7 +116,7 @@ public class TurretInfoEntryGenerator
     public void initEntry(IGuiTurretInfo gui) {
         super.initEntry(gui);
 
-        Set<ItemStack> fuelList = ElectrolyteHelper.getFuelMap().keySet();
+        Set<ItemStack> fuelList = ElectrolyteRegistry.getFuelMap().keySet();
         this.fuelItems = NonNullList.from(ItemStack.EMPTY, fuelList.toArray(new ItemStack[fuelList.size()]));
     }
 

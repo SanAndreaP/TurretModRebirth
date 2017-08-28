@@ -1,4 +1,4 @@
-package de.sanandrew.mods.turretmod.registry.upgrades;
+package de.sanandrew.mods.turretmod.api.upgrade;
 
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import net.minecraft.nbt.NBTTagCompound;
@@ -7,15 +7,13 @@ import net.minecraft.util.ResourceLocation;
 import java.util.UUID;
 
 @SuppressWarnings("unused")
-public interface TurretUpgrade
+public interface ITurretUpgrade
 {
     String getName();
 
-    String getModId();
-
     ResourceLocation getModel();
 
-    TurretUpgrade getDependantOn();
+    default ITurretUpgrade getDependantOn() { return null; }
 
     UUID getRecipeId();
 

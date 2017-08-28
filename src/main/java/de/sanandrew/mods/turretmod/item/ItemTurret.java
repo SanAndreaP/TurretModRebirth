@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.item;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.api.turret.TurretInfo;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
@@ -60,7 +60,7 @@ public class ItemTurret
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
 
-        TurretInfo info = getTurretInfo(stack);
+        ITurretInfo info = getTurretInfo(stack);
         if( info != null ) {
             tooltip.add(Lang.translateEntityCls(info.getTurretClass()));
         }
@@ -164,7 +164,7 @@ public class ItemTurret
         }
     }
 
-    public static TurretInfo getTurretInfo(@Nonnull ItemStack stack) {
+    public static ITurretInfo getTurretInfo(@Nonnull ItemStack stack) {
         NBTTagCompound nbt = stack.getTagCompound();
         if( nbt != null && nbt.hasKey("turretInfoUUID") ) {
             return TurretRegistry.INSTANCE.getInfo(UUID.fromString(nbt.getString("turretInfoUUID")));
@@ -196,7 +196,7 @@ public class ItemTurret
     }
 
     @Nonnull
-    public ItemStack getTurretItem(int stackSize, TurretInfo type) {
+    public ItemStack getTurretItem(int stackSize, ITurretInfo type) {
         if( type == null ) {
             throw new IllegalArgumentException("Cannot get turret_placer item with NULL type!");
         }
@@ -210,7 +210,7 @@ public class ItemTurret
     }
 
     @Nonnull
-    public ItemStack getTurretItem(int stackSize, TurretInfo type, EntityTurret turret) {
+    public ItemStack getTurretItem(int stackSize, ITurretInfo type, EntityTurret turret) {
         ItemStack stack = this.getTurretItem(stackSize, type);
         assert stack.getTagCompound() != null;
         stack.getTagCompound().setFloat("turretHealth", turret.getHealth());
@@ -221,11 +221,11 @@ public class ItemTurret
         return stack;
     }
 
-    public static EntityTurret spawnTurret(World world, TurretInfo info, BlockPos pos, boolean isUpsideDown, EntityPlayer owner) {
+    public static EntityTurret spawnTurret(World world, ITurretInfo info, BlockPos pos, boolean isUpsideDown, EntityPlayer owner) {
         return spawnTurret(world, info, pos.getX(), pos.getY(), pos.getZ(), isUpsideDown, owner);
     }
 
-    public static EntityTurret spawnTurret(World world, TurretInfo info, double x, double y, double z, boolean isUpsideDown, EntityPlayer owner) {
+    public static EntityTurret spawnTurret(World world, ITurretInfo info, double x, double y, double z, boolean isUpsideDown, EntityPlayer owner) {
         EntityTurret turret = createEntity(info, world, isUpsideDown, owner);
         if (turret != null) {
             turret.setLocationAndAngles(x, y - (isUpsideDown ? 1.0D : 0.0D), z, MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
@@ -238,7 +238,7 @@ public class ItemTurret
         return turret;
     }
 
-    private static EntityTurret createEntity(TurretInfo info, World world, boolean isUpsideDown, EntityPlayer owner) {
+    private static EntityTurret createEntity(ITurretInfo info, World world, boolean isUpsideDown, EntityPlayer owner) {
         EntityTurret entity = null;
         try {
             Class<? extends EntityTurret> entityClass = info.getTurretClass();

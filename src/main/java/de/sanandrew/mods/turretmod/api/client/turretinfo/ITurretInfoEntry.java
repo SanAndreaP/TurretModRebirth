@@ -10,6 +10,8 @@ public interface ITurretInfoEntry
     int MAX_ENTRY_WIDTH = 168;
     int MAX_ENTRY_HEIGHT = 183;
 
+    void initEntry(IGuiTurretInfo gui);
+
     void drawPage(int mouseX, int mouseY, int scrollY, float partTicks);
 
     int getPageHeight();
@@ -22,6 +24,4 @@ public interface ITurretInfoEntry
     default boolean actionPerformed(GuiButton btn) {
         return false;
     }
-
-    default void initEntry(IGuiTurretInfo gui) { }
 }

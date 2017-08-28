@@ -16,7 +16,7 @@ import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoRegistry;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
 import de.sanandrew.mods.turretmod.api.assembly.IRecipeEntry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
-import de.sanandrew.mods.turretmod.api.turret.TurretInfo;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.Minecraft;
@@ -54,7 +54,7 @@ public class TurretInfoEntryTurret
         this.turretClass = turret;
     }
 
-    private TurretInfoEntryTurret(TurretInfo info) {
+    private TurretInfoEntryTurret(ITurretInfo info) {
         this.values = new TurretInfoValues(info);
         this.icon = ItemRegistry.turret_placer.getTurretItem(1, info);
     }
@@ -189,7 +189,7 @@ public class TurretInfoEntryTurret
         public final IRecipeEntry[] recipeStacks;
         public final ItemStack[] ammoStacks;
 
-        public TurretInfoValues(TurretInfo info) {
+        public TurretInfoValues(ITurretInfo info) {
             List<ItemStack> ammoItms = new ArrayList<>();
 
             this.name = Lang.translateEntityCls(info.getTurretClass());

@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.registry.upgrades;
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -20,7 +21,7 @@ import net.minecraft.util.ResourceLocation;
 import java.util.UUID;
 
 public class UpgradeAmmoStorage
-        implements TurretUpgrade
+        implements ITurretUpgrade
 {
     private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "upgrades/ammo_storage");
     private AttributeModifier modifier = new AttributeModifier(UUID.fromString("3D3C0F11-E31A-4472-92BB-E1BE0354844E"), String.format("%s:%s", TmrConstants.ID, "ammoCapacityUpg"), 320.0D,
@@ -38,17 +39,12 @@ public class UpgradeAmmoStorage
     }
 
     @Override
-    public String getModId() {
-        return TmrConstants.ID;
-    }
-
-    @Override
     public ResourceLocation getModel() {
         return ITEM_MODEL;
     }
 
     @Override
-    public TurretUpgrade getDependantOn() {
+    public ITurretUpgrade getDependantOn() {
         return null;
     }
 

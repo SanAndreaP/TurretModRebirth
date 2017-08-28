@@ -11,9 +11,8 @@ package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
-import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
-import de.sanandrew.mods.turretmod.registry.upgrades.TurretUpgrade;
+import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -26,21 +25,20 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
-import java.util.UUID;
 
 @SideOnly(Side.CLIENT)
 public class TurretInfoEntryUpgrade
         implements ITurretInfoEntry
 {
     private int drawHeight;
-    private TurretUpgrade upgrade;
+    private ITurretUpgrade upgrade;
     private long lastTimestamp;
 
     private IGuiTurretInfo guiInfo;
     private final ItemStack icon;
     private final String title;
 
-    public TurretInfoEntryUpgrade(TurretUpgrade upgrade) {
+    public TurretInfoEntryUpgrade(ITurretUpgrade upgrade) {
         this.upgrade = upgrade;
         this.icon = UpgradeRegistry.INSTANCE.getUpgradeItem(this.upgrade);
         this.title = this.upgrade.getName();
@@ -64,7 +62,7 @@ public class TurretInfoEntryUpgrade
 
     @Override
     public void drawPage(int mouseX, int mouseY, int scrollY, float partTicks) {
-        TurretUpgrade prereq = this.upgrade.getDependantOn();
+        ITurretUpgrade prereq = this.upgrade.getDependantOn();
         int infoHeight = 54;
         Minecraft mc = this.guiInfo.__getMc();
 

@@ -1,5 +1,6 @@
 package de.sanandrew.mods.turretmod.api;
 
+import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
@@ -7,6 +8,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -35,4 +38,6 @@ public interface ITmrUtils
     <T extends Entity> List<T> getPassengersOfClass(Entity e, Class<T> psgClass);
 
     boolean isStackValid(@Nonnull ItemStack stack);
+
+    void addForcefield(Entity e, IForcefieldProvider provider);
 }

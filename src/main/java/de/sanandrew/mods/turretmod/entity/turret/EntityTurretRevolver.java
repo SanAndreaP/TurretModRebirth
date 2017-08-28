@@ -11,9 +11,9 @@ package de.sanandrew.mods.turretmod.entity.turret;
 import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.api.turret.TurretInfo;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
+import de.sanandrew.mods.turretmod.registry.turret.TurretInfoRevolver;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.Sounds;
@@ -32,47 +32,6 @@ public class EntityTurretRevolver
 {
     public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "turrets/turret_revolver");
     public static final UUID TII_UUID = UUID.fromString("4449D836-F122-409A-8E6C-D7B7438FD08C");
-    public static final TurretInfo TINFO = new TurretInfo() {
-        @Override
-        public String getName() {
-            return "turret_ii_revolver";
-        }
-
-        @Override
-        public UUID getUUID() {
-            return EntityTurretRevolver.TII_UUID;
-        }
-
-        @Override
-        public Class<? extends EntityTurret> getTurretClass() {
-            return EntityTurretRevolver.class;
-        }
-
-        @Override
-        public float getTurretHealth() {
-            return 30.0F;
-        }
-
-        @Override
-        public int getBaseAmmoCapacity() {
-            return 256;
-        }
-
-        @Override
-        public ResourceLocation getModel() {
-            return ITEM_MODEL;
-        }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.TURRET_MK2_RV;
-        }
-
-        @Override
-        public String getInfoRange() {
-            return "20";
-        }
-    };
 
     private static final AxisAlignedBB RANGE_BB = new AxisAlignedBB(-20.0D, -4.0D, -20.0D, 20.0D, 10.0D, 20.0D);
 
@@ -82,10 +41,12 @@ public class EntityTurretRevolver
     public float prevBarrelPosRight = 1.0F;
     public boolean leftShot;
 
+    @SuppressWarnings("unused")
     public EntityTurretRevolver(World world) {
         super(world);
     }
 
+    @SuppressWarnings("unused")
     public EntityTurretRevolver(World world, boolean isUpsideDown, EntityPlayer player) {
         super(world, isUpsideDown, player);
     }

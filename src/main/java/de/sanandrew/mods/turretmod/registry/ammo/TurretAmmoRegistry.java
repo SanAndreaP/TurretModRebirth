@@ -180,11 +180,6 @@ public final class TurretAmmoRegistry
             return false;
         }
 
-        if( type.getId() == null ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("Ammo-Type %s has no UUID! How am I supposed to differentiate all the cartridges?", type.getName()), new InvalidParameterException());
-            return false;
-        }
-
         if( this.ammoTypesFromUUID.containsKey(type.getId()) ) {
             TmrConstants.LOG.log(Level.ERROR, String.format("The UUID of Ammo-Type %s is already registered! Use another UUID. JUST DO IT!", type.getName()), new InvalidParameterException());
             return false;

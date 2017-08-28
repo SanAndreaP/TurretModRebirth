@@ -33,6 +33,7 @@ public class PacketRegistry
         registerMessage(TurretModRebirth.network, PacketOpenGui.class, 7, Side.SERVER);
         registerMessage(TurretModRebirth.network, PacketUpdateUgradeSlot.class, 8, Side.CLIENT);
         registerMessage(TurretModRebirth.network, PacketTurretNaming.class, 9, Side.SERVER);
+        registerMessage(TurretModRebirth.network, PacketSyncUpgradeInst.class, 10, Side.CLIENT);
     }
 
     public static void sendToAllAround(IMessage message, int dim, double x, double y, double z, double range) {

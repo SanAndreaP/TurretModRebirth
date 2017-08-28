@@ -10,13 +10,14 @@ package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
 public abstract class UpgradeUpgStorage
-        implements TurretUpgrade
+        implements ITurretUpgrade
 {
     private final ResourceLocation itemModel;
     private final String name;
@@ -29,11 +30,6 @@ public abstract class UpgradeUpgStorage
     @Override
     public String getName() {
         return this.name;
-    }
-
-    @Override
-    public String getModId() {
-        return TmrConstants.ID;
     }
 
     @Override
@@ -55,7 +51,7 @@ public abstract class UpgradeUpgStorage
         }
 
         @Override
-        public TurretUpgrade getDependantOn() {
+        public ITurretUpgrade getDependantOn() {
             return null;
         }
 
@@ -68,7 +64,7 @@ public abstract class UpgradeUpgStorage
     public static class UpgradeStorageMK2
             extends UpgradeUpgStorage
     {
-        private final TurretUpgrade dependant;
+        private final ITurretUpgrade dependant;
 
         public UpgradeStorageMK2() {
             super("upg_storage_ii");
@@ -76,7 +72,7 @@ public abstract class UpgradeUpgStorage
         }
 
         @Override
-        public TurretUpgrade getDependantOn() {
+        public ITurretUpgrade getDependantOn() {
             return this.dependant;
         }
 
@@ -89,7 +85,7 @@ public abstract class UpgradeUpgStorage
     public static class UpgradeStorageMK3
             extends UpgradeUpgStorage
     {
-        private final TurretUpgrade dependant;
+        private final ITurretUpgrade dependant;
 
         public UpgradeStorageMK3() {
             super("upg_storage_iii");
@@ -97,7 +93,7 @@ public abstract class UpgradeUpgStorage
         }
 
         @Override
-        public TurretUpgrade getDependantOn() {
+        public ITurretUpgrade getDependantOn() {
             return this.dependant;
         }
 

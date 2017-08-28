@@ -13,6 +13,8 @@ import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
+import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import net.minecraft.item.ItemStack;
@@ -28,6 +30,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public final class UpgradeRegistry
+        implements IUpgradeRegistry
 {
     public static final UUID EMPTY = UuidUtils.EMPTY_UUID;
     public static final UUID UPG_STORAGE_I = UUID.fromString("1749478F-2A8E-4C56-BC03-6C76CB5DE921");
@@ -46,18 +49,20 @@ public final class UpgradeRegistry
     public static final UUID ECONOMY_INF = UUID.fromString("C3CF3EE9-8314-4766-A5E0-6033DB3EE9DB");
     public static final UUID ENDER_MEDIUM = UUID.fromString("0ED3D861-F11D-4F6B-B9FC-67E22C8EB538");
     public static final UUID FUEL_PURIFY = UUID.fromString("677FA826-DA2D-40E9-9D86-7FAD7DE398CC");
+    public static final UUID SHIELD = UUID.fromString("90F61412-4ECC-431B-A6AC-288F26C37608");
 
     public static final UpgradeRegistry INSTANCE = new UpgradeRegistry();
 
-    private Map<UUID, TurretUpgrade> uuidToUpgradeMap = new HashMap<>();
-    private Map<TurretUpgrade, UUID> upgradeToUuidMap = new HashMap<>();
-    private List<TurretUpgrade> upgradeList = new ArrayList<>();
+    private Map<UUID, ITurretUpgrade> uuidToUpgradeMap = new HashMap<>();
+    private Map<ITurretUpgrade, UUID> upgradeToUuidMap = new HashMap<>();
+    private List<ITurretUpgrade> upgradeList = new ArrayList<>();
 
-    private static TurretUpgrade emptyInst;
+    private static ITurretUpgrade emptyInst;
 
     private List<String> errored = new ArrayList<>();
 
-    public void registerUpgrade(UUID uuid, TurretUpgrade upgrade) {
+    @Override
+    public void registerUpgrade(UUID uuid, ITurretUpgrade upgrade) {
         if( this.uuidToUpgradeMap.containsKey(uuid) ) {
             this.upgradeList.set(this.upgradeList.indexOf(this.uuidToUpgradeMap.get(uuid)), upgrade);
         } else {
@@ -67,15 +72,18 @@ public final class UpgradeRegistry
         this.upgradeToUuidMap.put(upgrade, uuid);
     }
 
-    public TurretUpgrade getUpgrade(UUID uuid) {
+    @Override
+    public ITurretUpgrade getUpgrade(UUID uuid) {
         return MiscUtils.defIfNull(this.uuidToUpgradeMap.get(uuid), emptyInst);
     }
 
-    public UUID getUpgradeUUID(TurretUpgrade upg) {
+    @Override
+    public UUID getUpgradeId(ITurretUpgrade upg) {
         return MiscUtils.defIfNull(this.upgradeToUuidMap.get(upg), EMPTY);
     }
 
-    public UUID getUpgradeUUID(@Nonnull ItemStack stack) {
+    @Override
+    public UUID getUpgradeId(@Nonnull ItemStack stack) {
         if( !stack.hasTagCompound() ) {
             return EMPTY;
         }
@@ -92,40 +100,44 @@ public final class UpgradeRegistry
         }
     }
 
-    public TurretUpgrade getUpgrade(@Nonnull ItemStack stack) {
+    @Override
+    public ITurretUpgrade getUpgrade(@Nonnull ItemStack stack) {
         if( !ItemStackUtils.isItem(stack, ItemRegistry.turret_upgrade) || !stack.hasTagCompound() ) {
             return emptyInst;
         }
 
-        return this.getUpgrade(this.getUpgradeUUID(stack));
+        return this.getUpgrade(this.getUpgradeId(stack));
     }
 
-    public List<TurretUpgrade> getRegisteredTypes() {
+    @Override
+    public List<ITurretUpgrade> getUpgrades() {
         return new ArrayList<>(this.upgradeList);
     }
 
-    public void initialize() {
-        this.registerUpgrade(EMPTY, new EmptyUpgrade());
-        this.registerUpgrade(UPG_STORAGE_I, new UpgradeUpgStorage.UpgradeStorageMK1());
-        this.registerUpgrade(UPG_STORAGE_II, new UpgradeUpgStorage.UpgradeStorageMK2());
-        this.registerUpgrade(UPG_STORAGE_III, new UpgradeUpgStorage.UpgradeStorageMK3());
-        this.registerUpgrade(AMMO_STORAGE, new UpgradeAmmoStorage());
-        this.registerUpgrade(HEALTH_I, new UpgradeHealth.UpgradeHealthMK1());
-        this.registerUpgrade(HEALTH_II, new UpgradeHealth.UpgradeHealthMK2());
-        this.registerUpgrade(HEALTH_III, new UpgradeHealth.UpgradeHealthMK3());
-        this.registerUpgrade(HEALTH_IV, new UpgradeHealth.UpgradeHealthMK4());
-        this.registerUpgrade(RELOAD_I, new UpgradeReloadTime.UpgradeReloadTimeMK1());
-        this.registerUpgrade(RELOAD_II, new UpgradeReloadTime.UpgradeReloadTimeMK2());
-        this.registerUpgrade(SMART_TGT, new UpgradeSmartTargeting());
-        this.registerUpgrade(ECONOMY_I, new UpgradeAmmoUsage.UpgradeAmmoUseI());
-        this.registerUpgrade(ECONOMY_II, new UpgradeAmmoUsage.UpgradeAmmoUseII());
-        this.registerUpgrade(ECONOMY_INF, new UpgradeAmmoUsage.UpgradeAmmoUseInf());
-        this.registerUpgrade(ENDER_MEDIUM, new UpgradeEnderMedium());
-        this.registerUpgrade(FUEL_PURIFY, new UpgradeFuelPurifier());
+    public static void initialize(IUpgradeRegistry registry) {
+        registry.registerUpgrade(EMPTY, new EmptyUpgrade());
+        emptyInst = UpgradeRegistry.INSTANCE.uuidToUpgradeMap.get(EMPTY);
 
-        emptyInst = this.uuidToUpgradeMap.get(EMPTY);
+        registry.registerUpgrade(UPG_STORAGE_I, new UpgradeUpgStorage.UpgradeStorageMK1());
+        registry.registerUpgrade(UPG_STORAGE_II, new UpgradeUpgStorage.UpgradeStorageMK2());
+        registry.registerUpgrade(UPG_STORAGE_III, new UpgradeUpgStorage.UpgradeStorageMK3());
+        registry.registerUpgrade(AMMO_STORAGE, new UpgradeAmmoStorage());
+        registry.registerUpgrade(HEALTH_I, new UpgradeHealth.UpgradeHealthMK1());
+        registry.registerUpgrade(HEALTH_II, new UpgradeHealth.UpgradeHealthMK2());
+        registry.registerUpgrade(HEALTH_III, new UpgradeHealth.UpgradeHealthMK3());
+        registry.registerUpgrade(HEALTH_IV, new UpgradeHealth.UpgradeHealthMK4());
+        registry.registerUpgrade(RELOAD_I, new UpgradeReloadTime.UpgradeReloadTimeMK1());
+        registry.registerUpgrade(RELOAD_II, new UpgradeReloadTime.UpgradeReloadTimeMK2());
+        registry.registerUpgrade(SMART_TGT, new UpgradeSmartTargeting());
+        registry.registerUpgrade(ECONOMY_I, new UpgradeAmmoUsage.UpgradeAmmoUseI());
+        registry.registerUpgrade(ECONOMY_II, new UpgradeAmmoUsage.UpgradeAmmoUseII());
+        registry.registerUpgrade(ECONOMY_INF, new UpgradeAmmoUsage.UpgradeAmmoUseInf());
+        registry.registerUpgrade(ENDER_MEDIUM, new UpgradeEnderMedium());
+        registry.registerUpgrade(FUEL_PURIFY, new UpgradeFuelPurifier());
+        registry.registerUpgrade(SHIELD, new UpgradePrsShield());
     }
 
+    @Override
     @Nonnull
     public ItemStack getUpgradeItem(UUID uuid) {
         NBTTagCompound nbt = new NBTTagCompound();
@@ -136,10 +148,11 @@ public final class UpgradeRegistry
         return stack;
     }
 
+    @Override
     @Nonnull
-    public ItemStack getUpgradeItem(TurretUpgrade upgrade) {
+    public ItemStack getUpgradeItem(ITurretUpgrade upgrade) {
         NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setString("upgradeId", this.getUpgradeUUID(upgrade).toString());
+        nbt.setString("upgradeId", this.getUpgradeId(upgrade).toString());
         ItemStack stack = new ItemStack(ItemRegistry.turret_upgrade, 1);
         stack.setTagCompound(nbt);
 
@@ -147,7 +160,7 @@ public final class UpgradeRegistry
     }
 
     private static final class EmptyUpgrade
-            implements TurretUpgrade
+            implements ITurretUpgrade
     {
         private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "upgrades/empty");
 
@@ -157,18 +170,8 @@ public final class UpgradeRegistry
         }
 
         @Override
-        public String getModId() {
-            return TmrConstants.ID;
-        }
-
-        @Override
         public ResourceLocation getModel() {
             return ITEM_MODEL;
-        }
-
-        @Override
-        public TurretUpgrade getDependantOn() {
-            return null;
         }
 
         @Override
@@ -180,17 +183,5 @@ public final class UpgradeRegistry
         public boolean isTurretApplicable(Class<? extends EntityTurret> turretCls) {
             return false;
         }
-
-        @Override
-        public void onApply(EntityTurret turret) { }
-
-        @Override
-        public void onLoad(EntityTurret turret, NBTTagCompound nbt) { }
-
-        @Override
-        public void onSave(EntityTurret turret, NBTTagCompound nbt) { }
-
-        @Override
-        public void onRemove(EntityTurret turret) { }
     }
 }

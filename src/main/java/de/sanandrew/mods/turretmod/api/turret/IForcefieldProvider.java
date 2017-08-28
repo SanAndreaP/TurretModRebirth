@@ -6,18 +6,17 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.client.util;
+package de.sanandrew.mods.turretmod.api.turret;
 
-import de.sanandrew.mods.sanlib.lib.client.ColorObj;
 import net.minecraft.util.math.AxisAlignedBB;
 
-public interface ForcefieldProvider
+public interface IForcefieldProvider
 {
     /**
      * Checks whether the shield is currently active
      * @return true, if the shield is active, false otherwise
      */
-    boolean hasShieldActive();
+    boolean isShieldActive();
 
     /**
      * Returns an AxisAlignedBoundingBox representing the shield's box.<br>
@@ -25,14 +24,16 @@ public interface ForcefieldProvider
      * An example for an 8 x 8 x 8 box would be:<br>
      * &nbsp;&nbsp;{@code AxisAlingedBB(-4.0F, -4.0F, -4.0F, 4.0F, 4.0F, 4.0F)}<br>
      * If the entity stands on X:3, Y:64, Z:206, the absolute coordinates for the AABB would be:<br>
-     * &nbsp;&nbsp;{@code AxisAlingedBB(-1.0F, 60.0F, 202.0F, 7.0F, 68.0F, 210.0F)}<br>
+     * &nbsp;&nbsp;{@code AxisAlingedBB(-1.0F, 60.0F, 202.0F, 7.0F, 68.0F, 210.0F)}
      * @return the AxisAlignedBB representing the shield
      */
     AxisAlignedBB getShieldBoundingBox();
 
     /**
-     * Returns the color of the shield. This includes the Alpha value.<br>
+     * Returns the color of the shield. This includes the Alpha value.
      * @return the color of the shield.
      */
-    ColorObj getShieldColor();
+    int getShieldColor();
+
+    default boolean hasSmoothFadeOut() { return true; }
 }

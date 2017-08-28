@@ -144,9 +144,7 @@ public class TurretInfoEntryAmmo
     public boolean actionPerformed(GuiButton btn) {
         if( btn instanceof GuiButtonAmmoItem ) {
             this.shownAmmo = ((GuiButtonAmmoItem) btn).ammoIndex;
-            for( GuiButtonAmmoItem ammoBtn : this.ammoBtn ) {
-                ammoBtn.enabled = ammoBtn.ammoIndex != this.shownAmmo;
-            }
+            this.ammoBtn.forEach(ammoBtnInst -> ammoBtnInst.enabled = ammoBtnInst.ammoIndex != this.shownAmmo);
 
             return true;
         }

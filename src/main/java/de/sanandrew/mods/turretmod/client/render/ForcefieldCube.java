@@ -8,7 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.render;
 
-import de.sanandrew.mods.sanlib.lib.client.ColorObj;
+import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;

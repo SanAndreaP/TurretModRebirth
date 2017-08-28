@@ -10,9 +10,9 @@ package de.sanandrew.mods.turretmod.entity.turret;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.api.turret.TurretInfo;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
+import de.sanandrew.mods.turretmod.registry.turret.TurretInfoFlamethrower;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.Sounds;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -29,54 +29,15 @@ public class EntityTurretFlamethrower
 {
     public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "turrets/turret_flamethrower");
     public static final UUID TIII_UUID = UUID.fromString("0C61E401-A5F9-44E9-8B29-3A3DC7762C73");
-    public static final TurretInfo TINFO = new TurretInfo() {
-        @Override
-        public String getName() {
-            return "turret_iii_flamethrower";
-        }
-
-        @Override
-        public UUID getUUID() {
-            return EntityTurretFlamethrower.TIII_UUID;
-        }
-
-        @Override
-        public Class<? extends EntityTurret> getTurretClass() {
-            return EntityTurretFlamethrower.class;
-        }
-
-        @Override
-        public float getTurretHealth() {
-            return 40.0F;
-        }
-
-        @Override
-        public int getBaseAmmoCapacity() {
-            return 4096;
-        }
-
-        @Override
-        public ResourceLocation getModel() {
-            return ITEM_MODEL;
-        }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.TURRET_MK3_FT;
-        }
-
-        @Override
-        public String getInfoRange() {
-            return "8";
-        }
-    };
     private static final AxisAlignedBB RANGE_BB = new AxisAlignedBB(-8.0D, -2.0D, -8.0D, 8.0D, 4.0D, 8.0D);
     private boolean doShootSound;
 
+    @SuppressWarnings("unused")
     public EntityTurretFlamethrower(World world) {
         super(world);
     }
 
+    @SuppressWarnings("unused")
     public EntityTurretFlamethrower(World world, boolean isUpsideDown, EntityPlayer player) {
         super(world, isUpsideDown, player);
     }
@@ -109,4 +70,5 @@ public class EntityTurretFlamethrower
     public SoundEvent getShootSound() {
         return (doShootSound = !doShootSound) ? Sounds.shoot_flamethrower : null;
     }
+
 }

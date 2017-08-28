@@ -13,8 +13,10 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
 import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
+import de.sanandrew.mods.turretmod.event.DamageEventHandler;
 import de.sanandrew.mods.turretmod.inventory.ContainerAssemblyFilter;
 import de.sanandrew.mods.turretmod.inventory.ContainerElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
@@ -46,6 +48,7 @@ public class CommonProxy
 
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(PlayerList.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(new DamageEventHandler());
     }
 
     public void init(FMLInitializationEvent event) { }
@@ -124,4 +127,6 @@ public class CommonProxy
     public void spawnParticle(EnumParticle particle, double x, double y, double z, Tuple data) { }
 
     public void playTurretLaser(EntityTurretLaser turretLaser) { }
+
+    public void addForcefield(Entity e, IForcefieldProvider provider) { }
 }

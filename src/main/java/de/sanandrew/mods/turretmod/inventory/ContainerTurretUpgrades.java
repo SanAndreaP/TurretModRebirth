@@ -136,7 +136,7 @@ public class ContainerTurretUpgrades
         Slot slot = this.inventorySlots.get(slotId);
 
         if( slot != null && slot.getHasStack() ) {
-            ItemStack slotStack = slot.getStack();
+            ItemStack slotStack = slot.getStack().copy();
             origStack = slotStack.copy();
 
             if( slotId < 36 ) { // if clicked stack is from Processor

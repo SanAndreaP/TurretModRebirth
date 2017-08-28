@@ -6,7 +6,7 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.render.world;
 
-import de.sanandrew.mods.sanlib.lib.client.ColorObj;
+import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;

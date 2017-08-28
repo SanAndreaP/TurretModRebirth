@@ -17,9 +17,9 @@ import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoRegistry;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.api.repairkit.TurretRepairKit;
-import de.sanandrew.mods.turretmod.api.turret.TurretInfo;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
-import de.sanandrew.mods.turretmod.registry.upgrades.TurretUpgrade;
+import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
@@ -110,20 +110,20 @@ public final class ModelRegistry
         }
 
         static final class Turret
-                extends MeshDefUUID<TurretInfo>
+                extends MeshDefUUID<ITurretInfo>
         {
             Turret() {
-                for( TurretInfo info : TurretRegistry.INSTANCE.getRegisteredInfos() ) {
+                for( ITurretInfo info : TurretRegistry.INSTANCE.getRegisteredInfos() ) {
                     ModelResourceLocation modelRes = new ModelResourceLocation(info.getModel(), "inventory");
                     this.modelRes.put(info.getUUID(), modelRes);
                 }
             }
 
             @Override
-            public TurretInfo getType(@Nonnull ItemStack stack) { return ItemTurret.getTurretInfo(stack); }
+            public ITurretInfo getType(@Nonnull ItemStack stack) { return ItemTurret.getTurretInfo(stack); }
 
             @Override
-            public UUID getId(TurretInfo type) { return type.getUUID(); }
+            public UUID getId(ITurretInfo type) { return type.getUUID(); }
         }
 
         static final class Ammo
@@ -144,20 +144,20 @@ public final class ModelRegistry
         }
 
         static final class Upgrade
-                extends MeshDefUUID<TurretUpgrade>
+                extends MeshDefUUID<ITurretUpgrade>
         {
             public Upgrade() {
-                for( TurretUpgrade upg : UpgradeRegistry.INSTANCE.getRegisteredTypes() ) {
+                for( ITurretUpgrade upg : UpgradeRegistry.INSTANCE.getUpgrades() ) {
                     ModelResourceLocation modelRes = new ModelResourceLocation(upg.getModel(), "inventory");
-                    this.modelRes.put(UpgradeRegistry.INSTANCE.getUpgradeUUID(upg), modelRes);
+                    this.modelRes.put(UpgradeRegistry.INSTANCE.getUpgradeId(upg), modelRes);
                 }
             }
 
             @Override
-            public TurretUpgrade getType(@Nonnull ItemStack stack) { return UpgradeRegistry.INSTANCE.getUpgrade(stack); }
+            public ITurretUpgrade getType(@Nonnull ItemStack stack) { return UpgradeRegistry.INSTANCE.getUpgrade(stack); }
 
             @Override
-            public UUID getId(TurretUpgrade type) { return UpgradeRegistry.INSTANCE.getUpgradeUUID(type); }
+            public UUID getId(ITurretUpgrade type) { return UpgradeRegistry.INSTANCE.getUpgradeId(type); }
         }
 
         static final class Repkit

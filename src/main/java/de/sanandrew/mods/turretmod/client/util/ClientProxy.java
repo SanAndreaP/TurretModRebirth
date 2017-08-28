@@ -12,6 +12,7 @@ import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
 import de.sanandrew.mods.turretmod.client.audio.SoundLaser;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import de.sanandrew.mods.turretmod.client.event.RenderEventHandler;
@@ -67,6 +68,7 @@ import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleSmokeNormal;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -263,5 +265,10 @@ public class ClientProxy
         } else if( turretLaser.laserSound.isDonePlaying() || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(turretLaser.laserSound) ) {
             turretLaser.laserSound = null;
         }
+    }
+
+    @Override
+    public void addForcefield(Entity e, IForcefieldProvider provider) {
+        RenderForcefieldHandler.INSTANCE.addForcefieldRenderer(e, provider);
     }
 }

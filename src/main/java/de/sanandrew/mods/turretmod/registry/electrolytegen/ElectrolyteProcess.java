@@ -30,7 +30,7 @@ public class ElectrolyteProcess
     public ElectrolyteProcess(ItemStack stack) {
         this.processStack = stack;
 
-        ElectrolyteHelper.Fuel fuel = ElectrolyteHelper.getFuel(stack);
+        ElectrolyteRegistry.Fuel fuel = ElectrolyteRegistry.getFuel(stack);
         this.progress = 0;
         this.maxProgress = fuel.ticksProc;
         this.effectivenes = fuel.effect;
@@ -43,7 +43,7 @@ public class ElectrolyteProcess
         this.progress = buf.readShort();
         this.maxProgress = buf.readShort();
 
-        ElectrolyteHelper.Fuel fuel = ElectrolyteHelper.getFuel(this.processStack);
+        ElectrolyteRegistry.Fuel fuel = ElectrolyteRegistry.getFuel(this.processStack);
         this.effectivenes = fuel.effect;
         this.trashStack = fuel.trash.copy();
         this.treasureStack = fuel.treasure.copy();
@@ -54,7 +54,7 @@ public class ElectrolyteProcess
         this.progress = nbt.getShort("progress");
         this.maxProgress = nbt.getShort("progressMax");
 
-        ElectrolyteHelper.Fuel fuel = ElectrolyteHelper.getFuel(this.processStack);
+        ElectrolyteRegistry.Fuel fuel = ElectrolyteRegistry.getFuel(this.processStack);
         this.effectivenes = fuel.effect;
         this.trashStack = fuel.trash.copy();
         this.treasureStack = fuel.treasure.copy();

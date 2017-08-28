@@ -66,7 +66,7 @@ public final class TurretInfoCategoryRegistry
         }
 
         {
-            ITurretInfoEntry[] entries = UpgradeRegistry.INSTANCE.getRegisteredTypes().stream().map(TurretInfoEntryUpgrade::new).toArray(ITurretInfoEntry[]::new);
+            ITurretInfoEntry[] entries = UpgradeRegistry.INSTANCE.getUpgrades().stream().map(TurretInfoEntryUpgrade::new).toArray(ITurretInfoEntry[]::new);
 
             registry.registerCategory(Resources.TINFO_GRP_UPGRADE.getResource(), Lang.TINFO_CATEGORY_NAME.get("upgrades"))
                     .addEntry(new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.assembly_upg_auto), TurretAssemblyRecipes.UPG_AT_AUTO))

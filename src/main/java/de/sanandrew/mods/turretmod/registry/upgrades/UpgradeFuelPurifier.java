@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretFlamethrower;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,7 +19,7 @@ import net.minecraft.util.ResourceLocation;
 import java.util.UUID;
 
 public class UpgradeFuelPurifier
-        implements TurretUpgrade
+        implements ITurretUpgrade
 {
     private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "upgrades/fuel_purifier");
 
@@ -34,18 +35,8 @@ public class UpgradeFuelPurifier
     }
 
     @Override
-    public String getModId() {
-        return TmrConstants.ID;
-    }
-
-    @Override
     public ResourceLocation getModel() {
         return ITEM_MODEL;
-    }
-
-    @Override
-    public TurretUpgrade getDependantOn() {
-        return null;
     }
 
     @Override
@@ -54,16 +45,7 @@ public class UpgradeFuelPurifier
     }
 
     @Override
-    public void onApply(EntityTurret turret) { }
-
-    @Override
-    public void onRemove(EntityTurret turret) { }
-
-    @Override
     public UUID getRecipeId() {
         return TurretAssemblyRecipes.UPG_FUEL_PURIFY;
     }
-
-    @Override
-    public void onLoad(EntityTurret turret, NBTTagCompound nbt) { }
 }

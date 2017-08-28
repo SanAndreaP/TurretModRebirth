@@ -54,13 +54,16 @@ public class TurretInfoEntryInfo
         this.guiInfo = gui;
         List<GuiButton> btns = gui.__getButtons();
 //TODO: fix buttons
-        btns.add(new GuiTurretInfo.GuiButtonLink(btns.size(), 4, 65, "SanAndreasP", "https://twitter.com/SanAndreasP"));
-        btns.add(new GuiTurretInfo.GuiButtonLink(btns.size(), 4, 85, "Darkhax", "https://twitter.com/Darkh4x"));
-        btns.add(new GuiTurretInfo.GuiButtonLink(btns.size(), 4, 96, "Drullkus", "https://twitter.com/Drullkus"));
-        btns.add(new GuiTurretInfo.GuiButtonLink(btns.size(), 4, 107, "Vazkii", "https://twitter.com/Vazkii"));
+        int x = gui.getEntryX() + 4;
+        int y = gui.getEntryY();
+        btns.add(new GuiTurretInfo.GuiButtonLink(btns.size(), x, y + 65, "SanAndreasP", "https://twitter.com/SanAndreasP"));
+        btns.add(new GuiTurretInfo.GuiButtonLink(btns.size(), x, y + 85, "Darkhax", "https://twitter.com/Darkh4x"));
+        btns.add(new GuiTurretInfo.GuiButtonLink(btns.size(), x, y + 96, "Drullkus", "https://twitter.com/Drullkus"));
+        btns.add(new GuiTurretInfo.GuiButtonLink(btns.size(), x, y + 107, "Vazkii", "https://twitter.com/Vazkii"));
 
-        btns.add(new GuiTurretInfo.GuiButtonLink(btns.size(), 2, 125, "Github Homepage", "https://github.com/SanAndreasP/TurretModRebirth"));
-        btns.add(new GuiTurretInfo.GuiButtonLink(btns.size(), 2, 136, "Github Issue Tracker", "https://github.com/SanAndreasP/TurretModRebirth/issues"));
+        x = gui.getEntryX() + 2;
+        btns.add(new GuiTurretInfo.GuiButtonLink(btns.size(), x, y + 125, "Github Homepage", "https://github.com/SanAndreasP/TurretModRebirth"));
+        btns.add(new GuiTurretInfo.GuiButtonLink(btns.size(), x, y + 136, "Github Issue Tracker", "https://github.com/SanAndreasP/TurretModRebirth/issues"));
     }
 
     @Override

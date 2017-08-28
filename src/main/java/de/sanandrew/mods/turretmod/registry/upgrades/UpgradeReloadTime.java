@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.registry.upgrades;
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -20,7 +21,7 @@ import net.minecraft.util.ResourceLocation;
 import java.util.UUID;
 
 public abstract class UpgradeReloadTime
-        implements TurretUpgrade
+        implements ITurretUpgrade
 {
     private final ResourceLocation itemModel;
 
@@ -36,11 +37,6 @@ public abstract class UpgradeReloadTime
     @Override
     public String getName() {
         return this.name;
-    }
-
-    @Override
-    public String getModId() {
-        return TmrConstants.ID;
     }
 
     @Override
@@ -84,7 +80,7 @@ public abstract class UpgradeReloadTime
         }
 
         @Override
-        public TurretUpgrade getDependantOn() {
+        public ITurretUpgrade getDependantOn() {
             return null;
         }
 
@@ -97,7 +93,7 @@ public abstract class UpgradeReloadTime
     public static class UpgradeReloadTimeMK2
             extends UpgradeReloadTime
     {
-        private final TurretUpgrade dependant;
+        private final ITurretUpgrade dependant;
 
         public UpgradeReloadTimeMK2() {
             super("reload_ii", "BA6FE867-0EBF-4E1A-9ED9-05E2B47143F8", -0.35D);
@@ -105,7 +101,7 @@ public abstract class UpgradeReloadTime
         }
 
         @Override
-        public TurretUpgrade getDependantOn() {
+        public ITurretUpgrade getDependantOn() {
             return this.dependant;
         }
 

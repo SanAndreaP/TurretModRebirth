@@ -14,7 +14,7 @@ import de.sanandrew.mods.turretmod.item.ItemTurret;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
-import de.sanandrew.mods.turretmod.api.turret.TurretInfo;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import mezz.jei.api.*;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
@@ -46,11 +46,11 @@ public class JeiPlugin
     @Override
     public void registerItemSubtypes(ISubtypeRegistry subtypeRegistry) {
         subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.turret_placer, itemStack -> {
-            TurretInfo stype = ItemTurret.getTurretInfo(itemStack);
+            ITurretInfo stype = ItemTurret.getTurretInfo(itemStack);
             return stype != null ? stype.getUUID().toString() : null;
         });
 
-        subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.turret_upgrade, itemStack -> UpgradeRegistry.INSTANCE.getUpgradeUUID(itemStack).toString());
+        subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.turret_upgrade, itemStack -> UpgradeRegistry.INSTANCE.getUpgradeId(itemStack).toString());
 
         subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.turret_ammo, itemStack -> TurretAmmoRegistry.INSTANCE.getType(itemStack).getId().toString());
 

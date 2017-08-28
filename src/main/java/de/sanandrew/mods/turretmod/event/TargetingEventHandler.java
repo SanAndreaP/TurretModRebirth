@@ -20,7 +20,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.List;
 
-public class TargetingEvents
+public class TargetingEventHandler
 {
     @SubscribeEvent
     public void onTargetCheck(TargetingEvent.TargetCheck event) {

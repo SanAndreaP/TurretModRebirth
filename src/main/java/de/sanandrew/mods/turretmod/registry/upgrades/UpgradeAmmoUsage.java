@@ -10,13 +10,14 @@ package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
 public abstract class UpgradeAmmoUsage
-        implements TurretUpgrade
+        implements ITurretUpgrade
 {
     private final ResourceLocation itemModel;
     private final String name;
@@ -29,11 +30,6 @@ public abstract class UpgradeAmmoUsage
     @Override
     public String getName() {
         return this.name;
-    }
-
-    @Override
-    public String getModId() {
-        return TmrConstants.ID;
     }
 
     @Override
@@ -54,7 +50,7 @@ public abstract class UpgradeAmmoUsage
         }
 
         @Override
-        public TurretUpgrade getDependantOn() {
+        public ITurretUpgrade getDependantOn() {
             return null;
         }
 
@@ -67,7 +63,7 @@ public abstract class UpgradeAmmoUsage
     public static class UpgradeAmmoUseII
             extends UpgradeAmmoUsage
     {
-        private final TurretUpgrade dependant;
+        private final ITurretUpgrade dependant;
 
         public UpgradeAmmoUseII() {
             super("use_decr_ii");
@@ -75,7 +71,7 @@ public abstract class UpgradeAmmoUsage
         }
 
         @Override
-        public TurretUpgrade getDependantOn() {
+        public ITurretUpgrade getDependantOn() {
             return this.dependant;
         }
 
@@ -88,7 +84,7 @@ public abstract class UpgradeAmmoUsage
     public static class UpgradeAmmoUseInf
             extends UpgradeAmmoUsage
     {
-        private final TurretUpgrade dependant;
+        private final ITurretUpgrade dependant;
 
         public UpgradeAmmoUseInf() {
             super("use_decr_inf");
@@ -96,7 +92,7 @@ public abstract class UpgradeAmmoUsage
         }
 
         @Override
-        public TurretUpgrade getDependantOn() {
+        public ITurretUpgrade getDependantOn() {
             return this.dependant;
         }
 

@@ -7,7 +7,7 @@
 package de.sanandrew.mods.turretmod.tileentity.electrolytegen;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteHelper;
+import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.items.ItemStackHandler;
@@ -37,7 +37,7 @@ final class ElectrolyteInventoryHandler
     @Nonnull
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
         this.validateSlotIndex(slot);
-        if( slot < 9 && !ElectrolyteHelper.getFuel(stack).isNull() && !ItemStackUtils.isValid(this.stacks.get(slot)) ) {
+        if( slot < 9 && !ElectrolyteRegistry.getFuel(stack).isNull() && !ItemStackUtils.isValid(this.stacks.get(slot)) ) {
             return super.insertItem(slot, stack, simulate);
         }
 
