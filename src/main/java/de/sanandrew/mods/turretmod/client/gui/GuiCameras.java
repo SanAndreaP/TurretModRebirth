@@ -6,8 +6,8 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.gui;
 
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.render.world.RenderTurretCam;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
@@ -28,8 +28,8 @@ public class GuiCameras
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawScreen(mouseX, mouseY, partialTicks);
 
-        if( e instanceof EntityTurret ) {
-            RenderTurretCam.bindTurretCamTx((EntityTurret) e);
+        if( e instanceof ITurretInst ) {
+            RenderTurretCam.bindTurretCamTx((ITurretInst) e);
             GlStateManager.pushMatrix();
             GlStateManager.translate(128, 128, 0);
             GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);

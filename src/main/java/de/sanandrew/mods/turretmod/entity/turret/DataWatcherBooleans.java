@@ -6,7 +6,7 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.api.turret;
+package de.sanandrew.mods.turretmod.entity.turret;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;

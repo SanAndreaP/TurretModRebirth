@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.network;
 
 import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeInstance;
 import io.netty.buffer.ByteBuf;
@@ -35,8 +35,8 @@ public class PacketSyncUpgradeInst
     @SuppressWarnings("unused")
     public PacketSyncUpgradeInst() { }
 
-    public PacketSyncUpgradeInst(EntityTurret turret, UUID upgradeId) {
-        this.turretId = turret.getEntityId();
+    public PacketSyncUpgradeInst(ITurretInst turret, UUID upgradeId) {
+        this.turretId = turret.getEntity().getEntityId();
         this.upgradeId = upgradeId;
         IUpgradeInstance<?> upgInstance = turret.getUpgradeProcessor().getUpgradeInstance(upgradeId);
         if( upgInstance != null ) {
@@ -54,8 +54,8 @@ public class PacketSyncUpgradeInst
     public void handleClientMessage(PacketSyncUpgradeInst packet, EntityPlayer player) {
         if( packet.instData.length > 0 ) {
             Entity e = player.world.getEntityByID(packet.turretId);
-            if( e instanceof EntityTurret ) {
-                IUpgradeProcessor processor = ((EntityTurret) e).getUpgradeProcessor();
+            if( e instanceof ITurretInst ) {
+                IUpgradeProcessor processor = ((ITurretInst) e).getUpgradeProcessor();
                 IUpgradeInstance<?> upgInstance = processor.getUpgradeInstance(packet.upgradeId);
                 if( upgInstance != null ) {
                     try( ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(packet.instData)) ) {

@@ -1,7 +1,6 @@
 package de.sanandrew.mods.turretmod.api.upgrade;
 
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
-import io.netty.buffer.ByteBuf;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -17,7 +16,7 @@ public interface IUpgradeInstance<T extends IUpgradeInstance<T>>
 
     default void toBytes(ObjectOutputStream stream) throws IOException { }
 
-    default void onTick(EntityTurret turret) { }
+    default void onTick(ITurretInst turret) { }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)

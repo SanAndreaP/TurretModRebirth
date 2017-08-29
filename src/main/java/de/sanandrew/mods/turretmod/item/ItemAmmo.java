@@ -9,8 +9,8 @@
 package de.sanandrew.mods.turretmod.item;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoRegistry;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
+import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoRegistry;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;

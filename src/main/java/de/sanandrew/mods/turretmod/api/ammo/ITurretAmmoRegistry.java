@@ -1,6 +1,6 @@
 package de.sanandrew.mods.turretmod.api.ammo;
 
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -11,7 +11,7 @@ public interface ITurretAmmoRegistry
 {
     List<ITurretAmmo> getRegisteredTypes();
 
-    List<UUID> getRegisteredGroups();
+    List<UUID> getGroups();
 
     ITurretAmmo[] getTypes(UUID groupId);
 
@@ -20,7 +20,7 @@ public interface ITurretAmmoRegistry
     @Nonnull
     ITurretAmmo getType(@Nonnull ItemStack stack);
 
-    List<ITurretAmmo> getTypesForTurret(Class<? extends EntityTurret> turret);
+    List<ITurretAmmo> getTypesForTurret(ITurret turret);
 
     @SuppressWarnings("unused")
     boolean registerAmmoType(ITurretAmmo<?> type);

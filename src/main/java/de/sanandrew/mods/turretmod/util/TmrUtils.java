@@ -10,24 +10,14 @@ import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.ITmrUtils;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
-import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
-import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
-import de.sanandrew.mods.turretmod.client.event.RenderForcefieldHandler;
-import de.sanandrew.mods.turretmod.client.util.ClientProxy;
-import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
-import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
-import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketUpdateTurretState;
-import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -38,35 +28,9 @@ public class TmrUtils
     public static final TmrUtils INSTANCE = new TmrUtils();
 
     @Override
-    public ITargetProcessor getNewTargetProcInstance(EntityTurret turret) {
-        return new TargetProcessor(turret);
-    }
-
-    @Override
-    public IUpgradeProcessor getNewUpgradeProcInstance(EntityTurret turret) {
-        return new UpgradeProcessor(turret);
-    }
-
-    @Override
-    public boolean isTCUItem(@Nonnull ItemStack stack) {
-        return ItemStackUtils.isItem(stack, ItemRegistry.turret_control_unit);
-    }
-
-    @Override
-    public void onTurretDeath(EntityTurret turret) {
-        ((TargetProcessor) turret.getTargetProcessor()).dropAmmo();
-        ((UpgradeProcessor) turret.getUpgradeProcessor()).dropUpgrades();
-    }
-
-    @Override
-    public void updateTurretState(EntityTurret turret) {
-        PacketRegistry.sendToAllAround(new PacketUpdateTurretState(turret), turret.dimension, turret.posX, turret.posY, turret.posZ, 64.0D);
-    }
-
-    @Override
-    @Nonnull
-    public ItemStack getPickedTurretResult(RayTraceResult target, EntityTurret turret) {
-        return ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(turret.getClass()));
+    public void updateTurretState(ITurretInst turret) {
+        EntityLiving turretL = turret.getEntity();
+        PacketRegistry.sendToAllAround(new PacketUpdateTurretState(turret), turretL.dimension, turretL.posX, turretL.posY, turretL.posZ, 64.0D);
     }
 
     @Override

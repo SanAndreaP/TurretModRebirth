@@ -10,8 +10,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.energy.IEnergyStorage;
 
-import javax.annotation.Nonnull;
-
 final class AssemblyEnergyStorage
         implements IEnergyStorage, INBTSerializable<NBTTagCompound>
 {

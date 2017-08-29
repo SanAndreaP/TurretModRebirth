@@ -8,16 +8,15 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
-import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
-import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoRegistry;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
 import de.sanandrew.mods.turretmod.api.assembly.IRecipeEntry;
+import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
+import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretNew;
+import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
-import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -26,7 +25,6 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -42,21 +40,17 @@ public class TurretInfoEntryTurret
     private int drawHeight;
     private float rotation;
     private long lastTimestamp;
-    private Class<? extends EntityTurret> turretClass;
-    private WeakReference<EntityTurret> turretRenderCache;
+    private ITurret turret;
+    private WeakReference<EntityTurretNew> turretRenderCache;
     private TurretInfoValues values;
 
     private IGuiTurretInfo guiInfo;
     private final ItemStack icon;
 
-    public TurretInfoEntryTurret(Class<? extends EntityTurret> turret) {
-        this(TurretRegistry.INSTANCE.getInfo(turret));
-        this.turretClass = turret;
-    }
-
-    private TurretInfoEntryTurret(ITurretInfo info) {
-        this.values = new TurretInfoValues(info);
-        this.icon = ItemRegistry.turret_placer.getTurretItem(1, info);
+    public TurretInfoEntryTurret(ITurret turret) {
+        this.values = new TurretInfoValues(turret);
+        this.turret = turret;
+        this.icon = ItemRegistry.turret_placer.getTurretItem(1, turret);
     }
 
     @Override
@@ -66,7 +60,7 @@ public class TurretInfoEntryTurret
 
     @Override
     public String getTitle() {
-        return Lang.translateEntityCls(this.turretClass);
+        return Lang.TURRET_NAME.get(this.values.name);
     }
 
     @Nonnull
@@ -104,9 +98,10 @@ public class TurretInfoEntryTurret
 
         descStart = Math.max(turretHeight, valueHeight);
 
+        String desc = Lang.translate(Lang.TURRET_DESC, this.values.name).replace("\\n", "\n");
         Gui.drawRect(2, 2 + descStart, MAX_ENTRY_WIDTH - 2, 3 + descStart, 0xFF0080BB);
-        mc.fontRenderer.drawSplitString(this.values.desc, 2, 5 + descStart, MAX_ENTRY_WIDTH - 2, 0xFF000000);
-        descHeight = mc.fontRenderer.getWordWrappedHeight(this.values.desc, MAX_ENTRY_WIDTH - 4) + 7;
+        mc.fontRenderer.drawSplitString(desc, 2, 5 + descStart, MAX_ENTRY_WIDTH - 2, 0xFF000000);
+        descHeight = mc.fontRenderer.getWordWrappedHeight(desc, MAX_ENTRY_WIDTH - 4) + 7;
 
         for( int i = 0; i < this.values.ammoStacks.length; i++ ) {
             this.guiInfo.drawMiniItem(63 + 10 * i, 84, mouseX, mouseY, scrollY, this.values.ammoStacks[i], true);
@@ -131,13 +126,13 @@ public class TurretInfoEntryTurret
     private void drawTurret(Minecraft mc, int x, int y) {
         if( this.turretRenderCache == null || this.turretRenderCache.get() == null || this.turretRenderCache.isEnqueued() ) {
             try {
-                this.turretRenderCache = new WeakReference<>(this.turretClass.getConstructor(World.class).newInstance(mc.world));
+                this.turretRenderCache = new WeakReference<>(new EntityTurretNew(mc.world, this.turret));
             } catch( Exception e ) {
                 return;
             }
         }
 
-        EntityTurret turret = this.turretRenderCache.get();
+        EntityTurretNew turret = this.turretRenderCache.get();
         if( turret == null ) {
             return;
         }
@@ -182,28 +177,26 @@ public class TurretInfoEntryTurret
     private static final class TurretInfoValues
     {
         public final String name;
-        public final String desc;
         public final float health;
         public final int ammoCap;
         public final String range;
         public final IRecipeEntry[] recipeStacks;
         public final ItemStack[] ammoStacks;
 
-        public TurretInfoValues(ITurretInfo info) {
+        public TurretInfoValues(ITurret turret) {
             List<ItemStack> ammoItms = new ArrayList<>();
 
-            this.name = Lang.translateEntityCls(info.getTurretClass());
-            this.desc = Lang.translateEntityClsDesc(info.getTurretClass()).replace("\\n", "\n");
-            this.range = info.getInfoRange();
-            this.health = info.getTurretHealth();
-            this.ammoCap = info.getBaseAmmoCapacity();
+            this.name = turret.getName();
+            this.range = turret.getInfoRange();
+            this.health = turret.getInfoHealth();
+            this.ammoCap = turret.getInfoBaseAmmoCapacity();
 
-            List<ITurretAmmo> ammos = TurretAmmoRegistry.INSTANCE.getTypesForTurret(info.getTurretClass());
+            List<ITurretAmmo> ammos = TurretAmmoRegistry.INSTANCE.getTypesForTurret(turret);
             for( ITurretAmmo ammo : ammos ) {
                 ammoItms.add(ItemRegistry.turret_ammo.getAmmoItem(1, ammo));
             }
 
-            TurretAssemblyRegistry.RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(info.getRecipeId());
+            TurretAssemblyRegistry.RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(turret.getRecipeId());
             this.recipeStacks = recipeEntry == null ? new IRecipeEntry[0] : recipeEntry.resources;
 
             this.ammoStacks = ammoItms.toArray(new ItemStack[ammoItms.size()]);

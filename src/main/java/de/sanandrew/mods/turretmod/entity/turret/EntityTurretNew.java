@@ -6,14 +6,26 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.api.turret;
+package de.sanandrew.mods.turretmod.entity.turret;
 
 import com.mojang.authlib.GameProfile;
+import de.sanandrew.mods.sanlib.lib.Tuple;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.ITmrUtils;
 import de.sanandrew.mods.turretmod.api.repairkit.IRepairKitRegistry;
 import de.sanandrew.mods.turretmod.api.repairkit.TurretRepairKit;
-import de.sanandrew.mods.turretmod.api.EnumGui;
+import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
+import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
+import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import io.netty.buffer.ByteBuf;
+import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -42,17 +54,18 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 import javax.annotation.Nonnull;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 
-public abstract class EntityTurret
+public class EntityTurretNew
         extends EntityLiving
-        implements IEntityAdditionalSpawnData
+        implements IEntityAdditionalSpawnData, ITurretInst
 {
     private static final AxisAlignedBB UPWARDS_BLOCK = new AxisAlignedBB(0.1D, 0.99D, 0.1D, 1.0D, 1.0D, 1.0D);
     private static final AxisAlignedBB DOWNWARDS_BLOCK = new AxisAlignedBB(0.1D, 0.0D, 0.1D, 1.0D, 0.01D, 1.0D);
 
-    public static final DataParameter<Boolean> SHOT_CHNG = EntityDataManager.createKey(EntityTurret.class, DataSerializers.BOOLEAN);
+    public static final DataParameter<Boolean> SHOT_CHNG = EntityDataManager.createKey(EntityTurretNew.class, DataSerializers.BOOLEAN);
 
     public static SoundEvent hurtSound; // populte by internal plugin
     public static SoundEvent deathSound; // populte by internal plugin
@@ -64,31 +77,45 @@ public abstract class EntityTurret
     public boolean showRange;
     public boolean inGui;
 
-    protected final ITargetProcessor targetProc;
-    protected final IUpgradeProcessor upgProc;
+    protected final TargetProcessor targetProc;
+    protected final UpgradeProcessor upgProc;
 
     protected UUID ownerUUID;
     protected String ownerName;
 
-    private DataWatcherBooleans<EntityTurret> dwBools;
+    private DataWatcherBooleans<EntityTurretNew> dwBools;
     private BlockPos blockPos;
     private boolean prevShotChng;
     private boolean checkBlock;
 
-    public EntityTurret(World world) {
+    private Map<Integer, Tuple> fields;
+
+    @Nonnull
+    private ITurret delegate;
+
+    public EntityTurretNew(World world) {
         super(world);
-        this.targetProc = utils.getNewTargetProcInstance(this);
-        this.upgProc = utils.getNewUpgradeProcInstance(this);
+        this.targetProc = new TargetProcessor(this);
+        this.upgProc = new UpgradeProcessor(this);
         this.rotationYaw = 0.0F;
         this.checkBlock = true;
+        this.delegate = TurretRegistry.NULL_TURRET;
+        this.fields = new Int2ObjectAVLTreeMap<>();
     }
 
-    public EntityTurret(World world, boolean isUpsideDown, EntityPlayer owner) {
+    public EntityTurretNew(World world, ITurret delegate) {
+        this(world);
+        this.delegate = delegate;
+    }
+
+    public EntityTurretNew(World world, boolean isUpsideDown, EntityPlayer owner, ITurret delegate) {
         this(world);
         this.isUpsideDown = isUpsideDown;
 
         this.ownerUUID = owner.getUniqueID();
         this.ownerName = owner.getName();
+
+        this.delegate = delegate;
     }
 
     @Override
@@ -97,6 +124,8 @@ public abstract class EntityTurret
 
         this.getAttributeMap().registerAttribute(TurretAttributes.MAX_AMMO_CAPACITY);
         this.getAttributeMap().registerAttribute(TurretAttributes.MAX_RELOAD_TICKS);
+
+        this.delegate.applyEntityAttributes(this);
     }
 
     @Override
@@ -109,16 +138,18 @@ public abstract class EntityTurret
         this.dataManager.register(SHOT_CHNG, false);
 
         this.setActive(true);
+
+        this.delegate.entityInit(this);
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource dmgSrc) {
-        return hurtSound;
+        return MiscUtils.defIfNull(this.delegate.getHurtSound(this), hurtSound);
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return deathSound;
+        return MiscUtils.defIfNull(this.delegate.getDeathSound(this), deathSound);
     }
 
     @Override
@@ -175,9 +206,12 @@ public abstract class EntityTurret
 
             this.rotationYaw = 0.0F;
             this.renderYawOffset = 0.0F;
+
+            this.delegate.onUpdate(this);
         }
     }
 
+    @Override
     public boolean wasShooting() {
         boolean shot = this.dataManager.get(SHOT_CHNG) != this.prevShotChng;
         this.prevShotChng = this.dataManager.get(SHOT_CHNG);
@@ -292,7 +326,7 @@ public abstract class EntityTurret
         ItemStack stack = player.getHeldItem(hand);
 
         if( this.world.isRemote ) {
-            if( utils.isTCUItem(stack) ) {
+            if( ItemStackUtils.isItem(stack, ItemRegistry.turret_control_unit) ) {
                 utils.openGui(player, player.isSneaking() ? EnumGui.GUI_DEBUG_CAMERA : EnumGui.GUI_TCU_INFO, this.getEntityId(), this.hasPlayerPermission(player) ? 1 : 0, 0);
                 return true;
             }
@@ -326,7 +360,8 @@ public abstract class EntityTurret
         super.onDeath(dmgSrc);
 
         if( !this.world.isRemote ) {
-            utils.onTurretDeath(this);
+            this.targetProc.dropAmmo();
+            this.upgProc.dropUpgrades();
         }
 
         //just insta-kill it
@@ -350,6 +385,10 @@ public abstract class EntityTurret
 
     @Override
     public void writeSpawnData(ByteBuf buffer) {
+        UUID turretId = this.delegate.getId();
+        buffer.writeLong(turretId.getMostSignificantBits());
+        buffer.writeLong(turretId.getLeastSignificantBits());
+
         NBTTagCompound targetNbt = new NBTTagCompound();
         this.targetProc.writeToNbt(targetNbt);
         ByteBufUtils.writeTag(buffer, targetNbt);
@@ -361,22 +400,26 @@ public abstract class EntityTurret
         buffer.writeBoolean(this.isUpsideDown);
 
         if( this.ownerUUID != null ) {
-            ByteBufUtils.writeUTF8String(buffer, this.ownerUUID.toString());
+            buffer.writeBoolean(true);
+            buffer.writeLong(this.ownerUUID.getMostSignificantBits());
+            buffer.writeLong(this.ownerUUID.getLeastSignificantBits());
             ByteBufUtils.writeUTF8String(buffer, this.ownerName);
         } else {
-            ByteBufUtils.writeUTF8String(buffer, "[UNKNOWN_OWNER]");
+            buffer.writeBoolean(false);
         }
     }
 
     @Override
     public void readSpawnData(ByteBuf buffer) {
+        this.delegate = TurretRegistry.INSTANCE.getTurret(new UUID(buffer.readLong(), buffer.readLong()));
+
         this.targetProc.readFromNbt(ByteBufUtils.readTag(buffer));
         this.upgProc.readFromNbt(ByteBufUtils.readTag(buffer));
+
         this.isUpsideDown = buffer.readBoolean();
 
-        String ownerUUIDStr = ByteBufUtils.readUTF8String(buffer);
-        if( !ownerUUIDStr.equals("[UNKNOWN_OWNER]") ) {
-            this.ownerUUID = UUID.fromString(ownerUUIDStr);
+        if( buffer.readBoolean() ) {
+            this.ownerUUID = new UUID(buffer.readLong(), buffer.readLong());
             this.ownerName = ByteBufUtils.readUTF8String(buffer);
         }
     }
@@ -437,22 +480,38 @@ public abstract class EntityTurret
     @Override
     public final void travel(float strafe, float vertical, float forward) {}
 
-    public abstract ResourceLocation getStandardTexture();
+    public ResourceLocation getStandardTexture() {
+        return this.delegate.getStandardTexture(this);
+    }
 
-    public abstract ResourceLocation getGlowTexture();
+    public ResourceLocation getGlowTexture() {
+        return this.delegate.getGlowTexture(this);
+    }
 
-    public abstract SoundEvent getShootSound();
+    public SoundEvent getShootSound() {
+        return this.delegate.getShootSound(this);
+    }
 
     public SoundEvent getNoAmmoSound() {
-        return SoundEvents.BLOCK_DISPENSER_FAIL;
+        return MiscUtils.defIfNull(this.delegate.getNoAmmoSound(this), SoundEvents.BLOCK_DISPENSER_FAIL);
     }
 
     public boolean isActive() {
         return this.dwBools.getBit(DataWatcherBooleans.Turret.ACTIVE.bit);
     }
 
-    public void setActive(boolean active) {
-        this.dwBools.setBit(DataWatcherBooleans.Turret.ACTIVE.bit, active);
+    public void setActive(boolean isActive) {
+        this.dwBools.setBit(DataWatcherBooleans.Turret.ACTIVE.bit, isActive);
+    }
+
+    @Override
+    public boolean showRange() {
+        return this.showRange;
+    }
+
+    @Override
+    public void setShowRange(boolean showRange) {
+        this.showRange = showRange;
     }
 
     private static boolean isAABBInside(AxisAlignedBB bb1, AxisAlignedBB bb2) {
@@ -473,7 +532,7 @@ public abstract class EntityTurret
 
         if( !doBlockCheckOnly ) {
             AxisAlignedBB aabb = new AxisAlignedBB(posPlaced.getX(), posPlaced.getY(), posPlaced.getZ(), posPlaced.getX() + 1.0D, posPlaced.getY() + (updideDown ? - 1.0D : 1.0D), posPlaced.getZ() + 1.0D);
-            if( !world.getEntitiesWithinAABB(EntityTurret.class, aabb).isEmpty() ) {
+            if( !world.getEntitiesWithinAABB(EntityTurretNew.class, aabb).isEmpty() ) {
                 return false;
             }
         }
@@ -481,6 +540,7 @@ public abstract class EntityTurret
         return true;
     }
 
+    @Override
     public String getOwnerName() {
         return this.ownerName;
     }
@@ -510,9 +570,24 @@ public abstract class EntityTurret
     }
 
     @Override
+    public boolean isInGui() {
+        return this.inGui;
+    }
+
+    @Override
+    public <V> void setField(int index, V value) {
+        this.fields.put(index, new Tuple(value));
+    }
+
+    @Override
+    public <V> V getField(int index) {
+        return this.fields.computeIfAbsent(index, i -> new Tuple(new Object[1])).getValue(0);
+    }
+
+    @Override
     @Nonnull
     public ItemStack getPickedResult(RayTraceResult target) {
-        return utils.getPickedTurretResult(target, this);
+        return ItemRegistry.turret_placer.getTurretItem(1, this.delegate);
     }
 
     @Override
@@ -530,5 +605,23 @@ public abstract class EntityTurret
         return this.getEntityBoundingBox();
     }
 
-    public abstract AxisAlignedBB getRangeBB();
+    public AxisAlignedBB getRangeBB() {
+        return this.delegate.getRangeBB(this);
+    }
+
+    @Override
+    public boolean isUpsideDown() {
+        return this.isUpsideDown;
+    }
+
+    @Override
+    public EntityLiving getEntity() {
+        return this;
+    }
+
+    @Override
+    public ITurret getTurret() {
+        return this.delegate;
+    }
+
 }

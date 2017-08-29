@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretUpgrades;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
@@ -34,7 +34,7 @@ public class GuiTcuUpgrades
         extends GuiContainer
         implements GuiTurretCtrlUnit
 {
-    private EntityTurret turret;
+    private ITurretInst turretInst;
 
     private int posY;
     private int posX;
@@ -43,10 +43,10 @@ public class GuiTcuUpgrades
     private boolean hasUpgStgII;
     private boolean hasUpgStgIII;
 
-    public GuiTcuUpgrades(InventoryPlayer invPlayer, EntityTurret turret) {
-        super(new ContainerTurretUpgrades(invPlayer, ((UpgradeProcessor) turret.getUpgradeProcessor())));
+    public GuiTcuUpgrades(InventoryPlayer invPlayer, ITurretInst turretInst) {
+        super(new ContainerTurretUpgrades(invPlayer, ((UpgradeProcessor) turretInst.getUpgradeProcessor())));
 
-        this.turret = turret;
+        this.turretInst = turretInst;
 
         this.xSize = GuiTCUHelper.X_SIZE;
         this.ySize = GuiTCUHelper.Y_SIZE;
@@ -60,9 +60,9 @@ public class GuiTcuUpgrades
             this.mc.player.closeScreen();
         }
 
-        this.hasUpgStgI = this.turret.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_STORAGE_I);
-        this.hasUpgStgII = this.turret.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_STORAGE_II);
-        this.hasUpgStgIII = this.turret.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_STORAGE_III);
+        this.hasUpgStgI = this.turretInst.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_STORAGE_I);
+        this.hasUpgStgII = this.turretInst.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_STORAGE_II);
+        this.hasUpgStgIII = this.turretInst.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_STORAGE_III);
     }
 
     @Override
@@ -151,8 +151,8 @@ public class GuiTcuUpgrades
     }
 
     @Override
-    public EntityTurret getTurret() {
-        return this.turret;
+    public ITurretInst getTurretInst() {
+        return this.turretInst;
     }
 
     @Override

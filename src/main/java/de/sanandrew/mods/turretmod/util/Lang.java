@@ -44,6 +44,9 @@ public final class Lang
     public static final TranslateKey TINFO_ENTRY_INFO_AUTHOR  = new TranslateKey("gui.%s.tinfo.modAuthor", TmrConstants.ID);
     public static final TranslateKey TINFO_ENTRY_INFO_CREDITS = new TranslateKey("gui.%s.tinfo.modCredits", TmrConstants.ID);
 
+    public static final TranslateKey TURRET_NAME = new TranslateKey("%s.turret.%%s.name", TmrConstants.ID);
+    public static final TranslateKey TURRET_DESC = new TranslateKey("%s.turret.%%s.desc", TmrConstants.ID);
+
     public static final TranslateKey TASSEMBLY_BTN_CANCEL      = new TranslateKey("gui.%s.tassembly.cancel", TmrConstants.ID);
     public static final TranslateKey TASSEMBLY_BTN_AUTOENABLE  = new TranslateKey("gui.%s.tassembly.automate.enable", TmrConstants.ID);
     public static final TranslateKey TASSEMBLY_BTN_AUTODISABLE = new TranslateKey("gui.%s.tassembly.automate.disable", TmrConstants.ID);

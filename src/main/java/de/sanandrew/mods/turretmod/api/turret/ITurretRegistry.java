@@ -5,11 +5,11 @@ import java.util.UUID;
 
 public interface ITurretRegistry
 {
-    List<ITurretInfo> getRegisteredInfos();
+    List<ITurret> getTurrets();
 
-    ITurretInfo getInfo(UUID uuid);
+    ITurret getTurret(UUID uuid);
 
-    ITurretInfo getInfo(Class<? extends EntityTurret> clazz);
+    ITurret getTurret(Class<? extends ITurret> clazz);
 
-    boolean registerTurretInfo(ITurretInfo type);
+    boolean registerTurret(ITurret type);
 }

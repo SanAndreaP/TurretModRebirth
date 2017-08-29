@@ -8,16 +8,18 @@
  */
 package de.sanandrew.mods.turretmod.registry.turret;
 
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
-import de.sanandrew.mods.turretmod.util.CommonProxy;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.AxisAlignedBB;
 import org.apache.logging.log4j.Level;
 
+import javax.annotation.Nonnull;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,38 +31,35 @@ public final class TurretRegistry
         implements ITurretRegistry
 {
     public static final TurretRegistry INSTANCE = new TurretRegistry();
+    public static final ITurret NULL_TURRET = new EmptyTurret();
 
-    private final Map<UUID, ITurretInfo> infoFromUUID;
-    private final Map<Class<? extends EntityTurret>, ITurretInfo> infoFromClass;
-    private final List<ITurretInfo> infos;
+    private final Map<UUID, ITurret> turretFromUUID;
+    private final Map<Class<? extends ITurret>, ITurret> turretFromClass;
+    private final List<ITurret> turrets;
 
     private TurretRegistry() {
-        this.infoFromUUID = new HashMap<>();
-        this.infoFromClass = new HashMap<>();
-        this.infos = new ArrayList<>();
+        this.turretFromUUID = new HashMap<>();
+        this.turretFromClass = new HashMap<>();
+        this.turrets = new ArrayList<>();
     }
 
     @Override
-    public List<ITurretInfo> getRegisteredInfos() {
-        return new ArrayList<>(this.infos);
+    public List<ITurret> getTurrets() {
+        return new ArrayList<>(this.turrets);
     }
 
     @Override
-    public ITurretInfo getInfo(UUID uuid) {
-        return this.infoFromUUID.get(uuid);
+    public ITurret getTurret(UUID uuid) {
+        return MiscUtils.defIfNull(this.turretFromUUID.get(uuid), NULL_TURRET);
     }
 
     @Override
-    public ITurretInfo getInfo(Class<? extends EntityTurret> clazz) {
-        return this.infoFromClass.get(clazz);
+    public ITurret getTurret(Class<? extends ITurret> clazz) {
+        return MiscUtils.defIfNull(this.turretFromClass.get(clazz), NULL_TURRET);
     }
 
     @Override
-    public boolean registerTurretInfo(ITurretInfo type) {
-        return this.registerTurretInfo(type, false);
-    }
-
-    boolean registerTurretInfo(ITurretInfo type, boolean registerEntity) {
+    public boolean registerTurret(ITurret type) {
         if( type == null ) {
             TmrConstants.LOG.log(Level.ERROR, "Cannot register NULL as Turret-Info!", new InvalidParameterException());
             return false;
@@ -71,25 +70,77 @@ public final class TurretRegistry
             return false;
         }
 
-        if( this.infoFromUUID.containsKey(type.getUUID()) ) {
+        if( this.turretFromUUID.containsKey(type.getId()) ) {
             TmrConstants.LOG.log(Level.ERROR, String.format("The UUID of Turret-Info %s is already registered! Use another UUID. JUST DO IT!", type.getName()), new InvalidParameterException());
             return false;
         }
 
-        if( type.getTurretClass() == null ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("Turret-Info %s has no turret_placer! wat?", type.getName()), new InvalidParameterException());
-            return false;
-        }
-
-        this.infoFromUUID.put(type.getUUID(), type);
-        this.infoFromClass.put(type.getTurretClass(), type);
-        this.infos.add(type);
-
-        if( registerEntity ) {
-            String name = type.getName();
-            EntityRegistry.registerModEntity(new ResourceLocation(TmrConstants.ID, name), type.getTurretClass(), TmrConstants.ID + '.' + name, CommonProxy.entityCount++, TurretModRebirth.instance, 128, 1, false);
-        }
+        this.turretFromUUID.put(type.getId(), type);
+        this.turretFromClass.put(type.getClass(), type);
+        this.turrets.add(type);
 
         return true;
+    }
+
+    private static class EmptyTurret
+            implements ITurret
+    {
+        private static final AxisAlignedBB BB = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
+
+        @Override
+        public String getName() {
+            return "empty";
+        }
+
+        @Nonnull
+        @Override
+        public UUID getId() {
+            return UuidUtils.EMPTY_UUID;
+        }
+
+        @Override
+        public float getInfoHealth() {
+            return 0;
+        }
+
+        @Override
+        public int getInfoBaseAmmoCapacity() {
+            return 0;
+        }
+
+        @Override
+        public String getInfoRange() {
+            return "n/a";
+        }
+
+        @Override
+        public ResourceLocation getItemModel() {
+            return null;
+        }
+
+        @Override
+        public UUID getRecipeId() {
+            return null;
+        }
+
+        @Override
+        public ResourceLocation getStandardTexture(ITurretInst inst) {
+            return null;
+        }
+
+        @Override
+        public ResourceLocation getGlowTexture(ITurretInst inst) {
+            return null;
+        }
+
+        @Override
+        public SoundEvent getShootSound(ITurretInst inst) {
+            return null;
+        }
+
+        @Override
+        public AxisAlignedBB getRangeBB(ITurretInst inst) {
+            return BB;
+        }
     }
 }

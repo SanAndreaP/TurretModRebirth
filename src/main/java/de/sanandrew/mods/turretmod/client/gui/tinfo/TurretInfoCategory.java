@@ -8,19 +8,14 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tinfo;
 
-import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoCategory;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)

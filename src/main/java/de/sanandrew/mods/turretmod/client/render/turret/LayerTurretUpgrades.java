@@ -10,21 +10,22 @@ package de.sanandrew.mods.turretmod.client.render.turret;
 
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
 import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class LayerTurretUpgrades<T extends EntityTurret>
-        implements LayerRenderer<T>
+public class LayerTurretUpgrades<E extends EntityLiving & ITurretInst>
+        implements LayerRenderer<E>
 {
     @Override
-    public void doRenderLayer(T turret, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    public void doRenderLayer(E turret, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         if( TmrConfiguration.renderUpgrades ) {
             UpgradeProcessor proc = ((UpgradeProcessor) turret.getUpgradeProcessor());
             int cnt = proc.getSizeInventory();

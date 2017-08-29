@@ -11,7 +11,6 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
 
 public final class Turrets
 {
-
     public static final ITurretInfo CROSSBOW = new TurretInfoCrossbow();
     public static final ITurretInfo SHOTGUN = new TurretInfoShotgun();
     public static final ITurretInfo CRYOLATOR = new TurretInfoCryolator();

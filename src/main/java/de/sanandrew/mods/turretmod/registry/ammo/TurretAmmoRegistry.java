@@ -15,7 +15,8 @@ import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmoRegistry;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.util.CommonProxy;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
@@ -40,7 +41,7 @@ public final class TurretAmmoRegistry
     public static final TurretAmmoRegistry INSTANCE = new TurretAmmoRegistry();
 
     private final Map<UUID, ITurretAmmo> ammoTypesFromUUID;
-    private final Multimap<Class<? extends EntityTurret>, ITurretAmmo> ammoTypesFromTurret;
+    private final Multimap<ITurret, ITurretAmmo> ammoTypesFromTurret;
     private final Map<UUID, List<ITurretAmmo>> ammoGroupsFromUUID;
     private final List<ITurretAmmo> ammoTypes;
 
@@ -91,12 +92,12 @@ public final class TurretAmmoRegistry
         }
 
         @Override
-        public EntityArrow getEntity(EntityTurret turret) {
+        public EntityArrow getEntity(ITurretInst turret) {
             return null;
         }
 
         @Override
-        public Class<? extends EntityTurret> getTurret() {
+        public ITurret getTurret() {
             return null;
         }
 
@@ -125,7 +126,7 @@ public final class TurretAmmoRegistry
     }
 
     @Override
-    public List<UUID> getRegisteredGroups() {
+    public List<UUID> getGroups() {
         return new ArrayList<>(this.ammoGroupsFromUUID.keySet());
     }
 
@@ -159,7 +160,7 @@ public final class TurretAmmoRegistry
     }
 
     @Override
-    public List<ITurretAmmo> getTypesForTurret(Class<? extends EntityTurret> turret) {
+    public List<ITurretAmmo> getTypesForTurret(ITurret turret) {
         return new ArrayList<>(this.ammoTypesFromTurret.get(turret));
     }
 

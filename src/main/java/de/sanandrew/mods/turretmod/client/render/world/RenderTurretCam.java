@@ -6,13 +6,14 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.render.world;
 
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.event.RenderEventHandler;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.BufferUtils;
@@ -25,10 +26,10 @@ public class RenderTurretCam
 {
     private static final int QUALITY = 64;
     private static final long MAX_UPDATE_TIME_NS = 1_000_000_000;
-    private static final WeakHashMap<EntityTurret, CamEntry> TURRETS = new WeakHashMap<>();
+    private static final WeakHashMap<ITurretInst, CamEntry> TURRETS = new WeakHashMap<>();
     private static long renderEndNanoTime;
 
-    public static void bindTurretCamTx(EntityTurret turret) {
+    public static void bindTurretCamTx(ITurretInst turret) {
         CamEntry entry = TURRETS.get(turret);
         if( entry == null ) {
             entry =  new CamEntry();
@@ -63,6 +64,7 @@ public class RenderTurretCam
                 if (turret != null) {
                     long updTime = System.nanoTime();
                     if (updTime - camEntry.lastUpdTime > MAX_UPDATE_TIME_NS) {
+                        EntityLiving turretL = turret.getEntity();
                         GameSettings settings = mc.gameSettings;
                         Entity entityBkp = mc.getRenderViewEntity();
                         int thirdPersonBkp = settings.thirdPersonView;
@@ -71,15 +73,15 @@ public class RenderTurretCam
                         float fovBkp = settings.fovSetting;
                         int widthBkp = mc.displayWidth;
                         int heightBkp = mc.displayHeight;
-                        float turretPrevYawBkp = turret.prevRotationYaw;
-                        float turretYawBkp = turret.rotationYaw;
-                        float turretPitchBkp = turret.rotationPitch;
-                        float turretPrevPitchBkp = turret.prevRotationPitch;
-                        double turretPosYBkp = turret.posY;
-                        double turretPrevPosYBkp = turret.prevPosY;
-                        double turretLTPosYBkp = turret.lastTickPosY;
+                        float turretPrevYawBkp = turretL.prevRotationYaw;
+                        float turretYawBkp = turretL.rotationYaw;
+                        float turretPitchBkp = turretL.rotationPitch;
+                        float turretPrevPitchBkp = turretL.prevRotationPitch;
+                        double turretPosYBkp = turretL.posY;
+                        double turretPrevPosYBkp = turretL.prevPosY;
+                        double turretLTPosYBkp = turretL.lastTickPosY;
 
-                        mc.setRenderViewEntity(turret);
+                        mc.setRenderViewEntity(turretL);
                         settings.fovSetting = 100.0F;
                         settings.thirdPersonView = 0;
                         settings.hideGUI = true;
@@ -90,16 +92,16 @@ public class RenderTurretCam
                         RenderEventHandler.renderPlayer = true;
                         RenderEventHandler.renderEntity = mc.player;
 
-                        turret.prevRotationYaw = turret.prevRotationYawHead;
-                        turret.rotationYaw = turret.rotationYawHead;
-                        if (turret.isUpsideDown) {
-                            turret.posY -= 1.0F;
-                            turret.prevPosY -= 1.0F;
-                            turret.lastTickPosY -= 1.0F;
-                            turret.rotationPitch += 180.0F;
-                            turret.prevRotationPitch += 180.0F;
-                            turret.rotationYaw = -turret.rotationYawHead;
-                            turret.prevRotationYaw = -turret.prevRotationYawHead;
+                        turretL.prevRotationYaw = turretL.prevRotationYawHead;
+                        turretL.rotationYaw = turretL.rotationYawHead;
+                        if( turret.isUpsideDown() ) {
+                            turretL.posY -= 1.0F;
+                            turretL.prevPosY -= 1.0F;
+                            turretL.lastTickPosY -= 1.0F;
+                            turretL.rotationPitch += 180.0F;
+                            turretL.prevRotationPitch += 180.0F;
+                            turretL.rotationYaw = -turretL.rotationYawHead;
+                            turretL.prevRotationYaw = -turretL.prevRotationYawHead;
                         }
 
                         int fps = Math.min(Minecraft.getDebugFPS(), mc.gameSettings.limitFramerate);
@@ -113,13 +115,13 @@ public class RenderTurretCam
 
                         renderEndNanoTime = System.nanoTime();
 
-                        turret.posY = turretPosYBkp;
-                        turret.prevPosY = turretPrevPosYBkp;
-                        turret.lastTickPosY = turretLTPosYBkp;
-                        turret.rotationYaw = turretYawBkp;
-                        turret.prevRotationYaw = turretPrevYawBkp;
-                        turret.rotationPitch = turretPitchBkp;
-                        turret.prevRotationPitch = turretPrevPitchBkp;
+                        turretL.posY = turretPosYBkp;
+                        turretL.prevPosY = turretPrevPosYBkp;
+                        turretL.lastTickPosY = turretLTPosYBkp;
+                        turretL.rotationYaw = turretYawBkp;
+                        turretL.prevRotationYaw = turretPrevYawBkp;
+                        turretL.rotationPitch = turretPitchBkp;
+                        turretL.prevRotationPitch = turretPrevPitchBkp;
 
                         RenderEventHandler.renderEntity = null;
                         RenderEventHandler.renderPlayer = false;

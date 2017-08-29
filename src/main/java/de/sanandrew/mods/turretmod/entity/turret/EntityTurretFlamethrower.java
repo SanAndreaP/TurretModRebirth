@@ -11,8 +11,6 @@ package de.sanandrew.mods.turretmod.entity.turret;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
-import de.sanandrew.mods.turretmod.registry.turret.TurretInfoFlamethrower;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.Sounds;
 import net.minecraft.entity.SharedMonsterAttributes;

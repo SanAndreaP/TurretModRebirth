@@ -8,12 +8,12 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
+import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
 import de.sanandrew.mods.turretmod.client.util.ShaderHelper;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoRegistry;
-import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -100,13 +100,13 @@ public class TurretInfoEntryAmmo
 
         this.guiInfo.renderStack(ItemRegistry.turret_ammo.getAmmoItem(1, ammo), 3, 35, 2.0F);
 
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_ROUNDS.get()),                          42, 34, 0xFF6A6A6A, false);
-        mc.fontRenderer.drawString(String.format("%d", ammo.getAmmoCapacity()),                            45, 43, 0xFF000000, false);
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_DPS.get()),                             42, 54, 0xFF6A6A6A, false);
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_HEALTHVAL.get(), ammo.getInfoDamage()), 45, 63, 0xFF000000, false);
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_TURRET.get()),                          42, 74, 0xFF6A6A6A, false);
-        mc.fontRenderer.drawString(Lang.translateEntityCls(ammo.getTurret()),                              45, 83, 0xFF000000, false);
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_CRAFTING.get()),                        42, 94, 0xFF6A6A6A, false);
+        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_ROUNDS),                          42, 34, 0xFF6A6A6A, false);
+        mc.fontRenderer.drawString(String.format("%d", ammo.getAmmoCapacity()),                      45, 43, 0xFF000000, false);
+        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_DPS),                             42, 54, 0xFF6A6A6A, false);
+        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_HEALTHVAL, ammo.getInfoDamage()), 45, 63, 0xFF000000, false);
+        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_TURRET),                          42, 74, 0xFF6A6A6A, false);
+        mc.fontRenderer.drawString(Lang.translate(Lang.TURRET_NAME, ammo.getTurret().getName()),     45, 83, 0xFF000000, false);
+        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_CRAFTING),                        42, 94, 0xFF6A6A6A, false);
 
         String text = Lang.translate(Lang.TINFO_ENTRY_AMMO_DESC.get(ammo.getInfoName())).replace("\\n", "\n");
         mc.fontRenderer.drawSplitString(text, 2, 117, MAX_ENTRY_WIDTH - 2, 0xFF000000);

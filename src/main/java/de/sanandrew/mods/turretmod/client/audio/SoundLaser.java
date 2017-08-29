@@ -6,10 +6,11 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.audio;
 
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.util.Sounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MovingSound;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -18,11 +19,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class SoundLaser
         extends MovingSound
 {
-    private final EntityTurretLaser turret;
+    private final ITurretInst turret;
 
-    public SoundLaser(EntityTurretLaser laser) {
+    public SoundLaser(ITurretInst turret) {
         super(Sounds.shoot_laser, SoundCategory.NEUTRAL);
-        this.turret = laser;
+        this.turret = turret;
         this.repeat = true;
         this.repeatDelay = 0;
         this.volume = 0.00001F;
@@ -30,12 +31,13 @@ public class SoundLaser
 
     @Override
     public void update() {
-        if( this.turret.isDead || Minecraft.getMinecraft().isGamePaused() ) {
+        EntityLiving turretL = this.turret.getEntity();
+        if( turretL.isDead || Minecraft.getMinecraft().isGamePaused() ) {
             this.donePlaying = true;
         } else {
-            this.xPosF = (float)this.turret.posX;
-            this.yPosF = (float)this.turret.posY;
-            this.zPosF = (float)this.turret.posZ;
+            this.xPosF = (float)turretL.posX;
+            this.yPosF = (float)turretL.posY;
+            this.zPosF = (float)turretL.posZ;
 
             if( this.turret.getTargetProcessor().isShooting() && this.turret.getTargetProcessor().hasAmmo() && !Minecraft.getMinecraft().isGamePaused() ) {
                 this.volume = 1.0F;

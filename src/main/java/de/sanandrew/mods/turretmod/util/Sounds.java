@@ -22,17 +22,17 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public final class Sounds
 {
 
-    public static final SoundEvent ricochet_splash = null;//new SoundEvent(R_RICOCHET_SPLASH);
-    public static final SoundEvent ricochet_bullet = null;// = new SoundEvent(R_RICOCHET_BULLET);
-    public static final SoundEvent shoot_cryolator = null;// = new SoundEvent(R_SHOOT_CRYOLATOR);
-    public static final SoundEvent shoot_shotgun = null;// = new SoundEvent(R_SHOOT_SHOTGUN);
-    public static final SoundEvent shoot_revolver = null;// = new SoundEvent(R_SHOOT_REVOLVER);
-    public static final SoundEvent shoot_minigun = null;// = new SoundEvent(R_SHOOT_MINIGUN);
-    public static final SoundEvent shoot_laser = null;// = new SoundEvent(R_SHOOT_LASER);
-    public static final SoundEvent shoot_flamethrower = null;// = new SoundEvent(R_SHOOT_FTHROWER);
-    public static final SoundEvent hit_turrethit = null;// = new SoundEvent(R_TURRET_HIT);
-    public static final SoundEvent hit_turretdeath = null;// = new SoundEvent(R_TURRET_DEATH);
-    public static final SoundEvent collect_ia_get = null;// = new SoundEvent(R_TURRET_COLLECT);
+    public static final SoundEvent ricochet_splash = nil();//new SoundEvent(R_RICOCHET_SPLASH);
+    public static final SoundEvent ricochet_bullet = nil();// = new SoundEvent(R_RICOCHET_BULLET);
+    public static final SoundEvent shoot_cryolator = nil();// = new SoundEvent(R_SHOOT_CRYOLATOR);
+    public static final SoundEvent shoot_shotgun = nil();// = new SoundEvent(R_SHOOT_SHOTGUN);
+    public static final SoundEvent shoot_revolver = nil();// = new SoundEvent(R_SHOOT_REVOLVER);
+    public static final SoundEvent shoot_minigun = nil();// = new SoundEvent(R_SHOOT_MINIGUN);
+    public static final SoundEvent shoot_laser = nil();// = new SoundEvent(R_SHOOT_LASER);
+    public static final SoundEvent shoot_flamethrower = nil();// = new SoundEvent(R_SHOOT_FTHROWER);
+    public static final SoundEvent hit_turrethit = nil();// = new SoundEvent(R_TURRET_HIT);
+    public static final SoundEvent hit_turretdeath = nil();// = new SoundEvent(R_TURRET_DEATH);
+    public static final SoundEvent collect_ia_get = nil();// = new SoundEvent(R_TURRET_COLLECT);
 
     private static final ResourceLocation R_RICOCHET_SPLASH = new ResourceLocation(TmrConstants.ID, "ricochet.splash");
     private static final ResourceLocation R_RICOCHET_BULLET = new ResourceLocation(TmrConstants.ID, "ricochet.bullet");
@@ -65,6 +65,10 @@ public final class Sounds
 
     private static ResourceLocation getRegistryName(ResourceLocation resLoc) {
         return new ResourceLocation(resLoc.getResourceDomain(), resLoc.getResourcePath().replace('.', '_'));
+    }
+
+    private static SoundEvent nil() {
+        return null;
     }
 //    private static int registryID = 0;
 //

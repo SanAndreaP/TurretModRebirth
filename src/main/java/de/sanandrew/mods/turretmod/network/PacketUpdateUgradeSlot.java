@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.network;
 
 import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
@@ -30,8 +30,8 @@ public class PacketUpdateUgradeSlot
     @SuppressWarnings("unused")
     public PacketUpdateUgradeSlot() {}
 
-    public PacketUpdateUgradeSlot(EntityTurret turret, int slot, @Nonnull ItemStack stack) {
-        this.turretID = turret.getEntityId();
+    public PacketUpdateUgradeSlot(ITurretInst turret, int slot, @Nonnull ItemStack stack) {
+        this.turretID = turret.getEntity().getEntityId();
         this.slot = (byte) slot;
         this.stack = stack;
     }
@@ -39,8 +39,8 @@ public class PacketUpdateUgradeSlot
     @Override
     public void handleClientMessage(PacketUpdateUgradeSlot packet, EntityPlayer player) {
         Entity e = player.world.getEntityByID(packet.turretID);
-        if( e instanceof EntityTurret ) {
-            ((UpgradeProcessor) ((EntityTurret) e).getUpgradeProcessor()).setInventorySlotContents(packet.slot, packet.stack);
+        if( e instanceof ITurretInst ) {
+            ((UpgradeProcessor) ((ITurretInst) e).getUpgradeProcessor()).setInventorySlotContents(packet.slot, packet.stack);
         }
     }
 

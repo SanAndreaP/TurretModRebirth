@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.client.model;
 
 import de.sanandrew.mods.sanlib.lib.client.ModelJsonHandler;
 import de.sanandrew.mods.sanlib.lib.client.ModelJsonLoader;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -58,12 +58,12 @@ public class ModelTurretBase
         this.head.rotateAngleY = rotYaw / (180.0F / (float)Math.PI);
         this.head.rotateAngleX = rotPitch / (180.0F / (float)Math.PI);
 
-        EntityTurret turret = (EntityTurret)entity;
+        ITurretInst turret = (ITurretInst) entity;
 
-		float maxHealth = turret.inGui ? 2.0F : turret.getMaxHealth();
-		float health = turret.inGui ? 1.0F : turret.getHealth();
-		int maxAmmo = turret.inGui ? 2 : turret.getTargetProcessor().getMaxAmmoCapacity();
-		int ammo = turret.inGui ? 1 : turret.getTargetProcessor().getAmmoCount();
+		float maxHealth = turret.isInGui() ? 2.0F : turret.getEntity().getMaxHealth();
+		float health = turret.isInGui() ? 1.0F : turret.getEntity().getHealth();
+		int maxAmmo = turret.isInGui() ? 2 : turret.getTargetProcessor().getMaxAmmoCapacity();
+		int ammo = turret.isInGui() ? 1 : turret.getTargetProcessor().getAmmoCount();
 
         this.healthBar.rotateAngleZ = -((float)Math.PI / 2.0F) * ((maxHealth - health) / maxHealth);
         this.ammoBar.rotateAngleZ = ((float)Math.PI / 2.0F) * ((maxAmmo - ammo) / (float) maxAmmo);

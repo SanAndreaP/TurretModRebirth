@@ -10,7 +10,7 @@ import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.event.TargetingEvent;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
+import de.sanandrew.mods.turretmod.entity.turret.TurretShotgun;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -47,7 +47,7 @@ public class TargetingEventHandler
 
     @SubscribeEvent
     public void onShooting(TargetingEvent.Shooting event) {
-        if( event.processor.getTurret() instanceof EntityTurretShotgun ) {
+        if( event.processor.getTurret() instanceof TurretShotgun ) {
             if( event.processor.hasAmmo() ) {
                 for( int i = 0; i < 6; i++ ) {
                     Entity projectile = event.processor.getProjectile();

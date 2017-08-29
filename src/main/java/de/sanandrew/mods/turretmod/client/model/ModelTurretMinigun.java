@@ -9,7 +9,8 @@
 package de.sanandrew.mods.turretmod.client.model;
 
 import de.sanandrew.mods.sanlib.lib.client.ModelJsonLoader;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretMinigun;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.entity.turret.TurretMinigun;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.resources.IResourceManager;
@@ -34,10 +35,16 @@ public class ModelTurretMinigun
 	public void setLivingAnimations(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partTicks) {
 		super.setLivingAnimations(entity, limbSwing, limbSwingAmount, partTicks);
 
-		if( entity instanceof EntityTurretMinigun ) {
-			EntityTurretMinigun shotgun = (EntityTurretMinigun) entity;
-			float barrelDeltaL = shotgun.prevBarrelLeft + (shotgun.barrelLeft - shotgun.prevBarrelLeft) * partTicks;
-			float barrelDeltaR = shotgun.prevBarrelRight + (shotgun.barrelRight - shotgun.prevBarrelRight) * partTicks;
+		ITurretInst turretInst = (ITurretInst) entity;
+		if( turretInst.getTurret() instanceof TurretMinigun ) {
+			float barrelLeft = turretInst.getField(TurretMinigun.BARREL_LEFT);
+			float prevBarrelLeft = turretInst.getField(TurretMinigun.PREV_BARREL_LEFT);
+			float barrelRight = turretInst.getField(TurretMinigun.BARREL_RIGHT);
+			float prevBarrelRight = turretInst.getField(TurretMinigun.PREV_BARREL_RIGHT);
+
+			float barrelDeltaL = prevBarrelLeft + (barrelLeft - prevBarrelLeft) * partTicks;
+			float barrelDeltaR = prevBarrelRight + (barrelRight - prevBarrelRight) * partTicks;
+
 			this.barrelBaseLeft.rotateAngleZ = barrelDeltaL / 180.0F * (float) Math.PI;
 			this.barrelBaseRight.rotateAngleZ = barrelDeltaR / 180.0F * (float) Math.PI;
 		}

@@ -10,10 +10,8 @@ package de.sanandrew.mods.turretmod.entity.turret;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.client.audio.SoundLaser;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
-import de.sanandrew.mods.turretmod.registry.turret.TurretInfoLaser;
+import de.sanandrew.mods.turretmod.client.audio.SoundLaser;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.SharedMonsterAttributes;

@@ -34,7 +34,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import org.apache.commons.lang3.mutable.MutableFloat;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 

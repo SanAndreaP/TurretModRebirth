@@ -11,8 +11,8 @@ package de.sanandrew.mods.turretmod.client.gui.tcu;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiSlimButton;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.network.PacketPlayerTurretAction;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketTurretNaming;
@@ -24,6 +24,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -36,7 +37,7 @@ public class GuiTcuInfo
         extends GuiScreen
         implements GuiTurretCtrlUnit
 {
-    private EntityTurret turret;
+    private ITurretInst turretInst;
     private boolean hasPermission;
 
     private int guiLeft;
@@ -55,8 +56,8 @@ public class GuiTcuInfo
     private String infoStr;
     private long infoTimeShown;
 
-    public GuiTcuInfo(EntityTurret turret, boolean hasPerm) {
-        this.turret = turret;
+    public GuiTcuInfo(ITurretInst turretInst, boolean hasPerm) {
+        this.turretInst = turretInst;
         this.hasPermission = hasPerm;
     }
 
@@ -84,7 +85,7 @@ public class GuiTcuInfo
 
         this.turretName = new GuiTextField(this.buttonList.size(), this.fontRenderer, this.guiLeft + 20, this.guiTop + 22, 150, 10);
         this.turretName.setMaxStringLength(128);
-        this.turretName.setText(this.turret.hasCustomName() ? this.turret.getCustomNameTag() : "");
+        this.turretName.setText(this.turretInst.getEntity().hasCustomName() ? this.turretInst.getEntity().getCustomNameTag() : "");
 
         GuiTCUHelper.pageInfo.enabled = false;
     }
@@ -93,7 +94,7 @@ public class GuiTcuInfo
     public void updateScreen() {
         super.updateScreen();
 
-        if( this.turret.isDead ) {
+        if( this.turretInst.getEntity().isDead ) {
             this.mc.player.closeScreen();
         }
 
@@ -103,7 +104,7 @@ public class GuiTcuInfo
     @Override
     public void drawScreen(int mouseX, int mouseY, float partTicks) {
         if( this.toggleActive != null ) {
-            if( this.turret.isActive() ) {
+            if( this.turretInst.isActive() ) {
                 this.toggleActive.displayString = Lang.translate(Lang.TCU_BTN.get("toggleActive.disable"));
             } else {
                 this.toggleActive.displayString = Lang.translate(Lang.TCU_BTN.get("toggleActive.enable"));
@@ -111,7 +112,7 @@ public class GuiTcuInfo
         }
 
         if( this.toggleRange != null ) {
-            if( this.turret.showRange ) {
+            if( this.turretInst.showRange() ) {
                 this.toggleRange.displayString = Lang.translate(Lang.TCU_BTN.get("range.disable"));
             } else {
                 this.toggleRange.displayString = Lang.translate(Lang.TCU_BTN.get("range.enable"));
@@ -132,14 +133,15 @@ public class GuiTcuInfo
 
         this.turretName.drawTextBox();
 
+        EntityLiving turretL = this.turretInst.getEntity();
         String value;
 //        String value = this.turret_placer.hasCustomName() ? this.turret_placer.getCustomNameTag() : "-n/a-";
 //        this.fontRenderer.drawString(value, this.guiLeft + 20, this.guiTop + 23, 0x000000);
 
-        value = String.format("%.1f / %.1f HP", this.turret.getHealth(), this.turret.getMaxHealth());
+        value = String.format("%.1f / %.1f HP", turretL.getHealth(), turretL.getMaxHealth());
         this.fontRenderer.drawString(value, this.guiLeft + 20, this.guiTop + 35, 0x000000);
 
-        ITargetProcessor tgtProc = this.turret.getTargetProcessor();
+        ITargetProcessor tgtProc = this.turretInst.getTargetProcessor();
         value = String.format("%d", tgtProc.getAmmoCount());
 
         if( tgtProc.hasAmmo() ) {
@@ -152,7 +154,7 @@ public class GuiTcuInfo
         value = tgtProc.hasTarget() ? Lang.translate(Lang.ENTITY_NAME.get(tgtProc.getTargetName())) : "-n/a-";
         this.fontRenderer.drawString(value, this.guiLeft + 20, this.guiTop + 71, 0x000000);
 
-        value = this.turret.getOwnerName();
+        value = this.turretInst.getOwnerName();
         this.fontRenderer.drawString(value, this.guiLeft + 20, this.guiTop + 95, 0x000000);
 
         if( this.infoStr != null && this.infoTimeShown >= System.currentTimeMillis() - 5000L ) {
@@ -184,7 +186,7 @@ public class GuiTcuInfo
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
         if( button == this.dismantle ) {
-            if( !PacketPlayerTurretAction.tryDismantle(this.mc.player, this.turret) ) {
+            if( !PacketPlayerTurretAction.tryDismantle(this.mc.player, this.turretInst) ) {
                 this.infoStr = Lang.TCU_DISMANTLE_ERROR.get();
                 this.infoTimeShown = System.currentTimeMillis();
             } else {
@@ -192,16 +194,16 @@ public class GuiTcuInfo
                 this.mc.player.closeScreen();
             }
         } else if( button == this.toggleRange ) {
-            this.turret.showRange = !this.turret.showRange;
-            this.turret.ignoreFrustumCheck = this.turret.showRange;
+            this.turretInst.setShowRange(!this.turretInst.showRange());
+            this.turretInst.getEntity().ignoreFrustumCheck = this.turretInst.showRange();
 
-            if( this.turret.showRange ) {
+            if( this.turretInst.showRange() ) {
                 this.toggleRange.displayString = Lang.translate(Lang.TCU_BTN.get("range.disable"));
             } else {
                 this.toggleRange.displayString = Lang.translate(Lang.TCU_BTN.get("range.enable"));
             }
         } else if( button == this.toggleActive ) {
-            PacketRegistry.sendToServer(new PacketPlayerTurretAction(this.turret, PacketPlayerTurretAction.TOGGLE_ACTIVE));
+            PacketRegistry.sendToServer(new PacketPlayerTurretAction(this.turretInst, PacketPlayerTurretAction.TOGGLE_ACTIVE));
         } else if( !GuiTCUHelper.actionPerformed(button, this) ) {
             super.actionPerformed(button);
         }
@@ -209,7 +211,7 @@ public class GuiTcuInfo
 
     @Override
     public void onGuiClosed() {
-        PacketRegistry.sendToServer(new PacketTurretNaming(this.turret, this.turretName.getText()));
+        PacketRegistry.sendToServer(new PacketTurretNaming(this.turretInst, this.turretName.getText()));
 
         super.onGuiClosed();
     }
@@ -230,8 +232,8 @@ public class GuiTcuInfo
     }
 
     @Override
-    public EntityTurret getTurret() {
-        return this.turret;
+    public ITurretInst getTurretInst() {
+        return this.turretInst;
     }
 
     @Override

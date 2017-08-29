@@ -13,7 +13,6 @@ import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;

@@ -9,7 +9,8 @@
 package de.sanandrew.mods.turretmod.client.model;
 
 import de.sanandrew.mods.sanlib.lib.client.ModelJsonLoader;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretShotgun;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.entity.turret.TurretShotgun;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.resources.IResourceManager;
@@ -50,9 +51,12 @@ public class ModelTurretShotgun
 	public void setLivingAnimations(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partTicks) {
 		super.setLivingAnimations(entity, limbSwing, limbSwingAmount, partTicks);
 
-		if( entity instanceof EntityTurretShotgun ) {
-			EntityTurretShotgun shotgun = (EntityTurretShotgun) entity;
-			float barrelDelta = shotgun.prevBarrelPos + (shotgun.barrelPos - shotgun.prevBarrelPos) * partTicks;
+		ITurretInst turretInst = (ITurretInst) entity;
+		if( turretInst.getTurret() instanceof TurretShotgun ) {
+			float barrelPos = turretInst.getField(TurretShotgun.BARREL_POS);
+			float prevBarrelPos = turretInst.getField(TurretShotgun.PREV_BARREL_POS);
+
+			float barrelDelta = prevBarrelPos + (barrelPos - prevBarrelPos) * partTicks;
 			this.barrel.rotationPointZ = 3.0F - 3.0F * barrelDelta;
 		}
 	}

@@ -8,15 +8,18 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
+import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretNew;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
@@ -34,11 +37,9 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -46,7 +47,7 @@ import java.util.stream.Collectors;
 public class ItemTurret
         extends Item
 {
-    private static final IItemPropertyGetter TURRET_TEX_ID = (stack, worldIn, entityIn) -> TurretRegistry.INSTANCE.getRegisteredInfos().indexOf(ItemTurret.getTurretInfo(stack));
+    private static final IItemPropertyGetter TURRET_TEX_ID = (stack, worldIn, entityIn) -> TurretRegistry.INSTANCE.getTurrets().indexOf(ItemTurret.getTurret(stack));
 
     public ItemTurret() {
         super();
@@ -60,9 +61,10 @@ public class ItemTurret
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
 
-        ITurretInfo info = getTurretInfo(stack);
-        if( info != null ) {
-            tooltip.add(Lang.translateEntityCls(info.getTurretClass()));
+        ITurret turret = getTurret(stack);
+        if( turret != null ) {
+            tooltip.add(Lang.translate(Lang.TURRET_NAME, turret.getName()));
+//            tooltip.add(Lang.translateEntityCls(turret.getTurretClass()));
         }
 
         String name = getTurretName(stack);
@@ -91,9 +93,9 @@ public class ItemTurret
 
             int shiftY = facing == EnumFacing.UP ? 1 : -1;
 
-            if( EntityTurret.canTurretBePlaced(world, placingOn, false, facing == EnumFacing.DOWN) ) {
+            if( EntityTurretNew.canTurretBePlaced(world, placingOn, false, facing == EnumFacing.DOWN) ) {
                 ItemStack stack = player.getHeldItem(hand);
-                EntityTurret turret = spawnTurret(world, getTurretInfo(stack), placingOn.getX() + 0.5D, placingOn.getY() + shiftY, placingOn.getZ() + 0.5D, facing == EnumFacing.DOWN, player);
+                EntityTurretNew turret = spawnTurret(world, getTurret(stack), placingOn.getX() + 0.5D, placingOn.getY() + shiftY, placingOn.getZ() + 0.5D, facing == EnumFacing.DOWN, player);
                 if( turret != null ) {
                     Float initHealth = getTurretHealth(stack);
                     if( initHealth != null ) {
@@ -133,7 +135,7 @@ public class ItemTurret
                 }
 
                 if( world.getBlockState(blockPos).getBlock() instanceof BlockLiquid ) {
-                    EntityTurret turret = spawnTurret(world, getTurretInfo(stack), blockPos, false, player);
+                    EntityTurretNew turret = spawnTurret(world, getTurret(stack), blockPos, false, player);
                     if( turret != null ) {
                         Float initHealth = getTurretHealth(stack);
                         if( initHealth != null ) {
@@ -160,17 +162,20 @@ public class ItemTurret
     @SuppressWarnings("unchecked")
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
         if( this.isInCreativeTab(tab) ) {
-            items.addAll(TurretRegistry.INSTANCE.getRegisteredInfos().stream().map(type -> this.getTurretItem(1, type)).collect(Collectors.toList()));
+            items.addAll(TurretRegistry.INSTANCE.getTurrets().stream().map(type -> this.getTurretItem(1, type)).collect(Collectors.toList()));
         }
     }
 
-    public static ITurretInfo getTurretInfo(@Nonnull ItemStack stack) {
+    public static ITurret getTurret(@Nonnull ItemStack stack) {
         NBTTagCompound nbt = stack.getTagCompound();
-        if( nbt != null && nbt.hasKey("turretInfoUUID") ) {
-            return TurretRegistry.INSTANCE.getInfo(UUID.fromString(nbt.getString("turretInfoUUID")));
+        if( nbt != null && nbt.hasKey("turretUUID") ) {
+            String id = nbt.getString("turretUUID");
+            if( UuidUtils.isStringUuid(id) ) {
+                return TurretRegistry.INSTANCE.getTurret(UUID.fromString(id));
+            }
         }
 
-        return null;
+        return TurretRegistry.NULL_TURRET;
     }
 
     public static Float getTurretHealth(@Nonnull ItemStack stack) {
@@ -196,13 +201,13 @@ public class ItemTurret
     }
 
     @Nonnull
-    public ItemStack getTurretItem(int stackSize, ITurretInfo type) {
+    public ItemStack getTurretItem(int stackSize, ITurret type) {
         if( type == null ) {
             throw new IllegalArgumentException("Cannot get turret_placer item with NULL type!");
         }
 
         NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setString("turretInfoUUID", type.getUUID().toString());
+        nbt.setString("turretUUID", type.getId().toString());
         ItemStack stack = new ItemStack(this, stackSize);
         stack.setTagCompound(nbt);
 
@@ -210,49 +215,50 @@ public class ItemTurret
     }
 
     @Nonnull
-    public ItemStack getTurretItem(int stackSize, ITurretInfo type, EntityTurret turret) {
+    public ItemStack getTurretItem(int stackSize, ITurret type, ITurretInst turretInst) {
         ItemStack stack = this.getTurretItem(stackSize, type);
-        assert stack.getTagCompound() != null;
-        stack.getTagCompound().setFloat("turretHealth", turret.getHealth());
-        if( turret.hasCustomName() ) {
-            stack.getTagCompound().setString("turretName", turret.getCustomNameTag());
+        NBTTagCompound nbt = stack.getTagCompound();
+        if( nbt != null ) {
+            EntityLiving turretL = turretInst.getEntity();
+            nbt.setFloat("turretHealth", turretL.getHealth());
+            if( turretL.hasCustomName() ) {
+                nbt.setString("turretName", turretL.getCustomNameTag());
+            }
         }
 
         return stack;
     }
 
-    public static EntityTurret spawnTurret(World world, ITurretInfo info, BlockPos pos, boolean isUpsideDown, EntityPlayer owner) {
-        return spawnTurret(world, info, pos.getX(), pos.getY(), pos.getZ(), isUpsideDown, owner);
+    public static EntityTurretNew spawnTurret(World world, ITurret turret, BlockPos pos, boolean isUpsideDown, EntityPlayer owner) {
+        return spawnTurret(world, turret, pos.getX(), pos.getY(), pos.getZ(), isUpsideDown, owner);
     }
 
-    public static EntityTurret spawnTurret(World world, ITurretInfo info, double x, double y, double z, boolean isUpsideDown, EntityPlayer owner) {
-        EntityTurret turret = createEntity(info, world, isUpsideDown, owner);
-        if (turret != null) {
-            turret.setLocationAndAngles(x, y - (isUpsideDown ? 1.0D : 0.0D), z, MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
-            turret.rotationYawHead = turret.rotationYaw;
-            turret.renderYawOffset = turret.rotationYaw;
-            world.spawnEntity(turret);
-            turret.playLivingSound();
-        }
+    public static EntityTurretNew spawnTurret(World world, ITurret turret, double x, double y, double z, boolean isUpsideDown, EntityPlayer owner) {
+        EntityTurretNew turretE = new EntityTurretNew(world, isUpsideDown, owner, turret);
+        turretE.setLocationAndAngles(x, y - (isUpsideDown ? 1.0D : 0.0D), z, MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
+        turretE.rotationYawHead = turretE.rotationYaw;
+        turretE.renderYawOffset = turretE.rotationYaw;
+        world.spawnEntity(turretE);
+        turretE.playLivingSound();
 
-        return turret;
+        return turretE;
     }
 
-    private static EntityTurret createEntity(ITurretInfo info, World world, boolean isUpsideDown, EntityPlayer owner) {
-        EntityTurret entity = null;
-        try {
-            Class<? extends EntityTurret> entityClass = info.getTurretClass();
-            if( entityClass != null ) {
-                entity = entityClass.getConstructor(World.class, boolean.class, EntityPlayer.class).newInstance(world, isUpsideDown, owner);
-            }
-        } catch( InvocationTargetException | IllegalAccessException | InstantiationException | NoSuchMethodException ex ) {
-            TmrConstants.LOG.log(Level.ERROR, "Cannot instanciate turret_placer!", ex);
-        }
-
-        if( entity == null ) {
-            TmrConstants.LOG.printf(Level.WARN, "Skipping turret_placer with name %s", info.getName());
-        }
-
-        return entity;
-    }
+//    private static EntityTurretNew createEntity(ITurret turret, World world, boolean isUpsideDown, EntityPlayer owner) {
+//        EntityTurretNew entity = null;
+//        try {
+//            Class<? extends EntityTurretNew> entityClass = info.getTurretClass();
+//            if( entityClass != null ) {
+//                entity = entityClass.getConstructor(World.class, boolean.class, EntityPlayer.class).newInstance(world, isUpsideDown, owner);
+//            }
+//        } catch( InvocationTargetException | IllegalAccessException | InstantiationException | NoSuchMethodException ex ) {
+//            TmrConstants.LOG.log(Level.ERROR, "Cannot instanciate turret_placer!", ex);
+//        }
+//
+//        if( entity == null ) {
+//            TmrConstants.LOG.printf(Level.WARN, "Skipping turret_placer with name %s", info.getName());
+//        }
+//
+//        return entity;
+//    }
 }

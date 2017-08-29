@@ -9,8 +9,8 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu;
 
 import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiSlimButton;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketUpdateTargets;
 import de.sanandrew.mods.turretmod.util.Lang;
@@ -41,7 +41,7 @@ public class GuiTcuPlayerTargets
         extends GuiScreen
         implements GuiTurretCtrlUnit
 {
-    private EntityTurret turret;
+    private ITurretInst turretInst;
 
     private int guiLeft;
     private int guiTop;
@@ -60,8 +60,8 @@ public class GuiTcuPlayerTargets
     private GuiButton selectAll;
     private GuiButton deselectAll;
 
-    public GuiTcuPlayerTargets(EntityTurret turret) {
-        this.turret = turret;
+    public GuiTcuPlayerTargets(ITurretInst turretInst) {
+        this.turretInst = turretInst;
     }
 
     @Override
@@ -88,7 +88,7 @@ public class GuiTcuPlayerTargets
     public void updateScreen() {
         super.updateScreen();
 
-        if( this.turret.isDead ) {
+        if( this.turretInst.getEntity().isDead ) {
             this.mc.player.closeScreen();
         }
 
@@ -135,10 +135,10 @@ public class GuiTcuPlayerTargets
             int btnMaxOffY = this.guiTop + 20 + 110;
 
             if( this.doSelectAll && !entry.getValue() ) {
-                this.turret.getTargetProcessor().updatePlayerTarget(entry.getKey(), true);
+                this.turretInst.getTargetProcessor().updatePlayerTarget(entry.getKey(), true);
                 targetListChanged = true;
             } else if( this.doDeselectAll && entry.getValue() ) {
-                this.turret.getTargetProcessor().updatePlayerTarget(entry.getKey(), false);
+                this.turretInst.getTargetProcessor().updatePlayerTarget(entry.getKey(), false);
                 targetListChanged = true;
             }
 
@@ -146,7 +146,7 @@ public class GuiTcuPlayerTargets
                 if( mouseX >= this.guiLeft + 8 && mouseX < this.guiLeft + 16 && mouseY >= this.guiTop + 20 + offsetY && mouseY < this.guiTop + 28 + offsetY ) {
                     btnTexOffY += 8;
                     if( isLmbDown && !this.prevIsLmbDown ) {
-                        this.turret.getTargetProcessor().updatePlayerTarget(entry.getKey(), !entry.getValue());
+                        this.turretInst.getTargetProcessor().updatePlayerTarget(entry.getKey(), !entry.getValue());
                         targetListChanged = true;
                     }
                 }
@@ -205,7 +205,7 @@ public class GuiTcuPlayerTargets
     }
 
     private void updateTargets() {
-        PacketRegistry.sendToServer(new PacketUpdateTargets(this.turret.getTargetProcessor()));
+        PacketRegistry.sendToServer(new PacketUpdateTargets(this.turretInst.getTargetProcessor()));
     }
 
     @Override
@@ -224,8 +224,8 @@ public class GuiTcuPlayerTargets
     }
 
     @Override
-    public EntityTurret getTurret() {
-        return this.turret;
+    public ITurretInst getTurretInst() {
+        return this.turretInst;
     }
 
     @Override
@@ -255,7 +255,7 @@ public class GuiTcuPlayerTargets
     private void updateList() {
         TreeMap<UUID, Boolean> btwSortMapNm = new TreeMap<>(new TargetComparatorName());
         btwSortMapNm.putAll(PlayerList.INSTANCE.getDefaultPlayerList());
-        btwSortMapNm.putAll(this.turret.getTargetProcessor().getPlayerTargets());
+        btwSortMapNm.putAll(this.turretInst.getTargetProcessor().getPlayerTargets());
         this.tempTargetList = btwSortMapNm;
     }
 }

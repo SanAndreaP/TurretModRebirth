@@ -47,7 +47,7 @@ public interface ITargetProcessor
 
     void playSound(SoundEvent sound, float volume);
 
-    EntityTurret getTurret();
+    ITurretInst getTurret();
 
     boolean hasTarget();
 

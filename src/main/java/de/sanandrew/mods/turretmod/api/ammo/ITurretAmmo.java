@@ -8,7 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.api.ammo;
 
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
@@ -71,8 +72,8 @@ public interface ITurretAmmo<T extends Entity & IProjectile>
     UUID getRecipeId();
     int getAmmoCapacity();
     Class<T> getEntityClass();
-    T getEntity(EntityTurret turret);
-    Class<? extends EntityTurret> getTurret();
+    T getEntity(ITurretInst turret);
+    ITurret getTurret();
     ResourceLocation getModel();
     ItemStack getStoringAmmoItem();
 }

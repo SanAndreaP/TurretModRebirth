@@ -1,6 +1,5 @@
 package de.sanandrew.mods.turretmod.api.client.turretinfo;
 
-import de.sanandrew.mods.turretmod.client.gui.tinfo.TurretInfoCategory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

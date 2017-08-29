@@ -9,15 +9,22 @@
 package de.sanandrew.mods.turretmod.client.render.turret;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.client.turret.ITurretRenerRegistry;
+import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretRender;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretNew;
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.relauncher.Side;
@@ -25,58 +32,108 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.opengl.GL11;
 
-import java.lang.reflect.InvocationTargetException;
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @SideOnly(Side.CLIENT)
-public class RenderTurret
-        extends RenderLiving<EntityTurret>
+public class RenderTurret<E extends EntityLiving & ITurretInst>
+        extends RenderLiving<E>
+        implements ITurretRenerRegistry
 {
-    public RenderTurret(RenderManager manager, ModelBase standardModel) {
-        super(manager, standardModel, 0.5F);
+    private static final ModelIntern NULL_MODEL = new ModelIntern();
+    private static final EmptyRender NULL_RENDER = new EmptyRender();
 
-        try {
-            this.addLayer(new LayerTurretGlow<>(this, standardModel.getClass().getConstructor(float.class).newInstance(0.001F)));
-        } catch( NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException ex ) {
-            TmrConstants.LOG.log(Level.ERROR, "Could not instanciate model class! Make sure it has a constructor with a one float parameter (scale)! Glowmap disabled.", ex);
-        }
+    private final Map<ITurret, ITurretRender<?>> turretRenders = new HashMap<>();
+    private final Map<ITurret, List<LayerRenderer<E>>> turretLayers = new HashMap<>();
 
+    public RenderTurret(RenderManager manager) {
+        super(manager, NULL_MODEL, 0.5F);
+
+//        this.addLayer(new LayerTurretGlow<>(this, standardModel.getNewInstance(0.001F)));
+//
         this.addLayer(new LayerTurretUpgrades<>());
     }
 
     @Override
-    public void doRender(EntityTurret entity, double x, double y, double z, float entityYaw, float partialTicks) {
+    public <T extends ModelBase> boolean registerRender(@Nonnull ITurret turret, @Nonnull ITurretRender<T> render) {
+        if( this.turretRenders.containsKey(turret) ) {
+            TmrConstants.LOG.log(Level.WARN, String.format("Cannot register renderer for turret %s since it already has one.", turret.getName()));
+            return false;
+        }
+
+        this.turretRenders.put(turret, render);
+        List<LayerRenderer<E>> layers = this.turretLayers.compute(turret, (key, val) -> new ArrayList<>());
+        render.addLayers(layers);
+
+        return true;
+    }
+
+    @Override
+    public ITurretRender<?> removeRender(ITurret turret) {
+        ITurretRender<?> oldRender = this.turretRenders.remove(turret);
+        this.turretLayers.remove(turret);
+
+        return oldRender;
+    }
+
+    @Override
+    public <T extends ModelBase> void addStandardLayers(List<LayerRenderer<?>> layerList, ITurretRender<T> render) {
+        layerList.add(new LayerTurretGlow<>(this, render.getNewModel(0.001F)));
+        layerList.add(new LayerTurretUpgrades<>());
+    }
+
+    @Override
+    public void doRender(E entity, double x, double y, double z, float entityYaw, float partialTicks) {
+        ITurret turret = entity.getTurret();
+        this.mainModel = turretRenders.getOrDefault(turret, NULL_RENDER).getModel();
+
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
+        turretRenders.getOrDefault(turret, NULL_RENDER).doRender(entity, x, y, z, entityYaw, partialTicks);
 
         renderTurretRange(entity, x, y, z);
     }
 
     @Override
-    protected void renderModel(EntityTurret turret, float limbSwing, float limbSwingAmount, float rotFloat, float rotYaw, float rotPitch, float scale) {
-        super.renderModel(turret, limbSwing, limbSwingAmount, rotFloat, rotYaw, rotPitch, scale);
+    protected void renderLayers(E entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch,
+                                float scaleIn)
+    {
+        if( this.turretLayers.containsKey(entity.getTurret()) ) {
+            this.turretLayers.get(entity.getTurret()).forEach((layer) -> {
+                boolean hasBrightnessSet = this.setBrightness(entity, partialTicks, layer.shouldCombineTextures());
+                layer.doRenderLayer(entity, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scaleIn);
+
+                if( hasBrightnessSet ) {
+                    this.unsetBrightness();
+                }
+            });
+        }
     }
 
     @Override
-    protected void applyRotations(EntityTurret turret, float x, float y, float z) {
+    protected void applyRotations(E turret, float x, float y, float z) {
         super.applyRotations(turret, x, y, z);
 
-        if( turret.isUpsideDown ) {
+        if( turret.isUpsideDown() ) {
             GlStateManager.translate(0.0F, turret.height + 0.2F, 0.0F);
             GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
         }
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(EntityTurret entity) {
-        return entity.getStandardTexture();
+    protected ResourceLocation getEntityTexture(E entity) {
+        return entity.getTurret().getStandardTexture(entity);
     }
 
     @Override
-    protected boolean canRenderName(EntityTurret entity) {
+    protected boolean canRenderName(E entity) {
         return false;
     }
 
-    private static void renderTurretRange(EntityTurret turret, double x, double y, double z) {
-        if( turret.showRange ) {
+    private static void renderTurretRange(ITurretInst turret, double x, double y, double z) {
+        if( turret.showRange() ) {
             GlStateManager.disableTexture2D();
 
             float prevBrightX = OpenGlHelper.lastBrightnessX;
@@ -159,6 +216,27 @@ public class RenderTurret
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, prevBrightX, prevBrightY);
 
             GlStateManager.enableTexture2D();
+        }
+    }
+
+    @Override
+    public RenderLivingBase<? extends EntityLiving> getRenderer() {
+        return this;
+    }
+
+    private static class ModelIntern extends ModelBase {
+
+    }
+
+    private static class EmptyRender implements ITurretRender<ModelIntern> {
+        @Override
+        public ModelIntern getNewModel(float scale) {
+            return new ModelIntern();
+        }
+
+        @Override
+        public ModelIntern getModel() {
+            return RenderTurret.NULL_MODEL;
         }
     }
 }

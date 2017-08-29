@@ -8,9 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tcu;
 
+import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiItemTab;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
@@ -65,7 +65,7 @@ public class GuiTCUHelper
         pageName = Lang.translate(Lang.TCU_PAGE_TITLE.get(pageName));
         fRender.drawString(pageName, gui.getGuiLeft() + 8, gui.getGuiTop() + 6, 0xFF404040);
 
-        String turretName = Lang.translateEntityCls(gui.getTurret().getClass());
+        String turretName = Lang.translate(Lang.TURRET_NAME, gui.getTurretInst().getTurret().getName());
         fRender.drawString(turretName, gui.getGuiLeft() + (X_SIZE - fRender.getStringWidth(turretName)) / 2.0F, gui.getGuiTop() + Y_SIZE - 15, 0xFF00FF00, false);
         RenderHelper.enableGUIStandardItemLighting();
     }
@@ -77,16 +77,16 @@ public class GuiTCUHelper
         Minecraft mc = gui.getMc();
 
         if( button == pageInfo ) {
-            TurretModRebirth.proxy.openGui(mc.player, EnumGui.GUI_TCU_INFO, gui.getTurret().getEntityId(), gui.hasPermision() ? 1 : 0, 0);
+            TurretModRebirth.proxy.openGui(mc.player, EnumGui.GUI_TCU_INFO, gui.getTurretInst().getEntity().getEntityId(), gui.hasPermision() ? 1 : 0, 0);
             return true;
         } else if( button == pageEntityTargets ) {
-            TurretModRebirth.proxy.openGui(mc.player, EnumGui.GUI_TCU_ENTITY_TARGETS, gui.getTurret().getEntityId(), 0, 0);
+            TurretModRebirth.proxy.openGui(mc.player, EnumGui.GUI_TCU_ENTITY_TARGETS, gui.getTurretInst().getEntity().getEntityId(), 0, 0);
             return true;
         } else if( button == pagePlayerTargets ) {
-            TurretModRebirth.proxy.openGui(mc.player, EnumGui.GUI_TCU_PLAYER_TARGETS, gui.getTurret().getEntityId(), 0, 0);
+            TurretModRebirth.proxy.openGui(mc.player, EnumGui.GUI_TCU_PLAYER_TARGETS, gui.getTurretInst().getEntity().getEntityId(), 0, 0);
             return true;
         } else if( button == pageUpgrades ) {
-            TurretModRebirth.proxy.openGui(mc.player, EnumGui.GUI_TCU_UPGRADES, gui.getTurret().getEntityId(), 0, 0);
+            TurretModRebirth.proxy.openGui(mc.player, EnumGui.GUI_TCU_UPGRADES, gui.getTurretInst().getEntity().getEntityId(), 0, 0);
             return true;
         }
         return false;

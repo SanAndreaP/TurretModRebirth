@@ -55,13 +55,12 @@ public final class TurretInfoCategoryRegistry
 
     public static void initialize(ITurretInfoCategoryRegistry registry) {
         {
-            ITurretInfoEntry[] entries = TurretRegistry.INSTANCE.getRegisteredInfos().stream().map(info -> new TurretInfoEntryTurret(info.getTurretClass()))
-                                                                .toArray(ITurretInfoEntry[]::new);
+            ITurretInfoEntry[] entries = TurretRegistry.INSTANCE.getTurrets().stream().map(TurretInfoEntryTurret::new).toArray(ITurretInfoEntry[]::new);
             registry.registerCategory(Resources.TINFO_GRP_TURRET.getResource(), Lang.TINFO_CATEGORY_NAME.get("turrets")).addEntry(entries);
         }
 
         {
-            ITurretInfoEntry[] entries = TurretAmmoRegistry.INSTANCE.getRegisteredGroups().stream().map(TurretInfoEntryAmmo::new).toArray(ITurretInfoEntry[]::new);
+            ITurretInfoEntry[] entries = TurretAmmoRegistry.INSTANCE.getGroups().stream().map(TurretInfoEntryAmmo::new).toArray(ITurretInfoEntry[]::new);
             registry.registerCategory(Resources.TINFO_GRP_AMMO.getResource(), Lang.TINFO_CATEGORY_NAME.get("turret_ammo")).addEntry(entries);
         }
 

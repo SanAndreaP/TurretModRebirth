@@ -10,9 +10,9 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
 import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretRevolver;
+import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
+import de.sanandrew.mods.turretmod.entity.turret.TurretRevolver;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import net.minecraft.item.ItemStack;
@@ -58,7 +58,7 @@ public abstract class TurretAmmoBullet
 
     @Override
     public Class<? extends EntityTurret> getTurret() {
-        return EntityTurretRevolver.class;
+        return TurretRevolver.class;
     }
 
     @Override

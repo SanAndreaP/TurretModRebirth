@@ -12,13 +12,13 @@ import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
 import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -38,8 +38,8 @@ public class PacketPlayerTurretAction
     @SuppressWarnings("unused")
     public PacketPlayerTurretAction() { }
 
-    public PacketPlayerTurretAction(EntityTurret turret, byte action) {
-        this.turretId = turret.getEntityId();
+    public PacketPlayerTurretAction(ITurretInst turretInst, byte action) {
+        this.turretId = turretInst.getEntity().getEntityId();
         this.actionId = action;
     }
 
@@ -49,46 +49,47 @@ public class PacketPlayerTurretAction
     @Override
     public void handleServerMessage(PacketPlayerTurretAction packet, EntityPlayer player) {
         Entity e = player.world.getEntityByID(packet.turretId);
-        if( e instanceof EntityTurret) {
-            EntityTurret turret = (EntityTurret) e;
-            if( !turret.hasPlayerPermission(player) ) {
+        if( e instanceof ITurretInst) {
+            ITurretInst turretInst = (ITurretInst) e;
+            if( !turretInst.hasPlayerPermission(player) ) {
                 return;
             }
 
             switch( packet.actionId ) {
                 case DISMANTLE:
-                    tryDismantle(player, turret);
+                    tryDismantle(player, turretInst);
                     break;
                 case TOGGLE_ACTIVE:
-                    turret.setActive(!turret.isActive());
+                    turretInst.setActive(!turretInst.isActive());
             }
         }
     }
 
-    public static boolean tryDismantle(EntityPlayer player, EntityTurret turret) {
+    public static boolean tryDismantle(EntityPlayer player, ITurretInst turretInst) {
         Tuple chestItm = InventoryUtils.getSimilarStackFromInventory(new ItemStack(Blocks.CHEST), player.inventory, true);
         if( chestItm != null && ItemStackUtils.isValid(chestItm.getValue(1)) ) {
             ItemStack chestStack = chestItm.getValue(1);
-            if( turret.world.isRemote ) {
-                PacketRegistry.sendToServer(new PacketPlayerTurretAction(turret, PacketPlayerTurretAction.DISMANTLE));
+            EntityLiving turretL = turretInst.getEntity();
+            if( turretL.world.isRemote ) {
+                PacketRegistry.sendToServer(new PacketPlayerTurretAction(turretInst, PacketPlayerTurretAction.DISMANTLE));
                 return true;
             } else {
 //                turret.checkBlock = false;
 //                turret.posY += 2048.0F;
 //                turret.setPosition(turret.posX, turret.posY, turret.posZ);
 //                turret.world.loadedEntityList.remove(turret);
-                int y = turret.isUpsideDown ? 3 : 0;
-                BlockPos chestPos = turret.getPosition();
-                if( turret.world.setBlockState(chestPos, Blocks.CHEST.getDefaultState(), 3) )
+                int y = turretInst.isUpsideDown() ? 3 : 0;
+                BlockPos chestPos = turretL.getPosition();
+                if( turretL.world.setBlockState(chestPos, Blocks.CHEST.getDefaultState(), 3) )
                 {
-                    TileEntity te = turret.world.getTileEntity(chestPos);
+                    TileEntity te = turretL.world.getTileEntity(chestPos);
 
                     if( te instanceof TileEntityChest ) {
 //                        turret.world.loadedEntityList.add(turret);
 
                         TileEntityChest chest = (TileEntityChest) te;
-                        chest.setInventorySlotContents(0, ItemRegistry.turret_placer.getTurretItem(1, TurretRegistry.INSTANCE.getInfo(turret.getClass()), turret));
-                        ((TargetProcessor) turret.getTargetProcessor()).putAmmoInInventory(chest);
+                        chest.setInventorySlotContents(0, ItemRegistry.turret_placer.getTurretItem(1, turretInst.getTurret(), turretInst));
+                        ((TargetProcessor) turretInst.getTargetProcessor()).putAmmoInInventory(chest);
 
                         chestStack.shrink(1);
                         if( chestStack.getCount() < 1 ) {
@@ -98,8 +99,8 @@ public class PacketPlayerTurretAction
                         }
                         player.inventoryContainer.detectAndSendChanges();
                         //TODO: make custom container for turrets and put upgrades in it
-                        ((UpgradeProcessor) turret.getUpgradeProcessor()).dropUpgrades();
-                        turret.onKillCommand();
+                        ((UpgradeProcessor) turretInst.getUpgradeProcessor()).dropUpgrades();
+                        turretL.onKillCommand();
                         return true;
                     }
                 }

@@ -9,9 +9,10 @@
 package de.sanandrew.mods.turretmod.network;
 
 import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
@@ -24,8 +25,8 @@ public class PacketTurretNaming
     @SuppressWarnings("unused")
     public PacketTurretNaming() { }
 
-    public PacketTurretNaming(EntityTurret turret, String name) {
-        this.turretId = turret.getEntityId();
+    public PacketTurretNaming(ITurretInst turret, String name) {
+        this.turretId = turret.getEntity().getEntityId();
         this.name = name;
     }
 
@@ -35,8 +36,8 @@ public class PacketTurretNaming
     @Override
     public void handleServerMessage(PacketTurretNaming packet, EntityPlayer player) {
         Entity e = player.world.getEntityByID(packet.turretId);
-        if( e instanceof EntityTurret ) {
-            EntityTurret turret = (EntityTurret) e;
+        if( e instanceof EntityLiving ) {
+            EntityLiving turret = (EntityLiving) e;
             turret.setCustomNameTag(packet.name);
         }
     }

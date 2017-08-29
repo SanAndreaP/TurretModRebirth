@@ -8,7 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.entity.projectile;
 
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretMinigun;
+import de.sanandrew.mods.turretmod.entity.turret.TurretMinigun;
 import de.sanandrew.mods.turretmod.util.Sounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -27,8 +27,8 @@ public class EntityProjectileMinigunPebble
     public EntityProjectileMinigunPebble(World world, Entity shooter, Entity target) {
         super(world, shooter, target);
 
-        if( shooter instanceof EntityTurretMinigun ) {
-            EntityTurretMinigun turret = (EntityTurretMinigun) shooter;
+        if( shooter instanceof TurretMinigun ) {
+            TurretMinigun turret = (TurretMinigun) shooter;
 
             float shift = (turret.leftShot ? 45.0F : -45.0F) / 180.0F * (float) Math.PI;
             float rotXZ = -turret.rotationYawHead / 180.0F * (float) Math.PI;

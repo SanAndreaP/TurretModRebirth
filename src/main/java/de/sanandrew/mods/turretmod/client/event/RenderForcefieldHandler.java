@@ -9,8 +9,8 @@
 package de.sanandrew.mods.turretmod.client.event;
 
 import de.sanandrew.mods.sanlib.lib.ColorObj;
-import de.sanandrew.mods.turretmod.client.render.ForcefieldCube;
 import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
+import de.sanandrew.mods.turretmod.client.render.ForcefieldCube;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import net.minecraft.client.Minecraft;
