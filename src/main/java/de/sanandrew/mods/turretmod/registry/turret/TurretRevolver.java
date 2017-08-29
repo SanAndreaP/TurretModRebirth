@@ -6,12 +6,13 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.entity.turret;
+package de.sanandrew.mods.turretmod.registry.turret;
 
 import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
@@ -20,11 +21,9 @@ import de.sanandrew.mods.turretmod.util.Sounds;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.world.World;
 
 import java.util.UUID;
 
@@ -36,21 +35,6 @@ public class TurretRevolver
 
     private static final AxisAlignedBB RANGE_BB = new AxisAlignedBB(-20.0D, -4.0D, -20.0D, 20.0D, 10.0D, 20.0D);
 
-    public static final int BARREL_LEFT = 0;
-    public static final int PREV_BARREL_LEFT = 1;
-    public static final int BARREL_RIGHT = 2;
-    public static final int PREV_BARREL_RIGHT = 3;
-    public static final int LEFT_SHOT = 4;
-
-    @Override
-    public void entityInit(ITurretInst turretInst) {
-        turretInst.setField(BARREL_LEFT, 1.0F);
-        turretInst.setField(PREV_BARREL_LEFT, 1.0F);
-        turretInst.setField(BARREL_RIGHT, 1.0F);
-        turretInst.setField(PREV_BARREL_RIGHT, 1.0F);
-        turretInst.setField(LEFT_SHOT, false);
-    }
-
     @Override
     public void applyEntityAttributes(ITurretInst turretInst) {
         turretInst.getEntity().getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).setBaseValue(15.0D);
@@ -61,42 +45,39 @@ public class TurretRevolver
     public void onUpdate(ITurretInst turretInst) {
         EntityLiving turretL = turretInst.getEntity();
 
-        if( turretL.world.isRemote ) {
-            turretInst.setField(PREV_BARREL_LEFT, turretInst.getField(BARREL_LEFT));
-            turretInst.setField(PREV_BARREL_RIGHT, turretInst.getField(BARREL_RIGHT));
+        MyRAM ram = turretInst.getRAM(MyRAM::new);
+        ram.prevBarrelLeft = ram.barrelLeft;
+        ram.prevBarrelRight = ram.barrelRight;
 
-            if( turretInst.wasShooting() ) {
-                float partShift;
-                if( turretInst.getField(LEFT_SHOT) ) {
-                    turretInst.setField(BARREL_RIGHT, 0.0F);
-                    turretInst.setField(LEFT_SHOT, false);
-                    partShift = 10.0F;
-                } else {
-                    turretInst.setField(BARREL_LEFT, 0.0F);
-                    turretInst.setField(LEFT_SHOT, true);
-                    partShift = 10.0F;
-                }
+        if( ram.barrelLeft < 1.0F ) {
+            ram.barrelLeft += 0.06F * 20.0F / turretInst.getTargetProcessor().getMaxShootTicks();
+        } else {
+            ram.barrelLeft = 1.0F;
+        }
 
+        if( ram.barrelRight < 1.0F ) {
+            ram.barrelRight += 0.06F * 20.0F / turretInst.getTargetProcessor().getMaxShootTicks();
+        } else {
+            ram.barrelRight = 1.0F;
+        }
+
+        if( turretInst.wasShooting() ) {
+            float partShift;
+            if( ram.isLeftShot ) {
+                ram.barrelRight = 0.0F;
+                ram.isLeftShot = false;
+                partShift = 10.0F;
+            } else {
+                ram.barrelLeft = 0.0F;
+                ram.isLeftShot = true;
+                partShift = -10.0F;
+            }
+
+            if( turretL.world.isRemote ) {
                 TurretModRebirth.proxy.spawnParticle(EnumParticle.SHOTGUN_SHOT, turretL.posX, turretL.posY + 1.5F, turretL.posZ,
                                                      new Tuple(turretL.rotationYawHead + partShift, turretL.rotationPitch, turretInst.isUpsideDown()));
             }
-
-            if( turretInst.<Float>getField(BARREL_LEFT) < 1.0F ) {
-                incrField(turretInst, BARREL_LEFT, 0.06F * 20.0F / turretInst.getTargetProcessor().getMaxShootTicks());
-            } else {
-                turretInst.setField(BARREL_LEFT, 1.0F);
-            }
-
-            if( turretInst.<Float>getField(BARREL_RIGHT) < 1.0F ) {
-                incrField(turretInst, BARREL_RIGHT, 0.06F * 20.0F / turretInst.getTargetProcessor().getMaxShootTicks());
-            } else {
-                turretInst.setField(BARREL_RIGHT, 1.0F);
-            }
         }
-    }
-
-    private static void incrField(ITurretInst turretInst, int fieldId, float value) {
-        turretInst.setField(fieldId, turretInst.<Float>getField(fieldId) + value);
     }
 
     @Override
@@ -121,7 +102,7 @@ public class TurretRevolver
 
     @Override
     public String getName() {
-        return "turret_ii_revolver";
+        return "ii_revolver";
     }
 
     @Override
@@ -152,5 +133,16 @@ public class TurretRevolver
     @Override
     public String getInfoRange() {
         return "20";
+    }
+
+    public static class MyRAM implements ITurretRAM
+    {
+        public float barrelLeft = 1.0F;
+        public float barrelRight = 1.0F;
+
+        public float prevBarrelLeft = 1.0F;
+        public float prevBarrelRight = 1.0F;
+
+        public boolean isLeftShot = false;
     }
 }

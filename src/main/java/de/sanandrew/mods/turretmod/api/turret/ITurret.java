@@ -56,4 +56,7 @@ public interface ITurret
         return null;
     }
 
+    default SoundEvent getCollectSound(ITurretInst turretInst) {
+        return null;
+    }
 }

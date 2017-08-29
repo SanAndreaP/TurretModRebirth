@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.entity.projectile;
 
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -63,9 +63,9 @@ public abstract class EntityTurretProjectile
 
         this.setPosition(shooter.posX, y, shooter.posZ);
 
-        if( shooter instanceof EntityTurret ) {
+        if( shooter instanceof EntityTurret) {
             EntityTurret turret = (EntityTurret) shooter;
-            if( turret.isUpsideDown ) {
+            if( turret.isUpsideDown() ) {
                 y -= 1.0D;
             }
             this.maxDist = turret.getTargetProcessor().getRangeVal() * 4.0D;
@@ -247,7 +247,7 @@ public abstract class EntityTurretProjectile
                             living.setArrowCountInEntity(living.getArrowCountInEntity() + 1);
                         }
 
-                        if( living instanceof EntityCreature && this.shooterCache instanceof EntityTurret ) {
+                        if( living instanceof EntityCreature && this.shooterCache instanceof EntityTurret) {
                             setEntityTarget((EntityCreature) living, (EntityTurret) this.shooterCache);
                         }
 

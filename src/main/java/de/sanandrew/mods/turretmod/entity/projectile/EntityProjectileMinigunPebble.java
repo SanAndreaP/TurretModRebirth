@@ -8,7 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.entity.projectile;
 
-import de.sanandrew.mods.turretmod.entity.turret.TurretMinigun;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.registry.turret.TurretMinigun;
 import de.sanandrew.mods.turretmod.util.Sounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -27,13 +28,14 @@ public class EntityProjectileMinigunPebble
     public EntityProjectileMinigunPebble(World world, Entity shooter, Entity target) {
         super(world, shooter, target);
 
-        if( shooter instanceof TurretMinigun ) {
-            TurretMinigun turret = (TurretMinigun) shooter;
+        if( shooter instanceof ITurretInst) {
+            ITurretInst turret = (ITurretInst) shooter;
+            TurretMinigun.MyRAM ram = turret.getRAM(TurretMinigun.MyRAM::new);
 
-            float shift = (turret.leftShot ? 45.0F : -45.0F) / 180.0F * (float) Math.PI;
-            float rotXZ = -turret.rotationYawHead / 180.0F * (float) Math.PI;
-            float rotY = -(turret.rotationPitch - 7.5F) / 180.0F * (float) Math.PI - 0.1F;
-            boolean isUpsideDown = turret.isUpsideDown;
+            float shift = (ram.isLeftShot ? 45.0F : -45.0F) / 180.0F * (float) Math.PI;
+            float rotXZ = -turret.getEntity().rotationYawHead / 180.0F * (float) Math.PI;
+            float rotY = -(turret.getEntity().rotationPitch - 7.5F) / 180.0F * (float) Math.PI - 0.1F;
+            boolean isUpsideDown = turret.isUpsideDown();
 
             this.posX += (Math.sin(rotXZ + shift) * 0.7F * Math.cos(rotY)) * (isUpsideDown ? -1.0F : 1.0F);
             this.posY += (Math.sin(rotY) * 0.6F) * (isUpsideDown ? -1.0F : 1.0F) - (isUpsideDown ? 1.0F : 0.0F);

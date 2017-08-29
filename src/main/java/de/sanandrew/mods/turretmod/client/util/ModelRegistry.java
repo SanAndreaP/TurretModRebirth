@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.client.util;
 
 import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
 import de.sanandrew.mods.turretmod.api.repairkit.TurretRepairKit;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.client.render.tileentity.RenderElectrolyteGenerator;
@@ -110,20 +110,20 @@ public final class ModelRegistry
         }
 
         static final class Turret
-                extends MeshDefUUID<ITurretInfo>
+                extends MeshDefUUID<ITurret>
         {
             Turret() {
-                for( ITurretInfo info : TurretRegistry.INSTANCE.getRegisteredInfos() ) {
-                    ModelResourceLocation modelRes = new ModelResourceLocation(info.getModel(), "inventory");
-                    this.modelRes.put(info.getUUID(), modelRes);
+                for( ITurret info : TurretRegistry.INSTANCE.getTurrets() ) {
+                    ModelResourceLocation modelRes = new ModelResourceLocation(info.getItemModel(), "inventory");
+                    this.modelRes.put(info.getId(), modelRes);
                 }
             }
 
             @Override
-            public ITurretInfo getType(@Nonnull ItemStack stack) { return ItemTurret.getTurretInfo(stack); }
+            public ITurret getType(@Nonnull ItemStack stack) { return ItemTurret.getTurret(stack); }
 
             @Override
-            public UUID getId(ITurretInfo type) { return type.getUUID(); }
+            public UUID getId(ITurret type) { return type.getId(); }
         }
 
         static final class Ammo

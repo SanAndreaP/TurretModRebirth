@@ -9,11 +9,18 @@
 package de.sanandrew.mods.turretmod.client.render.turret;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.client.turret.ITurretRenerRegistry;
+import de.sanandrew.mods.turretmod.api.client.turret.ITurretRenderRegistry;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretRender;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretNew;
+import de.sanandrew.mods.turretmod.client.model.ModelTurretBase;
+import de.sanandrew.mods.turretmod.client.model.ModelTurretFlamethrower;
+import de.sanandrew.mods.turretmod.client.model.ModelTurretLaser;
+import de.sanandrew.mods.turretmod.client.model.ModelTurretMinigun;
+import de.sanandrew.mods.turretmod.client.model.ModelTurretRevolver;
+import de.sanandrew.mods.turretmod.client.model.ModelTurretShotgun;
+import de.sanandrew.mods.turretmod.registry.turret.Turrets;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -41,24 +48,19 @@ import java.util.Map;
 @SideOnly(Side.CLIENT)
 public class RenderTurret<E extends EntityLiving & ITurretInst>
         extends RenderLiving<E>
-        implements ITurretRenerRegistry
+        implements ITurretRenderRegistry<E>
 {
-    private static final ModelIntern NULL_MODEL = new ModelIntern();
-    private static final EmptyRender NULL_RENDER = new EmptyRender();
-
-    private final Map<ITurret, ITurretRender<?>> turretRenders = new HashMap<>();
+    private final Map<ITurret, ITurretRender<?, E>> turretRenders = new HashMap<>();
     private final Map<ITurret, List<LayerRenderer<E>>> turretLayers = new HashMap<>();
 
     public RenderTurret(RenderManager manager) {
-        super(manager, NULL_MODEL, 0.5F);
+        super(manager, new ModelIntern(), 0.5F);
 
-//        this.addLayer(new LayerTurretGlow<>(this, standardModel.getNewInstance(0.001F)));
-//
-        this.addLayer(new LayerTurretUpgrades<>());
+        TurretModRebirth.PLUGINS.forEach(plugin -> plugin.registerTurretRenderer(this));
     }
 
     @Override
-    public <T extends ModelBase> boolean registerRender(@Nonnull ITurret turret, @Nonnull ITurretRender<T> render) {
+    public <T extends ModelBase> boolean registerRender(@Nonnull ITurret turret, @Nonnull ITurretRender<T, E> render) {
         if( this.turretRenders.containsKey(turret) ) {
             TmrConstants.LOG.log(Level.WARN, String.format("Cannot register renderer for turret %s since it already has one.", turret.getName()));
             return false;
@@ -72,15 +74,15 @@ public class RenderTurret<E extends EntityLiving & ITurretInst>
     }
 
     @Override
-    public ITurretRender<?> removeRender(ITurret turret) {
-        ITurretRender<?> oldRender = this.turretRenders.remove(turret);
+    public ITurretRender<?, E> removeRender(ITurret turret) {
+        ITurretRender<?, E> oldRender = this.turretRenders.remove(turret);
         this.turretLayers.remove(turret);
 
         return oldRender;
     }
 
     @Override
-    public <T extends ModelBase> void addStandardLayers(List<LayerRenderer<?>> layerList, ITurretRender<T> render) {
+    public <T extends ModelBase> void addStandardLayers(List<LayerRenderer<E>> layerList, ITurretRender<T, E> render) {
         layerList.add(new LayerTurretGlow<>(this, render.getNewModel(0.001F)));
         layerList.add(new LayerTurretUpgrades<>());
     }
@@ -88,12 +90,15 @@ public class RenderTurret<E extends EntityLiving & ITurretInst>
     @Override
     public void doRender(E entity, double x, double y, double z, float entityYaw, float partialTicks) {
         ITurret turret = entity.getTurret();
-        this.mainModel = turretRenders.getOrDefault(turret, NULL_RENDER).getModel();
+        ITurretRender<?, E> render = turretRenders.get(turret);
 
-        super.doRender(entity, x, y, z, entityYaw, partialTicks);
-        turretRenders.getOrDefault(turret, NULL_RENDER).doRender(entity, x, y, z, entityYaw, partialTicks);
+        if( render != null ) {
+            this.mainModel = render.getModel();
 
-        renderTurretRange(entity, x, y, z);
+            super.doRender(entity, x, y, z, entityYaw, partialTicks);
+            render.doRender(entity, x, y, z, entityYaw, partialTicks);
+            renderTurretRange(entity, x, y, z);
+        }
     }
 
     @Override
@@ -224,19 +229,17 @@ public class RenderTurret<E extends EntityLiving & ITurretInst>
         return this;
     }
 
-    private static class ModelIntern extends ModelBase {
-
+    public static <T extends EntityLiving & ITurretInst> void initialize(ITurretRenderRegistry<T> registry) {
+        registry.registerRender(Turrets.CROSSBOW, new TurretRenderBase<>(registry, ModelTurretBase::new));
+        registry.registerRender(Turrets.SHOTGUN, new TurretRenderBase<>(registry, ModelTurretShotgun::new));
+        registry.registerRender(Turrets.CRYOLATOR, new TurretRenderBase<>(registry, ModelTurretBase::new));
+        registry.registerRender(Turrets.REVOLVER, new TurretRenderBase<>(registry, ModelTurretRevolver::new));
+        registry.registerRender(Turrets.MINIGUN, new TurretRenderBase<>(registry, ModelTurretMinigun::new));
+        registry.registerRender(Turrets.LASER, new TurretRenderBase<>(registry, ModelTurretLaser::new));
+        registry.registerRender(Turrets.FLAMETHROWER, new TurretRenderBase<>(registry, ModelTurretFlamethrower::new));
     }
 
-    private static class EmptyRender implements ITurretRender<ModelIntern> {
-        @Override
-        public ModelIntern getNewModel(float scale) {
-            return new ModelIntern();
-        }
+    private static class ModelIntern extends ModelBase {
 
-        @Override
-        public ModelIntern getModel() {
-            return RenderTurret.NULL_MODEL;
-        }
     }
 }

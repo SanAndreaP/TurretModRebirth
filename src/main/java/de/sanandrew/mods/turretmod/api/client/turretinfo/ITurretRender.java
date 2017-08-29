@@ -7,13 +7,13 @@ import net.minecraft.entity.EntityLiving;
 
 import java.util.List;
 
-public interface ITurretRender<T extends ModelBase>
+public interface ITurretRender<T extends ModelBase, E extends EntityLiving & ITurretInst>
 {
     T getNewModel(float scale);
 
     T getModel();
 
-    default <E extends EntityLiving & ITurretInst> void addLayers(List<LayerRenderer<E>> layerList) { }
+    default void addLayers(List<LayerRenderer<E>> layerList) { }
 
     default void doRender(ITurretInst entity, double x, double y, double z, float entityYaw, float partialTicks) { }
 }

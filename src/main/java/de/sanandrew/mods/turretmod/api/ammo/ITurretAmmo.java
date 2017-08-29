@@ -72,7 +72,7 @@ public interface ITurretAmmo<T extends Entity & IProjectile>
     UUID getRecipeId();
     int getAmmoCapacity();
     Class<T> getEntityClass();
-    T getEntity(ITurretInst turret);
+    T getEntity(ITurretInst turretInst);
     ITurret getTurret();
     ResourceLocation getModel();
     ItemStack getStoringAmmoItem();

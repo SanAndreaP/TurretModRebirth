@@ -9,9 +9,9 @@
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretFlamethrower;
+import de.sanandrew.mods.turretmod.registry.turret.TurretFlamethrower;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import net.minecraft.util.ResourceLocation;
 
@@ -39,8 +39,8 @@ public class UpgradeFuelPurifier
     }
 
     @Override
-    public boolean isTurretApplicable(Class<? extends EntityTurret> turretCls) {
-        return EntityTurretFlamethrower.class.isAssignableFrom(turretCls);
+    public boolean isTurretApplicable(ITurret turret) {
+        return turret instanceof TurretFlamethrower;
     }
 
     @Override

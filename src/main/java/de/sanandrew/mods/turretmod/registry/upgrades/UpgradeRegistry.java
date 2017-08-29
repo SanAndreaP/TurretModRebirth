@@ -12,7 +12,7 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
@@ -180,7 +180,7 @@ public final class UpgradeRegistry
         }
 
         @Override
-        public boolean isTurretApplicable(Class<? extends EntityTurret> turretCls) {
+        public boolean isTurretApplicable(ITurret turret) {
             return false;
         }
     }

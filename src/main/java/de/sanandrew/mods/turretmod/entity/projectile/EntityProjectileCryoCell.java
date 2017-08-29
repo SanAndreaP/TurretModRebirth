@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.entity.projectile;
 
 import de.sanandrew.mods.sanlib.lib.Tuple;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.Sounds;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
@@ -88,7 +88,7 @@ public class EntityProjectileCryoCell
     public boolean onPreHit(Entity e, DamageSource dmgSource, MutableFloat dmg) {
         if( !this.world.isRemote && e instanceof EntityLivingBase ) {
             ((EntityLivingBase) e).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, this.duration, this.level));
-            if( e instanceof EntityCreature && this.shooterCache instanceof EntityTurret ) {
+            if( e instanceof EntityCreature && this.shooterCache instanceof EntityTurret) {
                 setEntityTarget((EntityCreature) e, (EntityTurret) this.shooterCache);
             }
             this.playSound(this.getRicochetSound(), 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));

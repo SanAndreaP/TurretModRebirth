@@ -12,6 +12,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLiving;
@@ -22,10 +23,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class LayerTurretGlow<E extends EntityLiving & ITurretInst>
         implements LayerRenderer<E>
 {
-    private RenderLivingBase<E> turretRenderer;
+    private RenderLiving<E> turretRenderer;
     private final ModelBase glowModel;
 
-    public LayerTurretGlow(RenderLivingBase<E> turretRenderer, ModelBase glowModel) {
+    public LayerTurretGlow(RenderLiving<E> turretRenderer, ModelBase glowModel) {
         this.turretRenderer = turretRenderer;
         this.glowModel = glowModel;
     }

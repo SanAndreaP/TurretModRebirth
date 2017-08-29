@@ -12,10 +12,9 @@ import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretNew;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
 import de.sanandrew.mods.turretmod.event.DamageEventHandler;
 import de.sanandrew.mods.turretmod.inventory.ContainerAssemblyFilter;
@@ -53,17 +52,13 @@ public class CommonProxy
         MinecraftForge.EVENT_BUS.register(PlayerList.INSTANCE);
         MinecraftForge.EVENT_BUS.register(new DamageEventHandler());
 
-        EntityRegistry.registerModEntity(new ResourceLocation(TmrConstants.ID, "turret"), EntityTurretNew.class, TmrConstants.ID + ".turret", CommonProxy.entityCount++, TurretModRebirth.instance, 128, 1, false);
+        EntityRegistry.registerModEntity(new ResourceLocation(TmrConstants.ID, "turret"), EntityTurret.class, TmrConstants.ID + ".turret", CommonProxy.entityCount++, TurretModRebirth.instance, 128, 1, false);
 
     }
 
     public void init(FMLInitializationEvent event) { }
 
-    public void postInit(FMLPostInitializationEvent event) {
-        EntityTurret.hurtSound = Sounds.hit_turrethit;
-        EntityTurret.deathSound = Sounds.hit_turretdeath;
-        EntityTurret.collectSound = Sounds.collect_ia_get;
-    }
+    public void postInit(FMLPostInitializationEvent event) { }
 
     @Override
     public final Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
@@ -72,7 +67,7 @@ public class CommonProxy
             switch( EnumGui.VALUES[id] ) {
                 case GUI_TCU_UPGRADES: {
                     Entity e = world.getEntityByID(x);
-                    if( e instanceof EntityTurret ) {
+                    if( e instanceof EntityTurret) {
                         return new ContainerTurretUpgrades(player.inventory, ((UpgradeProcessor) ((EntityTurret) e).getUpgradeProcessor()));
                     }
                     break;
@@ -132,7 +127,7 @@ public class CommonProxy
 
     public void spawnParticle(EnumParticle particle, double x, double y, double z, Tuple data) { }
 
-    public void playTurretLaser(EntityTurretLaser turretLaser) { }
+    public void playTurretLaser(ITurretInst turretInst) { }
 
     public void addForcefield(Entity e, IForcefieldProvider provider) { }
 }

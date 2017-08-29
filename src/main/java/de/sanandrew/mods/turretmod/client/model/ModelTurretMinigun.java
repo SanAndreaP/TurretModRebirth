@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.client.model;
 
 import de.sanandrew.mods.sanlib.lib.client.ModelJsonLoader;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.entity.turret.TurretMinigun;
+import de.sanandrew.mods.turretmod.registry.turret.TurretMinigun;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.resources.IResourceManager;
@@ -22,49 +22,48 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ModelTurretMinigun
-		extends ModelTurretBase
+        extends ModelTurretBase
 {
-	public ModelRenderer barrelBaseLeft;
-	public ModelRenderer barrelBaseRight;
+    public ModelRenderer barrelBaseLeft;
+    public ModelRenderer barrelBaseRight;
 
-	public ModelTurretMinigun(float scale) {
-		super(scale);
-	}
+    public ModelTurretMinigun(float scale) {
+        super(scale);
+    }
 
-	@Override
-	public void setLivingAnimations(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partTicks) {
-		super.setLivingAnimations(entity, limbSwing, limbSwingAmount, partTicks);
+    @Override
+    public void setLivingAnimations(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partTicks) {
+        super.setLivingAnimations(entity, limbSwing, limbSwingAmount, partTicks);
 
-		ITurretInst turretInst = (ITurretInst) entity;
-		if( turretInst.getTurret() instanceof TurretMinigun ) {
-			float barrelLeft = turretInst.getField(TurretMinigun.BARREL_LEFT);
-			float prevBarrelLeft = turretInst.getField(TurretMinigun.PREV_BARREL_LEFT);
-			float barrelRight = turretInst.getField(TurretMinigun.BARREL_RIGHT);
-			float prevBarrelRight = turretInst.getField(TurretMinigun.PREV_BARREL_RIGHT);
+        ITurretInst turretInst = (ITurretInst) entity;
+        if( turretInst.getTurret() instanceof TurretMinigun ) {
+            TurretMinigun.MyRAM ram = turretInst.getRAM(TurretMinigun.MyRAM::new);
 
-			float barrelDeltaL = prevBarrelLeft + (barrelLeft - prevBarrelLeft) * partTicks;
-			float barrelDeltaR = prevBarrelRight + (barrelRight - prevBarrelRight) * partTicks;
+            if( ram != null ) {
+                float barrelDeltaL = ram.prevBarrelLeft + (ram.barrelLeft - ram.prevBarrelLeft) * partTicks;
+                float barrelDeltaR = ram.prevBarrelRight + (ram.barrelRight - ram.prevBarrelRight) * partTicks;
 
-			this.barrelBaseLeft.rotateAngleZ = barrelDeltaL / 180.0F * (float) Math.PI;
-			this.barrelBaseRight.rotateAngleZ = barrelDeltaR / 180.0F * (float) Math.PI;
-		}
-	}
+                this.barrelBaseLeft.rotateAngleZ = barrelDeltaL / 180.0F * (float) Math.PI;
+                this.barrelBaseRight.rotateAngleZ = barrelDeltaR / 180.0F * (float) Math.PI;
+            }
+        }
+    }
 
-	@Override
-	public List<String> getMandatoryBoxes() {
-		return Stream.concat(super.getMandatoryBoxes().stream(), Stream.of("barrelBaseLeft", "barrelBaseRight")).collect(Collectors.toList());
-	}
+    @Override
+    public List<String> getMandatoryBoxes() {
+        return Stream.concat(super.getMandatoryBoxes().stream(), Stream.of("barrelBaseLeft", "barrelBaseRight")).collect(Collectors.toList());
+    }
 
-	@Override
-	public void onReload(IResourceManager iResourceManager, ModelJsonLoader<ModelTurretBase, ModelJsonLoader.ModelJson> loader) {
-		super.onReload(iResourceManager, loader);
+    @Override
+    public void onReload(IResourceManager iResourceManager, ModelJsonLoader<ModelTurretBase, ModelJsonLoader.ModelJson> loader) {
+        super.onReload(iResourceManager, loader);
 
-		this.barrelBaseLeft = loader.getBox("barrelBaseLeft");
-		this.barrelBaseRight = loader.getBox("barrelBaseRight");
-	}
+        this.barrelBaseLeft = loader.getBox("barrelBaseLeft");
+        this.barrelBaseRight = loader.getBox("barrelBaseRight");
+    }
 
-	@Override
-	public ResourceLocation getModelLocation() {
-		return Resources.TURRET_T2_MINIGUN_MODEL.getResource();
-	}
+    @Override
+    public ResourceLocation getModelLocation() {
+        return Resources.TURRET_T2_MINIGUN_MODEL.getResource();
+    }
 }

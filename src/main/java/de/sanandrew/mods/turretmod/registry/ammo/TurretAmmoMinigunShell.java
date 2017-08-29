@@ -10,11 +10,12 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileMinigunPebble;
-import de.sanandrew.mods.turretmod.entity.turret.TurretMinigun;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
+import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -57,8 +58,8 @@ public abstract class TurretAmmoMinigunShell
     }
 
     @Override
-    public Class<? extends EntityTurret> getTurret() {
-        return TurretMinigun.class;
+    public ITurret getTurret() {
+        return Turrets.MINIGUN;
     }
 
     @Override
@@ -88,8 +89,8 @@ public abstract class TurretAmmoMinigunShell
     }
 
     @Override
-    public EntityProjectileMinigunPebble getEntity(EntityTurret turret) {
-        return new EntityProjectileMinigunPebble(turret.world, turret, turret.getTargetProcessor().getTarget());
+    public EntityProjectileMinigunPebble getEntity(ITurretInst turretInst) {
+        return new EntityProjectileMinigunPebble(turretInst.getEntity().world, turretInst.getEntity(), turretInst.getTargetProcessor().getTarget());
     }
 
     @Override

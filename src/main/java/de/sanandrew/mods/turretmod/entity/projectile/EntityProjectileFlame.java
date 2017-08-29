@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.entity.projectile;
 
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretFlamethrower;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
@@ -37,11 +37,11 @@ public class EntityProjectileFlame
         super(world, shooter, target);
         this.damage = 3.00F;
 
-        if( shooter instanceof EntityTurretFlamethrower ) {
-            EntityTurretFlamethrower turret = (EntityTurretFlamethrower) shooter;
+        if( shooter instanceof EntityTurret) {
+            EntityTurret turret = (EntityTurret) shooter;
             float rotXZ = -turret.rotationYawHead / 180.0F * (float) Math.PI;
             float rotY = -(turret.rotationPitch - 2.5F) / 180.0F * (float) Math.PI - 0.1F;
-            boolean isUpsideDown = turret.isUpsideDown;
+            boolean isUpsideDown = turret.isUpsideDown();
 
             this.posX += (Math.sin(rotXZ) * 0.7F * Math.cos(rotY)) * (isUpsideDown ? -1.0F : 1.0F);
             this.posY += (Math.sin(rotY) * 0.6F) * (isUpsideDown ? -1.0F : 1.0F) - (isUpsideDown ? 1.0F : 0.0F);

@@ -12,7 +12,7 @@ import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretNew;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
@@ -63,7 +63,7 @@ public class ItemTurret
 
         ITurret turret = getTurret(stack);
         if( turret != null ) {
-            tooltip.add(Lang.translate(Lang.TURRET_NAME, turret.getName()));
+            tooltip.add(Lang.translate(Lang.TURRET_NAME.get(turret.getName())));
 //            tooltip.add(Lang.translateEntityCls(turret.getTurretClass()));
         }
 
@@ -93,9 +93,9 @@ public class ItemTurret
 
             int shiftY = facing == EnumFacing.UP ? 1 : -1;
 
-            if( EntityTurretNew.canTurretBePlaced(world, placingOn, false, facing == EnumFacing.DOWN) ) {
+            if( EntityTurret.canTurretBePlaced(world, placingOn, false, facing == EnumFacing.DOWN) ) {
                 ItemStack stack = player.getHeldItem(hand);
-                EntityTurretNew turret = spawnTurret(world, getTurret(stack), placingOn.getX() + 0.5D, placingOn.getY() + shiftY, placingOn.getZ() + 0.5D, facing == EnumFacing.DOWN, player);
+                EntityTurret turret = spawnTurret(world, getTurret(stack), placingOn.getX() + 0.5D, placingOn.getY() + shiftY, placingOn.getZ() + 0.5D, facing == EnumFacing.DOWN, player);
                 if( turret != null ) {
                     Float initHealth = getTurretHealth(stack);
                     if( initHealth != null ) {
@@ -135,7 +135,7 @@ public class ItemTurret
                 }
 
                 if( world.getBlockState(blockPos).getBlock() instanceof BlockLiquid ) {
-                    EntityTurretNew turret = spawnTurret(world, getTurret(stack), blockPos, false, player);
+                    EntityTurret turret = spawnTurret(world, getTurret(stack), blockPos, false, player);
                     if( turret != null ) {
                         Float initHealth = getTurretHealth(stack);
                         if( initHealth != null ) {
@@ -229,12 +229,12 @@ public class ItemTurret
         return stack;
     }
 
-    public static EntityTurretNew spawnTurret(World world, ITurret turret, BlockPos pos, boolean isUpsideDown, EntityPlayer owner) {
+    public static EntityTurret spawnTurret(World world, ITurret turret, BlockPos pos, boolean isUpsideDown, EntityPlayer owner) {
         return spawnTurret(world, turret, pos.getX(), pos.getY(), pos.getZ(), isUpsideDown, owner);
     }
 
-    public static EntityTurretNew spawnTurret(World world, ITurret turret, double x, double y, double z, boolean isUpsideDown, EntityPlayer owner) {
-        EntityTurretNew turretE = new EntityTurretNew(world, isUpsideDown, owner, turret);
+    public static EntityTurret spawnTurret(World world, ITurret turret, double x, double y, double z, boolean isUpsideDown, EntityPlayer owner) {
+        EntityTurret turretE = new EntityTurret(world, isUpsideDown, owner, turret);
         turretE.setLocationAndAngles(x, y - (isUpsideDown ? 1.0D : 0.0D), z, MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
         turretE.rotationYawHead = turretE.rotationYaw;
         turretE.renderYawOffset = turretE.rotationYaw;

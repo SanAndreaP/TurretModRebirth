@@ -9,23 +9,24 @@
 package de.sanandrew.mods.turretmod.entity.turret;
 
 import com.mojang.authlib.GameProfile;
-import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.sanlib.lib.util.ReflectionUtils;
+import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
-import de.sanandrew.mods.turretmod.api.ITmrUtils;
-import de.sanandrew.mods.turretmod.api.repairkit.IRepairKitRegistry;
 import de.sanandrew.mods.turretmod.api.repairkit.TurretRepairKit;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
+import de.sanandrew.mods.turretmod.util.Sounds;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import io.netty.buffer.ByteBuf;
-import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -54,24 +55,18 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 import javax.annotation.Nonnull;
-import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
-public class EntityTurretNew
+public class EntityTurret
         extends EntityLiving
         implements IEntityAdditionalSpawnData, ITurretInst
 {
     private static final AxisAlignedBB UPWARDS_BLOCK = new AxisAlignedBB(0.1D, 0.99D, 0.1D, 1.0D, 1.0D, 1.0D);
     private static final AxisAlignedBB DOWNWARDS_BLOCK = new AxisAlignedBB(0.1D, 0.0D, 0.1D, 1.0D, 0.01D, 1.0D);
 
-    public static final DataParameter<Boolean> SHOT_CHNG = EntityDataManager.createKey(EntityTurretNew.class, DataSerializers.BOOLEAN);
-
-    public static SoundEvent hurtSound; // populte by internal plugin
-    public static SoundEvent deathSound; // populte by internal plugin
-    public static SoundEvent collectSound; // populte by internal plugin
-    public static IRepairKitRegistry repairKitRegistry; // populte by internal plugin
-    public static ITmrUtils utils; // populte by internal plugin
+    public static final DataParameter<Boolean> SHOT_CHNG = EntityDataManager.createKey(EntityTurret.class, DataSerializers.BOOLEAN);
 
     public boolean isUpsideDown;
     public boolean showRange;
@@ -83,39 +78,40 @@ public class EntityTurretNew
     protected UUID ownerUUID;
     protected String ownerName;
 
-    private DataWatcherBooleans<EntityTurretNew> dwBools;
+    private DataWatcherBooleans<EntityTurret> dwBools;
     private BlockPos blockPos;
     private boolean prevShotChng;
     private boolean checkBlock;
 
-    private Map<Integer, Tuple> fields;
+    private ITurretRAM turretRAM;
 
     @Nonnull
     private ITurret delegate;
 
-    public EntityTurretNew(World world) {
+    public EntityTurret(World world) {
         super(world);
         this.targetProc = new TargetProcessor(this);
         this.upgProc = new UpgradeProcessor(this);
         this.rotationYaw = 0.0F;
         this.checkBlock = true;
         this.delegate = TurretRegistry.NULL_TURRET;
-        this.fields = new Int2ObjectAVLTreeMap<>();
     }
 
-    public EntityTurretNew(World world, ITurret delegate) {
+    public EntityTurret(World world, ITurret delegate) {
         this(world);
         this.delegate = delegate;
+
+        this.delegate.entityInit(this);
+        this.delegate.applyEntityAttributes(this);
+        this.setHealth(this.getMaxHealth());
     }
 
-    public EntityTurretNew(World world, boolean isUpsideDown, EntityPlayer owner, ITurret delegate) {
-        this(world);
+    public EntityTurret(World world, boolean isUpsideDown, EntityPlayer owner, ITurret delegate) {
+        this(world, delegate);
         this.isUpsideDown = isUpsideDown;
 
         this.ownerUUID = owner.getUniqueID();
         this.ownerName = owner.getName();
-
-        this.delegate = delegate;
     }
 
     @Override
@@ -125,7 +121,6 @@ public class EntityTurretNew
         this.getAttributeMap().registerAttribute(TurretAttributes.MAX_AMMO_CAPACITY);
         this.getAttributeMap().registerAttribute(TurretAttributes.MAX_RELOAD_TICKS);
 
-        this.delegate.applyEntityAttributes(this);
     }
 
     @Override
@@ -138,18 +133,20 @@ public class EntityTurretNew
         this.dataManager.register(SHOT_CHNG, false);
 
         this.setActive(true);
-
-        this.delegate.entityInit(this);
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource dmgSrc) {
-        return MiscUtils.defIfNull(this.delegate.getHurtSound(this), hurtSound);
+        return MiscUtils.defIfNull(this.delegate.getHurtSound(this), Sounds.hit_turrethit);
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MiscUtils.defIfNull(this.delegate.getDeathSound(this), deathSound);
+        return MiscUtils.defIfNull(this.delegate.getDeathSound(this), Sounds.hit_turretdeath);
+    }
+
+    protected SoundEvent getCollectSound() {
+        return MiscUtils.defIfNull(this.delegate.getCollectSound(this), Sounds.collect_ia_get);
     }
 
     @Override
@@ -259,7 +256,7 @@ public class EntityTurretNew
 
             if( this.targetProc.hasTarget() ) {
                 this.faceEntity(this.targetProc.getTarget(), 10.0F, this.getVerticalFaceSpeed());
-            } else if( this.world.isRemote && utils.getPassengersOfClass(this, EntityPlayer.class).size() < 1 ) {
+            } else if( this.world.isRemote && TmrUtils.INSTANCE.getPassengersOfClass(this, EntityPlayer.class).size() < 1 ) {
                 this.rotationYawHead += 1.0F;
                 this.rotationYawHead = wrap360.apply(this.rotationYawHead);
                 this.prevRotationYawHead = wrap360.apply(this.prevRotationYawHead);
@@ -316,9 +313,9 @@ public class EntityTurretNew
             player.inventory.setInventorySlotContents(player.inventory.currentItem, heldItem.copy());
         }
 
-        utils.updateTurretState(this);
+        TmrUtils.INSTANCE.updateTurretState(this);
         player.inventoryContainer.detectAndSendChanges();
-        this.world.playSound(null, this.posX, this.posY, this.posZ, collectSound, SoundCategory.NEUTRAL, 1.0F, 1.0F);
+        this.world.playSound(null, this.posX, this.posY, this.posZ, this.getCollectSound(), SoundCategory.NEUTRAL, 1.0F, 1.0F);
     }
 
     @Override
@@ -327,18 +324,18 @@ public class EntityTurretNew
 
         if( this.world.isRemote ) {
             if( ItemStackUtils.isItem(stack, ItemRegistry.turret_control_unit) ) {
-                utils.openGui(player, player.isSneaking() ? EnumGui.GUI_DEBUG_CAMERA : EnumGui.GUI_TCU_INFO, this.getEntityId(), this.hasPlayerPermission(player) ? 1 : 0, 0);
+                TmrUtils.INSTANCE.openGui(player, player.isSneaking() ? EnumGui.GUI_DEBUG_CAMERA : EnumGui.GUI_TCU_INFO, this.getEntityId(), this.hasPlayerPermission(player) ? 1 : 0, 0);
                 return true;
             }
 
             return false;
-        } else if( utils.isStackValid(stack) && hand == EnumHand.MAIN_HAND ) {
+        } else if( ItemStackUtils.isValid(stack) && hand == EnumHand.MAIN_HAND ) {
             TurretRepairKit repKit;
 
             if( this.targetProc.addAmmo(stack) ) {
                 this.onInteractSucceed(stack, player);
                 return true;
-            } else if( (repKit = repairKitRegistry.getType(stack)).isApplicable(this) ) {
+            } else if( (repKit = RepairKitRegistry.INSTANCE.getType(stack)).isApplicable(this) ) {
                     this.heal(repKit.getHealAmount());
                     repKit.onHeal(this);
                     stack.shrink(1);
@@ -428,6 +425,8 @@ public class EntityTurretNew
     public void writeEntityToNBT(NBTTagCompound nbt) {
         super.writeEntityToNBT(nbt);
 
+        nbt.setString("turretId", this.delegate.getId().toString());
+
         this.targetProc.writeToNbt(nbt);
         this.upgProc.writeToNbt(nbt);
         this.dwBools.writeToNbt(nbt);
@@ -442,6 +441,13 @@ public class EntityTurretNew
     @Override
     public void readEntityFromNBT(NBTTagCompound nbt) {
         super.readEntityFromNBT(nbt);
+
+        String turretId = nbt.getString("turretId");
+        if( UuidUtils.isStringUuid(turretId) ) {
+            this.delegate = TurretRegistry.INSTANCE.getTurret(UUID.fromString(turretId));
+            this.delegate.entityInit(this);
+            this.delegate.applyEntityAttributes(this);
+        }
 
         this.targetProc.readFromNbt(nbt);
         this.upgProc.readFromNbt(nbt);
@@ -532,7 +538,7 @@ public class EntityTurretNew
 
         if( !doBlockCheckOnly ) {
             AxisAlignedBB aabb = new AxisAlignedBB(posPlaced.getX(), posPlaced.getY(), posPlaced.getZ(), posPlaced.getX() + 1.0D, posPlaced.getY() + (updideDown ? - 1.0D : 1.0D), posPlaced.getZ() + 1.0D);
-            if( !world.getEntitiesWithinAABB(EntityTurretNew.class, aabb).isEmpty() ) {
+            if( !world.getEntitiesWithinAABB(EntityTurret.class, aabb).isEmpty() ) {
                 return false;
             }
         }
@@ -562,11 +568,11 @@ public class EntityTurretNew
             return true;
         }
 
-        if( utils.canPlayerEditAll() || this.ownerUUID.equals(profile.getId()) ) {
+        if( TmrUtils.INSTANCE.canPlayerEditAll() || this.ownerUUID.equals(profile.getId()) ) {
             return true;
         }
 
-        return player.canUseCommand(2, "") && utils.canOpEditAll();
+        return player.canUseCommand(2, "") && TmrUtils.INSTANCE.canOpEditAll();
     }
 
     @Override
@@ -575,13 +581,11 @@ public class EntityTurretNew
     }
 
     @Override
-    public <V> void setField(int index, V value) {
-        this.fields.put(index, new Tuple(value));
-    }
-
-    @Override
-    public <V> V getField(int index) {
-        return this.fields.computeIfAbsent(index, i -> new Tuple(new Object[1])).getValue(0);
+    public <V extends ITurretRAM> V getRAM(Supplier<V> onNull) {
+        if( this.turretRAM == null && onNull != null ) {
+            this.turretRAM = onNull.get();
+        }
+        return ReflectionUtils.getCasted(this.turretRAM);
     }
 
     @Override

@@ -11,6 +11,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 
+import java.util.function.Supplier;
+
 public interface ITurretInst
 {
     EntityLiving getEntity();
@@ -47,7 +49,5 @@ public interface ITurretInst
 
     boolean isInGui();
 
-    <V> void setField(int index, V value);
-
-    <V> V getField(int index);
+    <V extends ITurretRAM> V getRAM(Supplier<V> onNull);
 }

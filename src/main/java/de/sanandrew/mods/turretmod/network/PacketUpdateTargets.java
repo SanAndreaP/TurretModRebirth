@@ -9,8 +9,8 @@
 package de.sanandrew.mods.turretmod.network;
 
 import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,7 +33,7 @@ public class PacketUpdateTargets
     public PacketUpdateTargets(ITargetProcessor processor) {
         this.entityTargets = processor.getEnabledEntityTargets();
         this.playerTargets = processor.getEnabledPlayerTargets();
-        this.turretID = processor.getTurret().getEntityId();
+        this.turretID = processor.getTurret().getEntity().getEntityId();
     }
 
     @Override
@@ -44,8 +44,8 @@ public class PacketUpdateTargets
     @Override
     public void handleServerMessage(PacketUpdateTargets packet, EntityPlayer player) {
         Entity e = player.world.getEntityByID(packet.turretID);
-        if( e instanceof EntityTurret ) {
-            ITargetProcessor processor = ((EntityTurret) e).getTargetProcessor();
+        if( e instanceof ITurretInst) {
+            ITargetProcessor processor = ((ITurretInst) e).getTargetProcessor();
             processor.updateEntityTargets(packet.entityTargets);
             processor.updatePlayerTargets(packet.playerTargets);
         }

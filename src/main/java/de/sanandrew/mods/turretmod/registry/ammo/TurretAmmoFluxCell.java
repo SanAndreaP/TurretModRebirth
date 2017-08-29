@@ -10,11 +10,12 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileLaser;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
+import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -57,8 +58,8 @@ public abstract class TurretAmmoFluxCell
     }
 
     @Override
-    public Class<? extends EntityTurret> getTurret() {
-        return EntityTurretLaser.class;
+    public ITurret getTurret() {
+        return Turrets.LASER;
     }
 
     @Override
@@ -88,8 +89,8 @@ public abstract class TurretAmmoFluxCell
     }
 
     @Override
-    public EntityProjectileLaser getEntity(EntityTurret turret) {
-        return new EntityProjectileLaser(turret.world, turret, turret.getTargetProcessor().getTarget());
+    public EntityProjectileLaser getEntity(ITurretInst turretInst) {
+        return new EntityProjectileLaser(turretInst.getEntity().world, turretInst.getEntity(), turretInst.getTargetProcessor().getTarget());
     }
 
     @Override

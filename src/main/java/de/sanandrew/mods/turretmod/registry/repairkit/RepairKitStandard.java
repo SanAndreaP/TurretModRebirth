@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.registry.repairkit;
 
 import de.sanandrew.mods.turretmod.api.repairkit.TurretRepairKit;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
@@ -45,8 +45,8 @@ public class RepairKitStandard
     }
 
     @Override
-    public boolean isApplicable(EntityTurret turret) {
-        return turret.getHealth() <= turret.getMaxHealth() - this.heal;
+    public boolean isApplicable(ITurretInst turret) {
+        return turret.getEntity().getHealth() <= turret.getEntity().getMaxHealth() - this.heal;
     }
 
     @Override

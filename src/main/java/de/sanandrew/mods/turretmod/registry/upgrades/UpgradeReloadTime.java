@@ -10,7 +10,8 @@ package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
@@ -45,14 +46,14 @@ public abstract class UpgradeReloadTime
     }
 
     @Override
-    public boolean isTurretApplicable(Class<? extends EntityTurret> turretCls) {
+    public boolean isTurretApplicable(ITurret turret) {
         return true;
     }
 
     @Override
-    public void onApply(EntityTurret turret) {
-        if( !turret.world.isRemote ) {
-            IAttributeInstance attrib = turret.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS);
+    public void onApply(ITurretInst turretInst) {
+        if( !turretInst.getEntity().world.isRemote ) {
+            IAttributeInstance attrib = turretInst.getEntity().getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS);
             if( attrib.getModifier(this.modifier.getID()) != null ) {
                 attrib.removeModifier(this.modifier);
             }
@@ -62,12 +63,12 @@ public abstract class UpgradeReloadTime
     }
 
     @Override
-    public void onRemove(EntityTurret turret) {
-        if( !turret.world.isRemote ) {
-            IAttributeInstance attrib = turret.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS);
+    public void onRemove(ITurretInst turretInst) {
+        if( !turretInst.getEntity().world.isRemote ) {
+            IAttributeInstance attrib = turretInst.getEntity().getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS);
             if( attrib.getModifier(this.modifier.getID()) != null ) {
                 attrib.removeModifier(this.modifier);
-                turret.setHealth(Math.min(turret.getHealth(), turret.getMaxHealth()));
+                turretInst.getEntity().setHealth(turretInst.getEntity().getHealth());
             }
         }
     }

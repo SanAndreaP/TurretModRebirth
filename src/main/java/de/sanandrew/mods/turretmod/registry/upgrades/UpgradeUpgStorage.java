@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import net.minecraft.util.ResourceLocation;
@@ -38,7 +38,7 @@ public abstract class UpgradeUpgStorage
     }
 
     @Override
-    public boolean isTurretApplicable(Class<? extends EntityTurret> turretCls) {
+    public boolean isTurretApplicable(ITurret turretCls) {
         return true;
     }
 

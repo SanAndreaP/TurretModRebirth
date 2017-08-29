@@ -8,7 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.compat.jei;
 
-import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.ItemTurret;
@@ -49,8 +49,8 @@ public class JeiPlugin
     @Override
     public void registerItemSubtypes(ISubtypeRegistry subtypeRegistry) {
         subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.turret_placer, itemStack -> {
-            ITurretInfo stype = ItemTurret.getTurretInfo(itemStack);
-            return stype != null ? stype.getUUID().toString() : null;
+            ITurret stype = ItemTurret.getTurret(itemStack);
+            return stype != null ? stype.getId().toString() : null;
         });
 
         subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.turret_upgrade, itemStack -> UpgradeRegistry.INSTANCE.getUpgradeId(itemStack).toString());

@@ -9,9 +9,9 @@
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
+import de.sanandrew.mods.turretmod.registry.turret.TurretLaser;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import net.minecraft.util.ResourceLocation;
 
@@ -39,8 +39,8 @@ public class UpgradeEnderMedium
     }
 
     @Override
-    public boolean isTurretApplicable(Class<? extends EntityTurret> turretCls) {
-        return EntityTurretLaser.class.isAssignableFrom(turretCls);
+    public boolean isTurretApplicable(ITurret turret) {
+        return turret instanceof TurretLaser;
     }
 
     @Override

@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.client.model;
 
 import de.sanandrew.mods.sanlib.lib.client.ModelJsonLoader;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.entity.turret.TurretRevolver;
+import de.sanandrew.mods.turretmod.registry.turret.TurretRevolver;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.resources.IResourceManager;
@@ -37,13 +37,10 @@ public class ModelTurretRevolver
 
         ITurretInst turretInst = (ITurretInst) entity;
 		if( turretInst.getTurret() instanceof TurretRevolver ) {
-            float barrelLeft = turretInst.getField(TurretRevolver.BARREL_LEFT);
-            float prevBarrelLeft = turretInst.getField(TurretRevolver.PREV_BARREL_LEFT);
-            float barrelRight = turretInst.getField(TurretRevolver.BARREL_RIGHT);
-            float prevBarrelRight = turretInst.getField(TurretRevolver.PREV_BARREL_RIGHT);
+            TurretRevolver.MyRAM ram = turretInst.getRAM(TurretRevolver.MyRAM::new);
 
-			float barrelDeltaL = prevBarrelLeft + (barrelLeft - prevBarrelLeft) * partTicks;
-			float barrelDeltaR = prevBarrelRight + (barrelRight - prevBarrelRight) * partTicks;
+			float barrelDeltaL = ram.prevBarrelLeft + (ram.barrelLeft - ram.prevBarrelLeft) * partTicks;
+			float barrelDeltaR = ram.prevBarrelRight + (ram.barrelRight - ram.prevBarrelRight) * partTicks;
 
 			this.barrelLeft.rotationPointZ = 3.0F - 3.0F * barrelDeltaL;
 			this.barrelRight.rotationPointZ = 3.0F - 3.0F * barrelDeltaR;

@@ -13,7 +13,7 @@ import de.sanandrew.mods.turretmod.api.assembly.IRecipeEntry;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretNew;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
@@ -41,7 +41,7 @@ public class TurretInfoEntryTurret
     private float rotation;
     private long lastTimestamp;
     private ITurret turret;
-    private WeakReference<EntityTurretNew> turretRenderCache;
+    private WeakReference<EntityTurret> turretRenderCache;
     private TurretInfoValues values;
 
     private IGuiTurretInfo guiInfo;
@@ -77,7 +77,7 @@ public class TurretInfoEntryTurret
         int descHeight;
         Minecraft mc = guiInfo.__getMc();
 
-        mc.fontRenderer.drawString(TextFormatting.ITALIC + this.values.name, 2, 2, 0xFF0080BB);
+        mc.fontRenderer.drawString(TextFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 2, 0xFF0080BB);
         Gui.drawRect(2, 12, MAX_ENTRY_WIDTH - 2, 13, 0xFF0080BB);
 
         this.guiInfo.doEntryScissoring(2, 15, 54, 82);
@@ -98,7 +98,7 @@ public class TurretInfoEntryTurret
 
         descStart = Math.max(turretHeight, valueHeight);
 
-        String desc = Lang.translate(Lang.TURRET_DESC, this.values.name).replace("\\n", "\n");
+        String desc = Lang.translate(Lang.TURRET_DESC.get(this.values.name)).replace("\\n", "\n");
         Gui.drawRect(2, 2 + descStart, MAX_ENTRY_WIDTH - 2, 3 + descStart, 0xFF0080BB);
         mc.fontRenderer.drawSplitString(desc, 2, 5 + descStart, MAX_ENTRY_WIDTH - 2, 0xFF000000);
         descHeight = mc.fontRenderer.getWordWrappedHeight(desc, MAX_ENTRY_WIDTH - 4) + 7;
@@ -126,13 +126,13 @@ public class TurretInfoEntryTurret
     private void drawTurret(Minecraft mc, int x, int y) {
         if( this.turretRenderCache == null || this.turretRenderCache.get() == null || this.turretRenderCache.isEnqueued() ) {
             try {
-                this.turretRenderCache = new WeakReference<>(new EntityTurretNew(mc.world, this.turret));
+                this.turretRenderCache = new WeakReference<>(new EntityTurret(mc.world, this.turret));
             } catch( Exception e ) {
                 return;
             }
         }
 
-        EntityTurretNew turret = this.turretRenderCache.get();
+        EntityTurret turret = this.turretRenderCache.get();
         if( turret == null ) {
             return;
         }

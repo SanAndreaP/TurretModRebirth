@@ -8,9 +8,9 @@ package de.sanandrew.mods.turretmod.event;
 
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.event.TargetingEvent;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
-import de.sanandrew.mods.turretmod.entity.turret.TurretShotgun;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.registry.turret.TurretCryolator;
+import de.sanandrew.mods.turretmod.registry.turret.TurretShotgun;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -24,18 +24,18 @@ public class TargetingEventHandler
 {
     @SubscribeEvent
     public void onTargetCheck(TargetingEvent.TargetCheck event) {
-        EntityTurret turret = event.processor.getTurret();
+        ITurretInst turret = event.processor.getTurret();
 
-        if( turret instanceof EntityTurretCryolator && event.target instanceof EntityLivingBase && ((EntityLivingBase) event.target).isPotionActive(MobEffects.SLOWNESS) ) {
+        if( turret instanceof TurretCryolator && event.target instanceof EntityLivingBase && ((EntityLivingBase) event.target).isPotionActive(MobEffects.SLOWNESS) ) {
             event.setResult(Event.Result.DENY);
         }
 
         if( event.processor.getTurret().getUpgradeProcessor().hasUpgrade(UpgradeRegistry.SMART_TGT) ) {
-            List entities = turret.world.getEntitiesWithinAABB(turret.getClass(), turret.getTargetProcessor().getAdjustedRange(true));
+            List entities = turret.getEntity().world.getEntitiesWithinAABB(turret.getEntity().getClass(), turret.getTargetProcessor().getAdjustedRange(true));
 
             for( Object eObj : entities ) {
-                if( eObj instanceof EntityTurret ) {
-                    EntityTurret otherTurret = (EntityTurret) eObj;
+                if( eObj instanceof ITurretInst ) {
+                    ITurretInst otherTurret = (ITurretInst) eObj;
                     if( eObj != turret && otherTurret.getTargetProcessor().getTarget() == event.target && otherTurret.getTargetProcessor().hasAmmo() ) {
                         event.setResult(Event.Result.DENY);
                         break;
@@ -52,7 +52,7 @@ public class TargetingEventHandler
                 for( int i = 0; i < 6; i++ ) {
                     Entity projectile = event.processor.getProjectile();
                     assert projectile != null;
-                    event.processor.getTurret().world.spawnEntity(projectile);
+                    event.processor.getTurret().getEntity().world.spawnEntity(projectile);
                 }
                 event.processor.playSound(event.processor.getTurret().getShootSound(), 1.8F);
                 event.processor.getTurret().setShooting();
@@ -69,7 +69,7 @@ public class TargetingEventHandler
 
     @SubscribeEvent
     public void onAmmoConsumption(TargetingEvent.ConsumeAmmo event) {
-        EntityTurret turret = event.processor.getTurret();
+        ITurretInst turret = event.processor.getTurret();
         if( turret.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.ECONOMY_INF) && event.processor.getAmmoCount() == event.processor.getMaxAmmoCapacity() ) {
             event.setResult(Event.Result.DENY);
         } else {

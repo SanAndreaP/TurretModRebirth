@@ -6,28 +6,26 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.registry.turret;
 
-import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
 
 public final class Turrets
 {
-    public static final ITurretInfo CROSSBOW = new TurretInfoCrossbow();
-    public static final ITurretInfo SHOTGUN = new TurretInfoShotgun();
-    public static final ITurretInfo CRYOLATOR = new TurretInfoCryolator();
-    public static final ITurretInfo REVOLVER = new TurretInfoRevolver();
-    public static final ITurretInfo MINIGUN = new TurretInfoMinigun();
-    public static final ITurretInfo LASER = new TurretInfoLaser();
-    public static final ITurretInfo FLAMETHROWER = new TurretInfoFlamethrower();
+    public static final ITurret CROSSBOW = new TurretCrossbow();
+    public static final ITurret SHOTGUN = new TurretShotgun();
+    public static final ITurret CRYOLATOR = new TurretCryolator();
+    public static final ITurret REVOLVER = new TurretRevolver();
+    public static final ITurret MINIGUN = new TurretMinigun();
+    public static final ITurret LASER = new TurretLaser();
+    public static final ITurret FLAMETHROWER = new TurretFlamethrower();
 
     public static void initialize(ITurretRegistry registry) {
-        TurretRegistry turretRegistry = (TurretRegistry) registry;
-
-        turretRegistry.registerTurretInfo(CROSSBOW, true);
-        turretRegistry.registerTurretInfo(SHOTGUN, true);
-        turretRegistry.registerTurretInfo(CRYOLATOR, true);
-        turretRegistry.registerTurretInfo(REVOLVER, true);
-        turretRegistry.registerTurretInfo(MINIGUN, true);
-        turretRegistry.registerTurretInfo(LASER, true);
-        turretRegistry.registerTurretInfo(FLAMETHROWER, true);
+        registry.registerTurret(CROSSBOW);
+        registry.registerTurret(SHOTGUN);
+        registry.registerTurret(CRYOLATOR);
+        registry.registerTurret(REVOLVER);
+        registry.registerTurret(MINIGUN);
+        registry.registerTurret(LASER);
+        registry.registerTurret(FLAMETHROWER);
     }
 }

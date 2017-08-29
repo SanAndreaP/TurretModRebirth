@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.client.model;
 
 import de.sanandrew.mods.sanlib.lib.client.ModelJsonLoader;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.entity.turret.TurretShotgun;
+import de.sanandrew.mods.turretmod.registry.turret.TurretShotgun;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.resources.IResourceManager;
@@ -53,10 +53,9 @@ public class ModelTurretShotgun
 
 		ITurretInst turretInst = (ITurretInst) entity;
 		if( turretInst.getTurret() instanceof TurretShotgun ) {
-			float barrelPos = turretInst.getField(TurretShotgun.BARREL_POS);
-			float prevBarrelPos = turretInst.getField(TurretShotgun.PREV_BARREL_POS);
+			TurretShotgun.MyRAM ram = turretInst.getRAM(TurretShotgun.MyRAM::new);
 
-			float barrelDelta = prevBarrelPos + (barrelPos - prevBarrelPos) * partTicks;
+			float barrelDelta = ram.prevBarrelPos + (ram.barrelPos - ram.prevBarrelPos) * partTicks;
 			this.barrel.rotationPointZ = 3.0F - 3.0F * barrelDelta;
 		}
 	}

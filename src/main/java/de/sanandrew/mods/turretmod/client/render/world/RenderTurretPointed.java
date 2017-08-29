@@ -8,7 +8,7 @@ package de.sanandrew.mods.turretmod.client.render.world;
 
 import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.Minecraft;
@@ -39,11 +39,11 @@ public final class RenderTurretPointed
 
         labels.forEach((turret, tp) -> tp.active = false);
 
-        if( mc.pointedEntity instanceof EntityTurret ) {
-            renderTurretBB((EntityTurret) mc.pointedEntity, x, y, z);
+        if( mc.pointedEntity instanceof EntityTurret) {
+            EntityTurret turret = (EntityTurret) mc.pointedEntity;
+            renderTurretBB(turret, x, y, z);
 
             if( isItemTCU(mc.player.getHeldItemMainhand()) || isItemTCU(mc.player.getHeldItemOffhand()) ) {
-                EntityTurret turret = (EntityTurret) mc.pointedEntity;
                 LabelEntry tp = labels.get(turret);
                 if( tp != null ) {
                     tp.active = true;
@@ -114,7 +114,7 @@ public final class RenderTurretPointed
         BufferBuilder buffer = tessellator.getBuffer();
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y + (turret.isUpsideDown ? 1.4F : 0.7F), z);
+        GlStateManager.translate(x, y + (turret.isUpsideDown() ? 1.4F : 0.7F), z);
         GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(lbl.angleY, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(lbl.angleX, 1.0F, 0.0F, 0.0F);

@@ -13,8 +13,8 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.audio.SoundLaser;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import de.sanandrew.mods.turretmod.client.event.RenderEventHandler;
@@ -29,12 +29,6 @@ import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuPlayerTargets;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuUpgrades;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.TurretInfoCategoryRegistry;
-import de.sanandrew.mods.turretmod.client.model.ModelTurretBase;
-import de.sanandrew.mods.turretmod.client.model.ModelTurretFlamethrower;
-import de.sanandrew.mods.turretmod.client.model.ModelTurretLaser;
-import de.sanandrew.mods.turretmod.client.model.ModelTurretMinigun;
-import de.sanandrew.mods.turretmod.client.model.ModelTurretRevolver;
-import de.sanandrew.mods.turretmod.client.model.ModelTurretShotgun;
 import de.sanandrew.mods.turretmod.client.particle.ParticleAssemblySpark;
 import de.sanandrew.mods.turretmod.client.particle.ParticleCryoTrail;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderBullet;
@@ -51,13 +45,8 @@ import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileFlame;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileLaser;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileMinigunPebble;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectilePebble;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCryolator;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretFlamethrower;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretLaser;
-import de.sanandrew.mods.turretmod.entity.turret.TurretMinigun;
-import de.sanandrew.mods.turretmod.entity.turret.TurretRevolver;
-import de.sanandrew.mods.turretmod.entity.turret.TurretShotgun;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.registry.turret.TurretLaser;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
@@ -94,13 +83,14 @@ public class ClientProxy
         MinecraftForge.EVENT_BUS.register(new RenderEventHandler());
         MinecraftForge.EVENT_BUS.register(new ClientWorldEventListener());
 
-        RenderingRegistry.registerEntityRenderingHandler(EntityTurretCrossbow.class, manager -> new RenderTurret(manager, new ModelTurretBase(0.0F)));
-        RenderingRegistry.registerEntityRenderingHandler(TurretShotgun.class, manager -> new RenderTurret(manager, new ModelTurretShotgun(0.0F)));
-        RenderingRegistry.registerEntityRenderingHandler(EntityTurretCryolator.class, manager -> new RenderTurret(manager, new ModelTurretBase(0.0F)));
-        RenderingRegistry.registerEntityRenderingHandler(TurretRevolver.class, manager -> new RenderTurret(manager, new ModelTurretRevolver(0.0F)));
-        RenderingRegistry.registerEntityRenderingHandler(TurretMinigun.class, manager -> new RenderTurret(manager, new ModelTurretMinigun(0.0F)));
-        RenderingRegistry.registerEntityRenderingHandler(EntityTurretLaser.class, manager -> new RenderTurret(manager, new ModelTurretLaser(0.0F)));
-        RenderingRegistry.registerEntityRenderingHandler(EntityTurretFlamethrower.class, manager -> new RenderTurret(manager, new ModelTurretFlamethrower(0.0F)));
+        RenderingRegistry.registerEntityRenderingHandler(EntityTurret.class, RenderTurret::new);
+//        RenderingRegistry.registerEntityRenderingHandler(TurretCrossbow.class, manager -> new RenderTurret(manager, new ModelTurretBase(0.0F)));
+//        RenderingRegistry.registerEntityRenderingHandler(TurretShotgun.class, manager -> new RenderTurret(manager, new ModelTurretShotgun(0.0F)));
+//        RenderingRegistry.registerEntityRenderingHandler(TurretCryolator.class, manager -> new RenderTurret(manager, new ModelTurretBase(0.0F)));
+//        RenderingRegistry.registerEntityRenderingHandler(TurretRevolver.class, manager -> new RenderTurret(manager, new ModelTurretRevolver(0.0F)));
+//        RenderingRegistry.registerEntityRenderingHandler(TurretMinigun.class, manager -> new RenderTurret(manager, new ModelTurretMinigun(0.0F)));
+//        RenderingRegistry.registerEntityRenderingHandler(TurretLaser.class, manager -> new RenderTurret(manager, new ModelTurretLaser(0.0F)));
+//        RenderingRegistry.registerEntityRenderingHandler(TurretFlamethrower.class, manager -> new RenderTurret(manager, new ModelTurretFlamethrower(0.0F)));
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCrossbowBolt.class, RenderTurretArrow::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCryoCell.class, RenderNothingness::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectilePebble.class, RenderPebble::new);
@@ -255,14 +245,16 @@ public class ClientProxy
     }
 
     @Override
-    public void playTurretLaser(EntityTurretLaser turretLaser) {
-        if( turretLaser.laserSound == null ) {
-            if( turretLaser.getTargetProcessor().isShooting() && turretLaser.getTargetProcessor().hasAmmo() ) {
-                turretLaser.laserSound = new SoundLaser(turretLaser);
-                Minecraft.getMinecraft().getSoundHandler().playSound(turretLaser.laserSound);
+    public void playTurretLaser(ITurretInst turretInst) {
+        TurretLaser.MyRAM ram = turretInst.getRAM(TurretLaser.MyRAM::new);
+
+        if( ram.laserSound == null ) {
+            if( turretInst.getTargetProcessor().isShooting() && turretInst.getTargetProcessor().hasAmmo() ) {
+                ram.laserSound = new SoundLaser(turretInst);
+                Minecraft.getMinecraft().getSoundHandler().playSound(ram.laserSound);
             }
-        } else if( turretLaser.laserSound.isDonePlaying() || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(turretLaser.laserSound) ) {
-            turretLaser.laserSound = null;
+        } else if( ram.laserSound.isDonePlaying() || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(ram.laserSound) ) {
+            ram.laserSound = null;
         }
     }
 

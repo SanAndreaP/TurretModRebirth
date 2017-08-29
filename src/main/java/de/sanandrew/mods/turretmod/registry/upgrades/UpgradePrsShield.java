@@ -8,10 +8,12 @@ package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeInstance;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -47,32 +49,32 @@ public class UpgradePrsShield
     }
 
     @Override
-    public boolean isTurretApplicable(Class<? extends EntityTurret> turretCls) {
+    public boolean isTurretApplicable(ITurret turret) {
         return true;
     }
 
     @Override
-    public void onApply(EntityTurret turret) {
+    public void onApply(ITurretInst turretInst) {
         UUID upgId = UpgradeRegistry.INSTANCE.getUpgradeId(this);
         Shield shield = new Shield(20);
-        turret.getUpgradeProcessor().setUpgradeInstance(upgId, shield);
-        EntityTurret.utils.addForcefield(turret, shield);
+        turretInst.getUpgradeProcessor().setUpgradeInstance(upgId, shield);
+        TmrUtils.INSTANCE.addForcefield(turretInst.getEntity(), shield);
     }
 
     @Override
-    public void onLoad(EntityTurret turret, NBTTagCompound nbt) {
+    public void onLoad(ITurretInst turretInst, NBTTagCompound nbt) {
         UUID upgId = UpgradeRegistry.INSTANCE.getUpgradeId(this);
         Shield shield = new Shield(20);
         shield.value = nbt.getFloat("shieldValue");
         shield.recovery = nbt.getFloat("shieldRecovery");
-        turret.getUpgradeProcessor().setUpgradeInstance(upgId, shield);
-        EntityTurret.utils.addForcefield(turret, shield);
+        turretInst.getUpgradeProcessor().setUpgradeInstance(upgId, shield);
+        TmrUtils.INSTANCE.addForcefield(turretInst.getEntity(), shield);
     }
 
     @Override
-    public void onSave(EntityTurret turret, NBTTagCompound nbt) {
+    public void onSave(ITurretInst turretInst, NBTTagCompound nbt) {
         UUID upgId = UpgradeRegistry.INSTANCE.getUpgradeId(this);
-        Shield shield = turret.getUpgradeProcessor().getUpgradeInstance(upgId);
+        Shield shield = turretInst.getUpgradeProcessor().getUpgradeInstance(upgId);
         if( shield != null ) {
             nbt.setFloat("shieldValue", shield.value);
             nbt.setFloat("shieldRecovery", shield.recovery);
@@ -80,10 +82,10 @@ public class UpgradePrsShield
     }
 
     @Override
-    public void onRemove(EntityTurret turret) {
+    public void onRemove(ITurretInst turretInst) {
         UUID upgId = UpgradeRegistry.INSTANCE.getUpgradeId(this);
-        turret.getUpgradeProcessor().<Shield>getUpgradeInstance(upgId).value = 0;
-        turret.getUpgradeProcessor().delUpgradeInstance(upgId);
+        turretInst.getUpgradeProcessor().<Shield>getUpgradeInstance(upgId).value = 0;
+        turretInst.getUpgradeProcessor().delUpgradeInstance(upgId);
     }
 
     @IUpgradeInstance.UpgInstTickable
@@ -161,20 +163,20 @@ public class UpgradePrsShield
         }
 
         @Override
-        public void onTick(EntityTurret turret) {
+        public void onTick(ITurretInst turretInst) {
             boolean hadRecovery = this.recovery > 0.0F;
 
             if( this.value <= 0.0F ) {
                 this.recovery += RECOVERY_PER_TICK;
                 if( !hadRecovery ) {
-                    EntityTurret.utils.addForcefield(turret, new ShieldRecovery(this));
+                    TmrUtils.INSTANCE.addForcefield(turretInst.getEntity(), new ShieldRecovery(this));
                 }
             }
 
             if( this.recovery >= CRIT_VALUE ) {
                 this.value = MAX_VALUE;
                 this.recovery = 0.0F;
-                EntityTurret.utils.addForcefield(turret, this);
+                TmrUtils.INSTANCE.addForcefield(turretInst.getEntity(), this);
             }
         }
     }

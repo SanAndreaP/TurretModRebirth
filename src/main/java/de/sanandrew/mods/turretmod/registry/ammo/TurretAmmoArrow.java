@@ -10,11 +10,12 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
+import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -57,8 +58,8 @@ public abstract class TurretAmmoArrow
     }
 
     @Override
-    public Class<? extends EntityTurret> getTurret() {
-        return EntityTurretCrossbow.class;
+    public ITurret getTurret() {
+        return Turrets.CROSSBOW;
     }
 
     @Override
@@ -88,8 +89,8 @@ public abstract class TurretAmmoArrow
     }
 
     @Override
-    public EntityProjectileCrossbowBolt getEntity(EntityTurret turret) {
-        return new EntityProjectileCrossbowBolt(turret.world, turret, turret.getTargetProcessor().getTarget());
+    public EntityProjectileCrossbowBolt getEntity(ITurretInst turretInst) {
+        return new EntityProjectileCrossbowBolt(turretInst.getEntity().world, turretInst.getEntity(), turretInst.getTargetProcessor().getTarget());
     }
 
     @Override

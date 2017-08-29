@@ -54,11 +54,6 @@ public class TmrUtils
     }
 
     @Override
-    public boolean isStackValid(@Nonnull ItemStack stack) {
-        return ItemStackUtils.isValid(stack);
-    }
-
-    @Override
     public void addForcefield(Entity e, IForcefieldProvider provider) {
         TurretModRebirth.proxy.addForcefield(e, provider);
     }

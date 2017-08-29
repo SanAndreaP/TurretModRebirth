@@ -10,10 +10,12 @@ package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.util.ResourceLocation;
@@ -49,14 +51,14 @@ public class UpgradeAmmoStorage
     }
 
     @Override
-    public boolean isTurretApplicable(Class<? extends EntityTurret> turretCls) {
+    public boolean isTurretApplicable(ITurret turret) {
         return true;
     }
 
     @Override
-    public void onApply(EntityTurret turret) {
-        if( !turret.world.isRemote ) {
-            IAttributeInstance attrib = turret.getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY);
+    public void onApply(ITurretInst turretInst) {
+        if( !turretInst.getEntity().world.isRemote ) {
+            IAttributeInstance attrib = turretInst.getEntity().getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY);
             if( attrib.getModifier(modifier.getID()) != null ) {
                 attrib.removeModifier(modifier);
             }
@@ -66,13 +68,13 @@ public class UpgradeAmmoStorage
     }
 
     @Override
-    public void onRemove(EntityTurret turret) {
-        if( !turret.world.isRemote ) {
-            IAttributeInstance attrib = turret.getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY);
+    public void onRemove(ITurretInst turretInst) {
+        if( !turretInst.getEntity().world.isRemote ) {
+            IAttributeInstance attrib = turretInst.getEntity().getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY);
             if( attrib.getModifier(modifier.getID()) != null ) {
                 attrib.removeModifier(modifier);
-                turret.getTargetProcessor().dropExcessAmmo();
-                EntityTurret.utils.updateTurretState(turret);
+                turretInst.getTargetProcessor().dropExcessAmmo();
+                TmrUtils.INSTANCE.updateTurretState(turretInst);
             }
         }
     }

@@ -14,7 +14,7 @@ import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.repairkit.IRepairKitRegistry;
 import de.sanandrew.mods.turretmod.api.repairkit.TurretRepairKit;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -119,7 +119,7 @@ public final class RepairKitRegistry
         @Override public String getName() { return "EMPTY"; }
         @Override public UUID getUUID() { return EMPTY; }
         @Override public float getHealAmount() { return 0; }
-        @Override public boolean isApplicable(EntityTurret turret) { return false; }
+        @Override public boolean isApplicable(ITurretInst turret) { return false; }
         @Override public ResourceLocation getModel() { return null; }
     };
 }

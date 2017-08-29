@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.registry.repairkit;
 
 import de.sanandrew.mods.turretmod.api.repairkit.TurretRepairKit;
-import de.sanandrew.mods.turretmod.api.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
@@ -51,13 +51,13 @@ public class RepairKitRegeneration
     }
 
     @Override
-    public final void onHeal(EntityTurret turret) {
-        turret.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, this.regenTime, this.regenLvl, true, false));
+    public final void onHeal(ITurretInst turretInst) {
+        turretInst.getEntity().addPotionEffect(new PotionEffect(MobEffects.REGENERATION, this.regenTime, this.regenLvl, true, false));
     }
 
     @Override
-    public boolean isApplicable(EntityTurret turret) {
-        return turret.getHealth() <= turret.getMaxHealth() - this.heal && turret.getActivePotionEffect(MobEffects.REGENERATION) == null;
+    public boolean isApplicable(ITurretInst turretInst) {
+        return turretInst.getEntity().getHealth() <= turretInst.getEntity().getMaxHealth() - this.heal && turretInst.getEntity().getActivePotionEffect(MobEffects.REGENERATION) == null;
     }
 
     @Override

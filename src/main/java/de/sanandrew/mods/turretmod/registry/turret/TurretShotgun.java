@@ -6,12 +6,13 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.entity.turret;
+package de.sanandrew.mods.turretmod.registry.turret;
 
 import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
@@ -33,17 +34,6 @@ public class TurretShotgun
 
     private static final AxisAlignedBB RANGE_BB = new AxisAlignedBB(-16.0D, -4.0D, -16.0D, 16.0D, 8.0D, 16.0D);
 
-//    public float barrelPos = 1.0F;
-//    public float prevBarrelPos = 1.0F;
-    public static final int BARREL_POS = 0;
-    public static final int PREV_BARREL_POS = 1;
-
-    @Override
-    public void entityInit(ITurretInst turretInst) {
-        turretInst.setField(BARREL_POS, 1.0F);
-        turretInst.setField(PREV_BARREL_POS, 1.0F);
-    }
-
     @Override
     public void applyEntityAttributes(ITurretInst turretInst) {
         turretInst.getEntity().getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).setBaseValue(20.0D);
@@ -54,22 +44,21 @@ public class TurretShotgun
         EntityLiving turretL = turretInst.getEntity();
 
         if( turretL.world.isRemote ) {
-            if( turretInst.<Float>getField(BARREL_POS) < 1.0F ) {
-                incrField(turretInst, BARREL_POS, 0.06F * 20.0F / turretInst.getTargetProcessor().getMaxShootTicks());
+            MyRAM ram = turretInst.getRAM(MyRAM::new);
+            ram.prevBarrelPos = ram.barrelPos;
+
+            if( ram.barrelPos < 1.0F ) {
+                ram.barrelPos += 0.06F * 20.0F / turretInst.getTargetProcessor().getMaxShootTicks();
             } else {
-                turretInst.setField(BARREL_POS, 1.0F);
+                ram.barrelPos = 1.0F;
             }
 
             if( turretInst.wasShooting() ) {
-                turretInst.setField(BARREL_POS, 0.0F);
+                ram.barrelPos = 0.0F;
                 TurretModRebirth.proxy.spawnParticle(EnumParticle.SHOTGUN_SHOT, turretL.posX, turretL.posY + 1.5F, turretL.posZ,
-                                                     new Tuple(turretL.rotationYawHead, turretL.rotationPitch, turretInst.isUpsideDown()));
+                        new Tuple(turretL.rotationYawHead, turretL.rotationPitch, turretInst.isUpsideDown()));
             }
         }
-    }
-
-    private static void incrField(ITurretInst turretInst, int fieldId, float value) {
-        turretInst.setField(fieldId, turretInst.<Float>getField(fieldId) + value);
     }
 
     @Override
@@ -125,5 +114,11 @@ public class TurretShotgun
     @Override
     public String getInfoRange() {
         return "16";
+    }
+
+    public static class MyRAM implements ITurretRAM
+    {
+        public float barrelPos = 1.0F;
+        public float prevBarrelPos = 1.0F;
     }
 }

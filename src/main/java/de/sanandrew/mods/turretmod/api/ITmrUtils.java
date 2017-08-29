@@ -21,7 +21,5 @@ public interface ITmrUtils
 
     <T extends Entity> List<T> getPassengersOfClass(Entity e, Class<T> psgClass);
 
-    boolean isStackValid(@Nonnull ItemStack stack);
-
     void addForcefield(Entity e, IForcefieldProvider provider);
 }
