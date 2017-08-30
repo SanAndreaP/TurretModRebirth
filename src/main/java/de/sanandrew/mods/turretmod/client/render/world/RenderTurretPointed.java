@@ -113,7 +113,8 @@ public final class RenderTurretPointed
         final Minecraft mc = Minecraft.getMinecraft();
         final FontRenderer fontrenderer = mc.fontRenderer;
         final float scale = 0.010F;
-        final List<ILabelElement> fltElem = this.elements.stream().filter(el -> el.showElement(turret)).collect(Collectors.toList());
+        final List<ILabelElement> fltElem = this.elements.stream().filter(el -> el.showElement(turret))
+                                                         .sorted((el1, el2) -> el2.getPriority() - el1.getPriority()).collect(Collectors.toList());
 
         lbl.maxWidth = fltElem.stream().collect(() -> new MutableFloat(MIN_WIDTH),
                                                 (f, l) -> f.setValue(Math.max(f.getValue(), l.getWidth(turret, fontrenderer))),

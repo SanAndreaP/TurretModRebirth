@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @SideOnly(Side.CLIENT)
 public class RenderForcefieldHandler
@@ -39,7 +40,7 @@ public class RenderForcefieldHandler
     public static final RenderForcefieldHandler INSTANCE = new RenderForcefieldHandler();
 
     private final List<ForcefieldCube> fadeOutFields = new ArrayList<>();
-    private final Map<Integer, IForcefieldProvider> fieldProviders = new HashMap<>();
+    private final Map<Integer, IForcefieldProvider> fieldProviders = new ConcurrentHashMap<>();
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onRenderWorldLast(RenderWorldLastEvent event) {

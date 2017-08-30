@@ -24,6 +24,11 @@ public class LabelTurretName
     }
 
     @Override
+    public int getPriority() {
+        return 100;
+    }
+
+    @Override
     public float getHeight(ITurretInst turretInst, FontRenderer stdFontRenderer) {
         return stdFontRenderer.FONT_HEIGHT + 2.0F;
     }

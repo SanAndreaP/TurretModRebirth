@@ -24,4 +24,8 @@ public interface ILabelElement
     default void doRenderQuads(ITurretInst turretInst, float maxWidth, float progress, FontRenderer stdFontRenderer, float currHeight, BufferBuilder tessBuffer) { }
 
     default void doRenderTextured(ITurretInst turretInst, float maxWidth, float progress, FontRenderer stdFontRenderer) { }
+
+    default int getPriority() {
+        return 0;
+    }
 }

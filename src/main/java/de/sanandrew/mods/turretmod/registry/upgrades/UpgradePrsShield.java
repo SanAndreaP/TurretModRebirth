@@ -92,9 +92,10 @@ public class UpgradePrsShield
     public static final class Shield
             implements IUpgradeInstance<Shield>, IForcefieldProvider
     {
+        public static final float MAX_VALUE = 20.0F;
+
         private static final ColorObj BASE_COLOR = new ColorObj(0x8080FFA0);
         private static final AxisAlignedBB BB = new AxisAlignedBB(-0.5D, 0, -0.5D, 0.5D, 2, 0.5D);
-        private static final float MAX_VALUE = 20.0F;
         private static final float CRIT_VALUE = 5.0F;
         private static final float RECOVERY_PER_TICK = CRIT_VALUE / 100.0F;
 
@@ -126,9 +127,17 @@ public class UpgradePrsShield
             return this.value;
         }
 
+        public boolean isInRecovery() {
+            return this.recovery > 0.0F;
+        }
+
+        public float getRecoveryPercentage() {
+            return this.recovery / CRIT_VALUE * 100.0F;
+        }
+
         @Override
         public boolean isShieldActive() {
-            return this.value > 0.0F || this.recovery > 0.0F;
+            return this.value > 0.0F || this.isInRecovery();
         }
 
         @Override
@@ -164,7 +173,7 @@ public class UpgradePrsShield
 
         @Override
         public void onTick(ITurretInst turretInst) {
-            boolean hadRecovery = this.recovery > 0.0F;
+            boolean hadRecovery = this.isInRecovery();
 
             if( this.value <= 0.0F ) {
                 this.recovery += RECOVERY_PER_TICK;
@@ -192,7 +201,7 @@ public class UpgradePrsShield
 
         @Override
         public boolean isShieldActive() {
-            return this.delegate.recovery > 0.0F;
+            return this.delegate.isInRecovery();
         }
 
         @Override

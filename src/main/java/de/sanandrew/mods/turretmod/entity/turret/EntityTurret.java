@@ -627,5 +627,4 @@ public class EntityTurret
     public ITurret getTurret() {
         return this.delegate;
     }
-
 }

@@ -168,9 +168,11 @@ gui.sapturretmod.tcu.page.targetsPlayer.tab=Player Target Settings
 gui.sapturretmod.tcu.page.upgrades.title=TCU - Upgrades
 gui.sapturretmod.tcu.page.upgrades.tab=Upgrades
 gui.sapturretmod.tcu.page.upgrades.button.ejectAll=Eject All Upgrades
-gui.sapturretmod.tcu.label.health=Health: %.2f/%.2f
-gui.sapturretmod.tcu.label.ammo=Ammo: %d/%d
+gui.sapturretmod.tcu.label.health=Health: %s
+gui.sapturretmod.tcu.label.ammo=Ammo: %s
 gui.sapturretmod.tcu.label.target=Target: %s
+gui.sapturretmod.tcu.label.shield=Shield: %s
+gui.sapturretmod.tcu.label.shield_recv=Shield: Recovering %s
 
 gui.sapturretmod.tassembly.cancel=Cancel
 gui.sapturretmod.tassembly.automate.enable=Automate

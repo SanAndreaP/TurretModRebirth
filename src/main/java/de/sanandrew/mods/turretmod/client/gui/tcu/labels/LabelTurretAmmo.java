@@ -37,15 +37,15 @@ public class LabelTurretAmmo
 
     @Override
     public void doRenderQuads(ITurretInst turretInst, float maxWidth, float progress, FontRenderer stdFontRenderer, float currHeight, BufferBuilder tessBuffer) {
-        float healthPerc = turretInst.getTargetProcessor().getAmmoCount() / (float) turretInst.getTargetProcessor().getMaxAmmoCapacity() * (maxWidth - 2.0F);
+        float ammoPerc = turretInst.getTargetProcessor().getAmmoCount() / (float) turretInst.getTargetProcessor().getMaxAmmoCapacity() * (maxWidth - 2.0F);
         currHeight += stdFontRenderer.FONT_HEIGHT + 2.0F;
-        addQuad(tessBuffer, 1.0D, currHeight, 1.0D + healthPerc, currHeight + 2.0D, new ColorObj(0.625F, 0.625F, 1.0F, Math.max(progress, 0x4 / 255.0F)));
-        addQuad(tessBuffer, 1.0D + healthPerc, currHeight, maxWidth - 1.0F, currHeight + 2.0D, new ColorObj(0.05F, 0.05F, 0.4F, Math.max(progress, 0x4 / 255.0F)));
+        addQuad(tessBuffer, 1.0D, currHeight, 1.0D + ammoPerc, currHeight + 2.0D, new ColorObj(0.625F, 0.625F, 1.0F, Math.max(progress, 0x4 / 255.0F)));
+        addQuad(tessBuffer, 1.0D + ammoPerc, currHeight, maxWidth - 1.0F, currHeight + 2.0D, new ColorObj(0.05F, 0.05F, 0.4F, Math.max(progress, 0x4 / 255.0F)));
     }
 
     @Override
     public void doRenderTextured(ITurretInst turretInst, float maxWidth, float progress, FontRenderer stdFontRenderer) {
-        String s = Lang.translate(Lang.TCU_LABEL_AMMO, turretInst.getEntity().getHealth(), turretInst.getEntity().getMaxHealth());
+        String s = Lang.translate(Lang.TCU_LABEL_AMMO, String.format("%d/%d", turretInst.getTargetProcessor().getAmmoCount(), turretInst.getTargetProcessor().getMaxAmmoCapacity()));
         stdFontRenderer.drawString(s, 1.0F, 1.0F, new ColorObj(0.625F, 0.625F, 1.0F, Math.max(progress, 0x4 / 255.0F)).getColorInt(), false);
     }
 
