@@ -20,17 +20,11 @@ public interface ITurret
     @Nonnull
     UUID getId();
 
-    float getInfoHealth();
-
-    int getInfoBaseAmmoCapacity();
-
-    String getInfoRange();
-
     ResourceLocation getItemModel();
 
-    UUID getRecipeId();
-
     default void entityInit(ITurretInst turretInst) { }
+
+    default void applyEntityAttributes(ITurretInst turretInst) { }
 
     ResourceLocation getStandardTexture(ITurretInst turretInst);
 
@@ -42,7 +36,7 @@ public interface ITurret
 
     default void onUpdate(ITurretInst turretInst) { }
 
-    default void applyEntityAttributes(ITurretInst turretInst) { }
+    ITurretInfo getInfo();
 
     default SoundEvent getHurtSound(ITurretInst turretInst) {
         return null;

@@ -13,7 +13,6 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLiving;
 import net.minecraftforge.fml.relauncher.Side;
@@ -44,6 +43,7 @@ public class LayerTurretGlow<E extends EntityLiving & ITurretInst>
 
         GlStateManager.depthMask(false);
 
+        // set lightmap to full brightness
         int brightness = 0xF0;
         int brightX = brightness % 65536;
         int brightY = brightness / 65536;
@@ -53,11 +53,11 @@ public class LayerTurretGlow<E extends EntityLiving & ITurretInst>
         this.glowModel.setLivingAnimations(turret, limbSwing, limbSwingAmount, partialTicks);
         this.glowModel.render(turret, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
+        // reset lightmap to entity's brightness
         brightness = turret.getBrightnessForRender();
         brightX = brightness % 65536;
         brightY = brightness / 65536;
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightX, brightY);
-//        this.turretRenderer.setLightmap(turret);
 
         GlStateManager.depthMask(true);
 

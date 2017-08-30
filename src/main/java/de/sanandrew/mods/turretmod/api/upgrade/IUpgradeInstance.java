@@ -16,7 +16,7 @@ public interface IUpgradeInstance<T extends IUpgradeInstance<T>>
 
     default void toBytes(ObjectOutputStream stream) throws IOException { }
 
-    default void onTick(ITurretInst turret) { }
+    default void onTick(ITurretInst turretInst) { }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)

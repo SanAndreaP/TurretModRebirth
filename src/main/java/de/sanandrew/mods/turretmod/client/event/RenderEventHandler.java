@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.client.event;
 import de.sanandrew.mods.turretmod.client.render.world.RenderTurretCam;
 import de.sanandrew.mods.turretmod.client.render.world.RenderTurretLaser;
 import de.sanandrew.mods.turretmod.client.render.world.RenderTurretPointed;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
@@ -40,7 +41,7 @@ public class RenderEventHandler
             double renderY = renderEntity.lastTickPosY + (renderEntity.posY - renderEntity.lastTickPosY) * partTicks;
             double renderZ = renderEntity.lastTickPosZ + (renderEntity.posZ - renderEntity.lastTickPosZ) * partTicks;
 
-            RenderTurretPointed.render(mc, renderX, renderY, renderZ, partTicks);
+            RenderTurretPointed.INSTANCE.render(mc, renderX, renderY, renderZ, partTicks);
             RenderTurretLaser.render(mc, renderX, renderY, renderZ, partTicks);
         }
     }
@@ -72,7 +73,7 @@ public class RenderEventHandler
     public void onClientWorldUnload(WorldEvent.Unload event) {
         if( event.getWorld() instanceof WorldClient ) {
             RenderTurretCam.cleanupRenderers(true);
-            RenderTurretPointed.cleanupRenderers(true);
+            RenderTurretPointed.INSTANCE.cleanupRenderers(true);
         }
     }
 }

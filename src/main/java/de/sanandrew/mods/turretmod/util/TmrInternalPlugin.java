@@ -10,12 +10,14 @@ import de.sanandrew.mods.turretmod.api.ITmrPlugin;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmoRegistry;
 import de.sanandrew.mods.turretmod.api.assembly.ITurretAssemblyRegistry;
+import de.sanandrew.mods.turretmod.api.client.tcu.ILabelRegistry;
 import de.sanandrew.mods.turretmod.api.client.turret.ITurretRenderRegistry;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoCategoryRegistry;
 import de.sanandrew.mods.turretmod.api.repairkit.IRepairKitRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
+import de.sanandrew.mods.turretmod.client.gui.tcu.labels.Labels;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.TurretInfoCategoryRegistry;
 import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
 import de.sanandrew.mods.turretmod.event.TargetingEventHandler;
@@ -74,5 +76,11 @@ public class TmrInternalPlugin
     @SideOnly(Side.CLIENT)
     public void registerTurretRenderer(ITurretRenderRegistry<?> registry) {
         RenderTurret.initialize(registry);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerTcuLabelElements(ILabelRegistry registry) {
+        Labels.initialize(registry);
     }
 }

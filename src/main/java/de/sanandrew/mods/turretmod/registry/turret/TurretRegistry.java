@@ -12,6 +12,7 @@ import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
 import net.minecraft.util.ResourceLocation;
@@ -99,48 +100,58 @@ public final class TurretRegistry
         }
 
         @Override
-        public float getInfoHealth() {
-            return 0;
-        }
-
-        @Override
-        public int getInfoBaseAmmoCapacity() {
-            return 0;
-        }
-
-        @Override
-        public String getInfoRange() {
-            return "n/a";
-        }
-
-        @Override
         public ResourceLocation getItemModel() {
             return null;
         }
 
         @Override
-        public UUID getRecipeId() {
+        public ResourceLocation getStandardTexture(ITurretInst turretInst) {
             return null;
         }
 
         @Override
-        public ResourceLocation getStandardTexture(ITurretInst inst) {
+        public ResourceLocation getGlowTexture(ITurretInst turretInst) {
             return null;
         }
 
         @Override
-        public ResourceLocation getGlowTexture(ITurretInst inst) {
+        public SoundEvent getShootSound(ITurretInst turretInst) {
             return null;
         }
 
         @Override
-        public SoundEvent getShootSound(ITurretInst inst) {
-            return null;
-        }
-
-        @Override
-        public AxisAlignedBB getRangeBB(ITurretInst inst) {
+        public AxisAlignedBB getRangeBB(ITurretInst turretInst) {
             return BB;
+        }
+
+        @Override
+        public ITurretInfo getInfo() {
+            return MyInfo.INSTANCE;
+        }
+
+        public static final class MyInfo implements ITurretInfo
+        {
+            static final ITurretInfo INSTANCE = new TurretCrossbow.MyInfo();
+
+            @Override
+            public float getHealth() {
+                return 0;
+            }
+
+            @Override
+            public int getAmmoCapacity() {
+                return 0;
+            }
+
+            @Override
+            public String getRange() {
+                return "n/a";
+            }
+
+            @Override
+            public UUID getRecipeId() {
+                return null;
+            }
         }
     }
 }

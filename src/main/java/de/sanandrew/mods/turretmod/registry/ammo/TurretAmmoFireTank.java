@@ -32,7 +32,7 @@ public abstract class TurretAmmoFireTank
     private final ResourceLocation itemModel;
 
     public TurretAmmoFireTank(boolean isMulti, String modelName) {
-        this.name = isMulti ? "tank_lrg" : "tank_sng";
+        this.name = isMulti ? "fueltank_lrg" : "fueltank_sng";
         this.uuid = isMulti ? TurretAmmunitions.FUELTANK_PACK : TurretAmmunitions.FUELTANK;
         this.capacity = isMulti ? 256 : 16;
         this.itemModel = new ResourceLocation(TmrConstants.ID, "turret_ammo/" + modelName);
@@ -80,7 +80,7 @@ public abstract class TurretAmmoFireTank
 
     @Override
     public String getInfoName() {
-        return "tank";
+        return "fueltank";
     }
 
     @Override
@@ -105,7 +105,7 @@ public abstract class TurretAmmoFireTank
             extends TurretAmmoFireTank
     {
         public Single() {
-            super(false, "tank");
+            super(false, "fueltank");
         }
 
         @Override
@@ -118,7 +118,7 @@ public abstract class TurretAmmoFireTank
             extends TurretAmmoFireTank
     {
         public Multi() {
-            super(true, "tank_pack");
+            super(true, "fueltank_pack");
         }
 
         @Override

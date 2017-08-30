@@ -8,6 +8,8 @@ package de.sanandrew.mods.turretmod.client.render.world;
 
 import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.turretmod.api.client.tcu.ILabelElement;
+import de.sanandrew.mods.turretmod.api.client.tcu.ILabelRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
@@ -22,17 +24,28 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.mutable.MutableFloat;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.WeakHashMap;
+import java.util.stream.Collectors;
 
 @SideOnly(Side.CLIENT)
 public final class RenderTurretPointed
+        implements ILabelRegistry
 {
-    static WeakHashMap<EntityTurret, LabelEntry> labels = new WeakHashMap<>();
+    public static final RenderTurretPointed INSTANCE = new RenderTurretPointed();
 
-    public static void render(Minecraft mc, double x, double y, double z, double partTicks) {
+    private final WeakHashMap<EntityTurret, LabelEntry> labels = new WeakHashMap<>();
+    private final List<ILabelElement> elements = new ArrayList<>();
+
+    public void render(Minecraft mc, double x, double y, double z, double partTicks) {
         if( mc.player != mc.getRenderViewEntity() ) {
             return;
         }
@@ -44,12 +57,8 @@ public final class RenderTurretPointed
             renderTurretBB(turret, x, y, z);
 
             if( isItemTCU(mc.player.getHeldItemMainhand()) || isItemTCU(mc.player.getHeldItemOffhand()) ) {
-                LabelEntry tp = labels.get(turret);
-                if( tp != null ) {
-                    tp.active = true;
-                } else {
-                    labels.put(turret, new LabelEntry(mc.getRenderManager()));
-                }
+                LabelEntry tp = labels.computeIfAbsent(turret, t -> new LabelEntry(mc.getRenderManager()));
+                tp.active = true;
             }
         }
 
@@ -58,28 +67,17 @@ public final class RenderTurretPointed
         labels.forEach((turret, lbl) -> {
             if( turret != null ) {
                 boolean lblActive = lbl.active;
+                lbl.angleY += (-mc.getRenderManager().playerViewY - lbl.angleY) / 16.0F;
+                lbl.angleX += (mc.getRenderManager().playerViewX - lbl.angleX) / 16.0F;
 
                 if( lblActive ) {
-                    lbl.minHeight = -2.0F;
-                    if( lbl.progress < 1.5F ) {
-                        lbl.progress += 0.05F;
-                    } else {
-                        lbl.angleY += (-mc.getRenderManager().playerViewY - lbl.angleY) / 16.0F;
-                        lbl.angleX += (mc.getRenderManager().playerViewX - lbl.angleX) / 16.0F;
-                    }
-                    if( lbl.progress <= 1.0F ) {
-                        lbl.maxHeight = -2.0F + lbl.progress * 68.0F;
-                    } else {
-                        lbl.maxHeight = 66.0F;
+                    if( lbl.progress < 2.0F ) {
+                        lbl.progress += 0.01F;
                     }
                 } else {
-                    lbl.maxHeight = 66.0F;
                     if( lbl.progress > 0.0F ) {
-                        lbl.progress -= 0.05F;
+                        lbl.progress -= 0.01F;
                         lblActive = true;
-                    }
-                    if( lbl.progress <= 1.0F ) {
-                        lbl.minHeight = 66.0F - lbl.progress * 68.0F;
                     }
                 }
 
@@ -93,7 +91,13 @@ public final class RenderTurretPointed
         });
     }
 
-    public static void cleanupRenderers(boolean clearAll) {
+    @Override
+    public void registerLabelElement(ILabelElement element) {
+        Objects.requireNonNull(element);
+        this.elements.add(element);
+    }
+
+    public void cleanupRenderers(boolean clearAll) {
         if( clearAll ) {
             labels.clear();
         } else {
@@ -105,10 +109,18 @@ public final class RenderTurretPointed
         return ItemStackUtils.isItem(stack, ItemRegistry.turret_control_unit);
     }
 
-    private static void renderLabel(EntityTurret turret, double x, double y, double z, LabelEntry lbl) {
-        Minecraft mc = Minecraft.getMinecraft();
-        FontRenderer fontrenderer = mc.fontRenderer;
-        float scale = 0.010F;
+    private void renderLabel(EntityTurret turret, double x, double y, double z, LabelEntry lbl) {
+        final Minecraft mc = Minecraft.getMinecraft();
+        final FontRenderer fontrenderer = mc.fontRenderer;
+        final float scale = 0.010F;
+        final List<ILabelElement> fltElem = this.elements.stream().filter(el -> el.showElement(turret)).collect(Collectors.toList());
+
+        lbl.maxWidth = fltElem.stream().collect(() -> new MutableFloat(MIN_WIDTH),
+                                                (f, l) -> f.setValue(Math.max(f.getValue(), l.getWidth(turret, fontrenderer))),
+                                                (f1, f2) -> f1.setValue(Math.max(f1.getValue(), f2.getValue()))).floatValue();
+        lbl.maxHeight = fltElem.stream().collect(() -> new MutableFloat(0.0F),
+                                                 (f, l) -> f.add(l.getHeight(turret, fontrenderer)),
+                                                 (f1, f2) -> f1.add(f2.getValue())).floatValue();
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -119,7 +131,7 @@ public final class RenderTurretPointed
         GlStateManager.rotate(lbl.angleY, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(lbl.angleX, 1.0F, 0.0F, 0.0F);
         GlStateManager.scale(-scale, -scale, scale);
-        GlStateManager.translate(-64.0D, -32.0D, 0.0D);
+        GlStateManager.translate(-lbl.maxWidth / 2.0D, -32.0D, 0.0D);
         GlStateManager.disableLighting();
         GlStateManager.depthMask(false);
         GlStateManager.disableDepth();
@@ -129,31 +141,32 @@ public final class RenderTurretPointed
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
 
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-        addQuad(buffer, 0.0D, Math.max(0.0D, lbl.minHeight), 128.0D, Math.min(64.0D, lbl.maxHeight), new ColorObj(0x80001000));
+        float alphaMulti = Math.min(1.0F, lbl.progress);
+        ColorObj clrTop = new ColorObj(0x0050FF00 | (Math.max(Math.round(0xCC * alphaMulti), 4) << 24));
+        ColorObj clrBottom = new ColorObj(0x00288000 | (Math.max(Math.round(0xCC * alphaMulti), 4) << 24));
+        ColorObj clrMain = new ColorObj(0x00001000 | (Math.max(Math.round(0x80 * alphaMulti), 4) << 24));
 
-        addQuad(buffer, -1.0D, Math.max(-1.0D, lbl.minHeight), 129.0D, Math.min(0.0D, lbl.maxHeight), new ColorObj(0xCC50FF00));
-        addQuad(buffer, -1.0D, Math.max(64.0D, lbl.minHeight), 129.0D, Math.min(65.0D, lbl.maxHeight), new ColorObj(0xCC288000));
-        addQuad(buffer, -1.0D, Math.max(0.0D, lbl.minHeight), 0.0D, Math.min(64.0D, lbl.maxHeight), new ColorObj(0xCC50FF00), new ColorObj(0xCC288000));
-        addQuad(buffer, 128.0D, Math.max(0.0D, lbl.minHeight), 129.0D, Math.min(64.0D, lbl.maxHeight), new ColorObj(0xCC50FF00), new ColorObj(0xCC288000));
+        // main bg
+        addQuad(buffer, 0.0D, 0.0D, lbl.maxWidth, lbl.maxHeight, clrMain);
 
-        addQuad(buffer, -1.0D, Math.max(-2.0D, lbl.minHeight), 129.0D, Math.min(-1.0D, lbl.maxHeight), new ColorObj(0x80001000));
-        addQuad(buffer, -1.0D, Math.max(65.0D, lbl.minHeight), 129.0D, Math.min(66.0D, lbl.maxHeight), new ColorObj(0x80001000));
-        addQuad(buffer, -2.0D, Math.max(-1.0D, lbl.minHeight), -1.0D, Math.min(65.0D, lbl.maxHeight), new ColorObj(0x80001000));
-        addQuad(buffer, 129.0D, Math.max(-1.0D, lbl.minHeight), 130.0D, Math.min(65.0D, lbl.maxHeight), new ColorObj(0x80001000));
+        // inner frame [top, bottom, left, right]
+        addQuad(buffer, -1.0D,        -1.0D,         lbl.maxWidth + 1.0D, 0.0D,                 clrTop);
+        addQuad(buffer, -1.0D,        lbl.maxHeight, lbl.maxWidth + 1.0D, lbl.maxHeight + 1.0D, clrBottom);
+        addQuad(buffer, -1.0D,        0.0D,          0.0D,                lbl.maxHeight,        clrTop, clrBottom);
+        addQuad(buffer, lbl.maxWidth, 0.0D,          lbl.maxWidth + 1.0D, lbl.maxHeight,        clrTop, clrBottom);
 
-        float txtAlpha = Math.min(0.1F + Math.max(0.0F, (lbl.progress - 1.0F) * 2.0F), 1.0F);
+        // outer frame [top, bottom, left, right]
+        addQuad(buffer, -1.0D,               -2.0D,                lbl.maxWidth + 1.0D, -1.0D,                clrMain);
+        addQuad(buffer, -1.0D,               lbl.maxHeight + 1.0D, lbl.maxWidth + 1.0D, lbl.maxHeight + 2.0D, clrMain);
+        addQuad(buffer, -2.0D,               -1.0D,                -1.0D,               lbl.maxHeight + 1.0D, clrMain);
+        addQuad(buffer, lbl.maxWidth + 1.0D, -1.0D,                lbl.maxWidth + 2.0D, lbl.maxHeight + 1.0D, clrMain);
 
         if( lbl.progress >= 1.0F ) {
-            float healthRel = turret.getHealth() / turret.getMaxHealth();
-            float ammoRel = turret.getTargetProcessor().getAmmoCount() / (float)turret.getTargetProcessor().getMaxAmmoCapacity();
-            ColorObj clrBkg = new ColorObj(0.0F, 0.0F, 0.0F, txtAlpha);
-            //health
-            addQuad(buffer, (1.0D + 126.0D * healthRel), 22.0D, 127.0D, 24.0D, clrBkg);
-            addQuad(buffer, 1.0D, 22.0D, (1.0D + 126.0D * healthRel), 24.0D, new ColorObj(1.0F, 0.0F, 0.0F, txtAlpha));
-
-            //turret_ammo
-            addQuad(buffer, (1.0D + 126.0D * ammoRel), 38.0D, 127.0D, 40.0D, clrBkg);
-            addQuad(buffer, 1.0D, 38.0D, (1.0D + 126.0D * ammoRel), 40.0D, new ColorObj(0.625F, 0.625F, 1.0F, txtAlpha));
+            final MutableFloat currHeight = new MutableFloat(0.0F);
+            fltElem.forEach(elem -> {
+                elem.doRenderQuads(turret, lbl.maxWidth, lbl.progress - 1.0F, fontrenderer, currHeight.floatValue(), buffer);
+                currHeight.add(elem.getHeight(turret, fontrenderer));
+            });
         }
 
         tessellator.draw();
@@ -161,14 +174,14 @@ public final class RenderTurretPointed
         GlStateManager.enableTexture2D();
 
         if( lbl.progress >= 1.0F ) {
-            String s = turret.hasCustomName() ? turret.getCustomNameTag() : Lang.translateEntityCls(turret.getClass());
-            fontrenderer.drawString(s, 1, 1, new ColorObj(1.0F, 1.0F, 1.0F, txtAlpha).getColorInt());
-            s = String.format("Health: %.2f/%.2f", turret.getHealth(), turret.getMaxHealth());
-            fontrenderer.drawString(s, 1, 12, new ColorObj(1.0F, 0.5F, 0.5F, txtAlpha).getColorInt());
-            s = String.format("Ammo: %d/%d", turret.getTargetProcessor().getAmmoCount(), turret.getTargetProcessor().getMaxAmmoCapacity());
-            fontrenderer.drawString(s, 1, 28, new ColorObj(0.625F, 0.625F, 1.0F, txtAlpha).getColorInt());
-            s = String.format("Target: %s", turret.getTargetProcessor().getTarget() == null ? "n/a" : Lang.translateEntityCls(turret.getTargetProcessor().getTarget().getClass()));
-            fontrenderer.drawString(s, 1, 44, new ColorObj(1.0F, 1.0F, 0.625F, txtAlpha).getColorInt());
+            final MutableFloat currHeight = new MutableFloat(0.0F);
+            fltElem.forEach(elem -> {
+                GlStateManager.pushMatrix();
+                GlStateManager.translate(0.0F, currHeight.floatValue(), 0.0F);
+                elem.doRenderTextured(turret, lbl.maxWidth, lbl.progress - 1.0F, fontrenderer);
+                GlStateManager.popMatrix();
+                currHeight.add(elem.getHeight(turret, fontrenderer));
+            });
         }
 
         GlStateManager.enableDepth();
@@ -225,16 +238,16 @@ public final class RenderTurretPointed
         protected boolean active;
         protected float angleY;
         protected float angleX;
-        protected float minHeight;
         protected float maxHeight;
+        protected float maxWidth;
         protected float progress;
 
         protected LabelEntry(RenderManager rMan) {
             this.active = true;
             this.angleY = -rMan.playerViewY;
             this.angleX = rMan.playerViewX;
-            this.minHeight = -2.0F;
-            this.maxHeight = 66.0F;
+            this.maxWidth = MIN_WIDTH;
+            this.maxHeight = 0.0F;
             this.progress = 0.0F;
         }
     }

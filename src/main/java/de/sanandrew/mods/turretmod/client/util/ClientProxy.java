@@ -37,6 +37,7 @@ import de.sanandrew.mods.turretmod.client.render.projectile.RenderNothingness;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderPebble;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderTurretArrow;
 import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
+import de.sanandrew.mods.turretmod.client.render.world.RenderTurretPointed;
 import de.sanandrew.mods.turretmod.client.world.ClientWorldEventListener;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
@@ -84,13 +85,6 @@ public class ClientProxy
         MinecraftForge.EVENT_BUS.register(new ClientWorldEventListener());
 
         RenderingRegistry.registerEntityRenderingHandler(EntityTurret.class, RenderTurret::new);
-//        RenderingRegistry.registerEntityRenderingHandler(TurretCrossbow.class, manager -> new RenderTurret(manager, new ModelTurretBase(0.0F)));
-//        RenderingRegistry.registerEntityRenderingHandler(TurretShotgun.class, manager -> new RenderTurret(manager, new ModelTurretShotgun(0.0F)));
-//        RenderingRegistry.registerEntityRenderingHandler(TurretCryolator.class, manager -> new RenderTurret(manager, new ModelTurretBase(0.0F)));
-//        RenderingRegistry.registerEntityRenderingHandler(TurretRevolver.class, manager -> new RenderTurret(manager, new ModelTurretRevolver(0.0F)));
-//        RenderingRegistry.registerEntityRenderingHandler(TurretMinigun.class, manager -> new RenderTurret(manager, new ModelTurretMinigun(0.0F)));
-//        RenderingRegistry.registerEntityRenderingHandler(TurretLaser.class, manager -> new RenderTurret(manager, new ModelTurretLaser(0.0F)));
-//        RenderingRegistry.registerEntityRenderingHandler(TurretFlamethrower.class, manager -> new RenderTurret(manager, new ModelTurretFlamethrower(0.0F)));
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCrossbowBolt.class, RenderTurretArrow::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCryoCell.class, RenderNothingness::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityProjectilePebble.class, RenderPebble::new);
@@ -103,6 +97,8 @@ public class ClientProxy
     @Override
     public void init(FMLInitializationEvent event) {
         super.init(event);
+
+        TurretModRebirth.PLUGINS.forEach(plugin -> plugin.registerTcuLabelElements(RenderTurretPointed.INSTANCE));
 
         MinecraftForge.EVENT_BUS.register(RenderForcefieldHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());

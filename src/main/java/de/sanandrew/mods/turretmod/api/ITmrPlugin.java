@@ -2,6 +2,7 @@ package de.sanandrew.mods.turretmod.api;
 
 import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmoRegistry;
 import de.sanandrew.mods.turretmod.api.assembly.ITurretAssemblyRegistry;
+import de.sanandrew.mods.turretmod.api.client.tcu.ILabelRegistry;
 import de.sanandrew.mods.turretmod.api.client.turret.ITurretRenderRegistry;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoCategoryRegistry;
 import de.sanandrew.mods.turretmod.api.repairkit.IRepairKitRegistry;
@@ -31,4 +32,7 @@ public interface ITmrPlugin
 
     @SideOnly(Side.CLIENT)
     default void registerTurretRenderer(ITurretRenderRegistry<?> registry) { }
+
+    @SideOnly(Side.CLIENT)
+    default void registerTcuLabelElements(ILabelRegistry registry) { }
 }

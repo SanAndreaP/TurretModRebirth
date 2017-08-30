@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.registry.turret;
 import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
@@ -111,28 +112,13 @@ public class TurretRevolver
     }
 
     @Override
-    public float getInfoHealth() {
-        return 30.0F;
-    }
-
-    @Override
-    public int getInfoBaseAmmoCapacity() {
-        return 256;
-    }
-
-    @Override
     public ResourceLocation getItemModel() {
         return TurretRevolver.ITEM_MODEL;
     }
 
     @Override
-    public UUID getRecipeId() {
-        return TurretAssemblyRecipes.TURRET_MK2_RV;
-    }
-
-    @Override
-    public String getInfoRange() {
-        return "20";
+    public ITurretInfo getInfo() {
+        return MyInfo.INSTANCE;
     }
 
     public static class MyRAM implements ITurretRAM
@@ -144,5 +130,30 @@ public class TurretRevolver
         public float prevBarrelRight = 1.0F;
 
         public boolean isLeftShot = false;
+    }
+
+    public static final class MyInfo implements ITurretInfo
+    {
+        static final ITurretInfo INSTANCE = new TurretCrossbow.MyInfo();
+
+        @Override
+        public float getHealth() {
+            return 30.0F;
+        }
+
+        @Override
+        public int getAmmoCapacity() {
+            return 256;
+        }
+
+        @Override
+        public UUID getRecipeId() {
+            return TurretAssemblyRecipes.TURRET_MK2_RV;
+        }
+
+        @Override
+        public String getRange() {
+            return "20";
+        }
     }
 }

@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.registry.turret;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
@@ -78,33 +79,44 @@ public class TurretLaser
     }
 
     @Override
-    public float getInfoHealth() {
-        return 40.0F;
-    }
-
-    @Override
-    public int getInfoBaseAmmoCapacity() {
-        return 256;
-    }
-
-    @Override
     public ResourceLocation getItemModel() {
         return TurretLaser.ITEM_MODEL;
     }
 
     @Override
-    public UUID getRecipeId() {
-        return TurretAssemblyRecipes.TURRET_MK3_LR;
+    public ITurretInfo getInfo() {
+        return MyInfo.INSTANCE;
     }
 
-    @Override
-    public String getInfoRange() {
-        return "24";
-    }
-
-    public static class MyRAM implements ITurretRAM
+    public static class MyRAM
+            implements ITurretRAM
     {
         @SideOnly(Side.CLIENT)
         public SoundLaser laserSound;
+    }
+
+    public static final class MyInfo implements ITurretInfo
+    {
+        static final ITurretInfo INSTANCE = new TurretCrossbow.MyInfo();
+
+        @Override
+        public float getHealth() {
+            return 40.0F;
+        }
+
+        @Override
+        public int getAmmoCapacity() {
+            return 256;
+        }
+
+        @Override
+        public UUID getRecipeId() {
+            return TurretAssemblyRecipes.TURRET_MK3_LR;
+        }
+
+        @Override
+        public String getRange() {
+            return "24";
+        }
     }
 }

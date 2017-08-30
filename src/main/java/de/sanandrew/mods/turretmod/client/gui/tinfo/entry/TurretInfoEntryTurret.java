@@ -187,16 +187,16 @@ public class TurretInfoEntryTurret
             List<ItemStack> ammoItms = new ArrayList<>();
 
             this.name = turret.getName();
-            this.range = turret.getInfoRange();
-            this.health = turret.getInfoHealth();
-            this.ammoCap = turret.getInfoBaseAmmoCapacity();
+            this.range = turret.getInfo().getRange();
+            this.health = turret.getInfo().getHealth();
+            this.ammoCap = turret.getInfo().getAmmoCapacity();
 
             List<ITurretAmmo> ammos = TurretAmmoRegistry.INSTANCE.getTypesForTurret(turret);
             for( ITurretAmmo ammo : ammos ) {
                 ammoItms.add(ItemRegistry.turret_ammo.getAmmoItem(1, ammo));
             }
 
-            TurretAssemblyRegistry.RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(turret.getRecipeId());
+            TurretAssemblyRegistry.RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(turret.getInfo().getRecipeId());
             this.recipeStacks = recipeEntry == null ? new IRecipeEntry[0] : recipeEntry.resources;
 
             this.ammoStacks = ammoItms.toArray(new ItemStack[ammoItms.size()]);

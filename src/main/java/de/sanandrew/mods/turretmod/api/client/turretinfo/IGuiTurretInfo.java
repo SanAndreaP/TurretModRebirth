@@ -20,7 +20,6 @@ public interface IGuiTurretInfo
 
     void renderStack(@Nonnull ItemStack stack, int x, int y, double scale);
 
-    @SuppressWarnings("SameParameterValue")
     void doEntryScissoring(int x, int y, int width, int height);
 
     void doEntryScissoring();

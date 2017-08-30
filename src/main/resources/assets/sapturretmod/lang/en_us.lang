@@ -10,6 +10,7 @@ tile.sapturretmod:potato_generator.desc=This machine creates energy from items (
 
 item.sapturretmod:turret_info.name=Turret Info Tablet
 item.sapturretmod:turret_info.desc=Gives information about the\nitems in the Turret Mod.
+
 item.sapturretmod:turret_placer.name=Defense Turret
 item.sapturretmod:turret_placer.turret_name=Name: %s
 item.sapturretmod:turret_placer.health=Health: %.1f HP
@@ -31,36 +32,24 @@ item.sapturretmod:turret_assembly_filter.ttip=Used in the Turret Assembly Table
 item.sapturretmod:turret_assembly_filter.desc=This will filter what's going into the assembly table.\nAfter right-clicking you can configure the filter. In empty slots can go anything. In configured slots can only go the item configured (obviously), but those items won't go anywhere else, not even in empty configured slots.\nShift-right-click clears the filter.\n\nThe filter operates not only on the user-side of things (putting stuff into the table via GUI) but also with external insertion devices like the hopper.\n\nPlease note that you can't configure the stack size of items, thus it will always try to put a whole stack (depends on how many items can be stacked together) in a slot.\n\nf you want to put in more than 1 stack into the table, you can configure 2 or more slots with the same item.
 item.sapturretmod:turret_assembly_filter.conf=Configured
 item.sapturretmod:turret_assembly_filter.inst=Right-click to configure, Shift-right-click to clear config.
-
 item.sapturretmod:turret_ammo.arrow_sng.name=Arrow Bolt
 item.sapturretmod:turret_ammo.arrow_lrg.name=Arrow Bolt Pack
-sapturretmod.tinfo.ammo.arrow.name=Arrow Bolt
-sapturretmod.tinfo.ammo.arrow.desc=The standard ammo for the Crossbow Turret. Has a tiny knockback effect and acts like a standard arrow, just smaller. Very precise.\n\nCan be
 item.sapturretmod:turret_ammo.sgshell_sng.name=Shotgun Shell
 item.sapturretmod:turret_ammo.sgshell_lrg.name=Shotgun Shell Pack
-sapturretmod.tinfo.ammo.sgshell.name=Shotgun Shell
-sapturretmod.tinfo.ammo.sgshell.desc=The standard ammo for the Shotgun Turret. Has no knockback effect and turns into 6 dispersed pebble projectiles when shot.\nDoes not apply any immunity to the target, thus targets hit by multiple pebbles will take damage from all of them.\n\nCan be packaged, whose items will provide 16x ammo.
 item.sapturretmod:turret_ammo.cryocell_1.name=Cryo Cell SG1
 item.sapturretmod:turret_ammo.cryocell_pack_1.name=Cryo Cell SN1 Pack
 item.sapturretmod:turret_ammo.cryocell_2.name=Cryo Cell SG2
 item.sapturretmod:turret_ammo.cryocell_pack_2.name=Cryo Cell SN2 Pack
 item.sapturretmod:turret_ammo.cryocell_3.name=Cryo Cell SG3
 item.sapturretmod:turret_ammo.cryocell_pack_3.name=Cryo Cell SN3 Pack
-sapturretmod.tinfo.ammo.cryocell.name=Cryo Cell
-sapturretmod.tinfo.ammo.cryocell.desc=This ammunition used by the Cryolator Turret comes in 3 versions, which applies different slowness effects:\nCell SG1: Slowness I for 15s\nCell SG2: Slowness III for 10s\nCell SG3: Slowness V for 5s.\n\nDoes not apply immunity and any damage to the target.\n\nCan be packaged, whose items will provide 16x ammo.
 item.sapturretmod:turret_ammo.bullet_sng.name=Revolver Bullets
 item.sapturretmod:turret_ammo.bullet_lrg.name=Revolver Bullet Pack
-sapturretmod.tinfo.ammo.bullet.name=Revolver Bullets
-sapturretmod.tinfo.ammo.bullet.desc=Used by the Revolver Turret, it has the same knockback effect like the Shotgun projectiles, but do more damage than the Arrow bolts from the Crossbow Turret. Unlike other ammo types, this provides double the rounds.
 item.sapturretmod:turret_ammo.mgshell_sng.name=Minigun Rounds
 item.sapturretmod:turret_ammo.mgshell_lrg.name=Minigun Rounds Pack
-sapturretmod.tinfo.ammo.mgshell.name=Minigun Rounds
-sapturretmod.tinfo.ammo.mgshell.desc=This ammo contains seeds, which are shot by the Minigun Turret. On their own they do little damage and no knockback, but like the shotgun pebbles, they do not apply any immunity to the target. This, in combination with the rapid firing rate of the turret, compensate for their weakness.
 item.sapturretmod:turret_ammo.ecell_sng.name=Flux Cell
 item.sapturretmod:turret_ammo.ecell_lrg.name=Flux Cell Pack
-sapturretmod.tinfo.ammo.ecell.name=Flux Cell
-sapturretmod.tinfo.ammo.ecell.desc=Provides energy to the laser turret to shoot its lasers. Lasers have no knockback effect and don't damage anything immune to fire (unless upgraded), but deal a quite decent amount of damage and also sets the target on fire for 5 seconds.
-
+item.sapturretmod:turret_ammo.fueltank_sng.name=Fuel Tank
+item.sapturretmod:turret_ammo.fueltank_lrg.name=Fuel Tank Pack
 item.sapturretmod:turret_repair_kit.standard_1.name=Repair Kit 05HS
 item.sapturretmod:turret_repair_kit.standard_2.name=Repair Kit 10HS
 item.sapturretmod:turret_repair_kit.standard_3.name=Repair Kit 15HS
@@ -118,6 +107,21 @@ sapturretmod.turret.iii_laser.desc=Going with the theme, this can be considered 
 sapturretmod.turret.iii_flamethrower.name=Flamethrower Turret (T3)
 sapturretmod.turret.iii_flamethrower.desc=This turret deals large amounts of damage on a rather short distance. Not only that, but it operates in an area of effect, meaning it can hit multiple targets in front of it. Oh yeah, it deals fire damage if it wasn't obvious.
 
+sapturretmod.tinfo.ammo.arrow.name=Arrow Bolt
+sapturretmod.tinfo.ammo.arrow.desc=Used by the Crossbow Turret. Projectiles have a tiny knockback effect and act like standard arrows, just smaller. Very precise.\n\nCan be packaged, whose items will provide 16x ammo.
+sapturretmod.tinfo.ammo.sgshell.name=Shotgun Shell
+sapturretmod.tinfo.ammo.sgshell.desc=Used by the Shotgun Turret. One shell turns into 6 dispersed pebble projectiles when shot, which have no knockback effect.\nDoes not cause any immunity to the target, thus targets hit by multiple pebbles will take damage from all of them.\n\nCan be packaged, whose items will provide 16x ammo.
+sapturretmod.tinfo.ammo.cryocell.name=Cryo Cell
+sapturretmod.tinfo.ammo.cryocell.desc=Used by the Cryolator Turret. This ammunition comes in 3 versions, which applies different slowness effects:\nCell SG1: Slowness I for 15s\nCell SG2: Slowness III for 10s\nCell SG3: Slowness V for 5s.\n\nDoes not cause immunity and any damage to the target.\n\nCan be packaged, whose items will provide 16x ammo.
+sapturretmod.tinfo.ammo.bullet.name=Revolver Bullets
+sapturretmod.tinfo.ammo.bullet.desc=Used by the Revolver Turret, it has the same knockback effect like the Shotgun projectiles, but do more damage than the Arrow bolts from the Crossbow Turret. Unlike other ammo types, this provides double the rounds.\n\nCan be packaged, whose items will provide 16x ammo.
+sapturretmod.tinfo.ammo.mgshell.name=Minigun Rounds
+sapturretmod.tinfo.ammo.mgshell.desc=Used by the Minigun Turret. Cartridges contain seeds which do little damage and no knockback, but like the shotgun pebbles, they do not cause any immunity to the target. This, in combination with the rapid firing rate of the turret, compensate for their weakness.\nDue to the rapid firing rate, a cartridge provides 4 shots instead of the usual 1.\n\nCan be packaged, whose items will provide 16x ammo.
+sapturretmod.tinfo.ammo.ecell.name=Flux Cell
+sapturretmod.tinfo.ammo.ecell.desc=Used by the Laser Turret. Lasers have no knockback effect and don't damage anything immune to fire (unless upgraded), but deal quite a decent amount of damage and also sets the target on fire for 5 seconds.\n\nCan be packaged, whose items will provide 16x ammo.
+sapturretmod.tinfo.ammo.fueltank.name=Fuel Tank
+sapturretmod.tinfo.ammo.fueltank.desc=Used by the Flamethrower Turret. Flames have, like lasers, no knockback effect and are ineffective against fire-resistant targets (unless upgraded). They deal a hefty amount of damage and sets targets on fire for 5 seconds.\nLike the minigun cartridges, a tank provides 16 shots, due to the rapid firing rate of the turret.\n\nCan be packaged, whose items will provide 16x ammo.
+
 gui.sapturretmod.tinfo.infoTitle=Info about this mod
 gui.sapturretmod.tinfo.category.turrets.name=Turrets
 gui.sapturretmod.tinfo.category.ammo.name=Ammunition
@@ -139,7 +143,6 @@ gui.sapturretmod.tinfo.roundsVal=%d Rounds
 gui.sapturretmod.tinfo.rangeVal=%s Blocks
 gui.sapturretmod.tinfo.efficiency=%.2fx efficiency
 gui.sapturretmod.tinfo.decay=decays in %s
-
 gui.sapturretmod.tinfo.modName=Name:
 gui.sapturretmod.tinfo.modVersion=Version:
 gui.sapturretmod.tinfo.modAuthor=Author:
@@ -165,6 +168,9 @@ gui.sapturretmod.tcu.page.targetsPlayer.tab=Player Target Settings
 gui.sapturretmod.tcu.page.upgrades.title=TCU - Upgrades
 gui.sapturretmod.tcu.page.upgrades.tab=Upgrades
 gui.sapturretmod.tcu.page.upgrades.button.ejectAll=Eject All Upgrades
+gui.sapturretmod.tcu.label.health=Health: %.2f/%.2f
+gui.sapturretmod.tcu.label.ammo=Ammo: %d/%d
+gui.sapturretmod.tcu.label.target=Target: %s
 
 gui.sapturretmod.tassembly.cancel=Cancel
 gui.sapturretmod.tassembly.automate.enable=Automate

@@ -61,7 +61,7 @@ public final class TurretInfoCategoryRegistry
 
         {
             ITurretInfoEntry[] entries = TurretAmmoRegistry.INSTANCE.getGroups().stream().map(TurretInfoEntryAmmo::new).toArray(ITurretInfoEntry[]::new);
-            registry.registerCategory(Resources.TINFO_GRP_AMMO.getResource(), Lang.TINFO_CATEGORY_NAME.get("turret_ammo")).addEntry(entries);
+            registry.registerCategory(Resources.TINFO_GRP_AMMO.getResource(), Lang.TINFO_CATEGORY_NAME.get("ammo")).addEntry(entries);
         }
 
         {

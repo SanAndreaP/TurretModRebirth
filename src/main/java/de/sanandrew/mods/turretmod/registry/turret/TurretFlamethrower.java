@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.registry.turret;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
@@ -67,27 +68,37 @@ public class TurretFlamethrower
     }
 
     @Override
-    public float getInfoHealth() {
-        return 40.0F;
-    }
-
-    @Override
-    public int getInfoBaseAmmoCapacity() {
-        return 4096;
-    }
-
-    @Override
     public ResourceLocation getItemModel() {
         return TurretFlamethrower.ITEM_MODEL;
     }
 
     @Override
-    public UUID getRecipeId() {
-        return TurretAssemblyRecipes.TURRET_MK3_FT;
+    public ITurretInfo getInfo() {
+        return MyInfo.INSTANCE;
     }
 
-    @Override
-    public String getInfoRange() {
-        return "8";
+    public static final class MyInfo implements ITurretInfo
+    {
+        static final ITurretInfo INSTANCE = new TurretCrossbow.MyInfo();
+
+        @Override
+        public float getHealth() {
+            return 40.0F;
+        }
+
+        @Override
+        public int getAmmoCapacity() {
+            return 4096;
+        }
+
+        @Override
+        public UUID getRecipeId() {
+            return TurretAssemblyRecipes.TURRET_MK3_FT;
+        }
+
+        @Override
+        public String getRange() {
+            return "8";
+        }
     }
 }

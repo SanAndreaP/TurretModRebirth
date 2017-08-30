@@ -91,6 +91,24 @@ public class TurretModRebirth
         proxy.postInit(event);
     }
 
+    /* // for debugging purposes only!
+    @Mod.EventHandler
+    public void loadComplete(net.minecraftforge.fml.common.event.FMLLoadCompleteEvent event) {
+        java.util.function.Function<Object, Long> getObjSize = (obj -> {
+            try {
+                Class cls = Class.forName("jdk.nashorn.internal.ir.debug.ObjectSizeCalculator");
+                return de.sanandrew.mods.sanlib.lib.util.ReflectionUtils.<Long, Object>invokeCachedMethod(cls, null, "getObjectSize", "getObjectSize", new Class[] {Object.class},  new Object[] {obj});
+            } catch( ClassNotFoundException ex ) {
+                return 0L;
+            }
+        });
+
+        TmrConstants.LOG.log(org.apache.logging.log4j.Level.INFO, String.format("Memory used by turret registry: %d bytes", getObjSize.apply(TurretRegistry.INSTANCE)));
+        TmrConstants.LOG.log(org.apache.logging.log4j.Level.INFO, String.format("Memory used by ammo registry: %d bytes", getObjSize.apply(TurretAmmoRegistry.INSTANCE)));
+        TmrConstants.LOG.log(org.apache.logging.log4j.Level.INFO, String.format("Memory used by upgrade registry: %d bytes", getObjSize.apply(UpgradeRegistry.INSTANCE)));
+        TmrConstants.LOG.log(org.apache.logging.log4j.Level.INFO, String.format("Memory used by repairkit registry: %d bytes", getObjSize.apply(RepairKitRegistry.INSTANCE)));
+    } */
+
     private static void loadPlugins(ASMDataTable dataTable) {
         String annotationClassName = TmrPlugin.class.getCanonicalName();
         Set<ASMDataTable.ASMData> asmDatas = dataTable.getAll(annotationClassName);
