@@ -10,7 +10,7 @@ import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelElement;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradePersShield;
-import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -18,12 +18,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class LabelTurretPrsShield
+public class LabelTurretPersShield
         implements ILabelElement
 {
     @Override
     public boolean showElement(ITurretInst turretInst) {
-        return turretInst.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.SHIELD);
+        return turretInst.getUpgradeProcessor().hasUpgrade(Upgrades.SHIELD);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class LabelTurretPrsShield
 
     @Override
     public void doRenderQuads(ITurretInst turretInst, float maxWidth, float progress, FontRenderer stdFontRenderer, float currHeight, BufferBuilder tessBuffer) {
-        UpgradePersShield.Shield shield = turretInst.getUpgradeProcessor().getUpgradeInstance(UpgradeRegistry.SHIELD);
+        UpgradePersShield.Shield shield = turretInst.getUpgradeProcessor().getUpgradeInstance(Upgrades.SHIELD);
         float healthPerc = shield.getValue() / UpgradePersShield.Shield.MAX_VALUE * maxWidth;
 
         currHeight += stdFontRenderer.FONT_HEIGHT + 2.0F;
@@ -53,7 +53,7 @@ public class LabelTurretPrsShield
     }
 
     private static String getLabel(ITurretInst turretInst) {
-        UpgradePersShield.Shield shield = turretInst.getUpgradeProcessor().getUpgradeInstance(UpgradeRegistry.SHIELD);
+        UpgradePersShield.Shield shield = turretInst.getUpgradeProcessor().getUpgradeInstance(Upgrades.SHIELD);
 
         if( shield.isInRecovery() ) {
             return Lang.translate(Lang.TCU_LABEL_PRSSHIELD_RECV, String.format("%.0f %%", shield.getRecoveryPercentage()));

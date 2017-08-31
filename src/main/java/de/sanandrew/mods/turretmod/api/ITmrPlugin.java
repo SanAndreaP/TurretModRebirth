@@ -1,6 +1,6 @@
 package de.sanandrew.mods.turretmod.api;
 
-import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmoRegistry;
+import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
 import de.sanandrew.mods.turretmod.api.assembly.ITurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelRegistry;
 import de.sanandrew.mods.turretmod.api.client.turret.ITurretRenderRegistry;
@@ -21,7 +21,7 @@ public interface ITmrPlugin
 
     default void registerRepairKits(IRepairKitRegistry registry) { }
 
-    default void registerAmmo(ITurretAmmoRegistry registry) { }
+    default void registerAmmo(IAmmunitionRegistry registry) { }
 
     default void registerUpgrades(IUpgradeRegistry registry) { }
 

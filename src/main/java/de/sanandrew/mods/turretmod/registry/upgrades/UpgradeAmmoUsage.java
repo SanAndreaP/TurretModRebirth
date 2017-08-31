@@ -67,7 +67,7 @@ public abstract class UpgradeAmmoUsage
 
         public UpgradeAmmoUseII() {
             super("use_decr_ii");
-            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(UpgradeRegistry.ECONOMY_I);
+            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(Upgrades.ECONOMY_I);
         }
 
         @Override
@@ -88,7 +88,7 @@ public abstract class UpgradeAmmoUsage
 
         public UpgradeAmmoUseInf() {
             super("use_decr_inf");
-            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(UpgradeRegistry.ECONOMY_II);
+            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(Upgrades.ECONOMY_II);
         }
 
         @Override

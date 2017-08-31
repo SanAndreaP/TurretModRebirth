@@ -26,7 +26,7 @@ import java.util.UUID;
 public class UpgradePersShield
         implements ITurretUpgrade
 {
-    private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "upgrades/ender_medium");
+    private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "upgrades/pers_shield");
     private final String name;
 
     public UpgradePersShield() {

@@ -11,7 +11,7 @@ import de.sanandrew.mods.turretmod.api.event.TargetingEvent;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.turret.TurretCryolator;
 import de.sanandrew.mods.turretmod.registry.turret.TurretShotgun;
-import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.MobEffects;
@@ -30,7 +30,7 @@ public class TargetingEventHandler
             event.setResult(Event.Result.DENY);
         }
 
-        if( event.processor.getTurret().getUpgradeProcessor().hasUpgrade(UpgradeRegistry.SMART_TGT) ) {
+        if( event.processor.getTurret().getUpgradeProcessor().hasUpgrade(Upgrades.SMART_TGT) ) {
             List entities = turret.getEntity().world.getEntitiesWithinAABB(turret.getEntity().getClass(), turret.getTargetProcessor().getAdjustedRange(true));
 
             for( Object eObj : entities ) {
@@ -70,13 +70,13 @@ public class TargetingEventHandler
     @SubscribeEvent
     public void onAmmoConsumption(TargetingEvent.ConsumeAmmo event) {
         ITurretInst turret = event.processor.getTurret();
-        if( turret.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.ECONOMY_INF) && event.processor.getAmmoCount() == event.processor.getMaxAmmoCapacity() ) {
+        if( turret.getUpgradeProcessor().hasUpgrade(Upgrades.ECONOMY_INF) && event.processor.getAmmoCount() == event.processor.getMaxAmmoCapacity() ) {
             event.setResult(Event.Result.DENY);
         } else {
-            if( turret.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.ECONOMY_I) && MiscUtils.RNG.randomFloat() < 0.1F ) {
+            if( turret.getUpgradeProcessor().hasUpgrade(Upgrades.ECONOMY_I) && MiscUtils.RNG.randomFloat() < 0.1F ) {
                 event.setResult(Event.Result.DENY);
             }
-            if( turret.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.ECONOMY_II) && MiscUtils.RNG.randomFloat() < 0.35F ) {
+            if( turret.getUpgradeProcessor().hasUpgrade(Upgrades.ECONOMY_II) && MiscUtils.RNG.randomFloat() < 0.35F ) {
                 event.setResult(Event.Result.DENY);
             }
         }

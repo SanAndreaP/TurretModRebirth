@@ -98,7 +98,7 @@ public abstract class UpgradeHealth
 
         public UpgradeHealthMK2() {
             super("health_ii", "B7E5ADFA-517C-4167-A2FD-E0D31FA6E9BE");
-            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(UpgradeRegistry.HEALTH_I);
+            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(Upgrades.HEALTH_I);
         }
 
         @Override
@@ -119,7 +119,7 @@ public abstract class UpgradeHealth
 
         public UpgradeHealthMK3() {
             super("health_iii", "D49F43AE-5EA4-4DD2-B08A-9B5F1966C091");
-            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(UpgradeRegistry.HEALTH_II);
+            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(Upgrades.HEALTH_II);
         }
 
         @Override
@@ -140,7 +140,7 @@ public abstract class UpgradeHealth
 
         public UpgradeHealthMK4() {
             super("health_iv", "9431A60C-B995-4547-B143-2BEDC67467E1");
-            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(UpgradeRegistry.HEALTH_III);
+            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(Upgrades.HEALTH_III);
         }
 
         @Override

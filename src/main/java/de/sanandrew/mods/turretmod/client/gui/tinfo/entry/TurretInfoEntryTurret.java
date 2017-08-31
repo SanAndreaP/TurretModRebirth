@@ -8,14 +8,14 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
-import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
+import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.assembly.IRecipeEntry;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoRegistry;
+import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.Minecraft;
@@ -191,8 +191,8 @@ public class TurretInfoEntryTurret
             this.health = turret.getInfo().getHealth();
             this.ammoCap = turret.getInfo().getAmmoCapacity();
 
-            List<ITurretAmmo> ammos = TurretAmmoRegistry.INSTANCE.getTypesForTurret(turret);
-            for( ITurretAmmo ammo : ammos ) {
+            List<IAmmunition> ammos = AmmunitionRegistry.INSTANCE.getTypesForTurret(turret);
+            for( IAmmunition ammo : ammos ) {
                 ammoItms.add(ItemRegistry.turret_ammo.getAmmoItem(1, ammo));
             }
 

@@ -8,7 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.util;
 
-import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
+import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.repairkit.TurretRepairKit;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
@@ -17,7 +17,7 @@ import de.sanandrew.mods.turretmod.client.render.tileentity.RenderElectrolyteGen
 import de.sanandrew.mods.turretmod.client.render.tileentity.RenderTurretAssembly;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.ItemTurret;
-import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoRegistry;
+import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
@@ -127,20 +127,20 @@ public final class ModelRegistry
         }
 
         static final class Ammo
-                extends MeshDefUUID<ITurretAmmo>
+                extends MeshDefUUID<IAmmunition>
         {
             public Ammo() {
-                for( ITurretAmmo ammo : TurretAmmoRegistry.INSTANCE.getRegisteredTypes() ) {
+                for( IAmmunition ammo : AmmunitionRegistry.INSTANCE.getRegisteredTypes() ) {
                     ModelResourceLocation modelRes = new ModelResourceLocation(ammo.getModel(), "inventory");
                     this.modelRes.put(ammo.getId(), modelRes);
                 }
             }
 
             @Override
-            public ITurretAmmo getType(@Nonnull ItemStack stack) { return TurretAmmoRegistry.INSTANCE.getType(stack); }
+            public IAmmunition getType(@Nonnull ItemStack stack) { return AmmunitionRegistry.INSTANCE.getType(stack); }
 
             @Override
-            public UUID getId(ITurretAmmo type) { return type.getId(); }
+            public UUID getId(IAmmunition type) { return type.getId(); }
         }
 
         static final class Upgrade

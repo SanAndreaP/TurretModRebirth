@@ -18,7 +18,7 @@ import net.minecraft.util.ResourceLocation;
 import javax.annotation.Nonnull;
 import java.util.UUID;
 
-public interface ITurretAmmo<T extends Entity & IProjectile>
+public interface IAmmunition<T extends Entity & IProjectile>
 {
     /**
      * Returns the unlocalized name for this ammo type item. The name can (and should) differ, even

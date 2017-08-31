@@ -19,7 +19,7 @@ import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryMiscCra
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryTurret;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryUpgrade;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoRegistry;
+import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
@@ -60,7 +60,7 @@ public final class TurretInfoCategoryRegistry
         }
 
         {
-            ITurretInfoEntry[] entries = TurretAmmoRegistry.INSTANCE.getGroups().stream().map(TurretInfoEntryAmmo::new).toArray(ITurretInfoEntry[]::new);
+            ITurretInfoEntry[] entries = AmmunitionRegistry.INSTANCE.getGroups().stream().map(TurretInfoEntryAmmo::new).toArray(ITurretInfoEntry[]::new);
             registry.registerCategory(Resources.TINFO_GRP_AMMO.getResource(), Lang.TINFO_CATEGORY_NAME.get("ammo")).addEntry(entries);
         }
 

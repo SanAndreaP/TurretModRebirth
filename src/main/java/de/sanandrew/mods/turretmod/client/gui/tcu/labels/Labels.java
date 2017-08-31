@@ -18,6 +18,6 @@ public final class Labels
         registry.registerLabelElement(new LabelTurretHealth());
         registry.registerLabelElement(new LabelTurretAmmo());
         registry.registerLabelElement(new LabelTurretTarget());
-        registry.registerLabelElement(new LabelTurretPrsShield());
+        registry.registerLabelElement(new LabelTurretPersShield());
     }
 }
