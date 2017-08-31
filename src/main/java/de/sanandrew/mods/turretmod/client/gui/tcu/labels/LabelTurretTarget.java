@@ -26,7 +26,7 @@ public class LabelTurretTarget
     }
 
     @Override
-    public int getPriority() {
+    public short getPriority() {
         return -100;
     }
 
@@ -37,17 +37,17 @@ public class LabelTurretTarget
 
     @Override
     public float getWidth(ITurretInst turretInst, FontRenderer stdFontRenderer) {
-        return stdFontRenderer.getStringWidth(getLabel(turretInst)) + 2.0F;
+        return stdFontRenderer.getStringWidth(getLabel(turretInst));
     }
 
     @Override
     public void doRenderTextured(ITurretInst turretInst, float maxWidth, float progress, FontRenderer stdFontRenderer) {
         int color = new ColorObj(1.0F, 1.0F, 0.625F, Math.max(progress, 0x4 / 255.0F)).getColorInt();
-        stdFontRenderer.drawString(getLabel(turretInst), 1.0F, 1.0F, color, false);
+        stdFontRenderer.drawString(getLabel(turretInst), 0.0F, 0.0F, color, false);
     }
 
     private static String getLabel(ITurretInst turretInst) {
         Entity target = turretInst.getTargetProcessor().getTarget();
-        return Lang.translate(Lang.TCU_LABEL_TARGET, target == null ? "n/a" : target instanceof EntityPlayer ? ((EntityPlayer) target).getName() : Lang.translateEntityCls(target.getClass()));
+        return Lang.translate(Lang.TCU_LABEL_TARGET, target == null ? "n/a" : target.getName());
     }
 }

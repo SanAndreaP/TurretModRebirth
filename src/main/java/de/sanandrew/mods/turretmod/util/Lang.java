@@ -22,8 +22,8 @@ public final class Lang
     public static final TranslateKey TCU_LABEL_HEALTH      = new TranslateKey("gui.%s.tcu.label.health", TmrConstants.ID);
     public static final TranslateKey TCU_LABEL_AMMO        = new TranslateKey("gui.%s.tcu.label.ammo", TmrConstants.ID);
     public static final TranslateKey TCU_LABEL_TARGET      = new TranslateKey("gui.%s.tcu.label.target", TmrConstants.ID);
-    public static final TranslateKey TCU_LABEL_SHIELD      = new TranslateKey("gui.%s.tcu.label.shield", TmrConstants.ID);
-    public static final TranslateKey TCU_LABEL_SHIELD_RECV = new TranslateKey("gui.%s.tcu.label.shield_recv", TmrConstants.ID);
+    public static final TranslateKey TCU_LABEL_PRSSHIELD = new TranslateKey("gui.%s.tcu.label.shield", TmrConstants.ID);
+    public static final TranslateKey TCU_LABEL_PRSSHIELD_RECV = new TranslateKey("gui.%s.tcu.label.shield_recv", TmrConstants.ID);
 
     public static final TranslateKey TINFO_CATEGORY_NAME      = new TranslateKey("gui.%s.tinfo.category.%%s.name", TmrConstants.ID);
     public static final TranslateKey TINFO_ENTRY_INFO_TITLE   = new TranslateKey("gui.%s.tinfo.infoTitle", TmrConstants.ID);

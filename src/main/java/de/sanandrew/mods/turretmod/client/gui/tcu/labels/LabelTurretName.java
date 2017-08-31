@@ -24,7 +24,7 @@ public class LabelTurretName
     }
 
     @Override
-    public int getPriority() {
+    public short getPriority() {
         return 100;
     }
 
@@ -35,13 +35,13 @@ public class LabelTurretName
 
     @Override
     public float getWidth(ITurretInst turretInst, FontRenderer stdFontRenderer) {
-        return stdFontRenderer.getStringWidth(getName(turretInst)) + 2.0F;
+        return stdFontRenderer.getStringWidth(getName(turretInst));
     }
 
     @Override
     public void doRenderTextured(ITurretInst turretInst, float maxWidth, float progress, FontRenderer stdFontRenderer) {
-        int color = new ColorObj(1.0F, 1.0F, 1.0F, Math.max(progress, 0x4 / 255.0F)).getColorInt();
-        stdFontRenderer.drawString(getName(turretInst), 1.0F, 1.0F, color, false);
+        int color = new ColorObj(1.0F, 1.0F, 1.0F, Math.max(progress, 4.0F / 255.0F)).getColorInt();
+        stdFontRenderer.drawString(getName(turretInst), 0.0F, 0.0F, color, false);
     }
 
     private static String getName(ITurretInst turret) {

@@ -134,7 +134,7 @@ public final class UpgradeRegistry
         registry.registerUpgrade(ECONOMY_INF, new UpgradeAmmoUsage.UpgradeAmmoUseInf());
         registry.registerUpgrade(ENDER_MEDIUM, new UpgradeEnderMedium());
         registry.registerUpgrade(FUEL_PURIFY, new UpgradeFuelPurifier());
-        registry.registerUpgrade(SHIELD, new UpgradePrsShield());
+        registry.registerUpgrade(SHIELD, new UpgradePersShield());
     }
 
     @Override

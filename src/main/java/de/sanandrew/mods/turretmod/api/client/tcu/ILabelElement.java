@@ -25,7 +25,7 @@ public interface ILabelElement
 
     default void doRenderTextured(ITurretInst turretInst, float maxWidth, float progress, FontRenderer stdFontRenderer) { }
 
-    default int getPriority() {
+    default short getPriority() {
         return 0;
     }
 }

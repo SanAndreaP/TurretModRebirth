@@ -10,9 +10,9 @@ import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelElement;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelRegistry;
+import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -29,9 +29,7 @@ import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.WeakHashMap;
 import java.util.stream.Collectors;
@@ -45,12 +43,20 @@ public final class RenderTurretPointed
     private final WeakHashMap<EntityTurret, LabelEntry> labels = new WeakHashMap<>();
     private final List<ILabelElement> elements = new ArrayList<>();
 
+    private static final float FADE_TIME = 2.0F;
+
     public void render(Minecraft mc, double x, double y, double z, double partTicks) {
         if( mc.player != mc.getRenderViewEntity() ) {
             return;
         }
 
-        labels.forEach((turret, tp) -> tp.active = false);
+        labels.forEach((turret, tp) -> {
+            tp.wasActive = tp.active;
+            tp.active = false;
+            if( tp.wasActive ) {
+                tp.endTick = ClientTickHandler.ticksInGame;
+            }
+        });
 
         if( mc.pointedEntity instanceof EntityTurret) {
             EntityTurret turret = (EntityTurret) mc.pointedEntity;
@@ -59,6 +65,9 @@ public final class RenderTurretPointed
             if( isItemTCU(mc.player.getHeldItemMainhand()) || isItemTCU(mc.player.getHeldItemOffhand()) ) {
                 LabelEntry tp = labels.computeIfAbsent(turret, t -> new LabelEntry(mc.getRenderManager()));
                 tp.active = true;
+                if( !tp.wasActive ) {
+                    tp.beginTick = tp.endTick < 0 ? ClientTickHandler.ticksInGame : tp.endTick;
+                }
             }
         }
 
@@ -72,11 +81,11 @@ public final class RenderTurretPointed
 
                 if( lblActive ) {
                     if( lbl.progress < 2.0F ) {
-                        lbl.progress += 0.01F;
+                        lbl.progress = ((ClientTickHandler.ticksInGame - lbl.beginTick + (float) partTicks) / FADE_TIME);
                     }
                 } else {
                     if( lbl.progress > 0.0F ) {
-                        lbl.progress -= 0.01F;
+                        lbl.progress = ((lbl.endTick + FADE_TIME * 2.0F - ClientTickHandler.ticksInGame - (float) partTicks) / FADE_TIME);
                         lblActive = true;
                     }
                 }
@@ -145,22 +154,22 @@ public final class RenderTurretPointed
         float alphaMulti = Math.min(1.0F, lbl.progress);
         ColorObj clrTop = new ColorObj(0x0050FF00 | (Math.max(Math.round(0xCC * alphaMulti), 4) << 24));
         ColorObj clrBottom = new ColorObj(0x00288000 | (Math.max(Math.round(0xCC * alphaMulti), 4) << 24));
-        ColorObj clrMain = new ColorObj(0x00001000 | (Math.max(Math.round(0x80 * alphaMulti), 4) << 24));
+        ColorObj clrMain = new ColorObj(0x00001000 | (Math.max(Math.round(0xA0 * alphaMulti), 4) << 24));
 
         // main bg
-        addQuad(buffer, 0.0D, 0.0D, lbl.maxWidth, lbl.maxHeight, clrMain);
+        addQuad(buffer, -2.0D, -2.0D, lbl.maxWidth + 2.0D, lbl.maxHeight + 2.0D, clrMain);
 
         // inner frame [top, bottom, left, right]
-        addQuad(buffer, -1.0D,        -1.0D,         lbl.maxWidth + 1.0D, 0.0D,                 clrTop);
-        addQuad(buffer, -1.0D,        lbl.maxHeight, lbl.maxWidth + 1.0D, lbl.maxHeight + 1.0D, clrBottom);
-        addQuad(buffer, -1.0D,        0.0D,          0.0D,                lbl.maxHeight,        clrTop, clrBottom);
-        addQuad(buffer, lbl.maxWidth, 0.0D,          lbl.maxWidth + 1.0D, lbl.maxHeight,        clrTop, clrBottom);
+        addQuad(buffer, -3.0D,               -3.0D,                lbl.maxWidth + 3.0D, -2.0D,                clrTop);
+        addQuad(buffer, -3.0D,               lbl.maxHeight + 2.0D, lbl.maxWidth + 3.0D, lbl.maxHeight + 3.0D, clrBottom);
+        addQuad(buffer, -3.0D,               -2.0D,                -2.0D,               lbl.maxHeight + 2.0D, clrTop, clrBottom);
+        addQuad(buffer, lbl.maxWidth + 2.0D, -2.0D,                lbl.maxWidth + 3.0D, lbl.maxHeight + 2.0D, clrTop, clrBottom);
 
         // outer frame [top, bottom, left, right]
-        addQuad(buffer, -1.0D,               -2.0D,                lbl.maxWidth + 1.0D, -1.0D,                clrMain);
-        addQuad(buffer, -1.0D,               lbl.maxHeight + 1.0D, lbl.maxWidth + 1.0D, lbl.maxHeight + 2.0D, clrMain);
-        addQuad(buffer, -2.0D,               -1.0D,                -1.0D,               lbl.maxHeight + 1.0D, clrMain);
-        addQuad(buffer, lbl.maxWidth + 1.0D, -1.0D,                lbl.maxWidth + 2.0D, lbl.maxHeight + 1.0D, clrMain);
+        addQuad(buffer, -3.0D,               -4.0D,                lbl.maxWidth + 3.0D, -4.0D,                clrMain);
+        addQuad(buffer, -3.0D,               lbl.maxHeight + 3.0D, lbl.maxWidth + 3.0D, lbl.maxHeight + 4.0D, clrMain);
+        addQuad(buffer, -4.0D,               -3.0D,                -3.0D,               lbl.maxHeight + 3.0D, clrMain);
+        addQuad(buffer, lbl.maxWidth + 3.0D, -3.0D,                lbl.maxWidth + 4.0D, lbl.maxHeight + 3.0D, clrMain);
 
         if( lbl.progress >= 1.0F ) {
             final MutableFloat currHeight = new MutableFloat(0.0F);
@@ -236,6 +245,9 @@ public final class RenderTurretPointed
 
     private static class LabelEntry
     {
+        protected long beginTick;
+        protected long endTick;
+        protected boolean wasActive;
         protected boolean active;
         protected float angleY;
         protected float angleX;
@@ -245,6 +257,9 @@ public final class RenderTurretPointed
 
         protected LabelEntry(RenderManager rMan) {
             this.active = true;
+            this.wasActive = false;
+            this.beginTick = -1;
+            this.endTick = -1;
             this.angleY = -rMan.playerViewY;
             this.angleX = rMan.playerViewX;
             this.maxWidth = MIN_WIDTH;

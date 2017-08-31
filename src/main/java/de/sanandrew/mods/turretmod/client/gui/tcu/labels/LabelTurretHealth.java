@@ -32,21 +32,24 @@ public class LabelTurretHealth
 
     @Override
     public float getWidth(ITurretInst turretInst, FontRenderer stdFontRenderer) {
-        return ILabelRegistry.MIN_WIDTH;
+        return stdFontRenderer.getStringWidth(getLabel(turretInst));
     }
 
     @Override
     public void doRenderQuads(ITurretInst turretInst, float maxWidth, float progress, FontRenderer stdFontRenderer, float currHeight, BufferBuilder tessBuffer) {
-        float healthPerc = turretInst.getEntity().getHealth() / turretInst.getEntity().getMaxHealth() * (maxWidth - 2.0F);
+        float healthPerc = turretInst.getEntity().getHealth() / turretInst.getEntity().getMaxHealth() * maxWidth;
         currHeight += stdFontRenderer.FONT_HEIGHT + 2.0F;
-        addQuad(tessBuffer, 1.0D, currHeight, 1.0D + healthPerc, currHeight + 2.0D, new ColorObj(1.0F, 0.3F, 0.3F, Math.max(progress, 0x4 / 255.0F)));
-        addQuad(tessBuffer, 1.0D + healthPerc, currHeight, maxWidth - 1.0F, currHeight + 2.0D, new ColorObj(0.4F, 0.1F, 0.1F, Math.max(progress, 0x4 / 255.0F)));
+        addQuad(tessBuffer, 0.0D,       currHeight, healthPerc, currHeight + 2.0D, new ColorObj(1.0F, 0.3F, 0.3F, Math.max(progress, 4.0F / 255.0F)));
+        addQuad(tessBuffer, healthPerc, currHeight, maxWidth,   currHeight + 2.0D, new ColorObj(0.4F, 0.1F, 0.1F, Math.max(progress, 4.0F / 255.0F)));
     }
 
     @Override
     public void doRenderTextured(ITurretInst turretInst, float maxWidth, float progress, FontRenderer stdFontRenderer) {
-        String s = Lang.translate(Lang.TCU_LABEL_HEALTH, String.format("%.2f/%.2f", turretInst.getEntity().getHealth(), turretInst.getEntity().getMaxHealth()));
-        stdFontRenderer.drawString(s, 1.0F, 1.0F, new ColorObj(1.0F, 0.3F, 0.3F, Math.max(progress, 0x4 / 255.0F)).getColorInt(), false);
+        stdFontRenderer.drawString(getLabel(turretInst), 0.0F, 0.0F, new ColorObj(1.0F, 0.3F, 0.3F, Math.max(progress, 4.0F / 255.0F)).getColorInt(), false);
+    }
+
+    private static String getLabel(ITurretInst turretInst) {
+        return Lang.translate(Lang.TCU_LABEL_HEALTH, String.format("%.2f/%.2f", turretInst.getEntity().getHealth(), turretInst.getEntity().getMaxHealth()));
     }
 
     private static void addQuad(BufferBuilder buf, double minX, double minY, double maxX, double maxY, ColorObj clr) {

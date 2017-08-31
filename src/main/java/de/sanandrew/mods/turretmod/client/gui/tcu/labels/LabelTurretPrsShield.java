@@ -8,9 +8,8 @@ package de.sanandrew.mods.turretmod.client.gui.tcu.labels;
 
 import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelElement;
-import de.sanandrew.mods.turretmod.api.client.tcu.ILabelRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.registry.upgrades.UpgradePrsShield;
+import de.sanandrew.mods.turretmod.registry.upgrades.UpgradePersShield;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.gui.FontRenderer;
@@ -34,31 +33,33 @@ public class LabelTurretPrsShield
 
     @Override
     public float getWidth(ITurretInst turretInst, FontRenderer stdFontRenderer) {
-        return ILabelRegistry.MIN_WIDTH;
+        return stdFontRenderer.getStringWidth(getLabel(turretInst));
     }
 
     @Override
     public void doRenderQuads(ITurretInst turretInst, float maxWidth, float progress, FontRenderer stdFontRenderer, float currHeight, BufferBuilder tessBuffer) {
-        UpgradePrsShield.Shield shield = turretInst.getUpgradeProcessor().getUpgradeInstance(UpgradeRegistry.SHIELD);
-        float healthPerc = shield.getValue() / UpgradePrsShield.Shield.MAX_VALUE * (maxWidth - 2.0F);
+        UpgradePersShield.Shield shield = turretInst.getUpgradeProcessor().getUpgradeInstance(UpgradeRegistry.SHIELD);
+        float healthPerc = shield.getValue() / UpgradePersShield.Shield.MAX_VALUE * maxWidth;
 
         currHeight += stdFontRenderer.FONT_HEIGHT + 2.0F;
 
-        addQuad(tessBuffer, 1.0D, currHeight, 1.0D + healthPerc, currHeight + 2.0D, new ColorObj(0.3F, 1.0F, 0.3F, Math.max(progress, 0x4 / 255.0F)));
-        addQuad(tessBuffer, 1.0D + healthPerc, currHeight, maxWidth - 1.0F, currHeight + 2.0D, new ColorObj(0.1F, 0.4F, 0.1F, Math.max(progress, 0x4 / 255.0F)));
+        addQuad(tessBuffer, 0.0D,       currHeight, healthPerc, currHeight + 2.0D, new ColorObj(0.3F, 1.0F, 0.3F, Math.max(progress, 4.0F / 255.0F)));
+        addQuad(tessBuffer, healthPerc, currHeight, maxWidth,   currHeight + 2.0D, new ColorObj(0.1F, 0.4F, 0.1F, Math.max(progress, 4.0F / 255.0F)));
     }
 
     @Override
     public void doRenderTextured(ITurretInst turretInst, float maxWidth, float progress, FontRenderer stdFontRenderer) {
-        UpgradePrsShield.Shield shield = turretInst.getUpgradeProcessor().getUpgradeInstance(UpgradeRegistry.SHIELD);
-        String s;
+        stdFontRenderer.drawString(getLabel(turretInst), 0.0F, 0.0F, new ColorObj(0.3F, 1.0F, 0.3F, Math.max(progress, 4.0F / 255.0F)).getColorInt(), false);
+    }
+
+    private static String getLabel(ITurretInst turretInst) {
+        UpgradePersShield.Shield shield = turretInst.getUpgradeProcessor().getUpgradeInstance(UpgradeRegistry.SHIELD);
 
         if( shield.isInRecovery() ) {
-            s = Lang.translate(Lang.TCU_LABEL_SHIELD_RECV, String.format("%.0f %%", shield.getRecoveryPercentage()));
+            return Lang.translate(Lang.TCU_LABEL_PRSSHIELD_RECV, String.format("%.0f %%", shield.getRecoveryPercentage()));
         } else {
-            s = Lang.translate(Lang.TCU_LABEL_SHIELD, String.format("%.2f/%.2f", shield.getValue(), UpgradePrsShield.Shield.MAX_VALUE));
+            return Lang.translate(Lang.TCU_LABEL_PRSSHIELD, String.format("%.2f/%.2f", shield.getValue(), UpgradePersShield.Shield.MAX_VALUE));
         }
-        stdFontRenderer.drawString(s, 1.0F, 1.0F, new ColorObj(0.3F, 1.0F, 0.3F, Math.max(progress, 0x4 / 255.0F)).getColorInt(), false);
     }
 
     private static void addQuad(BufferBuilder buf, double minX, double minY, double maxX, double maxY, ColorObj clr) {

@@ -23,14 +23,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.UUID;
 
-public class UpgradePrsShield
+public class UpgradePersShield
         implements ITurretUpgrade
 {
     private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "upgrades/ender_medium");
     private final String name;
 
-    public UpgradePrsShield() {
-        this.name = "prs_shield";
+    public UpgradePersShield() {
+        this.name = "pers_shield";
     }
 
     @Override
@@ -97,7 +97,7 @@ public class UpgradePrsShield
         private static final ColorObj BASE_COLOR = new ColorObj(0x8080FFA0);
         private static final AxisAlignedBB BB = new AxisAlignedBB(-0.5D, 0, -0.5D, 0.5D, 2, 0.5D);
         private static final float CRIT_VALUE = 5.0F;
-        private static final float RECOVERY_PER_TICK = CRIT_VALUE / 100.0F;
+        private static final float RECOVERY_PER_TICK = CRIT_VALUE / 2000.0F;
 
         float value;
         float recovery;
