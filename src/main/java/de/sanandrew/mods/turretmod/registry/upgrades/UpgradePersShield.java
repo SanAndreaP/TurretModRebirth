@@ -94,10 +94,11 @@ public class UpgradePersShield
     {
         public static final float MAX_VALUE = 20.0F;
 
-        private static final ColorObj BASE_COLOR = new ColorObj(0x8080FFA0);
+        private static final ColorObj BASE_COLOR = new ColorObj(0x4080FFA0);
+        private static final float[] BASE_CLR_HSL = BASE_COLOR.calcHSL();
         private static final AxisAlignedBB BB = new AxisAlignedBB(-0.5D, 0, -0.5D, 0.5D, 2, 0.5D);
         private static final float CRIT_VALUE = 5.0F;
-        private static final float RECOVERY_PER_TICK = CRIT_VALUE / 2000.0F;
+        private static final float RECOVERY_PER_TICK = CRIT_VALUE / 1000.0F;
 
         float value;
         float recovery;
@@ -148,7 +149,7 @@ public class UpgradePersShield
         @Override
         public int getShieldColor() {
             if( this.value < CRIT_VALUE ) {
-                float[] hsl = BASE_COLOR.calcHSL();
+                float[] hsl = BASE_CLR_HSL.clone();
                 if( hsl[0] <= 180.0F ) {
                     hsl[0] = (this.value / CRIT_VALUE) * hsl[0];
                 } else {
@@ -193,6 +194,11 @@ public class UpgradePersShield
     static final class ShieldRecovery
             implements IForcefieldProvider
     {
+        private static final ColorObj CRIT_COLOR = new ColorObj(0x40FF0000);
+        private static final float[] CRIT_CLR_HSL = CRIT_COLOR.calcHSL();
+        private static final float[] HSL_DIF = new float[] {Shield.BASE_CLR_HSL[0] - CRIT_CLR_HSL[0], Shield.BASE_CLR_HSL[1] - CRIT_CLR_HSL[1],
+                                                            Shield.BASE_CLR_HSL[2] - CRIT_CLR_HSL[2]};
+
         final Shield delegate;
 
         ShieldRecovery(Shield delegate) {
@@ -211,10 +217,22 @@ public class UpgradePersShield
 
         @Override
         public int getShieldColor() {
-            ColorObj newClr = new ColorObj(Shield.BASE_COLOR);
-            newClr.setAlpha(Math.round(this.delegate.recovery / Shield.CRIT_VALUE * newClr.alpha()));
+            float perc = this.delegate.getRecoveryPercentage();
+            if( perc < 90.0F ) {
+                ColorObj newClr = new ColorObj(CRIT_COLOR);
+                newClr.setAlpha(Math.round(this.delegate.recovery / Shield.CRIT_VALUE * newClr.alpha()));
 
-            return newClr.getColorInt();
+                return newClr.getColorInt();
+            } else {
+                float[] hslDif = HSL_DIF.clone();
+                perc = (perc - 90.0F) / 10.0F;
+                float alpha = CRIT_COLOR.fAlpha() + (Shield.BASE_COLOR.fAlpha() - CRIT_COLOR.fAlpha()) * perc;
+                hslDif[0] = CRIT_CLR_HSL[0] + (hslDif[0] > 180.0F ? (hslDif[0] - 360.0F) : hslDif[0]) * perc;
+                hslDif[1] = CRIT_CLR_HSL[1] + hslDif[1] * perc;
+                hslDif[2] = CRIT_CLR_HSL[2] + hslDif[2] * perc;
+
+                return ColorObj.fromHSLA(hslDif[0], hslDif[1], hslDif[2], alpha).getColorInt();
+            }
         }
 
         @Override
