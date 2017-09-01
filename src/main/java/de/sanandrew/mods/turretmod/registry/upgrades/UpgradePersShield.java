@@ -196,7 +196,7 @@ public class UpgradePersShield
     {
         private static final ColorObj CRIT_COLOR = new ColorObj(0x40FF0000);
         private static final float[] CRIT_CLR_HSL = CRIT_COLOR.calcHSL();
-        private static final float[] HSL_DIF = new float[] {Shield.BASE_CLR_HSL[0] - CRIT_CLR_HSL[0], Shield.BASE_CLR_HSL[1] - CRIT_CLR_HSL[1],
+        private static final float[] HSL_DIF = new float[] {wrap360(Shield.BASE_CLR_HSL[0] - CRIT_CLR_HSL[0]), Shield.BASE_CLR_HSL[1] - CRIT_CLR_HSL[1],
                                                             Shield.BASE_CLR_HSL[2] - CRIT_CLR_HSL[2]};
 
         final Shield delegate;
@@ -217,27 +217,33 @@ public class UpgradePersShield
 
         @Override
         public int getShieldColor() {
-            float perc = this.delegate.getRecoveryPercentage();
-            if( perc < 90.0F ) {
+            float perc = this.delegate.recovery / Shield.CRIT_VALUE;
+            if( perc < 0.9F ) {
+                perc = perc / 0.9F;
+
                 ColorObj newClr = new ColorObj(CRIT_COLOR);
-                newClr.setAlpha(Math.round(this.delegate.recovery / Shield.CRIT_VALUE * newClr.alpha()));
+                newClr.setAlpha(Math.round((CRIT_COLOR.fAlpha() + (Shield.BASE_COLOR.fAlpha() - CRIT_COLOR.fAlpha()) * perc) * 255.0F * perc));
 
                 return newClr.getColorInt();
             } else {
+                perc = (perc - 0.9F) * 10.0F;
+
                 float[] hslDif = HSL_DIF.clone();
-                perc = (perc - 90.0F) / 10.0F;
-                float alpha = CRIT_COLOR.fAlpha() + (Shield.BASE_COLOR.fAlpha() - CRIT_COLOR.fAlpha()) * perc;
-                hslDif[0] = CRIT_CLR_HSL[0] + (hslDif[0] > 180.0F ? (hslDif[0] - 360.0F) : hslDif[0]) * perc;
+                hslDif[0] = wrap360(CRIT_CLR_HSL[0] + (hslDif[0] > 180.0F ? -(360.0F - hslDif[0]) : hslDif[0]) * perc);
                 hslDif[1] = CRIT_CLR_HSL[1] + hslDif[1] * perc;
                 hslDif[2] = CRIT_CLR_HSL[2] + hslDif[2] * perc;
 
-                return ColorObj.fromHSLA(hslDif[0], hslDif[1], hslDif[2], alpha).getColorInt();
+                return ColorObj.fromHSLA(hslDif[0], hslDif[1], hslDif[2], CRIT_COLOR.fAlpha() + (Shield.BASE_COLOR.fAlpha() - CRIT_COLOR.fAlpha()) * perc).getColorInt();
             }
         }
 
         @Override
         public boolean hasSmoothFadeOut() {
             return false;
+        }
+
+        private static float wrap360(float angle) {
+            return angle > 360.0F ? wrap360(angle - 360.0F) : angle < 0 ? wrap360(angle + 360.0F) : angle;
         }
     }
 }
