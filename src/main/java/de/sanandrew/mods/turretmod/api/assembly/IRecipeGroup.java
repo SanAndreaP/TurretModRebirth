@@ -8,7 +8,12 @@ import java.util.UUID;
 public interface IRecipeGroup
 {
     void addRecipeId(UUID id);
+
     List<UUID> getRecipeIdList();
+
     String getName();
+
     ItemStack getIcon();
+
+    void finalizeGroup(ITurretAssemblyRegistry registry);
 }

@@ -9,8 +9,8 @@
 package de.sanandrew.mods.turretmod.item;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
-import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoRegistry;
+import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
+import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -32,12 +32,12 @@ public class ItemAmmo
 
     @Override
     public String getUnlocalizedName(@Nonnull ItemStack stack) {
-        ITurretAmmo type = TurretAmmoRegistry.INSTANCE.getType(stack);
+        IAmmunition type = AmmunitionRegistry.INSTANCE.getType(stack);
         return String.format("%s.%s", this.getUnlocalizedName(), type.getName());
     }
 
     @Nonnull
-    public ItemStack getAmmoItem(int stackSize, ITurretAmmo type) {
+    public ItemStack getAmmoItem(int stackSize, IAmmunition type) {
         if( type == null ) {
             throw new IllegalArgumentException("Cannot get turret_ammo item with NULL type!");
         }
@@ -54,7 +54,7 @@ public class ItemAmmo
     @SuppressWarnings("unchecked")
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
         if( this.isInCreativeTab(tab) ) {
-            list.addAll(TurretAmmoRegistry.INSTANCE.getRegisteredTypes().stream().map(type -> this.getAmmoItem(1, type)).collect(Collectors.toList()));
+            list.addAll(AmmunitionRegistry.INSTANCE.getRegisteredTypes().stream().map(type -> this.getAmmoItem(1, type)).collect(Collectors.toList()));
         }
     }
 }

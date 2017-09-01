@@ -8,7 +8,6 @@
  */
 package de.sanandrew.mods.turretmod.registry.assembly;
 
-import com.google.common.collect.ImmutableList;
 import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
@@ -16,8 +15,11 @@ import de.sanandrew.mods.turretmod.api.assembly.IRecipeEntry;
 import de.sanandrew.mods.turretmod.api.assembly.IRecipeGroup;
 import de.sanandrew.mods.turretmod.api.assembly.ITurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
@@ -98,6 +100,7 @@ public final class TurretAssemblyRegistry
         return this.recipeResources.get(uuid);
     }
 
+    @Override
     @Nonnull
     public ItemStack getRecipeResult(UUID uuid) {
         ItemStack stack = this.recipeResults.get(uuid);
@@ -107,6 +110,24 @@ public final class TurretAssemblyRegistry
     @Override
     public List<RecipeKeyEntry> getRecipeList() {
         return new ArrayList<>(this.recipeEntries);
+    }
+
+    public void finalizeRegistry() {
+        this.recipeEntries.sort((o1, o2) -> {
+            int i = Integer.compare(Item.getIdFromItem(o2.stack.getItem()), Item.getIdFromItem(o1.stack.getItem()));
+            if( i == 0 ) {
+                NonNullList<ItemStack> subtypes = NonNullList.create();
+                o1.stack.getItem().getSubItems(CreativeTabs.SEARCH, subtypes);
+                return Integer.compare(getStackIndexInList(subtypes, o1.stack), getStackIndexInList(subtypes, o2.stack));
+            }
+            return i;
+        });
+
+        this.groupsList.forEach(group -> group.finalizeGroup(this));
+    }
+
+    private static int getStackIndexInList(NonNullList<ItemStack> stacks, ItemStack stack) {
+        return stacks.indexOf(stacks.stream().filter(fltStack -> ItemStackUtils.areEqual(stack, fltStack)).findFirst().orElse(null));
     }
 
     public boolean checkAndConsumeResources(IInventory inv, UUID uuid) {
@@ -198,7 +219,7 @@ public final class TurretAssemblyRegistry
         private final String name;
         @Nonnull
         private final ItemStack icon;
-        private final ImmutableList.Builder<UUID> recipes = new ImmutableList.Builder<>();
+        private final List<UUID> recipes = new ArrayList<>();
 
         public RecipeGroup(String name, @Nonnull ItemStack icon) {
             this.name = name;
@@ -222,7 +243,22 @@ public final class TurretAssemblyRegistry
 
         @Override
         public List<UUID> getRecipeIdList() {
-            return recipes.build();
+            return new ArrayList<>(this.recipes);
+        }
+
+        @Override
+        public void finalizeGroup(ITurretAssemblyRegistry registry) {
+            this.recipes.sort((o1, o2) -> {
+                ItemStack is1 = registry.getRecipeResult(o1);
+                ItemStack is2 = registry.getRecipeResult(o2);
+                int i = Integer.compare(Item.getIdFromItem(is1.getItem()), Item.getIdFromItem(is2.getItem()));
+                if( i == 0 ) {
+                    NonNullList<ItemStack> subtypes = NonNullList.create();
+                    is1.getItem().getSubItems(CreativeTabs.SEARCH, subtypes);
+                    return Integer.compare(getStackIndexInList(subtypes, is1), getStackIndexInList(subtypes, is2));
+                }
+                return i;
+            });
         }
     }
 }

@@ -98,7 +98,7 @@ public abstract class UpgradeReloadTime
 
         public UpgradeReloadTimeMK2() {
             super("reload_ii", "BA6FE867-0EBF-4E1A-9ED9-05E2B47143F8", -0.35D);
-            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(UpgradeRegistry.RELOAD_I);
+            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(Upgrades.RELOAD_I);
         }
 
         @Override

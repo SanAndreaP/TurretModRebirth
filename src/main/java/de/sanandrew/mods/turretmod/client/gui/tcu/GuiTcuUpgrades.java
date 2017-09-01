@@ -13,7 +13,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretUpgrades;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
@@ -60,9 +60,9 @@ public class GuiTcuUpgrades
             this.mc.player.closeScreen();
         }
 
-        this.hasUpgStgI = this.turretInst.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_STORAGE_I);
-        this.hasUpgStgII = this.turretInst.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_STORAGE_II);
-        this.hasUpgStgIII = this.turretInst.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.UPG_STORAGE_III);
+        this.hasUpgStgI = this.turretInst.getUpgradeProcessor().hasUpgrade(Upgrades.UPG_STORAGE_I);
+        this.hasUpgStgII = this.turretInst.getUpgradeProcessor().hasUpgrade(Upgrades.UPG_STORAGE_II);
+        this.hasUpgStgIII = this.turretInst.getUpgradeProcessor().hasUpgrade(Upgrades.UPG_STORAGE_III);
     }
 
     @Override

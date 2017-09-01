@@ -24,7 +24,7 @@ public class LabelTurretName
     }
 
     @Override
-    public short getPriority() {
+    public int getPriority() {
         return 100;
     }
 

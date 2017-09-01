@@ -6,11 +6,11 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.registry.ammo;
 
-import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmoRegistry;
+import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
 
 import java.util.UUID;
 
-public final class TurretAmmunitions
+public final class Ammunitions
 {
     public static final UUID ARROW = UUID.fromString("7B497E61-4E8D-4E49-AC71-414751E399E8");
     public static final UUID QUIVER = UUID.fromString("E6D51120-B52A-42EA-BF78-BEBBC7D41C09");
@@ -31,8 +31,8 @@ public final class TurretAmmunitions
     public static final UUID FUELTANK = UUID.fromString("0CA51FA8-FD33-4C3D-A9AB-BA29DFFF4ABA");
     public static final UUID FUELTANK_PACK = UUID.fromString("5C41DA09-8C7E-4191-8520-058E69C36DC0");
 
-    public static void initialize(ITurretAmmoRegistry registry) {
-        TurretAmmoRegistry castRegistry = (TurretAmmoRegistry) registry;
+    public static void initialize(IAmmunitionRegistry registry) {
+        AmmunitionRegistry castRegistry = (AmmunitionRegistry) registry;
 
         castRegistry.registerAmmoType(new TurretAmmoArrow.Single(), true);
         castRegistry.registerAmmoType(new TurretAmmoArrow.Quiver(), true);

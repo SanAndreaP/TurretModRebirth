@@ -54,7 +54,7 @@
     "item": "sapturretmod:turret_placer",
     "count": 1,
     "nbt": {
-      "turretInfoUUID": "f6196022-3f9d-4d3f-b3c1-9ed644db436b"
+      "turretUUID": "f6196022-3f9d-4d3f-b3c1-9ed644db436b"
     }
   }
 }

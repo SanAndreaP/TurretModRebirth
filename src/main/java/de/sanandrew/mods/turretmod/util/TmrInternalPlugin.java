@@ -8,7 +8,7 @@ package de.sanandrew.mods.turretmod.util;
 
 import de.sanandrew.mods.turretmod.api.ITmrPlugin;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
-import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmoRegistry;
+import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
 import de.sanandrew.mods.turretmod.api.assembly.ITurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelRegistry;
 import de.sanandrew.mods.turretmod.api.client.turret.ITurretRenderRegistry;
@@ -21,11 +21,11 @@ import de.sanandrew.mods.turretmod.client.gui.tcu.labels.Labels;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.TurretInfoCategoryRegistry;
 import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
 import de.sanandrew.mods.turretmod.event.TargetingEventHandler;
-import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmunitions;
+import de.sanandrew.mods.turretmod.registry.ammo.Ammunitions;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKits;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
-import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -33,7 +33,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class TmrInternalPlugin
         implements ITmrPlugin
 {
-    public static ITurretAmmoRegistry ammoRegistry;
+    public static IAmmunitionRegistry ammoRegistry;
 
     @Override
     public void registerAssemblyRecipes(ITurretAssemblyRegistry registry) {
@@ -51,14 +51,14 @@ public class TmrInternalPlugin
     }
 
     @Override
-    public void registerAmmo(ITurretAmmoRegistry registry) {
+    public void registerAmmo(IAmmunitionRegistry registry) {
         ammoRegistry = registry;
-        TurretAmmunitions.initialize(registry);
+        Ammunitions.initialize(registry);
     }
 
     @Override
     public void registerUpgrades(IUpgradeRegistry registry) {
-        UpgradeRegistry.initialize(registry);
+        Upgrades.initialize(registry);
     }
 
     @Override

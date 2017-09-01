@@ -26,7 +26,7 @@ import java.util.UUID;
 public class UpgradePersShield
         implements ITurretUpgrade
 {
-    private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "upgrades/ender_medium");
+    private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "upgrades/pers_shield");
     private final String name;
 
     public UpgradePersShield() {
@@ -94,7 +94,7 @@ public class UpgradePersShield
     {
         public static final float MAX_VALUE = 20.0F;
 
-        private static final ColorObj BASE_COLOR = new ColorObj(0x4080FFA0);
+        private static final ColorObj BASE_COLOR = new ColorObj(0x40DD74FF);
         private static final float[] BASE_CLR_HSL = BASE_COLOR.calcHSL();
         private static final AxisAlignedBB BB = new AxisAlignedBB(-0.5D, 0, -0.5D, 0.5D, 2, 0.5D);
         private static final float CRIT_VALUE = 5.0F;

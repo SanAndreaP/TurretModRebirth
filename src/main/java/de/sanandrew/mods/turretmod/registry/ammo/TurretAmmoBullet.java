@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.registry.ammo;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
+import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public abstract class TurretAmmoBullet
-        implements ITurretAmmo<EntityProjectileBullet>
+        implements IAmmunition<EntityProjectileBullet>
 {
     private final String name;
     private final UUID uuid;
@@ -32,7 +32,7 @@ public abstract class TurretAmmoBullet
 
     public TurretAmmoBullet(boolean isMulti, String modelName) {
         this.name = isMulti ? "bullet_lrg" : "bullet_sng";
-        this.uuid = isMulti ? TurretAmmunitions.BULLET_PACK : TurretAmmunitions.BULLET;
+        this.uuid = isMulti ? Ammunitions.BULLET_PACK : Ammunitions.BULLET;
         this.capacity = isMulti ? 32 : 2;
         this.itemModel = new ResourceLocation(TmrConstants.ID, "turret_ammo/" + modelName);
     }
@@ -69,12 +69,12 @@ public abstract class TurretAmmoBullet
 
     @Override
     public UUID getTypeId() {
-        return TurretAmmunitions.BULLET;
+        return Ammunitions.BULLET;
     }
 
     @Override
     public UUID getGroupId() {
-        return TurretAmmunitions.BULLET;
+        return Ammunitions.BULLET;
     }
 
     @Override
@@ -85,7 +85,7 @@ public abstract class TurretAmmoBullet
     @Override
     @Nonnull
     public ItemStack getStoringAmmoItem() {
-        return ItemRegistry.turret_ammo.getAmmoItem(1, TurretAmmoRegistry.INSTANCE.getType(TurretAmmunitions.BULLET));
+        return ItemRegistry.turret_ammo.getAmmoItem(1, AmmunitionRegistry.INSTANCE.getType(Ammunitions.BULLET));
     }
 
     @Override

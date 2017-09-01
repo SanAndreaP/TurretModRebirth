@@ -20,6 +20,7 @@ import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncUpgradeInst;
 import de.sanandrew.mods.turretmod.network.PacketUpdateUgradeSlot;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -74,7 +75,7 @@ public final class UpgradeProcessor
                 }
             }
 
-            if( !this.hasUpgrade(UpgradeRegistry.UPG_STORAGE_III) ) {
+            if( !this.hasUpgrade(Upgrades.UPG_STORAGE_III) ) {
                 for( int i = 27, max = this.upgradeStacks.size(); i < max; i++ ) {
                     ItemStack invStack = this.upgradeStacks.get(i);
                     if( ItemStackUtils.isValid(invStack) ) {
@@ -89,7 +90,7 @@ public final class UpgradeProcessor
                 }
             }
 
-            if( !this.hasUpgrade(UpgradeRegistry.UPG_STORAGE_II) ) {
+            if( !this.hasUpgrade(Upgrades.UPG_STORAGE_II) ) {
                 for( int i = 18; i < 27; i++ ) {
                     ItemStack invStack = this.upgradeStacks.get(i);
                     if( ItemStackUtils.isValid(invStack) ) {
@@ -104,7 +105,7 @@ public final class UpgradeProcessor
                 }
             }
 
-            if( !this.hasUpgrade(UpgradeRegistry.UPG_STORAGE_I) ) {
+            if( !this.hasUpgrade(Upgrades.UPG_STORAGE_I) ) {
                 for( int i = 9; i < 18; i++ ) {
                     ItemStack invStack = this.upgradeStacks.get(i);
                     if( ItemStackUtils.isValid(invStack) ) {
@@ -268,13 +269,13 @@ public final class UpgradeProcessor
 
     @Override
     public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
-        if( slot >= 9 && !this.hasUpgrade(UpgradeRegistry.UPG_STORAGE_I) ) {
+        if( slot >= 9 && !this.hasUpgrade(Upgrades.UPG_STORAGE_I) ) {
             return false;
         }
-        if( slot >= 18 && !this.hasUpgrade(UpgradeRegistry.UPG_STORAGE_II) ) {
+        if( slot >= 18 && !this.hasUpgrade(Upgrades.UPG_STORAGE_II) ) {
             return false;
         }
-        if( slot >= 27 && !this.hasUpgrade(UpgradeRegistry.UPG_STORAGE_III) ) {
+        if( slot >= 27 && !this.hasUpgrade(Upgrades.UPG_STORAGE_III) ) {
             return false;
         }
 

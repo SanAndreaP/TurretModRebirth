@@ -15,12 +15,12 @@ import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.ReflectionUtils;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
-import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
+import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.event.TargetingEvent;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoRegistry;
+import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -68,13 +68,10 @@ public final class TargetProcessor
     protected ITurretInst turret;
     protected boolean isShootingClt;
 
-    protected EntityTargetSelector selector;
-
     public TargetProcessor(ITurretInst turret) {
         this.entityTargetList = new HashMap<>(ENTITY_TARGET_LIST_STD);
         this.playerTargetList = new HashMap<>();
         this.turret = turret;
-        this.selector = new EntityTargetSelector();
         this.initShootTicks = 20;
         this.ammoStack = ItemStack.EMPTY;
     }
@@ -82,8 +79,8 @@ public final class TargetProcessor
     @Override
     public boolean addAmmo(@Nonnull ItemStack stack) {
         if( this.isAmmoApplicable(stack) ) {
-            ITurretAmmo type = TurretAmmoRegistry.INSTANCE.getType(stack);
-            UUID currType = ItemStackUtils.isValid(this.ammoStack) ? TurretAmmoRegistry.INSTANCE.getType(this.ammoStack).getTypeId() : null;
+            IAmmunition type = AmmunitionRegistry.INSTANCE.getType(stack);
+            UUID currType = ItemStackUtils.isValid(this.ammoStack) ? AmmunitionRegistry.INSTANCE.getType(this.ammoStack).getTypeId() : null;
 
             if( currType != null && !currType.equals(type.getTypeId()) ) {
                 this.dropAmmo();
@@ -93,7 +90,7 @@ public final class TargetProcessor
             if( maxCapacity > 0 ) {
                 if( !this.hasAmmo() ) {
                     this.ammoStack = type.getStoringAmmoItem();
-                } else if( !TurretAmmoRegistry.INSTANCE.areAmmoItemsEqual(stack, this.ammoStack) ) {
+                } else if( !AmmunitionRegistry.INSTANCE.areAmmoItemsEqual(stack, this.ammoStack) ) {
                     return false;
                 }
 
@@ -144,10 +141,10 @@ public final class TargetProcessor
             int decrAmmo = this.ammoCount - this.getMaxAmmoCapacity();
             if( decrAmmo > 0 ) {
                 List<ItemStack> items = new ArrayList<>();
-                ITurretAmmo type = TurretAmmoRegistry.INSTANCE.getType(this.ammoStack);
+                IAmmunition type = AmmunitionRegistry.INSTANCE.getType(this.ammoStack);
                 int maxStackSize = this.ammoStack.getMaxStackSize();
 
-                while( decrAmmo > 0 && type != TurretAmmoRegistry.NULL_TYPE ) {
+                while( decrAmmo > 0 && type != AmmunitionRegistry.NULL_TYPE ) {
                     ItemStack stack = this.ammoStack.copy();
                     stack.setCount(Math.min(decrAmmo / type.getAmmoCapacity(), maxStackSize));
                     decrAmmo -= stack.getCount() * type.getAmmoCapacity();
@@ -185,8 +182,8 @@ public final class TargetProcessor
         if( this.hasAmmo() ) {
             List<ItemStack> items = new ArrayList<>();
             int maxStackSize = this.ammoStack.getMaxStackSize();
-            ITurretAmmo type = TurretAmmoRegistry.INSTANCE.getType(this.ammoStack);
-            while( this.ammoCount > 0 && type != TurretAmmoRegistry.NULL_TYPE ) {
+            IAmmunition type = AmmunitionRegistry.INSTANCE.getType(this.ammoStack);
+            while( this.ammoCount > 0 && type != AmmunitionRegistry.NULL_TYPE ) {
                 ItemStack stack = this.ammoStack.copy();
                 stack.setCount(Math.min(this.ammoCount / type.getAmmoCapacity(), maxStackSize));
                 this.ammoCount -= stack.getCount() * type.getAmmoCapacity();
@@ -213,8 +210,8 @@ public final class TargetProcessor
         if( this.hasAmmo() ) {
             List<ItemStack> items = new ArrayList<>();
             int maxStackSize = this.ammoStack.getMaxStackSize();
-            ITurretAmmo type = TurretAmmoRegistry.INSTANCE.getType(this.ammoStack);
-            while( this.ammoCount > 0 && type != TurretAmmoRegistry.NULL_TYPE ) {
+            IAmmunition type = AmmunitionRegistry.INSTANCE.getType(this.ammoStack);
+            while( this.ammoCount > 0 && type != AmmunitionRegistry.NULL_TYPE ) {
                 ItemStack stack = this.ammoStack.copy();
                 stack.setCount(Math.min(this.ammoCount / type.getAmmoCapacity(), maxStackSize));
                 this.ammoCount -= stack.getCount() * type.getAmmoCapacity();
@@ -243,12 +240,12 @@ public final class TargetProcessor
     @Override
     public boolean isAmmoApplicable(@Nonnull ItemStack stack) {
         if( ItemStackUtils.isValid(stack) ) {
-            ITurretAmmo stackType = TurretAmmoRegistry.INSTANCE.getType(stack);
-            if( stackType != TurretAmmoRegistry.NULL_TYPE ) {
-                if( TurretAmmoRegistry.INSTANCE.getType(this.ammoStack).getTypeId().equals(stackType.getTypeId()) ) {
+            IAmmunition stackType = AmmunitionRegistry.INSTANCE.getType(stack);
+            if( stackType != AmmunitionRegistry.NULL_TYPE ) {
+                if( AmmunitionRegistry.INSTANCE.getType(this.ammoStack).getTypeId().equals(stackType.getTypeId()) ) {
                     return this.ammoCount < this.getMaxAmmoCapacity();
                 } else {
-                    List<ITurretAmmo> types = TurretAmmoRegistry.INSTANCE.getTypesForTurret(this.turret.getTurret());
+                    List<IAmmunition> types = AmmunitionRegistry.INSTANCE.getTypesForTurret(this.turret.getTurret());
                     if( types.contains(stackType) ) {
                         return true;
                     }
@@ -276,8 +273,8 @@ public final class TargetProcessor
 
     @Override
     public Entity getProjectile() {
-        ITurretAmmo ammo = TurretAmmoRegistry.INSTANCE.getType(this.ammoStack);
-        if( ammo != TurretAmmoRegistry.NULL_TYPE ) {
+        IAmmunition ammo = AmmunitionRegistry.INSTANCE.getType(this.ammoStack);
+        if( ammo != AmmunitionRegistry.NULL_TYPE ) {
             return ammo.getEntity(this.turret);
         }
 
@@ -348,10 +345,9 @@ public final class TargetProcessor
 
         AxisAlignedBB aabb = this.getAdjustedRange(true);
         if( this.entityToAttack == null ) {
-            for( Object entityObj : turretL.world.getEntitiesInAABBexcluding(turretL, aabb, this.selector) ) {
+            for( Entity entityObj : turretL.world.getEntitiesInAABBexcluding(turretL, aabb, entity -> this.isEntityValidTarget(entity, aabb)) ) {
                 EntityLivingBase livingBase = (EntityLivingBase) entityObj;
-                boolean isEntityValid = turretL.canEntityBeSeen(livingBase) && livingBase.isEntityAlive() && livingBase.getEntityBoundingBox().intersects(aabb);
-                if( isEntityValid && checkTargetListeners(livingBase) ) {
+                if( this.checkTargetListeners(livingBase) ) {
                     this.entityToAttack = livingBase;
                     this.entityToAttackUUID = livingBase.getUniqueID();
                     changed = true;
@@ -361,10 +357,7 @@ public final class TargetProcessor
         }
 
         if( this.entityToAttack != null ) {
-            boolean isEntityValid = turretL.canEntityBeSeen(this.entityToAttack) && this.entityToAttack.isEntityAlive() && this.entityToAttack.getEntityBoundingBox().intersects(aabb);
-            boolean isTargetValid = Boolean.TRUE.equals(this.entityTargetList.get(this.entityToAttack.getClass()));
-            boolean isPlayerValid = Boolean.TRUE.equals(this.playerTargetList.get(this.entityToAttack.getUniqueID())) || Boolean.TRUE.equals(this.playerTargetList.get(UuidUtils.EMPTY_UUID));
-            if( isEntityValid && (isTargetValid || isPlayerValid) && checkTargetListeners(this.entityToAttack) ) {
+            if( this.isEntityValidTarget(this.entityToAttack, aabb) && this.checkTargetListeners(this.entityToAttack) ) {
                 if( this.initShootTicks <= 0 && this.shootTicks == 0 ) {
                     boolean success = shootProjectile();
                     this.shootTicks = success ? this.getMaxShootTicks() : MAX_INIT_SHOOT_TICKS;
@@ -383,6 +376,23 @@ public final class TargetProcessor
         if( changed ) {
             TmrUtils.INSTANCE.updateTurretState(this.turret);
         }
+    }
+
+    @Override
+    public boolean isEntityValidTarget(Entity entity) {
+        return this.isEntityValidTarget(entity, this.getAdjustedRange(true));
+    }
+
+    private boolean isEntityValidTarget(Entity entity, AxisAlignedBB aabb) {
+        if( entity instanceof EntityLivingBase ) {
+            boolean isEntityValid = this.turret.getEntity().canEntityBeSeen(entity) && entity.isEntityAlive() && entity.getEntityBoundingBox().intersects(aabb);
+            boolean isTargetValid = Boolean.TRUE.equals(this.entityTargetList.get(entity.getClass()));
+            boolean isPlayerValid = Boolean.TRUE.equals(this.playerTargetList.get(entity.getUniqueID())) || Boolean.TRUE.equals(this.playerTargetList.get(UuidUtils.EMPTY_UUID));
+
+            return isEntityValid && (isTargetValid || isPlayerValid);
+        }
+
+        return false;
     }
 
     public static void initialize() {
@@ -528,23 +538,5 @@ public final class TargetProcessor
     @Override
     public String getTargetName() {
         return this.hasTarget() ? EntityList.getEntityString(this.entityToAttack) : "";
-    }
-
-    private class EntityTargetSelector
-            implements Predicate<Entity>
-    {
-        @Override
-        public boolean apply(Entity entity) {
-            if( entity instanceof EntityLiving ) {
-                if( Boolean.TRUE.equals(TargetProcessor.this.entityTargetList.get(entity.getClass()))  ) {
-                    return !entity.isDead;
-                }
-            } else if( entity instanceof EntityPlayer ) {
-                if( Boolean.TRUE.equals(TargetProcessor.this.playerTargetList.get(entity.getUniqueID()))  || Boolean.TRUE.equals(TargetProcessor.this.playerTargetList.get(UuidUtils.EMPTY_UUID))) {
-                    return !entity.isDead;
-                }
-            }
-            return false;
-        }
     }
 }

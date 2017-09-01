@@ -12,7 +12,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.ItemTurret;
-import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoRegistry;
+import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
@@ -55,7 +55,7 @@ public class JeiPlugin
 
         subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.turret_upgrade, itemStack -> UpgradeRegistry.INSTANCE.getUpgradeId(itemStack).toString());
 
-        subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.turret_ammo, itemStack -> TurretAmmoRegistry.INSTANCE.getType(itemStack).getId().toString());
+        subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.turret_ammo, itemStack -> AmmunitionRegistry.INSTANCE.getType(itemStack).getId().toString());
 
         subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.repair_kit, itemStack -> RepairKitRegistry.INSTANCE.getType(itemStack).getUUID().toString());
     }

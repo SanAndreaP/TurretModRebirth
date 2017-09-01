@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.registry.ammo;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
+import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public abstract class TurretAmmoArrow
-        implements ITurretAmmo<EntityProjectileCrossbowBolt>
+        implements IAmmunition<EntityProjectileCrossbowBolt>
 {
     private final String name;
     private final UUID uuid;
@@ -32,7 +32,7 @@ public abstract class TurretAmmoArrow
 
     public TurretAmmoArrow(boolean quiver) {
         this.name = quiver ? "arrow_lrg" : "arrow_sng";
-        this.uuid = quiver ? TurretAmmunitions.QUIVER : TurretAmmunitions.ARROW;
+        this.uuid = quiver ? Ammunitions.QUIVER : Ammunitions.ARROW;
         this.capacity = quiver ? 16 : 1;
         this.itemModel = new ResourceLocation(TmrConstants.ID, "turret_ammo/" + (quiver ? "arrow_pack" : "arrow"));
     }
@@ -69,12 +69,12 @@ public abstract class TurretAmmoArrow
 
     @Override
     public UUID getTypeId() {
-        return TurretAmmunitions.ARROW;
+        return Ammunitions.ARROW;
     }
 
     @Override
     public UUID getGroupId() {
-        return TurretAmmunitions.ARROW;
+        return Ammunitions.ARROW;
     }
 
     @Override
@@ -85,7 +85,7 @@ public abstract class TurretAmmoArrow
     @Override
     @Nonnull
     public ItemStack getStoringAmmoItem() {
-        return ItemRegistry.turret_ammo.getAmmoItem(1, TurretAmmoRegistry.INSTANCE.getType(TurretAmmunitions.ARROW));
+        return ItemRegistry.turret_ammo.getAmmoItem(1, AmmunitionRegistry.INSTANCE.getType(Ammunitions.ARROW));
     }
 
     @Override

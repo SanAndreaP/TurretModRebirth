@@ -123,7 +123,7 @@ public final class RenderTurretPointed
         final FontRenderer fontrenderer = mc.fontRenderer;
         final float scale = 0.010F;
         final List<ILabelElement> fltElem = this.elements.stream().filter(el -> el.showElement(turret))
-                                                         .sorted((el1, el2) -> el2.getPriority() - el1.getPriority()).collect(Collectors.toList());
+                                                         .sorted((el1, el2) -> Integer.compare(el2.getPriority(), el1.getPriority())).collect(Collectors.toList());
 
         lbl.maxWidth = fltElem.stream().collect(() -> new MutableFloat(MIN_WIDTH),
                                                 (f, l) -> f.setValue(Math.max(f.getValue(), l.getWidth(turret, fontrenderer))),
@@ -166,7 +166,7 @@ public final class RenderTurretPointed
         addQuad(buffer, lbl.maxWidth + 2.0D, -2.0D,                lbl.maxWidth + 3.0D, lbl.maxHeight + 2.0D, clrTop, clrBottom);
 
         // outer frame [top, bottom, left, right]
-        addQuad(buffer, -3.0D,               -4.0D,                lbl.maxWidth + 3.0D, -4.0D,                clrMain);
+        addQuad(buffer, -3.0D,               -4.0D,                lbl.maxWidth + 3.0D, -3.0D,                clrMain);
         addQuad(buffer, -3.0D,               lbl.maxHeight + 3.0D, lbl.maxWidth + 3.0D, lbl.maxHeight + 4.0D, clrMain);
         addQuad(buffer, -4.0D,               -3.0D,                -3.0D,               lbl.maxHeight + 3.0D, clrMain);
         addQuad(buffer, lbl.maxWidth + 3.0D, -3.0D,                lbl.maxWidth + 4.0D, lbl.maxHeight + 3.0D, clrMain);

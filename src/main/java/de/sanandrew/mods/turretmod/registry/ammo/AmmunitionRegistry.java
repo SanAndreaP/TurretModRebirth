@@ -13,8 +13,8 @@ import com.google.common.collect.Multimap;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
-import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmoRegistry;
+import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
+import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
@@ -35,17 +35,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public final class TurretAmmoRegistry
-        implements ITurretAmmoRegistry
+public final class AmmunitionRegistry
+        implements IAmmunitionRegistry
 {
-    public static final TurretAmmoRegistry INSTANCE = new TurretAmmoRegistry();
+    public static final AmmunitionRegistry INSTANCE = new AmmunitionRegistry();
 
-    private final Map<UUID, ITurretAmmo> ammoTypesFromUUID;
-    private final Multimap<ITurret, ITurretAmmo> ammoTypesFromTurret;
-    private final Map<UUID, List<ITurretAmmo>> ammoGroupsFromUUID;
-    private final List<ITurretAmmo> ammoTypes;
+    private final Map<UUID, IAmmunition> ammoTypesFromUUID;
+    private final Multimap<ITurret, IAmmunition> ammoTypesFromTurret;
+    private final Map<UUID, List<IAmmunition>> ammoGroupsFromUUID;
+    private final List<IAmmunition> ammoTypes;
 
-    public static final ITurretAmmo NULL_TYPE = new ITurretAmmo<EntityArrow>() {
+    public static final IAmmunition NULL_TYPE = new IAmmunition<EntityArrow>() {
         @Override
         public String getName() {
             return "";
@@ -92,7 +92,7 @@ public final class TurretAmmoRegistry
         }
 
         @Override
-        public EntityArrow getEntity(ITurretInst turret) {
+        public EntityArrow getEntity(ITurretInst turretInst) {
             return null;
         }
 
@@ -113,7 +113,7 @@ public final class TurretAmmoRegistry
         }
     };
 
-    private TurretAmmoRegistry() {
+    private AmmunitionRegistry() {
         this.ammoTypesFromUUID = new HashMap<>();
         this.ammoTypesFromTurret = ArrayListMultimap.create();
         this.ammoGroupsFromUUID = new HashMap<>();
@@ -121,7 +121,7 @@ public final class TurretAmmoRegistry
     }
 
     @Override
-    public List<ITurretAmmo> getRegisteredTypes() {
+    public List<IAmmunition> getRegisteredTypes() {
         return new ArrayList<>(this.ammoTypes);
     }
 
@@ -131,19 +131,19 @@ public final class TurretAmmoRegistry
     }
 
     @Override
-    public ITurretAmmo[] getTypes(UUID groupId) {
-        List<ITurretAmmo> ammoList = MiscUtils.defIfNull(this.ammoGroupsFromUUID.get(groupId), new ArrayList<>(0));
-        return ammoList.toArray(new ITurretAmmo[ammoList.size()]);
+    public IAmmunition[] getTypes(UUID groupId) {
+        List<IAmmunition> ammoList = MiscUtils.defIfNull(this.ammoGroupsFromUUID.get(groupId), new ArrayList<>(0));
+        return ammoList.toArray(new IAmmunition[ammoList.size()]);
     }
 
     @Override
-    public ITurretAmmo getType(UUID typeId) {
+    public IAmmunition getType(UUID typeId) {
         return MiscUtils.defIfNull(this.ammoTypesFromUUID.get(typeId), NULL_TYPE);
     }
 
     @Override
     @Nonnull
-    public ITurretAmmo getType(@Nonnull ItemStack stack) {
+    public IAmmunition getType(@Nonnull ItemStack stack) {
         NBTTagCompound nbt = stack.getTagCompound();
         if( nbt != null ) {
             if( nbt.hasKey("ammoType") ) {
@@ -160,17 +160,17 @@ public final class TurretAmmoRegistry
     }
 
     @Override
-    public List<ITurretAmmo> getTypesForTurret(ITurret turret) {
+    public List<IAmmunition> getTypesForTurret(ITurret turret) {
         return new ArrayList<>(this.ammoTypesFromTurret.get(turret));
     }
 
     @Override
     @SuppressWarnings("unused")
-    public boolean registerAmmoType(ITurretAmmo<?> type) {
+    public boolean registerAmmoType(IAmmunition<?> type) {
         return registerAmmoType(type, false);
     }
 
-    boolean registerAmmoType(ITurretAmmo<?> type, boolean registerEntity) {
+    boolean registerAmmoType(IAmmunition<?> type, boolean registerEntity) {
         if( type == null ) {
             TmrConstants.LOG.log(Level.ERROR, "Cannot register NULL as Ammo-Type!", new InvalidParameterException());
             return false;
@@ -210,7 +210,7 @@ public final class TurretAmmoRegistry
             EntityRegistry.registerModEntity(new ResourceLocation(TmrConstants.ID, name), type.getEntityClass(), TmrConstants.ID + '.' + name, CommonProxy.entityCount++, TurretModRebirth.instance, 128, 1, true);
         }
 
-        List<ITurretAmmo> groupList = this.ammoGroupsFromUUID.computeIfAbsent(type.getGroupId(), k -> new ArrayList<>());
+        List<IAmmunition> groupList = this.ammoGroupsFromUUID.computeIfAbsent(type.getGroupId(), k -> new ArrayList<>());
         groupList.add(type);
 
         return true;
@@ -219,8 +219,8 @@ public final class TurretAmmoRegistry
     @Override
     public boolean areAmmoItemsEqual(@Nonnull ItemStack firstStack, @Nonnull ItemStack secondStack) {
         if( firstStack.getItem() == ItemRegistry.turret_ammo && secondStack.getItem() == ItemRegistry.turret_ammo ) {
-            ITurretAmmo firstType = this.getType(firstStack);
-            ITurretAmmo secondType = this.getType(secondStack);
+            IAmmunition firstType = this.getType(firstStack);
+            IAmmunition secondType = this.getType(secondStack);
             return firstType != NULL_TYPE && secondType != NULL_TYPE && firstType.getTypeId().equals(secondType.getTypeId());
         } else {
             return firstStack == secondStack;

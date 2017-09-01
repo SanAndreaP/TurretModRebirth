@@ -68,7 +68,7 @@ public abstract class UpgradeUpgStorage
 
         public UpgradeStorageMK2() {
             super("upg_storage_ii");
-            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(UpgradeRegistry.UPG_STORAGE_I);
+            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(Upgrades.UPG_STORAGE_I);
         }
 
         @Override
@@ -89,7 +89,7 @@ public abstract class UpgradeUpgStorage
 
         public UpgradeStorageMK3() {
             super("upg_storage_iii");
-            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(UpgradeRegistry.UPG_STORAGE_II);
+            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(Upgrades.UPG_STORAGE_II);
         }
 
         @Override

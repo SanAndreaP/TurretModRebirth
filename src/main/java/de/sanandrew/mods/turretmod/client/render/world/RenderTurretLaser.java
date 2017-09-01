@@ -11,7 +11,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.turret.TurretLaser;
-import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -59,7 +59,7 @@ public final class RenderTurretLaser
         final double beamWidth = 0.0125D;
 
         ColorObj laserClr = new ColorObj(1.0F, 0.0F, 0.0F, 0.25F);
-        if( turret.getUpgradeProcessor().hasUpgrade(UpgradeRegistry.ENDER_MEDIUM) ) {
+        if( turret.getUpgradeProcessor().hasUpgrade(Upgrades.ENDER_MEDIUM) ) {
             laserClr = new ColorObj(0.0F, 0.5F, 1.0F, 0.25F);
         }
 

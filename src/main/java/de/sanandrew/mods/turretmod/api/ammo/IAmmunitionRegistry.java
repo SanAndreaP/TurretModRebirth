@@ -7,23 +7,23 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.UUID;
 
-public interface ITurretAmmoRegistry
+public interface IAmmunitionRegistry
 {
-    List<ITurretAmmo> getRegisteredTypes();
+    List<IAmmunition> getRegisteredTypes();
 
     List<UUID> getGroups();
 
-    ITurretAmmo[] getTypes(UUID groupId);
+    IAmmunition[] getTypes(UUID groupId);
 
-    ITurretAmmo getType(UUID typeId);
+    IAmmunition getType(UUID typeId);
 
     @Nonnull
-    ITurretAmmo getType(@Nonnull ItemStack stack);
+    IAmmunition getType(@Nonnull ItemStack stack);
 
-    List<ITurretAmmo> getTypesForTurret(ITurret turret);
+    List<IAmmunition> getTypesForTurret(ITurret turret);
 
     @SuppressWarnings("unused")
-    boolean registerAmmoType(ITurretAmmo<?> type);
+    boolean registerAmmoType(IAmmunition<?> type);
 
     boolean areAmmoItemsEqual(@Nonnull ItemStack firstStack, @Nonnull ItemStack secondStack);
 }

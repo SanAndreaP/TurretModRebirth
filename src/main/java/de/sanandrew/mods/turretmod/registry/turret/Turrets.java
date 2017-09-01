@@ -16,6 +16,7 @@ public final class Turrets
     public static final ITurret CRYOLATOR = new TurretCryolator();
     public static final ITurret REVOLVER = new TurretRevolver();
     public static final ITurret MINIGUN = new TurretMinigun();
+    public static final ITurret SHIELDGEN = new TurretShieldGen();
     public static final ITurret LASER = new TurretLaser();
     public static final ITurret FLAMETHROWER = new TurretFlamethrower();
 
@@ -25,6 +26,7 @@ public final class Turrets
         registry.registerTurret(CRYOLATOR);
         registry.registerTurret(REVOLVER);
         registry.registerTurret(MINIGUN);
+        registry.registerTurret(SHIELDGEN);
         registry.registerTurret(LASER);
         registry.registerTurret(FLAMETHROWER);
     }

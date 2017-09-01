@@ -8,12 +8,12 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
-import de.sanandrew.mods.turretmod.api.ammo.ITurretAmmo;
+import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
 import de.sanandrew.mods.turretmod.client.util.ShaderHelper;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.registry.ammo.TurretAmmoRegistry;
+import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -45,7 +45,7 @@ public class TurretInfoEntryAmmo
 {
     private int drawHeight;
     private int shownAmmo;
-    private ITurretAmmo[] ammos;
+    private IAmmunition[] ammos;
     private List<GuiButtonAmmoItem> ammoBtn;
     private long lastTimestamp;
 
@@ -54,7 +54,7 @@ public class TurretInfoEntryAmmo
     private final String title;
 
     public TurretInfoEntryAmmo(UUID groupId) {
-        ITurretAmmo[] ammos = TurretAmmoRegistry.INSTANCE.getTypes(groupId);
+        IAmmunition[] ammos = AmmunitionRegistry.INSTANCE.getTypes(groupId);
 
         this.ammos = ammos;
         this.title = ammos[0].getInfoName();
@@ -88,7 +88,7 @@ public class TurretInfoEntryAmmo
 
     @Override
     public void drawPage(int mouseX, int mouseY, int scrollY, float partTicks) {
-        ITurretAmmo<?> ammo = this.ammos[this.shownAmmo];
+        IAmmunition<?> ammo = this.ammos[this.shownAmmo];
         Minecraft mc = this.guiInfo.__getMc();
 
         mc.fontRenderer.drawString(TextFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 20, 0xFF0080BB);
