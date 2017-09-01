@@ -68,13 +68,10 @@ public final class TargetProcessor
     protected ITurretInst turret;
     protected boolean isShootingClt;
 
-    protected EntityTargetSelector selector;
-
     public TargetProcessor(ITurretInst turret) {
         this.entityTargetList = new HashMap<>(ENTITY_TARGET_LIST_STD);
         this.playerTargetList = new HashMap<>();
         this.turret = turret;
-        this.selector = new EntityTargetSelector();
         this.initShootTicks = 20;
         this.ammoStack = ItemStack.EMPTY;
     }
@@ -348,10 +345,9 @@ public final class TargetProcessor
 
         AxisAlignedBB aabb = this.getAdjustedRange(true);
         if( this.entityToAttack == null ) {
-            for( Object entityObj : turretL.world.getEntitiesInAABBexcluding(turretL, aabb, this.selector) ) {
+            for( Entity entityObj : turretL.world.getEntitiesInAABBexcluding(turretL, aabb, entity -> this.isEntityValidTarget(entity, aabb)) ) {
                 EntityLivingBase livingBase = (EntityLivingBase) entityObj;
-                boolean isEntityValid = turretL.canEntityBeSeen(livingBase) && livingBase.isEntityAlive() && livingBase.getEntityBoundingBox().intersects(aabb);
-                if( isEntityValid && checkTargetListeners(livingBase) ) {
+                if( this.checkTargetListeners(livingBase) ) {
                     this.entityToAttack = livingBase;
                     this.entityToAttackUUID = livingBase.getUniqueID();
                     changed = true;
@@ -361,10 +357,7 @@ public final class TargetProcessor
         }
 
         if( this.entityToAttack != null ) {
-            boolean isEntityValid = turretL.canEntityBeSeen(this.entityToAttack) && this.entityToAttack.isEntityAlive() && this.entityToAttack.getEntityBoundingBox().intersects(aabb);
-            boolean isTargetValid = Boolean.TRUE.equals(this.entityTargetList.get(this.entityToAttack.getClass()));
-            boolean isPlayerValid = Boolean.TRUE.equals(this.playerTargetList.get(this.entityToAttack.getUniqueID())) || Boolean.TRUE.equals(this.playerTargetList.get(UuidUtils.EMPTY_UUID));
-            if( isEntityValid && (isTargetValid || isPlayerValid) && checkTargetListeners(this.entityToAttack) ) {
+            if( this.isEntityValidTarget(this.entityToAttack, aabb) && this.checkTargetListeners(this.entityToAttack) ) {
                 if( this.initShootTicks <= 0 && this.shootTicks == 0 ) {
                     boolean success = shootProjectile();
                     this.shootTicks = success ? this.getMaxShootTicks() : MAX_INIT_SHOOT_TICKS;
@@ -383,6 +376,23 @@ public final class TargetProcessor
         if( changed ) {
             TmrUtils.INSTANCE.updateTurretState(this.turret);
         }
+    }
+
+    @Override
+    public boolean isEntityValidTarget(Entity entity) {
+        return this.isEntityValidTarget(entity, this.getAdjustedRange(true));
+    }
+
+    private boolean isEntityValidTarget(Entity entity, AxisAlignedBB aabb) {
+        if( entity instanceof EntityLivingBase ) {
+            boolean isEntityValid = this.turret.getEntity().canEntityBeSeen(entity) && entity.isEntityAlive() && entity.getEntityBoundingBox().intersects(aabb);
+            boolean isTargetValid = Boolean.TRUE.equals(this.entityTargetList.get(entity.getClass()));
+            boolean isPlayerValid = Boolean.TRUE.equals(this.playerTargetList.get(entity.getUniqueID())) || Boolean.TRUE.equals(this.playerTargetList.get(UuidUtils.EMPTY_UUID));
+
+            return isEntityValid && (isTargetValid || isPlayerValid);
+        }
+
+        return false;
     }
 
     public static void initialize() {
@@ -528,23 +538,5 @@ public final class TargetProcessor
     @Override
     public String getTargetName() {
         return this.hasTarget() ? EntityList.getEntityString(this.entityToAttack) : "";
-    }
-
-    private class EntityTargetSelector
-            implements Predicate<Entity>
-    {
-        @Override
-        public boolean apply(Entity entity) {
-            if( entity instanceof EntityLiving ) {
-                if( Boolean.TRUE.equals(TargetProcessor.this.entityTargetList.get(entity.getClass()))  ) {
-                    return !entity.isDead;
-                }
-            } else if( entity instanceof EntityPlayer ) {
-                if( Boolean.TRUE.equals(TargetProcessor.this.playerTargetList.get(entity.getUniqueID()))  || Boolean.TRUE.equals(TargetProcessor.this.playerTargetList.get(UuidUtils.EMPTY_UUID))) {
-                    return !entity.isDead;
-                }
-            }
-            return false;
-        }
     }
 }

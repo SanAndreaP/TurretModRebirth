@@ -43,13 +43,13 @@ public class LabelTurretPersShield
 
         currHeight += stdFontRenderer.FONT_HEIGHT + 2.0F;
 
-        addQuad(tessBuffer, 0.0D,       currHeight, healthPerc, currHeight + 2.0D, new ColorObj(0.3F, 1.0F, 0.3F, Math.max(progress, 4.0F / 255.0F)));
-        addQuad(tessBuffer, healthPerc, currHeight, maxWidth,   currHeight + 2.0D, new ColorObj(0.1F, 0.4F, 0.1F, Math.max(progress, 4.0F / 255.0F)));
+        addQuad(tessBuffer, 0.0D,       currHeight, healthPerc, currHeight + 2.0D, new ColorObj(0.87F, 0.45F, 1.0F, Math.max(progress, 4.0F / 255.0F)));
+        addQuad(tessBuffer, healthPerc, currHeight, maxWidth,   currHeight + 2.0D, new ColorObj(0.22F, 0.11F, 0.4F, Math.max(progress, 4.0F / 255.0F)));
     }
 
     @Override
     public void doRenderTextured(ITurretInst turretInst, float maxWidth, float progress, FontRenderer stdFontRenderer) {
-        stdFontRenderer.drawString(getLabel(turretInst), 0.0F, 0.0F, new ColorObj(0.3F, 1.0F, 0.3F, Math.max(progress, 4.0F / 255.0F)).getColorInt(), false);
+        stdFontRenderer.drawString(getLabel(turretInst), 0.0F, 0.0F, new ColorObj(0.87F, 0.45F, 1.0F, Math.max(progress, 4.0F / 255.0F)).getColorInt(), false);
     }
 
     private static String getLabel(ITurretInst turretInst) {
