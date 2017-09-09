@@ -34,7 +34,8 @@ public class ForcefieldCube
     public Map<EnumFacing, CubeFace[]> faces = new EnumMap<>(EnumFacing.class);
     private final Vec3d center;
     private final AxisAlignedBB boxAABB;
-    public ColorObj boxColor;
+    public final ColorObj boxColor;
+    public boolean fullRendered;
 
     public ForcefieldCube(Vec3d mpCenter, AxisAlignedBB cubeBox, ColorObj color) {
         this.center = mpCenter;
@@ -107,6 +108,10 @@ public class ForcefieldCube
     }
 
     public void interfere(ForcefieldCube interfered, boolean isRecessive) {
+        if( this.fullRendered || interfered.fullRendered ) {
+            return;
+        }
+
         Iterator<Entry<EnumFacing, CubeFace[]>> faceIterator = this.faces.entrySet().iterator();
         Map<EnumFacing, CubeFace[]> newFaceMap = new EnumMap<>(EnumFacing.class);
 
@@ -147,7 +152,6 @@ public class ForcefieldCube
             Collections.addAll(newFaces, myFace.getValue());
 
             if( newFaces.size() > 0 && intersects ) {
-
                 CubeFace myFacePart;
                 CubeFace[] newFaceParts;
                 CubeFace intfFace = new CubeFace(myFace.getKey().getOpposite(), interfered.center, interfered.boxAABB, interfered.boxColor);
@@ -237,16 +241,16 @@ public class ForcefieldCube
             RectCoords lftRect = new RectCoords(my.beginX, Math.min(intsCoord.beginY, my.beginY), Math.max(intsCoord.beginX, my.beginX), Math.max(intsCoord.endY, my.endY));
             RectCoords rgtRect = new RectCoords(Math.min(intsCoord.endX, my.endX), Math.min(intsCoord.beginY, my.beginY), my.endX, Math.max(intsCoord.endY, my.endY));
 
-            if( !topRect.isEmptyOrNegative() ) {
+            if( topRect.isSizePositive() ) {
                 newCubes.add(this.get3DCoords(topRect));
             }
-            if( !btmRect.isEmptyOrNegative() ) {
+            if( btmRect.isSizePositive() ) {
                 newCubes.add(this.get3DCoords(btmRect));
             }
-            if( !lftRect.isEmptyOrNegative() ) {
+            if( lftRect.isSizePositive() ) {
                 newCubes.add(this.get3DCoords(lftRect));
             }
-            if( !rgtRect.isEmptyOrNegative() ) {
+            if( rgtRect.isSizePositive() ) {
                 newCubes.add(this.get3DCoords(rgtRect));
             }
 
@@ -307,8 +311,8 @@ public class ForcefieldCube
             this.endY = yEnd;
         }
 
-        public boolean isEmptyOrNegative() {
-            return beginX + 0.0001D >= endX || beginY <= endY + 0.0001D;
+        public boolean isSizePositive() {
+            return beginX + 0.0001D < endX && beginY > endY + 0.0001D;
         }
     }
 }

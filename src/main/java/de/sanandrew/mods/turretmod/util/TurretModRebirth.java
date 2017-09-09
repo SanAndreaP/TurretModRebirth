@@ -18,11 +18,14 @@ import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteRegistry;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
+import de.sanandrew.mods.turretmod.registry.turret.shieldgen.ShieldHandler;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
+import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -91,6 +94,15 @@ public class TurretModRebirth
         proxy.postInit(event);
 
         TurretAssemblyRegistry.INSTANCE.finalizeRegistry();
+    }
+
+    @Mod.EventHandler
+    public void interModComm(FMLInterModComms.IMCEvent event) {
+        event.getMessages().forEach(message -> {
+            if( message.key.equals(TmrConstants.ID + ":checkProjForShield") && message.isFunctionMessage() ) {
+                message.getFunctionValue(Entity.class, Entity.class).ifPresent(ShieldHandler.PROJ_GET_OWNER::add);
+            }
+        });
     }
 
     /* // for debugging purposes only!

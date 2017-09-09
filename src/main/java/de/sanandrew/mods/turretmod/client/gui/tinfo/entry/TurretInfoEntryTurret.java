@@ -14,9 +14,9 @@ import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
+import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -40,17 +40,17 @@ public class TurretInfoEntryTurret
     private int drawHeight;
     private float rotation;
     private long lastTimestamp;
-    private ITurret turret;
     private WeakReference<EntityTurret> turretRenderCache;
-    private TurretInfoValues values;
 
     private IGuiTurretInfo guiInfo;
     private final ItemStack icon;
+    private final ITurret turret;
+    private final TurretInfoValues values;
 
     public TurretInfoEntryTurret(ITurret turret) {
         this.values = new TurretInfoValues(turret);
         this.turret = turret;
-        this.icon = ItemRegistry.turret_placer.getTurretItem(1, turret);
+        this.icon = TurretRegistry.INSTANCE.getTurretItem(turret);
     }
 
     @Override
@@ -193,10 +193,10 @@ public class TurretInfoEntryTurret
 
             List<IAmmunition> ammos = AmmunitionRegistry.INSTANCE.getTypesForTurret(turret);
             for( IAmmunition ammo : ammos ) {
-                ammoItms.add(ItemRegistry.turret_ammo.getAmmoItem(1, ammo));
+                ammoItms.add(AmmunitionRegistry.INSTANCE.getAmmoItem(ammo));
             }
 
-            TurretAssemblyRegistry.RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(turret.getInfo().getRecipeId());
+            TurretAssemblyRegistry.RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(TurretRegistry.INSTANCE.getTurretItem(turret));
             this.recipeStacks = recipeEntry == null ? new IRecipeEntry[0] : recipeEntry.resources;
 
             this.ammoStacks = ammoItms.toArray(new ItemStack[ammoItms.size()]);

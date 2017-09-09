@@ -6,7 +6,7 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.client.render.turret;
+package de.sanandrew.mods.turretmod.client.render.layer;
 
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.client.model.ModelBase;
@@ -22,7 +22,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class LayerTurretGlow<E extends EntityLiving & ITurretInst>
         implements LayerRenderer<E>
 {
-    private RenderLiving<E> turretRenderer;
+    private final RenderLiving<E> turretRenderer;
     private final ModelBase glowModel;
 
     public LayerTurretGlow(RenderLiving<E> turretRenderer, ModelBase glowModel) {
@@ -44,20 +44,16 @@ public class LayerTurretGlow<E extends EntityLiving & ITurretInst>
         GlStateManager.depthMask(false);
 
         // set lightmap to full brightness
-        int brightness = 0xF0;
-        int brightX = brightness % 65536;
-        int brightY = brightness / 65536;
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightX, brightY);
+        float lastBrightX = OpenGlHelper.lastBrightnessX;
+        float lastBrightY = OpenGlHelper.lastBrightnessY;
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 0xF0, 0x0);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
         this.glowModel.setLivingAnimations(turret, limbSwing, limbSwingAmount, partialTicks);
         this.glowModel.render(turret, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
         // reset lightmap to entity's brightness
-        brightness = turret.getBrightnessForRender();
-        brightX = brightness % 65536;
-        brightY = brightness / 65536;
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightX, brightY);
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastBrightX, lastBrightY);
 
         GlStateManager.depthMask(true);
 

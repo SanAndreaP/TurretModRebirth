@@ -8,7 +8,6 @@ package de.sanandrew.mods.turretmod.api.assembly;
 
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 
 import javax.annotation.Nonnull;
 import java.util.List;

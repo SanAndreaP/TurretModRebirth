@@ -22,8 +22,8 @@ public class GuiItemTab
         extends GuiButton
 {
 	@Nonnull
-	private ItemStack renderedItem;
-    private boolean isRight;
+	private final ItemStack renderedItem;
+    private final boolean isRight;
 
 	public GuiItemTab(int id, int posX, int posY, @Nonnull ItemStack renderedItem, String hoverText, boolean onTheRight) {
 		super(id, posX, posY, hoverText);

@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
 public class ContainerElectrolyteGenerator
         extends Container
 {
-    private TileEntityElectrolyteGenerator tile;
+    private final TileEntityElectrolyteGenerator tile;
 
     public ContainerElectrolyteGenerator(IInventory playerInv, TileEntityElectrolyteGenerator generator) {
         this.tile = generator;

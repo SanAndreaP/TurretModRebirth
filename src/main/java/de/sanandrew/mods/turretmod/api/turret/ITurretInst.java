@@ -50,4 +50,6 @@ public interface ITurretInst
     boolean isInGui();
 
     <V extends ITurretRAM> V getRAM(Supplier<V> onNull);
+
+    void updateState();
 }

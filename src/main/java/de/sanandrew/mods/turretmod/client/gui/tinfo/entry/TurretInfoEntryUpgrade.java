@@ -31,12 +31,12 @@ public class TurretInfoEntryUpgrade
         implements ITurretInfoEntry
 {
     private int drawHeight;
-    private ITurretUpgrade upgrade;
     private long lastTimestamp;
 
     private IGuiTurretInfo guiInfo;
     private final ItemStack icon;
     private final String title;
+    private final ITurretUpgrade upgrade;
 
     public TurretInfoEntryUpgrade(ITurretUpgrade upgrade) {
         this.upgrade = upgrade;
@@ -65,6 +65,7 @@ public class TurretInfoEntryUpgrade
         ITurretUpgrade prereq = this.upgrade.getDependantOn();
         int infoHeight = 54;
         Minecraft mc = this.guiInfo.__getMc();
+        ItemStack upgStack = UpgradeRegistry.INSTANCE.getUpgradeItem(this.upgrade);
 
         mc.fontRenderer.drawString(TextFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 2, 0xFF0080BB);
         Gui.drawRect(2, 12, MAX_ENTRY_WIDTH - 2, 13, 0xFF0080BB);
@@ -73,11 +74,11 @@ public class TurretInfoEntryUpgrade
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.guiInfo.__drawTexturedRect(2, 16, 192, 18, 34, 34);
 
-        RenderUtils.renderStackInGui(UpgradeRegistry.INSTANCE.getUpgradeItem(this.upgrade), 3, 17, 2.0F);
+        RenderUtils.renderStackInGui(upgStack, 3, 17, 2.0F);
 
         mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_CRAFTING.get()), 42, 16, 0xFF6A6A6A, false);
         if( prereq != null ) {
-            mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_WORKBENCH.get()), 42, 36, 0xFF6A6A6A, false);
+            mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_PREREQ.get()), 42, 36, 0xFF6A6A6A, false);
             infoHeight = 56;
         }
 
@@ -87,7 +88,7 @@ public class TurretInfoEntryUpgrade
         mc.fontRenderer.drawSplitString(text, 2, infoHeight + 3, MAX_ENTRY_WIDTH - 2, 0xFF000000);
         this.drawHeight = mc.fontRenderer.getWordWrappedHeight(text, MAX_ENTRY_WIDTH - 2) + infoHeight + 3 + 2;
 
-        TurretAssemblyRegistry.RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(this.upgrade.getRecipeId());
+        TurretAssemblyRegistry.RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(upgStack);
         if( recipeEntry != null ) {
             for( int i = 0; i < recipeEntry.resources.length; i++ ) {
                 ItemStack[] stacks = recipeEntry.resources[i].getEntryItemStacks();

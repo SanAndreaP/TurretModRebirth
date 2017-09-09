@@ -15,7 +15,7 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
-import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -88,7 +88,7 @@ public class PacketPlayerTurretAction
 //                        turret.world.loadedEntityList.add(turret);
 
                         TileEntityChest chest = (TileEntityChest) te;
-                        chest.setInventorySlotContents(0, ItemRegistry.turret_placer.getTurretItem(1, turretInst.getTurret(), turretInst));
+                        chest.setInventorySlotContents(0, TurretRegistry.INSTANCE.getTurretItem(turretInst));
                         ((TargetProcessor) turretInst.getTargetProcessor()).putAmmoInInventory(chest);
 
                         chestStack.shrink(1);

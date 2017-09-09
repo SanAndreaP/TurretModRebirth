@@ -47,8 +47,8 @@ import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileLaser;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileMinigunPebble;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectilePebble;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.registry.turret.TurretLaser;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.registry.turret.TurretLaser;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.util.CommonProxy;
@@ -143,7 +143,7 @@ public class ClientProxy
                     break;
                 case GUI_TASSEMBLY_FLT:
                     ItemStack stack = player.getHeldItemMainhand();
-                    if( ItemStackUtils.isValid(stack) && stack.getItem() == ItemRegistry.assembly_upg_filter ) {
+                    if( ItemStackUtils.isValid(stack) && stack.getItem() == ItemRegistry.ASSEMBLY_UPG_FILTER ) {
                         return new GuiAssemblyFilter(player.inventory, stack);
                     }
                     break;
@@ -257,5 +257,10 @@ public class ClientProxy
     @Override
     public void addForcefield(Entity e, IForcefieldProvider provider) {
         RenderForcefieldHandler.INSTANCE.addForcefieldRenderer(e, provider);
+    }
+
+    @Override
+    public boolean hasForcefield(Entity e, Class<? extends IForcefieldProvider> providerCls) {
+        return RenderForcefieldHandler.INSTANCE.hasForcefield(e, providerCls);
     }
 }

@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class ElectrolyteRegistry
 {
     private static final Map<ItemStack, Fuel> FUELS_INTRN = new HashMap<>();

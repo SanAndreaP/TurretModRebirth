@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 class AssemblyInventoryHandler
         implements ISidedInventory, INBTSerializable<NBTTagCompound>
 {
-    private NonNullList<ItemStack> assemblyStacks = NonNullList.withSize(23, ItemStack.EMPTY);
+    private final NonNullList<ItemStack> assemblyStacks = NonNullList.withSize(23, ItemStack.EMPTY);
 
     private static final int[] SLOTS_INSERT = new int[] {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22};
     private static final int[] SLOTS_EXTRACT =  new int[] {0};
@@ -59,15 +59,15 @@ class AssemblyInventoryHandler
     }
 
     boolean hasAutoUpgrade() {
-        return ItemStackUtils.isItem(this.assemblyStacks.get(1), ItemRegistry.assembly_upg_auto);
+        return ItemStackUtils.isItem(this.assemblyStacks.get(1), ItemRegistry.ASSEMBLY_UPG_AUTO);
     }
 
     boolean hasSpeedUpgrade() {
-        return ItemStackUtils.isItem(this.assemblyStacks.get(2), ItemRegistry.assembly_upg_speed);
+        return ItemStackUtils.isItem(this.assemblyStacks.get(2), ItemRegistry.ASSEMBLY_UPG_SPEED);
     }
 
     boolean hasFilterUpgrade() {
-        return ItemStackUtils.isItem(this.assemblyStacks.get(3), ItemRegistry.assembly_upg_filter);
+        return ItemStackUtils.isItem(this.assemblyStacks.get(3), ItemRegistry.ASSEMBLY_UPG_FILTER);
     }
 
     boolean canFillOutput() {
@@ -230,9 +230,9 @@ class AssemblyInventoryHandler
     @Override
     public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
         return slot != 0 && ItemStackUtils.isValid(stack)
-                && ( (slot > 4 && this.isStackAcceptable(stack, slot - 5)) || (slot == 1 && stack.getItem() == ItemRegistry.assembly_upg_auto)
-                || (slot == 2 && stack.getItem() == ItemRegistry.assembly_upg_speed)
-                || (slot == 3 && stack.getItem() == ItemRegistry.assembly_upg_filter) );
+                && ( (slot > 4 && this.isStackAcceptable(stack, slot - 5)) || (slot == 1 && stack.getItem() == ItemRegistry.ASSEMBLY_UPG_AUTO)
+                || (slot == 2 && stack.getItem() == ItemRegistry.ASSEMBLY_UPG_SPEED)
+                || (slot == 3 && stack.getItem() == ItemRegistry.ASSEMBLY_UPG_FILTER) );
     }
 
     @Override

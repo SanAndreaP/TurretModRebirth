@@ -23,6 +23,14 @@
           "item": "minecraft:gold_block"
         }
       ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:diamond"
+        }
+      ]
     }
   ],
   "result": {

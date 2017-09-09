@@ -11,10 +11,7 @@ package de.sanandrew.mods.turretmod.registry.upgrades;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import net.minecraft.util.ResourceLocation;
-
-import java.util.UUID;
 
 public abstract class UpgradeAmmoUsage
         implements ITurretUpgrade
@@ -53,11 +50,6 @@ public abstract class UpgradeAmmoUsage
         public ITurretUpgrade getDependantOn() {
             return null;
         }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.UPG_ECONOMY_I;
-        }
     }
 
     public static class UpgradeAmmoUseII
@@ -74,11 +66,6 @@ public abstract class UpgradeAmmoUsage
         public ITurretUpgrade getDependantOn() {
             return this.dependant;
         }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.UPG_ECONOMY_II;
-        }
     }
 
     public static class UpgradeAmmoUseInf
@@ -94,11 +81,6 @@ public abstract class UpgradeAmmoUsage
         @Override
         public ITurretUpgrade getDependantOn() {
             return this.dependant;
-        }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.UPG_ECONOMY_INF;
         }
     }
 }

@@ -15,7 +15,6 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.client.audio.SoundLaser;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -84,6 +83,11 @@ public class TurretLaser
     }
 
     @Override
+    public int getTier() {
+        return 3;
+    }
+
+    @Override
     public ITurretInfo getInfo() {
         return MyInfo.INSTANCE;
     }
@@ -97,7 +101,7 @@ public class TurretLaser
 
     public static final class MyInfo implements ITurretInfo
     {
-        static final ITurretInfo INSTANCE = new TurretCrossbow.MyInfo();
+        static final ITurretInfo INSTANCE = new MyInfo();
 
         @Override
         public float getHealth() {
@@ -107,11 +111,6 @@ public class TurretLaser
         @Override
         public int getAmmoCapacity() {
             return 256;
-        }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.TURRET_MK3_LR;
         }
 
         @Override

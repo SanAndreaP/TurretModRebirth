@@ -5,6 +5,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
+@SuppressWarnings("unused")
 public interface ITurretInfoCategoryRegistry
 {
     ITurretInfoCategory registerCategory(ResourceLocation categoryIcon, String title);

@@ -14,9 +14,11 @@ import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.client.event.CollisionEventHandler;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
 import de.sanandrew.mods.turretmod.event.DamageEventHandler;
+import de.sanandrew.mods.turretmod.event.ExplosionEventHandler;
 import de.sanandrew.mods.turretmod.inventory.ContainerAssemblyFilter;
 import de.sanandrew.mods.turretmod.inventory.ContainerElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
@@ -51,6 +53,8 @@ public class CommonProxy
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(PlayerList.INSTANCE);
         MinecraftForge.EVENT_BUS.register(new DamageEventHandler());
+        MinecraftForge.EVENT_BUS.register(new ExplosionEventHandler());
+        MinecraftForge.EVENT_BUS.register(new CollisionEventHandler());
 
         EntityRegistry.registerModEntity(new ResourceLocation(TmrConstants.ID, "turret"), EntityTurret.class, TmrConstants.ID + ".turret", CommonProxy.entityCount++, TurretModRebirth.instance, 128, 1, false);
 
@@ -80,7 +84,7 @@ public class CommonProxy
                     break;
                 case GUI_TASSEMBLY_FLT:
                     ItemStack stack = player.getHeldItemMainhand();
-                    if( ItemStackUtils.isValid(stack) && stack.getItem() == ItemRegistry.assembly_upg_filter ) {
+                    if( ItemStackUtils.isValid(stack) && stack.getItem() == ItemRegistry.ASSEMBLY_UPG_FILTER ) {
                         return new ContainerAssemblyFilter(player.inventory, stack, player.inventory.currentItem);
                     }
                     break;
@@ -121,13 +125,13 @@ public class CommonProxy
         }
     }
 
-    public void spawnParticle(EnumParticle particle, double x, double y, double z) {
-        this.spawnParticle(particle, x, y, z, null);
-    }
-
     public void spawnParticle(EnumParticle particle, double x, double y, double z, Tuple data) { }
 
     public void playTurretLaser(ITurretInst turretInst) { }
 
     public void addForcefield(Entity e, IForcefieldProvider provider) { }
+
+    public boolean hasForcefield(Entity e, Class<? extends IForcefieldProvider> providerCls) {
+        return false;
+    }
 }

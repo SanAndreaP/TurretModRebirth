@@ -34,6 +34,7 @@ public class ItemTurretInfo
         super();
         this.setCreativeTab(TmrCreativeTabs.MISC);
         this.setUnlocalizedName(TmrConstants.ID + ":turret_info");
+        this.setRegistryName(TmrConstants.ID, "turret_info");
     }
 
     @Override

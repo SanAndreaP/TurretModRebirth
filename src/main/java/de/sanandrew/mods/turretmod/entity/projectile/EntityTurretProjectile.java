@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.entity.projectile;
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -188,7 +189,6 @@ public abstract class EntityTurretProjectile
         List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, checkBB);
         double minDist = 0.0D;
 
-//        System.out.println(checkBB);
         for( Entity collidedEntity : list ) {
             if( collidedEntity.canBeCollidedWith() && collidedEntity != this.shooterCache ) {
                 AxisAlignedBB collisionAABB = collidedEntity.getEntityBoundingBox().grow(0.3D);
@@ -248,7 +248,7 @@ public abstract class EntityTurretProjectile
                         }
 
                         if( living instanceof EntityCreature && this.shooterCache instanceof EntityTurret) {
-                            setEntityTarget((EntityCreature) living, (EntityTurret) this.shooterCache);
+                            TmrUtils.INSTANCE.setEntityTarget((EntityCreature) living, (EntityTurret) this.shooterCache);
                         }
 
                         double deltaX = this.posX - living.posX;
@@ -279,22 +279,6 @@ public abstract class EntityTurretProjectile
         return DamageSource.causeThrownDamage(this, this.shooterCache == null ? this : this.shooterCache);
     }
 
-    public static void setEntityTarget(EntityCreature target, final EntityTurret attacker) {
-        target.setAttackTarget(attacker);
-        target.setRevengeTarget(attacker);
-
-        List<EntityAIMoveTowardsTurret> aiLst = EntityUtils.getAisFromTaskList(target.tasks.taskEntries, EntityAIMoveTowardsTurret.class);
-        if( aiLst.size() < 1 ) {
-            target.tasks.addTask(10, new EntityAIMoveTowardsTurret(target, attacker, 1.1D, 64.0F));
-        } else {
-            aiLst.forEach(aiTgtFollow -> {
-                if( !aiTgtFollow.shouldContinueExecuting() ) {
-                    aiTgtFollow.setNewTurret(attacker);
-                }
-            });
-        }
-    }
-
     public void knockBackEntity(EntityLivingBase living, double deltaX, double deltaZ) {
         if( this.rand.nextDouble() >= living.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).getAttributeValue() ) {
             living.isAirBorne = true;
@@ -320,6 +304,7 @@ public abstract class EntityTurretProjectile
         this.setDead();
     }
 
+    @SuppressWarnings("EmptyMethod")
     private void onBlockHit(@SuppressWarnings("UnusedParameters") BlockPos pos) { }
 
     public abstract float getInitialSpeedMultiplier();
@@ -336,10 +321,12 @@ public abstract class EntityTurretProjectile
         return 0.0F;
     }
 
+    @SuppressWarnings("SameReturnValue")
     public float getSpeedMultiplierAir() {
         return 1.0F;
     }
 
+    @SuppressWarnings("SameReturnValue")
     public float getSpeedMultiplierLiquid() {
         return 0.8F;
     }

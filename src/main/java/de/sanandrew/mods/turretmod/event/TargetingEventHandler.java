@@ -11,8 +11,11 @@ import de.sanandrew.mods.turretmod.api.event.TargetingEvent;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.turret.TurretCryolator;
 import de.sanandrew.mods.turretmod.registry.turret.TurretShotgun;
+import de.sanandrew.mods.turretmod.registry.turret.shieldgen.ShieldHandler;
+import de.sanandrew.mods.turretmod.registry.turret.shieldgen.TurretForcefield;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.MobEffects;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -23,20 +26,31 @@ import java.util.List;
 public class TargetingEventHandler
 {
     @SubscribeEvent
-    public void onTargetCheck(TargetingEvent.TargetCheck event) {
-        ITurretInst turret = event.processor.getTurret();
+    public void onProcessorTick(TargetingEvent.ProcessorTick event) {
+        ITurretInst turretInst = event.processor.getTurret();
 
-        if( turret instanceof TurretCryolator && event.target instanceof EntityLivingBase && ((EntityLivingBase) event.target).isPotionActive(MobEffects.SLOWNESS) ) {
+        if( turretInst.getTurret() instanceof TurretForcefield ) {
+            event.setCanceled(true);
+
+            ShieldHandler.onTargeting(turretInst, event.processor);
+        }
+    }
+
+    @SubscribeEvent
+    public void onTargetCheck(TargetingEvent.TargetCheck event) {
+        ITurretInst turretInst = event.processor.getTurret();
+
+        if( turretInst.getTurret() instanceof TurretCryolator && event.target instanceof EntityLivingBase && ((EntityLivingBase) event.target).isPotionActive(MobEffects.SLOWNESS) ) {
             event.setResult(Event.Result.DENY);
         }
 
         if( event.processor.getTurret().getUpgradeProcessor().hasUpgrade(Upgrades.SMART_TGT) ) {
-            List entities = turret.getEntity().world.getEntitiesWithinAABB(turret.getEntity().getClass(), turret.getTargetProcessor().getAdjustedRange(true));
+            List<EntityLiving> entities = turretInst.getEntity().world.getEntitiesWithinAABB(EntityLiving.class, turretInst.getTargetProcessor().getAdjustedRange(true));
 
-            for( Object eObj : entities ) {
-                if( eObj instanceof ITurretInst ) {
-                    ITurretInst otherTurret = (ITurretInst) eObj;
-                    if( eObj != turret && otherTurret.getTargetProcessor().getTarget() == event.target && otherTurret.getTargetProcessor().hasAmmo() ) {
+            for( EntityLiving entity : entities ) {
+                if( entity instanceof ITurretInst ) {
+                    ITurretInst otherTurret = (ITurretInst) entity;
+                    if( entity != turretInst && otherTurret.getTargetProcessor().getTarget() == event.target && otherTurret.getTargetProcessor().hasAmmo() ) {
                         event.setResult(Event.Result.DENY);
                         break;
                     }

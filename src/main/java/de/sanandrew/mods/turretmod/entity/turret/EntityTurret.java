@@ -22,6 +22,8 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.network.PacketRegistry;
+import de.sanandrew.mods.turretmod.network.PacketUpdateTurretState;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.Sounds;
@@ -56,7 +58,6 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class EntityTurret
@@ -81,7 +82,7 @@ public class EntityTurret
     private DataWatcherBooleans<EntityTurret> dwBools;
     private BlockPos blockPos;
     private boolean prevShotChng;
-    private boolean checkBlock;
+    private final boolean checkBlock;
 
     private ITurretRAM turretRAM;
 
@@ -120,6 +121,7 @@ public class EntityTurret
 
         this.getAttributeMap().registerAttribute(TurretAttributes.MAX_AMMO_CAPACITY);
         this.getAttributeMap().registerAttribute(TurretAttributes.MAX_RELOAD_TICKS);
+        this.getAttributeMap().registerAttribute(TurretAttributes.MAX_INIT_SHOOT_TICKS);
 
     }
 
@@ -137,16 +139,16 @@ public class EntityTurret
 
     @Override
     protected SoundEvent getHurtSound(DamageSource dmgSrc) {
-        return MiscUtils.defIfNull(this.delegate.getHurtSound(this), Sounds.hit_turrethit);
+        return MiscUtils.defIfNull(this.delegate.getHurtSound(this), Sounds.HIT_TURRETHIT);
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MiscUtils.defIfNull(this.delegate.getDeathSound(this), Sounds.hit_turretdeath);
+        return MiscUtils.defIfNull(this.delegate.getDeathSound(this), Sounds.HIT_TURRETDEATH);
     }
 
     protected SoundEvent getCollectSound() {
-        return MiscUtils.defIfNull(this.delegate.getCollectSound(this), Sounds.collect_ia_get);
+        return MiscUtils.defIfNull(this.delegate.getCollectSound(this), Sounds.COLLECT_IA_GET);
     }
 
     @Override
@@ -246,20 +248,19 @@ public class EntityTurret
             this.world.profiler.endSection();
         }
 
-        Function<Float, Float> wrap360 = rot -> (rot < 0.0F ? 360.0F - Math.abs(rot) : rot) % 360.0F;
+        this.upgProc.onTick();
+
         if( this.isActive() ) {
             if( !this.world.isRemote ) {
                 this.targetProc.onTick();
             }
 
-            this.upgProc.onTick();
-
             if( this.targetProc.hasTarget() ) {
                 this.faceEntity(this.targetProc.getTarget(), 10.0F, this.getVerticalFaceSpeed());
             } else if( this.world.isRemote && TmrUtils.INSTANCE.getPassengersOfClass(this, EntityPlayer.class).size() < 1 ) {
                 this.rotationYawHead += 1.0F;
-                this.rotationYawHead = wrap360.apply(this.rotationYawHead);
-                this.prevRotationYawHead = wrap360.apply(this.prevRotationYawHead);
+                this.rotationYawHead = TmrUtils.wrap360(this.rotationYawHead);
+                this.prevRotationYawHead = TmrUtils.wrap360(this.prevRotationYawHead);
 
                 if( this.rotationPitch < 0.0F ) {
                     this.rotationPitch += 5.0F;
@@ -274,8 +275,8 @@ public class EntityTurret
                 }
             }
         } else {
-            this.rotationYawHead = wrap360.apply(this.rotationYawHead);
-            this.prevRotationYawHead = wrap360.apply(this.prevRotationYawHead);
+            this.rotationYawHead = TmrUtils.wrap360(this.rotationYawHead);
+            this.prevRotationYawHead = TmrUtils.wrap360(this.prevRotationYawHead);
             float closestRot = (MathHelper.ceil(this.rotationYawHead) / 90) * 90.0F;
             if( this.rotationYawHead > closestRot ) {
                 this.rotationYawHead -= 5.0F;
@@ -289,7 +290,7 @@ public class EntityTurret
                 }
             }
 
-            final float lockedPitch = 30.0F;
+            final float lockedPitch = this.delegate.getDeactiveHeadPitch();
             if( this.rotationPitch < lockedPitch ) {
                 this.rotationPitch += 1.0F;
                 if( this.rotationPitch > lockedPitch ) {
@@ -313,7 +314,7 @@ public class EntityTurret
             player.inventory.setInventorySlotContents(player.inventory.currentItem, heldItem.copy());
         }
 
-        TmrUtils.INSTANCE.updateTurretState(this);
+        this.updateState();
         player.inventoryContainer.detectAndSendChanges();
         this.world.playSound(null, this.posX, this.posY, this.posZ, this.getCollectSound(), SoundCategory.NEUTRAL, 1.0F, 1.0F);
     }
@@ -323,7 +324,7 @@ public class EntityTurret
         ItemStack stack = player.getHeldItem(hand);
 
         if( this.world.isRemote ) {
-            if( ItemStackUtils.isItem(stack, ItemRegistry.turret_control_unit) ) {
+            if( ItemStackUtils.isItem(stack, ItemRegistry.TURRET_CONTROL_UNIT) ) {
                 TmrUtils.INSTANCE.openGui(player, player.isSneaking() ? EnumGui.GUI_DEBUG_CAMERA : EnumGui.GUI_TCU_INFO, this.getEntityId(), this.hasPlayerPermission(player) ? 1 : 0, 0);
                 return true;
             }
@@ -404,6 +405,8 @@ public class EntityTurret
         } else {
             buffer.writeBoolean(false);
         }
+
+        this.delegate.writeSpawnData(this, buffer);
     }
 
     @Override
@@ -419,6 +422,8 @@ public class EntityTurret
             this.ownerUUID = new UUID(buffer.readLong(), buffer.readLong());
             this.ownerName = ByteBufUtils.readUTF8String(buffer);
         }
+
+        this.delegate.readSpawnData(this, buffer);
     }
 
     @Override
@@ -436,6 +441,8 @@ public class EntityTurret
             nbt.setString("ownerUUID", this.ownerUUID.toString());
             nbt.setString("ownerName", this.ownerName);
         }
+
+        this.delegate.onSave(this, nbt);
     }
 
     @Override
@@ -458,6 +465,8 @@ public class EntityTurret
             this.ownerUUID = UUID.fromString(nbt.getString("ownerUUID"));
             this.ownerName = nbt.getString("ownerName");
         }
+
+        this.delegate.onLoad(this, nbt);
     }
 
     @Override
@@ -589,9 +598,14 @@ public class EntityTurret
     }
 
     @Override
+    public void updateState() {
+        PacketRegistry.sendToAllAround(new PacketUpdateTurretState(this), this.dimension, this.posX, this.posY, this.posZ, 64.0D);
+    }
+
+    @Override
     @Nonnull
     public ItemStack getPickedResult(RayTraceResult target) {
-        return ItemRegistry.turret_placer.getTurretItem(1, this.delegate);
+        return TurretRegistry.INSTANCE.getTurretItem(this.delegate);
     }
 
     @Override
@@ -601,12 +615,12 @@ public class EntityTurret
 
     @Override
     public AxisAlignedBB getCollisionBox(Entity entity) {
-        return entity.getEntityBoundingBox();
+        return entity instanceof EntityPlayer ? entity.getEntityBoundingBox() : null;
     }
 
     @Override
     public AxisAlignedBB getCollisionBoundingBox() {
-        return this.getEntityBoundingBox();
+        return null;
     }
 
     public AxisAlignedBB getRangeBB() {

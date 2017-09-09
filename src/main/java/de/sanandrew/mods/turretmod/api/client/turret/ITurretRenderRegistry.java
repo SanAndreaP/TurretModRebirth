@@ -21,7 +21,9 @@ public interface ITurretRenderRegistry<E extends EntityLiving & ITurretInst>
 
     ITurretRender<?, E> removeRender(ITurret turret);
 
-    <T extends ModelBase> void addStandardLayers(List<LayerRenderer<E>> layerList, ITurretRender<T, E> render);
+    void addUpgradeLayer(List<LayerRenderer<E>> layerList);
+
+    <T extends ModelBase> void addGlowLayer(List<LayerRenderer<E>> layerList, ITurretRender<T, E> render);
 
     RenderLivingBase<? extends EntityLiving> getRenderer();
 }

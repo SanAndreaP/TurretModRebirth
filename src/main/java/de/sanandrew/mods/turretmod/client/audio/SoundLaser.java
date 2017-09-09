@@ -22,7 +22,7 @@ public class SoundLaser
     private final ITurretInst turret;
 
     public SoundLaser(ITurretInst turret) {
-        super(Sounds.shoot_laser, SoundCategory.NEUTRAL);
+        super(Sounds.SHOOT_LASER, SoundCategory.NEUTRAL);
         this.turret = turret;
         this.repeat = true;
         this.repeatDelay = 0;

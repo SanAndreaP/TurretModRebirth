@@ -13,7 +13,6 @@ import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.Sounds;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -54,7 +53,7 @@ public class TurretFlamethrower
 
     @Override
     public SoundEvent getShootSound(ITurretInst turretInst) {
-        return turretInst.getEntity().getRNG().nextBoolean() ? Sounds.shoot_flamethrower : null;
+        return turretInst.getEntity().getRNG().nextBoolean() ? Sounds.SHOOT_FLAMETHROWER : null;
     }
 
     @Override
@@ -73,13 +72,18 @@ public class TurretFlamethrower
     }
 
     @Override
+    public int getTier() {
+        return 3;
+    }
+
+    @Override
     public ITurretInfo getInfo() {
         return MyInfo.INSTANCE;
     }
 
     public static final class MyInfo implements ITurretInfo
     {
-        static final ITurretInfo INSTANCE = new TurretCrossbow.MyInfo();
+        static final ITurretInfo INSTANCE = new MyInfo();
 
         @Override
         public float getHealth() {
@@ -89,11 +93,6 @@ public class TurretFlamethrower
         @Override
         public int getAmmoCapacity() {
             return 4096;
-        }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.TURRET_MK3_FT;
         }
 
         @Override

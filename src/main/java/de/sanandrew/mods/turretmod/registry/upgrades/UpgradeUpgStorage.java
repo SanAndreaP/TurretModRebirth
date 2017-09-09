@@ -11,10 +11,7 @@ package de.sanandrew.mods.turretmod.registry.upgrades;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import net.minecraft.util.ResourceLocation;
-
-import java.util.UUID;
 
 public abstract class UpgradeUpgStorage
         implements ITurretUpgrade
@@ -38,7 +35,7 @@ public abstract class UpgradeUpgStorage
     }
 
     @Override
-    public boolean isTurretApplicable(ITurret turretCls) {
+    public boolean isTurretApplicable(ITurret turret) {
         return true;
     }
 
@@ -53,11 +50,6 @@ public abstract class UpgradeUpgStorage
         @Override
         public ITurretUpgrade getDependantOn() {
             return null;
-        }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.UPG_STORAGE_1;
         }
     }
 
@@ -75,11 +67,6 @@ public abstract class UpgradeUpgStorage
         public ITurretUpgrade getDependantOn() {
             return this.dependant;
         }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.UPG_STORAGE_2;
-        }
     }
 
     public static class UpgradeStorageMK3
@@ -95,11 +82,6 @@ public abstract class UpgradeUpgStorage
         @Override
         public ITurretUpgrade getDependantOn() {
             return this.dependant;
-        }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.UPG_STORAGE_3;
         }
     }
 }

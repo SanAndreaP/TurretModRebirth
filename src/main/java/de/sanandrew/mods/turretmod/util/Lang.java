@@ -14,21 +14,23 @@ import net.minecraft.entity.EntityList;
 
 public final class Lang
 {
-    public static final TranslateKey TCU_BTN               = new TranslateKey("gui.%s.tcu.page.info.button.%%s", TmrConstants.ID);
-    public static final TranslateKey TCU_TARGET_BTN        = new TranslateKey("gui.%s.tcu.page.targetsEntity.button.%%s", TmrConstants.ID);
-    public static final TranslateKey TCU_PAGE_TITLE        = new TranslateKey("gui.%s.tcu.page.%%s.title", TmrConstants.ID);
-    public static final TranslateKey TCU_PAGE_TAB          = new TranslateKey("gui.%s.tcu.page.%%s.tab", TmrConstants.ID);
-    public static final TranslateKey TCU_DISMANTLE_ERROR   = new TranslateKey("gui.%s.tcu.page.info.button.dismantle.error", TmrConstants.ID);
-    public static final TranslateKey TCU_LABEL_HEALTH      = new TranslateKey("gui.%s.tcu.label.health", TmrConstants.ID);
-    public static final TranslateKey TCU_LABEL_AMMO        = new TranslateKey("gui.%s.tcu.label.ammo", TmrConstants.ID);
-    public static final TranslateKey TCU_LABEL_TARGET      = new TranslateKey("gui.%s.tcu.label.target", TmrConstants.ID);
-    public static final TranslateKey TCU_LABEL_PRSSHIELD = new TranslateKey("gui.%s.tcu.label.shield", TmrConstants.ID);
-    public static final TranslateKey TCU_LABEL_PRSSHIELD_RECV = new TranslateKey("gui.%s.tcu.label.shield_recv", TmrConstants.ID);
+    public static final TranslateKey TCU_BTN                     = new TranslateKey("gui.%s.tcu.page.info.button.%%s", TmrConstants.ID);
+    public static final TranslateKey TCU_TARGET_BTN              = new TranslateKey("gui.%s.tcu.page.targetsEntity.button.%%s", TmrConstants.ID);
+    public static final TranslateKey TCU_PAGE_TITLE              = new TranslateKey("gui.%s.tcu.page.%%s.title", TmrConstants.ID);
+    public static final TranslateKey TCU_PAGE_TAB                = new TranslateKey("gui.%s.tcu.page.%%s.tab", TmrConstants.ID);
+    public static final TranslateKey TCU_DISMANTLE_ERROR         = new TranslateKey("gui.%s.tcu.page.info.button.dismantle.error", TmrConstants.ID);
+    public static final TranslateKey TCU_LABEL_HEALTH            = new TranslateKey("gui.%s.tcu.label.health", TmrConstants.ID);
+    public static final TranslateKey TCU_LABEL_AMMO              = new TranslateKey("gui.%s.tcu.label.ammo", TmrConstants.ID);
+    public static final TranslateKey TCU_LABEL_TARGET            = new TranslateKey("gui.%s.tcu.label.target", TmrConstants.ID);
+    public static final TranslateKey TCU_LABEL_PRSSHIELD         = new TranslateKey("gui.%s.tcu.label.shield_pers", TmrConstants.ID);
+    public static final TranslateKey TCU_LABEL_PRSSHIELD_RECV    = new TranslateKey("gui.%s.tcu.label.shield_pers_recv", TmrConstants.ID);
+    public static final TranslateKey TCU_LABEL_TURRETSHIELD      = new TranslateKey("gui.%s.tcu.label.shield_turret", TmrConstants.ID);
+    public static final TranslateKey TCU_LABEL_TURRETSHIELD_RECV = new TranslateKey("gui.%s.tcu.label.shield_turret_recv", TmrConstants.ID);
 
     public static final TranslateKey TINFO_CATEGORY_NAME      = new TranslateKey("gui.%s.tinfo.category.%%s.name", TmrConstants.ID);
     public static final TranslateKey TINFO_ENTRY_INFO_TITLE   = new TranslateKey("gui.%s.tinfo.infoTitle", TmrConstants.ID);
-    public static final TranslateKey TINFO_ENTRY_AMMO_NAME    = new TranslateKey("%s.tinfo.ammo.%%s.name", TmrConstants.ID);
-    public static final TranslateKey TINFO_ENTRY_AMMO_DESC    = new TranslateKey("%s.tinfo.ammo.%%s.desc", TmrConstants.ID);
+    public static final TranslateKey TINFO_ENTRY_AMMO_NAME    = new TranslateKey("gui.%s.tinfo.ammo.%%s.name", TmrConstants.ID);
+    public static final TranslateKey TINFO_ENTRY_AMMO_DESC    = new TranslateKey("gui.%s.tinfo.ammo.%%s.desc", TmrConstants.ID);
     public static final TranslateKey TINFO_ENTRY_ROUNDS       = new TranslateKey("gui.%s.tinfo.rounds", TmrConstants.ID);
     public static final TranslateKey TINFO_ENTRY_DPS          = new TranslateKey("gui.%s.tinfo.dps", TmrConstants.ID);
     public static final TranslateKey TINFO_ENTRY_HEALTH       = new TranslateKey("gui.%s.tinfo.health", TmrConstants.ID);

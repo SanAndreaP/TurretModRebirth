@@ -163,7 +163,7 @@ public class RenderTurretCam
 
     private static class CamEntry
     {
-        int textureId;
+        final int textureId;
         boolean active;
         long lastUpdTime;
 

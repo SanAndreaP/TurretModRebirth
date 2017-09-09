@@ -9,6 +9,7 @@ package de.sanandrew.mods.turretmod.api;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+@SuppressWarnings("unused")
 public final class TmrConstants
 {
     public static final String ID = "sapturretmod";

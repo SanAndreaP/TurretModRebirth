@@ -61,6 +61,7 @@ public class BlockElectrolyteGenerator
         this.setUnlocalizedName(TmrConstants.ID + ":potato_generator");
         this.setLightOpacity(0);
         this.setDefaultState(this.blockState.getBaseState().withProperty(TILE_HOLDER, true));
+        this.setRegistryName(TmrConstants.ID, "electrolyte_generator");
     }
 
     @Override

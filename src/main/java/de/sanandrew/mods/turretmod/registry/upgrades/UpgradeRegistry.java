@@ -16,7 +16,6 @@ import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -25,6 +24,7 @@ import org.apache.logging.log4j.Level;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -37,24 +37,23 @@ public final class UpgradeRegistry
     public static final UUID EMPTY = UuidUtils.EMPTY_UUID;
     private static final ITurretUpgrade EMPTY_INST;
 
-    private Map<UUID, ITurretUpgrade> uuidToUpgradeMap = new HashMap<>();
-    private Map<ITurretUpgrade, UUID> upgradeToUuidMap = new HashMap<>();
-    private List<ITurretUpgrade> upgradeList = new ArrayList<>();
-
-    private List<String> errored = new ArrayList<>();
+    private Map<UUID, ITurretUpgrade> uuidToUpgradeMap;
+    private Map<ITurretUpgrade, UUID> upgradeToUuidMap;
+    private List<String> errored;
 
     static {
         INSTANCE.registerUpgrade(UpgradeRegistry.EMPTY, new UpgradeRegistry.EmptyUpgrade());
         EMPTY_INST = UpgradeRegistry.INSTANCE.uuidToUpgradeMap.get(UpgradeRegistry.EMPTY);
     }
 
+    private UpgradeRegistry() {
+        this.uuidToUpgradeMap = new HashMap<>();
+        this.upgradeToUuidMap = new LinkedHashMap<>();
+        this.errored = new ArrayList<>();
+    }
+
     @Override
     public void registerUpgrade(UUID uuid, ITurretUpgrade upgrade) {
-        if( this.uuidToUpgradeMap.containsKey(uuid) ) {
-            this.upgradeList.set(this.upgradeList.indexOf(this.uuidToUpgradeMap.get(uuid)), upgrade);
-        } else {
-        }
-        this.upgradeList.add(upgrade);
         this.uuidToUpgradeMap.put(uuid, upgrade);
         this.upgradeToUuidMap.put(upgrade, uuid);
     }
@@ -89,7 +88,7 @@ public final class UpgradeRegistry
 
     @Override
     public ITurretUpgrade getUpgrade(@Nonnull ItemStack stack) {
-        if( !ItemStackUtils.isItem(stack, ItemRegistry.turret_upgrade) || !stack.hasTagCompound() ) {
+        if( !ItemStackUtils.isItem(stack, ItemRegistry.TURRET_UPGRADE) || !stack.hasTagCompound() ) {
             return EMPTY_INST;
         }
 
@@ -98,7 +97,7 @@ public final class UpgradeRegistry
 
     @Override
     public List<ITurretUpgrade> getUpgrades() {
-        return new ArrayList<>(this.upgradeList);
+        return new ArrayList<>(this.upgradeToUuidMap.keySet());
     }
 
     @Override
@@ -106,7 +105,7 @@ public final class UpgradeRegistry
     public ItemStack getUpgradeItem(UUID uuid) {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setString("upgradeId", uuid.toString());
-        ItemStack stack = new ItemStack(ItemRegistry.turret_upgrade, 1);
+        ItemStack stack = new ItemStack(ItemRegistry.TURRET_UPGRADE, 1);
         stack.setTagCompound(nbt);
 
         return stack;
@@ -117,7 +116,7 @@ public final class UpgradeRegistry
     public ItemStack getUpgradeItem(ITurretUpgrade upgrade) {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setString("upgradeId", this.getUpgradeId(upgrade).toString());
-        ItemStack stack = new ItemStack(ItemRegistry.turret_upgrade, 1);
+        ItemStack stack = new ItemStack(ItemRegistry.TURRET_UPGRADE, 1);
         stack.setTagCompound(nbt);
 
         return stack;
@@ -136,11 +135,6 @@ public final class UpgradeRegistry
         @Override
         public ResourceLocation getModel() {
             return ITEM_MODEL;
-        }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.UPG_EMPTY;
         }
 
         @Override

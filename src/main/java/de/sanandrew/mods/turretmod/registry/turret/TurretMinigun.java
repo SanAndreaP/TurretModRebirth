@@ -15,7 +15,6 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.Sounds;
@@ -70,7 +69,7 @@ public class TurretMinigun
                 ram.isLeftShot = false;
             } else {
                 ram.maxBarrelLeft += 90.0F;
-                ram.isLeftShot = false;
+                ram.isLeftShot = true;
             }
 
             if( turretL.world.isRemote ) {
@@ -97,7 +96,7 @@ public class TurretMinigun
 
     @Override
     public SoundEvent getShootSound(ITurretInst turretInst) {
-        return Sounds.shoot_minigun;
+        return Sounds.SHOOT_MINIGUN;
     }
     @Override
     public String getName() {
@@ -112,6 +111,11 @@ public class TurretMinigun
     @Override
     public ResourceLocation getItemModel() {
         return ITEM_MODEL;
+    }
+
+    @Override
+    public int getTier() {
+        return 2;
     }
 
     @Override
@@ -134,7 +138,7 @@ public class TurretMinigun
 
     public static final class MyInfo implements ITurretInfo
     {
-        static final ITurretInfo INSTANCE = new TurretCrossbow.MyInfo();
+        static final ITurretInfo INSTANCE = new MyInfo();
 
         @Override
         public float getHealth() {
@@ -144,11 +148,6 @@ public class TurretMinigun
         @Override
         public int getAmmoCapacity() {
             return 512;
-        }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.TURRET_MK2_MG;
         }
 
         @Override

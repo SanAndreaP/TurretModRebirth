@@ -33,8 +33,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class TmrInternalPlugin
         implements ITmrPlugin
 {
-    public static IAmmunitionRegistry ammoRegistry;
-
     @Override
     public void registerAssemblyRecipes(ITurretAssemblyRegistry registry) {
         TurretAssemblyRecipes.initialize(registry);
@@ -52,7 +50,6 @@ public class TmrInternalPlugin
 
     @Override
     public void registerAmmo(IAmmunitionRegistry registry) {
-        ammoRegistry = registry;
         Ammunitions.initialize(registry);
     }
 

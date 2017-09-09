@@ -16,7 +16,6 @@ import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.client.render.tileentity.RenderElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.client.render.tileentity.RenderTurretAssembly;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.item.ItemTurret;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
@@ -50,18 +49,18 @@ public final class ModelRegistry
 {
     @SubscribeEvent
     public static void registerModels(ModelRegistryEvent event) throws Exception {
-        setStandardModel(ItemRegistry.turret_control_unit);
-        setStandardModel(ItemRegistry.turret_info);
-        setStandardModel(ItemRegistry.assembly_upg_filter);
-        setStandardModel(ItemRegistry.assembly_upg_auto);
-        setStandardModel(ItemRegistry.assembly_upg_speed);
-        setStandardModel(BlockRegistry.electrolyte_generator);
-        setStandardModel(BlockRegistry.turret_assembly);
+        setStandardModel(ItemRegistry.TURRET_CONTROL_UNIT);
+        setStandardModel(ItemRegistry.TURRET_INFO);
+        setStandardModel(ItemRegistry.ASSEMBLY_UPG_FILTER);
+        setStandardModel(ItemRegistry.ASSEMBLY_UPG_AUTO);
+        setStandardModel(ItemRegistry.ASSEMBLY_UPG_SPEED);
+        setStandardModel(BlockRegistry.ELECTROLYTE_GENERATOR);
+        setStandardModel(BlockRegistry.TURRET_ASSEMBLY);
 
-        setCustomMeshModel(ItemRegistry.turret_placer, new MeshDefUUID.Turret());
-        setCustomMeshModel(ItemRegistry.turret_ammo, new MeshDefUUID.Ammo());
-        setCustomMeshModel(ItemRegistry.turret_upgrade, new MeshDefUUID.Upgrade());
-        setCustomMeshModel(ItemRegistry.repair_kit, new MeshDefUUID.Repkit());
+        setCustomMeshModel(ItemRegistry.TURRET_PLACER, new MeshDefUUID.Turret());
+        setCustomMeshModel(ItemRegistry.TURRET_AMMO, new MeshDefUUID.Ammo());
+        setCustomMeshModel(ItemRegistry.TURRET_UPGRADE, new MeshDefUUID.Upgrade());
+        setCustomMeshModel(ItemRegistry.REPAIR_KIT, new MeshDefUUID.Repkit());
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurretAssembly.class, new RenderTurretAssembly());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityElectrolyteGenerator.class, new RenderElectrolyteGenerator());
@@ -120,7 +119,7 @@ public final class ModelRegistry
             }
 
             @Override
-            public ITurret getType(@Nonnull ItemStack stack) { return ItemTurret.getTurret(stack); }
+            public ITurret getType(@Nonnull ItemStack stack) { return TurretRegistry.INSTANCE.getTurret(stack); }
 
             @Override
             public UUID getId(ITurret type) { return type.getId(); }

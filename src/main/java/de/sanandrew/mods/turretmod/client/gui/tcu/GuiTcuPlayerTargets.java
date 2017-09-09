@@ -41,7 +41,7 @@ public class GuiTcuPlayerTargets
         extends GuiScreen
         implements GuiTurretCtrlUnit
 {
-    private ITurretInst turretInst;
+    private final ITurretInst turretInst;
 
     private int guiLeft;
     private int guiTop;

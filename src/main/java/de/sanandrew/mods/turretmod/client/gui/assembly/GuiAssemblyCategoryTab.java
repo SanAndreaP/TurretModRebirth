@@ -26,7 +26,7 @@ class GuiAssemblyCategoryTab
         extends GuiButton
 {
 	@Nonnull
-	private ItemStack renderedItem;
+	private final ItemStack renderedItem;
 
 	GuiAssemblyCategoryTab(int id, int posX, int posY, @Nonnull ItemStack renderedItem, String hoverText) {
 		super(id, posX, posY, hoverText);

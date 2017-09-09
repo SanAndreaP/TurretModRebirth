@@ -115,7 +115,7 @@ public final class RenderTurretPointed
     }
 
     private static boolean isItemTCU(@Nonnull ItemStack stack) {
-        return ItemStackUtils.isItem(stack, ItemRegistry.turret_control_unit);
+        return ItemStackUtils.isItem(stack, ItemRegistry.TURRET_CONTROL_UNIT);
     }
 
     private void renderLabel(EntityTurret turret, double x, double y, double z, LabelEntry lbl) {

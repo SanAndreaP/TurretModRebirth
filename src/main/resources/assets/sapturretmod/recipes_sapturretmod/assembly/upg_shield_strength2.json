@@ -1,0 +1,44 @@
+{
+  "id": "6e577957-fa94-485d-9e1b-35ed4bb35ced",
+  "group": "group4",
+  "fluxPerTick": 20,
+  "ticksProcessing": 600,
+  "ingredients": [
+    {
+      "count": 1,
+      "showTooltipText": true,
+      "items": [
+        {
+          "item": "sapturretmod:turret_upgrade",
+          "nbt": {
+            "upgradeId": "00000000-0000-0000-0000-000000000000"
+          }
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "showTooltipText": true,
+      "items": [
+        {
+          "item": "minecraft:enchanted_book",
+          "nbt": {
+            "StoredEnchantments": [
+              {
+                "id": "0s",
+                "lvl": "1s"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret_upgrade",
+    "count": 1,
+    "nbt": {
+      "upgradeId": "ef8bf1bb-437e-491d-ad6a-03f807987fae"
+    }
+  }
+}

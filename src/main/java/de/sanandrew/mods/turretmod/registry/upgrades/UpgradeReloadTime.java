@@ -14,7 +14,6 @@ import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.util.ResourceLocation;
@@ -27,7 +26,7 @@ public abstract class UpgradeReloadTime
     private final ResourceLocation itemModel;
 
     private final String name;
-    private AttributeModifier modifier;
+    private final AttributeModifier modifier;
 
     public UpgradeReloadTime(String name, String modUUID, double value) {
         this.name = name;
@@ -84,11 +83,6 @@ public abstract class UpgradeReloadTime
         public ITurretUpgrade getDependantOn() {
             return null;
         }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.UPG_RELOAD_1;
-        }
     }
 
     public static class UpgradeReloadTimeMK2
@@ -104,11 +98,6 @@ public abstract class UpgradeReloadTime
         @Override
         public ITurretUpgrade getDependantOn() {
             return this.dependant;
-        }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.UPG_RELOAD_2;
         }
     }
 }

@@ -37,8 +37,8 @@ public class GuiTcuInfo
         extends GuiScreen
         implements GuiTurretCtrlUnit
 {
-    private ITurretInst turretInst;
-    private boolean hasPermission;
+    private final ITurretInst turretInst;
+    private final boolean hasPermission;
 
     private int guiLeft;
     private int guiTop;

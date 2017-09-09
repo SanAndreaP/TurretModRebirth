@@ -24,7 +24,6 @@ import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
@@ -38,7 +37,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class UpgradeProcessor
-        implements IInventory, IUpgradeProcessor
+        implements IUpgradeProcessor
 {
     @Nonnull
     private final NonNullList<ItemStack> upgradeStacks = NonNullList.withSize(36, ItemStack.EMPTY);
@@ -46,7 +45,7 @@ public final class UpgradeProcessor
     private final Map<UUID, IUpgradeInstance> upgTickable = new ConcurrentHashMap<>();
 
     private boolean hasChanged = false;
-    private ITurretInst turret;
+    private final ITurretInst turret;
 
     public UpgradeProcessor(ITurretInst turret) {
         this.turret = turret;
@@ -214,14 +213,16 @@ public final class UpgradeProcessor
     @Override
     public void setInventorySlotContents(int slot, @Nonnull ItemStack stack) {
         ItemStack slotStack = this.upgradeStacks.get(slot);
-        if( ItemStackUtils.isValid(slotStack) ) {
-            ITurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(slotStack);
-            upg.onRemove(this.turret);
-        }
+        if( !ItemStackUtils.areEqual(slotStack, stack) ) {
+            if( ItemStackUtils.isValid(slotStack) ) {
+                ITurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(slotStack);
+                upg.onRemove(this.turret);
+            }
 
-        if( ItemStackUtils.isValid(stack) ) {
-            ITurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(stack);
-            upg.onApply(this.turret);
+            if( ItemStackUtils.isValid(stack) ) {
+                ITurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(stack);
+                upg.onApply(this.turret);
+            }
         }
 
         this.upgradeStacks.set(slot, stack);
@@ -283,7 +284,7 @@ public final class UpgradeProcessor
             return false;
         }
 
-        if( stack.getItem() == ItemRegistry.turret_upgrade ) {
+        if( stack.getItem() == ItemRegistry.TURRET_UPGRADE ) {
             ITurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(stack);
             if( this.hasUpgrade(UpgradeRegistry.INSTANCE.getUpgradeId(upg)) ) {
                 return false;

@@ -11,7 +11,6 @@ package de.sanandrew.mods.turretmod.client.event;
 import de.sanandrew.mods.turretmod.client.render.world.RenderTurretCam;
 import de.sanandrew.mods.turretmod.client.render.world.RenderTurretLaser;
 import de.sanandrew.mods.turretmod.client.render.world.RenderTurretPointed;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;

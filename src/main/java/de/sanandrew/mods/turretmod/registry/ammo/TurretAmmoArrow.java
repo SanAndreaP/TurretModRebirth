@@ -13,8 +13,6 @@ import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
-import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -22,19 +20,19 @@ import net.minecraft.util.ResourceLocation;
 import javax.annotation.Nonnull;
 import java.util.UUID;
 
-public abstract class TurretAmmoArrow
+public class TurretAmmoArrow
         implements IAmmunition<EntityProjectileCrossbowBolt>
 {
     private final String name;
-    private final UUID uuid;
+    private final UUID id;
     private final int capacity;
     private final ResourceLocation itemModel;
 
-    public TurretAmmoArrow(boolean quiver) {
-        this.name = quiver ? "arrow_lrg" : "arrow_sng";
-        this.uuid = quiver ? Ammunitions.QUIVER : Ammunitions.ARROW;
-        this.capacity = quiver ? 16 : 1;
-        this.itemModel = new ResourceLocation(TmrConstants.ID, "turret_ammo/" + (quiver ? "arrow_pack" : "arrow"));
+    public TurretAmmoArrow(boolean isMulti) {
+        this.name = isMulti ? "arrow_pack" : "arrow";
+        this.id = isMulti ? Ammunitions.QUIVER : Ammunitions.ARROW;
+        this.capacity = isMulti ? 16 : 1;
+        this.itemModel = new ResourceLocation(TmrConstants.ID, "turret_ammo/" + this.name);
     }
 
     @Override
@@ -44,7 +42,7 @@ public abstract class TurretAmmoArrow
 
     @Override
     public UUID getId() {
-        return this.uuid;
+        return this.id;
     }
 
     @Override
@@ -85,7 +83,7 @@ public abstract class TurretAmmoArrow
     @Override
     @Nonnull
     public ItemStack getStoringAmmoItem() {
-        return ItemRegistry.turret_ammo.getAmmoItem(1, AmmunitionRegistry.INSTANCE.getType(Ammunitions.ARROW));
+        return AmmunitionRegistry.INSTANCE.getAmmoItem(AmmunitionRegistry.INSTANCE.getType(Ammunitions.ARROW));
     }
 
     @Override
@@ -96,31 +94,5 @@ public abstract class TurretAmmoArrow
     @Override
     public ResourceLocation getModel() {
         return itemModel;
-    }
-
-    public static class Single
-            extends TurretAmmoArrow
-    {
-        public Single() {
-            super(false);
-        }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.ARROW_SNG;
-        }
-    }
-
-    public static class Quiver
-            extends TurretAmmoArrow
-    {
-        public Quiver() {
-            super(true);
-        }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.ARROW_MTP;
-        }
     }
 }

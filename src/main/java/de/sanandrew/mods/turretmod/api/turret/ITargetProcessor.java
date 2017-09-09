@@ -1,6 +1,7 @@
 package de.sanandrew.mods.turretmod.api.turret;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundEvent;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+@SuppressWarnings("unused")
 public interface ITargetProcessor
 {
     EventBus TARGET_BUS = new EventBus();
@@ -37,6 +39,14 @@ public interface ITargetProcessor
 
     boolean isShooting();
 
+    boolean canShoot();
+
+    void setShot(boolean success);
+
+    void decrInitShootTicks();
+
+    void resetInitShootTicks();
+
     Entity getProjectile();
 
     double getRangeVal();
@@ -48,6 +58,10 @@ public interface ITargetProcessor
     void playSound(SoundEvent sound, float volume);
 
     boolean isEntityValidTarget(Entity entity);
+
+    List<Entity> getValidTargetList(EntityLiving turretEntity);
+
+    boolean isEntityTargeted(Entity entity);
 
     ITurretInst getTurret();
 

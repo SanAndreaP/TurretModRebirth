@@ -63,7 +63,7 @@ public class GuiTurretInfo
     public int entryY;
     private URI clickedURI;
 
-    public List<GuiButton> entryButtons;
+    public final List<GuiButton> entryButtons;
 
     public GuiTurretInfo(int category, int entry) {
         this.category = category < 0 ? null : TurretInfoCategoryRegistry.INSTANCE.getCategory(category);

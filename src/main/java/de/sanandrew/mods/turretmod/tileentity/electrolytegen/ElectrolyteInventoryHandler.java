@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
 final class ElectrolyteInventoryHandler
         extends ItemStackHandler
 {
-    private TileEntityElectrolyteGenerator tile;
+    private final TileEntityElectrolyteGenerator tile;
 
     public ElectrolyteInventoryHandler(TileEntityElectrolyteGenerator tile) {
         super(14);

@@ -28,7 +28,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class GuiPotatoGenerator
         extends GuiContainer
 {
-    private TileEntityElectrolyteGenerator generator;
+    private final TileEntityElectrolyteGenerator generator;
     private int currEnergy;
     private int maxEnergy;
     private float currEffective;

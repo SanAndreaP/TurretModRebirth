@@ -16,16 +16,15 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 @SideOnly(Side.CLIENT)
 public class TurretRenderBase<T extends EntityLiving & ITurretInst>
         implements ITurretRender<ModelTurretBase, T>
 {
-    private final ModelTurretBase mainModel;
-    private final ITurretRenderRegistry<T> renderRegistry;
-    private final Function<Float, ModelTurretBase> modelConst;
+    final ModelTurretBase mainModel;
+    final ITurretRenderRegistry<T> renderRegistry;
+    final Function<Float, ModelTurretBase> modelConst;
 
     public TurretRenderBase(ITurretRenderRegistry<T> registry, Function<Float, ModelTurretBase> modelConst) {
         this.renderRegistry = registry;
@@ -45,6 +44,7 @@ public class TurretRenderBase<T extends EntityLiving & ITurretInst>
 
     @Override
     public void addLayers(List<LayerRenderer<T>> layerList) {
-        this.renderRegistry.addStandardLayers(layerList, this);
+        this.renderRegistry.addUpgradeLayer(layerList);
+        this.renderRegistry.addGlowLayer(layerList, this);
     }
 }

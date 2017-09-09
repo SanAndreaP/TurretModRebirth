@@ -11,10 +11,10 @@ package de.sanandrew.mods.turretmod.compat.jei;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.item.ItemTurret;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
+import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
@@ -43,20 +43,20 @@ public class JeiPlugin
 
         registry.addRecipes(TurretAssemblyRegistry.INSTANCE.getRecipeList(), AssemblyRecipeCategory.UID);
 
-        registry.addRecipeCatalyst(new ItemStack(BlockRegistry.turret_assembly), AssemblyRecipeCategory.UID);
+        registry.addRecipeCatalyst(new ItemStack(BlockRegistry.TURRET_ASSEMBLY), AssemblyRecipeCategory.UID);
     }
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistry subtypeRegistry) {
-        subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.turret_placer, itemStack -> {
-            ITurret stype = ItemTurret.getTurret(itemStack);
+        subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.TURRET_PLACER, itemStack -> {
+            ITurret stype = TurretRegistry.INSTANCE.getTurret(itemStack);
             return stype != null ? stype.getId().toString() : null;
         });
 
-        subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.turret_upgrade, itemStack -> UpgradeRegistry.INSTANCE.getUpgradeId(itemStack).toString());
+        subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.TURRET_UPGRADE, itemStack -> UpgradeRegistry.INSTANCE.getUpgradeId(itemStack).toString());
 
-        subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.turret_ammo, itemStack -> AmmunitionRegistry.INSTANCE.getType(itemStack).getId().toString());
+        subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.TURRET_AMMO, itemStack -> AmmunitionRegistry.INSTANCE.getType(itemStack).getId().toString());
 
-        subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.repair_kit, itemStack -> RepairKitRegistry.INSTANCE.getType(itemStack).getUUID().toString());
+        subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.REPAIR_KIT, itemStack -> RepairKitRegistry.INSTANCE.getType(itemStack).getUUID().toString());
     }
 }

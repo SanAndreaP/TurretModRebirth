@@ -35,12 +35,12 @@ import org.lwjgl.opengl.GL11;
 public class RenderTurretAssembly
         extends TileEntitySpecialRenderer<TileEntityTurretAssembly>
 {
-    private ModelTurretAssembly modelBlock = new ModelTurretAssembly();
+    private final ModelTurretAssembly modelBlock = new ModelTurretAssembly();
 
     public float armX;
     public float armZ;
 
-    private ShaderItemAlphaOverride shaderCallback = new ShaderItemAlphaOverride();
+    private final ShaderItemAlphaOverride shaderCallback = new ShaderItemAlphaOverride();
 
     @Override
     public void render(TileEntityTurretAssembly tile, double x, double y, double z, float partTicks, int destroyStage, float alpha) {
@@ -57,7 +57,7 @@ public class RenderTurretAssembly
         renderItem(tile);
 
         if( tile.isActive && tile.robotArmX >= 4.0F && tile.robotArmX <= 10.0F && tile.robotArmY <= -3.5F && tile.robotArmY >= -9.5F ) {
-            tile.spawnParticle = this.renderLaser(BlockRegistry.turret_assembly.getDirection(tile.getBlockMetadata()), tile.getPos());
+            tile.spawnParticle = this.renderLaser(BlockRegistry.TURRET_ASSEMBLY.getDirection(tile.getBlockMetadata()), tile.getPos());
         }
 
         GlStateManager.popMatrix();
@@ -133,7 +133,7 @@ public class RenderTurretAssembly
         ItemStack crfStack = assembly.currCrafting != null ? assembly.currCrafting.getValue(1) : assembly.getInventory().getStackInSlot(0);
 
         GlStateManager.pushMatrix();
-        GlStateManager.rotate((float)(90.0D * BlockRegistry.turret_assembly.getDirection(assembly.getBlockMetadata()).getHorizontalIndex()), 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate((float)(90.0D * BlockRegistry.TURRET_ASSEMBLY.getDirection(assembly.getBlockMetadata()).getHorizontalIndex()), 0.0F, 1.0F, 0.0F);
 
         if( ItemStackUtils.isValid(crfStack) ) {
             GlStateManager.enableBlend();

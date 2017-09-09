@@ -31,6 +31,7 @@ import javax.annotation.Nonnull;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -77,11 +78,6 @@ public final class AmmunitionRegistry
         }
 
         @Override
-        public UUID getRecipeId() {
-            return UuidUtils.EMPTY_UUID;
-        }
-
-        @Override
         public int getAmmoCapacity() {
             return 0;
         }
@@ -116,7 +112,7 @@ public final class AmmunitionRegistry
     private AmmunitionRegistry() {
         this.ammoTypesFromUUID = new HashMap<>();
         this.ammoTypesFromTurret = ArrayListMultimap.create();
-        this.ammoGroupsFromUUID = new HashMap<>();
+        this.ammoGroupsFromUUID = new LinkedHashMap<>();
         this.ammoTypes = new ArrayList<>();
     }
 
@@ -170,6 +166,21 @@ public final class AmmunitionRegistry
         return registerAmmoType(type, false);
     }
 
+    @Override
+    @Nonnull
+    public ItemStack getAmmoItem(IAmmunition type) {
+        if( type == null ) {
+            throw new IllegalArgumentException("Cannot get turret_ammo item with NULL type!");
+        }
+
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setString("ammoType", type.getId().toString());
+        ItemStack stack = new ItemStack(ItemRegistry.TURRET_AMMO, 1);
+        stack.setTagCompound(nbt);
+
+        return stack;
+    }
+
     boolean registerAmmoType(IAmmunition<?> type, boolean registerEntity) {
         if( type == null ) {
             TmrConstants.LOG.log(Level.ERROR, "Cannot register NULL as Ammo-Type!", new InvalidParameterException());
@@ -191,11 +202,6 @@ public final class AmmunitionRegistry
             return false;
         }
 
-        if( type.getEntityClass() == null ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("Ammo-Type %s has no projectile entity! Turrets can't shoot emptiness, can they!?", type.getName()), new InvalidParameterException());
-            return false;
-        }
-
         if( type.getTurret() == null ) {
             TmrConstants.LOG.log(Level.ERROR, String.format("Ammo-Type %s has no turret_placer! Ammo is pretty useless without something to shoot it with.", type.getName()), new InvalidParameterException());
             return false;
@@ -210,7 +216,8 @@ public final class AmmunitionRegistry
             EntityRegistry.registerModEntity(new ResourceLocation(TmrConstants.ID, name), type.getEntityClass(), TmrConstants.ID + '.' + name, CommonProxy.entityCount++, TurretModRebirth.instance, 128, 1, true);
         }
 
-        List<IAmmunition> groupList = this.ammoGroupsFromUUID.computeIfAbsent(type.getGroupId(), k -> new ArrayList<>());
+        UUID grpId = type.getGroupId();
+        List<IAmmunition> groupList = this.ammoGroupsFromUUID.computeIfAbsent(grpId, k -> new ArrayList<>());
         groupList.add(type);
 
         return true;
@@ -218,7 +225,7 @@ public final class AmmunitionRegistry
 
     @Override
     public boolean areAmmoItemsEqual(@Nonnull ItemStack firstStack, @Nonnull ItemStack secondStack) {
-        if( firstStack.getItem() == ItemRegistry.turret_ammo && secondStack.getItem() == ItemRegistry.turret_ammo ) {
+        if( firstStack.getItem() == ItemRegistry.TURRET_AMMO && secondStack.getItem() == ItemRegistry.TURRET_AMMO ) {
             IAmmunition firstType = this.getType(firstStack);
             IAmmunition secondType = this.getType(secondStack);
             return firstType != NULL_TYPE && secondType != NULL_TYPE && firstType.getTypeId().equals(secondType.getTypeId());

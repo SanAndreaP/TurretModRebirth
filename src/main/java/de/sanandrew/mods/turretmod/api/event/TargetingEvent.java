@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 import javax.annotation.Nonnull;
 
 @Event.HasResult
+@SuppressWarnings("unused")
 public abstract class TargetingEvent
         extends Event
 {
@@ -22,6 +23,15 @@ public abstract class TargetingEvent
 
     public TargetingEvent(ITargetProcessor processor) {
         this.processor = processor;
+    }
+
+    @Cancelable
+    public static class ProcessorTick
+            extends TargetingEvent
+    {
+        public ProcessorTick(ITargetProcessor processor) {
+            super(processor);
+        }
     }
 
     public static class TargetCheck
@@ -44,6 +54,7 @@ public abstract class TargetingEvent
         }
     }
 
+    @SuppressWarnings("CanBeFinal")
     public static class ConsumeAmmo
             extends TargetingEvent
     {

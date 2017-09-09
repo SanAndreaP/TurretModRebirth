@@ -8,7 +8,6 @@ package de.sanandrew.mods.turretmod.client.gui.tcu.labels;
 
 import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelElement;
-import de.sanandrew.mods.turretmod.api.client.tcu.ILabelRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.gui.FontRenderer;

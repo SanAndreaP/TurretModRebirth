@@ -23,14 +23,14 @@ public class ModelTurretAssembly
     public ModelRenderer robotArm;
     public ModelRenderer robotHead;
 
-    public ModelJsonLoader<ModelTurretAssembly, ModelJsonLoader.ModelJson> modelJson;
+    public final ModelJsonLoader<ModelTurretAssembly, ModelJsonLoader.ModelJson> modelJson;
 
     public ModelTurretAssembly() {
         this.modelJson = ModelJsonLoader.create(this, Resources.TILE_TURRET_ASSEMBLY_MODEL.getResource(), "base", "robotBinding", "robotArm", "robotHead");
     }
 
     public void render(float scale, TileEntityTurretAssembly te, float armX, float armZ) {
-        int meta = te.hasWorld() ? BlockRegistry.turret_assembly.getDirection(te.getBlockMetadata()).getHorizontalIndex() : 0;
+        int meta = te.hasWorld() ? BlockRegistry.TURRET_ASSEMBLY.getDirection(te.getBlockMetadata()).getHorizontalIndex() : 0;
         this.base.rotateAngleY = (float)(90.0D * meta / 180.0D * Math.PI);
 
         this.robotBinding.rotationPointX = armX;

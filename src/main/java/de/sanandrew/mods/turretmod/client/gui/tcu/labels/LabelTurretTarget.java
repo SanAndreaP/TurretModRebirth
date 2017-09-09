@@ -9,10 +9,10 @@ package de.sanandrew.mods.turretmod.client.gui.tcu.labels;
 import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelElement;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.registry.turret.shieldgen.TurretForcefield;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -22,7 +22,7 @@ public class LabelTurretTarget
 {
     @Override
     public boolean showElement(ITurretInst turretInst) {
-        return true;
+        return !(turretInst.getTurret() instanceof TurretForcefield);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class LabelTurretTarget
 
     @Override
     public void doRenderTextured(ITurretInst turretInst, float maxWidth, float progress, FontRenderer stdFontRenderer) {
-        int color = new ColorObj(1.0F, 1.0F, 0.625F, Math.max(progress, 0x4 / 255.0F)).getColorInt();
+        int color = new ColorObj(1.0F, 1.0F, 1.0F, Math.max(progress, 0x4 / 255.0F)).getColorInt();
         stdFontRenderer.drawString(getLabel(turretInst), 0.0F, 0.0F, color, false);
     }
 

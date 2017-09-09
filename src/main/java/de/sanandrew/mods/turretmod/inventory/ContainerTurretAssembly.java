@@ -23,8 +23,8 @@ import javax.annotation.Nonnull;
 public class ContainerTurretAssembly
         extends Container
 {
-    private IInventory inventory;
-    private TileEntityTurretAssembly tile;
+    private final IInventory inventory;
+    private final TileEntityTurretAssembly tile;
 
     public ContainerTurretAssembly(IInventory playerInv, TileEntityTurretAssembly assembly) {
         this.tile = assembly;
@@ -157,16 +157,16 @@ public class ContainerTurretAssembly
                 if( !super.mergeItemStack(slotStack, 23, 59, true) ) {
                     return ItemStack.EMPTY;
                 }
-            } else if( origStack.getItem() == ItemRegistry.assembly_upg_auto ) {
-                if( transferUpgrade(ItemRegistry.assembly_upg_auto, origStack, slotStack, 0) ) {
+            } else if( origStack.getItem() == ItemRegistry.ASSEMBLY_UPG_AUTO ) {
+                if( transferUpgrade(ItemRegistry.ASSEMBLY_UPG_AUTO, origStack, slotStack, 0) ) {
                     return ItemStack.EMPTY;
                 }
-            } else if( origStack.getItem() == ItemRegistry.assembly_upg_speed ) {
-                if( transferUpgrade(ItemRegistry.assembly_upg_speed, origStack, slotStack, 1) ) {
+            } else if( origStack.getItem() == ItemRegistry.ASSEMBLY_UPG_SPEED ) {
+                if( transferUpgrade(ItemRegistry.ASSEMBLY_UPG_SPEED, origStack, slotStack, 1) ) {
                     return ItemStack.EMPTY;
                 }
-            } else if( origStack.getItem() == ItemRegistry.assembly_upg_filter ) {
-                if( transferUpgrade(ItemRegistry.assembly_upg_filter, origStack, slotStack, 2) ) {
+            } else if( origStack.getItem() == ItemRegistry.ASSEMBLY_UPG_FILTER ) {
+                if( transferUpgrade(ItemRegistry.ASSEMBLY_UPG_FILTER, origStack, slotStack, 2) ) {
                     return ItemStack.EMPTY;
                 }
             } else if( !this.mergeItemStack(slotStack, 5, 23, false) ) { // if clicked stack is from player and also merge to input slots is sucessful
@@ -224,7 +224,7 @@ public class ContainerTurretAssembly
 
         @Override
         public boolean isItemValid(@Nonnull ItemStack stack) {
-            return !ContainerTurretAssembly.this.tile.hasAutoUpgrade() && stack.getItem() == ItemRegistry.assembly_upg_auto;
+            return !ContainerTurretAssembly.this.tile.hasAutoUpgrade() && stack.getItem() == ItemRegistry.ASSEMBLY_UPG_AUTO;
         }
     }
 
@@ -237,7 +237,7 @@ public class ContainerTurretAssembly
 
         @Override
         public boolean isItemValid(@Nonnull ItemStack stack) {
-            return !ContainerTurretAssembly.this.tile.hasSpeedUpgrade() && stack.getItem() == ItemRegistry.assembly_upg_speed;
+            return !ContainerTurretAssembly.this.tile.hasSpeedUpgrade() && stack.getItem() == ItemRegistry.ASSEMBLY_UPG_SPEED;
         }
     }
 
@@ -250,7 +250,7 @@ public class ContainerTurretAssembly
 
         @Override
         public boolean isItemValid(@Nonnull ItemStack stack) {
-            return !ContainerTurretAssembly.this.tile.hasFilterUpgrade() && stack.getItem() == ItemRegistry.assembly_upg_filter;
+            return !ContainerTurretAssembly.this.tile.hasFilterUpgrade() && stack.getItem() == ItemRegistry.ASSEMBLY_UPG_FILTER;
         }
     }
 }

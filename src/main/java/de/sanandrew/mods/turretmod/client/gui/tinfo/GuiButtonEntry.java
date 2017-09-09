@@ -29,7 +29,7 @@ public class GuiButtonEntry
     public final int entIndex;
 
     @Nonnull
-    private ItemStack icon;
+    private final ItemStack icon;
 
     private float ticksHovered = 0.0F;
     private float lastTime;

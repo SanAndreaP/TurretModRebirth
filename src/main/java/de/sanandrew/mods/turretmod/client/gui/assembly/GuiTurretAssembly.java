@@ -66,7 +66,7 @@ public class GuiTurretAssembly
     @Nonnull
     private final ItemStack upgIconFilter;
 
-    private TileEntityTurretAssembly assembly;
+    private final TileEntityTurretAssembly assembly;
     private List<Tuple> cacheRecipes;
     private FontRenderer frDetails;
     private boolean shiftPressed;
@@ -95,7 +95,7 @@ public class GuiTurretAssembly
     private UUID currCrfUUID;
     private ItemStack currCrfItem;
 
-    private ShaderItemAlphaOverride shaderCallback = new ShaderItemAlphaOverride();
+    private final ShaderItemAlphaOverride shaderCallback = new ShaderItemAlphaOverride();
 
     public GuiTurretAssembly(InventoryPlayer invPlayer, TileEntityTurretAssembly tile) {
         super(new ContainerTurretAssembly(invPlayer, tile));
@@ -106,9 +106,9 @@ public class GuiTurretAssembly
 
 //        this.assembly.syncStacks = false;
 
-        this.upgIconAuto = new ItemStack(ItemRegistry.assembly_upg_auto);
-        this.upgIconSpeed = new ItemStack(ItemRegistry.assembly_upg_speed);
-        this.upgIconFilter = new ItemStack(ItemRegistry.assembly_upg_filter);
+        this.upgIconAuto = new ItemStack(ItemRegistry.ASSEMBLY_UPG_AUTO);
+        this.upgIconSpeed = new ItemStack(ItemRegistry.ASSEMBLY_UPG_SPEED);
+        this.upgIconFilter = new ItemStack(ItemRegistry.ASSEMBLY_UPG_FILTER);
     }
 
     @SuppressWarnings("unchecked")
@@ -581,12 +581,6 @@ public class GuiTurretAssembly
     }
 
     @Override
-    public void onGuiClosed() {
-//        this.assembly.syncStacks = true;
-        super.onGuiClosed();
-    }
-
-    @Override
     protected void keyTyped(char keyChar, int keyCode) throws IOException {
         this.shiftPressed = keyCode == Keyboard.KEY_LSHIFT;
 
@@ -609,7 +603,7 @@ public class GuiTurretAssembly
     private GuiAssemblyCategoryTab[] getSortedTabs() {
         GuiAssemblyCategoryTab[] tabs = this.groupBtns.keySet().toArray(new GuiAssemblyCategoryTab[this.groupBtns.size()]);
 
-        Arrays.sort(tabs, (o1, o2) -> o1.id > o2.id ? 1 : o1.id < o2.id ? -1 : 0);
+        Arrays.sort(tabs, Comparator.comparingInt(o -> o.id));
 
         return tabs;
     }

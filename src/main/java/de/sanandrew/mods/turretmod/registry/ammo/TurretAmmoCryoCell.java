@@ -13,8 +13,6 @@ import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCryoCell;
-import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -25,13 +23,13 @@ import java.util.UUID;
 public abstract class TurretAmmoCryoCell
         implements IAmmunition<EntityProjectileCryoCell>
 {private final String name;
-    private final UUID uuid;
+    private final UUID id;
     private final int capacity;
     private final ResourceLocation itemModel;
 
-    public TurretAmmoCryoCell(String name, UUID uuid, int capacity) {
+    public TurretAmmoCryoCell(String name, UUID id, int capacity) {
         this.name = name;
-        this.uuid = uuid;
+        this.id = id;
         this.capacity = capacity;
         this.itemModel = new ResourceLocation(TmrConstants.ID, "turret_ammo/" + name);
     }
@@ -43,7 +41,7 @@ public abstract class TurretAmmoCryoCell
 
     @Override
     public UUID getId() {
-        return this.uuid;
+        return this.id;
     }
 
     @Override
@@ -79,7 +77,7 @@ public abstract class TurretAmmoCryoCell
     @Override
     @Nonnull
     public ItemStack getStoringAmmoItem() {
-        return ItemRegistry.turret_ammo.getAmmoItem(1, AmmunitionRegistry.INSTANCE.getType(this.getTypeId()));
+        return AmmunitionRegistry.INSTANCE.getAmmoItem(AmmunitionRegistry.INSTANCE.getType(this.getTypeId()));
     }
 
     @Override
@@ -97,11 +95,6 @@ public abstract class TurretAmmoCryoCell
         @Override
         public UUID getTypeId() {
             return Ammunitions.CRYOCELL_MK1;
-        }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.CRYOCELL_1_SNG;
         }
 
         @Override
@@ -123,11 +116,6 @@ public abstract class TurretAmmoCryoCell
         }
 
         @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.CRYOCELL_1_MTP;
-        }
-
-        @Override
         public EntityProjectileCryoCell getEntity(ITurretInst turretInst) {
             return new EntityProjectileCryoCell(turretInst.getEntity().world, turretInst.getEntity(), turretInst.getTargetProcessor().getTarget()).setLevelAndDuration(0, 300);
         }
@@ -143,11 +131,6 @@ public abstract class TurretAmmoCryoCell
         @Override
         public UUID getTypeId() {
             return Ammunitions.CRYOCELL_MK2;
-        }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.CRYOCELL_2_SNG;
         }
 
         @Override
@@ -169,11 +152,6 @@ public abstract class TurretAmmoCryoCell
         }
 
         @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.CRYOCELL_2_MTP;
-        }
-
-        @Override
         public EntityProjectileCryoCell getEntity(ITurretInst turretInst) {
             return new EntityProjectileCryoCell(turretInst.getEntity().world, turretInst.getEntity(), turretInst.getTargetProcessor().getTarget()).setLevelAndDuration(2, 200);
         }
@@ -192,11 +170,6 @@ public abstract class TurretAmmoCryoCell
         }
 
         @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.CRYOCELL_3_SNG;
-        }
-
-        @Override
         public EntityProjectileCryoCell getEntity(ITurretInst turretInst) {
             return new EntityProjectileCryoCell(turretInst.getEntity().world, turretInst.getEntity(), turretInst.getTargetProcessor().getTarget()).setLevelAndDuration(4, 100);
         }
@@ -212,11 +185,6 @@ public abstract class TurretAmmoCryoCell
         @Override
         public UUID getTypeId() {
             return Ammunitions.CRYOCELL_MK3;
-        }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.CRYOCELL_3_MTP;
         }
 
         @Override

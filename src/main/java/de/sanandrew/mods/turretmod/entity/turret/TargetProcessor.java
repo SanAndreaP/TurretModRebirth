@@ -8,7 +8,6 @@
  */
 package de.sanandrew.mods.turretmod.entity.turret;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
@@ -21,7 +20,6 @@ import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -53,10 +51,10 @@ public final class TargetProcessor
         implements ITargetProcessor
 {
     protected static final Map<Class<? extends Entity>, Boolean> ENTITY_TARGET_LIST_STD = new HashMap<>();
-    protected static final int MAX_INIT_SHOOT_TICKS = 20;
 
     protected final Map<Class<? extends Entity>, Boolean> entityTargetList;
     protected final Map<UUID, Boolean> playerTargetList;
+    protected final ITurretInst turret;
 
     protected int ammoCount;
     @Nonnull
@@ -65,7 +63,6 @@ public final class TargetProcessor
     protected int initShootTicks;
     protected Entity entityToAttack;
     protected UUID entityToAttackUUID;
-    protected ITurretInst turret;
     protected boolean isShootingClt;
 
     public TargetProcessor(ITurretInst turret) {
@@ -272,6 +269,30 @@ public final class TargetProcessor
     }
 
     @Override
+    public boolean canShoot() {
+        return this.initShootTicks <= 0 && this.shootTicks == 0;
+    }
+
+    @Override
+    public void setShot(boolean success) {
+        this.shootTicks = success ? this.getMaxShootTicks() : this.getMaxInitShootTicks();
+    }
+
+    @Override
+    public void decrInitShootTicks() {
+        this.initShootTicks--;
+    }
+
+    @Override
+    public void resetInitShootTicks() {
+        this.initShootTicks = this.getMaxInitShootTicks();
+    }
+
+    private int getMaxInitShootTicks() {
+        return (int) Math.round(this.turret.getEntity().getEntityAttribute(TurretAttributes.MAX_INIT_SHOOT_TICKS).getAttributeValue());
+    }
+
+    @Override
     public Entity getProjectile() {
         IAmmunition ammo = AmmunitionRegistry.INSTANCE.getType(this.ammoStack);
         if( ammo != AmmunitionRegistry.NULL_TYPE ) {
@@ -339,13 +360,17 @@ public final class TargetProcessor
             this.shootTicks--;
         }
 
+        if( TARGET_BUS.post(new TargetingEvent.ProcessorTick(this)) ) {
+            return;
+        }
+
         if( this.entityToAttack == null && this.entityToAttackUUID != null ) {
             this.entityToAttack = EntityUtils.getEntityByUUID(turretL.world, this.entityToAttackUUID);
         }
 
         AxisAlignedBB aabb = this.getAdjustedRange(true);
         if( this.entityToAttack == null ) {
-            for( Entity entityObj : turretL.world.getEntitiesInAABBexcluding(turretL, aabb, entity -> this.isEntityValidTarget(entity, aabb)) ) {
+            for( Entity entityObj : getValidTargetList(turretL, aabb) ) {
                 EntityLivingBase livingBase = (EntityLivingBase) entityObj;
                 if( this.checkTargetListeners(livingBase) ) {
                     this.entityToAttack = livingBase;
@@ -358,15 +383,14 @@ public final class TargetProcessor
 
         if( this.entityToAttack != null ) {
             if( this.isEntityValidTarget(this.entityToAttack, aabb) && this.checkTargetListeners(this.entityToAttack) ) {
-                if( this.initShootTicks <= 0 && this.shootTicks == 0 ) {
-                    boolean success = shootProjectile();
-                    this.shootTicks = success ? this.getMaxShootTicks() : MAX_INIT_SHOOT_TICKS;
+                if( this.canShoot() ) {
+                    this.setShot(shootProjectile());
                     changed = true;
                 } else if( this.initShootTicks > 0 ) {
-                    this.initShootTicks--;
+                    this.decrInitShootTicks();
                 }
             } else {
-                this.initShootTicks = MAX_INIT_SHOOT_TICKS;
+                this.resetInitShootTicks();
                 this.entityToAttack = null;
                 this.entityToAttackUUID = null;
                 changed = true;
@@ -374,7 +398,7 @@ public final class TargetProcessor
         }
 
         if( changed ) {
-            TmrUtils.INSTANCE.updateTurretState(this.turret);
+            this.turret.updateState();
         }
     }
 
@@ -383,13 +407,29 @@ public final class TargetProcessor
         return this.isEntityValidTarget(entity, this.getAdjustedRange(true));
     }
 
+    @Override
+    public List<Entity> getValidTargetList(EntityLiving turretEntity) {
+        return this.getValidTargetList(turretEntity, this.getAdjustedRange(true));
+    }
+
+    @Override
+    public boolean isEntityTargeted(Entity entity) {
+        return Boolean.TRUE.equals(this.entityTargetList.get(entity.getClass()))
+                    || (entity instanceof EntityPlayer
+                        && (Boolean.TRUE.equals(this.playerTargetList.get(entity.getUniqueID()))
+                            || (Boolean.TRUE.equals(this.playerTargetList.get(UuidUtils.EMPTY_UUID)))));
+    }
+
+    private List<Entity> getValidTargetList(EntityLiving turretEntity, AxisAlignedBB aabb) {
+        return turretEntity.world.getEntitiesInAABBexcluding(turretEntity, aabb, entity -> this.isEntityValidTarget(entity, aabb));
+    }
+
     private boolean isEntityValidTarget(Entity entity, AxisAlignedBB aabb) {
         if( entity instanceof EntityLivingBase ) {
-            boolean isEntityValid = this.turret.getEntity().canEntityBeSeen(entity) && entity.isEntityAlive() && entity.getEntityBoundingBox().intersects(aabb);
-            boolean isTargetValid = Boolean.TRUE.equals(this.entityTargetList.get(entity.getClass()));
-            boolean isPlayerValid = Boolean.TRUE.equals(this.playerTargetList.get(entity.getUniqueID())) || Boolean.TRUE.equals(this.playerTargetList.get(UuidUtils.EMPTY_UUID));
+            boolean isEntityValid = (this.turret.getTurret().canSeeThroughBlocks() || this.turret.getEntity().canEntityBeSeen(entity)) && entity.isEntityAlive()
+                                            && entity.getEntityBoundingBox().intersects(aabb);
 
-            return isEntityValid && (isTargetValid || isPlayerValid);
+            return isEntityValid && isEntityTargeted(entity);
         }
 
         return false;

@@ -19,5 +19,5 @@ public interface ITurretRender<T extends ModelBase, E extends EntityLiving & ITu
 
     default void addLayers(List<LayerRenderer<E>> layerList) { }
 
-    default void doRender(ITurretInst entity, double x, double y, double z, float entityYaw, float partialTicks) { }
+    default void doRender(ITurretInst turretInst, double x, double y, double z, float entityYaw, float partialTicks) { }
 }

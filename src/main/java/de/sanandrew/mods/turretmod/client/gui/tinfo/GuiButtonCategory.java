@@ -34,8 +34,8 @@ public class GuiButtonCategory
 
     public final int catIndex;
 
-    private ResourceLocation texture;
-    private GuiTurretInfo tinfo;
+    private final ResourceLocation texture;
+    private final GuiTurretInfo tinfo;
 
     private float lastTime;
     private float ticksHovered = 0.0F;

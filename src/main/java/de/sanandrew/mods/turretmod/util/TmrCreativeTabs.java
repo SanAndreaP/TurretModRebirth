@@ -41,7 +41,7 @@ public class TmrCreativeTabs
         public ItemStack getIconItemStack() {
             if( this.tabIcons == null ) {
                 this.tabIcons = NonNullList.create();
-                ItemRegistry.turret_placer.getSubItems(this, this.tabIcons);
+                ItemRegistry.TURRET_PLACER.getSubItems(this, this.tabIcons);
             }
 
             return this.tabIcons.get((int) (System.currentTimeMillis() / 4250L) % this.tabIcons.size());
@@ -53,13 +53,13 @@ public class TmrCreativeTabs
             super.displayAllRelevantItems(itmList);
 
             itmList.sort((itm1, itm2) -> {
-                if( itm1 != null && itm1.getItem() == ItemRegistry.turret_placer ) {
-                    return itm2 != null && itm2.getItem() == ItemRegistry.turret_placer ? 0 : -2;
-                } else if( itm2 != null && itm2.getItem() == ItemRegistry.turret_placer ) {
+                if( itm1 != null && itm1.getItem() == ItemRegistry.TURRET_PLACER ) {
+                    return itm2 != null && itm2.getItem() == ItemRegistry.TURRET_PLACER ? 0 : -2;
+                } else if( itm2 != null && itm2.getItem() == ItemRegistry.TURRET_PLACER ) {
                     return 2;
-                } else if( itm1 != null && itm1.getItem() == ItemRegistry.turret_ammo ) {
-                    return itm2 != null && itm2.getItem() == ItemRegistry.turret_ammo ? 0 : -1;
-                } else if( itm2 != null && itm2.getItem() == ItemRegistry.turret_ammo ) {
+                } else if( itm1 != null && itm1.getItem() == ItemRegistry.TURRET_AMMO ) {
+                    return itm2 != null && itm2.getItem() == ItemRegistry.TURRET_AMMO ? 0 : -1;
+                } else if( itm2 != null && itm2.getItem() == ItemRegistry.TURRET_AMMO ) {
                     return 1;
                 }
 
@@ -76,7 +76,7 @@ public class TmrCreativeTabs
         @SideOnly(Side.CLIENT)
         public ItemStack getTabIconItem() {
             if( !ItemStackUtils.isValid(this.currTabIcon) ) {
-                this.currTabIcon = new ItemStack(ItemRegistry.turret_control_unit, 1);
+                this.currTabIcon = new ItemStack(ItemRegistry.TURRET_CONTROL_UNIT, 1);
             }
 
             return this.currTabIcon;
@@ -92,9 +92,9 @@ public class TmrCreativeTabs
                     return itm2 != null && itm2.getItem() instanceof ItemBlock ? 0 : -2;
                 } else if( itm2 != null && itm2.getItem() instanceof ItemBlock ) {
                     return 2;
-                } else if( itm1 != null && itm1.getItem() == ItemRegistry.repair_kit ) {
-                    return itm2 != null && itm2.getItem() == ItemRegistry.repair_kit ? 0 : 1;
-                } else if( itm2 != null && itm2.getItem() == ItemRegistry.repair_kit ) {
+                } else if( itm1 != null && itm1.getItem() == ItemRegistry.REPAIR_KIT ) {
+                    return itm2 != null && itm2.getItem() == ItemRegistry.REPAIR_KIT ? 0 : 1;
+                } else if( itm2 != null && itm2.getItem() == ItemRegistry.REPAIR_KIT ) {
                     return -1;
                 }
 
@@ -118,7 +118,7 @@ public class TmrCreativeTabs
         public ItemStack getIconItemStack() {
             if( this.tabIcons == null ) {
                 this.tabIcons = NonNullList.create();
-                ItemRegistry.turret_upgrade.getSubItems(this, this.tabIcons);
+                ItemRegistry.TURRET_UPGRADE.getSubItems(this, this.tabIcons);
             }
 
             return this.tabIcons.get((int) (System.currentTimeMillis() / 4250L) % this.tabIcons.size());

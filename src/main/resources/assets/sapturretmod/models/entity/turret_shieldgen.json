@@ -1,0 +1,133 @@
+{
+  "parent": "sapturretmod:models/entity/turret_base.json",
+  "cubes": [
+    {
+      "boxName": "antenna",
+      "sizeX": 1,
+      "sizeY": 8,
+      "sizeZ": 1,
+      "textureX": 32,
+      "textureY": 6,
+      "textureWidth": 128,
+      "textureHeight": 64,
+      "offsetX": -0.5,
+      "offsetY": -11.0,
+      "offsetZ": -0.5,
+      "parentBox": "head"
+    },
+    {
+      "boxName": "antennaBall",
+      "sizeX": 2,
+      "sizeY": 2,
+      "sizeZ": 2,
+      "textureX": 24,
+      "textureY": 4,
+      "textureWidth": 128,
+      "textureHeight": 64,
+      "offsetX": -1.0,
+      "offsetY": -12.0,
+      "offsetZ": -1.0,
+      "parentBox": "antenna"
+    },
+    {
+      "boxName": "projBaseX",
+      "sizeX": 18,
+      "sizeY": 1,
+      "sizeZ": 1,
+      "textureX": 24,
+      "textureY": 0,
+      "textureWidth": 128,
+      "textureHeight": 64,
+      "offsetX": -9.0,
+      "offsetY": -0.5,
+      "offsetZ": -0.5,
+      "parentBox": "head"
+    },
+    {
+      "boxName": "projBaseZ",
+      "sizeX": 18,
+      "sizeY": 1,
+      "sizeZ": 1,
+      "textureX": 24,
+      "textureY": 0,
+      "textureWidth": 128,
+      "textureHeight": 64,
+      "offsetX": -9.0,
+      "offsetY": -0.5,
+      "offsetZ": -0.5,
+      "rotateAngleY": 1.5707963267948966192313216916398,
+      "parentBox": "head"
+    },
+    {
+      "boxName": "projAnchorI",
+      "rotateAngleY": 1.5707963267948966192313216916398,
+      "parentBox": "head"
+    },
+    {
+      "boxName": "projAnchorII",
+      "rotateAngleY": -1.5707963267948966192313216916398,
+      "parentBox": "head"
+    },
+    {
+      "boxName": "projectorI",
+      "sizeX": 1,
+      "sizeY": 16,
+      "sizeZ": 3,
+      "textureX": 60,
+      "textureY": 0,
+      "textureWidth": 128,
+      "textureHeight": 64,
+      "offsetX": -9.0,
+      "offsetY": -5.0,
+      "offsetZ": -1.5,
+      "rotateAngleZ": 0.21816615649929119711546134606108,
+      "parentBox": "head"
+    },
+    {
+      "boxName": "projectorII",
+      "sizeX": 1,
+      "sizeY": 16,
+      "sizeZ": 3,
+      "textureX": 60,
+      "textureY": 0,
+      "textureWidth": 128,
+      "textureHeight": 64,
+      "offsetX": -9.0,
+      "offsetY": -5.0,
+      "offsetZ": -1.5,
+      "rotateAngleY": 3.1415926535897932384626433832795,
+      "rotateAngleZ": -0.21816615649929119711546134606108,
+      "parentBox": "head"
+    },
+    {
+      "boxName": "projectorIII",
+      "sizeX": 1,
+      "sizeY": 16,
+      "sizeZ": 3,
+      "textureX": 60,
+      "textureY": 0,
+      "textureWidth": 128,
+      "textureHeight": 64,
+      "offsetX": -9.0,
+      "offsetY": -5.0,
+      "offsetZ": -1.5,
+      "rotateAngleZ": 0.21816615649929119711546134606108,
+      "parentBox": "projAnchorI"
+    },
+    {
+      "boxName": "projectorIV",
+      "sizeX": 1,
+      "sizeY": 16,
+      "sizeZ": 3,
+      "textureX": 60,
+      "textureY": 0,
+      "textureWidth": 128,
+      "textureHeight": 64,
+      "offsetX": -9.0,
+      "offsetY": -5.0,
+      "offsetZ": -1.5,
+      "rotateAngleZ": 0.21816615649929119711546134606108,
+      "parentBox": "projAnchorII"
+    }
+  ]
+}

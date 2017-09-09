@@ -9,8 +9,8 @@ package de.sanandrew.mods.turretmod.client.gui.tcu.labels;
 import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelElement;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.registry.upgrades.UpgradePersShield;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
+import de.sanandrew.mods.turretmod.registry.upgrades.shield.ShieldPersonal;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -23,7 +23,7 @@ public class LabelTurretPersShield
 {
     @Override
     public boolean showElement(ITurretInst turretInst) {
-        return turretInst.getUpgradeProcessor().hasUpgrade(Upgrades.SHIELD);
+        return turretInst.getUpgradeProcessor().hasUpgrade(Upgrades.SHIELD_PERSONAL);
     }
 
     @Override
@@ -38,8 +38,8 @@ public class LabelTurretPersShield
 
     @Override
     public void doRenderQuads(ITurretInst turretInst, float maxWidth, float progress, FontRenderer stdFontRenderer, float currHeight, BufferBuilder tessBuffer) {
-        UpgradePersShield.Shield shield = turretInst.getUpgradeProcessor().getUpgradeInstance(Upgrades.SHIELD);
-        float healthPerc = shield.getValue() / UpgradePersShield.Shield.MAX_VALUE * maxWidth;
+        ShieldPersonal shield = turretInst.getUpgradeProcessor().getUpgradeInstance(Upgrades.SHIELD_PERSONAL);
+        float healthPerc = shield.getValue() / ShieldPersonal.MAX_VALUE * maxWidth;
 
         currHeight += stdFontRenderer.FONT_HEIGHT + 2.0F;
 
@@ -53,12 +53,12 @@ public class LabelTurretPersShield
     }
 
     private static String getLabel(ITurretInst turretInst) {
-        UpgradePersShield.Shield shield = turretInst.getUpgradeProcessor().getUpgradeInstance(Upgrades.SHIELD);
+        ShieldPersonal shield = turretInst.getUpgradeProcessor().getUpgradeInstance(Upgrades.SHIELD_PERSONAL);
 
         if( shield.isInRecovery() ) {
             return Lang.translate(Lang.TCU_LABEL_PRSSHIELD_RECV, String.format("%.0f %%", shield.getRecoveryPercentage()));
         } else {
-            return Lang.translate(Lang.TCU_LABEL_PRSSHIELD, String.format("%.2f/%.2f", shield.getValue(), UpgradePersShield.Shield.MAX_VALUE));
+            return Lang.translate(Lang.TCU_LABEL_PRSSHIELD, String.format("%.2f/%.2f", shield.getValue(), ShieldPersonal.MAX_VALUE));
         }
     }
 

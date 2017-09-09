@@ -13,7 +13,6 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
@@ -26,7 +25,7 @@ public abstract class UpgradeHealth
 {
     private final ResourceLocation itemModel;
     private final String name;
-    private AttributeModifier modifier;
+    private final AttributeModifier modifier;
 
     public UpgradeHealth(String name, String modUUID) {
         this.name = name;
@@ -84,11 +83,6 @@ public abstract class UpgradeHealth
         public ITurretUpgrade getDependantOn() {
             return null;
         }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.UPG_HEALTH_MK1;
-        }
     }
 
     public static class UpgradeHealthMK2
@@ -105,11 +99,6 @@ public abstract class UpgradeHealth
         public ITurretUpgrade getDependantOn() {
             return this.dependant;
         }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.UPG_HEALTH_MK2;
-        }
     }
 
     public static class UpgradeHealthMK3
@@ -125,11 +114,6 @@ public abstract class UpgradeHealth
         @Override
         public ITurretUpgrade getDependantOn() {
             return this.dependant;
-        }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.UPG_HEALTH_MK3;
         }
     }
 
@@ -149,8 +133,8 @@ public abstract class UpgradeHealth
         }
 
         @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.UPG_HEALTH_MK4;
+        public boolean isTurretApplicable(ITurret turret) {
+            return turret.getTier() < 4;
         }
     }
 }

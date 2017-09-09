@@ -20,7 +20,6 @@ import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryTurret;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.entry.TurretInfoEntryUpgrade;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
@@ -68,16 +67,16 @@ public final class TurretInfoCategoryRegistry
             ITurretInfoEntry[] entries = UpgradeRegistry.INSTANCE.getUpgrades().stream().map(TurretInfoEntryUpgrade::new).toArray(ITurretInfoEntry[]::new);
 
             registry.registerCategory(Resources.TINFO_GRP_UPGRADE.getResource(), Lang.TINFO_CATEGORY_NAME.get("upgrades"))
-                    .addEntry(new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.assembly_upg_auto), TurretAssemblyRecipes.UPG_AT_AUTO))
-                    .addEntry(new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.assembly_upg_filter), TurretAssemblyRecipes.UPG_AT_FILTER))
-                    .addEntry(new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.assembly_upg_speed), TurretAssemblyRecipes.UPG_AT_SPEED))
+                    .addEntry(new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.ASSEMBLY_UPG_AUTO)))
+                    .addEntry(new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.ASSEMBLY_UPG_FILTER)))
+                    .addEntry(new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.ASSEMBLY_UPG_SPEED)))
                     .addEntry(entries);
         }
 
         registry.registerCategory(Resources.TINFO_GRP_MISC.getResource(), Lang.TINFO_CATEGORY_NAME.get("misc"))
-                .addEntry(new TurretInfoEntryMiscCraftable(getRecipe(new ItemStack(BlockRegistry.turret_assembly))))
-                .addEntry(new TurretInfoEntryGenerator(getRecipe(new ItemStack(BlockRegistry.electrolyte_generator))))
-                .addEntry(new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.turret_control_unit), TurretAssemblyRecipes.TCU));
+                .addEntry(new TurretInfoEntryMiscCraftable(getRecipe(new ItemStack(BlockRegistry.TURRET_ASSEMBLY))))
+                .addEntry(new TurretInfoEntryGenerator(getRecipe(new ItemStack(BlockRegistry.ELECTROLYTE_GENERATOR))))
+                .addEntry(new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.TURRET_CONTROL_UNIT)));
 
         registry.registerCategory(Resources.TINFO_GRP_INFO.getResource(), Lang.TINFO_CATEGORY_NAME.get("info")).addEntry(new TurretInfoEntryInfo());
     }

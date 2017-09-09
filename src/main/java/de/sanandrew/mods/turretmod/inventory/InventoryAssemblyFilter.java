@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 public class InventoryAssemblyFilter
         implements IInventory
 {
-    public NonNullList<ItemStack> invStacks;
+    public final NonNullList<ItemStack> invStacks;
 
     public InventoryAssemblyFilter(@Nonnull NonNullList<ItemStack> stacks) {
         this.invStacks = stacks;

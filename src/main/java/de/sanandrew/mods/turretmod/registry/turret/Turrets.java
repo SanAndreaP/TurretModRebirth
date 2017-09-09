@@ -8,6 +8,7 @@ package de.sanandrew.mods.turretmod.registry.turret;
 
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
+import de.sanandrew.mods.turretmod.registry.turret.shieldgen.TurretForcefield;
 
 public final class Turrets
 {
@@ -16,7 +17,7 @@ public final class Turrets
     public static final ITurret CRYOLATOR = new TurretCryolator();
     public static final ITurret REVOLVER = new TurretRevolver();
     public static final ITurret MINIGUN = new TurretMinigun();
-    public static final ITurret SHIELDGEN = new TurretShieldGen();
+    public static final ITurret SHIELDGEN = new TurretForcefield();
     public static final ITurret LASER = new TurretLaser();
     public static final ITurret FLAMETHROWER = new TurretFlamethrower();
 

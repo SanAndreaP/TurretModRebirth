@@ -19,6 +19,8 @@ import de.sanandrew.mods.turretmod.client.model.ModelTurretLaser;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretMinigun;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretRevolver;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretShotgun;
+import de.sanandrew.mods.turretmod.client.render.layer.LayerTurretGlow;
+import de.sanandrew.mods.turretmod.client.render.layer.LayerTurretUpgrades;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.model.ModelBase;
@@ -54,7 +56,7 @@ public class RenderTurret<E extends EntityLiving & ITurretInst>
     private final Map<ITurret, List<LayerRenderer<E>>> turretLayers = new HashMap<>();
 
     public RenderTurret(RenderManager manager) {
-        super(manager, new ModelIntern(), 0.5F);
+        super(manager, new ModelBase() { }, 0.5F);
 
         TurretModRebirth.PLUGINS.forEach(plugin -> plugin.registerTurretRenderer(this));
     }
@@ -82,9 +84,13 @@ public class RenderTurret<E extends EntityLiving & ITurretInst>
     }
 
     @Override
-    public <T extends ModelBase> void addStandardLayers(List<LayerRenderer<E>> layerList, ITurretRender<T, E> render) {
-        layerList.add(new LayerTurretGlow<>(this, render.getNewModel(0.001F)));
+    public void addUpgradeLayer(List<LayerRenderer<E>> layerList) {
         layerList.add(new LayerTurretUpgrades<>());
+    }
+
+    @Override
+    public <T extends ModelBase> void addGlowLayer(List<LayerRenderer<E>> layerList, ITurretRender<T, E> render) {
+        layerList.add(new LayerTurretGlow<>(this, render.getNewModel(0.001F)));
     }
 
     @Override
@@ -237,9 +243,6 @@ public class RenderTurret<E extends EntityLiving & ITurretInst>
         registry.registerRender(Turrets.MINIGUN, new TurretRenderBase<>(registry, ModelTurretMinigun::new));
         registry.registerRender(Turrets.LASER, new TurretRenderBase<>(registry, ModelTurretLaser::new));
         registry.registerRender(Turrets.FLAMETHROWER, new TurretRenderBase<>(registry, ModelTurretFlamethrower::new));
-    }
-
-    private static class ModelIntern extends ModelBase {
-
+        registry.registerRender(Turrets.SHIELDGEN, new TurretRenderShieldGen<>(registry));
     }
 }

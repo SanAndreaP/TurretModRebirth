@@ -69,7 +69,6 @@ public interface IAmmunition<T extends Entity & IProjectile>
 
 
     float getInfoDamage();
-    UUID getRecipeId();
     int getAmmoCapacity();
     Class<T> getEntityClass();
     T getEntity(ITurretInst turretInst);

@@ -74,9 +74,8 @@ public class TileEntityTurretAssembly
     private long ticksExisted;
     private String customName;
 
-    AssemblyEnergyStorage energyStorage;
-    AssemblyInventoryHandler invHandler;
-
+    final AssemblyEnergyStorage energyStorage;
+    final AssemblyInventoryHandler invHandler;
     final IItemHandler itemHandlerBottom;
     final IItemHandler itemHandlerSide;
 
@@ -130,6 +129,7 @@ public class TileEntityTurretAssembly
         this.isActive = false;
         this.isActiveClient = false;
         this.doSync = true;
+        this.markDirty();
     }
 
     private void initCrafting() {
@@ -206,17 +206,18 @@ public class TileEntityTurretAssembly
                                 this.isActiveClient = false;
                             }
 
-                            if( !TurretAssemblyRegistry.INSTANCE.checkAndConsumeResources(this.invHandler, this.currCrafting.getValue(0)) ) {
-                                this.isActive = false;
-                                this.isActiveClient = false;
-                            }
-
                             if( this.currCrafting.<ItemStack>getValue(1).getCount() > 1 ) {
                                 if( !this.automate ) {
                                     this.currCrafting.<ItemStack>getValue(1).shrink(1);
                                 }
+
+                                if( !TurretAssemblyRegistry.INSTANCE.checkAndConsumeResources(this.invHandler, this.currCrafting.getValue(0)) ) {
+                                    this.isActive = false;
+                                    this.isActiveClient = false;
+                                }
                             } else if( !this.automate ) {
                                 this.cancelCrafting();
+                                return;
                             }
                             this.ticksCrafted = 0;
 

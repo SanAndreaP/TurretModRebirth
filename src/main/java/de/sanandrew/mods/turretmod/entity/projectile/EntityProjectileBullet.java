@@ -37,15 +37,6 @@ public class EntityProjectileBullet
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-
-//        if( this.world.isRemote ) {
-//            TurretModRebirth.proxy.spawnParticle(EnumParticle.CRYO_PARTICLE, this.posX, this.posY, this.posZ, Triplet.with(this.motionX, this.motionY, this.motionZ));
-//        }
-    }
-
-    @Override
     public float getInitialSpeedMultiplier() {
         return 3.0F;
     }
@@ -82,7 +73,7 @@ public class EntityProjectileBullet
 
     @Override
     public SoundEvent getRicochetSound() {
-        return Sounds.ricochet_bullet;
+        return Sounds.RICOCHET_BULLET;
     }
 
 //    @Override

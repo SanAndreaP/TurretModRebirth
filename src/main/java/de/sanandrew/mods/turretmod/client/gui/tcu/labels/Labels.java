@@ -19,5 +19,6 @@ public final class Labels
         registry.registerLabelElement(new LabelTurretAmmo());
         registry.registerLabelElement(new LabelTurretTarget());
         registry.registerLabelElement(new LabelTurretPersShield());
+        registry.registerLabelElement(new LabelTurretShield());
     }
 }

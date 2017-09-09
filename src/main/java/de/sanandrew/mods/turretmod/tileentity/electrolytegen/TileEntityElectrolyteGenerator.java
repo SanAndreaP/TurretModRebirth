@@ -52,10 +52,10 @@ public class TileEntityElectrolyteGenerator
 
     boolean doSync;
     private String customName;
-    private ElectrolyteInventoryHandler itemHandler = new ElectrolyteInventoryHandler(this);
-    private ElectrolyteEnergyStorage energyStorage = new ElectrolyteEnergyStorage();
 
-    public ElectrolyteContainerInventoryHandler containerItemHandler = new ElectrolyteContainerInventoryHandler(itemHandler);
+    private final ElectrolyteInventoryHandler itemHandler = new ElectrolyteInventoryHandler(this);
+    private final ElectrolyteEnergyStorage energyStorage = new ElectrolyteEnergyStorage();
+    public final ElectrolyteContainerInventoryHandler containerItemHandler = new ElectrolyteContainerInventoryHandler(this.itemHandler);
 
     public int getGeneratedFlux() {
         return this.effectiveness < 0.1F ? 0 : Math.min(200, (int) Math.round(Math.pow(1.6D, this.effectiveness) / (68.0D + (127433.0D / 177119.0D)) * 80.0D));
@@ -284,7 +284,7 @@ public class TileEntityElectrolyteGenerator
     }
 
     public String getName() {
-        return this.hasCustomName() ? this.customName : BlockRegistry.electrolyte_generator.getUnlocalizedName() + ".name";
+        return this.hasCustomName() ? this.customName : BlockRegistry.ELECTROLYTE_GENERATOR.getUnlocalizedName() + ".name";
     }
 
     public boolean hasCustomName() {

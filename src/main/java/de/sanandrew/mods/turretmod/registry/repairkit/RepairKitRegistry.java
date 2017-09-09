@@ -92,7 +92,7 @@ public final class RepairKitRegistry
     @Override
     @Nonnull
     public TurretRepairKit getType(@Nonnull ItemStack stack) {
-        if( ItemStackUtils.isItem(stack, ItemRegistry.repair_kit) ) {
+        if( ItemStackUtils.isItem(stack, ItemRegistry.REPAIR_KIT) ) {
             NBTTagCompound nbt = stack.getTagCompound();
             if( nbt != null ) {
                 if( nbt.hasKey("repKitType") ) {
@@ -107,9 +107,6 @@ public final class RepairKitRegistry
         }
 
         return EMPTY_REPKIT;
-    }
-
-    public void initialize() {
     }
 
     private static final UUID EMPTY = UuidUtils.EMPTY_UUID;

@@ -29,6 +29,7 @@ public class ItemRepairKit
         super();
         this.setCreativeTab(TmrCreativeTabs.MISC);
         this.setUnlocalizedName(TmrConstants.ID + ":turret_repair_kit");
+        this.setRegistryName(TmrConstants.ID, "repair_kit");
     }
 
     @Override

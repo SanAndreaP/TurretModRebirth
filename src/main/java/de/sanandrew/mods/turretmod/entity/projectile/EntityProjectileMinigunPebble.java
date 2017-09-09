@@ -56,7 +56,7 @@ public class EntityProjectileMinigunPebble
 
     @Override
     public SoundEvent getRicochetSound() {
-        return Sounds.ricochet_bullet;
+        return Sounds.RICOCHET_BULLET;
     }
 
     @Override

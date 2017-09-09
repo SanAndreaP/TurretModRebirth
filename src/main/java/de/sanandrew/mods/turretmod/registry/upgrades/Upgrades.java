@@ -7,6 +7,10 @@
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
+import de.sanandrew.mods.turretmod.registry.turret.TurretFlamethrower;
+import de.sanandrew.mods.turretmod.registry.turret.TurretLaser;
+import de.sanandrew.mods.turretmod.registry.turret.shieldgen.TurretForcefield;
+import de.sanandrew.mods.turretmod.registry.upgrades.shield.UpgradeShieldPersonal;
 
 import java.util.UUID;
 
@@ -28,7 +32,11 @@ public class Upgrades
     public static final UUID ECONOMY_INF = UUID.fromString("C3CF3EE9-8314-4766-A5E0-6033DB3EE9DB");
     public static final UUID ENDER_MEDIUM = UUID.fromString("0ED3D861-F11D-4F6B-B9FC-67E22C8EB538");
     public static final UUID FUEL_PURIFY = UUID.fromString("677FA826-DA2D-40E9-9D86-7FAD7DE398CC");
-    public static final UUID SHIELD = UUID.fromString("90F61412-4ECC-431B-A6AC-288F26C37608");
+    public static final UUID SHIELD_PERSONAL = UUID.fromString("90F61412-4ECC-431B-A6AC-288F26C37608");
+    public static final UUID SHIELD_PROJECTILE = UUID.fromString("AB5E19F9-C241-4F3C-B04E-6C276369B0CF");
+    public static final UUID SHIELD_EXPLOSIVE = UUID.fromString("853DB6B1-EAEF-4175-B1EE-02F765D24D25");
+    public static final UUID SHIELD_STRENGTH_I = UUID.fromString("C03BFDDA-1415-4519-BE59-61C568B6345E");
+    public static final UUID SHIELD_STRENGTH_II = UUID.fromString("EF8BF1BB-437E-491D-AD6A-03F807987FAE");
 
     public static void initialize(IUpgradeRegistry registry) {
         registry.registerUpgrade(UPG_STORAGE_I, new UpgradeUpgStorage.UpgradeStorageMK1());
@@ -41,13 +49,16 @@ public class Upgrades
         registry.registerUpgrade(HEALTH_IV, new UpgradeHealth.UpgradeHealthMK4());
         registry.registerUpgrade(RELOAD_I, new UpgradeReloadTime.UpgradeReloadTimeMK1());
         registry.registerUpgrade(RELOAD_II, new UpgradeReloadTime.UpgradeReloadTimeMK2());
-        registry.registerUpgrade(SMART_TGT, new UpgradeSmartTargeting());
+        registry.registerUpgrade(SMART_TGT, new UpgradeBasic("smart_tgt", t -> true)); //TODO: add advanced settings for TCU
         registry.registerUpgrade(ECONOMY_I, new UpgradeAmmoUsage.UpgradeAmmoUseI());
         registry.registerUpgrade(ECONOMY_II, new UpgradeAmmoUsage.UpgradeAmmoUseII());
         registry.registerUpgrade(ECONOMY_INF, new UpgradeAmmoUsage.UpgradeAmmoUseInf());
-        registry.registerUpgrade(ENDER_MEDIUM, new UpgradeEnderMedium());
-        registry.registerUpgrade(FUEL_PURIFY, new UpgradeFuelPurifier());
-        registry.registerUpgrade(SHIELD, new UpgradePersShield());
+        registry.registerUpgrade(ENDER_MEDIUM, new UpgradeBasic("ender_medium", t -> t instanceof TurretLaser));
+        registry.registerUpgrade(FUEL_PURIFY, new UpgradeBasic("fuel_purifier", t -> t instanceof TurretFlamethrower));
+        registry.registerUpgrade(SHIELD_PERSONAL, new UpgradeShieldPersonal());
+        registry.registerUpgrade(SHIELD_PROJECTILE, new UpgradeBasic("shield_projectile", t -> t instanceof TurretForcefield));
+        registry.registerUpgrade(SHIELD_EXPLOSIVE, new UpgradeBasic("shield_explosive", t -> t instanceof TurretForcefield));
+        registry.registerUpgrade(SHIELD_STRENGTH_I, new UpgradeBasic("shield_strength_i", t -> t instanceof TurretForcefield));
+        registry.registerUpgrade(SHIELD_STRENGTH_II, new UpgradeBasic("shield_strength_ii", t -> t instanceof TurretForcefield, registry.getUpgrade(Upgrades.SHIELD_STRENGTH_I)));
     }
-
 }

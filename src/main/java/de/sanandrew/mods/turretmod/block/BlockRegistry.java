@@ -21,18 +21,15 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.logging.log4j.Level;
 
-@SuppressWarnings("ConstantNamingConvention")
 @Mod.EventBusSubscriber
-@GameRegistry.ObjectHolder(TmrConstants.ID)
 public class BlockRegistry
 {
-    public static final BlockTurretAssembly turret_assembly = nilBlock();
-    public static final BlockElectrolyteGenerator electrolyte_generator = nilBlock();
+    public static final BlockTurretAssembly TURRET_ASSEMBLY = new BlockTurretAssembly();
+    public static final BlockElectrolyteGenerator ELECTROLYTE_GENERATOR = new BlockElectrolyteGenerator();
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
-        event.getRegistry().registerAll(new BlockTurretAssembly().setRegistryName(TmrConstants.ID, "turret_assembly"),
-                                        new BlockElectrolyteGenerator().setRegistryName(TmrConstants.ID, "electrolyte_generator"));
+        event.getRegistry().registerAll(TURRET_ASSEMBLY, ELECTROLYTE_GENERATOR);
 
         GameRegistry.registerTileEntity(TileEntityTurretAssembly.class, TmrConstants.ID + ":te_turret_assembly");
         GameRegistry.registerTileEntity(TileEntityElectrolyteGenerator.class, TmrConstants.ID + ":te_potato_generator");
@@ -41,7 +38,7 @@ public class BlockRegistry
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
         Block[] blocks = {
-                turret_assembly, electrolyte_generator
+                TURRET_ASSEMBLY, ELECTROLYTE_GENERATOR
         };
         for( Block block : blocks ) {
             ResourceLocation regName = block.getRegistryName();
@@ -51,12 +48,5 @@ public class BlockRegistry
                 TmrConstants.LOG.log(Level.ERROR, String.format("Cannot register Item for Block %s as it does not have a registry name!", block));
             }
         }
-    }
-
-    /**
-     * prevents IDE from thinking the block fields are null
-     */
-    private static <T> T nilBlock() {
-        return null;
     }
 }

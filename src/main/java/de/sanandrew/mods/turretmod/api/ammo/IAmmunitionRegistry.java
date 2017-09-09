@@ -25,5 +25,8 @@ public interface IAmmunitionRegistry
     @SuppressWarnings("unused")
     boolean registerAmmoType(IAmmunition<?> type);
 
+    @Nonnull
+    ItemStack getAmmoItem(IAmmunition type);
+
     boolean areAmmoItemsEqual(@Nonnull ItemStack firstStack, @Nonnull ItemStack secondStack);
 }

@@ -34,7 +34,7 @@ public class GuiTcuUpgrades
         extends GuiContainer
         implements GuiTurretCtrlUnit
 {
-    private ITurretInst turretInst;
+    private final ITurretInst turretInst;
 
     private int posY;
     private int posX;
@@ -56,7 +56,7 @@ public class GuiTcuUpgrades
     public void updateScreen() {
         super.updateScreen();
 
-        if( !ItemStackUtils.isValid(this.mc.player.getHeldItemMainhand()) || this.mc.player.getHeldItemMainhand().getItem() != ItemRegistry.turret_control_unit ) {
+        if( !ItemStackUtils.isValid(this.mc.player.getHeldItemMainhand()) || this.mc.player.getHeldItemMainhand().getItem() != ItemRegistry.TURRET_CONTROL_UNIT ) {
             this.mc.player.closeScreen();
         }
 

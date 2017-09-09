@@ -23,23 +23,22 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
-import java.util.UUID;
 
 @SideOnly(Side.CLIENT)
 public class TurretInfoEntryMiscAssembleable
         implements ITurretInfoEntry
 {
     private int drawHeight;
-    private TurretAssemblyRegistry.RecipeEntry recipe;
-    private String desc;
     private long lastTimestamp;
 
     private IGuiTurretInfo guiInfo;
     private final ItemStack icon;
+    private final TurretAssemblyRegistry.RecipeEntry recipe;
     private final String title;
+    private final String desc;
 
-    public TurretInfoEntryMiscAssembleable(@Nonnull ItemStack stack, UUID recipeId) {
-        this(stack, TurretAssemblyRegistry.INSTANCE.getRecipeEntry(recipeId));
+    public TurretInfoEntryMiscAssembleable(@Nonnull ItemStack stack) {
+        this(stack, TurretAssemblyRegistry.INSTANCE.getRecipeEntry(stack));
     }
 
     private TurretInfoEntryMiscAssembleable(@Nonnull ItemStack stack, TurretAssemblyRegistry.RecipeEntry recipeEntry) {

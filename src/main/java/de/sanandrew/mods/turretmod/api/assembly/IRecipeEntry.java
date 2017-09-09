@@ -9,6 +9,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 
+@SuppressWarnings({"UnusedReturnValue", "unused"})
 public interface IRecipeEntry
 {
     RecipeEntry put(Item... items);

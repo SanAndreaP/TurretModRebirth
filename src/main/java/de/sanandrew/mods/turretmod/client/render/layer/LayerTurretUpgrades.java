@@ -6,12 +6,12 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.client.render.turret;
+package de.sanandrew.mods.turretmod.client.render.layer;
 
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
+import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
@@ -27,7 +27,7 @@ public class LayerTurretUpgrades<E extends EntityLiving & ITurretInst>
     @Override
     public void doRenderLayer(E turret, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         if( TmrConfiguration.renderUpgrades ) {
-            UpgradeProcessor proc = ((UpgradeProcessor) turret.getUpgradeProcessor());
+            IUpgradeProcessor proc = turret.getUpgradeProcessor();
             int cnt = proc.getSizeInventory();
             for( int i = 0; i < cnt; i++ ) {
                 ItemStack slotStack = proc.getStackInSlot(i);

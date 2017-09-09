@@ -28,19 +28,117 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @SideOnly(Side.CLIENT)
 public class RenderForcefieldHandler
 {
     public static final RenderForcefieldHandler INSTANCE = new RenderForcefieldHandler();
+    private static final Queue<IForcefieldProvider> EMPTY_QUEUE = new Queue<IForcefieldProvider>()
+    {
+        @Override
+        public boolean add(IForcefieldProvider provider) {
+            return false;
+        }
+
+        @Override
+        public boolean offer(IForcefieldProvider provider) {
+            return false;
+        }
+
+        @Override
+        public IForcefieldProvider remove() {
+            return null;
+        }
+
+        @Override
+        public IForcefieldProvider poll() {
+            return null;
+        }
+
+        @Override
+        public IForcefieldProvider element() {
+            return null;
+        }
+
+        @Override
+        public IForcefieldProvider peek() {
+            return null;
+        }
+
+        @Override
+        public int size() {
+            return 0;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return true;
+        }
+
+        @Override
+        public boolean contains(Object o) {
+            return false;
+        }
+
+        @Override
+        public Iterator<IForcefieldProvider> iterator() {
+            return Collections.emptyListIterator();
+        }
+
+        @Override
+        public Object[] toArray() {
+            return new Object[0];
+        }
+
+        @Override
+        public <T> T[] toArray(T[] a) {
+            if( a.length > 0 ) {
+                a[0] = null;
+            }
+            return a;
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            return false;
+        }
+
+        @Override
+        public boolean containsAll(Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public boolean addAll(Collection<? extends IForcefieldProvider> c) {
+            return false;
+        }
+
+        @Override
+        public boolean removeAll(Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public boolean retainAll(Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public void clear() {
+
+        }
+    };
 
     private final List<ForcefieldCube> fadeOutFields = new ArrayList<>();
-    private final Map<Integer, IForcefieldProvider> fieldProviders = new ConcurrentHashMap<>();
+    private final Map<Integer, Queue<IForcefieldProvider>> fieldProviders = new ConcurrentHashMap<>();
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onRenderWorldLast(RenderWorldLastEvent event) {
@@ -59,39 +157,44 @@ public class RenderForcefieldHandler
 
         int worldTicks = (int) (mc.world.getTotalWorldTime() % Integer.MAX_VALUE);
 
-        Iterator<Map.Entry<Integer, IForcefieldProvider>> it = this.fieldProviders.entrySet().iterator();
+        Iterator<Map.Entry<Integer, Queue<IForcefieldProvider>>> it = this.fieldProviders.entrySet().iterator();
         while( it.hasNext() ) {
-            Map.Entry<Integer, IForcefieldProvider> entry = it.next();
+            Map.Entry<Integer, Queue<IForcefieldProvider>> entry = it.next();
             Entity entity = mc.world.getEntityByID(entry.getKey());
-            IForcefieldProvider ffProvider = entry.getValue();
 
-            if( entity == null ) {
+            if( entity == null || entry.getValue().size() < 1 ) {
                 it.remove();
                 continue;
             }
 
-            ColorObj color = new ColorObj(ffProvider.getShieldColor());
+            Iterator<IForcefieldProvider> itFF = entry.getValue().iterator();
+            while( itFF.hasNext() ) {
+                IForcefieldProvider ffProvider = itFF.next();
 
-            double entityX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
-            double entityY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;
-            double entityZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks;
+                ColorObj color = new ColorObj(ffProvider.getShieldColor());
 
-            ForcefieldCube cube = new ForcefieldCube(new Vec3d(entityX - renderX, entityY - renderY, entityZ - renderZ), ffProvider.getShieldBoundingBox(), color);
+                double entityX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
+                double entityY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;
+                double entityZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks;
 
-            if( entity.isDead || !entity.isEntityAlive() || !ffProvider.isShieldActive() || !mc.world.loadedEntityList.contains(entity) ) {
-                if( ffProvider.hasSmoothFadeOut() ) {
-                    this.fadeOutFields.add(cube);
-                }
-                it.remove();
-            } else {
-                if( TmrConfiguration.calcForcefieldIntf ) {
-                    for( ForcefieldCube intfCube : cubes ) {
-                        cube.interfere(intfCube, false);
-                        intfCube.interfere(cube, true);
+                ForcefieldCube cube = new ForcefieldCube(new Vec3d(entityX - renderX, entityY - renderY, entityZ - renderZ), ffProvider.getShieldBoundingBox(), color);
+                cube.fullRendered = ffProvider.renderFull();
+
+                if( entity.isDead || !entity.isEntityAlive() || !ffProvider.isShieldActive() || !mc.world.loadedEntityList.contains(entity) ) {
+                    if( ffProvider.hasSmoothFadeOut() ) {
+                        this.fadeOutFields.add(cube);
                     }
-                }
+                    itFF.remove();
+                } else {
+                    if( TmrConfiguration.calcForcefieldIntf ) {
+                        for( ForcefieldCube intfCube : cubes ) {
+                            cube.interfere(intfCube, false);
+                            intfCube.interfere(cube, true);
+                        }
+                    }
 
-                cubes.add(cube);
+                    cubes.add(cube);
+                }
             }
         }
 
@@ -101,8 +204,6 @@ public class RenderForcefieldHandler
             if( shield.boxColor.alpha() <= 0 ) {
                 fadeOutIt.remove();
             } else {
-//                ForcefieldCube cube = new ForcefieldCube(new Vec3d(shield.posX - renderX, shield.posY - renderY, shield.posZ - renderZ), shield.shieldBB, shield.color);
-
                 cubes.add(shield);
 
                 shield.boxColor.setAlpha(shield.boxColor.alpha() - 3);
@@ -176,23 +277,14 @@ public class RenderForcefieldHandler
 
     @SuppressWarnings("unused")
     public void addForcefieldRenderer(Entity entity, IForcefieldProvider provider) {
-        this.fieldProviders.put(entity.getEntityId(), provider);
+        Queue<IForcefieldProvider> fields = this.fieldProviders.computeIfAbsent(entity.getEntityId(), key -> new ConcurrentLinkedQueue<>());
+
+        if( fields.stream().noneMatch(prov -> prov.getClass().equals(provider.getClass())) ) {
+            fields.add(provider);
+        }
     }
 
-//    private static class ForcefieldFadeOut
-//            extends ForcefieldCube
-//    {
-//        public ColorObj color;
-//
-//        public double posX;
-//        public double posY;
-//        public double posZ;
-//
-//        ForcefieldFadeOut(double posX, double posY, double posZ, ColorObj origRGBA, AxisAlignedBB origShieldBB) {
-//            this.posX = posX;
-//            this.posY = posY;
-//            this.posZ = posZ;
-//            this.color = origRGBA;
-//        }
-//    }
+    public boolean hasForcefield(Entity entity, Class<? extends IForcefieldProvider> providerCls) {
+        return this.fieldProviders.getOrDefault(entity.getEntityId(), EMPTY_QUEUE).stream().anyMatch(prov -> prov.getClass().equals(providerCls));
+    }
 }

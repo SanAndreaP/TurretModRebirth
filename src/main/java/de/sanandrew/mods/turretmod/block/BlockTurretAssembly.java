@@ -54,6 +54,7 @@ public class BlockTurretAssembly
         this.blockSoundType = SoundType.STONE;
         this.setUnlocalizedName(TmrConstants.ID + ":turret_assembly");
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+        this.setRegistryName(TmrConstants.ID, "turret_assembly");
     }
 
     private static void setDefaultFacing(World world, BlockPos pos, IBlockState state) {

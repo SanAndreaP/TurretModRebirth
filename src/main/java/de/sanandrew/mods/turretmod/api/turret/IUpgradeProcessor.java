@@ -2,13 +2,16 @@ package de.sanandrew.mods.turretmod.api.turret;
 
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeInstance;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
 
+@SuppressWarnings("unused")
 public interface IUpgradeProcessor
+        extends IInventory
 {
     void onTick();
 

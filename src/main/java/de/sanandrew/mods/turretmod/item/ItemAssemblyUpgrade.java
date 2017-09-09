@@ -55,6 +55,7 @@ public abstract class ItemAssemblyUpgrade
         public Automation() {
             super();
             this.setUnlocalizedName(TmrConstants.ID + ":turret_assembly_auto");
+            this.setRegistryName(TmrConstants.ID, "assembly_upg_auto");
         }
     }
 
@@ -64,6 +65,7 @@ public abstract class ItemAssemblyUpgrade
         public Speed() {
             super();
             this.setUnlocalizedName(TmrConstants.ID + ":turret_assembly_speed");
+            this.setRegistryName(TmrConstants.ID, "assembly_upg_speed");
         }
     }
 
@@ -73,6 +75,7 @@ public abstract class ItemAssemblyUpgrade
         public Filter() {
             super();
             this.setUnlocalizedName(TmrConstants.ID + ":turret_assembly_filter");
+            this.setRegistryName(TmrConstants.ID, "assembly_upg_filter");
         }
 
         @Override

@@ -28,6 +28,7 @@ public class ItemTurretControlUnit
         super();
         this.setCreativeTab(TmrCreativeTabs.MISC);
         this.setUnlocalizedName(TmrConstants.ID + ":turret_control_unit");
+        this.setRegistryName(TmrConstants.ID, "turret_control_unit");
     }
 
     @Override

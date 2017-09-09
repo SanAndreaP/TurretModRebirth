@@ -15,7 +15,6 @@ import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 
 import javax.annotation.Nonnull;
@@ -28,6 +27,7 @@ public class ItemAmmo
         super();
         this.setCreativeTab(TmrCreativeTabs.TURRETS);
         this.setUnlocalizedName(TmrConstants.ID + ":turret_ammo");
+        this.setRegistryName(TmrConstants.ID, "turret_ammo");
     }
 
     @Override
@@ -36,25 +36,11 @@ public class ItemAmmo
         return String.format("%s.%s", this.getUnlocalizedName(), type.getName());
     }
 
-    @Nonnull
-    public ItemStack getAmmoItem(int stackSize, IAmmunition type) {
-        if( type == null ) {
-            throw new IllegalArgumentException("Cannot get turret_ammo item with NULL type!");
-        }
-
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setString("ammoType", type.getId().toString());
-        ItemStack stack = new ItemStack(this, stackSize);
-        stack.setTagCompound(nbt);
-
-        return stack;
-    }
-
     @Override
     @SuppressWarnings("unchecked")
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
         if( this.isInCreativeTab(tab) ) {
-            list.addAll(AmmunitionRegistry.INSTANCE.getRegisteredTypes().stream().map(type -> this.getAmmoItem(1, type)).collect(Collectors.toList()));
+            list.addAll(AmmunitionRegistry.INSTANCE.getRegisteredTypes().stream().map(AmmunitionRegistry.INSTANCE::getAmmoItem).collect(Collectors.toList()));
         }
     }
 }

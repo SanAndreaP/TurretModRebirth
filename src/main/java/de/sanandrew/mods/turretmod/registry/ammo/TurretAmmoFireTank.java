@@ -13,8 +13,6 @@ import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileFlame;
-import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import net.minecraft.item.ItemStack;
@@ -23,19 +21,19 @@ import net.minecraft.util.ResourceLocation;
 import javax.annotation.Nonnull;
 import java.util.UUID;
 
-public abstract class TurretAmmoFireTank
+public class TurretAmmoFireTank
         implements IAmmunition<EntityProjectileFlame>
 {
     private final String name;
-    private final UUID uuid;
+    private final UUID id;
     private final int capacity;
     private final ResourceLocation itemModel;
 
-    public TurretAmmoFireTank(boolean isMulti, String modelName) {
-        this.name = isMulti ? "fueltank_lrg" : "fueltank_sng";
-        this.uuid = isMulti ? Ammunitions.FUELTANK_PACK : Ammunitions.FUELTANK;
+    public TurretAmmoFireTank(boolean isMulti) {
+        this.name = isMulti ? "fueltank_pack" : "fueltank";
+        this.id = isMulti ? Ammunitions.FUELTANK_PACK : Ammunitions.FUELTANK;
         this.capacity = isMulti ? 256 : 16;
-        this.itemModel = new ResourceLocation(TmrConstants.ID, "turret_ammo/" + modelName);
+        this.itemModel = new ResourceLocation(TmrConstants.ID, "turret_ammo/" + this.name);
     }
 
     @Override
@@ -45,7 +43,7 @@ public abstract class TurretAmmoFireTank
 
     @Override
     public UUID getId() {
-        return this.uuid;
+        return this.id;
     }
 
     @Override
@@ -86,7 +84,7 @@ public abstract class TurretAmmoFireTank
     @Override
     @Nonnull
     public ItemStack getStoringAmmoItem() {
-        return ItemRegistry.turret_ammo.getAmmoItem(1, AmmunitionRegistry.INSTANCE.getType(Ammunitions.FUELTANK));
+        return AmmunitionRegistry.INSTANCE.getAmmoItem(AmmunitionRegistry.INSTANCE.getType(Ammunitions.FUELTANK));
     }
 
     @Override
@@ -99,31 +97,5 @@ public abstract class TurretAmmoFireTank
     @Override
     public ResourceLocation getModel() {
         return this.itemModel;
-    }
-
-    public static class Single
-            extends TurretAmmoFireTank
-    {
-        public Single() {
-            super(false, "fueltank");
-        }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.FUELTANK_SNG;
-        }
-    }
-
-    public static class Multi
-            extends TurretAmmoFireTank
-    {
-        public Multi() {
-            super(true, "fueltank_pack");
-        }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.FUELTANK_MTP;
-        }
     }
 }

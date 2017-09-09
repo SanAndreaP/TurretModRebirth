@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.registry.turret;
 
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
@@ -15,6 +16,10 @@ import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
+import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -83,6 +88,52 @@ public final class TurretRegistry
         return true;
     }
 
+    @Override
+    @Nonnull
+    public ItemStack getTurretItem(ITurret type) {
+        if( type == null ) {
+            throw new IllegalArgumentException("Cannot get turret_placer item with NULL type!");
+        }
+
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setString("turretUUID", type.getId().toString());
+        ItemStack stack = new ItemStack(ItemRegistry.TURRET_PLACER, 1);
+        stack.setTagCompound(nbt);
+
+        return stack;
+    }
+
+    @Override
+    @Nonnull
+    public ItemStack getTurretItem(ITurretInst turretInst) {
+        ItemStack stack = this.getTurretItem(turretInst.getTurret());
+        NBTTagCompound nbt = stack.getTagCompound();
+        if( nbt != null ) {
+            EntityLiving turretL = turretInst.getEntity();
+            nbt.setFloat("turretHealth", turretL.getHealth());
+            if( turretL.hasCustomName() ) {
+                nbt.setString("turretName", turretL.getCustomNameTag());
+            }
+        }
+
+        return stack;
+    }
+
+    @Override
+    public ITurret getTurret(@Nonnull ItemStack stack) {
+        if( ItemStackUtils.isItem(stack, ItemRegistry.TURRET_PLACER) ) {
+            NBTTagCompound nbt = stack.getTagCompound();
+            if( nbt != null && nbt.hasKey("turretUUID") ) {
+                String id = nbt.getString("turretUUID");
+                if( UuidUtils.isStringUuid(id) ) {
+                    return TurretRegistry.INSTANCE.getTurret(UUID.fromString(id));
+                }
+            }
+        }
+
+        return TurretRegistry.NULL_TURRET;
+    }
+
     private static class EmptyTurret
             implements ITurret
     {
@@ -125,13 +176,18 @@ public final class TurretRegistry
         }
 
         @Override
+        public int getTier() {
+            return 0;
+        }
+
+        @Override
         public ITurretInfo getInfo() {
             return MyInfo.INSTANCE;
         }
 
         public static final class MyInfo implements ITurretInfo
         {
-            static final ITurretInfo INSTANCE = new TurretCrossbow.MyInfo();
+            static final ITurretInfo INSTANCE = new MyInfo();
 
             @Override
             public float getHealth() {
@@ -146,11 +202,6 @@ public final class TurretRegistry
             @Override
             public String getRange() {
                 return "n/a";
-            }
-
-            @Override
-            public UUID getRecipeId() {
-                return null;
             }
         }
     }

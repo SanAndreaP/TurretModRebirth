@@ -9,7 +9,7 @@
       "items": [
         {
           "type": "forge:ore_dict",
-          "ore": "blockGlass"
+          "ore": "paneGlass"
         }
       ]
     },
@@ -39,6 +39,15 @@
         {
           "type": "forge:ore_dict",
           "ore": "dustRedstone"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "nuggetIron"
         }
       ]
     }

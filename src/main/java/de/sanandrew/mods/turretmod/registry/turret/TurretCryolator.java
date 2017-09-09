@@ -13,7 +13,6 @@ import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.Sounds;
 import net.minecraft.util.ResourceLocation;
@@ -52,7 +51,7 @@ public class TurretCryolator
 
     @Override
     public SoundEvent getShootSound(ITurretInst turretInst) {
-        return Sounds.shoot_cryolator;
+        return Sounds.SHOOT_CRYOLATOR;
     }
 
     @Override
@@ -75,9 +74,14 @@ public class TurretCryolator
         return MyInfo.INSTANCE;
     }
 
+    @Override
+    public int getTier() {
+        return 1;
+    }
+
     public static final class MyInfo implements ITurretInfo
     {
-        static final ITurretInfo INSTANCE = new TurretCrossbow.MyInfo();
+        static final ITurretInfo INSTANCE = new MyInfo();
 
         @Override
         public float getHealth() {
@@ -87,11 +91,6 @@ public class TurretCryolator
         @Override
         public int getAmmoCapacity() {
             return 256;
-        }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.TURRET_MK1_CL;
         }
 
         @Override

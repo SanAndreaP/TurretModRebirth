@@ -12,7 +12,6 @@ import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
 import de.sanandrew.mods.turretmod.client.util.ShaderHelper;
-import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
@@ -40,18 +39,19 @@ import java.util.List;
 import java.util.UUID;
 
 @SideOnly(Side.CLIENT)
+//TODO: optimize rendering
 public class TurretInfoEntryAmmo
         implements ITurretInfoEntry
 {
     private int drawHeight;
     private int shownAmmo;
-    private IAmmunition[] ammos;
     private List<GuiButtonAmmoItem> ammoBtn;
     private long lastTimestamp;
 
     private IGuiTurretInfo guiInfo;
     private final ItemStack icon;
     private final String title;
+    private final IAmmunition[] ammos;
 
     public TurretInfoEntryAmmo(UUID groupId) {
         IAmmunition[] ammos = AmmunitionRegistry.INSTANCE.getTypes(groupId);
@@ -90,6 +90,7 @@ public class TurretInfoEntryAmmo
     public void drawPage(int mouseX, int mouseY, int scrollY, float partTicks) {
         IAmmunition<?> ammo = this.ammos[this.shownAmmo];
         Minecraft mc = this.guiInfo.__getMc();
+        ItemStack ammoItem = AmmunitionRegistry.INSTANCE.getAmmoItem(ammo);
 
         mc.fontRenderer.drawString(TextFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 20, 0xFF0080BB);
         Gui.drawRect(2, 30, MAX_ENTRY_WIDTH - 2, 31, 0xFF0080BB);
@@ -98,14 +99,14 @@ public class TurretInfoEntryAmmo
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.guiInfo.__drawTexturedRect(2, 34, 192, 18, 34, 34);
 
-        this.guiInfo.renderStack(ItemRegistry.turret_ammo.getAmmoItem(1, ammo), 3, 35, 2.0F);
+        this.guiInfo.renderStack(ammoItem, 3, 35, 2.0F);
 
         mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_ROUNDS),                          42, 34, 0xFF6A6A6A, false);
         mc.fontRenderer.drawString(String.format("%d", ammo.getAmmoCapacity()),                      45, 43, 0xFF000000, false);
         mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_DPS),                             42, 54, 0xFF6A6A6A, false);
         mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_HEALTHVAL, ammo.getInfoDamage()), 45, 63, 0xFF000000, false);
         mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_TURRET),                          42, 74, 0xFF6A6A6A, false);
-        mc.fontRenderer.drawString(Lang.translate(Lang.TURRET_NAME, ammo.getTurret().getName()),     45, 83, 0xFF000000, false);
+        mc.fontRenderer.drawString(Lang.translate(Lang.TURRET_NAME.get(ammo.getTurret().getName())), 45, 83, 0xFF000000, false);
         mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_CRAFTING),                        42, 94, 0xFF6A6A6A, false);
 
         String text = Lang.translate(Lang.TINFO_ENTRY_AMMO_DESC.get(ammo.getInfoName())).replace("\\n", "\n");
@@ -114,7 +115,7 @@ public class TurretInfoEntryAmmo
 
         Gui.drawRect(2, 114, MAX_ENTRY_WIDTH - 2, 115, 0xFF0080BB);
 
-        TurretAssemblyRegistry.RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(ammo.getRecipeId());
+        TurretAssemblyRegistry.RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(ammoItem);
         if( recipeEntry != null ) {
             for( int i = 0; i < recipeEntry.resources.length; i++ ) {
                 ItemStack[] stacks = recipeEntry.resources[i].getEntryItemStacks();
@@ -171,7 +172,7 @@ public class TurretInfoEntryAmmo
         public GuiButtonAmmoItem(int id, int x, int y, int index) {
             super(id, x, y, 16, 16, "");
             this.ammoIndex = index;
-            this.stack = ItemRegistry.turret_ammo.getAmmoItem(1,  TurretInfoEntryAmmo.this.ammos[this.ammoIndex]);
+            this.stack = AmmunitionRegistry.INSTANCE.getAmmoItem(TurretInfoEntryAmmo.this.ammos[this.ammoIndex]);
         }
 
         @Override

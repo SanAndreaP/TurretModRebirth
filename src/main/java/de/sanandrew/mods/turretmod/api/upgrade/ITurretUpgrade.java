@@ -5,8 +5,6 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.UUID;
-
 @SuppressWarnings("unused")
 public interface ITurretUpgrade
 {
@@ -15,8 +13,6 @@ public interface ITurretUpgrade
     ResourceLocation getModel();
 
     default ITurretUpgrade getDependantOn() { return null; }
-
-    UUID getRecipeId();
 
     boolean isTurretApplicable(ITurret turret);
 

@@ -6,12 +6,8 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.api.turret;
 
-import java.util.UUID;
-
 public interface ITurretInfo
 {
-    UUID getRecipeId();
-
     float getHealth();
 
     int getAmmoCapacity();

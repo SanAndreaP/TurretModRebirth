@@ -23,9 +23,9 @@ public class ContainerAssemblyFilter
         extends Container
 {
     @Nonnull
-    private ItemStack filterStack;
-    private int filterStackSlot;
-    private InventoryAssemblyFilter filterInv;
+    private final ItemStack filterStack;
+    private final int filterStackSlot;
+    private final InventoryAssemblyFilter filterInv;
 
     public ContainerAssemblyFilter(IInventory playerInv, @Nonnull ItemStack stack, int slot) {
         this.filterStack = stack;
@@ -56,7 +56,7 @@ public class ContainerAssemblyFilter
 
     @Override
     public void onContainerClosed(EntityPlayer player) {
-        if( !player.world.isRemote && ItemStackUtils.isValid(player.getHeldItemMainhand()) && player.getHeldItemMainhand().getItem() == ItemRegistry.assembly_upg_filter ) {
+        if( !player.world.isRemote && ItemStackUtils.isValid(player.getHeldItemMainhand()) && player.getHeldItemMainhand().getItem() == ItemRegistry.ASSEMBLY_UPG_FILTER ) {
             ItemAssemblyUpgrade.Filter.setFilterStacks(this.filterStack, this.filterInv.invStacks);
             player.inventory.setInventorySlotContents(this.filterStackSlot, this.filterStack.copy());
             player.inventoryContainer.detectAndSendChanges();

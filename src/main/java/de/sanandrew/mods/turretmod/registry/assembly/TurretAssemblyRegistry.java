@@ -37,11 +37,10 @@ public final class TurretAssemblyRegistry
 {
     public static final TurretAssemblyRegistry INSTANCE = new TurretAssemblyRegistry();
 
-    private Map<UUID, ItemStack> recipeResults = new HashMap<>();
-    private Map<UUID, RecipeEntry> recipeResources = new HashMap<>();
-    private List<RecipeKeyEntry> recipeEntries = new ArrayList<>();
-
-    private List<IRecipeGroup> groupsList = new ArrayList<>();
+    private final Map<UUID, ItemStack> recipeResults = new HashMap<>();
+    private final Map<UUID, RecipeEntry> recipeResources = new HashMap<>();
+    private final List<RecipeKeyEntry> recipeEntries = new ArrayList<>();
+    private final List<IRecipeGroup> groupsList = new ArrayList<>();
 
     @Override
     public boolean registerRecipe(UUID uuid, IRecipeGroup group, @Nonnull ItemStack result, int fluxPerTick, int ticksProcessing, IRecipeEntry... resources) {
@@ -80,7 +79,7 @@ public final class TurretAssemblyRegistry
 
     @Override
     public IRecipeGroup registerGroup(String name, @Nonnull ItemStack stack) {
-        name = BlockRegistry.turret_assembly.getUnlocalizedName() + '.' + name;
+        name = BlockRegistry.TURRET_ASSEMBLY.getUnlocalizedName() + '.' + name;
         IRecipeGroup group = new RecipeGroup(name, stack);
         this.groupsList.add(group);
         return group;
@@ -88,7 +87,7 @@ public final class TurretAssemblyRegistry
 
     @Override
     public IRecipeGroup getGroup(String name) {
-        final String fullName = BlockRegistry.turret_assembly.getUnlocalizedName() + '.' + name;
+        final String fullName = BlockRegistry.TURRET_ASSEMBLY.getUnlocalizedName() + '.' + name;
         return this.groupsList.stream().filter(group -> group.getName().equals(fullName)).findFirst().orElse(null);
     }
 
@@ -98,6 +97,16 @@ public final class TurretAssemblyRegistry
 
     public RecipeEntry getRecipeEntry(UUID uuid) {
         return this.recipeResources.get(uuid);
+    }
+
+    public RecipeEntry getRecipeEntry(ItemStack result) {
+        for( Map.Entry<UUID, ItemStack> entry : this.recipeResults.entrySet() ) {
+            if( ItemStackUtils.areEqual(result, entry.getValue()) ) {
+                return this.recipeResources.get(entry.getKey());
+            }
+        }
+
+        return null;
     }
 
     @Override

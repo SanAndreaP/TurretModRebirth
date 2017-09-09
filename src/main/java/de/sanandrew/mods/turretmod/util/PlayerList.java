@@ -55,10 +55,6 @@ public class PlayerList
         return s == null ? "UNKNOWN" : this.playerMap.get(playerUUID);
     }
 
-    public UUID[] getPlayers() {
-        return this.playerMap.keySet().toArray(new UUID[this.playerMap.size()]);
-    }
-
     public Map<UUID, String> getPlayerMap() {
         return new HashMap<>(this.playerMap);
     }

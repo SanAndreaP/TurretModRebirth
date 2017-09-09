@@ -19,7 +19,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 class GuiAssemblyTabNav
         extends GuiButton
 {
-    private boolean isDown;
+    private final boolean isDown;
 
 	GuiAssemblyTabNav(int id, int posX, int posY, boolean isDown) {
 		super(id, posX, posY, "");

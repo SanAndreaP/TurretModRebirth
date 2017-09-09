@@ -6,10 +6,11 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.entity.projectile;
+package de.sanandrew.mods.turretmod.entity.ai;
 
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.RandomPositionGenerator;
@@ -17,17 +18,17 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.math.Vec3d;
 
-final class EntityAIMoveTowardsTurret
+public final class EntityAIMoveTowardsTurret
         extends EntityAIBase
 {
-    private EntityTurret targetTurret;
-    private EntityCreature theEntity;
+    private final EntityCreature theEntity;
+    private final double speed;
+    private final float maxDistance;
 
+    private ITurretInst targetTurret;
     private Path turretPath;
-    private double speed;
-    private float maxDistance;
 
-    public EntityAIMoveTowardsTurret(EntityCreature doer, EntityTurret target, double speed, float maxDistance) {
+    public EntityAIMoveTowardsTurret(EntityCreature doer, ITurretInst target, double speed, float maxDistance) {
         this.theEntity = doer;
         this.speed = speed;
         this.maxDistance = maxDistance;
@@ -35,18 +36,19 @@ final class EntityAIMoveTowardsTurret
         this.setMutexBits(1);
     }
 
-    public void setNewTurret(EntityTurret turret) {
+    public void setNewTurret(ITurretInst turret) {
         this.targetTurret = turret;
     }
 
     @Override
     public boolean shouldExecute() {
-        if( this.targetTurret == null || !this.targetTurret.isEntityAlive() ) {
+        if( this.targetTurret == null || !this.targetTurret.getEntity().isEntityAlive() ) {
             return false;
-        } else if( this.targetTurret.getDistanceSqToEntity(this.theEntity) > this.maxDistance * this.maxDistance ) {
+        } else if( this.targetTurret.getEntity().getDistanceSqToEntity(this.theEntity) > this.maxDistance * this.maxDistance ) {
             return false;
         } else {
-            Vec3d targetPosVec = new Vec3d(this.targetTurret.posX, this.targetTurret.posY, this.targetTurret.posZ);
+            EntityLivingBase turretL = this.targetTurret.getEntity();
+            Vec3d targetPosVec = new Vec3d(turretL.posX, turretL.posY, turretL.posZ);
             Vec3d pathBlockVec = RandomPositionGenerator.findRandomTargetBlockTowards(this.theEntity, 8, 7, targetPosVec);
 
             if( pathBlockVec == null ) {
@@ -61,7 +63,12 @@ final class EntityAIMoveTowardsTurret
 
     @Override
     public boolean shouldContinueExecuting() {
-        return !this.theEntity.getNavigator().noPath() && this.targetTurret != null && this.targetTurret.isEntityAlive() && this.targetTurret.getDistanceSqToEntity(this.theEntity) < this.maxDistance * this.maxDistance;
+        if( this.targetTurret != null ) {
+            EntityLivingBase turretL = this.targetTurret.getEntity();
+            return !this.theEntity.getNavigator().noPath() && turretL.isEntityAlive() && turretL.getDistanceSqToEntity(this.theEntity) < this.maxDistance * this.maxDistance;
+        }
+
+        return false;
     }
 
     @Override

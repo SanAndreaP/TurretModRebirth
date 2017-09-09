@@ -17,5 +17,5 @@ public interface GuiTurretCtrlUnit
     ITurretInst getTurretInst();
     FontRenderer getFontRenderer();
     Minecraft getMc();
-    default boolean hasPermision() { return true; };
+    default boolean hasPermision() { return true; }
 }

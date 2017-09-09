@@ -14,8 +14,6 @@ import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.util.ResourceLocation;
@@ -26,13 +24,14 @@ public class UpgradeAmmoStorage
         implements ITurretUpgrade
 {
     private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "upgrades/ammo_storage");
-    private AttributeModifier modifier = new AttributeModifier(UUID.fromString("3D3C0F11-E31A-4472-92BB-E1BE0354844E"), String.format("%s:%s", TmrConstants.ID, "ammoCapacityUpg"), 320.0D,
-                                                               EntityUtils.ATTR_ADD_VAL_TO_BASE);
+    private final AttributeModifier modifier;
 
     private final String name;
 
     public UpgradeAmmoStorage() {
         this.name = "ammo_storage";
+        this.modifier = new AttributeModifier(UUID.fromString("3D3C0F11-E31A-4472-92BB-E1BE0354844E"), String.format("%s:%s", TmrConstants.ID, "ammoCapacityUpg"), 1.0D,
+                                              EntityUtils.ATTR_ADD_PERC_VAL_TO_SUM);
     }
 
     @Override
@@ -74,13 +73,8 @@ public class UpgradeAmmoStorage
             if( attrib.getModifier(modifier.getID()) != null ) {
                 attrib.removeModifier(modifier);
                 turretInst.getTargetProcessor().dropExcessAmmo();
-                TmrUtils.INSTANCE.updateTurretState(turretInst);
+                turretInst.updateState();
             }
         }
-    }
-
-    @Override
-    public UUID getRecipeId() {
-        return TurretAssemblyRecipes.UPG_AMMO_STG;
     }
 }

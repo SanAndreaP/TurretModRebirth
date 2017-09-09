@@ -36,4 +36,6 @@ public interface IForcefieldProvider
     int getShieldColor();
 
     default boolean hasSmoothFadeOut() { return true; }
+
+    default boolean renderFull() { return false; }
 }

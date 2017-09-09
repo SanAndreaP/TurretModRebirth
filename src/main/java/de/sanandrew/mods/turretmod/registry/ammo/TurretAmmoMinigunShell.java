@@ -13,8 +13,6 @@ import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileMinigunPebble;
-import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -22,19 +20,19 @@ import net.minecraft.util.ResourceLocation;
 import javax.annotation.Nonnull;
 import java.util.UUID;
 
-public abstract class TurretAmmoMinigunShell
+public class TurretAmmoMinigunShell
         implements IAmmunition<EntityProjectileMinigunPebble>
 {
     private final String name;
-    private final UUID uuid;
+    private final UUID id;
     private final int capacity;
     private final ResourceLocation itemModel;
 
-    public TurretAmmoMinigunShell(boolean isMulti, String modelName) {
-        this.name = isMulti ? "mgshell_lrg" : "mgshell_sng";
-        this.uuid = isMulti ? Ammunitions.MGSHELL_PACK : Ammunitions.MGSHELL;
+    public TurretAmmoMinigunShell(boolean isMulti) {
+        this.name = isMulti ? "minigun_shell_pack" : "minigun_shell";
+        this.id = isMulti ? Ammunitions.MGSHELL_PACK : Ammunitions.MGSHELL;
         this.capacity = isMulti ? 64 : 4;
-        this.itemModel = new ResourceLocation(TmrConstants.ID, "turret_ammo/" + modelName);
+        this.itemModel = new ResourceLocation(TmrConstants.ID, "turret_ammo/" + this.name);
     }
 
     @Override
@@ -44,7 +42,7 @@ public abstract class TurretAmmoMinigunShell
 
     @Override
     public UUID getId() {
-        return this.uuid;
+        return this.id;
     }
 
     @Override
@@ -79,13 +77,13 @@ public abstract class TurretAmmoMinigunShell
 
     @Override
     public String getInfoName() {
-        return "mgshell";
+        return "minigun_shell";
     }
 
     @Override
     @Nonnull
     public ItemStack getStoringAmmoItem() {
-        return ItemRegistry.turret_ammo.getAmmoItem(1, AmmunitionRegistry.INSTANCE.getType(Ammunitions.MGSHELL));
+        return AmmunitionRegistry.INSTANCE.getAmmoItem(AmmunitionRegistry.INSTANCE.getType(Ammunitions.MGSHELL));
     }
 
     @Override
@@ -96,31 +94,5 @@ public abstract class TurretAmmoMinigunShell
     @Override
     public ResourceLocation getModel() {
         return this.itemModel;
-    }
-
-    public static class Single
-            extends TurretAmmoMinigunShell
-    {
-        public Single() {
-            super(false, "minigun_shell");
-        }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.MGSHELL_SNG;
-        }
-    }
-
-    public static class Multi
-            extends TurretAmmoMinigunShell
-    {
-        public Multi() {
-            super(true, "minigun_shell_pack");
-        }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.MGSHELL_MTP;
-        }
     }
 }

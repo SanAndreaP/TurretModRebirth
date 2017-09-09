@@ -34,9 +34,10 @@ public class ModelTurretBase
 	public ModelRenderer healthBar;
 	public ModelRenderer ammoBar;
 
-	private ModelJsonLoader<ModelTurretBase, ModelJsonLoader.ModelJson> modelJson;
+	private final ModelJsonLoader<ModelTurretBase, ModelJsonLoader.ModelJson> modelJson;
 	private final float scale;
 
+	@SuppressWarnings("SimplifyStreamApiCallChains")
 	public ModelTurretBase(float scale) {
 		this.scale = scale;
 		this.modelJson = ModelJsonLoader.create(this, this.getModelLocation(), this.getMandatoryBoxes().stream().toArray(String[]::new));

@@ -13,7 +13,6 @@ import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
@@ -71,6 +70,11 @@ public class TurretCrossbow
     }
 
     @Override
+    public int getTier() {
+        return 1;
+    }
+
+    @Override
     public ITurretInfo getInfo() {
         return MyInfo.INSTANCE;
     }
@@ -86,11 +90,6 @@ public class TurretCrossbow
         @Override
         public int getAmmoCapacity() {
             return 256;
-        }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.TURRET_MK1_CB;
         }
 
         @Override

@@ -15,7 +15,6 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.Sounds;
@@ -79,7 +78,7 @@ public class TurretShotgun
 
     @Override
     public SoundEvent getShootSound(ITurretInst turretInst) {
-        return Sounds.shoot_shotgun;
+        return Sounds.SHOOT_SHOTGUN;
     }
 
     @Override
@@ -98,8 +97,13 @@ public class TurretShotgun
     }
 
     @Override
+    public int getTier() {
+        return 1;
+    }
+
+    @Override
     public ITurretInfo getInfo() {
-        return TurretMinigun.MyInfo.INSTANCE;
+        return MyInfo.INSTANCE;
     }
 
     public static class MyRAM implements ITurretRAM
@@ -110,7 +114,7 @@ public class TurretShotgun
 
     public static final class MyInfo implements ITurretInfo
     {
-        static final ITurretInfo INSTANCE = new TurretCrossbow.MyInfo();
+        static final ITurretInfo INSTANCE = new MyInfo();
 
         @Override
         public float getHealth() {
@@ -120,11 +124,6 @@ public class TurretShotgun
         @Override
         public int getAmmoCapacity() {
             return 256;
-        }
-
-        @Override
-        public UUID getRecipeId() {
-            return TurretAssemblyRecipes.TURRET_MK1_SG;
         }
 
         @Override

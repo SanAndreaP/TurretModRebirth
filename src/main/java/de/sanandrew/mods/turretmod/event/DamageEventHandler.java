@@ -8,8 +8,8 @@ package de.sanandrew.mods.turretmod.event;
 
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.registry.upgrades.UpgradePersShield;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
+import de.sanandrew.mods.turretmod.registry.upgrades.shield.ShieldPersonal;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -19,15 +19,15 @@ public class DamageEventHandler
     public void onDamage(LivingHurtEvent event) {
         if( event.getEntity() instanceof EntityTurret) {
             IUpgradeProcessor proc = ((EntityTurret) event.getEntity()).getUpgradeProcessor();
-            if( proc.hasUpgrade(Upgrades.SHIELD) ) {
-                UpgradePersShield.Shield upgInst = proc.getUpgradeInstance(Upgrades.SHIELD);
+            if( proc.hasUpgrade(Upgrades.SHIELD_PERSONAL) ) {
+                ShieldPersonal upgInst = proc.getUpgradeInstance(Upgrades.SHIELD_PERSONAL);
                 float restDmg = upgInst.damage(event.getAmount());
                 if( restDmg <= 0.0F ) {
                     event.setCanceled(true);
                 } else {
                     event.setAmount(restDmg);
                 }
-                proc.syncUpgrade(Upgrades.SHIELD);
+                proc.syncUpgrade(Upgrades.SHIELD_PERSONAL);
             }
         }
     }

@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.UUID;
 
+@SuppressWarnings({"UnusedReturnValue", "unused"})
 public interface IRepairKitRegistry
 {
     boolean register(TurretRepairKit type);
