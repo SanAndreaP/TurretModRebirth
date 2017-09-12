@@ -13,7 +13,7 @@ What version of SanLib do you use?
 [SanLib Version Number]
 
 What version of Turret Mod Rebirth do you use?
-[Clay Soldiers Version Number]
+[Turret Mod Rebirth Version Number]
  
 What is the issue / bug you have encountered? Give us a short description.
 [Description]
