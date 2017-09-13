@@ -44,13 +44,13 @@ public final class TurretAssemblyRecipes
     private static boolean loadJsonRecipes(ModContainer mod, final ITurretAssemblyRegistry registry) {
         return MiscUtils.findFiles(mod, "assets/" + mod.getModId() + "/recipes_sapturretmod/assembly/",
                                    root -> preProcessJson(root, registry),
-                                   (root, file) -> file.getFileName().startsWith("group_") || processJson(file, json -> registerJsonRecipes(json, registry)));
+                                   (root, file) -> processRecipeJson(file, registry));
     }
 
     private static boolean preProcessJson(Path root, final ITurretAssemblyRegistry registry) {
         if( Files.exists(root) ) {
             try {
-                Files.find(root, Integer.MAX_VALUE, (filePth, attr) -> filePth.getFileName().toString().startsWith("group_"))
+                Files.find(root, Integer.MAX_VALUE, (filePth, attr) -> FilenameUtils.getName(filePth.toString()).startsWith("group_"))
                      .forEach(file -> processJson(file, json -> registerJsonGroup(json, registry)));
             } catch( IOException ex ) {
                 TmrConstants.LOG.log(Level.ERROR, String.format("Couldn't read recipe group from directory %s", root), ex);
@@ -61,8 +61,12 @@ public final class TurretAssemblyRecipes
         return true;
     }
 
+    private static boolean processRecipeJson(Path file, final ITurretAssemblyRegistry registry) {
+        return FilenameUtils.getName(file.toString()).startsWith("group_") || processJson(file, json -> registerJsonRecipes(json, registry));
+    }
+
     private static boolean processJson(Path file, Ex2Function<JsonObject, Boolean, JsonParseException, IOException> callback) {
-        if( !"json".equals(FilenameUtils.getExtension(file.toString())) || file.getFileName().toString().startsWith("_") ) {
+        if( !"json".equals(FilenameUtils.getExtension(file.toString())) || FilenameUtils.getName(file.toString()).startsWith("_") ) {
             return true;
         }
 
@@ -77,7 +81,7 @@ public final class TurretAssemblyRecipes
 
             return true;
         } catch( JsonParseException e ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("Parsing error loading electrolyte generator recipe from %s", file), e);
+            TmrConstants.LOG.log(Level.ERROR, String.format("Parsing error loading assembly table recipe from %s", file), e);
             return false;
         } catch( IOException e ) {
             TmrConstants.LOG.log(Level.ERROR, String.format("Couldn't read recipe from %s", file), e);
