@@ -206,7 +206,7 @@ public class TileEntityTurretAssembly
                                 this.isActiveClient = false;
                             }
 
-                            if( this.currCrafting.<ItemStack>getValue(1).getCount() > 1 ) {
+                            if( this.currCrafting.<ItemStack>getValue(1).getCount() > 1 || this.automate ) {
                                 if( !this.automate ) {
                                     this.currCrafting.<ItemStack>getValue(1).shrink(1);
                                 }

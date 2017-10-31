@@ -48,6 +48,7 @@ public class GuiAssemblyFilter
     @Override
     protected void drawGuiContainerBackgroundLayer(float partTicks, int mouseX, int mouseY) {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        this.drawDefaultBackground();
 
         this.mc.getTextureManager().bindTexture(Resources.GUI_ASSEMBLY_FLT.getResource());
 

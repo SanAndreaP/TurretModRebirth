@@ -264,6 +264,6 @@ class AssemblyInventoryHandler
 
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
-        ItemStackUtils.readItemStacksFromTag(this.assemblyStacks, nbt.getTagList("stack", Constants.NBT.TAG_COMPOUND));
+        ItemStackUtils.readItemStacksFromTag(this.assemblyStacks, nbt.getTagList("inventory", Constants.NBT.TAG_COMPOUND));
     }
 }
