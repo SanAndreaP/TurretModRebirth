@@ -91,16 +91,18 @@ public class PlayerList
 
     @SubscribeEvent
     public void onWorldLoad(WorldEvent.Load event) {
-        MapStorage storage = event.getWorld().getMapStorage();
-        if( storage != null ) {
-            PlayerList result = (PlayerList) storage.getOrLoadData(PlayerList.class, WSD_NAME);
-            if( result == null ) {
-                result = this;
-            }
+        if( !event.getWorld().isRemote ) {
+            MapStorage storage = event.getWorld().getMapStorage();
+            if( storage != null ) {
+                PlayerList result = (PlayerList) storage.getOrLoadData(PlayerList.class, WSD_NAME);
+                if( result == null ) {
+                    result = this;
+                }
 
-            this.playerMap.putAll(result.playerMap);
-            storage.setData(WSD_NAME, this);
-            this.syncList();
+                this.playerMap.putAll(result.playerMap);
+                storage.setData(WSD_NAME, this);
+                this.syncList();
+            }
         }
     }
 
