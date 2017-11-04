@@ -11,7 +11,7 @@ import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -95,7 +95,7 @@ public class LayerTurretShieldLightning<E extends EntityLiving & ITurretInst>
             double maxX = 0.0D;
             double maxZ = 0.0D;
             XorShiftRandom rngMain = new XorShiftRandom(this.seed);
-            BufferBuilder buf = tess.getBuffer();
+            VertexBuffer buf = tess.getBuffer();
 
             for( int i = 7; i >= 0; i-- ) {
                 xPos[i] = maxX;

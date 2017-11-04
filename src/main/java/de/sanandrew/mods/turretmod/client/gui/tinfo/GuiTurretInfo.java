@@ -141,7 +141,7 @@ public class GuiTurretInfo
 
         for( GuiButton btn : this.entryButtons ) {
             btn.enabled = btn.y - Math.round(this.scroll * this.dHeight) > 0 && btn.y - Math.round(this.scroll * this.dHeight) + btn.height < ITurretInfoEntry.MAX_ENTRY_HEIGHT;
-            btn.drawButton(this.mc, mouseX - this.entryX, mouseY - this.entryY + Math.round(this.scroll * this.dHeight), partTicks);
+            btn.func_146112_a(this.mc, mouseX - this.entryX, mouseY - this.entryY + Math.round(this.scroll * this.dHeight));
         }
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
@@ -393,7 +393,7 @@ public class GuiTurretInfo
         }
 
         @Override
-        public void drawButton(Minecraft mc, int mouseX, int mouseY, float partTicks) {
+        public void func_146112_a(Minecraft mc, int mouseX, int mouseY) {
             if( this.visible ) {
                 String clrCode = (this.enabled ? TextFormatting.BLUE : TextFormatting.GRAY).toString();
                 mc.fontRenderer.drawString(clrCode + TextFormatting.UNDERLINE + this.displayString, this.x, this.y, 0xFF000000, false);
@@ -412,7 +412,7 @@ public class GuiTurretInfo
         }
 
         @Override
-        public void drawButton(Minecraft mc, int mouseX, int mouseY, float partTicks) {
+        public void func_146112_a(Minecraft mc, int mouseX, int mouseY) {
             if( this.visible ) {
                 boolean over = mouseX >= this.x && mouseX < this.x + this.width && mouseY >= this.y && mouseY < this.y + this.height;
 

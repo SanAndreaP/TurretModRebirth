@@ -24,7 +24,7 @@ import de.sanandrew.mods.turretmod.client.render.layer.LayerTurretUpgrades;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -155,7 +155,7 @@ public class RenderTurret<E extends EntityLiving & ITurretInst>
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightX, brightY);
 
             Tessellator tess = Tessellator.getInstance();
-            BufferBuilder buf = tess.getBuffer();
+            VertexBuffer buf = tess.getBuffer();
 
             AxisAlignedBB aabb = turret.getTargetProcessor().getAdjustedRange(false);
 

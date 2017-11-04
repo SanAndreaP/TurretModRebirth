@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.client.render.projectile;
 
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileFlame;
 import de.sanandrew.mods.turretmod.util.Resources;
-import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -39,7 +39,7 @@ public class RenderFlame<T extends EntityProjectileFlame>
         GlStateManager.disableLighting();
 
         Tessellator tess = Tessellator.getInstance();
-        BufferBuilder buf = tess.getBuffer();
+        VertexBuffer buf = tess.getBuffer();
         float prevBrightX = OpenGlHelper.lastBrightnessX;
         float prevBrightY = OpenGlHelper.lastBrightnessY;
         

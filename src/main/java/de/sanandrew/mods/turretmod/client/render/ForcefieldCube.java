@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.client.render;
 
 import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -53,7 +53,7 @@ public class ForcefieldCube
     }
 
     public void draw(Tessellator tess) {
-        BufferBuilder buffer = tess.getBuffer();
+        VertexBuffer buffer = tess.getBuffer();
         for( CubeFace[] faceList : faces.values() ) {
             for( CubeFace facePart : faceList ) {
                 float red = facePart.color.fRed();

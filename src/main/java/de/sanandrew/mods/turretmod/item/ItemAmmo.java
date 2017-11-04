@@ -38,9 +38,7 @@ public class ItemAmmo
 
     @Override
     @SuppressWarnings("unchecked")
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
-        if( this.isInCreativeTab(tab) ) {
-            list.addAll(AmmunitionRegistry.INSTANCE.getRegisteredTypes().stream().map(AmmunitionRegistry.INSTANCE::getAmmoItem).collect(Collectors.toList()));
-        }
+    public void getSubItems(Item itm, CreativeTabs tab, NonNullList<ItemStack> list) {
+        list.addAll(AmmunitionRegistry.INSTANCE.getRegisteredTypes().stream().map(AmmunitionRegistry.INSTANCE::getAmmoItem).collect(Collectors.toList()));
     }
 }

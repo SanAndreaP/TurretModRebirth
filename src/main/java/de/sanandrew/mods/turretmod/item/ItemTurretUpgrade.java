@@ -13,8 +13,8 @@ import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -39,7 +39,7 @@ public class ItemTurretUpgrade
     @Override
     @SideOnly(Side.CLIENT)
     @SuppressWarnings("unchecked")
-    public void addInformation(@Nonnull ItemStack stack, World world, List lines, ITooltipFlag advInfo) {
+    public void addInformation(@Nonnull ItemStack stack, EntityPlayer world, List lines, boolean advInfo) {
         ITurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(stack);
         lines.add(Lang.translate(String.format("%s.%s.name", this.getUnlocalizedName(stack), upg.getName())));
         super.addInformation(stack, world, lines, advInfo);
@@ -47,9 +47,7 @@ public class ItemTurretUpgrade
 
     @Override
     @SuppressWarnings("unchecked")
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-        if( this.isInCreativeTab(tab) ) {
-            items.addAll(UpgradeRegistry.INSTANCE.getUpgrades().stream().map(UpgradeRegistry.INSTANCE::getUpgradeItem).collect(Collectors.toList()));
-        }
+    public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> items) {
+        items.addAll(UpgradeRegistry.INSTANCE.getUpgrades().stream().map(UpgradeRegistry.INSTANCE::getUpgradeItem).collect(Collectors.toList()));
     }
 }

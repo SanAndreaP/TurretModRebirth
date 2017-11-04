@@ -23,6 +23,7 @@ import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -57,13 +58,20 @@ public final class ModelRegistry
         setStandardModel(BlockRegistry.ELECTROLYTE_GENERATOR);
         setStandardModel(BlockRegistry.TURRET_ASSEMBLY);
 
+//        setCustomMeshModel(ItemRegistry.TURRET_PLACER, new MeshDefUUID.Turret());
+//        setCustomMeshModel(ItemRegistry.TURRET_AMMO, new MeshDefUUID.Ammo());
+//        setCustomMeshModel(ItemRegistry.TURRET_UPGRADE, new MeshDefUUID.Upgrade());
+//        setCustomMeshModel(ItemRegistry.REPAIR_KIT, new MeshDefUUID.Repkit());
+
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurretAssembly.class, new RenderTurretAssembly());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityElectrolyteGenerator.class, new RenderElectrolyteGenerator());
+    }
+
+    public static void registerModelPre112() {
         setCustomMeshModel(ItemRegistry.TURRET_PLACER, new MeshDefUUID.Turret());
         setCustomMeshModel(ItemRegistry.TURRET_AMMO, new MeshDefUUID.Ammo());
         setCustomMeshModel(ItemRegistry.TURRET_UPGRADE, new MeshDefUUID.Upgrade());
         setCustomMeshModel(ItemRegistry.REPAIR_KIT, new MeshDefUUID.Repkit());
-
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurretAssembly.class, new RenderTurretAssembly());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityElectrolyteGenerator.class, new RenderElectrolyteGenerator());
     }
 
     private static void setStandardModel(Item item) {
@@ -81,6 +89,7 @@ public final class ModelRegistry
     }
 
     private static void setCustomMeshModel(Item item, MeshDefUUID<?> mesher) {
+        Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, mesher);
         ModelLoader.setCustomMeshDefinition(item, mesher);
         ModelBakery.registerItemVariants(item, mesher.getResLocations());
     }

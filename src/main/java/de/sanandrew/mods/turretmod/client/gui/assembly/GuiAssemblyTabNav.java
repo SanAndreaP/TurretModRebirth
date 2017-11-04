@@ -29,7 +29,7 @@ class GuiAssemblyTabNav
 	}
 
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partTicks) {
+    public void func_146112_a(Minecraft mc, int mouseX, int mouseY) {
         if( this.visible && this.enabled ) {
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);

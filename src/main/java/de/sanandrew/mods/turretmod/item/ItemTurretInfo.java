@@ -13,7 +13,6 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -39,7 +38,7 @@ public class ItemTurretInfo
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, World world, List<String> list, ITooltipFlag advInfo) {
+    public void addInformation(@Nonnull ItemStack stack, EntityPlayer world, List<String> list, boolean advInfo) {
         String[] lines = Lang.translate(this.getUnlocalizedName() + ".desc").split("\\\\n");
         list.addAll(Arrays.asList(lines));
 

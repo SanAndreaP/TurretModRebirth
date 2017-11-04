@@ -7,7 +7,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -22,7 +22,7 @@ idea {
     }
 }
 
-version = "1.12-4.0.0-beta.2.5"
+version = "1.11.2-4.0.0-beta.2.5"
 group = "de.sanandrew.mods"
 archivesBaseName = "TurretMod"
 
@@ -32,7 +32,7 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12-14.21.1.2387"
+    version = "1.11.2-13.20.1.2516"
     runDir = "run"
     mappings = "snapshot_20170716"
 }
@@ -44,8 +44,8 @@ repositories {
 }
 
 dependencies {
-  deobfCompile "mezz.jei:jei_1.12:4.7.1.69:api"
-  runtime "mezz.jei:jei_1.12:4.7.1.69"
+  deobfCompile "mezz.jei:jei_1.11.2:4.5.1.296:api"
+  runtime "mezz.jei:jei_1.11.2:4.5.1.296"
 }
 
 processResources {

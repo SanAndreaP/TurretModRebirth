@@ -14,7 +14,6 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -43,7 +42,7 @@ public abstract class ItemAssemblyUpgrade
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+    public void addInformation(@Nonnull ItemStack stack, EntityPlayer worldIn, List<String> tooltip, boolean flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
 
         tooltip.add(Lang.translate(this.getUnlocalizedName() + ".ttip"));
@@ -80,7 +79,7 @@ public abstract class ItemAssemblyUpgrade
 
         @Override
         @SideOnly(Side.CLIENT)
-        public void addInformation(@Nonnull ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        public void addInformation(@Nonnull ItemStack stack, EntityPlayer worldIn, List<String> tooltip, boolean flagIn) {
             super.addInformation(stack, worldIn, tooltip, flagIn);
 
             NBTTagCompound nbt = stack.getTagCompound();

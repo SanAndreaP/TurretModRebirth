@@ -13,7 +13,7 @@ import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteProcess;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -33,7 +33,7 @@ public class RenderElectrolyteGenerator
     private static int wireCallList;
 
     @Override
-    public void render(TileEntityElectrolyteGenerator tile, double x, double y, double z, float partTicks, int destroyStage, float alpha) {
+    public void func_180535_a(TileEntityElectrolyteGenerator tile, double x, double y, double z, float partTicks, int destroyStage) {
         GlStateManager.pushMatrix();
         GlStateManager.translate((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
@@ -108,7 +108,7 @@ public class RenderElectrolyteGenerator
             GlStateManager.glNewList(wireCallList, GL11.GL_COMPILE);
 
             Tessellator tess = Tessellator.getInstance();
-            BufferBuilder buf = tess.getBuffer();
+            VertexBuffer buf = tess.getBuffer();
 
             buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 

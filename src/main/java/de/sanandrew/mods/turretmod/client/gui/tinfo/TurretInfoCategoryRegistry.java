@@ -97,9 +97,10 @@ public final class TurretInfoCategoryRegistry
     }
 
     private static IRecipe getRecipe(ItemStack stack) {
-        IRecipe rcp;
-        for( ResourceLocation key : CraftingManager.REGISTRY.getKeys() ) {
-            rcp = CraftingManager.REGISTRY.getObject(key);
+//        IRecipe rcp;
+//        for( ResourceLocation key : CraftingManager.REGISTRY.getKeys() ) {
+        for( IRecipe rcp : CraftingManager.func_77594_a().func_77592_b() ) {
+//            rcp = CraftingManager.REGISTRY.getObject(key);
 
             if( rcp != null && ItemStackUtils.isValid(rcp.getRecipeOutput()) && ItemStackUtils.areEqual(rcp.getRecipeOutput(), stack, false, false, false) ) {
                 return rcp;

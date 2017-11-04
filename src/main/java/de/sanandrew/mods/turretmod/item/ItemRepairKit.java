@@ -58,9 +58,9 @@ public class ItemRepairKit
     }
 
     @Override
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-        if( this.isInCreativeTab(tab) ) {
-            items.addAll(RepairKitRegistry.INSTANCE.getRegisteredTypes().stream().map(type -> this.getRepKitItem(1, type)).collect(Collectors.toList()));
-        }
+    public void getSubItems(Item itm, CreativeTabs tab, NonNullList<ItemStack> items) {
+//        if( this.isInCreativeTab(tab) ) {
+        items.addAll(RepairKitRegistry.INSTANCE.getRegisteredTypes().stream().map(type -> this.getRepKitItem(1, type)).collect(Collectors.toList()));
+//        }
     }
 }

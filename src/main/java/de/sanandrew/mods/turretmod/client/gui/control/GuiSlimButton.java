@@ -27,7 +27,7 @@ public class GuiSlimButton
     }
 
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partTicks) {
+    public void func_146112_a(Minecraft mc, int mouseX, int mouseY) {
         if( this.visible ) {
             int center = this.width / 2;
             int textColor = 0xE0E0E0;

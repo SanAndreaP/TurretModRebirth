@@ -14,6 +14,7 @@ import net.minecraftforge.fml.client.IModGuiFactory;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.Set;
 
 @SuppressWarnings("unused")
@@ -35,7 +36,20 @@ public class TmrGuiFactory
     }
 
     @Override
+    @Deprecated
+    public Class<? extends GuiScreen> mainConfigGuiClass() {
+        return null;
+    }
+
+    @Override
     public Set<RuntimeOptionCategoryElement> runtimeGuiCategories() {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    @Deprecated
+    public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element) {
         return null;
     }
 }

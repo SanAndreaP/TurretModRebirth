@@ -18,7 +18,7 @@ import de.sanandrew.mods.turretmod.client.util.ShaderHelper;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -43,7 +43,7 @@ public class RenderTurretAssembly
     private final ShaderItemAlphaOverride shaderCallback = new ShaderItemAlphaOverride();
 
     @Override
-    public void render(TileEntityTurretAssembly tile, double x, double y, double z, float partTicks, int destroyStage, float alpha) {
+    public void func_180535_a(TileEntityTurretAssembly tile, double x, double y, double z, float partTicks, int destroyStage) {
         GlStateManager.pushMatrix();
         GlStateManager.translate((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
@@ -90,7 +90,7 @@ public class RenderTurretAssembly
         int tileZ = pos.getZ();
         float dist = (float) Minecraft.getMinecraft().player.getDistance(tileX + 0.5F, tileY + 0.5F, tileZ + 0.5F);
         Tessellator tess = Tessellator.getInstance();
-        BufferBuilder buf = tess.getBuffer();
+        VertexBuffer buf = tess.getBuffer();
 
         GlStateManager.pushMatrix();
         GlStateManager.disableTexture2D();

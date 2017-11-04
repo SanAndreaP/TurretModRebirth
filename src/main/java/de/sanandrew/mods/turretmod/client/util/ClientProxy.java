@@ -98,6 +98,8 @@ public class ClientProxy
     public void init(FMLInitializationEvent event) {
         super.init(event);
 
+        ModelRegistry.registerModelPre112();
+
         TurretModRebirth.PLUGINS.forEach(plugin -> plugin.registerTcuLabelElements(RenderTurretPointed.INSTANCE));
 
         MinecraftForge.EVENT_BUS.register(RenderForcefieldHandler.INSTANCE);

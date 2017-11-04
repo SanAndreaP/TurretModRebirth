@@ -138,7 +138,7 @@ public class EntityTurret
     }
 
     @Override
-    protected SoundEvent getHurtSound(DamageSource dmgSrc) {
+    protected SoundEvent getHurtSound() {
         return MiscUtils.defIfNull(this.delegate.getHurtSound(this), Sounds.HIT_TURRETHIT);
     }
 
@@ -240,7 +240,7 @@ public class EntityTurret
         if( this.isMovementBlocked() ) {
             this.isJumping = false;
             this.moveStrafing = 0.0F;
-            this.moveForward = 0.0F;
+            this.moveVertical = 0.0F;
             this.randomYawVelocity = 0.0F;
         } else if( !this.world.isRemote ) {
             this.world.profiler.startSection("oldAi");
@@ -369,7 +369,7 @@ public class EntityTurret
     protected void updateMyEntityActionState() {
         this.idleTime++;
         this.moveStrafing = 0.0F;
-        this.moveForward = 0.0F;
+        this.moveVertical = 0.0F;
         this.rotationYaw = 0.0F;
     }
 
@@ -493,7 +493,7 @@ public class EntityTurret
 
     /**turrets are immobile, leave empty*/
     @Override
-    public final void travel(float strafe, float vertical, float forward) {}
+    public final void func_70612_e(float strafe, float vertical) {}
 
     public ResourceLocation getStandardTexture() {
         return this.delegate.getStandardTexture(this);

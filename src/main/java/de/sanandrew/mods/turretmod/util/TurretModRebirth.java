@@ -8,6 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import de.sanandrew.mods.turretmod.api.ITmrPlugin;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
@@ -81,6 +83,7 @@ public class TurretModRebirth
         PLUGINS.forEach(plugin -> plugin.registerAssemblyRecipes(TurretAssemblyRegistry.INSTANCE));
 
         ElectrolyteRegistry.initialize();
+        CraftingRecipes.initialize();
 
         proxy.init(event);
     }
@@ -100,7 +103,11 @@ public class TurretModRebirth
     public void interModComm(FMLInterModComms.IMCEvent event) {
         event.getMessages().forEach(message -> {
             if( message.key.equals(TmrConstants.ID + ":checkProjForShield") && message.isFunctionMessage() ) {
-                message.getFunctionValue(Entity.class, Entity.class).ifPresent(ShieldHandler.PROJ_GET_OWNER::add);
+                @SuppressWarnings("Guava")
+                Optional<Function<Entity, Entity>> msgFunc = message.getFunctionValue(Entity.class, Entity.class);
+                if( msgFunc.isPresent() ) {
+                    ShieldHandler.PROJ_GET_OWNER.add(msgFunc.get()::apply);
+                }
             }
         });
     }

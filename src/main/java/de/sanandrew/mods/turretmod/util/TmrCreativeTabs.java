@@ -41,7 +41,7 @@ public class TmrCreativeTabs
         public ItemStack getIconItemStack() {
             if( this.tabIcons == null ) {
                 this.tabIcons = NonNullList.create();
-                ItemRegistry.TURRET_PLACER.getSubItems(this, this.tabIcons);
+                ItemRegistry.TURRET_PLACER.getSubItems(ItemRegistry.TURRET_PLACER, this, this.tabIcons);
             }
 
             return this.tabIcons.get((int) (System.currentTimeMillis() / 4250L) % this.tabIcons.size());
@@ -118,7 +118,7 @@ public class TmrCreativeTabs
         public ItemStack getIconItemStack() {
             if( this.tabIcons == null ) {
                 this.tabIcons = NonNullList.create();
-                ItemRegistry.TURRET_UPGRADE.getSubItems(this, this.tabIcons);
+                ItemRegistry.TURRET_UPGRADE.getSubItems(ItemRegistry.TURRET_PLACER, this, this.tabIcons);
             }
 
             return this.tabIcons.get((int) (System.currentTimeMillis() / 4250L) % this.tabIcons.size());
@@ -165,9 +165,9 @@ public class TmrCreativeTabs
             }
 
             NonNullList<ItemStack> subItms = NonNullList.create();
-            o1.getItem().getSubItems(this.tab, subItms);
+            o1.getItem().getSubItems(ItemRegistry.TURRET_PLACER, this.tab, subItms);
 
-            return getStackIndexInList(o2, subItms) > getStackIndexInList(o1, subItms) ? -1 : 1;
+            return Integer.compare(getStackIndexInList(o1, subItms), getStackIndexInList(o2, subItms));
         }
 
         private static int getStackIndexInList(@Nonnull ItemStack stack, List<ItemStack> stackArray) {

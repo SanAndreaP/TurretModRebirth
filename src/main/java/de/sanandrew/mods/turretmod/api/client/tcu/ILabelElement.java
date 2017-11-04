@@ -8,7 +8,7 @@ package de.sanandrew.mods.turretmod.api.client.tcu;
 
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -21,7 +21,7 @@ public interface ILabelElement
 
     float getWidth(ITurretInst turretInst, FontRenderer stdFontRenderer);
 
-    default void doRenderQuads(ITurretInst turretInst, float maxWidth, float progress, FontRenderer stdFontRenderer, float currHeight, BufferBuilder tessBuffer) { }
+    default void doRenderQuads(ITurretInst turretInst, float maxWidth, float progress, FontRenderer stdFontRenderer, float currHeight, VertexBuffer tessBuffer) { }
 
     default void doRenderTextured(ITurretInst turretInst, float maxWidth, float progress, FontRenderer stdFontRenderer) { }
 

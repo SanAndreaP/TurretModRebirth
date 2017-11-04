@@ -117,7 +117,9 @@ public class TurretInfoEntryGenerator
         super.initEntry(gui);
 
         Set<ItemStack> fuelList = ElectrolyteRegistry.getFuelMap().keySet();
-        this.fuelItems = NonNullList.from(ItemStackUtils.getEmpty(), fuelList.toArray(new ItemStack[fuelList.size()]));
+        this.fuelItems = NonNullList.withSize(fuelList.size(), ItemStackUtils.getEmpty());
+        this.fuelItems.addAll(fuelList);
+//        this.fuelItems = NonNullList.from(ItemStackUtils.getEmpty(), fuelList.toArray(new ItemStack[fuelList.size()]));
     }
 
     @Override

@@ -19,15 +19,21 @@ import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @SideOnly(Side.CLIENT)
 public class TurretInfoEntryMiscCraftable
@@ -85,19 +91,12 @@ public class TurretInfoEntryMiscCraftable
 
         for( int i = 0; i < cRecipe.recipeHeight; i++ ) {
             for( int j = 0; j < cRecipe.recipeWidth; j++ ) {
-                ItemStack[] recpStacks = cRecipe.recipeItems.get(i * cRecipe.recipeWidth + j).getMatchingStacks();
-//                ItemStack[] recpStacks = null;
-//                if( recpStack != null ) {
-//                    NonNullList<ItemStack> stacks = NonNullList.create();
-//
-//                    if( recpStack.getItemDamage() == OreDictionary.WILDCARD_VALUE ) {
-//                        recpStack.getItem().getSubItems(CreativeTabs.SEARCH, stacks);
-//                    } else {
-//                        stacks.add(recpStack);
-//                    }
-//
-//                    recpStacks = stacks.toArray(new ItemStack[stacks.size()]);
-//                }
+                ItemStack recpStack = cRecipe.recipeItems[i * cRecipe.recipeWidth + j];
+                ItemStack[] recpStacks = null;
+                if( ItemStackUtils.isValid(recpStack) ) {
+                    NonNullList<ItemStack> stacks = NonNullList.withSize(1, recpStack);
+                    recpStacks = stacks.toArray(new ItemStack[stacks.size()]);
+                }
 
                 crfArray[i * cRecipe.recipeWidth + j] = recpStacks;
             }
@@ -113,31 +112,21 @@ public class TurretInfoEntryMiscCraftable
 
         for( int i = 0; i < recipeHeight; i++ ) {
             for( int j = 0; j < recipeWidth; j++ ) {
-                ItemStack[] recpStacks = cRecipe.getIngredients().get(i * recipeWidth + j).getMatchingStacks();
-//                ItemStack[] recpStacks = null;
-//                if( recpObj != null ) {
-//                    List<ItemStack> stacks = new ArrayList<>();
-//
-//                    if( recpObj instanceof ItemStack ) {
-//                        ItemStack recpStack = (ItemStack) recpObj;
-//                        if( recpStack.getItemDamage() == OreDictionary.WILDCARD_VALUE ) {
-//                            recpStack.getItem().getSubItems(recpStack.getItem(), CreativeTabs.SEARCH, stacks);
-//                        } else {
-//                            stacks.add(recpStack);
-//                        }
-//                    } else if( recpObj instanceof ArrayList ) {
-////                        noinspection unchecked
-//                        ((ArrayList<ItemStack>) recpObj).stream().filter(Objects::nonNull).forEach(recpStack -> {
-//                            if( recpStack.getItemDamage() == OreDictionary.WILDCARD_VALUE ) {
-//                                recpStack.getItem().getSubItems(recpStack.getItem(), CreativeTabs.SEARCH, stacks);
-//                            } else {
-//                                stacks.add(recpStack);
-//                            }
-//                        });
-//                    }
-//
-//                    recpStacks = stacks.toArray(new ItemStack[stacks.size()]);
-//                }
+                Object recpObj = cRecipe.getInput()[i * recipeWidth + j];
+                ItemStack[] recpStacks = null;
+                if( recpObj != null ) {
+                    List<ItemStack> stacks = new ArrayList<>();
+
+                    if( recpObj instanceof ItemStack && ItemStackUtils.isValid((ItemStack) recpObj) ) {
+                        ItemStack recpStack = (ItemStack) recpObj;
+                        stacks.add(recpStack);
+                    } else if( recpObj instanceof ArrayList ) {
+//                        noinspection unchecked
+                        ((ArrayList<ItemStack>) recpObj).stream().filter(input -> input != null && ItemStackUtils.isValid(input)).forEach(stacks::add);
+                    }
+
+                    recpStacks = stacks.toArray(new ItemStack[stacks.size()]);
+                }
 
                 crfArray[i * recipeWidth + j] = recpStacks;
             }

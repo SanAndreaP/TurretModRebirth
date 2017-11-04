@@ -124,11 +124,11 @@ public final class TurretAssemblyRegistry
     public void finalizeRegistry() {
         this.recipeEntries.sort((o1, o2) -> {
             int i = Integer.compare(Item.getIdFromItem(o2.stack.getItem()), Item.getIdFromItem(o1.stack.getItem()));
-            if( i == 0 ) {
-                NonNullList<ItemStack> subtypes = NonNullList.create();
-                o1.stack.getItem().getSubItems(CreativeTabs.SEARCH, subtypes);
-                return Integer.compare(getStackIndexInList(subtypes, o1.stack), getStackIndexInList(subtypes, o2.stack));
-            }
+//            if( i == 0 ) {
+//                NonNullList<ItemStack> subtypes = NonNullList.create();
+//                o1.stack.getItem().getSubItems(o1.stack.getItem(), CreativeTabs.SEARCH, subtypes);
+//                return Integer.compare(getStackIndexInList(subtypes, o1.stack), getStackIndexInList(subtypes, o2.stack));
+//            }
             return i;
         });
 
@@ -262,11 +262,11 @@ public final class TurretAssemblyRegistry
                 ItemStack is1 = registry.getRecipeResult(o1);
                 ItemStack is2 = registry.getRecipeResult(o2);
                 int i = Integer.compare(Item.getIdFromItem(is1.getItem()), Item.getIdFromItem(is2.getItem()));
-                if( i == 0 ) {
-                    NonNullList<ItemStack> subtypes = NonNullList.create();
-                    is1.getItem().getSubItems(CreativeTabs.SEARCH, subtypes);
-                    return Integer.compare(getStackIndexInList(subtypes, is1), getStackIndexInList(subtypes, is2));
-                }
+//                if( i == 0 ) {
+//                    NonNullList<ItemStack> subtypes = NonNullList.create();
+//                    is1.getItem().getSubItems(is1.getItem(), CreativeTabs.SEARCH, subtypes);
+//                    return Integer.compare(getStackIndexInList(subtypes, is1), getStackIndexInList(subtypes, is2));
+//                }
                 return i;
             });
         }

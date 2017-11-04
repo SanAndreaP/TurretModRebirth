@@ -36,7 +36,7 @@ class GuiAssemblyCategoryTab
 	}
 
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+    public void func_146112_a(Minecraft mc, int mouseX, int mouseY) {
         if( this.visible ) {
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);

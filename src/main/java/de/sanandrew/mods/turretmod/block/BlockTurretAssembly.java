@@ -201,7 +201,7 @@ public class BlockTurretAssembly
         }
 
         @Override
-        protected StateImplementation createState(Block block, ImmutableMap<IProperty<?>, Comparable<?>> properties, @Nullable ImmutableMap<IUnlistedProperty<?>, Optional<?>> unlistedProperties) {
+        protected StateImplementation createState(Block block, ImmutableMap<IProperty<?>, Comparable<?>> properties, @Nullable ImmutableMap<IUnlistedProperty<?>, com.google.common.base.Optional<?>> unlistedProperties) {
             return new MyStateImplementation(block, properties);
         }
     }

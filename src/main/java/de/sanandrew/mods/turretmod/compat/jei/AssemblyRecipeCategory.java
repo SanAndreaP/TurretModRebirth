@@ -24,6 +24,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
@@ -94,5 +95,10 @@ public class AssemblyRecipeCategory<T extends IRecipeWrapper>
         recipeLayout.getItemStacks().init(inputSize, false, 73, 66);
         recipeLayout.getItemStacks().set(ingredients);
 //        recipeLayout.getItemStacks().set(inputSize, ingredients.getOutputs(ItemStack.class));
+    }
+
+    @Override
+    public List<String> getTooltipStrings(int mouseX, int mouseY) {
+        return Collections.emptyList();
     }
 }

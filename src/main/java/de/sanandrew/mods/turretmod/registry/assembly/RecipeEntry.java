@@ -161,7 +161,7 @@ public class RecipeEntry
             NonNullList<ItemStack> fltStacks = NonNullList.create();
             for( ItemStack stack : this.normalAlternatives ) {
                 if( stack.getItemDamage() == OreDictionary.WILDCARD_VALUE ) {
-                    stack.getItem().getSubItems(CreativeTabs.SEARCH, stacks);
+                    stack.getItem().getSubItems(stack.getItem(), CreativeTabs.SEARCH, stacks);
                 } else {
                     stacks.add(stack);
                 }
@@ -170,8 +170,8 @@ public class RecipeEntry
             for( String oreDictName : this.oreDictAlternatives ) {
                 OreDictionary.getOres(oreDictName).forEach(stack -> {
                     if( stack.getItemDamage() == OreDictionary.WILDCARD_VALUE ) {
-                        stack.getItem().getSubItems(CreativeTabs.SEARCH, stacks);
-                    }else {
+                        stack.getItem().getSubItems(stack.getItem(), CreativeTabs.SEARCH, stacks);
+                    } else {
                         stacks.add(stack);
                     }
                 });

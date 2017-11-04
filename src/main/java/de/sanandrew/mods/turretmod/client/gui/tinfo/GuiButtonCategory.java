@@ -73,8 +73,8 @@ public class GuiButtonCategory
     }
 
     @Override
-    public void drawButton(Minecraft mc, int mx, int my, float partTicks) {
-        float time = ClientTickHandler.ticksInGame + partTicks;
+    public void func_146112_a(Minecraft mc, int mx, int my) {
+        float time = ClientTickHandler.ticksInGame + mc.getRenderPartialTicks();
         float timeDelta = time - this.lastTime;
         this.lastTime = time;
 

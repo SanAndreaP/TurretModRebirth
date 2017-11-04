@@ -15,7 +15,6 @@ import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import net.minecraft.block.BlockLiquid;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.IItemPropertyGetter;
@@ -36,7 +35,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,7 +54,7 @@ public class ItemTurret
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+    public void addInformation(ItemStack stack, EntityPlayer worldIn, List<String> tooltip, boolean flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
 
         ITurret turret = TurretRegistry.INSTANCE.getTurret(stack);
@@ -158,10 +156,8 @@ public class ItemTurret
 
     @Override
     @SuppressWarnings("unchecked")
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-        if( this.isInCreativeTab(tab) ) {
-            items.addAll(TurretRegistry.INSTANCE.getTurrets().stream().map(TurretRegistry.INSTANCE::getTurretItem).collect(Collectors.toList()));
-        }
+    public void getSubItems(Item tab, CreativeTabs tabs, NonNullList<ItemStack> items) {
+        items.addAll(TurretRegistry.INSTANCE.getTurrets().stream().map(TurretRegistry.INSTANCE::getTurretItem).collect(Collectors.toList()));
     }
 
     public static Float getTurretHealth(@Nonnull ItemStack stack) {

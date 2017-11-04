@@ -176,7 +176,7 @@ public class TurretInfoEntryAmmo
         }
 
         @Override
-        public void drawButton(Minecraft mc, int mouseX, int mouseY, float partTicks) {
+        public void func_146112_a(Minecraft mc, int mouseX, int mouseY) {
             if( this.visible ) {
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(0.0F, 0.0F, 100.0F);
