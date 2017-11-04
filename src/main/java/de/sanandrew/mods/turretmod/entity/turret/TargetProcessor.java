@@ -65,6 +65,8 @@ public final class TargetProcessor
     protected UUID entityToAttackUUID;
     protected boolean isShootingClt;
 
+    protected long processTicks = 0;
+
     public TargetProcessor(ITurretInst turret) {
         this.entityTargetList = new HashMap<>(ENTITY_TARGET_LIST_STD);
         this.playerTargetList = new HashMap<>();
@@ -360,23 +362,25 @@ public final class TargetProcessor
             this.shootTicks--;
         }
 
-        if( TARGET_BUS.post(new TargetingEvent.ProcessorTick(this)) ) {
-            return;
-        }
-
         if( this.entityToAttack == null && this.entityToAttackUUID != null ) {
             this.entityToAttack = EntityUtils.getEntityByUUID(turretL.world, this.entityToAttackUUID);
         }
 
         AxisAlignedBB aabb = this.getAdjustedRange(true);
-        if( this.entityToAttack == null ) {
-            for( Entity entityObj : getValidTargetList(turretL, aabb) ) {
-                EntityLivingBase livingBase = (EntityLivingBase) entityObj;
-                if( this.checkTargetListeners(livingBase) ) {
-                    this.entityToAttack = livingBase;
-                    this.entityToAttackUUID = livingBase.getUniqueID();
-                    changed = true;
-                    break;
+
+        if( this.processTicks++ % 10 == 0 ) {
+            if( TARGET_BUS.post(new TargetingEvent.ProcessorTick(this)) ) {
+                return;
+            }
+            if( this.entityToAttack == null ) {
+                for( Entity entityObj : getValidTargetList(turretL, aabb) ) {
+                    EntityLivingBase livingBase = (EntityLivingBase) entityObj;
+                    if( this.checkTargetListeners(livingBase) ) {
+                        this.entityToAttack = livingBase;
+                        this.entityToAttackUUID = livingBase.getUniqueID();
+                        changed = true;
+                        break;
+                    }
                 }
             }
         }
@@ -425,14 +429,8 @@ public final class TargetProcessor
     }
 
     private boolean isEntityValidTarget(Entity entity, AxisAlignedBB aabb) {
-        if( entity instanceof EntityLivingBase ) {
-            boolean isEntityValid = (this.turret.getTurret().canSeeThroughBlocks() || this.turret.getEntity().canEntityBeSeen(entity)) && entity.isEntityAlive()
-                                            && entity.getEntityBoundingBox().intersects(aabb);
-
-            return isEntityValid && isEntityTargeted(entity);
-        }
-
-        return false;
+        return entity instanceof EntityLivingBase && isEntityTargeted(entity) && entity.isEntityAlive() && entity.getEntityBoundingBox().intersects(aabb)
+               && (this.turret.getTurret().canSeeThroughBlocks() || this.turret.getEntity().canEntityBeSeen(entity));
     }
 
     public static void initialize() {

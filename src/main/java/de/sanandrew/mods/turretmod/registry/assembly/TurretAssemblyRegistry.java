@@ -159,13 +159,14 @@ public final class TurretAssemblyRegistry
             for( int i = invSize - 1; i >= 2; i-- ) {
                 ItemStack invStack = inv.getStackInSlot(i);
                 if( ItemStackUtils.isValid(invStack) ) {
-                    ItemStack validStack = null;
+                    @Nonnull
+                    ItemStack validStack = ItemStack.EMPTY;
                     if( resource.isItemFitting(invStack) )
                     {
                         validStack = invStack;
                     }
 
-                    if( validStack != null ) {
+                    if( ItemStackUtils.isValid(validStack) ) {
                         resourceOnSlotList.add(new Tuple(i, Math.min(validStack.getCount(), resource.getItemCount())));
                         resource.decreaseItemCount(validStack.getCount());
                     }
