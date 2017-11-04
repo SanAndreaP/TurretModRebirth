@@ -43,7 +43,7 @@ public class ContainerTurretUpgrades
     }
 
     @Override
-    protected boolean mergeItemStack(@Nonnull ItemStack stack, int beginSlot, int endSlot, boolean reverse) {
+    protected boolean mergeItemStack(ItemStack stack, int beginSlot, int endSlot, boolean reverse) {
         boolean slotChanged = false;
         int start = beginSlot;
 
@@ -55,21 +55,21 @@ public class ContainerTurretUpgrades
         ItemStack slotStack;
 
         if( stack.isStackable() ) {
-            while( stack.getCount() > 0 && (!reverse && start < endSlot || reverse && start >= beginSlot) ) {
+            while( stack.stackSize > 0 && (!reverse && start < endSlot || reverse && start >= beginSlot) ) {
                 slot = this.inventorySlots.get(start);
                 slotStack = slot.getStack();
 
-                if( ItemStackUtils.areEqual(slotStack, stack) && slot.isItemValid(stack) ) {
-                    int combStackSize = slotStack.getCount() + stack.getCount();
+                if( ItemStackUtils.areEqual(slotStack, stack) && slot.isItemValid(stack) && ItemStackUtils.isValid(slotStack) ) {
+                    int combStackSize = slotStack.stackSize + stack.stackSize;
 
                     if( combStackSize <= stack.getMaxStackSize() ) {
-                        stack.setCount(0);
-                        slotStack.setCount(combStackSize);
+                        stack.stackSize = (0);
+                        slotStack.stackSize = (combStackSize);
                         slot.onSlotChanged();
                         slotChanged = true;
-                    } else if( slotStack.getCount() < stack.getMaxStackSize() ) {
-                        stack.shrink(stack.getMaxStackSize() - slotStack.getCount());
-                        slotStack.setCount(stack.getMaxStackSize());
+                    } else if( slotStack.stackSize < stack.getMaxStackSize() ) {
+                        stack.stackSize -= (stack.getMaxStackSize() - slotStack.stackSize);
+                        slotStack.stackSize = (stack.getMaxStackSize());
                         slot.onSlotChanged();
                         slotChanged = true;
                     }
@@ -83,7 +83,7 @@ public class ContainerTurretUpgrades
             }
         }
 
-        if( stack.getCount() > 0 ) {
+        if( stack.stackSize > 0 ) {
             if( reverse ) {
                 start = endSlot - 1;
             } else {
@@ -96,7 +96,7 @@ public class ContainerTurretUpgrades
                 if( !ItemStackUtils.isValid(slot.getStack()) && slot.isItemValid(stack) ) {
                     slot.putStack(stack.copy());
                     slot.onSlotChanged();
-                    stack.setCount(0);
+                    stack.stackSize = (0);
                     slotChanged = true;
                     break;
                 }
@@ -112,17 +112,17 @@ public class ContainerTurretUpgrades
         return slotChanged;
     }
 
-    private boolean transferUpgrade(Item desiredItm, @Nonnull ItemStack origStack, @Nonnull ItemStack slotStack) {
+    private boolean transferUpgrade(Item desiredItm, ItemStack origStack, ItemStack slotStack) {
         int origStackSize = desiredItm.getItemStackLimit(origStack);
         desiredItm.setMaxStackSize(1);
-        slotStack.setCount(1);
+        slotStack.stackSize = (1);
 
         if( !this.mergeItemStack(slotStack, 0, 36, false) ) {
-            slotStack.setCount(origStack.getCount());
+            slotStack.stackSize = (origStack.stackSize);
             desiredItm.setMaxStackSize(origStackSize);
             return true;
         } else {
-            slotStack.setCount(origStack.getCount() - 1);
+            slotStack.stackSize = (origStack.stackSize - 1);
         }
 
         desiredItm.setMaxStackSize(origStackSize);
@@ -130,36 +130,38 @@ public class ContainerTurretUpgrades
     }
 
     @Override
-    @Nonnull
     public ItemStack transferStackInSlot(EntityPlayer player, int slotId) {
         ItemStack origStack = ItemStackUtils.getEmpty();
         Slot slot = this.inventorySlots.get(slotId);
 
         if( slot != null && slot.getHasStack() ) {
-            ItemStack slotStack = slot.getStack().copy();
-            origStack = slotStack.copy();
+            ItemStack slotStack = slot.getStack();
+            if( ItemStackUtils.isValid(slotStack) ) {
+                slotStack = slotStack.copy();
+                origStack = slotStack.copy();
 
-            if( slotId < 36 ) { // if clicked stack is from Processor
-                if( !super.mergeItemStack(slotStack, 36, 72, true) ) {
+                if( slotId < 36 ) { // if clicked stack is from Processor
+                    if( !super.mergeItemStack(slotStack, 36, 72, true) ) {
+                        return ItemStackUtils.getEmpty();
+                    }
+                } else if( origStack.getItem() == ItemRegistry.TURRET_UPGRADE ) {
+                    if( transferUpgrade(origStack.getItem(), origStack, slotStack) ) {
+                        return ItemStackUtils.getEmpty();
+                    }
+                }
+
+                if( slotStack.stackSize == 0 ) { // if stackSize of slot got to 0
+                    slot.putStack(ItemStackUtils.getEmpty());
+                } else { // update changed slot stack state
+                    slot.onSlotChanged();
+                }
+
+                if( slotStack.stackSize == origStack.stackSize ) { // if nothing changed stackSize-wise
                     return ItemStackUtils.getEmpty();
                 }
-            } else if( origStack.getItem() == ItemRegistry.TURRET_UPGRADE ) {
-                if( transferUpgrade(origStack.getItem(), origStack, slotStack) ) {
-                    return ItemStackUtils.getEmpty();
-                }
-            }
 
-            if( slotStack.getCount() == 0 ) { // if stackSize of slot got to 0
-                slot.putStack(ItemStackUtils.getEmpty());
-            } else { // update changed slot stack state
-                slot.onSlotChanged();
+                slot.func_82870_a(player, slotStack);
             }
-
-            if( slotStack.getCount() == origStack.getCount() ) { // if nothing changed stackSize-wise
-                return ItemStackUtils.getEmpty();
-            }
-
-            slot.onTake(player, slotStack);
         }
 
         return origStack;
@@ -181,7 +183,7 @@ public class ContainerTurretUpgrades
         }
 
         @Override
-        public boolean isItemValid(@Nonnull ItemStack stack) {
+        public boolean isItemValid(ItemStack stack) {
             return this.upgProc.isItemValidForSlot(this.getSlotIndex(), stack);
         }
     }

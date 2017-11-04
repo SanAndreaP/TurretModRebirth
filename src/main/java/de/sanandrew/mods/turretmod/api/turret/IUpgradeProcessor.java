@@ -25,7 +25,7 @@ public interface IUpgradeProcessor
 
     void delUpgradeInstance(UUID id);
 
-    boolean tryApplyUpgrade(@Nonnull ItemStack upgStack);
+    boolean tryApplyUpgrade(ItemStack upgStack);
 
     void writeToNbt(NBTTagCompound nbt);
 

@@ -19,7 +19,6 @@ public interface ITurretInfoEntry
 
     int getPageHeight();
 
-    @Nonnull
     ItemStack getIcon();
 
     String getTitle();

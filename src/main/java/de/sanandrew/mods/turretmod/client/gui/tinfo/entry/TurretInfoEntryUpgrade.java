@@ -49,7 +49,6 @@ public class TurretInfoEntryUpgrade
         this.guiInfo = gui;
     }
 
-    @Nonnull
     @Override
     public ItemStack getIcon() {
         return this.icon;

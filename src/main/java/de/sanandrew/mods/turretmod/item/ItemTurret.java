@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
@@ -25,7 +26,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -74,7 +74,7 @@ public class ItemTurret
     }
 
     @Override
-    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+    public EnumActionResult onItemUse(ItemStack stackPar, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if( !world.isRemote ) {
             BlockPos placingOn = pos.add(facing.getFrontOffsetX(), 0, facing.getFrontOffsetZ());
             if( facing.getFrontOffsetY() == 0 ) {
@@ -104,7 +104,7 @@ public class ItemTurret
                     }
 
                     if( !player.capabilities.isCreativeMode ) {
-                        stack.shrink(1);
+                        stack.stackSize -= (1);
                     }
                 }
             }
@@ -114,10 +114,10 @@ public class ItemTurret
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(ItemStack stackPar, World world, EntityPlayer player, EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
 
-        if( !world.isRemote ) {
+        if( ItemStackUtils.isValid(stack) && !world.isRemote ) {
             RayTraceResult traceResult = this.rayTrace(world, player, true);
             //noinspection ConstantConditions
             if( traceResult != null && traceResult.typeOfHit == RayTraceResult.Type.BLOCK ) {
@@ -144,7 +144,7 @@ public class ItemTurret
                         }
 
                         if( !player.capabilities.isCreativeMode ) {
-                            stack.shrink(1);
+                            stack.stackSize -= (1);
                         }
                     }
                 }
@@ -156,11 +156,11 @@ public class ItemTurret
 
     @Override
     @SuppressWarnings("unchecked")
-    public void getSubItems(Item tab, CreativeTabs tabs, NonNullList<ItemStack> items) {
+    public void getSubItems(Item tab, CreativeTabs tabs, List<ItemStack> items) {
         items.addAll(TurretRegistry.INSTANCE.getTurrets().stream().map(TurretRegistry.INSTANCE::getTurretItem).collect(Collectors.toList()));
     }
 
-    public static Float getTurretHealth(@Nonnull ItemStack stack) {
+    public static Float getTurretHealth(ItemStack stack) {
         NBTTagCompound nbt = stack.getTagCompound();
         if( nbt != null && nbt.hasKey("turretHealth") ) {
             return nbt.getFloat("turretHealth");
@@ -169,7 +169,7 @@ public class ItemTurret
         return null;
     }
 
-    public static String getTurretName(@Nonnull ItemStack stack) {
+    public static String getTurretName(ItemStack stack) {
         NBTTagCompound nbt = stack.getTagCompound();
         if( nbt != null && nbt.hasKey("turretName") ) {
             return nbt.getString("turretName");

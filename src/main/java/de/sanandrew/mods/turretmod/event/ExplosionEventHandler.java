@@ -12,6 +12,7 @@ import de.sanandrew.mods.turretmod.registry.turret.shieldgen.TurretForcefield;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -31,7 +32,8 @@ public class ExplosionEventHandler
     @SubscribeEvent
     public void onExplosion(ExplosionEvent.Detonate event) {
         float radius = event.getExplosion().size;
-        AxisAlignedBB aabb = new AxisAlignedBB(-radius, -radius, -radius, radius, radius, radius).grow(24.0D).offset(event.getExplosion().getPosition());
+        Vec3d expPos = event.getExplosion().getPosition();
+        AxisAlignedBB aabb = new AxisAlignedBB(-radius, -radius, -radius, radius, radius, radius).grow(24.0D).offset(expPos.x, expPos.y, expPos.z);
 
         for( EntityLivingBase living : event.getWorld().getEntitiesWithinAABB(EntityLivingBase.class, aabb, CHK_ENTITY::test) ) {
             ShieldHandler.onExplosion((ITurretInst) living, aabb, event.getAffectedBlocks(), event.getAffectedEntities());

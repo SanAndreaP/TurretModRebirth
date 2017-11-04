@@ -54,10 +54,10 @@ public class ClientWorldEventListener
 
     }
 
-    @Override
-    public void spawnParticle(int id, boolean ignoreRange, boolean unknown1, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, int... parameters) {
-
-    }
+//    @Override
+//    public void spawnParticle(int id, boolean ignoreRange, boolean unknown1, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, int... parameters) {
+//
+//    }
 
     @Override
     public void onEntityAdded(Entity entityIn) {

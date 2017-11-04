@@ -56,7 +56,7 @@ public class CommonProxy
         MinecraftForge.EVENT_BUS.register(new ExplosionEventHandler());
         MinecraftForge.EVENT_BUS.register(new CollisionEventHandler());
 
-        EntityRegistry.registerModEntity(new ResourceLocation(TmrConstants.ID, "turret"), EntityTurret.class, TmrConstants.ID + ".turret", CommonProxy.entityCount++, TurretModRebirth.instance, 128, 1, false);
+        EntityRegistry.registerModEntity(/*new ResourceLocation(TmrConstants.ID, "turret"), */EntityTurret.class, TmrConstants.ID + ".turret", CommonProxy.entityCount++, TurretModRebirth.instance, 128, 1, false);
 
     }
 

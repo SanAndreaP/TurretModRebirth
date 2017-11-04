@@ -57,7 +57,6 @@ public final class TargetProcessor
     protected final ITurretInst turret;
 
     protected int ammoCount;
-    @Nonnull
     protected ItemStack ammoStack;
     protected int shootTicks;
     protected int initShootTicks;
@@ -76,7 +75,7 @@ public final class TargetProcessor
     }
 
     @Override
-    public boolean addAmmo(@Nonnull ItemStack stack) {
+    public boolean addAmmo(ItemStack stack) {
         if( this.isAmmoApplicable(stack) ) {
             IAmmunition type = AmmunitionRegistry.INSTANCE.getType(stack);
             UUID currType = ItemStackUtils.isValid(this.ammoStack) ? AmmunitionRegistry.INSTANCE.getType(this.ammoStack).getTypeId() : null;
@@ -94,18 +93,18 @@ public final class TargetProcessor
                 }
 
                 int provided = type.getAmmoCapacity();
-                int providedStack = stack.getCount() * provided; //provides 4*16=64, needs 56 = 56 / 64 * 4
+                int providedStack = stack.stackSize * provided; //provides 4*16=64, needs 56 = 56 / 64 * 4
                 if( providedStack - maxCapacity > 0 ) {
-                    int stackSub = MathHelper.floor(maxCapacity / (double)providedStack * stack.getCount());
+                    int stackSub = MathHelper.floor(maxCapacity / (double)providedStack * stack.stackSize);
                     if( stackSub > 0 ) {
                         this.ammoCount += stackSub * provided;
-                        stack.shrink(stackSub);
+                        stack.stackSize -= (stackSub);
                     } else {
                         return false;
                     }
                 } else {
                     this.ammoCount += providedStack;
-                    stack.setCount(0);
+                    stack.stackSize = (0);
                 }
                 return true;
             }
@@ -120,7 +119,6 @@ public final class TargetProcessor
     }
 
     @Override
-    @Nonnull
     public ItemStack getAmmoStack() {
         if( ItemStackUtils.isValid(this.ammoStack) ) {
             return this.ammoStack.copy();
@@ -145,9 +143,9 @@ public final class TargetProcessor
 
                 while( decrAmmo > 0 && type != AmmunitionRegistry.NULL_TYPE ) {
                     ItemStack stack = this.ammoStack.copy();
-                    stack.setCount(Math.min(decrAmmo / type.getAmmoCapacity(), maxStackSize));
-                    decrAmmo -= stack.getCount() * type.getAmmoCapacity();
-                    if( stack.getCount() <= 0 ) {
+                    stack.stackSize = (Math.min(decrAmmo / type.getAmmoCapacity(), maxStackSize));
+                    decrAmmo -= stack.stackSize * type.getAmmoCapacity();
+                    if( stack.stackSize <= 0 ) {
                         break;
                     }
                     items.add(stack);
@@ -184,9 +182,9 @@ public final class TargetProcessor
             IAmmunition type = AmmunitionRegistry.INSTANCE.getType(this.ammoStack);
             while( this.ammoCount > 0 && type != AmmunitionRegistry.NULL_TYPE ) {
                 ItemStack stack = this.ammoStack.copy();
-                stack.setCount(Math.min(this.ammoCount / type.getAmmoCapacity(), maxStackSize));
-                this.ammoCount -= stack.getCount() * type.getAmmoCapacity();
-                if( stack.getCount() <= 0 ) {
+                stack.stackSize = (Math.min(this.ammoCount / type.getAmmoCapacity(), maxStackSize));
+                this.ammoCount -= stack.stackSize * type.getAmmoCapacity();
+                if( stack.stackSize <= 0 ) {
                     this.ammoCount = 0;
                     break;
                 }
@@ -212,9 +210,9 @@ public final class TargetProcessor
             IAmmunition type = AmmunitionRegistry.INSTANCE.getType(this.ammoStack);
             while( this.ammoCount > 0 && type != AmmunitionRegistry.NULL_TYPE ) {
                 ItemStack stack = this.ammoStack.copy();
-                stack.setCount(Math.min(this.ammoCount / type.getAmmoCapacity(), maxStackSize));
-                this.ammoCount -= stack.getCount() * type.getAmmoCapacity();
-                if( stack.getCount() <= 0 ) {
+                stack.stackSize = (Math.min(this.ammoCount / type.getAmmoCapacity(), maxStackSize));
+                this.ammoCount -= stack.stackSize * type.getAmmoCapacity();
+                if( stack.stackSize <= 0 ) {
                     this.ammoCount = 0;
                     break;
                 }
@@ -237,7 +235,7 @@ public final class TargetProcessor
     }
 
     @Override
-    public boolean isAmmoApplicable(@Nonnull ItemStack stack) {
+    public boolean isAmmoApplicable(ItemStack stack) {
         if( ItemStackUtils.isValid(stack) ) {
             IAmmunition stackType = AmmunitionRegistry.INSTANCE.getType(stack);
             if( stackType != AmmunitionRegistry.NULL_TYPE ) {
@@ -434,7 +432,7 @@ public final class TargetProcessor
     }
 
     public static void initialize() {
-        EntityList.getEntityNameList().stream().map(EntityList::getClass)
+        EntityList.getEntityNameList().stream().map(EntityList.field_75625_b::get)
                 .filter(cls -> cls != null && EntityLiving.class.isAssignableFrom(cls) && !ITurretInst.class.isAssignableFrom(cls) && !EntityLiving.class.equals(cls))
                 .forEach(cls -> ENTITY_TARGET_LIST_STD.put(cls, IMob.class.isAssignableFrom(cls)));
     }
@@ -483,7 +481,7 @@ public final class TargetProcessor
     public void readFromNbt(NBTTagCompound nbt) {
         this.ammoCount = nbt.getInteger("ammoCount");
         if( nbt.hasKey("ammoStack") ) {
-            this.ammoStack = new ItemStack(nbt.getCompoundTag("ammoStack"));
+            this.ammoStack = ItemStack.func_77949_a(nbt.getCompoundTag("ammoStack"));
         }
         if( nbt.hasKey("targetUUID") ) {
             this.entityToAttackUUID = UUID.fromString(nbt.getString("targetUUID"));
@@ -563,7 +561,7 @@ public final class TargetProcessor
         }
     }
 
-    public void updateClientState(int targetId, int ammoCount, @Nonnull ItemStack ammoStack, boolean isShooting) {
+    public void updateClientState(int targetId, int ammoCount, ItemStack ammoStack, boolean isShooting) {
         EntityLiving turretL = this.turret.getEntity();
         if( turretL.world.isRemote ) {
             this.entityToAttack = targetId < 0 ? null : turretL.world.getEntityByID(targetId);

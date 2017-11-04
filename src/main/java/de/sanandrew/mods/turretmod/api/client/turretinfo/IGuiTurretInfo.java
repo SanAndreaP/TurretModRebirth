@@ -18,13 +18,13 @@ public interface IGuiTurretInfo
 
     void __drawTexturedRect(int x, int y, int u, int v, int w, int h);
 
-    void renderStack(@Nonnull ItemStack stack, int x, int y, double scale);
+    void renderStack(ItemStack stack, int x, int y, double scale);
 
     void doEntryScissoring(int x, int y, int width, int height);
 
     void doEntryScissoring();
 
-    void drawMiniItem(int x, int y, int mouseX, int mouseY, int scrollY, @Nonnull ItemStack stack, boolean drawTooltip);
+    void drawMiniItem(int x, int y, int mouseX, int mouseY, int scrollY, ItemStack stack, boolean drawTooltip);
 
     int getEntryX();
 

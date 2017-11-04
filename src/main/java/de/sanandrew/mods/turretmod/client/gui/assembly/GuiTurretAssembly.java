@@ -35,7 +35,6 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -59,11 +58,8 @@ import java.util.stream.Collectors;
 public class GuiTurretAssembly
         extends GuiContainer
 {
-    @Nonnull
     private final ItemStack upgIconAuto;
-    @Nonnull
     private final ItemStack upgIconSpeed;
-    @Nonnull
     private final ItemStack upgIconFilter;
 
     private final TileEntityTurretAssembly assembly;
@@ -185,7 +181,7 @@ public class GuiTurretAssembly
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        this.drawDefaultBackground();
+//        this.drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
 //        this.renderToolTip(mouseX, mouseY);
     }
@@ -283,7 +279,7 @@ public class GuiTurretAssembly
             ShaderHelper.releaseShader();
         }
         if( this.assembly.hasFilterUpgrade() ) {
-            NonNullList<ItemStack> filteredStacks = this.assembly.getFilterStacks();
+            List<ItemStack> filteredStacks = this.assembly.getFilterStacks();
             for( int i = 0; i < filteredStacks.size(); i++ ) {
                 ItemStack filterStack = filteredStacks.get(i);
                 if( ItemStackUtils.isValid(filterStack) && !ItemStackUtils.isValid(this.assembly.getInventory().getStackInSlot(i + 5)) ) {
@@ -310,7 +306,7 @@ public class GuiTurretAssembly
         }
 
         if( this.hasCrafting ) {
-            String cnt = String.format("%d", this.currCrfItem.getCount());
+            String cnt = String.format("%d", this.currCrfItem.stackSize);
             if( this.assembly.isAutomated() ) {
                 cnt = String.valueOf('\u221E');
             }
@@ -399,7 +395,7 @@ public class GuiTurretAssembly
             ItemStack stack = entryStacks[(int)((this.lastTimestamp / 1000L) % entryStacks.length)];
             List<?> tooltip = GuiUtils.getTooltipWithoutShift(stack);
 
-            String dscL1 = String.format("%dx %s", stack.getCount(), tooltip.get(0));
+            String dscL1 = String.format("%dx %s", stack.stackSize, tooltip.get(0));
             String dscL2 = null;
             tHeight+=9;
 

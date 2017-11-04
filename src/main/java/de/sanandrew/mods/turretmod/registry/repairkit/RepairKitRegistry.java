@@ -79,7 +79,6 @@ public final class RepairKitRegistry
     }
 
     @Override
-    @Nonnull
     public TurretRepairKit getType(UUID uuid) {
         return MiscUtils.defIfNull(this.kitsFromUUID.get(uuid), EMPTY_REPKIT);
     }
@@ -90,8 +89,7 @@ public final class RepairKitRegistry
     }
 
     @Override
-    @Nonnull
-    public TurretRepairKit getType(@Nonnull ItemStack stack) {
+    public TurretRepairKit getType(ItemStack stack) {
         if( ItemStackUtils.isItem(stack, ItemRegistry.REPAIR_KIT) ) {
             NBTTagCompound nbt = stack.getTagCompound();
             if( nbt != null ) {

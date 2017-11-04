@@ -14,7 +14,6 @@ import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
@@ -131,7 +130,7 @@ public class RecipeEntry
     }
 
     @Override
-    public boolean isItemFitting(@Nonnull ItemStack stack) {
+    public boolean isItemFitting(ItemStack stack) {
         if( !ItemStackUtils.isValid(stack) ) {
             return false;
         }
@@ -157,8 +156,8 @@ public class RecipeEntry
     @SideOnly(Side.CLIENT)
     public ItemStack[] getEntryItemStacks() {
         if( this.cachedEntryStacks == null || this.cachedEntryStacks.get() == null ) {
-            NonNullList<ItemStack> stacks = NonNullList.create();
-            NonNullList<ItemStack> fltStacks = NonNullList.create();
+            List<ItemStack> stacks = new ArrayList<>();
+            List<ItemStack> fltStacks = new ArrayList<>();
             for( ItemStack stack : this.normalAlternatives ) {
                 if( stack.getItemDamage() == OreDictionary.WILDCARD_VALUE ) {
                     stack.getItem().getSubItems(stack.getItem(), CreativeTabs.SEARCH, stacks);
@@ -187,7 +186,7 @@ public class RecipeEntry
                 }
 
                 if( valid != null ) {
-                    valid.setCount(this.stackSize);
+                    valid.stackSize = (this.stackSize);
                     fltStacks.add(valid);
                 }
             }

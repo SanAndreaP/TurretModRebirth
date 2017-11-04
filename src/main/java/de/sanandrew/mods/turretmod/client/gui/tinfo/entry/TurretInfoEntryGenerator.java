@@ -21,11 +21,12 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @SideOnly(Side.CLIENT)
@@ -38,9 +39,7 @@ public class TurretInfoEntryGenerator
         super(recipe);
     }
 
-    @Nonnull
-    private NonNullList<ItemStack> fuelItems;
-    @Nonnull
+    private List<ItemStack> fuelItems;
     private ItemStack tooltipItem;
 
     @Override
@@ -88,7 +87,7 @@ public class TurretInfoEntryGenerator
         GlStateManager.popMatrix();
     }
 
-    private void drawFuelItem(int x, int y, int mouseX, int mouseY, int scrollY, @Nonnull ItemStack stack) {
+    private void drawFuelItem(int x, int y, int mouseX, int mouseY, int scrollY, ItemStack stack) {
         this.guiInfo.__getMc().getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.guiInfo.__drawTexturedRect(x, y, 192, 0, 18, 18);
@@ -117,7 +116,7 @@ public class TurretInfoEntryGenerator
         super.initEntry(gui);
 
         Set<ItemStack> fuelList = ElectrolyteRegistry.getFuelMap().keySet();
-        this.fuelItems = NonNullList.withSize(fuelList.size(), ItemStackUtils.getEmpty());
+        this.fuelItems = new ArrayList<>(fuelList.size());
         this.fuelItems.addAll(fuelList);
 //        this.fuelItems = NonNullList.from(ItemStackUtils.getEmpty(), fuelList.toArray(new ItemStack[fuelList.size()]));
     }

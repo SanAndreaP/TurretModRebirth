@@ -69,7 +69,7 @@ public final class UpgradeRegistry
     }
 
     @Override
-    public UUID getUpgradeId(@Nonnull ItemStack stack) {
+    public UUID getUpgradeId(ItemStack stack) {
         if( !stack.hasTagCompound() ) {
             return EMPTY;
         }
@@ -87,7 +87,7 @@ public final class UpgradeRegistry
     }
 
     @Override
-    public ITurretUpgrade getUpgrade(@Nonnull ItemStack stack) {
+    public ITurretUpgrade getUpgrade(ItemStack stack) {
         if( !ItemStackUtils.isItem(stack, ItemRegistry.TURRET_UPGRADE) || !stack.hasTagCompound() ) {
             return EMPTY_INST;
         }
@@ -101,7 +101,6 @@ public final class UpgradeRegistry
     }
 
     @Override
-    @Nonnull
     public ItemStack getUpgradeItem(UUID uuid) {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setString("upgradeId", uuid.toString());
@@ -112,7 +111,6 @@ public final class UpgradeRegistry
     }
 
     @Override
-    @Nonnull
     public ItemStack getUpgradeItem(ITurretUpgrade upgrade) {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setString("upgradeId", this.getUpgradeId(upgrade).toString());

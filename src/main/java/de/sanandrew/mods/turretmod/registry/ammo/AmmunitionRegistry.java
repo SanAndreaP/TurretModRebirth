@@ -104,7 +104,6 @@ public final class AmmunitionRegistry
         }
 
         @Override
-        @Nonnull
         public ItemStack getStoringAmmoItem() {
             return ItemStackUtils.getEmpty();
         }
@@ -139,16 +138,17 @@ public final class AmmunitionRegistry
     }
 
     @Override
-    @Nonnull
-    public IAmmunition getType(@Nonnull ItemStack stack) {
-        NBTTagCompound nbt = stack.getTagCompound();
-        if( nbt != null ) {
-            if( nbt.hasKey("ammoType") ) {
-                String typeUUID = nbt.getString("ammoType");
-                try {
-                    return this.getType(UUID.fromString(typeUUID));
-                } catch( IllegalArgumentException ex ) {
-                    return NULL_TYPE;
+    public IAmmunition getType(ItemStack stack) {
+        if( ItemStackUtils.isValid(stack) ) {
+            NBTTagCompound nbt = stack.getTagCompound();
+            if( nbt != null ) {
+                if( nbt.hasKey("ammoType") ) {
+                    String typeUUID = nbt.getString("ammoType");
+                    try {
+                        return this.getType(UUID.fromString(typeUUID));
+                    } catch( IllegalArgumentException ex ) {
+                        return NULL_TYPE;
+                    }
                 }
             }
         }
@@ -168,7 +168,6 @@ public final class AmmunitionRegistry
     }
 
     @Override
-    @Nonnull
     public ItemStack getAmmoItem(IAmmunition type) {
         if( type == null ) {
             throw new IllegalArgumentException("Cannot get turret_ammo item with NULL type!");
@@ -214,7 +213,7 @@ public final class AmmunitionRegistry
 
         if( registerEntity ) {
             String name = "turret_proj_".concat(type.getName());
-            EntityRegistry.registerModEntity(new ResourceLocation(TmrConstants.ID, name), type.getEntityClass(), TmrConstants.ID + '.' + name, CommonProxy.entityCount++, TurretModRebirth.instance, 128, 1, true);
+            EntityRegistry.registerModEntity(/*new ResourceLocation(TmrConstants.ID, name), */type.getEntityClass(), TmrConstants.ID + '.' + name, CommonProxy.entityCount++, TurretModRebirth.instance, 128, 1, true);
         }
 
         UUID grpId = type.getGroupId();
@@ -225,7 +224,7 @@ public final class AmmunitionRegistry
     }
 
     @Override
-    public boolean areAmmoItemsEqual(@Nonnull ItemStack firstStack, @Nonnull ItemStack secondStack) {
+    public boolean areAmmoItemsEqual(ItemStack firstStack, ItemStack secondStack) {
         if( firstStack.getItem() == ItemRegistry.TURRET_AMMO && secondStack.getItem() == ItemRegistry.TURRET_AMMO ) {
             IAmmunition firstType = this.getType(firstStack);
             IAmmunition secondType = this.getType(secondStack);

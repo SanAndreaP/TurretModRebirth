@@ -89,7 +89,6 @@ public final class TurretRegistry
     }
 
     @Override
-    @Nonnull
     public ItemStack getTurretItem(ITurret type) {
         if( type == null ) {
             throw new IllegalArgumentException("Cannot get turret_placer item with NULL type!");
@@ -104,7 +103,6 @@ public final class TurretRegistry
     }
 
     @Override
-    @Nonnull
     public ItemStack getTurretItem(ITurretInst turretInst) {
         ItemStack stack = this.getTurretItem(turretInst.getTurret());
         NBTTagCompound nbt = stack.getTagCompound();
@@ -120,7 +118,7 @@ public final class TurretRegistry
     }
 
     @Override
-    public ITurret getTurret(@Nonnull ItemStack stack) {
+    public ITurret getTurret(ItemStack stack) {
         if( ItemStackUtils.isItem(stack, ItemRegistry.TURRET_PLACER) ) {
             NBTTagCompound nbt = stack.getTagCompound();
             if( nbt != null && nbt.hasKey("turretUUID") ) {
@@ -144,7 +142,6 @@ public final class TurretRegistry
             return "empty";
         }
 
-        @Nonnull
         @Override
         public UUID getId() {
             return UuidUtils.EMPTY_UUID;

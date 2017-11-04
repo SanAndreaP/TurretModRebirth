@@ -58,10 +58,10 @@ public abstract class TargetingEvent
     public static class ConsumeAmmo
             extends TargetingEvent
     {
-        public final @Nonnull ItemStack ammoStack;
+        public final ItemStack ammoStack;
         public int consumeAmount;
 
-        public ConsumeAmmo(ITargetProcessor processor, @Nonnull ItemStack ammoStack, int consumeAmount) {
+        public ConsumeAmmo(ITargetProcessor processor, ItemStack ammoStack, int consumeAmount) {
             super(processor);
             this.ammoStack = ammoStack;
             this.consumeAmount = consumeAmount;

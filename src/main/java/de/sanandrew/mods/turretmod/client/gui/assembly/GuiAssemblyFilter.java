@@ -29,7 +29,7 @@ public class GuiAssemblyFilter
     private int posY;
     private int posX;
 
-    public GuiAssemblyFilter(InventoryPlayer invPlayer, @Nonnull ItemStack assemblyFilter) {
+    public GuiAssemblyFilter(InventoryPlayer invPlayer, ItemStack assemblyFilter) {
         super(new ContainerAssemblyFilter(invPlayer, assemblyFilter, 0));
 
         this.xSize = 176;
@@ -48,7 +48,7 @@ public class GuiAssemblyFilter
     @Override
     protected void drawGuiContainerBackgroundLayer(float partTicks, int mouseX, int mouseY) {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        this.drawDefaultBackground();
+//        this.drawDefaultBackground();
 
         this.mc.getTextureManager().bindTexture(Resources.GUI_ASSEMBLY_FLT.getResource());
 

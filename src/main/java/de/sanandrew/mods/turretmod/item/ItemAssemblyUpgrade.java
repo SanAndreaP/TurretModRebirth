@@ -21,7 +21,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -30,6 +29,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class ItemAssemblyUpgrade
@@ -42,7 +43,7 @@ public abstract class ItemAssemblyUpgrade
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, EntityPlayer worldIn, List<String> tooltip, boolean flagIn) {
+    public void addInformation(ItemStack stack, EntityPlayer worldIn, List<String> tooltip, boolean flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
 
         tooltip.add(Lang.translate(this.getUnlocalizedName() + ".ttip"));
@@ -79,7 +80,7 @@ public abstract class ItemAssemblyUpgrade
 
         @Override
         @SideOnly(Side.CLIENT)
-        public void addInformation(@Nonnull ItemStack stack, EntityPlayer worldIn, List<String> tooltip, boolean flagIn) {
+        public void addInformation(ItemStack stack, EntityPlayer worldIn, List<String> tooltip, boolean flagIn) {
             super.addInformation(stack, worldIn, tooltip, flagIn);
 
             NBTTagCompound nbt = stack.getTagCompound();
@@ -91,7 +92,7 @@ public abstract class ItemAssemblyUpgrade
         }
 
         @Override
-        public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+        public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
             if( !world.isRemote ) {
                 if( player.isSneaking() ) {
                     setFilterStacks(player.getHeldItem(hand), null);
@@ -101,11 +102,11 @@ public abstract class ItemAssemblyUpgrade
                 }
             }
 
-            return super.onItemRightClick(world, player, hand);
+            return super.onItemRightClick(stack, world, player, hand);
         }
 
-        public static NonNullList<ItemStack> getFilterStacks(@Nonnull ItemStack stack) {
-            NonNullList<ItemStack> stacks = getEmptyInv();
+        public static List<ItemStack> getFilterStacks(ItemStack stack) {
+            List<ItemStack> stacks = getEmptyInv();
             NBTTagCompound nbt = stack.getTagCompound();
 
             if( nbt != null && nbt.hasKey("filteredStacks") ) {
@@ -115,7 +116,7 @@ public abstract class ItemAssemblyUpgrade
             return stacks;
         }
 
-        public static void setFilterStacks(@Nonnull ItemStack stack, NonNullList<ItemStack> inv) {
+        public static void setFilterStacks(ItemStack stack, List<ItemStack> inv) {
             NBTTagCompound nbt = stack.getTagCompound();
             if( nbt == null ) {
                 nbt = new NBTTagCompound();
@@ -132,8 +133,8 @@ public abstract class ItemAssemblyUpgrade
             stack.setTagCompound(nbt);
         }
 
-        public static NonNullList<ItemStack> getEmptyInv() {
-            return NonNullList.withSize(18, ItemStackUtils.getEmpty());
+        public static List<ItemStack> getEmptyInv() {
+            return new ArrayList<>(Collections.nCopies(18, null));
         }
     }
 }

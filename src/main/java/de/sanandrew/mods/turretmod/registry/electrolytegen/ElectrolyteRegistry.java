@@ -15,7 +15,6 @@ import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.oredict.OreDictionary;
@@ -30,6 +29,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
@@ -63,7 +63,7 @@ public class ElectrolyteRegistry
                 throw new JsonSyntaxException("Json cannot be null");
             }
 
-            NonNullList<ItemStack> inputItems = JsonUtils.getItemStacks(json.get("electrolytes"));
+            List<ItemStack> inputItems = JsonUtils.getItemStacks(json.get("electrolytes"));
             float effectiveness = JsonUtils.getFloatVal(json.get("effectiveness"));
             int ticksProcessing = JsonUtils.getIntVal(json.get("timeProcessing"));
             ItemStack trash = ItemStackUtils.getEmpty();
@@ -94,7 +94,6 @@ public class ElectrolyteRegistry
         return FUELS_UNMODIFY;
     }
 
-    @Nonnull
     public static Fuel getFuel(ItemStack stack) {
         if( !ItemStackUtils.isValid(stack) ) {
             return NULL_FUEL;
@@ -114,7 +113,7 @@ public class ElectrolyteRegistry
         return !getFuel(stack).isNull();
     }
 
-    public static boolean registerFuels(NonNullList<ItemStack> electrolytes, float effectiveness, int ticksProcessing, @Nonnull ItemStack trash, @Nonnull ItemStack treasure) {
+    public static boolean registerFuels(List<ItemStack> electrolytes, float effectiveness, int ticksProcessing, ItemStack trash, ItemStack treasure) {
         if( effectiveness < 1.0F ) {
             TmrConstants.LOG.log(Level.ERROR, "Cannot have an effectiveness of less than 1.0");
             return false;
@@ -153,12 +152,10 @@ public class ElectrolyteRegistry
     {
         public final float effect;
         public final short ticksProc;
-        @Nonnull
         public final ItemStack trash;
-        @Nonnull
         public final ItemStack treasure;
 
-        public Fuel(float effectiveness, int ticksProcessing, @Nonnull ItemStack trash, @Nonnull ItemStack treasure) {
+        public Fuel(float effectiveness, int ticksProcessing, ItemStack trash, ItemStack treasure) {
             this.effect = effectiveness;
             this.ticksProc = (short) ticksProcessing;
             this.trash = trash;

@@ -63,7 +63,6 @@ public class TurretInfoEntryTurret
         return Lang.TURRET_NAME.get(this.values.name);
     }
 
-    @Nonnull
     @Override
     public ItemStack getIcon() {
         return this.icon;

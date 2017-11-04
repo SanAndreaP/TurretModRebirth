@@ -22,7 +22,7 @@ idea {
     }
 }
 
-version = "1.11.2-4.0.0-beta.2.5"
+version = "1.10.2-4.0.0-beta.2.5"
 group = "de.sanandrew.mods"
 archivesBaseName = "TurretMod"
 
@@ -32,7 +32,7 @@ compileJava {
 }
 
 minecraft {
-    version = "1.11.2-13.20.1.2516"
+    version = "1.10.2-12.18.3.2511"
     runDir = "run"
     mappings = "snapshot_20170716"
 }
@@ -44,8 +44,8 @@ repositories {
 }
 
 dependencies {
-  deobfCompile "mezz.jei:jei_1.11.2:4.5.1.296:api"
-  runtime "mezz.jei:jei_1.11.2:4.5.1.296"
+  deobfCompile "mezz.jei:jei_1.10.2:3.14.7.420:api"
+  runtime "mezz.jei:jei_1.10.2:3.14.7.420"
 }
 
 processResources {

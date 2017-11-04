@@ -28,7 +28,6 @@ public class GuiButtonEntry
     private static final float TIME = 6.0F;
     public final int entIndex;
 
-    @Nonnull
     private final ItemStack icon;
 
     private float ticksHovered = 0.0F;

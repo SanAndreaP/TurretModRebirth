@@ -101,7 +101,7 @@ public final class Lang
     }
 
     public static String translateEntityCls(Class<? extends Entity> eClass) {
-        String namedEntry = EntityList.getTranslationName(EntityList.getKey(eClass));
+        String namedEntry = EntityList.func_188430_a(eClass);
         if( namedEntry != null ) {
             return translate(ENTITY_NAME.get(namedEntry));
         }
@@ -110,7 +110,7 @@ public final class Lang
     }
 
     public static String translateEntityClsDesc(Class<? extends Entity> eClass) {
-        String namedEntry = EntityList.getTranslationName(EntityList.getKey(eClass));
+        String namedEntry = EntityList.func_188430_a(eClass);
         if( namedEntry != null ) {
             return translate(ENTITY_DESC.get(namedEntry));
         }

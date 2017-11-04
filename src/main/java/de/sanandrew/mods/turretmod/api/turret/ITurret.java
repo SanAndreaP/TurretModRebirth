@@ -23,7 +23,6 @@ public interface ITurret
 {
     String getName();
 
-    @Nonnull
     UUID getId();
 
     ResourceLocation getItemModel();

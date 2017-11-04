@@ -17,7 +17,6 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.assembly.IRecipeEntry;
 import de.sanandrew.mods.turretmod.api.assembly.ITurretAssemblyRegistry;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import org.apache.commons.io.FilenameUtils;
@@ -117,7 +116,7 @@ public final class TurretAssemblyRecipes
                 JsonObject elemObj = elem.getAsJsonObject();
                 int count = JsonUtils.getIntVal(elemObj.get("count"));
                 boolean showTooltipText = JsonUtils.getBoolVal(elemObj.get("showTooltipText"), false);
-                NonNullList<ItemStack> items = JsonUtils.getItemStacks(elemObj.get("items"));
+                List<ItemStack> items = JsonUtils.getItemStacks(elemObj.get("items"));
 
                 int sz = items.size();
                 if( sz > 0 ) {

@@ -32,7 +32,7 @@ public class ItemTurretControlUnit
     }
 
     @Override
-    public String getItemStackDisplayName(@Nonnull ItemStack stack) {
+    public String getItemStackDisplayName(ItemStack stack) {
         long currDisplayNameTime = System.currentTimeMillis();
         if( this.prevDisplayNameTime + 1000 < currDisplayNameTime ) {
             final int count = 5;

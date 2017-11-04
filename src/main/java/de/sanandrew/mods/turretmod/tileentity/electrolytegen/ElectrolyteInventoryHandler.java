@@ -9,10 +9,12 @@ package de.sanandrew.mods.turretmod.tileentity.electrolytegen;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteRegistry;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 final class ElectrolyteInventoryHandler
         extends ItemStackHandler
@@ -24,7 +26,7 @@ final class ElectrolyteInventoryHandler
         this.tile = tile;
     }
 
-    boolean canAddExtraction(@Nonnull ItemStack stack) {
+    boolean canAddExtraction(ItemStack stack) {
         ItemStack myStack = stack.copy();
         for( int i = 9; i < 14 && ItemStackUtils.isValid(myStack); i++ ) {
             myStack = super.insertItem(i, myStack, true);
@@ -34,17 +36,16 @@ final class ElectrolyteInventoryHandler
     }
 
     @Override
-    @Nonnull
-    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         this.validateSlotIndex(slot);
-        if( slot < 9 && !ElectrolyteRegistry.getFuel(stack).isNull() && !ItemStackUtils.isValid(this.stacks.get(slot)) ) {
+        if( slot < 9 && !ElectrolyteRegistry.getFuel(stack).isNull() && !ItemStackUtils.isValid(this.stacks[slot]) ) {
             return super.insertItem(slot, stack, simulate);
         }
 
         return stack;
     }
 
-    void addExtraction(@Nonnull ItemStack stack) {
+    void addExtraction(ItemStack stack) {
         ItemStack myStack = stack.copy();
         for( int i = 9; i < 14 && ItemStackUtils.isValid(myStack); i++ ) {
             myStack = super.insertItem(i, myStack, false);
@@ -52,11 +53,10 @@ final class ElectrolyteInventoryHandler
     }
 
     @Override
-    protected int getStackLimit(int slot, @Nonnull ItemStack stack) {
+    protected int getStackLimit(int slot, ItemStack stack) {
         return slot < 9 ? 1 : super.getStackLimit(slot, stack);
     }
 
-    @Nonnull
     ItemStack extractInsertItem(int slot, boolean simulate) {
         if( slot < 9 ) {
             return super.extractItem(slot, 1, simulate);
@@ -66,7 +66,6 @@ final class ElectrolyteInventoryHandler
     }
 
     @Override
-    @Nonnull
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         if( slot > 8 ) {
             return super.extractItem(slot, amount, simulate);
@@ -75,7 +74,7 @@ final class ElectrolyteInventoryHandler
         return ItemStackUtils.getEmpty();
     }
 
-    NonNullList<ItemStack> getStacksArray() {
+    ItemStack[] getStacksArray() {
         return this.stacks;
     }
 

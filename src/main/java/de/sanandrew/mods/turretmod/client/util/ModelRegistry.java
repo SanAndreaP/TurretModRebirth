@@ -27,6 +27,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -82,9 +83,8 @@ public final class ModelRegistry
     }
 
     private static void setStandardModel(Block item) {
-        Item itm = Item.getItemFromBlock(item);
-        if( itm != Items.AIR ) {
-            setStandardModel(itm);
+        if( item != Blocks.AIR ) {
+            setStandardModel(Item.getItemFromBlock(item));
         }
     }
 
@@ -100,7 +100,7 @@ public final class ModelRegistry
         public final Map<UUID, ModelResourceLocation> modelRes = new HashMap<>();
 
         @Override
-        public ModelResourceLocation getModelLocation(@Nonnull ItemStack stack) {
+        public ModelResourceLocation getModelLocation(ItemStack stack) {
             T type = getType(stack);
             ResourceLocation regName = stack.getItem().getRegistryName();
             if( regName != null ) {
@@ -110,7 +110,7 @@ public final class ModelRegistry
             }
         }
 
-        public abstract T getType(@Nonnull ItemStack stack);
+        public abstract T getType(ItemStack stack);
         public abstract UUID getId(T type);
 
         public ResourceLocation[] getResLocations() {
@@ -128,7 +128,7 @@ public final class ModelRegistry
             }
 
             @Override
-            public ITurret getType(@Nonnull ItemStack stack) { return TurretRegistry.INSTANCE.getTurret(stack); }
+            public ITurret getType(ItemStack stack) { return TurretRegistry.INSTANCE.getTurret(stack); }
 
             @Override
             public UUID getId(ITurret type) { return type.getId(); }
@@ -145,7 +145,7 @@ public final class ModelRegistry
             }
 
             @Override
-            public IAmmunition getType(@Nonnull ItemStack stack) { return AmmunitionRegistry.INSTANCE.getType(stack); }
+            public IAmmunition getType(ItemStack stack) { return AmmunitionRegistry.INSTANCE.getType(stack); }
 
             @Override
             public UUID getId(IAmmunition type) { return type.getId(); }
@@ -162,7 +162,7 @@ public final class ModelRegistry
             }
 
             @Override
-            public ITurretUpgrade getType(@Nonnull ItemStack stack) { return UpgradeRegistry.INSTANCE.getUpgrade(stack); }
+            public ITurretUpgrade getType(ItemStack stack) { return UpgradeRegistry.INSTANCE.getUpgrade(stack); }
 
             @Override
             public UUID getId(ITurretUpgrade type) { return UpgradeRegistry.INSTANCE.getUpgradeId(type); }
@@ -179,7 +179,7 @@ public final class ModelRegistry
             }
 
             @Override
-            public TurretRepairKit getType(@Nonnull ItemStack stack) { return RepairKitRegistry.INSTANCE.getType(stack); }
+            public TurretRepairKit getType(ItemStack stack) { return RepairKitRegistry.INSTANCE.getType(stack); }
 
             @Override
             public UUID getId(TurretRepairKit type) { return RepairKitRegistry.INSTANCE.getTypeId(type); }

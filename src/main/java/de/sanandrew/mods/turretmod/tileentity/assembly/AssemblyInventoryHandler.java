@@ -14,18 +14,20 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 class AssemblyInventoryHandler
         implements ISidedInventory, INBTSerializable<NBTTagCompound>
 {
-    private final NonNullList<ItemStack> assemblyStacks = NonNullList.withSize(23, ItemStackUtils.getEmpty());
+    private final List<ItemStack> assemblyStacks = new ArrayList<>(Collections.nCopies(23, null));
 
     private static final int[] SLOTS_INSERT = new int[] {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22};
     private static final int[] SLOTS_EXTRACT =  new int[] {0};
@@ -36,9 +38,9 @@ class AssemblyInventoryHandler
         this.tile = tile;
     }
 
-    private boolean isStackAcceptable(@Nonnull ItemStack stack, int insrtSlot) {
+    private boolean isStackAcceptable(ItemStack stack, int insrtSlot) {
         if( this.hasFilterUpgrade() ) {
-            NonNullList<ItemStack> filter = this.getFilterStacks();
+            List<ItemStack> filter = this.getFilterStacks();
             if( ItemStackUtils.isStackInList(stack, filter) ) {
                 return ItemStackUtils.areEqual(stack, filter.get(insrtSlot));
             } else {
@@ -50,7 +52,7 @@ class AssemblyInventoryHandler
     }
 
 
-    NonNullList<ItemStack> getFilterStacks() {
+    List<ItemStack> getFilterStacks() {
         if( this.hasFilterUpgrade() ) {
             return ItemAssemblyUpgrade.Filter.getFilterStacks(this.assemblyStacks.get(3));
         } else {
@@ -72,7 +74,7 @@ class AssemblyInventoryHandler
 
     boolean canFillOutput() {
         ItemStack invStack = this.assemblyStacks.get(0);
-        return !ItemStackUtils.isValid(invStack) || invStack.getCount() < invStack.getMaxStackSize();
+        return !ItemStackUtils.isValid(invStack) || invStack.stackSize < invStack.getMaxStackSize();
     }
 
     boolean canFillOutput(ItemStack stack) {
@@ -82,7 +84,7 @@ class AssemblyInventoryHandler
 
     void fillOutput(ItemStack stack) {
         if( ItemStackUtils.isValid(this.assemblyStacks.get(0)) ) {
-            this.assemblyStacks.get(0).grow(stack.getCount());
+            this.assemblyStacks.get(0).stackSize += (stack.stackSize);
         } else {
             this.assemblyStacks.set(0, stack.copy());
             this.markDirty();
@@ -95,12 +97,12 @@ class AssemblyInventoryHandler
     }
 
     @Override
-    public boolean canInsertItem(int slot, @Nonnull ItemStack stack, EnumFacing side) {
+    public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
         return this.isItemValidForSlot(slot, stack) && side != EnumFacing.DOWN && side != EnumFacing.UP;
     }
 
     @Override
-    public boolean canExtractItem(int slot, @Nonnull ItemStack stack, EnumFacing side) {
+    public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
         return slot == 0 && side == EnumFacing.DOWN;
     }
 
@@ -109,19 +111,17 @@ class AssemblyInventoryHandler
         return this.assemblyStacks.size();
     }
 
-    @Override
+//    @Override
     public boolean isEmpty() {
         return this.assemblyStacks.stream().noneMatch(ItemStackUtils::isValid);
     }
 
     @Override
-    @Nonnull
     public ItemStack getStackInSlot(int slot) {
         return this.assemblyStacks.get(slot);
     }
 
     @Override
-    @Nonnull
     public ItemStack decrStackSize(int slot, int size) {
         if( !this.hasAutoUpgrade() ) {
             this.tile.automate = false;
@@ -130,7 +130,7 @@ class AssemblyInventoryHandler
         if( ItemStackUtils.isValid(this.assemblyStacks.get(slot)) ) {
             ItemStack itemstack;
 
-            if( this.assemblyStacks.get(slot).getCount() <= size ) {
+            if( this.assemblyStacks.get(slot).stackSize <= size ) {
                 itemstack = this.assemblyStacks.get(slot);
                 this.assemblyStacks.set(slot, ItemStackUtils.getEmpty());
 
@@ -142,7 +142,7 @@ class AssemblyInventoryHandler
             } else {
                 itemstack = this.assemblyStacks.get(slot).splitStack(size);
 
-                if( this.assemblyStacks.get(slot).getCount() == 0 ) {
+                if( this.assemblyStacks.get(slot).stackSize == 0 ) {
                     this.assemblyStacks.set(slot, ItemStackUtils.getEmpty());
                 }
 
@@ -158,7 +158,6 @@ class AssemblyInventoryHandler
     }
 
     @Override
-    @Nonnull
     public ItemStack removeStackFromSlot(int slot) {
         if( ItemStackUtils.isValid(this.assemblyStacks.get(slot)) ) {
             ItemStack itemstack = this.assemblyStacks.get(slot);
@@ -173,15 +172,15 @@ class AssemblyInventoryHandler
     }
 
     @Override
-    public void setInventorySlotContents(int slot, @Nonnull ItemStack stack) {
+    public void setInventorySlotContents(int slot, ItemStack stack) {
         if( !this.hasAutoUpgrade() ) {
             this.tile.automate = false;
         }
 
         this.assemblyStacks.set(slot, stack);
 
-        if( ItemStackUtils.isValid(stack) && stack.getCount() > this.getInventoryStackLimit() ) {
-            stack.setCount(this.getInventoryStackLimit());
+        if( ItemStackUtils.isValid(stack) && stack.stackSize > this.getInventoryStackLimit() ) {
+            stack.stackSize = (this.getInventoryStackLimit());
         }
 
         if( slot <= 4 ) {
@@ -228,7 +227,7 @@ class AssemblyInventoryHandler
     public void closeInventory(EntityPlayer player) {}
 
     @Override
-    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
+    public boolean isItemValidForSlot(int slot, ItemStack stack) {
         return slot != 0 && ItemStackUtils.isValid(stack)
                 && ( (slot > 4 && this.isStackAcceptable(stack, slot - 5)) || (slot == 1 && stack.getItem() == ItemRegistry.ASSEMBLY_UPG_AUTO)
                 || (slot == 2 && stack.getItem() == ItemRegistry.ASSEMBLY_UPG_SPEED)

@@ -37,11 +37,11 @@ public class TurretInfoEntryMiscAssembleable
     private final String title;
     private final String desc;
 
-    public TurretInfoEntryMiscAssembleable(@Nonnull ItemStack stack) {
+    public TurretInfoEntryMiscAssembleable(ItemStack stack) {
         this(stack, TurretAssemblyRegistry.INSTANCE.getRecipeEntry(stack));
     }
 
-    private TurretInfoEntryMiscAssembleable(@Nonnull ItemStack stack, TurretAssemblyRegistry.RecipeEntry recipeEntry) {
+    private TurretInfoEntryMiscAssembleable(ItemStack stack, TurretAssemblyRegistry.RecipeEntry recipeEntry) {
         this.icon = stack;
         this.title = stack.getUnlocalizedName() + ".name";
         this.recipe = recipeEntry;
@@ -53,7 +53,6 @@ public class TurretInfoEntryMiscAssembleable
         this.guiInfo = gui;
     }
 
-    @Nonnull
     @Override
     public ItemStack getIcon() {
         return this.icon;

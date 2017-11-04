@@ -22,7 +22,6 @@ import mezz.jei.api.IModRegistry;
 import mezz.jei.api.ISubtypeRegistry;
 import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
-import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -34,18 +33,20 @@ public class JeiPlugin
 {
     public JeiPlugin() { }
 
-    @Override
-    public void registerCategories(IRecipeCategoryRegistration registry) {
-        registry.addRecipeCategories(new AssemblyRecipeCategory(registry.getJeiHelpers().getGuiHelper()));
-    }
+//    @Override
+//    public void registerCategories(IRecipeCategoryRegistration registry) {
+//        registry.addRecipeCategories(new AssemblyRecipeCategory(registry.getJeiHelpers().getGuiHelper()));
+//    }
 
     @Override
     public void register(IModRegistry registry) {
-        registry.handleRecipes(TurretAssemblyRegistry.RecipeKeyEntry.class, new AssemblyRecipeWrapper.Factory(), AssemblyRecipeCategory.UID);
+//        registry.handleRecipes(TurretAssemblyRegistry.RecipeKeyEntry.class, new AssemblyRecipeWrapper.Factory(), AssemblyRecipeCategory.UID);
 
-        registry.addRecipes(TurretAssemblyRegistry.INSTANCE.getRecipeList(), AssemblyRecipeCategory.UID);
+        registry.addRecipes(TurretAssemblyRegistry.INSTANCE.getRecipeList());
 
-        registry.addRecipeCatalyst(new ItemStack(BlockRegistry.TURRET_ASSEMBLY), AssemblyRecipeCategory.UID);
+        registry.addRecipeCategories(new AssemblyRecipeCategory(registry.getJeiHelpers().getGuiHelper()));
+
+//        registry.addRecipeCatalyst(new ItemStack(BlockRegistry.TURRET_ASSEMBLY), AssemblyRecipeCategory.UID);
     }
 
     @Override

@@ -10,24 +10,17 @@ public interface IUpgradeRegistry
 {
     void registerUpgrade(UUID uuid, ITurretUpgrade upgrade);
 
-    @Nonnull
     ITurretUpgrade getUpgrade(UUID uuid);
 
-    @Nonnull
     UUID getUpgradeId(ITurretUpgrade upg);
 
-    @Nonnull
-    UUID getUpgradeId(@Nonnull ItemStack stack);
+    UUID getUpgradeId(ItemStack stack);
 
-    @Nonnull
-    ITurretUpgrade getUpgrade(@Nonnull ItemStack stack);
+    ITurretUpgrade getUpgrade(ItemStack stack);
 
-    @Nonnull
     List<ITurretUpgrade> getUpgrades();
 
-    @Nonnull
     ItemStack getUpgradeItem(UUID uuid);
 
-    @Nonnull
     ItemStack getUpgradeItem(ITurretUpgrade upgrade);
 }

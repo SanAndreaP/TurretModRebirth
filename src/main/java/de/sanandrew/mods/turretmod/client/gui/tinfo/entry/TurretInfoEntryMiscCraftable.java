@@ -23,7 +23,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -32,6 +31,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -53,7 +53,7 @@ public class TurretInfoEntryMiscCraftable
         this(recipe != null ? recipe.getRecipeOutput() : ItemStackUtils.getEmpty(), recipe);
     }
 
-    private TurretInfoEntryMiscCraftable(@Nonnull ItemStack stack, IRecipe recipe) {
+    private TurretInfoEntryMiscCraftable(ItemStack stack, IRecipe recipe) {
         this.icon = stack;
         this.title = String.format("%s.name", stack.getUnlocalizedName());
         this.desc = String.format("%s.desc", stack.getUnlocalizedName());
@@ -70,7 +70,6 @@ public class TurretInfoEntryMiscCraftable
         }
     }
 
-    @Nonnull
     @Override
     public ItemStack getIcon() {
         return this.icon;
@@ -94,7 +93,7 @@ public class TurretInfoEntryMiscCraftable
                 ItemStack recpStack = cRecipe.recipeItems[i * cRecipe.recipeWidth + j];
                 ItemStack[] recpStacks = null;
                 if( ItemStackUtils.isValid(recpStack) ) {
-                    NonNullList<ItemStack> stacks = NonNullList.withSize(1, recpStack);
+                    List<ItemStack> stacks = Collections.singletonList(recpStack);
                     recpStacks = stacks.toArray(new ItemStack[stacks.size()]);
                 }
 
@@ -120,9 +119,9 @@ public class TurretInfoEntryMiscCraftable
                     if( recpObj instanceof ItemStack && ItemStackUtils.isValid((ItemStack) recpObj) ) {
                         ItemStack recpStack = (ItemStack) recpObj;
                         stacks.add(recpStack);
-                    } else if( recpObj instanceof ArrayList ) {
+                    } else if( recpObj instanceof List ) {
 //                        noinspection unchecked
-                        ((ArrayList<ItemStack>) recpObj).stream().filter(input -> input != null && ItemStackUtils.isValid(input)).forEach(stacks::add);
+                        ((List<ItemStack>) recpObj).stream().filter(ItemStackUtils::isValid).forEach(stacks::add);
                     }
 
                     recpStacks = stacks.toArray(new ItemStack[stacks.size()]);

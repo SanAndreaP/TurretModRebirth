@@ -16,11 +16,8 @@ import javax.annotation.Nonnull;
 
 public class ElectrolyteProcess
 {
-    @Nonnull
     public final ItemStack processStack;
-    @Nonnull
     public final ItemStack trashStack;
-    @Nonnull
     public final ItemStack treasureStack;
     public final short maxProgress;
     public final float effectivenes;
@@ -50,7 +47,7 @@ public class ElectrolyteProcess
     }
 
     public ElectrolyteProcess(NBTTagCompound nbt) {
-        this.processStack = new ItemStack(nbt.getCompoundTag("progressItem"));
+        this.processStack = ItemStack.func_77949_a(nbt.getCompoundTag("progressItem"));
         this.progress = nbt.getShort("progress");
         this.maxProgress = nbt.getShort("progressMax");
 

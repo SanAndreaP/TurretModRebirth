@@ -25,7 +25,6 @@ import javax.annotation.Nonnull;
 public class RenderPebble<T extends EntityTurretProjectile>
         extends Render<T>
 {
-    @Nonnull
     private ItemStack gravelItem = ItemStackUtils.getEmpty();
 
     public RenderPebble(RenderManager manager) {

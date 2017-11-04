@@ -17,16 +17,14 @@ public interface IAmmunitionRegistry
 
     IAmmunition getType(UUID typeId);
 
-    @Nonnull
-    IAmmunition getType(@Nonnull ItemStack stack);
+    IAmmunition getType(ItemStack stack);
 
     List<IAmmunition> getTypesForTurret(ITurret turret);
 
     @SuppressWarnings("unused")
     boolean registerAmmoType(IAmmunition<?> type);
 
-    @Nonnull
     ItemStack getAmmoItem(IAmmunition type);
 
-    boolean areAmmoItemsEqual(@Nonnull ItemStack firstStack, @Nonnull ItemStack secondStack);
+    boolean areAmmoItemsEqual(ItemStack firstStack, ItemStack secondStack);
 }

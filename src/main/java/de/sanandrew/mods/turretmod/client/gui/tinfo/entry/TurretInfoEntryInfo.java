@@ -38,7 +38,6 @@ public class TurretInfoEntryInfo
         this.icon = new ItemStack(Blocks.GRASS);
     }
 
-    @Nonnull
     @Override
     public ItemStack getIcon() {
         return this.icon;

@@ -22,13 +22,12 @@ final class ElectrolyteContainerInventoryHandler
     }
 
     @Override
-    @Nonnull
-    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         return this.parentHandler.insertItem(slot, stack, simulate);
     }
 
     @Override
-    protected int getStackLimit(int slot, @Nonnull ItemStack stack) {
+    protected int getStackLimit(int slot, ItemStack stack) {
         return this.parentHandler.getStackLimit(slot, stack);
     }
 

@@ -16,7 +16,7 @@ public interface IRecipeEntry
 
     RecipeEntry put(Block... blocks);
 
-    RecipeEntry put(@Nonnull ItemStack... stacks);
+    RecipeEntry put(ItemStack... stacks);
 
     RecipeEntry put(String... oreDictNames);
 
@@ -26,7 +26,7 @@ public interface IRecipeEntry
 
     RecipeEntry copy();
 
-    boolean isItemFitting(@Nonnull ItemStack stack);
+    boolean isItemFitting(ItemStack stack);
 
     @SideOnly(Side.CLIENT)
     ItemStack[] getEntryItemStacks();

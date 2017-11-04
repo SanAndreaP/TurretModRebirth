@@ -314,7 +314,7 @@ public class GuiTurretInfo
     }
 
     @Override
-    public void drawMiniItem(int x, int y, int mouseX, int mouseY, int scrollY, @Nonnull ItemStack stack, boolean drawTooltip) {
+    public void drawMiniItem(int x, int y, int mouseX, int mouseY, int scrollY, ItemStack stack, boolean drawTooltip) {
         this.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.pushMatrix();
@@ -378,7 +378,7 @@ public class GuiTurretInfo
     }
 
     @Override
-    public void renderStack(@Nonnull ItemStack stack, int x, int y, double scale) {
+    public void renderStack(ItemStack stack, int x, int y, double scale) {
         RenderUtils.renderStackInGui(stack, x, y, scale);
     }
 

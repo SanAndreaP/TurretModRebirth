@@ -48,10 +48,10 @@ public class AssemblyRecipeCategory<T extends IRecipeWrapper>
         return Lang.translate(Lang.JEI_ASSEMBLY_TITLE);
     }
 
-    @Override
-    public String getModName() {
-        return TmrConstants.NAME;
-    }
+//    @Override
+//    public String getModName() {
+//        return TmrConstants.NAME;
+//    }
 
     @Override
     public IDrawable getBackground() {
@@ -66,6 +66,16 @@ public class AssemblyRecipeCategory<T extends IRecipeWrapper>
 
     @Override
     public void drawExtras(Minecraft minecraft) {
+
+    }
+
+    @Override
+    public void drawAnimations(Minecraft minecraft) {
+
+    }
+
+    @Override
+    public void setRecipe(IRecipeLayout recipeLayout, T recipeWrapper) {
 
     }
 

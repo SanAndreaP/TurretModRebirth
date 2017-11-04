@@ -22,12 +22,11 @@ import javax.annotation.Nonnull;
 public class ContainerAssemblyFilter
         extends Container
 {
-    @Nonnull
     private final ItemStack filterStack;
     private final int filterStackSlot;
     private final InventoryAssemblyFilter filterInv;
 
-    public ContainerAssemblyFilter(IInventory playerInv, @Nonnull ItemStack stack, int slot) {
+    public ContainerAssemblyFilter(IInventory playerInv, ItemStack stack, int slot) {
         this.filterStack = stack;
         this.filterStackSlot = slot;
         this.filterInv = new InventoryAssemblyFilter(ItemAssemblyUpgrade.Filter.getFilterStacks(stack));
@@ -66,23 +65,24 @@ public class ContainerAssemblyFilter
     }
 
     @Override
-    @Nonnull
     public ItemStack transferStackInSlot(EntityPlayer player, int slotId) {
         Slot slot = this.inventorySlots.get(slotId);
 
         if( slot != null && slot.getHasStack() ) {
             ItemStack slotStack = slot.getStack();
-            ItemStack origStack = slotStack.copy();
+            if( ItemStackUtils.isValid(slotStack) ) {
+                ItemStack origStack = slotStack.copy();
 
-            if( slotId < 18 ) {
-                slot.putStack(ItemStackUtils.getEmpty());
-            } else {
-                for( int i = 0; i < 18; i++ ) {
-                    Slot fltSlot = this.inventorySlots.get(i);
-                    if( !fltSlot.getHasStack() ) {
-                        origStack.setCount(1);
-                        fltSlot.putStack(origStack);
-                        return ItemStackUtils.getEmpty();
+                if( slotId < 18 ) {
+                    slot.putStack(ItemStackUtils.getEmpty());
+                } else {
+                    for( int i = 0; i < 18; i++ ) {
+                        Slot fltSlot = this.inventorySlots.get(i);
+                        if( !fltSlot.getHasStack() ) {
+                            origStack.stackSize = (1);
+                            fltSlot.putStack(origStack);
+                            return ItemStackUtils.getEmpty();
+                        }
                     }
                 }
             }
@@ -105,7 +105,7 @@ public class ContainerAssemblyFilter
         }
 
         @Override
-        public boolean isItemValid(@Nonnull ItemStack stack) {
+        public boolean isItemValid(ItemStack stack) {
             if( ItemStackUtils.isValid(stack) ) {
                 this.putStack(stack.copy());
             }

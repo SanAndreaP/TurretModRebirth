@@ -62,7 +62,7 @@ public class RenderTurret<E extends EntityLiving & ITurretInst>
     }
 
     @Override
-    public <T extends ModelBase> boolean registerRender(@Nonnull ITurret turret, @Nonnull ITurretRender<T, E> render) {
+    public <T extends ModelBase> boolean registerRender(ITurret turret, ITurretRender<T, E> render) {
         if( this.turretRenders.containsKey(turret) ) {
             TmrConstants.LOG.log(Level.WARN, String.format("Cannot register renderer for turret %s since it already has one.", turret.getName()));
             return false;

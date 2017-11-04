@@ -17,7 +17,7 @@ import java.util.List;
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public interface ITurretRenderRegistry<E extends EntityLiving & ITurretInst>
 {
-    <T extends ModelBase> boolean registerRender(@Nonnull ITurret turret, @Nonnull ITurretRender<T, E> render);
+    <T extends ModelBase> boolean registerRender(ITurret turret, ITurretRender<T, E> render);
 
     ITurretRender<?, E> removeRender(ITurret turret);
 

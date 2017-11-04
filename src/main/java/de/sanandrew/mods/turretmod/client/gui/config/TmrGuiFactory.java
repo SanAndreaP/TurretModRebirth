@@ -25,20 +25,20 @@ public class TmrGuiFactory
     @Override
     public void initialize(Minecraft mc) { }
 
-    @Override
-    public boolean hasConfigGui() {
-        return false;
-    }
-
-    @Override
-    public GuiScreen createConfigGui(GuiScreen parentScreen) {
-        return new GuiConfigScreen(parentScreen);
-    }
+//    @Override
+//    public boolean hasConfigGui() {
+//        return false;
+//    }
+//
+//    @Override
+//    public GuiScreen createConfigGui(GuiScreen parentScreen) {
+//        return new GuiConfigScreen(parentScreen);
+//    }
 
     @Override
     @Deprecated
     public Class<? extends GuiScreen> mainConfigGuiClass() {
-        return null;
+        return GuiConfigScreen.class;
     }
 
     @Override

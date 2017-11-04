@@ -114,7 +114,7 @@ public final class RenderTurretPointed
         }
     }
 
-    private static boolean isItemTCU(@Nonnull ItemStack stack) {
+    private static boolean isItemTCU(ItemStack stack) {
         return ItemStackUtils.isItem(stack, ItemRegistry.TURRET_CONTROL_UNIT);
     }
 

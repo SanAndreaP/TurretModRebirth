@@ -35,8 +35,7 @@ public interface IAmmunition<T extends Entity & IProjectile>
      * Cannot be {@code null}!
      * @return A unique ID for this item
      */
-    @Nonnull
-    UUID getId();
+        UUID getId();
 
     /**
      * Returns the ID for this ammo type item. It needs to be unique from all other types registered, but must
@@ -46,7 +45,6 @@ public interface IAmmunition<T extends Entity & IProjectile>
      * Cannot be {@code null}!
      * @return A unique ID for this type
      */
-    @Nonnull
     UUID getTypeId();
 
     /**
@@ -56,7 +54,6 @@ public interface IAmmunition<T extends Entity & IProjectile>
      * Cannot be {@code null}!
      * @return A unique ID for this type
      */
-    @Nonnull
     UUID getGroupId();
 
     /**

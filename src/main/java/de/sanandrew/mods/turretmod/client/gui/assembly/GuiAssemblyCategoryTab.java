@@ -25,10 +25,9 @@ import javax.annotation.Nonnull;
 class GuiAssemblyCategoryTab
         extends GuiButton
 {
-	@Nonnull
 	private final ItemStack renderedItem;
 
-	GuiAssemblyCategoryTab(int id, int posX, int posY, @Nonnull ItemStack renderedItem, String hoverText) {
+	GuiAssemblyCategoryTab(int id, int posX, int posY, ItemStack renderedItem, String hoverText) {
 		super(id, posX, posY, hoverText);
 		this.width = 20;
 		this.height = 14;

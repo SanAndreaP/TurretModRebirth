@@ -33,7 +33,6 @@ public class PacketUpdateTurretState
     private int turretId;
     private int entityToAttackId;
     private int currAmmoCap;
-    @Nonnull
     private ItemStack ammoStack;
     private boolean isShooting;
     private byte[] delegateData;

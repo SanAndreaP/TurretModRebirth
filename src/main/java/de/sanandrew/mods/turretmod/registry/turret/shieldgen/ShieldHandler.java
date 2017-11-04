@@ -15,7 +15,6 @@ import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityFireball;
-import net.minecraft.entity.projectile.EntityLlamaSpit;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.network.play.server.SPacketEntityVelocity;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -40,8 +39,6 @@ public class ShieldHandler
                 return ((EntityArrow) proj).shootingEntity;
             } else if( proj instanceof EntityThrowable ) {
                 return ((EntityThrowable) proj).getThrower();
-            } else if( proj instanceof EntityLlamaSpit ) {
-                return ((EntityLlamaSpit) proj).owner;
             } else if( proj instanceof EntityFireball ) {
                 return ((EntityFireball) proj).shootingEntity;
             }

@@ -15,9 +15,9 @@ import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class ItemAmmo
@@ -31,14 +31,14 @@ public class ItemAmmo
     }
 
     @Override
-    public String getUnlocalizedName(@Nonnull ItemStack stack) {
+    public String getUnlocalizedName(ItemStack stack) {
         IAmmunition type = AmmunitionRegistry.INSTANCE.getType(stack);
         return String.format("%s.%s", this.getUnlocalizedName(), type.getName());
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void getSubItems(Item itm, CreativeTabs tab, NonNullList<ItemStack> list) {
+    public void getSubItems(Item itm, CreativeTabs tab, List<ItemStack> list) {
         list.addAll(AmmunitionRegistry.INSTANCE.getRegisteredTypes().stream().map(AmmunitionRegistry.INSTANCE::getAmmoItem).collect(Collectors.toList()));
     }
 }

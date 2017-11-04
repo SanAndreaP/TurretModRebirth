@@ -18,11 +18,10 @@ public interface ITargetProcessor
 {
     EventBus TARGET_BUS = new EventBus();
 
-    boolean addAmmo(@Nonnull ItemStack stack);
+    boolean addAmmo(ItemStack stack);
 
     int getAmmoCount();
 
-    @Nonnull
     ItemStack getAmmoStack();
 
     boolean hasAmmo();
@@ -31,7 +30,7 @@ public interface ITargetProcessor
 
     void decrAmmo();
 
-    boolean isAmmoApplicable(@Nonnull ItemStack stack);
+    boolean isAmmoApplicable(ItemStack stack);
 
     int getMaxAmmoCapacity();
 

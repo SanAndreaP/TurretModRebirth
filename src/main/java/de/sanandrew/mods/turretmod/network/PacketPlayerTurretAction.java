@@ -91,8 +91,8 @@ public class PacketPlayerTurretAction
                         chest.setInventorySlotContents(0, TurretRegistry.INSTANCE.getTurretItem(turretInst));
                         ((TargetProcessor) turretInst.getTargetProcessor()).putAmmoInInventory(chest);
 
-                        chestStack.shrink(1);
-                        if( chestStack.getCount() < 1 ) {
+                        chestStack.stackSize -= (1);
+                        if( chestStack.stackSize < 1 ) {
                             player.inventory.setInventorySlotContents(chestItm.getValue(0), ItemStackUtils.getEmpty());
                         } else {
                             player.inventory.setInventorySlotContents(chestItm.getValue(0), chestStack.copy());

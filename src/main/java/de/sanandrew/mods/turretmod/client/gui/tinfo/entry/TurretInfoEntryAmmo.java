@@ -61,7 +61,6 @@ public class TurretInfoEntryAmmo
         this.icon = this.ammos[0].getStoringAmmoItem();
     }
 
-    @Nonnull
     @Override
     public ItemStack getIcon() {
         return this.icon;
@@ -157,7 +156,6 @@ public class TurretInfoEntryAmmo
             extends GuiButton
     {
         public final int ammoIndex;
-        @Nonnull
         public final ItemStack stack;
 
         private void drawGrayscale(int shader) {

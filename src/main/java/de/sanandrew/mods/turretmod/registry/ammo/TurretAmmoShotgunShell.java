@@ -81,7 +81,6 @@ public class TurretAmmoShotgunShell
     }
 
     @Override
-    @Nonnull
     public ItemStack getStoringAmmoItem() {
         return AmmunitionRegistry.INSTANCE.getAmmoItem(AmmunitionRegistry.INSTANCE.getType(Ammunitions.SGSHELL));
     }

@@ -17,7 +17,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -39,7 +38,7 @@ public class ItemTurretUpgrade
     @Override
     @SideOnly(Side.CLIENT)
     @SuppressWarnings("unchecked")
-    public void addInformation(@Nonnull ItemStack stack, EntityPlayer world, List lines, boolean advInfo) {
+    public void addInformation(ItemStack stack, EntityPlayer world, List lines, boolean advInfo) {
         ITurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(stack);
         lines.add(Lang.translate(String.format("%s.%s.name", this.getUnlocalizedName(stack), upg.getName())));
         super.addInformation(stack, world, lines, advInfo);
@@ -47,7 +46,7 @@ public class ItemTurretUpgrade
 
     @Override
     @SuppressWarnings("unchecked")
-    public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> items) {
+    public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> items) {
         items.addAll(UpgradeRegistry.INSTANCE.getUpgrades().stream().map(UpgradeRegistry.INSTANCE::getUpgradeItem).collect(Collectors.toList()));
     }
 }

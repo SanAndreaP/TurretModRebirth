@@ -38,7 +38,7 @@ public class ItemTurretInfo
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, EntityPlayer world, List<String> list, boolean advInfo) {
+    public void addInformation(ItemStack stack, EntityPlayer world, List<String> list, boolean advInfo) {
         String[] lines = Lang.translate(this.getUnlocalizedName() + ".desc").split("\\\\n");
         list.addAll(Arrays.asList(lines));
 
@@ -46,11 +46,11 @@ public class ItemTurretInfo
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
         if( world.isRemote ) {
             TurretModRebirth.proxy.openGui(player, EnumGui.GUI_TINFO, -1, -1, 0);
         }
 
-        return super.onItemRightClick(world, player, hand);
+        return super.onItemRightClick(stack, world, player, hand);
     }
 }

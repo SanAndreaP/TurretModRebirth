@@ -143,7 +143,7 @@ public class BlockTurretAssembly
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ) {
         if( !world.isRemote ) {
             TurretModRebirth.proxy.openGui(player, EnumGui.GUI_TASSEMBLY_MAN, pos.getX(), pos.getY(), pos.getZ());
         }
@@ -152,7 +152,7 @@ public class BlockTurretAssembly
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, @Nonnull ItemStack stack) {
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
         world.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
 
         if( stack.hasDisplayName() ) {
@@ -185,7 +185,7 @@ public class BlockTurretAssembly
     }
 
     @Override
-    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
+    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, ItemStack stack) {
         return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
     }
 

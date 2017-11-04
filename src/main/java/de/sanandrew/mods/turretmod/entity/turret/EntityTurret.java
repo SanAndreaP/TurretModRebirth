@@ -32,7 +32,6 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -86,7 +85,6 @@ public class EntityTurret
 
     private ITurretRAM turretRAM;
 
-    @Nonnull
     private ITurret delegate;
 
     public EntityTurret(World world) {
@@ -229,7 +227,7 @@ public class EntityTurret
 
         if( !this.isUpsideDown ) {
             this.motionY -= 0.0325F;
-            super.move(MoverType.SELF, 0.0F, this.motionY, 0.0F);
+            super.move(0.0F, this.motionY, 0.0F);
             this.blockPos = this.getPosition().down(1);
         } else if( this.checkBlock && !canTurretBePlaced(this.world, this.blockPos, true, this.isUpsideDown) ) {
             this.onKillCommand();
@@ -307,8 +305,8 @@ public class EntityTurret
         this.world.profiler.endSection();
     }
 
-    private void onInteractSucceed(@Nonnull ItemStack heldItem, EntityPlayer player) {
-        if( heldItem.getCount() == 0 ) {
+    private void onInteractSucceed(ItemStack heldItem, EntityPlayer player) {
+        if( heldItem.stackSize == 0 ) {
             player.inventory.removeStackFromSlot(player.inventory.currentItem);
         } else {
             player.inventory.setInventorySlotContents(player.inventory.currentItem, heldItem.copy());
@@ -320,7 +318,7 @@ public class EntityTurret
     }
 
     @Override
-    protected boolean processInteract(EntityPlayer player, EnumHand hand) {
+    protected boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stacks) {
         ItemStack stack = player.getHeldItem(hand);
 
         if( this.world.isRemote ) {
@@ -339,18 +337,18 @@ public class EntityTurret
             } else if( (repKit = RepairKitRegistry.INSTANCE.getType(stack)).isApplicable(this) ) {
                     this.heal(repKit.getHealAmount());
                     repKit.onHeal(this);
-                    stack.shrink(1);
+                    stack.stackSize -= (1);
                     this.onInteractSucceed(stack, player);
 
                     return true;
             } else if( this.upgProc.tryApplyUpgrade(stack.copy()) ) {
-                stack.shrink(1);
+                stack.stackSize -= (1);
                 this.onInteractSucceed(stack, player);
                 return true;
             }
         }
 
-        return super.processInteract(player, hand);
+        return super.processInteract(player, hand, stack);
     }
 
     @Override
@@ -485,10 +483,11 @@ public class EntityTurret
     public final void knockBack(Entity entity, float unknown, double motionXAmount, double motionZAmount) {}
 
     @Override
-    public final void move(MoverType type, double motionX, double motionY, double motionZ) {
-        if( type == MoverType.PISTON ) {
-            super.move(type, motionX, motionY, motionZ);
-        }
+    public final void move(double motionX, double motionY, double motionZ) {
+        super.move(0.0, motionY, 0.0);
+//        if( type == MoverType.PISTON ) {
+//            super.move(type, motionX, motionY, motionZ);
+//        }
     }
 
     /**turrets are immobile, leave empty*/
@@ -603,7 +602,6 @@ public class EntityTurret
     }
 
     @Override
-    @Nonnull
     public ItemStack getPickedResult(RayTraceResult target) {
         return TurretRegistry.INSTANCE.getTurretItem(this.delegate);
     }

@@ -48,7 +48,7 @@ public class RenderElectrolyteGenerator
         GlStateManager.popMatrix();
     }
 
-    private static void drawElectrolyteItem(int index, @Nonnull ItemStack stack) {
+    private static void drawElectrolyteItem(int index, ItemStack stack) {
         GlStateManager.pushMatrix();
         GlStateManager.rotate(40.0F * index, 0.0F, 1.0F, 0.0F);
         GlStateManager.translate(0.4F, 0.0F, 0.0F);

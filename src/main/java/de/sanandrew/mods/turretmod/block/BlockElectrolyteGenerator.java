@@ -143,12 +143,12 @@ public class BlockElectrolyteGenerator
 
     @Override
     @SuppressWarnings("TailRecursion")
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ) {
         if( !world.isRemote ) {
             if( state.getValue(TILE_HOLDER) ) {
                 TurretModRebirth.proxy.openGui(player, EnumGui.GUI_POTATOGEN, pos.getX(), pos.getY(), pos.getZ());
             } else {
-                return this.onBlockActivated(world, pos.down(1), world.getBlockState(pos.down(1)), player, hand, side, hitX, hitY, hitZ);
+                return this.onBlockActivated(world, pos.down(1), world.getBlockState(pos.down(1)), player, hand, stack, side, hitX, hitY, hitZ);
             }
         }
 
@@ -156,7 +156,7 @@ public class BlockElectrolyteGenerator
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, @Nonnull ItemStack stack) {
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
         if( stack.hasDisplayName() && state.getValue(TILE_HOLDER) ) {
             TileEntity te = world.getTileEntity(pos);
             assert te != null;

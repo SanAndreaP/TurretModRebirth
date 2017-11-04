@@ -17,11 +17,9 @@ public interface ITurretRegistry
 
     boolean registerTurret(ITurret type);
 
-    @Nonnull
     ItemStack getTurretItem(ITurret type);
 
-    @Nonnull
     ItemStack getTurretItem(ITurretInst turretInst);
 
-    ITurret getTurret(@Nonnull ItemStack stack);
+    ITurret getTurret(ItemStack stack);
 }
