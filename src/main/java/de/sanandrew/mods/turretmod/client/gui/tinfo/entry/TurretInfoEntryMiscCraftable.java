@@ -120,9 +120,9 @@ public class TurretInfoEntryMiscCraftable
                     if( recpObj instanceof ItemStack && ItemStackUtils.isValid((ItemStack) recpObj) ) {
                         ItemStack recpStack = (ItemStack) recpObj;
                         stacks.add(recpStack);
-                    } else if( recpObj instanceof ArrayList ) {
+                    } else if( recpObj instanceof List ) {
 //                        noinspection unchecked
-                        ((ArrayList<ItemStack>) recpObj).stream().filter(input -> input != null && ItemStackUtils.isValid(input)).forEach(stacks::add);
+                        ((List<ItemStack>) recpObj).stream().filter(input -> input != null && ItemStackUtils.isValid(input)).forEach(stacks::add);
                     }
 
                     recpStacks = stacks.toArray(new ItemStack[stacks.size()]);
