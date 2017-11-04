@@ -91,7 +91,7 @@ public class ContainerElectrolyteGenerator
     @Override
     @Nonnull
     public ItemStack transferStackInSlot(EntityPlayer player, int slotId) {
-        ItemStack origStack = ItemStack.EMPTY;
+        ItemStack origStack = ItemStackUtils.getEmpty();
         Slot slot = this.inventorySlots.get(slotId);
 
         if( slot != null && slot.getHasStack() ) {
@@ -100,20 +100,20 @@ public class ContainerElectrolyteGenerator
 
             if( slotId < 23 ) { // if clicked stack is from TileEntity
                 if( !this.mergeItemStack(slotStack, 22, 58, true) ) {
-                    return ItemStack.EMPTY;
+                    return ItemStackUtils.getEmpty();
                 }
             } else if( !this.mergeItemStackInput(slotStack, 0, 9, false) ) { // if clicked stack is from player and also merge to input slots is sucessful
-                return ItemStack.EMPTY;
+                return ItemStackUtils.getEmpty();
             }
 
             if( slotStack.getCount() == 0 ) { // if stackSize of slot got to 0
-                slot.putStack(ItemStack.EMPTY);
+                slot.putStack(ItemStackUtils.getEmpty());
             } else { // update changed slot stack state
                 slot.onSlotChanged();
             }
 
             if( slotStack.getCount() == origStack.getCount() ) { // if nothing changed stackSize-wise
-                return ItemStack.EMPTY;
+                return ItemStackUtils.getEmpty();
             }
 
             slot.onTake(player, slotStack);
@@ -149,7 +149,7 @@ public class ContainerElectrolyteGenerator
         @Nonnull
         public ItemStack getStack() {
             ElectrolyteProcess proc = this.generator.processes[this.index];
-            return proc == null ? ItemStack.EMPTY : proc.processStack;
+            return proc == null ? ItemStackUtils.getEmpty() : proc.processStack;
         }
 
         @Override
@@ -166,7 +166,7 @@ public class ContainerElectrolyteGenerator
         @Override
         @Nonnull
         public ItemStack decrStackSize(int amount) {
-            return ItemStack.EMPTY;
+            return ItemStackUtils.getEmpty();
         }
 
         @Override

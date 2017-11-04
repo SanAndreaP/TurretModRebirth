@@ -134,7 +134,7 @@ public abstract class ItemAssemblyUpgrade
         }
 
         public static NonNullList<ItemStack> getEmptyInv() {
-            return NonNullList.withSize(18, ItemStack.EMPTY);
+            return NonNullList.withSize(18, ItemStackUtils.getEmpty());
         }
     }
 }

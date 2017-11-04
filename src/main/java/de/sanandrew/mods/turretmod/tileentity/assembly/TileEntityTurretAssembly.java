@@ -427,7 +427,7 @@ public class TileEntityTurretAssembly
             ByteBufUtils.writeItemStack(buf, this.currCrafting.getValue(1));
             ByteBufUtils.writeUTF8String(buf, this.currCrafting.getValue(0).toString());
         } else {
-            ByteBufUtils.writeItemStack(buf, ItemStack.EMPTY);
+            ByteBufUtils.writeItemStack(buf, ItemStackUtils.getEmpty());
         }
     }
 

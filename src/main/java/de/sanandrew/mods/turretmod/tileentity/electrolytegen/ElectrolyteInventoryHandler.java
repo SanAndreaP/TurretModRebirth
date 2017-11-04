@@ -62,7 +62,7 @@ final class ElectrolyteInventoryHandler
             return super.extractItem(slot, 1, simulate);
         }
 
-        return ItemStack.EMPTY;
+        return ItemStackUtils.getEmpty();
     }
 
     @Override
@@ -72,7 +72,7 @@ final class ElectrolyteInventoryHandler
             return super.extractItem(slot, amount, simulate);
         }
 
-        return ItemStack.EMPTY;
+        return ItemStackUtils.getEmpty();
     }
 
     NonNullList<ItemStack> getStacksArray() {

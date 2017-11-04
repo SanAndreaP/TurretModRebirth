@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.client.render.projectile;
 
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -25,7 +26,7 @@ public class RenderPebble<T extends EntityTurretProjectile>
         extends Render<T>
 {
     @Nonnull
-    private ItemStack gravelItem = ItemStack.EMPTY;
+    private ItemStack gravelItem = ItemStackUtils.getEmpty();
 
     public RenderPebble(RenderManager manager) {
         super(manager);
@@ -33,7 +34,7 @@ public class RenderPebble<T extends EntityTurretProjectile>
 
     @Override
     public void doRender(T entity, double x, double y, double z, float yaw, float partTicks) {
-        if( this.gravelItem.isEmpty() ) {
+        if( !ItemStackUtils.isValid(this.gravelItem) ) {
             this.gravelItem = new ItemStack(Blocks.GRAVEL, 1);
         }
 

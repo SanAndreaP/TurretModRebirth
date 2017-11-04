@@ -137,7 +137,7 @@ public class RecipeEntry
         }
 
         for( ItemStack nrmStack : this.normalAlternatives ) {
-            if( ItemStackUtils.areEqualNbtFit(nrmStack, stack, false, nrmStack.getItemDamage() != OreDictionary.WILDCARD_VALUE) ) {
+            if( ItemStackUtils.areEqualNbtFit(nrmStack, stack, false, true) ) {
                 return true;
             }
         }

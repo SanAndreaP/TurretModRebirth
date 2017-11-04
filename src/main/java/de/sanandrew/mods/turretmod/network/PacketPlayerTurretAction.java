@@ -93,7 +93,7 @@ public class PacketPlayerTurretAction
 
                         chestStack.shrink(1);
                         if( chestStack.getCount() < 1 ) {
-                            player.inventory.setInventorySlotContents(chestItm.getValue(0), ItemStack.EMPTY);
+                            player.inventory.setInventorySlotContents(chestItm.getValue(0), ItemStackUtils.getEmpty());
                         } else {
                             player.inventory.setInventorySlotContents(chestItm.getValue(0), chestStack.copy());
                         }

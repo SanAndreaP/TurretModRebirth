@@ -132,7 +132,7 @@ public class ContainerTurretUpgrades
     @Override
     @Nonnull
     public ItemStack transferStackInSlot(EntityPlayer player, int slotId) {
-        ItemStack origStack = ItemStack.EMPTY;
+        ItemStack origStack = ItemStackUtils.getEmpty();
         Slot slot = this.inventorySlots.get(slotId);
 
         if( slot != null && slot.getHasStack() ) {
@@ -141,22 +141,22 @@ public class ContainerTurretUpgrades
 
             if( slotId < 36 ) { // if clicked stack is from Processor
                 if( !super.mergeItemStack(slotStack, 36, 72, true) ) {
-                    return ItemStack.EMPTY;
+                    return ItemStackUtils.getEmpty();
                 }
             } else if( origStack.getItem() == ItemRegistry.TURRET_UPGRADE ) {
                 if( transferUpgrade(origStack.getItem(), origStack, slotStack) ) {
-                    return ItemStack.EMPTY;
+                    return ItemStackUtils.getEmpty();
                 }
             }
 
             if( slotStack.getCount() == 0 ) { // if stackSize of slot got to 0
-                slot.putStack(ItemStack.EMPTY);
+                slot.putStack(ItemStackUtils.getEmpty());
             } else { // update changed slot stack state
                 slot.onSlotChanged();
             }
 
             if( slotStack.getCount() == origStack.getCount() ) { // if nothing changed stackSize-wise
-                return ItemStack.EMPTY;
+                return ItemStackUtils.getEmpty();
             }
 
             slot.onTake(player, slotStack);

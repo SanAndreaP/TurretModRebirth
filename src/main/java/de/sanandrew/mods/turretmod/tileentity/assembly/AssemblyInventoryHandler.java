@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 class AssemblyInventoryHandler
         implements ISidedInventory, INBTSerializable<NBTTagCompound>
 {
-    private final NonNullList<ItemStack> assemblyStacks = NonNullList.withSize(23, ItemStack.EMPTY);
+    private final NonNullList<ItemStack> assemblyStacks = NonNullList.withSize(23, ItemStackUtils.getEmpty());
 
     private static final int[] SLOTS_INSERT = new int[] {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22};
     private static final int[] SLOTS_EXTRACT =  new int[] {0};
@@ -132,7 +132,7 @@ class AssemblyInventoryHandler
 
             if( this.assemblyStacks.get(slot).getCount() <= size ) {
                 itemstack = this.assemblyStacks.get(slot);
-                this.assemblyStacks.set(slot, ItemStack.EMPTY);
+                this.assemblyStacks.set(slot, ItemStackUtils.getEmpty());
 
                 if( slot <= 4 ) {
                     this.markDirty();
@@ -143,7 +143,7 @@ class AssemblyInventoryHandler
                 itemstack = this.assemblyStacks.get(slot).splitStack(size);
 
                 if( this.assemblyStacks.get(slot).getCount() == 0 ) {
-                    this.assemblyStacks.set(slot, ItemStack.EMPTY);
+                    this.assemblyStacks.set(slot, ItemStackUtils.getEmpty());
                 }
 
                 if( slot <= 4 ) {
@@ -153,7 +153,7 @@ class AssemblyInventoryHandler
                 return itemstack;
             }
         } else {
-            return ItemStack.EMPTY;
+            return ItemStackUtils.getEmpty();
         }
     }
 
@@ -162,13 +162,13 @@ class AssemblyInventoryHandler
     public ItemStack removeStackFromSlot(int slot) {
         if( ItemStackUtils.isValid(this.assemblyStacks.get(slot)) ) {
             ItemStack itemstack = this.assemblyStacks.get(slot);
-            this.assemblyStacks.set(slot, ItemStack.EMPTY);
+            this.assemblyStacks.set(slot, ItemStackUtils.getEmpty());
             if( slot <= 4 ) {
                 this.markDirty();
             }
             return itemstack;
         } else {
-            return ItemStack.EMPTY;
+            return ItemStackUtils.getEmpty();
         }
     }
 
@@ -251,7 +251,7 @@ class AssemblyInventoryHandler
     @Override
     public void clear() {
         for( int i = 0; i < this.assemblyStacks.size(); i++ ) {
-            this.assemblyStacks.set(i, ItemStack.EMPTY);
+            this.assemblyStacks.set(i, ItemStackUtils.getEmpty());
         }
     }
 

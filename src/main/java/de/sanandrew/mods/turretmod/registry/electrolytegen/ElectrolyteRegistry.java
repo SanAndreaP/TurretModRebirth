@@ -37,7 +37,7 @@ public class ElectrolyteRegistry
 {
     private static final Map<ItemStack, Fuel> FUELS_INTRN = new HashMap<>();
     private static final Map<ItemStack, Fuel> FUELS_UNMODIFY = Collections.unmodifiableMap(FUELS_INTRN);
-    public static final Fuel NULL_FUEL = new Fuel(-1, -1, ItemStack.EMPTY, ItemStack.EMPTY);
+    public static final Fuel NULL_FUEL = new Fuel(-1, -1, ItemStackUtils.getEmpty(), ItemStackUtils.getEmpty());
 
     public static void initialize() {
         TmrConstants.LOG.log(Level.INFO, "Initializing Electrolyte Generator recipes...");
@@ -66,8 +66,8 @@ public class ElectrolyteRegistry
             NonNullList<ItemStack> inputItems = JsonUtils.getItemStacks(json.get("electrolytes"));
             float effectiveness = JsonUtils.getFloatVal(json.get("effectiveness"));
             int ticksProcessing = JsonUtils.getIntVal(json.get("timeProcessing"));
-            ItemStack trash = ItemStack.EMPTY;
-            ItemStack treasure = ItemStack.EMPTY;
+            ItemStack trash = ItemStackUtils.getEmpty();
+            ItemStack treasure = ItemStackUtils.getEmpty();
 
             JsonElement elem = json.get("trash");
             if( elem != null && !elem.isJsonNull() ) {

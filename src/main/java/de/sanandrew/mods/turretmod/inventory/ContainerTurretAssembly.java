@@ -146,7 +146,7 @@ public class ContainerTurretAssembly
     @Override
     @Nonnull
     public ItemStack transferStackInSlot(EntityPlayer player, int slotId) {
-        ItemStack origStack = ItemStack.EMPTY;
+        ItemStack origStack = ItemStackUtils.getEmpty();
         Slot slot = this.inventorySlots.get(slotId);
 
         if( slot != null && slot.getHasStack() ) {
@@ -155,32 +155,32 @@ public class ContainerTurretAssembly
 
             if( slotId < 23 ) { // if clicked stack is from TileEntity
                 if( !super.mergeItemStack(slotStack, 23, 59, true) ) {
-                    return ItemStack.EMPTY;
+                    return ItemStackUtils.getEmpty();
                 }
             } else if( origStack.getItem() == ItemRegistry.ASSEMBLY_UPG_AUTO ) {
                 if( transferUpgrade(ItemRegistry.ASSEMBLY_UPG_AUTO, origStack, slotStack, 0) ) {
-                    return ItemStack.EMPTY;
+                    return ItemStackUtils.getEmpty();
                 }
             } else if( origStack.getItem() == ItemRegistry.ASSEMBLY_UPG_SPEED ) {
                 if( transferUpgrade(ItemRegistry.ASSEMBLY_UPG_SPEED, origStack, slotStack, 1) ) {
-                    return ItemStack.EMPTY;
+                    return ItemStackUtils.getEmpty();
                 }
             } else if( origStack.getItem() == ItemRegistry.ASSEMBLY_UPG_FILTER ) {
                 if( transferUpgrade(ItemRegistry.ASSEMBLY_UPG_FILTER, origStack, slotStack, 2) ) {
-                    return ItemStack.EMPTY;
+                    return ItemStackUtils.getEmpty();
                 }
             } else if( !this.mergeItemStack(slotStack, 5, 23, false) ) { // if clicked stack is from player and also merge to input slots is sucessful
-                return ItemStack.EMPTY;
+                return ItemStackUtils.getEmpty();
             }
 
             if( slotStack.getCount() == 0 ) { // if stackSize of slot got to 0
-                slot.putStack(ItemStack.EMPTY);
+                slot.putStack(ItemStackUtils.getEmpty());
             } else { // update changed slot stack state
                 slot.onSlotChanged();
             }
 
             if( slotStack.getCount() == origStack.getCount() ) { // if nothing changed stackSize-wise
-                return ItemStack.EMPTY;
+                return ItemStackUtils.getEmpty();
             }
 
             slot.onTake(player, slotStack);

@@ -72,7 +72,7 @@ public final class TargetProcessor
         this.playerTargetList = new HashMap<>();
         this.turret = turret;
         this.initShootTicks = 20;
-        this.ammoStack = ItemStack.EMPTY;
+        this.ammoStack = ItemStackUtils.getEmpty();
     }
 
     @Override
@@ -125,7 +125,7 @@ public final class TargetProcessor
         if( ItemStackUtils.isValid(this.ammoStack) ) {
             return this.ammoStack.copy();
         } else {
-            return ItemStack.EMPTY;
+            return ItemStackUtils.getEmpty();
         }
     }
 
@@ -193,7 +193,7 @@ public final class TargetProcessor
                 items.add(stack);
             }
 
-            this.ammoStack = ItemStack.EMPTY;
+            this.ammoStack = ItemStackUtils.getEmpty();
 
             if( !items.isEmpty() ) {
                 EntityLiving turretL = this.turret.getEntity();
@@ -221,7 +221,7 @@ public final class TargetProcessor
                 items.add(stack);
             }
 
-            this.ammoStack = ItemStack.EMPTY;
+            this.ammoStack = ItemStackUtils.getEmpty();
 
             if( !items.isEmpty() ) {
                 EntityLiving turretL = this.turret.getEntity();

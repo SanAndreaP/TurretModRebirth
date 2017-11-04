@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.CraftingUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
 import de.sanandrew.mods.turretmod.util.Lang;
@@ -43,7 +44,7 @@ public class TurretInfoEntryMiscCraftable
     private final String title;
 
     public TurretInfoEntryMiscCraftable(IRecipe recipe) {
-        this(recipe != null ? recipe.getRecipeOutput() : ItemStack.EMPTY, recipe);
+        this(recipe != null ? recipe.getRecipeOutput() : ItemStackUtils.getEmpty(), recipe);
     }
 
     private TurretInfoEntryMiscCraftable(@Nonnull ItemStack stack, IRecipe recipe) {
@@ -172,7 +173,7 @@ public class TurretInfoEntryMiscCraftable
             for( int j = 0, maxJ = this.crafting.getValue(2); j < maxJ; j++ ) {
 
                 ItemStack crfStack[] = this.crafting.<ItemStack[][]>getValue(0)[i*3 + j];
-                ItemStack drawnStack = ItemStack.EMPTY;
+                ItemStack drawnStack = ItemStackUtils.getEmpty();
                 if( crfStack != null && crfStack.length > 0 ) {
                     drawnStack = crfStack[(int)(this.lastTimestamp / 1000L % crfStack.length)];
                 }

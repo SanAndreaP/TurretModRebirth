@@ -32,7 +32,7 @@ public class TmrCreativeTabs
         @Override
         @SideOnly(Side.CLIENT)
         public ItemStack getTabIconItem() {
-            return ItemStack.EMPTY;
+            return getIconItemStack();
         }
 
         @Override
@@ -70,7 +70,7 @@ public class TmrCreativeTabs
 
     public static final CreativeTabs MISC = new CreativeTabs(TmrConstants.ID + ":misc") {
         @Nonnull
-        private ItemStack currTabIcon = ItemStack.EMPTY;
+        private ItemStack currTabIcon = ItemStackUtils.getEmpty();
 
         @Override
         @SideOnly(Side.CLIENT)
@@ -109,7 +109,7 @@ public class TmrCreativeTabs
         @Override
         @SideOnly(Side.CLIENT)
         public ItemStack getTabIconItem() {
-            return ItemStack.EMPTY;
+            return getIconItemStack();
         }
 
         @Override

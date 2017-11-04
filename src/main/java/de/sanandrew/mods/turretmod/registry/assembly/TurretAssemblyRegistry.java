@@ -160,7 +160,7 @@ public final class TurretAssemblyRegistry
                 ItemStack invStack = inv.getStackInSlot(i);
                 if( ItemStackUtils.isValid(invStack) ) {
                     @Nonnull
-                    ItemStack validStack = ItemStack.EMPTY;
+                    ItemStack validStack = ItemStackUtils.getEmpty();
                     if( resource.isItemFitting(invStack) )
                     {
                         validStack = invStack;

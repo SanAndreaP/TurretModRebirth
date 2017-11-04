@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
@@ -105,7 +106,7 @@ public final class AmmunitionRegistry
         @Override
         @Nonnull
         public ItemStack getStoringAmmoItem() {
-            return ItemStack.EMPTY;
+            return ItemStackUtils.getEmpty();
         }
     };
 

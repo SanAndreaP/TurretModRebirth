@@ -54,7 +54,7 @@ public class TurretInfoEntryGenerator
         this.drawHeight += 3;
 
         int maxItems = 9;
-        this.tooltipItem = ItemStack.EMPTY;
+        this.tooltipItem = ItemStackUtils.getEmpty();
         for( int i = 0, cnt = this.fuelItems.size(); i < cnt; i++ ) {
             int x = i % maxItems;
             int y = i / maxItems;
@@ -117,7 +117,7 @@ public class TurretInfoEntryGenerator
         super.initEntry(gui);
 
         Set<ItemStack> fuelList = ElectrolyteRegistry.getFuelMap().keySet();
-        this.fuelItems = NonNullList.from(ItemStack.EMPTY, fuelList.toArray(new ItemStack[fuelList.size()]));
+        this.fuelItems = NonNullList.from(ItemStackUtils.getEmpty(), fuelList.toArray(new ItemStack[fuelList.size()]));
     }
 
     @Override
