@@ -56,7 +56,7 @@ public class GuiTcuUpgrades
     public void updateScreen() {
         super.updateScreen();
 
-        if( !ItemStackUtils.isValid(this.mc.player.getHeldItemMainhand()) || this.mc.player.getHeldItemMainhand().getItem() != ItemRegistry.TURRET_CONTROL_UNIT ) {
+        if( ! ) {
             this.mc.player.closeScreen();
         }
 

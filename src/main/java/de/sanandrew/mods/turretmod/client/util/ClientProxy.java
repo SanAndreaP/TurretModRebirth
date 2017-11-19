@@ -23,10 +23,10 @@ import de.sanandrew.mods.turretmod.client.gui.GuiCameras;
 import de.sanandrew.mods.turretmod.client.gui.GuiPotatoGenerator;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiAssemblyFilter;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
-import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuEntityTargets;
-import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuInfo;
-import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuPlayerTargets;
-import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuUpgrades;
+//import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuEntityTargets;
+//import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuInfo;
+//import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuPlayerTargets;
+//import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuUpgrades;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.TurretInfoCategoryRegistry;
 import de.sanandrew.mods.turretmod.client.particle.ParticleAssemblySpark;
@@ -48,6 +48,7 @@ import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileMinigunPebb
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectilePebble;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretLaser;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
@@ -98,6 +99,7 @@ public class ClientProxy
     public void init(FMLInitializationEvent event) {
         super.init(event);
 
+        TurretModRebirth.PLUGINS.forEach(plugin -> plugin.registerTcuGuis(GuiTcuRegistry.INSTANCE));
         TurretModRebirth.PLUGINS.forEach(plugin -> plugin.registerTcuLabelElements(RenderTurretPointed.INSTANCE));
 
         MinecraftForge.EVENT_BUS.register(RenderForcefieldHandler.INSTANCE);
@@ -127,14 +129,12 @@ public class ClientProxy
         if( id >= 0 && id < EnumGui.VALUES.length ) {
             TileEntity te;
             switch( EnumGui.VALUES[id] ) {
-                case GUI_TCU_INFO:
-                    return new GuiTcuInfo((EntityTurret) world.getEntityByID(x), y == 1);
-                case GUI_TCU_ENTITY_TARGETS:
-                    return new GuiTcuEntityTargets((EntityTurret) world.getEntityByID(x));
-                case GUI_TCU_PLAYER_TARGETS:
-                    return new GuiTcuPlayerTargets((EntityTurret) world.getEntityByID(x));
-                case GUI_TCU_UPGRADES:
-                    return new GuiTcuUpgrades(player.inventory, (EntityTurret) world.getEntityByID(x));
+                case GUI_TCU:
+                    Entity e = world.getEntityByID(x);
+                    if( e instanceof ITurretInst ) {
+                        return GuiTcuRegistry.INSTANCE.openGUI(y, player, (ITurretInst) e);
+                    }
+                    break;
                 case GUI_TASSEMBLY_MAN:
                     te = world.getTileEntity(new BlockPos(x, y, z));
                     if( te instanceof TileEntityTurretAssembly ) {

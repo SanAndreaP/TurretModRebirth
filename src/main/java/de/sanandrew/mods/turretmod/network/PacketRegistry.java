@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class PacketRegistry
+public final class PacketRegistry
 {
     public static void initialize() {
         registerMessage(TurretModRebirth.network, PacketUpdateTargets.class, 0, Side.CLIENT);
@@ -34,6 +34,7 @@ public class PacketRegistry
         registerMessage(TurretModRebirth.network, PacketUpdateUgradeSlot.class, 8, Side.CLIENT);
         registerMessage(TurretModRebirth.network, PacketTurretNaming.class, 9, Side.SERVER);
         registerMessage(TurretModRebirth.network, PacketSyncUpgradeInst.class, 10, Side.CLIENT);
+        registerMessage(TurretModRebirth.network, PacketSyncTcuGuis.class, 11, Side.CLIENT);
     }
 
     public static void sendToAllAround(IMessage message, int dim, double x, double y, double z, double range) {

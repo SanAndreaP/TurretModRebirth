@@ -44,7 +44,6 @@ public class GuiTcuInfo
     private int guiTop;
 
     private int specOwnerHead;
-
     private FontRenderer frAmmoItem;
 
     private GuiButton dismantle;
