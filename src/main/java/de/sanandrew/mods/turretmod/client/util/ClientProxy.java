@@ -27,6 +27,7 @@ import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
 //import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuInfo;
 //import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuPlayerTargets;
 //import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuUpgrades;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.PlayerHeads;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.TurretInfoCategoryRegistry;
 import de.sanandrew.mods.turretmod.client.particle.ParticleAssemblySpark;
@@ -113,6 +114,8 @@ public class ClientProxy
         super.postInit(event);
 
         TurretModRebirth.PLUGINS.forEach(plugin -> plugin.registerTurretInfoCategories(TurretInfoCategoryRegistry.INSTANCE));
+
+        PlayerHeads.preLoadPlayerHeadsAsync();
     }
 
     @Override

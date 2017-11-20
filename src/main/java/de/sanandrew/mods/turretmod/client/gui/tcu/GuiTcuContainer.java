@@ -100,6 +100,7 @@ public class GuiTcuContainer
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
         super.actionPerformed(button);
+        this.helper.onButtonClick(this, button);
         this.guiDelegate.onButtonClick(this, button);
     }
 
@@ -107,6 +108,12 @@ public class GuiTcuContainer
     public void onGuiClosed() {
         this.guiDelegate.onGuiClose(this);
         super.onGuiClosed();
+    }
+
+    @Override
+    public void handleMouseInput() throws IOException {
+        super.handleMouseInput();
+        this.guiDelegate.onMouseInput(this);
     }
 
     @Override

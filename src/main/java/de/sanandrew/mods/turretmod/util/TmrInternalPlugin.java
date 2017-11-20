@@ -11,6 +11,7 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
 import de.sanandrew.mods.turretmod.api.assembly.ITurretAssemblyRegistry;
+import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelRegistry;
 import de.sanandrew.mods.turretmod.api.client.turret.ITurretRenderRegistry;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoCategoryRegistry;
@@ -19,16 +20,16 @@ import de.sanandrew.mods.turretmod.api.turret.IGuiTcuRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
-import de.sanandrew.mods.turretmod.client.gui.tcu.guis.GuiInfo;
-import de.sanandrew.mods.turretmod.client.gui.tcu.guis.GuiUpgrades;
-import de.sanandrew.mods.turretmod.client.gui.tcu.labels.Labels;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiInfo;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiTargetCreatures;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiUpgrades;
+import de.sanandrew.mods.turretmod.client.gui.tcu.label.Labels;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.TurretInfoCategoryRegistry;
 import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
 import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
 import de.sanandrew.mods.turretmod.event.TargetingEventHandler;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretUpgrades;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.item.ItemRepairKit;
 import de.sanandrew.mods.turretmod.registry.ammo.Ammunitions;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKits;
@@ -111,6 +112,8 @@ public class TmrInternalPlugin
     @SideOnly(Side.CLIENT)
     public void registerTcuGuis(IGuiTcuRegistry registry) {
         registry.registerGui(GUI_INFO, new ItemStack(Items.BOOK), GuiInfo::new, null);
-        registry.registerGui(GUI_UPGRADES, new ItemStack(ItemRegistry.TURRET_UPGRADE), GuiUpgrades::new, ((player, guiTcuInst) -> guiTcuInst.hasPermision()));
+        registry.registerGui(GUI_TARGETS_MOB, new ItemStack(Items.SKULL, 1, 2), GuiTargetCreatures::new, IGuiTcuInst::hasPermision);
+        registry.registerGui(GUI_TARGETS_PLAYER, new ItemStack(Items.SKULL, 1, 3), GuiTargetCreatures::new, IGuiTcuInst::hasPermision);
+        registry.registerGui(GUI_UPGRADES, new ItemStack(ItemRegistry.TURRET_UPGRADE), GuiUpgrades::new, IGuiTcuInst::hasPermision);
     }
 }

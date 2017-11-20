@@ -4,11 +4,13 @@
    * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
    *                http://creativecommons.org/licenses/by-nc-sa/4.0/
    *******************************************************************************************************************/
-package de.sanandrew.mods.turretmod.client.gui.tcu.labels;
+package de.sanandrew.mods.turretmod.client.gui.tcu.label;
 
 import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelElement;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.registry.turret.shieldgen.ShieldTurret;
+import de.sanandrew.mods.turretmod.registry.turret.shieldgen.TurretForcefield;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -16,12 +18,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class LabelTurretAmmo
+public class LabelTurretShield
         implements ILabelElement
 {
     @Override
     public boolean showElement(ITurretInst turretInst) {
-        return true;
+        return turretInst.getTurret() instanceof TurretForcefield;
     }
 
     @Override
@@ -36,20 +38,32 @@ public class LabelTurretAmmo
 
     @Override
     public void doRenderQuads(ITurretInst turretInst, float maxWidth, float progress, FontRenderer stdFontRenderer, float currHeight, BufferBuilder tessBuffer) {
-        float ammoPerc = turretInst.getTargetProcessor().getAmmoCount() / (float) turretInst.getTargetProcessor().getMaxAmmoCapacity() * maxWidth;
+        ShieldTurret shield = turretInst.getRAM(null);
+        float shieldPerc = shield == null ? 0.0F : shield.getValue() / shield.getMaxValue() * maxWidth;
+
         currHeight += stdFontRenderer.FONT_HEIGHT + 2.0F;
-        addQuad(tessBuffer, 0.0D,     currHeight, ammoPerc, currHeight + 2.0D, new ColorObj(0.625F, 0.625F, 1.0F, Math.max(progress, 4.0F / 255.0F)));
-        addQuad(tessBuffer, ammoPerc, currHeight, maxWidth, currHeight + 2.0D, new ColorObj(0.05F, 0.05F, 0.4F, Math.max(progress, 4.0F / 255.0F)));
+
+        addQuad(tessBuffer, 0.0D,       currHeight, shieldPerc, currHeight + 2.0D, new ColorObj(1.0F, 1.0F, 0.0F, Math.max(progress, 4.0F / 255.0F)));
+        addQuad(tessBuffer, shieldPerc, currHeight, maxWidth,   currHeight + 2.0D, new ColorObj(0.4F, 0.4F, 0.0F, Math.max(progress, 4.0F / 255.0F)));
     }
 
     @Override
     public void doRenderTextured(ITurretInst turretInst, float maxWidth, float progress, FontRenderer stdFontRenderer) {
-        stdFontRenderer.drawString(getLabel(turretInst), 0.0F, 0.0F, new ColorObj(0.625F, 0.625F, 1.0F, Math.max(progress, 4.0F / 255.0F)).getColorInt(), false);
+        stdFontRenderer.drawString(getLabel(turretInst), 0.0F, 0.0F, new ColorObj(1.0F, 1.0F, 0.0F, Math.max(progress, 4.0F / 255.0F)).getColorInt(), false);
     }
 
     private static String getLabel(ITurretInst turretInst) {
-        return Lang.translate(Lang.TCU_LABEL_AMMO, String.format("%d/%d", turretInst.getTargetProcessor().getAmmoCount(),
-                                                                          turretInst.getTargetProcessor().getMaxAmmoCapacity()));
+        ShieldTurret shield = turretInst.getRAM(null);
+
+        if( shield != null ) {
+            if( shield.isInRecovery() ) {
+                return Lang.translate(Lang.TCU_LABEL_TURRETSHIELD_RECV, String.format("%.0f %%", shield.getRecovery() * 100.0F));
+            } else {
+                return Lang.translate(Lang.TCU_LABEL_TURRETSHIELD, String.format("%.2f/%.2f", shield.getValue(), shield.getMaxValue()));
+            }
+        } else {
+            return "";
+        }
     }
 
     private static void addQuad(BufferBuilder buf, double minX, double minY, double maxX, double maxY, ColorObj clr) {

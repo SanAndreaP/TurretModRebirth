@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public final class GuiTcuRegistry
@@ -51,9 +52,9 @@ public final class GuiTcuRegistry
     @SideOnly(Side.CLIENT)
     public Gui openGUI(int type, EntityPlayer player, ITurretInst turretInst) {
         if( type >= 0 && type < GUI_RESOURCES.size() ) {
-            ResourceLocation loc = GUI_RESOURCES.get(type);
-            if( guis.containsKey(loc) ) {
-                OpenTcuGuiEvent event = new OpenTcuGuiEvent(player, turretInst, guis.get(loc).factory);
+            GuiEntry entry = getGuiEntry(GUI_RESOURCES.get(type));
+            if( entry != null ) {
+                OpenTcuGuiEvent event = new OpenTcuGuiEvent(player, turretInst, entry.factory);
                 if( !MinecraftForge.EVENT_BUS.post(event) ) {
                     IGuiTCU guiDelegate = event.factory.get();
                     Container cnt = guiDelegate.getContainer(player, turretInst);
@@ -67,6 +68,10 @@ public final class GuiTcuRegistry
         }
 
         return null;
+    }
+
+    public GuiEntry getGuiEntry(ResourceLocation location) {
+        return guis.get(location);
     }
 
     public Container openContainer(int type, EntityPlayer player, ITurretInst turretInst) {
@@ -100,7 +105,7 @@ public final class GuiTcuRegistry
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void registerGui(ResourceLocation location, ItemStack icon, Supplier<IGuiTCU> factory, BiFunction<EntityPlayer, IGuiTcuInst<?>, Boolean> canShowTabFunc) {
+    public void registerGui(ResourceLocation location, ItemStack icon, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc) {
         if( guis == null ) {
             guis = new HashMap<>();
         }
@@ -123,16 +128,20 @@ public final class GuiTcuRegistry
     }
 
     @SideOnly(Side.CLIENT)
-    private static final class GuiEntry
+    public static final class GuiEntry
     {
-        final ItemStack icon;
+        public final ItemStack icon;
+        final Function<IGuiTcuInst<?>, Boolean> canShowTabFunc;
         final Supplier<IGuiTCU> factory;
-        final BiFunction<EntityPlayer, IGuiTcuInst<?>, Boolean> canShowTabFunc;
 
-        GuiEntry(ItemStack icon, Supplier<IGuiTCU> factory, BiFunction<EntityPlayer, IGuiTcuInst<?>, Boolean> canShowTabFunc) {
+        GuiEntry(ItemStack icon, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc) {
             this.icon = icon;
             this.factory = factory;
             this.canShowTabFunc = canShowTabFunc;
+        }
+
+        public boolean showTab(IGuiTcuInst<?> gui) {
+            return this.canShowTabFunc == null || this.canShowTabFunc.apply(gui);
         }
     }
 }

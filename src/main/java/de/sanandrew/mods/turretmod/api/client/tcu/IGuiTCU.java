@@ -12,8 +12,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 
 import java.io.IOException;
-import java.util.List;
 
+@SuppressWarnings("unused")
 public interface IGuiTCU
 {
     /**
@@ -41,4 +41,6 @@ public interface IGuiTCU
     default void onKeyType(IGuiTcuInst<?> gui, char typedChar, int keyCode) throws IOException {}
 
     default void onGuiClose(IGuiTcuInst<?> gui) {}
+
+    default void onMouseInput(IGuiTcuInst<?> gui) throws IOException {}
 }

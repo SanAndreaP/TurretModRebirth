@@ -17,6 +17,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public interface IGuiTcuRegistry
@@ -24,5 +25,5 @@ public interface IGuiTcuRegistry
     void registerGuiEntry(ResourceLocation location, int position, @Nullable BiFunction<EntityPlayer, ITurretInst, Container> containerFactory);
 
     @SideOnly(Side.CLIENT)
-    void registerGui(ResourceLocation location, ItemStack icon, Supplier<IGuiTCU> factory, BiFunction<EntityPlayer, IGuiTcuInst<?>, Boolean> canShowTabFunc);
+    void registerGui(ResourceLocation location, ItemStack icon, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc);
 }

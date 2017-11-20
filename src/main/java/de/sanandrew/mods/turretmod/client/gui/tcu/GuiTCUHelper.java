@@ -9,13 +9,24 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.client.gui.control.GuiItemTab;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.mutable.MutableInt;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 @SideOnly(Side.CLIENT)
 public final class GuiTCUHelper
@@ -23,17 +34,20 @@ public final class GuiTCUHelper
     static final int X_SIZE = 176;
     static final int Y_SIZE = 236;
 
+    final Map<GuiButton, ResourceLocation> tabs = new HashMap<>();
+
     GuiTCUHelper() {}
 
     @SuppressWarnings("unchecked")
     void initGui(IGuiTcuInst<?> gui) {
-//        pageInfo = gui.addNewButton(new GuiItemTab(gui.getNewButtonId(), gui.getPosX() - 23, gui.getPosY() + 5, new ItemStack(Items.SIGN), Lang.translate(Lang.TCU_PAGE_TAB.get("info")), false));
-
-//        if( gui.hasPermision() ) {
-//            pageEntityTargets = gui.addNewButton(new GuiItemTab(gui.getNewButtonId(), gui.getPosX() - 23, gui.getPosY() + 33, new ItemStack(Items.SKULL, 1, 2), Lang.translate(Lang.TCU_PAGE_TAB.get("targetsEntity")), false));
-//            pagePlayerTargets = gui.addNewButton(new GuiItemTab(gui.getNewButtonId(), gui.getPosX() - 23, gui.getPosY() + 61, new ItemStack(Items.SKULL, 1, 3), Lang.translate(Lang.TCU_PAGE_TAB.get("targetsPlayer")), false));
-//            pageUpgrades = gui.addNewButton(new GuiItemTab(gui.getNewButtonId(), gui.getPosX() - 23, gui.getPosY() + 89, new ItemStack(ItemRegistry.TURRET_UPGRADE), Lang.translate(Lang.TCU_PAGE_TAB.get("upgrades")), false));
-//        }
+        this.tabs.clear();
+        MutableInt tabPos = new MutableInt(0);
+        GuiTcuRegistry.GUI_RESOURCES.forEach(location -> {
+            GuiTcuRegistry.GuiEntry entry = GuiTcuRegistry.INSTANCE.getGuiEntry(location);
+            if( entry.showTab(gui) ) {
+                this.tabs.put(gui.addNewButton(new GuiItemTab(gui.getNewButtonId(), gui.getPosX() - 23, gui.getPosY() + 5 + tabPos.getAndIncrement() * 28, entry.icon, "", false)), location);
+            }
+        });
     }
 
     boolean hasPermission(Minecraft mc, ITurretInst turretInst) {
@@ -67,6 +81,13 @@ public final class GuiTCUHelper
 //        String turretName = Lang.translate(Lang.TURRET_NAME.get(gui.getTurretInst().getTurret().getName()));
 //        fRender.drawString(turretName, gui.getGuiLeft() + (X_SIZE - fRender.getStringWidth(turretName)) / 2.0F, gui.getGuiTop() + Y_SIZE - 15, 0xFF00FF00, false);
 //        RenderHelper.enableGUIStandardItemLighting();
+    }
+
+    void onButtonClick(IGuiTcuInst<?> gui, GuiButton button) {
+        ResourceLocation location = this.tabs.get(button);
+        if( location != null ) {
+            TurretModRebirth.proxy.openGui(gui.getGui().mc.player, EnumGui.GUI_TCU, gui.getTurretInst().getEntity().getEntityId(), GuiTcuRegistry.GUI_RESOURCES.indexOf(location), 0);
+        }
     }
 
 //    static boolean actionPerformed(GuiButton button, GuiTurretCtrlUnit gui) {
