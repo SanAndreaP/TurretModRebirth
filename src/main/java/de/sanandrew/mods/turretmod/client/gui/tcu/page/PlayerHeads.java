@@ -8,12 +8,22 @@ package de.sanandrew.mods.turretmod.client.gui.tcu.page;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import de.sanandrew.mods.sanlib.lib.Tuple;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.util.CommonProxy;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
+import org.lwjgl.Sys;
 
 import java.util.Map;
 import java.util.UUID;
@@ -21,7 +31,7 @@ import java.util.UUID;
 @SideOnly(Side.CLIENT)
 public final class PlayerHeads
 {
-    public static final UUID[] PLAYERS = new UUID[] {
+    private static final UUID[] PLAYERS = new UUID[] {
             UuidUtils.EMPTY_UUID, // STANDARD
             UUID.fromString("044d980d-5c2a-4030-95cf-cbfde69ea3cb"), // SanAndreasP
             UUID.fromString("5399b615-3440-4c66-939d-ab1375952ac3"), // Drullkus
@@ -29,18 +39,35 @@ public final class PlayerHeads
             UUID.fromString("d183e5a2-a087-462a-963e-c3d7295f9ec5"), // Darkhax
     };
 
+    private static final String[] PLAYER_NAMES = new String[PLAYERS.length];
+
+    private static Tuple lastHead;
+
     public static void preLoadPlayerHeadsAsync() {
         Thread t = new Thread(() -> {
             Minecraft mc = Minecraft.getMinecraft();
-            for( UUID player : PLAYERS ) {
+            for( int i = 0, max = PLAYERS.length; i < max; i++ ) {
+                UUID player = PLAYERS[i];
                 try {
-                    mc.getSkinManager().loadSkinFromCache(new GameProfile(player, null));
-//                    mc.getSkinManager().loadSkin(map.get(MinecraftProfileTexture.Type.SKIN), MinecraftProfileTexture.Type.SKIN);
+                    GameProfile profile = mc.getSessionService().fillProfileProperties(new GameProfile(player, null), true);
+                    PLAYER_NAMES[i] = profile.getName();
                 } catch( Exception ex ) {
                     TmrConstants.LOG.log(Level.WARN, "Error while loading player skin", ex);
                 }
             }
         }, "TmrSkinPreloader");
-        t.run();
+        t.start();
+    }
+
+    public static ItemStack getRandomSkull() {
+        if( lastHead == null || lastHead.<Long>getValue(0) + 5000 < System.currentTimeMillis() ) {
+            lastHead = new Tuple(System.currentTimeMillis(), MiscUtils.defIfNull(PLAYER_NAMES[MiscUtils.RNG.randomInt(PLAYER_NAMES.length)], ""));
+        }
+
+        ItemStack stack = new ItemStack(Items.SKULL, 1, 3);
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setString("SkullOwner", lastHead.getValue(1));
+        stack.setTagCompound(nbt);
+        return stack;
     }
 }

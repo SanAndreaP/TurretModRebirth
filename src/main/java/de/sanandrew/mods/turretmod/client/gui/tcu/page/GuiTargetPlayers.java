@@ -20,7 +20,7 @@ public class GuiTargetPlayers
 {
     @Override
     protected Map<UUID, Boolean> getTargetList(ITurretInst turretInst) {
-        TreeMap<UUID, Boolean> btwSortMapNm = new TreeMap<>(new TargetComparatorName());
+        TreeMap<UUID, Boolean> btwSortMapNm = new TreeMap<>(new TargetComparator());
         btwSortMapNm.putAll(PlayerList.INSTANCE.getDefaultPlayerList());
         btwSortMapNm.putAll(turretInst.getTargetProcessor().getPlayerTargets());
         return btwSortMapNm;
@@ -37,7 +37,7 @@ public class GuiTargetPlayers
         gui.getFontRenderer().drawString(PlayerList.INSTANCE.getPlayerName(type), posX, posY, textColor, false);
     }
 
-    private static final class TargetComparatorName
+    private static final class TargetComparator
             implements Comparator<UUID>
     {
         @Override

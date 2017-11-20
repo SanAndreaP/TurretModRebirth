@@ -12,6 +12,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
 
@@ -19,6 +20,7 @@ public class GuiTcuScreen
         extends GuiScreen
         implements IGuiTcuInst<GuiTcuScreen>
 {
+    private final ResourceLocation registryKey;
     private final ITurretInst turret;
     private final IGuiTCU guiDelegate;
     private final GuiTCUHelper helper = new GuiTCUHelper();
@@ -28,8 +30,9 @@ public class GuiTcuScreen
     private int xSize;
     private int ySize;
 
-    public GuiTcuScreen(IGuiTCU gui, ITurretInst turretInst) {
+    public GuiTcuScreen(ResourceLocation registryKey, IGuiTCU gui, ITurretInst turretInst) {
         super();
+        this.registryKey = registryKey;
         this.turret = turretInst;
         this.guiDelegate = gui;
 
@@ -63,6 +66,7 @@ public class GuiTcuScreen
         this.guiDelegate.drawBackground(this, partialTicks, mouseX, mouseY);
         super.drawScreen(mouseX, mouseY, partialTicks);
         this.guiDelegate.drawForeground(this, mouseX, mouseY);
+        this.helper.drawScreen(this);
     }
 
     @Override
@@ -157,5 +161,10 @@ public class GuiTcuScreen
     @Override
     public void drawGradient(int left, int top, int right, int bottom, int startColor, int endColor) {
         this.drawGradientRect(left, top, right, bottom, startColor, endColor);
+    }
+
+    @Override
+    public ResourceLocation getRegistryKey() {
+        return this.registryKey;
     }
 }

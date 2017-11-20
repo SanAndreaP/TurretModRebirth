@@ -106,7 +106,7 @@ public abstract class GuiTargets<T>
             guiInst.mc.renderEngine.bindTexture(Resources.GUI_TCU_TARGETS.getResource());
             guiInst.drawTexturedModalRect(gui.getPosX() + 8, gui.getPosY() + 20 + offsetY, 176, btnTexOffY, 8, 8);
 
-            this.drawEntry(gui, entry.getKey(), gui.getPosX() + 20, gui.getPosY());
+            this.drawEntry(gui, entry.getKey(), gui.getPosX() + 20, gui.getPosY() + 21 + offsetY);
 
             offsetY += gui.getFontRenderer().FONT_HEIGHT + 1;
         }

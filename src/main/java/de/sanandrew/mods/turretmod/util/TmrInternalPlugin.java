@@ -22,8 +22,10 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiInfo;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiTargetCreatures;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiTargetPlayers;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiUpgrades;
 import de.sanandrew.mods.turretmod.client.gui.tcu.label.Labels;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.PlayerHeads;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.TurretInfoCategoryRegistry;
 import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
 import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
@@ -86,7 +88,7 @@ public class TmrInternalPlugin
         registry.registerGuiEntry(GUI_INFO, 0, null);
         registry.registerGuiEntry(GUI_TARGETS_MOB, 1, null);
         registry.registerGuiEntry(GUI_TARGETS_PLAYER, 2, null);
-        registry.registerGuiEntry(GUI_TARGETS_SMART, 3, null);
+//        registry.registerGuiEntry(GUI_TARGETS_SMART, 3, null);
         registry.registerGuiEntry(GUI_UPGRADES, 4, (player, turretInst) -> new ContainerTurretUpgrades(player.inventory, (UpgradeProcessor) turretInst.getUpgradeProcessor()));
     }
 
@@ -113,7 +115,7 @@ public class TmrInternalPlugin
     public void registerTcuGuis(IGuiTcuRegistry registry) {
         registry.registerGui(GUI_INFO, new ItemStack(Items.BOOK), GuiInfo::new, null);
         registry.registerGui(GUI_TARGETS_MOB, new ItemStack(Items.SKULL, 1, 2), GuiTargetCreatures::new, IGuiTcuInst::hasPermision);
-        registry.registerGui(GUI_TARGETS_PLAYER, new ItemStack(Items.SKULL, 1, 3), GuiTargetCreatures::new, IGuiTcuInst::hasPermision);
+        registry.registerGui(GUI_TARGETS_PLAYER, PlayerHeads::getRandomSkull, GuiTargetPlayers::new, IGuiTcuInst::hasPermision);
         registry.registerGui(GUI_UPGRADES, new ItemStack(ItemRegistry.TURRET_UPGRADE), GuiUpgrades::new, IGuiTcuInst::hasPermision);
     }
 }
