@@ -14,6 +14,8 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.util.Resources;
+import de.sanandrew.mods.turretmod.util.TmrConfiguration;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -32,6 +34,8 @@ public class TurretCrossbow
     @Override
     public void applyEntityAttributes(ITurretInst turretInst) {
         turretInst.getEntity().getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).setBaseValue(20.0D);
+        turretInst.getEntity().getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY).setBaseValue(TmrConfiguration.ConfTurret.crossbowMaxAmmoCapacity);
+        turretInst.getEntity().getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(TmrConfiguration.ConfTurret.crossbowMaxHealth);
     }
 
     @Override
@@ -84,12 +88,12 @@ public class TurretCrossbow
 
         @Override
         public float getHealth() {
-            return 20.0F;
+            return TmrConfiguration.ConfTurret.crossbowMaxHealth;
         }
 
         @Override
         public int getAmmoCapacity() {
-            return 256;
+            return TmrConfiguration.ConfTurret.crossbowMaxAmmoCapacity;
         }
 
         @Override
