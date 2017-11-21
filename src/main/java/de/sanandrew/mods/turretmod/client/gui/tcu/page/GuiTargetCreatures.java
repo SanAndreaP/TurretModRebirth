@@ -14,12 +14,16 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.IAnimals;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.io.IOException;
 import java.util.Comparator;
-import java.util.Map;
+import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
+@SideOnly(Side.CLIENT)
 public class GuiTargetCreatures
         extends GuiTargets<Class<? extends Entity>>
 {
@@ -41,21 +45,21 @@ public class GuiTargetCreatures
     public void onButtonClick(IGuiTcuInst<?> gui, GuiButton button) throws IOException {
         super.onButtonClick(gui, button);
         if( button == this.selectMobs ) {
-            this.tempTargetList.forEach((key, val) -> {
+            this.tempTargets.forEach((key, val) -> {
                 if( !val && IMob.class.isAssignableFrom(key) ) {
                     this.updateEntry(gui.getTurretInst(), key, true);
                 }
             });
             this.updateTargets(gui.getTurretInst());
         } else if( button == this.selectAnimals ) {
-            this.tempTargetList.forEach((key, val) -> {
+            this.tempTargets.forEach((key, val) -> {
                 if( !val && IAnimals.class.isAssignableFrom(key) && !IMob.class.isAssignableFrom(key) ) {
                     this.updateEntry(gui.getTurretInst(), key, true);
                 }
             });
             this.updateTargets(gui.getTurretInst());
         } else if( button == this.selectOther ) {
-            this.tempTargetList.forEach((key, val) -> {
+            this.tempTargets.forEach((key, val) -> {
                 if( !val && !IAnimals.class.isAssignableFrom(key) && !IMob.class.isAssignableFrom(key) ) {
                     this.updateEntry(gui.getTurretInst(), key, true);
                 }
@@ -65,7 +69,7 @@ public class GuiTargetCreatures
     }
 
     @Override
-    protected Map<Class<? extends Entity>, Boolean> getTargetList(ITurretInst turretInst) {
+    protected SortedMap<Class<? extends Entity>, Boolean> getTargetList(ITurretInst turretInst) {
         TreeMap<Class<? extends Entity>, Boolean> btwSortMapCl = new TreeMap<>(new TargetComparator());
         btwSortMapCl.putAll(turretInst.getTargetProcessor().getEntityTargets());
         return btwSortMapCl;
@@ -74,6 +78,11 @@ public class GuiTargetCreatures
     @Override
     protected void updateEntry(ITurretInst turretInst, Class<? extends Entity> type, boolean active) {
         turretInst.getTargetProcessor().updateEntityTarget(type, active);
+    }
+
+    @Override
+    protected boolean isEntryVisible(Class<? extends Entity> type, String srcText) {
+        return Lang.translateEntityCls(type).toUpperCase().contains(srcText.toUpperCase());
     }
 
     @Override

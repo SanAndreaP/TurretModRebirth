@@ -9,17 +9,21 @@ package de.sanandrew.mods.turretmod.client.gui.tcu.page;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.util.PlayerList;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Comparator;
-import java.util.Map;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
+@SideOnly(Side.CLIENT)
 public class GuiTargetPlayers
         extends GuiTargets<UUID>
 {
     @Override
-    protected Map<UUID, Boolean> getTargetList(ITurretInst turretInst) {
+    protected SortedMap<UUID, Boolean> getTargetList(ITurretInst turretInst) {
         TreeMap<UUID, Boolean> btwSortMapNm = new TreeMap<>(new TargetComparator());
         btwSortMapNm.putAll(PlayerList.INSTANCE.getDefaultPlayerList());
         btwSortMapNm.putAll(turretInst.getTargetProcessor().getPlayerTargets());
@@ -35,6 +39,11 @@ public class GuiTargetPlayers
     protected void drawEntry(IGuiTcuInst<?> gui, UUID type, int posX, int posY) {
         int textColor = 0xFFFFFF;
         gui.getFontRenderer().drawString(PlayerList.INSTANCE.getPlayerName(type), posX, posY, textColor, false);
+    }
+
+    @Override
+    protected boolean isEntryVisible(UUID type, String srcText) {
+        return PlayerList.INSTANCE.getPlayerName(type).toUpperCase().contains(srcText.toUpperCase());
     }
 
     private static final class TargetComparator

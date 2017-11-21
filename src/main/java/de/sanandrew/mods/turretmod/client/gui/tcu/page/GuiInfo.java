@@ -102,8 +102,6 @@ public class GuiInfo
             guiScreen.drawTexturedModalRect(posX + 7, gui.getPosY() + 95, gui.getGuiWidth(), this.specOwnerHead * 8, 10, 8);
         }
 
-        this.turretName.drawTextBox();
-
         EntityLiving turretL = turretInst.getEntity();
         String value;
         //        String value = this.turret_placer.hasCustomName() ? this.turret_placer.getCustomNameTag() : "-n/a-";
@@ -135,6 +133,8 @@ public class GuiInfo
         } else {
             this.infoStr = null;
         }
+
+        this.turretName.drawTextBox();
     }
 
     @Override

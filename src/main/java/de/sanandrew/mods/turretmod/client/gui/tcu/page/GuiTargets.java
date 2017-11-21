@@ -17,20 +17,26 @@ import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
+@SideOnly(Side.CLIENT)
 public abstract class GuiTargets<T>
         implements IGuiTCU
 {
     protected static final int MAX_ITEMS = 11;
-    protected Map<T, Boolean> tempTargetList = new HashMap<>();
+    protected SortedMap<T, Boolean> tempTargets = new TreeMap<>();
+    protected SortedMap<T, Boolean> filteredTargets = new TreeMap<>();
 
     private float scroll = 0.0F;
     private float scrollAmount = 0.0F;
@@ -41,19 +47,27 @@ public abstract class GuiTargets<T>
     protected GuiButton selectAll;
     protected GuiButton deselectAll;
 
+    private GuiTextField searchBar;
+
     @Override
     public void initGui(IGuiTcuInst<?> gui) {
         int center = gui.getPosX() + (gui.getGuiWidth() - 150) / 2;
         this.selectAll = gui.addNewButton(new GuiSlimButton(gui.getNewButtonId(), center, gui.getPosY() + 138, 150, Lang.translate(Lang.TCU_TARGET_BTN.get("selectAll"))));
         this.deselectAll = gui.addNewButton(new GuiSlimButton(gui.getNewButtonId(), center, gui.getPosY() + 151, 150, Lang.translate(Lang.TCU_TARGET_BTN.get("deselectAll"))));
 
+        this.searchBar = new GuiTextField(0, gui.getFontRenderer(), gui.getPosX() + 20, gui.getPosY() + 5, 150, 10);
+        this.searchBar.setMaxStringLength(1024);
+        this.searchBar.setText("");
+
         this.updateList(gui.getTurretInst());
     }
 
     @Override
     public void updateScreen(IGuiTcuInst<?> gui) {
-        this.canScroll = this.tempTargetList.size() >= MAX_ITEMS;
-        this.scrollAmount = Math.max(0.0F, 1.0F / (this.tempTargetList.size() - (float) MAX_ITEMS));
+        this.canScroll = this.filteredTargets.size() >= MAX_ITEMS;
+        this.scrollAmount = Math.max(0.0F, 1.0F / (this.filteredTargets.size() - (float) MAX_ITEMS));
+
+        this.searchBar.updateCursorCounter();
     }
 
     @Override
@@ -82,12 +96,12 @@ public abstract class GuiTargets<T>
         guiInst.drawTexturedModalRect(gui.getPosX() + 163, gui.getPosY() + 19 + MathHelper.floor(scroll * 109.0F), 176, this.canScroll ? 0 : 6, 6, 6);
 
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
-        GuiUtils.glScissor(gui.getPosX() + 6, gui.getPosY() + 19, gui.getGuiWidth() - 23, 115);
+        GuiUtils.glScissor(gui.getPosX() + 6, gui.getPosY() + 19, gui.getGuiWidth() - 23, MAX_ITEMS * (gui.getFontRenderer().FONT_HEIGHT + 1));
 
-        int offsetY = Math.round(-this.scroll * (this.tempTargetList.size() - 11)) * (gui.getFontRenderer().FONT_HEIGHT + 1);
+        int offsetY = Math.round(-this.scroll * (this.filteredTargets.size() - 11)) * (gui.getFontRenderer().FONT_HEIGHT + 1);
         boolean targetListChanged = false;
 
-        for( Map.Entry<T, Boolean> entry : this.tempTargetList.entrySet() ) {
+        for( Map.Entry<T, Boolean> entry : this.filteredTargets.entrySet() ) {
             int btnTexOffY = 12 + (entry.getValue() ? 16 : 0);
             int btnMinOffY = gui.getPosY() + 20;
             int btnMaxOffY = gui.getPosY() + 20 + 110;
@@ -118,6 +132,8 @@ public abstract class GuiTargets<T>
         }
 
         this.prevIsLmbDown = isLmbDown;
+
+        this.searchBar.drawTextBox();
     }
 
     @Override
@@ -135,12 +151,28 @@ public abstract class GuiTargets<T>
     @Override
     public void onButtonClick(IGuiTcuInst<?> gui, GuiButton button) throws IOException {
         if( button == this.selectAll ) {
-            this.tempTargetList.forEach((key, val) -> this.updateEntry(gui.getTurretInst(), key, true));
+            this.tempTargets.forEach((key, val) -> this.updateEntry(gui.getTurretInst(), key, true));
             this.updateTargets(gui.getTurretInst());
         } else if( button == this.deselectAll ) {
-            this.tempTargetList.forEach((key, val) -> this.updateEntry(gui.getTurretInst(), key, false));
+            this.tempTargets.forEach((key, val) -> this.updateEntry(gui.getTurretInst(), key, false));
             this.updateTargets(gui.getTurretInst());
         }
+    }
+
+    @Override
+    public void onMouseClick(IGuiTcuInst<?> gui, int mouseX, int mouseY, int mouseButton) throws IOException {
+        this.searchBar.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    @Override
+    public boolean doKeyIntercept(IGuiTcuInst<?> gui, char typedChar, int keyCode) throws IOException {
+        if( this.searchBar.textboxKeyTyped(typedChar, keyCode) ) {
+            this.filterList();
+            this.scroll = 0.0F;
+            return true;
+        }
+
+        return false;
     }
 
     protected void updateTargets(ITurretInst turretInst) {
@@ -149,12 +181,22 @@ public abstract class GuiTargets<T>
     }
 
     private void updateList(ITurretInst turretInst) {
-        this.tempTargetList = getTargetList(turretInst);
+        this.tempTargets = getTargetList(turretInst);
+        this.filterList();
     }
 
-    protected abstract Map<T, Boolean> getTargetList(ITurretInst turretInst);
+    private void filterList() {
+        this.filteredTargets = new TreeMap<>(this.tempTargets.comparator());
+        this.tempTargets.entrySet().stream()
+                        .filter(e -> isEntryVisible(e.getKey(), this.searchBar.getText()))
+                        .forEach(e -> this.filteredTargets.put(e.getKey(), e.getValue()));
+    }
+
+    protected abstract SortedMap<T, Boolean> getTargetList(ITurretInst turretInst);
 
     protected abstract void updateEntry(ITurretInst turretInst, T type, boolean active);
+
+    protected abstract boolean isEntryVisible(T type, String srcText);
 
     protected abstract void drawEntry(IGuiTcuInst<?> gui, T type, int posX, int posY);
 

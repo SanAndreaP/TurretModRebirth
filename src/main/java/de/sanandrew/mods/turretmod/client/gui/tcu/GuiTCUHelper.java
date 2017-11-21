@@ -43,7 +43,6 @@ public final class GuiTCUHelper
 
     GuiTCUHelper() {}
 
-    private int marquee;
     private long marqueeTime;
 
     @SuppressWarnings("unchecked")
@@ -81,13 +80,13 @@ public final class GuiTCUHelper
             if( this.marqueeTime < 1 ) {
                 this.marqueeTime = currTime;
             }
-            this.marquee = -144 + (int)(currTime - this.marqueeTime) / 25;
-            if( this.marquee > strWidth ) {
+            int marquee = -144 + (int) (currTime - this.marqueeTime) / 25;
+            if( marquee > strWidth ) {
                 this.marqueeTime = currTime;
             }
             GL11.glEnable(GL11.GL_SCISSOR_TEST);
             GuiUtils.glScissor(gui.getPosX() + 16, gui.getPosY() + 6, 144, 12);
-            fRender.drawString(turretName, gui.getPosX() + 17 - this.marquee, gui.getPosY() + 9, 0xFFAAAAFF, false);
+            fRender.drawString(turretName, gui.getPosX() + 17 - marquee, gui.getPosY() + 9, 0xFFAAAAFF, false);
             GL11.glDisable(GL11.GL_SCISSOR_TEST);
         } else {
             fRender.drawString(turretName, gui.getPosX() + (X_SIZE - fRender.getStringWidth(turretName)) / 2.0F, gui.getPosY() + 9, 0xFFAAAAFF, false);
