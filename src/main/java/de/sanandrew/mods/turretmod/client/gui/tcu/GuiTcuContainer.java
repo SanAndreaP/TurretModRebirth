@@ -15,6 +15,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.inventory.Container;
+import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
 
@@ -22,6 +23,7 @@ public class GuiTcuContainer
         extends GuiContainer
         implements IGuiTcuInst<GuiTcuContainer>
 {
+    private final ResourceLocation registryKey;
     private final ITurretInst turret;
     private final IGuiTCU guiDelegate;
     private final GuiTCUHelper helper = new GuiTCUHelper();
@@ -29,8 +31,9 @@ public class GuiTcuContainer
     private int posX;
     private int posY;
 
-    public GuiTcuContainer(IGuiTCU gui, Container guiContainer, ITurretInst turretInst) {
+    public GuiTcuContainer(ResourceLocation registryKey, IGuiTCU gui, Container guiContainer, ITurretInst turretInst) {
         super(guiContainer);
+        this.registryKey = registryKey;
         this.turret = turretInst;
         this.guiDelegate = gui;
 
@@ -62,6 +65,7 @@ public class GuiTcuContainer
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
+        this.helper.drawScreen(this);
         this.renderHoveredToolTip(mouseX, mouseY);
     }
 
@@ -175,5 +179,10 @@ public class GuiTcuContainer
     @Override
     public void drawGradient(int left, int top, int right, int bottom, int startColor, int endColor) {
         this.drawGradientRect(left, top, right, bottom, startColor, endColor);
+    }
+
+    @Override
+    public ResourceLocation getRegistryKey() {
+        return this.registryKey;
     }
 }

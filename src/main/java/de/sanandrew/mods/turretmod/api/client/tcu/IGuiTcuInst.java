@@ -10,6 +10,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.ResourceLocation;
 
 public interface IGuiTcuInst<T extends GuiScreen>
 {
@@ -34,4 +35,6 @@ public interface IGuiTcuInst<T extends GuiScreen>
     FontRenderer getFontRenderer();
 
     void drawGradient(int left, int top, int right, int bottom, int startColor, int endColor);
+
+    ResourceLocation getRegistryKey();
 }

@@ -26,4 +26,7 @@ public interface IGuiTcuRegistry
 
     @SideOnly(Side.CLIENT)
     void registerGui(ResourceLocation location, ItemStack icon, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc);
+
+    @SideOnly(Side.CLIENT)
+    void registerGui(ResourceLocation location, Supplier<ItemStack> iconSupplier, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc);
 }

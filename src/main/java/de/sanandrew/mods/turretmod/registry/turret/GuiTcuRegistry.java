@@ -28,6 +28,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,9 +60,9 @@ public final class GuiTcuRegistry
                     IGuiTCU guiDelegate = event.factory.get();
                     Container cnt = guiDelegate.getContainer(player, turretInst);
                     if( cnt != null ) {
-                        return new GuiTcuContainer(guiDelegate, cnt, turretInst);
+                        return new GuiTcuContainer(GUI_RESOURCES.get(type), guiDelegate, cnt, turretInst);
                     } else {
-                        return new GuiTcuScreen(guiDelegate, turretInst);
+                        return new GuiTcuScreen(GUI_RESOURCES.get(type), guiDelegate, turretInst);
                     }
                 }
             }
@@ -110,7 +111,16 @@ public final class GuiTcuRegistry
             guis = new HashMap<>();
         }
 
-        guis.put(location, new GuiEntry(icon, factory, canShowTabFunc));
+        guis.put(location, new GuiEntry(() -> icon, factory, canShowTabFunc));
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void registerGui(ResourceLocation location, Supplier<ItemStack> iconSupplier, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc) {
+        if( guis == null ) {
+            guis = new HashMap<>();
+        }
+
+        guis.put(location, new GuiEntry(iconSupplier, factory, canShowTabFunc));
     }
 
     @SubscribeEvent
@@ -130,11 +140,11 @@ public final class GuiTcuRegistry
     @SideOnly(Side.CLIENT)
     public static final class GuiEntry
     {
-        public final ItemStack icon;
+        final Supplier<ItemStack> icon;
         final Function<IGuiTcuInst<?>, Boolean> canShowTabFunc;
         final Supplier<IGuiTCU> factory;
 
-        GuiEntry(ItemStack icon, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc) {
+        GuiEntry(Supplier<ItemStack> icon, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc) {
             this.icon = icon;
             this.factory = factory;
             this.canShowTabFunc = canShowTabFunc;
@@ -142,6 +152,10 @@ public final class GuiTcuRegistry
 
         public boolean showTab(IGuiTcuInst<?> gui) {
             return this.canShowTabFunc == null || this.canShowTabFunc.apply(gui);
+        }
+
+        public ItemStack getIcon() {
+            return this.icon.get();
         }
     }
 }

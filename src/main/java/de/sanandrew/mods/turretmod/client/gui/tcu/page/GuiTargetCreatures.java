@@ -66,10 +66,8 @@ public class GuiTargetCreatures
 
     @Override
     protected Map<Class<? extends Entity>, Boolean> getTargetList(ITurretInst turretInst) {
-        TreeMap<Class<? extends Entity>, Boolean> btwSortMapNm = new TreeMap<>(new TargetComparatorName());
-        TreeMap<Class<? extends Entity>, Boolean> btwSortMapCl = new TreeMap<>(new TargetComparatorClass());
-        btwSortMapNm.putAll(turretInst.getTargetProcessor().getEntityTargets());
-        btwSortMapCl.putAll(btwSortMapNm);
+        TreeMap<Class<? extends Entity>, Boolean> btwSortMapCl = new TreeMap<>(new TargetComparator());
+        btwSortMapCl.putAll(turretInst.getTargetProcessor().getEntityTargets());
         return btwSortMapCl;
     }
 
@@ -90,30 +88,32 @@ public class GuiTargetCreatures
         gui.getFontRenderer().drawString(Lang.translateEntityCls(type), posX, posY, textColor, false);
     }
 
-    private static final class TargetComparatorClass
+    private static final class TargetComparator
             implements Comparator<Class<? extends Entity>>
     {
         @Override
         public int compare(Class<? extends Entity> o1, Class<? extends Entity> o2) {
-            if( IMob.class.isAssignableFrom(o1) && IAnimals.class.isAssignableFrom(o2) ) {
-                return -1;
+            if( IMob.class.isAssignableFrom(o1) ) {
+                if( IMob.class.isAssignableFrom(o2) ) {
+                    return Lang.translateEntityCls(o1).compareTo(Lang.translateEntityCls(o2));
+                } else {
+                    return -1;
+                }
+            } else if( IAnimals.class.isAssignableFrom(o1) ) {
+                if( IMob.class.isAssignableFrom(o2) ) {
+                    return 1;
+                } else if( IAnimals.class.isAssignableFrom(o2) ) {
+                    return Lang.translateEntityCls(o1).compareTo(Lang.translateEntityCls(o2));
+                } else {
+                    return -1;
+                }
+            } else {
+                if( IMob.class.isAssignableFrom(o2) || IAnimals.class.isAssignableFrom(o2) ) {
+                    return 1;
+                } else {
+                    return Lang.translateEntityCls(o1).compareTo(Lang.translateEntityCls(o2));
+                }
             }
-            if( IAnimals.class.isAssignableFrom(o1) && !IMob.class.isAssignableFrom(o2) && !IAnimals.class.isAssignableFrom(o2) ) {
-                return -1;
-            }
-            if( o1.equals(o2) ) {
-                return 0;
-            }
-            return 1;
-        }
-    }
-
-    private static final class TargetComparatorName
-            implements Comparator<Class<? extends Entity>>
-    {
-        @Override
-        public int compare(Class<? extends Entity> o1, Class<? extends Entity> o2) {
-            return Lang.translateEntityCls(o2).compareTo(Lang.translateEntityCls(o1));
         }
     }
 }
