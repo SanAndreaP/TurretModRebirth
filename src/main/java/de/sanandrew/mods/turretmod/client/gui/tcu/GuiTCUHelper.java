@@ -71,7 +71,6 @@ public final class GuiTCUHelper
     }
 
     void drawScreen(IGuiTcuInst<?> gui) {
-        RenderHelper.disableStandardItemLighting();
         FontRenderer fRender = gui.getFontRenderer();
         String turretName = Lang.translate(Lang.TURRET_NAME.get(gui.getTurretInst().getTurret().getName()));
         int strWidth = fRender.getStringWidth(turretName);
@@ -91,7 +90,6 @@ public final class GuiTCUHelper
         } else {
             fRender.drawString(turretName, gui.getPosX() + (X_SIZE - fRender.getStringWidth(turretName)) / 2.0F, gui.getPosY() + 9, 0xFFAAAAFF, false);
         }
-        RenderHelper.enableStandardItemLighting();
     }
 
     void onButtonClick(IGuiTcuInst<?> gui, GuiButton button) {

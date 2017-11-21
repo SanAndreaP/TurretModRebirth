@@ -47,11 +47,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class TmrInternalPlugin
         implements ITmrPlugin
 {
-    private static final ResourceLocation GUI_INFO = new ResourceLocation(TmrConstants.ID, "tcu_info");
-    private static final ResourceLocation GUI_TARGETS_MOB = new ResourceLocation(TmrConstants.ID, "tcu_targets_mob");
-    private static final ResourceLocation GUI_TARGETS_PLAYER = new ResourceLocation(TmrConstants.ID, "tcu_targets_player");
-    private static final ResourceLocation GUI_TARGETS_SMART = new ResourceLocation(TmrConstants.ID, "tcu_targets_smart");
-    private static final ResourceLocation GUI_UPGRADES = new ResourceLocation(TmrConstants.ID, "tcu_upgrades");
+    private static final ResourceLocation GUI_INFO = new ResourceLocation(TmrConstants.ID, "info");
+    private static final ResourceLocation GUI_TARGETS_MOB = new ResourceLocation(TmrConstants.ID, "targets_creature");
+    private static final ResourceLocation GUI_TARGETS_PLAYER = new ResourceLocation(TmrConstants.ID, "targets_player");
+    private static final ResourceLocation GUI_TARGETS_SMART = new ResourceLocation(TmrConstants.ID, "targets_smart");
+    private static final ResourceLocation GUI_UPGRADES = new ResourceLocation(TmrConstants.ID, "upgrades");
 
     @Override
     public void registerAssemblyRecipes(ITurretAssemblyRegistry registry) {

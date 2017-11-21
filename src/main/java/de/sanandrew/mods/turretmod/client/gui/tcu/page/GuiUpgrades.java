@@ -60,19 +60,19 @@ public class GuiUpgrades
         GlStateManager.translate(0.0F, 0.0F, 300.0F);
         if( !this.hasUpgStgI ) {
             for( int j = 0; j < 9; j++ ) {
-                gui.drawGradient(8 + j * 18, 41 + 18, 8 + 16 + j * 18, 41 + 18 + 16, 0x80FFFFFF, 0x80FFFFFF);
+                gui.drawGradient(8 + j * 18, 40 + 18, 8 + 16 + j * 18, 40 + 18 + 16, 0x80FFFFFF, 0x80FFFFFF);
             }
         }
 
         if( !this.hasUpgStgII ) {
             for( int j = 0; j < 9; j++ ) {
-                gui.drawGradient(8 + j * 18, 41 + 36, 8 + 16 + j * 18, 41 + 36 + 16, 0x80FFFFFF, 0x80FFFFFF);
+                gui.drawGradient(8 + j * 18, 40 + 36, 8 + 16 + j * 18, 40 + 36 + 16, 0x80FFFFFF, 0x80FFFFFF);
             }
         }
 
         if( !this.hasUpgStgIII ) {
             for( int j = 0; j < 9; j++ ) {
-                gui.drawGradient(8 + j * 18, 41 + 54, 8 + 16 + j * 18, 41 + 54 + 16, 0x80FFFFFF, 0x80FFFFFF);
+                gui.drawGradient(8 + j * 18, 40 + 54, 8 + 16 + j * 18, 40 + 54 + 16, 0x80FFFFFF, 0x80FFFFFF);
             }
         }
         GlStateManager.popMatrix();

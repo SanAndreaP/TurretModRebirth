@@ -19,6 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -39,7 +40,7 @@ public final class PlayerHeads
             UUID.fromString("d183e5a2-a087-462a-963e-c3d7295f9ec5"), // Darkhax
     };
 
-    private static final String[] PLAYER_NAMES = new String[PLAYERS.length];
+    private static final GameProfile[] PLAYER_PROFILES = new GameProfile[PLAYERS.length];
 
     private static Tuple lastHead;
 
@@ -50,7 +51,7 @@ public final class PlayerHeads
                 UUID player = PLAYERS[i];
                 try {
                     GameProfile profile = mc.getSessionService().fillProfileProperties(new GameProfile(player, null), true);
-                    PLAYER_NAMES[i] = profile.getName();
+                    PLAYER_PROFILES[i] = profile;
                 } catch( Exception ex ) {
                     TmrConstants.LOG.log(Level.WARN, "Error while loading player skin", ex);
                 }
@@ -61,13 +62,12 @@ public final class PlayerHeads
 
     public static ItemStack getRandomSkull() {
         if( lastHead == null || lastHead.<Long>getValue(0) + 5000 < System.currentTimeMillis() ) {
-            lastHead = new Tuple(System.currentTimeMillis(), MiscUtils.defIfNull(PLAYER_NAMES[MiscUtils.RNG.randomInt(PLAYER_NAMES.length)], ""));
+            lastHead = new Tuple(System.currentTimeMillis(), PLAYER_PROFILES[MiscUtils.RNG.randomInt(PLAYER_PROFILES.length)]);
         }
 
         ItemStack stack = new ItemStack(Items.SKULL, 1, 3);
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setString("SkullOwner", lastHead.getValue(1));
-        stack.setTagCompound(nbt);
+        NBTTagCompound nbt = stack.getOrCreateSubCompound("SkullOwner");
+        NBTUtil.writeGameProfile(nbt, lastHead.getValue(1));
         return stack;
     }
 }

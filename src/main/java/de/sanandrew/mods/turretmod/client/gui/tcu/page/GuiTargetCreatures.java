@@ -36,9 +36,9 @@ public class GuiTargetCreatures
         super.initGui(gui);
 
         int center = gui.getPosX() + (gui.getGuiWidth() - 150) / 2;
-        this.selectMobs = gui.addNewButton(new GuiSlimButton(gui.getNewButtonId(), center, gui.getPosY() + 164, 150, Lang.translate(Lang.TCU_TARGET_BTN.get("selectMobs"))));
-        this.selectAnimals = gui.addNewButton(new GuiSlimButton(gui.getNewButtonId(), center, gui.getPosY() + 177, 150, Lang.translate(Lang.TCU_TARGET_BTN.get("selectAnimals"))));
-        this.selectOther = gui.addNewButton(new GuiSlimButton(gui.getNewButtonId(), center, gui.getPosY() + 190, 150, Lang.translate(Lang.TCU_TARGET_BTN.get("selectOther"))));
+        this.selectMobs = gui.addNewButton(new GuiSlimButton(gui.getNewButtonId(), center, gui.getPosY() + 164, 150, Lang.translate(Lang.TCU_BTN.get("selectMobs"))));
+        this.selectAnimals = gui.addNewButton(new GuiSlimButton(gui.getNewButtonId(), center, gui.getPosY() + 177, 150, Lang.translate(Lang.TCU_BTN.get("selectAnimals"))));
+        this.selectOther = gui.addNewButton(new GuiSlimButton(gui.getNewButtonId(), center, gui.getPosY() + 190, 150, Lang.translate(Lang.TCU_BTN.get("selectOther"))));
     }
 
     @Override

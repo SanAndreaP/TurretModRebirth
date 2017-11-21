@@ -9,6 +9,7 @@ package de.sanandrew.mods.turretmod.client.gui.tcu;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -65,7 +66,6 @@ public class GuiTcuContainer
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
-        this.helper.drawScreen(this);
         this.renderHoveredToolTip(mouseX, mouseY);
     }
 
@@ -76,7 +76,7 @@ public class GuiTcuContainer
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        RenderHelper.disableStandardItemLighting();
+        this.fontRenderer.drawString(Lang.translate(Lang.TCU_PAGE_TITLE.get(this.registryKey.getResourceDomain(), this.registryKey.getResourcePath())), 8, 28, 0xFF404040);
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(-this.posX, -this.posY, 0.0F);
@@ -84,7 +84,6 @@ public class GuiTcuContainer
         GlStateManager.popMatrix();
 
         this.guiDelegate.drawForeground(this, mouseX, mouseY);
-        RenderHelper.enableGUIStandardItemLighting();
     }
 
     @Override

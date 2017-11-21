@@ -27,18 +27,18 @@ public class ContainerTurretUpgrades
     public ContainerTurretUpgrades(IInventory playerInv, UpgradeProcessor proc) {
         for( int i = 0; i < 4; i++ ) {
             for( int j = 0; j < 9; j++ ) {
-                this.addSlotToContainer(new SlotUpgrade(proc, j + i * 9, 8 + j * 18, 41 + i * 18));
+                this.addSlotToContainer(new SlotUpgrade(proc, j + i * 9, 8 + j * 18, 40 + i * 18));
             }
         }
 
         for( int i = 0; i < 3; i++ ) {
             for( int j = 0; j < 9; j++ ) {
-                this.addSlotToContainer(new Slot(playerInv, j + i * 9 + 9, 8 + j * 18, 126 + i * 18));
+                this.addSlotToContainer(new Slot(playerInv, j + i * 9 + 9, 8 + j * 18, 125 + i * 18));
             }
         }
 
         for( int i = 0; i < 9; i++ ) {
-            this.addSlotToContainer(new Slot(playerInv, i, 8 + i * 18, 184));
+            this.addSlotToContainer(new Slot(playerInv, i, 8 + i * 18, 183));
         }
     }
 

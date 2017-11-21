@@ -52,8 +52,8 @@ public abstract class GuiTargets<T>
     @Override
     public void initGui(IGuiTcuInst<?> gui) {
         int center = gui.getPosX() + (gui.getGuiWidth() - 150) / 2;
-        this.selectAll = gui.addNewButton(new GuiSlimButton(gui.getNewButtonId(), center, gui.getPosY() + 138, 150, Lang.translate(Lang.TCU_TARGET_BTN.get("selectAll"))));
-        this.deselectAll = gui.addNewButton(new GuiSlimButton(gui.getNewButtonId(), center, gui.getPosY() + 151, 150, Lang.translate(Lang.TCU_TARGET_BTN.get("deselectAll"))));
+        this.selectAll = gui.addNewButton(new GuiSlimButton(gui.getNewButtonId(), center, gui.getPosY() + 138, 150, Lang.translate(Lang.TCU_BTN.get("selectAll"))));
+        this.deselectAll = gui.addNewButton(new GuiSlimButton(gui.getNewButtonId(), center, gui.getPosY() + 151, 150, Lang.translate(Lang.TCU_BTN.get("deselectAll"))));
 
         this.searchBar = new GuiTextField(0, gui.getFontRenderer(), gui.getPosX() + 20, gui.getPosY() + 5, 150, 10);
         this.searchBar.setMaxStringLength(1024);
@@ -64,7 +64,7 @@ public abstract class GuiTargets<T>
 
     @Override
     public void updateScreen(IGuiTcuInst<?> gui) {
-        this.canScroll = this.filteredTargets.size() >= MAX_ITEMS;
+        this.canScroll = this.filteredTargets.size() > MAX_ITEMS;
         this.scrollAmount = Math.max(0.0F, 1.0F / (this.filteredTargets.size() - (float) MAX_ITEMS));
 
         this.searchBar.updateCursorCounter();
