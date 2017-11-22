@@ -53,7 +53,8 @@ public final class GuiTCUHelper
             GuiTcuRegistry.GuiEntry entry = GuiTcuRegistry.INSTANCE.getGuiEntry(location);
             if( entry != null && entry.showTab(gui) ) {
                 GuiButton btn = gui.addNewButton(new GuiItemTab(gui.getNewButtonId(), gui.getPosX() - 23,
-                                                                gui.getPosY() + 5 + tabPos.getAndIncrement() * 28, entry.getIcon(), "", false));
+                                                                gui.getPosY() + 5 + tabPos.getAndIncrement() * 28, entry.getIcon(),
+                                                                Lang.translate(Lang.TCU_PAGE_TITLE.get(location.getResourceDomain(), location.getResourcePath())), false));
                 btn.enabled = !location.equals(gui.getRegistryKey());
                 this.tabs.put(btn, location);
             }
@@ -72,6 +73,7 @@ public final class GuiTCUHelper
 
     void drawScreen(IGuiTcuInst<?> gui) {
         FontRenderer fRender = gui.getFontRenderer();
+        fRender.drawString(Lang.translate(Lang.TCU_PAGE_TITLE.get(gui.getRegistryKey().getResourceDomain(), gui.getRegistryKey().getResourcePath())), 8, 28, 0xFF404040);
         String turretName = Lang.translate(Lang.TURRET_NAME.get(gui.getTurretInst().getTurret().getName()));
         int strWidth = fRender.getStringWidth(turretName);
         if( strWidth > 144 ) {
@@ -85,10 +87,10 @@ public final class GuiTCUHelper
             }
             GL11.glEnable(GL11.GL_SCISSOR_TEST);
             GuiUtils.glScissor(gui.getPosX() + 16, gui.getPosY() + 6, 144, 12);
-            fRender.drawString(turretName, gui.getPosX() + 17 - marquee, gui.getPosY() + 9, 0xFFAAAAFF, false);
+            fRender.drawString(turretName, 17 - marquee, 9, 0xFFAAAAFF, false);
             GL11.glDisable(GL11.GL_SCISSOR_TEST);
         } else {
-            fRender.drawString(turretName, gui.getPosX() + (X_SIZE - fRender.getStringWidth(turretName)) / 2.0F, gui.getPosY() + 9, 0xFFAAAAFF, false);
+            fRender.drawString(turretName, (X_SIZE - fRender.getStringWidth(turretName)) / 2.0F, 9, 0xFFAAAAFF, false);
         }
     }
 

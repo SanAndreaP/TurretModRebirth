@@ -8,7 +8,7 @@ package de.sanandrew.mods.turretmod.client.gui.tcu.page;
 
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.client.gui.control.GuiSlimButton;
+import de.sanandrew.mods.turretmod.client.gui.control.GuiIconButton;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.Entity;
@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.Comparator;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.regex.Pattern;
 
 @SideOnly(Side.CLIENT)
 public class GuiTargetCreatures
@@ -35,10 +34,11 @@ public class GuiTargetCreatures
     public void initGui(IGuiTcuInst<?> gui) {
         super.initGui(gui);
 
-        int center = gui.getPosX() + (gui.getGuiWidth() - 150) / 2;
-        this.selectMobs = gui.addNewButton(new GuiSlimButton(gui.getNewButtonId(), center, gui.getPosY() + 164, 150, Lang.translate(Lang.TCU_BTN.get("selectMobs"))));
-        this.selectAnimals = gui.addNewButton(new GuiSlimButton(gui.getNewButtonId(), center, gui.getPosY() + 177, 150, Lang.translate(Lang.TCU_BTN.get("selectAnimals"))));
-        this.selectOther = gui.addNewButton(new GuiSlimButton(gui.getNewButtonId(), center, gui.getPosY() + 190, 150, Lang.translate(Lang.TCU_BTN.get("selectOther"))));
+        int x = gui.getPosX() + gui.getGuiWidth();
+        int y = gui.getPosY() + 190;
+        this.selectMobs = gui.addNewButton(new GuiIconButton(gui.getNewButtonId(), x - 63, y, 202, 36, Lang.translate(Lang.TCU_BTN.get("selectMobs"))));
+        this.selectAnimals = gui.addNewButton(new GuiIconButton(gui.getNewButtonId(), x - 44, y, 220, 36, Lang.translate(Lang.TCU_BTN.get("selectAnimals"))));
+        this.selectOther = gui.addNewButton(new GuiIconButton(gui.getNewButtonId(), x - 25, y, 238, 36, Lang.translate(Lang.TCU_BTN.get("selectOther"))));
     }
 
     @Override
@@ -87,14 +87,24 @@ public class GuiTargetCreatures
 
     @Override
     protected void drawEntry(IGuiTcuInst<?> gui, Class<? extends Entity> type, int posX, int posY) {
-        int textColor = 0xFFFFFFFF;
+        int textColor = 0xFF000000;
         if( IMob.class.isAssignableFrom(type) ) {
-            textColor = 0xFFFFAAAA;
+            textColor = 0xFFA00000;
         } else if( IAnimals.class.isAssignableFrom(type) ) {
-            textColor = 0xFFAAFFAA;
+            textColor = 0xFF00A000;
         }
 
         gui.getFontRenderer().drawString(Lang.translateEntityCls(type), posX, posY, textColor, false);
+    }
+
+    @Override
+    protected boolean isBlacklist(ITurretInst turretInst) {
+        return turretInst.getTargetProcessor().isEntityBlacklist();
+    }
+
+    @Override
+    protected void setBlacklist(ITurretInst turretInst, boolean isBlacklist) {
+        turretInst.getTargetProcessor().setEntityBlacklist(isBlacklist);
     }
 
     private static final class TargetComparator

@@ -29,9 +29,6 @@ public class GuiTcuContainer
     private final IGuiTCU guiDelegate;
     private final GuiTCUHelper helper = new GuiTCUHelper();
 
-    private int posX;
-    private int posY;
-
     public GuiTcuContainer(ResourceLocation registryKey, IGuiTCU gui, Container guiContainer, ITurretInst turretInst) {
         super(guiContainer);
         this.registryKey = registryKey;
@@ -45,9 +42,6 @@ public class GuiTcuContainer
     @Override
     public void initGui() {
         super.initGui();
-
-        this.posX = (this.width - this.xSize) / 2;
-        this.posY = (this.height - this.ySize) / 2;
 
         this.buttonList.clear();
         this.helper.initGui(this);
@@ -76,13 +70,7 @@ public class GuiTcuContainer
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        this.fontRenderer.drawString(Lang.translate(Lang.TCU_PAGE_TITLE.get(this.registryKey.getResourceDomain(), this.registryKey.getResourcePath())), 8, 28, 0xFF404040);
-
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(-this.posX, -this.posY, 0.0F);
         this.helper.drawScreen(this);
-        GlStateManager.popMatrix();
-
         this.guiDelegate.drawForeground(this, mouseX, mouseY);
     }
 
@@ -136,12 +124,12 @@ public class GuiTcuContainer
 
     @Override
     public int getPosX() {
-        return this.posX;
+        return this.guiLeft;
     }
 
     @Override
     public int getPosY() {
-        return this.posY;
+        return this.guiTop;
     }
 
     @Override

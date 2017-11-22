@@ -92,4 +92,12 @@ public interface ITargetProcessor
     String getTargetName();
 
     void onTick();
+
+    boolean isEntityBlacklist();
+
+    boolean isPlayerBlacklist();
+
+    void setEntityBlacklist(boolean isBlacklist);
+
+    void setPlayerBlacklist(boolean isBlacklist);
 }

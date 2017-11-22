@@ -25,6 +25,8 @@ public class PacketUpdateTargets
 {
     private List<Class<? extends Entity>> entityTargets;
     private UUID[] playerTargets;
+    private boolean isBlacklistEntity;
+    private boolean isBlacklistPlayer;
     private int turretID;
 
     @SuppressWarnings("unused")
@@ -33,6 +35,8 @@ public class PacketUpdateTargets
     public PacketUpdateTargets(ITargetProcessor processor) {
         this.entityTargets = processor.getEnabledEntityTargets();
         this.playerTargets = processor.getEnabledPlayerTargets();
+        this.isBlacklistEntity = processor.isEntityBlacklist();
+        this.isBlacklistPlayer = processor.isPlayerBlacklist();
         this.turretID = processor.getTurret().getEntity().getEntityId();
     }
 
@@ -48,6 +52,8 @@ public class PacketUpdateTargets
             ITargetProcessor processor = ((ITurretInst) e).getTargetProcessor();
             processor.updateEntityTargets(packet.entityTargets);
             processor.updatePlayerTargets(packet.playerTargets);
+            processor.setEntityBlacklist(packet.isBlacklistEntity);
+            processor.setPlayerBlacklist(packet.isBlacklistPlayer);
         }
     }
 
@@ -69,6 +75,8 @@ public class PacketUpdateTargets
                 this.playerTargets[i] = null;
             }
         }
+        this.isBlacklistEntity = buf.readBoolean();
+        this.isBlacklistPlayer = buf.readBoolean();
     }
 
     @Override
@@ -82,5 +90,7 @@ public class PacketUpdateTargets
         for( UUID playerTarget : this.playerTargets ) {
             ByteBufUtils.writeUTF8String(buf, playerTarget.toString());
         }
+        buf.writeBoolean(this.isBlacklistEntity);
+        buf.writeBoolean(this.isBlacklistPlayer);
     }
 }

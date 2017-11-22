@@ -9,9 +9,11 @@ package de.sanandrew.mods.turretmod.client.gui.tcu;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
@@ -65,8 +67,11 @@ public class GuiTcuScreen
         this.drawDefaultBackground();
         this.guiDelegate.drawBackground(this, partialTicks, mouseX, mouseY);
         super.drawScreen(mouseX, mouseY, partialTicks);
-        this.guiDelegate.drawForeground(this, mouseX, mouseY);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(this.posX, this.posY, 0);
         this.helper.drawScreen(this);
+        this.guiDelegate.drawForeground(this, mouseX, mouseY);
+        GlStateManager.popMatrix();
     }
 
     @Override

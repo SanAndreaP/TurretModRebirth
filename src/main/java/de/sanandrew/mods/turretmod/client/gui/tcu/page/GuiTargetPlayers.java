@@ -16,7 +16,6 @@ import java.util.Comparator;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 @SideOnly(Side.CLIENT)
 public class GuiTargetPlayers
@@ -37,8 +36,18 @@ public class GuiTargetPlayers
 
     @Override
     protected void drawEntry(IGuiTcuInst<?> gui, UUID type, int posX, int posY) {
-        int textColor = 0xFFFFFF;
+        int textColor = 0xFF000000;
         gui.getFontRenderer().drawString(PlayerList.INSTANCE.getPlayerName(type), posX, posY, textColor, false);
+    }
+
+    @Override
+    protected boolean isBlacklist(ITurretInst turretInst) {
+        return turretInst.getTargetProcessor().isPlayerBlacklist();
+    }
+
+    @Override
+    protected void setBlacklist(ITurretInst turretInst, boolean isBlacklist) {
+        turretInst.getTargetProcessor().setPlayerBlacklist(isBlacklist);
     }
 
     @Override
