@@ -4,7 +4,7 @@
    * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
    *                http://creativecommons.org/licenses/by-nc-sa/4.0/
    *******************************************************************************************************************/
-package de.sanandrew.mods.turretmod.client.gui.control;
+package de.sanandrew.mods.turretmod.client.gui.tcu.page;
 
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
@@ -12,13 +12,13 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 
-public final class GuiIconButton
+public final class GuiButtonTargetIcon
         extends GuiButton
 {
     private final int textureX;
     private final int textureY;
 
-    public GuiIconButton(int buttonId, int x, int y, int texX, int texY, String buttonText) {
+    public GuiButtonTargetIcon(int buttonId, int x, int y, int texX, int texY, String buttonText) {
         super(buttonId, x, y, 18, 18, buttonText);
         this.textureX = texX;
         this.textureY = texY;
@@ -33,7 +33,6 @@ public final class GuiIconButton
             mc.getTextureManager().bindTexture(Resources.GUI_TCU_TARGETS.getResource());
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             this.drawTexturedModalRect(this.x, this.y, this.textureX, this.textureY + hoverState * this.height, this.width, this.height);
-            this.mouseDragged(mc, mouseX, mouseY);
 
             if( this.hovered ) {
                 drawTabHoveringText(this.displayString, mouseX, mouseY, mc.fontRenderer);
@@ -44,7 +43,7 @@ public final class GuiIconButton
     private void drawTabHoveringText(String text, int mouseX, int mouseY, FontRenderer fontRenderer) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(0.0F, 0.0F, 400.0F);
-
+        GlStateManager.disableRescaleNormal();
         GlStateManager.enableDepth();
 
         int textWidth = fontRenderer.getStringWidth(text);
@@ -71,6 +70,7 @@ public final class GuiIconButton
         fontRenderer.drawStringWithShadow(text, xPos, yPos, -1);
         GlStateManager.enableDepth();
 
+        GlStateManager.enableRescaleNormal();
         GlStateManager.popMatrix();
     }
 }

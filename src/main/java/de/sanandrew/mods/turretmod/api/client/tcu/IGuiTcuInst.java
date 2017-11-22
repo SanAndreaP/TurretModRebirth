@@ -22,9 +22,9 @@ public interface IGuiTcuInst<T extends GuiScreen>
 
     int getPosY();
 
-    int getGuiWidth();
+    int getWidth();
 
-    int getGuiHeight();
+    int getHeight();
 
     boolean hasPermision();
 

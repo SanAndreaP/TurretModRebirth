@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
+import de.sanandrew.mods.turretmod.client.shader.ShaderGrayscale;
 import de.sanandrew.mods.turretmod.client.util.ShaderHelper;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
@@ -43,6 +44,8 @@ import java.util.UUID;
 public class TurretInfoEntryAmmo
         implements ITurretInfoEntry
 {
+    private static final ShaderGrayscale SHADER_GRAYSCALE = new ShaderGrayscale(TextureMap.LOCATION_BLOCKS_TEXTURE);
+
     private int drawHeight;
     private int shownAmmo;
     private List<GuiButtonAmmoItem> ammoBtn;
@@ -160,15 +163,6 @@ public class TurretInfoEntryAmmo
         @Nonnull
         public final ItemStack stack;
 
-        private void drawGrayscale(int shader) {
-            TextureManager texMgr = Minecraft.getMinecraft().renderEngine;
-            int imageUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "image");
-
-            OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB);
-            GlStateManager.bindTexture(texMgr.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).getGlTextureId());
-            ARBShaderObjects.glUniform1iARB(imageUniform, 0);
-        }
-
         public GuiButtonAmmoItem(int id, int x, int y, int index) {
             super(id, x, y, 16, 16, "");
             this.ammoIndex = index;
@@ -187,23 +181,7 @@ public class TurretInfoEntryAmmo
                 if( this.enabled ) {
                     Gui.drawRect(this.x, this.y, this.x + this.width, this.y + this.height, 0x80000000);
 
-                    int texture = 0;
-                    boolean shaders = ShaderHelper.areShadersEnabled();
-
-                    if(shaders) {
-                        OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + TmrConfiguration.glSecondaryTextureUnit);
-                        texture = GlStateManager.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
-                    }
-
-                    ShaderHelper.useShader(ShaderHelper.grayscaleItem, this::drawGrayscale);
-                    TurretInfoEntryAmmo.this.guiInfo.renderStack(this.stack, this.x, this.y, 1.0F);
-                    ShaderHelper.releaseShader();
-
-                    if(shaders) {
-                        OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + TmrConfiguration.glSecondaryTextureUnit);
-                        GlStateManager.bindTexture(texture);
-                        OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB);
-                    }
+                    SHADER_GRAYSCALE.render(() -> TurretInfoEntryAmmo.this.guiInfo.renderStack(this.stack, this.x, this.y, 1.0F));
                 } else {
                     Gui.drawRect(this.x, this.y, this.x + this.width, this.y + this.height, 0x80FFFFFF);
                     TurretInfoEntryAmmo.this.guiInfo.renderStack(this.stack, this.x, this.y, 1.0F);

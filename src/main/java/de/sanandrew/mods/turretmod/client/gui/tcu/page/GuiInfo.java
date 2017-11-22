@@ -49,7 +49,7 @@ public class GuiInfo
 
         this.frAmmoItem = new FontRenderer(gui.getGui().mc.gameSettings, new ResourceLocation("textures/font/ascii.png"), gui.getGui().mc.getTextureManager(), true);
 
-        int center = gui.getPosX() + (gui.getGuiWidth() - 150) / 2;
+        int center = gui.getPosX() + (gui.getWidth() - 150) / 2;
         if( gui.hasPermision() ) {
             this.dismantle = gui.addNewButton(new GuiSlimButton(gui.getNewButtonId(), center, gui.getPosY() + 138, 150, Lang.translate(Lang.TCU_BTN.get("dismantle"))));
             this.toggleActive = gui.addNewButton(new GuiSlimButton(gui.getNewButtonId(), center, gui.getPosY() + 151, 150, Lang.translate(Lang.TCU_BTN.get("toggleActive"))));
@@ -96,10 +96,10 @@ public class GuiInfo
         guiScreen.mc.renderEngine.bindTexture(Resources.GUI_TCU_INFO.getResource());
 
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        guiScreen.drawTexturedModalRect(posX, gui.getPosY(), 0, 0, gui.getGuiWidth(), gui.getGuiHeight());
+        guiScreen.drawTexturedModalRect(posX, gui.getPosY(), 0, 0, gui.getWidth(), gui.getHeight());
 
         if( this.specOwnerHead >= 0 ) {
-            guiScreen.drawTexturedModalRect(posX + 7, gui.getPosY() + 95, gui.getGuiWidth(), this.specOwnerHead * 8, 10, 8);
+            guiScreen.drawTexturedModalRect(posX + 7, gui.getPosY() + 95, gui.getWidth(), this.specOwnerHead * 8, 10, 8);
         }
 
         EntityLiving turretL = turretInst.getEntity();
@@ -128,8 +128,8 @@ public class GuiInfo
 
         if( this.infoStr != null && this.infoTimeShown >= System.currentTimeMillis() - 5000L ) {
             String err = Lang.translate(this.infoStr);
-            fontRenderer.drawSplitString(err, posX + 10 + (gui.getGuiWidth() - 20 - Math.min(gui.getGuiWidth() - 20, fontRenderer.getStringWidth(err))) / 2,
-                                         posY + 178, gui.getGuiWidth() - 25, 0xFFFF0000);
+            fontRenderer.drawSplitString(err, posX + 10 + (gui.getWidth() - 20 - Math.min(gui.getWidth() - 20, fontRenderer.getStringWidth(err))) / 2,
+                                         posY + 178, gui.getWidth() - 25, 0xFFFF0000);
         } else {
             this.infoStr = null;
         }

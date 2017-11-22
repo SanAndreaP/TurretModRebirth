@@ -8,7 +8,6 @@ package de.sanandrew.mods.turretmod.client.gui.tcu.page;
 
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.client.gui.control.GuiIconButton;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.Entity;
@@ -34,11 +33,11 @@ public class GuiTargetCreatures
     public void initGui(IGuiTcuInst<?> gui) {
         super.initGui(gui);
 
-        int x = gui.getPosX() + gui.getGuiWidth();
+        int x = gui.getPosX() + gui.getWidth();
         int y = gui.getPosY() + 190;
-        this.selectMobs = gui.addNewButton(new GuiIconButton(gui.getNewButtonId(), x - 63, y, 202, 36, Lang.translate(Lang.TCU_BTN.get("selectMobs"))));
-        this.selectAnimals = gui.addNewButton(new GuiIconButton(gui.getNewButtonId(), x - 44, y, 220, 36, Lang.translate(Lang.TCU_BTN.get("selectAnimals"))));
-        this.selectOther = gui.addNewButton(new GuiIconButton(gui.getNewButtonId(), x - 25, y, 238, 36, Lang.translate(Lang.TCU_BTN.get("selectOther"))));
+        this.selectMobs = gui.addNewButton(new GuiButtonTargetIcon(gui.getNewButtonId(), x - 63, y, 202, 36, Lang.translate(Lang.TCU_BTN.get("selectMobs"))));
+        this.selectAnimals = gui.addNewButton(new GuiButtonTargetIcon(gui.getNewButtonId(), x - 44, y, 220, 36, Lang.translate(Lang.TCU_BTN.get("selectAnimals"))));
+        this.selectOther = gui.addNewButton(new GuiButtonTargetIcon(gui.getNewButtonId(), x - 25, y, 238, 36, Lang.translate(Lang.TCU_BTN.get("selectOther"))));
     }
 
     @Override

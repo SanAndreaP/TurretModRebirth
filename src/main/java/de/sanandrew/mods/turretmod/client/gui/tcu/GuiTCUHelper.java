@@ -13,7 +13,7 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.client.gui.control.GuiItemTab;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiButtonTcuTab;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
@@ -21,25 +21,27 @@ import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.mutable.MutableInt;
-import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
 
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.Map;
+import java.util.TreeMap;
 
 @SideOnly(Side.CLIENT)
 public final class GuiTCUHelper
 {
+    private static final int MAX_TABS = 5;
+
     static final int X_SIZE = 176;
     static final int Y_SIZE = 236;
 
-    final Map<GuiButton, ResourceLocation> tabs = new HashMap<>();
+    final Map<GuiButton, ResourceLocation> tabs = new TreeMap<>(new ComparatorTabButton());
+
+    private int currTabScroll = 0;
 
     GuiTCUHelper() {}
 
@@ -52,9 +54,10 @@ public final class GuiTCUHelper
         GuiTcuRegistry.GUI_RESOURCES.forEach(location -> {
             GuiTcuRegistry.GuiEntry entry = GuiTcuRegistry.INSTANCE.getGuiEntry(location);
             if( entry != null && entry.showTab(gui) ) {
-                GuiButton btn = gui.addNewButton(new GuiItemTab(gui.getNewButtonId(), gui.getPosX() - 23,
-                                                                gui.getPosY() + 5 + tabPos.getAndIncrement() * 28, entry.getIcon(),
-                                                                Lang.translate(Lang.TCU_PAGE_TITLE.get(location.getResourceDomain(), location.getResourcePath())), false));
+                GuiButton btn = new GuiButtonTcuTab(gui.getNewButtonId(), 0, gui.getPosY() + 213, entry.getIcon(),
+                                                    Lang.translate(Lang.TCU_PAGE_TITLE.get(location.getResourceDomain(), location.getResourcePath())));
+                btn.visible = false;
+                gui.addNewButton(btn);
                 btn.enabled = !location.equals(gui.getRegistryKey());
                 this.tabs.put(btn, location);
             }
@@ -66,9 +69,19 @@ public final class GuiTCUHelper
     }
 
     void updateScreen(Minecraft mc, IGuiTcuInst<?> gui) {
-        if( !gui.hasPermision() || gui.getTurretInst().getEntity().isDead ) {
+        if( !gui.hasPermision() || gui.getTurretInst().getEntity().isDead || gui.getTurretInst().getEntity().getDistanceSqToEntity(mc.player) > 36.0D ) {
             mc.player.closeScreen();
         }
+
+        int maxTabs = Math.min(this.tabs.size(), MAX_TABS);
+        int minXTabs = gui.getPosX() + (gui.getWidth() - maxTabs * 19 + 1) / 2;
+        MutableInt currIndex = new MutableInt(0);
+        this.tabs.forEach((btn, location) -> {
+            int cInd = currIndex.getAndIncrement();
+            btn.visible = cInd >= this.currTabScroll && cInd < this.currTabScroll + MAX_TABS;
+            btn.enabled = !gui.getRegistryKey().equals(location);
+            btn.x = minXTabs + (cInd - this.currTabScroll) * 19;
+        });
     }
 
     void drawScreen(IGuiTcuInst<?> gui) {
@@ -101,4 +114,12 @@ public final class GuiTCUHelper
         }
     }
 
+    private static final class ComparatorTabButton
+            implements Comparator<GuiButton>
+    {
+        @Override
+        public int compare(GuiButton o1, GuiButton o2) {
+            return Integer.compare(o1.id, o2.id);
+        }
+    }
 }

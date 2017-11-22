@@ -133,12 +133,12 @@ public class GuiTcuContainer
     }
 
     @Override
-    public int getGuiWidth() {
+    public int getWidth() {
         return this.xSize;
     }
 
     @Override
-    public int getGuiHeight() {
+    public int getHeight() {
         return this.ySize;
     }
 

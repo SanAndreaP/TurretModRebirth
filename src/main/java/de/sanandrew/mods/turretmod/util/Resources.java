@@ -43,6 +43,7 @@ public enum Resources
     PROJECTILE_FLAME_BLUE("textures/entities/projectiles/flame_blue.png"),
 
     GUI_BUTTONS("textures/gui/buttons.png"),
+    GUI_TCU_BUTTONS("textures/gui/tcu/buttons.png"),
     GUI_TCU_TARGETS("textures/gui/tcu/page_targets.png"),
     GUI_TCU_UPGRADES("textures/gui/tcu/page_upgrades.png"),
     GUI_TCU_INFO("textures/gui/tcu/page_info.png"),
