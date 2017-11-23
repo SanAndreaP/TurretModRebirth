@@ -4,24 +4,28 @@
    * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
    *                http://creativecommons.org/licenses/by-nc-sa/4.0/
    *******************************************************************************************************************/
-package de.sanandrew.mods.turretmod.client.gui.tcu.page;
+package de.sanandrew.mods.turretmod.client.gui.control;
 
+import com.google.common.base.Strings;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.ResourceLocation;
 
-public final class GuiButtonTargetIcon
+public final class GuiButtonIcon
         extends GuiButton
 {
+    private final ResourceLocation texture;
     private final int textureX;
     private final int textureY;
 
-    public GuiButtonTargetIcon(int buttonId, int x, int y, int texX, int texY, String buttonText) {
+    public GuiButtonIcon(int buttonId, int x, int y, int texX, int texY, ResourceLocation texture, String buttonText) {
         super(buttonId, x, y, 18, 18, buttonText);
         this.textureX = texX;
         this.textureY = texY;
+        this.texture = texture;
     }
 
     @Override
@@ -30,11 +34,11 @@ public final class GuiButtonTargetIcon
             this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             int hoverState = this.getHoverState(this.hovered) - 1;
 
-            mc.getTextureManager().bindTexture(Resources.GUI_TCU_TARGETS.getResource());
+            mc.getTextureManager().bindTexture(this.texture);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             this.drawTexturedModalRect(this.x, this.y, this.textureX, this.textureY + hoverState * this.height, this.width, this.height);
 
-            if( this.hovered ) {
+            if( this.hovered && !Strings.isNullOrEmpty(this.displayString) ) {
                 drawTabHoveringText(this.displayString, mouseX, mouseY, mc.fontRenderer);
             }
         }

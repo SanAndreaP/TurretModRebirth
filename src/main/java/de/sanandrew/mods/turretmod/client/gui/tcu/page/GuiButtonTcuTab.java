@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tcu.page;
 
+import com.google.common.base.Strings;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.client.shader.ShaderGrayscale;
@@ -34,7 +35,6 @@ public class GuiButtonTcuTab
 {
 	@Nonnull
 	private final ItemStack renderedItem;
-	private final int textureOffset;
 	private static final ShaderGrayscale SHADER_GRAYSCALE = new ShaderGrayscale(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
 	public GuiButtonTcuTab(int id, int posX, int posY, @Nonnull ItemStack renderedItem, String hoverText) {
@@ -42,16 +42,7 @@ public class GuiButtonTcuTab
 		this.width = 18;
 		this.height = 18;
 		this.renderedItem = renderedItem;
-		this.textureOffset = 0;
 	}
-
-    public GuiButtonTcuTab(int id, int posX, int posY, int textureOffset, String hoverText) {
-        super(id, posX, posY, hoverText);
-        this.width = 18;
-        this.height = 18;
-        this.renderedItem = ItemStackUtils.getEmpty();
-        this.textureOffset = textureOffset;
-    }
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY, float partTicks) {
@@ -62,25 +53,19 @@ public class GuiButtonTcuTab
             mc.renderEngine.bindTexture(Resources.GUI_TCU_BUTTONS.getResource());
             this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             int hoverState = this.getHoverState(this.hovered);
-            if( ItemStackUtils.isValid(renderedItem) ) {
-                if( hoverState != 1 ) {
-                    this.drawTexturedModalRect(this.x, this.y, 0, 0, this.width, this.height);
-                }
-            } else {
-                this.drawTexturedModalRect(this.x, this.y, this.textureOffset, hoverState * 18, this.width, this.height);
+            if( hoverState != 1 ) {
+                this.drawTexturedModalRect(this.x, this.y, 0, 0, this.width, this.height);
             }
             GlStateManager.disableBlend();
 
-            if( ItemStackUtils.isValid(renderedItem) ) {
-                GlStateManager.enableDepth();
-                if( hoverState != 0 ) {
-                    SHADER_GRAYSCALE.render(() -> RenderUtils.renderStackInGui(this.renderedItem, this.x + 1, this.y + 1, 1.0F), 1.0F);
-                } else {
-                    RenderUtils.renderStackInGui(this.renderedItem, this.x + 1, this.y + 1, 1.0F);
-                }
+            GlStateManager.enableDepth();
+            if( hoverState != 0 ) {
+                SHADER_GRAYSCALE.render(() -> RenderUtils.renderStackInGui(this.renderedItem, this.x + 1, this.y + 1, 1.0F), 1.0F);
+            } else {
+                RenderUtils.renderStackInGui(this.renderedItem, this.x + 1, this.y + 1, 1.0F);
             }
 
-            if( this.hovered ) {
+            if( this.hovered && !Strings.isNullOrEmpty(this.displayString) ) {
                 this.drawTabHoveringText(this.displayString, mouseX, mouseY, mc.fontRenderer);
             }
         }

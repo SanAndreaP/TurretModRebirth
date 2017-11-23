@@ -13,15 +13,18 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.client.gui.control.GuiButtonIcon;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiButtonTcuTab;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
+import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -40,8 +43,10 @@ public final class GuiTCUHelper
     static final int Y_SIZE = 236;
 
     final Map<GuiButton, ResourceLocation> tabs = new TreeMap<>(new ComparatorTabButton());
+    GuiButton tabNavLeft;
+    GuiButton tabNavRight;
 
-    private int currTabScroll = 0;
+    private static int currTabScroll = 0;
 
     GuiTCUHelper() {}
 
@@ -50,18 +55,27 @@ public final class GuiTCUHelper
     @SuppressWarnings("unchecked")
     void initGui(IGuiTcuInst<?> gui) {
         this.tabs.clear();
-        MutableInt tabPos = new MutableInt(0);
+
+        MutableInt currIndex = new MutableInt(0);
         GuiTcuRegistry.GUI_RESOURCES.forEach(location -> {
             GuiTcuRegistry.GuiEntry entry = GuiTcuRegistry.INSTANCE.getGuiEntry(location);
             if( entry != null && entry.showTab(gui) ) {
                 GuiButton btn = new GuiButtonTcuTab(gui.getNewButtonId(), 0, gui.getPosY() + 213, entry.getIcon(),
                                                     Lang.translate(Lang.TCU_PAGE_TITLE.get(location.getResourceDomain(), location.getResourcePath())));
                 btn.visible = false;
-                gui.addNewButton(btn);
                 btn.enabled = !location.equals(gui.getRegistryKey());
+                if( btn.enabled && (currIndex.getValue() < currTabScroll || currIndex.getValue() >= currTabScroll + MAX_TABS) ) {
+                    currTabScroll = Math.min(Math.max(currIndex.getValue() - MathHelper.floor(MAX_TABS / 2.0F), 0), this.tabs.size() - MAX_TABS + 1);
+                }
+                gui.addNewButton(btn);
                 this.tabs.put(btn, location);
+                currIndex.increment();
             }
         });
+        this.tabNavLeft = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), 0, gui.getPosY() + 213, 18, 0, Resources.GUI_TCU_BUTTONS.getResource(), ""));
+        this.tabNavLeft.visible = false;
+        this.tabNavRight = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), 0, gui.getPosY() + 213, 36, 0, Resources.GUI_TCU_BUTTONS.getResource(), ""));
+        this.tabNavRight.visible = false;
     }
 
     boolean hasPermission(Minecraft mc, ITurretInst turretInst) {
@@ -78,10 +92,14 @@ public final class GuiTCUHelper
         MutableInt currIndex = new MutableInt(0);
         this.tabs.forEach((btn, location) -> {
             int cInd = currIndex.getAndIncrement();
-            btn.visible = cInd >= this.currTabScroll && cInd < this.currTabScroll + MAX_TABS;
+            btn.visible = cInd >= currTabScroll && cInd < currTabScroll + MAX_TABS;
             btn.enabled = !gui.getRegistryKey().equals(location);
-            btn.x = minXTabs + (cInd - this.currTabScroll) * 19;
+            btn.x = minXTabs + (cInd - currTabScroll) * 19;
         });
+        this.tabNavLeft.x = minXTabs - 19;
+        this.tabNavRight.x = minXTabs + maxTabs * 19;
+        this.tabNavLeft.visible = currTabScroll > 0;
+        this.tabNavRight.visible = currTabScroll + MAX_TABS < this.tabs.size();
     }
 
     void drawScreen(IGuiTcuInst<?> gui) {
@@ -111,6 +129,10 @@ public final class GuiTCUHelper
         ResourceLocation location = this.tabs.get(button);
         if( location != null ) {
             TurretModRebirth.proxy.openGui(gui.getGui().mc.player, EnumGui.GUI_TCU, gui.getTurretInst().getEntity().getEntityId(), GuiTcuRegistry.GUI_RESOURCES.indexOf(location), 0);
+        } else if( button == this.tabNavLeft && currTabScroll > 0 ) {
+            currTabScroll--;
+        } else if( button == this.tabNavRight && currTabScroll < this.tabs.size() - MAX_TABS ) {
+            currTabScroll++;
         }
     }
 
