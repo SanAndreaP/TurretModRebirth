@@ -74,7 +74,7 @@ public class GuiButtonTcuTab
             if( ItemStackUtils.isValid(renderedItem) ) {
                 GlStateManager.enableDepth();
                 if( hoverState != 0 ) {
-                    SHADER_GRAYSCALE.render(() -> RenderUtils.renderStackInGui(this.renderedItem, this.x + 1, this.y + 1, 1.0F));
+                    SHADER_GRAYSCALE.render(() -> RenderUtils.renderStackInGui(this.renderedItem, this.x + 1, this.y + 1, 1.0F), 1.0F);
                 } else {
                     RenderUtils.renderStackInGui(this.renderedItem, this.x + 1, this.y + 1, 1.0F);
                 }

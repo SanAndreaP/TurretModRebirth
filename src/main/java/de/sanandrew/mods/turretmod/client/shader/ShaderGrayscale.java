@@ -28,16 +28,18 @@ public class ShaderGrayscale
         this.texture = texture;
     }
 
-    private void drawGrayscale(int shader) {
+    private void drawGrayscale(int shader, float brightness) {
         TextureManager texMgr = Minecraft.getMinecraft().renderEngine;
         int imageUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "image");
+        int brightnessUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "brightness");
 
         OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB);
         GlStateManager.bindTexture(texMgr.getTexture(this.texture).getGlTextureId());
         ARBShaderObjects.glUniform1iARB(imageUniform, 0);
+        ARBShaderObjects.glUniform1fARB(brightnessUniform, brightness);
     }
 
-    public void render(Procedure renderer) {
+    public void render(Procedure renderer, float brightness) {
         int texture = 0;
         boolean shaders = ShaderHelper.areShadersEnabled();
 
@@ -46,7 +48,7 @@ public class ShaderGrayscale
             texture = GlStateManager.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
         }
 
-        ShaderHelper.useShader(ShaderHelper.grayscaleItem, this::drawGrayscale);
+        ShaderHelper.useShader(ShaderHelper.grayscaleItem, shader -> this.drawGrayscale(shader, brightness));
         renderer.work();
         ShaderHelper.releaseShader();
 

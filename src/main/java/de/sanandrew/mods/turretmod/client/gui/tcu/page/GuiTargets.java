@@ -107,16 +107,22 @@ public abstract class GuiTargets<T>
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
         GuiUtils.glScissor(scrollAreaX, scrollAreaY, scrollAreaWidth, scrollAreaHeight);
 
-        int offsetY = Math.round(-this.scroll * (this.filteredTargets.size() - MAX_ITEMS)) * (gui.getFontRenderer().FONT_HEIGHT + 1);
+        int currScrollInd = Math.round(-this.scroll * (this.filteredTargets.size() - MAX_ITEMS));
+        int offsetY = currScrollInd * (gui.getFontRenderer().FONT_HEIGHT + 1);
         int btnMinOffY = scrollAreaY + 1;
         int btnMaxOffY = btnMinOffY + MAX_ITEMS * (gui.getFontRenderer().FONT_HEIGHT + 1);
         boolean targetListChanged = false;
+        int currInd = 0;
 
         for( Map.Entry<T, Boolean> entry : this.filteredTargets.entrySet() ) {
             int btnTexOffY = 12 + (entry.getValue() ? 16 : 0);
 
+            if( currInd++ % 2 == 1 ) {
+                gui.drawGradient(scrollAreaX + 1, scrollAreaY + 1 + offsetY, scrollAreaX + scrollAreaWidth - 2, scrollAreaY + 9 + offsetY, 0x10000000, 0x10000000);
+            }
+
             if( mouseY >= btnMinOffY && mouseY < btnMaxOffY ) {
-                if( mouseX >= scrollAreaX + 1 && mouseX < scrollAreaX + 9 && mouseY >= scrollAreaY + 1 + offsetY && mouseY < scrollAreaY + 9 + offsetY ) {
+                if( mouseX >= scrollAreaX + 1 && mouseX < scrollAreaX + scrollAreaWidth - 2 && mouseY >= scrollAreaY + 1 + offsetY && mouseY < scrollAreaY + 9 + offsetY ) {
                     btnTexOffY += 8;
                     if( isLmbDown && !this.prevIsLmbDown ) {
                         this.updateEntry(gui.getTurretInst(), entry.getKey(), !entry.getValue());
@@ -129,7 +135,7 @@ public abstract class GuiTargets<T>
             guiInst.mc.renderEngine.bindTexture(Resources.GUI_TCU_TARGETS.getResource());
             guiInst.drawTexturedModalRect(scrollAreaX + 1, scrollAreaY + 1 + offsetY, 176, btnTexOffY, 8, 8);
 
-            this.drawEntry(gui, entry.getKey(), scrollAreaX + 10, scrollAreaY + 2 + offsetY);
+            this.drawEntry(gui, entry.getKey(), scrollAreaX + 10, scrollAreaY + 1 + offsetY);
 
             offsetY += gui.getFontRenderer().FONT_HEIGHT + 1;
         }

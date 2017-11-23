@@ -181,7 +181,7 @@ public class TurretInfoEntryAmmo
                 if( this.enabled ) {
                     Gui.drawRect(this.x, this.y, this.x + this.width, this.y + this.height, 0x80000000);
 
-                    SHADER_GRAYSCALE.render(() -> TurretInfoEntryAmmo.this.guiInfo.renderStack(this.stack, this.x, this.y, 1.0F));
+                    SHADER_GRAYSCALE.render(() -> TurretInfoEntryAmmo.this.guiInfo.renderStack(this.stack, this.x, this.y, 1.0F), 0.75F);
                 } else {
                     Gui.drawRect(this.x, this.y, this.x + this.width, this.y + this.height, 0x80FFFFFF);
                     TurretInfoEntryAmmo.this.guiInfo.renderStack(this.stack, this.x, this.y, 1.0F);
