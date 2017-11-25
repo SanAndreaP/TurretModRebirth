@@ -29,7 +29,7 @@ public class GuiCameras
         super.drawScreen(mouseX, mouseY, partialTicks);
 
         if( e instanceof ITurretInst ) {
-            RenderTurretCam.bindTurretCamTx((ITurretInst) e);
+            RenderTurretCam.bindTurretCamTx((ITurretInst) e, 64);
             GlStateManager.pushMatrix();
             GlStateManager.translate(128, 128, 0);
             GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);

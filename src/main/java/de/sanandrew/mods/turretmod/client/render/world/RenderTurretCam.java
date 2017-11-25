@@ -6,8 +6,11 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.render.world;
 
+import de.sanandrew.mods.sanlib.lib.XorShiftRandom;
+import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.event.RenderEventHandler;
+import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
@@ -24,15 +27,15 @@ import java.util.WeakHashMap;
 @SideOnly(Side.CLIENT)
 public class RenderTurretCam
 {
-    private static final int QUALITY = 64;
     private static final long MAX_UPDATE_TIME_NS = 1_000_000_000;
     private static final WeakHashMap<ITurretInst, CamEntry> TURRETS = new WeakHashMap<>();
     private static long renderEndNanoTime;
+    private static final XorShiftRandom RNG = new XorShiftRandom();
 
-    public static void bindTurretCamTx(ITurretInst turret) {
+    public static void bindTurretCamTx(ITurretInst turret, int quality) {
         CamEntry entry = TURRETS.get(turret);
         if( entry == null ) {
-            entry =  new CamEntry();
+            entry =  new CamEntry(quality);
             TURRETS.put(turret, entry);
         } else {
             entry.active = true;
@@ -40,6 +43,25 @@ public class RenderTurretCam
 
         if( entry.active ) {
             GlStateManager.bindTexture(entry.textureId);
+        }
+    }
+
+    public static void drawTurretCam(ITurretInst turretInst, int quality, int x, int y, int width, int height) {
+        if( turretInst.isActive() ) {
+            RenderTurretCam.bindTurretCamTx(turretInst, quality);
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(x, y, 0);
+            GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+            GlStateManager.scale(1.0F / 256.0F * width, 1.0F / 256.0F * height, 1.0F);
+            GuiUtils.drawTexturedModalRect(-256, -256, 0.0F, 0, 0, 256, 256);
+            GlStateManager.popMatrix();
+        } else {
+            Minecraft.getMinecraft().renderEngine.bindTexture(Resources.GUI_TCU_CAM_NA.getResource());
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(x, y, 0);
+            GlStateManager.scale(1.0F / 256.0F * width, 4.0F / 256.0F * height, 1.0F);
+            GuiUtils.drawTexturedModalRect(0, 0, 0.0F, 0, 64 * RNG.randomInt(3), 256, 64);
+            GlStateManager.popMatrix();
         }
     }
 
@@ -86,8 +108,8 @@ public class RenderTurretCam
                         settings.thirdPersonView = 0;
                         settings.hideGUI = true;
                         settings.mipmapLevels = 0;
-                        mc.displayWidth = QUALITY;
-                        mc.displayHeight = QUALITY;
+                        mc.displayWidth = camEntry.quality;
+                        mc.displayHeight = camEntry.quality;
 
                         RenderEventHandler.renderPlayer = true;
                         RenderEventHandler.renderEntity = mc.player;
@@ -111,7 +133,7 @@ public class RenderTurretCam
 
                         mc.entityRenderer.renderWorld(renderTickTime, System.nanoTime() + timeDeltaFps);
                         GlStateManager.bindTexture(camEntry.textureId);
-                        GL11.glCopyTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, 0, 0, QUALITY, QUALITY, 0);
+                        GL11.glCopyTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, 0, 0, camEntry.quality, camEntry.quality, 0);
 
                         renderEndNanoTime = System.nanoTime();
 
@@ -163,16 +185,18 @@ public class RenderTurretCam
 
     private static class CamEntry
     {
+        final int quality;
         final int textureId;
         boolean active;
         long lastUpdTime;
 
-        protected CamEntry() {
+        protected CamEntry(int quality) {
             this.textureId = GL11.glGenTextures();
             this.active = true;
             this.lastUpdTime = 0;
+            this.quality = quality;
             GlStateManager.bindTexture(this.textureId);
-            GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, QUALITY, QUALITY, 0, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, BufferUtils.createByteBuffer(3 * QUALITY * QUALITY));
+            GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, quality, quality, 0, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, BufferUtils.createByteBuffer(3 * quality * quality));
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
         }
