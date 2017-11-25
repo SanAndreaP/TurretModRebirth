@@ -360,6 +360,16 @@ public final class TargetProcessor
         boolean changed = false;
         EntityLiving turretL = this.turret.getEntity();
 
+        if( !this.turret.isActive() ) {
+            if( this.entityToAttack != null || this.entityToAttackUUID != null ) {
+                this.resetInitShootTicks();
+                this.entityToAttack = null;
+                this.entityToAttackUUID = null;
+                this.turret.updateState();
+            }
+            return;
+        }
+
         if( this.shootTicks > 0 ) {
             this.shootTicks--;
         }

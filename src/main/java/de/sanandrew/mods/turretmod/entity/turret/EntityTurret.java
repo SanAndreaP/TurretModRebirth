@@ -250,10 +250,11 @@ public class EntityTurret
 
         this.upgProc.onTick();
 
+        if( !this.world.isRemote ) {
+            this.targetProc.onTick();
+        }
+
         if( this.isActive() ) {
-            if( !this.world.isRemote ) {
-                this.targetProc.onTick();
-            }
 
             if( this.targetProc.hasTarget() ) {
                 this.faceEntity(this.targetProc.getTarget(), 10.0F, this.getVerticalFaceSpeed());
