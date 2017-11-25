@@ -65,6 +65,7 @@ public final class RenderTurretLaser
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
+        boolean prevLightingState = GL11.glGetBoolean(GL11.GL_LIGHTING);
 
         GlStateManager.pushMatrix();
         GlStateManager.disableLighting();
@@ -117,7 +118,9 @@ public final class RenderTurretLaser
         GlStateManager.disableBlend();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
-        GlStateManager.enableLighting();
+        if( prevLightingState ) {
+            GlStateManager.enableLighting();
+        }
         GlStateManager.popMatrix();
     }
 }
