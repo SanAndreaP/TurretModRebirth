@@ -6,6 +6,7 @@ import de.sanandrew.mods.turretmod.api.client.tcu.ILabelRegistry;
 import de.sanandrew.mods.turretmod.api.client.turret.ITurretRenderRegistry;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoCategoryRegistry;
 import de.sanandrew.mods.turretmod.api.repairkit.IRepairKitRegistry;
+import de.sanandrew.mods.turretmod.api.turret.IGuiTcuRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -27,6 +28,8 @@ public interface ITmrPlugin
 
     default void postInit() { }
 
+    default void registerTcuEntries(IGuiTcuRegistry registry) { }
+
     @SideOnly(Side.CLIENT)
     default void registerTurretInfoCategories(ITurretInfoCategoryRegistry registry) { }
 
@@ -35,4 +38,7 @@ public interface ITmrPlugin
 
     @SideOnly(Side.CLIENT)
     default void registerTcuLabelElements(ILabelRegistry registry) { }
+
+    @SideOnly(Side.CLIENT)
+    default void registerTcuGuis(IGuiTcuRegistry registry) { }
 }

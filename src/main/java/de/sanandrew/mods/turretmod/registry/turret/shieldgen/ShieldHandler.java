@@ -56,7 +56,7 @@ public class ShieldHandler
 
         if( processor.canShoot() ) {
             if( shield != null && shield.getValue() > 0.0F ) {
-                for( Entity target : processor.getValidTargetList(turretL) ) {
+                for( Entity target : processor.getValidTargetList() ) {
                     double dX = turretInst.getEntity().posX - target.posX;
                     double dY = turretInst.getEntity().posY - target.posY;
                     double dZ = turretInst.getEntity().posZ - target.posZ;

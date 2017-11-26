@@ -19,7 +19,6 @@ import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.util.CommonProxy;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
@@ -164,7 +163,7 @@ public final class AmmunitionRegistry
     @Override
     @SuppressWarnings("unused")
     public boolean registerAmmoType(IAmmunition<?> type) {
-        return registerAmmoType(type, false);
+        return registerAmmoType(type, null);
     }
 
     @Override
@@ -181,7 +180,7 @@ public final class AmmunitionRegistry
         return stack;
     }
 
-    boolean registerAmmoType(IAmmunition<?> type, boolean registerEntity) {
+    boolean registerAmmoType(IAmmunition<?> type, Integer registerEntityId) {
         if( type == null ) {
             TmrConstants.LOG.log(Level.ERROR, "Cannot register NULL as Ammo-Type!", new InvalidParameterException());
             return false;
@@ -211,9 +210,9 @@ public final class AmmunitionRegistry
         this.ammoTypesFromTurret.put(type.getTurret(), type);
         this.ammoTypes.add(type);
 
-        if( registerEntity ) {
+        if( registerEntityId != null ) {
             String name = "turret_proj_".concat(type.getName());
-            EntityRegistry.registerModEntity(/*new ResourceLocation(TmrConstants.ID, name), */type.getEntityClass(), TmrConstants.ID + '.' + name, CommonProxy.entityCount++, TurretModRebirth.instance, 128, 1, true);
+            EntityRegistry.registerModEntity(type.getEntityClass(), TmrConstants.ID + '.' + name, registerEntityId, TurretModRebirth.instance, 128, 1, true);
         }
 
         UUID grpId = type.getGroupId();

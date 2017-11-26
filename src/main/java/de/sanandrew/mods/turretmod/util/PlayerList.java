@@ -48,7 +48,7 @@ public class PlayerList
 
     public String getPlayerName(UUID playerUUID) {
         if( playerUUID.equals(UuidUtils.EMPTY_UUID) ) {
-            return "[all players]";
+            return "[deprecated]";
         }
 
         String s = this.playerMap.get(playerUUID);
@@ -62,7 +62,6 @@ public class PlayerList
     public Map<UUID, Boolean> getDefaultPlayerList() {
         Map<UUID, Boolean> players = new HashMap<>(this.playerMap.size());
 
-        players.put(UuidUtils.EMPTY_UUID, false);
         for( UUID playerUUID : this.playerMap.keySet() ) {
             players.put(playerUUID, false);
         }

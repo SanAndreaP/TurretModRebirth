@@ -371,7 +371,9 @@ public final class UpgradeProcessor
     public void syncUpgrade(UUID id) {
         EntityLiving turretL = this.turret.getEntity();
 
-        PacketRegistry.sendToAllAround(new PacketSyncUpgradeInst(this.turret, id), turretL.world.provider.getDimension(), turretL.posX, turretL.posY, turretL.posZ, 64.0D);
+        if( !turretL.world.isRemote ) {
+            PacketRegistry.sendToAllAround(new PacketSyncUpgradeInst(this.turret, id), turretL.world.provider.getDimension(), turretL.posX, turretL.posY, turretL.posZ, 64.0D);
+        }
     }
 
     private void callbackWriteUpgStack(ItemStack upgStack, NBTTagCompound nbt) {

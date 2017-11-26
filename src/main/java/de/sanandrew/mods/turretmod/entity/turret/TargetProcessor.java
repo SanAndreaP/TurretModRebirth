@@ -63,6 +63,8 @@ public final class TargetProcessor
     protected Entity entityToAttack;
     protected UUID entityToAttackUUID;
     protected boolean isShootingClt;
+    protected boolean isBlacklistEntity = false;
+    protected boolean isBlacklistPlayer = false;
 
     protected long processTicks = 0;
 
@@ -356,6 +358,16 @@ public final class TargetProcessor
         boolean changed = false;
         EntityLiving turretL = this.turret.getEntity();
 
+        if( !this.turret.isActive() ) {
+            if( this.entityToAttack != null || this.entityToAttackUUID != null ) {
+                this.resetInitShootTicks();
+                this.entityToAttack = null;
+                this.entityToAttackUUID = null;
+                this.turret.updateState();
+            }
+            return;
+        }
+
         if( this.shootTicks > 0 ) {
             this.shootTicks--;
         }
@@ -371,7 +383,7 @@ public final class TargetProcessor
                 return;
             }
             if( this.entityToAttack == null ) {
-                for( Entity entityObj : getValidTargetList(turretL, aabb) ) {
+                for( Entity entityObj : getValidTargetList(aabb) ) {
                     EntityLivingBase livingBase = (EntityLivingBase) entityObj;
                     if( this.checkTargetListeners(livingBase) ) {
                         this.entityToAttack = livingBase;
@@ -405,25 +417,50 @@ public final class TargetProcessor
     }
 
     @Override
+    public boolean isEntityBlacklist() {
+        return this.isBlacklistEntity;
+    }
+
+    @Override
+    public boolean isPlayerBlacklist() {
+        return this.isBlacklistPlayer;
+    }
+
+    @Override
+    public void setEntityBlacklist(boolean isBlacklist) {
+        this.isBlacklistEntity = isBlacklist;
+    }
+
+    @Override
+    public void setPlayerBlacklist(boolean isBlacklist) {
+        this.isBlacklistPlayer = isBlacklist;
+    }
+
+    @Override
     public boolean isEntityValidTarget(Entity entity) {
         return this.isEntityValidTarget(entity, this.getAdjustedRange(true));
     }
 
     @Override
-    public List<Entity> getValidTargetList(EntityLiving turretEntity) {
-        return this.getValidTargetList(turretEntity, this.getAdjustedRange(true));
+    public List<Entity> getValidTargetList() {
+        return this.getValidTargetList(this.getAdjustedRange(true));
     }
 
     @Override
     public boolean isEntityTargeted(Entity entity) {
-        return Boolean.TRUE.equals(this.entityTargetList.get(entity.getClass()))
-                    || (entity instanceof EntityPlayer
-                        && (Boolean.TRUE.equals(this.playerTargetList.get(entity.getUniqueID()))
-                            || (Boolean.TRUE.equals(this.playerTargetList.get(UuidUtils.EMPTY_UUID)))));
+        Boolean creatureSetting = this.entityTargetList.get(entity.getClass());
+        if( creatureSetting != null ) {
+            return this.isBlacklistEntity ^ creatureSetting;
+        } else if( entity instanceof EntityPlayer ) {
+            boolean b = (Boolean.TRUE.equals(this.playerTargetList.get(entity.getUniqueID())) || (Boolean.TRUE.equals(this.playerTargetList.get(UuidUtils.EMPTY_UUID))));
+            return this.isBlacklistPlayer ^ b;
+        }
+
+        return false;
     }
 
-    private List<Entity> getValidTargetList(EntityLiving turretEntity, AxisAlignedBB aabb) {
-        return turretEntity.world.getEntitiesInAABBexcluding(turretEntity, aabb, entity -> this.isEntityValidTarget(entity, aabb));
+    private List<Entity> getValidTargetList(AxisAlignedBB aabb) {
+        return turret.getEntity().world.getEntitiesInAABBexcluding(turret.getEntity(), aabb, entity -> this.isEntityValidTarget(entity, aabb));
     }
 
     private boolean isEntityValidTarget(Entity entity, AxisAlignedBB aabb) {
@@ -464,6 +501,9 @@ public final class TargetProcessor
             nbt.setString("targetUUID", this.entityToAttackUUID.toString());
         }
 
+        nbt.setBoolean("entityBlacklist", this.isBlacklistEntity);
+        nbt.setBoolean("playerBlacklist", this.isBlacklistPlayer);
+
         NBTTagList entityTargets = new NBTTagList();
         for( Class cls : this.getEnabledEntityTargets() ) {
             entityTargets.appendTag(new NBTTagString(cls.getName()));
@@ -487,6 +527,9 @@ public final class TargetProcessor
             this.entityToAttackUUID = UUID.fromString(nbt.getString("targetUUID"));
         }
 
+        this.isBlacklistEntity = nbt.getBoolean("entityBlacklist");
+        this.isBlacklistPlayer = nbt.getBoolean("playerBlacklist");
+
         List<Class<? extends Entity>> entityTgt = new ArrayList<>();
         NBTTagList list = nbt.getTagList("entityTargets", Constants.NBT.TAG_STRING);
         for( int i = 0; i < list.tagCount(); i++ ) {
@@ -501,7 +544,12 @@ public final class TargetProcessor
         list = nbt.getTagList("playerTargets", Constants.NBT.TAG_STRING);
         for( int i = 0; i < list.tagCount(); i++ ) {
             try {
-                playerTgt.add(UUID.fromString(list.getStringTagAt(i)));
+                UUID id = UUID.fromString(list.getStringTagAt(i));
+                if( id.equals(UuidUtils.EMPTY_UUID) ) {
+                    this.isBlacklistPlayer = true;
+                } else {
+                    playerTgt.add(id);
+                }
             } catch( IllegalArgumentException ignored ) { }
         }
         this.updatePlayerTargets(playerTgt.toArray(new UUID[playerTgt.size()]));

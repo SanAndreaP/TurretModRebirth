@@ -29,8 +29,9 @@ import net.minecraft.util.math.BlockPos;
 public class PacketPlayerTurretAction
         extends AbstractMessage<PacketPlayerTurretAction>
 {
-    public static final byte TOGGLE_ACTIVE = 0;
+    public static final byte SET_ACTIVE = 0;
     public static final byte DISMANTLE = 1;
+    public static final byte SET_DEACTIVE = 2;
 
     private int turretId;
     private byte actionId;
@@ -59,8 +60,12 @@ public class PacketPlayerTurretAction
                 case DISMANTLE:
                     tryDismantle(player, turretInst);
                     break;
-                case TOGGLE_ACTIVE:
-                    turretInst.setActive(!turretInst.isActive());
+                case SET_ACTIVE:
+                    turretInst.setActive(true);
+                    break;
+                case SET_DEACTIVE:
+                    turretInst.setActive(false);
+                    break;
             }
         }
     }
@@ -74,19 +79,12 @@ public class PacketPlayerTurretAction
                 PacketRegistry.sendToServer(new PacketPlayerTurretAction(turretInst, PacketPlayerTurretAction.DISMANTLE));
                 return true;
             } else {
-//                turret.checkBlock = false;
-//                turret.posY += 2048.0F;
-//                turret.setPosition(turret.posX, turret.posY, turret.posZ);
-//                turret.world.loadedEntityList.remove(turret);
-                int y = turretInst.isUpsideDown() ? 3 : 0;
+//                int y = turretInst.isUpsideDown() ? 3 : 0;
                 BlockPos chestPos = turretL.getPosition();
-                if( turretL.world.setBlockState(chestPos, Blocks.CHEST.getDefaultState(), 3) )
-                {
+                if( turretL.world.setBlockState(chestPos, Blocks.CHEST.getDefaultState(), 3) ) {
                     TileEntity te = turretL.world.getTileEntity(chestPos);
 
                     if( te instanceof TileEntityChest ) {
-//                        turret.world.loadedEntityList.add(turret);
-
                         TileEntityChest chest = (TileEntityChest) te;
                         chest.setInventorySlotContents(0, TurretRegistry.INSTANCE.getTurretItem(turretInst));
                         ((TargetProcessor) turretInst.getTargetProcessor()).putAmmoInInventory(chest);
@@ -104,10 +102,6 @@ public class PacketPlayerTurretAction
                         return true;
                     }
                 }
-//                this.checkBlock = true;
-//                this.posY -= 2048.0F;
-//                this.setPosition(this.posX, this.posY, this.posZ);
-//                turret.world.loadedEntityList.add(turret);
             }
         }
 
