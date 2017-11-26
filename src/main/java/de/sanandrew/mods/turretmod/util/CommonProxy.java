@@ -16,16 +16,15 @@ import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.event.CollisionEventHandler;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
 import de.sanandrew.mods.turretmod.event.DamageEventHandler;
 import de.sanandrew.mods.turretmod.event.ExplosionEventHandler;
 import de.sanandrew.mods.turretmod.inventory.ContainerAssemblyFilter;
 import de.sanandrew.mods.turretmod.inventory.ContainerElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
-import de.sanandrew.mods.turretmod.inventory.ContainerTurretUpgrades;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketOpenGui;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
+import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
 import net.minecraft.entity.Entity;
@@ -48,19 +47,18 @@ import org.apache.logging.log4j.Level;
 public class CommonProxy
         implements IGuiHandler
 {
-    public static int entityCount = 0;
-
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(PlayerList.INSTANCE);
         MinecraftForge.EVENT_BUS.register(new DamageEventHandler());
         MinecraftForge.EVENT_BUS.register(new ExplosionEventHandler());
         MinecraftForge.EVENT_BUS.register(new CollisionEventHandler());
 
-        EntityRegistry.registerModEntity(new ResourceLocation(TmrConstants.ID, "turret"), EntityTurret.class, TmrConstants.ID + ".turret", CommonProxy.entityCount++, TurretModRebirth.instance, 128, 1, false);
-
+        EntityRegistry.registerModEntity(new ResourceLocation(TmrConstants.ID, "turret"), EntityTurret.class, TmrConstants.ID + ".turret", 0, TurretModRebirth.instance, 128, 1, false);
     }
 
-    public void init(FMLInitializationEvent event) { }
+    public void init(FMLInitializationEvent event) {
+        TurretModRebirth.PLUGINS.forEach(plugin -> plugin.registerTcuEntries(GuiTcuRegistry.INSTANCE));
+    }
 
     public void postInit(FMLPostInitializationEvent event) { }
 
@@ -69,13 +67,12 @@ public class CommonProxy
         if( id >= 0 && id < EnumGui.VALUES.length ) {
             TileEntity te;
             switch( EnumGui.VALUES[id] ) {
-                case GUI_TCU_UPGRADES: {
+                case GUI_TCU:
                     Entity e = world.getEntityByID(x);
-                    if( e instanceof EntityTurret) {
-                        return new ContainerTurretUpgrades(player.inventory, ((UpgradeProcessor) ((EntityTurret) e).getUpgradeProcessor()));
+                    if( e instanceof ITurretInst ) {
+                        return GuiTcuRegistry.INSTANCE.openContainer(y, player, (ITurretInst) e);
                     }
                     break;
-                }
                 case GUI_TASSEMBLY_MAN:
                     te = world.getTileEntity(new BlockPos(x, y, z));
                     if( te instanceof TileEntityTurretAssembly ) {

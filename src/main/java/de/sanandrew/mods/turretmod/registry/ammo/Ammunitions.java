@@ -36,25 +36,25 @@ public final class Ammunitions
     public static void initialize(IAmmunitionRegistry registry) {
         AmmunitionRegistry castRegistry = (AmmunitionRegistry) registry;
 
-        castRegistry.registerAmmoType(new TurretAmmoArrow(false), true);
-        castRegistry.registerAmmoType(new TurretAmmoArrow(true), true);
-        castRegistry.registerAmmoType(new TurretAmmoShotgunShell(false), true);
-        castRegistry.registerAmmoType(new TurretAmmoShotgunShell(true), true);
-        castRegistry.registerAmmoType(new TurretAmmoBullet(false), true);
-        castRegistry.registerAmmoType(new TurretAmmoBullet(true), true);
-        castRegistry.registerAmmoType(new TurretAmmoCryoCell.SingleMK1(), true);
-        castRegistry.registerAmmoType(new TurretAmmoCryoCell.MultiMK1(), true);
-        castRegistry.registerAmmoType(new TurretAmmoCryoCell.SingleMK2(), true);
-        castRegistry.registerAmmoType(new TurretAmmoCryoCell.MultiMK2(), true);
-        castRegistry.registerAmmoType(new TurretAmmoCryoCell.SingleMK3(), true);
-        castRegistry.registerAmmoType(new TurretAmmoCryoCell.MultiMK3(), true);
-        castRegistry.registerAmmoType(new TurretAmmoMinigunShell(false), true);
-        castRegistry.registerAmmoType(new TurretAmmoMinigunShell(true), true);
+        castRegistry.registerAmmoType(new TurretAmmoArrow(false), 1);
+        castRegistry.registerAmmoType(new TurretAmmoArrow(true), 2);
+        castRegistry.registerAmmoType(new TurretAmmoShotgunShell(false), 3);
+        castRegistry.registerAmmoType(new TurretAmmoShotgunShell(true), 4);
+        castRegistry.registerAmmoType(new TurretAmmoBullet(false), 5);
+        castRegistry.registerAmmoType(new TurretAmmoBullet(true), 6);
+        castRegistry.registerAmmoType(new TurretAmmoCryoCell.SingleMK1(), 7);
+        castRegistry.registerAmmoType(new TurretAmmoCryoCell.MultiMK1(), 8);
+        castRegistry.registerAmmoType(new TurretAmmoCryoCell.SingleMK2(), 9);
+        castRegistry.registerAmmoType(new TurretAmmoCryoCell.MultiMK2(), 10);
+        castRegistry.registerAmmoType(new TurretAmmoCryoCell.SingleMK3(), 11);
+        castRegistry.registerAmmoType(new TurretAmmoCryoCell.MultiMK3(), 12);
+        castRegistry.registerAmmoType(new TurretAmmoMinigunShell(false), 13);
+        castRegistry.registerAmmoType(new TurretAmmoMinigunShell(true), 14);
         castRegistry.registerAmmoType(new TurretAmmoElectrolyteCell(false));
         castRegistry.registerAmmoType(new TurretAmmoElectrolyteCell(true));
-        castRegistry.registerAmmoType(new TurretAmmoFluxCell(false), true);
-        castRegistry.registerAmmoType(new TurretAmmoFluxCell(true), true);
-        castRegistry.registerAmmoType(new TurretAmmoFireTank(false), true);
-        castRegistry.registerAmmoType(new TurretAmmoFireTank(true), true);
+        castRegistry.registerAmmoType(new TurretAmmoFluxCell(false), 15);
+        castRegistry.registerAmmoType(new TurretAmmoFluxCell(true), 16);
+        castRegistry.registerAmmoType(new TurretAmmoFireTank(false), 17);
+        castRegistry.registerAmmoType(new TurretAmmoFireTank(true), 18);
     }
 }

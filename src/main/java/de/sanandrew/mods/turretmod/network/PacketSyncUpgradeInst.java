@@ -52,6 +52,11 @@ public class PacketSyncUpgradeInst
 
     @Override
     public void handleClientMessage(PacketSyncUpgradeInst packet, EntityPlayer player) {
+        this.handleServerMessage(packet, player);
+    }
+
+    @Override
+    public void handleServerMessage(PacketSyncUpgradeInst packet, EntityPlayer player) {
         if( packet.instData.length > 0 ) {
             Entity e = player.world.getEntityByID(packet.turretId);
             if( e instanceof ITurretInst ) {
@@ -69,9 +74,6 @@ public class PacketSyncUpgradeInst
             }
         }
     }
-
-    @Override
-    public void handleServerMessage(PacketSyncUpgradeInst packet, EntityPlayer player) { }
 
     @Override
     public void fromBytes(ByteBuf buf) {

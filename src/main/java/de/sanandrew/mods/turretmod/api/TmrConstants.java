@@ -14,11 +14,11 @@ public final class TmrConstants
 {
     public static final String ID = "sapturretmod";
     public static final Logger LOG = LogManager.getLogger(ID);
-    public static final String VERSION = "4.0.0-beta.2.5";
+    public static final String VERSION = "4.0.0-beta.3";
     public static final String CHANNEL = "SapTurretModNWCH";
     public static final String NAME = "Turret Mod Rebirth";
     public static final String DEPENDENCIES = "required-after:forge@[13.20.1.2516,];required-after:sanlib@[1.3.0,]";
 
     public static final String API_ID = "sapturretmod_api";
-    public static final String API_VERSION = "1.0.0-beta.2";
+    public static final String API_VERSION = "1.0.0-beta.3";
 }

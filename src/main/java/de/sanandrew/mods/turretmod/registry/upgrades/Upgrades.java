@@ -11,6 +11,7 @@ import de.sanandrew.mods.turretmod.registry.turret.TurretFlamethrower;
 import de.sanandrew.mods.turretmod.registry.turret.TurretLaser;
 import de.sanandrew.mods.turretmod.registry.turret.shieldgen.TurretForcefield;
 import de.sanandrew.mods.turretmod.registry.upgrades.shield.UpgradeShieldPersonal;
+import de.sanandrew.mods.turretmod.registry.upgrades.smartTargeting.UpgradeSmartTargeting;
 
 import java.util.UUID;
 
@@ -49,7 +50,7 @@ public class Upgrades
         registry.registerUpgrade(HEALTH_IV, new UpgradeHealth.UpgradeHealthMK4());
         registry.registerUpgrade(RELOAD_I, new UpgradeReloadTime.UpgradeReloadTimeMK1());
         registry.registerUpgrade(RELOAD_II, new UpgradeReloadTime.UpgradeReloadTimeMK2());
-        registry.registerUpgrade(SMART_TGT, new UpgradeBasic("smart_tgt", t -> true)); //TODO: add advanced settings for TCU
+        registry.registerUpgrade(SMART_TGT, new UpgradeSmartTargeting());
         registry.registerUpgrade(ECONOMY_I, new UpgradeAmmoUsage.UpgradeAmmoUseI());
         registry.registerUpgrade(ECONOMY_II, new UpgradeAmmoUsage.UpgradeAmmoUseII());
         registry.registerUpgrade(ECONOMY_INF, new UpgradeAmmoUsage.UpgradeAmmoUseInf());

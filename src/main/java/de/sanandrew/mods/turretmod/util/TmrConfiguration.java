@@ -85,4 +85,15 @@ public final class TmrConfiguration
             syncConfig();
         }
     }
+
+    public static final class ConfTurret
+    {
+        public static final String CAT_TURRET = "turret_values";
+
+        public static float crossbowMaxHealth = 20.0F;
+        public static int crossbowMaxAmmoCapacity = 256;
+        public static float crossbowProjDamage = 2.0F;
+        public static float crossbowProjKnockbackH = 0.01F;
+        public static float crossbowProjKnockbackV = 0.2F;
+    }
 }
