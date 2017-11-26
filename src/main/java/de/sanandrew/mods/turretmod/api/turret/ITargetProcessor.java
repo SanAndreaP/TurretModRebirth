@@ -1,7 +1,6 @@
 package de.sanandrew.mods.turretmod.api.turret;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundEvent;
@@ -59,7 +58,7 @@ public interface ITargetProcessor
 
     boolean isEntityValidTarget(Entity entity);
 
-    List<Entity> getValidTargetList(EntityLiving turretEntity);
+    List<Entity> getValidTargetList();
 
     boolean isEntityTargeted(Entity entity);
 

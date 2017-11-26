@@ -385,7 +385,7 @@ public final class TargetProcessor
                 return;
             }
             if( this.entityToAttack == null ) {
-                for( Entity entityObj : getValidTargetList(turretL, aabb) ) {
+                for( Entity entityObj : getValidTargetList(aabb) ) {
                     EntityLivingBase livingBase = (EntityLivingBase) entityObj;
                     if( this.checkTargetListeners(livingBase) ) {
                         this.entityToAttack = livingBase;
@@ -444,8 +444,8 @@ public final class TargetProcessor
     }
 
     @Override
-    public List<Entity> getValidTargetList(EntityLiving turretEntity) {
-        return this.getValidTargetList(turretEntity, this.getAdjustedRange(true));
+    public List<Entity> getValidTargetList() {
+        return this.getValidTargetList(this.getAdjustedRange(true));
     }
 
     @Override
@@ -461,8 +461,8 @@ public final class TargetProcessor
         return false;
     }
 
-    private List<Entity> getValidTargetList(EntityLiving turretEntity, AxisAlignedBB aabb) {
-        return turretEntity.world.getEntitiesInAABBexcluding(turretEntity, aabb, entity -> this.isEntityValidTarget(entity, aabb));
+    private List<Entity> getValidTargetList(AxisAlignedBB aabb) {
+        return turret.getEntity().world.getEntitiesInAABBexcluding(turret.getEntity(), aabb, entity -> this.isEntityValidTarget(entity, aabb));
     }
 
     private boolean isEntityValidTarget(Entity entity, AxisAlignedBB aabb) {

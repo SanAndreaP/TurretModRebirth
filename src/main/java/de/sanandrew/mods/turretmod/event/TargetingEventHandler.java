@@ -14,8 +14,8 @@ import de.sanandrew.mods.turretmod.registry.turret.TurretShotgun;
 import de.sanandrew.mods.turretmod.registry.turret.shieldgen.ShieldHandler;
 import de.sanandrew.mods.turretmod.registry.turret.shieldgen.TurretForcefield;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
+import de.sanandrew.mods.turretmod.registry.upgrades.smartTargeting.AdvTargetSettings;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.MobEffects;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -45,15 +45,11 @@ public class TargetingEventHandler
         }
 
         if( event.processor.getTurret().getUpgradeProcessor().hasUpgrade(Upgrades.SMART_TGT) ) {
-            List<EntityLiving> entities = turretInst.getEntity().world.getEntitiesWithinAABB(EntityLiving.class, turretInst.getTargetProcessor().getAdjustedRange(true));
-
-            for( EntityLiving entity : entities ) {
-                if( entity instanceof ITurretInst ) {
-                    ITurretInst otherTurret = (ITurretInst) entity;
-                    if( entity != turretInst && otherTurret.getTargetProcessor().getTarget() == event.target && otherTurret.getTargetProcessor().hasAmmo() ) {
-                        event.setResult(Event.Result.DENY);
-                        break;
-                    }
+            AdvTargetSettings settings = event.processor.getTurret().getUpgradeProcessor().getUpgradeInstance(Upgrades.SMART_TGT);
+            if( settings != null ) {
+                List<Entity> entities = turretInst.getTargetProcessor().getValidTargetList();
+                if( !settings.isTargetValid(event.target, turretInst, entities) ) {
+                    event.setResult(Event.Result.DENY);
                 }
             }
         }

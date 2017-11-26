@@ -6,7 +6,6 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.api.client.event;
 
-import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.entity.player.EntityPlayer;

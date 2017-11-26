@@ -38,11 +38,11 @@ public class GuiTargetCreatures
         int x = gui.getPosX() + gui.getWidth();
         int y = gui.getPosY() + 190;
         this.selectMobs = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), x - 63, y, 202, 36, Resources.GUI_TCU_TARGETS.getResource(),
-                                                             Lang.translate(Lang.TCU_BTN.get("selectMobs"))));
+                                                             Lang.translate(Lang.TCU_BTN.get("select_mobs"))));
         this.selectAnimals = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), x - 44, y, 220, 36, Resources.GUI_TCU_TARGETS.getResource(),
-                                                                Lang.translate(Lang.TCU_BTN.get("selectAnimals"))));
+                                                                Lang.translate(Lang.TCU_BTN.get("select_animals"))));
         this.selectOther = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), x - 25, y, 238, 36, Resources.GUI_TCU_TARGETS.getResource(),
-                                                              Lang.translate(Lang.TCU_BTN.get("selectOther"))));
+                                                              Lang.translate(Lang.TCU_BTN.get("select_other"))));
     }
 
     @Override

@@ -47,16 +47,13 @@ import org.apache.logging.log4j.Level;
 public class CommonProxy
         implements IGuiHandler
 {
-    public static int entityCount = 0;
-
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(PlayerList.INSTANCE);
         MinecraftForge.EVENT_BUS.register(new DamageEventHandler());
         MinecraftForge.EVENT_BUS.register(new ExplosionEventHandler());
         MinecraftForge.EVENT_BUS.register(new CollisionEventHandler());
 
-        EntityRegistry.registerModEntity(new ResourceLocation(TmrConstants.ID, "turret"), EntityTurret.class, TmrConstants.ID + ".turret", CommonProxy.entityCount++, TurretModRebirth.instance, 128, 1, false);
-
+        EntityRegistry.registerModEntity(new ResourceLocation(TmrConstants.ID, "turret"), EntityTurret.class, TmrConstants.ID + ".turret", 0, TurretModRebirth.instance, 128, 1, false);
     }
 
     public void init(FMLInitializationEvent event) {
@@ -75,13 +72,6 @@ public class CommonProxy
                     if( e instanceof ITurretInst ) {
                         return GuiTcuRegistry.INSTANCE.openContainer(y, player, (ITurretInst) e);
                     }
-//                case GUI_TCU_UPGRADES: {
-//                    Entity e = world.getEntityByID(x);
-//                    if( e instanceof EntityTurret) {
-//                        return new ContainerTurretUpgrades(player.inventory, ((UpgradeProcessor) ((EntityTurret) e).getUpgradeProcessor()));
-//                    }
-//                    break;
-//                }
                     break;
                 case GUI_TASSEMBLY_MAN:
                     te = world.getTileEntity(new BlockPos(x, y, z));

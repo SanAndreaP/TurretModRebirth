@@ -13,7 +13,6 @@ import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.client.gui.GuiCameras;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiButtonIcon;
 import de.sanandrew.mods.turretmod.client.render.world.RenderTurretCam;
 import de.sanandrew.mods.turretmod.network.PacketPlayerTurretAction;
@@ -28,10 +27,13 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 
+@SideOnly(Side.CLIENT)
 public class GuiInfo
         implements IGuiTCU
 {
@@ -61,13 +63,13 @@ public class GuiInfo
             this.dismantle = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center, btnY, 176, 50, Resources.GUI_TCU_INFO.getResource(),
                                                                 Lang.translate(Lang.TCU_BTN.get("dismantle"))));
             this.setActive = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 19, btnY, 194, 50, Resources.GUI_TCU_INFO.getResource(),
-                                                                Lang.translate(Lang.TCU_BTN.get("toggleActive.enable"))));
+                                                                Lang.translate(Lang.TCU_BTN.get("activate"))));
             this.setDeactive = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 19, btnY, 212, 50, Resources.GUI_TCU_INFO.getResource(),
-                                                                  Lang.translate(Lang.TCU_BTN.get("toggleActive.disable"))));
+                                                                  Lang.translate(Lang.TCU_BTN.get("deactivate"))));
             this.showRange = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 38, btnY, 176, 86, Resources.GUI_TCU_INFO.getResource(),
-                                                                Lang.translate(Lang.TCU_BTN.get("range.enable"))));
+                                                                Lang.translate(Lang.TCU_BTN.get("show_range"))));
             this.hideRange = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 38, btnY, 194, 86, Resources.GUI_TCU_INFO.getResource(),
-                                                                Lang.translate(Lang.TCU_BTN.get("range.disable"))));
+                                                                Lang.translate(Lang.TCU_BTN.get("hide_range"))));
         }
 
         this.setActive.visible = false;
@@ -156,13 +158,13 @@ public class GuiInfo
             fontRenderer.drawString(value, posX + 20, posY + 140, 0xFF000000);
         }
 
-//        if( this.infoStr != null && this.infoTimeShown >= System.currentTimeMillis() - 5000L ) {
-//            String err = Lang.translate(this.infoStr);
-//            fontRenderer.drawSplitString(err, posX + 10 + (gui.getWidth() - 20 - Math.min(gui.getWidth() - 20, fontRenderer.getStringWidth(err))) / 2,
-//                                         posY + 178, gui.getWidth() - 25, 0xFFFF0000);
-//        } else {
-//            this.infoStr = null;
-//        }
+        if( this.infoStr != null && this.infoTimeShown >= System.currentTimeMillis() - 5000L ) {
+            String err = Lang.translate(this.infoStr);
+            fontRenderer.drawSplitString(err, posX + 10 + (gui.getWidth() - 20 - Math.min(gui.getWidth() - 20, fontRenderer.getStringWidth(err))) / 2,
+                                         posY + 160, gui.getWidth() - 25, 0xFFFF0000);
+        } else {
+            this.infoStr = null;
+        }
 
         this.turretName.drawTextBox();
     }

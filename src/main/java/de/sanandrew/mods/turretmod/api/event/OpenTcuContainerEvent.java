@@ -6,16 +6,13 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.api.event;
 
-import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
-import javax.annotation.Nonnull;
 import java.util.function.BiFunction;
-import java.util.function.Supplier;
 
 @Cancelable
 public class OpenTcuContainerEvent

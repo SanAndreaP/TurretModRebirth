@@ -6,13 +6,17 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.registry.turret;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.client.event.OpenTcuGuiEvent;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.event.OpenTcuContainerEvent;
+import de.sanandrew.mods.turretmod.api.turret.IGuiTcuRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuContainer;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuScreen;
+import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
+import de.sanandrew.mods.turretmod.inventory.ContainerTurretUpgrades;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncTcuGuis;
 import net.minecraft.client.gui.Gui;
@@ -40,6 +44,12 @@ import java.util.function.Supplier;
 public final class GuiTcuRegistry
         implements de.sanandrew.mods.turretmod.api.turret.IGuiTcuRegistry
 {
+    public static final ResourceLocation GUI_INFO = new ResourceLocation(TmrConstants.ID, "info");
+    public static final ResourceLocation GUI_TARGETS_MOB = new ResourceLocation(TmrConstants.ID, "targets_creature");
+    public static final ResourceLocation GUI_TARGETS_PLAYER = new ResourceLocation(TmrConstants.ID, "targets_player");
+    public static final ResourceLocation GUI_TARGETS_SMART = new ResourceLocation(TmrConstants.ID, "targets_smart");
+    public static final ResourceLocation GUI_UPGRADES = new ResourceLocation(TmrConstants.ID, "upgrades");
+
     public static final List<ResourceLocation> GUI_RESOURCES = new ArrayList<>();
     public static final GuiTcuRegistry INSTANCE = new GuiTcuRegistry();
 
@@ -120,6 +130,14 @@ public final class GuiTcuRegistry
         }
 
         guis.put(location, new GuiEntry(iconSupplier, factory, canShowTabFunc));
+    }
+
+    public static void initialize(IGuiTcuRegistry registry) {
+        registry.registerGuiEntry(GUI_INFO, 0, null);
+        registry.registerGuiEntry(GUI_TARGETS_MOB, 1, null);
+        registry.registerGuiEntry(GUI_TARGETS_PLAYER, 2, null);
+        registry.registerGuiEntry(GUI_TARGETS_SMART, 3, null);
+        registry.registerGuiEntry(GUI_UPGRADES, 4, (player, turretInst) -> new ContainerTurretUpgrades(player.inventory, (UpgradeProcessor) turretInst.getUpgradeProcessor()));
     }
 
     @SubscribeEvent

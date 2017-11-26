@@ -12,17 +12,28 @@ import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
+import de.sanandrew.mods.turretmod.api.turret.IGuiTcuRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiButtonIcon;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiButtonTcuTab;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiInfo;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiSmartTargets;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiTargetCreatures;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiTargetPlayers;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiUpgrades;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.PlayerHeads;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
+import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -35,7 +46,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 @SideOnly(Side.CLIENT)
-public final class GuiTCUHelper
+public final class GuiTcuHelper
 {
     private static final int MAX_TABS = 5;
 
@@ -48,11 +59,10 @@ public final class GuiTCUHelper
 
     private static int currTabScroll = 0;
 
-    GuiTCUHelper() {}
+    GuiTcuHelper() {}
 
     private long marqueeTime;
 
-    @SuppressWarnings("unchecked")
     void initGui(IGuiTcuInst<?> gui) {
         this.tabs.clear();
 
@@ -134,6 +144,14 @@ public final class GuiTCUHelper
         } else if( button == this.tabNavRight && currTabScroll < this.tabs.size() - MAX_TABS ) {
             currTabScroll++;
         }
+    }
+
+    public static void initialize(IGuiTcuRegistry registry) {
+        registry.registerGui(GuiTcuRegistry.GUI_INFO, new ItemStack(Items.BOOK), GuiInfo::new, null);
+        registry.registerGui(GuiTcuRegistry.GUI_TARGETS_MOB, new ItemStack(Items.SKULL, 1, 2), GuiTargetCreatures::new, IGuiTcuInst::hasPermision);
+        registry.registerGui(GuiTcuRegistry.GUI_TARGETS_PLAYER, PlayerHeads::getRandomSkull, GuiTargetPlayers::new, IGuiTcuInst::hasPermision);
+        registry.registerGui(GuiTcuRegistry.GUI_TARGETS_SMART, UpgradeRegistry.INSTANCE.getUpgradeItem(Upgrades.SMART_TGT), GuiSmartTargets::new, GuiSmartTargets::showTab);
+        registry.registerGui(GuiTcuRegistry.GUI_UPGRADES, new ItemStack(ItemRegistry.TURRET_UPGRADE), GuiUpgrades::new, IGuiTcuInst::hasPermision);
     }
 
     private static final class ComparatorTabButton

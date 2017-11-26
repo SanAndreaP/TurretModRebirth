@@ -6,7 +6,6 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.shader;
 
-import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiButtonTcuTab;
 import de.sanandrew.mods.turretmod.client.util.ShaderHelper;
 import de.sanandrew.mods.turretmod.util.Procedure;
 import de.sanandrew.mods.turretmod.util.TmrConfiguration;
@@ -14,7 +13,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.ARBMultitexture;
 import org.lwjgl.opengl.ARBShaderObjects;

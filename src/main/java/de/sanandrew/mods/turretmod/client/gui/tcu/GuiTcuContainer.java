@@ -9,12 +9,9 @@ package de.sanandrew.mods.turretmod.client.gui.tcu;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
 
@@ -27,7 +24,7 @@ public class GuiTcuContainer
     private final ResourceLocation registryKey;
     private final ITurretInst turret;
     private final IGuiTCU guiDelegate;
-    private final GuiTCUHelper helper = new GuiTCUHelper();
+    private final GuiTcuHelper helper = new GuiTcuHelper();
 
     public GuiTcuContainer(ResourceLocation registryKey, IGuiTCU gui, Container guiContainer, ITurretInst turretInst) {
         super(guiContainer);
@@ -35,8 +32,8 @@ public class GuiTcuContainer
         this.turret = turretInst;
         this.guiDelegate = gui;
 
-        this.xSize = GuiTCUHelper.X_SIZE;
-        this.ySize = GuiTCUHelper.Y_SIZE;
+        this.xSize = GuiTcuHelper.X_SIZE;
+        this.ySize = GuiTcuHelper.Y_SIZE;
     }
 
     @Override

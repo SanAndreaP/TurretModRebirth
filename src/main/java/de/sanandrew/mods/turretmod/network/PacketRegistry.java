@@ -34,6 +34,7 @@ public final class PacketRegistry
         registerMessage(TurretModRebirth.network, PacketUpdateUgradeSlot.class, 8, Side.CLIENT);
         registerMessage(TurretModRebirth.network, PacketTurretNaming.class, 9, Side.SERVER);
         registerMessage(TurretModRebirth.network, PacketSyncUpgradeInst.class, 10, Side.CLIENT);
+        registerMessage(TurretModRebirth.network, PacketSyncUpgradeInst.class, 10, Side.SERVER);
         registerMessage(TurretModRebirth.network, PacketSyncTcuGuis.class, 11, Side.CLIENT);
     }
 

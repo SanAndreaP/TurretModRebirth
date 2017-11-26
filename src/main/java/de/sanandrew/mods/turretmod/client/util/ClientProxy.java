@@ -23,10 +23,6 @@ import de.sanandrew.mods.turretmod.client.gui.GuiCameras;
 import de.sanandrew.mods.turretmod.client.gui.GuiPotatoGenerator;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiAssemblyFilter;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
-//import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuEntityTargets;
-//import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuInfo;
-//import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuPlayerTargets;
-//import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuUpgrades;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.PlayerHeads;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.client.gui.tinfo.TurretInfoCategoryRegistry;
@@ -74,8 +70,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
 
+//import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuEntityTargets;
+//import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuInfo;
+//import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuPlayerTargets;
+//import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuUpgrades;
+
 @SideOnly(Side.CLIENT)
-@SuppressWarnings("MethodCallSideOnly")
 public class ClientProxy
         extends CommonProxy
 {

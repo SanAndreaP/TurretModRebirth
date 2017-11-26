@@ -58,9 +58,9 @@ public abstract class GuiTargets<T>
         this.blacklist = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 7, gui.getPosY() + 190, 202, 0,
                                                             Resources.GUI_TCU_TARGETS.getResource(), Lang.translate(Lang.TCU_BTN.get("blacklist"))));
         this.selectAll = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 26, gui.getPosY() + 190, 220, 0,
-                                                            Resources.GUI_TCU_TARGETS.getResource(), Lang.translate(Lang.TCU_BTN.get("selectAll"))));
+                                                            Resources.GUI_TCU_TARGETS.getResource(), Lang.translate(Lang.TCU_BTN.get("select_all"))));
         this.deselectAll = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 45, gui.getPosY() + 190, 238, 0,
-                                                              Resources.GUI_TCU_TARGETS.getResource(), Lang.translate(Lang.TCU_BTN.get("deselectAll"))));
+                                                              Resources.GUI_TCU_TARGETS.getResource(), Lang.translate(Lang.TCU_BTN.get("deselect_all"))));
 
         this.searchBar = new GuiTextField(0, gui.getFontRenderer(), gui.getPosX() + 8, gui.getPosY() + 40, 160, 10);
         this.searchBar.setMaxStringLength(1024);

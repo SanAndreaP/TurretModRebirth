@@ -10,10 +10,13 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.io.IOException;
 
 @SuppressWarnings("unused")
+@SideOnly(Side.CLIENT)
 public interface IGuiTCU
 {
     /**
