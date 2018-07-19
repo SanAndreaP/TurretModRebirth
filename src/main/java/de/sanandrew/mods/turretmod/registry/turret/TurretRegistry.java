@@ -13,7 +13,6 @@ import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
@@ -140,69 +139,34 @@ public final class TurretRegistry
         private static final AxisAlignedBB BB = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 
         @Override
-        public String getName() {
-            return "empty";
-        }
+        public String getName() { return "empty"; }
 
         @Nonnull
         @Override
-        public UUID getId() {
-            return UuidUtils.EMPTY_UUID;
-        }
+        public UUID getId() { return UuidUtils.EMPTY_UUID; }
 
         @Override
-        public ResourceLocation getItemModel() {
-            return null;
-        }
+        public ResourceLocation getItemModel() { return null; }
 
         @Override
-        public ResourceLocation getStandardTexture(ITurretInst turretInst) {
-            return null;
-        }
+        public ResourceLocation getStandardTexture(ITurretInst turretInst) { return null; }
 
         @Override
-        public ResourceLocation getGlowTexture(ITurretInst turretInst) {
-            return null;
-        }
+        public ResourceLocation getGlowTexture(ITurretInst turretInst) { return null; }
 
         @Override
-        public SoundEvent getShootSound(ITurretInst turretInst) {
-            return null;
-        }
+        public SoundEvent getShootSound(ITurretInst turretInst) { return null; }
 
         @Override
-        public AxisAlignedBB getRangeBB(ITurretInst turretInst) {
-            return BB;
-        }
+        public AxisAlignedBB getRangeBB(ITurretInst turretInst) { return BB; }
 
         @Override
-        public int getTier() {
-            return 0;
-        }
+        public int getTier() { return 0; }
 
         @Override
-        public ITurretInfo getInfo() {
-            return MyInfo.INSTANCE;
-        }
+        public float getHealth() { return 0; }
 
-        public static final class MyInfo implements ITurretInfo
-        {
-            static final ITurretInfo INSTANCE = new MyInfo();
-
-            @Override
-            public float getHealth() {
-                return 0;
-            }
-
-            @Override
-            public int getAmmoCapacity() {
-                return 0;
-            }
-
-            @Override
-            public String getRange() {
-                return "n/a";
-            }
-        }
+        @Override
+        public int getAmmoCapacity() { return 0; }
     }
 }

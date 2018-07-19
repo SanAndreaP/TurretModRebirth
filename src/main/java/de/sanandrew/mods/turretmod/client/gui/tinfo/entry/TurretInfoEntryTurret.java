@@ -157,7 +157,7 @@ public class TurretInfoEntryTurret
         turret.prevRotationYawHead = turret.rotationYawHead = 0.0F;
 
         Minecraft.getMinecraft().getRenderManager().setRenderShadow(false);
-        Minecraft.getMinecraft().getRenderManager().doRenderEntity(turret, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, true);
+        Minecraft.getMinecraft().getRenderManager().renderEntity(turret, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, true);
         Minecraft.getMinecraft().getRenderManager().setRenderShadow(true);
         GlStateManager.popMatrix();
         RenderHelper.disableStandardItemLighting();
@@ -187,9 +187,9 @@ public class TurretInfoEntryTurret
             List<ItemStack> ammoItms = new ArrayList<>();
 
             this.name = turret.getName();
-            this.range = turret.getInfo().getRange();
-            this.health = turret.getInfo().getHealth();
-            this.ammoCap = turret.getInfo().getAmmoCapacity();
+            this.range = String.valueOf(turret.getRangeBB(null).maxX);
+            this.health = turret.getHealth();
+            this.ammoCap = turret.getAmmoCapacity();
 
             List<IAmmunition> ammos = AmmunitionRegistry.INSTANCE.getTypesForTurret(turret);
             for( IAmmunition ammo : ammos ) {
@@ -199,7 +199,7 @@ public class TurretInfoEntryTurret
             TurretAssemblyRegistry.RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(TurretRegistry.INSTANCE.getTurretItem(turret));
             this.recipeStacks = recipeEntry == null ? new IRecipeEntry[0] : recipeEntry.resources;
 
-            this.ammoStacks = ammoItms.toArray(new ItemStack[ammoItms.size()]);
+            this.ammoStacks = ammoItms.toArray(new ItemStack[0]);
         }
     }
 }

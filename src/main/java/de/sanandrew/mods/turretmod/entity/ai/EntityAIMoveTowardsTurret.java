@@ -44,7 +44,7 @@ public final class EntityAIMoveTowardsTurret
     public boolean shouldExecute() {
         if( this.targetTurret == null || !this.targetTurret.getEntity().isEntityAlive() ) {
             return false;
-        } else if( this.targetTurret.getEntity().getDistanceSqToEntity(this.theEntity) > this.maxDistance * this.maxDistance ) {
+        } else if( this.targetTurret.getEntity().getDistanceSq(this.theEntity) > this.maxDistance * this.maxDistance ) {
             return false;
         } else {
             EntityLivingBase turretL = this.targetTurret.getEntity();
@@ -65,7 +65,7 @@ public final class EntityAIMoveTowardsTurret
     public boolean shouldContinueExecuting() {
         if( this.targetTurret != null ) {
             EntityLivingBase turretL = this.targetTurret.getEntity();
-            return !this.theEntity.getNavigator().noPath() && turretL.isEntityAlive() && turretL.getDistanceSqToEntity(this.theEntity) < this.maxDistance * this.maxDistance;
+            return !this.theEntity.getNavigator().noPath() && turretL.isEntityAlive() && turretL.getDistanceSq(this.theEntity) < this.maxDistance * this.maxDistance;
         }
 
         return false;

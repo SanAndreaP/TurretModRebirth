@@ -10,7 +10,6 @@ package de.sanandrew.mods.turretmod.registry.turret.shieldgen;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
@@ -106,8 +105,12 @@ public class TurretForcefield
 
     @Override
     public AxisAlignedBB getRangeBB(ITurretInst turretInst) {
-        IUpgradeProcessor upgProc = turretInst.getUpgradeProcessor();
-        return upgProc.hasUpgrade(Upgrades.SHIELD_STRENGTH_II) ? RANGE_BB_III : upgProc.hasUpgrade(Upgrades.SHIELD_STRENGTH_I) ? RANGE_BB_II : RANGE_BB_I;
+        if( turretInst == null ) {
+            return RANGE_BB_I;
+        } else {
+            IUpgradeProcessor upgProc = turretInst.getUpgradeProcessor();
+            return upgProc.hasUpgrade(Upgrades.SHIELD_STRENGTH_II) ? RANGE_BB_III : upgProc.hasUpgrade(Upgrades.SHIELD_STRENGTH_I) ? RANGE_BB_II : RANGE_BB_I;
+        }
     }
 
     @Override
@@ -136,11 +139,6 @@ public class TurretForcefield
     }
 
     @Override
-    public ITurretInfo getInfo() {
-        return MyInfo.INSTANCE;
-    }
-
-    @Override
     public boolean canSeeThroughBlocks() {
         return true;
     }
@@ -150,23 +148,13 @@ public class TurretForcefield
         return 0.0F;
     }
 
-    public static final class MyInfo implements ITurretInfo
-    {
-        static final ITurretInfo INSTANCE = new MyInfo();
+    @Override
+    public float getHealth() {
+        return 30.0F;
+    }
 
-        @Override
-        public float getHealth() {
-            return 30.0F;
-        }
-
-        @Override
-        public int getAmmoCapacity() {
-            return 512;
-        }
-
-        @Override
-        public String getRange() {
-            return "20";
-        }
+    @Override
+    public int getAmmoCapacity() {
+        return 512;
     }
 }

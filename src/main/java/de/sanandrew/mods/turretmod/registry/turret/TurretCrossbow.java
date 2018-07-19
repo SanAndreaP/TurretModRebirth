@@ -10,7 +10,6 @@ package de.sanandrew.mods.turretmod.registry.turret;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -79,26 +78,12 @@ public class TurretCrossbow
     }
 
     @Override
-    public ITurretInfo getInfo() {
-        return MyInfo.INSTANCE;
+    public float getHealth() {
+        return TmrConfiguration.ConfTurret.crossbowMaxHealth;
     }
 
-    public static final class MyInfo implements ITurretInfo {
-        static final ITurretInfo INSTANCE = new MyInfo();
-
-        @Override
-        public float getHealth() {
-            return TmrConfiguration.ConfTurret.crossbowMaxHealth;
-        }
-
-        @Override
-        public int getAmmoCapacity() {
-            return TmrConfiguration.ConfTurret.crossbowMaxAmmoCapacity;
-        }
-
-        @Override
-        public String getRange() {
-            return "16";
-        }
+    @Override
+    public int getAmmoCapacity() {
+        return TmrConfiguration.ConfTurret.crossbowMaxAmmoCapacity;
     }
 }

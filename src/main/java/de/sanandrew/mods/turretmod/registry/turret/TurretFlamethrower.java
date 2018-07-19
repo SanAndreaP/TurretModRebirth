@@ -10,7 +10,6 @@ package de.sanandrew.mods.turretmod.registry.turret;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -77,27 +76,12 @@ public class TurretFlamethrower
     }
 
     @Override
-    public ITurretInfo getInfo() {
-        return MyInfo.INSTANCE;
+    public float getHealth() {
+        return 40.0F;
     }
 
-    public static final class MyInfo implements ITurretInfo
-    {
-        static final ITurretInfo INSTANCE = new MyInfo();
-
-        @Override
-        public float getHealth() {
-            return 40.0F;
-        }
-
-        @Override
-        public int getAmmoCapacity() {
-            return 4096;
-        }
-
-        @Override
-        public String getRange() {
-            return "8";
-        }
+    @Override
+    public int getAmmoCapacity() {
+        return 4096;
     }
 }

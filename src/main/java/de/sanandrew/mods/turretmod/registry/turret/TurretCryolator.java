@@ -10,7 +10,6 @@ package de.sanandrew.mods.turretmod.registry.turret;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -70,32 +69,17 @@ public class TurretCryolator
     }
 
     @Override
-    public ITurretInfo getInfo() {
-        return MyInfo.INSTANCE;
-    }
-
-    @Override
     public int getTier() {
         return 1;
     }
 
-    public static final class MyInfo implements ITurretInfo
-    {
-        static final ITurretInfo INSTANCE = new MyInfo();
+    @Override
+    public float getHealth() {
+        return 20.0F;
+    }
 
-        @Override
-        public float getHealth() {
-            return 20.0F;
-        }
-
-        @Override
-        public int getAmmoCapacity() {
-            return 256;
-        }
-
-        @Override
-        public String getRange() {
-            return "16";
-        }
+    @Override
+    public int getAmmoCapacity() {
+        return 256;
     }
 }

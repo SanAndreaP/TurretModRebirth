@@ -10,7 +10,6 @@ package de.sanandrew.mods.turretmod.registry.turret;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
@@ -87,11 +86,6 @@ public class TurretLaser
         return 3;
     }
 
-    @Override
-    public ITurretInfo getInfo() {
-        return MyInfo.INSTANCE;
-    }
-
     public static class MyRAM
             implements ITurretRAM
     {
@@ -99,23 +93,13 @@ public class TurretLaser
         public SoundLaser laserSound;
     }
 
-    public static final class MyInfo implements ITurretInfo
-    {
-        static final ITurretInfo INSTANCE = new MyInfo();
+    @Override
+    public float getHealth() {
+        return 40.0F;
+    }
 
-        @Override
-        public float getHealth() {
-            return 40.0F;
-        }
-
-        @Override
-        public int getAmmoCapacity() {
-            return 256;
-        }
-
-        @Override
-        public String getRange() {
-            return "24";
-        }
+    @Override
+    public int getAmmoCapacity() {
+        return 256;
     }
 }

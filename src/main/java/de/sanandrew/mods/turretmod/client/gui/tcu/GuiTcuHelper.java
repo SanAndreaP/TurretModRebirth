@@ -93,7 +93,7 @@ public final class GuiTcuHelper
     }
 
     void updateScreen(Minecraft mc, IGuiTcuInst<?> gui) {
-        if( !gui.hasPermision() || gui.getTurretInst().getEntity().isDead || gui.getTurretInst().getEntity().getDistanceSqToEntity(mc.player) > 36.0D ) {
+        if( !gui.hasPermision() || gui.getTurretInst().getEntity().isDead || gui.getTurretInst().getEntity().getDistance(mc.player) > 36.0D ) {
             mc.player.closeScreen();
         }
 

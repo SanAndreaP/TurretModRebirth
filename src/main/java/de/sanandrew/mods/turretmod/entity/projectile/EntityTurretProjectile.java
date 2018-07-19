@@ -117,7 +117,7 @@ public abstract class EntityTurretProjectile
     public void onUpdate() {
         this.isAirBorne = true;
 
-        if( this.shooterCache != null && this.getDistanceToEntity(this.shooterCache) > this.maxDist ) {
+        if( this.shooterCache != null && this.getDistance(this.shooterCache) > this.maxDist ) {
             this.setDead();
             return;
         }
@@ -209,7 +209,7 @@ public abstract class EntityTurretProjectile
             hitObj = new RayTraceResult(entity);
         }
 
-        if( hitObj != null && hitObj.entityHit != null && hitObj.entityHit instanceof EntityPlayer ) {
+        if( hitObj != null && hitObj.entityHit instanceof EntityPlayer ) {
             EntityPlayer player = (EntityPlayer)hitObj.entityHit;
 
             if( player.capabilities.disableDamage ) {
@@ -362,7 +362,7 @@ public abstract class EntityTurretProjectile
     }
 
     @Override
-    public void setThrowableHeading(double x, double y, double z, float recoil, float randMulti) {
+    public void shoot(double x, double y, double z, float recoil, float randMulti) {
         float vecNormal = MathHelper.sqrt(x * x + y * y + z * z);
         x /= vecNormal;
         y /= vecNormal;

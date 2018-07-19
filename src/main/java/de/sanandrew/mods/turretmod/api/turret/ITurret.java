@@ -13,6 +13,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -38,11 +39,9 @@ public interface ITurret
 
     SoundEvent getShootSound(ITurretInst turretInst);
 
-    AxisAlignedBB getRangeBB(ITurretInst turretInst);
+    AxisAlignedBB getRangeBB(@Nullable ITurretInst turretInst);
 
     int getTier();
-
-    ITurretInfo getInfo();
 
     default void onUpdate(ITurretInst turretInst) { }
 
@@ -81,4 +80,8 @@ public interface ITurret
     default SoundEvent getCollectSound(ITurretInst turretInst) {
         return null;
     }
+
+    float getHealth();
+
+    int getAmmoCapacity();
 }

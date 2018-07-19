@@ -22,7 +22,7 @@ idea {
     }
 }
 
-version = "1.12-4.0.0-beta.3"
+version = "1.12-4.0.0-beta.4"
 group = "de.sanandrew.mods"
 archivesBaseName = "TurretMod"
 
@@ -32,20 +32,27 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12-14.21.1.2387"
+    version = "1.12.2-14.23.2.2611"
     runDir = "run"
-    mappings = "snapshot_20170716"
+    mappings = "snapshot_20180301"
 }
 
 repositories {
-  maven {
-    url = "http://dvs1.progwml6.com/files/maven"
-  }
+    mavenCentral()
+	maven {
+		url = "http://dvs1.progwml6.com/files/maven"
+	}
+	maven {
+		name = "CurseForge"
+		url = "https://minecraft.curseforge.com/api/maven/"
+	}
 }
 
 dependencies {
-  deobfCompile "mezz.jei:jei_1.12:4.7.1.69:api"
-  runtime "mezz.jei:jei_1.12:4.7.1.69"
+    deobfCompile "mezz.jei:jei_1.12.2:4.8.5.147:api"
+    runtime "mezz.jei:jei_1.12.2:4.8.5.147"
+    deobfCompile "sanlib:SanLib:1.12.2:1.4.4"
+    deobfCompile "the-one-probe:theoneprobe:1.12:1.4.19"
 }
 
 processResources {
@@ -86,30 +93,8 @@ task deobfJar(type: Jar) {
     }
 }
 
-configurations {
-//    deployDev
-}
-
 artifacts {
     archives deobfJar
     archives sourceJar
     archives jar
-//    deployDev deobfJar
-}
-
-project.ext {
-    releaseRepoUrl = "file://${project(':').projectDir}/maven-repo/"
-}
-
-class LibDownloader extends DefaultTask {
-    @Input
-    String sourceUrl
-
-    @OutputFile
-    File target
-
-    @TaskAction
-    void download() {
-       ant.get(src: sourceUrl, dest: target)
-    }
 }

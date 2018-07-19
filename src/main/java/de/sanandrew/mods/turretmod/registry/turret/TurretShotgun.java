@@ -11,7 +11,6 @@ package de.sanandrew.mods.turretmod.registry.turret;
 import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInfo;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
@@ -101,34 +100,19 @@ public class TurretShotgun
         return 1;
     }
 
-    @Override
-    public ITurretInfo getInfo() {
-        return MyInfo.INSTANCE;
-    }
-
     public static class MyRAM implements ITurretRAM
     {
         public float barrelPos = 1.0F;
         public float prevBarrelPos = 1.0F;
     }
 
-    public static final class MyInfo implements ITurretInfo
-    {
-        static final ITurretInfo INSTANCE = new MyInfo();
+    @Override
+    public float getHealth() {
+        return 20.0F;
+    }
 
-        @Override
-        public float getHealth() {
-            return 20.0F;
-        }
-
-        @Override
-        public int getAmmoCapacity() {
-            return 256;
-        }
-
-        @Override
-        public String getRange() {
-            return "16";
-        }
+    @Override
+    public int getAmmoCapacity() {
+        return 256;
     }
 }
