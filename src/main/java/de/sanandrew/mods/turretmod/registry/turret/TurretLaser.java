@@ -41,12 +41,12 @@ public class TurretLaser
 
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {
-        return Resources.TURRET_T3_LASER.getResource();
+        return Resources.TURRET_T3_LASER.resource;
     }
 
     @Override
     public ResourceLocation getGlowTexture(ITurretInst turretInst) {
-        return Resources.TURRET_T3_LASER_GLOW.getResource();
+        return Resources.TURRET_T3_LASER_GLOW.resource;
     }
 
     @Override

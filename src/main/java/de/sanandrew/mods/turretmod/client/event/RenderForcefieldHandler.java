@@ -220,27 +220,27 @@ public class RenderForcefieldHandler
                 case 1:
                     texTranslateX = transformTexAmount * -0.01F;
                     texTranslateY = transformTexAmount * 0.01F;
-                    mc.renderEngine.bindTexture(Resources.TURRET_FORCEFIELD_P1.getResource());
+                    mc.renderEngine.bindTexture(Resources.TURRET_FORCEFIELD_P1.resource);
                     break;
                 case 2:
                     texTranslateX = transformTexAmount * 0.005F;
                     texTranslateY = transformTexAmount * 0.005F;
-                    mc.renderEngine.bindTexture(Resources.TURRET_FORCEFIELD_P2.getResource());
+                    mc.renderEngine.bindTexture(Resources.TURRET_FORCEFIELD_P2.resource);
                     break;
                 case 3:
                     texTranslateX = transformTexAmount * -0.005F;
                     texTranslateY = transformTexAmount * 0.005F;
-                    mc.renderEngine.bindTexture(Resources.TURRET_FORCEFIELD_P1.getResource());
+                    mc.renderEngine.bindTexture(Resources.TURRET_FORCEFIELD_P1.resource);
                     break;
                 case 4:
                     texTranslateX = transformTexAmount * 0.0025F;
                     texTranslateY = transformTexAmount * 0.0025F;
-                    mc.renderEngine.bindTexture(Resources.TURRET_FORCEFIELD_P2.getResource());
+                    mc.renderEngine.bindTexture(Resources.TURRET_FORCEFIELD_P2.resource);
                     break;
                 case 5:
                     texTranslateX = transformTexAmount * 0.00F;
                     texTranslateY = transformTexAmount * 0.00F;
-                    mc.renderEngine.bindTexture(Resources.TURRET_FORCEFIELD_P3.getResource());
+                    mc.renderEngine.bindTexture(Resources.TURRET_FORCEFIELD_P3.resource);
                     break;
             }
 

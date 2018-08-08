@@ -56,7 +56,7 @@ public class RenderTurretCam
             GuiUtils.drawTexturedModalRect(-256, -256, 0.0F, 0, 0, 256, 256);
             GlStateManager.popMatrix();
         } else {
-            Minecraft.getMinecraft().renderEngine.bindTexture(Resources.GUI_TCU_CAM_NA.getResource());
+            Minecraft.getMinecraft().renderEngine.bindTexture(Resources.GUI_TCU_CAM_NA.resource);
             GlStateManager.pushMatrix();
             GlStateManager.translate(x, y, 0);
             GlStateManager.scale(1.0F / 256.0F * width, 4.0F / 256.0F * height, 1.0F);

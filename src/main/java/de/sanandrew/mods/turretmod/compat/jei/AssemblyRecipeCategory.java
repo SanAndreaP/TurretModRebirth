@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.compat.jei;
 
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -34,7 +35,7 @@ public class AssemblyRecipeCategory<T extends IRecipeWrapper>
     private final IDrawableStatic background;
 
     public AssemblyRecipeCategory(IGuiHelper guiHelper) {
-        this.background = guiHelper.createDrawable(Resources.JEI_ASSEMBLY_BKG.getResource(), 0, 0, 164, 130);
+        this.background = guiHelper.createDrawable(Resources.JEI_ASSEMBLY_BKG.resource, 0, 0, 164, 130);
     }
 
     @Override
@@ -44,7 +45,7 @@ public class AssemblyRecipeCategory<T extends IRecipeWrapper>
 
     @Override
     public String getTitle() {
-        return Lang.translate(Lang.JEI_ASSEMBLY_TITLE);
+        return LangUtils.translate(Lang.JEI_ASSEMBLY_TITLE);
     }
 
     @Override

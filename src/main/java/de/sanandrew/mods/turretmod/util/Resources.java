@@ -78,18 +78,14 @@ public enum Resources
 
     JEI_ASSEMBLY_BKG("textures/gui/turretassembly/jei_crafting.png");
 
-    private final ResourceLocation location;
+    public final ResourceLocation resource;
 
-    Resources(String texture) {
-        this.location = new ResourceLocation(TmrConstants.ID, texture);
-    }
-
-    public ResourceLocation getResource() {
-        return this.location;
+    Resources(String location) {
+        this.resource = new ResourceLocation(TmrConstants.ID, location);
     }
 
     @Override
     public String toString() {
-        return this.location.toString();
+        return this.resource.toString();
     }
 }

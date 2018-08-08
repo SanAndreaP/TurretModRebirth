@@ -41,7 +41,7 @@ class GuiAssemblyCategoryTab
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
-            mc.renderEngine.bindTexture(Resources.GUI_ASSEMBLY_CRF.getResource());
+            mc.renderEngine.bindTexture(Resources.GUI_ASSEMBLY_CRF.resource);
 
             this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             int hoverState = this.getHoverState(this.hovered);

@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
@@ -61,17 +62,17 @@ public class ItemTurret
 
         ITurret turret = TurretRegistry.INSTANCE.getTurret(stack);
         if( turret != null ) {
-            tooltip.add(Lang.translate(Lang.TURRET_NAME.get(turret.getName())));
+            tooltip.add(LangUtils.translate(Lang.TURRET_NAME.get(turret.getName())));
         }
 
         String name = getTurretName(stack);
         if( name != null ) {
-            tooltip.add(String.format(Lang.translate("%s.turret_name", this.getUnlocalizedName()), name));
+            tooltip.add(String.format(LangUtils.translate("%s.turret_name", this.getUnlocalizedName()), name));
         }
 
         Float health = getTurretHealth(stack);
         if( health != null ) {
-            tooltip.add(String.format(Lang.translate("%s.health", this.getUnlocalizedName()), health));
+            tooltip.add(String.format(LangUtils.translate("%s.health", this.getUnlocalizedName()), health));
         }
     }
 

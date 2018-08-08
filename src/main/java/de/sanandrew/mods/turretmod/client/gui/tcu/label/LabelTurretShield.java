@@ -7,6 +7,7 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu.label;
 
 import de.sanandrew.mods.sanlib.lib.ColorObj;
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelElement;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.turret.shieldgen.ShieldTurret;
@@ -57,9 +58,9 @@ public class LabelTurretShield
 
         if( shield != null ) {
             if( shield.isInRecovery() ) {
-                return Lang.translate(Lang.TCU_LABEL_TURRETSHIELD_RECV, String.format("%.0f %%", shield.getRecovery() * 100.0F));
+                return LangUtils.translate(Lang.TCU_LABEL_TURRETSHIELD_RECV, String.format("%.0f %%", shield.getRecovery() * 100.0F));
             } else {
-                return Lang.translate(Lang.TCU_LABEL_TURRETSHIELD, String.format("%.2f/%.2f", shield.getValue(), shield.getMaxValue()));
+                return LangUtils.translate(Lang.TCU_LABEL_TURRETSHIELD, String.format("%.2f/%.2f", shield.getValue(), shield.getMaxValue()));
             }
         } else {
             return "";

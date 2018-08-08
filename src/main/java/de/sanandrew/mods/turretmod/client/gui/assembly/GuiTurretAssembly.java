@@ -9,15 +9,17 @@
 package de.sanandrew.mods.turretmod.client.gui.assembly;
 
 import de.sanandrew.mods.sanlib.lib.Tuple;
+import de.sanandrew.mods.sanlib.lib.client.ShaderHelper;
 import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.assembly.IRecipeEntry;
 import de.sanandrew.mods.turretmod.api.assembly.IRecipeGroup;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiSlimButton;
 import de.sanandrew.mods.turretmod.client.shader.ShaderItemAlphaOverride;
-import de.sanandrew.mods.turretmod.client.util.ShaderHelper;
+import de.sanandrew.mods.turretmod.client.util.Shaders;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketAssemblyToggleAutomate;
@@ -120,9 +122,9 @@ public class GuiTurretAssembly
 
         this.frDetails = new FontRenderer(this.mc.gameSettings, new ResourceLocation("textures/font/ascii.png"), this.mc.getTextureManager(), true);
 
-        this.buttonList.add(this.cancelTask = new GuiSlimButton(this.buttonList.size(), this.guiLeft + 156, this.guiTop + 55, 50, Lang.translate(Lang.TASSEMBLY_BTN_CANCEL.get())));
-        this.buttonList.add(this.automate = new GuiSlimButton(this.buttonList.size(), this.guiLeft + 156, this.guiTop + 68, 50, Lang.translate(Lang.TASSEMBLY_BTN_AUTOENABLE.get())));
-        this.buttonList.add(this.manual = new GuiSlimButton(this.buttonList.size(), this.guiLeft + 156, this.guiTop + 81, 50, Lang.translate(Lang.TASSEMBLY_BTN_AUTODISABLE.get())));
+        this.buttonList.add(this.cancelTask = new GuiSlimButton(this.buttonList.size(), this.guiLeft + 156, this.guiTop + 55, 50, LangUtils.translate(Lang.TASSEMBLY_BTN_CANCEL.get())));
+        this.buttonList.add(this.automate = new GuiSlimButton(this.buttonList.size(), this.guiLeft + 156, this.guiTop + 68, 50, LangUtils.translate(Lang.TASSEMBLY_BTN_AUTOENABLE.get())));
+        this.buttonList.add(this.manual = new GuiSlimButton(this.buttonList.size(), this.guiLeft + 156, this.guiTop + 81, 50, LangUtils.translate(Lang.TASSEMBLY_BTN_AUTODISABLE.get())));
 
         this.buttonList.add(this.groupUp = new GuiAssemblyTabNav(this.buttonList.size(), this.guiLeft + 13, this.guiTop + 9, false));
 
@@ -131,7 +133,7 @@ public class GuiTurretAssembly
         Arrays.sort(groups, Comparator.comparing(IRecipeGroup::getName));
         this.groupBtns = new HashMap<>(1 + (int) (groups.length / 0.75F));
         for( IRecipeGroup grp : groups ) {
-            GuiAssemblyCategoryTab tab = new GuiAssemblyCategoryTab(this.buttonList.size(), this.guiLeft + 9, this.guiTop + 19 + pos * 15 - 15 * scrollGroupPos, grp.getIcon(), Lang.translate(grp.getName()));
+            GuiAssemblyCategoryTab tab = new GuiAssemblyCategoryTab(this.buttonList.size(), this.guiLeft + 9, this.guiTop + 19 + pos * 15 - 15 * scrollGroupPos, grp.getIcon(), LangUtils.translate(grp.getName()));
             this.groupBtns.put(tab, grp);
             this.buttonList.add(tab);
 
@@ -198,7 +200,7 @@ public class GuiTurretAssembly
         double procPerc = this.ticksCrafted / (double) this.maxTicksCraft;
         int procBarX = Math.max(0, Math.min(50, MathHelper.ceil(procPerc * 50.0D)));
 
-        this.mc.getTextureManager().bindTexture(Resources.GUI_ASSEMBLY_CRF.getResource());
+        this.mc.getTextureManager().bindTexture(Resources.GUI_ASSEMBLY_CRF.resource);
 
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
@@ -255,7 +257,7 @@ public class GuiTurretAssembly
                         }
                     }
                 } else {
-                    this.mc.getTextureManager().bindTexture(Resources.GUI_ASSEMBLY_CRF.getResource());
+                    this.mc.getTextureManager().bindTexture(Resources.GUI_ASSEMBLY_CRF.resource);
 
                     GlStateManager.disableDepth();
                     GlStateManager.enableBlend();
@@ -272,13 +274,13 @@ public class GuiTurretAssembly
 
         if( !this.assembly.hasAutoUpgrade() ) {
             this.shaderCallback.alphaMulti = 0.35F;
-            ShaderHelper.useShader(ShaderHelper.alphaOverride, this.shaderCallback::call);
+            ShaderHelper.useShader(Shaders.alphaOverride, this.shaderCallback::call);
             RenderUtils.renderStackInGui(this.upgIconAuto, this.guiLeft + 14, this.guiTop + 100, 1.0F);
             ShaderHelper.releaseShader();
         }
         if( !this.assembly.hasSpeedUpgrade() ) {
             this.shaderCallback.alphaMulti = 0.35F;
-            ShaderHelper.useShader(ShaderHelper.alphaOverride, this.shaderCallback::call);
+            ShaderHelper.useShader(Shaders.alphaOverride, this.shaderCallback::call);
             RenderUtils.renderStackInGui(this.upgIconSpeed, this.guiLeft + 14, this.guiTop + 118, 1.0F);
             ShaderHelper.releaseShader();
         }
@@ -292,7 +294,7 @@ public class GuiTurretAssembly
 
                     RenderUtils.renderStackInGui(filterStack, this.guiLeft + 36 + x * 18, this.guiTop + 100 + y * 18, 1.0D);
 
-                    this.mc.getTextureManager().bindTexture(Resources.GUI_ASSEMBLY_CRF.getResource());
+                    this.mc.getTextureManager().bindTexture(Resources.GUI_ASSEMBLY_CRF.resource);
                     GlStateManager.disableDepth();
                     GlStateManager.enableBlend();
                     GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
@@ -304,7 +306,7 @@ public class GuiTurretAssembly
             }
         } else {
             this.shaderCallback.alphaMulti = 0.35F;
-            ShaderHelper.useShader(ShaderHelper.alphaOverride, this.shaderCallback::call);
+            ShaderHelper.useShader(Shaders.alphaOverride, this.shaderCallback::call);
             RenderUtils.renderStackInGui(this.upgIconFilter, this.guiLeft + 202, this.guiTop + 100, 1.0F);
             ShaderHelper.releaseShader();
         }
@@ -315,7 +317,7 @@ public class GuiTurretAssembly
                 cnt = String.valueOf('\u221E');
             }
 
-            this.frDetails.drawString(Lang.translate(Lang.TASSEMBLY_CRAFTING.get()), this.guiLeft + 156, this.guiTop + 40, 0xFF303030);
+            this.frDetails.drawString(LangUtils.translate(Lang.TASSEMBLY_CRAFTING.get()), this.guiLeft + 156, this.guiTop + 40, 0xFF303030);
             RenderUtils.renderStackInGui(this.currCrfItem, this.guiLeft + 190, this.guiTop + 36, 1.0F, this.fontRenderer, cnt, true);
 
             this.cancelTask.enabled = true;
@@ -494,7 +496,7 @@ public class GuiTurretAssembly
         }
 
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(Resources.GUI_ASSEMBLY_CRF.getResource());
+        this.mc.getTextureManager().bindTexture(Resources.GUI_ASSEMBLY_CRF.resource);
         GlStateManager.pushMatrix();
         if( ingredients.length < 1 ) {
             GlStateManager.translate(0.0F, -10.0F, 0.0F);
@@ -531,7 +533,7 @@ public class GuiTurretAssembly
             return;
         }
         String amount = String.format("%d / %d RF", stg.getEnergyStored(), stg.getMaxEnergyStored());
-        String consumption = Lang.translate(Lang.TASSEMBLY_RF_USING.get(), this.assembly.getFluxConsumption() * (this.assembly.hasSpeedUpgrade() ? 4 : 1));
+        String consumption = LangUtils.translate(Lang.TASSEMBLY_RF_USING.get(), this.assembly.getFluxConsumption() * (this.assembly.hasSpeedUpgrade() ? 4 : 1));
 
         int textWidth = Math.max(this.fontRenderer.getStringWidth(amount), this.fontRenderer.getStringWidth(consumption));
         int xPos = mouseX - 12 - textWidth;

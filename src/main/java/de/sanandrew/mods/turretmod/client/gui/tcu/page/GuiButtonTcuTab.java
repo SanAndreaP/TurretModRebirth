@@ -41,7 +41,7 @@ public class GuiButtonTcuTab
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            mc.renderEngine.bindTexture(Resources.GUI_TCU_BUTTONS.getResource());
+            mc.renderEngine.bindTexture(Resources.GUI_TCU_BUTTONS.resource);
             this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             int hoverState = this.getHoverState(this.hovered);
             if( hoverState != 1 ) {

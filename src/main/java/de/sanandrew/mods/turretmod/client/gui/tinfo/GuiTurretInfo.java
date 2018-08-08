@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.client.gui.tinfo;
 import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
@@ -110,7 +111,7 @@ public class GuiTurretInfo
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.drawDefaultBackground();
 
-        this.mc.renderEngine.bindTexture(Resources.GUI_TURRETINFO.getResource());
+        this.mc.renderEngine.bindTexture(Resources.GUI_TURRETINFO.resource);
 
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, X_SIZE, Y_SIZE);
@@ -134,7 +135,7 @@ public class GuiTurretInfo
             this.entry.drawPage(mouseX - this.entryX, mouseY - this.entryY, Math.round(this.scroll * this.dHeight), partTicks);
         } else if( this.category != null ) {
             this.dHeight = this.entryButtons.size() * 14 + 20 - ITurretInfoEntry.MAX_ENTRY_HEIGHT;
-            this.fontRenderer.drawString(TextFormatting.ITALIC + Lang.translate(this.category.getTitle()), 2, 2, 0xFF33AA33, false);
+            this.fontRenderer.drawString(TextFormatting.ITALIC + LangUtils.translate(this.category.getTitle()), 2, 2, 0xFF33AA33, false);
             Gui.drawRect(2, 12, ITurretInfoEntry.MAX_ENTRY_WIDTH - 2, 13, 0xFF33AA33);
 
         }
@@ -169,7 +170,7 @@ public class GuiTurretInfo
             GlStateManager.pushMatrix();
             GlStateManager.translate(mouseX + 12, mouseY - 12, 32.0F);
 
-            String title = Lang.translate(this.categoryHighlight.getTitle());
+            String title = LangUtils.translate(this.categoryHighlight.getTitle());
             int bkgColor = 0xF0101000;
             int lightBg = 0x5050FF00;
             int darkBg = (lightBg & 0xFEFEFE) >> 1 | lightBg & 0xFF000000;
@@ -315,7 +316,7 @@ public class GuiTurretInfo
 
     @Override
     public void drawMiniItem(int x, int y, int mouseX, int mouseY, int scrollY, @Nonnull ItemStack stack, boolean drawTooltip) {
-        this.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
+        this.mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.resource);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.pushMatrix();
         GlStateManager.translate(x - 0.5F, y - 0.5F, 0.0F);
@@ -417,7 +418,7 @@ public class GuiTurretInfo
                 boolean over = mouseX >= this.x && mouseX < this.x + this.width && mouseY >= this.y && mouseY < this.y + this.height;
 
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-                mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
+                mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.resource);
                 GlStateManager.enableBlend();
                 GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
                 switch( this.buttonType ) {

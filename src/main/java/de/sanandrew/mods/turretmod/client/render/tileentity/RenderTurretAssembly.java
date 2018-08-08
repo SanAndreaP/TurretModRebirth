@@ -9,12 +9,13 @@
 package de.sanandrew.mods.turretmod.client.render.tileentity;
 
 import de.sanandrew.mods.sanlib.lib.Tuple;
+import de.sanandrew.mods.sanlib.lib.client.ShaderHelper;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.client.model.block.ModelTurretAssembly;
 import de.sanandrew.mods.turretmod.client.shader.ShaderItemAlphaOverride;
-import de.sanandrew.mods.turretmod.client.util.ShaderHelper;
+import de.sanandrew.mods.turretmod.client.util.Shaders;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
@@ -51,7 +52,7 @@ public class RenderTurretAssembly
         armX = Math.max(2.0F, Math.min(12.0F, tile.prevRobotArmX + (tile.robotArmX - tile.prevRobotArmX) * partTicks)) - 7.0F;
         armZ = Math.max(-11.0F, Math.min(-3.0F, tile.prevRobotArmY + (tile.robotArmY - tile.prevRobotArmY) * partTicks));
 
-        this.bindTexture(Resources.TILE_TURRET_ASSEMBLY.getResource());
+        this.bindTexture(Resources.TILE_TURRET_ASSEMBLY.resource);
         this.modelBlock.render(0.0625F, tile, armX, armZ);
 
         renderItem(tile);
@@ -139,7 +140,7 @@ public class RenderTurretAssembly
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             this.shaderCallback.alphaMulti = Math.max(0.0F, (assembly.getTicksCrafted() - 15.0F) / (assembly.getMaxTicksCrafted() - 15.0F));
-            ShaderHelper.useShader(ShaderHelper.alphaOverride, this.shaderCallback::call);
+            ShaderHelper.useShader(Shaders.alphaOverride, this.shaderCallback::call);
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, OpenGlHelper.lastBrightnessX, OpenGlHelper.lastBrightnessY);
             RenderUtils.renderStackInWorld(crfStack, 0.0D, 0.802D, 0.0D, -90.0F, 180.0F, 0.0F, 0.35D);
             ShaderHelper.releaseShader();

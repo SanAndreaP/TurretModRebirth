@@ -7,6 +7,7 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu.page;
 
 import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
@@ -54,13 +55,13 @@ public abstract class GuiTargets<T>
     @Override
     public void initGui(IGuiTcuInst<?> gui) {
         this.whitelist = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 7, gui.getPosY() + 190, 184, 0,
-                                                            Resources.GUI_TCU_TARGETS.getResource(), Lang.translate(Lang.TCU_BTN.get("whitelist"))));
+                                                            Resources.GUI_TCU_TARGETS.resource, LangUtils.translate(Lang.TCU_BTN.get("whitelist"))));
         this.blacklist = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 7, gui.getPosY() + 190, 202, 0,
-                                                            Resources.GUI_TCU_TARGETS.getResource(), Lang.translate(Lang.TCU_BTN.get("blacklist"))));
+                                                            Resources.GUI_TCU_TARGETS.resource, LangUtils.translate(Lang.TCU_BTN.get("blacklist"))));
         this.selectAll = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 26, gui.getPosY() + 190, 220, 0,
-                                                            Resources.GUI_TCU_TARGETS.getResource(), Lang.translate(Lang.TCU_BTN.get("select_all"))));
+                                                            Resources.GUI_TCU_TARGETS.resource, LangUtils.translate(Lang.TCU_BTN.get("select_all"))));
         this.deselectAll = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 45, gui.getPosY() + 190, 238, 0,
-                                                              Resources.GUI_TCU_TARGETS.getResource(), Lang.translate(Lang.TCU_BTN.get("deselect_all"))));
+                                                              Resources.GUI_TCU_TARGETS.resource, LangUtils.translate(Lang.TCU_BTN.get("deselect_all"))));
 
         this.searchBar = new GuiTextField(0, gui.getFontRenderer(), gui.getPosX() + 8, gui.getPosY() + 40, 160, 10);
         this.searchBar.setMaxStringLength(1024);
@@ -103,7 +104,7 @@ public abstract class GuiTargets<T>
             this.scroll = Math.max(0.0F, Math.min(1.0F, (mouseY - 2 - scrollAreaY) / (float)scrollHeight));
         }
 
-        gui.getGui().mc.renderEngine.bindTexture(Resources.GUI_TCU_TARGETS.getResource());
+        gui.getGui().mc.renderEngine.bindTexture(Resources.GUI_TCU_TARGETS.resource);
 
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         guiInst.drawTexturedModalRect(gui.getPosX(), gui.getPosY(), 0, 0, gui.getWidth(), gui.getHeight());
@@ -137,7 +138,7 @@ public abstract class GuiTargets<T>
             }
 
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            guiInst.mc.renderEngine.bindTexture(Resources.GUI_TCU_TARGETS.getResource());
+            guiInst.mc.renderEngine.bindTexture(Resources.GUI_TCU_TARGETS.resource);
             guiInst.drawTexturedModalRect(scrollAreaX + 1, scrollAreaY + 1 + offsetY, 176, btnTexOffY, 8, 8);
 
             this.drawEntry(gui, entry.getKey(), scrollAreaX + 10, scrollAreaY + 1 + offsetY);

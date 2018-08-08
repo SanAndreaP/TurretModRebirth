@@ -64,6 +64,6 @@ public class ModelTurretMinigun
 
     @Override
     public ResourceLocation getModelLocation() {
-        return Resources.TURRET_T2_MINIGUN_MODEL.getResource();
+        return Resources.TURRET_T2_MINIGUN_MODEL.resource;
     }
 }

@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.item;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.util.Lang;
@@ -46,7 +47,7 @@ public abstract class ItemAssemblyUpgrade
     public void addInformation(@Nonnull ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
 
-        tooltip.add(Lang.translate(this.getUnlocalizedName() + ".ttip"));
+        tooltip.add(LangUtils.translate(this.getUnlocalizedName() + ".ttip"));
     }
 
     public static class Automation
@@ -85,9 +86,9 @@ public abstract class ItemAssemblyUpgrade
 
             NBTTagCompound nbt = stack.getTagCompound();
             if( nbt != null && nbt.hasKey("filteredStacks") ) {
-                tooltip.add(TextFormatting.ITALIC + Lang.translate(this.getUnlocalizedName() + ".conf"));
+                tooltip.add(TextFormatting.ITALIC + LangUtils.translate(this.getUnlocalizedName() + ".conf"));
             } else {
-                tooltip.add(Lang.translate(this.getUnlocalizedName() + ".inst"));
+                tooltip.add(LangUtils.translate(this.getUnlocalizedName() + ".inst"));
             }
         }
 

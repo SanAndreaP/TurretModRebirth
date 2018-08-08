@@ -32,6 +32,6 @@ public class ModelTurretLaser
 
     @Override
     public ResourceLocation getModelLocation() {
-        return Resources.TURRET_T3_LASER_MODEL.getResource();
+        return Resources.TURRET_T3_LASER_MODEL.resource;
     }
 }

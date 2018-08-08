@@ -18,6 +18,6 @@ public class ModelTurretShieldgen
 
     @Override
     public ResourceLocation getModelLocation() {
-        return Resources.TURRET_T2_SHIELDGEN_MODEL.getResource();
+        return Resources.TURRET_T2_SHIELDGEN_MODEL.resource;
     }
 }

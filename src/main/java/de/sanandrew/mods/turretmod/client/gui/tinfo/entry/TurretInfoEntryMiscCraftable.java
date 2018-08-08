@@ -12,6 +12,7 @@ import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.CraftingUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
 import de.sanandrew.mods.turretmod.util.Lang;
@@ -72,7 +73,7 @@ public class TurretInfoEntryMiscCraftable
 
     @Override
     public String getTitle() {
-        return Lang.translate(this.title);
+        return LangUtils.translate(this.title);
     }
 
     @Override
@@ -150,22 +151,22 @@ public class TurretInfoEntryMiscCraftable
     public void drawPage(int mouseX, int mouseY, int scrollY, float partTicks) {
         Minecraft mc = this.guiInfo.__getMc();
         
-        mc.fontRenderer.drawString(TextFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 2, 0xFF0080BB);
+        mc.fontRenderer.drawString(TextFormatting.ITALIC + LangUtils.translate(this.getTitle()), 2, 2, 0xFF0080BB);
         Gui.drawRect(2, 12, MAX_ENTRY_WIDTH - 2, 13, 0xFF0080BB);
 
-        mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
+        mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.resource);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.guiInfo.__drawTexturedRect(2, 16, 192, 18, 34, 34);
 
         RenderUtils.renderStackInGui(this.icon, 3, 17, 2.0F);
 
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_WORKBENCH.get()), 42, 16, 0xFF6A6A6A, false);
+        mc.fontRenderer.drawString(LangUtils.translate(Lang.TINFO_ENTRY_WORKBENCH.get()), 42, 16, 0xFF6A6A6A, false);
 
         this.drawHeight = 27 + 9 * this.crafting.<Integer>getValue(2);
 
         Gui.drawRect(2, this.drawHeight, MAX_ENTRY_WIDTH - 2, this.drawHeight + 1, 0xFF0080BB);
 
-        String text = Lang.translate(this.desc).replace("\\n", "\n");
+        String text = LangUtils.translate(this.desc).replace("\\n", "\n");
         mc.fontRenderer.drawSplitString(text, 2, this.drawHeight + 3, MAX_ENTRY_WIDTH - 2, 0xFF000000);
         this.drawHeight = mc.fontRenderer.getWordWrappedHeight(text, MAX_ENTRY_WIDTH - 2) + this.drawHeight + 3 + 2;
 

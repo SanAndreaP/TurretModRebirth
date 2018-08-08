@@ -6,6 +6,7 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.gui.tcu.page;
 
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiButtonIcon;
@@ -37,12 +38,12 @@ public class GuiTargetCreatures
 
         int x = gui.getPosX() + gui.getWidth();
         int y = gui.getPosY() + 190;
-        this.selectMobs = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), x - 63, y, 202, 36, Resources.GUI_TCU_TARGETS.getResource(),
-                                                             Lang.translate(Lang.TCU_BTN.get("select_mobs"))));
-        this.selectAnimals = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), x - 44, y, 220, 36, Resources.GUI_TCU_TARGETS.getResource(),
-                                                                Lang.translate(Lang.TCU_BTN.get("select_animals"))));
-        this.selectOther = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), x - 25, y, 238, 36, Resources.GUI_TCU_TARGETS.getResource(),
-                                                              Lang.translate(Lang.TCU_BTN.get("select_other"))));
+        this.selectMobs = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), x - 63, y, 202, 36, Resources.GUI_TCU_TARGETS.resource,
+                                                             LangUtils.translate(Lang.TCU_BTN.get("select_mobs"))));
+        this.selectAnimals = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), x - 44, y, 220, 36, Resources.GUI_TCU_TARGETS.resource,
+                                                                LangUtils.translate(Lang.TCU_BTN.get("select_animals"))));
+        this.selectOther = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), x - 25, y, 238, 36, Resources.GUI_TCU_TARGETS.resource,
+                                                              LangUtils.translate(Lang.TCU_BTN.get("select_other"))));
     }
 
     @Override
@@ -86,7 +87,7 @@ public class GuiTargetCreatures
 
     @Override
     protected boolean isEntryVisible(Class<? extends Entity> type, String srcText) {
-        return Lang.translateEntityCls(type).toUpperCase().contains(srcText.toUpperCase());
+        return LangUtils.translateEntityCls(type).toUpperCase().contains(srcText.toUpperCase());
     }
 
     @Override
@@ -98,7 +99,7 @@ public class GuiTargetCreatures
             textColor = 0xFF00A000;
         }
 
-        gui.getFontRenderer().drawString(Lang.translateEntityCls(type), posX, posY, textColor, false);
+        gui.getFontRenderer().drawString(LangUtils.translateEntityCls(type), posX, posY, textColor, false);
     }
 
     @Override
@@ -118,7 +119,7 @@ public class GuiTargetCreatures
         public int compare(Class<? extends Entity> o1, Class<? extends Entity> o2) {
             if( IMob.class.isAssignableFrom(o1) ) {
                 if( IMob.class.isAssignableFrom(o2) ) {
-                    return Lang.translateEntityCls(o1).compareTo(Lang.translateEntityCls(o2));
+                    return LangUtils.translateEntityCls(o1).compareTo(LangUtils.translateEntityCls(o2));
                 } else {
                     return -1;
                 }
@@ -126,7 +127,7 @@ public class GuiTargetCreatures
                 if( IMob.class.isAssignableFrom(o2) ) {
                     return 1;
                 } else if( IAnimals.class.isAssignableFrom(o2) ) {
-                    return Lang.translateEntityCls(o1).compareTo(Lang.translateEntityCls(o2));
+                    return LangUtils.translateEntityCls(o1).compareTo(LangUtils.translateEntityCls(o2));
                 } else {
                     return -1;
                 }
@@ -134,7 +135,7 @@ public class GuiTargetCreatures
                 if( IMob.class.isAssignableFrom(o2) || IAnimals.class.isAssignableFrom(o2) ) {
                     return 1;
                 } else {
-                    return Lang.translateEntityCls(o1).compareTo(Lang.translateEntityCls(o2));
+                    return LangUtils.translateEntityCls(o1).compareTo(LangUtils.translateEntityCls(o2));
                 }
             }
         }

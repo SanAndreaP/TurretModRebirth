@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
@@ -41,7 +42,7 @@ public class ItemTurretUpgrade
     @SuppressWarnings("unchecked")
     public void addInformation(@Nonnull ItemStack stack, World world, List lines, ITooltipFlag advInfo) {
         ITurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(stack);
-        lines.add(Lang.translate(String.format("%s.%s.name", this.getUnlocalizedName(stack), upg.getName())));
+        lines.add(LangUtils.translate(String.format("%s.%s.name", this.getUnlocalizedName(stack), upg.getName())));
         super.addInformation(stack, world, lines, advInfo);
     }
 

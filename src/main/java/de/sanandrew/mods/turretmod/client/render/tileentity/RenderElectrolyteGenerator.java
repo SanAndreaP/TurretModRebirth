@@ -59,7 +59,7 @@ public class RenderElectrolyteGenerator
         GlStateManager.disableCull();
         GlStateManager.disableLighting();
 
-        Minecraft.getMinecraft().getTextureManager().bindTexture(Resources.TILE_ELECTROLYTE_GEN_WIRE.getResource());
+        Minecraft.getMinecraft().getTextureManager().bindTexture(Resources.TILE_ELECTROLYTE_GEN_WIRE.resource);
         drawParaboleWire(10);
 
         GlStateManager.enableLighting();

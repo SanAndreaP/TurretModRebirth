@@ -55,30 +55,30 @@ public final class TurretInfoCategoryRegistry
     public static void initialize(ITurretInfoCategoryRegistry registry) {
         {
             ITurretInfoEntry[] entries = TurretRegistry.INSTANCE.getTurrets().stream().map(TurretInfoEntryTurret::new).toArray(ITurretInfoEntry[]::new);
-            registry.registerCategory(Resources.TINFO_GRP_TURRET.getResource(), Lang.TINFO_CATEGORY_NAME.get("turrets")).addEntry(entries);
+            registry.registerCategory(Resources.TINFO_GRP_TURRET.resource, Lang.TINFO_CATEGORY_NAME.get("turrets")).addEntry(entries);
         }
 
         {
             ITurretInfoEntry[] entries = AmmunitionRegistry.INSTANCE.getGroups().stream().map(TurretInfoEntryAmmo::new).toArray(ITurretInfoEntry[]::new);
-            registry.registerCategory(Resources.TINFO_GRP_AMMO.getResource(), Lang.TINFO_CATEGORY_NAME.get("ammo")).addEntry(entries);
+            registry.registerCategory(Resources.TINFO_GRP_AMMO.resource, Lang.TINFO_CATEGORY_NAME.get("ammo")).addEntry(entries);
         }
 
         {
             ITurretInfoEntry[] entries = UpgradeRegistry.INSTANCE.getUpgrades().stream().map(TurretInfoEntryUpgrade::new).toArray(ITurretInfoEntry[]::new);
 
-            registry.registerCategory(Resources.TINFO_GRP_UPGRADE.getResource(), Lang.TINFO_CATEGORY_NAME.get("upgrades"))
+            registry.registerCategory(Resources.TINFO_GRP_UPGRADE.resource, Lang.TINFO_CATEGORY_NAME.get("upgrades"))
                     .addEntry(new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.ASSEMBLY_UPG_AUTO)))
                     .addEntry(new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.ASSEMBLY_UPG_FILTER)))
                     .addEntry(new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.ASSEMBLY_UPG_SPEED)))
                     .addEntry(entries);
         }
 
-        registry.registerCategory(Resources.TINFO_GRP_MISC.getResource(), Lang.TINFO_CATEGORY_NAME.get("misc"))
+        registry.registerCategory(Resources.TINFO_GRP_MISC.resource, Lang.TINFO_CATEGORY_NAME.get("misc"))
                 .addEntry(new TurretInfoEntryMiscCraftable(getRecipe(new ItemStack(BlockRegistry.TURRET_ASSEMBLY))))
                 .addEntry(new TurretInfoEntryGenerator(getRecipe(new ItemStack(BlockRegistry.ELECTROLYTE_GENERATOR))))
                 .addEntry(new TurretInfoEntryMiscAssembleable(new ItemStack(ItemRegistry.TURRET_CONTROL_UNIT)));
 
-        registry.registerCategory(Resources.TINFO_GRP_INFO.getResource(), Lang.TINFO_CATEGORY_NAME.get("info")).addEntry(new TurretInfoEntryInfo());
+        registry.registerCategory(Resources.TINFO_GRP_INFO.resource, Lang.TINFO_CATEGORY_NAME.get("info")).addEntry(new TurretInfoEntryInfo());
     }
 
     @Override

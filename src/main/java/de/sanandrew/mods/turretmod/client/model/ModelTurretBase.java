@@ -94,6 +94,6 @@ public class ModelTurretBase
 	}
 
 	public ResourceLocation getModelLocation() {
-		return Resources.TURRET_T1_BASE_MODEL.getResource();
+		return Resources.TURRET_T1_BASE_MODEL.resource;
 	}
 }

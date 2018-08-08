@@ -8,6 +8,7 @@ package de.sanandrew.mods.turretmod.client.gui.tcu.page;
 
 import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
@@ -60,16 +61,16 @@ public class GuiInfo
         int center = gui.getPosX() + (gui.getWidth() - 56) / 2;
         int btnY = gui.getPosY() + 190;
         if( gui.hasPermision() ) {
-            this.dismantle = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center, btnY, 176, 50, Resources.GUI_TCU_INFO.getResource(),
-                                                                Lang.translate(Lang.TCU_BTN.get("dismantle"))));
-            this.setActive = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 19, btnY, 194, 50, Resources.GUI_TCU_INFO.getResource(),
-                                                                Lang.translate(Lang.TCU_BTN.get("activate"))));
-            this.setDeactive = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 19, btnY, 212, 50, Resources.GUI_TCU_INFO.getResource(),
-                                                                  Lang.translate(Lang.TCU_BTN.get("deactivate"))));
-            this.showRange = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 38, btnY, 176, 86, Resources.GUI_TCU_INFO.getResource(),
-                                                                Lang.translate(Lang.TCU_BTN.get("show_range"))));
-            this.hideRange = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 38, btnY, 194, 86, Resources.GUI_TCU_INFO.getResource(),
-                                                                Lang.translate(Lang.TCU_BTN.get("hide_range"))));
+            this.dismantle = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center, btnY, 176, 50, Resources.GUI_TCU_INFO.resource,
+                                                                LangUtils.translate(Lang.TCU_BTN.get("dismantle"))));
+            this.setActive = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 19, btnY, 194, 50, Resources.GUI_TCU_INFO.resource,
+                                                                LangUtils.translate(Lang.TCU_BTN.get("activate"))));
+            this.setDeactive = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 19, btnY, 212, 50, Resources.GUI_TCU_INFO.resource,
+                                                                  LangUtils.translate(Lang.TCU_BTN.get("deactivate"))));
+            this.showRange = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 38, btnY, 176, 86, Resources.GUI_TCU_INFO.resource,
+                                                                LangUtils.translate(Lang.TCU_BTN.get("show_range"))));
+            this.hideRange = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 38, btnY, 194, 86, Resources.GUI_TCU_INFO.resource,
+                                                                LangUtils.translate(Lang.TCU_BTN.get("hide_range"))));
         }
 
         this.setActive.visible = false;
@@ -99,7 +100,7 @@ public class GuiInfo
         int posX = gui.getPosX();
         int posY = gui.getPosY();
 
-        guiScreen.mc.renderEngine.bindTexture(Resources.GUI_TCU_INFO.getResource());
+        guiScreen.mc.renderEngine.bindTexture(Resources.GUI_TCU_INFO.resource);
 
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         guiScreen.drawTexturedModalRect(posX, posY, 0, 0, gui.getWidth(), gui.getHeight());
@@ -146,7 +147,7 @@ public class GuiInfo
         value = turretInst.getOwnerName();
         fontRenderer.drawString(value, posX + 20, posY + 128, 0xFF000000);
 
-        value = tgtProc.hasTarget() ? Lang.translate(Lang.ENTITY_NAME.get(tgtProc.getTargetName())) : "-n/a-";
+        value = tgtProc.hasTarget() ? LangUtils.translate(Lang.ENTITY_NAME.get(tgtProc.getTargetName())) : "-n/a-";
         if( fontRenderer.getStringWidth(value) > 149 ) {
             int rgt = 148 - fontRenderer.getStringWidth("...");
             fontRenderer.drawString("...", posX + 21 + rgt, posY + 140, 0xFF000000);
@@ -159,7 +160,7 @@ public class GuiInfo
         }
 
         if( this.infoStr != null && this.infoTimeShown >= System.currentTimeMillis() - 5000L ) {
-            String err = Lang.translate(this.infoStr);
+            String err = LangUtils.translate(this.infoStr);
             fontRenderer.drawSplitString(err, posX + 10 + (gui.getWidth() - 20 - Math.min(gui.getWidth() - 20, fontRenderer.getStringWidth(err))) / 2,
                                          posY + 160, gui.getWidth() - 25, 0xFFFF0000);
         } else {

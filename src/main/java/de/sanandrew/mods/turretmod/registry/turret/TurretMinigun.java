@@ -80,12 +80,12 @@ public class TurretMinigun
 
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {
-        return (turretInst.getEntity().hasCustomName() && turretInst.getEntity().getCustomNameTag().equalsIgnoreCase("silverchiren") ? Resources.TURRET_T2_MINIGUN_EE : Resources.TURRET_T2_MINIGUN).getResource();
+        return (turretInst.getEntity().hasCustomName() && turretInst.getEntity().getCustomNameTag().equalsIgnoreCase("silverchiren") ? Resources.TURRET_T2_MINIGUN_EE : Resources.TURRET_T2_MINIGUN).resource;
     }
 
     @Override
     public ResourceLocation getGlowTexture(ITurretInst turretInst) {
-        return Resources.TURRET_T2_MINIGUN_GLOW.getResource();
+        return Resources.TURRET_T2_MINIGUN_GLOW.resource;
     }
 
     @Override

@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.client.gui.tinfo;
 
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import de.sanandrew.mods.turretmod.util.Lang;
@@ -39,7 +40,7 @@ public class GuiButtonEntry
         this.entIndex = entryId;
         ITurretInfoEntry entry = gui.category.getEntry(id);
         this.icon = entry.getIcon();
-        this.displayString = Lang.translate(entry.getTitle());
+        this.displayString = LangUtils.translate(entry.getTitle());
     }
 
     @Override

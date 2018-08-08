@@ -37,12 +37,12 @@ public class TurretFlamethrower
 
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {
-        return Resources.TURRET_T3_FTHROWER.getResource();
+        return Resources.TURRET_T3_FTHROWER.resource;
     }
 
     @Override
     public ResourceLocation getGlowTexture(ITurretInst turretInst) {
-        return Resources.TURRET_T3_FTHROWER_GLOW.getResource();
+        return Resources.TURRET_T3_FTHROWER_GLOW.resource;
     }
 
     @Override

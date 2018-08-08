@@ -95,12 +95,12 @@ public class TurretForcefield
 
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {
-        return Resources.TURRET_T2_SHIELDGEN.getResource();
+        return Resources.TURRET_T2_SHIELDGEN.resource;
     }
 
     @Override
     public ResourceLocation getGlowTexture(ITurretInst turretInst) {
-        return Resources.TURRET_T2_SHIELDGEN_GLOW.getResource();
+        return Resources.TURRET_T2_SHIELDGEN_GLOW.resource;
     }
 
     @Override

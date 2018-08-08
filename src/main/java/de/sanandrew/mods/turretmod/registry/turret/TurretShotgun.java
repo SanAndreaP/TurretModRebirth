@@ -62,12 +62,12 @@ public class TurretShotgun
 
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {
-        return Resources.TURRET_T1_SHOTGUN.getResource();
+        return Resources.TURRET_T1_SHOTGUN.resource;
     }
 
     @Override
     public ResourceLocation getGlowTexture(ITurretInst turretInst) {
-        return Resources.TURRET_T1_SHOTGUN_GLOW.getResource();
+        return Resources.TURRET_T1_SHOTGUN_GLOW.resource;
     }
 
     @Override

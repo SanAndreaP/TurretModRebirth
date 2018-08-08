@@ -67,6 +67,6 @@ public class RenderFlame<T extends EntityProjectileFlame>
 
     @Override
     protected ResourceLocation getEntityTexture(T entity) {
-        return entity.purifying ? Resources.PROJECTILE_FLAME_BLUE.getResource() : Resources.PROJECTILE_FLAME_RED.getResource();
+        return entity.purifying ? Resources.PROJECTILE_FLAME_BLUE.resource : Resources.PROJECTILE_FLAME_RED.resource;
     }
 }

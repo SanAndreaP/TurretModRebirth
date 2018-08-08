@@ -35,12 +35,12 @@ public class TurretCryolator
 
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {
-        return Resources.TURRET_T1_SNOWBALL.getResource();
+        return Resources.TURRET_T1_SNOWBALL.resource;
     }
 
     @Override
     public ResourceLocation getGlowTexture(ITurretInst turretInst) {
-        return Resources.TURRET_T1_SNOWBALL_GLOW.getResource();
+        return Resources.TURRET_T1_SNOWBALL_GLOW.resource;
     }
 
     @Override

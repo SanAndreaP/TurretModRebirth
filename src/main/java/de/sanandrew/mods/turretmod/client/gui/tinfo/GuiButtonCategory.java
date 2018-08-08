@@ -8,9 +8,10 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tinfo;
 
+import de.sanandrew.mods.sanlib.lib.client.ShaderHelper;
 import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
-import de.sanandrew.mods.turretmod.client.util.ShaderHelper;
+import de.sanandrew.mods.turretmod.client.util.Shaders;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import net.minecraft.client.Minecraft;
@@ -54,7 +55,7 @@ public class GuiButtonCategory
         OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + TmrConfiguration.glSecondaryTextureUnit);
         GlStateManager.enableTexture2D();
         GlStateManager.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
-        ResourceLocation stencil = Resources.TINFO_GRP_STENCIL.getResource();
+        ResourceLocation stencil = Resources.TINFO_GRP_STENCIL.resource;
         texMgr.getTexture(stencil);
         ITextureObject stencilTex;
         texMgr.bindTexture(stencil);
@@ -101,7 +102,7 @@ public class GuiButtonCategory
             texture = GlStateManager.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
         }
 
-        ShaderHelper.useShader(ShaderHelper.categoryButton, this::doBtnShader);
+        ShaderHelper.useShader(Shaders.categoryButton, this::doBtnShader);
         GuiUtils.drawTexturedModalRect(x, y, zLevel * 2, 0, 0, 32, 32, s, s);
         ShaderHelper.releaseShader();
 

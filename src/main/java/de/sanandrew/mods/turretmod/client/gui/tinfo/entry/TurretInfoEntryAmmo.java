@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
@@ -88,24 +89,24 @@ public class TurretInfoEntryAmmo
         Minecraft mc = this.guiInfo.__getMc();
         ItemStack ammoItem = AmmunitionRegistry.INSTANCE.getAmmoItem(ammo);
 
-        mc.fontRenderer.drawString(TextFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 20, 0xFF0080BB);
+        mc.fontRenderer.drawString(TextFormatting.ITALIC + LangUtils.translate(this.getTitle()), 2, 20, 0xFF0080BB);
         Gui.drawRect(2, 30, MAX_ENTRY_WIDTH - 2, 31, 0xFF0080BB);
 
-        mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
+        mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.resource);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.guiInfo.__drawTexturedRect(2, 34, 192, 18, 34, 34);
 
         this.guiInfo.renderStack(ammoItem, 3, 35, 2.0F);
 
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_ROUNDS),                          42, 34, 0xFF6A6A6A, false);
+        mc.fontRenderer.drawString(LangUtils.translate(Lang.TINFO_ENTRY_ROUNDS), 42, 34, 0xFF6A6A6A, false);
         mc.fontRenderer.drawString(String.format("%d", ammo.getAmmoCapacity()),                      45, 43, 0xFF000000, false);
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_DPS),                             42, 54, 0xFF6A6A6A, false);
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_HEALTHVAL, ammo.getInfoDamage()), 45, 63, 0xFF000000, false);
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_TURRET),                          42, 74, 0xFF6A6A6A, false);
-        mc.fontRenderer.drawString(Lang.translate(Lang.TURRET_NAME.get(ammo.getTurret().getName())), 45, 83, 0xFF000000, false);
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_CRAFTING),                        42, 94, 0xFF6A6A6A, false);
+        mc.fontRenderer.drawString(LangUtils.translate(Lang.TINFO_ENTRY_DPS),                             42, 54, 0xFF6A6A6A, false);
+        mc.fontRenderer.drawString(LangUtils.translate(Lang.TINFO_ENTRY_HEALTHVAL, ammo.getInfoDamage()), 45, 63, 0xFF000000, false);
+        mc.fontRenderer.drawString(LangUtils.translate(Lang.TINFO_ENTRY_TURRET),                          42, 74, 0xFF6A6A6A, false);
+        mc.fontRenderer.drawString(LangUtils.translate(Lang.TURRET_NAME.get(ammo.getTurret().getName())), 45, 83, 0xFF000000, false);
+        mc.fontRenderer.drawString(LangUtils.translate(Lang.TINFO_ENTRY_CRAFTING),                        42, 94, 0xFF6A6A6A, false);
 
-        String text = Lang.translate(Lang.TINFO_ENTRY_AMMO_DESC.get(ammo.getInfoName())).replace("\\n", "\n");
+        String text = LangUtils.translate(Lang.TINFO_ENTRY_AMMO_DESC.get(ammo.getInfoName())).replace("\\n", "\n");
         mc.fontRenderer.drawSplitString(text, 2, 117, MAX_ENTRY_WIDTH - 2, 0xFF000000);
         this.drawHeight = mc.fontRenderer.getWordWrappedHeight(text, MAX_ENTRY_WIDTH - 2) + 2;
 

@@ -7,6 +7,7 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu.label;
 
 import de.sanandrew.mods.sanlib.lib.ColorObj;
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelElement;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
@@ -56,9 +57,9 @@ public class LabelTurretPersShield
         ShieldPersonal shield = turretInst.getUpgradeProcessor().getUpgradeInstance(Upgrades.SHIELD_PERSONAL);
 
         if( shield.isInRecovery() ) {
-            return Lang.translate(Lang.TCU_LABEL_PRSSHIELD_RECV, String.format("%.0f %%", shield.getRecoveryPercentage()));
+            return LangUtils.translate(Lang.TCU_LABEL_PRSSHIELD_RECV, String.format("%.0f %%", shield.getRecoveryPercentage()));
         } else {
-            return Lang.translate(Lang.TCU_LABEL_PRSSHIELD, String.format("%.2f/%.2f", shield.getValue(), ShieldPersonal.MAX_VALUE));
+            return LangUtils.translate(Lang.TCU_LABEL_PRSSHIELD, String.format("%.2f/%.2f", shield.getValue(), ShieldPersonal.MAX_VALUE));
         }
     }
 

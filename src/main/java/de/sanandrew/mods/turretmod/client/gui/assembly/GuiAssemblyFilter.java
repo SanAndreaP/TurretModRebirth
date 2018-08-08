@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.client.gui.assembly;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.inventory.ContainerAssemblyFilter;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
@@ -50,7 +51,7 @@ public class GuiAssemblyFilter
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.drawDefaultBackground();
 
-        this.mc.getTextureManager().bindTexture(Resources.GUI_ASSEMBLY_FLT.getResource());
+        this.mc.getTextureManager().bindTexture(Resources.GUI_ASSEMBLY_FLT.resource);
 
         this.drawTexturedModalRect(this.posX, this.posY, 0, 0, this.xSize, this.ySize);
 
@@ -63,8 +64,8 @@ public class GuiAssemblyFilter
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-        String s = Lang.translate(ItemRegistry.ASSEMBLY_UPG_FILTER.getUnlocalizedName() + ".name");
+        String s = LangUtils.translate(ItemRegistry.ASSEMBLY_UPG_FILTER.getUnlocalizedName() + ".name");
         this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 6, 4210752);
-        this.fontRenderer.drawString(Lang.translate(Lang.CONTAINER_INV.get()), 8, this.ySize - 96 + 3, 4210752);
+        this.fontRenderer.drawString(LangUtils.translate(Lang.CONTAINER_INV.get()), 8, this.ySize - 96 + 3, 4210752);
     }
 }

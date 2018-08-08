@@ -20,6 +20,6 @@ public class ModelTurretFlamethrower
 
 	@Override
 	public ResourceLocation getModelLocation() {
-		return Resources.TURRET_T3_FTHROWER_MODEL.getResource();
+		return Resources.TURRET_T3_FTHROWER_MODEL.resource;
 	}
 }

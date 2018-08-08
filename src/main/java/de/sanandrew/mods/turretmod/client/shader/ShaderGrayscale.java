@@ -6,7 +6,8 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.shader;
 
-import de.sanandrew.mods.turretmod.client.util.ShaderHelper;
+import de.sanandrew.mods.sanlib.lib.client.ShaderHelper;
+import de.sanandrew.mods.turretmod.client.util.Shaders;
 import de.sanandrew.mods.turretmod.util.Procedure;
 import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import net.minecraft.client.Minecraft;
@@ -46,7 +47,7 @@ public class ShaderGrayscale
             texture = GlStateManager.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
         }
 
-        ShaderHelper.useShader(ShaderHelper.grayscaleItem, shader -> this.drawGrayscale(shader, brightness));
+        ShaderHelper.useShader(Shaders.grayscaleItem, shader -> this.drawGrayscale(shader, brightness));
         renderer.work();
         ShaderHelper.releaseShader();
 

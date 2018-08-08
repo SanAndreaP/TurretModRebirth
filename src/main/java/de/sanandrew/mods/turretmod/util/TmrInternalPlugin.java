@@ -6,21 +6,21 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.util;
 
+import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconInst;
 import de.sanandrew.mods.turretmod.api.ITmrPlugin;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
 import de.sanandrew.mods.turretmod.api.assembly.ITurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelRegistry;
 import de.sanandrew.mods.turretmod.api.client.turret.ITurretRenderRegistry;
-import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoCategoryRegistry;
 import de.sanandrew.mods.turretmod.api.repairkit.IRepairKitRegistry;
 import de.sanandrew.mods.turretmod.api.turret.IGuiTcuRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
+import de.sanandrew.mods.turretmod.client.gui.lexicon.Categories;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuHelper;
 import de.sanandrew.mods.turretmod.client.gui.tcu.label.Labels;
-import de.sanandrew.mods.turretmod.client.gui.tinfo.TurretInfoCategoryRegistry;
 import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
 import de.sanandrew.mods.turretmod.event.TargetingEventHandler;
 import de.sanandrew.mods.turretmod.registry.ammo.Ammunitions;
@@ -74,8 +74,8 @@ public class TmrInternalPlugin
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void registerTurretInfoCategories(ITurretInfoCategoryRegistry registry) {
-        TurretInfoCategoryRegistry.initialize(registry);
+    public void registerLexicon(ILexiconInst registry) {
+        Categories.initialize(registry);
     }
 
     @Override

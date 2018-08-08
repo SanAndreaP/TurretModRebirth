@@ -37,7 +37,7 @@ public class ModelTurretShotgun
 
 	@Override
 	public ResourceLocation getModelLocation() {
-		return Resources.TURRET_T1_SHOTGUN_MODEL.getResource();
+		return Resources.TURRET_T1_SHOTGUN_MODEL.resource;
 	}
 
     @Override

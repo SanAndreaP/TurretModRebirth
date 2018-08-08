@@ -7,6 +7,7 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu.label;
 
 import de.sanandrew.mods.sanlib.lib.ColorObj;
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelElement;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.util.Lang;
@@ -45,6 +46,6 @@ public class LabelTurretName
     }
 
     private static String getName(ITurretInst turret) {
-        return turret.getEntity().hasCustomName() ? turret.getEntity().getCustomNameTag() : Lang.translate(Lang.TURRET_NAME.get(turret.getTurret().getName()));
+        return turret.getEntity().hasCustomName() ? turret.getEntity().getCustomNameTag() : LangUtils.translate(Lang.TURRET_NAME.get(turret.getTurret().getName()));
     }
 }

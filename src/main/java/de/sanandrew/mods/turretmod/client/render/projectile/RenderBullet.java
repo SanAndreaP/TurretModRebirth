@@ -99,6 +99,6 @@ public class RenderBullet<T extends EntityTurretProjectile>
 
     @Override
     protected ResourceLocation getEntityTexture(T entity) {
-        return Resources.PROJECTILE_BULLET.getResource();
+        return Resources.PROJECTILE_BULLET.resource;
     }
 }

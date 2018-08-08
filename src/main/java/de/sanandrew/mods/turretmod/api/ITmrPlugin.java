@@ -1,5 +1,6 @@
 package de.sanandrew.mods.turretmod.api;
 
+import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconInst;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
 import de.sanandrew.mods.turretmod.api.assembly.ITurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelRegistry;
@@ -31,7 +32,7 @@ public interface ITmrPlugin
     default void registerTcuEntries(IGuiTcuRegistry registry) { }
 
     @SideOnly(Side.CLIENT)
-    default void registerTurretInfoCategories(ITurretInfoCategoryRegistry registry) { }
+    default void registerLexicon(ILexiconInst registry) { }
 
     @SideOnly(Side.CLIENT)
     default void registerTurretRenderer(ITurretRenderRegistry<?> registry) { }

@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
 import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteRegistry;
@@ -76,8 +77,8 @@ public class TurretInfoEntryGenerator
 
         mc.fontRenderer.drawString(String.format("§e%s", GuiUtils.getTooltipWithoutShift(tooltipItem).get(0)), 22, 2, 0xFFFFFFFF, false);
         ElectrolyteRegistry.Fuel fuel = ElectrolyteRegistry.getFuel(tooltipItem);
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_EFFICIENCY.get(), fuel.effect), 22, 11, 0xFFFFFFFF, false);
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_DECAY.get(), MiscUtils.getTimeFromTicks(fuel.ticksProc)), 22, 20, 0xFFFFFFFF, false);
+        mc.fontRenderer.drawString(LangUtils.translate(Lang.TINFO_ENTRY_EFFICIENCY.get(), fuel.effect), 22, 11, 0xFFFFFFFF, false);
+        mc.fontRenderer.drawString(LangUtils.translate(Lang.TINFO_ENTRY_DECAY.get(), MiscUtils.getTimeFromTicks(fuel.ticksProc)), 22, 20, 0xFFFFFFFF, false);
         mc.fontRenderer.drawString(String.format("§a%s", GuiUtils.getTooltipWithoutShift(fuel.trash).get(0)), 32, 29, 0xFFFFFFFF, false);
         mc.fontRenderer.drawString(String.format("§d%s", GuiUtils.getTooltipWithoutShift(fuel.treasure).get(0)), 32, 38, 0xFFFFFFFF, false);
 
@@ -89,7 +90,7 @@ public class TurretInfoEntryGenerator
     }
 
     private void drawFuelItem(int x, int y, int mouseX, int mouseY, int scrollY, @Nonnull ItemStack stack) {
-        this.guiInfo.__getMc().getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
+        this.guiInfo.__getMc().getTextureManager().bindTexture(Resources.GUI_TURRETINFO.resource);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.guiInfo.__drawTexturedRect(x, y, 192, 0, 18, 18);
 

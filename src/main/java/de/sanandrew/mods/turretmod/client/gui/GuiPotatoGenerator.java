@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.gui;
 
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.inventory.ContainerElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteProcess;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
@@ -65,7 +66,7 @@ public class GuiPotatoGenerator
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partTicks, int mouseX, int mouseY) {
-        this.mc.getTextureManager().bindTexture(Resources.GUI_POTATOGEN.getResource());
+        this.mc.getTextureManager().bindTexture(Resources.GUI_POTATOGEN.resource);
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(this.guiLeft, this.guiTop, 0.0F);
@@ -93,15 +94,15 @@ public class GuiPotatoGenerator
         RenderHelper.disableStandardItemLighting();
 
         String eff = String.format("%.2f%%", this.currEffective / 9.0F * 100.0F);
-        this.fontRenderer.drawString(Lang.translate(Lang.ELECTROGEN_EFFECTIVE.get()), 8, 100, 0xFF606060, false);
+        this.fontRenderer.drawString(LangUtils.translate(Lang.ELECTROGEN_EFFECTIVE.get()), 8, 100, 0xFF606060, false);
         this.fontRenderer.drawString(eff, 150 - this.fontRenderer.getStringWidth(eff), 100, 0xFF606060, false);
         String rft = String.format("%d RF/t", this.generatedEnergy);
-        this.fontRenderer.drawString(Lang.translate(Lang.ELECTROGEN_POWERGEN.get()), 8, 110, 0xFF606060, false);
+        this.fontRenderer.drawString(LangUtils.translate(Lang.ELECTROGEN_POWERGEN.get()), 8, 110, 0xFF606060, false);
         this.fontRenderer.drawString(rft, 150 - this.fontRenderer.getStringWidth(rft), 110, 0xFF606060, false);
 
-        String s = this.generator.hasCustomName() ? this.generator.getName() : Lang.translate(this.generator.getName());
+        String s = this.generator.hasCustomName() ? this.generator.getName() : LangUtils.translate(this.generator.getName());
         this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 6, 0x404040);
-        this.fontRenderer.drawString(Lang.translate(Lang.CONTAINER_INV.get()), 8, this.ySize - 96 + 2, 0x404040);
+        this.fontRenderer.drawString(LangUtils.translate(Lang.CONTAINER_INV.get()), 8, this.ySize - 96 + 2, 0x404040);
 
         if( mouseX >= this.guiLeft + 156 && mouseX < this.guiLeft + 168 && mouseY >= this.guiTop + 75 && mouseY < this.guiTop + 134 ) {
             this.drawRFluxLabel(mouseX - this.guiLeft, mouseY - guiTop);

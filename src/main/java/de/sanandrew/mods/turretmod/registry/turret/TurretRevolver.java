@@ -81,12 +81,12 @@ public class TurretRevolver
 
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {
-        return Resources.TURRET_T2_REVOLVER.getResource();
+        return Resources.TURRET_T2_REVOLVER.resource;
     }
 
     @Override
     public ResourceLocation getGlowTexture(ITurretInst turretInst) {
-        return Resources.TURRET_T2_REVOLVER_GLOW.getResource();
+        return Resources.TURRET_T2_REVOLVER_GLOW.resource;
     }
 
     @Override

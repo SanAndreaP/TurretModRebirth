@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.util.Lang;
@@ -40,7 +41,7 @@ public class ItemTurretInfo
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(@Nonnull ItemStack stack, World world, List<String> list, ITooltipFlag advInfo) {
-        String[] lines = Lang.translate(this.getUnlocalizedName() + ".desc").split("\\\\n");
+        String[] lines = LangUtils.translate(this.getUnlocalizedName() + ".desc").split("\\\\n");
         list.addAll(Arrays.asList(lines));
 
         super.addInformation(stack, world, list, advInfo);

@@ -7,6 +7,7 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu.label;
 
 import de.sanandrew.mods.sanlib.lib.ColorObj;
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelElement;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.util.Lang;
@@ -48,7 +49,7 @@ public class LabelTurretHealth
     }
 
     private static String getLabel(ITurretInst turretInst) {
-        return Lang.translate(Lang.TCU_LABEL_HEALTH, String.format("%.2f/%.2f", turretInst.getEntity().getHealth(), turretInst.getEntity().getMaxHealth()));
+        return LangUtils.translate(Lang.TCU_LABEL_HEALTH, String.format("%.2f/%.2f", turretInst.getEntity().getHealth(), turretInst.getEntity().getMaxHealth()));
     }
 
     private static void addQuad(BufferBuilder buf, double minX, double minY, double maxX, double maxY, ColorObj clr) {

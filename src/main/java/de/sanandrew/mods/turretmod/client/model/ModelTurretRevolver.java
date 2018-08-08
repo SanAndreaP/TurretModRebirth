@@ -62,6 +62,6 @@ public class ModelTurretRevolver
 
 	@Override
 	public ResourceLocation getModelLocation() {
-		return Resources.TURRET_T2_REVOLVER_MODEL.getResource();
+		return Resources.TURRET_T2_REVOLVER_MODEL.resource;
 	}
 }

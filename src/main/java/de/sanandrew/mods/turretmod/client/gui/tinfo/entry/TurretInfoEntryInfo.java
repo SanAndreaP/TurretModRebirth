@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
@@ -70,18 +71,18 @@ public class TurretInfoEntryInfo
     public void drawPage(int mouseX, int mouseY, int scrollY, float partTicks) {
         Minecraft mc = this.guiInfo.__getMc();
         
-        mc.fontRenderer.drawString(TextFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 2, 0xFF0080BB);
+        mc.fontRenderer.drawString(TextFormatting.ITALIC + LangUtils.translate(this.getTitle()), 2, 2, 0xFF0080BB);
         Gui.drawRect(2, 12, MAX_ENTRY_WIDTH - 2, 13, 0xFF0080BB);
 
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_INFO_NAME.get()), 2, 16, 0xFF808080, false);
+        mc.fontRenderer.drawString(LangUtils.translate(Lang.TINFO_ENTRY_INFO_NAME.get()), 2, 16, 0xFF808080, false);
         mc.fontRenderer.drawString(TmrConstants.NAME, 4, 25, 0xFF000000, false);
 
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_INFO_VERSION.get()), 2, 36, 0xFF808080, false);
+        mc.fontRenderer.drawString(LangUtils.translate(Lang.TINFO_ENTRY_INFO_VERSION.get()), 2, 36, 0xFF808080, false);
         mc.fontRenderer.drawString(TmrConstants.VERSION, 4, 45, 0xFF000000, false);
 
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_INFO_AUTHOR.get()), 2, 56, 0xFF808080, false);
+        mc.fontRenderer.drawString(LangUtils.translate(Lang.TINFO_ENTRY_INFO_AUTHOR.get()), 2, 56, 0xFF808080, false);
 
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_INFO_CREDITS.get()), 2, 76, 0xFF808080, false);
+        mc.fontRenderer.drawString(LangUtils.translate(Lang.TINFO_ENTRY_INFO_CREDITS.get()), 2, 76, 0xFF808080, false);
 
         this.drawHeight = 147;
     }

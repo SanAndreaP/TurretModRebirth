@@ -43,7 +43,7 @@ public class GuiSlimButton
                 textColor = 0xFFFFA0;
             }
 
-            mc.getTextureManager().bindTexture(Resources.GUI_BUTTONS.getResource());
+            mc.getTextureManager().bindTexture(Resources.GUI_BUTTONS.resource);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);

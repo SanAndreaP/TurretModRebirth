@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.assembly.IRecipeEntry;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
@@ -77,7 +78,7 @@ public class TurretInfoEntryTurret
         int descHeight;
         Minecraft mc = guiInfo.__getMc();
 
-        mc.fontRenderer.drawString(TextFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 2, 0xFF0080BB);
+        mc.fontRenderer.drawString(TextFormatting.ITALIC + LangUtils.translate(this.getTitle()), 2, 2, 0xFF0080BB);
         Gui.drawRect(2, 12, MAX_ENTRY_WIDTH - 2, 13, 0xFF0080BB);
 
         this.guiInfo.doEntryScissoring(2, 15, 54, 82);
@@ -87,18 +88,18 @@ public class TurretInfoEntryTurret
 
         this.guiInfo.doEntryScissoring();
 
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_HEALTH.get()),                         60, 15, 0xFF6A6A6A, false);
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_HEALTHVAL.get(), this.values.health),  63, 24, 0xFF000000, false);
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_RANGE.get()),                          60, 35, 0xFF6A6A6A, false);
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_RANGEVAL.get(), this.values.range),    63, 44, 0xFF000000, false);
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_AMMOCAP.get()),                        60, 55, 0xFF6A6A6A, false);
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_ROUNDSVAL.get(), this.values.ammoCap), 63, 64, 0xFF000000, false);
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_AMMOUSE.get()),                        60, 75, 0xFF6A6A6A, false);
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_CRAFTING.get()),                       60, 95, 0xFF6A6A6A, false);
+        mc.fontRenderer.drawString(LangUtils.translate(Lang.TINFO_ENTRY_HEALTH.get()),                         60, 15, 0xFF6A6A6A, false);
+        mc.fontRenderer.drawString(LangUtils.translate(Lang.TINFO_ENTRY_HEALTHVAL.get(), this.values.health),  63, 24, 0xFF000000, false);
+        mc.fontRenderer.drawString(LangUtils.translate(Lang.TINFO_ENTRY_RANGE.get()),                          60, 35, 0xFF6A6A6A, false);
+        mc.fontRenderer.drawString(LangUtils.translate(Lang.TINFO_ENTRY_RANGEVAL.get(), this.values.range),    63, 44, 0xFF000000, false);
+        mc.fontRenderer.drawString(LangUtils.translate(Lang.TINFO_ENTRY_AMMOCAP.get()),                        60, 55, 0xFF6A6A6A, false);
+        mc.fontRenderer.drawString(LangUtils.translate(Lang.TINFO_ENTRY_ROUNDSVAL.get(), this.values.ammoCap), 63, 64, 0xFF000000, false);
+        mc.fontRenderer.drawString(LangUtils.translate(Lang.TINFO_ENTRY_AMMOUSE.get()),                        60, 75, 0xFF6A6A6A, false);
+        mc.fontRenderer.drawString(LangUtils.translate(Lang.TINFO_ENTRY_CRAFTING.get()),                       60, 95, 0xFF6A6A6A, false);
 
         descStart = Math.max(turretHeight, valueHeight);
 
-        String desc = Lang.translate(Lang.TURRET_DESC.get(this.values.name)).replace("\\n", "\n");
+        String desc = LangUtils.translate(Lang.TURRET_DESC.get(this.values.name)).replace("\\n", "\n");
         Gui.drawRect(2, 2 + descStart, MAX_ENTRY_WIDTH - 2, 3 + descStart, 0xFF0080BB);
         mc.fontRenderer.drawSplitString(desc, 2, 5 + descStart, MAX_ENTRY_WIDTH - 2, 0xFF000000);
         descHeight = mc.fontRenderer.getWordWrappedHeight(desc, MAX_ENTRY_WIDTH - 4) + 7;

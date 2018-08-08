@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.client.gui.tcu;
 
 import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.IGuiTcuRegistry;
@@ -71,7 +72,7 @@ public final class GuiTcuHelper
             GuiTcuRegistry.GuiEntry entry = GuiTcuRegistry.INSTANCE.getGuiEntry(location);
             if( entry != null && entry.showTab(gui) ) {
                 GuiButton btn = new GuiButtonTcuTab(gui.getNewButtonId(), 0, gui.getPosY() + 213, entry.getIcon(),
-                                                    Lang.translate(Lang.TCU_PAGE_TITLE.get(location.getResourceDomain(), location.getResourcePath())));
+                                                    LangUtils.translate(Lang.TCU_PAGE_TITLE.get(location.getResourceDomain(), location.getResourcePath())));
                 btn.visible = false;
                 btn.enabled = !location.equals(gui.getRegistryKey());
                 if( btn.enabled && (currIndex.getValue() < currTabScroll || currIndex.getValue() >= currTabScroll + MAX_TABS) ) {
@@ -82,9 +83,9 @@ public final class GuiTcuHelper
                 currIndex.increment();
             }
         });
-        this.tabNavLeft = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), 0, gui.getPosY() + 213, 18, 0, Resources.GUI_TCU_BUTTONS.getResource(), ""));
+        this.tabNavLeft = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), 0, gui.getPosY() + 213, 18, 0, Resources.GUI_TCU_BUTTONS.resource, ""));
         this.tabNavLeft.visible = false;
-        this.tabNavRight = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), 0, gui.getPosY() + 213, 36, 0, Resources.GUI_TCU_BUTTONS.getResource(), ""));
+        this.tabNavRight = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), 0, gui.getPosY() + 213, 36, 0, Resources.GUI_TCU_BUTTONS.resource, ""));
         this.tabNavRight.visible = false;
     }
 
@@ -114,8 +115,8 @@ public final class GuiTcuHelper
 
     void drawScreen(IGuiTcuInst<?> gui) {
         FontRenderer fRender = gui.getFontRenderer();
-        fRender.drawString(Lang.translate(Lang.TCU_PAGE_TITLE.get(gui.getRegistryKey().getResourceDomain(), gui.getRegistryKey().getResourcePath())), 8, 28, 0xFF404040);
-        String turretName = Lang.translate(Lang.TURRET_NAME.get(gui.getTurretInst().getTurret().getName()));
+        fRender.drawString(LangUtils.translate(Lang.TCU_PAGE_TITLE.get(gui.getRegistryKey().getResourceDomain(), gui.getRegistryKey().getResourcePath())), 8, 28, 0xFF404040);
+        String turretName = LangUtils.translate(Lang.TURRET_NAME.get(gui.getTurretInst().getTurret().getName()));
         int strWidth = fRender.getStringWidth(turretName);
         if( strWidth > 144 ) {
             long currTime = System.currentTimeMillis();

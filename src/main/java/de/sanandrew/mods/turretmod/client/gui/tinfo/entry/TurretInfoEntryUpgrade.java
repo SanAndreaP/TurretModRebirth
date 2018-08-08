@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
@@ -67,24 +68,24 @@ public class TurretInfoEntryUpgrade
         Minecraft mc = this.guiInfo.__getMc();
         ItemStack upgStack = UpgradeRegistry.INSTANCE.getUpgradeItem(this.upgrade);
 
-        mc.fontRenderer.drawString(TextFormatting.ITALIC + Lang.translate(this.getTitle()), 2, 2, 0xFF0080BB);
+        mc.fontRenderer.drawString(TextFormatting.ITALIC + LangUtils.translate(this.getTitle()), 2, 2, 0xFF0080BB);
         Gui.drawRect(2, 12, MAX_ENTRY_WIDTH - 2, 13, 0xFF0080BB);
 
-        mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.getResource());
+        mc.getTextureManager().bindTexture(Resources.GUI_TURRETINFO.resource);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.guiInfo.__drawTexturedRect(2, 16, 192, 18, 34, 34);
 
         RenderUtils.renderStackInGui(upgStack, 3, 17, 2.0F);
 
-        mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_CRAFTING.get()), 42, 16, 0xFF6A6A6A, false);
+        mc.fontRenderer.drawString(LangUtils.translate(Lang.TINFO_ENTRY_CRAFTING.get()), 42, 16, 0xFF6A6A6A, false);
         if( prereq != null ) {
-            mc.fontRenderer.drawString(Lang.translate(Lang.TINFO_ENTRY_PREREQ.get()), 42, 36, 0xFF6A6A6A, false);
+            mc.fontRenderer.drawString(LangUtils.translate(Lang.TINFO_ENTRY_PREREQ.get()), 42, 36, 0xFF6A6A6A, false);
             infoHeight = 56;
         }
 
         Gui.drawRect(2, infoHeight, MAX_ENTRY_WIDTH - 2, infoHeight + 1, 0xFF0080BB);
 
-        String text = Lang.translate(String.format(Lang.ITEM_UPGRADE_DESC.get(), upgrade.getName())).replace("\\n", "\n");
+        String text = LangUtils.translate(String.format(Lang.ITEM_UPGRADE_DESC.get(), upgrade.getName())).replace("\\n", "\n");
         mc.fontRenderer.drawSplitString(text, 2, infoHeight + 3, MAX_ENTRY_WIDTH - 2, 0xFF000000);
         this.drawHeight = mc.fontRenderer.getWordWrappedHeight(text, MAX_ENTRY_WIDTH - 2) + infoHeight + 3 + 2;
 

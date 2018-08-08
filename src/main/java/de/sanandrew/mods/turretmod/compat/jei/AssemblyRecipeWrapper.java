@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.compat.jei;
 
 import com.google.common.collect.ImmutableList;
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.assembly.IRecipeEntry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
@@ -56,9 +57,9 @@ public class AssemblyRecipeWrapper
 
     @Override
     public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
-        String s = Lang.translate(Lang.JEI_ASSEMBLY_ENERGY) + ' ' + this.fluxPerTick * this.timeInTicks + " RF";
+        String s = LangUtils.translate(Lang.JEI_ASSEMBLY_ENERGY) + ' ' + this.fluxPerTick * this.timeInTicks + " RF";
         minecraft.fontRenderer.drawString(s, 0, 90, 0xFF808080);
-        s = Lang.translate(Lang.JEI_ASSEMBLY_TIME) + ' ' + MiscUtils.getTimeFromTicks(this.timeInTicks);
+        s = LangUtils.translate(Lang.JEI_ASSEMBLY_TIME) + ' ' + MiscUtils.getTimeFromTicks(this.timeInTicks);
         minecraft.fontRenderer.drawString(s, 0, 100, 0xFF808080);
     }
 

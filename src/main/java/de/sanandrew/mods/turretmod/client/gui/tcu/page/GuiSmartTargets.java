@@ -7,6 +7,7 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu.page;
 
 import com.google.common.base.Strings;
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
@@ -53,24 +54,24 @@ public class GuiSmartTargets
     public void initGui(IGuiTcuInst<?> gui) {
         AdvTargetSettings settings = getSettings(gui);
         if( settings != null ) {
-            ResourceLocation texture = Resources.GUI_TCU_SMARTTGT.getResource();
-            this.turretIgnore = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 10, gui.getPosY() + 48, 212, 18, texture, Lang.translate(Lang.TCU_BTN.get("adv_turret_ignore"))));
-            this.turretCheckSame = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 29, gui.getPosY() + 48, 176, 18, texture, Lang.translate(Lang.TCU_BTN.get("adv_turret_same"))));
-            this.turretCheckAll = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 48, gui.getPosY() + 48, 194, 18, texture, Lang.translate(Lang.TCU_BTN.get("adv_turret_all"))));
+            ResourceLocation texture = Resources.GUI_TCU_SMARTTGT.resource;
+            this.turretIgnore = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 10, gui.getPosY() + 48, 212, 18, texture, LangUtils.translate(Lang.TCU_BTN.get("adv_turret_ignore"))));
+            this.turretCheckSame = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 29, gui.getPosY() + 48, 176, 18, texture, LangUtils.translate(Lang.TCU_BTN.get("adv_turret_same"))));
+            this.turretCheckAll = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 48, gui.getPosY() + 48, 194, 18, texture, LangUtils.translate(Lang.TCU_BTN.get("adv_turret_all"))));
 
-            this.tamedAll = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 10, gui.getPosY() + 82, 194, 72, texture, Lang.translate(Lang.TCU_BTN.get("adv_tamed_all"))));
-            this.tamedPlayers = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 29, gui.getPosY() + 82, 176, 72, texture, Lang.translate(Lang.TCU_BTN.get("adv_tamed_players"))));
-            this.tamedNone = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 48, gui.getPosY() + 82, 230, 18, texture, Lang.translate(Lang.TCU_BTN.get("adv_tamed_none"))));
+            this.tamedAll = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 10, gui.getPosY() + 82, 194, 72, texture, LangUtils.translate(Lang.TCU_BTN.get("adv_tamed_all"))));
+            this.tamedPlayers = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 29, gui.getPosY() + 82, 176, 72, texture, LangUtils.translate(Lang.TCU_BTN.get("adv_tamed_players"))));
+            this.tamedNone = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 48, gui.getPosY() + 82, 230, 18, texture, LangUtils.translate(Lang.TCU_BTN.get("adv_tamed_none"))));
 
-            this.childAndAdult = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 10, gui.getPosY() + 116, 176, 126, texture, Lang.translate(Lang.TCU_BTN.get("adv_child_adult"))));
-            this.childOnly = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 29, gui.getPosY() + 116, 212, 72, texture, Lang.translate(Lang.TCU_BTN.get("adv_child_only"))));
-            this.adultOnly = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 48, gui.getPosY() + 116, 230, 72, texture, Lang.translate(Lang.TCU_BTN.get("adv_adult_only"))));
+            this.childAndAdult = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 10, gui.getPosY() + 116, 176, 126, texture, LangUtils.translate(Lang.TCU_BTN.get("adv_child_adult"))));
+            this.childOnly = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 29, gui.getPosY() + 116, 212, 72, texture, LangUtils.translate(Lang.TCU_BTN.get("adv_child_only"))));
+            this.adultOnly = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 48, gui.getPosY() + 116, 230, 72, texture, LangUtils.translate(Lang.TCU_BTN.get("adv_adult_only"))));
 
-            this.noCount = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 10, gui.getPosY() + 150, 194, 126, texture, Lang.translate(Lang.TCU_BTN.get("adv_count_no"))));
-            this.countGlobalLess = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 29, gui.getPosY() + 150, 212, 126, texture, Lang.translate(Lang.TCU_BTN.get("adv_count_global_less"))));
-            this.countGlobalMore = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 48, gui.getPosY() + 150, 230, 126, texture, Lang.translate(Lang.TCU_BTN.get("adv_count_global_more"))));
-            this.countIndivLess = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 67, gui.getPosY() + 150, 176, 180, texture, Lang.translate(Lang.TCU_BTN.get("adv_count_individual_less"))));
-            this.countIndivMore = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 86, gui.getPosY() + 150, 194, 180, texture, Lang.translate(Lang.TCU_BTN.get("adv_count_individual_more"))));
+            this.noCount = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 10, gui.getPosY() + 150, 194, 126, texture, LangUtils.translate(Lang.TCU_BTN.get("adv_count_no"))));
+            this.countGlobalLess = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 29, gui.getPosY() + 150, 212, 126, texture, LangUtils.translate(Lang.TCU_BTN.get("adv_count_global_less"))));
+            this.countGlobalMore = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 48, gui.getPosY() + 150, 230, 126, texture, LangUtils.translate(Lang.TCU_BTN.get("adv_count_global_more"))));
+            this.countIndivLess = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 67, gui.getPosY() + 150, 176, 180, texture, LangUtils.translate(Lang.TCU_BTN.get("adv_count_individual_less"))));
+            this.countIndivMore = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 86, gui.getPosY() + 150, 194, 180, texture, LangUtils.translate(Lang.TCU_BTN.get("adv_count_individual_more"))));
 
             this.countEntities = new GuiTextField(0, gui.getFontRenderer(), gui.getPosX() + 110, gui.getPosY() + 157, 25, 10);
             this.countEntities.setMaxStringLength(3);
@@ -115,14 +116,14 @@ public class GuiSmartTargets
 
     @Override
     public void drawBackground(IGuiTcuInst<?> gui, float partialTicks, int mouseX, int mouseY) {
-        gui.getGui().mc.renderEngine.bindTexture(Resources.GUI_TCU_SMARTTGT.getResource());
+        gui.getGui().mc.renderEngine.bindTexture(Resources.GUI_TCU_SMARTTGT.resource);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         gui.getGui().drawTexturedModalRect(gui.getPosX(), gui.getPosY(), 0, 0, gui.getWidth(), gui.getHeight());
 
-        drawGroupBox(gui.getFontRenderer(), Lang.translate(Lang.TCU_SMARTTGT_GBOX.get("turret")), gui.getPosX() + 7, gui.getPosY() + 39, 162, 30, 0x80000000, 0x30000000);
-        drawGroupBox(gui.getFontRenderer(), Lang.translate(Lang.TCU_SMARTTGT_GBOX.get("tamed")), gui.getPosX() + 7, gui.getPosY() + 73, 162, 30, 0x80000000, 0x30000000);
-        drawGroupBox(gui.getFontRenderer(), Lang.translate(Lang.TCU_SMARTTGT_GBOX.get("age")), gui.getPosX() + 7, gui.getPosY() + 107, 162, 30, 0x80000000, 0x30000000);
-        drawGroupBox(gui.getFontRenderer(), Lang.translate(Lang.TCU_SMARTTGT_GBOX.get("count")), gui.getPosX() + 7, gui.getPosY() + 141, 162, 30, 0x80000000, 0x30000000);
+        drawGroupBox(gui.getFontRenderer(), LangUtils.translate(Lang.TCU_SMARTTGT_GBOX.get("turret")), gui.getPosX() + 7, gui.getPosY() + 39, 162, 30, 0x80000000, 0x30000000);
+        drawGroupBox(gui.getFontRenderer(), LangUtils.translate(Lang.TCU_SMARTTGT_GBOX.get("tamed")), gui.getPosX() + 7, gui.getPosY() + 73, 162, 30, 0x80000000, 0x30000000);
+        drawGroupBox(gui.getFontRenderer(), LangUtils.translate(Lang.TCU_SMARTTGT_GBOX.get("age")), gui.getPosX() + 7, gui.getPosY() + 107, 162, 30, 0x80000000, 0x30000000);
+        drawGroupBox(gui.getFontRenderer(), LangUtils.translate(Lang.TCU_SMARTTGT_GBOX.get("count")), gui.getPosX() + 7, gui.getPosY() + 141, 162, 30, 0x80000000, 0x30000000);
 
         if( this.countEntities != null ) {
             this.countEntities.drawTextBox();

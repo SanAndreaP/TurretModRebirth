@@ -8,9 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
+import de.sanandrew.mods.sanlib.lib.util.LangUtils.TranslateKey;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 
 public final class Lang
 {
@@ -26,29 +25,33 @@ public final class Lang
     public static final TranslateKey TCU_LABEL_TURRETSHIELD      = new TranslateKey("gui.%s.tcu.label.shield_turret", TmrConstants.ID);
     public static final TranslateKey TCU_LABEL_TURRETSHIELD_RECV = new TranslateKey("gui.%s.tcu.label.shield_turret_recv", TmrConstants.ID);
 
-    public static final TranslateKey TINFO_CATEGORY_NAME      = new TranslateKey("gui.%s.tinfo.category.%%s.name", TmrConstants.ID);
-    public static final TranslateKey TINFO_ENTRY_INFO_TITLE   = new TranslateKey("gui.%s.tinfo.infoTitle", TmrConstants.ID);
-    public static final TranslateKey TINFO_ENTRY_AMMO_NAME    = new TranslateKey("gui.%s.tinfo.ammo.%%s.name", TmrConstants.ID);
-    public static final TranslateKey TINFO_ENTRY_AMMO_DESC    = new TranslateKey("gui.%s.tinfo.ammo.%%s.desc", TmrConstants.ID);
-    public static final TranslateKey TINFO_ENTRY_ROUNDS       = new TranslateKey("gui.%s.tinfo.rounds", TmrConstants.ID);
-    public static final TranslateKey TINFO_ENTRY_DPS          = new TranslateKey("gui.%s.tinfo.dps", TmrConstants.ID);
-    public static final TranslateKey TINFO_ENTRY_HEALTH       = new TranslateKey("gui.%s.tinfo.health", TmrConstants.ID);
-    public static final TranslateKey TINFO_ENTRY_HEALTHVAL    = new TranslateKey("gui.%s.tinfo.healthVal", TmrConstants.ID);
-    public static final TranslateKey TINFO_ENTRY_TURRET       = new TranslateKey("gui.%s.tinfo.turret", TmrConstants.ID);
-    public static final TranslateKey TINFO_ENTRY_CRAFTING     = new TranslateKey("gui.%s.tinfo.crafting", TmrConstants.ID);
-    public static final TranslateKey TINFO_ENTRY_WORKBENCH    = new TranslateKey("gui.%s.tinfo.workbench", TmrConstants.ID);
-    public static final TranslateKey TINFO_ENTRY_PREREQ       = new TranslateKey("gui.%s.tinfo.prereq", TmrConstants.ID);
-    public static final TranslateKey TINFO_ENTRY_RANGE        = new TranslateKey("gui.%s.tinfo.range", TmrConstants.ID);
-    public static final TranslateKey TINFO_ENTRY_RANGEVAL     = new TranslateKey("gui.%s.tinfo.rangeVal", TmrConstants.ID);
-    public static final TranslateKey TINFO_ENTRY_AMMOCAP      = new TranslateKey("gui.%s.tinfo.ammocap", TmrConstants.ID);
-    public static final TranslateKey TINFO_ENTRY_AMMOUSE      = new TranslateKey("gui.%s.tinfo.ammouse", TmrConstants.ID);
-    public static final TranslateKey TINFO_ENTRY_ROUNDSVAL    = new TranslateKey("gui.%s.tinfo.roundsVal", TmrConstants.ID);
-    public static final TranslateKey TINFO_ENTRY_EFFICIENCY   = new TranslateKey("gui.%s.tinfo.efficiency", TmrConstants.ID);
-    public static final TranslateKey TINFO_ENTRY_DECAY        = new TranslateKey("gui.%s.tinfo.decay", TmrConstants.ID);
-    public static final TranslateKey TINFO_ENTRY_INFO_NAME    = new TranslateKey("gui.%s.tinfo.modName", TmrConstants.ID);
-    public static final TranslateKey TINFO_ENTRY_INFO_VERSION = new TranslateKey("gui.%s.tinfo.modVersion", TmrConstants.ID);
-    public static final TranslateKey TINFO_ENTRY_INFO_AUTHOR  = new TranslateKey("gui.%s.tinfo.modAuthor", TmrConstants.ID);
-    public static final TranslateKey TINFO_ENTRY_INFO_CREDITS = new TranslateKey("gui.%s.tinfo.modCredits", TmrConstants.ID);
+    @Deprecated public static final TranslateKey TINFO_CATEGORY_NAME      = new TranslateKey("gui.%s.tinfo.category.%%s.name", TmrConstants.ID);
+    @Deprecated public static final TranslateKey TINFO_ENTRY_INFO_TITLE   = new TranslateKey("gui.%s.tinfo.infoTitle", TmrConstants.ID);
+    @Deprecated public static final TranslateKey TINFO_ENTRY_AMMO_NAME    = new TranslateKey("gui.%s.tinfo.ammo.%%s.name", TmrConstants.ID);
+    @Deprecated public static final TranslateKey TINFO_ENTRY_AMMO_DESC    = new TranslateKey("gui.%s.tinfo.ammo.%%s.desc", TmrConstants.ID);
+    @Deprecated public static final TranslateKey TINFO_ENTRY_ROUNDS       = new TranslateKey("gui.%s.tinfo.rounds", TmrConstants.ID);
+    @Deprecated public static final TranslateKey TINFO_ENTRY_DPS          = new TranslateKey("gui.%s.tinfo.dps", TmrConstants.ID);
+    @Deprecated public static final TranslateKey TINFO_ENTRY_HEALTH       = new TranslateKey("gui.%s.tinfo.health", TmrConstants.ID);
+    @Deprecated public static final TranslateKey TINFO_ENTRY_HEALTHVAL    = new TranslateKey("gui.%s.tinfo.healthVal", TmrConstants.ID);
+    @Deprecated public static final TranslateKey TINFO_ENTRY_TURRET       = new TranslateKey("gui.%s.tinfo.turret", TmrConstants.ID);
+    @Deprecated public static final TranslateKey TINFO_ENTRY_CRAFTING     = new TranslateKey("gui.%s.tinfo.crafting", TmrConstants.ID);
+    @Deprecated public static final TranslateKey TINFO_ENTRY_WORKBENCH    = new TranslateKey("gui.%s.tinfo.workbench", TmrConstants.ID);
+    @Deprecated public static final TranslateKey TINFO_ENTRY_PREREQ       = new TranslateKey("gui.%s.tinfo.prereq", TmrConstants.ID);
+    @Deprecated public static final TranslateKey TINFO_ENTRY_RANGE        = new TranslateKey("gui.%s.tinfo.range", TmrConstants.ID);
+    @Deprecated public static final TranslateKey TINFO_ENTRY_RANGEVAL     = new TranslateKey("gui.%s.tinfo.rangeVal", TmrConstants.ID);
+    @Deprecated public static final TranslateKey TINFO_ENTRY_AMMOCAP      = new TranslateKey("gui.%s.tinfo.ammocap", TmrConstants.ID);
+    @Deprecated public static final TranslateKey TINFO_ENTRY_AMMOUSE      = new TranslateKey("gui.%s.tinfo.ammouse", TmrConstants.ID);
+    @Deprecated public static final TranslateKey TINFO_ENTRY_ROUNDSVAL    = new TranslateKey("gui.%s.tinfo.roundsVal", TmrConstants.ID);
+    @Deprecated public static final TranslateKey TINFO_ENTRY_EFFICIENCY   = new TranslateKey("gui.%s.tinfo.efficiency", TmrConstants.ID);
+    @Deprecated public static final TranslateKey TINFO_ENTRY_DECAY        = new TranslateKey("gui.%s.tinfo.decay", TmrConstants.ID);
+    @Deprecated public static final TranslateKey TINFO_ENTRY_INFO_NAME    = new TranslateKey("gui.%s.tinfo.modName", TmrConstants.ID);
+    @Deprecated public static final TranslateKey TINFO_ENTRY_INFO_VERSION = new TranslateKey("gui.%s.tinfo.modVersion", TmrConstants.ID);
+    @Deprecated public static final TranslateKey TINFO_ENTRY_INFO_AUTHOR  = new TranslateKey("gui.%s.tinfo.modAuthor", TmrConstants.ID);
+    @Deprecated public static final TranslateKey TINFO_ENTRY_INFO_CREDITS = new TranslateKey("gui.%s.tinfo.modCredits", TmrConstants.ID);
+
+    public static final TranslateKey LEXICON_ENTRY_NAME = new TranslateKey("sanlib.lexicon.%s.%%s.%%s.name", TmrConstants.ID);
+    public static final TranslateKey LEXICON_ENTRY_GRIDTEXT = new TranslateKey("sanlib.lexicon.%s.%%s.%%s.gridtext", TmrConstants.ID);
+    public static final TranslateKey LEXICON_INFO_ITEM = new TranslateKey("sanlib.lexicon.%s.info.%%s", TmrConstants.ID);
 
     public static final TranslateKey TURRET_NAME = new TranslateKey("%s.turret.%%s.name", TmrConstants.ID);
     public static final TranslateKey TURRET_DESC = new TranslateKey("%s.turret.%%s.desc", TmrConstants.ID);
@@ -72,69 +75,4 @@ public final class Lang
     public static final TranslateKey JEI_ASSEMBLY_TITLE  = new TranslateKey("jei.%s.assembly.title", TmrConstants.ID);
     public static final TranslateKey JEI_ASSEMBLY_ENERGY = new TranslateKey("jei.%s.assembly.energy", TmrConstants.ID);
     public static final TranslateKey JEI_ASSEMBLY_TIME   = new TranslateKey("jei.%s.assembly.time", TmrConstants.ID);
-
-    /**
-     * Wrapper method to {@link net.minecraft.util.text.translation.I18n#canTranslate(String)} for abbreviation.
-     * <s>Also tries to translate with [NONE] to en_US if the translation fails</s>
-     * @param langKey language key to be translated
-     * @return translated key or langKey, if translation fails
-     */
-    @SuppressWarnings("deprecation")
-    public static String translate(String langKey, Object... args) {
-        return net.minecraft.util.text.translation.I18n.canTranslate(langKey)
-                ? net.minecraft.util.text.translation.I18n.translateToLocalFormatted(langKey, args)
-                : langKey;
-    }
-
-    public static String translate(TranslateKey langKey, Object... args) {
-        return translate(langKey.key, args);
-    }
-
-    @SuppressWarnings("deprecation")
-    public static String translateOrDefault(String langKey, String defaultVal) {
-        return net.minecraft.util.text.translation.I18n.canTranslate(langKey) ? translate(langKey) : defaultVal;
-    }
-
-    public static String translateOrDefault(TranslateKey langKey, String defaultVal) {
-        return translateOrDefault(langKey.key, defaultVal);
-    }
-
-    public static String translateEntityCls(Class<? extends Entity> eClass) {
-        String namedEntry = EntityList.getTranslationName(EntityList.getKey(eClass));
-        if( namedEntry != null ) {
-            return translate(ENTITY_NAME.get(namedEntry));
-        }
-
-        return "[UNKNOWN] " + eClass.getName();
-    }
-
-    public static String translateEntityClsDesc(Class<? extends Entity> eClass) {
-        String namedEntry = EntityList.getTranslationName(EntityList.getKey(eClass));
-        if( namedEntry != null ) {
-            return translate(ENTITY_DESC.get(namedEntry));
-        }
-
-        return "";
-    }
-
-    public static final class TranslateKey
-    {
-        private final String key;
-
-        TranslateKey(String key) {
-            this.key = key;
-        }
-
-        TranslateKey(String key, Object... args) {
-            this(String.format(key, args));
-        }
-
-        public String get() {
-            return this.key;
-        }
-
-        public String get(Object... args) {
-            return String.format(this.key, args);
-        }
-    }
 }

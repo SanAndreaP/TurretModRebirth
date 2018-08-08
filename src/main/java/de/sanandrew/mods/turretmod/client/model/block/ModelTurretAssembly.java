@@ -26,7 +26,7 @@ public class ModelTurretAssembly
     public final ModelJsonLoader<ModelTurretAssembly, ModelJsonLoader.ModelJson> modelJson;
 
     public ModelTurretAssembly() {
-        this.modelJson = ModelJsonLoader.create(this, Resources.TILE_TURRET_ASSEMBLY_MODEL.getResource(), "base", "robotBinding", "robotArm", "robotHead");
+        this.modelJson = ModelJsonLoader.create(this, Resources.TILE_TURRET_ASSEMBLY_MODEL.resource, "base", "robotBinding", "robotArm", "robotHead");
     }
 
     public void render(float scale, TileEntityTurretAssembly te, float armX, float armZ) {
