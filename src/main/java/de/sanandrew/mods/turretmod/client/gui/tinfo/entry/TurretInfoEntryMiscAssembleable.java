@@ -12,6 +12,7 @@ import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
+import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -34,7 +35,7 @@ public class TurretInfoEntryMiscAssembleable
 
     private IGuiTurretInfo guiInfo;
     private final ItemStack icon;
-    private final TurretAssemblyRegistry.RecipeEntry recipe;
+    private final RecipeEntry recipe;
     private final String title;
     private final String desc;
 
@@ -42,7 +43,7 @@ public class TurretInfoEntryMiscAssembleable
         this(stack, TurretAssemblyRegistry.INSTANCE.getRecipeEntry(stack));
     }
 
-    private TurretInfoEntryMiscAssembleable(@Nonnull ItemStack stack, TurretAssemblyRegistry.RecipeEntry recipeEntry) {
+    private TurretInfoEntryMiscAssembleable(@Nonnull ItemStack stack, RecipeEntry recipeEntry) {
         this.icon = stack;
         this.title = stack.getUnlocalizedName() + ".name";
         this.recipe = recipeEntry;

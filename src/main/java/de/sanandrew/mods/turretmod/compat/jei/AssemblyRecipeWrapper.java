@@ -11,7 +11,9 @@ package de.sanandrew.mods.turretmod.compat.jei;
 import com.google.common.collect.ImmutableList;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
-import de.sanandrew.mods.turretmod.api.assembly.IRecipeEntry;
+import de.sanandrew.mods.turretmod.api.assembly.IRecipeItem;
+import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntry;
+import de.sanandrew.mods.turretmod.registry.assembly.RecipeKeyEntry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import mezz.jei.api.ingredients.IIngredients;
@@ -35,12 +37,12 @@ public class AssemblyRecipeWrapper
     private final int fluxPerTick;
     private final int timeInTicks;
 
-    public AssemblyRecipeWrapper(TurretAssemblyRegistry.RecipeKeyEntry keyEntry) {
-        TurretAssemblyRegistry.RecipeEntry entry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(keyEntry.id);
+    public AssemblyRecipeWrapper(RecipeKeyEntry keyEntry) {
+        RecipeEntry entry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(keyEntry.id);
         assert entry != null : "Recipe Entry should not be null!";
 
         ImmutableList.Builder<List<ItemStack>> inputBuilder = ImmutableList.builder();
-        for( IRecipeEntry item : entry.resources ) {
+        for( IRecipeItem item : entry.resources ) {
             inputBuilder.add(Arrays.asList(item.getEntryItemStacks()));
         }
         this.input = inputBuilder.build();
@@ -75,10 +77,10 @@ public class AssemblyRecipeWrapper
     }
 
     public static class Factory
-            implements IRecipeWrapperFactory<TurretAssemblyRegistry.RecipeKeyEntry>
+            implements IRecipeWrapperFactory<RecipeKeyEntry>
     {
         @Override
-        public IRecipeWrapper getRecipeWrapper(TurretAssemblyRegistry.RecipeKeyEntry recipe) {
+        public IRecipeWrapper getRecipeWrapper(RecipeKeyEntry recipe) {
             return new AssemblyRecipeWrapper(recipe);
         }
     }

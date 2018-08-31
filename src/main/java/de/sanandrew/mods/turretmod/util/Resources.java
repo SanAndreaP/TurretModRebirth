@@ -55,12 +55,13 @@ public enum Resources
     GUI_POTATOGEN("textures/gui/potatogen.png"),
     GUI_TURRETINFO("textures/gui/turretinfo/backg.png"),
 
-    TINFO_GRP_AMMO("textures/gui/turretinfo/groups/ammo.png"),
-    TINFO_GRP_INFO("textures/gui/turretinfo/groups/info.png"),
-    TINFO_GRP_MISC("textures/gui/turretinfo/groups/misc.png"),
-    TINFO_GRP_TURRET("textures/gui/turretinfo/groups/turrets.png"),
-    TINFO_GRP_UPGRADE("textures/gui/turretinfo/groups/upgrades.png"),
+    TINFO_GRP_AMMO("textures/gui/lexicon/group_ammo.png"),
+    TINFO_GRP_INFO("textures/gui/lexicon/group_info.png"),
+    TINFO_GRP_MISC("textures/gui/lexicon/group_misc.png"),
+    TINFO_GRP_TURRET("textures/gui/lexicon/group_turrets.png"),
+    TINFO_GRP_UPGRADE("textures/gui/lexicon/group_upgrades.png"),
     TINFO_GRP_STENCIL("textures/gui/turretinfo/stencil_grp.png"),
+    TINFO_GRP_SRC("textures/gui/lexicon/group_search.png"),
 
     TURRET_FORCEFIELD_P1("textures/entities/shield_1.png"),
     TURRET_FORCEFIELD_P2("textures/entities/shield_2.png"),

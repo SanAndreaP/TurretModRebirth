@@ -22,9 +22,11 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nonnull;
 
-class AssemblyInventoryHandler
+public class AssemblyInventoryHandler
         implements ISidedInventory, INBTSerializable<NBTTagCompound>
 {
+    public static final int RESOURCE_SLOTS = 18;
+
     private final NonNullList<ItemStack> assemblyStacks = NonNullList.withSize(23, ItemStackUtils.getEmpty());
 
     private static final int[] SLOTS_INSERT = new int[] {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22};
@@ -48,7 +50,6 @@ class AssemblyInventoryHandler
 
         return true;
     }
-
 
     NonNullList<ItemStack> getFilterStacks() {
         if( this.hasFilterUpgrade() ) {

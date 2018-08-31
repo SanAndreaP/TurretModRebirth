@@ -36,7 +36,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class TmrInternalPlugin
         implements ITmrPlugin
 {
-
     @Override
     public void registerAssemblyRecipes(ITurretAssemblyRegistry registry) {
         TurretAssemblyRecipes.initialize(registry);

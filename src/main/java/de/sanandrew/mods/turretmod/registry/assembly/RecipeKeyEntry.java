@@ -4,16 +4,21 @@
  * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
  *                http://creativecommons.org/licenses/by-nc-sa/4.0/
  *******************************************************************************************************************/
-package de.sanandrew.mods.turretmod.client.gui.lexicon;
+package de.sanandrew.mods.turretmod.registry.assembly;
 
-import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconInst;
-import de.sanandrew.mods.turretmod.client.gui.lexicon.info.LexiconGroupInfo;
-import de.sanandrew.mods.turretmod.client.gui.lexicon.turret.LexiconGroupTurret;
+import net.minecraft.item.ItemStack;
 
-public class Categories
+import javax.annotation.Nonnull;
+import java.util.UUID;
+
+public class RecipeKeyEntry
 {
-    public static void initialize(ILexiconInst inst) {
-        LexiconGroupInfo.register(inst);
-        LexiconGroupTurret.register(inst);
+    public final UUID id;
+    @Nonnull
+    public final ItemStack stack;
+
+    public RecipeKeyEntry(UUID id, @Nonnull ItemStack stack) {
+        this.id = id;
+        this.stack = stack;
     }
 }

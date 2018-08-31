@@ -46,13 +46,17 @@ repositories {
 		name = "CurseForge"
 		url = "https://minecraft.curseforge.com/api/maven/"
 	}
+    maven {
+        name = "SanLib"
+        url = "https://github.com/SanAndreasP/SanLib/raw/1.12/maven/"
+    }
 }
 
 dependencies {
     deobfCompile "mezz.jei:jei_1.12.2:4.8.5.147:api"
     runtime "mezz.jei:jei_1.12.2:4.8.5.147"
-    deobfCompile "sanlib:SanLib:1.12.2:1.5.0"
     deobfCompile "the-one-probe:theoneprobe:1.12:1.4.19"
+    deobfCompile "de.sanandrew.mods:SanLib:1.12.2-1.5.1"
 }
 
 processResources {

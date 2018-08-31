@@ -1,6 +1,6 @@
 package de.sanandrew.mods.turretmod.api.assembly;
 
-import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntry;
+import de.sanandrew.mods.turretmod.registry.assembly.RecipeItem;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -10,21 +10,21 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 
 @SuppressWarnings({"UnusedReturnValue", "unused"})
-public interface IRecipeEntry
+public interface IRecipeItem
 {
-    RecipeEntry put(Item... items);
+    RecipeItem put(Item... items);
 
-    RecipeEntry put(Block... blocks);
+    RecipeItem put(Block... blocks);
 
-    RecipeEntry put(@Nonnull ItemStack... stacks);
+    RecipeItem put(@Nonnull ItemStack... stacks);
 
-    RecipeEntry put(String... oreDictNames);
+    RecipeItem put(String... oreDictNames);
 
-    RecipeEntry drawTooltip();
+    RecipeItem drawTooltip();
 
     boolean shouldDrawTooltip();
 
-    RecipeEntry copy();
+    RecipeItem copy();
 
     boolean isItemFitting(@Nonnull ItemStack stack);
 

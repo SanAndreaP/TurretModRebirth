@@ -14,6 +14,7 @@ import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
 import de.sanandrew.mods.turretmod.network.TileClientSync;
+import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
@@ -46,17 +47,17 @@ public class TileEntityTurretAssembly
         extends TileEntity
         implements TileClientSync, ITickable
 {
-    public static final int MAX_FLUX_STORAGE = 75_000;
-    public static final int MAX_FLUX_INSERT = 500;
+    static final int MAX_FLUX_STORAGE = 75_000;
+    static final int MAX_FLUX_INSERT = 500;
 
     public float robotArmX;
     public float robotArmY;
     public float prevRobotArmX;
     public float prevRobotArmY;
-    public float robotMotionX;
-    public float robotMotionY;
-    public float robotEndX;
-    public float robotEndY;
+    private float robotMotionX;
+    private float robotMotionY;
+    private float robotEndX;
+    private float robotEndY;
     public Tuple spawnParticle;
 
     private boolean prevActive;
@@ -65,19 +66,19 @@ public class TileEntityTurretAssembly
     private boolean isActiveClient;
 
     public Tuple currCrafting;
-    int ticksCrafted;
-    int maxTicksCrafted;
-    int fluxConsumption;
+    private int ticksCrafted;
+    private int maxTicksCrafted;
+    private int fluxConsumption;
 
-    boolean doSync = false;
+    private boolean doSync = false;
 
     private long ticksExisted;
     private String customName;
 
-    final AssemblyEnergyStorage energyStorage;
-    final AssemblyInventoryHandler invHandler;
-    final IItemHandler itemHandlerBottom;
-    final IItemHandler itemHandlerSide;
+    private final AssemblyEnergyStorage energyStorage;
+    private final AssemblyInventoryHandler invHandler;
+    private final IItemHandler itemHandlerBottom;
+    private final IItemHandler itemHandlerSide;
 
     public TileEntityTurretAssembly() {
         this.robotArmX = 2.0F;
@@ -110,7 +111,7 @@ public class TileEntityTurretAssembly
             }
         } else if( this.currCrafting == null ) {
             ItemStack stackRes = TurretAssemblyRegistry.INSTANCE.getRecipeResult(recipe);
-            TurretAssemblyRegistry.RecipeEntry entry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(recipe);
+            RecipeEntry entry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(recipe);
             if( entry != null && ItemStackUtils.isValid(stackRes) ) {
                 stackRes = stackRes.copy();
                 stackRes.setCount(this.automate ? 1 : count);
@@ -140,7 +141,7 @@ public class TileEntityTurretAssembly
             if( ItemStackUtils.isValid(recipe) ) {
                 addStacks.setCount(recipe.getCount());
                 if( this.invHandler.canFillOutput(addStacks) && TurretAssemblyRegistry.INSTANCE.checkAndConsumeResources(this.invHandler, currCrfUUID) ) {
-                    TurretAssemblyRegistry.RecipeEntry currentlyCrafted = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(currCrfUUID);
+                    RecipeEntry currentlyCrafted = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(currCrfUUID);
                     if( currentlyCrafted != null ) {
                         this.maxTicksCrafted = currentlyCrafted.ticksProcessing;
                         this.fluxConsumption = MathHelper.ceil(currentlyCrafted.fluxPerTick * (this.hasSpeedUpgrade() ? 1.1F : 1.0F));
@@ -215,7 +216,7 @@ public class TileEntityTurretAssembly
                                     this.isActive = false;
                                     this.isActiveClient = false;
                                 }
-                            } else if( !this.automate ) {
+                            } else {
                                 this.cancelCrafting();
                                 return;
                             }
@@ -465,7 +466,7 @@ public class TileEntityTurretAssembly
     }
 
     @Override
-    @SuppressWarnings({"unchecked", "ConstantConditions"})
+    @SuppressWarnings({"unchecked", "ConstantConditions", "ObjectEquality"})
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
         if( capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ) {
             if( facing == EnumFacing.DOWN ) {
@@ -481,6 +482,7 @@ public class TileEntityTurretAssembly
     }
 
     @Override
+    @SuppressWarnings("ObjectEquality")
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
         if( facing != EnumFacing.UP ) {
             return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || capability == CapabilityEnergy.ENERGY || super.hasCapability(capability, facing);
@@ -493,7 +495,7 @@ public class TileEntityTurretAssembly
         this.customName = customName;
     }
 
-    public String getCustomName() {
+    String getCustomName() {
         return this.hasCustomName() ? this.customName : TmrConstants.ID + ".container.assembly";
     }
 

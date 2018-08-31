@@ -15,7 +15,7 @@ import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
-import de.sanandrew.mods.turretmod.api.assembly.IRecipeEntry;
+import de.sanandrew.mods.turretmod.api.assembly.IRecipeItem;
 import de.sanandrew.mods.turretmod.api.assembly.IRecipeGroup;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiSlimButton;
 import de.sanandrew.mods.turretmod.client.shader.ShaderItemAlphaOverride;
@@ -25,6 +25,7 @@ import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketAssemblyToggleAutomate;
 import de.sanandrew.mods.turretmod.network.PacketInitAssemblyCrafting;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
+import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.Lang;
@@ -381,22 +382,22 @@ public class GuiTurretAssembly
     }
 
     private void drawIngredientsDetail(int mouseX, int mouseY, UUID recipe, boolean showOnLeft) {
-        TurretAssemblyRegistry.RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(recipe);
+        RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(recipe);
         if( recipeEntry == null ) {
             return;
         }
 
-        IRecipeEntry[] ingredients = recipeEntry.resources;
+        IRecipeItem[] ingredients = recipeEntry.resources;
         if( ingredients.length < 1 ) {
             this.drawIngredientsSmall(mouseX, mouseY, recipe, showOnLeft);
             return;
         }
 
-        Map<IRecipeEntry, Tuple> desc = new HashMap<>(ingredients.length);
+        Map<IRecipeItem, Tuple> desc = new HashMap<>(ingredients.length);
         List<Integer> lngth = new ArrayList<>(ingredients.length);
         int tHeight = 0;
 
-        for( IRecipeEntry entry : ingredients ) {
+        for( IRecipeItem entry : ingredients ) {
             ItemStack[] entryStacks = entry.getEntryItemStacks();
             ItemStack stack = entryStacks[(int)((this.lastTimestamp / 1000L) % entryStacks.length)];
             List<?> tooltip = GuiUtils.getTooltipWithoutShift(stack);
@@ -458,12 +459,12 @@ public class GuiTurretAssembly
     }
 
     private void drawIngredientsSmall(int mouseX, int mouseY, UUID recipe, boolean showOnLeft) {
-        TurretAssemblyRegistry.RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(recipe);
+        RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(recipe);
         if( recipeEntry == null ) {
             return;
         }
 
-        IRecipeEntry[] ingredients = recipeEntry.resources;
+        IRecipeItem[] ingredients = recipeEntry.resources;
 
         String rf = String.format("%d RF/t", MathHelper.ceil(recipeEntry.fluxPerTick * (this.assembly.hasSpeedUpgrade() ? 1.1F : 1.0F)));
         String ticks = MiscUtils.getTimeFromTicks(recipeEntry.ticksProcessing);

@@ -29,12 +29,12 @@ public final class LexiconEntryInfo
 
     @Override
     public String getGroupId() {
-        return LexiconGroupInfo.GRP_NAME;
+        return LexiconGroupInfo.NAME;
     }
 
     @Override
     public String getPageRenderId() {
-        return LexiconRenderInfo.RENDER_INFO_ID;
+        return LexiconRenderInfo.ID;
     }
 
     @Nonnull

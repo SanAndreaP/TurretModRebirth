@@ -13,6 +13,7 @@ import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
+import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
@@ -89,7 +90,7 @@ public class TurretInfoEntryUpgrade
         mc.fontRenderer.drawSplitString(text, 2, infoHeight + 3, MAX_ENTRY_WIDTH - 2, 0xFF000000);
         this.drawHeight = mc.fontRenderer.getWordWrappedHeight(text, MAX_ENTRY_WIDTH - 2) + infoHeight + 3 + 2;
 
-        TurretAssemblyRegistry.RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(upgStack);
+        RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(upgStack);
         if( recipeEntry != null ) {
             for( int i = 0; i < recipeEntry.resources.length; i++ ) {
                 ItemStack[] stacks = recipeEntry.resources[i].getEntryItemStacks();

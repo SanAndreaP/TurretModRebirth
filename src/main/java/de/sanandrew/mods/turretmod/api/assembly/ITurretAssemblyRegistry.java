@@ -6,7 +6,7 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.api.assembly;
 
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
+import de.sanandrew.mods.turretmod.registry.assembly.RecipeKeyEntry;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -16,7 +16,7 @@ import java.util.UUID;
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public interface ITurretAssemblyRegistry
 {
-    boolean registerRecipe(UUID uuid, IRecipeGroup group, @Nonnull ItemStack result, int fluxPerTick, int ticksProcessing, IRecipeEntry... resources);
+    boolean registerRecipe(UUID uuid, IRecipeGroup group, @Nonnull ItemStack result, int fluxPerTick, int ticksProcessing, IRecipeItem... resources);
 
     IRecipeGroup registerGroup(String name, @Nonnull ItemStack stack);
 
@@ -25,5 +25,5 @@ public interface ITurretAssemblyRegistry
     @Nonnull
     ItemStack getRecipeResult(UUID uuid);
 
-    List<TurretAssemblyRegistry.RecipeKeyEntry> getRecipeList();
+    List<RecipeKeyEntry> getRecipeList();
 }

@@ -14,7 +14,7 @@ import de.sanandrew.mods.sanlib.lib.function.Ex2Function;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.assembly.IRecipeEntry;
+import de.sanandrew.mods.turretmod.api.assembly.IRecipeItem;
 import de.sanandrew.mods.turretmod.api.assembly.ITurretAssemblyRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -41,6 +41,7 @@ public final class TurretAssemblyRecipes
         TmrConstants.LOG.log(Level.INFO, String.format("Initializing Turret Assembly recipes done in %d ms. Found %d recipes.", timeDelta, registry.getRecipeList().size()));
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     private static boolean loadJsonRecipes(ModContainer mod, final ITurretAssemblyRegistry registry) {
         return MiscUtils.findFiles(mod, "assets/" + mod.getModId() + "/recipes_sapturretmod/assembly/",
                                    root -> preProcessJson(root, registry),
@@ -111,7 +112,7 @@ public final class TurretAssemblyRecipes
         if( !ingredients.isJsonArray() ) {
             throw new JsonSyntaxException("Ingredients must be an array");
         }
-        List<IRecipeEntry> entries = new ArrayList<>();
+        List<IRecipeItem> entries = new ArrayList<>();
         ingredients.getAsJsonArray().forEach(elem -> {
             if( elem != null && elem.isJsonObject() ) {
                 JsonObject elemObj = elem.getAsJsonObject();
@@ -121,7 +122,7 @@ public final class TurretAssemblyRecipes
 
                 int sz = items.size();
                 if( sz > 0 ) {
-                    IRecipeEntry entry = new RecipeEntry(count).put(items.toArray(new ItemStack[sz]));
+                    IRecipeItem entry = new RecipeItem(count).put(items.toArray(new ItemStack[0]));
                     if( showTooltipText ) {
                         entry.drawTooltip();
                     }
@@ -132,6 +133,6 @@ public final class TurretAssemblyRecipes
         });
 
         return registry.registerRecipe(UUID.fromString(id), registry.getGroup(group), result, fluxPerTick, ticksProcessing,
-                                       entries.toArray(new IRecipeEntry[entries.size()]));
+                                       entries.toArray(new IRecipeItem[0]));
     }
 }

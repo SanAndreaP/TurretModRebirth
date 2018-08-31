@@ -10,12 +10,13 @@ package de.sanandrew.mods.turretmod.client.gui.tinfo.entry;
 
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
-import de.sanandrew.mods.turretmod.api.assembly.IRecipeEntry;
+import de.sanandrew.mods.turretmod.api.assembly.IRecipeItem;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
+import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
@@ -169,7 +170,7 @@ public class TurretInfoEntryTurret
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
-    private void drawItemRecipe(int x, int y, int mouseX, int mouseY, int scrollY, IRecipeEntry entryItem) {
+    private void drawItemRecipe(int x, int y, int mouseX, int mouseY, int scrollY, IRecipeItem entryItem) {
         ItemStack[] entryStacks = entryItem.getEntryItemStacks();
         ItemStack stack = entryStacks[(int)((this.lastTimestamp / 1000L) % entryStacks.length)];
         this.guiInfo.drawMiniItem(x, y, mouseX, mouseY, scrollY, stack, entryItem.shouldDrawTooltip());
@@ -181,7 +182,7 @@ public class TurretInfoEntryTurret
         public final float health;
         public final int ammoCap;
         public final String range;
-        public final IRecipeEntry[] recipeStacks;
+        public final IRecipeItem[] recipeStacks;
         public final ItemStack[] ammoStacks;
 
         public TurretInfoValues(ITurret turret) {
@@ -197,8 +198,8 @@ public class TurretInfoEntryTurret
                 ammoItms.add(AmmunitionRegistry.INSTANCE.getAmmoItem(ammo));
             }
 
-            TurretAssemblyRegistry.RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(TurretRegistry.INSTANCE.getTurretItem(turret));
-            this.recipeStacks = recipeEntry == null ? new IRecipeEntry[0] : recipeEntry.resources;
+            RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(TurretRegistry.INSTANCE.getTurretItem(turret));
+            this.recipeStacks = recipeEntry == null ? new IRecipeItem[0] : recipeEntry.resources;
 
             this.ammoStacks = ammoItms.toArray(new ItemStack[0]);
         }

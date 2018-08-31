@@ -11,7 +11,7 @@ package de.sanandrew.mods.turretmod.registry.assembly;
 import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.assembly.IRecipeEntry;
+import de.sanandrew.mods.turretmod.api.assembly.IRecipeItem;
 import de.sanandrew.mods.turretmod.api.assembly.IRecipeGroup;
 import de.sanandrew.mods.turretmod.api.assembly.ITurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
@@ -43,7 +43,7 @@ public final class TurretAssemblyRegistry
     private final List<IRecipeGroup> groupsList = new ArrayList<>();
 
     @Override
-    public boolean registerRecipe(UUID uuid, IRecipeGroup group, @Nonnull ItemStack result, int fluxPerTick, int ticksProcessing, IRecipeEntry... resources) {
+    public boolean registerRecipe(UUID uuid, IRecipeGroup group, @Nonnull ItemStack result, int fluxPerTick, int ticksProcessing, IRecipeItem... resources) {
         if( uuid == null ) {
             TmrConstants.LOG.log(Level.ERROR, "UUID for assembly recipe cannot be null!", new InvalidParameterException());
             return false;
@@ -65,7 +65,7 @@ public final class TurretAssemblyRegistry
             return false;
         }
         if( resources == null ) {
-            resources = new IRecipeEntry[0];
+            resources = new IRecipeItem[0];
         }
 
         this.recipeResults.put(uuid, result);
@@ -135,7 +135,7 @@ public final class TurretAssemblyRegistry
         this.groupsList.forEach(group -> group.finalizeGroup(this));
     }
 
-    private static int getStackIndexInList(NonNullList<ItemStack> stacks, ItemStack stack) {
+    static int getStackIndexInList(NonNullList<ItemStack> stacks, ItemStack stack) {
         return stacks.indexOf(stacks.stream().filter(fltStack -> ItemStackUtils.areEqual(stack, fltStack)).findFirst().orElse(null));
     }
 
@@ -146,12 +146,12 @@ public final class TurretAssemblyRegistry
         }
         entry = entry.copy();
         List<Tuple> resourceOnSlotList = new ArrayList<>();
-        List<IRecipeEntry> resourceStacks = new ArrayList<>(Arrays.asList(entry.resources));
+        List<IRecipeItem> resourceStacks = new ArrayList<>(Arrays.asList(entry.resources));
 
-        Iterator<IRecipeEntry> resourceStacksIt = resourceStacks.iterator();
+        Iterator<IRecipeItem> resourceStacksIt = resourceStacks.iterator();
         int invSize = inv.getSizeInventory();
         while( resourceStacksIt.hasNext() ) {
-            IRecipeEntry resource = resourceStacksIt.next();
+            IRecipeItem resource = resourceStacksIt.next();
             if( resource == null ) {
                 return false;
             }
@@ -190,85 +190,4 @@ public final class TurretAssemblyRegistry
         return true;
     }
 
-    public static class RecipeEntry
-    {
-        public final IRecipeEntry[] resources;
-        public final int fluxPerTick;
-        public final int ticksProcessing;
-
-        RecipeEntry(IRecipeEntry[] resources, int fluxPerTick, int ticksProcessing) {
-            this.resources = resources;
-            this.fluxPerTick = fluxPerTick;
-            this.ticksProcessing = ticksProcessing;
-        }
-
-        public RecipeEntry copy() {
-            List<IRecipeEntry> stacks = new ArrayList<>();
-            for( IRecipeEntry stack : this.resources ) {
-                stacks.add(stack.copy());
-            }
-            return new RecipeEntry(stacks.toArray(new IRecipeEntry[stacks.size()]), this.fluxPerTick, this.ticksProcessing);
-        }
-    }
-
-    public static class RecipeKeyEntry
-    {
-        public final UUID id;
-        @Nonnull
-        public final ItemStack stack;
-
-        public RecipeKeyEntry(UUID id, @Nonnull ItemStack stack) {
-            this.id = id;
-            this.stack = stack;
-        }
-    }
-
-    public static class RecipeGroup
-            implements IRecipeGroup
-    {
-        private final String name;
-        @Nonnull
-        private final ItemStack icon;
-        private final List<UUID> recipes = new ArrayList<>();
-
-        public RecipeGroup(String name, @Nonnull ItemStack icon) {
-            this.name = name;
-            this.icon = icon;
-        }
-
-        public void addRecipeId(UUID id) {
-            this.recipes.add(id);
-        }
-
-        @Override
-        public String getName() {
-            return this.name;
-        }
-
-        @Override
-        @Nonnull
-        public ItemStack getIcon() {
-            return this.icon;
-        }
-
-        @Override
-        public List<UUID> getRecipeIdList() {
-            return new ArrayList<>(this.recipes);
-        }
-
-        @Override
-        public void finalizeGroup(ITurretAssemblyRegistry registry) {
-            this.recipes.sort((o1, o2) -> {
-                ItemStack is1 = registry.getRecipeResult(o1);
-                ItemStack is2 = registry.getRecipeResult(o2);
-                int i = Integer.compare(Item.getIdFromItem(is1.getItem()), Item.getIdFromItem(is2.getItem()));
-                if( i == 0 ) {
-                    NonNullList<ItemStack> subtypes = NonNullList.create();
-                    is1.getItem().getSubItems(CreativeTabs.SEARCH, subtypes);
-                    return Integer.compare(getStackIndexInList(subtypes, is1), getStackIndexInList(subtypes, is2));
-                }
-                return i;
-            });
-        }
-    }
 }

@@ -14,6 +14,7 @@ import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
 import de.sanandrew.mods.turretmod.client.shader.ShaderGrayscale;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
+import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -112,7 +113,7 @@ public class TurretInfoEntryAmmo
 
         Gui.drawRect(2, 114, MAX_ENTRY_WIDTH - 2, 115, 0xFF0080BB);
 
-        TurretAssemblyRegistry.RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(ammoItem);
+        RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(ammoItem);
         if( recipeEntry != null ) {
             for( int i = 0; i < recipeEntry.resources.length; i++ ) {
                 ItemStack[] stacks = recipeEntry.resources[i].getEntryItemStacks();

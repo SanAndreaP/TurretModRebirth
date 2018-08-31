@@ -129,7 +129,7 @@ public final class AmmunitionRegistry
     @Override
     public IAmmunition[] getTypes(UUID groupId) {
         List<IAmmunition> ammoList = MiscUtils.defIfNull(this.ammoGroupsFromUUID.get(groupId), new ArrayList<>(0));
-        return ammoList.toArray(new IAmmunition[ammoList.size()]);
+        return ammoList.toArray(new IAmmunition[0]);
     }
 
     @Override
@@ -224,6 +224,7 @@ public final class AmmunitionRegistry
     }
 
     @Override
+    @SuppressWarnings("ObjectEquality")
     public boolean areAmmoItemsEqual(@Nonnull ItemStack firstStack, @Nonnull ItemStack secondStack) {
         if( firstStack.getItem() == ItemRegistry.TURRET_AMMO && secondStack.getItem() == ItemRegistry.TURRET_AMMO ) {
             IAmmunition firstType = this.getType(firstStack);

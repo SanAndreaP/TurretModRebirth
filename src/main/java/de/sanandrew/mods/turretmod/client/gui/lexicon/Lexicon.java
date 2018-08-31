@@ -35,6 +35,11 @@ public class Lexicon
     }
 
     @Override
+    public int getNavButtonOffsetY() {
+        return 210;
+    }
+
+    @Override
     public int getEntryPosX() {
         return 9;
     }
@@ -84,10 +89,9 @@ public class Lexicon
         return Resources.TINFO_GRP_STENCIL.resource;
     }
 
-    //TODO: do search icon
     @Override
     public ResourceLocation getGroupSearchIcon() {
-        return Resources.TINFO_GRP_STENCIL.resource;
+        return Resources.TINFO_GRP_SRC.resource;
     }
 
     @Override
