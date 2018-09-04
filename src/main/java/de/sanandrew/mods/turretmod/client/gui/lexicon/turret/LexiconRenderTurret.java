@@ -23,6 +23,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.relauncher.Side;
@@ -90,7 +91,7 @@ public class LexiconRenderTurret
         drawTurretStat("values.ammo", String.format("%d", this.turret.getAmmoCapacity()), helper, this.drawHeight + 12, 61, mouseX, mouseY);
         drawTurretStat("values.range", getFormattedRange(this.turret.getRangeBB(null)), helper, this.drawHeight + 24, 70, mouseX, mouseY);
         drawTurretStat("values.reload", String.format("%s", MiscUtils.getTimeFromTicks(this.turret.getReloadTicks())), helper, this.drawHeight + 36, 79, mouseX, mouseY);
-        drawTurretStat("values.tier", String.format("%d", this.turret.getTier()), helper, 62, this.drawHeight + 48, mouseX, mouseY);
+        drawTurretStat("values.tier", String.format("%d", this.turret.getTier()), helper, this.drawHeight + 48, 88, mouseX, mouseY);
 
         this.drawHeight += 70;
 
@@ -100,7 +101,7 @@ public class LexiconRenderTurret
 
         fr.drawString(LangUtils.translate(Lang.LEXICON_TURRET_ITEM.get("desc")), 2, this.drawHeight, HDR_COLOR);
         this.drawHeight += 9;
-        this.drawHeight += helper.drawContentString(2, this.drawHeight, entry, helper.getEntryButtonList());
+        this.drawHeight += helper.drawContentString(4, this.drawHeight, entry, helper.getEntryButtonList());
     }
 
     private static String getFormattedRange(AxisAlignedBB aabb) {
@@ -170,5 +171,8 @@ public class LexiconRenderTurret
 
         GlStateManager.popMatrix();
         RenderHelper.disableStandardItemLighting();
+        GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+        GlStateManager.disableTexture2D();
+        GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
     }
 }

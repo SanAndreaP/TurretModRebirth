@@ -36,15 +36,15 @@ public class LexiconRenderInfo
 
     @Override
     public void initPage(ILexiconEntry entry, ILexiconGuiHelper helper, List<GuiButton> globalButtons, List<GuiButton> entryButtons) {
-        entryButtons.add(helper.getNewLinkButton(entryButtons.size(), 6, 42, "SanAndreasP", "https://minecraft.curseforge.com/members/SanAndreasP", helper.getFontRenderer(), true).get());
+        entryButtons.add(helper.getNewLinkButton(entryButtons.size(), 6, 44, "SanAndreasP", "https://minecraft.curseforge.com/members/SanAndreasP", helper.getFontRenderer(), true).get());
 
-        entryButtons.add(helper.getNewLinkButton(entryButtons.size(), 6, 63, "Drullkus (ion cannon model)", "https://minecraft.curseforge.com/members/Drullkus", helper.getFontRenderer(), true).get());
-        entryButtons.add(helper.getNewLinkButton(entryButtons.size(), 6, 72, "Darkhax (helper code)", "https://minecraft.curseforge.com/members/Darkhax", helper.getFontRenderer(), true).get());
-        entryButtons.add(helper.getNewLinkButton(entryButtons.size(), 6, 81, "Vazkii (rendering code)", "https://minecraft.curseforge.com/members/Vazkii", helper.getFontRenderer(), true).get());
+        entryButtons.add(helper.getNewLinkButton(entryButtons.size(), 6, 65, "Drullkus (ion cannon model)", "https://minecraft.curseforge.com/members/Drullkus", helper.getFontRenderer(), true).get());
+        entryButtons.add(helper.getNewLinkButton(entryButtons.size(), 6, 74, "Darkhax (helper code)", "https://minecraft.curseforge.com/members/Darkhax", helper.getFontRenderer(), true).get());
+        entryButtons.add(helper.getNewLinkButton(entryButtons.size(), 6, 83, "Vazkii (rendering code)", "https://minecraft.curseforge.com/members/Vazkii", helper.getFontRenderer(), true).get());
 
-        entryButtons.add(helper.getNewLinkButton(entryButtons.size(), 6, 102, LangUtils.translate(Lang.LEXICON_INFO_ITEM.get("github")), "https://github.com/SanAndreasP/TurretModRebirth", helper.getFontRenderer(), true).get());
-        entryButtons.add(helper.getNewLinkButton(entryButtons.size(), 6, 111, LangUtils.translate(Lang.LEXICON_INFO_ITEM.get("issues")), "https://github.com/SanAndreasP/TurretModRebirth/issues/", helper.getFontRenderer(), true).get());
-        entryButtons.add(helper.getNewLinkButton(entryButtons.size(), 6, 120, LangUtils.translate(Lang.LEXICON_INFO_ITEM.get("curse")), "https://minecraft.curseforge.com/projects/turret-mod-rebirth", helper.getFontRenderer(), true).get());
+        entryButtons.add(helper.getNewLinkButton(entryButtons.size(), 6, 104, LangUtils.translate(Lang.LEXICON_INFO_ITEM.get("github")), "https://github.com/SanAndreasP/TurretModRebirth", helper.getFontRenderer(), true).get());
+        entryButtons.add(helper.getNewLinkButton(entryButtons.size(), 6, 113, LangUtils.translate(Lang.LEXICON_INFO_ITEM.get("issues")), "https://github.com/SanAndreasP/TurretModRebirth/issues/", helper.getFontRenderer(), true).get());
+        entryButtons.add(helper.getNewLinkButton(entryButtons.size(), 6, 122, LangUtils.translate(Lang.LEXICON_INFO_ITEM.get("curse")), "https://minecraft.curseforge.com/projects/turret-mod-rebirth", helper.getFontRenderer(), true).get());
     }
 
     @Override
@@ -58,22 +58,22 @@ public class LexiconRenderInfo
         helper.getFontRenderer().drawString(s, (helper.getLexicon().getEntryWidth() - helper.getFontRenderer().getStringWidth(s)) / 2, 2, helper.getLexicon().getTitleColor());
 
         this.drawHeight = 14;
-        helper.getFontRenderer().drawString(LangUtils.translate(Lang.LEXICON_INFO_ITEM.get("version")), 0, this.drawHeight, ITEM_TXT_COLOR);
+        helper.getFontRenderer().drawString(LangUtils.translate(Lang.LEXICON_INFO_ITEM.get("version")), 2, this.drawHeight, ITEM_TXT_COLOR);
         this.drawHeight += 9;
         helper.getFontRenderer().drawString(TmrConstants.VERSION, 6, this.drawHeight, TXT_COLOR);
 
         this.drawHeight += 12;
-        helper.getFontRenderer().drawString(LangUtils.translate(Lang.LEXICON_INFO_ITEM.get("author")), 0, this.drawHeight, ITEM_TXT_COLOR);
+        helper.getFontRenderer().drawString(LangUtils.translate(Lang.LEXICON_INFO_ITEM.get("author")), 2, this.drawHeight, ITEM_TXT_COLOR);
         this.drawHeight += 9;
         // author links
 
         this.drawHeight += 12;
-        helper.getFontRenderer().drawString(LangUtils.translate(Lang.LEXICON_INFO_ITEM.get("credits")), 0, this.drawHeight, ITEM_TXT_COLOR);
+        helper.getFontRenderer().drawString(LangUtils.translate(Lang.LEXICON_INFO_ITEM.get("credits")), 2, this.drawHeight, ITEM_TXT_COLOR);
         this.drawHeight += 27;
         // credit links
 
         this.drawHeight += 12;
-        helper.getFontRenderer().drawString(LangUtils.translate(Lang.LEXICON_INFO_ITEM.get("links")), 0, this.drawHeight, ITEM_TXT_COLOR);
+        helper.getFontRenderer().drawString(LangUtils.translate(Lang.LEXICON_INFO_ITEM.get("links")), 2, this.drawHeight, ITEM_TXT_COLOR);
         this.drawHeight += 27;
         // misc links
     }

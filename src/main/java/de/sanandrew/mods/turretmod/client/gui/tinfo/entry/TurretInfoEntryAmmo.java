@@ -12,6 +12,7 @@ import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.IGuiTurretInfo;
 import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretInfoEntry;
+import de.sanandrew.mods.turretmod.client.gui.lexicon.ammo.GuiButtonAmmoItem;
 import de.sanandrew.mods.turretmod.client.shader.ShaderGrayscale;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntry;
@@ -39,7 +40,6 @@ import java.util.UUID;
 public class TurretInfoEntryAmmo
         implements ITurretInfoEntry
 {
-    private static final ShaderGrayscale SHADER_GRAYSCALE = new ShaderGrayscale(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
     private int drawHeight;
     private int shownAmmo;
@@ -77,10 +77,10 @@ public class TurretInfoEntryAmmo
         this.ammoBtn = new ArrayList<>(MathHelper.ceil(this.ammos.length * (1/0.75D)));
         this.shownAmmo = 0;
         for( int i = 0; i < this.ammos.length; i++ ) {
-            GuiButtonAmmoItem btn = new GuiButtonAmmoItem(gui.__getButtons().size(), gui.getEntryX() + i*16, gui.getEntryY(), i);
-            this.ammoBtn.add(btn);
-            btn.enabled = i != this.shownAmmo;
-            gui.__getButtons().add(btn);
+//            GuiButtonAmmoItem btn = new GuiButtonAmmoItem(this, gui.__getButtons().size(), gui.getEntryX() + i*16, gui.getEntryY(), i);
+//            this.ammoBtn.add(btn);
+//            btn.enabled = i != this.shownAmmo;
+//            gui.__getButtons().add(btn);
         }
     }
 
@@ -141,48 +141,14 @@ public class TurretInfoEntryAmmo
 
     @Override
     public boolean actionPerformed(GuiButton btn) {
-        if( btn instanceof GuiButtonAmmoItem ) {
-            this.shownAmmo = ((GuiButtonAmmoItem) btn).ammoIndex;
-            this.ammoBtn.forEach(ammoBtnInst -> ammoBtnInst.enabled = ammoBtnInst.ammoIndex != this.shownAmmo);
-
-            return true;
-        }
+//        if( btn instanceof GuiButtonAmmoItem ) {
+//            this.shownAmmo = ((GuiButtonAmmoItem) btn).ammoIndex;
+//            this.ammoBtn.forEach(ammoBtnInst -> ammoBtnInst.enabled = ammoBtnInst.ammoIndex != this.shownAmmo);
+//
+//            return true;
+//        }
 
         return false;
     }
 
-    private class GuiButtonAmmoItem
-            extends GuiButton
-    {
-        public final int ammoIndex;
-        @Nonnull
-        public final ItemStack stack;
-
-        public GuiButtonAmmoItem(int id, int x, int y, int index) {
-            super(id, x, y, 16, 16, "");
-            this.ammoIndex = index;
-            this.stack = AmmunitionRegistry.INSTANCE.getAmmoItem(TurretInfoEntryAmmo.this.ammos[this.ammoIndex]);
-        }
-
-        @Override
-        public void drawButton(Minecraft mc, int mouseX, int mouseY, float partTicks) {
-            if( this.visible ) {
-                GlStateManager.pushMatrix();
-                GlStateManager.translate(0.0F, 0.0F, 100.0F);
-                Gui.drawRect(this.x, this.y, this.x + this.width, this.y + 1, 0xA0000000);
-                Gui.drawRect(this.x, this.y + this.height - 1, this.x + this.width, this.y + this.height, 0xA0000000);
-                Gui.drawRect(this.x, this.y + 1, this.x + 1, this.y + this.height - 1, 0x40000000);
-                Gui.drawRect(this.x + this.width - 1, this.y + 1, this.x + this.width, this.y + this.height - 1, 0x40000000);
-                if( this.enabled ) {
-                    Gui.drawRect(this.x, this.y, this.x + this.width, this.y + this.height, 0x80000000);
-
-                    SHADER_GRAYSCALE.render(() -> TurretInfoEntryAmmo.this.guiInfo.renderStack(this.stack, this.x, this.y, 1.0F), 0.75F);
-                } else {
-                    Gui.drawRect(this.x, this.y, this.x + this.width, this.y + this.height, 0x80FFFFFF);
-                    TurretInfoEntryAmmo.this.guiInfo.renderStack(this.stack, this.x, this.y, 1.0F);
-                }
-                GlStateManager.popMatrix();
-            }
-        }
-    }
 }
