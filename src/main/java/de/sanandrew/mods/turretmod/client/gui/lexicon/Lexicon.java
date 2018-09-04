@@ -36,7 +36,7 @@ public class Lexicon
 
     @Override
     public int getNavButtonOffsetY() {
-        return 210;
+        return 214;
     }
 
     @Override

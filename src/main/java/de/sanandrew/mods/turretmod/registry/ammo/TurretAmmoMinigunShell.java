@@ -76,7 +76,7 @@ public class TurretAmmoMinigunShell
     }
 
     @Override
-    public String getInfoName() {
+    public String getGroupName() {
         return "minigun_shell";
     }
 

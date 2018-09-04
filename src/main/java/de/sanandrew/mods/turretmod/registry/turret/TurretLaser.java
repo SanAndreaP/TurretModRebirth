@@ -12,11 +12,9 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
-import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.client.audio.SoundLaser;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -29,15 +27,9 @@ public class TurretLaser
         implements ITurret
 {
     public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "turrets/turret_laser");
-    public static final UUID TIII_UUID = UUID.fromString("F6196022-3F9D-4D3F-B3C1-9ED644DB436B");
+    private static final UUID ID = UUID.fromString("F6196022-3F9D-4D3F-B3C1-9ED644DB436B");
 
     private static final AxisAlignedBB RANGE_BB = new AxisAlignedBB(-24.0D, -4.0D, -24.0D, 24.0D, 12.0D, 24.0D);
-
-    @Override
-    public void applyEntityAttributes(ITurretInst turretInst) {
-        turretInst.getEntity().getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).setBaseValue(5.0D);
-        turretInst.getEntity().getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(40.0D);
-    }
 
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {
@@ -73,7 +65,7 @@ public class TurretLaser
 
     @Override
     public UUID getId() {
-        return TurretLaser.TIII_UUID;
+        return TurretLaser.ID;
     }
 
     @Override
@@ -101,5 +93,10 @@ public class TurretLaser
     @Override
     public int getAmmoCapacity() {
         return 256;
+    }
+
+    @Override
+    public int getReloadTicks() {
+        return 5;
     }
 }

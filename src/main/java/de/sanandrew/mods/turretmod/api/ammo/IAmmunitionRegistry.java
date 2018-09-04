@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface IAmmunitionRegistry
 {
-    List<IAmmunition> getRegisteredTypes();
+    List<IAmmunition> getTypes();
 
     List<UUID> getGroups();
 

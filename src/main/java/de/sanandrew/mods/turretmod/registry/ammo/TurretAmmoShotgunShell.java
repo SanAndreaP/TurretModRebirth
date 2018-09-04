@@ -76,7 +76,7 @@ public class TurretAmmoShotgunShell
     }
 
     @Override
-    public String getInfoName() {
+    public String getGroupName() {
         return "shotgun_shell";
     }
 

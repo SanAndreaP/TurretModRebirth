@@ -33,6 +33,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -67,17 +68,17 @@ public class EntityTurret
     private static final AxisAlignedBB UPWARDS_BLOCK = new AxisAlignedBB(0.1D, 0.99D, 0.1D, 1.0D, 1.0D, 1.0D);
     private static final AxisAlignedBB DOWNWARDS_BLOCK = new AxisAlignedBB(0.1D, 0.0D, 0.1D, 1.0D, 0.01D, 1.0D);
 
-    public static final DataParameter<Boolean> SHOT_CHNG = EntityDataManager.createKey(EntityTurret.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> SHOT_CHNG = EntityDataManager.createKey(EntityTurret.class, DataSerializers.BOOLEAN);
 
     public boolean isUpsideDown;
-    public boolean showRange;
+    private boolean showRange;
     public boolean inGui;
 
-    protected final TargetProcessor targetProc;
-    protected final UpgradeProcessor upgProc;
+    private final TargetProcessor targetProc;
+    private final UpgradeProcessor upgProc;
 
-    protected UUID ownerUUID;
-    protected String ownerName;
+    private UUID ownerUUID;
+    private String ownerName;
 
     private DataWatcherBooleans<EntityTurret> dwBools;
     private BlockPos blockPos;
@@ -102,8 +103,8 @@ public class EntityTurret
         this(world);
         this.delegate = delegate;
 
-        this.delegate.entityInit(this);
-        this.delegate.applyEntityAttributes(this);
+        this.loadDelegate(delegate);
+
         this.setHealth(this.getMaxHealth());
     }
 
@@ -122,7 +123,6 @@ public class EntityTurret
         this.getAttributeMap().registerAttribute(TurretAttributes.MAX_AMMO_CAPACITY);
         this.getAttributeMap().registerAttribute(TurretAttributes.MAX_RELOAD_TICKS);
         this.getAttributeMap().registerAttribute(TurretAttributes.MAX_INIT_SHOOT_TICKS);
-
     }
 
     @Override
@@ -147,7 +147,7 @@ public class EntityTurret
         return MiscUtils.defIfNull(this.delegate.getDeathSound(this), Sounds.HIT_TURRETDEATH);
     }
 
-    protected SoundEvent getCollectSound() {
+    private SoundEvent getCollectSound() {
         return MiscUtils.defIfNull(this.delegate.getCollectSound(this), Sounds.COLLECT_IA_GET);
     }
 
@@ -173,8 +173,8 @@ public class EntityTurret
         double distVecXZ = MathHelper.sqrt(deltaX * deltaX + deltaZ * deltaZ);
         float yawRotation = (float) ((this.isUpsideDown ? -1.0D : 1.0D) * (Math.atan2(deltaZ, deltaX) * 180.0D / Math.PI)) - 90.0F;
         float pitchRotation = (float) -(Math.atan2(deltaY, distVecXZ) * 180.0D / Math.PI);
-        this.rotationPitch = this.updateRotation(this.rotationPitch, pitchRotation);
-        this.rotationYawHead = this.updateRotation(this.rotationYawHead, yawRotation);
+        this.rotationPitch = calcRotation(this.rotationPitch, pitchRotation);
+        this.rotationYawHead = calcRotation(this.rotationYawHead, yawRotation);
     }
 
     /**
@@ -183,7 +183,7 @@ public class EntityTurret
     @Override
     public void setRotationYawHead(float rotation) { }
 
-    protected float updateRotation(float prevRotation, float newRotation) {
+    private static float calcRotation(float prevRotation, float newRotation) {
         final float speed = 20.0F;
         float part = MathHelper.wrapDegrees(newRotation - prevRotation);
 
@@ -278,6 +278,7 @@ public class EntityTurret
         } else {
             this.rotationYawHead = TmrUtils.wrap360(this.rotationYawHead);
             this.prevRotationYawHead = TmrUtils.wrap360(this.prevRotationYawHead);
+            @SuppressWarnings("IntegerDivisionInFloatingPointContext")
             float closestRot = (MathHelper.ceil(this.rotationYawHead) / 90) * 90.0F;
             if( this.rotationYawHead > closestRot ) {
                 this.rotationYawHead -= 5.0F;
@@ -367,7 +368,7 @@ public class EntityTurret
         this.setDead();
     }
 
-    protected void updateMyEntityActionState() {
+    private void updateMyEntityActionState() {
         this.idleTime++;
         this.moveStrafing = 0.0F;
         this.moveForward = 0.0F;
@@ -452,9 +453,7 @@ public class EntityTurret
 
         String turretId = nbt.getString("turretId");
         if( UuidUtils.isStringUuid(turretId) ) {
-            this.delegate = TurretRegistry.INSTANCE.getTurret(UUID.fromString(turretId));
-            this.delegate.entityInit(this);
-            this.delegate.applyEntityAttributes(this);
+            loadDelegate(UUID.fromString(turretId));
         }
 
         this.targetProc.readFromNbt(nbt);
@@ -468,6 +467,20 @@ public class EntityTurret
         }
 
         this.delegate.onLoad(this, nbt);
+    }
+
+    private void loadDelegate(UUID id) {
+        this.loadDelegate(TurretRegistry.INSTANCE.getTurret(id));
+    }
+
+    private void loadDelegate(ITurret turret) {
+        this.delegate = turret;
+        this.delegate.entityInit(this);
+        this.delegate.applyEntityAttributes(this);
+
+        this.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).setBaseValue(this.delegate.getReloadTicks());
+        this.getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY).setBaseValue(this.delegate.getAmmoCapacity());
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(this.delegate.getHealth());
     }
 
     @Override
@@ -548,9 +561,7 @@ public class EntityTurret
 
         if( !doBlockCheckOnly ) {
             AxisAlignedBB aabb = new AxisAlignedBB(posPlaced.getX(), posPlaced.getY(), posPlaced.getZ(), posPlaced.getX() + 1.0D, posPlaced.getY() + (updideDown ? - 1.0D : 1.0D), posPlaced.getZ() + 1.0D);
-            if( !world.getEntitiesWithinAABB(EntityTurret.class, aabb).isEmpty() ) {
-                return false;
-            }
+            return world.getEntitiesWithinAABB(EntityTurret.class, aabb).isEmpty();
         }
 
         return true;

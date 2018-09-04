@@ -138,35 +138,26 @@ public final class TurretRegistry
     {
         private static final AxisAlignedBB BB = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 
-        @Override
-        public String getName() { return "empty"; }
+        @Override public String getName() { return "empty"; }
 
-        @Nonnull
-        @Override
-        public UUID getId() { return UuidUtils.EMPTY_UUID; }
+        @Nonnull @Override public UUID getId() { return UuidUtils.EMPTY_UUID; }
 
-        @Override
-        public ResourceLocation getItemModel() { return null; }
+        @Override public ResourceLocation getItemModel() { return null; }
 
-        @Override
-        public ResourceLocation getStandardTexture(ITurretInst turretInst) { return null; }
+        @Override public ResourceLocation getStandardTexture(ITurretInst turretInst) { return null; }
 
-        @Override
-        public ResourceLocation getGlowTexture(ITurretInst turretInst) { return null; }
+        @Override public ResourceLocation getGlowTexture(ITurretInst turretInst) { return null; }
 
-        @Override
-        public SoundEvent getShootSound(ITurretInst turretInst) { return null; }
+        @Override public SoundEvent getShootSound(ITurretInst turretInst) { return null; }
 
-        @Override
-        public AxisAlignedBB getRangeBB(ITurretInst turretInst) { return BB; }
+        @Override public AxisAlignedBB getRangeBB(ITurretInst turretInst) { return BB; }
 
-        @Override
-        public int getTier() { return 0; }
+        @Override public int getTier() { return 0; }
 
-        @Override
-        public float getHealth() { return 0; }
+        @Override public float getHealth() { return 0; }
 
-        @Override
-        public int getAmmoCapacity() { return 0; }
+        @Override public int getAmmoCapacity() { return 0; }
+
+        @Override public int getReloadTicks() { return 0; }
     }
 }

@@ -76,7 +76,7 @@ public class TurretAmmoBullet
     }
 
     @Override
-    public String getInfoName() {
+    public String getGroupName() {
         return "bullet";
     }
 

@@ -39,10 +39,7 @@ public class TurretForcefield
 
     @Override
     public void applyEntityAttributes(ITurretInst turretInst) {
-        turretInst.getEntity().getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30.0D);
-        turretInst.getEntity().getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).setBaseValue(1.0D);
         turretInst.getEntity().getEntityAttribute(TurretAttributes.MAX_INIT_SHOOT_TICKS).setBaseValue(0.0D);
-        turretInst.getEntity().getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY).setBaseValue(512.0D);
     }
 
     @Override
@@ -156,5 +153,10 @@ public class TurretForcefield
     @Override
     public int getAmmoCapacity() {
         return 512;
+    }
+
+    @Override
+    public int getReloadTicks() {
+        return 1;
     }
 }

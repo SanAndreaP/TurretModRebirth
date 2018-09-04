@@ -70,7 +70,7 @@ public abstract class TurretAmmoCryoCell
     }
 
     @Override
-    public String getInfoName() {
+    public String getGroupName() {
         return "cryocell";
     }
 

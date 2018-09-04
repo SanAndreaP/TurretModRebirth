@@ -84,4 +84,6 @@ public interface ITurret
     float getHealth();
 
     int getAmmoCapacity();
+
+    int getReloadTicks();
 }

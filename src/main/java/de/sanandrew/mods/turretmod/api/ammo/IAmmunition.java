@@ -65,7 +65,7 @@ public interface IAmmunition<T extends Entity & IProjectile>
      * <i>Example:</i> Arrows and Quivers IDs both have {@code arrow} as their name.<br>
      * @return A name for the Turret Info Tablet
      */
-    String getInfoName();
+    String getGroupName();
 
 
     float getInfoDamage();

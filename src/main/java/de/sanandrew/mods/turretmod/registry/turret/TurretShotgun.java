@@ -13,7 +13,6 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
-import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.Sounds;
@@ -29,14 +28,9 @@ public class TurretShotgun
         implements ITurret
 {
     public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "turrets/turret_shotgun");
-    public static final UUID TI_UUID = UUID.fromString("F7991EC5-2A89-49A6-B8EA-80775973C4C5");
+    private static final UUID ID = UUID.fromString("F7991EC5-2A89-49A6-B8EA-80775973C4C5");
 
     private static final AxisAlignedBB RANGE_BB = new AxisAlignedBB(-16.0D, -4.0D, -16.0D, 16.0D, 8.0D, 16.0D);
-
-    @Override
-    public void applyEntityAttributes(ITurretInst turretInst) {
-        turretInst.getEntity().getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).setBaseValue(20.0D);
-    }
 
     @Override
     public void onUpdate(ITurretInst turretInst) {
@@ -87,7 +81,7 @@ public class TurretShotgun
 
     @Override
     public UUID getId() {
-        return TurretShotgun.TI_UUID;
+        return TurretShotgun.ID;
     }
 
     @Override
@@ -114,5 +108,10 @@ public class TurretShotgun
     @Override
     public int getAmmoCapacity() {
         return 256;
+    }
+
+    @Override
+    public int getReloadTicks() {
+        return 20;
     }
 }

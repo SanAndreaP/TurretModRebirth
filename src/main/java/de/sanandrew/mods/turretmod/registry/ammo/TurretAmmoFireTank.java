@@ -77,7 +77,7 @@ public class TurretAmmoFireTank
     }
 
     @Override
-    public String getInfoName() {
+    public String getGroupName() {
         return "fueltank";
     }
 

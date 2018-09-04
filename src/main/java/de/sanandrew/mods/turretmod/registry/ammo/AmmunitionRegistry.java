@@ -68,7 +68,7 @@ public final class AmmunitionRegistry
         }
 
         @Override
-        public String getInfoName() {
+        public String getGroupName() {
             return "";
         }
 
@@ -117,7 +117,7 @@ public final class AmmunitionRegistry
     }
 
     @Override
-    public List<IAmmunition> getRegisteredTypes() {
+    public List<IAmmunition> getTypes() {
         return new ArrayList<>(this.ammoTypes);
     }
 

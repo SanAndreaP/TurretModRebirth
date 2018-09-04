@@ -55,7 +55,7 @@ public class TurretInfoEntryAmmo
         IAmmunition[] ammos = AmmunitionRegistry.INSTANCE.getTypes(groupId);
 
         this.ammos = ammos;
-        this.title = ammos[0].getInfoName();
+        this.title = ammos[0].getGroupName();
         this.icon = this.ammos[0].getStoringAmmoItem();
     }
 
@@ -107,7 +107,7 @@ public class TurretInfoEntryAmmo
         mc.fontRenderer.drawString(LangUtils.translate(Lang.TURRET_NAME.get(ammo.getTurret().getName())), 45, 83, 0xFF000000, false);
         mc.fontRenderer.drawString(LangUtils.translate(Lang.TINFO_ENTRY_CRAFTING),                        42, 94, 0xFF6A6A6A, false);
 
-        String text = LangUtils.translate(Lang.TINFO_ENTRY_AMMO_DESC.get(ammo.getInfoName())).replace("\\n", "\n");
+        String text = LangUtils.translate(Lang.TINFO_ENTRY_AMMO_DESC.get(ammo.getGroupName())).replace("\\n", "\n");
         mc.fontRenderer.drawSplitString(text, 2, 117, MAX_ENTRY_WIDTH - 2, 0xFF000000);
         this.drawHeight = mc.fontRenderer.getWordWrappedHeight(text, MAX_ENTRY_WIDTH - 2) + 2;
 

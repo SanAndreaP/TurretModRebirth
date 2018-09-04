@@ -13,13 +13,11 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
-import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.Sounds;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -30,16 +28,9 @@ public class TurretMinigun
         implements ITurret
 {
     public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "turrets/turret_minigun");
-    public static final UUID TII_UUID = UUID.fromString("97E1FB65-EE36-43BA-A900-583B4BD7973A");
+    private static final UUID ID = UUID.fromString("97E1FB65-EE36-43BA-A900-583B4BD7973A");
 
     private static final AxisAlignedBB RANGE_BB = new AxisAlignedBB(-20.0D, -4.0D, -20.0D, 20.0D, 10.0D, 20.0D);
-
-    @Override
-    public void applyEntityAttributes(ITurretInst turretInst) {
-        turretInst.getEntity().getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY).setBaseValue(512.0D);
-        turretInst.getEntity().getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).setBaseValue(3.0D);
-        turretInst.getEntity().getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30.0D);
-    }
 
     @Override
     public void onUpdate(ITurretInst turretInst) {
@@ -104,7 +95,7 @@ public class TurretMinigun
 
     @Override
     public UUID getId() {
-        return TII_UUID;
+        return ID;
     }
 
     @Override
@@ -124,8 +115,8 @@ public class TurretMinigun
         public float prevBarrelLeft = 0.0F;
         public float prevBarrelRight = 0.0F;
 
-        public float maxBarrelLeft = 0.0F;
-        public float maxBarrelRight = 0.0F;
+        float maxBarrelLeft = 0.0F;
+        float maxBarrelRight = 0.0F;
 
         public boolean isLeftShot = false;
     }
@@ -138,5 +129,10 @@ public class TurretMinigun
     @Override
     public int getAmmoCapacity() {
         return 512;
+    }
+
+    @Override
+    public int getReloadTicks() {
+        return 3;
     }
 }

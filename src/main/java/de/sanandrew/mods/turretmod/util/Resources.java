@@ -62,6 +62,7 @@ public enum Resources
     TINFO_GRP_UPGRADE("textures/gui/lexicon/group_upgrades.png"),
     TINFO_GRP_STENCIL("textures/gui/turretinfo/stencil_grp.png"),
     TINFO_GRP_SRC("textures/gui/lexicon/group_search.png"),
+    TINFO_ELEMENTS("textures/gui/lexicon/elements.png"),
 
     TURRET_FORCEFIELD_P1("textures/entities/shield_1.png"),
     TURRET_FORCEFIELD_P2("textures/entities/shield_2.png"),

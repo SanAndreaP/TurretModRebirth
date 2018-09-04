@@ -76,7 +76,7 @@ public class TurretAmmoFluxCell
     }
 
     @Override
-    public String getInfoName() {
+    public String getGroupName() {
         return "fluxcell";
     }
 

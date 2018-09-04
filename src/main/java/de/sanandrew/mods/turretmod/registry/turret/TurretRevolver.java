@@ -13,13 +13,11 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
-import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.Sounds;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -30,15 +28,9 @@ public class TurretRevolver
         implements ITurret
 {
     public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "turrets/turret_revolver");
-    public static final UUID TII_UUID = UUID.fromString("4449D836-F122-409A-8E6C-D7B7438FD08C");
+    private static final UUID ID = UUID.fromString("4449D836-F122-409A-8E6C-D7B7438FD08C");
 
     private static final AxisAlignedBB RANGE_BB = new AxisAlignedBB(-20.0D, -4.0D, -20.0D, 20.0D, 10.0D, 20.0D);
-
-    @Override
-    public void applyEntityAttributes(ITurretInst turretInst) {
-        turretInst.getEntity().getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).setBaseValue(15.0D);
-        turretInst.getEntity().getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30.0D);
-    }
 
     @Override
     public void onUpdate(ITurretInst turretInst) {
@@ -106,7 +98,7 @@ public class TurretRevolver
 
     @Override
     public UUID getId() {
-        return TurretRevolver.TII_UUID;
+        return TurretRevolver.ID;
     }
 
     @Override
@@ -127,7 +119,7 @@ public class TurretRevolver
         public float prevBarrelLeft = 1.0F;
         public float prevBarrelRight = 1.0F;
 
-        public boolean isLeftShot = false;
+        boolean isLeftShot = false;
     }
 
     @Override
@@ -138,5 +130,10 @@ public class TurretRevolver
     @Override
     public int getAmmoCapacity() {
         return 256;
+    }
+
+    @Override
+    public int getReloadTicks() {
+        return 15;
     }
 }

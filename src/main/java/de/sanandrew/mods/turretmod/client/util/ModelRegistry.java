@@ -129,7 +129,7 @@ public final class ModelRegistry
                 extends MeshDefUUID<IAmmunition>
         {
             public Ammo() {
-                for( IAmmunition ammo : AmmunitionRegistry.INSTANCE.getRegisteredTypes() ) {
+                for( IAmmunition ammo : AmmunitionRegistry.INSTANCE.getTypes() ) {
                     ModelResourceLocation modelRes = new ModelResourceLocation(ammo.getModel(), "inventory");
                     this.modelRes.put(ammo.getId(), modelRes);
                 }

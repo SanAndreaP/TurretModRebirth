@@ -76,7 +76,7 @@ public class TurretAmmoArrow
     }
 
     @Override
-    public String getInfoName() {
+    public String getGroupName() {
         return "arrow";
     }
 

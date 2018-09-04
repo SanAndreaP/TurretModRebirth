@@ -76,7 +76,7 @@ public class TurretAmmoElectrolyteCell
     }
 
     @Override
-    public String getInfoName() {
+    public String getGroupName() {
         return "eleccell";
     }
 
