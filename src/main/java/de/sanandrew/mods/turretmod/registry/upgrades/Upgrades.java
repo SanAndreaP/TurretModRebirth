@@ -7,14 +7,13 @@
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
-import de.sanandrew.mods.turretmod.registry.turret.TurretFlamethrower;
-import de.sanandrew.mods.turretmod.registry.turret.TurretLaser;
-import de.sanandrew.mods.turretmod.registry.turret.shieldgen.TurretForcefield;
+import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import de.sanandrew.mods.turretmod.registry.upgrades.shield.UpgradeShieldPersonal;
 import de.sanandrew.mods.turretmod.registry.upgrades.smartTargeting.UpgradeSmartTargeting;
 
 import java.util.UUID;
 
+@SuppressWarnings("WeakerAccess")
 public class Upgrades
 {
     public static final UUID UPG_STORAGE_I = UUID.fromString("1749478F-2A8E-4C56-BC03-6C76CB5DE921");
@@ -54,12 +53,12 @@ public class Upgrades
         registry.registerUpgrade(ECONOMY_I, new UpgradeAmmoUsage.UpgradeAmmoUseI());
         registry.registerUpgrade(ECONOMY_II, new UpgradeAmmoUsage.UpgradeAmmoUseII());
         registry.registerUpgrade(ECONOMY_INF, new UpgradeAmmoUsage.UpgradeAmmoUseInf());
-        registry.registerUpgrade(ENDER_MEDIUM, new UpgradeBasic("ender_medium", t -> t instanceof TurretLaser));
-        registry.registerUpgrade(FUEL_PURIFY, new UpgradeBasic("fuel_purifier", t -> t instanceof TurretFlamethrower));
+        registry.registerUpgrade(ENDER_MEDIUM, new UpgradeBasic("ender_medium", Turrets.LASER));
+        registry.registerUpgrade(FUEL_PURIFY, new UpgradeBasic("fuel_purifier", Turrets.FLAMETHROWER));
         registry.registerUpgrade(SHIELD_PERSONAL, new UpgradeShieldPersonal());
-        registry.registerUpgrade(SHIELD_PROJECTILE, new UpgradeBasic("shield_projectile", t -> t instanceof TurretForcefield));
-        registry.registerUpgrade(SHIELD_EXPLOSIVE, new UpgradeBasic("shield_explosive", t -> t instanceof TurretForcefield));
-        registry.registerUpgrade(SHIELD_STRENGTH_I, new UpgradeBasic("shield_strength_i", t -> t instanceof TurretForcefield));
-        registry.registerUpgrade(SHIELD_STRENGTH_II, new UpgradeBasic("shield_strength_ii", t -> t instanceof TurretForcefield, registry.getUpgrade(Upgrades.SHIELD_STRENGTH_I)));
+        registry.registerUpgrade(SHIELD_PROJECTILE, new UpgradeBasic("shield_projectile", Turrets.SHIELDGEN));
+        registry.registerUpgrade(SHIELD_EXPLOSIVE, new UpgradeBasic("shield_explosive", Turrets.SHIELDGEN));
+        registry.registerUpgrade(SHIELD_STRENGTH_I, new UpgradeBasic("shield_strength_i", Turrets.SHIELDGEN));
+        registry.registerUpgrade(SHIELD_STRENGTH_II, new UpgradeBasic("shield_strength_ii", registry.getUpgrade(Upgrades.SHIELD_STRENGTH_I), Turrets.SHIELDGEN));
     }
 }

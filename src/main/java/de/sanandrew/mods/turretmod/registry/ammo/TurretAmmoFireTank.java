@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
+import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileFlame;
@@ -62,7 +63,7 @@ public class TurretAmmoFireTank
     }
 
     @Override
-    public float getInfoDamage() {
+    public float getDamageInfo() {
         return 0.5F;
     }
 
@@ -71,14 +72,10 @@ public class TurretAmmoFireTank
         return Ammunitions.FUELTANK;
     }
 
+    @Nonnull
     @Override
-    public UUID getGroupId() {
-        return Ammunitions.FUELTANK;
-    }
-
-    @Override
-    public String getGroupName() {
-        return "fueltank";
+    public IAmmunitionGroup getGroup() {
+        return Ammunitions.Groups.FUEL_TANK;
     }
 
     @Override

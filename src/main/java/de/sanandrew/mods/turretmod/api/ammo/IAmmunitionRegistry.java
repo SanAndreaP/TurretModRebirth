@@ -22,8 +22,13 @@ public interface IAmmunitionRegistry
 
     List<IAmmunition> getTypesForTurret(ITurret turret);
 
-    @SuppressWarnings("unused")
+    List<IAmmunitionGroup> getGroupsForTurret(ITurret turret);
+
+    @SuppressWarnings({"unused", "UnusedReturnValue"})
     boolean registerAmmoType(IAmmunition<?> type);
+
+    @Nonnull
+    ItemStack getAmmoItem(UUID id);
 
     @Nonnull
     ItemStack getAmmoItem(IAmmunition type);

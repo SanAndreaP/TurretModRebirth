@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
+import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
@@ -50,34 +51,25 @@ public class TurretAmmoArrow
         return this.capacity;
     }
 
+    @Nonnull
+    @Override
+    public IAmmunitionGroup getGroup() {
+        return Ammunitions.Groups.ARROW;
+    }
+
     @Override
     public Class<EntityProjectileCrossbowBolt> getEntityClass() {
         return EntityProjectileCrossbowBolt.class;
     }
 
     @Override
-    public ITurret getTurret() {
-        return Turrets.CROSSBOW;
-    }
-
-    @Override
-    public float getInfoDamage() {
+    public float getDamageInfo() {
         return 3.0F;
     }
 
     @Override
     public UUID getTypeId() {
         return Ammunitions.ARROW;
-    }
-
-    @Override
-    public UUID getGroupId() {
-        return Ammunitions.ARROW;
-    }
-
-    @Override
-    public String getGroupName() {
-        return "arrow";
     }
 
     @Override

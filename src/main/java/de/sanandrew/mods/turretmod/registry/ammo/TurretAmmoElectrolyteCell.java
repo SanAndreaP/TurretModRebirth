@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
+import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
@@ -61,7 +62,7 @@ public class TurretAmmoElectrolyteCell
     }
 
     @Override
-    public float getInfoDamage() {
+    public float getDamageInfo() {
         return 0.0F;
     }
 
@@ -70,14 +71,10 @@ public class TurretAmmoElectrolyteCell
         return Ammunitions.ELECTROLYTECELL;
     }
 
+    @Nonnull
     @Override
-    public UUID getGroupId() {
-        return Ammunitions.ELECTROLYTECELL;
-    }
-
-    @Override
-    public String getGroupName() {
-        return "eleccell";
+    public IAmmunitionGroup getGroup() {
+        return Ammunitions.Groups.ELEC_CELL;
     }
 
     @Override

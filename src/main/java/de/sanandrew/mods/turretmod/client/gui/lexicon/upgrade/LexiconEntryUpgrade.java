@@ -4,31 +4,27 @@
  * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
  *                http://creativecommons.org/licenses/by-nc-sa/4.0/
  *******************************************************************************************************************/
-package de.sanandrew.mods.turretmod.client.gui.lexicon.turret;
+package de.sanandrew.mods.turretmod.client.gui.lexicon.upgrade;
 
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconEntry;
-import de.sanandrew.mods.turretmod.api.turret.ITurret;
-import de.sanandrew.mods.turretmod.client.gui.lexicon.info.LexiconGroupInfo;
-import de.sanandrew.mods.turretmod.client.gui.lexicon.info.LexiconRenderInfo;
+import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.client.util.ClientProxy;
-import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
-import de.sanandrew.mods.turretmod.util.Lang;
-import net.minecraft.init.Blocks;
+import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public final class LexiconEntryTurret
+public final class LexiconEntryUpgrade
         implements ILexiconEntry
 {
     private final String id;
-    private final ItemStack icon;
-    final ITurret turret;
+    private final ItemStack item;
+    final ITurretUpgrade upgrade;
 
-    LexiconEntryTurret(ITurret turret) {
-        this.icon =  TurretRegistry.INSTANCE.getTurretItem(turret);
-        this.turret = turret;
-        this.id = turret.getName();
+    LexiconEntryUpgrade(ITurretUpgrade upgrade) {
+        this.item =  UpgradeRegistry.INSTANCE.getUpgradeItem(upgrade);
+        this.upgrade = upgrade;
+        this.id = upgrade.getName();
     }
 
     @Override
@@ -38,23 +34,23 @@ public final class LexiconEntryTurret
 
     @Override
     public String getGroupId() {
-        return LexiconGroupTurret.NAME;
+        return LexiconGroupUpgrade.NAME;
     }
 
     @Override
     public String getPageRenderId() {
-        return LexiconRenderTurret.ID;
+        return LexiconRenderUpgrade.ID;
     }
 
     @Nonnull
     @Override
     public ItemStack getEntryIcon() {
-        return this.icon;
+        return this.item;
     }
 
     @Override
     public String getTitleLangKey(String modId) {
-        return Lang.TURRET_NAME.get(this.turret.getName());
+        return this.item.getUnlocalizedName() + ".name";
     }
 
     @Nonnull

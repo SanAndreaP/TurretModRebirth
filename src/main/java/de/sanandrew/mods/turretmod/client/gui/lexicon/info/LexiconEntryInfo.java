@@ -18,7 +18,7 @@ public final class LexiconEntryInfo
     public static final String ID = "info";
     private final ItemStack icon;
 
-    public LexiconEntryInfo() {
+    LexiconEntryInfo() {
         this.icon = new ItemStack(Blocks.BARRIER, 1);
     }
 

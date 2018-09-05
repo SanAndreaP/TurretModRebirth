@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
+import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCryoCell;
@@ -55,23 +56,14 @@ public abstract class TurretAmmoCryoCell
     }
 
     @Override
-    public ITurret getTurret() {
-        return Turrets.CRYOLATOR;
-    }
-
-    @Override
-    public float getInfoDamage() {
+    public float getDamageInfo() {
         return 0.0F;
     }
 
+    @Nonnull
     @Override
-    public UUID getGroupId() {
-        return Ammunitions.CRYOCELL_MK1;
-    }
-
-    @Override
-    public String getGroupName() {
-        return "cryocell";
+    public IAmmunitionGroup getGroup() {
+        return Ammunitions.Groups.CRYO_CELL;
     }
 
     @Override

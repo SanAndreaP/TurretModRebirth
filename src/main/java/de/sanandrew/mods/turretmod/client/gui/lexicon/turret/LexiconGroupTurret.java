@@ -17,7 +17,7 @@ import de.sanandrew.mods.turretmod.util.Resources;
 public final class LexiconGroupTurret
         extends LexiconGroup
 {
-    static final String NAME = "turret";
+    public static final String NAME = "turret";
 
     private LexiconGroupTurret() {
         super(NAME, Resources.TINFO_GRP_TURRET.resource);

@@ -8,25 +8,26 @@ package de.sanandrew.mods.turretmod.client.gui.lexicon.ammo;
 
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconEntry;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
+import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.client.util.ClientProxy;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
-import java.util.Arrays;
 import java.util.UUID;
 
 public final class LexiconEntryAmmo
         implements ILexiconEntry
 {
     private final String id;
-    private final ItemStack[] icons;
+    private final ItemStack icon;
     final IAmmunition<?>[] ammoTypes;
 
-    public LexiconEntryAmmo(UUID groupId) {
+    LexiconEntryAmmo(UUID groupId) {
         this.ammoTypes = AmmunitionRegistry.INSTANCE.getTypes(groupId);
-        this.icons = Arrays.stream(this.ammoTypes).map(AmmunitionRegistry.INSTANCE::getAmmoItem).toArray(ItemStack[]::new);
-        this.id = this.ammoTypes[0].getGroupName();
+        IAmmunitionGroup groupInst = this.ammoTypes[0].getGroup();
+        this.icon = groupInst.getIcon();
+        this.id = groupInst.getName();
     }
 
     @Override
@@ -47,7 +48,7 @@ public final class LexiconEntryAmmo
     @Nonnull
     @Override
     public ItemStack getEntryIcon() {
-        return this.icons[0];
+        return this.icon;
     }
 
     @Nonnull

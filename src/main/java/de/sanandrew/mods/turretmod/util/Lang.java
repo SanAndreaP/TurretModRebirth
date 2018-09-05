@@ -49,11 +49,13 @@ public final class Lang
     @Deprecated public static final TranslateKey TINFO_ENTRY_INFO_AUTHOR  = new TranslateKey("gui.%s.tinfo.modAuthor", TmrConstants.ID);
     @Deprecated public static final TranslateKey TINFO_ENTRY_INFO_CREDITS = new TranslateKey("gui.%s.tinfo.modCredits", TmrConstants.ID);
 
-    public static final TranslateKey LEXICON_ENTRY_NAME = new TranslateKey("sanlib.lexicon.%s.%%s.%%s.name", TmrConstants.ID);
-    public static final TranslateKey LEXICON_ENTRY_GRIDTEXT = new TranslateKey("sanlib.lexicon.%s.%%s.%%s.gridtext", TmrConstants.ID);
-    public static final TranslateKey LEXICON_INFO_ITEM = new TranslateKey("sanlib.lexicon.%s.info.%%s", TmrConstants.ID);
     public static final TranslateKey LEXICON_TURRET_ITEM = new TranslateKey("sanlib.lexicon.%s.turret.%%s", TmrConstants.ID);
+    public static final TranslateKey LEXICON_STAT_ITEM = new TranslateKey("sanlib.lexicon.%s.stat.%%s", TmrConstants.ID);
+    public static final TranslateKey LEXICON_AMMO_ITEM = new TranslateKey("sanlib.lexicon.%s.ammo.%%s", TmrConstants.ID);
+    public static final TranslateKey LEXICON_INFO_ITEM = new TranslateKey("sanlib.lexicon.%s.info.%%s", TmrConstants.ID);
     public static final TranslateKey LEXICON_ASSEMBLY_RECIPE = new TranslateKey("sanlib.lexicon.%s.assembly", TmrConstants.ID);
+    public static final TranslateKey LEXICON_DETAILS = new TranslateKey("sanlib.lexicon.%s.details", TmrConstants.ID);
+    public static final TranslateKey LEXICON_DESCRIPTION = new TranslateKey("sanlib.lexicon.%s.desc", TmrConstants.ID);
 
     public static final TranslateKey TURRET_NAME = new TranslateKey("%s.turret.%%s.name", TmrConstants.ID);
     public static final TranslateKey TURRET_DESC = new TranslateKey("%s.turret.%%s.desc", TmrConstants.ID);

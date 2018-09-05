@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
+import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileLaser;
@@ -61,7 +62,7 @@ public class TurretAmmoFluxCell
     }
 
     @Override
-    public float getInfoDamage() {
+    public float getDamageInfo() {
         return 2.5F;
     }
 
@@ -70,14 +71,10 @@ public class TurretAmmoFluxCell
         return Ammunitions.FLUXCELL;
     }
 
+    @Nonnull
     @Override
-    public UUID getGroupId() {
-        return Ammunitions.FLUXCELL;
-    }
-
-    @Override
-    public String getGroupName() {
-        return "fluxcell";
+    public IAmmunitionGroup getGroup() {
+        return Ammunitions.Groups.FLUX_CELL;
     }
 
     @Override

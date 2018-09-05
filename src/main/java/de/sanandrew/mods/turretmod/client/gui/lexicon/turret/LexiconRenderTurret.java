@@ -6,14 +6,18 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.gui.lexicon.turret;
 
+import de.sanandrew.mods.sanlib.api.client.lexicon.IGuiButtonEntry;
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconEntry;
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconGuiHelper;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
+import de.sanandrew.mods.turretmod.client.gui.lexicon.ammo.LexiconGroupAmmo;
 import de.sanandrew.mods.turretmod.client.gui.lexicon.assembly.LexiconRenderAssemblyRecipe;
+import de.sanandrew.mods.turretmod.client.util.ClientProxy;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
@@ -30,6 +34,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
@@ -38,8 +43,7 @@ public class LexiconRenderTurret
 {
     static final String ID = TmrConstants.ID + ":turret";
 
-    private static final int HDR_COLOR = 0xFF202080;
-    private static final int TXT_COLOR = 0xFF000000;
+    private static final int H2_COLOR = 0xFF202080;
 
     private RecipeEntry recipe;
     private ITurret turret;
@@ -49,19 +53,30 @@ public class LexiconRenderTurret
     private float rotation;
     private float prevRotation;
 
+    private List<IGuiButtonEntry> ammoGroupButtons;
+
     @Override
     public String getId() {
         return ID;
     }
 
     @Override
-    public void initPage(ILexiconEntry entry, ILexiconGuiHelper helper, List<GuiButton> globalButtons, List<GuiButton> entryButtons) {
+    public void initPage(ILexiconEntry entry, ILexiconGuiHelper helper, List<GuiButton> deprecated1, List<GuiButton> deprecated2) {
         if( entry instanceof LexiconEntryTurret ) {
             this.turret = ((LexiconEntryTurret) entry).turret;
             this.recipe = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(TurretRegistry.INSTANCE.getTurretItem(this.turret));
             if( this.turretCache != null ) {
                 this.turretCache.clear();
             }
+
+            this.ammoGroupButtons = new ArrayList<>();
+            List<GuiButton> entryButtons = helper.getEntryButtonList();
+            AmmunitionRegistry.INSTANCE.getGroupsForTurret(this.turret).forEach(g -> {
+                IGuiButtonEntry entryBtn = helper.getNewEntryButton(entryButtons.size(), 4, 0, ClientProxy.lexiconInstance.getGroup(LexiconGroupAmmo.NAME).getEntry(g.getName()),
+                                                                    helper.getFontRenderer());
+                this.ammoGroupButtons.add(entryBtn);
+                entryButtons.add(entryBtn.get());
+            });
         }
     }
 
@@ -87,43 +102,35 @@ public class LexiconRenderTurret
         this.drawTurret(helper.getGui().mc, 27, this.drawHeight + 65, partTicks);
         helper.doEntryScissoring();
 
-        drawTurretStat("values.health", String.format("%.1f HP", this.turret.getHealth()), helper, this.drawHeight, 52, mouseX, mouseY);
-        drawTurretStat("values.ammo", String.format("%d", this.turret.getAmmoCapacity()), helper, this.drawHeight + 12, 61, mouseX, mouseY);
-        drawTurretStat("values.range", getFormattedRange(this.turret.getRangeBB(null)), helper, this.drawHeight + 24, 70, mouseX, mouseY);
-        drawTurretStat("values.reload", String.format("%s", MiscUtils.getTimeFromTicks(this.turret.getReloadTicks())), helper, this.drawHeight + 36, 79, mouseX, mouseY);
-        drawTurretStat("values.tier", String.format("%d", this.turret.getTier()), helper, this.drawHeight + 48, 88, mouseX, mouseY);
+        drawStat("health", String.format("%.1f HP", this.turret.getHealth()), helper, 60, this.drawHeight, 52, 0, mouseX, mouseY);
+        drawStat("ammo", String.format("%d", this.turret.getAmmoCapacity()), helper, 60, this.drawHeight + 12, 61, 0, mouseX, mouseY);
+        drawStat("range", getFormattedRange(this.turret.getRangeBB(null)), helper, 60, this.drawHeight + 24, 70, 0, mouseX, mouseY);
+        drawStat("reload", String.format("%s", MiscUtils.getTimeFromTicks(this.turret.getReloadTicks())), helper, 60, this.drawHeight + 36, 79, 0, mouseX, mouseY);
+        drawStat("tier", String.format("%d", this.turret.getTier()), helper, 60, this.drawHeight + 48, 88, 0, mouseX, mouseY);
 
         this.drawHeight += 70;
 
-        fr.drawString(LangUtils.translate(Lang.LEXICON_ASSEMBLY_RECIPE), 2, this.drawHeight, HDR_COLOR);
-        this.drawHeight += 9;
-        this.drawHeight += this.renderRecipe(helper, this.recipe, 4, this.drawHeight, mouseX, mouseY, scrollY) + 3;
+        if( this.recipe != null ) {
+            fr.drawString(LangUtils.translate(Lang.LEXICON_ASSEMBLY_RECIPE), 2, this.drawHeight, H2_COLOR);
+            this.drawHeight += 9;
+            this.drawHeight += this.renderRecipe(helper, this.recipe, 4, this.drawHeight, mouseX, mouseY, scrollY) + 3;
+        }
 
-        fr.drawString(LangUtils.translate(Lang.LEXICON_TURRET_ITEM.get("desc")), 2, this.drawHeight, HDR_COLOR);
+        fr.drawString(LangUtils.translate(Lang.LEXICON_TURRET_ITEM.get("ammo")), 2, this.drawHeight, H2_COLOR);
+        this.drawHeight += 9;
+        for( int i = 0, max = this.ammoGroupButtons.size(); i < max; i++ ) {
+            this.ammoGroupButtons.get(i).get().y = i * 16;
+            this.drawHeight += 16;
+        }
+        this.drawHeight += 4;
+
+        fr.drawString(LangUtils.translate(Lang.LEXICON_DESCRIPTION), 2, this.drawHeight, H2_COLOR);
         this.drawHeight += 9;
         this.drawHeight += helper.drawContentString(4, this.drawHeight, entry, helper.getEntryButtonList());
     }
 
     private static String getFormattedRange(AxisAlignedBB aabb) {
         return String.format("h: %.0f, u: %.0f, d: %.0f", (aabb.maxX + aabb.maxZ) / 2.0F, aabb.maxY, -aabb.minY);
-    }
-
-    private static void drawTurretStat(String title, String value, ILexiconGuiHelper helper, int y, int iconU, int mouseX, int mouseY) {
-        FontRenderer fr = helper.getFontRenderer();
-        int wVal = fr.getStringWidth(value);
-
-        helper.getGui().mc.renderEngine.bindTexture(Resources.TINFO_ELEMENTS.resource);
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        helper.drawTextureRect(60, y, iconU, 0, 9, 9);
-        fr.drawString(value, 60 + 12, y + 1, 0xFF6A6A6A, false);
-        if( mouseX >= 60 && mouseX < 60 + 12 + wVal && mouseY >= y && mouseY < y + 10 ) {
-            String s = LangUtils.translate(Lang.LEXICON_TURRET_ITEM.get(title));
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(0.0F, 0.0F, 50.0F);
-            helper.drawRect(60 + 5, y, 60 + 6 + fr.getStringWidth(s), y + 10, 0x80000000);
-            fr.drawString(s, 60 + 6, y + 1, 0xFFFFFFFF, false);
-            GlStateManager.popMatrix();
-        }
     }
 
     @Override

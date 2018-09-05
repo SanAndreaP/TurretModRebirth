@@ -4,8 +4,11 @@ import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.Range;
 
-@SuppressWarnings("unused")
+import javax.annotation.Nullable;
+
+//@SuppressWarnings("unused")
 public interface ITurretUpgrade
 {
     String getName();
@@ -14,7 +17,27 @@ public interface ITurretUpgrade
 
     default ITurretUpgrade getDependantOn() { return null; }
 
-    boolean isTurretApplicable(ITurret turret);
+    /**
+     * <p>This returns an array of whitelisted turrets that can use this upgrade.</p>
+     * <p>If either {@code null} or an empty array is returned, this upgrade can be applied to any turret.</p>
+     *
+     * @return The array with whitelisted turrets or {@code null}
+     */
+    @Nullable
+    default ITurret[] getApplicableTurrets() {
+        return null;
+    }
+
+    /**
+     * <p>This returns a range (minimum and maximum). The turrets' tier has to be within that range (both inclusive) in order for this upgrade to be applicable.</p>
+     * <p>If {@code null} is returned, this upgrade can be applied to any turret tier.</p>
+     *
+     * @return The range or {@code null}
+     */
+    @Nullable
+    default Range<Integer> getTierRange() {
+        return null;
+    }
 
     /**
      * Called when this upgrade gets applied to the turret (through interaction from the player or other means).

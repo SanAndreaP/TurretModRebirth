@@ -13,6 +13,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -21,20 +22,20 @@ public class UpgradeBasic
 {
 
     private final String name;
-    private final Function<ITurret, Boolean> isTurretApplicable;
+    private final ITurret[] applicableTurrets;
     private final ResourceLocation itemModel;
     private final ITurretUpgrade dependantOn;
 
-    public UpgradeBasic(String name, Function<ITurret, Boolean> isTurretApplicable) {
+    UpgradeBasic(String name, @Nullable ITurret... applicableTurrets) {
         this.name = name;
-        this.isTurretApplicable = Objects.requireNonNull(isTurretApplicable);
+        this.applicableTurrets = applicableTurrets;
         this.itemModel = new ResourceLocation(TmrConstants.ID, "upgrades/" + name);
         this.dependantOn = null;
     }
 
-    public UpgradeBasic(String name, Function<ITurret, Boolean> isTurretApplicable, ITurretUpgrade dependantOn) {
+    UpgradeBasic(String name, ITurretUpgrade dependantOn, @Nullable ITurret... applicableTurrets) {
         this.name = name;
-        this.isTurretApplicable = Objects.requireNonNull(isTurretApplicable);
+        this.applicableTurrets = applicableTurrets;
         this.itemModel = new ResourceLocation(TmrConstants.ID, "upgrades/" + name);
         this.dependantOn = dependantOn;
     }
@@ -49,9 +50,10 @@ public class UpgradeBasic
         return this.itemModel;
     }
 
+    @Nullable
     @Override
-    public boolean isTurretApplicable(ITurret turret) {
-        return this.isTurretApplicable.apply(turret);
+    public ITurret[] getApplicableTurrets() {
+        return this.applicableTurrets;
     }
 
     @Override

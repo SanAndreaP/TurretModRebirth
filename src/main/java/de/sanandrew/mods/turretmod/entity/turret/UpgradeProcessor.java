@@ -47,7 +47,7 @@ public final class UpgradeProcessor
     private boolean hasChanged = false;
     private final ITurretInst turret;
 
-    public UpgradeProcessor(ITurretInst turret) {
+    UpgradeProcessor(ITurretInst turret) {
         this.turret = turret;
     }
 
@@ -76,48 +76,33 @@ public final class UpgradeProcessor
 
             if( !this.hasUpgrade(Upgrades.UPG_STORAGE_III) ) {
                 for( int i = 27, max = this.upgradeStacks.size(); i < max; i++ ) {
-                    ItemStack invStack = this.upgradeStacks.get(i);
-                    if( ItemStackUtils.isValid(invStack) ) {
-                        if( !turretL.world.isRemote ) {
-                            EntityItem itm = new EntityItem(turretL.world, turretL.posX, turretL.posY, turretL.posZ, invStack);
-                            turretL.world.spawnEntity(itm);
-                        }
-                        ITurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(invStack);
-                        upg.onRemove(this.turret);
-                        this.upgradeStacks.set(i, ItemStackUtils.getEmpty());
-                    }
+                    dropUpgrade(turretL, i, this.upgradeStacks.get(i));
                 }
             }
 
             if( !this.hasUpgrade(Upgrades.UPG_STORAGE_II) ) {
                 for( int i = 18; i < 27; i++ ) {
-                    ItemStack invStack = this.upgradeStacks.get(i);
-                    if( ItemStackUtils.isValid(invStack) ) {
-                        if( !turretL.world.isRemote ) {
-                            EntityItem itm = new EntityItem(turretL.world, turretL.posX, turretL.posY, turretL.posZ, invStack);
-                            turretL.world.spawnEntity(itm);
-                        }
-                        ITurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(invStack);
-                        upg.onRemove(this.turret);
-                        this.upgradeStacks.set(i, ItemStackUtils.getEmpty());
-                    }
+                    dropUpgrade(turretL, i, this.upgradeStacks.get(i));
                 }
             }
 
             if( !this.hasUpgrade(Upgrades.UPG_STORAGE_I) ) {
                 for( int i = 9; i < 18; i++ ) {
-                    ItemStack invStack = this.upgradeStacks.get(i);
-                    if( ItemStackUtils.isValid(invStack) ) {
-                        if( !turretL.world.isRemote ) {
-                            EntityItem itm = new EntityItem(turretL.world, turretL.posX, turretL.posY, turretL.posZ, invStack);
-                            turretL.world.spawnEntity(itm);
-                        }
-                        ITurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(invStack);
-                        upg.onRemove(this.turret);
-                        this.upgradeStacks.set(i, ItemStackUtils.getEmpty());
-                    }
+                    dropUpgrade(turretL, i, this.upgradeStacks.get(i));
                 }
             }
+        }
+    }
+
+    private void dropUpgrade(EntityLiving entity, int slot, ItemStack stack) {
+        if( ItemStackUtils.isValid(stack) ) {
+            if( !entity.world.isRemote ) {
+                EntityItem itm = new EntityItem(entity.world, entity.posX, entity.posY, entity.posZ, stack);
+                entity.world.spawnEntity(itm);
+            }
+            ITurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(stack);
+            upg.onRemove(this.turret);
+            this.upgradeStacks.set(slot, ItemStackUtils.getEmpty());
         }
     }
 

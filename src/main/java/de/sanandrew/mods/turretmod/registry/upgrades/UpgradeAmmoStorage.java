@@ -10,7 +10,6 @@ package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
@@ -28,7 +27,7 @@ public class UpgradeAmmoStorage
 
     private final String name;
 
-    public UpgradeAmmoStorage() {
+    UpgradeAmmoStorage() {
         this.name = "ammo_storage";
         this.modifier = new AttributeModifier(UUID.fromString("3D3C0F11-E31A-4472-92BB-E1BE0354844E"), String.format("%s:%s", TmrConstants.ID, "ammoCapacityUpg"), 1.0D,
                                               EntityUtils.ATTR_ADD_PERC_VAL_TO_SUM);
@@ -47,11 +46,6 @@ public class UpgradeAmmoStorage
     @Override
     public ITurretUpgrade getDependantOn() {
         return null;
-    }
-
-    @Override
-    public boolean isTurretApplicable(ITurret turret) {
-        return true;
     }
 
     @Override

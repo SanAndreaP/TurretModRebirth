@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
+import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileMinigunPebble;
@@ -61,7 +62,7 @@ public class TurretAmmoMinigunShell
     }
 
     @Override
-    public float getInfoDamage() {
+    public float getDamageInfo() {
         return 0.3F;
     }
 
@@ -70,14 +71,10 @@ public class TurretAmmoMinigunShell
         return Ammunitions.MGSHELL;
     }
 
+    @Nonnull
     @Override
-    public UUID getGroupId() {
-        return Ammunitions.MGSHELL;
-    }
-
-    @Override
-    public String getGroupName() {
-        return "minigun_shell";
+    public IAmmunitionGroup getGroup() {
+        return Ammunitions.Groups.MG_SHELL;
     }
 
     @Override

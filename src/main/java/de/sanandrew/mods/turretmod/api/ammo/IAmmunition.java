@@ -50,29 +50,24 @@ public interface IAmmunition<T extends Entity & IProjectile>
     UUID getTypeId();
 
     /**
-     * Returns the ID for this ammo group. This is used in the Turret Info Tablet to group them together in one page.<br>
-     * <i>Example:</i> Arrows and Quivers have the same ID beginning with {@code 7B49...}, All Cryo-Cells and their
-     * Packs have an ID beginning with {@code 0B56...}.<br>
+     * Returns the ammo group. This is used in the Turret Info Tablet to group ammunition types together in one page.<br>
+     * <i>Example:</i> Arrows and Quivers have the same group with an ID beginning with {@code 7B49...}, All Cryo-Cells and their
+     * Packs have a group with an ID beginning with {@code 0B56...}.<br>
      * Cannot be {@code null}!
-     * @return A unique ID for this type
+     * @return A group instance
      */
     @Nonnull
-    UUID getGroupId();
+    IAmmunitionGroup getGroup();
 
-    /**
-     * Returns the unlocalized name for this ammo to be used in the Turret Info Tablet. This should return the same
-     * name within the same group (See {@link #getGroupId()}).<br>
-     * <i>Example:</i> Arrows and Quivers IDs both have {@code arrow} as their name.<br>
-     * @return A name for the Turret Info Tablet
-     */
-    String getGroupName();
+    float getDamageInfo();
 
-
-    float getInfoDamage();
     int getAmmoCapacity();
+
     Class<T> getEntityClass();
+
     T getEntity(ITurretInst turretInst);
-    ITurret getTurret();
+
     ResourceLocation getModel();
+
     ItemStack getStoringAmmoItem();
 }

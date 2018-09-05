@@ -6,14 +6,23 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.gui.lexicon.ammo;
 
+import de.sanandrew.mods.sanlib.api.client.lexicon.IGuiButtonLink;
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconEntry;
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconGuiHelper;
-import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconPageRender;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
+import de.sanandrew.mods.turretmod.client.gui.lexicon.assembly.LexiconRenderAssemblyRecipe;
+import de.sanandrew.mods.turretmod.client.gui.lexicon.turret.LexiconGroupTurret;
+import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
+import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntry;
+import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
+import de.sanandrew.mods.turretmod.util.Lang;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -22,17 +31,21 @@ import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class LexiconRenderAmmo
-        implements ILexiconPageRender
+        extends LexiconRenderAssemblyRecipe
 {
     static final String ID = TmrConstants.ID + ":ammo";
 
-    private static final int ITEM_TXT_COLOR = 0xFF808080;
-    private static final int TXT_COLOR = 0xFF000000;
+    private static final int H2_COLOR = 0xFF202080;
 
+    private RecipeEntry recipe;
     private int drawHeight;
-    private List<GuiButtonAmmoItem> ammoButtons;
     private IAmmunition<?> currAmmo;
+    private ItemStack currAmmoItem;
     private boolean ammoChanged = false;
+    private int subtypeRowCount;
+
+    private List<GuiButtonAmmoItem> ammoButtons;
+    private IGuiButtonLink turretLink;
 
     @Override
     public String getId() {
@@ -48,19 +61,37 @@ public class LexiconRenderAmmo
 
         if( entry instanceof LexiconEntryAmmo ) {
             IAmmunition[] types = ((LexiconEntryAmmo) entry).ammoTypes;
+            if( types.length > 0 ) {
+                this.currAmmo = types[0];
 
-            int rowElemCnt = helper.getLexicon().getEntryWidth() / 18;
-            double rowCnt = types.length / (float) rowElemCnt;
-            int rowCntTotal = MathHelper.ceil(rowCnt);
-            int lastRowCnt = MathHelper.ceil((rowCnt - (rowCntTotal - 1)) * 18.0F);
+                int width = helper.getLexicon().getEntryWidth();
+                int rowElemCnt = width / 18;
+                double rowCnt = types.length / (double) rowElemCnt;
+                this.subtypeRowCount = MathHelper.ceil(rowCnt);
+                int lastRowElemCnt = MathHelper.ceil((rowCnt - (this.subtypeRowCount - 1)) * rowElemCnt);
 
-            for( int i = 0, row = 1; i < types.length; i++ ) {
-                GuiButtonAmmoItem btn = new GuiButtonAmmoItem(types[i], entryButtons.size(), i * 16, 14);
-                if( i == 0 ) {
-                    this.currAmmo = types[i];
+                for( int row = 0; row < this.subtypeRowCount; row++ ) {
+                    int x, max;
+                    int min = row * rowElemCnt;
+                    if( row == this.subtypeRowCount - 1 ) {
+                        x = (width - lastRowElemCnt * 18) / 2;
+                        max = min + lastRowElemCnt;
+                    } else {
+                        x = (width - rowElemCnt * 18) / 2;
+                        max = min + rowElemCnt;
+                    }
+
+                    for( int i = min; i < max; i++ ) {
+                        GuiButtonAmmoItem btn = new GuiButtonAmmoItem(types[i], entryButtons.size(), x + (i - min) * 18, 14 + row * 18);
+                        this.ammoButtons.add(btn);
+                        entryButtons.add(btn);
+                    }
                 }
-                this.ammoButtons.add(btn);
-                helper.getEntryButtonList().add(btn);
+
+                String turretName = this.currAmmo.getGroup().getTurret().getName();
+                this.turretLink = helper.getNewLinkButton(entryButtons.size(), 4, 0, LangUtils.translate(Lang.TURRET_NAME.get(turretName)),
+                                                          LexiconGroupTurret.NAME + ':' + turretName, helper.getFontRenderer());
+                entryButtons.add(this.turretLink.get());
             }
         }
     }
@@ -71,33 +102,46 @@ public class LexiconRenderAmmo
             this.ammoChanged = false;
 
             this.ammoButtons.forEach(btn -> btn.inactive = (btn.ammo != this.currAmmo));
+            this.currAmmoItem = AmmunitionRegistry.INSTANCE.getAmmoItem(this.currAmmo);
+            this.recipe = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(this.currAmmoItem);
         }
     }
 
     @Override
     public void renderPageEntry(ILexiconEntry entry, ILexiconGuiHelper helper, int mouseX, int mouseY, int scrollY, float partTicks) {
-        String s = LangUtils.translate(LangUtils.LEXICON_GROUP_NAME.get(TmrConstants.ID, entry.getGroupId()));
-        helper.getFontRenderer().drawString(s, (helper.getLexicon().getEntryWidth() - helper.getFontRenderer().getStringWidth(s)) / 2, 2, helper.getLexicon().getTitleColor());
+        FontRenderer fr = helper.getFontRenderer();
 
+        helper.drawTitleCenter(2, entry);
         this.drawHeight = 14;
-//        helper.getFontRenderer().drawString(LangUtils.translate(Lang.LEXICON_INFO_ITEM.get("version")), 0, this.drawHeight, ITEM_TXT_COLOR);
-//        this.drawHeight += 9;
-//        helper.getFontRenderer().drawString(TmrConstants.VERSION, 6, this.drawHeight, TXT_COLOR);
-//
-//        this.drawHeight += 12;
-//        helper.getFontRenderer().drawString(LangUtils.translate(Lang.LEXICON_INFO_ITEM.get("author")), 0, this.drawHeight, ITEM_TXT_COLOR);
-//        this.drawHeight += 9;
-//        // author links
-//
-//        this.drawHeight += 12;
-//        helper.getFontRenderer().drawString(LangUtils.translate(Lang.LEXICON_INFO_ITEM.get("credits")), 0, this.drawHeight, ITEM_TXT_COLOR);
-//        this.drawHeight += 27;
-//        // credit links
-//
-//        this.drawHeight += 12;
-//        helper.getFontRenderer().drawString(LangUtils.translate(Lang.LEXICON_INFO_ITEM.get("links")), 0, this.drawHeight, ITEM_TXT_COLOR);
-//        this.drawHeight += 27;
-        // misc links
+
+        // subtype buttons
+        this.drawHeight += 3 + this.subtypeRowCount * 18;
+
+        String s = TextFormatting.ITALIC + this.currAmmoItem.getDisplayName();
+        fr.drawString(s, 2, this.drawHeight, helper.getLexicon().getTitleColor());
+        this.drawHeight += 14;
+
+        if( this.recipe != null ) {
+            fr.drawString(LangUtils.translate(Lang.LEXICON_ASSEMBLY_RECIPE), 2, this.drawHeight, H2_COLOR);
+            this.drawHeight += 9;
+            this.drawHeight += this.renderRecipe(helper, this.recipe, 4, this.drawHeight, mouseX, mouseY, scrollY) + 6;
+        }
+
+        fr.drawString(LangUtils.translate(Lang.LEXICON_DETAILS), 2, this.drawHeight, H2_COLOR);
+        this.drawHeight += 9;
+
+        drawStat("rounds", String.format("%d", currAmmo.getAmmoCapacity()), helper, 4, this.drawHeight, 61, 0, mouseX, mouseY);
+        drawStat("damage", String.format("%.1f DP", currAmmo.getDamageInfo()), helper, 40, this.drawHeight, 52, 9, mouseX, mouseY);
+        this.drawHeight += 15;
+
+        fr.drawString(LangUtils.translate(Lang.LEXICON_AMMO_ITEM.get("turret")), 2, this.drawHeight, H2_COLOR);
+        this.turretLink.get().y = this.drawHeight + 9;
+        this.drawHeight += 24;
+
+        fr.drawString(LangUtils.translate(Lang.LEXICON_DESCRIPTION), 2, this.drawHeight, H2_COLOR);
+        this.drawHeight += 11;
+
+        this.drawHeight += helper.drawContentString(4, this.drawHeight, entry, helper.getEntryButtonList());
     }
 
     @Override

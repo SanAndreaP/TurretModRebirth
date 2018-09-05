@@ -9,7 +9,6 @@
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import net.minecraft.util.ResourceLocation;
 
@@ -19,7 +18,7 @@ public abstract class UpgradeUpgStorage
     private final ResourceLocation itemModel;
     private final String name;
 
-    public UpgradeUpgStorage(String name) {
+    UpgradeUpgStorage(String name) {
         this.name = name;
         this.itemModel = new ResourceLocation(TmrConstants.ID, "upgrades/" + name);
     }
@@ -34,16 +33,11 @@ public abstract class UpgradeUpgStorage
         return this.itemModel;
     }
 
-    @Override
-    public boolean isTurretApplicable(ITurret turret) {
-        return true;
-    }
-
     public static class UpgradeStorageMK1
             extends UpgradeUpgStorage
     {
 
-        public UpgradeStorageMK1() {
+        UpgradeStorageMK1() {
             super("upg_storage_i");
         }
 
@@ -58,7 +52,7 @@ public abstract class UpgradeUpgStorage
     {
         private final ITurretUpgrade dependant;
 
-        public UpgradeStorageMK2() {
+        UpgradeStorageMK2() {
             super("upg_storage_ii");
             this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(Upgrades.UPG_STORAGE_I);
         }
@@ -74,7 +68,7 @@ public abstract class UpgradeUpgStorage
     {
         private final ITurretUpgrade dependant;
 
-        public UpgradeStorageMK3() {
+        UpgradeStorageMK3() {
             super("upg_storage_iii");
             this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(Upgrades.UPG_STORAGE_II);
         }
