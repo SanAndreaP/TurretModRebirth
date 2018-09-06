@@ -268,7 +268,7 @@ public final class UpgradeProcessor
                 return false;
             }
             ITurret[] applicableTurrets = upg.getApplicableTurrets();
-            if( applicableTurrets != null && Stream.of(applicableTurrets).noneMatch(u -> Objects.equals(u, this.turret.getTurret())) ) {
+            if( applicableTurrets != null && applicableTurrets.length > 0 && Stream.of(applicableTurrets).noneMatch(u -> Objects.equals(u, this.turret.getTurret())) ) {
                 return false;
             }
 
