@@ -57,11 +57,6 @@ public class TurretAmmoFluxCell
     }
 
     @Override
-    public ITurret getTurret() {
-        return Turrets.LASER;
-    }
-
-    @Override
     public float getDamageInfo() {
         return 2.5F;
     }

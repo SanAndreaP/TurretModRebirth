@@ -57,11 +57,6 @@ public class TurretAmmoElectrolyteCell
     }
 
     @Override
-    public ITurret getTurret() {
-        return Turrets.SHIELDGEN;
-    }
-
-    @Override
     public float getDamageInfo() {
         return 0.0F;
     }

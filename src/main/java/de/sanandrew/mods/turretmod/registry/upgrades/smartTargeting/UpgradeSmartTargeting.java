@@ -37,11 +37,6 @@ public class UpgradeSmartTargeting
     }
 
     @Override
-    public boolean isTurretApplicable(ITurret turret) {
-        return true;
-    }
-
-    @Override
     public void onApply(ITurretInst turretInst) {
         UUID upgId = UpgradeRegistry.INSTANCE.getUpgradeId(this);
         AdvTargetSettings settings = new AdvTargetSettings();

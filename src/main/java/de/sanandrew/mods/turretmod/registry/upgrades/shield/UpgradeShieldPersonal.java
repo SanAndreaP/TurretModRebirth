@@ -37,11 +37,6 @@ public class UpgradeShieldPersonal
     }
 
     @Override
-    public boolean isTurretApplicable(ITurret turret) {
-        return true;
-    }
-
-    @Override
     public void onApply(ITurretInst turretInst) {
         UUID upgId = UpgradeRegistry.INSTANCE.getUpgradeId(this);
         ShieldPersonal shield = new ShieldPersonal(20.0F);

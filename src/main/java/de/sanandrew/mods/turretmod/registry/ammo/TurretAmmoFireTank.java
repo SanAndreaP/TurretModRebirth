@@ -58,11 +58,6 @@ public class TurretAmmoFireTank
     }
 
     @Override
-    public ITurret getTurret() {
-        return Turrets.FLAMETHROWER;
-    }
-
-    @Override
     public float getDamageInfo() {
         return 0.5F;
     }

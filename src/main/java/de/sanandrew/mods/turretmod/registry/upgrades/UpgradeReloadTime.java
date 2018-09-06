@@ -45,11 +45,6 @@ public abstract class UpgradeReloadTime
     }
 
     @Override
-    public boolean isTurretApplicable(ITurret turret) {
-        return true;
-    }
-
-    @Override
     public void onApply(ITurretInst turretInst) {
         if( !turretInst.getEntity().world.isRemote ) {
             IAttributeInstance attrib = turretInst.getEntity().getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS);

@@ -34,11 +34,6 @@ public abstract class UpgradeAmmoUsage
         return this.itemModel;
     }
 
-    @Override
-    public boolean isTurretApplicable(ITurret turret) {
-        return true;
-    }
-
     public static class UpgradeAmmoUseI
             extends UpgradeAmmoUsage
     {

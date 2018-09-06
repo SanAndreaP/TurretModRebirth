@@ -19,9 +19,11 @@ import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.Range;
 import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -138,8 +140,8 @@ public final class UpgradeRegistry
         }
 
         @Override
-        public boolean isTurretApplicable(ITurret turret) {
-            return false;
+        public Range<Integer> getTierRange() {
+            return Range.is(-1);
         }
     }
 }

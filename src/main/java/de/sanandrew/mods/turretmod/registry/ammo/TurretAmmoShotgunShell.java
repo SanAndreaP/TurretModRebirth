@@ -57,11 +57,6 @@ public class TurretAmmoShotgunShell
     }
 
     @Override
-    public ITurret getTurret() {
-        return Turrets.SHOTGUN;
-    }
-
-    @Override
     public float getDamageInfo() {
         return 0.5F;
     }

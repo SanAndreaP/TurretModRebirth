@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.entity.turret;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.sanlib.lib.util.ReflectionUtils;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
@@ -30,11 +31,14 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.util.Constants;
+import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 public final class UpgradeProcessor
         implements IUpgradeProcessor
@@ -253,25 +257,18 @@ public final class UpgradeProcessor
     @Override
     public void closeInventory(EntityPlayer player) {}
 
-    @Override
-    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
-        if( slot >= 9 && !this.hasUpgrade(Upgrades.UPG_STORAGE_I) ) {
-            return false;
-        }
-        if( slot >= 18 && !this.hasUpgrade(Upgrades.UPG_STORAGE_II) ) {
-            return false;
-        }
-        if( slot >= 27 && !this.hasUpgrade(Upgrades.UPG_STORAGE_III) ) {
-            return false;
-        }
-
-        if( ItemStackUtils.isValid(this.upgradeStacks.get(slot)) ) {
-            return false;
-        }
-
+    private boolean isUpgradeItemApplicable(ItemStack stack) {
         if( stack.getItem() == ItemRegistry.TURRET_UPGRADE ) {
             ITurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(stack);
             if( this.hasUpgrade(UpgradeRegistry.INSTANCE.getUpgradeId(upg)) ) {
+                return false;
+            }
+            Range<Integer> tierRange = upg.getTierRange();
+            if( tierRange != null && !tierRange.contains(this.turret.getTurret().getTier()) ) {
+                return false;
+            }
+            ITurret[] applicableTurrets = upg.getApplicableTurrets();
+            if( applicableTurrets != null && Stream.of(applicableTurrets).noneMatch(u -> Objects.equals(u, this.turret.getTurret())) ) {
                 return false;
             }
 
@@ -280,7 +277,31 @@ public final class UpgradeProcessor
         }
 
         return false;
+    }
 
+    private boolean isUpgradeItemApplicableForSlot(int slot, ItemStack stack, boolean checkItem) {
+        if( !checkItem || this.isUpgradeItemApplicable(stack) ) {
+            if( slot >= 9 && !this.hasUpgrade(Upgrades.UPG_STORAGE_I) ) {
+                return false;
+            }
+
+            if( slot >= 18 && !this.hasUpgrade(Upgrades.UPG_STORAGE_II) ) {
+                return false;
+            }
+
+            if( slot >= 27 && !this.hasUpgrade(Upgrades.UPG_STORAGE_III) ) {
+                return false;
+            }
+
+            return !ItemStackUtils.isValid(this.upgradeStacks.get(slot));
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
+        return isUpgradeItemApplicableForSlot(slot, stack, true);
     }
 
     @Override
@@ -303,17 +324,13 @@ public final class UpgradeProcessor
 
     @Override
     public boolean tryApplyUpgrade(@Nonnull ItemStack upgStack) {
-        ITurretUpgrade upg = UpgradeRegistry.INSTANCE.getUpgrade(upgStack);
-        if( !this.hasUpgrade(upg) ) {
-            ITurretUpgrade dep = upg.getDependantOn();
-            if( dep == null || this.hasUpgrade(dep) ) {
-                EntityLiving turretL = this.turret.getEntity();
-                for( int i = 0, max = this.upgradeStacks.size(); i < max; i++ ) {
-                    if( this.isItemValidForSlot(i, upgStack) ) {
-                        this.setInventorySlotContents(i, upgStack);
-                        PacketRegistry.sendToAllAround(new PacketUpdateUgradeSlot(this.turret, i, upgStack), turretL.dimension, turretL.posX, turretL.posY, turretL.posZ, 64.0D);
-                        return true;
-                    }
+        if( this.isUpgradeItemApplicable(upgStack) ) {
+            EntityLiving turretL = this.turret.getEntity();
+            for( int i = 0, max = this.upgradeStacks.size(); i < max; i++ ) {
+                if( this.isUpgradeItemApplicableForSlot(i, upgStack, false) ) {
+                    this.setInventorySlotContents(i, upgStack);
+                    PacketRegistry.sendToAllAround(new PacketUpdateUgradeSlot(this.turret, i, upgStack), turretL.dimension, turretL.posX, turretL.posY, turretL.posZ, 64.0D);
+                    return true;
                 }
             }
         }

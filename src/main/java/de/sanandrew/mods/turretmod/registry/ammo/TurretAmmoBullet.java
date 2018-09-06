@@ -57,11 +57,6 @@ public class TurretAmmoBullet
     }
 
     @Override
-    public ITurret getTurret() {
-        return Turrets.REVOLVER;
-    }
-
-    @Override
     public float getDamageInfo() {
         return 2.75F;
     }
