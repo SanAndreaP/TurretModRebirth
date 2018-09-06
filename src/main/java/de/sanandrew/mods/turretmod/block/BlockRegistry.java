@@ -31,8 +31,8 @@ public class BlockRegistry
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         event.getRegistry().registerAll(TURRET_ASSEMBLY, ELECTROLYTE_GENERATOR);
 
-        GameRegistry.registerTileEntity(TileEntityTurretAssembly.class, TmrConstants.ID + ":te_turret_assembly");
-        GameRegistry.registerTileEntity(TileEntityElectrolyteGenerator.class, TmrConstants.ID + ":te_potato_generator");
+        GameRegistry.registerTileEntity(TileEntityTurretAssembly.class, new ResourceLocation(TmrConstants.ID, "te_turret_assembly"));
+        GameRegistry.registerTileEntity(TileEntityElectrolyteGenerator.class, new ResourceLocation(TmrConstants.ID, "te_potato_generator"));
     }
 
     @SubscribeEvent
