@@ -118,8 +118,8 @@ public class LexiconRenderTurret
 
         fr.drawString(LangUtils.translate(Lang.LEXICON_TURRET_ITEM.get("ammo")), 2, this.drawHeight, H2_COLOR);
         this.drawHeight += 9;
-        for( int i = 0, max = this.ammoGroupButtons.size(); i < max; i++ ) {
-            this.ammoGroupButtons.get(i).get().y = i * 16;
+        for( IGuiButtonEntry ammoGroupButton : this.ammoGroupButtons ) {
+            ammoGroupButton.get().y = this.drawHeight;
             this.drawHeight += 16;
         }
         this.drawHeight += 4;
