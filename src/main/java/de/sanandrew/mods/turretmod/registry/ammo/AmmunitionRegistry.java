@@ -173,7 +173,9 @@ public final class AmmunitionRegistry
 
         this.ammoTypeFromID.put(type.getId(), type);
         this.ammoTypesFromTurret.put(group.getTurret(), type);
-        this.ammoGroupsFromTurret.put(group.getTurret(), group);
+        if( !this.ammoGroupsFromTurret.containsEntry(group.getTurret(), group) ) {
+            this.ammoGroupsFromTurret.put(group.getTurret(), group);
+        }
         this.ammoTypes.add(type);
 
         if( registerEntityId != null ) {
