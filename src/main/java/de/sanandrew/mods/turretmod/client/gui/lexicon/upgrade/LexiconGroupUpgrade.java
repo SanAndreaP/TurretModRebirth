@@ -19,7 +19,7 @@ public final class LexiconGroupUpgrade
     public static final String NAME = "upgrade";
 
     private LexiconGroupUpgrade() {
-        super(NAME, Resources.TINFO_GRP_TURRET.resource);
+        super(NAME, Resources.TINFO_GRP_UPGRADE.resource);
     }
 
     public static void register(ILexiconInst registry) {

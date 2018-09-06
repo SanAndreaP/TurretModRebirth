@@ -50,7 +50,7 @@ public final class LexiconEntryUpgrade
 
     @Override
     public String getTitleLangKey(String modId) {
-        return this.item.getUnlocalizedName() + ".name";
+        return this.item.getUnlocalizedName()  + '.' + this.upgrade.getName() + ".name";
     }
 
     @Nonnull

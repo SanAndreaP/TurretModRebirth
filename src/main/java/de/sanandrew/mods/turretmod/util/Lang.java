@@ -52,6 +52,7 @@ public final class Lang
     public static final TranslateKey LEXICON_TURRET_ITEM = new TranslateKey("sanlib.lexicon.%s.turret.%%s", TmrConstants.ID);
     public static final TranslateKey LEXICON_STAT_ITEM = new TranslateKey("sanlib.lexicon.%s.stat.%%s", TmrConstants.ID);
     public static final TranslateKey LEXICON_AMMO_ITEM = new TranslateKey("sanlib.lexicon.%s.ammo.%%s", TmrConstants.ID);
+    public static final TranslateKey LEXICON_UPGRADE_ITEM = new TranslateKey("sanlib.lexicon.%s.upgrade.%%s", TmrConstants.ID);
     public static final TranslateKey LEXICON_INFO_ITEM = new TranslateKey("sanlib.lexicon.%s.info.%%s", TmrConstants.ID);
     public static final TranslateKey LEXICON_ASSEMBLY_RECIPE = new TranslateKey("sanlib.lexicon.%s.assembly", TmrConstants.ID);
     public static final TranslateKey LEXICON_DETAILS = new TranslateKey("sanlib.lexicon.%s.details", TmrConstants.ID);
