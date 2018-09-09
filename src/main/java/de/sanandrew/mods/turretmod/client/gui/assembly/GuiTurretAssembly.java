@@ -80,7 +80,7 @@ public class GuiTurretAssembly
     private boolean prevIsLmbDown;
     private boolean prevIsRmbDown;
     private boolean isScrolling;
-    private int scrollPos;
+    private static int scrollPos;
 
     private GuiSlimButton cancelTask;
     private GuiSlimButton automate;
