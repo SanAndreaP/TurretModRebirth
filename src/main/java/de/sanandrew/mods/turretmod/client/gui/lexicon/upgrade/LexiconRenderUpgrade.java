@@ -115,16 +115,16 @@ public class LexiconRenderUpgrade
             this.drawHeight += 9;
             for( IGuiButtonEntry turretButton : this.turretButtons ) {
                 turretButton.get().y = this.drawHeight;
-                this.drawHeight += 16;
+                this.drawHeight += 14;
             }
-            this.drawHeight += 4;
+            this.drawHeight += 2;
         }
 
         if( this.prereqUpgradeButton != null ) {
             fr.drawString(LangUtils.translate(Lang.LEXICON_UPGRADE_ITEM.get("prereq")), 2, this.drawHeight, H2_COLOR);
             this.drawHeight += 9;
             this.prereqUpgradeButton.get().y = this.drawHeight;
-            this.drawHeight += 20;
+            this.drawHeight += 16;
         }
 
         fr.drawString(LangUtils.translate(Lang.LEXICON_DESCRIPTION), 2, this.drawHeight, H2_COLOR);
