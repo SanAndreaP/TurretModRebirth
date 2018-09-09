@@ -9,6 +9,7 @@ package de.sanandrew.mods.turretmod.client.gui.lexicon.turret;
 import de.sanandrew.mods.sanlib.api.client.lexicon.IGuiButtonEntry;
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconEntry;
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconGuiHelper;
+import de.sanandrew.mods.sanlib.lib.XorShiftRandom;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
@@ -52,6 +53,7 @@ public class LexiconRenderTurret
     private int tickTime;
     private float rotation;
     private float prevRotation;
+    private boolean bouncy;
 
     private List<IGuiButtonEntry> ammoGroupButtons;
 
@@ -63,6 +65,7 @@ public class LexiconRenderTurret
     @Override
     public void initPage(ILexiconEntry entry, ILexiconGuiHelper helper, List<GuiButton> deprecated1, List<GuiButton> deprecated2) {
         if( entry instanceof LexiconEntryTurret ) {
+            this.bouncy = new XorShiftRandom().randomInt(1000) == 0;
             this.turret = ((LexiconEntryTurret) entry).turret;
             this.recipe = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(TurretRegistry.INSTANCE.getTurretItem(this.turret));
             if( this.turretCache != null ) {
@@ -162,7 +165,7 @@ public class LexiconRenderTurret
         GlStateManager.translate(x + 1.0F, y - 6.0F, 50.0F);
         GlStateManager.scale(25.0F, 25.0F, 25.0F);
 
-        GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+        GlStateManager.rotate(180.0F + (float) (this.bouncy ? Math.sin(rotation * 0.25F) * 10.0F : 0.0F), 0.0F, 0.0F, 1.0F);
         GlStateManager.rotate(22.5F, 1.0F, 0.0F, 0.0F);
         GlStateManager.rotate(135.0F + rotation, 0.0F, 1.0F, 0.0F);
         RenderHelper.enableStandardItemLighting();
@@ -172,6 +175,9 @@ public class LexiconRenderTurret
         turret.prevRotationYaw = turret.rotationYaw = 0.0F;
         turret.prevRotationYawHead = turret.rotationYawHead = 0.0F;
 
+        if( this.bouncy ) {
+            GlStateManager.scale(1.0F, 0.9F + Math.sin(rotation * 0.5F) * 0.1F, 1.0F);
+        }
         Minecraft.getMinecraft().getRenderManager().setRenderShadow(false);
         Minecraft.getMinecraft().getRenderManager().renderEntity(turret, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, true);
         Minecraft.getMinecraft().getRenderManager().setRenderShadow(true);
