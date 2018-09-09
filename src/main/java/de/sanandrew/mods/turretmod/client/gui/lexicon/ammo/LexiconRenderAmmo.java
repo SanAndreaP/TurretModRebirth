@@ -6,7 +6,7 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.gui.lexicon.ammo;
 
-import de.sanandrew.mods.sanlib.api.client.lexicon.IGuiButtonLink;
+import de.sanandrew.mods.sanlib.api.client.lexicon.IGuiButtonEntry;
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconEntry;
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconGuiHelper;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
@@ -14,6 +14,7 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.client.gui.lexicon.assembly.LexiconRenderAssemblyRecipe;
 import de.sanandrew.mods.turretmod.client.gui.lexicon.turret.LexiconGroupTurret;
+import de.sanandrew.mods.turretmod.client.util.ClientProxy;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
@@ -45,7 +46,7 @@ public class LexiconRenderAmmo
     private int subtypeRowCount;
 
     private List<GuiButtonAmmoItem> ammoButtons;
-    private IGuiButtonLink turretLink;
+    private IGuiButtonEntry turretLink;
 
     @Override
     public String getId() {
@@ -89,8 +90,8 @@ public class LexiconRenderAmmo
                 }
 
                 String turretName = this.currAmmo.getGroup().getTurret().getName();
-                this.turretLink = helper.getNewLinkButton(entryButtons.size(), 4, 0, LangUtils.translate(Lang.TURRET_NAME.get(turretName)),
-                                                          LexiconGroupTurret.NAME + ':' + turretName, helper.getFontRenderer());
+                this.turretLink = helper.getNewEntryButton(entryButtons.size(), 4, 0, ClientProxy.lexiconInstance.getGroup(LexiconGroupTurret.NAME).getEntry(turretName),
+                                                           helper.getFontRenderer());
                 entryButtons.add(this.turretLink.get());
             }
         }
@@ -136,7 +137,7 @@ public class LexiconRenderAmmo
 
         fr.drawString(LangUtils.translate(Lang.LEXICON_AMMO_ITEM.get("turret")), 2, this.drawHeight, H2_COLOR);
         this.turretLink.get().y = this.drawHeight + 9;
-        this.drawHeight += 24;
+        this.drawHeight += 26;
 
         fr.drawString(LangUtils.translate(Lang.LEXICON_DESCRIPTION), 2, this.drawHeight, H2_COLOR);
         this.drawHeight += 11;
