@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.client.gui.config;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.util.TmrConfiguration;
+import de.sanandrew.mods.turretmod.util.TmrConfig;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
@@ -32,9 +32,9 @@ public class GuiConfigScreen
     @SuppressWarnings("unchecked")
     private static List<IConfigElement> getCfgElements() {
         List<IConfigElement> configElements = new ArrayList<>();
-        configElements.add(new ConfigElement(TmrConfiguration.getCategory(Configuration.CATEGORY_CLIENT)));
-        configElements.add(new ConfigElement(TmrConfiguration.getCategory(Configuration.CATEGORY_GENERAL)));
-        configElements.add(new ConfigElement(TmrConfiguration.getCategory(TmrConfiguration.CAT_SERVER)));
+        configElements.add(new ConfigElement(TmrConfig.getCategory(Configuration.CATEGORY_CLIENT)));
+        configElements.add(new ConfigElement(TmrConfig.getCategory(Configuration.CATEGORY_GENERAL)));
+        configElements.add(new ConfigElement(TmrConfig.getCategory(TmrConfig.CAT_SERVER)));
         return configElements;
     }
 }

@@ -9,7 +9,7 @@ package de.sanandrew.mods.turretmod.client.shader;
 import de.sanandrew.mods.sanlib.lib.client.ShaderHelper;
 import de.sanandrew.mods.turretmod.client.util.Shaders;
 import de.sanandrew.mods.turretmod.util.Procedure;
-import de.sanandrew.mods.turretmod.util.TmrConfiguration;
+import de.sanandrew.mods.turretmod.util.TmrConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -43,7 +43,7 @@ public class ShaderGrayscale
         boolean shaders = ShaderHelper.areShadersEnabled();
 
         if(shaders) {
-            OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + TmrConfiguration.glSecondaryTextureUnit);
+            OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + TmrConfig.glSecondaryTextureUnit);
             texture = GlStateManager.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
         }
 
@@ -52,7 +52,7 @@ public class ShaderGrayscale
         ShaderHelper.releaseShader();
 
         if(shaders) {
-            OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + TmrConfiguration.glSecondaryTextureUnit);
+            OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + TmrConfig.glSecondaryTextureUnit);
             GlStateManager.bindTexture(texture);
             OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB);
         }

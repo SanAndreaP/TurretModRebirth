@@ -68,6 +68,6 @@ public final class LexiconEntryAmmo
     @Override
     public String getSrcText() {
         return ClientProxy.lexiconInstance.getTranslatedText(this) + ammoItemNames
-               + ClientProxy.lexiconInstance.getGroup(LexiconGroupTurret.NAME).getEntry(this.turretName);
+               + ClientProxy.lexiconInstance.getGroup(LexiconGroupTurret.NAME).getEntry(this.turretName).getSrcTitle();
     }
 }

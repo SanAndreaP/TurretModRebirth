@@ -8,7 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.entity.projectile;
 
-import de.sanandrew.mods.turretmod.util.TmrConfiguration;
+import de.sanandrew.mods.turretmod.registry.turret.TurretCrossbow;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.SoundEvent;
@@ -47,16 +47,16 @@ public class EntityProjectileCrossbowBolt
 
     @Override
     public float getDamage() {
-        return TmrConfiguration.ConfTurret.crossbowProjDamage;
+        return TurretCrossbow.Config.projDamage;
     }
 
     @Override
     public float getKnockbackStrengthH() {
-        return TmrConfiguration.ConfTurret.crossbowProjKnockbackH;
+        return TurretCrossbow.Config.projKnockbackH;
     }
 
     @Override
     public float getKnockbackStrengthV() {
-        return TmrConfiguration.ConfTurret.crossbowProjKnockbackV;
+        return TurretCrossbow.Config.projKnockbackV;
     }
 }

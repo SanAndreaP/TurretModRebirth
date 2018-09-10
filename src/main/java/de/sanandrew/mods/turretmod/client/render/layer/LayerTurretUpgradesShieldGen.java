@@ -12,7 +12,7 @@ import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
-import de.sanandrew.mods.turretmod.util.TmrConfiguration;
+import de.sanandrew.mods.turretmod.util.TmrConfig;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLiving;
@@ -26,7 +26,7 @@ public class LayerTurretUpgradesShieldGen<E extends EntityLiving & ITurretInst>
 {
     @Override
     public void doRenderLayer(E turret, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        if( TmrConfiguration.renderUpgrades ) {
+        if( TmrConfig.renderUpgrades ) {
             IUpgradeProcessor proc = turret.getUpgradeProcessor();
             int cnt = proc.getSizeInventory();
             for( int i = 0; i < cnt; i++ ) {

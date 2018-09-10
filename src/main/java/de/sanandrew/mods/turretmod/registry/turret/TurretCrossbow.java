@@ -8,11 +8,13 @@
  */
 package de.sanandrew.mods.turretmod.registry.turret;
 
+import de.sanandrew.mods.sanlib.lib.util.config.Category;
+import de.sanandrew.mods.sanlib.lib.util.config.Range;
+import de.sanandrew.mods.sanlib.lib.util.config.Value;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.util.Resources;
-import de.sanandrew.mods.turretmod.util.TmrConfiguration;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -55,12 +57,12 @@ public class TurretCrossbow
 
     @Override
     public UUID getId() {
-        return TurretCrossbow.ID;
+        return de.sanandrew.mods.turretmod.registry.turret.TurretCrossbow.ID;
     }
 
     @Override
     public ResourceLocation getItemModel() {
-        return TurretCrossbow.ITEM_MODEL;
+        return de.sanandrew.mods.turretmod.registry.turret.TurretCrossbow.ITEM_MODEL;
     }
 
     @Override
@@ -70,16 +72,34 @@ public class TurretCrossbow
 
     @Override
     public float getHealth() {
-        return TmrConfiguration.ConfTurret.crossbowMaxHealth;
+        return Config.maxHealth;
     }
 
     @Override
     public int getAmmoCapacity() {
-        return TmrConfiguration.ConfTurret.crossbowMaxAmmoCapacity;
+        return Config.maxAmmoCapacity;
     }
 
     @Override
     public int getReloadTicks() {
-        return 20;
+        return Config.maxReloadTicks;
+    }
+
+    @Category("Crossbow")
+    @SuppressWarnings("WeakerAccess")
+    public static final class Config
+    {
+        @Value(range = @Range(minD = 0.1F, maxD = 1024.0D))
+        public static float maxHealth = 20.0F;
+        @Value(range = @Range(minI = 1, maxI = Short.MAX_VALUE))
+        public static int maxAmmoCapacity = 256;
+        @Value(range = @Range(minI = 1))
+        public static int maxReloadTicks = 20;
+        @Value(range = @Range(minD = 0.0F, maxD = 1024.0D))
+        public static float projDamage = 2.0F;
+        @Value(range = @Range(minD = 0.0F, maxD = 256.0D))
+        public static float projKnockbackH = 0.01F;
+        @Value(range = @Range(minD = 0.0F, maxD = 256.0D))
+        public static float projKnockbackV = 0.2F;
     }
 }

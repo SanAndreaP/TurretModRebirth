@@ -60,7 +60,7 @@ public class TurretModRebirth
 
         loadPlugins(event.getAsmData());
 
-        TmrConfiguration.initConfiguration(event);
+        TmrConfig.initConfiguration(event);
 
         network = NetworkRegistry.INSTANCE.newSimpleChannel(TmrConstants.CHANNEL);
         PacketRegistry.initialize();
