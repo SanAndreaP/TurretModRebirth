@@ -85,21 +85,27 @@ public class TurretCrossbow
         return Config.maxReloadTicks;
     }
 
-    @Category("Crossbow")
+    @Category("crossbow")
     @SuppressWarnings("WeakerAccess")
     public static final class Config
     {
-        @Value(range = @Range(minD = 0.1F, maxD = 1024.0D))
+        @Value(comment = "maximum health this turret has.", range = @Range(minD = 0.1F, maxD = 1024.0D), reqWorldRestart = true)
         public static float maxHealth = 20.0F;
-        @Value(range = @Range(minI = 1, maxI = Short.MAX_VALUE))
+        @Value(comment = "maximum capacity of ammo rounds this turret can hold.", range = @Range(minI = 1, maxI = Short.MAX_VALUE), reqWorldRestart = true)
         public static int maxAmmoCapacity = 256;
-        @Value(range = @Range(minI = 1))
+        @Value(comment = "maximum tick time between shots. 20 ticks = 1 second.", range = @Range(minI = 1), reqWorldRestart = true)
         public static int maxReloadTicks = 20;
-        @Value(range = @Range(minD = 0.0F, maxD = 1024.0D))
-        public static float projDamage = 2.0F;
-        @Value(range = @Range(minD = 0.0F, maxD = 256.0D))
+        @Value(comment = "base damage a projectile can deal to a target.", range = @Range(minD = 0.0F, maxD = 1024.0D))
+        public static float projDamage = 4.0F;
+        @Value(comment = "multiplier applied to the speed with which the projectile travels.", range = @Range(minD = 0.0F, maxD = 256.0D))
+        public static float projSpeed = 1.0F;
+        @Value(comment = "how much the projectile curves down/up. negative values let projectiles go up, whereas positive values go down.", range = @Range(minD = -10.0F, maxD = 10.0D))
+        public static float projArc = 0.4F;
+        @Value(comment = "horizontal knockback strength a projectile can apply. Vanilla arrows have a value of 0.1.", range = @Range(minD = 0.0F, maxD = 256.0D))
         public static float projKnockbackH = 0.01F;
-        @Value(range = @Range(minD = 0.0F, maxD = 256.0D))
-        public static float projKnockbackV = 0.2F;
+        @Value(comment = "vertical (y) knockback strength a projectile can apply. Vanilla arrows have a value of 0.1.", range = @Range(minD = 0.0F, maxD = 256.0D))
+        public static float projKnockbackV = 0.1F;
+        @Value(comment = "how much more inaccurate a projectiles' trajectory vector becomes. Higher values result in less accuracy.", range = @Range(minD = 0.0F, maxD = 10.0D))
+        public static float projScatter = 0.0F;
     }
 }

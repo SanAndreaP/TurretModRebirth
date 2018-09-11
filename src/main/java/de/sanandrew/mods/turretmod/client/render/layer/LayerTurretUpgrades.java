@@ -26,7 +26,7 @@ public class LayerTurretUpgrades<E extends EntityLiving & ITurretInst>
 {
     @Override
     public void doRenderLayer(E turret, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        if( TmrConfig.renderUpgrades ) {
+        if( TmrConfig.Client.renderUpgrades ) {
             IUpgradeProcessor proc = turret.getUpgradeProcessor();
             int cnt = proc.getSizeInventory();
             for( int i = 0; i < cnt; i++ ) {

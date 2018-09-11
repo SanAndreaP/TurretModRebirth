@@ -6,6 +6,7 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.shader;
 
+import de.sanandrew.mods.sanlib.SLibConfig;
 import de.sanandrew.mods.sanlib.lib.client.ShaderHelper;
 import de.sanandrew.mods.turretmod.client.util.Shaders;
 import de.sanandrew.mods.turretmod.util.Procedure;
@@ -43,7 +44,7 @@ public class ShaderGrayscale
         boolean shaders = ShaderHelper.areShadersEnabled();
 
         if(shaders) {
-            OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + TmrConfig.glSecondaryTextureUnit);
+            OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + ShaderHelper.getSecondaryTextureUnit());
             texture = GlStateManager.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
         }
 
@@ -52,7 +53,7 @@ public class ShaderGrayscale
         ShaderHelper.releaseShader();
 
         if(shaders) {
-            OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + TmrConfig.glSecondaryTextureUnit);
+            OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB + ShaderHelper.getSecondaryTextureUnit());
             GlStateManager.bindTexture(texture);
             OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB);
         }

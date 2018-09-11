@@ -32,7 +32,7 @@ public class EntityProjectileCrossbowBolt
 
     @Override
     public float getArc() {
-        return 0.4F;
+        return TurretCrossbow.Config.projArc;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class EntityProjectileCrossbowBolt
 
     @Override
     public float getInitialSpeedMultiplier() {
-        return 1.0F;
+        return TurretCrossbow.Config.projSpeed;
     }
 
     @Override
@@ -58,5 +58,10 @@ public class EntityProjectileCrossbowBolt
     @Override
     public float getKnockbackStrengthV() {
         return TurretCrossbow.Config.projKnockbackV;
+    }
+
+    @Override
+    public double getScatterValue() {
+        return TurretCrossbow.Config.projScatter;
     }
 }

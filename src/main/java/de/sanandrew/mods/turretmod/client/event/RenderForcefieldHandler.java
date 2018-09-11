@@ -186,7 +186,7 @@ public class RenderForcefieldHandler
                     }
                     itFF.remove();
                 } else {
-                    if( TmrConfig.calcForcefieldIntf ) {
+                    if( TmrConfig.Client.calcForcefieldIntf ) {
                         for( ForcefieldCube intfCube : cubes ) {
                             cube.interfere(intfCube, false);
                             intfCube.interfere(cube, true);

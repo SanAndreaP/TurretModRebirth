@@ -31,12 +31,12 @@ public class TmrUtils
 
     @Override
     public boolean canPlayerEditAll() {
-        return TmrConfig.playerCanEditAll;
+        return TmrConfig.Server.playerCanEditAll;
     }
 
     @Override
     public boolean canOpEditAll() {
-        return TmrConfig.opCanEditAll;
+        return TmrConfig.Server.opCanEditAll;
     }
 
     @Override
