@@ -42,7 +42,7 @@ public class PacketUpdateTurretState
     public PacketUpdateTurretState() { }
 
     public PacketUpdateTurretState(ITurretInst turret) {
-        this.turretId = turret.getEntity().getEntityId();
+        this.turretId = turret.get().getEntityId();
         ITargetProcessor tgtProc = turret.getTargetProcessor();
         if( tgtProc.hasTarget() ) {
             this.entityToAttackId = tgtProc.getTarget().getEntityId();

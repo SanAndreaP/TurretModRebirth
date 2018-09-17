@@ -91,10 +91,6 @@ public class LexiconRenderUpgrade
     }
 
     @Override
-    public void updateScreen(ILexiconGuiHelper helper) {
-    }
-
-    @Override
     public void renderPageEntry(ILexiconEntry entry, ILexiconGuiHelper helper, int mouseX, int mouseY, int scrollY, float partTicks) {
         FontRenderer fr = helper.getFontRenderer();
 

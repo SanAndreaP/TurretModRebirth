@@ -42,12 +42,12 @@ public final class EntityAIMoveTowardsTurret
 
     @Override
     public boolean shouldExecute() {
-        if( this.targetTurret == null || !this.targetTurret.getEntity().isEntityAlive() ) {
+        if( this.targetTurret == null || !this.targetTurret.get().isEntityAlive() ) {
             return false;
-        } else if( this.targetTurret.getEntity().getDistanceSq(this.theEntity) > this.maxDistance * this.maxDistance ) {
+        } else if( this.targetTurret.get().getDistanceSq(this.theEntity) > this.maxDistance * this.maxDistance ) {
             return false;
         } else {
-            EntityLivingBase turretL = this.targetTurret.getEntity();
+            EntityLivingBase turretL = this.targetTurret.get();
             Vec3d targetPosVec = new Vec3d(turretL.posX, turretL.posY, turretL.posZ);
             Vec3d pathBlockVec = RandomPositionGenerator.findRandomTargetBlockTowards(this.theEntity, 8, 7, targetPosVec);
 
@@ -64,7 +64,7 @@ public final class EntityAIMoveTowardsTurret
     @Override
     public boolean shouldContinueExecuting() {
         if( this.targetTurret != null ) {
-            EntityLivingBase turretL = this.targetTurret.getEntity();
+            EntityLivingBase turretL = this.targetTurret.get();
             return !this.theEntity.getNavigator().noPath() && turretL.isEntityAlive() && turretL.getDistanceSq(this.theEntity) < this.maxDistance * this.maxDistance;
         }
 

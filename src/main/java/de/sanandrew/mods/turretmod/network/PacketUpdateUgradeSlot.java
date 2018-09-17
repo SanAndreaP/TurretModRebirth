@@ -31,7 +31,7 @@ public class PacketUpdateUgradeSlot
     public PacketUpdateUgradeSlot() {}
 
     public PacketUpdateUgradeSlot(ITurretInst turret, int slot, @Nonnull ItemStack stack) {
-        this.turretID = turret.getEntity().getEntityId();
+        this.turretID = turret.get().getEntityId();
         this.slot = (byte) slot;
         this.stack = stack;
     }

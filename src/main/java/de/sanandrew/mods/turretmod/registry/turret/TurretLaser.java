@@ -43,7 +43,7 @@ public class TurretLaser
 
     @Override
     public void onUpdate(ITurretInst turretInst) {
-        if( turretInst.getEntity().world.isRemote ) {
+        if( turretInst.get().world.isRemote ) {
             TurretModRebirth.proxy.playTurretLaser(turretInst);
         }
     }

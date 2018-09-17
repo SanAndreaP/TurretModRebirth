@@ -6,8 +6,9 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.client.util;
+package de.sanandrew.mods.turretmod.client.model;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.repairkit.TurretRepairKit;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
@@ -44,7 +45,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @SideOnly(Side.CLIENT)
-@Mod.EventBusSubscriber(Side.CLIENT)
+@Mod.EventBusSubscriber(value = Side.CLIENT, modid = TmrConstants.ID)
 public final class ModelRegistry
 {
     @SubscribeEvent

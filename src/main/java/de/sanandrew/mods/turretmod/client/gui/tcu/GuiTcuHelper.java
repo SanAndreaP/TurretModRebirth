@@ -94,7 +94,7 @@ public final class GuiTcuHelper
     }
 
     void updateScreen(Minecraft mc, IGuiTcuInst<?> gui) {
-        if( !gui.hasPermision() || gui.getTurretInst().getEntity().isDead || gui.getTurretInst().getEntity().getDistance(mc.player) > 36.0D ) {
+        if( !gui.hasPermision() || gui.getTurretInst().get().isDead || gui.getTurretInst().get().getDistance(mc.player) > 36.0D ) {
             mc.player.closeScreen();
         }
 
@@ -139,7 +139,7 @@ public final class GuiTcuHelper
     void onButtonClick(IGuiTcuInst<?> gui, GuiButton button) {
         ResourceLocation location = this.tabs.get(button);
         if( location != null ) {
-            TurretModRebirth.proxy.openGui(gui.getGui().mc.player, EnumGui.GUI_TCU, gui.getTurretInst().getEntity().getEntityId(), GuiTcuRegistry.GUI_RESOURCES.indexOf(location), 0);
+            TurretModRebirth.proxy.openGui(gui.getGui().mc.player, EnumGui.GUI_TCU, gui.getTurretInst().get().getEntityId(), GuiTcuRegistry.GUI_RESOURCES.indexOf(location), 0);
         } else if( button == this.tabNavLeft && currTabScroll > 0 ) {
             currTabScroll--;
         } else if( button == this.tabNavRight && currTabScroll < this.tabs.size() - MAX_TABS ) {

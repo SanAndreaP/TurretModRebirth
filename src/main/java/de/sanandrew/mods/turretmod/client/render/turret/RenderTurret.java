@@ -9,8 +9,9 @@
 package de.sanandrew.mods.turretmod.client.render.turret;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.client.render.IRenderInst;
+import de.sanandrew.mods.turretmod.api.client.turret.ITurretRender;
 import de.sanandrew.mods.turretmod.api.client.turret.ITurretRenderRegistry;
-import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretRender;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretBase;
@@ -28,6 +29,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -50,7 +52,7 @@ import java.util.Map;
 @SideOnly(Side.CLIENT)
 public class RenderTurret<E extends EntityLiving & ITurretInst>
         extends RenderLiving<E>
-        implements ITurretRenderRegistry<E>
+        implements ITurretRenderRegistry<E>, IRenderInst<E>
 {
     private final Map<ITurret, ITurretRender<?, E>> turretRenders = new HashMap<>();
     private final Map<ITurret, List<LayerRenderer<E>>> turretLayers = new HashMap<>();
@@ -62,23 +64,23 @@ public class RenderTurret<E extends EntityLiving & ITurretInst>
     }
 
     @Override
-    public <T extends ModelBase> boolean registerRender(@Nonnull ITurret turret, @Nonnull ITurretRender<T, E> render) {
-        if( this.turretRenders.containsKey(turret) ) {
-            TmrConstants.LOG.log(Level.WARN, String.format("Cannot register renderer for turret %s since it already has one.", turret.getName()));
+    public boolean registerRender(@Nonnull ITurret key, @Nonnull ITurretRender<?, E> render) {
+        if( this.turretRenders.containsKey(key) ) {
+            TmrConstants.LOG.log(Level.WARN, String.format("Cannot register renderer for turret %s since it already has one.", key.getName()));
             return false;
         }
 
-        this.turretRenders.put(turret, render);
-        List<LayerRenderer<E>> layers = this.turretLayers.compute(turret, (key, val) -> new ArrayList<>());
+        this.turretRenders.put(key, render);
+        List<LayerRenderer<E>> layers = this.turretLayers.compute(key, (k, v) -> new ArrayList<>());
         render.addLayers(layers);
 
         return true;
     }
 
     @Override
-    public ITurretRender<?, E> removeRender(ITurret turret) {
-        ITurretRender<?, E> oldRender = this.turretRenders.remove(turret);
-        this.turretLayers.remove(turret);
+    public ITurretRender<?, E> removeRender(ITurret key) {
+        ITurretRender<?, E> oldRender = this.turretRenders.remove(key);
+        this.turretLayers.remove(key);
 
         return oldRender;
     }
@@ -96,13 +98,13 @@ public class RenderTurret<E extends EntityLiving & ITurretInst>
     @Override
     public void doRender(E entity, double x, double y, double z, float entityYaw, float partialTicks) {
         ITurret turret = entity.getTurret();
-        ITurretRender<?, E> render = turretRenders.get(turret);
+        ITurretRender<?, E> render = this.turretRenders.get(turret);
 
         if( render != null ) {
             this.mainModel = render.getModel();
 
             super.doRender(entity, x, y, z, entityYaw, partialTicks);
-            render.doRender(entity, x, y, z, entityYaw, partialTicks);
+            render.doRender(this, entity, x, y, z, entityYaw, partialTicks);
             renderTurretRange(entity, x, y, z);
         }
     }
@@ -244,5 +246,25 @@ public class RenderTurret<E extends EntityLiving & ITurretInst>
         registry.registerRender(Turrets.LASER, new TurretRenderBase<>(registry, ModelTurretLaser::new));
         registry.registerRender(Turrets.FLAMETHROWER, new TurretRenderBase<>(registry, ModelTurretFlamethrower::new));
         registry.registerRender(Turrets.SHIELDGEN, new TurretRenderShieldGen<>(registry));
+    }
+
+    @Override
+    public boolean bindRenderEntityTexture(E entity) {
+        return this.bindEntityTexture(entity);
+    }
+
+    @Override
+    public boolean renderOutlines() {
+        return this.renderOutlines;
+    }
+
+    @Override
+    public Render<?> getRender() {
+        return this;
+    }
+
+    @Override
+    public int getRenderTeamColor(E entity) {
+        return this.getTeamColor(entity);
     }
 }

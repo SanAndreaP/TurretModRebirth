@@ -114,13 +114,13 @@ public final class ShieldPersonal
             this.recovery = 0.0F;
         }
 
-        if( turretInst.getEntity().world.isRemote ) {
-            if( this.isInRecovery() && !TmrUtils.INSTANCE.hasForcefield(turretInst.getEntity(), ShieldPersonalRecovery.class) ) {
-                TmrUtils.INSTANCE.addForcefield(turretInst.getEntity(), new ShieldPersonalRecovery(this));
+        if( turretInst.get().world.isRemote ) {
+            if( this.isInRecovery() && !TmrUtils.INSTANCE.hasForcefield(turretInst.get(), ShieldPersonalRecovery.class) ) {
+                TmrUtils.INSTANCE.addForcefield(turretInst.get(), new ShieldPersonalRecovery(this));
             }
 
-            if( this.isShieldActive() && !TmrUtils.INSTANCE.hasForcefield(turretInst.getEntity(), this.getClass()) ) {
-                TmrUtils.INSTANCE.addForcefield(turretInst.getEntity(), this);
+            if( this.isShieldActive() && !TmrUtils.INSTANCE.hasForcefield(turretInst.get(), this.getClass()) ) {
+                TmrUtils.INSTANCE.addForcefield(turretInst.get(), this);
             }
         }
     }

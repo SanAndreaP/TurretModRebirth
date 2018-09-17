@@ -11,10 +11,8 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
-import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectilePebble;
-import de.sanandrew.mods.turretmod.registry.turret.Turrets;
+import de.sanandrew.mods.turretmod.registry.projectile.Pebble;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -22,7 +20,7 @@ import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public class TurretAmmoShotgunShell
-        implements IAmmunition<EntityProjectilePebble>
+        implements IAmmunition<Pebble>
 {
     private final String name;
     private final UUID id;
@@ -52,8 +50,8 @@ public class TurretAmmoShotgunShell
     }
 
     @Override
-    public Class<EntityProjectilePebble> getEntityClass() {
-        return EntityProjectilePebble.class;
+    public Class<Pebble> getEntityClass() {
+        return Pebble.class;
     }
 
     @Override
@@ -79,8 +77,8 @@ public class TurretAmmoShotgunShell
     }
 
     @Override
-    public EntityProjectilePebble getEntity(ITurretInst turretInst) {
-        return new EntityProjectilePebble(turretInst.getEntity().world, turretInst.getEntity(), turretInst.getTargetProcessor().getTarget());
+    public Pebble getEntity(ITurretInst turretInst) {
+        return new Pebble(turretInst.get().world, turretInst.get(), turretInst.getTargetProcessor().getTarget());
     }
 
     @Override

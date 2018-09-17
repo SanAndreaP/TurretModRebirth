@@ -11,10 +11,8 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
-import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
-import de.sanandrew.mods.turretmod.registry.turret.Turrets;
+import de.sanandrew.mods.turretmod.registry.projectile.Bullet;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -22,7 +20,7 @@ import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public class TurretAmmoBullet
-        implements IAmmunition<EntityProjectileBullet>
+        implements IAmmunition<Bullet>
 {
     private final String name;
     private final UUID id;
@@ -52,8 +50,8 @@ public class TurretAmmoBullet
     }
 
     @Override
-    public Class<EntityProjectileBullet> getEntityClass() {
-        return EntityProjectileBullet.class;
+    public Class<Bullet> getEntityClass() {
+        return Bullet.class;
     }
 
     @Override
@@ -79,8 +77,8 @@ public class TurretAmmoBullet
     }
 
     @Override
-    public EntityProjectileBullet getEntity(ITurretInst turretInst) {
-        return new EntityProjectileBullet(turretInst.getEntity().world, turretInst.getEntity(), turretInst.getTargetProcessor().getTarget());
+    public Bullet getEntity(ITurretInst turretInst) {
+        return new Bullet(turretInst.get().world, turretInst.get(), turretInst.getTargetProcessor().getTarget());
     }
 
     @Override

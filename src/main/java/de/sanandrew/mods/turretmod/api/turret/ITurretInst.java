@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 
 public interface ITurretInst
 {
-    EntityLiving getEntity();
+    EntityLiving get();
 
     ITurret getTurret();
 

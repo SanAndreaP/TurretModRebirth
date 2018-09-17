@@ -8,7 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.client.render.projectile;
 
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileFlame;
+import de.sanandrew.mods.turretmod.api.client.render.IRender;
+import de.sanandrew.mods.turretmod.api.client.render.IRenderInst;
+import de.sanandrew.mods.turretmod.registry.projectile.EntityProjectileFlame;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -23,16 +25,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderFlame<T extends EntityProjectileFlame>
-        extends Render<T>
+        implements IRender<T>
 {
-    public RenderFlame(RenderManager manager) {
-        super(manager);
-    }
-
     @Override
-    public void doRender(T entity, double x, double y, double z, float yaw, float partTicks) {
+    public void doRender(IRenderInst<T> render, T entity, double x, double y, double z, float entityYaw, float partialTicks) {
+        RenderManager renderManager = render.getRender().getRenderManager();
+
         GlStateManager.pushMatrix();
-        this.bindEntityTexture(entity);
+        render.bindRenderEntityTexture(entity);
         GlStateManager.translate((float)x, (float)y, (float)z);
         double scale = 2.0F;// * (entity.deathUpdateTicks / 20.0F);
         GlStateManager.scale(scale, scale, scale);
@@ -49,8 +49,8 @@ public class RenderFlame<T extends EntityProjectileFlame>
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightX, brightY);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
-        GlStateManager.rotate(180.0F - this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate((this.renderManager.options.thirdPersonView == 2 ? -1 : 1) * -this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
+        GlStateManager.rotate(180.0F - renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate((renderManager.options.thirdPersonView == 2 ? -1 : 1) * -renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
 
         buf.begin(7, DefaultVertexFormats.POSITION_TEX);
         buf.pos(-0.125D, -0.0625D, 0.0D).tex(0.0D, 1.0D).endVertex();
@@ -62,11 +62,10 @@ public class RenderFlame<T extends EntityProjectileFlame>
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, prevBrightX, prevBrightY);
         GlStateManager.enableLighting();
         GlStateManager.popMatrix();
-        super.doRender(entity, x, y, z, yaw, partTicks);
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(T entity) {
+    public ResourceLocation getRenderTexture(T entity) {
         return entity.purifying ? Resources.PROJECTILE_FLAME_BLUE.resource : Resources.PROJECTILE_FLAME_RED.resource;
     }
 }

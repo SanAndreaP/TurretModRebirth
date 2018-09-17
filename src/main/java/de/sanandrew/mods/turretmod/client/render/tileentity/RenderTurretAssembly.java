@@ -15,7 +15,7 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.client.model.block.ModelTurretAssembly;
 import de.sanandrew.mods.turretmod.client.shader.ShaderItemAlphaOverride;
-import de.sanandrew.mods.turretmod.client.util.Shaders;
+import de.sanandrew.mods.turretmod.client.shader.Shaders;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;

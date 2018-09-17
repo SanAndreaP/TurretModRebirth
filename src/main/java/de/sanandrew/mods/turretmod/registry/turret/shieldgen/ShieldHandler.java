@@ -52,7 +52,7 @@ public class ShieldHandler
 
     public static void onTargeting(ITurretInst turretInst, ITargetProcessor processor) {
         ShieldTurret shield = turretInst.getRAM(null);
-        EntityLiving turretL = turretInst.getEntity();
+        EntityLiving turretL = turretInst.get();
         boolean hasPushed = false;
         boolean hasTarget = false;
         List<Entity> recognizedEntities = new ArrayList<>();
@@ -60,9 +60,9 @@ public class ShieldHandler
         if( processor.canShoot() ) {
             if( shield != null && shield.getValue() > 0.0F ) {
                 for( Entity target : processor.getValidTargetList() ) {
-                    double dX = turretInst.getEntity().posX - target.posX;
-                    double dY = turretInst.getEntity().posY - target.posY;
-                    double dZ = turretInst.getEntity().posZ - target.posZ;
+                    double dX = turretInst.get().posX - target.posX;
+                    double dY = turretInst.get().posY - target.posY;
+                    double dZ = turretInst.get().posZ - target.posZ;
 
                     if( knockBackEntity(turretInst, target, 1.0F, dX, dY, dZ) ) {
                         if( target instanceof EntityCreature ) {
@@ -90,9 +90,9 @@ public class ShieldHandler
                     Optional<Entity> opOwner = PROJ_GET_OWNER.stream().map(func -> func.apply(projectile))
                                                              .filter(owner -> owner != null && processor.isEntityTargeted(owner)).findFirst();
                     if( opOwner.isPresent() ) {
-                        double dX = turretInst.getEntity().posX - projectile.posX;
-                        double dY = turretInst.getEntity().posY - projectile.posY;
-                        double dZ = turretInst.getEntity().posZ - projectile.posZ;
+                        double dX = turretInst.get().posX - projectile.posX;
+                        double dY = turretInst.get().posY - projectile.posY;
+                        double dZ = turretInst.get().posZ - projectile.posZ;
 
                         if( knockBackEntity(turretInst, projectile, 0.5F, dX, dY, dZ) ) {
                             if( opOwner.get() instanceof EntityCreature ) {
@@ -130,7 +130,7 @@ public class ShieldHandler
         }
 
         if( ALREADY_PUSHED.containsKey(turretInst) ) {
-            ALREADY_PUSHED.get(turretInst).entrySet().removeIf(entry -> entry.getKey() == null || entry.getValue() < turretInst.getEntity().ticksExisted
+            ALREADY_PUSHED.get(turretInst).entrySet().removeIf(entry -> entry.getKey() == null || entry.getValue() < turretInst.get().ticksExisted
                                                                                 || !recognizedEntities.contains(entry.getKey()));
         }
         ALREADY_PUSHED.entrySet().removeIf(entry -> entry.getKey() == null || entry.getValue().isEmpty());
@@ -140,7 +140,7 @@ public class ShieldHandler
         AxisAlignedBB turretBB = turretInst.getTargetProcessor().getAdjustedRange(true);
         if( turretBB.intersects(explosionBB) ) {
             blocksAffected.removeIf(blockPos -> {
-                if( turretInst.getEntity().world.getBlockState(blockPos).getMaterial() != Material.AIR && turretBB.intersects(new AxisAlignedBB(blockPos)) ) {
+                if( turretInst.get().world.getBlockState(blockPos).getMaterial() != Material.AIR && turretBB.intersects(new AxisAlignedBB(blockPos)) ) {
                     ShieldTurret shield = turretInst.getRAM(null);
                     if( shield != null && shield.isShieldActive() ) {
                         shield.damage(2.0F);
@@ -164,7 +164,7 @@ public class ShieldHandler
     }
 
     public static boolean knockBackEntity(ITurretInst turretInst, Entity entity, float strength, double xRatio, double yRatio, double zRatio) {
-        boolean hasBeenPushed = ALREADY_PUSHED.containsKey(turretInst) && ALREADY_PUSHED.get(turretInst).getOrDefault(entity, -1) > turretInst.getEntity().ticksExisted;
+        boolean hasBeenPushed = ALREADY_PUSHED.containsKey(turretInst) && ALREADY_PUSHED.get(turretInst).getOrDefault(entity, -1) > turretInst.get().ticksExisted;
         if( hasBeenPushed ) {
             return false;
         } else {
@@ -185,10 +185,10 @@ public class ShieldHandler
             }
 
             if( entity.world instanceof WorldServer ) {
-                ((WorldServer) entity.world).getEntityTracker().sendToTracking(turretInst.getEntity(), new SPacketEntityVelocity(entity));
+                ((WorldServer) entity.world).getEntityTracker().sendToTracking(turretInst.get(), new SPacketEntityVelocity(entity));
             }
 
-            ALREADY_PUSHED.computeIfAbsent(turretInst, inst -> new WeakHashMap<>()).put(entity, turretInst.getEntity().ticksExisted + 20);
+            ALREADY_PUSHED.computeIfAbsent(turretInst, inst -> new WeakHashMap<>()).put(entity, turretInst.get().ticksExisted + 20);
 
             return true;
         }

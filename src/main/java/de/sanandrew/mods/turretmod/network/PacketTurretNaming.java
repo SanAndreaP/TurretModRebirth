@@ -26,7 +26,7 @@ public class PacketTurretNaming
     public PacketTurretNaming() { }
 
     public PacketTurretNaming(ITurretInst turret, String name) {
-        this.turretId = turret.getEntity().getEntityId();
+        this.turretId = turret.get().getEntityId();
         this.name = name;
     }
 

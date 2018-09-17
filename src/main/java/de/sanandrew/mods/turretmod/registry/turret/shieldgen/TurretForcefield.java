@@ -16,7 +16,6 @@ import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.util.Resources;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -39,7 +38,7 @@ public class TurretForcefield
 
     @Override
     public void applyEntityAttributes(ITurretInst turretInst) {
-        turretInst.getEntity().getEntityAttribute(TurretAttributes.MAX_INIT_SHOOT_TICKS).setBaseValue(0.0D);
+        turretInst.get().getEntityAttribute(TurretAttributes.MAX_INIT_SHOOT_TICKS).setBaseValue(0.0D);
     }
 
     @Override

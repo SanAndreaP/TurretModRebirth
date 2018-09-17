@@ -19,7 +19,7 @@ import de.sanandrew.mods.turretmod.api.assembly.IRecipeItem;
 import de.sanandrew.mods.turretmod.api.assembly.IRecipeGroup;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiSlimButton;
 import de.sanandrew.mods.turretmod.client.shader.ShaderItemAlphaOverride;
-import de.sanandrew.mods.turretmod.client.util.Shaders;
+import de.sanandrew.mods.turretmod.client.shader.Shaders;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketAssemblyToggleAutomate;

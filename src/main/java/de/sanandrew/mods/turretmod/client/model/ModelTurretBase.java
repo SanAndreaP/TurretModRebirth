@@ -61,8 +61,8 @@ public class ModelTurretBase
 
         ITurretInst turret = (ITurretInst) entity;
 
-		float maxHealth = turret.isInGui() ? 2.0F : turret.getEntity().getMaxHealth();
-		float health = turret.isInGui() ? 1.0F : turret.getEntity().getHealth();
+		float maxHealth = turret.isInGui() ? 2.0F : turret.get().getMaxHealth();
+		float health = turret.isInGui() ? 1.0F : turret.get().getHealth();
 		int maxAmmo = turret.isInGui() ? 2 : turret.getTargetProcessor().getMaxAmmoCapacity();
 		int ammo = turret.isInGui() ? 1 : turret.getTargetProcessor().getAmmoCount();
 

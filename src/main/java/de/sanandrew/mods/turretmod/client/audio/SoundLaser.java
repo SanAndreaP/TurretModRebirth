@@ -31,7 +31,7 @@ public class SoundLaser
 
     @Override
     public void update() {
-        EntityLiving turretL = this.turret.getEntity();
+        EntityLiving turretL = this.turret.get();
         if( turretL.isDead || Minecraft.getMinecraft().isGamePaused() ) {
             this.donePlaying = true;
         } else {

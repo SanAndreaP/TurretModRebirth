@@ -60,7 +60,7 @@ public final class UpgradeProcessor
         this.upgTickable.forEach((key, val) -> val.onTick(this.turret));
 
         if( this.hasChanged ) {
-            EntityLiving turretL = this.turret.getEntity();
+            EntityLiving turretL = this.turret.get();
 
             for( int i = 0, max = this.upgradeStacks.size(); i < max; i++ ) {
                 ItemStack invStack = this.upgradeStacks.get(i);
@@ -325,7 +325,7 @@ public final class UpgradeProcessor
     @Override
     public boolean tryApplyUpgrade(@Nonnull ItemStack upgStack) {
         if( this.isUpgradeItemApplicable(upgStack) ) {
-            EntityLiving turretL = this.turret.getEntity();
+            EntityLiving turretL = this.turret.get();
             for( int i = 0, max = this.upgradeStacks.size(); i < max; i++ ) {
                 if( this.isUpgradeItemApplicableForSlot(i, upgStack, false) ) {
                     this.setInventorySlotContents(i, upgStack);
@@ -339,7 +339,7 @@ public final class UpgradeProcessor
     }
 
     public void dropUpgrades() {
-        EntityLiving turretL = this.turret.getEntity();
+        EntityLiving turretL = this.turret.get();
 
         for( int i = 0; i < this.getSizeInventory(); i++ ) {
             ItemStack stack = this.removeStackFromSlot(i);
@@ -373,7 +373,7 @@ public final class UpgradeProcessor
 
     @Override
     public void syncUpgrade(UUID id) {
-        EntityLiving turretL = this.turret.getEntity();
+        EntityLiving turretL = this.turret.get();
         if( !turretL.world.isRemote ) {
             PacketRegistry.sendToAllAround(new PacketSyncUpgradeInst(this.turret, id), turretL.world.provider.getDimension(), turretL.posX, turretL.posY, turretL.posZ, 64.0D);
         }

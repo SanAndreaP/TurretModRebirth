@@ -41,7 +41,7 @@ public final class RenderTurretLaser
 
     private static void renderLaser(ITurretInst turret, double renderX, double renderY, double renderZ, double partTicks) {
         Entity tgt = turret.getTargetProcessor().getTarget();
-        EntityLiving turretL = turret.getEntity();
+        EntityLiving turretL = turret.get();
 
         double turretX = turretL.lastTickPosX + (turretL.posX - turretL.lastTickPosX) * partTicks;
         double turretY = turretL.lastTickPosY + (turretL.posY - turretL.lastTickPosY) * partTicks + turretL.getEyeHeight() - (turret.isUpsideDown() ? 0.95F : 0.13F);

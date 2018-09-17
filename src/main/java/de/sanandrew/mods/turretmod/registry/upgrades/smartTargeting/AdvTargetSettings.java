@@ -70,7 +70,7 @@ public class AdvTargetSettings
     private boolean checkValidity(Entity target, ITurretInst turretInst) {
         ITargetProcessor tgtProcessor = turretInst.getTargetProcessor();
         if( this.turretAwareness != TurretAwareness.UNAWARE ) {
-            List<Entity> turrets = turretInst.getEntity().world.getEntitiesInAABBexcluding(turretInst.getEntity(), tgtProcessor.getAdjustedRange(true),
+            List<Entity> turrets = turretInst.get().world.getEntitiesInAABBexcluding(turretInst.get(), tgtProcessor.getAdjustedRange(true),
                                                                                            e -> e instanceof ITurretInst);
             for( Entity e : turrets ) {
                 ITurretInst otherTurret = (ITurretInst) e;

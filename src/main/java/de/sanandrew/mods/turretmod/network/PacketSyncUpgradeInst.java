@@ -36,7 +36,7 @@ public class PacketSyncUpgradeInst
     public PacketSyncUpgradeInst() { }
 
     public PacketSyncUpgradeInst(ITurretInst turret, UUID upgradeId) {
-        this.turretId = turret.getEntity().getEntityId();
+        this.turretId = turret.get().getEntityId();
         this.upgradeId = upgradeId;
         IUpgradeInstance<?> upgInstance = turret.getUpgradeProcessor().getUpgradeInstance(upgradeId);
         if( upgInstance != null ) {

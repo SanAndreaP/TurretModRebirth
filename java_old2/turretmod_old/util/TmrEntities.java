@@ -17,8 +17,8 @@ import de.sanandrew.mods.turretmod.client.model.turret.techii.ModelTurretRevolve
 import de.sanandrew.mods.turretmod.client.render.entity.RenderBullet;
 import de.sanandrew.mods.turretmod.client.render.entity.RenderTurret;
 import de.sanandrew.mods.turretmod.client.render.entity.RenderTurretArrow;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileArrow;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
+import de.sanandrew.mods.turretmod.registry.projectile.EntityProjectileArrow;
+import de.sanandrew.mods.turretmod.registry.projectile.EntityProjectileBullet;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretOP;
 import de.sanandrew.mods.turretmod.entity.turret.techi.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.entity.turret.techii.EntityTurretRevolver;

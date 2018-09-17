@@ -6,7 +6,7 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.entity.projectile;
+package de.sanandrew.mods.turretmod.registry.projectile;
 
 import de.sanandrew.mods.turretmod.util.TurretMod;
 import net.minecraft.init.Items;

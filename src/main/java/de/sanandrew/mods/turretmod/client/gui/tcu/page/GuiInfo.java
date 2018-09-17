@@ -78,7 +78,7 @@ public class GuiInfo
 
         this.turretName = new GuiTextField(0, gui.getFontRenderer(), gui.getPosX() + 20, gui.getPosY() + 91, 148, 10);
         this.turretName.setMaxStringLength(128);
-        this.turretName.setText(gui.getTurretInst().getEntity().hasCustomName() ? gui.getTurretInst().getEntity().getCustomNameTag() : "");
+        this.turretName.setText(gui.getTurretInst().get().hasCustomName() ? gui.getTurretInst().get().getCustomNameTag() : "");
     }
 
     @Override
@@ -120,7 +120,7 @@ public class GuiInfo
         guiScreen.drawTexturedModalRect(posX + 7, posY + 128, 234, this.specOwnerHead * 8, 11, 8);
         guiScreen.drawTexturedModalRect(posX + 7, posY + 140, 245, 24, 11, 8);
 
-        EntityLiving turretL = turretInst.getEntity();
+        EntityLiving turretL = turretInst.get();
         ITargetProcessor tgtProc = turretInst.getTargetProcessor();
         String value;
 
@@ -189,10 +189,10 @@ public class GuiInfo
             }
         } else if( button == this.showRange ) {
             turretInst.setShowRange(true);
-            turretInst.getEntity().ignoreFrustumCheck = true;
+            turretInst.get().ignoreFrustumCheck = true;
         } else if( button == this.hideRange ) {
             turretInst.setShowRange(false);
-            turretInst.getEntity().ignoreFrustumCheck = false;
+            turretInst.get().ignoreFrustumCheck = false;
         } else if( button == this.setActive ) {
             PacketRegistry.sendToServer(new PacketPlayerTurretAction(turretInst, PacketPlayerTurretAction.SET_ACTIVE));
         } else if( button == this.setDeactive ) {

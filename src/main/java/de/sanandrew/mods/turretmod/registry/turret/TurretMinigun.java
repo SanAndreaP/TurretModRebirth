@@ -34,7 +34,7 @@ public class TurretMinigun
 
     @Override
     public void onUpdate(ITurretInst turretInst) {
-        EntityLiving turretL = turretInst.getEntity();
+        EntityLiving turretL = turretInst.get();
 
         MyRAM ram = turretInst.getRAM(MyRAM::new);
 
@@ -71,7 +71,7 @@ public class TurretMinigun
 
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {
-        return (turretInst.getEntity().hasCustomName() && turretInst.getEntity().getCustomNameTag().equalsIgnoreCase("silverchiren") ? Resources.TURRET_T2_MINIGUN_EE : Resources.TURRET_T2_MINIGUN).resource;
+        return (turretInst.get().hasCustomName() && turretInst.get().getCustomNameTag().equalsIgnoreCase("silverchiren") ? Resources.TURRET_T2_MINIGUN_EE : Resources.TURRET_T2_MINIGUN).resource;
     }
 
     @Override

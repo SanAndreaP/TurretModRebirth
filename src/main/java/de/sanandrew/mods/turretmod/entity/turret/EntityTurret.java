@@ -645,7 +645,7 @@ public class EntityTurret
     }
 
     @Override
-    public EntityLiving getEntity() {
+    public EntityLiving get() {
         return this;
     }
 

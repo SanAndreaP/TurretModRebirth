@@ -37,7 +37,7 @@ public class PacketUpdateTargets
         this.playerTargets = processor.getEnabledPlayerTargets();
         this.isBlacklistEntity = processor.isEntityBlacklist();
         this.isBlacklistPlayer = processor.isPlayerBlacklist();
-        this.turretID = processor.getTurret().getEntity().getEntityId();
+        this.turretID = processor.getTurret().get().getEntityId();
     }
 
     @Override

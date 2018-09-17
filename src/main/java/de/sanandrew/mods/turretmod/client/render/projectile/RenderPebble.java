@@ -10,7 +10,9 @@ package de.sanandrew.mods.turretmod.client.render.projectile;
 
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
+import de.sanandrew.mods.turretmod.api.client.render.IRender;
+import de.sanandrew.mods.turretmod.api.client.render.IRenderInst;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretProjectile;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.init.Blocks;
@@ -23,26 +25,17 @@ import javax.annotation.Nonnull;
 
 @SideOnly(Side.CLIENT)
 public class RenderPebble<T extends EntityTurretProjectile>
-        extends Render<T>
+        implements IRender<T>
 {
     @Nonnull
     private ItemStack gravelItem = ItemStackUtils.getEmpty();
 
-    public RenderPebble(RenderManager manager) {
-        super(manager);
-    }
-
     @Override
-    public void doRender(T entity, double x, double y, double z, float yaw, float partTicks) {
+    public void doRender(IRenderInst<T> render, T entity, double x, double y, double z, float entityYaw, float partialTicks) {
         if( !ItemStackUtils.isValid(this.gravelItem) ) {
             this.gravelItem = new ItemStack(Blocks.GRAVEL, 1);
         }
 
         RenderUtils.renderStackInWorld(this.gravelItem, x, y, z, 0.0F, 0.0F, 0.0F, 0.1D);
-    }
-
-    @Override
-    protected ResourceLocation getEntityTexture(T entity) {
-        return null;
     }
 }

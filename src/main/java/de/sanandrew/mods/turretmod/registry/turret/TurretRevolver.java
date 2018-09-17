@@ -34,7 +34,7 @@ public class TurretRevolver
 
     @Override
     public void onUpdate(ITurretInst turretInst) {
-        EntityLiving turretL = turretInst.getEntity();
+        EntityLiving turretL = turretInst.get();
 
         MyRAM ram = turretInst.getRAM(MyRAM::new);
         ram.prevBarrelLeft = ram.barrelLeft;

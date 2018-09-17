@@ -158,7 +158,7 @@ public final class TargetProcessor
                 this.ammoCount = this.getMaxAmmoCapacity();
 
                 if( !items.isEmpty() ) {
-                    EntityLiving turretL = this.turret.getEntity();
+                    EntityLiving turretL = this.turret.get();
                     for( ItemStack stack : items ) {
                         EntityItem item = new EntityItem(turretL.world, turretL.posX, turretL.posY, turretL.posZ, stack);
                         turretL.world.spawnEntity(item);
@@ -198,7 +198,7 @@ public final class TargetProcessor
             this.ammoStack = ItemStackUtils.getEmpty();
 
             if( !items.isEmpty() ) {
-                EntityLiving turretL = this.turret.getEntity();
+                EntityLiving turretL = this.turret.get();
                 for( ItemStack stack : items ) {
                     EntityItem item = new EntityItem(turretL.world, turretL.posX, turretL.posY, turretL.posZ, stack);
                     turretL.world.spawnEntity(item);
@@ -226,7 +226,7 @@ public final class TargetProcessor
             this.ammoStack = ItemStackUtils.getEmpty();
 
             if( !items.isEmpty() ) {
-                EntityLiving turretL = this.turret.getEntity();
+                EntityLiving turretL = this.turret.get();
                 for( ItemStack stack : items ) {
                     stack = InventoryUtils.addStackToInventory(stack, inventory);
                     if( ItemStackUtils.isValid(stack) ) {
@@ -259,12 +259,12 @@ public final class TargetProcessor
 
     @Override
     public final int getMaxAmmoCapacity() {
-        return MathHelper.ceil(this.turret.getEntity().getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY).getAttributeValue());
+        return MathHelper.ceil(this.turret.get().getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY).getAttributeValue());
     }
 
     @Override
     public final int getMaxShootTicks() {
-        return MathHelper.ceil(this.turret.getEntity().getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).getAttributeValue());
+        return MathHelper.ceil(this.turret.get().getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).getAttributeValue());
     }
 
     @Override
@@ -293,7 +293,7 @@ public final class TargetProcessor
     }
 
     private int getMaxInitShootTicks() {
-        return (int) Math.round(this.turret.getEntity().getEntityAttribute(TurretAttributes.MAX_INIT_SHOOT_TICKS).getAttributeValue());
+        return (int) Math.round(this.turret.get().getEntityAttribute(TurretAttributes.MAX_INIT_SHOOT_TICKS).getAttributeValue());
     }
 
     @Override
@@ -318,7 +318,7 @@ public final class TargetProcessor
         if( this.turret.isUpsideDown() ) {
             aabb = new AxisAlignedBB(aabb.minX, -aabb.maxY, aabb.minZ, aabb.maxX, -aabb.minY, aabb.maxZ);
         }
-        EntityLiving turretL = this.turret.getEntity();
+        EntityLiving turretL = this.turret.get();
         return doOffset ? aabb.offset(turretL.posX, turretL.posY, turretL.posZ) : aabb;
     }
 
@@ -337,7 +337,7 @@ public final class TargetProcessor
         if( this.hasAmmo() ) {
             Entity projectile = this.getProjectile();
             assert projectile != null;
-            this.turret.getEntity().world.spawnEntity(projectile);
+            this.turret.get().world.spawnEntity(projectile);
             this.playSound(this.turret.getShootSound(), 1.8F);
             this.turret.setShooting();
             this.decrAmmo();
@@ -350,7 +350,7 @@ public final class TargetProcessor
 
     @Override
     public void playSound(SoundEvent sound, float volume) {
-        EntityLiving turretL = this.turret.getEntity();
+        EntityLiving turretL = this.turret.get();
         final float pitch = 1.0F / (turretL.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F;
         turretL.world.playSound(null, turretL.posX, turretL.posY, turretL.posZ, sound, SoundCategory.NEUTRAL, volume, pitch);
     }
@@ -358,7 +358,7 @@ public final class TargetProcessor
     @Override
     public void onTick() {
         boolean changed = false;
-        EntityLiving turretL = this.turret.getEntity();
+        EntityLiving turretL = this.turret.get();
 
         if( !this.turret.isActive() ) {
             if( this.entityToAttack != null || this.entityToAttackUUID != null ) {
@@ -462,12 +462,12 @@ public final class TargetProcessor
     }
 
     private List<Entity> getValidTargetList(AxisAlignedBB aabb) {
-        return turret.getEntity().world.getEntitiesInAABBexcluding(turret.getEntity(), aabb, entity -> this.isEntityValidTarget(entity, aabb));
+        return turret.get().world.getEntitiesInAABBexcluding(turret.get(), aabb, entity -> this.isEntityValidTarget(entity, aabb));
     }
 
     private boolean isEntityValidTarget(Entity entity, AxisAlignedBB aabb) {
         return entity instanceof EntityLivingBase && isEntityTargeted(entity) && entity.isEntityAlive() && entity.getEntityBoundingBox().intersects(aabb)
-               && (this.turret.getTurret().canSeeThroughBlocks() || this.turret.getEntity().canEntityBeSeen(entity));
+               && (this.turret.getTurret().canSeeThroughBlocks() || this.turret.get().canEntityBeSeen(entity));
     }
 
     public static void initialize() {
@@ -612,7 +612,7 @@ public final class TargetProcessor
     }
 
     public void updateClientState(int targetId, int ammoCount, @Nonnull ItemStack ammoStack, boolean isShooting) {
-        EntityLiving turretL = this.turret.getEntity();
+        EntityLiving turretL = this.turret.get();
         if( turretL.world.isRemote ) {
             this.entityToAttack = targetId < 0 ? null : turretL.world.getEntityByID(targetId);
             this.ammoCount = ammoCount;

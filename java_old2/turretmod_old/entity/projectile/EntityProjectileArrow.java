@@ -1,4 +1,4 @@
-package de.sanandrew.mods.turretmod.entity.projectile;
+package de.sanandrew.mods.turretmod.registry.projectile;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;

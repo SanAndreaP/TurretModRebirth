@@ -11,10 +11,8 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
-import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileFlame;
-import de.sanandrew.mods.turretmod.registry.turret.Turrets;
+import de.sanandrew.mods.turretmod.registry.projectile.EntityProjectileFlame;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -81,7 +79,7 @@ public class TurretAmmoFireTank
 
     @Override
     public EntityProjectileFlame getEntity(ITurretInst turretInst) {
-        EntityProjectileFlame flame = new EntityProjectileFlame(turretInst.getEntity().world, turretInst.getEntity(), turretInst.getTargetProcessor().getTarget());
+        EntityProjectileFlame flame = new EntityProjectileFlame(turretInst.get().world, turretInst.get(), turretInst.getTargetProcessor().getTarget());
         flame.purifying = turretInst.getUpgradeProcessor().hasUpgrade(Upgrades.FUEL_PURIFY);
         return flame;
     }

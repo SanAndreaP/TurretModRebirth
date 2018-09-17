@@ -56,7 +56,7 @@ public class TmrUtils
 
     @Override
     public void setEntityTarget(EntityCreature target, final ITurretInst attackingTurret) {
-        EntityLivingBase turretL = attackingTurret.getEntity();
+        EntityLivingBase turretL = attackingTurret.get();
         target.setAttackTarget(turretL);
         target.setRevengeTarget(turretL);
 

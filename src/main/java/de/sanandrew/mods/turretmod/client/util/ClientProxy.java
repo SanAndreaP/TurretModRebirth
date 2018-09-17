@@ -27,21 +27,12 @@ import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.PlayerHeads;
 import de.sanandrew.mods.turretmod.client.particle.ParticleAssemblySpark;
 import de.sanandrew.mods.turretmod.client.particle.ParticleCryoTrail;
-import de.sanandrew.mods.turretmod.client.render.projectile.RenderBullet;
-import de.sanandrew.mods.turretmod.client.render.projectile.RenderFlame;
-import de.sanandrew.mods.turretmod.client.render.projectile.RenderNothingness;
-import de.sanandrew.mods.turretmod.client.render.projectile.RenderPebble;
-import de.sanandrew.mods.turretmod.client.render.projectile.RenderTurretArrow;
+import de.sanandrew.mods.turretmod.client.render.projectile.RenderProjectile;
 import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
 import de.sanandrew.mods.turretmod.client.render.world.RenderTurretPointed;
+import de.sanandrew.mods.turretmod.client.shader.Shaders;
 import de.sanandrew.mods.turretmod.client.world.ClientWorldEventListener;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileBullet;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCrossbowBolt;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileCryoCell;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileFlame;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileLaser;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileMinigunPebble;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectilePebble;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
@@ -84,13 +75,14 @@ public class ClientProxy
         MinecraftForge.EVENT_BUS.register(new ClientWorldEventListener());
 
         RenderingRegistry.registerEntityRenderingHandler(EntityTurret.class, RenderTurret::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCrossbowBolt.class, RenderTurretArrow::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCryoCell.class, RenderNothingness::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityProjectilePebble.class, RenderPebble::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileBullet.class, RenderBullet::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileMinigunPebble.class, RenderPebble::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileLaser.class, RenderNothingness::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileFlame.class, RenderFlame::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityTurretProjectile.class, RenderProjectile::new);
+//        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCrossbowBolt.class, RenderTurretArrow::new);
+//        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileCryoCell.class, RenderNothingness::new);
+//        RenderingRegistry.registerEntityRenderingHandler(EntityProjectilePebble.class, RenderPebble::new);
+//        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileBullet.class, RenderBullet::new);
+//        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileMinigunPebble.class, RenderPebble::new);
+//        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileLaser.class, RenderNothingness::new);
+//        RenderingRegistry.registerEntityRenderingHandler(EntityProjectileFlame.class, RenderFlame::new);
     }
 
     @Override

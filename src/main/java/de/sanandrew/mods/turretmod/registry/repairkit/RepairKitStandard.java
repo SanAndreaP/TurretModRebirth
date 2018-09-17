@@ -46,7 +46,7 @@ public class RepairKitStandard
 
     @Override
     public boolean isApplicable(ITurretInst turret) {
-        return turret.getEntity().getHealth() <= turret.getEntity().getMaxHealth() - this.heal;
+        return turret.get().getHealth() <= turret.get().getMaxHealth() - this.heal;
     }
 
     @Override

@@ -6,7 +6,7 @@
  * http://botaniamod.net/license.php
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.client.util;
+package de.sanandrew.mods.turretmod.client.shader;
 
 import de.sanandrew.mods.sanlib.lib.client.ShaderHelper;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -20,7 +20,7 @@ public final class Shaders
     public static int grayscaleItem = 0;
     public static int alphaOverride = 0;
 
-    static void initShaders() {
+    public static void initShaders() {
         if( !ShaderHelper.areShadersEnabled() ) {
             return;
         }

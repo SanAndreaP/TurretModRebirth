@@ -10,7 +10,6 @@ package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
@@ -46,8 +45,8 @@ public abstract class UpgradeReloadTime
 
     @Override
     public void onApply(ITurretInst turretInst) {
-        if( !turretInst.getEntity().world.isRemote ) {
-            IAttributeInstance attrib = turretInst.getEntity().getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS);
+        if( !turretInst.get().world.isRemote ) {
+            IAttributeInstance attrib = turretInst.get().getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS);
             if( attrib.getModifier(this.modifier.getID()) != null ) {
                 attrib.removeModifier(this.modifier);
             }
@@ -58,11 +57,11 @@ public abstract class UpgradeReloadTime
 
     @Override
     public void onRemove(ITurretInst turretInst) {
-        if( !turretInst.getEntity().world.isRemote ) {
-            IAttributeInstance attrib = turretInst.getEntity().getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS);
+        if( !turretInst.get().world.isRemote ) {
+            IAttributeInstance attrib = turretInst.get().getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS);
             if( attrib.getModifier(this.modifier.getID()) != null ) {
                 attrib.removeModifier(this.modifier);
-                turretInst.getEntity().setHealth(turretInst.getEntity().getHealth());
+                turretInst.get().setHealth(turretInst.get().getHealth());
             }
         }
     }

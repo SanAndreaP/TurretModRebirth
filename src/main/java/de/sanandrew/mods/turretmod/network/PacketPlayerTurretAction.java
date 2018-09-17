@@ -40,7 +40,7 @@ public class PacketPlayerTurretAction
     public PacketPlayerTurretAction() { }
 
     public PacketPlayerTurretAction(ITurretInst turretInst, byte action) {
-        this.turretId = turretInst.getEntity().getEntityId();
+        this.turretId = turretInst.get().getEntityId();
         this.actionId = action;
     }
 
@@ -74,7 +74,7 @@ public class PacketPlayerTurretAction
         Tuple chestItm = InventoryUtils.getSimilarStackFromInventory(new ItemStack(Blocks.CHEST), player.inventory, true);
         if( chestItm != null && ItemStackUtils.isValid(chestItm.getValue(1)) ) {
             ItemStack chestStack = chestItm.getValue(1);
-            EntityLiving turretL = turretInst.getEntity();
+            EntityLiving turretL = turretInst.get();
             if( turretL.world.isRemote ) {
                 PacketRegistry.sendToServer(new PacketPlayerTurretAction(turretInst, PacketPlayerTurretAction.DISMANTLE));
                 return true;

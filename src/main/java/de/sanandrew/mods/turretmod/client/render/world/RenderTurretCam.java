@@ -86,7 +86,7 @@ public class RenderTurretCam
                 if (turret != null) {
                     long updTime = System.nanoTime();
                     if (updTime - camEntry.lastUpdTime > MAX_UPDATE_TIME_NS) {
-                        EntityLiving turretL = turret.getEntity();
+                        EntityLiving turretL = turret.get();
                         GameSettings settings = mc.gameSettings;
                         Entity entityBkp = mc.getRenderViewEntity();
                         int thirdPersonBkp = settings.thirdPersonView;

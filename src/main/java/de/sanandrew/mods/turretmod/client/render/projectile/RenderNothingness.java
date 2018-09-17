@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.render.projectile;
 
+import de.sanandrew.mods.turretmod.api.client.render.IRender;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
@@ -17,17 +18,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderNothingness
-        extends Render<Entity>
+        implements IRender<Entity>
 {
-    public RenderNothingness(RenderManager manager) {
-        super(manager);
-    }
-
-    @Override
-    public void doRender(Entity entity, double x, double y, double z, float yaw, float partTicks) { }
-
-    @Override
-    protected ResourceLocation getEntityTexture(Entity entity) {
-        return null;
-    }
 }

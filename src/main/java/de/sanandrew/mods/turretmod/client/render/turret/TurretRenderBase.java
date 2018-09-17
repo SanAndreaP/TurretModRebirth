@@ -6,8 +6,9 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.render.turret;
 
+import de.sanandrew.mods.turretmod.api.client.turret.ITurretRender;
 import de.sanandrew.mods.turretmod.api.client.turret.ITurretRenderRegistry;
-import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretRender;
+import de.sanandrew.mods.turretmod.api.client.render.IRender;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;

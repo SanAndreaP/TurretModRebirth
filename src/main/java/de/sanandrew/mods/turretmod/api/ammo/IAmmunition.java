@@ -8,7 +8,6 @@
  */
 package de.sanandrew.mods.turretmod.api.ammo;
 
-import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IProjectile;

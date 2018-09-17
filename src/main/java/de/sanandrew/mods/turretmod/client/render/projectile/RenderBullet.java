@@ -8,13 +8,13 @@
  */
 package de.sanandrew.mods.turretmod.client.render.projectile;
 
-import de.sanandrew.mods.turretmod.entity.projectile.EntityTurretProjectile;
+import de.sanandrew.mods.turretmod.api.client.render.IRender;
+import de.sanandrew.mods.turretmod.api.client.render.IRenderInst;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -22,23 +22,18 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderBullet<T extends EntityTurretProjectile>
-        extends Render<T>
+        implements IRender<T>
 {
-    public RenderBullet(RenderManager manager) {
-        super(manager);
-    }
-
     @Override
-    public void doRender(T entity, double x, double y, double z, float yaw, float partTicks) {
-        this.bindEntityTexture(entity);
+    public void doRender(IRenderInst<T> render, T entity, double x, double y, double z, float entityYaw, float partialTicks) {
+        render.bindRenderEntityTexture(entity);
 
-        this.bindEntityTexture(entity);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.pushMatrix();
         GlStateManager.disableLighting();
         GlStateManager.translate((float)x, (float)y, (float)z);
-        GlStateManager.rotate(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partTicks - 90.0F, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partTicks, 0.0F, 0.0F, 1.0F);
+        GlStateManager.rotate(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTicks - 90.0F, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks, 0.0F, 0.0F, 1.0F);
         Tessellator tess = Tessellator.getInstance();
         BufferBuilder buf = tess.getBuffer();
         int textureIndex = 0;
@@ -56,9 +51,9 @@ public class RenderBullet<T extends EntityTurretProjectile>
         GlStateManager.scale(scale, scale, scale);
         GlStateManager.translate(-4.0F, 0.0F, 0.0F);
 
-        if( this.renderOutlines ) {
+        if( render.renderOutlines() ) {
             GlStateManager.enableColorMaterial();
-            GlStateManager.enableOutlineMode(this.getTeamColor(entity));
+            GlStateManager.enableOutlineMode(render.getRenderTeamColor(entity));
         }
 
         GlStateManager.glNormal3f(scale, 0.0F, 0.0F);
@@ -87,7 +82,7 @@ public class RenderBullet<T extends EntityTurretProjectile>
             tess.draw();
         }
 
-        if( this.renderOutlines ) {
+        if( render.renderOutlines() ) {
             GlStateManager.disableOutlineMode();
             GlStateManager.disableColorMaterial();
         }
@@ -98,7 +93,7 @@ public class RenderBullet<T extends EntityTurretProjectile>
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(T entity) {
+    public ResourceLocation getRenderTexture(T entity) {
         return Resources.PROJECTILE_BULLET.resource;
     }
 }

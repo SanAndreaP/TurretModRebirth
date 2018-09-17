@@ -43,7 +43,7 @@ public class TurretFlamethrower
 
     @Override
     public SoundEvent getShootSound(ITurretInst turretInst) {
-        return turretInst.getEntity().getRNG().nextBoolean() ? Sounds.SHOOT_FLAMETHROWER : null;
+        return turretInst.get().getRNG().nextBoolean() ? Sounds.SHOOT_FLAMETHROWER : null;
     }
 
     @Override

@@ -11,7 +11,7 @@ package de.sanandrew.mods.turretmod.util.ammo;
 import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.api.TurretAmmo;
 import de.sanandrew.mods.turretmod.api.TurretProjectile;
-import de.sanandrew.mods.turretmod.entity.projectile.EntityProjectileArrow;
+import de.sanandrew.mods.turretmod.registry.projectile.EntityProjectileArrow;
 import de.sanandrew.mods.turretmod.entity.turret.techi.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.item.ItemTurretAmmo;
 import net.minecraft.entity.projectile.EntityArrow;

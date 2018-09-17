@@ -108,7 +108,7 @@ public final class TurretRegistry
         ItemStack stack = this.getTurretItem(turretInst.getTurret());
         NBTTagCompound nbt = stack.getTagCompound();
         if( nbt != null ) {
-            EntityLiving turretL = turretInst.getEntity();
+            EntityLiving turretL = turretInst.get();
             nbt.setFloat("turretHealth", turretL.getHealth());
             if( turretL.hasCustomName() ) {
                 nbt.setString("turretName", turretL.getCustomNameTag());

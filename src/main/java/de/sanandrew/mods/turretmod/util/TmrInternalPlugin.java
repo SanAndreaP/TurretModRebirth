@@ -11,6 +11,7 @@ import de.sanandrew.mods.turretmod.api.ITmrPlugin;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
 import de.sanandrew.mods.turretmod.api.assembly.ITurretAssemblyRegistry;
+import de.sanandrew.mods.turretmod.api.client.render.IRenderRegistry;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelRegistry;
 import de.sanandrew.mods.turretmod.api.client.turret.ITurretRenderRegistry;
 import de.sanandrew.mods.turretmod.api.repairkit.IRepairKitRegistry;
@@ -21,6 +22,7 @@ import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
 import de.sanandrew.mods.turretmod.client.gui.lexicon.Categories;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuHelper;
 import de.sanandrew.mods.turretmod.client.gui.tcu.label.Labels;
+import de.sanandrew.mods.turretmod.client.render.projectile.RenderProjectile;
 import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
 import de.sanandrew.mods.turretmod.event.TargetingEventHandler;
 import de.sanandrew.mods.turretmod.registry.ammo.Ammunitions;
@@ -29,8 +31,11 @@ import de.sanandrew.mods.turretmod.registry.repairkit.RepairKits;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
+import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.UUID;
 
 @TmrPlugin
 public class TmrInternalPlugin
@@ -81,6 +86,11 @@ public class TmrInternalPlugin
     @SideOnly(Side.CLIENT)
     public void registerTurretRenderer(ITurretRenderRegistry<?> registry) {
         RenderTurret.initialize(registry);
+    }
+
+    @Override
+    public void registerProjectileRenderer(IRenderRegistry<UUID, Entity, ?, ?> registry) {
+        RenderProjectile.initialize(registry);
     }
 
     @Override

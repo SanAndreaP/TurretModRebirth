@@ -8,7 +8,6 @@
  */
 package de.sanandrew.mods.turretmod.util;
 
-import com.google.common.collect.ImmutableList;
 import de.sanandrew.mods.sanlib.lib.util.config.Category;
 import de.sanandrew.mods.sanlib.lib.util.config.ConfigUtils;
 import de.sanandrew.mods.sanlib.lib.util.config.Init;
@@ -24,9 +23,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber(modid = TmrConstants.ID)
 @SuppressWarnings("WeakerAccess")
@@ -61,16 +58,13 @@ public final class TmrConfig
 
         @Init
         public static void initialize() {
-            ConfigUtils.loadCategory(configTurrets, TurretCrossbow.Config.class, NAME);
+            ConfigUtils.loadCategory(configTurrets, TurretCrossbow.class, NAME);
         }
     }
 
-    @Value(category = Configuration.CATEGORY_GENERAL, comment = "A list of items and values for the electrolyte generator to be able to use.\nAn example of an entry would be: <minecraft:stick>, 2.0, 500, <minecraft:apple>, <minecraft:diamond>\nwhere <minecraft:stick> is the item used\n2.0 the efficiency as a floating point number\n500 the ticks it takes to decay\n<minecraft:apple> the \"trash\" result and\n<minecraft:diamond> the \"treasure\" result")
-    public static String[] electrolyteAdditRecipes = new String[0];
-
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void initConfiguration(FMLPreInitializationEvent event) {
         File modCfgDir = new File(event.getModConfigurationDirectory(), TmrConstants.ID);
-        //noinspection ResultOfMethodCallIgnored
         modCfgDir.mkdirs();
         configGeneral = ConfigUtils.loadConfigFile(new File(modCfgDir, "general.cfg"), VERSION, TmrConstants.NAME);
         configTurrets = ConfigUtils.loadConfigFile(new File(modCfgDir, "turrets.cfg"), VERSION, TmrConstants.NAME);

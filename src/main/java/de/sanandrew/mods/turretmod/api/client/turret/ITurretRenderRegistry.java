@@ -1,6 +1,6 @@
 package de.sanandrew.mods.turretmod.api.client.turret;
 
-import de.sanandrew.mods.turretmod.api.client.turretinfo.ITurretRender;
+import de.sanandrew.mods.turretmod.api.client.render.IRenderRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.client.model.ModelBase;
@@ -10,20 +10,14 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public interface ITurretRenderRegistry<E extends EntityLiving & ITurretInst>
+        extends IRenderRegistry<ITurret, E, ITurretRender<?, E>, RenderLivingBase<E>>
 {
-    <T extends ModelBase> boolean registerRender(@Nonnull ITurret turret, @Nonnull ITurretRender<T, E> render);
-
-    ITurretRender<?, E> removeRender(ITurret turret);
-
     void addUpgradeLayer(List<LayerRenderer<E>> layerList);
 
     <T extends ModelBase> void addGlowLayer(List<LayerRenderer<E>> layerList, ITurretRender<T, E> render);
-
-    RenderLivingBase<? extends EntityLiving> getRenderer();
 }

@@ -102,14 +102,14 @@ public final class ShieldTurret
         float maxVal = this.getMaxValue();
 
         if( this.turretInst.isActive() && this.turretInst.getTargetProcessor().hasAmmo() && this.value < maxVal ) {
-            double speedMulti = this.turretInst.getEntity().getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).getAttributeValue();
+            double speedMulti = this.turretInst.get().getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).getAttributeValue();
             if( this.value <= 0.0F ) {
                 int prevRecoveryPerc = MathHelper.floor(this.recovery * 100.0F);
                 this.recovery += RECOVERY_PER_TICK * (2.0F - speedMulti);
                 if( prevRecoveryPerc != MathHelper.floor(this.recovery * 100.0F) ) {
                     this.turretInst.getTargetProcessor().decrAmmo();
                 }
-            } else if( this.turretInst.getEntity().ticksExisted % Math.round(40 * speedMulti) == 0 ) {
+            } else if( this.turretInst.get().ticksExisted % Math.round(40 * speedMulti) == 0 ) {
                 this.value += 1.0F;
                 if( this.value > maxVal ) {
                     this.value = maxVal;
@@ -127,13 +127,13 @@ public final class ShieldTurret
             this.value = maxVal;
         }
 
-        if( this.turretInst.getEntity().world.isRemote ) {
-            if( this.isInRecovery() && !TmrUtils.INSTANCE.hasForcefield(this.turretInst.getEntity(), ShieldTurretRecovery.class) ) {
-                TmrUtils.INSTANCE.addForcefield(this.turretInst.getEntity(), new ShieldTurretRecovery(this));
+        if( this.turretInst.get().world.isRemote ) {
+            if( this.isInRecovery() && !TmrUtils.INSTANCE.hasForcefield(this.turretInst.get(), ShieldTurretRecovery.class) ) {
+                TmrUtils.INSTANCE.addForcefield(this.turretInst.get(), new ShieldTurretRecovery(this));
             }
 
-            if( this.isShieldActive() && !TmrUtils.INSTANCE.hasForcefield(this.turretInst.getEntity(), this.getClass()) ) {
-                TmrUtils.INSTANCE.addForcefield(turretInst.getEntity(), this);
+            if( this.isShieldActive() && !TmrUtils.INSTANCE.hasForcefield(this.turretInst.get(), this.getClass()) ) {
+                TmrUtils.INSTANCE.addForcefield(turretInst.get(), this);
             }
         }
     }
