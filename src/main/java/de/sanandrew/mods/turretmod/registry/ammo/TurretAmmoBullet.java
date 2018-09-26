@@ -11,8 +11,9 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
+import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.registry.projectile.Bullet;
+import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -20,7 +21,7 @@ import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public class TurretAmmoBullet
-        implements IAmmunition<Bullet>
+        implements IAmmunition
 {
     private final String name;
     private final UUID id;
@@ -50,11 +51,6 @@ public class TurretAmmoBullet
     }
 
     @Override
-    public Class<Bullet> getEntityClass() {
-        return Bullet.class;
-    }
-
-    @Override
     public float getDamageInfo() {
         return 2.75F;
     }
@@ -77,8 +73,8 @@ public class TurretAmmoBullet
     }
 
     @Override
-    public Bullet getEntity(ITurretInst turretInst) {
-        return new Bullet(turretInst.get().world, turretInst.get(), turretInst.getTargetProcessor().getTarget());
+    public ITurretProjectile getProjectile(ITurretInst turretInst) {
+        return Projectiles.BULLET;
     }
 
     @Override

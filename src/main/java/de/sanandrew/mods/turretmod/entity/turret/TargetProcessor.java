@@ -12,9 +12,11 @@ import com.google.common.collect.Maps;
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.sanlib.lib.util.ReflectionUtils;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
+import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.event.TargetingEvent;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
@@ -45,6 +47,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public final class TargetProcessor
@@ -298,9 +301,15 @@ public final class TargetProcessor
 
     @Override
     public Entity getProjectile() {
-        IAmmunition ammo = AmmunitionRegistry.INSTANCE.getType(this.ammoStack);
-        if( ammo != AmmunitionRegistry.NULL_TYPE ) {
-            return ammo.getEntity(this.turret);
+        if( this.hasAmmo() ) {
+            ITurretProjectile proj = AmmunitionRegistry.INSTANCE.getType(this.ammoStack).getProjectile(this.turret);
+            if( proj != null ) {
+                if( this.entityToAttack != null ) {
+                    return new EntityTurretProjectile(this.turret.get().world, proj, (EntityTurret) this.turret, this.entityToAttack);
+                } else {
+                    return new EntityTurretProjectile(this.turret.get().world, proj, (EntityTurret) this.turret, this.turret.get().getLookVec());
+                }
+            }
         }
 
         return null;
@@ -334,9 +343,8 @@ public final class TargetProcessor
             return event.getResult() != Event.Result.DENY;
         }
 
-        if( this.hasAmmo() ) {
-            Entity projectile = this.getProjectile();
-            assert projectile != null;
+        Entity projectile = this.getProjectile();
+        if( projectile != null ) {
             this.turret.get().world.spawnEntity(projectile);
             this.playSound(this.turret.getShootSound(), 1.8F);
             this.turret.setShooting();

@@ -9,6 +9,8 @@ public interface ITurretProjectileInst
      */
     float getLastCausedDamage();
 
+    Entity getLastDamagedEntity();
+
     /**
      * @return this instance as an {@link Entity}
      */

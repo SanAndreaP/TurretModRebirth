@@ -33,6 +33,7 @@ public final class TmrConfig
 
     private static Configuration configGeneral;
     private static Configuration configTurrets;
+    private static Configuration configProjectiles;
 
     @Category(Configuration.CATEGORY_CLIENT)
     public static final class Client
@@ -68,6 +69,7 @@ public final class TmrConfig
         modCfgDir.mkdirs();
         configGeneral = ConfigUtils.loadConfigFile(new File(modCfgDir, "general.cfg"), VERSION, TmrConstants.NAME);
         configTurrets = ConfigUtils.loadConfigFile(new File(modCfgDir, "turrets.cfg"), VERSION, TmrConstants.NAME);
+        configProjectiles = ConfigUtils.loadConfigFile(new File(modCfgDir, "projectiles.cfg"), VERSION, TmrConstants.NAME);
         syncConfig();
     }
 

@@ -11,8 +11,9 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
+import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.registry.projectile.CryoBall;
+import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -20,7 +21,7 @@ import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public abstract class TurretAmmoCryoCell
-        implements IAmmunition<CryoBall>
+        implements IAmmunition
 {private final String name;
     private final UUID id;
     private final int capacity;
@@ -46,11 +47,6 @@ public abstract class TurretAmmoCryoCell
     @Override
     public int getAmmoCapacity() {
         return this.capacity;
-    }
-
-    @Override
-    public Class<CryoBall> getEntityClass() {
-        return CryoBall.class;
     }
 
     @Override
@@ -88,8 +84,8 @@ public abstract class TurretAmmoCryoCell
         }
 
         @Override
-        public CryoBall getEntity(ITurretInst turretInst) {
-            return new CryoBall(turretInst.get().world, turretInst.get(), turretInst.getTargetProcessor().getTarget()).setLevelAndDuration(0, 300);
+        public ITurretProjectile getProjectile(ITurretInst turretInst) {
+            return Projectiles.CRYO_BALL_I;
         }
     }
 
@@ -106,8 +102,8 @@ public abstract class TurretAmmoCryoCell
         }
 
         @Override
-        public CryoBall getEntity(ITurretInst turretInst) {
-            return new CryoBall(turretInst.get().world, turretInst.get(), turretInst.getTargetProcessor().getTarget()).setLevelAndDuration(0, 300);
+        public ITurretProjectile getProjectile(ITurretInst turretInst) {
+            return Projectiles.CRYO_BALL_I;
         }
     }
 
@@ -124,8 +120,8 @@ public abstract class TurretAmmoCryoCell
         }
 
         @Override
-        public CryoBall getEntity(ITurretInst turretInst) {
-            return new CryoBall(turretInst.get().world, turretInst.get(), turretInst.getTargetProcessor().getTarget()).setLevelAndDuration(2, 200);
+        public ITurretProjectile getProjectile(ITurretInst turretInst) {
+            return Projectiles.CRYO_BALL_II;
         }
     }
 
@@ -142,8 +138,8 @@ public abstract class TurretAmmoCryoCell
         }
 
         @Override
-        public CryoBall getEntity(ITurretInst turretInst) {
-            return new CryoBall(turretInst.get().world, turretInst.get(), turretInst.getTargetProcessor().getTarget()).setLevelAndDuration(2, 200);
+        public ITurretProjectile getProjectile(ITurretInst turretInst) {
+            return Projectiles.CRYO_BALL_II;
         }
     }
 
@@ -160,8 +156,8 @@ public abstract class TurretAmmoCryoCell
         }
 
         @Override
-        public CryoBall getEntity(ITurretInst turretInst) {
-            return new CryoBall(turretInst.get().world, turretInst.get(), turretInst.getTargetProcessor().getTarget()).setLevelAndDuration(4, 100);
+        public ITurretProjectile getProjectile(ITurretInst turretInst) {
+            return Projectiles.CRYO_BALL_III;
         }
     }
 
@@ -178,8 +174,8 @@ public abstract class TurretAmmoCryoCell
         }
 
         @Override
-        public CryoBall getEntity(ITurretInst turretInst) {
-            return new CryoBall(turretInst.get().world, turretInst.get(), turretInst.getTargetProcessor().getTarget()).setLevelAndDuration(4, 100);
+        public ITurretProjectile getProjectile(ITurretInst turretInst) {
+            return Projectiles.CRYO_BALL_III;
         }
     }
 }

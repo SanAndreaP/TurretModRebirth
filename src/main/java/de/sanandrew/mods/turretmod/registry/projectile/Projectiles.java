@@ -6,6 +6,7 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.registry.projectile;
 
+import de.sanandrew.mods.turretmod.api.ammo.IProjectileRegistry;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 
 public class Projectiles
@@ -18,4 +19,19 @@ public class Projectiles
     public static final ITurretProjectile BULLET = new Bullet();
     public static final ITurretProjectile MG_PEBBLE = new MinigunPebble();
     public static final ITurretProjectile LASER = new Laser();
+    public static final ITurretProjectile FLAME_NORMAL = new Flame(Flame.ID1, false);
+    public static final ITurretProjectile FLAME_PURIFY = new Flame(Flame.ID2, true);
+
+    public static void initialize(IProjectileRegistry registry) {
+        registry.registerProjectile(CB_BOLT);
+        registry.registerProjectile(CRYO_BALL_I);
+        registry.registerProjectile(CRYO_BALL_II);
+        registry.registerProjectile(CRYO_BALL_III);
+        registry.registerProjectile(PEBBLE);
+        registry.registerProjectile(BULLET);
+        registry.registerProjectile(MG_PEBBLE);
+        registry.registerProjectile(LASER);
+        registry.registerProjectile(FLAME_NORMAL);
+        registry.registerProjectile(FLAME_PURIFY);
+    }
 }

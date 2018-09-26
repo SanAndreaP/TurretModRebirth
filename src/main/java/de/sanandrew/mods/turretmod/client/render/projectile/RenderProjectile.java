@@ -11,6 +11,7 @@ import de.sanandrew.mods.turretmod.api.client.render.IRender;
 import de.sanandrew.mods.turretmod.api.client.render.IRenderInst;
 import de.sanandrew.mods.turretmod.api.client.render.IRenderRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretProjectile;
+import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -26,9 +27,9 @@ import java.util.UUID;
 
 public class RenderProjectile
         extends Render<EntityTurretProjectile>
-        implements IRenderRegistry<UUID, Entity, IRender<Entity>, Render<Entity>>, IRenderInst<Entity>
+        implements IRenderRegistry<UUID, EntityTurretProjectile, IRender<EntityTurretProjectile>, Render<EntityTurretProjectile>>, IRenderInst<EntityTurretProjectile>
 {
-    private final Map<UUID, IRender<Entity>> renders = new HashMap<>();
+    private final Map<UUID, IRender<EntityTurretProjectile>> renders = new HashMap<>();
 
     public RenderProjectile(RenderManager renderManager) {
         super(renderManager);
@@ -38,8 +39,9 @@ public class RenderProjectile
 
     @Override
     public void doRender(EntityTurretProjectile entity, double x, double y, double z, float entityYaw, float partialTicks) {
-        if( this.renders.containsKey(entity.delegate.getId()) ) {
-            this.renders.get(entity.delegate.getId()).doRender(this, entity, x, y, z, entityYaw, partialTicks);
+        UUID delegateId = entity.delegate.getId();
+        if( this.renders.containsKey(delegateId) ) {
+            this.renders.get(delegateId).doRender(this, entity, x, y, z, entityYaw, partialTicks);
         }
     }
 
@@ -54,7 +56,7 @@ public class RenderProjectile
     }
 
     @Override
-    public boolean registerRender(@Nonnull UUID key, @Nonnull IRender<Entity> render) {
+    public boolean registerRender(@Nonnull UUID key, @Nonnull IRender<EntityTurretProjectile> render) {
         if( this.renders.containsKey(key) ) {
             TmrConstants.LOG.log(Level.WARN, String.format("Cannot register renderer for projectile ID %s since it already has one.", key));
             return false;
@@ -66,7 +68,7 @@ public class RenderProjectile
     }
 
     @Override
-    public IRender<Entity> removeRender(UUID key) {
+    public IRender<EntityTurretProjectile> removeRender(UUID key) {
         return this.renders.remove(key);
     }
 
@@ -76,8 +78,8 @@ public class RenderProjectile
     }
 
     @Override
-    public boolean bindRenderEntityTexture(Entity entity) {
-        return this.bindEntityTexture((EntityTurretProjectile) entity);
+    public boolean bindRenderEntityTexture(EntityTurretProjectile entity) {
+        return this.bindEntityTexture(entity);
     }
 
     @Override
@@ -91,18 +93,20 @@ public class RenderProjectile
     }
 
     @Override
-    public int getRenderTeamColor(Entity entity) {
-        return this.getTeamColor((EntityTurretProjectile) entity);
+    public int getRenderTeamColor(EntityTurretProjectile entity) {
+        return this.getTeamColor(entity);
     }
 
-    public static <T extends Entity> void initialize(IRenderRegistry<UUID, Entity, ?, ?> registry) {
-//        registry.registerRender(Turrets.CROSSBOW, new TurretRenderBase<>(registry, ModelTurretBase::new));
-//        registry.registerRender(Turrets.SHOTGUN, new TurretRenderBase<>(registry, ModelTurretShotgun::new));
-//        registry.registerRender(Turrets.CRYOLATOR, new TurretRenderBase<>(registry, ModelTurretBase::new));
-//        registry.registerRender(Turrets.REVOLVER, new TurretRenderBase<>(registry, ModelTurretRevolver::new));
-//        registry.registerRender(Turrets.MINIGUN, new TurretRenderBase<>(registry, ModelTurretMinigun::new));
-//        registry.registerRender(Turrets.LASER, new TurretRenderBase<>(registry, ModelTurretLaser::new));
-//        registry.registerRender(Turrets.FLAMETHROWER, new TurretRenderBase<>(registry, ModelTurretFlamethrower::new));
-//        registry.registerRender(Turrets.SHIELDGEN, new TurretRenderShieldGen<>(registry));
+    public static <T extends Entity> void initialize(IRenderRegistry<UUID, T, IRender<T>, Render<T>> registry) {
+        registry.registerRender(Projectiles.CB_BOLT.getId(), new RenderTurretArrow<>());
+        registry.registerRender(Projectiles.PEBBLE.getId(), new RenderPebble<>());
+        registry.registerRender(Projectiles.CRYO_BALL_I.getId(), new RenderNothingness<>());
+        registry.registerRender(Projectiles.CRYO_BALL_II.getId(), new RenderNothingness<>());
+        registry.registerRender(Projectiles.CRYO_BALL_III.getId(), new RenderNothingness<>());
+        registry.registerRender(Projectiles.BULLET.getId(), new RenderBullet<>());
+        registry.registerRender(Projectiles.MG_PEBBLE.getId(), new RenderPebble<>());
+        registry.registerRender(Projectiles.LASER.getId(), new RenderNothingness<>());
+        registry.registerRender(Projectiles.FLAME_NORMAL.getId(), new RenderFlame<>(false));
+        registry.registerRender(Projectiles.FLAME_PURIFY.getId(), new RenderFlame<>(true));
     }
 }

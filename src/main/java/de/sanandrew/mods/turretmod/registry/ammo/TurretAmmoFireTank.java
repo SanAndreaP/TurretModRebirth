@@ -11,8 +11,9 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
+import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.registry.projectile.EntityProjectileFlame;
+import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -21,7 +22,7 @@ import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public class TurretAmmoFireTank
-        implements IAmmunition<EntityProjectileFlame>
+        implements IAmmunition
 {
     private final String name;
     private final UUID id;
@@ -51,11 +52,6 @@ public class TurretAmmoFireTank
     }
 
     @Override
-    public Class<EntityProjectileFlame> getEntityClass() {
-        return EntityProjectileFlame.class;
-    }
-
-    @Override
     public float getDamageInfo() {
         return 0.5F;
     }
@@ -78,10 +74,12 @@ public class TurretAmmoFireTank
     }
 
     @Override
-    public EntityProjectileFlame getEntity(ITurretInst turretInst) {
-        EntityProjectileFlame flame = new EntityProjectileFlame(turretInst.get().world, turretInst.get(), turretInst.getTargetProcessor().getTarget());
-        flame.purifying = turretInst.getUpgradeProcessor().hasUpgrade(Upgrades.FUEL_PURIFY);
-        return flame;
+    public ITurretProjectile getProjectile(ITurretInst turretInst) {
+        if( turretInst.getUpgradeProcessor().hasUpgrade(Upgrades.FUEL_PURIFY) ) {
+            return Projectiles.FLAME_PURIFY;
+        } else {
+            return Projectiles.FLAME_NORMAL;
+        }
     }
 
     @Override

@@ -15,12 +15,13 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderTurretArrow<T extends EntityTurretProjectile>
+public class RenderTurretArrow<T extends Entity>
         implements IRender<T>
 {
     private static final ResourceLocation ARROW_TEXTURES = new ResourceLocation("textures/entity/arrow.png");

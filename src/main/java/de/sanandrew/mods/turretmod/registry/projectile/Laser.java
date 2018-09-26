@@ -13,7 +13,6 @@ import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectileInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
@@ -26,7 +25,7 @@ import java.util.UUID;
 public class Laser
         implements ITurretProjectile
 {
-    private static final UUID ID = UUID.fromString("CFED3E55-284B-4697-9FB0-682BFB736101");
+    private static final UUID ID = UUID.fromString("88C89B58-0DE9-4E72-BEAD-AD52DEABBD46");
 
     @Nonnull
     @Override
@@ -88,16 +87,12 @@ public class Laser
 
     @Override
     public boolean onDamageEntityPre(@Nullable ITurretInst turret, @Nonnull ITurretProjectileInst projectile, Entity target, DamageSource damageSrc, MutableFloat damage) {
-        if( target instanceof EntityLivingBase ) {
-            EntityLivingBase elb = ((EntityLivingBase) target);
+        boolean flammable = !target.isImmuneToFire();
 
-            if( turret == null || !turret.getUpgradeProcessor().hasUpgrade(Upgrades.ENDER_MEDIUM) ) {
-                return !elb.isImmuneToFire();
-            } else if( !elb.isImmuneToFire() ) {
-                damage.setValue(damage.floatValue() * 1.25F);
-            }
-
-            elb.hurtResistantTime = 0;
+        if( turret == null || !turret.getUpgradeProcessor().hasUpgrade(Upgrades.ENDER_MEDIUM) ) {
+            return flammable;
+        } else if( flammable ) {
+            damage.setValue(damage.floatValue() * 1.25F);
         }
 
         return true;
@@ -105,10 +100,6 @@ public class Laser
 
     @Override
     public void onDamageEntityPost(@Nullable ITurretInst turret, @Nonnull ITurretProjectileInst projectile, Entity target, DamageSource damageSrc) {
-        if( target instanceof EntityLivingBase ) {
-            ((EntityLivingBase) target).hurtResistantTime = ((EntityLivingBase) target).maxHurtResistantTime;
-        }
-
         target.setFire(2);
     }
 }

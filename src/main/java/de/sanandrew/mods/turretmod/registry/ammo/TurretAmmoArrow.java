@@ -11,8 +11,9 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
+import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.registry.projectile.CrossbowBolt;
+import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -20,7 +21,7 @@ import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public class TurretAmmoArrow
-        implements IAmmunition<CrossbowBolt>
+        implements IAmmunition
 {
     private final String name;
     private final UUID id;
@@ -56,11 +57,6 @@ public class TurretAmmoArrow
     }
 
     @Override
-    public Class<CrossbowBolt> getEntityClass() {
-        return CrossbowBolt.class;
-    }
-
-    @Override
     public float getDamageInfo() {
         return 3.0F;
     }
@@ -77,8 +73,8 @@ public class TurretAmmoArrow
     }
 
     @Override
-    public CrossbowBolt getEntity(ITurretInst turretInst) {
-        return new CrossbowBolt(turretInst.get().world, turretInst.get(), turretInst.getTargetProcessor().getTarget());
+    public ITurretProjectile getProjectile(ITurretInst turretInst) {
+        return Projectiles.CB_BOLT;
     }
 
     @Override

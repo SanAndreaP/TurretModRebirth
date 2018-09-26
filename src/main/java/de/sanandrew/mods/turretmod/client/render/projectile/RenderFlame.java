@@ -10,23 +10,30 @@ package de.sanandrew.mods.turretmod.client.render.projectile;
 
 import de.sanandrew.mods.turretmod.api.client.render.IRender;
 import de.sanandrew.mods.turretmod.api.client.render.IRenderInst;
-import de.sanandrew.mods.turretmod.registry.projectile.EntityProjectileFlame;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretProjectile;
+import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderFlame<T extends EntityProjectileFlame>
+public class RenderFlame<T extends Entity>
         implements IRender<T>
 {
+    private final boolean purify;
+
+    public RenderFlame(boolean purify) {
+        this.purify = purify;
+    }
+
     @Override
     public void doRender(IRenderInst<T> render, T entity, double x, double y, double z, float entityYaw, float partialTicks) {
         RenderManager renderManager = render.getRender().getRenderManager();
@@ -66,6 +73,6 @@ public class RenderFlame<T extends EntityProjectileFlame>
 
     @Override
     public ResourceLocation getRenderTexture(T entity) {
-        return entity.purifying ? Resources.PROJECTILE_FLAME_BLUE.resource : Resources.PROJECTILE_FLAME_RED.resource;
+        return this.purify ? Resources.PROJECTILE_FLAME_BLUE.resource : Resources.PROJECTILE_FLAME_RED.resource;
     }
 }

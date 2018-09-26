@@ -10,7 +10,9 @@ import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconInst;
 import de.sanandrew.mods.turretmod.api.ITmrPlugin;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectileRegistry;
 import de.sanandrew.mods.turretmod.api.assembly.ITurretAssemblyRegistry;
+import de.sanandrew.mods.turretmod.api.client.render.IRender;
 import de.sanandrew.mods.turretmod.api.client.render.IRenderRegistry;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelRegistry;
 import de.sanandrew.mods.turretmod.api.client.turret.ITurretRenderRegistry;
@@ -27,10 +29,12 @@ import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
 import de.sanandrew.mods.turretmod.event.TargetingEventHandler;
 import de.sanandrew.mods.turretmod.registry.ammo.Ammunitions;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
+import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKits;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
+import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -77,6 +81,11 @@ public class TmrInternalPlugin
     }
 
     @Override
+    public void registerProjectiles(IProjectileRegistry registry) {
+        Projectiles.initialize(registry);
+    }
+
+    @Override
     @SideOnly(Side.CLIENT)
     public void registerLexicon(ILexiconInst registry) {
         Categories.initialize(registry);
@@ -89,7 +98,7 @@ public class TmrInternalPlugin
     }
 
     @Override
-    public void registerProjectileRenderer(IRenderRegistry<UUID, Entity, ?, ?> registry) {
+    public <T extends Entity> void registerProjectileRenderer(IRenderRegistry<UUID, T, IRender<T>, Render<T>> registry) {
         RenderProjectile.initialize(registry);
     }
 

@@ -45,6 +45,8 @@ public class EntityTurretProjectile
     public ITurretProjectile delegate;
     private UUID shooterUUID;
     private EntityTurret shooterCache;
+    private Entity lastDamaged;
+    private int lastDamagedTimer;
 
     private double maxDist;
     private float lastDamage;
@@ -83,15 +85,15 @@ public class EntityTurretProjectile
         if( target != null ) {
             targetVec = new Vec3d(target.posX - shooter.posX, (target.getEntityBoundingBox().minY + target.height / 1.4D) - y, target.posZ - shooter.posZ);
         } else if( shootingVec != null ) {
-            targetVec = shootingVec.normalize();
+            targetVec = shootingVec;
         } else {
             targetVec = new Vec3d(0.0D, -1.0D, 0.0D);
         }
 
-        this.setHeadingFromVec(targetVec);
+        this.setHeadingFromVec(targetVec.normalize());
         this.motionY += this.delegate.getArc() * Math.sqrt(targetVec.x * targetVec.x + targetVec.z * targetVec.z) * 0.05;
 
-        this.lastDamage = Float.MAX_VALUE;
+        this.lastDamage = -1.0F;
 
         this.delegate.onCreate(this.shooterCache, this);
     }
@@ -124,6 +126,11 @@ public class EntityTurretProjectile
         if( (this.shooterCache != null && this.getDistance(this.shooterCache) > this.maxDist) || this.delegate == null ) {
             this.setDead();
             return;
+        }
+
+        if( this.lastDamaged != null && ++this.lastDamagedTimer >= 20 ) {
+            this.lastDamaged = null;
+            this.lastDamagedTimer = 0;
         }
 
         this.doCollisionCheck();
@@ -239,8 +246,14 @@ public class EntityTurretProjectile
                 double preHitMotionX = hitObj.entityHit.motionX;
                 double preHitMotionY = hitObj.entityHit.motionY;
                 double preHitMotionZ = hitObj.entityHit.motionZ;
+
+                if( hitObj.entityHit instanceof EntityLivingBase ) {
+                    ((EntityLivingBase) hitObj.entityHit).hurtResistantTime = 0;
+                }
                 if( this.delegate.onDamageEntityPre(this.shooterCache, this, hitObj.entityHit, damagesource, dmg) && hitObj.entityHit.attackEntityFrom(damagesource, dmg.floatValue()) ) {
                     this.lastDamage = dmg.floatValue();
+                    this.lastDamaged = hitObj.entityHit;
+                    this.lastDamagedTimer = 0;
 
                     hitObj.entityHit.velocityChanged = preHitVelocityChanged;
                     hitObj.entityHit.isAirBorne = preHitAirBorne;
@@ -377,6 +390,11 @@ public class EntityTurretProjectile
     @Override
     public float getLastCausedDamage() {
         return this.lastDamage;
+    }
+
+    @Override
+    public Entity getLastDamagedEntity() {
+        return this.lastDamaged;
     }
 
     @Override

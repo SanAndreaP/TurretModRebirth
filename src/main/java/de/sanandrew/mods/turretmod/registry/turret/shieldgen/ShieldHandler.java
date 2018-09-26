@@ -54,7 +54,6 @@ public class ShieldHandler
         ShieldTurret shield = turretInst.getRAM(null);
         EntityLiving turretL = turretInst.get();
         boolean hasPushed = false;
-        boolean hasTarget = false;
         List<Entity> recognizedEntities = new ArrayList<>();
 
         if( processor.canShoot() ) {
@@ -73,8 +72,6 @@ public class ShieldHandler
 
                         shield.damage(1.0F);
                         turretInst.updateState();
-
-                        hasTarget = true;
 
                         if( shield.getValue() <= 0.0F ) {
                             break;
@@ -104,8 +101,6 @@ public class ShieldHandler
                             shield.damage(1.0F);
                             turretInst.updateState();
 
-                            hasTarget = true;
-
                             if( shield.getValue() <= 0.0F ) {
                                 break;
                             }
@@ -117,8 +112,7 @@ public class ShieldHandler
             }
         }
 
-        if( hasTarget ) {
-            //noinspection ConstantConditions
+        if( recognizedEntities.size() > 0 ) {
             if( hasPushed ) {
                 processor.setShot(true);
                 processor.getTurret().updateState();
@@ -163,7 +157,7 @@ public class ShieldHandler
         }
     }
 
-    public static boolean knockBackEntity(ITurretInst turretInst, Entity entity, float strength, double xRatio, double yRatio, double zRatio) {
+    private static boolean knockBackEntity(ITurretInst turretInst, Entity entity, float strength, double xRatio, double yRatio, double zRatio) {
         boolean hasBeenPushed = ALREADY_PUSHED.containsKey(turretInst) && ALREADY_PUSHED.get(turretInst).getOrDefault(entity, -1) > turretInst.get().ticksExisted;
         if( hasBeenPushed ) {
             return false;

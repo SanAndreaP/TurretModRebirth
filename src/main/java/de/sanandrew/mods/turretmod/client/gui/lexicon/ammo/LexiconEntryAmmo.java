@@ -23,7 +23,7 @@ public final class LexiconEntryAmmo
 {
     private final String id;
     private final ItemStack icon;
-    final IAmmunition<?>[] ammoTypes;
+    final IAmmunition[] ammoTypes;
 
     private final String turretName;
     private final String ammoItemNames;

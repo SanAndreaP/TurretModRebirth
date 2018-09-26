@@ -4,6 +4,7 @@ import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconInst;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectileRegistry;
 import de.sanandrew.mods.turretmod.api.assembly.ITurretAssemblyRegistry;
+import de.sanandrew.mods.turretmod.api.client.render.IRender;
 import de.sanandrew.mods.turretmod.api.client.render.IRenderRegistry;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelRegistry;
 import de.sanandrew.mods.turretmod.api.client.turret.ITurretRenderRegistry;
@@ -46,7 +47,7 @@ public interface ITmrPlugin
     default void registerTurretRenderer(ITurretRenderRegistry<?> registry) { }
 
     @SideOnly(Side.CLIENT)
-    default void registerProjectileRenderer(IRenderRegistry<UUID, Entity, ?, ?> registry) { }
+    default <T extends Entity> void registerProjectileRenderer(IRenderRegistry<UUID, T, IRender<T>, Render<T>> registry) { }
 
     @SideOnly(Side.CLIENT)
     default void registerTcuLabelElements(ILabelRegistry registry) { }

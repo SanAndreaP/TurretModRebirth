@@ -58,12 +58,18 @@ public class TargetingEventHandler
     @SubscribeEvent
     public void onShooting(TargetingEvent.Shooting event) {
         if( event.processor.getTurret() instanceof TurretShotgun ) {
-            if( event.processor.hasAmmo() ) {
-                for( int i = 0; i < 6; i++ ) {
-                    Entity projectile = event.processor.getProjectile();
-                    assert projectile != null;
+            boolean hadProjectile = false;
+            for( int i = 0; i < 6; i++ ) {
+                Entity projectile = event.processor.getProjectile();
+                if( projectile != null ) {
                     event.processor.getTurret().get().world.spawnEntity(projectile);
+                    hadProjectile = true;
+                } else {
+                    break;
                 }
+            }
+
+            if( hadProjectile ) {
                 event.processor.playSound(event.processor.getTurret().getShootSound(), 1.8F);
                 event.processor.getTurret().setShooting();
                 event.processor.decrAmmo();

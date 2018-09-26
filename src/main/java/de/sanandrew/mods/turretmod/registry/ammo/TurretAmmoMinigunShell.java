@@ -11,8 +11,9 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
+import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.registry.projectile.MinigunPebble;
+import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -20,7 +21,7 @@ import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public class TurretAmmoMinigunShell
-        implements IAmmunition<MinigunPebble>
+        implements IAmmunition
 {
     private final String name;
     private final UUID id;
@@ -50,11 +51,6 @@ public class TurretAmmoMinigunShell
     }
 
     @Override
-    public Class<MinigunPebble> getEntityClass() {
-        return MinigunPebble.class;
-    }
-
-    @Override
     public float getDamageInfo() {
         return 0.3F;
     }
@@ -77,8 +73,8 @@ public class TurretAmmoMinigunShell
     }
 
     @Override
-    public MinigunPebble getEntity(ITurretInst turretInst) {
-        return new MinigunPebble(turretInst.get().world, turretInst.get(), turretInst.getTargetProcessor().getTarget());
+    public ITurretProjectile getProjectile(ITurretInst turretInst) {
+        return Projectiles.MG_PEBBLE;
     }
 
     @Override

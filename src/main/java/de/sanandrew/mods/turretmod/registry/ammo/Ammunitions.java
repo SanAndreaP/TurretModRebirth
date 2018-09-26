@@ -41,26 +41,26 @@ public final class Ammunitions
     public static void initialize(IAmmunitionRegistry registry) {
         AmmunitionRegistry castRegistry = (AmmunitionRegistry) registry;
 
-        castRegistry.registerAmmoType(new TurretAmmoArrow(false), 1);
-        castRegistry.registerAmmoType(new TurretAmmoArrow(true), 2);
-        castRegistry.registerAmmoType(new TurretAmmoShotgunShell(false), 3);
-        castRegistry.registerAmmoType(new TurretAmmoShotgunShell(true), 4);
-        castRegistry.registerAmmoType(new TurretAmmoBullet(false), 5);
-        castRegistry.registerAmmoType(new TurretAmmoBullet(true), 6);
-        castRegistry.registerAmmoType(new TurretAmmoCryoCell.SingleMK1(), 7);
-        castRegistry.registerAmmoType(new TurretAmmoCryoCell.MultiMK1(), 8);
-        castRegistry.registerAmmoType(new TurretAmmoCryoCell.SingleMK2(), 9);
-        castRegistry.registerAmmoType(new TurretAmmoCryoCell.MultiMK2(), 10);
-        castRegistry.registerAmmoType(new TurretAmmoCryoCell.SingleMK3(), 11);
-        castRegistry.registerAmmoType(new TurretAmmoCryoCell.MultiMK3(), 12);
-        castRegistry.registerAmmoType(new TurretAmmoMinigunShell(false), 13);
-        castRegistry.registerAmmoType(new TurretAmmoMinigunShell(true), 14);
+        castRegistry.registerAmmoType(new TurretAmmoArrow(false));
+        castRegistry.registerAmmoType(new TurretAmmoArrow(true));
+        castRegistry.registerAmmoType(new TurretAmmoShotgunShell(false));
+        castRegistry.registerAmmoType(new TurretAmmoShotgunShell(true));
+        castRegistry.registerAmmoType(new TurretAmmoBullet(false));
+        castRegistry.registerAmmoType(new TurretAmmoBullet(true));
+        castRegistry.registerAmmoType(new TurretAmmoCryoCell.SingleMK1());
+        castRegistry.registerAmmoType(new TurretAmmoCryoCell.MultiMK1());
+        castRegistry.registerAmmoType(new TurretAmmoCryoCell.SingleMK2());
+        castRegistry.registerAmmoType(new TurretAmmoCryoCell.MultiMK2());
+        castRegistry.registerAmmoType(new TurretAmmoCryoCell.SingleMK3());
+        castRegistry.registerAmmoType(new TurretAmmoCryoCell.MultiMK3());
+        castRegistry.registerAmmoType(new TurretAmmoMinigunShell(false));
+        castRegistry.registerAmmoType(new TurretAmmoMinigunShell(true));
         castRegistry.registerAmmoType(new TurretAmmoElectrolyteCell(false));
         castRegistry.registerAmmoType(new TurretAmmoElectrolyteCell(true));
-        castRegistry.registerAmmoType(new TurretAmmoFluxCell(false), 15);
-        castRegistry.registerAmmoType(new TurretAmmoFluxCell(true), 16);
-        castRegistry.registerAmmoType(new TurretAmmoFireTank(false), 17);
-        castRegistry.registerAmmoType(new TurretAmmoFireTank(true), 18);
+        castRegistry.registerAmmoType(new TurretAmmoFluxCell(false));
+        castRegistry.registerAmmoType(new TurretAmmoFluxCell(true));
+        castRegistry.registerAmmoType(new TurretAmmoFireTank(false));
+        castRegistry.registerAmmoType(new TurretAmmoFireTank(true));
     }
 
     enum Groups

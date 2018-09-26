@@ -11,8 +11,9 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
+import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.registry.projectile.Laser;
+import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -20,7 +21,7 @@ import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public class TurretAmmoFluxCell
-        implements IAmmunition<Laser>
+        implements IAmmunition
 {
     private final String name;
     private final UUID id;
@@ -50,11 +51,6 @@ public class TurretAmmoFluxCell
     }
 
     @Override
-    public Class<Laser> getEntityClass() {
-        return Laser.class;
-    }
-
-    @Override
     public float getDamageInfo() {
         return 2.5F;
     }
@@ -77,8 +73,8 @@ public class TurretAmmoFluxCell
     }
 
     @Override
-    public Laser getEntity(ITurretInst turretInst) {
-        return new Laser(turretInst.get().world, turretInst.get(), turretInst.getTargetProcessor().getTarget());
+    public ITurretProjectile getProjectile(ITurretInst turretInst) {
+        return Projectiles.LASER;
     }
 
     @Override

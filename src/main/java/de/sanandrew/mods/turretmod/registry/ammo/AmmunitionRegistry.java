@@ -17,15 +17,13 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
+import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
-import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
 import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
@@ -48,15 +46,14 @@ public final class AmmunitionRegistry
     private final Map<UUID, List<IAmmunition>> ammoTypesFromGroupID;
     private final List<IAmmunition> ammoTypes;
 
-    public static final IAmmunition NULL_TYPE = new IAmmunition<EntityArrow>() {
+    public static final IAmmunition NULL_TYPE = new IAmmunition() {
         @Override public String getName() { return ""; }
         @Override public UUID getId() { return UuidUtils.EMPTY_UUID; }
         @Override public UUID getTypeId() { return UuidUtils.EMPTY_UUID; }
         @Nonnull @Override public IAmmunitionGroup getGroup() { return Ammunitions.Groups.UNKNOWN; }
         @Override public float getDamageInfo() { return 0; }
         @Override public int getAmmoCapacity() { return 0; }
-        @Override public Class<EntityArrow> getEntityClass() { return null; }
-        @Override public EntityArrow getEntity(ITurretInst turretInst) { return null; }
+        @Override public ITurretProjectile getProjectile(ITurretInst turretInst) { return null; }
         @Override public ResourceLocation getModel() { return null; }
         @Override @Nonnull public ItemStack getStoringAmmoItem() { return ItemStackUtils.getEmpty(); }
     };
@@ -119,32 +116,7 @@ public final class AmmunitionRegistry
     }
 
     @Override
-    public boolean registerAmmoType(IAmmunition<?> type) {
-        return registerAmmoType(type, null);
-    }
-
-    @Override
-    @Nonnull
-    public ItemStack getAmmoItem(UUID id) {
-        return this.getAmmoItem(this.ammoTypeFromID.get(id));
-    }
-
-    @Override
-    @Nonnull
-    public ItemStack getAmmoItem(IAmmunition type) {
-        if( type == null ) {
-            throw new IllegalArgumentException("Cannot get turret_ammo item with NULL type!");
-        }
-
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setString("ammoType", type.getId().toString());
-        ItemStack stack = new ItemStack(ItemRegistry.TURRET_AMMO, 1);
-        stack.setTagCompound(nbt);
-
-        return stack;
-    }
-
-    boolean registerAmmoType(IAmmunition<?> type, Integer registerEntityId) {
+    public boolean registerAmmoType(IAmmunition type) {
         if( type == null ) {
             TmrConstants.LOG.log(Level.ERROR, "Cannot register NULL as Ammo-Type!", new InvalidParameterException());
             return false;
@@ -178,14 +150,30 @@ public final class AmmunitionRegistry
         }
         this.ammoTypes.add(type);
 
-        if( registerEntityId != null ) {
-            String name = "turret_proj_".concat(type.getName());
-            EntityRegistry.registerModEntity(new ResourceLocation(TmrConstants.ID, name), type.getEntityClass(), TmrConstants.ID + '.' + name, registerEntityId, TurretModRebirth.instance, 128, 1, true);
-        }
-
         this.ammoTypesFromGroupID.computeIfAbsent(group.getId(), k -> new ArrayList<>()).add(type);
 
         return true;
+    }
+
+    @Override
+    @Nonnull
+    public ItemStack getAmmoItem(UUID id) {
+        return this.getAmmoItem(this.ammoTypeFromID.get(id));
+    }
+
+    @Override
+    @Nonnull
+    public ItemStack getAmmoItem(IAmmunition type) {
+        if( type == null ) {
+            throw new IllegalArgumentException("Cannot get turret_ammo item with NULL type!");
+        }
+
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setString("ammoType", type.getId().toString());
+        ItemStack stack = new ItemStack(ItemRegistry.TURRET_AMMO, 1);
+        stack.setTagCompound(nbt);
+
+        return stack;
     }
 
     @Override

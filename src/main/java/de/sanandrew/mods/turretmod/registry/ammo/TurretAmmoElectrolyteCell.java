@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
+import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
@@ -52,11 +53,6 @@ public class TurretAmmoElectrolyteCell
     }
 
     @Override
-    public Class getEntityClass() {
-        return null;
-    }
-
-    @Override
     public float getDamageInfo() {
         return 0.0F;
     }
@@ -79,7 +75,7 @@ public class TurretAmmoElectrolyteCell
     }
 
     @Override
-    public Entity getEntity(ITurretInst turretInst) {
+    public ITurretProjectile getProjectile(ITurretInst turretInst) {
         return null;
     }
 

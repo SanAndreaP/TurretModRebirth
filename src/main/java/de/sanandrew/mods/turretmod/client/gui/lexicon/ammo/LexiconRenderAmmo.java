@@ -40,7 +40,7 @@ public class LexiconRenderAmmo
 
     private RecipeEntry recipe;
     private int drawHeight;
-    private IAmmunition<?> currAmmo;
+    private IAmmunition currAmmo;
     private ItemStack currAmmoItem;
     private boolean ammoChanged = false;
     private int subtypeRowCount;

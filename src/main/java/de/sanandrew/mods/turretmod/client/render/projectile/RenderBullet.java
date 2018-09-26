@@ -10,18 +10,18 @@ package de.sanandrew.mods.turretmod.client.render.projectile;
 
 import de.sanandrew.mods.turretmod.api.client.render.IRender;
 import de.sanandrew.mods.turretmod.api.client.render.IRenderInst;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderBullet<T extends EntityTurretProjectile>
+public class RenderBullet<T extends Entity>
         implements IRender<T>
 {
     @Override

@@ -9,15 +9,13 @@
 package de.sanandrew.mods.turretmod.api.ammo;
 
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
 
-public interface IAmmunition<T extends Entity & IProjectile>
+public interface IAmmunition
 {
     /**
      * Returns the unlocalized name for this ammo type item. The name can (and should) differ, even
@@ -62,9 +60,7 @@ public interface IAmmunition<T extends Entity & IProjectile>
 
     int getAmmoCapacity();
 
-    Class<T> getEntityClass();
-
-    T getEntity(ITurretInst turretInst);
+    ITurretProjectile getProjectile(ITurretInst turretInst);
 
     ResourceLocation getModel();
 
