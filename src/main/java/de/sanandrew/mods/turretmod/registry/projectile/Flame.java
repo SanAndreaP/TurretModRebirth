@@ -113,7 +113,7 @@ public class Flame
             return true;
         } else {
             hitObj.entityHit.setFire(5);
-            return between(0.0F, projectile.getLastCausedDamage() - DMG_REDUCTION, -1.0F);
+            return MiscUtils.between(0.0F, projectile.getLastCausedDamage() - DMG_REDUCTION, -1.0F);
         }
     }
 
@@ -133,9 +133,5 @@ public class Flame
         } else {
             return true;
         }
-    }
-
-    private static boolean between(float lo, float val, float hi) {
-        return hi < lo ? hi <= val && val <= lo : lo <= val && val <= hi;
     }
 }

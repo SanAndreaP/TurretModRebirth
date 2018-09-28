@@ -10,8 +10,6 @@ package de.sanandrew.mods.turretmod.client.render.projectile;
 
 import de.sanandrew.mods.turretmod.api.client.render.IRender;
 import de.sanandrew.mods.turretmod.api.client.render.IRenderInst;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretProjectile;
-import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -30,7 +28,7 @@ public class RenderFlame<T extends Entity>
 {
     private final boolean purify;
 
-    public RenderFlame(boolean purify) {
+    RenderFlame(boolean purify) {
         this.purify = purify;
     }
 

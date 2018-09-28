@@ -55,6 +55,8 @@ public class EntityTurretProjectile
         super(world);
         this.setSize(0.5F, 0.5F);
         this.maxDist = Integer.MAX_VALUE;
+
+        this.lastDamage = -1.0F;
     }
 
     public EntityTurretProjectile(World world, ITurretProjectile delegate, EntityTurret shooter, Entity target) {
@@ -92,8 +94,6 @@ public class EntityTurretProjectile
 
         this.setHeadingFromVec(targetVec.normalize());
         this.motionY += this.delegate.getArc() * Math.sqrt(targetVec.x * targetVec.x + targetVec.z * targetVec.z) * 0.05;
-
-        this.lastDamage = -1.0F;
 
         this.delegate.onCreate(this.shooterCache, this);
     }
