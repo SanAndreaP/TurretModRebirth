@@ -9,7 +9,7 @@ package de.sanandrew.mods.turretmod.client.render.projectile;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
-public class RenderTurretArrow<T extends Entity>
+public class RenderCrossbowBolt<T extends Entity>
         extends RenderCrossTextureProjectile<T>
 {
     private static final ResourceLocation ARROW_TEXTURES = new ResourceLocation("textures/entity/arrow.png");

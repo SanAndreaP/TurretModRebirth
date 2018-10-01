@@ -8,6 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.registry.turret;
 
+import de.sanandrew.mods.sanlib.lib.util.config.Category;
+import de.sanandrew.mods.sanlib.lib.util.config.Range;
+import de.sanandrew.mods.sanlib.lib.util.config.Value;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
@@ -19,12 +22,28 @@ import net.minecraft.util.math.AxisAlignedBB;
 
 import java.util.UUID;
 
+@Category("flamethrower")
+@SuppressWarnings("WeakerAccess")
 public class TurretFlamethrower
         implements ITurret
 {
     public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "turrets/turret_flamethrower");
     private static final UUID ID = UUID.fromString("0C61E401-A5F9-44E9-8B29-3A3DC7762C73");
-    private static final AxisAlignedBB RANGE_BB = new AxisAlignedBB(-8.0D, -2.0D, -8.0D, 8.0D, 4.0D, 8.0D);
+
+    private static AxisAlignedBB rangeBB;
+
+    @Value(comment = "Maximum health this turret has.", range = @Range(minD = 0.1D, maxD = 1024.0D), reqWorldRestart = true)
+    public static float health = 40.0F;
+    @Value(comment = "Capacity of ammo rounds this turret can hold.", range = @Range(minI = 1, maxI = Short.MAX_VALUE), reqWorldRestart = true)
+    public static int ammoCapacity = 4096;
+    @Value(comment = "Maximum tick time between shots. 20 ticks = 1 second.", range = @Range(minI = 1), reqWorldRestart = true)
+    public static int reloadTicks = 1;
+    @Value(comment = "Horizontal length of half the edge of the targeting box. The total edge length is [value * 2], with the turret centered in it.", range = @Range(minD = 1.0D), reqMcRestart = true)
+    public static double rangeH = 8.0D;
+    @Value(comment = "Vertical length of the edge of the targeting box, from the turret upwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
+    public static double rangeU = 4.0D;
+    @Value(comment = "Vertical length of the edge of the targeting box, from the turret downwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
+    public static double rangeD = 2.0D;
 
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {
@@ -38,7 +57,10 @@ public class TurretFlamethrower
 
     @Override
     public AxisAlignedBB getRangeBB(ITurretInst turretInst) {
-        return RANGE_BB;
+        if( rangeBB == null ) {
+            rangeBB = new AxisAlignedBB(-rangeH, -rangeD, -rangeH, rangeH, rangeU, rangeH);
+        }
+        return rangeBB;
     }
 
     @Override
@@ -68,16 +90,16 @@ public class TurretFlamethrower
 
     @Override
     public float getHealth() {
-        return 40.0F;
+        return health;
     }
 
     @Override
     public int getAmmoCapacity() {
-        return 4096;
+        return ammoCapacity;
     }
 
     @Override
     public int getReloadTicks() {
-        return 1;
+        return reloadTicks;
     }
 }

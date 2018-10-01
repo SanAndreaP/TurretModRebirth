@@ -14,6 +14,7 @@ import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
+import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -74,7 +75,7 @@ public class TurretAmmoFluxCell
 
     @Override
     public ITurretProjectile getProjectile(ITurretInst turretInst) {
-        return Projectiles.LASER;
+        return turretInst.getUpgradeProcessor().hasUpgrade(Upgrades.ENDER_MEDIUM) ? Projectiles.LASER_BLURAY : Projectiles.LASER_NORMAL;
     }
 
     @Override

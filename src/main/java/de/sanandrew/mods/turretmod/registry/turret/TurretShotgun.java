@@ -27,7 +27,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 
 import java.util.UUID;
 
-@Category("crossbow")
+@Category("shotgun")
 @SuppressWarnings("WeakerAccess")
 public class TurretShotgun
         implements ITurret
@@ -37,30 +37,18 @@ public class TurretShotgun
 
     private static AxisAlignedBB rangeBB;
 
-    @Value(comment = "maximum health this turret has.", range = @Range(minD = 0.1D, maxD = 1024.0D), reqWorldRestart = true)
+    @Value(comment = "Maximum health this turret has.", range = @Range(minD = 0.1D, maxD = 1024.0D), reqWorldRestart = true)
     public static float health = 20.0F;
-    @Value(comment = "capacity of ammo rounds this turret can hold.", range = @Range(minI = 1, maxI = Short.MAX_VALUE), reqWorldRestart = true)
+    @Value(comment = "Capacity of ammo rounds this turret can hold.", range = @Range(minI = 1, maxI = Short.MAX_VALUE), reqWorldRestart = true)
     public static int ammoCapacity = 256;
-    @Value(comment = "maximum tick time between shots. 20 ticks = 1 second.", range = @Range(minI = 1), reqWorldRestart = true)
+    @Value(comment = "Maximum tick time between shots. 20 ticks = 1 second.", range = @Range(minI = 1), reqWorldRestart = true)
     public static int reloadTicks = 20;
-    @Value(comment = "horizontal length of half the edge of the targeting box. The total edge length is [value * 2], with the turret centered in it.", range = @Range(minD = 1.0D), reqMcRestart = true)
+    @Value(comment = "Horizontal length of half the edge of the targeting box. The total edge length is [value * 2], with the turret centered in it.", range = @Range(minD = 1.0D), reqMcRestart = true)
     public static double rangeH = 16.0D;
-    @Value(comment = "vertical length of the edge of the targeting box, from the turret upwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
+    @Value(comment = "Vertical length of the edge of the targeting box, from the turret upwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
     public static double rangeU = 8.0D;
-    @Value(comment = "vertical length of the edge of the targeting box, from the turret downwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
-    public static double rangeD = 8.0D;
-    @Value(comment = "base damage a projectile can deal to a target.", range = @Range(minD = 0.0D, maxD = 1024.0D))
-    public static float projDamage = 4.0F;
-    @Value(comment = "multiplier applied to the speed with which the projectile travels.", range = @Range(minD = 0.0D, maxD = 256.0D))
-    public static float projSpeed = 1.0F;
-    @Value(comment = "how much the projectile curves down/up. negative values let projectiles go up, whereas positive values go down.", range = @Range(minD = -10.0D, maxD = 10.0D))
-    public static float projArc = 0.4F;
-    @Value(comment = "horizontal knockback strength a projectile can apply. Vanilla arrows have a value of 0.1.", range = @Range(minD = 0.0D, maxD = 256.0D))
-    public static float projKnockbackH = 0.01F;
-    @Value(comment = "vertical (y) knockback strength a projectile can apply. Vanilla arrows have a value of 0.1.", range = @Range(minD = 0.0D, maxD = 256.0D))
-    public static float projKnockbackV = 0.1F;
-    @Value(comment = "how much more inaccurate a projectiles' trajectory vector becomes. Higher values result in less accuracy.", range = @Range(minD = 0.0D, maxD = 10.0D))
-    public static float projScatter = 0.1F;
+    @Value(comment = "Vertical length of the edge of the targeting box, from the turret downwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
+    public static double rangeD = 4.0D;
 
     @Override
     public void onUpdate(ITurretInst turretInst) {

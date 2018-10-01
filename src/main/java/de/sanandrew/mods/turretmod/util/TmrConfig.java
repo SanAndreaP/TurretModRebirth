@@ -13,7 +13,21 @@ import de.sanandrew.mods.sanlib.lib.util.config.ConfigUtils;
 import de.sanandrew.mods.sanlib.lib.util.config.Init;
 import de.sanandrew.mods.sanlib.lib.util.config.Value;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.registry.projectile.Bullet;
+import de.sanandrew.mods.turretmod.registry.projectile.CrossbowBolt;
+import de.sanandrew.mods.turretmod.registry.projectile.CryoBall;
+import de.sanandrew.mods.turretmod.registry.projectile.Flame;
+import de.sanandrew.mods.turretmod.registry.projectile.Laser;
+import de.sanandrew.mods.turretmod.registry.projectile.MinigunPebble;
+import de.sanandrew.mods.turretmod.registry.projectile.ShotgunPebble;
 import de.sanandrew.mods.turretmod.registry.turret.TurretCrossbow;
+import de.sanandrew.mods.turretmod.registry.turret.TurretCryolator;
+import de.sanandrew.mods.turretmod.registry.turret.TurretFlamethrower;
+import de.sanandrew.mods.turretmod.registry.turret.TurretLaser;
+import de.sanandrew.mods.turretmod.registry.turret.TurretMinigun;
+import de.sanandrew.mods.turretmod.registry.turret.TurretRevolver;
+import de.sanandrew.mods.turretmod.registry.turret.TurretShotgun;
+import de.sanandrew.mods.turretmod.registry.turret.shieldgen.TurretForcefield;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -60,6 +74,29 @@ public final class TmrConfig
         @Init
         public static void initialize() {
             ConfigUtils.loadCategory(configTurrets, TurretCrossbow.class, NAME);
+            ConfigUtils.loadCategory(configTurrets, TurretShotgun.class, NAME);
+            ConfigUtils.loadCategory(configTurrets, TurretCryolator.class, NAME);
+            ConfigUtils.loadCategory(configTurrets, TurretRevolver.class, NAME);
+            ConfigUtils.loadCategory(configTurrets, TurretMinigun.class, NAME);
+            ConfigUtils.loadCategory(configTurrets, TurretForcefield.class, NAME);
+            ConfigUtils.loadCategory(configTurrets, TurretLaser.class, NAME);
+            ConfigUtils.loadCategory(configTurrets, TurretFlamethrower.class, NAME);
+        }
+    }
+
+    public static final class Projectiles
+    {
+        public static final String NAME = "projectiles";
+
+        @Init
+        public static void initialize() {
+            ConfigUtils.loadCategory(configProjectiles, CrossbowBolt.class, NAME);
+            ConfigUtils.loadCategory(configProjectiles, ShotgunPebble.class, NAME);
+            ConfigUtils.loadCategory(configProjectiles, CryoBall.class, NAME);
+            ConfigUtils.loadCategory(configProjectiles, Bullet.class, NAME);
+            ConfigUtils.loadCategory(configProjectiles, MinigunPebble.class, NAME);
+            ConfigUtils.loadCategory(configProjectiles, Laser.class, NAME);
+            ConfigUtils.loadCategory(configProjectiles, Flame.class, NAME);
         }
     }
 
@@ -76,12 +113,16 @@ public final class TmrConfig
     public static void syncConfig() {
         ConfigUtils.loadCategories(configGeneral, TmrConfig.class);
         ConfigUtils.loadCategories(configTurrets, Turrets.class);
+        ConfigUtils.loadCategories(configProjectiles, Projectiles.class);
 
         if( configGeneral.hasChanged() ) {
             configGeneral.save();
         }
         if( configTurrets.hasChanged() ) {
             configTurrets.save();
+        }
+        if( configProjectiles.hasChanged() ) {
+            configProjectiles.save();
         }
     }
 
@@ -90,6 +131,7 @@ public final class TmrConfig
         Map<String, ConfigCategory[]> cat = new HashMap<>();
         cat.put("general", configGeneral.getCategoryNames().stream().map(configGeneral::getCategory).filter(c -> c.size() > 0).toArray(ConfigCategory[]::new));
         cat.put("turrets", configTurrets.getCategoryNames().stream().map(configTurrets::getCategory).filter(c -> c.size() > 0).toArray(ConfigCategory[]::new));
+        cat.put("projectiles", configProjectiles.getCategoryNames().stream().map(configProjectiles::getCategory).filter(c -> c.size() > 0).toArray(ConfigCategory[]::new));
 
         return cat;
     }

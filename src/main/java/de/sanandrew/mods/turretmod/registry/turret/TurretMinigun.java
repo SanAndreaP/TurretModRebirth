@@ -9,6 +9,9 @@
 package de.sanandrew.mods.turretmod.registry.turret;
 
 import de.sanandrew.mods.sanlib.lib.Tuple;
+import de.sanandrew.mods.sanlib.lib.util.config.Category;
+import de.sanandrew.mods.sanlib.lib.util.config.Range;
+import de.sanandrew.mods.sanlib.lib.util.config.Value;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
@@ -24,13 +27,28 @@ import net.minecraft.util.math.AxisAlignedBB;
 
 import java.util.UUID;
 
+@Category("minigun")
+@SuppressWarnings("WeakerAccess")
 public class TurretMinigun
         implements ITurret
 {
     public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "turrets/turret_minigun");
     private static final UUID ID = UUID.fromString("97E1FB65-EE36-43BA-A900-583B4BD7973A");
 
-    private static final AxisAlignedBB RANGE_BB = new AxisAlignedBB(-20.0D, -4.0D, -20.0D, 20.0D, 10.0D, 20.0D);
+    private static AxisAlignedBB rangeBB;
+
+    @Value(comment = "Maximum health this turret has.", range = @Range(minD = 0.1D, maxD = 1024.0D), reqWorldRestart = true)
+    public static float health = 30.0F;
+    @Value(comment = "Capacity of ammo rounds this turret can hold.", range = @Range(minI = 1, maxI = Short.MAX_VALUE), reqWorldRestart = true)
+    public static int ammoCapacity = 512;
+    @Value(comment = "Maximum tick time between shots. 20 ticks = 1 second.", range = @Range(minI = 1), reqWorldRestart = true)
+    public static int reloadTicks = 3;
+    @Value(comment = "Horizontal length of half the edge of the targeting box. The total edge length is [value * 2], with the turret centered in it.", range = @Range(minD = 1.0D), reqMcRestart = true)
+    public static double rangeH = 20.0D;
+    @Value(comment = "Vertical length of the edge of the targeting box, from the turret upwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
+    public static double rangeU = 10.0D;
+    @Value(comment = "Vertical length of the edge of the targeting box, from the turret downwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
+    public static double rangeD = 4.0D;
 
     @Override
     public void onUpdate(ITurretInst turretInst) {
@@ -81,7 +99,10 @@ public class TurretMinigun
 
     @Override
     public AxisAlignedBB getRangeBB(ITurretInst turretInst) {
-        return RANGE_BB;
+        if( rangeBB == null ) {
+            rangeBB = new AxisAlignedBB(-rangeH, -rangeD, -rangeH, rangeH, rangeU, rangeH);
+        }
+        return rangeBB;
     }
 
     @Override
@@ -123,16 +144,16 @@ public class TurretMinigun
 
     @Override
     public float getHealth() {
-        return 30.0F;
+        return health;
     }
 
     @Override
     public int getAmmoCapacity() {
-        return 512;
+        return ammoCapacity;
     }
 
     @Override
     public int getReloadTicks() {
-        return 3;
+        return reloadTicks;
     }
 }

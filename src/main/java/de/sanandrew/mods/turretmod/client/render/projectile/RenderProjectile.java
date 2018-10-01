@@ -98,14 +98,14 @@ public class RenderProjectile
     }
 
     public static <T extends Entity> void initialize(IRenderRegistry<UUID, T, IRender<T>, Render<T>> registry) {
-        registry.registerRender(Projectiles.CB_BOLT.getId(), new RenderTurretArrow<>());
+        registry.registerRender(Projectiles.CB_BOLT.getId(), new RenderCrossbowBolt<>());
         registry.registerRender(Projectiles.PEBBLE.getId(), new RenderPebble<>());
         registry.registerRender(Projectiles.CRYO_BALL_I.getId(), new RenderNothingness<>());
         registry.registerRender(Projectiles.CRYO_BALL_II.getId(), new RenderNothingness<>());
         registry.registerRender(Projectiles.CRYO_BALL_III.getId(), new RenderNothingness<>());
         registry.registerRender(Projectiles.BULLET.getId(), new RenderBullet<>());
         registry.registerRender(Projectiles.MG_PEBBLE.getId(), new RenderPebble<>());
-        registry.registerRender(Projectiles.LASER.getId(), new RenderNothingness<>());
+        registry.registerRender(Projectiles.LASER_NORMAL.getId(), new RenderNothingness<>());
         registry.registerRender(Projectiles.FLAME_NORMAL.getId(), new RenderFlame<>(false));
         registry.registerRender(Projectiles.FLAME_PURIFY.getId(), new RenderFlame<>(true));
     }

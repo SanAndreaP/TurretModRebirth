@@ -8,6 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.registry.turret;
 
+import de.sanandrew.mods.sanlib.lib.util.config.Category;
+import de.sanandrew.mods.sanlib.lib.util.config.Range;
+import de.sanandrew.mods.sanlib.lib.util.config.Value;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
@@ -23,13 +26,28 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.UUID;
 
+@Category("laser")
+@SuppressWarnings("WeakerAccess")
 public class TurretLaser
         implements ITurret
 {
     public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "turrets/turret_laser");
     private static final UUID ID = UUID.fromString("F6196022-3F9D-4D3F-B3C1-9ED644DB436B");
 
-    private static final AxisAlignedBB RANGE_BB = new AxisAlignedBB(-24.0D, -4.0D, -24.0D, 24.0D, 12.0D, 24.0D);
+    private static AxisAlignedBB rangeBB;
+
+    @Value(comment = "Maximum health this turret has.", range = @Range(minD = 0.1D, maxD = 1024.0D), reqWorldRestart = true)
+    public static float health = 40.0F;
+    @Value(comment = "Capacity of ammo rounds this turret can hold.", range = @Range(minI = 1, maxI = Short.MAX_VALUE), reqWorldRestart = true)
+    public static int ammoCapacity = 256;
+    @Value(comment = "Maximum tick time between shots. 20 ticks = 1 second.", range = @Range(minI = 1), reqWorldRestart = true)
+    public static int reloadTicks = 5;
+    @Value(comment = "Horizontal length of half the edge of the targeting box. The total edge length is [value * 2], with the turret centered in it.", range = @Range(minD = 1.0D), reqMcRestart = true)
+    public static double rangeH = 24.0D;
+    @Value(comment = "Vertical length of the edge of the targeting box, from the turret upwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
+    public static double rangeU = 12.0D;
+    @Value(comment = "Vertical length of the edge of the targeting box, from the turret downwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
+    public static double rangeD = 4.0D;
 
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {
@@ -50,7 +68,10 @@ public class TurretLaser
 
     @Override
     public AxisAlignedBB getRangeBB(ITurretInst turretInst) {
-        return RANGE_BB;
+        if( rangeBB == null ) {
+            rangeBB = new AxisAlignedBB(-rangeH, -rangeD, -rangeH, rangeH, rangeU, rangeH);
+        }
+        return rangeBB;
     }
 
     @Override
@@ -87,16 +108,16 @@ public class TurretLaser
 
     @Override
     public float getHealth() {
-        return 40.0F;
+        return health;
     }
 
     @Override
     public int getAmmoCapacity() {
-        return 256;
+        return ammoCapacity;
     }
 
     @Override
     public int getReloadTicks() {
-        return 5;
+        return reloadTicks;
     }
 }

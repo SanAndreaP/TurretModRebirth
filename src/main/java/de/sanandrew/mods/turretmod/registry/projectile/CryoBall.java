@@ -9,10 +9,12 @@
 package de.sanandrew.mods.turretmod.registry.projectile;
 
 import de.sanandrew.mods.sanlib.lib.Tuple;
+import de.sanandrew.mods.sanlib.lib.util.config.Category;
+import de.sanandrew.mods.sanlib.lib.util.config.Range;
+import de.sanandrew.mods.sanlib.lib.util.config.Value;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectileInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.registry.turret.TurretCryolator;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.Sounds;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
@@ -28,6 +30,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
+@Category("cryo ball")
+@SuppressWarnings("WeakerAccess")
 public class CryoBall
         implements ITurretProjectile
 {
@@ -35,14 +39,35 @@ public class CryoBall
     static final UUID ID2 = UUID.fromString("5CE32B23-3038-454E-8109-CA8CA2CB75F3");
     static final UUID ID3 = UUID.fromString("419B8825-24CF-4B20-B785-E78D95575A33");
 
-    private final int level;
-    private final int duration;
+    @Value(comment = "Base damage this projectile can deal to a target.", range = @Range(minD = 0.0D, maxD = 1024.0D))
+    public static float damage = 0.0F;
+    @Value(comment = "Multiplier applied to the speed with which this projectile travels.", range = @Range(minD = 0.0D, maxD = 256.0D))
+    public static float speed = 1.5F;
+    @Value(comment = "How much this projectile curves down/up. negative values let it go up, whereas positive values go down.", range = @Range(minD = -10.0D, maxD = 10.0D))
+    public static float arc = 0.05F;
+    @Value(comment = "Horizontal knockback strength this projectile can apply. Vanilla arrows have a value of 0.1.", range = @Range(minD = 0.0D, maxD = 256.0D))
+    public static float knockbackH = 0.0F;
+    @Value(comment = "Vertical (y) knockback strength this projectile can apply. Vanilla arrows have a value of 0.1.", range = @Range(minD = 0.0D, maxD = 256.0D))
+    public static float knockbackV = 0.0F;
+    @Value(comment = "How much more inaccurate this projectiles' trajectory vector becomes. Higher values result in less accuracy.", range = @Range(minD = 0.0D, maxD = 10.0D))
+    public static double scatter = 0.1D;
+    @Value(comment = "Which level of slowness this projectile applies on its first level.", range = @Range(minI = 0, maxI = 10))
+    public static int slownessLevelFirst = 1;
+    @Value(comment = "Which level of slowness this projectile applies on its second level.", range = @Range(minI = 0, maxI = 10))
+    public static int slownessLevelSecond = 3;
+    @Value(comment = "Which level of slowness this projectile applies on its third level.", range = @Range(minI = 0, maxI = 10))
+    public static int slownessLevelThird = 5;
+    @Value(comment = "How long the slowness lasts in ticks, when this projectile applies it on its first level. 20 ticks = 1 second.", range = @Range(minI = 0))
+    public static int slownessDurationFirst = 300;
+    @Value(comment = "How long the slowness lasts in ticks, when this projectile applies it on its second level. 20 ticks = 1 second.", range = @Range(minI = 0))
+    public static int slownessDurationSecond = 250;
+    @Value(comment = "How long the slowness lasts in ticks, when this projectile applies it on its third level. 20 ticks = 1 second.", range = @Range(minI = 0))
+    public static int slownessDurationThird = 200;
+
     private final UUID id;
 
-    CryoBall(UUID id, int level, int duration) {
+    CryoBall(UUID id) {
         this.id = id;
-        this.level = level;
-        this.duration = duration;
     }
 
     @Nonnull
@@ -53,7 +78,7 @@ public class CryoBall
 
     @Override
     public float getArc() {
-        return TurretCryolator.projArc;
+        return arc;
     }
 
     @Override
@@ -67,33 +92,40 @@ public class CryoBall
 
     @Override
     public float getSpeed() {
-        return TurretCryolator.projSpeed;
+        return speed;
     }
 
     @Override
     public float getDamage() {
-        return 0.0F;
+        return damage;
     }
 
     @Override
     public float getKnockbackHorizontal() {
-        return TurretCryolator.projKnockbackH;
+        return knockbackH;
     }
 
     @Override
     public float getKnockbackVertical() {
-        return TurretCryolator.projKnockbackV;
+        return knockbackV;
     }
 
     @Override
     public double getScatterValue() {
-        return TurretCryolator.projScatter;
+        return scatter;
     }
 
     @Override
     public boolean onDamageEntityPre(@Nullable ITurretInst turret, @Nonnull ITurretProjectileInst projectile, Entity target, DamageSource damageSrc, MutableFloat damage) {
         if( !projectile.get().world.isRemote && target instanceof EntityLivingBase ) {
-            ((EntityLivingBase) target).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, this.duration, this.level));
+            if( this.id == ID1 && slownessLevelFirst > 0 ) {
+                ((EntityLivingBase) target).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, slownessDurationFirst, slownessLevelFirst - 1));
+            } else if( this.id == ID2 && slownessLevelSecond > 0 ) {
+                ((EntityLivingBase) target).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, slownessDurationSecond, slownessLevelSecond - 1));
+            } else if( this.id == ID3 && slownessLevelThird > 0 ) {
+                ((EntityLivingBase) target).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, slownessDurationThird, slownessLevelThird - 1));
+            }
+
             return false;
         }
 

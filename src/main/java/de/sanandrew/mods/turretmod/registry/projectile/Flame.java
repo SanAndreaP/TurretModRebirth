@@ -9,6 +9,9 @@
 package de.sanandrew.mods.turretmod.registry.projectile;
 
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.sanlib.lib.util.config.Category;
+import de.sanandrew.mods.sanlib.lib.util.config.Range;
+import de.sanandrew.mods.sanlib.lib.util.config.Value;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectileInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
@@ -25,20 +28,39 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
+@Category("flame")
+@SuppressWarnings("WeakerAccess")
 public class Flame
         implements ITurretProjectile
 {
     static final UUID ID1 = UUID.fromString("3C7C8732-7B9C-488D-9F30-C7A0723F1C54");
     static final UUID ID2 = UUID.fromString("E105B888-11D4-4491-A83E-885438DCD62A");
 
-    private static final float DMG_REDUCTION = 0.5F;
+    @Value(comment = "Base damage this projectile can deal to a target.", range = @Range(minD = 0.0D, maxD = 1024.0D))
+    public static float damage = 3.0F;
+    @Value(comment = "Multiplier applied to the speed with which this projectile travels.", range = @Range(minD = 0.0D, maxD = 256.0D))
+    public static float speed = 0.6F;
+    @Value(comment = "How much this projectile curves down/up. negative values let it go up, whereas positive values go down.", range = @Range(minD = -10.0D, maxD = 10.0D))
+    public static float arc = -0.15F;
+    @Value(comment = "Horizontal knockback strength this projectile can apply. Vanilla arrows have a value of 0.1.", range = @Range(minD = 0.0D, maxD = 256.0D))
+    public static float knockbackH = 0.0F;
+    @Value(comment = "Vertical (y) knockback strength this projectile can apply. Vanilla arrows have a value of 0.1.", range = @Range(minD = 0.0D, maxD = 256.0D))
+    public static float knockbackV = 0.0F;
+    @Value(comment = "How much more inaccurate this projectiles' trajectory vector becomes. Higher values result in less accuracy.", range = @Range(minD = 0.0D, maxD = 10.0D))
+    public static double scatter = 0.1D;
+    @Value(comment = "How much damage this projectile looses after successfully hitting an entity. If the damage reaches 0, the projectile is killed.", range = @Range(minD = 0.0D, maxD = 1024.0D))
+    public static float damageReduction = 0.5F;
+    @Value(comment = "Wether or not purifying flames cause fire on blocks hit.")
+    public static boolean purifyingFireBlocks = true;
+    @Value(comment = "How high in percent the chance is of purifying flames causing fire on blocks hit.", range = @Range(minD = 0.0D, maxD = 100.0D))
+    public static float purifyingFireBlocksChance = 1.0F;
 
     private final boolean purifying;
     private final UUID id;
 
-    Flame(UUID id, boolean purifying) {
+    Flame(UUID id) {
         this.id = id;
-        this.purifying = purifying;
+        this.purifying = id == ID2;
     }
 
     @Nonnull
@@ -66,32 +88,32 @@ public class Flame
 
     @Override
     public float getArc() {
-        return -0.15F;
+        return arc;
     }
 
     @Override
     public float getSpeed() {
-        return 0.6F;
+        return speed;
     }
 
     @Override
     public float getDamage() {
-        return 3.0F;
+        return damage;
     }
 
     @Override
     public float getKnockbackHorizontal() {
-        return 0.0F;
+        return knockbackH;
     }
 
     @Override
     public float getKnockbackVertical() {
-        return 0.0F;
+        return knockbackV;
     }
 
     @Override
     public double getScatterValue() {
-        return 0.1D;
+        return scatter;
     }
 
     @Override
@@ -103,7 +125,7 @@ public class Flame
     public boolean onHit(@Nullable ITurretInst turret, @Nonnull ITurretProjectileInst projectile, RayTraceResult hitObj) {
         if( hitObj.typeOfHit != RayTraceResult.Type.ENTITY ) {
             Entity projEntity = projectile.get();
-            if( this.purifying && hitObj.typeOfHit == RayTraceResult.Type.BLOCK && !projEntity.world.isRemote && MiscUtils.RNG.randomInt(100) == 0 ) {
+            if( this.purifying && purifyingFireBlocks && hitObj.typeOfHit == RayTraceResult.Type.BLOCK && !projEntity.world.isRemote && MiscUtils.RNG.randomFloat() * 100.0 < purifyingFireBlocksChance ) {
                 BlockPos fire = hitObj.getBlockPos().offset(hitObj.sideHit);
                 if( projEntity.world.isAirBlock(fire) ) {
                     projEntity.world.setBlockState(fire, Blocks.FIRE.getDefaultState(), 11); // 1 = block update, 2 = send to client, 8 = needs update
@@ -112,8 +134,9 @@ public class Flame
 
             return true;
         } else {
+            float lastDmg = projectile.getLastCausedDamage();
             hitObj.entityHit.setFire(5);
-            return MiscUtils.between(0.0F, projectile.getLastCausedDamage() - DMG_REDUCTION, -1.0F);
+            return lastDmg >= 0.0F && lastDmg - damageReduction <= 0.0F;
         }
     }
 
@@ -125,13 +148,9 @@ public class Flame
 
         float lastDmg = projectile.getLastCausedDamage();
         if( lastDmg > 0.0F ) {
-            damage.setValue(lastDmg - 0.5F);
-            return true;
-        } else if( lastDmg - 0.5F > -1.0F ) {
-            projectile.get().setDead();
-            return false;
-        } else {
-            return true;
+            damage.setValue(lastDmg - damageReduction);
         }
+
+        return true;
     }
 }

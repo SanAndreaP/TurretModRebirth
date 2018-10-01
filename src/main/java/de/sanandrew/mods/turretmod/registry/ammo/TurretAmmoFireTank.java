@@ -75,11 +75,7 @@ public class TurretAmmoFireTank
 
     @Override
     public ITurretProjectile getProjectile(ITurretInst turretInst) {
-        if( turretInst.getUpgradeProcessor().hasUpgrade(Upgrades.FUEL_PURIFY) ) {
-            return Projectiles.FLAME_PURIFY;
-        } else {
-            return Projectiles.FLAME_NORMAL;
-        }
+        return turretInst.getUpgradeProcessor().hasUpgrade(Upgrades.FUEL_PURIFY) ? Projectiles.FLAME_PURIFY : Projectiles.FLAME_NORMAL;
     }
 
     @Override
