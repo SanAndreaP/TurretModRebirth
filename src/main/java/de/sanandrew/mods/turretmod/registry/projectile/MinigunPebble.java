@@ -31,7 +31,7 @@ public class MinigunPebble
     private static final UUID ID = UUID.fromString("CFED3E55-284B-4697-9FB0-682BFB736101");
 
     @Value(comment = "Base damage this projectile can deal to a target.", range = @Range(minD = 0.0D, maxD = 1024.0D))
-    public static float damage = 0.3F;
+    public static float damage = 0.9F;
     @Value(comment = "Multiplier applied to the speed with which this projectile travels.", range = @Range(minD = 0.0D, maxD = 256.0D))
     public static float speed = 3.0F;
     @Value(comment = "How much this projectile curves down/up. negative values let it go up, whereas positive values go down.", range = @Range(minD = -10.0D, maxD = 10.0D))

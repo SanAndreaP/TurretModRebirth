@@ -91,6 +91,7 @@ item.sapturretmod:turret_upgrade.shield_strength_ii.name=Shield Amplifier II
 
 #### Entities ####
 # Turrets
+entity.sapturretmod.turret.name=Defense Turret
 sapturretmod.turret.name=Defense Turret
 sapturretmod.turret.i_crossbow.name=Crossbow Turret (T1)
 sapturretmod.turret.i_shotgun.name=Shotgun Turret (T1)

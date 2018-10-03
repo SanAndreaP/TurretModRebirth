@@ -27,7 +27,7 @@ public class ShotgunPebble
     private static final UUID ID = UUID.fromString("87E13300-2A58-456C-9712-B440C48D5376");
 
     @Value(comment = "Base damage this projectile can deal to a target.", range = @Range(minD = 0.0D, maxD = 1024.0D))
-    public static float damage = 0.5F;
+    public static float damage = 0.8F;
     @Value(comment = "Multiplier applied to the speed with which this projectile travels.", range = @Range(minD = 0.0D, maxD = 256.0D))
     public static float speed = 3.0F;
     @Value(comment = "How much this projectile curves down/up. negative values let it go up, whereas positive values go down.", range = @Range(minD = -10.0D, maxD = 10.0D))

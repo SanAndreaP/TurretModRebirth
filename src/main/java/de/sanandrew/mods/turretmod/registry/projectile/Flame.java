@@ -37,7 +37,7 @@ public class Flame
     static final UUID ID2 = UUID.fromString("E105B888-11D4-4491-A83E-885438DCD62A");
 
     @Value(comment = "Base damage this projectile can deal to a target.", range = @Range(minD = 0.0D, maxD = 1024.0D))
-    public static float damage = 3.0F;
+    public static float damage = 0.55F;
     @Value(comment = "Multiplier applied to the speed with which this projectile travels.", range = @Range(minD = 0.0D, maxD = 256.0D))
     public static float speed = 0.6F;
     @Value(comment = "How much this projectile curves down/up. negative values let it go up, whereas positive values go down.", range = @Range(minD = -10.0D, maxD = 10.0D))
