@@ -52,7 +52,7 @@ public class TurretAmmoBullet
 
     @Override
     public float getDamageInfo() {
-        return 2.75F;
+        return Projectiles.BULLET.getDamage();
     }
 
     @Override

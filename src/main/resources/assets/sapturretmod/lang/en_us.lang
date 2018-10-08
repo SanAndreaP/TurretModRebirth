@@ -1,15 +1,13 @@
 #### Blocks ####
 # Assembly
 tile.sapturretmod:turret_assembly.name=Turret Assembly Table
-tile.sapturretmod:turret_assembly.group0=Misc Stuff
+tile.sapturretmod:turret_assembly.group0=Miscellaneous
 tile.sapturretmod:turret_assembly.group1=Turrets
 tile.sapturretmod:turret_assembly.group2=Ammunition
 tile.sapturretmod:turret_assembly.group3=Repair Kits
 tile.sapturretmod:turret_assembly.group4=Upgrades
-tile.sapturretmod:turret_assembly.desc=The assembly table is an essential part for your turret cravings, as it crafts any item and turret you need or want.\n\nTo operate it you need power as well as the items required for the item you want to craft. It currently only accepts Redstone Flux as energy.\n\nIf you think it's too slow or you want to automate it, there are a couple of upgrades available.
 # Generator
 tile.sapturretmod:potato_generator.name=Electrolyte Generator
-tile.sapturretmod:potato_generator.desc=This machine creates energy from items (mostly food) with high enough acid or base by reacting with the electrolyte within them.\nThe more items are put in it, the higher the efficiency of the generator.\n\nEach item has its own effectiveness and decay time, which dictate how much power can be generated in total. The effectiveness level also influences the amount of power the generator can produce in a moment, but there is only so much the generator can transfer internally, so there is a cap of 200 RF/t.\n\nItems used up in the generator may produce byproducts, which could be §2trash§0 or rarely something §dvaluable§0.
 
 #### Items ####
 item.sapturretmod:turret_info.name=Turret Info Tablet
@@ -24,7 +22,6 @@ item.sapturretmod:turret_control_unit.name.2=TCU (Turret Corrosion Unity)
 item.sapturretmod:turret_control_unit.name.3=TCU (Trigger Capacity Uranus)
 item.sapturretmod:turret_control_unit.name.4=TCU (Timmy Cleans Utilities)
 item.sapturretmod:turret_control_unit.name.5=TCU (Transient Colossal Uppercut)
-item.sapturretmod:turret_control_unit.desc=This item is a configuration and info tool for placed turrets.\n\nLooking at a turret with this tool in hand shows an info label on it with information about its name, health and ammo.\n\nRight-Clicking a turret with it will open a GUI that lets you see detailed info and configure it, like targets and upgrades.
 # Assembly Upgrades
 item.sapturretmod:turret_assembly_auto.name=Automation Upgrade
 item.sapturretmod:turret_assembly_auto.ttip=Used in the Turret Assembly Table
@@ -66,7 +63,7 @@ item.sapturretmod:turret_upgrade.name=Turret Upgrade
 item.sapturretmod:turret_upgrade.requires=Requires:
 item.sapturretmod:turret_upgrade.applicableTo=Only Applicable On:
 item.sapturretmod:turret_upgrade.shdetails=<Hold Shift>
-item.sapturretmod:turret_upgrade.empty.name=Empty
+item.sapturretmod:turret_upgrade.empty.name=Upgrade Base
 item.sapturretmod:turret_upgrade.health_i.name=Health I
 item.sapturretmod:turret_upgrade.health_ii.name=Health II
 item.sapturretmod:turret_upgrade.health_iii.name=Health III
@@ -170,6 +167,10 @@ sanlib.lexicon.sapturretmod.upgrade.shield_strength_ii.text=Increases the radius
 sanlib.lexicon.sapturretmod.upgrade.assembly_auto.text=This enables automation of the assembly table. Once this is applied, a button will appear where you can toggle the assembly table between manual and automation mode.\n\nIn manual mode it will act like without the upgrade, crafting items on your command.\n\nIn automation mode, you can tell it to craft a specific item. Once the items and the power are available, it'll start crafting and keep crafting until it runs out of ingredients, energy or space in the output slot.\nYou cannot change the item crafted until you cancel it.
 sanlib.lexicon.sapturretmod.upgrade.assembly_speed.text=This optimizes the assembly process and makes the assembly table 4x faster. Since this optimization isn't free to come by, it'll increase the energy consumption of the current crafting operation by 10%% (after the 4x increase of RF/t).
 sanlib.lexicon.sapturretmod.upgrade.assembly_filter.text=This will filter what's going into the assembly table.\nAfter right-clicking you can configure the filter. In empty slots can go anything. In configured slots can only go the item configured (obviously), but those items won't go anywhere else, not even in empty configured slots.\nShift-right-click clears the filter.\n\nThe filter operates not only on the user-side of things (putting stuff into the table via GUI) but also with external insertion devices like the hopper.\n\nPlease note that you can't configure the stack size of items, thus it will always try to put a whole stack (depends on how many items can be stacked together) in a slot.\n\nf you want to put in more than 1 stack into the table, you can configure 2 or more slots with the same item.
+sanlib.lexicon.sapturretmod.misc.name=Miscellaneous
+sanlib.lexicon.sapturretmod.misc.assembly.text=The assembly table is an essential part for your turret cravings, as it crafts any item and turret you need or want.\n\nTo operate it you need power as well as the items required for the item you want to craft. It currently accepts Redstone Flux, Tesla, Forge Energy and derivatives as energy types.\n\nIf you think it's too slow or you want to automate it, there are a couple of upgrades available.
+sanlib.lexicon.sapturretmod.misc.generator.text=This machine creates energy from items (mostly food) with high enough acid or base by reacting with the electrolyte within them.\nThe more items are put in it, the higher the efficiency of the generator.\n\nEach item has its own effectiveness and decay time, which dictate how much power can be generated in total. The effectiveness level also influences the amount of power the generator can produce in a moment, but there is only so much the generator can transfer internally, so there is a cap of 200 RF/t.\n\nItems used up in the generator may produce byproducts, which could be §2trash§0 or rarely something §dvaluable§0.
+sanlib.lexicon.sapturretmod.misc.tcu.text=This item is a configuration and info tool for placed turrets.\n\nLooking at a turret with this tool in hand shows an info label on it with information about its name, health and ammo.\n\nRight-Clicking a turret with it will open a GUI that lets you see detailed info and configure it, like targets and upgrades.
 sanlib.lexicon.sapturretmod.info.name=About
 sanlib.lexicon.sapturretmod.info.version=Version
 sanlib.lexicon.sapturretmod.info.author=Author
@@ -273,7 +274,7 @@ subtitles.sapturretmod.turretShoot.minigun=Minigun Turret shoots
 subtitles.sapturretmod.turretShoot.pistol=Revolver Turret shoots
 subtitles.sapturretmod.turretShoot.laser=Laser Turret shoots
 subtitles.sapturretmod.turretShoot.flamethrower=Flamethrower Turret fires
-subtitles.sapturretmod.turretShoot.sniper=Sniper Turret shoots
+subtitles.sapturretmod.turretShoot.sniper=Plasma Turret shoots
 subtitles.sapturretmod.turretShoot.healer=Healer Turret heals
 subtitles.sapturretmod.turretShoot.flak=Flak Turret launches
 subtitles.sapturretmod.turretShoot.artillery=Artillery Turret shoots

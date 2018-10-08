@@ -53,7 +53,7 @@ public class TurretAmmoFluxCell
 
     @Override
     public float getDamageInfo() {
-        return 2.5F;
+        return Projectiles.LASER_NORMAL.getDamage();
     }
 
     @Override

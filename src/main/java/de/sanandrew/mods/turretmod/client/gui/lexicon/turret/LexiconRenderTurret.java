@@ -105,11 +105,11 @@ public class LexiconRenderTurret
         this.drawTurret(helper.getGui().mc, 27, this.drawHeight + 65, partTicks);
         helper.doEntryScissoring();
 
-        drawStat("health", String.format("%.1f HP", this.turret.getHealth()), helper, 60, this.drawHeight, 52, 0, mouseX, mouseY);
-        drawStat("ammo", String.format("%d", this.turret.getAmmoCapacity()), helper, 60, this.drawHeight + 12, 61, 0, mouseX, mouseY);
-        drawStat("range", getFormattedRange(this.turret.getRangeBB(null)), helper, 60, this.drawHeight + 24, 70, 0, mouseX, mouseY);
-        drawStat("reload", String.format("%s", MiscUtils.getTimeFromTicks(this.turret.getReloadTicks())), helper, 60, this.drawHeight + 36, 79, 0, mouseX, mouseY);
-        drawStat("tier", String.format("%d", this.turret.getTier()), helper, 60, this.drawHeight + 48, 88, 0, mouseX, mouseY);
+        drawStat("health", String.format("%.1f HP", this.turret.getHealth()), helper, 60, this.drawHeight, 52, 0, mouseX, mouseY + scrollY);
+        drawStat("ammo", String.format("%d", this.turret.getAmmoCapacity()), helper, 60, this.drawHeight + 12, 61, 0, mouseX, mouseY + scrollY);
+        drawStat("range", getFormattedRange(this.turret.getRangeBB(null)), helper, 60, this.drawHeight + 24, 70, 0, mouseX, mouseY + scrollY);
+        drawStat("reload", String.format("%s", MiscUtils.getTimeFromTicks(this.turret.getReloadTicks())), helper, 60, this.drawHeight + 36, 79, 0, mouseX, mouseY + scrollY);
+        drawStat("tier", String.format("%d", this.turret.getTier()), helper, 60, this.drawHeight + 48, 88, 0, mouseX, mouseY + scrollY);
 
         this.drawHeight += 70;
 

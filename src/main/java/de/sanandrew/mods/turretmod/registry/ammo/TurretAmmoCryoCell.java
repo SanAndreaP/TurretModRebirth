@@ -49,11 +49,6 @@ public abstract class TurretAmmoCryoCell
         return this.capacity;
     }
 
-    @Override
-    public float getDamageInfo() {
-        return 0.0F;
-    }
-
     @Nonnull
     @Override
     public IAmmunitionGroup getGroup() {
@@ -87,6 +82,11 @@ public abstract class TurretAmmoCryoCell
         public ITurretProjectile getProjectile(ITurretInst turretInst) {
             return Projectiles.CRYO_BALL_I;
         }
+
+        @Override
+        public float getDamageInfo() {
+            return Projectiles.CRYO_BALL_I.getDamage();
+        }
     }
 
     public static class MultiMK1
@@ -104,6 +104,11 @@ public abstract class TurretAmmoCryoCell
         @Override
         public ITurretProjectile getProjectile(ITurretInst turretInst) {
             return Projectiles.CRYO_BALL_I;
+        }
+
+        @Override
+        public float getDamageInfo() {
+            return Projectiles.CRYO_BALL_I.getDamage();
         }
     }
 
@@ -123,6 +128,11 @@ public abstract class TurretAmmoCryoCell
         public ITurretProjectile getProjectile(ITurretInst turretInst) {
             return Projectiles.CRYO_BALL_II;
         }
+
+        @Override
+        public float getDamageInfo() {
+            return Projectiles.CRYO_BALL_II.getDamage();
+        }
     }
 
     public static class MultiMK2
@@ -140,6 +150,11 @@ public abstract class TurretAmmoCryoCell
         @Override
         public ITurretProjectile getProjectile(ITurretInst turretInst) {
             return Projectiles.CRYO_BALL_II;
+        }
+
+        @Override
+        public float getDamageInfo() {
+            return Projectiles.CRYO_BALL_II.getDamage();
         }
     }
 
@@ -159,6 +174,11 @@ public abstract class TurretAmmoCryoCell
         public ITurretProjectile getProjectile(ITurretInst turretInst) {
             return Projectiles.CRYO_BALL_III;
         }
+
+        @Override
+        public float getDamageInfo() {
+            return Projectiles.CRYO_BALL_III.getDamage();
+        }
     }
 
     public static class MultiMK3
@@ -176,6 +196,11 @@ public abstract class TurretAmmoCryoCell
         @Override
         public ITurretProjectile getProjectile(ITurretInst turretInst) {
             return Projectiles.CRYO_BALL_III;
+        }
+
+        @Override
+        public float getDamageInfo() {
+            return Projectiles.CRYO_BALL_III.getDamage();
         }
     }
 }

@@ -35,7 +35,7 @@ import java.util.stream.Stream;
 public class LexiconRenderAssemblyUpgrade
         extends LexiconRenderAssemblyRecipe
 {
-    static final String ID = TmrConstants.ID + ":upgrade";
+    static final String ID = TmrConstants.ID + ":abupgrade";
 
     private static final int H2_COLOR = 0xFF202080;
 

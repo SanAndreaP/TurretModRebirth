@@ -6,21 +6,19 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.gui.lexicon.misc;
 
-import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconEntryCraftingGrid;
-import de.sanandrew.mods.sanlib.client.lexicon.LexiconInstance;
+import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconEntry;
 import de.sanandrew.mods.turretmod.client.util.ClientProxy;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 
 import javax.annotation.Nonnull;
 
 public class LexiconEntryCraftable
-        implements ILexiconEntryCraftingGrid
+        implements ILexiconEntry
 {
     private final String id;
     private final ItemStack item;
 
-    public LexiconEntryCraftable(String id, ItemStack stack) {
+    LexiconEntryCraftable(String id, ItemStack stack) {
         this.id = id;
         this.item = stack;
     }
@@ -37,13 +35,18 @@ public class LexiconEntryCraftable
 
     @Override
     public String getPageRenderId() {
-        return LexiconInstance.RENDER_ID_CRAFTING;
+        return LexiconRenderCraftable.ID;
     }
 
     @Nonnull
     @Override
     public ItemStack getEntryIcon() {
         return this.item;
+    }
+
+    @Override
+    public String getTitleLangKey(String modId) {
+        return this.item.getUnlocalizedName() + ".name";
     }
 
     @Nonnull
@@ -56,11 +59,5 @@ public class LexiconEntryCraftable
     @Override
     public String getSrcText() {
         return ClientProxy.lexiconInstance.getTranslatedText(this);
-    }
-
-    @Nonnull
-    @Override
-    public NonNullList<ItemStack> getRecipeResults() {
-        return NonNullList.withSize(1, this.item);
     }
 }

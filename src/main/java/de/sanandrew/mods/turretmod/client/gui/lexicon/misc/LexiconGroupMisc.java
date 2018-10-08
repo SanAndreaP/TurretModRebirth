@@ -10,9 +10,6 @@ import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconGroup;
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconInst;
 import de.sanandrew.mods.sanlib.api.client.lexicon.LexiconGroup;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
-import de.sanandrew.mods.turretmod.client.gui.lexicon.ammo.LexiconEntryAmmo;
-import de.sanandrew.mods.turretmod.client.gui.lexicon.info.LexiconEntryInfo;
-import de.sanandrew.mods.turretmod.client.gui.lexicon.info.LexiconRenderInfo;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.item.ItemStack;
@@ -27,14 +24,15 @@ public final class LexiconGroupMisc
     }
 
     public static void register(ILexiconInst registry) {
-//        registry.registerPageRender(new LexiconRenderInfo());
+        registry.registerPageRender(new LexiconRenderCraftable());
+        registry.registerPageRender(new LexiconRenderTCU());
 
         ILexiconGroup grp = new LexiconGroupMisc();
         registry.registerGroup(grp);
 
         grp.addEntry(new LexiconEntryCraftable("assembly", new ItemStack(BlockRegistry.TURRET_ASSEMBLY)));
         grp.addEntry(new LexiconEntryCraftable("generator", new ItemStack(BlockRegistry.ELECTROLYTE_GENERATOR)));
-        grp.addEntry(new LexiconEntryCraftable("tcu", new ItemStack(ItemRegistry.TURRET_CONTROL_UNIT)));
+        grp.addEntry(new LexiconEntryTCU());
 
 //        grp.addEntry(new LexiconEntryInfo());
     }

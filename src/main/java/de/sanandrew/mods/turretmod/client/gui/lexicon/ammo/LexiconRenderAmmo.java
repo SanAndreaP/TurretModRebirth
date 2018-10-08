@@ -131,8 +131,8 @@ public class LexiconRenderAmmo
         fr.drawString(LangUtils.translate(Lang.LEXICON_DETAILS), 2, this.drawHeight, H2_COLOR);
         this.drawHeight += 9;
 
-        drawStat("rounds", String.format("%d", currAmmo.getAmmoCapacity()), helper, 4, this.drawHeight, 61, 0, mouseX, mouseY);
-        drawStat("damage", String.format("%.1f DP", currAmmo.getDamageInfo()), helper, 40, this.drawHeight, 52, 9, mouseX, mouseY);
+        drawStat("rounds", String.format("%d", currAmmo.getAmmoCapacity()), helper, 4, this.drawHeight, 61, 0, mouseX, mouseY + scrollY);
+        drawStat("damage", String.format("%.1f DP", currAmmo.getDamageInfo()), helper, 40, this.drawHeight, 52, 9, mouseX, mouseY + scrollY);
         this.drawHeight += 15;
 
         fr.drawString(LangUtils.translate(Lang.LEXICON_AMMO_ITEM.get("turret")), 2, this.drawHeight, H2_COLOR);

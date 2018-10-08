@@ -33,7 +33,7 @@ public final class LexiconGroupUpgrade
 
         grp.addEntry(new LexiconEntryAssemblyUpgrade("assembly_auto", new ItemStack(ItemRegistry.ASSEMBLY_UPG_AUTO)));
         grp.addEntry(new LexiconEntryAssemblyUpgrade("assembly_speed", new ItemStack(ItemRegistry.ASSEMBLY_UPG_SPEED)));
-        grp.addEntry(new LexiconEntryAssemblyUpgrade("assembly_filter", new ItemStack(ItemRegistry.ASSEMBLY_UPG_FILTER)));
+        grp.addEntry(new LexiconEntryAssemblyUpgrade("assembly_filter", new ItemStack(ItemRegistry.ASSEMBLY_UPG_FILTER)).setDivideAfter());
 
         UpgradeRegistry.INSTANCE.getUpgrades().forEach(u -> grp.addEntry(new LexiconEntryUpgrade(u)));
     }

@@ -4,31 +4,24 @@
  * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
  *                http://creativecommons.org/licenses/by-nc-sa/4.0/
  *******************************************************************************************************************/
-package de.sanandrew.mods.turretmod.client.gui.lexicon.upgrade;
+package de.sanandrew.mods.turretmod.client.gui.lexicon.misc;
 
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconEntry;
-import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.client.util.ClientProxy;
-import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public final class LexiconEntryAssemblyUpgrade
+public class LexiconEntryTCU
         implements ILexiconEntry
 {
     private final String id;
     private final ItemStack item;
-    private boolean doDivisor;
 
-    LexiconEntryAssemblyUpgrade(String id, ItemStack stack) {
-        this.id = id;
-        this.item =  stack;
-    }
-
-    LexiconEntryAssemblyUpgrade setDivideAfter() {
-        this.doDivisor = true;
-        return this;
+    LexiconEntryTCU() {
+        this.id = "tcu";
+        this.item = new ItemStack(ItemRegistry.TURRET_CONTROL_UNIT);
     }
 
     @Override
@@ -38,23 +31,18 @@ public final class LexiconEntryAssemblyUpgrade
 
     @Override
     public String getGroupId() {
-        return LexiconGroupUpgrade.NAME;
+        return LexiconGroupMisc.NAME;
     }
 
     @Override
     public String getPageRenderId() {
-        return LexiconRenderAssemblyUpgrade.ID;
+        return LexiconRenderTCU.ID;
     }
 
     @Nonnull
     @Override
     public ItemStack getEntryIcon() {
         return this.item;
-    }
-
-    @Override
-    public boolean divideAfter() {
-        return this.doDivisor;
     }
 
     @Override

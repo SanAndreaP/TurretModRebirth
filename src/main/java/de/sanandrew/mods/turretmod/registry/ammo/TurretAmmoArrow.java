@@ -58,7 +58,7 @@ public class TurretAmmoArrow
 
     @Override
     public float getDamageInfo() {
-        return 3.0F;
+        return Projectiles.CB_BOLT.getDamage();
     }
 
     @Override

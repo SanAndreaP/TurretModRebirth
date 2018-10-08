@@ -53,7 +53,7 @@ public class TurretAmmoFireTank
 
     @Override
     public float getDamageInfo() {
-        return 0.5F;
+        return Projectiles.FLAME_NORMAL.getDamage();
     }
 
     @Override

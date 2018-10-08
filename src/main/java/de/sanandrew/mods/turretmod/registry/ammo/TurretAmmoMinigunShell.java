@@ -52,7 +52,7 @@ public class TurretAmmoMinigunShell
 
     @Override
     public float getDamageInfo() {
-        return 0.3F;
+        return Projectiles.MG_PEBBLE.getDamage();
     }
 
     @Override
