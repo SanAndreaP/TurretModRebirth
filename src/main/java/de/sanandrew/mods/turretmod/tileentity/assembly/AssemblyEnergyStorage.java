@@ -14,7 +14,7 @@ final class AssemblyEnergyStorage
         implements IEnergyStorage, INBTSerializable<NBTTagCompound>
 {
     int fluxAmount;
-    int prevFluxAmount;
+    private int prevFluxAmount;
 
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate) {

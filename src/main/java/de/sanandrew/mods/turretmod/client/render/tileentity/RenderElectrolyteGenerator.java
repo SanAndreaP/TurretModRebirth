@@ -60,7 +60,7 @@ public class RenderElectrolyteGenerator
         GlStateManager.disableLighting();
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(Resources.TILE_ELECTROLYTE_GEN_WIRE.resource);
-        drawParaboleWire(10);
+        drawParaboleWire();
 
         GlStateManager.enableLighting();
         GlStateManager.enableCull();
@@ -68,17 +68,18 @@ public class RenderElectrolyteGenerator
         GlStateManager.popMatrix();
     }
 
-    private static void drawParaboleWire(int steps) {
+    private static void drawParaboleWire() {
+        final int steps2 = 10;
         if( wireCallList == 0 ) {
             double scale = 0.01D;
             final double perpendAngle = 90.0D * Math.PI / 180.0D;
 
-            Vec3d[] builtVecMain = new Vec3d[steps+1];
-            Vec3d[] builtVecA = new Vec3d[steps+1];
-            Vec3d[] builtVecB = new Vec3d[steps+1];
+            Vec3d[] builtVecMain = new Vec3d[steps2+1];
+            Vec3d[] builtVecA = new Vec3d[steps2+1];
+            Vec3d[] builtVecB = new Vec3d[steps2+1];
 
-            for( int i = 0; i <= steps; i++ ) {
-                double x = i / (double) steps;
+            for( int i = 0; i <= steps2; i++ ) {
+                double x = i / (double) steps2;
                 double y = Math.pow(x, 4.0D);
                 builtVecMain[i] = new Vec3d(x * -0.35D, y * -0.5D, 0.00D);
                 builtVecA[i] = new Vec3d(x * -0.35D, y * -0.5D, 0.0D);
@@ -134,6 +135,7 @@ public class RenderElectrolyteGenerator
         GlStateManager.callList(wireCallList);
     }
 
+    @SuppressWarnings("unused")
     private static void delWireCallList() {
         GlStateManager.glDeleteLists(wireCallList, 0);
         wireCallList = 0;

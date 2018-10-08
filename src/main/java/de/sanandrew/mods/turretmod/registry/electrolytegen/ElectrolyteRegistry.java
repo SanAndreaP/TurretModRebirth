@@ -37,7 +37,7 @@ public class ElectrolyteRegistry
 {
     private static final Map<ItemStack, Fuel> FUELS_INTRN = new HashMap<>();
     private static final Map<ItemStack, Fuel> FUELS_UNMODIFY = Collections.unmodifiableMap(FUELS_INTRN);
-    public static final Fuel NULL_FUEL = new Fuel(-1, -1, ItemStackUtils.getEmpty(), ItemStackUtils.getEmpty());
+    private static final Fuel NULL_FUEL = new Fuel(-1, -1, ItemStackUtils.getEmpty(), ItemStackUtils.getEmpty());
 
     public static void initialize() {
         TmrConstants.LOG.log(Level.INFO, "Initializing Electrolyte Generator recipes...");
@@ -90,7 +90,7 @@ public class ElectrolyteRegistry
         return true;
     }
 
-    public static Map<ItemStack, Fuel> getFuelMap() {
+    private static Map<ItemStack, Fuel> getFuelMap() {
         return FUELS_UNMODIFY;
     }
 
@@ -111,10 +111,10 @@ public class ElectrolyteRegistry
     }
 
     public static boolean isFuel(ItemStack stack) {
-        return !getFuel(stack).isNull();
+        return getFuel(stack).isValid();
     }
 
-    public static boolean registerFuels(NonNullList<ItemStack> electrolytes, float effectiveness, int ticksProcessing, @Nonnull ItemStack trash, @Nonnull ItemStack treasure) {
+    private static boolean registerFuels(NonNullList<ItemStack> electrolytes, float effectiveness, int ticksProcessing, @Nonnull ItemStack trash, @Nonnull ItemStack treasure) {
         if( effectiveness < 1.0F ) {
             TmrConstants.LOG.log(Level.ERROR, "Cannot have an effectiveness of less than 1.0");
             return false;
@@ -125,7 +125,7 @@ public class ElectrolyteRegistry
             return false;
         }
 
-        if( electrolytes.stream().anyMatch(item -> !getFuel(item).isNull()) ) {
+        if( electrolytes.stream().anyMatch(item -> getFuel(item).isValid()) ) {
             TmrConstants.LOG.log(Level.ERROR, "Electrolyte item is already registered");
             return false;
         }
@@ -151,12 +151,12 @@ public class ElectrolyteRegistry
 
     public static final class Fuel
     {
-        public final float effect;
-        public final short ticksProc;
+        final float effect;
+        final short ticksProc;
         @Nonnull
-        public final ItemStack trash;
+        final ItemStack trash;
         @Nonnull
-        public final ItemStack treasure;
+        final ItemStack treasure;
 
         public Fuel(float effectiveness, int ticksProcessing, @Nonnull ItemStack trash, @Nonnull ItemStack treasure) {
             this.effect = effectiveness;
@@ -165,8 +165,8 @@ public class ElectrolyteRegistry
             this.treasure = treasure;
         }
 
-        public boolean isNull() {
-            return this.effect < 1.0F || this.ticksProc < 1;
+        public boolean isValid() {
+            return this.effect >= 1.0F && this.ticksProc >= 1;
         }
     }
 }

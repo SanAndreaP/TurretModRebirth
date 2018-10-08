@@ -10,7 +10,6 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
@@ -45,6 +44,7 @@ public final class AmmunitionRegistry
     private final Multimap<ITurret, IAmmunitionGroup> ammoGroupsFromTurret;
     private final Map<UUID, List<IAmmunition>> ammoTypesFromGroupID;
     private final List<IAmmunition> ammoTypes;
+    private final Map<UUID, IAmmunition> ammoTypeWithLowestRoundCount;
 
     public static final IAmmunition NULL_TYPE = new IAmmunition() {
         @Override public String getName() { return ""; }
@@ -55,7 +55,6 @@ public final class AmmunitionRegistry
         @Override public int getAmmoCapacity() { return 0; }
         @Override public ITurretProjectile getProjectile(ITurretInst turretInst) { return null; }
         @Override public ResourceLocation getModel() { return null; }
-        @Override @Nonnull public ItemStack getStoringAmmoItem() { return ItemStackUtils.getEmpty(); }
     };
 
     private AmmunitionRegistry() {
@@ -64,6 +63,7 @@ public final class AmmunitionRegistry
         this.ammoGroupsFromTurret = ArrayListMultimap.create();
         this.ammoTypesFromGroupID = new LinkedHashMap<>();
         this.ammoTypes = new ArrayList<>();
+        this.ammoTypeWithLowestRoundCount = new HashMap<>();
     }
 
     @Override
@@ -78,13 +78,13 @@ public final class AmmunitionRegistry
 
     @Override
     public IAmmunition[] getTypes(UUID groupId) {
-        List<IAmmunition> ammoList = MiscUtils.defIfNull(this.ammoTypesFromGroupID.get(groupId), new ArrayList<>(0));
+        List<IAmmunition> ammoList = MiscUtils.defIfNull(this.ammoTypesFromGroupID.get(groupId), () -> new ArrayList<>(0));
         return ammoList.toArray(new IAmmunition[0]);
     }
 
     @Override
     public IAmmunition getType(UUID typeId) {
-        return MiscUtils.defIfNull(this.ammoTypeFromID.get(typeId), NULL_TYPE);
+        return this.ammoTypeFromID.getOrDefault(typeId, NULL_TYPE);
     }
 
     @Override
@@ -152,13 +152,18 @@ public final class AmmunitionRegistry
 
         this.ammoTypesFromGroupID.computeIfAbsent(group.getId(), k -> new ArrayList<>()).add(type);
 
+        int rounds = this.ammoTypeWithLowestRoundCount.computeIfAbsent(type.getTypeId(), (tId) -> type).getAmmoCapacity();
+        if( rounds > type.getAmmoCapacity() ) {
+            this.ammoTypeWithLowestRoundCount.put(type.getTypeId(), type);
+        }
+
         return true;
     }
 
     @Override
     @Nonnull
     public ItemStack getAmmoItem(UUID id) {
-        return this.getAmmoItem(this.ammoTypeFromID.get(id));
+        return this.getAmmoItem(this.ammoTypeFromID.getOrDefault(id, NULL_TYPE));
     }
 
     @Override
@@ -186,5 +191,9 @@ public final class AmmunitionRegistry
         } else {
             return firstStack == secondStack;
         }
+    }
+
+    public ItemStack getLowestRoundedTypeItem(UUID typeId) {
+        return this.getAmmoItem(this.ammoTypeWithLowestRoundCount.getOrDefault(typeId, NULL_TYPE));
     }
 }

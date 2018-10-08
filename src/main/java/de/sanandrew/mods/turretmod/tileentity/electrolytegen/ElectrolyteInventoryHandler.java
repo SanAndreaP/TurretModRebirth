@@ -19,25 +19,25 @@ final class ElectrolyteInventoryHandler
 {
     private final TileEntityElectrolyteGenerator tile;
 
-    public ElectrolyteInventoryHandler(TileEntityElectrolyteGenerator tile) {
+    ElectrolyteInventoryHandler(TileEntityElectrolyteGenerator tile) {
         super(14);
         this.tile = tile;
     }
 
-    boolean canAddExtraction(@Nonnull ItemStack stack) {
+    boolean isOutputFull(@Nonnull ItemStack stack) {
         ItemStack myStack = stack.copy();
         for( int i = 9; i < 14 && ItemStackUtils.isValid(myStack); i++ ) {
             myStack = super.insertItem(i, myStack, true);
         }
 
-        return !ItemStackUtils.isValid(myStack);
+        return ItemStackUtils.isValid(myStack);
     }
 
     @Override
     @Nonnull
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
         this.validateSlotIndex(slot);
-        if( slot < 9 && !ElectrolyteRegistry.getFuel(stack).isNull() && !ItemStackUtils.isValid(this.stacks.get(slot)) ) {
+        if( slot < 9 && ElectrolyteRegistry.getFuel(stack).isValid() && !ItemStackUtils.isValid(this.stacks.get(slot)) ) {
             return super.insertItem(slot, stack, simulate);
         }
 

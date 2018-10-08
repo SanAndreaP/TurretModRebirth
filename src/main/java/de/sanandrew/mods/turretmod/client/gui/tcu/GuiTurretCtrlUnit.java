@@ -9,6 +9,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
+@SuppressWarnings("unused")
 public interface GuiTurretCtrlUnit
 {
     int getGuiLeft();

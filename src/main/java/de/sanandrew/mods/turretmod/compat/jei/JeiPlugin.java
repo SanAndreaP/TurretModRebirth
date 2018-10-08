@@ -51,7 +51,7 @@ public class JeiPlugin
     public void registerItemSubtypes(ISubtypeRegistry subtypeRegistry) {
         subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.TURRET_PLACER, itemStack -> {
             ITurret stype = TurretRegistry.INSTANCE.getTurret(itemStack);
-            return stype != null ? stype.getId().toString() : null;
+            return stype != null ? stype.getId().toString() : "";
         });
 
         subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.TURRET_UPGRADE, itemStack -> UpgradeRegistry.INSTANCE.getUpgradeId(itemStack).toString());

@@ -91,10 +91,10 @@ public class ContainerAssemblyFilter
         return ItemStackUtils.getEmpty();
     }
 
-    public static class SlotFilter
+    static class SlotFilter
             extends Slot
     {
-        public SlotFilter(InventoryAssemblyFilter filter, int id, int x, int y) {
+        SlotFilter(InventoryAssemblyFilter filter, int id, int x, int y) {
             super(filter, id, x, y);
         }
 

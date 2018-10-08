@@ -29,7 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
-public class AssemblyRecipeWrapper
+class AssemblyRecipeWrapper
         implements IRecipeWrapper
 {
     private final List<List<ItemStack>> input;
@@ -37,7 +37,7 @@ public class AssemblyRecipeWrapper
     private final int fluxPerTick;
     private final int timeInTicks;
 
-    public AssemblyRecipeWrapper(RecipeKeyEntry keyEntry) {
+    private AssemblyRecipeWrapper(RecipeKeyEntry keyEntry) {
         RecipeEntry entry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(keyEntry.id);
         assert entry != null : "Recipe Entry should not be null!";
 

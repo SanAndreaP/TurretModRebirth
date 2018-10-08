@@ -14,7 +14,6 @@ import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
@@ -28,7 +27,7 @@ public class TurretAmmoArrow
     private final int capacity;
     private final ResourceLocation itemModel;
 
-    public TurretAmmoArrow(boolean isMulti) {
+    TurretAmmoArrow(boolean isMulti) {
         this.name = isMulti ? "arrow_pack" : "arrow";
         this.id = isMulti ? Ammunitions.QUIVER : Ammunitions.ARROW;
         this.capacity = isMulti ? 16 : 1;
@@ -64,12 +63,6 @@ public class TurretAmmoArrow
     @Override
     public UUID getTypeId() {
         return Ammunitions.ARROW;
-    }
-
-    @Override
-    @Nonnull
-    public ItemStack getStoringAmmoItem() {
-        return AmmunitionRegistry.INSTANCE.getAmmoItem(AmmunitionRegistry.INSTANCE.getType(Ammunitions.ARROW));
     }
 
     @Override

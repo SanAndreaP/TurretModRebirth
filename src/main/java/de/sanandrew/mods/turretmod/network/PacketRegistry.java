@@ -58,7 +58,7 @@ public final class PacketRegistry
         TurretModRebirth.network.sendTo(message, player);
     }
 
-    public static <T extends AbstractMessage<T> & IMessageHandler<T, IMessage>> void registerMessage (SimpleNetworkWrapper network, Class<T> clazz, int id, Side side) {
+    private static <T extends AbstractMessage<T> & IMessageHandler<T, IMessage>> void registerMessage(SimpleNetworkWrapper network, Class<T> clazz, int id, Side side) {
         network.registerMessage(clazz, clazz, id, side);
     }
 }

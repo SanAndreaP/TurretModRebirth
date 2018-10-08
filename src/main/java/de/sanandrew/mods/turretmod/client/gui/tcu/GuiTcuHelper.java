@@ -54,9 +54,9 @@ public final class GuiTcuHelper
     static final int X_SIZE = 176;
     static final int Y_SIZE = 236;
 
-    final Map<GuiButton, ResourceLocation> tabs = new TreeMap<>(new ComparatorTabButton());
-    GuiButton tabNavLeft;
-    GuiButton tabNavRight;
+    private final Map<GuiButton, ResourceLocation> tabs = new TreeMap<>(new ComparatorTabButton());
+    private GuiButton tabNavLeft;
+    private GuiButton tabNavRight;
 
     private static int currTabScroll = 0;
 

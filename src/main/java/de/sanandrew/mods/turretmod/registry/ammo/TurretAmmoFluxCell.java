@@ -15,7 +15,6 @@ import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
@@ -29,7 +28,7 @@ public class TurretAmmoFluxCell
     private final int capacity;
     private final ResourceLocation itemModel;
 
-    public TurretAmmoFluxCell(boolean isMulti) {
+    TurretAmmoFluxCell(boolean isMulti) {
         this.name = isMulti ? "fluxcell_pack" : "fluxcell";
         this.id = isMulti ? Ammunitions.FLUXCELL_PACK : Ammunitions.FLUXCELL;
         this.capacity = isMulti ? 16 : 1;
@@ -65,12 +64,6 @@ public class TurretAmmoFluxCell
     @Override
     public IAmmunitionGroup getGroup() {
         return Ammunitions.Groups.FLUX_CELL;
-    }
-
-    @Override
-    @Nonnull
-    public ItemStack getStoringAmmoItem() {
-        return AmmunitionRegistry.INSTANCE.getAmmoItem(AmmunitionRegistry.INSTANCE.getType(Ammunitions.FLUXCELL));
     }
 
     @Override

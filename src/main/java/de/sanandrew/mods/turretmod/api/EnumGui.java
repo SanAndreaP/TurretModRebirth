@@ -10,10 +10,6 @@ package de.sanandrew.mods.turretmod.api;
 
 public enum EnumGui
 {
-    /**GUI_TCU_INFO,**/
-    /**GUI_TCU_ENTITY_TARGETS,**/
-    /**GUI_TCU_PLAYER_TARGETS,**/
-    /**GUI_TCU_UPGRADES,**/
     GUI_TASSEMBLY_MAN,
     GUI_TASSEMBLY_FLT,
     GUI_POTATOGEN,

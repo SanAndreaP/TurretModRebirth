@@ -1,7 +1,6 @@
 package de.sanandrew.mods.turretmod.api.client.render;
 
 
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;

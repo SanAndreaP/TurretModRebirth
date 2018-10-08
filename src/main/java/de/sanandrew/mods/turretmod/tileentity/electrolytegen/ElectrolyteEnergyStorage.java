@@ -14,9 +14,9 @@ final class ElectrolyteEnergyStorage
         implements IEnergyStorage, INBTSerializable<NBTTagCompound>
 {
     int fluxAmount;
-    int prevFluxAmount;
+    private int prevFluxAmount;
     int fluxExtractPerTick;
-    int fluxBuffer;
+    private int fluxBuffer;
 
     void resetFluxExtract() {
         this.fluxExtractPerTick = Math.min(this.fluxAmount, TileEntityElectrolyteGenerator.MAX_FLUX_EXTRACT);

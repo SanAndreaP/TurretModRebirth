@@ -15,7 +15,7 @@ import de.sanandrew.mods.turretmod.client.gui.control.GuiButtonIcon;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncUpgradeInst;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
-import de.sanandrew.mods.turretmod.registry.upgrades.smartTargeting.AdvTargetSettings;
+import de.sanandrew.mods.turretmod.registry.upgrades.smarttargeting.AdvTargetSettings;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.gui.FontRenderer;
@@ -24,8 +24,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-
-import java.io.IOException;
 
 public class GuiSmartTargets
         implements IGuiTCU
@@ -120,10 +118,10 @@ public class GuiSmartTargets
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         gui.getGui().drawTexturedModalRect(gui.getPosX(), gui.getPosY(), 0, 0, gui.getWidth(), gui.getHeight());
 
-        drawGroupBox(gui.getFontRenderer(), LangUtils.translate(Lang.TCU_SMARTTGT_GBOX.get("turret")), gui.getPosX() + 7, gui.getPosY() + 39, 162, 30, 0x80000000, 0x30000000);
-        drawGroupBox(gui.getFontRenderer(), LangUtils.translate(Lang.TCU_SMARTTGT_GBOX.get("tamed")), gui.getPosX() + 7, gui.getPosY() + 73, 162, 30, 0x80000000, 0x30000000);
-        drawGroupBox(gui.getFontRenderer(), LangUtils.translate(Lang.TCU_SMARTTGT_GBOX.get("age")), gui.getPosX() + 7, gui.getPosY() + 107, 162, 30, 0x80000000, 0x30000000);
-        drawGroupBox(gui.getFontRenderer(), LangUtils.translate(Lang.TCU_SMARTTGT_GBOX.get("count")), gui.getPosX() + 7, gui.getPosY() + 141, 162, 30, 0x80000000, 0x30000000);
+        drawGroupBox(gui.getFontRenderer(), LangUtils.translate(Lang.TCU_SMARTTGT_GBOX.get("turret")), gui.getPosX() + 7, gui.getPosY() + 39);
+        drawGroupBox(gui.getFontRenderer(), LangUtils.translate(Lang.TCU_SMARTTGT_GBOX.get("tamed")), gui.getPosX() + 7, gui.getPosY() + 73);
+        drawGroupBox(gui.getFontRenderer(), LangUtils.translate(Lang.TCU_SMARTTGT_GBOX.get("age")), gui.getPosX() + 7, gui.getPosY() + 107);
+        drawGroupBox(gui.getFontRenderer(), LangUtils.translate(Lang.TCU_SMARTTGT_GBOX.get("count")), gui.getPosX() + 7, gui.getPosY() + 141);
 
         if( this.countEntities != null ) {
             this.countEntities.drawTextBox();
@@ -131,7 +129,7 @@ public class GuiSmartTargets
     }
 
     @Override
-    public void onButtonClick(IGuiTcuInst<?> gui, GuiButton button) throws IOException {
+    public void onButtonClick(IGuiTcuInst<?> gui, GuiButton button) {
         AdvTargetSettings settings = getSettings(gui);
         if( settings != null ) {
             if( button == this.turretIgnore ) {
@@ -181,12 +179,12 @@ public class GuiSmartTargets
     }
 
     @Override
-    public void onMouseClick(IGuiTcuInst<?> gui, int mouseX, int mouseY, int mouseButton) throws IOException {
+    public void onMouseClick(IGuiTcuInst<?> gui, int mouseX, int mouseY, int mouseButton) {
         this.countEntities.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
-    public boolean doKeyIntercept(IGuiTcuInst<?> gui, char typedChar, int keyCode) throws IOException {
+    public boolean doKeyIntercept(IGuiTcuInst<?> gui, char typedChar, int keyCode) {
         if( this.countEntities.textboxKeyTyped(typedChar, keyCode) ) {
             AdvTargetSettings settings = getSettings(gui);
             if( settings != null ) {
@@ -203,16 +201,20 @@ public class GuiSmartTargets
         return false;
     }
 
-    private static void drawGroupBox(FontRenderer fontRenderer, String title, int x, int y, int width, int height, int textColor, int frameColor) {
+    private static void drawGroupBox(FontRenderer fontRenderer, String title, int x, int y) {
+        final int width2 = 162;
+        final int height2 = 30;
+        final int frameColor2 = 0x30000000;
+
         int strWidth = fontRenderer.getStringWidth(title);
         GlStateManager.enableBlend();
-        fontRenderer.drawString(title, x + 5, y, textColor, false);
+        fontRenderer.drawString(title, x + 5, y, 0x80000000, false);
 
-        Gui.drawRect(x,                y + 4,          x + 3,     y + 5,          frameColor);
-        Gui.drawRect(x + strWidth + 6, y + 4,          x + width, y + 5,          frameColor);
-        Gui.drawRect(x,                y + height - 1, x + width, y + height,     frameColor);
-        Gui.drawRect(x,                y + 5,          x + 1,     y + height - 1, frameColor);
-        Gui.drawRect(x + width - 1,    y + 5,          x + width, y + height - 1, frameColor);
+        Gui.drawRect(x,                y + 4,          x + 3,     y + 5,          frameColor2);
+        Gui.drawRect(x + strWidth + 6, y + 4,          x + width2, y + 5,          frameColor2);
+        Gui.drawRect(x,                y + height2 - 1, x + width2, y + height2,     frameColor2);
+        Gui.drawRect(x,                y + 5,          x + 1,     y + height2 - 1, frameColor2);
+        Gui.drawRect(x + width2 - 1,    y + 5,          x + width2, y + height2 - 1, frameColor2);
     }
 
     public static boolean showTab(IGuiTcuInst<?> gui) {

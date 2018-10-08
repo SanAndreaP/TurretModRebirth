@@ -31,7 +31,7 @@ import java.util.Map.Entry;
 public class ForcefieldCube
         implements Cloneable
 {
-    public Map<EnumFacing, CubeFace[]> faces = new EnumMap<>(EnumFacing.class);
+    private Map<EnumFacing, CubeFace[]> faces = new EnumMap<>(EnumFacing.class);
     private final Vec3d center;
     private final AxisAlignedBB boxAABB;
     public final ColorObj boxColor;
@@ -48,6 +48,7 @@ public class ForcefieldCube
     }
 
     @Override
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     public ForcefieldCube clone() {
         return new ForcefieldCube(this.center, this.boxAABB, this.boxColor);
     }
@@ -173,7 +174,7 @@ public class ForcefieldCube
                 }
             }
 
-            newFaceMap.put(myFace.getKey(), newFaces.toArray(new CubeFace[newFaces.size()]));
+            newFaceMap.put(myFace.getKey(), newFaces.toArray(new CubeFace[0]));
         }
 
         this.faces = newFaceMap;
@@ -181,19 +182,19 @@ public class ForcefieldCube
 
     private static class CubeFace
     {
-        public final EnumFacing facing;
-        public final Vec3d beginPt;
-        public final Vec3d endPt;
-        public final ColorObj color;
+        final EnumFacing facing;
+        final Vec3d beginPt;
+        final Vec3d endPt;
+        final ColorObj color;
 
-        public CubeFace(EnumFacing direction, Vec3d begin, Vec3d end, ColorObj faceColor) {
+        CubeFace(EnumFacing direction, Vec3d begin, Vec3d end, ColorObj faceColor) {
             this.facing = direction;
             this.beginPt = begin;
             this.endPt = end;
             this.color = faceColor;
         }
 
-        public CubeFace(EnumFacing direction, Vec3d center, AxisAlignedBB boxBB, ColorObj faceColor) {
+        CubeFace(EnumFacing direction, Vec3d center, AxisAlignedBB boxBB, ColorObj faceColor) {
             this.facing = direction;
             this.color = faceColor;
             switch( direction ) {
@@ -226,7 +227,7 @@ public class ForcefieldCube
             }
         }
 
-        public CubeFace[] intersect(CubeFace intersector) {
+        CubeFace[] intersect(CubeFace intersector) {
             RectCoords my = this.get2DCoords();
             RectCoords intsCoord = intersector.get2DCoords();
 
@@ -258,10 +259,10 @@ public class ForcefieldCube
                 return new CubeFace[0];
             }
 
-            return newCubes.toArray(new CubeFace[newCubes.size()]);
+            return newCubes.toArray(new CubeFace[0]);
         }
 
-        public RectCoords get2DCoords() {
+        RectCoords get2DCoords() {
             switch( this.facing ) {
                 case NORTH:
                 case SOUTH:
@@ -277,7 +278,7 @@ public class ForcefieldCube
             }
         }
 
-        public CubeFace get3DCoords(RectCoords newRect) {
+        CubeFace get3DCoords(RectCoords newRect) {
             switch( this.facing ) {
                 case NORTH:
                 case SOUTH:
@@ -299,19 +300,19 @@ public class ForcefieldCube
 
     private static class RectCoords
     {
-        public final double beginX;
-        public final double beginY;
-        public final double endX;
-        public final double endY;
+        final double beginX;
+        final double beginY;
+        final double endX;
+        final double endY;
 
-        public RectCoords(double xBegin, double yBegin, double xEnd, double yEnd) {
+        RectCoords(double xBegin, double yBegin, double xEnd, double yEnd) {
             this.beginX = xBegin;
             this.beginY = yBegin;
             this.endX = xEnd;
             this.endY = yEnd;
         }
 
-        public boolean isSizePositive() {
+        boolean isSizePositive() {
             return beginX + 0.0001D < endX && beginY > endY + 0.0001D;
         }
     }

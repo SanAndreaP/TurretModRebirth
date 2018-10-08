@@ -38,11 +38,11 @@ public class PlayerList
     //concurrent hash map to prevent different dimension altering this list at the same time
     private final Map<UUID, String> playerMap = new ConcurrentHashMap<>();
 
-    public PlayerList() {
+    private PlayerList() {
         this(WSD_NAME);
     }
 
-    public PlayerList(String name) {
+    private PlayerList(String name) {
         super(name);
     }
 

@@ -85,7 +85,7 @@ public abstract class RenderCrossTextureProjectile<T extends Entity>
         GlStateManager.popMatrix();
     }
 
-    protected int getTextureIndex() {
+    int getTextureIndex() {
         return 0;
     }
 }

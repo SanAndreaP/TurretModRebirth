@@ -26,7 +26,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class RenderEventHandler
 {
     public static Entity renderEntity;
-    public static Entity backupEntity;
+    private static Entity backupEntity;
     public static boolean renderPlayer;
 
     @SubscribeEvent

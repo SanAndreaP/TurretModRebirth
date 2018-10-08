@@ -24,8 +24,8 @@ import java.util.stream.Stream;
 public class ModelTurretRevolver
 		extends ModelTurretBase
 {
-	public ModelRenderer barrelLeft;
-	public ModelRenderer barrelRight;
+	private ModelRenderer barrelLeft;
+	private ModelRenderer barrelRight;
 
 	public ModelTurretRevolver(float scale) {
 		super(scale);

@@ -49,7 +49,7 @@ import java.util.UUID;
 public final class ModelRegistry
 {
     @SubscribeEvent
-    public static void registerModels(ModelRegistryEvent event) throws Exception {
+    public static void registerModels(ModelRegistryEvent event) {
         setStandardModel(ItemRegistry.TURRET_CONTROL_UNIT);
         setStandardModel(ItemRegistry.TURRET_INFO);
         setStandardModel(ItemRegistry.ASSEMBLY_UPG_FILTER);
@@ -89,7 +89,7 @@ public final class ModelRegistry
     private static abstract class MeshDefUUID<T>
             implements ItemMeshDefinition
     {
-        public final Map<UUID, ModelResourceLocation> modelRes = new HashMap<>();
+        final Map<UUID, ModelResourceLocation> modelRes = new HashMap<>();
 
         @Override
         public ModelResourceLocation getModelLocation(@Nonnull ItemStack stack) {
@@ -102,11 +102,11 @@ public final class ModelRegistry
             }
         }
 
-        public abstract T getType(@Nonnull ItemStack stack);
-        public abstract UUID getId(T type);
+        protected abstract T getType(@Nonnull ItemStack stack);
+        protected abstract UUID getId(T type);
 
-        public ResourceLocation[] getResLocations() {
-            return this.modelRes.values().toArray(new ModelResourceLocation[this.modelRes.size()]);
+        ResourceLocation[] getResLocations() {
+            return this.modelRes.values().toArray(new ModelResourceLocation[0]);
         }
 
         static final class Turret
@@ -129,7 +129,7 @@ public final class ModelRegistry
         static final class Ammo
                 extends MeshDefUUID<IAmmunition>
         {
-            public Ammo() {
+            Ammo() {
                 for( IAmmunition ammo : AmmunitionRegistry.INSTANCE.getTypes() ) {
                     ModelResourceLocation modelRes = new ModelResourceLocation(ammo.getModel(), "inventory");
                     this.modelRes.put(ammo.getId(), modelRes);
@@ -146,7 +146,7 @@ public final class ModelRegistry
         static final class Upgrade
                 extends MeshDefUUID<ITurretUpgrade>
         {
-            public Upgrade() {
+            Upgrade() {
                 for( ITurretUpgrade upg : UpgradeRegistry.INSTANCE.getUpgrades() ) {
                     ModelResourceLocation modelRes = new ModelResourceLocation(upg.getModel(), "inventory");
                     this.modelRes.put(UpgradeRegistry.INSTANCE.getUpgradeId(upg), modelRes);
@@ -163,7 +163,7 @@ public final class ModelRegistry
         static final class Repkit
                 extends MeshDefUUID<TurretRepairKit>
         {
-            public Repkit() {
+            Repkit() {
                 for( TurretRepairKit kit : RepairKitRegistry.INSTANCE.getRegisteredTypes() ) {
                     ModelResourceLocation modelRes = new ModelResourceLocation(kit.getModel(), "inventory");
                     this.modelRes.put(RepairKitRegistry.INSTANCE.getTypeId(kit), modelRes);

@@ -28,11 +28,9 @@ public class ModelTurretBase
 		extends ModelBase
 		implements ModelJsonHandler<ModelTurretBase, ModelJsonLoader.ModelJson>
 {
-	public ModelRenderer base;
-	public ModelRenderer head;
-	public ModelRenderer throat;
-	public ModelRenderer healthBar;
-	public ModelRenderer ammoBar;
+	private ModelRenderer head;
+	private ModelRenderer healthBar;
+	private ModelRenderer ammoBar;
 
 	private final ModelJsonLoader<ModelTurretBase, ModelJsonLoader.ModelJson> modelJson;
 	private final float scale;
@@ -74,8 +72,6 @@ public class ModelTurretBase
 	public void onReload(IResourceManager iResourceManager, ModelJsonLoader<ModelTurretBase, ModelJsonLoader.ModelJson> loader) {
 		loader.load();
 
-		this.base = loader.getBox("base");
-		this.throat = loader.getBox("throat");
 		this.head = loader.getBox("head");
 		this.healthBar = loader.getBox("healthBar");
 		this.ammoBar = loader.getBox("ammoBar");
@@ -89,11 +85,11 @@ public class ModelTurretBase
 		return this.scale;
 	}
 
-	public List<String> getMandatoryBoxes() {
-		return Arrays.asList("base", "head", "throat", "healthBar", "ammoBar");
+	List<String> getMandatoryBoxes() {
+		return Arrays.asList("head", "healthBar", "ammoBar");
 	}
 
-	public ResourceLocation getModelLocation() {
+	ResourceLocation getModelLocation() {
 		return Resources.TURRET_T1_BASE_MODEL.resource;
 	}
 }

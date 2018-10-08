@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.inventory;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -44,72 +45,7 @@ public class ContainerTurretUpgrades
 
     @Override
     protected boolean mergeItemStack(@Nonnull ItemStack stack, int beginSlot, int endSlot, boolean reverse) {
-        boolean slotChanged = false;
-        int start = beginSlot;
-
-        if( reverse ) {
-            start = endSlot - 1;
-        }
-
-        Slot slot;
-        ItemStack slotStack;
-
-        if( stack.isStackable() ) {
-            while( stack.getCount() > 0 && (!reverse && start < endSlot || reverse && start >= beginSlot) ) {
-                slot = this.inventorySlots.get(start);
-                slotStack = slot.getStack();
-
-                if( ItemStackUtils.areEqual(slotStack, stack) && slot.isItemValid(stack) ) {
-                    int combStackSize = slotStack.getCount() + stack.getCount();
-
-                    if( combStackSize <= stack.getMaxStackSize() ) {
-                        stack.setCount(0);
-                        slotStack.setCount(combStackSize);
-                        slot.onSlotChanged();
-                        slotChanged = true;
-                    } else if( slotStack.getCount() < stack.getMaxStackSize() ) {
-                        stack.shrink(stack.getMaxStackSize() - slotStack.getCount());
-                        slotStack.setCount(stack.getMaxStackSize());
-                        slot.onSlotChanged();
-                        slotChanged = true;
-                    }
-                }
-
-                if( reverse ) {
-                    start--;
-                } else {
-                    start++;
-                }
-            }
-        }
-
-        if( stack.getCount() > 0 ) {
-            if( reverse ) {
-                start = endSlot - 1;
-            } else {
-                start = beginSlot;
-            }
-
-            while( !reverse && start < endSlot || reverse && start >= beginSlot ) {
-                slot = this.inventorySlots.get(start);
-
-                if( !ItemStackUtils.isValid(slot.getStack()) && slot.isItemValid(stack) ) {
-                    slot.putStack(stack.copy());
-                    slot.onSlotChanged();
-                    stack.setCount(0);
-                    slotChanged = true;
-                    break;
-                }
-
-                if( reverse ) {
-                    start--;
-                } else {
-                    start++;
-                }
-            }
-        }
-
-        return slotChanged;
+        return TmrUtils.mergeItemStack(this, stack, beginSlot, endSlot, reverse);
     }
 
     private boolean transferUpgrade(Item desiredItm, @Nonnull ItemStack origStack, @Nonnull ItemStack slotStack) {
@@ -170,12 +106,12 @@ public class ContainerTurretUpgrades
         return true;
     }
 
-    public static class SlotUpgrade
+    static class SlotUpgrade
             extends Slot
     {
         private final UpgradeProcessor upgProc;
 
-        public SlotUpgrade(UpgradeProcessor proc, int id, int x, int y) {
+        SlotUpgrade(UpgradeProcessor proc, int id, int x, int y) {
             super(proc, id, x, y);
             this.upgProc = proc;
         }

@@ -7,14 +7,12 @@
 package de.sanandrew.mods.turretmod.client.gui.lexicon.upgrade;
 
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconEntry;
-import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.client.util.ClientProxy;
-import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public final class LexiconEntryAssemblyUpgrade
+final class LexiconEntryAssemblyUpgrade
         implements ILexiconEntry
 {
     private final String id;

@@ -18,7 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class GuiCameras
         extends GuiScreen
 {
-    final Entity e;
+    private final Entity e;
 
     public GuiCameras(Entity rendered) {
         e = rendered;

@@ -28,6 +28,6 @@ public class RecipeEntry
         for( IRecipeItem stack : this.resources ) {
             stacks.add(stack.copy());
         }
-        return new RecipeEntry(stacks.toArray(new IRecipeItem[stacks.size()]), this.fluxPerTick, this.ticksProcessing);
+        return new RecipeEntry(stacks.toArray(new IRecipeItem[0]), this.fluxPerTick, this.ticksProcessing);
     }
 }

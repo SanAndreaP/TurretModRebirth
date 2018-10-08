@@ -19,14 +19,14 @@ import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public class GuiButtonAmmoItem
+class GuiButtonAmmoItem
         extends GuiButton
 {
     private static final ShaderGrayscale SHADER_GRAYSCALE = new ShaderGrayscale(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
     final IAmmunition ammo;
     @Nonnull
-    public final ItemStack stack;
+    private final ItemStack stack;
     boolean inactive;
 
     public GuiButtonAmmoItem(IAmmunition ammo, int id, int x, int y) {

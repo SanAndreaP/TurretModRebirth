@@ -12,7 +12,6 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
@@ -23,7 +22,6 @@ import org.apache.commons.lang3.Range;
 import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -36,7 +34,7 @@ public final class UpgradeRegistry
 {
 
     public static final UpgradeRegistry INSTANCE = new UpgradeRegistry();
-    public static final UUID EMPTY = UuidUtils.EMPTY_UUID;
+    private static final UUID EMPTY = UuidUtils.EMPTY_UUID;
     private static final ITurretUpgrade EMPTY_INST;
 
     private Map<UUID, ITurretUpgrade> uuidToUpgradeMap;

@@ -9,7 +9,6 @@
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import net.minecraft.util.ResourceLocation;
 
@@ -19,7 +18,7 @@ public abstract class UpgradeAmmoUsage
     private final ResourceLocation itemModel;
     private final String name;
 
-    public UpgradeAmmoUsage(String name) {
+    UpgradeAmmoUsage(String name) {
         this.name = name;
         this.itemModel = new ResourceLocation(TmrConstants.ID, "upgrades/" + name);
     }

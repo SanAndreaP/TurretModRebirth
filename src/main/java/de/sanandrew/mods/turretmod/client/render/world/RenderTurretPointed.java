@@ -245,17 +245,17 @@ public final class RenderTurretPointed
 
     private static class LabelEntry
     {
-        protected long beginTick;
-        protected long endTick;
-        protected boolean wasActive;
-        protected boolean active;
-        protected float angleY;
-        protected float angleX;
-        protected float maxHeight;
-        protected float maxWidth;
-        protected float progress;
+        long beginTick;
+        long endTick;
+        boolean wasActive;
+        boolean active;
+        float angleY;
+        float angleX;
+        float maxHeight;
+        float maxWidth;
+        float progress;
 
-        protected LabelEntry(RenderManager rMan) {
+        LabelEntry(RenderManager rMan) {
             this.active = true;
             this.wasActive = false;
             this.beginTick = -1;

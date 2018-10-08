@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ModelRendererCulled
+class ModelRendererCulled
         extends ModelRenderer
 {
     public ModelRendererCulled(ModelBase model, int texOffX, int texOffY) {

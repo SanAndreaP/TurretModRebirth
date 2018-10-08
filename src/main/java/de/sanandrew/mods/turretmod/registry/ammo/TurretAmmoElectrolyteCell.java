@@ -12,11 +12,7 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
-import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.registry.turret.Turrets;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
@@ -30,7 +26,7 @@ public class TurretAmmoElectrolyteCell
     private final int capacity;
     private final ResourceLocation itemModel;
 
-    public TurretAmmoElectrolyteCell(boolean isMulti) {
+    TurretAmmoElectrolyteCell(boolean isMulti) {
         this.name = isMulti ? "eleccell_pack" : "eleccell";
         this.id = isMulti ? Ammunitions.ELECTROLYTECELL_PACK : Ammunitions.ELECTROLYTECELL;
         this.capacity = isMulti ? 32 : 2;
@@ -66,12 +62,6 @@ public class TurretAmmoElectrolyteCell
     @Override
     public IAmmunitionGroup getGroup() {
         return Ammunitions.Groups.ELEC_CELL;
-    }
-
-    @Override
-    @Nonnull
-    public ItemStack getStoringAmmoItem() {
-        return AmmunitionRegistry.INSTANCE.getAmmoItem(AmmunitionRegistry.INSTANCE.getType(Ammunitions.ELECTROLYTECELL));
     }
 
     @Override

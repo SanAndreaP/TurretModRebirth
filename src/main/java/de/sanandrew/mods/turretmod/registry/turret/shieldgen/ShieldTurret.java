@@ -20,18 +20,18 @@ import net.minecraft.util.math.MathHelper;
 public final class ShieldTurret
         implements ITurretRAM, IForcefieldProvider
 {
-    static final ColorObj BASE_COLOR = new ColorObj(0x40FFFFFF);
+    private static final ColorObj BASE_COLOR = new ColorObj(0x40FFFFFF);
     static final ColorObj CRIT_COLOR = new ColorObj(0x40FF0000);
-    static final float[] BASE_CLR_HSL = BASE_COLOR.calcHSL();
-    static final float[] CRIT_CLR_HSL = CRIT_COLOR.calcHSL();
-    static final float[] HSL_DIF = new float[] {
+    private static final float[] BASE_CLR_HSL = BASE_COLOR.calcHSL();
+    private static final float[] CRIT_CLR_HSL = CRIT_COLOR.calcHSL();
+    private static final float[] HSL_DIF = new float[] {
             TmrUtils.wrap360(BASE_CLR_HSL[0] - CRIT_CLR_HSL[0]),
             BASE_CLR_HSL[1] - CRIT_CLR_HSL[1],
             BASE_CLR_HSL[2] - CRIT_CLR_HSL[2]
     };
 
-    static final float RECOVERY_PER_TICK = 0.0005F;
-    static final float MAX_VALUE_RECOVERED = 100.0F;
+    private static final float RECOVERY_PER_TICK = 0.0005F;
+    private static final float MAX_VALUE_RECOVERED = 100.0F;
 
     float value;
     float recovery;
@@ -62,7 +62,7 @@ public final class ShieldTurret
         return upgProc.hasUpgrade(Upgrades.SHIELD_STRENGTH_II) ? 250.0F : upgProc.hasUpgrade(Upgrades.SHIELD_STRENGTH_I) ? 150.0F : 100.0F;
     }
 
-    public float getCritValue() {
+    private float getCritValue() {
         return this.getMaxValue() / 10.0F;
     }
 

@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public class LexiconEntryCraftable
+class LexiconEntryCraftable
         implements ILexiconEntry
 {
     private final String id;

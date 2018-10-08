@@ -35,9 +35,9 @@ import java.util.TreeMap;
 public abstract class GuiTargets<T>
         implements IGuiTCU
 {
-    protected static final int MAX_ITEMS = 13;
-    protected SortedMap<T, Boolean> tempTargets = new TreeMap<>();
-    protected SortedMap<T, Boolean> filteredTargets = new TreeMap<>();
+    private static final int MAX_ITEMS = 13;
+    SortedMap<T, Boolean> tempTargets = new TreeMap<>();
+    private SortedMap<T, Boolean> filteredTargets = new TreeMap<>();
 
     private float scroll = 0.0F;
     private float scrollAmount = 0.0F;
@@ -45,10 +45,10 @@ public abstract class GuiTargets<T>
     private boolean canScroll;
     private boolean prevIsLmbDown;
 
-    protected GuiButton whitelist;
-    protected GuiButton blacklist;
-    protected GuiButton selectAll;
-    protected GuiButton deselectAll;
+    private GuiButton whitelist;
+    private GuiButton blacklist;
+    private GuiButton selectAll;
+    private GuiButton deselectAll;
 
     private GuiTextField searchBar;
 
@@ -158,7 +158,7 @@ public abstract class GuiTargets<T>
     }
 
     @Override
-    public void onMouseInput(IGuiTcuInst<?> gui) throws IOException {
+    public void onMouseInput(IGuiTcuInst<?> gui) {
         if( this.canScroll ) {
             int dWheelDir = Mouse.getEventDWheel();
             if( dWheelDir < 0 ) {
@@ -187,12 +187,12 @@ public abstract class GuiTargets<T>
     }
 
     @Override
-    public void onMouseClick(IGuiTcuInst<?> gui, int mouseX, int mouseY, int mouseButton) throws IOException {
+    public void onMouseClick(IGuiTcuInst<?> gui, int mouseX, int mouseY, int mouseButton) {
         this.searchBar.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
-    public boolean doKeyIntercept(IGuiTcuInst<?> gui, char typedChar, int keyCode) throws IOException {
+    public boolean doKeyIntercept(IGuiTcuInst<?> gui, char typedChar, int keyCode) {
         if( this.searchBar.textboxKeyTyped(typedChar, keyCode) ) {
             this.filterList();
             this.scroll = 0.0F;
@@ -202,7 +202,7 @@ public abstract class GuiTargets<T>
         return false;
     }
 
-    protected void updateTargets(ITurretInst turretInst) {
+    void updateTargets(ITurretInst turretInst) {
         PacketRegistry.sendToServer(new PacketUpdateTargets(turretInst.getTargetProcessor()));
         this.updateList(turretInst);
     }

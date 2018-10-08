@@ -23,7 +23,7 @@ public final class DataWatcherBooleans<T extends Entity>
     private final DataParameter<Integer> param;
     private static final Map<Class<? extends Entity>, DataParameter<Integer>> PARAMS = new HashMap<>();
 
-    public DataWatcherBooleans(T e) {
+    DataWatcherBooleans(T e) {
         this.entity = e;
         Class<? extends Entity> entityCls = e.getClass();
         if( !PARAMS.containsKey(entityCls) ) {
@@ -32,11 +32,11 @@ public final class DataWatcherBooleans<T extends Entity>
         this.param = PARAMS.get(entityCls);
     }
 
-    public void registerDwValue() {
+    void registerDwValue() {
         this.entity.getDataManager().register(this.param, 0);
     }
 
-    public void setBit(int bit, boolean value) {
+    void setBit(int bit, boolean value) {
         int dwVal = this.entity.getDataManager().get(this.param);
         if( value ) {
             dwVal = dwVal | (1 << bit);
@@ -46,15 +46,15 @@ public final class DataWatcherBooleans<T extends Entity>
         this.entity.getDataManager().set(this.param, dwVal);
     }
 
-    public boolean getBit(int bit) {
+    boolean getBit(int bit) {
         return (((this.entity.getDataManager().get(this.param) & (1 << bit)) >> bit) & 1) == 1;
     }
 
-    public void writeToNbt(NBTTagCompound nbt) {
+    void writeToNbt(NBTTagCompound nbt) {
         nbt.setInteger("dataWatcherBools", this.entity.getDataManager().get(this.param));
     }
 
-    public void readFromNbt(NBTTagCompound nbt) {
+    void readFromNbt(NBTTagCompound nbt) {
         this.entity.getDataManager().set(this.param, nbt.getInteger("dataWatcherBools"));
     }
 

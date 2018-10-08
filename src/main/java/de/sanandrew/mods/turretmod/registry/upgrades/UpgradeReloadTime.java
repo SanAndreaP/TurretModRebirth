@@ -27,7 +27,7 @@ public abstract class UpgradeReloadTime
     private final String name;
     private final AttributeModifier modifier;
 
-    public UpgradeReloadTime(String name, String modUUID, double value) {
+    UpgradeReloadTime(String name, String modUUID, double value) {
         this.name = name;
         this.modifier = new AttributeModifier(UUID.fromString(modUUID), String.format("%s:%s", TmrConstants.ID, name), value, EntityUtils.ATTR_ADD_PERC_VAL_TO_SUM);
         this.itemModel = new ResourceLocation(TmrConstants.ID, "upgrades/" + name);

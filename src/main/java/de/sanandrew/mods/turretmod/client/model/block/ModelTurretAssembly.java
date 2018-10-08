@@ -18,15 +18,14 @@ public class ModelTurretAssembly
         extends ModelBase
         implements ModelJsonHandler<ModelTurretAssembly, ModelJsonLoader.ModelJson>
 {
-    public ModelRenderer base;
-    public ModelRenderer robotBinding;
-    public ModelRenderer robotArm;
-    public ModelRenderer robotHead;
+    private ModelRenderer base;
+    private ModelRenderer robotBinding;
+    private ModelRenderer robotArm;
 
-    public final ModelJsonLoader<ModelTurretAssembly, ModelJsonLoader.ModelJson> modelJson;
+    private final ModelJsonLoader<ModelTurretAssembly, ModelJsonLoader.ModelJson> modelJson;
 
     public ModelTurretAssembly() {
-        this.modelJson = ModelJsonLoader.create(this, Resources.TILE_TURRET_ASSEMBLY_MODEL.resource, "base", "robotBinding", "robotArm", "robotHead");
+        this.modelJson = ModelJsonLoader.create(this, Resources.TILE_TURRET_ASSEMBLY_MODEL.resource, "base", "robotBinding", "robotArm");
     }
 
     public void render(float scale, TileEntityTurretAssembly te, float armX, float armZ) {
@@ -48,7 +47,6 @@ public class ModelTurretAssembly
         this.base = loader.getBox("base");
         this.robotBinding = loader.getBox("robotBinding");
         this.robotArm = loader.getBox("robotArm");
-        this.robotHead = loader.getBox("robotHead");
     }
 
     @Override

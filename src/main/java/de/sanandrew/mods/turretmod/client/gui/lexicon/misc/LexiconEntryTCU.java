@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public class LexiconEntryTCU
+class LexiconEntryTCU
         implements ILexiconEntry
 {
     private final String id;

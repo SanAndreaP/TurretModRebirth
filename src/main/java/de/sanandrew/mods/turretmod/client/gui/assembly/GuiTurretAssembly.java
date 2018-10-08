@@ -212,12 +212,12 @@ public class GuiTurretAssembly
         if( this.cacheRecipes != null ) {
             int maxScroll = this.cacheRecipes.size() - 4;
             if( maxScroll > 0 && !this.hasCrafting ) {
-                int scrollBtnPos = MathHelper.floor(79.0D / maxScroll * this.scrollPos);
+                int scrollBtnPos = MathHelper.floor(79.0D / maxScroll * scrollPos);
 
                 if( (mouseX >= this.guiLeft + 144 && mouseX < this.guiLeft + 150 && mouseY >= this.guiTop + 7 && mouseY < this.guiTop + 92) || this.isScrolling ) {
                     if( isLmbDown ) {
                         scrollBtnPos = Math.min(79, Math.max(0, mouseY - 7 - this.guiTop));
-                        this.scrollPos = MathHelper.floor(scrollBtnPos / 78.0D * maxScroll);
+                        scrollPos = MathHelper.floor(scrollBtnPos / 78.0D * maxScroll);
                         this.isScrolling = true;
                     }
                 }
@@ -230,7 +230,7 @@ public class GuiTurretAssembly
 
             int maxSz = Math.min(4, this.cacheRecipes.size());
             for( int i = 0; i < maxSz; i++) {
-                int index = this.scrollPos + i;
+                int index = scrollPos + i;
                 ItemStack stack = this.cacheRecipes.get(index).getValue(1);
                 boolean isActive = !this.hasCrafting || (!this.assembly.isAutomated() && ItemStackUtils.areEqual(this.currCrfItem, stack));
 
@@ -351,7 +351,7 @@ public class GuiTurretAssembly
         if( this.cacheRecipes != null ) {
             int maxSz = Math.min(4, this.cacheRecipes.size());
             for( int i = 0; i < maxSz; i++) {
-                int index = this.scrollPos + i;
+                int index = scrollPos + i;
 
                 if( !this.hasCrafting ) {
                     if( mouseX >= this.guiLeft + 35 && mouseX < this.guiLeft + 143 && mouseY >= this.guiTop + 9 + 21 * i && mouseY < this.guiTop + 27 + 21 * i ) {
@@ -596,15 +596,15 @@ public class GuiTurretAssembly
         if( this.cacheRecipes != null && this.cacheRecipes.size() > 4 && !this.hasCrafting ) {
             int dWheelDir = Mouse.getEventDWheel();
             if( dWheelDir < 0 ) {
-                this.scrollPos = Math.min(this.cacheRecipes.size() - 4, this.scrollPos + 1);
+                scrollPos = Math.min(this.cacheRecipes.size() - 4, scrollPos + 1);
             } else if( dWheelDir > 0 ) {
-                this.scrollPos = Math.max(0, this.scrollPos - 1);
+                scrollPos = Math.max(0, scrollPos - 1);
             }
         }
     }
 
     private GuiAssemblyCategoryTab[] getSortedTabs() {
-        GuiAssemblyCategoryTab[] tabs = this.groupBtns.keySet().toArray(new GuiAssemblyCategoryTab[this.groupBtns.size()]);
+        GuiAssemblyCategoryTab[] tabs = this.groupBtns.keySet().toArray(new GuiAssemblyCategoryTab[0]);
 
         Arrays.sort(tabs, Comparator.comparingInt(o -> o.id));
 
@@ -618,7 +618,7 @@ public class GuiTurretAssembly
         } else if( btn.id == this.automate.id || btn.id == this.manual.id ) {
             PacketRegistry.sendToServer(new PacketAssemblyToggleAutomate(this.assembly));
         } else if( btn instanceof GuiAssemblyCategoryTab && this.groupBtns.containsKey(btn) ) {
-            this.scrollPos = 0;
+            scrollPos = 0;
             IRecipeGroup grp = this.groupBtns.get(btn);
             GuiAssemblyCategoryTab[] tabs = getSortedTabs();
             for( int i = 0; i < tabs.length; i++ ) {

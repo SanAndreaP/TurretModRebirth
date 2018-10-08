@@ -38,8 +38,8 @@ public class RenderTurretAssembly
 {
     private final ModelTurretAssembly modelBlock = new ModelTurretAssembly();
 
-    public float armX;
-    public float armZ;
+    private float armX;
+    private float armZ;
 
     private final ShaderItemAlphaOverride shaderCallback = new ShaderItemAlphaOverride();
 

@@ -177,7 +177,7 @@ public class GuiInfo
     }
 
     @Override
-    public void onButtonClick(IGuiTcuInst<?> gui, GuiButton button) throws IOException {
+    public void onButtonClick(IGuiTcuInst<?> gui, GuiButton button) {
         ITurretInst turretInst = gui.getTurretInst();
         if( button == this.dismantle ) {
             if( !PacketPlayerTurretAction.tryDismantle(gui.getGui().mc.player, turretInst) ) {
@@ -201,12 +201,12 @@ public class GuiInfo
     }
 
     @Override
-    public void onMouseClick(IGuiTcuInst<?> gui, int mouseX, int mouseY, int mouseButton) throws IOException {
+    public void onMouseClick(IGuiTcuInst<?> gui, int mouseX, int mouseY, int mouseButton) {
         this.turretName.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
-    public boolean doKeyIntercept(IGuiTcuInst<?> gui, char typedChar, int keyCode) throws IOException {
+    public boolean doKeyIntercept(IGuiTcuInst<?> gui, char typedChar, int keyCode) {
         return this.turretName.textboxKeyTyped(typedChar, keyCode);
     }
 

@@ -134,11 +134,11 @@ public class TmrCreativeTabs
         }
     };
 
-    protected static void sortItemsByName(NonNullList<ItemStack> items) {
+    private static void sortItemsByName(NonNullList<ItemStack> items) {
         items.sort(ITM_NAME_COMP);
     }
 
-    protected static void sortItemsBySubItems(final NonNullList<ItemStack> items, final CreativeTabs tab) {
+    private static void sortItemsBySubItems(final NonNullList<ItemStack> items, final CreativeTabs tab) {
         items.sort(new ItemSubComparator(tab));
     }
 
@@ -167,7 +167,7 @@ public class TmrCreativeTabs
             NonNullList<ItemStack> subItms = NonNullList.create();
             o1.getItem().getSubItems(this.tab, subItms);
 
-            return getStackIndexInList(o2, subItms) > getStackIndexInList(o1, subItms) ? -1 : 1;
+            return Integer.compare(getStackIndexInList(o1, subItms), getStackIndexInList(o2, subItms));
         }
 
         private static int getStackIndexInList(@Nonnull ItemStack stack, List<ItemStack> stackArray) {

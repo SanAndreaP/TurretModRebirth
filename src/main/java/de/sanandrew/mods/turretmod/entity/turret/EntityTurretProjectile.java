@@ -299,7 +299,7 @@ public class EntityTurretProjectile
         }
     }
 
-    public DamageSource getProjDamageSource(Entity hitEntity) {
+    private DamageSource getProjDamageSource(Entity hitEntity) {
         //TODO: add upgrade to be able to damage endermen
         return MiscUtils.defIfNull(this.delegate.getCustomDamageSrc(this.shooterCache, this, hitEntity, true),
                                    () -> DamageSource.causeThrownDamage(this, this.shooterCache == null ? this : this.shooterCache));

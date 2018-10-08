@@ -14,7 +14,7 @@ import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public final class LexiconEntryUpgrade
+final class LexiconEntryUpgrade
         implements ILexiconEntry
 {
     private final String id;

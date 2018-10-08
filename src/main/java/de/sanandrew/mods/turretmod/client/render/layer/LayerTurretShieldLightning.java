@@ -66,16 +66,16 @@ public class LayerTurretShieldLightning<E extends EntityLiving & ITurretInst>
         private final int ticksVisible;
         private final long seed;
 
-        public RenderLightning() {
+        RenderLightning() {
             this.ticksVisible = ClientTickHandler.ticksInGame + MAX_TICKS_VISIBLE;
             this.seed = MiscUtils.RNG.randomLong();
         }
 
-        public boolean finished() {
+        boolean finished() {
             return this.ticksVisible <= ClientTickHandler.ticksInGame;
         }
 
-        public void doRender(float partTicks) {
+        void doRender(float partTicks) {
             GlStateManager.disableTexture2D();
             GlStateManager.disableLighting();
             GlStateManager.enableBlend();
@@ -89,7 +89,7 @@ public class LayerTurretShieldLightning<E extends EntityLiving & ITurretInst>
             GlStateManager.enableTexture2D();
         }
 
-        public void renderLightning(Tessellator tess, float partTicks) {
+        void renderLightning(Tessellator tess, float partTicks) {
             double xPos[] = new double[8];
             double zPos[] = new double[8];
             double maxX = 0.0D;

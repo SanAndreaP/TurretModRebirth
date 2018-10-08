@@ -4,7 +4,7 @@
    * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
    *                http://creativecommons.org/licenses/by-nc-sa/4.0/
    *******************************************************************************************************************/
-package de.sanandrew.mods.turretmod.registry.upgrades.smartTargeting;
+package de.sanandrew.mods.turretmod.registry.upgrades.smarttargeting;
 
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
@@ -49,7 +49,7 @@ public class AdvTargetSettings
         stream.writeShort(this.countEntities);
     }
 
-    public void loadFromNbt(NBTTagCompound nbt) {
+    void loadFromNbt(NBTTagCompound nbt) {
         if( nbt.hasKey("turretAwareness") ) {
             this.setTurretAwareness(nbt.getByte("turretAwareness"));
         }
@@ -59,7 +59,7 @@ public class AdvTargetSettings
         this.setCountEntities(nbt.getShort("countEntities"));
     }
 
-    public void writeToNbt(NBTTagCompound nbt) {
+    void writeToNbt(NBTTagCompound nbt) {
         nbt.setByte("turretAwareness", (byte) this.turretAwareness.ordinal());
         nbt.setByte("tamedAwareness", (byte) this.tamedAwareness.ordinal());
         nbt.setByte("childAwareness", (byte) this.childAwareness.ordinal());
@@ -97,8 +97,8 @@ public class AdvTargetSettings
             boolean isChild = ((EntityLivingBase) target).isChild();
             if( this.childAwareness == ChildAwareness.CHILDREN_ONLY && !isChild ) {
                 return false;
-            } else if( this.childAwareness == ChildAwareness.ADULTS_ONLY && isChild ) {
-                return false;
+            } else {
+                return this.childAwareness != ChildAwareness.ADULTS_ONLY || !isChild;
             }
         }
 
@@ -123,8 +123,8 @@ public class AdvTargetSettings
             }
             if( this.countAwareness.isBelow && entityCount < this.countEntities ) {
                 return false;
-            } else if( !this.countAwareness.isBelow && entityCount > this.countEntities ) {
-                return false;
+            } else {
+                return this.countAwareness.isBelow || entityCount <= this.countEntities;
             }
         }
 
@@ -139,7 +139,7 @@ public class AdvTargetSettings
         this.turretAwareness = Objects.requireNonNull(awareness);
     }
 
-    public void setTurretAwareness(int awareness) {
+    private void setTurretAwareness(int awareness) {
         if( awareness >= 0 && awareness < TurretAwareness.VALUES.length ) {
             this.turretAwareness = TurretAwareness.VALUES[awareness];
         }
@@ -153,7 +153,7 @@ public class AdvTargetSettings
         this.tamedAwareness = Objects.requireNonNull(awareness);
     }
 
-    public void setTamedAwareness(int awareness) {
+    private void setTamedAwareness(int awareness) {
         if( awareness >= 0 && awareness < TamedAwareness.VALUES.length ) {
             this.tamedAwareness = TamedAwareness.VALUES[awareness];
         }
@@ -167,7 +167,7 @@ public class AdvTargetSettings
         this.childAwareness = Objects.requireNonNull(childAwareness);
     }
 
-    public void setChildAwareness(int awareness) {
+    private void setChildAwareness(int awareness) {
         if( awareness >= 0 && awareness < ChildAwareness.VALUES.length ) {
             this.childAwareness = ChildAwareness.VALUES[awareness];
         }
@@ -181,7 +181,7 @@ public class AdvTargetSettings
         this.countAwareness = Objects.requireNonNull(countAwareness);
     }
 
-    public void setCountAwareness(int awareness) {
+    private void setCountAwareness(int awareness) {
         if( awareness >= 0 && awareness < CountAwareness.VALUES.length ) {
             this.countAwareness = CountAwareness.VALUES[awareness];
         }
@@ -201,7 +201,7 @@ public class AdvTargetSettings
         SAME_TYPE,
         ALL_TYPES;
 
-        public static final TurretAwareness[] VALUES = values();
+        static final TurretAwareness[] VALUES = values();
     }
 
     public enum TamedAwareness
@@ -210,7 +210,7 @@ public class AdvTargetSettings
         IGNORE_UNTARGETED_PLAYERS,
         IGNORE_ALL_TAMED;
 
-        public static final TamedAwareness[] VALUES = values();
+        static final TamedAwareness[] VALUES = values();
     }
 
     public enum ChildAwareness
@@ -219,7 +219,7 @@ public class AdvTargetSettings
         ADULTS_ONLY,
         CHILDREN_ONLY;
 
-        public static final ChildAwareness[] VALUES = values();
+        static final ChildAwareness[] VALUES = values();
     }
 
     public enum CountAwareness
@@ -230,14 +230,14 @@ public class AdvTargetSettings
         IGNORE_IF_ABOVE_GLOBAL(true, false),
         IGNORE_IF_ABOVE_INDIVIDUAL(false, false);
 
-        public final boolean isGlobal;
-        public final boolean isBelow;
+        final boolean isGlobal;
+        final boolean isBelow;
 
         CountAwareness(boolean isGlobal, boolean isBelow) {
             this.isGlobal = isGlobal;
             this.isBelow = isBelow;
         }
 
-        public static final CountAwareness[] VALUES = values();
+        static final CountAwareness[] VALUES = values();
     }
 }

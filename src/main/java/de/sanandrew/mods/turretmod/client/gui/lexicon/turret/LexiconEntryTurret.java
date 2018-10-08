@@ -7,24 +7,20 @@
 package de.sanandrew.mods.turretmod.client.gui.lexicon.turret;
 
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconEntry;
-import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.client.gui.lexicon.ammo.LexiconGroupAmmo;
-import de.sanandrew.mods.turretmod.client.gui.lexicon.info.LexiconGroupInfo;
-import de.sanandrew.mods.turretmod.client.gui.lexicon.info.LexiconRenderInfo;
 import de.sanandrew.mods.turretmod.client.util.ClientProxy;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import org.apache.logging.log4j.util.Strings;
 
 import javax.annotation.Nonnull;
 import java.util.stream.Stream;
 
-public final class LexiconEntryTurret
+final class LexiconEntryTurret
         implements ILexiconEntry
 {
     private final String id;

@@ -14,7 +14,6 @@ import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
@@ -28,7 +27,7 @@ public class TurretAmmoMinigunShell
     private final int capacity;
     private final ResourceLocation itemModel;
 
-    public TurretAmmoMinigunShell(boolean isMulti) {
+    TurretAmmoMinigunShell(boolean isMulti) {
         this.name = isMulti ? "minigun_shell_pack" : "minigun_shell";
         this.id = isMulti ? Ammunitions.MGSHELL_PACK : Ammunitions.MGSHELL;
         this.capacity = isMulti ? 64 : 4;
@@ -64,12 +63,6 @@ public class TurretAmmoMinigunShell
     @Override
     public IAmmunitionGroup getGroup() {
         return Ammunitions.Groups.MG_SHELL;
-    }
-
-    @Override
-    @Nonnull
-    public ItemStack getStoringAmmoItem() {
-        return AmmunitionRegistry.INSTANCE.getAmmoItem(AmmunitionRegistry.INSTANCE.getType(Ammunitions.MGSHELL));
     }
 
     @Override

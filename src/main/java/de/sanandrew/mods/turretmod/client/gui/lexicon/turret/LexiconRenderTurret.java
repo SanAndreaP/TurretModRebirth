@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
-public class LexiconRenderTurret
+class LexiconRenderTurret
         extends LexiconRenderAssemblyRecipe
 {
     static final String ID = TmrConstants.ID + ":turret";

@@ -19,7 +19,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
-public class LexiconRenderInfo
+class LexiconRenderInfo
         implements ILexiconPageRender
 {
     static final String ID = TmrConstants.ID + ":info";

@@ -50,7 +50,7 @@ public class TileEntityElectrolyteGenerator
 
     public float effectiveness;
 
-    boolean doSync;
+    private boolean doSync;
     private String customName;
 
     private final ElectrolyteInventoryHandler itemHandler = new ElectrolyteInventoryHandler(this);
@@ -107,11 +107,11 @@ public class TileEntityElectrolyteGenerator
         boolean markAsDirty = false;
 
         if( process != null ) {
-            if( process.hasTrash() && !this.itemHandler.canAddExtraction(process.trashStack) ) {
+            if( process.hasTrash() && this.itemHandler.isOutputFull(process.trashStack) ) {
                 return;
             }
 
-            if( process.hasTreasure() && !this.itemHandler.canAddExtraction(process.treasureStack) ) {
+            if( process.hasTreasure() && this.itemHandler.isOutputFull(process.treasureStack) ) {
                 return;
             }
 

@@ -14,36 +14,25 @@ import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
-import de.sanandrew.mods.turretmod.client.gui.lexicon.ammo.LexiconGroupAmmo;
 import de.sanandrew.mods.turretmod.client.gui.lexicon.assembly.LexiconRenderAssemblyRecipe;
 import de.sanandrew.mods.turretmod.client.gui.lexicon.turret.LexiconGroupTurret;
 import de.sanandrew.mods.turretmod.client.util.ClientProxy;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
-import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
-import de.sanandrew.mods.turretmod.util.Resources;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
 @SideOnly(Side.CLIENT)
-public class LexiconRenderUpgrade
+class LexiconRenderUpgrade
         extends LexiconRenderAssemblyRecipe
 {
     static final String ID = TmrConstants.ID + ":upgrade";
@@ -51,7 +40,6 @@ public class LexiconRenderUpgrade
     private static final int H2_COLOR = 0xFF202080;
 
     private RecipeEntry recipe;
-    private ITurretUpgrade upgrade;
     private ItemStack upgradeStack;
     private int drawHeight;
 
@@ -66,20 +54,20 @@ public class LexiconRenderUpgrade
     @Override
     public void initPage(ILexiconEntry entry, ILexiconGuiHelper helper, List<GuiButton> deprecated1, List<GuiButton> deprecated2) {
         if( entry instanceof LexiconEntryUpgrade ) {
-            this.upgrade = ((LexiconEntryUpgrade) entry).upgrade;
-            this.upgradeStack = UpgradeRegistry.INSTANCE.getUpgradeItem(this.upgrade);
+            ITurretUpgrade upgrade = ((LexiconEntryUpgrade) entry).upgrade;
+            this.upgradeStack = UpgradeRegistry.INSTANCE.getUpgradeItem(upgrade);
             this.recipe = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(this.upgradeStack);
             this.turretButtons = new ArrayList<>();
 
             List<GuiButton> entryButtons = helper.getEntryButtonList();
-            Stream.of(MiscUtils.defIfNull(this.upgrade.getApplicableTurrets(), () -> new ITurret[0])).forEach(t -> {
+            Stream.of(MiscUtils.defIfNull(upgrade.getApplicableTurrets(), () -> new ITurret[0])).forEach(t -> {
                 IGuiButtonEntry entryBtn = helper.getNewEntryButton(entryButtons.size(), 4, 0, ClientProxy.lexiconInstance.getGroup(LexiconGroupTurret.NAME).getEntry(t.getName()),
                                                                     helper.getFontRenderer());
                 this.turretButtons.add(entryBtn);
                 entryButtons.add(entryBtn.get());
             });
 
-            ITurretUpgrade prereq = this.upgrade.getDependantOn();
+            ITurretUpgrade prereq = upgrade.getDependantOn();
             if( prereq != null ) {
                 this.prereqUpgradeButton = helper.getNewEntryButton(entryButtons.size(), 4, 0, ClientProxy.lexiconInstance.getGroup(LexiconGroupUpgrade.NAME).getEntry(prereq.getName()),
                                                                     helper.getFontRenderer());

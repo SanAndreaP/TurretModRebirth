@@ -1,9 +1,9 @@
-/**
+/*
  * ****************************************************************************************************************
- * Authors:   Vazkii, modified by SanAndreasP
- * Copyright: Vazkii, SanAndreasP
- * License:   Botania License
- * http://botaniamod.net/license.php
+ * Authors:   SanAndreasP
+ * Copyright: SanAndreasP
+ * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+ * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
 package de.sanandrew.mods.turretmod.client.shader;
@@ -14,6 +14,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
+@SuppressWarnings("WeakerAccess")
 public final class Shaders
 {
     public static int categoryButton = 0;

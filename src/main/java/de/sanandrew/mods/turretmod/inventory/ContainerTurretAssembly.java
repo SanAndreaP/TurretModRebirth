@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.inventory;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -75,72 +76,7 @@ public class ContainerTurretAssembly
 
     @Override
     protected boolean mergeItemStack(@Nonnull ItemStack stack, int beginSlot, int endSlot, boolean reverse) {
-        boolean slotChanged = false;
-        int start = beginSlot;
-
-        if( reverse ) {
-            start = endSlot - 1;
-        }
-
-        Slot slot;
-        ItemStack slotStack;
-
-        if( stack.isStackable() ) {
-            while( stack.getCount() > 0 && (!reverse && start < endSlot || reverse && start >= beginSlot) ) {
-                slot = this.inventorySlots.get(start);
-                slotStack = slot.getStack();
-
-                if( ItemStackUtils.areEqual(slotStack, stack) && slot.isItemValid(stack) ) {
-                    int combStackSize = slotStack.getCount() + stack.getCount();
-
-                    if( combStackSize <= stack.getMaxStackSize() ) {
-                        stack.setCount(0);
-                        slotStack.setCount(combStackSize);
-                        slot.onSlotChanged();
-                        slotChanged = true;
-                    } else if( slotStack.getCount() < stack.getMaxStackSize() ) {
-                        stack.shrink(stack.getMaxStackSize() - slotStack.getCount());
-                        slotStack.setCount(stack.getMaxStackSize());
-                        slot.onSlotChanged();
-                        slotChanged = true;
-                    }
-                }
-
-                if( reverse ) {
-                    start--;
-                } else {
-                    start++;
-                }
-            }
-        }
-
-        if( stack.getCount() > 0 ) {
-            if( reverse ) {
-                start = endSlot - 1;
-            } else {
-                start = beginSlot;
-            }
-
-            while( !reverse && start < endSlot || reverse && start >= beginSlot ) {
-                slot = this.inventorySlots.get(start);
-
-                if( !ItemStackUtils.isValid(slot.getStack()) && slot.isItemValid(stack) ) {
-                    slot.putStack(stack.copy());
-                    slot.onSlotChanged();
-                    stack.setCount(0);
-                    slotChanged = true;
-                    break;
-                }
-
-                if( reverse ) {
-                    start--;
-                } else {
-                    start++;
-                }
-            }
-        }
-
-        return slotChanged;
+        return TmrUtils.mergeItemStack(this, stack, beginSlot, endSlot, reverse);
     }
 
     @Override
@@ -192,7 +128,7 @@ public class ContainerTurretAssembly
     private class SlotOutput
             extends Slot
     {
-        public SlotOutput(int id, int x, int y) {
+        SlotOutput(int id, int x, int y) {
             super(ContainerTurretAssembly.this.inventory, id, x, y);
         }
 
@@ -205,7 +141,7 @@ public class ContainerTurretAssembly
     private class SlotIngredients
             extends Slot
     {
-        public SlotIngredients(int id, int x, int y) {
+        SlotIngredients(int id, int x, int y) {
             super(ContainerTurretAssembly.this.inventory, id, x, y);
         }
 
@@ -218,7 +154,7 @@ public class ContainerTurretAssembly
     private class SlotAutoUpgrade
             extends Slot
     {
-        public SlotAutoUpgrade(int id, int x, int y) {
+        SlotAutoUpgrade(int id, int x, int y) {
             super(ContainerTurretAssembly.this.inventory, id, x, y);
         }
 
@@ -231,7 +167,7 @@ public class ContainerTurretAssembly
     private class SlotSpeedUpgrade
             extends Slot
     {
-        public SlotSpeedUpgrade(int id, int x, int y) {
+        SlotSpeedUpgrade(int id, int x, int y) {
             super(ContainerTurretAssembly.this.inventory, id, x, y);
         }
 
@@ -244,7 +180,7 @@ public class ContainerTurretAssembly
     private class SlotFilterUpgrade
             extends Slot
     {
-        public SlotFilterUpgrade(int id, int x, int y) {
+        SlotFilterUpgrade(int id, int x, int y) {
             super(ContainerTurretAssembly.this.inventory, id, x, y);
         }
 

@@ -14,7 +14,6 @@ import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
@@ -28,7 +27,7 @@ public class TurretAmmoShotgunShell
     private final int capacity;
     private final ResourceLocation itemModel;
 
-    public TurretAmmoShotgunShell(boolean isMulti) {
+    TurretAmmoShotgunShell(boolean isMulti) {
         this.name = isMulti ? "shotgun_shell_pack" : "shotgun_shell";
         this.id = isMulti ? Ammunitions.SGSHELL_PACK : Ammunitions.SGSHELL;
         this.capacity = isMulti ? 16 : 1;
@@ -64,12 +63,6 @@ public class TurretAmmoShotgunShell
     @Override
     public IAmmunitionGroup getGroup() {
         return Ammunitions.Groups.SG_SHELL;
-    }
-
-    @Override
-    @Nonnull
-    public ItemStack getStoringAmmoItem() {
-        return AmmunitionRegistry.INSTANCE.getAmmoItem(AmmunitionRegistry.INSTANCE.getType(Ammunitions.SGSHELL));
     }
 
     @Override

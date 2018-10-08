@@ -39,6 +39,7 @@ public final class RenderTurretLaser
         mc.world.getEntities(EntityTurret.class, chk::test).forEach(turret -> renderLaser(turret, x, y, z, partTicks));
     }
 
+    @SuppressWarnings("SuspiciousNameCombination")
     private static void renderLaser(ITurretInst turret, double renderX, double renderY, double renderZ, double partTicks) {
         Entity tgt = turret.getTargetProcessor().getTarget();
         EntityLiving turretL = turret.get();

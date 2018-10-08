@@ -24,8 +24,8 @@ import java.util.stream.Stream;
 public class ModelTurretMinigun
         extends ModelTurretBase
 {
-    public ModelRenderer barrelBaseLeft;
-    public ModelRenderer barrelBaseRight;
+    private ModelRenderer barrelBaseLeft;
+    private ModelRenderer barrelBaseRight;
 
     public ModelTurretMinigun(float scale) {
         super(scale);

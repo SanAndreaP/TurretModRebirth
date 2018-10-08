@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
-public class AssemblyRecipeCategory<T extends IRecipeWrapper>
+class AssemblyRecipeCategory<T extends IRecipeWrapper>
         implements IRecipeCategory<T>
 {
     static final String UID = TmrConstants.ID + ".assemblytbl";

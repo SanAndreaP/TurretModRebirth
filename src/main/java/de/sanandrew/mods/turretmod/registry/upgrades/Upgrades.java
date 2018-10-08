@@ -9,7 +9,7 @@ package de.sanandrew.mods.turretmod.registry.upgrades;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import de.sanandrew.mods.turretmod.registry.upgrades.shield.UpgradeShieldPersonal;
-import de.sanandrew.mods.turretmod.registry.upgrades.smartTargeting.UpgradeSmartTargeting;
+import de.sanandrew.mods.turretmod.registry.upgrades.smarttargeting.UpgradeSmartTargeting;
 
 import java.util.UUID;
 

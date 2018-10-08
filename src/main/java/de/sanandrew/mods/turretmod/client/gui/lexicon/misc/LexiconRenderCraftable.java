@@ -19,7 +19,7 @@ import net.minecraft.util.math.Vec3i;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LexiconRenderCraftable
+class LexiconRenderCraftable
         implements ILexiconPageRender
 {
     static final String ID = TmrConstants.ID + ":craftable";

@@ -9,8 +9,6 @@ package de.sanandrew.mods.turretmod.client.gui.lexicon.turret;
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconGroup;
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconInst;
 import de.sanandrew.mods.sanlib.api.client.lexicon.LexiconGroup;
-import de.sanandrew.mods.turretmod.client.gui.lexicon.info.LexiconEntryInfo;
-import de.sanandrew.mods.turretmod.client.gui.lexicon.info.LexiconRenderInfo;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.Resources;
 

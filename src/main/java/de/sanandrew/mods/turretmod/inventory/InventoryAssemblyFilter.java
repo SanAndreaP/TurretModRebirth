@@ -18,7 +18,7 @@ import net.minecraft.util.text.TextComponentString;
 
 import javax.annotation.Nonnull;
 
-public class InventoryAssemblyFilter
+class InventoryAssemblyFilter
         implements IInventory
 {
     public final NonNullList<ItemStack> invStacks;

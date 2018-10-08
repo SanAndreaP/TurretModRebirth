@@ -31,7 +31,6 @@ public class ElectrolyteProcess
         this.processStack = stack;
 
         ElectrolyteRegistry.Fuel fuel = ElectrolyteRegistry.getFuel(stack);
-        this.progress = 0;
         this.maxProgress = fuel.ticksProc;
         this.effectivenes = fuel.effect;
         this.trashStack = fuel.trash.copy();

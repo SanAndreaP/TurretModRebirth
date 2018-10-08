@@ -14,7 +14,7 @@ import de.sanandrew.mods.turretmod.registry.turret.TurretShotgun;
 import de.sanandrew.mods.turretmod.registry.turret.shieldgen.ShieldHandler;
 import de.sanandrew.mods.turretmod.registry.turret.shieldgen.TurretForcefield;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
-import de.sanandrew.mods.turretmod.registry.upgrades.smartTargeting.AdvTargetSettings;
+import de.sanandrew.mods.turretmod.registry.upgrades.smarttargeting.AdvTargetSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.MobEffects;

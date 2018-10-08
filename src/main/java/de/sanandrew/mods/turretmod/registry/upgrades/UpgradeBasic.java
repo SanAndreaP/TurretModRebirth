@@ -14,8 +14,6 @@ import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
-import java.util.Objects;
-import java.util.function.Function;
 
 public class UpgradeBasic
         implements ITurretUpgrade

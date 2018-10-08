@@ -13,7 +13,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 public final class ShieldTurretRecovery
         implements IForcefieldProvider
 {
-    final ShieldTurret delegate;
+    private final ShieldTurret delegate;
 
     ShieldTurretRecovery(ShieldTurret delegate) {
         this.delegate = delegate;

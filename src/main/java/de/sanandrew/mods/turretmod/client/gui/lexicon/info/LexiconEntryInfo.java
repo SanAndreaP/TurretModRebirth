@@ -12,10 +12,10 @@ import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public final class LexiconEntryInfo
+final class LexiconEntryInfo
         implements ILexiconEntry
 {
-    public static final String ID = "info";
+    private static final String ID = "info";
     private final ItemStack icon;
 
     LexiconEntryInfo() {

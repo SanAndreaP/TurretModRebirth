@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.io.IOException;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "BooleanMethodIsAlwaysInverted"})
 @SideOnly(Side.CLIENT)
 public interface IGuiTCU
 {
@@ -37,13 +37,13 @@ public interface IGuiTCU
 
     default void onButtonClick(IGuiTcuInst<?> gui, GuiButton button) throws IOException {}
 
-    default void onMouseClick(IGuiTcuInst<?> gui, int mouseX, int mouseY, int mouseButton) throws IOException {}
+    default void onMouseClick(IGuiTcuInst<?> gui, int mouseX, int mouseY, int mouseButton) {}
 
-    default boolean doKeyIntercept(IGuiTcuInst<?> gui, char typedChar, int keyCode) throws IOException { return false; }
+    default boolean doKeyIntercept(IGuiTcuInst<?> gui, char typedChar, int keyCode) { return false; }
 
-    default void onKeyType(IGuiTcuInst<?> gui, char typedChar, int keyCode) throws IOException {}
+    default void onKeyType(IGuiTcuInst<?> gui, char typedChar, int keyCode) {}
 
     default void onGuiClose(IGuiTcuInst<?> gui) {}
 
-    default void onMouseInput(IGuiTcuInst<?> gui) throws IOException {}
+    default void onMouseInput(IGuiTcuInst<?> gui) {}
 }

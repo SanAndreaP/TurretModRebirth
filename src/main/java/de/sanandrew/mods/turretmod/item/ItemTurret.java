@@ -47,7 +47,7 @@ public class ItemTurret
     private static final IItemPropertyGetter TURRET_TEX_ID = (stack, worldIn, entityIn) ->
                                                                      TurretRegistry.INSTANCE.getTurrets().indexOf(TurretRegistry.INSTANCE.getTurret(stack));
 
-    public ItemTurret() {
+    ItemTurret() {
         super();
         this.setCreativeTab(TmrCreativeTabs.TURRETS);
         this.setUnlocalizedName(TmrConstants.ID + ":turret_placer");
@@ -76,6 +76,18 @@ public class ItemTurret
         }
     }
 
+    private static void setTurretStats(EntityTurret turret, ItemStack stack) {
+        Float initHealth = getTurretHealth(stack);
+        if( initHealth != null ) {
+            turret.setHealth(initHealth);
+        }
+
+        String name = getTurretName(stack);
+        if( name != null ) {
+            turret.setCustomNameTag(name);
+        }
+    }
+
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if( !world.isRemote ) {
@@ -96,15 +108,7 @@ public class ItemTurret
                 EntityTurret turret = spawnTurret(world, TurretRegistry.INSTANCE.getTurret(stack), placingOn.getX() + 0.5D, placingOn.getY() + shiftY,
                                                   placingOn.getZ() + 0.5D, facing == EnumFacing.DOWN, player);
                 if( turret != null ) {
-                    Float initHealth = getTurretHealth(stack);
-                    if( initHealth != null ) {
-                        turret.setHealth(initHealth);
-                    }
-
-                    String name = getTurretName(stack);
-                    if( name != null ) {
-                        turret.setCustomNameTag(name);
-                    }
+                    setTurretStats(turret, stack);
 
                     if( !player.capabilities.isCreativeMode ) {
                         stack.shrink(1);
@@ -134,17 +138,9 @@ public class ItemTurret
                 }
 
                 if( world.getBlockState(blockPos).getBlock() instanceof BlockLiquid ) {
-                    EntityTurret turret = spawnTurret(world, TurretRegistry.INSTANCE.getTurret(stack), blockPos, false, player);
+                    EntityTurret turret = spawnTurret(world, TurretRegistry.INSTANCE.getTurret(stack), blockPos, player);
                     if( turret != null ) {
-                        Float initHealth = getTurretHealth(stack);
-                        if( initHealth != null ) {
-                            turret.setHealth(initHealth);
-                        }
-
-                        String name = getTurretName(stack);
-                        if( name != null ) {
-                            turret.setCustomNameTag(name);
-                        }
+                        setTurretStats(turret, stack);
 
                         if( !player.capabilities.isCreativeMode ) {
                             stack.shrink(1);
@@ -165,7 +161,7 @@ public class ItemTurret
         }
     }
 
-    public static Float getTurretHealth(@Nonnull ItemStack stack) {
+    private static Float getTurretHealth(@Nonnull ItemStack stack) {
         NBTTagCompound nbt = stack.getTagCompound();
         if( nbt != null && nbt.hasKey("turretHealth") ) {
             return nbt.getFloat("turretHealth");
@@ -174,7 +170,7 @@ public class ItemTurret
         return null;
     }
 
-    public static String getTurretName(@Nonnull ItemStack stack) {
+    private static String getTurretName(@Nonnull ItemStack stack) {
         NBTTagCompound nbt = stack.getTagCompound();
         if( nbt != null && nbt.hasKey("turretName") ) {
             return nbt.getString("turretName");
@@ -187,8 +183,8 @@ public class ItemTurret
         return null;
     }
 
-    private static EntityTurret spawnTurret(World world, ITurret turret, BlockPos pos, boolean isUpsideDown, EntityPlayer owner) {
-        return spawnTurret(world, turret, pos.getX(), pos.getY(), pos.getZ(), isUpsideDown, owner);
+    private static EntityTurret spawnTurret(World world, ITurret turret, BlockPos pos, EntityPlayer owner) {
+        return spawnTurret(world, turret, pos.getX(), pos.getY(), pos.getZ(), false, owner);
     }
 
     private static EntityTurret spawnTurret(World world, ITurret turret, double x, double y, double z, boolean isUpsideDown, EntityPlayer owner) {

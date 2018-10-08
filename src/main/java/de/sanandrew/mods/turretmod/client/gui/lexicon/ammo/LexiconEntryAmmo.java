@@ -18,7 +18,7 @@ import javax.annotation.Nonnull;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-public final class LexiconEntryAmmo
+final class LexiconEntryAmmo
         implements ILexiconEntry
 {
     private final String id;

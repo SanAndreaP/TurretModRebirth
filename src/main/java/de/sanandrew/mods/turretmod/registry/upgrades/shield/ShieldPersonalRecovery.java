@@ -22,7 +22,7 @@ public final class ShieldPersonalRecovery
             ShieldPersonal.BASE_CLR_HSL[2] - CRIT_CLR_HSL[2]
     };
 
-    final ShieldPersonal delegate;
+    private final ShieldPersonal delegate;
 
     ShieldPersonalRecovery(ShieldPersonal delegate) {
         this.delegate = delegate;

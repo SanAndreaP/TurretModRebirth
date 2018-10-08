@@ -9,12 +9,11 @@
 package de.sanandrew.mods.turretmod.block;
 
 import com.google.common.collect.ImmutableMap;
-import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
@@ -24,7 +23,6 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -119,21 +117,7 @@ public class BlockTurretAssembly
 
         if( assembly != null ) {
             for( int i = 0; i < assembly.getInventory().getSizeInventory(); i++ ) {
-                ItemStack stack = assembly.getInventory().getStackInSlot(i);
-
-                if( ItemStackUtils.isValid(stack) ) {
-                    float xOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
-                    float yOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
-                    float zOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
-
-                    EntityItem entityitem = new EntityItem(world, (pos.getX() + xOff), (pos.getY() + yOff), (pos.getZ() + zOff), stack.copy());
-
-                    float motionSpeed = 0.05F;
-                    entityitem.motionX = ((float) MiscUtils.RNG.randomGaussian() * motionSpeed);
-                    entityitem.motionY = ((float) MiscUtils.RNG.randomGaussian() * motionSpeed + 0.2F);
-                    entityitem.motionZ = ((float) MiscUtils.RNG.randomGaussian() * motionSpeed);
-                    world.spawnEntity(entityitem);
-                }
+                TmrUtils.dropItem(assembly.getInventory().getStackInSlot(i), world, pos);
             }
 
             world.updateComparatorOutputLevel(pos, this);
@@ -166,7 +150,12 @@ public class BlockTurretAssembly
 
     @Override
     protected BlockStateContainer createBlockState() {
-        return new MyBlockStateContainer(this, FACING);
+        return new BlockStateContainer(this, FACING) {
+            @Override
+            protected StateImplementation createState(Block block, ImmutableMap<IProperty<?>, Comparable<?>> properties, @Nullable ImmutableMap<IUnlistedProperty<?>, Optional<?>> unlistedProperties) {
+                return new MyStateImplementation(block, properties);
+            }
+        };
     }
 
     @Override
@@ -193,23 +182,10 @@ public class BlockTurretAssembly
         return this.getStateFromMeta(meta).getValue(FACING);
     }
 
-    private static final class MyBlockStateContainer
-            extends BlockStateContainer
-    {
-        public MyBlockStateContainer(Block blockIn, IProperty<?>... properties) {
-            super(blockIn, properties);
-        }
-
-        @Override
-        protected StateImplementation createState(Block block, ImmutableMap<IProperty<?>, Comparable<?>> properties, @Nullable ImmutableMap<IUnlistedProperty<?>, Optional<?>> unlistedProperties) {
-            return new MyStateImplementation(block, properties);
-        }
-    }
-
     private static final class MyStateImplementation
             extends BlockStateContainer.StateImplementation
     {
-        protected MyStateImplementation(Block blockIn, ImmutableMap<IProperty<?>, Comparable<?>> propertiesIn) {
+        MyStateImplementation(Block blockIn, ImmutableMap<IProperty<?>, Comparable<?>> propertiesIn) {
             super(blockIn, propertiesIn);
         }
 

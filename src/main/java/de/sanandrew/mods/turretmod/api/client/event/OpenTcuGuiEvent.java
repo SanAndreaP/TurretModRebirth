@@ -16,6 +16,7 @@ import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
 @Cancelable
+@SuppressWarnings("WeakerAccess")
 public class OpenTcuGuiEvent
         extends Event
 {

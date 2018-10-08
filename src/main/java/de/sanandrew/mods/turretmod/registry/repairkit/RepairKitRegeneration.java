@@ -26,7 +26,7 @@ public class RepairKitRegeneration
     private final int regenLvl;
     private final int regenTime;
 
-    public RepairKitRegeneration(String name, UUID uuid, float heal, ResourceLocation model, int level, int time) {
+    RepairKitRegeneration(String name, UUID uuid, float heal, ResourceLocation model, int level, int time) {
         this.name = name;
         this.uuid = uuid;
         this.heal = heal;
@@ -51,13 +51,13 @@ public class RepairKitRegeneration
     }
 
     @Override
-    public final void onHeal(ITurretInst turretInst) {
-        turretInst.get().addPotionEffect(new PotionEffect(MobEffects.REGENERATION, this.regenTime, this.regenLvl, true, false));
+    public final void onHeal(ITurretInst turret) {
+        turret.get().addPotionEffect(new PotionEffect(MobEffects.REGENERATION, this.regenTime, this.regenLvl, true, false));
     }
 
     @Override
-    public boolean isApplicable(ITurretInst turretInst) {
-        return turretInst.get().getHealth() <= turretInst.get().getMaxHealth() - this.heal && turretInst.get().getActivePotionEffect(MobEffects.REGENERATION) == null;
+    public boolean isApplicable(ITurretInst turret) {
+        return turret.get().getHealth() <= turret.get().getMaxHealth() - this.heal && turret.get().getActivePotionEffect(MobEffects.REGENERATION) == null;
     }
 
     @Override

@@ -190,7 +190,7 @@ public class RenderTurretCam
         boolean active;
         long lastUpdTime;
 
-        protected CamEntry(int quality) {
+        CamEntry(int quality) {
             this.textureId = GL11.glGenTextures();
             this.active = true;
             this.lastUpdTime = 0;

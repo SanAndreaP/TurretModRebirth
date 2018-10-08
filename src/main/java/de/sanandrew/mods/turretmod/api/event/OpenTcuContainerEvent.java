@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 import java.util.function.BiFunction;
 
 @Cancelable
+@SuppressWarnings("WeakerAccess")
 public class OpenTcuContainerEvent
         extends Event
 {

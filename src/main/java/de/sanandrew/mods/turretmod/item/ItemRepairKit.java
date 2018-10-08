@@ -39,7 +39,7 @@ public class ItemRepairKit
     }
 
     @Nonnull
-    public ItemStack getRepKitItem(int stackSize, UUID typeId) {
+    private ItemStack getRepKitItem(int stackSize, UUID typeId) {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setString("repKitType", typeId.toString());
         ItemStack stack = new ItemStack(this, stackSize);
@@ -49,7 +49,7 @@ public class ItemRepairKit
     }
 
     @Nonnull
-    public ItemStack getRepKitItem(int stackSize, TurretRepairKit type) {
+    private ItemStack getRepKitItem(int stackSize, TurretRepairKit type) {
         if( type == null ) {
             throw new IllegalArgumentException("Cannot get turret_ammo item with NULL type!");
         }

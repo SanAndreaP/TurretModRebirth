@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 public class ModelTurretShotgun
 		extends ModelTurretBase
 {
-	public ModelRenderer barrel;
+	private ModelRenderer barrel;
 
 	public ModelTurretShotgun(float scale) {
 		super(scale);

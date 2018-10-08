@@ -6,27 +6,19 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.gui.lexicon.misc;
 
-import de.sanandrew.mods.sanlib.api.client.lexicon.CraftingGrid;
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconEntry;
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconGuiHelper;
-import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconPageRender;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.client.gui.lexicon.assembly.LexiconRenderAssemblyRecipe;
 import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
-import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.Vec3i;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class LexiconRenderTCU
+class LexiconRenderTCU
         extends LexiconRenderAssemblyRecipe
 {
     static final String ID = TmrConstants.ID + ":tcu";

@@ -7,6 +7,8 @@
 package de.sanandrew.mods.turretmod.util;
 
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.ITmrUtils;
 import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
@@ -15,8 +17,15 @@ import de.sanandrew.mods.turretmod.entity.ai.EntityAIMoveTowardsTurret;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class TmrUtils
@@ -70,6 +79,91 @@ public class TmrUtils
                 }
             });
         }
+    }
+
+    public static void dropItem(ItemStack stack, World world, BlockPos pos) {
+        if( ItemStackUtils.isValid(stack) ) {
+            float xOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
+            float yOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
+            float zOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
+
+            EntityItem entityitem = new EntityItem(world, (pos.getX() + xOff), (pos.getY() + yOff), (pos.getZ() + zOff), stack.copy());
+
+            float motionSpeed = 0.05F;
+            entityitem.motionX = ((float) MiscUtils.RNG.randomGaussian() * motionSpeed);
+            entityitem.motionY = ((float) MiscUtils.RNG.randomGaussian() * motionSpeed + 0.2F);
+            entityitem.motionZ = ((float) MiscUtils.RNG.randomGaussian() * motionSpeed);
+            world.spawnEntity(entityitem);
+        }
+    }
+
+    public static boolean mergeItemStack(Container container, @Nonnull ItemStack stack, int beginSlot, int endSlot, boolean reverse) {
+        boolean slotChanged = false;
+        int start = beginSlot;
+
+        if( reverse ) {
+            start = endSlot - 1;
+        }
+
+        Slot slot;
+        ItemStack slotStack;
+
+        if( stack.isStackable() ) {
+            while( stack.getCount() > 0 && (!reverse && start < endSlot || reverse && start >= beginSlot) ) {
+                slot = container.inventorySlots.get(start);
+                slotStack = slot.getStack();
+
+                if( ItemStackUtils.areEqual(slotStack, stack) && slot.isItemValid(stack) ) {
+                    int combStackSize = slotStack.getCount() + stack.getCount();
+
+                    if( combStackSize <= stack.getMaxStackSize() ) {
+                        stack.setCount(0);
+                        slotStack.setCount(combStackSize);
+                        slot.onSlotChanged();
+                        slotChanged = true;
+                    } else if( slotStack.getCount() < stack.getMaxStackSize() ) {
+                        stack.shrink(stack.getMaxStackSize() - slotStack.getCount());
+                        slotStack.setCount(stack.getMaxStackSize());
+                        slot.onSlotChanged();
+                        slotChanged = true;
+                    }
+                }
+
+                if( reverse ) {
+                    start--;
+                } else {
+                    start++;
+                }
+            }
+        }
+
+        if( stack.getCount() > 0 ) {
+            if( reverse ) {
+                start = endSlot - 1;
+            } else {
+                start = beginSlot;
+            }
+
+            while( !reverse && start < endSlot || reverse && start >= beginSlot ) {
+                slot = container.inventorySlots.get(start);
+
+                if( !ItemStackUtils.isValid(slot.getStack()) && slot.isItemValid(stack) ) {
+                    slot.putStack(stack.copy());
+                    slot.onSlotChanged();
+                    stack.setCount(0);
+                    slotChanged = true;
+                    break;
+                }
+
+                if( reverse ) {
+                    start--;
+                } else {
+                    start++;
+                }
+            }
+        }
+
+        return slotChanged;
     }
 
     public static float wrap360(float angle) {

@@ -70,7 +70,7 @@ public class EntityTurret
 
     private static final DataParameter<Boolean> SHOT_CHNG = EntityDataManager.createKey(EntityTurret.class, DataSerializers.BOOLEAN);
 
-    public boolean isUpsideDown;
+    private boolean isUpsideDown;
     private boolean showRange;
     public boolean inGui;
 
@@ -231,7 +231,7 @@ public class EntityTurret
             this.motionY -= 0.0325F;
             super.move(MoverType.SELF, 0.0F, this.motionY, 0.0F);
             this.blockPos = this.getPosition().down(1);
-        } else if( this.checkBlock && !canTurretBePlaced(this.world, this.blockPos, true, this.isUpsideDown) ) {
+        } else if( this.checkBlock && !canTurretBePlaced(this.world, this.blockPos, true, true) ) {
             this.onKillCommand();
         }
 

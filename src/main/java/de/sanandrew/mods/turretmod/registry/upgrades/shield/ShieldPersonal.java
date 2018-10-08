@@ -25,9 +25,9 @@ public final class ShieldPersonal
 
     static final ColorObj BASE_COLOR = new ColorObj(0x40DD74FF);
     static final float[] BASE_CLR_HSL = BASE_COLOR.calcHSL();
-    static final AxisAlignedBB BB = new AxisAlignedBB(-0.5D, 0, -0.5D, 0.5D, 2, 0.5D);
+    private static final AxisAlignedBB BB = new AxisAlignedBB(-0.5D, 0, -0.5D, 0.5D, 2, 0.5D);
     static final float CRIT_VALUE = 5.0F;
-    static final float RECOVERY_PER_TICK = CRIT_VALUE / 1000.0F;
+    private static final float RECOVERY_PER_TICK = CRIT_VALUE / 1000.0F;
 
     float value;
     float recovery;

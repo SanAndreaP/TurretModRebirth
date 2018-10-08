@@ -92,7 +92,7 @@ public final class TurretAssemblyRegistry
     }
 
     public IRecipeGroup[] getGroups() {
-        return this.groupsList.toArray(new IRecipeGroup[this.groupsList.size()]);
+        return this.groupsList.toArray(new IRecipeGroup[0]);
     }
 
     public RecipeEntry getRecipeEntry(UUID uuid) {

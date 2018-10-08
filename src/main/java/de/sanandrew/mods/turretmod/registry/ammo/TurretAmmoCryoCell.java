@@ -14,7 +14,6 @@ import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
@@ -27,7 +26,7 @@ public abstract class TurretAmmoCryoCell
     private final int capacity;
     private final ResourceLocation itemModel;
 
-    public TurretAmmoCryoCell(String name, UUID id, int capacity) {
+    TurretAmmoCryoCell(String name, UUID id, int capacity) {
         this.name = name;
         this.id = id;
         this.capacity = capacity;
@@ -56,12 +55,6 @@ public abstract class TurretAmmoCryoCell
     }
 
     @Override
-    @Nonnull
-    public ItemStack getStoringAmmoItem() {
-        return AmmunitionRegistry.INSTANCE.getAmmoItem(AmmunitionRegistry.INSTANCE.getType(this.getTypeId()));
-    }
-
-    @Override
     public ResourceLocation getModel() {
         return this.itemModel;
     }
@@ -69,7 +62,7 @@ public abstract class TurretAmmoCryoCell
     public static class SingleMK1
             extends TurretAmmoCryoCell
     {
-        public SingleMK1() {
+        SingleMK1() {
             super("cryocell_1", Ammunitions.CRYOCELL_MK1, 1);
         }
 
@@ -92,7 +85,7 @@ public abstract class TurretAmmoCryoCell
     public static class MultiMK1
             extends TurretAmmoCryoCell
     {
-        public MultiMK1() {
+        MultiMK1() {
             super("cryocell_pack_1", Ammunitions.CRYOCELL_PACK_MK1, 16);
         }
 
@@ -115,7 +108,7 @@ public abstract class TurretAmmoCryoCell
     public static class SingleMK2
             extends TurretAmmoCryoCell
     {
-        public SingleMK2() {
+        SingleMK2() {
             super("cryocell_2", Ammunitions.CRYOCELL_MK2, 1);
         }
 
@@ -138,7 +131,7 @@ public abstract class TurretAmmoCryoCell
     public static class MultiMK2
             extends TurretAmmoCryoCell
     {
-        public MultiMK2() {
+        MultiMK2() {
             super("cryocell_pack_2", Ammunitions.CRYOCELL_PACK_MK2, 16);
         }
 
@@ -161,7 +154,7 @@ public abstract class TurretAmmoCryoCell
     public static class SingleMK3
             extends TurretAmmoCryoCell
     {
-        public SingleMK3() {
+        SingleMK3() {
             super("cryocell_3", Ammunitions.CRYOCELL_MK3, 1);
         }
 
@@ -184,7 +177,7 @@ public abstract class TurretAmmoCryoCell
     public static class MultiMK3
             extends TurretAmmoCryoCell
     {
-        public MultiMK3() {
+        MultiMK3() {
             super("cryocell_pack_3", Ammunitions.CRYOCELL_PACK_MK3, 16);
         }
 

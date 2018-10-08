@@ -9,12 +9,11 @@
 package de.sanandrew.mods.turretmod.block;
 
 import com.google.common.collect.ImmutableMap;
-import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -24,7 +23,6 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -94,21 +92,7 @@ public class BlockElectrolyteGenerator
                 IItemHandler handler = potatoGen.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
                 if( handler != null ) {
                     for( int i = 0, max = handler.getSlots(); i < max; i++ ) {
-                        ItemStack stack = handler.getStackInSlot(i);
-
-                        if( ItemStackUtils.isValid(stack) ) {
-                            float xOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
-                            float yOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
-                            float zOff = MiscUtils.RNG.randomFloat() * 0.8F + 0.1F;
-
-                            EntityItem entityitem = new EntityItem(world, (pos.getX() + xOff), (pos.getY() + yOff), (pos.getZ() + zOff), stack.copy());
-
-                            float motionSpeed = 0.05F;
-                            entityitem.motionX = ((float) MiscUtils.RNG.randomGaussian() * motionSpeed);
-                            entityitem.motionY = ((float) MiscUtils.RNG.randomGaussian() * motionSpeed + 0.2F);
-                            entityitem.motionZ = ((float) MiscUtils.RNG.randomGaussian() * motionSpeed);
-                            world.spawnEntity(entityitem);
-                        }
+                        TmrUtils.dropItem(handler.getStackInSlot(i), world, pos);
                     }
                 }
 
@@ -166,7 +150,12 @@ public class BlockElectrolyteGenerator
 
     @Override
     protected BlockStateContainer createBlockState() {
-        return new MyBlockStateContainer(this, TILE_HOLDER);
+        return new BlockStateContainer(this, TILE_HOLDER) {
+            @Override
+            protected StateImplementation createState(Block block, ImmutableMap<IProperty<?>, Comparable<?>> properties, @Nullable ImmutableMap<IUnlistedProperty<?>, Optional<?>> unlistedProperties) {
+                return new MyStateImplementation(block, properties);
+            }
+        };
     }
 
     @Override
@@ -184,23 +173,10 @@ public class BlockElectrolyteGenerator
         return new TileEntityElectrolyteGenerator();
     }
 
-    private static final class MyBlockStateContainer
-            extends BlockStateContainer
-    {
-        public MyBlockStateContainer(Block blockIn, IProperty<?>... properties) {
-            super(blockIn, properties);
-        }
-
-        @Override
-        protected StateImplementation createState(Block block, ImmutableMap<IProperty<?>, Comparable<?>> properties, @Nullable ImmutableMap<IUnlistedProperty<?>, Optional<?>> unlistedProperties) {
-            return new MyStateImplementation(block, properties);
-        }
-    }
-
     private static final class MyStateImplementation
             extends BlockStateContainer.StateImplementation
     {
-        protected MyStateImplementation(Block blockIn, ImmutableMap<IProperty<?>, Comparable<?>> propertiesIn) {
+        MyStateImplementation(Block blockIn, ImmutableMap<IProperty<?>, Comparable<?>> propertiesIn) {
             super(blockIn, propertiesIn);
         }
 

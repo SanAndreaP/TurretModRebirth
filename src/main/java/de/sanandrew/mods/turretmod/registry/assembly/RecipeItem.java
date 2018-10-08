@@ -29,9 +29,9 @@ import java.util.List;
 public class RecipeItem
         implements IRecipeItem
 {
-    public int stackSize;
-    public ItemStack[] normalAlternatives;
-    public String[] oreDictAlternatives;
+    private int stackSize;
+    private ItemStack[] normalAlternatives;
+    private String[] oreDictAlternatives;
     private boolean drawTooltip;
 
     private WeakReference<ItemStack[]> cachedEntryStacks;
@@ -52,26 +52,24 @@ public class RecipeItem
 
     @Override
     public RecipeItem put(Item... items) {
-        List<ItemStack> newStacks = new ArrayList<>();
-        newStacks.addAll(Arrays.asList(this.normalAlternatives));
+        List<ItemStack> newStacks = new ArrayList<>(Arrays.asList(this.normalAlternatives));
         for( Item item : items ) {
             newStacks.add(new ItemStack(item, 1));
         }
 
-        this.normalAlternatives = newStacks.toArray(new ItemStack[newStacks.size()]);
+        this.normalAlternatives = newStacks.toArray(new ItemStack[0]);
 
         return this;
     }
 
     @Override
     public RecipeItem put(Block... blocks) {
-        List<ItemStack> newStacks = new ArrayList<>();
-        newStacks.addAll(Arrays.asList(this.normalAlternatives));
+        List<ItemStack> newStacks = new ArrayList<>(Arrays.asList(this.normalAlternatives));
         for( Block block : blocks ) {
             newStacks.add(new ItemStack(block, 1));
         }
 
-        this.normalAlternatives = newStacks.toArray(new ItemStack[newStacks.size()]);
+        this.normalAlternatives = newStacks.toArray(new ItemStack[0]);
 
         return this;
     }
@@ -82,15 +80,14 @@ public class RecipeItem
         newStacks.addAll(Arrays.asList(this.normalAlternatives));
         newStacks.addAll(Arrays.asList(stacks));
 
-        this.normalAlternatives = newStacks.toArray(new ItemStack[newStacks.size()]);
+        this.normalAlternatives = newStacks.toArray(new ItemStack[0]);
 
         return this;
     }
 
     @Override
     public RecipeItem put(String... oreDictNames) {
-        List<String> newNames = new ArrayList<>();
-        newNames.addAll(Arrays.asList(this.oreDictAlternatives));
+        List<String> newNames = new ArrayList<>(Arrays.asList(this.oreDictAlternatives));
         for( String name : oreDictNames ) {
             if( name.endsWith("*") ) {
                 name = name.substring(0, name.lastIndexOf('*'));
@@ -104,7 +101,7 @@ public class RecipeItem
             }
         }
 
-        this.oreDictAlternatives = newNames.toArray(new String[newNames.size()]);
+        this.oreDictAlternatives = newNames.toArray(new String[0]);
 
         return this;
     }
@@ -192,7 +189,7 @@ public class RecipeItem
                 }
             }
 
-            this.cachedEntryStacks = new WeakReference<>(fltStacks.toArray(new ItemStack[fltStacks.size()]));
+            this.cachedEntryStacks = new WeakReference<>(fltStacks.toArray(new ItemStack[0]));
         }
 
         return this.cachedEntryStacks.get();

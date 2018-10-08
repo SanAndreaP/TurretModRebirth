@@ -55,18 +55,12 @@ public class ContainerElectrolyteGenerator
         return this.tile.isUseableByPlayer(player);
     }
 
-    protected boolean mergeItemStackInput(@Nonnull ItemStack stack, int beginSlot, int endSlot, boolean reverse) {
+    private boolean mergeItemStackInput(@Nonnull ItemStack stack) {
         boolean slotChanged = false;
-        int start;
+        int start = 0;
         Slot slot;
 
-        if( reverse ) {
-            start = endSlot - 1;
-        } else {
-            start = beginSlot;
-        }
-
-        while( !reverse && start < endSlot || reverse && start >= beginSlot ) {
+        while( start < 9 ) {
             slot = this.inventorySlots.get(start);
 
             if( !ItemStackUtils.isValid(slot.getStack()) && slot.isItemValid(stack) ) {
@@ -78,11 +72,7 @@ public class ContainerElectrolyteGenerator
                 break;
             }
 
-            if( reverse ) {
-                start--;
-            } else {
-                start++;
-            }
+            start++;
         }
 
         return slotChanged;
@@ -102,7 +92,7 @@ public class ContainerElectrolyteGenerator
                 if( !this.mergeItemStack(slotStack, 22, 58, true) ) {
                     return ItemStackUtils.getEmpty();
                 }
-            } else if( !this.mergeItemStackInput(slotStack, 0, 9, false) ) { // if clicked stack is from player and also merge to input slots is sucessful
+            } else if( !this.mergeItemStackInput(slotStack) ) { // if clicked stack is from player and also merge to input slots is sucessful
                 return ItemStackUtils.getEmpty();
             }
 
@@ -122,14 +112,14 @@ public class ContainerElectrolyteGenerator
         return origStack;
     }
 
-    public static class SlotProcessing
+    static class SlotProcessing
             extends Slot
     {
         private static final IInventory EMPTY_INV = new InventoryBasic("[Null]", true, 0);
         private final TileEntityElectrolyteGenerator generator;
         private final int index;
 
-        public SlotProcessing(TileEntityElectrolyteGenerator generator, int id, int x, int y) {
+        SlotProcessing(TileEntityElectrolyteGenerator generator, int id, int x, int y) {
             super(EMPTY_INV, id, x, y);
             this.generator = generator;
             this.index = id;

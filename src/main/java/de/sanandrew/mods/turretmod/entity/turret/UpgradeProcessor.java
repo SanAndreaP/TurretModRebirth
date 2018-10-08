@@ -368,7 +368,9 @@ public final class UpgradeProcessor
 
     @Override
     public void readFromNbt(NBTTagCompound nbt) {
-        ItemStackUtils.readItemStacksFromTag(this.upgradeStacks, nbt.getTagList("upgInventory", Constants.NBT.TAG_COMPOUND), this::callbackReadUpgStack);
+        if( nbt != null ) {
+            ItemStackUtils.readItemStacksFromTag(this.upgradeStacks, nbt.getTagList("upgInventory", Constants.NBT.TAG_COMPOUND), this::callbackReadUpgStack);
+        }
     }
 
     @Override

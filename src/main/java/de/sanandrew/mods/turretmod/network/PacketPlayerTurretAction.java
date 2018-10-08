@@ -30,7 +30,7 @@ public class PacketPlayerTurretAction
         extends AbstractMessage<PacketPlayerTurretAction>
 {
     public static final byte SET_ACTIVE = 0;
-    public static final byte DISMANTLE = 1;
+    private static final byte DISMANTLE = 1;
     public static final byte SET_DEACTIVE = 2;
 
     private int turretId;
@@ -79,7 +79,6 @@ public class PacketPlayerTurretAction
                 PacketRegistry.sendToServer(new PacketPlayerTurretAction(turretInst, PacketPlayerTurretAction.DISMANTLE));
                 return true;
             } else {
-//                int y = turretInst.isUpsideDown() ? 3 : 0;
                 BlockPos chestPos = turretL.getPosition();
                 if( turretL.world.setBlockState(chestPos, Blocks.CHEST.getDefaultState(), 3) ) {
                     TileEntity te = turretL.world.getTileEntity(chestPos);

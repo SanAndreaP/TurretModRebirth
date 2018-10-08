@@ -15,7 +15,6 @@ import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
@@ -29,7 +28,7 @@ public class TurretAmmoFireTank
     private final int capacity;
     private final ResourceLocation itemModel;
 
-    public TurretAmmoFireTank(boolean isMulti) {
+    TurretAmmoFireTank(boolean isMulti) {
         this.name = isMulti ? "fueltank_pack" : "fueltank";
         this.id = isMulti ? Ammunitions.FUELTANK_PACK : Ammunitions.FUELTANK;
         this.capacity = isMulti ? 256 : 16;
@@ -65,12 +64,6 @@ public class TurretAmmoFireTank
     @Override
     public IAmmunitionGroup getGroup() {
         return Ammunitions.Groups.FUEL_TANK;
-    }
-
-    @Override
-    @Nonnull
-    public ItemStack getStoringAmmoItem() {
-        return AmmunitionRegistry.INSTANCE.getAmmoItem(AmmunitionRegistry.INSTANCE.getType(Ammunitions.FUELTANK));
     }
 
     @Override
