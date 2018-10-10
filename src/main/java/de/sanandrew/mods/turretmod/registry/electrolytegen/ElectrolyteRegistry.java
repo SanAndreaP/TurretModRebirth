@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-@SuppressWarnings({"unused", "UnusedReturnValue"})
+@SuppressWarnings({"unused", "UnusedReturnValue", "WeakerAccess"})
 public class ElectrolyteRegistry
 {
     private static final Map<ItemStack, Fuel> FUELS_INTRN = new HashMap<>();
@@ -44,7 +44,7 @@ public class ElectrolyteRegistry
         long prevTime = System.nanoTime();
         Loader.instance().getActiveModList().forEach(ElectrolyteRegistry::loadJsonRecipes);
         long timeDelta = (System.nanoTime() - prevTime) / 1_000_000;
-        TmrConstants.LOG.log(Level.INFO, String.format("Initializing Electrolyte Generator recipes done in %d ms. Found %d recipes.", timeDelta, ElectrolyteRegistry.getFuelMap().size()));
+        TmrConstants.LOG.log(Level.INFO, String.format("Initializing Electrolyte Generator recipes done in %d ms. Found %d recipes.", timeDelta, FUELS_UNMODIFY.size()));
     }
 
     private static boolean loadJsonRecipes(ModContainer mod) {
@@ -90,7 +90,7 @@ public class ElectrolyteRegistry
         return true;
     }
 
-    private static Map<ItemStack, Fuel> getFuelMap() {
+    public static Map<ItemStack, Fuel> getFuelMap() {
         return FUELS_UNMODIFY;
     }
 
@@ -114,7 +114,7 @@ public class ElectrolyteRegistry
         return getFuel(stack).isValid();
     }
 
-    private static boolean registerFuels(NonNullList<ItemStack> electrolytes, float effectiveness, int ticksProcessing, @Nonnull ItemStack trash, @Nonnull ItemStack treasure) {
+    public static boolean registerFuels(NonNullList<ItemStack> electrolytes, float effectiveness, int ticksProcessing, @Nonnull ItemStack trash, @Nonnull ItemStack treasure) {
         if( effectiveness < 1.0F ) {
             TmrConstants.LOG.log(Level.ERROR, "Cannot have an effectiveness of less than 1.0");
             return false;

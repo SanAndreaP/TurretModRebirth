@@ -24,13 +24,10 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@SideOnly(Side.CLIENT)
 public class LexiconRenderAmmo
         extends LexiconRenderAssemblyRecipe
 {

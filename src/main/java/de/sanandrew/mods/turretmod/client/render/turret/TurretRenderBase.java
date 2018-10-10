@@ -12,13 +12,10 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.model.ModelTurretBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLiving;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 import java.util.function.Function;
 
-@SideOnly(Side.CLIENT)
 public class TurretRenderBase<T extends EntityLiving & ITurretInst>
         implements ITurretRender<ModelTurretBase, T>
 {

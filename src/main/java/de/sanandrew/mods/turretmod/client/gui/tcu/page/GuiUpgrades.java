@@ -18,10 +18,7 @@ import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
 public class GuiUpgrades
         implements IGuiTCU
 {

@@ -18,15 +18,12 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLiving;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Queue;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-@SideOnly(Side.CLIENT)
 public class LayerTurretShieldLightning<E extends EntityLiving & ITurretInst>
         implements LayerRenderer<E>
 {

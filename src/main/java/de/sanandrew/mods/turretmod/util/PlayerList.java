@@ -39,11 +39,7 @@ public class PlayerList
     private final Map<UUID, String> playerMap = new ConcurrentHashMap<>();
 
     private PlayerList() {
-        this(WSD_NAME);
-    }
-
-    private PlayerList(String name) {
-        super(name);
+        super(WSD_NAME);
     }
 
     public String getPlayerName(UUID playerUUID) {

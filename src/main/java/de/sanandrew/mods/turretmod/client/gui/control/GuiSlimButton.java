@@ -10,18 +10,12 @@ package de.sanandrew.mods.turretmod.client.gui.control;
 
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
 public class GuiSlimButton
         extends GuiButton
 {
-    private static FontRenderer slimFont;
-
     public GuiSlimButton(int id, int x, int y, int width, String text) {
         super(id, x, y, width, 12, text);
     }

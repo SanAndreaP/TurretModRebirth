@@ -9,15 +9,12 @@ package de.sanandrew.mods.turretmod.client.gui.tcu.page;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.util.PlayerList;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Comparator;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
 
-@SideOnly(Side.CLIENT)
 public class GuiTargetPlayers
         extends GuiTargets<UUID>
 {

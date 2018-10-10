@@ -23,11 +23,8 @@ import mezz.jei.api.ISubtypeRegistry;
 import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @JEIPlugin
-@SideOnly(Side.CLIENT)
 public class JeiPlugin
     implements IModPlugin
 {

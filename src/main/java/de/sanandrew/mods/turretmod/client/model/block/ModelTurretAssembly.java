@@ -8,12 +8,9 @@ import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.resources.IResourceManager;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Arrays;
 
-@SideOnly(Side.CLIENT)
 public class ModelTurretAssembly
         extends ModelBase
         implements ModelJsonHandler<ModelTurretAssembly, ModelJsonLoader.ModelJson>

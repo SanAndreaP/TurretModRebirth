@@ -15,12 +15,9 @@ import de.sanandrew.mods.turretmod.api.client.render.IRenderInst;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 
-@SideOnly(Side.CLIENT)
 public class RenderPebble<T extends Entity>
         implements IRender<T>
 {

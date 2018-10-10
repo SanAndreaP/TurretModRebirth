@@ -16,13 +16,10 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
 
 import java.util.UUID;
 
-@SideOnly(Side.CLIENT)
 public final class PlayerHeads
 {
     private static final UUID[] PLAYERS = new UUID[] {

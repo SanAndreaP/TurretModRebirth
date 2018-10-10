@@ -15,10 +15,7 @@ import de.sanandrew.mods.turretmod.registry.upgrades.shield.ShieldPersonal;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
 public class LabelTurretPersShield
         implements ILabelElement
 {

@@ -32,8 +32,8 @@ import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
 import de.sanandrew.mods.turretmod.client.render.world.RenderTurretPointed;
 import de.sanandrew.mods.turretmod.client.shader.Shaders;
 import de.sanandrew.mods.turretmod.client.world.ClientWorldEventListener;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretLaser;
@@ -56,11 +56,8 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
 
-@SideOnly(Side.CLIENT)
 public class ClientProxy
         extends CommonProxy
 {

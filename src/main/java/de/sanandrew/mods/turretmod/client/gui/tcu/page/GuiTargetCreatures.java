@@ -16,15 +16,12 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.IAnimals;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-@SideOnly(Side.CLIENT)
 public class GuiTargetCreatures
         extends GuiTargets<Class<? extends Entity>>
 {

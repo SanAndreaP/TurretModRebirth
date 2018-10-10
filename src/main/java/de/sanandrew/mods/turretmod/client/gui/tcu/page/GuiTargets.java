@@ -21,8 +21,6 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -31,7 +29,6 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-@SideOnly(Side.CLIENT)
 public abstract class GuiTargets<T>
         implements IGuiTCU
 {

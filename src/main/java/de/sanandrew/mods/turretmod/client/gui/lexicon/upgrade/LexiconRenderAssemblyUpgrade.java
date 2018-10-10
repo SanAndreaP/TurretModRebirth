@@ -17,12 +17,9 @@ import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-@SideOnly(Side.CLIENT)
 public class LexiconRenderAssemblyUpgrade
         extends LexiconRenderAssemblyRecipe
 {

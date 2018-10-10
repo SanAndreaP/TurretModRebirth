@@ -37,8 +37,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.lwjgl.opengl.GL11;
 
@@ -46,7 +44,6 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 
-@SideOnly(Side.CLIENT)
 public final class GuiTcuHelper
 {
     private static final int MAX_TABS = 5;

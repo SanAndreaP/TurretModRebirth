@@ -17,13 +17,10 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Arrays;
 import java.util.List;
 
-@SideOnly(Side.CLIENT)
 public class ModelTurretBase
 		extends ModelBase
 		implements ModelJsonHandler<ModelTurretBase, ModelJsonLoader.ModelJson>

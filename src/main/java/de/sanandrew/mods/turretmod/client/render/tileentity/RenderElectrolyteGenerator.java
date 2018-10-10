@@ -20,13 +20,10 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 
-@SideOnly(Side.CLIENT)
 public class RenderElectrolyteGenerator
         extends TileEntitySpecialRenderer<TileEntityElectrolyteGenerator>
 {

@@ -11,10 +11,7 @@ import de.sanandrew.mods.turretmod.client.render.world.RenderTurretCam;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
 public class GuiCameras
         extends GuiScreen
 {

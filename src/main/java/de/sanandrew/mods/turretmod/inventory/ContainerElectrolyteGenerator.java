@@ -33,7 +33,7 @@ public class ContainerElectrolyteGenerator
             this.addSlotToContainer(new SlotItemHandler(generator.containerItemHandler, i, 8 + i*18, 17));
         }
         for( int i = 0; i < 9; i++ ) {
-            this.addSlotToContainer(new SlotProcessing(generator, i, 8 + i*18, 43));
+            this.addSlotToContainer(new SlotProcessing(generator, i, 8 + i*18));
         }
         for( int i = 0; i < 5; i++ ) {
             this.addSlotToContainer(new SlotItemHandler(generator.containerItemHandler, i+9, 44 + i*18, 76));
@@ -119,8 +119,8 @@ public class ContainerElectrolyteGenerator
         private final TileEntityElectrolyteGenerator generator;
         private final int index;
 
-        SlotProcessing(TileEntityElectrolyteGenerator generator, int id, int x, int y) {
-            super(EMPTY_INV, id, x, y);
+        SlotProcessing(TileEntityElectrolyteGenerator generator, int id, int x) {
+            super(EMPTY_INV, id, x, 43);
             this.generator = generator;
             this.index = id;
         }

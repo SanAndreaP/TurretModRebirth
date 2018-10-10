@@ -22,8 +22,6 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.mutable.MutableFloat;
 import org.lwjgl.opengl.GL11;
 
@@ -34,7 +32,6 @@ import java.util.Objects;
 import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 
-@SideOnly(Side.CLIENT)
 public final class RenderTurretPointed
         implements ILabelRegistry
 {

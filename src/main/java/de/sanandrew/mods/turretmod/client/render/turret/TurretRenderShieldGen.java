@@ -13,12 +13,9 @@ import de.sanandrew.mods.turretmod.client.render.layer.LayerTurretShieldLightnin
 import de.sanandrew.mods.turretmod.client.render.layer.LayerTurretUpgradesShieldGen;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLiving;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-@SideOnly(Side.CLIENT)
 public class TurretRenderShieldGen<T extends EntityLiving & ITurretInst>
         extends TurretRenderBase<T>
 {

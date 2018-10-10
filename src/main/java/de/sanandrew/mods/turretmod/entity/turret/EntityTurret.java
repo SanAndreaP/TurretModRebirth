@@ -46,7 +46,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -508,14 +507,6 @@ public class EntityTurret
     /**turrets are immobile, leave empty*/
     @Override
     public final void travel(float strafe, float vertical, float forward) {}
-
-    public ResourceLocation getStandardTexture() {
-        return this.delegate.getStandardTexture(this);
-    }
-
-    public ResourceLocation getGlowTexture() {
-        return this.delegate.getGlowTexture(this);
-    }
 
     public SoundEvent getShootSound() {
         return this.delegate.getShootSound(this);

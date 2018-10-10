@@ -15,8 +15,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
 
 import java.util.ArrayList;
@@ -27,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-@SideOnly(Side.CLIENT)
 public class ForcefieldCube
         implements Cloneable
 {

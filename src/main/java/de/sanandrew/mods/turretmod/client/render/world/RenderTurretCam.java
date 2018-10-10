@@ -17,14 +17,11 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 import java.util.WeakHashMap;
 
-@SideOnly(Side.CLIENT)
 public class RenderTurretCam
 {
     private static final long MAX_UPDATE_TIME_NS = 1_000_000_000;

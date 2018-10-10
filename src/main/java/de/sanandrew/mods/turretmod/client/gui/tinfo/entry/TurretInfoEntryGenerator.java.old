@@ -29,7 +29,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import java.util.Set;
 
-@SideOnly(Side.CLIENT)
 public class TurretInfoEntryGenerator
         extends TurretInfoEntryMiscCraftable
 {

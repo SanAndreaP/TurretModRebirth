@@ -32,9 +32,9 @@ public class ContainerTurretAssembly
         this.inventory = this.tile.getInventory();
 
         this.addSlotToContainer(new SlotOutput(0, 172, 10));
-        this.addSlotToContainer(new SlotAutoUpgrade(1, 14, 100));
-        this.addSlotToContainer(new SlotSpeedUpgrade(2, 14, 118));
-        this.addSlotToContainer(new SlotFilterUpgrade(3, 202, 100));
+        this.addSlotToContainer(new SlotAutoUpgrade());
+        this.addSlotToContainer(new SlotSpeedUpgrade());
+        this.addSlotToContainer(new SlotFilterUpgrade());
         this.addSlotToContainer(new SlotOutput(4, 202, 118));
 
         for( int i = 0; i < 2; i++ ) {
@@ -154,8 +154,8 @@ public class ContainerTurretAssembly
     private class SlotAutoUpgrade
             extends Slot
     {
-        SlotAutoUpgrade(int id, int x, int y) {
-            super(ContainerTurretAssembly.this.inventory, id, x, y);
+        SlotAutoUpgrade() {
+            super(ContainerTurretAssembly.this.inventory, 1, 14, 100);
         }
 
         @Override
@@ -167,8 +167,8 @@ public class ContainerTurretAssembly
     private class SlotSpeedUpgrade
             extends Slot
     {
-        SlotSpeedUpgrade(int id, int x, int y) {
-            super(ContainerTurretAssembly.this.inventory, id, x, y);
+        SlotSpeedUpgrade() {
+            super(ContainerTurretAssembly.this.inventory, 2, 14, 118);
         }
 
         @Override
@@ -180,8 +180,8 @@ public class ContainerTurretAssembly
     private class SlotFilterUpgrade
             extends Slot
     {
-        SlotFilterUpgrade(int id, int x, int y) {
-            super(ContainerTurretAssembly.this.inventory, id, x, y);
+        SlotFilterUpgrade() {
+            super(ContainerTurretAssembly.this.inventory, 3, 202, 100);
         }
 
         @Override
