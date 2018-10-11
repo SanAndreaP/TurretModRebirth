@@ -111,16 +111,22 @@ public abstract class GuiTargets<T>
         GuiUtils.glScissor(scrollAreaX, scrollAreaY, scrollAreaWidth, scrollAreaHeight);
 
         int currScrollInd = Math.round(-this.scroll * (this.filteredTargets.size() - MAX_ITEMS));
-        int offsetY = currScrollInd * (gui.getFontRenderer().FONT_HEIGHT + 1);
+        int offsetY = 0;
         int btnMinOffY = scrollAreaY + 1;
         int btnMaxOffY = btnMinOffY + MAX_ITEMS * (gui.getFontRenderer().FONT_HEIGHT + 1);
         boolean targetListChanged = false;
-        int currInd = 0;
+        int currInd = -1;
 
         for( Map.Entry<T, Boolean> entry : this.filteredTargets.entrySet() ) {
+            currInd++;
+
+            if( currScrollInd + currInd < 0 ) {
+                continue;
+            }
+
             int btnTexOffY = 12 + (entry.getValue() ? 16 : 0);
 
-            if( currInd++ % 2 == 1 ) {
+            if( currInd % 2 == 1 ) {
                 gui.drawGradient(scrollAreaX + 1, scrollAreaY + 1 + offsetY, scrollAreaX + scrollAreaWidth - 2, scrollAreaY + 9 + offsetY, 0x10000000, 0x10000000);
             }
 
@@ -141,6 +147,10 @@ public abstract class GuiTargets<T>
             this.drawEntry(gui, entry.getKey(), scrollAreaX + 10, scrollAreaY + 1 + offsetY);
 
             offsetY += gui.getFontRenderer().FONT_HEIGHT + 1;
+
+            if( currScrollInd + currInd >= MAX_ITEMS ) {
+                break;
+            }
         }
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
