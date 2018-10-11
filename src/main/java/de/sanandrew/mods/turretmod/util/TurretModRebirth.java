@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.util;
 import de.sanandrew.mods.turretmod.api.ITmrPlugin;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
+import de.sanandrew.mods.turretmod.entity.turret.TargetList;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
@@ -91,11 +92,11 @@ public class TurretModRebirth
     public void postInit(FMLPostInitializationEvent event) {
         PLUGINS.forEach(ITmrPlugin::postInit);
 
-        TargetProcessor.initialize();
-
         proxy.postInit(event);
 
         TurretAssemblyRegistry.INSTANCE.finalizeRegistry();
+
+        TargetList.initializePostInit();
     }
 
     @Mod.EventHandler

@@ -198,4 +198,9 @@ public class TurretForcefield
     public int getReloadTicks() {
         return reloadTicks;
     }
+
+    @Override
+    public AttackType getAttackType() {
+        return AttackType.ALL;
+    }
 }

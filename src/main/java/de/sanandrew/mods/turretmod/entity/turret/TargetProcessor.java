@@ -8,7 +8,6 @@
  */
 package de.sanandrew.mods.turretmod.entity.turret;
 
-import com.google.common.collect.Maps;
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
@@ -24,9 +23,7 @@ import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -34,6 +31,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -43,18 +41,19 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public final class TargetProcessor
         implements ITargetProcessor
 {
-    private static final Map<Class<? extends Entity>, Boolean> ENTITY_TARGET_LIST_STD = new HashMap<>();
+//    public static final Map<Class<? extends Entity>, Boolean> ENTITY_TARGET_LIST_GROUND = new HashMap<>();
 
-    private final Map<Class<? extends Entity>, Boolean> entityTargetList;
+    private final Map<ResourceLocation, Boolean> entityTargetList;
     private final Map<UUID, Boolean> playerTargetList;
     private final ITurretInst turret;
 
@@ -72,11 +71,15 @@ public final class TargetProcessor
     private long processTicks = 0;
 
     TargetProcessor(ITurretInst turret) {
-        this.entityTargetList = new HashMap<>(ENTITY_TARGET_LIST_STD);
+        this.entityTargetList = new HashMap<>();
         this.playerTargetList = new HashMap<>();
         this.turret = turret;
         this.initShootTicks = 20;
         this.ammoStack = ItemStackUtils.getEmpty();
+    }
+
+    public void init() {
+        this.entityTargetList.putAll(TargetList.getStandardTargetList(this.turret.getAttackType()));
     }
 
     @Override
@@ -382,10 +385,9 @@ public final class TargetProcessor
             }
             if( this.entityToAttack == null ) {
                 for( Entity entityObj : getValidTargetList(aabb) ) {
-                    EntityLivingBase livingBase = (EntityLivingBase) entityObj;
-                    if( this.checkTargetListeners(livingBase) ) {
-                        this.entityToAttack = livingBase;
-                        this.entityToAttackUUID = livingBase.getUniqueID();
+                    if( this.checkTargetListeners(entityObj) ) {
+                        this.entityToAttack = entityObj;
+                        this.entityToAttackUUID = entityObj.getUniqueID();
                         changed = true;
                         break;
                     }
@@ -446,7 +448,7 @@ public final class TargetProcessor
 
     @Override
     public boolean isEntityTargeted(Entity entity) {
-        Boolean creatureSetting = this.entityTargetList.get(entity.getClass());
+        Boolean creatureSetting = this.entityTargetList.get(EntityList.getKey(entity.getClass()));
         if( creatureSetting != null ) {
             return this.isBlacklistEntity ^ creatureSetting;
         } else if( entity instanceof EntityPlayer ) {
@@ -462,14 +464,8 @@ public final class TargetProcessor
     }
 
     private boolean isEntityValidTarget(Entity entity, AxisAlignedBB aabb) {
-        return entity instanceof EntityLivingBase && isEntityTargeted(entity) && entity.isEntityAlive() && entity.getEntityBoundingBox().intersects(aabb)
+        return isEntityTargeted(entity) && entity.isEntityAlive() && entity.getEntityBoundingBox().intersects(aabb)
                && (this.turret.getTurret().canSeeThroughBlocks() || this.turret.get().canEntityBeSeen(entity));
-    }
-
-    public static void initialize() {
-        EntityList.getEntityNameList().stream().map(EntityList::getClass)
-                .filter(cls -> cls != null && EntityLiving.class.isAssignableFrom(cls) && !ITurretInst.class.isAssignableFrom(cls) && !EntityLiving.class.equals(cls))
-                .forEach(cls -> ENTITY_TARGET_LIST_STD.put(cls, IMob.class.isAssignableFrom(cls)));
     }
 
     @Override
@@ -503,10 +499,10 @@ public final class TargetProcessor
         nbt.setBoolean("playerBlacklist", this.isBlacklistPlayer);
 
         NBTTagList entityTargets = new NBTTagList();
-        for( Class cls : this.getEnabledEntityTargets() ) {
-            entityTargets.appendTag(new NBTTagString(cls.getName()));
+        for( ResourceLocation res : this.getEnabledEntityTargets() ) {
+            entityTargets.appendTag(new NBTTagString(res.toString()));
         }
-        nbt.setTag("entityTargets", entityTargets);
+        nbt.setTag("EntityTargetsRL", entityTargets);
 
         NBTTagList playerTargets = new NBTTagList();
         for( UUID uuid : this.getEnabledPlayerTargets() ) {
@@ -531,18 +527,28 @@ public final class TargetProcessor
         this.isBlacklistEntity = nbt.getBoolean("entityBlacklist");
         this.isBlacklistPlayer = nbt.getBoolean("playerBlacklist");
 
-        List<Class<? extends Entity>> entityTgt = new ArrayList<>();
-        NBTTagList list = nbt.getTagList("entityTargets", Constants.NBT.TAG_STRING);
-        for( int i = 0; i < list.tagCount(); i++ ) {
-            Class<? extends Entity> cls = ReflectionUtils.getClass(list.getStringTagAt(i));
-            if( cls != null ) {
-                entityTgt.add(cls);
+        if( nbt.hasKey("entityTargets") ) {
+            @Deprecated
+            List<Class<? extends Entity>> entityTgt = new ArrayList<>();
+            NBTTagList list = nbt.getTagList("entityTargets", Constants.NBT.TAG_STRING);
+            for( int i = 0; i < list.tagCount(); i++ ) {
+                Class<? extends Entity> cls = ReflectionUtils.getClass(list.getStringTagAt(i));
+                if( cls != null ) {
+                    entityTgt.add(cls);
+                }
             }
+            this.updateEntityTargets(entityTgt.stream().map(EntityList::getKey).toArray(ResourceLocation[]::new));
+        } else {
+            List<ResourceLocation> entityTgt = new ArrayList<>();
+            NBTTagList list = nbt.getTagList("EntityTargetsRL", Constants.NBT.TAG_STRING);
+            for( int i = 0; i < list.tagCount(); i++ ) {
+                entityTgt.add(new ResourceLocation(list.getStringTagAt(i)));
+            }
+            this.updateEntityTargets(entityTgt.toArray(new ResourceLocation[0]));
         }
-        this.updateEntityTargets(entityTgt);
 
         List<UUID> playerTgt = new ArrayList<>();
-        list = nbt.getTagList("playerTargets", Constants.NBT.TAG_STRING);
+        NBTTagList list = nbt.getTagList("playerTargets", Constants.NBT.TAG_STRING);
         for( int i = 0; i < list.tagCount(); i++ ) {
             try {
                 UUID id = UUID.fromString(list.getStringTagAt(i));
@@ -557,21 +563,17 @@ public final class TargetProcessor
     }
 
     @Override
-    public List<Class<? extends Entity>> getEnabledEntityTargets() {
-        Collection<Class<? extends Entity>> enabledClasses = Maps.filterEntries(this.entityTargetList, input -> input != null && input.getValue()).keySet();
-
-        return new ArrayList<>(enabledClasses);
+    public ResourceLocation[] getEnabledEntityTargets() {
+        return this.entityTargetList.entrySet().stream().filter(Map.Entry::getValue).map(Map.Entry::getKey).toArray(ResourceLocation[]::new);
     }
 
     @Override
     public UUID[] getEnabledPlayerTargets() {
-        Collection<UUID> enabledUUIDs = Maps.filterEntries(this.playerTargetList, input -> input != null && input.getValue()).keySet();
-
-        return enabledUUIDs.toArray(new UUID[0]);
+        return this.playerTargetList.entrySet().stream().filter(Map.Entry::getValue).map(Map.Entry::getKey).toArray(UUID[]::new);
     }
 
     @Override
-    public Map<Class<? extends Entity>, Boolean> getEntityTargets() {
+    public Map<ResourceLocation, Boolean> getEntityTargets() {
         return new HashMap<>(this.entityTargetList);
     }
 
@@ -581,9 +583,9 @@ public final class TargetProcessor
     }
 
     @Override
-    public void updateEntityTarget(Class<? extends Entity> cls, boolean active) {
-        if( ENTITY_TARGET_LIST_STD.containsKey(cls) ) {
-            this.entityTargetList.put(cls, active);
+    public void updateEntityTarget(ResourceLocation res, boolean active) {
+        if( TargetList.isEntityTargetable(res, this.turret.getAttackType()) ) {
+            this.entityTargetList.put(res, active);
         }
     }
 
@@ -593,10 +595,10 @@ public final class TargetProcessor
     }
 
     @Override
-    public void updateEntityTargets(List<Class<? extends Entity>> classes) {
+    public void updateEntityTargets(ResourceLocation[] keys) {
         this.entityTargetList.entrySet().forEach(entry -> entry.setValue(false));
 
-        classes.stream().filter(cls -> cls != null && ENTITY_TARGET_LIST_STD.containsKey(cls)).forEach(cls -> this.entityTargetList.put(cls, true));
+        Arrays.stream(keys).filter(r -> TargetList.isEntityTargetable(r, this.turret.getAttackType())).forEach(r -> this.entityTargetList.put(r, true));
     }
 
     @Override

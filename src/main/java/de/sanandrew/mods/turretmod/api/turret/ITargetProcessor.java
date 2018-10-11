@@ -3,6 +3,7 @@ package de.sanandrew.mods.turretmod.api.turret;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.common.eventhandler.EventBus;
@@ -72,19 +73,19 @@ public interface ITargetProcessor
 
     void readFromNbt(NBTTagCompound nbt);
 
-    List<Class<? extends Entity>> getEnabledEntityTargets();
+    ResourceLocation[] getEnabledEntityTargets();
 
     UUID[] getEnabledPlayerTargets();
 
-    Map<Class<? extends Entity>, Boolean> getEntityTargets();
+    Map<ResourceLocation, Boolean> getEntityTargets();
 
     Map<UUID, Boolean> getPlayerTargets();
 
-    void updateEntityTarget(Class<? extends Entity> cls, boolean active);
+    void updateEntityTarget(ResourceLocation res, boolean active);
 
     void updatePlayerTarget(UUID uid, boolean active);
 
-    void updateEntityTargets(List<Class<? extends Entity>> classes);
+    void updateEntityTargets(ResourceLocation[] keys);
 
     void updatePlayerTargets(UUID[] uuids);
 

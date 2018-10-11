@@ -52,4 +52,6 @@ public interface ITurretInst
     <V extends ITurretRAM> V getRAM(Supplier<V> onNull);
 
     void updateState();
+
+    ITurret.AttackType getAttackType();
 }

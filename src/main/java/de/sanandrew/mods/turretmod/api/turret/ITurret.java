@@ -86,4 +86,16 @@ public interface ITurret
     int getAmmoCapacity();
 
     int getReloadTicks();
+
+    default AttackType getAttackType() {
+        return AttackType.GROUND;
+    }
+
+    enum AttackType
+    {
+        ALL,
+        GROUND,
+        AIR,
+        WATER
+    }
 }

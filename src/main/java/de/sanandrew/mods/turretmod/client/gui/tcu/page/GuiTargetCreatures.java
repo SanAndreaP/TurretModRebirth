@@ -7,6 +7,7 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu.page;
 
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiButtonIcon;
@@ -14,16 +15,19 @@ import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.IAnimals;
+import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class GuiTargetCreatures
-        extends GuiTargets<Class<? extends Entity>>
+        extends GuiTargets<ResourceLocation>
 {
     private GuiButton selectMobs;
     private GuiButton selectAnimals;
@@ -48,21 +52,24 @@ public class GuiTargetCreatures
         super.onButtonClick(gui, button);
         if( button == this.selectMobs ) {
             this.tempTargets.forEach((key, val) -> {
-                if( !val && IMob.class.isAssignableFrom(key) ) {
+                Class<?> c = MiscUtils.defIfNull(EntityList.getClass(key), Object.class);
+                if( !val && IMob.class.isAssignableFrom(c) ) {
                     this.updateEntry(gui.getTurretInst(), key, true);
                 }
             });
             this.updateTargets(gui.getTurretInst());
         } else if( button == this.selectAnimals ) {
             this.tempTargets.forEach((key, val) -> {
-                if( !val && IAnimals.class.isAssignableFrom(key) && !IMob.class.isAssignableFrom(key) ) {
+                Class<?> c = MiscUtils.defIfNull(EntityList.getClass(key), Object.class);
+                if( !val && IAnimals.class.isAssignableFrom(c) && !IMob.class.isAssignableFrom(c) ) {
                     this.updateEntry(gui.getTurretInst(), key, true);
                 }
             });
             this.updateTargets(gui.getTurretInst());
         } else if( button == this.selectOther ) {
             this.tempTargets.forEach((key, val) -> {
-                if( !val && !IAnimals.class.isAssignableFrom(key) && !IMob.class.isAssignableFrom(key) ) {
+                Class<?> c = MiscUtils.defIfNull(EntityList.getClass(key), Object.class);
+                if( !val && !IAnimals.class.isAssignableFrom(c) && !IMob.class.isAssignableFrom(c) ) {
                     this.updateEntry(gui.getTurretInst(), key, true);
                 }
             });
@@ -71,32 +78,33 @@ public class GuiTargetCreatures
     }
 
     @Override
-    protected SortedMap<Class<? extends Entity>, Boolean> getTargetList(ITurretInst turretInst) {
-        TreeMap<Class<? extends Entity>, Boolean> btwSortMapCl = new TreeMap<>(new TargetComparator());
+    protected SortedMap<ResourceLocation, Boolean> getTargetList(ITurretInst turretInst) {
+        TreeMap<ResourceLocation, Boolean> btwSortMapCl = new TreeMap<>(new TargetComparator());
         btwSortMapCl.putAll(turretInst.getTargetProcessor().getEntityTargets());
         return btwSortMapCl;
     }
 
     @Override
-    protected void updateEntry(ITurretInst turretInst, Class<? extends Entity> type, boolean active) {
+    protected void updateEntry(ITurretInst turretInst, ResourceLocation type, boolean active) {
         turretInst.getTargetProcessor().updateEntityTarget(type, active);
     }
 
     @Override
-    protected boolean isEntryVisible(Class<? extends Entity> type, String srcText) {
-        return LangUtils.translateEntityCls(type).toUpperCase().contains(srcText.toUpperCase());
+    protected boolean isEntryVisible(ResourceLocation type, String srcText) {
+        return LangUtils.translateEntityCls(MiscUtils.defIfNull(EntityList.getClass(type), Entity.class)).toUpperCase().contains(srcText.toUpperCase());
     }
 
     @Override
-    protected void drawEntry(IGuiTcuInst<?> gui, Class<? extends Entity> type, int posX, int posY) {
+    protected void drawEntry(IGuiTcuInst<?> gui, ResourceLocation type, int posX, int posY) {
         int textColor = 0xFF000000;
-        if( IMob.class.isAssignableFrom(type) ) {
+        Class<? extends Entity> c = MiscUtils.defIfNull(EntityList.getClass(type), Entity.class);
+        if( IMob.class.isAssignableFrom(c) ) {
             textColor = 0xFFA00000;
-        } else if( IAnimals.class.isAssignableFrom(type) ) {
+        } else if( IAnimals.class.isAssignableFrom(c) ) {
             textColor = 0xFF00A000;
         }
 
-        gui.getFontRenderer().drawString(LangUtils.translateEntityCls(type), posX, posY, textColor, false);
+        gui.getFontRenderer().drawString(LangUtils.translateEntityCls(c), posX, posY, textColor, false);
     }
 
     @Override
@@ -110,29 +118,31 @@ public class GuiTargetCreatures
     }
 
     private static final class TargetComparator
-            implements Comparator<Class<? extends Entity>>
+            implements Comparator<ResourceLocation>
     {
         @Override
-        public int compare(Class<? extends Entity> o1, Class<? extends Entity> o2) {
-            if( IMob.class.isAssignableFrom(o1) ) {
-                if( IMob.class.isAssignableFrom(o2) ) {
-                    return LangUtils.translateEntityCls(o1).compareTo(LangUtils.translateEntityCls(o2));
+        public int compare(ResourceLocation o1, ResourceLocation o2) {
+            Class<? extends Entity> c1 = MiscUtils.defIfNull(EntityList.getClass(o1), Entity.class);
+            Class<? extends Entity> c2 = MiscUtils.defIfNull(EntityList.getClass(o2), Entity.class);
+            if( IMob.class.isAssignableFrom(c1) ) {
+                if( IMob.class.isAssignableFrom(c2) ) {
+                    return LangUtils.translateEntityCls(c1).compareTo(LangUtils.translateEntityCls(c2));
                 } else {
                     return -1;
                 }
-            } else if( IAnimals.class.isAssignableFrom(o1) ) {
-                if( IMob.class.isAssignableFrom(o2) ) {
+            } else if( IAnimals.class.isAssignableFrom(c1) ) {
+                if( IMob.class.isAssignableFrom(c2) ) {
                     return 1;
-                } else if( IAnimals.class.isAssignableFrom(o2) ) {
-                    return LangUtils.translateEntityCls(o1).compareTo(LangUtils.translateEntityCls(o2));
+                } else if( IAnimals.class.isAssignableFrom(c2) ) {
+                    return LangUtils.translateEntityCls(c1).compareTo(LangUtils.translateEntityCls(c2));
                 } else {
                     return -1;
                 }
             } else {
-                if( IMob.class.isAssignableFrom(o2) || IAnimals.class.isAssignableFrom(o2) ) {
+                if( IMob.class.isAssignableFrom(c2) || IAnimals.class.isAssignableFrom(c2) ) {
                     return 1;
                 } else {
-                    return LangUtils.translateEntityCls(o1).compareTo(LangUtils.translateEntityCls(o2));
+                    return LangUtils.translateEntityCls(c1).compareTo(LangUtils.translateEntityCls(c2));
                 }
             }
         }

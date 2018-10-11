@@ -89,6 +89,7 @@ public class EntityTurret
     @Nonnull
     private ITurret delegate;
 
+    /** called when turret is loaded from disk **/
     public EntityTurret(World world) {
         super(world);
         this.targetProc = new TargetProcessor(this);
@@ -98,15 +99,16 @@ public class EntityTurret
         this.delegate = TurretRegistry.NULL_TURRET;
     }
 
+    /** called when turret is rendered in a GUI or its placed down by {@link EntityTurret#EntityTurret(World, boolean, EntityPlayer, ITurret)} **/
     public EntityTurret(World world, ITurret delegate) {
         this(world);
-        this.delegate = delegate;
 
         this.loadDelegate(delegate);
 
         this.setHealth(this.getMaxHealth());
     }
 
+    /** called when turret is placed down **/
     public EntityTurret(World world, boolean isUpsideDown, EntityPlayer owner, ITurret delegate) {
         this(world, delegate);
         this.isUpsideDown = isUpsideDown;
@@ -254,7 +256,6 @@ public class EntityTurret
         }
 
         if( this.isActive() ) {
-
             if( this.targetProc.hasTarget() ) {
                 this.faceEntity(this.targetProc.getTarget(), 10.0F, this.getVerticalFaceSpeed());
             } else if( this.world.isRemote && TmrUtils.INSTANCE.getPassengersOfClass(this, EntityPlayer.class).size() < 1 ) {
@@ -480,6 +481,8 @@ public class EntityTurret
         this.getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).setBaseValue(this.delegate.getReloadTicks());
         this.getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY).setBaseValue(this.delegate.getAmmoCapacity());
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(this.delegate.getHealth());
+
+        this.targetProc.init();
     }
 
     @Override
@@ -643,5 +646,10 @@ public class EntityTurret
     @Override
     public ITurret getTurret() {
         return this.delegate;
+    }
+
+    @Override
+    public ITurret.AttackType getAttackType() {
+        return this.delegate.getAttackType();
     }
 }

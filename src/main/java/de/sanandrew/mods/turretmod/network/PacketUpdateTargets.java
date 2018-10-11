@@ -14,16 +14,18 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.UUID;
 
 public class PacketUpdateTargets
         extends AbstractMessage<PacketUpdateTargets>
 {
-    private List<Class<? extends Entity>> entityTargets;
+    private ResourceLocation[] entityTargets;
     private UUID[] playerTargets;
     private boolean isBlacklistEntity;
     private boolean isBlacklistPlayer;

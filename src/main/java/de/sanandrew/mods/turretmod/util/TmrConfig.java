@@ -13,6 +13,9 @@ import de.sanandrew.mods.sanlib.lib.util.config.ConfigUtils;
 import de.sanandrew.mods.sanlib.lib.util.config.Init;
 import de.sanandrew.mods.sanlib.lib.util.config.Value;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.entity.turret.TargetList;
+import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import de.sanandrew.mods.turretmod.registry.projectile.Bullet;
 import de.sanandrew.mods.turretmod.registry.projectile.CrossbowBolt;
 import de.sanandrew.mods.turretmod.registry.projectile.CryoBall;
@@ -28,6 +31,11 @@ import de.sanandrew.mods.turretmod.registry.turret.TurretMinigun;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRevolver;
 import de.sanandrew.mods.turretmod.registry.turret.TurretShotgun;
 import de.sanandrew.mods.turretmod.registry.turret.shieldgen.TurretForcefield;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.monster.IMob;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -36,8 +44,14 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Mod.EventBusSubscriber(modid = TmrConstants.ID)
 @SuppressWarnings("WeakerAccess")
@@ -48,6 +62,7 @@ public final class TmrConfig
     private static Configuration configGeneral;
     private static Configuration configTurrets;
     private static Configuration configProjectiles;
+    private static Configuration configTargets;
 
     @Category(Configuration.CATEGORY_CLIENT)
     public static final class Client
@@ -69,34 +84,38 @@ public final class TmrConfig
 
     public static final class Turrets
     {
-        public static final String NAME = "turrets";
-
         @Init
         public static void initialize() {
-            ConfigUtils.loadCategory(configTurrets, TurretCrossbow.class, NAME);
-            ConfigUtils.loadCategory(configTurrets, TurretShotgun.class, NAME);
-            ConfigUtils.loadCategory(configTurrets, TurretCryolator.class, NAME);
-            ConfigUtils.loadCategory(configTurrets, TurretRevolver.class, NAME);
-            ConfigUtils.loadCategory(configTurrets, TurretMinigun.class, NAME);
-            ConfigUtils.loadCategory(configTurrets, TurretForcefield.class, NAME);
-            ConfigUtils.loadCategory(configTurrets, TurretLaser.class, NAME);
-            ConfigUtils.loadCategory(configTurrets, TurretFlamethrower.class, NAME);
+            ConfigUtils.loadCategory(configTurrets, TurretCrossbow.class, null);
+            ConfigUtils.loadCategory(configTurrets, TurretShotgun.class, null);
+            ConfigUtils.loadCategory(configTurrets, TurretCryolator.class, null);
+            ConfigUtils.loadCategory(configTurrets, TurretRevolver.class, null);
+            ConfigUtils.loadCategory(configTurrets, TurretMinigun.class, null);
+            ConfigUtils.loadCategory(configTurrets, TurretForcefield.class, null);
+            ConfigUtils.loadCategory(configTurrets, TurretLaser.class, null);
+            ConfigUtils.loadCategory(configTurrets, TurretFlamethrower.class, null);
         }
     }
 
     public static final class Projectiles
     {
-        public static final String NAME = "projectiles";
-
         @Init
         public static void initialize() {
-            ConfigUtils.loadCategory(configProjectiles, CrossbowBolt.class, NAME);
-            ConfigUtils.loadCategory(configProjectiles, ShotgunPebble.class, NAME);
-            ConfigUtils.loadCategory(configProjectiles, CryoBall.class, NAME);
-            ConfigUtils.loadCategory(configProjectiles, Bullet.class, NAME);
-            ConfigUtils.loadCategory(configProjectiles, MinigunPebble.class, NAME);
-            ConfigUtils.loadCategory(configProjectiles, Laser.class, NAME);
-            ConfigUtils.loadCategory(configProjectiles, Flame.class, NAME);
+            ConfigUtils.loadCategory(configProjectiles, CrossbowBolt.class, null);
+            ConfigUtils.loadCategory(configProjectiles, ShotgunPebble.class, null);
+            ConfigUtils.loadCategory(configProjectiles, CryoBall.class, null);
+            ConfigUtils.loadCategory(configProjectiles, Bullet.class, null);
+            ConfigUtils.loadCategory(configProjectiles, MinigunPebble.class, null);
+            ConfigUtils.loadCategory(configProjectiles, Laser.class, null);
+            ConfigUtils.loadCategory(configProjectiles, Flame.class, null);
+        }
+    }
+
+    public static final class Targets
+    {
+        @Init
+        public static void initialize() {
+            ConfigUtils.loadCategory(configTargets, TargetList.class, null);
         }
     }
 
@@ -107,6 +126,7 @@ public final class TmrConfig
         configGeneral = ConfigUtils.loadConfigFile(new File(modCfgDir, "general.cfg"), VERSION, TmrConstants.NAME);
         configTurrets = ConfigUtils.loadConfigFile(new File(modCfgDir, "turrets.cfg"), VERSION, TmrConstants.NAME);
         configProjectiles = ConfigUtils.loadConfigFile(new File(modCfgDir, "projectiles.cfg"), VERSION, TmrConstants.NAME);
+        configTargets = ConfigUtils.loadConfigFile(new File(modCfgDir, "targets.cfg"), VERSION, TmrConstants.NAME);
         syncConfig();
     }
 
@@ -114,6 +134,7 @@ public final class TmrConfig
         ConfigUtils.loadCategories(configGeneral, TmrConfig.class);
         ConfigUtils.loadCategories(configTurrets, Turrets.class);
         ConfigUtils.loadCategories(configProjectiles, Projectiles.class);
+        ConfigUtils.loadCategories(configTargets, Targets.class);
 
         if( configGeneral.hasChanged() ) {
             configGeneral.save();
@@ -124,6 +145,9 @@ public final class TmrConfig
         if( configProjectiles.hasChanged() ) {
             configProjectiles.save();
         }
+        if( configTargets.hasChanged() ) {
+            configTargets.save();
+        }
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
@@ -132,6 +156,7 @@ public final class TmrConfig
         cat.put("general", configGeneral.getCategoryNames().stream().map(configGeneral::getCategory).filter(c -> c.size() > 0).toArray(ConfigCategory[]::new));
         cat.put("turrets", configTurrets.getCategoryNames().stream().map(configTurrets::getCategory).filter(c -> c.size() > 0).toArray(ConfigCategory[]::new));
         cat.put("projectiles", configProjectiles.getCategoryNames().stream().map(configProjectiles::getCategory).filter(c -> c.size() > 0).toArray(ConfigCategory[]::new));
+        cat.put("targets", configTargets.getCategoryNames().stream().map(configTargets::getCategory).filter(c -> c.size() > 0).toArray(ConfigCategory[]::new));
 
         return cat;
     }
