@@ -7,8 +7,12 @@
 package de.sanandrew.mods.turretmod.entity.turret;
 
 import de.sanandrew.mods.sanlib.lib.util.config.Category;
+import de.sanandrew.mods.sanlib.lib.util.config.Pattern;
+import de.sanandrew.mods.sanlib.lib.util.config.Range;
+import de.sanandrew.mods.sanlib.lib.util.config.Value;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.util.TmrConfig;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.IMob;
@@ -24,21 +28,36 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Category("targets")
+@Category(TargetList.NAME)
 @SuppressWarnings("WeakerAccess")
-public class TargetList
+public final class TargetList
 {
+    public static final String NAME = "targets";
+
+    @Value(comment = "Wether or not to regenerate the groundEntities config. This will be set to false once it is done.\n" +
+                             "The generator will scoop through the entity registry and add any entity extending EntityLiving and filter out anything that is already\n" +
+                             "whitelisted as a flying or water-based entity.")
     public static boolean groundRegenerate = true;
 
+    @Value(comment = "A whitelist to determine targetable entity types by \"anti-ground\" turrets (anything that cannot attack flying or water-based entities).\n" +
+                             "This needs to be the registry name, like \"minecraft:cow\" for a cow, etc.",
+           range = @Range(validationPattern = @Pattern(".*?:.*")))
     public static String[] groundEntities = {};
 
+    @Value(comment = "A whitelist to determine targetable entity types by \"anti-air\" turrets (anything that cannot attack ground-based or water-based entities).\n" +
+                             "This needs to be the registry name, like \"minecraft:ghast\" for a ghast, etc.",
+           range = @Range(validationPattern = @Pattern(".*?:.*")))
     public static String[] flyingEntities = {
             "minecraft:ghast",
             "minecraft:wither",
             "minecraft:ender_dragon",
-            "minecraft:vex"
+            "minecraft:vex",
+            "minecraft:bat"
     };
 
+    @Value(comment = "A whitelist to determine targetable entity types by \"anti-water\" turrets (anything that cannot attack flying or ground-based entities).\n" +
+                             "This needs to be the registry name, like \"minecraft:squid\" for a squid, etc.",
+           range = @Range(validationPattern = @Pattern(".*?:.*")))
     public static String[] waterEntities = {
             "minecraft:squid",
             "minecraft:guardian",
@@ -51,12 +70,13 @@ public class TargetList
 
     public static void initializePostInit() {
         if( groundRegenerate ) {
-            Stream<String> feStr = Arrays.stream(flyingEntities);
-            Stream<String> weStr = Arrays.stream(waterEntities);
             groundEntities = EntityList.getEntityNameList().stream()
                                        .filter(nm -> {
+                                           Stream<String> feStr = Arrays.stream(flyingEntities);
+                                           Stream<String> weStr = Arrays.stream(waterEntities);
                                            String nmStr = nm.toString();
                                            Class c = EntityList.getClass(nm);
+
                                            return c != null && EntityLiving.class.isAssignableFrom(c) && feStr.noneMatch(nmStr::equals) && weStr.noneMatch(nmStr::equals)
                                                   && !ITurretInst.class.isAssignableFrom(c) && !EntityLiving.class.equals(c);
                                        }).map(ResourceLocation::toString).toArray(String[]::new);
@@ -73,6 +93,10 @@ public class TargetList
         TARGETABLE_GROUND.addAll(Arrays.stream(groundEntities).map(ResourceLocation::new).collect(Collectors.toList()));
         TARGETABLE_AIR.addAll(Arrays.stream(flyingEntities).map(ResourceLocation::new).collect(Collectors.toList()));
         TARGETABLE_WATER.addAll(Arrays.stream(waterEntities).map(ResourceLocation::new).collect(Collectors.toList()));
+
+        groundRegenerate = false;
+
+        TmrConfig.Targets.reset();
     }
 
     public static boolean isEntityTargetable(ResourceLocation res, ITurret.AttackType type) {

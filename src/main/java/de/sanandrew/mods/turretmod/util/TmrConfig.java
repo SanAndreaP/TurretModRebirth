@@ -13,9 +13,7 @@ import de.sanandrew.mods.sanlib.lib.util.config.ConfigUtils;
 import de.sanandrew.mods.sanlib.lib.util.config.Init;
 import de.sanandrew.mods.sanlib.lib.util.config.Value;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.turret.TargetList;
-import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import de.sanandrew.mods.turretmod.registry.projectile.Bullet;
 import de.sanandrew.mods.turretmod.registry.projectile.CrossbowBolt;
 import de.sanandrew.mods.turretmod.registry.projectile.CryoBall;
@@ -31,27 +29,17 @@ import de.sanandrew.mods.turretmod.registry.turret.TurretMinigun;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRevolver;
 import de.sanandrew.mods.turretmod.registry.turret.TurretShotgun;
 import de.sanandrew.mods.turretmod.registry.turret.shieldgen.TurretForcefield;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.monster.IMob;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Mod.EventBusSubscriber(modid = TmrConstants.ID)
 @SuppressWarnings("WeakerAccess")
@@ -117,6 +105,18 @@ public final class TmrConfig
         public static void initialize() {
             ConfigUtils.loadCategory(configTargets, TargetList.class, null);
         }
+
+        public static void reset() {
+            Property p = configTargets.getCategory(TargetList.NAME).get("groundRegenerate");
+            p.set(false);
+            p.setDefaultValue(false);
+
+            p = configTargets.getCategory(TargetList.NAME).get("groundEntities");
+            p.set(TargetList.groundEntities);
+            p.setDefaultValues(TargetList.groundEntities);
+
+            configTargets.save();
+        }
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -165,6 +165,7 @@ public final class TmrConfig
     public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
         if( eventArgs.getModID().equals(TmrConstants.ID) ) {
             syncConfig();
+            TargetList.initializePostInit();
         }
     }
 }

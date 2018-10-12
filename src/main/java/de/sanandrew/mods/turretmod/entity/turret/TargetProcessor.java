@@ -51,8 +51,6 @@ import java.util.stream.Collectors;
 public final class TargetProcessor
         implements ITargetProcessor
 {
-//    public static final Map<Class<? extends Entity>, Boolean> ENTITY_TARGET_LIST_GROUND = new HashMap<>();
-
     private final Map<ResourceLocation, Boolean> entityTargetList;
     private final Map<UUID, Boolean> playerTargetList;
     private final ITurretInst turret;
@@ -527,8 +525,7 @@ public final class TargetProcessor
         this.isBlacklistEntity = nbt.getBoolean("entityBlacklist");
         this.isBlacklistPlayer = nbt.getBoolean("playerBlacklist");
 
-        if( nbt.hasKey("entityTargets") ) {
-            @Deprecated
+        if( nbt.hasKey("entityTargets") ) { // @deprecated
             List<Class<? extends Entity>> entityTgt = new ArrayList<>();
             NBTTagList list = nbt.getTagList("entityTargets", Constants.NBT.TAG_STRING);
             for( int i = 0; i < list.tagCount(); i++ ) {

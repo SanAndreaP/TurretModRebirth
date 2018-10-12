@@ -11,6 +11,7 @@ import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiButtonIcon;
+import de.sanandrew.mods.turretmod.entity.turret.TargetList;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.gui.GuiButton;
@@ -80,6 +81,7 @@ public class GuiTargetCreatures
     @Override
     protected SortedMap<ResourceLocation, Boolean> getTargetList(ITurretInst turretInst) {
         TreeMap<ResourceLocation, Boolean> btwSortMapCl = new TreeMap<>(new TargetComparator());
+        btwSortMapCl.putAll(TargetList.getStandardTargetList(turretInst.getAttackType()));
         btwSortMapCl.putAll(turretInst.getTargetProcessor().getEntityTargets());
         return btwSortMapCl;
     }

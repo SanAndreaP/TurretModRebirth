@@ -63,11 +63,9 @@ public class PacketUpdateTargets
     @SuppressWarnings("unchecked")
     public void fromBytes(ByteBuf buf) {
         this.turretID = buf.readInt();
-        this.entityTargets = new ArrayList<>();
-        for( int i = 0, max = buf.readInt(); i < max; i++ ) {
-            try {
-                this.entityTargets.add((Class<? extends Entity>) Class.forName(ByteBufUtils.readUTF8String(buf)));
-            } catch( ClassNotFoundException ignored ) { }
+        this.entityTargets = new ResourceLocation[buf.readInt()];
+        for( int i = 0; i < this.entityTargets.length; i++ ) {
+            this.entityTargets[i] = new ResourceLocation(ByteBufUtils.readUTF8String(buf));
         }
         this.playerTargets = new UUID[buf.readInt()];
         for( int i = 0; i < this.playerTargets.length; i++ ) {
@@ -84,9 +82,9 @@ public class PacketUpdateTargets
     @Override
     public void toBytes(ByteBuf buf) {
         buf.writeInt(this.turretID);
-        buf.writeInt(this.entityTargets.size());
-        for( Class entityTarget : this.entityTargets ) {
-            ByteBufUtils.writeUTF8String(buf, entityTarget.getName());
+        buf.writeInt(this.entityTargets.length);
+        for( ResourceLocation entityTarget : this.entityTargets ) {
+            ByteBufUtils.writeUTF8String(buf, entityTarget.toString());
         }
         buf.writeInt(this.playerTargets.length);
         for( UUID playerTarget : this.playerTargets ) {
