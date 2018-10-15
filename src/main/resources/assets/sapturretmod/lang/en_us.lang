@@ -99,6 +99,16 @@ sapturretmod.turret.ii_shieldgen.name=Forcefield Turret (T2)
 sapturretmod.turret.iii_laser.name=Laser Turret (T3)
 sapturretmod.turret.iii_flamethrower.name=Flamethrower Turret (T3)
 
+# Death Messages
+death.attack.turret.i_crossbow=%1$s was shot by %2$s
+death.attack.turret.i_shotgun=%1$s has been turned into cheese by %2$s
+death.attack.turret.i_snowball=%1$s was frozen solid by %2$s
+death.attack.turret.ii_revolver=%1$s played russian roulette with %2$s and lost
+death.attack.turret.ii_minigun=%1$s was pricked to death by %2$s
+death.attack.turret.ii_shieldgen=%1$s was smushed to death by %2$s
+death.attack.turret.iii_laser=%1$s was cut precisely and burnt by %2$s
+death.attack.turret.iii_flamethrower=%1$s has been cooked to well-done by %2$s
+
 #### GUI ####
 # Turret Info
 sanlib.lexicon.sapturretmod.assembly=Turret Assembly Recipe

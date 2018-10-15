@@ -8,10 +8,14 @@
  */
 package de.sanandrew.mods.turretmod.entity.turret;
 
+import com.google.common.base.Strings;
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectileInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.projectile.ProjectileRegistry;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import io.netty.buffer.ByteBuf;
@@ -19,21 +23,32 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityMultiPart;
 import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.MultiPartEntityPart;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityDamageSource;
+import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import org.apache.commons.lang3.mutable.MutableFloat;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
@@ -209,6 +224,14 @@ public class EntityTurretProjectile
                 RayTraceResult interceptObj = collisionAABB.calculateIntercept(posVec, futurePosVec);
 
                 if( interceptObj != null ) {
+//                    if( collidedEntity instanceof EntityDragonPart ) {
+//                        IEntityMultiPart multiEntity = ((EntityDragonPart) collidedEntity).entityDragonObj;
+//                        if( multiEntity instanceof EntityDragon ) {
+//                            dragonPart = (EntityDragonPart) collidedEntity;
+//                            collidedEntity = (EntityDragon) multiEntity;
+//                        }
+//                    }
+
                     double vecDistance = posVec.distanceTo(interceptObj.hitVec);
 
                     if( !EntityTurret.class.isAssignableFrom(collidedEntity.getClass()) && (vecDistance < minDist || minDist == 0.0D) ) {
@@ -250,6 +273,7 @@ public class EntityTurretProjectile
                 if( hitObj.entityHit instanceof EntityLivingBase ) {
                     ((EntityLivingBase) hitObj.entityHit).hurtResistantTime = 0;
                 }
+
                 if( this.delegate.onDamageEntityPre(this.shooterCache, this, hitObj.entityHit, damagesource, dmg) && hitObj.entityHit.attackEntityFrom(damagesource, dmg.floatValue()) ) {
                     this.lastDamage = dmg.floatValue();
                     this.lastDamaged = hitObj.entityHit;
@@ -299,10 +323,35 @@ public class EntityTurretProjectile
         }
     }
 
+    public static DamageSource getDamageSource(ITurretInst turret, @Nonnull ITurretProjectileInst projectile, ITurretProjectile.TargetType type) {
+        switch( type ) {
+            case SPECIAL_ENDERMAN:
+                return new DamageSourceProjectile(projectile.get(), turret);
+            case SPECIAL_ENDER_DRAGON:
+                return new DamageSourceProjectile(projectile.get(), turret).setExplosion();
+            default:
+                return new DamageSourceIndirectProjectile(projectile.get(), turret);
+        }
+    }
+
     private DamageSource getProjDamageSource(Entity hitEntity) {
-        //TODO: add upgrade to be able to damage endermen
-        return MiscUtils.defIfNull(this.delegate.getCustomDamageSrc(this.shooterCache, this, hitEntity, true),
-                                   () -> DamageSource.causeThrownDamage(this, this.shooterCache == null ? this : this.shooterCache));
+        return MiscUtils.defIfNull(this.delegate.getCustomDamageSrc(this.shooterCache, this, hitEntity, ITurretProjectile.TargetType.REGULAR),
+                                   () -> {
+                                       ITurretProjectile.TargetType type = ITurretProjectile.TargetType.REGULAR;
+                                       if( hitEntity instanceof EntityEnderman && false ) { //TODO: add upgrade to be able to damage endermen
+                                           type = ITurretProjectile.TargetType.SPECIAL_ENDERMAN;
+                                       } else if( false ) {//TODO: add upgrade to be able to damage the ender dragon
+                                           if( hitEntity instanceof EntityDragon ) {
+                                               type = ITurretProjectile.TargetType.SPECIAL_ENDER_DRAGON;
+                                           } else if( hitEntity instanceof MultiPartEntityPart ) {
+                                               if( ((MultiPartEntityPart) hitEntity).parent instanceof EntityDragon ) {
+                                                   type = ITurretProjectile.TargetType.SPECIAL_ENDER_DRAGON;
+                                               }
+                                           }
+                                       }
+
+                                       return getDamageSource(this.shooterCache, this, type);
+                                   });
     }
 
     private void knockBackEntity(EntityLivingBase living, double deltaX, double deltaZ) {
@@ -400,5 +449,75 @@ public class EntityTurretProjectile
     @Override
     public Entity get() {
         return this;
+    }
+
+    public static class DamageSourceProjectile
+            extends EntityDamageSource
+    {
+        private final ITurretInst turret;
+
+        DamageSourceProjectile(Entity projectile, ITurretInst turret) {
+            super(TmrConstants.ID + ".turret", projectile);
+            this.setProjectile();
+
+            this.turret = turret;
+        }
+
+        @Nullable
+        @Override
+        public Entity getImmediateSource() {
+            return this.damageSourceEntity;
+        }
+
+        @Nullable
+        @Override
+        public Entity getTrueSource() {
+            return this.turret.get();
+        }
+
+        @Override
+        public ITextComponent getDeathMessage(EntityLivingBase attacked) {
+            return getDeathMessage(attacked, this.turret, this.damageType);
+        }
+
+        static ITextComponent getDeathMessage(EntityLivingBase attacked, ITurretInst turret, String damageType) {
+            String turretOwner = turret.getOwnerName();
+            String turretName = turret.get().getDisplayName().getFormattedText();
+            if( !Strings.isNullOrEmpty(turretOwner) ) {
+                turretName = turretOwner + (turretOwner.endsWith("s") ? "' " : "s' ") + turretName;
+            }
+            String s = "death.attack." + damageType + '.' + turret.getTurret().getName();
+            return new TextComponentTranslation(s, attacked.getDisplayName(), turretName);
+        }
+    }
+
+    public static class DamageSourceIndirectProjectile
+            extends EntityDamageSourceIndirect
+    {
+        private final ITurretInst turret;
+
+        DamageSourceIndirectProjectile(Entity projectile, ITurretInst turret) {
+            super(TmrConstants.ID + ".turret", projectile, turret.get());
+            this.setProjectile();
+
+            this.turret = turret;
+        }
+
+        @Nullable
+        @Override
+        public Entity getImmediateSource() {
+            return this.damageSourceEntity;
+        }
+
+        @Nullable
+        @Override
+        public Entity getTrueSource() {
+            return this.turret.get();
+        }
+
+        @Override
+        public ITextComponent getDeathMessage(EntityLivingBase attacked) {
+            return DamageSourceProjectile.getDeathMessage(attacked, this.turret, this.damageType);
+        }
     }
 }

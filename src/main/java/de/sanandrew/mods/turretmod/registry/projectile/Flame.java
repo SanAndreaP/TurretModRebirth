@@ -15,6 +15,7 @@ import de.sanandrew.mods.sanlib.lib.util.config.Value;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectileInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretProjectile;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
@@ -119,6 +120,11 @@ public class Flame
     @Override
     public SoundEvent getRicochetSound() {
         return SoundEvents.BLOCK_FIRE_EXTINGUISH;
+    }
+
+    @Override
+    public DamageSource getCustomDamageSrc(@Nullable ITurretInst turret, @Nonnull ITurretProjectileInst projectile, Entity target, TargetType type) {
+        return EntityTurretProjectile.getDamageSource(turret, projectile, type).setFireDamage();
     }
 
     @Override

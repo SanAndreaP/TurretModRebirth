@@ -84,11 +84,11 @@ public interface ITurretProjectile
      * @param turret The turret that shoots this projectile
      * @param projectile The projectile entity
      * @param target The target that got hit
-     * @param isIndirect Wether or not this can return something like {@link DamageSource#causeThrownDamage(Entity, Entity)}
-     *                   <p>If false return something to prevent endermen from teleporting (so something that's not indirect nor unblockable damage)</p>
+     * @param type The type of entity the target should be recognized as, only differs from {@link TargetType#REGULAR} if the turret has an upgrade handling that type.
+     *             <p><b>This method should return a different damage source type appropriate for this target type!</b></p>
      * @return a custom damage source appropriate for this projectile or <tt>null</tt>, if it's the standard projectile damage
      */
-    default DamageSource getCustomDamageSrc(@Nullable ITurretInst turret, @Nonnull ITurretProjectileInst projectile, Entity target, boolean isIndirect) {
+    default DamageSource getCustomDamageSrc(@Nullable ITurretInst turret, @Nonnull ITurretProjectileInst projectile, Entity target, TargetType type) {
         return null;
     }
 
@@ -164,5 +164,25 @@ public interface ITurretProjectile
      */
     default float getSpeedMultiplierLiquid() {
         return 0.8F;
+    }
+
+    /**
+     * <p>An enumerator determining the type of the target when acquiring the source of damage
+     * ({@link ITurretProjectile#getCustomDamageSrc(ITurretInst, ITurretProjectileInst, Entity, TargetType)}</p>
+     */
+    enum TargetType
+    {
+        /**
+         * A regular entity, nothing special about that
+         */
+        REGULAR,
+        /**
+         * An enderman, only used if turret has "anti-endermen" upgrade
+         */
+        SPECIAL_ENDERMAN,
+        /**
+         * An ender dragon, only used if turret has "anti-enderdragon" upgrade
+         */
+        SPECIAL_ENDER_DRAGON
     }
 }

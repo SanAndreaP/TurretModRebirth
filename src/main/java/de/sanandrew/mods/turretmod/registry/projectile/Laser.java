@@ -14,6 +14,7 @@ import de.sanandrew.mods.sanlib.lib.util.config.Value;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectileInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretProjectile;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.DamageSource;
@@ -97,20 +98,8 @@ public class Laser
     }
 
     @Override
-    public DamageSource getCustomDamageSrc(@Nullable ITurretInst turret, @Nonnull ITurretProjectileInst projectile, Entity target, boolean isIndirect) {
-        DamageSource dmg;
-
-        if( isIndirect ) {
-            dmg = DamageSource.causeThrownDamage(projectile.get(), turret == null ? projectile.get() : turret.get());
-        } else {
-            dmg = DamageSource.causeThornsDamage(turret == null ? projectile.get() : turret.get());
-        }
-
-        if( !this.isBlue ) {
-            dmg.setFireDamage();
-        }
-
-        return dmg;
+    public DamageSource getCustomDamageSrc(@Nullable ITurretInst turret, @Nonnull ITurretProjectileInst projectile, Entity target, TargetType type) {
+        return EntityTurretProjectile.getDamageSource(turret, projectile, type).setFireDamage();
     }
 
     @Override
