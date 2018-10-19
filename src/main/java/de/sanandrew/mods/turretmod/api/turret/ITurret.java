@@ -91,6 +91,10 @@ public interface ITurret
         return AttackType.GROUND;
     }
 
+    default boolean isBuoy() {
+        return false;
+    }
+
     enum AttackType
     {
         ALL,

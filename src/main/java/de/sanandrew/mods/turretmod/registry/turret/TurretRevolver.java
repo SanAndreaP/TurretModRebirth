@@ -84,7 +84,7 @@ public class TurretRevolver
 
             if( turretL.world.isRemote ) {
                 TurretModRebirth.proxy.spawnParticle(EnumParticle.SHOTGUN_SHOT, turretL.posX, turretL.posY + 1.5F, turretL.posZ,
-                                                     new Tuple(turretL.rotationYawHead + partShift, turretL.rotationPitch, turretInst.isUpsideDown()));
+                                                     new Tuple(turretL.rotationYawHead + partShift, turretL.rotationPitch));
             }
         }
     }

@@ -113,7 +113,7 @@ public class RenderTurretCam
 
                         turretL.prevRotationYaw = turretL.prevRotationYawHead;
                         turretL.rotationYaw = turretL.rotationYawHead;
-                        if( turret.isUpsideDown() ) {
+                        if( turret.isBuoy() ) {
                             turretL.posY -= 1.0F;
                             turretL.prevPosY -= 1.0F;
                             turretL.lastTickPosY -= 1.0F;

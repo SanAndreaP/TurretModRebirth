@@ -46,7 +46,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public final class TargetProcessor
         implements ITargetProcessor
@@ -313,7 +312,7 @@ public final class TargetProcessor
     @Override
     public AxisAlignedBB getAdjustedRange(boolean doOffset) {
         AxisAlignedBB aabb = this.turret.getRangeBB();
-        if( this.turret.isUpsideDown() ) {
+        if( this.turret.isBuoy() ) {
             aabb = new AxisAlignedBB(aabb.minX, -aabb.maxY, aabb.minZ, aabb.maxX, -aabb.minY, aabb.maxZ);
         }
         EntityLiving turretL = this.turret.get();

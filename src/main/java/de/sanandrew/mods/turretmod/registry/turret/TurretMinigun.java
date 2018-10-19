@@ -82,7 +82,7 @@ public class TurretMinigun
 
             if( turretL.world.isRemote ) {
                 TurretModRebirth.proxy.spawnParticle(EnumParticle.MINIGUN_SHOT, turretL.posX, turretL.posY + 1.5F, turretL.posZ,
-                                                     new Tuple(turretL.rotationYawHead, turretL.rotationPitch - 7.5F, turretInst.isUpsideDown(), ram.isLeftShot));
+                                                     new Tuple(turretL.rotationYawHead, turretL.rotationPitch - 7.5F, ram.isLeftShot));
             }
         }
     }

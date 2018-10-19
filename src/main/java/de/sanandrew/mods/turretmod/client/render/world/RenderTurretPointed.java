@@ -133,7 +133,7 @@ public final class RenderTurretPointed
         BufferBuilder buffer = tessellator.getBuffer();
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y + (turret.isUpsideDown() ? 1.4F : 0.7F), z);
+        GlStateManager.translate(x, y + (turret.isBuoy() ? 1.4F : 0.7F), z);
         GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(lbl.angleY, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(lbl.angleX, 1.0F, 0.0F, 0.0F);

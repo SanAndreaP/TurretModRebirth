@@ -32,7 +32,6 @@ import de.sanandrew.mods.turretmod.util.Sounds;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
@@ -55,7 +54,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -73,7 +71,6 @@ public class EntityTurret
 
     private static final DataParameter<Boolean> SHOT_CHNG = EntityDataManager.createKey(EntityTurret.class, DataSerializers.BOOLEAN);
 
-    private boolean isUpsideDown;
     private boolean showRange;
     public boolean inGui;
 
@@ -103,7 +100,7 @@ public class EntityTurret
         this.delegate = TurretRegistry.NULL_TURRET;
     }
 
-    /** called when turret is rendered in a GUI or its placed down by {@link EntityTurret#EntityTurret(World, boolean, EntityPlayer, ITurret)} **/
+    /** called when turret is rendered in a GUI or its placed down by {@link EntityTurret#EntityTurret(World, EntityPlayer, ITurret)} **/
     public EntityTurret(World world, ITurret delegate) {
         this(world);
 
@@ -113,9 +110,8 @@ public class EntityTurret
     }
 
     /** called when turret is placed down **/
-    public EntityTurret(World world, boolean isUpsideDown, EntityPlayer owner, ITurret delegate) {
+    public EntityTurret(World world, EntityPlayer owner, ITurret delegate) {
         this(world, delegate);
-        this.isUpsideDown = isUpsideDown;
 
         this.ownerUUID = owner.getUniqueID();
         this.ownerName = owner.getName();
@@ -173,10 +169,10 @@ public class EntityTurret
         } else {
             deltaY = (entity.getEntityBoundingBox().minY + entity.getEntityBoundingBox().maxY) / 2.0D - (this.posY + this.getEyeHeight());
         }
-        deltaY *= this.isUpsideDown ? -1.0D : 1.0D;
+        deltaY *= this.delegate.isBuoy() ? -1.0D : 1.0D;
 
         double distVecXZ = MathHelper.sqrt(deltaX * deltaX + deltaZ * deltaZ);
-        float yawRotation = (float) ((this.isUpsideDown ? -1.0D : 1.0D) * (Math.atan2(deltaZ, deltaX) * 180.0D / Math.PI)) - 90.0F;
+        float yawRotation = (float) ((this.delegate.isBuoy() ? -1.0D : 1.0D) * (Math.atan2(deltaZ, deltaX) * 180.0D / Math.PI)) - 90.0F;
         float pitchRotation = (float) -(Math.atan2(deltaY, distVecXZ) * 180.0D / Math.PI);
         this.rotationPitch = calcRotation(this.rotationPitch, pitchRotation);
         this.rotationYawHead = calcRotation(this.rotationYawHead, yawRotation);
@@ -229,10 +225,10 @@ public class EntityTurret
     @Override
     public void onLivingUpdate() {
         if( this.blockPos == null ) {
-            this.blockPos = this.getPosition().up(this.isUpsideDown ? 2 : -1);
+            this.blockPos = this.getPosition().up(this.delegate.isBuoy() ? 2 : -1);
         }
 
-        if( !this.isUpsideDown ) {
+        if( !this.delegate.isBuoy() ) {
             this.motionY -= 0.0325F;
             super.move(MoverType.SELF, 0.0F, this.motionY, 0.0F);
             this.blockPos = this.getPosition().down(1);
@@ -401,8 +397,6 @@ public class EntityTurret
         this.upgProc.writeToNbt(upgNbt);
         ByteBufUtils.writeTag(buffer, upgNbt);
 
-        buffer.writeBoolean(this.isUpsideDown);
-
         if( this.ownerUUID != null ) {
             buffer.writeBoolean(true);
             buffer.writeLong(this.ownerUUID.getMostSignificantBits());
@@ -422,8 +416,6 @@ public class EntityTurret
         this.targetProc.readFromNbt(ByteBufUtils.readTag(buffer));
         this.upgProc.readFromNbt(ByteBufUtils.readTag(buffer));
 
-        this.isUpsideDown = buffer.readBoolean();
-
         if( buffer.readBoolean() ) {
             this.ownerUUID = new UUID(buffer.readLong(), buffer.readLong());
             this.ownerName = ByteBufUtils.readUTF8String(buffer);
@@ -442,7 +434,6 @@ public class EntityTurret
         this.upgProc.writeToNbt(nbt);
         this.dwBools.writeToNbt(nbt);
 
-        nbt.setBoolean("isUpsideDown", this.isUpsideDown);
         if( this.ownerUUID != null ) {
             nbt.setString("ownerUUID", this.ownerUUID.toString());
             nbt.setString("ownerName", this.ownerName);
@@ -464,7 +455,6 @@ public class EntityTurret
         this.upgProc.readFromNbt(nbt);
         this.dwBools.readFromNbt(nbt);
 
-        this.isUpsideDown = nbt.getBoolean("isUpsideDown");
         if( nbt.hasKey("ownerUUID") ) {
             this.ownerUUID = UUID.fromString(nbt.getString("ownerUUID"));
             this.ownerName = nbt.getString("ownerName");
@@ -638,8 +628,8 @@ public class EntityTurret
     }
 
     @Override
-    public boolean isUpsideDown() {
-        return this.isUpsideDown;
+    public boolean isBuoy() {
+        return this.delegate.isBuoy();
     }
 
     @Override

@@ -126,7 +126,7 @@ public class RenderTurret<E extends EntityLiving & ITurretInst>
     protected void applyRotations(E turret, float x, float y, float z) {
         super.applyRotations(turret, x, y, z);
 
-        if( turret.isUpsideDown() ) {
+        if( turret.isBuoy() ) {
             GlStateManager.translate(0.0F, turret.height + 0.2F, 0.0F);
             GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
         }

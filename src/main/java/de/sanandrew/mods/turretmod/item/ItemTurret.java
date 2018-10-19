@@ -105,8 +105,7 @@ public class ItemTurret
 
             if( EntityTurret.canTurretBePlaced(world, placingOn, false, facing == EnumFacing.DOWN) ) {
                 ItemStack stack = player.getHeldItem(hand);
-                EntityTurret turret = spawnTurret(world, TurretRegistry.INSTANCE.getTurret(stack), placingOn.getX() + 0.5D, placingOn.getY() + shiftY,
-                                                  placingOn.getZ() + 0.5D, facing == EnumFacing.DOWN, player);
+                EntityTurret turret = spawnTurret(world, TurretRegistry.INSTANCE.getTurret(stack), placingOn.getX() + 0.5D, placingOn.getY() + shiftY, placingOn.getZ() + 0.5D, player);
                 if( turret != null ) {
                     setTurretStats(turret, stack);
 
@@ -184,12 +183,12 @@ public class ItemTurret
     }
 
     private static EntityTurret spawnTurret(World world, ITurret turret, BlockPos pos, EntityPlayer owner) {
-        return spawnTurret(world, turret, pos.getX(), pos.getY(), pos.getZ(), false, owner);
+        return spawnTurret(world, turret, pos.getX(), pos.getY(), pos.getZ(), owner);
     }
 
-    private static EntityTurret spawnTurret(World world, ITurret turret, double x, double y, double z, boolean isUpsideDown, EntityPlayer owner) {
-        EntityTurret turretE = new EntityTurret(world, isUpsideDown, owner, turret);
-        turretE.setLocationAndAngles(x, y - (isUpsideDown ? 1.0D : 0.0D), z, MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
+    private static EntityTurret spawnTurret(World world, ITurret turret, double x, double y, double z, EntityPlayer owner) {
+        EntityTurret turretE = new EntityTurret(world, owner, turret);
+        turretE.setLocationAndAngles(x, y, z, MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
         turretE.rotationYawHead = turretE.rotationYaw;
         turretE.renderYawOffset = turretE.rotationYaw;
         world.spawnEntity(turretE);

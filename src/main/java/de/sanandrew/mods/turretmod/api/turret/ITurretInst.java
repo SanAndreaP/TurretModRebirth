@@ -23,7 +23,7 @@ public interface ITurretInst
 
     AxisAlignedBB getRangeBB();
 
-    boolean isUpsideDown();
+    boolean isBuoy();
 
     SoundEvent getShootSound();
 

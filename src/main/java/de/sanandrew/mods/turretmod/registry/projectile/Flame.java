@@ -77,11 +77,10 @@ public class Flame
 
             float rotXZ = -turret.get().rotationYawHead / 180.0F * (float) Math.PI;
             float rotY = -(turret.get().rotationPitch - 2.5F) / 180.0F * (float) Math.PI - 0.1F;
-            boolean isUpsideDown = turret.isUpsideDown();
 
-            projEntity.posX += (Math.sin(rotXZ) * 0.7F * Math.cos(rotY)) * (isUpsideDown ? -1.0F : 1.0F);
-            projEntity.posY += (Math.sin(rotY) * 0.6F) * (isUpsideDown ? -1.0F : 1.0F) - (isUpsideDown ? 1.0F : 0.0F);
-            projEntity.posZ += (Math.cos(rotXZ) * 0.7F * Math.cos(rotY)) * (isUpsideDown ? -1.0F : 1.0F);
+            projEntity.posX += Math.sin(rotXZ) * 0.7F * Math.cos(rotY);
+            projEntity.posY += Math.sin(rotY) * 0.6F;
+            projEntity.posZ += Math.cos(rotXZ) * 0.7F * Math.cos(rotY);
 
             projEntity.setPosition(projEntity.posX, projEntity.posY, projEntity.posZ);
         }

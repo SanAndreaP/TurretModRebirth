@@ -42,7 +42,7 @@ public final class RenderTurretLaser
         EntityLiving turretL = turret.get();
 
         double turretX = turretL.lastTickPosX + (turretL.posX - turretL.lastTickPosX) * partTicks;
-        double turretY = turretL.lastTickPosY + (turretL.posY - turretL.lastTickPosY) * partTicks + turretL.getEyeHeight() - (turret.isUpsideDown() ? 0.95F : 0.13F);
+        double turretY = turretL.lastTickPosY + (turretL.posY - turretL.lastTickPosY) * partTicks + turretL.getEyeHeight() - 0.13F;
         double turretZ = turretL.lastTickPosZ + (turretL.posZ - turretL.lastTickPosZ) * partTicks;
 
         double vecX = tgt.lastTickPosX + (tgt.posX - tgt.lastTickPosX) * partTicks - turretX;
@@ -73,8 +73,8 @@ public final class RenderTurretLaser
         GlStateManager.disableCull();
 
         GlStateManager.translate(turretX - renderX, turretY - renderY, turretZ - renderZ);
-        GlStateManager.rotate(270.0F - (float) rotYaw, 0.0F, (turret.isUpsideDown() ? -1.0F : 1.0F), 0.0F);
-        GlStateManager.rotate((float) -rotPtc, 0.0F, 0.0F, (turret.isUpsideDown() ? -1.0F : 1.0F));
+        GlStateManager.rotate(270.0F - (float) rotYaw, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate((float) -rotPtc, 0.0F, 0.0F, 1.0F);
 
         GlStateManager.depthMask(false);
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
