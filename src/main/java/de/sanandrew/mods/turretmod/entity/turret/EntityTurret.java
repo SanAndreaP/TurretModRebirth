@@ -83,7 +83,6 @@ public class EntityTurret
     private DataWatcherBooleans<EntityTurret> dwBools;
     private BlockPos blockPos;
     private boolean prevShotChng;
-    private final boolean checkBlock;
 
     private ITurretRAM turretRAM;
 
@@ -96,7 +95,6 @@ public class EntityTurret
         this.targetProc = new TargetProcessor(this);
         this.upgProc = new UpgradeProcessor(this);
         this.rotationYaw = 0.0F;
-        this.checkBlock = true;
         this.delegate = TurretRegistry.NULL_TURRET;
     }
 
@@ -232,8 +230,8 @@ public class EntityTurret
             this.motionY -= 0.0325F;
             super.move(MoverType.SELF, 0.0F, this.motionY, 0.0F);
             this.blockPos = this.getPosition().down(1);
-        } else if( this.checkBlock && !canTurretBePlaced(this.world, this.blockPos, true, true) ) {
-            this.onKillCommand();
+        } else {
+            //TODO: make buoyant
         }
 
         this.world.profiler.startSection("ai");
@@ -535,20 +533,21 @@ public class EntityTurret
         return bb1.minX <= bb2.minX && bb1.minY <= bb2.minY && bb1.minZ <= bb2.minZ && bb1.maxX >= bb2.maxX && bb1.maxY >= bb2.maxY && bb1.maxZ >= bb2.maxZ;
     }
 
-    public static boolean canTurretBePlaced(World world, BlockPos pos, boolean doBlockCheckOnly, boolean updideDown) {
+    public static boolean canTurretBePlaced(ITurret delegate, World world, BlockPos pos, boolean doBlockCheckOnly) {
         AxisAlignedBB blockBB = world.getBlockState(pos).getCollisionBoundingBox(world, pos);
-        if( blockBB == null || !isAABBInside(blockBB, updideDown ? DOWNWARDS_BLOCK : UPWARDS_BLOCK) ) {
+        boolean buoyant = delegate.isBuoy();
+        if( !buoyant && (blockBB == null || !isAABBInside(blockBB, UPWARDS_BLOCK)) ) {
             return false;
         }
 
-        BlockPos posPlaced = pos.offset(updideDown ? EnumFacing.DOWN : EnumFacing.UP);
-        BlockPos posPlaced2 = pos.offset(updideDown ? EnumFacing.DOWN : EnumFacing.UP, 2);
+        BlockPos posPlaced = pos.offset(EnumFacing.UP);
+        BlockPos posPlaced2 = buoyant ? pos.offset(EnumFacing.UP, 2) : pos;
         if( !world.getBlockState(posPlaced).getBlock().isReplaceable(world, posPlaced) || !world.getBlockState(posPlaced2).getBlock().isReplaceable(world, posPlaced2) ) {
             return false;
         }
 
         if( !doBlockCheckOnly ) {
-            AxisAlignedBB aabb = new AxisAlignedBB(posPlaced.getX(), posPlaced.getY(), posPlaced.getZ(), posPlaced.getX() + 1.0D, posPlaced.getY() + (updideDown ? - 1.0D : 1.0D), posPlaced.getZ() + 1.0D);
+            AxisAlignedBB aabb = new AxisAlignedBB(posPlaced.getX(), posPlaced.getY(), posPlaced.getZ(), posPlaced.getX() + 1.0D, posPlaced.getY() + (buoyant ? - 1.0D : 1.0D), posPlaced.getZ() + 1.0D);
             return world.getEntitiesWithinAABB(EntityTurret.class, aabb).isEmpty();
         }
 
@@ -654,5 +653,10 @@ public class EntityTurret
         } else {
             return LangUtils.translate(Lang.TURRET_NAME.get(this.delegate.getName()));
         }
+    }
+
+    @Override
+    public boolean canBreatheUnderwater() {
+        return this.delegate.isBuoy();
     }
 }

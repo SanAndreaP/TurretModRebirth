@@ -15,6 +15,7 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -33,6 +34,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -94,38 +96,35 @@ public class ItemTurret
             BlockPos placingOn = pos.add(facing.getFrontOffsetX(), 0, facing.getFrontOffsetZ());
             if( facing.getFrontOffsetY() == 0 ) {
                 placingOn = placingOn.offset(EnumFacing.DOWN);
-                facing = EnumFacing.UP;
-                if( world.getBlockState(placingOn).getBlock().isReplaceable(world, placingOn) ) {
-                    placingOn = placingOn.offset(EnumFacing.UP, 2);
-                    facing = EnumFacing.DOWN;
-                }
             }
 
-            int shiftY = facing == EnumFacing.UP ? 1 : -1;
-
-            if( EntityTurret.canTurretBePlaced(world, placingOn, false, facing == EnumFacing.DOWN) ) {
-                ItemStack stack = player.getHeldItem(hand);
-                EntityTurret turret = spawnTurret(world, TurretRegistry.INSTANCE.getTurret(stack), placingOn.getX() + 0.5D, placingOn.getY() + shiftY, placingOn.getZ() + 0.5D, player);
+            ItemStack stack = player.getHeldItem(hand);
+            ITurret delegate = TurretRegistry.INSTANCE.getTurret(stack);
+            if( !delegate.isBuoy() && EntityTurret.canTurretBePlaced(delegate, world, placingOn, false) ) {
+                EntityTurret turret = spawnTurret(world, delegate, placingOn.getX() + 0.5D, placingOn.getY() + 1, placingOn.getZ() + 0.5D, player);
                 if( turret != null ) {
                     setTurretStats(turret, stack);
 
                     if( !player.capabilities.isCreativeMode ) {
                         stack.shrink(1);
                     }
+                    return EnumActionResult.SUCCESS;
                 }
             }
+        } else {
+            return EnumActionResult.SUCCESS;
         }
 
-        return EnumActionResult.SUCCESS;
+        return EnumActionResult.PASS;
     }
 
     @Override
+    @SuppressWarnings("ConstantConditions")
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
 
         if( !world.isRemote ) {
             RayTraceResult traceResult = this.rayTrace(world, player, true);
-            //noinspection ConstantConditions
             if( traceResult != null && traceResult.typeOfHit == RayTraceResult.Type.BLOCK ) {
                 BlockPos blockPos = traceResult.getBlockPos();
                 if( !world.isBlockModifiable(player, blockPos) ) {
@@ -136,8 +135,10 @@ public class ItemTurret
                     return new ActionResult<>(EnumActionResult.FAIL, stack);
                 }
 
-                if( world.getBlockState(blockPos).getBlock() instanceof BlockLiquid ) {
-                    EntityTurret turret = spawnTurret(world, TurretRegistry.INSTANCE.getTurret(stack), blockPos, player);
+                ITurret delegate = TurretRegistry.INSTANCE.getTurret(stack);
+                BlockPos lowerPos = blockPos.down();
+                if( delegate.isBuoy() && isBlockLiquid(world, blockPos) && isBlockLiquid(world, lowerPos) && EntityTurret.canTurretBePlaced(delegate, world, lowerPos, false) ) {
+                    EntityTurret turret = spawnTurret(world, delegate, lowerPos, player);
                     if( turret != null ) {
                         setTurretStats(turret, stack);
 
@@ -150,6 +151,11 @@ public class ItemTurret
         }
 
         return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+    }
+
+    private static boolean isBlockLiquid(World world, BlockPos pos) {
+        Block b = world.getBlockState(pos).getBlock();
+        return b instanceof BlockLiquid || b instanceof IFluidBlock;
     }
 
     @Override

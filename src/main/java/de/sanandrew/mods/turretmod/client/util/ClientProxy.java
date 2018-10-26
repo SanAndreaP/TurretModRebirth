@@ -183,7 +183,7 @@ public class ClientProxy
                 break;
             }
             case MINIGUN_SHOT: {
-                boolean isLeft = data.getValue(3);
+                boolean isLeft = data.getValue(2);
                 float shift = (isLeft ? 45.0F : -45.0F) / 180.0F * (float) Math.PI;
                 float rotXZ = -(float) data.getValue(0) / 180.0F * (float) Math.PI;
                 float rotY = -(float) data.getValue(1) / 180.0F * (float) Math.PI - 0.1F;
