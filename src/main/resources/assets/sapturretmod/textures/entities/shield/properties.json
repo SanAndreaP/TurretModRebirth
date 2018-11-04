@@ -1,0 +1,12 @@
+[
+  {
+    "texture": "sapturretmod:textures/entities/shield/shield_mv.png",
+    "moveMultiplierX": 0.0025,
+    "moveMultiplierY": 0.0
+  },
+  {
+    "texture": "sapturretmod:textures/entities/shield/shield_st.png",
+    "moveMultiplierX": 0.0,
+    "moveMultiplierY": 0.0
+  }
+]

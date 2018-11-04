@@ -8,6 +8,7 @@ package de.sanandrew.mods.turretmod.registry.turret.shieldgen;
 
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -70,7 +71,7 @@ public class ShieldHandler
 
                         hasPushed = true;
 
-                        shield.damage(1.0F);
+                        shield.damage(TurretForcefield.shieldDamagePerEntity);
                         turretInst.updateState();
 
                         if( shield.getValue() <= 0.0F ) {
@@ -82,7 +83,7 @@ public class ShieldHandler
                 }
             }
 
-            if( shield != null && shield.getValue() > 0.0F ) {
+            if( shield != null && shield.getValue() > 0.0F && turretInst.getUpgradeProcessor().hasUpgrade(Upgrades.SHIELD_PROJECTILE) ) {
                 for( Entity projectile : turretL.world.getEntitiesWithinAABB(Entity.class, processor.getAdjustedRange(true)) ) {
                     Optional<Entity> opOwner = PROJ_GET_OWNER.stream().map(func -> func.apply(projectile))
                                                              .filter(owner -> owner != null && processor.isEntityTargeted(owner)).findFirst();
@@ -98,7 +99,7 @@ public class ShieldHandler
 
                             hasPushed = true;
 
-                            shield.damage(1.0F);
+                            shield.damage(TurretForcefield.shieldDamagePerProjectile);
                             turretInst.updateState();
 
                             if( shield.getValue() <= 0.0F ) {
@@ -137,7 +138,7 @@ public class ShieldHandler
                 if( turretInst.get().world.getBlockState(blockPos).getMaterial() != Material.AIR && turretBB.intersects(new AxisAlignedBB(blockPos)) ) {
                     ShieldTurret shield = turretInst.getRAM(null);
                     if( shield != null && shield.isShieldActive() ) {
-                        shield.damage(2.0F);
+                        shield.damage(TurretForcefield.shieldDamagePerExplodedBlock);
                         return true;
                     }
                 }
@@ -147,7 +148,7 @@ public class ShieldHandler
                 if( turretBB.intersects(entity.getEntityBoundingBox()) && !turretInst.getTargetProcessor().isEntityTargeted(entity) ) {
                     ShieldTurret shield = turretInst.getRAM(null);
                     if( shield != null && shield.isShieldActive() ) {
-                        shield.damage(2.0F);
+                        shield.damage(TurretForcefield.shieldDamagePerExplodedEntity);
                         return true;
                     }
                 }

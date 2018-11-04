@@ -30,9 +30,6 @@ public final class ShieldTurret
             BASE_CLR_HSL[2] - CRIT_CLR_HSL[2]
     };
 
-    private static final float RECOVERY_PER_TICK = 0.0005F;
-    private static final float MAX_VALUE_RECOVERED = 100.0F;
-
     float value;
     float recovery;
     final ITurretInst turretInst;
@@ -59,7 +56,9 @@ public final class ShieldTurret
 
     public float getMaxValue() {
         IUpgradeProcessor upgProc = this.turretInst.getUpgradeProcessor();
-        return upgProc.hasUpgrade(Upgrades.SHIELD_STRENGTH_II) ? 250.0F : upgProc.hasUpgrade(Upgrades.SHIELD_STRENGTH_I) ? 150.0F : 100.0F;
+        return upgProc.hasUpgrade(Upgrades.SHIELD_STRENGTH_II)
+               ? TurretForcefield.shieldValueThird
+               : (upgProc.hasUpgrade(Upgrades.SHIELD_STRENGTH_I) ? TurretForcefield.shieldValueSecond : TurretForcefield.shieldValueFirst);
     }
 
     private float getCritValue() {
@@ -105,7 +104,7 @@ public final class ShieldTurret
             double speedMulti = this.turretInst.get().getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS).getAttributeValue();
             if( this.value <= 0.0F ) {
                 int prevRecoveryPerc = MathHelper.floor(this.recovery * 100.0F);
-                this.recovery += RECOVERY_PER_TICK * (2.0F - speedMulti);
+                this.recovery += TurretForcefield.shieldRecoveryPerTick * (2.0F - speedMulti);
                 if( prevRecoveryPerc != MathHelper.floor(this.recovery * 100.0F) ) {
                     this.turretInst.getTargetProcessor().decrAmmo();
                 }
@@ -119,7 +118,7 @@ public final class ShieldTurret
         }
 
         if( this.recovery >= 1.0F ) {
-            this.value = MAX_VALUE_RECOVERED;
+            this.value = TurretForcefield.maxShieldRecoveryValue;
             this.recovery = 0.0F;
         }
 

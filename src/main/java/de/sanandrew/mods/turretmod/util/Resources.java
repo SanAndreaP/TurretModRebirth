@@ -64,14 +64,11 @@ public enum Resources
     TINFO_GRP_SRC("textures/gui/lexicon/group_search.png"),
     TINFO_ELEMENTS("textures/gui/lexicon/elements.png"),
 
-    TURRET_FORCEFIELD_P1("textures/entities/shield_1.png"),
-    TURRET_FORCEFIELD_P2("textures/entities/shield_2.png"),
-    TURRET_FORCEFIELD_P3("textures/entities/shield_3.png"),
+    TURRET_FORCEFIELD_PROPERTIES("textures/entities/shield/properties.json"),
     TILE_ITEM_TRANSMITTER("textures/blocks/item_transmitter.png"),
     TILE_ITEM_TRANSMITTER_GLOW("textures/blocks/item_transmitter_glow.png"),
     TILE_TURRET_ASSEMBLY("textures/blocks/turret_assembly.png"),
     TILE_TURRET_ASSEMBLY_MODEL("models/block/turret_assembly_tile.json"),
-//    TILE_ELECTROLYTE_GEN("textures/blocks/electrolyte_gen.png"),
     TILE_ELECTROLYTE_GEN_WIRE("textures/blocks/electrolyte_gen_cable.png"),
 
     SHADER_CATEGORY_BUTTON_FRAG("shader/categorybtn.frag"),

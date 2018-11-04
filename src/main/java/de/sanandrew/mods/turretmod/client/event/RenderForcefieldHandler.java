@@ -8,7 +8,11 @@
  */
 package de.sanandrew.mods.turretmod.client.event;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import de.sanandrew.mods.sanlib.lib.ColorObj;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
 import de.sanandrew.mods.turretmod.client.render.ForcefieldCube;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -17,125 +21,40 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.resources.IResource;
+import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.client.resource.IResourceType;
+import net.minecraftforge.client.resource.ISelectiveResourceReloadListener;
+import net.minecraftforge.client.resource.VanillaResourceType;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.Level;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.function.Predicate;
 
 public class RenderForcefieldHandler
+        implements ISelectiveResourceReloadListener
 {
     public static final RenderForcefieldHandler INSTANCE = new RenderForcefieldHandler();
-    private static final Queue<IForcefieldProvider> EMPTY_QUEUE = new Queue<IForcefieldProvider>()
-    {
-        @Override
-        public boolean add(IForcefieldProvider provider) {
-            return false;
-        }
 
-        @Override
-        public boolean offer(IForcefieldProvider provider) {
-            return false;
-        }
-
-        @Override
-        public IForcefieldProvider remove() {
-            return null;
-        }
-
-        @Override
-        public IForcefieldProvider poll() {
-            return null;
-        }
-
-        @Override
-        public IForcefieldProvider element() {
-            return null;
-        }
-
-        @Override
-        public IForcefieldProvider peek() {
-            return null;
-        }
-
-        @Override
-        public int size() {
-            return 0;
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return true;
-        }
-
-        @Override
-        public boolean contains(Object o) {
-            return false;
-        }
-
-        @Override
-        public Iterator<IForcefieldProvider> iterator() {
-            return Collections.emptyListIterator();
-        }
-
-        @Override
-        public Object[] toArray() {
-            return new Object[0];
-        }
-
-        @Override
-        public <T> T[] toArray(T[] a) {
-            if( a.length > 0 ) {
-                a[0] = null;
-            }
-            return a;
-        }
-
-        @Override
-        public boolean remove(Object o) {
-            return false;
-        }
-
-        @Override
-        public boolean containsAll(Collection<?> c) {
-            return false;
-        }
-
-        @Override
-        public boolean addAll(Collection<? extends IForcefieldProvider> c) {
-            return false;
-        }
-
-        @Override
-        public boolean removeAll(Collection<?> c) {
-            return false;
-        }
-
-        @Override
-        public boolean retainAll(Collection<?> c) {
-            return false;
-        }
-
-        @Override
-        public void clear() {
-
-        }
-    };
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     private final List<ForcefieldCube> fadeOutFields = new ArrayList<>();
     private final Map<Integer, Queue<IForcefieldProvider>> fieldProviders = new ConcurrentHashMap<>();
+    private ShieldTexture[] textures;
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onRenderWorldLast(RenderWorldLastEvent event) {
@@ -207,39 +126,25 @@ public class RenderForcefieldHandler
             }
         }
 
-        Tessellator tess = Tessellator.getInstance();
-        for( int pass = 1; pass <= 5; pass++ ) {
-            float transformTexAmount = worldTicks % 400 + event.getPartialTicks();
-            float texTranslateX = 0.0F;
-            float texTranslateY = 0.0F;
-
-            switch( pass ) {
-                case 1:
-                    texTranslateX = transformTexAmount * -0.01F;
-                    texTranslateY = transformTexAmount * 0.01F;
-                    mc.renderEngine.bindTexture(Resources.TURRET_FORCEFIELD_P1.resource);
-                    break;
-                case 2:
-                    texTranslateX = transformTexAmount * 0.005F;
-                    texTranslateY = transformTexAmount * 0.005F;
-                    mc.renderEngine.bindTexture(Resources.TURRET_FORCEFIELD_P2.resource);
-                    break;
-                case 3:
-                    texTranslateX = transformTexAmount * -0.005F;
-                    texTranslateY = transformTexAmount * 0.005F;
-                    mc.renderEngine.bindTexture(Resources.TURRET_FORCEFIELD_P1.resource);
-                    break;
-                case 4:
-                    texTranslateX = transformTexAmount * 0.0025F;
-                    texTranslateY = transformTexAmount * 0.0025F;
-                    mc.renderEngine.bindTexture(Resources.TURRET_FORCEFIELD_P2.resource);
-                    break;
-                case 5:
-                    texTranslateX = transformTexAmount * 0.00F;
-                    texTranslateY = transformTexAmount * 0.00F;
-                    mc.renderEngine.bindTexture(Resources.TURRET_FORCEFIELD_P3.resource);
-                    break;
+        if( this.textures == null ) {
+            try( IResource res = mc.getResourceManager().getResource(Resources.TURRET_FORCEFIELD_PROPERTIES.resource);
+                 InputStream str = res.getInputStream() )
+            {
+                String json = IOUtils.toString(str, Charset.forName("UTF-8"));
+                this.textures = GSON.fromJson(json, ShieldTexture[].class);
+            } catch( IOException | JsonSyntaxException ex ) {
+                this.textures = new ShieldTexture[0];
+                TmrConstants.LOG.log(Level.ERROR, "Cannot load forcefield textures", ex);
             }
+        }
+
+        Tessellator tess = Tessellator.getInstance();
+        for( ShieldTexture tx : this.textures ) {
+            float transformTexAmount = worldTicks % 400 + event.getPartialTicks();
+            float texTranslateX = transformTexAmount * tx.moveMultiplierX;
+            float texTranslateY = transformTexAmount * tx.moveMultiplierY;
+
+            mc.renderEngine.bindTexture(tx.getTexture());
 
             GlStateManager.matrixMode(GL11.GL_TEXTURE);
             GlStateManager.loadIdentity();
@@ -247,7 +152,7 @@ public class RenderForcefieldHandler
             GlStateManager.matrixMode(GL11.GL_MODELVIEW);
 
             GlStateManager.enableBlend();
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.CONSTANT_ALPHA, GlStateManager.DestFactor.ONE_MINUS_CONSTANT_ALPHA);
+            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
             for( ForcefieldCube cube : cubes ) {
                 tess.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
@@ -263,7 +168,6 @@ public class RenderForcefieldHandler
                 GL14.glBlendColor(1.0F, 1.0F, 1.0F, 1.0F);
             }
 
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             GlStateManager.disableBlend();
 
             GlStateManager.matrixMode(GL11.GL_TEXTURE);
@@ -282,6 +186,25 @@ public class RenderForcefieldHandler
     }
 
     public boolean hasForcefield(Entity entity, Class<? extends IForcefieldProvider> providerCls) {
-        return this.fieldProviders.getOrDefault(entity.getEntityId(), EMPTY_QUEUE).stream().anyMatch(prov -> prov.getClass().equals(providerCls));
+        return this.fieldProviders.containsKey(entity.getEntityId()) && this.fieldProviders.get(entity.getEntityId()).stream().anyMatch(prov -> prov.getClass().equals(providerCls));
+    }
+
+    @Override
+    public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
+        if( resourcePredicate.test(VanillaResourceType.TEXTURES) ) {
+            this.textures = null;
+        }
+    }
+
+    private final class ShieldTexture
+    {
+        String texture;
+        float moveMultiplierX;
+        float moveMultiplierY;
+        private ResourceLocation textureRL;
+
+        ResourceLocation getTexture() {
+            return this.textureRL == null ? (this.textureRL = new ResourceLocation(this.texture)) : this.textureRL;
+        }
     }
 }

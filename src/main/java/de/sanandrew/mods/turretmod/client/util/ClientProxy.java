@@ -45,6 +45,7 @@ import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleSmokeNormal;
+import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -84,6 +85,8 @@ public class ClientProxy
 
         MinecraftForge.EVENT_BUS.register(RenderForcefieldHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
+
+        ((IReloadableResourceManager)Minecraft.getMinecraft().getResourceManager()).registerReloadListener(RenderForcefieldHandler.INSTANCE);
 
         Shaders.initShaders();
     }

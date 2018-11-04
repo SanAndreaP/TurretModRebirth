@@ -541,7 +541,7 @@ public class EntityTurret
         }
 
         BlockPos posPlaced = pos.offset(EnumFacing.UP);
-        BlockPos posPlaced2 = buoyant ? pos.offset(EnumFacing.UP, 2) : pos;
+        BlockPos posPlaced2 = buoyant ? pos : pos.offset(EnumFacing.UP, 2);
         if( !world.getBlockState(posPlaced).getBlock().isReplaceable(world, posPlaced) || !world.getBlockState(posPlaced2).getBlock().isReplaceable(world, posPlaced2) ) {
             return false;
         }
