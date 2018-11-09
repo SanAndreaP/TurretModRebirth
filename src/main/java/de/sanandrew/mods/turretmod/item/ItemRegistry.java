@@ -9,14 +9,21 @@
 package de.sanandrew.mods.turretmod.item;
 
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Mod.EventBusSubscriber
 public class ItemRegistry
 {
-    public static final ItemTurret TURRET_PLACER = new ItemTurret();
+    @Deprecated
+    /** DO NOT USE!!! THIS IS A LEGACY ITEM!!! */
+    public static final ItemTurretOld TURRET_PLACER = new ItemTurretOld();
+    public static final Map<ResourceLocation, ItemTurret> TURRET_PLACERS = new HashMap<>();
     public static final ItemAmmo TURRET_AMMO = new ItemAmmo();
     public static final ItemTurretControlUnit TURRET_CONTROL_UNIT = new ItemTurretControlUnit();
     public static final ItemRepairKit REPAIR_KIT = new ItemRepairKit();
@@ -28,6 +35,7 @@ public class ItemRegistry
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
+        event.getRegistry().registerAll(TURRET_PLACERS.values().toArray(new Item[0]));
         event.getRegistry().registerAll(TURRET_PLACER,
                                         TURRET_AMMO,
                                         TURRET_CONTROL_UNIT,

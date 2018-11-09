@@ -1,14 +1,18 @@
-/* ******************************************************************************************************************
+/*
+ * ****************************************************************************************************************
  * Authors:   SanAndreasP
  * Copyright: SanAndreasP
  * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
- *                http://creativecommons.org/licenses/by-nc-sa/4.0/
- *******************************************************************************************************************/
+ * http://creativecommons.org/licenses/by-nc-sa/4.0/
+ * *****************************************************************************************************************
+ */
 package de.sanandrew.mods.turretmod.item;
 
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import net.minecraft.block.Block;
@@ -16,6 +20,7 @@ import net.minecraft.block.BlockLiquid;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -26,8 +31,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.relauncher.Side;
@@ -36,22 +41,23 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@SuppressWarnings("Duplicates")
-public class ItemTurret
+/** LEGACY!!! **/
+@Deprecated
+public class ItemTurretOld
         extends Item
 {
-    private final ITurret turret;
+    @Deprecated
+    private static final IItemPropertyGetter TURRET_TEX_ID = (stack, worldIn, entityIn) ->
+                                                                     TurretRegistry.INSTANCE.getTurrets().indexOf(TurretRegistry.INSTANCE.getTurret(stack));
 
-    public ItemTurret(ITurret turret) {
+    @Deprecated
+    ItemTurretOld() {
         super();
-        this.turret = turret;
-
-        ResourceLocation id = turret.getRegistryId();
-
-        this.setCreativeTab(TmrCreativeTabs.TURRETS);
-        this.setRegistryName(id);
-        this.setUnlocalizedName(id.toString());
+        this.setUnlocalizedName(TmrConstants.ID + ":turret_placer");
+        this.addPropertyOverride(new ResourceLocation("turretId"), TURRET_TEX_ID);
+        this.setRegistryName(TmrConstants.ID, "turret_placer");
     }
 
     @Override
@@ -59,15 +65,7 @@ public class ItemTurret
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
 
-        String name = getTurretName(stack);
-        if( name != null ) {
-            tooltip.add(String.format(LangUtils.translate("%s.turret_name", this.getUnlocalizedName()), name));
-        }
-
-        Float health = getTurretHealth(stack);
-        if( health != null ) {
-            tooltip.add(String.format(LangUtils.translate("%s.health", this.getUnlocalizedName()), health));
-        }
+        tooltip.add(TextFormatting.RED + "PLEASE PLACE DOWN AND DISMANTLE TURRET TO GET THE REAL ITEM BACK!!!");
     }
 
     private static void setTurretStats(EntityTurret turret, ItemStack stack) {
@@ -91,10 +89,11 @@ public class ItemTurret
             }
 
             ItemStack stack = player.getHeldItem(hand);
-            if( !this.turret.isBuoy() && EntityTurret.canTurretBePlaced(this.turret, world, placingOn, false) ) {
-                EntityTurret bob = spawnTurret(world, this.turret, placingOn.getX() + 0.5D, placingOn.getY() + 1, placingOn.getZ() + 0.5D, player);
-                if( bob != null ) {
-                    setTurretStats(bob, stack);
+            ITurret delegate = TurretRegistry.INSTANCE.getTurret(stack);
+            if( !delegate.isBuoy() && EntityTurret.canTurretBePlaced(delegate, world, placingOn, false) ) {
+                EntityTurret turret = ItemTurret.spawnTurret(world, delegate, placingOn.getX() + 0.5D, placingOn.getY() + 1, placingOn.getZ() + 0.5D, player);
+                if( turret != null ) {
+                    setTurretStats(turret, stack);
 
                     if( !player.capabilities.isCreativeMode ) {
                         stack.shrink(1);
@@ -126,11 +125,12 @@ public class ItemTurret
                     return new ActionResult<>(EnumActionResult.FAIL, stack);
                 }
 
+                ITurret delegate = TurretRegistry.INSTANCE.getTurret(stack);
                 BlockPos lowerPos = blockPos.down();
-                if( this.turret.isBuoy() && isBlockLiquid(world, blockPos) && isBlockLiquid(world, lowerPos) && EntityTurret.canTurretBePlaced(this.turret, world, lowerPos, false) ) {
-                    EntityTurret susan = spawnTurret(world, this.turret, lowerPos, player);
-                    if( susan != null ) {
-                        setTurretStats(susan, stack);
+                if( delegate.isBuoy() && isBlockLiquid(world, blockPos) && isBlockLiquid(world, lowerPos) && EntityTurret.canTurretBePlaced(delegate, world, lowerPos, false) ) {
+                    EntityTurret turret = spawnTurret(world, delegate, lowerPos, player);
+                    if( turret != null ) {
+                        setTurretStats(turret, stack);
 
                         if( !player.capabilities.isCreativeMode ) {
                             stack.shrink(1);
@@ -143,14 +143,14 @@ public class ItemTurret
         return new ActionResult<>(EnumActionResult.SUCCESS, stack);
     }
 
-    public ITurret getTurret() {
-        return this.turret;
-    }
-
     private static boolean isBlockLiquid(World world, BlockPos pos) {
         Block b = world.getBlockState(pos).getBlock();
         return b instanceof BlockLiquid || b instanceof IFluidBlock;
     }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) { }
 
     private static Float getTurretHealth(@Nonnull ItemStack stack) {
         NBTTagCompound nbt = stack.getTagCompound();
@@ -175,17 +175,6 @@ public class ItemTurret
     }
 
     private static EntityTurret spawnTurret(World world, ITurret turret, BlockPos pos, EntityPlayer owner) {
-        return spawnTurret(world, turret, pos.getX(), pos.getY(), pos.getZ(), owner);
-    }
-
-    static EntityTurret spawnTurret(World world, ITurret turret, double x, double y, double z, EntityPlayer owner) {
-        EntityTurret turretE = new EntityTurret(world, owner, turret);
-        turretE.setLocationAndAngles(x, y, z, MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
-        turretE.rotationYawHead = turretE.rotationYaw;
-        turretE.renderYawOffset = turretE.rotationYaw;
-        world.spawnEntity(turretE);
-        turretE.playLivingSound();
-
-        return turretE;
+        return ItemTurret.spawnTurret(world, turret, pos.getX(), pos.getY(), pos.getZ(), owner);
     }
 }

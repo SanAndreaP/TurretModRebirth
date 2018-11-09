@@ -67,7 +67,6 @@ public class EntityTurret
         implements IEntityAdditionalSpawnData, ITurretInst
 {
     private static final AxisAlignedBB UPWARDS_BLOCK = new AxisAlignedBB(0.1D, 0.99D, 0.1D, 1.0D, 1.0D, 1.0D);
-    private static final AxisAlignedBB DOWNWARDS_BLOCK = new AxisAlignedBB(0.1D, 0.0D, 0.1D, 1.0D, 0.01D, 1.0D);
 
     private static final DataParameter<Boolean> SHOT_CHNG = EntityDataManager.createKey(EntityTurret.class, DataSerializers.BOOLEAN);
 
@@ -651,7 +650,7 @@ public class EntityTurret
         if( this.hasCustomName() ) {
             return this.getCustomNameTag();
         } else {
-            return LangUtils.translate(Lang.TURRET_NAME.get(this.delegate.getName()));
+            return LangUtils.translate(Lang.ENTITY_NAME.get(this.delegate.getRegistryId()));
         }
     }
 

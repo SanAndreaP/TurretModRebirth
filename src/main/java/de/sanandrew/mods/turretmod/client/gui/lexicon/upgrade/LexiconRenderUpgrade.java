@@ -61,7 +61,7 @@ class LexiconRenderUpgrade
 
             List<GuiButton> entryButtons = helper.getEntryButtonList();
             Stream.of(MiscUtils.defIfNull(upgrade.getApplicableTurrets(), () -> new ITurret[0])).forEach(t -> {
-                IGuiButtonEntry entryBtn = helper.getNewEntryButton(entryButtons.size(), 4, 0, ClientProxy.lexiconInstance.getGroup(LexiconGroupTurret.NAME).getEntry(t.getName()),
+                IGuiButtonEntry entryBtn = helper.getNewEntryButton(entryButtons.size(), 4, 0, ClientProxy.lexiconInstance.getGroup(LexiconGroupTurret.NAME).getEntry(t.getRegistryId().toString()),
                                                                     helper.getFontRenderer());
                 this.turretButtons.add(entryBtn);
                 entryButtons.add(entryBtn.get());

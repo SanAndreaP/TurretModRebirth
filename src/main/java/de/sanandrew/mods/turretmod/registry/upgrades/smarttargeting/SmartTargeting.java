@@ -15,13 +15,13 @@ import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
-public class UpgradeSmartTargeting
+public class SmartTargeting
         implements ITurretUpgrade
 {
     private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "upgrades/smart_tgt");
     private final String name;
 
-    public UpgradeSmartTargeting() {
+    public SmartTargeting() {
         this.name = "smart_tgt";
     }
 

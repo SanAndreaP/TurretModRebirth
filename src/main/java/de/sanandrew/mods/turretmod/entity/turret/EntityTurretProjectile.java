@@ -16,6 +16,7 @@ import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectileInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.projectile.ProjectileRegistry;
+import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -254,7 +255,8 @@ public class EntityTurretProjectile
             if( hitObj.entityHit != null ) {
                 MutableFloat dmg = new MutableFloat(this.delegate.getDamage());
 
-                DamageSource damagesource = this.getProjDamageSource(hitObj.entityHit);
+                ITurretProjectile.TargetType tgtType = this.getTargetType(hitObj.entityHit);
+                DamageSource damagesource = this.getProjDamageSource(hitObj.entityHit, tgtType);
 
                 if( this.isBurning() && !(hitObj.entityHit instanceof EntityEnderman) ) {
                     hitObj.entityHit.setFire(5);
@@ -268,6 +270,10 @@ public class EntityTurretProjectile
 
                 if( hitObj.entityHit instanceof EntityLivingBase ) {
                     ((EntityLivingBase) hitObj.entityHit).hurtResistantTime = 0;
+
+                    if( hitObj.entityHit instanceof EntityCreature && this.shooterCache != null ) {
+                        TmrUtils.INSTANCE.setEntityTarget((EntityCreature) hitObj.entityHit, this.shooterCache);
+                    }
                 }
 
                 if( this.delegate.onDamageEntityPre(this.shooterCache, this, hitObj.entityHit, damagesource, dmg) && hitObj.entityHit.attackEntityFrom(damagesource, dmg.floatValue()) ) {
@@ -287,10 +293,6 @@ public class EntityTurretProjectile
 
                         if( !this.world.isRemote ) {
                             living.setArrowCountInEntity(living.getArrowCountInEntity() + 1);
-                        }
-
-                        if( living instanceof EntityCreature && this.shooterCache != null ) {
-                            TmrUtils.INSTANCE.setEntityTarget((EntityCreature) living, this.shooterCache);
                         }
 
                         double deltaX = this.posX - living.posX;
@@ -322,7 +324,7 @@ public class EntityTurretProjectile
     public static DamageSource getDamageSource(ITurretInst turret, @Nonnull ITurretProjectileInst projectile, ITurretProjectile.TargetType type) {
         switch( type ) {
             case SPECIAL_ENDERMAN:
-                return new DamageSourceProjectile(projectile.get(), turret);
+                return new DamageSourceProjectile(projectile.get(), turret).setIsThornsDamage();
             case SPECIAL_ENDER_DRAGON:
                 return new DamageSourceProjectile(projectile.get(), turret).setExplosion();
             default:
@@ -330,24 +332,21 @@ public class EntityTurretProjectile
         }
     }
 
-    private DamageSource getProjDamageSource(Entity hitEntity) {
-        return MiscUtils.defIfNull(this.delegate.getCustomDamageSrc(this.shooterCache, this, hitEntity, ITurretProjectile.TargetType.REGULAR),
-                                   () -> {
-                                       ITurretProjectile.TargetType type = ITurretProjectile.TargetType.REGULAR;
-                                       if( hitEntity instanceof EntityEnderman && false ) { //TODO: add upgrade to be able to damage endermen
-                                           type = ITurretProjectile.TargetType.SPECIAL_ENDERMAN;
-                                       } else if( false ) {//TODO: add upgrade to be able to damage the ender dragon
-                                           if( hitEntity instanceof EntityDragon ) {
-                                               type = ITurretProjectile.TargetType.SPECIAL_ENDER_DRAGON;
-                                           } else if( hitEntity instanceof MultiPartEntityPart ) {
-                                               if( ((MultiPartEntityPart) hitEntity).parent instanceof EntityDragon ) {
-                                                   type = ITurretProjectile.TargetType.SPECIAL_ENDER_DRAGON;
-                                               }
-                                           }
-                                       }
+    private DamageSource getProjDamageSource(Entity hitEntity, ITurretProjectile.TargetType type) {
+        return MiscUtils.defIfNull(this.delegate.getCustomDamageSrc(this.shooterCache, this, hitEntity, type),
+                                   () -> getDamageSource(this.shooterCache, this, type));
+    }
 
-                                       return getDamageSource(this.shooterCache, this, type);
-                                   });
+    private ITurretProjectile.TargetType getTargetType(Entity entity) {
+        if( entity instanceof EntityEnderman && this.shooterCache.getUpgradeProcessor().hasUpgrade(Upgrades.ENDER_TOXIN_I) ) {
+            return ITurretProjectile.TargetType.SPECIAL_ENDERMAN;
+        } else if( (entity instanceof EntityDragon || (entity instanceof MultiPartEntityPart && ((MultiPartEntityPart) entity).parent instanceof EntityDragon))
+                           && this.shooterCache.getUpgradeProcessor().hasUpgrade(Upgrades.ENDER_TOXIN_II) )
+        {
+            return ITurretProjectile.TargetType.SPECIAL_ENDER_DRAGON;
+        } else {
+            return ITurretProjectile.TargetType.REGULAR;
+        }
     }
 
     private void knockBackEntity(EntityLivingBase living, double deltaX, double deltaZ) {
@@ -482,7 +481,7 @@ public class EntityTurretProjectile
             if( !Strings.isNullOrEmpty(turretOwner) ) {
                 turretName = turretOwner + (turretOwner.endsWith("s") ? "' " : "s' ") + turretName;
             }
-            String s = "death.attack." + damageType + '.' + turret.getTurret().getName();
+            String s = "death.attack." + damageType + '.' + turret.getTurret().getRegistryId();
             return new TextComponentTranslation(s, attacked.getDisplayName(), turretName);
         }
     }

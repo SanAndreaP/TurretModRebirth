@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.util;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.item.ItemTurret;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -41,7 +42,7 @@ public class TmrCreativeTabs
         public ItemStack getIconItemStack() {
             if( this.tabIcons == null ) {
                 this.tabIcons = NonNullList.create();
-                ItemRegistry.TURRET_PLACER.getSubItems(this, this.tabIcons);
+                ItemRegistry.TURRET_PLACERS.forEach((rl, item) -> item.getSubItems(this, this.tabIcons));
             }
 
             return this.tabIcons.get((int) (System.currentTimeMillis() / 4250L) % this.tabIcons.size());
@@ -53,9 +54,9 @@ public class TmrCreativeTabs
             super.displayAllRelevantItems(itmList);
 
             itmList.sort((itm1, itm2) -> {
-                if( itm1 != null && itm1.getItem() == ItemRegistry.TURRET_PLACER ) {
-                    return itm2 != null && itm2.getItem() == ItemRegistry.TURRET_PLACER ? 0 : -2;
-                } else if( itm2 != null && itm2.getItem() == ItemRegistry.TURRET_PLACER ) {
+                if( itm1 != null && itm1.getItem() instanceof ItemTurret ) {
+                    return itm2 != null && itm2.getItem() instanceof ItemTurret ? 0 : -2;
+                } else if( itm2 != null && itm2.getItem() instanceof ItemTurret ) {
                     return 2;
                 } else if( itm1 != null && itm1.getItem() == ItemRegistry.TURRET_AMMO ) {
                     return itm2 != null && itm2.getItem() == ItemRegistry.TURRET_AMMO ? 0 : -1;

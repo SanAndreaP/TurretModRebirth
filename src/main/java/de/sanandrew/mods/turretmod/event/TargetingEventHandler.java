@@ -9,6 +9,8 @@ package de.sanandrew.mods.turretmod.event;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.event.TargetingEvent;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.network.PacketRegistry;
+import de.sanandrew.mods.turretmod.network.PacketSyncAttackTarget;
 import de.sanandrew.mods.turretmod.registry.turret.TurretCryolator;
 import de.sanandrew.mods.turretmod.registry.turret.TurretShotgun;
 import de.sanandrew.mods.turretmod.registry.turret.shieldgen.ShieldHandler;
@@ -18,6 +20,7 @@ import de.sanandrew.mods.turretmod.registry.upgrades.smarttargeting.AdvTargetSet
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.MobEffects;
+import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -95,6 +98,14 @@ public class TargetingEventHandler
             if( turret.getUpgradeProcessor().hasUpgrade(Upgrades.ECONOMY_II) && MiscUtils.RNG.randomFloat() < 0.35F ) {
                 event.setResult(Event.Result.DENY);
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onEntityAttackTarget(LivingSetAttackTargetEvent event) {
+        Entity e = event.getEntity();
+        if( event.getTarget() == null && !e.world.isRemote ) {
+            PacketRegistry.sendToAllAround(new PacketSyncAttackTarget(e, null), e.dimension, e.posX, e.posY, e.posZ, 64.0D);
         }
     }
 }

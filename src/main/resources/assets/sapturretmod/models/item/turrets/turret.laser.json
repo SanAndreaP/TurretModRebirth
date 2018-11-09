@@ -1,5 +1,5 @@
 {
-  "parent": "sapturretmod:item/turrets/turret_std",
+  "parent": "sapturretmod:item/turrets/standard",
   "textures": {
     "0": "sapturretmod:items/turrets/turret_laser"
   },

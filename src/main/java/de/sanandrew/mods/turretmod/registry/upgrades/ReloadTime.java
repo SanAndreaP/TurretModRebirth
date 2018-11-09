@@ -19,7 +19,7 @@ import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
-public abstract class UpgradeReloadTime
+public abstract class ReloadTime
         implements ITurretUpgrade
 {
     private final ResourceLocation itemModel;
@@ -27,7 +27,7 @@ public abstract class UpgradeReloadTime
     private final String name;
     private final AttributeModifier modifier;
 
-    UpgradeReloadTime(String name, String modUUID, double value) {
+    ReloadTime(String name, String modUUID, double value) {
         this.name = name;
         this.modifier = new AttributeModifier(UUID.fromString(modUUID), String.format("%s:%s", TmrConstants.ID, name), value, EntityUtils.ATTR_ADD_PERC_VAL_TO_SUM);
         this.itemModel = new ResourceLocation(TmrConstants.ID, "upgrades/" + name);
@@ -66,10 +66,10 @@ public abstract class UpgradeReloadTime
         }
     }
 
-    public static class UpgradeReloadTimeMK1
-            extends UpgradeReloadTime
+    public static class MK1
+            extends ReloadTime
     {
-        public UpgradeReloadTimeMK1() {
+        public MK1() {
             super("reload_i", "E6DAE7D4-A730-4F57-B3F9-61C369033625", -0.15D);
         }
 
@@ -79,12 +79,12 @@ public abstract class UpgradeReloadTime
         }
     }
 
-    public static class UpgradeReloadTimeMK2
-            extends UpgradeReloadTime
+    public static class MK2
+            extends ReloadTime
     {
         private final ITurretUpgrade dependant;
 
-        public UpgradeReloadTimeMK2() {
+        public MK2() {
             super("reload_ii", "BA6FE867-0EBF-4E1A-9ED9-05E2B47143F8", -0.35D);
             this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(Upgrades.RELOAD_I);
         }

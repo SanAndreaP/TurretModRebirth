@@ -15,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 
-public class UpgradeBasic
+public class SimpleUpgrade
         implements ITurretUpgrade
 {
 
@@ -24,14 +24,14 @@ public class UpgradeBasic
     private final ResourceLocation itemModel;
     private final ITurretUpgrade dependantOn;
 
-    UpgradeBasic(String name, @Nullable ITurret... applicableTurrets) {
+    SimpleUpgrade(String name, @Nullable ITurret... applicableTurrets) {
         this.name = name;
         this.applicableTurrets = applicableTurrets;
         this.itemModel = new ResourceLocation(TmrConstants.ID, "upgrades/" + name);
         this.dependantOn = null;
     }
 
-    UpgradeBasic(String name, ITurretUpgrade dependantOn, @Nullable ITurret... applicableTurrets) {
+    SimpleUpgrade(String name, ITurretUpgrade dependantOn, @Nullable ITurret... applicableTurrets) {
         this.name = name;
         this.applicableTurrets = applicableTurrets;
         this.itemModel = new ResourceLocation(TmrConstants.ID, "upgrades/" + name);

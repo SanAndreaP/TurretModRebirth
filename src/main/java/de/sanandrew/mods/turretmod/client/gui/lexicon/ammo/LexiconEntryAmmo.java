@@ -33,7 +33,7 @@ final class LexiconEntryAmmo
         IAmmunitionGroup groupInst = this.ammoTypes[0].getGroup();
         this.icon = groupInst.getIcon();
         this.id = groupInst.getName();
-        this.turretName = groupInst.getTurret().getName();
+        this.turretName = groupInst.getTurret().getRegistryId().toString();
         this.ammoItemNames = String.join("|", Stream.of(this.ammoTypes).map(a -> AmmunitionRegistry.INSTANCE.getAmmoItem(a).getDisplayName()).toArray(String[]::new));
     }
 

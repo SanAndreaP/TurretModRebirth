@@ -20,6 +20,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 
 @Category("flamethrower")
@@ -27,8 +28,8 @@ import java.util.UUID;
 public class TurretFlamethrower
         implements ITurret
 {
-    public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "turrets/turret_flamethrower");
     private static final UUID ID = UUID.fromString("0C61E401-A5F9-44E9-8B29-3A3DC7762C73");
+    private static final ResourceLocation REGISTRY_ID = new ResourceLocation(TmrConstants.ID, "turret.flamethrower");
 
     private static AxisAlignedBB rangeBB;
 
@@ -69,18 +70,8 @@ public class TurretFlamethrower
     }
 
     @Override
-    public String getName() {
-        return "iii_flamethrower";
-    }
-
-    @Override
     public UUID getId() {
         return TurretFlamethrower.ID;
-    }
-
-    @Override
-    public ResourceLocation getItemModel() {
-        return TurretFlamethrower.ITEM_MODEL;
     }
 
     @Override
@@ -101,5 +92,11 @@ public class TurretFlamethrower
     @Override
     public int getReloadTicks() {
         return reloadTicks;
+    }
+
+    @Nonnull
+    @Override
+    public ResourceLocation getRegistryId() {
+        return REGISTRY_ID;
     }
 }

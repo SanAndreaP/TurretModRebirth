@@ -42,6 +42,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 @SideOnly(Side.CLIENT)
@@ -58,6 +59,10 @@ public final class ModelRegistry
         setStandardModel(BlockRegistry.ELECTROLYTE_GENERATOR);
         setStandardModel(BlockRegistry.TURRET_ASSEMBLY);
 
+        ItemRegistry.TURRET_PLACERS.forEach((rl, item) -> {
+            ResourceLocation regName = Objects.requireNonNull(item.getRegistryName());
+            setStandardModel(item, new ResourceLocation(regName.getResourceDomain(), "turrets/" + regName.getResourcePath()));
+        });
         setCustomMeshModel(ItemRegistry.TURRET_PLACER, new MeshDefUUID.Turret());
         setCustomMeshModel(ItemRegistry.TURRET_AMMO, new MeshDefUUID.Ammo());
         setCustomMeshModel(ItemRegistry.TURRET_UPGRADE, new MeshDefUUID.Upgrade());
@@ -72,6 +77,10 @@ public final class ModelRegistry
         if( regName != null ) {
             ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(regName, "inventory"));
         }
+    }
+
+    private static void setStandardModel(Item item, ResourceLocation modelLocation) {
+        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(modelLocation, "inventory"));
     }
 
     private static void setStandardModel(Block item) {
@@ -109,12 +118,14 @@ public final class ModelRegistry
             return this.modelRes.values().toArray(new ModelResourceLocation[0]);
         }
 
+        @Deprecated
         static final class Turret
                 extends MeshDefUUID<ITurret>
         {
             Turret() {
                 for( ITurret info : TurretRegistry.INSTANCE.getTurrets() ) {
-                    ModelResourceLocation modelRes = new ModelResourceLocation(info.getItemModel(), "inventory");
+                    ResourceLocation regName = info.getRegistryId();
+                    ModelResourceLocation modelRes = new ModelResourceLocation(new ResourceLocation(regName.getResourceDomain(), "turrets/" + regName.getResourcePath()), "inventory");
                     this.modelRes.put(info.getId(), modelRes);
                 }
             }

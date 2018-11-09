@@ -24,6 +24,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 
 @Category("laser")
@@ -31,8 +32,8 @@ import java.util.UUID;
 public class TurretLaser
         implements ITurret
 {
-    public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "turrets/turret_laser");
     private static final UUID ID = UUID.fromString("F6196022-3F9D-4D3F-B3C1-9ED644DB436B");
+    private static final ResourceLocation REGISTRY_ID = new ResourceLocation(TmrConstants.ID, "turret.laser");
 
     private static AxisAlignedBB rangeBB;
 
@@ -80,18 +81,8 @@ public class TurretLaser
     }
 
     @Override
-    public String getName() {
-        return "iii_laser";
-    }
-
-    @Override
     public UUID getId() {
         return TurretLaser.ID;
-    }
-
-    @Override
-    public ResourceLocation getItemModel() {
-        return TurretLaser.ITEM_MODEL;
     }
 
     @Override
@@ -119,5 +110,11 @@ public class TurretLaser
     @Override
     public int getReloadTicks() {
         return reloadTicks;
+    }
+
+    @Nonnull
+    @Override
+    public ResourceLocation getRegistryId() {
+        return REGISTRY_ID;
     }
 }

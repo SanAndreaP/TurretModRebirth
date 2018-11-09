@@ -25,6 +25,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 
 @Category("shotgun")
@@ -32,8 +33,8 @@ import java.util.UUID;
 public class TurretShotgun
         implements ITurret
 {
-    public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "turrets/turret_shotgun");
     private static final UUID ID = UUID.fromString("F7991EC5-2A89-49A6-B8EA-80775973C4C5");
+    private static final ResourceLocation REGISTRY_ID = new ResourceLocation(TmrConstants.ID, "turret.shotgun");
 
     private static AxisAlignedBB rangeBB;
 
@@ -96,18 +97,8 @@ public class TurretShotgun
     }
 
     @Override
-    public String getName() {
-        return "i_shotgun";
-    }
-
-    @Override
     public UUID getId() {
         return TurretShotgun.ID;
-    }
-
-    @Override
-    public ResourceLocation getItemModel() {
-        return TurretShotgun.ITEM_MODEL;
     }
 
     @Override
@@ -134,5 +125,11 @@ public class TurretShotgun
     @Override
     public int getReloadTicks() {
         return reloadTicks;
+    }
+
+    @Nonnull
+    @Override
+    public ResourceLocation getRegistryId() {
+        return REGISTRY_ID;
     }
 }

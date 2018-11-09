@@ -43,6 +43,6 @@ public class LabelTurretName
     }
 
     private static String getName(ITurretInst turret) {
-        return turret.get().hasCustomName() ? turret.get().getCustomNameTag() : LangUtils.translate(Lang.TURRET_NAME.get(turret.getTurret().getName()));
+        return turret.get().hasCustomName() ? turret.get().getCustomNameTag() : LangUtils.translate(Lang.ENTITY_NAME.get(turret.getTurret().getRegistryId()));
     }
 }

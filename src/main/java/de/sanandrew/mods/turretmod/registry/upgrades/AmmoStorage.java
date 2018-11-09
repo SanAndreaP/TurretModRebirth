@@ -19,7 +19,7 @@ import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
-public class UpgradeAmmoStorage
+public class AmmoStorage
         implements ITurretUpgrade
 {
     private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "upgrades/ammo_storage");
@@ -27,7 +27,7 @@ public class UpgradeAmmoStorage
 
     private final String name;
 
-    UpgradeAmmoStorage() {
+    AmmoStorage() {
         this.name = "ammo_storage";
         this.modifier = new AttributeModifier(UUID.fromString("3D3C0F11-E31A-4472-92BB-E1BE0354844E"), String.format("%s:%s", TmrConstants.ID, "ammoCapacityUpg"), 1.0D,
                                               EntityUtils.ATTR_ADD_PERC_VAL_TO_SUM);

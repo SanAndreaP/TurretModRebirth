@@ -20,6 +20,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 
 @Category("cryolator")
@@ -27,8 +28,8 @@ import java.util.UUID;
 public class TurretCryolator
         implements ITurret
 {
-    public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "turrets/turret_cryolator");
     private static final UUID ID = UUID.fromString("3AF4D8C3-FCFC-42B0-98A3-BFB669AA7CE6");
+    private static final ResourceLocation REGISTRY_ID = new ResourceLocation(TmrConstants.ID, "turret.cryolator");
 
     private static AxisAlignedBB rangeBB;
 
@@ -69,18 +70,8 @@ public class TurretCryolator
     }
 
     @Override
-    public String getName() {
-        return "i_snowball";
-    }
-
-    @Override
     public UUID getId() {
         return TurretCryolator.ID;
-    }
-
-    @Override
-    public ResourceLocation getItemModel() {
-        return TurretCryolator.ITEM_MODEL;
     }
 
     @Override
@@ -101,5 +92,11 @@ public class TurretCryolator
     @Override
     public int getReloadTicks() {
         return maxReloadTicks;
+    }
+
+    @Nonnull
+    @Override
+    public ResourceLocation getRegistryId() {
+        return REGISTRY_ID;
     }
 }

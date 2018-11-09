@@ -1,6 +1,7 @@
 package de.sanandrew.mods.turretmod.api.turret;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -11,7 +12,10 @@ public interface ITurretRegistry
 {
     List<ITurret> getTurrets();
 
+    @Deprecated
     ITurret getTurret(UUID uuid);
+
+    ITurret getTurret(ResourceLocation location);
 
     ITurret getTurret(Class<? extends ITurret> clazz);
 

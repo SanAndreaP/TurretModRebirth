@@ -34,7 +34,6 @@ public final class Lang
     public static final TranslateKey LEXICON_DETAILS         = new TranslateKey("sanlib.lexicon.%s.details", TmrConstants.ID);
     public static final TranslateKey LEXICON_DESCRIPTION     = new TranslateKey("sanlib.lexicon.%s.desc", TmrConstants.ID);
 
-    public static final TranslateKey TURRET_NAME = new TranslateKey("%s.turret.%%s.name", TmrConstants.ID);
     public static final TranslateKey TURRET_DESC = new TranslateKey("%s.turret.%%s.desc", TmrConstants.ID);
 
     public static final TranslateKey TASSEMBLY_BTN_CANCEL      = new TranslateKey("gui.%s.tassembly.cancel", TmrConstants.ID);

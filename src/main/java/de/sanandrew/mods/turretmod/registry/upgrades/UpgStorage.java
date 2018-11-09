@@ -12,13 +12,13 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import net.minecraft.util.ResourceLocation;
 
-public abstract class UpgradeAmmoUsage
+public abstract class UpgStorage
         implements ITurretUpgrade
 {
     private final ResourceLocation itemModel;
     private final String name;
 
-    UpgradeAmmoUsage(String name) {
+    UpgStorage(String name) {
         this.name = name;
         this.itemModel = new ResourceLocation(TmrConstants.ID, "upgrades/" + name);
     }
@@ -33,11 +33,12 @@ public abstract class UpgradeAmmoUsage
         return this.itemModel;
     }
 
-    public static class UpgradeAmmoUseI
-            extends UpgradeAmmoUsage
+    public static class MK1
+            extends UpgStorage
     {
-        public UpgradeAmmoUseI() {
-            super("use_decr_i");
+
+        MK1() {
+            super("upg_storage_i");
         }
 
         @Override
@@ -46,14 +47,14 @@ public abstract class UpgradeAmmoUsage
         }
     }
 
-    public static class UpgradeAmmoUseII
-            extends UpgradeAmmoUsage
+    public static class MK2
+            extends UpgStorage
     {
         private final ITurretUpgrade dependant;
 
-        public UpgradeAmmoUseII() {
-            super("use_decr_ii");
-            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(Upgrades.ECONOMY_I);
+        MK2() {
+            super("upg_storage_ii");
+            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(Upgrades.UPG_STORAGE_I);
         }
 
         @Override
@@ -62,14 +63,14 @@ public abstract class UpgradeAmmoUsage
         }
     }
 
-    public static class UpgradeAmmoUseInf
-            extends UpgradeAmmoUsage
+    public static class MK3
+            extends UpgStorage
     {
         private final ITurretUpgrade dependant;
 
-        public UpgradeAmmoUseInf() {
-            super("use_decr_inf");
-            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(Upgrades.ECONOMY_II);
+        MK3() {
+            super("upg_storage_iii");
+            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(Upgrades.UPG_STORAGE_II);
         }
 
         @Override

@@ -16,6 +16,7 @@ import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectileInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretProjectile;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;

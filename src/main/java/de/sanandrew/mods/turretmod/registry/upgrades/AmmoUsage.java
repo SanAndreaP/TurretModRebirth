@@ -12,13 +12,13 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import net.minecraft.util.ResourceLocation;
 
-public abstract class UpgradeUpgStorage
+public abstract class AmmoUsage
         implements ITurretUpgrade
 {
     private final ResourceLocation itemModel;
     private final String name;
 
-    UpgradeUpgStorage(String name) {
+    AmmoUsage(String name) {
         this.name = name;
         this.itemModel = new ResourceLocation(TmrConstants.ID, "upgrades/" + name);
     }
@@ -33,12 +33,11 @@ public abstract class UpgradeUpgStorage
         return this.itemModel;
     }
 
-    public static class UpgradeStorageMK1
-            extends UpgradeUpgStorage
+    public static class AmmoUseI
+            extends AmmoUsage
     {
-
-        UpgradeStorageMK1() {
-            super("upg_storage_i");
+        public AmmoUseI() {
+            super("use_decr_i");
         }
 
         @Override
@@ -47,14 +46,14 @@ public abstract class UpgradeUpgStorage
         }
     }
 
-    public static class UpgradeStorageMK2
-            extends UpgradeUpgStorage
+    public static class AmmoUseII
+            extends AmmoUsage
     {
         private final ITurretUpgrade dependant;
 
-        UpgradeStorageMK2() {
-            super("upg_storage_ii");
-            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(Upgrades.UPG_STORAGE_I);
+        public AmmoUseII() {
+            super("use_decr_ii");
+            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(Upgrades.ECONOMY_I);
         }
 
         @Override
@@ -63,14 +62,14 @@ public abstract class UpgradeUpgStorage
         }
     }
 
-    public static class UpgradeStorageMK3
-            extends UpgradeUpgStorage
+    public static class AmmoUseInf
+            extends AmmoUsage
     {
         private final ITurretUpgrade dependant;
 
-        UpgradeStorageMK3() {
-            super("upg_storage_iii");
-            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(Upgrades.UPG_STORAGE_II);
+        public AmmoUseInf() {
+            super("use_decr_inf");
+            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(Upgrades.ECONOMY_II);
         }
 
         @Override

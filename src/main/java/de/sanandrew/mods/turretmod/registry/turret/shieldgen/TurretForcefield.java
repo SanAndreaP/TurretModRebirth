@@ -24,6 +24,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -34,8 +35,8 @@ import java.util.UUID;
 public class TurretForcefield
         implements ITurret
 {
-    public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "turrets/turret_forcefield");
     public static final UUID ID = UUID.fromString("95C3D0DC-000E-4E2D-9551-C9C897E072DC");
+    private static final ResourceLocation REGISTRY_ID = new ResourceLocation(TmrConstants.ID, "turret.forcefield");
 
     private static AxisAlignedBB rangeBB1;
     private static AxisAlignedBB rangeBB2;
@@ -173,18 +174,8 @@ public class TurretForcefield
     }
 
     @Override
-    public String getName() {
-        return "ii_shieldgen";
-    }
-
-    @Override
     public UUID getId() {
         return TurretForcefield.ID;
-    }
-
-    @Override
-    public ResourceLocation getItemModel() {
-        return TurretForcefield.ITEM_MODEL;
     }
 
     @Override
@@ -220,5 +211,11 @@ public class TurretForcefield
     @Override
     public AttackType getAttackType() {
         return AttackType.ALL;
+    }
+
+    @Nonnull
+    @Override
+    public ResourceLocation getRegistryId() {
+        return REGISTRY_ID;
     }
 }

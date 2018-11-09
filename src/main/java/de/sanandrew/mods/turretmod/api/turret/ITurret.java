@@ -22,12 +22,12 @@ import java.util.UUID;
 @SuppressWarnings({"SameReturnValue", "unused"})
 public interface ITurret
 {
-    String getName();
-
     @Nonnull
+    @Deprecated
     UUID getId();
 
-    ResourceLocation getItemModel();
+    @Nonnull
+    ResourceLocation getRegistryId();
 
     default void entityInit(ITurretInst turretInst) { }
 

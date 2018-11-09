@@ -14,6 +14,8 @@ import de.sanandrew.mods.turretmod.api.ITmrUtils;
 import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.ai.EntityAIMoveTowardsTurret;
+import de.sanandrew.mods.turretmod.network.PacketRegistry;
+import de.sanandrew.mods.turretmod.network.PacketSyncAttackTarget;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
@@ -68,6 +70,7 @@ public class TmrUtils
         EntityLivingBase turretL = attackingTurret.get();
         target.setAttackTarget(turretL);
         target.setRevengeTarget(turretL);
+        PacketRegistry.sendToAllAround(new PacketSyncAttackTarget(target, turretL), turretL.dimension, turretL.posX, turretL.posY, turretL.posZ, 64.0D);
 
         List<EntityAIMoveTowardsTurret> aiLst = EntityUtils.getAisFromTaskList(target.tasks.taskEntries, EntityAIMoveTowardsTurret.class);
         if( aiLst.size() < 1 ) {

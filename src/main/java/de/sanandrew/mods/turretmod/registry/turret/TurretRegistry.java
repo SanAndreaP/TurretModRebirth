@@ -16,6 +16,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.item.ItemTurret;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -38,12 +39,15 @@ public final class TurretRegistry
     public static final TurretRegistry INSTANCE = new TurretRegistry();
     public static final ITurret NULL_TURRET = new EmptyTurret();
 
+    @Deprecated
     private final Map<UUID, ITurret> turretFromUUID;
+    private final Map<ResourceLocation, ITurret> turretFromRL;
     private final Map<Class<? extends ITurret>, ITurret> turretFromClass;
     private final List<ITurret> turrets;
 
     private TurretRegistry() {
         this.turretFromUUID = new HashMap<>();
+        this.turretFromRL = new HashMap<>();
         this.turretFromClass = new HashMap<>();
         this.turrets = new ArrayList<>();
     }
@@ -54,8 +58,14 @@ public final class TurretRegistry
     }
 
     @Override
+    @Deprecated
     public ITurret getTurret(UUID uuid) {
         return MiscUtils.defIfNull(this.turretFromUUID.get(uuid), NULL_TURRET);
+    }
+
+    @Override
+    public ITurret getTurret(ResourceLocation location) {
+        return MiscUtils.defIfNull(this.turretFromRL.get(location), NULL_TURRET);
     }
 
     @Override
@@ -66,23 +76,26 @@ public final class TurretRegistry
     @Override
     public boolean registerTurret(ITurret type) {
         if( type == null ) {
-            TmrConstants.LOG.log(Level.ERROR, "Cannot register NULL as Turret-Info!", new InvalidParameterException());
-            return false;
-        }
-
-        if( type.getName() == null || type.getName().isEmpty() ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("Turret-Info %s has an empty/NULL name! Cannot register the Void.", type.getClass().getName()), new InvalidParameterException());
+            TmrConstants.LOG.log(Level.ERROR, "Cannot register NULL as turret!", new InvalidParameterException());
             return false;
         }
 
         if( this.turretFromUUID.containsKey(type.getId()) ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("The UUID of Turret-Info %s is already registered! Use another UUID. JUST DO IT!", type.getName()), new InvalidParameterException());
+            TmrConstants.LOG.log(Level.ERROR, String.format("The UUID of turret %s is already registered!", type.getRegistryId()), new InvalidParameterException());
+            return false;
+        }
+
+        if( this.turretFromRL.containsKey(type.getRegistryId()) ) {
+            TmrConstants.LOG.log(Level.ERROR, String.format("The turret %s is already registered!", type.getRegistryId()), new InvalidParameterException());
             return false;
         }
 
         this.turretFromUUID.put(type.getId(), type);
+        this.turretFromRL.put(type.getRegistryId(), type);
         this.turretFromClass.put(type.getClass(), type);
         this.turrets.add(type);
+
+        ItemRegistry.TURRET_PLACERS.put(type.getRegistryId(), new ItemTurret(type));
 
         return true;
     }
@@ -94,25 +107,18 @@ public final class TurretRegistry
             throw new IllegalArgumentException("Cannot get turret_placer item with NULL type!");
         }
 
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setString("turretUUID", type.getId().toString());
-        ItemStack stack = new ItemStack(ItemRegistry.TURRET_PLACER, 1);
-        stack.setTagCompound(nbt);
-
-        return stack;
+        return new ItemStack(ItemRegistry.TURRET_PLACERS.get(type.getRegistryId()), 1);
     }
 
     @Override
     @Nonnull
     public ItemStack getTurretItem(ITurretInst turretInst) {
         ItemStack stack = this.getTurretItem(turretInst.getTurret());
-        NBTTagCompound nbt = stack.getTagCompound();
-        if( nbt != null ) {
-            EntityLiving turretL = turretInst.get();
-            nbt.setFloat("turretHealth", turretL.getHealth());
-            if( turretL.hasCustomName() ) {
-                nbt.setString("turretName", turretL.getCustomNameTag());
-            }
+        NBTTagCompound nbt = stack.getOrCreateSubCompound("TurretStats");
+        EntityLiving turretL = turretInst.get();
+        nbt.setFloat("TurretHealth", turretL.getHealth());
+        if( turretL.hasCustomName() ) {
+            nbt.setString("TurretName", turretL.getCustomNameTag());
         }
 
         return stack;
@@ -128,6 +134,8 @@ public final class TurretRegistry
                     return TurretRegistry.INSTANCE.getTurret(UUID.fromString(id));
                 }
             }
+        } else if( ItemStackUtils.isValid(stack) && stack.getItem() instanceof ItemTurret ) {
+            return ((ItemTurret) stack.getItem()).getTurret();
         }
 
         return TurretRegistry.NULL_TURRET;
@@ -138,11 +146,9 @@ public final class TurretRegistry
     {
         private static final AxisAlignedBB BB = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 
-        @Override public String getName() { return "empty"; }
-
         @Nonnull @Override public UUID getId() { return UuidUtils.EMPTY_UUID; }
 
-        @Override public ResourceLocation getItemModel() { return null; }
+        @Nonnull @Override public ResourceLocation getRegistryId() { return new ResourceLocation("null"); }
 
         @Override public ResourceLocation getStandardTexture(ITurretInst turretInst) { return null; }
 

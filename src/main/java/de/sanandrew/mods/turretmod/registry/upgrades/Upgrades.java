@@ -9,7 +9,7 @@ package de.sanandrew.mods.turretmod.registry.upgrades;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import de.sanandrew.mods.turretmod.registry.upgrades.shield.UpgradeShieldPersonal;
-import de.sanandrew.mods.turretmod.registry.upgrades.smarttargeting.UpgradeSmartTargeting;
+import de.sanandrew.mods.turretmod.registry.upgrades.smarttargeting.SmartTargeting;
 
 import java.util.UUID;
 
@@ -37,28 +37,32 @@ public class Upgrades
     public static final UUID SHIELD_EXPLOSIVE = UUID.fromString("853DB6B1-EAEF-4175-B1EE-02F765D24D25");
     public static final UUID SHIELD_STRENGTH_I = UUID.fromString("C03BFDDA-1415-4519-BE59-61C568B6345E");
     public static final UUID SHIELD_STRENGTH_II = UUID.fromString("EF8BF1BB-437E-491D-AD6A-03F807987FAE");
+    public static final UUID ENDER_TOXIN_I = UUID.fromString("320F0103-BA1B-4DA6-9ABA-211A1EF84F12");
+    public static final UUID ENDER_TOXIN_II = UUID.fromString("6A68C909-D73D-49A7-AF71-5366BCEFBB37");
 
     public static void initialize(IUpgradeRegistry registry) {
-        registry.registerUpgrade(UPG_STORAGE_I, new UpgradeUpgStorage.UpgradeStorageMK1());
-        registry.registerUpgrade(UPG_STORAGE_II, new UpgradeUpgStorage.UpgradeStorageMK2());
-        registry.registerUpgrade(UPG_STORAGE_III, new UpgradeUpgStorage.UpgradeStorageMK3());
-        registry.registerUpgrade(AMMO_STORAGE, new UpgradeAmmoStorage());
-        registry.registerUpgrade(HEALTH_I, new UpgradeHealth.UpgradeHealthMK1());
-        registry.registerUpgrade(HEALTH_II, new UpgradeHealth.UpgradeHealthMK2());
-        registry.registerUpgrade(HEALTH_III, new UpgradeHealth.UpgradeHealthMK3());
-        registry.registerUpgrade(HEALTH_IV, new UpgradeHealth.UpgradeHealthMK4());
-        registry.registerUpgrade(RELOAD_I, new UpgradeReloadTime.UpgradeReloadTimeMK1());
-        registry.registerUpgrade(RELOAD_II, new UpgradeReloadTime.UpgradeReloadTimeMK2());
-        registry.registerUpgrade(SMART_TGT, new UpgradeSmartTargeting());
-        registry.registerUpgrade(ECONOMY_I, new UpgradeAmmoUsage.UpgradeAmmoUseI());
-        registry.registerUpgrade(ECONOMY_II, new UpgradeAmmoUsage.UpgradeAmmoUseII());
-        registry.registerUpgrade(ECONOMY_INF, new UpgradeAmmoUsage.UpgradeAmmoUseInf());
-        registry.registerUpgrade(ENDER_MEDIUM, new UpgradeBasic("ender_medium", Turrets.LASER));
-        registry.registerUpgrade(FUEL_PURIFY, new UpgradeBasic("fuel_purifier", Turrets.FLAMETHROWER));
+        registry.registerUpgrade(UPG_STORAGE_I, new UpgStorage.MK1());
+        registry.registerUpgrade(UPG_STORAGE_II, new UpgStorage.MK2());
+        registry.registerUpgrade(UPG_STORAGE_III, new UpgStorage.MK3());
+        registry.registerUpgrade(AMMO_STORAGE, new AmmoStorage());
+        registry.registerUpgrade(HEALTH_I, new Health.MK1());
+        registry.registerUpgrade(HEALTH_II, new Health.MK2());
+        registry.registerUpgrade(HEALTH_III, new Health.MK3());
+        registry.registerUpgrade(HEALTH_IV, new Health.MK4());
+        registry.registerUpgrade(RELOAD_I, new ReloadTime.MK1());
+        registry.registerUpgrade(RELOAD_II, new ReloadTime.MK2());
+        registry.registerUpgrade(SMART_TGT, new SmartTargeting());
+        registry.registerUpgrade(ECONOMY_I, new AmmoUsage.AmmoUseI());
+        registry.registerUpgrade(ECONOMY_II, new AmmoUsage.AmmoUseII());
+        registry.registerUpgrade(ECONOMY_INF, new AmmoUsage.AmmoUseInf());
+        registry.registerUpgrade(ENDER_MEDIUM, new SimpleUpgrade("ender_medium", Turrets.LASER));
+        registry.registerUpgrade(FUEL_PURIFY, new SimpleUpgrade("fuel_purifier", Turrets.FLAMETHROWER));
         registry.registerUpgrade(SHIELD_PERSONAL, new UpgradeShieldPersonal());
-        registry.registerUpgrade(SHIELD_PROJECTILE, new UpgradeBasic("shield_projectile", Turrets.SHIELDGEN));
-        registry.registerUpgrade(SHIELD_EXPLOSIVE, new UpgradeBasic("shield_explosive", Turrets.SHIELDGEN));
-        registry.registerUpgrade(SHIELD_STRENGTH_I, new UpgradeBasic("shield_strength_i", Turrets.SHIELDGEN));
-        registry.registerUpgrade(SHIELD_STRENGTH_II, new UpgradeBasic("shield_strength_ii", registry.getUpgrade(Upgrades.SHIELD_STRENGTH_I), Turrets.SHIELDGEN));
+        registry.registerUpgrade(SHIELD_PROJECTILE, new SimpleUpgrade("shield_projectile", Turrets.SHIELDGEN));
+        registry.registerUpgrade(SHIELD_EXPLOSIVE, new SimpleUpgrade("shield_explosive", Turrets.SHIELDGEN));
+        registry.registerUpgrade(SHIELD_STRENGTH_I, new SimpleUpgrade("shield_strength_i", Turrets.SHIELDGEN));
+        registry.registerUpgrade(SHIELD_STRENGTH_II, new SimpleUpgrade("shield_strength_ii", registry.getUpgrade(SHIELD_STRENGTH_I), Turrets.SHIELDGEN));
+        registry.registerUpgrade(ENDER_TOXIN_I, new SimpleUpgrade("ender_toxin_i"));
+        registry.registerUpgrade(ENDER_TOXIN_II, new SimpleUpgrade("ender_toxin_ii", registry.getUpgrade(ENDER_TOXIN_I)));
     }
 }

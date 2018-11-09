@@ -25,6 +25,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 
 @Category("revolver")
@@ -32,8 +33,8 @@ import java.util.UUID;
 public class TurretRevolver
         implements ITurret
 {
-    public static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "turrets/turret_revolver");
     private static final UUID ID = UUID.fromString("4449D836-F122-409A-8E6C-D7B7438FD08C");
+    private static final ResourceLocation REGISTRY_ID = new ResourceLocation(TmrConstants.ID, "turret.revolver");
 
     private static AxisAlignedBB rangeBB;
 
@@ -113,18 +114,8 @@ public class TurretRevolver
     }
 
     @Override
-    public String getName() {
-        return "ii_revolver";
-    }
-
-    @Override
     public UUID getId() {
         return TurretRevolver.ID;
-    }
-
-    @Override
-    public ResourceLocation getItemModel() {
-        return TurretRevolver.ITEM_MODEL;
     }
 
     @Override
@@ -156,5 +147,11 @@ public class TurretRevolver
     @Override
     public int getReloadTicks() {
         return reloadTicks;
+    }
+
+    @Nonnull
+    @Override
+    public ResourceLocation getRegistryId() {
+        return REGISTRY_ID;
     }
 }
