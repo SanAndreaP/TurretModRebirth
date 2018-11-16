@@ -9,12 +9,10 @@ package de.sanandrew.mods.turretmod.item;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
-import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -23,7 +21,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -41,13 +38,13 @@ import java.util.List;
 public class ItemTurret
         extends Item
 {
-    private final ITurret turret;
+    public final ITurret turret;
 
     public ItemTurret(ITurret turret) {
         super();
         this.turret = turret;
 
-        ResourceLocation id = turret.getRegistryId();
+        ResourceLocation id = turret.getId();
 
         this.setCreativeTab(TmrCreativeTabs.TURRETS);
         this.setRegistryName(id);
@@ -141,10 +138,6 @@ public class ItemTurret
         }
 
         return new ActionResult<>(EnumActionResult.SUCCESS, stack);
-    }
-
-    public ITurret getTurret() {
-        return this.turret;
     }
 
     private static boolean isBlockLiquid(World world, BlockPos pos) {

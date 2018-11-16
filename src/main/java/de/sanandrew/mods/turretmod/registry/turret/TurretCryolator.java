@@ -21,14 +21,12 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import javax.annotation.Nonnull;
-import java.util.UUID;
 
 @Category("cryolator")
 @SuppressWarnings("WeakerAccess")
 public class TurretCryolator
         implements ITurret
 {
-    private static final UUID ID = UUID.fromString("3AF4D8C3-FCFC-42B0-98A3-BFB669AA7CE6");
     private static final ResourceLocation REGISTRY_ID = new ResourceLocation(TmrConstants.ID, "turret.cryolator");
 
     private static AxisAlignedBB rangeBB;
@@ -70,11 +68,6 @@ public class TurretCryolator
     }
 
     @Override
-    public UUID getId() {
-        return TurretCryolator.ID;
-    }
-
-    @Override
     public int getTier() {
         return 1;
     }
@@ -96,7 +89,7 @@ public class TurretCryolator
 
     @Nonnull
     @Override
-    public ResourceLocation getRegistryId() {
+    public ResourceLocation getId() {
         return REGISTRY_ID;
     }
 }

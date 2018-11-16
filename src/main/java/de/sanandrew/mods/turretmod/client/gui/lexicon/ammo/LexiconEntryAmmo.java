@@ -15,7 +15,6 @@ import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
-import java.util.UUID;
 import java.util.stream.Stream;
 
 final class LexiconEntryAmmo
@@ -28,12 +27,11 @@ final class LexiconEntryAmmo
     private final String turretName;
     private final String ammoItemNames;
 
-    LexiconEntryAmmo(UUID groupId) {
-        this.ammoTypes = AmmunitionRegistry.INSTANCE.getTypes(groupId);
-        IAmmunitionGroup groupInst = this.ammoTypes[0].getGroup();
-        this.icon = groupInst.getIcon();
-        this.id = groupInst.getName();
-        this.turretName = groupInst.getTurret().getRegistryId().toString();
+    LexiconEntryAmmo(IAmmunitionGroup group) {
+        this.ammoTypes = AmmunitionRegistry.INSTANCE.getTypes(group).toArray(new IAmmunition[0]);
+        this.icon = group.getIcon();
+        this.id = group.getName();
+        this.turretName = group.getTurret().getId().toString();
         this.ammoItemNames = String.join("|", Stream.of(this.ammoTypes).map(a -> AmmunitionRegistry.INSTANCE.getAmmoItem(a).getDisplayName()).toArray(String[]::new));
     }
 

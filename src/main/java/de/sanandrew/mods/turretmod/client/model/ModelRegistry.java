@@ -9,17 +9,13 @@
 package de.sanandrew.mods.turretmod.client.model;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.repairkit.TurretRepairKit;
-import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.client.render.tileentity.RenderElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.client.render.tileentity.RenderTurretAssembly;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
-import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
@@ -49,6 +45,7 @@ import java.util.UUID;
 @Mod.EventBusSubscriber(value = Side.CLIENT, modid = TmrConstants.ID)
 public final class ModelRegistry
 {
+    @SuppressWarnings("deprecation")
     @SubscribeEvent
     public static void registerModels(ModelRegistryEvent event) {
         setStandardModel(ItemRegistry.TURRET_CONTROL_UNIT);
@@ -63,8 +60,10 @@ public final class ModelRegistry
             ResourceLocation regName = Objects.requireNonNull(item.getRegistryName());
             setStandardModel(item, new ResourceLocation(regName.getResourceDomain(), "turrets/" + regName.getResourcePath()));
         });
-        setCustomMeshModel(ItemRegistry.TURRET_PLACER, new MeshDefUUID.Turret());
-        setCustomMeshModel(ItemRegistry.TURRET_AMMO, new MeshDefUUID.Ammo());
+        ItemRegistry.TURRET_AMMO.forEach((rl, item) -> {
+            ResourceLocation regName = Objects.requireNonNull(item.getRegistryName());
+            setStandardModel(item, new ResourceLocation(regName.getResourceDomain(), "ammo/" + regName.getResourcePath()));
+        });
         setCustomMeshModel(ItemRegistry.TURRET_UPGRADE, new MeshDefUUID.Upgrade());
         setCustomMeshModel(ItemRegistry.REPAIR_KIT, new MeshDefUUID.Repkit());
 
@@ -116,42 +115,6 @@ public final class ModelRegistry
 
         ResourceLocation[] getResLocations() {
             return this.modelRes.values().toArray(new ModelResourceLocation[0]);
-        }
-
-        @Deprecated
-        static final class Turret
-                extends MeshDefUUID<ITurret>
-        {
-            Turret() {
-                for( ITurret info : TurretRegistry.INSTANCE.getTurrets() ) {
-                    ResourceLocation regName = info.getRegistryId();
-                    ModelResourceLocation modelRes = new ModelResourceLocation(new ResourceLocation(regName.getResourceDomain(), "turrets/" + regName.getResourcePath()), "inventory");
-                    this.modelRes.put(info.getId(), modelRes);
-                }
-            }
-
-            @Override
-            public ITurret getType(@Nonnull ItemStack stack) { return TurretRegistry.INSTANCE.getTurret(stack); }
-
-            @Override
-            public UUID getId(ITurret type) { return type.getId(); }
-        }
-
-        static final class Ammo
-                extends MeshDefUUID<IAmmunition>
-        {
-            Ammo() {
-                for( IAmmunition ammo : AmmunitionRegistry.INSTANCE.getTypes() ) {
-                    ModelResourceLocation modelRes = new ModelResourceLocation(ammo.getModel(), "inventory");
-                    this.modelRes.put(ammo.getId(), modelRes);
-                }
-            }
-
-            @Override
-            public IAmmunition getType(@Nonnull ItemStack stack) { return AmmunitionRegistry.INSTANCE.getType(stack); }
-
-            @Override
-            public UUID getId(IAmmunition type) { return type.getId(); }
         }
 
         static final class Upgrade

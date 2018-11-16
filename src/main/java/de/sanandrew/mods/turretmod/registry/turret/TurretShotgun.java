@@ -26,14 +26,12 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import javax.annotation.Nonnull;
-import java.util.UUID;
 
 @Category("shotgun")
 @SuppressWarnings("WeakerAccess")
 public class TurretShotgun
         implements ITurret
 {
-    private static final UUID ID = UUID.fromString("F7991EC5-2A89-49A6-B8EA-80775973C4C5");
     private static final ResourceLocation REGISTRY_ID = new ResourceLocation(TmrConstants.ID, "turret.shotgun");
 
     private static AxisAlignedBB rangeBB;
@@ -97,11 +95,6 @@ public class TurretShotgun
     }
 
     @Override
-    public UUID getId() {
-        return TurretShotgun.ID;
-    }
-
-    @Override
     public int getTier() {
         return 1;
     }
@@ -129,7 +122,7 @@ public class TurretShotgun
 
     @Nonnull
     @Override
-    public ResourceLocation getRegistryId() {
+    public ResourceLocation getId() {
         return REGISTRY_ID;
     }
 }

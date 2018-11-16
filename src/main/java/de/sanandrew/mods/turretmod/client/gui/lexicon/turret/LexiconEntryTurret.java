@@ -32,7 +32,7 @@ final class LexiconEntryTurret
     LexiconEntryTurret(ITurret turret) {
         this.icon =  TurretRegistry.INSTANCE.getTurretItem(turret);
         this.turret = turret;
-        this.id = turret.getRegistryId().toString();
+        this.id = turret.getId().toString();
         this.ammoGroups = AmmunitionRegistry.INSTANCE.getGroupsForTurret(this.turret).toArray(new IAmmunitionGroup[0]);
     }
 
@@ -59,7 +59,7 @@ final class LexiconEntryTurret
 
     @Override
     public String getTitleLangKey(String modId) {
-        return Lang.ENTITY_NAME.get(this.turret.getRegistryId());
+        return Lang.ENTITY_NAME.get(this.turret.getId());
     }
 
     @Nonnull

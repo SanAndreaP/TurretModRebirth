@@ -17,61 +17,35 @@ import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
-import java.util.UUID;
 
-public class TurretAmmoBullet
+public class MinigunShell
         implements IAmmunition
 {
-    private final String name;
-    private final UUID id;
-    private final int capacity;
-    private final ResourceLocation itemModel;
-
-    TurretAmmoBullet(boolean isMulti) {
-        this.name = isMulti ? "bullet_pack" : "bullet";
-        this.id = isMulti ? Ammunitions.BULLET_PACK : Ammunitions.BULLET;
-        this.capacity = isMulti ? 32 : 2;
-        this.itemModel = new ResourceLocation(TmrConstants.ID, "turret_ammo/" + this.name);
-    }
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo.minigunshell");
 
     @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public UUID getId() {
-        return this.id;
+    public ResourceLocation getId() {
+        return ID;
     }
 
     @Override
     public int getAmmoCapacity() {
-        return this.capacity;
+        return 4;
     }
 
     @Override
     public float getDamageInfo() {
-        return Projectiles.BULLET.getDamage();
-    }
-
-    @Override
-    public UUID getTypeId() {
-        return Ammunitions.BULLET;
+        return Projectiles.MG_PEBBLE.getDamage();
     }
 
     @Nonnull
     @Override
     public IAmmunitionGroup getGroup() {
-        return Ammunitions.Groups.BULLET;
+        return Ammunitions.Groups.MG_SHELL;
     }
 
     @Override
     public ITurretProjectile getProjectile(ITurretInst turretInst) {
-        return Projectiles.BULLET;
-    }
-
-    @Override
-    public ResourceLocation getModel() {
-        return this.itemModel;
+        return Projectiles.MG_PEBBLE;
     }
 }

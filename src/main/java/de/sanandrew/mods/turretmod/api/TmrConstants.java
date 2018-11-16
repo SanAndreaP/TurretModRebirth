@@ -20,5 +20,5 @@ public final class TmrConstants
     public static final String DEPENDENCIES = "required-after:forge@[14.23.2.2611,];required-after:sanlib@[1.4.4,]";
 
     public static final String API_ID = "sapturretmod_api";
-    public static final String API_VERSION = "1.0.0-beta.4";
+    public static final String API_VERSION = "1.1.0-beta.4";
 }

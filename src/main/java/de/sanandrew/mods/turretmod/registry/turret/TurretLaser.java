@@ -25,14 +25,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
-import java.util.UUID;
 
 @Category("laser")
 @SuppressWarnings("WeakerAccess")
 public class TurretLaser
         implements ITurret
 {
-    private static final UUID ID = UUID.fromString("F6196022-3F9D-4D3F-B3C1-9ED644DB436B");
     private static final ResourceLocation REGISTRY_ID = new ResourceLocation(TmrConstants.ID, "turret.laser");
 
     private static AxisAlignedBB rangeBB;
@@ -81,11 +79,6 @@ public class TurretLaser
     }
 
     @Override
-    public UUID getId() {
-        return TurretLaser.ID;
-    }
-
-    @Override
     public int getTier() {
         return 3;
     }
@@ -114,7 +107,7 @@ public class TurretLaser
 
     @Nonnull
     @Override
-    public ResourceLocation getRegistryId() {
+    public ResourceLocation getId() {
         return REGISTRY_ID;
     }
 }

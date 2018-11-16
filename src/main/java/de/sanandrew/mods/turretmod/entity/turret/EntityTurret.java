@@ -27,6 +27,7 @@ import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketUpdateTurretState;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
+import de.sanandrew.mods.turretmod.util.ItemRemapper;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Sounds;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
@@ -48,6 +49,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -382,9 +384,7 @@ public class EntityTurret
 
     @Override
     public void writeSpawnData(ByteBuf buffer) {
-        UUID turretId = this.delegate.getId();
-        buffer.writeLong(turretId.getMostSignificantBits());
-        buffer.writeLong(turretId.getLeastSignificantBits());
+        ByteBufUtils.writeUTF8String(buffer, this.delegate.getId().toString());
 
         NBTTagCompound targetNbt = new NBTTagCompound();
         this.targetProc.writeToNbt(targetNbt);
@@ -408,7 +408,7 @@ public class EntityTurret
 
     @Override
     public void readSpawnData(ByteBuf buffer) {
-        this.delegate = TurretRegistry.INSTANCE.getTurret(new UUID(buffer.readLong(), buffer.readLong()));
+        this.delegate = TurretRegistry.INSTANCE.getTurret(new ResourceLocation(ByteBufUtils.readUTF8String(buffer)));
 
         this.targetProc.readFromNbt(ByteBufUtils.readTag(buffer));
         this.upgProc.readFromNbt(ByteBufUtils.readTag(buffer));
@@ -446,7 +446,10 @@ public class EntityTurret
         String turretId = nbt.getString("turretId");
         if( UuidUtils.isStringUuid(turretId) ) {
             loadDelegate(UUID.fromString(turretId));
+        } else {
+            loadDelegate(new ResourceLocation(turretId));
         }
+
 
         this.targetProc.readFromNbt(nbt);
         this.upgProc.readFromNbt(nbt);
@@ -460,8 +463,13 @@ public class EntityTurret
         this.delegate.onLoad(this, nbt);
     }
 
-    private void loadDelegate(UUID id) {
+    private void loadDelegate(ResourceLocation id) {
         this.loadDelegate(TurretRegistry.INSTANCE.getTurret(id));
+    }
+
+    @Deprecated
+    private void loadDelegate(UUID id) {
+        this.loadDelegate(ItemRemapper.OLD_TURRET_MAPPINGS.get(id));
     }
 
     private void loadDelegate(ITurret turret) {
@@ -650,7 +658,7 @@ public class EntityTurret
         if( this.hasCustomName() ) {
             return this.getCustomNameTag();
         } else {
-            return LangUtils.translate(Lang.ENTITY_NAME.get(this.delegate.getRegistryId()));
+            return LangUtils.translate(Lang.ENTITY_NAME.get(this.delegate.getId()));
         }
     }
 

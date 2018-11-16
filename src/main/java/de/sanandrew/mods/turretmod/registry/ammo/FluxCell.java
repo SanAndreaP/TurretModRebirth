@@ -14,64 +14,39 @@ import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
+import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
-import java.util.UUID;
 
-public class TurretAmmoMinigunShell
+public class FluxCell
         implements IAmmunition
 {
-    private final String name;
-    private final UUID id;
-    private final int capacity;
-    private final ResourceLocation itemModel;
-
-    TurretAmmoMinigunShell(boolean isMulti) {
-        this.name = isMulti ? "minigun_shell_pack" : "minigun_shell";
-        this.id = isMulti ? Ammunitions.MGSHELL_PACK : Ammunitions.MGSHELL;
-        this.capacity = isMulti ? 64 : 4;
-        this.itemModel = new ResourceLocation(TmrConstants.ID, "turret_ammo/" + this.name);
-    }
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo.fluxcell");
 
     @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public UUID getId() {
-        return this.id;
+    public ResourceLocation getId() {
+        return ID;
     }
 
     @Override
     public int getAmmoCapacity() {
-        return this.capacity;
+        return 1;
     }
 
     @Override
     public float getDamageInfo() {
-        return Projectiles.MG_PEBBLE.getDamage();
-    }
-
-    @Override
-    public UUID getTypeId() {
-        return Ammunitions.MGSHELL;
+        return Projectiles.LASER_NORMAL.getDamage();
     }
 
     @Nonnull
     @Override
     public IAmmunitionGroup getGroup() {
-        return Ammunitions.Groups.MG_SHELL;
+        return Ammunitions.Groups.FLUX_CELL;
     }
 
     @Override
     public ITurretProjectile getProjectile(ITurretInst turretInst) {
-        return Projectiles.MG_PEBBLE;
-    }
-
-    @Override
-    public ResourceLocation getModel() {
-        return this.itemModel;
+        return turretInst.getUpgradeProcessor().hasUpgrade(Upgrades.ENDER_MEDIUM) ? Projectiles.LASER_BLURAY : Projectiles.LASER_NORMAL;
     }
 }

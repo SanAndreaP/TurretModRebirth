@@ -12,9 +12,6 @@ public interface ITurretRegistry
 {
     List<ITurret> getTurrets();
 
-    @Deprecated
-    ITurret getTurret(UUID uuid);
-
     ITurret getTurret(ResourceLocation location);
 
     ITurret getTurret(Class<? extends ITurret> clazz);

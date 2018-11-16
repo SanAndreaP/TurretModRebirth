@@ -39,7 +39,12 @@ public class PlayerList
     private final Map<UUID, String> playerMap = new ConcurrentHashMap<>();
 
     private PlayerList() {
-        super(WSD_NAME);
+        this(WSD_NAME);
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public PlayerList(String s) {
+        super(s);
     }
 
     public String getPlayerName(UUID playerUUID) {

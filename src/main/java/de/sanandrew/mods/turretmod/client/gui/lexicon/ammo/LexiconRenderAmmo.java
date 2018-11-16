@@ -86,7 +86,7 @@ public class LexiconRenderAmmo
                     }
                 }
 
-                String turretName = this.currAmmo.getGroup().getTurret().getRegistryId().toString();
+                String turretName = this.currAmmo.getGroup().getTurret().getId().toString();
                 this.turretLink = helper.getNewEntryButton(entryButtons.size(), 4, 0, ClientProxy.lexiconInstance.getGroup(LexiconGroupTurret.NAME).getEntry(turretName),
                                                            helper.getFontRenderer());
                 entryButtons.add(this.turretLink.get());

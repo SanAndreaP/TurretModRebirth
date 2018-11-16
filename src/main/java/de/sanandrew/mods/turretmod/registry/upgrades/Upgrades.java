@@ -58,10 +58,10 @@ public class Upgrades
         registry.registerUpgrade(ENDER_MEDIUM, new SimpleUpgrade("ender_medium", Turrets.LASER));
         registry.registerUpgrade(FUEL_PURIFY, new SimpleUpgrade("fuel_purifier", Turrets.FLAMETHROWER));
         registry.registerUpgrade(SHIELD_PERSONAL, new UpgradeShieldPersonal());
-        registry.registerUpgrade(SHIELD_PROJECTILE, new SimpleUpgrade("shield_projectile", Turrets.SHIELDGEN));
-        registry.registerUpgrade(SHIELD_EXPLOSIVE, new SimpleUpgrade("shield_explosive", Turrets.SHIELDGEN));
-        registry.registerUpgrade(SHIELD_STRENGTH_I, new SimpleUpgrade("shield_strength_i", Turrets.SHIELDGEN));
-        registry.registerUpgrade(SHIELD_STRENGTH_II, new SimpleUpgrade("shield_strength_ii", registry.getUpgrade(SHIELD_STRENGTH_I), Turrets.SHIELDGEN));
+        registry.registerUpgrade(SHIELD_PROJECTILE, new SimpleUpgrade("shield_projectile", Turrets.FORCEFIELD));
+        registry.registerUpgrade(SHIELD_EXPLOSIVE, new SimpleUpgrade("shield_explosive", Turrets.FORCEFIELD));
+        registry.registerUpgrade(SHIELD_STRENGTH_I, new SimpleUpgrade("shield_strength_i", Turrets.FORCEFIELD));
+        registry.registerUpgrade(SHIELD_STRENGTH_II, new SimpleUpgrade("shield_strength_ii", registry.getUpgrade(SHIELD_STRENGTH_I), Turrets.FORCEFIELD));
         registry.registerUpgrade(ENDER_TOXIN_I, new SimpleUpgrade("ender_toxin_i"));
         registry.registerUpgrade(ENDER_TOXIN_II, new SimpleUpgrade("ender_toxin_ii", registry.getUpgrade(ENDER_TOXIN_I)));
     }

@@ -21,14 +21,12 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import javax.annotation.Nonnull;
-import java.util.UUID;
 
 @Category("crossbow")
 @SuppressWarnings("WeakerAccess")
 public class TurretCrossbow
         implements ITurret
 {
-    private static final UUID ID = UUID.fromString("50E1E69C-395C-486C-BB9D-41E82C8B22E2");
     private static final ResourceLocation REGISTRY_ID = new ResourceLocation(TmrConstants.ID, "turret.crossbow");
 
     private static AxisAlignedBB rangeBB;
@@ -70,11 +68,6 @@ public class TurretCrossbow
     }
 
     @Override
-    public UUID getId() {
-        return ID;
-    }
-
-    @Override
     public int getTier() {
         return 1;
     }
@@ -96,7 +89,7 @@ public class TurretCrossbow
 
     @Nonnull
     @Override
-    public ResourceLocation getRegistryId() {
+    public ResourceLocation getId() {
         return REGISTRY_ID;
     }
 }

@@ -14,64 +14,39 @@ import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
+import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
-import java.util.UUID;
 
-public class TurretAmmoShotgunShell
+public class FuelTank
         implements IAmmunition
 {
-    private final String name;
-    private final UUID id;
-    private final int capacity;
-    private final ResourceLocation itemModel;
-
-    TurretAmmoShotgunShell(boolean isMulti) {
-        this.name = isMulti ? "shotgun_shell_pack" : "shotgun_shell";
-        this.id = isMulti ? Ammunitions.SGSHELL_PACK : Ammunitions.SGSHELL;
-        this.capacity = isMulti ? 16 : 1;
-        this.itemModel = new ResourceLocation(TmrConstants.ID, "turret_ammo/" + this.name);
-    }
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo.fueltank");
 
     @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public UUID getId() {
-        return this.id;
+    public ResourceLocation getId() {
+        return ID;
     }
 
     @Override
     public int getAmmoCapacity() {
-        return this.capacity;
+        return 16;
     }
 
     @Override
     public float getDamageInfo() {
-        return Projectiles.PEBBLE.getDamage();
-    }
-
-    @Override
-    public UUID getTypeId() {
-        return Ammunitions.SGSHELL;
+        return Projectiles.FLAME_NORMAL.getDamage();
     }
 
     @Nonnull
     @Override
     public IAmmunitionGroup getGroup() {
-        return Ammunitions.Groups.SG_SHELL;
+        return Ammunitions.Groups.FUEL_TANK;
     }
 
     @Override
     public ITurretProjectile getProjectile(ITurretInst turretInst) {
-        return Projectiles.PEBBLE;
-    }
-
-    @Override
-    public ResourceLocation getModel() {
-        return this.itemModel;
+        return turretInst.getUpgradeProcessor().hasUpgrade(Upgrades.FUEL_PURIFY) ? Projectiles.FLAME_PURIFY : Projectiles.FLAME_NORMAL;
     }
 }

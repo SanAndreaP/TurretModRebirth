@@ -20,11 +20,8 @@ import java.util.Map;
 @Mod.EventBusSubscriber
 public class ItemRegistry
 {
-    @Deprecated
-    /** DO NOT USE!!! THIS IS A LEGACY ITEM!!! */
-    public static final ItemTurretOld TURRET_PLACER = new ItemTurretOld();
     public static final Map<ResourceLocation, ItemTurret> TURRET_PLACERS = new HashMap<>();
-    public static final ItemAmmo TURRET_AMMO = new ItemAmmo();
+    public static final Map<ResourceLocation, ItemAmmo> TURRET_AMMO = new HashMap<>();
     public static final ItemTurretControlUnit TURRET_CONTROL_UNIT = new ItemTurretControlUnit();
     public static final ItemRepairKit REPAIR_KIT = new ItemRepairKit();
     public static final ItemAssemblyUpgrade ASSEMBLY_UPG_AUTO = new ItemAssemblyUpgrade.Automation();
@@ -36,9 +33,8 @@ public class ItemRegistry
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
         event.getRegistry().registerAll(TURRET_PLACERS.values().toArray(new Item[0]));
-        event.getRegistry().registerAll(TURRET_PLACER,
-                                        TURRET_AMMO,
-                                        TURRET_CONTROL_UNIT,
+        event.getRegistry().registerAll(TURRET_AMMO.values().toArray(new Item[0]));
+        event.getRegistry().registerAll(TURRET_CONTROL_UNIT,
                                         REPAIR_KIT,
                                         ASSEMBLY_UPG_AUTO,
                                         ASSEMBLY_UPG_SPEED,

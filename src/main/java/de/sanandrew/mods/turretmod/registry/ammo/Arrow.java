@@ -17,36 +17,20 @@ import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
-import java.util.UUID;
 
-public class TurretAmmoArrow
+public class Arrow
         implements IAmmunition
 {
-    private final String name;
-    private final UUID id;
-    private final int capacity;
-    private final ResourceLocation itemModel;
-
-    TurretAmmoArrow(boolean isMulti) {
-        this.name = isMulti ? "arrow_pack" : "arrow";
-        this.id = isMulti ? Ammunitions.QUIVER : Ammunitions.ARROW;
-        this.capacity = isMulti ? 16 : 1;
-        this.itemModel = new ResourceLocation(TmrConstants.ID, "turret_ammo/" + this.name);
-    }
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo.arrow");
 
     @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public UUID getId() {
-        return this.id;
+    public ResourceLocation getId() {
+        return ID;
     }
 
     @Override
     public int getAmmoCapacity() {
-        return this.capacity;
+        return 1;
     }
 
     @Nonnull
@@ -61,17 +45,7 @@ public class TurretAmmoArrow
     }
 
     @Override
-    public UUID getTypeId() {
-        return Ammunitions.ARROW;
-    }
-
-    @Override
     public ITurretProjectile getProjectile(ITurretInst turretInst) {
         return Projectiles.CB_BOLT;
-    }
-
-    @Override
-    public ResourceLocation getModel() {
-        return itemModel;
     }
 }

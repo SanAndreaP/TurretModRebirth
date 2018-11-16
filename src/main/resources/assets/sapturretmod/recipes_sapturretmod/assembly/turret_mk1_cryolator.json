@@ -48,10 +48,7 @@
     }
   ],
   "result": {
-    "item": "sapturretmod:turret_placer",
-    "count": 1,
-    "nbt": {
-      "turretUUID": "3af4d8c3-fcfc-42b0-98a3-bfb669aa7ce6"
-    }
+    "item": "sapturretmod:turret.cryolator",
+    "count": 1
   }
 }

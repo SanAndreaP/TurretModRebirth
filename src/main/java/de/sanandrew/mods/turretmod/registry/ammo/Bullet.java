@@ -14,65 +14,38 @@ import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
-import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
-import java.util.UUID;
 
-public class TurretAmmoFluxCell
+public class Bullet
         implements IAmmunition
 {
-    private final String name;
-    private final UUID id;
-    private final int capacity;
-    private final ResourceLocation itemModel;
-
-    TurretAmmoFluxCell(boolean isMulti) {
-        this.name = isMulti ? "fluxcell_pack" : "fluxcell";
-        this.id = isMulti ? Ammunitions.FLUXCELL_PACK : Ammunitions.FLUXCELL;
-        this.capacity = isMulti ? 16 : 1;
-        this.itemModel = new ResourceLocation(TmrConstants.ID, "turret_ammo/" + this.name);
-    }
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo.bullet");
 
     @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public UUID getId() {
-        return this.id;
+    public ResourceLocation getId() {
+        return ID;
     }
 
     @Override
     public int getAmmoCapacity() {
-        return this.capacity;
+        return 2;
     }
 
     @Override
     public float getDamageInfo() {
-        return Projectiles.LASER_NORMAL.getDamage();
-    }
-
-    @Override
-    public UUID getTypeId() {
-        return Ammunitions.FLUXCELL;
+        return Projectiles.BULLET.getDamage();
     }
 
     @Nonnull
     @Override
     public IAmmunitionGroup getGroup() {
-        return Ammunitions.Groups.FLUX_CELL;
+        return Ammunitions.Groups.BULLET;
     }
 
     @Override
     public ITurretProjectile getProjectile(ITurretInst turretInst) {
-        return turretInst.getUpgradeProcessor().hasUpgrade(Upgrades.ENDER_MEDIUM) ? Projectiles.LASER_BLURAY : Projectiles.LASER_NORMAL;
-    }
-
-    @Override
-    public ResourceLocation getModel() {
-        return this.itemModel;
+        return Projectiles.BULLET;
     }
 }

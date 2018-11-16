@@ -14,65 +14,38 @@ import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
-import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
-import java.util.UUID;
 
-public class TurretAmmoFireTank
+public class ShotgunShell
         implements IAmmunition
 {
-    private final String name;
-    private final UUID id;
-    private final int capacity;
-    private final ResourceLocation itemModel;
-
-    TurretAmmoFireTank(boolean isMulti) {
-        this.name = isMulti ? "fueltank_pack" : "fueltank";
-        this.id = isMulti ? Ammunitions.FUELTANK_PACK : Ammunitions.FUELTANK;
-        this.capacity = isMulti ? 256 : 16;
-        this.itemModel = new ResourceLocation(TmrConstants.ID, "turret_ammo/" + this.name);
-    }
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo.shotgunshell");
 
     @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public UUID getId() {
-        return this.id;
+    public ResourceLocation getId() {
+        return ID;
     }
 
     @Override
     public int getAmmoCapacity() {
-        return this.capacity;
+        return 1;
     }
 
     @Override
     public float getDamageInfo() {
-        return Projectiles.FLAME_NORMAL.getDamage();
-    }
-
-    @Override
-    public UUID getTypeId() {
-        return Ammunitions.FUELTANK;
+        return Projectiles.PEBBLE.getDamage();
     }
 
     @Nonnull
     @Override
     public IAmmunitionGroup getGroup() {
-        return Ammunitions.Groups.FUEL_TANK;
+        return Ammunitions.Groups.SG_SHELL;
     }
 
     @Override
     public ITurretProjectile getProjectile(ITurretInst turretInst) {
-        return turretInst.getUpgradeProcessor().hasUpgrade(Upgrades.FUEL_PURIFY) ? Projectiles.FLAME_PURIFY : Projectiles.FLAME_NORMAL;
-    }
-
-    @Override
-    public ResourceLocation getModel() {
-        return this.itemModel;
+        return Projectiles.PEBBLE;
     }
 }

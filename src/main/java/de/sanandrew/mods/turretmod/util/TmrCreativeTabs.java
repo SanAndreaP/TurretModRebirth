@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.util;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.item.ItemAmmo;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.ItemTurret;
 import net.minecraft.creativetab.CreativeTabs;
@@ -58,9 +59,9 @@ public class TmrCreativeTabs
                     return itm2 != null && itm2.getItem() instanceof ItemTurret ? 0 : -2;
                 } else if( itm2 != null && itm2.getItem() instanceof ItemTurret ) {
                     return 2;
-                } else if( itm1 != null && itm1.getItem() == ItemRegistry.TURRET_AMMO ) {
-                    return itm2 != null && itm2.getItem() == ItemRegistry.TURRET_AMMO ? 0 : -1;
-                } else if( itm2 != null && itm2.getItem() == ItemRegistry.TURRET_AMMO ) {
+                } else if( itm1 != null && itm1.getItem() instanceof ItemAmmo ) {
+                    return itm2 != null && itm2.getItem() instanceof ItemAmmo ? 0 : -1;
+                } else if( itm2 != null && itm2.getItem() instanceof ItemAmmo ) {
                     return 1;
                 }
 

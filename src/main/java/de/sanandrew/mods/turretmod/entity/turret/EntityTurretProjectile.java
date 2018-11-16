@@ -481,7 +481,7 @@ public class EntityTurretProjectile
             if( !Strings.isNullOrEmpty(turretOwner) ) {
                 turretName = turretOwner + (turretOwner.endsWith("s") ? "' " : "s' ") + turretName;
             }
-            String s = "death.attack." + damageType + '.' + turret.getTurret().getRegistryId();
+            String s = "death.attack." + damageType + '.' + turret.getTurret().getId();
             return new TextComponentTranslation(s, attacked.getDisplayName(), turretName);
         }
     }

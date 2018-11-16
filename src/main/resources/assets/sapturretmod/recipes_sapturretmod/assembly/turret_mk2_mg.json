@@ -51,10 +51,7 @@
     }
   ],
   "result": {
-    "item": "sapturretmod:turret_placer",
-    "count": 1,
-    "nbt": {
-      "turretUUID": "97e1fb65-ee36-43ba-a900-583b4bd7973a"
-    }
+    "item": "sapturretmod:turret.minigun",
+    "count": 1
   }
 }

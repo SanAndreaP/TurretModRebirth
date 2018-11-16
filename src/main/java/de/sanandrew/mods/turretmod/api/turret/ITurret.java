@@ -23,11 +23,7 @@ import java.util.UUID;
 public interface ITurret
 {
     @Nonnull
-    @Deprecated
-    UUID getId();
-
-    @Nonnull
-    ResourceLocation getRegistryId();
+    ResourceLocation getId();
 
     default void entityInit(ITurretInst turretInst) { }
 

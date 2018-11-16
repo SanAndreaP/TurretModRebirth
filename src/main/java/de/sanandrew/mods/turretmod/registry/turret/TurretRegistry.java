@@ -10,7 +10,6 @@ package de.sanandrew.mods.turretmod.registry.turret;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
-import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
@@ -31,7 +30,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public final class TurretRegistry
         implements ITurretRegistry
@@ -39,14 +37,11 @@ public final class TurretRegistry
     public static final TurretRegistry INSTANCE = new TurretRegistry();
     public static final ITurret NULL_TURRET = new EmptyTurret();
 
-    @Deprecated
-    private final Map<UUID, ITurret> turretFromUUID;
     private final Map<ResourceLocation, ITurret> turretFromRL;
     private final Map<Class<? extends ITurret>, ITurret> turretFromClass;
     private final List<ITurret> turrets;
 
     private TurretRegistry() {
-        this.turretFromUUID = new HashMap<>();
         this.turretFromRL = new HashMap<>();
         this.turretFromClass = new HashMap<>();
         this.turrets = new ArrayList<>();
@@ -55,12 +50,6 @@ public final class TurretRegistry
     @Override
     public List<ITurret> getTurrets() {
         return new ArrayList<>(this.turrets);
-    }
-
-    @Override
-    @Deprecated
-    public ITurret getTurret(UUID uuid) {
-        return MiscUtils.defIfNull(this.turretFromUUID.get(uuid), NULL_TURRET);
     }
 
     @Override
@@ -80,22 +69,16 @@ public final class TurretRegistry
             return false;
         }
 
-        if( this.turretFromUUID.containsKey(type.getId()) ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("The UUID of turret %s is already registered!", type.getRegistryId()), new InvalidParameterException());
+        if( this.turretFromRL.containsKey(type.getId()) ) {
+            TmrConstants.LOG.log(Level.ERROR, String.format("The turret %s is already registered!", type.getId()), new InvalidParameterException());
             return false;
         }
 
-        if( this.turretFromRL.containsKey(type.getRegistryId()) ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("The turret %s is already registered!", type.getRegistryId()), new InvalidParameterException());
-            return false;
-        }
-
-        this.turretFromUUID.put(type.getId(), type);
-        this.turretFromRL.put(type.getRegistryId(), type);
+        this.turretFromRL.put(type.getId(), type);
         this.turretFromClass.put(type.getClass(), type);
         this.turrets.add(type);
 
-        ItemRegistry.TURRET_PLACERS.put(type.getRegistryId(), new ItemTurret(type));
+        ItemRegistry.TURRET_PLACERS.put(type.getId(), new ItemTurret(type));
 
         return true;
     }
@@ -107,7 +90,7 @@ public final class TurretRegistry
             throw new IllegalArgumentException("Cannot get turret_placer item with NULL type!");
         }
 
-        return new ItemStack(ItemRegistry.TURRET_PLACERS.get(type.getRegistryId()), 1);
+        return new ItemStack(ItemRegistry.TURRET_PLACERS.get(type.getId()), 1);
     }
 
     @Override
@@ -126,16 +109,8 @@ public final class TurretRegistry
 
     @Override
     public ITurret getTurret(@Nonnull ItemStack stack) {
-        if( ItemStackUtils.isItem(stack, ItemRegistry.TURRET_PLACER) ) {
-            NBTTagCompound nbt = stack.getTagCompound();
-            if( nbt != null && nbt.hasKey("turretUUID") ) {
-                String id = nbt.getString("turretUUID");
-                if( UuidUtils.isStringUuid(id) ) {
-                    return TurretRegistry.INSTANCE.getTurret(UUID.fromString(id));
-                }
-            }
-        } else if( ItemStackUtils.isValid(stack) && stack.getItem() instanceof ItemTurret ) {
-            return ((ItemTurret) stack.getItem()).getTurret();
+        if( ItemStackUtils.isValid(stack) && stack.getItem() instanceof ItemTurret ) {
+            return ((ItemTurret) stack.getItem()).turret;
         }
 
         return TurretRegistry.NULL_TURRET;
@@ -146,9 +121,7 @@ public final class TurretRegistry
     {
         private static final AxisAlignedBB BB = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 
-        @Nonnull @Override public UUID getId() { return UuidUtils.EMPTY_UUID; }
-
-        @Nonnull @Override public ResourceLocation getRegistryId() { return new ResourceLocation("null"); }
+        @Nonnull @Override public ResourceLocation getId() { return new ResourceLocation("null"); }
 
         @Override public ResourceLocation getStandardTexture(ITurretInst turretInst) { return null; }
 

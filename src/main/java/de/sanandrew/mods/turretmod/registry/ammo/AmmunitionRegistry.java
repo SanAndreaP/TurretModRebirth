@@ -10,8 +10,7 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
-import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
@@ -19,9 +18,9 @@ import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.item.ItemAmmo;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Level;
 
@@ -29,77 +28,57 @@ import javax.annotation.Nonnull;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public final class AmmunitionRegistry
         implements IAmmunitionRegistry
 {
     public static final AmmunitionRegistry INSTANCE = new AmmunitionRegistry();
 
-    private final Map<UUID, IAmmunition> ammoTypeFromID;
+    private final Map<ResourceLocation, IAmmunition> ammoTypes;
     private final Multimap<ITurret, IAmmunition> ammoTypesFromTurret;
     private final Multimap<ITurret, IAmmunitionGroup> ammoGroupsFromTurret;
-    private final Map<UUID, List<IAmmunition>> ammoTypesFromGroupID;
-    private final List<IAmmunition> ammoTypes;
-    private final Map<UUID, IAmmunition> ammoTypeWithLowestRoundCount;
+    private final Multimap<ResourceLocation, IAmmunition> ammoTypesFromGroup;
+    private final Map<ResourceLocation, IAmmunitionGroup> ammoGroups;
 
-    public static final IAmmunition NULL_TYPE = new IAmmunition() {
-        @Override public String getName() { return ""; }
-        @Override public UUID getId() { return UuidUtils.EMPTY_UUID; }
-        @Override public UUID getTypeId() { return UuidUtils.EMPTY_UUID; }
+    private static final IAmmunition NULL_TYPE = new IAmmunition() {
+        @Override public ResourceLocation getId() { return new ResourceLocation("null"); }
         @Nonnull @Override public IAmmunitionGroup getGroup() { return Ammunitions.Groups.UNKNOWN; }
         @Override public float getDamageInfo() { return 0; }
         @Override public int getAmmoCapacity() { return 0; }
         @Override public ITurretProjectile getProjectile(ITurretInst turretInst) { return null; }
-        @Override public ResourceLocation getModel() { return null; }
+        @Override public boolean isValid() { return false; }
     };
 
     private AmmunitionRegistry() {
-        this.ammoTypeFromID = new HashMap<>();
+        this.ammoTypes = new HashMap<>();
         this.ammoTypesFromTurret = ArrayListMultimap.create();
         this.ammoGroupsFromTurret = ArrayListMultimap.create();
-        this.ammoTypesFromGroupID = new LinkedHashMap<>();
-        this.ammoTypes = new ArrayList<>();
-        this.ammoTypeWithLowestRoundCount = new HashMap<>();
+        this.ammoTypesFromGroup = ArrayListMultimap.create();
+        this.ammoGroups = new HashMap<>();
     }
 
     @Override
     public List<IAmmunition> getTypes() {
-        return new ArrayList<>(this.ammoTypes);
+        return new ArrayList<>(this.ammoTypes.values());
     }
 
     @Override
-    public List<UUID> getGroups() {
-        return new ArrayList<>(this.ammoTypesFromGroupID.keySet());
+    public List<IAmmunition> getTypes(IAmmunitionGroup group) {
+        return new ArrayList<>(this.ammoTypesFromGroup.get(group.getId()));
     }
 
     @Override
-    public IAmmunition[] getTypes(UUID groupId) {
-        List<IAmmunition> ammoList = MiscUtils.defIfNull(this.ammoTypesFromGroupID.get(groupId), () -> new ArrayList<>(0));
-        return ammoList.toArray(new IAmmunition[0]);
-    }
-
-    @Override
-    public IAmmunition getType(UUID typeId) {
-        return this.ammoTypeFromID.getOrDefault(typeId, NULL_TYPE);
+    public IAmmunition getType(ResourceLocation typeId) {
+        return this.ammoTypes.getOrDefault(typeId, NULL_TYPE);
     }
 
     @Override
     @Nonnull
     public IAmmunition getType(@Nonnull ItemStack stack) {
-        NBTTagCompound nbt = stack.getTagCompound();
-        if( nbt != null ) {
-            if( nbt.hasKey("ammoType") ) {
-                String typeUUID = nbt.getString("ammoType");
-                try {
-                    return this.getType(UUID.fromString(typeUUID));
-                } catch( IllegalArgumentException ex ) {
-                    return NULL_TYPE;
-                }
-            }
+        if( ItemStackUtils.isValid(stack) && stack.getItem() instanceof ItemAmmo ) {
+            return ((ItemAmmo) stack.getItem()).ammo;
         }
 
         return NULL_TYPE;
@@ -122,78 +101,61 @@ public final class AmmunitionRegistry
             return false;
         }
 
-        if( type.getName() == null || type.getName().isEmpty() ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("Ammo-Type %s has an empty/NULL name! Cannot register the Void.", type.getName()), new InvalidParameterException());
-            return false;
-        }
-
-        if( this.ammoTypeFromID.containsKey(type.getId()) ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("The UUID of Ammo-Type %s is already registered! Use another UUID. JUST DO IT!", type.getName()), new InvalidParameterException());
+        if( this.ammoTypes.containsKey(type.getId()) ) {
+            TmrConstants.LOG.log(Level.ERROR, String.format("The ammo ID %s is already registered!", type.getId()), new InvalidParameterException());
             return false;
         }
 
         if( type.getAmmoCapacity() < 1 ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("Ammo-Type %s provides less than 1 round! At least give it SOMETHING...", type.getName()), new InvalidParameterException());
+            TmrConstants.LOG.log(Level.ERROR, String.format("Ammo ID %s provides less than 1 round!", type.getId()), new InvalidParameterException());
             return false;
         }
 
         IAmmunitionGroup group = type.getGroup();
         if( group.getTurret() == null ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("Ammo-Type %s has no turret_placer! Ammo is pretty useless without something to shoot it with.", type.getName()), new InvalidParameterException());
+            TmrConstants.LOG.log(Level.ERROR, String.format("Ammo ID %s has no turret associated!", type.getId()), new InvalidParameterException());
             return false;
         }
 
-        this.ammoTypeFromID.put(type.getId(), type);
+        this.ammoTypes.put(type.getId(), type);
         this.ammoTypesFromTurret.put(group.getTurret(), type);
         if( !this.ammoGroupsFromTurret.containsEntry(group.getTurret(), group) ) {
             this.ammoGroupsFromTurret.put(group.getTurret(), group);
         }
-        this.ammoTypes.add(type);
+        this.ammoGroups.putIfAbsent(group.getId(), group);
+        this.ammoTypesFromGroup.put(group.getId(), type);
 
-        this.ammoTypesFromGroupID.computeIfAbsent(group.getId(), k -> new ArrayList<>()).add(type);
-
-        int rounds = this.ammoTypeWithLowestRoundCount.computeIfAbsent(type.getTypeId(), (tId) -> type).getAmmoCapacity();
-        if( rounds > type.getAmmoCapacity() ) {
-            this.ammoTypeWithLowestRoundCount.put(type.getTypeId(), type);
-        }
+        ItemRegistry.TURRET_AMMO.put(type.getId(), new ItemAmmo(type));
 
         return true;
     }
 
     @Override
     @Nonnull
-    public ItemStack getAmmoItem(UUID id) {
-        return this.getAmmoItem(this.ammoTypeFromID.getOrDefault(id, NULL_TYPE));
+    public ItemStack getAmmoItem(ResourceLocation id) {
+        return this.getAmmoItem(this.ammoTypes.getOrDefault(id, NULL_TYPE));
     }
 
     @Override
     @Nonnull
     public ItemStack getAmmoItem(IAmmunition type) {
         if( type == null ) {
-            throw new IllegalArgumentException("Cannot get turret_ammo item with NULL type!");
+            throw new IllegalArgumentException("Cannot get turret ammo item with NULL type!");
         }
 
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setString("ammoType", type.getId().toString());
-        ItemStack stack = new ItemStack(ItemRegistry.TURRET_AMMO, 1);
-        stack.setTagCompound(nbt);
+        return new ItemStack(ItemRegistry.TURRET_AMMO.get(type.getId()), 1);
+    }
 
-        return stack;
+    @Override
+    public List<IAmmunitionGroup> getGroups() {
+        return new ArrayList<>(this.ammoGroups.values());
     }
 
     @Override
     @SuppressWarnings("ObjectEquality")
     public boolean areAmmoItemsEqual(@Nonnull ItemStack firstStack, @Nonnull ItemStack secondStack) {
-        if( firstStack.getItem() == ItemRegistry.TURRET_AMMO && secondStack.getItem() == ItemRegistry.TURRET_AMMO ) {
-            IAmmunition firstType = this.getType(firstStack);
-            IAmmunition secondType = this.getType(secondStack);
-            return firstType != NULL_TYPE && secondType != NULL_TYPE && firstType.getTypeId().equals(secondType.getTypeId());
-        } else {
-            return firstStack == secondStack;
-        }
-    }
-
-    public ItemStack getLowestRoundedTypeItem(UUID typeId) {
-        return this.getAmmoItem(this.ammoTypeWithLowestRoundCount.getOrDefault(typeId, NULL_TYPE));
+        IAmmunition firstType = this.getType(firstStack);
+        IAmmunition secondType = this.getType(secondStack);
+        return firstType != NULL_TYPE && secondType != NULL_TYPE && firstType.getId().equals(secondType.getId());
     }
 }

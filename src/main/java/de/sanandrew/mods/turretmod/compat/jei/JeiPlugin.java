@@ -8,18 +8,11 @@
  */
 package de.sanandrew.mods.turretmod.compat.jei;
 
-import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
-import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.RecipeKeyEntry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
-import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
-import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
-import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
-import mezz.jei.api.ISubtypeRegistry;
 import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import net.minecraft.item.ItemStack;
@@ -35,6 +28,7 @@ public class JeiPlugin
         registry.addRecipeCategories(new AssemblyRecipeCategory(registry.getJeiHelpers().getGuiHelper()));
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void register(IModRegistry registry) {
         registry.handleRecipes(RecipeKeyEntry.class, new AssemblyRecipeWrapper.Factory(), AssemblyRecipeCategory.UID);
@@ -42,19 +36,5 @@ public class JeiPlugin
         registry.addRecipes(TurretAssemblyRegistry.INSTANCE.getRecipeList(), AssemblyRecipeCategory.UID);
 
         registry.addRecipeCatalyst(new ItemStack(BlockRegistry.TURRET_ASSEMBLY), AssemblyRecipeCategory.UID);
-    }
-
-    @Override
-    public void registerItemSubtypes(ISubtypeRegistry subtypeRegistry) {
-        subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.TURRET_PLACER, itemStack -> {
-            ITurret stype = TurretRegistry.INSTANCE.getTurret(itemStack);
-            return stype != null ? stype.getId().toString() : "";
-        });
-
-        subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.TURRET_UPGRADE, itemStack -> UpgradeRegistry.INSTANCE.getUpgradeId(itemStack).toString());
-
-        subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.TURRET_AMMO, itemStack -> AmmunitionRegistry.INSTANCE.getType(itemStack).getId().toString());
-
-        subtypeRegistry.registerSubtypeInterpreter(ItemRegistry.REPAIR_KIT, itemStack -> RepairKitRegistry.INSTANCE.getType(itemStack).getUUID().toString());
     }
 }

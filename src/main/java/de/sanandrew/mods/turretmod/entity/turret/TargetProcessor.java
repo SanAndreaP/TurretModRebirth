@@ -83,16 +83,16 @@ public final class TargetProcessor
     public boolean addAmmo(@Nonnull ItemStack stack) {
         if( this.isAmmoApplicable(stack) ) {
             IAmmunition type = AmmunitionRegistry.INSTANCE.getType(stack);
-            UUID currType = ItemStackUtils.isValid(this.ammoStack) ? AmmunitionRegistry.INSTANCE.getType(this.ammoStack).getTypeId() : null;
+            IAmmunition currType = AmmunitionRegistry.INSTANCE.getType(this.ammoStack);
 
-            if( currType != null && !currType.equals(type.getTypeId()) ) {
+            if( currType.isValid() && !currType.getId().equals(type.getId()) ) {
                 this.dropAmmo();
             }
 
             int maxCapacity = this.getMaxAmmoCapacity() - this.ammoCount;
             if( maxCapacity > 0 ) {
                 if( !this.hasAmmo() ) {
-                    this.ammoStack = AmmunitionRegistry.INSTANCE.getLowestRoundedTypeItem(type.getTypeId());
+                    this.ammoStack = AmmunitionRegistry.INSTANCE.getAmmoItem(type);
                 } else if( !AmmunitionRegistry.INSTANCE.areAmmoItemsEqual(stack, this.ammoStack) ) {
                     return false;
                 }
@@ -133,6 +133,10 @@ public final class TargetProcessor
         }
     }
 
+    public void setAmmoStackInternal(ItemStack stack) {
+        this.ammoStack = stack;
+    }
+
     @Override
     public boolean hasAmmo() {
         return ItemStackUtils.isValid(this.ammoStack) && this.ammoCount > 0;
@@ -147,7 +151,7 @@ public final class TargetProcessor
                 IAmmunition type = AmmunitionRegistry.INSTANCE.getType(this.ammoStack);
                 int maxStackSize = this.ammoStack.getMaxStackSize();
 
-                while( decrAmmo > 0 && type != AmmunitionRegistry.NULL_TYPE ) {
+                while( decrAmmo > 0 && type.isValid() ) {
                     ItemStack stack = this.ammoStack.copy();
                     stack.setCount(Math.min(decrAmmo / type.getAmmoCapacity(), maxStackSize));
                     decrAmmo -= stack.getCount() * type.getAmmoCapacity();
@@ -180,7 +184,7 @@ public final class TargetProcessor
         int maxStackSize = this.ammoStack.getMaxStackSize();
         IAmmunition type = AmmunitionRegistry.INSTANCE.getType(this.ammoStack);
 
-        while( this.ammoCount > 0 && type != AmmunitionRegistry.NULL_TYPE ) {
+        while( this.ammoCount > 0 && type.isValid() ) {
             ItemStack stack = this.ammoStack.copy();
             stack.setCount(Math.min(this.ammoCount / type.getAmmoCapacity(), maxStackSize));
             this.ammoCount -= stack.getCount() * type.getAmmoCapacity();
@@ -235,8 +239,8 @@ public final class TargetProcessor
     public boolean isAmmoApplicable(@Nonnull ItemStack stack) {
         if( ItemStackUtils.isValid(stack) ) {
             IAmmunition stackType = AmmunitionRegistry.INSTANCE.getType(stack);
-            if( stackType != AmmunitionRegistry.NULL_TYPE ) {
-                if( AmmunitionRegistry.INSTANCE.getType(this.ammoStack).getTypeId().equals(stackType.getTypeId()) ) {
+            if( stackType.isValid() ) {
+                if( AmmunitionRegistry.INSTANCE.getType(this.ammoStack).getId().equals(stackType.getId()) ) {
                     return this.ammoCount < this.getMaxAmmoCapacity();
                 } else {
                     List<IAmmunition> types = AmmunitionRegistry.INSTANCE.getTypesForTurret(this.turret.getTurret());

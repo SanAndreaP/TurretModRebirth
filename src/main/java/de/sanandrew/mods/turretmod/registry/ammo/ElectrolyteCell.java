@@ -16,46 +16,25 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
-import java.util.UUID;
 
-public class TurretAmmoElectrolyteCell
+public class ElectrolyteCell
         implements IAmmunition
 {
-    private final String name;
-    private final UUID id;
-    private final int capacity;
-    private final ResourceLocation itemModel;
-
-    TurretAmmoElectrolyteCell(boolean isMulti) {
-        this.name = isMulti ? "eleccell_pack" : "eleccell";
-        this.id = isMulti ? Ammunitions.ELECTROLYTECELL_PACK : Ammunitions.ELECTROLYTECELL;
-        this.capacity = isMulti ? 32 : 2;
-        this.itemModel = new ResourceLocation(TmrConstants.ID, "turret_ammo/" + this.name);
-    }
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo.eleccell");
 
     @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public UUID getId() {
-        return this.id;
+    public ResourceLocation getId() {
+        return ID;
     }
 
     @Override
     public int getAmmoCapacity() {
-        return this.capacity;
+        return 2;
     }
 
     @Override
     public float getDamageInfo() {
         return 0.0F;
-    }
-
-    @Override
-    public UUID getTypeId() {
-        return Ammunitions.ELECTROLYTECELL;
     }
 
     @Nonnull
@@ -67,10 +46,5 @@ public class TurretAmmoElectrolyteCell
     @Override
     public ITurretProjectile getProjectile(ITurretInst turretInst) {
         return null;
-    }
-
-    @Override
-    public ResourceLocation getModel() {
-        return this.itemModel;
     }
 }

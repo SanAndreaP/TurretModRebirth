@@ -2,20 +2,18 @@ package de.sanandrew.mods.turretmod.api.ammo;
 
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.UUID;
 
 public interface IAmmunitionRegistry
 {
     List<IAmmunition> getTypes();
 
-    List<UUID> getGroups();
+    List<IAmmunition> getTypes(IAmmunitionGroup group);
 
-    IAmmunition[] getTypes(UUID groupId);
-
-    IAmmunition getType(UUID typeId);
+    IAmmunition getType(ResourceLocation typeId);
 
     @Nonnull
     IAmmunition getType(@Nonnull ItemStack stack);
@@ -28,10 +26,12 @@ public interface IAmmunitionRegistry
     boolean registerAmmoType(IAmmunition type);
 
     @Nonnull
-    ItemStack getAmmoItem(UUID id);
+    ItemStack getAmmoItem(ResourceLocation id);
 
     @Nonnull
     ItemStack getAmmoItem(IAmmunition type);
+
+    List<IAmmunitionGroup> getGroups();
 
     boolean areAmmoItemsEqual(@Nonnull ItemStack firstStack, @Nonnull ItemStack secondStack);
 }

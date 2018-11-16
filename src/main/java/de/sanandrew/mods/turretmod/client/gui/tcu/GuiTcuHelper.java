@@ -113,7 +113,7 @@ public final class GuiTcuHelper
     void drawScreen(IGuiTcuInst<?> gui) {
         FontRenderer fRender = gui.getFontRenderer();
         fRender.drawString(LangUtils.translate(Lang.TCU_PAGE_TITLE.get(gui.getRegistryKey().getResourceDomain(), gui.getRegistryKey().getResourcePath())), 8, 28, 0xFF404040);
-        String turretName = LangUtils.translate(Lang.ENTITY_NAME.get(gui.getTurretInst().getTurret().getRegistryId()));
+        String turretName = LangUtils.translate(Lang.ENTITY_NAME.get(gui.getTurretInst().getTurret().getId()));
         int strWidth = fRender.getStringWidth(turretName);
         if( strWidth > 144 ) {
             long currTime = System.currentTimeMillis();
