@@ -12,7 +12,7 @@ import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
+import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.util.ResourceLocation;
@@ -20,27 +20,19 @@ import net.minecraft.util.ResourceLocation;
 import java.util.UUID;
 
 public abstract class ReloadTime
-        implements ITurretUpgrade
+        implements IUpgrade
 {
-    private final ResourceLocation itemModel;
-
-    private final String name;
+    private final ResourceLocation id;
     private final AttributeModifier modifier;
 
     ReloadTime(String name, String modUUID, double value) {
-        this.name = name;
         this.modifier = new AttributeModifier(UUID.fromString(modUUID), String.format("%s:%s", TmrConstants.ID, name), value, EntityUtils.ATTR_ADD_PERC_VAL_TO_SUM);
-        this.itemModel = new ResourceLocation(TmrConstants.ID, "upgrades/" + name);
+        this.id = new ResourceLocation(TmrConstants.ID, "upgrade." + name);
     }
 
     @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public ResourceLocation getModel() {
-        return this.itemModel;
+    public ResourceLocation getId() {
+        return this.id;
     }
 
     @Override
@@ -66,32 +58,24 @@ public abstract class ReloadTime
         }
     }
 
-    public static class MK1
+    static class MK1
             extends ReloadTime
     {
-        public MK1() {
-            super("reload_i", "E6DAE7D4-A730-4F57-B3F9-61C369033625", -0.15D);
-        }
-
-        @Override
-        public ITurretUpgrade getDependantOn() {
-            return null;
+        MK1() {
+            super("reload.1", "E6DAE7D4-A730-4F57-B3F9-61C369033625", -0.15D);
         }
     }
 
-    public static class MK2
+    static class MK2
             extends ReloadTime
     {
-        private final ITurretUpgrade dependant;
-
-        public MK2() {
-            super("reload_ii", "BA6FE867-0EBF-4E1A-9ED9-05E2B47143F8", -0.35D);
-            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(Upgrades.RELOAD_I);
+        MK2() {
+            super("reload.2", "BA6FE867-0EBF-4E1A-9ED9-05E2B47143F8", -0.35D);
         }
 
         @Override
-        public ITurretUpgrade getDependantOn() {
-            return this.dependant;
+        public IUpgrade getDependantOn() {
+            return Upgrades.RELOAD_I;
         }
     }
 }

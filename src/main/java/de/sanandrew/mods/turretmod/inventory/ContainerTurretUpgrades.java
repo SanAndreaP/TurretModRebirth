@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.inventory;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
-import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.item.ItemUpgrade;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -79,7 +79,7 @@ public class ContainerTurretUpgrades
                 if( !super.mergeItemStack(slotStack, 36, 72, true) ) {
                     return ItemStackUtils.getEmpty();
                 }
-            } else if( origStack.getItem() == ItemRegistry.TURRET_UPGRADE ) {
+            } else if( origStack.getItem() instanceof ItemUpgrade ) {
                 if( transferUpgrade(origStack.getItem(), origStack, slotStack) ) {
                     return ItemStackUtils.getEmpty();
                 }

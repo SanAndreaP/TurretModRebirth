@@ -120,7 +120,7 @@ public class TmrCreativeTabs
         public ItemStack getIconItemStack() {
             if( this.tabIcons == null ) {
                 this.tabIcons = NonNullList.create();
-                ItemRegistry.TURRET_UPGRADE.getSubItems(this, this.tabIcons);
+                ItemRegistry.TURRET_UPGRADES.forEach((rl, item) -> item.getSubItems(this, this.tabIcons));
             }
 
             return this.tabIcons.get((int) (System.currentTimeMillis() / 4250L) % this.tabIcons.size());

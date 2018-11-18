@@ -12,7 +12,7 @@ import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
+import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.util.ResourceLocation;
@@ -20,43 +20,26 @@ import net.minecraft.util.ResourceLocation;
 import java.util.UUID;
 
 public class AmmoStorage
-        implements ITurretUpgrade
+        implements IUpgrade
 {
-    private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "upgrades/ammo_storage");
-    private final AttributeModifier modifier;
-
-    private final String name;
-
-    AmmoStorage() {
-        this.name = "ammo_storage";
-        this.modifier = new AttributeModifier(UUID.fromString("3D3C0F11-E31A-4472-92BB-E1BE0354844E"), String.format("%s:%s", TmrConstants.ID, "ammoCapacityUpg"), 1.0D,
-                                              EntityUtils.ATTR_ADD_PERC_VAL_TO_SUM);
-    }
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "upgrade.ammostorage");
+    private static final AttributeModifier MODIFIER = new AttributeModifier(UUID.fromString("3D3C0F11-E31A-4472-92BB-E1BE0354844E"), String.format("%s:%s", TmrConstants.ID, "ammoCapacityUpg"), 1.0D,
+                                                                            EntityUtils.ATTR_ADD_PERC_VAL_TO_SUM);
 
     @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public ResourceLocation getModel() {
-        return ITEM_MODEL;
-    }
-
-    @Override
-    public ITurretUpgrade getDependantOn() {
-        return null;
+    public ResourceLocation getId() {
+        return ID;
     }
 
     @Override
     public void onApply(ITurretInst turretInst) {
         if( !turretInst.get().world.isRemote ) {
             IAttributeInstance attrib = turretInst.get().getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY);
-            if( attrib.getModifier(modifier.getID()) != null ) {
-                attrib.removeModifier(modifier);
+            if( attrib.getModifier(MODIFIER.getID()) != null ) {
+                attrib.removeModifier(MODIFIER);
             }
 
-            attrib.applyModifier(modifier);
+            attrib.applyModifier(MODIFIER);
         }
     }
 
@@ -64,8 +47,8 @@ public class AmmoStorage
     public void onRemove(ITurretInst turretInst) {
         if( !turretInst.get().world.isRemote ) {
             IAttributeInstance attrib = turretInst.get().getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY);
-            if( attrib.getModifier(modifier.getID()) != null ) {
-                attrib.removeModifier(modifier);
+            if( attrib.getModifier(MODIFIER.getID()) != null ) {
+                attrib.removeModifier(MODIFIER);
                 turretInst.getTargetProcessor().dropExcessAmmo();
                 turretInst.updateState();
             }

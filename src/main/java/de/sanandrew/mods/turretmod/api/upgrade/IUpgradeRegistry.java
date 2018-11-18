@@ -1,6 +1,8 @@
 package de.sanandrew.mods.turretmod.api.upgrade;
 
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -8,26 +10,28 @@ import java.util.UUID;
 
 public interface IUpgradeRegistry
 {
-    void registerUpgrade(UUID uuid, ITurretUpgrade upgrade);
+    void register(IUpgrade upgrade);
+
+    void registerAll(IUpgrade... upgrade);
 
     @Nonnull
-    ITurretUpgrade getUpgrade(UUID uuid);
+    IUpgrade getUpgrade(ResourceLocation id);
 
     @Nonnull
-    UUID getUpgradeId(ITurretUpgrade upg);
+    IUpgrade getUpgrade(@Nonnull ItemStack stack);
 
     @Nonnull
-    UUID getUpgradeId(@Nonnull ItemStack stack);
+    List<IUpgrade> getUpgrades();
 
     @Nonnull
-    ITurretUpgrade getUpgrade(@Nonnull ItemStack stack);
+    ItemStack getUpgradeItem(ResourceLocation id);
 
     @Nonnull
-    List<ITurretUpgrade> getUpgrades();
+    ItemStack getUpgradeItem(IUpgrade upgrade);
 
-    @Nonnull
-    ItemStack getUpgradeItem(UUID uuid);
+    void syncWithServer(ITurretInst turret, ResourceLocation upgradeId);
 
-    @Nonnull
-    ItemStack getUpgradeItem(ITurretUpgrade upgrade);
+    void syncWithClients(ITurretInst turret, ResourceLocation upgradeId);
+
+    IUpgrade getEmptyUpgrade();
 }

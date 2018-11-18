@@ -36,7 +36,7 @@ public class LabelTurretPersShield
 
     @Override
     public void doRenderQuads(ITurretInst turretInst, float maxWidth, float progress, FontRenderer stdFontRenderer, float currHeight, BufferBuilder tessBuffer) {
-        ShieldPersonal shield = turretInst.getUpgradeProcessor().getUpgradeInstance(Upgrades.SHIELD_PERSONAL);
+        ShieldPersonal shield = turretInst.getUpgradeProcessor().getUpgradeInstance(Upgrades.SHIELD_PERSONAL.getId());
         float healthPerc = shield.getValue() / ShieldPersonal.MAX_VALUE * maxWidth;
 
         currHeight += stdFontRenderer.FONT_HEIGHT + 2.0F;
@@ -51,7 +51,7 @@ public class LabelTurretPersShield
     }
 
     private static String getLabel(ITurretInst turretInst) {
-        ShieldPersonal shield = turretInst.getUpgradeProcessor().getUpgradeInstance(Upgrades.SHIELD_PERSONAL);
+        ShieldPersonal shield = turretInst.getUpgradeProcessor().getUpgradeInstance(Upgrades.SHIELD_PERSONAL.getId());
 
         if( shield.isInRecovery() ) {
             return LangUtils.translate(Lang.TCU_LABEL_PRSSHIELD_RECV, String.format("%.0f %%", shield.getRecoveryPercentage()));

@@ -10,13 +10,11 @@ package de.sanandrew.mods.turretmod.client.model;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.repairkit.TurretRepairKit;
-import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.client.render.tileentity.RenderElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.client.render.tileentity.RenderTurretAssembly;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
-import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
 import net.minecraft.block.Block;
@@ -64,7 +62,10 @@ public final class ModelRegistry
             ResourceLocation regName = Objects.requireNonNull(item.getRegistryName());
             setStandardModel(item, new ResourceLocation(regName.getResourceDomain(), "ammo/" + regName.getResourcePath()));
         });
-        setCustomMeshModel(ItemRegistry.TURRET_UPGRADE, new MeshDefUUID.Upgrade());
+        ItemRegistry.TURRET_UPGRADES.forEach((rl, item) -> {
+            ResourceLocation regName = Objects.requireNonNull(item.getRegistryName());
+            setStandardModel(item, new ResourceLocation(regName.getResourceDomain(), "upgrades/" + regName.getResourcePath()));
+        });
         setCustomMeshModel(ItemRegistry.REPAIR_KIT, new MeshDefUUID.Repkit());
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurretAssembly.class, new RenderTurretAssembly());
@@ -115,23 +116,6 @@ public final class ModelRegistry
 
         ResourceLocation[] getResLocations() {
             return this.modelRes.values().toArray(new ModelResourceLocation[0]);
-        }
-
-        static final class Upgrade
-                extends MeshDefUUID<ITurretUpgrade>
-        {
-            Upgrade() {
-                for( ITurretUpgrade upg : UpgradeRegistry.INSTANCE.getUpgrades() ) {
-                    ModelResourceLocation modelRes = new ModelResourceLocation(upg.getModel(), "inventory");
-                    this.modelRes.put(UpgradeRegistry.INSTANCE.getUpgradeId(upg), modelRes);
-                }
-            }
-
-            @Override
-            public ITurretUpgrade getType(@Nonnull ItemStack stack) { return UpgradeRegistry.INSTANCE.getUpgrade(stack); }
-
-            @Override
-            public UUID getId(ITurretUpgrade type) { return UpgradeRegistry.INSTANCE.getUpgradeId(type); }
         }
 
         static final class Repkit

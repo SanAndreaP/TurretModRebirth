@@ -1,10 +1,11 @@
 package de.sanandrew.mods.turretmod.api.turret;
 
-import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
+import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeInstance;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
@@ -15,21 +16,19 @@ public interface IUpgradeProcessor
 {
     void onTick();
 
-    boolean hasUpgrade(UUID id);
+    boolean hasUpgrade(ResourceLocation id);
 
-    boolean hasUpgrade(ITurretUpgrade upg);
+    boolean hasUpgrade(IUpgrade upg);
 
-    <T extends IUpgradeInstance> T getUpgradeInstance(UUID id);
+    <T extends IUpgradeInstance> T getUpgradeInstance(ResourceLocation id);
 
-    void setUpgradeInstance(UUID id, IUpgradeInstance inst);
+    void setUpgradeInstance(ResourceLocation id, IUpgradeInstance inst);
 
-    void delUpgradeInstance(UUID id);
+    void delUpgradeInstance(ResourceLocation id);
 
     boolean tryApplyUpgrade(@Nonnull ItemStack upgStack);
 
     void writeToNbt(NBTTagCompound nbt);
 
     void readFromNbt(NBTTagCompound nbt);
-
-    void syncUpgrade(UUID id);
 }

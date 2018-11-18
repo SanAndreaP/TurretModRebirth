@@ -10,15 +10,20 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
+import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
+import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import de.sanandrew.mods.turretmod.item.ItemAmmo;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.ItemTurret;
+import de.sanandrew.mods.turretmod.item.ItemUpgrade;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.Ammunitions;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
+import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -48,7 +53,6 @@ public class ItemRemapper
 {
     private static final ResourceLocation OLD_AMMO_ID = new ResourceLocation(TmrConstants.ID, "turret_ammo");
     private static final Map<UUID, ResourceLocation> OLD_AMMO_MAPPINGS = new HashMap<UUID, ResourceLocation>() {
-        private static final long serialVersionUID = 95937088410596615L;
         {
             this.put(UUID.fromString("7B497E61-4E8D-4E49-AC71-414751E399E8"), Ammunitions.ARROW.getId());
             this.put(UUID.fromString("3B3AA3F7-DA37-4B92-8F18-53694361447F"), Ammunitions.SGSHELL.getId());
@@ -65,7 +69,6 @@ public class ItemRemapper
 
     private static final ResourceLocation OLD_TURRET_ID = new ResourceLocation(TmrConstants.ID, "turret_placer");
     public static final Map<UUID, ITurret> OLD_TURRET_MAPPINGS = Collections.unmodifiableMap(new HashMap<UUID, ITurret>() {
-        private static final long serialVersionUID = -8711592707424745524L;
         {
             this.put(UUID.fromString("50E1E69C-395C-486C-BB9D-41E82C8B22E2"), Turrets.CROSSBOW);
             this.put(UUID.fromString("F7991EC5-2A89-49A6-B8EA-80775973C4C5"), Turrets.SHOTGUN);
@@ -78,38 +81,82 @@ public class ItemRemapper
         }
     });
 
+    private static final ResourceLocation OLD_UPGRADE_ID = new ResourceLocation(TmrConstants.ID, "turret_upgrade");
+    private static final Map<UUID, IUpgrade> OLD_UPGRADE_MAPPINGS = new HashMap<UUID, IUpgrade>() {
+        {
+            this.put(UUID.fromString("1749478F-2A8E-4C56-BC03-6C76CB5DE921"), Upgrades.UPG_STORAGE_I);
+            this.put(UUID.fromString("DEFFE281-A2F5-488A-95C1-E9A3BB6E0DD1"), Upgrades.UPG_STORAGE_II);
+            this.put(UUID.fromString("50DB1AC3-1CCD-4CB0-AD5A-0777C548655D"), Upgrades.UPG_STORAGE_III);
+            this.put(UUID.fromString("2C850D81-0C01-47EA-B3AD-86E4FF523521"), Upgrades.AMMO_STORAGE);
+            this.put(UUID.fromString("13218AB7-3DA6-461D-9882-13482291164B"), Upgrades.HEALTH_I);
+            this.put(UUID.fromString("612A78CB-ED0C-4990-B1F3-041BE8171B1A"), Upgrades.HEALTH_II);
+            this.put(UUID.fromString("2239A7BB-DD38-4764-9FFC-6E04934F9B3C"), Upgrades.HEALTH_III);
+            this.put(UUID.fromString("FF6CC60F-EEC7-40C5-92D8-A614DFA06777"), Upgrades.HEALTH_IV);
+            this.put(UUID.fromString("4ED4E813-E2D8-43E9-B499-9911E214C5E9"), Upgrades.RELOAD_I);
+            this.put(UUID.fromString("80877F84-F03D-4ED8-A9D3-BAF6DF4F3BF1"), Upgrades.RELOAD_II);
+            this.put(UUID.fromString("12435AB9-5AA3-4DB9-9B76-7943BA71597A"), Upgrades.SMART_TGT);
+            this.put(UUID.fromString("A8F29058-C8B7-400D-A7F4-4CEDE627A7E8"), Upgrades.ECONOMY_I);
+            this.put(UUID.fromString("2A76A2EB-0EA3-4EB0-9EC2-61E579361306"), Upgrades.ECONOMY_II);
+            this.put(UUID.fromString("C3CF3EE9-8314-4766-A5E0-6033DB3EE9DB"), Upgrades.ECONOMY_INF);
+            this.put(UUID.fromString("0ED3D861-F11D-4F6B-B9FC-67E22C8EB538"), Upgrades.ENDER_MEDIUM);
+            this.put(UUID.fromString("677FA826-DA2D-40E9-9D86-7FAD7DE398CC"), Upgrades.FUEL_PURIFY);
+            this.put(UUID.fromString("90F61412-4ECC-431B-A6AC-288F26C37608"), Upgrades.SHIELD_PERSONAL);
+            this.put(UUID.fromString("AB5E19F9-C241-4F3C-B04E-6C276369B0CF"), Upgrades.SHIELD_PROJECTILE);
+            this.put(UUID.fromString("853DB6B1-EAEF-4175-B1EE-02F765D24D25"), Upgrades.SHIELD_EXPLOSIVE);
+            this.put(UUID.fromString("C03BFDDA-1415-4519-BE59-61C568B6345E"), Upgrades.SHIELD_STRENGTH_I);
+            this.put(UUID.fromString("EF8BF1BB-437E-491D-AD6A-03F807987FAE"), Upgrades.SHIELD_STRENGTH_II);
+            this.put(UUID.fromString("320F0103-BA1B-4DA6-9ABA-211A1EF84F12"), Upgrades.ENDER_TOXIN_I);
+            this.put(UUID.fromString("6A68C909-D73D-49A7-AF71-5366BCEFBB37"), Upgrades.ENDER_TOXIN_II);
+        }
+    };
+
     @SubscribeEvent
     public static void onMissingItem(RegistryEvent.MissingMappings<Item> event) {
         List<RegistryEvent.MissingMappings.Mapping<Item>> list = event.getMappings();
         for( RegistryEvent.MissingMappings.Mapping<Item> map : list ) {
             if( map.key.equals(OLD_AMMO_ID) ) {
-                ItemRegistry.TURRET_AMMO.values().stream().findFirst().ifPresent(map::remap);
+                map.remap(ItemRegistry.TURRET_AMMO.get(Ammunitions.ARROW.getId()));
             } else if( map.key.equals(OLD_TURRET_ID) ) {
-                ItemRegistry.TURRET_PLACERS.values().stream().findFirst().ifPresent(map::remap);
+                map.remap(ItemRegistry.TURRET_PLACERS.get(Turrets.CROSSBOW.getId()));
+            } else if( map.key.equals(OLD_UPGRADE_ID) ) {
+                map.remap(ItemRegistry.TURRET_UPGRADES.get(UpgradeRegistry.EMPTY_UPGRADE.getId()));
             }
         }
     }
 
     @SubscribeEvent
-    public static void onChunkLoaded(ChunkEvent.Load event) {
+    public static void onChunkLoad(ChunkEvent.Load event) {
+        // replace items in loaded tile entities (chests etc.)
         Chunk chunk = event.getChunk();
         chunk.getTileEntityMap().values().forEach(te ->  {
-            IItemHandler handler = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
-            if( handler instanceof IItemHandlerModifiable ) {
-                replaceOldItems((IItemHandlerModifiable) handler);
-            }
+            Arrays.stream(EnumFacing.VALUES).forEach(f -> {
+                IItemHandler handler = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, f);
+                if( handler instanceof IItemHandlerModifiable ) {
+                    replaceOldItems((IItemHandlerModifiable) handler);
+                }
+            });
         });
 
+        // replace items in entities (donkeys with chests etc.) and turrets
         Arrays.stream(chunk.getEntityLists()).forEach(cimm -> cimm.forEach(e -> {
             IItemHandler handler = e.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
             if( handler instanceof IItemHandlerModifiable ) {
                 replaceOldItems((IItemHandlerModifiable) handler);
             }
+
             if( e instanceof EntityTurret ) {
                 EntityTurret turret = (EntityTurret) e;
                 ItemStack oldStack = turret.getTargetProcessor().getAmmoStack();
                 if( ItemStackUtils.isValid(oldStack) && oldStack.getItem() instanceof ItemAmmo ) {
                     ((TargetProcessor) turret.getTargetProcessor()).setAmmoStackInternal(getNewAmmoStack(oldStack));
+                }
+
+                IUpgradeProcessor uProc = turret.getUpgradeProcessor();
+                for( int i = 0, max = uProc.getSizeInventory(); i < max; i++ ) {
+                    oldStack = uProc.getStackInSlot(i);
+                    if( ItemStackUtils.isValid(oldStack) && oldStack.getItem() instanceof ItemUpgrade ) {
+                        uProc.setInventorySlotContents(i, getNewUpgradeStack(oldStack));
+                    }
                 }
             }
         }));
@@ -117,9 +164,10 @@ public class ItemRemapper
 
     @SubscribeEvent
     public static void onPlayerJoin(EntityJoinWorldEvent event) {
+        // replace items in player inventories
         if( event.getEntity() instanceof EntityPlayer && !event.getWorld().isRemote ) {
             EntityPlayer player = (EntityPlayer) event.getEntity();
-            IItemHandler handler = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.NORTH);
+            IItemHandler handler = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
             if( handler instanceof IItemHandlerModifiable ) {
                 replaceOldItems((IItemHandlerModifiable) handler);
                 player.inventoryContainer.detectAndSendChanges();
@@ -136,6 +184,8 @@ public class ItemRemapper
                     stack = getNewAmmoStack(oldStack);
                 } else if( oldStack.getItem() instanceof ItemTurret ) {
                     stack = getNewTurretStack(oldStack);
+                } else if( oldStack.getItem() instanceof ItemUpgrade ) {
+                    stack = getNewUpgradeStack(oldStack);
                 }
 
                 if( ItemStackUtils.isValid(stack) ) {
@@ -144,6 +194,21 @@ public class ItemRemapper
                 }
             }
         }
+    }
+
+    private static ItemStack getNewUpgradeStack(ItemStack oldStack) {
+        NBTTagCompound nbt = oldStack.getTagCompound();
+        if( nbt != null && nbt.hasKey("upgradeId", Constants.NBT.TAG_STRING) ) {
+            String oldUpgradeIdStr = nbt.getString("upgradeId");
+            UUID oldUpgradeId = UuidUtils.isStringUuid(oldUpgradeIdStr) ? UUID.fromString(oldUpgradeIdStr) : null;
+            if( OLD_UPGRADE_MAPPINGS.containsKey(oldUpgradeId) ) {
+                ItemStack stack = UpgradeRegistry.INSTANCE.getUpgradeItem(OLD_UPGRADE_MAPPINGS.get(oldUpgradeId));
+                stack.setCount(oldStack.getCount());
+                return stack;
+            }
+        }
+
+        return ItemStack.EMPTY;
     }
 
     private static ItemStack getNewAmmoStack(ItemStack oldStack) {

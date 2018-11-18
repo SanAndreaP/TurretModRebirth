@@ -13,7 +13,7 @@ import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
-import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
+import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.client.gui.lexicon.assembly.LexiconRenderAssemblyRecipe;
 import de.sanandrew.mods.turretmod.client.gui.lexicon.turret.LexiconGroupTurret;
 import de.sanandrew.mods.turretmod.client.util.ClientProxy;
@@ -54,7 +54,7 @@ class LexiconRenderUpgrade
     @Override
     public void initPage(ILexiconEntry entry, ILexiconGuiHelper helper, List<GuiButton> deprecated1, List<GuiButton> deprecated2) {
         if( entry instanceof LexiconEntryUpgrade ) {
-            ITurretUpgrade upgrade = ((LexiconEntryUpgrade) entry).upgrade;
+            IUpgrade upgrade = ((LexiconEntryUpgrade) entry).upgrade;
             this.upgradeStack = UpgradeRegistry.INSTANCE.getUpgradeItem(upgrade);
             this.recipe = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(this.upgradeStack);
             this.turretButtons = new ArrayList<>();
@@ -67,9 +67,9 @@ class LexiconRenderUpgrade
                 entryButtons.add(entryBtn.get());
             });
 
-            ITurretUpgrade prereq = upgrade.getDependantOn();
+            IUpgrade prereq = upgrade.getDependantOn();
             if( prereq != null ) {
-                this.prereqUpgradeButton = helper.getNewEntryButton(entryButtons.size(), 4, 0, ClientProxy.lexiconInstance.getGroup(LexiconGroupUpgrade.NAME).getEntry(prereq.getName()),
+                this.prereqUpgradeButton = helper.getNewEntryButton(entryButtons.size(), 4, 0, ClientProxy.lexiconInstance.getGroup(LexiconGroupUpgrade.NAME).getEntry(prereq.getId().toString()),
                                                                     helper.getFontRenderer());
                 entryButtons.add(this.prereqUpgradeButton.get());
             } else {

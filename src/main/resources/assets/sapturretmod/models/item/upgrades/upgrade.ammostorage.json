@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "sapturretmod:items/upgrades/backg",
+    "layer1": "sapturretmod:items/upgrades/ammostorage"
+  }
+}

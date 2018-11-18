@@ -7,6 +7,7 @@ import net.minecraft.util.ResourceLocation;
 import javax.annotation.Nonnull;
 import java.util.List;
 
+@SuppressWarnings("UnusedReturnValue")
 public interface IAmmunitionRegistry
 {
     List<IAmmunition> getTypes();
@@ -22,8 +23,7 @@ public interface IAmmunitionRegistry
 
     List<IAmmunitionGroup> getGroupsForTurret(ITurret turret);
 
-    @SuppressWarnings({"unused", "UnusedReturnValue"})
-    boolean registerAmmoType(IAmmunition type);
+    boolean register(IAmmunition type);
 
     @Nonnull
     ItemStack getAmmoItem(ResourceLocation id);

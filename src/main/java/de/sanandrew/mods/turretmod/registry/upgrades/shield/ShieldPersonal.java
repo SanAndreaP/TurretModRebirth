@@ -32,9 +32,13 @@ public final class ShieldPersonal
     float value;
     float recovery;
 
-    public ShieldPersonal(float value) {
+    ShieldPersonal(float value, float recovery) {
         this.value = Math.min(Math.max(value, 0.0F), MAX_VALUE);
-        this.recovery = 0.0F;
+        this.recovery = recovery;
+    }
+
+    ShieldPersonal(float value) {
+        this(value, 0.0F);
     }
 
     public float damage(float dmg) {

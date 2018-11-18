@@ -28,16 +28,16 @@ public final class Ammunitions
     public static final IAmmunition FUELTANK = new FuelTank();
 
     public static void initialize(IAmmunitionRegistry registry) {
-        registry.registerAmmoType(ARROW);
-        registry.registerAmmoType(SGSHELL);
-        registry.registerAmmoType(CRYOCELL_MK1);
-        registry.registerAmmoType(CRYOCELL_MK2);
-        registry.registerAmmoType(CRYOCELL_MK3);
-        registry.registerAmmoType(BULLET);
-        registry.registerAmmoType(MGSHELL);
-        registry.registerAmmoType(ELECTROLYTECELL);
-        registry.registerAmmoType(FLUXCELL);
-        registry.registerAmmoType(FUELTANK);
+        registry.register(ARROW);
+        registry.register(SGSHELL);
+        registry.register(CRYOCELL_MK1);
+        registry.register(CRYOCELL_MK2);
+        registry.register(CRYOCELL_MK3);
+        registry.register(BULLET);
+        registry.register(MGSHELL);
+        registry.register(ELECTROLYTECELL);
+        registry.register(FLUXCELL);
+        registry.register(FUELTANK);
     }
 
     enum Groups

@@ -11,7 +11,7 @@ package de.sanandrew.mods.turretmod.registry.upgrades;
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
+import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
@@ -22,26 +22,19 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public abstract class Health
-        implements ITurretUpgrade
+        implements IUpgrade
 {
-    private final ResourceLocation itemModel;
-    private final String name;
+    private final ResourceLocation id;
     private final AttributeModifier modifier;
 
     Health(String name, String modUUID) {
-        this.name = name;
         this.modifier = new AttributeModifier(UUID.fromString(modUUID), String.format("%s:%s", TmrConstants.ID, name), 0.25D, EntityUtils.ATTR_ADD_PERC_VAL_TO_SUM);
-        this.itemModel = new ResourceLocation(TmrConstants.ID, "upgrades/" + name);
+        this.id = new ResourceLocation(TmrConstants.ID, "upgrade." + name);
     }
 
     @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public ResourceLocation getModel() {
-        return this.itemModel;
+    public ResourceLocation getId() {
+        return this.id;
     }
 
     @Override
@@ -67,65 +60,50 @@ public abstract class Health
         }
     }
 
-    public static class MK1
+    static class MK1
             extends Health
     {
-
         MK1() {
-            super("health_i", "673176FC-51F9-4CBC-BA12-5073B6867644");
-        }
-
-        @Override
-        public ITurretUpgrade getDependantOn() {
-            return null;
+            super("health.1", "673176FC-51F9-4CBC-BA12-5073B6867644");
         }
     }
 
-    public static class MK2
+    static class MK2
             extends Health
     {
-        private final ITurretUpgrade dependant;
-
         MK2() {
-            super("health_ii", "B7E5ADFA-517C-4167-A2FD-E0D31FA6E9BE");
-            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(Upgrades.HEALTH_I);
+            super("health.2", "B7E5ADFA-517C-4167-A2FD-E0D31FA6E9BE");
         }
 
         @Override
-        public ITurretUpgrade getDependantOn() {
-            return this.dependant;
+        public IUpgrade getDependantOn() {
+            return Upgrades.HEALTH_I;
         }
     }
 
-    public static class MK3
+    static class MK3
             extends Health
     {
-        private final ITurretUpgrade dependant;
-
         MK3() {
-            super("health_iii", "D49F43AE-5EA4-4DD2-B08A-9B5F1966C091");
-            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(Upgrades.HEALTH_II);
+            super("health.3", "D49F43AE-5EA4-4DD2-B08A-9B5F1966C091");
         }
 
         @Override
-        public ITurretUpgrade getDependantOn() {
-            return this.dependant;
+        public IUpgrade getDependantOn() {
+            return Upgrades.HEALTH_II;
         }
     }
 
-    public static class MK4
+    static class MK4
             extends Health
     {
-        private final ITurretUpgrade dependant;
-
         MK4() {
-            super("health_iv", "9431A60C-B995-4547-B143-2BEDC67467E1");
-            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(Upgrades.HEALTH_III);
+            super("health.4", "9431A60C-B995-4547-B143-2BEDC67467E1");
         }
 
         @Override
-        public ITurretUpgrade getDependantOn() {
-            return this.dependant;
+        public IUpgrade getDependantOn() {
+            return Upgrades.HEALTH_III;
         }
 
         @Nullable

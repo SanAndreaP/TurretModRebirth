@@ -95,7 +95,7 @@ public final class AmmunitionRegistry
     }
 
     @Override
-    public boolean registerAmmoType(IAmmunition type) {
+    public boolean register(IAmmunition type) {
         if( type == null ) {
             TmrConstants.LOG.log(Level.ERROR, "Cannot register NULL as Ammo-Type!", new InvalidParameterException());
             return false;

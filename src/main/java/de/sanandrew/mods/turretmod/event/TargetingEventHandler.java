@@ -48,7 +48,7 @@ public class TargetingEventHandler
         }
 
         if( event.processor.getTurret().getUpgradeProcessor().hasUpgrade(Upgrades.SMART_TGT) ) {
-            AdvTargetSettings settings = event.processor.getTurret().getUpgradeProcessor().getUpgradeInstance(Upgrades.SMART_TGT);
+            AdvTargetSettings settings = event.processor.getTurret().getUpgradeProcessor().getUpgradeInstance(Upgrades.SMART_TGT.getId());
             if( settings != null ) {
                 List<Entity> entities = turretInst.getTargetProcessor().getValidTargetList();
                 if( !settings.isTargetValid(event.target, turretInst, entities) ) {

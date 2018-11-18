@@ -10,42 +10,31 @@ package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
-import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
+import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 
 public class SimpleUpgrade
-        implements ITurretUpgrade
+        implements IUpgrade
 {
-
-    private final String name;
+    private final ResourceLocation id;
     private final ITurret[] applicableTurrets;
-    private final ResourceLocation itemModel;
-    private final ITurretUpgrade dependantOn;
+    private final IUpgrade dependantOn;
 
     SimpleUpgrade(String name, @Nullable ITurret... applicableTurrets) {
-        this.name = name;
-        this.applicableTurrets = applicableTurrets;
-        this.itemModel = new ResourceLocation(TmrConstants.ID, "upgrades/" + name);
-        this.dependantOn = null;
+        this(name, null, applicableTurrets);
     }
 
-    SimpleUpgrade(String name, ITurretUpgrade dependantOn, @Nullable ITurret... applicableTurrets) {
-        this.name = name;
+    SimpleUpgrade(String name, IUpgrade dependantOn, @Nullable ITurret... applicableTurrets) {
+        this.id = new ResourceLocation(TmrConstants.ID, "upgrade." + name);
         this.applicableTurrets = applicableTurrets;
-        this.itemModel = new ResourceLocation(TmrConstants.ID, "upgrades/" + name);
         this.dependantOn = dependantOn;
     }
 
     @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public ResourceLocation getModel() {
-        return this.itemModel;
+    public ResourceLocation getId() {
+        return this.id;
     }
 
     @Nullable
@@ -55,7 +44,7 @@ public class SimpleUpgrade
     }
 
     @Override
-    public ITurretUpgrade getDependantOn() {
+    public IUpgrade getDependantOn() {
         return this.dependantOn;
     }
 }

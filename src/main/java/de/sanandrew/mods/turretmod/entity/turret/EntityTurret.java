@@ -445,7 +445,7 @@ public class EntityTurret
 
         String turretId = nbt.getString("turretId");
         if( UuidUtils.isStringUuid(turretId) ) {
-            loadDelegate(UUID.fromString(turretId));
+            loadDelegate(ItemRemapper.OLD_TURRET_MAPPINGS.get(UUID.fromString(turretId)));
         } else {
             loadDelegate(new ResourceLocation(turretId));
         }
@@ -465,11 +465,6 @@ public class EntityTurret
 
     private void loadDelegate(ResourceLocation id) {
         this.loadDelegate(TurretRegistry.INSTANCE.getTurret(id));
-    }
-
-    @Deprecated
-    private void loadDelegate(UUID id) {
-        this.loadDelegate(ItemRemapper.OLD_TURRET_MAPPINGS.get(id));
     }
 
     private void loadDelegate(ITurret turret) {

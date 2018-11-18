@@ -8,133 +8,119 @@
  */
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
-import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.item.ItemUpgrade;
+import de.sanandrew.mods.turretmod.network.PacketRegistry;
+import de.sanandrew.mods.turretmod.network.PacketSyncUpgradeInst;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.Range;
-import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 public final class UpgradeRegistry
         implements IUpgradeRegistry
 {
-
     public static final UpgradeRegistry INSTANCE = new UpgradeRegistry();
-    private static final UUID EMPTY = UuidUtils.EMPTY_UUID;
-    private static final ITurretUpgrade EMPTY_INST;
+    public static final IUpgrade EMPTY_UPGRADE = new UpgradeRegistry.EmptyUpgrade();
+    private static final IUpgrade NULL_UPGRADE;
 
-    private Map<UUID, ITurretUpgrade> uuidToUpgradeMap;
-    private Map<ITurretUpgrade, UUID> upgradeToUuidMap;
-    private List<String> errored;
+    private BiMap<ResourceLocation, IUpgrade> upgrades;
 
     static {
-        INSTANCE.registerUpgrade(UpgradeRegistry.EMPTY, new UpgradeRegistry.EmptyUpgrade());
-        EMPTY_INST = UpgradeRegistry.INSTANCE.uuidToUpgradeMap.get(UpgradeRegistry.EMPTY);
+        INSTANCE.register(EMPTY_UPGRADE);
+        NULL_UPGRADE = new SimpleUpgrade("null") {
+            @Override
+            public boolean isValid() {
+                return false;
+            }
+        };
     }
 
     private UpgradeRegistry() {
-        this.uuidToUpgradeMap = new HashMap<>();
-        this.upgradeToUuidMap = new LinkedHashMap<>();
-        this.errored = new ArrayList<>();
+        this.upgrades = HashBiMap.create();
     }
 
     @Override
-    public void registerUpgrade(UUID uuid, ITurretUpgrade upgrade) {
-        this.uuidToUpgradeMap.put(uuid, upgrade);
-        this.upgradeToUuidMap.put(upgrade, uuid);
+    public void register(IUpgrade upgrade) {
+        this.upgrades.put(upgrade.getId(), upgrade);
+
+        ItemRegistry.TURRET_UPGRADES.put(upgrade.getId(), new ItemUpgrade(upgrade));
     }
 
     @Override
-    public ITurretUpgrade getUpgrade(UUID uuid) {
-        return MiscUtils.defIfNull(this.uuidToUpgradeMap.get(uuid), EMPTY_INST);
+    public void registerAll(IUpgrade... upgrade) {
+        Arrays.stream(upgrade).forEach(this::register);
     }
 
     @Override
-    public UUID getUpgradeId(ITurretUpgrade upg) {
-        return MiscUtils.defIfNull(this.upgradeToUuidMap.get(upg), EMPTY);
+    public IUpgrade getUpgrade(ResourceLocation id) {
+        return this.upgrades.getOrDefault(id, NULL_UPGRADE);
     }
 
     @Override
-    public UUID getUpgradeId(@Nonnull ItemStack stack) {
-        if( !stack.hasTagCompound() ) {
-            return EMPTY;
+    public IUpgrade getUpgrade(@Nonnull ItemStack stack) {
+        if( !ItemStackUtils.isValid(stack) || !(stack.getItem() instanceof ItemUpgrade) ) {
+            return NULL_UPGRADE;
         }
 
-        String uid = MiscUtils.defIfNull(stack.getTagCompound(), new NBTTagCompound()).getString("upgradeId");
-        try {
-            return UUID.fromString(uid);
-        } catch( IllegalArgumentException ex ) {
-            if( !this.errored.contains(uid) ) {
-                TmrConstants.LOG.log(Level.WARN, "There was an error at parsing the UUID for a turret_placer upgrade item!", ex);
-                this.errored.add(uid);
-            }
-            return EMPTY;
-        }
+        return ((ItemUpgrade) stack.getItem()).upgrade;
     }
 
     @Override
-    public ITurretUpgrade getUpgrade(@Nonnull ItemStack stack) {
-        if( !ItemStackUtils.isItem(stack, ItemRegistry.TURRET_UPGRADE) || !stack.hasTagCompound() ) {
-            return EMPTY_INST;
-        }
-
-        return this.getUpgrade(this.getUpgradeId(stack));
-    }
-
-    @Override
-    public List<ITurretUpgrade> getUpgrades() {
-        return new ArrayList<>(this.upgradeToUuidMap.keySet());
+    public List<IUpgrade> getUpgrades() {
+        return new ArrayList<>(this.upgrades.values());
     }
 
     @Override
     @Nonnull
-    public ItemStack getUpgradeItem(UUID uuid) {
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setString("upgradeId", uuid.toString());
-        ItemStack stack = new ItemStack(ItemRegistry.TURRET_UPGRADE, 1);
-        stack.setTagCompound(nbt);
-
-        return stack;
+    public ItemStack getUpgradeItem(ResourceLocation id) {
+        return new ItemStack(ItemRegistry.TURRET_UPGRADES.getOrDefault(id, ItemRegistry.TURRET_UPGRADES.get(EMPTY_UPGRADE.getId())));
     }
 
     @Override
     @Nonnull
-    public ItemStack getUpgradeItem(ITurretUpgrade upgrade) {
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setString("upgradeId", this.getUpgradeId(upgrade).toString());
-        ItemStack stack = new ItemStack(ItemRegistry.TURRET_UPGRADE, 1);
-        stack.setTagCompound(nbt);
+    public ItemStack getUpgradeItem(IUpgrade upgrade) {
+        return getUpgradeItem(upgrade.getId());
+    }
 
-        return stack;
+    @Override
+    public void syncWithServer(ITurretInst turret, ResourceLocation upgradeId) {
+        PacketRegistry.sendToServer(new PacketSyncUpgradeInst(turret, upgradeId));
+    }
+
+    @Override
+    public void syncWithClients(ITurretInst turret, ResourceLocation upgradeId) {
+        EntityLiving turretL = turret.get();
+        if( !turretL.world.isRemote ) {
+            PacketRegistry.sendToAllAround(new PacketSyncUpgradeInst(turret, upgradeId), turretL.world.provider.getDimension(), turretL.posX, turretL.posY, turretL.posZ, 64.0D);
+        }
+    }
+
+    @Override
+    public IUpgrade getEmptyUpgrade() {
+        return EMPTY_UPGRADE;
     }
 
     static final class EmptyUpgrade
-            implements ITurretUpgrade
+            implements IUpgrade
     {
-        private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "upgrades/empty");
+        private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "upgrade.empty");
 
         @Override
-        public String getName() {
-            return "empty";
-        }
-
-        @Override
-        public ResourceLocation getModel() {
-            return ITEM_MODEL;
+        public ResourceLocation getId() {
+            return ID;
         }
 
         @Override

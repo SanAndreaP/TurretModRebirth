@@ -9,72 +9,54 @@
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
+import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import net.minecraft.util.ResourceLocation;
 
 public abstract class AmmoUsage
-        implements ITurretUpgrade
+        implements IUpgrade
 {
-    private final ResourceLocation itemModel;
-    private final String name;
+    private final ResourceLocation id;
 
     AmmoUsage(String name) {
-        this.name = name;
-        this.itemModel = new ResourceLocation(TmrConstants.ID, "upgrades/" + name);
+        this.id = new ResourceLocation(TmrConstants.ID, "upgrade." + name);
     }
 
     @Override
-    public String getName() {
-        return this.name;
+    public ResourceLocation getId() {
+        return this.id;
     }
 
-    @Override
-    public ResourceLocation getModel() {
-        return this.itemModel;
-    }
-
-    public static class AmmoUseI
+    static class MK1
             extends AmmoUsage
     {
-        public AmmoUseI() {
-            super("use_decr_i");
+        MK1() {
+            super("ammousage.1");
+        }
+    }
+
+    static class MK2
+            extends AmmoUsage
+    {
+        MK2() {
+            super("ammousage.2");
         }
 
         @Override
-        public ITurretUpgrade getDependantOn() {
-            return null;
+        public IUpgrade getDependantOn() {
+            return Upgrades.ECONOMY_I;
         }
     }
 
-    public static class AmmoUseII
+    static class MKInf
             extends AmmoUsage
     {
-        private final ITurretUpgrade dependant;
-
-        public AmmoUseII() {
-            super("use_decr_ii");
-            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(Upgrades.ECONOMY_I);
+        MKInf() {
+            super("ammousage.inf");
         }
 
         @Override
-        public ITurretUpgrade getDependantOn() {
-            return this.dependant;
-        }
-    }
-
-    public static class AmmoUseInf
-            extends AmmoUsage
-    {
-        private final ITurretUpgrade dependant;
-
-        public AmmoUseInf() {
-            super("use_decr_inf");
-            this.dependant = UpgradeRegistry.INSTANCE.getUpgrade(Upgrades.ECONOMY_II);
-        }
-
-        @Override
-        public ITurretUpgrade getDependantOn() {
-            return this.dependant;
+        public IUpgrade getDependantOn() {
+            return Upgrades.ECONOMY_II;
         }
     }
 }

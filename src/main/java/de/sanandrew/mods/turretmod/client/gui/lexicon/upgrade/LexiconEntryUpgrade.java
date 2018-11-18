@@ -7,7 +7,7 @@
 package de.sanandrew.mods.turretmod.client.gui.lexicon.upgrade;
 
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconEntry;
-import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
+import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.client.util.ClientProxy;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import net.minecraft.item.ItemStack;
@@ -19,12 +19,12 @@ final class LexiconEntryUpgrade
 {
     private final String id;
     private final ItemStack item;
-    final ITurretUpgrade upgrade;
+    final IUpgrade upgrade;
 
-    LexiconEntryUpgrade(ITurretUpgrade upgrade) {
+    LexiconEntryUpgrade(IUpgrade upgrade) {
         this.item =  UpgradeRegistry.INSTANCE.getUpgradeItem(upgrade);
         this.upgrade = upgrade;
-        this.id = upgrade.getName();
+        this.id = upgrade.getId().toString();
     }
 
     @Override
@@ -50,7 +50,7 @@ final class LexiconEntryUpgrade
 
     @Override
     public String getTitleLangKey(String modId) {
-        return this.item.getUnlocalizedName()  + '.' + this.upgrade.getName() + ".name";
+        return this.item.getUnlocalizedName() + ".name";
     }
 
     @Nonnull

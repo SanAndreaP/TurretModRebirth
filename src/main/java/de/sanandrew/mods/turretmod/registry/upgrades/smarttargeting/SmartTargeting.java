@@ -8,7 +8,7 @@ package de.sanandrew.mods.turretmod.registry.upgrades.smarttargeting;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
+import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -16,44 +16,28 @@ import net.minecraft.util.ResourceLocation;
 import java.util.UUID;
 
 public class SmartTargeting
-        implements ITurretUpgrade
+        implements IUpgrade
 {
-    private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "upgrades/smart_tgt");
-    private final String name;
-
-    public SmartTargeting() {
-        this.name = "smart_tgt";
-    }
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "upgrade.smarttgt");
 
     @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public ResourceLocation getModel() {
-        return ITEM_MODEL;
+    public ResourceLocation getId() {
+        return ID;
     }
 
     @Override
     public void onApply(ITurretInst turretInst) {
-        UUID upgId = UpgradeRegistry.INSTANCE.getUpgradeId(this);
-        AdvTargetSettings settings = new AdvTargetSettings();
-        turretInst.getUpgradeProcessor().setUpgradeInstance(upgId, settings);
+        turretInst.getUpgradeProcessor().setUpgradeInstance(ID, new AdvTargetSettings());
     }
 
     @Override
     public void onLoad(ITurretInst turretInst, NBTTagCompound nbt) {
-        UUID upgId = UpgradeRegistry.INSTANCE.getUpgradeId(this);
-        AdvTargetSettings settings = new AdvTargetSettings();
-        settings.loadFromNbt(nbt);
-        turretInst.getUpgradeProcessor().setUpgradeInstance(upgId, settings);
+        turretInst.getUpgradeProcessor().setUpgradeInstance(ID, new AdvTargetSettings(nbt));
     }
 
     @Override
     public void onSave(ITurretInst turretInst, NBTTagCompound nbt) {
-        UUID upgId = UpgradeRegistry.INSTANCE.getUpgradeId(this);
-        AdvTargetSettings settings = turretInst.getUpgradeProcessor().getUpgradeInstance(upgId);
+        AdvTargetSettings settings = turretInst.getUpgradeProcessor().getUpgradeInstance(ID);
         if( settings != null ) {
             settings.writeToNbt(nbt);
         }
@@ -61,7 +45,6 @@ public class SmartTargeting
 
     @Override
     public void onRemove(ITurretInst turretInst) {
-        UUID upgId = UpgradeRegistry.INSTANCE.getUpgradeId(this);
-        turretInst.getUpgradeProcessor().delUpgradeInstance(upgId);
+        turretInst.getUpgradeProcessor().delUpgradeInstance(ID);
     }
 }

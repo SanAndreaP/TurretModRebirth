@@ -8,52 +8,33 @@ package de.sanandrew.mods.turretmod.registry.upgrades.shield;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.api.upgrade.ITurretUpgrade;
-import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.UUID;
-
 public class UpgradeShieldPersonal
-        implements ITurretUpgrade
+        implements IUpgrade
 {
-    private static final ResourceLocation ITEM_MODEL = new ResourceLocation(TmrConstants.ID, "upgrades/pers_shield");
-    private final String name;
-
-    public UpgradeShieldPersonal() {
-        this.name = "pers_shield";
-    }
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "upgrade.shield.personal");
 
     @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public ResourceLocation getModel() {
-        return ITEM_MODEL;
+    public ResourceLocation getId() {
+        return ID;
     }
 
     @Override
     public void onApply(ITurretInst turretInst) {
-        UUID upgId = UpgradeRegistry.INSTANCE.getUpgradeId(this);
-        ShieldPersonal shield = new ShieldPersonal(20.0F);
-        turretInst.getUpgradeProcessor().setUpgradeInstance(upgId, shield);
+        turretInst.getUpgradeProcessor().setUpgradeInstance(ID, new ShieldPersonal(20.0F));
     }
 
     @Override
     public void onLoad(ITurretInst turretInst, NBTTagCompound nbt) {
-        UUID upgId = UpgradeRegistry.INSTANCE.getUpgradeId(this);
-        ShieldPersonal shield = new ShieldPersonal(nbt.getFloat("shieldValue"));
-        shield.recovery = nbt.getFloat("shieldRecovery");
-        turretInst.getUpgradeProcessor().setUpgradeInstance(upgId, shield);
+        turretInst.getUpgradeProcessor().setUpgradeInstance(ID, new ShieldPersonal(nbt.getFloat("shieldValue"), nbt.getFloat("shieldRecovery")));
     }
 
     @Override
     public void onSave(ITurretInst turretInst, NBTTagCompound nbt) {
-        UUID upgId = UpgradeRegistry.INSTANCE.getUpgradeId(this);
-        ShieldPersonal shield = turretInst.getUpgradeProcessor().getUpgradeInstance(upgId);
+        ShieldPersonal shield = turretInst.getUpgradeProcessor().getUpgradeInstance(ID);
         if( shield != null ) {
             nbt.setFloat("shieldValue", shield.value);
             nbt.setFloat("shieldRecovery", shield.recovery);
@@ -62,8 +43,7 @@ public class UpgradeShieldPersonal
 
     @Override
     public void onRemove(ITurretInst turretInst) {
-        UUID upgId = UpgradeRegistry.INSTANCE.getUpgradeId(this);
-        turretInst.getUpgradeProcessor().<ShieldPersonal>getUpgradeInstance(upgId).value = 0;
-        turretInst.getUpgradeProcessor().delUpgradeInstance(upgId);
+        turretInst.getUpgradeProcessor().<ShieldPersonal>getUpgradeInstance(ID).value = 0;
+        turretInst.getUpgradeProcessor().delUpgradeInstance(ID);
     }
 }

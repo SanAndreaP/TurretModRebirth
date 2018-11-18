@@ -16,26 +16,23 @@ import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeInstance;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import org.apache.logging.log4j.Level;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.UUID;
+import java.io.*;
 
 public class PacketSyncUpgradeInst
         extends AbstractMessage<PacketSyncUpgradeInst>
 {
     private int turretId;
-    private UUID upgradeId;
+    private ResourceLocation upgradeId;
     private byte[] instData;
 
     @SuppressWarnings("unused")
     public PacketSyncUpgradeInst() { }
 
-    public PacketSyncUpgradeInst(ITurretInst turret, UUID upgradeId) {
+    public PacketSyncUpgradeInst(ITurretInst turret, ResourceLocation upgradeId) {
         this.turretId = turret.get().getEntityId();
         this.upgradeId = upgradeId;
         IUpgradeInstance<?> upgInstance = turret.getUpgradeProcessor().getUpgradeInstance(upgradeId);
@@ -78,7 +75,7 @@ public class PacketSyncUpgradeInst
     @Override
     public void fromBytes(ByteBuf buf) {
         this.turretId = buf.readInt();
-        this.upgradeId = new UUID(buf.readLong(), buf.readLong());
+        this.upgradeId = new ResourceLocation(ByteBufUtils.readUTF8String(buf));
         int lng = buf.readInt();
         this.instData = new byte[lng];
         if( lng > 0 ) {
@@ -89,8 +86,7 @@ public class PacketSyncUpgradeInst
     @Override
     public void toBytes(ByteBuf buf) {
         buf.writeInt(this.turretId);
-        buf.writeLong(this.upgradeId.getMostSignificantBits());
-        buf.writeLong(this.upgradeId.getLeastSignificantBits());
+        ByteBufUtils.writeUTF8String(buf, this.upgradeId.toString());
         buf.writeInt(this.instData.length);
         buf.writeBytes(this.instData);
     }

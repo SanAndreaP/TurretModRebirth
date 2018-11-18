@@ -14,6 +14,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiButtonIcon;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncUpgradeInst;
+import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.registry.upgrades.smarttargeting.AdvTargetSettings;
 import de.sanandrew.mods.turretmod.util.Lang;
@@ -222,7 +223,7 @@ public class GuiSmartTargets
     }
 
     private static AdvTargetSettings getSettings(IGuiTcuInst<?> gui) {
-        AdvTargetSettings settings = gui.getTurretInst().getUpgradeProcessor().getUpgradeInstance(Upgrades.SMART_TGT);
+        AdvTargetSettings settings = gui.getTurretInst().getUpgradeProcessor().getUpgradeInstance(Upgrades.SMART_TGT.getId());
         if( settings == null ) {
             gui.getGui().mc.player.closeScreen();
         }
@@ -230,7 +231,7 @@ public class GuiSmartTargets
     }
 
     private static void syncSettings(ITurretInst turretInst) {
-        PacketRegistry.sendToServer(new PacketSyncUpgradeInst(turretInst, Upgrades.SMART_TGT));
+        UpgradeRegistry.INSTANCE.syncWithServer(turretInst, Upgrades.SMART_TGT.getId());
     }
 
     private static Integer getInteger(String s, Integer def) {
