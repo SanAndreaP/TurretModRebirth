@@ -8,35 +8,25 @@
  */
 package de.sanandrew.mods.turretmod.registry.repairkit;
 
-import de.sanandrew.mods.turretmod.api.repairkit.TurretRepairKit;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.repairkit.IRepairKit;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.UUID;
-
 public class RepairKitStandard
-        implements TurretRepairKit
+        implements IRepairKit
 {
-    private final String name;
-    private final UUID uuid;
+    private final ResourceLocation id;
     private final float heal;
-    private final ResourceLocation itemModel;
 
-    public RepairKitStandard(String name, UUID uuid, float heal, ResourceLocation model) {
-        this.name = name;
-        this.uuid = uuid;
+    RepairKitStandard(String suffix, float heal) {
+        this.id = new ResourceLocation(TmrConstants.ID, "repkit.standard." + suffix);
         this.heal = heal;
-        this.itemModel = model;
     }
 
     @Override
-    public final String getName() {
-        return this.name;
-    }
-
-    @Override
-    public final UUID getUUID() {
-        return this.uuid;
+    public final ResourceLocation getId() {
+        return this.id;
     }
 
     @Override
@@ -47,10 +37,5 @@ public class RepairKitStandard
     @Override
     public boolean isApplicable(ITurretInst turret) {
         return turret.get().getHealth() <= turret.get().getMaxHealth() - this.heal;
-    }
-
-    @Override
-    public ResourceLocation getModel() {
-        return this.itemModel;
     }
 }

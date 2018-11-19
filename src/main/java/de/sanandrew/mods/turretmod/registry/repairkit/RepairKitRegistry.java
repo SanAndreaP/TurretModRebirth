@@ -8,115 +8,91 @@
  */
 package de.sanandrew.mods.turretmod.registry.repairkit;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
-import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.repairkit.IRepairKit;
 import de.sanandrew.mods.turretmod.api.repairkit.IRepairKitRegistry;
-import de.sanandrew.mods.turretmod.api.repairkit.TurretRepairKit;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.item.ItemRepairKit;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 public final class RepairKitRegistry
         implements IRepairKitRegistry
 {
     public static final RepairKitRegistry INSTANCE = new RepairKitRegistry();
 
-    private final Map<UUID, TurretRepairKit> kitsFromUUID;
-    private final Map<TurretRepairKit, UUID> uuidFromKits;
-    private final List<TurretRepairKit> kits;
+    private final BiMap<ResourceLocation, IRepairKit> repairKits;
 
     private RepairKitRegistry() {
-        this.kitsFromUUID = new HashMap<>();
-        this.uuidFromKits = new HashMap<>();
-        this.kits = new ArrayList<>();
+        this.repairKits = HashBiMap.create();
     }
 
     @Override
-    public boolean register(TurretRepairKit type) {
+    public void register(IRepairKit type) {
         if( type == null ) {
             TmrConstants.LOG.log(Level.ERROR, "Cannot register NULL as Repair Kit!", new InvalidParameterException());
-            return false;
+            return;
         }
 
-        if( type.getName() == null || type.getName().isEmpty() ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("Repair Kit %s has an empty/NULL name! Cannot register the Void.", type.getName()), new InvalidParameterException());
-            return false;
+        if( this.repairKits.containsKey(type.getId()) ) {
+            TmrConstants.LOG.log(Level.ERROR, String.format("The UUID of the Repair Kit %s is already registered! Use another UUID. JUST DO IT!", type.getId()), new InvalidParameterException());
+            return;
         }
 
-        if( type.getUUID() == null ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("Repair Kit %s has no UUID! How am I supposed to differentiate all the screws?", type.getName()), new InvalidParameterException());
-            return false;
-        }
+        this.repairKits.put(type.getId(), type);
 
-        if( this.kitsFromUUID.containsKey(type.getUUID()) ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("The UUID of the Repair Kit %s is already registered! Use another UUID. JUST DO IT!", type.getName()), new InvalidParameterException());
-            return false;
-        }
-
-        this.kitsFromUUID.put(type.getUUID(), type);
-        this.uuidFromKits.put(type, type.getUUID());
-        this.kits.add(type);
-
-        return true;
+        ItemRegistry.TURRET_REPAIRKITS.put(type.getId(), new ItemRepairKit(type));
     }
 
     @Override
-    public List<TurretRepairKit> getRegisteredTypes() {
-        return new ArrayList<>(this.kits);
+    public void registerAll(IRepairKit... types) {
+        Arrays.stream(types).forEach(this::register);
+    }
+
+    @Override
+    public List<IRepairKit> getTypes() {
+        return new ArrayList<>(this.repairKits.values());
     }
 
     @Override
     @Nonnull
-    public TurretRepairKit getType(UUID uuid) {
-        return MiscUtils.defIfNull(this.kitsFromUUID.get(uuid), EMPTY_REPKIT);
-    }
-
-    @Override
-    public UUID getTypeId(TurretRepairKit type) {
-        return this.uuidFromKits.get(type);
+    public IRepairKit getType(ResourceLocation id) {
+        return MiscUtils.defIfNull(this.repairKits.get(id), EMPTY_REPKIT);
     }
 
     @Override
     @Nonnull
-    public TurretRepairKit getType(@Nonnull ItemStack stack) {
-        if( ItemStackUtils.isItem(stack, ItemRegistry.REPAIR_KIT) ) {
-            NBTTagCompound nbt = stack.getTagCompound();
-            if( nbt != null ) {
-                if( nbt.hasKey("repKitType") ) {
-                    String typeUUID = nbt.getString("repKitType");
-                    try {
-                        return this.getType(UUID.fromString(typeUUID));
-                    } catch( IllegalArgumentException ex ) {
-                        return EMPTY_REPKIT;
-                    }
-                }
-            }
+    public IRepairKit getType(@Nonnull ItemStack stack) {
+        if( ItemStackUtils.isValid(stack) && stack.getItem() instanceof ItemRepairKit ) {
+            return ((ItemRepairKit) stack.getItem()).kit;
         }
 
         return EMPTY_REPKIT;
     }
 
-    private static final UUID EMPTY = UuidUtils.EMPTY_UUID;
+    @Nonnull
+    @Override
+    public ItemStack getItem(IRepairKit type) {
+        return type != null && type.isValid() && this.repairKits.containsValue(type) ? new ItemStack(ItemRegistry.TURRET_REPAIRKITS.get(type.getId()), 1) : ItemStack.EMPTY;
+    }
 
-    private static final TurretRepairKit EMPTY_REPKIT = new TurretRepairKit()
+    private static final IRepairKit EMPTY_REPKIT = new IRepairKit()
     {
-        @Override public String getName() { return "EMPTY"; }
-        @Override public UUID getUUID() { return EMPTY; }
+        @Override public ResourceLocation getId() { return new ResourceLocation("null"); }
         @Override public float getHealAmount() { return 0; }
         @Override public boolean isApplicable(ITurretInst turret) { return false; }
-        @Override public ResourceLocation getModel() { return null; }
+        @Override public boolean isValid() { return false; }
     };
 }

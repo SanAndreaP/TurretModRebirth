@@ -15,7 +15,7 @@ import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.sanlib.lib.util.ReflectionUtils;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
-import de.sanandrew.mods.turretmod.api.repairkit.TurretRepairKit;
+import de.sanandrew.mods.turretmod.api.repairkit.IRepairKit;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
@@ -332,7 +332,7 @@ public class EntityTurret
 
             return false;
         } else if( ItemStackUtils.isValid(stack) && hand == EnumHand.MAIN_HAND ) {
-            TurretRepairKit repKit;
+            IRepairKit repKit;
 
             if( this.targetProc.addAmmo(stack) ) {
                 this.onInteractSucceed(stack, player);

@@ -11,19 +11,21 @@ package de.sanandrew.mods.turretmod.api.repairkit;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 
-public interface TurretRepairKit
+public interface IRepairKit
 {
-    String getName();
-
-    UUID getUUID();
+    @Nonnull
+    ResourceLocation getId();
 
     float getHealAmount();
 
     boolean isApplicable(ITurretInst turret);
 
-    ResourceLocation getModel();
-
     default void onHeal(ITurretInst turret) { }
+
+    default boolean isValid() {
+        return true;
+    }
 }

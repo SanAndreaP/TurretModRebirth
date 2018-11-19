@@ -9,6 +9,7 @@ package de.sanandrew.mods.turretmod.util;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.repairkit.IRepairKit;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
@@ -16,10 +17,13 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import de.sanandrew.mods.turretmod.item.ItemAmmo;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.item.ItemRepairKit;
 import de.sanandrew.mods.turretmod.item.ItemTurret;
 import de.sanandrew.mods.turretmod.item.ItemUpgrade;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.Ammunitions;
+import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
+import de.sanandrew.mods.turretmod.registry.repairkit.RepairKits;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
@@ -48,6 +52,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+@SuppressWarnings("serial")
 @Mod.EventBusSubscriber(modid = TmrConstants.ID)
 public class ItemRemapper
 {
@@ -110,6 +115,18 @@ public class ItemRemapper
         }
     };
 
+    private static final ResourceLocation OLD_REPKIT_ID = new ResourceLocation(TmrConstants.ID, "turret_upgrade");
+    private static final Map<UUID, IRepairKit> OLD_REPKIT_MAPPINGS = new HashMap<UUID, IRepairKit>() {
+        {
+            this.put(UUID.fromString("89db7dd5-2ded-4e58-96dd-07e47bffa919"), RepairKits.STANDARD_MK1);
+            this.put(UUID.fromString("36477c40-3eb3-4997-a2ec-3a9a37be86d5"), RepairKits.STANDARD_MK2);
+            this.put(UUID.fromString("c9ecc3ea-8bfa-4e42-b401-e0475a23d7f6"), RepairKits.STANDARD_MK3);
+            this.put(UUID.fromString("6b3cbd27-1efa-4ee2-b8c8-35d2988361b9"), RepairKits.STANDARD_MK4);
+            this.put(UUID.fromString("4c44ca3d-4f32-44e6-bf2e-11189ec88a73"), RepairKits.REGEN_MK1);
+
+        }
+    };
+
     @SubscribeEvent
     public static void onMissingItem(RegistryEvent.MissingMappings<Item> event) {
         List<RegistryEvent.MissingMappings.Mapping<Item>> list = event.getMappings();
@@ -120,6 +137,8 @@ public class ItemRemapper
                 map.remap(ItemRegistry.TURRET_PLACERS.get(Turrets.CROSSBOW.getId()));
             } else if( map.key.equals(OLD_UPGRADE_ID) ) {
                 map.remap(ItemRegistry.TURRET_UPGRADES.get(UpgradeRegistry.EMPTY_UPGRADE.getId()));
+            } else if( map.key.equals(OLD_REPKIT_ID) ) {
+                map.remap(ItemRegistry.TURRET_REPAIRKITS.get(RepairKits.STANDARD_MK1.getId()));
             }
         }
     }
@@ -128,14 +147,12 @@ public class ItemRemapper
     public static void onChunkLoad(ChunkEvent.Load event) {
         // replace items in loaded tile entities (chests etc.)
         Chunk chunk = event.getChunk();
-        chunk.getTileEntityMap().values().forEach(te ->  {
-            Arrays.stream(EnumFacing.VALUES).forEach(f -> {
-                IItemHandler handler = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, f);
-                if( handler instanceof IItemHandlerModifiable ) {
-                    replaceOldItems((IItemHandlerModifiable) handler);
-                }
-            });
-        });
+        chunk.getTileEntityMap().values().forEach(te -> Arrays.stream(EnumFacing.VALUES).forEach(f -> {
+            IItemHandler handler = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, f);
+            if( handler instanceof IItemHandlerModifiable ) {
+                replaceOldItems((IItemHandlerModifiable) handler);
+            }
+        }));
 
         // replace items in entities (donkeys with chests etc.) and turrets
         Arrays.stream(chunk.getEntityLists()).forEach(cimm -> cimm.forEach(e -> {
@@ -186,6 +203,8 @@ public class ItemRemapper
                     stack = getNewTurretStack(oldStack);
                 } else if( oldStack.getItem() instanceof ItemUpgrade ) {
                     stack = getNewUpgradeStack(oldStack);
+                } else if( oldStack.getItem() instanceof ItemRepairKit ) {
+                    stack = getNewRepkitStack(oldStack);
                 }
 
                 if( ItemStackUtils.isValid(stack) ) {
@@ -194,6 +213,21 @@ public class ItemRemapper
                 }
             }
         }
+    }
+
+    private static ItemStack getNewRepkitStack(ItemStack oldStack) {
+        NBTTagCompound nbt = oldStack.getTagCompound();
+        if( nbt != null && nbt.hasKey("repKitType", Constants.NBT.TAG_STRING) ) {
+            String oldRepkitIdStr = nbt.getString("repKitType");
+            UUID oldRepkitId = UuidUtils.isStringUuid(oldRepkitIdStr) ? UUID.fromString(oldRepkitIdStr) : null;
+            if( OLD_REPKIT_MAPPINGS.containsKey(oldRepkitId) ) {
+                ItemStack stack = RepairKitRegistry.INSTANCE.getItem(OLD_REPKIT_MAPPINGS.get(oldRepkitId));
+                stack.setCount(oldStack.getCount());
+                return stack;
+            }
+        }
+
+        return ItemStack.EMPTY;
     }
 
     private static ItemStack getNewUpgradeStack(ItemStack oldStack) {

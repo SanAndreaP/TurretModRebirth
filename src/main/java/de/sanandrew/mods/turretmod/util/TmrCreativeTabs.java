@@ -12,6 +12,7 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.item.ItemAmmo;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.item.ItemRepairKit;
 import de.sanandrew.mods.turretmod.item.ItemTurret;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemBlock;
@@ -94,9 +95,9 @@ public class TmrCreativeTabs
                     return itm2 != null && itm2.getItem() instanceof ItemBlock ? 0 : -2;
                 } else if( itm2 != null && itm2.getItem() instanceof ItemBlock ) {
                     return 2;
-                } else if( itm1 != null && itm1.getItem() == ItemRegistry.REPAIR_KIT ) {
-                    return itm2 != null && itm2.getItem() == ItemRegistry.REPAIR_KIT ? 0 : 1;
-                } else if( itm2 != null && itm2.getItem() == ItemRegistry.REPAIR_KIT ) {
+                } else if( itm1 != null && itm1.getItem() instanceof ItemRepairKit ) {
+                    return itm2 != null && itm2.getItem() instanceof ItemRepairKit ? 0 : 1;
+                } else if( itm2 != null && itm2.getItem() instanceof ItemRepairKit ) {
                     return -1;
                 }
 

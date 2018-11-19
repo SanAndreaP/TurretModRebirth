@@ -1,6 +1,7 @@
 package de.sanandrew.mods.turretmod.api.repairkit;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -9,15 +10,18 @@ import java.util.UUID;
 @SuppressWarnings({"UnusedReturnValue", "unused"})
 public interface IRepairKitRegistry
 {
-    boolean register(TurretRepairKit type);
+    void register(IRepairKit type);
 
-    List<TurretRepairKit> getRegisteredTypes();
+    void registerAll(IRepairKit... types);
 
-    @Nonnull
-    TurretRepairKit getType(UUID uuid);
-
-    UUID getTypeId(TurretRepairKit type);
+    List<IRepairKit> getTypes();
 
     @Nonnull
-    TurretRepairKit getType(@Nonnull ItemStack stack);
+    IRepairKit getType(ResourceLocation id);
+
+    @Nonnull
+    IRepairKit getType(@Nonnull ItemStack stack);
+
+    @Nonnull
+    ItemStack getItem(IRepairKit type);
 }

@@ -8,41 +8,31 @@
  */
 package de.sanandrew.mods.turretmod.registry.repairkit;
 
-import de.sanandrew.mods.turretmod.api.repairkit.TurretRepairKit;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.repairkit.IRepairKit;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.UUID;
-
 public class RepairKitRegeneration
-        implements TurretRepairKit
+        implements IRepairKit
 {
-    private final String name;
-    private final UUID uuid;
+    private final ResourceLocation id;
     private final float heal;
-    private final ResourceLocation itemModel;
     private final int regenLvl;
     private final int regenTime;
 
-    RepairKitRegeneration(String name, UUID uuid, float heal, ResourceLocation model, int level, int time) {
-        this.name = name;
-        this.uuid = uuid;
+    RepairKitRegeneration(String suffix, float heal, int level, int time) {
+        this.id = new ResourceLocation(TmrConstants.ID, "repkit.regen." + suffix);
         this.heal = heal;
-        this.itemModel = model;
         this.regenLvl = level;
         this.regenTime = time;
     }
 
     @Override
-    public final String getName() {
-        return this.name;
-    }
-
-    @Override
-    public final UUID getUUID() {
-        return this.uuid;
+    public final ResourceLocation getId() {
+        return this.id;
     }
 
     @Override
@@ -58,10 +48,5 @@ public class RepairKitRegeneration
     @Override
     public boolean isApplicable(ITurretInst turret) {
         return turret.get().getHealth() <= turret.get().getMaxHealth() - this.heal && turret.get().getActivePotionEffect(MobEffects.REGENERATION) == null;
-    }
-
-    @Override
-    public ResourceLocation getModel() {
-        return this.itemModel;
     }
 }
