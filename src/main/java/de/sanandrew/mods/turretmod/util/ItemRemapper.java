@@ -115,7 +115,7 @@ public class ItemRemapper
         }
     };
 
-    private static final ResourceLocation OLD_REPKIT_ID = new ResourceLocation(TmrConstants.ID, "turret_upgrade");
+    private static final ResourceLocation OLD_REPKIT_ID = new ResourceLocation(TmrConstants.ID, "repair_kit");
     private static final Map<UUID, IRepairKit> OLD_REPKIT_MAPPINGS = new HashMap<UUID, IRepairKit>() {
         {
             this.put(UUID.fromString("89db7dd5-2ded-4e58-96dd-07e47bffa919"), RepairKits.STANDARD_MK1);
