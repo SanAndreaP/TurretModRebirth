@@ -74,7 +74,7 @@ class LexiconRenderTurret
 
             this.ammoGroupButtons = new ArrayList<>();
             List<GuiButton> entryButtons = helper.getEntryButtonList();
-            AmmunitionRegistry.INSTANCE.getGroupsForTurret(this.turret).forEach(g -> {
+            AmmunitionRegistry.INSTANCE.getGroups(this.turret).forEach(g -> {
                 IGuiButtonEntry entryBtn = helper.getNewEntryButton(entryButtons.size(), 4, 0, ClientProxy.lexiconInstance.getGroup(LexiconGroupAmmo.NAME).getEntry(g.getName()),
                                                                     helper.getFontRenderer());
                 this.ammoGroupButtons.add(entryBtn);

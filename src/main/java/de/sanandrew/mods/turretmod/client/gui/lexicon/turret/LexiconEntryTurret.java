@@ -33,7 +33,7 @@ final class LexiconEntryTurret
         this.icon =  TurretRegistry.INSTANCE.getTurretItem(turret);
         this.turret = turret;
         this.id = turret.getId().toString();
-        this.ammoGroups = AmmunitionRegistry.INSTANCE.getGroupsForTurret(this.turret).toArray(new IAmmunitionGroup[0]);
+        this.ammoGroups = AmmunitionRegistry.INSTANCE.getGroups(this.turret).toArray(new IAmmunitionGroup[0]);
     }
 
     @Override

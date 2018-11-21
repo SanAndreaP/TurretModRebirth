@@ -243,7 +243,7 @@ public final class TargetProcessor
                 if( AmmunitionRegistry.INSTANCE.getType(this.ammoStack).getId().equals(stackType.getId()) ) {
                     return this.ammoCount < this.getMaxAmmoCapacity();
                 } else {
-                    List<IAmmunition> types = AmmunitionRegistry.INSTANCE.getTypesForTurret(this.turret.getTurret());
+                    List<IAmmunition> types = AmmunitionRegistry.INSTANCE.getTypes(this.turret.getTurret());
                     return types.contains(stackType);
                 }
             }

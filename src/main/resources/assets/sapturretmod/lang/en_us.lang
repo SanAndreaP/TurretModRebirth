@@ -53,15 +53,15 @@ item.sapturretmod:ammo.eleccell.name=Electrolyte Cell
 item.sapturretmod:ammo.fluxcell.name=Flux Cell
 item.sapturretmod:ammo.fueltank.name=Fuel Tank
 # Repair Kits
-item.sapturretmod:turret_repair_kit.standard_1.name=Repair Kit 05HS
-item.sapturretmod:turret_repair_kit.standard_2.name=Repair Kit 10HS
-item.sapturretmod:turret_repair_kit.standard_3.name=Repair Kit 15HS
-item.sapturretmod:turret_repair_kit.standard_4.name=Repair Kit 20HS
-item.sapturretmod:turret_repair_kit.regen_1.name=Repair Kit 01H40R
+item.sapturretmod:repkit.standard.1.name=Repair Kit 05HS
+item.sapturretmod:repkit.standard.2.name=Repair Kit 10HS
+item.sapturretmod:repkit.standard.3.name=Repair Kit 15HS
+item.sapturretmod:repkit.standard.4.name=Repair Kit 20HS
+item.sapturretmod:repkit.regen.1.name=Repair Kit 01H40R
 # Turret Upgrades
-item.sapturretmod:turret_upgrade.requires=Requires:
-item.sapturretmod:turret_upgrade.applicableTo=Only Applicable On:
-item.sapturretmod:turret_upgrade.shdetails=<Hold Shift>
+item.sapturretmod:upgrade.requires=Requires:
+item.sapturretmod:upgrade.applicableTo=Only Applicable On:
+item.sapturretmod:upgrade.shdetails=<Hold Shift>
 item.sapturretmod:upgrade.empty.name=Upgrade Base
 item.sapturretmod:upgrade.health.1.name=Health I Upgrade
 item.sapturretmod:upgrade.health.2.name=Health II Upgrade

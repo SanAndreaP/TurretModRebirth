@@ -8,8 +8,8 @@
  */
 package de.sanandrew.mods.turretmod.api.ammo;
 
+import de.sanandrew.mods.turretmod.api.IRegistryType;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -20,16 +20,8 @@ import javax.annotation.Nullable;
  * {@link IAmmunitionRegistry} through {@link de.sanandrew.mods.turretmod.api.ITmrPlugin#registerAmmo(IAmmunitionRegistry)}</p>
  */
 public interface IAmmunition
+        extends IRegistryType
 {
-    /**
-     * <p>Returns the ID for this ammo type item. It needs to be unique from all other items registered.</p>
-     * <p>Cannot be <tt>null</tt>!</p>
-     *
-     * @return A unique ID for this item
-     */
-    @Nonnull
-    ResourceLocation getId();
-
     /**
      * <p>Returns the ammo group. This is used in the Turret Info Tablet to group ammunition types together in one page.</p>
      * <p><i>Example:</i> Arrows and Quivers have the same group with an ID beginning with {@code 7B49...}, All Cryo-Cells and their
@@ -66,12 +58,4 @@ public interface IAmmunition
      */
     @Nullable
     ITurretProjectile getProjectile(ITurretInst turretInst);
-
-    /**
-     * Returns wether or not this ammo type is considered valid.
-     * @return <tt>true</tt>, if this ammo is valid and usable, <tt>false</tt> otherwise.
-     */
-    default boolean isValid() {
-        return true;
-    }
 }

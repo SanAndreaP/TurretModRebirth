@@ -10,8 +10,6 @@ public interface IAmmunitionGroup
 {
     ResourceLocation getId();
 
-    String getName();
-
     ItemStack getIcon();
 
     ITurret getTurret();

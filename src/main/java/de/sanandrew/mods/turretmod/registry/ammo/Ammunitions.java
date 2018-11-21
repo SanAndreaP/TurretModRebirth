@@ -6,6 +6,7 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.registry.ammo;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
@@ -28,52 +29,39 @@ public final class Ammunitions
     public static final IAmmunition FUELTANK = new FuelTank();
 
     public static void initialize(IAmmunitionRegistry registry) {
-        registry.register(ARROW);
-        registry.register(SGSHELL);
-        registry.register(CRYOCELL_MK1);
-        registry.register(CRYOCELL_MK2);
-        registry.register(CRYOCELL_MK3);
-        registry.register(BULLET);
-        registry.register(MGSHELL);
-        registry.register(ELECTROLYTECELL);
-        registry.register(FLUXCELL);
-        registry.register(FUELTANK);
+        registry.registerAll(ARROW, SGSHELL, CRYOCELL_MK1, CRYOCELL_MK2, CRYOCELL_MK3, BULLET, MGSHELL, ELECTROLYTECELL,
+                             FLUXCELL, FUELTANK);
     }
 
     enum Groups
             implements IAmmunitionGroup
     {
-        ARROW (Ammunitions.ARROW.getId(), "arrow", Turrets.CROSSBOW),
-        BULLET (Ammunitions.BULLET.getId(), "bullet", Turrets.REVOLVER),
-        CRYO_CELL (Ammunitions.CRYOCELL_MK1.getId(), "cryocell", Turrets.CRYOLATOR),
-        ELEC_CELL (Ammunitions.ELECTROLYTECELL.getId(), "eleccell", Turrets.FORCEFIELD),
-        FUEL_TANK (Ammunitions.FUELTANK.getId(), "fueltank", Turrets.FLAMETHROWER),
-        FLUX_CELL (Ammunitions.FLUXCELL.getId(), "fluxcell", Turrets.LASER),
-        MG_SHELL (Ammunitions.MGSHELL.getId(), "minigun_shell", Turrets.MINIGUN),
-        SG_SHELL (Ammunitions.SGSHELL.getId(), "shotgun_shell", Turrets.SHOTGUN),
+        ARROW("arrow", Turrets.CROSSBOW, Ammunitions.ARROW.getId()),
+        BULLET("bullet", Turrets.REVOLVER, Ammunitions.BULLET.getId()),
+        CRYO_CELL("cryocell", Turrets.CRYOLATOR, Ammunitions.CRYOCELL_MK1.getId()),
+        ELEC_CELL("eleccell", Turrets.FORCEFIELD, Ammunitions.ELECTROLYTECELL.getId()),
+        FUEL_TANK("fueltank", Turrets.FLAMETHROWER, Ammunitions.FUELTANK.getId()),
+        FLUX_CELL("fluxcell", Turrets.LASER, Ammunitions.FLUXCELL.getId()),
+        MG_SHELL("shell.minigun", Turrets.MINIGUN, Ammunitions.MGSHELL.getId()),
+        SG_SHELL("shell.shotgun", Turrets.SHOTGUN, Ammunitions.SGSHELL.getId()),
 
-        UNKNOWN (new ResourceLocation("null"), "", null);
+        UNKNOWN("null", null, null);
 
         private final ResourceLocation id;
-        private final String name;
+        private final ResourceLocation typeIcon;
         private final ITurret turret;
 
         private ItemStack icon;
 
-        Groups(ResourceLocation id, String name, ITurret turret) {
-            this.id = id;
-            this.name = name;
+        Groups(String name, ITurret turret, ResourceLocation typeIcon) {
+            this.id = new ResourceLocation(TmrConstants.ID, "ammogroup." + name);
             this.turret = turret;
+            this.typeIcon = typeIcon;
         }
 
         @Override
         public ResourceLocation getId() {
             return this.id;
-        }
-
-        @Override
-        public String getName() {
-            return this.name;
         }
 
         @Override
@@ -83,8 +71,12 @@ public final class Ammunitions
 
         @Override
         public ItemStack getIcon() {
+            if( this.typeIcon == null ) {
+                return ItemStack.EMPTY;
+            }
+
             if( this.icon == null ) {
-                this.icon = AmmunitionRegistry.INSTANCE.getAmmoItem(this.id);
+                this.icon = AmmunitionRegistry.INSTANCE.getItem(this.typeIcon);
             }
             return this.icon;
         }

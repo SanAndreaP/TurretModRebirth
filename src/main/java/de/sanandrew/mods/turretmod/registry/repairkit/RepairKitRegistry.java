@@ -19,24 +19,25 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.ItemRepairKit;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public final class RepairKitRegistry
         implements IRepairKitRegistry
 {
     public static final RepairKitRegistry INSTANCE = new RepairKitRegistry();
 
-    private final BiMap<ResourceLocation, IRepairKit> repairKits;
+    private final BiMap<ResourceLocation, IRepairKit> repairKitMap;
+    private final NonNullList<IRepairKit> repairKitList;
 
     private RepairKitRegistry() {
-        this.repairKits = HashBiMap.create();
+        this.repairKitMap = HashBiMap.create();
+        this.repairKitList = NonNullList.create();
     }
 
     @Override
@@ -46,12 +47,13 @@ public final class RepairKitRegistry
             return;
         }
 
-        if( this.repairKits.containsKey(type.getId()) ) {
+        if( this.repairKitMap.containsKey(type.getId()) ) {
             TmrConstants.LOG.log(Level.ERROR, String.format("The UUID of the Repair Kit %s is already registered! Use another UUID. JUST DO IT!", type.getId()), new InvalidParameterException());
             return;
         }
 
-        this.repairKits.put(type.getId(), type);
+        this.repairKitMap.put(type.getId(), type);
+        this.repairKitList.add(type);
 
         ItemRegistry.TURRET_REPAIRKITS.put(type.getId(), new ItemRepairKit(type));
     }
@@ -62,14 +64,14 @@ public final class RepairKitRegistry
     }
 
     @Override
-    public List<IRepairKit> getTypes() {
-        return new ArrayList<>(this.repairKits.values());
+    public NonNullList<IRepairKit> getTypes() {
+        return NonNullList.from(NULL_TYPE, this.repairKitMap.values().toArray(new IRepairKit[0]));
     }
 
     @Override
     @Nonnull
     public IRepairKit getType(ResourceLocation id) {
-        return MiscUtils.defIfNull(this.repairKits.get(id), EMPTY_REPKIT);
+        return MiscUtils.defIfNull(this.repairKitMap.get(id), NULL_TYPE);
     }
 
     @Override
@@ -79,16 +81,19 @@ public final class RepairKitRegistry
             return ((ItemRepairKit) stack.getItem()).kit;
         }
 
-        return EMPTY_REPKIT;
+        return NULL_TYPE;
     }
 
-    @Nonnull
     @Override
-    public ItemStack getItem(IRepairKit type) {
-        return type != null && type.isValid() && this.repairKits.containsValue(type) ? new ItemStack(ItemRegistry.TURRET_REPAIRKITS.get(type.getId()), 1) : ItemStack.EMPTY;
+    public ItemStack getItem(ResourceLocation id) {
+        if( !this.repairKitMap.getOrDefault(id, NULL_TYPE).isValid() ) {
+            throw new IllegalArgumentException("Cannot get repair kit item with invalid type!");
+        }
+
+        return new ItemStack(ItemRegistry.TURRET_REPAIRKITS.get(id), 1);
     }
 
-    private static final IRepairKit EMPTY_REPKIT = new IRepairKit()
+    private static final IRepairKit NULL_TYPE = new IRepairKit()
     {
         @Override public ResourceLocation getId() { return new ResourceLocation("null"); }
         @Override public float getHealAmount() { return 0; }

@@ -30,9 +30,9 @@ final class LexiconEntryAmmo
     LexiconEntryAmmo(IAmmunitionGroup group) {
         this.ammoTypes = AmmunitionRegistry.INSTANCE.getTypes(group).toArray(new IAmmunition[0]);
         this.icon = group.getIcon();
-        this.id = group.getName();
+        this.id = group.getId().toString();
         this.turretName = group.getTurret().getId().toString();
-        this.ammoItemNames = String.join("|", Stream.of(this.ammoTypes).map(a -> AmmunitionRegistry.INSTANCE.getAmmoItem(a).getDisplayName()).toArray(String[]::new));
+        this.ammoItemNames = String.join("|", Stream.of(this.ammoTypes).map(a -> AmmunitionRegistry.INSTANCE.getItem(a.getId()).getDisplayName()).toArray(String[]::new));
     }
 
     @Override
