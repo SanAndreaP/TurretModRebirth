@@ -6,6 +6,7 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.api.turret;
 
+import de.sanandrew.mods.turretmod.api.IRegistryType;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -21,10 +22,8 @@ import java.util.UUID;
 
 @SuppressWarnings({"SameReturnValue", "unused"})
 public interface ITurret
+        extends IRegistryType
 {
-    @Nonnull
-    ResourceLocation getId();
-
     default void entityInit(ITurretInst turretInst) { }
 
     default void applyEntityAttributes(ITurretInst turretInst) { }

@@ -1,5 +1,6 @@
 package de.sanandrew.mods.turretmod.api.upgrade;
 
+import de.sanandrew.mods.turretmod.api.IRegistryType;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.nbt.NBTTagCompound;
@@ -9,9 +10,8 @@ import org.apache.commons.lang3.Range;
 import javax.annotation.Nullable;
 
 public interface IUpgrade
+        extends IRegistryType
 {
-    ResourceLocation getId();
-
     default IUpgrade getDependantOn() { return null; }
 
     /**
@@ -65,12 +65,4 @@ public interface IUpgrade
      * @param turretInst The turret which loads this upgrade
      */
     default void onRemove(ITurretInst turretInst) { }
-
-    /**
-     * Returns wether or not this upgrade is considered valid.
-     * @return <tt>true</tt>, if this upgrade is valid and usable, <tt>false</tt> otherwise.
-     */
-    default boolean isValid() {
-        return true;
-    }
 }

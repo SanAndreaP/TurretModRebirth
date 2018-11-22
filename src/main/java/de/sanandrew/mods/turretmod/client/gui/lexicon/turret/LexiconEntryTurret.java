@@ -30,7 +30,7 @@ final class LexiconEntryTurret
     private final IAmmunitionGroup[] ammoGroups;
 
     LexiconEntryTurret(ITurret turret) {
-        this.icon =  TurretRegistry.INSTANCE.getTurretItem(turret);
+        this.icon =  TurretRegistry.INSTANCE.getItem(turret.getId());
         this.turret = turret;
         this.id = turret.getId().toString();
         this.ammoGroups = AmmunitionRegistry.INSTANCE.getGroups(this.turret).toArray(new IAmmunitionGroup[0]);
@@ -72,7 +72,7 @@ final class LexiconEntryTurret
     @Override
     public String getSrcText() {
         if( Strings.isEmpty(this.ammos) ) {
-            this.ammos = String.join("|", Stream.of(this.ammoGroups).map(g -> ClientProxy.lexiconInstance.getGroup(LexiconGroupAmmo.NAME).getEntry(g.getName()).getSrcTitle())
+            this.ammos = String.join("|", Stream.of(this.ammoGroups).map(g -> ClientProxy.lexiconInstance.getGroup(LexiconGroupAmmo.NAME).getEntry(g.getId().toString()).getSrcTitle())
                                                                     .toArray(String[]::new));
         }
         return ClientProxy.lexiconInstance.getTranslatedText(this) + this.ammos;

@@ -148,7 +148,7 @@ public final class GuiTcuHelper
         registry.registerGui(GuiTcuRegistry.GUI_INFO, new ItemStack(Items.BOOK), GuiInfo::new, null);
         registry.registerGui(GuiTcuRegistry.GUI_TARGETS_MOB, new ItemStack(Items.SKULL, 1, 2), GuiTargetCreatures::new, IGuiTcuInst::hasPermision);
         registry.registerGui(GuiTcuRegistry.GUI_TARGETS_PLAYER, PlayerHeads::getRandomSkull, GuiTargetPlayers::new, IGuiTcuInst::hasPermision);
-        registry.registerGui(GuiTcuRegistry.GUI_TARGETS_SMART, UpgradeRegistry.INSTANCE.getUpgradeItem(Upgrades.SMART_TGT), GuiSmartTargets::new, GuiSmartTargets::showTab);
+        registry.registerGui(GuiTcuRegistry.GUI_TARGETS_SMART, UpgradeRegistry.INSTANCE.getItem(Upgrades.SMART_TGT.getId()), GuiSmartTargets::new, GuiSmartTargets::showTab);
         registry.registerGui(GuiTcuRegistry.GUI_UPGRADES, new ItemStack(ItemRegistry.TURRET_UPGRADES.get(UpgradeRegistry.INSTANCE.getEmptyUpgrade().getId())), GuiUpgrades::new, IGuiTcuInst::hasPermision);
     }
 

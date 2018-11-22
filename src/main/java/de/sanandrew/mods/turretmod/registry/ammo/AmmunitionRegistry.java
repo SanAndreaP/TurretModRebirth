@@ -32,13 +32,13 @@ public final class AmmunitionRegistry
     public static final AmmunitionRegistry INSTANCE = new AmmunitionRegistry();
 
     private final Map<ResourceLocation, IAmmunition> ammoTypes;
-    private final Map<ITurret, List<IAmmunition>> ammoTypesFromTurret;
+    private final Map<ITurret, UModList<IAmmunition>> ammoTypesFromTurret;
 
     private final Collection<IAmmunition> uAmmoTypes;
 
     /** used for the lexicon only! **/
-    private final Map<ITurret, Set<IAmmunitionGroup>> ammoGroupsFromTurret;
-    private final Map<ResourceLocation, List<IAmmunition>> ammoTypesFromGroup;
+    private final Map<ITurret, UModSet<IAmmunitionGroup>> ammoGroupsFromTurret;
+    private final Map<ResourceLocation, UModList<IAmmunition>> ammoTypesFromGroup;
     private final Map<ResourceLocation, IAmmunitionGroup> ammoGroups;
     private boolean finalizedForLexicon = false;
 
@@ -86,7 +86,7 @@ public final class AmmunitionRegistry
     @Override
     @Nonnull
     public Collection<IAmmunition> getTypes(ITurret turret) {
-        return new ArrayList<>(this.ammoTypesFromTurret.get(turret));
+        return this.ammoTypesFromTurret.get(turret).umList;
     }
 
     @Override
@@ -113,7 +113,7 @@ public final class AmmunitionRegistry
         }
 
         this.ammoTypes.put(type.getId(), type);
-        this.ammoTypesFromTurret.computeIfAbsent(group.getTurret(), (t) -> new ArrayList<>()).add(type);
+        this.ammoTypesFromTurret.computeIfAbsent(group.getTurret(), (t) -> new UModList<>()).mList.add(type);
 
         ItemRegistry.TURRET_AMMO.put(type.getId(), new ItemAmmo(type));
     }
@@ -121,7 +121,7 @@ public final class AmmunitionRegistry
     @Override
     @Nonnull
     public ItemStack getItem(ResourceLocation id) {
-        if( !this.ammoTypes.getOrDefault(id, NULL_TYPE).isValid() ) {
+        if( !this.getType(id).isValid() ) {
             throw new IllegalArgumentException("Cannot get turret ammo item with invalid type!");
         }
 
@@ -133,9 +133,9 @@ public final class AmmunitionRegistry
             this.finalizedForLexicon = true;
             this.uAmmoTypes.forEach(type -> {
                 IAmmunitionGroup g = type.getGroup();
-                this.ammoGroupsFromTurret.computeIfAbsent(g.getTurret(), t -> new HashSet<>()).add(g);
+                this.ammoGroupsFromTurret.computeIfAbsent(g.getTurret(), t -> new UModSet<>()).mSet.add(g);
                 this.ammoGroups.putIfAbsent(g.getId(), g);
-                this.ammoTypesFromGroup.computeIfAbsent(g.getId(), t -> new ArrayList<>()).add(type);
+                this.ammoTypesFromGroup.computeIfAbsent(g.getId(), t -> new UModList<>()).mList.add(type);
             });
         }
     }
@@ -143,18 +143,30 @@ public final class AmmunitionRegistry
     @Nonnull
     public Collection<IAmmunition> getTypes(IAmmunitionGroup group) {
         this.finalizeForLexicon();
-        return this.ammoTypesFromGroup.get(group.getId());
+        return this.ammoTypesFromGroup.get(group.getId()).umList;
     }
 
     @Nonnull
     public Collection<IAmmunitionGroup> getGroups(ITurret turret) {
         this.finalizeForLexicon();
-        return this.ammoGroupsFromTurret.get(turret);
+        return this.ammoGroupsFromTurret.get(turret).umSet;
     }
 
     @Nonnull
     public Collection<IAmmunitionGroup> getGroups() {
         this.finalizeForLexicon();
         return this.ammoGroups.values();
+    }
+
+    private static class UModList<T>
+    {
+        final ArrayList<T> mList = new ArrayList<>();
+        final Collection<T> umList = Collections.unmodifiableList(this.mList);
+    }
+
+    private static class UModSet<T>
+    {
+        final HashSet<T> mSet = new HashSet<>();
+        final Collection<T> umSet = Collections.unmodifiableSet(this.mSet);
     }
 }

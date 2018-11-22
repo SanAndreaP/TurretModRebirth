@@ -9,10 +9,7 @@
       "showTooltipText": true,
       "items": [
         {
-          "item": "sapturretmod:turret_upgrade",
-          "nbt": {
-            "upgradeId": "00000000-0000-0000-0000-000000000000"
-          }
+          "item": "sapturretmod:upgrade.empty"
         }
       ]
     },
@@ -26,10 +23,7 @@
     }
   ],
   "result": {
-    "item": "sapturretmod:turret_upgrade",
-    "count": 1,
-    "nbt": {
-      "upgradeId": "4ed4e813-e2d8-43e9-b499-9911e214c5e9"
-    }
+    "item": "sapturretmod:upgrade.reload.1",
+    "count": 1
   }
 }

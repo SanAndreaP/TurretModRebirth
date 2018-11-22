@@ -1,9 +1,6 @@
 {
   "name": "group1",
   "item": {
-    "item": "sapturretmod:turret_placer",
-    "nbt": {
-      "turretUUID": "50e1e69c-395c-486c-bb9d-41e82c8b22e2"
-    }
+    "item": "sapturretmod:turret.crossbow"
   }
 }

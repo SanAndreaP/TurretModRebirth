@@ -9,7 +9,6 @@
 package de.sanandrew.mods.turretmod.registry.turret;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
@@ -26,77 +25,73 @@ import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public final class TurretRegistry
         implements ITurretRegistry
 {
     public static final TurretRegistry INSTANCE = new TurretRegistry();
-    public static final ITurret NULL_TURRET = new EmptyTurret();
+    public static final ITurret NULL_TYPE = new EmptyTurret();
 
     private final Map<ResourceLocation, ITurret> turretFromRL;
     private final Map<Class<? extends ITurret>, ITurret> turretFromClass;
-    private final List<ITurret> turrets;
+
+    private final Collection<ITurret> turrets;
 
     private TurretRegistry() {
         this.turretFromRL = new HashMap<>();
         this.turretFromClass = new HashMap<>();
-        this.turrets = new ArrayList<>();
+
+        this.turrets = Collections.unmodifiableCollection(turretFromRL.values());
     }
 
     @Override
-    public List<ITurret> getTurrets() {
-        return new ArrayList<>(this.turrets);
+    public Collection<ITurret> getTypes() {
+        return this.turrets;
     }
 
     @Override
-    public ITurret getTurret(ResourceLocation location) {
-        return MiscUtils.defIfNull(this.turretFromRL.get(location), NULL_TURRET);
+    public ITurret getType(ResourceLocation location) {
+        return this.turretFromRL.getOrDefault(location, NULL_TYPE);
     }
 
     @Override
-    public ITurret getTurret(Class<? extends ITurret> clazz) {
-        return MiscUtils.defIfNull(this.turretFromClass.get(clazz), NULL_TURRET);
+    public ITurret getType(Class<? extends ITurret> clazz) {
+        return this.turretFromClass.getOrDefault(clazz, NULL_TYPE);
     }
 
     @Override
-    public boolean registerTurret(ITurret type) {
+    public void register(ITurret type) {
         if( type == null ) {
             TmrConstants.LOG.log(Level.ERROR, "Cannot register NULL as turret!", new InvalidParameterException());
-            return false;
+            return;
         }
 
         if( this.turretFromRL.containsKey(type.getId()) ) {
             TmrConstants.LOG.log(Level.ERROR, String.format("The turret %s is already registered!", type.getId()), new InvalidParameterException());
-            return false;
+            return;
         }
 
         this.turretFromRL.put(type.getId(), type);
         this.turretFromClass.put(type.getClass(), type);
-        this.turrets.add(type);
 
         ItemRegistry.TURRET_PLACERS.put(type.getId(), new ItemTurret(type));
-
-        return true;
     }
 
     @Override
     @Nonnull
-    public ItemStack getTurretItem(ITurret type) {
-        if( type == null ) {
-            throw new IllegalArgumentException("Cannot get turret_placer item with NULL type!");
+    public ItemStack getItem(ResourceLocation id) {
+        if( !this.getType(id).isValid() ) {
+            throw new IllegalArgumentException("Cannot get turret item with invalid type!");
         }
 
-        return new ItemStack(ItemRegistry.TURRET_PLACERS.get(type.getId()), 1);
+        return new ItemStack(ItemRegistry.TURRET_PLACERS.get(id), 1);
     }
 
     @Override
     @Nonnull
-    public ItemStack getTurretItem(ITurretInst turretInst) {
-        ItemStack stack = this.getTurretItem(turretInst.getTurret());
+    public ItemStack getItem(ITurretInst turretInst) {
+        ItemStack stack = this.getItem(turretInst.getTurret().getId());
         NBTTagCompound nbt = stack.getOrCreateSubCompound("TurretStats");
         EntityLiving turretL = turretInst.get();
         nbt.setFloat("TurretHealth", turretL.getHealth());
@@ -108,12 +103,12 @@ public final class TurretRegistry
     }
 
     @Override
-    public ITurret getTurret(@Nonnull ItemStack stack) {
+    public ITurret getType(@Nonnull ItemStack stack) {
         if( ItemStackUtils.isValid(stack) && stack.getItem() instanceof ItemTurret ) {
             return ((ItemTurret) stack.getItem()).turret;
         }
 
-        return TurretRegistry.NULL_TURRET;
+        return TurretRegistry.NULL_TYPE;
     }
 
     private static class EmptyTurret
@@ -122,21 +117,14 @@ public final class TurretRegistry
         private static final AxisAlignedBB BB = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 
         @Nonnull @Override public ResourceLocation getId() { return new ResourceLocation("null"); }
-
         @Override public ResourceLocation getStandardTexture(ITurretInst turretInst) { return null; }
-
         @Override public ResourceLocation getGlowTexture(ITurretInst turretInst) { return null; }
-
         @Override public SoundEvent getShootSound(ITurretInst turretInst) { return null; }
-
         @Override public AxisAlignedBB getRangeBB(ITurretInst turretInst) { return BB; }
-
         @Override public int getTier() { return 0; }
-
         @Override public float getHealth() { return 0; }
-
         @Override public int getAmmoCapacity() { return 0; }
-
         @Override public int getReloadTicks() { return 0; }
+        @Override public boolean isValid() { return false; }
     }
 }

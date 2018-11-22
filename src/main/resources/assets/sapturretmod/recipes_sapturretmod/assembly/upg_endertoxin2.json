@@ -9,10 +9,7 @@
       "showTooltipText": true,
       "items": [
         {
-          "item": "sapturretmod:turret_upgrade",
-          "nbt": {
-            "upgradeId": "00000000-0000-0000-0000-000000000000"
-          }
+          "item": "sapturretmod:upgrade.empty"
         }
       ]
     },
@@ -26,10 +23,7 @@
     }
   ],
   "result": {
-    "item": "sapturretmod:turret_upgrade",
-    "count": 1,
-    "nbt": {
-      "upgradeId": "6a68c909-d73d-49a7-af71-5366bcefbb37"
-    }
+    "item": "sapturretmod:upgrade.endertoxin.2",
+    "count": 1
   }
 }

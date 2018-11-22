@@ -8,10 +8,7 @@
       "count": 2,
       "items": [
         {
-          "item": "sapturretmod:turret_ammo",
-          "nbt": {
-            "ammoType": "0b567594-e5ca-48b5-a538-e87c213f439c"
-          }
+          "item": "sapturretmod:ammo.cryocell.1"
         }
       ]
     },
@@ -25,10 +22,7 @@
     }
   ],
   "result": {
-    "item": "sapturretmod:turret_ammo",
-    "count": 1,
-    "nbt": {
-      "ammoType": "cb5be826-0480-4d30-af1f-23be19329b37"
-    }
+    "item": "sapturretmod:ammo.cryocell.2",
+    "count": 1
   }
 }

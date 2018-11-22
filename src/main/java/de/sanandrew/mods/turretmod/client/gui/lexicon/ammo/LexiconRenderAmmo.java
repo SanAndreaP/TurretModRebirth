@@ -100,7 +100,7 @@ public class LexiconRenderAmmo
             this.ammoChanged = false;
 
             this.ammoButtons.forEach(btn -> btn.inactive = (btn.ammo != this.currAmmo));
-            this.currAmmoItem = AmmunitionRegistry.INSTANCE.getAmmoItem(this.currAmmo);
+            this.currAmmoItem = AmmunitionRegistry.INSTANCE.getItem(this.currAmmo.getId());
             this.recipe = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(this.currAmmoItem);
         }
     }

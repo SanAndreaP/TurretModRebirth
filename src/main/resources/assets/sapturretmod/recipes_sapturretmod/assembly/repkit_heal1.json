@@ -26,10 +26,7 @@
     }
   ],
   "result": {
-    "item": "sapturretmod:repair_kit",
-    "count": 3,
-    "nbt": {
-      "repKitType": "89db7dd5-2ded-4e58-96dd-07e47bffa919"
-    }
+    "item": "sapturretmod:repkit.standard.1",
+    "count": 3
   }
 }

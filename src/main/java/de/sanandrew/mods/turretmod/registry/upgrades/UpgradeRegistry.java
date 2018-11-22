@@ -8,8 +8,6 @@
  */
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
@@ -25,22 +23,21 @@ import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public final class UpgradeRegistry
         implements IUpgradeRegistry
 {
     public static final UpgradeRegistry INSTANCE = new UpgradeRegistry();
     public static final IUpgrade EMPTY_UPGRADE = new UpgradeRegistry.EmptyUpgrade();
-    private static final IUpgrade NULL_UPGRADE;
+    private static final IUpgrade NULL_TYPE;
 
-    private BiMap<ResourceLocation, IUpgrade> upgrades;
+    private Map<ResourceLocation, IUpgrade> upgradeFromRL;
+    private Collection<IUpgrade> upgrades;
 
     static {
         INSTANCE.register(EMPTY_UPGRADE);
-        NULL_UPGRADE = new SimpleUpgrade("null") {
+        NULL_TYPE = new SimpleUpgrade("null") {
             @Override
             public boolean isValid() {
                 return false;
@@ -49,50 +46,44 @@ public final class UpgradeRegistry
     }
 
     private UpgradeRegistry() {
-        this.upgrades = HashBiMap.create();
+        this.upgradeFromRL = new HashMap<>();
+        this.upgrades = Collections.unmodifiableCollection(this.upgradeFromRL.values());
     }
 
     @Override
     public void register(IUpgrade upgrade) {
-        this.upgrades.put(upgrade.getId(), upgrade);
+        this.upgradeFromRL.put(upgrade.getId(), upgrade);
 
         ItemRegistry.TURRET_UPGRADES.put(upgrade.getId(), new ItemUpgrade(upgrade));
     }
 
     @Override
-    public void registerAll(IUpgrade... upgrade) {
-        Arrays.stream(upgrade).forEach(this::register);
+    public IUpgrade getType(ResourceLocation id) {
+        return this.upgradeFromRL.getOrDefault(id, NULL_TYPE);
     }
 
     @Override
-    public IUpgrade getUpgrade(ResourceLocation id) {
-        return this.upgrades.getOrDefault(id, NULL_UPGRADE);
-    }
-
-    @Override
-    public IUpgrade getUpgrade(@Nonnull ItemStack stack) {
+    public IUpgrade getType(@Nonnull ItemStack stack) {
         if( !ItemStackUtils.isValid(stack) || !(stack.getItem() instanceof ItemUpgrade) ) {
-            return NULL_UPGRADE;
+            return NULL_TYPE;
         }
 
         return ((ItemUpgrade) stack.getItem()).upgrade;
     }
 
     @Override
-    public List<IUpgrade> getUpgrades() {
-        return new ArrayList<>(this.upgrades.values());
+    public Collection<IUpgrade> getTypes() {
+        return this.upgrades;
     }
 
     @Override
     @Nonnull
-    public ItemStack getUpgradeItem(ResourceLocation id) {
-        return new ItemStack(ItemRegistry.TURRET_UPGRADES.getOrDefault(id, ItemRegistry.TURRET_UPGRADES.get(EMPTY_UPGRADE.getId())));
-    }
+    public ItemStack getItem(ResourceLocation id) {
+        if( !this.getType(id).isValid() ) {
+            throw new IllegalArgumentException("Cannot get upgrade item with invalid type!");
+        }
 
-    @Override
-    @Nonnull
-    public ItemStack getUpgradeItem(IUpgrade upgrade) {
-        return getUpgradeItem(upgrade.getId());
+        return new ItemStack(ItemRegistry.TURRET_UPGRADES.get(id), 1);
     }
 
     @Override

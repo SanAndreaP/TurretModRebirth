@@ -32,10 +32,9 @@ public class ItemAmmoCartridge
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
         if( this.isInCreativeTab(tab) ) {
-            list.addAll(AmmunitionRegistry.INSTANCE.getTypes().stream().map(AmmunitionRegistry.INSTANCE::getAmmoItem).collect(Collectors.toList()));
+            list.addAll(AmmunitionRegistry.INSTANCE.getTypes().stream().map(a -> AmmunitionRegistry.INSTANCE.getItem(a.getId())).collect(Collectors.toList()));
         }
     }
 }

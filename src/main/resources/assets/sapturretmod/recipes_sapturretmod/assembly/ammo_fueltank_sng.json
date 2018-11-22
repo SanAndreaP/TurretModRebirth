@@ -31,10 +31,7 @@
     }
   ],
   "result": {
-    "item": "sapturretmod:turret_ammo",
-    "count": 1,
-    "nbt": {
-      "ammoType": "0ca51fa8-fd33-4c3d-a9ab-ba29dfff4aba"
-    }
+    "item": "sapturretmod:ammo.fueltank",
+    "count": 1
   }
 }

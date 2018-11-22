@@ -40,12 +40,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public final class TargetProcessor
         implements ITargetProcessor
@@ -92,8 +87,8 @@ public final class TargetProcessor
             int maxCapacity = this.getMaxAmmoCapacity() - this.ammoCount;
             if( maxCapacity > 0 ) {
                 if( !this.hasAmmo() ) {
-                    this.ammoStack = AmmunitionRegistry.INSTANCE.getAmmoItem(type);
-                } else if( !AmmunitionRegistry.INSTANCE.areAmmoItemsEqual(stack, this.ammoStack) ) {
+                    this.ammoStack = AmmunitionRegistry.INSTANCE.getItem(type.getId());
+                } else if( !AmmunitionRegistry.INSTANCE.isEqual(stack, this.ammoStack) ) {
                     return false;
                 }
 
@@ -243,7 +238,7 @@ public final class TargetProcessor
                 if( AmmunitionRegistry.INSTANCE.getType(this.ammoStack).getId().equals(stackType.getId()) ) {
                     return this.ammoCount < this.getMaxAmmoCapacity();
                 } else {
-                    List<IAmmunition> types = AmmunitionRegistry.INSTANCE.getTypes(this.turret.getTurret());
+                    Collection<IAmmunition> types = AmmunitionRegistry.INSTANCE.getTypes(this.turret.getTurret());
                     return types.contains(stackType);
                 }
             }

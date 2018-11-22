@@ -50,10 +50,7 @@
     }
   ],
   "result": {
-    "item": "sapturretmod:turret_ammo",
-    "count": 2,
-    "nbt": {
-      "ammoType": "3851173d-3ac3-4f17-a488-68c33716af26"
-    }
+    "item": "sapturretmod:ammo.minigunshell",
+    "count": 2
   }
 }

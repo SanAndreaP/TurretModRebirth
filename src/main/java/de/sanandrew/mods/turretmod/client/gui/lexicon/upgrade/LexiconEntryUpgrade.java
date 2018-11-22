@@ -22,7 +22,7 @@ final class LexiconEntryUpgrade
     final IUpgrade upgrade;
 
     LexiconEntryUpgrade(IUpgrade upgrade) {
-        this.item =  UpgradeRegistry.INSTANCE.getUpgradeItem(upgrade);
+        this.item =  UpgradeRegistry.INSTANCE.getItem(upgrade.getId());
         this.upgrade = upgrade;
         this.id = upgrade.getId().toString();
     }

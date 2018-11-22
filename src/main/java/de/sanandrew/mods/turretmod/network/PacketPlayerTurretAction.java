@@ -85,7 +85,7 @@ public class PacketPlayerTurretAction
 
                     if( te instanceof TileEntityChest ) {
                         TileEntityChest chest = (TileEntityChest) te;
-                        chest.setInventorySlotContents(0, TurretRegistry.INSTANCE.getTurretItem(turretInst));
+                        chest.setInventorySlotContents(0, TurretRegistry.INSTANCE.getItem(turretInst));
                         ((TargetProcessor) turretInst.getTargetProcessor()).putAmmoInInventory(chest);
 
                         chestStack.shrink(1);

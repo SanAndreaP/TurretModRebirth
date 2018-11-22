@@ -22,13 +22,13 @@ public final class Turrets
     public static final ITurret FLAMETHROWER = new TurretFlamethrower();
 
     public static void initialize(ITurretRegistry registry) {
-        registry.registerTurret(CROSSBOW);
-        registry.registerTurret(SHOTGUN);
-        registry.registerTurret(CRYOLATOR);
-        registry.registerTurret(REVOLVER);
-        registry.registerTurret(MINIGUN);
-        registry.registerTurret(FORCEFIELD);
-        registry.registerTurret(LASER);
-        registry.registerTurret(FLAMETHROWER);
+        registry.register(CROSSBOW);
+        registry.register(SHOTGUN);
+        registry.register(CRYOLATOR);
+        registry.register(REVOLVER);
+        registry.register(MINIGUN);
+        registry.register(FORCEFIELD);
+        registry.register(LASER);
+        registry.register(FLAMETHROWER);
     }
 }

@@ -14,10 +14,7 @@
     }
   ],
   "result": {
-    "item": "sapturretmod:turret_ammo",
-    "count": 4,
-    "nbt": {
-      "ammoType": "7b497e61-4e8d-4e49-ac71-414751e399e8"
-    }
+    "item": "sapturretmod:ammo.arrow",
+    "count": 4
   }
 }

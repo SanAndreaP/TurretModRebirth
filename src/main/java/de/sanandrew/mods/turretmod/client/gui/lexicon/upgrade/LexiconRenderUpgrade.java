@@ -55,7 +55,7 @@ class LexiconRenderUpgrade
     public void initPage(ILexiconEntry entry, ILexiconGuiHelper helper, List<GuiButton> deprecated1, List<GuiButton> deprecated2) {
         if( entry instanceof LexiconEntryUpgrade ) {
             IUpgrade upgrade = ((LexiconEntryUpgrade) entry).upgrade;
-            this.upgradeStack = UpgradeRegistry.INSTANCE.getUpgradeItem(upgrade);
+            this.upgradeStack = UpgradeRegistry.INSTANCE.getItem(upgrade.getId());
             this.recipe = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(this.upgradeStack);
             this.turretButtons = new ArrayList<>();
 

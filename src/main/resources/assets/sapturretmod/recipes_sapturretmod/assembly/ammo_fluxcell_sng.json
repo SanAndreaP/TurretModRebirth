@@ -33,10 +33,7 @@
     }
   ],
   "result": {
-    "item": "sapturretmod:turret_ammo",
-    "count": 1,
-    "nbt": {
-      "ammoType": "48800c6a-9a31-4f45-8ad5-dd02b8b18bcb"
-    }
+    "item": "sapturretmod:ammo.fluxcell",
+    "count": 1
   }
 }

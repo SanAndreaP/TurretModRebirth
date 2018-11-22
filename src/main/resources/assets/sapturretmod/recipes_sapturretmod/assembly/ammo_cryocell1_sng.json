@@ -53,10 +53,7 @@
     }
   ],
   "result": {
-    "item": "sapturretmod:turret_ammo",
-    "count": 4,
-    "nbt": {
-      "ammoType": "0b567594-e5ca-48b5-a538-e87c213f439c"
-    }
+    "item": "sapturretmod:ammo.cryocell.1",
+    "count": 4
   }
 }

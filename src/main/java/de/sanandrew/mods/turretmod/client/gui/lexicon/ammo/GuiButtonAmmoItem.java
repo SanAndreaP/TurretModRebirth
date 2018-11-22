@@ -29,10 +29,10 @@ class GuiButtonAmmoItem
     private final ItemStack stack;
     boolean inactive;
 
-    public GuiButtonAmmoItem(IAmmunition ammo, int id, int x, int y) {
+    GuiButtonAmmoItem(IAmmunition ammo, int id, int x, int y) {
         super(id, x, y, 16, 16, "");
         this.ammo = ammo;
-        this.stack = AmmunitionRegistry.INSTANCE.getAmmoItem(ammo);
+        this.stack = AmmunitionRegistry.INSTANCE.getItem(ammo.getId());
         this.inactive = true;
     }
 

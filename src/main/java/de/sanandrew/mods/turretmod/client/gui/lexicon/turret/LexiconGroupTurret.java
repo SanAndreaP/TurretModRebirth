@@ -27,6 +27,6 @@ public final class LexiconGroupTurret
         ILexiconGroup grp = new LexiconGroupTurret();
         registry.registerGroup(grp);
 
-        TurretRegistry.INSTANCE.getTurrets().forEach(t -> grp.addEntry(new LexiconEntryTurret(t)));
+        TurretRegistry.INSTANCE.getTypes().forEach(t -> grp.addEntry(new LexiconEntryTurret(t)));
     }
 }

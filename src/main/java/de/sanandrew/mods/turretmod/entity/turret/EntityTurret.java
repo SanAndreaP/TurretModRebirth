@@ -96,7 +96,7 @@ public class EntityTurret
         this.targetProc = new TargetProcessor(this);
         this.upgProc = new UpgradeProcessor(this);
         this.rotationYaw = 0.0F;
-        this.delegate = TurretRegistry.NULL_TURRET;
+        this.delegate = TurretRegistry.NULL_TYPE;
     }
 
     /** called when turret is rendered in a GUI or its placed down by {@link EntityTurret#EntityTurret(World, EntityPlayer, ITurret)} **/
@@ -408,7 +408,7 @@ public class EntityTurret
 
     @Override
     public void readSpawnData(ByteBuf buffer) {
-        this.delegate = TurretRegistry.INSTANCE.getTurret(new ResourceLocation(ByteBufUtils.readUTF8String(buffer)));
+        this.delegate = TurretRegistry.INSTANCE.getType(new ResourceLocation(ByteBufUtils.readUTF8String(buffer)));
 
         this.targetProc.readFromNbt(ByteBufUtils.readTag(buffer));
         this.upgProc.readFromNbt(ByteBufUtils.readTag(buffer));
@@ -464,7 +464,7 @@ public class EntityTurret
     }
 
     private void loadDelegate(ResourceLocation id) {
-        this.loadDelegate(TurretRegistry.INSTANCE.getTurret(id));
+        this.loadDelegate(TurretRegistry.INSTANCE.getType(id));
     }
 
     private void loadDelegate(ITurret turret) {
@@ -606,7 +606,7 @@ public class EntityTurret
     @Override
     @Nonnull
     public ItemStack getPickedResult(RayTraceResult target) {
-        return TurretRegistry.INSTANCE.getTurretItem(this.delegate);
+        return TurretRegistry.INSTANCE.getItem(this.delegate.getId());
     }
 
     @Override

@@ -28,19 +28,13 @@
       "count": 1,
       "items": [
         {
-          "item": "sapturretmod:repair_kit",
-          "nbt": {
-            "repKitType": "89db7dd5-2ded-4e58-96dd-07e47bffa919"
-          }
+          "item": "sapturretmod:repkit.standard.1"
         }
       ]
     }
   ],
   "result": {
-    "item": "sapturretmod:repair_kit",
-    "count": 1,
-    "nbt": {
-      "repKitType": "36477c40-3eb3-4997-a2ec-3a9a37be86d5"
-    }
+    "item": "sapturretmod:repkit.standard.2",
+    "count": 1
   }
 }

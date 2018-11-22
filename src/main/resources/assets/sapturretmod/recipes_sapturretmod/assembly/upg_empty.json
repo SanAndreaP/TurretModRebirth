@@ -42,10 +42,7 @@
     }
   ],
   "result": {
-    "item": "sapturretmod:turret_upgrade",
-    "count": 3,
-    "nbt": {
-      "upgradeId": "00000000-0000-0000-0000-000000000000"
-    }
+    "item": "sapturretmod:upgrade.empty",
+    "count": 3
   }
 }

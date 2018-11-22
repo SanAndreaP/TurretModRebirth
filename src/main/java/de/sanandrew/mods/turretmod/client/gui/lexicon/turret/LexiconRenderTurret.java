@@ -67,7 +67,7 @@ class LexiconRenderTurret
         if( entry instanceof LexiconEntryTurret ) {
             this.bouncy = new XorShiftRandom().randomInt(1000) == 0;
             this.turret = ((LexiconEntryTurret) entry).turret;
-            this.recipe = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(TurretRegistry.INSTANCE.getTurretItem(this.turret));
+            this.recipe = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(TurretRegistry.INSTANCE.getItem(this.turret.getId()));
             if( this.turretCache != null ) {
                 this.turretCache.clear();
             }
@@ -75,7 +75,7 @@ class LexiconRenderTurret
             this.ammoGroupButtons = new ArrayList<>();
             List<GuiButton> entryButtons = helper.getEntryButtonList();
             AmmunitionRegistry.INSTANCE.getGroups(this.turret).forEach(g -> {
-                IGuiButtonEntry entryBtn = helper.getNewEntryButton(entryButtons.size(), 4, 0, ClientProxy.lexiconInstance.getGroup(LexiconGroupAmmo.NAME).getEntry(g.getName()),
+                IGuiButtonEntry entryBtn = helper.getNewEntryButton(entryButtons.size(), 4, 0, ClientProxy.lexiconInstance.getGroup(LexiconGroupAmmo.NAME).getEntry(g.getId().toString()),
                                                                     helper.getFontRenderer());
                 this.ammoGroupButtons.add(entryBtn);
                 entryButtons.add(entryBtn.get());
