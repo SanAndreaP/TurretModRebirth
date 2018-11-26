@@ -48,6 +48,7 @@ public enum Resources
     GUI_TCU_UPGRADES("textures/gui/tcu/page_upgrades.png"),
     GUI_TCU_INFO("textures/gui/tcu/page_info.png"),
     GUI_TCU_SMARTTGT("textures/gui/tcu/page_smart.png"),
+    GUI_TCU_COLORIZER("textures/gui/tcu/page_colorizer.png"),
     GUI_TCU_CAM_NA("textures/gui/tcu/cam_unavailable.png"),
 //    GUI_TCU_HUD("textures/gui/tcu/hud.png"),
     GUI_ASSEMBLY_CRF("textures/gui/turretassembly/manual.png"),
