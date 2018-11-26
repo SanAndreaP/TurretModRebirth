@@ -56,7 +56,7 @@ public class UpgradeShieldColorizer
         recalcColor(turretInst);
     }
 
-    private static void recalcColor(ITurretInst turretInst) {
+    static void recalcColor(ITurretInst turretInst) {
         ShieldTurret shield = turretInst.getRAM(null);
         if( shield != null ) {
             shield.recalcBaseColor();

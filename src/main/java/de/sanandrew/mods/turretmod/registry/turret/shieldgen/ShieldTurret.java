@@ -17,13 +17,13 @@ import net.minecraft.util.math.MathHelper;
 public final class ShieldTurret
         implements ITurretRAM, IForcefieldProvider
 {
-    static final ColorObj CRIT_COLOR = new ColorObj(0x40FF0000);
+    static final ColorObj CRIT_COLOR = new ColorObj(0xFFFF0000);
     private static final float[] CRIT_CLR_HSL = CRIT_COLOR.calcHSL();
 
     float value;
     float recovery;
     final ITurretInst turretInst;
-    private ColorObj baseColor = new ColorObj(0x40FFFFFF);
+    private ColorObj baseColor = new ColorObj(0xFFFFFFFF);
     private float[] baseColorHsl = this.baseColor.calcHSL();
     private float[] hslDiff = getHslDiff();
 
@@ -36,9 +36,9 @@ public final class ShieldTurret
     public void recalcBaseColor() {
         ShieldColorizer colorizer = this.turretInst.getUpgradeProcessor().getUpgradeInstance(Upgrades.SHIELD_COLORIZER.getId());
         if( colorizer != null ) {
-            this.baseColor = new ColorObj(colorizer.color);
+            this.baseColor = new ColorObj(colorizer.getColor());
         } else {
-            this.baseColor = new ColorObj(0x40FFFFFF);
+            this.baseColor = new ColorObj(0xFFFFFFFF);
         }
 
         this.baseColorHsl = this.baseColor.calcHSL();

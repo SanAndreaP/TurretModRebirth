@@ -21,6 +21,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.entity.Entity;
@@ -65,9 +67,9 @@ public class RenderForcefieldHandler
         }
 
         final float partialTicks = event.getPartialTicks();
-        double renderX = renderEntity.lastTickPosX + (renderEntity.posX - renderEntity.lastTickPosX) * partialTicks;
-        double renderY = renderEntity.lastTickPosY + (renderEntity.posY - renderEntity.lastTickPosY) * partialTicks;
-        double renderZ = renderEntity.lastTickPosZ + (renderEntity.posZ - renderEntity.lastTickPosZ) * partialTicks;
+        double renderX = getPartialPos(renderEntity.lastTickPosX, renderEntity.posX, partialTicks);
+        double renderY = getPartialPos(renderEntity.lastTickPosY, renderEntity.posY, partialTicks);
+        double renderZ = getPartialPos(renderEntity.lastTickPosZ, renderEntity.posZ, partialTicks);
 
         List<ForcefieldCube> cubes = new ArrayList<>();
 
@@ -89,9 +91,9 @@ public class RenderForcefieldHandler
 
                 ColorObj color = new ColorObj(ffProvider.getShieldColor());
 
-                double entityX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
-                double entityY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;
-                double entityZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks;
+                double entityX = getPartialPos(entity.lastTickPosX, entity.posX, partialTicks);
+                double entityY = getPartialPos(entity.lastTickPosY, entity.posY, partialTicks);
+                double entityZ = getPartialPos(entity.lastTickPosZ, entity.posZ, partialTicks);
 
                 ForcefieldCube cube = new ForcefieldCube(new Vec3d(entityX - renderX, entityY - renderY, entityZ - renderZ), ffProvider.getShieldBoundingBox(), color);
                 cube.fullRendered = ffProvider.renderFull();
@@ -151,29 +153,29 @@ public class RenderForcefieldHandler
             GlStateManager.translate(texTranslateX, texTranslateY, 0.0F);
             GlStateManager.matrixMode(GL11.GL_MODELVIEW);
 
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-
             for( ForcefieldCube cube : cubes ) {
                 tess.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-
-                cube.draw(tess);
-
-                GL14.glBlendColor(1.0f, 1.0f, 1.0f, cube.boxColor.fAlpha() * 0.5F);
                 GlStateManager.depthMask(false);
+                GlStateManager.disableAlpha();
+                GlStateManager.enableBlend();
+                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
                 GlStateManager.disableCull();
+                cube.draw(tess);
                 tess.draw();
                 GlStateManager.enableCull();
+                GlStateManager.disableBlend();
+                GlStateManager.enableAlpha();
                 GlStateManager.depthMask(true);
-                GL14.glBlendColor(1.0F, 1.0F, 1.0F, 1.0F);
             }
-
-            GlStateManager.disableBlend();
 
             GlStateManager.matrixMode(GL11.GL_TEXTURE);
             GL11.glLoadIdentity();
             GlStateManager.matrixMode(GL11.GL_MODELVIEW);
         }
+    }
+
+    private static double getPartialPos(double prev, double curr, double partialTicks) {
+        return prev + (curr - prev) * partialTicks;
     }
 
     @SuppressWarnings("unused")

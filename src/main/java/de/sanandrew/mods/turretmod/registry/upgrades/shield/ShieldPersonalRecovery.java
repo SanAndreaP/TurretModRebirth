@@ -14,7 +14,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 public final class ShieldPersonalRecovery
         implements IForcefieldProvider
 {
-    private static final ColorObj CRIT_COLOR = new ColorObj(0x40FF0000);
+    private static final ColorObj CRIT_COLOR = new ColorObj(0xFFFF0000);
     private static final float[] CRIT_CLR_HSL = CRIT_COLOR.calcHSL();
     private static final float[] HSL_DIF = new float[] {
             TmrUtils.wrap360(ShieldPersonal.BASE_CLR_HSL[0] - CRIT_CLR_HSL[0]),

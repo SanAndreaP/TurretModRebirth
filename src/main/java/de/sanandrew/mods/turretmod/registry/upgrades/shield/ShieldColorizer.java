@@ -1,5 +1,6 @@
 package de.sanandrew.mods.turretmod.registry.upgrades.shield;
 
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeInstance;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -7,10 +8,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+@IUpgradeInstance.Tickable
 public class ShieldColorizer
         implements IUpgradeInstance<ShieldColorizer>
 {
-    public int color = 0x40FFFFFF;
+    private int color = 0xFFFFFFFF;
+    private boolean colorChanged = false;
 
     ShieldColorizer() { }
 
@@ -20,7 +23,7 @@ public class ShieldColorizer
 
     @Override
     public void fromBytes(ObjectInputStream stream) throws IOException {
-        this.color = stream.readInt();
+        this.setColor(stream.readInt());
     }
 
     @Override
@@ -29,10 +32,27 @@ public class ShieldColorizer
     }
 
     private void loadFromNbt(NBTTagCompound nbt) {
-        this.color = nbt.getInteger("Color");
+        this.setColor(nbt.getInteger("Color"));
     }
 
     void writeToNbt(NBTTagCompound nbt) {
         nbt.setInteger("Color", this.color);
+    }
+
+    @Override
+    public void onTick(ITurretInst turretInst) {
+        if( this.colorChanged ) {
+            this.colorChanged = false;
+            UpgradeShieldColorizer.recalcColor(turretInst);
+        }
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+        this.colorChanged = true;
+    }
+
+    public int getColor() {
+        return this.color;
     }
 }

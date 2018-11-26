@@ -12,6 +12,9 @@ import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
@@ -57,7 +60,7 @@ public class ForcefieldCube
                 float red = facePart.color.fRed();
                 float green = facePart.color.fGreen();
                 float blue = facePart.color.fBlue();
-                float alpha = 1.0F;
+                float alpha = facePart.color.fAlpha();
                 if( facePart.facing == EnumFacing.NORTH ) {
                     double maxU = (facePart.endPt.z - facePart.beginPt.z) / 8.0D;
                     double maxV = (facePart.beginPt.y - facePart.endPt.y) / 8.0D;

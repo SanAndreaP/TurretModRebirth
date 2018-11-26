@@ -45,10 +45,11 @@ public final class GuiTcuRegistry
         implements de.sanandrew.mods.turretmod.api.turret.IGuiTcuRegistry
 {
     public static final ResourceLocation GUI_INFO = new ResourceLocation(TmrConstants.ID, "info");
-    public static final ResourceLocation GUI_TARGETS_MOB = new ResourceLocation(TmrConstants.ID, "targets_creature");
-    public static final ResourceLocation GUI_TARGETS_PLAYER = new ResourceLocation(TmrConstants.ID, "targets_player");
-    public static final ResourceLocation GUI_TARGETS_SMART = new ResourceLocation(TmrConstants.ID, "targets_smart");
+    public static final ResourceLocation GUI_TARGETS_MOB = new ResourceLocation(TmrConstants.ID, "targets.creature");
+    public static final ResourceLocation GUI_TARGETS_PLAYER = new ResourceLocation(TmrConstants.ID, "targets.player");
+    public static final ResourceLocation GUI_TARGETS_SMART = new ResourceLocation(TmrConstants.ID, "targets.smart");
     public static final ResourceLocation GUI_UPGRADES = new ResourceLocation(TmrConstants.ID, "upgrades");
+    public static final ResourceLocation GUI_COLORIZER = new ResourceLocation(TmrConstants.ID, "colorizer");
 
     public static final List<ResourceLocation> GUI_RESOURCES = new ArrayList<>();
     public static final GuiTcuRegistry INSTANCE = new GuiTcuRegistry();
@@ -138,6 +139,7 @@ public final class GuiTcuRegistry
         registry.registerGuiEntry(GUI_TARGETS_PLAYER, 2, null);
         registry.registerGuiEntry(GUI_TARGETS_SMART, 3, null);
         registry.registerGuiEntry(GUI_UPGRADES, 4, (player, turretInst) -> new ContainerTurretUpgrades(player.inventory, (UpgradeProcessor) turretInst.getUpgradeProcessor()));
+        registry.registerGuiEntry(GUI_COLORIZER, 5, null);
     }
 
     @SubscribeEvent

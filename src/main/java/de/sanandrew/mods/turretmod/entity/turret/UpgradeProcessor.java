@@ -129,7 +129,7 @@ public final class UpgradeProcessor
     @Override
     public void setUpgradeInstance(ResourceLocation id, IUpgradeInstance inst) {
         this.upgInstances.put(id, inst);
-        if( inst.getClass().getAnnotation(IUpgradeInstance.UpgInstTickable.class) != null ) {
+        if( inst.getClass().getAnnotation(IUpgradeInstance.Tickable.class) != null ) {
             this.upgTickable.put(id, inst);
         }
     }

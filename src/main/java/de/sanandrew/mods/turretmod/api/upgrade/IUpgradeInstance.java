@@ -20,7 +20,7 @@ public interface IUpgradeInstance<T extends IUpgradeInstance<T>>
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
-    @interface UpgInstTickable
+    @interface Tickable
     {
 
     }

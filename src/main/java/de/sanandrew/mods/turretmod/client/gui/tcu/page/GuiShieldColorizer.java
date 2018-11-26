@@ -7,6 +7,7 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu.page;
 
 import com.google.common.base.Strings;
+import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
@@ -31,6 +32,7 @@ public class GuiShieldColorizer
 //    private static final int MAX_LUMEN =
 
     private GuiTextField rgbColor;
+    private ColorObj currColor;
 
     private int[] hueLumenPos;
     private int saturation;
@@ -39,17 +41,19 @@ public class GuiShieldColorizer
     public void initGui(IGuiTcuInst<?> gui) {
         ShieldColorizer settings = getSettings(gui);
         if( settings != null ) {
-            ResourceLocation texture = Resources.GUI_TCU_COLORIZER.resource;
-            this.rgbColor = new GuiTextField(0, gui.getFontRenderer(), gui.getPosX() + 110, gui.getPosY() + 157, 25, 10);
-            this.rgbColor.setMaxStringLength(3);
+//            ResourceLocation texture = Resources.GUI_TCU_COLORIZER.resource;
+            this.rgbColor = new GuiTextField(0, gui.getFontRenderer(), gui.getPosX() + 110, gui.getPosY() + 157, 60, 10);
+            this.rgbColor.setMaxStringLength(9);
             this.rgbColor.setValidator(s -> {
                 if( Strings.isNullOrEmpty(s) ) {
                     return true;
                 }
-                Integer val = getInteger(s, -1);
-                return val >= 0 && val <= 256;
+                Integer val = getInteger(s, null);
+                return val != null;
             });
-            this.rgbColor.setText(String.format("%08X", settings.color));
+            this.rgbColor.setText(String.format("%08X", settings.getColor()));
+
+            this.currColor = new ColorObj(settings.getColor());
         }
     }
 
@@ -83,7 +87,7 @@ public class GuiShieldColorizer
 
     @Override
     public void drawBackground(IGuiTcuInst<?> gui, float partialTicks, int mouseX, int mouseY) {
-        gui.getGui().mc.renderEngine.bindTexture(Resources.GUI_TCU_SMARTTGT.resource);
+        gui.getGui().mc.renderEngine.bindTexture(Resources.GUI_TCU_COLORIZER.resource);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         gui.getGui().drawTexturedModalRect(gui.getPosX(), gui.getPosY(), 0, 0, gui.getWidth(), gui.getHeight());
 
@@ -156,10 +160,11 @@ public class GuiShieldColorizer
     public boolean doKeyIntercept(IGuiTcuInst<?> gui, char typedChar, int keyCode) {
         if( this.rgbColor.textboxKeyTyped(typedChar, keyCode) ) {
             ShieldColorizer settings = getSettings(gui);
-            if( settings != null ) {
-                Integer val = getInteger(this.rgbColor.getText(), null);
+            String s = this.rgbColor.getText();
+            if( settings != null && s.length() == 8 ) {
+                Integer val = getInteger(s, null);
                 if( val != null ) {
-                    settings.color = val;
+                    settings.setColor(val);
                     syncSettings(gui.getTurretInst());
                 }
             }
@@ -204,7 +209,9 @@ public class GuiShieldColorizer
 
     private static Integer getInteger(String s, Integer def) {
         try {
-            return Integer.decode(s);
+            s = s.startsWith("0x") ? s : "0x" + s;
+            long l = Long.decode(s);
+            return (int)(l & 0xFFFFFFFFL);
         } catch( NumberFormatException ex ) {
             return def;
         }

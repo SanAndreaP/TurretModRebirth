@@ -16,13 +16,7 @@ import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.IGuiTcuRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiButtonIcon;
-import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiButtonTcuTab;
-import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiInfo;
-import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiSmartTargets;
-import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiTargetCreatures;
-import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiTargetPlayers;
-import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiUpgrades;
-import de.sanandrew.mods.turretmod.client.gui.tcu.page.PlayerHeads;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.*;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
@@ -149,7 +143,8 @@ public final class GuiTcuHelper
         registry.registerGui(GuiTcuRegistry.GUI_TARGETS_MOB, new ItemStack(Items.SKULL, 1, 2), GuiTargetCreatures::new, IGuiTcuInst::hasPermision);
         registry.registerGui(GuiTcuRegistry.GUI_TARGETS_PLAYER, PlayerHeads::getRandomSkull, GuiTargetPlayers::new, IGuiTcuInst::hasPermision);
         registry.registerGui(GuiTcuRegistry.GUI_TARGETS_SMART, UpgradeRegistry.INSTANCE.getItem(Upgrades.SMART_TGT.getId()), GuiSmartTargets::new, GuiSmartTargets::showTab);
-        registry.registerGui(GuiTcuRegistry.GUI_UPGRADES, new ItemStack(ItemRegistry.TURRET_UPGRADES.get(UpgradeRegistry.INSTANCE.getEmptyUpgrade().getId())), GuiUpgrades::new, IGuiTcuInst::hasPermision);
+        registry.registerGui(GuiTcuRegistry.GUI_UPGRADES, UpgradeRegistry.INSTANCE.getItem(UpgradeRegistry.EMPTY_UPGRADE.getId()), GuiUpgrades::new, IGuiTcuInst::hasPermision);
+        registry.registerGui(GuiTcuRegistry.GUI_COLORIZER, UpgradeRegistry.INSTANCE.getItem(Upgrades.SHIELD_COLORIZER.getId()), GuiShieldColorizer::new, GuiShieldColorizer::showTab);
     }
 
     private static final class ComparatorTabButton
