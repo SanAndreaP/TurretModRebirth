@@ -40,7 +40,7 @@ public final class ShieldTurretRecovery
 
             return newClr.getColorInt();
         } else {
-            return ShieldTurret.getCritColor((perc - 0.9F) * 10.0F);
+            return this.delegate.getCritColor((perc - 0.9F) * 10.0F);
         }
     }
 

@@ -9,8 +9,17 @@ package de.sanandrew.mods.turretmod.client.gui.lexicon.ammo;
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconGroup;
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconInst;
 import de.sanandrew.mods.sanlib.api.client.lexicon.LexiconGroup;
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
+import de.sanandrew.mods.turretmod.api.IRegistryType;
+import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
+import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
+import de.sanandrew.mods.turretmod.client.util.ResourceOrderer;
+import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.util.Resources;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class LexiconGroupAmmo
         extends LexiconGroup
@@ -27,6 +36,9 @@ public final class LexiconGroupAmmo
         ILexiconGroup grp = new LexiconGroupAmmo();
         registry.registerGroup(grp);
 
-        AmmunitionRegistry.INSTANCE.getGroups().forEach(g -> grp.addEntry(new LexiconEntryAmmo(g)));
+        AmmunitionRegistry.INSTANCE.getGroups().stream()
+                .sorted(ResourceOrderer.getOrderComparator(g -> AmmunitionRegistry.INSTANCE.getTypes(g).stream().findFirst().orElseThrow(RuntimeException::new).getId(),
+                                                           g -> g.getId().toString()))
+                .forEach(g -> grp.addEntry(new LexiconEntryAmmo(g)));
     }
 }

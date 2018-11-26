@@ -54,7 +54,7 @@ public final class Ammunitions
         private ItemStack icon;
 
         Groups(String name, ITurret turret, ResourceLocation typeIcon) {
-            this.id = new ResourceLocation(TmrConstants.ID, "ammogroup." + name);
+            this.id = new ResourceLocation(TmrConstants.ID, "ammo." + name);
             this.turret = turret;
             this.typeIcon = typeIcon;
         }

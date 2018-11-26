@@ -7,12 +7,9 @@
 package de.sanandrew.mods.turretmod.registry.turret.shieldgen;
 
 import de.sanandrew.mods.sanlib.lib.ColorObj;
-import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
-import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
-import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
+import de.sanandrew.mods.turretmod.api.turret.*;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
+import de.sanandrew.mods.turretmod.registry.upgrades.shield.ShieldColorizer;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
@@ -20,24 +17,40 @@ import net.minecraft.util.math.MathHelper;
 public final class ShieldTurret
         implements ITurretRAM, IForcefieldProvider
 {
-    private static final ColorObj BASE_COLOR = new ColorObj(0x40FFFFFF);
     static final ColorObj CRIT_COLOR = new ColorObj(0x40FF0000);
-    private static final float[] BASE_CLR_HSL = BASE_COLOR.calcHSL();
     private static final float[] CRIT_CLR_HSL = CRIT_COLOR.calcHSL();
-    private static final float[] HSL_DIF = new float[] {
-            TmrUtils.wrap360(BASE_CLR_HSL[0] - CRIT_CLR_HSL[0]),
-            BASE_CLR_HSL[1] - CRIT_CLR_HSL[1],
-            BASE_CLR_HSL[2] - CRIT_CLR_HSL[2]
-    };
 
     float value;
     float recovery;
     final ITurretInst turretInst;
+    private ColorObj baseColor = new ColorObj(0x40FFFFFF);
+    private float[] baseColorHsl = this.baseColor.calcHSL();
+    private float[] hslDiff = getHslDiff();
 
-    public ShieldTurret(ITurretInst turretInst) {
+    ShieldTurret(ITurretInst turretInst) {
         this.turretInst = turretInst;
         this.value = 0.0F;
         this.recovery = 0.0F;
+    }
+
+    public void recalcBaseColor() {
+        ShieldColorizer colorizer = this.turretInst.getUpgradeProcessor().getUpgradeInstance(Upgrades.SHIELD_COLORIZER.getId());
+        if( colorizer != null ) {
+            this.baseColor = new ColorObj(colorizer.color);
+        } else {
+            this.baseColor = new ColorObj(0x40FFFFFF);
+        }
+
+        this.baseColorHsl = this.baseColor.calcHSL();
+        this.hslDiff = getHslDiff();
+    }
+
+    private float[] getHslDiff() {
+        return new float[] {
+                TmrUtils.wrap360(baseColorHsl[0] - CRIT_CLR_HSL[0]),
+                baseColorHsl[1] - CRIT_CLR_HSL[1],
+                baseColorHsl[2] - CRIT_CLR_HSL[2]
+        };
     }
 
     public void damage(float dmg) {
@@ -91,13 +104,13 @@ public final class ShieldTurret
     public int getShieldColor() {
         float critVal = this.getCritValue();
         if( this.value < critVal ) {
-            return getCritColor(this.value / critVal);
+            return this.getCritColor(this.value / critVal);
         } else {
-            return BASE_COLOR.getColorInt();
+            return this.baseColor.getColorInt();
         }
     }
 
-    public void onTick() {
+    void onTick() {
         float maxVal = this.getMaxValue();
 
         if( this.turretInst.isActive() && this.turretInst.getTargetProcessor().hasAmmo() && this.value < maxVal ) {
@@ -137,9 +150,9 @@ public final class ShieldTurret
         }
     }
 
-    static int getCritColor(float relation) {
-        float alpha = ShieldTurret.CRIT_COLOR.fAlpha() + (ShieldTurret.BASE_COLOR.fAlpha() - ShieldTurret.CRIT_COLOR.fAlpha()) * relation;
-        float[] hslDif = ShieldTurret.HSL_DIF.clone();
+    int getCritColor(float relation) {
+        float alpha = CRIT_COLOR.fAlpha() + (this.baseColor.fAlpha() - CRIT_COLOR.fAlpha()) * relation;
+        float[] hslDif = this.hslDiff.clone();
         hslDif[0] = TmrUtils.wrap360(ShieldTurret.CRIT_CLR_HSL[0] + (hslDif[0] > 180.0F ? -(360.0F - hslDif[0]) : hslDif[0]) * relation);
         hslDif[1] = ShieldTurret.CRIT_CLR_HSL[1] + hslDif[1] * relation;
         hslDif[2] = ShieldTurret.CRIT_CLR_HSL[2] + hslDif[2] * relation;

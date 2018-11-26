@@ -41,28 +41,41 @@ import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.util.CommonProxy;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
+import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleSmokeNormal;
 import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.client.resource.IResourceType;
+import net.minecraftforge.client.resource.ISelectiveResourceReloadListener;
+import net.minecraftforge.client.resource.VanillaResourceType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Level;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
 
 public class ClientProxy
         extends CommonProxy
 {
-
     public static ILexiconInst lexiconInstance;
 
     @Override
@@ -86,7 +99,9 @@ public class ClientProxy
         MinecraftForge.EVENT_BUS.register(RenderForcefieldHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
 
-        ((IReloadableResourceManager)Minecraft.getMinecraft().getResourceManager()).registerReloadListener(RenderForcefieldHandler.INSTANCE);
+        IReloadableResourceManager mcResourceMgr = (IReloadableResourceManager)Minecraft.getMinecraft().getResourceManager();
+        mcResourceMgr.registerReloadListener(RenderForcefieldHandler.INSTANCE);
+        mcResourceMgr.registerReloadListener(ResourceOrderer.INSTANCE);
 
         Shaders.initShaders();
     }

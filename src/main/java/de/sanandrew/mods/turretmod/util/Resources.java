@@ -75,7 +75,9 @@ public enum Resources
     SHADER_GRAYSCALE_FRAG("shader/grayscale.frag"),
     SHADER_ALPHA_OVERRIDE_FRAG("shader/alpha_override.frag"),
 
-    JEI_ASSEMBLY_BKG("textures/gui/turretassembly/jei_crafting.png");
+    JEI_ASSEMBLY_BKG("textures/gui/turretassembly/jei_crafting.png"),
+
+    ITEM_ORDER_LIST("item_order.cfg");
 
     public final ResourceLocation resource;
 

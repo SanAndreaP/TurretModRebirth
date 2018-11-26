@@ -154,14 +154,20 @@ public class ItemRemapper
                 EntityTurret turret = (EntityTurret) e;
                 ItemStack oldStack = turret.getTargetProcessor().getAmmoStack();
                 if( ItemStackUtils.isValid(oldStack) && oldStack.getItem() instanceof ItemAmmo ) {
-                    ((TargetProcessor) turret.getTargetProcessor()).setAmmoStackInternal(getNewAmmoStack(oldStack));
+                    ItemStack newAmmoStack = getNewAmmoStack(oldStack);
+                    if( ItemStackUtils.isValid(newAmmoStack) ) {
+                        ((TargetProcessor) turret.getTargetProcessor()).setAmmoStackInternal(newAmmoStack);
+                    }
                 }
 
                 IUpgradeProcessor uProc = turret.getUpgradeProcessor();
                 for( int i = 0, max = uProc.getSizeInventory(); i < max; i++ ) {
                     oldStack = uProc.getStackInSlot(i);
                     if( ItemStackUtils.isValid(oldStack) && oldStack.getItem() instanceof ItemUpgrade ) {
-                        uProc.setInventorySlotContents(i, getNewUpgradeStack(oldStack));
+                        ItemStack newUpgradeStack = getNewUpgradeStack(oldStack);
+                        if( ItemStackUtils.isValid(newUpgradeStack) ) {
+                            uProc.setInventorySlotContents(i, newUpgradeStack);
+                        }
                     }
                 }
             }

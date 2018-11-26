@@ -32,7 +32,5 @@ public final class LexiconGroupMisc
         grp.addEntry(new LexiconEntryCraftable("assembly", new ItemStack(BlockRegistry.TURRET_ASSEMBLY)));
         grp.addEntry(new LexiconEntryCraftable("generator", new ItemStack(BlockRegistry.ELECTROLYTE_GENERATOR)));
         grp.addEntry(new LexiconEntryTCU());
-
-//        grp.addEntry(new LexiconEntryInfo());
     }
 }

@@ -14,16 +14,16 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Mod.EventBusSubscriber
 public class ItemRegistry
 {
-    public static final Map<ResourceLocation, ItemTurret> TURRET_PLACERS = new HashMap<>();
-    public static final Map<ResourceLocation, ItemAmmo> TURRET_AMMO = new HashMap<>();
-    public static final Map<ResourceLocation, ItemUpgrade> TURRET_UPGRADES = new HashMap<>();
-    public static final Map<ResourceLocation, ItemRepairKit> TURRET_REPAIRKITS = new HashMap<>();
+    public static final Map<ResourceLocation, ItemTurret> TURRET_PLACERS = new LinkedHashMap<>();
+    public static final Map<ResourceLocation, ItemAmmo> TURRET_AMMO = new LinkedHashMap<>();
+    public static final Map<ResourceLocation, ItemUpgrade> TURRET_UPGRADES = new LinkedHashMap<>();
+    public static final Map<ResourceLocation, ItemRepairKit> TURRET_REPAIRKITS = new LinkedHashMap<>();
     public static final ItemTurretControlUnit TURRET_CONTROL_UNIT = new ItemTurretControlUnit();
     public static final ItemAssemblyUpgrade ASSEMBLY_UPG_AUTO = new ItemAssemblyUpgrade.Automation();
     public static final ItemAssemblyUpgrade ASSEMBLY_UPG_SPEED = new ItemAssemblyUpgrade.Speed();

@@ -49,20 +49,20 @@ public abstract class ItemAssemblyUpgrade
         tooltip.add(LangUtils.translate(this.getUnlocalizedName() + ".ttip"));
     }
 
-    public static class Automation
+    static class Automation
         extends ItemAssemblyUpgrade
     {
-        public Automation() {
+        Automation() {
             super();
             this.setUnlocalizedName(TmrConstants.ID + ":turret_assembly_auto");
             this.setRegistryName(TmrConstants.ID, "assembly_upg_auto");
         }
     }
 
-    public static class Speed
+    static class Speed
         extends ItemAssemblyUpgrade
     {
-        public Speed() {
+        Speed() {
             super();
             this.setUnlocalizedName(TmrConstants.ID + ":turret_assembly_speed");
             this.setRegistryName(TmrConstants.ID, "assembly_upg_speed");
@@ -72,7 +72,7 @@ public abstract class ItemAssemblyUpgrade
     public static class Filter
         extends ItemAssemblyUpgrade
     {
-        public Filter() {
+        Filter() {
             super();
             this.setUnlocalizedName(TmrConstants.ID + ":turret_assembly_filter");
             this.setRegistryName(TmrConstants.ID, "assembly_upg_filter");

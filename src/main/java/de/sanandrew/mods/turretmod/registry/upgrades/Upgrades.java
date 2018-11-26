@@ -9,6 +9,7 @@ package de.sanandrew.mods.turretmod.registry.upgrades;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
+import de.sanandrew.mods.turretmod.registry.upgrades.shield.UpgradeShieldColorizer;
 import de.sanandrew.mods.turretmod.registry.upgrades.shield.UpgradeShieldPersonal;
 import de.sanandrew.mods.turretmod.registry.upgrades.smarttargeting.SmartTargeting;
 
@@ -36,6 +37,7 @@ public class Upgrades
     public static final IUpgrade SHIELD_EXPLOSIVE =  new SimpleUpgrade("shield.explosive", Turrets.FORCEFIELD);
     public static final IUpgrade SHIELD_STRENGTH_I = new SimpleUpgrade("shield.strength.1", Turrets.FORCEFIELD);
     public static final IUpgrade SHIELD_STRENGTH_II = new SimpleUpgrade("shield.strength.2", SHIELD_STRENGTH_I, Turrets.FORCEFIELD);
+    public static final IUpgrade SHIELD_COLORIZER =  new UpgradeShieldColorizer();
     public static final IUpgrade ENDER_TOXIN_I = new SimpleUpgrade("endertoxin.1");
     public static final IUpgrade ENDER_TOXIN_II =  new SimpleUpgrade("endertoxin.2", ENDER_TOXIN_I);
 
@@ -43,6 +45,6 @@ public class Upgrades
         registry.registerAll(UPG_STORAGE_I, UPG_STORAGE_II, UPG_STORAGE_III, AMMO_STORAGE, HEALTH_I, HEALTH_II, HEALTH_III, HEALTH_IV,
                              RELOAD_I, RELOAD_II, SMART_TGT, ECONOMY_I, ECONOMY_II, ECONOMY_INF, ENDER_MEDIUM, FUEL_PURIFY,
                              SHIELD_PERSONAL, SHIELD_PROJECTILE, SHIELD_EXPLOSIVE, SHIELD_STRENGTH_I, SHIELD_STRENGTH_II,
-                             ENDER_TOXIN_I, ENDER_TOXIN_II);
+                             SHIELD_COLORIZER, ENDER_TOXIN_I, ENDER_TOXIN_II);
     }
 }
