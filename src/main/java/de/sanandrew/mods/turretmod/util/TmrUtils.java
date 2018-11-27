@@ -170,6 +170,6 @@ public class TmrUtils
     }
 
     public static float wrap360(float angle) {
-        return angle > 360.0F ? wrap360(angle - 360.0F) : angle < 0 ? wrap360(angle + 360.0F) : angle;
+        return angle >= 360.0F ? wrap360(angle - 360.0F) : angle < 0 ? wrap360(angle + 360.0F) : angle;
     }
 }
