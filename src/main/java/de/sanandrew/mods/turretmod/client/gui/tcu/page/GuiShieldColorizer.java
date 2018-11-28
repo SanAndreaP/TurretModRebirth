@@ -24,10 +24,6 @@ public class GuiShieldColorizer
         extends Gui
         implements IGuiTCU
 {
-    private static final int MAX_HUE = 360;
-    private static final int MAX_SATURATION = 100;
-    private static final int MAX_LUMEN = 100;
-
     private static final int[] DISP_MIN_MAX_HUE = {32, 132};
     private static final int[] DISP_MIN_MAX_SAT = {40, 140};
     private static final int[] DISP_MIN_MAX_LUM = {136, 144, 40, 140};
@@ -88,9 +84,7 @@ public class GuiShieldColorizer
 
         gui.getGui().mc.renderEngine.bindTexture(Resources.GUI_TCU_COLORIZER.resource);
         GlStateManager.enableBlend();
-//        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-//        this.drawTexturedModalRect(DISP_MIN_MAX_LUM[0], DISP_MIN_MAX_LUM[2], 248, 5, 8, 100);
 
         GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ZERO);
         this.drawTexturedModalRect(DISP_MIN_MAX_LUM[0] - 1, DISP_MIN_MAX_LUM[2] - 2 + l, 244, 0, 12, 5);
@@ -102,6 +96,11 @@ public class GuiShieldColorizer
 
     @Override
     public void onMouseClick(IGuiTcuInst<?> gui, int mouseX, int mouseY, int mouseButton) {
+        this.rgbColor.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    @Override
+    public void onMouseClickMove(IGuiTcuInst<?> gui, int mouseX, int mouseY, int mouseButton, long timeSinceLastClick) {
         int mouseGuiX = mouseX - gui.getPosX();
         int mouseGuiY = mouseY - gui.getPosY();
 
@@ -114,8 +113,6 @@ public class GuiShieldColorizer
             this.hsl[2] = (100 - Math.round(Math.rint(mouseGuiY * 1.01D)) + DISP_MIN_MAX_LUM[2]) / (float) (DISP_MIN_MAX_LUM[3] - DISP_MIN_MAX_LUM[2]);
 
             setColor(ColorObj.fromHSLA(hsl[0], hsl[1], hsl[2], this.alpha), gui.getTurretInst());
-        } else {
-            this.rgbColor.mouseClicked(mouseX, mouseY, mouseButton);
         }
     }
 
@@ -138,22 +135,6 @@ public class GuiShieldColorizer
 
         return false;
     }
-
-//    private static void drawGroupBox(FontRenderer fontRenderer, String title, int x, int y) {
-//        final int width2 = 162;
-//        final int height2 = 30;
-//        final int frameColor2 = 0x30000000;
-//
-//        int strWidth = fontRenderer.getStringWidth(title);
-//        GlStateManager.enableBlend();
-//        fontRenderer.drawString(title, x + 5, y, 0x80000000, false);
-//
-//        Gui.drawRect(x,                y + 4,          x + 3,     y + 5,          frameColor2);
-//        Gui.drawRect(x + strWidth + 6, y + 4,          x + width2, y + 5,          frameColor2);
-//        Gui.drawRect(x,                y + height2 - 1, x + width2, y + height2,     frameColor2);
-//        Gui.drawRect(x,                y + 5,          x + 1,     y + height2 - 1, frameColor2);
-//        Gui.drawRect(x + width2 - 1,    y + 5,          x + width2, y + height2 - 1, frameColor2);
-//    }
 
     public static boolean showTab(IGuiTcuInst<?> gui) {
         return gui.hasPermision() && gui.getTurretInst().getUpgradeProcessor().hasUpgrade(Upgrades.SHIELD_COLORIZER);

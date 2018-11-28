@@ -78,6 +78,12 @@ public class GuiTcuContainer
     }
 
     @Override
+    protected void mouseClickMove(int mouseX, int mouseY, int mouseButton, long timeSinceLastClick) {
+        super.mouseClickMove(mouseX, mouseY, mouseButton, timeSinceLastClick);
+        this.guiDelegate.onMouseClickMove(this, mouseX, mouseY, mouseButton, timeSinceLastClick);
+    }
+
+    @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if( !this.guiDelegate.doKeyIntercept(this, typedChar, keyCode) ) {
             super.keyTyped(typedChar, keyCode);

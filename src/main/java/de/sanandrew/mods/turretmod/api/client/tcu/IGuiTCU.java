@@ -7,6 +7,7 @@
 package de.sanandrew.mods.turretmod.api.client.tcu;
 
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuContainer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -46,4 +47,6 @@ public interface IGuiTCU
     default void onGuiClose(IGuiTcuInst<?> gui) {}
 
     default void onMouseInput(IGuiTcuInst<?> gui) {}
+
+    default void onMouseClickMove(IGuiTcuInst<?> gui, int mouseX, int mouseY, int mouseButton, long timeSinceLastClick) {}
 }
