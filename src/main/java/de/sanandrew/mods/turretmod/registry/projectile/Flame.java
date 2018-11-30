@@ -47,7 +47,7 @@ public class Flame
     public static float knockbackH = 0.0F;
     @Value(comment = "Vertical (y) knockback strength this projectile can apply. Vanilla arrows have a value of 0.1.", range = @Range(minD = 0.0D, maxD = 256.0D))
     public static float knockbackV = 0.0F;
-    @Value(comment = "How much more inaccurate this projectiles' trajectory vector becomes. Higher values result in less accuracy.", range = @Range(minD = 0.0D, maxD = 10.0D))
+    @Value(comment = "How much more inaccurate this projectile's trajectory vector becomes. Higher values result in less accuracy.", range = @Range(minD = 0.0D, maxD = 10.0D))
     public static double scatter = 0.1D;
     @Value(comment = "How much damage this projectile looses after successfully hitting an entity. If the damage reaches 0, the projectile is killed.", range = @Range(minD = 0.0D, maxD = 1024.0D))
     public static float damageReduction = 0.5F;

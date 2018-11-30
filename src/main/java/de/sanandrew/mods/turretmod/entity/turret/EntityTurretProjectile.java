@@ -479,7 +479,7 @@ public class EntityTurretProjectile
             String turretOwner = turret.getOwnerName();
             String turretName = turret.get().getDisplayName().getFormattedText();
             if( !Strings.isNullOrEmpty(turretOwner) ) {
-                turretName = turretOwner + (turretOwner.endsWith("s") ? "' " : "s' ") + turretName;
+                turretName = turretOwner + "'s " + turretName;
             }
             String s = "death.attack." + damageType + '.' + turret.getTurret().getId();
             return new TextComponentTranslation(s, attacked.getDisplayName(), turretName);

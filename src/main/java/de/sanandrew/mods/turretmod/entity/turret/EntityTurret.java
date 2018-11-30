@@ -334,7 +334,7 @@ public class EntityTurret
         } else if( ItemStackUtils.isValid(stack) && hand == EnumHand.MAIN_HAND ) {
             IRepairKit repKit;
 
-            if( this.targetProc.addAmmo(stack) ) {
+            if( this.targetProc.addAmmo(stack, player) ) {
                 this.onInteractSucceed(stack, player);
                 return true;
             } else if( (repKit = RepairKitRegistry.INSTANCE.getType(stack)).isApplicable(this) ) {

@@ -21,8 +21,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.entity.Entity;
@@ -37,12 +35,15 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL14;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Predicate;
@@ -67,9 +68,7 @@ public class RenderForcefieldHandler
         }
 
         final float partialTicks = event.getPartialTicks();
-        double renderX = getPartialPos(renderEntity.lastTickPosX, renderEntity.posX, partialTicks);
-        double renderY = getPartialPos(renderEntity.lastTickPosY, renderEntity.posY, partialTicks);
-        double renderZ = getPartialPos(renderEntity.lastTickPosZ, renderEntity.posZ, partialTicks);
+        double[] renderPos = getPartialPos(renderEntity, partialTicks);
 
         List<ForcefieldCube> cubes = new ArrayList<>();
 
@@ -91,11 +90,9 @@ public class RenderForcefieldHandler
 
                 ColorObj color = new ColorObj(ffProvider.getShieldColor());
 
-                double entityX = getPartialPos(entity.lastTickPosX, entity.posX, partialTicks);
-                double entityY = getPartialPos(entity.lastTickPosY, entity.posY, partialTicks);
-                double entityZ = getPartialPos(entity.lastTickPosZ, entity.posZ, partialTicks);
+                double[] entityPos = getPartialPos(entity, partialTicks);
 
-                ForcefieldCube cube = new ForcefieldCube(new Vec3d(entityX - renderX, entityY - renderY, entityZ - renderZ), ffProvider.getShieldBoundingBox(), color);
+                ForcefieldCube cube = new ForcefieldCube(new Vec3d(entityPos[0] - renderPos[0], entityPos[1] - renderPos[1], entityPos[2] - renderPos[2]), ffProvider.getShieldBoundingBox(), color);
                 cube.fullRendered = ffProvider.renderFull();
 
                 if( entity.isDead || !entity.isEntityAlive() || !ffProvider.isShieldActive() || !mc.world.loadedEntityList.contains(entity) ) {
@@ -129,15 +126,7 @@ public class RenderForcefieldHandler
         }
 
         if( this.textures == null ) {
-            try( IResource res = mc.getResourceManager().getResource(Resources.TURRET_FORCEFIELD_PROPERTIES.resource);
-                 InputStream str = res.getInputStream() )
-            {
-                String json = IOUtils.toString(str, Charset.forName("UTF-8"));
-                this.textures = GSON.fromJson(json, ShieldTexture[].class);
-            } catch( IOException | JsonSyntaxException ex ) {
-                this.textures = new ShieldTexture[0];
-                TmrConstants.LOG.log(Level.ERROR, "Cannot load forcefield textures", ex);
-            }
+            this.textures = getTextures(mc.getResourceManager());
         }
 
         Tessellator tess = Tessellator.getInstance();
@@ -174,8 +163,22 @@ public class RenderForcefieldHandler
         }
     }
 
-    private static double getPartialPos(double prev, double curr, double partialTicks) {
-        return prev + (curr - prev) * partialTicks;
+    public static ShieldTexture[] getTextures(IResourceManager resourceManager) {
+        try( IResource res = resourceManager.getResource(Resources.TURRET_FORCEFIELD_PROPERTIES.resource);
+             InputStream str = res.getInputStream() )
+        {
+            String json = IOUtils.toString(str, Charset.forName("UTF-8"));
+            return GSON.fromJson(json, ShieldTexture[].class);
+        } catch( IOException | JsonSyntaxException ex ) {
+            TmrConstants.LOG.log(Level.ERROR, "Cannot load forcefield textures", ex);
+            return new ShieldTexture[0];
+        }
+    }
+
+    private static double[] getPartialPos(Entity e, double partialTicks) {
+        return new double[] { e.lastTickPosX + (e.posX - e.lastTickPosX) * partialTicks,
+                              e.lastTickPosY + (e.posY - e.lastTickPosY) * partialTicks,
+                              e.lastTickPosZ + (e.posZ - e.lastTickPosZ) * partialTicks};
     }
 
     @SuppressWarnings("unused")
@@ -198,14 +201,14 @@ public class RenderForcefieldHandler
         }
     }
 
-    private final class ShieldTexture
+    public static final class ShieldTexture
     {
+        public float moveMultiplierX;
+        public float moveMultiplierY;
         String texture;
-        float moveMultiplierX;
-        float moveMultiplierY;
         private ResourceLocation textureRL;
 
-        ResourceLocation getTexture() {
+        public ResourceLocation getTexture() {
             return this.textureRL == null ? (this.textureRL = new ResourceLocation(this.texture)) : this.textureRL;
         }
     }

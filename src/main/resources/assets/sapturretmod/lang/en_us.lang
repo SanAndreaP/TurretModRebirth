@@ -83,6 +83,7 @@ item.sapturretmod:upgrade.shield.projectile.name=Shield Projectile Deflector Upg
 item.sapturretmod:upgrade.shield.explosive.name=Shield Explosion Absorber Upgrade
 item.sapturretmod:upgrade.shield.strength.1.name=Shield Amplifier I Upgrade
 item.sapturretmod:upgrade.shield.strength.2.name=Shield Amplifier II Upgrade
+item.sapturretmod:upgrade.shield.colorizer.name=Shield Colorizer Upgrade
 item.sapturretmod:upgrade.endertoxin.1.name=Ender Toxin I Upgrade
 item.sapturretmod:upgrade.endertoxin.2.name=Ender Toxin II Upgrade
 
@@ -167,6 +168,7 @@ gui.sapturretmod.tcu.page.smarttgt.turret=Turret Awareness
 gui.sapturretmod.tcu.page.smarttgt.tamed=Tamed Awareness
 gui.sapturretmod.tcu.page.smarttgt.age=Age Awareness
 gui.sapturretmod.tcu.page.smarttgt.count=Count Awareness
+gui.sapturretmod.tcu.page.colorizer.colorcode=Color Code (AARRGGBB)
 # Assembly
 gui.sapturretmod.tassembly.cancel=Cancel
 gui.sapturretmod.tassembly.automate.enable=Automate

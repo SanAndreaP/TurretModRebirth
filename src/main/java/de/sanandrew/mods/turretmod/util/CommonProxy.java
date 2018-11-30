@@ -17,6 +17,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.event.CollisionEventHandler;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretProjectile;
+import de.sanandrew.mods.turretmod.event.CapabilityEventHandler;
 import de.sanandrew.mods.turretmod.event.DamageEventHandler;
 import de.sanandrew.mods.turretmod.event.ExplosionEventHandler;
 import de.sanandrew.mods.turretmod.inventory.ContainerAssemblyFilter;
@@ -53,6 +54,7 @@ public class CommonProxy
         MinecraftForge.EVENT_BUS.register(new DamageEventHandler());
         MinecraftForge.EVENT_BUS.register(new ExplosionEventHandler());
         MinecraftForge.EVENT_BUS.register(new CollisionEventHandler());
+        MinecraftForge.EVENT_BUS.register(new CapabilityEventHandler());
 
         EntityRegistry.registerModEntity(new ResourceLocation(TmrConstants.ID, "turret"), EntityTurret.class, TmrConstants.ID + ".turret", 0, TurretModRebirth.instance, 128, 1, true);
         EntityRegistry.registerModEntity(new ResourceLocation(TmrConstants.ID, "projectile"), EntityTurretProjectile.class, TmrConstants.ID + ".projectile", 1, TurretModRebirth.instance, 128, 1, true);

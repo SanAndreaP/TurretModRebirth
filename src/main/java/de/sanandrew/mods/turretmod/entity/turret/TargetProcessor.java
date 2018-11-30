@@ -19,25 +19,28 @@ import de.sanandrew.mods.turretmod.api.event.TargetingEvent;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
+import de.sanandrew.mods.turretmod.item.ItemAmmoCartridge;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -76,12 +79,23 @@ public final class TargetProcessor
 
     @Override
     public boolean addAmmo(@Nonnull ItemStack stack) {
-        if( this.isAmmoApplicable(stack) ) {
+        return this.addAmmo(stack, null);
+    }
+
+    @Override
+    public boolean addAmmo(@Nonnull ItemStack stack, ICapabilityProvider excessInv) {
+        if( stack.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN) ) {
+            return ItemAmmoCartridge.extractAmmoStacks(stack, this);
+        } else if( this.isAmmoApplicable(stack) ) {
             IAmmunition type = AmmunitionRegistry.INSTANCE.getType(stack);
             IAmmunition currType = AmmunitionRegistry.INSTANCE.getType(this.ammoStack);
 
             if( currType.isValid() && !currType.getId().equals(type.getId()) ) {
-                this.dropAmmo();
+                if( excessInv != null ) {
+                    this.putAmmoInInventory(excessInv);
+                } else {
+                    this.dropAmmo();
+                }
             }
 
             int maxCapacity = this.getMaxAmmoCapacity() - this.ammoCount;
@@ -106,6 +120,7 @@ public final class TargetProcessor
                     this.ammoCount += providedStack;
                     stack.setCount(0);
                 }
+
                 return true;
             }
         }
@@ -211,7 +226,7 @@ public final class TargetProcessor
         }
     }
 
-    public void putAmmoInInventory(IInventory inventory) {
+    public void putAmmoInInventory(ICapabilityProvider inventory) {
         if( this.hasAmmo() ) {
             NonNullList<ItemStack> items = this.extractAmmoItems();
 
@@ -220,7 +235,7 @@ public final class TargetProcessor
             if( !items.isEmpty() ) {
                 EntityLiving turretL = this.turret.get();
                 for( ItemStack stack : items ) {
-                    stack = InventoryUtils.addStackToInventory(stack, inventory);
+                    stack = InventoryUtils.addStackToCapability(stack, inventory, EnumFacing.UP, false);
                     if( ItemStackUtils.isValid(stack) ) {
                         EntityItem item = new EntityItem(turretL.world, turretL.posX, turretL.posY, turretL.posZ, stack);
                         turretL.world.spawnEntity(item);

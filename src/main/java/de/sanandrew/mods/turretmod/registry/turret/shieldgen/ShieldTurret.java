@@ -17,19 +17,23 @@ import net.minecraft.util.math.MathHelper;
 public final class ShieldTurret
         implements ITurretRAM, IForcefieldProvider
 {
-    static final ColorObj CRIT_COLOR = new ColorObj(0xFFFF0000);
+    static final ColorObj CRIT_COLOR = new ColorObj(0x40FF0000);
     private static final float[] CRIT_CLR_HSL = CRIT_COLOR.calcHSL();
 
     float value;
     float recovery;
     final ITurretInst turretInst;
-    private ColorObj baseColor = new ColorObj(0xFFFFFFFF);
+    private float prevValue;
+    private float attackTime;
+    private ColorObj baseColor = new ColorObj(0x40FFFFFF);
     private float[] baseColorHsl = this.baseColor.calcHSL();
     private float[] hslDiff = getHslDiff();
 
     ShieldTurret(ITurretInst turretInst) {
         this.turretInst = turretInst;
+        this.prevValue = 0.0F;
         this.value = 0.0F;
+        this.attackTime = 0.0F;
         this.recovery = 0.0F;
     }
 
@@ -38,7 +42,7 @@ public final class ShieldTurret
         if( colorizer != null ) {
             this.baseColor = new ColorObj(colorizer.getColor());
         } else {
-            this.baseColor = new ColorObj(0xFFFFFFFF);
+            this.baseColor = new ColorObj(0x40FFFFFF);
         }
 
         this.baseColorHsl = this.baseColor.calcHSL();
@@ -106,11 +110,18 @@ public final class ShieldTurret
         if( this.value < critVal ) {
             return this.getCritColor(this.value / critVal);
         } else {
-            return this.baseColor.getColorInt();
+            return (MathHelper.floor(Math.max(this.baseColor.alpha(), 0x40 * this.attackTime)) << 24) | (this.baseColor.getColorInt() & 0xFFFFFF);
         }
     }
 
     void onTick() {
+        if( this.attackTime > 0.0F ) {
+            this.attackTime -= 0.1F;
+        }
+        if( this.prevValue > this.value ) {
+            this.attackTime = 1.0F;
+        }
+        this.prevValue = this.value;
         float maxVal = this.getMaxValue();
 
         if( this.turretInst.isActive() && this.turretInst.getTargetProcessor().hasAmmo() && this.value < maxVal ) {

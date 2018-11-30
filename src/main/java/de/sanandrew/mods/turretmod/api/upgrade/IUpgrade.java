@@ -26,7 +26,7 @@ public interface IUpgrade
     }
 
     /**
-     * <p>This returns a range (minimum and maximum). The turrets' tier has to be within that range (both inclusive) in order for this upgrade to be applicable.</p>
+     * <p>This returns a range (minimum and maximum). The turret's tier has to be within that range (both inclusive) in order for this upgrade to be applicable.</p>
      * <p>If {@code null} is returned, this upgrade can be applied to any turret tier.</p>
      *
      * @return The range or {@code null}

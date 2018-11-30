@@ -6,6 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.common.eventhandler.EventBus;
 
 import javax.annotation.Nonnull;
@@ -19,6 +20,8 @@ public interface ITargetProcessor
     EventBus TARGET_BUS = new EventBus();
 
     boolean addAmmo(@Nonnull ItemStack stack);
+
+    boolean addAmmo(@Nonnull ItemStack stack, ICapabilityProvider excessInv);
 
     int getAmmoCount();
 

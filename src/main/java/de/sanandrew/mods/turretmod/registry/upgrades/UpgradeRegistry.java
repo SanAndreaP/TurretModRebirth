@@ -51,10 +51,10 @@ public final class UpgradeRegistry
     }
 
     @Override
-    public void register(IUpgrade upgrade) {
-        this.upgradeFromRL.put(upgrade.getId(), upgrade);
+    public void register(IUpgrade type) {
+        this.upgradeFromRL.put(type.getId(), type);
 
-        ItemRegistry.TURRET_UPGRADES.put(upgrade.getId(), new ItemUpgrade(upgrade));
+        ItemRegistry.TURRET_UPGRADES.put(type.getId(), new ItemUpgrade(type));
     }
 
     @Override
@@ -63,12 +63,12 @@ public final class UpgradeRegistry
     }
 
     @Override
-    public IUpgrade getType(@Nonnull ItemStack stack) {
-        if( !ItemStackUtils.isValid(stack) || !(stack.getItem() instanceof ItemUpgrade) ) {
+    public IUpgrade getType(@Nonnull ItemStack item) {
+        if( !ItemStackUtils.isValid(item) || !(item.getItem() instanceof ItemUpgrade) ) {
             return NULL_TYPE;
         }
 
-        return ((ItemUpgrade) stack.getItem()).upgrade;
+        return ((ItemUpgrade) item.getItem()).upgrade;
     }
 
     @Override

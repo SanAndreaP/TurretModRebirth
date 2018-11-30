@@ -8,44 +8,53 @@ package de.sanandrew.mods.turretmod.client.gui.tcu.page;
 
 import com.google.common.base.Strings;
 import de.sanandrew.mods.sanlib.lib.ColorObj;
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.client.event.RenderForcefieldHandler;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.registry.upgrades.shield.ShieldColorizer;
+import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
+import org.lwjgl.opengl.GL11;
 
 public class GuiShieldColorizer
         extends Gui
         implements IGuiTCU
 {
-    private static final int[] DISP_MIN_MAX_HUE = {32, 132};
+    private static final int[] DISP_MIN_MAX_HUE = {22, 122};
     private static final int[] DISP_MIN_MAX_SAT = {40, 140};
-    private static final int[] DISP_MIN_MAX_LUM = {136, 144, 40, 140};
+    private static final int[] DISP_MIN_MAX_LUM = {129, 138, 40, 140};
+    private static final int[] DISP_MIN_MAX_ALP = {145, 154, 40, 140};
 
     private GuiTextField rgbColor;
     private float[] hsl = new float[3];
     private float alpha;
 
+    private RenderForcefieldHandler.ShieldTexture[] shieldTextures;
+
     @Override
     public void initGui(IGuiTcuInst<?> gui) {
+        this.rgbColor = new GuiTextField(0, gui.getFontRenderer(), gui.getPosX() + 94, gui.getPosY() + 180, 60, 10);
+        this.rgbColor.setMaxStringLength(9);
+        this.rgbColor.setValidator(s -> {
+            if( Strings.isNullOrEmpty(s) ) {
+                return true;
+            }
+            Integer val = getInteger(s);
+            return val != null;
+        });
+        this.shieldTextures = RenderForcefieldHandler.getTextures(gui.getGui().mc.getResourceManager());
+
         ShieldColorizer settings = getSettings(gui);
         if( settings != null ) {
-            this.rgbColor = new GuiTextField(0, gui.getFontRenderer(), gui.getPosX() + 110, gui.getPosY() + 157, 60, 10);
-            this.rgbColor.setMaxStringLength(9);
-            this.rgbColor.setValidator(s -> {
-                if( Strings.isNullOrEmpty(s) ) {
-                    return true;
-                }
-                Integer val = getInteger(s);
-                return val != null;
-            });
-
             ColorObj color = new ColorObj(settings.getColor());
             this.updateColor(color);
         }
@@ -53,50 +62,86 @@ public class GuiShieldColorizer
 
     @Override
     public void updateScreen(IGuiTcuInst<?> gui) {
-        ShieldColorizer settings = getSettings(gui);
-        if( settings != null ) {
-            this.rgbColor.updateCursorCounter();
-        }
+        this.rgbColor.updateCursorCounter();
     }
 
     @Override
     public void drawBackground(IGuiTcuInst<?> gui, float partialTicks, int mouseX, int mouseY) {
-        gui.getGui().mc.renderEngine.bindTexture(Resources.GUI_TCU_COLORIZER.resource);
+        GuiScreen guiScr = gui.getGui();
+        guiScr.mc.renderEngine.bindTexture(Resources.GUI_TCU_COLORIZER.resource);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        gui.getGui().drawTexturedModalRect(gui.getPosX(), gui.getPosY(), 0, 0, gui.getWidth(), gui.getHeight());
+        guiScr.drawTexturedModalRect(gui.getPosX(), gui.getPosY(), 0, 0, gui.getWidth(), gui.getHeight());
 
-        if( this.rgbColor != null ) {
-            this.rgbColor.drawTextBox();
-        }
+        this.rgbColor.drawTextBox();
     }
 
     @Override
     public void drawForeground(IGuiTcuInst<?> gui, int mouseX, int mouseY) {
+        GuiScreen guiScr = gui.getGui();
         int h = Math.round(this.hsl[0] / 360.0F * 99.0F);
         int s = 99 - Math.round(this.hsl[1] * 99.0F);
         int l = 99 - Math.round(this.hsl[2] * 99.0F);
+        int a = 99 - Math.round(this.alpha * 99.0F);
 
-        Gui.drawRect(DISP_MIN_MAX_LUM[0], DISP_MIN_MAX_LUM[2], DISP_MIN_MAX_LUM[1], DISP_MIN_MAX_LUM[3], ColorObj.fromHSLA(this.hsl[0], this.hsl[1], 0.5F, 1.0F).getColorInt());
+        int brightColor = ColorObj.fromHSLA(this.hsl[0], this.hsl[1], 0.5F, 1.0F).getColorInt();
+        Gui.drawRect(DISP_MIN_MAX_LUM[0], DISP_MIN_MAX_LUM[2], DISP_MIN_MAX_LUM[1], DISP_MIN_MAX_LUM[3], brightColor);
 
         int lumenHalf = DISP_MIN_MAX_LUM[2] + (DISP_MIN_MAX_LUM[3] - DISP_MIN_MAX_LUM[2]) / 2;
         this.drawGradientRect(DISP_MIN_MAX_LUM[0], DISP_MIN_MAX_LUM[2], DISP_MIN_MAX_LUM[1], lumenHalf, 0xFFFFFFFF, 0x00FFFFFF);
         this.drawGradientRect(DISP_MIN_MAX_LUM[0], lumenHalf, DISP_MIN_MAX_LUM[1], DISP_MIN_MAX_LUM[3], 0x00000000, 0xFF000000);
 
-        gui.getGui().mc.renderEngine.bindTexture(Resources.GUI_TCU_COLORIZER.resource);
+        ColorObj newColor = ColorObj.fromHSLA(this.hsl[0], this.hsl[1], this.hsl[2], 1.0F);
+        int rgbColor = newColor.getColorInt();
+        newColor.setAlpha(0);
+        int rgbColorNA = newColor.getColorInt();
+        this.drawGradientRect(DISP_MIN_MAX_ALP[0], DISP_MIN_MAX_ALP[2], DISP_MIN_MAX_ALP[1], DISP_MIN_MAX_ALP[3], rgbColor, rgbColorNA);
+
+        gui.getFontRenderer().drawString("#", 87, 181, 0xA0A0A0);
+        gui.getFontRenderer().drawSplitString(LangUtils.translate(Lang.TCU_COLORIZER_CLRCODE), 22, 181, 60, 0xA0A0A0);
+
+        guiScr.mc.renderEngine.bindTexture(Resources.GUI_TCU_COLORIZER.resource);
         GlStateManager.enableBlend();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
         GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ZERO);
-        this.drawTexturedModalRect(DISP_MIN_MAX_LUM[0] - 1, DISP_MIN_MAX_LUM[2] - 2 + l, 244, 0, 12, 5);
-
         this.drawTexturedModalRect(DISP_MIN_MAX_HUE[0] - 2 + h, DISP_MIN_MAX_SAT[0] - 2 + s, 239, 0, 5, 5);
+        this.drawTexturedModalRect(DISP_MIN_MAX_LUM[0] - 1, DISP_MIN_MAX_LUM[2] - 2 + l, 244, 0, 12, 5);
+        this.drawTexturedModalRect(DISP_MIN_MAX_ALP[0] - 1, DISP_MIN_MAX_ALP[2] - 2 + a, 244, 0, 12, 5);
 
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+
+
+        ColorObj color = ColorObj.fromHSLA(this.hsl[0], this.hsl[1], this.hsl[2], this.alpha);
+
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        GlStateManager.color(color.fRed(), color.fGreen(), color.fBlue(), color.fAlpha());
+        float partTicks = guiScr.mc.getRenderPartialTicks();
+        for( RenderForcefieldHandler.ShieldTexture tx : this.shieldTextures ) {
+            float transformTexAmount = guiScr.mc.world.getTotalWorldTime() % 400 + partTicks;
+            float texTranslateX = transformTexAmount * tx.moveMultiplierX;
+            float texTranslateY = transformTexAmount * tx.moveMultiplierY;
+
+            guiScr.mc.renderEngine.bindTexture(tx.getTexture());
+            GlStateManager.matrixMode(GL11.GL_TEXTURE);
+            GlStateManager.loadIdentity();
+            GlStateManager.translate(texTranslateX, texTranslateY, 0.0F);
+            GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+
+            Gui.drawScaledCustomSizeModalRect(22, 144, 0, 0, 264, 42, 132, 21, 256, 256);
+
+            GlStateManager.matrixMode(GL11.GL_TEXTURE);
+            GL11.glLoadIdentity();
+            GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+        }
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+
     }
 
     @Override
     public void onMouseClick(IGuiTcuInst<?> gui, int mouseX, int mouseY, int mouseButton) {
         this.rgbColor.mouseClicked(mouseX, mouseY, mouseButton);
+        this.onMouseClickMove(gui, mouseX, mouseY, mouseButton, 0);
     }
 
     @Override
@@ -111,6 +156,10 @@ public class GuiShieldColorizer
             setColor(ColorObj.fromHSLA(hsl[0], hsl[1], hsl[2], this.alpha), gui.getTurretInst());
         } else if( mouseGuiX >= DISP_MIN_MAX_LUM[0] && mouseGuiX < DISP_MIN_MAX_LUM[1] && mouseGuiY >= DISP_MIN_MAX_LUM[2] && mouseGuiY < DISP_MIN_MAX_LUM[3] ) {
             this.hsl[2] = (100 - Math.round(Math.rint(mouseGuiY * 1.01D)) + DISP_MIN_MAX_LUM[2]) / (float) (DISP_MIN_MAX_LUM[3] - DISP_MIN_MAX_LUM[2]);
+
+            setColor(ColorObj.fromHSLA(hsl[0], hsl[1], hsl[2], this.alpha), gui.getTurretInst());
+        } else if( mouseGuiX >= DISP_MIN_MAX_ALP[0] && mouseGuiX < DISP_MIN_MAX_ALP[1] && mouseGuiY >= DISP_MIN_MAX_ALP[2] && mouseGuiY < DISP_MIN_MAX_ALP[3] ) {
+            this.alpha = (100 - Math.round(Math.rint(mouseGuiY * 1.01D)) + DISP_MIN_MAX_ALP[2]) / (float) (DISP_MIN_MAX_ALP[3] - DISP_MIN_MAX_ALP[2]);
 
             setColor(ColorObj.fromHSLA(hsl[0], hsl[1], hsl[2], this.alpha), gui.getTurretInst());
         }
@@ -164,7 +213,7 @@ public class GuiShieldColorizer
         int colorInt = color.getColorInt();
         this.rgbColor.setText(String.format("%08X", colorInt));
         this.hsl = color.calcHSL();
-        this.alpha = color.alpha();
+        this.alpha = color.fAlpha();
     }
 
     private static void syncSettings(ITurretInst turretInst) {

@@ -42,7 +42,7 @@ public final class AmmunitionRegistry
     private final Map<ResourceLocation, IAmmunitionGroup> ammoGroups;
     private boolean finalizedForLexicon = false;
 
-    private static final IAmmunition NULL_TYPE = new IAmmunition() {
+    public static final IAmmunition NULL_TYPE = new IAmmunition() {
         @Override public ResourceLocation getId() { return new ResourceLocation("null"); }
         @Nonnull @Override public IAmmunitionGroup getGroup() { return Ammunitions.Groups.UNKNOWN; }
         @Override public float getDamageInfo() { return 0; }
@@ -69,15 +69,15 @@ public final class AmmunitionRegistry
 
     @Override
     @Nonnull
-    public IAmmunition getType(ResourceLocation typeId) {
-        return this.ammoTypes.getOrDefault(typeId, NULL_TYPE);
+    public IAmmunition getType(ResourceLocation id) {
+        return this.ammoTypes.getOrDefault(id, NULL_TYPE);
     }
 
     @Override
     @Nonnull
-    public IAmmunition getType(@Nonnull ItemStack stack) {
-        if( ItemStackUtils.isValid(stack) && stack.getItem() instanceof ItemAmmo ) {
-            return ((ItemAmmo) stack.getItem()).ammo;
+    public IAmmunition getType(@Nonnull ItemStack item) {
+        if( ItemStackUtils.isValid(item) && item.getItem() instanceof ItemAmmo ) {
+            return ((ItemAmmo) item.getItem()).ammo;
         }
 
         return NULL_TYPE;

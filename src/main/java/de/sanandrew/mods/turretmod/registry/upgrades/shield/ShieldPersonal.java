@@ -23,7 +23,7 @@ public final class ShieldPersonal
 {
     public static final float MAX_VALUE = 20.0F;
 
-    static final ColorObj BASE_COLOR = new ColorObj(0xFFDD74FF);
+    static final ColorObj BASE_COLOR = new ColorObj(0x40DD74FF);
     static final float[] BASE_CLR_HSL = BASE_COLOR.calcHSL();
     private static final AxisAlignedBB BB = new AxisAlignedBB(-0.5D, 0, -0.5D, 0.5D, 2, 0.5D);
     static final float CRIT_VALUE = 5.0F;

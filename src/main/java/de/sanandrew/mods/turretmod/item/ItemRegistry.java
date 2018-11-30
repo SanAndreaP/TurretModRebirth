@@ -29,6 +29,7 @@ public class ItemRegistry
     public static final ItemAssemblyUpgrade ASSEMBLY_UPG_SPEED = new ItemAssemblyUpgrade.Speed();
     public static final ItemAssemblyUpgrade.Filter ASSEMBLY_UPG_FILTER = new ItemAssemblyUpgrade.Filter();
     public static final ItemTurretInfo TURRET_INFO = new ItemTurretInfo();
+    public static final ItemAmmoCartridge AMMO_CARTRIDGE = new ItemAmmoCartridge();
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
@@ -40,7 +41,8 @@ public class ItemRegistry
                                         ASSEMBLY_UPG_AUTO,
                                         ASSEMBLY_UPG_SPEED,
                                         ASSEMBLY_UPG_FILTER,
-                                        TURRET_INFO
+                                        TURRET_INFO,
+                                        AMMO_CARTRIDGE
         );
     }
 }
