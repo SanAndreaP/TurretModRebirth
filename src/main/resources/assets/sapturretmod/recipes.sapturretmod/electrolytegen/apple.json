@@ -1,0 +1,14 @@
+{
+  "type": "sapturretmod:electrolytes",
+  "electrolytes": {
+    "item": "minecraft:apple"
+  },
+  "effectiveness": 1.3,
+  "timeProcessing": 220,
+  "trash": {
+    "item": "minecraft:wheat_seeds"
+  },
+  "treasure": {
+    "item": "minecraft:gold_nugget"
+  }
+}

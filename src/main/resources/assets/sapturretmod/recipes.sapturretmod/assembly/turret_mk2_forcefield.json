@@ -1,0 +1,57 @@
+{
+  "type": "sapturretmod:assembly",
+  "group": "turrets",
+  "fluxPerTick": 15,
+  "ticksProcessing": 100,
+  "ingredients": [
+    {
+      "count": 3,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "blockQuartz"
+        }
+      ]
+    },
+    {
+      "count": 2,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotGold"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "blockRedstone"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "obsidian"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "enderpearl"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret.forcefield",
+    "count": 1
+  }
+}

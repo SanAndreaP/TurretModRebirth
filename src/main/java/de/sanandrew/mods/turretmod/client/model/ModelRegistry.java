@@ -10,12 +10,14 @@ package de.sanandrew.mods.turretmod.client.model;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
+import de.sanandrew.mods.turretmod.client.model.item.MeshDefAmmoCartridge;
 import de.sanandrew.mods.turretmod.client.render.tileentity.RenderElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.client.render.tileentity.RenderTurretAssembly;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -34,7 +36,6 @@ import java.util.Objects;
 @Mod.EventBusSubscriber(value = Side.CLIENT, modid = TmrConstants.ID)
 public final class ModelRegistry
 {
-    @SuppressWarnings("deprecation")
     @SubscribeEvent
     public static void registerModels(ModelRegistryEvent event) {
         setStandardModel(ItemRegistry.TURRET_CONTROL_UNIT);
@@ -62,6 +63,8 @@ public final class ModelRegistry
             setStandardModel(item, new ResourceLocation(regName.getResourceDomain(), "repairkits/" + regName.getResourcePath()));
         });
 
+        setCustomMeshModel(ItemRegistry.AMMO_CARTRIDGE, new MeshDefAmmoCartridge());
+
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurretAssembly.class, new RenderTurretAssembly());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityElectrolyteGenerator.class, new RenderElectrolyteGenerator());
     }
@@ -82,5 +85,10 @@ public final class ModelRegistry
         if( itm != Items.AIR ) {
             setStandardModel(itm);
         }
+    }
+
+    private static void setCustomMeshModel(@SuppressWarnings("SameParameterValue") Item item, IListedItemMeshDefinition mesher) {
+        ModelLoader.setCustomMeshDefinition(item, mesher);
+        ModelBakery.registerItemVariants(item, mesher.getDefinedResources());
     }
 }

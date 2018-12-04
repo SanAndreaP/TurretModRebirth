@@ -1,0 +1,47 @@
+{
+  "type": "sapturretmod:assembly",
+  "group": "turrets",
+  "fluxPerTick": 10,
+  "ticksProcessing": 100,
+  "ingredients": [
+    {
+      "count": 12,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "cobblestone"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:bow"
+        }
+      ]
+    },
+    {
+      "count": 4,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        }
+      ]
+    },
+    {
+      "count": 4,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "plankWood"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret.crossbow",
+    "count": 1
+  }
+}

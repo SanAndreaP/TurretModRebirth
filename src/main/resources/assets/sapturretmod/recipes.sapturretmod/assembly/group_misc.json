@@ -1,0 +1,7 @@
+{
+  "type": "sapturretmod:assembly.tab",
+  "name": "misc",
+  "item": {
+    "item": "sapturretmod:turret_control_unit"
+  }
+}

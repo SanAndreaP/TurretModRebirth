@@ -20,59 +20,54 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public final class TurretAssemblyRegistry
         implements ITurretAssemblyRegistry
 {
     public static final TurretAssemblyRegistry INSTANCE = new TurretAssemblyRegistry();
 
-    private final Map<UUID, ItemStack> recipeResults = new HashMap<>();
-    private final Map<UUID, RecipeEntry> recipeResources = new HashMap<>();
-    private final List<RecipeKeyEntry> recipeEntries = new ArrayList<>();
+    private final Map<ResourceLocation, RecipeEntry> recipes = new LinkedHashMap<>();
+    private final Map<ResourceLocation, RecipeEntry> uRecipes = Collections.unmodifiableMap(this.recipes);
     private final List<IRecipeGroup> groupsList = new ArrayList<>();
 
     @Override
-    public boolean registerRecipe(UUID uuid, IRecipeGroup group, @Nonnull ItemStack result, int fluxPerTick, int ticksProcessing, IRecipeItem... resources) {
-        if( uuid == null ) {
-            TmrConstants.LOG.log(Level.ERROR, "UUID for assembly recipe cannot be null!", new InvalidParameterException());
-            return false;
-        }
-        if( this.recipeResults.containsKey(uuid) ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("UUID %s for assembly recipe cannot be registered twice!", uuid), new InvalidParameterException());
+    public boolean registerRecipe(ResourceLocation id, IRecipeGroup group, @Nonnull ItemStack result, int fluxPerTick, int ticksProcessing, IRecipeItem... resources) {
+        if( id == null ) {
+            TmrConstants.LOG.log(Level.ERROR, "ID for assembly recipe cannot be null!", new InvalidParameterException());
             return false;
         }
         if( !ItemStackUtils.isValid(result) ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("Result stack of UUID %s is not valid!", uuid), new InvalidParameterException());
+            TmrConstants.LOG.log(Level.ERROR, String.format("Result stack of assembly recipe %s is not valid!", id), new InvalidParameterException());
             return false;
         }
         if( fluxPerTick < 0 ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("Flux usage cannot be smaller than 0 for UUID %s!", uuid), new InvalidParameterException());
+            TmrConstants.LOG.log(Level.ERROR, String.format("Flux usage cannot be smaller than 0 for assembly recipe %s!", id), new InvalidParameterException());
             return false;
         }
         if( ticksProcessing < 0 ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("Ticks processing cannot be smaller than 0 for UUID %s!", uuid), new InvalidParameterException());
+            TmrConstants.LOG.log(Level.ERROR, String.format("Ticks processing cannot be smaller than 0 for assembly recipe %s!", id), new InvalidParameterException());
             return false;
         }
         if( resources == null ) {
             resources = new IRecipeItem[0];
         }
 
-        this.recipeResults.put(uuid, result);
-        this.recipeResources.put(uuid, new RecipeEntry(resources, fluxPerTick, ticksProcessing));
-        this.recipeEntries.add(new RecipeKeyEntry(uuid, result));
+        this.recipes.put(id, new RecipeEntry(resources, fluxPerTick, ticksProcessing, result));
 
-        group.addRecipeId(uuid);
+        group.addRecipeId(id);
 
         return true;
     }
@@ -95,14 +90,14 @@ public final class TurretAssemblyRegistry
         return this.groupsList.toArray(new IRecipeGroup[0]);
     }
 
-    public RecipeEntry getRecipeEntry(UUID uuid) {
-        return this.recipeResources.get(uuid);
+    public RecipeEntry getRecipeEntry(ResourceLocation id) {
+        return this.recipes.get(id);
     }
 
     public RecipeEntry getRecipeEntry(ItemStack result) {
-        for( Map.Entry<UUID, ItemStack> entry : this.recipeResults.entrySet() ) {
-            if( ItemStackUtils.areEqual(result, entry.getValue()) ) {
-                return this.recipeResources.get(entry.getKey());
+        for( Map.Entry<ResourceLocation, RecipeEntry> entry : this.recipes.entrySet() ) {
+            if( ItemStackUtils.areEqual(result, entry.getValue().result) ) {
+                return entry.getValue();
             }
         }
 
@@ -111,26 +106,30 @@ public final class TurretAssemblyRegistry
 
     @Override
     @Nonnull
-    public ItemStack getRecipeResult(UUID uuid) {
-        ItemStack stack = this.recipeResults.get(uuid);
+    public ItemStack getRecipeResult(ResourceLocation id) {
+        ItemStack stack = this.recipes.get(id).result;
         return stack.copy();
     }
 
     @Override
-    public List<RecipeKeyEntry> getRecipeList() {
-        return new ArrayList<>(this.recipeEntries);
+    public Map<ResourceLocation, RecipeEntry> getRecipeList() {
+        return this.uRecipes;
     }
 
     public void finalizeRegistry() {
-        this.recipeEntries.sort((o1, o2) -> {
-            int i = Integer.compare(Item.getIdFromItem(o2.stack.getItem()), Item.getIdFromItem(o1.stack.getItem()));
+        LinkedHashMap<ResourceLocation, RecipeEntry> recipeOrdered = new LinkedHashMap<>(this.recipes);
+        this.recipes.clear();
+        recipeOrdered.entrySet().stream().sorted((o1, o2) -> {
+            RecipeEntry r1 = o1.getValue();
+            RecipeEntry r2 = o2.getValue();
+            int i = Integer.compare(Item.getIdFromItem(r1.result.getItem()), Item.getIdFromItem(r2.result.getItem()));
             if( i == 0 ) {
                 NonNullList<ItemStack> subtypes = NonNullList.create();
-                o1.stack.getItem().getSubItems(CreativeTabs.SEARCH, subtypes);
-                return Integer.compare(getStackIndexInList(subtypes, o1.stack), getStackIndexInList(subtypes, o2.stack));
+                r1.result.getItem().getSubItems(CreativeTabs.SEARCH, subtypes);
+                return Integer.compare(getStackIndexInList(subtypes, r1.result), getStackIndexInList(subtypes, r2.result));
             }
             return i;
-        });
+        }).forEach(e -> this.recipes.put(e.getKey(), e.getValue()));
 
         this.groupsList.forEach(group -> group.finalizeGroup(this));
     }
@@ -139,10 +138,11 @@ public final class TurretAssemblyRegistry
         return stacks.indexOf(stacks.stream().filter(fltStack -> ItemStackUtils.areEqual(stack, fltStack)).findFirst().orElse(null));
     }
 
-    public boolean checkAndConsumeResources(IInventory inv, UUID uuid) {
-        RecipeEntry entry = this.getRecipeEntry(uuid);
+    @Nullable
+    public List<ItemStack> checkAndConsumeResources(IInventory inv, ResourceLocation id) {
+        RecipeEntry entry = this.getRecipeEntry(id);
         if( entry == null ) {
-            return false;
+            return null;
         }
         entry = entry.copy();
         List<Tuple> resourceOnSlotList = new ArrayList<>();
@@ -153,7 +153,7 @@ public final class TurretAssemblyRegistry
         while( resourceStacksIt.hasNext() ) {
             IRecipeItem resource = resourceStacksIt.next();
             if( resource == null ) {
-                return false;
+                return null;
             }
 
             for( int i = invSize - 1; i >= 2; i-- ) {
@@ -180,14 +180,14 @@ public final class TurretAssemblyRegistry
         }
 
         if( resourceStacks.size() > 0 ) {
-            return false;
+            return null;
         }
 
+        List<ItemStack> removedItems = new ArrayList<>();
         for( Tuple resourceSlot : resourceOnSlotList ) {
-            inv.decrStackSize(resourceSlot.getValue(0), resourceSlot.getValue(1));
+            removedItems.add(inv.getStackInSlot(resourceSlot.getValue(0)).splitStack(resourceSlot.getValue(1)));
         }
 
-        return true;
+        return removedItems;
     }
-
 }

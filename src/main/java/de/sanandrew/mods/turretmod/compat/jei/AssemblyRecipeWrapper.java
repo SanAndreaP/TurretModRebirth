@@ -13,7 +13,6 @@ import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.assembly.IRecipeItem;
 import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntry;
-import de.sanandrew.mods.turretmod.registry.assembly.RecipeKeyEntry;
 import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import mezz.jei.api.ingredients.IIngredients;
@@ -21,12 +20,14 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.api.recipe.IRecipeWrapperFactory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @SideOnly(Side.CLIENT)
 class AssemblyRecipeWrapper
@@ -37,8 +38,8 @@ class AssemblyRecipeWrapper
     private final int fluxPerTick;
     private final int timeInTicks;
 
-    private AssemblyRecipeWrapper(RecipeKeyEntry keyEntry) {
-        RecipeEntry entry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(keyEntry.id);
+    private AssemblyRecipeWrapper(Map.Entry<ResourceLocation, RecipeEntry> keyEntry) {
+        RecipeEntry entry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(keyEntry.getKey());
         assert entry != null : "Recipe Entry should not be null!";
 
         ImmutableList.Builder<List<ItemStack>> inputBuilder = ImmutableList.builder();
@@ -48,7 +49,7 @@ class AssemblyRecipeWrapper
         this.input = inputBuilder.build();
         this.fluxPerTick = entry.fluxPerTick;
         this.timeInTicks = entry.ticksProcessing;
-        this.output = ImmutableList.of(keyEntry.stack);
+        this.output = ImmutableList.of(keyEntry.getValue().result);
     }
 
     @Override
@@ -77,10 +78,11 @@ class AssemblyRecipeWrapper
     }
 
     public static class Factory
-            implements IRecipeWrapperFactory<RecipeKeyEntry>
+            implements IRecipeWrapperFactory<Map.Entry>
     {
         @Override
-        public IRecipeWrapper getRecipeWrapper(RecipeKeyEntry recipe) {
+        @SuppressWarnings("unchecked")
+        public IRecipeWrapper getRecipeWrapper(Map.Entry recipe) {
             return new AssemblyRecipeWrapper(recipe);
         }
     }

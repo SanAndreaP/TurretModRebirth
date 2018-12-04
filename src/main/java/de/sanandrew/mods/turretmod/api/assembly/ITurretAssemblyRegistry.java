@@ -6,24 +6,24 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.api.assembly;
 
-import de.sanandrew.mods.turretmod.registry.assembly.RecipeKeyEntry;
+import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntry;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
-import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public interface ITurretAssemblyRegistry
 {
-    boolean registerRecipe(UUID uuid, IRecipeGroup group, @Nonnull ItemStack result, int fluxPerTick, int ticksProcessing, IRecipeItem... resources);
+    boolean registerRecipe(ResourceLocation id, IRecipeGroup group, @Nonnull ItemStack result, int fluxPerTick, int ticksProcessing, IRecipeItem... resources);
 
     IRecipeGroup registerGroup(String name, @Nonnull ItemStack stack);
 
     IRecipeGroup getGroup(String name);
 
     @Nonnull
-    ItemStack getRecipeResult(UUID uuid);
+    ItemStack getRecipeResult(ResourceLocation id);
 
-    List<RecipeKeyEntry> getRecipeList();
+    Map<ResourceLocation, RecipeEntry> getRecipeList();
 }

@@ -1,0 +1,14 @@
+{
+  "type": "sapturretmod:electrolytes",
+  "electrolytes": {
+    "item": "minecraft:potato"
+  },
+  "effectiveness": 1.0,
+  "timeProcessing": 200,
+  "trash": {
+    "item": "minecraft:sugar"
+  },
+  "treasure": {
+    "item": "minecraft:baked_potato"
+  }
+}

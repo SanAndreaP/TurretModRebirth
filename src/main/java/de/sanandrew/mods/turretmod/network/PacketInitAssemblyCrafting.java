@@ -13,30 +13,29 @@ import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-
-import java.util.UUID;
 
 public class PacketInitAssemblyCrafting
         extends AbstractMessage<PacketInitAssemblyCrafting>
 {
     private BlockPos pos;
-    private String crfUUID;
+    private String crfId;
     private int count;
 
     @SuppressWarnings("unused")
     public PacketInitAssemblyCrafting() { }
 
-    public PacketInitAssemblyCrafting(TileEntityTurretAssembly assembly, UUID uuid, int count) {
+    public PacketInitAssemblyCrafting(TileEntityTurretAssembly assembly, ResourceLocation id, int count) {
         this.pos = assembly.getPos();
-        this.crfUUID = uuid == null ? null : uuid.toString();
+        this.crfId = id == null ? null : id.toString();
         this.count = count;
     }
 
     public PacketInitAssemblyCrafting(TileEntityTurretAssembly assembly) {
         this.pos = assembly.getPos();
-        this.crfUUID = null;
+        this.crfId = null;
         this.count = 0;
     }
 
@@ -49,10 +48,10 @@ public class PacketInitAssemblyCrafting
     public void handleServerMessage(PacketInitAssemblyCrafting packet, EntityPlayer player) {
         TileEntity te = player.world.getTileEntity(packet.pos);
         if( te instanceof TileEntityTurretAssembly ) {
-            if( packet.crfUUID.equals("[CANCEL]") ) {
+            if( packet.crfId.equals("[CANCEL]") ) {
                 ((TileEntityTurretAssembly) te).cancelCrafting();
             } else {
-                ((TileEntityTurretAssembly) te).beginCrafting(UUID.fromString(packet.crfUUID), packet.count);
+                ((TileEntityTurretAssembly) te).beginCrafting(new ResourceLocation(packet.crfId), packet.count);
             }
         }
     }
@@ -60,7 +59,7 @@ public class PacketInitAssemblyCrafting
     @Override
     public void fromBytes(ByteBuf buf) {
         this.pos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
-        this.crfUUID = ByteBufUtils.readUTF8String(buf);
+        this.crfId = ByteBufUtils.readUTF8String(buf);
         this.count = buf.readByte();
     }
 
@@ -69,10 +68,10 @@ public class PacketInitAssemblyCrafting
         buf.writeInt(this.pos.getX());
         buf.writeInt(this.pos.getY());
         buf.writeInt(this.pos.getZ());
-        if( this.crfUUID == null ) {
+        if( this.crfId == null ) {
             ByteBufUtils.writeUTF8String(buf, "[CANCEL]");
         } else {
-            ByteBufUtils.writeUTF8String(buf, this.crfUUID);
+            ByteBufUtils.writeUTF8String(buf, this.crfId);
         }
         buf.writeByte(this.count);
     }

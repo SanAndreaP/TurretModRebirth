@@ -13,7 +13,6 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
-import de.sanandrew.mods.turretmod.registry.ammo.Ammunitions;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -30,17 +29,14 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ItemAmmoCartridge
         extends Item
@@ -55,7 +51,6 @@ public class ItemAmmoCartridge
         this.setMaxDamage(0);
     }
 
-    //TODO use pre-filled cartridges for every ammo type
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
         super.getSubItems(tab, list);
@@ -77,24 +72,22 @@ public class ItemAmmoCartridge
         }
     }
 
-    // crash: java.lang.IllegalArgumentException: Cannot get turret ammo item with invalid type!
-    //	at de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry.getItem(AmmunitionRegistry.java:125)
-    //	at de.sanandrew.mods.turretmod.item.ItemAmmoCartridge.addInformation(ItemAmmoCartridge.java:85)
-
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        IInventory inv = getInventory(stack);
-        if( inv instanceof Inventory && !inv.isEmpty() ) {
-            Inventory ammoInv = (Inventory) inv;
-            tooltip.add("Stored: " + ammoInv.getTotalAmmoCount() + "x " + AmmunitionRegistry.INSTANCE.getItem(ammoInv.getAmmoType().getId()).getDisplayName());
+        Inventory inv = getInventory(stack);
+        if( inv != null && !inv.isEmpty() ) {
+            tooltip.add("Stored: " + inv.getTotalAmmoCount() + "x " + AmmunitionRegistry.INSTANCE.getItem(inv.getAmmoType().getId()).getDisplayName());
         }
         super.addInformation(stack, worldIn, tooltip, flagIn);
     }
 
-    public static IInventory getInventory(ItemStack item) {
+    public static Inventory getInventory(ItemStack item) {
         IItemHandler itemHandler = item.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
         if( itemHandler instanceof InvWrapper ) {
-            return ((InvWrapper) itemHandler).getInv();
+            IInventory inv = ((InvWrapper) itemHandler).getInv();
+            if( inv instanceof Inventory ) {
+                return (Inventory) inv;
+            }
         }
 
         return null;
@@ -142,7 +135,7 @@ public class ItemAmmoCartridge
         @Override
         public boolean isEmpty() {
             this.load();
-            return this.stacks.stream().noneMatch(ItemStackUtils::isValid);
+            return this.stacks.stream().filter(i -> AmmunitionRegistry.INSTANCE.getType(i).isValid()).noneMatch(ItemStackUtils::isValid);
         }
 
         @Override
@@ -255,18 +248,16 @@ public class ItemAmmoCartridge
             return this.stacks.stream().map(ItemStack::getCount).reduce(Integer::sum).orElse(0);
         }
 
-        IAmmunition getAmmoType() {
+        public IAmmunition getAmmoType() {
             this.load();
-            return this.stacks.stream().map(AmmunitionRegistry.INSTANCE::getType).reduce((t1, t2) -> t1).orElse(AmmunitionRegistry.NULL_TYPE);
+            return this.stacks.stream().map(AmmunitionRegistry.INSTANCE::getType).filter(IAmmunition::isValid).reduce((t1, t2) -> t1).orElse(AmmunitionRegistry.NULL_TYPE);
         }
 
-//        @Override
         private void save() {
             NBTTagCompound nbt = this.holder.getOrCreateSubCompound("Inventory");
             nbt.setTag("Items", ItemStackUtils.writeItemStacksToTag(this.stacks, this.getInventoryStackLimit()));
         }
 
-//        @Override
         private void load() {
             if( !this.loaded ) {
                 this.loaded = true;

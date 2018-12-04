@@ -18,6 +18,8 @@ import de.sanandrew.mods.turretmod.api.assembly.IRecipeItem;
 import de.sanandrew.mods.turretmod.api.assembly.ITurretAssemblyRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import org.apache.commons.io.FilenameUtils;
@@ -29,7 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Stream;
 
 public final class TurretAssemblyRecipes
 {
@@ -41,18 +43,18 @@ public final class TurretAssemblyRecipes
         TmrConstants.LOG.log(Level.INFO, String.format("Initializing Turret Assembly recipes done in %d ms. Found %d recipes.", timeDelta, registry.getRecipeList().size()));
     }
 
-    @SuppressWarnings("UnusedReturnValue")
-    private static boolean loadJsonRecipes(ModContainer mod, final ITurretAssemblyRegistry registry) {
-        return MiscUtils.findFiles(mod, "assets/" + mod.getModId() + "/recipes_sapturretmod/assembly/",
-                                   root -> preProcessJson(root, registry),
-                                   (root, file) -> processRecipeJson(file, registry));
+    private static void loadJsonRecipes(ModContainer mod, final ITurretAssemblyRegistry registry) {
+        final String modId = mod.getModId();
+
+        MiscUtils.findFiles(mod, "assets/" + modId + "/recipes.sapturretmod/assembly/",
+                            root -> preProcessJson(root, registry),
+                            (root, file) -> processRecipeJson(modId, file, registry));
     }
 
     private static boolean preProcessJson(Path root, final ITurretAssemblyRegistry registry) {
         if( Files.exists(root) ) {
-            try {
-                Files.find(root, Integer.MAX_VALUE, (filePth, attr) -> FilenameUtils.getName(filePth.toString()).startsWith("group_"))
-                     .forEach(file -> processJson(file, json -> registerJsonGroup(json, registry)));
+            try( Stream<Path> groups = Files.find(root, Integer.MAX_VALUE, (filePth, attr) -> FilenameUtils.getName(filePth.toString()).startsWith("group_")) ) {
+                groups.forEach(file -> processJson(file, json -> registerJsonGroup(json, registry)));
             } catch( IOException ex ) {
                 TmrConstants.LOG.log(Level.ERROR, String.format("Couldn't read recipe group from directory %s", root), ex);
                 return false;
@@ -62,8 +64,10 @@ public final class TurretAssemblyRecipes
         return true;
     }
 
-    private static boolean processRecipeJson(Path file, final ITurretAssemblyRegistry registry) {
-        return FilenameUtils.getName(file.toString()).startsWith("group_") || processJson(file, json -> registerJsonRecipes(json, registry));
+    private static boolean processRecipeJson(final String modId, Path file, final ITurretAssemblyRegistry registry) {
+        String fileName = FilenameUtils.getBaseName(file.toString());
+        return fileName.startsWith("group_")
+               || processJson(file, json -> registerJsonRecipes(new ResourceLocation(modId, fileName), json, registry));
     }
 
     private static boolean processJson(Path file, Ex2Function<JsonObject, Boolean, JsonParseException, IOException> callback) {
@@ -101,8 +105,7 @@ public final class TurretAssemblyRecipes
     }
 
     @SuppressWarnings("RedundantThrows")
-    private static boolean registerJsonRecipes(JsonObject json, final ITurretAssemblyRegistry registry) throws JsonParseException, IOException {
-        String id = JsonUtils.getStringVal(json.get("id"));
+    private static boolean registerJsonRecipes(ResourceLocation id, JsonObject json, final ITurretAssemblyRegistry registry) throws JsonParseException, IOException {
         String group = JsonUtils.getStringVal(json.get("group"));
         int fluxPerTick = JsonUtils.getIntVal(json.get("fluxPerTick"));
         int ticksProcessing = JsonUtils.getIntVal(json.get("ticksProcessing"));
@@ -132,7 +135,7 @@ public final class TurretAssemblyRecipes
             }
         });
 
-        return registry.registerRecipe(UUID.fromString(id), registry.getGroup(group), result, fluxPerTick, ticksProcessing,
+        return registry.registerRecipe(id, registry.getGroup(group), result, fluxPerTick, ticksProcessing,
                                        entries.toArray(new IRecipeItem[0]));
     }
 }

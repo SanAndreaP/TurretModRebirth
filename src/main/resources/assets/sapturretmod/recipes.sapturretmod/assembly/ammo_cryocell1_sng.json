@@ -1,0 +1,59 @@
+{
+  "type": "sapturretmod:assembly",
+  "group": "ammo",
+  "fluxPerTick": 10,
+  "ticksProcessing": 60,
+  "ingredients": [
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "paneGlass"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:snow"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:gunpowder"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustGunpowder"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "nuggetIron"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:ammo.cryocell.1",
+    "count": 4
+  }
+}

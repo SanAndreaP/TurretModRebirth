@@ -1,0 +1,14 @@
+{
+  "type": "sapturretmod:electrolytes",
+  "electrolytes": {
+    "item": "minecraft:carrot"
+  },
+  "effectiveness": 1.0,
+  "timeProcessing": 250,
+  "trash": {
+    "item": "minecraft:sugar"
+  },
+  "treasure": {
+    "item": "minecraft:redstone"
+  }
+}

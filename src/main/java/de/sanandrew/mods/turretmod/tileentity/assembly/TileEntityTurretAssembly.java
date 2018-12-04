@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.tileentity.assembly;
 
 import de.sanandrew.mods.sanlib.lib.Tuple;
+import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
@@ -19,20 +20,24 @@ import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
@@ -41,7 +46,8 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TileEntityTurretAssembly
         extends TileEntity
@@ -80,6 +86,8 @@ public class TileEntityTurretAssembly
     private final IItemHandler itemHandlerBottom;
     private final IItemHandler itemHandlerSide;
 
+    private List<ItemStack> removedItems;
+
     public TileEntityTurretAssembly() {
         this.robotArmX = 2.0F;
         this.robotArmY = -9.0F;
@@ -96,7 +104,7 @@ public class TileEntityTurretAssembly
         this.itemHandlerSide = new SidedInvWrapper(this.invHandler, EnumFacing.WEST);
     }
 
-    public void beginCrafting(UUID recipe, int count) {
+    public void beginCrafting(ResourceLocation recipe, int count) {
         if( this.currCrafting != null && recipe.equals(this.currCrafting.getValue(0)) && !this.automate ) {
             ItemStack result = TurretAssemblyRegistry.INSTANCE.getRecipeResult(recipe);
             ItemStack currCrfStack = this.currCrafting.getValue(1);
@@ -123,6 +131,16 @@ public class TileEntityTurretAssembly
     }
 
     public void cancelCrafting() {
+        if( this.removedItems != null ) {
+            this.removedItems.forEach(is -> {
+                ItemStack remains = InventoryUtils.addStackToInventory(is, this.invHandler);
+                if( ItemStackUtils.isValid(remains) ) {
+                    EntityItem item = new EntityItem(this.world, this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D, remains);
+                    this.world.spawnEntity(item);
+                }
+            });
+            this.removedItems = null;
+        }
         this.currCrafting = null;
         this.ticksCrafted = 0;
         this.fluxConsumption = 0;
@@ -135,19 +153,22 @@ public class TileEntityTurretAssembly
 
     private void initCrafting() {
         if( this.currCrafting != null && this.invHandler.canFillOutput() ) {
-            UUID currCrfUUID = this.currCrafting.getValue(0);
+            ResourceLocation currCrfId = this.currCrafting.getValue(0);
             ItemStack addStacks = this.currCrafting.<ItemStack>getValue(1).copy();
-            ItemStack recipe = TurretAssemblyRegistry.INSTANCE.getRecipeResult(currCrfUUID);
+            ItemStack recipe = TurretAssemblyRegistry.INSTANCE.getRecipeResult(currCrfId);
             if( ItemStackUtils.isValid(recipe) ) {
                 addStacks.setCount(recipe.getCount());
-                if( this.invHandler.canFillOutput(addStacks) && TurretAssemblyRegistry.INSTANCE.checkAndConsumeResources(this.invHandler, currCrfUUID) ) {
-                    RecipeEntry currentlyCrafted = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(currCrfUUID);
+                if( this.invHandler.canFillOutput(addStacks) ) {
+                    RecipeEntry currentlyCrafted = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(currCrfId);
                     if( currentlyCrafted != null ) {
-                        this.maxTicksCrafted = currentlyCrafted.ticksProcessing;
-                        this.fluxConsumption = MathHelper.ceil(currentlyCrafted.fluxPerTick * (this.hasSpeedUpgrade() ? 1.1F : 1.0F));
-                        this.ticksCrafted = 0;
-                        this.isActive = true;
-                        this.doSync = true;
+                        this.removedItems = TurretAssemblyRegistry.INSTANCE.checkAndConsumeResources(this.invHandler, currCrfId);
+                        if( this.removedItems != null ) {
+                            this.maxTicksCrafted = currentlyCrafted.ticksProcessing;
+                            this.fluxConsumption = MathHelper.ceil(currentlyCrafted.fluxPerTick * (this.hasSpeedUpgrade() ? 1.1F : 1.0F));
+                            this.ticksCrafted = 0;
+                            this.isActive = true;
+                            this.doSync = true;
+                        }
                     }
                 }
             } else {
@@ -212,7 +233,8 @@ public class TileEntityTurretAssembly
                                     this.currCrafting.<ItemStack>getValue(1).shrink(1);
                                 }
 
-                                if( !TurretAssemblyRegistry.INSTANCE.checkAndConsumeResources(this.invHandler, this.currCrafting.getValue(0)) ) {
+                                this.removedItems = TurretAssemblyRegistry.INSTANCE.checkAndConsumeResources(this.invHandler, this.currCrafting.getValue(0));
+                                if( this.removedItems == null ) {
                                     this.isActive = false;
                                     this.isActiveClient = false;
                                 }
@@ -293,23 +315,18 @@ public class TileEntityTurretAssembly
     }
 
     private void animateRobotArmRng() {
-        float endX = 4.0F + MiscUtils.RNG.randomFloat() * 6.0F;
-        float endY = -3.5F + MiscUtils.RNG.randomFloat() * -6.0F;
-
-        this.robotMotionX = (0.1F + MiscUtils.RNG.randomFloat() * 0.1F) * (endX > this.robotArmX ? 1.0F : -1.0F);
-        this.robotMotionY = (0.1F + MiscUtils.RNG.randomFloat() * 0.1F) * (endY > this.robotArmY ? 1.0F : -1.0F);
-        this.robotEndX = endX;
-        this.robotEndY = endY;
+        this.animateRobotArm(4.0F + MiscUtils.RNG.randomFloat() * 6.0F, -3.5F + MiscUtils.RNG.randomFloat() * -6.0F);
     }
 
     private void animateRobotArmReset() {
-        float endX = 2.0F;
-        float endY = -9.0F;
+        this.animateRobotArm(2.0F, -9.0F);
+    }
 
-        this.robotMotionX = (0.1F + MiscUtils.RNG.randomFloat() * 0.1F) * (endX > this.robotArmX ? 1.0F : -1.0F);
-        this.robotMotionY = (0.1F + MiscUtils.RNG.randomFloat() * 0.1F) * (endY > this.robotArmY ? 1.0F : -1.0F);
-        this.robotEndX = endX;
-        this.robotEndY = endY;
+    private void animateRobotArm(float x, float y) {
+        this.robotMotionX = (0.1F + MiscUtils.RNG.randomFloat() * 0.1F) * (x > this.robotArmX ? 1.0F : -1.0F);
+        this.robotMotionY = (0.1F + MiscUtils.RNG.randomFloat() * 0.1F) * (y > this.robotArmY ? 1.0F : -1.0F);
+        this.robotEndX = x;
+        this.robotEndY = y;
     }
 
     public IInventory getInventory() {
@@ -330,7 +347,7 @@ public class TileEntityTurretAssembly
     @Override
     public void handleUpdateTag(NBTTagCompound tag) {
         super.handleUpdateTag(tag);
-        this.readFromNBT(tag);
+        this.readNBT(tag);
     }
 
     @Override
@@ -344,6 +361,10 @@ public class TileEntityTurretAssembly
 
         this.writeNBT(nbt);
 
+        if( this.removedItems != null ) {
+            nbt.setTag("RemovedItems", ItemStackUtils.writeItemStacksToTag(this.removedItems, this.invHandler.getInventoryStackLimit()));
+        }
+
         return nbt;
     }
 
@@ -353,6 +374,11 @@ public class TileEntityTurretAssembly
 
         this.readNBT(nbt);
 
+        if( nbt.hasKey("RemovedItems", Constants.NBT.TAG_LIST) ) {
+            this.removedItems = new ArrayList<>();
+            ItemStackUtils.readItemStacksFromTag(this.removedItems, nbt.getTagList("RemovedItems", Constants.NBT.TAG_COMPOUND));
+        }
+
         this.doSync = true;
     }
 
@@ -360,8 +386,8 @@ public class TileEntityTurretAssembly
         nbt.setTag("inventory", this.invHandler.serializeNBT());
 
         if( this.currCrafting != null ) {
-            nbt.setString("craftingUUID", this.currCrafting.getValue(0).toString());
-            ItemStackUtils.writeStackToTag(this.currCrafting.getValue(1), nbt, "craftingStack");
+            nbt.setString("CraftingId", this.currCrafting.getValue(0).toString());
+            ItemStackUtils.writeStackToTag(this.currCrafting.getValue(1), nbt, "CraftingStack");
         }
 
         nbt.setTag("cap_energy", this.energyStorage.serializeNBT());
@@ -382,8 +408,8 @@ public class TileEntityTurretAssembly
     private void readNBT(NBTTagCompound nbt) {
         this.invHandler.deserializeNBT(nbt.getCompoundTag("inventory"));
 
-        if( nbt.hasKey("craftingUUID") && nbt.hasKey("craftingStack") ) {
-            this.currCrafting = new Tuple(UUID.fromString(nbt.getString("craftingUUID")), new ItemStack(nbt.getCompoundTag("craftingStack")));
+        if( nbt.hasKey("CraftingId") && nbt.hasKey("CraftingStack") ) {
+            this.currCrafting = new Tuple(new ResourceLocation(nbt.getString("CraftingUUID")), new ItemStack(nbt.getCompoundTag("CraftingStack")));
         }
 
         this.energyStorage.deserializeNBT(nbt.getCompoundTag("cap_energy"));
@@ -443,7 +469,7 @@ public class TileEntityTurretAssembly
         this.isActiveClient = buf.readBoolean();
         ItemStack crfStack = ByteBufUtils.readItemStack(buf);
         if( ItemStackUtils.isValid(crfStack) ) {
-            this.currCrafting = new Tuple(UUID.fromString(ByteBufUtils.readUTF8String(buf)), crfStack);
+            this.currCrafting = new Tuple(new ResourceLocation(ByteBufUtils.readUTF8String(buf)), crfStack);
         } else {
             this.currCrafting = null;
         }
@@ -466,7 +492,7 @@ public class TileEntityTurretAssembly
     }
 
     @Override
-    @SuppressWarnings({"unchecked", "ConstantConditions", "ObjectEquality"})
+    @SuppressWarnings({"unchecked", "ObjectEquality"})
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
         if( capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ) {
             if( facing == EnumFacing.DOWN ) {

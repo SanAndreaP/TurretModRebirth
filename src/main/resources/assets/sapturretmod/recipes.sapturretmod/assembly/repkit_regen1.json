@@ -1,0 +1,32 @@
+{
+  "type": "sapturretmod:assembly",
+  "group": "repkit",
+  "fluxPerTick": 25,
+  "ticksProcessing": 600,
+  "ingredients": [
+    {
+      "count": 2,
+      "items": [
+        {
+          "item": "minecraft:leather"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "showTooltipText": true,
+      "items": [
+        {
+          "item": "minecraft:potion",
+          "nbt": {
+            "Potion": "minecraft:regeneration"
+          }
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:repkit.regen.1",
+    "count": 6
+  }
+}

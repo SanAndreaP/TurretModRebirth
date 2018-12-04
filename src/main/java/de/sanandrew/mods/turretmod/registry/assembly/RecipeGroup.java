@@ -12,6 +12,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -24,14 +25,14 @@ public class RecipeGroup
     private final String name;
     @Nonnull
     private final ItemStack icon;
-    private final List<UUID> recipes = new ArrayList<>();
+    private final List<ResourceLocation> recipes = new ArrayList<>();
 
     public RecipeGroup(String name, @Nonnull ItemStack icon) {
         this.name = name;
         this.icon = icon;
     }
 
-    public void addRecipeId(UUID id) {
+    public void addRecipeId(ResourceLocation id) {
         this.recipes.add(id);
     }
 
@@ -47,7 +48,7 @@ public class RecipeGroup
     }
 
     @Override
-    public List<UUID> getRecipeIdList() {
+    public List<ResourceLocation> getRecipeIdList() {
         return new ArrayList<>(this.recipes);
     }
 

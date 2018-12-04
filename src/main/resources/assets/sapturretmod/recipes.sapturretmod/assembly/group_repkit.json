@@ -1,0 +1,7 @@
+{
+  "type": "sapturretmod:assembly.tab",
+  "name": "repkit",
+  "item": {
+    "item": "sapturretmod:repkit.standard.1"
+  }
+}

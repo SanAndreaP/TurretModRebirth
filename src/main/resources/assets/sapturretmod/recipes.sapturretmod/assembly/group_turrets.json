@@ -1,0 +1,7 @@
+{
+  "type": "sapturretmod:assembly.tab",
+  "name": "turrets",
+  "item": {
+    "item": "sapturretmod:turret.crossbow"
+  }
+}

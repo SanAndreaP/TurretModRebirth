@@ -1,15 +1,15 @@
 package de.sanandrew.mods.turretmod.api.assembly;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface IRecipeGroup
 {
-    void addRecipeId(UUID id);
+    void addRecipeId(ResourceLocation id);
 
-    List<UUID> getRecipeIdList();
+    List<ResourceLocation> getRecipeIdList();
 
     String getName();
 

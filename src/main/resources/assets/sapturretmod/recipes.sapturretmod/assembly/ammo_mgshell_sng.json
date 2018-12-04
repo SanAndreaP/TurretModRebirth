@@ -1,0 +1,56 @@
+{
+  "type": "sapturretmod:assembly",
+  "group": "ammo",
+  "fluxPerTick": 10,
+  "ticksProcessing": 60,
+  "ingredients": [
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotIron"
+        }
+      ]
+    },
+    {
+      "count": 2,
+      "items": [
+        {
+          "item": "minecraft:wheat_seeds"
+        },
+        {
+          "item": "minecraft:melon_seeds"
+        },
+        {
+          "item": "minecraft:pumpkin_seeds"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:gunpowder"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustGunpowder"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:ammo.minigunshell",
+    "count": 2
+  }
+}

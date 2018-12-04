@@ -1,0 +1,29 @@
+{
+  "type": "sapturretmod:assembly",
+  "group": "upgrades",
+  "fluxPerTick": 20,
+  "ticksProcessing": 600,
+  "ingredients": [
+    {
+      "count": 1,
+      "showTooltipText": true,
+      "items": [
+        {
+          "item": "sapturretmod:upgrade.empty"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:trapped_chest"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:upgrade.upgstorage.1",
+    "count": 1
+  }
+}
