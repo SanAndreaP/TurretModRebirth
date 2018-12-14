@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.logging.log4j.Level;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(modid = TmrConstants.ID)
 public class BlockRegistry
 {
     public static final BlockTurretAssembly TURRET_ASSEMBLY = new BlockTurretAssembly();

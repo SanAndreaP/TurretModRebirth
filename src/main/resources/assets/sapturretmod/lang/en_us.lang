@@ -51,6 +51,7 @@ item.sapturretmod:ammo.minigunshell.name=Minigun Rounds
 item.sapturretmod:ammo.eleccell.name=Electrolyte Cell
 item.sapturretmod:ammo.fluxcell.name=Flux Cell
 item.sapturretmod:ammo.fueltank.name=Fuel Tank
+item.sapturretmod:ammo.cartridge.name=Ammunition Cartridge
 # Repair Kits
 item.sapturretmod:repkit.standard.1.name=Repair Kit 05HS
 item.sapturretmod:repkit.standard.2.name=Repair Kit 10HS

@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
@@ -17,7 +18,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(modid = TmrConstants.ID)
 public class ItemRegistry
 {
     public static final Map<ResourceLocation, ItemTurret> TURRET_PLACERS = new LinkedHashMap<>();
