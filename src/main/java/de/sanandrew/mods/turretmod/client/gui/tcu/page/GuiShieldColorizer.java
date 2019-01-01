@@ -135,7 +135,6 @@ public class GuiShieldColorizer
             GlStateManager.matrixMode(GL11.GL_MODELVIEW);
         }
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-
     }
 
     @Override

@@ -13,7 +13,6 @@ import de.sanandrew.mods.turretmod.registry.upgrades.shield.UpgradeShieldColoriz
 import de.sanandrew.mods.turretmod.registry.upgrades.shield.UpgradeShieldPersonal;
 import de.sanandrew.mods.turretmod.registry.upgrades.smarttargeting.SmartTargeting;
 
-@SuppressWarnings("WeakerAccess")
 public class Upgrades
 {
     public static final IUpgrade UPG_STORAGE_I = new SimpleUpgrade("upgstorage.1");

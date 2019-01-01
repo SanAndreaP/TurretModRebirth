@@ -55,6 +55,7 @@ public enum Resources
     GUI_ASSEMBLY_FLT("textures/gui/turretassembly/filter.png"),
     GUI_POTATOGEN("textures/gui/potatogen.png"),
     GUI_TURRETINFO("textures/gui/turretinfo/backg.png"),
+    GUI_CARTRIDGE("textures/gui/ammo_cartridge.png"),
 
     TINFO_GRP_AMMO("textures/gui/lexicon/group_ammo.png"),
     TINFO_GRP_INFO("textures/gui/lexicon/group_info.png"),
