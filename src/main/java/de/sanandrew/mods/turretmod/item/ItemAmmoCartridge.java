@@ -9,11 +9,13 @@
 package de.sanandrew.mods.turretmod.item;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,6 +24,9 @@ import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
@@ -70,6 +75,15 @@ public class ItemAmmoCartridge
                 }
             });
         }
+    }
+
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
+        if( !worldIn.isRemote ) {
+            TurretModRebirth.proxy.openGui(playerIn, EnumGui.CARTRIDGE, 0, 0, 0);
+        }
+
+        return ActionResult.newResult(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
     }
 
     @Override

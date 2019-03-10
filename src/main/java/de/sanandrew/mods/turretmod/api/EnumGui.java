@@ -10,13 +10,14 @@ package de.sanandrew.mods.turretmod.api;
 
 public enum EnumGui
 {
-    GUI_TASSEMBLY_MAN,
-    GUI_TASSEMBLY_FLT,
-    GUI_POTATOGEN,
-    GUI_TINFO,
-    GUI_TCU,
+    TASSEMBLY_MAN,
+    TASSEMBLY_FLT,
+    ELECTROLYTEGEN,
+    TINFO,
+    TCU,
+    CARTRIDGE,
 
-    GUI_DEBUG_CAMERA;
+    DEBUG_CAMERA;
 
     public static final EnumGui[] VALUES = values();
 }

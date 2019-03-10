@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.inventory;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteProcess;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -96,17 +97,7 @@ public class ContainerElectrolyteGenerator
                 return ItemStackUtils.getEmpty();
             }
 
-            if( slotStack.getCount() == 0 ) { // if stackSize of slot got to 0
-                slot.putStack(ItemStackUtils.getEmpty());
-            } else { // update changed slot stack state
-                slot.onSlotChanged();
-            }
-
-            if( slotStack.getCount() == origStack.getCount() ) { // if nothing changed stackSize-wise
-                return ItemStackUtils.getEmpty();
-            }
-
-            slot.onTake(player, slotStack);
+            if (TmrUtils.finishTransfer(player, origStack, slot, slotStack)) return ItemStackUtils.getEmpty();
         }
 
         return origStack;

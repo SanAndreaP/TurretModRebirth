@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.client.util;
 
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconInst;
 import de.sanandrew.mods.sanlib.lib.Tuple;
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
@@ -21,9 +22,11 @@ import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import de.sanandrew.mods.turretmod.client.event.RenderEventHandler;
 import de.sanandrew.mods.turretmod.client.event.RenderForcefieldHandler;
 import de.sanandrew.mods.turretmod.client.gui.GuiCameras;
-import de.sanandrew.mods.turretmod.client.gui.GuiPotatoGenerator;
+import de.sanandrew.mods.turretmod.client.gui.GuiCartridge;
+import de.sanandrew.mods.turretmod.client.gui.GuiElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiAssemblyFilter;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
+import de.sanandrew.mods.turretmod.client.gui.element.ElectrolyteBar;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.PlayerHeads;
 import de.sanandrew.mods.turretmod.client.particle.ParticleAssemblySpark;
 import de.sanandrew.mods.turretmod.client.particle.ParticleCryoTrail;
@@ -34,6 +37,7 @@ import de.sanandrew.mods.turretmod.client.shader.Shaders;
 import de.sanandrew.mods.turretmod.client.world.ClientWorldEventListener;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretProjectile;
+import de.sanandrew.mods.turretmod.item.ItemAmmoCartridge;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretLaser;
@@ -41,42 +45,34 @@ import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.util.CommonProxy;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
-import de.sanandrew.mods.turretmod.util.Resources;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleSmokeNormal;
 import net.minecraft.client.resources.IReloadableResourceManager;
-import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.client.resource.IResourceType;
-import net.minecraftforge.client.resource.ISelectiveResourceReloadListener;
-import net.minecraftforge.client.resource.VanillaResourceType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Level;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Predicate;
 
 public class ClientProxy
         extends CommonProxy
 {
     public static ILexiconInst lexiconInstance;
+
+    static {
+        GuiDefinition.TYPES.put(ElectrolyteBar.ID, ElectrolyteBar::new);
+    }
 
     @Override
     public void preInit(FMLPreInitializationEvent event) {
@@ -127,33 +123,41 @@ public class ClientProxy
         if( id >= 0 && id < EnumGui.VALUES.length ) {
             TileEntity te;
             switch( EnumGui.VALUES[id] ) {
-                case GUI_TCU:
+                case TCU:
                     Entity e = world.getEntityByID(x);
                     if( e instanceof ITurretInst ) {
                         return GuiTcuRegistry.INSTANCE.openGUI(y, player, (ITurretInst) e);
                     }
                     break;
-                case GUI_TASSEMBLY_MAN:
+                case TASSEMBLY_MAN:
                     te = world.getTileEntity(new BlockPos(x, y, z));
                     if( te instanceof TileEntityTurretAssembly ) {
                         return new GuiTurretAssembly(player.inventory, (TileEntityTurretAssembly) te);
                     }
                     break;
-                case GUI_TASSEMBLY_FLT:
-                    ItemStack stack = player.getHeldItemMainhand();
+                case TASSEMBLY_FLT:
+                    ItemStack stack = TmrUtils.getHeldItemOfType(player, ItemRegistry.ASSEMBLY_UPG_FILTER);
                     if( ItemStackUtils.isValid(stack) && stack.getItem() == ItemRegistry.ASSEMBLY_UPG_FILTER ) {
                         return new GuiAssemblyFilter(player.inventory, stack);
                     }
                     break;
-                case GUI_POTATOGEN:
+                case ELECTROLYTEGEN:
                     te = world.getTileEntity(new BlockPos(x, y, z));
                     if( te instanceof TileEntityElectrolyteGenerator ) {
-                        return new GuiPotatoGenerator(player.inventory, (TileEntityElectrolyteGenerator) te);
+                        return new GuiElectrolyteGenerator(player.inventory, (TileEntityElectrolyteGenerator) te);
                     }
-                case GUI_TINFO:
+                case TINFO:
                     return lexiconInstance.getGui();
-                case GUI_DEBUG_CAMERA:
+                case DEBUG_CAMERA:
                     return new GuiCameras(world.getEntityByID(x));
+                case CARTRIDGE:
+                    ItemStack heldStack = TmrUtils.getHeldItemOfType(player, ItemRegistry.AMMO_CARTRIDGE);
+                    if( ItemStackUtils.isValid(heldStack) ) {
+                        IInventory inv = ItemAmmoCartridge.getInventory(heldStack);
+                        if( inv != null ) {
+                            return new GuiCartridge(player.inventory, inv, player);
+                        }
+                    }
             }
         } else {
             TmrConstants.LOG.log(Level.WARN, "Gui ID %d cannot be opened as it isn't a valid index in EnumGui!", id);

@@ -98,7 +98,7 @@ public abstract class ItemAssemblyUpgrade
                     setFilterStacks(player.getHeldItem(hand), null);
                     player.inventoryContainer.detectAndSendChanges();
                 } else {
-                    TurretModRebirth.proxy.openGui(player, EnumGui.GUI_TASSEMBLY_FLT, 0, 0, 0);
+                    TurretModRebirth.proxy.openGui(player, EnumGui.TASSEMBLY_FLT, 0, 0, 0);
                 }
             }
 

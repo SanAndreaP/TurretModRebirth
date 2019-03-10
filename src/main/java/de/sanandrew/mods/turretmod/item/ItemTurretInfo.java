@@ -49,7 +49,7 @@ public class ItemTurretInfo
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         if( world.isRemote ) {
-            TurretModRebirth.proxy.openGui(player, EnumGui.GUI_TINFO, -1, -1, 0);
+            TurretModRebirth.proxy.openGui(player, EnumGui.TINFO, -1, -1, 0);
         }
 
         return super.onItemRightClick(world, player, hand);

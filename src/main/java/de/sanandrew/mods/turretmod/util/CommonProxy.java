@@ -21,8 +21,10 @@ import de.sanandrew.mods.turretmod.event.CapabilityEventHandler;
 import de.sanandrew.mods.turretmod.event.DamageEventHandler;
 import de.sanandrew.mods.turretmod.event.ExplosionEventHandler;
 import de.sanandrew.mods.turretmod.inventory.ContainerAssemblyFilter;
+import de.sanandrew.mods.turretmod.inventory.ContainerCartridge;
 import de.sanandrew.mods.turretmod.inventory.ContainerElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
+import de.sanandrew.mods.turretmod.item.ItemAmmoCartridge;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketOpenGui;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
@@ -32,6 +34,7 @@ import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectroly
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -71,30 +74,37 @@ public class CommonProxy
         if( id >= 0 && id < EnumGui.VALUES.length ) {
             TileEntity te;
             switch( EnumGui.VALUES[id] ) {
-                case GUI_TCU:
+                case TCU:
                     Entity e = world.getEntityByID(x);
                     if( e instanceof ITurretInst ) {
                         return GuiTcuRegistry.INSTANCE.openContainer(y, player, (ITurretInst) e);
                     }
                     break;
-                case GUI_TASSEMBLY_MAN:
+                case TASSEMBLY_MAN:
                     te = world.getTileEntity(new BlockPos(x, y, z));
                     if( te instanceof TileEntityTurretAssembly ) {
                         return new ContainerTurretAssembly(player.inventory, (TileEntityTurretAssembly) te);
                     }
                     break;
-                case GUI_TASSEMBLY_FLT:
-                    ItemStack stack = player.getHeldItemMainhand();
-                    if( ItemStackUtils.isValid(stack) && stack.getItem() == ItemRegistry.ASSEMBLY_UPG_FILTER ) {
+                case TASSEMBLY_FLT:
+                    ItemStack stack = TmrUtils.getHeldItemOfType(player, ItemRegistry.ASSEMBLY_UPG_FILTER);
+                    if( ItemStackUtils.isValid(stack) ) {
                         return new ContainerAssemblyFilter(player.inventory, stack, player.inventory.currentItem);
                     }
                     break;
-                case GUI_POTATOGEN:
+                case ELECTROLYTEGEN:
                     te = world.getTileEntity(new BlockPos(x, y, z));
                     if( te instanceof TileEntityElectrolyteGenerator ) {
                         return new ContainerElectrolyteGenerator(player.inventory, (TileEntityElectrolyteGenerator) te);
                     }
-
+                case CARTRIDGE:
+                    ItemStack heldStack = TmrUtils.getHeldItemOfType(player, ItemRegistry.AMMO_CARTRIDGE);
+                    if( ItemStackUtils.isValid(heldStack) ) {
+                        IInventory inv = ItemAmmoCartridge.getInventory(heldStack);
+                        if( inv != null ) {
+                            return new ContainerCartridge(player.inventory, inv, player);
+                        }
+                    }
             }
         } else {
             TmrConstants.LOG.log(Level.WARN, "Gui ID %d cannot be opened as it isn't a valid index in EnumGui!", id);

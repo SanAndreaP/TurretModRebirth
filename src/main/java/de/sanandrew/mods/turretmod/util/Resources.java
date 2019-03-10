@@ -53,9 +53,11 @@ public enum Resources
 //    GUI_TCU_HUD("textures/gui/tcu/hud.png"),
     GUI_ASSEMBLY_CRF("textures/gui/turretassembly/manual.png"),
     GUI_ASSEMBLY_FLT("textures/gui/turretassembly/filter.png"),
-    GUI_POTATOGEN("textures/gui/potatogen.png"),
+    GUI_ELECTROLYTE("textures/gui/potatogen.png"),
     GUI_TURRETINFO("textures/gui/turretinfo/backg.png"),
     GUI_CARTRIDGE("textures/gui/ammo_cartridge.png"),
+    GUI_STRUCT_ELECTROLYTE("guis/electrolyte.json"),
+    GUI_STRUCT_CARTRIDGE("guis/ammo_cartridge.json"),
 
     TINFO_GRP_AMMO("textures/gui/lexicon/group_ammo.png"),
     TINFO_GRP_INFO("textures/gui/lexicon/group_info.png"),

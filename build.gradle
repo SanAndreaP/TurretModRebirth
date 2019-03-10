@@ -32,7 +32,7 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12.2-14.23.4.2747"
+    version = "1.12.2-14.23.5.2768"
     runDir = "run"
     mappings = "snapshot_20180301"
 }
@@ -56,7 +56,7 @@ dependencies {
     deobfCompile "mezz.jei:jei_1.12.2:4.8.5.147:api"
     runtime "mezz.jei:jei_1.12.2:4.8.5.147"
     deobfCompile "the-one-probe:theoneprobe:1.12:1.4.19"
-    deobfCompile "de.sanandrew.mods:SanLib:1.12.2-1.5.1"
+    deobfCompile "de.sanandrew.mods:SanLib:1.12.2-1.6.0"
 }
 
 processResources {

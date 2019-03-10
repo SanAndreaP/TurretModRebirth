@@ -129,7 +129,7 @@ public class BlockTurretAssembly
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if( !world.isRemote ) {
-            TurretModRebirth.proxy.openGui(player, EnumGui.GUI_TASSEMBLY_MAN, pos.getX(), pos.getY(), pos.getZ());
+            TurretModRebirth.proxy.openGui(player, EnumGui.TASSEMBLY_MAN, pos.getX(), pos.getY(), pos.getZ());
         }
 
         return true;

@@ -48,7 +48,7 @@ public class ElectrolyteRegistry
     }
 
     private static boolean loadJsonRecipes(ModContainer mod) {
-        return MiscUtils.findFiles(mod, "assets/" + mod.getModId() + "/recipes_sapturretmod/electrolytegen/", null, ElectrolyteRegistry::processJson);
+        return MiscUtils.findFiles(mod, "assets/" + mod.getModId() + "/recipes.sapturretmod/electrolytegen/", null, ElectrolyteRegistry::processJson);
     }
 
     private static boolean processJson(Path root, Path file) {

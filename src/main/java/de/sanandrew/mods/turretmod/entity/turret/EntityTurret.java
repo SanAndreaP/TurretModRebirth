@@ -326,7 +326,7 @@ public class EntityTurret
 
         if( this.world.isRemote ) {
             if( ItemStackUtils.isItem(stack, ItemRegistry.TURRET_CONTROL_UNIT) ) {
-                TmrUtils.INSTANCE.openGui(player, player.isSneaking() ? EnumGui.GUI_DEBUG_CAMERA : EnumGui.GUI_TCU, this.getEntityId(), 0, 0);
+                TmrUtils.INSTANCE.openGui(player, player.isSneaking() ? EnumGui.DEBUG_CAMERA : EnumGui.TCU, this.getEntityId(), 0, 0);
                 return true;
             }
 

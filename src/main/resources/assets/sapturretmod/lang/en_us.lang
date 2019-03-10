@@ -179,6 +179,8 @@ gui.sapturretmod.tassembly.rfUsing=using %d RF/t
 # Generator
 gui.sapturretmod.electrogen.effective=Effectiveness:
 gui.sapturretmod.electrogen.powergen=Power generated:
+# Ammo Cartridge
+container.sapturretmod.ammo_cartridge=Ammunition Cartridge
 
 #### Subtitles ####
 subtitles.sapturretmod.turretIdle=Turret idles

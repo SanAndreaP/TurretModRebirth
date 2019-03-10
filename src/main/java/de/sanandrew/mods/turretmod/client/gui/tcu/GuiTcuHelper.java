@@ -130,7 +130,7 @@ public final class GuiTcuHelper
     void onButtonClick(IGuiTcuInst<?> gui, GuiButton button) {
         ResourceLocation location = this.tabs.get(button);
         if( location != null ) {
-            TurretModRebirth.proxy.openGui(gui.getGui().mc.player, EnumGui.GUI_TCU, gui.getTurretInst().get().getEntityId(), GuiTcuRegistry.GUI_RESOURCES.indexOf(location), 0);
+            TurretModRebirth.proxy.openGui(gui.getGui().mc.player, EnumGui.TCU, gui.getTurretInst().get().getEntityId(), GuiTcuRegistry.GUI_RESOURCES.indexOf(location), 0);
         } else if( button == this.tabNavLeft && currTabScroll > 0 ) {
             currTabScroll--;
         } else if( button == this.tabNavRight && currTabScroll < this.tabs.size() - MAX_TABS ) {

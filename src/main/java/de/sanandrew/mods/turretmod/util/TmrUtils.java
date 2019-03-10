@@ -23,6 +23,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -167,6 +168,31 @@ public class TmrUtils
         }
 
         return slotChanged;
+    }
+
+    public static boolean finishTransfer(EntityPlayer player, ItemStack origStack, Slot slot, ItemStack slotStack) {
+        if( slotStack.getCount() == 0 ) { // if stackSize of slot got to 0
+            slot.putStack(ItemStackUtils.getEmpty());
+        } else { // update changed slot stack state
+            slot.onSlotChanged();
+        }
+
+        if( slotStack.getCount() == origStack.getCount() ) { // if nothing changed stackSize-wise
+            return true;
+        }
+
+        slot.onTake(player, slotStack);
+
+        return false;
+    }
+
+    public static ItemStack getHeldItemOfType(EntityPlayer player, Item type) {
+        ItemStack heldStack = player.getHeldItemMainhand();
+        if( !ItemStackUtils.isItem(heldStack, type) ) {
+            return player.getHeldItemOffhand();
+        }
+
+        return heldStack;
     }
 
     public static float wrap360(float angle) {

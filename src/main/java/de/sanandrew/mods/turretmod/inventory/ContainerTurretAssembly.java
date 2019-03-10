@@ -109,17 +109,9 @@ public class ContainerTurretAssembly
                 return ItemStackUtils.getEmpty();
             }
 
-            if( slotStack.getCount() == 0 ) { // if stackSize of slot got to 0
-                slot.putStack(ItemStackUtils.getEmpty());
-            } else { // update changed slot stack state
-                slot.onSlotChanged();
-            }
-
-            if( slotStack.getCount() == origStack.getCount() ) { // if nothing changed stackSize-wise
+            if( TmrUtils.finishTransfer(player, origStack, slot, slotStack) ) {
                 return ItemStackUtils.getEmpty();
             }
-
-            slot.onTake(player, slotStack);
         }
 
         return origStack;

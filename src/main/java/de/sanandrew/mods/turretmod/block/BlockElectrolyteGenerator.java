@@ -130,7 +130,7 @@ public class BlockElectrolyteGenerator
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if( !world.isRemote ) {
             if( state.getValue(TILE_HOLDER) ) {
-                TurretModRebirth.proxy.openGui(player, EnumGui.GUI_POTATOGEN, pos.getX(), pos.getY(), pos.getZ());
+                TurretModRebirth.proxy.openGui(player, EnumGui.ELECTROLYTEGEN, pos.getX(), pos.getY(), pos.getZ());
             } else {
                 return this.onBlockActivated(world, pos.down(1), world.getBlockState(pos.down(1)), player, hand, side, hitX, hitY, hitZ);
             }

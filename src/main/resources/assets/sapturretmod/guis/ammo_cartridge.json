@@ -1,0 +1,32 @@
+{
+  "width": 176,
+  "height": 166,
+  "backgroundElements": [
+    {
+      "type": "texture",
+      "pos": [0, 0],
+      "data": {
+        "size": [176, 166],
+        "uv": [0, 0],
+        "location": "sapturretmod:textures/gui/ammo_cartridge.png"
+      }
+    },
+    {
+      "type": "text",
+      "pos": [8, 6],
+      "data": {
+        "color": "0xFF404040",
+        "text": "container.sapturretmod.ammo_cartridge"
+      }
+    },
+    {
+      "type": "text",
+      "pos": [8, 73],
+      "data": {
+        "color": "0xFF404040",
+        "text": "container.inventory"
+      }
+    }
+  ],
+  "foregroundElements": []
+}
