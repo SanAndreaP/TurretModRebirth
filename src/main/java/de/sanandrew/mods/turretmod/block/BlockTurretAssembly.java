@@ -20,6 +20,7 @@ import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -92,18 +93,6 @@ public class BlockTurretAssembly
     @Override
     public int getMetaFromState(IBlockState state) {
         return state.getValue(FACING).getIndex();
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public IBlockState withRotation(IBlockState state, Rotation rot) {
-        return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public IBlockState withMirror(IBlockState state, Mirror mirrorIn) {
-        return state.withRotation(mirrorIn.toRotation(state.getValue(FACING)));
     }
 
     @Override
@@ -212,6 +201,21 @@ public class BlockTurretAssembly
         @Override
         public boolean isOpaqueCube() {
             return false;
+        }
+
+        @Override
+        public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, BlockPos pos, EnumFacing facing) {
+            return facing == EnumFacing.DOWN ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
+        }
+
+        @Override
+        public IBlockState withMirror(Mirror mirrorIn) {
+            return this.withRotation(mirrorIn.toRotation(this.getValue(FACING)));
+        }
+
+        @Override
+        public IBlockState withRotation(Rotation rot) {
+            return this.withProperty(FACING, rot.rotate(this.getValue(FACING)));
         }
     }
 }
