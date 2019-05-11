@@ -7,6 +7,7 @@
 package de.sanandrew.mods.turretmod.event;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.inventory.AmmoCartridgeInventory;
 import de.sanandrew.mods.turretmod.item.ItemAmmoCartridge;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -20,7 +21,7 @@ public class CapabilityEventHandler
     @SubscribeEvent
     public void attachCapability(AttachCapabilitiesEvent<ItemStack> event) {
         if( event.getObject().getItem() instanceof ItemAmmoCartridge ) {
-            event.addCapability(CAP_AMMO_CARTRIDGE, new ItemAmmoCartridge.Inventory(event.getObject()));
+            event.addCapability(CAP_AMMO_CARTRIDGE, new AmmoCartridgeInventory(event.getObject()));
         }
     }
 }

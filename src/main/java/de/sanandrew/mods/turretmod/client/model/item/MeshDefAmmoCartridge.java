@@ -10,6 +10,7 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.client.model.IListedItemMeshDefinition;
+import de.sanandrew.mods.turretmod.inventory.AmmoCartridgeInventory;
 import de.sanandrew.mods.turretmod.item.ItemAmmoCartridge;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
@@ -38,7 +39,7 @@ public class MeshDefAmmoCartridge
     @Override
     public ModelResourceLocation getModelLocation(ItemStack stack) {
         if( ItemStackUtils.isValid(stack) && stack.getItem() instanceof ItemAmmoCartridge ) {
-            ItemAmmoCartridge.Inventory inv = ItemAmmoCartridge.getInventory(stack);
+            AmmoCartridgeInventory inv = ItemAmmoCartridge.getInventory(stack);
             IAmmunition storedType = inv != null ? inv.getAmmoType() : AmmunitionRegistry.NULL_TYPE;
             return this.ammoToModel.get(storedType.isValid() ? storedType.getId() : null);
         }
