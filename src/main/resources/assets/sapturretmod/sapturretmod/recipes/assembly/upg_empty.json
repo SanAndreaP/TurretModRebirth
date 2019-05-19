@@ -1,0 +1,48 @@
+{
+  "type": "sapturretmod:assembly.recipe",
+  "group": "upgrades",
+  "fluxPerTick": 80,
+  "ticksProcessing": 400,
+  "ingredients": [
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "paneGlass"
+        }
+      ]
+    },
+    {
+      "count": 2,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotGold"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:stone_slab",
+          "data": 0
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:upgrade.empty",
+    "count": 3
+  }
+}

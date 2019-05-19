@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.network;
 
 import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
+import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -48,10 +49,10 @@ public class PacketInitAssemblyCrafting
     public void handleServerMessage(PacketInitAssemblyCrafting packet, EntityPlayer player) {
         TileEntity te = player.world.getTileEntity(packet.pos);
         if( te instanceof TileEntityTurretAssembly ) {
-            if( packet.crfId.equals("[CANCEL]") ) {
+            if( packet.crfId == null ) {
                 ((TileEntityTurretAssembly) te).cancelCrafting();
             } else {
-                ((TileEntityTurretAssembly) te).beginCrafting(new ResourceLocation(packet.crfId), packet.count);
+                ((TileEntityTurretAssembly) te).beginCrafting(AssemblyManager.INSTANCE.getRecipe(new ResourceLocation(packet.crfId)), packet.count);
             }
         }
     }
@@ -59,8 +60,13 @@ public class PacketInitAssemblyCrafting
     @Override
     public void fromBytes(ByteBuf buf) {
         this.pos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
-        this.crfId = ByteBufUtils.readUTF8String(buf);
-        this.count = buf.readByte();
+        if( buf.readBoolean() ) {
+            this.crfId = ByteBufUtils.readUTF8String(buf);
+            this.count = buf.readByte();
+        } else {
+            this.crfId = null;
+            this.count = 0;
+        }
     }
 
     @Override
@@ -69,10 +75,11 @@ public class PacketInitAssemblyCrafting
         buf.writeInt(this.pos.getY());
         buf.writeInt(this.pos.getZ());
         if( this.crfId == null ) {
-            ByteBufUtils.writeUTF8String(buf, "[CANCEL]");
+            buf.writeBoolean(false);
         } else {
+            buf.writeBoolean(true);
             ByteBufUtils.writeUTF8String(buf, this.crfId);
+            buf.writeByte(this.count);
         }
-        buf.writeByte(this.count);
     }
 }

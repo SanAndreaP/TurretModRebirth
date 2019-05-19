@@ -11,7 +11,7 @@ import de.sanandrew.mods.turretmod.api.ITmrPlugin;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectileRegistry;
-import de.sanandrew.mods.turretmod.api.assembly.ITurretAssemblyRegistry;
+import de.sanandrew.mods.turretmod.api.assembly.IAssemblyManager;
 import de.sanandrew.mods.turretmod.api.client.render.IRender;
 import de.sanandrew.mods.turretmod.api.client.render.IRenderRegistry;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelRegistry;
@@ -46,7 +46,7 @@ public class TmrInternalPlugin
         implements ITmrPlugin
 {
     @Override
-    public void registerAssemblyRecipes(ITurretAssemblyRegistry registry) {
+    public void registerAssemblyRecipes(IAssemblyManager registry) {
         TurretAssemblyRecipes.initialize(registry);
     }
 

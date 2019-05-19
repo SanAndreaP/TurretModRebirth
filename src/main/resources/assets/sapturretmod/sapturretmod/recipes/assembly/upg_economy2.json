@@ -1,0 +1,37 @@
+{
+  "type": "sapturretmod:assembly.recipe",
+  "group": "upgrades",
+  "fluxPerTick": 20,
+  "ticksProcessing": 600,
+  "ingredients": [
+    {
+      "count": 1,
+      "showTooltipText": true,
+      "items": [
+        {
+          "item": "sapturretmod:upgrade.empty"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:gold_block"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:diamond"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:upgrade.ammousage.2",
+    "count": 1
+  }
+}

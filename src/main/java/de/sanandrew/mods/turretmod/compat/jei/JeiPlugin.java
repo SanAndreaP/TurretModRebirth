@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.compat.jei;
 
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
+import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JEIPlugin;
@@ -33,7 +33,7 @@ public class JeiPlugin
     public void register(IModRegistry registry) {
         registry.handleRecipes(Map.Entry.class, new AssemblyRecipeWrapper.Factory(), AssemblyRecipeCategory.UID);
 
-        registry.addRecipes(TurretAssemblyRegistry.INSTANCE.getRecipeList().entrySet(), AssemblyRecipeCategory.UID);
+        registry.addRecipes(AssemblyManager.INSTANCE.getRecipes().entrySet(), AssemblyRecipeCategory.UID);
 
         registry.addRecipeCatalyst(new ItemStack(BlockRegistry.TURRET_ASSEMBLY), AssemblyRecipeCategory.UID);
     }

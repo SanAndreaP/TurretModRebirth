@@ -1,0 +1,54 @@
+{
+  "type": "sapturretmod:assembly.recipe",
+  "group": "turrets",
+  "fluxPerTick": 10,
+  "ticksProcessing": 100,
+  "ingredients": [
+    {
+      "count": 12,
+      "items": [
+        {
+          "item": "minecraft:snow"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:bow"
+        }
+      ]
+    },
+    {
+      "count": 4,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        }
+      ]
+    },
+    {
+      "count": 4,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "plankWood"
+        }
+      ]
+    },
+    {
+      "count": 2,
+      "items": [
+        {
+          "item": "minecraft:ice"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret.cryolator",
+    "count": 1
+  }
+}

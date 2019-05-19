@@ -1,0 +1,37 @@
+{
+  "type": "sapturretmod:assembly.recipe",
+  "group": "upgrades",
+  "fluxPerTick": 20,
+  "ticksProcessing": 600,
+  "ingredients": [
+    {
+      "count": 1,
+      "showTooltipText": true,
+      "items": [
+        {
+          "item": "sapturretmod:upgrade.empty"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:trapped_chest"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:gold_ingot"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:upgrade.upgstorage.2",
+    "count": 1
+  }
+}

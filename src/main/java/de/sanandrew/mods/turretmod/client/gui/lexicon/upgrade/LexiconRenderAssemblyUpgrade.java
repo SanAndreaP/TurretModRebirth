@@ -11,8 +11,8 @@ import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconGuiHelper;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.client.gui.lexicon.assembly.LexiconRenderAssemblyRecipe;
-import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntry;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
+import de.sanandrew.mods.turretmod.registry.assembly.AssemblyRecipe;
+import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -27,7 +27,7 @@ public class LexiconRenderAssemblyUpgrade
 
     private static final int H2_COLOR = 0xFF202080;
 
-    private RecipeEntry recipe;
+    private AssemblyRecipe recipe;
     private ItemStack stack;
     private int drawHeight;
 
@@ -40,7 +40,7 @@ public class LexiconRenderAssemblyUpgrade
     public void initPage(ILexiconEntry entry, ILexiconGuiHelper helper, List<GuiButton> deprecated1, List<GuiButton> deprecated2) {
         if( entry instanceof LexiconEntryAssemblyUpgrade ) {
             this.stack = entry.getEntryIcon();
-            this.recipe = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(this.stack);
+            this.recipe = AssemblyManager.INSTANCE.getRecipe(this.stack);
         }
     }
 

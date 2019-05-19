@@ -1,0 +1,50 @@
+{
+  "type": "sapturretmod:assembly.recipe",
+  "group": "ammo",
+  "fluxPerTick": 10,
+  "ticksProcessing": 60,
+  "ingredients": [
+    {
+      "count": 2,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotIron"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:gravel"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:gunpowder"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustGunpowder"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:ammo.shotgunshell",
+    "count": 12
+  }
+}

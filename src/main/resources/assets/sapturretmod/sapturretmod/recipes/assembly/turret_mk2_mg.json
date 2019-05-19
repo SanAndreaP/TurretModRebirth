@@ -1,0 +1,57 @@
+{
+  "type": "sapturretmod:assembly.recipe",
+  "group": "turrets",
+  "fluxPerTick": 15,
+  "ticksProcessing": 100,
+  "ingredients": [
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "blockIron"
+        }
+      ]
+    },
+    {
+      "count": 4,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotGold"
+        }
+      ]
+    },
+    {
+      "count": 4,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        }
+      ]
+    },
+    {
+      "count": 2,
+      "items": [
+        {
+          "item": "minecraft:stonebrick",
+          "data": 0
+        }
+      ]
+    },
+    {
+      "count": 4,
+      "items": [
+        {
+          "item": "minecraft:stone_slab",
+          "data": 0
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret.minigun",
+    "count": 1
+  }
+}

@@ -19,8 +19,8 @@ import de.sanandrew.mods.turretmod.client.gui.lexicon.assembly.LexiconRenderAsse
 import de.sanandrew.mods.turretmod.client.util.ClientProxy;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
-import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntry;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
+import de.sanandrew.mods.turretmod.registry.assembly.AssemblyRecipe;
+import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -46,7 +46,7 @@ class LexiconRenderTurret
 
     private static final int H2_COLOR = 0xFF202080;
 
-    private RecipeEntry recipe;
+    private AssemblyRecipe recipe;
     private ITurret turret;
     private WeakReference<EntityTurret> turretCache;
     private int drawHeight;
@@ -67,7 +67,7 @@ class LexiconRenderTurret
         if( entry instanceof LexiconEntryTurret ) {
             this.bouncy = new XorShiftRandom().randomInt(1000) == 0;
             this.turret = ((LexiconEntryTurret) entry).turret;
-            this.recipe = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(TurretRegistry.INSTANCE.getItem(this.turret.getId()));
+            this.recipe = AssemblyManager.INSTANCE.getRecipe(TurretRegistry.INSTANCE.getItem(this.turret.getId()));
             if( this.turretCache != null ) {
                 this.turretCache.clear();
             }

@@ -12,10 +12,9 @@ import de.sanandrew.mods.turretmod.api.ITmrPlugin;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
 import de.sanandrew.mods.turretmod.entity.turret.TargetList;
-import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
+import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteRegistry;
 import de.sanandrew.mods.turretmod.registry.projectile.ProjectileRegistry;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
@@ -84,7 +83,7 @@ public class TurretModRebirth
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        PLUGINS.forEach(plugin -> plugin.registerAssemblyRecipes(TurretAssemblyRegistry.INSTANCE));
+        PLUGINS.forEach(plugin -> plugin.registerAssemblyRecipes(AssemblyManager.INSTANCE));
 
         ElectrolyteRegistry.initialize();
 
@@ -97,7 +96,7 @@ public class TurretModRebirth
 
         proxy.postInit(event);
 
-        TurretAssemblyRegistry.INSTANCE.finalizeRegistry();
+        AssemblyManager.INSTANCE.finalizeRegistry();
 
         TargetList.initializePostInit();
     }

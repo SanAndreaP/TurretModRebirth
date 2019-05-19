@@ -9,7 +9,7 @@ package de.sanandrew.mods.turretmod.client.gui.lexicon.assembly;
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconGuiHelper;
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconPageRender;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
-import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntry;
+import de.sanandrew.mods.turretmod.registry.assembly.AssemblyRecipe;
 import de.sanandrew.mods.turretmod.tileentity.assembly.AssemblyInventoryHandler;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -39,12 +39,12 @@ public abstract class LexiconRenderAssemblyRecipe
     }
 
     @SuppressWarnings("SameParameterValue")
-    protected int renderRecipe(ILexiconGuiHelper helper, RecipeEntry recipe, int posX, int posY, int mouseX, int mouseY, int scrollY) {
+    protected int renderRecipe(ILexiconGuiHelper helper, AssemblyRecipe recipe, int posX, int posY, int mouseX, int mouseY, int scrollY) {
         final ItemStack[] EMPTY_IS = new ItemStack[] {ItemStack.EMPTY};
         for( int i = 0; i < AssemblyInventoryHandler.RESOURCE_SLOTS; i++ ) {
             int x = posX + (i % 9) * 9;
             int y = posY + (i / 9) * 9;
-            ItemStack[] rendered = i < recipe.resources.length ? recipe.resources[i].getEntryItemStacks() : EMPTY_IS;
+            ItemStack[] rendered = i < recipe.ingredients.length ? recipe.ingredients[i].getEntryItemStacks() : EMPTY_IS;
 
             helper.drawItemGrid(x, y, mouseX, mouseY, scrollY, rendered[(int) ((System.currentTimeMillis() / 1000L) % rendered.length)], 0.5F, true);
         }

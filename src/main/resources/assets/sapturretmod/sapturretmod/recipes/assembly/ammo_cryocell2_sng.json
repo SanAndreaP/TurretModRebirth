@@ -1,0 +1,28 @@
+{
+  "type": "sapturretmod:assembly.recipe",
+  "group": "ammo",
+  "fluxPerTick": 5,
+  "ticksProcessing": 40,
+  "ingredients": [
+    {
+      "count": 2,
+      "items": [
+        {
+          "item": "sapturretmod:ammo.cryocell.1"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:snow"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:ammo.cryocell.2",
+    "count": 1
+  }
+}

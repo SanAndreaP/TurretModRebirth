@@ -1,0 +1,38 @@
+{
+  "type": "sapturretmod:assembly.recipe",
+  "group": "upgrades",
+  "fluxPerTick": 20,
+  "ticksProcessing": 600,
+  "ingredients": [
+    {
+      "count": 1,
+      "showTooltipText": true,
+      "items": [
+        {
+          "item": "sapturretmod:upgrade.empty"
+        }
+      ]
+    },
+    {
+      "count": 16,
+      "items": [
+        {
+          "item": "minecraft:speckled_melon"
+        }
+      ]
+    },
+    {
+      "count": 4,
+      "items": [
+        {
+          "item": "minecraft:golden_apple",
+          "data": 0
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:upgrade.health.4",
+    "count": 1
+  }
+}

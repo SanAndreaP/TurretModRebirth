@@ -1,0 +1,37 @@
+{
+  "type": "sapturretmod:assembly.recipe",
+  "group": "ammo",
+  "fluxPerTick": 10,
+  "ticksProcessing": 60,
+  "ingredients": [
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:lava_bucket"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:rabbit_hide"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:ammo.fueltank",
+    "count": 1
+  }
+}

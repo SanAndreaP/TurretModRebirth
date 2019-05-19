@@ -1,0 +1,35 @@
+{
+  "type": "sapturretmod:assembly.tabs",
+  "tabs": [
+    {
+      "name": "misc",
+      "icon": {
+        "item": "sapturretmod:turret_control_unit"
+      }
+    },
+    {
+      "name": "turrets",
+      "item": {
+        "item": "sapturretmod:turret.crossbow"
+      }
+    },
+    {
+      "name": "ammo",
+      "icon": {
+        "item": "sapturretmod:ammo.arrow"
+      }
+    },
+    {
+      "name": "upgrades",
+      "item": {
+        "item": "sapturretmod:upgrade.empty"
+      }
+    },
+    {
+      "name": "repkit",
+      "item": {
+        "item": "sapturretmod:repkit.standard.1"
+      }
+    }
+  ]
+}

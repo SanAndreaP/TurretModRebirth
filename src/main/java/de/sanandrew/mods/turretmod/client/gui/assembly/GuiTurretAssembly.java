@@ -15,8 +15,6 @@ import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
-import de.sanandrew.mods.turretmod.api.assembly.IRecipeGroup;
-import de.sanandrew.mods.turretmod.api.assembly.IRecipeItem;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiSlimButton;
 import de.sanandrew.mods.turretmod.client.shader.ShaderItemAlphaOverride;
 import de.sanandrew.mods.turretmod.client.shader.Shaders;
@@ -25,8 +23,8 @@ import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketAssemblyToggleAutomate;
 import de.sanandrew.mods.turretmod.network.PacketInitAssemblyCrafting;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
-import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntry;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
+import de.sanandrew.mods.turretmod.registry.assembly.AssemblyRecipe;
+import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -126,7 +124,7 @@ public class GuiTurretAssembly
         this.buttonList.add(this.groupUp = new GuiAssemblyTabNav(this.buttonList.size(), this.guiLeft + 13, this.guiTop + 9, false));
 
         int pos = 0;
-        IRecipeGroup[] groups = TurretAssemblyRegistry.INSTANCE.getGroups();
+        IRecipeGroup[] groups = AssemblyManager.INSTANCE.getGroups();
         Arrays.sort(groups, Comparator.comparing(IRecipeGroup::getName));
         this.groupBtns = new HashMap<>(1 + (int) (groups.length / 0.75F));
         for( IRecipeGroup grp : groups ) {
@@ -155,7 +153,7 @@ public class GuiTurretAssembly
 
     private void loadGroupRecipes(IRecipeGroup group) {
         this.cacheRecipes = new ArrayList<>();
-        this.cacheRecipes.addAll(group.getRecipeIdList().stream().map(recipe -> new Tuple(recipe, TurretAssemblyRegistry.INSTANCE.getRecipeResult(recipe))).collect(Collectors.toList()));
+        this.cacheRecipes.addAll(group.getRecipeIdList().stream().map(recipe -> new Tuple(recipe, AssemblyManager.INSTANCE.getRecipeResult(recipe))).collect(Collectors.toList()));
     }
 
     @Override
@@ -378,12 +376,12 @@ public class GuiTurretAssembly
     }
 
     private void drawIngredientsDetail(int mouseX, int mouseY, ResourceLocation recipe, boolean showOnLeft) {
-        RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(recipe);
-        if( recipeEntry == null ) {
+        AssemblyRecipe assemblyRecipe = AssemblyManager.INSTANCE.getRecipe(recipe);
+        if( assemblyRecipe == null ) {
             return;
         }
 
-        IRecipeItem[] ingredients = recipeEntry.resources;
+        IRecipeItem[] ingredients = assemblyRecipe.ingredients;
         if( ingredients.length < 1 ) {
             this.drawIngredientsSmall(mouseX, mouseY, recipe, showOnLeft);
             return;
@@ -459,15 +457,15 @@ public class GuiTurretAssembly
     }
 
     private void drawIngredientsSmall(int mouseX, int mouseY, ResourceLocation recipe, boolean showOnLeft) {
-        RecipeEntry recipeEntry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(recipe);
-        if( recipeEntry == null ) {
+        AssemblyRecipe assemblyRecipe = AssemblyManager.INSTANCE.getRecipe(recipe);
+        if( assemblyRecipe == null ) {
             return;
         }
 
-        IRecipeItem[] ingredients = recipeEntry.resources;
+        IRecipeItem[] ingredients = assemblyRecipe.ingredients;
 
-        String rf = String.format("%d RF/t", MathHelper.ceil(recipeEntry.fluxPerTick * (this.assembly.hasSpeedUpgrade() ? 1.1F : 1.0F)));
-        String ticks = MiscUtils.getTimeFromTicks(recipeEntry.ticksProcessing);
+        String rf = String.format("%d RF/t", MathHelper.ceil(assemblyRecipe.fluxPerTick * (this.assembly.hasSpeedUpgrade() ? 1.1F : 1.0F)));
+        String ticks = MiscUtils.getTimeFromTicks(assemblyRecipe.ticksProcessing);
 
         int textWidth = Math.max(Math.max(ingredients.length * 9, this.frDetails.getStringWidth(rf) + 10), this.frDetails.getStringWidth(ticks) + 10);
         int xPos = mouseX + (showOnLeft ? -textWidth - 12 : 12);

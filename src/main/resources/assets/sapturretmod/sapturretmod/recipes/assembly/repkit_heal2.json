@@ -1,0 +1,40 @@
+{
+  "type": "sapturretmod:assembly.recipe",
+  "group": "repkit",
+  "fluxPerTick": 25,
+  "ticksProcessing": 600,
+  "ingredients": [
+    {
+      "count": 2,
+      "items": [
+        {
+          "item": "minecraft:leather"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "showTooltipText": true,
+      "items": [
+        {
+          "item": "minecraft:potion",
+          "nbt": {
+            "Potion": "minecraft:healing"
+          }
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "sapturretmod:repkit.standard.1"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:repkit.standard.2",
+    "count": 1
+  }
+}

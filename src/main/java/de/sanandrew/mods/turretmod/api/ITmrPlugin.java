@@ -3,7 +3,7 @@ package de.sanandrew.mods.turretmod.api;
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconInst;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectileRegistry;
-import de.sanandrew.mods.turretmod.api.assembly.ITurretAssemblyRegistry;
+import de.sanandrew.mods.turretmod.api.assembly.IAssemblyManager;
 import de.sanandrew.mods.turretmod.api.client.render.IRender;
 import de.sanandrew.mods.turretmod.api.client.render.IRenderRegistry;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelRegistry;
@@ -23,7 +23,7 @@ public interface ITmrPlugin
 {
     default void preInit(ITmrUtils utils) { }
 
-    default void registerAssemblyRecipes(ITurretAssemblyRegistry registry) { }
+    default void registerAssemblyRecipes(IAssemblyManager registry) { }
 
     default void registerTurrets(ITurretRegistry registry) { }
 

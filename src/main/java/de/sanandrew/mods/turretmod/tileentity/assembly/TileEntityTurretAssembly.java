@@ -13,10 +13,10 @@ import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
 import de.sanandrew.mods.turretmod.network.TileClientSync;
-import de.sanandrew.mods.turretmod.registry.assembly.RecipeEntry;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRegistry;
+import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import io.netty.buffer.ByteBuf;
@@ -24,7 +24,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -71,13 +70,14 @@ public class TileEntityTurretAssembly
     public boolean isActive;
     private boolean isActiveClient;
 
-    public Tuple currCrafting;
+    public IAssemblyRecipe currRecipe;
+    public int craftingAmount;
+
     private int ticksCrafted;
     private int maxTicksCrafted;
     private int fluxConsumption;
 
-    private boolean doSync = false;
-
+    private boolean doSync;
     private long ticksExisted;
     private String customName;
 
@@ -104,29 +104,18 @@ public class TileEntityTurretAssembly
         this.itemHandlerSide = new SidedInvWrapper(this.invHandler, EnumFacing.WEST);
     }
 
-    public void beginCrafting(ResourceLocation recipe, int count) {
-        if( this.currCrafting != null && recipe.equals(this.currCrafting.getValue(0)) && !this.automate ) {
-            ItemStack result = TurretAssemblyRegistry.INSTANCE.getRecipeResult(recipe);
-            ItemStack currCrfStack = this.currCrafting.getValue(1);
-            if( currCrfStack.getCount() + count < 1 ) {
+    public void beginCrafting(IAssemblyRecipe recipe, int count) {
+        if( this.currRecipe != null && recipe.getId().equals(this.currRecipe.getId()) && !this.automate ) {
+            if( this.craftingAmount + count < 1 ) {
                 this.cancelCrafting();
-            } else if( ItemStackUtils.isValid(result) && currCrfStack.getCount() + count * result.getCount() <= currCrfStack.getMaxStackSize() ) {
-                currCrfStack.grow(count);
-                this.doSync = true;
             } else {
-                currCrfStack.setCount(currCrfStack.getMaxStackSize());
+                this.craftingAmount += count;
                 this.doSync = true;
             }
-        } else if( this.currCrafting == null ) {
-            ItemStack stackRes = TurretAssemblyRegistry.INSTANCE.getRecipeResult(recipe);
-            RecipeEntry entry = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(recipe);
-            if( entry != null && ItemStackUtils.isValid(stackRes) ) {
-                stackRes = stackRes.copy();
-                stackRes.setCount(this.automate ? 1 : count);
-                this.currCrafting = new Tuple(recipe, stackRes);
-                this.maxTicksCrafted = entry.ticksProcessing;
-                this.doSync = true;
-            }
+        } else if( this.currRecipe == null ) {
+            this.currRecipe = recipe;
+            this.craftingAmount = this.automate ? 1 : count;
+            this.doSync = true;
         }
     }
 
@@ -141,7 +130,8 @@ public class TileEntityTurretAssembly
             });
             this.removedItems = null;
         }
-        this.currCrafting = null;
+        this.currRecipe = null;
+        this.craftingAmount = 0;
         this.ticksCrafted = 0;
         this.fluxConsumption = 0;
         this.maxTicksCrafted = 0;
@@ -152,27 +142,17 @@ public class TileEntityTurretAssembly
     }
 
     private void initCrafting() {
-        if( this.currCrafting != null && this.invHandler.canFillOutput() ) {
-            ResourceLocation currCrfId = this.currCrafting.getValue(0);
-            ItemStack addStacks = this.currCrafting.<ItemStack>getValue(1).copy();
-            ItemStack recipe = TurretAssemblyRegistry.INSTANCE.getRecipeResult(currCrfId);
-            if( ItemStackUtils.isValid(recipe) ) {
-                addStacks.setCount(recipe.getCount());
-                if( this.invHandler.canFillOutput(addStacks) ) {
-                    RecipeEntry currentlyCrafted = TurretAssemblyRegistry.INSTANCE.getRecipeEntry(currCrfId);
-                    if( currentlyCrafted != null ) {
-                        this.removedItems = TurretAssemblyRegistry.INSTANCE.checkAndConsumeResources(this.invHandler, currCrfId);
-                        if( this.removedItems != null ) {
-                            this.maxTicksCrafted = currentlyCrafted.ticksProcessing;
-                            this.fluxConsumption = MathHelper.ceil(currentlyCrafted.fluxPerTick * (this.hasSpeedUpgrade() ? 1.1F : 1.0F));
-                            this.ticksCrafted = 0;
-                            this.isActive = true;
-                            this.doSync = true;
-                        }
-                    }
+        if( this.currRecipe != null && this.invHandler.canFillOutput() ) {
+            ItemStack result = this.currRecipe.getCraftingResult(this.invHandler);
+            if( this.invHandler.canFillOutput(result) ) {
+                this.removedItems = AssemblyManager.INSTANCE.checkAndConsumeResources(this.invHandler, this.world, this.currRecipe);
+                if( this.removedItems != null ) {
+                    this.maxTicksCrafted = this.currRecipe.getProcessTime();
+                    this.fluxConsumption = MathHelper.ceil(this.currRecipe.getFluxPerTick() * (this.hasSpeedUpgrade() ? 1.1F : 1.0F));
+                    this.ticksCrafted = 0;
+                    this.isActive = true;
+                    this.doSync = true;
                 }
-            } else {
-                this.cancelCrafting();
             }
         }
     }
@@ -210,12 +190,12 @@ public class TileEntityTurretAssembly
             boolean markDirty = false;
 
             this.isActiveClient = this.isActive;
-            if( this.isActive && this.currCrafting != null ) {
+            if( this.isActive && this.currRecipe != null ) {
                 for( int i = 0; i < maxLoop; i++ ) {
                     if( this.energyStorage.fluxAmount >= this.fluxConsumption && this.world.isBlockIndirectlyGettingPowered(this.pos) == 0 ) {
                         this.energyStorage.fluxAmount -= this.fluxConsumption;
                         if( ++this.ticksCrafted >= this.maxTicksCrafted ) {
-                            ItemStack stack = TurretAssemblyRegistry.INSTANCE.getRecipeResult(this.currCrafting.getValue(0));
+                            ItemStack stack = this.currRecipe.getCraftingResult(this.invHandler);
                             if( !ItemStackUtils.isValid(stack) ) {
                                 this.cancelCrafting();
                                 return;
@@ -228,12 +208,12 @@ public class TileEntityTurretAssembly
                                 this.isActiveClient = false;
                             }
 
-                            if( this.currCrafting.<ItemStack>getValue(1).getCount() > 1 || this.automate ) {
+                            if( this.craftingAmount > 1 || this.automate ) {
                                 if( !this.automate ) {
-                                    this.currCrafting.<ItemStack>getValue(1).shrink(1);
+                                    this.craftingAmount--;
                                 }
 
-                                this.removedItems = TurretAssemblyRegistry.INSTANCE.checkAndConsumeResources(this.invHandler, this.currCrafting.getValue(0));
+                                this.removedItems = AssemblyManager.INSTANCE.checkAndConsumeResources(this.invHandler, this.world, this.currRecipe);
                                 if( this.removedItems == null ) {
                                     this.isActive = false;
                                     this.isActiveClient = false;
@@ -253,7 +233,7 @@ public class TileEntityTurretAssembly
                         this.doSync = true;
                     }
 
-                    if( !this.isActive || this.currCrafting == null ) {
+                    if( !this.isActive || this.currRecipe == null ) {
                         break;
                     }
                 }
@@ -385,9 +365,9 @@ public class TileEntityTurretAssembly
     private NBTTagCompound writeNBT(NBTTagCompound nbt) {
         nbt.setTag("inventory", this.invHandler.serializeNBT());
 
-        if( this.currCrafting != null ) {
-            nbt.setString("CraftingId", this.currCrafting.getValue(0).toString());
-            ItemStackUtils.writeStackToTag(this.currCrafting.getValue(1), nbt, "CraftingStack");
+        if( this.currRecipe != null ) {
+            nbt.setString("CraftingId", this.currRecipe.getId().toString());
+            nbt.setInteger("CraftingAmount", this.craftingAmount);
         }
 
         nbt.setTag("cap_energy", this.energyStorage.serializeNBT());
@@ -408,8 +388,9 @@ public class TileEntityTurretAssembly
     private void readNBT(NBTTagCompound nbt) {
         this.invHandler.deserializeNBT(nbt.getCompoundTag("inventory"));
 
-        if( nbt.hasKey("CraftingId") && nbt.hasKey("CraftingStack") ) {
-            this.currCrafting = new Tuple(new ResourceLocation(nbt.getString("CraftingUUID")), new ItemStack(nbt.getCompoundTag("CraftingStack")));
+        if( nbt.hasKey("CraftingId") && nbt.hasKey("CraftingAmount") ) {
+            this.currRecipe = AssemblyManager.INSTANCE.getRecipe(new ResourceLocation(nbt.getString("CraftingId")));
+            this.craftingAmount = nbt.getInteger("CraftingAmount");
         }
 
         this.energyStorage.deserializeNBT(nbt.getCompoundTag("cap_energy"));
@@ -450,11 +431,12 @@ public class TileEntityTurretAssembly
         buf.writeInt(this.maxTicksCrafted);
         buf.writeBoolean(this.automate);
         buf.writeBoolean(this.isActiveClient);
-        if( this.currCrafting != null ) {
-            ByteBufUtils.writeItemStack(buf, this.currCrafting.getValue(1));
-            ByteBufUtils.writeUTF8String(buf, this.currCrafting.getValue(0).toString());
+        if( this.currRecipe != null ) {
+            buf.writeBoolean(true);
+            ByteBufUtils.writeUTF8String(buf, this.currRecipe.getId().toString());
+            buf.writeInt(this.craftingAmount);
         } else {
-            ByteBufUtils.writeItemStack(buf, ItemStackUtils.getEmpty());
+            buf.writeBoolean(false);
         }
     }
 
@@ -467,16 +449,17 @@ public class TileEntityTurretAssembly
         this.maxTicksCrafted = buf.readInt();
         this.automate = buf.readBoolean();
         this.isActiveClient = buf.readBoolean();
-        ItemStack crfStack = ByteBufUtils.readItemStack(buf);
-        if( ItemStackUtils.isValid(crfStack) ) {
-            this.currCrafting = new Tuple(new ResourceLocation(ByteBufUtils.readUTF8String(buf)), crfStack);
+        if( buf.readBoolean() ) {
+            this.currRecipe = AssemblyManager.INSTANCE.getRecipe(new ResourceLocation(ByteBufUtils.readUTF8String(buf)));
+            this.craftingAmount = buf.readInt();
         } else {
-            this.currCrafting = null;
+            this.currRecipe = null;
+            this.craftingAmount = 0;
         }
     }
 
     public void setAutomated(boolean b) {
-        if( this.currCrafting == null ) {
+        if( this.currRecipe == null ) {
             this.automate = b;
             this.doSync = true;
         }

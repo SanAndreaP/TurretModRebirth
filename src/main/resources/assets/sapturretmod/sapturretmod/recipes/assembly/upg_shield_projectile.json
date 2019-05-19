@@ -1,0 +1,38 @@
+{
+  "type": "sapturretmod:assembly.recipe",
+  "group": "upgrades",
+  "fluxPerTick": 20,
+  "ticksProcessing": 600,
+  "ingredients": [
+    {
+      "count": 1,
+      "showTooltipText": true,
+      "items": [
+        {
+          "item": "sapturretmod:upgrade.empty"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "showTooltipText": true,
+      "items": [
+        {
+          "item": "minecraft:enchanted_book",
+          "nbt": {
+            "StoredEnchantments": [
+              {
+                "id": "4s",
+                "lvl": "1s"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:upgrade.shield.projectile",
+    "count": 1
+  }
+}
