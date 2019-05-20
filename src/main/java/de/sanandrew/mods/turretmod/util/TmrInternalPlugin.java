@@ -28,7 +28,7 @@ import de.sanandrew.mods.turretmod.client.render.projectile.RenderProjectile;
 import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
 import de.sanandrew.mods.turretmod.event.TargetingEventHandler;
 import de.sanandrew.mods.turretmod.registry.ammo.Ammunitions;
-import de.sanandrew.mods.turretmod.registry.assembly.TurretAssemblyRecipes;
+import de.sanandrew.mods.turretmod.registry.assembly.AssemblyRecipeLoader;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKits;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
@@ -47,7 +47,7 @@ public class TmrInternalPlugin
 {
     @Override
     public void registerAssemblyRecipes(IAssemblyManager registry) {
-        TurretAssemblyRecipes.initialize(registry);
+        AssemblyRecipeLoader.initialize(registry);
     }
 
     @Override

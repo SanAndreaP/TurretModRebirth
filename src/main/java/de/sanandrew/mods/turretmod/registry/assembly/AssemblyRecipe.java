@@ -7,6 +7,7 @@
 package de.sanandrew.mods.turretmod.registry.assembly;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -15,7 +16,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 public class AssemblyRecipe
-        implements de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe
+        implements IAssemblyRecipe
 {
     private final ResourceLocation id;
     private final NonNullList<Ingredient> ingredients;

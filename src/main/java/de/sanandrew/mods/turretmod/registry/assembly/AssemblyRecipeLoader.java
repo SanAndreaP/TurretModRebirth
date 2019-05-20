@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public final class TurretAssemblyRecipes
+public final class AssemblyRecipeLoader
 {
     public static void initialize(final IAssemblyManager registry) {
         TmrConstants.LOG.log(Level.INFO, "Initializing Turret Assembly recipes...");
