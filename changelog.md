@@ -21,14 +21,14 @@ _Changes & Bugfixes_
 * turret entity now has a name, so informational mods like WAILA/WAWLA/The One Probe can read
   those accurately
 * fix lag with TCU target settings when lots of mods are installed
-* turrets now have custon death messages when killing named entities/players
+* turrets now have custom death messages when killing named entities/players
 * removed ability to place turrets upside-down, instead there will be a custom turret type that
-  can be mounted on walls/ceilings
+  can be mounted on walls/ceilings in the future
 * redone texture work on the forcefield, now also supports recolorization - resource pack
   makers can now configure the texture, move speed and direction of each layer, remove and/or
   define new layers
-* Electrolyte Generator and Turret Assembly Table now prevent snow, torches and similar from
-  being placed on top of them
+* Electrolyte Generator and Turret Assembly Table now prevent snow, torches and similar blocks
+  from being placed on top of them
 
 _Internal Changes_
 * lots of code outsourced to SanLib (Config, Turret Info Tablet, GUIs)

@@ -19,6 +19,7 @@ import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiSlimButton;
 import de.sanandrew.mods.turretmod.client.shader.ShaderItemAlphaOverride;
 import de.sanandrew.mods.turretmod.client.shader.Shaders;
+import de.sanandrew.mods.turretmod.client.util.GuiHelper;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketAssemblyToggleAutomate;
@@ -406,14 +407,10 @@ public class GuiTurretAssembly
         int xPos = mouseX + (showOnLeft ? -textWidth - 12 : 12);
         int yPos = mouseY - 12;
 
-        int bkgColor = 0xF0100010;
-        int lightBg = 0x505000FF;
-        int darkBg = (lightBg & 0xFEFEFE) >> 1 | lightBg & 0xFF000000;
-
         GlStateManager.pushMatrix();
         GlStateManager.translate(0.0F, 0.0F, 300.0F);
 
-        this.drawTooltipBg(xPos, yPos, textWidth, tHeight, bkgColor, lightBg, darkBg);
+        GuiHelper.drawTooltipBg(xPos, yPos, textWidth, tHeight);
 
         for( int i = 0, j = 0, max = ingredients.size(); i < max; i++, j++ ) {
             Tuple descIng = desc.get(ingredients.get(i));
@@ -436,18 +433,19 @@ public class GuiTurretAssembly
         GlStateManager.popMatrix();
     }
 
-    private void drawTooltipBg(int xPos, int yPos, int w, int h, int bkgColor, int lightBg, int darkBg) {
-        this.drawGradientRect(xPos - 3, yPos - 4, xPos + w + 3, yPos - 3, bkgColor, bkgColor);
-        this.drawGradientRect(xPos - 3, yPos + h + 3, xPos + w + 3, yPos + h + 4, bkgColor, bkgColor);
-        this.drawGradientRect(xPos - 3, yPos - 3, xPos + w + 3, yPos + h + 3, bkgColor, bkgColor);
-        this.drawGradientRect(xPos - 4, yPos - 3, xPos - 3, yPos + h + 3, bkgColor, bkgColor);
-        this.drawGradientRect(xPos + w + 3, yPos - 3, xPos + w + 4, yPos + h + 3, bkgColor, bkgColor);
-
-        this.drawGradientRect(xPos - 3, yPos - 3 + 1, xPos - 3 + 1, yPos + h + 3 - 1, lightBg, darkBg);
-        this.drawGradientRect(xPos + w + 2, yPos - 3 + 1, xPos + w + 3, yPos + h + 3 - 1, lightBg, darkBg);
-        this.drawGradientRect(xPos - 3, yPos - 3, xPos + w + 3, yPos - 3 + 1, lightBg, lightBg);
-        this.drawGradientRect(xPos - 3, yPos + h + 2, xPos + w + 3, yPos + h + 3, darkBg, darkBg);
-    }
+//    private void drawTooltipBg(int xPos, int yPos, int w, int h, int bkgColor, int lightBg, int darkBg) {
+////        this.drawGradientRect(xPos - 3, yPos - 4, xPos + w + 3, yPos - 3, bkgColor, bkgColor);
+////        this.drawGradientRect(xPos - 3, yPos + h + 3, xPos + w + 3, yPos + h + 4, bkgColor, bkgColor);
+////        this.drawGradientRect(xPos - 3, yPos - 3, xPos + w + 3, yPos + h + 3, bkgColor, bkgColor);
+////        this.drawGradientRect(xPos - 4, yPos - 3, xPos - 3, yPos + h + 3, bkgColor, bkgColor);
+////        this.drawGradientRect(xPos + w + 3, yPos - 3, xPos + w + 4, yPos + h + 3, bkgColor, bkgColor);
+////
+////        this.drawGradientRect(xPos - 3, yPos - 3 + 1, xPos - 3 + 1, yPos + h + 3 - 1, lightBg, darkBg);
+////        this.drawGradientRect(xPos + w + 2, yPos - 3 + 1, xPos + w + 3, yPos + h + 3 - 1, lightBg, darkBg);
+////        this.drawGradientRect(xPos - 3, yPos - 3, xPos + w + 3, yPos - 3 + 1, lightBg, lightBg);
+////        this.drawGradientRect(xPos - 3, yPos + h + 2, xPos + w + 3, yPos + h + 3, darkBg, darkBg);
+//        GuiHelper.drawTooltipBg(xPos, yPos, w, h, bkgColor, lightBg, darkBg);
+//    }
 
     private void drawIngredientsSmall(int mouseX, int mouseY, IAssemblyRecipe recipe, boolean showOnLeft) {
         if( recipe == null ) {
@@ -467,11 +465,10 @@ public class GuiTurretAssembly
         GlStateManager.pushMatrix();
         GlStateManager.translate(0.0D, 0.0D, 300.0D);
 
-        int bkgColor = 0xF0100010;
         int lightBg = 0x505000FF;
         int darkBg = (lightBg & 0xFEFEFE) >> 1 | lightBg & 0xFF000000;
 
-        this.drawTooltipBg(xPos, yPos, textWidth, height, bkgColor, lightBg, darkBg);
+        GuiHelper.drawTooltipBg(xPos, yPos, textWidth, height, 0xF0100010, lightBg, darkBg);
 
         if( ingredients.size() > 0 ) {
             this.drawGradientRect(xPos - 2, yPos + 10, xPos + textWidth + 2, yPos + 11, lightBg, darkBg);
@@ -524,13 +521,9 @@ public class GuiTurretAssembly
 
         RenderHelper.disableStandardItemLighting();
 
-        int bkgColor = 0xF0100010;
-        int lightBg = 0x505000FF;
-        int darkBg = (lightBg & 0xFEFEFE) >> 1 | lightBg & 0xFF000000;
-
         this.zLevel = 400.0F;
 
-        this.drawTooltipBg(xPos, yPos, textWidth, height, bkgColor, lightBg, darkBg);
+        GuiHelper.drawTooltipBg(xPos, yPos, textWidth, height);
         this.zLevel = 0.0F;
 
         GlStateManager.pushMatrix();

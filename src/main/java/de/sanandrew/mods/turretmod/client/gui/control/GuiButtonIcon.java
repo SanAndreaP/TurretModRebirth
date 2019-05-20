@@ -7,6 +7,7 @@
 package de.sanandrew.mods.turretmod.client.gui.control;
 
 import com.google.common.base.Strings;
+import de.sanandrew.mods.turretmod.client.util.GuiHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -45,7 +46,7 @@ public final class GuiButtonIcon
         }
     }
 
-    private void drawTabHoveringText(String text, int mouseX, int mouseY, FontRenderer fontRenderer) {
+    private static void drawTabHoveringText(String text, int mouseX, int mouseY, FontRenderer fontRenderer) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(0.0F, 0.0F, 400.0F);
         GlStateManager.disableRescaleNormal();
@@ -57,20 +58,17 @@ public final class GuiButtonIcon
         int xPos = mouseX + 12;
         int yPos = mouseY - 4 - textHeight;
 
-        int bkgColor = 0xF0100010;
-        int lightBg = 0x505000FF;
-        int darkBg = (lightBg & 0xFEFEFE) >> 1 | lightBg & 0xFF000000;
-
-        this.drawGradientRect(xPos - 3, yPos - 4, xPos + textWidth + 3, yPos - 3, bkgColor, bkgColor);
-        this.drawGradientRect(xPos - 3, yPos + textHeight + 3, xPos + textWidth + 3, yPos + textHeight + 4, bkgColor, bkgColor);
-        this.drawGradientRect(xPos - 3, yPos - 3, xPos + textWidth + 3, yPos + textHeight + 3, bkgColor, bkgColor);
-        this.drawGradientRect(xPos - 4, yPos - 3, xPos - 3, yPos + textHeight + 3, bkgColor, bkgColor);
-        this.drawGradientRect(xPos + textWidth + 3, yPos - 3, xPos + textWidth + 4, yPos + textHeight + 3, bkgColor, bkgColor);
-
-        this.drawGradientRect(xPos - 3, yPos - 3 + 1, xPos - 3 + 1, yPos + textHeight + 3 - 1, lightBg, darkBg);
-        this.drawGradientRect(xPos + textWidth + 2, yPos - 3 + 1, xPos + textWidth + 3, yPos + textHeight + 3 - 1, lightBg, darkBg);
-        this.drawGradientRect(xPos - 3, yPos - 3, xPos + textWidth + 3, yPos - 3 + 1, lightBg, lightBg);
-        this.drawGradientRect(xPos - 3, yPos + textHeight + 2, xPos + textWidth + 3, yPos + textHeight + 3, darkBg, darkBg);
+        GuiHelper.drawTooltipBg(xPos, yPos, textWidth, textHeight);
+//        this.drawGradientRect(xPos - 3, yPos - 4, xPos + textWidth + 3, yPos - 3, bkgColor, bkgColor);
+//        this.drawGradientRect(xPos - 3, yPos + textHeight + 3, xPos + textWidth + 3, yPos + textHeight + 4, bkgColor, bkgColor);
+//        this.drawGradientRect(xPos - 3, yPos - 3, xPos + textWidth + 3, yPos + textHeight + 3, bkgColor, bkgColor);
+//        this.drawGradientRect(xPos - 4, yPos - 3, xPos - 3, yPos + textHeight + 3, bkgColor, bkgColor);
+//        this.drawGradientRect(xPos + textWidth + 3, yPos - 3, xPos + textWidth + 4, yPos + textHeight + 3, bkgColor, bkgColor);
+//
+//        this.drawGradientRect(xPos - 3, yPos - 3 + 1, xPos - 3 + 1, yPos + textHeight + 3 - 1, lightBg, darkBg);
+//        this.drawGradientRect(xPos + textWidth + 2, yPos - 3 + 1, xPos + textWidth + 3, yPos + textHeight + 3 - 1, lightBg, darkBg);
+//        this.drawGradientRect(xPos - 3, yPos - 3, xPos + textWidth + 3, yPos - 3 + 1, lightBg, lightBg);
+//        this.drawGradientRect(xPos - 3, yPos + textHeight + 2, xPos + textWidth + 3, yPos + textHeight + 3, darkBg, darkBg);
 
         GlStateManager.disableDepth();
         for( int i = 0; i < lines.length; i++ ) {
