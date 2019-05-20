@@ -127,7 +127,7 @@ public class GuiTurretAssembly
         this.groupBtns = new HashMap<>(1 + (int) (groups.length / 0.75F));
         for( String grp : groups ) {
             ItemStack groupIcon = AssemblyManager.INSTANCE.getGroupIcon(grp);
-            String groupName = LangUtils.translate(Lang.TASSEMBLY_GROUP_NAME, grp);
+            String groupName = LangUtils.translate(Lang.TASSEMBLY_GROUP_NAME.get(grp));
             GuiAssemblyCategoryTab tab = new GuiAssemblyCategoryTab(this.buttonList.size(), this.guiLeft + 9, this.guiTop + 19 + pos * 15 - 15 * scrollGroupPos, groupIcon, groupName);
             this.groupBtns.put(tab, grp);
             this.buttonList.add(tab);
@@ -432,20 +432,6 @@ public class GuiTurretAssembly
 
         GlStateManager.popMatrix();
     }
-
-//    private void drawTooltipBg(int xPos, int yPos, int w, int h, int bkgColor, int lightBg, int darkBg) {
-////        this.drawGradientRect(xPos - 3, yPos - 4, xPos + w + 3, yPos - 3, bkgColor, bkgColor);
-////        this.drawGradientRect(xPos - 3, yPos + h + 3, xPos + w + 3, yPos + h + 4, bkgColor, bkgColor);
-////        this.drawGradientRect(xPos - 3, yPos - 3, xPos + w + 3, yPos + h + 3, bkgColor, bkgColor);
-////        this.drawGradientRect(xPos - 4, yPos - 3, xPos - 3, yPos + h + 3, bkgColor, bkgColor);
-////        this.drawGradientRect(xPos + w + 3, yPos - 3, xPos + w + 4, yPos + h + 3, bkgColor, bkgColor);
-////
-////        this.drawGradientRect(xPos - 3, yPos - 3 + 1, xPos - 3 + 1, yPos + h + 3 - 1, lightBg, darkBg);
-////        this.drawGradientRect(xPos + w + 2, yPos - 3 + 1, xPos + w + 3, yPos + h + 3 - 1, lightBg, darkBg);
-////        this.drawGradientRect(xPos - 3, yPos - 3, xPos + w + 3, yPos - 3 + 1, lightBg, lightBg);
-////        this.drawGradientRect(xPos - 3, yPos + h + 2, xPos + w + 3, yPos + h + 3, darkBg, darkBg);
-//        GuiHelper.drawTooltipBg(xPos, yPos, w, h, bkgColor, lightBg, darkBg);
-//    }
 
     private void drawIngredientsSmall(int mouseX, int mouseY, IAssemblyRecipe recipe, boolean showOnLeft) {
         if( recipe == null ) {
