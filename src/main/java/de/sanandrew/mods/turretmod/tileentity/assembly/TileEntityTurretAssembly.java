@@ -142,7 +142,7 @@ public class TileEntityTurretAssembly
     }
 
     private void initCrafting() {
-        if( this.currRecipe != null && this.invHandler.canFillOutput() ) {
+        if( this.currRecipe != null ) {
             ItemStack result = this.currRecipe.getCraftingResult(this.invHandler);
             if( this.invHandler.canFillOutput(result) ) {
                 this.removedItems = AssemblyManager.INSTANCE.checkAndConsumeResources(this.invHandler, this.world, this.currRecipe);

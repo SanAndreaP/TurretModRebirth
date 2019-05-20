@@ -19,6 +19,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 
@@ -71,23 +73,52 @@ public class AssemblyInventoryHandler
         return ItemStackUtils.isItem(this.assemblyStacks.get(3), ItemRegistry.ASSEMBLY_UPG_FILTER);
     }
 
-    boolean canFillOutput() {
-        ItemStack invStack = this.assemblyStacks.get(0);
-        return !ItemStackUtils.isValid(invStack) || invStack.getCount() < invStack.getMaxStackSize();
-    }
-
     boolean canFillOutput(ItemStack stack) {
+        IItemHandler ihm = getFirstItemContainer();
+        if( ihm != null ) {
+            for( int i = 0, max = ihm.getSlots(); i < max; i++ ) {
+                stack = ihm.insertItem(i, stack, true);
+                if( !ItemStackUtils.isValid(stack) ) {
+                    return true;
+                }
+            }
+        }
+
         ItemStack invStack = this.assemblyStacks.get(0);
-        return this.canFillOutput() && ItemStackUtils.canStack(invStack, stack, true);
+        return !ItemStackUtils.isValid(invStack) || invStack.getCount() < invStack.getMaxStackSize() && ItemStackUtils.canStack(invStack, stack, true);
     }
 
     void fillOutput(ItemStack stack) {
+        IItemHandler ihm = getFirstItemContainer();
+        if( ihm != null ) {
+            for( int i = 0, max = ihm.getSlots(); i < max; i++ ) {
+                stack = ihm.insertItem(i, stack, false);
+                if( !ItemStackUtils.isValid(stack) ) {
+                    return;
+                }
+                // TODO: move container to output slot if filled
+            }
+        }
+
         if( ItemStackUtils.isValid(this.assemblyStacks.get(0)) ) {
             this.assemblyStacks.get(0).grow(stack.getCount());
         } else {
             this.assemblyStacks.set(0, stack.copy());
             this.markDirty();
         }
+    }
+
+    private IItemHandler getFirstItemContainer() {
+        for( ItemStack stack : this.assemblyStacks ) {
+            if( ItemStackUtils.isValid(stack) ) {
+                IItemHandler itemHandler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+                if( itemHandler != null ) {
+                    return itemHandler;
+                }
+            }
+        }
+
+        return null;
     }
 
     @Override
