@@ -12,12 +12,12 @@ import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconGuiHelper;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.client.gui.lexicon.assembly.LexiconRenderAssemblyRecipe;
 import de.sanandrew.mods.turretmod.client.gui.lexicon.turret.LexiconGroupTurret;
 import de.sanandrew.mods.turretmod.client.util.ClientProxy;
-import de.sanandrew.mods.turretmod.registry.assembly.AssemblyRecipe;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
@@ -39,7 +39,7 @@ class LexiconRenderUpgrade
 
     private static final int H2_COLOR = 0xFF202080;
 
-    private AssemblyRecipe recipe;
+    private IAssemblyRecipe recipe;
     private ItemStack upgradeStack;
     private int drawHeight;
 
@@ -56,7 +56,7 @@ class LexiconRenderUpgrade
         if( entry instanceof LexiconEntryUpgrade ) {
             IUpgrade upgrade = ((LexiconEntryUpgrade) entry).upgrade;
             this.upgradeStack = UpgradeRegistry.INSTANCE.getItem(upgrade.getId());
-            this.recipe = AssemblyManager.INSTANCE.getRecipe(this.upgradeStack);
+            this.recipe = AssemblyManager.INSTANCE.findRecipe(this.upgradeStack);
             this.turretButtons = new ArrayList<>();
 
             List<GuiButton> entryButtons = helper.getEntryButtonList();

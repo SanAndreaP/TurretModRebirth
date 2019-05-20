@@ -13,13 +13,13 @@ import de.sanandrew.mods.sanlib.lib.XorShiftRandom;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.client.gui.lexicon.ammo.LexiconGroupAmmo;
 import de.sanandrew.mods.turretmod.client.gui.lexicon.assembly.LexiconRenderAssemblyRecipe;
 import de.sanandrew.mods.turretmod.client.util.ClientProxy;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
-import de.sanandrew.mods.turretmod.registry.assembly.AssemblyRecipe;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.Lang;
@@ -46,7 +46,7 @@ class LexiconRenderTurret
 
     private static final int H2_COLOR = 0xFF202080;
 
-    private AssemblyRecipe recipe;
+    private IAssemblyRecipe recipe;
     private ITurret turret;
     private WeakReference<EntityTurret> turretCache;
     private int drawHeight;
@@ -67,7 +67,7 @@ class LexiconRenderTurret
         if( entry instanceof LexiconEntryTurret ) {
             this.bouncy = new XorShiftRandom().randomInt(1000) == 0;
             this.turret = ((LexiconEntryTurret) entry).turret;
-            this.recipe = AssemblyManager.INSTANCE.getRecipe(TurretRegistry.INSTANCE.getItem(this.turret.getId()));
+            this.recipe = AssemblyManager.INSTANCE.findRecipe(TurretRegistry.INSTANCE.getItem(this.turret.getId()));
             if( this.turretCache != null ) {
                 this.turretCache.clear();
             }

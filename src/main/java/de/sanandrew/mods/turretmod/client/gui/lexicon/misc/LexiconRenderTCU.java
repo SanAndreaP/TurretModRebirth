@@ -10,8 +10,8 @@ import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconEntry;
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconGuiHelper;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.client.gui.lexicon.assembly.LexiconRenderAssemblyRecipe;
-import de.sanandrew.mods.turretmod.registry.assembly.AssemblyRecipe;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.gui.GuiButton;
@@ -27,7 +27,7 @@ class LexiconRenderTCU
 
     private int drawHeight;
     private List<GuiButton> entryButtons;
-    private AssemblyRecipe recipe;
+    private IAssemblyRecipe recipe;
 
     @Override
     public String getId() {
@@ -38,7 +38,7 @@ class LexiconRenderTCU
     public void initPage(ILexiconEntry entry, ILexiconGuiHelper helper, List<GuiButton> globalButtons, List<GuiButton> entryButtons) {
         this.entryButtons = entryButtons;
 
-        this.recipe = AssemblyManager.INSTANCE.getRecipe(entry.getEntryIcon());
+        this.recipe = AssemblyManager.INSTANCE.findRecipe(entry.getEntryIcon());
     }
 
     @Override

@@ -202,6 +202,7 @@ public class TileEntityTurretAssembly
                             }
 
                             this.invHandler.fillOutput(stack);
+                            this.removedItems = null;
 
                             if( !this.invHandler.canFillOutput(stack) ) {
                                 this.isActive = false;
@@ -213,10 +214,12 @@ public class TileEntityTurretAssembly
                                     this.craftingAmount--;
                                 }
 
-                                this.removedItems = AssemblyManager.INSTANCE.checkAndConsumeResources(this.invHandler, this.world, this.currRecipe);
-                                if( this.removedItems == null ) {
-                                    this.isActive = false;
-                                    this.isActiveClient = false;
+                                if( this.isActive ) {
+                                    this.removedItems = this.craftingAmount >= 1 ? AssemblyManager.INSTANCE.checkAndConsumeResources(this.invHandler, this.world, this.currRecipe) : null;
+                                    if( this.removedItems == null ) {
+                                        this.isActive = false;
+                                        this.isActiveClient = false;
+                                    }
                                 }
                             } else {
                                 this.cancelCrafting();

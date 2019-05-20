@@ -1,11 +1,6 @@
 #### Blocks ####
 # Assembly
 tile.sapturretmod:turret_assembly.name=Turret Assembly Table
-tile.sapturretmod:turret_assembly.group0=Miscellaneous
-tile.sapturretmod:turret_assembly.group1=Turrets
-tile.sapturretmod:turret_assembly.group2=Ammunition
-tile.sapturretmod:turret_assembly.group3=Repair Kits
-tile.sapturretmod:turret_assembly.group4=Upgrades
 # Generator
 tile.sapturretmod:potato_generator.name=Electrolyte Generator
 
@@ -176,6 +171,11 @@ gui.sapturretmod.tassembly.automate.enable=Automate
 gui.sapturretmod.tassembly.automate.disable=Manual
 gui.sapturretmod.tassembly.crafting=Crafting:
 gui.sapturretmod.tassembly.rfUsing=using %d RF/t
+gui.sapturretmod.tassembly.group.misc=Miscellaneous
+gui.sapturretmod.tassembly.group.turrets=Turrets
+gui.sapturretmod.tassembly.group.ammo=Ammunition
+gui.sapturretmod.tassembly.group.repkit=Repair Kits
+gui.sapturretmod.tassembly.group.upgrades=Upgrades
 # Generator
 gui.sapturretmod.electrogen.effective=Effectiveness:
 gui.sapturretmod.electrogen.powergen=Power generated:

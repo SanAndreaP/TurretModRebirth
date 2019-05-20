@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.registry.assembly;
 
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.assembly.AssemblyIngredient;
@@ -98,6 +99,16 @@ public final class AssemblyManager
         return this.recipes.get(id);
     }
 
+    public IAssemblyRecipe findRecipe(ItemStack output) {
+        for( IAssemblyRecipe recipe : recipes.values() ) {
+            if( ItemStackUtils.areEqual(output, recipe.getRecipeOutput(), false, true, true) ) {
+                return recipe;
+            }
+        }
+
+        return null;
+    }
+
     @Override
     public List<IAssemblyRecipe> getRecipes() {
         if( this.cacheRecipes == null ) {
@@ -107,11 +118,12 @@ public final class AssemblyManager
         return this.cacheRecipes;
     }
 
+    @SuppressWarnings("Convert2MethodRef")
     public void finalizeRegistry() {
         LinkedHashMap<ResourceLocation, IAssemblyRecipe> recipeOrdered = new LinkedHashMap<>(this.recipes);
         this.recipes.clear();
         this.recipes.putAll(recipeOrdered.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey))
-                                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, throwingMerger(), LinkedHashMap::new)));
+                                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, throwingMerger(), () -> new LinkedHashMap<>())));
     }
 
     /** See {@link java.util.stream.Collectors#throwingMerger()} **/

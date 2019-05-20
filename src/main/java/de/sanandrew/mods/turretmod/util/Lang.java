@@ -42,6 +42,7 @@ public final class Lang
     public static final TranslateKey TASSEMBLY_BTN_AUTODISABLE = new TranslateKey("gui.%s.tassembly.automate.disable", TmrConstants.ID);
     public static final TranslateKey TASSEMBLY_CRAFTING        = new TranslateKey("gui.%s.tassembly.crafting", TmrConstants.ID);
     public static final TranslateKey TASSEMBLY_RF_USING        = new TranslateKey("gui.%s.tassembly.rfUsing", TmrConstants.ID);
+    public static final TranslateKey TASSEMBLY_GROUP_NAME      = new TranslateKey("gui.%s.tassembly.group.%%s", TmrConstants.ID);
 
     public static final TranslateKey ELECTROGEN_EFFECTIVE = new TranslateKey("gui.%s.electrogen.effective", TmrConstants.ID);
     public static final TranslateKey ELECTROGEN_POWERGEN  = new TranslateKey("gui.%s.electrogen.powergen", TmrConstants.ID);

@@ -41,10 +41,14 @@ public final class TurretAssemblyRecipes
     private static void loadJsonRecipes(ModContainer mod, final IAssemblyManager registry) {
         final String modId = mod.getModId();
 
-        MiscUtils.findFiles(mod, "assets/" + modId + "/" + modId + "/recipes/assembly/", null, (root, file) -> processJson(modId, file, registry));
+        MiscUtils.findFiles(mod, "assets/" + modId + '/' + modId + "/recipes/assembly/", null, (root, file) -> processJson(modId, file, registry));
     }
 
     private static boolean processJson(final String modId, Path file, final IAssemblyManager registry) {
+        if( !file.toString().endsWith(".json") ) {
+            return true;
+        }
+
         try( BufferedReader reader = Files.newBufferedReader(file) ) {
             JsonObject json = JsonUtils.fromJson(reader, JsonObject.class);
 
@@ -62,7 +66,7 @@ public final class TurretAssemblyRecipes
                         throw new JsonSyntaxException("A group definition needs to be an object");
                     }
                 }
-            } else if( type.equals(modId + "assembly.recipe") ) {
+            } else if( type.equals(modId + ":assembly.recipe") ) {
                 NonNullList<Ingredient> ingredients = NonNullList.create();
                 JsonContext context = new JsonContext(modId);
                 for( JsonElement jobj : json.getAsJsonArray("ingredients") ) {

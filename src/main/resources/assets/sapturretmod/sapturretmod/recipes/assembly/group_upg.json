@@ -1,7 +1,0 @@
-{
-  "type": "sapturretmod:assembly.tab",
-  "name": "upgrades",
-  "item": {
-    "item": "sapturretmod:upgrade.empty"
-  }
-}

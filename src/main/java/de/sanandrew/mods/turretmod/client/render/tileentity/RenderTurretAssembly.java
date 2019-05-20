@@ -128,7 +128,7 @@ public class RenderTurretAssembly
 
     private void renderItem(TileEntityTurretAssembly assembly) {
         int xShift = 0;
-        ItemStack crfStack = assembly.currCrafting != null ? assembly.currCrafting.getValue(1) : assembly.getInventory().getStackInSlot(0);
+        ItemStack crfStack = assembly.currRecipe != null ? assembly.currRecipe.getRecipeOutput() : assembly.getInventory().getStackInSlot(0);
 
         GlStateManager.pushMatrix();
         GlStateManager.rotate((float)(90.0D * BlockRegistry.TURRET_ASSEMBLY.getDirection(assembly.getBlockMetadata()).getHorizontalIndex()), 0.0F, 1.0F, 0.0F);

@@ -9,7 +9,7 @@
     },
     {
       "name": "turrets",
-      "item": {
+      "icon": {
         "item": "sapturretmod:turret.crossbow"
       }
     },
@@ -21,13 +21,13 @@
     },
     {
       "name": "upgrades",
-      "item": {
+      "icon": {
         "item": "sapturretmod:upgrade.empty"
       }
     },
     {
       "name": "repkit",
-      "item": {
+      "icon": {
         "item": "sapturretmod:repkit.standard.1"
       }
     }

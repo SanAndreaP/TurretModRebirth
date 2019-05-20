@@ -15,6 +15,7 @@ import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiSlimButton;
 import de.sanandrew.mods.turretmod.client.shader.ShaderItemAlphaOverride;
 import de.sanandrew.mods.turretmod.client.shader.Shaders;
@@ -23,7 +24,6 @@ import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketAssemblyToggleAutomate;
 import de.sanandrew.mods.turretmod.network.PacketInitAssemblyCrafting;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
-import de.sanandrew.mods.turretmod.registry.assembly.AssemblyRecipe;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.Lang;
@@ -35,6 +35,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -54,7 +55,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class GuiTurretAssembly
         extends GuiContainer
@@ -67,7 +67,7 @@ public class GuiTurretAssembly
     private final ItemStack upgIconFilter;
 
     private final TileEntityTurretAssembly assembly;
-    private List<Tuple> cacheRecipes;
+    private List<IAssemblyRecipe> cacheRecipes;
     private FontRenderer frDetails;
     private boolean shiftPressed;
 
@@ -84,16 +84,13 @@ public class GuiTurretAssembly
     private GuiSlimButton manual;
     private GuiAssemblyTabNav groupUp;
     private GuiAssemblyTabNav groupDown;
-    private Map<GuiAssemblyCategoryTab, IRecipeGroup> groupBtns;
+    private Map<GuiAssemblyCategoryTab, String> groupBtns;
 
     private long lastTimestamp;
     private int maxEnergy;
     private int currEnergy;
     private int ticksCrafted;
     private int maxTicksCraft;
-    private boolean hasCrafting;
-    private ResourceLocation currCrfId;
-    private ItemStack currCrfItem;
 
     private final ShaderItemAlphaOverride shaderCallback = new ShaderItemAlphaOverride();
 
@@ -124,11 +121,13 @@ public class GuiTurretAssembly
         this.buttonList.add(this.groupUp = new GuiAssemblyTabNav(this.buttonList.size(), this.guiLeft + 13, this.guiTop + 9, false));
 
         int pos = 0;
-        IRecipeGroup[] groups = AssemblyManager.INSTANCE.getGroups();
-        Arrays.sort(groups, Comparator.comparing(IRecipeGroup::getName));
+        String[] groups = AssemblyManager.INSTANCE.getGroups();
+        Arrays.sort(groups, Comparator.comparing(s -> s));
         this.groupBtns = new HashMap<>(1 + (int) (groups.length / 0.75F));
-        for( IRecipeGroup grp : groups ) {
-            GuiAssemblyCategoryTab tab = new GuiAssemblyCategoryTab(this.buttonList.size(), this.guiLeft + 9, this.guiTop + 19 + pos * 15 - 15 * scrollGroupPos, grp.getIcon(), LangUtils.translate(grp.getName()));
+        for( String grp : groups ) {
+            ItemStack groupIcon = AssemblyManager.INSTANCE.getGroupIcon(grp);
+            String groupName = LangUtils.translate(Lang.TASSEMBLY_GROUP_NAME, grp);
+            GuiAssemblyCategoryTab tab = new GuiAssemblyCategoryTab(this.buttonList.size(), this.guiLeft + 9, this.guiTop + 19 + pos * 15 - 15 * scrollGroupPos, groupIcon, groupName);
             this.groupBtns.put(tab, grp);
             this.buttonList.add(tab);
 
@@ -151,9 +150,9 @@ public class GuiTurretAssembly
         }
     }
 
-    private void loadGroupRecipes(IRecipeGroup group) {
+    private void loadGroupRecipes(String group) {
         this.cacheRecipes = new ArrayList<>();
-        this.cacheRecipes.addAll(group.getRecipeIdList().stream().map(recipe -> new Tuple(recipe, AssemblyManager.INSTANCE.getRecipeResult(recipe))).collect(Collectors.toList()));
+        this.cacheRecipes.addAll(AssemblyManager.INSTANCE.getRecipes(group));
     }
 
     @Override
@@ -173,11 +172,6 @@ public class GuiTurretAssembly
         }
 
         this.maxTicksCraft = this.assembly.getMaxTicksCrafted();
-        this.hasCrafting = this.assembly.currCrafting != null;
-        if( this.hasCrafting ) {
-            this.currCrfId = this.assembly.currCrafting.getValue(0);
-            this.currCrfItem = this.assembly.currCrafting.getValue(1);
-        }
     }
 
     @Override
@@ -205,7 +199,7 @@ public class GuiTurretAssembly
 
         if( this.cacheRecipes != null ) {
             int maxScroll = this.cacheRecipes.size() - 4;
-            if( maxScroll > 0 && !this.hasCrafting ) {
+            if( maxScroll > 0 && this.assembly.currRecipe == null ) {
                 int scrollBtnPos = MathHelper.floor(79.0D / maxScroll * scrollPos);
 
                 if( (mouseX >= this.guiLeft + 144 && mouseX < this.guiLeft + 150 && mouseY >= this.guiTop + 7 && mouseY < this.guiTop + 92) || this.isScrolling ) {
@@ -225,8 +219,8 @@ public class GuiTurretAssembly
             int maxSz = Math.min(4, this.cacheRecipes.size());
             for( int i = 0; i < maxSz; i++) {
                 int index = scrollPos + i;
-                ItemStack stack = this.cacheRecipes.get(index).getValue(1);
-                boolean isActive = !this.hasCrafting || (!this.assembly.isAutomated() && ItemStackUtils.areEqual(this.currCrfItem, stack));
+                ItemStack stack = this.cacheRecipes.get(index).getRecipeOutput();
+                boolean isEnabled = this.assembly.currRecipe == null || (!this.assembly.isAutomated() && ItemStackUtils.areEqual(this.assembly.currRecipe.getRecipeOutput(), stack));
 
                 RenderUtils.renderStackInGui(stack, this.guiLeft + 36, this.guiTop + 10 + 21 * i, 1.0F, this.fontRenderer);
 
@@ -236,7 +230,7 @@ public class GuiTurretAssembly
                     this.frDetails.drawString(tooltip.get(1).toString(), this.guiLeft + 57, this.guiTop + 19 + 21 * i, 0xFF808080);
                 }
 
-                if( isActive ) {
+                if( isEnabled ) {
                     if( mouseX >= this.guiLeft + 35 && mouseX < this.guiLeft + 143 && mouseY >= this.guiTop + 9 + 21 * i && mouseY < this.guiTop + 27 + 21 * i ) {
                         GlStateManager.disableDepth();
                         GlStateManager.colorMask(true, true, true, false);
@@ -245,10 +239,10 @@ public class GuiTurretAssembly
                         GlStateManager.enableDepth();
 
                         if( isLmbDown && !this.prevIsLmbDown ) {
-                            PacketRegistry.sendToServer(new PacketInitAssemblyCrafting(this.assembly, this.cacheRecipes.get(index).getValue(0), this.shiftPressed ? 16 : 1));
+                            PacketRegistry.sendToServer(new PacketInitAssemblyCrafting(this.assembly, this.cacheRecipes.get(index).getId(), this.shiftPressed ? 16 : 1));
                         }
                         if( isRmbDown && !this.prevIsRmbDown ) {
-                            PacketRegistry.sendToServer(new PacketInitAssemblyCrafting(this.assembly, this.cacheRecipes.get(index).getValue(0), this.shiftPressed ? -16 : -1));
+                            PacketRegistry.sendToServer(new PacketInitAssemblyCrafting(this.assembly, this.cacheRecipes.get(index).getId(), this.shiftPressed ? -16 : -1));
                         }
                     }
                 } else {
@@ -306,14 +300,14 @@ public class GuiTurretAssembly
             ShaderHelper.releaseShader();
         }
 
-        if( this.hasCrafting ) {
-            String cnt = String.format("%d", this.currCrfItem.getCount());
+        if( this.assembly.currRecipe != null ) {
+            String cnt = String.format("%d", this.assembly.craftingAmount);
             if( this.assembly.isAutomated() ) {
                 cnt = String.valueOf('\u221E');
             }
 
             this.frDetails.drawString(LangUtils.translate(Lang.TASSEMBLY_CRAFTING.get()), this.guiLeft + 156, this.guiTop + 40, 0xFF303030);
-            RenderUtils.renderStackInGui(this.currCrfItem, this.guiLeft + 190, this.guiTop + 36, 1.0F, this.fontRenderer, cnt, true);
+            RenderUtils.renderStackInGui(this.assembly.currRecipe.getRecipeOutput(), this.guiLeft + 190, this.guiTop + 36, 1.0F, this.fontRenderer, cnt, true);
 
             this.cancelTask.enabled = true;
             this.automate.enabled = false;
@@ -347,23 +341,23 @@ public class GuiTurretAssembly
             for( int i = 0; i < maxSz; i++) {
                 int index = scrollPos + i;
 
-                if( !this.hasCrafting ) {
+                if( this.assembly.currRecipe == null ) {
                     if( mouseX >= this.guiLeft + 35 && mouseX < this.guiLeft + 143 && mouseY >= this.guiTop + 9 + 21 * i && mouseY < this.guiTop + 27 + 21 * i ) {
                         if( this.shiftPressed ) {
-                            this.drawIngredientsDetail(mouseX - this.guiLeft, mouseY - this.guiTop, this.cacheRecipes.get(index).getValue(0), false);
+                            this.drawIngredientsDetail(mouseX - this.guiLeft, mouseY - this.guiTop, this.cacheRecipes.get(index), false);
                         } else {
-                            this.drawIngredientsSmall(mouseX - this.guiLeft, mouseY - this.guiTop, this.cacheRecipes.get(index).getValue(0), false);
+                            this.drawIngredientsSmall(mouseX - this.guiLeft, mouseY - this.guiTop, this.cacheRecipes.get(index), false);
                         }
                     }
                 }
             }
         }
 
-        if( this.hasCrafting && mouseX >= this.guiLeft + 190 && mouseX < this.guiLeft + 206 && mouseY >= this.guiTop + 36 && mouseY < this.guiTop + 52 ) {
+        if( this.assembly.currRecipe != null && mouseX >= this.guiLeft + 190 && mouseX < this.guiLeft + 206 && mouseY >= this.guiTop + 36 && mouseY < this.guiTop + 52 ) {
             if( this.shiftPressed ) {
-                this.drawIngredientsDetail(mouseX - this.guiLeft, mouseY - this.guiTop, this.currCrfId, true);
+                this.drawIngredientsDetail(mouseX - this.guiLeft, mouseY - this.guiTop, this.assembly.currRecipe, true);
             } else {
-                this.drawIngredientsSmall(mouseX - this.guiLeft, mouseY - this.guiTop, this.currCrfId, true);
+                this.drawIngredientsSmall(mouseX - this.guiLeft, mouseY - this.guiTop, this.assembly.currRecipe, true);
             }
         }
 
@@ -375,24 +369,23 @@ public class GuiTurretAssembly
         RenderHelper.enableGUIStandardItemLighting();
     }
 
-    private void drawIngredientsDetail(int mouseX, int mouseY, ResourceLocation recipe, boolean showOnLeft) {
-        AssemblyRecipe assemblyRecipe = AssemblyManager.INSTANCE.getRecipe(recipe);
-        if( assemblyRecipe == null ) {
+    private void drawIngredientsDetail(int mouseX, int mouseY, IAssemblyRecipe recipe, boolean showOnLeft) {
+        if( recipe == null ) {
             return;
         }
 
-        IRecipeItem[] ingredients = assemblyRecipe.ingredients;
-        if( ingredients.length < 1 ) {
+        NonNullList<Ingredient> ingredients = recipe.getIngredients();
+        if( ingredients.size() < 1 ) {
             this.drawIngredientsSmall(mouseX, mouseY, recipe, showOnLeft);
             return;
         }
 
-        Map<IRecipeItem, Tuple> desc = new HashMap<>(ingredients.length);
-        List<Integer> lngth = new ArrayList<>(ingredients.length);
+        Map<Ingredient, Tuple> desc = new HashMap<>();
+        List<Integer> lngth = new ArrayList<>();
         int tHeight = 0;
 
-        for( IRecipeItem entry : ingredients ) {
-            ItemStack[] entryStacks = entry.getEntryItemStacks();
+        for( Ingredient entry : ingredients ) {
+            ItemStack[] entryStacks = entry.getMatchingStacks();
             ItemStack stack = entryStacks[(int)((this.lastTimestamp / 1000L) % entryStacks.length)];
             List<?> tooltip = GuiUtils.getTooltipWithoutShift(stack);
 
@@ -400,7 +393,7 @@ public class GuiTurretAssembly
             String dscL2 = null;
             tHeight+=9;
 
-            if( tooltip.size() > 1 && entry.shouldDrawTooltip() ) {
+            if( tooltip.size() > 1 ) {
                 dscL2 = String.format("%s", tooltip.get(1));
                 tHeight+=9;
             }
@@ -422,8 +415,8 @@ public class GuiTurretAssembly
 
         this.drawTooltipBg(xPos, yPos, textWidth, tHeight, bkgColor, lightBg, darkBg);
 
-        for( int i = 0, j = 0; i < ingredients.length; i++, j++ ) {
-            Tuple descIng = desc.get(ingredients[i]);
+        for( int i = 0, j = 0, max = ingredients.size(); i < max; i++, j++ ) {
+            Tuple descIng = desc.get(ingredients.get(i));
 
             RenderHelper.enableGUIStandardItemLighting();
             RenderUtils.renderStackInGui(descIng.getValue(0), xPos, yPos + j * 9, 0.5F);
@@ -456,21 +449,20 @@ public class GuiTurretAssembly
         this.drawGradientRect(xPos - 3, yPos + h + 2, xPos + w + 3, yPos + h + 3, darkBg, darkBg);
     }
 
-    private void drawIngredientsSmall(int mouseX, int mouseY, ResourceLocation recipe, boolean showOnLeft) {
-        AssemblyRecipe assemblyRecipe = AssemblyManager.INSTANCE.getRecipe(recipe);
-        if( assemblyRecipe == null ) {
+    private void drawIngredientsSmall(int mouseX, int mouseY, IAssemblyRecipe recipe, boolean showOnLeft) {
+        if( recipe == null ) {
             return;
         }
 
-        IRecipeItem[] ingredients = assemblyRecipe.ingredients;
+        NonNullList<Ingredient> ingredients = recipe.getIngredients();
 
-        String rf = String.format("%d RF/t", MathHelper.ceil(assemblyRecipe.fluxPerTick * (this.assembly.hasSpeedUpgrade() ? 1.1F : 1.0F)));
-        String ticks = MiscUtils.getTimeFromTicks(assemblyRecipe.ticksProcessing);
+        String rf = String.format("%d RF/t", MathHelper.ceil(recipe.getFluxPerTick() * (this.assembly.hasSpeedUpgrade() ? 1.1F : 1.0F)));
+        String ticks = MiscUtils.getTimeFromTicks(recipe.getProcessTime());
 
-        int textWidth = Math.max(Math.max(ingredients.length * 9, this.frDetails.getStringWidth(rf) + 10), this.frDetails.getStringWidth(ticks) + 10);
+        int textWidth = Math.max(Math.max(ingredients.size() * 9, this.frDetails.getStringWidth(rf) + 10), this.frDetails.getStringWidth(ticks) + 10);
         int xPos = mouseX + (showOnLeft ? -textWidth - 12 : 12);
         int yPos = mouseY - 12;
-        int height = ingredients.length > 0 ? 31 : 18;
+        int height = ingredients.size() > 0 ? 31 : 18;
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(0.0D, 0.0D, 300.0D);
@@ -481,14 +473,14 @@ public class GuiTurretAssembly
 
         this.drawTooltipBg(xPos, yPos, textWidth, height, bkgColor, lightBg, darkBg);
 
-        if( ingredients.length > 0 ) {
+        if( ingredients.size() > 0 ) {
             this.drawGradientRect(xPos - 2, yPos + 10, xPos + textWidth + 2, yPos + 11, lightBg, darkBg);
         }
 
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(Resources.GUI_ASSEMBLY_CRF.resource);
         GlStateManager.pushMatrix();
-        if( ingredients.length < 1 ) {
+        if( ingredients.size() < 1 ) {
             GlStateManager.translate(0.0F, -10.0F, 0.0F);
         } else {
             GlStateManager.translate(0.0F, 3.0F, 0.0F);
@@ -507,8 +499,8 @@ public class GuiTurretAssembly
         GlStateManager.popMatrix();
 
         RenderHelper.enableGUIStandardItemLighting();
-        for( int i = 0; i < ingredients.length; i++ ) {
-            ItemStack[] entryStacks = ingredients[i].getEntryItemStacks();
+        for( int i = 0, max = ingredients.size(); i < max; i++ ) {
+            ItemStack[] entryStacks = ingredients.get(i).getMatchingStacks();
             ItemStack stack = entryStacks[(int)((this.lastTimestamp / 1000L) % entryStacks.length)];
             RenderUtils.renderStackInGui(stack, xPos + i * 9, yPos, 0.5F);
         }
@@ -574,7 +566,7 @@ public class GuiTurretAssembly
     @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
-        if( this.cacheRecipes != null && this.cacheRecipes.size() > 4 && !this.hasCrafting ) {
+        if( this.cacheRecipes != null && this.cacheRecipes.size() > 4 && this.assembly.currRecipe == null ) {
             int dWheelDir = Mouse.getEventDWheel();
             if( dWheelDir < 0 ) {
                 scrollPos = Math.min(this.cacheRecipes.size() - 4, scrollPos + 1);
@@ -600,7 +592,7 @@ public class GuiTurretAssembly
             PacketRegistry.sendToServer(new PacketAssemblyToggleAutomate(this.assembly));
         } else if( btn instanceof GuiAssemblyCategoryTab && this.groupBtns.containsKey(btn) ) {
             scrollPos = 0;
-            IRecipeGroup grp = this.groupBtns.get(btn);
+            String grp = this.groupBtns.get(btn);
             GuiAssemblyCategoryTab[] tabs = getSortedTabs();
             for( int i = 0; i < tabs.length; i++ ) {
                 tabs[i].enabled = true;

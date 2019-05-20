@@ -87,8 +87,8 @@ public class AssemblyRecipe
         return this.group;
     }
 
-    private NonNullList<ItemStack> getCompactInventory(IInventory inv) {
-        NonNullList<ItemStack> items = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
+    private static NonNullList<ItemStack> getCompactInventory(IInventory inv) {
+        NonNullList<ItemStack> items = NonNullList.create();
         NonNullList<ItemStack> cmpItems = NonNullList.create();
 
         for( int slot = 0, max = inv.getSizeInventory(); slot < max; slot++ ) {

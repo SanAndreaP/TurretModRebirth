@@ -11,22 +11,20 @@ package de.sanandrew.mods.turretmod.compat.jei;
 import com.google.common.collect.ImmutableList;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
-import de.sanandrew.mods.turretmod.registry.assembly.AssemblyRecipe;
-import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
+import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.util.Lang;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.api.recipe.IRecipeWrapperFactory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @SideOnly(Side.CLIENT)
 class AssemblyRecipeWrapper
@@ -37,18 +35,15 @@ class AssemblyRecipeWrapper
     private final int fluxPerTick;
     private final int timeInTicks;
 
-    private AssemblyRecipeWrapper(Map.Entry<ResourceLocation, AssemblyRecipe> keyEntry) {
-        AssemblyRecipe entry = AssemblyManager.INSTANCE.getRecipe(keyEntry.getKey());
-        assert entry != null : "Recipe Entry should not be null!";
-
+    private AssemblyRecipeWrapper(IAssemblyRecipe recipe) {
         ImmutableList.Builder<List<ItemStack>> inputBuilder = ImmutableList.builder();
-        for( IRecipeItem item : entry.ingredients) {
-            inputBuilder.add(Arrays.asList(item.getEntryItemStacks()));
+        for( Ingredient item : recipe.getIngredients()) {
+            inputBuilder.add(Arrays.asList(item.getMatchingStacks()));
         }
         this.input = inputBuilder.build();
-        this.fluxPerTick = entry.fluxPerTick;
-        this.timeInTicks = entry.ticksProcessing;
-        this.output = ImmutableList.of(keyEntry.getValue().result);
+        this.fluxPerTick = recipe.getFluxPerTick();
+        this.timeInTicks = recipe.getProcessTime();
+        this.output = ImmutableList.of(recipe.getRecipeOutput());
     }
 
     @Override
@@ -77,11 +72,10 @@ class AssemblyRecipeWrapper
     }
 
     public static class Factory
-            implements IRecipeWrapperFactory<Map.Entry>
+            implements IRecipeWrapperFactory<IAssemblyRecipe>
     {
         @Override
-        @SuppressWarnings("unchecked")
-        public IRecipeWrapper getRecipeWrapper(Map.Entry recipe) {
+        public IRecipeWrapper getRecipeWrapper(IAssemblyRecipe recipe) {
             return new AssemblyRecipeWrapper(recipe);
         }
     }

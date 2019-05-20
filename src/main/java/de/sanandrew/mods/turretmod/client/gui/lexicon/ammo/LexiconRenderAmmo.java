@@ -12,11 +12,11 @@ import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconGuiHelper;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
+import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.client.gui.lexicon.assembly.LexiconRenderAssemblyRecipe;
 import de.sanandrew.mods.turretmod.client.gui.lexicon.turret.LexiconGroupTurret;
 import de.sanandrew.mods.turretmod.client.util.ClientProxy;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
-import de.sanandrew.mods.turretmod.registry.assembly.AssemblyRecipe;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.gui.FontRenderer;
@@ -35,7 +35,7 @@ public class LexiconRenderAmmo
 
     private static final int H2_COLOR = 0xFF202080;
 
-    private AssemblyRecipe recipe;
+    private IAssemblyRecipe recipe;
     private int drawHeight;
     private IAmmunition currAmmo;
     private ItemStack currAmmoItem;
@@ -101,7 +101,7 @@ public class LexiconRenderAmmo
 
             this.ammoButtons.forEach(btn -> btn.inactive = (btn.ammo != this.currAmmo));
             this.currAmmoItem = AmmunitionRegistry.INSTANCE.getItem(this.currAmmo.getId());
-            this.recipe = AssemblyManager.INSTANCE.getRecipe(this.currAmmoItem);
+            this.recipe = AssemblyManager.INSTANCE.findRecipe(this.currAmmoItem);
         }
     }
 
