@@ -29,6 +29,10 @@ public final class ElectrolyteRecipe
     private final float trashChance;
     private final float treasureChance;
 
+    public ElectrolyteRecipe(ResourceLocation id, @Nonnull Ingredient ingredient, @Nonnull ItemStack trash, @Nonnull ItemStack treasure, float efficiency, int processTime) {
+        this(id, ingredient, trash, treasure, efficiency, processTime, 0.2F, 0.02F);
+    }
+
     public ElectrolyteRecipe(ResourceLocation id, @Nonnull Ingredient ingredient, @Nonnull ItemStack trash, @Nonnull ItemStack treasure, float efficiency, int processTime, float trashChance, float treasureChance) {
         this.id = id;
         this.ingredient = NonNullList.withSize(1, ingredient);

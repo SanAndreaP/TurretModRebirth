@@ -55,18 +55,16 @@ public class GuiInfo
 
         int center = gui.getPosX() + (gui.getWidth() - 56) / 2;
         int btnY = gui.getPosY() + 190;
-        if( gui.hasPermision() ) {
-            this.dismantle = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center, btnY, 176, 50, Resources.GUI_TCU_INFO.resource,
-                                                                LangUtils.translate(Lang.TCU_BTN.get("dismantle"))));
-            this.setActive = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 19, btnY, 194, 50, Resources.GUI_TCU_INFO.resource,
-                                                                LangUtils.translate(Lang.TCU_BTN.get("activate"))));
-            this.setDeactive = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 19, btnY, 212, 50, Resources.GUI_TCU_INFO.resource,
-                                                                  LangUtils.translate(Lang.TCU_BTN.get("deactivate"))));
-            this.showRange = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 38, btnY, 176, 86, Resources.GUI_TCU_INFO.resource,
-                                                                LangUtils.translate(Lang.TCU_BTN.get("show_range"))));
-            this.hideRange = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 38, btnY, 194, 86, Resources.GUI_TCU_INFO.resource,
-                                                                LangUtils.translate(Lang.TCU_BTN.get("hide_range"))));
-        }
+        this.dismantle = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center, btnY, 176, 50, Resources.GUI_TCU_INFO.resource,
+                                                            LangUtils.translate(Lang.TCU_BTN.get("dismantle"))));
+        this.setActive = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 19, btnY, 194, 50, Resources.GUI_TCU_INFO.resource,
+                                                            LangUtils.translate(Lang.TCU_BTN.get("activate"))));
+        this.setDeactive = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 19, btnY, 212, 50, Resources.GUI_TCU_INFO.resource,
+                                                              LangUtils.translate(Lang.TCU_BTN.get("deactivate"))));
+        this.showRange = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 38, btnY, 176, 86, Resources.GUI_TCU_INFO.resource,
+                                                            LangUtils.translate(Lang.TCU_BTN.get("show_range"))));
+        this.hideRange = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 38, btnY, 194, 86, Resources.GUI_TCU_INFO.resource,
+                                                            LangUtils.translate(Lang.TCU_BTN.get("hide_range"))));
 
         this.setActive.visible = false;
         this.hideRange.visible = false;
@@ -74,6 +72,15 @@ public class GuiInfo
         this.turretName = new GuiTextField(0, gui.getFontRenderer(), gui.getPosX() + 20, gui.getPosY() + 91, 148, 10);
         this.turretName.setMaxStringLength(128);
         this.turretName.setText(gui.getTurretInst().get().hasCustomName() ? gui.getTurretInst().get().getCustomNameTag() : "");
+
+        if( !gui.hasPermision() ) {
+            this.dismantle.enabled = false;
+            this.setActive.enabled = false;
+            this.setDeactive.enabled = false;
+            this.showRange.enabled = false;
+            this.hideRange.enabled = false;
+            this.turretName.setEnabled(false);
+        }
     }
 
     @Override

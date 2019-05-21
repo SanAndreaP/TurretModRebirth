@@ -126,7 +126,7 @@ public class ClientProxy
                 case TCU:
                     Entity e = world.getEntityByID(x);
                     if( e instanceof ITurretInst ) {
-                        return GuiTcuRegistry.INSTANCE.openGUI(y, player, (ITurretInst) e);
+                        return GuiTcuRegistry.INSTANCE.openGUI(y, player, (ITurretInst) e, z == 1);
                     }
                     break;
                 case TASSEMBLY_MAN:

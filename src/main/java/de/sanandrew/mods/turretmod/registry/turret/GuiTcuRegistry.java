@@ -61,7 +61,7 @@ public final class GuiTcuRegistry
     private GuiTcuRegistry() { }
 
     @SideOnly(Side.CLIENT)
-    public Gui openGUI(int type, EntityPlayer player, ITurretInst turretInst) {
+    public Gui openGUI(int type, EntityPlayer player, ITurretInst turretInst, boolean showFirstTabOnly) {
         if( type >= 0 && type < GUI_RESOURCES.size() ) {
             GuiEntry entry = getGuiEntry(GUI_RESOURCES.get(type));
             if( entry != null ) {
@@ -70,9 +70,9 @@ public final class GuiTcuRegistry
                     IGuiTCU guiDelegate = event.factory.get();
                     Container cnt = guiDelegate.getContainer(player, turretInst);
                     if( cnt != null ) {
-                        return new GuiTcuContainer(GUI_RESOURCES.get(type), guiDelegate, cnt, turretInst);
+                        return new GuiTcuContainer(GUI_RESOURCES.get(type), guiDelegate, cnt, turretInst, showFirstTabOnly);
                     } else {
-                        return new GuiTcuScreen(GUI_RESOURCES.get(type), guiDelegate, turretInst);
+                        return new GuiTcuScreen(GUI_RESOURCES.get(type), guiDelegate, turretInst, showFirstTabOnly);
                     }
                 }
             }

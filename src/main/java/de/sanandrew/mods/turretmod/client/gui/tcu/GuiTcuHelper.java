@@ -55,11 +55,11 @@ public final class GuiTcuHelper
 
     private long marqueeTime;
 
-    void initGui(IGuiTcuInst<?> gui) {
+    void initGui(IGuiTcuInst<?> gui, boolean showFirstTabOnly) {
         this.tabs.clear();
 
         MutableInt currIndex = new MutableInt(0);
-        GuiTcuRegistry.GUI_RESOURCES.forEach(location -> {
+        for( ResourceLocation location : GuiTcuRegistry.GUI_RESOURCES ) {
             GuiTcuRegistry.GuiEntry entry = GuiTcuRegistry.INSTANCE.getGuiEntry(location);
             if( entry != null && entry.showTab(gui) ) {
                 GuiButton btn = new GuiButtonTcuTab(gui.getNewButtonId(), 0, gui.getPosY() + 213, entry.getIcon(),
@@ -72,8 +72,12 @@ public final class GuiTcuHelper
                 gui.addNewButton(btn);
                 this.tabs.put(btn, location);
                 currIndex.increment();
+
+                if( showFirstTabOnly ) {
+                    break;
+                }
             }
-        });
+        }
         this.tabNavLeft = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), 0, gui.getPosY() + 213, 18, 0, Resources.GUI_TCU_BUTTONS.resource, ""));
         this.tabNavLeft.visible = false;
         this.tabNavRight = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), 0, gui.getPosY() + 213, 36, 0, Resources.GUI_TCU_BUTTONS.resource, ""));
@@ -85,7 +89,7 @@ public final class GuiTcuHelper
     }
 
     void updateScreen(Minecraft mc, IGuiTcuInst<?> gui) {
-        if( !gui.hasPermision() || gui.getTurretInst().get().isDead || gui.getTurretInst().get().getDistance(mc.player) > 36.0D ) {
+        if( gui.getTurretInst().get().isDead || gui.getTurretInst().get().getDistance(mc.player) > 36.0D ) {
             mc.player.closeScreen();
         }
 

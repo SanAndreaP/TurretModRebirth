@@ -29,7 +29,9 @@ _Changes_
   makers can now configure the texture, move speed and direction of each layer, remove and/or
   define new layers
 * Electrolyte Generator recipes can now define the chances of trash and/or treasure
+    - bumped up trash chance from 10% to 20%
     - bumped up treasure chance from 1% to 2%
+* Electrolyte Generator "Effectiveness" has been renamed to "Efficiency"
 
 _Bugfixes_
 * Turret Assembly Table now returns the items used in the crafting process when canceling it

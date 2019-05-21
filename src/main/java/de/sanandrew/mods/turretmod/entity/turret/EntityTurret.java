@@ -326,12 +326,14 @@ public class EntityTurret
 
         if( this.world.isRemote ) {
             if( ItemStackUtils.isItem(stack, ItemRegistry.TURRET_CONTROL_UNIT) ) {
-                TmrUtils.INSTANCE.openGui(player, player.isSneaking() ? EnumGui.DEBUG_CAMERA : EnumGui.TCU, this.getEntityId(), 0, 0);
+                TmrUtils.INSTANCE.openGui(player, EnumGui.TCU, this.getEntityId(), 0, 0);
                 return true;
+            } else if( !ItemStackUtils.isValid(stack) ) {
+                TmrUtils.INSTANCE.openGui(player, EnumGui.TCU, this.getEntityId(), 0, 1);
             }
 
             return false;
-        } else if( ItemStackUtils.isValid(stack) && hand == EnumHand.MAIN_HAND ) {
+        } else if( ItemStackUtils.isValid(stack) ) {
             IRepairKit repKit;
 
             if( this.targetProc.addAmmo(stack, player) ) {

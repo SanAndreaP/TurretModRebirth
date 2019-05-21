@@ -25,8 +25,9 @@ public class GuiTcuContainer
     private final ITurretInst turret;
     private final IGuiTCU guiDelegate;
     private final GuiTcuHelper helper = new GuiTcuHelper();
+    private final boolean showFirstTabOnly;
 
-    public GuiTcuContainer(ResourceLocation registryKey, IGuiTCU gui, Container guiContainer, ITurretInst turretInst) {
+    public GuiTcuContainer(ResourceLocation registryKey, IGuiTCU gui, Container guiContainer, ITurretInst turretInst, boolean showFirstTabOnly) {
         super(guiContainer);
         this.registryKey = registryKey;
         this.turret = turretInst;
@@ -34,6 +35,8 @@ public class GuiTcuContainer
 
         this.xSize = GuiTcuHelper.X_SIZE;
         this.ySize = GuiTcuHelper.Y_SIZE;
+
+        this.showFirstTabOnly = showFirstTabOnly;
     }
 
     @Override
@@ -41,7 +44,7 @@ public class GuiTcuContainer
         super.initGui();
 
         this.buttonList.clear();
-        this.helper.initGui(this);
+        this.helper.initGui(this, this.showFirstTabOnly);
 
         this.guiDelegate.initGui(this);
     }
