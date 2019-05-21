@@ -16,6 +16,7 @@ import de.sanandrew.mods.turretmod.api.client.render.IRender;
 import de.sanandrew.mods.turretmod.api.client.render.IRenderRegistry;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelRegistry;
 import de.sanandrew.mods.turretmod.api.client.turret.ITurretRenderRegistry;
+import de.sanandrew.mods.turretmod.api.electrolytegen.IElectrolyteManager;
 import de.sanandrew.mods.turretmod.api.repairkit.IRepairKitRegistry;
 import de.sanandrew.mods.turretmod.api.turret.IGuiTcuRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
@@ -29,6 +30,7 @@ import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
 import de.sanandrew.mods.turretmod.event.TargetingEventHandler;
 import de.sanandrew.mods.turretmod.registry.ammo.Ammunitions;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyRecipeLoader;
+import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteRecipeLoader;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKits;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
@@ -48,6 +50,11 @@ public class TmrInternalPlugin
     @Override
     public void registerAssemblyRecipes(IAssemblyManager registry) {
         AssemblyRecipeLoader.initialize(registry);
+    }
+
+    @Override
+    public void registerElectrolyteRecipes(IElectrolyteManager registry) {
+        ElectrolyteRecipeLoader.initialize(registry);
     }
 
     @Override

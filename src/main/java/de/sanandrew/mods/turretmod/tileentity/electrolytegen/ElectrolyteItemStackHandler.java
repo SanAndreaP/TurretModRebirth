@@ -11,12 +11,12 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 
-final class ElectrolyteContainerInventoryHandler
+final class ElectrolyteItemStackHandler
         extends ItemStackHandler
 {
-    private final ElectrolyteInventoryHandler parentHandler;
+    private final ElectrolyteInventory parentHandler;
 
-    public ElectrolyteContainerInventoryHandler(ElectrolyteInventoryHandler handler) {
+    public ElectrolyteItemStackHandler(ElectrolyteInventory handler) {
         super(handler.getStacksArray());
         this.parentHandler = handler;
     }

@@ -83,7 +83,7 @@ public class GuiElectrolyteGenerator
             this.maxEnergy = stg.getMaxEnergyStored();
         }
 
-        this.currEffective = this.generator.effectiveness;
+        this.currEffective = this.generator.efficiency;
         this.generatedEnergy = this.generator.getGeneratedFlux();
     }
 
@@ -151,12 +151,12 @@ public class GuiElectrolyteGenerator
     @Override
     public int getMaxProcess(int slot) {
         ElectrolyteProcess proc = this.generator.processes[slot];
-        return proc == null ? 0 : proc.maxProgress;
+        return proc == null ? 0 : proc.recipe.getProcessTime();
     }
 
     @Override
     public String getText(String key, String originalText) {
-        if( "effectiveness".equalsIgnoreCase(key) ) {
+        if( "efficiency".equalsIgnoreCase(key) ) {
             return String.format("%.2f%%", this.currEffective / 9.0F * 100.0F);
         } else if( "powergen".equalsIgnoreCase(key) ) {
             return String.format("%d RF/t", this.generatedEnergy);

@@ -28,4 +28,6 @@ public interface IAssemblyManager
     List<IAssemblyRecipe> getRecipes();
 
     void setGroupIcon(String group, ItemStack icon);
+
+    void removeRecipe(ResourceLocation id);
 }

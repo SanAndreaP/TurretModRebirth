@@ -8,7 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 public interface IAssemblyRecipe
-//        extends IRecipe TODO: implement on 1.14
+//        extends IRecipe //TODO: implement in 1.14
 {
     ResourceLocation getId();
 

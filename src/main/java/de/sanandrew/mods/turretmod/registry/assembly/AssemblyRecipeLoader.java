@@ -41,7 +41,7 @@ public final class AssemblyRecipeLoader
     private static void loadJsonRecipes(ModContainer mod, final IAssemblyManager registry) {
         final String modId = mod.getModId();
 
-        MiscUtils.findFiles(mod, "assets/" + modId + '/' + modId + "/recipes/assembly/", null, (root, file) -> processJson(modId, file, registry));
+        MiscUtils.findFiles(mod, "assets/" + modId + '/' + TmrConstants.ID + "/recipes/assembly/", null, (root, file) -> processJson(modId, file, registry));
     }
 
     private static boolean processJson(final String modId, Path file, final IAssemblyManager registry) {
@@ -51,13 +51,17 @@ public final class AssemblyRecipeLoader
 
         try( BufferedReader reader = Files.newBufferedReader(file) ) {
             JsonObject json = JsonUtils.fromJson(reader, JsonObject.class);
+            ResourceLocation id = new ResourceLocation(modId, "recipes/assembly/" + file.getFileName().toString());
 
             if( json == null ) {
                 throw new JsonSyntaxException("Cannot read valid JSON");
+            } else if( json.isJsonNull() ) {
+                registry.removeRecipe(id);
+                return true;
             }
 
             String type = JsonUtils.getStringVal(json.get("type"));
-            if( type.equals(modId + ":assembly.tabs") ) {
+            if( type.equals(TmrConstants.ID + ":assembly.tabs") ) {
                 for( JsonElement tab : json.getAsJsonArray("tabs") ) {
                     if( tab.isJsonObject() ) {
                         JsonObject tabObj = tab.getAsJsonObject();
@@ -66,7 +70,7 @@ public final class AssemblyRecipeLoader
                         throw new JsonSyntaxException("A group definition needs to be an object");
                     }
                 }
-            } else if( type.equals(modId + ":assembly.recipe") ) {
+            } else if( type.equals(TmrConstants.ID + ":assembly.recipe") ) {
                 NonNullList<Ingredient> ingredients = NonNullList.create();
                 JsonContext context = new JsonContext(modId);
                 for( JsonElement jobj : json.getAsJsonArray("ingredients") ) {
@@ -77,7 +81,7 @@ public final class AssemblyRecipeLoader
                     }
                 }
 
-                registry.registerRecipe(new AssemblyRecipe(new ResourceLocation(modId, file.getFileName().toString()),
+                registry.registerRecipe(new AssemblyRecipe(id,
                                                            JsonUtils.getStringVal(json.get("group")),
                                                            ingredients,
                                                            JsonUtils.getIntVal(json.get("fluxPerTick")),
@@ -85,9 +89,9 @@ public final class AssemblyRecipeLoader
                                                            JsonUtils.getItemStack(json.get("result"))));
             }
         } catch( JsonParseException e ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("Malformed recipe JSON from %s", file), e);
+            TmrConstants.LOG.log(Level.WARN, String.format("Malformed recipe JSON from %s", file), e);
         } catch( IOException e ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("Couldn't read recipe from %s", file), e);
+            TmrConstants.LOG.log(Level.WARN, String.format("Couldn't read recipe from %s", file), e);
         }
 
         return true;

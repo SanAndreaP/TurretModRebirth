@@ -22,6 +22,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class AssemblyIngredient
         extends Ingredient
 {
@@ -36,12 +37,9 @@ public class AssemblyIngredient
         this.count = count;
     }
 
-    public AssemblyIngredient(int count, String... ores)
-    {
+    public AssemblyIngredient(int count, String... ores) {
         super(0);
-        this.itemList = Arrays.stream(ores)
-                .map(OreDictionary::getOres)
-                .collect(NonNullList::create, NonNullList::addAll, NonNullList::addAll);
+        this.itemList = Arrays.stream(ores).map(OreDictionary::getOres).collect(NonNullList::create, NonNullList::addAll, NonNullList::addAll);
         this.count = count;
     }
 

@@ -177,7 +177,7 @@ gui.sapturretmod.tassembly.group.ammo=Ammunition
 gui.sapturretmod.tassembly.group.repkit=Repair Kits
 gui.sapturretmod.tassembly.group.upgrades=Upgrades
 # Generator
-gui.sapturretmod.electrogen.effective=Effectiveness:
+gui.sapturretmod.electrogen.efficiency=Efficiency:
 gui.sapturretmod.electrogen.powergen=Power generated:
 # Ammo Cartridge
 container.sapturretmod.ammo_cartridge=Ammunition Cartridge

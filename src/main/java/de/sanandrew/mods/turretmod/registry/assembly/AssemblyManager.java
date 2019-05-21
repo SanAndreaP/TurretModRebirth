@@ -35,6 +35,7 @@ public final class AssemblyManager
     private final Map<ResourceLocation, IAssemblyRecipe> recipes = new LinkedHashMap<>();
     private final Map<String, List<ResourceLocation>> groups = new HashMap<>();
     private Map<String, ItemStack> groupIcons = new HashMap<>();
+
     private String[] cacheGroupNames;
     private List<IAssemblyRecipe> cacheRecipes;
     private Map<String, List<IAssemblyRecipe>> cacheGroupToRecipes;
@@ -55,6 +56,10 @@ public final class AssemblyManager
             return false;
         }
 
+        if( recipes.containsKey(id) ){
+            this.removeRecipe(id);
+        }
+
         this.recipes.put(id, recipe);
 
         this.groups.computeIfAbsent(recipe.getGroup(), k -> new ArrayList<>()).add(id);
@@ -62,6 +67,14 @@ public final class AssemblyManager
         this.invalidateCaches();
 
         return true;
+    }
+
+    @Override
+    public void removeRecipe(ResourceLocation id) {
+        this.recipes.remove(id);
+        this.groups.forEach((k, v) -> v.removeIf(r -> r.equals(id)));
+
+        this.invalidateCaches();
     }
 
     @Override

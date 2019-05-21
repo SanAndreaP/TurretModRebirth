@@ -9,15 +9,17 @@
 package de.sanandrew.mods.turretmod.tileentity.electrolytegen;
 
 import de.sanandrew.mods.sanlib.lib.power.EnergyHelper;
-import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.turretmod.api.electrolytegen.IElectrolyteRecipe;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
 import de.sanandrew.mods.turretmod.network.TileClientSync;
 import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteProcess;
-import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteRegistry;
+import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteManager;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
@@ -42,23 +44,23 @@ public class TileEntityElectrolyteGenerator
         extends TileEntity
         implements TileClientSync, ITickable
 {
-    public static final int MAX_FLUX_STORAGE = 500_000;
-    public static final int MAX_FLUX_EXTRACT = 1_000;
-    public static final int MAX_FLUX_GENERATED = 200;
+    static final int MAX_FLUX_STORAGE = 500_000;
+    static final int MAX_FLUX_EXTRACT = 1_000;
+    static final int MAX_FLUX_GENERATED = 200;
 
     public final ElectrolyteProcess[] processes = new ElectrolyteProcess[9];
 
-    public float effectiveness;
+    public float efficiency;
 
     private boolean doSync;
     private String customName;
 
-    private final ElectrolyteInventoryHandler itemHandler = new ElectrolyteInventoryHandler(this);
+    private final ElectrolyteInventory itemHandler = new ElectrolyteInventory(this);
     private final ElectrolyteEnergyStorage energyStorage = new ElectrolyteEnergyStorage();
-    public final ElectrolyteContainerInventoryHandler containerItemHandler = new ElectrolyteContainerInventoryHandler(this.itemHandler);
+    public final ElectrolyteItemStackHandler containerItemHandler = new ElectrolyteItemStackHandler(this.itemHandler);
 
     public int getGeneratedFlux() {
-        return this.effectiveness < 0.1F ? 0 : Math.min(200, (int) Math.round(Math.pow(1.6D, this.effectiveness) / (68.0D + (127433.0D / 177119.0D)) * 80.0D));
+        return this.efficiency < 0.1F ? 0 : Math.min(200, (int) Math.round(Math.pow(1.6D, this.efficiency) / (68.0D + (127433.0D / 177119.0D)) * 80.0D));
     }
 
     @Override
@@ -66,25 +68,25 @@ public class TileEntityElectrolyteGenerator
         if( !this.world.isRemote ) {
             this.energyStorage.resetFluxExtract();
 
-            float prevEffective = this.effectiveness;
+            float prevEffective = this.efficiency;
 
             this.energyStorage.emptyBuffer();
 
             if( this.energyStorage.isBufferEmpty() && this.energyStorage.fluxAmount < MAX_FLUX_STORAGE ) {
                 int fluxEff = this.getGeneratedFlux();
 
-                this.effectiveness = 0.0F;
+                this.efficiency = 0.0F;
 
                 for( int i = 0, max = this.processes.length; i < max; i++ ) {
                     this.processSlot(i);
                 }
 
-                if( this.effectiveness > 0.1F ) {
+                if( this.efficiency > 0.1F ) {
                     this.energyStorage.fillBuffer(fluxEff);
                 }
             }
 
-            if( prevEffective < this.effectiveness - 0.01F || prevEffective > this.effectiveness + 0.01F ) {
+            if( prevEffective < this.efficiency - 0.01F || prevEffective > this.efficiency + 0.01F ) {
                 this.doSync = true;
             }
 
@@ -107,20 +109,27 @@ public class TileEntityElectrolyteGenerator
         boolean markAsDirty = false;
 
         if( process != null ) {
-            if( process.hasTrash() && this.itemHandler.isOutputFull(process.trashStack) ) {
+            if( process.recipe == null ) {
+                this.processes[slot] = null;
                 return;
             }
 
-            if( process.hasTreasure() && this.itemHandler.isOutputFull(process.treasureStack) ) {
+            ItemStack trashStack = process.getTrashStack(this.itemHandler);
+            if( ItemStackUtils.isValid(trashStack) && this.itemHandler.isOutputFull(trashStack) ) {
+                return;
+            }
+
+            ItemStack treasureStack = process.getTreasureStack(this.itemHandler);
+            if( ItemStackUtils.isValid(treasureStack) && this.itemHandler.isOutputFull(treasureStack) ) {
                 return;
             }
 
             if( process.hasFinished() ) {
-                if( process.hasTrash() && MiscUtils.RNG.randomInt(10) == 0 ) {
-                    this.itemHandler.addExtraction(process.trashStack);
+                if( ItemStackUtils.isValid(trashStack) ) {
+                    this.itemHandler.addExtraction(trashStack);
                 }
-                if( process.hasTreasure() && MiscUtils.RNG.randomInt(100) == 0 ) {
-                    this.itemHandler.addExtraction(process.treasureStack);
+                if( ItemStackUtils.isValid(treasureStack) ) {
+                    this.itemHandler.addExtraction(treasureStack);
                 }
 
                 this.processes[slot] = null;
@@ -129,15 +138,18 @@ public class TileEntityElectrolyteGenerator
                 process.incrProgress();
             }
 
-            this.effectiveness += process.effectivenes;
+            this.efficiency += process.recipe.getEfficiency();
             this.doSync = true;
         }
 
-        if( this.processes[slot] == null && ElectrolyteRegistry.isFuel(this.itemHandler.extractInsertItem(slot, true)) ) {
-            this.processes[slot] = new ElectrolyteProcess(this.itemHandler.extractInsertItem(slot, false));
+        if( this.processes[slot] == null ) {
+            IElectrolyteRecipe recipe = ElectrolyteManager.INSTANCE.getFuel(this.itemHandler.extractInsertItem(slot, true));
+            if( recipe != null ) {
+                this.processes[slot] = new ElectrolyteProcess(recipe, this.itemHandler.extractInsertItem(slot, false));
 
-            markAsDirty = true;
-            this.doSync = true;
+                markAsDirty = true;
+                this.doSync = true;
+            }
         }
 
         if( markAsDirty ) {
@@ -298,7 +310,7 @@ public class TileEntityElectrolyteGenerator
     @Override
     public void toBytes(ByteBuf buf) {
         buf.writeInt(this.energyStorage.fluxAmount);
-        buf.writeFloat(this.effectiveness);
+        buf.writeFloat(this.efficiency);
         for( ElectrolyteProcess process : this.processes ) {
             if( process != null ) {
                 buf.writeBoolean(true);
@@ -312,7 +324,7 @@ public class TileEntityElectrolyteGenerator
     @Override
     public void fromBytes(ByteBuf buf) {
         this.energyStorage.fluxAmount = buf.readInt();
-        this.effectiveness = buf.readFloat();
+        this.efficiency = buf.readFloat();
         for( int i = 0, max = this.processes.length; i < max; i++ ) {
             if( buf.readBoolean() ) {
                 this.processes[i] = new ElectrolyteProcess(buf);

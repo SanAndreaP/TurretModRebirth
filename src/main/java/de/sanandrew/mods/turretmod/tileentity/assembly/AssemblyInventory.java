@@ -24,7 +24,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 
-public class AssemblyInventoryHandler
+public class AssemblyInventory
         implements ISidedInventory, INBTSerializable<NBTTagCompound>
 {
     public static final int RESOURCE_SLOTS = 18;
@@ -36,7 +36,7 @@ public class AssemblyInventoryHandler
 
     private final TileEntityTurretAssembly tile;
 
-    AssemblyInventoryHandler(TileEntityTurretAssembly tile) {
+    AssemblyInventory(TileEntityTurretAssembly tile) {
         this.tile = tile;
     }
 
@@ -96,7 +96,6 @@ public class AssemblyInventoryHandler
                 if( !ItemStackUtils.isValid(stack) ) {
                     return;
                 }
-                // TODO: move container to output slot if filled
             }
         }
 
@@ -233,9 +232,8 @@ public class AssemblyInventoryHandler
 
     @Override
     public ITextComponent getDisplayName() {
-        return null;
+        return this.tile.getDisplayName();
     }
-
 
     @Override
     public int getInventoryStackLimit() {
@@ -282,9 +280,7 @@ public class AssemblyInventoryHandler
 
     @Override
     public void clear() {
-        for( int i = 0; i < this.assemblyStacks.size(); i++ ) {
-            this.assemblyStacks.set(i, ItemStackUtils.getEmpty());
-        }
+        this.assemblyStacks.clear();
     }
 
     @Override

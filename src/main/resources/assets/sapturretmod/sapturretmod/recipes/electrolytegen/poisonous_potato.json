@@ -1,10 +1,10 @@
 {
   "type": "sapturretmod:electrolytes",
-  "electrolytes": {
+  "electrolyte": {
     "item": "minecraft:poisonous_potato"
   },
-  "effectiveness": 1.2,
-  "timeProcessing": 150,
+  "efficiency": 1.2,
+  "ticksProcessing": 150,
   "trash": {
     "item": "minecraft:sugar"
   },

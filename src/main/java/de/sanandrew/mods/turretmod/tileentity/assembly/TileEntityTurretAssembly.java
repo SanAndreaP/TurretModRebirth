@@ -82,7 +82,7 @@ public class TileEntityTurretAssembly
     private String customName;
 
     private final AssemblyEnergyStorage energyStorage;
-    private final AssemblyInventoryHandler invHandler;
+    private final AssemblyInventory invHandler;
     private final IItemHandler itemHandlerBottom;
     private final IItemHandler itemHandlerSide;
 
@@ -99,7 +99,7 @@ public class TileEntityTurretAssembly
         this.ticksExisted = 0L;
 
         this.energyStorage = new AssemblyEnergyStorage();
-        this.invHandler = new AssemblyInventoryHandler(this);
+        this.invHandler = new AssemblyInventory(this);
         this.itemHandlerBottom = new SidedInvWrapper(this.invHandler, EnumFacing.DOWN);
         this.itemHandlerSide = new SidedInvWrapper(this.invHandler, EnumFacing.WEST);
     }

@@ -7,80 +7,71 @@
 package de.sanandrew.mods.turretmod.registry.electrolytegen;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.api.electrolytegen.IElectrolyteRecipe;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-
-import javax.annotation.Nonnull;
 
 public class ElectrolyteProcess
 {
-    @Nonnull
+    public final IElectrolyteRecipe recipe;
+
     public final ItemStack processStack;
-    @Nonnull
-    public final ItemStack trashStack;
-    @Nonnull
-    public final ItemStack treasureStack;
-    public final short maxProgress;
-    public final float effectivenes;
+    private ItemStack trashStack = null;
+    private ItemStack treasureStack = null;
+    private short progress = 0;
 
-    private short progress;
-
-    public ElectrolyteProcess(ItemStack stack) {
+    public ElectrolyteProcess(IElectrolyteRecipe recipe, ItemStack stack) {
+        this.recipe = recipe;
         this.processStack = stack;
-
-        ElectrolyteRegistry.Fuel fuel = ElectrolyteRegistry.getFuel(stack);
-        this.maxProgress = fuel.ticksProc;
-        this.effectivenes = fuel.effect;
-        this.trashStack = fuel.trash.copy();
-        this.treasureStack = fuel.treasure.copy();
     }
 
     public ElectrolyteProcess(ByteBuf buf) {
         this.processStack = ByteBufUtils.readItemStack(buf);
         this.progress = buf.readShort();
-        this.maxProgress = buf.readShort();
-
-        ElectrolyteRegistry.Fuel fuel = ElectrolyteRegistry.getFuel(this.processStack);
-        this.effectivenes = fuel.effect;
-        this.trashStack = fuel.trash.copy();
-        this.treasureStack = fuel.treasure.copy();
+        this.recipe = ElectrolyteManager.INSTANCE.getFuel(new ResourceLocation(ByteBufUtils.readUTF8String(buf)));
     }
 
     public ElectrolyteProcess(NBTTagCompound nbt) {
-        this.processStack = new ItemStack(nbt.getCompoundTag("progressItem"));
-        this.progress = nbt.getShort("progress");
-        this.maxProgress = nbt.getShort("progressMax");
-
-        ElectrolyteRegistry.Fuel fuel = ElectrolyteRegistry.getFuel(this.processStack);
-        this.effectivenes = fuel.effect;
-        this.trashStack = fuel.trash.copy();
-        this.treasureStack = fuel.treasure.copy();
+        this.processStack = new ItemStack(nbt.getCompoundTag("ProgressItem"));
+        this.progress = nbt.getShort("Progress");
+        this.recipe = ElectrolyteManager.INSTANCE.getFuel(new ResourceLocation(nbt.getString("Recipe")));
     }
 
     public void writeToByteBuf(ByteBuf buf) {
         ByteBufUtils.writeItemStack(buf, this.processStack);
         buf.writeShort(this.progress);
-        buf.writeShort(this.maxProgress);
+        ByteBufUtils.writeUTF8String(buf, this.recipe.getId().toString());
     }
 
     public void writeToNBT(NBTTagCompound nbt) {
-        ItemStackUtils.writeStackToTag(this.processStack, nbt, "progressItem");
-        nbt.setShort("progress", this.progress);
-        nbt.setShort("progressMax", this.progress);
-    }
-
-    public boolean hasTrash() {
-        return ItemStackUtils.isValid(this.trashStack);
-    }
-
-    public boolean hasTreasure() {
-        return ItemStackUtils.isValid(this.treasureStack);
+        ItemStackUtils.writeStackToTag(this.processStack, nbt, "ProgressItem");
+        nbt.setShort("Progress", this.progress);
+        nbt.setString("Recipe", this.recipe.getId().toString());
     }
 
     public int getProgress() {
         return this.progress;
+    }
+
+    public ItemStack getTrashStack(IInventory inv) {
+        if( this.trashStack == null ) {
+            this.trashStack = MiscUtils.RNG.randomFloat() < this.recipe.getTrashChance() ? this.recipe.getCraftingResult(inv) : ItemStack.EMPTY;
+        }
+
+        return this.trashStack;
+    }
+
+    public ItemStack getTreasureStack(IInventory inv) {
+        if( this.treasureStack == null ) {
+            this.treasureStack = MiscUtils.RNG.randomFloat() < this.recipe.getTreasureChance() ? this.recipe.getCraftingResult(inv) : ItemStack.EMPTY;
+        }
+
+        return this.treasureStack;
     }
 
     public void incrProgress() {
@@ -88,6 +79,6 @@ public class ElectrolyteProcess
     }
 
     public boolean hasFinished() {
-        return this.progress >= this.maxProgress;
+        return this.progress >= this.recipe.getProcessTime();
     }
 }

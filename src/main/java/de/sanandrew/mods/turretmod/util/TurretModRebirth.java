@@ -15,7 +15,7 @@ import de.sanandrew.mods.turretmod.entity.turret.TargetList;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
-import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteRegistry;
+import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteManager;
 import de.sanandrew.mods.turretmod.registry.projectile.ProjectileRegistry;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
@@ -83,9 +83,10 @@ public class TurretModRebirth
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        PLUGINS.forEach(plugin -> plugin.registerAssemblyRecipes(AssemblyManager.INSTANCE));
-
-        ElectrolyteRegistry.initialize();
+        PLUGINS.forEach(plugin -> {
+            plugin.registerAssemblyRecipes(AssemblyManager.INSTANCE);
+            plugin.registerElectrolyteRecipes(ElectrolyteManager.INSTANCE);
+        });
 
         proxy.init(event);
     }

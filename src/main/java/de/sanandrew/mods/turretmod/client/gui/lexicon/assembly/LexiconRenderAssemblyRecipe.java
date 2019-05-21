@@ -10,7 +10,7 @@ import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconGuiHelper;
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconPageRender;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
-import de.sanandrew.mods.turretmod.tileentity.assembly.AssemblyInventoryHandler;
+import de.sanandrew.mods.turretmod.tileentity.assembly.AssemblyInventory;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.gui.FontRenderer;
@@ -43,7 +43,7 @@ public abstract class LexiconRenderAssemblyRecipe
     @SuppressWarnings("SameParameterValue")
     protected int renderRecipe(ILexiconGuiHelper helper, IAssemblyRecipe recipe, int posX, int posY, int mouseX, int mouseY, int scrollY) {
         final ItemStack[] emptyIS = new ItemStack[] {ItemStack.EMPTY};
-        for( int i = 0; i < AssemblyInventoryHandler.RESOURCE_SLOTS; i++ ) {
+        for( int i = 0; i < AssemblyInventory.RESOURCE_SLOTS; i++ ) {
             int x = posX + (i % 9) * 9;
             int y = posY + (i / 9) * 9;
             NonNullList<Ingredient> ingredients = recipe.getIngredients();
@@ -52,6 +52,6 @@ public abstract class LexiconRenderAssemblyRecipe
             helper.drawItemGrid(x, y, mouseX, mouseY, scrollY, rendered[(int) ((System.currentTimeMillis() / 1000L) % rendered.length)], 0.5F, true);
         }
 
-        return (AssemblyInventoryHandler.RESOURCE_SLOTS / 9) * 9;
+        return (AssemblyInventory.RESOURCE_SLOTS / 9) * 9;
     }
 }

@@ -7,19 +7,23 @@
 package de.sanandrew.mods.turretmod.tileentity.electrolytegen;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteRegistry;
+import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteManager;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 
-final class ElectrolyteInventoryHandler
+final class ElectrolyteInventory
         extends ItemStackHandler
+        implements IInventory
 {
     private final TileEntityElectrolyteGenerator tile;
 
-    ElectrolyteInventoryHandler(TileEntityElectrolyteGenerator tile) {
+    ElectrolyteInventory(TileEntityElectrolyteGenerator tile) {
         super(14);
         this.tile = tile;
     }
@@ -37,7 +41,7 @@ final class ElectrolyteInventoryHandler
     @Nonnull
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
         this.validateSlotIndex(slot);
-        if( slot < 9 && ElectrolyteRegistry.getFuel(stack).isValid() && !ItemStackUtils.isValid(this.stacks.get(slot)) ) {
+        if( this.isItemValidForSlot(slot, stack) ) {
             return super.insertItem(slot, stack, simulate);
         }
 
@@ -62,7 +66,7 @@ final class ElectrolyteInventoryHandler
             return super.extractItem(slot, 1, simulate);
         }
 
-        return ItemStackUtils.getEmpty();
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -72,7 +76,7 @@ final class ElectrolyteInventoryHandler
             return super.extractItem(slot, amount, simulate);
         }
 
-        return ItemStackUtils.getEmpty();
+        return ItemStack.EMPTY;
     }
 
     NonNullList<ItemStack> getStacksArray() {
@@ -83,5 +87,86 @@ final class ElectrolyteInventoryHandler
     protected void onLoad() {
         super.onLoad();
         this.tile.containerItemHandler.onLoad();
+    }
+
+    @Override
+    public int getSizeInventory() {
+        return this.stacks.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return this.stacks.stream().noneMatch(ItemStackUtils::isValid);
+    }
+
+    @Override
+    public ItemStack decrStackSize(int index, int count) {
+        return this.extractItem(index, count, false);
+    }
+
+    @Override
+    public ItemStack removeStackFromSlot(int index) {
+        return this.extractItem(index, this.getStackInSlot(index).getCount(), false);
+    }
+
+    @Override
+    public void setInventorySlotContents(int index, ItemStack stack) {
+        this.removeStackFromSlot(index);
+        this.insertItem(index, stack, false);
+    }
+
+    @Override
+    public int getInventoryStackLimit() {
+        return 64;
+    }
+
+    @Override
+    public void markDirty() { }
+
+    @Override
+    public boolean isUsableByPlayer(EntityPlayer player) { return true; }
+
+    @Override
+    public void openInventory(EntityPlayer player) { }
+
+    @Override
+    public void closeInventory(EntityPlayer player) { }
+
+    @Override
+    public boolean isItemValidForSlot(int index, ItemStack stack) {
+        return index < 9 && ElectrolyteManager.INSTANCE.getFuel(stack) != null && !ItemStackUtils.isValid(this.stacks.get(index));
+    }
+
+    @Override
+    public int getField(int id) {
+        return 0;
+    }
+
+    @Override
+    public void setField(int id, int value) { }
+
+    @Override
+    public int getFieldCount() {
+        return 0;
+    }
+
+    @Override
+    public void clear() {
+        this.stacks.clear();
+    }
+
+    @Override
+    public String getName() {
+        return this.tile.getName();
+    }
+
+    @Override
+    public boolean hasCustomName() {
+        return this.tile.hasCustomName();
+    }
+
+    @Override
+    public ITextComponent getDisplayName() {
+        return this.tile.getDisplayName();
     }
 }

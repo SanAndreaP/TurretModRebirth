@@ -8,6 +8,7 @@ import de.sanandrew.mods.turretmod.api.client.render.IRender;
 import de.sanandrew.mods.turretmod.api.client.render.IRenderRegistry;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelRegistry;
 import de.sanandrew.mods.turretmod.api.client.turret.ITurretRenderRegistry;
+import de.sanandrew.mods.turretmod.api.electrolytegen.IElectrolyteManager;
 import de.sanandrew.mods.turretmod.api.repairkit.IRepairKitRegistry;
 import de.sanandrew.mods.turretmod.api.turret.IGuiTcuRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
@@ -24,6 +25,8 @@ public interface ITmrPlugin
     default void preInit(ITmrUtils utils) { }
 
     default void registerAssemblyRecipes(IAssemblyManager registry) { }
+
+    default void registerElectrolyteRecipes(IElectrolyteManager registry) { }
 
     default void registerTurrets(ITurretRegistry registry) { }
 

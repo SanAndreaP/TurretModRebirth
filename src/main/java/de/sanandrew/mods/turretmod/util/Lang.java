@@ -44,9 +44,6 @@ public final class Lang
     public static final TranslateKey TASSEMBLY_RF_USING        = new TranslateKey("gui.%s.tassembly.rfUsing", TmrConstants.ID);
     public static final TranslateKey TASSEMBLY_GROUP_NAME      = new TranslateKey("gui.%s.tassembly.group.%%s", TmrConstants.ID);
 
-    public static final TranslateKey ELECTROGEN_EFFECTIVE = new TranslateKey("gui.%s.electrogen.effective", TmrConstants.ID);
-    public static final TranslateKey ELECTROGEN_POWERGEN  = new TranslateKey("gui.%s.electrogen.powergen", TmrConstants.ID);
-
     public static final TranslateKey ENTITY_NAME   = new TranslateKey("entity.%s.name");
     public static final TranslateKey ENTITY_DESC   = new TranslateKey("entity.%s.desc");
     public static final TranslateKey CONTAINER_INV = new TranslateKey("container.inventory");

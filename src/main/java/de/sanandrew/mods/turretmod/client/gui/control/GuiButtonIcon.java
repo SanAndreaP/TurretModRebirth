@@ -59,16 +59,6 @@ public final class GuiButtonIcon
         int yPos = mouseY - 4 - textHeight;
 
         GuiHelper.drawTooltipBg(xPos, yPos, textWidth, textHeight);
-//        this.drawGradientRect(xPos - 3, yPos - 4, xPos + textWidth + 3, yPos - 3, bkgColor, bkgColor);
-//        this.drawGradientRect(xPos - 3, yPos + textHeight + 3, xPos + textWidth + 3, yPos + textHeight + 4, bkgColor, bkgColor);
-//        this.drawGradientRect(xPos - 3, yPos - 3, xPos + textWidth + 3, yPos + textHeight + 3, bkgColor, bkgColor);
-//        this.drawGradientRect(xPos - 4, yPos - 3, xPos - 3, yPos + textHeight + 3, bkgColor, bkgColor);
-//        this.drawGradientRect(xPos + textWidth + 3, yPos - 3, xPos + textWidth + 4, yPos + textHeight + 3, bkgColor, bkgColor);
-//
-//        this.drawGradientRect(xPos - 3, yPos - 3 + 1, xPos - 3 + 1, yPos + textHeight + 3 - 1, lightBg, darkBg);
-//        this.drawGradientRect(xPos + textWidth + 2, yPos - 3 + 1, xPos + textWidth + 3, yPos + textHeight + 3 - 1, lightBg, darkBg);
-//        this.drawGradientRect(xPos - 3, yPos - 3, xPos + textWidth + 3, yPos - 3 + 1, lightBg, lightBg);
-//        this.drawGradientRect(xPos - 3, yPos + textHeight + 2, xPos + textWidth + 3, yPos + textHeight + 3, darkBg, darkBg);
 
         GlStateManager.disableDepth();
         for( int i = 0; i < lines.length; i++ ) {
