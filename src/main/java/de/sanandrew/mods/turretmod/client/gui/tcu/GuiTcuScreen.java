@@ -31,9 +31,7 @@ public class GuiTcuScreen
     private int xSize;
     private int ySize;
 
-    private final boolean showFirstTabOnly;
-
-    public GuiTcuScreen(ResourceLocation registryKey, IGuiTCU gui, ITurretInst turretInst, boolean showFirstTabOnly) {
+    public GuiTcuScreen(ResourceLocation registryKey, IGuiTCU gui, ITurretInst turretInst) {
         super();
         this.registryKey = registryKey;
         this.turret = turretInst;
@@ -41,8 +39,6 @@ public class GuiTcuScreen
 
         this.xSize = GuiTcuHelper.X_SIZE;
         this.ySize = GuiTcuHelper.Y_SIZE;
-
-        this.showFirstTabOnly = showFirstTabOnly;
     }
 
     @Override
@@ -53,7 +49,7 @@ public class GuiTcuScreen
         this.posY = (this.height - this.ySize) / 2;
 
         this.buttonList.clear();
-        this.helper.initGui(this, this.showFirstTabOnly);
+        this.helper.initGui(this);
 
         this.guiDelegate.initGui(this);
     }

@@ -126,7 +126,7 @@ public class ClientProxy
                 case TCU:
                     Entity e = world.getEntityByID(x);
                     if( e instanceof ITurretInst ) {
-                        return GuiTcuRegistry.INSTANCE.openGUI(y, player, (ITurretInst) e, z == 1);
+                        return GuiTcuRegistry.INSTANCE.openGUI(y, player, (ITurretInst) e);
                     }
                     break;
                 case TASSEMBLY_MAN:
@@ -160,7 +160,7 @@ public class ClientProxy
                     }
             }
         } else {
-            TmrConstants.LOG.log(Level.WARN, "Gui ID %d cannot be opened as it isn't a valid index in EnumGui!", id);
+            TmrConstants.LOG.log(Level.WARN, String.format("Gui ID %d cannot be opened as it isn't a valid index in EnumGui!", id));
         }
 
         return null;

@@ -329,7 +329,7 @@ public class EntityTurret
                 TmrUtils.INSTANCE.openGui(player, EnumGui.TCU, this.getEntityId(), 0, 0);
                 return true;
             } else if( !ItemStackUtils.isValid(stack) ) {
-                TmrUtils.INSTANCE.openGui(player, EnumGui.TCU, this.getEntityId(), 0, 1);
+                //TODO: do dedicated info GUI on right-click with empty hand
             }
 
             return false;

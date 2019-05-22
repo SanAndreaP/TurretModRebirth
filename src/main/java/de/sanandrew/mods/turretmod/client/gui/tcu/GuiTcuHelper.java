@@ -55,7 +55,7 @@ public final class GuiTcuHelper
 
     private long marqueeTime;
 
-    void initGui(IGuiTcuInst<?> gui, boolean showFirstTabOnly) {
+    void initGui(IGuiTcuInst<?> gui) {
         this.tabs.clear();
 
         MutableInt currIndex = new MutableInt(0);
@@ -72,10 +72,6 @@ public final class GuiTcuHelper
                 gui.addNewButton(btn);
                 this.tabs.put(btn, location);
                 currIndex.increment();
-
-                if( showFirstTabOnly ) {
-                    break;
-                }
             }
         }
         this.tabNavLeft = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), 0, gui.getPosY() + 213, 18, 0, Resources.GUI_TCU_BUTTONS.resource, ""));
