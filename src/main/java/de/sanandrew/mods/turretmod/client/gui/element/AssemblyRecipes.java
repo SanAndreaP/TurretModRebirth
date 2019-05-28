@@ -16,6 +16,7 @@ import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
+import net.minecraft.client.gui.Gui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,7 +45,7 @@ public class AssemblyRecipes
             if( this.rows == null ) {
                 List<IAssemblyRecipe> recipes = AssemblyManager.INSTANCE.getRecipes(this.group);
                 int rowCount = JsonUtils.getIntVal(data.get("itemRows"), 4);
-                int cols = JsonUtils.getIntVal(data.get("itemColumns"), 5);
+                int cols = JsonUtils.getIntVal(data.get("itemColumns"), 6);
                 Map<Integer, List<IAssemblyRecipe>> rowMap = new HashMap<>();
                 List<GuiElementInst> newRows = new ArrayList<>();
 
@@ -65,7 +66,7 @@ public class AssemblyRecipes
 
                 JsonArray areaSize = new JsonArray();
                 areaSize.add(cols * 18);
-                areaSize.add(Math.min(this.rows.length * 18, rowCount * 18));
+                areaSize.add(rowCount * 18);
                 data.add("areaSize", areaSize);
             }
 
@@ -89,8 +90,14 @@ public class AssemblyRecipes
 
         @Override
         public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
+            Gui.drawRect(mouseX, mouseY, mouseX + 10, mouseY + 10, 0xFFFF00FF);
             for( int i = 0; i < this.recipes.length; i++ ) {
-                RenderUtils.renderStackInGui(this.recipes[i].getRecipeOutput(), x + 1 + i * 18, y + 1, 1.0, gui.get().mc.fontRenderer);
+                int stackX = x + 1 + i * 18;
+                int stackY = y + 1;
+                RenderUtils.renderStackInGui(this.recipes[i].getRecipeOutput(), stackX, stackY, 1.0, gui.get().mc.fontRenderer);
+                if( mouseX >= stackX && mouseX < stackX + 16 && mouseY >= stackY && mouseY < stackY + 16 ) {
+                    Gui.drawRect(stackX, stackY, stackX + 16, stackY + 16, 0x80FFFFFF);
+                }
             }
         }
 

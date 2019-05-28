@@ -8,32 +8,41 @@
       "data": {
         "size": [230, 222],
         "uv": [0, 0],
-        "location": "sapturretmod:textures/gui/turretassembly/manual.png"
+        "location": "sapturretmod:textures/gui/turretassembly/assembly.png"
+      }
+    },
+    {
+      "type": "rflux_bar",
+      "pos": [210, 8],
+      "data": {
+        "size": [12, 82],
+        "uv": [230, 12],
+        "location": "sapturretmod:textures/gui/turretassembly/assembly.png"
       }
     }
   ],
   "foregroundElements": [
     {
       "type": "assembly_recipes",
-      "pos": [8, 8],
+      "pos": [35, 9],
       "data": {
         "scrollArea": {
           "scrollButton": {
             "type": "texture",
-            "pos": [0, 0],
+            "pos": [144, 7],
             "data": {
               "size": [6, 6],
               "uv": [230, 0],
-              "location": "sapturretmod:textures/gui/turretassembly/manual.png"
+              "location": "sapturretmod:textures/gui/turretassembly/assembly.png"
             }
           },
           "scrollButtonDeactive": {
             "type": "texture",
-            "pos": [0, 0],
+            "pos": [144, 7],
             "data": {
               "size": [6, 6],
               "uv": [230, 6],
-              "location": "sapturretmod:textures/gui/turretassembly/manual.png"
+              "location": "sapturretmod:textures/gui/turretassembly/assembly.png"
             }
           }
         },
@@ -44,9 +53,9 @@
     },
     {
       "type": "rflux_label",
-      "pos": [156, 75],
+      "pos": [210, 8],
       "data": {
-        "size": [12, 59],
+        "size": [12, 82],
         "textElement": {
           "color": "0xFFFFFFFF",
           "shadow": true

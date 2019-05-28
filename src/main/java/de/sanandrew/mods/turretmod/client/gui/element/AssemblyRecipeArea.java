@@ -43,7 +43,7 @@ public class AssemblyRecipeArea
     @Override
     public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
         GroupData grpData = this.recipeGroups.get(this.currGroup);
-        grpData.area.render(gui, partTicks, x, y, mouseX, mouseY, grpData.data);
+        grpData.area.render(gui, partTicks, x, y, mouseX + x - gui.getScreenPosX(), mouseY + y - gui.getScreenPosY(), grpData.data);
     }
 
     @Override
