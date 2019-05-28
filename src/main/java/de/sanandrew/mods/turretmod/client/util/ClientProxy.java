@@ -26,6 +26,9 @@ import de.sanandrew.mods.turretmod.client.gui.GuiCartridge;
 import de.sanandrew.mods.turretmod.client.gui.GuiElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiAssemblyFilter;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
+import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssemblyNEW;
+import de.sanandrew.mods.turretmod.client.gui.element.AssemblyRecipeArea;
+import de.sanandrew.mods.turretmod.client.gui.element.AssemblyRecipes;
 import de.sanandrew.mods.turretmod.client.gui.element.ElectrolyteBar;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.PlayerHeads;
 import de.sanandrew.mods.turretmod.client.particle.ParticleAssemblySpark;
@@ -72,6 +75,7 @@ public class ClientProxy
 
     static {
         GuiDefinition.TYPES.put(ElectrolyteBar.ID, ElectrolyteBar::new);
+        GuiDefinition.TYPES.put(AssemblyRecipeArea.ID, AssemblyRecipeArea::new);
     }
 
     @Override
@@ -132,7 +136,7 @@ public class ClientProxy
                 case TASSEMBLY_MAN:
                     te = world.getTileEntity(new BlockPos(x, y, z));
                     if( te instanceof TileEntityTurretAssembly ) {
-                        return new GuiTurretAssembly(player.inventory, (TileEntityTurretAssembly) te);
+                        return new GuiTurretAssemblyNEW(player.inventory, (TileEntityTurretAssembly) te);
                     }
                     break;
                 case TASSEMBLY_FLT:

@@ -1,0 +1,57 @@
+{
+  "width": 230,
+  "height": 222,
+  "backgroundElements": [
+    {
+      "type": "texture",
+      "pos": [0, 0],
+      "data": {
+        "size": [230, 222],
+        "uv": [0, 0],
+        "location": "sapturretmod:textures/gui/turretassembly/manual.png"
+      }
+    }
+  ],
+  "foregroundElements": [
+    {
+      "type": "assembly_recipes",
+      "pos": [8, 8],
+      "data": {
+        "scrollArea": {
+          "scrollButton": {
+            "type": "texture",
+            "pos": [0, 0],
+            "data": {
+              "size": [6, 6],
+              "uv": [230, 0],
+              "location": "sapturretmod:textures/gui/turretassembly/manual.png"
+            }
+          },
+          "scrollButtonDeactive": {
+            "type": "texture",
+            "pos": [0, 0],
+            "data": {
+              "size": [6, 6],
+              "uv": [230, 6],
+              "location": "sapturretmod:textures/gui/turretassembly/manual.png"
+            }
+          }
+        },
+        "groupButtons": {
+
+        }
+      }
+    },
+    {
+      "type": "rflux_label",
+      "pos": [156, 75],
+      "data": {
+        "size": [12, 59],
+        "textElement": {
+          "color": "0xFFFFFFFF",
+          "shadow": true
+        }
+      }
+    }
+  ]
+}

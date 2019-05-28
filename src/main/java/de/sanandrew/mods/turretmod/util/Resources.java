@@ -56,6 +56,7 @@ public enum Resources
     GUI_ELECTROLYTE("textures/gui/potatogen.png"),
     GUI_TURRETINFO("textures/gui/turretinfo/backg.png"),
     GUI_CARTRIDGE("textures/gui/ammo_cartridge.png"),
+    GUI_STRUCT_ASSEMBLY("guis/assembly.json"),
     GUI_STRUCT_ELECTROLYTE("guis/electrolyte.json"),
     GUI_STRUCT_CARTRIDGE("guis/ammo_cartridge.json"),
 

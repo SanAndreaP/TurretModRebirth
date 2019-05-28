@@ -6,17 +6,17 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.gui.element;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ScrollArea;
+import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +25,13 @@ import java.util.Map;
 public class AssemblyRecipes
         extends ScrollArea
 {
-    GuiElementInst[] rows;
+    private final String group;
+
+    private GuiElementInst[] rows;
+
+    AssemblyRecipes(String group) {
+        this.group = group;
+    }
 
     @Override
     protected GuiElementInst[] getElements(IGui gui, JsonObject elementData) {
@@ -36,24 +42,31 @@ public class AssemblyRecipes
     public void bakeData(IGui gui, JsonObject data) {
         if( this.data == null ) {
             if( this.rows == null ) {
+                List<IAssemblyRecipe> recipes = AssemblyManager.INSTANCE.getRecipes(this.group);
+                int rowCount = JsonUtils.getIntVal(data.get("itemRows"), 4);
                 int cols = JsonUtils.getIntVal(data.get("itemColumns"), 5);
-                List<IAssemblyRecipe> recipes = AssemblyManager.INSTANCE.getRecipes();
-                Map<Integer, List<IAssemblyRecipe>> rows = new HashMap<>();
+                Map<Integer, List<IAssemblyRecipe>> rowMap = new HashMap<>();
                 List<GuiElementInst> newRows = new ArrayList<>();
 
-                for( int cellId = 0, max = recipes.size(); cellId < recipes.size(); cellId++ ) {
+                for( int cellId = 0, max = recipes.size() - 1; cellId <= max; cellId++ ) {
                     int rowId = cellId / cols;
                     int colId = (cellId % cols) + 1;
-                    List<IAssemblyRecipe> rowRecipes = rows.computeIfAbsent(rowId, k -> new ArrayList<>());
+                    List<IAssemblyRecipe> rowRecipes = rowMap.computeIfAbsent(rowId, k -> new ArrayList<>());
                     rowRecipes.add(recipes.get(cellId));
-                    if( colId == cols ) {
+                    if( colId == cols || cellId == max ) {
                         GuiElementInst rowInst = new GuiElementInst();
+                        rowInst.pos = new int[] {0, rowId * 18};
                         rowInst.element = new Row(rowRecipes.toArray(new IAssemblyRecipe[0]));
                         newRows.add(rowInst);
                     }
                 }
 
                 this.rows = newRows.toArray(new GuiElementInst[0]);
+
+                JsonArray areaSize = new JsonArray();
+                areaSize.add(cols * 18);
+                areaSize.add(Math.min(this.rows.length * 18, rowCount * 18));
+                data.add("areaSize", areaSize);
             }
 
             data.addProperty("rasterized", true);
@@ -62,7 +75,7 @@ public class AssemblyRecipes
         super.bakeData(gui, data);
     }
 
-    private final class Row
+    private static final class Row
             implements IGuiElement
     {
         private IAssemblyRecipe[] recipes;
@@ -72,23 +85,18 @@ public class AssemblyRecipes
         }
 
         @Override
-        public void bakeData(IGui gui, JsonObject data) {
-
-        }
+        public void bakeData(IGui gui, JsonObject data) { }
 
         @Override
         public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
-
+            for( int i = 0; i < this.recipes.length; i++ ) {
+                RenderUtils.renderStackInGui(this.recipes[i].getRecipeOutput(), x + 1 + i * 18, y + 1, 1.0, gui.get().mc.fontRenderer);
+            }
         }
 
         @Override
         public int getHeight() {
-            return 0;
-        }
-
-        @Override
-        public void handleMouseInput(IGui gui) throws IOException {
-
+            return 18;
         }
     }
 }
