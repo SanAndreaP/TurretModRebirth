@@ -15,15 +15,17 @@ import de.sanandrew.mods.sanlib.lib.client.gui.element.ScrollArea;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
+import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssemblyNEW;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AssemblyRecipes
+class AssemblyRecipes
         extends ScrollArea
 {
     private final String group;
@@ -76,6 +78,11 @@ public class AssemblyRecipes
         super.bakeData(gui, data);
     }
 
+    @Override
+    public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
+        super.render(gui, partTicks, x, y, mouseX, mouseY, data);
+    }
+
     private static final class Row
             implements IGuiElement
     {
@@ -96,7 +103,15 @@ public class AssemblyRecipes
                 int stackY = y + 1;
                 RenderUtils.renderStackInGui(this.recipes[i].getRecipeOutput(), stackX, stackY, 1.0, gui.get().mc.fontRenderer);
                 if( mouseX >= stackX && mouseX < stackX + 16 && mouseY >= stackY && mouseY < stackY + 16 ) {
+                    GlStateManager.disableLighting();
+                    GlStateManager.disableDepth();
+                    GlStateManager.colorMask(true, true, true, false);
                     Gui.drawRect(stackX, stackY, stackX + 16, stackY + 16, 0x80FFFFFF);
+                    GlStateManager.colorMask(true, true, true, true);
+                    GlStateManager.enableDepth();
+                    GlStateManager.enableLighting();
+
+                    ((GuiTurretAssemblyNEW) gui).hoveredRecipe = this.recipes[i];
                 }
             }
         }

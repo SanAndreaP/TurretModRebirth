@@ -15,6 +15,7 @@ import de.sanandrew.mods.sanlib.lib.client.gui.element.DynamicText;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.RedstoneFluxBar;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.client.util.GuiHelper;
 import de.sanandrew.mods.turretmod.inventory.ContainerElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
@@ -42,6 +43,9 @@ public class GuiTurretAssemblyNEW
     private float currPartTicks;
 
     private GuiDefinition guiDef;
+
+    public IAssemblyRecipe hoveredRecipe;
+    public String currGroup;
 
     public GuiTurretAssemblyNEW(InventoryPlayer invPlayer, TileEntityTurretAssembly tile) {
         super(new ContainerTurretAssembly(invPlayer, tile));

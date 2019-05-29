@@ -23,10 +23,20 @@
   ],
   "foregroundElements": [
     {
+      "type": "assembly_group_button",
+      "pos": [0, 0],
+      "data": {
+        "size": [10, 10],
+        "uv": [230, 12],
+        "location": "sapturretmod:textures/gui/turretassembly/assembly.png"
+      }
+    },
+    {
       "type": "assembly_recipes",
       "pos": [35, 9],
       "data": {
         "scrollArea": {
+          "scrollbarHeight": 76,
           "scrollButton": {
             "type": "texture",
             "pos": [144, 7],
