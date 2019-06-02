@@ -27,6 +27,7 @@ public class AssemblyRecipeArea
 
     private Map<String, GroupData> recipeGroups = null;
     private int height = 0;
+    private boolean updatedAll;
 
     @Override
     public void bakeData(IGui gui, JsonObject data) {
@@ -45,9 +46,20 @@ public class AssemblyRecipeArea
     }
 
     @Override
-    public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
+    public void update(IGui gui, JsonObject data) {
         GroupData grpData = this.recipeGroups.get(((GuiTurretAssemblyNEW) gui).currGroup);
         this.height = grpData.area.getHeight();
+
+        if( !this.updatedAll ) {
+            this.recipeGroups.values().forEach(g -> g.area.update(gui, g.data));
+            this.updatedAll = true;
+        }
+        grpData.area.update(gui, grpData.data);
+    }
+
+    @Override
+    public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
+        GroupData grpData = this.recipeGroups.get(((GuiTurretAssemblyNEW) gui).currGroup);
         grpData.area.render(gui, partTicks, x, y, mouseX, mouseY, grpData.data);
     }
 

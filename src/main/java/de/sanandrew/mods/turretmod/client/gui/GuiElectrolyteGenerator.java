@@ -44,6 +44,7 @@ public class GuiElectrolyteGenerator
     private float currPartTicks;
 
     private GuiDefinition guiDef;
+    private boolean initializedUpdate;
 
     public GuiElectrolyteGenerator(InventoryPlayer invPlayer, TileEntityElectrolyteGenerator tile) {
         super(new ContainerElectrolyteGenerator(invPlayer, tile));
@@ -85,10 +86,17 @@ public class GuiElectrolyteGenerator
 
         this.currEffective = this.generator.efficiency;
         this.generatedEnergy = this.generator.getGeneratedFlux();
+
+        this.guiDef.update(this);
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partTicks, int mouseX, int mouseY) {
+        if( !this.initializedUpdate ) {
+            this.guiDef.update(this);
+            this.initializedUpdate = true;
+        }
+
         this.currPartTicks = partTicks;
         GuiHelper.drawGDBackground(this.guiDef, this, partTicks, mouseX, mouseY);
     }
@@ -131,15 +139,8 @@ public class GuiElectrolyteGenerator
     }
 
     @Override
-    public float getZLevel() {
-        return this.zLevel;
-    }
-
-    @Override
-    public float setZLevel(float newZ) {
-        float origZ = this.zLevel;
-        this.zLevel = newZ;
-        return origZ;
+    public GuiDefinition getDefinition() {
+        return this.guiDef;
     }
 
     @Override

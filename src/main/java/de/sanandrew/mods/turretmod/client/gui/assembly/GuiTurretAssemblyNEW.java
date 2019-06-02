@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.client.gui.assembly;
 
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
+import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ContainerName;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.DynamicText;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.RedstoneFluxBar;
@@ -19,6 +20,8 @@ import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.client.util.GuiHelper;
 import de.sanandrew.mods.turretmod.inventory.ContainerElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
+import de.sanandrew.mods.turretmod.network.PacketAssemblyToggleAutomate;
+import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -43,6 +46,7 @@ public class GuiTurretAssemblyNEW
     private float currPartTicks;
 
     private GuiDefinition guiDef;
+    private boolean initializedUpdate;
 
     public IAssemblyRecipe hoveredRecipe;
     public String currGroup;
@@ -70,9 +74,14 @@ public class GuiTurretAssemblyNEW
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        this.hoveredRecipe = null;
+
         this.drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
+        if( this.hoveredRecipe != null ) {
+            this.renderToolTip(this.hoveredRecipe.getRecipeOutput(), mouseX, mouseY);
+        }
     }
 
     @Override
@@ -84,10 +93,17 @@ public class GuiTurretAssemblyNEW
             this.currEnergy = stg.getEnergyStored();
             this.maxEnergy = stg.getMaxEnergyStored();
         }
+
+        this.guiDef.update(this);
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partTicks, int mouseX, int mouseY) {
+        if( !this.initializedUpdate ) {
+            this.guiDef.update(this);
+            this.initializedUpdate = true;
+        }
+
         this.currPartTicks = partTicks;
         GuiHelper.drawGDBackground(this.guiDef, this, partTicks, mouseX, mouseY);
     }
@@ -136,15 +152,23 @@ public class GuiTurretAssemblyNEW
     }
 
     @Override
-    public float getZLevel() {
-        return this.zLevel;
+    public GuiDefinition getDefinition() {
+        return this.guiDef;
     }
 
     @Override
-    public float setZLevel(float newZ) {
-        float origZ = this.zLevel;
-        this.zLevel = newZ;
-        return origZ;
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+        this.guiDef.mouseClicked(this, mouseX, mouseY, mouseButton);
+    }
+
+    @Override
+    public void performAction(IGuiElement element, int action) {
+        switch( action ) {
+            case 1: case 2:
+                PacketRegistry.sendToServer(new PacketAssemblyToggleAutomate(this.assembly));
+                break;
+        }
     }
 
     @Override

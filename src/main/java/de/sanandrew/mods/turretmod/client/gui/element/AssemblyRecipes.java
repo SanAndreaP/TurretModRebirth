@@ -14,6 +14,7 @@ import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ScrollArea;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
+import de.sanandrew.mods.turretmod.api.assembly.IAssemblyManager;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssemblyNEW;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
@@ -37,7 +38,7 @@ class AssemblyRecipes
     }
 
     @Override
-    protected GuiElementInst[] getElements(IGui gui, JsonObject elementData) {
+    public GuiElementInst[] getElements(IGui gui, JsonObject elementData) {
         return this.rows;
     }
 
@@ -97,16 +98,16 @@ class AssemblyRecipes
 
         @Override
         public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
-            Gui.drawRect(mouseX, mouseY, mouseX + 10, mouseY + 10, 0xFFFF00FF);
+            int localMouseX = mouseX - gui.getScreenPosX();
+            int localMouseY = mouseY - gui.getScreenPosY();
             for( int i = 0; i < this.recipes.length; i++ ) {
-                int stackX = x + 1 + i * 18;
-                int stackY = y + 1;
-                RenderUtils.renderStackInGui(this.recipes[i].getRecipeOutput(), stackX, stackY, 1.0, gui.get().mc.fontRenderer);
-                if( mouseX >= stackX && mouseX < stackX + 16 && mouseY >= stackY && mouseY < stackY + 16 ) {
+                int slotX = x + i * 18;
+                RenderUtils.renderStackInGui(this.recipes[i].getRecipeOutput(), slotX + 1, y + 1, 1.0, gui.get().mc.fontRenderer);
+                if( localMouseX >= slotX && localMouseX < slotX + 18 && localMouseY >= y && localMouseY < y + 18 ) {
                     GlStateManager.disableLighting();
                     GlStateManager.disableDepth();
                     GlStateManager.colorMask(true, true, true, false);
-                    Gui.drawRect(stackX, stackY, stackX + 16, stackY + 16, 0x80FFFFFF);
+                    Gui.drawRect(slotX + 1, y + 1, slotX + 17, y + 17, 0x80FFFFFF);
                     GlStateManager.colorMask(true, true, true, true);
                     GlStateManager.enableDepth();
                     GlStateManager.enableLighting();

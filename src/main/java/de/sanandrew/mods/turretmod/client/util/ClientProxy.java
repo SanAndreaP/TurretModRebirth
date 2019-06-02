@@ -28,6 +28,7 @@ import de.sanandrew.mods.turretmod.client.gui.assembly.GuiAssemblyFilter;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssemblyNEW;
 import de.sanandrew.mods.turretmod.client.gui.element.AssemblyGroupButton;
 import de.sanandrew.mods.turretmod.client.gui.element.AssemblyRecipeArea;
+import de.sanandrew.mods.turretmod.client.gui.element.Button;
 import de.sanandrew.mods.turretmod.client.gui.element.ElectrolyteBar;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.PlayerHeads;
 import de.sanandrew.mods.turretmod.client.particle.ParticleAssemblySpark;
@@ -76,6 +77,7 @@ public class ClientProxy
         GuiDefinition.TYPES.put(ElectrolyteBar.ID, ElectrolyteBar::new);
         GuiDefinition.TYPES.put(AssemblyRecipeArea.ID, AssemblyRecipeArea::new);
         GuiDefinition.TYPES.put(AssemblyGroupButton.ID, AssemblyGroupButton::new);
+        GuiDefinition.TYPES.put(Button.ID, Button::new);
     }
 
     @Override

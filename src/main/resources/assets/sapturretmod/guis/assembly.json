@@ -32,10 +32,47 @@
       }
     },
     {
+      "type": "button",
+      "id": "automate-button",
+      "pos": [0, 40],
+      "data": {
+        "size": [20, 15],
+        "buttonFunction": 0,
+        "labelEnabled": {
+          "type": "text",
+          "pos": [0, 0],
+          "data": {
+            "text": "text",
+            "shadow": true,
+            "color": "0xFFFFFFFF"
+          }
+        },
+        "labelHover": {
+          "type": "text",
+          "pos": [0, 0],
+          "data": {
+            "text": "text",
+            "shadow": true,
+            "color": "0xFFFFFFA0"
+          }
+        },
+        "labelDisabled": {
+          "type": "text",
+          "pos": [0, 0],
+          "data": {
+            "text": "text",
+            "shadow": true,
+            "color": "0xFFA0A0A0"
+          }
+        }
+      }
+    },
+    {
       "type": "assembly_recipes",
       "pos": [35, 9],
       "data": {
         "scrollArea": {
+          "itemColumns": 6,
           "scrollbarHeight": 76,
           "scrollButton": {
             "type": "texture",
