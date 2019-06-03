@@ -46,12 +46,8 @@ public class Button
             this.data.textureSize = JsonUtils.getIntArray(data.get("textureSize"), new int[] {256, 256}, Range.is(2));
             this.data.forceAlpha = JsonUtils.getBoolVal(data.get("forceAlpha"), false);
 
-            this.data.labelEnabled = JsonUtils.GSON.fromJson(data.get("labelEnabled"), GuiElementInst.class);
-            this.data.labelEnabled.get().bakeData(gui, this.data.labelEnabled.data);
-            this.data.labelHover = JsonUtils.GSON.fromJson(data.get("labelHover"), GuiElementInst.class);
-            this.data.labelHover.get().bakeData(gui, this.data.labelHover.data);
-            this.data.labelDisabled = JsonUtils.GSON.fromJson(data.get("labelDisabled"), GuiElementInst.class);
-            this.data.labelDisabled.get().bakeData(gui, this.data.labelDisabled.data);
+            this.data.label = JsonUtils.GSON.fromJson(data.get("label"), GuiElementInst.class);
+            this.data.label.get().bakeData(gui, this.data.label.data);
             this.data.centerLabel = JsonUtils.getBoolVal(data.get("centerLabel"), true);
 
             this.data.dummyButton = new GuiButton(this.data.buttonFunction, 0, 0, "");
@@ -69,6 +65,7 @@ public class Button
 
             gui.get().mc.renderEngine.bindTexture(this.data.location);
             GlStateManager.pushMatrix();
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             if( this.data.forceAlpha ) {
                 GlStateManager.enableBlend();
                 GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
@@ -77,24 +74,22 @@ public class Button
             drawRect(isEnabled, this.isCurrHovering);
             GlStateManager.popMatrix();
 
-            int lblX = this.data.labelEnabled.pos[0];
-            int lblY = this.data.labelEnabled.pos[1];
+            int lblX = this.data.label.pos[0];
+            int lblY = this.data.label.pos[1];
 
-            IGuiElement labelElem = (isEnabled
-                                     ? (this.isCurrHovering ? this.data.labelHover : this.data.labelEnabled)
-                                     : this.data.labelDisabled).get();
+            IButtonLabel labelElem = (IButtonLabel) this.data.label.get();
             if( this.data.centerLabel ) {
                 lblX = (this.data.size[0] - labelElem.getWidth()) / 2;
                 lblY = (this.data.size[1] - labelElem.getHeight() + 1) / 2;
             }
 
-            labelElem.render(gui, partTicks, x + lblX, y + lblY, mouseX, mouseY, this.data.labelEnabled.data);
+            labelElem.renderLabel(gui, partTicks, x + lblX, y + lblY, mouseX, mouseY, this.data.label.data, isEnabled, this.isCurrHovering);
         }
     }
 
     @Override
     public void mouseClicked(IGui gui, int mouseX, int mouseY, int mouseButton) {
-        if( this.isVisible() && this.isEnabled() && this.isCurrHovering ) {
+        if( mouseButton == 0 && this.isVisible() && this.isEnabled() && this.isCurrHovering ) {
             GuiScreen gs = gui.get();
             GuiButton btn = this.data.dummyButton;
             List<GuiButton> btnList = new ArrayList<>(Collections.singletonList(this.data.dummyButton));
@@ -234,9 +229,7 @@ public class Button
 
         public GuiButton dummyButton;
 
-        public GuiElementInst labelEnabled;
-        public GuiElementInst labelHover;
-        public GuiElementInst labelDisabled;
+        public GuiElementInst label;
         public boolean centerLabel;
     }
 }

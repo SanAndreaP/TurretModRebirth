@@ -33,36 +33,48 @@
     },
     {
       "type": "button",
-      "id": "automate-button",
-      "pos": [0, 40],
+      "id": "cancel-button",
+      "pos": [156, 48],
       "data": {
-        "size": [20, 15],
+        "size": [50, 12],
         "buttonFunction": 0,
-        "labelEnabled": {
-          "type": "text",
+        "label": {
+          "type": "button_text",
           "pos": [0, 0],
           "data": {
-            "text": "text",
-            "shadow": true,
-            "color": "0xFFFFFFFF"
+            "text": "gui.sapturretmod.tassembly.cancel"
           }
-        },
-        "labelHover": {
-          "type": "text",
+        }
+      }
+    },
+    {
+      "type": "button",
+      "id": "automate-button",
+      "pos": [156, 61],
+      "data": {
+        "size": [50, 12],
+        "buttonFunction": 1,
+        "label": {
+          "type": "button_text",
           "pos": [0, 0],
           "data": {
-            "text": "text",
-            "shadow": true,
-            "color": "0xFFFFFFA0"
+            "text": "gui.sapturretmod.tassembly.automate.enable"
           }
-        },
-        "labelDisabled": {
-          "type": "text",
+        }
+      }
+    },
+    {
+      "type": "button",
+      "id": "manual-button",
+      "pos": [156, 74],
+      "data": {
+        "size": [50, 12],
+        "buttonFunction": 1,
+        "label": {
+          "type": "button_text",
           "pos": [0, 0],
           "data": {
-            "text": "text",
-            "shadow": true,
-            "color": "0xFFA0A0A0"
+            "text": "gui.sapturretmod.tassembly.automate.disable"
           }
         }
       }

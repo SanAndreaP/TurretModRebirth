@@ -19,6 +19,7 @@ public class ElectrolyteBar
     public static final ResourceLocation ID = new ResourceLocation("electrolyte_bar");
 
     private BakedData data;
+    private int energyBarWidth;
 
     @Override
     public void bakeData(IGui gui, JsonObject data) {
@@ -39,9 +40,14 @@ public class ElectrolyteBar
     }
 
     @Override
-    public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
+    public void update(IGui gui, JsonObject data) {
         IGuiElectrolyte gel = (IGuiElectrolyte) gui;
+        double energyPerc = gel.getProcess(this.data.slot) / (double) gel.getMaxProcess(this.data.slot);
+        this.energyBarWidth = Math.max(0, Math.min(this.data.size[0], MathHelper.ceil((1.0F - energyPerc) * this.data.size[0])));
+    }
 
+    @Override
+    public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
         gui.get().mc.renderEngine.bindTexture(this.data.location);
         GlStateManager.pushMatrix();
         if( this.data.forceAlpha ) {
@@ -52,17 +58,19 @@ public class ElectrolyteBar
         GlStateManager.scale(this.data.scale[0], this.data.scale[1], 1.0D);
         GlStateManager.color(this.data.color.fRed(), this.data.color.fGreen(), this.data.color.fBlue(), this.data.color.fAlpha());
 
-        double energyPerc = gel.getProcess(this.data.slot) / (double) gel.getMaxProcess(this.data.slot);
-        int energyBarX = Math.max(0, Math.min(this.data.size[0], MathHelper.ceil((1.0F - energyPerc) * this.data.size[0])));
-
-        Gui.drawModalRectWithCustomSizedTexture(0, 0, this.data.uv[0], this.data.uv[1], energyBarX, this.data.size[1], this.data.textureSize[0], this.data.textureSize[1]);
+        Gui.drawModalRectWithCustomSizedTexture(0, 0, this.data.uv[0], this.data.uv[1], this.energyBarWidth, this.data.size[1], this.data.textureSize[0], this.data.textureSize[1]);
 
         GlStateManager.popMatrix();
     }
 
     @Override
+    public int getWidth() {
+        return this.energyBarWidth;
+    }
+
+    @Override
     public int getHeight() {
-        return this.data == null ? 0 : this.data.size[1];
+        return this.data.size[1];
     }
 
     static final class BakedData

@@ -8,6 +8,7 @@ package de.sanandrew.mods.turretmod.client.gui.element;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
@@ -21,10 +22,13 @@ import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 class AssemblyRecipes
         extends ScrollArea
@@ -80,6 +84,13 @@ class AssemblyRecipes
     }
 
     @Override
+    public void mouseClicked(IGui gui, int mouseX, int mouseY, int mouseButton) throws IOException {
+        for( GuiElementInst r : this.rows ) {
+            r.get().mouseClicked(gui, mouseX, mouseY, mouseButton);
+        }
+    }
+
+    @Override
     public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
         super.render(gui, partTicks, x, y, mouseX, mouseY, data);
     }
@@ -88,6 +99,7 @@ class AssemblyRecipes
             implements IGuiElement
     {
         private IAssemblyRecipe[] recipes;
+        private boolean isHoveredOver;
 
         Row(IAssemblyRecipe[] recipes) {
             this.recipes = recipes;
@@ -98,12 +110,17 @@ class AssemblyRecipes
 
         @Override
         public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
+            this.isHoveredOver = false;
+
             int localMouseX = mouseX - gui.getScreenPosX();
             int localMouseY = mouseY - gui.getScreenPosY();
+
             for( int i = 0; i < this.recipes.length; i++ ) {
                 int slotX = x + i * 18;
                 RenderUtils.renderStackInGui(this.recipes[i].getRecipeOutput(), slotX + 1, y + 1, 1.0, gui.get().mc.fontRenderer);
                 if( localMouseX >= slotX && localMouseX < slotX + 18 && localMouseY >= y && localMouseY < y + 18 ) {
+                    this.isHoveredOver = true;
+
                     GlStateManager.disableLighting();
                     GlStateManager.disableDepth();
                     GlStateManager.colorMask(true, true, true, false);
@@ -115,6 +132,18 @@ class AssemblyRecipes
                     ((GuiTurretAssemblyNEW) gui).hoveredRecipe = this.recipes[i];
                 }
             }
+        }
+
+        @Override
+        public void mouseClicked(IGui gui, int mouseX, int mouseY, int mouseButton) {
+            if( this.isHoveredOver && mouseButton == 0 ) {
+                gui.performAction(this, -1);
+            }
+        }
+
+        @Override
+        public int getWidth() {
+            return this.recipes.length * 18;
         }
 
         @Override

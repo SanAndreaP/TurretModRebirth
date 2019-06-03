@@ -25,8 +25,9 @@ public class AssemblyRecipeArea
 {
     public static final ResourceLocation ID = new ResourceLocation("assembly_recipes");
 
-    private Map<String, GroupData> recipeGroups = null;
-    private int height = 0;
+    private Map<String, GroupData> recipeGroups;
+    private int width;
+    private int height;
     private boolean updatedAll;
 
     @Override
@@ -48,6 +49,7 @@ public class AssemblyRecipeArea
     @Override
     public void update(IGui gui, JsonObject data) {
         GroupData grpData = this.recipeGroups.get(((GuiTurretAssemblyNEW) gui).currGroup);
+        this.width = grpData.area.getWidth();
         this.height = grpData.area.getHeight();
 
         if( !this.updatedAll ) {
@@ -64,8 +66,18 @@ public class AssemblyRecipeArea
     }
 
     @Override
-    public void handleMouseInput(IGui gui) throws IOException {
+    public void handleMouseInput(IGui gui) {
         this.recipeGroups.get(((GuiTurretAssemblyNEW) gui).currGroup).area.handleMouseInput(gui);
+    }
+
+    @Override
+    public void mouseClicked(IGui gui, int mouseX, int mouseY, int mouseButton) throws IOException {
+        this.recipeGroups.get(((GuiTurretAssemblyNEW) gui).currGroup).area.mouseClicked(gui, mouseX, mouseY, mouseButton);
+    }
+
+    @Override
+    public int getWidth() {
+        return this.width;
     }
 
     @Override
