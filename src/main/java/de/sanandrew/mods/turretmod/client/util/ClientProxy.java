@@ -26,11 +26,7 @@ import de.sanandrew.mods.turretmod.client.gui.GuiCartridge;
 import de.sanandrew.mods.turretmod.client.gui.GuiElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiAssemblyFilter;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssemblyNEW;
-import de.sanandrew.mods.turretmod.client.gui.element.AssemblyGroupButton;
-import de.sanandrew.mods.turretmod.client.gui.element.AssemblyRecipeArea;
-import de.sanandrew.mods.turretmod.client.gui.element.Button;
-import de.sanandrew.mods.turretmod.client.gui.element.ButtonTextLabel;
-import de.sanandrew.mods.turretmod.client.gui.element.ElectrolyteBar;
+import de.sanandrew.mods.turretmod.client.gui.element.*;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.PlayerHeads;
 import de.sanandrew.mods.turretmod.client.particle.ParticleAssemblySpark;
 import de.sanandrew.mods.turretmod.client.particle.ParticleCryoTrail;
@@ -77,9 +73,9 @@ public class ClientProxy
     static {
         GuiDefinition.TYPES.put(ElectrolyteBar.ID, ElectrolyteBar::new);
         GuiDefinition.TYPES.put(AssemblyRecipeArea.ID, AssemblyRecipeArea::new);
-        GuiDefinition.TYPES.put(AssemblyGroupButton.ID, AssemblyGroupButton::new);
         GuiDefinition.TYPES.put(Button.ID, Button::new);
         GuiDefinition.TYPES.put(ButtonTextLabel.ID, ButtonTextLabel::new);
+        GuiDefinition.TYPES.put(AssemblyGroupIcon.ID, AssemblyGroupIcon::new);
     }
 
     @Override

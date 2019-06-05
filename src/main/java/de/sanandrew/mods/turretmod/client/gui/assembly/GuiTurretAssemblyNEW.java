@@ -27,6 +27,7 @@ import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketAssemblyToggleAutomate;
 import de.sanandrew.mods.turretmod.network.PacketInitAssemblyCrafting;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
+import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.util.Resources;
@@ -41,6 +42,9 @@ import org.apache.logging.log4j.Level;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class GuiTurretAssemblyNEW
         extends GuiContainer
@@ -55,7 +59,7 @@ public class GuiTurretAssemblyNEW
     private boolean initializedUpdate;
 
     public IAssemblyRecipe hoveredRecipe;
-    public String currGroup;
+    public static String currGroup;
 
     private Button cancelButton;
     private Button automateButton;
@@ -203,6 +207,24 @@ public class GuiTurretAssemblyNEW
                 break;
             case 1:
                 PacketRegistry.sendToServer(new PacketAssemblyToggleAutomate(this.assembly));
+                break;
+            case 2: {
+                    List<String> g = Arrays.asList(AssemblyManager.INSTANCE.getGroups());
+                    int currInd = g.indexOf(currGroup) - 1;
+                    if( currInd < 0 ) {
+                        currInd = g.size() - 1;
+                    }
+                    currGroup = g.get(currInd);
+                }
+                break;
+            case 3: {
+                    List<String> g = Arrays.asList(AssemblyManager.INSTANCE.getGroups());
+                    int currInd = g.indexOf(currGroup) + 1;
+                    if( currInd == g.size() ) {
+                        currInd = 0;
+                    }
+                    currGroup = g.get(currInd);
+                }
                 break;
         }
     }

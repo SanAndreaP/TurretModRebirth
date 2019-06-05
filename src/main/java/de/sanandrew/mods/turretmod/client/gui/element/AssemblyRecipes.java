@@ -8,14 +8,12 @@ package de.sanandrew.mods.turretmod.client.gui.element;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ScrollArea;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
-import de.sanandrew.mods.turretmod.api.assembly.IAssemblyManager;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssemblyNEW;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
@@ -24,11 +22,9 @@ import net.minecraft.client.renderer.GlStateManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 class AssemblyRecipes
         extends ScrollArea

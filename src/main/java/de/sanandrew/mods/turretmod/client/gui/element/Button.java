@@ -1,5 +1,6 @@
 package de.sanandrew.mods.turretmod.client.gui.element;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
@@ -46,8 +47,11 @@ public class Button
             this.data.textureSize = JsonUtils.getIntArray(data.get("textureSize"), new int[] {256, 256}, Range.is(2));
             this.data.forceAlpha = JsonUtils.getBoolVal(data.get("forceAlpha"), false);
 
-            this.data.label = JsonUtils.GSON.fromJson(data.get("label"), GuiElementInst.class);
-            this.data.label.get().bakeData(gui, this.data.label.data);
+            JsonElement lbl = data.get("label");
+            if( lbl != null ) {
+                this.data.label = JsonUtils.GSON.fromJson(lbl, GuiElementInst.class);
+                this.data.label.get().bakeData(gui, this.data.label.data);
+            }
             this.data.centerLabel = JsonUtils.getBoolVal(data.get("centerLabel"), true);
 
             this.data.dummyButton = new GuiButton(this.data.buttonFunction, 0, 0, "");
@@ -74,16 +78,18 @@ public class Button
             drawRect(isEnabled, this.isCurrHovering);
             GlStateManager.popMatrix();
 
-            int lblX = this.data.label.pos[0];
-            int lblY = this.data.label.pos[1];
+            if( this.data.label != null ) {
+                int lblX = this.data.label.pos[0];
+                int lblY = this.data.label.pos[1];
 
-            IButtonLabel labelElem = (IButtonLabel) this.data.label.get();
-            if( this.data.centerLabel ) {
-                lblX = (this.data.size[0] - labelElem.getWidth()) / 2;
-                lblY = (this.data.size[1] - labelElem.getHeight() + 1) / 2;
+                IButtonLabel labelElem = (IButtonLabel) this.data.label.get();
+                if (this.data.centerLabel) {
+                    lblX = (this.data.size[0] - labelElem.getWidth()) / 2;
+                    lblY = (this.data.size[1] - labelElem.getHeight() + 1) / 2;
+                }
+
+                labelElem.renderLabel(gui, partTicks, x + lblX, y + lblY, mouseX, mouseY, this.data.label.data, isEnabled, this.isCurrHovering);
             }
-
-            labelElem.renderLabel(gui, partTicks, x + lblX, y + lblY, mouseX, mouseY, this.data.label.data, isEnabled, this.isCurrHovering);
         }
     }
 

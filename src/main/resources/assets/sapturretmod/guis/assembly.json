@@ -19,18 +19,13 @@
         "uv": [230, 12],
         "location": "sapturretmod:textures/gui/turretassembly/assembly.png"
       }
+    },
+    {
+      "type": "assembly_group_icon",
+      "pos": [16, 37]
     }
   ],
   "foregroundElements": [
-    {
-      "type": "assembly_group_button",
-      "pos": [0, 0],
-      "data": {
-        "size": [10, 10],
-        "uv": [230, 12],
-        "location": "sapturretmod:textures/gui/turretassembly/assembly.png"
-      }
-    },
     {
       "type": "button",
       "id": "cancel-button",
@@ -80,6 +75,36 @@
       }
     },
     {
+      "type": "button",
+      "pos": [14, 23],
+      "data": {
+        "location": "sapturretmod:textures/gui/turretassembly/assembly.png",
+        "size": [16, 9],
+        "buttonFunction": 2,
+        "uvEnabled": [50, 222],
+        "uvHover": [50, 231],
+        "uvDisabled": [50, 222],
+        "ctHorizontal": 0,
+        "ctVertical": 0,
+        "uvSize": [16, 9]
+      }
+    },
+    {
+      "type": "button",
+      "pos": [14, 58],
+      "data": {
+        "location": "sapturretmod:textures/gui/turretassembly/assembly.png",
+        "size": [16, 9],
+        "buttonFunction": 3,
+        "uvEnabled": [66, 222],
+        "uvHover": [66, 231],
+        "uvDisabled": [66, 222],
+        "ctHorizontal": 0,
+        "ctVertical": 0,
+        "uvSize": [16, 9]
+      }
+    },
+    {
       "type": "assembly_recipes",
       "pos": [35, 9],
       "data": {
@@ -104,9 +129,6 @@
               "location": "sapturretmod:textures/gui/turretassembly/assembly.png"
             }
           }
-        },
-        "groupButtons": {
-
         }
       }
     },
