@@ -119,7 +119,7 @@ public class Button
         return mouseX >= x && mouseX < x + this.data.size[0] && mouseY >= y && mouseY < y + this.data.size[1];
     }
 
-    void drawRect(boolean enabled, boolean hovered) {
+    protected void drawRect(boolean enabled, boolean hovered) {
         int[] uv = enabled
                    ? (hovered ? this.data.uvHover : this.data.uvEnabled)
                    : this.data.uvDisabled;

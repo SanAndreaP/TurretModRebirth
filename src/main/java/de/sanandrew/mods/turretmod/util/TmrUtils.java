@@ -6,6 +6,8 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.util;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
@@ -83,6 +85,12 @@ public class TmrUtils
                 }
             });
         }
+    }
+
+    public static void addJsonProperty(JsonObject jobj, String name, int[] arr) {
+        JsonArray jarr = new JsonArray();
+        for( int i : arr ) jarr.add(i);
+        jobj.add(name, jarr);
     }
 
     public static void dropItem(ItemStack stack, World world, BlockPos pos) {

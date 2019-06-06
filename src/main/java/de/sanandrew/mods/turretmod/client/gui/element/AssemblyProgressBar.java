@@ -12,11 +12,19 @@ import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
+import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssemblyNEW;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 
 public class AssemblyProgressBar
         extends Texture
 {
+    public static final ResourceLocation ID = new ResourceLocation("assembly_progress");
+
     private GuiElementInst label;
+    private int progressWidth;
 
     @Override
     public void bakeData(IGui gui, JsonObject data) {
@@ -27,22 +35,33 @@ public class AssemblyProgressBar
                 this.label.get().bakeData(gui, this.label.data);
             }
 
+            if( !data.has("location") ) data.addProperty("location", "sapturretmod:textures/gui/turretassembly/assembly.png");
+            if( !data.has("size") ) TmrUtils.addJsonProperty(data, "size", new int[] {50, 5});
+            if( !data.has("uv") ) TmrUtils.addJsonProperty(data, "uv", new int[] {0, 222});
         }
+
         super.bakeData(gui, data);
     }
 
-    //TODO: update SanLib to expose this method
-    void drawRect(IGui gui) {
+    @Override
+    public void update(IGui gui, JsonObject data) {
+        GuiTurretAssemblyNEW gta = (GuiTurretAssemblyNEW) gui;
+        double energyPerc = gta.getProgress() / (double) gta.getMaxProgress();
+        this.progressWidth = Math.max(0, Math.min(this.data.size[0], (int) Math.round(energyPerc * this.data.size[0])));
+    }
 
+    @Override
+    protected void drawRect(IGui gui) {
+        Gui.drawModalRectWithCustomSizedTexture(0, 0, this.data.uv[0], this.data.uv[1], this.progressWidth, this.data.size[1], this.data.textureSize[0], this.data.textureSize[1]);
     }
 
     @Override
     public int getWidth() {
-        return 0;
+        return this.progressWidth;
     }
 
     @Override
     public int getHeight() {
-        return 0;
+        return this.data.size[1];
     }
 }

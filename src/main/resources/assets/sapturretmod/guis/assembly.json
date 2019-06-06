@@ -23,6 +23,11 @@
     {
       "type": "assembly_group_icon",
       "pos": [16, 37]
+    },
+    {
+      "type": "assembly_progress",
+      "pos": [156, 35],
+      "data": {}
     }
   ],
   "foregroundElements": [

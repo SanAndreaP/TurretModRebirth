@@ -76,6 +76,7 @@ public class ClientProxy
         GuiDefinition.TYPES.put(Button.ID, Button::new);
         GuiDefinition.TYPES.put(ButtonTextLabel.ID, ButtonTextLabel::new);
         GuiDefinition.TYPES.put(AssemblyGroupIcon.ID, AssemblyGroupIcon::new);
+        GuiDefinition.TYPES.put(AssemblyProgressBar.ID, AssemblyProgressBar::new);
     }
 
     @Override

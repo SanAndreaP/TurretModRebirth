@@ -264,4 +264,12 @@ public class GuiTurretAssemblyNEW
     public IAssemblyRecipe getCurrRecipe() {
         return this.assembly.currRecipe;
     }
+
+    public int getProgress() {
+        return this.assembly.getTicksCrafted();
+    }
+
+    public int getMaxProgress() {
+        return this.assembly.getMaxTicksCrafted();
+    }
 }
