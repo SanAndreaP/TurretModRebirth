@@ -111,6 +111,8 @@
         "scrollArea": {
           "itemColumns": 6,
           "scrollbarHeight": 76,
+          "areaTexture": "sapturretmod:textures/gui/turretassembly/assembly.png",
+          "areaTextureUV": [0, 0],
           "scrollButton": {
             "type": "texture",
             "pos": [144, 7],

@@ -13,12 +13,16 @@ import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ScrollArea;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssemblyNEW;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.Range;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,6 +36,9 @@ class AssemblyRecipes
     private final String group;
 
     private GuiElementInst[] rows;
+    private ResourceLocation areaTexture;
+    private int[] areaTextureUV;
+    private int[] areaTextureSize;
 
     AssemblyRecipes(String group) {
         this.group = group;
@@ -45,6 +52,9 @@ class AssemblyRecipes
     @Override
     public void bakeData(IGui gui, JsonObject data) {
         if( this.data == null ) {
+            this.areaTexture = new ResourceLocation(JsonUtils.getStringVal(data.get("areaTexture")));
+            this.areaTextureUV = JsonUtils.getIntArray(data.get("areaTextureUV"), Range.is(2));
+            this.areaTextureSize = JsonUtils.getIntArray(data.get("areaTextureSize"), new int[] {256, 256}, Range.is(2));
             if( this.rows == null ) {
                 List<IAssemblyRecipe> recipes = AssemblyManager.INSTANCE.getRecipes(this.group);
                 int rowCount = JsonUtils.getIntVal(data.get("itemRows"), 4);
@@ -86,12 +96,7 @@ class AssemblyRecipes
         }
     }
 
-    @Override
-    public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
-        super.render(gui, partTicks, x, y, mouseX, mouseY, data);
-    }
-
-    private static final class Row
+    private final class Row
             implements IGuiElement
     {
         private IAssemblyRecipe[] recipes;
@@ -108,24 +113,44 @@ class AssemblyRecipes
         public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
             this.isHoveredOver = false;
 
+            GuiTurretAssemblyNEW gta = (GuiTurretAssemblyNEW) gui;
+            IAssemblyRecipe currRecipe = gta.getCurrRecipe();
             int localMouseX = mouseX - gui.getScreenPosX();
             int localMouseY = mouseY - gui.getScreenPosY();
 
             for( int i = 0; i < this.recipes.length; i++ ) {
                 int slotX = x + i * 18;
                 RenderUtils.renderStackInGui(this.recipes[i].getRecipeOutput(), slotX + 1, y + 1, 1.0, gui.get().mc.fontRenderer);
-                if( localMouseX >= slotX && localMouseX < slotX + 18 && localMouseY >= y && localMouseY < y + 18 ) {
-                    this.isHoveredOver = true;
-
-                    GlStateManager.disableLighting();
+                if( currRecipe != null && !this.recipes[i].getId().equals(currRecipe.getId()) ) {
                     GlStateManager.disableDepth();
                     GlStateManager.colorMask(true, true, true, false);
-                    Gui.drawRect(slotX + 1, y + 1, slotX + 17, y + 17, 0x80FFFFFF);
+                    GlStateManager.enableBlend();
+                    GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+                    GlStateManager.color(1.0F, 1.0F, 1.0F, 0.75F);
+                    gta.mc.renderEngine.bindTexture(AssemblyRecipes.this.areaTexture);
+                    Gui.drawModalRectWithCustomSizedTexture(slotX + 1, y + 1,
+                                                            AssemblyRecipes.this.areaTextureUV[0] + slotX + 1, AssemblyRecipes.this.areaTextureUV[1] + y + 1,
+                                                            16, 16,
+                                                            AssemblyRecipes.this.areaTextureSize[0], AssemblyRecipes.this.areaTextureSize[1]);
+                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                     GlStateManager.colorMask(true, true, true, true);
                     GlStateManager.enableDepth();
-                    GlStateManager.enableLighting();
+                }
 
-                    ((GuiTurretAssemblyNEW) gui).hoveredRecipe = this.recipes[i];
+                if( localMouseX >= slotX && localMouseX < slotX + 18 && localMouseY >= y && localMouseY < y + 18 ) {
+                    if( currRecipe == null || this.recipes[i].getId().equals(currRecipe.getId()) ) {
+                        this.isHoveredOver = true;
+
+                        GlStateManager.disableLighting();
+                        GlStateManager.disableDepth();
+                        GlStateManager.colorMask(true, true, true, false);
+                        Gui.drawRect(slotX + 1, y + 1, slotX + 17, y + 17, 0x80FFFFFF);
+                        GlStateManager.colorMask(true, true, true, true);
+                        GlStateManager.enableDepth();
+                        GlStateManager.enableLighting();
+
+                        gta.hoveredRecipe = this.recipes[i];
+                    }
                 }
             }
         }

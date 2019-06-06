@@ -44,6 +44,7 @@ import org.lwjgl.input.Keyboard;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class GuiTurretAssemblyNEW
@@ -89,6 +90,10 @@ public class GuiTurretAssemblyNEW
         this.cancelButton = (Button) this.guiDef.getElementById("cancel-button").get();
         this.automateButton = (Button) this.guiDef.getElementById("automate-button").get();
         this.manualButton = (Button) this.guiDef.getElementById("manual-button").get();
+
+        if( this.assembly.currRecipe != null ) {
+            currGroup = this.assembly.currRecipe.getGroup();
+        }
     }
 
     @Override
@@ -208,24 +213,27 @@ public class GuiTurretAssemblyNEW
             case 1:
                 PacketRegistry.sendToServer(new PacketAssemblyToggleAutomate(this.assembly));
                 break;
-            case 2: {
-                    List<String> g = Arrays.asList(AssemblyManager.INSTANCE.getGroups());
-                    int currInd = g.indexOf(currGroup) - 1;
-                    if( currInd < 0 ) {
-                        currInd = g.size() - 1;
-                    }
-                    currGroup = g.get(currInd);
-                }
+            case 2:
+                switchGroup(-1);
                 break;
-            case 3: {
-                    List<String> g = Arrays.asList(AssemblyManager.INSTANCE.getGroups());
-                    int currInd = g.indexOf(currGroup) + 1;
-                    if( currInd == g.size() ) {
-                        currInd = 0;
-                    }
-                    currGroup = g.get(currInd);
-                }
+            case 3:
+                switchGroup(1);
                 break;
+        }
+    }
+
+    private void switchGroup(int direction) {
+        if( this.assembly.currRecipe == null ) {
+            List<String> g = new ArrayList<>(Arrays.asList(AssemblyManager.INSTANCE.getGroups()));
+            if( direction < 0 ) {
+                Collections.reverse(g);
+            }
+
+            int currInd = g.indexOf(currGroup) + 1;
+            if( currInd == g.size() ) {
+                currInd = 0;
+            }
+            currGroup = g.get(currInd);
         }
     }
 
@@ -251,5 +259,9 @@ public class GuiTurretAssemblyNEW
         this.shiftPressed = keyCode == Keyboard.KEY_LSHIFT;
 
         super.keyTyped(keyChar, keyCode);
+    }
+
+    public IAssemblyRecipe getCurrRecipe() {
+        return this.assembly.currRecipe;
     }
 }
