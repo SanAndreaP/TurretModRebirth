@@ -6,7 +6,9 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.gui.element;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
@@ -28,6 +30,8 @@ public class AssemblyRecipeArea
     private int height;
     private boolean updatedAll;
 
+    GuiElementInst activeRecipeMarker;
+
     @Override
     public void bakeData(IGui gui, JsonObject data) {
         if( this.recipeGroups == null ) {
@@ -39,6 +43,11 @@ public class AssemblyRecipeArea
                 if( GuiTurretAssemblyNEW.currGroup == null ) {
                     GuiTurretAssemblyNEW.currGroup = grp;
                 }
+            }
+            JsonElement jActiveRecipeMarker = data.get("activeRecipeMarker");
+            if( jActiveRecipeMarker != null ) {
+                this.activeRecipeMarker = JsonUtils.GSON.fromJson(jActiveRecipeMarker, GuiElementInst.class);
+                this.activeRecipeMarker.get().bakeData(gui, this.activeRecipeMarker.data);
             }
         }
     }
@@ -60,6 +69,13 @@ public class AssemblyRecipeArea
     public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
         GroupData grpData = this.recipeGroups.get(GuiTurretAssemblyNEW.currGroup);
         grpData.area.render(gui, partTicks, x, y, mouseX, mouseY, grpData.data);
+
+        if( this.activeRecipeMarker != null ) {
+            int[] currRecipeCoords = ((GuiTurretAssemblyNEW) gui).currRecipeCoords;
+            if( currRecipeCoords != null ) {
+                this.activeRecipeMarker.get().render(gui, partTicks, this.activeRecipeMarker.pos[0] + currRecipeCoords[0], this.activeRecipeMarker.pos[1] + currRecipeCoords[1], mouseX, mouseY, data);
+            }
+        }
     }
 
     @Override

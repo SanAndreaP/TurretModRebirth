@@ -24,6 +24,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -358,8 +359,9 @@ public class TileEntityTurretAssembly
         this.readNBT(nbt);
 
         if( nbt.hasKey("RemovedItems", Constants.NBT.TAG_LIST) ) {
-            this.removedItems = new ArrayList<>();
-            ItemStackUtils.readItemStacksFromTag(this.removedItems, nbt.getTagList("RemovedItems", Constants.NBT.TAG_COMPOUND));
+            NBTTagList remItems = nbt.getTagList("RemovedItems", Constants.NBT.TAG_COMPOUND);
+            this.removedItems = NonNullList.withSize(remItems.tagCount(), ItemStack.EMPTY);
+            ItemStackUtils.readItemStacksFromTag(this.removedItems, remItems);
         }
 
         this.doSync = true;

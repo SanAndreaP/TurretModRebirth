@@ -121,20 +121,24 @@ class AssemblyRecipes
             for( int i = 0; i < this.recipes.length; i++ ) {
                 int slotX = x + i * 18;
                 RenderUtils.renderStackInGui(this.recipes[i].getRecipeOutput(), slotX + 1, y + 1, 1.0, gui.get().mc.fontRenderer);
-                if( currRecipe != null && !this.recipes[i].getId().equals(currRecipe.getId()) ) {
-                    GlStateManager.disableDepth();
-                    GlStateManager.colorMask(true, true, true, false);
-                    GlStateManager.enableBlend();
-                    GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-                    GlStateManager.color(1.0F, 1.0F, 1.0F, 0.75F);
-                    gta.mc.renderEngine.bindTexture(AssemblyRecipes.this.areaTexture);
-                    Gui.drawModalRectWithCustomSizedTexture(slotX + 1, y + 1,
-                                                            AssemblyRecipes.this.areaTextureUV[0] + slotX + 1, AssemblyRecipes.this.areaTextureUV[1] + y + 1,
-                                                            16, 16,
-                                                            AssemblyRecipes.this.areaTextureSize[0], AssemblyRecipes.this.areaTextureSize[1]);
-                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-                    GlStateManager.colorMask(true, true, true, true);
-                    GlStateManager.enableDepth();
+                if( currRecipe != null ) {
+                    if( this.recipes[i].getId().equals(currRecipe.getId()) ) {
+                        gta.currRecipeCoords = new int[] {slotX, y};
+                    } else {
+                        GlStateManager.disableDepth();
+                        GlStateManager.colorMask(true, true, true, false);
+                        GlStateManager.enableBlend();
+                        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+                        GlStateManager.color(1.0F, 1.0F, 1.0F, 0.75F);
+                        gta.mc.renderEngine.bindTexture(AssemblyRecipes.this.areaTexture);
+                        Gui.drawModalRectWithCustomSizedTexture(slotX + 1, y + 1,
+                                                                AssemblyRecipes.this.areaTextureUV[0] + slotX + 1, AssemblyRecipes.this.areaTextureUV[1] + y + 1,
+                                                                16, 16,
+                                                                AssemblyRecipes.this.areaTextureSize[0], AssemblyRecipes.this.areaTextureSize[1]);
+                        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                        GlStateManager.colorMask(true, true, true, true);
+                        GlStateManager.enableDepth();
+                    }
                 }
 
                 if( localMouseX >= slotX && localMouseX < slotX + 18 && localMouseY >= y && localMouseY < y + 18 ) {

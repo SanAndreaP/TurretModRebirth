@@ -10,6 +10,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssemblyNEW;
@@ -17,6 +18,8 @@ import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+
+import java.util.Locale;
 
 public class AssemblyProgressBar
         extends Texture
@@ -63,5 +66,20 @@ public class AssemblyProgressBar
     @Override
     public int getHeight() {
         return this.data.size[1];
+    }
+
+    public static class AssemblyProgressLabel
+            extends Text
+    {
+        @Override
+        public String getBakedText(IGui gui, JsonObject data) {
+            return "";
+        }
+
+        @Override
+        public String getDynamicText(IGui gui, String originalText) {
+            int cnt = ((GuiTurretAssemblyNEW) gui).getCraftingCount();
+            return cnt > 0 ? (cnt == Integer.MAX_VALUE ? "-1" : String.format(Locale.ROOT, "%d", cnt)) : "";
+        }
     }
 }

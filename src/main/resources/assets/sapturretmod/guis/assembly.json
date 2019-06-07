@@ -136,6 +136,15 @@
               "location": "sapturretmod:textures/gui/turretassembly/assembly.png"
             }
           }
+        },
+        "activeRecipeMarker": {
+          "type": "texture",
+          "pos": [-2, -2],
+          "data": {
+            "size": [22, 22],
+            "uv": [82, 222],
+            "location": "sapturretmod:textures/gui/turretassembly/assembly.png"
+          }
         }
       }
     },

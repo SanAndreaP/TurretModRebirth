@@ -60,6 +60,7 @@ public class GuiTurretAssemblyNEW
     private boolean initializedUpdate;
 
     public IAssemblyRecipe hoveredRecipe;
+    public int[] currRecipeCoords;
     public static String currGroup;
 
     private Button cancelButton;
@@ -99,6 +100,7 @@ public class GuiTurretAssemblyNEW
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.hoveredRecipe = null;
+        this.currRecipeCoords = null;
 
         this.drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
@@ -271,5 +273,9 @@ public class GuiTurretAssemblyNEW
 
     public int getMaxProgress() {
         return this.assembly.getMaxTicksCrafted();
+    }
+
+    public int getCraftingCount() {
+        return this.assembly.currRecipe != null ? (this.assembly.isAutomated() ? Integer.MAX_VALUE : this.assembly.craftingAmount) : 0;
     }
 }
