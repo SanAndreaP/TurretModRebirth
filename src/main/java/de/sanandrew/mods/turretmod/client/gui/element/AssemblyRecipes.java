@@ -52,7 +52,7 @@ class AssemblyRecipes
     @Override
     public void bakeData(IGui gui, JsonObject data) {
         if( this.data == null ) {
-            this.areaTexture = new ResourceLocation(JsonUtils.getStringVal(data.get("areaTexture")));
+            this.areaTexture = gui.getDefinition().getTexture(data.get("areaTexture"));
             this.areaTextureUV = JsonUtils.getIntArray(data.get("areaTextureUV"), Range.is(2));
             this.areaTextureSize = JsonUtils.getIntArray(data.get("areaTextureSize"), new int[] {256, 256}, Range.is(2));
             if( this.rows == null ) {
@@ -145,15 +145,14 @@ class AssemblyRecipes
                     if( currRecipe == null || this.recipes[i].getId().equals(currRecipe.getId()) ) {
                         this.isHoveredOver = true;
 
-                        GlStateManager.disableLighting();
                         GlStateManager.disableDepth();
                         GlStateManager.colorMask(true, true, true, false);
                         Gui.drawRect(slotX + 1, y + 1, slotX + 17, y + 17, 0x80FFFFFF);
                         GlStateManager.colorMask(true, true, true, true);
                         GlStateManager.enableDepth();
-                        GlStateManager.enableLighting();
 
                         gta.hoveredRecipe = this.recipes[i];
+                        gta.hoveredRecipeCoords = new int[] { slotX, y };
                     }
                 }
             }

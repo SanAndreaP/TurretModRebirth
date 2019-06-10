@@ -1,14 +1,14 @@
 {
   "width": 176,
   "height": 222,
+  "texture": "sapturretmod:textures/gui/potatogen.png",
   "backgroundElements": [
     {
       "type": "texture",
       "pos": [0, 0],
       "data": {
         "size": [176, 222],
-        "uv": [0, 0],
-        "location": "sapturretmod:textures/gui/potatogen.png"
+        "uv": [0, 0]
       }
     },
     {
@@ -67,8 +67,7 @@
       "pos": [156, 75],
       "data": {
         "size": [12, 59],
-        "uv": [176, 0],
-        "location": "sapturretmod:textures/gui/potatogen.png"
+        "uv": [176, 0]
       }
     },
     {
@@ -137,13 +136,16 @@
   ],
   "foregroundElements": [
     {
-      "type": "rflux_label",
+      "type": "label",
       "pos": [156, 75],
       "data": {
         "size": [12, 59],
-        "textElement": {
-          "color": "0xFFFFFFFF",
-          "shadow": true
+        "backgroundColor": "0xF0100000",
+        "borderTopColor": "0x50FF0000",
+        "borderBottomColor": "0x507F0000",
+        "content": {
+          "type": "rflux_text",
+          "pos": [0, 0]
         }
       }
     }

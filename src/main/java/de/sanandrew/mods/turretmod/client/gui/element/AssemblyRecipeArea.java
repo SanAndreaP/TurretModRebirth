@@ -14,6 +14,7 @@ import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssemblyNEW;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
@@ -31,6 +32,7 @@ public class AssemblyRecipeArea
     private boolean updatedAll;
 
     GuiElementInst activeRecipeMarker;
+    GuiElementInst recipeLabel;
 
     @Override
     public void bakeData(IGui gui, JsonObject data) {
@@ -44,17 +46,25 @@ public class AssemblyRecipeArea
                     GuiTurretAssemblyNEW.currGroup = grp;
                 }
             }
+
             JsonElement jActiveRecipeMarker = data.get("activeRecipeMarker");
             if( jActiveRecipeMarker != null ) {
                 this.activeRecipeMarker = JsonUtils.GSON.fromJson(jActiveRecipeMarker, GuiElementInst.class);
+                gui.getDefinition().initElement(this.activeRecipeMarker);
                 this.activeRecipeMarker.get().bakeData(gui, this.activeRecipeMarker.data);
             }
+
+            this.recipeLabel = JsonUtils.GSON.fromJson(data.get("recipeLabel"), GuiElementInst.class);
+            gui.getDefinition().initElement(this.recipeLabel);
+            TmrUtils.addJsonProperty(this.recipeLabel.data, "size", new int[] {18, 18});
+            this.recipeLabel.get().bakeData(gui, this.recipeLabel.data);
         }
     }
 
     @Override
     public void update(IGui gui, JsonObject data) {
         GroupData grpData = this.recipeGroups.get(GuiTurretAssemblyNEW.currGroup);
+        GuiTurretAssemblyNEW gta = (GuiTurretAssemblyNEW) gui;
         this.width = grpData.area.getWidth();
         this.height = grpData.area.getHeight();
 
@@ -62,19 +72,32 @@ public class AssemblyRecipeArea
             this.recipeGroups.values().forEach(g -> g.area.update(gui, g.data));
             this.updatedAll = true;
         }
+
+        if( gta.hoveredRecipe != null && gta.hoveredRecipeCoords != null ) {
+            this.recipeLabel.get().update(gui, this.recipeLabel.data);
+        }
+
         grpData.area.update(gui, grpData.data);
     }
 
     @Override
     public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
         GroupData grpData = this.recipeGroups.get(GuiTurretAssemblyNEW.currGroup);
+        GuiTurretAssemblyNEW gta = (GuiTurretAssemblyNEW) gui;
+
         grpData.area.render(gui, partTicks, x, y, mouseX, mouseY, grpData.data);
 
         if( this.activeRecipeMarker != null ) {
-            int[] currRecipeCoords = ((GuiTurretAssemblyNEW) gui).currRecipeCoords;
-            if( currRecipeCoords != null ) {
-                this.activeRecipeMarker.get().render(gui, partTicks, this.activeRecipeMarker.pos[0] + currRecipeCoords[0], this.activeRecipeMarker.pos[1] + currRecipeCoords[1], mouseX, mouseY, data);
+            if( gta.currRecipeCoords != null ) {
+                this.activeRecipeMarker.get().render(gui, partTicks,
+                                                     this.activeRecipeMarker.pos[0] + gta.currRecipeCoords[0], this.activeRecipeMarker.pos[1] + gta.currRecipeCoords[1],
+                                                     mouseX, mouseY,
+                                                     data);
             }
+        }
+
+        if( gta.hoveredRecipe != null && gta.hoveredRecipeCoords != null ) {
+            this.recipeLabel.get().render(gui, partTicks, gta.hoveredRecipeCoords[0], gta.hoveredRecipeCoords[1], mouseX, mouseY, this.recipeLabel.data);
         }
     }
 

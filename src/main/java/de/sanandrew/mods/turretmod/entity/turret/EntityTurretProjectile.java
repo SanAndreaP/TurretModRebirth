@@ -492,27 +492,15 @@ public class EntityTurretProjectile
         private final ITurretInst turret;
 
         DamageSourceIndirectProjectile(Entity projectile, ITurretInst turret) {
-            super(TmrConstants.ID + ".turret", projectile, turret.get());
+            super(TmrConstants.ID + ".turret", projectile, turret != null ? turret.get() : projectile);
             this.setProjectile();
 
             this.turret = turret;
         }
 
-        @Nullable
-        @Override
-        public Entity getImmediateSource() {
-            return this.damageSourceEntity;
-        }
-
-        @Nullable
-        @Override
-        public Entity getTrueSource() {
-            return this.turret.get();
-        }
-
         @Override
         public ITextComponent getDeathMessage(EntityLivingBase attacked) {
-            return DamageSourceProjectile.getDeathMessage(attacked, this.turret, this.damageType);
+            return this.turret != null ? DamageSourceProjectile.getDeathMessage(attacked, this.turret, this.damageType) : super.getDeathMessage(attacked);
         }
     }
 }

@@ -1,14 +1,14 @@
 {
   "width": 230,
   "height": 222,
+  "texture": "sapturretmod:textures/gui/turretassembly/assembly.png",
   "backgroundElements": [
     {
       "type": "texture",
       "pos": [0, 0],
       "data": {
         "size": [230, 222],
-        "uv": [0, 0],
-        "location": "sapturretmod:textures/gui/turretassembly/assembly.png"
+        "uv": [0, 0]
       }
     },
     {
@@ -16,8 +16,7 @@
       "pos": [210, 8],
       "data": {
         "size": [12, 82],
-        "uv": [230, 12],
-        "location": "sapturretmod:textures/gui/turretassembly/assembly.png"
+        "uv": [230, 12]
       }
     },
     {
@@ -27,7 +26,13 @@
     {
       "type": "assembly_progress",
       "pos": [156, 35],
-      "data": {}
+      "data": {
+        "label": {
+          "type": "assembly_progress_text",
+          "pos": [25, -1],
+          "data": {}
+        }
+      }
     }
   ],
   "foregroundElements": [
@@ -83,7 +88,7 @@
       "type": "button",
       "pos": [14, 23],
       "data": {
-        "location": "sapturretmod:textures/gui/turretassembly/assembly.png",
+        "texture": "sapturretmod:textures/gui/turretassembly/assembly.png",
         "size": [16, 9],
         "buttonFunction": 2,
         "uvEnabled": [50, 222],
@@ -98,7 +103,7 @@
       "type": "button",
       "pos": [14, 58],
       "data": {
-        "location": "sapturretmod:textures/gui/turretassembly/assembly.png",
+        "texture": "sapturretmod:textures/gui/turretassembly/assembly.png",
         "size": [16, 9],
         "buttonFunction": 3,
         "uvEnabled": [66, 222],
@@ -116,15 +121,13 @@
         "scrollArea": {
           "itemColumns": 6,
           "scrollbarHeight": 76,
-          "areaTexture": "sapturretmod:textures/gui/turretassembly/assembly.png",
           "areaTextureUV": [0, 0],
           "scrollButton": {
             "type": "texture",
             "pos": [144, 7],
             "data": {
               "size": [6, 6],
-              "uv": [230, 0],
-              "location": "sapturretmod:textures/gui/turretassembly/assembly.png"
+              "uv": [230, 0]
             }
           },
           "scrollButtonDeactive": {
@@ -132,8 +135,7 @@
             "pos": [144, 7],
             "data": {
               "size": [6, 6],
-              "uv": [230, 6],
-              "location": "sapturretmod:textures/gui/turretassembly/assembly.png"
+              "uv": [230, 6]
             }
           }
         },
@@ -142,20 +144,39 @@
           "pos": [-2, -2],
           "data": {
             "size": [22, 22],
-            "uv": [82, 222],
-            "location": "sapturretmod:textures/gui/turretassembly/assembly.png"
+            "uv": [82, 222]
+          }
+        },
+        "recipeLabel": {
+          "type": "label",
+          "pos": [0, 0],
+          "data": {
+            "backgroundColor": "0xF0001000",
+            "borderTopColor": "0x5000FF00",
+            "borderBottomColor": "0x50007F00",
+            "content": {
+              "type": "assembly_recipe_label",
+              "pos": [0, 0],
+              "data": {
+                "borderColor": "0x5000FF00",
+                "compactIngredientsColumns": 6
+              }
+            }
           }
         }
       }
     },
     {
-      "type": "rflux_label",
+      "type": "label",
       "pos": [210, 8],
       "data": {
         "size": [12, 82],
-        "textElement": {
-          "color": "0xFFFFFFFF",
-          "shadow": true
+        "backgroundColor": "0xF0100000",
+        "borderTopColor": "0x50FF0000",
+        "borderBottomColor": "0x507F0000",
+        "content": {
+          "type": "rflux_text",
+          "pos": [0, 0]
         }
       }
     }

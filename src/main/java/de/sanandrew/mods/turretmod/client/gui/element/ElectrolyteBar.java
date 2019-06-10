@@ -28,7 +28,6 @@ public class ElectrolyteBar
             this.slot = JsonUtils.getIntVal(data.get("slot"));
         }
 
-        if( !data.has("location") ) data.addProperty("location", "sapturretmod:textures/gui/potatogen.png");
         if( !data.has("size") ) TmrUtils.addJsonProperty(data, "size", new int[] {16, 3});
         if( !data.has("uv") ) TmrUtils.addJsonProperty(data, "uv", new int[] {176, 59});
 

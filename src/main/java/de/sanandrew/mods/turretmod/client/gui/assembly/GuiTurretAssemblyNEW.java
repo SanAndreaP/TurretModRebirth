@@ -9,19 +9,16 @@
 package de.sanandrew.mods.turretmod.client.gui.assembly;
 
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
-import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.Button;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ContainerName;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.DynamicText;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.RedstoneFluxBar;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
-import de.sanandrew.mods.turretmod.client.gui.element.Button;
 import de.sanandrew.mods.turretmod.client.util.GuiHelper;
-import de.sanandrew.mods.turretmod.inventory.ContainerElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketAssemblyToggleAutomate;
@@ -29,7 +26,6 @@ import de.sanandrew.mods.turretmod.network.PacketInitAssemblyCrafting;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
-import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -60,6 +56,7 @@ public class GuiTurretAssemblyNEW
     private boolean initializedUpdate;
 
     public IAssemblyRecipe hoveredRecipe;
+    public int[] hoveredRecipeCoords;
     public int[] currRecipeCoords;
     public static String currGroup;
 
@@ -100,14 +97,12 @@ public class GuiTurretAssemblyNEW
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.hoveredRecipe = null;
+        this.hoveredRecipeCoords = null;
         this.currRecipeCoords = null;
 
         this.drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
-        if( this.hoveredRecipe != null ) {
-            this.renderToolTip(this.hoveredRecipe.getRecipeOutput(), mouseX, mouseY);
-        }
     }
 
     @Override

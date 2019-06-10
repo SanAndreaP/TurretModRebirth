@@ -1,14 +1,14 @@
 {
   "width": 176,
   "height": 166,
+  "texture": "sapturretmod:textures/gui/ammo_cartridge.png",
   "backgroundElements": [
     {
       "type": "texture",
       "pos": [0, 0],
       "data": {
         "size": [176, 166],
-        "uv": [0, 0],
-        "location": "sapturretmod:textures/gui/ammo_cartridge.png"
+        "uv": [0, 0]
       }
     },
     {

@@ -13,6 +13,7 @@ import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssemblyNEW;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.client.gui.Gui;
@@ -27,6 +28,7 @@ public class AssemblyProgressBar
     public static final ResourceLocation ID = new ResourceLocation("assembly_progress");
 
     private GuiElementInst label;
+    private boolean centerLabel;
     private int progressWidth;
 
     @Override
@@ -35,10 +37,11 @@ public class AssemblyProgressBar
             JsonElement lblElem = data.get("label");
             if( lblElem != null ) {
                 this.label = JsonUtils.GSON.fromJson(lblElem, GuiElementInst.class);
+                gui.getDefinition().initElement(this.label);
                 this.label.get().bakeData(gui, this.label.data);
+                this.centerLabel = JsonUtils.getBoolVal(data.get("centerLabel"), true);
             }
 
-            if( !data.has("location") ) data.addProperty("location", "sapturretmod:textures/gui/turretassembly/assembly.png");
             if( !data.has("size") ) TmrUtils.addJsonProperty(data, "size", new int[] {50, 5});
             if( !data.has("uv") ) TmrUtils.addJsonProperty(data, "uv", new int[] {0, 222});
         }
@@ -51,6 +54,16 @@ public class AssemblyProgressBar
         GuiTurretAssemblyNEW gta = (GuiTurretAssemblyNEW) gui;
         double energyPerc = gta.getProgress() / (double) gta.getMaxProgress();
         this.progressWidth = Math.max(0, Math.min(this.data.size[0], (int) Math.round(energyPerc * this.data.size[0])));
+    }
+
+    @Override
+    public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
+        super.render(gui, partTicks, x, y, mouseX, mouseY, data);
+
+        if( this.label != null ) {
+            int lblX = x + this.label.pos[0] - (this.centerLabel ? (this.label.get().getWidth() / 2) : 0);
+            this.label.get().render(gui, partTicks, lblX, y + this.label.pos[1], mouseX, mouseY, this.label.data);
+        }
     }
 
     @Override
@@ -71,6 +84,38 @@ public class AssemblyProgressBar
     public static class AssemblyProgressLabel
             extends Text
     {
+        public static final ResourceLocation ID = new ResourceLocation("assembly_progress_text");
+
+        public int mainColor;
+        public int strokeColor;
+
+        @Override
+        public void bakeData(IGui gui, JsonObject data) {
+            boolean init = this.data == null;
+
+            if( !data.has("color") ) data.addProperty("color", "0xFF00F000");
+            data.addProperty("shadow", false);
+            data.addProperty("wrapWidth", 0);
+
+            super.bakeData(gui, data);
+
+            if( init ) {
+                this.mainColor = this.data.color;
+                this.strokeColor = MiscUtils.hexToInt(JsonUtils.getStringVal(data.get("strokeColor"), "0xFF000000"));
+            }
+        }
+
+        @Override
+        public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
+            this.data.color = this.strokeColor;
+            super.render(gui, partTicks, x + 1, y, mouseX, mouseY, data);
+            super.render(gui, partTicks, x - 1, y, mouseX, mouseY, data);
+            super.render(gui, partTicks, x, y + 1, mouseX, mouseY, data);
+            super.render(gui, partTicks, x, y - 1, mouseX, mouseY, data);
+            this.data.color = this.mainColor;
+            super.render(gui, partTicks, x, y, mouseX, mouseY, data);
+        }
+
         @Override
         public String getBakedText(IGui gui, JsonObject data) {
             return "";
@@ -79,7 +124,7 @@ public class AssemblyProgressBar
         @Override
         public String getDynamicText(IGui gui, String originalText) {
             int cnt = ((GuiTurretAssemblyNEW) gui).getCraftingCount();
-            return cnt > 0 ? (cnt == Integer.MAX_VALUE ? "-1" : String.format(Locale.ROOT, "%d", cnt)) : "";
+            return cnt > 0 ? (cnt == Integer.MAX_VALUE ? "\u221E" : String.format(Locale.ROOT, "%dx", cnt)) : "";
         }
     }
 }

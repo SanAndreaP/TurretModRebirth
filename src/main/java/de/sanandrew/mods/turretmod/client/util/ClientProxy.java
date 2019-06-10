@@ -73,10 +73,10 @@ public class ClientProxy
     static {
         GuiDefinition.TYPES.put(ElectrolyteBar.ID, ElectrolyteBar::new);
         GuiDefinition.TYPES.put(AssemblyRecipeArea.ID, AssemblyRecipeArea::new);
-        GuiDefinition.TYPES.put(Button.ID, Button::new);
-        GuiDefinition.TYPES.put(ButtonTextLabel.ID, ButtonTextLabel::new);
         GuiDefinition.TYPES.put(AssemblyGroupIcon.ID, AssemblyGroupIcon::new);
         GuiDefinition.TYPES.put(AssemblyProgressBar.ID, AssemblyProgressBar::new);
+        GuiDefinition.TYPES.put(AssemblyProgressBar.AssemblyProgressLabel.ID, AssemblyProgressBar.AssemblyProgressLabel::new);
+        GuiDefinition.TYPES.put(AssemblyRecipeLabel.ID, AssemblyRecipeLabel::new);
     }
 
     @Override
