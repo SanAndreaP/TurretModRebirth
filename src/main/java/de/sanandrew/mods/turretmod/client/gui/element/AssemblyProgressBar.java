@@ -14,18 +14,19 @@ import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
-import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssemblyNEW;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 
 import java.util.Locale;
 
+@SuppressWarnings("WeakerAccess")
 public class AssemblyProgressBar
         extends Texture
 {
-    public static final ResourceLocation ID = new ResourceLocation("assembly_progress");
+    public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "assembly.progress");
 
     private GuiElementInst label;
     private boolean centerLabel;
@@ -51,9 +52,9 @@ public class AssemblyProgressBar
 
     @Override
     public void update(IGui gui, JsonObject data) {
-        GuiTurretAssemblyNEW gta = (GuiTurretAssemblyNEW) gui;
-        double energyPerc = gta.getProgress() / (double) gta.getMaxProgress();
-        this.progressWidth = Math.max(0, Math.min(this.data.size[0], (int) Math.round(energyPerc * this.data.size[0])));
+        GuiTurretAssembly gta = (GuiTurretAssembly) gui;
+        double perc = gta.assembly.getTicksCrafted() / (double) gta.assembly.getMaxTicksCrafted();
+        this.progressWidth = Math.max(0, Math.min(this.data.size[0], (int) Math.round(perc * this.data.size[0])));
     }
 
     @Override
@@ -84,7 +85,7 @@ public class AssemblyProgressBar
     public static class AssemblyProgressLabel
             extends Text
     {
-        public static final ResourceLocation ID = new ResourceLocation("assembly_progress_text");
+        public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "assembly.progress_text");
 
         public int mainColor;
         public int strokeColor;
@@ -123,7 +124,7 @@ public class AssemblyProgressBar
 
         @Override
         public String getDynamicText(IGui gui, String originalText) {
-            int cnt = ((GuiTurretAssemblyNEW) gui).getCraftingCount();
+            int cnt = ((GuiTurretAssembly) gui).getCraftingCount();
             return cnt > 0 ? (cnt == Integer.MAX_VALUE ? "\u221E" : String.format(Locale.ROOT, "%dx", cnt)) : "";
         }
     }

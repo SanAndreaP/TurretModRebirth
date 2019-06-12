@@ -20,19 +20,23 @@
       }
     },
     {
-      "type": "assembly_group_icon",
+      "type": "sapturretmod:assembly.group_icon",
       "pos": [16, 37]
     },
     {
-      "type": "assembly_progress",
+      "type": "sapturretmod:assembly.progress",
       "pos": [156, 35],
       "data": {
         "label": {
-          "type": "assembly_progress_text",
+          "type": "sapturretmod:assembly.progress_text",
           "pos": [25, -1],
           "data": {}
         }
       }
+    },
+    {
+      "type": "sapturretmod:assembly.ghost_items",
+      "pos":[0, 0]
     }
   ],
   "foregroundElements": [
@@ -115,7 +119,7 @@
       }
     },
     {
-      "type": "assembly_recipes",
+      "type": "sapturretmod:assembly.recipes",
       "pos": [35, 9],
       "data": {
         "scrollArea": {
@@ -155,7 +159,7 @@
             "borderTopColor": "0x5000FF00",
             "borderBottomColor": "0x50007F00",
             "content": {
-              "type": "assembly_recipe_label",
+              "type": "sapturretmod:assembly.recipe_label",
               "pos": [0, 0],
               "data": {
                 "borderColor": "0x5000FF00",

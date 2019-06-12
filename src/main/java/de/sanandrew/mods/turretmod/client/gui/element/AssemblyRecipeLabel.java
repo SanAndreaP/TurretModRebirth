@@ -9,18 +9,16 @@ import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.assembly.AssemblyIngredient;
-import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
-import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssemblyNEW;
+import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +27,7 @@ import java.util.List;
 public class AssemblyRecipeLabel
         implements IGuiElement
 {
-    public static final ResourceLocation ID = new ResourceLocation("assembly_recipe_label");
+    public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "assembly.recipe_label");
 
     GuiElementInst itemTooltip;
     GuiElementInst timeIcon;
@@ -82,7 +80,7 @@ public class AssemblyRecipeLabel
 
     @Override
     public void update(IGui gui, JsonObject data) {
-        GuiTurretAssemblyNEW gta = (GuiTurretAssemblyNEW) gui;
+        GuiTurretAssembly gta = (GuiTurretAssembly) gui;
         this.ticksCrafting = gta.getProcessTime(gta.hoveredRecipe);
         this.rfPerTick = gta.getRfPerTick(gta.hoveredRecipe);
         NonNullList<Ingredient> ingredients = gta.hoveredRecipe.getIngredients();
@@ -199,7 +197,7 @@ public class AssemblyRecipeLabel
         public void update(IGui gui, JsonObject data) {
             super.update(gui, data);
 
-            GuiTurretAssemblyNEW gta = (GuiTurretAssemblyNEW) gui;
+            GuiTurretAssembly gta = (GuiTurretAssembly) gui;
             this.currWidth = 0;
             this.lines = gui.get().getItemToolTip(gta.hoveredRecipe.getRecipeOutput());
             this.lines.forEach(l -> this.currWidth = Math.max(this.data.fontRenderer.getStringWidth(l), this.currWidth));

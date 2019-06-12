@@ -13,14 +13,12 @@ import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ScrollArea;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
-import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
-import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssemblyNEW;
+import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.Range;
 
@@ -113,8 +111,8 @@ class AssemblyRecipes
         public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
             this.isHoveredOver = false;
 
-            GuiTurretAssemblyNEW gta = (GuiTurretAssemblyNEW) gui;
-            IAssemblyRecipe currRecipe = gta.getCurrRecipe();
+            GuiTurretAssembly gta = (GuiTurretAssembly) gui;
+            IAssemblyRecipe currRecipe = gta.assembly.currRecipe;
             int localMouseX = mouseX - gui.getScreenPosX();
             int localMouseY = mouseY - gui.getScreenPosY();
 

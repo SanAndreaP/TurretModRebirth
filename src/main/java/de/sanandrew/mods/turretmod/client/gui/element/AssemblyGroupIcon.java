@@ -4,7 +4,8 @@ import com.google.gson.JsonObject;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
-import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssemblyNEW;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -12,7 +13,7 @@ import net.minecraft.util.ResourceLocation;
 public class AssemblyGroupIcon
         implements IGuiElement
 {
-    public static final ResourceLocation ID = new ResourceLocation("assembly_group_icon");
+    public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "assembly.group_icon");
 
     private ItemStack currStack = ItemStack.EMPTY;
 
@@ -21,7 +22,7 @@ public class AssemblyGroupIcon
 
     @Override
     public void update(IGui gui, JsonObject data) {
-        this.currStack = AssemblyManager.INSTANCE.getGroupIcon(GuiTurretAssemblyNEW.currGroup);
+        this.currStack = AssemblyManager.INSTANCE.getGroupIcon(GuiTurretAssembly.currGroup);
     }
 
     @Override

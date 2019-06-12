@@ -12,7 +12,7 @@ import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
-import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssemblyNEW;
+import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.util.ResourceLocation;
@@ -24,7 +24,7 @@ import java.util.Map;
 public class AssemblyRecipeArea
         implements IGuiElement
 {
-    public static final ResourceLocation ID = new ResourceLocation("assembly_recipes");
+    public static final ResourceLocation ID = new ResourceLocation("sapturretmod:assembly.recipes");
 
     private Map<String, GroupData> recipeGroups;
     private int width;
@@ -42,8 +42,8 @@ public class AssemblyRecipeArea
             for( String grp : AssemblyManager.INSTANCE.getGroups() ) {
                 this.recipeGroups.put(grp, new GroupData(gui, grp, dataArea));
 
-                if( GuiTurretAssemblyNEW.currGroup == null ) {
-                    GuiTurretAssemblyNEW.currGroup = grp;
+                if( GuiTurretAssembly.currGroup == null ) {
+                    GuiTurretAssembly.currGroup = grp;
                 }
             }
 
@@ -63,8 +63,8 @@ public class AssemblyRecipeArea
 
     @Override
     public void update(IGui gui, JsonObject data) {
-        GroupData grpData = this.recipeGroups.get(GuiTurretAssemblyNEW.currGroup);
-        GuiTurretAssemblyNEW gta = (GuiTurretAssemblyNEW) gui;
+        GroupData grpData = this.recipeGroups.get(GuiTurretAssembly.currGroup);
+        GuiTurretAssembly gta = (GuiTurretAssembly) gui;
         this.width = grpData.area.getWidth();
         this.height = grpData.area.getHeight();
 
@@ -82,8 +82,8 @@ public class AssemblyRecipeArea
 
     @Override
     public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
-        GroupData grpData = this.recipeGroups.get(GuiTurretAssemblyNEW.currGroup);
-        GuiTurretAssemblyNEW gta = (GuiTurretAssemblyNEW) gui;
+        GroupData grpData = this.recipeGroups.get(GuiTurretAssembly.currGroup);
+        GuiTurretAssembly gta = (GuiTurretAssembly) gui;
 
         grpData.area.render(gui, partTicks, x, y, mouseX, mouseY, grpData.data);
 
@@ -103,12 +103,12 @@ public class AssemblyRecipeArea
 
     @Override
     public void handleMouseInput(IGui gui) {
-        this.recipeGroups.get(GuiTurretAssemblyNEW.currGroup).area.handleMouseInput(gui);
+        this.recipeGroups.get(GuiTurretAssembly.currGroup).area.handleMouseInput(gui);
     }
 
     @Override
     public void mouseClicked(IGui gui, int mouseX, int mouseY, int mouseButton) throws IOException {
-        this.recipeGroups.get(GuiTurretAssemblyNEW.currGroup).area.mouseClicked(gui, mouseX, mouseY, mouseButton);
+        this.recipeGroups.get(GuiTurretAssembly.currGroup).area.mouseClicked(gui, mouseX, mouseY, mouseButton);
     }
 
     @Override
