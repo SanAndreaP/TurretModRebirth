@@ -5,12 +5,14 @@ import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.assembly.AssemblyIngredient;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssemblyNEW;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -18,28 +20,37 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("WeakerAccess")
 public class AssemblyRecipeLabel
         implements IGuiElement
 {
     public static final ResourceLocation ID = new ResourceLocation("assembly_recipe_label");
 
     GuiElementInst itemTooltip;
+    GuiElementInst timeIcon;
+    GuiElementInst rfIcon;
 
     int borderColor;
     int compactIngredientsColumns;
 
-    int currWidth = 0;
-    int currHeight = 0;
-    long currTicks = 0L;
+    int currWidth;
+    int currHeight;
+    long currTicks;
+    int ticksCrafting;
+    int rfPerTick;
     ItemStack[][] ingredients;
     int[] ingredientSize;
+    boolean shiftPressed;
 
     @Override
     public void bakeData(IGui gui, JsonObject data) {
+        this.currTicks = 0L;
+
         if( this.itemTooltip == null ) {
             this.itemTooltip = new GuiElementInst();
             this.itemTooltip.element = new ItemTooltipText();
@@ -49,13 +60,32 @@ public class AssemblyRecipeLabel
             this.borderColor = MiscUtils.hexToInt(JsonUtils.getStringVal(data.get("borderColor")));
             this.compactIngredientsColumns = JsonUtils.getIntVal(data.get("compactIngredientsColumns"), 6);
         }
+
+        if( this.timeIcon == null ) {
+            this.timeIcon = new GuiElementInst();
+            this.timeIcon.element = new Texture();
+            this.timeIcon.data = data.has("timeIconData") ? data.get("timeIconData").getAsJsonObject() : new JsonObject();
+            if( !this.timeIcon.data.has("size") ) TmrUtils.addJsonProperty(this.timeIcon.data, "size", new int[] { 9, 9 });
+            if( !this.timeIcon.data.has("uv") ) TmrUtils.addJsonProperty(this.timeIcon.data, "uv", new int[] { 230, 94 });
+            this.timeIcon.element.bakeData(gui, this.timeIcon.data);
+        }
+
+        if( this.rfIcon == null ) {
+            this.rfIcon = new GuiElementInst();
+            this.rfIcon.element = new Texture();
+            this.rfIcon.data = data.has("rfIconData") ? data.get("rfIconData").getAsJsonObject() : new JsonObject();
+            if( !this.rfIcon.data.has("size") ) TmrUtils.addJsonProperty(this.rfIcon.data, "size", new int[] { 9, 9 });
+            if( !this.rfIcon.data.has("uv") ) TmrUtils.addJsonProperty(this.rfIcon.data, "uv", new int[] { 230, 103 });
+            this.rfIcon.element.bakeData(gui, this.rfIcon.data);
+        }
     }
 
     @Override
     public void update(IGui gui, JsonObject data) {
-        this.itemTooltip.element.update(gui, this.itemTooltip.data);
-
-        NonNullList<Ingredient> ingredients = ((GuiTurretAssemblyNEW) gui).hoveredRecipe.getIngredients();
+        GuiTurretAssemblyNEW gta = (GuiTurretAssemblyNEW) gui;
+        this.ticksCrafting = gta.getProcessTime(gta.hoveredRecipe);
+        this.rfPerTick = gta.getRfPerTick(gta.hoveredRecipe);
+        NonNullList<Ingredient> ingredients = gta.hoveredRecipe.getIngredients();
         int max = ingredients.size();
         this.ingredients = new ItemStack[max][];
         this.ingredientSize = new int[max];
@@ -64,14 +94,18 @@ public class AssemblyRecipeLabel
             this.ingredients[i] = aIng.getMatchingStacks();
             this.ingredientSize[i] = aIng.getCount();
         }
+        this.shiftPressed = gta.isShiftPressed();
+
+        this.itemTooltip.element.update(gui, this.itemTooltip.data);
+        this.timeIcon.element.update(gui, this.timeIcon.data);
+        this.rfIcon.element.update(gui, this.rfIcon.data);
 
         this.currTicks++;
     }
 
     @Override
     public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
-        GuiTurretAssemblyNEW gta = (GuiTurretAssemblyNEW) gui;
-        FontRenderer fr = gta.mc.fontRenderer;
+        Text.BakedData ittData = ((ItemTooltipText) this.itemTooltip.element).data;
         int origY = y;
 
         this.itemTooltip.element.render(gui, partTicks, x, y, mouseX, mouseY, this.itemTooltip.data);
@@ -86,29 +120,54 @@ public class AssemblyRecipeLabel
         GlStateManager.translate(0, 0, 200);
         for( int i = 0; this.ingredients != null && i < this.ingredients.length; i++ ) {
             ItemStack[] variants = this.ingredients[i];
+            ItemStack variant = variants[(int) (this.currTicks / 20) % variants.length];
 
-            RenderUtils.renderStackInGui(variants[(int) (this.currTicks / 20) % variants.length], x + col * 18 + 1, y + 1, 1.0D, fr, String.format("%d", this.ingredientSize[i]), true);
+            if( this.shiftPressed ) {
+                y += 1;
+                RenderUtils.renderStackInGui(variant, x + 1, y, 0.5D);
+                List<String> ingLines = gui.get().getItemToolTip(variant);
+                ingLines.set(0, String.format("%dx %s", this.ingredientSize[i], ingLines.get(0)));
+                for( String line : ingLines ) {
+                    ittData.fontRenderer.drawString(line, x + 11, y, ittData.color, ittData.shadow);
+                    y += 10;
+                    this.currWidth = Math.max(this.currWidth, 11 + ittData.fontRenderer.getStringWidth(line));
+                }
+            } else {
+                RenderUtils.renderStackInGui(variant, x + col * 18 + 1, y + 1, 1.0D, ittData.fontRenderer, String.format("%d", this.ingredientSize[i]), true);
 
-            col++;
-            this.currWidth = Math.max(this.currWidth, col * 18);
+                col++;
+                this.currWidth = Math.max(this.currWidth, col * 18);
 
-            if( col >= this.compactIngredientsColumns && i < this.ingredients.length - 1 ) {
-                y += 18;
-                col = 0;
+                if( col >= this.compactIngredientsColumns && i < this.ingredients.length - 1 ) {
+                    y += 18;
+                    col = 0;
+                } else if( i == this.ingredients.length - 1 ) {
+                    y += 19;
+                }
             }
         }
         GlStateManager.popMatrix();
 
-        y += 19;
         int yDiv2 = y;
-        y += 2;
+        y += 3;
 
+        GlStateManager.disableDepth();
+        String ticks = MiscUtils.getTimeFromTicks(this.ticksCrafting);
+        this.timeIcon.element.render(gui, partTicks, x, y, mouseX, mouseY, this.timeIcon.data);
+        ittData.fontRenderer.drawString(ticks, x + this.timeIcon.element.getWidth() + 2, y + 1, ittData.color, ittData.shadow);
+        y += Math.max(this.timeIcon.element.getHeight() + 2, ittData.fontRenderer.FONT_HEIGHT);
+        this.currWidth = Math.max(this.currWidth, this.timeIcon.element.getWidth() + 2 + ittData.fontRenderer.getStringWidth(ticks));
+
+        String rf = String.format("%d RF/t", this.rfPerTick);
+        this.rfIcon.element.render(gui, partTicks, x, y, mouseX, mouseY, this.rfIcon.data);
+        ittData.fontRenderer.drawString(rf, x + this.rfIcon.element.getWidth() + 2, y + 1, ittData.color, ittData.shadow);
+        y += Math.max(this.rfIcon.element.getHeight(), ittData.fontRenderer.FONT_HEIGHT);
+        this.currWidth = Math.max(this.currWidth, this.rfIcon.element.getWidth() + 2 + ittData.fontRenderer.getStringWidth(rf));
 
         this.currHeight = y - origY;
 
-        GlStateManager.disableDepth();
-        Gui.drawRect(x - 2, yDiv1, x + this.getWidth() + 2, yDiv1 + 1, this.borderColor);
-        Gui.drawRect(x - 2, yDiv2, x + this.getWidth() + 2, yDiv2 + 1, this.borderColor);
+        Gui.drawRect(x - 2, yDiv1, x + this.currWidth + 2, yDiv1 + 1, this.borderColor);
+        Gui.drawRect(x - 2, yDiv2, x + this.currWidth + 2, yDiv2 + 1, this.borderColor);
         GlStateManager.enableDepth();
     }
 

@@ -32,6 +32,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import org.apache.logging.log4j.Level;
@@ -253,7 +254,7 @@ public class GuiTurretAssemblyNEW
 
     @Override
     protected void keyTyped(char keyChar, int keyCode) throws IOException {
-        this.shiftPressed = keyCode == Keyboard.KEY_LSHIFT;
+        this.shiftPressed = keyCode == Keyboard.KEY_LSHIFT || keyCode == Keyboard.KEY_RSHIFT;
 
         super.keyTyped(keyChar, keyCode);
     }
@@ -272,5 +273,17 @@ public class GuiTurretAssemblyNEW
 
     public int getCraftingCount() {
         return this.assembly.currRecipe != null ? (this.assembly.isAutomated() ? Integer.MAX_VALUE : this.assembly.craftingAmount) : 0;
+    }
+
+    public int getRfPerTick(IAssemblyRecipe recipe) {
+        return recipe != null ? MathHelper.ceil(recipe.getFluxPerTick() * (this.assembly.hasSpeedUpgrade() ? 4.4F : 1.0F)) : 0;
+    }
+
+    public int getProcessTime(IAssemblyRecipe recipe) {
+        return recipe != null ? MathHelper.floor(recipe.getProcessTime() / (this.assembly.hasSpeedUpgrade() ? 4 : 1)) : 0;
+    }
+
+    public boolean isShiftPressed() {
+        return this.shiftPressed;
     }
 }
