@@ -30,7 +30,7 @@ public class TargetingEventHandler
 {
     @SubscribeEvent
     public void onProcessorTick(TargetingEvent.ProcessorTick event) {
-        ITurretInst turretInst = event.processor.getTurret();
+        ITurretInst turretInst = event.processor.getTurretInst();
 
         if( turretInst.getTurret() instanceof TurretForcefield ) {
             event.setCanceled(true);
@@ -41,14 +41,14 @@ public class TargetingEventHandler
 
     @SubscribeEvent
     public void onTargetCheck(TargetingEvent.TargetCheck event) {
-        ITurretInst turretInst = event.processor.getTurret();
+        ITurretInst turretInst = event.processor.getTurretInst();
 
         if( turretInst.getTurret() instanceof TurretCryolator && event.target instanceof EntityLivingBase && ((EntityLivingBase) event.target).isPotionActive(MobEffects.SLOWNESS) ) {
             event.setResult(Event.Result.DENY);
         }
 
-        if( event.processor.getTurret().getUpgradeProcessor().hasUpgrade(Upgrades.SMART_TGT) ) {
-            AdvTargetSettings settings = event.processor.getTurret().getUpgradeProcessor().getUpgradeInstance(Upgrades.SMART_TGT.getId());
+        if( event.processor.getTurretInst().getUpgradeProcessor().hasUpgrade(Upgrades.SMART_TGT) ) {
+            AdvTargetSettings settings = event.processor.getTurretInst().getUpgradeProcessor().getUpgradeInstance(Upgrades.SMART_TGT.getId());
             if( settings != null ) {
                 List<Entity> entities = turretInst.getTargetProcessor().getValidTargetList();
                 if( !settings.isTargetValid(event.target, turretInst, entities) ) {
@@ -60,12 +60,12 @@ public class TargetingEventHandler
 
     @SubscribeEvent
     public void onShooting(TargetingEvent.Shooting event) {
-        if( event.processor.getTurret() instanceof TurretShotgun ) {
+        if( event.processor.getTurretInst().getTurret() instanceof TurretShotgun ) {
             boolean hadProjectile = false;
             for( int i = 0; i < 6; i++ ) {
                 Entity projectile = event.processor.getProjectile();
                 if( projectile != null ) {
-                    event.processor.getTurret().get().world.spawnEntity(projectile);
+                    event.processor.getTurretInst().get().world.spawnEntity(projectile);
                     hadProjectile = true;
                 } else {
                     break;
@@ -73,12 +73,12 @@ public class TargetingEventHandler
             }
 
             if( hadProjectile ) {
-                event.processor.playSound(event.processor.getTurret().getShootSound(), 1.8F);
-                event.processor.getTurret().setShooting();
+                event.processor.playSound(event.processor.getTurretInst().getShootSound(), 1.8F);
+                event.processor.getTurretInst().setShooting();
                 event.processor.decrAmmo();
                 event.setResult(Event.Result.ALLOW);
             } else {
-                event.processor.playSound(event.processor.getTurret().getNoAmmoSound(), 1.0F);
+                event.processor.playSound(event.processor.getTurretInst().getNoAmmoSound(), 1.0F);
                 event.setResult(Event.Result.DENY);
             }
 
@@ -88,7 +88,7 @@ public class TargetingEventHandler
 
     @SubscribeEvent
     public void onAmmoConsumption(TargetingEvent.ConsumeAmmo event) {
-        ITurretInst turret = event.processor.getTurret();
+        ITurretInst turret = event.processor.getTurretInst();
         if( turret.getUpgradeProcessor().hasUpgrade(Upgrades.ECONOMY_INF) && event.processor.getAmmoCount() == event.processor.getMaxAmmoCapacity() ) {
             event.setResult(Event.Result.DENY);
         } else {

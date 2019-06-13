@@ -66,7 +66,7 @@ public class ShieldHandler
 
                     if( knockBackEntity(turretInst, target, 1.0F, dX, dY, dZ) ) {
                         if( target instanceof EntityCreature ) {
-                            TmrUtils.INSTANCE.setEntityTarget((EntityCreature) target, processor.getTurret());
+                            TmrUtils.INSTANCE.setEntityTarget((EntityCreature) target, processor.getTurretInst());
                         }
 
                         hasPushed = true;
@@ -94,7 +94,7 @@ public class ShieldHandler
 
                         if( knockBackEntity(turretInst, projectile, 0.5F, dX, dY, dZ) ) {
                             if( opOwner.get() instanceof EntityCreature ) {
-                                TmrUtils.INSTANCE.setEntityTarget((EntityCreature) opOwner.get(), processor.getTurret());
+                                TmrUtils.INSTANCE.setEntityTarget((EntityCreature) opOwner.get(), processor.getTurretInst());
                             }
 
                             hasPushed = true;
@@ -116,7 +116,7 @@ public class ShieldHandler
         if( recognizedEntities.size() > 0 ) {
             if( hasPushed ) {
                 processor.setShot(true);
-                processor.getTurret().updateState();
+                processor.getTurretInst().updateState();
             } else if( !processor.isShooting() ) {
                 processor.decrInitShootTicks();
             }

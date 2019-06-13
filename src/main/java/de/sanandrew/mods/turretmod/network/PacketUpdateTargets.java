@@ -17,9 +17,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
 import java.util.UUID;
 
 public class PacketUpdateTargets
@@ -39,7 +36,7 @@ public class PacketUpdateTargets
         this.playerTargets = processor.getEnabledPlayerTargets();
         this.isBlacklistEntity = processor.isEntityBlacklist();
         this.isBlacklistPlayer = processor.isPlayerBlacklist();
-        this.turretID = processor.getTurret().get().getEntityId();
+        this.turretID = processor.getTurretInst().get().getEntityId();
     }
 
     @Override

@@ -64,6 +64,11 @@ public class GuiCartridge
     }
 
     @Override
+    public GuiDefinition getDefinition() {
+        return this.guiDef;
+    }
+
+    @Override
     public int getScreenPosX() {
         return this.guiLeft;
     }
@@ -71,17 +76,5 @@ public class GuiCartridge
     @Override
     public int getScreenPosY() {
         return this.guiTop;
-    }
-
-    @Override
-    public float getZLevel() {
-        return this.zLevel;
-    }
-
-    @Override
-    public float setZLevel(float newZ) {
-        float origZ = this.zLevel;
-        this.zLevel = newZ;
-        return origZ;
     }
 }

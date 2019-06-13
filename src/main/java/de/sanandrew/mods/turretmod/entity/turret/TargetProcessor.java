@@ -480,7 +480,7 @@ public final class TargetProcessor
     }
 
     @Override
-    public ITurretInst getTurret() {
+    public ITurretInst getTurretInst() {
         return this.turret;
     }
 

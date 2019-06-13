@@ -23,6 +23,8 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.stream.IntStream;
 
 public class AssemblyInventory
         implements ISidedInventory, INBTSerializable<NBTTagCompound>
@@ -154,12 +156,12 @@ public class AssemblyInventory
 
     @Override
     public boolean canInsertItem(int slot, @Nonnull ItemStack stack, EnumFacing side) {
-        return this.isItemValidForSlot(slot, stack) && side != EnumFacing.DOWN && side != EnumFacing.UP;
+        return IntStream.of(SLOTS_INSERT).anyMatch(s -> s == slot) && this.isItemValidForSlot(slot, stack) && side != EnumFacing.DOWN && side != EnumFacing.UP;
     }
 
     @Override
     public boolean canExtractItem(int slot, @Nonnull ItemStack stack, EnumFacing side) {
-        return slot == 0 && side == EnumFacing.DOWN;
+        return IntStream.of(SLOTS_EXTRACT).anyMatch(s -> s == slot) && side == EnumFacing.DOWN;
     }
 
     @Override

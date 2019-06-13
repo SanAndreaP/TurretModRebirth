@@ -66,7 +66,7 @@ public interface ITargetProcessor
 
     boolean isEntityTargeted(Entity entity);
 
-    ITurretInst getTurret();
+    ITurretInst getTurretInst();
 
     boolean hasTarget();
 
