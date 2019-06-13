@@ -28,6 +28,7 @@ public class AssemblyGhostItems
     public final ItemStack upgIconAuto = new ItemStack(ItemRegistry.ASSEMBLY_UPG_AUTO);
     public final ItemStack upgIconSpeed = new ItemStack(ItemRegistry.ASSEMBLY_UPG_SPEED);
     public final ItemStack upgIconFilter = new ItemStack(ItemRegistry.ASSEMBLY_UPG_FILTER);
+    public final ItemStack cartridge = new ItemStack(ItemRegistry.AMMO_CARTRIDGE);
 
     @Override
     public void bakeData(IGui gui, JsonObject data) {
@@ -48,6 +49,7 @@ public class AssemblyGhostItems
         GuiTurretAssembly gta = (GuiTurretAssembly) gui;
         if( !gta.assembly.hasAutoUpgrade() ) this.slotsRendered.add(new SlotData(upgIconAuto, 14, 100));
         if( !gta.assembly.hasSpeedUpgrade() ) this.slotsRendered.add(new SlotData(upgIconSpeed, 14, 118));
+        if( !ItemStackUtils.isValid(gta.assembly.getInventory().getStackInSlot(4)) ) this.slotsRendered.add(new SlotData(cartridge, 181, 10));
         if( !gta.assembly.hasFilterUpgrade() ) {
             this.slotsRendered.add(new SlotData(upgIconFilter, 202, 100));
         } else {

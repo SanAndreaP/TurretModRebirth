@@ -32,7 +32,7 @@ public class AssemblyInventory
     private final NonNullList<ItemStack> assemblyStacks = NonNullList.withSize(23, ItemStackUtils.getEmpty());
 
     private static final int[] SLOTS_INSERT = new int[] {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22};
-    private static final int[] SLOTS_EXTRACT =  new int[] {0};
+    private static final int[] SLOTS_EXTRACT =  new int[] {0, 4};
 
     private final TileEntityTurretAssembly tile;
 
@@ -74,14 +74,14 @@ public class AssemblyInventory
     }
 
     boolean canFillOutput(ItemStack stack) {
-        IItemHandler ihm = getFirstItemContainer();
+        StackContainerSlotData ihm = getFirstItemContainer();
         if( ihm != null ) {
-            for( int i = 0, max = ihm.getSlots(); i < max; i++ ) {
-                stack = ihm.insertItem(i, stack, true);
-                if( !ItemStackUtils.isValid(stack) ) {
-                    return true;
-                }
+            if( fillItemContainer(ihm.handler, stack, true) ) {
+                this.tryPushOutputToItemContainer(ihm.handler);
+                return true;
             }
+
+            this.pushItemContainerToOutput(ihm.slot);
         }
 
         ItemStack invStack = this.assemblyStacks.get(0);
@@ -89,14 +89,13 @@ public class AssemblyInventory
     }
 
     void fillOutput(ItemStack stack) {
-        IItemHandler ihm = getFirstItemContainer();
+        StackContainerSlotData ihm = getFirstItemContainer();
         if( ihm != null ) {
-            for( int i = 0, max = ihm.getSlots(); i < max; i++ ) {
-                stack = ihm.insertItem(i, stack, false);
-                if( !ItemStackUtils.isValid(stack) ) {
-                    return;
-                }
+            if( fillItemContainer(ihm.handler, stack, false) ) {
+                this.tryPushOutputToItemContainer(ihm.handler);
+                return;
             }
+            this.pushItemContainerToOutput(ihm.slot);
         }
 
         if( ItemStackUtils.isValid(this.assemblyStacks.get(0)) ) {
@@ -107,12 +106,40 @@ public class AssemblyInventory
         }
     }
 
-    private IItemHandler getFirstItemContainer() {
-        for( ItemStack stack : this.assemblyStacks ) {
+    private static boolean fillItemContainer(IItemHandler handler, ItemStack stack, boolean simulate) {
+        for( int i = 0, max = handler.getSlots(); i < max; i++ ) {
+            stack = handler.insertItem(i, stack, simulate);
+            if( !ItemStackUtils.isValid(stack) ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void tryPushOutputToItemContainer(IItemHandler handler) {
+        if( fillItemContainer(handler, this.assemblyStacks.get(0), true) ) {
+            fillItemContainer(handler, this.assemblyStacks.get(0), false);
+            this.assemblyStacks.set(0, ItemStack.EMPTY);
+            this.markDirty();
+        }
+    }
+
+    private void pushItemContainerToOutput(int containerSlot) {
+        if( !ItemStackUtils.isValid(this.assemblyStacks.get(4)) ) {
+            this.assemblyStacks.set(4, this.assemblyStacks.get(containerSlot).copy());
+            this.assemblyStacks.set(containerSlot, ItemStack.EMPTY);
+            this.markDirty();
+        }
+    }
+
+    private StackContainerSlotData getFirstItemContainer() {
+        for( int slot : SLOTS_INSERT ) {
+            ItemStack stack = this.assemblyStacks.get(slot);
             if( ItemStackUtils.isValid(stack) ) {
                 IItemHandler itemHandler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
                 if( itemHandler != null ) {
-                    return itemHandler;
+                    return new StackContainerSlotData(itemHandler, slot);
                 }
             }
         }
@@ -293,5 +320,16 @@ public class AssemblyInventory
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
         ItemStackUtils.readItemStacksFromTag(this.assemblyStacks, nbt.getTagList("inventory", Constants.NBT.TAG_COMPOUND));
+    }
+
+    private static final class StackContainerSlotData
+    {
+        IItemHandler handler;
+        int slot;
+
+        StackContainerSlotData(IItemHandler itemHandler, int slot) {
+            this.handler = itemHandler;
+            this.slot = slot;
+        }
     }
 }

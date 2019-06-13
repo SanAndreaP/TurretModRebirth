@@ -31,11 +31,11 @@ public class ContainerTurretAssembly
         this.tile = assembly;
         this.inventory = this.tile.getInventory();
 
-        this.addSlotToContainer(new SlotOutput(0, 172, 10));
+        this.addSlotToContainer(new SlotOutput(0, 163, 10));
+        this.addSlotToContainer(new SlotOutput(4, 181, 10));
         this.addSlotToContainer(new SlotAutoUpgrade());
         this.addSlotToContainer(new SlotSpeedUpgrade());
         this.addSlotToContainer(new SlotFilterUpgrade());
-        this.addSlotToContainer(new SlotOutput(4, 202, 118));
 
         for( int i = 0; i < 2; i++ ) {
             for( int j = 0; j < 9; j++ ) {

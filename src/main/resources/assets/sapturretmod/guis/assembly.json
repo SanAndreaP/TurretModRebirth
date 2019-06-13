@@ -25,11 +25,11 @@
     },
     {
       "type": "sapturretmod:assembly.progress",
-      "pos": [156, 35],
+      "pos": [156, 31],
       "data": {
         "label": {
           "type": "sapturretmod:assembly.progress_text",
-          "pos": [25, -1],
+          "pos": [25, 6],
           "data": {}
         }
       }

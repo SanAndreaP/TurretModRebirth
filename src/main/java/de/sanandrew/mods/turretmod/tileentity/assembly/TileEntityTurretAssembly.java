@@ -307,8 +307,9 @@ public class TileEntityTurretAssembly
     }
 
     private void animateRobotArm(float x, float y) {
-        this.robotMotionX = (0.1F + MiscUtils.RNG.randomFloat() * 0.1F) * (x > this.robotArmX ? 1.0F : -1.0F);
-        this.robotMotionY = (0.1F + MiscUtils.RNG.randomFloat() * 0.1F) * (y > this.robotArmY ? 1.0F : -1.0F);
+        float speedMulti = (this.hasSpeedUpgrade() ? 4.0F : 1.0F);
+        this.robotMotionX = (0.1F + MiscUtils.RNG.randomFloat() * 0.1F) * (x > this.robotArmX ? 1.0F : -1.0F) * speedMulti;
+        this.robotMotionY = (0.1F + MiscUtils.RNG.randomFloat() * 0.1F) * (y > this.robotArmY ? 1.0F : -1.0F) * speedMulti;
         this.robotEndX = x;
         this.robotEndY = y;
     }
