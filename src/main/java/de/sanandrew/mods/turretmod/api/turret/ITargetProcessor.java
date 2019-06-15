@@ -96,6 +96,8 @@ public interface ITargetProcessor
 
     void onTick();
 
+    void onTickClient();
+
     boolean isEntityBlacklist();
 
     boolean isPlayerBlacklist();
