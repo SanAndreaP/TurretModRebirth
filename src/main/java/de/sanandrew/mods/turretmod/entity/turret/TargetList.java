@@ -6,6 +6,7 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.entity.turret;
 
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.sanlib.lib.util.config.Category;
 import de.sanandrew.mods.sanlib.lib.util.config.Pattern;
 import de.sanandrew.mods.sanlib.lib.util.config.Range;
@@ -19,12 +20,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -145,7 +141,7 @@ public final class TargetList
                                            Class c = EntityList.getClass(nm);
 
                                            return c != null && EntityLiving.class.isAssignableFrom(c) && feStr.noneMatch(nmStr::equals) && weStr.noneMatch(nmStr::equals)
-                                                  && !ITurretInst.class.isAssignableFrom(c) && !EntityLiving.class.equals(c);
+                                                  && !ITurretInst.class.isAssignableFrom(c) && !EntityLiving.class.equals(c) && !Entity.class.equals(c);
                                        }).map(ResourceLocation::toString).toArray(String[]::new);
         }
 
@@ -183,27 +179,28 @@ public final class TargetList
     }
 
     public static Map<ResourceLocation, Boolean> getStandardTargetList(ITurret.AttackType type) {
-        List<ResourceLocation> entities;
+        Set<ResourceLocation> entities;
         switch( type ) {
             case ALL:
-                entities = Stream.of(TARGETABLE_GROUND.stream(), TARGETABLE_AIR.stream(), TARGETABLE_WATER.stream()).flatMap(s -> s).collect(Collectors.toList());
+                entities = Stream.of(TARGETABLE_GROUND.stream(), TARGETABLE_AIR.stream(), TARGETABLE_WATER.stream()).flatMap(s -> s).collect(Collectors.toCollection(LinkedHashSet::new));
                 break;
             case GROUND:
-                entities = new ArrayList<>(TARGETABLE_GROUND);
+                entities = new LinkedHashSet<>(TARGETABLE_GROUND);
                 break;
             case AIR:
-                entities = new ArrayList<>(TARGETABLE_AIR);
+                entities = new LinkedHashSet<>(TARGETABLE_AIR);
                 break;
             case WATER:
-                entities = new ArrayList<>(TARGETABLE_WATER);
+                entities = new LinkedHashSet<>(TARGETABLE_WATER);
                 break;
                 default:
-            entities = Collections.emptyList();
+            entities = Collections.emptySet();
         }
 
-        return entities.stream().collect(Collectors.toMap(Function.identity(), e -> {
-            Class<? extends Entity> entityCls = EntityList.getClass(e);
-            return entityCls != null && IMob.class.isAssignableFrom(entityCls);
-        }));
+        return entities.stream().filter(e -> !Entity.class.equals(MiscUtils.defIfNull(EntityList.getClass(e), Entity.class)))
+                                .collect(Collectors.toMap(Function.identity(), e -> {
+                                    Class<? extends Entity> entityCls = EntityList.getClass(e);
+                                    return entityCls != null && IMob.class.isAssignableFrom(entityCls);
+                                }));
     }
 }
