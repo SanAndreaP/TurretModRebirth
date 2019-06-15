@@ -6,6 +6,7 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.registry.turret.shieldgen;
 
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
@@ -19,8 +20,10 @@ import net.minecraft.entity.projectile.EntityFireball;
 import net.minecraft.entity.projectile.EntityLlamaSpit;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.network.play.server.SPacketEntityVelocity;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.WorldServer;
 
 import java.util.ArrayList;
@@ -88,26 +91,30 @@ public class ShieldHandler
                     Optional<Entity> opOwner = PROJ_GET_OWNER.stream().map(func -> func.apply(projectile))
                                                              .filter(owner -> owner != null && processor.isEntityTargeted(owner)).findFirst();
                     if( opOwner.isPresent() ) {
-                        double dX = turretInst.get().posX - projectile.posX;
-                        double dY = turretInst.get().posY - projectile.posY;
-                        double dZ = turretInst.get().posZ - projectile.posZ;
+                        projectile.setDead();
 
-                        if( knockBackEntity(turretInst, projectile, 0.5F, dX, dY, dZ) ) {
-                            if( opOwner.get() instanceof EntityCreature ) {
-                                TmrUtils.INSTANCE.setEntityTarget((EntityCreature) opOwner.get(), processor.getTurretInst());
-                            }
-
-                            hasPushed = true;
-
-                            shield.damage(TurretForcefield.shieldDamagePerProjectile);
-                            turretInst.updateState();
-
-                            if( shield.getValue() <= 0.0F ) {
-                                break;
-                            }
+                        for( int i = 0; i < 20; i++ ) {
+                            double d2 = MiscUtils.RNG.randomGaussian() * 0.02D;
+                            double d0 = MiscUtils.RNG.randomGaussian() * 0.02D;
+                            double d1 = MiscUtils.RNG.randomGaussian() * 0.02D;
+                            turretL.world.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL,
+                                                        projectile.posX + MiscUtils.RNG.randomDouble() * 2.0D - 1.0D,
+                                                        projectile.posY + MiscUtils.RNG.randomDouble(),
+                                                        projectile.posZ + MiscUtils.RNG.randomDouble() * 2.0D - 1.0D, d2, d0, d1);
                         }
 
-                        recognizedEntities.add(projectile);
+                        if( opOwner.get() instanceof EntityCreature ) {
+                            TmrUtils.INSTANCE.setEntityTarget((EntityCreature) opOwner.get(), processor.getTurretInst());
+                        }
+
+                        hasPushed = true;
+
+                        shield.damage(TurretForcefield.shieldDamagePerProjectile);
+                        turretInst.updateState();
+
+                        if( shield.getValue() <= 0.0F ) {
+                            break;
+                        }
                     }
                 }
             }
