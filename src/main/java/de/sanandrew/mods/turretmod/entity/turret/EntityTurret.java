@@ -252,6 +252,8 @@ public class EntityTurret
 
         if( !this.world.isRemote ) {
             this.targetProc.onTick();
+        } else {
+            this.targetProc.onTickClient();
         }
 
         if( this.isActive() ) {

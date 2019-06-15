@@ -428,6 +428,14 @@ public final class TargetProcessor
     }
 
     @Override
+    public void onTickClient() {
+        if( this.entityToAttack != null && !this.entityToAttack.isEntityAlive() ) {
+            this.entityToAttackUUID = null;
+            this.entityToAttack = null;
+        }
+    }
+
+    @Override
     public boolean isEntityBlacklist() {
         return this.isBlacklistEntity;
     }
