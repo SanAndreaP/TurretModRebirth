@@ -230,11 +230,17 @@ public class EntityTurretProjectile
 //                    }
 
                     double vecDistance = posVec.distanceTo(interceptObj.hitVec);
+                    boolean isClosest = vecDistance < minDist || minDist == 0.0D;
 
-                    if( !EntityTurret.class.isAssignableFrom(collidedEntity.getClass()) && (vecDistance < minDist || minDist == 0.0D) ) {
+                    if( (this.shooterCache == null || this.shooterCache.getTargetProcessor().isEntityValidTarget(collidedEntity)) && isClosest ) {
                         entity = collidedEntity;
                         minDist = vecDistance;
                     }
+
+//                    if( !EntityTurret.class.isAssignableFrom(collidedEntity.getClass()) && (vecDistance < minDist || minDist == 0.0D) ) {
+//                        entity = collidedEntity;
+//                        minDist = vecDistance;
+//                    }
                 }
             }
         }
