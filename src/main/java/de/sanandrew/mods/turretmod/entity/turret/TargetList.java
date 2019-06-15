@@ -13,6 +13,7 @@ import de.sanandrew.mods.sanlib.lib.util.config.Value;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.util.TmrConfig;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.IMob;
@@ -200,6 +201,9 @@ public final class TargetList
             entities = Collections.emptyList();
         }
 
-        return entities.stream().collect(Collectors.toMap(Function.identity(), e -> IMob.class.isAssignableFrom(Objects.requireNonNull(EntityList.getClass(e)))));
+        return entities.stream().collect(Collectors.toMap(Function.identity(), e -> {
+            Class<? extends Entity> entityCls = EntityList.getClass(e);
+            return entityCls != null && IMob.class.isAssignableFrom(entityCls);
+        }));
     }
 }
