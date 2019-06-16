@@ -4,14 +4,15 @@
    * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
    *                http://creativecommons.org/licenses/by-nc-sa/4.0/
    *******************************************************************************************************************/
-package de.sanandrew.mods.turretmod.tileentity.electrolytegen;
+package de.sanandrew.mods.turretmod.inventory;
 
+import de.sanandrew.mods.turretmod.inventory.ElectrolyteInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 
-final class ElectrolyteItemStackHandler
+public final class ElectrolyteItemStackHandler
         extends ItemStackHandler
 {
     private final ElectrolyteInventory parentHandler;
@@ -28,12 +29,12 @@ final class ElectrolyteItemStackHandler
     }
 
     @Override
-    protected int getStackLimit(int slot, @Nonnull ItemStack stack) {
+    public int getStackLimit(int slot, @Nonnull ItemStack stack) {
         return this.parentHandler.getStackLimit(slot, stack);
     }
 
     @Override
-    public void onLoad() {
+    protected void onLoad() {
         super.onLoad();
         this.stacks = this.parentHandler.getStacksArray();
     }

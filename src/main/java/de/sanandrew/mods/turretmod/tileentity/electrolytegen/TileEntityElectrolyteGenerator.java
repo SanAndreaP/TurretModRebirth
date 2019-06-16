@@ -12,6 +12,8 @@ import de.sanandrew.mods.sanlib.lib.power.EnergyHelper;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.electrolytegen.IElectrolyteRecipe;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
+import de.sanandrew.mods.turretmod.inventory.ElectrolyteInventory;
+import de.sanandrew.mods.turretmod.inventory.ElectrolyteItemStackHandler;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
 import de.sanandrew.mods.turretmod.network.TileClientSync;

@@ -14,6 +14,7 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
+import de.sanandrew.mods.turretmod.inventory.AssemblyInventory;
 import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
 import de.sanandrew.mods.turretmod.network.TileClientSync;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
@@ -46,7 +47,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TileEntityTurretAssembly
@@ -67,7 +67,7 @@ public class TileEntityTurretAssembly
     public Tuple spawnParticle;
 
     private boolean prevActive;
-    boolean automate;
+    private boolean automate;
     public boolean isActive;
     private boolean isActiveClient;
 
@@ -468,6 +468,10 @@ public class TileEntityTurretAssembly
         if( this.currRecipe == null ) {
             this.automate = b;
             this.doSync = true;
+        } else if( !b ) {
+            this.cancelCrafting();
+            this.automate = false;
+            this.doSync = true;
         }
     }
 
@@ -510,7 +514,7 @@ public class TileEntityTurretAssembly
         this.customName = customName;
     }
 
-    String getCustomName() {
+    public String getCustomName() {
         return this.hasCustomName() ? this.customName : TmrConstants.ID + ".container.assembly";
     }
 

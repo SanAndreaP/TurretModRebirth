@@ -4,10 +4,11 @@
    * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
    *                http://creativecommons.org/licenses/by-nc-sa/4.0/
    *******************************************************************************************************************/
-package de.sanandrew.mods.turretmod.tileentity.electrolytegen;
+package de.sanandrew.mods.turretmod.inventory;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteManager;
+import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -17,18 +18,18 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 
-final class ElectrolyteInventory
+public final class ElectrolyteInventory
         extends ItemStackHandler
         implements IInventory
 {
     private final TileEntityElectrolyteGenerator tile;
 
-    ElectrolyteInventory(TileEntityElectrolyteGenerator tile) {
+    public ElectrolyteInventory(TileEntityElectrolyteGenerator tile) {
         super(14);
         this.tile = tile;
     }
 
-    boolean isOutputFull(@Nonnull ItemStack stack) {
+    public boolean isOutputFull(@Nonnull ItemStack stack) {
         ItemStack myStack = stack.copy();
         for( int i = 9; i < 14 && ItemStackUtils.isValid(myStack); i++ ) {
             myStack = super.insertItem(i, myStack, true);
@@ -48,7 +49,7 @@ final class ElectrolyteInventory
         return stack;
     }
 
-    void addExtraction(@Nonnull ItemStack stack) {
+    public void addExtraction(@Nonnull ItemStack stack) {
         ItemStack myStack = stack.copy();
         for( int i = 9; i < 14 && ItemStackUtils.isValid(myStack); i++ ) {
             myStack = super.insertItem(i, myStack, false);
@@ -56,12 +57,12 @@ final class ElectrolyteInventory
     }
 
     @Override
-    protected int getStackLimit(int slot, @Nonnull ItemStack stack) {
+    public int getStackLimit(int slot, @Nonnull ItemStack stack) {
         return slot < 9 ? 1 : super.getStackLimit(slot, stack);
     }
 
     @Nonnull
-    ItemStack extractInsertItem(int slot, boolean simulate) {
+    public ItemStack extractInsertItem(int slot, boolean simulate) {
         if( slot < 9 ) {
             return super.extractItem(slot, 1, simulate);
         }

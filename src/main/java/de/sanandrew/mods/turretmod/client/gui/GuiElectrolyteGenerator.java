@@ -44,7 +44,6 @@ public class GuiElectrolyteGenerator
     private float currPartTicks;
 
     private GuiDefinition guiDef;
-    private boolean initializedUpdate;
 
     public GuiElectrolyteGenerator(InventoryPlayer invPlayer, TileEntityElectrolyteGenerator tile) {
         super(new ContainerElectrolyteGenerator(invPlayer, tile));
@@ -65,6 +64,8 @@ public class GuiElectrolyteGenerator
         super.initGui();
 
         GuiHelper.initGuiDef(this.guiDef, this);
+
+        this.updateScreen();
     }
 
     @Override
@@ -92,11 +93,6 @@ public class GuiElectrolyteGenerator
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partTicks, int mouseX, int mouseY) {
-        if( !this.initializedUpdate ) {
-            this.guiDef.update(this);
-            this.initializedUpdate = true;
-        }
-
         this.currPartTicks = partTicks;
         GuiHelper.drawGDBackground(this.guiDef, this, partTicks, mouseX, mouseY);
     }

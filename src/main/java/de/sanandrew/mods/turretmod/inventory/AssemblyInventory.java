@@ -4,11 +4,12 @@
    * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
    *                http://creativecommons.org/licenses/by-nc-sa/4.0/
    *******************************************************************************************************************/
-package de.sanandrew.mods.turretmod.tileentity.assembly;
+package de.sanandrew.mods.turretmod.inventory;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.item.ItemAssemblyUpgrade;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -23,7 +24,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
-import java.util.Arrays;
 import java.util.stream.IntStream;
 
 public class AssemblyInventory
@@ -38,7 +38,7 @@ public class AssemblyInventory
 
     private final TileEntityTurretAssembly tile;
 
-    AssemblyInventory(TileEntityTurretAssembly tile) {
+    public AssemblyInventory(TileEntityTurretAssembly tile) {
         this.tile = tile;
     }
 
@@ -55,7 +55,7 @@ public class AssemblyInventory
         return true;
     }
 
-    NonNullList<ItemStack> getFilterStacks() {
+    public NonNullList<ItemStack> getFilterStacks() {
         if( this.hasFilterUpgrade() ) {
             return ItemAssemblyUpgrade.Filter.getFilterStacks(this.assemblyStacks.get(3));
         } else {
@@ -63,19 +63,19 @@ public class AssemblyInventory
         }
     }
 
-    boolean hasAutoUpgrade() {
+    public boolean hasAutoUpgrade() {
         return ItemStackUtils.isItem(this.assemblyStacks.get(1), ItemRegistry.ASSEMBLY_UPG_AUTO);
     }
 
-    boolean hasSpeedUpgrade() {
+    public boolean hasSpeedUpgrade() {
         return ItemStackUtils.isItem(this.assemblyStacks.get(2), ItemRegistry.ASSEMBLY_UPG_SPEED);
     }
 
-    boolean hasFilterUpgrade() {
+    public boolean hasFilterUpgrade() {
         return ItemStackUtils.isItem(this.assemblyStacks.get(3), ItemRegistry.ASSEMBLY_UPG_FILTER);
     }
 
-    boolean canFillOutput(ItemStack stack) {
+    public boolean canFillOutput(ItemStack stack) {
         StackContainerSlotData ihm = getFirstItemContainer();
         if( ihm != null ) {
             if( fillItemContainer(ihm.handler, stack, true) ) {
@@ -90,7 +90,7 @@ public class AssemblyInventory
         return !ItemStackUtils.isValid(invStack) || invStack.getCount() < invStack.getMaxStackSize() && ItemStackUtils.canStack(invStack, stack, true);
     }
 
-    void fillOutput(ItemStack stack) {
+    public void fillOutput(ItemStack stack) {
         StackContainerSlotData ihm = getFirstItemContainer();
         if( ihm != null ) {
             if( fillItemContainer(ihm.handler, stack, false) ) {
@@ -184,7 +184,7 @@ public class AssemblyInventory
     @Nonnull
     public ItemStack decrStackSize(int slot, int size) {
         if( !this.hasAutoUpgrade() ) {
-            this.tile.automate = false;
+            this.tile.setAutomated(false);
         }
 
         if( ItemStackUtils.isValid(this.assemblyStacks.get(slot)) ) {
@@ -235,7 +235,7 @@ public class AssemblyInventory
     @Override
     public void setInventorySlotContents(int slot, @Nonnull ItemStack stack) {
         if( !this.hasAutoUpgrade() ) {
-            this.tile.automate = false;
+            this.tile.setAutomated(false);
         }
 
         this.assemblyStacks.set(slot, stack);

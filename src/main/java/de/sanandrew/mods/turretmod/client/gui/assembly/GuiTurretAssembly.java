@@ -53,7 +53,6 @@ public class GuiTurretAssembly
     private float currPartTicks;
 
     private GuiDefinition guiDef;
-    private boolean initializedUpdate;
 
     public IAssemblyRecipe hoveredRecipe;
     public int[] hoveredRecipeCoords;
@@ -92,6 +91,8 @@ public class GuiTurretAssembly
         if( this.assembly.currRecipe != null ) {
             currGroup = this.assembly.currRecipe.getGroup();
         }
+
+        this.updateScreen();
     }
 
     @Override
@@ -133,11 +134,6 @@ public class GuiTurretAssembly
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partTicks, int mouseX, int mouseY) {
-        if( !this.initializedUpdate ) {
-            this.guiDef.update(this);
-            this.initializedUpdate = true;
-        }
-
         this.currPartTicks = partTicks;
         GuiHelper.drawGDBackground(this.guiDef, this, partTicks, mouseX, mouseY);
     }

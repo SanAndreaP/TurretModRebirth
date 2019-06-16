@@ -10,7 +10,7 @@ import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconGuiHelper;
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconPageRender;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
-import de.sanandrew.mods.turretmod.tileentity.assembly.AssemblyInventory;
+import de.sanandrew.mods.turretmod.inventory.AssemblyInventory;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.gui.FontRenderer;
