@@ -6,6 +6,7 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.util;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
@@ -18,20 +19,29 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.ai.EntityAIMoveTowardsTurret;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncAttackTarget;
+import net.minecraft.block.Block;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.IUnlistedProperty;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 public class TmrUtils
         implements ITmrUtils
@@ -205,5 +215,23 @@ public class TmrUtils
 
     public static float wrap360(float angle) {
         return angle >= 360.0F ? wrap360(angle - 360.0F) : angle < 0 ? wrap360(angle + 360.0F) : angle;
+    }
+
+    public static BlockStateContainer buildCustomBlockStateContainer(Block block,
+                                                                     BiFunction<Block, ImmutableMap<IProperty<?>, Comparable<?>>, BlockStateContainer.StateImplementation> stateImplCtor,
+                                                                     IProperty<?>... properties)
+    {
+        return new BlockStateContainer(block, properties) {
+            @Override
+            protected StateImplementation createState(Block block, ImmutableMap<IProperty<?>, Comparable<?>> properties, @Nullable ImmutableMap<IUnlistedProperty<?>, Optional<?>> unlistedProperties) {
+                return stateImplCtor.apply(block, properties);
+            }
+        };
+    }
+
+    public static void dropBlockItems(IInventory inv, World world, BlockPos pos) {
+        for( int i = 0, max = inv.getSizeInventory(); i < max; i++ ) {
+            dropItem(inv.getStackInSlot(i), world, pos);
+        }
     }
 }

@@ -80,7 +80,7 @@ public class CommonProxy
                         return GuiTcuRegistry.INSTANCE.openContainer(y, player, (ITurretInst) e);
                     }
                     break;
-                case TASSEMBLY_MAN:
+                case TASSEMBLY:
                     te = world.getTileEntity(new BlockPos(x, y, z));
                     if( te instanceof TileEntityTurretAssembly ) {
                         return new ContainerTurretAssembly(player.inventory, (TileEntityTurretAssembly) te);

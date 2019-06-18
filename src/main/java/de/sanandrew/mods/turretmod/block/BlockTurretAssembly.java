@@ -37,11 +37,8 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.IUnlistedProperty;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Optional;
 
 public class BlockTurretAssembly
         extends BlockHorizontal
@@ -105,20 +102,17 @@ public class BlockTurretAssembly
         TileEntityTurretAssembly assembly = (TileEntityTurretAssembly) world.getTileEntity(pos);
 
         if( assembly != null ) {
-            for( int i = 0; i < assembly.getInventory().getSizeInventory(); i++ ) {
-                TmrUtils.dropItem(assembly.getInventory().getStackInSlot(i), world, pos);
-            }
-
-            world.updateComparatorOutputLevel(pos, this);
+            TmrUtils.dropBlockItems(assembly.getInventory(), world, pos);
         }
 
+        world.updateComparatorOutputLevel(pos, this);
         super.breakBlock(world, pos, state);
     }
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if( !world.isRemote ) {
-            TurretModRebirth.proxy.openGui(player, EnumGui.TASSEMBLY_MAN, pos.getX(), pos.getY(), pos.getZ());
+            TurretModRebirth.proxy.openGui(player, EnumGui.TASSEMBLY, pos.getX(), pos.getY(), pos.getZ());
         }
 
         return true;
@@ -139,12 +133,7 @@ public class BlockTurretAssembly
 
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, FACING) {
-            @Override
-            protected StateImplementation createState(Block block, ImmutableMap<IProperty<?>, Comparable<?>> properties, @Nullable ImmutableMap<IUnlistedProperty<?>, Optional<?>> unlistedProperties) {
-                return new MyStateImplementation(block, properties);
-            }
-        };
+        return TmrUtils.buildCustomBlockStateContainer(this, MyStateImplementation::new, FACING);
     }
 
     @Override

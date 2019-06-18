@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.api;
 
 public enum EnumGui
 {
-    TASSEMBLY_MAN,
+    TASSEMBLY,
     TASSEMBLY_FLT,
     ELECTROLYTEGEN,
     TINFO,

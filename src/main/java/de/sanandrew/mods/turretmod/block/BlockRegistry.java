@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.block;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
 import net.minecraft.block.Block;
@@ -26,19 +27,21 @@ public class BlockRegistry
 {
     public static final BlockTurretAssembly TURRET_ASSEMBLY = new BlockTurretAssembly();
     public static final BlockElectrolyteGenerator ELECTROLYTE_GENERATOR = new BlockElectrolyteGenerator();
+    public static final BlockTurretCrate TURRET_CRATE = new BlockTurretCrate();
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
-        event.getRegistry().registerAll(TURRET_ASSEMBLY, ELECTROLYTE_GENERATOR);
+        event.getRegistry().registerAll(TURRET_ASSEMBLY, ELECTROLYTE_GENERATOR, TURRET_CRATE);
 
         GameRegistry.registerTileEntity(TileEntityTurretAssembly.class, new ResourceLocation(TmrConstants.ID, "te_turret_assembly"));
         GameRegistry.registerTileEntity(TileEntityElectrolyteGenerator.class, new ResourceLocation(TmrConstants.ID, "te_potato_generator"));
+        GameRegistry.registerTileEntity(TileEntityTurretCrate.class, new ResourceLocation(TmrConstants.ID, "te_turret_crate"));
     }
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
         Block[] blocks = {
-                TURRET_ASSEMBLY, ELECTROLYTE_GENERATOR
+                TURRET_ASSEMBLY, ELECTROLYTE_GENERATOR, TURRET_CRATE
         };
         for( Block block : blocks ) {
             ResourceLocation regName = block.getRegistryName();

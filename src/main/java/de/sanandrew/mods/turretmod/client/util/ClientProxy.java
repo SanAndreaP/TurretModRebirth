@@ -135,7 +135,7 @@ public class ClientProxy
                         return GuiTcuRegistry.INSTANCE.openGUI(y, player, (ITurretInst) e);
                     }
                     break;
-                case TASSEMBLY_MAN:
+                case TASSEMBLY:
                     te = world.getTileEntity(new BlockPos(x, y, z));
                     if( te instanceof TileEntityTurretAssembly ) {
                         return new GuiTurretAssembly(player.inventory, (TileEntityTurretAssembly) te);

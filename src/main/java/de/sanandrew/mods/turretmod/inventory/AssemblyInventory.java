@@ -187,11 +187,12 @@ public class AssemblyInventory
             this.tile.setAutomated(false);
         }
 
-        if( ItemStackUtils.isValid(this.assemblyStacks.get(slot)) ) {
+        ItemStack stack = this.getStackInSlot(slot);
+        if( ItemStackUtils.isValid(stack) ) {
             ItemStack itemstack;
 
-            if( this.assemblyStacks.get(slot).getCount() <= size ) {
-                itemstack = this.assemblyStacks.get(slot);
+            if( stack.getCount() <= size ) {
+                itemstack = stack;
                 this.assemblyStacks.set(slot, ItemStackUtils.getEmpty());
 
                 if( slot <= 4 ) {
@@ -200,9 +201,9 @@ public class AssemblyInventory
 
                 return itemstack;
             } else {
-                itemstack = this.assemblyStacks.get(slot).splitStack(size);
+                itemstack = stack.splitStack(size);
 
-                if( this.assemblyStacks.get(slot).getCount() == 0 ) {
+                if( stack.getCount() == 0 ) {
                     this.assemblyStacks.set(slot, ItemStackUtils.getEmpty());
                 }
 
@@ -213,7 +214,7 @@ public class AssemblyInventory
                 return itemstack;
             }
         } else {
-            return ItemStackUtils.getEmpty();
+            return ItemStack.EMPTY;
         }
     }
 

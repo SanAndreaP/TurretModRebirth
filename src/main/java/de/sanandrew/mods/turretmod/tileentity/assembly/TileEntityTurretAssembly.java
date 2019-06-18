@@ -342,7 +342,7 @@ public class TileEntityTurretAssembly
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        super.writeToNBT(nbt);
+        nbt = super.writeToNBT(nbt);
 
         this.writeNBT(nbt);
 

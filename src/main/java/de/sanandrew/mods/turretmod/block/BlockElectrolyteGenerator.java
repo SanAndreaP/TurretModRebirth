@@ -36,13 +36,10 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Optional;
 
 public class BlockElectrolyteGenerator
         extends Block
@@ -151,12 +148,7 @@ public class BlockElectrolyteGenerator
 
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, TILE_HOLDER) {
-            @Override
-            protected StateImplementation createState(Block block, ImmutableMap<IProperty<?>, Comparable<?>> properties, @Nullable ImmutableMap<IUnlistedProperty<?>, Optional<?>> unlistedProperties) {
-                return new MyStateImplementation(block, properties);
-            }
-        };
+        return TmrUtils.buildCustomBlockStateContainer(this, MyStateImplementation::new, TILE_HOLDER);
     }
 
     @Override
