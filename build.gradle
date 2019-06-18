@@ -70,7 +70,7 @@ processResources {
     }
 
     from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info', '**/*.psd'
+        exclude 'mcmod.info', '**/*.psd', '**/*.bbmodel'
     }
 
     rename '(.+_at.cfg)', 'META-INF/$1'
