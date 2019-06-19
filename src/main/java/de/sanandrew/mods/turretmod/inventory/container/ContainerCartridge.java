@@ -1,4 +1,4 @@
-package de.sanandrew.mods.turretmod.inventory;
+package de.sanandrew.mods.turretmod.inventory.container;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
@@ -41,7 +41,6 @@ public class ContainerCartridge
     public boolean canInteractWith(EntityPlayer playerIn) {
         return this.cartridge.isUsableByPlayer(playerIn);
     }
-
 
     @Override
     protected boolean mergeItemStack(@Nonnull ItemStack stack, int beginSlot, int endSlot, boolean reverse) {

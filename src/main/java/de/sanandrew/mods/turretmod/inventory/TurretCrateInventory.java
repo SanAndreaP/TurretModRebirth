@@ -1,7 +1,12 @@
 package de.sanandrew.mods.turretmod.inventory;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
+import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
+import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -13,10 +18,13 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 
+import java.util.AbstractCollection;
+import java.util.Optional;
+
 public class TurretCrateInventory
         implements IInventory, INBTSerializable<NBTTagCompound>
 {
-    private static final int SIZE_UPGRADE_STORAGE = 36;
+    public static final int SIZE_UPGRADE_STORAGE = 36;
 
     private final TileEntityTurretCrate tile;
     private final NonNullList<ItemStack> upgrades = NonNullList.withSize(SIZE_UPGRADE_STORAGE, ItemStack.EMPTY);
@@ -29,7 +37,7 @@ public class TurretCrateInventory
 
     @Override
     public int getSizeInventory() {
-        return SIZE_UPGRADE_STORAGE + 1 + ammo.size();
+        return SIZE_UPGRADE_STORAGE + 2;
     }
 
     @Override
@@ -68,6 +76,9 @@ public class TurretCrateInventory
                 if( stack.getCount() == 0 ) {
                     this.removeStackFromSlot(index);
                 }
+                if( index == SIZE_UPGRADE_STORAGE + 1 ) {
+                    this.reduceAmmoList();
+                }
 
                 return itemstack;
             }
@@ -84,17 +95,27 @@ public class TurretCrateInventory
             return stack;
         } else if( index >= 1 && index <= SIZE_UPGRADE_STORAGE ) {
             return this.upgrades.set(index - 1, ItemStack.EMPTY);
-        } else if( index > SIZE_UPGRADE_STORAGE && index - SIZE_UPGRADE_STORAGE <= this.ammo.size() ) {
-            return this.ammo.remove(index - SIZE_UPGRADE_STORAGE - 1);
+        } else if( index == SIZE_UPGRADE_STORAGE + 1 && this.ammo.size() > 0 ) {
+            ItemStack removed = this.ammo.remove(0);
+            this.reduceAmmoList();
+            return removed;
         }
 
         return ItemStack.EMPTY;
+    }
+
+    private void reduceAmmoList() {
+        NonNullList<ItemStack> combinedList = TmrUtils.getCompactItems(this.ammo, this.getInventoryStackLimit());
+        this.ammo.clear();
+        this.ammo.addAll(combinedList);
+        this.ammoCntCache = -1;
     }
 
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
         if( !ItemStackUtils.isValid(stack) ) {
             this.removeStackFromSlot(index);
+            this.ammoCntCache = -1;
         }
     }
 
@@ -141,6 +162,7 @@ public class TurretCrateInventory
         this.turretStack = ItemStack.EMPTY;
         this.upgrades.clear();
         this.ammo.clear();
+        this.ammoCntCache = -1;
     }
 
     @Override
@@ -177,7 +199,34 @@ public class TurretCrateInventory
         NBTTagList ammoTag = nbt.getTagList("InventoryAmmo", Constants.NBT.TAG_COMPOUND);
         if( ammoTag.tagCount() > 0 ) {
             this.ammo.addAll(NonNullList.withSize(ammoTag.tagCount(), ItemStack.EMPTY));
+            this.ammoCntCache = -1;
             ItemStackUtils.readItemStacksFromTag(this.ammo, ammoTag);
         }
+    }
+
+    public void insertTurret(ITurretInst turretInst) {
+        this.turretStack = TurretRegistry.INSTANCE.getItem(turretInst);
+
+        this.ammo.clear();
+        this.ammo.addAll(((TargetProcessor) turretInst.getTargetProcessor()).extractAmmoItems());
+        this.ammoCntCache = -1;
+
+        this.upgrades.clear();
+        NonNullList<ItemStack> tUpgrades = ((UpgradeProcessor) turretInst.getUpgradeProcessor()).extractUpgrades();
+        for( int i = 0, max = this.upgrades.size(); i < max; i++ ) {
+            this.upgrades.set(i, tUpgrades.get(i));
+        }
+
+        turretInst.get().onKillCommand();
+    }
+
+    private int ammoCntCache = -1;
+    public int getAmmoCount() {
+        if( this.ammoCntCache < 0 ) {
+            this.ammoCntCache = 0;
+            this.ammo.forEach(a -> this.ammoCntCache += a.getCount());
+        }
+
+        return this.ammoCntCache;
     }
 }

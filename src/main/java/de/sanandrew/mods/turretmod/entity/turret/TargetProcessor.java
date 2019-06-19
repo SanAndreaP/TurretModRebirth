@@ -189,7 +189,7 @@ public final class TargetProcessor
         }
     }
 
-    private NonNullList<ItemStack> extractAmmoItems() {
+    public NonNullList<ItemStack> extractAmmoItems() {
         NonNullList<ItemStack> items = NonNullList.create();
         int maxStackSize = this.ammoStack.getMaxStackSize();
         IAmmunition type = AmmunitionRegistry.INSTANCE.getType(this.ammoStack);

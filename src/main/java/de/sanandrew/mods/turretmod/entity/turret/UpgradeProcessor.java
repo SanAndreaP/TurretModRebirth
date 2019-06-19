@@ -360,6 +360,13 @@ public final class UpgradeProcessor
         }
     }
 
+    public NonNullList<ItemStack> extractUpgrades() {
+        NonNullList<ItemStack> newList = NonNullList.create();
+        newList.addAll(this.upgradeStacks);
+        this.upgradeStacks.clear();
+        return newList;
+    }
+
     @Override
     public void writeToNbt(NBTTagCompound nbt) {
         nbt.setTag("upgInventory", ItemStackUtils.writeItemStacksToTag(this.upgradeStacks, 1, this::callbackWriteUpgStack));

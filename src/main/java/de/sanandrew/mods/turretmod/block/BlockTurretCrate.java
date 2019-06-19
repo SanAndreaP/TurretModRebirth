@@ -7,10 +7,12 @@
 package de.sanandrew.mods.turretmod.block;
 
 import com.google.common.collect.ImmutableMap;
+import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
 import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
+import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -19,12 +21,14 @@ import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -34,7 +38,7 @@ import javax.annotation.Nonnull;
 public class BlockTurretCrate
         extends Block
 {
-    public BlockTurretCrate() {
+    BlockTurretCrate() {
         super(Material.IRON);
         this.setCreativeTab(TmrCreativeTabs.MISC);
         this.setHardness(4.25F);
@@ -58,6 +62,15 @@ public class BlockTurretCrate
     @Override
     protected BlockStateContainer createBlockState() {
         return TmrUtils.buildCustomBlockStateContainer(this, MyStateImplementation::new);
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+        if( !world.isRemote ) {
+            TurretModRebirth.proxy.openGui(player, EnumGui.TCRATE, pos.getX(), pos.getY(), pos.getZ());
+        }
+
+        return true;
     }
 
     @Override

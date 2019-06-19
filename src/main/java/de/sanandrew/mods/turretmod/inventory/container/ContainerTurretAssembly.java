@@ -6,7 +6,7 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.inventory;
+package de.sanandrew.mods.turretmod.inventory.container;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
@@ -31,8 +31,9 @@ public class ContainerTurretAssembly
         this.tile = assembly;
         this.inventory = this.tile.getInventory();
 
-        this.addSlotToContainer(new SlotOutput(0, 163, 10));
-        this.addSlotToContainer(new SlotOutput(4, 181, 10));
+        IInventory tileInv = assembly.getInventory();
+        this.addSlotToContainer(new SlotOutput(tileInv, 0, 163, 10));
+        this.addSlotToContainer(new SlotOutput(tileInv, 4, 181, 10));
         this.addSlotToContainer(new SlotAutoUpgrade());
         this.addSlotToContainer(new SlotSpeedUpgrade());
         this.addSlotToContainer(new SlotFilterUpgrade());
@@ -115,19 +116,6 @@ public class ContainerTurretAssembly
         }
 
         return origStack;
-    }
-
-    private class SlotOutput
-            extends Slot
-    {
-        SlotOutput(int id, int x, int y) {
-            super(ContainerTurretAssembly.this.inventory, id, x, y);
-        }
-
-        @Override
-        public boolean isItemValid(@Nonnull ItemStack stack) {
-            return false;
-        }
     }
 
     private class SlotIngredients

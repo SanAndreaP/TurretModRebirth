@@ -37,13 +37,6 @@ public final class Lang
 
     public static final TranslateKey TURRET_DESC = new TranslateKey("%s.turret.%%s.desc", TmrConstants.ID);
 
-    public static final TranslateKey TASSEMBLY_BTN_CANCEL      = new TranslateKey("gui.%s.tassembly.cancel", TmrConstants.ID);
-    public static final TranslateKey TASSEMBLY_BTN_AUTOENABLE  = new TranslateKey("gui.%s.tassembly.automate.enable", TmrConstants.ID);
-    public static final TranslateKey TASSEMBLY_BTN_AUTODISABLE = new TranslateKey("gui.%s.tassembly.automate.disable", TmrConstants.ID);
-    public static final TranslateKey TASSEMBLY_CRAFTING        = new TranslateKey("gui.%s.tassembly.crafting", TmrConstants.ID);
-    public static final TranslateKey TASSEMBLY_RF_USING        = new TranslateKey("gui.%s.tassembly.rfUsing", TmrConstants.ID);
-    public static final TranslateKey TASSEMBLY_GROUP_NAME      = new TranslateKey("gui.%s.tassembly.group.%%s", TmrConstants.ID);
-
     public static final TranslateKey ENTITY_NAME   = new TranslateKey("entity.%s.name");
     public static final TranslateKey ENTITY_DESC   = new TranslateKey("entity.%s.desc");
     public static final TranslateKey CONTAINER_INV = new TranslateKey("container.inventory");

@@ -16,8 +16,7 @@ public enum EnumGui
     TINFO,
     TCU,
     CARTRIDGE,
-
-    DEBUG_CAMERA;
+    TCRATE;
 
     public static final EnumGui[] VALUES = values();
 }

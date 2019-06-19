@@ -4,7 +4,7 @@ import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.client.util.GuiHelper;
-import de.sanandrew.mods.turretmod.inventory.ContainerCartridge;
+import de.sanandrew.mods.turretmod.inventory.container.ContainerCartridge;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;

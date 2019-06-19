@@ -13,9 +13,11 @@ import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
 import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
+import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -71,7 +73,7 @@ public class PacketPlayerTurretAction
     }
 
     public static boolean tryDismantle(EntityPlayer player, ITurretInst turretInst) {
-        Tuple chestItm = InventoryUtils.getSimilarStackFromInventory(new ItemStack(Blocks.CHEST), player.inventory, true);
+        Tuple chestItm = InventoryUtils.getSimilarStackFromInventory(new ItemStack(BlockRegistry.TURRET_CRATE), player.inventory, true);
         if( chestItm != null && ItemStackUtils.isValid(chestItm.getValue(1)) ) {
             ItemStack chestStack = chestItm.getValue(1);
             EntityLiving turretL = turretInst.get();
@@ -80,13 +82,12 @@ public class PacketPlayerTurretAction
                 return true;
             } else {
                 BlockPos chestPos = turretL.getPosition();
-                if( turretL.world.setBlockState(chestPos, Blocks.CHEST.getDefaultState(), 3) ) {
+                if( turretL.world.setBlockState(chestPos, BlockRegistry.TURRET_CRATE.getDefaultState(), 3) ) {
                     TileEntity te = turretL.world.getTileEntity(chestPos);
 
-                    if( te instanceof TileEntityChest ) {
-                        TileEntityChest chest = (TileEntityChest) te;
-                        chest.setInventorySlotContents(0, TurretRegistry.INSTANCE.getItem(turretInst));
-                        ((TargetProcessor) turretInst.getTargetProcessor()).putAmmoInInventory(chest);
+                    if( te instanceof TileEntityTurretCrate ) {
+                        TileEntityTurretCrate crate = (TileEntityTurretCrate) te;
+                        crate.insertTurret(turretInst);
 
                         chestStack.shrink(1);
                         if( chestStack.getCount() < 1 ) {
@@ -95,9 +96,7 @@ public class PacketPlayerTurretAction
                             player.inventory.setInventorySlotContents(chestItm.getValue(0), chestStack.copy());
                         }
                         player.inventoryContainer.detectAndSendChanges();
-                        //TODO: make custom container for turrets and put upgrades in it
-                        ((UpgradeProcessor) turretInst.getUpgradeProcessor()).dropUpgrades();
-                        turretL.onKillCommand();
+
                         return true;
                     }
                 }

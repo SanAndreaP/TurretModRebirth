@@ -21,9 +21,9 @@ import de.sanandrew.mods.turretmod.client.audio.SoundLaser;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import de.sanandrew.mods.turretmod.client.event.RenderEventHandler;
 import de.sanandrew.mods.turretmod.client.event.RenderForcefieldHandler;
-import de.sanandrew.mods.turretmod.client.gui.GuiCameras;
 import de.sanandrew.mods.turretmod.client.gui.GuiCartridge;
 import de.sanandrew.mods.turretmod.client.gui.GuiElectrolyteGenerator;
+import de.sanandrew.mods.turretmod.client.gui.GuiTurretCrate;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiAssemblyFilter;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
 import de.sanandrew.mods.turretmod.client.gui.element.*;
@@ -41,6 +41,7 @@ import de.sanandrew.mods.turretmod.item.ItemAmmoCartridge;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretLaser;
+import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.util.CommonProxy;
@@ -152,10 +153,9 @@ public class ClientProxy
                     if( te instanceof TileEntityElectrolyteGenerator ) {
                         return new GuiElectrolyteGenerator(player.inventory, (TileEntityElectrolyteGenerator) te);
                     }
+                    break;
                 case TINFO:
                     return lexiconInstance.getGui();
-                case DEBUG_CAMERA:
-                    return new GuiCameras(world.getEntityByID(x));
                 case CARTRIDGE:
                     ItemStack heldStack = TmrUtils.getHeldItemOfType(player, ItemRegistry.AMMO_CARTRIDGE);
                     if( ItemStackUtils.isValid(heldStack) ) {
@@ -164,6 +164,13 @@ public class ClientProxy
                             return new GuiCartridge(player.inventory, inv, player);
                         }
                     }
+                    break;
+                case TCRATE:
+                    te = world.getTileEntity(new BlockPos(x, y, z));
+                    if( te instanceof TileEntityTurretCrate ) {
+                        return new GuiTurretCrate(player.inventory, (TileEntityTurretCrate) te);
+                    }
+                    break;
             }
         } else {
             TmrConstants.LOG.log(Level.WARN, String.format("Gui ID %d cannot be opened as it isn't a valid index in EnumGui!", id));

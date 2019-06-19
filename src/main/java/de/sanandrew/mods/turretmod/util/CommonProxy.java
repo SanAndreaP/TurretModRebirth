@@ -20,15 +20,17 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.event.CapabilityEventHandler;
 import de.sanandrew.mods.turretmod.event.DamageEventHandler;
 import de.sanandrew.mods.turretmod.event.ExplosionEventHandler;
-import de.sanandrew.mods.turretmod.inventory.ContainerAssemblyFilter;
-import de.sanandrew.mods.turretmod.inventory.ContainerCartridge;
-import de.sanandrew.mods.turretmod.inventory.ContainerElectrolyteGenerator;
-import de.sanandrew.mods.turretmod.inventory.ContainerTurretAssembly;
+import de.sanandrew.mods.turretmod.inventory.container.ContainerAssemblyFilter;
+import de.sanandrew.mods.turretmod.inventory.container.ContainerCartridge;
+import de.sanandrew.mods.turretmod.inventory.container.ContainerElectrolyteGenerator;
+import de.sanandrew.mods.turretmod.inventory.container.ContainerTurretAssembly;
+import de.sanandrew.mods.turretmod.inventory.container.ContainerTurretCrate;
 import de.sanandrew.mods.turretmod.item.ItemAmmoCartridge;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketOpenGui;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
+import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
 import net.minecraft.entity.Entity;
@@ -97,6 +99,7 @@ public class CommonProxy
                     if( te instanceof TileEntityElectrolyteGenerator ) {
                         return new ContainerElectrolyteGenerator(player.inventory, (TileEntityElectrolyteGenerator) te);
                     }
+                    break;
                 case CARTRIDGE:
                     ItemStack heldStack = TmrUtils.getHeldItemOfType(player, ItemRegistry.AMMO_CARTRIDGE);
                     if( ItemStackUtils.isValid(heldStack) ) {
@@ -105,9 +108,16 @@ public class CommonProxy
                             return new ContainerCartridge(player.inventory, inv, player);
                         }
                     }
+                    break;
+                case TCRATE:
+                    te = world.getTileEntity(new BlockPos(x, y, z));
+                    if( te instanceof TileEntityTurretCrate ) {
+                        return new ContainerTurretCrate(player.inventory, (TileEntityTurretCrate) te);
+                    }
+                    break;
             }
         } else {
-            TmrConstants.LOG.log(Level.WARN, "Gui ID %d cannot be opened as it isn't a valid index in EnumGui!", id);
+            TmrConstants.LOG.log(Level.WARN, String.format("Gui ID %d cannot be opened as it isn't a valid index in EnumGui!", id));
         }
 
         return null;
