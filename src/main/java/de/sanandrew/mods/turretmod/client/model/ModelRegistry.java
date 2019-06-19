@@ -45,6 +45,7 @@ public final class ModelRegistry
         setStandardModel(ItemRegistry.ASSEMBLY_UPG_SPEED);
         setStandardModel(BlockRegistry.ELECTROLYTE_GENERATOR);
         setStandardModel(BlockRegistry.TURRET_ASSEMBLY);
+        setStandardModel(BlockRegistry.TURRET_CRATE);
 
         ItemRegistry.TURRET_PLACERS.forEach((rl, item) -> {
             ResourceLocation regName = Objects.requireNonNull(item.getRegistryName());

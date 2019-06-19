@@ -1,0 +1,6 @@
+{
+    "variants": {
+        "normal": { "model": "sapturretmod:turret_crate" },
+        "inventory": { "model": "sapturretmod:turret_crate" }
+    }
+}
