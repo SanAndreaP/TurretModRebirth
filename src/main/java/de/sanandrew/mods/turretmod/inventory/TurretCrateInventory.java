@@ -18,9 +18,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 
-import java.util.AbstractCollection;
-import java.util.Optional;
-
 public class TurretCrateInventory
         implements IInventory, INBTSerializable<NBTTagCompound>
 {
@@ -30,6 +27,7 @@ public class TurretCrateInventory
     private final NonNullList<ItemStack> upgrades = NonNullList.withSize(SIZE_UPGRADE_STORAGE, ItemStack.EMPTY);
     private final NonNullList<ItemStack> ammo = NonNullList.create();
     private ItemStack turretStack = ItemStack.EMPTY;
+    private int ammoCntCache = -1;
 
     public TurretCrateInventory(TileEntityTurretCrate tile) {
         this.tile = tile;
@@ -220,7 +218,6 @@ public class TurretCrateInventory
         turretInst.get().onKillCommand();
     }
 
-    private int ammoCntCache = -1;
     public int getAmmoCount() {
         if( this.ammoCntCache < 0 ) {
             this.ammoCntCache = 0;

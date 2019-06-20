@@ -23,28 +23,30 @@ public class ContainerTurretCrate
 {
     private TileEntityTurretCrate tile;
 
+    private SlotAmmo ammoSlot;
+
     public ContainerTurretCrate(IInventory playerInv, TileEntityTurretCrate crate) {
         this.tile = crate;
 
         IInventory tileInv = this.tile.getInventory();
 
-        this.addSlotToContainer(new SlotOutput(tileInv, 0, 0, 0));
-        this.addSlotToContainer(new SlotAmmo(tileInv, TurretCrateInventory.SIZE_UPGRADE_STORAGE + 1, 36, 0));
+        this.addSlotToContainer(new SlotOutput(tileInv, 0, 8, 18));
+        this.addSlotToContainer(this.ammoSlot = new SlotAmmo(tileInv, TurretCrateInventory.SIZE_UPGRADE_STORAGE + 1, 62, 18));
 
-        for( int i = 1; i <= TurretCrateInventory.SIZE_UPGRADE_STORAGE; i++ ) {
+        for( int i = 0; i < TurretCrateInventory.SIZE_UPGRADE_STORAGE; i++ ) {
             int row = i / 9;
             int col = i % 9;
-            this.addSlotToContainer(new SlotOutput(tileInv, i, col * 18, 18 + row * 18));
+            this.addSlotToContainer(new SlotOutput(tileInv, i + 1, 8 + col * 18, 44 + row * 18));
         }
 
         for( int i = 0; i < 3; i++ ) {
             for( int j = 0; j < 9; j++ ) {
-                this.addSlotToContainer(new Slot(playerInv, j + i * 9 + 9, 8 + j * 18, 110 + i * 18));
+                this.addSlotToContainer(new Slot(playerInv, j + i * 9 + 9, 8 + j * 18, 128 + i * 18));
             }
         }
 
         for( int i = 0; i < 9; i++ ) {
-            this.addSlotToContainer(new Slot(playerInv, i, 8 + i * 18, 124));
+            this.addSlotToContainer(new Slot(playerInv, i, 8 + i * 18, 186));
         }
     }
 
@@ -82,6 +84,10 @@ public class ContainerTurretCrate
         }
 
         return origStack;
+    }
+
+    public SlotAmmo getAmmoSlot() {
+        return this.ammoSlot;
     }
 
     public static final class SlotAmmo
