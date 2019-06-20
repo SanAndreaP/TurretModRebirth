@@ -1,7 +1,7 @@
 {
   "width": 176,
   "height": 222,
-  "texture": "sapturretmod:textures/gui/potatogen.png",
+  "texture": "sapturretmod:textures/gui/electrolyte_generator.png",
   "backgroundElements": [
     {
       "type": "texture",

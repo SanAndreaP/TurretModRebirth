@@ -148,7 +148,7 @@ public class ClientProxy
                         return new GuiAssemblyFilter(player.inventory, stack);
                     }
                     break;
-                case ELECTROLYTEGEN:
+                case ELECTROLYTE_GENERATOR:
                     te = world.getTileEntity(new BlockPos(x, y, z));
                     if( te instanceof TileEntityElectrolyteGenerator ) {
                         return new GuiElectrolyteGenerator(player.inventory, (TileEntityElectrolyteGenerator) te);

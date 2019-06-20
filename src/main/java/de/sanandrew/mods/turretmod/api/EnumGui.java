@@ -12,7 +12,7 @@ public enum EnumGui
 {
     TASSEMBLY,
     TASSEMBLY_FLT,
-    ELECTROLYTEGEN,
+    ELECTROLYTE_GENERATOR,
     TINFO,
     TCU,
     CARTRIDGE,

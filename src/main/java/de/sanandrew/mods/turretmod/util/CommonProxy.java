@@ -94,7 +94,7 @@ public class CommonProxy
                         return new ContainerAssemblyFilter(player.inventory, stack, player.inventory.currentItem);
                     }
                     break;
-                case ELECTROLYTEGEN:
+                case ELECTROLYTE_GENERATOR:
                     te = world.getTileEntity(new BlockPos(x, y, z));
                     if( te instanceof TileEntityElectrolyteGenerator ) {
                         return new ContainerElectrolyteGenerator(player.inventory, (TileEntityElectrolyteGenerator) te);

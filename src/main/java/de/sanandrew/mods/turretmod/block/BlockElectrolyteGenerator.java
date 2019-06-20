@@ -84,10 +84,10 @@ public class BlockElectrolyteGenerator
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
         if( state.getValue(TILE_HOLDER) ) {
-            TileEntityElectrolyteGenerator potatoGen = (TileEntityElectrolyteGenerator) world.getTileEntity(pos);
+            TileEntityElectrolyteGenerator electrolyteGen = (TileEntityElectrolyteGenerator) world.getTileEntity(pos);
 
-            if( potatoGen != null ) {
-                IItemHandler handler = potatoGen.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
+            if( electrolyteGen != null ) {
+                IItemHandler handler = electrolyteGen.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
                 if( handler != null ) {
                     for( int i = 0, max = handler.getSlots(); i < max; i++ ) {
                         TmrUtils.dropItem(handler.getStackInSlot(i), world, pos);
@@ -128,7 +128,7 @@ public class BlockElectrolyteGenerator
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if( !world.isRemote ) {
             if( state.getValue(TILE_HOLDER) ) {
-                TurretModRebirth.proxy.openGui(player, EnumGui.ELECTROLYTEGEN, pos.getX(), pos.getY(), pos.getZ());
+                TurretModRebirth.proxy.openGui(player, EnumGui.ELECTROLYTE_GENERATOR, pos.getX(), pos.getY(), pos.getZ());
             } else {
                 return this.onBlockActivated(world, pos.down(1), world.getBlockState(pos.down(1)), player, hand, side, hitX, hitY, hitZ);
             }
