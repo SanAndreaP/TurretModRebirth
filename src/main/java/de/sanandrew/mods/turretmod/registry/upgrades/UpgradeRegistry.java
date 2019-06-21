@@ -72,6 +72,20 @@ public final class UpgradeRegistry
     }
 
     @Override
+    public boolean isType(@Nonnull ItemStack item, ResourceLocation id) {
+        IUpgrade itmType = this.getType(item);
+
+        return itmType.isValid() && itmType.getId().equals(id);
+    }
+
+    @Override
+    public boolean isType(@Nonnull ItemStack item, IUpgrade type) {
+        IUpgrade itmType = this.getType(item);
+
+        return type.isValid() && itmType.isValid() && itmType.getId().equals(type.getId());
+    }
+
+    @Override
     public Collection<IUpgrade> getTypes() {
         return this.upgrades;
     }

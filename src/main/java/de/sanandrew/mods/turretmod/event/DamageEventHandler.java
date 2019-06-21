@@ -12,6 +12,7 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.registry.upgrades.shield.ShieldPersonal;
+import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -25,16 +26,24 @@ public class DamageEventHandler
     public void onDamage(LivingHurtEvent event) {
         if( event.getEntity() instanceof EntityTurret ) {
             EntityTurret turret = (EntityTurret) event.getEntity();
-            IUpgradeProcessor proc = turret.getUpgradeProcessor();
-            if( proc.hasUpgrade(Upgrades.SHIELD_PERSONAL) ) {
-                ShieldPersonal upgInst = proc.getUpgradeInstance(Upgrades.SHIELD_PERSONAL.getId());
-                float restDmg = upgInst.damage(event.getAmount());
-                if( restDmg <= 0.0F ) {
-                    event.setCanceled(true);
-                } else {
-                    event.setAmount(restDmg);
+            if( !turret.world.isRemote ) {
+                IUpgradeProcessor proc = turret.getUpgradeProcessor();
+                if( proc.hasUpgrade(Upgrades.SHIELD_PERSONAL) ) {
+                    ShieldPersonal upgInst = proc.getUpgradeInstance(Upgrades.SHIELD_PERSONAL.getId());
+                    float restDmg = upgInst.damage(event.getAmount());
+                    if( restDmg <= 0.0F ) {
+                        event.setCanceled(true);
+                    } else {
+                        event.setAmount(restDmg);
+                    }
+                    UpgradeRegistry.INSTANCE.syncWithClients(turret, Upgrades.SHIELD_PERSONAL.getId());
                 }
-                UpgradeRegistry.INSTANCE.syncWithClients(turret, Upgrades.SHIELD_PERSONAL.getId());
+                if( !event.isCanceled() && proc.hasUpgrade(Upgrades.TURRET_SAFE) && turret.getHealth() - event.getAmount() <= 0.001F ) {
+                    TileEntityTurretCrate crate = turret.dismantle();
+                    if( crate != null ) {
+                        crate.getInventory().replaceSafeUpgrade();
+                    }
+                }
             }
         }
     }

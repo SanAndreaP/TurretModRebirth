@@ -5,6 +5,8 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
+import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -114,6 +116,15 @@ public class TurretCrateInventory
         if( !ItemStackUtils.isValid(stack) ) {
             this.removeStackFromSlot(index);
             this.ammoCntCache = -1;
+        }
+    }
+
+    public void replaceSafeUpgrade() {
+        for( int i = 0; i < SIZE_UPGRADE_STORAGE; i++ ) {
+            ItemStack upgStack = this.upgrades.get(i);
+            if( UpgradeRegistry.INSTANCE.isType(upgStack, Upgrades.TURRET_SAFE) ) {
+                this.upgrades.set(i, UpgradeRegistry.INSTANCE.getItem(UpgradeRegistry.INSTANCE.getEmptyUpgrade().getId()));
+            }
         }
     }
 

@@ -11,6 +11,10 @@ import java.util.Collection;
 public interface IUpgradeRegistry
         extends IRegistry<IUpgrade>
 {
+    boolean isType(@Nonnull ItemStack item, ResourceLocation id);
+
+    boolean isType(@Nonnull ItemStack item, IUpgrade type);
+
     void syncWithServer(ITurretInst turret, ResourceLocation upgradeId);
 
     void syncWithClients(ITurretInst turret, ResourceLocation upgradeId);
