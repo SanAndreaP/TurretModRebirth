@@ -214,8 +214,6 @@ public class TurretCrateInventory
         for( int i = 0, max = this.upgrades.size(); i < max; i++ ) {
             this.upgrades.set(i, tUpgrades.get(i));
         }
-
-        turretInst.get().onKillCommand();
     }
 
     public int getAmmoCount() {

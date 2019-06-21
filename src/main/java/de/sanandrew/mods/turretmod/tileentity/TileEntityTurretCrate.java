@@ -93,7 +93,7 @@ public class TileEntityTurretCrate
         return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
     }
 
-    public IInventory getInventory() {
+    public TurretCrateInventory getInventory() {
         return this.invHandler;
     }
 

@@ -78,10 +78,9 @@ public class GuiTurretCrate
             FontRenderer fr = ammoCount > 99 ? this.smallFr : this.fontRenderer;
             String s = String.format("%d", ammoCount);
 
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(0.0D, 0.0D, 100.0D);
+            GlStateManager.disableDepth();
             fr.drawString(s, this.ammoSlot.xPos + 17 - fr.getStringWidth(s), this.ammoSlot.yPos + 9, 0xFFFFFFFF, true);
-            GlStateManager.popMatrix();
+            GlStateManager.enableDepth();
         }
 
         RenderHelper.disableStandardItemLighting();

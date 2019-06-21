@@ -22,11 +22,13 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
+import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketUpdateTurretState;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
+import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
 import de.sanandrew.mods.turretmod.util.ItemRemapper;
 import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Sounds;
@@ -46,6 +48,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -664,5 +667,24 @@ public class EntityTurret
     @Override
     public boolean canBreatheUnderwater() {
         return this.delegate.isBuoy();
+    }
+
+    @Override
+    public TileEntityTurretCrate dismantle() {
+        BlockPos cratePos = this.getPosition();
+        if( this.world.setBlockState(cratePos, BlockRegistry.TURRET_CRATE.getDefaultState(), 3) ) {
+            TileEntity te = this.world.getTileEntity(cratePos);
+
+            if( te instanceof TileEntityTurretCrate ) {
+                TileEntityTurretCrate crate = (TileEntityTurretCrate) te;
+                crate.insertTurret(this);
+
+                this.onKillCommand();
+
+                return crate;
+            }
+        }
+
+        return null;
     }
 }

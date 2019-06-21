@@ -1,8 +1,7 @@
 #### Blocks ####
-# Assembly
 tile.sapturretmod:turret_assembly.name=Turret Assembly Table
-# Generator
 tile.sapturretmod:potato_generator.name=Electrolyte Generator
+tile.sapturretmod:turret_crate.name=Turret Crate
 
 #### Items ####
 item.sapturretmod:turret_info.name=Turret Lexicon
@@ -181,6 +180,7 @@ gui.sapturretmod.electrogen.efficiency=Efficiency:
 gui.sapturretmod.electrogen.powergen=Power generated:
 # Ammo Cartridge
 container.sapturretmod.ammo_cartridge=Ammunition Cartridge
+container.sapturretmod.turret_crate=Turret Crate
 
 #### Subtitles ####
 subtitles.sapturretmod.turretIdle=Turret idles

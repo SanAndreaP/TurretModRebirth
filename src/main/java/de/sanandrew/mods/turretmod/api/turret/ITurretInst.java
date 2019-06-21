@@ -6,6 +6,7 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.api.turret;
 
+import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.SoundEvent;
@@ -54,4 +55,6 @@ public interface ITurretInst
     void updateState();
 
     ITurret.AttackType getAttackType();
+
+    TileEntityTurretCrate dismantle();
 }

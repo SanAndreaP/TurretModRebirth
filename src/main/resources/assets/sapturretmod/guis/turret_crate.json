@@ -1,13 +1,13 @@
 {
   "width": 176,
-  "height": 210,
+  "height": 211,
   "texture": "sapturretmod:textures/gui/turret_crate.png",
   "backgroundElements": [
     {
       "type": "texture",
       "pos": [0, 0],
       "data": {
-        "size": [176, 210],
+        "size": [176, 211],
         "uv": [0, 0]
       }
     },
@@ -21,7 +21,7 @@
     },
     {
       "type": "text",
-      "pos": [8, 116],
+      "pos": [8, 117],
       "data": {
         "color": "0xFF404040",
         "text": "container.inventory"
