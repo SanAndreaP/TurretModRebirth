@@ -64,9 +64,15 @@ public class GuiTurretCrate
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         this.ammoSlot.isRendering = true;
 
-        drawDefaultBackground();
         this.currPartTicks = partialTicks;
         GuiHelper.drawGDBackground(this.guiDef, this, partialTicks, mouseX, mouseY);
+    }
+
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        this.renderHoveredToolTip(mouseX, mouseY);
     }
 
     @Override

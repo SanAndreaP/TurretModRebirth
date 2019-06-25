@@ -15,9 +15,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.ItemTurret;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -25,7 +23,10 @@ import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
 import java.security.InvalidParameterException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class TurretRegistry
         implements ITurretRegistry
@@ -51,8 +52,8 @@ public final class TurretRegistry
     }
 
     @Override
-    public ITurret getType(ResourceLocation location) {
-        return this.turretFromRL.getOrDefault(location, NULL_TYPE);
+    public ITurret getType(ResourceLocation id) {
+        return this.turretFromRL.getOrDefault(id, NULL_TYPE);
     }
 
     @Override
@@ -92,12 +93,7 @@ public final class TurretRegistry
     @Nonnull
     public ItemStack getItem(ITurretInst turretInst) {
         ItemStack stack = this.getItem(turretInst.getTurret().getId());
-        NBTTagCompound nbt = stack.getOrCreateSubCompound("TurretStats");
-        EntityLiving turretL = turretInst.get();
-        nbt.setFloat("TurretHealth", turretL.getHealth());
-        if( turretL.hasCustomName() ) {
-            nbt.setString("TurretName", turretL.getCustomNameTag());
-        }
+        new ItemTurret.TurretStats(turretInst).updateData(stack);
 
         return stack;
     }

@@ -41,8 +41,7 @@ public final class Lang
     public static final TranslateKey ENTITY_DESC   = new TranslateKey("entity.%s.desc");
     public static final TranslateKey CONTAINER_INV = new TranslateKey("container.inventory");
 
-    public static final TranslateKey ITEM_UPGRADE_NAME = new TranslateKey("item.%s:turret_upgrade.%%s.name", TmrConstants.ID);
-    public static final TranslateKey ITEM_UPGRADE_DESC = new TranslateKey("item.%s:turret_upgrade.%%s.desc", TmrConstants.ID);
+    public static final TranslateKey ITEM_TURRET_PLACER = new TranslateKey("item.%s:turret.%%s", TmrConstants.ID);
 
     public static final TranslateKey JEI_ASSEMBLY_TITLE  = new TranslateKey("jei.%s.assembly.title", TmrConstants.ID);
     public static final TranslateKey JEI_ASSEMBLY_ENERGY = new TranslateKey("jei.%s.assembly.energy", TmrConstants.ID);

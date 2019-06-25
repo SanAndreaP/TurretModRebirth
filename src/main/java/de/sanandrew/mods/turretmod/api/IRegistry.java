@@ -23,7 +23,7 @@ public interface IRegistry<T extends IRegistryType>
     T getType(ResourceLocation id);
 
     @Nonnull
-    T getType(ItemStack item);
+    T getType(ItemStack stack);
 
     @Nonnull
     default ItemStack getItem(ResourceLocation id) {

@@ -1,19 +1,22 @@
-**1.12.2-4.0.0-beta.4**
+## 1.12.2-4.0.0-beta.4
 
-`This needs at least SanLib 1.6.0 and Minecraft Forge 14.23.5.2768 or higher!`
+##### `This needs at least SanLib 1.6.0 and Minecraft Forge 14.23.5.2768 or higher!`
 
-_Additions_
+###### _Additions_
+* added the Turret Crate, a special storage unit for dismantling turrets
 * new upgrade: Ender Toxin I and II, damages Enderman without them teleporting, 2nd level also
   allows damaging the ender dragon
 * new upgrade: Shield Colorizer, allows you to customize the color of the forcefield for the
   Forcefield Turret
+* new upgrade: Turret Safe, which saves the turret from complete destruction by
+  dismantling the Turret before a lethal blow
 * added the Ammo Cartridge, a backpack-like storage item replacing the ammo packs, it can hold
-  27 stacks of one type of ammo, the item texture/model will match the content
-* turrets now have custom death messages when killing named entities/players
+  27 stacks of one type of ammo
 * Turret Assembly Table can now insert into item containers, given they expose the IItemHandler
-  capability, like the Ammo Cartridge does
+  capability, like the Ammo Cartridge does; Once full, the item is moved to a dedicated output
+  slot
 
-_Changes_
+###### _Changes_
 * turrets now have 3 targeting categories: anti-air, anti-ground and anti-marine
     - the Minigun Turret is now anti-air, thus can only attack flying entities like Ghasts and
       the Ender Dragon
@@ -21,6 +24,7 @@ _Changes_
     - every other turret will be anti-ground
     - _every entity can be configured to be put into any of those categories_
 * significantly boosted output of ammo recipes
+* turrets now have custom death messages when killing named entities/players
 * more configuration options (turret health, fire rate, etc. now configurable)
 * rebalanced turret values
 * removed ability to place turrets upside-down, instead there will be a custom turret type that
@@ -32,8 +36,11 @@ _Changes_
     - bumped up trash chance from 10% to 20%
     - bumped up treasure chance from 1% to 2%
 * Electrolyte Generator "Effectiveness" has been renamed to "Efficiency"
+* Chests no longer work for dismantling a turret
+* redone the Turret Assembly Table GUI, it now has an item grid instead of a list; Recipe
+  groups are now navigateable via up/down button to save space.
 
-_Bugfixes_
+###### _Bugfixes_
 * Turret Assembly Table now returns the items used in the crafting process when canceling it
 * turret entity now has a name, so informational mods like WAILA/WAWLA/The One Probe can read
   those accurately
@@ -42,8 +49,9 @@ _Bugfixes_
   from being placed on top of them
 * Turret Assembly Table doesn't consume resources when output slot is full, basically deleting
   items
+* Turret items now store the turret's health and custom name upon dismantling it
   
-_Internal Changes_
+###### _Internal Changes_
 * lots of code outsourced to SanLib (Config, Turret Info Tablet, GUIs)
 * TileEntities are now registered with a ResourceLocation
 * upgrades can now define which tier range and/or what turrets specifically are allowed to be
