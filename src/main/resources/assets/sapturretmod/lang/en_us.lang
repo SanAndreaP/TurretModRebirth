@@ -81,6 +81,7 @@ item.sapturretmod:upgrade.shield.strength.2.name=Shield Amplifier II Upgrade
 item.sapturretmod:upgrade.shield.colorizer.name=Shield Colorizer Upgrade
 item.sapturretmod:upgrade.endertoxin.1.name=Ender Toxin I Upgrade
 item.sapturretmod:upgrade.endertoxin.2.name=Ender Toxin II Upgrade
+item.sapturretmod:upgrade.turretsafe.name=Turret Safe Upgrade
 
 #### Entities ####
 # Turrets
