@@ -14,6 +14,7 @@ import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nonnull;
 
@@ -33,8 +34,8 @@ public class ElectrolyteCell
     }
 
     @Override
-    public float getDamageInfo() {
-        return 0.0F;
+    public Range<Float> getDamageInfo() {
+        return Range.is(0.0F);
     }
 
     @Nonnull

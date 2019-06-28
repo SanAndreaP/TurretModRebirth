@@ -15,6 +15,7 @@ import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nonnull;
 
@@ -34,8 +35,8 @@ public class MinigunShell
     }
 
     @Override
-    public float getDamageInfo() {
-        return Projectiles.MG_PEBBLE.getDamage();
+    public Range<Float> getDamageInfo() {
+        return Range.is(Projectiles.MG_PEBBLE.getDamage());
     }
 
     @Nonnull

@@ -16,6 +16,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nonnull;
 
@@ -35,8 +36,8 @@ public class FluxCell
     }
 
     @Override
-    public float getDamageInfo() {
-        return Projectiles.LASER_NORMAL.getDamage();
+    public Range<Float> getDamageInfo() {
+        return Range.is(Projectiles.LASER_NORMAL.getDamage());
     }
 
     @Nonnull

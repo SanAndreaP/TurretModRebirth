@@ -24,9 +24,11 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
+import org.apache.commons.lang3.Range;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class LexiconRenderAmmo
         extends LexiconRenderAssemblyRecipe
@@ -128,8 +130,8 @@ public class LexiconRenderAmmo
         fr.drawString(LangUtils.translate(Lang.LEXICON_DETAILS), 2, this.drawHeight, H2_COLOR);
         this.drawHeight += 9;
 
-        drawStat("rounds", String.format("%d", currAmmo.getAmmoCapacity()), helper, 4, this.drawHeight, 61, 0, mouseX, mouseY + scrollY);
-        drawStat("damage", String.format("%.1f DP", currAmmo.getDamageInfo()), helper, 40, this.drawHeight, 52, 9, mouseX, mouseY + scrollY);
+        drawStat("rounds", String.format("%d", this.currAmmo.getAmmoCapacity()), helper, 4, this.drawHeight, 61, 0, mouseX, mouseY + scrollY);
+        drawStat("damage", String.format("%s DP", getDamageFormatted(this.currAmmo.getDamageInfo())), helper, 40, this.drawHeight, 52, 9, mouseX, mouseY + scrollY);
         this.drawHeight += 15;
 
         fr.drawString(LangUtils.translate(Lang.LEXICON_AMMO_ITEM.get("turret")), 2, this.drawHeight, H2_COLOR);
@@ -157,5 +159,12 @@ public class LexiconRenderAmmo
     @Override
     public int getEntryHeight(ILexiconEntry entry, ILexiconGuiHelper helper) {
         return this.drawHeight;
+    }
+
+    private static String getDamageFormatted(Range<Float> range) {
+        String minF = String.format("%.1f", range.getMinimum());
+        String maxF = String.format("%.1f", range.getMaximum());
+
+        return minF.equals(maxF) ? minF : minF + " - " + maxF;
     }
 }

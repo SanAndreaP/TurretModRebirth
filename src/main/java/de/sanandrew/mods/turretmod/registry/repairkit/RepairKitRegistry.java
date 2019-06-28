@@ -59,11 +59,6 @@ public final class RepairKitRegistry
     }
 
     @Override
-    public void registerAll(IRepairKit... types) {
-        Arrays.stream(types).forEach(this::register);
-    }
-
-    @Override
     public NonNullList<IRepairKit> getTypes() {
         return NonNullList.from(NULL_TYPE, this.repairKitMap.values().toArray(new IRepairKit[0]));
     }

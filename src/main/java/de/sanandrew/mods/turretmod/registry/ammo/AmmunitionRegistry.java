@@ -20,6 +20,7 @@ import de.sanandrew.mods.turretmod.item.ItemAmmo;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.Range;
 import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
@@ -45,7 +46,7 @@ public final class AmmunitionRegistry
     public static final IAmmunition NULL_TYPE = new IAmmunition() {
         @Override public ResourceLocation getId() { return new ResourceLocation("null"); }
         @Nonnull @Override public IAmmunitionGroup getGroup() { return Ammunitions.Groups.UNKNOWN; }
-        @Override public float getDamageInfo() { return 0; }
+        @Override public Range<Float> getDamageInfo() { return Range.is(0.0F); }
         @Override public int getAmmoCapacity() { return 0; }
         @Override public ITurretProjectile getProjectile(ITurretInst turretInst) { return null; }
         @Override public boolean isValid() { return false; }
@@ -75,9 +76,9 @@ public final class AmmunitionRegistry
 
     @Override
     @Nonnull
-    public IAmmunition getType(@Nonnull ItemStack item) {
-        if( ItemStackUtils.isValid(item) && item.getItem() instanceof ItemAmmo ) {
-            return ((ItemAmmo) item.getItem()).ammo;
+    public IAmmunition getType(@Nonnull ItemStack stack) {
+        if( ItemStackUtils.isValid(stack) && stack.getItem() instanceof ItemAmmo ) {
+            return ((ItemAmmo) stack.getItem()).ammo;
         }
 
         return NULL_TYPE;

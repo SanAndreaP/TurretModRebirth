@@ -11,9 +11,12 @@ import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
+import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+
+import javax.annotation.Nonnull;
 
 public final class Ammunitions
 {
@@ -45,7 +48,7 @@ public final class Ammunitions
         MG_SHELL("shell.minigun", Turrets.MINIGUN, Ammunitions.MGSHELL.getId()),
         SG_SHELL("shell.shotgun", Turrets.SHOTGUN, Ammunitions.SGSHELL.getId()),
 
-        UNKNOWN("null", null, null);
+        UNKNOWN("null", TurretRegistry.NULL_TYPE, null);
 
         private final ResourceLocation id;
         private final ResourceLocation typeIcon;
@@ -53,23 +56,26 @@ public final class Ammunitions
 
         private ItemStack icon;
 
-        Groups(String name, ITurret turret, ResourceLocation typeIcon) {
+        Groups(@Nonnull String name, @Nonnull ITurret turret, ResourceLocation typeIcon) {
             this.id = new ResourceLocation(TmrConstants.ID, "ammo." + name);
             this.turret = turret;
             this.typeIcon = typeIcon;
         }
 
         @Override
+        @Nonnull
         public ResourceLocation getId() {
             return this.id;
         }
 
         @Override
+        @Nonnull
         public ITurret getTurret() {
             return this.turret;
         }
 
         @Override
+        @Nonnull
         public ItemStack getIcon() {
             if( this.typeIcon == null ) {
                 return ItemStack.EMPTY;

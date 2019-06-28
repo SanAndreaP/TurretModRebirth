@@ -15,6 +15,7 @@ import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nonnull;
 
@@ -40,8 +41,8 @@ public class Arrow
     }
 
     @Override
-    public float getDamageInfo() {
-        return Projectiles.CB_BOLT.getDamage();
+    public Range<Float> getDamageInfo() {
+        return Range.is(Projectiles.CB_BOLT.getDamage());
     }
 
     @Override

@@ -15,6 +15,7 @@ import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nonnull;
 
@@ -48,8 +49,8 @@ public abstract class CryoCell
         }
 
         @Override
-        public float getDamageInfo() {
-            return Projectiles.CRYO_BALL_I.getDamage();
+        public Range<Float> getDamageInfo() {
+            return Range.is(Projectiles.CRYO_BALL_I.getDamage());
         }
     }
 
@@ -69,8 +70,8 @@ public abstract class CryoCell
         }
 
         @Override
-        public float getDamageInfo() {
-            return Projectiles.CRYO_BALL_II.getDamage();
+        public Range<Float> getDamageInfo() {
+            return Range.is(Projectiles.CRYO_BALL_II.getDamage());
         }
     }
 
@@ -90,8 +91,8 @@ public abstract class CryoCell
         }
 
         @Override
-        public float getDamageInfo() {
-            return Projectiles.CRYO_BALL_III.getDamage();
+        public Range<Float> getDamageInfo() {
+            return Range.is(Projectiles.CRYO_BALL_III.getDamage());
         }
     }
 }
