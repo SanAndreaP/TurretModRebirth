@@ -8,11 +8,11 @@
  */
 package de.sanandrew.mods.turretmod.api.repairkit;
 
-import de.sanandrew.mods.turretmod.api.IRegistryType;
+import de.sanandrew.mods.turretmod.api.IRegistryObject;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 
 public interface IRepairKit
-        extends IRegistryType
+        extends IRegistryObject
 {
     float getHealAmount();
 

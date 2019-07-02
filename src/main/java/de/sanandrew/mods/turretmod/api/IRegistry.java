@@ -8,50 +8,105 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * <p>A common interface used by registry objects in the Turret Mod API.</p>
- * @param <T> the type of objects registered by this registry
+ * <p>A common interface used by registries in the Turret Mod API.</p>
+ * @param <T> the type of objects registered by this registry.
  */
-public interface IRegistry<T extends IRegistryType>
+public interface IRegistry<T extends IRegistryObject>
 {
     /**
-     * <p>Registers a new type to this registry</p>
-     * @param type The new type to be registered, cannot be <tt>null</tt>
+     * <p>Registers a new object to this registry.</p>
+     *
+     * @param type The new object to be registered, cannot be <tt>null</tt>.
      */
     void register(@Nonnull T type);
 
     /**
-     * @return a collection of registered types, usually and preferably immutable, cannot be <tt>null</tt>
+     * <p>Returns an immutable collection of the objects registered in this registry.</p>
+     *
+     * @return an immutable collection of registered objects.
      */
     @Nonnull
-    Collection<T> getTypes();
+    Collection<T> getObjects();
 
     /**
-     * <p>Fetches a type that has the given ID.</p>
-     * <p>If no type is found, this needs to return an "unknown" type (a type that returns <tt>false</tt> in {@link IRegistryType#isValid()}).</p>
-     * @param id The ID of the type needed
-     * @return the type matching the ID given or an "unknown" type, if no type is found, cannot be <tt>null</tt>
+     * <p>Fetches an object that has the given ID.</p>
+     * <p>If no object is found, this returns the {@link #getDefaultObject() default object}.</p>
+     *
+     * @param id The ID of the object requested.
+     * @return the object with the ID given or the default object, if none is found.
      */
     @Nonnull
-    T getType(ResourceLocation id);
+    T getObject(ResourceLocation id);
 
+    /**
+     * <p>Reads the object from the given ItemStack.</p>
+     * <p>If no object can be found either in this registry or in the ItemStack itself, or this registry doesn't support items,
+     *    this returns the {@link #getDefaultObject() default object}.</p>
+     *
+     * @param stack The ItemStack that may contain a registered object.
+     * @return the object contained in the ItemStack or the default object, if none is found.
+     */
     @Nonnull
-    T getType(ItemStack stack);
+    T getObject(ItemStack stack);
 
+    /**
+     * <p>Returns the default object, an unregistered empty object that returns <tt>false</tt> in {@link IRegistryObject#isValid()}.</p>
+     *
+     * @return the default object.
+     */
+    @Nonnull
+    T getDefaultObject();
+
+    /**
+     * <p>Creates a new ItemStack instance with a stack size of 1, containing the object given by its ID.</p>
+     * <p>If no object can be fetched with the ID, this returns {@link ItemStack#EMPTY} or an ItemStack with
+     *    the {@link #getDefaultObject() default object}, depending on the registry.</p>
+     * <p>If this registry doesn't support items, this throws an {@link UnsupportedOperationException}.</p>
+     *
+     * @param id the ID of the object whose ItemStack should be created.
+     * @return a new ItemStack containing the (default) object or ItemStack.EMPTY, if no object can be found.
+     * @throws UnsupportedOperationException if this registry doesn't support items.
+     */
     @Nonnull
     default ItemStack getItem(ResourceLocation id) {
         throw new UnsupportedOperationException("Cannot create item! This registry does not register items.");
     }
 
-    default boolean isEqual(ItemStack s1, ItemStack s2) {
-        return this.isEqual(this.getType(s1), this.getType(s2));
+    /**
+     * <p>Indicates wether the first object is "equal to" the second object and neither are invalid.</p>
+     *
+     * @param obj1 The first object to be compared, cannot be <tt>null</tt>.
+     * @param obj2 The second object to be compared, cannot be <tt>null</tt>.
+     * @return <tt>true</tt>, if both types are valid and the same; <tt>false</tt> otherwise.
+     *
+     * @see Object#equals(Object)
+     */
+    default boolean isEqual(@Nonnull T obj1, @Nonnull T obj2) {
+        return obj1.isValid() && obj2.isValid() && obj1.getId().equals(obj2.getId());
     }
 
-    default boolean isEqual(T t1, T t2) {
-        return t1.isValid() && t2.isValid() && t1.getId().equals(t2.getId());
+    /**
+     * <p>Indicates wether the first ItemStack contains the same object as the second ItemStack.</p>
+     *
+     * @param stack1 The first ItemStack to be compared, cannot be <tt>null</tt>.
+     * @param stack2 The second ItemStack to be compared, cannot be <tt>null</tt>.
+     * @return <tt>true</tt>, if both objects from the ItemStacks are valid and the same; <tt>false</tt> otherwise.
+     *
+     * @see IRegistry#isEqual(IRegistryObject, IRegistryObject)
+     */
+    default boolean isEqual(@Nonnull ItemStack stack1, @Nonnull ItemStack stack2) {
+        return this.isEqual(this.getObject(stack1), this.getObject(stack2));
     }
 
+    /**
+     * <p>A helper method to register multiple objects at once.</p>
+     *
+     * @param registry The registry to be filled.
+     * @param objects The object(s) to be registered.
+     * @param <T> The type of the registry objects.
+     */
     @SafeVarargs
-    static <T extends IRegistryType> void registerAll(IRegistry<T> registry, T... types) {
-        Arrays.stream(types).forEach(registry::register);
+    static <T extends IRegistryObject> void registerAll(IRegistry<T> registry, T... objects) {
+        Arrays.stream(objects).forEach(registry::register);
     }
 }

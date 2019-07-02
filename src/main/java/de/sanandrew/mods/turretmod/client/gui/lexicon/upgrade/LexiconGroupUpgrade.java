@@ -10,7 +10,7 @@ import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconGroup;
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconInst;
 import de.sanandrew.mods.sanlib.api.client.lexicon.LexiconGroup;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
-import de.sanandrew.mods.turretmod.api.IRegistryType;
+import de.sanandrew.mods.turretmod.api.IRegistryObject;
 import de.sanandrew.mods.turretmod.client.util.ResourceOrderer;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
@@ -37,8 +37,8 @@ public final class LexiconGroupUpgrade
         grp.addEntry(new LexiconEntryAssemblyUpgrade("assembly_speed", new ItemStack(ItemRegistry.ASSEMBLY_UPG_SPEED)));
         grp.addEntry(new LexiconEntryAssemblyUpgrade("assembly_filter", new ItemStack(ItemRegistry.ASSEMBLY_UPG_FILTER)).setDivideAfter());
 
-        UpgradeRegistry.INSTANCE.getTypes().stream()
-                .sorted(ResourceOrderer.getOrderComparator(IRegistryType::getId, t -> LangUtils.translate(ItemRegistry.TURRET_UPGRADES.get(t.getId()).getUnlocalizedName() + ".name")))
-                .forEach(u -> grp.addEntry(new LexiconEntryUpgrade(u)));
+        UpgradeRegistry.INSTANCE.getObjects().stream()
+                                .sorted(ResourceOrderer.getOrderComparator(IRegistryObject::getId, t -> LangUtils.translate(ItemRegistry.TURRET_UPGRADES.get(t.getId()).getUnlocalizedName() + ".name")))
+                                .forEach(u -> grp.addEntry(new LexiconEntryUpgrade(u)));
     }
 }

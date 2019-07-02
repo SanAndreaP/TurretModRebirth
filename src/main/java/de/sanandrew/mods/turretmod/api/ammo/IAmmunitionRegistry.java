@@ -8,10 +8,9 @@ import net.minecraft.util.ResourceLocation;
 import javax.annotation.Nonnull;
 import java.util.Collection;
 
-@SuppressWarnings("UnusedReturnValue")
 public interface IAmmunitionRegistry
         extends IRegistry<IAmmunition>
 {
     @Nonnull
-    Collection<IAmmunition> getTypes(ITurret turret);
+    Collection<IAmmunition> getObjects(ITurret turret);
 }

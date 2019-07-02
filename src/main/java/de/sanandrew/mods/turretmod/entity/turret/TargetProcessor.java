@@ -87,8 +87,8 @@ public final class TargetProcessor
         if( stack.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN) ) {
             return ItemAmmoCartridge.extractAmmoStacks(stack, this);
         } else if( this.isAmmoApplicable(stack) ) {
-            IAmmunition type = AmmunitionRegistry.INSTANCE.getType(stack);
-            IAmmunition currType = AmmunitionRegistry.INSTANCE.getType(this.ammoStack);
+            IAmmunition type = AmmunitionRegistry.INSTANCE.getObject(stack);
+            IAmmunition currType = AmmunitionRegistry.INSTANCE.getObject(this.ammoStack);
 
             if( currType.isValid() && !currType.getId().equals(type.getId()) ) {
                 if( excessInv != null ) {
@@ -158,7 +158,7 @@ public final class TargetProcessor
             int decrAmmo = this.ammoCount - this.getMaxAmmoCapacity();
             if( decrAmmo > 0 ) {
                 NonNullList<ItemStack> items = NonNullList.create();
-                IAmmunition type = AmmunitionRegistry.INSTANCE.getType(this.ammoStack);
+                IAmmunition type = AmmunitionRegistry.INSTANCE.getObject(this.ammoStack);
                 int maxStackSize = this.ammoStack.getMaxStackSize();
 
                 while( decrAmmo > 0 && type.isValid() ) {
@@ -192,7 +192,7 @@ public final class TargetProcessor
     public NonNullList<ItemStack> extractAmmoItems() {
         NonNullList<ItemStack> items = NonNullList.create();
         int maxStackSize = this.ammoStack.getMaxStackSize();
-        IAmmunition type = AmmunitionRegistry.INSTANCE.getType(this.ammoStack);
+        IAmmunition type = AmmunitionRegistry.INSTANCE.getObject(this.ammoStack);
 
         while( this.ammoCount > 0 && type.isValid() ) {
             ItemStack stack = this.ammoStack.copy();
@@ -248,12 +248,12 @@ public final class TargetProcessor
     @Override
     public boolean isAmmoApplicable(@Nonnull ItemStack stack) {
         if( ItemStackUtils.isValid(stack) ) {
-            IAmmunition stackType = AmmunitionRegistry.INSTANCE.getType(stack);
+            IAmmunition stackType = AmmunitionRegistry.INSTANCE.getObject(stack);
             if( stackType.isValid() ) {
-                if( AmmunitionRegistry.INSTANCE.getType(this.ammoStack).getId().equals(stackType.getId()) ) {
+                if( AmmunitionRegistry.INSTANCE.getObject(this.ammoStack).getId().equals(stackType.getId()) ) {
                     return this.ammoCount < this.getMaxAmmoCapacity();
                 } else {
-                    Collection<IAmmunition> types = AmmunitionRegistry.INSTANCE.getTypes(this.turret.getTurret());
+                    Collection<IAmmunition> types = AmmunitionRegistry.INSTANCE.getObjects(this.turret.getTurret());
                     return types.contains(stackType);
                 }
             }
@@ -304,7 +304,7 @@ public final class TargetProcessor
     @Override
     public Entity getProjectile() {
         if( this.hasAmmo() ) {
-            ITurretProjectile proj = AmmunitionRegistry.INSTANCE.getType(this.ammoStack).getProjectile(this.turret);
+            ITurretProjectile proj = AmmunitionRegistry.INSTANCE.getObject(this.ammoStack).getProjectile(this.turret);
             if( proj != null ) {
                 if( this.entityToAttack != null ) {
                     return new EntityTurretProjectile(this.turret.get().world, proj, (EntityTurret) this.turret, this.entityToAttack);

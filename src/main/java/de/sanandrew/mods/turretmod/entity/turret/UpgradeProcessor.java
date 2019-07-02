@@ -64,7 +64,7 @@ public final class UpgradeProcessor
             for( int i = 0, max = this.upgradeStacks.size(); i < max; i++ ) {
                 ItemStack invStack = this.upgradeStacks.get(i);
                 if( ItemStackUtils.isValid(invStack) ) {
-                    IUpgrade upg = UpgradeRegistry.INSTANCE.getType(invStack);
+                    IUpgrade upg = UpgradeRegistry.INSTANCE.getObject(invStack);
                     IUpgrade dep = upg.getDependantOn();
                     if( dep != null && !this.hasUpgrade(dep) ) {
                         if( !turretL.world.isRemote ) {
@@ -103,7 +103,7 @@ public final class UpgradeProcessor
                 EntityItem itm = new EntityItem(entity.world, entity.posX, entity.posY, entity.posZ, stack);
                 entity.world.spawnEntity(itm);
             }
-            IUpgrade upg = UpgradeRegistry.INSTANCE.getType(stack);
+            IUpgrade upg = UpgradeRegistry.INSTANCE.getObject(stack);
             upg.onRemove(this.turret);
             this.upgradeStacks.set(slot, ItemStackUtils.getEmpty());
         }
@@ -164,7 +164,7 @@ public final class UpgradeProcessor
             ItemStack itemstack;
 
             if( slotStack.getCount() <= amount ) {
-                IUpgrade upg = UpgradeRegistry.INSTANCE.getType(slotStack);
+                IUpgrade upg = UpgradeRegistry.INSTANCE.getObject(slotStack);
                 upg.onRemove(this.turret);
 
                 itemstack = slotStack;
@@ -203,12 +203,12 @@ public final class UpgradeProcessor
         ItemStack slotStack = this.upgradeStacks.get(slot);
         if( !ItemStackUtils.areEqual(slotStack, stack) ) {
             if( ItemStackUtils.isValid(slotStack) ) {
-                IUpgrade upg = UpgradeRegistry.INSTANCE.getType(slotStack);
+                IUpgrade upg = UpgradeRegistry.INSTANCE.getObject(slotStack);
                 upg.onRemove(this.turret);
             }
 
             if( ItemStackUtils.isValid(stack) ) {
-                IUpgrade upg = UpgradeRegistry.INSTANCE.getType(stack);
+                IUpgrade upg = UpgradeRegistry.INSTANCE.getObject(stack);
                 upg.onApply(this.turret);
             }
         }
@@ -380,12 +380,12 @@ public final class UpgradeProcessor
     }
 
     private void callbackWriteUpgStack(@Nonnull ItemStack upgStack, NBTTagCompound nbt) {
-        IUpgrade upg = UpgradeRegistry.INSTANCE.getType(upgStack);
+        IUpgrade upg = UpgradeRegistry.INSTANCE.getObject(upgStack);
         upg.onSave(this.turret, nbt);
     }
 
     private void callbackReadUpgStack(@Nonnull ItemStack upgStack, NBTTagCompound nbt) {
-        IUpgrade upg = UpgradeRegistry.INSTANCE.getType(upgStack);
+        IUpgrade upg = UpgradeRegistry.INSTANCE.getObject(upgStack);
         upg.onLoad(this.turret, nbt);
     }
 }

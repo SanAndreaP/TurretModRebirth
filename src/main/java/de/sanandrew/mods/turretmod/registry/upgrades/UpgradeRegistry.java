@@ -57,43 +57,49 @@ public final class UpgradeRegistry
         ItemRegistry.TURRET_UPGRADES.put(type.getId(), new ItemUpgrade(type));
     }
 
+    @Nonnull
     @Override
-    public IUpgrade getType(ResourceLocation id) {
+    public IUpgrade getDefaultObject() {
+        return NULL_TYPE;
+    }
+
+    @Override
+    public IUpgrade getObject(ResourceLocation id) {
         return this.upgradeFromRL.getOrDefault(id, NULL_TYPE);
     }
 
     @Override
-    public IUpgrade getType(@Nonnull ItemStack item) {
-        if( !ItemStackUtils.isValid(item) || !(item.getItem() instanceof ItemUpgrade) ) {
+    public IUpgrade getObject(@Nonnull ItemStack stack) {
+        if( !ItemStackUtils.isValid(stack) || !(stack.getItem() instanceof ItemUpgrade) ) {
             return NULL_TYPE;
         }
 
-        return ((ItemUpgrade) item.getItem()).upgrade;
+        return ((ItemUpgrade) stack.getItem()).upgrade;
     }
 
     @Override
     public boolean isType(@Nonnull ItemStack item, ResourceLocation id) {
-        IUpgrade itmType = this.getType(item);
+        IUpgrade itmType = this.getObject(item);
 
         return itmType.isValid() && itmType.getId().equals(id);
     }
 
     @Override
     public boolean isType(@Nonnull ItemStack item, IUpgrade type) {
-        IUpgrade itmType = this.getType(item);
+        IUpgrade itmType = this.getObject(item);
 
         return type.isValid() && itmType.isValid() && itmType.getId().equals(type.getId());
     }
 
     @Override
-    public Collection<IUpgrade> getTypes() {
+    public Collection<IUpgrade> getObjects() {
         return this.upgrades;
     }
 
     @Override
     @Nonnull
     public ItemStack getItem(ResourceLocation id) {
-        if( !this.getType(id).isValid() ) {
+        if( !this.getObject(id).isValid() ) {
             throw new IllegalArgumentException("Cannot get upgrade item with invalid type!");
         }
 

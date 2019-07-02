@@ -1,6 +1,5 @@
 package de.sanandrew.mods.turretmod.client.util;
 
-import de.sanandrew.mods.turretmod.api.IRegistryType;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.item.ItemStack;

@@ -43,7 +43,7 @@ public final class AmmoCartridgeInventory
     @Override
     public boolean isEmpty() {
         this.load();
-        return this.stacks.stream().filter(i -> AmmunitionRegistry.INSTANCE.getType(i).isValid()).noneMatch(ItemStackUtils::isValid);
+        return this.stacks.stream().filter(i -> AmmunitionRegistry.INSTANCE.getObject(i).isValid()).noneMatch(ItemStackUtils::isValid);
     }
 
     @Override
@@ -101,7 +101,7 @@ public final class AmmoCartridgeInventory
     public boolean isItemValidForSlot(int index, ItemStack stack) {
         this.load();
         return ItemStackUtils.isValid(stack) && stack.getItem() instanceof ItemAmmo
-               && (this.isEmpty() || AmmunitionRegistry.INSTANCE.isEqual(this.getAmmoType(), AmmunitionRegistry.INSTANCE.getType(stack)));
+               && (this.isEmpty() || AmmunitionRegistry.INSTANCE.isEqual(this.getAmmoType(), AmmunitionRegistry.INSTANCE.getObject(stack)));
     }
 
     @Override
@@ -158,7 +158,8 @@ public final class AmmoCartridgeInventory
 
     public IAmmunition getAmmoType() {
         this.load();
-        return this.stacks.stream().map(AmmunitionRegistry.INSTANCE::getType).filter(IAmmunition::isValid).reduce((t1, t2) -> t1).orElse(AmmunitionRegistry.NULL_TYPE);
+        return this.stacks.stream().map(AmmunitionRegistry.INSTANCE::getObject).filter(IAmmunition::isValid).reduce((t1, t2) -> t1)
+                          .orElse(AmmunitionRegistry.INSTANCE.getDefaultObject());
     }
 
     private void save() {

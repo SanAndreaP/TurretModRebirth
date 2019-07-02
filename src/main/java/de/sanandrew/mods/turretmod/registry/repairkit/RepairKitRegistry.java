@@ -25,7 +25,6 @@ import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
 import java.security.InvalidParameterException;
-import java.util.Arrays;
 
 public final class RepairKitRegistry
         implements IRepairKitRegistry
@@ -34,6 +33,14 @@ public final class RepairKitRegistry
 
     private final BiMap<ResourceLocation, IRepairKit> repairKitMap;
     private final NonNullList<IRepairKit> repairKitList;
+
+    private static final IRepairKit NULL_TYPE = new IRepairKit()
+    {
+        @Override public ResourceLocation getId() { return new ResourceLocation("null"); }
+        @Override public float getHealAmount() { return 0; }
+        @Override public boolean isApplicable(ITurretInst turret) { return false; }
+        @Override public boolean isValid() { return false; }
+    };
 
     private RepairKitRegistry() {
         this.repairKitMap = HashBiMap.create();
@@ -58,20 +65,26 @@ public final class RepairKitRegistry
         ItemRegistry.TURRET_REPAIRKITS.put(type.getId(), new ItemRepairKit(type));
     }
 
+    @Nonnull
     @Override
-    public NonNullList<IRepairKit> getTypes() {
+    public IRepairKit getDefaultObject() {
+        return NULL_TYPE;
+    }
+
+    @Override
+    public NonNullList<IRepairKit> getObjects() {
         return NonNullList.from(NULL_TYPE, this.repairKitMap.values().toArray(new IRepairKit[0]));
     }
 
     @Override
     @Nonnull
-    public IRepairKit getType(ResourceLocation id) {
+    public IRepairKit getObject(ResourceLocation id) {
         return MiscUtils.defIfNull(this.repairKitMap.get(id), NULL_TYPE);
     }
 
     @Override
     @Nonnull
-    public IRepairKit getType(@Nonnull ItemStack stack) {
+    public IRepairKit getObject(@Nonnull ItemStack stack) {
         if( ItemStackUtils.isValid(stack) && stack.getItem() instanceof ItemRepairKit ) {
             return ((ItemRepairKit) stack.getItem()).kit;
         }
@@ -87,12 +100,4 @@ public final class RepairKitRegistry
 
         return new ItemStack(ItemRegistry.TURRET_REPAIRKITS.get(id), 1);
     }
-
-    private static final IRepairKit NULL_TYPE = new IRepairKit()
-    {
-        @Override public ResourceLocation getId() { return new ResourceLocation("null"); }
-        @Override public float getHealAmount() { return 0; }
-        @Override public boolean isApplicable(ITurretInst turret) { return false; }
-        @Override public boolean isValid() { return false; }
-    };
 }

@@ -6,6 +6,7 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.registry.ammo;
 
+import de.sanandrew.mods.turretmod.api.IRegistry;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
@@ -32,8 +33,9 @@ public final class Ammunitions
     public static final IAmmunition FUELTANK = new FuelTank();
 
     public static void initialize(IAmmunitionRegistry registry) {
-        registry.registerAll(ARROW, SGSHELL, CRYOCELL_MK1, CRYOCELL_MK2, CRYOCELL_MK3, BULLET, MGSHELL, ELECTROLYTECELL,
-                             FLUXCELL, FUELTANK);
+        IRegistry.registerAll(registry,
+                              ARROW, SGSHELL, CRYOCELL_MK1, CRYOCELL_MK2, CRYOCELL_MK3, BULLET, MGSHELL, ELECTROLYTECELL,
+                              FLUXCELL, FUELTANK);
     }
 
     enum Groups
@@ -48,7 +50,7 @@ public final class Ammunitions
         MG_SHELL("shell.minigun", Turrets.MINIGUN, Ammunitions.MGSHELL.getId()),
         SG_SHELL("shell.shotgun", Turrets.SHOTGUN, Ammunitions.SGSHELL.getId()),
 
-        UNKNOWN("null", TurretRegistry.NULL_TYPE, null);
+        UNKNOWN("null", TurretRegistry.INSTANCE.getDefaultObject(), null);
 
         private final ResourceLocation id;
         private final ResourceLocation typeIcon;

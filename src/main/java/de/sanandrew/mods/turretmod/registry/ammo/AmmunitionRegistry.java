@@ -43,7 +43,7 @@ public final class AmmunitionRegistry
     private final Map<ResourceLocation, IAmmunitionGroup> ammoGroups;
     private boolean finalizedForLexicon = false;
 
-    public static final IAmmunition NULL_TYPE = new IAmmunition() {
+    private static final IAmmunition NULL_TYPE = new IAmmunition() {
         @Override public ResourceLocation getId() { return new ResourceLocation("null"); }
         @Nonnull @Override public IAmmunitionGroup getGroup() { return Ammunitions.Groups.UNKNOWN; }
         @Override public Range<Float> getDamageInfo() { return Range.is(0.0F); }
@@ -64,19 +64,19 @@ public final class AmmunitionRegistry
 
     @Override
     @Nonnull
-    public Collection<IAmmunition> getTypes() {
+    public Collection<IAmmunition> getObjects() {
         return this.uAmmoTypes;
     }
 
     @Override
     @Nonnull
-    public IAmmunition getType(ResourceLocation id) {
+    public IAmmunition getObject(ResourceLocation id) {
         return this.ammoTypes.getOrDefault(id, NULL_TYPE);
     }
 
     @Override
     @Nonnull
-    public IAmmunition getType(@Nonnull ItemStack stack) {
+    public IAmmunition getObject(@Nonnull ItemStack stack) {
         if( ItemStackUtils.isValid(stack) && stack.getItem() instanceof ItemAmmo ) {
             return ((ItemAmmo) stack.getItem()).ammo;
         }
@@ -86,7 +86,7 @@ public final class AmmunitionRegistry
 
     @Override
     @Nonnull
-    public Collection<IAmmunition> getTypes(ITurret turret) {
+    public Collection<IAmmunition> getObjects(ITurret turret) {
         return this.ammoTypesFromTurret.get(turret).umList;
     }
 
@@ -108,10 +108,6 @@ public final class AmmunitionRegistry
         }
 
         IAmmunitionGroup group = type.getGroup();
-        if( group.getTurret() == null ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("Ammo ID %s has no turret associated!", type.getId()), new InvalidParameterException());
-            return;
-        }
 
         this.ammoTypes.put(type.getId(), type);
         this.ammoTypesFromTurret.computeIfAbsent(group.getTurret(), (t) -> new UModList<>()).mList.add(type);
@@ -119,10 +115,16 @@ public final class AmmunitionRegistry
         ItemRegistry.TURRET_AMMO.put(type.getId(), new ItemAmmo(type));
     }
 
+    @Nonnull
+    @Override
+    public IAmmunition getDefaultObject() {
+        return NULL_TYPE;
+    }
+
     @Override
     @Nonnull
     public ItemStack getItem(ResourceLocation id) {
-        if( !this.getType(id).isValid() ) {
+        if( !this.getObject(id).isValid() ) {
             throw new IllegalArgumentException("Cannot get turret ammo item with invalid type!");
         }
 

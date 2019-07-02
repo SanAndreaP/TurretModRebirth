@@ -99,7 +99,7 @@ public class EntityTurret
         this.targetProc = new TargetProcessor(this);
         this.upgProc = new UpgradeProcessor(this);
         this.rotationYaw = 0.0F;
-        this.delegate = TurretRegistry.NULL_TYPE;
+        this.delegate = TurretRegistry.INSTANCE.getDefaultObject();
     }
 
     /** called when turret is rendered in a GUI or its placed down by {@link EntityTurret#EntityTurret(World, EntityPlayer, ITurret)} **/
@@ -344,7 +344,7 @@ public class EntityTurret
             if( this.targetProc.addAmmo(stack, player) ) {
                 this.onInteractSucceed(stack, player);
                 return true;
-            } else if( (repKit = RepairKitRegistry.INSTANCE.getType(stack)).isApplicable(this) ) {
+            } else if( (repKit = RepairKitRegistry.INSTANCE.getObject(stack)).isApplicable(this) ) {
                     this.heal(repKit.getHealAmount());
                     repKit.onHeal(this);
                     stack.shrink(1);
@@ -415,7 +415,7 @@ public class EntityTurret
 
     @Override
     public void readSpawnData(ByteBuf buffer) {
-        this.delegate = TurretRegistry.INSTANCE.getType(new ResourceLocation(ByteBufUtils.readUTF8String(buffer)));
+        this.delegate = TurretRegistry.INSTANCE.getObject(new ResourceLocation(ByteBufUtils.readUTF8String(buffer)));
 
         this.targetProc.readFromNbt(ByteBufUtils.readTag(buffer));
         this.upgProc.readFromNbt(ByteBufUtils.readTag(buffer));
@@ -471,7 +471,7 @@ public class EntityTurret
     }
 
     private void loadDelegate(ResourceLocation id) {
-        this.loadDelegate(TurretRegistry.INSTANCE.getType(id));
+        this.loadDelegate(TurretRegistry.INSTANCE.getObject(id));
     }
 
     private void loadDelegate(ITurret turret) {

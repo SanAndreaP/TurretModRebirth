@@ -32,11 +32,11 @@ public final class TurretRegistry
         implements ITurretRegistry
 {
     public static final TurretRegistry INSTANCE = new TurretRegistry();
-    public static final ITurret NULL_TYPE = new EmptyTurret();
+
+    private static final ITurret NULL_TYPE = new EmptyTurret();
 
     private final Map<ResourceLocation, ITurret> turretFromRL;
     private final Map<Class<? extends ITurret>, ITurret> turretFromClass;
-
     private final Collection<ITurret> turrets;
 
     private TurretRegistry() {
@@ -47,12 +47,12 @@ public final class TurretRegistry
     }
 
     @Override
-    public Collection<ITurret> getTypes() {
+    public Collection<ITurret> getObjects() {
         return this.turrets;
     }
 
     @Override
-    public ITurret getType(ResourceLocation id) {
+    public ITurret getObject(ResourceLocation id) {
         return this.turretFromRL.getOrDefault(id, NULL_TYPE);
     }
 
@@ -79,10 +79,16 @@ public final class TurretRegistry
         ItemRegistry.TURRET_PLACERS.put(type.getId(), new ItemTurret(type));
     }
 
+    @Nonnull
+    @Override
+    public ITurret getDefaultObject() {
+        return NULL_TYPE;
+    }
+
     @Override
     @Nonnull
     public ItemStack getItem(ResourceLocation id) {
-        if( !this.getType(id).isValid() ) {
+        if( !this.getObject(id).isValid() ) {
             throw new IllegalArgumentException("Cannot get turret item with invalid type!");
         }
 
@@ -99,7 +105,7 @@ public final class TurretRegistry
     }
 
     @Override
-    public ITurret getType(@Nonnull ItemStack stack) {
+    public ITurret getObject(@Nonnull ItemStack stack) {
         if( ItemStackUtils.isValid(stack) && stack.getItem() instanceof ItemTurret ) {
             return ((ItemTurret) stack.getItem()).turret;
         }

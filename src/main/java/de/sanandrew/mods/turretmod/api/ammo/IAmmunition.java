@@ -8,7 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.api.ammo;
 
-import de.sanandrew.mods.turretmod.api.IRegistryType;
+import de.sanandrew.mods.turretmod.api.IRegistryObject;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import org.apache.commons.lang3.Range;
 
@@ -21,14 +21,14 @@ import javax.annotation.Nullable;
  * {@link IAmmunitionRegistry} through {@link de.sanandrew.mods.turretmod.api.ITmrPlugin#registerAmmo(IAmmunitionRegistry)}</p>
  */
 public interface IAmmunition
-        extends IRegistryType
+        extends IRegistryObject
 {
     /**
-     * <p>Returns the ammunition group. This is used in the Turret Info Tablet to group ammo types together in one page.</p>
-     * <p><i>Example:</i> Each Cryo-Cell type returns the same group instance (with the ID {@code sapturretmod:cryocell})
-     * <p>Cannot be <tt>null</tt></p>
+     * <p>Returns the ammunition group.</p>
+     * <p><i>Example:</i> Each Cryo-Cell type returns the same group instance (with the ID {@code sapturretmod:cryocell}).
+     * <p>Cannot be <tt>null</tt>.</p>
      *
-     * @return A group instance
+     * @return The group representing this ammo item.
      */
     @Nonnull
     IAmmunitionGroup getGroup();
@@ -37,7 +37,7 @@ public interface IAmmunition
      * <p>Returns the damage dealt, represented as a range, by a projectile spawned by this ammo type for the Turret Info Tablet.</p>
      * <p>If the projectile deals the same amount of damage, return {@link Range#is(Comparable) Range#is(damage)}.</p>
      * <p>If the projectile deals a variable amount of damage, return {@link Range#between(Comparable, Comparable) Range#between(minDamage, maxDamage)}.</p>
-     * <p>Cannot be <tt>null</tt>!</p>
+     * <p>Cannot be <tt>null</tt>.</p>
      *
      * @return The amount of damage, as range, a projectile can deal
      */

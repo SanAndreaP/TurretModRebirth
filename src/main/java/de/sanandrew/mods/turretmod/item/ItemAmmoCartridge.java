@@ -53,7 +53,7 @@ public class ItemAmmoCartridge
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
         super.getSubItems(tab, list);
         if( this.isInCreativeTab(tab) ) {
-            AmmunitionRegistry.INSTANCE.getTypes().forEach(t -> {
+            AmmunitionRegistry.INSTANCE.getObjects().forEach(t -> {
                 if( t.isValid() ) {
                     ItemStack typeStack = AmmunitionRegistry.INSTANCE.getItem(t.getId());
                     typeStack.setCount(typeStack.getMaxStackSize());

@@ -6,23 +6,21 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.api.turret;
 
-import de.sanandrew.mods.turretmod.api.IRegistryType;
+import de.sanandrew.mods.turretmod.api.IRegistryObject;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.UUID;
 
 @SuppressWarnings({"SameReturnValue", "unused"})
 public interface ITurret
-        extends IRegistryType
+        extends IRegistryObject
 {
     default void entityInit(ITurretInst turretInst) { }
 

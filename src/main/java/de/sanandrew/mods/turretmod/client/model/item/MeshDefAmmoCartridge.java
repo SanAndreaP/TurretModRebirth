@@ -40,7 +40,7 @@ public class MeshDefAmmoCartridge
     public ModelResourceLocation getModelLocation(ItemStack stack) {
         if( ItemStackUtils.isValid(stack) && stack.getItem() instanceof ItemAmmoCartridge ) {
             AmmoCartridgeInventory inv = ItemAmmoCartridge.getInventory(stack);
-            IAmmunition storedType = inv != null ? inv.getAmmoType() : AmmunitionRegistry.NULL_TYPE;
+            IAmmunition storedType = inv != null ? inv.getAmmoType() : AmmunitionRegistry.INSTANCE.getDefaultObject();
             return this.ammoToModel.get(storedType.isValid() ? storedType.getId() : null);
         }
 

@@ -1,16 +1,15 @@
 package de.sanandrew.mods.turretmod.api.upgrade;
 
-import de.sanandrew.mods.turretmod.api.IRegistryType;
+import de.sanandrew.mods.turretmod.api.IRegistryObject;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nullable;
 
 public interface IUpgrade
-        extends IRegistryType
+        extends IRegistryObject
 {
     default IUpgrade getDependantOn() { return null; }
 
