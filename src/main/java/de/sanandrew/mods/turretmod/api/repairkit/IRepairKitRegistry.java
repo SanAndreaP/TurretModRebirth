@@ -8,6 +8,9 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * A registry specialized to handling objects of the type {@link IRepairKit}
+ */
 public interface IRepairKitRegistry
         extends IRegistry<IRepairKit>
 {

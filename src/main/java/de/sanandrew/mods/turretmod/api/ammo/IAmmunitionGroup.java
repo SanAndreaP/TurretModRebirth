@@ -7,8 +7,10 @@ import net.minecraft.item.ItemStack;
 import javax.annotation.Nonnull;
 
 /**
- * <p>An object defining an ammunition group.</p>
- * <p>This is used as an informational object for the Turret Lexicon and also defines which turret can accept the ammo in this group.</p>
+ * <p>A registry object defining an ammunition group.</p>
+ * <p>This is used to group objects together onto one page for the Turret Lexicon and also defines which turret can accept the ammo in this group.</p>
+ * <p>Note: although this is a registry object, this does not need to be registered explicitly, as this will be automatically with an {@link IAmmunition}
+ *    object, which references this instance via {@link IAmmunition#getGroup()}.</p>
  */
 public interface IAmmunitionGroup
         extends IRegistryObject

@@ -62,21 +62,21 @@ public final class TurretRegistry
     }
 
     @Override
-    public void register(ITurret type) {
-        if( type == null ) {
+    public void register(ITurret obj) {
+        if( obj == null ) {
             TmrConstants.LOG.log(Level.ERROR, "Cannot register NULL as turret!", new InvalidParameterException());
             return;
         }
 
-        if( this.turretFromRL.containsKey(type.getId()) ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("The turret %s is already registered!", type.getId()), new InvalidParameterException());
+        if( this.turretFromRL.containsKey(obj.getId()) ) {
+            TmrConstants.LOG.log(Level.ERROR, String.format("The turret %s is already registered!", obj.getId()), new InvalidParameterException());
             return;
         }
 
-        this.turretFromRL.put(type.getId(), type);
-        this.turretFromClass.put(type.getClass(), type);
+        this.turretFromRL.put(obj.getId(), obj);
+        this.turretFromClass.put(obj.getClass(), obj);
 
-        ItemRegistry.TURRET_PLACERS.put(type.getId(), new ItemTurret(type));
+        ItemRegistry.TURRET_PLACERS.put(obj.getId(), new ItemTurret(obj));
     }
 
     @Nonnull

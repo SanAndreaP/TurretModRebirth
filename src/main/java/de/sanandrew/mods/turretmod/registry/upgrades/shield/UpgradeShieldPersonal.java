@@ -23,7 +23,7 @@ public class UpgradeShieldPersonal
     }
 
     @Override
-    public void onApply(ITurretInst turretInst) {
+    public void initialize(ITurretInst turretInst) {
         turretInst.getUpgradeProcessor().setUpgradeInstance(ID, new ShieldPersonal(20.0F));
     }
 
@@ -42,7 +42,7 @@ public class UpgradeShieldPersonal
     }
 
     @Override
-    public void onRemove(ITurretInst turretInst) {
+    public void terminate(ITurretInst turretInst) {
         turretInst.getUpgradeProcessor().<ShieldPersonal>getUpgradeInstance(ID).value = 0;
         turretInst.getUpgradeProcessor().delUpgradeInstance(ID);
     }

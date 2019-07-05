@@ -32,7 +32,7 @@ public class AmmoStorage
     }
 
     @Override
-    public void onApply(ITurretInst turretInst) {
+    public void initialize(ITurretInst turretInst) {
         if( !turretInst.get().world.isRemote ) {
             IAttributeInstance attrib = turretInst.get().getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY);
             if( attrib.getModifier(MODIFIER.getID()) != null ) {
@@ -44,7 +44,7 @@ public class AmmoStorage
     }
 
     @Override
-    public void onRemove(ITurretInst turretInst) {
+    public void terminate(ITurretInst turretInst) {
         if( !turretInst.get().world.isRemote ) {
             IAttributeInstance attrib = turretInst.get().getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY);
             if( attrib.getModifier(MODIFIER.getID()) != null ) {

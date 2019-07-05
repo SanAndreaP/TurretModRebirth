@@ -8,7 +8,8 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * <p>A common interface used by registries in the Turret Mod API.</p>
+ * <p>A registry, holding and maintaining objects with a common function/purpose.</p>
+ *
  * @param <T> the type of objects registered by this registry.
  */
 public interface IRegistry<T extends IRegistryObject>
@@ -16,14 +17,15 @@ public interface IRegistry<T extends IRegistryObject>
     /**
      * <p>Registers a new object to this registry.</p>
      *
-     * @param type The new object to be registered, cannot be <tt>null</tt>.
+     * @param obj The new object to be registered.
+     * @throws NullPointerException if the object to be registered is <tt>null</tt>
      */
-    void register(@Nonnull T type);
+    void register(@Nonnull T obj);
 
     /**
-     * <p>Returns an immutable collection of the objects registered in this registry.</p>
+     * <p>Returns an unmodifiable view of the objects registered in this registry.</p>
      *
-     * @return an immutable collection of registered objects.
+     * @return an unmodifiable view of registered objects.
      */
     @Nonnull
     Collection<T> getObjects();
@@ -59,12 +61,11 @@ public interface IRegistry<T extends IRegistryObject>
 
     /**
      * <p>Creates a new ItemStack instance with a stack size of 1, containing the object given by its ID.</p>
-     * <p>If no object can be fetched with the ID, this returns {@link ItemStack#EMPTY} or an ItemStack with
-     *    the {@link #getDefaultObject() default object}, depending on the registry.</p>
+     * <p>If no object can be fetched with the ID, this returns {@link ItemStack#EMPTY}.</p>
      * <p>If this registry doesn't support items, this throws an {@link UnsupportedOperationException}.</p>
      *
      * @param id the ID of the object whose ItemStack should be created.
-     * @return a new ItemStack containing the (default) object or ItemStack.EMPTY, if no object can be found.
+     * @return a new ItemStack containing the (default) object or <tt>ItemStack.EMPTY</tt>, if no object can be found.
      * @throws UnsupportedOperationException if this registry doesn't support items.
      */
     @Nonnull
@@ -75,9 +76,10 @@ public interface IRegistry<T extends IRegistryObject>
     /**
      * <p>Indicates wether the first object is "equal to" the second object and neither are invalid.</p>
      *
-     * @param obj1 The first object to be compared, cannot be <tt>null</tt>.
-     * @param obj2 The second object to be compared, cannot be <tt>null</tt>.
-     * @return <tt>true</tt>, if both types are valid and the same; <tt>false</tt> otherwise.
+     * @param obj1 The first object to be compared.
+     * @param obj2 The second object to be compared.
+     * @return <tt>true</tt>, if both types are valid and considered the same; <tt>false</tt> otherwise.
+     * @throws NullPointerException if either the first or second object is <tt>null</tt>
      *
      * @see Object#equals(Object)
      */
@@ -88,9 +90,9 @@ public interface IRegistry<T extends IRegistryObject>
     /**
      * <p>Indicates wether the first ItemStack contains the same object as the second ItemStack.</p>
      *
-     * @param stack1 The first ItemStack to be compared, cannot be <tt>null</tt>.
-     * @param stack2 The second ItemStack to be compared, cannot be <tt>null</tt>.
-     * @return <tt>true</tt>, if both objects from the ItemStacks are valid and the same; <tt>false</tt> otherwise.
+     * @param stack1 The first ItemStack to be compared.
+     * @param stack2 The second ItemStack to be compared.
+     * @return <tt>true</tt>, if both objects from the ItemStacks are valid and considered the same; <tt>false</tt> otherwise.
      *
      * @see IRegistry#isEqual(IRegistryObject, IRegistryObject)
      */
@@ -104,6 +106,7 @@ public interface IRegistry<T extends IRegistryObject>
      * @param registry The registry to be filled.
      * @param objects The object(s) to be registered.
      * @param <T> The type of the registry objects.
+     * @throws NullPointerException if the registry or one of the objects is <tt>null</tt>
      */
     @SafeVarargs
     static <T extends IRegistryObject> void registerAll(IRegistry<T> registry, T... objects) {

@@ -48,21 +48,21 @@ public final class RepairKitRegistry
     }
 
     @Override
-    public void register(IRepairKit type) {
-        if( type == null ) {
+    public void register(IRepairKit obj) {
+        if( obj == null ) {
             TmrConstants.LOG.log(Level.ERROR, "Cannot register NULL as Repair Kit!", new InvalidParameterException());
             return;
         }
 
-        if( this.repairKitMap.containsKey(type.getId()) ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("The UUID of the Repair Kit %s is already registered! Use another UUID. JUST DO IT!", type.getId()), new InvalidParameterException());
+        if( this.repairKitMap.containsKey(obj.getId()) ) {
+            TmrConstants.LOG.log(Level.ERROR, String.format("The UUID of the Repair Kit %s is already registered! Use another UUID. JUST DO IT!", obj.getId()), new InvalidParameterException());
             return;
         }
 
-        this.repairKitMap.put(type.getId(), type);
-        this.repairKitList.add(type);
+        this.repairKitMap.put(obj.getId(), obj);
+        this.repairKitList.add(obj);
 
-        ItemRegistry.TURRET_REPAIRKITS.put(type.getId(), new ItemRepairKit(type));
+        ItemRegistry.TURRET_REPAIRKITS.put(obj.getId(), new ItemRepairKit(obj));
     }
 
     @Nonnull
@@ -79,7 +79,7 @@ public final class RepairKitRegistry
     @Override
     @Nonnull
     public IRepairKit getObject(ResourceLocation id) {
-        return MiscUtils.defIfNull(this.repairKitMap.get(id), NULL_TYPE);
+        return this.repairKitMap.getOrDefault(id, NULL_TYPE);
     }
 
     @Override

@@ -51,10 +51,10 @@ public final class UpgradeRegistry
     }
 
     @Override
-    public void register(IUpgrade type) {
-        this.upgradeFromRL.put(type.getId(), type);
+    public void register(IUpgrade obj) {
+        this.upgradeFromRL.put(obj.getId(), obj);
 
-        ItemRegistry.TURRET_UPGRADES.put(type.getId(), new ItemUpgrade(type));
+        ItemRegistry.TURRET_UPGRADES.put(obj.getId(), new ItemUpgrade(obj));
     }
 
     @Nonnull
@@ -78,17 +78,17 @@ public final class UpgradeRegistry
     }
 
     @Override
-    public boolean isType(@Nonnull ItemStack item, ResourceLocation id) {
-        IUpgrade itmType = this.getObject(item);
+    public boolean isType(@Nonnull ItemStack stack, ResourceLocation id) {
+        IUpgrade itmType = this.getObject(stack);
 
         return itmType.isValid() && itmType.getId().equals(id);
     }
 
     @Override
-    public boolean isType(@Nonnull ItemStack item, IUpgrade type) {
-        IUpgrade itmType = this.getObject(item);
+    public boolean isType(@Nonnull ItemStack stack, IUpgrade obj) {
+        IUpgrade itmType = this.getObject(stack);
 
-        return type.isValid() && itmType.isValid() && itmType.getId().equals(type.getId());
+        return obj.isValid() && itmType.isValid() && itmType.getId().equals(obj.getId());
     }
 
     @Override
@@ -107,15 +107,15 @@ public final class UpgradeRegistry
     }
 
     @Override
-    public void syncWithServer(ITurretInst turret, ResourceLocation upgradeId) {
-        PacketRegistry.sendToServer(new PacketSyncUpgradeInst(turret, upgradeId));
+    public void syncWithServer(ITurretInst turretInst, ResourceLocation id) {
+        PacketRegistry.sendToServer(new PacketSyncUpgradeInst(turretInst, id));
     }
 
     @Override
-    public void syncWithClients(ITurretInst turret, ResourceLocation upgradeId) {
-        EntityLiving turretL = turret.get();
+    public void syncWithClients(ITurretInst turretInst, ResourceLocation id) {
+        EntityLiving turretL = turretInst.get();
         if( !turretL.world.isRemote ) {
-            PacketRegistry.sendToAllAround(new PacketSyncUpgradeInst(turret, upgradeId), turretL.world.provider.getDimension(), turretL.posX, turretL.posY, turretL.posZ, 64.0D);
+            PacketRegistry.sendToAllAround(new PacketSyncUpgradeInst(turretInst, id), turretL.world.provider.getDimension(), turretL.posX, turretL.posY, turretL.posZ, 64.0D);
         }
     }
 

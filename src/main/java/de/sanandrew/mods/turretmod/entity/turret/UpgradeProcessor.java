@@ -71,7 +71,7 @@ public final class UpgradeProcessor
                             EntityItem itm = new EntityItem(turretL.world, turretL.posX, turretL.posY, turretL.posZ, invStack);
                             turretL.world.spawnEntity(itm);
                         }
-                        upg.onRemove(this.turret);
+                        upg.terminate(this.turret);
                         this.upgradeStacks.set(i, ItemStackUtils.getEmpty());
                     }
                 }
@@ -104,7 +104,7 @@ public final class UpgradeProcessor
                 entity.world.spawnEntity(itm);
             }
             IUpgrade upg = UpgradeRegistry.INSTANCE.getObject(stack);
-            upg.onRemove(this.turret);
+            upg.terminate(this.turret);
             this.upgradeStacks.set(slot, ItemStackUtils.getEmpty());
         }
     }
@@ -165,7 +165,7 @@ public final class UpgradeProcessor
 
             if( slotStack.getCount() <= amount ) {
                 IUpgrade upg = UpgradeRegistry.INSTANCE.getObject(slotStack);
-                upg.onRemove(this.turret);
+                upg.terminate(this.turret);
 
                 itemstack = slotStack;
                 this.upgradeStacks.set(slot, ItemStackUtils.getEmpty());
@@ -204,12 +204,12 @@ public final class UpgradeProcessor
         if( !ItemStackUtils.areEqual(slotStack, stack) ) {
             if( ItemStackUtils.isValid(slotStack) ) {
                 IUpgrade upg = UpgradeRegistry.INSTANCE.getObject(slotStack);
-                upg.onRemove(this.turret);
+                upg.terminate(this.turret);
             }
 
             if( ItemStackUtils.isValid(stack) ) {
                 IUpgrade upg = UpgradeRegistry.INSTANCE.getObject(stack);
-                upg.onApply(this.turret);
+                upg.initialize(this.turret);
             }
         }
 
@@ -386,6 +386,7 @@ public final class UpgradeProcessor
 
     private void callbackReadUpgStack(@Nonnull ItemStack upgStack, NBTTagCompound nbt) {
         IUpgrade upg = UpgradeRegistry.INSTANCE.getObject(upgStack);
+        upg.initialize(this.turret);
         upg.onLoad(this.turret, nbt);
     }
 }

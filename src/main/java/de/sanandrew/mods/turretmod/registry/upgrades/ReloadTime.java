@@ -36,7 +36,7 @@ public abstract class ReloadTime
     }
 
     @Override
-    public void onApply(ITurretInst turretInst) {
+    public void initialize(ITurretInst turretInst) {
         if( !turretInst.get().world.isRemote ) {
             IAttributeInstance attrib = turretInst.get().getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS);
             if( attrib.getModifier(this.modifier.getID()) != null ) {
@@ -48,7 +48,7 @@ public abstract class ReloadTime
     }
 
     @Override
-    public void onRemove(ITurretInst turretInst) {
+    public void terminate(ITurretInst turretInst) {
         if( !turretInst.get().world.isRemote ) {
             IAttributeInstance attrib = turretInst.get().getEntityAttribute(TurretAttributes.MAX_RELOAD_TICKS);
             if( attrib.getModifier(this.modifier.getID()) != null ) {

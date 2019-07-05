@@ -31,7 +31,7 @@ public class UpgradeShieldColorizer
     }
 
     @Override
-    public void onApply(ITurretInst turretInst) {
+    public void initialize(ITurretInst turretInst) {
         turretInst.getUpgradeProcessor().setUpgradeInstance(ID, new ShieldColorizer());
         recalcColor(turretInst);
     }
@@ -51,7 +51,7 @@ public class UpgradeShieldColorizer
     }
 
     @Override
-    public void onRemove(ITurretInst turretInst) {
+    public void terminate(ITurretInst turretInst) {
         turretInst.getUpgradeProcessor().delUpgradeInstance(ID);
         recalcColor(turretInst);
     }
