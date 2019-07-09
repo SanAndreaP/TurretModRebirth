@@ -11,7 +11,7 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
-import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import net.minecraft.util.ResourceLocation;
@@ -46,7 +46,7 @@ public class MinigunShell
     }
 
     @Override
-    public ITurretProjectile getProjectile(ITurretInst turretInst) {
+    public IProjectile getProjectile(ITurretInst turretInst) {
         return Projectiles.MG_PEBBLE;
     }
 }

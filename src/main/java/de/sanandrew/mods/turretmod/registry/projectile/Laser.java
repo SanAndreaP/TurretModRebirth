@@ -11,28 +11,28 @@ package de.sanandrew.mods.turretmod.registry.projectile;
 import de.sanandrew.mods.sanlib.lib.util.config.Category;
 import de.sanandrew.mods.sanlib.lib.util.config.Range;
 import de.sanandrew.mods.sanlib.lib.util.config.Value;
-import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
-import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectileInst;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectileInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretProjectile;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import org.apache.commons.lang3.mutable.MutableFloat;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 @Category("laser")
 @SuppressWarnings("WeakerAccess")
 public class Laser
-        implements ITurretProjectile
+        implements IProjectile
 {
-    static final UUID ID1 = UUID.fromString("88C89B58-0DE9-4E72-BEAD-AD52DEABBD46");
-    static final UUID ID2 = UUID.fromString("7B872ACE-B844-40BB-A10A-CABDF10AB86E");
+    static final ResourceLocation ID1 = new ResourceLocation(TmrConstants.ID, "laser.normal");
+    static final ResourceLocation ID2 = new ResourceLocation(TmrConstants.ID, "laser.pure");
 
     @Value(comment = "Base damage this projectile can deal to a target.", range = @Range(minD = 0.0D, maxD = 1024.0D))
     public static float damage = 2.0F;
@@ -50,16 +50,16 @@ public class Laser
     public static int fireTime = 2;
 
     private final boolean isBlue;
-    private final UUID id;
+    private final ResourceLocation id;
 
-    Laser(UUID id) {
+    Laser(ResourceLocation id) {
         this.id = id;
-        this.isBlue = id == ID2;
+        this.isBlue = id.equals(ID2);
     }
 
     @Nonnull
     @Override
-    public UUID getId() {
+    public ResourceLocation getId() {
         return this.id;
     }
 
@@ -99,12 +99,12 @@ public class Laser
     }
 
     @Override
-    public DamageSource getCustomDamageSrc(@Nullable ITurretInst turret, @Nonnull ITurretProjectileInst projectile, Entity target, TargetType type) {
+    public DamageSource getCustomDamageSrc(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile, Entity target, TargetType type) {
         return EntityTurretProjectile.getDamageSource(turret, projectile, type).setFireDamage();
     }
 
     @Override
-    public boolean onDamageEntityPre(@Nullable ITurretInst turret, @Nonnull ITurretProjectileInst projectile, Entity target, DamageSource damageSrc, MutableFloat damage) {
+    public boolean onDamageEntityPre(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile, Entity target, DamageSource damageSrc, MutableFloat damage) {
         boolean flammable = !target.isImmuneToFire();
 
         if( !this.isBlue ) {
@@ -117,7 +117,7 @@ public class Laser
     }
 
     @Override
-    public void onDamageEntityPost(@Nullable ITurretInst turret, @Nonnull ITurretProjectileInst projectile, Entity target, DamageSource damageSrc) {
+    public void onDamageEntityPost(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile, Entity target, DamageSource damageSrc) {
         if( fireTime > 0 ) {
             target.setFire(fireTime);
         }

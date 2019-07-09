@@ -12,14 +12,16 @@ import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.sanlib.lib.util.config.Category;
 import de.sanandrew.mods.sanlib.lib.util.config.Range;
 import de.sanandrew.mods.sanlib.lib.util.config.Value;
-import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
-import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectileInst;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectileInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretProjectile;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -27,15 +29,14 @@ import org.apache.commons.lang3.mutable.MutableFloat;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 @Category("flame")
 @SuppressWarnings("WeakerAccess")
 public class Flame
-        implements ITurretProjectile
+        implements IProjectile
 {
-    static final UUID ID1 = UUID.fromString("3C7C8732-7B9C-488D-9F30-C7A0723F1C54");
-    static final UUID ID2 = UUID.fromString("E105B888-11D4-4491-A83E-885438DCD62A");
+    static final ResourceLocation ID1 = new ResourceLocation(TmrConstants.ID, "flame.normal");
+    static final ResourceLocation ID2 = new ResourceLocation(TmrConstants.ID, "flame.pure");
 
     @Value(comment = "Base damage this projectile can deal to a target.", range = @Range(minD = 0.0D, maxD = 1024.0D))
     public static float damage = 0.55F;
@@ -57,21 +58,21 @@ public class Flame
     public static float purifyingFireBlocksChance = 1.0F;
 
     private final boolean purifying;
-    private final UUID id;
+    private final ResourceLocation id;
 
-    Flame(UUID id) {
+    Flame(ResourceLocation id) {
         this.id = id;
-        this.purifying = id == ID2;
+        this.purifying = id.equals(ID2);
     }
 
     @Nonnull
     @Override
-    public UUID getId() {
+    public ResourceLocation getId() {
         return this.id;
     }
 
     @Override
-    public void onCreate(@Nullable ITurretInst turret, @Nonnull ITurretProjectileInst projectile) {
+    public void onCreate(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile) {
         if( turret != null ) {
             Entity projEntity = projectile.get();
 
@@ -122,12 +123,12 @@ public class Flame
     }
 
     @Override
-    public DamageSource getCustomDamageSrc(@Nullable ITurretInst turret, @Nonnull ITurretProjectileInst projectile, Entity target, TargetType type) {
+    public DamageSource getCustomDamageSrc(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile, Entity target, TargetType type) {
         return EntityTurretProjectile.getDamageSource(turret, projectile, type).setFireDamage();
     }
 
     @Override
-    public boolean onHit(@Nullable ITurretInst turret, @Nonnull ITurretProjectileInst projectile, RayTraceResult hitObj) {
+    public boolean onHit(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile, RayTraceResult hitObj) {
         if( hitObj.typeOfHit != RayTraceResult.Type.ENTITY ) {
             Entity projEntity = projectile.get();
             if( this.purifying && purifyingFireBlocks && hitObj.typeOfHit == RayTraceResult.Type.BLOCK && !projEntity.world.isRemote && MiscUtils.RNG.randomFloat() * 100.0 < purifyingFireBlocksChance ) {
@@ -146,7 +147,7 @@ public class Flame
     }
 
     @Override
-    public boolean onDamageEntityPre(@Nullable ITurretInst turret, @Nonnull ITurretProjectileInst projectile, Entity target, DamageSource damageSrc, MutableFloat damage) {
+    public boolean onDamageEntityPre(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile, Entity target, DamageSource damageSrc, MutableFloat damage) {
         if( projectile.getLastDamagedEntity() == target ) {
             return false;
         }

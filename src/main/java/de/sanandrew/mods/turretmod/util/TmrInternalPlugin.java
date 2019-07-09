@@ -38,6 +38,7 @@ import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -105,7 +106,7 @@ public class TmrInternalPlugin
     }
 
     @Override
-    public <T extends Entity> void registerProjectileRenderer(IRenderRegistry<UUID, T, IRender<T>, Render<T>> registry) {
+    public <T extends Entity> void registerProjectileRenderer(IRenderRegistry<ResourceLocation, T, IRender<T>, Render<T>> registry) {
         RenderProjectile.initialize(registry);
     }
 

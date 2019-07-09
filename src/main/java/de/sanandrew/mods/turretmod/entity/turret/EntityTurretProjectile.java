@@ -12,8 +12,8 @@ import com.google.common.base.Strings;
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
-import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectileInst;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectileInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.projectile.ProjectileRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
@@ -23,7 +23,6 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.MultiPartEntityPart;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.boss.EntityDragon;
@@ -34,13 +33,18 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import org.apache.commons.lang3.mutable.MutableFloat;
 
@@ -49,12 +53,11 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-@SuppressWarnings({"SuspiciousNameCombination", "BooleanMethodNameMustStartWithQuestion"})
 public class EntityTurretProjectile
         extends Entity
-        implements IProjectile, IEntityAdditionalSpawnData, ITurretProjectileInst
+        implements net.minecraft.entity.IProjectile, IEntityAdditionalSpawnData, IProjectileInst
 {
-    public ITurretProjectile delegate;
+    public IProjectile delegate;
     private UUID shooterUUID;
     private EntityTurret shooterCache;
     private Entity lastDamaged;
@@ -63,6 +66,7 @@ public class EntityTurretProjectile
     private double maxDist;
     private float lastDamage;
 
+    @SuppressWarnings("WeakerAccess")
     public EntityTurretProjectile(World world) {
         super(world);
         this.setSize(0.5F, 0.5F);
@@ -71,15 +75,15 @@ public class EntityTurretProjectile
         this.lastDamage = -1.0F;
     }
 
-    public EntityTurretProjectile(World world, ITurretProjectile delegate, EntityTurret shooter, Entity target) {
+    EntityTurretProjectile(World world, IProjectile delegate, EntityTurret shooter, Entity target) {
         this(world, delegate, shooter, target, null);
     }
 
-    public EntityTurretProjectile(World world, ITurretProjectile delegate, EntityTurret shooter, Vec3d shootingVec) {
+    EntityTurretProjectile(World world, IProjectile delegate, EntityTurret shooter, Vec3d shootingVec) {
         this(world, delegate, shooter, null, shootingVec);
     }
 
-    private EntityTurretProjectile(World world, ITurretProjectile delegate, EntityTurret shooter, Entity target, Vec3d shootingVec) {
+    private EntityTurretProjectile(World world, IProjectile delegate, EntityTurret shooter, Entity target, Vec3d shootingVec) {
         this(world);
 
         this.delegate = delegate;
@@ -180,8 +184,13 @@ public class EntityTurretProjectile
                 this.world.spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.posX - this.motionX * disPos, this.posY - this.motionY * disPos, this.posZ - this.motionZ * disPos, this.motionX, this.motionY, this.motionZ);
             }
 
-            //TODO: make speed dependend on viscosity
-            speed = this.delegate.getSpeedMultiplierLiquid();
+            BlockPos currPos = this.getPosition();
+            Fluid fluid = FluidRegistry.lookupFluidForBlock(this.world.getBlockState(currPos).getBlock());
+            float viscosity = 1.0F;
+            if( fluid != null ) {
+                viscosity = fluid.getViscosity(this.world, currPos) / 1000.0F;
+            }
+            speed = this.delegate.getSpeedMultiplierLiquid(viscosity);
         }
 
         if( this.isWet() ) {
@@ -261,7 +270,7 @@ public class EntityTurretProjectile
             if( hitObj.entityHit != null ) {
                 MutableFloat dmg = new MutableFloat(this.delegate.getDamage());
 
-                ITurretProjectile.TargetType tgtType = this.getTargetType(hitObj.entityHit);
+                IProjectile.TargetType tgtType = this.getTargetType(hitObj.entityHit);
                 DamageSource damagesource = this.getProjDamageSource(hitObj.entityHit, tgtType);
 
                 if( this.isBurning() && !(hitObj.entityHit instanceof EntityEnderman) ) {
@@ -327,7 +336,7 @@ public class EntityTurretProjectile
         }
     }
 
-    public static DamageSource getDamageSource(ITurretInst turret, @Nonnull ITurretProjectileInst projectile, ITurretProjectile.TargetType type) {
+    public static DamageSource getDamageSource(ITurretInst turret, @Nonnull IProjectileInst projectile, IProjectile.TargetType type) {
         switch( type ) {
             case SPECIAL_ENDERMAN:
                 return new DamageSourceProjectile(projectile.get(), turret).setIsThornsDamage();
@@ -338,20 +347,20 @@ public class EntityTurretProjectile
         }
     }
 
-    private DamageSource getProjDamageSource(Entity hitEntity, ITurretProjectile.TargetType type) {
+    private DamageSource getProjDamageSource(Entity hitEntity, IProjectile.TargetType type) {
         return MiscUtils.defIfNull(this.delegate.getCustomDamageSrc(this.shooterCache, this, hitEntity, type),
                                    () -> getDamageSource(this.shooterCache, this, type));
     }
 
-    private ITurretProjectile.TargetType getTargetType(Entity entity) {
+    private IProjectile.TargetType getTargetType(Entity entity) {
         if( entity instanceof EntityEnderman && this.shooterCache.getUpgradeProcessor().hasUpgrade(Upgrades.ENDER_TOXIN_I) ) {
-            return ITurretProjectile.TargetType.SPECIAL_ENDERMAN;
+            return IProjectile.TargetType.SPECIAL_ENDERMAN;
         } else if( (entity instanceof EntityDragon || (entity instanceof MultiPartEntityPart && ((MultiPartEntityPart) entity).parent instanceof EntityDragon))
                            && this.shooterCache.getUpgradeProcessor().hasUpgrade(Upgrades.ENDER_TOXIN_II) )
         {
-            return ITurretProjectile.TargetType.SPECIAL_ENDER_DRAGON;
+            return IProjectile.TargetType.SPECIAL_ENDER_DRAGON;
         } else {
-            return ITurretProjectile.TargetType.REGULAR;
+            return IProjectile.TargetType.REGULAR;
         }
     }
 
@@ -376,8 +385,8 @@ public class EntityTurretProjectile
 
     @Override
     protected void readEntityFromNBT(NBTTagCompound nbt) {
-        this.delegate = ProjectileRegistry.INSTANCE.getProjectile(UUID.fromString(nbt.getString("DelegateId")));
-        if( this.delegate == null ) {
+        this.delegate = ProjectileRegistry.INSTANCE.getObject(new ResourceLocation(nbt.getString("DelegateId")));
+        if( !this.delegate.isValid() ) {
             this.setDead();
         }
         if( nbt.hasKey("shooter") ) {
@@ -416,8 +425,7 @@ public class EntityTurretProjectile
 
     @Override
     public void writeSpawnData(ByteBuf buffer) {
-        buffer.writeLong(this.delegate.getId().getMostSignificantBits());
-        buffer.writeLong(this.delegate.getId().getLeastSignificantBits());
+        ByteBufUtils.writeUTF8String(buffer, this.delegate.getId().toString());
         buffer.writeFloat(this.rotationYaw);
         buffer.writeFloat(this.rotationPitch);
         buffer.writeBoolean(this.shooterCache != null);
@@ -428,7 +436,7 @@ public class EntityTurretProjectile
 
     @Override
     public void readSpawnData(ByteBuf buffer) {
-        this.delegate = ProjectileRegistry.INSTANCE.getProjectile(new UUID(buffer.readLong(), buffer.readLong()));
+        this.delegate = ProjectileRegistry.INSTANCE.getObject(new ResourceLocation(ByteBufUtils.readUTF8String(buffer)));
         this.rotationYaw = buffer.readFloat();
         this.rotationPitch = buffer.readFloat();
 

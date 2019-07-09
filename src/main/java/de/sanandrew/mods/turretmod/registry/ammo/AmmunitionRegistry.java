@@ -13,7 +13,7 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
-import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.item.ItemAmmo;
@@ -48,7 +48,7 @@ public final class AmmunitionRegistry
         @Nonnull @Override public IAmmunitionGroup getGroup() { return Ammunitions.Groups.UNKNOWN; }
         @Nonnull @Override public Range<Float> getDamageInfo() { return Range.is(0.0F); }
         @Override public int getAmmoCapacity() { return 0; }
-        @Override public ITurretProjectile getProjectile(ITurretInst turretInst) { return null; }
+        @Override public IProjectile getProjectile(ITurretInst turretInst) { return null; }
         @Override public boolean isValid() { return false; }
     };
 

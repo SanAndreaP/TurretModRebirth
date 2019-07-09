@@ -23,13 +23,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class RenderProjectile
         extends Render<EntityTurretProjectile>
-        implements IRenderRegistry<UUID, EntityTurretProjectile, IRender<EntityTurretProjectile>, Render<EntityTurretProjectile>>, IRenderInst<EntityTurretProjectile>
+        implements IRenderRegistry<ResourceLocation, EntityTurretProjectile, IRender<EntityTurretProjectile>, Render<EntityTurretProjectile>>, IRenderInst<EntityTurretProjectile>
 {
-    private final Map<UUID, IRender<EntityTurretProjectile>> renders = new HashMap<>();
+    private final Map<ResourceLocation, IRender<EntityTurretProjectile>> renders = new HashMap<>();
 
     public RenderProjectile(RenderManager renderManager) {
         super(renderManager);
@@ -39,7 +38,7 @@ public class RenderProjectile
 
     @Override
     public void doRender(EntityTurretProjectile entity, double x, double y, double z, float entityYaw, float partialTicks) {
-        UUID delegateId = entity.delegate.getId();
+        ResourceLocation delegateId = entity.delegate.getId();
         if( this.renders.containsKey(delegateId) ) {
             this.renders.get(delegateId).doRender(this, entity, x, y, z, entityYaw, partialTicks);
         }
@@ -56,7 +55,7 @@ public class RenderProjectile
     }
 
     @Override
-    public boolean registerRender(@Nonnull UUID key, @Nonnull IRender<EntityTurretProjectile> render) {
+    public boolean registerRender(@Nonnull ResourceLocation key, @Nonnull IRender<EntityTurretProjectile> render) {
         if( this.renders.containsKey(key) ) {
             TmrConstants.LOG.log(Level.WARN, String.format("Cannot register renderer for projectile ID %s since it already has one.", key));
             return false;
@@ -68,7 +67,7 @@ public class RenderProjectile
     }
 
     @Override
-    public IRender<EntityTurretProjectile> removeRender(UUID key) {
+    public IRender<EntityTurretProjectile> removeRender(ResourceLocation key) {
         return this.renders.remove(key);
     }
 
@@ -97,7 +96,7 @@ public class RenderProjectile
         return this.getTeamColor(entity);
     }
 
-    public static <T extends Entity> void initialize(IRenderRegistry<UUID, T, IRender<T>, Render<T>> registry) {
+    public static <T extends Entity> void initialize(IRenderRegistry<ResourceLocation, T, IRender<T>, Render<T>> registry) {
         registry.registerRender(Projectiles.CB_BOLT.getId(), new RenderCrossbowBolt<>());
         registry.registerRender(Projectiles.PEBBLE.getId(), new RenderPebble<>());
         registry.registerRender(Projectiles.CRYO_BALL_I.getId(), new RenderNothingness<>());

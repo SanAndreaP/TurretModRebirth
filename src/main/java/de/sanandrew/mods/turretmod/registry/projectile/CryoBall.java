@@ -12,8 +12,9 @@ import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.util.config.Category;
 import de.sanandrew.mods.sanlib.lib.util.config.Range;
 import de.sanandrew.mods.sanlib.lib.util.config.Value;
-import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
-import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectileInst;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectileInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.util.EnumParticle;
 import de.sanandrew.mods.turretmod.util.Sounds;
@@ -23,21 +24,21 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import org.apache.commons.lang3.mutable.MutableFloat;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 @Category("cryo ball")
 @SuppressWarnings("WeakerAccess")
 public class CryoBall
-        implements ITurretProjectile
+        implements IProjectile
 {
-    static final UUID ID1 = UUID.fromString("3A7F610D-0DE4-42F3-B3E2-9FFF5FC0693A");
-    static final UUID ID2 = UUID.fromString("5CE32B23-3038-454E-8109-CA8CA2CB75F3");
-    static final UUID ID3 = UUID.fromString("419B8825-24CF-4B20-B785-E78D95575A33");
+    static final ResourceLocation ID1 = new ResourceLocation(TmrConstants.ID, "cryoball.slow");
+    static final ResourceLocation ID2 = new ResourceLocation(TmrConstants.ID, "cryoball.slower");
+    static final ResourceLocation ID3 = new ResourceLocation(TmrConstants.ID, "cryoball.slowest");
 
     @Value(comment = "Base damage this projectile can deal to a target.", range = @Range(minD = 0.0D, maxD = 1024.0D))
     public static float damage = 0.0F;
@@ -64,15 +65,15 @@ public class CryoBall
     @Value(comment = "How long the slowness lasts in ticks, when this projectile applies it on its third level. 20 ticks = 1 second.", range = @Range(minI = 0))
     public static int slownessDurationThird = 200;
 
-    private final UUID id;
+    private final ResourceLocation id;
 
-    CryoBall(UUID id) {
+    CryoBall(ResourceLocation id) {
         this.id = id;
     }
 
     @Nonnull
     @Override
-    public UUID getId() {
+    public ResourceLocation getId() {
         return this.id;
     }
 
@@ -82,7 +83,7 @@ public class CryoBall
     }
 
     @Override
-    public void onUpdate(@Nullable ITurretInst turret, @Nonnull ITurretProjectileInst projectile) {
+    public void onUpdate(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile) {
         Entity projEntity = projectile.get();
         if( projEntity.world.isRemote ) {
             TurretModRebirth.proxy.spawnParticle(EnumParticle.CRYO_PARTICLE, projEntity.posX, projEntity.posY, projEntity.posZ,
@@ -116,13 +117,13 @@ public class CryoBall
     }
 
     @Override
-    public boolean onDamageEntityPre(@Nullable ITurretInst turret, @Nonnull ITurretProjectileInst projectile, Entity target, DamageSource damageSrc, MutableFloat damage) {
+    public boolean onDamageEntityPre(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile, Entity target, DamageSource damageSrc, MutableFloat damage) {
         if( !projectile.get().world.isRemote && target instanceof EntityLivingBase ) {
-            if( this.id == ID1 && slownessLevelFirst > 0 ) {
+            if( this.id.equals(ID1) && slownessLevelFirst > 0 ) {
                 ((EntityLivingBase) target).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, slownessDurationFirst, slownessLevelFirst - 1));
-            } else if( this.id == ID2 && slownessLevelSecond > 0 ) {
+            } else if( this.id.equals(ID2) && slownessLevelSecond > 0 ) {
                 ((EntityLivingBase) target).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, slownessDurationSecond, slownessLevelSecond - 1));
-            } else if( this.id == ID3 && slownessLevelThird > 0 ) {
+            } else if( this.id.equals(ID3) && slownessLevelThird > 0 ) {
                 ((EntityLivingBase) target).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, slownessDurationThird, slownessLevelThird - 1));
             }
 
@@ -138,7 +139,7 @@ public class CryoBall
     }
 
     @Override
-    public void onDamageEntityPost(@Nullable ITurretInst turret, @Nonnull ITurretProjectileInst projectile, Entity target, DamageSource damageSrc) {
+    public void onDamageEntityPost(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile, Entity target, DamageSource damageSrc) {
         if( target instanceof EntityLivingBase ) {
             ((EntityLivingBase) target).hurtResistantTime = 0;
         }

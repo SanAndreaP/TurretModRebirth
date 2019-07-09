@@ -11,19 +11,20 @@ package de.sanandrew.mods.turretmod.registry.projectile;
 import de.sanandrew.mods.sanlib.lib.util.config.Category;
 import de.sanandrew.mods.sanlib.lib.util.config.Range;
 import de.sanandrew.mods.sanlib.lib.util.config.Value;
-import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
 import de.sanandrew.mods.turretmod.util.Sounds;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 
 import javax.annotation.Nonnull;
-import java.util.UUID;
 
 @Category("shotgun pebble")
 @SuppressWarnings("WeakerAccess")
 public class ShotgunPebble
-        implements ITurretProjectile
+        implements IProjectile
 {
-    private static final UUID ID = UUID.fromString("87E13300-2A58-456C-9712-B440C48D5376");
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "pebble.shotgun");
 
     @Value(comment = "Base damage this projectile can deal to a target.", range = @Range(minD = 0.0D, maxD = 1024.0D))
     public static float damage = 0.8F;
@@ -40,7 +41,7 @@ public class ShotgunPebble
 
     @Nonnull
     @Override
-    public UUID getId() {
+    public ResourceLocation getId() {
         return ID;
     }
 

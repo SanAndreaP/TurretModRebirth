@@ -7,41 +7,68 @@
 package de.sanandrew.mods.turretmod.registry.projectile;
 
 import de.sanandrew.mods.turretmod.api.ammo.IProjectileRegistry;
-import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public final class ProjectileRegistry
         implements IProjectileRegistry
 {
     public static final ProjectileRegistry INSTANCE = new ProjectileRegistry();
 
-    private final Map<UUID, ITurretProjectile> projectiles;
+    private static final IProjectile NULL_PROJ = new IProjectile() {
+        @Nonnull @Override public ResourceLocation getId() { return new ResourceLocation("null"); }
+        @Override public float getSpeed() { return 0; }
+        @Override public float getArc() { return 0; }
+        @Override public float getDamage() { return 0; }
+        @Override public float getKnockbackHorizontal() { return 0; }
+        @Override public float getKnockbackVertical() { return 0; }
+        @Override public SoundEvent getRicochetSound() { return null; }
+        @Override public double getScatterValue() { return 0; }
+        @Override public boolean isValid() { return false; }
+    };
+
+    private final Map<ResourceLocation, IProjectile> projectiles;
+    private final Collection<IProjectile> projList;
 
     private ProjectileRegistry() {
         this.projectiles = new HashMap<>();
+        this.projList = Collections.unmodifiableCollection(projectiles.values());
+    }
+
+    @Nonnull
+    @Override
+    public IProjectile getObject(ResourceLocation id) {
+        return this.projectiles.getOrDefault(id, NULL_PROJ);
+    }
+
+    @Nonnull
+    @Override
+    public IProjectile getObject(ItemStack stack) {
+        return NULL_PROJ;
+    }
+
+    @Nonnull
+    @Override
+    public IProjectile getDefaultObject() {
+        return NULL_PROJ;
     }
 
     @Override
-    public ITurretProjectile getProjectile(UUID id) {
-        return this.projectiles.get(id);
+    public void register(@Nonnull IProjectile obj) {
+        this.projectiles.put(obj.getId(), obj);
     }
 
+    @Nonnull
     @Override
-    public void registerProjectile(@Nonnull ITurretProjectile projectile) throws IllegalArgumentException {
-        UUID id = projectile.getId();
-        if( this.projectiles.containsKey(id) ) {
-            throw new IllegalArgumentException(String.format("Cannot register projectiles with the same ID %s!", id));
-        }
-
-        this.projectiles.put(id, projectile);
-    }
-
-    @Override
-    public void removeProjectile(UUID id) {
-        this.projectiles.remove(id);
+    public Collection<IProjectile> getObjects() {
+        return this.projList;
     }
 }

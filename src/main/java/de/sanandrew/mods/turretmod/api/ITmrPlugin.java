@@ -15,6 +15,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -49,7 +50,7 @@ public interface ITmrPlugin
     default void registerTurretRenderer(ITurretRenderRegistry<?> registry) { }
 
     @SideOnly(Side.CLIENT)
-    default <T extends Entity> void registerProjectileRenderer(IRenderRegistry<UUID, T, IRender<T>, Render<T>> registry) { }
+    default <T extends Entity> void registerProjectileRenderer(IRenderRegistry<ResourceLocation, T, IRender<T>, Render<T>> registry) { }
 
     @SideOnly(Side.CLIENT)
     default void registerTcuLabelElements(ILabelRegistry registry) { }

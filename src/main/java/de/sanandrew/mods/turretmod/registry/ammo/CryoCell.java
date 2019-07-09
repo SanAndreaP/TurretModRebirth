@@ -11,7 +11,7 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
-import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import net.minecraft.util.ResourceLocation;
@@ -44,7 +44,7 @@ public abstract class CryoCell
         }
 
         @Override
-        public ITurretProjectile getProjectile(ITurretInst turretInst) {
+        public IProjectile getProjectile(ITurretInst turretInst) {
             return Projectiles.CRYO_BALL_I;
         }
 
@@ -65,7 +65,7 @@ public abstract class CryoCell
         }
 
         @Override
-        public ITurretProjectile getProjectile(ITurretInst turretInst) {
+        public IProjectile getProjectile(ITurretInst turretInst) {
             return Projectiles.CRYO_BALL_II;
         }
 
@@ -86,7 +86,7 @@ public abstract class CryoCell
         }
 
         @Override
-        public ITurretProjectile getProjectile(ITurretInst turretInst) {
+        public IProjectile getProjectile(ITurretInst turretInst) {
             return Projectiles.CRYO_BALL_III;
         }
 

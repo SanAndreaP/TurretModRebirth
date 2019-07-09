@@ -11,7 +11,7 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
-import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.Range;
@@ -45,7 +45,7 @@ public class ElectrolyteCell
     }
 
     @Override
-    public ITurretProjectile getProjectile(ITurretInst turretInst) {
+    public IProjectile getProjectile(ITurretInst turretInst) {
         return null;
     }
 }

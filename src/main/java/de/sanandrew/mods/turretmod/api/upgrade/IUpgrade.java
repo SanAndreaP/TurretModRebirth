@@ -10,6 +10,8 @@ import javax.annotation.Nullable;
 
 /**
  * <p>A registry object defining a turret upgrade.</p>
+ *
+ * @see IUpgradeRegistry
  */
 public interface IUpgrade
         extends IRegistryObject
@@ -48,9 +50,9 @@ public interface IUpgrade
     }
 
     /**
-     * <p>Initializes this upgrade upon application to or loading from the specified turret instance.</p>
+     * <p>Initializes this upgrade; invoked upon application to or loading from the specified turret instance.</p>
      * <p>Some upgrades apply entity attributes to this turret or the like.</p>
-     * <p><b>This should be called client and server side!</b></p>
+     * <p><b>This should be invoked on the client and server side.</b></p>
      *
      * @param turretInst The turret instance this upgrade gets applied to.
      */
@@ -58,7 +60,7 @@ public interface IUpgrade
 
     /**
      * <p>Reads additional data for this upgrade from the provided NBT tag.</p>
-     * <p><b>This should be called server side!</b></p>
+     * <p><b>This should be invoked on the server side.</b></p>
      *
      * @param turretInst The turret instance which holds this upgrade.
      * @param nbt The NBT tag of the upgrade item.
@@ -67,7 +69,7 @@ public interface IUpgrade
 
     /**
      * <p>Saves additional data for this upgrade to the provided NBT tag.</p>
-     * <p><b>This should be called server side!</b></p>
+     * <p><b>This should be invoked on the server side.</b></p>
      *
      * @param turretInst The turret instance which holds this upgrade.
      * @param nbt The NBT tag of the upgrade item.
@@ -77,7 +79,7 @@ public interface IUpgrade
     /**
      * <p>Terminates this upgrade upon removal from the specified turret instance.</p>
      * <p>Some upgrades remove entity attributes from this turret or the like.</p>
-     * <p><b>This should be called client and server side!</b></p>
+     * <p><b>This should be invoked on the client and server side.</b></p>
      *
      * @param turretInst The turret instance this upgrade gets removed from.
      */

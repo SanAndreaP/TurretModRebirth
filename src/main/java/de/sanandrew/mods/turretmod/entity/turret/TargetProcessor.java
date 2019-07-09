@@ -14,7 +14,7 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.ReflectionUtils;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
-import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
 import de.sanandrew.mods.turretmod.api.event.TargetingEvent;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
@@ -304,7 +304,7 @@ public final class TargetProcessor
     @Override
     public Entity getProjectile() {
         if( this.hasAmmo() ) {
-            ITurretProjectile proj = AmmunitionRegistry.INSTANCE.getObject(this.ammoStack).getProjectile(this.turret);
+            IProjectile proj = AmmunitionRegistry.INSTANCE.getObject(this.ammoStack).getProjectile(this.turret);
             if( proj != null ) {
                 if( this.entityToAttack != null ) {
                     return new EntityTurretProjectile(this.turret.get().world, proj, (EntityTurret) this.turret, this.entityToAttack);

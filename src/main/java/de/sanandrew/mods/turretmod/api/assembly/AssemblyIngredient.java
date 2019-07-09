@@ -22,6 +22,9 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+/**
+ * <p>An ingredient for a recipe used by the turret assembly table.</p>
+ */
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class AssemblyIngredient
         extends Ingredient
@@ -31,17 +34,34 @@ public class AssemblyIngredient
     private ItemStack[] items;
     private IntList itemIds;
 
+    /**
+     * <p>Creates a new ingredient defined by a list of items.</p>
+     *
+     * @param count the amount of items required by this ingredient.
+     * @param stacks one or more items that represent this ingredient.
+     */
     public AssemblyIngredient(int count, ItemStack... stacks) {
         super(0);
         this.itemList = NonNullList.from(ItemStack.EMPTY, stacks);
         this.count = count;
     }
 
+    /**
+     * <p>Creates a new ingredient defined by a list of ore dictionary names.</p>
+     * @param count The amount of items required by this ingredient.
+     * @param ores One or more ore dictionary names, whose items represent this ingredient.
+     */
     public AssemblyIngredient(int count, String... ores) {
         super(0);
         this.itemList = Arrays.stream(ores).map(OreDictionary::getOres).collect(NonNullList::create, NonNullList::addAll, NonNullList::addAll);
         this.count = count;
     }
+
+    /**
+     * <p>Returns the amount of items this ingredient should consume upon crafting.</p>
+     *
+     * @return the amount of items required by this ingredient.
+     */
 
     public int getCount() {
         return this.count;
@@ -105,6 +125,14 @@ public class AssemblyIngredient
         return true;
     }
 
+    /**
+     * <p>Reads an ingredient from the given JSON element.</p>
+     *
+     * @param json The JSON element an ingredient should be read from.
+     * @param ctx The JSON context.
+     * @return the ingredient read from the JSON element.
+     * @throws JsonSyntaxException if the JSON element does not contain a valid ingredient.
+     */
     public static AssemblyIngredient fromJson(@Nullable JsonElement json, JsonContext ctx) {
         if( json != null && !json.isJsonNull() ) {
             if( json.isJsonObject() ) {

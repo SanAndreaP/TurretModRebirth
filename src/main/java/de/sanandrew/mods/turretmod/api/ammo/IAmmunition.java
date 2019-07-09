@@ -54,5 +54,5 @@ public interface IAmmunition
      * @return The projectile delegate or <tt>null</tt>, if no projectile should be fired.
      */
     @Nullable
-    ITurretProjectile getProjectile(ITurretInst turretInst);
+    IProjectile getProjectile(ITurretInst turretInst);
 }

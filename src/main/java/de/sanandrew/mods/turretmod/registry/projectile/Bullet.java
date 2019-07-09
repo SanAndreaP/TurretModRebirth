@@ -11,19 +11,20 @@ package de.sanandrew.mods.turretmod.registry.projectile;
 import de.sanandrew.mods.sanlib.lib.util.config.Category;
 import de.sanandrew.mods.sanlib.lib.util.config.Range;
 import de.sanandrew.mods.sanlib.lib.util.config.Value;
-import de.sanandrew.mods.turretmod.api.ammo.ITurretProjectile;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
 import de.sanandrew.mods.turretmod.util.Sounds;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 
 import javax.annotation.Nonnull;
-import java.util.UUID;
 
 @Category("bullet")
 @SuppressWarnings("WeakerAccess")
 public class Bullet
-        implements ITurretProjectile
+        implements IProjectile
 {
-    private static final UUID ID = UUID.fromString("C25768A6-0618-4E7A-98B2-EED2F79A74C2");
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "bullet");
 
     @Value(comment = "Base damage this projectile can deal to a target.", range = @Range(minD = 0.0D, maxD = 1024.0D))
     public static float damage = 4.5F;
@@ -40,7 +41,7 @@ public class Bullet
 
     @Nonnull
     @Override
-    public UUID getId() {
+    public ResourceLocation getId() {
         return ID;
     }
 
