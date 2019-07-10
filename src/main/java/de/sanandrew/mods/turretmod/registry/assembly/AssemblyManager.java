@@ -146,8 +146,8 @@ public final class AssemblyManager
     }
 
     @Nullable
-    public List<ItemStack> checkAndConsumeResources(IInventory inv, World world, de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe recipe) {
-        if( recipe.matches(inv, world) ) {
+    public List<ItemStack> checkAndConsumeResources(IInventory inv, World world, IAssemblyRecipe recipe) {
+        if( recipe.canFit(9, 2) && recipe.matches(inv, world) ) {
             List<ItemStack> removedStacks = new ArrayList<>();
             Map<AssemblyIngredient, Integer> ingredients = recipe.getIngredients().stream().collect(Collectors.toMap(a -> (AssemblyIngredient) a,
                                                                                                                      a -> ((AssemblyIngredient) a).getCount()));

@@ -8,6 +8,8 @@ import java.util.Collection;
 
 /**
  * A registry specialized to handling objects of the type {@link IAmmunition}
+ *
+ * @see de.sanandrew.mods.turretmod.api.ITmrPlugin#registerAmmo(IAmmunitionRegistry) ITmrPlugin.registerAmmo(IAmmunitionRegistry)
  */
 public interface IAmmunitionRegistry
         extends IRegistry<IAmmunition>

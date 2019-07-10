@@ -71,7 +71,7 @@ public class AssemblyRecipe
 
     @Override
     public boolean canFit(int width, int height) {
-        return true;
+        return width * height <= this.ingredients.size();
     }
 
     @Override

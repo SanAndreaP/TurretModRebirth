@@ -62,11 +62,13 @@ public class AssemblyIngredient
      *
      * @return the amount of items required by this ingredient.
      */
-
     public int getCount() {
         return this.count;
     }
 
+    /**
+     * @return an array of ItemStacks that can match this ingredient.
+     */
     @Override
     @Nonnull
     public ItemStack[] getMatchingStacks() {
@@ -85,7 +87,9 @@ public class AssemblyIngredient
         return this.items;
     }
 
-
+    /**
+     * @return a list of numerical item IDs from the matching ItemStacks of this ingredient, for networking purposes (?).
+     */
     @Override
     @Nonnull
     public IntList getValidItemStacksPacked() {
@@ -114,12 +118,19 @@ public class AssemblyIngredient
         return false;
     }
 
+    /**
+     * <p>Invalidates the caches of this ingredient, which will be rebuilt upon accessing them again.</p>
+     */
     @Override
     protected void invalidate() {
         this.itemIds = null;
         this.items = null;
     }
 
+    /**
+     * <p>Indicates wether this ingredient is considered simple. Some recipes do additional operations if all ingredients are simple.</p>
+     * @return <tt>true</tt>, if this ingredient is considered simple; <tt>false</tt> otherwise.
+     */
     @Override
     public boolean isSimple() {
         return true;

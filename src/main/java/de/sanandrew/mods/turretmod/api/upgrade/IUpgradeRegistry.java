@@ -10,6 +10,8 @@ import java.util.Collection;
 
 /**
  * A registry specialized to handling objects of the type {@link IUpgrade}
+ *
+ * @see de.sanandrew.mods.turretmod.api.ITmrPlugin#registerUpgrades(IUpgradeRegistry) ITmrPlugin.registerUpgrades(IUpgradeRegistry)
  */
 @SuppressWarnings("unused")
 public interface IUpgradeRegistry
