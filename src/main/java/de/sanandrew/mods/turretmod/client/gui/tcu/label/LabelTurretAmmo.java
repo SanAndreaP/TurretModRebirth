@@ -23,8 +23,8 @@ public class LabelTurretAmmo
     }
 
     @Override
-    public float getHeight(ITurretInst turretInst, FontRenderer stdFontRenderer) {
-        return stdFontRenderer.FONT_HEIGHT + 6.0F;
+    public float getHeight(ITurretInst turretInst, FontRenderer fontRenderer) {
+        return fontRenderer.FONT_HEIGHT + 6.0F;
     }
 
     @Override
@@ -33,16 +33,16 @@ public class LabelTurretAmmo
     }
 
     @Override
-    public void doRenderQuads(ITurretInst turretInst, float maxWidth, float progress, FontRenderer stdFontRenderer, float currHeight, BufferBuilder tessBuffer) {
+    public void renderQuads(ITurretInst turretInst, float maxWidth, float progress, FontRenderer fontRenderer, float currHeight, BufferBuilder buffer) {
         float ammoPerc = turretInst.getTargetProcessor().getAmmoCount() / (float) turretInst.getTargetProcessor().getMaxAmmoCapacity() * maxWidth;
-        currHeight += stdFontRenderer.FONT_HEIGHT + 2.0F;
-        addQuad(tessBuffer, 0.0D,     currHeight, ammoPerc, currHeight + 2.0D, new ColorObj(0.625F, 0.625F, 1.0F, Math.max(progress, 4.0F / 255.0F)));
-        addQuad(tessBuffer, ammoPerc, currHeight, maxWidth, currHeight + 2.0D, new ColorObj(0.05F, 0.05F, 0.4F, Math.max(progress, 4.0F / 255.0F)));
+        currHeight += fontRenderer.FONT_HEIGHT + 2.0F;
+        addQuad(buffer, 0.0D, currHeight, ammoPerc, currHeight + 2.0D, new ColorObj(0.625F, 0.625F, 1.0F, Math.max(progress, 4.0F / 255.0F)));
+        addQuad(buffer, ammoPerc, currHeight, maxWidth, currHeight + 2.0D, new ColorObj(0.05F, 0.05F, 0.4F, Math.max(progress, 4.0F / 255.0F)));
     }
 
     @Override
-    public void doRenderTextured(ITurretInst turretInst, float maxWidth, float progress, FontRenderer stdFontRenderer) {
-        stdFontRenderer.drawString(getLabel(turretInst), 0.0F, 0.0F, new ColorObj(0.625F, 0.625F, 1.0F, Math.max(progress, 4.0F / 255.0F)).getColorInt(), false);
+    public void renderTextured(ITurretInst turretInst, float maxWidth, float progress, FontRenderer fontRenderer) {
+        fontRenderer.drawString(getLabel(turretInst), 0.0F, 0.0F, new ColorObj(0.625F, 0.625F, 1.0F, Math.max(progress, 4.0F / 255.0F)).getColorInt(), false);
     }
 
     private static String getLabel(ITurretInst turretInst) {

@@ -23,7 +23,6 @@ import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
 import java.util.Comparator;
-import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -35,8 +34,8 @@ public class GuiTargetCreatures
     private GuiButton selectOther;
 
     @Override
-    public void initGui(IGuiTcuInst<?> gui) {
-        super.initGui(gui);
+    public void initialize(IGuiTcuInst<?> gui) {
+        super.initialize(gui);
 
         int x = gui.getPosX() + gui.getWidth();
         int y = gui.getPosY() + 190;

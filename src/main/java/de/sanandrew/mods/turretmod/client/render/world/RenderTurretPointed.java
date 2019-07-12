@@ -98,7 +98,7 @@ public final class RenderTurretPointed
     }
 
     @Override
-    public void registerLabelElement(ILabelElement element) {
+    public void register(ILabelElement element) {
         Objects.requireNonNull(element);
         this.elements.add(element);
     }
@@ -171,7 +171,7 @@ public final class RenderTurretPointed
         if( lbl.progress >= 1.0F ) {
             final MutableFloat currHeight = new MutableFloat(0.0F);
             fltElem.forEach(elem -> {
-                elem.doRenderQuads(turret, lbl.maxWidth, lbl.progress - 1.0F, fontrenderer, currHeight.floatValue(), buffer);
+                elem.renderQuads(turret, lbl.maxWidth, lbl.progress - 1.0F, fontrenderer, currHeight.floatValue(), buffer);
                 currHeight.add(elem.getHeight(turret, fontrenderer));
             });
         }
@@ -185,7 +185,7 @@ public final class RenderTurretPointed
             fltElem.forEach(elem -> {
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(0.0F, currHeight.floatValue(), 0.0F);
-                elem.doRenderTextured(turret, lbl.maxWidth, lbl.progress - 1.0F, fontrenderer);
+                elem.renderTextured(turret, lbl.maxWidth, lbl.progress - 1.0F, fontrenderer);
                 GlStateManager.popMatrix();
                 currHeight.add(elem.getHeight(turret, fontrenderer));
             });

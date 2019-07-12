@@ -48,7 +48,7 @@ public class GuiInfo
     private long infoTimeShown;
 
     @Override
-    public void initGui(IGuiTcuInst<?> gui) {
+    public void initialize(IGuiTcuInst<?> gui) {
         this.specOwnerHead = MiscUtils.RNG.randomInt(3) == 0 ? MiscUtils.RNG.randomInt(5) : 0;
 
         this.frAmmoItem = new FontRenderer(gui.getGui().mc.gameSettings, new ResourceLocation("textures/font/ascii.png"), gui.getGui().mc.getTextureManager(), true);

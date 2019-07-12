@@ -50,7 +50,7 @@ public abstract class GuiTargets<T>
     private GuiTextField searchBar;
 
     @Override
-    public void initGui(IGuiTcuInst<?> gui) {
+    public void initialize(IGuiTcuInst<?> gui) {
         this.whitelist = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 7, gui.getPosY() + 190, 184, 0,
                                                             Resources.GUI_TCU_TARGETS.resource, LangUtils.translate(Lang.TCU_BTN.get("whitelist"))));
         this.blacklist = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), gui.getPosX() + 7, gui.getPosY() + 190, 202, 0,

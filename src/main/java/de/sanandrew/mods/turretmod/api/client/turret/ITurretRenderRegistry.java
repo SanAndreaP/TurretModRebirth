@@ -15,7 +15,7 @@ import java.util.List;
 @SideOnly(Side.CLIENT)
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public interface ITurretRenderRegistry<E extends EntityLiving & ITurretInst>
-        extends IRenderRegistry<ITurret, E, ITurretRender<?, E>, RenderLivingBase<E>>
+        extends IRenderRegistry<ITurret, E, ITurretRender<?, E>>
 {
     void addUpgradeLayer(List<LayerRenderer<E>> layerList);
 

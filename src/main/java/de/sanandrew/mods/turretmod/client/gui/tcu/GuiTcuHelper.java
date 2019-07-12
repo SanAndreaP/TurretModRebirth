@@ -59,13 +59,13 @@ public final class GuiTcuHelper
         this.tabs.clear();
 
         MutableInt currIndex = new MutableInt(0);
-        for( ResourceLocation location : GuiTcuRegistry.GUI_RESOURCES ) {
+        for( ResourceLocation location : GuiTcuRegistry.GUI_ENTRIES ) {
             GuiTcuRegistry.GuiEntry entry = GuiTcuRegistry.INSTANCE.getGuiEntry(location);
             if( entry != null && entry.showTab(gui) ) {
                 GuiButton btn = new GuiButtonTcuTab(gui.getNewButtonId(), 0, gui.getPosY() + 213, entry.getIcon(),
                                                     LangUtils.translate(Lang.TCU_PAGE_TITLE.get(location.getResourceDomain(), location.getResourcePath())));
                 btn.visible = false;
-                btn.enabled = !location.equals(gui.getRegistryKey());
+                btn.enabled = !location.equals(gui.getCurrentEntryKey());
                 if( btn.enabled && (currIndex.getValue() < currTabScroll || currIndex.getValue() >= currTabScroll + MAX_TABS) ) {
                     currTabScroll = Math.min(Math.max(currIndex.getValue() - MathHelper.floor(MAX_TABS / 2.0F), 0), this.tabs.size() - MAX_TABS + 1);
                 }
@@ -95,7 +95,7 @@ public final class GuiTcuHelper
         this.tabs.forEach((btn, location) -> {
             int cInd = currIndex.getAndIncrement();
             btn.visible = cInd >= currTabScroll && cInd < currTabScroll + MAX_TABS;
-            btn.enabled = !gui.getRegistryKey().equals(location);
+            btn.enabled = !gui.getCurrentEntryKey().equals(location);
             btn.x = minXTabs + (cInd - currTabScroll) * 19;
         });
         this.tabNavLeft.x = minXTabs - 19;
@@ -106,7 +106,7 @@ public final class GuiTcuHelper
 
     void drawScreen(IGuiTcuInst<?> gui) {
         FontRenderer fRender = gui.getFontRenderer();
-        fRender.drawString(LangUtils.translate(Lang.TCU_PAGE_TITLE.get(gui.getRegistryKey().getResourceDomain(), gui.getRegistryKey().getResourcePath())), 8, 28, 0xFF404040);
+        fRender.drawString(LangUtils.translate(Lang.TCU_PAGE_TITLE.get(gui.getCurrentEntryKey().getResourceDomain(), gui.getCurrentEntryKey().getResourcePath())), 8, 28, 0xFF404040);
         String turretName = LangUtils.translate(Lang.ENTITY_NAME.get(gui.getTurretInst().getTurret().getId()));
         int strWidth = fRender.getStringWidth(turretName);
         if( strWidth > 144 ) {
@@ -130,7 +130,7 @@ public final class GuiTcuHelper
     void onButtonClick(IGuiTcuInst<?> gui, GuiButton button) {
         ResourceLocation location = this.tabs.get(button);
         if( location != null ) {
-            TurretModRebirth.proxy.openGui(gui.getGui().mc.player, EnumGui.TCU, gui.getTurretInst().get().getEntityId(), GuiTcuRegistry.GUI_RESOURCES.indexOf(location), 0);
+            TurretModRebirth.proxy.openGui(gui.getGui().mc.player, EnumGui.TCU, gui.getTurretInst().get().getEntityId(), GuiTcuRegistry.GUI_ENTRIES.indexOf(location), 0);
         } else if( button == this.tabNavLeft && currTabScroll > 0 ) {
             currTabScroll--;
         } else if( button == this.tabNavRight && currTabScroll < this.tabs.size() - MAX_TABS ) {

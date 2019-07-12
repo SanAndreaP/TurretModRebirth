@@ -29,20 +29,20 @@ public class PacketSyncTcuGuis
     @SuppressWarnings("unused")
     public PacketSyncTcuGuis() {
         this.guis = new TreeMap<>();
-        for( int i = 0, max = GuiTcuRegistry.GUI_RESOURCES.size(); i < max; i++ ) {
-            this.guis.put(i, GuiTcuRegistry.GUI_RESOURCES.get(i));
+        for( int i = 0, max = GuiTcuRegistry.GUI_ENTRIES.size(); i < max; i++ ) {
+            this.guis.put(i, GuiTcuRegistry.GUI_ENTRIES.get(i));
         }
     }
 
     @Override
     public void handleClientMessage(PacketSyncTcuGuis packet, EntityPlayer player) {
         if( FMLCommonHandler.instance().getSide() == Side.CLIENT ) {
-            GuiTcuRegistry.GUI_RESOURCES.clear();
+            GuiTcuRegistry.GUI_ENTRIES.clear();
             packet.guis.forEach((pos, gui) -> {
-                if( GuiTcuRegistry.GUI_RESOURCES.size() >= pos ) {
-                    GuiTcuRegistry.GUI_RESOURCES.add(gui);
+                if( GuiTcuRegistry.GUI_ENTRIES.size() >= pos ) {
+                    GuiTcuRegistry.GUI_ENTRIES.add(gui);
                 } else {
-                    GuiTcuRegistry.GUI_RESOURCES.set(pos, gui);
+                    GuiTcuRegistry.GUI_ENTRIES.set(pos, gui);
                 }
             });
         }

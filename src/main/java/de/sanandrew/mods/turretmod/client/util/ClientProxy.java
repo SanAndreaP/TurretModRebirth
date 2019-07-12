@@ -51,6 +51,7 @@ import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleSmokeNormal;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -265,5 +266,19 @@ public class ClientProxy
     @Override
     public boolean hasForcefield(Entity e, Class<? extends IForcefieldProvider> providerCls) {
         return RenderForcefieldHandler.INSTANCE.hasForcefield(e, providerCls);
+    }
+
+    public static float[] forceGlow() {
+        float[] prevBright = new float[] {OpenGlHelper.lastBrightnessX, OpenGlHelper.lastBrightnessY};
+        int brightness = 0xF0;
+        int brightX = brightness % 65536;
+        int brightY = brightness / 65536;
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightX, brightY);
+
+        return prevBright;
+    }
+
+    public static void resetGlow(float[] prevBright) {
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, prevBright[0], prevBright[1]);
     }
 }

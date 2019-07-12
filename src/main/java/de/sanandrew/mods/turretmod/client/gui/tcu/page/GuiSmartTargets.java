@@ -50,7 +50,7 @@ public class GuiSmartTargets
     private GuiTextField countEntities;
 
     @Override
-    public void initGui(IGuiTcuInst<?> gui) {
+    public void initialize(IGuiTcuInst<?> gui) {
         AdvTargetSettings settings = getSettings(gui);
         if( settings != null ) {
             ResourceLocation texture = Resources.GUI_TCU_SMARTTGT.resource;

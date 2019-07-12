@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.client.render.layer;
 
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.client.util.ClientProxy;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -40,17 +41,13 @@ public class LayerTurretGlow<E extends EntityLiving & ITurretInst>
 
         GlStateManager.depthMask(false);
 
-        // set lightmap to full brightness
-        float lastBrightX = OpenGlHelper.lastBrightnessX;
-        float lastBrightY = OpenGlHelper.lastBrightnessY;
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 0xF0, 0x0);
+        float[] prevBright = ClientProxy.forceGlow();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
         this.glowModel.setLivingAnimations(turret, limbSwing, limbSwingAmount, partialTicks);
         this.glowModel.render(turret, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
-        // reset lightmap to entity's brightness
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastBrightX, lastBrightY);
+        ClientProxy.resetGlow(prevBright);
 
         GlStateManager.depthMask(true);
 

@@ -32,7 +32,7 @@ public class GuiUpgrades
     }
 
     @Override
-    public void initGui(IGuiTcuInst<?> gui) {
+    public void initialize(IGuiTcuInst<?> gui) {
 
     }
 

@@ -51,7 +51,7 @@ public final class GuiTcuRegistry
     public static final ResourceLocation GUI_UPGRADES = new ResourceLocation(TmrConstants.ID, "upgrades");
     public static final ResourceLocation GUI_COLORIZER = new ResourceLocation(TmrConstants.ID, "colorizer");
 
-    public static final List<ResourceLocation> GUI_RESOURCES = new ArrayList<>();
+    public static final List<ResourceLocation> GUI_ENTRIES = new ArrayList<>();
     public static final GuiTcuRegistry INSTANCE = new GuiTcuRegistry();
 
     @SideOnly(Side.CLIENT)
@@ -62,17 +62,17 @@ public final class GuiTcuRegistry
 
     @SideOnly(Side.CLIENT)
     public Gui openGUI(int type, EntityPlayer player, ITurretInst turretInst) {
-        if( type >= 0 && type < GUI_RESOURCES.size() ) {
-            GuiEntry entry = getGuiEntry(GUI_RESOURCES.get(type));
+        if( type >= 0 && type < GUI_ENTRIES.size() ) {
+            GuiEntry entry = getGuiEntry(GUI_ENTRIES.get(type));
             if( entry != null ) {
                 OpenTcuGuiEvent event = new OpenTcuGuiEvent(player, turretInst, entry.factory);
                 if( !MinecraftForge.EVENT_BUS.post(event) ) {
                     IGuiTCU guiDelegate = event.factory.get();
                     Container cnt = guiDelegate.getContainer(player, turretInst);
                     if( cnt != null ) {
-                        return new GuiTcuContainer(GUI_RESOURCES.get(type), guiDelegate, cnt, turretInst);
+                        return new GuiTcuContainer(GUI_ENTRIES.get(type), guiDelegate, cnt, turretInst);
                     } else {
-                        return new GuiTcuScreen(GUI_RESOURCES.get(type), guiDelegate, turretInst);
+                        return new GuiTcuScreen(GUI_ENTRIES.get(type), guiDelegate, turretInst);
                     }
                 }
             }
@@ -86,8 +86,8 @@ public final class GuiTcuRegistry
     }
 
     public Container openContainer(int type, EntityPlayer player, ITurretInst turretInst) {
-        if( type >= 0 && type < GUI_RESOURCES.size() ) {
-            ResourceLocation loc = GUI_RESOURCES.get(type);
+        if( type >= 0 && type < GUI_ENTRIES.size() ) {
+            ResourceLocation loc = GUI_ENTRIES.get(type);
             OpenTcuContainerEvent event = new OpenTcuContainerEvent(player, turretInst, containers.get(loc));
             if( !MinecraftForge.EVENT_BUS.post(event) ) {
                 if( event.factory != null ) {
@@ -105,10 +105,10 @@ public final class GuiTcuRegistry
             containers = new HashMap<>();
         }
 
-        if( position >= GUI_RESOURCES.size() ) {
-            GUI_RESOURCES.add(location);
+        if( position >= GUI_ENTRIES.size() ) {
+            GUI_ENTRIES.add(location);
         } else {
-            GUI_RESOURCES.set(position, location);
+            GUI_ENTRIES.set(position, location);
         }
 
         containers.put(location, containerFactory);

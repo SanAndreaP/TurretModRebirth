@@ -29,8 +29,8 @@ public class LabelTurretTarget
     }
 
     @Override
-    public float getHeight(ITurretInst turretInst, FontRenderer stdFontRenderer) {
-        return stdFontRenderer.FONT_HEIGHT + 2.0F;
+    public float getHeight(ITurretInst turretInst, FontRenderer fontRenderer) {
+        return fontRenderer.FONT_HEIGHT + 2.0F;
     }
 
     @Override
@@ -39,9 +39,9 @@ public class LabelTurretTarget
     }
 
     @Override
-    public void doRenderTextured(ITurretInst turretInst, float maxWidth, float progress, FontRenderer stdFontRenderer) {
+    public void renderTextured(ITurretInst turretInst, float maxWidth, float progress, FontRenderer fontRenderer) {
         int color = new ColorObj(1.0F, 1.0F, 1.0F, Math.max(progress, 0x4 / 255.0F)).getColorInt();
-        stdFontRenderer.drawString(getLabel(turretInst), 0.0F, 0.0F, color, false);
+        fontRenderer.drawString(getLabel(turretInst), 0.0F, 0.0F, color, false);
     }
 
     private static String getLabel(ITurretInst turretInst) {

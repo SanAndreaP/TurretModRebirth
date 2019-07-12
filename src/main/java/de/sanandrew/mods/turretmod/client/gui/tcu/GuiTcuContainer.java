@@ -21,14 +21,14 @@ public class GuiTcuContainer
         extends GuiContainer
         implements IGuiTcuInst<GuiTcuContainer>
 {
-    private final ResourceLocation registryKey;
+    private final ResourceLocation entryKey;
     private final ITurretInst turret;
     private final IGuiTCU guiDelegate;
     private final GuiTcuHelper helper = new GuiTcuHelper();
 
-    public GuiTcuContainer(ResourceLocation registryKey, IGuiTCU gui, Container guiContainer, ITurretInst turretInst) {
+    public GuiTcuContainer(ResourceLocation entryKey, IGuiTCU gui, Container guiContainer, ITurretInst turretInst) {
         super(guiContainer);
-        this.registryKey = registryKey;
+        this.entryKey = entryKey;
         this.turret = turretInst;
         this.guiDelegate = gui;
 
@@ -43,7 +43,7 @@ public class GuiTcuContainer
         this.buttonList.clear();
         this.helper.initGui(this);
 
-        this.guiDelegate.initGui(this);
+        this.guiDelegate.initialize(this);
     }
 
     @Override
@@ -172,7 +172,7 @@ public class GuiTcuContainer
     }
 
     @Override
-    public ResourceLocation getRegistryKey() {
-        return this.registryKey;
+    public ResourceLocation getCurrentEntryKey() {
+        return this.entryKey;
     }
 }

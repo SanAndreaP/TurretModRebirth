@@ -11,11 +11,11 @@ import de.sanandrew.mods.turretmod.api.client.tcu.ILabelRegistry;
 public final class Labels
 {
     public static void initialize(ILabelRegistry registry) {
-        registry.registerLabelElement(new LabelTurretName());
-        registry.registerLabelElement(new LabelTurretHealth());
-        registry.registerLabelElement(new LabelTurretAmmo());
-        registry.registerLabelElement(new LabelTurretTarget());
-        registry.registerLabelElement(new LabelTurretPersShield());
-        registry.registerLabelElement(new LabelTurretShield());
+        registry.register(new LabelTurretName());
+        registry.register(new LabelTurretHealth());
+        registry.register(new LabelTurretAmmo());
+        registry.register(new LabelTurretTarget());
+        registry.register(new LabelTurretPersShield());
+        registry.register(new LabelTurretShield());
     }
 }

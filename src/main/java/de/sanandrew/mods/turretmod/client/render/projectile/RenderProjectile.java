@@ -26,7 +26,7 @@ import java.util.Map;
 
 public class RenderProjectile
         extends Render<EntityTurretProjectile>
-        implements IRenderRegistry<ResourceLocation, EntityTurretProjectile, IRender<EntityTurretProjectile>, Render<EntityTurretProjectile>>, IRenderInst<EntityTurretProjectile>
+        implements IRenderRegistry<ResourceLocation, EntityTurretProjectile, IRender<EntityTurretProjectile>>, IRenderInst<EntityTurretProjectile>
 {
     private final Map<ResourceLocation, IRender<EntityTurretProjectile>> renders = new HashMap<>();
 
@@ -55,7 +55,7 @@ public class RenderProjectile
     }
 
     @Override
-    public boolean registerRender(@Nonnull ResourceLocation key, @Nonnull IRender<EntityTurretProjectile> render) {
+    public boolean register(@Nonnull ResourceLocation key, @Nonnull IRender<EntityTurretProjectile> render) {
         if( this.renders.containsKey(key) ) {
             TmrConstants.LOG.log(Level.WARN, String.format("Cannot register renderer for projectile ID %s since it already has one.", key));
             return false;
@@ -67,7 +67,7 @@ public class RenderProjectile
     }
 
     @Override
-    public IRender<EntityTurretProjectile> removeRender(ResourceLocation key) {
+    public IRender<EntityTurretProjectile> remove(ResourceLocation key) {
         return this.renders.remove(key);
     }
 
@@ -96,16 +96,16 @@ public class RenderProjectile
         return this.getTeamColor(entity);
     }
 
-    public static <T extends Entity> void initialize(IRenderRegistry<ResourceLocation, T, IRender<T>, Render<T>> registry) {
-        registry.registerRender(Projectiles.CB_BOLT.getId(), new RenderCrossbowBolt<>());
-        registry.registerRender(Projectiles.PEBBLE.getId(), new RenderPebble<>());
-        registry.registerRender(Projectiles.CRYO_BALL_I.getId(), new RenderNothingness<>());
-        registry.registerRender(Projectiles.CRYO_BALL_II.getId(), new RenderNothingness<>());
-        registry.registerRender(Projectiles.CRYO_BALL_III.getId(), new RenderNothingness<>());
-        registry.registerRender(Projectiles.BULLET.getId(), new RenderBullet<>());
-        registry.registerRender(Projectiles.MG_PEBBLE.getId(), new RenderPebble<>());
-        registry.registerRender(Projectiles.LASER_NORMAL.getId(), new RenderNothingness<>());
-        registry.registerRender(Projectiles.FLAME_NORMAL.getId(), new RenderFlame<>(false));
-        registry.registerRender(Projectiles.FLAME_PURIFY.getId(), new RenderFlame<>(true));
+    public static <T extends Entity> void initialize(IRenderRegistry<ResourceLocation, T, IRender<T>> registry) {
+        registry.register(Projectiles.CB_BOLT.getId(), new RenderCrossbowBolt<>());
+        registry.register(Projectiles.PEBBLE.getId(), new RenderPebble<>());
+        registry.register(Projectiles.CRYO_BALL_I.getId(), new RenderNothingness<>());
+        registry.register(Projectiles.CRYO_BALL_II.getId(), new RenderNothingness<>());
+        registry.register(Projectiles.CRYO_BALL_III.getId(), new RenderNothingness<>());
+        registry.register(Projectiles.BULLET.getId(), new RenderBullet<>());
+        registry.register(Projectiles.MG_PEBBLE.getId(), new RenderPebble<>());
+        registry.register(Projectiles.LASER_NORMAL.getId(), new RenderNothingness<>());
+        registry.register(Projectiles.FLAME_NORMAL.getId(), new RenderFlame<>(false));
+        registry.register(Projectiles.FLAME_PURIFY.getId(), new RenderFlame<>(true));
     }
 }

@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.client.render.projectile;
 
 import de.sanandrew.mods.turretmod.api.client.render.IRender;
 import de.sanandrew.mods.turretmod.api.client.render.IRenderInst;
+import de.sanandrew.mods.turretmod.client.util.ClientProxy;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -42,13 +43,9 @@ public class RenderFlame<T extends Entity>
 
         Tessellator tess = Tessellator.getInstance();
         BufferBuilder buf = tess.getBuffer();
-        float prevBrightX = OpenGlHelper.lastBrightnessX;
-        float prevBrightY = OpenGlHelper.lastBrightnessY;
-        
-        int brightness = 0xF0;
-        int brightX = brightness % 65536;
-        int brightY = brightness / 65536;
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightX, brightY);
+
+        float[] prevBright = ClientProxy.forceGlow();
+
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
         GlStateManager.rotate(180.0F - renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
@@ -61,7 +58,8 @@ public class RenderFlame<T extends Entity>
         buf.pos(-0.125D, 0.1875D, 0.0D).tex(0.0D, 0.0D).endVertex();
         tess.draw();
 
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, prevBrightX, prevBrightY);
+        ClientProxy.resetGlow(prevBright);
+
         GlStateManager.enableLighting();
         GlStateManager.popMatrix();
     }

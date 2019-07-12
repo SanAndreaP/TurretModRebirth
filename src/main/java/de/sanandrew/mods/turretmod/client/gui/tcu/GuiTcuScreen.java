@@ -21,7 +21,7 @@ public class GuiTcuScreen
         extends GuiScreen
         implements IGuiTcuInst<GuiTcuScreen>
 {
-    private final ResourceLocation registryKey;
+    private final ResourceLocation entryKey;
     private final ITurretInst turret;
     private final IGuiTCU guiDelegate;
     private final GuiTcuHelper helper = new GuiTcuHelper();
@@ -31,9 +31,9 @@ public class GuiTcuScreen
     private int xSize;
     private int ySize;
 
-    public GuiTcuScreen(ResourceLocation registryKey, IGuiTCU gui, ITurretInst turretInst) {
+    public GuiTcuScreen(ResourceLocation entryKey, IGuiTCU gui, ITurretInst turretInst) {
         super();
-        this.registryKey = registryKey;
+        this.entryKey = entryKey;
         this.turret = turretInst;
         this.guiDelegate = gui;
 
@@ -51,7 +51,7 @@ public class GuiTcuScreen
         this.buttonList.clear();
         this.helper.initGui(this);
 
-        this.guiDelegate.initGui(this);
+        this.guiDelegate.initialize(this);
     }
 
     @Override
@@ -174,7 +174,7 @@ public class GuiTcuScreen
     }
 
     @Override
-    public ResourceLocation getRegistryKey() {
-        return this.registryKey;
+    public ResourceLocation getCurrentEntryKey() {
+        return this.entryKey;
     }
 }

@@ -16,6 +16,7 @@ import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.client.model.block.ModelTurretAssembly;
 import de.sanandrew.mods.turretmod.client.shader.ShaderItemAlphaOverride;
 import de.sanandrew.mods.turretmod.client.shader.Shaders;
+import de.sanandrew.mods.turretmod.client.util.ClientProxy;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.Minecraft;
@@ -97,12 +98,7 @@ public class RenderTurretAssembly
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
-        float prevBrightX = OpenGlHelper.lastBrightnessX;
-        float prevBrightY = OpenGlHelper.lastBrightnessY;
-        int bright = 0xF0;
-        int brightX = bright % 65536;
-        int brightY = bright / 65536;
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightX, brightY);
+        float[] prevBright = ClientProxy.forceGlow();
 
         GlStateManager.glLineWidth(Math.min(20.0F, 20.0F / (dist)));
         buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
@@ -116,7 +112,7 @@ public class RenderTurretAssembly
         buf.pos(0.0F, 1.0F, 0.0F).color(255, 0, 0, 128).endVertex();
         tess.draw();
 
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, prevBrightX, prevBrightY);
+        ClientProxy.resetGlow(prevBright);
 
         GlStateManager.disableBlend();
         GlStateManager.enableTexture2D();

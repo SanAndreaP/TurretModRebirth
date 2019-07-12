@@ -41,7 +41,7 @@ public class GuiShieldColorizer
     private RenderForcefieldHandler.ShieldTexture[] shieldTextures;
 
     @Override
-    public void initGui(IGuiTcuInst<?> gui) {
+    public void initialize(IGuiTcuInst<?> gui) {
         this.rgbColor = new GuiTextField(0, gui.getFontRenderer(), gui.getPosX() + 94, gui.getPosY() + 180, 60, 10);
         this.rgbColor.setMaxStringLength(9);
         this.rgbColor.setValidator(s -> {

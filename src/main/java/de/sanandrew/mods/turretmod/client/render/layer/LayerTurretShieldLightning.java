@@ -10,6 +10,7 @@ import de.sanandrew.mods.sanlib.lib.XorShiftRandom;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
+import de.sanandrew.mods.turretmod.client.util.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -43,11 +44,9 @@ public class LayerTurretShieldLightning<E extends EntityLiving & ITurretInst>
         GlStateManager.pushMatrix();
         GlStateManager.scale(0.01D, 0.01D, 0.01D);
         GlStateManager.translate(0.0F, -9*16, 0.0F);
-        float lastBrightX = OpenGlHelper.lastBrightnessX;
-        float lastBrightY = OpenGlHelper.lastBrightnessY;
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 0xF0, 0x0);
+        float[] prevBright = ClientProxy.forceGlow();
         LIGHTNING_RENDERS.entrySet().stream().filter(entry -> entry.getKey() == turretInst).forEach(entry -> entry.getValue().forEach(val -> val.doRender(partialTicks)));
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastBrightX, lastBrightY);
+        ClientProxy.resetGlow(prevBright);
         GlStateManager.popMatrix();
     }
 

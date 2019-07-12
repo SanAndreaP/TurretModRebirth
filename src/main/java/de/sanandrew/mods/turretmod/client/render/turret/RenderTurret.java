@@ -22,6 +22,7 @@ import de.sanandrew.mods.turretmod.client.model.entity.ModelTurretRevolver;
 import de.sanandrew.mods.turretmod.client.model.entity.ModelTurretShotgun;
 import de.sanandrew.mods.turretmod.client.render.layer.LayerTurretGlow;
 import de.sanandrew.mods.turretmod.client.render.layer.LayerTurretUpgrades;
+import de.sanandrew.mods.turretmod.client.util.ClientProxy;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.model.ModelBase;
@@ -61,7 +62,7 @@ public class RenderTurret<E extends EntityLiving & ITurretInst>
     }
 
     @Override
-    public boolean registerRender(@Nonnull ITurret key, @Nonnull ITurretRender<?, E> render) {
+    public boolean register(@Nonnull ITurret key, @Nonnull ITurretRender<?, E> render) {
         if( this.turretRenders.containsKey(key) ) {
             TmrConstants.LOG.log(Level.WARN, String.format("Cannot register renderer for turret %s since it already has one.", key.getId()));
             return false;
@@ -75,7 +76,7 @@ public class RenderTurret<E extends EntityLiving & ITurretInst>
     }
 
     @Override
-    public ITurretRender<?, E> removeRender(ITurret key) {
+    public ITurretRender<?, E> remove(ITurret key) {
         ITurretRender<?, E> oldRender = this.turretRenders.remove(key);
         this.turretLayers.remove(key);
 
@@ -146,12 +147,7 @@ public class RenderTurret<E extends EntityLiving & ITurretInst>
         if( turret.showRange() ) {
             GlStateManager.disableTexture2D();
 
-            float prevBrightX = OpenGlHelper.lastBrightnessX;
-            float prevBrightY = OpenGlHelper.lastBrightnessY;
-            int brightness = 0xF0;
-            int brightX = brightness % 65536;
-            int brightY = brightness / 65536;
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightX, brightY);
+            float[] prevBright = ClientProxy.forceGlow();
 
             Tessellator tess = Tessellator.getInstance();
             BufferBuilder buf = tess.getBuffer();
@@ -223,7 +219,7 @@ public class RenderTurret<E extends EntityLiving & ITurretInst>
             }
             GlStateManager.popMatrix();
 
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, prevBrightX, prevBrightY);
+            ClientProxy.resetGlow(prevBright);
 
             GlStateManager.enableTexture2D();
         }
@@ -235,14 +231,15 @@ public class RenderTurret<E extends EntityLiving & ITurretInst>
     }
 
     public static <T extends EntityLiving & ITurretInst> void initialize(ITurretRenderRegistry<T> registry) {
-        registry.registerRender(Turrets.CROSSBOW, new TurretRenderBase<>(registry, ModelTurretBase::new));
-        registry.registerRender(Turrets.SHOTGUN, new TurretRenderBase<>(registry, ModelTurretShotgun::new));
-        registry.registerRender(Turrets.CRYOLATOR, new TurretRenderBase<>(registry, ModelTurretBase::new));
-        registry.registerRender(Turrets.REVOLVER, new TurretRenderBase<>(registry, ModelTurretRevolver::new));
-        registry.registerRender(Turrets.MINIGUN, new TurretRenderBase<>(registry, ModelTurretMinigun::new));
-        registry.registerRender(Turrets.LASER, new TurretRenderBase<>(registry, ModelTurretLaser::new));
-        registry.registerRender(Turrets.FLAMETHROWER, new TurretRenderBase<>(registry, ModelTurretFlamethrower::new));
-        registry.registerRender(Turrets.FORCEFIELD, new TurretRenderShieldGen<>(registry));
+        registry.register(Turrets.CROSSBOW, new TurretRenderBase<>(registry, ModelTurretBase::new));
+        registry.register(Turrets.HARPOON, new TurretRenderBase<>(registry, ModelTurretBase::new));
+        registry.register(Turrets.SHOTGUN, new TurretRenderBase<>(registry, ModelTurretShotgun::new));
+        registry.register(Turrets.CRYOLATOR, new TurretRenderBase<>(registry, ModelTurretBase::new));
+        registry.register(Turrets.REVOLVER, new TurretRenderBase<>(registry, ModelTurretRevolver::new));
+        registry.register(Turrets.MINIGUN, new TurretRenderBase<>(registry, ModelTurretMinigun::new));
+        registry.register(Turrets.LASER, new TurretRenderBase<>(registry, ModelTurretLaser::new));
+        registry.register(Turrets.FLAMETHROWER, new TurretRenderBase<>(registry, ModelTurretFlamethrower::new));
+        registry.register(Turrets.FORCEFIELD, new TurretRenderShieldGen<>(registry));
     }
 
     @Override
