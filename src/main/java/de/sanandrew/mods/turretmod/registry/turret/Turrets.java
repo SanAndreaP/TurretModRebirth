@@ -13,6 +13,7 @@ import de.sanandrew.mods.turretmod.registry.turret.shieldgen.TurretForcefield;
 public final class Turrets
 {
     public static final ITurret CROSSBOW = new TurretCrossbow();
+    public static final ITurret HARPOON = new TurretHarpoon();
     public static final ITurret SHOTGUN = new TurretShotgun();
     public static final ITurret CRYOLATOR = new TurretCryolator();
     public static final ITurret REVOLVER = new TurretRevolver();
@@ -23,6 +24,7 @@ public final class Turrets
 
     public static void initialize(ITurretRegistry registry) {
         registry.register(CROSSBOW);
+        registry.register(HARPOON);
         registry.register(SHOTGUN);
         registry.register(CRYOLATOR);
         registry.register(REVOLVER);
