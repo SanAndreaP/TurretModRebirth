@@ -92,4 +92,14 @@ public class TurretHarpoon
     public ResourceLocation getId() {
         return REGISTRY_ID;
     }
+
+    @Override
+    public AttackType getAttackType() {
+        return AttackType.WATER;
+    }
+
+    @Override
+    public boolean isBuoy() {
+        return true;
+    }
 }
