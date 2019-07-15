@@ -136,7 +136,7 @@ public class ItemTurret
     }
 
     private static EntityTurret spawnTurret(World world, ITurret turret, BlockPos pos, EntityPlayer owner) {
-        return spawnTurret(world, turret, pos.getX(), pos.getY(), pos.getZ(), owner);
+        return spawnTurret(world, turret, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, owner);
     }
 
     private static EntityTurret spawnTurret(World world, ITurret turret, double x, double y, double z, EntityPlayer owner) {
