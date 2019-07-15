@@ -106,7 +106,7 @@ public class TmrInternalPlugin
     }
 
     @Override
-    public <T extends Entity> void registerProjectileRenderer(IRenderRegistry<ResourceLocation, T, IRender<T>, Render<T>> registry) {
+    public <T extends Entity> void registerProjectileRenderer(IRenderRegistry<ResourceLocation, T, IRender<T>> registry) {
         RenderProjectile.initialize(registry);
     }
 
