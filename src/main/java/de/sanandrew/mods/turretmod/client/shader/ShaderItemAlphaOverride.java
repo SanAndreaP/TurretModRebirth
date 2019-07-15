@@ -24,13 +24,16 @@ public class ShaderItemAlphaOverride
     public void call(int shader) {
         TextureManager texMgr = Minecraft.getMinecraft().renderEngine;
         int alphaUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "alpha");
-        int brightUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "brightness");
         int imageUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "image");
+        int lightingUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "lighting");
 
         OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texMgr.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).getGlTextureId());
         ARBShaderObjects.glUniform1iARB(imageUniform, 0);
-        ARBShaderObjects.glUniform1fARB(brightUniform, this.brightness);
+        OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE1_ARB);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, Minecraft.getMinecraft().entityRenderer.lightmapTexture.getGlTextureId());
+        ARBShaderObjects.glUniform1iARB(lightingUniform, 1);
         ARBShaderObjects.glUniform1fARB(alphaUniform, this.alphaMulti);
+        OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB);
     }
 }
