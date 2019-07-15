@@ -22,6 +22,7 @@ import javax.annotation.Nonnull;
 public final class Ammunitions
 {
     public static final IAmmunition ARROW = new Arrow();
+    public static final IAmmunition HARPOON = new Harpoon();
     public static final IAmmunition SGSHELL = new ShotgunShell();
     public static final IAmmunition CRYOCELL_MK1 = new CryoCell.Mk1();
     public static final IAmmunition CRYOCELL_MK2 = new CryoCell.Mk2();
@@ -34,7 +35,7 @@ public final class Ammunitions
 
     public static void initialize(IAmmunitionRegistry registry) {
         IRegistry.registerAll(registry,
-                              ARROW, SGSHELL, CRYOCELL_MK1, CRYOCELL_MK2, CRYOCELL_MK3, BULLET, MGSHELL, ELECTROLYTECELL,
+                              ARROW, HARPOON, SGSHELL, CRYOCELL_MK1, CRYOCELL_MK2, CRYOCELL_MK3, BULLET, MGSHELL, ELECTROLYTECELL,
                               FLUXCELL, FUELTANK);
     }
 
@@ -42,6 +43,7 @@ public final class Ammunitions
             implements IAmmunitionGroup
     {
         ARROW("arrow", Turrets.CROSSBOW, Ammunitions.ARROW.getId()),
+        HARPOON("harpoon", Turrets.HARPOON, Ammunitions.HARPOON.getId()),
         BULLET("bullet", Turrets.REVOLVER, Ammunitions.BULLET.getId()),
         CRYO_CELL("cryocell", Turrets.CRYOLATOR, Ammunitions.CRYOCELL_MK1.getId()),
         ELEC_CELL("eleccell", Turrets.FORCEFIELD, Ammunitions.ELECTROLYTECELL.getId()),

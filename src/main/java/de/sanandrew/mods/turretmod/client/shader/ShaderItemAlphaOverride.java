@@ -19,15 +19,18 @@ import org.lwjgl.opengl.GL11;
 public class ShaderItemAlphaOverride
 {
     public float alphaMulti = 1.0F;
+    public float brightness = 1.0F;
 
     public void call(int shader) {
         TextureManager texMgr = Minecraft.getMinecraft().renderEngine;
         int alphaUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "alpha");
+        int brightUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "brightness");
         int imageUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "image");
 
         OpenGlHelper.setActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texMgr.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).getGlTextureId());
         ARBShaderObjects.glUniform1iARB(imageUniform, 0);
+        ARBShaderObjects.glUniform1fARB(brightUniform, this.brightness);
         ARBShaderObjects.glUniform1fARB(alphaUniform, this.alphaMulti);
     }
 }
