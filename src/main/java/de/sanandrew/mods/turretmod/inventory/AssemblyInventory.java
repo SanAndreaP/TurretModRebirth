@@ -235,7 +235,7 @@ public class AssemblyInventory
 
     @Override
     public void setInventorySlotContents(int slot, @Nonnull ItemStack stack) {
-        if( !this.hasAutoUpgrade() ) {
+        if( this.tile.isAutomated() && !this.hasAutoUpgrade() ) {
             this.tile.setAutomated(false);
         }
 
