@@ -138,13 +138,8 @@ public class RenderTurretAssembly
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             this.shaderCallback.alphaMulti = Math.max(0.0F, (assembly.getTicksCrafted() - 15.0F) / (assembly.getMaxTicksCrafted() - 15.0F));
-            int skyLight = world.getLightFromNeighborsFor(EnumSkyBlock.SKY, pos);
-            int blockLight = world.getLightFromNeighborsFor(EnumSkyBlock.BLOCK, pos);
-            this.shaderCallback.brightness = 1.0F;
+            this.shaderCallback.brightness = world.getCombinedLight(pos, 0);
             ShaderHelper.useShader(Shaders.alphaOverride, this.shaderCallback::call);
-            GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-            GlStateManager.enableTexture2D();
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, OpenGlHelper.lastBrightnessX, OpenGlHelper.lastBrightnessY);
             RenderUtils.renderStackInWorld(crfStack, 0.0D, 0.802D, 0.0D, -90.0F, 180.0F, 0.0F, 0.35D);
             ShaderHelper.releaseShader();
             GlStateManager.disableBlend();
