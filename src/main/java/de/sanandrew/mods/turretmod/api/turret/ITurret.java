@@ -88,6 +88,10 @@ public interface ITurret
         return false;
     }
 
+    default float getEyeHeight(float height) {
+        return height * 0.85F;
+    }
+
     enum AttackType
     {
         ALL,

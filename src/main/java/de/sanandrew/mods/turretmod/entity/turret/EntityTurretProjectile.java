@@ -94,9 +94,6 @@ public class EntityTurretProjectile
 
         this.setPosition(shooter.posX, y, shooter.posZ);
 
-        if( shooter.isBuoy() ) {
-            y -= 1.0D;
-        }
         this.maxDist = shooter.getTargetProcessor().getRangeVal() * 4.0D;
 
         Vec3d targetVec;

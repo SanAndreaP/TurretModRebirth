@@ -22,7 +22,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 
 import javax.annotation.Nonnull;
 
-@Category("crossbow")
+@Category("harpoon")
 @SuppressWarnings("WeakerAccess")
 public class TurretHarpoon
         implements ITurret
@@ -101,5 +101,10 @@ public class TurretHarpoon
     @Override
     public boolean isBuoy() {
         return true;
+    }
+
+    @Override
+    public float getEyeHeight(float height) {
+        return height * 0.4F;
     }
 }

@@ -85,7 +85,6 @@ public class EntityTurret
     private String ownerName;
 
     private DataWatcherBooleans<EntityTurret> dwBools;
-    private BlockPos blockPos;
     private boolean prevShotChng;
 
     private ITurretRAM turretRAM;
@@ -171,13 +170,17 @@ public class EntityTurret
         } else {
             deltaY = (entity.getEntityBoundingBox().minY + entity.getEntityBoundingBox().maxY) / 2.0D - (this.posY + this.getEyeHeight());
         }
-        deltaY *= this.delegate.isBuoy() ? -1.0D : 1.0D;
 
         double distVecXZ = MathHelper.sqrt(deltaX * deltaX + deltaZ * deltaZ);
-        float yawRotation = (float) ((this.delegate.isBuoy() ? -1.0D : 1.0D) * (Math.atan2(deltaZ, deltaX) * 180.0D / Math.PI)) - 90.0F;
+        float yawRotation = (float) (Math.atan2(deltaZ, deltaX) * 180.0D / Math.PI) - 90.0F;
         float pitchRotation = (float) -(Math.atan2(deltaY, distVecXZ) * 180.0D / Math.PI);
         this.rotationPitch = calcRotation(this.rotationPitch, pitchRotation);
         this.rotationYawHead = calcRotation(this.rotationYawHead, yawRotation);
+    }
+
+    @Override
+    public float getEyeHeight() {
+        return this.delegate.getEyeHeight(this.height);
     }
 
     /**
@@ -224,18 +227,33 @@ public class EntityTurret
         this.dataManager.set(SHOT_CHNG, !this.dataManager.get(SHOT_CHNG));
     }
 
+    private boolean isSubmergedInLiquid(double heightMod) {
+        BlockPos pos = new BlockPos(this.posX, this.posY + heightMod, this.posZ);
+        return this.world.getBlockState(pos).getMaterial().isLiquid();
+    }
+
     @Override
     public void onLivingUpdate() {
-        if( this.blockPos == null ) {
-            this.blockPos = this.getPosition().up(this.delegate.isBuoy() ? 2 : -1);
-        }
-
         if( !this.delegate.isBuoy() ) {
             this.motionY -= 0.0325F;
             super.move(MoverType.SELF, 0.0F, this.motionY, 0.0F);
-            this.blockPos = this.getPosition().down(1);
         } else {
-            //TODO: make buoyant
+            if( this.isSubmergedInLiquid(this.height + 0.2F) ) {
+                this.motionY += 0.0125F;
+            } else if( this.isSubmergedInLiquid(this.height + 0.05F) ) {
+                this.motionY += 0.005F;
+                if( this.motionY > 0.025F ) {
+                    this.motionY *= 0.75F;
+                }
+            } else if( !this.isSubmergedInLiquid(this.height - 0.2F) ) {
+                this.motionY -= 0.0325F;
+            } else {
+                this.motionY -= 0.005F;
+                if( this.motionY < -0.025F ) {
+                    this.motionY *= 0.75F;
+                }
+            }
+            super.move(MoverType.SELF, 0.0F, this.motionY, 0.0F);
         }
 
         this.world.profiler.startSection("ai");
@@ -538,14 +556,15 @@ public class EntityTurret
         this.showRange = showRange;
     }
 
-    private static boolean isAABBInside(AxisAlignedBB bb1, AxisAlignedBB bb2) {
-        return bb1.minX <= bb2.minX && bb1.minY <= bb2.minY && bb1.minZ <= bb2.minZ && bb1.maxX >= bb2.maxX && bb1.maxY >= bb2.maxY && bb1.maxZ >= bb2.maxZ;
+    private static boolean isAABBInside(AxisAlignedBB bb1) {
+        return bb1.minX <= EntityTurret.UPWARDS_BLOCK.minX && bb1.minY <= EntityTurret.UPWARDS_BLOCK.minY && bb1.minZ <= EntityTurret.UPWARDS_BLOCK.minZ
+                       && bb1.maxX >= EntityTurret.UPWARDS_BLOCK.maxX && bb1.maxY >= EntityTurret.UPWARDS_BLOCK.maxY && bb1.maxZ >= EntityTurret.UPWARDS_BLOCK.maxZ;
     }
 
     public static boolean canTurretBePlaced(ITurret delegate, World world, BlockPos pos, boolean doBlockCheckOnly) {
         AxisAlignedBB blockBB = world.getBlockState(pos).getCollisionBoundingBox(world, pos);
         boolean buoyant = delegate.isBuoy();
-        if( !buoyant && (blockBB == null || !isAABBInside(blockBB, UPWARDS_BLOCK)) ) {
+        if( !buoyant && (blockBB == null || !isAABBInside(blockBB)) ) {
             return false;
         }
 
