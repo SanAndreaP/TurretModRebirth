@@ -31,8 +31,8 @@ public class AssemblyRecipeArea
     private int height;
     private boolean updatedAll;
 
-    GuiElementInst activeRecipeMarker;
-    GuiElementInst recipeLabel;
+    private GuiElementInst activeRecipeMarker;
+    private GuiElementInst recipeLabel;
 
     @Override
     public void bakeData(IGui gui, JsonObject data) {

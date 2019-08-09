@@ -10,6 +10,7 @@ import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelElement;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.client.util.ClientProxy;
 import de.sanandrew.mods.turretmod.util.Lang;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -36,8 +37,8 @@ public class LabelTurretAmmo
     public void renderQuads(ITurretInst turretInst, float maxWidth, float progress, FontRenderer fontRenderer, float currHeight, BufferBuilder buffer) {
         float ammoPerc = turretInst.getTargetProcessor().getAmmoCount() / (float) turretInst.getTargetProcessor().getMaxAmmoCapacity() * maxWidth;
         currHeight += fontRenderer.FONT_HEIGHT + 2.0F;
-        addQuad(buffer, 0.0D, currHeight, ammoPerc, currHeight + 2.0D, new ColorObj(0.625F, 0.625F, 1.0F, Math.max(progress, 4.0F / 255.0F)));
-        addQuad(buffer, ammoPerc, currHeight, maxWidth, currHeight + 2.0D, new ColorObj(0.05F, 0.05F, 0.4F, Math.max(progress, 4.0F / 255.0F)));
+        ClientProxy.addQuad(buffer, 0.0D, currHeight, ammoPerc, currHeight + 2.0D, new ColorObj(0.625F, 0.625F, 1.0F, Math.max(progress, 4.0F / 255.0F)));
+        ClientProxy.addQuad(buffer, ammoPerc, currHeight, maxWidth, currHeight + 2.0D, new ColorObj(0.05F, 0.05F, 0.4F, Math.max(progress, 4.0F / 255.0F)));
     }
 
     @Override
@@ -48,12 +49,5 @@ public class LabelTurretAmmo
     private static String getLabel(ITurretInst turretInst) {
         return LangUtils.translate(Lang.TCU_LABEL_AMMO, String.format("%d/%d", turretInst.getTargetProcessor().getAmmoCount(),
                                                                       turretInst.getTargetProcessor().getMaxAmmoCapacity()));
-    }
-
-    private static void addQuad(BufferBuilder buf, double minX, double minY, double maxX, double maxY, ColorObj clr) {
-        buf.pos(minX, minY, 0.0D).color(clr.fRed(), clr.fGreen(), clr.fBlue(), clr.fAlpha()).endVertex();
-        buf.pos(minX, maxY, 0.0D).color(clr.fRed(), clr.fGreen(), clr.fBlue(), clr.fAlpha()).endVertex();
-        buf.pos(maxX, maxY, 0.0D).color(clr.fRed(), clr.fGreen(), clr.fBlue(), clr.fAlpha()).endVertex();
-        buf.pos(maxX, minY, 0.0D).color(clr.fRed(), clr.fGreen(), clr.fBlue(), clr.fAlpha()).endVertex();
     }
 }

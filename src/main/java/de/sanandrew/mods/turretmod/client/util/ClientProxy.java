@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.client.util;
 
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconInst;
+import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
@@ -51,6 +52,7 @@ import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleSmokeNormal;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.entity.Entity;
@@ -280,5 +282,16 @@ public class ClientProxy
 
     public static void resetGlow(float[] prevBright) {
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, prevBright[0], prevBright[1]);
+    }
+
+    public static void addQuad(BufferBuilder buf, double minX, double minY, double maxX, double maxY, ColorObj clr) {
+        addQuad(buf, minX, minY, maxX, maxY, clr, clr);
+    }
+
+    public static void addQuad(BufferBuilder buf, double minX, double minY, double maxX, double maxY, ColorObj clr1, ColorObj clr2) {
+        buf.pos(minX, minY, 0.0D).color(clr1.fRed(), clr1.fGreen(), clr1.fBlue(), clr1.fAlpha()).endVertex();
+        buf.pos(minX, maxY, 0.0D).color(clr2.fRed(), clr2.fGreen(), clr2.fBlue(), clr2.fAlpha()).endVertex();
+        buf.pos(maxX, maxY, 0.0D).color(clr2.fRed(), clr2.fGreen(), clr2.fBlue(), clr2.fAlpha()).endVertex();
+        buf.pos(maxX, minY, 0.0D).color(clr1.fRed(), clr1.fGreen(), clr1.fBlue(), clr1.fAlpha()).endVertex();
     }
 }

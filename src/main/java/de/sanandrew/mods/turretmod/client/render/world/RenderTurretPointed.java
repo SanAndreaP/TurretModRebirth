@@ -11,17 +11,22 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelElement;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelRegistry;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
+import de.sanandrew.mods.turretmod.client.util.ClientProxy;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.mutable.MutableFloat;
 import org.lwjgl.opengl.GL11;
 
@@ -47,7 +52,7 @@ public final class RenderTurretPointed
             return;
         }
 
-        labels.forEach((turret, tp) -> {
+        this.labels.forEach((turret, tp) -> {
             tp.wasActive = tp.active;
             tp.active = false;
             if( tp.wasActive ) {
@@ -60,7 +65,7 @@ public final class RenderTurretPointed
             renderTurretBB(turret, x, y, z);
 
             if( isItemTCU(mc.player.getHeldItemMainhand()) || isItemTCU(mc.player.getHeldItemOffhand()) ) {
-                LabelEntry tp = labels.computeIfAbsent(turret, t -> new LabelEntry(mc.getRenderManager()));
+                LabelEntry tp = this.labels.computeIfAbsent(turret, t -> new LabelEntry(mc.getRenderManager()));
                 tp.active = true;
                 if( !tp.wasActive ) {
                     tp.beginTick = tp.endTick < 0 ? ClientTickHandler.ticksInGame : tp.endTick;
@@ -70,7 +75,7 @@ public final class RenderTurretPointed
 
         cleanupRenderers(false);
 
-        labels.forEach((turret, lbl) -> {
+        this.labels.forEach((turret, lbl) -> {
             if( turret != null ) {
                 boolean lblActive = lbl.active;
                 lbl.angleY += (-mc.getRenderManager().playerViewY - lbl.angleY) / 16.0F;
@@ -105,9 +110,9 @@ public final class RenderTurretPointed
 
     public void cleanupRenderers(boolean clearAll) {
         if( clearAll ) {
-            labels.clear();
+            this.labels.clear();
         } else {
-            labels.entrySet().removeIf(entry -> entry.getValue() != null && !entry.getValue().active && entry.getValue().progress <= 0.0F);
+            this.labels.entrySet().removeIf(entry -> entry.getValue() != null && !entry.getValue().active && entry.getValue().progress <= 0.0F);
         }
     }
 
@@ -154,19 +159,19 @@ public final class RenderTurretPointed
         ColorObj clrMain = new ColorObj(0x00001000 | (Math.max(Math.round(0xA0 * alphaMulti), 4) << 24));
 
         // main bg
-        addQuad(buffer, -2.0D, -2.0D, lbl.maxWidth + 2.0D, lbl.maxHeight + 2.0D, clrMain);
+        ClientProxy.addQuad(buffer, -2.0D, -2.0D, lbl.maxWidth + 2.0D, lbl.maxHeight + 2.0D, clrMain);
 
         // inner frame [top, bottom, left, right]
-        addQuad(buffer, -3.0D,               -3.0D,                lbl.maxWidth + 3.0D, -2.0D,                clrTop);
-        addQuad(buffer, -3.0D,               lbl.maxHeight + 2.0D, lbl.maxWidth + 3.0D, lbl.maxHeight + 3.0D, clrBottom);
-        addQuad(buffer, -3.0D,               -2.0D,                -2.0D,               lbl.maxHeight + 2.0D, clrTop, clrBottom);
-        addQuad(buffer, lbl.maxWidth + 2.0D, -2.0D,                lbl.maxWidth + 3.0D, lbl.maxHeight + 2.0D, clrTop, clrBottom);
+        ClientProxy.addQuad(buffer, -3.0D,               -3.0D,                lbl.maxWidth + 3.0D, -2.0D,                clrTop);
+        ClientProxy.addQuad(buffer, -3.0D,               lbl.maxHeight + 2.0D, lbl.maxWidth + 3.0D, lbl.maxHeight + 3.0D, clrBottom);
+        ClientProxy.addQuad(buffer, -3.0D,               -2.0D,                -2.0D,               lbl.maxHeight + 2.0D, clrTop, clrBottom);
+        ClientProxy.addQuad(buffer, lbl.maxWidth + 2.0D, -2.0D,                lbl.maxWidth + 3.0D, lbl.maxHeight + 2.0D, clrTop, clrBottom);
 
         // outer frame [top, bottom, left, right]
-        addQuad(buffer, -3.0D,               -4.0D,                lbl.maxWidth + 3.0D, -3.0D,                clrMain);
-        addQuad(buffer, -3.0D,               lbl.maxHeight + 3.0D, lbl.maxWidth + 3.0D, lbl.maxHeight + 4.0D, clrMain);
-        addQuad(buffer, -4.0D,               -3.0D,                -3.0D,               lbl.maxHeight + 3.0D, clrMain);
-        addQuad(buffer, lbl.maxWidth + 3.0D, -3.0D,                lbl.maxWidth + 4.0D, lbl.maxHeight + 3.0D, clrMain);
+        ClientProxy.addQuad(buffer, -3.0D,               -4.0D,                lbl.maxWidth + 3.0D, -3.0D,                clrMain);
+        ClientProxy.addQuad(buffer, -3.0D,               lbl.maxHeight + 3.0D, lbl.maxWidth + 3.0D, lbl.maxHeight + 4.0D, clrMain);
+        ClientProxy.addQuad(buffer, -4.0D,               -3.0D,                -3.0D,               lbl.maxHeight + 3.0D, clrMain);
+        ClientProxy.addQuad(buffer, lbl.maxWidth + 3.0D, -3.0D,                lbl.maxWidth + 4.0D, lbl.maxHeight + 3.0D, clrMain);
 
         if( lbl.progress >= 1.0F ) {
             final MutableFloat currHeight = new MutableFloat(0.0F);
@@ -201,43 +206,17 @@ public final class RenderTurretPointed
     private static void renderTurretBB(EntityTurret turret, double renderX, double renderY, double renderZ) {
         AxisAlignedBB renderBB = turret.getEntityBoundingBox().offset(-renderX, -renderY, -renderZ);
 
-        Tessellator tess = Tessellator.getInstance();
-        BufferBuilder buf = tess.getBuffer();
-
-        GlStateManager.pushMatrix();
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.glLineWidth(2.0F);
         GlStateManager.disableTexture2D();
+        GlStateManager.depthMask(false);
 
-        GlStateManager.glLineWidth(1.0F);
-        buf.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
-        addLine(buf, renderBB.minX, renderBB.minY, renderBB.minZ, renderBB.minX, renderBB.maxY, renderBB.minZ, new ColorObj(0xFF000000));
-        addLine(buf, renderBB.maxX, renderBB.maxY, renderBB.minZ, renderBB.maxX, renderBB.minY, renderBB.minZ, new ColorObj(0xFF000000));
-        addLine(buf, renderBB.maxX, renderBB.minY, renderBB.maxZ, renderBB.maxX, renderBB.maxY, renderBB.maxZ, new ColorObj(0xFF000000));
-        addLine(buf, renderBB.minX, renderBB.maxY, renderBB.maxZ, renderBB.minX, renderBB.minY, renderBB.maxZ, new ColorObj(0xFF000000));
+        RenderGlobal.drawSelectionBoundingBox(renderBB, 0.0F, 0.0F, 0.0F, 0.4F);
 
-        addLine(buf, renderBB.minX, renderBB.minY, renderBB.minZ, renderBB.minX, renderBB.maxY, renderBB.minZ, new ColorObj(0xFF000000));
-        addLine(buf, renderBB.minX, renderBB.maxY, renderBB.maxZ, renderBB.minX, renderBB.minY, renderBB.maxZ, new ColorObj(0xFF000000));
-        addLine(buf, renderBB.maxX, renderBB.minY, renderBB.maxZ, renderBB.maxX, renderBB.maxY, renderBB.maxZ, new ColorObj(0xFF000000));
-        addLine(buf, renderBB.maxX, renderBB.maxY, renderBB.minZ, renderBB.maxX, renderBB.minY, renderBB.minZ, new ColorObj(0xFF000000));
-        tess.draw();
-
+        GlStateManager.depthMask(true);
         GlStateManager.enableTexture2D();
-        GlStateManager.popMatrix();
-    }
-
-    private static void addLine(BufferBuilder buf, double minX, double minY, double minZ, double maxX, double maxY, double maxZ, ColorObj clr) {
-        buf.pos(minX, minY, minZ).color(clr.fRed(), clr.fGreen(), clr.fBlue(), clr.fAlpha()).endVertex();
-        buf.pos(maxX, maxY, maxZ).color(clr.fRed(), clr.fGreen(), clr.fBlue(), clr.fAlpha()).endVertex();
-    }
-
-    private static void addQuad(BufferBuilder buf, double minX, double minY, double maxX, double maxY, ColorObj clr1, ColorObj clr2) {
-        buf.pos(minX, minY, 0.0D).color(clr1.fRed(), clr1.fGreen(), clr1.fBlue(), clr1.fAlpha()).endVertex();
-        buf.pos(minX, maxY, 0.0D).color(clr2.fRed(), clr2.fGreen(), clr2.fBlue(), clr2.fAlpha()).endVertex();
-        buf.pos(maxX, maxY, 0.0D).color(clr2.fRed(), clr2.fGreen(), clr2.fBlue(), clr2.fAlpha()).endVertex();
-        buf.pos(maxX, minY, 0.0D).color(clr1.fRed(), clr1.fGreen(), clr1.fBlue(), clr1.fAlpha()).endVertex();
-    }
-
-    private static void addQuad(BufferBuilder buf, double minX, double minY, double maxX, double maxY, ColorObj clr) {
-        addQuad(buf, minX, minY, maxX, maxY, clr, clr);
+        GlStateManager.disableBlend();
     }
 
     private static class LabelEntry
