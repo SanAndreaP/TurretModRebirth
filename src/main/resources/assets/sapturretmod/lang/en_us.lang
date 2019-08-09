@@ -94,7 +94,6 @@ entity.sapturretmod:turret.minigun.name=Minigun Turret (T2)
 entity.sapturretmod:turret.forcefield.name=Forcefield Turret (T2)
 entity.sapturretmod:turret.laser.name=Laser Turret (T3)
 entity.sapturretmod:turret.flamethrower.name=Flamethrower Turret (T3)
-
 # Death Messages
 death.attack.sapturretmod.turret.sapturretmod:crossbow=%1$s was shot by %2$s
 death.attack.sapturretmod.turret.sapturretmod:shotgun=%1$s has been turned into cheese by %2$s
@@ -117,7 +116,6 @@ sanlib.lexicon.sapturretmod.stat.reload=Reload Time
 sanlib.lexicon.sapturretmod.stat.tier=Tier
 sanlib.lexicon.sapturretmod.stat.rounds=Rounds provided
 sanlib.lexicon.sapturretmod.stat.damage=Damage per projectile
-
 # TCU
 gui.sapturretmod.tcu.label.health=Health: %s
 gui.sapturretmod.tcu.label.ammo=Ammo: %s
@@ -207,12 +205,94 @@ jei.sapturretmod.assembly.title=Turret Assembly Table
 jei.sapturretmod.assembly.energy=Energy consumed:
 jei.sapturretmod.assembly.time=Processing time:
 
-
-
 #### Creative Tabs ####
 itemGroup.sapturretmod:turrets=Turret Mod: Turrets
 itemGroup.sapturretmod:misc=Turret Mod: Items
 itemGroup.sapturretmod:upgrades=Turret Mod: Upgrades
+
+#### Lexicon ####
+# Ammo
+sanlib.lexicon.ammo.name=Ammunition Types
+sanlib.lexicon.ammo.turret=Applicable Turret
+sanlib.lexicon.ammo.sapturretmod:ammo.arrow.name=Arrow Bolt
+sanlib.lexicon.ammo.sapturretmod:ammo.arrow.text=Used by the Crossbow Turret. Projectiles have a tiny knockback effect and act like standard arrows, just smaller. Very precise.\n\nCan be packaged, whose items will provide 16x ammo.
+sanlib.lexicon.ammo.sapturretmod:ammo.shell.shotgun.name=Shotgun Shell
+sanlib.lexicon.ammo.sapturretmod:ammo.shell.shotgun.text=Used by the Shotgun Turret. One shell turns into 6 dispersed pebble projectiles when shot, which have no knockback effect.\nDoes not cause any immunity to the target, thus targets hit by multiple pebbles will take damage from all of them.\n\nCan be packaged, whose items will provide 16x ammo.
+sanlib.lexicon.ammo.sapturretmod:ammo.cryocell.name=Cryo Cell
+sanlib.lexicon.ammo.sapturretmod:ammo.cryocell.text=Used by the Cryolator Turret. This ammunition comes in 3 versions, which applies different slowness effects:\nCell SG1: Slowness I for 15s\nCell SG2: Slowness III for 10s\nCell SG3: Slowness V for 5s.\n\nDoes not cause immunity and any damage to the target.\n\nCan be packaged, whose items will provide 16x ammo.
+sanlib.lexicon.ammo.sapturretmod:ammo.bullet.name=Revolver Bullets
+sanlib.lexicon.ammo.sapturretmod:ammo.bullet.text=Used by the Revolver Turret, it has the same knockback effect like the Shotgun projectiles, but do more damage than the Arrow bolts from the Crossbow Turret. Unlike other ammo types, this provides double the rounds.\n\nCan be packaged, whose items will provide 16x ammo.
+sanlib.lexicon.ammo.sapturretmod:ammo.shell.minigun.name=Minigun Rounds
+sanlib.lexicon.ammo.sapturretmod:ammo.shell.minigun.text=Used by the Minigun Turret. Cartridges contain seeds which do little damage and no knockback, but like the shotgun pebbles, they do not cause any immunity to the target. This, in combination with the rapid firing rate of the turret, compensate for their weakness.\nDue to the rapid firing rate, a cartridge provides 4 shots instead of the usual 1.\n\nCan be packaged, whose items will provide 16x ammo.
+sanlib.lexicon.ammo.sapturretmod:ammo.eleccell.name=Electrolyte Cell
+sanlib.lexicon.ammo.sapturretmod:ammo.eleccell.text=Used by the Forcefield Turret. Provides energy necessary to charge up the forcefield.\n\nCan be packaged, whose items will provide 16x ammo.
+sanlib.lexicon.ammo.sapturretmod:ammo.fluxcell.name=Flux Cell
+sanlib.lexicon.ammo.sapturretmod:ammo.fluxcell.text=Used by the Laser Turret. Lasers have no knockback effect and don't damage anything immune to fire (unless upgraded), but deal quite a decent amount of damage and also sets the target on fire for 5 seconds.\n\nCan be packaged, whose items will provide 16x ammo.
+sanlib.lexicon.ammo.sapturretmod:ammo.fueltank.name=Fuel Tank
+sanlib.lexicon.ammo.sapturretmod:ammo.fueltank.text=Used by the Flamethrower Turret. Flames have, like lasers, no knockback effect and are ineffective against fire-resistant targets (unless upgraded). They deal a hefty amount of damage and sets targets on fire for 5 seconds.\nLike the minigun cartridges, a tank provides 16 shots, due to the rapid firing rate of the turret.\n\nCan be packaged, whose items will provide 16x ammo.
+# Info
+sanlib.lexicon.info.name=About
+sanlib.lexicon.info.version=Version
+sanlib.lexicon.info.author=Author
+sanlib.lexicon.info.credits=Credits
+sanlib.lexicon.info.links=Links
+sanlib.lexicon.info.github=Github Source
+sanlib.lexicon.info.issues=Issues and Suggestions
+sanlib.lexicon.info.curse=CurseForge page
+# Misc
+sanlib.lexicon.misc.name=Miscellaneous
+sanlib.lexicon.misc.assembly.text=The assembly table is an essential part for your turret cravings, as it crafts any item and turret you need or want.\n\nTo operate it you need power as well as the items required for the item you want to craft. It currently accepts Redstone Flux, Tesla, Forge Energy and derivatives as energy types.\n\nIf you think it's too slow or you want to automate it, there are a couple of upgrades available.
+sanlib.lexicon.misc.generator.text=This machine creates energy from items (mostly food) with high enough acid or base by reacting with the electrolyte within them.\nThe more items are put in it, the higher the efficiency of the generator.\n\nEach item has its own effectiveness and decay time, which dictate how much power can be generated in total. The effectiveness level also influences the amount of power the generator can produce in a moment, but there is only so much the generator can transfer internally, so there is a cap of 200 RF/t.\n\nItems used up in the generator may produce byproducts, which could be §2trash§0 or rarely something §dvaluable§0.
+sanlib.lexicon.misc.tcu.text=This item is a configuration and info tool for placed turrets.\n\nLooking at a turret with this tool in hand shows an info label on it with information about its name, health and ammo.\n\nRight-Clicking a turret with it will open a GUI that lets you see detailed info and configure it, like targets and upgrades.
+# Search
+sanlib.lexicon.search.name=Search
+sanlib.lexicon.search.title=Results matching with title
+sanlib.lexicon.search.text=Results matching with entry text
+# Turrets
+sanlib.lexicon.turret.name=Turrets
+sanlib.lexicon.turret.ammo=Applicable Ammunitions
+sanlib.lexicon.turret.sapturretmod:turret.crossbow.text=Meant for basic defense and beginners. Not very strong but one of the cheapest to make.
+sanlib.lexicon.turret.sapturretmod:turret.shotgun.text=Used for basic crowd control. Very weak but can hit multiple targets at once, due to its ammo dispersing into multiple projectiles.
+sanlib.lexicon.turret.sapturretmod:turret.snowball.text=This one is of the supporting kind, as its not dealing any damage, but will slow down any target that it hits.\n\nIt'll only attack a target if it's not already slowed down, though, to preserve ammo.
+sanlib.lexicon.turret.sapturretmod:turret.revolver.text=Can be seen as the upgraded version of the {link:Crossbow Turret|turret:i_crossbow}, as it has more range, greater health and deals more damage, although with less knockback effect.
+sanlib.lexicon.turret.sapturretmod:turret.minigun.text=Deals low amounts of damage per projectile, but compensates for it with a rapid firing rate.\n\nDue to its high output, and since its shooting compartments aren't directly inside the head, it can store double the amount of rounds (512).
+sanlib.lexicon.turret.sapturretmod:turret.shieldgen.text=This supportive turret creates a forcefield around it that protects the area from any intruders.\n\nTargets within the forcefield will immediately be pushed out, but make sure they don't get stuck, because the shield will quickly drain out in an attempt to get the entity out.
+sanlib.lexicon.turret.sapturretmod:turret.laser.text=Going with the theme, this can be considered as the upgraded version of the {link:Crossbow|turret:i_crossbow} and {link:Revolver Turret|turret:ii_revolver}. With more health, higher damage and firing rate, this can burn anything alive.\n\nIf the target is immune to fire, though, the turret can't damage it, so make sure to configure appropriate targets (or upgrade it).
+sanlib.lexicon.turret.sapturretmod:turret.flamethrower.text=This turret deals large amounts of damage on a rather short distance. Not only that, but it operates in an area of effect like the {link:Shotgun Turret|turret:i_shotgun}, meaning it can hit multiple targets in front of it.\n\nOh yeah, it deals fire damage if it wasn't obvious, thus it can't damage anything with fire-resistance if not upgraded.
+# Upgrades
+sanlib.lexicon.upgrade.name=Upgrades
+sanlib.lexicon.upgrade.turrets=Applicable Turrets
+sanlib.lexicon.upgrade.prereq=Required Upgrade
+sanlib.lexicon.upgrade.sapturretmod:upgrade.empty.text=This is the crafting base for all other upgrades. Not applicable to anything.
+sanlib.lexicon.upgrade.sapturretmod:upgrade.health.1.text=Increases the maximum turret health by 25%% .\n\nThis upgrade strengthens the structure of the turret chassis.\nIt will not increase the turrets health automatically! You must heal it afterwards.
+sanlib.lexicon.upgrade.sapturretmod:upgrade.health.2.text=Increases the maximum turret health by an additional 25%% (50%% in total).\n\nThis upgrade further strengthens the structure of the turret chassis.\nIt will not increase the turrets health automatically! You must heal it afterwards.
+sanlib.lexicon.upgrade.sapturretmod:upgrade.health.3.text=Increases the maximum turret health by an additional 25%% (75%% in total).\n\nThis upgrade strengthens the structure of the turret chassis even further.\nIt will not increase the turrets health automatically! You must heal it afterwards.
+sanlib.lexicon.upgrade.sapturretmod:upgrade.health.4.text=Increases the maximum turret health by an additional 25%% (100%% in total).\n\nThis upgrade strengthens the structure of the turret chassis to the maximum. Note that it isn't applicable to turrets higher than Tier 3, as their structure won't allow further manipulation.\nIt will not increase the turrets health automatically! You must heal it afterwards.
+sanlib.lexicon.upgrade.sapturretmod:upgrade.reload.1.text=Decreases the reload time by 15%% .\n\nIt cools down the parts of the loading mechanism, so it can work faster at the same temperature.\nBe careful with faster shooting turrets, mobs that get hit will get some kind of immunity aura that usually lasts a second. Those with that aura won't get hurt, thus wasting ammunition.\n\nNotice: The Forcefield Turret will use this upgrade to increase its regeneration speed by the same percentage.
+sanlib.lexicon.upgrade.sapturretmod:upgrade.reload.2.text=Decreases the reload time by an additional 35%% (50%% in total).\n\nIt cools down the parts of the loading mechanism better, so the reload can be done even quicker at the same temperature.\n\nNotice: The Forcefield Turret will use this upgrade to increase its regeneration speed by the same percentage.
+sanlib.lexicon.upgrade.sapturretmod:upgrade.upgstorage.1.text=Adds 9 more upgrade slots (18 in total).\n\nProvides an upgrade co-processor to handle 9 more upgrades.
+sanlib.lexicon.upgrade.sapturretmod:upgrade.upgstorage.2.text=Adds 9 more upgrade slots (27 in total).\n\nProvides an upgrade co-processor to handle 9 more upgrades.
+sanlib.lexicon.upgrade.sapturretmod:upgrade.upgstorage.3.text=Adds 9 more upgrade slots (36 in total).\n\nProvides an upgrade co-processor to handle 9 more upgrades.
+sanlib.lexicon.upgrade.sapturretmod:upgrade.ammostorage.text=Increases ammo storage by 100%% .\n\nDuplicates the ammo container inside the turret for more ammunition storage.
+sanlib.lexicon.upgrade.sapturretmod:upgrade.smarttgt.text=Adds a targeting co-processor for smarter target selection. This unlocks a new tab in the TCU that gives you finer targeting control.\n\nThe target list supersedes these settings, meaning if it's set to target tamed creatures, it still won't shoot at tamed wolves if wolves are not set as a target.\n\nBy default, the co-processor is configured to ignore entities targeted by turrets of the same type. The TCU allows further customization:\n\n§3Turret Awareness§0\nChecks surrounding turrets and only allows entities that are not targeted, if enabled.\n\n§3Tamed Awareness§0\nChecks tamed entities and, if configured, their owners.\n\n§3Age Awareness§0\nChecks the age of a targeted entity and only allows either children or adults, if enabled.\n\n§3Count Awareness§0\nCounts targetable entities and compares either the sum of all types (global) or each sum of each type (individual; e.g. sum of cows and sum of pigs). Allows only targeting if the amount is / amounts are above or below the specified value. The value can be between 0 and 256 (inclusive).
+sanlib.lexicon.upgrade.sapturretmod:upgrade.ammousage.1.text=Reduces ammo consumption by an average of 10%% .\n\nCoats the ammo container of a turret with the dust of an emerald, after which the turret has a chance to not consume ammo.
+sanlib.lexicon.upgrade.sapturretmod:upgrade.ammousage.2.text=Reduces ammo consumption by an additional average of 35%% .\n\nReplaces components of the ammo container with gold parts and strengthens the effect of the emerald coating with diamond dust, so the chance of the turret not consuming ammo will be further increased.
+sanlib.lexicon.upgrade.sapturretmod:upgrade.ammousage.inf.text=Stops ammo consumption altogether when ammo container is filled.\n\nCoats the ammo container of a turret with the magic of the Infinity enchantment. The container will then never deplete its supply, but it must be filled to the max with rounds, otherwise it will resort to the other Economy upgrades to reduce ammo usage.
+sanlib.lexicon.upgrade.sapturretmod:upgrade.endermedium.text=Enables damage on fire-resistant entities and increases damage output for the Laser Turret.\n\nReplaces the standard redstone based gain medium with an ender pearl based one inside the turret. The new frequency of the laser fired will inflict damage to anything with fire immunity and also adds bonus damage to everything else.
+sanlib.lexicon.upgrade.sapturretmod:upgrade.fuelpurifier.text=Enables damage on fire-resistant entities and increases damage output for the Flamethrower Turret.\n\nModifies the tank filters to act as a catalyst which purifies the fuel for the turret. The flames will burn blue and damage anything, even fire-resistent entities, with a higher damage value. Be careful, though! Blocks hit by the flames may catch on fire.
+sanlib.lexicon.upgrade.sapturretmod:upgrade.shield.personal.text=Attaches a weak forcefield generator to a turret.\n\nThe shield protects a turret for 20 hitpoints from any attack until its depleted, which will then recover itself slowly. It does not regenerate itself when active.
+sanlib.lexicon.upgrade.sapturretmod:upgrade.shield.projectile.text=Allows the Forcefield Turret to protect an area from projectiles.\n\nThe forcefield generated by the turret will be able to deflect projectiles it can recognise as such. No guarantee for projectiles not made by the gods of the vanilla!
+sanlib.lexicon.upgrade.sapturretmod:upgrade.shield.explosive.text=Allows the Forcefield Turret to protect blocks and entities (which aren't a target) within its perimeter from explosions.\n\nThe forcefield structure is changed to make it stronger and thus resist explosions. Each block and each entity protected will decrease the hitpoints of the shield by 2 HP.
+sanlib.lexicon.upgrade.sapturretmod:upgrade.shield.strength.1.text=Increases the radius of the Forcefield Turret to 16 blocks and hitpoints of the forcefield to 150 HP.\n\nAdds a booster to the forcefield generator to increase hitpoints and range of the protective shield.
+sanlib.lexicon.upgrade.sapturretmod:upgrade.shield.strength.2.text=Increases the radius of the Forcefield Turret to 24 blocks and hitpoints of the forcefield to 250 HP.\n\nAdds a secondary booster to the forcefield generator to further increase hitpoints and range of the protective shield.
+sanlib.lexicon.upgrade.sapturretmod:upgrade.shield.colorizer.text=Allows the colorization of the Forcefield Turret's shield and provides the ability to controll its transparency.
+sanlib.lexicon.upgrade.sapturretmod:upgrade.endertoxin.1.text=Infuses the projectiles of a turret with water in order to be able to damage ender-based creatures like Endermen.\n\nIt also prevents Endermen and Shulkers from teleporting away if damaged by one of these infused projectiles.
+sanlib.lexicon.upgrade.sapturretmod:upgrade.endertoxin.2.text=Coats the water-infused projectiles of a turret with TNT in order to be able to damage huge ender-based creatures like the Ender Dragon.
+sanlib.lexicon.upgrade.assembly_auto.text=Enables automation of the assembly table. Once this is applied, a button will appear where you can toggle the assembly table between manual and automation mode.\n\nIn manual mode it will act like without the upgrade, crafting items on your command.\n\nIn automation mode, you can tell it to craft a specific item. Once the items and the power are available, it'll start crafting and keep crafting until it runs out of ingredients, energy or space in the output slot.\nYou cannot change the item crafted until you cancel it.
+sanlib.lexicon.upgrade.assembly_speed.text=Optimizes the assembly process and makes the assembly table 4x faster. Since this optimization isn't free to come by, it'll increase the energy consumption of the current crafting operation by 10%% (after the 4x increase of RF/t).
+sanlib.lexicon.upgrade.assembly_filter.text=Filters what's going into the assembly table.\nAfter right-clicking you can configure the filter. In empty slots can go anything. In configured slots can only go the item configured (obviously), but those items won't go anywhere else, not even in empty configured slots.\nShift-right-click clears the filter.\n\nThe filter operates not only on the user-side of things (putting stuff into the table via GUI) but also with external insertion devices like the hopper.\n\nPlease note that you can't configure the stack size of items, thus it will always try to put a whole stack (depends on how many items can be stacked together) in a slot.\n\nf you want to put in more than 1 stack into the table, you can configure 2 or more slots with the same item.
+
+
 
 #############Old#################
 #turret.amtp0t1a=Arrows
