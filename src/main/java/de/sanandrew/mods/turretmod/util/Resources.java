@@ -13,7 +13,8 @@ import net.minecraft.util.ResourceLocation;
 
 public enum Resources
 {
-    TURRET_T1_BASE_MODEL("models/entity/turret_base.json"),
+    TURRET_T1_BASE("models/entity/turret_base.json"),
+    TURRET_T1_BASE_BUOY("models/entity/turret_base_buoy.json"),
     TURRET_T1_CROSSBOW("textures/entities/turrets/t1_crossbow.png"),
     TURRET_T1_CROSSBOW_GLOW("textures/entities/turrets/t1_crossbow_glow.png"),
     TURRET_T1_SHOTGUN("textures/entities/turrets/t1_shotgun.png"),

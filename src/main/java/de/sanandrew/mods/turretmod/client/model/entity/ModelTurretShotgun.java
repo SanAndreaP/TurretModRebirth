@@ -15,7 +15,6 @@ import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.ResourceLocation;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,17 +26,12 @@ public class ModelTurretShotgun
 	private ModelRenderer barrel;
 
 	public ModelTurretShotgun(float scale) {
-		super(scale);
+		super(scale, Resources.TURRET_T1_SHOTGUN_MODEL.resource);
 	}
 
 	@Override
 	public List<String> getMandatoryBoxes() {
 		return Stream.concat(super.getMandatoryBoxes().stream(), Stream.of("barrel")).collect(Collectors.toList());
-	}
-
-	@Override
-	public ResourceLocation getModelLocation() {
-		return Resources.TURRET_T1_SHOTGUN_MODEL.resource;
 	}
 
     @Override

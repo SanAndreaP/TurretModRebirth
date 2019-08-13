@@ -15,7 +15,6 @@ import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.ResourceLocation;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +27,7 @@ public class ModelTurretMinigun
     private ModelRenderer barrelBaseRight;
 
     public ModelTurretMinigun(float scale) {
-        super(scale);
+        super(scale, Resources.TURRET_T2_MINIGUN_MODEL.resource);
     }
 
     @Override
@@ -60,10 +59,5 @@ public class ModelTurretMinigun
 
         this.barrelBaseLeft = loader.getBox("barrelBaseLeft");
         this.barrelBaseRight = loader.getBox("barrelBaseRight");
-    }
-
-    @Override
-    public ResourceLocation getModelLocation() {
-        return Resources.TURRET_T2_MINIGUN_MODEL.resource;
     }
 }

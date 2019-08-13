@@ -15,7 +15,6 @@ import de.sanandrew.mods.turretmod.api.client.turret.ITurretRenderRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.model.entity.ModelTurretBase;
-import de.sanandrew.mods.turretmod.client.model.entity.ModelTurretFlamethrower;
 import de.sanandrew.mods.turretmod.client.model.entity.ModelTurretLaser;
 import de.sanandrew.mods.turretmod.client.model.entity.ModelTurretMinigun;
 import de.sanandrew.mods.turretmod.client.model.entity.ModelTurretRevolver;
@@ -24,11 +23,11 @@ import de.sanandrew.mods.turretmod.client.render.layer.LayerTurretGlow;
 import de.sanandrew.mods.turretmod.client.render.layer.LayerTurretUpgrades;
 import de.sanandrew.mods.turretmod.client.util.ClientProxy;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
+import de.sanandrew.mods.turretmod.util.Resources;
 import de.sanandrew.mods.turretmod.util.TurretModRebirth;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLiving;
@@ -227,13 +226,13 @@ public class RenderTurret<E extends EntityLiving & ITurretInst>
 
     public static <T extends EntityLiving & ITurretInst> void initialize(ITurretRenderRegistry<T> registry) {
         registry.register(Turrets.CROSSBOW, new TurretRenderBase<>(registry, ModelTurretBase::new));
-        registry.register(Turrets.HARPOON, new TurretRenderBase<>(registry, ModelTurretBase::new));
+        registry.register(Turrets.HARPOON, new TurretRenderBase<>(registry, scale -> new ModelTurretBase(scale, Resources.TURRET_T1_BASE_BUOY.resource)));
         registry.register(Turrets.SHOTGUN, new TurretRenderBase<>(registry, ModelTurretShotgun::new));
         registry.register(Turrets.CRYOLATOR, new TurretRenderBase<>(registry, ModelTurretBase::new));
         registry.register(Turrets.REVOLVER, new TurretRenderBase<>(registry, ModelTurretRevolver::new));
         registry.register(Turrets.MINIGUN, new TurretRenderBase<>(registry, ModelTurretMinigun::new));
         registry.register(Turrets.LASER, new TurretRenderBase<>(registry, ModelTurretLaser::new));
-        registry.register(Turrets.FLAMETHROWER, new TurretRenderBase<>(registry, ModelTurretFlamethrower::new));
+        registry.register(Turrets.FLAMETHROWER, new TurretRenderBase<>(registry, scale -> new ModelTurretBase(scale, Resources.TURRET_T3_FTHROWER_MODEL.resource)));
         registry.register(Turrets.FORCEFIELD, new TurretRenderShieldGen<>(registry));
     }
 

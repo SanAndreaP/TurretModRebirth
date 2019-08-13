@@ -33,8 +33,12 @@ public class ModelTurretBase
 	private final float scale;
 
 	public ModelTurretBase(float scale) {
+	    this(scale, Resources.TURRET_T1_BASE.resource);
+    }
+
+    public ModelTurretBase(float scale, ResourceLocation modelLocation) {
 		this.scale = scale;
-		this.modelJson = ModelJsonLoader.create(this, this.getModelLocation(), this.getMandatoryBoxes().toArray(new String[0]));
+		this.modelJson = ModelJsonLoader.create(this, modelLocation, this.getMandatoryBoxes().toArray(new String[0]));
 	}
 
 	@Override
@@ -83,9 +87,5 @@ public class ModelTurretBase
 
 	List<String> getMandatoryBoxes() {
 		return Arrays.asList("head", "healthBar", "ammoBar");
-	}
-
-	ResourceLocation getModelLocation() {
-		return Resources.TURRET_T1_BASE_MODEL.resource;
 	}
 }

@@ -11,13 +11,12 @@ package de.sanandrew.mods.turretmod.client.model.entity;
 import de.sanandrew.mods.sanlib.lib.client.ModelJsonLoader;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
 
 public class ModelTurretLaser
         extends ModelTurretBase
 {
     public ModelTurretLaser(float scale) {
-        super(scale);
+        super(scale, Resources.TURRET_T3_LASER_MODEL.resource);
     }
 
     @Override
@@ -28,10 +27,5 @@ public class ModelTurretLaser
         loader.addCustomModelRenderer("barrelRightII", ModelRendererCulled.class);
 
         super.onReload(iResourceManager, loader);
-    }
-
-    @Override
-    public ResourceLocation getModelLocation() {
-        return Resources.TURRET_T3_LASER_MODEL.resource;
     }
 }
