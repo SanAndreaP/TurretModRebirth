@@ -42,10 +42,10 @@ repositories {
 	maven {
 		url = "http://dvs1.progwml6.com/files/maven"
 	}
-	maven {
-		name = "CurseForge"
-		url = "https://minecraft.curseforge.com/api/maven/"
-	}
+    maven { // TOP
+        name 'tterrag maven'
+        url "https://maven.tterrag.com/"
+    }
     maven {
         name = "SanLib"
         url = "https://github.com/SanAndreasP/SanLib/raw/1.12/maven/"
@@ -55,7 +55,7 @@ repositories {
 dependencies {
     deobfCompile "mezz.jei:jei_1.12.2:4.8.5.147:api"
     runtime "mezz.jei:jei_1.12.2:4.8.5.147"
-    deobfCompile "the-one-probe:theoneprobe:1.12:1.4.19"
+    deobfCompile("mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.19-11") { transitive = false }
     deobfCompile "de.sanandrew.mods:SanLib:1.12.2-1.6.0"
 }
 
