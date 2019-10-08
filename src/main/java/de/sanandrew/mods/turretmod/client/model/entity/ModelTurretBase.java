@@ -13,6 +13,7 @@ import de.sanandrew.mods.sanlib.lib.client.ModelJsonLoader;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.resources.IResourceManager;
@@ -49,12 +50,21 @@ public class ModelTurretBase
 		if( this.modelJson.isLoaded() ) {
 			Arrays.asList(this.modelJson.getMainBoxes()).forEach((box) -> {
 				ITurretInst turret = (ITurretInst) entity;
-				int b = turret.getPartBrightnessForRender((23 - box.rotationPointY - box.offsetY) / 16.0);
+				int b = turret.getPartBrightnessForRender(getSubmergedBoxOffset(box));
 				OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, b % 0x1_0000, (float) b / 0x1_0000);
 
 				box.render(scale);
 			});
 		}
+	}
+
+	private double getSubmergedBoxOffset(ModelRenderer box) {
+		if( box.cubeList.size() > 0 ) {
+			ModelBox cube = box.cubeList.get(0);
+			return (23.0D - box.rotationPointY - box.offsetY - cube.posY1) / 16.0D;
+		}
+
+		return (23.0D - box.rotationPointY - box.offsetY) / 16.0D;
 	}
 
 	@Override
