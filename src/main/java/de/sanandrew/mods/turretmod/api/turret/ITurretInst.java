@@ -11,6 +11,8 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.function.Supplier;
 
@@ -57,4 +59,7 @@ public interface ITurretInst
     ITurret.AttackType getAttackType();
 
     TileEntityTurretCrate dismantle();
+
+    @SideOnly(Side.CLIENT)
+    int getPartBrightnessForRender(double partY);
 }

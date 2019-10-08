@@ -123,6 +123,16 @@ public class RenderTurret<E extends EntityLiving & ITurretInst>
     }
 
     @Override
+    protected boolean setScoreTeamColor(E entityLivingBaseIn) {
+        return super.setScoreTeamColor(entityLivingBaseIn);
+    }
+
+    @Override
+    protected boolean setBrightness(E entitylivingbaseIn, float partialTicks, boolean combineTextures) {
+        return super.setBrightness(entitylivingbaseIn, partialTicks, combineTextures);
+    }
+
+    @Override
     protected void applyRotations(E turret, float x, float y, float z) {
         super.applyRotations(turret, x, y, z);
     }

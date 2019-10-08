@@ -14,6 +14,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
@@ -46,7 +47,13 @@ public class ModelTurretBase
 		this.setRotationAngles(limbSwing, limbSwingAmount, rotFloat, rotYaw, rotPitch, scale, entity);
 
 		if( this.modelJson.isLoaded() ) {
-			Arrays.asList(this.modelJson.getMainBoxes()).forEach((box) -> box.render(scale));
+			Arrays.asList(this.modelJson.getMainBoxes()).forEach((box) -> {
+				ITurretInst turret = (ITurretInst) entity;
+				int b = turret.getPartBrightnessForRender((23 - box.rotationPointY - box.offsetY) / 16.0);
+				OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, b % 0x1_0000, (float) b / 0x1_0000);
+
+				box.render(scale);
+			});
 		}
 	}
 

@@ -81,8 +81,7 @@
       "textureHeight": 64,
       "offsetX": -6,
       "offsetY": -4,
-      "offsetZ": -6,
-      "parentBox": "base"
+      "offsetZ": -6
     },
     {
       "boxName": "baseFeetII",
@@ -95,8 +94,7 @@
       "textureHeight": 64,
       "offsetX": -5,
       "offsetY": -3,
-      "offsetZ": -5,
-      "parentBox": "base"
+      "offsetZ": -5
     },
     {
       "boxName": "baseFeetIII",
@@ -109,8 +107,7 @@
       "textureHeight": 64,
       "offsetX": -4,
       "offsetY": -2,
-      "offsetZ": -4,
-      "parentBox": "base"
+      "offsetZ": -4
     },
     {
       "boxName": "baseFeetIV",
@@ -123,8 +120,7 @@
       "textureHeight": 64,
       "offsetX": -3,
       "offsetY": -1,
-      "offsetZ": -3,
-      "parentBox": "base"
+      "offsetZ": -3
     },
     {
       "boxName": "throatEdgeI",
@@ -140,8 +136,7 @@
       "offsetZ": 0,
       "rotationPointY": 16,
       "rotateAngleX": -0.05235987755982988,
-      "rotateAngleZ": 0.05235987755982988,
-      "parentBox": "throat"
+      "rotateAngleZ": 0.05235987755982988
     },
     {
       "boxName": "throatEdgeII",
@@ -157,8 +152,7 @@
       "offsetZ": 0,
       "rotationPointY": 16,
       "rotateAngleX": -0.05235987755982988,
-      "rotateAngleZ": -0.05235987755982988,
-      "parentBox": "throat"
+      "rotateAngleZ": -0.05235987755982988
     },
     {
       "boxName": "throatEdgeIII",
@@ -174,8 +168,7 @@
       "offsetZ": -1,
       "rotationPointY": 16,
       "rotateAngleX": 0.05235987755982988,
-      "rotateAngleZ": 0.05235987755982988,
-      "parentBox": "throat"
+      "rotateAngleZ": 0.05235987755982988
     },
     {
       "boxName": "throatEdgeIV",
@@ -191,8 +184,7 @@
       "offsetZ": -1,
       "rotationPointY": 16,
       "rotateAngleX": 0.05235987755982988,
-      "rotateAngleZ": -0.05235987755982988,
-      "parentBox": "throat"
+      "rotateAngleZ": -0.05235987755982988
     },
     {
       "boxName": "antenna",
@@ -205,8 +197,7 @@
       "textureHeight": 64,
       "offsetX": -0.5,
       "offsetY": -13,
-      "offsetZ": -0.5,
-      "parentBox": "base"
+      "offsetZ": -0.5
     },
     {
       "boxName": "baseRingI",
@@ -219,8 +210,7 @@
       "textureHeight": 64,
       "offsetX": 5,
       "offsetY": -7,
-      "offsetZ": -8,
-      "parentBox": "base"
+      "offsetZ": -8
     },
     {
       "boxName": "baseRingII",
@@ -234,8 +224,7 @@
       "offsetX": 5,
       "offsetY": -7,
       "offsetZ": -8,
-      "rotateAngleY": -1.5707963267948966,
-      "parentBox": "base"
+      "rotateAngleY": -1.5707963267948966
     },
     {
       "boxName": "baseRingIII",
@@ -249,8 +238,7 @@
       "offsetX": 5,
       "offsetY": -7,
       "offsetZ": -8,
-      "rotateAngleY": -3.141592653589793,
-      "parentBox": "base"
+      "rotateAngleY": -3.141592653589793
     },
     {
       "boxName": "baseRingIV",
@@ -264,8 +252,7 @@
       "offsetX": 5,
       "offsetY": -7,
       "offsetZ": -8,
-      "rotateAngleY": 1.5707963267948966,
-      "parentBox": "base"
+      "rotateAngleY": 1.5707963267948966
     }
   ]
 }

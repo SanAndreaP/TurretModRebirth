@@ -62,6 +62,8 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
@@ -705,5 +707,18 @@ public class EntityTurret
         }
 
         return null;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public int getPartBrightnessForRender(double partY) {
+        BlockPos.MutableBlockPos bpos = new BlockPos.MutableBlockPos(MathHelper.floor(this.posX), 0, MathHelper.floor(this.posZ));
+
+        if( this.world.isBlockLoaded(bpos) ) {
+            bpos.setY(MathHelper.floor(this.posY + partY));
+            return this.world.getCombinedLight(bpos, 0);
+        } else {
+            return 0;
+        }
     }
 }
