@@ -19,7 +19,7 @@ public class CapabilityEventHandler
     private static final ResourceLocation CAP_AMMO_CARTRIDGE = new ResourceLocation(TmrConstants.ID, "ammo.cartridge");
 
     @SubscribeEvent
-    public void attachCapability(AttachCapabilitiesEvent<ItemStack> event) {
+    public void attachCapabilityItemStack(AttachCapabilitiesEvent<ItemStack> event) {
         if( event.getObject().getItem() instanceof ItemAmmoCartridge ) {
             event.addCapability(CAP_AMMO_CARTRIDGE, new AmmoCartridgeInventory(event.getObject()));
         }

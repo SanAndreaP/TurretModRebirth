@@ -6,6 +6,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import de.sanandrew.mods.turretmod.registry.turret.shieldgen.ShieldTurret;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
@@ -51,7 +52,7 @@ public class UpgradeShieldColorizer
     }
 
     @Override
-    public void terminate(ITurretInst turretInst) {
+    public void terminate(ITurretInst turretInst, ItemStack stack) {
         turretInst.getUpgradeProcessor().delUpgradeInstance(ID);
         recalcColor(turretInst);
     }

@@ -9,11 +9,9 @@ package de.sanandrew.mods.turretmod.registry.upgrades.smarttargeting;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
-import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-
-import java.util.UUID;
 
 public class SmartTargeting
         implements IUpgrade
@@ -44,7 +42,7 @@ public class SmartTargeting
     }
 
     @Override
-    public void terminate(ITurretInst turretInst) {
+    public void terminate(ITurretInst turretInst, ItemStack stack) {
         turretInst.getUpgradeProcessor().delUpgradeInstance(ID);
     }
 }

@@ -6,17 +6,26 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.event;
 
+import de.sanandrew.mods.sanlib.lib.util.ReflectionUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.entity.turret.EntityTurretProjectile;
+import de.sanandrew.mods.turretmod.registry.upgrades.Leveling;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.registry.upgrades.shield.ShieldPersonal;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.DamageSource;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -43,6 +52,26 @@ public class DamageEventHandler
                     if( crate != null ) {
                         crate.getInventory().replaceSafeUpgrade();
                     }
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onDeath(LivingDeathEvent event) {
+        DamageSource dmgSrc = event.getSource();
+        EntityLivingBase corpse = event.getEntityLiving();
+        if( dmgSrc instanceof EntityTurretProjectile.ITurretDamageSource && corpse.world instanceof WorldServer ) {
+            ITurretInst turret = ((EntityTurretProjectile.ITurretDamageSource) dmgSrc).getTurretInst();
+            if( turret != null && turret.getUpgradeProcessor().hasUpgrade(Upgrades.LEVELING) ) {
+                Leveling.LevelStorage lvlStorage = turret.getUpgradeProcessor().getUpgradeInstance(Upgrades.LEVELING.getId());
+                if( lvlStorage != null ) {
+                    EntityPlayer faker = FakePlayerFactory.getMinecraft((WorldServer) corpse.world);
+
+                    int xp = TmrUtils.getExperiencePoints(event.getEntityLiving(), faker);
+                    xp = net.minecraftforge.event.ForgeEventFactory.getExperienceDrop(corpse, faker, xp);
+
+                    lvlStorage.addXp(xp);
                 }
             }
         }

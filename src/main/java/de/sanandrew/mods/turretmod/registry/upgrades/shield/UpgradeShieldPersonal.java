@@ -9,6 +9,7 @@ package de.sanandrew.mods.turretmod.registry.upgrades.shield;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
@@ -42,7 +43,7 @@ public class UpgradeShieldPersonal
     }
 
     @Override
-    public void terminate(ITurretInst turretInst) {
+    public void terminate(ITurretInst turretInst, ItemStack stack) {
         turretInst.getUpgradeProcessor().<ShieldPersonal>getUpgradeInstance(ID).value = 0;
         turretInst.getUpgradeProcessor().delUpgradeInstance(ID);
     }

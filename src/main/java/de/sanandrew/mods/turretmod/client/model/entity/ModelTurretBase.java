@@ -58,7 +58,7 @@ public class ModelTurretBase
 		}
 	}
 
-	private double getSubmergedBoxOffset(ModelRenderer box) {
+	private static double getSubmergedBoxOffset(ModelRenderer box) {
 		if( box.cubeList.size() > 0 ) {
 			ModelBox cube = box.cubeList.get(0);
 			return (23.0D - box.rotationPointY - box.offsetY - cube.posY1) / 16.0D;

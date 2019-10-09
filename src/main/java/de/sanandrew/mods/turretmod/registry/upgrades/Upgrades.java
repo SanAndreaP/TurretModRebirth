@@ -41,12 +41,13 @@ public class Upgrades
     public static final IUpgrade ENDER_TOXIN_I = new SimpleUpgrade("endertoxin.1");
     public static final IUpgrade ENDER_TOXIN_II =  new SimpleUpgrade("endertoxin.2", ENDER_TOXIN_I);
     public static final IUpgrade TURRET_SAFE = new SimpleUpgrade("turretsafe");
+    public static final IUpgrade LEVELING = new Leveling();
 
     public static void initialize(IUpgradeRegistry registry) {
         IRegistry.registerAll(registry,
                               UPG_STORAGE_I, UPG_STORAGE_II, UPG_STORAGE_III, AMMO_STORAGE, HEALTH_I, HEALTH_II, HEALTH_III, HEALTH_IV,
                               RELOAD_I, RELOAD_II, SMART_TGT, ECONOMY_I, ECONOMY_II, ECONOMY_INF, ENDER_MEDIUM, FUEL_PURIFY,
                               SHIELD_PERSONAL, SHIELD_PROJECTILE, SHIELD_EXPLOSIVE, SHIELD_STRENGTH_I, SHIELD_STRENGTH_II,
-                              SHIELD_COLORIZER, ENDER_TOXIN_I, ENDER_TOXIN_II, TURRET_SAFE);
+                              SHIELD_COLORIZER, ENDER_TOXIN_I, ENDER_TOXIN_II, TURRET_SAFE, LEVELING);
     }
 }

@@ -3,6 +3,7 @@ package de.sanandrew.mods.turretmod.api.upgrade;
 import de.sanandrew.mods.turretmod.api.IRegistryObject;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import org.apache.commons.lang3.Range;
 
@@ -82,6 +83,7 @@ public interface IUpgrade
      * <p><b>This should be invoked on the client and server side.</b></p>
      *
      * @param turretInst The turret instance this upgrade gets removed from.
+     * @param stack
      */
-    default void terminate(ITurretInst turretInst) { }
+    default void terminate(ITurretInst turretInst, ItemStack stack) { }
 }

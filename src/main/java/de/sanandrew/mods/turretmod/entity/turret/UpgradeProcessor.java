@@ -67,44 +67,39 @@ public final class UpgradeProcessor
                     IUpgrade upg = UpgradeRegistry.INSTANCE.getObject(invStack);
                     IUpgrade dep = upg.getDependantOn();
                     if( dep != null && !this.hasUpgrade(dep) ) {
-                        if( !turretL.world.isRemote ) {
-                            EntityItem itm = new EntityItem(turretL.world, turretL.posX, turretL.posY, turretL.posZ, invStack);
-                            turretL.world.spawnEntity(itm);
-                        }
-                        upg.terminate(this.turret);
-                        this.upgradeStacks.set(i, ItemStackUtils.getEmpty());
+                        dropUpgrade(turretL, i, invStack, upg);
                     }
                 }
             }
 
             if( !this.hasUpgrade(Upgrades.UPG_STORAGE_III) ) {
                 for( int i = 27, max = this.upgradeStacks.size(); i < max; i++ ) {
-                    dropUpgrade(turretL, i, this.upgradeStacks.get(i));
+                    dropUpgrade(turretL, i, this.upgradeStacks.get(i), null);
                 }
             }
 
             if( !this.hasUpgrade(Upgrades.UPG_STORAGE_II) ) {
                 for( int i = 18; i < 27; i++ ) {
-                    dropUpgrade(turretL, i, this.upgradeStacks.get(i));
+                    dropUpgrade(turretL, i, this.upgradeStacks.get(i), null);
                 }
             }
 
             if( !this.hasUpgrade(Upgrades.UPG_STORAGE_I) ) {
                 for( int i = 9; i < 18; i++ ) {
-                    dropUpgrade(turretL, i, this.upgradeStacks.get(i));
+                    dropUpgrade(turretL, i, this.upgradeStacks.get(i), null);
                 }
             }
         }
     }
 
-    private void dropUpgrade(EntityLiving entity, int slot, ItemStack stack) {
+    private void dropUpgrade(EntityLiving entity, int slot, ItemStack stack, IUpgrade upg) {
         if( ItemStackUtils.isValid(stack) ) {
             if( !entity.world.isRemote ) {
                 EntityItem itm = new EntityItem(entity.world, entity.posX, entity.posY, entity.posZ, stack);
                 entity.world.spawnEntity(itm);
             }
-            IUpgrade upg = UpgradeRegistry.INSTANCE.getObject(stack);
-            upg.terminate(this.turret);
+            upg = upg != null ? upg : UpgradeRegistry.INSTANCE.getObject(stack);
+            upg.terminate(this.turret, stack);
             this.upgradeStacks.set(slot, ItemStackUtils.getEmpty());
         }
     }
@@ -165,7 +160,7 @@ public final class UpgradeProcessor
 
             if( slotStack.getCount() <= amount ) {
                 IUpgrade upg = UpgradeRegistry.INSTANCE.getObject(slotStack);
-                upg.terminate(this.turret);
+                upg.terminate(this.turret, slotStack);
 
                 itemstack = slotStack;
                 this.upgradeStacks.set(slot, ItemStackUtils.getEmpty());
@@ -204,7 +199,7 @@ public final class UpgradeProcessor
         if( !ItemStackUtils.areEqual(slotStack, stack) ) {
             if( ItemStackUtils.isValid(slotStack) ) {
                 IUpgrade upg = UpgradeRegistry.INSTANCE.getObject(slotStack);
-                upg.terminate(this.turret);
+                upg.terminate(this.turret, slotStack);
             }
 
             if( ItemStackUtils.isValid(stack) ) {

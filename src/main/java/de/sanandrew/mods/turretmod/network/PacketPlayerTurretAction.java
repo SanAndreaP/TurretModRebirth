@@ -65,7 +65,7 @@ public class PacketPlayerTurretAction
     }
 
     public static boolean tryDismantle(EntityPlayer player, ITurretInst turretInst) {
-        Tuple crateItm = InventoryUtils.getSimilarStackFromInventory(new ItemStack(BlockRegistry.TURRET_CRATE), player.inventory, true);
+        Tuple crateItm = InventoryUtils.getSimilarStackFromInventory(new ItemStack(BlockRegistry.TURRET_CRATE), player.inventory, false);
         if( crateItm != null && ItemStackUtils.isValid(crateItm.getValue(1)) ) {
             ItemStack crateStack = crateItm.getValue(1);
             EntityLiving turretL = turretInst.get();

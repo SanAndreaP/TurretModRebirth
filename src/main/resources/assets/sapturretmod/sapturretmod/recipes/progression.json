@@ -1,0 +1,46 @@
+{
+  "type": "sapturretmod:progression",
+  "progressions": [
+    {
+      "id": "sapturretmod:progress:tier_2",
+      "unlocks": [
+        { "item": "sapturretmod:ammo.eleccell" },
+        { "item": "sapturretmod:ammo.minigunshell" },
+        { "item": "sapturretmod:ammo.bullet" },
+        { "item": "sapturretmod:repkit.standard.2" },
+        { "item": "sapturretmod:turret.forcefield" },
+        { "item": "sapturretmod:turret.revolver" },
+        { "item": "sapturretmod:turret.minigun" },
+        { "item": "sapturretmod:upgrade.ammousage.2" },
+        { "item": "sapturretmod:upgrade.endertoxin.1" },
+        { "item": "sapturretmod:upgrade.health.2" },
+        { "item": "sapturretmod:upgrade.shield.colorizer" },
+        { "item": "sapturretmod:upgrade.shield.personal" },
+        { "item": "sapturretmod:upgrade.shield.strength.1" },
+        { "item": "sapturretmod:upgrade.smarttgt" },
+        { "item": "sapturretmod:upgrade.upgstorage.2" }
+      ]
+    },
+    {
+      "id": "sapturretmod:progress:tier_3",
+      "unlocks": [
+        { "progression": "sapturretmod:progress:tier_2" },
+        { "item": "sapturretmod:ammo.fluxcell" },
+        { "item": "sapturretmod:ammo.fueltank" },
+        { "item": "sapturretmod:repkit.standard.3" },
+        { "item": "sapturretmod:turret.flamethrower" },
+        { "item": "sapturretmod:turret.laser" },
+        { "item": "sapturretmod:upgrade.ammousage.inf" },
+        { "item": "sapturretmod:upgrade.endermedium" },
+        { "item": "sapturretmod:upgrade.endertoxin.2" },
+        { "item": "sapturretmod:upgrade.fuelpurifier" },
+        { "item": "sapturretmod:upgrade.health.3" },
+        { "item": "sapturretmod:upgrade.reload.2" },
+        { "item": "sapturretmod:upgrade.shield.explosive" },
+        { "item": "sapturretmod:upgrade.shield.projectile" },
+        { "item": "sapturretmod:upgrade.shield.strength.2" },
+        { "item": "sapturretmod:upgrade.upgstorage.3" }
+      ]
+    }
+  ]
+}

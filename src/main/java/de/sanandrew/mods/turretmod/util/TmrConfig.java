@@ -70,6 +70,9 @@ public final class TmrConfig
         public static boolean playerCanEditAll = false;
     }
 
+    @Value(comment = "Whether or not progression based crafting is activated (N/A)")
+    public static boolean doProgression = true;
+
     public static final class Turrets
     {
         @Init

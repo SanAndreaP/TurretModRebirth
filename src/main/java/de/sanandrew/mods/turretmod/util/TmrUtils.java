@@ -12,6 +12,7 @@ import com.google.gson.JsonObject;
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.sanlib.lib.util.ReflectionUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.ITmrUtils;
 import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
@@ -47,6 +48,13 @@ public class TmrUtils
         implements ITmrUtils
 {
     public static final TmrUtils INSTANCE = new TmrUtils();
+
+    //region SRG-Reflections
+    public static int getExperiencePoints(EntityLivingBase target, EntityPlayer player) {
+        return ReflectionUtils.invokeCachedMethod(EntityLivingBase.class, target, "getExperiencePoints", "func_70693_a",
+                                                  new Class[] { EntityPlayer.class }, new Object[]{ player });
+    }
+    //endregion
 
     @Override
     public void openGui(EntityPlayer player, EnumGui id, int x, int y, int z) {
