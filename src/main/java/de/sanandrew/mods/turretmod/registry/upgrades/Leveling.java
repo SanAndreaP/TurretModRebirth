@@ -102,7 +102,8 @@ public class Leveling
             }
         }
 
-        /*
+/*
+
 ------------------------------------------------------------------------------------------------------------------------
 How I figured out the formula for getting the level at {x} XP points (last formula, as it was the most complicated one)
 Base formula (y = 4.5x² - 162.5x + 2220; x = level; y = total xp points) from minecraft wiki
@@ -124,7 +125,8 @@ x = sqrt(0.̅2y - 167.33) + 18.0̅5
 Notes: - to correctly get the level and not underlevel, 0.̅2 needs to be written as a simple fraction in code -> (10.0D / 45.0D)
        - 18.0̅5 can be rounded to 3 decimal places -> 18.056D
        - The resulting decimal is floored, providing an integer
-         */
+
+*/
         public int getLevel() {
             if( this.cachedLevel > -1 ) {
                 return this.cachedLevel;
