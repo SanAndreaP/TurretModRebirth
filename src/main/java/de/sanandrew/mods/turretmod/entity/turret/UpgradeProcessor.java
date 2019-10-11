@@ -107,13 +107,13 @@ public final class UpgradeProcessor
     @Override
     public boolean hasUpgrade(ResourceLocation id) {
         final ItemStack upgItemStack = UpgradeRegistry.INSTANCE.getItem(id);
-        return ItemStackUtils.isStackInList(upgItemStack, this.upgradeStacks);
+        return this.upgradeStacks.stream().anyMatch(currStack -> ItemStackUtils.areEqual(upgItemStack, currStack, false));
     }
 
     @Override
     public boolean hasUpgrade(IUpgrade upg) {
         final ItemStack upgItemStack = UpgradeRegistry.INSTANCE.getItem(upg.getId());
-        return ItemStackUtils.isStackInList(upgItemStack, this.upgradeStacks);
+        return this.upgradeStacks.stream().anyMatch(currStack -> ItemStackUtils.areEqual(upgItemStack, currStack, false));
     }
 
     @Override
@@ -204,7 +204,7 @@ public final class UpgradeProcessor
 
             if( ItemStackUtils.isValid(stack) ) {
                 IUpgrade upg = UpgradeRegistry.INSTANCE.getObject(stack);
-                upg.initialize(this.turret);
+                upg.initialize(this.turret, stack);
             }
         }
 
@@ -332,7 +332,7 @@ public final class UpgradeProcessor
         return false;
     }
 
-    public void dropUpgrades() {
+    void dropUpgrades() {
         EntityLiving turretL = this.turret.get();
 
         for( int i = 0; i < this.getSizeInventory(); i++ ) {
@@ -381,7 +381,7 @@ public final class UpgradeProcessor
 
     private void callbackReadUpgStack(@Nonnull ItemStack upgStack, NBTTagCompound nbt) {
         IUpgrade upg = UpgradeRegistry.INSTANCE.getObject(upgStack);
-        upg.initialize(this.turret);
+        upg.initialize(this.turret, upgStack);
         upg.onLoad(this.turret, nbt);
     }
 }

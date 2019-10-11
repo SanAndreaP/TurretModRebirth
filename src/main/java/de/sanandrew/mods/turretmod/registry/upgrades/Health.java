@@ -39,7 +39,7 @@ public abstract class Health
     }
 
     @Override
-    public void initialize(ITurretInst turretInst) {
+    public void initialize(ITurretInst turretInst, ItemStack stack) {
         if( !turretInst.get().world.isRemote ) {
             IAttributeInstance attrib = turretInst.get().getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH);
             if( attrib.getModifier(this.modifier.getID()) != null ) {

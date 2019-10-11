@@ -33,7 +33,7 @@ public class AmmoStorage
     }
 
     @Override
-    public void initialize(ITurretInst turretInst) {
+    public void initialize(ITurretInst turretInst, ItemStack stack) {
         if( !turretInst.get().world.isRemote ) {
             IAttributeInstance attrib = turretInst.get().getEntityAttribute(TurretAttributes.MAX_AMMO_CAPACITY);
             if( attrib.getModifier(MODIFIER.getID()) != null ) {

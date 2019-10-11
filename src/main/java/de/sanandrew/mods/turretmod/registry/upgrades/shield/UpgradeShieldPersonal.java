@@ -24,7 +24,7 @@ public class UpgradeShieldPersonal
     }
 
     @Override
-    public void initialize(ITurretInst turretInst) {
+    public void initialize(ITurretInst turretInst, ItemStack stack) {
         turretInst.getUpgradeProcessor().setUpgradeInstance(ID, new ShieldPersonal(20.0F));
     }
 

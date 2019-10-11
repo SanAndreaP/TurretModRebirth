@@ -56,8 +56,9 @@ public interface IUpgrade
      * <p><b>This should be invoked on the client and server side.</b></p>
      *
      * @param turretInst The turret instance this upgrade gets applied to.
+     * @param stack
      */
-    default void initialize(ITurretInst turretInst) { }
+    default void initialize(ITurretInst turretInst, ItemStack stack) { }
 
     /**
      * <p>Reads additional data for this upgrade from the provided NBT tag.</p>

@@ -24,7 +24,7 @@ public class SmartTargeting
     }
 
     @Override
-    public void initialize(ITurretInst turretInst) {
+    public void initialize(ITurretInst turretInst, ItemStack stack) {
         turretInst.getUpgradeProcessor().setUpgradeInstance(ID, new AdvTargetSettings());
     }
 

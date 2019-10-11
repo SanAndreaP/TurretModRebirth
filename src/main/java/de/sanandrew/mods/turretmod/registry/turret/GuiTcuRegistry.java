@@ -50,6 +50,7 @@ public final class GuiTcuRegistry
     public static final ResourceLocation GUI_TARGETS_SMART = new ResourceLocation(TmrConstants.ID, "targets.smart");
     public static final ResourceLocation GUI_UPGRADES = new ResourceLocation(TmrConstants.ID, "upgrades");
     public static final ResourceLocation GUI_COLORIZER = new ResourceLocation(TmrConstants.ID, "colorizer");
+    public static final ResourceLocation GUI_LEVELING = new ResourceLocation(TmrConstants.ID, "leveling");
 
     public static final List<ResourceLocation> GUI_ENTRIES = new ArrayList<>();
     public static final GuiTcuRegistry INSTANCE = new GuiTcuRegistry();
@@ -140,6 +141,7 @@ public final class GuiTcuRegistry
         registry.registerGuiEntry(GUI_TARGETS_SMART, 3, null);
         registry.registerGuiEntry(GUI_UPGRADES, 4, (player, turretInst) -> new ContainerTurretUpgrades(player.inventory, (UpgradeProcessor) turretInst.getUpgradeProcessor()));
         registry.registerGuiEntry(GUI_COLORIZER, 5, null);
+        registry.registerGuiEntry(GUI_LEVELING, 6, null);
     }
 
     @SubscribeEvent

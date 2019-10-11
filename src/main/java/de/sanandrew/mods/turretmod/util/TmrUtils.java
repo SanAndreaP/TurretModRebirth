@@ -26,6 +26,9 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.IAttribute;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -240,6 +243,22 @@ public class TmrUtils
     public static void dropBlockItems(IInventory inv, World world, BlockPos pos) {
         for( int i = 0, max = inv.getSizeInventory(); i < max; i++ ) {
             dropItem(inv.getStackInSlot(i), world, pos);
+        }
+    }
+
+    //TODO: use this for modifier applications
+    public static void tryApplyModifier(EntityLivingBase e, IAttribute attribute, AttributeModifier modifier) {
+        IAttributeInstance attrib = e.getEntityAttribute(attribute);
+        if( !attrib.hasModifier(modifier) ) {
+            attrib.applyModifier(modifier);
+        }
+    }
+
+    //TODO: use this for modifier removal
+    public static void tryRemoveModifier(EntityLivingBase e, IAttribute attribute, AttributeModifier modifier) {
+        IAttributeInstance attrib = e.getEntityAttribute(attribute);
+        if( attrib.hasModifier(modifier) ) {
+            attrib.removeModifier(modifier);
         }
     }
 

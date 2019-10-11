@@ -51,6 +51,7 @@ public final class TmrConfig
     private static Configuration configTurrets;
     private static Configuration configProjectiles;
     private static Configuration configTargets;
+    private static Configuration configUpgrades;
 
     @Category(Configuration.CATEGORY_CLIENT)
     public static final class Client

@@ -37,6 +37,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public final class GuiTcuHelper
 {
@@ -58,22 +59,25 @@ public final class GuiTcuHelper
     void initGui(IGuiTcuInst<?> gui) {
         this.tabs.clear();
 
-        MutableInt currIndex = new MutableInt(0);
         for( ResourceLocation location : GuiTcuRegistry.GUI_ENTRIES ) {
             GuiTcuRegistry.GuiEntry entry = GuiTcuRegistry.INSTANCE.getGuiEntry(location);
-            if( entry != null && entry.showTab(gui) ) {
-                GuiButton btn = new GuiButtonTcuTab(gui.getNewButtonId(), 0, gui.getPosY() + 213, entry.getIcon(),
-                                                    LangUtils.translate(Lang.TCU_PAGE_TITLE.get(location.getResourceDomain(), location.getResourcePath())));
+            if( entry != null ) {
+                GuiButtonTcuTab btn = new GuiButtonTcuTab(gui.getNewButtonId(), 0, gui.getPosY() + 213, entry.getIcon(),
+                                                          LangUtils.translate(Lang.TCU_PAGE_TITLE.get(location.getResourceDomain(), location.getResourcePath())));
                 btn.visible = false;
                 btn.enabled = !location.equals(gui.getCurrentEntryKey());
-                if( btn.enabled && (currIndex.getValue() < currTabScroll || currIndex.getValue() >= currTabScroll + MAX_TABS) ) {
-                    currTabScroll = Math.min(Math.max(currIndex.getValue() - MathHelper.floor(MAX_TABS / 2.0F), 0), this.tabs.size() - MAX_TABS + 1);
-                }
                 gui.addNewButton(btn);
                 this.tabs.put(btn, location);
-                currIndex.increment();
+
             }
         }
+        MutableInt currIndex = new MutableInt(0);
+        this.getShownTabs(gui).forEach((b, l) -> {
+            if( b.enabled && (currIndex.getValue() < currTabScroll || currIndex.getValue() >= currTabScroll + MAX_TABS) ) {
+                currTabScroll = Math.min(Math.max(currIndex.getValue() - MathHelper.floor(MAX_TABS / 2.0F), 0), this.tabs.size() - MAX_TABS + 1);
+            }
+            currIndex.increment();
+        });
         this.tabNavLeft = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), 0, gui.getPosY() + 213, 18, 0, Resources.GUI_TCU_BUTTONS.resource, ""));
         this.tabNavLeft.visible = false;
         this.tabNavRight = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), 0, gui.getPosY() + 213, 36, 0, Resources.GUI_TCU_BUTTONS.resource, ""));
@@ -84,15 +88,23 @@ public final class GuiTcuHelper
         return ItemStackUtils.isItem(mc.player.getHeldItemMainhand(), ItemRegistry.TURRET_CONTROL_UNIT) && turretInst.hasPlayerPermission(mc.player);
     }
 
+    private Map<GuiButton, ResourceLocation> getShownTabs(IGuiTcuInst<?> gui) {
+        return this.tabs.entrySet().stream()
+                        .filter(e -> GuiTcuRegistry.INSTANCE.getGuiEntry(e.getValue()).showTab(gui))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v1, v2) -> v1, () -> new TreeMap<>(new ComparatorTabButton())));
+    }
+
     void updateScreen(Minecraft mc, IGuiTcuInst<?> gui) {
         if( gui.getTurretInst().get().isDead || gui.getTurretInst().get().getDistance(mc.player) > 36.0D ) {
             mc.player.closeScreen();
         }
 
-        int maxTabs = Math.min(this.tabs.size(), MAX_TABS);
+        Map<GuiButton, ResourceLocation> sTabs = this.getShownTabs(gui);
+        int maxTabs = Math.min(sTabs.size(), MAX_TABS);
         int minXTabs = gui.getPosX() + (gui.getWidth() - maxTabs * 19 + 1) / 2;
         MutableInt currIndex = new MutableInt(0);
-        this.tabs.forEach((btn, location) -> {
+        this.tabs.forEach((b, r) -> b.visible = false);
+        sTabs.forEach((btn, location) -> {
             int cInd = currIndex.getAndIncrement();
             btn.visible = cInd >= currTabScroll && cInd < currTabScroll + MAX_TABS;
             btn.enabled = !gui.getCurrentEntryKey().equals(location);
@@ -101,7 +113,7 @@ public final class GuiTcuHelper
         this.tabNavLeft.x = minXTabs - 19;
         this.tabNavRight.x = minXTabs + maxTabs * 19;
         this.tabNavLeft.visible = currTabScroll > 0;
-        this.tabNavRight.visible = currTabScroll + MAX_TABS < this.tabs.size();
+        this.tabNavRight.visible = currTabScroll + MAX_TABS < sTabs.size();
     }
 
     void drawScreen(IGuiTcuInst<?> gui) {
@@ -145,6 +157,7 @@ public final class GuiTcuHelper
         registry.registerGui(GuiTcuRegistry.GUI_TARGETS_SMART, UpgradeRegistry.INSTANCE.getItem(Upgrades.SMART_TGT.getId()), GuiSmartTargets::new, GuiSmartTargets::showTab);
         registry.registerGui(GuiTcuRegistry.GUI_UPGRADES, UpgradeRegistry.INSTANCE.getItem(UpgradeRegistry.EMPTY_UPGRADE.getId()), GuiUpgrades::new, IGuiTcuInst::hasPermision);
         registry.registerGui(GuiTcuRegistry.GUI_COLORIZER, UpgradeRegistry.INSTANCE.getItem(Upgrades.SHIELD_COLORIZER.getId()), GuiShieldColorizer::new, GuiShieldColorizer::showTab);
+        registry.registerGui(GuiTcuRegistry.GUI_LEVELING, UpgradeRegistry.INSTANCE.getItem(Upgrades.LEVELING.getId()), GuiLevels::new, GuiLevels::showTab);
     }
 
     private static final class ComparatorTabButton

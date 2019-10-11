@@ -1,9 +1,18 @@
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
+import de.sanandrew.mods.sanlib.lib.util.config.Category;
+import de.sanandrew.mods.sanlib.lib.util.config.Value;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeInstance;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -13,11 +22,17 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class Leveling
         implements IUpgrade
 {
     private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "upgrade.leveling");
+
+    private static final String NBT_ITEM_LEVELS = "Levels";
+    private static final String NBT_EXPERIENCE = "Experience";
 
     @Nonnull
     @Override
@@ -26,8 +41,20 @@ public class Leveling
     }
 
     @Override
-    public void initialize(ITurretInst turretInst) {
-        turretInst.getUpgradeProcessor().setUpgradeInstance(ID, new LevelStorage());
+    public void initialize(ITurretInst turretInst, ItemStack stack) {
+        IUpgradeProcessor processor = turretInst.getUpgradeProcessor();
+        if( processor.getUpgradeInstance(ID) == null ) {
+            if( turretInst.get().isServerWorld() ) {
+                NBTTagCompound lvlNbt = stack.getSubCompound(NBT_ITEM_LEVELS);
+                LevelStorage stg = lvlNbt != null && lvlNbt.hasKey(NBT_EXPERIENCE)
+                                   ? new LevelStorage(lvlNbt.getInteger(NBT_EXPERIENCE))
+                                   : new LevelStorage();
+                processor.setUpgradeInstance(ID, stg);
+                UpgradeRegistry.INSTANCE.syncWithClients(turretInst, ID);
+            } else {
+                processor.setUpgradeInstance(ID, new LevelStorage());
+            }
+        }
     }
 
     @Override
@@ -42,18 +69,31 @@ public class Leveling
 
     @Override
     public void terminate(ITurretInst turretInst, ItemStack stack) {
-        turretInst.getUpgradeProcessor().delUpgradeInstance(ID);
+        LevelStorage stg = turretInst.getUpgradeProcessor().getUpgradeInstance(ID);
+        if( stg != null ) {
+            NBTTagCompound lvlNbt = stack.getOrCreateSubCompound(NBT_ITEM_LEVELS);
+            lvlNbt.setInteger(NBT_EXPERIENCE, stg.xp);
+
+            turretInst.getUpgradeProcessor().delUpgradeInstance(ID);
+        }
     }
 
-    @SuppressWarnings({"WeakerAccess", "unused"})
+    @SuppressWarnings("unused")
     @IUpgradeInstance.Tickable
+    @Category("Leveling")
     public static class LevelStorage
             implements IUpgradeInstance<LevelStorage>
     {
-        private static final int MAX_XP = 5_345; // level 50
+        @Value(comment = "The maximum XP a turret can gain through the Leveling upgrade. The default is 50 levels worth; see https://minecraft.gamepedia.com/Experience#Leveling_up")
+        public static int maxXp = 5_345; // level 50
+        @Value()
+        public static String stagesJson = "";
+        public static Stages[] stages;
+
         private int prevXp;
         private int xp;
         private int cachedLevel;
+        private Stages currStage;
 
         LevelStorage() {
             this.xp = 0;
@@ -81,12 +121,15 @@ public class Leveling
 
         @Override
         public void onTick(ITurretInst turretInst) {
-            if( this.prevXp != this.xp ) {
+            if( turretInst.get().isServerWorld() && this.prevXp != this.xp ) {
                 UpgradeRegistry.INSTANCE.syncWithClients(turretInst, Leveling.ID);
 
                 this.prevXp = this.xp;
                 this.cachedLevel = -1;
             }
+        }
+
+        private void applyEffects() {
         }
 
         public int getXp() {
@@ -96,8 +139,8 @@ public class Leveling
         public void addXp(int xp) {
             if( xp > 0 ) {
                 this.xp += xp;
-                if( this.xp > MAX_XP ) {
-                    this.xp = MAX_XP;
+                if( this.xp > maxXp) {
+                    this.xp = maxXp;
                 }
             }
         }
@@ -142,22 +185,56 @@ Notes: - to correctly get the level and not underlevel, 0.̅2 needs to be writte
         }
 
         public int getNextLevelMinXp() {
-            return getXpReqForNextLevel(this.getLevel());
+            return getXpReqForNextLevel(this.getLevel() + 1);
         }
 
         public int getCurrentLevelMinXp() {
-            return getXpReqForNextLevel(this.getLevel() - 1);
+            return getXpReqForNextLevel(this.getLevel());
         }
 
         private static int getXpReqForNextLevel(int lvl) {
             if ( lvl < 0 ) {
                 return 0;
-            } else if( lvl < 16 ) {
-                return 2 * lvl + 7;
-            } else if( lvl < 31 ) {
-                return 5 * lvl - 38;
+            } else if( lvl < 17 ) {
+                return lvl * lvl + 6 * lvl;
+            } else if( lvl < 32 ) {
+                return MathHelper.floor(2.5D * lvl * lvl - 40.5D * lvl + 360);
             } else {
-                return 9 * lvl - 158;
+                return MathHelper.floor(4.5D * lvl * lvl - 162.5D * lvl + 2220);
+            }
+        }
+
+        private Stages[] loadFromJson() {
+            JsonArray jArray = JsonUtils.GSON.fromJson(stagesJson, JsonArray.class);
+            List<Stages> stages = new ArrayList<>();
+            jArray.forEach(e -> {
+                JsonObject stage = e.getAsJsonObject();
+                int lvl = stage.get("level").getAsInt();
+                List<AttributeModifier> modifiers = new ArrayList<>();
+                stage.get("modifiers").getAsJsonArray().forEach(m -> {
+                    JsonObject mod = m.getAsJsonObject();
+                    modifiers.add(new AttributeModifier(UUID.fromString(mod.get("id").getAsString()),
+                                                        mod.get("name").getAsString(),
+                                                        mod.get("amount").getAsDouble(),
+                                                        mod.get("mode").getAsInt()));
+                });
+
+                stages.add(new Stages(lvl, modifiers.toArray(new AttributeModifier[0])));
+            });
+
+            return stages.toArray(new Stages[0]);
+        }
+
+        static class Stages
+        {
+            public final int level;
+
+            Stages(int level, AttributeModifier... modifiers) {
+                this.level = level;
+            }
+
+            public boolean check(int level, Stages currStage) {
+                return level >= this.level && currStage.level < this.level;
             }
         }
     }

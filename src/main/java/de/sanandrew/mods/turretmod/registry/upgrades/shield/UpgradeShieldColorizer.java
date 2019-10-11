@@ -32,7 +32,7 @@ public class UpgradeShieldColorizer
     }
 
     @Override
-    public void initialize(ITurretInst turretInst) {
+    public void initialize(ITurretInst turretInst, ItemStack stack) {
         turretInst.getUpgradeProcessor().setUpgradeInstance(ID, new ShieldColorizer());
         recalcColor(turretInst);
     }
