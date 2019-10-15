@@ -48,7 +48,7 @@ public class BlockTurretAssembly
         this.setCreativeTab(TmrCreativeTabs.MISC);
         this.setHardness(4.25F);
         this.blockSoundType = SoundType.STONE;
-        this.setUnlocalizedName(TmrConstants.ID + ":turret_assembly");
+        this.setTranslationKey(TmrConstants.ID + ":turret_assembly");
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
         this.setRegistryName(TmrConstants.ID, "turret_assembly");
     }
@@ -78,7 +78,7 @@ public class BlockTurretAssembly
     @Override
     @SuppressWarnings("deprecation")
     public IBlockState getStateFromMeta(int meta) {
-        EnumFacing enumfacing = EnumFacing.getFront(meta);
+        EnumFacing enumfacing = EnumFacing.byIndex(meta);
 
         if( enumfacing.getAxis() == EnumFacing.Axis.Y ) {
             enumfacing = EnumFacing.NORTH;

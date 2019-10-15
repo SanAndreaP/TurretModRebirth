@@ -38,7 +38,7 @@ public final class LexiconGroupUpgrade
         grp.addEntry(new LexiconEntryAssemblyUpgrade("assembly_filter", new ItemStack(ItemRegistry.ASSEMBLY_UPG_FILTER)).setDivideAfter());
 
         UpgradeRegistry.INSTANCE.getObjects().stream()
-                                .sorted(ResourceOrderer.getOrderComparator(IRegistryObject::getId, t -> LangUtils.translate(ItemRegistry.TURRET_UPGRADES.get(t.getId()).getUnlocalizedName() + ".name")))
+                                .sorted(ResourceOrderer.getOrderComparator(IRegistryObject::getId, t -> LangUtils.translate(ItemRegistry.TURRET_UPGRADES.get(t.getId()).getTranslationKey() + ".name")))
                                 .forEach(u -> grp.addEntry(new LexiconEntryUpgrade(u)));
     }
 }

@@ -24,7 +24,7 @@ public class ItemTurretControlUnit
     public ItemTurretControlUnit() {
         super();
 
-        this.setUnlocalizedName(TurretMod.MOD_ID + ":turret_control_unit");
+        this.setTranslationKey(TurretMod.MOD_ID + ":turret_control_unit");
         this.setTextureName(TurretMod.MOD_ID + ":tcu");
         this.setCreativeTab(TmrCreativeTabs.MISC);
     }
@@ -38,6 +38,6 @@ public class ItemTurretControlUnit
             this.nameId = MathHelper.ceiling_double_int(indFloat);
         }
         this.prevDisplayNameTime = currDisplayNameTime;
-        return SAPUtils.translatePreFormat("%s.name.%d", this.getUnlocalizedName(), this.nameId);
+        return SAPUtils.translatePreFormat("%s.name.%d", this.getTranslationKey(), this.nameId);
     }
 }

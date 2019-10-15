@@ -193,7 +193,7 @@ public class TileEntityTurretAssembly
             this.isActiveClient = this.isActive;
             if( this.isActive && this.currRecipe != null ) {
                 for( int i = 0; i < maxLoop; i++ ) {
-                    if( this.energyStorage.fluxAmount >= this.fluxConsumption && this.world.isBlockIndirectlyGettingPowered(this.pos) == 0 ) {
+                    if( this.energyStorage.fluxAmount >= this.fluxConsumption && this.world.getRedstonePowerFromNeighbors(this.pos) == 0 ) {
                         this.energyStorage.fluxAmount -= this.fluxConsumption;
                         if( ++this.ticksCrafted >= this.maxTicksCrafted ) {
                             ItemStack stack = this.currRecipe.getCraftingResult(this.invHandler);

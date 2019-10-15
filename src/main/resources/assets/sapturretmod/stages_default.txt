@@ -1,0 +1,6 @@
+{ "level": 10, "modifiers": [{ "attribute": "generic.maxHealth", "id": "ea80c950-274c-4e81-a6ab-d6321a57c9eb", "name": "sapturretmod:leveling_10_health", "amount": 0.1, "mode": 1 }] }
+{ "level": 20, "modifiers": [{ "attribute": "generic.maxHealth", "id": "f24c5b28-c8ef-4ab9-9c2d-97f627078a20", "name": "sapturretmod:leveling_20_health", "amount": 0.1, "mode": 1 }] }
+{ "level": 30, "modifiers": [{ "attribute": "generic.maxHealth", "id": "032d53bd-a231-4706-be98-21164e7920c9", "name": "sapturretmod:leveling_30_health", "amount": 0.1, "mode": 1 }] }
+{ "level": 40, "modifiers": [{ "attribute": "generic.maxHealth", "id": "f24c5b28-c8ef-4ab9-9c2d-97f627078a20", "name": "sapturretmod:leveling_40_health", "amount": 0.2, "mode": 1 }] }
+{ "level": 45, "modifiers": [{ "attribute": "generic.maxHealth", "id": "032d53bd-a231-4706-be98-21164e7920c9", "name": "sapturretmod:leveling_45_health", "amount": 0.2, "mode": 1 }] }
+{ "level": 50, "modifiers": [{ "attribute": "generic.maxHealth", "id": "032d53bd-a231-4706-be98-21164e7920c9", "name": "sapturretmod:leveling_50_health", "amount": 0.3, "mode": 1 }] }

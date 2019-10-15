@@ -29,6 +29,7 @@ import de.sanandrew.mods.turretmod.registry.turret.TurretMinigun;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRevolver;
 import de.sanandrew.mods.turretmod.registry.turret.TurretShotgun;
 import de.sanandrew.mods.turretmod.registry.turret.shieldgen.TurretForcefield;
+import de.sanandrew.mods.turretmod.registry.upgrades.leveling.LevelStorage;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -51,7 +52,7 @@ public final class TmrConfig
     private static Configuration configTurrets;
     private static Configuration configProjectiles;
     private static Configuration configTargets;
-    private static Configuration configUpgrades;
+    public static Configuration configUpgrades;
 
     @Category(Configuration.CATEGORY_CLIENT)
     public static final class Client
@@ -71,7 +72,7 @@ public final class TmrConfig
         public static boolean playerCanEditAll = false;
     }
 
-    @Value(comment = "Whether or not progression based crafting is activated (N/A)")
+    @Value(comment = "Whether or not progression based crafting is activated (not available yet)")
     public static boolean doProgression = true;
 
     public static final class Turrets
@@ -123,6 +124,14 @@ public final class TmrConfig
         }
     }
 
+    public static final class Upgrades
+    {
+        @Init
+        public static void initialize() {
+            ConfigUtils.loadCategory(configUpgrades, LevelStorage.class, null);
+        }
+    }
+
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void initConfiguration(FMLPreInitializationEvent event) {
         File modCfgDir = new File(event.getModConfigurationDirectory(), TmrConstants.ID);
@@ -131,6 +140,7 @@ public final class TmrConfig
         configTurrets = ConfigUtils.loadConfigFile(new File(modCfgDir, "turrets.cfg"), VERSION, TmrConstants.NAME);
         configProjectiles = ConfigUtils.loadConfigFile(new File(modCfgDir, "projectiles.cfg"), VERSION, TmrConstants.NAME);
         configTargets = ConfigUtils.loadConfigFile(new File(modCfgDir, "targets.cfg"), VERSION, TmrConstants.NAME);
+        configUpgrades = ConfigUtils.loadConfigFile(new File(modCfgDir, "upgrades.cfg"), VERSION, TmrConstants.NAME);
         syncConfig();
     }
 
@@ -139,6 +149,7 @@ public final class TmrConfig
         ConfigUtils.loadCategories(configTurrets, Turrets.class);
         ConfigUtils.loadCategories(configProjectiles, Projectiles.class);
         ConfigUtils.loadCategories(configTargets, Targets.class);
+        ConfigUtils.loadCategories(configUpgrades, Upgrades.class);
 
         if( configGeneral.hasChanged() ) {
             configGeneral.save();
@@ -152,6 +163,9 @@ public final class TmrConfig
         if( configTargets.hasChanged() ) {
             configTargets.save();
         }
+        if( configUpgrades.hasChanged() ) {
+            configUpgrades.save();
+        }
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
@@ -161,6 +175,7 @@ public final class TmrConfig
         cat.put("turrets", configTurrets.getCategoryNames().stream().map(configTurrets::getCategory).filter(c -> c.size() > 0).toArray(ConfigCategory[]::new));
         cat.put("projectiles", configProjectiles.getCategoryNames().stream().map(configProjectiles::getCategory).filter(c -> c.size() > 0).toArray(ConfigCategory[]::new));
         cat.put("targets", configTargets.getCategoryNames().stream().map(configTargets::getCategory).filter(c -> c.size() > 0).toArray(ConfigCategory[]::new));
+        cat.put("upgrades", configUpgrades.getCategoryNames().stream().map(configUpgrades::getCategory).filter(c -> c.size() > 0).toArray(ConfigCategory[]::new));
 
         return cat;
     }

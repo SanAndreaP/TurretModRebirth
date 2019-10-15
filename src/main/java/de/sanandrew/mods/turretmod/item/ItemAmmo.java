@@ -22,6 +22,6 @@ public class ItemAmmo
 
         this.setCreativeTab(TmrCreativeTabs.TURRETS);
         this.setRegistryName(ammo.getId());
-        this.setUnlocalizedName(ammo.getId().toString());
+        this.setTranslationKey(ammo.getId().toString());
     }
 }

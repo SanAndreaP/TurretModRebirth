@@ -51,7 +51,7 @@ public class ItemTurret
 
         this.setCreativeTab(TmrCreativeTabs.TURRETS);
         this.setRegistryName(id);
-        this.setUnlocalizedName(id.toString());
+        this.setTranslationKey(id.toString());
     }
 
     @Override
@@ -72,8 +72,8 @@ public class ItemTurret
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if( !world.isRemote ) {
-            BlockPos placingOn = pos.add(facing.getFrontOffsetX(), 0, facing.getFrontOffsetZ());
-            if( facing.getFrontOffsetY() == 0 ) {
+            BlockPos placingOn = pos.add(facing.getXOffset(), 0, facing.getZOffset());
+            if( facing.getYOffset() == 0 ) {
                 placingOn = placingOn.offset(EnumFacing.DOWN);
             }
 

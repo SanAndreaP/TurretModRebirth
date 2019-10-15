@@ -46,7 +46,7 @@ public abstract class ItemAssemblyUpgrade
     public void addInformation(@Nonnull ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
 
-        tooltip.add(LangUtils.translate(this.getUnlocalizedName() + ".ttip"));
+        tooltip.add(LangUtils.translate(this.getTranslationKey() + ".ttip"));
     }
 
     static class Automation
@@ -54,7 +54,7 @@ public abstract class ItemAssemblyUpgrade
     {
         Automation() {
             super();
-            this.setUnlocalizedName(TmrConstants.ID + ":turret_assembly_auto");
+            this.setTranslationKey(TmrConstants.ID + ":turret_assembly_auto");
             this.setRegistryName(TmrConstants.ID, "assembly_upg_auto");
         }
     }
@@ -64,7 +64,7 @@ public abstract class ItemAssemblyUpgrade
     {
         Speed() {
             super();
-            this.setUnlocalizedName(TmrConstants.ID + ":turret_assembly_speed");
+            this.setTranslationKey(TmrConstants.ID + ":turret_assembly_speed");
             this.setRegistryName(TmrConstants.ID, "assembly_upg_speed");
         }
     }
@@ -74,7 +74,7 @@ public abstract class ItemAssemblyUpgrade
     {
         Filter() {
             super();
-            this.setUnlocalizedName(TmrConstants.ID + ":turret_assembly_filter");
+            this.setTranslationKey(TmrConstants.ID + ":turret_assembly_filter");
             this.setRegistryName(TmrConstants.ID, "assembly_upg_filter");
         }
 
@@ -85,9 +85,9 @@ public abstract class ItemAssemblyUpgrade
 
             NBTTagCompound nbt = stack.getTagCompound();
             if( nbt != null && nbt.hasKey("filteredStacks") ) {
-                tooltip.add(TextFormatting.ITALIC + LangUtils.translate(this.getUnlocalizedName() + ".conf"));
+                tooltip.add(TextFormatting.ITALIC + LangUtils.translate(this.getTranslationKey() + ".conf"));
             } else {
-                tooltip.add(LangUtils.translate(this.getUnlocalizedName() + ".inst"));
+                tooltip.add(LangUtils.translate(this.getTranslationKey() + ".inst"));
             }
         }
 

@@ -133,7 +133,7 @@ public class TmrCreativeTabs
     {
         @Override
         public int compare(ItemStack stack1, ItemStack stack2) {
-            return stack2.getUnlocalizedName().compareTo(stack1.getUnlocalizedName());
+            return stack2.getTranslationKey().compareTo(stack1.getTranslationKey());
         }
     }
 

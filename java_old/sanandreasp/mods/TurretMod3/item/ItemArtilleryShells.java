@@ -24,8 +24,8 @@ public class ItemArtilleryShells extends Item {
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack par1ItemStack) {
-		return this.getUnlocalizedName() + getRealNumber(par1ItemStack.getItemDamage());
+	public String getTranslationKey(ItemStack par1ItemStack) {
+		return this.getTranslationKey() + getRealNumber(par1ItemStack.getItemDamage());
 	}
 
 	@Override

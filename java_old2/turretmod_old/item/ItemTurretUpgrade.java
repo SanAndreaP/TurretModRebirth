@@ -44,13 +44,13 @@ public class ItemTurretUpgrade
 
     public ItemTurretUpgrade() {
         super();
-        this.setUnlocalizedName(TurretMod.MOD_ID + ":turret_upgrade");
+        this.setTranslationKey(TurretMod.MOD_ID + ":turret_upgrade");
         this.setCreativeTab(TmrCreativeTabs.UPGRADES);
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack) {
-        return super.getUnlocalizedName(stack);
+    public String getTranslationKey(ItemStack stack) {
+        return super.getTranslationKey(stack);
     }
 
     @Override
@@ -102,7 +102,7 @@ public class ItemTurretUpgrade
     @SuppressWarnings("unchecked")
     public void addInformation(ItemStack stack, EntityPlayer player, List lines, boolean advTooltip) {
         TurretUpgrade stackUpgrade = this.getUpgradeFromStack(stack);
-        String unlocName = this.getUnlocalizedName(stack);
+        String unlocName = this.getTranslationKey(stack);
         String upgName = stackUpgrade == null ? "empty" : stackUpgrade.getName();
 
         lines.add(TextFormatting.AQUA + SAPUtils.translatePreFormat("%s.%s.name", unlocName, upgName));

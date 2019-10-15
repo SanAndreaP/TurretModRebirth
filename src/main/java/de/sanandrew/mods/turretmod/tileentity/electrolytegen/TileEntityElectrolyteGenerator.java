@@ -167,7 +167,7 @@ public class TileEntityElectrolyteGenerator
                 }
                 EnumFacing otherDir = direction.getOpposite();
 
-                BlockPos adjPos = this.pos.add(direction.getFrontOffsetX(), direction.getFrontOffsetY(), direction.getFrontOffsetZ());
+                BlockPos adjPos = this.pos.add(direction.getXOffset(), direction.getYOffset(), direction.getZOffset());
                 TileEntity te = this.world.getTileEntity(adjPos);
 
                 if( te == null || !EnergyHelper.canConnectEnergy(te, otherDir) ) {
@@ -298,7 +298,7 @@ public class TileEntityElectrolyteGenerator
     }
 
     public String getName() {
-        return this.hasCustomName() ? this.customName : BlockRegistry.ELECTROLYTE_GENERATOR.getUnlocalizedName() + ".name";
+        return this.hasCustomName() ? this.customName : BlockRegistry.ELECTROLYTE_GENERATOR.getTranslationKey() + ".name";
     }
 
     public boolean hasCustomName() {

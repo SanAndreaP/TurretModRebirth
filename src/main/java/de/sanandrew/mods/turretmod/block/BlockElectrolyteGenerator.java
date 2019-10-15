@@ -54,7 +54,7 @@ public class BlockElectrolyteGenerator
         this.blockHardness = 4.25F;
         this.blockSoundType = SoundType.STONE;
         this.setCreativeTab(TmrCreativeTabs.MISC);
-        this.setUnlocalizedName(TmrConstants.ID + ":potato_generator");
+        this.setTranslationKey(TmrConstants.ID + ":potato_generator");
         this.setLightOpacity(0);
         this.setDefaultState(this.blockState.getBaseState().withProperty(TILE_HOLDER, true));
         this.setRegistryName(TmrConstants.ID, "electrolyte_generator");

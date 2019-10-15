@@ -24,6 +24,6 @@ public class ItemUpgrade
 
         this.setCreativeTab(TmrCreativeTabs.UPGRADES);
         this.setRegistryName(upgrade.getId());
-        this.setUnlocalizedName(upgrade.getId().toString());
+        this.setTranslationKey(upgrade.getId().toString());
     }
 }

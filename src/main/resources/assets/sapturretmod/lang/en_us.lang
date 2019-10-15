@@ -84,6 +84,19 @@ item.sapturretmod:upgrade.endertoxin.2.name=Ender Toxin II Upgrade
 item.sapturretmod:upgrade.turretsafe.name=Turret Safe Upgrade
 
 #### Entities ####
+attribute.generic.maxHealth=Max Health
+attribute.generic.followRange=Follow Range
+attribute.generic.knockbackResistance=Knockback Resistance
+attribute.generic.movementSpeed=Movement Speed
+attribute.generic.flyingSpeed=Flying Speed
+attribute.generic.attackDamage=Attack Damage
+attribute.generic.attackSpeed=Attack Speed
+attribute.generic.armor=Armor
+attribute.generic.armorToughness=Armor Toughness
+attribute.generic.luck=Luck
+attribute.sapturretmod.maxAmmoCapacity=Max Ammunition Capacity
+attribute.sapturretmod.maxReloadTicks=Reload Time
+attribute.sapturretmod.maxInitShootTicks=Shooting Initialization Time
 # Turrets
 entity.sapturretmod:turret.name=Defense Turret
 entity.sapturretmod:turret.crossbow.name=Crossbow Turret (T1)

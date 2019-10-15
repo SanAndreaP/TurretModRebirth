@@ -10,6 +10,7 @@ import de.sanandrew.mods.turretmod.api.IRegistry;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
+import de.sanandrew.mods.turretmod.registry.upgrades.leveling.Leveling;
 import de.sanandrew.mods.turretmod.registry.upgrades.shield.UpgradeShieldColorizer;
 import de.sanandrew.mods.turretmod.registry.upgrades.shield.UpgradeShieldPersonal;
 import de.sanandrew.mods.turretmod.registry.upgrades.smarttargeting.SmartTargeting;

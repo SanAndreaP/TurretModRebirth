@@ -43,7 +43,7 @@ public class BlockTurretCrate
         this.setCreativeTab(TmrCreativeTabs.MISC);
         this.setHardness(4.25F);
         this.blockSoundType = SoundType.METAL;
-        this.setUnlocalizedName(TmrConstants.ID + ":turret_crate");
+        this.setTranslationKey(TmrConstants.ID + ":turret_crate");
         this.setRegistryName(TmrConstants.ID, "turret_crate");
     }
 

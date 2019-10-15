@@ -43,7 +43,7 @@ public class ItemAmmoCartridge
         super();
         this.setCreativeTab(TmrCreativeTabs.TURRETS);
         this.setRegistryName(TmrConstants.ID, "ammo.cartridge");
-        this.setUnlocalizedName(TmrConstants.ID + ":ammo.cartridge");
+        this.setTranslationKey(TmrConstants.ID + ":ammo.cartridge");
         this.setMaxStackSize(1);
         this.setHasSubtypes(true);
         this.setMaxDamage(0);

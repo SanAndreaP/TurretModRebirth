@@ -9,6 +9,7 @@ package de.sanandrew.mods.turretmod.util;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import de.sanandrew.mods.sanlib.SanLib;
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
@@ -40,9 +41,19 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.fml.common.ModContainer;
+import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -254,6 +265,14 @@ public class TmrUtils
         }
     }
 
+    //TODO: use this for modifier applications
+    public static void tryApplyModifier(EntityLivingBase e, String attributeName, AttributeModifier modifier) {
+        IAttributeInstance attrib = e.getAttributeMap().getAttributeInstanceByName(attributeName);
+        if( attrib != null && !attrib.hasModifier(modifier) ) {
+            attrib.applyModifier(modifier);
+        }
+    }
+
     //TODO: use this for modifier removal
     public static void tryRemoveModifier(EntityLivingBase e, IAttribute attribute, AttributeModifier modifier) {
         IAttributeInstance attrib = e.getEntityAttribute(attribute);
@@ -262,10 +281,18 @@ public class TmrUtils
         }
     }
 
+    //TODO: use this for modifier removal
+    public static void tryRemoveModifier(EntityLivingBase e, String attributeName, AttributeModifier modifier) {
+        IAttributeInstance attrib = e.getAttributeMap().getAttributeInstanceByName(attributeName);
+        if( attrib != null && attrib.hasModifier(modifier) ) {
+            attrib.removeModifier(modifier);
+        }
+    }
+
     public static NonNullList<ItemStack> getCompactItems(NonNullList<ItemStack> items, int maxInvStackSize) {
         NonNullList<ItemStack> cmpItems = NonNullList.create();
 
-        items.sort((i1, i2) -> ItemStackUtils.areEqual(i1, i2, false, true, true) ? 0 : i1.getUnlocalizedName().compareTo(i2.getUnlocalizedName()));
+        items.sort((i1, i2) -> ItemStackUtils.areEqual(i1, i2, false, true, true) ? 0 : i1.getTranslationKey().compareTo(i2.getTranslationKey()));
         items.forEach(v -> {
             int cmpSize = cmpItems.size();
             if( cmpSize < 1 ) {
@@ -289,5 +316,24 @@ public class TmrUtils
         });
 
         return cmpItems;
+    }
+
+    public static BufferedReader getFile(ModContainer mod, String file) {
+        File source = mod.getSource();
+
+        try {
+            if( source.isFile() ) {
+                try( FileSystem fs = FileSystems.newFileSystem(source.toPath(), null) ) {
+                    return Files.newBufferedReader(fs.getPath('/' + file), StandardCharsets.UTF_8);
+                }
+            } else if( source.isDirectory() ) {
+                return Files.newBufferedReader(source.toPath().resolve(file), StandardCharsets.UTF_8);
+            }
+        } catch( IOException e ) {
+            SanLib.LOG.log(Level.ERROR, "Error loading file: ", e);
+            return null;
+        }
+
+        return null;
     }
 }

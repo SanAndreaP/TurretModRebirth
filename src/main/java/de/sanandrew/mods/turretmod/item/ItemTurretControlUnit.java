@@ -27,7 +27,7 @@ public class ItemTurretControlUnit
     public ItemTurretControlUnit() {
         super();
         this.setCreativeTab(TmrCreativeTabs.MISC);
-        this.setUnlocalizedName(TmrConstants.ID + ":turret_control_unit");
+        this.setTranslationKey(TmrConstants.ID + ":turret_control_unit");
         this.setRegistryName(TmrConstants.ID, "turret_control_unit");
     }
 
@@ -41,6 +41,6 @@ public class ItemTurretControlUnit
         }
 
         this.prevDisplayNameTime = currDisplayNameTime;
-        return LangUtils.translate(String.format("%s.name.%d", this.getUnlocalizedName(), this.nameId));
+        return LangUtils.translate(String.format("%s.name.%d", this.getTranslationKey(), this.nameId));
     }
 }

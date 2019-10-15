@@ -38,12 +38,12 @@ public class ItemTurretAmmo
         super();
         this.hasSubtypes = false; // subtypes defined through NBT, so no need to check for subtypes via metadata
         this.setMaxDamage(0);
-        this.setUnlocalizedName(TurretMod.MOD_ID + ":turret_ammo");
+        this.setTranslationKey(TurretMod.MOD_ID + ":turret_ammo");
         this.setCreativeTab(TmrCreativeTabs.MISC);
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack) {
+    public String getTranslationKey(ItemStack stack) {
         return "item.turret_ammo." + AMMO_NAMES_ICON_DESC.get(getTypeFromItem(stack)).getValue0();
     }
 

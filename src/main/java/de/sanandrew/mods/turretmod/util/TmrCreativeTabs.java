@@ -27,14 +27,14 @@ public class TmrCreativeTabs
 
         @Override
         @SideOnly(Side.CLIENT)
-        public ItemStack getTabIconItem() {
-            return getIconItemStack();
+        public ItemStack getIcon() {
+            return createIcon();
         }
 
         @Override
         @SideOnly(Side.CLIENT)
         @Nonnull
-        public ItemStack getIconItemStack() {
+        public ItemStack createIcon() {
             if( this.tabIcons == null ) {
                 this.tabIcons = NonNullList.create();
                 ItemRegistry.TURRET_PLACERS.forEach((rl, item) -> item.getSubItems(this, this.tabIcons));
@@ -57,7 +57,7 @@ public class TmrCreativeTabs
 
         @Override
         @SideOnly(Side.CLIENT)
-        public ItemStack getTabIconItem() {
+        public ItemStack createIcon() {
             if( !ItemStackUtils.isValid(this.currTabIcon) ) {
                 this.currTabIcon = new ItemStack(ItemRegistry.TURRET_CONTROL_UNIT, 1);
             }
@@ -78,14 +78,14 @@ public class TmrCreativeTabs
 
         @Override
         @SideOnly(Side.CLIENT)
-        public ItemStack getTabIconItem() {
-            return getIconItemStack();
+        public ItemStack getIcon() {
+            return createIcon();
         }
 
         @Override
         @SideOnly(Side.CLIENT)
         @Nonnull
-        public ItemStack getIconItemStack() {
+        public ItemStack createIcon() {
             if( this.tabIcons == null ) {
                 this.tabIcons = NonNullList.create();
                 ItemRegistry.TURRET_UPGRADES.forEach((rl, item) -> item.getSubItems(this, this.tabIcons));

@@ -6,12 +6,11 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.event;
 
-import de.sanandrew.mods.sanlib.lib.util.ReflectionUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretProjectile;
-import de.sanandrew.mods.turretmod.registry.upgrades.Leveling;
+import de.sanandrew.mods.turretmod.registry.upgrades.leveling.LevelStorage;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.registry.upgrades.shield.ShieldPersonal;
@@ -64,7 +63,7 @@ public class DamageEventHandler
         if( dmgSrc instanceof EntityTurretProjectile.ITurretDamageSource && corpse.world instanceof WorldServer ) {
             ITurretInst turret = ((EntityTurretProjectile.ITurretDamageSource) dmgSrc).getTurretInst();
             if( turret != null && turret.getUpgradeProcessor().hasUpgrade(Upgrades.LEVELING) ) {
-                Leveling.LevelStorage lvlStorage = turret.getUpgradeProcessor().getUpgradeInstance(Upgrades.LEVELING.getId());
+                LevelStorage lvlStorage = turret.getUpgradeProcessor().getUpgradeInstance(Upgrades.LEVELING.getId());
                 if( lvlStorage != null ) {
                     EntityPlayer faker = FakePlayerFactory.getMinecraft((WorldServer) corpse.world);
 

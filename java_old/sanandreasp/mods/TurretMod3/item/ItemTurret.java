@@ -129,8 +129,8 @@ public class ItemTurret extends Item {
     @Override
     public String getItemStackDisplayName(ItemStack par1ItemStack) {
     	if (this.hasEffect(par1ItemStack))
-    		return "\247d" + getUnlocalizedName(par1ItemStack) + "\247r";
-    	return getUnlocalizedName(par1ItemStack);
+    		return "\247d" + getTranslationKey(par1ItemStack) + "\247r";
+    	return getTranslationKey(par1ItemStack);
     }
 
     @SuppressWarnings("unchecked")
@@ -328,7 +328,7 @@ public class ItemTurret extends Item {
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack par1ItemStack) {
+	public String getTranslationKey(ItemStack par1ItemStack) {
 		return TurretInfo.getTurretInfo(TurretInfo.getTurretClass(par1ItemStack.getItemDamage())).getTurretName();
 	}
 }

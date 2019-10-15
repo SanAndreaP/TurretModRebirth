@@ -153,31 +153,31 @@ public class TM3ModRegistry {
 							.setCreativeTab(tabTurret);
 
 		turretItem		= new ItemTurret()
-							.setUnlocalizedName("tm3.turretItem")
+							.setTranslationKey("tm3.turretItem")
 							.setCreativeTab(tabTurret);
 		ammoItems		= new ItemAmmunitions()
-							.setUnlocalizedName("tm3.arrowPack")
+							.setTranslationKey("tm3.arrowPack")
 							.setCreativeTab(tabTurret);
 		tcu				= new Item().setTextureName("TurretMod3:tcu")
-							.setUnlocalizedName("tm3.turretControlU")
+							.setTranslationKey("tm3.turretControlU")
 							.setCreativeTab(tabTurret);
 		tInfoBook		= new ItemTurretInfo()
-							.setUnlocalizedName("tm3.tInfoBook")
+							.setTranslationKey("tm3.tInfoBook")
 							.setCreativeTab(tabTurret);
 		mobileBase		= new ItemMobileBase().setTextureName("TurretMod3:mobileBase")
-							.setUnlocalizedName("tm3.mobileBase")
+							.setTranslationKey("tm3.mobileBase")
 							.setCreativeTab(tabTurret);
 		httm			= new Item().setTextureName("TurretMod3:httm")
-							.setUnlocalizedName("tm3.htTurretMod")
+							.setTranslationKey("tm3.htTurretMod")
 							.setCreativeTab(tabTurret);
 		rocket			= new ItemFLAKRockets()
-							.setUnlocalizedName("tm3.flakRockets")
+							.setTranslationKey("tm3.flakRockets")
 							.setCreativeTab(tabTurret);
 		artilleryBall	= new ItemArtilleryShells()
-							.setUnlocalizedName("tm3.artilleryBalls")
+							.setTranslationKey("tm3.artilleryBalls")
 							.setCreativeTab(tabTurret);
 		turretRec1		= new ItemTMDisc("tidalForce")
-							.setUnlocalizedName("tm3.turretRec1")
+							.setTranslationKey("tm3.turretRec1")
 							.setCreativeTab(tabTurret);
 
 		this.registerItems(turretItem, ammoItems, tcu, tInfoBook, mobileBase, httm, rocket, artilleryBall, turretRec1);

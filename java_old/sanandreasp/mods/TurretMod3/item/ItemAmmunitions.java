@@ -30,10 +30,10 @@ public class ItemAmmunitions extends Item {
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack par1ItemStack) {
+	public String getTranslationKey(ItemStack par1ItemStack) {
 		int dmg = par1ItemStack.getItemDamage();
 		if (dmg >= dmgLangMapping.size() || dmg < 0)
-			return super.getUnlocalizedName(par1ItemStack);
+			return super.getTranslationKey(par1ItemStack);
 		else
 			return "tm3." + dmgLangMapping.get(dmg);
 	}

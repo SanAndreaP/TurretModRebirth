@@ -33,14 +33,14 @@ public class ItemTurretInfo
     public ItemTurretInfo() {
         super();
         this.setCreativeTab(TmrCreativeTabs.MISC);
-        this.setUnlocalizedName(TmrConstants.ID + ":turret_info");
+        this.setTranslationKey(TmrConstants.ID + ":turret_info");
         this.setRegistryName(TmrConstants.ID, "turret_info");
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(@Nonnull ItemStack stack, World world, List<String> list, ITooltipFlag advInfo) {
-        String[] lines = LangUtils.translate(this.getUnlocalizedName() + ".desc").split("\\\\n");
+        String[] lines = LangUtils.translate(this.getTranslationKey() + ".desc").split("\\\\n");
         list.addAll(Arrays.asList(lines));
 
         super.addInformation(stack, world, list, advInfo);

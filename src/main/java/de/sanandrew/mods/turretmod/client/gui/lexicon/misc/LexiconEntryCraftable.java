@@ -46,7 +46,7 @@ class LexiconEntryCraftable
 
     @Override
     public String getTitleLangKey(String modId) {
-        return this.item.getUnlocalizedName() + ".name";
+        return this.item.getTranslationKey() + ".name";
     }
 
     @Nonnull

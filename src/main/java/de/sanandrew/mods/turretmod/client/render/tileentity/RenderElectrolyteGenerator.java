@@ -89,7 +89,7 @@ public class RenderElectrolyteGenerator
             for( int i = 1; i < builtVecA.length - 1; i++) {
                 Vec3d vecBtwPre = builtVecMain[i].subtract(builtVecMain[i-1]);
                 Vec3d vecBtwPost = builtVecMain[i+1].subtract(builtVecMain[i]);
-                double btwAngle = Math.acos(vecBtwPre.dotProduct(vecBtwPost) / (vecBtwPre.lengthVector() * vecBtwPost.lengthVector()));
+                double btwAngle = Math.acos(vecBtwPre.dotProduct(vecBtwPost) / vecBtwPre.lengthSquared());
                 builtVecA[i] = builtVecMain[i].add(rotateVecXY( vecBtwPre.normalize().scale(scale), perpendAngle + btwAngle / 2.0D));
                 builtVecB[i] = builtVecMain[i].add(rotateVecXY( vecBtwPre.normalize().scale(scale), -perpendAngle - btwAngle / 2.0D));
             }
@@ -111,7 +111,7 @@ public class RenderElectrolyteGenerator
             buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
             for( int i = 0; i < builtVecA.length - 1; i++ ) {
-                final double u = Math.abs(builtVecA[i+1].subtract(builtVecA[i]).lengthVector()) * 4.5D;
+                final double u = Math.abs(builtVecA[i+1].subtract(builtVecA[i]).length()) * 4.5D;
 
                 buf.pos(builtVecA[i].x, builtVecA[i].y, -scale).tex(0.0D, 1.0D).endVertex();
                 buf.pos(builtVecA[i+1].x, builtVecA[i+1].y, -scale).tex(u, 1.0D).endVertex();

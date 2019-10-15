@@ -7,17 +7,27 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu.page;
 
 import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
-import de.sanandrew.mods.turretmod.registry.upgrades.Leveling;
+import de.sanandrew.mods.turretmod.registry.upgrades.leveling.LevelStorage;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
+import de.sanandrew.mods.turretmod.registry.upgrades.leveling.Stage;
+import de.sanandrew.mods.turretmod.util.Lang;
 import de.sanandrew.mods.turretmod.util.Resources;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class GuiLevels
         implements IGuiTCU
@@ -27,11 +37,13 @@ public class GuiLevels
     private int maxXp = 0;
     private int currXp = 0;
 
+    private Map<Stage, List<Stage.Modifier>> currStages = new HashMap<>();
+
     @Override
     public void initialize(IGuiTcuInst<?> gui) {
         IUpgradeProcessor processor = gui.getTurretInst().getUpgradeProcessor();
         if( processor.hasUpgrade(Upgrades.LEVELING) ) {
-            Leveling.LevelStorage stg = processor.getUpgradeInstance(Upgrades.LEVELING.getId());
+            LevelStorage stg = processor.getUpgradeInstance(Upgrades.LEVELING.getId());
             if( stg != null ) {
                 this.currLvl = stg.getLevel();
                 this.minXp = stg.getCurrentLevelMinXp();
@@ -44,11 +56,19 @@ public class GuiLevels
     @Override
     public void updateScreen(IGuiTcuInst<?> gui) {
         this.initialize(gui);
+
+        ITurretInst turretInst = gui.getTurretInst();
+        this.currStages.clear();
+        LevelStorage lvlStg = turretInst.getUpgradeProcessor().getUpgradeInstance(Upgrades.LEVELING.getId());
+        if( lvlStg != null ) {
+            lvlStg.fetchCurrentStages().forEach(s -> {
+                this.currStages.computeIfAbsent(s, stage -> new ArrayList<>()).addAll(Arrays.asList(s.modifiers));
+            });
+        }
     }
 
     @Override
     public void drawBackground(IGuiTcuInst<?> gui, float partialTicks, int mouseX, int mouseY) {
-        ITurretInst turretInst = gui.getTurretInst();
         FontRenderer fontRenderer = gui.getFontRenderer();
         GuiScreen guiScreen = gui.getGui();
         int posX = gui.getPosX();
@@ -64,6 +84,13 @@ public class GuiLevels
         fontRenderer.drawString(String.format("Current XP: %d", this.currXp), posX + 10, posY + 102, 0xFF000000, false);
         fontRenderer.drawString(String.format("Min XP: %d", this.minXp), posX + 10, posY + 112, 0xFF000000, false);
         fontRenderer.drawString(String.format("Max XP: %d", this.maxXp), posX + 10, posY + 122, 0xFF000000, false);
+
+        AtomicInteger posYMod = new AtomicInteger();
+        this.currStages.forEach((k, v) -> {
+            v.forEach(modifier -> {
+                fontRenderer.drawString(LangUtils.translate(Lang.ATTRIBUTE.get(modifier.attributeName)), posX + 15, posY + 132 + posYMod.getAndIncrement(), 0xFFFFA0FF, false);
+            });
+        });
 
         GuiUtils.drawGradientRect(posX + 10, posY + 150, 100, 10, 0xFF000000, 0xFF000000, true);
         float v = (this.currXp - this.minXp) / (float) (this.maxXp - this.minXp) * 100.0F;

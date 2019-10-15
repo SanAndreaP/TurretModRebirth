@@ -24,6 +24,6 @@ public class ItemRepairKit
 
         this.setCreativeTab(TmrCreativeTabs.MISC);
         this.setRegistryName(kit.getId());
-        this.setUnlocalizedName(kit.getId().toString());
+        this.setTranslationKey(kit.getId().toString());
     }
 }

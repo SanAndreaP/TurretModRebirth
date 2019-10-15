@@ -60,6 +60,6 @@ public final class Sounds
     }
 
     private static ResourceLocation getRegistryName(ResourceLocation resLoc) {
-        return new ResourceLocation(resLoc.getResourceDomain(), resLoc.getResourcePath().replace('.', '_'));
+        return new ResourceLocation(resLoc.getNamespace(), resLoc.getPath().replace('.', '_'));
     }
 }

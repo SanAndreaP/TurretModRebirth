@@ -24,8 +24,8 @@ public class ItemFLAKRockets extends Item {
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack par1ItemStack) {
-		return this.getUnlocalizedName() + par1ItemStack.getItemDamage();
+	public String getTranslationKey(ItemStack par1ItemStack) {
+		return this.getTranslationKey() + par1ItemStack.getItemDamage();
 	}
 
 	@Override

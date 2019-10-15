@@ -63,7 +63,7 @@ public final class GuiTcuHelper
             GuiTcuRegistry.GuiEntry entry = GuiTcuRegistry.INSTANCE.getGuiEntry(location);
             if( entry != null ) {
                 GuiButtonTcuTab btn = new GuiButtonTcuTab(gui.getNewButtonId(), 0, gui.getPosY() + 213, entry.getIcon(),
-                                                          LangUtils.translate(Lang.TCU_PAGE_TITLE.get(location.getResourceDomain(), location.getResourcePath())));
+                                                          LangUtils.translate(Lang.TCU_PAGE_TITLE.get(location.getNamespace(), location.getPath())));
                 btn.visible = false;
                 btn.enabled = !location.equals(gui.getCurrentEntryKey());
                 gui.addNewButton(btn);
@@ -118,7 +118,7 @@ public final class GuiTcuHelper
 
     void drawScreen(IGuiTcuInst<?> gui) {
         FontRenderer fRender = gui.getFontRenderer();
-        fRender.drawString(LangUtils.translate(Lang.TCU_PAGE_TITLE.get(gui.getCurrentEntryKey().getResourceDomain(), gui.getCurrentEntryKey().getResourcePath())), 8, 28, 0xFF404040);
+        fRender.drawString(LangUtils.translate(Lang.TCU_PAGE_TITLE.get(gui.getCurrentEntryKey().getNamespace(), gui.getCurrentEntryKey().getPath())), 8, 28, 0xFF404040);
         String turretName = LangUtils.translate(Lang.ENTITY_NAME.get(gui.getTurretInst().getTurret().getId()));
         int strWidth = fRender.getStringWidth(turretName);
         if( strWidth > 144 ) {
