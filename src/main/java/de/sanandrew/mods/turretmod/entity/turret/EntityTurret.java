@@ -127,6 +127,7 @@ public class EntityTurret
         this.getAttributeMap().registerAttribute(TurretAttributes.MAX_AMMO_CAPACITY);
         this.getAttributeMap().registerAttribute(TurretAttributes.MAX_RELOAD_TICKS);
         this.getAttributeMap().registerAttribute(TurretAttributes.MAX_INIT_SHOOT_TICKS);
+        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(1.0D);
     }
 
     @Override

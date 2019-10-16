@@ -24,6 +24,7 @@ import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -49,19 +50,19 @@ public final class TargetProcessor
         implements ITargetProcessor
 {
     private final Map<ResourceLocation, Boolean> entityTargetList;
-    private final Map<UUID, Boolean> playerTargetList;
-    private final ITurretInst turret;
+    private final Map<UUID, Boolean>             playerTargetList;
+    private final ITurretInst                    turret;
 
-    private int ammoCount;
+    private int       ammoCount;
     @Nonnull
     private ItemStack ammoStack;
-    private int shootTicks;
-    private int initShootTicks;
-    private Entity entityToAttack;
-    private UUID entityToAttackUUID;
-    private boolean isShootingClt;
-    private boolean isBlacklistEntity = false;
-    private boolean isBlacklistPlayer = false;
+    private int       shootTicks;
+    private int       initShootTicks;
+    private Entity    entityToAttack;
+    private UUID      entityToAttackUUID;
+    private boolean   isShootingClt;
+    private boolean   isBlacklistEntity = false;
+    private boolean   isBlacklistPlayer = false;
 
     private long processTicks = 0;
 
@@ -109,7 +110,7 @@ public final class TargetProcessor
                 int provided = type.getAmmoCapacity();
                 int providedStack = stack.getCount() * provided; //provides 4*16=64, needs 56 = 56 / 64 * 4
                 if( providedStack - maxCapacity > 0 ) {
-                    int stackSub = MathHelper.floor(maxCapacity / (double)providedStack * stack.getCount());
+                    int stackSub = MathHelper.floor(maxCapacity / (double) providedStack * stack.getCount());
                     if( stackSub > 0 ) {
                         this.ammoCount += stackSub * provided;
                         stack.shrink(stackSub);
@@ -226,6 +227,7 @@ public final class TargetProcessor
         }
     }
 
+    @Override
     public void putAmmoInInventory(ICapabilityProvider inventory) {
         if( this.hasAmmo() ) {
             NonNullList<ItemStack> items = this.extractAmmoItems();
@@ -306,10 +308,11 @@ public final class TargetProcessor
         if( this.hasAmmo() ) {
             IProjectile proj = AmmunitionRegistry.INSTANCE.getObject(this.ammoStack).getProjectile(this.turret);
             if( proj != null ) {
+                double attackModifier = this.turret.get().getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue();
                 if( this.entityToAttack != null ) {
-                    return new EntityTurretProjectile(this.turret.get().world, proj, (EntityTurret) this.turret, this.entityToAttack);
+                    return new EntityTurretProjectile(this.turret.get().world, proj, (EntityTurret) this.turret, this.entityToAttack, attackModifier);
                 } else {
-                    return new EntityTurretProjectile(this.turret.get().world, proj, (EntityTurret) this.turret, this.turret.get().getLookVec());
+                    return new EntityTurretProjectile(this.turret.get().world, proj, (EntityTurret) this.turret, this.turret.get().getLookVec(), attackModifier);
                 }
             }
         }
@@ -575,7 +578,8 @@ public final class TargetProcessor
                 } else {
                     playerTgt.add(id);
                 }
-            } catch( IllegalArgumentException ignored ) { }
+            } catch( IllegalArgumentException ignored ) {
+            }
         }
         this.updatePlayerTargets(playerTgt.toArray(new UUID[0]));
     }

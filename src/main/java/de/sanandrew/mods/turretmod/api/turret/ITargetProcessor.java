@@ -34,6 +34,8 @@ public interface ITargetProcessor
 
     void decrAmmo();
 
+    void putAmmoInInventory(ICapabilityProvider inventory);
+
     boolean isAmmoApplicable(@Nonnull ItemStack stack);
 
     int getMaxAmmoCapacity();

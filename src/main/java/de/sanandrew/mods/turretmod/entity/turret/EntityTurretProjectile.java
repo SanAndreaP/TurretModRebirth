@@ -65,6 +65,7 @@ public class EntityTurretProjectile
 
     private double maxDist;
     private float lastDamage;
+    private double attackModifier = 1.0D;
 
     @SuppressWarnings("WeakerAccess")
     public EntityTurretProjectile(World world) {
@@ -75,20 +76,22 @@ public class EntityTurretProjectile
         this.lastDamage = -1.0F;
     }
 
-    EntityTurretProjectile(World world, IProjectile delegate, EntityTurret shooter, Entity target) {
-        this(world, delegate, shooter, target, null);
+    EntityTurretProjectile(World world, IProjectile delegate, EntityTurret shooter, Entity target, double attackModifier) {
+        this(world, delegate, shooter, target, null, attackModifier);
     }
 
-    EntityTurretProjectile(World world, IProjectile delegate, EntityTurret shooter, Vec3d shootingVec) {
-        this(world, delegate, shooter, null, shootingVec);
+    EntityTurretProjectile(World world, IProjectile delegate, EntityTurret shooter, Vec3d shootingVec, double attackModifier) {
+        this(world, delegate, shooter, null, shootingVec, attackModifier);
     }
 
-    private EntityTurretProjectile(World world, IProjectile delegate, EntityTurret shooter, Entity target, Vec3d shootingVec) {
+    private EntityTurretProjectile(World world, IProjectile delegate, EntityTurret shooter, Entity target, Vec3d shootingVec, double attackModifier) {
         this(world);
 
         this.delegate = delegate;
         this.shooterUUID = shooter.getUniqueID();
         this.shooterCache = shooter;
+
+        this.attackModifier = attackModifier;
 
         double y = shooter.posY + shooter.getEyeHeight() - 0.1D;
 
@@ -265,7 +268,7 @@ public class EntityTurretProjectile
 
         if( hitObj != null ) {
             if( hitObj.entityHit != null ) {
-                MutableFloat dmg = new MutableFloat(this.delegate.getDamage());
+                MutableFloat dmg = new MutableFloat(this.delegate.getDamage() * this.attackModifier);
 
                 IProjectile.TargetType tgtType = this.getTargetType(hitObj.entityHit);
                 DamageSource damagesource = this.getProjDamageSource(hitObj.entityHit, tgtType);
@@ -389,12 +392,16 @@ public class EntityTurretProjectile
         if( nbt.hasKey("shooter") ) {
             this.shooterUUID = UUID.fromString(nbt.getString("shooter"));
         }
+        if( nbt.hasKey("AttackModifier") ) {
+            this.attackModifier = nbt.getDouble("AttackModifier");
+        }
         this.lastDamage = nbt.hasKey("LastDamage") ? nbt.getFloat("LastDamage") : Float.MAX_VALUE;
     }
 
     @Override
     protected void writeEntityToNBT(NBTTagCompound nbt) {
         nbt.setString("DelegateId", this.delegate.getId().toString());
+        nbt.setDouble("AttackModifier", this.attackModifier);
         if( this.shooterUUID != null ) {
             nbt.setString("shooter", this.shooterUUID.toString());
         }
