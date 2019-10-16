@@ -23,24 +23,24 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@SuppressWarnings({ "unused", "WeakerAccess" })
 @IUpgradeInstance.Tickable
 @Category("Leveling")
 public class LevelStorage
         implements IUpgradeInstance<LevelStorage>
 {
     @Value(comment = "The maximum XP a turret can gain through the Leveling upgrade. The default is 50 levels worth; see https://minecraft.gamepedia.com/Experience#Leveling_up")
-    public static int      maxXp      = 5_345; // level 50
+    private static int      maxXp      = 5_345; // level 50
     @Value(value = "stages", comment = "A list of JSON strings defining the level stages which are applied once a turret levels up to a stage level.", reqWorldRestart = true)
-    public static String[] stagesJson = getDefaultStages();
-    public static Stage[]  stages     = {};
+    private static String[] stagesJson = getDefaultStages();
+    private static Stage[]  stages     = {};
 
-    @Init(Init.Stage.POST)
+    @Init
     public static void initStages() {
         stages = Stage.load(stagesJson);
     }
 
     int xp;
+
     private int     prevXp;
     private int     cachedLevel;
     private Stage   currStage   = Stage.NULL_STAGE;
@@ -84,9 +84,13 @@ public class LevelStorage
 
         if( !this.initialized ) {
             this.initialized = true;
-            
+
+            // cleanup dangling modifiers
             List<UUID> currModIds = Arrays.stream(stages).map(s -> Arrays.stream(s.modifiers).map(m -> m.modifier.getID()).collect(Collectors.toList()))
-                                          .reduce(new ArrayList<>(), (result, element) -> {result.addAll(element); return result;});
+                                          .reduce(new ArrayList<>(), (result, element) -> {
+                                              result.addAll(element);
+                                              return result;
+                                          });
             e.getAttributeMap().getAllAttributes().forEach(a -> a.getModifiers().forEach(m -> {
                                                                if( m.getName().startsWith(Stage.NAME_PREFIX) && !currModIds.contains(m.getID()) ) {
                                                                    a.removeModifier(m);

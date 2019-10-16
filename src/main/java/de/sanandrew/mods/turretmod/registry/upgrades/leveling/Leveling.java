@@ -61,6 +61,7 @@ public class Leveling
             NBTTagCompound lvlNbt = stack.getOrCreateSubCompound(NBT_ITEM_LEVELS);
             lvlNbt.setInteger(NBT_EXPERIENCE, stg.xp);
 
+            stg.removeEffects(turretInst);
             turretInst.getUpgradeProcessor().delUpgradeInstance(ID);
         }
     }

@@ -8,9 +8,7 @@ import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 public class Stage
@@ -48,7 +46,7 @@ public class Stage
                 AttributeModifier attributeModifier = new AttributeModifier(UUID.fromString(mod.get("id").getAsString()),
                                                                             NAME_PREFIX + mod.get("name").getAsString(),
                                                                             mod.get("amount").getAsDouble(),
-                                                                            mod.get("mode").getAsInt()).setSaved(false);
+                                                                            mod.get("mode").getAsInt());
                 modifiers.add(new Modifier(mod.get("attribute").getAsString(), attributeModifier));
             });
 
