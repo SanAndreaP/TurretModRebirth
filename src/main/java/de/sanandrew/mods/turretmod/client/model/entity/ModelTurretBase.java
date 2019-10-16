@@ -81,8 +81,8 @@ public class ModelTurretBase
 		int maxAmmo = turret.isInGui() ? 2 : turret.getTargetProcessor().getMaxAmmoCapacity();
 		int ammo = turret.isInGui() ? 1 : turret.getTargetProcessor().getAmmoCount();
 
-        this.healthBar.rotateAngleZ = -((float)Math.PI / 2.0F) * ((maxHealth - health) / maxHealth);
-        this.ammoBar.rotateAngleZ = ((float)Math.PI / 2.0F) * ((maxAmmo - ammo) / (float) maxAmmo);
+        this.healthBar.rotateAngleZ = -((float)Math.PI / 2.0F) * (Math.max(0.0F, maxHealth - health) / maxHealth);
+        this.ammoBar.rotateAngleZ = ((float)Math.PI / 2.0F) * (Math.max(0.0F, maxAmmo - ammo) / (float) maxAmmo);
 	}
 
 	@Override

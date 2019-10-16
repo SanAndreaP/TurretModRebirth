@@ -35,7 +35,7 @@ public class LabelTurretHealth
 
     @Override
     public void renderQuads(ITurretInst turretInst, float maxWidth, float progress, FontRenderer fontRenderer, float currHeight, BufferBuilder buffer) {
-        float healthPerc = turretInst.get().getHealth() / turretInst.get().getMaxHealth() * maxWidth;
+        float healthPerc = Math.min(turretInst.get().getHealth() / turretInst.get().getMaxHealth() * maxWidth, maxWidth);
         currHeight += fontRenderer.FONT_HEIGHT + 2.0F;
         ClientProxy.addQuad(buffer, 0.0D, currHeight, healthPerc, currHeight + 2.0D, new ColorObj(1.0F, 0.3F, 0.3F, Math.max(progress, 4.0F / 255.0F)));
         ClientProxy.addQuad(buffer, healthPerc, currHeight, maxWidth, currHeight + 2.0D, new ColorObj(0.4F, 0.1F, 0.1F, Math.max(progress, 4.0F / 255.0F)));

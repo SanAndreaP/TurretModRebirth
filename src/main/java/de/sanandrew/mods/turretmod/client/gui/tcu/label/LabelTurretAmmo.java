@@ -35,7 +35,7 @@ public class LabelTurretAmmo
 
     @Override
     public void renderQuads(ITurretInst turretInst, float maxWidth, float progress, FontRenderer fontRenderer, float currHeight, BufferBuilder buffer) {
-        float ammoPerc = turretInst.getTargetProcessor().getAmmoCount() / (float) turretInst.getTargetProcessor().getMaxAmmoCapacity() * maxWidth;
+        float ammoPerc = Math.min(turretInst.getTargetProcessor().getAmmoCount() / (float) turretInst.getTargetProcessor().getMaxAmmoCapacity() * maxWidth, maxWidth);
         currHeight += fontRenderer.FONT_HEIGHT + 2.0F;
         ClientProxy.addQuad(buffer, 0.0D, currHeight, ammoPerc, currHeight + 2.0D, new ColorObj(0.625F, 0.625F, 1.0F, Math.max(progress, 4.0F / 255.0F)));
         ClientProxy.addQuad(buffer, ammoPerc, currHeight, maxWidth, currHeight + 2.0D, new ColorObj(0.05F, 0.05F, 0.4F, Math.max(progress, 4.0F / 255.0F)));
