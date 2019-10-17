@@ -7,7 +7,7 @@
 package de.sanandrew.mods.turretmod.client.audio;
 
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.util.Sounds;
+import de.sanandrew.mods.turretmod.registry.Sounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.EntityLiving;

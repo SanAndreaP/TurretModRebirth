@@ -12,7 +12,7 @@ import de.sanandrew.mods.sanlib.api.client.lexicon.LexiconGroup;
 import de.sanandrew.mods.turretmod.api.IRegistryObject;
 import de.sanandrew.mods.turretmod.client.util.ResourceOrderer;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
-import de.sanandrew.mods.turretmod.util.Resources;
+import de.sanandrew.mods.turretmod.registry.Resources;
 
 public final class LexiconGroupTurret
         extends LexiconGroup

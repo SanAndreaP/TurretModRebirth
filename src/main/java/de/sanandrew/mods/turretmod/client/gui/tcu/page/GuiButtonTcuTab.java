@@ -12,7 +12,7 @@ import com.google.common.base.Strings;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.turretmod.client.shader.ShaderGrayscale;
 import de.sanandrew.mods.turretmod.client.util.GuiHelper;
-import de.sanandrew.mods.turretmod.util.Resources;
+import de.sanandrew.mods.turretmod.registry.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;

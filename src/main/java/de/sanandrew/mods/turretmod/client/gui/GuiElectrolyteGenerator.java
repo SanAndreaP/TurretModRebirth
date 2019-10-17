@@ -20,7 +20,7 @@ import de.sanandrew.mods.turretmod.client.util.GuiHelper;
 import de.sanandrew.mods.turretmod.inventory.container.ContainerElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteProcess;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
-import de.sanandrew.mods.turretmod.util.Resources;
+import de.sanandrew.mods.turretmod.registry.Resources;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;

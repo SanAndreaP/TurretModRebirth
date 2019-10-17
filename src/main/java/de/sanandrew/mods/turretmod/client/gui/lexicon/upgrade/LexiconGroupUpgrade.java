@@ -14,7 +14,7 @@ import de.sanandrew.mods.turretmod.api.IRegistryObject;
 import de.sanandrew.mods.turretmod.client.util.ResourceOrderer;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
-import de.sanandrew.mods.turretmod.util.Resources;
+import de.sanandrew.mods.turretmod.registry.Resources;
 import net.minecraft.item.ItemStack;
 
 public final class LexiconGroupUpgrade

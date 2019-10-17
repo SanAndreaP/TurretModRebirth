@@ -11,7 +11,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.model.entity.ModelTurretBase;
 import de.sanandrew.mods.turretmod.client.render.layer.LayerTurretShieldLightning;
 import de.sanandrew.mods.turretmod.client.render.layer.LayerTurretUpgradesShieldGen;
-import de.sanandrew.mods.turretmod.util.Resources;
+import de.sanandrew.mods.turretmod.registry.Resources;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLiving;
 

@@ -7,7 +7,7 @@
 package de.sanandrew.mods.turretmod.client.gui.lexicon.misc;
 
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconEntry;
-import de.sanandrew.mods.turretmod.client.util.ClientProxy;
+import de.sanandrew.mods.turretmod.client.init.ClientProxy;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import net.minecraft.item.ItemStack;
 

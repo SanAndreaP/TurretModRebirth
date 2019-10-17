@@ -10,10 +10,10 @@ import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelElement;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.client.util.ClientProxy;
+import de.sanandrew.mods.turretmod.client.init.ClientProxy;
 import de.sanandrew.mods.turretmod.registry.turret.shieldgen.ShieldTurret;
 import de.sanandrew.mods.turretmod.registry.turret.shieldgen.TurretForcefield;
-import de.sanandrew.mods.turretmod.util.Lang;
+import de.sanandrew.mods.turretmod.registry.Lang;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 

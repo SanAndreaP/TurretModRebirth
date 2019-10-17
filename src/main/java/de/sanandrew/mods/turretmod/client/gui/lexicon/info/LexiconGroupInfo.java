@@ -9,7 +9,7 @@ package de.sanandrew.mods.turretmod.client.gui.lexicon.info;
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconGroup;
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconInst;
 import de.sanandrew.mods.sanlib.api.client.lexicon.LexiconGroup;
-import de.sanandrew.mods.turretmod.util.Resources;
+import de.sanandrew.mods.turretmod.registry.Resources;
 
 public final class LexiconGroupInfo
         extends LexiconGroup

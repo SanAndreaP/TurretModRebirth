@@ -12,7 +12,7 @@ import de.sanandrew.mods.turretmod.api.client.render.IRenderInst;
 import de.sanandrew.mods.turretmod.api.client.render.IRenderRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
@@ -98,6 +98,8 @@ public class RenderProjectile
 
     public static <T extends Entity> void initialize(IRenderRegistry<ResourceLocation, T, IRender<T>> registry) {
         registry.register(Projectiles.CB_BOLT.getId(), new RenderCrossbowBolt<>());
+        //TODO: make custom harpoon model
+        registry.register(Projectiles.HARPOON.getId(), new RenderCrossbowBolt<>());
         registry.register(Projectiles.PEBBLE.getId(), new RenderPebble<>());
         registry.register(Projectiles.CRYO_BALL_I.getId(), new RenderNothingness<>());
         registry.register(Projectiles.CRYO_BALL_II.getId(), new RenderNothingness<>());

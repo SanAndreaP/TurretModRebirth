@@ -16,7 +16,7 @@ import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectileInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.turret.TurretMinigun;
-import de.sanandrew.mods.turretmod.util.Sounds;
+import de.sanandrew.mods.turretmod.registry.Sounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;

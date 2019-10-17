@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.network;
 
 import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.NetworkRegistry;

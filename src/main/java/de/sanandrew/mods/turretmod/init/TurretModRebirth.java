@@ -6,7 +6,7 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.util;
+package de.sanandrew.mods.turretmod.init;
 
 import de.sanandrew.mods.turretmod.api.ITmrPlugin;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
@@ -21,6 +21,7 @@ import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.shieldgen.ShieldHandler;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -40,19 +41,15 @@ import java.util.Set;
 @Mod(modid = TmrConstants.ID, version = TmrConstants.VERSION, name = TmrConstants.NAME, guiFactory = TurretModRebirth.GUI_FACTORY, dependencies = TmrConstants.DEPENDENCIES)
 public class TurretModRebirth
 {
-    static final String GUI_FACTORY = "de.sanandrew.mods.turretmod.client.gui.config.TmrGuiFactory";
-
-    public static SimpleNetworkWrapper network;
-
-    private static final String MOD_PROXY_CLIENT = "de.sanandrew.mods.turretmod.client.util.ClientProxy";
-    private static final String MOD_PROXY_COMMON = "de.sanandrew.mods.turretmod.util.CommonProxy";
-
-    public static final List<ITmrPlugin> PLUGINS = new ArrayList<>();
-
+    public static final  List<ITmrPlugin>     PLUGINS          = new ArrayList<>();
+    static final         String               GUI_FACTORY      = "de.sanandrew.mods.turretmod.client.gui.config.TmrGuiFactory";
+    private static final String               MOD_PROXY_CLIENT = "de.sanandrew.mods.turretmod.client.util.ClientProxy";
+    private static final String               MOD_PROXY_COMMON = "de.sanandrew.mods.turretmod.util.CommonProxy";
+    public static        SimpleNetworkWrapper network;
     @Mod.Instance(TmrConstants.ID)
-    public static TurretModRebirth instance;
+    public static        TurretModRebirth     instance;
     @SidedProxy(modId = TmrConstants.ID, clientSide = TurretModRebirth.MOD_PROXY_CLIENT, serverSide = TurretModRebirth.MOD_PROXY_COMMON)
-    public static CommonProxy proxy;
+    public static        CommonProxy          proxy;
 
     private boolean isDev;
 
@@ -79,6 +76,24 @@ public class TurretModRebirth
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
 
         proxy.preInit(event);
+    }
+
+    private static void loadPlugins(ASMDataTable dataTable) {
+        String annotationClassName = TmrPlugin.class.getCanonicalName();
+        Set<ASMDataTable.ASMData> asmDatas = dataTable.getAll(annotationClassName);
+        for( ASMDataTable.ASMData asmData : asmDatas ) {
+            try {
+                Class<?> asmClass = Class.forName(asmData.getClassName());
+                Class<? extends ITmrPlugin> asmInstanceClass = asmClass.asSubclass(ITmrPlugin.class);
+                ITmrPlugin instance = asmInstanceClass.getConstructor().newInstance();
+                PLUGINS.add(instance);
+            } catch( ClassNotFoundException | IllegalAccessException | ExceptionInInitializerError | InstantiationException | NoSuchMethodException | InvocationTargetException e ) {
+                TmrConstants.LOG.error("Failed to load: {}", asmData.getClassName(), e);
+            }
+        }
+
+        // make sure this mods internal plungin is loaded first. Always.
+        PLUGINS.sort((p1, p2) -> p1 instanceof TmrInternalPlugin ? -1 : p2 instanceof TmrInternalPlugin ? 1 : 0);
     }
 
     @Mod.EventHandler
@@ -116,39 +131,21 @@ public class TurretModRebirth
     @SuppressWarnings("unchecked")
     public void loadComplete(net.minecraftforge.fml.common.event.FMLLoadCompleteEvent event) {
         if( this.isDev ) {
-            java.util.function.Function<Object, Long> getObjSize = (obj -> {
+            java.util.function.Function<Object, Long> gos = (obj -> {
                 try {
                     Class cls = Class.forName("jdk.nashorn.internal.ir.debug.ObjectSizeCalculator");
                     return de.sanandrew.mods.sanlib.lib.util.ReflectionUtils.<Long, Object>invokeCachedMethod(cls, null, "getObjectSize", "getObjectSize",
-                                                                                                              new Class[] {Object.class},
-                                                                                                              new Object[] {obj});
+                                                                                                              new Class[] { Object.class },
+                                                                                                              new Object[] { obj });
                 } catch( ClassNotFoundException ex ) {
                     return 0L;
                 }
             });
 
-            TmrConstants.LOG.log(org.apache.logging.log4j.Level.INFO, String.format("Memory used by turret registry: %d bytes", getObjSize.apply(TurretRegistry.INSTANCE)));
-            TmrConstants.LOG.log(org.apache.logging.log4j.Level.INFO, String.format("Memory used by ammo registry: %d bytes", getObjSize.apply(AmmunitionRegistry.INSTANCE)));
-            TmrConstants.LOG.log(org.apache.logging.log4j.Level.INFO, String.format("Memory used by upgrade registry: %d bytes", getObjSize.apply(UpgradeRegistry.INSTANCE)));
-            TmrConstants.LOG.log(org.apache.logging.log4j.Level.INFO, String.format("Memory used by repairkit registry: %d bytes", getObjSize.apply(RepairKitRegistry.INSTANCE)));
+            TmrConstants.LOG.log(org.apache.logging.log4j.Level.INFO, String.format("Memory used by turret registry: %d bytes", gos.apply(TurretRegistry.INSTANCE)));
+            TmrConstants.LOG.log(org.apache.logging.log4j.Level.INFO, String.format("Memory used by ammo registry: %d bytes", gos.apply(AmmunitionRegistry.INSTANCE)));
+            TmrConstants.LOG.log(org.apache.logging.log4j.Level.INFO, String.format("Memory used by upgrade registry: %d bytes", gos.apply(UpgradeRegistry.INSTANCE)));
+            TmrConstants.LOG.log(org.apache.logging.log4j.Level.INFO, String.format("Memory used by repairkit registry: %d bytes", gos.apply(RepairKitRegistry.INSTANCE)));
         }
-    }
-
-    private static void loadPlugins(ASMDataTable dataTable) {
-        String annotationClassName = TmrPlugin.class.getCanonicalName();
-        Set<ASMDataTable.ASMData> asmDatas = dataTable.getAll(annotationClassName);
-        for (ASMDataTable.ASMData asmData : asmDatas) {
-            try {
-                Class<?> asmClass = Class.forName(asmData.getClassName());
-                Class<? extends ITmrPlugin> asmInstanceClass = asmClass.asSubclass(ITmrPlugin.class);
-                ITmrPlugin instance = asmInstanceClass.getConstructor().newInstance();
-                PLUGINS.add(instance);
-            } catch (ClassNotFoundException | IllegalAccessException | ExceptionInInitializerError | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
-                TmrConstants.LOG.error("Failed to load: {}", asmData.getClassName(), e);
-            }
-        }
-
-        // make sure this mods internal plungin is loaded first. Always.
-        PLUGINS.sort((p1, p2) -> p1 instanceof TmrInternalPlugin ? -1 : p2 instanceof TmrInternalPlugin ? 1 : 0);
     }
 }

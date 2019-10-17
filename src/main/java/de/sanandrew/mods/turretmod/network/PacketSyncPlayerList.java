@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.network;
 
 import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
-import de.sanandrew.mods.turretmod.util.PlayerList;
+import de.sanandrew.mods.turretmod.world.PlayerList;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;

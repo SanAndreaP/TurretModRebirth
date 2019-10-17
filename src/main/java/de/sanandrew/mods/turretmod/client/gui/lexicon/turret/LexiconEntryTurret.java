@@ -10,10 +10,10 @@ import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconEntry;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.client.gui.lexicon.ammo.LexiconGroupAmmo;
-import de.sanandrew.mods.turretmod.client.util.ClientProxy;
+import de.sanandrew.mods.turretmod.client.init.ClientProxy;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
-import de.sanandrew.mods.turretmod.util.Lang;
+import de.sanandrew.mods.turretmod.registry.Lang;
 import net.minecraft.item.ItemStack;
 import org.apache.logging.log4j.util.Strings;
 

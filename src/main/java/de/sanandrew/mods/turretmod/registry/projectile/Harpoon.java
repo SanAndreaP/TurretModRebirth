@@ -19,14 +19,14 @@ import net.minecraft.util.SoundEvent;
 
 import javax.annotation.Nonnull;
 
-@Category("crossbow bolt")
-public class CrossbowBolt
+@Category("harpoon")
+public class Harpoon
         implements IProjectile
 {
-    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "crossbowbolt");
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "harpoon");
 
     @Value(comment = "Base damage this projectile can deal to a target.", range = @Range(minD = 0.0D, maxD = 1024.0D))
-    public static float damage = 4.0F;
+    public static float damage = 6.0F;
     @Value(comment = "Multiplier applied to the speed with which this projectile travels.", range = @Range(minD = 0.0D, maxD = 256.0D))
     public static float speed = 1.0F;
     @Value(comment = "How much this projectile curves down/up. negative values let it go up, whereas positive values go down.", range = @Range(minD = -10.0D, maxD = 10.0D))
@@ -77,5 +77,10 @@ public class CrossbowBolt
     @Override
     public double getScatterValue() {
         return scatter;
+    }
+
+    @Override
+    public float getSpeedMultiplierLiquid(float viscosity) {
+        return 2.0F - viscosity;
     }
 }

@@ -15,10 +15,10 @@ import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.client.gui.lexicon.assembly.LexiconRenderAssemblyRecipe;
 import de.sanandrew.mods.turretmod.client.gui.lexicon.turret.LexiconGroupTurret;
-import de.sanandrew.mods.turretmod.client.util.ClientProxy;
+import de.sanandrew.mods.turretmod.client.init.ClientProxy;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
-import de.sanandrew.mods.turretmod.util.Lang;
+import de.sanandrew.mods.turretmod.registry.Lang;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.item.ItemStack;
@@ -28,7 +28,6 @@ import org.apache.commons.lang3.Range;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class LexiconRenderAmmo
         extends LexiconRenderAssemblyRecipe

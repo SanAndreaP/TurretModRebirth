@@ -11,7 +11,7 @@ package de.sanandrew.mods.turretmod.item;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
+import de.sanandrew.mods.turretmod.registry.TmrCreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;

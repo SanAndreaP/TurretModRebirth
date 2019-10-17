@@ -12,7 +12,7 @@ import com.google.common.collect.ImmutableList;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
-import de.sanandrew.mods.turretmod.util.Lang;
+import de.sanandrew.mods.turretmod.registry.Lang;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.api.recipe.IRecipeWrapperFactory;

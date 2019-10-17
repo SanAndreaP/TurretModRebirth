@@ -34,11 +34,6 @@ public class LevelStorage
     private static String[] stagesJson = getDefaultStages();
     private static Stage[]  stages     = {};
 
-    @Init
-    public static void initStages() {
-        stages = Stage.load(stagesJson);
-    }
-
     int xp;
 
     private int     prevXp;
@@ -56,6 +51,38 @@ public class LevelStorage
         this.xp = xp;
         this.prevXp = 0;
         this.cachedLevel = -1;
+    }
+
+    @Init
+    public static void initStages() {
+        stages = Stage.load(stagesJson);
+    }
+
+    private static int getXpReqForNextLevel(int lvl) {
+        if( lvl < 0 ) {
+            return 0;
+        } else if( lvl < 17 ) {
+            return lvl * lvl + 6 * lvl;
+        } else if( lvl < 32 ) {
+            return MathHelper.floor(2.5D * lvl * lvl - 40.5D * lvl + 360);
+        } else {
+            return MathHelper.floor(4.5D * lvl * lvl - 162.5D * lvl + 2220);
+        }
+    }
+
+    private static String[] getDefaultStages() {
+        try( BufferedReader r = TmrUtils.getFile(Loader.instance().getModList().stream().filter(c -> c.getModId().equals(TmrConstants.ID)).findFirst()
+                                                       .orElseThrow(IOException::new),
+                                                 "assets/" + TmrConstants.ID + "/stages_default.txt")
+        ) {
+            if( r != null ) {
+                return r.lines().toArray(String[]::new);
+            }
+        } catch( IOException e ) {
+            TmrConstants.LOG.log(Level.ERROR, "Cannot load default stages: {}", e.getMessage());
+        }
+
+        return new String[0];
     }
 
     @Override
@@ -182,32 +209,5 @@ public class LevelStorage
 
     public int getCurrentLevelMinXp() {
         return getXpReqForNextLevel(this.getLevel());
-    }
-
-    private static int getXpReqForNextLevel(int lvl) {
-        if( lvl < 0 ) {
-            return 0;
-        } else if( lvl < 17 ) {
-            return lvl * lvl + 6 * lvl;
-        } else if( lvl < 32 ) {
-            return MathHelper.floor(2.5D * lvl * lvl - 40.5D * lvl + 360);
-        } else {
-            return MathHelper.floor(4.5D * lvl * lvl - 162.5D * lvl + 2220);
-        }
-    }
-
-    private static String[] getDefaultStages() {
-        try( BufferedReader r = TmrUtils
-                .getFile(Loader.instance().getModList().stream().filter(c -> c.getModId().equals(TmrConstants.ID)).findFirst().orElseThrow(IOException::new),
-                         "assets/" + TmrConstants.ID + "/stages_default.txt")
-        ) {
-            if( r != null ) {
-                return r.lines().toArray(String[]::new);
-            }
-        } catch( IOException e ) {
-            TmrConstants.LOG.log(Level.ERROR, "Cannot load default stages: {}", e.getMessage());
-        }
-
-        return new String[0];
     }
 }

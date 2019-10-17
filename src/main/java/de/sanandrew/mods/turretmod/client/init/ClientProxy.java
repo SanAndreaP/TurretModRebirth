@@ -6,7 +6,7 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.client.util;
+package de.sanandrew.mods.turretmod.client.init;
 
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconInst;
 import de.sanandrew.mods.sanlib.lib.ColorObj;
@@ -35,6 +35,7 @@ import de.sanandrew.mods.turretmod.client.render.projectile.RenderProjectile;
 import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
 import de.sanandrew.mods.turretmod.client.render.world.RenderTurretPointed;
 import de.sanandrew.mods.turretmod.client.shader.Shaders;
+import de.sanandrew.mods.turretmod.client.util.ResourceOrderer;
 import de.sanandrew.mods.turretmod.client.world.ClientWorldEventListener;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretProjectile;
@@ -45,10 +46,10 @@ import de.sanandrew.mods.turretmod.registry.turret.TurretLaser;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
-import de.sanandrew.mods.turretmod.util.CommonProxy;
-import de.sanandrew.mods.turretmod.util.EnumParticle;
+import de.sanandrew.mods.turretmod.init.CommonProxy;
+import de.sanandrew.mods.turretmod.registry.EnumParticle;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleSmokeNormal;

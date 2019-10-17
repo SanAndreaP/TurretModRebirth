@@ -24,16 +24,6 @@ public class Stage
         this.modifiers = modifiers;
     }
 
-    boolean check(int level, Stage currStage) {
-        return level >= this.level && currStage.level < this.level;
-    }
-
-    void apply(ITurretInst turretInst) {
-        for( Modifier m : this.modifiers ) {
-            TmrUtils.tryApplyModifier(turretInst.get(), m.attributeName, m.modifier);
-        }
-    }
-
     static Stage[] load(String[] jsons) {
         List<Stage> stageList = new ArrayList<>();
         for( String j : jsons ) {
@@ -54,6 +44,16 @@ public class Stage
         }
 
         return stageList.toArray(new Stage[0]);
+    }
+
+    boolean check(int level, Stage currStage) {
+        return level >= this.level && currStage.level < this.level;
+    }
+
+    void apply(ITurretInst turretInst) {
+        for( Modifier m : this.modifiers ) {
+            TmrUtils.tryApplyModifier(turretInst.get(), m.attributeName, m.modifier);
+        }
     }
 
     public static class Modifier

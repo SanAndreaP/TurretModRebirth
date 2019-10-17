@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.client.shader;
 
 import de.sanandrew.mods.sanlib.lib.client.ShaderHelper;
-import de.sanandrew.mods.turretmod.util.Resources;
+import de.sanandrew.mods.turretmod.registry.Resources;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 

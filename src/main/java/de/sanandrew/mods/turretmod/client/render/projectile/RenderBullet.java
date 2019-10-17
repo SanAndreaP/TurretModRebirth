@@ -6,7 +6,7 @@
  * ***************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.render.projectile;
 
-import de.sanandrew.mods.turretmod.util.Resources;
+import de.sanandrew.mods.turretmod.registry.Resources;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 

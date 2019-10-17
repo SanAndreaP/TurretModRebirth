@@ -1,6 +1,7 @@
 package de.sanandrew.mods.turretmod.client.util;
 
-import de.sanandrew.mods.turretmod.util.Resources;
+import de.sanandrew.mods.turretmod.registry.Resources;
+import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -21,7 +22,7 @@ import java.util.function.Predicate;
 public final class ResourceOrderer
         implements ISelectiveResourceReloadListener
 {
-    static final ResourceOrderer INSTANCE = new ResourceOrderer();
+    public static final ResourceOrderer INSTANCE = new ResourceOrderer();
 
     private static final List<ResourceLocation> ORDERED_LIST = new ArrayList<>();
 
@@ -30,7 +31,7 @@ public final class ResourceOrderer
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
         if( resourcePredicate.test(VanillaResourceType.TEXTURES) ) {
-            try( InputStream is = resourceManager.getResource(Resources.ITEM_ORDER_LIST.resource).getInputStream() ) {
+            try( IResource r = resourceManager.getResource(Resources.ITEM_ORDER_LIST.resource); InputStream is = r.getInputStream() ) {
                 ORDERED_LIST.clear();
                 IOUtils.readLines(is, StandardCharsets.UTF_8).forEach(s -> { if( !s.startsWith("#") ) ORDERED_LIST.add(new ResourceLocation(s)); });
             } catch( IOException ignored ) { }

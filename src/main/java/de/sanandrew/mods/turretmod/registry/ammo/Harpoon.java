@@ -42,11 +42,11 @@ public class Harpoon
 
     @Override
     public Range<Float> getDamageInfo() {
-        return Range.is(Projectiles.CB_BOLT.getDamage());
+        return Range.is(Projectiles.HARPOON.getDamage());
     }
 
     @Override
     public IProjectile getProjectile(ITurretInst turretInst) {
-        return Projectiles.CB_BOLT;
+        return Projectiles.HARPOON;
     }
 }

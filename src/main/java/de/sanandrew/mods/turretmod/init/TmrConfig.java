@@ -6,7 +6,7 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.util;
+package de.sanandrew.mods.turretmod.init;
 
 import de.sanandrew.mods.sanlib.lib.util.config.Category;
 import de.sanandrew.mods.sanlib.lib.util.config.ConfigUtils;
@@ -18,12 +18,14 @@ import de.sanandrew.mods.turretmod.registry.projectile.Bullet;
 import de.sanandrew.mods.turretmod.registry.projectile.CrossbowBolt;
 import de.sanandrew.mods.turretmod.registry.projectile.CryoBall;
 import de.sanandrew.mods.turretmod.registry.projectile.Flame;
+import de.sanandrew.mods.turretmod.registry.projectile.Harpoon;
 import de.sanandrew.mods.turretmod.registry.projectile.Laser;
 import de.sanandrew.mods.turretmod.registry.projectile.MinigunPebble;
 import de.sanandrew.mods.turretmod.registry.projectile.ShotgunPebble;
 import de.sanandrew.mods.turretmod.registry.turret.TurretCrossbow;
 import de.sanandrew.mods.turretmod.registry.turret.TurretCryolator;
 import de.sanandrew.mods.turretmod.registry.turret.TurretFlamethrower;
+import de.sanandrew.mods.turretmod.registry.turret.TurretHarpoon;
 import de.sanandrew.mods.turretmod.registry.turret.TurretLaser;
 import de.sanandrew.mods.turretmod.registry.turret.TurretMinigun;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRevolver;
@@ -39,11 +41,14 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.File;
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
-@Mod.EventBusSubscriber(modid = TmrConstants.ID)
 @SuppressWarnings("WeakerAccess")
+@Mod.EventBusSubscriber(modid = TmrConstants.ID)
 public final class TmrConfig
 {
     public static final String VERSION = "2.0";
@@ -80,6 +85,7 @@ public final class TmrConfig
         @Init
         public static void initialize() {
             ConfigUtils.loadCategory(configTurrets, TurretCrossbow.class, null);
+            ConfigUtils.loadCategory(configTurrets, TurretHarpoon.class, null);
             ConfigUtils.loadCategory(configTurrets, TurretShotgun.class, null);
             ConfigUtils.loadCategory(configTurrets, TurretCryolator.class, null);
             ConfigUtils.loadCategory(configTurrets, TurretRevolver.class, null);
@@ -95,6 +101,7 @@ public final class TmrConfig
         @Init
         public static void initialize() {
             ConfigUtils.loadCategory(configProjectiles, CrossbowBolt.class, null);
+            ConfigUtils.loadCategory(configProjectiles, Harpoon.class, null);
             ConfigUtils.loadCategory(configProjectiles, ShotgunPebble.class, null);
             ConfigUtils.loadCategory(configProjectiles, CryoBall.class, null);
             ConfigUtils.loadCategory(configProjectiles, Bullet.class, null);
@@ -168,9 +175,10 @@ public final class TmrConfig
         }
     }
 
-    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     public static Map<String, ConfigCategory[]> getCategoriesForGUI() {
-        Map<String, ConfigCategory[]> cat = new HashMap<>();
+        List<String> order = Arrays.asList("general", "turrets", "projectiles", "targets", "upgrades");
+
+        Map<String, ConfigCategory[]> cat = new TreeMap<>(Comparator.comparingInt(order::indexOf));
         cat.put("general", configGeneral.getCategoryNames().stream().map(configGeneral::getCategory).filter(c -> c.size() > 0).toArray(ConfigCategory[]::new));
         cat.put("turrets", configTurrets.getCategoryNames().stream().map(configTurrets::getCategory).filter(c -> c.size() > 0).toArray(ConfigCategory[]::new));
         cat.put("projectiles", configProjectiles.getCategoryNames().stream().map(configProjectiles::getCategory).filter(c -> c.size() > 0).toArray(ConfigCategory[]::new));

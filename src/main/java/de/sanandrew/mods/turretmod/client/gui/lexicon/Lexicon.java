@@ -10,9 +10,9 @@ import de.sanandrew.mods.sanlib.api.client.lexicon.ILexicon;
 import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconInst;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.client.shader.Shaders;
-import de.sanandrew.mods.turretmod.client.util.ClientProxy;
-import de.sanandrew.mods.turretmod.util.Resources;
-import de.sanandrew.mods.turretmod.util.TurretModRebirth;
+import de.sanandrew.mods.turretmod.client.init.ClientProxy;
+import de.sanandrew.mods.turretmod.registry.Resources;
+import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import net.minecraft.util.ResourceLocation;
 
 @de.sanandrew.mods.sanlib.api.client.lexicon.Lexicon

@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.item;
 
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
-import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
+import de.sanandrew.mods.turretmod.registry.TmrCreativeTabs;
 import net.minecraft.item.Item;
 
 public class ItemUpgrade

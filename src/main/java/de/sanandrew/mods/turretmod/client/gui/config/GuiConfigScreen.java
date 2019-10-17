@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.client.gui.config;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.util.TmrConfig;
+import de.sanandrew.mods.turretmod.init.TmrConfig;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.ConfigElement;

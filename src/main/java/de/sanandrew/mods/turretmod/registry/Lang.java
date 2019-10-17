@@ -6,7 +6,7 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.util;
+package de.sanandrew.mods.turretmod.registry;
 
 import de.sanandrew.mods.sanlib.lib.util.LangUtils.TranslateKey;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
@@ -40,7 +40,7 @@ public final class Lang
     public static final TranslateKey ENTITY_NAME   = new TranslateKey("entity.%s.name");
     public static final TranslateKey ENTITY_DESC   = new TranslateKey("entity.%s.desc");
     public static final TranslateKey CONTAINER_INV = new TranslateKey("container.inventory");
-    public static final TranslateKey ATTRIBUTE   = new TranslateKey("attribute.%s");
+    public static final TranslateKey ATTRIBUTE     = new TranslateKey("attribute.%s");
 
     public static final TranslateKey ITEM_TURRET_PLACER = new TranslateKey("item.%s:turret.%%s", TmrConstants.ID);
 

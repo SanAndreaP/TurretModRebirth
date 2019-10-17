@@ -6,7 +6,7 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.util;
+package de.sanandrew.mods.turretmod.registry;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import net.minecraft.util.ResourceLocation;
@@ -51,7 +51,7 @@ public enum Resources
     GUI_TCU_SMARTTGT("textures/gui/tcu/page_smart.png"),
     GUI_TCU_COLORIZER("textures/gui/tcu/page_colorizer.png"),
     GUI_TCU_CAM_NA("textures/gui/tcu/cam_unavailable.png"),
-//    GUI_TCU_HUD("textures/gui/tcu/hud.png"),
+    //    GUI_TCU_HUD("textures/gui/tcu/hud.png"),
     GUI_ASSEMBLY_CRF("textures/gui/turretassembly/manual.png"),
     GUI_ASSEMBLY_FLT("textures/gui/turretassembly/filter.png"),
     GUI_TURRETINFO("textures/gui/turretinfo/backg.png"),

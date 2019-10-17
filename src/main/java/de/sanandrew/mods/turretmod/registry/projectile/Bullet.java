@@ -13,7 +13,7 @@ import de.sanandrew.mods.sanlib.lib.util.config.Range;
 import de.sanandrew.mods.sanlib.lib.util.config.Value;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
-import de.sanandrew.mods.turretmod.util.Sounds;
+import de.sanandrew.mods.turretmod.registry.Sounds;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 

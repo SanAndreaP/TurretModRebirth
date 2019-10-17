@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.client.model.entity;
 
 import de.sanandrew.mods.sanlib.lib.client.ModelJsonLoader;
-import de.sanandrew.mods.turretmod.util.Resources;
+import de.sanandrew.mods.turretmod.registry.Resources;
 import net.minecraft.client.resources.IResourceManager;
 
 public class ModelTurretLaser
