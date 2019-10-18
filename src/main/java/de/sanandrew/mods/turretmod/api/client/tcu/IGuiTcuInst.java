@@ -6,6 +6,7 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.api.client.tcu;
 
+import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -18,6 +19,7 @@ import net.minecraft.util.ResourceLocation;
  */
 @SuppressWarnings("JavadocReference")
 public interface IGuiTcuInst<T extends GuiScreen>
+        extends IGui
 {
     /**
      * @return the {@link GuiScreen} instance of this GUI.
@@ -63,6 +65,7 @@ public interface IGuiTcuInst<T extends GuiScreen>
      * @param <U> The type of the button.
      * @return The button added to this GUI; This is the same as the parameter.
      */
+    @Deprecated
     <U extends GuiButton> U addNewButton(U button);
 
     /**
@@ -70,6 +73,7 @@ public interface IGuiTcuInst<T extends GuiScreen>
      *
      * @return a new button ID.
      */
+    @Deprecated
     int getNewButtonId();
 
     /**

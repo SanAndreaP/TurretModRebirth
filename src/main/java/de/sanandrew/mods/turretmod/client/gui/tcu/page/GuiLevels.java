@@ -6,6 +6,8 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.gui.tcu.page;
 
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
+import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
@@ -24,6 +26,7 @@ import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.util.math.MathHelper;
 import org.apache.commons.lang3.mutable.MutableInt;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,6 +41,16 @@ public class GuiLevels
     private int minXp   = 0;
     private int maxXp   = 0;
     private int currXp  = 0;
+
+    private GuiDefinition guiDef;
+
+    {
+        try {
+            guiDef = GuiDefinition.getNewDefinition(Resources.GUI_STRUCT_TCU_LEVELS.resource);
+        } catch( IOException e ) {
+            e.printStackTrace();
+        }
+    }
 
     private Map<String, ModifierInfo> currModifiers = new HashMap<>();
 
@@ -110,6 +123,11 @@ public class GuiLevels
         GuiUtils.drawGradientRect(posX + 10, posY + 132 + posYMod.getValue(), 100, 10, 0xFF000000, 0xFF000000, true);
         float v = (this.currXp - this.minXp) / (float) (this.maxXp - this.minXp) * 100.0F;
         GuiUtils.drawGradientRect(posX + 10, posY + 132 + posYMod.getValue(), MathHelper.floor(v), 10, 0xFF00A000, 0xFF00FF00, false);
+    }
+
+    @Override
+    public GuiDefinition getDefinition() {
+        return null;
     }
 
     public static boolean showTab(IGuiTcuInst<?> gui) {

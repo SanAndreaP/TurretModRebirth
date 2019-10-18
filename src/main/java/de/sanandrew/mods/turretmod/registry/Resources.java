@@ -60,6 +60,7 @@ public enum Resources
     GUI_STRUCT_ELECTROLYTE("guis/electrolyte_generator.json"),
     GUI_STRUCT_CARTRIDGE("guis/ammo_cartridge.json"),
     GUI_STRUCT_TCRATE("guis/turret_crate.json"),
+    GUI_STRUCT_TCU_LEVELS("guis/tcu/levels.json"),
 
     TINFO_GRP_AMMO("textures/gui/lexicon/group_ammo.png"),
     TINFO_GRP_INFO("textures/gui/lexicon/group_info.png"),

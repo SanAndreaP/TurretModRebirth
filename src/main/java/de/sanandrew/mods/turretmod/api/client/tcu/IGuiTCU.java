@@ -6,10 +6,13 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.api.client.tcu;
 
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
+import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
 
@@ -50,6 +53,7 @@ public interface IGuiTCU
      * @param mouseX The X position of the mouse cursor.
      * @param mouseY The Y position of the mouse cursor.
      */
+    @Deprecated
     void drawBackground(IGuiTcuInst<?> gui, float partialTicks, int mouseX, int mouseY);
 
     /**
@@ -59,6 +63,7 @@ public interface IGuiTCU
      * @param mouseX The X position of the mouse cursor.
      * @param mouseY The Y position of the mouse cursor.
      */
+    @Deprecated
     default void drawForeground(IGuiTcuInst<?> gui, int mouseX, int mouseY) {}
 
     /**
@@ -68,6 +73,7 @@ public interface IGuiTCU
      * @param button The button clicked.
      * @throws IOException if the operation tries opening an url and fails to do so.
      */
+    @Deprecated
     default void onButtonClick(IGuiTcuInst<?> gui, GuiButton button) throws IOException {}
 
     /**
@@ -78,6 +84,7 @@ public interface IGuiTCU
      * @param mouseY The Y position of the mouse cursor.
      * @param mouseButton The mouse button pressed.
      */
+    @Deprecated
     default void onMouseClick(IGuiTcuInst<?> gui, int mouseX, int mouseY, int mouseButton) {}
 
     /**
@@ -110,6 +117,7 @@ public interface IGuiTCU
      * <p>Invoked when there's input occurring from the mouse, like mouse click, mouse move, mouse release, etc.</p>
      * @param gui The TCU GUI instance.
      */
+    @Deprecated
     default void onMouseInput(IGuiTcuInst<?> gui) {}
 
     /**
@@ -121,5 +129,10 @@ public interface IGuiTCU
      * @param mouseButton The mouse button pressed.
      * @param timeSinceLastClick The amount of milliseconds passed since the last click.
      */
+    @Deprecated
     default void onMouseClickMove(IGuiTcuInst<?> gui, int mouseX, int mouseY, int mouseButton, long timeSinceLastClick) {}
+
+    ResourceLocation getGuiDefinition();
+
+    default void onElementAction(IGuiElement element, int action) {}
 }

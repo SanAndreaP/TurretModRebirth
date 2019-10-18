@@ -1,0 +1,16 @@
+{
+  "width": 230,
+  "height": 222,
+  "texture": "sapturretmod:textures/gui/tcu/page_info.png",
+  "backgroundElements": [
+    {
+      "type": "texture",
+      "pos": [0, 0],
+      "data": {
+        "size": [230, 222],
+        "uv": [0, 0]
+      }
+    }
+  ],
+  "foregroundElements": []
+}
