@@ -1,0 +1,55 @@
+{
+  "width": 176,
+  "height": 236,
+  "texture": "sapturretmod:textures/gui/tcu/page_info.png",
+  "backgroundElements": [
+    {
+      "type": "texture",
+      "pos": [0, 0],
+      "data": {
+        "size": [176, 236],
+        "uv": [0, 0]
+      }
+    },
+    {
+      "type": "turretname",
+      "pos": [16, 9],
+      "data": {
+        "color": "0xFFA0A0FF"
+      }
+    },
+    {
+      "type": "button",
+      "pos": [60, 190],
+      "id": "dismantle",
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "buttonFunction": 0,
+        "texture": "sapturretmod:textures/gui/tcu/page_info.png",
+        "uvEnabled": [176, 50],
+        "uvDisabled": [176, 32],
+        "uvHover": [176, 68],
+        "ctHorizontal": 9,
+        "ctVertical": 9
+      }
+    }
+  ],
+  "foregroundElements": [
+    {
+      "type": "label",
+      "pos": [60, 190],
+      "data": {
+        "size": [18, 18],
+        "content": {
+          "type": "text",
+          "pos": [0, 0],
+          "data": {
+            "color": "0xFFFFFFFF",
+            "text": "gui.sapturretmod.tcu.button.dismantle"
+          }
+        }
+      }
+    }
+  ]
+}

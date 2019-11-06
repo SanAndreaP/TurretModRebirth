@@ -28,6 +28,7 @@ import de.sanandrew.mods.turretmod.client.gui.GuiTurretCrate;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiAssemblyFilter;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
 import de.sanandrew.mods.turretmod.client.gui.element.*;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.TurretName;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.PlayerHeads;
 import de.sanandrew.mods.turretmod.client.particle.ParticleAssemblySpark;
 import de.sanandrew.mods.turretmod.client.particle.ParticleCryoTrail;
@@ -83,6 +84,8 @@ public class ClientProxy
         GuiDefinition.TYPES.put(AssemblyProgressBar.AssemblyProgressLabel.ID, AssemblyProgressBar.AssemblyProgressLabel::new);
         GuiDefinition.TYPES.put(AssemblyRecipeLabel.ID, AssemblyRecipeLabel::new);
         GuiDefinition.TYPES.put(AssemblyGhostItems.ID, AssemblyGhostItems::new);
+
+        GuiDefinition.TYPES.put(TurretName.ID, TurretName::new);
     }
 
     @Override

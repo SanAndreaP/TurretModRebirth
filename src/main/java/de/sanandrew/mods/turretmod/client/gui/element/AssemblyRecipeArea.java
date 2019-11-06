@@ -102,13 +102,13 @@ public class AssemblyRecipeArea
     }
 
     @Override
-    public void handleMouseInput(IGui gui) {
+    public void handleMouseInput(IGui gui) throws IOException {
         this.recipeGroups.get(GuiTurretAssembly.currGroup).area.handleMouseInput(gui);
     }
 
     @Override
-    public void mouseClicked(IGui gui, int mouseX, int mouseY, int mouseButton) throws IOException {
-        this.recipeGroups.get(GuiTurretAssembly.currGroup).area.mouseClicked(gui, mouseX, mouseY, mouseButton);
+    public boolean mouseClicked(IGui gui, int mouseX, int mouseY, int mouseButton) throws IOException {
+        return this.recipeGroups.get(GuiTurretAssembly.currGroup).area.mouseClicked(gui, mouseX, mouseY, mouseButton);
     }
 
     @Override
@@ -123,10 +123,10 @@ public class AssemblyRecipeArea
 
     private static final class GroupData
     {
-        AssemblyRecipes area;
-        JsonObject data;
+        private AssemblyRecipes area;
+        private JsonObject      data;
 
-        GroupData(IGui gui, String grp, JsonObject data) {
+        private GroupData(IGui gui, String grp, JsonObject data) {
             this.area = new AssemblyRecipes(grp);
             this.data = deepCopy(data);
             this.area.bakeData(gui, this.data);

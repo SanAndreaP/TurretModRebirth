@@ -682,7 +682,7 @@ public class EntityTurret
         if( this.hasCustomName() ) {
             return this.getCustomNameTag();
         } else {
-            return LangUtils.translate(Lang.ENTITY_NAME.get(this.delegate.getId()));
+            return LangUtils.translate(LangUtils.ENTITY_NAME.get(this.delegate.getId()));
         }
     }
 

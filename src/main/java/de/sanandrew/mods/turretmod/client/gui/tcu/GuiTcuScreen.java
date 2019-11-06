@@ -48,12 +48,11 @@ public class GuiTcuScreen
             this.guiDef = GuiDefinition.getNewDefinition(this.guiDelegate.getGuiDefinition());
             this.xSize = this.guiDef.width;
             this.ySize = this.guiDef.height;
+
+            helper.checkRequiredElements(this.guiDef);
         } catch( IOException e ) {
             TmrConstants.LOG.log(Level.ERROR, e);
         }
-
-//        this.xSize = GuiTcuHelper.X_SIZE;
-//        this.ySize = GuiTcuHelper.Y_SIZE;
     }
 
     @Override
@@ -66,7 +65,6 @@ public class GuiTcuScreen
         this.posY = (this.height - this.ySize) / 2;
 
         this.buttonList.clear();
-//        this.helper.initGui(this);
 
         this.guiDelegate.initialize(this);
     }
@@ -75,7 +73,6 @@ public class GuiTcuScreen
     public void updateScreen() {
         super.updateScreen();
         this.helper.updateScreen(this.mc, this);
-        this.guiDelegate.updateScreen(this);
 
         this.guiDef.update(this);
     }
@@ -84,56 +81,48 @@ public class GuiTcuScreen
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
         GuiHelper.drawGDBackground(this.guiDef, this, partialTicks, mouseX, mouseY);
-//        this.guiDelegate.drawBackground(this, partialTicks, mouseX, mouseY);
         super.drawScreen(mouseX, mouseY, partialTicks);
         GlStateManager.pushMatrix();
         GlStateManager.translate(this.posX, this.posY, 0);
         this.guiDef.drawForeground(this, mouseX, mouseY, partialTicks);
-//        this.helper.drawScreen(this);
-//        this.guiDelegate.drawForeground(this, mouseX, mouseY);
         GlStateManager.popMatrix();
     }
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
-//        this.guiDelegate.onMouseClick(this, mouseX, mouseY, mouseButton);
         this.guiDef.mouseClicked(this, mouseX, mouseY, mouseButton);
     }
 
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int mouseButton, long timeSinceLastClick) {
         super.mouseClickMove(mouseX, mouseY, mouseButton, timeSinceLastClick);
-//        this.guiDelegate.onMouseClickMove(this, mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
         this.guiDef.mouseClickMove(this, mouseX, mouseY, mouseButton, timeSinceLastClick);
     }
 
     @Override
-    protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        if( !this.guiDelegate.doKeyIntercept(this, typedChar, keyCode) ) {
-            super.keyTyped(typedChar, keyCode);
-            this.guiDelegate.onKeyType(this, typedChar, keyCode);
-        }
-    }
-
-    @Override
-    protected void actionPerformed(GuiButton button) throws IOException {
-        super.actionPerformed(button);
-//        this.helper.onButtonClick(this, button);
-//        this.guiDelegate.onButtonClick(this, button);
-    }
-
-    @Override
-    public void onGuiClosed() {
-        this.guiDelegate.onGuiClose(this);
-        super.onGuiClosed();
+    protected void mouseReleased(int mouseX, int mouseY, int state) {
+        super.mouseReleased(mouseX, mouseY, state);
+        this.guiDef.mouseReleased(this, mouseX, mouseY, state);
     }
 
     @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
-//        this.guiDelegate.onMouseInput(this);
         this.guiDef.handleMouseInput(this);
+    }
+
+    @Override
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        if( !this.guiDef.keyTyped(this, typedChar, keyCode) ) {
+            super.keyTyped(typedChar, keyCode);
+        }
+    }
+
+    @Override
+    public void onGuiClosed() {
+        super.onGuiClosed();
+        this.guiDef.guiClosed(this);
     }
 
     @Override
@@ -177,17 +166,6 @@ public class GuiTcuScreen
     }
 
     @Override
-    public <U extends GuiButton> U addNewButton(U button) {
-        this.buttonList.add(button);
-        return button;
-    }
-
-    @Override
-    public int getNewButtonId() {
-        return this.buttonList.size();
-    }
-
-    @Override
     public FontRenderer getFontRenderer() {
         return this.fontRenderer;
     }
@@ -223,7 +201,7 @@ public class GuiTcuScreen
     }
 
     @Override
-    public void performAction(IGuiElement element, int action) {
-        this.guiDelegate.onElementAction(element, action);
+    public boolean performAction(IGuiElement element, int action) {
+        return this.guiDelegate.onElementAction(element, action);
     }
 }

@@ -10,7 +10,6 @@ import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelElement;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.registry.Lang;
 import net.minecraft.client.gui.FontRenderer;
 
 public class LabelTurretName
@@ -43,6 +42,6 @@ public class LabelTurretName
     }
 
     private static String getName(ITurretInst turret) {
-        return turret.get().hasCustomName() ? turret.get().getCustomNameTag() : LangUtils.translate(Lang.ENTITY_NAME.get(turret.getTurret().getId()));
+        return turret.get().hasCustomName() ? turret.get().getCustomNameTag() : LangUtils.translate(LangUtils.ENTITY_NAME.get(turret.getTurret().getId()));
     }
 }

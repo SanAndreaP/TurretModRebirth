@@ -37,9 +37,6 @@ public final class Lang
 
     public static final TranslateKey TURRET_DESC = new TranslateKey("%s.turret.%%s.desc", TmrConstants.ID);
 
-    public static final TranslateKey ENTITY_NAME   = new TranslateKey("entity.%s.name");
-    public static final TranslateKey ENTITY_DESC   = new TranslateKey("entity.%s.desc");
-    public static final TranslateKey CONTAINER_INV = new TranslateKey("container.inventory");
     public static final TranslateKey ATTRIBUTE     = new TranslateKey("attribute.%s");
 
     public static final TranslateKey ITEM_TURRET_PLACER = new TranslateKey("item.%s:turret.%%s", TmrConstants.ID);

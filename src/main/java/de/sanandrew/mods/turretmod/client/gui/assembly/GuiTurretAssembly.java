@@ -193,26 +193,29 @@ public class GuiTurretAssembly
     }
 
     @Override
-    public void performAction(IGuiElement element, int action) {
+    public boolean performAction(IGuiElement element, int action) {
         switch( action ) {
             case -1:
                 if( this.hoveredRecipe != null ) {
                     PacketRegistry.sendToServer(new PacketInitAssemblyCrafting(this.assembly, this.hoveredRecipe.getId(), this.shiftPressed ? 16 : 1));
+                    return true;
                 }
                 break;
             case 0:
                 PacketRegistry.sendToServer(new PacketInitAssemblyCrafting(this.assembly));
-                break;
+                return true;
             case 1:
                 PacketRegistry.sendToServer(new PacketAssemblyToggleAutomate(this.assembly));
-                break;
+                return true;
             case 2:
                 switchGroup(-1);
-                break;
+                return true;
             case 3:
                 switchGroup(1);
-                break;
+                return true;
         }
+
+        return false;
     }
 
     private void switchGroup(int direction) {
@@ -253,7 +256,7 @@ public class GuiTurretAssembly
     }
 
     public int getProcessTime(IAssemblyRecipe recipe) {
-        return recipe != null ? MathHelper.floor(recipe.getProcessTime() / (this.assembly.hasSpeedUpgrade() ? 4 : 1)) : 0;
+        return recipe != null ? MathHelper.floor(recipe.getProcessTime() / (this.assembly.hasSpeedUpgrade() ? 4.0F : 1.0F)) : 0;
     }
 
     public boolean isShiftPressed() {

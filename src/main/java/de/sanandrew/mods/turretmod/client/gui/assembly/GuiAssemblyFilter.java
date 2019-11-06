@@ -12,7 +12,6 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.inventory.container.ContainerAssemblyFilter;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.registry.Lang;
 import de.sanandrew.mods.turretmod.registry.Resources;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -35,7 +34,6 @@ public class GuiAssemblyFilter
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void initGui() {
         super.initGui();
 
@@ -63,6 +61,6 @@ public class GuiAssemblyFilter
 
         String s = LangUtils.translate(ItemRegistry.ASSEMBLY_UPG_FILTER.getTranslationKey() + ".name");
         this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 6, 4210752);
-        this.fontRenderer.drawString(LangUtils.translate(Lang.CONTAINER_INV.get()), 8, this.ySize - 96 + 3, 4210752);
+        this.fontRenderer.drawString(LangUtils.translate(LangUtils.CONTAINER_INV.get()), 8, this.ySize - 96 + 3, 4210752);
     }
 }

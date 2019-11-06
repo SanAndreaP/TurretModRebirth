@@ -43,8 +43,8 @@ public class TurretModRebirth
 {
     public static final  List<ITmrPlugin>     PLUGINS          = new ArrayList<>();
     static final         String               GUI_FACTORY      = "de.sanandrew.mods.turretmod.client.gui.config.TmrGuiFactory";
-    private static final String               MOD_PROXY_CLIENT = "de.sanandrew.mods.turretmod.client.util.ClientProxy";
-    private static final String               MOD_PROXY_COMMON = "de.sanandrew.mods.turretmod.util.CommonProxy";
+    private static final String               MOD_PROXY_CLIENT = "de.sanandrew.mods.turretmod.client.init.ClientProxy";
+    private static final String               MOD_PROXY_COMMON = "de.sanandrew.mods.turretmod.init.CommonProxy";
     public static        SimpleNetworkWrapper network;
     @Mod.Instance(TmrConstants.ID)
     public static        TurretModRebirth     instance;

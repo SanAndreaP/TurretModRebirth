@@ -49,9 +49,6 @@ public class GuiTcuContainer
         } catch( IOException e ) {
             TmrConstants.LOG.log(Level.ERROR, e);
         }
-
-//        this.xSize = GuiTcuHelper.X_SIZE;
-//        this.ySize = GuiTcuHelper.Y_SIZE;
     }
 
     @Override
@@ -61,7 +58,6 @@ public class GuiTcuContainer
         GuiHelper.initGuiDef(this.guiDef, this);
 
         this.buttonList.clear();
-//        this.helper.initGui(this);
 
         this.guiDelegate.initialize(this);
     }
@@ -86,8 +82,6 @@ public class GuiTcuContainer
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         this.currPartTicks = partialTicks;
         GuiHelper.drawGDBackground(this.guiDef, this, partialTicks, mouseX, mouseY);
-
-//        this.guiDelegate.drawBackground(this, partialTicks, mouseX, mouseY);
     }
 
     @Override
@@ -95,49 +89,43 @@ public class GuiTcuContainer
         RenderHelper.disableStandardItemLighting();
         this.guiDef.drawForeground(this, mouseX, mouseY, this.currPartTicks);
         RenderHelper.enableGUIStandardItemLighting();
-//        this.guiDelegate.drawForeground(this, mouseX, mouseY);
     }
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
         this.guiDef.mouseClicked(this, mouseX, mouseY, mouseButton);
-//        this.guiDelegate.onMouseClick(this, mouseX, mouseY, mouseButton);
     }
 
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int mouseButton, long timeSinceLastClick) {
         super.mouseClickMove(mouseX, mouseY, mouseButton, timeSinceLastClick);
         this.guiDef.mouseClickMove(this, mouseX, mouseY, mouseButton, timeSinceLastClick);
-//        this.guiDelegate.onMouseClickMove(this, mouseX, mouseY, mouseButton, timeSinceLastClick);
     }
 
     @Override
-    protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        if( !this.guiDelegate.doKeyIntercept(this, typedChar, keyCode) ) {
-            super.keyTyped(typedChar, keyCode);
-            this.guiDelegate.onKeyType(this, typedChar, keyCode);
-        }
-    }
-
-    @Override
-    protected void actionPerformed(GuiButton button) throws IOException {
-        super.actionPerformed(button);
-//        this.helper.onButtonClick(this, button);
-//        this.guiDelegate.onButtonClick(this, button);
-    }
-
-    @Override
-    public void onGuiClosed() {
-        this.guiDelegate.onGuiClose(this);
-        super.onGuiClosed();
+    protected void mouseReleased(int mouseX, int mouseY, int state) {
+        super.mouseReleased(mouseX, mouseY, state);
+        this.guiDef.mouseReleased(this, mouseX, mouseY, state);
     }
 
     @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
         this.guiDef.handleMouseInput(this);
-//        this.guiDelegate.onMouseInput(this);
+    }
+
+    @Override
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        if( !this.guiDef.keyTyped(this, typedChar, keyCode) ) {
+            super.keyTyped(typedChar, keyCode);
+        }
+    }
+
+    @Override
+    public void onGuiClosed() {
+        super.onGuiClosed();
+        this.guiDef.guiClosed(this);
     }
 
     @Override
@@ -181,19 +169,6 @@ public class GuiTcuContainer
     }
 
     @Override
-    @Deprecated
-    public <U extends GuiButton> U addNewButton(U button) {
-        this.buttonList.add(button);
-        return button;
-    }
-
-    @Override
-    @Deprecated
-    public int getNewButtonId() {
-        return this.buttonList.size();
-    }
-
-    @Override
     public FontRenderer getFontRenderer() {
         return this.fontRenderer;
     }
@@ -229,7 +204,7 @@ public class GuiTcuContainer
     }
 
     @Override
-    public void performAction(IGuiElement element, int action) {
-        this.guiDelegate.onElementAction(element, action);
+    public boolean performAction(IGuiElement element, int action) {
+        return this.guiDelegate.onElementAction(element, action);
     }
 }

@@ -88,10 +88,14 @@ class AssemblyRecipes
     }
 
     @Override
-    public void mouseClicked(IGui gui, int mouseX, int mouseY, int mouseButton) throws IOException {
+    public boolean mouseClicked(IGui gui, int mouseX, int mouseY, int mouseButton) throws IOException {
         for( GuiElementInst r : this.rows ) {
-            r.get().mouseClicked(gui, mouseX, mouseY, mouseButton);
+            if( r.get().mouseClicked(gui, mouseX, mouseY, mouseButton) ) {
+                return true;
+            }
         }
+
+        return false;
     }
 
     private final class Row
@@ -100,7 +104,7 @@ class AssemblyRecipes
         private IAssemblyRecipe[] recipes;
         private boolean isHoveredOver;
 
-        Row(IAssemblyRecipe[] recipes) {
+        private Row(IAssemblyRecipe[] recipes) {
             this.recipes = recipes;
         }
 
@@ -157,10 +161,12 @@ class AssemblyRecipes
         }
 
         @Override
-        public void mouseClicked(IGui gui, int mouseX, int mouseY, int mouseButton) {
-            if( this.isHoveredOver && mouseButton == 0 ) {
-                gui.performAction(this, -1);
+        public boolean mouseClicked(IGui gui, int mouseX, int mouseY, int mouseButton) {
+            if( this.isHoveredOver && mouseButton == 0 && gui.performAction(this, -1) ) {
+                return true;
             }
+
+            return false;
         }
 
         @Override

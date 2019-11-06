@@ -49,52 +49,57 @@ public class GuiInfo
 
     @Override
     public void initialize(IGuiTcuInst<?> gui) {
-        this.specOwnerHead = MiscUtils.RNG.randomInt(3) == 0 ? MiscUtils.RNG.randomInt(5) : 0;
-
-        this.frAmmoItem = new FontRenderer(gui.getGui().mc.gameSettings, new ResourceLocation("textures/font/ascii.png"), gui.getGui().mc.getTextureManager(), true);
-
-        int center = gui.getPosX() + (gui.getWidth() - 56) / 2;
-        int btnY = gui.getPosY() + 190;
-        this.dismantle = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center, btnY, 176, 50, Resources.GUI_TCU_INFO.resource,
-                                                            LangUtils.translate(Lang.TCU_BTN.get("dismantle"))));
-        this.setActive = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 19, btnY, 194, 50, Resources.GUI_TCU_INFO.resource,
-                                                            LangUtils.translate(Lang.TCU_BTN.get("activate"))));
-        this.setDeactive = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 19, btnY, 212, 50, Resources.GUI_TCU_INFO.resource,
-                                                              LangUtils.translate(Lang.TCU_BTN.get("deactivate"))));
-        this.showRange = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 38, btnY, 176, 86, Resources.GUI_TCU_INFO.resource,
-                                                            LangUtils.translate(Lang.TCU_BTN.get("show_range"))));
-        this.hideRange = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 38, btnY, 194, 86, Resources.GUI_TCU_INFO.resource,
-                                                            LangUtils.translate(Lang.TCU_BTN.get("hide_range"))));
-
-        this.setActive.visible = false;
-        this.hideRange.visible = false;
-
-        this.turretName = new GuiTextField(0, gui.getFontRenderer(), gui.getPosX() + 20, gui.getPosY() + 91, 148, 10);
-        this.turretName.setMaxStringLength(128);
-        this.turretName.setText(gui.getTurretInst().get().hasCustomName() ? gui.getTurretInst().get().getCustomNameTag() : "");
-
-        if( !gui.hasPermision() ) {
-            this.dismantle.enabled = false;
-            this.setActive.enabled = false;
-            this.setDeactive.enabled = false;
-            this.showRange.enabled = false;
-            this.hideRange.enabled = false;
-            this.turretName.setEnabled(false);
-        }
+//        this.specOwnerHead = MiscUtils.RNG.randomInt(3) == 0 ? MiscUtils.RNG.randomInt(5) : 0;
+//
+//        this.frAmmoItem = new FontRenderer(gui.getGui().mc.gameSettings, new ResourceLocation("textures/font/ascii.png"), gui.getGui().mc.getTextureManager(), true);
+//
+//        int center = gui.getPosX() + (gui.getWidth() - 56) / 2;
+//        int btnY = gui.getPosY() + 190;
+//        this.dismantle = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center, btnY, 176, 50, Resources.GUI_TCU_INFO.resource,
+//                                                            LangUtils.translate(Lang.TCU_BTN.get("dismantle"))));
+////        this.setActive = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 19, btnY, 194, 50, Resources.GUI_TCU_INFO.resource,
+////                                                            LangUtils.translate(Lang.TCU_BTN.get("activate"))));
+////        this.setDeactive = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 19, btnY, 212, 50, Resources.GUI_TCU_INFO.resource,
+////                                                              LangUtils.translate(Lang.TCU_BTN.get("deactivate"))));
+////        this.showRange = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 38, btnY, 176, 86, Resources.GUI_TCU_INFO.resource,
+////                                                            LangUtils.translate(Lang.TCU_BTN.get("show_range"))));
+////        this.hideRange = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 38, btnY, 194, 86, Resources.GUI_TCU_INFO.resource,
+////                                                            LangUtils.translate(Lang.TCU_BTN.get("hide_range"))));
+//
+//        this.setActive.visible = false;
+//        this.hideRange.visible = false;
+//
+//        this.turretName = new GuiTextField(0, gui.getFontRenderer(), gui.getPosX() + 20, gui.getPosY() + 91, 148, 10);
+//        this.turretName.setMaxStringLength(128);
+//        this.turretName.setText(gui.getTurretInst().get().hasCustomName() ? gui.getTurretInst().get().getCustomNameTag() : "");
+//
+//        if( !gui.hasPermision() ) {
+//            this.dismantle.enabled = false;
+//            this.setActive.enabled = false;
+//            this.setDeactive.enabled = false;
+//            this.showRange.enabled = false;
+//            this.hideRange.enabled = false;
+//            this.turretName.setEnabled(false);
+//        }
     }
 
     @Override
     public void updateScreen(IGuiTcuInst<?> gui) {
-        this.turretName.updateCursorCounter();
+//        this.turretName.updateCursorCounter();
 
-        ITurretInst turretInst = gui.getTurretInst();
-        this.setDeactive.visible = turretInst.isActive();
-        this.setActive.visible = !this.setDeactive.visible;
-        this.hideRange.visible = turretInst.showRange();
-        this.showRange.visible = !this.hideRange.visible;
+//        ITurretInst turretInst = gui.getTurretInst();
+//        this.setDeactive.visible = turretInst.isActive();
+//        this.setActive.visible = !this.setDeactive.visible;
+//        this.hideRange.visible = turretInst.showRange();
+//        this.showRange.visible = !this.hideRange.visible;
     }
 
     @Override
+    public ResourceLocation getGuiDefinition() {
+        return Resources.GUI_STRUCT_TCU_INFO.resource;
+    }
+
+    //    @Override
     public void drawBackground(IGuiTcuInst<?> gui, float partialTicks, int mouseX, int mouseY) {
         ITurretInst turretInst = gui.getTurretInst();
         FontRenderer fontRenderer = gui.getFontRenderer();
@@ -149,7 +154,7 @@ public class GuiInfo
         value = turretInst.getOwnerName();
         fontRenderer.drawString(value, posX + 20, posY + 128, 0xFF000000);
 
-        value = tgtProc.hasTarget() ? LangUtils.translate(Lang.ENTITY_NAME.get(tgtProc.getTargetName())) : "-n/a-";
+        value = tgtProc.hasTarget() ? LangUtils.translate(LangUtils.ENTITY_NAME.get(tgtProc.getTargetName())) : "-n/a-";
         if( fontRenderer.getStringWidth(value) > 149 ) {
             int rgt = 148 - fontRenderer.getStringWidth("...");
             fontRenderer.drawString("...", posX + 21 + rgt, posY + 140, 0xFF000000);
@@ -172,13 +177,13 @@ public class GuiInfo
         this.turretName.drawTextBox();
     }
 
-    @Override
+//    @Override
     public void drawForeground(IGuiTcuInst<?> gui, int mouseX, int mouseY) {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         RenderTurretCam.drawTurretCam(gui.getTurretInst(), 48, (gui.getWidth() - 48) / 2, 40, 48, 48);
     }
 
-    @Override
+//    @Override
     public void onButtonClick(IGuiTcuInst<?> gui, GuiButton button) {
         ITurretInst turretInst = gui.getTurretInst();
         if( button == this.dismantle ) {
@@ -202,17 +207,17 @@ public class GuiInfo
         }
     }
 
-    @Override
+//    @Override
     public void onMouseClick(IGuiTcuInst<?> gui, int mouseX, int mouseY, int mouseButton) {
         this.turretName.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
-    @Override
+//    @Override
     public boolean doKeyIntercept(IGuiTcuInst<?> gui, char typedChar, int keyCode) {
         return this.turretName.textboxKeyTyped(typedChar, keyCode);
     }
 
-    @Override
+//    @Override
     public void onGuiClose(IGuiTcuInst<?> gui) {
         PacketRegistry.sendToServer(new PacketTurretNaming(gui.getTurretInst(), this.turretName.getText()));
     }

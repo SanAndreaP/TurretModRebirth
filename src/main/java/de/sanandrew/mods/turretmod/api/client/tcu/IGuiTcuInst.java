@@ -59,24 +59,6 @@ public interface IGuiTcuInst<T extends GuiScreen>
     boolean hasPermision();
 
     /**
-     * <p>Adds a new {@link GuiButton} instance to this GUI.</p>
-     *
-     * @param button The button to be added.
-     * @param <U> The type of the button.
-     * @return The button added to this GUI; This is the same as the parameter.
-     */
-    @Deprecated
-    <U extends GuiButton> U addNewButton(U button);
-
-    /**
-     * <p>Fetches a new button ID to be used for {@link IGuiTcuInst#addNewButton(GuiButton)}.</p>
-     *
-     * @return a new button ID.
-     */
-    @Deprecated
-    int getNewButtonId();
-
-    /**
      * @return the font renderer associated with this GUI.
      */
     FontRenderer getFontRenderer();

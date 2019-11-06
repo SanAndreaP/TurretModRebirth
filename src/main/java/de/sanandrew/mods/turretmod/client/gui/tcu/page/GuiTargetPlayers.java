@@ -16,48 +16,48 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 public class GuiTargetPlayers
-        extends GuiTargets<UUID>
+//        extends GuiTargets<UUID>
 {
-    @Override
-    protected SortedMap<UUID, Boolean> getTargetList(ITurretInst turretInst) {
-        TreeMap<UUID, Boolean> btwSortMapNm = new TreeMap<>(new TargetComparator());
-        btwSortMapNm.putAll(PlayerList.INSTANCE.getDefaultPlayerList());
-        btwSortMapNm.putAll(turretInst.getTargetProcessor().getPlayerTargets());
-        return btwSortMapNm;
-    }
-
-    @Override
-    protected void updateEntry(ITurretInst turretInst, UUID type, boolean active) {
-        turretInst.getTargetProcessor().updatePlayerTarget(type, active);
-    }
-
-    @Override
-    protected void drawEntry(IGuiTcuInst<?> gui, UUID type, int posX, int posY) {
-        int textColor = 0xFF000000;
-        gui.getFontRenderer().drawString(PlayerList.INSTANCE.getPlayerName(type), posX, posY, textColor, false);
-    }
-
-    @Override
-    protected boolean isBlacklist(ITurretInst turretInst) {
-        return turretInst.getTargetProcessor().isPlayerBlacklist();
-    }
-
-    @Override
-    protected void setBlacklist(ITurretInst turretInst, boolean isBlacklist) {
-        turretInst.getTargetProcessor().setPlayerBlacklist(isBlacklist);
-    }
-
-    @Override
-    protected boolean isEntryVisible(UUID type, String srcText) {
-        return PlayerList.INSTANCE.getPlayerName(type).toUpperCase().contains(srcText.toUpperCase());
-    }
-
-    private static final class TargetComparator
-            implements Comparator<UUID>
-    {
-        @Override
-        public int compare(UUID o1, UUID o2) {
-            return PlayerList.INSTANCE.getPlayerName(o2).compareTo(PlayerList.INSTANCE.getPlayerName(o1));
-        }
-    }
+//    @Override
+//    protected SortedMap<UUID, Boolean> getTargetList(ITurretInst turretInst) {
+//        TreeMap<UUID, Boolean> btwSortMapNm = new TreeMap<>(new TargetComparator());
+//        btwSortMapNm.putAll(PlayerList.INSTANCE.getDefaultPlayerList());
+//        btwSortMapNm.putAll(turretInst.getTargetProcessor().getPlayerTargets());
+//        return btwSortMapNm;
+//    }
+//
+//    @Override
+//    protected void updateEntry(ITurretInst turretInst, UUID type, boolean active) {
+//        turretInst.getTargetProcessor().updatePlayerTarget(type, active);
+//    }
+//
+//    @Override
+//    protected void drawEntry(IGuiTcuInst<?> gui, UUID type, int posX, int posY) {
+//        int textColor = 0xFF000000;
+//        gui.getFontRenderer().drawString(PlayerList.INSTANCE.getPlayerName(type), posX, posY, textColor, false);
+//    }
+//
+//    @Override
+//    protected boolean isBlacklist(ITurretInst turretInst) {
+//        return turretInst.getTargetProcessor().isPlayerBlacklist();
+//    }
+//
+//    @Override
+//    protected void setBlacklist(ITurretInst turretInst, boolean isBlacklist) {
+//        turretInst.getTargetProcessor().setPlayerBlacklist(isBlacklist);
+//    }
+//
+//    @Override
+//    protected boolean isEntryVisible(UUID type, String srcText) {
+//        return PlayerList.INSTANCE.getPlayerName(type).toUpperCase().contains(srcText.toUpperCase());
+//    }
+//
+//    private static final class TargetComparator
+//            implements Comparator<UUID>
+//    {
+//        @Override
+//        public int compare(UUID o1, UUID o2) {
+//            return PlayerList.INSTANCE.getPlayerName(o2).compareTo(PlayerList.INSTANCE.getPlayerName(o1));
+//        }
+//    }
 }
