@@ -14,7 +14,6 @@ import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.util.GuiHelper;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
@@ -66,7 +65,7 @@ public class GuiTcuScreen
 
         this.buttonList.clear();
 
-        this.guiDelegate.initialize(this);
+        this.guiDelegate.initialize(this, this.guiDef);
     }
 
     @Override
@@ -123,6 +122,7 @@ public class GuiTcuScreen
     public void onGuiClosed() {
         super.onGuiClosed();
         this.guiDef.guiClosed(this);
+        this.guiDelegate.guiClosed(this);
     }
 
     @Override
@@ -202,6 +202,6 @@ public class GuiTcuScreen
 
     @Override
     public boolean performAction(IGuiElement element, int action) {
-        return this.guiDelegate.onElementAction(element, action);
+        return this.guiDelegate.onElementAction(this, element, action);
     }
 }

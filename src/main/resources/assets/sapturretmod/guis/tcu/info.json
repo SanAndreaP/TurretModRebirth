@@ -5,17 +5,24 @@
   "backgroundElements": [
     {
       "type": "texture",
-      "pos": [0, 0],
       "data": {
         "size": [176, 236],
         "uv": [0, 0]
       }
     },
     {
-      "type": "turretname",
+      "type": "sapturretmod:turret_name",
       "pos": [16, 9],
       "data": {
         "color": "0xFFA0A0FF"
+      }
+    },
+    {
+      "type": "textfield",
+      "pos": [20, 91],
+      "id": "turretNameInput",
+      "data": {
+        "size": [148, 10]
       }
     },
     {
@@ -33,17 +40,80 @@
         "ctHorizontal": 9,
         "ctVertical": 9
       }
+    },
+    {
+      "type": "button",
+      "pos": [80, 190],
+      "id": "activate",
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "buttonFunction": 1,
+        "texture": "sapturretmod:textures/gui/tcu/page_info.png",
+        "uvEnabled": [194, 50],
+        "uvDisabled": [194, 32],
+        "uvHover": [194, 68],
+        "ctHorizontal": 9,
+        "ctVertical": 9
+      }
+    },
+    {
+      "type": "button",
+      "pos": [80, 190],
+      "id": "deactivate",
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "buttonFunction": 2,
+        "texture": "sapturretmod:textures/gui/tcu/page_info.png",
+        "uvEnabled": [212, 50],
+        "uvDisabled": [212, 32],
+        "uvHover": [212, 68],
+        "ctHorizontal": 9,
+        "ctVertical": 9
+      }
+    },
+    {
+      "type": "button",
+      "pos": [100, 190],
+      "id": "showRange",
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "buttonFunction": 3,
+        "texture": "sapturretmod:textures/gui/tcu/page_info.png",
+        "uvEnabled": [194, 86],
+        "uvDisabled": [194, 68],
+        "uvHover": [194, 104],
+        "ctHorizontal": 9,
+        "ctVertical": 9
+      }
+    },
+    {
+      "type": "button",
+      "pos": [100, 190],
+      "id": "hideRange",
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "buttonFunction": 4,
+        "texture": "sapturretmod:textures/gui/tcu/page_info.png",
+        "uvEnabled": [176, 86],
+        "uvDisabled": [176, 68],
+        "uvHover": [176, 104],
+        "ctHorizontal": 9,
+        "ctVertical": 9
+      }
     }
   ],
   "foregroundElements": [
     {
-      "type": "label",
+      "type": "sapturretmod:button_label",
       "pos": [60, 190],
       "data": {
-        "size": [18, 18],
+        "buttonId": "dismantle",
         "content": {
           "type": "text",
-          "pos": [0, 0],
           "data": {
             "color": "0xFFFFFFFF",
             "text": "gui.sapturretmod.tcu.button.dismantle"

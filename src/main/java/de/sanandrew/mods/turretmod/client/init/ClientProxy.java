@@ -86,6 +86,7 @@ public class ClientProxy
         GuiDefinition.TYPES.put(AssemblyGhostItems.ID, AssemblyGhostItems::new);
 
         GuiDefinition.TYPES.put(TurretName.ID, TurretName::new);
+        GuiDefinition.TYPES.put(ButtonLabel.ID, ButtonLabel::new);
     }
 
     @Override

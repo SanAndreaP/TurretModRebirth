@@ -6,15 +6,18 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.gui.tcu.page;
 
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
+import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.Button;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.TextField;
 import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
-import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.client.gui.control.GuiButtonIcon;
 import de.sanandrew.mods.turretmod.client.render.world.RenderTurretCam;
 import de.sanandrew.mods.turretmod.network.PacketPlayerTurretAction;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
@@ -33,22 +36,35 @@ import org.lwjgl.opengl.GL11;
 public class GuiInfo
         implements IGuiTCU
 {
+    private static final int ACTION_DISMANTLE = 0;
+    private static final int ACTION_ACTIVATE = 1;
+    private static final int ACTION_DEACTIVATE = 2;
+    private static final int ACTION_RANGE_SHOW = 3;
+    private static final int ACTION_RANGE_HIDE = 4;
+
     private int specOwnerHead;
     private FontRenderer frAmmoItem;
 
-    private GuiButton dismantle;
-    private GuiButton setActive;
-    private GuiButton setDeactive;
-    private GuiButton showRange;
-    private GuiButton hideRange;
+    private Button         dismantle;
+    private Button setActive;
+    private Button setDeactive;
+    private Button showRange;
+    private Button hideRange;
 
-    private GuiTextField turretName;
+    private TextField turretName;
 
     private String infoStr;
     private long infoTimeShown;
 
     @Override
-    public void initialize(IGuiTcuInst<?> gui) {
+    public void initialize(IGuiTcuInst<?> gui, GuiDefinition guiDefinition) {
+        this.dismantle = guiDefinition.getElementById("dismantle").get(Button.class);
+        this.setActive = guiDefinition.getElementById("activate").get(Button.class);
+        this.setDeactive = guiDefinition.getElementById("deactivate").get(Button.class);
+        this.showRange = guiDefinition.getElementById("showRange").get(Button.class);
+        this.hideRange = guiDefinition.getElementById("hideRange").get(Button.class);
+
+        this.turretName = guiDefinition.getElementById("turretNameInput").get(TextField.class);
 //        this.specOwnerHead = MiscUtils.RNG.randomInt(3) == 0 ? MiscUtils.RNG.randomInt(5) : 0;
 //
 //        this.frAmmoItem = new FontRenderer(gui.getGui().mc.gameSettings, new ResourceLocation("textures/font/ascii.png"), gui.getGui().mc.getTextureManager(), true);
@@ -65,33 +81,31 @@ public class GuiInfo
 ////                                                            LangUtils.translate(Lang.TCU_BTN.get("show_range"))));
 ////        this.hideRange = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 38, btnY, 194, 86, Resources.GUI_TCU_INFO.resource,
 ////                                                            LangUtils.translate(Lang.TCU_BTN.get("hide_range"))));
-//
-//        this.setActive.visible = false;
-//        this.hideRange.visible = false;
-//
+
+        this.setActive.setVisible(false);
+        this.hideRange.setVisible(false);
+
 //        this.turretName = new GuiTextField(0, gui.getFontRenderer(), gui.getPosX() + 20, gui.getPosY() + 91, 148, 10);
-//        this.turretName.setMaxStringLength(128);
-//        this.turretName.setText(gui.getTurretInst().get().hasCustomName() ? gui.getTurretInst().get().getCustomNameTag() : "");
-//
-//        if( !gui.hasPermision() ) {
-//            this.dismantle.enabled = false;
-//            this.setActive.enabled = false;
-//            this.setDeactive.enabled = false;
-//            this.showRange.enabled = false;
-//            this.hideRange.enabled = false;
-//            this.turretName.setEnabled(false);
-//        }
+        this.turretName.setMaxStringLength(128);
+        this.turretName.setText(gui.getTurretInst().get().hasCustomName() ? gui.getTurretInst().get().getCustomNameTag() : "");
+
+        if( !gui.hasPermision() ) {
+            this.dismantle.setEnabled(false);
+            this.setActive.setEnabled(false);
+            this.setDeactive.setEnabled(false);
+            this.showRange.setEnabled(false);
+            this.hideRange.setEnabled(false);
+            this.turretName.setEnabled(false);
+        }
     }
 
     @Override
     public void updateScreen(IGuiTcuInst<?> gui) {
-//        this.turretName.updateCursorCounter();
-
-//        ITurretInst turretInst = gui.getTurretInst();
-//        this.setDeactive.visible = turretInst.isActive();
-//        this.setActive.visible = !this.setDeactive.visible;
-//        this.hideRange.visible = turretInst.showRange();
-//        this.showRange.visible = !this.hideRange.visible;
+        ITurretInst turretInst = gui.getTurretInst();
+        this.setDeactive.setVisible(turretInst.isActive());
+        this.setActive.setVisible(!this.setDeactive.isVisible());
+        this.hideRange.setVisible(turretInst.showRange());
+        this.showRange.setVisible(!this.hideRange.isVisible());
     }
 
     @Override
@@ -173,8 +187,6 @@ public class GuiInfo
         } else {
             this.infoStr = null;
         }
-
-        this.turretName.drawTextBox();
     }
 
 //    @Override
@@ -183,42 +195,50 @@ public class GuiInfo
         RenderTurretCam.drawTurretCam(gui.getTurretInst(), 48, (gui.getWidth() - 48) / 2, 40, 48, 48);
     }
 
-//    @Override
-    public void onButtonClick(IGuiTcuInst<?> gui, GuiButton button) {
+    @Override
+    public boolean onElementAction(IGuiTcuInst<?> gui, IGuiElement element, int action) {
         ITurretInst turretInst = gui.getTurretInst();
-        if( button == this.dismantle ) {
-            if( !PacketPlayerTurretAction.tryDismantle(gui.getGui().mc.player, turretInst) ) {
-                this.infoStr = Lang.TCU_DISMANTLE_ERROR.get();
-                this.infoTimeShown = System.currentTimeMillis();
-            } else {
-                this.infoStr = null;
-                gui.getGui().mc.player.closeScreen();
-            }
-        } else if( button == this.showRange ) {
-            turretInst.setShowRange(true);
-            turretInst.get().ignoreFrustumCheck = true;
-        } else if( button == this.hideRange ) {
-            turretInst.setShowRange(false);
-            turretInst.get().ignoreFrustumCheck = false;
-        } else if( button == this.setActive ) {
-            PacketRegistry.sendToServer(new PacketPlayerTurretAction(turretInst, PacketPlayerTurretAction.SET_ACTIVE));
-        } else if( button == this.setDeactive ) {
-            PacketRegistry.sendToServer(new PacketPlayerTurretAction(turretInst, PacketPlayerTurretAction.SET_DEACTIVE));
+        switch( action ) {
+            case ACTION_DISMANTLE:
+                if( !PacketPlayerTurretAction.tryDismantle(gui.getGui().mc.player, turretInst) ) {
+                    this.infoStr = Lang.TCU_DISMANTLE_ERROR.get();
+                    this.infoTimeShown = System.currentTimeMillis();
+                } else {
+                    this.infoStr = null;
+                    gui.getGui().mc.player.closeScreen();
+                }
+                return true;
+            case ACTION_RANGE_SHOW:
+                turretInst.setShowRange(true);
+                turretInst.get().ignoreFrustumCheck = true;
+                return true;
+            case ACTION_RANGE_HIDE:
+                turretInst.setShowRange(false);
+                turretInst.get().ignoreFrustumCheck = false;
+                return true;
+            case ACTION_ACTIVATE:
+                PacketRegistry.sendToServer(new PacketPlayerTurretAction(turretInst, PacketPlayerTurretAction.SET_ACTIVE));
+                return true;
+            case ACTION_DEACTIVATE:
+                PacketRegistry.sendToServer(new PacketPlayerTurretAction(turretInst, PacketPlayerTurretAction.SET_DEACTIVE));
+                return true;
         }
+
+        return false;
     }
 
-//    @Override
-    public void onMouseClick(IGuiTcuInst<?> gui, int mouseX, int mouseY, int mouseButton) {
-        this.turretName.mouseClicked(mouseX, mouseY, mouseButton);
-    }
+////    @Override
+//    public void onMouseClick(IGuiTcuInst<?> gui, int mouseX, int mouseY, int mouseButton) {
+//        this.turretName.mouseClicked(mouseX, mouseY, mouseButton);
+//    }
+//
+////    @Override
+//    public boolean doKeyIntercept(IGuiTcuInst<?> gui, char typedChar, int keyCode) {
+//        return this.turretName.textboxKeyTyped(typedChar, keyCode);
+//    }
 
-//    @Override
-    public boolean doKeyIntercept(IGuiTcuInst<?> gui, char typedChar, int keyCode) {
-        return this.turretName.textboxKeyTyped(typedChar, keyCode);
-    }
-
-//    @Override
-    public void onGuiClose(IGuiTcuInst<?> gui) {
+    @Override
+    public void guiClosed(IGuiTcuInst<?> gui) {
         PacketRegistry.sendToServer(new PacketTurretNaming(gui.getTurretInst(), this.turretName.getText()));
     }
 }

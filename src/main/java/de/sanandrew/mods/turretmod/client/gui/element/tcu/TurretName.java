@@ -14,7 +14,7 @@ import org.lwjgl.opengl.GL11;
 public class TurretName
         extends Text
 {
-    public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "turretName");
+    public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "turret_name");
 
     private long marqueeTime;
 
