@@ -72,6 +72,7 @@ public class GuiTcuScreen
     public void updateScreen() {
         super.updateScreen();
         this.helper.updateScreen(this.mc, this);
+        this.guiDelegate.updateScreen(this);
 
         this.guiDef.update(this);
     }

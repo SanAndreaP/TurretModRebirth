@@ -28,6 +28,7 @@ import de.sanandrew.mods.turretmod.client.gui.GuiTurretCrate;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiAssemblyFilter;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
 import de.sanandrew.mods.turretmod.client.gui.element.*;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.TurretCam;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.TurretName;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.PlayerHeads;
 import de.sanandrew.mods.turretmod.client.particle.ParticleAssemblySpark;
@@ -87,6 +88,7 @@ public class ClientProxy
 
         GuiDefinition.TYPES.put(TurretName.ID, TurretName::new);
         GuiDefinition.TYPES.put(ButtonLabel.ID, ButtonLabel::new);
+        GuiDefinition.TYPES.put(TurretCam.ID, TurretCam::new);
     }
 
     @Override

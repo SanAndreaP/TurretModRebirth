@@ -5,18 +5,17 @@ import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Button;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Label;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
-import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import net.minecraft.util.ResourceLocation;
-import org.apache.commons.lang3.Range;
 
 public class ButtonLabel
         extends Label
 {
     public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "button_label");
 
-    Button linkedBtn;
+    private Button linkedBtn;
 
     @Override
     public void bakeData(IGui gui, JsonObject data) {
@@ -24,6 +23,17 @@ public class ButtonLabel
         this.linkedBtn = btnElem.get(Button.class);
         if( !data.has("size") ) {
             data.add("size", btnElem.data.get("size"));
+        }
+        if( !data.has("content") && data.has("text") ) {
+            JsonObject textObj = new JsonObject();
+            JsonObject textData = new JsonObject();
+
+            textData.addProperty("color", "0xFFFFFFFF");
+            textData.add("text", data.get("text"));
+            textObj.addProperty("type", Text.ID.toString());
+            textObj.add("data", textData);
+
+            data.add("content", textObj);
         }
 
         super.bakeData(gui, data);

@@ -11,6 +11,14 @@
       }
     },
     {
+      "type": "sapturretmod:turret_cam",
+      "pos": [64, 40],
+      "data": {
+        "size": [48, 48],
+        "quality": 48
+      }
+    },
+    {
       "type": "sapturretmod:turret_name",
       "pos": [16, 9],
       "data": {
@@ -27,98 +35,104 @@
     },
     {
       "type": "button",
-      "pos": [60, 190],
+      "pos": [59, 190],
       "id": "dismantle",
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
         "buttonFunction": 0,
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
-        "uvEnabled": [176, 50],
-        "uvDisabled": [176, 32],
-        "uvHover": [176, 68],
-        "ctHorizontal": 9,
-        "ctVertical": 9
+        "uvEnabled": [176, 50]
       }
     },
     {
       "type": "button",
-      "pos": [80, 190],
+      "pos": [79, 190],
       "id": "activate",
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
         "buttonFunction": 1,
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
-        "uvEnabled": [194, 50],
-        "uvDisabled": [194, 32],
-        "uvHover": [194, 68],
-        "ctHorizontal": 9,
-        "ctVertical": 9
+        "uvEnabled": [194, 50]
       }
     },
     {
       "type": "button",
-      "pos": [80, 190],
+      "pos": [79, 190],
       "id": "deactivate",
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
         "buttonFunction": 2,
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
-        "uvEnabled": [212, 50],
-        "uvDisabled": [212, 32],
-        "uvHover": [212, 68],
-        "ctHorizontal": 9,
-        "ctVertical": 9
+        "uvEnabled": [212, 50]
       }
     },
     {
       "type": "button",
-      "pos": [100, 190],
+      "pos": [99, 190],
       "id": "showRange",
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
         "buttonFunction": 3,
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
-        "uvEnabled": [194, 86],
-        "uvDisabled": [194, 68],
-        "uvHover": [194, 104],
-        "ctHorizontal": 9,
-        "ctVertical": 9
+        "uvEnabled": [194, 86]
       }
     },
     {
       "type": "button",
-      "pos": [100, 190],
+      "pos": [99, 190],
       "id": "hideRange",
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
         "buttonFunction": 4,
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
-        "uvEnabled": [176, 86],
-        "uvDisabled": [176, 68],
-        "uvHover": [176, 104],
-        "ctHorizontal": 9,
-        "ctVertical": 9
+        "uvEnabled": [176, 86]
       }
     }
   ],
   "foregroundElements": [
     {
       "type": "sapturretmod:button_label",
-      "pos": [60, 190],
+      "pos": [59, 190],
       "data": {
         "buttonId": "dismantle",
-        "content": {
-          "type": "text",
-          "data": {
-            "color": "0xFFFFFFFF",
-            "text": "gui.sapturretmod.tcu.button.dismantle"
-          }
-        }
+        "text": "gui.sapturretmod.tcu.button.dismantle"
+      }
+    },
+    {
+      "type": "sapturretmod:button_label",
+      "pos": [79, 190],
+      "data": {
+        "buttonId": "activate",
+        "text": "gui.sapturretmod.tcu.button.activate"
+      }
+    },
+    {
+      "type": "sapturretmod:button_label",
+      "pos": [79, 190],
+      "data": {
+        "buttonId": "deactivate",
+        "text": "gui.sapturretmod.tcu.button.deactivate"
+      }
+    },
+    {
+      "type": "sapturretmod:button_label",
+      "pos": [99, 190],
+      "data": {
+        "buttonId": "showRange",
+        "text": "gui.sapturretmod.tcu.button.show_range"
+      }
+    },
+    {
+      "type": "sapturretmod:button_label",
+      "pos": [99, 190],
+      "data": {
+        "buttonId": "hideRange",
+        "text": "gui.sapturretmod.tcu.button.hide_range"
       }
     }
   ]

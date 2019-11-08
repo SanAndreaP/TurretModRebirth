@@ -36,16 +36,16 @@ import org.lwjgl.opengl.GL11;
 public class GuiInfo
         implements IGuiTCU
 {
-    private static final int ACTION_DISMANTLE = 0;
-    private static final int ACTION_ACTIVATE = 1;
+    private static final int ACTION_DISMANTLE  = 0;
+    private static final int ACTION_ACTIVATE   = 1;
     private static final int ACTION_DEACTIVATE = 2;
     private static final int ACTION_RANGE_SHOW = 3;
     private static final int ACTION_RANGE_HIDE = 4;
 
-    private int specOwnerHead;
+    private int          specOwnerHead;
     private FontRenderer frAmmoItem;
 
-    private Button         dismantle;
+    private Button dismantle;
     private Button setActive;
     private Button setDeactive;
     private Button showRange;
@@ -54,7 +54,7 @@ public class GuiInfo
     private TextField turretName;
 
     private String infoStr;
-    private long infoTimeShown;
+    private long   infoTimeShown;
 
     @Override
     public void initialize(IGuiTcuInst<?> gui, GuiDefinition guiDefinition) {
@@ -68,24 +68,10 @@ public class GuiInfo
 //        this.specOwnerHead = MiscUtils.RNG.randomInt(3) == 0 ? MiscUtils.RNG.randomInt(5) : 0;
 //
 //        this.frAmmoItem = new FontRenderer(gui.getGui().mc.gameSettings, new ResourceLocation("textures/font/ascii.png"), gui.getGui().mc.getTextureManager(), true);
-//
-//        int center = gui.getPosX() + (gui.getWidth() - 56) / 2;
-//        int btnY = gui.getPosY() + 190;
-//        this.dismantle = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center, btnY, 176, 50, Resources.GUI_TCU_INFO.resource,
-//                                                            LangUtils.translate(Lang.TCU_BTN.get("dismantle"))));
-////        this.setActive = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 19, btnY, 194, 50, Resources.GUI_TCU_INFO.resource,
-////                                                            LangUtils.translate(Lang.TCU_BTN.get("activate"))));
-////        this.setDeactive = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 19, btnY, 212, 50, Resources.GUI_TCU_INFO.resource,
-////                                                              LangUtils.translate(Lang.TCU_BTN.get("deactivate"))));
-////        this.showRange = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 38, btnY, 176, 86, Resources.GUI_TCU_INFO.resource,
-////                                                            LangUtils.translate(Lang.TCU_BTN.get("show_range"))));
-////        this.hideRange = gui.addNewButton(new GuiButtonIcon(gui.getNewButtonId(), center + 38, btnY, 194, 86, Resources.GUI_TCU_INFO.resource,
-////                                                            LangUtils.translate(Lang.TCU_BTN.get("hide_range"))));
 
         this.setActive.setVisible(false);
         this.hideRange.setVisible(false);
 
-//        this.turretName = new GuiTextField(0, gui.getFontRenderer(), gui.getPosX() + 20, gui.getPosY() + 91, 148, 10);
         this.turretName.setMaxStringLength(128);
         this.turretName.setText(gui.getTurretInst().get().hasCustomName() ? gui.getTurretInst().get().getCustomNameTag() : "");
 
@@ -189,12 +175,6 @@ public class GuiInfo
         }
     }
 
-//    @Override
-    public void drawForeground(IGuiTcuInst<?> gui, int mouseX, int mouseY) {
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderTurretCam.drawTurretCam(gui.getTurretInst(), 48, (gui.getWidth() - 48) / 2, 40, 48, 48);
-    }
-
     @Override
     public boolean onElementAction(IGuiTcuInst<?> gui, IGuiElement element, int action) {
         ITurretInst turretInst = gui.getTurretInst();
@@ -226,16 +206,6 @@ public class GuiInfo
 
         return false;
     }
-
-////    @Override
-//    public void onMouseClick(IGuiTcuInst<?> gui, int mouseX, int mouseY, int mouseButton) {
-//        this.turretName.mouseClicked(mouseX, mouseY, mouseButton);
-//    }
-//
-////    @Override
-//    public boolean doKeyIntercept(IGuiTcuInst<?> gui, char typedChar, int keyCode) {
-//        return this.turretName.textboxKeyTyped(typedChar, keyCode);
-//    }
 
     @Override
     public void guiClosed(IGuiTcuInst<?> gui) {

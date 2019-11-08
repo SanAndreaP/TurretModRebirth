@@ -32,7 +32,6 @@ public class TurretName
 
     @Override
     public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
-//        super.render(gui, partTicks, x, y, mouseX, mouseY, data);
         String name = this.getDynamicText(gui, "");
         int strWidth = this.data.fontRenderer.getStringWidth(name);
         if( strWidth > this.textfieldLength ) {
