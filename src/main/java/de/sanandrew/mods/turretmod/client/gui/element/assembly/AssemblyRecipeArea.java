@@ -4,7 +4,7 @@
  * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
  *                http://creativecommons.org/licenses/by-nc-sa/4.0/
  *******************************************************************************************************************/
-package de.sanandrew.mods.turretmod.client.gui.element;
+package de.sanandrew.mods.turretmod.client.gui.element.assembly;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -14,7 +14,6 @@ import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
@@ -56,7 +55,7 @@ public class AssemblyRecipeArea
 
             this.recipeLabel = JsonUtils.GSON.fromJson(data.get("recipeLabel"), GuiElementInst.class);
             gui.getDefinition().initElement(this.recipeLabel);
-            TmrUtils.addJsonProperty(this.recipeLabel.data, "size", new int[] {18, 18});
+            JsonUtils.addJsonProperty(this.recipeLabel.data, "size", new int[] {18, 18});
             this.recipeLabel.get().bakeData(gui, this.recipeLabel.data);
         }
     }

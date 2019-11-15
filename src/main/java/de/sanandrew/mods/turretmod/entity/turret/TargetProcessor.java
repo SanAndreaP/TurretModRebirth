@@ -140,7 +140,7 @@ public final class TargetProcessor
         if( ItemStackUtils.isValid(this.ammoStack) ) {
             return this.ammoStack.copy();
         } else {
-            return ItemStackUtils.getEmpty();
+            return ItemStack.EMPTY;
         }
     }
 

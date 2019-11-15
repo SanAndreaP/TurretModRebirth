@@ -4,7 +4,7 @@
  * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
  *                http://creativecommons.org/licenses/by-nc-sa/4.0/
  *******************************************************************************************************************/
-package de.sanandrew.mods.turretmod.client.gui.element;
+package de.sanandrew.mods.turretmod.client.gui.element.assembly;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -16,7 +16,6 @@ import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
 
@@ -43,8 +42,8 @@ public class AssemblyProgressBar
                 this.centerLabel = JsonUtils.getBoolVal(data.get("centerLabel"), true);
             }
 
-            if( !data.has("size") ) TmrUtils.addJsonProperty(data, "size", new int[] {50, 5});
-            if( !data.has("uv") ) TmrUtils.addJsonProperty(data, "uv", new int[] {0, 222});
+            JsonUtils.addDefaultJsonProperty(data, "size", new int[] {50, 5});
+            JsonUtils.addDefaultJsonProperty(data, "uv", new int[] {0, 222});
         }
 
         super.bakeData(gui, data);

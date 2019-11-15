@@ -7,13 +7,12 @@ import de.sanandrew.mods.sanlib.lib.client.gui.element.Button;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Label;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
-import de.sanandrew.mods.turretmod.api.TmrConstants;
 import net.minecraft.util.ResourceLocation;
 
 public class ButtonLabel
         extends Label
 {
-    public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "button_label");
+    public static final ResourceLocation ID = new ResourceLocation("button_label");
 
     private Button linkedBtn;
 

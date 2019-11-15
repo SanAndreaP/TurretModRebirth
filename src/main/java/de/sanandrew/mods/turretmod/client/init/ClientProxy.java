@@ -28,6 +28,14 @@ import de.sanandrew.mods.turretmod.client.gui.GuiTurretCrate;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiAssemblyFilter;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
 import de.sanandrew.mods.turretmod.client.gui.element.*;
+import de.sanandrew.mods.turretmod.client.gui.element.assembly.AssemblyGhostItems;
+import de.sanandrew.mods.turretmod.client.gui.element.assembly.AssemblyGroupIcon;
+import de.sanandrew.mods.turretmod.client.gui.element.assembly.AssemblyProgressBar;
+import de.sanandrew.mods.turretmod.client.gui.element.assembly.AssemblyRecipeArea;
+import de.sanandrew.mods.turretmod.client.gui.element.assembly.AssemblyRecipeLabel;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.AmmoItem;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.InfoPlayerIcon;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.nav.PageNavigation;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.TurretCam;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.TurretName;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.PlayerHeads;
@@ -86,9 +94,15 @@ public class ClientProxy
         GuiDefinition.TYPES.put(AssemblyRecipeLabel.ID, AssemblyRecipeLabel::new);
         GuiDefinition.TYPES.put(AssemblyGhostItems.ID, AssemblyGhostItems::new);
 
+        GuiDefinition.TYPES.put(PageNavigation.ID, PageNavigation::new);
+        GuiDefinition.TYPES.put(PageNavigation.PageNavigationLabel.ID, PageNavigation.PageNavigationLabel::new);
         GuiDefinition.TYPES.put(TurretName.ID, TurretName::new);
-        GuiDefinition.TYPES.put(ButtonLabel.ID, ButtonLabel::new);
         GuiDefinition.TYPES.put(TurretCam.ID, TurretCam::new);
+        GuiDefinition.TYPES.put(InfoPlayerIcon.ID, InfoPlayerIcon::new);
+        GuiDefinition.TYPES.put(AmmoItem.ID, AmmoItem::new);
+
+        GuiDefinition.TYPES.put(ButtonLabel.ID, ButtonLabel::new);
+        GuiDefinition.TYPES.put(Item.ID, Item::new);
     }
 
     @Override

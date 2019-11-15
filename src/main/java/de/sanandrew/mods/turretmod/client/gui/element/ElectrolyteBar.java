@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -28,8 +27,8 @@ public class ElectrolyteBar
             this.slot = JsonUtils.getIntVal(data.get("slot"));
         }
 
-        if( !data.has("size") ) TmrUtils.addJsonProperty(data, "size", new int[] {16, 3});
-        if( !data.has("uv") ) TmrUtils.addJsonProperty(data, "uv", new int[] {176, 59});
+        JsonUtils.addDefaultJsonProperty(data, "size", new int[] {16, 3});
+        JsonUtils.addDefaultJsonProperty(data, "uv", new int[] {176, 59});
 
         super.bakeData(gui, data);
     }

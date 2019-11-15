@@ -34,6 +34,19 @@
       }
     },
     {
+      "type": "sapturretmod:tinfo_playericon",
+      "pos": [7, 128],
+      "data": {
+        "uvs": [
+          [234, 0],
+          [234, 8],
+          [234, 16],
+          [234, 24],
+          [234, 32]
+        ]
+      }
+    },
+    {
       "type": "button",
       "pos": [59, 190],
       "id": "dismantle",
@@ -92,11 +105,28 @@
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
         "uvEnabled": [176, 86]
       }
+    },
+    {
+      "type": "sapturretmod:tinfo_page_nav",
+      "pos": [0, 212],
+      "id": "pgNavigation",
+      "data": {
+        "tabScrollLeft": {
+          "size": [16, 16],
+          "uvSize": [16, 16],
+          "uvEnabled": [18, 0]
+        },
+        "tabScrollRight": {
+          "size": [16, 16],
+          "uvSize": [16, 16],
+          "uvEnabled": [36, 0]
+        }
+      }
     }
   ],
   "foregroundElements": [
     {
-      "type": "sapturretmod:button_label",
+      "type": "button_label",
       "pos": [59, 190],
       "data": {
         "buttonId": "dismantle",
@@ -104,7 +134,7 @@
       }
     },
     {
-      "type": "sapturretmod:button_label",
+      "type": "button_label",
       "pos": [79, 190],
       "data": {
         "buttonId": "activate",
@@ -112,7 +142,7 @@
       }
     },
     {
-      "type": "sapturretmod:button_label",
+      "type": "button_label",
       "pos": [79, 190],
       "data": {
         "buttonId": "deactivate",
@@ -120,7 +150,7 @@
       }
     },
     {
-      "type": "sapturretmod:button_label",
+      "type": "button_label",
       "pos": [99, 190],
       "data": {
         "buttonId": "showRange",
@@ -128,12 +158,17 @@
       }
     },
     {
-      "type": "sapturretmod:button_label",
+      "type": "button_label",
       "pos": [99, 190],
       "data": {
         "buttonId": "hideRange",
         "text": "gui.sapturretmod.tcu.button.hide_range"
       }
+    },
+    {
+      "type": "sapturretmod:tinfo_page_nav_label",
+      "pos": [0, 212],
+      "id": "pgNavigation"
     }
   ]
 }

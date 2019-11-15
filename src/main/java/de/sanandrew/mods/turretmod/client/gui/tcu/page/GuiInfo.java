@@ -42,7 +42,7 @@ public class GuiInfo
     private static final int ACTION_RANGE_SHOW = 3;
     private static final int ACTION_RANGE_HIDE = 4;
 
-    private int          specOwnerHead;
+//    private int          specOwnerHead;
     private FontRenderer frAmmoItem;
 
     private Button dismantle;
@@ -110,7 +110,6 @@ public class GuiInfo
         guiScreen.mc.renderEngine.bindTexture(Resources.GUI_TCU_INFO.resource);
 
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        guiScreen.drawTexturedModalRect(posX, posY, 0, 0, gui.getWidth(), gui.getHeight());
         guiScreen.drawTexturedModalRect(posX + (gui.getWidth() - 50) / 2, posY + 39, 176, 0, 50, 50);
 
         gui.drawGradient(posX + 7, posY + 92, posX + 169, posY + 100, 0x10000000, 0x10000000);
@@ -124,7 +123,7 @@ public class GuiInfo
         guiScreen.drawTexturedModalRect(posX + 7, posY + 92, 245, 0, 11, 8);
         guiScreen.drawTexturedModalRect(posX + 7, posY + 104, 245, 8, 11, 8);
         guiScreen.drawTexturedModalRect(posX + 7, posY + 116, 245, 16, 11, 8);
-        guiScreen.drawTexturedModalRect(posX + 7, posY + 128, 234, this.specOwnerHead * 8, 11, 8);
+//        guiScreen.drawTexturedModalRect(posX + 7, posY + 128, 234, this.specOwnerHead * 8, 11, 8);
         guiScreen.drawTexturedModalRect(posX + 7, posY + 140, 245, 24, 11, 8);
 
         EntityLiving turretL = turretInst.get();

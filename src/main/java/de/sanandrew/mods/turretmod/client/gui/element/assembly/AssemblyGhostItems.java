@@ -1,14 +1,14 @@
-package de.sanandrew.mods.turretmod.client.gui.element;
+package de.sanandrew.mods.turretmod.client.gui.element.assembly;
 
 import com.google.gson.JsonObject;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -32,8 +32,8 @@ public class AssemblyGhostItems
 
     @Override
     public void bakeData(IGui gui, JsonObject data) {
-        TmrUtils.addJsonProperty(data, "size", new int[] {16, 16});
-        TmrUtils.addJsonProperty(data, "uv", new int[] {0, 0});
+        JsonUtils.addJsonProperty(data, "size", new int[] { 16, 16});
+        JsonUtils.addJsonProperty(data, "uv", new int[] {0, 0});
         data.addProperty("forceAlpha", true);
         if( !data.has("color") ) data.addProperty("color", "0xA0FFFFFF");
 

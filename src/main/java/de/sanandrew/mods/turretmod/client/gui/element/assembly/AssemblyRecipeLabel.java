@@ -1,4 +1,4 @@
-package de.sanandrew.mods.turretmod.client.gui.element;
+package de.sanandrew.mods.turretmod.client.gui.element.assembly;
 
 import com.google.gson.JsonObject;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
@@ -63,8 +63,8 @@ public class AssemblyRecipeLabel
             this.timeIcon = new GuiElementInst();
             this.timeIcon.element = new Texture();
             this.timeIcon.data = data.has("timeIconData") ? data.get("timeIconData").getAsJsonObject() : new JsonObject();
-            if( !this.timeIcon.data.has("size") ) TmrUtils.addJsonProperty(this.timeIcon.data, "size", new int[] { 9, 9 });
-            if( !this.timeIcon.data.has("uv") ) TmrUtils.addJsonProperty(this.timeIcon.data, "uv", new int[] { 230, 94 });
+            JsonUtils.addDefaultJsonProperty(this.timeIcon.data, "size", new int[] { 9, 9 });
+            JsonUtils.addDefaultJsonProperty(this.timeIcon.data, "uv", new int[] { 230, 94 });
             this.timeIcon.element.bakeData(gui, this.timeIcon.data);
         }
 
@@ -72,8 +72,8 @@ public class AssemblyRecipeLabel
             this.rfIcon = new GuiElementInst();
             this.rfIcon.element = new Texture();
             this.rfIcon.data = data.has("rfIconData") ? data.get("rfIconData").getAsJsonObject() : new JsonObject();
-            if( !this.rfIcon.data.has("size") ) TmrUtils.addJsonProperty(this.rfIcon.data, "size", new int[] { 9, 9 });
-            if( !this.rfIcon.data.has("uv") ) TmrUtils.addJsonProperty(this.rfIcon.data, "uv", new int[] { 230, 103 });
+            JsonUtils.addJsonProperty(this.rfIcon.data, "size", new int[] { 9, 9 });
+            JsonUtils.addJsonProperty(this.rfIcon.data, "uv", new int[] { 230, 103 });
             this.rfIcon.element.bakeData(gui, this.rfIcon.data);
         }
     }
