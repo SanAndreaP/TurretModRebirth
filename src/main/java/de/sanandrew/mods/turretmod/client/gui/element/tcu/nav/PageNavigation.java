@@ -1,7 +1,6 @@
 package de.sanandrew.mods.turretmod.client.gui.element.tcu.nav;
 
 import com.google.gson.JsonObject;
-import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
@@ -26,7 +25,7 @@ import java.util.stream.Collectors;
 public class PageNavigation
         implements IGuiElement
 {
-    public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tinfo_page_nav");
+    public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu_page_nav");
 
     public BakedData data;
 
@@ -44,7 +43,7 @@ public class PageNavigation
             int currIdx = 0;
             for( ResourceLocation page : GuiTcuRegistry.GUI_ENTRIES ) {
                 GuiElementInst btn = new GuiElementInst();
-                btn.element = new ButtonNav(currIdx++);
+                btn.element = new ButtonNav(currIdx++, page);
 
                 this.data.pages.put(btn, page);
                 btn.data = data.getAsJsonObject("buttonData");
@@ -59,7 +58,7 @@ public class PageNavigation
             this.data.tabScrollL.get().bakeData(gui, this.data.tabScrollL.data);
             this.data.tabScrollR = new GuiElementInst();
             this.data.tabScrollR.element = new ButtonTabScroll(1);
-            this.data.tabScrollL.data = data.getAsJsonObject("tabScrollRight");
+            this.data.tabScrollR.data = data.getAsJsonObject("tabScrollRight");
             gui.getDefinition().initElement(this.data.tabScrollR);
             this.data.tabScrollR.get().bakeData(gui, this.data.tabScrollR.data);
         }
@@ -155,6 +154,13 @@ public class PageNavigation
         }
 
         @Override
+        public void bakeData(IGui gui, JsonObject data) {
+            JsonUtils.addDefaultJsonProperty(data, "buttonFunction", -1);
+
+            super.bakeData(gui, data);
+        }
+
+        @Override
         public void performAction(IGui gui, int id) {
             if( PageNavigation.this.tabStartIdx > 0 && this.direction == 0 ) {
                 PageNavigation.this.tabStartIdx--;
@@ -167,7 +173,7 @@ public class PageNavigation
     public static class PageNavigationLabel
             extends Label
     {
-        public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tinfo_page_nav_label");
+        public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu_page_nav_label");
 
         private GuiElementInst pageNavigation;
 
@@ -177,12 +183,17 @@ public class PageNavigation
 
             super.bakeData(gui, data);
 
-            this.data.content = new GuiElementInst();
-            this.data.content.element = new LabelText();
-            gui.getDefinition().initElement(this.data.content);
-
             this.pageNavigation = gui.getDefinition().getElementById(JsonUtils.getStringVal(data.get("for")));
+        }
 
+        @Override
+        public GuiElementInst getLabel(IGui gui, JsonObject data) {
+            GuiElementInst lbl = new GuiElementInst();
+            lbl.element = new LabelText();
+            gui.getDefinition().initElement(lbl);
+            lbl.get().bakeData(gui, data);
+
+            return lbl;
         }
 
         @Override
@@ -197,7 +208,7 @@ public class PageNavigation
         private static class LabelText
                 extends Text
         {
-            String text;
+            private String text = "";
 
             @Override
             public String getBakedText(IGui gui, JsonObject data) {

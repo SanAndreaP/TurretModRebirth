@@ -34,7 +34,7 @@
       }
     },
     {
-      "type": "sapturretmod:tinfo_playericon",
+      "type": "sapturretmod:tcu_playericon",
       "pos": [7, 128],
       "data": {
         "uvs": [
@@ -107,7 +107,7 @@
       }
     },
     {
-      "type": "sapturretmod:tinfo_page_nav",
+      "type": "sapturretmod:tcu_page_nav",
       "pos": [0, 212],
       "id": "pgNavigation",
       "data": {
@@ -166,9 +166,12 @@
       }
     },
     {
-      "type": "sapturretmod:tinfo_page_nav_label",
+      "type": "sapturretmod:tcu_page_nav_label",
       "pos": [0, 212],
-      "id": "pgNavigation"
+      "id": "pgNavigationLbl",
+      "data": {
+        "for": "pgNavigation"
+      }
     }
   ]
 }

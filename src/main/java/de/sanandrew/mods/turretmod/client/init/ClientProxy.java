@@ -34,7 +34,7 @@ import de.sanandrew.mods.turretmod.client.gui.element.assembly.AssemblyProgressB
 import de.sanandrew.mods.turretmod.client.gui.element.assembly.AssemblyRecipeArea;
 import de.sanandrew.mods.turretmod.client.gui.element.assembly.AssemblyRecipeLabel;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.AmmoItem;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.InfoPlayerIcon;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.info.PlayerIcon;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.nav.PageNavigation;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.TurretCam;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.TurretName;
@@ -98,7 +98,7 @@ public class ClientProxy
         GuiDefinition.TYPES.put(PageNavigation.PageNavigationLabel.ID, PageNavigation.PageNavigationLabel::new);
         GuiDefinition.TYPES.put(TurretName.ID, TurretName::new);
         GuiDefinition.TYPES.put(TurretCam.ID, TurretCam::new);
-        GuiDefinition.TYPES.put(InfoPlayerIcon.ID, InfoPlayerIcon::new);
+        GuiDefinition.TYPES.put(PlayerIcon.ID, PlayerIcon::new);
         GuiDefinition.TYPES.put(AmmoItem.ID, AmmoItem::new);
 
         GuiDefinition.TYPES.put(ButtonLabel.ID, ButtonLabel::new);

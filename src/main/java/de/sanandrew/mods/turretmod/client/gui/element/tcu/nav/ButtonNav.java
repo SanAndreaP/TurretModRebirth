@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Button;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.IButtonLabel;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
@@ -24,8 +25,9 @@ public class ButtonNav
     int pageIdx;
     private ItemStack pageStack = ItemStack.EMPTY;
 
-    ButtonNav(int id) {
+    ButtonNav(int id, ResourceLocation page) {
         this.pageIdx = id;
+        this.page = page;
     }
 
     @Override
@@ -39,6 +41,7 @@ public class ButtonNav
         JsonUtils.addDefaultJsonProperty(data, "uvSize", new int[] {0, 0});
         JsonUtils.addDefaultJsonProperty(data, "ctHorizontal", 0);
         JsonUtils.addDefaultJsonProperty(data, "ctVertical", 0);
+        JsonUtils.addDefaultJsonProperty(data, "buttonFunction", -1);
 
         super.bakeData(gui, data);
 
@@ -60,6 +63,7 @@ public class ButtonNav
 
     public class Label
             extends Item
+            implements IButtonLabel
     {
         @Override
         protected ItemStack getBakedStack(IGui gui, JsonObject data) {
@@ -72,8 +76,18 @@ public class ButtonNav
         }
 
         @Override
-        public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
-            if( !ButtonNav.this.isEnabled() && !ButtonNav.this.isHovering(gui, x, y, mouseX, mouseY) ) {
+        public int getWidth() {
+            return 16;
+        }
+
+        @Override
+        public int getHeight() {
+            return 16;
+        }
+
+        @Override
+        public void renderLabel(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data, boolean enabled, boolean hovered) {
+            if( !enabled || !hovered ) {
                 SHADER_GRAYSCALE.render(() -> super.render(gui, partTicks, x, y, mouseX, mouseY, data), 1.0F);
             } else {
                 super.render(gui, partTicks, x, y, mouseX, mouseY, data);

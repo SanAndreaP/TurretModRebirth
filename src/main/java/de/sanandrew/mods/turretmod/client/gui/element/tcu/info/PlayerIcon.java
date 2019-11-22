@@ -1,4 +1,4 @@
-package de.sanandrew.mods.turretmod.client.gui.element.tcu;
+package de.sanandrew.mods.turretmod.client.gui.element.tcu.info;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -16,10 +16,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class InfoPlayerIcon
+public class PlayerIcon
         extends Texture
 {
-    public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tinfo_playericon");
+    public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu_info_playericon");
 
     @Override
     public void bakeData(IGui gui, JsonObject data) {
