@@ -12,6 +12,7 @@ import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.registry.Lang;
+import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import net.minecraft.util.ResourceLocation;
 
@@ -56,6 +57,7 @@ public class PageNavigation
             this.data.tabScrollL.data = data.getAsJsonObject("tabScrollLeft");
             gui.getDefinition().initElement(this.data.tabScrollL);
             this.data.tabScrollL.get().bakeData(gui, this.data.tabScrollL.data);
+
             this.data.tabScrollR = new GuiElementInst();
             this.data.tabScrollR.element = new ButtonTabScroll(1);
             this.data.tabScrollR.data = data.getAsJsonObject("tabScrollRight");
@@ -155,6 +157,7 @@ public class PageNavigation
 
         @Override
         public void bakeData(IGui gui, JsonObject data) {
+            JsonUtils.addDefaultJsonProperty(data, "texture", Resources.GUI_TCU_BUTTONS.resource.toString());
             JsonUtils.addDefaultJsonProperty(data, "buttonFunction", -1);
 
             super.bakeData(gui, data);

@@ -12,7 +12,7 @@
     },
     {
       "type": "sapturretmod:turret_cam",
-      "pos": [64, 40],
+      "pos": [64, 28],
       "data": {
         "size": [48, 48],
         "quality": 48
@@ -34,7 +34,7 @@
       }
     },
     {
-      "type": "sapturretmod:tcu_playericon",
+      "type": "sapturretmod:tcu_info_playericon",
       "pos": [7, 128],
       "data": {
         "uvs": [

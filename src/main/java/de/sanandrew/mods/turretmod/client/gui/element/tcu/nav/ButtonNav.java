@@ -13,6 +13,7 @@ import de.sanandrew.mods.turretmod.client.shader.ShaderGrayscale;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -51,6 +52,8 @@ public class ButtonNav
             if( this.data.label == null ) {
                 this.data.label = new GuiElementInst();
                 this.data.label.element = new Label();
+                gui.getDefinition().initElement(this.data.label);
+                this.data.label.get().bakeData(gui, this.data.label.data);
             }
         }
     }
@@ -87,7 +90,11 @@ public class ButtonNav
 
         @Override
         public void renderLabel(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data, boolean enabled, boolean hovered) {
-            if( !enabled || !hovered ) {
+            if( ButtonNav.this.pageStack == null ) {
+                ButtonNav.this.pageStack = new ItemStack(Blocks.BARRIER, 1);
+            }
+
+            if( enabled && !hovered ) {
                 SHADER_GRAYSCALE.render(() -> super.render(gui, partTicks, x, y, mouseX, mouseY, data), 1.0F);
             } else {
                 super.render(gui, partTicks, x, y, mouseX, mouseY, data);
