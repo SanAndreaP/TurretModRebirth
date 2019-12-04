@@ -108,7 +108,7 @@
     },
     {
       "type": "sapturretmod:tcu_page_nav",
-      "pos": [0, 212],
+      "pos": [0, 214],
       "id": "pgNavigation",
       "data": {
         "tabScrollLeft": {
@@ -167,8 +167,7 @@
     },
     {
       "type": "sapturretmod:tcu_page_nav_label",
-      "pos": [0, 212],
-      "id": "pgNavigationLbl",
+      "pos": [0, 214],
       "data": {
         "for": "pgNavigation"
       }

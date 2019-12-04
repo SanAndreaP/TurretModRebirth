@@ -71,23 +71,40 @@ public class PageNavigation
         final IGuiTcuInst guiTcuInst = (IGuiTcuInst) gui;
         final ResourceLocation currEntry = guiTcuInst.getCurrentEntryKey();
 
-        int shownId = 0;
+        final int tabScrollElemLWidth = this.data.tabScrollL.get().getWidth();
+        final IGuiElement tabScrollElemR = this.data.tabScrollR.get();
+
+        int cntAvailableTabs = 0;
         for( Map.Entry<GuiElementInst, ResourceLocation> entry : this.data.pages.entrySet() ) {
             GuiElementInst btn = entry.getKey();
             ButtonNav btnNav = btn.get(ButtonNav.class);
-            if( GuiTcuRegistry.INSTANCE.getGuiEntry(btnNav.page).showTab(guiTcuInst)
-                && btnNav.pageIdx >= this.tabStartIdx && btnNav.pageIdx <= this.tabStartIdx + this.data.maxTabsShown )
-            {
-                btnNav.setVisible(true);
-                btn.pos[0] = this.data.tabScrollL.get().getWidth() + shownId++ * 18;
-                btnNav.setEnabled(!currEntry.equals(btnNav.page));
-            } else {
-                btnNav.setVisible(false);
-            }
-        }
-        this.data.tabScrollR.pos[0] = this.data.tabScrollL.get().getWidth() + shownId * 18;
+            if( GuiTcuRegistry.INSTANCE.getGuiEntry(btnNav.page).showTab(guiTcuInst) ) {
+                cntAvailableTabs++;
 
+                if( btnNav.pageIdx >= this.tabStartIdx && btnNav.pageIdx <= this.tabStartIdx + this.data.maxTabsShown ) {
+                    btnNav.setVisible(true);
+                    btnNav.setEnabled(!currEntry.equals(btnNav.page));
+
+                    continue;
+                }
+            }
+
+            btnNav.setVisible(false);
+        }
         this.shownTabs = this.fetchShownPageButtons();
+
+        int tabWidth = this.shownTabs.keySet().stream().map(elem -> elem.get().getWidth()).reduce((e1, e2) -> e1 + e2 + 2).orElse(0);
+        int tabLeft = (guiTcuInst.getWidth() - tabWidth - tabScrollElemLWidth - tabScrollElemR.getWidth() - 4) / 2;
+
+        this.data.tabScrollL.pos[0] = tabLeft;
+        this.data.tabScrollL.get(ButtonTabScroll.class).setVisible(this.tabStartIdx > 0);
+        this.data.tabScrollR.pos[0] = tabLeft + tabScrollElemLWidth + tabWidth + 4;
+        this.data.tabScrollR.get(ButtonTabScroll.class).setVisible(this.tabStartIdx < cntAvailableTabs - shownTabs.size());
+
+        int shownId = 0;
+        for( Map.Entry<GuiElementInst, ResourceLocation> entry : this.shownTabs.entrySet() ) {
+            entry.getKey().pos[0] = tabLeft + tabScrollElemLWidth + 2 + shownId++ * 16;
+        }
     }
 
     private Map<GuiElementInst, ResourceLocation> fetchShownPageButtons() {
@@ -98,7 +115,7 @@ public class PageNavigation
 
     @Override
     public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
-        this.data.tabScrollL.get().render(gui, partTicks, x, y, mouseX, mouseY, data);
+        this.data.tabScrollL.get().render(gui, partTicks, x + this.data.tabScrollL.pos[0], y, mouseX, mouseY, data);
         this.data.tabScrollR.get().render(gui, partTicks, x + this.data.tabScrollR.pos[0], y, mouseX, mouseY, data);
         this.shownTabs.forEach((btn, page) -> btn.get().render(gui, partTicks, x + btn.pos[0], y, mouseX, mouseY, btn.data));
     }
@@ -204,7 +221,7 @@ public class PageNavigation
             PageNavigation pgn = this.pageNavigation.get(PageNavigation.class);
             pgn.shownTabs.forEach((e, p) -> {
                 this.data.content.get(LabelText.class).text = LangUtils.translate(Lang.TCU_PAGE_TITLE.get(p));
-                super.render(gui, partTicks, e.pos[0], e.pos[1], mouseX, mouseY, e.data);
+                super.render(gui, partTicks, e.pos[0] + x, e.pos[1] + y, mouseX, mouseY, e.data);
             });
         }
 
@@ -212,6 +229,13 @@ public class PageNavigation
                 extends Text
         {
             private String text = "";
+
+            @Override
+            public void bakeData(IGui gui, JsonObject data) {
+                JsonUtils.addDefaultJsonProperty(data, "color", "0xFFFFFFFF");
+
+                super.bakeData(gui, data);
+            }
 
             @Override
             public String getBakedText(IGui gui, JsonObject data) {
