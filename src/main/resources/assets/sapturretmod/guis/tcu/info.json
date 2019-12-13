@@ -35,14 +35,15 @@
     },
     {
       "type": "sapturretmod:tcu_info_playericon",
-      "pos": [7, 128],
+      "pos": [8, 148],
       "data": {
         "uvs": [
-          [234, 0],
-          [234, 8],
-          [234, 16],
-          [234, 24],
-          [234, 32]
+          [240, 0],
+          [240, 16],
+          [240, 32],
+          [240, 48],
+          [240, 64],
+          [240, 80]
         ]
       }
     },
@@ -55,7 +56,7 @@
         "uvSize": [18, 18],
         "buttonFunction": 0,
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
-        "uvEnabled": [176, 50]
+        "uvEnabled": [176, 0]
       }
     },
     {
@@ -67,7 +68,7 @@
         "uvSize": [18, 18],
         "buttonFunction": 1,
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
-        "uvEnabled": [194, 50]
+        "uvEnabled": [194, 0]
       }
     },
     {
@@ -79,7 +80,7 @@
         "uvSize": [18, 18],
         "buttonFunction": 2,
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
-        "uvEnabled": [212, 50]
+        "uvEnabled": [212, 0]
       }
     },
     {
@@ -91,7 +92,7 @@
         "uvSize": [18, 18],
         "buttonFunction": 3,
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
-        "uvEnabled": [194, 86]
+        "uvEnabled": [176, 36]
       }
     },
     {
@@ -103,7 +104,7 @@
         "uvSize": [18, 18],
         "buttonFunction": 4,
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
-        "uvEnabled": [176, 86]
+        "uvEnabled": [194, 36]
       }
     },
     {

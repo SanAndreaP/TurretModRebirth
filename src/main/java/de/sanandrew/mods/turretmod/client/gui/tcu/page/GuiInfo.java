@@ -18,6 +18,7 @@ import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.client.gui.element.IGuiProgress;
 import de.sanandrew.mods.turretmod.client.render.world.RenderTurretCam;
 import de.sanandrew.mods.turretmod.network.PacketPlayerTurretAction;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
@@ -34,7 +35,7 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 public class GuiInfo
-        implements IGuiTCU
+        implements IGuiTCU, IGuiProgress
 {
     private static final int ACTION_DISMANTLE  = 0;
     private static final int ACTION_ACTIVATE   = 1;
@@ -209,5 +210,19 @@ public class GuiInfo
     @Override
     public void guiClosed(IGuiTcuInst<?> gui) {
         PacketRegistry.sendToServer(new PacketTurretNaming(gui.getTurretInst(), this.turretName.getText()));
+    }
+
+    @Override
+    public Number getCurrentValue(String progressId) {
+//        switch( progressId ) {
+//            case "health":
+//                return this.
+//        }
+        return 0;
+    }
+
+    @Override
+    public Number getMaxValue(String progressId) {
+        return 0;
     }
 }

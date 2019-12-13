@@ -27,7 +27,7 @@ public class PlayerIcon
 
         if( !data.has("size") ) {
             JsonArray arr = new JsonArray();
-            arr.add(11); arr.add(8);
+            arr.add(16); arr.add(16);
             data.add("size", arr);
         }
         if( !data.has("uv") ) {
