@@ -12,10 +12,10 @@
     },
     {
       "type": "sapturretmod:turret_cam",
-      "pos": [64, 28],
+      "pos": [64, 30],
       "data": {
         "size": [48, 48],
-        "quality": 48
+        "quality": 512
       }
     },
     {
@@ -27,10 +27,10 @@
     },
     {
       "type": "textfield",
-      "pos": [20, 91],
+      "pos": [27, 87],
       "id": "turretNameInput",
       "data": {
-        "size": [148, 10]
+        "size": [138, 10]
       }
     },
     {
@@ -38,7 +38,7 @@
       "pos": [8, 148],
       "data": {
         "uvs": [
-          [240, 0],
+          [240,  0],
           [240, 16],
           [240, 32],
           [240, 48],
@@ -48,8 +48,118 @@
       }
     },
     {
+      "type": "sapturretmod:tcu_info_progress",
+      "pos": [6, 100],
+      "data": {
+        "type": "health",
+        "bar": {
+          "pos": [20, 11],
+          "data": {
+            "size": [140, 3],
+            "uv": [116, 244]
+          }
+        },
+        "text": {
+          "pos": [20, 2],
+          "data": {
+            "color": "0xFFC20000"
+          }
+        }
+      }
+    },
+    {
+      "type": "sapturretmod:tcu_info_progress",
+      "pos": [6, 100],
+      "data": {
+        "type": "personal_shield",
+        "bar": {
+          "pos": [20, 11],
+          "data": {
+            "size": [140, 3],
+            "uv": [116, 250]
+          }
+        },
+        "text": {
+          "pos": [161, 2],
+          "data": {
+            "color": "0xFFC709DD",
+            "justifyRight": true
+          }
+        }
+      }
+    },
+    {
+      "type": "sapturretmod:tcu_info_progress",
+      "pos": [6, 116],
+      "data": {
+        "type": "ammo",
+        "bar": {
+          "pos": [20, 11],
+          "data": {
+            "size": [120, 3],
+            "uv": [116, 247]
+          }
+        },
+        "text": {
+          "pos": [20, 2],
+          "data": {
+            "color": "0xFF0061C2"
+          }
+        }
+      }
+    },
+    {
+      "type": "sapturretmod:tcu_info_progress",
+      "pos": [6, 132],
+      "data": {
+        "type": "target",
+        "text": {
+          "pos": [20, 4]
+        }
+      }
+    },
+    {
+      "type": "sapturretmod:tcu_info_progress",
+      "pos": [6, 148],
+      "data": {
+        "type": "player",
+        "text": {
+          "pos": [20, 4]
+        }
+      }
+    },
+    {
+      "type": "sapturretmod:tcu_info_progress",
+      "pos": [6, 164],
+      "data": {
+        "type": "forcefield",
+        "bar": {
+          "pos": [20, 11],
+          "data": {
+            "size": [140, 3],
+            "uv": [116, 253],
+            "uvBackground": [116, 236]
+          }
+        },
+        "text": {
+          "pos": [20, 2],
+          "data": {
+            "color": "0xFF997E00"
+          }
+        },
+        "icon": {
+          "type": "texture",
+          "pos": [3, 0],
+          "data": {
+            "size": [16, 16],
+            "uv": [176, 72]
+          }
+        }
+      }
+    },
+    {
       "type": "button",
-      "pos": [59, 190],
+      "pos": [59, 186],
       "id": "dismantle",
       "data": {
         "size": [18, 18],
@@ -61,7 +171,7 @@
     },
     {
       "type": "button",
-      "pos": [79, 190],
+      "pos": [79, 186],
       "id": "activate",
       "data": {
         "size": [18, 18],
@@ -73,7 +183,7 @@
     },
     {
       "type": "button",
-      "pos": [79, 190],
+      "pos": [79, 186],
       "id": "deactivate",
       "data": {
         "size": [18, 18],
@@ -85,7 +195,7 @@
     },
     {
       "type": "button",
-      "pos": [99, 190],
+      "pos": [99, 186],
       "id": "showRange",
       "data": {
         "size": [18, 18],
@@ -97,7 +207,7 @@
     },
     {
       "type": "button",
-      "pos": [99, 190],
+      "pos": [99, 186],
       "id": "hideRange",
       "data": {
         "size": [18, 18],
@@ -128,7 +238,7 @@
   "foregroundElements": [
     {
       "type": "button_label",
-      "pos": [59, 190],
+      "pos": [59, 186],
       "data": {
         "buttonId": "dismantle",
         "text": "gui.sapturretmod.tcu.button.dismantle"
@@ -136,7 +246,7 @@
     },
     {
       "type": "button_label",
-      "pos": [79, 190],
+      "pos": [79, 186],
       "data": {
         "buttonId": "activate",
         "text": "gui.sapturretmod.tcu.button.activate"
@@ -144,7 +254,7 @@
     },
     {
       "type": "button_label",
-      "pos": [79, 190],
+      "pos": [79, 186],
       "data": {
         "buttonId": "deactivate",
         "text": "gui.sapturretmod.tcu.button.deactivate"
@@ -152,7 +262,7 @@
     },
     {
       "type": "button_label",
-      "pos": [99, 190],
+      "pos": [99, 186],
       "data": {
         "buttonId": "showRange",
         "text": "gui.sapturretmod.tcu.button.show_range"
@@ -160,7 +270,7 @@
     },
     {
       "type": "button_label",
-      "pos": [99, 190],
+      "pos": [99, 186],
       "data": {
         "buttonId": "hideRange",
         "text": "gui.sapturretmod.tcu.button.hide_range"
