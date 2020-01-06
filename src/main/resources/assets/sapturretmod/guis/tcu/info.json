@@ -218,6 +218,10 @@
       }
     },
     {
+      "type": "sapturretmod:tcu_info_ammo",
+      "pos": [150, 116]
+    },
+    {
       "type": "sapturretmod:tcu_page_nav",
       "pos": [0, 214],
       "id": "pgNavigation",
@@ -275,6 +279,10 @@
         "buttonId": "hideRange",
         "text": "gui.sapturretmod.tcu.button.hide_range"
       }
+    },
+    {
+      "type": "sapturretmod:tcu_info_ammolabel",
+      "pos": [150, 116]
     },
     {
       "type": "sapturretmod:tcu_page_nav_label",

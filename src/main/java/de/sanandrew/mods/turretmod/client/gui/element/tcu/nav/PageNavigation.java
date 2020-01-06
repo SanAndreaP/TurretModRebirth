@@ -57,18 +57,20 @@ public class PageNavigation
             this.data.tabScrollL.data = data.getAsJsonObject("tabScrollLeft");
             gui.getDefinition().initElement(this.data.tabScrollL);
             this.data.tabScrollL.get().bakeData(gui, this.data.tabScrollL.data);
+            this.data.tabScrollL.get(ButtonTabScroll.class).setVisible(false);
 
             this.data.tabScrollR = new GuiElementInst();
             this.data.tabScrollR.element = new ButtonTabScroll(1);
             this.data.tabScrollR.data = data.getAsJsonObject("tabScrollRight");
             gui.getDefinition().initElement(this.data.tabScrollR);
             this.data.tabScrollR.get().bakeData(gui, this.data.tabScrollR.data);
+            this.data.tabScrollR.get(ButtonTabScroll.class).setVisible(false);
         }
     }
 
     @Override
     public void update(IGui gui, JsonObject data) {
-        final IGuiTcuInst guiTcuInst = (IGuiTcuInst) gui;
+        final IGuiTcuInst<?> guiTcuInst = (IGuiTcuInst<?>) gui;
         final ResourceLocation currEntry = guiTcuInst.getCurrentEntryKey();
 
         final int tabScrollElemLWidth = this.data.tabScrollL.get().getWidth();
