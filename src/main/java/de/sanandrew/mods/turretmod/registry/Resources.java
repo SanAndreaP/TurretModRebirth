@@ -61,6 +61,8 @@ public enum Resources
     GUI_STRUCT_CARTRIDGE("guis/ammo_cartridge.json"),
     GUI_STRUCT_TCRATE("guis/turret_crate.json"),
     GUI_STRUCT_TCU_INFO("guis/tcu/info.json"),
+    GUI_STRUCT_TCU_TARGET_CREATURES("guis/tcu/target_creatures.json"),
+    GUI_STRUCT_TCU_TARGET_PLAYERS("guis/tcu/target_players.json"),
     GUI_STRUCT_TCU_LEVELS("guis/tcu/levels.json"),
 
     TINFO_GRP_AMMO("textures/gui/lexicon/group_ammo.png"),

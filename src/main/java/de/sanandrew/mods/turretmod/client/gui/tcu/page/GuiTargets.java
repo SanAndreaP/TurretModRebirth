@@ -6,32 +6,49 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.gui.tcu.page;
 
-import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
-import de.sanandrew.mods.sanlib.lib.util.LangUtils;
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
+import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.client.gui.control.GuiButtonIcon;
-import de.sanandrew.mods.turretmod.network.PacketRegistry;
-import de.sanandrew.mods.turretmod.network.PacketUpdateTargets;
-import de.sanandrew.mods.turretmod.registry.Lang;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.target.TargetType;
 import de.sanandrew.mods.turretmod.registry.Resources;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.math.MathHelper;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.util.ResourceLocation;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
-public abstract class GuiTargets<T>
-//        implements IGuiTCU
+public class GuiTargets
+        implements IGuiTCU
 {
+    private final TargetType type;
+
+    public GuiTargets(TargetType type) {
+        this.type = type;
+    }
+
+    @Override
+    public void initialize(IGuiTcuInst<?> gui, GuiDefinition guiDefinition) {
+
+    }
+
+    @Override
+    public void updateScreen(IGuiTcuInst<?> gui) {
+
+    }
+
+    @Override
+    public ResourceLocation getGuiDefinition() {
+        switch( this.type ) {
+            case CREATURE:
+                return Resources.GUI_STRUCT_TCU_TARGET_CREATURES.resource;
+            case PLAYER:
+                return Resources.GUI_STRUCT_TCU_TARGET_PLAYERS.resource;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean onElementAction(IGuiTcuInst<?> gui, IGuiElement element, int action) {
+        return false;
+    }
+
 //    private static final int MAX_ITEMS = 13;
 //    SortedMap<T, Boolean> tempTargets = new TreeMap<>();
 //    private SortedMap<T, Boolean> filteredTargets = new TreeMap<>();

@@ -1,0 +1,65 @@
+{
+  "width": 176,
+  "height": 236,
+  "texture": "sapturretmod:textures/gui/tcu/page_targets.png",
+  "backgroundElements": [
+    {
+      "type": "texture",
+      "data": {
+        "size": [176, 236],
+        "uv": [0, 0]
+      }
+    },
+    {
+      "type": "sapturretmod:target_list",
+      "pos": [8, 53],
+      "data": {
+        "targetType": "creature",
+        "areaSize": [153, 135],
+        "rasterized": true,
+        "scrollButton": {
+          "type": "texture",
+          "pos": [162, 53],
+          "data": {
+            "size": [6, 6],
+            "uv": [176, 0]
+          }
+        },
+        "scrollButtonDeactive": {
+          "type": "texture",
+          "pos": [162, 53],
+          "data": {
+            "size": [6, 6],
+            "uv": [176, 6]
+          }
+        }
+      }
+    },
+    {
+      "type": "sapturretmod:tcu_page_nav",
+      "pos": [0, 214],
+      "id": "pgNavigation",
+      "data": {
+        "tabScrollLeft": {
+          "size": [16, 16],
+          "uvSize": [16, 16],
+          "uvEnabled": [18, 0]
+        },
+        "tabScrollRight": {
+          "size": [16, 16],
+          "uvSize": [16, 16],
+          "uvEnabled": [36, 0]
+        }
+      }
+    }
+  ],
+  "foregroundElements": [
+    {
+      "type": "sapturretmod:tcu_page_nav_label",
+      "pos": [0, 214],
+      "data": {
+        "for": "pgNavigation"
+      }
+    }
+  ]
+}

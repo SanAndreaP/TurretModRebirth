@@ -10,10 +10,15 @@ package de.sanandrew.mods.turretmod.api.ammo;
 
 import de.sanandrew.mods.turretmod.api.IRegistryObject;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.World;
 import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * <p>A registry object defining an ammunition item.</p>
@@ -55,4 +60,20 @@ public interface IAmmunition
      */
     @Nullable
     IProjectile getProjectile(ITurretInst turretInst);
+
+    /**
+     * <p>Allows this ammunition object to add tooltip information, if needed.</p>
+     * <p><i>Notice: when overriding this method, please call <tt>IAmmunition.super.addInformation(...)</tt> at the end of your implementation.</i></p>
+     *
+     * @param stack The <tt>ItemStack</tt> representing this ammunition object.
+     * @param world The world the ItemStack exists in, if any.
+     * @param tooltip The list of lines to be populated by this method, preferrably an <tt>ArrayList</tt>.
+     * @param flag The flag of the tooltip to be drawn, determines if advanced information is to be shown or not.
+     */
+    default void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
+        if( flag.isAdvanced() ) {
+            tooltip.add(TextFormatting.DARK_GRAY + "aid: " + this.getId().toString());
+            tooltip.add(TextFormatting.DARK_GRAY + "gid: " + this.getGroup().getId().toString());
+        }
+    }
 }

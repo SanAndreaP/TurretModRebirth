@@ -68,6 +68,10 @@ public interface ITargetProcessor
 
     boolean isEntityTargeted(Entity entity);
 
+    boolean isPlayerTargeted(UUID id);
+
+    boolean isEntityTargeted(ResourceLocation id);
+
     ITurretInst getTurretInst();
 
     boolean hasTarget();

@@ -136,8 +136,8 @@ public final class GuiTcuRegistry
 
     public static void initialize(IGuiTcuRegistry registry) {
         registry.registerGuiEntry(GUI_INFO, 0, null);
-//        registry.registerGuiEntry(GUI_TARGETS_MOB, 1, null);
-//        registry.registerGuiEntry(GUI_TARGETS_PLAYER, 2, null);
+        registry.registerGuiEntry(GUI_TARGETS_MOB, 1, null);
+        registry.registerGuiEntry(GUI_TARGETS_PLAYER, 2, null);
 //        registry.registerGuiEntry(GUI_TARGETS_SMART, 3, null);
 //        registry.registerGuiEntry(GUI_UPGRADES, 4, (player, turretInst) -> new ContainerTurretUpgrades(player.inventory, (UpgradeProcessor) turretInst.getUpgradeProcessor()));
 //        registry.registerGuiEntry(GUI_COLORIZER, 5, null);

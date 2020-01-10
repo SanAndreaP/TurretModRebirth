@@ -17,6 +17,7 @@ import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.IGuiTcuRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.gui.control.GuiButtonIcon;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.target.TargetType;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.*;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
@@ -157,8 +158,8 @@ public final class GuiTcuHelper
 
     public static void initialize(IGuiTcuRegistry registry) {
         registry.registerGui(GuiTcuRegistry.GUI_INFO, new ItemStack(Items.BOOK), GuiInfo::new, null);
-//        registry.registerGui(GuiTcuRegistry.GUI_TARGETS_MOB, new ItemStack(Items.SKULL, 1, 2), GuiTargetCreatures::new, IGuiTcuInst::hasPermision);
-//        registry.registerGui(GuiTcuRegistry.GUI_TARGETS_PLAYER, PlayerHeads::getRandomSkull, GuiTargetPlayers::new, IGuiTcuInst::hasPermision);
+        registry.registerGui(GuiTcuRegistry.GUI_TARGETS_MOB, new ItemStack(Items.SKULL, 1, 2), () -> new GuiTargets(TargetType.CREATURE), IGuiTcuInst::hasPermision);
+        registry.registerGui(GuiTcuRegistry.GUI_TARGETS_PLAYER, PlayerHeads::getRandomSkull, () -> new GuiTargets(TargetType.PLAYER), IGuiTcuInst::hasPermision);
 //        registry.registerGui(GuiTcuRegistry.GUI_TARGETS_SMART, UpgradeRegistry.INSTANCE.getItem(Upgrades.SMART_TGT.getId()), GuiSmartTargets::new, GuiSmartTargets::showTab);
 //        registry.registerGui(GuiTcuRegistry.GUI_UPGRADES, UpgradeRegistry.INSTANCE.getItem(UpgradeRegistry.EMPTY_UPGRADE.getId()), GuiUpgrades::new, IGuiTcuInst::hasPermision);
 //        registry.registerGui(GuiTcuRegistry.GUI_COLORIZER, UpgradeRegistry.INSTANCE.getItem(Upgrades.SHIELD_COLORIZER.getId()), GuiShieldColorizer::new, GuiShieldColorizer::showTab);

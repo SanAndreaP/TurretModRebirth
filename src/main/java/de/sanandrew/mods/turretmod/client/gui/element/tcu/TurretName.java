@@ -59,6 +59,6 @@ public class TurretName
 
     @Override
     public String getDynamicText(IGui gui, String originalText) {
-        return LangUtils.translate(LangUtils.ENTITY_NAME.get(((IGuiTcuInst) gui).getTurretInst().getTurret().getId()));
+        return LangUtils.translate(LangUtils.ENTITY_NAME.get(((IGuiTcuInst<?>) gui).getTurretInst().getTurret().getId()));
     }
 }

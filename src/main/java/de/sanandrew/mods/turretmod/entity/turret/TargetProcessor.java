@@ -470,15 +470,11 @@ public final class TargetProcessor
 
     @Override
     public boolean isEntityTargeted(Entity entity) {
-        Boolean creatureSetting = this.entityTargetList.get(EntityList.getKey(entity.getClass()));
-        if( creatureSetting != null ) {
-            return this.isBlacklistEntity ^ creatureSetting;
-        } else if( entity instanceof EntityPlayer ) {
-            boolean b = (Boolean.TRUE.equals(this.playerTargetList.get(entity.getUniqueID())) || (Boolean.TRUE.equals(this.playerTargetList.get(UuidUtils.EMPTY_UUID))));
-            return this.isBlacklistPlayer ^ b;
+        if( entity instanceof EntityPlayer ) {
+            return this.isBlacklistPlayer ^ (this.isPlayerTargeted(entity.getUniqueID()) || this.isPlayerTargeted(UuidUtils.EMPTY_UUID));
+        } else {
+            return this.isBlacklistEntity ^ this.isEntityTargeted(EntityList.getKey(entity.getClass()));
         }
-
-        return false;
     }
 
     private List<Entity> getValidTargetList(AxisAlignedBB aabb) {
@@ -488,6 +484,16 @@ public final class TargetProcessor
     private boolean isEntityValidTarget(Entity entity, AxisAlignedBB aabb) {
         return isEntityTargeted(entity) && entity.isEntityAlive() && entity.getEntityBoundingBox().intersects(aabb)
                && (this.turret.getTurret().canSeeThroughBlocks() || this.turret.get().canEntityBeSeen(entity));
+    }
+
+    @Override
+    public boolean isPlayerTargeted(UUID id) {
+        return Boolean.TRUE.equals(this.playerTargetList.get(id));
+    }
+
+    @Override
+    public boolean isEntityTargeted(ResourceLocation id) {
+        return Boolean.TRUE.equals(this.entityTargetList.get(id));
     }
 
     @Override

@@ -8,7 +8,13 @@ package de.sanandrew.mods.turretmod.item;
 
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.registry.TmrCreativeTabs;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class ItemAmmo
         extends Item
@@ -23,5 +29,12 @@ public class ItemAmmo
         this.setCreativeTab(TmrCreativeTabs.TURRETS);
         this.setRegistryName(ammo.getId());
         this.setTranslationKey(ammo.getId().toString());
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        this.ammo.addInformation(stack, worldIn, tooltip, flagIn);
+
+        super.addInformation(stack, worldIn, tooltip, flagIn);
     }
 }
