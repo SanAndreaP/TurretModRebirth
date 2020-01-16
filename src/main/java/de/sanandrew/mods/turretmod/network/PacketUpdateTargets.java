@@ -17,26 +17,63 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 public class PacketUpdateTargets
         extends AbstractMessage<PacketUpdateTargets>
 {
-    private ResourceLocation[] entityTargets;
-    private UUID[] playerTargets;
-    private boolean isBlacklistEntity;
-    private boolean isBlacklistPlayer;
-    private int turretID;
+    private PacketSubtype    type;
+    private boolean            toggle;
+    private ResourceLocation[] entityIds;
+    private UUID[]             playerIds;
+    private int                turretId;
+
+    public static PacketUpdateTargets updateTarget(ITurretInst turretInst, ResourceLocation entityId, boolean enabled) {
+        PacketUpdateTargets p = new PacketUpdateTargets(turretInst, PacketSubtype.ENTITY_ID, enabled);
+        p.entityIds = new ResourceLocation[] { entityId };
+
+        return p;
+    }
+
+    public static PacketUpdateTargets updateTarget(ITurretInst turretInst, UUID playerId, boolean enabled) {
+        PacketUpdateTargets p = new PacketUpdateTargets(turretInst, PacketSubtype.PLAYER_ID, enabled);
+        p.playerIds = new UUID[] { playerId };
+
+        return p;
+    }
+
+    public static PacketUpdateTargets updateTargets(ITurretInst turretInst, ResourceLocation[] entityIds, boolean enabled) {
+        PacketUpdateTargets p = new PacketUpdateTargets(turretInst, PacketSubtype.ENTITY_ID, enabled);
+        p.entityIds = entityIds;
+
+        return p;
+    }
+
+    public static PacketUpdateTargets updateTargets(ITurretInst turretInst, UUID[] playerIds, boolean enabled) {
+        PacketUpdateTargets p = new PacketUpdateTargets(turretInst, PacketSubtype.ENTITY_ID, enabled);
+        p.playerIds = playerIds;
+
+        return p;
+    }
+
+    public static PacketUpdateTargets updateEntityBlacklist(ITurretInst turretInst, boolean isBlacklist) {
+        return new PacketUpdateTargets(turretInst, PacketSubtype.BLACKLIST_ENTITY, isBlacklist);
+    }
+
+    public static PacketUpdateTargets updatePlayerBlacklist(ITurretInst turretInst, boolean isBlacklist) {
+        return new PacketUpdateTargets(turretInst, PacketSubtype.BLACKLIST_PLAYER, isBlacklist);
+    }
 
     @SuppressWarnings("unused")
-    public PacketUpdateTargets() {}
+    public PacketUpdateTargets() {
+        this.type = PacketSubtype.UNKNOWN;
+    }
 
-    public PacketUpdateTargets(ITargetProcessor processor) {
-        this.entityTargets = processor.getEnabledEntityTargets();
-        this.playerTargets = processor.getEnabledPlayerTargets();
-        this.isBlacklistEntity = processor.isEntityBlacklist();
-        this.isBlacklistPlayer = processor.isPlayerBlacklist();
-        this.turretID = processor.getTurretInst().get().getEntityId();
+    private PacketUpdateTargets(ITurretInst turretInst, PacketSubtype type, boolean toggle) {
+        this.type = type;
+        this.toggle = toggle;
+        this.turretId = turretInst.get().getEntityId();
     }
 
     @Override
@@ -46,48 +83,89 @@ public class PacketUpdateTargets
 
     @Override
     public void handleServerMessage(PacketUpdateTargets packet, EntityPlayer player) {
-        Entity e = player.world.getEntityByID(packet.turretID);
-        if( e instanceof ITurretInst) {
+        Entity e = player.world.getEntityByID(packet.turretId);
+        if( e instanceof ITurretInst ) {
             ITargetProcessor processor = ((ITurretInst) e).getTargetProcessor();
-            processor.updateEntityTargets(packet.entityTargets);
-            processor.updatePlayerTargets(packet.playerTargets);
-            processor.setEntityBlacklist(packet.isBlacklistEntity);
-            processor.setPlayerBlacklist(packet.isBlacklistPlayer);
+            switch( packet.type ) {
+                case ENTITY_ID:
+                    Arrays.stream(packet.entityIds).forEach(id -> processor.updateEntityTarget(id, packet.toggle));
+                    break;
+                case PLAYER_ID:
+                    Arrays.stream(packet.playerIds).forEach(id -> processor.updatePlayerTarget(id, packet.toggle));
+                    break;
+                case BLACKLIST_ENTITY:
+                    processor.setEntityBlacklist(packet.toggle);
+                    break;
+                case BLACKLIST_PLAYER:
+                    processor.setPlayerBlacklist(packet.toggle);
+                    break;
+            }
         }
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void fromBytes(ByteBuf buf) {
-        this.turretID = buf.readInt();
-        this.entityTargets = new ResourceLocation[buf.readInt()];
-        for( int i = 0; i < this.entityTargets.length; i++ ) {
-            this.entityTargets[i] = new ResourceLocation(ByteBufUtils.readUTF8String(buf));
+        this.turretId = buf.readInt();
+        this.type = PacketSubtype.getType(buf.readByte());
+
+        switch( this.type ) {
+            case ENTITY_ID:
+                this.entityIds = new ResourceLocation[buf.readInt()];
+                for( int i = 0; i < this.entityIds.length; i++ ) { this.entityIds[i] = new ResourceLocation(ByteBufUtils.readUTF8String(buf)); }
+                this.toggle = buf.readBoolean();
+                break;
+            case PLAYER_ID:
+                this.playerIds = new UUID[buf.readInt()];
+                for( int i = 0; i < this.playerIds.length; i++ ) { this.playerIds[i] = UUID.fromString(ByteBufUtils.readUTF8String(buf)); }
+                this.toggle = buf.readBoolean();
+                break;
+            case BLACKLIST_ENTITY:
+            case BLACKLIST_PLAYER:
+                this.toggle = buf.readBoolean();
+                break;
         }
-        this.playerTargets = new UUID[buf.readInt()];
-        for( int i = 0; i < this.playerTargets.length; i++ ) {
-            try {
-                this.playerTargets[i] = UUID.fromString(ByteBufUtils.readUTF8String(buf));
-            } catch( IllegalArgumentException ex ) {
-                this.playerTargets[i] = null;
-            }
-        }
-        this.isBlacklistEntity = buf.readBoolean();
-        this.isBlacklistPlayer = buf.readBoolean();
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeInt(this.turretID);
-        buf.writeInt(this.entityTargets.length);
-        for( ResourceLocation entityTarget : this.entityTargets ) {
-            ByteBufUtils.writeUTF8String(buf, entityTarget.toString());
+        buf.writeInt(this.turretId);
+        buf.writeByte(this.type.id);
+        switch( this.type ) {
+            case ENTITY_ID:
+                buf.writeInt(this.entityIds.length);
+                Arrays.stream(this.entityIds).forEach(e -> ByteBufUtils.writeUTF8String(buf, e.toString()));
+                buf.writeBoolean(this.toggle);
+                break;
+            case PLAYER_ID:
+                buf.writeInt(this.playerIds.length);
+                Arrays.stream(this.playerIds).forEach(e -> ByteBufUtils.writeUTF8String(buf, e.toString()));
+                buf.writeBoolean(this.toggle);
+                break;
+            case BLACKLIST_ENTITY:
+            case BLACKLIST_PLAYER:
+                buf.writeBoolean(this.toggle);
+                break;
         }
-        buf.writeInt(this.playerTargets.length);
-        for( UUID playerTarget : this.playerTargets ) {
-            ByteBufUtils.writeUTF8String(buf, playerTarget.toString());
+    }
+
+    enum PacketSubtype
+    {
+        UNKNOWN,
+        ENTITY_ID,
+        PLAYER_ID,
+        BLACKLIST_ENTITY,
+        BLACKLIST_PLAYER;
+
+        private static final PacketSubtype[] VALUES = values();
+
+        final byte id = (byte) this.ordinal();
+
+        static PacketSubtype getType(int id) {
+            if( id >= 0 && id < VALUES.length ) {
+                return VALUES[id];
+            }
+
+            return UNKNOWN;
         }
-        buf.writeBoolean(this.isBlacklistEntity);
-        buf.writeBoolean(this.isBlacklistPlayer);
     }
 }

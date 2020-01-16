@@ -119,6 +119,7 @@ public class GuiTcuContainer
         if( !this.guiDef.keyTyped(this, typedChar, keyCode) ) {
             super.keyTyped(typedChar, keyCode);
         }
+        this.guiDelegate.keyTyped(this, typedChar, keyCode);
     }
 
     @Override

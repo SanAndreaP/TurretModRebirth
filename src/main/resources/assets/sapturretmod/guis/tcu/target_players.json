@@ -22,7 +22,7 @@
       "pos": [8, 53],
       "id": "targetList",
       "data": {
-        "targetType": "creature",
+        "targetType": "player",
         "areaSize": [153, 135],
         "rasterized": true,
         "scrollButton": {
@@ -109,42 +109,6 @@
       }
     },
     {
-      "type": "button",
-      "pos": [113, 190],
-      "id": "selectMobs",
-      "data": {
-        "size": [18, 18],
-        "texture": "sapturretmod:textures/gui/tcu/page_targets.png",
-        "uvSize": [18, 18],
-        "uvEnabled": [202, 36],
-        "buttonFunction": 3
-      }
-    },
-    {
-      "type": "button",
-      "pos": [132, 190],
-      "id": "selectAnimals",
-      "data": {
-        "size": [18, 18],
-        "texture": "sapturretmod:textures/gui/tcu/page_targets.png",
-        "uvSize": [18, 18],
-        "uvEnabled": [220, 36],
-        "buttonFunction": 4
-      }
-    },
-    {
-      "type": "button",
-      "pos": [151, 190],
-      "id": "selectOther",
-      "data": {
-        "size": [18, 18],
-        "texture": "sapturretmod:textures/gui/tcu/page_targets.png",
-        "uvSize": [18, 18],
-        "uvEnabled": [238, 36],
-        "buttonFunction": 5
-      }
-    },
-    {
       "type": "textField",
       "pos": [8, 40],
       "id": "search",
@@ -191,30 +155,6 @@
       "data": {
         "buttonId": "deselectAll",
         "text": "gui.sapturretmod.tcu.button.deselect_all"
-      }
-    },
-    {
-      "type": "button_label",
-      "pos": [113, 190],
-      "data": {
-        "buttonId": "selectMobs",
-        "text": "gui.sapturretmod.tcu.button.select_mobs"
-      }
-    },
-    {
-      "type": "button_label",
-      "pos": [132, 190],
-      "data": {
-        "buttonId": "selectAnimals",
-        "text": "gui.sapturretmod.tcu.button.select_animals"
-      }
-    },
-    {
-      "type": "button_label",
-      "pos": [151, 190],
-      "data": {
-        "buttonId": "selectOther",
-        "text": "gui.sapturretmod.tcu.button.select_other"
       }
     }
   ]

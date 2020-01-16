@@ -44,8 +44,8 @@ public final class UpgradeProcessor
 {
     @Nonnull
     private final NonNullList<ItemStack> upgradeStacks = NonNullList.withSize(36, ItemStackUtils.getEmpty());
-    private final Map<ResourceLocation, IUpgradeInstance> upgInstances = new ConcurrentHashMap<>();
-    private final Map<ResourceLocation, IUpgradeInstance> upgTickable = new ConcurrentHashMap<>();
+    private final Map<ResourceLocation, IUpgradeInstance<?>> upgInstances = new ConcurrentHashMap<>();
+    private final Map<ResourceLocation, IUpgradeInstance<?>> upgTickable = new ConcurrentHashMap<>();
 
     private boolean hasChanged = false;
     private final ITurretInst turret;
@@ -117,12 +117,12 @@ public final class UpgradeProcessor
     }
 
     @Override
-    public <T extends IUpgradeInstance> T getUpgradeInstance(ResourceLocation id) {
+    public <T extends IUpgradeInstance<?>> T getUpgradeInstance(ResourceLocation id) {
         return ReflectionUtils.getCasted(this.upgInstances.get(id));
     }
 
     @Override
-    public void setUpgradeInstance(ResourceLocation id, IUpgradeInstance inst) {
+    public void setUpgradeInstance(ResourceLocation id, IUpgradeInstance<?> inst) {
         this.upgInstances.put(id, inst);
         if( inst.getClass().getAnnotation(IUpgradeInstance.Tickable.class) != null ) {
             this.upgTickable.put(id, inst);
@@ -164,18 +164,17 @@ public final class UpgradeProcessor
 
                 itemstack = slotStack;
                 this.upgradeStacks.set(slot, ItemStackUtils.getEmpty());
-                this.markDirty();
-                return itemstack;
             } else {
                 itemstack = slotStack.splitStack(amount);
 
                 if( slotStack.getCount() == 0 ) {
                     this.upgradeStacks.set(slot, ItemStackUtils.getEmpty());
                 }
-
-                this.markDirty();
-                return itemstack;
             }
+
+            this.markDirty();
+
+            return itemstack;
         } else {
             return ItemStackUtils.getEmpty();
         }

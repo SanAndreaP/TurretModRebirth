@@ -48,4 +48,6 @@ public interface IGuiTCU
     default boolean onElementAction(IGuiTcuInst<?> gui, IGuiElement element, int action) { return false; }
 
     default void guiClosed(IGuiTcuInst<?> gui) { }
+
+    default void keyTyped(IGuiTcuInst<?> gui, char typedChar, int keyCode) { }
 }

@@ -21,6 +21,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.item.ItemAmmoCartridge;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
+import de.sanandrew.mods.turretmod.world.PlayerList;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -44,7 +45,13 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public final class TargetProcessor
         implements ITargetProcessor
@@ -76,6 +83,7 @@ public final class TargetProcessor
 
     public void init() {
         this.entityTargetList.putAll(TargetList.getStandardTargetList(this.turret.getAttackType()));
+        this.playerTargetList.putAll(PlayerList.INSTANCE.getDefaultPlayerList());
     }
 
     @Override
@@ -471,9 +479,11 @@ public final class TargetProcessor
     @Override
     public boolean isEntityTargeted(Entity entity) {
         if( entity instanceof EntityPlayer ) {
-            return this.isBlacklistPlayer ^ (this.isPlayerTargeted(entity.getUniqueID()) || this.isPlayerTargeted(UuidUtils.EMPTY_UUID));
+            UUID id = entity.getUniqueID();
+            return this.playerTargetList.containsKey(id) && (this.isBlacklistPlayer ^ this.isPlayerTargeted(id));
         } else {
-            return this.isBlacklistEntity ^ this.isEntityTargeted(EntityList.getKey(entity.getClass()));
+            ResourceLocation id = EntityList.getKey(entity.getClass());
+            return this.entityTargetList.containsKey(id) && (this.isBlacklistEntity ^ this.isEntityTargeted(id));
         }
     }
 
@@ -527,16 +537,22 @@ public final class TargetProcessor
         nbt.setBoolean("playerBlacklist", this.isBlacklistPlayer);
 
         NBTTagList entityTargets = new NBTTagList();
-        for( ResourceLocation res : this.getEnabledEntityTargets() ) {
-            entityTargets.appendTag(new NBTTagString(res.toString()));
+        for( Map.Entry<ResourceLocation, Boolean> res : this.getEntityTargets().entrySet() ) {
+            NBTTagCompound entityEntry = new NBTTagCompound();
+            entityEntry.setString("ID", res.getKey().toString());
+            entityEntry.setBoolean("Enabled", res.getValue());
+            entityTargets.appendTag(entityEntry);
         }
-        nbt.setTag("EntityTargetsRL", entityTargets);
+        nbt.setTag("EntityTargetsCMP", entityTargets);
 
         NBTTagList playerTargets = new NBTTagList();
-        for( UUID uuid : this.getEnabledPlayerTargets() ) {
-            playerTargets.appendTag(new NBTTagString(uuid.toString()));
+        for( Map.Entry<UUID, Boolean> res : this.getPlayerTargets().entrySet() ) {
+            NBTTagCompound playerEntry = new NBTTagCompound();
+            playerEntry.setString("ID", res.getKey().toString());
+            playerEntry.setBoolean("Enabled", res.getValue());
+            playerTargets.appendTag(playerEntry);
         }
-        nbt.setTag("playerTargets", playerTargets);
+        nbt.setTag("PlayerTargetsCMP", playerTargets);
     }
 
     @Override
@@ -566,28 +582,35 @@ public final class TargetProcessor
             }
             this.updateEntityTargets(entityTgt.stream().map(EntityList::getKey).toArray(ResourceLocation[]::new));
         } else {
-            List<ResourceLocation> entityTgt = new ArrayList<>();
-            NBTTagList list = nbt.getTagList("EntityTargetsRL", Constants.NBT.TAG_STRING);
+            NBTTagList list = nbt.getTagList("EntityTargetsCMP", Constants.NBT.TAG_COMPOUND);
             for( int i = 0; i < list.tagCount(); i++ ) {
-                entityTgt.add(new ResourceLocation(list.getStringTagAt(i)));
+                NBTTagCompound tag = list.getCompoundTagAt(i);
+                this.updateEntityTarget(new ResourceLocation(tag.getString("ID")), tag.getBoolean("Enabled"));
             }
-            this.updateEntityTargets(entityTgt.toArray(new ResourceLocation[0]));
         }
 
-        List<UUID> playerTgt = new ArrayList<>();
-        NBTTagList list = nbt.getTagList("playerTargets", Constants.NBT.TAG_STRING);
-        for( int i = 0; i < list.tagCount(); i++ ) {
-            try {
-                UUID id = UUID.fromString(list.getStringTagAt(i));
-                if( id.equals(UuidUtils.EMPTY_UUID) ) {
-                    this.isBlacklistPlayer = true;
-                } else {
-                    playerTgt.add(id);
+        if( nbt.hasKey("playerTargets") ) { // @deprecated
+            List<UUID> playerTgt = new ArrayList<>();
+            NBTTagList list = nbt.getTagList("playerTargets", Constants.NBT.TAG_STRING);
+            for( int i = 0; i < list.tagCount(); i++ ) {
+                try {
+                    UUID id = UUID.fromString(list.getStringTagAt(i));
+                    if( id.equals(UuidUtils.EMPTY_UUID) ) {
+                        this.isBlacklistPlayer = true;
+                    } else {
+                        playerTgt.add(id);
+                    }
+                } catch( IllegalArgumentException ignored ) {
                 }
-            } catch( IllegalArgumentException ignored ) {
+            }
+            this.updatePlayerTargets(playerTgt.toArray(new UUID[0]));
+        } else {
+            NBTTagList list = nbt.getTagList("PlayerTargetsCMP", Constants.NBT.TAG_COMPOUND);
+            for( int i = 0; i < list.tagCount(); i++ ) {
+                NBTTagCompound tag = list.getCompoundTagAt(i);
+                this.updatePlayerTarget(UUID.fromString(tag.getString("ID")), tag.getBoolean("Enabled"));
             }
         }
-        this.updatePlayerTargets(playerTgt.toArray(new UUID[0]));
     }
 
     @Override

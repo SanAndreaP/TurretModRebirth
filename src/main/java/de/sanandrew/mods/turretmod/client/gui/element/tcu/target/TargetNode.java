@@ -11,66 +11,80 @@ import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.network.PacketRegistry;
-import de.sanandrew.mods.turretmod.network.PacketSyncAttackTarget;
 import org.apache.commons.lang3.Range;
 
 public class TargetNode<T>
         implements IGuiElement
 {
-    private final T          targetId;
-    private final TargetType targetType;
-
-    private boolean enabled;
-    private boolean visible;
+    private boolean initialized = false;
+    private int[] margins;
+    private int bttDistance;
 
     private GuiElementInst buttonOn;
     private GuiElementInst buttonOff;
     private GuiElementInst text;
 
-    TargetNode(T id, TargetType type) {
+    private final T             targetId;
+    private final TargetType<T> targetType;
+    private final int width;
+
+    private int posX;
+    private int posY;
+    private boolean enabled;
+
+    private String name;
+
+    TargetNode(T id, TargetType<T> type, int width) {
         this.targetId = id;
         this.targetType = type;
-        this.visible = true;
+        this.width = width;
     }
 
     @Override
     public void bakeData(IGui gui, JsonObject data) {
-        GuiDefinition guiDef = gui.getDefinition();
-        ITurretInst turretInst = ((IGuiTcuInst<?>) gui).getTurretInst();
+        if( !this.initialized ) {
+            this.initialized = true;
 
-        JsonObject btnData = MiscUtils.defIfNull(data.get("button"), JsonObject::new).getAsJsonObject();
-        JsonObject txtData = MiscUtils.defIfNull(data.get("text"), JsonObject::new).getAsJsonObject();
+            GuiDefinition guiDef = gui.getDefinition();
+            ITurretInst turretInst = ((IGuiTcuInst<?>) gui).getTurretInst();
 
-        this.buttonOn = new GuiElementInst();
-        this.buttonOn.element = new Button();
-        guiDef.initElement(this.buttonOn);
-        JsonUtils.addJsonProperty(this.buttonOn.data, "texture", gui.getDefinition().getTexture(btnData.get("texture")).toString());
-        JsonUtils.addJsonProperty(this.buttonOn.data, "size", JsonUtils.getIntArray(btnData.get("size"), new int[] {8, 8}, Range.is(2)));
-        JsonUtils.addJsonProperty(this.buttonOn.data, "uvSize", JsonUtils.getIntArray(btnData.get("uvSize"), new int[] {8, 8}, Range.is(2)));
-        JsonUtils.addJsonProperty(this.buttonOn.data, "uvEnabled", JsonUtils.getIntArray(btnData.get("uvEnabledOn"), new int[] {176, 28}, Range.is(2)));
-        JsonUtils.addJsonProperty(this.buttonOn.data, "uvDisabled", new int[] {-8, -8});
-        JsonUtils.addJsonProperty(this.buttonOn.data, "uvHover", JsonUtils.getIntArray(btnData.get("uvHoverOn"), new int[] {176, 36}, Range.is(2)));
-        JsonUtils.addJsonProperty(this.buttonOn.data, "buttonFunction", 0);
-        this.buttonOn.get().bakeData(gui, this.buttonOn.data);
+            this.margins = JsonUtils.getIntArray(data.get("margins"), new int[] {2, 2, 2, 2}, Range.is(4));
+            this.bttDistance = JsonUtils.getIntVal(data.get("buttonToTextDistance"), 2);
+            this.name = this.targetType.getName(turretInst, this.targetId);
 
-        this.buttonOff = new GuiElementInst();
-        this.buttonOff.element = new Button();
-        guiDef.initElement(this.buttonOff);
-        this.buttonOn.data.entrySet().forEach(e -> this.buttonOff.data.add(e.getKey(), e.getValue()));
-        JsonUtils.addJsonProperty(this.buttonOff.data, "uvEnabled", JsonUtils.getIntArray(btnData.get("uvEnabledOff"), new int[] {176, 12}, Range.is(2)));
-        JsonUtils.addJsonProperty(this.buttonOff.data, "uvHover", JsonUtils.getIntArray(btnData.get("uvHoverOff"), new int[] {176, 20}, Range.is(2)));
-        this.buttonOff.get().bakeData(gui, this.buttonOff.data);
+            JsonObject btnData = MiscUtils.defIfNull(data.get("button"), JsonObject::new).getAsJsonObject();
+            JsonObject txtData = MiscUtils.defIfNull(data.get("text"), JsonObject::new).getAsJsonObject();
 
-        this.text = new GuiElementInst();
-        this.text.element = new Text();
-        guiDef.initElement(this.text);
-        JsonUtils.addJsonProperty(this.text.data, "text", this.targetType.getName(turretInst, this.targetId));
-        JsonUtils.addJsonProperty(this.text.data, "color", getTextColor(txtData, this.targetType.getType(turretInst, this.targetId)));
-        JsonUtils.addJsonProperty(this.text.data, "shadow", JsonUtils.getBoolVal(txtData.get("shadow"), false));
-        JsonUtils.addJsonProperty(this.text.data, "justifyRight", JsonUtils.getBoolVal(txtData.get("justifyRight"), false));
-        if( txtData.has("font") ) this.text.data.add("font", txtData.get("font"));
-        this.text.get().bakeData(gui, this.text.data);
+            this.buttonOn = new GuiElementInst();
+            this.buttonOn.element = new Button();
+            guiDef.initElement(this.buttonOn);
+            JsonUtils.addJsonProperty(this.buttonOn.data, "texture", gui.getDefinition().getTexture(btnData.get("texture")).toString());
+            JsonUtils.addJsonProperty(this.buttonOn.data, "size", JsonUtils.getIntArray(btnData.get("size"), new int[] { 8, 8 }, Range.is(2)));
+            JsonUtils.addJsonProperty(this.buttonOn.data, "uvSize", JsonUtils.getIntArray(btnData.get("uvSize"), new int[] { 8, 8 }, Range.is(2)));
+            JsonUtils.addJsonProperty(this.buttonOn.data, "uvEnabled", JsonUtils.getIntArray(btnData.get("uvEnabledOn"), new int[] { 176, 28 }, Range.is(2)));
+            JsonUtils.addJsonProperty(this.buttonOn.data, "uvDisabled", new int[] { -8, -8 });
+            JsonUtils.addJsonProperty(this.buttonOn.data, "uvHover", JsonUtils.getIntArray(btnData.get("uvHoverOn"), new int[] { 176, 36 }, Range.is(2)));
+            JsonUtils.addJsonProperty(this.buttonOn.data, "buttonFunction", -1);
+            this.buttonOn.get().bakeData(gui, this.buttonOn.data);
+
+            this.buttonOff = new GuiElementInst();
+            this.buttonOff.element = new Button();
+            guiDef.initElement(this.buttonOff);
+            this.buttonOn.data.entrySet().forEach(e -> this.buttonOff.data.add(e.getKey(), e.getValue()));
+            JsonUtils.addJsonProperty(this.buttonOff.data, "uvEnabled", JsonUtils.getIntArray(btnData.get("uvEnabledOff"), new int[] { 176, 12 }, Range.is(2)));
+            JsonUtils.addJsonProperty(this.buttonOff.data, "uvHover", JsonUtils.getIntArray(btnData.get("uvHoverOff"), new int[] { 176, 20 }, Range.is(2)));
+            this.buttonOff.get().bakeData(gui, this.buttonOff.data);
+
+            this.text = new GuiElementInst();
+            this.text.element = new Text();
+            guiDef.initElement(this.text);
+            JsonUtils.addJsonProperty(this.text.data, "text", this.name);
+            JsonUtils.addJsonProperty(this.text.data, "color", getTextColor(txtData, this.targetType.getType(turretInst, this.targetId)));
+            JsonUtils.addJsonProperty(this.text.data, "shadow", JsonUtils.getBoolVal(txtData.get("shadow"), false));
+            JsonUtils.addJsonProperty(this.text.data, "justifyRight", JsonUtils.getBoolVal(txtData.get("justifyRight"), false));
+            if( txtData.has("font") ) this.text.data.add("font", txtData.get("font"));
+            this.text.get().bakeData(gui, this.text.data);
+        }
     }
 
     private static String getTextColor(JsonObject textData, TargetType.EntityType type) {
@@ -91,21 +105,25 @@ public class TargetNode<T>
 
     @Override
     public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
-        if( this.visible ) {
-            if( this.enabled ) {
-                this.buttonOn.get().render(gui, partTicks, x + this.buttonOn.pos[0], y + this.buttonOn.pos[1], mouseX, mouseY, this.buttonOn.data);
-            } else {
-                this.buttonOff.get().render(gui, partTicks, x + this.buttonOff.pos[0], y + this.buttonOff.pos[1], mouseX, mouseY, this.buttonOff.data);
-            }
-            this.text.get().render(gui, partTicks, x + this.text.pos[0], y + this.text.pos[1], mouseX, mouseY, this.text.data);
+        this.posX = x;
+        this.posY = y;
+
+        Button btn;
+        if( this.enabled ) {
+            btn = this.buttonOn.get(Button.class);
+            this.buttonOn.get().render(gui, partTicks, x + this.margins[3], y + this.margins[0], mouseX, mouseY, this.buttonOn.data);
+        } else {
+            btn = this.buttonOff.get(Button.class);
+            this.buttonOff.get().render(gui, partTicks, x + this.margins[3], y + this.margins[0], mouseX, mouseY, this.buttonOff.data);
         }
+        this.text.get().render(gui, partTicks, x + this.margins[3] + btn.data.size[0] + bttDistance, y + this.margins[0], mouseX, mouseY, this.text.data);
     }
 
     @Override
     public boolean mouseClicked(IGui gui, int mouseX, int mouseY, int mouseButton) {
-        if( false ) {
-            this.targetType.updateTarget(((IGuiTcuInst<?>) gui).getTurretInst(), this.targetId, !this.enabled);
-            PacketRegistry.sendToServer(new PacketSyncAttackTarget());
+        if( IGuiElement.isHovering(gui, this.posX, this.posY, mouseX, mouseY, this.width, this.getHeight()) ) {
+            ITurretInst turretInst = ((IGuiTcuInst<?>) gui).getTurretInst();
+            this.targetType.updateTarget(turretInst, this.targetId, !this.enabled);
             return true;
         }
 
@@ -114,11 +132,15 @@ public class TargetNode<T>
 
     @Override
     public int getWidth() {
-        return 0;
+        return this.width;
     }
 
     @Override
     public int getHeight() {
-        return this.visible ? 8 : 0;
+        return 8 + this.margins[0] + this.margins[2];
+    }
+
+    public String getName() {
+        return this.name;
     }
 }

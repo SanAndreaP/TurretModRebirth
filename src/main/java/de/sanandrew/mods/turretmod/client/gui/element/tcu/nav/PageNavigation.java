@@ -28,43 +28,47 @@ public class PageNavigation
 {
     public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu_page_nav");
 
-    public BakedData data;
+    private Map<GuiElementInst, ResourceLocation> pages = new TreeMap<>(new ComparatorTabButton());
+    private GuiElementInst                        tabScrollL;
+    private GuiElementInst                        tabScrollR;
+    private int                                   maxTabsShown;
 
-    private int tabStartIdx = 0;
+    private boolean initialized = false;
+    private int     tabStartIdx = 0;
 
-    private Map<GuiElementInst, ResourceLocation> shownTabs = Collections.emptyMap();
+    Map<GuiElementInst, ResourceLocation> shownTabs = Collections.emptyMap();
 
     @Override
     public void bakeData(IGui gui, JsonObject data) {
-        if( this.data == null ) {
-            this.data = new BakedData();
+        if( !this.initialized ) {
+            this.initialized = true;
 
-            this.data.maxTabsShown = JsonUtils.getIntVal(data.get("tabsShown"), 7);
+            this.maxTabsShown = JsonUtils.getIntVal(data.get("tabsShown"), 7);
 
             int currIdx = 0;
             for( ResourceLocation page : GuiTcuRegistry.GUI_ENTRIES ) {
                 GuiElementInst btn = new GuiElementInst();
                 btn.element = new ButtonNav(currIdx++, page);
 
-                this.data.pages.put(btn, page);
+                this.pages.put(btn, page);
                 btn.data = data.getAsJsonObject("buttonData");
                 gui.getDefinition().initElement(btn);
                 btn.element.bakeData(gui, btn.data);
             }
 
-            this.data.tabScrollL = new GuiElementInst();
-            this.data.tabScrollL.element = new ButtonTabScroll(0);
-            this.data.tabScrollL.data = data.getAsJsonObject("tabScrollLeft");
-            gui.getDefinition().initElement(this.data.tabScrollL);
-            this.data.tabScrollL.get().bakeData(gui, this.data.tabScrollL.data);
-            this.data.tabScrollL.get(ButtonTabScroll.class).setVisible(false);
+            this.tabScrollL = new GuiElementInst();
+            this.tabScrollL.element = new ButtonTabScroll(0);
+            this.tabScrollL.data = data.getAsJsonObject("tabScrollLeft");
+            gui.getDefinition().initElement(this.tabScrollL);
+            this.tabScrollL.get().bakeData(gui, this.tabScrollL.data);
+            this.tabScrollL.get(ButtonTabScroll.class).setVisible(false);
 
-            this.data.tabScrollR = new GuiElementInst();
-            this.data.tabScrollR.element = new ButtonTabScroll(1);
-            this.data.tabScrollR.data = data.getAsJsonObject("tabScrollRight");
-            gui.getDefinition().initElement(this.data.tabScrollR);
-            this.data.tabScrollR.get().bakeData(gui, this.data.tabScrollR.data);
-            this.data.tabScrollR.get(ButtonTabScroll.class).setVisible(false);
+            this.tabScrollR = new GuiElementInst();
+            this.tabScrollR.element = new ButtonTabScroll(1);
+            this.tabScrollR.data = data.getAsJsonObject("tabScrollRight");
+            gui.getDefinition().initElement(this.tabScrollR);
+            this.tabScrollR.get().bakeData(gui, this.tabScrollR.data);
+            this.tabScrollR.get(ButtonTabScroll.class).setVisible(false);
         }
     }
 
@@ -73,17 +77,17 @@ public class PageNavigation
         final IGuiTcuInst<?> guiTcuInst = (IGuiTcuInst<?>) gui;
         final ResourceLocation currEntry = guiTcuInst.getCurrentEntryKey();
 
-        final int tabScrollElemLWidth = this.data.tabScrollL.get().getWidth();
-        final IGuiElement tabScrollElemR = this.data.tabScrollR.get();
+        final int tabScrollElemLWidth = this.tabScrollL.get().getWidth();
+        final IGuiElement tabScrollElemR = this.tabScrollR.get();
 
         int cntAvailableTabs = 0;
-        for( Map.Entry<GuiElementInst, ResourceLocation> entry : this.data.pages.entrySet() ) {
+        for( Map.Entry<GuiElementInst, ResourceLocation> entry : this.pages.entrySet() ) {
             GuiElementInst btn = entry.getKey();
             ButtonNav btnNav = btn.get(ButtonNav.class);
             if( GuiTcuRegistry.INSTANCE.getGuiEntry(btnNav.page).showTab(guiTcuInst) ) {
                 cntAvailableTabs++;
 
-                if( btnNav.pageIdx >= this.tabStartIdx && btnNav.pageIdx <= this.tabStartIdx + this.data.maxTabsShown ) {
+                if( btnNav.pageIdx >= this.tabStartIdx && btnNav.pageIdx <= this.tabStartIdx + this.maxTabsShown ) {
                     btnNav.setVisible(true);
                     btnNav.setEnabled(!currEntry.equals(btnNav.page));
 
@@ -98,10 +102,10 @@ public class PageNavigation
         int tabWidth = this.shownTabs.keySet().stream().map(elem -> elem.get().getWidth()).reduce((e1, e2) -> e1 + e2 + 2).orElse(0);
         int tabLeft = (guiTcuInst.getWidth() - tabWidth - tabScrollElemLWidth - tabScrollElemR.getWidth() - 4) / 2;
 
-        this.data.tabScrollL.pos[0] = tabLeft;
-        this.data.tabScrollL.get(ButtonTabScroll.class).setVisible(this.tabStartIdx > 0);
-        this.data.tabScrollR.pos[0] = tabLeft + tabScrollElemLWidth + tabWidth + 4;
-        this.data.tabScrollR.get(ButtonTabScroll.class).setVisible(this.tabStartIdx < cntAvailableTabs - shownTabs.size());
+        this.tabScrollL.pos[0] = tabLeft;
+        this.tabScrollL.get(ButtonTabScroll.class).setVisible(this.tabStartIdx > 0);
+        this.tabScrollR.pos[0] = tabLeft + tabScrollElemLWidth + tabWidth + 4;
+        this.tabScrollR.get(ButtonTabScroll.class).setVisible(this.tabStartIdx < cntAvailableTabs - shownTabs.size());
 
         int shownId = 0;
         for( Map.Entry<GuiElementInst, ResourceLocation> entry : this.shownTabs.entrySet() ) {
@@ -110,15 +114,15 @@ public class PageNavigation
     }
 
     private Map<GuiElementInst, ResourceLocation> fetchShownPageButtons() {
-        return this.data.pages.entrySet().stream()
-                              .filter(e -> e.getKey().get(ButtonNav.class).isVisible())
-                              .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (u, v) -> u, () -> new TreeMap<>(new ComparatorTabButton())));
+        return this.pages.entrySet().stream()
+                         .filter(e -> e.getKey().get(ButtonNav.class).isVisible())
+                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (u, v) -> u, () -> new TreeMap<>(new ComparatorTabButton())));
     }
 
     @Override
     public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
-        this.data.tabScrollL.get().render(gui, partTicks, x + this.data.tabScrollL.pos[0], y, mouseX, mouseY, data);
-        this.data.tabScrollR.get().render(gui, partTicks, x + this.data.tabScrollR.pos[0], y, mouseX, mouseY, data);
+        this.tabScrollL.get().render(gui, partTicks, x + this.tabScrollL.pos[0], y, mouseX, mouseY, data);
+        this.tabScrollR.get().render(gui, partTicks, x + this.tabScrollR.pos[0], y, mouseX, mouseY, data);
         this.shownTabs.forEach((btn, page) -> btn.get().render(gui, partTicks, x + btn.pos[0], y, mouseX, mouseY, btn.data));
     }
 
@@ -130,30 +134,21 @@ public class PageNavigation
             }
         }
 
-        if( this.data.tabScrollL.get(ButtonTabScroll.class).mouseClicked(gui, mouseX, mouseY, mouseButton) ) {
+        if( this.tabScrollL.get(ButtonTabScroll.class).mouseClicked(gui, mouseX, mouseY, mouseButton) ) {
             return true;
         }
 
-        return this.data.tabScrollR.get(ButtonTabScroll.class).mouseClicked(gui, mouseX, mouseY, mouseButton);
+        return this.tabScrollR.get(ButtonTabScroll.class).mouseClicked(gui, mouseX, mouseY, mouseButton);
     }
 
     @Override
     public int getWidth() {
-        return 18 * Math.min(this.data.maxTabsShown, this.data.pages.size()) - 2;
+        return 18 * Math.min(this.maxTabsShown, this.pages.size()) - 2;
     }
 
     @Override
     public int getHeight() {
         return 16;
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public static class BakedData
-    {
-        public Map<GuiElementInst, ResourceLocation> pages = new TreeMap<>(new ComparatorTabButton());
-        public GuiElementInst                        tabScrollL;
-        public GuiElementInst                        tabScrollR;
-        public int                                   maxTabsShown;
     }
 
     private static final class ComparatorTabButton
@@ -186,67 +181,8 @@ public class PageNavigation
         public void performAction(IGui gui, int id) {
             if( PageNavigation.this.tabStartIdx > 0 && this.direction == 0 ) {
                 PageNavigation.this.tabStartIdx--;
-            } else if( PageNavigation.this.tabStartIdx < PageNavigation.this.data.pages.size() - PageNavigation.this.data.maxTabsShown && this.direction == 1 ) {
+            } else if( PageNavigation.this.tabStartIdx < PageNavigation.this.pages.size() - PageNavigation.this.maxTabsShown && this.direction == 1 ) {
                 PageNavigation.this.tabStartIdx++;
-            }
-        }
-    }
-
-    public static class PageNavigationLabel
-            extends Label
-    {
-        public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu_page_nav_label");
-
-        private GuiElementInst pageNavigation;
-
-        @Override
-        public void bakeData(IGui gui, JsonObject data) {
-            JsonUtils.addDefaultJsonProperty(data, "size", new int[] {16, 16});
-
-            super.bakeData(gui, data);
-
-            this.pageNavigation = gui.getDefinition().getElementById(JsonUtils.getStringVal(data.get("for")));
-        }
-
-        @Override
-        public GuiElementInst getLabel(IGui gui, JsonObject data) {
-            GuiElementInst lbl = new GuiElementInst();
-            lbl.element = new LabelText();
-            gui.getDefinition().initElement(lbl);
-            lbl.get().bakeData(gui, data);
-
-            return lbl;
-        }
-
-        @Override
-        public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
-            PageNavigation pgn = this.pageNavigation.get(PageNavigation.class);
-            pgn.shownTabs.forEach((e, p) -> {
-                this.data.content.get(LabelText.class).text = LangUtils.translate(Lang.TCU_PAGE_TITLE.get(p));
-                super.render(gui, partTicks, e.pos[0] + x, e.pos[1] + y, mouseX, mouseY, e.data);
-            });
-        }
-
-        private static class LabelText
-                extends Text
-        {
-            private String text = "";
-
-            @Override
-            public void bakeData(IGui gui, JsonObject data) {
-                JsonUtils.addDefaultJsonProperty(data, "color", "0xFFFFFFFF");
-
-                super.bakeData(gui, data);
-            }
-
-            @Override
-            public String getBakedText(IGui gui, JsonObject data) {
-                return "";
-            }
-
-            @Override
-            public String getDynamicText(IGui gui, String originalText) {
-                return this.text;
             }
         }
     }

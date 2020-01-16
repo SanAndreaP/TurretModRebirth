@@ -478,7 +478,6 @@ public class EntityTurret
             loadDelegate(new ResourceLocation(turretId));
         }
 
-
         this.targetProc.readFromNbt(nbt);
         this.upgProc.readFromNbt(nbt);
         this.dwBools.readFromNbt(nbt);

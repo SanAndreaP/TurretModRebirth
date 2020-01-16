@@ -58,9 +58,13 @@ public class ButtonNav
         }
     }
 
+    boolean isHovering() {
+        return this.isCurrHovering;
+    }
+
     @Override
     public void performAction(IGui gui, int id) {
-        TurretModRebirth.proxy.openGui(gui.get().mc.player, EnumGui.TCU, ((IGuiTcuInst) gui).getTurretInst().get().getEntityId(),
+        TurretModRebirth.proxy.openGui(gui.get().mc.player, EnumGui.TCU, ((IGuiTcuInst<?>) gui).getTurretInst().get().getEntityId(),
                                        GuiTcuRegistry.GUI_ENTRIES.indexOf(this.page), 0);
     }
 

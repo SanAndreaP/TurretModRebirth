@@ -20,9 +20,9 @@ public interface IUpgradeProcessor
 
     boolean hasUpgrade(IUpgrade upg);
 
-    <T extends IUpgradeInstance> T getUpgradeInstance(ResourceLocation id);
+    <T extends IUpgradeInstance<?>> T getUpgradeInstance(ResourceLocation id);
 
-    void setUpgradeInstance(ResourceLocation id, IUpgradeInstance inst);
+    void setUpgradeInstance(ResourceLocation id, IUpgradeInstance<?> inst);
 
     void delUpgradeInstance(ResourceLocation id);
 
