@@ -245,7 +245,7 @@
       "pos": [59, 186],
       "data": {
         "buttonId": "dismantle",
-        "text": "gui.sapturretmod.tcu.button.dismantle"
+        "text": "gui.sapturretmod.tcu.button.info.dismantle"
       }
     },
     {
@@ -253,7 +253,7 @@
       "pos": [79, 186],
       "data": {
         "buttonId": "activate",
-        "text": "gui.sapturretmod.tcu.button.activate"
+        "text": "gui.sapturretmod.tcu.button.info.activate"
       }
     },
     {
@@ -261,7 +261,7 @@
       "pos": [79, 186],
       "data": {
         "buttonId": "deactivate",
-        "text": "gui.sapturretmod.tcu.button.deactivate"
+        "text": "gui.sapturretmod.tcu.button.info.deactivate"
       }
     },
     {
@@ -269,7 +269,7 @@
       "pos": [99, 186],
       "data": {
         "buttonId": "showRange",
-        "text": "gui.sapturretmod.tcu.button.show_range"
+        "text": "gui.sapturretmod.tcu.button.info.show_range"
       }
     },
     {
@@ -277,7 +277,7 @@
       "pos": [99, 186],
       "data": {
         "buttonId": "hideRange",
-        "text": "gui.sapturretmod.tcu.button.hide_range"
+        "text": "gui.sapturretmod.tcu.button.info.hide_range"
       }
     },
     {

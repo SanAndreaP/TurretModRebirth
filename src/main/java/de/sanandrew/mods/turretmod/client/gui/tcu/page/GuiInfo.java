@@ -38,9 +38,6 @@ public class GuiInfo
     private static final int ACTION_RANGE_SHOW = 3;
     private static final int ACTION_RANGE_HIDE = 4;
 
-//    private int          specOwnerHead;
-//    private FontRenderer frAmmoItem;
-
     private Button dismantle;
     private Button setActive;
     private Button setDeactive;
@@ -61,9 +58,6 @@ public class GuiInfo
         this.hideRange = guiDefinition.getElementById("hideRange").get(Button.class);
 
         this.turretName = guiDefinition.getElementById("turretNameInput").get(TextField.class);
-//        this.specOwnerHead = MiscUtils.RNG.randomInt(3) == 0 ? MiscUtils.RNG.randomInt(5) : 0;
-//
-//        this.frAmmoItem = new FontRenderer(gui.getGui().mc.gameSettings, new ResourceLocation("textures/font/ascii.png"), gui.getGui().mc.getTextureManager(), true);
 
         this.setActive.setVisible(false);
         this.hideRange.setVisible(false);
@@ -95,72 +89,7 @@ public class GuiInfo
         return Resources.GUI_STRUCT_TCU_INFO.resource;
     }
 
-    //    @Override
 //    public void drawBackground(IGuiTcuInst<?> gui, float partialTicks, int mouseX, int mouseY) {
-//        ITurretInst turretInst = gui.getTurretInst();
-//        FontRenderer fontRenderer = gui.getFontRenderer();
-//        GuiScreen guiScreen = gui.getGui();
-//        int posX = gui.getPosX();
-//        int posY = gui.getPosY();
-//
-//        guiScreen.mc.renderEngine.bindTexture(Resources.GUI_TCU_INFO.resource);
-//
-//        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-//        guiScreen.drawTexturedModalRect(posX + (gui.getWidth() - 50) / 2, posY + 39, 176, 0, 50, 50);
-//
-//        gui.drawGradient(posX + 7, posY + 92, posX + 169, posY + 100, 0x10000000, 0x10000000);
-//        gui.drawGradient(posX + 7, posY + 104, posX + 169, posY + 112, 0x10000000, 0x10000000);
-//        gui.drawGradient(posX + 7, posY + 116, posX + 169, posY + 124, 0x10000000, 0x10000000);
-//        gui.drawGradient(posX + 7, posY + 128, posX + 169, posY + 136, 0x10000000, 0x10000000);
-//        gui.drawGradient(posX + 7, posY + 140, posX + 169, posY + 148, 0x10000000, 0x10000000);
-//
-//        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-//
-//        guiScreen.drawTexturedModalRect(posX + 7, posY + 92, 245, 0, 11, 8);
-//        guiScreen.drawTexturedModalRect(posX + 7, posY + 104, 245, 8, 11, 8);
-//        guiScreen.drawTexturedModalRect(posX + 7, posY + 116, 245, 16, 11, 8);
-////        guiScreen.drawTexturedModalRect(posX + 7, posY + 128, 234, this.specOwnerHead * 8, 11, 8);
-//        guiScreen.drawTexturedModalRect(posX + 7, posY + 140, 245, 24, 11, 8);
-//
-//        EntityLiving turretL = turretInst.get();
-//        ITargetProcessor tgtProc = turretInst.getTargetProcessor();
-//        String value;
-//
-//        value = String.format("%.1f / %.1f HP", turretL.getHealth(), turretL.getMaxHealth());
-//        fontRenderer.drawString(value, posX + 20, posY + 104, 0xFF000000);
-//
-//        if( tgtProc.hasAmmo() ) {
-//            value = String.format("%dx %s", tgtProc.getAmmoCount(), tgtProc.getAmmoStack().getDisplayName());
-//            if( fontRenderer.getStringWidth(value) > 139 ) {
-//                int rgt = 139 - fontRenderer.getStringWidth("...");
-//                fontRenderer.drawString("...", posX + 30 + rgt, posY + 116, 0xFF000000);
-//                GL11.glEnable(GL11.GL_SCISSOR_TEST);
-//                GuiUtils.glScissor(posX + 20, posY + 116, 9 + rgt, 8);
-//                fontRenderer.drawString(value, posX + 30, posY + 116, 0xFF000000);
-//                GL11.glDisable(GL11.GL_SCISSOR_TEST);
-//            } else {
-//                fontRenderer.drawString(value, posX + 30, posY + 116, 0xFF000000);
-//            }
-//            RenderUtils.renderStackInGui(tgtProc.getAmmoStack(), posX + 20, posY + 116, 0.5D, this.frAmmoItem, "", true);
-//        } else {
-//            fontRenderer.drawString("-n/a-", posX + 20, posY + 116, 0xFF000000);
-//        }
-//
-//        value = turretInst.getOwnerName();
-//        fontRenderer.drawString(value, posX + 20, posY + 128, 0xFF000000);
-//
-//        value = tgtProc.hasTarget() ? LangUtils.translate(LangUtils.ENTITY_NAME.get(tgtProc.getTargetName())) : "-n/a-";
-//        if( fontRenderer.getStringWidth(value) > 149 ) {
-//            int rgt = 148 - fontRenderer.getStringWidth("...");
-//            fontRenderer.drawString("...", posX + 21 + rgt, posY + 140, 0xFF000000);
-//            GL11.glEnable(GL11.GL_SCISSOR_TEST);
-//            GuiUtils.glScissor(posX + 20, posY + 140, rgt, 8);
-//            fontRenderer.drawString(value, posX + 20, posY + 140, 0xFF000000);
-//            GL11.glDisable(GL11.GL_SCISSOR_TEST);
-//        } else {
-//            fontRenderer.drawString(value, posX + 20, posY + 140, 0xFF000000);
-//        }
-//
 //        if( this.infoStr != null && this.infoTimeShown >= System.currentTimeMillis() - 5000L ) {
 //            String err = LangUtils.translate(this.infoStr);
 //            fontRenderer.drawSplitString(err, posX + 10 + (gui.getWidth() - 20 - Math.min(gui.getWidth() - 20, fontRenderer.getStringWidth(err))) / 2,

@@ -78,5 +78,5 @@ public interface IGuiTcuInst<T extends GuiScreen>
     /**
      * @return the key of the current TCU GUI page.
      */
-    ResourceLocation getCurrentEntryKey();
+    String getCurrentEntryKey();
 }

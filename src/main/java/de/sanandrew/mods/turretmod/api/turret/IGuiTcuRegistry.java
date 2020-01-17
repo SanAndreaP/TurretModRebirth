@@ -22,11 +22,11 @@ import java.util.function.Supplier;
 
 public interface IGuiTcuRegistry
 {
-    void registerGuiEntry(ResourceLocation location, int position, @Nullable BiFunction<EntityPlayer, ITurretInst, Container> containerFactory);
+    void registerGuiEntry(String key, int position, @Nullable BiFunction<EntityPlayer, ITurretInst, Container> containerFactory);
 
     @SideOnly(Side.CLIENT)
-    void registerGui(ResourceLocation location, ItemStack icon, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc);
+    void registerGui(String key, ItemStack icon, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc);
 
     @SideOnly(Side.CLIENT)
-    void registerGui(ResourceLocation location, Supplier<ItemStack> iconSupplier, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc);
+    void registerGui(String key, Supplier<ItemStack> iconSupplier, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc);
 }

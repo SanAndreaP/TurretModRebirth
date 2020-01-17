@@ -6,7 +6,6 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.registry.turret;
 
-import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.client.event.OpenTcuGuiEvent;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
@@ -15,8 +14,6 @@ import de.sanandrew.mods.turretmod.api.turret.IGuiTcuRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuContainer;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuScreen;
-import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
-import de.sanandrew.mods.turretmod.inventory.container.ContainerTurretUpgrades;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncTcuGuis;
 import net.minecraft.client.gui.Gui;
@@ -24,7 +21,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -42,22 +38,22 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public final class GuiTcuRegistry
-        implements de.sanandrew.mods.turretmod.api.turret.IGuiTcuRegistry
+        implements IGuiTcuRegistry
 {
-    public static final ResourceLocation GUI_INFO = new ResourceLocation(TmrConstants.ID, "info");
-    public static final ResourceLocation GUI_TARGETS_MOB = new ResourceLocation(TmrConstants.ID, "targets.creature");
-    public static final ResourceLocation GUI_TARGETS_PLAYER = new ResourceLocation(TmrConstants.ID, "targets.player");
-    public static final ResourceLocation GUI_TARGETS_SMART = new ResourceLocation(TmrConstants.ID, "targets.smart");
-    public static final ResourceLocation GUI_UPGRADES = new ResourceLocation(TmrConstants.ID, "upgrades");
-    public static final ResourceLocation GUI_COLORIZER = new ResourceLocation(TmrConstants.ID, "colorizer");
-    public static final ResourceLocation GUI_LEVELING = new ResourceLocation(TmrConstants.ID, "leveling");
+    public static final String GUI_INFO = "info";
+    public static final String GUI_TARGETS_MOB = "targets.creature";
+    public static final String GUI_TARGETS_PLAYER = "targets.player";
+    public static final String GUI_TARGETS_SMART = "targets.smart";
+    public static final String GUI_UPGRADES = "upgrades";
+    public static final String GUI_COLORIZER = "colorizer";
+    public static final String GUI_LEVELING = "leveling";
 
-    public static final List<ResourceLocation> GUI_ENTRIES = new ArrayList<>();
+    public static final List<String> GUI_ENTRIES = new ArrayList<>();
     public static final GuiTcuRegistry INSTANCE = new GuiTcuRegistry();
 
     @SideOnly(Side.CLIENT)
-    private static Map<ResourceLocation, GuiEntry> guis;
-    private static Map<ResourceLocation, BiFunction<EntityPlayer, ITurretInst, Container>> containers;
+    private static Map<String, GuiEntry> guis;
+    private static Map<String, BiFunction<EntityPlayer, ITurretInst, Container>> containers;
 
     private GuiTcuRegistry() { }
 
@@ -82,14 +78,14 @@ public final class GuiTcuRegistry
         return null;
     }
 
-    public GuiEntry getGuiEntry(ResourceLocation location) {
+    public GuiEntry getGuiEntry(String location) {
         return guis.get(location);
     }
 
     public Container openContainer(int type, EntityPlayer player, ITurretInst turretInst) {
         if( type >= 0 && type < GUI_ENTRIES.size() ) {
-            ResourceLocation loc = GUI_ENTRIES.get(type);
-            OpenTcuContainerEvent event = new OpenTcuContainerEvent(player, turretInst, containers.get(loc));
+            String key = GUI_ENTRIES.get(type);
+            OpenTcuContainerEvent event = new OpenTcuContainerEvent(player, turretInst, containers.get(key));
             if( !MinecraftForge.EVENT_BUS.post(event) ) {
                 if( event.factory != null ) {
                     return event.factory.apply(player, turretInst);
@@ -101,37 +97,38 @@ public final class GuiTcuRegistry
     }
 
     @Override
-    public void registerGuiEntry(ResourceLocation location, int position, @Nullable BiFunction<EntityPlayer, ITurretInst, Container> containerFactory) {
+    public void registerGuiEntry(String key, int position, @Nullable BiFunction<EntityPlayer, ITurretInst, Container> containerFactory) {
         if( containers == null ) {
             containers = new HashMap<>();
         }
 
         if( position >= GUI_ENTRIES.size() ) {
-            GUI_ENTRIES.add(location);
+            GUI_ENTRIES.add(key);
         } else {
-            GUI_ENTRIES.set(position, location);
+            GUI_ENTRIES.set(position, key);
         }
 
-        containers.put(location, containerFactory);
+        containers.put(key, containerFactory);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void registerGui(ResourceLocation location, ItemStack icon, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc) {
+    public void registerGui(String key, ItemStack icon, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc) {
         if( guis == null ) {
             guis = new HashMap<>();
         }
 
-        guis.put(location, new GuiEntry(() -> icon, factory, canShowTabFunc));
+        guis.put(key, new GuiEntry(() -> icon, factory, canShowTabFunc));
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
-    public void registerGui(ResourceLocation location, Supplier<ItemStack> iconSupplier, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc) {
+    public void registerGui(String key, Supplier<ItemStack> iconSupplier, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc) {
         if( guis == null ) {
             guis = new HashMap<>();
         }
 
-        guis.put(location, new GuiEntry(iconSupplier, factory, canShowTabFunc));
+        guis.put(key, new GuiEntry(iconSupplier, factory, canShowTabFunc));
     }
 
     public static void initialize(IGuiTcuRegistry registry) {
@@ -161,11 +158,11 @@ public final class GuiTcuRegistry
     @SideOnly(Side.CLIENT)
     public static final class GuiEntry
     {
-        final Supplier<ItemStack> icon;
-        final Function<IGuiTcuInst<?>, Boolean> canShowTabFunc;
-        final Supplier<IGuiTCU> factory;
+        private final Supplier<ItemStack>               icon;
+        private final Function<IGuiTcuInst<?>, Boolean> canShowTabFunc;
+        private final Supplier<IGuiTCU>                 factory;
 
-        GuiEntry(Supplier<ItemStack> icon, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc) {
+        private GuiEntry(Supplier<ItemStack> icon, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc) {
             this.icon = icon;
             this.factory = factory;
             this.canShowTabFunc = canShowTabFunc;

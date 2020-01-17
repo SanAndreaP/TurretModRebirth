@@ -113,7 +113,8 @@
       "pos": [8, 40],
       "id": "search",
       "data": {
-        "size": [160, 10]
+        "size": [160, 10],
+        "placeholderText": "gui.sapturretmod.tcu.page.targets.search.placeholder"
       }
     }
   ],
@@ -130,7 +131,7 @@
       "pos": [7, 190],
       "data": {
         "buttonId": "blacklist",
-        "text": "gui.sapturretmod.tcu.button.blacklist"
+        "text": "gui.sapturretmod.tcu.button.targets.blacklist"
       }
     },
     {
@@ -138,7 +139,7 @@
       "pos": [7, 190],
       "data": {
         "buttonId": "whitelist",
-        "text": "gui.sapturretmod.tcu.button.whitelist"
+        "text": "gui.sapturretmod.tcu.button.targets.whitelist"
       }
     },
     {
@@ -146,7 +147,7 @@
       "pos": [26, 190],
       "data": {
         "buttonId": "selectAll",
-        "text": "gui.sapturretmod.tcu.button.select_all"
+        "text": "gui.sapturretmod.tcu.button.targets.select_all"
       }
     },
     {
@@ -154,7 +155,7 @@
       "pos": [45, 190],
       "data": {
         "buttonId": "deselectAll",
-        "text": "gui.sapturretmod.tcu.button.deselect_all"
+        "text": "gui.sapturretmod.tcu.button.targets.deselect_all"
       }
     }
   ]

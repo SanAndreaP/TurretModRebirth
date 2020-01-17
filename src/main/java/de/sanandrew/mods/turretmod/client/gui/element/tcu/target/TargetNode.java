@@ -28,9 +28,8 @@ public class TargetNode<T>
     private final TargetType<T> targetType;
     private final int width;
 
-    private int posX;
-    private int posY;
     private boolean enabled;
+    private boolean isHovering;
 
     private String name;
 
@@ -56,7 +55,7 @@ public class TargetNode<T>
             JsonObject txtData = MiscUtils.defIfNull(data.get("text"), JsonObject::new).getAsJsonObject();
 
             this.buttonOn = new GuiElementInst();
-            this.buttonOn.element = new Button();
+            this.buttonOn.element = new Checkbox();
             guiDef.initElement(this.buttonOn);
             JsonUtils.addJsonProperty(this.buttonOn.data, "texture", gui.getDefinition().getTexture(btnData.get("texture")).toString());
             JsonUtils.addJsonProperty(this.buttonOn.data, "size", JsonUtils.getIntArray(btnData.get("size"), new int[] { 8, 8 }, Range.is(2)));
@@ -68,7 +67,7 @@ public class TargetNode<T>
             this.buttonOn.get().bakeData(gui, this.buttonOn.data);
 
             this.buttonOff = new GuiElementInst();
-            this.buttonOff.element = new Button();
+            this.buttonOff.element = new Checkbox();
             guiDef.initElement(this.buttonOff);
             this.buttonOn.data.entrySet().forEach(e -> this.buttonOff.data.add(e.getKey(), e.getValue()));
             JsonUtils.addJsonProperty(this.buttonOff.data, "uvEnabled", JsonUtils.getIntArray(btnData.get("uvEnabledOff"), new int[] { 176, 12 }, Range.is(2)));
@@ -105,15 +104,14 @@ public class TargetNode<T>
 
     @Override
     public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
-        this.posX = x;
-        this.posY = y;
+        this.isHovering = IGuiElement.isHovering(gui, x, y, mouseX, mouseY, this.width, this.getHeight());
 
         Button btn;
         if( this.enabled ) {
-            btn = this.buttonOn.get(Button.class);
+            btn = this.buttonOn.get(Checkbox.class);
             this.buttonOn.get().render(gui, partTicks, x + this.margins[3], y + this.margins[0], mouseX, mouseY, this.buttonOn.data);
         } else {
-            btn = this.buttonOff.get(Button.class);
+            btn = this.buttonOff.get(Checkbox.class);
             this.buttonOff.get().render(gui, partTicks, x + this.margins[3], y + this.margins[0], mouseX, mouseY, this.buttonOff.data);
         }
         this.text.get().render(gui, partTicks, x + this.margins[3] + btn.data.size[0] + bttDistance, y + this.margins[0], mouseX, mouseY, this.text.data);
@@ -121,7 +119,7 @@ public class TargetNode<T>
 
     @Override
     public boolean mouseClicked(IGui gui, int mouseX, int mouseY, int mouseButton) {
-        if( IGuiElement.isHovering(gui, this.posX, this.posY, mouseX, mouseY, this.width, this.getHeight()) ) {
+        if( this.isHovering ) {
             ITurretInst turretInst = ((IGuiTcuInst<?>) gui).getTurretInst();
             this.targetType.updateTarget(turretInst, this.targetId, !this.enabled);
             return true;
@@ -142,5 +140,14 @@ public class TargetNode<T>
 
     public String getName() {
         return this.name;
+    }
+
+    private class Checkbox
+            extends Button
+    {
+        @Override
+        public boolean isHovering(IGui gui, int x, int y, int mouseX, int mouseY) {
+            return TargetNode.this.isHovering;
+        }
     }
 }

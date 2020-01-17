@@ -12,7 +12,6 @@ import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
@@ -24,7 +23,7 @@ import java.util.TreeMap;
 public class PacketSyncTcuGuis
         extends AbstractMessage<PacketSyncTcuGuis>
 {
-    private Map<Integer, ResourceLocation> guis;
+    private Map<Integer, String> guis;
 
     @SuppressWarnings("unused")
     public PacketSyncTcuGuis() {
@@ -57,7 +56,7 @@ public class PacketSyncTcuGuis
         this.guis = new HashMap<>(size);
 
         for( int i = 0; i < size; i++ ) {
-            this.guis.put(i, new ResourceLocation(ByteBufUtils.readUTF8String(buf)));
+            this.guis.put(i, ByteBufUtils.readUTF8String(buf));
         }
     }
 
@@ -66,7 +65,7 @@ public class PacketSyncTcuGuis
         buf.writeInt(this.guis.size());
         this.guis.forEach((pos, gui) -> {
             buf.writeInt(pos);
-            ByteBufUtils.writeUTF8String(buf, gui.toString());
+            ByteBufUtils.writeUTF8String(buf, gui);
         });
     }
 }

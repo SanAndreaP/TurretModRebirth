@@ -16,7 +16,6 @@ import de.sanandrew.mods.turretmod.client.util.GuiHelper;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Level;
 
 import java.io.IOException;
@@ -25,7 +24,7 @@ public class GuiTcuScreen
         extends GuiScreen
         implements IGuiTcuInst<GuiTcuScreen>
 {
-    private final ResourceLocation entryKey;
+    private final String entryKey;
     private final ITurretInst turret;
     private final IGuiTCU guiDelegate;
     private final GuiTcuHelper helper = new GuiTcuHelper();
@@ -37,7 +36,7 @@ public class GuiTcuScreen
 
     private GuiDefinition guiDef;
 
-    public GuiTcuScreen(ResourceLocation entryKey, IGuiTCU gui, ITurretInst turretInst) {
+    public GuiTcuScreen(String entryKey, IGuiTCU gui, ITurretInst turretInst) {
         super();
         this.entryKey = entryKey;
         this.turret = turretInst;
@@ -178,7 +177,7 @@ public class GuiTcuScreen
     }
 
     @Override
-    public ResourceLocation getCurrentEntryKey() {
+    public String getCurrentEntryKey() {
         return this.entryKey;
     }
 

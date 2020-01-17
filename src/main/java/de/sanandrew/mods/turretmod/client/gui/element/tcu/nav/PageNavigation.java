@@ -5,13 +5,9 @@ import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Button;
-import de.sanandrew.mods.sanlib.lib.client.gui.element.Label;
-import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
-import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
-import de.sanandrew.mods.turretmod.registry.Lang;
 import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import net.minecraft.util.ResourceLocation;
@@ -28,7 +24,7 @@ public class PageNavigation
 {
     public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu_page_nav");
 
-    private Map<GuiElementInst, ResourceLocation> pages = new TreeMap<>(new ComparatorTabButton());
+    private Map<GuiElementInst, String> pages = new TreeMap<>(new ComparatorTabButton());
     private GuiElementInst                        tabScrollL;
     private GuiElementInst                        tabScrollR;
     private int                                   maxTabsShown;
@@ -36,7 +32,7 @@ public class PageNavigation
     private boolean initialized = false;
     private int     tabStartIdx = 0;
 
-    Map<GuiElementInst, ResourceLocation> shownTabs = Collections.emptyMap();
+    Map<GuiElementInst, String> shownTabs = Collections.emptyMap();
 
     @Override
     public void bakeData(IGui gui, JsonObject data) {
@@ -46,7 +42,7 @@ public class PageNavigation
             this.maxTabsShown = JsonUtils.getIntVal(data.get("tabsShown"), 7);
 
             int currIdx = 0;
-            for( ResourceLocation page : GuiTcuRegistry.GUI_ENTRIES ) {
+            for( String page : GuiTcuRegistry.GUI_ENTRIES ) {
                 GuiElementInst btn = new GuiElementInst();
                 btn.element = new ButtonNav(currIdx++, page);
 
@@ -75,13 +71,13 @@ public class PageNavigation
     @Override
     public void update(IGui gui, JsonObject data) {
         final IGuiTcuInst<?> guiTcuInst = (IGuiTcuInst<?>) gui;
-        final ResourceLocation currEntry = guiTcuInst.getCurrentEntryKey();
+        final String currEntry = guiTcuInst.getCurrentEntryKey();
 
         final int tabScrollElemLWidth = this.tabScrollL.get().getWidth();
         final IGuiElement tabScrollElemR = this.tabScrollR.get();
 
         int cntAvailableTabs = 0;
-        for( Map.Entry<GuiElementInst, ResourceLocation> entry : this.pages.entrySet() ) {
+        for( Map.Entry<GuiElementInst, String> entry : this.pages.entrySet() ) {
             GuiElementInst btn = entry.getKey();
             ButtonNav btnNav = btn.get(ButtonNav.class);
             if( GuiTcuRegistry.INSTANCE.getGuiEntry(btnNav.page).showTab(guiTcuInst) ) {
@@ -108,12 +104,12 @@ public class PageNavigation
         this.tabScrollR.get(ButtonTabScroll.class).setVisible(this.tabStartIdx < cntAvailableTabs - shownTabs.size());
 
         int shownId = 0;
-        for( Map.Entry<GuiElementInst, ResourceLocation> entry : this.shownTabs.entrySet() ) {
+        for( Map.Entry<GuiElementInst, String> entry : this.shownTabs.entrySet() ) {
             entry.getKey().pos[0] = tabLeft + tabScrollElemLWidth + 2 + shownId++ * 16;
         }
     }
 
-    private Map<GuiElementInst, ResourceLocation> fetchShownPageButtons() {
+    private Map<GuiElementInst, String> fetchShownPageButtons() {
         return this.pages.entrySet().stream()
                          .filter(e -> e.getKey().get(ButtonNav.class).isVisible())
                          .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (u, v) -> u, () -> new TreeMap<>(new ComparatorTabButton())));
@@ -128,7 +124,7 @@ public class PageNavigation
 
     @Override
     public boolean mouseClicked(IGui gui, int mouseX, int mouseY, int mouseButton) throws IOException {
-        for( Map.Entry<GuiElementInst, ResourceLocation> e : this.shownTabs.entrySet() ) {
+        for( Map.Entry<GuiElementInst, String> e : this.shownTabs.entrySet() ) {
             if( e.getKey().get().mouseClicked(gui, mouseX, mouseY, mouseButton) ) {
                 return true;
             }

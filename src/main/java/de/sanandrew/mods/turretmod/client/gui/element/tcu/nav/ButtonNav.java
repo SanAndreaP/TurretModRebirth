@@ -22,11 +22,11 @@ public class ButtonNav
 {
     private static final ShaderGrayscale SHADER_GRAYSCALE = new ShaderGrayscale(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
-    public ResourceLocation page;
+    public String page;
     int pageIdx;
     private ItemStack pageStack = ItemStack.EMPTY;
 
-    ButtonNav(int id, ResourceLocation page) {
+    ButtonNav(int id, String page) {
         this.pageIdx = id;
         this.page = page;
     }

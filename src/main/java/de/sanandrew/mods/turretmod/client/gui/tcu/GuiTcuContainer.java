@@ -18,7 +18,6 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.inventory.Container;
-import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Level;
 
 import java.io.IOException;
@@ -27,7 +26,7 @@ public class GuiTcuContainer
         extends GuiContainer
         implements IGuiTcuInst<GuiTcuContainer>
 {
-    private final ResourceLocation entryKey;
+    private final String entryKey;
     private final ITurretInst turret;
     private final IGuiTCU guiDelegate;
     private final GuiTcuHelper helper = new GuiTcuHelper();
@@ -35,7 +34,7 @@ public class GuiTcuContainer
     private float currPartTicks;
     private GuiDefinition guiDef;
 
-    public GuiTcuContainer(ResourceLocation entryKey, IGuiTCU gui, Container guiContainer, ITurretInst turretInst) {
+    public GuiTcuContainer(String entryKey, IGuiTCU gui, Container guiContainer, ITurretInst turretInst) {
         super(guiContainer);
         this.entryKey = entryKey;
         this.turret = turretInst;
@@ -180,7 +179,7 @@ public class GuiTcuContainer
     }
 
     @Override
-    public ResourceLocation getCurrentEntryKey() {
+    public String getCurrentEntryKey() {
         return this.entryKey;
     }
 
