@@ -2,9 +2,9 @@ package de.sanandrew.mods.turretmod.client.gui.element.assembly;
 
 import com.google.gson.JsonObject;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.Item;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
-import de.sanandrew.mods.turretmod.client.gui.element.Item;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;

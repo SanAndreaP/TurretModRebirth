@@ -2,9 +2,9 @@ package de.sanandrew.mods.turretmod.client.gui.element.tcu.info;
 
 import com.google.gson.JsonObject;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.Item;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
-import de.sanandrew.mods.turretmod.client.gui.element.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 

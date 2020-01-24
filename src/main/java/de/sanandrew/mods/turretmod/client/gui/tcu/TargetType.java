@@ -1,4 +1,4 @@
-package de.sanandrew.mods.turretmod.client.gui.element.tcu.target;
+package de.sanandrew.mods.turretmod.client.gui.tcu;
 
 import com.google.common.base.Strings;
 import com.google.gson.JsonObject;
@@ -8,6 +8,7 @@ import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.target.TargetNode;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketUpdateTargets;
 import de.sanandrew.mods.turretmod.world.PlayerList;
@@ -54,7 +55,7 @@ public abstract class TargetType<T>
 
     public abstract void toggleAllTargets(EntityType type, ITurretInst turretInst, boolean enable);
 
-    void buildElements(IGui gui, ITurretInst turretInst, JsonObject nodeData, int width, String filter, List<GuiElementInst> elements) {
+    public void buildElements(IGui gui, ITurretInst turretInst, JsonObject nodeData, int width, String filter, List<GuiElementInst> elements) {
         MutableInt posY = new MutableInt(0);
         this.getTargets(turretInst).forEach((id, enabled) -> {
             GuiElementInst elem = new GuiElementInst();

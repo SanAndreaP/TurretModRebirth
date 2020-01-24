@@ -71,63 +71,63 @@
       }
     },
     {
-      "type": "electrolyte_bar",
+      "type": "sapturretmod:electrolyte_bar",
       "pos": [8, 61],
       "data": {
         "slot": 0
       }
     },
     {
-      "type": "electrolyte_bar",
+      "type": "sapturretmod:electrolyte_bar",
       "pos": [26, 61],
       "data": {
         "slot": 1
       }
     },
     {
-      "type": "electrolyte_bar",
+      "type": "sapturretmod:electrolyte_bar",
       "pos": [44, 61],
       "data": {
         "slot": 2
       }
     },
     {
-      "type": "electrolyte_bar",
+      "type": "sapturretmod:electrolyte_bar",
       "pos": [62, 61],
       "data": {
         "slot": 3
       }
     },
     {
-      "type": "electrolyte_bar",
+      "type": "sapturretmod:electrolyte_bar",
       "pos": [80, 61],
       "data": {
         "slot": 4
       }
     },
     {
-      "type": "electrolyte_bar",
+      "type": "sapturretmod:electrolyte_bar",
       "pos": [98, 61],
       "data": {
         "slot": 5
       }
     },
     {
-      "type": "electrolyte_bar",
+      "type": "sapturretmod:electrolyte_bar",
       "pos": [116, 61],
       "data": {
         "slot": 6
       }
     },
     {
-      "type": "electrolyte_bar",
+      "type": "sapturretmod:electrolyte_bar",
       "pos": [134, 61],
       "data": {
         "slot": 7
       }
     },
     {
-      "type": "electrolyte_bar",
+      "type": "sapturretmod:electrolyte_bar",
       "pos": [152, 61],
       "data": {
         "slot": 8

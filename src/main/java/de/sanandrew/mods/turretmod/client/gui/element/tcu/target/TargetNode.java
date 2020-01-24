@@ -11,6 +11,7 @@ import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.client.gui.tcu.TargetType;
 import org.apache.commons.lang3.Range;
 
 public class TargetNode<T>
@@ -26,14 +27,14 @@ public class TargetNode<T>
 
     private final T             targetId;
     private final TargetType<T> targetType;
-    private final int width;
+    private final int           width;
 
     private boolean enabled;
     private boolean isHovering;
 
     private String name;
 
-    TargetNode(T id, TargetType<T> type, int width) {
+    public TargetNode(T id, TargetType<T> type, int width) {
         this.targetId = id;
         this.targetType = type;
         this.width = width;
@@ -137,6 +138,14 @@ public class TargetNode<T>
     public int getHeight() {
         return 8 + this.margins[0] + this.margins[2];
     }
+
+    @Override
+    public boolean isVisible() {
+        return true;
+    }
+
+    @Override
+    public void setVisible(boolean visible) { }
 
     public String getName() {
         return this.name;

@@ -1,28 +1,14 @@
 {
-  "width": 176,
-  "height": 236,
+  "parent": "sapturretmod:guis/tcu/tcu.json",
   "texture": "sapturretmod:textures/gui/tcu/page_info.png",
   "backgroundElements": [
-    {
-      "type": "texture",
-      "data": {
-        "size": [176, 236],
-        "uv": [0, 0]
-      }
-    },
+
     {
       "type": "sapturretmod:turret_cam",
       "pos": [64, 30],
       "data": {
         "size": [48, 48],
         "quality": 48
-      }
-    },
-    {
-      "type": "sapturretmod:turret_name",
-      "pos": [16, 9],
-      "data": {
-        "color": "0xFFA0A0FF"
       }
     },
     {
@@ -131,6 +117,7 @@
     {
       "type": "sapturretmod:tcu_info_progress",
       "pos": [6, 164],
+      "id": "info_prog_forcefield",
       "data": {
         "type": "forcefield",
         "bar": {
@@ -220,64 +207,101 @@
     {
       "type": "sapturretmod:tcu_info_ammo",
       "pos": [150, 116]
-    },
-    {
-      "type": "sapturretmod:tcu_page_nav",
-      "pos": [0, 214],
-      "id": "pgNavigation",
-      "data": {
-        "tabScrollLeft": {
-          "size": [16, 16],
-          "uvSize": [16, 16],
-          "uvEnabled": [18, 0]
-        },
-        "tabScrollRight": {
-          "size": [16, 16],
-          "uvSize": [16, 16],
-          "uvEnabled": [36, 0]
-        }
-      }
     }
   ],
   "foregroundElements": [
     {
-      "type": "button_label",
+      "type": "label",
       "pos": [59, 186],
       "data": {
-        "buttonId": "dismantle",
+        "size": [18, 18],
+        "for": "dismantle",
         "text": "gui.sapturretmod.tcu.button.info.dismantle"
       }
     },
     {
-      "type": "button_label",
+      "type": "label",
       "pos": [79, 186],
       "data": {
-        "buttonId": "activate",
+        "size": [18, 18],
+        "for": "activate",
         "text": "gui.sapturretmod.tcu.button.info.activate"
       }
     },
     {
-      "type": "button_label",
+      "type": "label",
       "pos": [79, 186],
       "data": {
-        "buttonId": "deactivate",
+        "size": [18, 18],
+        "for": "deactivate",
         "text": "gui.sapturretmod.tcu.button.info.deactivate"
       }
     },
     {
-      "type": "button_label",
+      "type": "label",
       "pos": [99, 186],
       "data": {
-        "buttonId": "showRange",
+        "size": [18, 18],
+        "for": "showRange",
         "text": "gui.sapturretmod.tcu.button.info.show_range"
       }
     },
     {
-      "type": "button_label",
+      "type": "label",
       "pos": [99, 186],
       "data": {
-        "buttonId": "hideRange",
+        "size": [18, 18],
+        "for": "hideRange",
         "text": "gui.sapturretmod.tcu.button.info.hide_range"
+      }
+    },
+    {
+      "type": "label",
+      "pos":[6, 84],
+      "data": {
+        "size": [20, 16],
+        "text": "gui.sapturretmod.tcu.page.info.name"
+      }
+    },
+    {
+      "type": "label",
+      "pos":[6, 100],
+      "data": {
+        "size": [20, 16],
+        "text": "gui.sapturretmod.tcu.page.info.health"
+      }
+    },
+    {
+      "type": "label",
+      "pos":[6, 116],
+      "data": {
+        "size": [20, 16],
+        "text": "gui.sapturretmod.tcu.page.info.ammo"
+      }
+    },
+    {
+      "type": "label",
+      "pos":[6, 132],
+      "data": {
+        "size": [20, 16],
+        "text": "gui.sapturretmod.tcu.page.info.target"
+      }
+    },
+    {
+      "type": "label",
+      "pos":[6, 148],
+      "data": {
+        "size": [20, 16],
+        "text": "gui.sapturretmod.tcu.page.info.player"
+      }
+    },
+    {
+      "type": "label",
+      "pos":[6, 164],
+      "data": {
+        "size": [20, 16],
+        "text": "gui.sapturretmod.tcu.page.info.forcefield",
+        "for": "info_prog_forcefield"
       }
     },
     {
@@ -285,10 +309,12 @@
       "pos": [150, 116]
     },
     {
-      "type": "sapturretmod:tcu_page_nav_label",
-      "pos": [0, 214],
+      "type": "sapturretmod:tcu_info_error",
+      "pos": [0, 0],
+      "id": "errorDismantle",
       "data": {
-        "for": "pgNavigation"
+        "size": [176, 236],
+        "text": "gui.sapturretmod.tcu.page.info.dismantle.error"
       }
     }
   ]

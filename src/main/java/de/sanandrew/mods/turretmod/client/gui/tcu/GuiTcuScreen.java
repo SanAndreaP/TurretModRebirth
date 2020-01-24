@@ -46,8 +46,6 @@ public class GuiTcuScreen
             this.guiDef = GuiDefinition.getNewDefinition(this.guiDelegate.getGuiDefinition());
             this.xSize = this.guiDef.width;
             this.ySize = this.guiDef.height;
-
-            this.helper.checkRequiredElements(this.guiDef);
         } catch( IOException e ) {
             TmrConstants.LOG.log(Level.ERROR, e);
         }

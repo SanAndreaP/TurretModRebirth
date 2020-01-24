@@ -44,6 +44,7 @@ public class AssemblyRecipeLabel
     ItemStack[][] ingredients;
     int[] ingredientSize;
     boolean shiftPressed;
+    boolean visible = true;
 
     @Override
     public void bakeData(IGui gui, JsonObject data) {
@@ -177,6 +178,16 @@ public class AssemblyRecipeLabel
     @Override
     public int getHeight() {
         return this.currHeight;
+    }
+
+    @Override
+    public boolean isVisible() {
+        return this.visible;
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     public static class ItemTooltipText

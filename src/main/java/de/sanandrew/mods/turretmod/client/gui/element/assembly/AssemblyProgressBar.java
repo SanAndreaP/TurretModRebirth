@@ -8,6 +8,7 @@ package de.sanandrew.mods.turretmod.client.gui.element.assembly;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;

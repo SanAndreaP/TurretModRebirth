@@ -36,6 +36,8 @@ public class PlayerIcon
             data.add("uv", arr);
         }
 
+        JsonUtils.addDefaultJsonProperty(data, "forceAlpha", true);
+
         super.bakeData(gui, data);
 
         if( initialize ) {

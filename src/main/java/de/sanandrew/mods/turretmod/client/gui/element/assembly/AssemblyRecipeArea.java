@@ -33,6 +33,8 @@ public class AssemblyRecipeArea
     private GuiElementInst activeRecipeMarker;
     private GuiElementInst recipeLabel;
 
+    private boolean visible = true;
+
     @Override
     public void bakeData(IGui gui, JsonObject data) {
         if( this.recipeGroups == null ) {
@@ -118,6 +120,16 @@ public class AssemblyRecipeArea
     @Override
     public int getHeight() {
         return this.height;
+    }
+
+    @Override
+    public boolean isVisible() {
+        return this.visible;
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     private static final class GroupData

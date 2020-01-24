@@ -162,11 +162,7 @@ class AssemblyRecipes
 
         @Override
         public boolean mouseClicked(IGui gui, int mouseX, int mouseY, int mouseButton) {
-            if( this.isHoveredOver && mouseButton == 0 && gui.performAction(this, -1) ) {
-                return true;
-            }
-
-            return false;
+            return this.isHoveredOver && mouseButton == 0 && gui.performAction(this, -1);
         }
 
         @Override
@@ -178,5 +174,13 @@ class AssemblyRecipes
         public int getHeight() {
             return 18;
         }
+
+        @Override
+        public boolean isVisible() {
+            return true;
+        }
+
+        @Override
+        public void setVisible(boolean visible) { }
     }
 }

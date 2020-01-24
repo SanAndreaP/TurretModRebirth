@@ -39,9 +39,11 @@ public class InfoElement
 
     private int[]          size;
     private String         type;
-    private GuiElementInst bar  = null;
-    private GuiElementInst text = null;
-    private GuiElementInst icon = null;
+    private GuiElementInst bar     = null;
+    private GuiElementInst text    = null;
+    private GuiElementInst icon    = null;
+    private boolean        visible = true;
+    private boolean        forceVisible = true;
 
     @Override
     public void bakeData(IGui gui, JsonObject data) {
@@ -75,7 +77,12 @@ public class InfoElement
 
     @Override
     public void update(IGui gui, JsonObject data) {
-        if( this.type.equals(FORCEFIELD) && !(((IGuiTcuInst<?>) gui.get()).getTurretInst().getTurret() instanceof TurretForcefield) ) {
+        ITurretInst ti = ((IGuiTcuInst<?>) gui.get()).getTurretInst();
+
+        this.visible = (!this.type.equals(FORCEFIELD) || (ti.getTurret() instanceof TurretForcefield)) &&
+                       (!this.type.equals(PERSONAL_SHIELD) || ti.getUpgradeProcessor().hasUpgrade(Upgrades.SHIELD_PERSONAL));
+
+        if( !this.visible ) {
             return;
         }
 
@@ -87,14 +94,6 @@ public class InfoElement
 
     @Override
     public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
-        ITurretInst ti = ((IGuiTcuInst<?>) gui.get()).getTurretInst();
-        if( this.type.equals(FORCEFIELD) && !(ti.getTurret() instanceof TurretForcefield) ) {
-            return;
-        }
-        if( this.type.equals(PERSONAL_SHIELD) && !ti.getUpgradeProcessor().hasUpgrade(Upgrades.SHIELD_PERSONAL) ) {
-            return;
-        }
-
         Consumer<GuiElementInst> r = inst -> { if( inst != null ) inst.get().render(gui, partTicks, x + inst.pos[0], y + inst.pos[1], mouseX, mouseY, inst.data); };
         r.accept(this.bar);
         r.accept(this.text);
@@ -109,6 +108,16 @@ public class InfoElement
     @Override
     public int getHeight() {
         return this.size[1];
+    }
+
+    @Override
+    public boolean isVisible() {
+        return this.visible && this.forceVisible;
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        this.forceVisible = visible;
     }
 
     public static class InfoBar

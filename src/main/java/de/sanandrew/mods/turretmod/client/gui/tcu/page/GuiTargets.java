@@ -15,7 +15,7 @@ import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.target.TargetList;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.target.TargetType;
+import de.sanandrew.mods.turretmod.client.gui.tcu.TargetType;
 import de.sanandrew.mods.turretmod.registry.Resources;
 import net.minecraft.util.ResourceLocation;
 

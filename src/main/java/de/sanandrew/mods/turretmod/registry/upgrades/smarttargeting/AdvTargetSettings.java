@@ -127,10 +127,10 @@ public class AdvTargetSettings
             } else {
                 entityCount = entityStream.filter(e -> e != null && e.getClass().equals(target.getClass())).count();
             }
-            if( this.countAwareness.isBelow && entityCount < this.countEntities ) {
+            if( this.countAwareness.isAbove && entityCount <= this.countEntities ) {
                 return false;
             } else {
-                return this.countAwareness.isBelow || entityCount <= this.countEntities;
+                return this.countAwareness.isAbove || entityCount < this.countEntities;
             }
         }
 
@@ -213,7 +213,7 @@ public class AdvTargetSettings
     public enum TamedAwareness
     {
         UNAWARE,
-        IGNORE_UNTARGETED_PLAYERS,
+        TARGETED_PLAYERS,
         IGNORE_ALL_TAMED;
 
         static final TamedAwareness[] VALUES = values();
@@ -231,17 +231,17 @@ public class AdvTargetSettings
     public enum CountAwareness
     {
         NO_COUNT(false, false),
-        IGNORE_IF_BELOW_GLOBAL(true, true),
-        IGNORE_IF_BELOW_INDIVIDUAL(false, true),
-        IGNORE_IF_ABOVE_GLOBAL(true, false),
-        IGNORE_IF_ABOVE_INDIVIDUAL(false, false);
+        ABOVE_GLOBAL(true, true),
+        ABOVE_INDIVIDUAL(false, true),
+        BELOW_GLOBAL(true, false),
+        BELOW_INDIVIDUAL(false, false);
 
         final boolean isGlobal;
-        final boolean isBelow;
+        final boolean isAbove;
 
-        CountAwareness(boolean isGlobal, boolean isBelow) {
+        CountAwareness(boolean isGlobal, boolean isAbove) {
             this.isGlobal = isGlobal;
-            this.isBelow = isBelow;
+            this.isAbove = isAbove;
         }
 
         static final CountAwareness[] VALUES = values();

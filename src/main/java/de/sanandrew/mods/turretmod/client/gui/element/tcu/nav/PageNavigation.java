@@ -31,6 +31,7 @@ public class PageNavigation
 
     private boolean initialized = false;
     private int     tabStartIdx = 0;
+    private boolean visible = true;
 
     Map<GuiElementInst, String> shownTabs = Collections.emptyMap();
 
@@ -99,9 +100,9 @@ public class PageNavigation
         int tabLeft = (guiTcuInst.getWidth() - tabWidth - tabScrollElemLWidth - tabScrollElemR.getWidth() - 4) / 2;
 
         this.tabScrollL.pos[0] = tabLeft;
-        this.tabScrollL.get(ButtonTabScroll.class).setVisible(this.tabStartIdx > 0);
+        this.tabScrollL.get().setVisible(this.tabStartIdx > 0);
         this.tabScrollR.pos[0] = tabLeft + tabScrollElemLWidth + tabWidth + 4;
-        this.tabScrollR.get(ButtonTabScroll.class).setVisible(this.tabStartIdx < cntAvailableTabs - shownTabs.size());
+        this.tabScrollR.get().setVisible(this.tabStartIdx < cntAvailableTabs - shownTabs.size());
 
         int shownId = 0;
         for( Map.Entry<GuiElementInst, String> entry : this.shownTabs.entrySet() ) {
@@ -147,6 +148,16 @@ public class PageNavigation
         return 16;
     }
 
+    @Override
+    public boolean isVisible() {
+        return this.visible;
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
     private static final class ComparatorTabButton
             implements Comparator<GuiElementInst>
     {
@@ -167,6 +178,8 @@ public class PageNavigation
 
         @Override
         public void bakeData(IGui gui, JsonObject data) {
+            JsonUtils.addDefaultJsonProperty(data, "size", new int[] {16, 16});
+            JsonUtils.addDefaultJsonProperty(data, "uvSize", new int[] {16, 16});
             JsonUtils.addDefaultJsonProperty(data, "texture", Resources.GUI_TCU_BUTTONS.resource.toString());
             JsonUtils.addDefaultJsonProperty(data, "buttonFunction", -1);
 

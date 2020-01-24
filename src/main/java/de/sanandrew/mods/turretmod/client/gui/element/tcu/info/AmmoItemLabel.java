@@ -138,5 +138,13 @@ public class AmmoItemLabel
         public int getHeight() {
             return this.height;
         }
+
+        @Override
+        public boolean isVisible() {
+            return true;
+        }
+
+        @Override
+        public void setVisible(boolean visible) { }
     }
 }

@@ -5,17 +5,16 @@ import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Button;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.IButtonLabel;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.Item;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
-import de.sanandrew.mods.turretmod.client.gui.element.Item;
 import de.sanandrew.mods.turretmod.client.shader.ShaderGrayscale;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 
 public class ButtonNav
         extends Button

@@ -8,45 +8,26 @@
  */
 package de.sanandrew.mods.turretmod.client.gui.tcu;
 
-import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
-import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.sanlib.lib.util.LangUtils;
-import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.IGuiTcuRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.client.gui.control.GuiButtonIcon;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.target.TargetType;
-import de.sanandrew.mods.turretmod.client.gui.tcu.page.*;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiInfo;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiSmartTargets;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiTargets;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiUpgrades;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.PlayerHeads;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
-import de.sanandrew.mods.turretmod.registry.Lang;
-import de.sanandrew.mods.turretmod.registry.Resources;
-import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import org.apache.commons.lang3.mutable.MutableInt;
-import org.lwjgl.opengl.GL11;
-
-import java.util.Comparator;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 public final class GuiTcuHelper
 {
 //    private static final int MAX_TABS = 5;
-
-    static final int X_SIZE = 176;
-    static final int Y_SIZE = 236;
 
 //    private final Map<GuiButton, ResourceLocation> tabs = new TreeMap<>(new ComparatorTabButton());
 //    private GuiButton tabNavLeft;
@@ -160,14 +141,10 @@ public final class GuiTcuHelper
         registry.registerGui(GuiTcuRegistry.GUI_INFO, new ItemStack(Items.BOOK), GuiInfo::new, null);
         registry.registerGui(GuiTcuRegistry.GUI_TARGETS_MOB, new ItemStack(Items.SKULL, 1, 2), () -> new GuiTargets(TargetType.CREATURE), IGuiTcuInst::hasPermision);
         registry.registerGui(GuiTcuRegistry.GUI_TARGETS_PLAYER, PlayerHeads::getRandomSkull, () -> new GuiTargets(TargetType.PLAYER), IGuiTcuInst::hasPermision);
-//        registry.registerGui(GuiTcuRegistry.GUI_TARGETS_SMART, UpgradeRegistry.INSTANCE.getItem(Upgrades.SMART_TGT.getId()), GuiSmartTargets::new, GuiSmartTargets::showTab);
-//        registry.registerGui(GuiTcuRegistry.GUI_UPGRADES, UpgradeRegistry.INSTANCE.getItem(UpgradeRegistry.EMPTY_UPGRADE.getId()), GuiUpgrades::new, IGuiTcuInst::hasPermision);
+        registry.registerGui(GuiTcuRegistry.GUI_TARGETS_SMART, UpgradeRegistry.INSTANCE.getItem(Upgrades.SMART_TGT.getId()), GuiSmartTargets::new, GuiSmartTargets::showTab);
+        registry.registerGui(GuiTcuRegistry.GUI_UPGRADES, UpgradeRegistry.INSTANCE.getItem(UpgradeRegistry.EMPTY_UPGRADE.getId()), GuiUpgrades::new, IGuiTcuInst::hasPermision);
 //        registry.registerGui(GuiTcuRegistry.GUI_COLORIZER, UpgradeRegistry.INSTANCE.getItem(Upgrades.SHIELD_COLORIZER.getId()), GuiShieldColorizer::new, GuiShieldColorizer::showTab);
 //        registry.registerGui(GuiTcuRegistry.GUI_LEVELING, UpgradeRegistry.INSTANCE.getItem(Upgrades.LEVELING.getId()), GuiLevels::new, GuiLevels::showTab);
-    }
-
-    public void checkRequiredElements(GuiDefinition guiDef) {
-//        guiDef.
     }
 
 //    @Deprecated

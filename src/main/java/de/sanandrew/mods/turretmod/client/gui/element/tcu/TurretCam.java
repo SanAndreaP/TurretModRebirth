@@ -19,6 +19,8 @@ public class TurretCam
 
     public BakedData data;
 
+    private boolean visible = true;
+
     @Override
     public void bakeData(IGui gui, JsonObject data) {
         if( this.data == null ) {
@@ -45,6 +47,16 @@ public class TurretCam
     @Override
     public int getHeight() {
         return this.data.size[1];
+    }
+
+    @Override
+    public boolean isVisible() {
+        return this.visible;
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     @SuppressWarnings("WeakerAccess")

@@ -10,6 +10,7 @@ import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.client.gui.tcu.TargetType;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;

@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -12,7 +13,7 @@ import net.minecraft.util.math.MathHelper;
 public class ElectrolyteBar
         extends Texture
 {
-    public static final ResourceLocation ID = new ResourceLocation("electrolyte_bar");
+    public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "electrolyte_bar");
 
     private int energyBarWidth;
     private int slot;

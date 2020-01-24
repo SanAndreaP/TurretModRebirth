@@ -1,0 +1,42 @@
+{
+  "width": 176,
+  "height": 236,
+  "backgroundElements": [
+    {
+      "type": "texture",
+      "data": {
+        "size": [176, 236],
+        "uv": [0, 0]
+      }
+    },
+    {
+      "type": "sapturretmod:turret_name",
+      "pos": [16, 9],
+      "data": {
+        "color": "0xFFA0A0FF"
+      }
+    },
+    {
+      "type": "sapturretmod:tcu_page_nav",
+      "pos": [0, 214],
+      "id": "pgNavigation",
+      "data": {
+        "tabScrollLeft": {
+          "uvEnabled": [18, 0]
+        },
+        "tabScrollRight": {
+          "uvEnabled": [36, 0]
+        }
+      }
+    }
+  ],
+  "foregroundElements": [
+    {
+      "type": "sapturretmod:tcu_page_nav_label",
+      "pos": [0, 214],
+      "data": {
+        "for": "pgNavigation"
+      }
+    }
+  ]
+}

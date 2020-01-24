@@ -10,7 +10,7 @@ import java.util.List;
 
 @SideOnly(Side.CLIENT)
 @SuppressWarnings("unused")
-public interface GuiTurretCtrlUnit
+public interface IGuiTCU
 {
     int getGuiLeft();
     int getGuiTop();

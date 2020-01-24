@@ -1,0 +1,336 @@
+{
+  "parent": "sapturretmod:guis/tcu/tcu.json",
+  "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
+  "backgroundElements": [
+    {
+      "type": "group_box",
+      "pos": [7, 39],
+      "data": {
+        "size": [162, 30],
+        "title": {
+          "text": "gui.sapturretmod.tcu.page.targets.smart.turret"
+        }
+      }
+    },
+    {
+      "type": "group_box",
+      "pos": [7, 73],
+      "data": {
+        "size": [162, 30],
+        "title": {
+          "text": "gui.sapturretmod.tcu.page.targets.smart.tamed"
+        }
+      }
+    },
+    {
+      "type": "group_box",
+      "pos": [7, 107],
+      "data": {
+        "size": [162, 30],
+        "title": {
+          "text": "gui.sapturretmod.tcu.page.targets.smart.age"
+        }
+      }
+    },
+    {
+      "type": "group_box",
+      "pos": [7, 141],
+      "data": {
+        "size": [162, 30],
+        "title": {
+          "text": "gui.sapturretmod.tcu.page.targets.smart.count"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "id": "turretIgnore",
+      "pos": [10, 48],
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "buttonFunction": 0,
+        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
+        "uvEnabled": [212, 18]
+      }
+    },
+    {
+      "type": "button",
+      "id": "turretCheckSame",
+      "pos": [29, 48],
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "buttonFunction": 1,
+        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
+        "uvEnabled": [176, 18]
+      }
+    },
+    {
+      "type": "button",
+      "id": "turretCheckAll",
+      "pos": [48, 48],
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "buttonFunction": 2,
+        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
+        "uvEnabled": [194, 18]
+      }
+    },
+    {
+      "type": "button",
+      "id": "tamedAll",
+      "pos": [10, 82],
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "buttonFunction": 3,
+        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
+        "uvEnabled": [194, 72]
+      }
+    },
+    {
+      "type": "button",
+      "id": "tamedPlayers",
+      "pos": [29, 82],
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "buttonFunction": 4,
+        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
+        "uvEnabled": [176, 72]
+      }
+    },
+    {
+      "type": "button",
+      "id": "tamedNone",
+      "pos": [48, 82],
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "buttonFunction": 5,
+        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
+        "uvEnabled": [230, 18]
+      }
+    },
+    {
+      "type": "button",
+      "id": "childAdult",
+      "pos": [10, 116],
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "buttonFunction": 6,
+        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
+        "uvEnabled": [176, 126]
+      }
+    },
+    {
+      "type": "button",
+      "id": "childOnly",
+      "pos": [29, 116],
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "buttonFunction": 7,
+        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
+        "uvEnabled": [212, 72]
+      }
+    },
+    {
+      "type": "button",
+      "id": "adultOnly",
+      "pos": [48, 116],
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "buttonFunction": 8,
+        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
+        "uvEnabled": [230, 72]
+      }
+    },
+    {
+      "type": "button",
+      "id": "noCount",
+      "pos": [10, 150],
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "buttonFunction": 9,
+        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
+        "uvEnabled": [194, 126]
+      }
+    },
+    {
+      "type": "button",
+      "id": "countGlobalLess",
+      "pos": [29, 150],
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "buttonFunction": 10,
+        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
+        "uvEnabled": [212, 126]
+      }
+    },
+    {
+      "type": "button",
+      "id": "countGlobalMore",
+      "pos": [48, 150],
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "buttonFunction": 11,
+        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
+        "uvEnabled": [230, 126]
+      }
+    },
+    {
+      "type": "button",
+      "id": "countIndivLess",
+      "pos": [67, 150],
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "buttonFunction": 12,
+        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
+        "uvEnabled": [176, 180]
+      }
+    },
+    {
+      "type": "button",
+      "id": "countIndivMore",
+      "pos": [86, 150],
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "buttonFunction": 13,
+        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
+        "uvEnabled": [194, 180]
+      }
+    },
+    {
+      "type": "textfield",
+      "pos": [110, 157],
+      "id": "countEntities",
+      "data": {
+        "size": [25, 10]
+      }
+    }
+  ],
+  "foregroundElements": [
+    {
+      "type": "label",
+      "pos": [10, 48],
+      "data": {
+        "size": [18, 18],
+        "text": "gui.sapturretmod.tcu.button.targets.smart.turret_ignore"
+      }
+    },
+    {
+      "type": "label",
+      "pos": [29, 48],
+      "data": {
+        "size": [18, 18],
+        "text": "gui.sapturretmod.tcu.button.targets.smart.turret_same"
+      }
+    },
+    {
+      "type": "label",
+      "pos": [48, 48],
+      "data": {
+        "size": [18, 18],
+        "text": "gui.sapturretmod.tcu.button.targets.smart.turret_all"
+      }
+    },
+    {
+      "type": "label",
+      "pos": [10, 82],
+      "data": {
+        "size": [18, 18],
+        "text": "gui.sapturretmod.tcu.button.targets.smart.tamed_all"
+      }
+    },
+    {
+      "type": "label",
+      "pos": [29, 82],
+      "data": {
+        "size": [18, 18],
+        "text": "gui.sapturretmod.tcu.button.targets.smart.tamed_players"
+      }
+    },
+    {
+      "type": "label",
+      "pos": [48, 82],
+      "data": {
+        "size": [18, 18],
+        "text": "gui.sapturretmod.tcu.button.targets.smart.tamed_none"
+      }
+    },
+    {
+      "type": "label",
+      "pos": [10, 116],
+      "data": {
+        "size": [18, 18],
+        "text": "gui.sapturretmod.tcu.button.targets.smart.child_adult"
+      }
+    },
+    {
+      "type": "label",
+      "pos": [29, 116],
+      "data": {
+        "size": [18, 18],
+        "text": "gui.sapturretmod.tcu.button.targets.smart.child_only"
+      }
+    },
+    {
+      "type": "label",
+      "pos": [48, 116],
+      "data": {
+        "size": [18, 18],
+        "text": "gui.sapturretmod.tcu.button.targets.smart.adult_only"
+      }
+    },
+    {
+      "type": "label",
+      "pos": [10, 150],
+      "data": {
+        "size": [18, 18],
+        "text": "gui.sapturretmod.tcu.button.targets.smart.count_no"
+      }
+    },
+    {
+      "type": "label",
+      "pos": [29, 150],
+      "data": {
+        "size": [18, 18],
+        "text": "gui.sapturretmod.tcu.button.targets.smart.count_global_less"
+      }
+    },
+    {
+      "type": "label",
+      "pos": [48, 150],
+      "data": {
+        "size": [18, 18],
+        "text": "gui.sapturretmod.tcu.button.targets.smart.count_global_more"
+      }
+    },
+    {
+      "type": "label",
+      "pos": [67, 150],
+      "data": {
+        "size": [18, 18],
+        "text": "gui.sapturretmod.tcu.button.targets.smart.count_individual_less"
+      }
+    },
+    {
+      "type": "label",
+      "pos": [86, 150],
+      "data": {
+        "size": [18, 18],
+        "text": "gui.sapturretmod.tcu.button.targets.smart.count_individual_more"
+      }
+    }
+  ]
+}
