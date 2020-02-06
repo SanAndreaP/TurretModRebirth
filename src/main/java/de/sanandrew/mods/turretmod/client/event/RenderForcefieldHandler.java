@@ -38,7 +38,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -72,8 +72,6 @@ public class RenderForcefieldHandler
 
         List<ForcefieldCube> cubes = new ArrayList<>();
 
-        int worldTicks = (int) (mc.world.getTotalWorldTime() % Integer.MAX_VALUE);
-
         Iterator<Map.Entry<Integer, Queue<IForcefieldProvider>>> it = this.fieldProviders.entrySet().iterator();
         while( it.hasNext() ) {
             Map.Entry<Integer, Queue<IForcefieldProvider>> entry = it.next();
@@ -92,7 +90,7 @@ public class RenderForcefieldHandler
 
                 double[] entityPos = getPartialPos(entity, partialTicks);
 
-                ForcefieldCube cube = new ForcefieldCube(new Vec3d(entityPos[0] - renderPos[0], entityPos[1] - renderPos[1], entityPos[2] - renderPos[2]), ffProvider.getShieldBoundingBox(), color);
+                ForcefieldCube cube = new ForcefieldCube(new Vec3d(entityPos[0] - renderPos[0], entityPos[1] - renderPos[1], entityPos[2] - renderPos[2]), ffProvider.getShieldBoundingBox(), color, ffProvider.cullShieldFaces());
                 cube.fullRendered = ffProvider.renderFull();
 
                 if( entity.isDead || !entity.isEntityAlive() || !ffProvider.isShieldActive() || !mc.world.loadedEntityList.contains(entity) ) {
@@ -125,13 +123,38 @@ public class RenderForcefieldHandler
             }
         }
 
+        this.renderCubes(cubes, mc, partialTicks);
+    }
+
+    private static void renderCube(ForcefieldCube cube, Tessellator tess) {
+        tess.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+        GlStateManager.depthMask(false);
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        if( !cube.cullFaces ) {
+            GlStateManager.disableCull();
+        }
+        cube.draw(tess);
+        tess.draw();
+        if( !cube.cullFaces ) {
+            GlStateManager.enableCull();
+        }
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.depthMask(true);
+    }
+
+    public void renderCubes(List<ForcefieldCube> cubes, Minecraft mc, float partialTicks) {
+        int worldTicks = (int) (mc.world.getTotalWorldTime() % Integer.MAX_VALUE);
+
         if( this.textures == null ) {
             this.textures = getTextures(mc.getResourceManager());
         }
 
         Tessellator tess = Tessellator.getInstance();
         for( ShieldTexture tx : this.textures ) {
-            float transformTexAmount = worldTicks % 400 + event.getPartialTicks();
+            float transformTexAmount = worldTicks % 400 + partialTicks;
             float texTranslateX = transformTexAmount * tx.moveMultiplierX;
             float texTranslateY = transformTexAmount * tx.moveMultiplierY;
 
@@ -143,18 +166,7 @@ public class RenderForcefieldHandler
             GlStateManager.matrixMode(GL11.GL_MODELVIEW);
 
             for( ForcefieldCube cube : cubes ) {
-                tess.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-                GlStateManager.depthMask(false);
-                GlStateManager.disableAlpha();
-                GlStateManager.enableBlend();
-                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-                GlStateManager.disableCull();
-                cube.draw(tess);
-                tess.draw();
-                GlStateManager.enableCull();
-                GlStateManager.disableBlend();
-                GlStateManager.enableAlpha();
-                GlStateManager.depthMask(true);
+                renderCube(cube, tess);
             }
 
             GlStateManager.matrixMode(GL11.GL_TEXTURE);
@@ -167,7 +179,7 @@ public class RenderForcefieldHandler
         try( IResource res = resourceManager.getResource(Resources.TURRET_FORCEFIELD_PROPERTIES.resource);
              InputStream str = res.getInputStream() )
         {
-            String json = IOUtils.toString(str, Charset.forName("UTF-8"));
+            String json = IOUtils.toString(str, StandardCharsets.UTF_8);
             return GSON.fromJson(json, ShieldTexture[].class);
         } catch( IOException | JsonSyntaxException ex ) {
             TmrConstants.LOG.log(Level.ERROR, "Cannot load forcefield textures", ex);

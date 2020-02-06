@@ -7,7 +7,10 @@
 package de.sanandrew.mods.turretmod.api.client.tcu;
 
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
@@ -55,7 +58,10 @@ public interface IGuiTcuInst<T extends GuiScreen>
      *
      * @return <tt>true</tt>, if the player has the appropriate permission; <tt>false</tt> otherwise.
      */
-    boolean hasPermision();
+    default boolean hasPermision() {
+        Minecraft mc = this.get().mc;
+        return ItemStackUtils.isItem(mc.player.getHeldItemMainhand(), ItemRegistry.TURRET_CONTROL_UNIT) && this.getTurretInst().hasPlayerPermission(mc.player);
+    }
 
     /**
      * @return the font renderer associated with this GUI.
@@ -79,4 +85,11 @@ public interface IGuiTcuInst<T extends GuiScreen>
      * @return the key of the current TCU GUI page.
      */
     String getCurrentEntryKey();
+
+    default void checkForClosing() {
+        Minecraft mc = this.get().mc;
+        if( this.getTurretInst().get().isDead || this.getTurretInst().get().getDistance(mc.player) > 36.0D ) {
+            mc.player.closeScreen();
+        }
+    }
 }

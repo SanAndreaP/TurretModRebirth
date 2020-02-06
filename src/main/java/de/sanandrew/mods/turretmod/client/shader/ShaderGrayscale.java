@@ -7,7 +7,7 @@
 package de.sanandrew.mods.turretmod.client.shader;
 
 import de.sanandrew.mods.sanlib.lib.client.ShaderHelper;
-import de.sanandrew.mods.turretmod.util.Procedure;
+import de.sanandrew.mods.sanlib.lib.function.Procedure;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;

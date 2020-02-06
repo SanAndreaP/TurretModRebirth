@@ -1,0 +1,80 @@
+{
+  "parent": "sapturretmod:guis/tcu/tcu.json",
+  "texture": "sapturretmod:textures/gui/tcu/page_colorizer.png",
+  "backgroundElements": [
+    {
+      "type": "color_picker",
+      "id": "color-picker",
+      "pos": [8, 40],
+      "data": {
+        "hueSlider": {
+          "size": [120, 12],
+          "pos": [0, 0],
+          "textfield": {
+            "offset": [2, 0],
+            "size": [38, 12]
+          }
+        },
+        "saturationSlider": {
+          "size": [120, 12],
+          "pos": [0, 16],
+          "textfield": {
+            "offset": [2, 0],
+            "size": [38, 12]
+          }
+        },
+        "luminanceSlider": {
+          "size": [120, 12],
+          "pos": [0, 32],
+          "textfield": {
+            "offset": [2, 0],
+            "size": [38, 12]
+          }
+        },
+        "alphaSlider": {
+          "size": [120, 12],
+          "pos": [0, 48],
+          "textfield": {
+            "offset": [2, 0],
+            "size": [38, 12]
+          }
+        }
+      }
+    },
+    {
+      "type": "textfield",
+      "id": "color-code",
+      "pos": [109, 104],
+      "data": {
+        "size": [59, 12]
+      }
+    },
+    {
+      "type": "text",
+      "pos": [105, 106],
+      "data": {
+        "text": "gui.sapturretmod.tcu.page.colorizer.colorcode",
+        "justify": "right",
+        "color": "0xFF404040"
+      }
+    },
+    {
+      "type": "sapturretmod:tcu_colorizer_shield",
+      "id": "shield",
+      "pos": [88, 132]
+    },
+    {
+      "type": "check_box",
+      "pos": [10, 112],
+      "id": "cull-faces",
+      "data": {
+        "size": [8, 8],
+        "uv": [0, 0],
+        "label": {
+          "text": "gui.sapturretmod.tcu.page.colorizer.cullfaces"
+        }
+      }
+    }
+  ],
+  "foregroundElements": []
+}

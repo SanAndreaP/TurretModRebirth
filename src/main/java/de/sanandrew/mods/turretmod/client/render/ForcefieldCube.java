@@ -35,12 +35,14 @@ public class ForcefieldCube
     private final Vec3d center;
     private final AxisAlignedBB boxAABB;
     public final ColorObj boxColor;
+    public final boolean cullFaces;
     public boolean fullRendered;
 
-    public ForcefieldCube(Vec3d mpCenter, AxisAlignedBB cubeBox, ColorObj color) {
+    public ForcefieldCube(Vec3d mpCenter, AxisAlignedBB cubeBox, ColorObj color, boolean cullFaces) {
         this.center = mpCenter;
         this.boxAABB = cubeBox;
         this.boxColor = color;
+        this.cullFaces = cullFaces;
 
         for( EnumFacing direction : EnumFacing.VALUES ) {
             this.faces.put(direction, new CubeFace[]{new CubeFace(direction, mpCenter, cubeBox, color)});
@@ -50,7 +52,7 @@ public class ForcefieldCube
     @Override
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     public ForcefieldCube clone() {
-        return new ForcefieldCube(this.center, this.boxAABB, this.boxColor);
+        return new ForcefieldCube(this.center, this.boxAABB, this.boxColor, this.cullFaces);
     }
 
     public void draw(Tessellator tess) {
@@ -182,19 +184,19 @@ public class ForcefieldCube
 
     private static class CubeFace
     {
-        final EnumFacing facing;
-        final Vec3d beginPt;
-        final Vec3d endPt;
-        final ColorObj color;
+        private final EnumFacing facing;
+        private final Vec3d      beginPt;
+        private final Vec3d      endPt;
+        private final ColorObj   color;
 
-        CubeFace(EnumFacing direction, Vec3d begin, Vec3d end, ColorObj faceColor) {
+        private CubeFace(EnumFacing direction, Vec3d begin, Vec3d end, ColorObj faceColor) {
             this.facing = direction;
             this.beginPt = begin;
             this.endPt = end;
             this.color = faceColor;
         }
 
-        CubeFace(EnumFacing direction, Vec3d center, AxisAlignedBB boxBB, ColorObj faceColor) {
+        private CubeFace(EnumFacing direction, Vec3d center, AxisAlignedBB boxBB, ColorObj faceColor) {
             this.facing = direction;
             this.color = faceColor;
             switch( direction ) {
@@ -227,7 +229,7 @@ public class ForcefieldCube
             }
         }
 
-        CubeFace[] intersect(CubeFace intersector) {
+        private CubeFace[] intersect(CubeFace intersector) {
             RectCoords my = this.get2DCoords();
             RectCoords intsCoord = intersector.get2DCoords();
 
@@ -262,7 +264,7 @@ public class ForcefieldCube
             return newCubes.toArray(new CubeFace[0]);
         }
 
-        RectCoords get2DCoords() {
+        private RectCoords get2DCoords() {
             switch( this.facing ) {
                 case NORTH:
                 case SOUTH:
@@ -278,7 +280,7 @@ public class ForcefieldCube
             }
         }
 
-        CubeFace get3DCoords(RectCoords newRect) {
+        private CubeFace get3DCoords(RectCoords newRect) {
             switch( this.facing ) {
                 case NORTH:
                 case SOUTH:

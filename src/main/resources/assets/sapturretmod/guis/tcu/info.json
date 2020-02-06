@@ -316,13 +316,6 @@
         "size": [176, 236],
         "text": "gui.sapturretmod.tcu.page.info.dismantle.error"
       }
-    },
-    {
-      "type": "color_picker",
-      "pos": [0, 0],
-      "data": {
-        "size": [120, 120]
-      }
     }
   ]
 }

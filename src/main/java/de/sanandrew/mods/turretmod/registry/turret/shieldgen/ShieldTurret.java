@@ -26,6 +26,7 @@ public final class ShieldTurret
     private float prevValue;
     private float attackTime;
     private ColorObj baseColor = new ColorObj(0x40FFFFFF);
+    private boolean cullFaces = false;
     private float[] baseColorHsl = this.baseColor.calcHSL();
     private float[] hslDiff = getHslDiff();
 
@@ -41,8 +42,10 @@ public final class ShieldTurret
         ShieldColorizer colorizer = this.turretInst.getUpgradeProcessor().getUpgradeInstance(Upgrades.SHIELD_COLORIZER.getId());
         if( colorizer != null ) {
             this.baseColor = new ColorObj(colorizer.getColor());
+            this.cullFaces = colorizer.doCullFaces();
         } else {
             this.baseColor = new ColorObj(0x40FFFFFF);
+            this.cullFaces = false;
         }
 
         this.baseColorHsl = this.baseColor.calcHSL();
@@ -112,6 +115,11 @@ public final class ShieldTurret
         } else {
             return (MathHelper.floor(Math.max(this.baseColor.alpha(), 0x40 * this.attackTime)) << 24) | (this.baseColor.getColorInt() & 0xFFFFFF);
         }
+    }
+
+    @Override
+    public boolean cullShieldFaces() {
+        return this.cullFaces;
     }
 
     void onTick() {

@@ -27,7 +27,6 @@ public class GuiTcuScreen
     private final String entryKey;
     private final ITurretInst turret;
     private final IGuiTCU guiDelegate;
-    private final GuiTcuHelper helper = new GuiTcuHelper();
 
     private int posX;
     private int posY;
@@ -68,7 +67,7 @@ public class GuiTcuScreen
     @Override
     public void updateScreen() {
         super.updateScreen();
-        this.helper.updateScreen(this.mc, this);
+        this.checkForClosing();
         this.guiDelegate.updateScreen(this);
 
         this.guiDef.update(this);
@@ -157,11 +156,6 @@ public class GuiTcuScreen
     @Override
     public int getHeight() {
         return this.ySize;
-    }
-
-    @Override
-    public boolean hasPermision() {
-        return this.helper.hasPermission(this.mc, this.turret);
     }
 
     @Override

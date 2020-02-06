@@ -12,7 +12,8 @@ import java.io.ObjectOutputStream;
 public class ShieldColorizer
         implements IUpgradeInstance<ShieldColorizer>
 {
-    private int color = 0xFFFFFFFF;
+    private int color = 0x40FFFFFF;
+    private boolean cullFaces = false;
     private boolean colorChanged = false;
 
     ShieldColorizer() { }
@@ -24,19 +25,23 @@ public class ShieldColorizer
     @Override
     public void fromBytes(ObjectInputStream stream) throws IOException {
         this.setColor(stream.readInt());
+        this.setCullFaces(stream.readBoolean());
     }
 
     @Override
     public void toBytes(ObjectOutputStream stream) throws IOException {
         stream.writeInt(this.color);
+        stream.writeBoolean(this.cullFaces);
     }
 
     private void loadFromNbt(NBTTagCompound nbt) {
         this.setColor(nbt.getInteger("Color"));
+        this.setCullFaces(nbt.getBoolean("CullFaces"));
     }
 
     void writeToNbt(NBTTagCompound nbt) {
         nbt.setInteger("Color", this.color);
+        nbt.setBoolean("CullFaces", this.cullFaces);
     }
 
     @Override
@@ -54,5 +59,14 @@ public class ShieldColorizer
 
     public int getColor() {
         return this.color;
+    }
+
+    public void setCullFaces(boolean cullFaces) {
+        this.cullFaces = cullFaces;
+        this.colorChanged = true;
+    }
+
+    public boolean doCullFaces() {
+        return this.cullFaces;
     }
 }

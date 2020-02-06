@@ -2,119 +2,119 @@ package de.sanandrew.mods.turretmod.client.gui.element.tcu.shieldcolor;
 
 import com.google.gson.JsonObject;
 import de.sanandrew.mods.sanlib.lib.ColorObj;
-import de.sanandrew.mods.sanlib.lib.Tuple;
-import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
-import de.sanandrew.mods.sanlib.lib.client.gui.element.TextField;
 import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
-import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
-import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.sanlib.lib.function.Procedure;
 import net.minecraft.util.ResourceLocation;
-import org.apache.commons.lang3.Range;
-import org.lwjgl.input.Mouse;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 
+@SuppressWarnings("unused")
 public class ColorPicker
         implements IGuiElement
 {
     public static final ResourceLocation ID = new ResourceLocation("color_picker");
 
-    private int[] size;
-    private int lumSliderDist;
-    private int        lumSliderWidth;
-    private TextField  colorTxt;
-    private HueSlice[] hues;
-
-    private int hue;
-    private int sat;
-    private int lum;
-    private boolean prevMouseDownHueSat;
-    private boolean prevMouseDownLum;
+    private Slider hue;
+    private Slider sat;
+    private Slider lum;
+    private Slider alp;
 
     private boolean visible = true;
 
     @Override
     public void bakeData(IGui gui, JsonObject data) {
-        this.size = JsonUtils.getIntArray(data.get("size"), Range.is(2));
-        JsonObject lumBarData = MiscUtils.defIfNull(data.getAsJsonObject("luminanceSlider"), JsonObject::new);
-        this.lumSliderDist = JsonUtils.getIntVal(lumBarData.get("gapBetweenHue"), 5);
-        this.lumSliderWidth = JsonUtils.getIntVal(lumBarData.get("width"), 8);
-        GuiElementInst txtField = gui.getDefinition().getElementById("colorText");
-        this.colorTxt = txtField != null ? txtField.get(TextField.class) : null;
-
-        this.calcHues();
-    }
-
-    private void calcHues() {
-        final int[] mainHues = new int[] { 0xFF0000, 0xFFFF00, 0x00FF00, 0x00FFFF, 0x0000FF, 0xFF00FF, 0xFF0000 };
-
-        int ySeq = this.size[0] / (mainHues.length - 1);
-        List<HueSlice> hueList = new ArrayList<>();
-
-        for( int i = 0; i < mainHues.length - 1; i++ ) {
-            int currClr = mainHues[i];
-            int nextClr = mainHues[i + 1];
-
-            int diff = currClr ^ nextClr;
-            int diffBitShift = (int) (Math.log10(diff & -diff) / Math.log10(2));
-            int start = ySeq * i;
-            int clrShift = Math.round(0xFF * (1 / (float) ySeq)) << diffBitShift;
-
-            for( int x = 0; x < ySeq; x++ ) {
-                hueList.add(new HueSlice(start + x, 1, currClr));
-                if( currClr > nextClr ) {
-                    currClr -= clrShift;
-                } else {
-                    currClr += clrShift;
-                }
-            }
-        }
-
-        this.hues = hueList.toArray(new HueSlice[0]);
+        this.hue = Slider.load(gui, data.getAsJsonObject("hueSlider"), 360.0F, 1.0F);
+        this.sat = Slider.load(gui, data.getAsJsonObject("saturationSlider"), 1.0F, 100.0F);
+        this.lum = Slider.load(gui, data.getAsJsonObject("luminanceSlider"), 1.0F, 100.0F);
+        this.alp = Slider.load(gui, data.getAsJsonObject("alphaSlider"), 1.0F, 100.0F);
     }
 
     @Override
     public void update(IGui gui, JsonObject data) {
+        this.hue.update(gui);
+        this.sat.update(gui);
+        this.lum.update(gui);
+        this.alp.update(gui);
+    }
 
+    @Override
+    public boolean mouseClicked(IGui gui, int mouseX, int mouseY, int mouseButton) throws IOException {
+        return this.hue.mouseClicked(gui, mouseX, mouseY, mouseButton)
+               || this.sat.mouseClicked(gui, mouseX, mouseY, mouseButton)
+               || this.lum.mouseClicked(gui, mouseX, mouseY, mouseButton)
+               || this.alp.mouseClicked(gui, mouseX, mouseY, mouseButton);
+    }
+
+    @Override
+    public boolean keyTyped(IGui gui, char typedChar, int keyCode) throws IOException {
+        return this.hue.keyTyped(gui, typedChar, keyCode)
+               || this.sat.keyTyped(gui, typedChar, keyCode)
+               || this.lum.keyTyped(gui, typedChar, keyCode)
+               || this.alp.keyTyped(gui, typedChar, keyCode);
     }
 
     @Override
     public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
-        if( Mouse.isButtonDown(0) ) {
-            if( IGuiElement.isHovering(gui, x, y, mouseX, mouseY, this.size[0], this.size[1]) || this.prevMouseDownHueSat ) {
-                this.hue = Math.max(Math.min(mouseX - gui.getScreenPosX() - x, this.size[0]), 0);
-                this.sat = this.size[1] - Math.max(Math.min(mouseY - gui.getScreenPosY() - y, this.size[1]), 0);
-
-                this.prevMouseDownHueSat = true;
-            } else if( IGuiElement.isHovering(gui, x + this.size[0] + this.lumSliderDist, y, mouseX, mouseY, this.lumSliderWidth, this.size[1])
-                       || this.prevMouseDownLum )
-            {
-                this.lum = this.size[1] - Math.max(Math.min(mouseY - gui.getScreenPosY() - y, this.size[1]), 0);
-
-                this.prevMouseDownLum = true;
-            }
-        } else {
-            this.prevMouseDownHueSat = false;
-            this.prevMouseDownLum = false;
+        int c1, c2;
+        float h = this.hue.getValue();
+        float s = this.sat.getValue();
+        float l = this.lum.getValue();
+        for( int i = 0, max = this.hue.size[0]; i < max; i++ ) {
+            c1 = ColorObj.fromHSLA((i / (float) max) * 360.0F, 1.0F, 0.5F, 1.0F).getColorInt();
+            GuiUtils.drawGradientRect(x + i + this.hue.pos[0], y + this.hue.pos[1], 1, this.hue.size[1], c1, c1, true);
         }
 
-        GuiUtils.drawGradientRect(x + this.size[0] + this.lumSliderDist, y, this.lumSliderWidth, this.size[1], this.getLuminanceColor(), 0xFF000000, true);
-        for( HueSlice hs : this.hues ) {
-            GuiUtils.drawGradientRect(x + hs.x(), y, hs.width(), this.size[1], 0xFF000000 | hs.color(), this.getSaturationColor(), true);
-        }
+        c1 = ColorObj.fromHSLA(h, 0.0F, l, 1.0F).getColorInt();
+        c2 = ColorObj.fromHSLA(h, 1.0F, l, 1.0F).getColorInt();
+        GuiUtils.drawGradientRect(x + this.sat.pos[0], y + this.sat.pos[1], this.sat.size[0], this.sat.size[1], c1, c2, false);
+
+        c1 = ColorObj.fromHSLA(h, s, 0.0F, 1.0F).getColorInt();
+        c2 = ColorObj.fromHSLA(h, s, 0.5F, 1.0F).getColorInt();
+        GuiUtils.drawGradientRect(x + this.lum.pos[0], y + this.lum.pos[1], this.lum.size[0] / 2, this.lum.size[1], c1, c2, false);
+        c1 = ColorObj.fromHSLA(h, s, 1.0F, 1.0F).getColorInt();
+        GuiUtils.drawGradientRect(x + this.lum.pos[0] + this.lum.size[0] / 2, y + this.lum.pos[1], this.lum.size[0] / 2, this.lum.size[1], c2, c1, false);
+
+        c1 = ColorObj.fromHSLA(h, s, l, 0.0F).getColorInt();
+        c2 = ColorObj.fromHSLA(h, s, l, 1.0F).getColorInt();
+        GuiUtils.drawGradientRect(x + this.alp.pos[0], y + this.alp.pos[1], this.alp.size[0], this.alp.size[1], c1, c2, false);
+
+        this.hue.render(gui, partTicks, x, y, mouseX, mouseY);
+        this.sat.render(gui, partTicks, x, y, mouseX, mouseY);
+        this.lum.render(gui, partTicks, x, y, mouseX, mouseY);
+        this.alp.render(gui, partTicks, x, y, mouseX, mouseY);
+    }
+
+    public int getColor() {
+        return ColorObj.fromHSLA(this.hue.getValue(), this.sat.getValue(), this.lum.getValue(), this.alp.getValue()).getColorInt();
+    }
+
+    public void setColor(int clr) {
+        ColorObj newClr = new ColorObj(clr);
+        float[] hsl = newClr.calcHSL();
+
+        this.hue.setValue(hsl[0]);
+        this.sat.setValue(hsl[1]);
+        this.lum.setValue(hsl[2]);
+        this.alp.setValue(newClr.fAlpha());
+    }
+
+    public void setOnChangeCallback(Procedure callback) {
+        this.hue.setCallback(callback);
+        this.sat.setCallback(callback);
+        this.lum.setCallback(callback);
+        this.alp.setCallback(callback);
     }
 
     @Override
     public int getWidth() {
-        return this.size[0];
+        return 0;
     }
 
     @Override
     public int getHeight() {
-        return this.size[1];
+        return 0;
     }
 
     @Override
@@ -125,48 +125,5 @@ public class ColorPicker
     @Override
     public void setVisible(boolean visible) {
         this.visible = visible;
-    }
-
-    private float getLuminanceValue() {
-        return this.lum / (float) this.size[1];
-    }
-
-    private float getHueValue() {
-        return this.hue / (float) this.size[0] * 360.0F;
-    }
-
-    private float getSaturationValue() {
-        return this.sat / (float) this.size[1];
-    }
-
-    private int getSaturationColor() {
-        int satBit = (int) (0xFF * this.getLuminanceValue());
-        return 0xFF000000 | satBit | (satBit << 8) | (satBit << 16);
-    }
-
-    private int getLuminanceColor() {
-        return ColorObj.fromHSLA(this.getHueValue(), this.getSaturationValue(), 0.5F, 1.0F).getColorInt();
-    }
-
-    private static class HueSlice
-            extends Tuple
-    {
-        private static final long serialVersionUID = -3500046251131955628L;
-
-        private HueSlice(int x, int width, int color) {
-            super(x, width, color);
-        }
-
-        private int x() {
-            return this.getValue(0);
-        }
-
-        private int width() {
-            return this.getValue(1);
-        }
-
-        private int color() {
-            return this.getValue(2);
-        }
     }
 }

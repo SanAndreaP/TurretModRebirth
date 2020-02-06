@@ -14,13 +14,23 @@ import de.sanandrew.mods.turretmod.api.turret.IGuiTcuRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuContainer;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuScreen;
+import de.sanandrew.mods.turretmod.client.gui.tcu.TargetType;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiInfo;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiShieldColorizer;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiSmartTargets;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiTargets;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiUpgrades;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.PlayerHeads;
 import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
 import de.sanandrew.mods.turretmod.inventory.container.ContainerTurretUpgrades;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncTcuGuis;
+import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -133,14 +143,25 @@ public final class GuiTcuRegistry
         guis.put(key, new GuiEntry(iconSupplier, factory, canShowTabFunc));
     }
 
-    public static void initialize(IGuiTcuRegistry registry) {
+    public static void initializeEntries(IGuiTcuRegistry registry) {
         registry.registerGuiEntry(GUI_INFO, 0, null);
         registry.registerGuiEntry(GUI_TARGETS_MOB, 1, null);
         registry.registerGuiEntry(GUI_TARGETS_PLAYER, 2, null);
         registry.registerGuiEntry(GUI_TARGETS_SMART, 3, null);
         registry.registerGuiEntry(GUI_UPGRADES, 4, (player, turretInst) -> new ContainerTurretUpgrades(player.inventory, (UpgradeProcessor) turretInst.getUpgradeProcessor()));
-//        registry.registerGuiEntry(GUI_COLORIZER, 5, null);
+        registry.registerGuiEntry(GUI_COLORIZER, 5, null);
 //        registry.registerGuiEntry(GUI_LEVELING, 6, null);
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static void initializeGuis(IGuiTcuRegistry registry) {
+        registry.registerGui(GUI_INFO, new ItemStack(Items.BOOK), GuiInfo::new, null);
+        registry.registerGui(GUI_TARGETS_MOB, new ItemStack(Items.SKULL, 1, 2), () -> new GuiTargets(TargetType.CREATURE), IGuiTcuInst::hasPermision);
+        registry.registerGui(GUI_TARGETS_PLAYER, PlayerHeads::getRandomSkull, () -> new GuiTargets(TargetType.PLAYER), IGuiTcuInst::hasPermision);
+        registry.registerGui(GUI_TARGETS_SMART, UpgradeRegistry.INSTANCE.getItem(Upgrades.SMART_TGT.getId()), GuiSmartTargets::new, GuiSmartTargets::showTab);
+        registry.registerGui(GUI_UPGRADES, UpgradeRegistry.INSTANCE.getItem(UpgradeRegistry.EMPTY_UPGRADE.getId()), GuiUpgrades::new, IGuiTcuInst::hasPermision);
+        registry.registerGui(GUI_COLORIZER, UpgradeRegistry.INSTANCE.getItem(Upgrades.SHIELD_COLORIZER.getId()), GuiShieldColorizer::new, GuiShieldColorizer::showTab);
+//        registry.registerGui(GuiTcuRegistry.GUI_LEVELING, UpgradeRegistry.INSTANCE.getItem(Upgrades.LEVELING.getId()), GuiLevels::new, GuiLevels::showTab);
     }
 
     @SubscribeEvent

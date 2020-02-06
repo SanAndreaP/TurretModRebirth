@@ -96,6 +96,11 @@ public final class ShieldPersonal
     }
 
     @Override
+    public boolean cullShieldFaces() {
+        return true;
+    }
+
+    @Override
     public void fromBytes(ObjectInputStream stream) throws IOException {
         this.value = stream.readFloat();
         this.recovery = stream.readFloat();

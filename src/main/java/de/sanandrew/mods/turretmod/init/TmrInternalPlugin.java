@@ -23,7 +23,6 @@ import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
 import de.sanandrew.mods.turretmod.client.gui.lexicon.Categories;
-import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuHelper;
 import de.sanandrew.mods.turretmod.client.gui.tcu.label.Labels;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderProjectile;
 import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
@@ -36,13 +35,10 @@ import de.sanandrew.mods.turretmod.registry.repairkit.RepairKits;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.UUID;
 
 @TmrPlugin
 public class TmrInternalPlugin
@@ -85,7 +81,7 @@ public class TmrInternalPlugin
 
     @Override
     public void registerTcuEntries(IGuiTcuRegistry registry) {
-        GuiTcuRegistry.initialize(registry);
+        GuiTcuRegistry.initializeEntries(registry);
     }
 
     @Override
@@ -119,6 +115,6 @@ public class TmrInternalPlugin
     @Override
     @SideOnly(Side.CLIENT)
     public void registerTcuGuis(IGuiTcuRegistry registry) {
-        GuiTcuHelper.initialize(registry);
+        GuiTcuRegistry.initializeGuis(registry);
     }
 }

@@ -45,6 +45,11 @@ public final class ShieldTurretRecovery
     }
 
     @Override
+    public boolean cullShieldFaces() {
+        return false;
+    }
+
+    @Override
     public boolean hasSmoothFadeOut() {
         return false;
     }

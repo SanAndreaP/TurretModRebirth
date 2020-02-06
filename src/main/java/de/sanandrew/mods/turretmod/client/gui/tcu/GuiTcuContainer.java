@@ -29,7 +29,6 @@ public class GuiTcuContainer
     private final String entryKey;
     private final ITurretInst turret;
     private final IGuiTCU guiDelegate;
-    private final GuiTcuHelper helper = new GuiTcuHelper();
 
     private float currPartTicks;
     private GuiDefinition guiDef;
@@ -63,7 +62,7 @@ public class GuiTcuContainer
     @Override
     public void updateScreen() {
         super.updateScreen();
-        this.helper.updateScreen(this.mc, this);
+        this.checkForClosing();
         this.guiDelegate.updateScreen(this);
 
         this.guiDef.update(this);
@@ -161,11 +160,6 @@ public class GuiTcuContainer
     @Override
     public int getHeight() {
         return this.ySize;
-    }
-
-    @Override
-    public boolean hasPermision() {
-        return this.helper.hasPermission(this.mc, this.turret);
     }
 
     @Override

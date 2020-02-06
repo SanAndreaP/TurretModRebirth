@@ -65,6 +65,7 @@ public enum Resources
     GUI_STRUCT_TCU_TARGET_PLAYERS("guis/tcu/target_players.json"),
     GUI_STRUCT_TCU_TARGET_SMART("guis/tcu/target_smart.json"),
     GUI_STRUCT_TCU_UPGRADES("guis/tcu/upgrades.json"),
+    GUI_STRUCT_TCU_COLORIZER("guis/tcu/colorizer.json"),
     GUI_STRUCT_TCU_LEVELS("guis/tcu/levels.json"),
 
     TINFO_GRP_AMMO("textures/gui/lexicon/group_ammo.png"),

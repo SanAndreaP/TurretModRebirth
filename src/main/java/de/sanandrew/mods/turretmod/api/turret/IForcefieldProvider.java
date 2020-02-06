@@ -35,6 +35,12 @@ public interface IForcefieldProvider
      */
     int getShieldColor();
 
+    /**
+     * Returns wether or not to cull the faces of the shield.
+     * @return <tt>true</tt>, if the faces should be culled, <tt>false</tt> otherwise
+     */
+    boolean cullShieldFaces();
+
     default boolean hasSmoothFadeOut() { return true; }
 
     default boolean renderFull() { return false; }

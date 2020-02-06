@@ -61,6 +61,11 @@ public final class ShieldPersonalRecovery
     }
 
     @Override
+    public boolean cullShieldFaces() {
+        return true;
+    }
+
+    @Override
     public boolean hasSmoothFadeOut() {
         return false;
     }
