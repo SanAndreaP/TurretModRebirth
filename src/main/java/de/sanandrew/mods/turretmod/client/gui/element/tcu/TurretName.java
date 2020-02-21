@@ -1,6 +1,7 @@
 package de.sanandrew.mods.turretmod.client.gui.element.tcu;
 
 import com.google.gson.JsonObject;
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
@@ -21,19 +22,16 @@ public class TurretName
     private int textfieldLength;
 
     @Override
-    public void bakeData(IGui gui, JsonObject data) {
-        boolean initialize = this.data == null;
-        super.bakeData(gui, data);
+    public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
+        super.bakeData(gui, data, inst);
 
-        if( initialize ) {
-            this.textfieldLength = JsonUtils.getIntVal(data.get("textfieldLength"), 144);
-        }
+        this.textfieldLength = JsonUtils.getIntVal(data.get("textfieldLength"), 144);
     }
 
     @Override
     public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
         String name = this.getDynamicText(gui, "");
-        int strWidth = this.data.fontRenderer.getStringWidth(name);
+        int strWidth = this.fontRenderer.getStringWidth(name);
         if( strWidth > this.textfieldLength ) {
             long currTime = System.currentTimeMillis();
             if( this.marqueeTime < 1L ) {
@@ -45,10 +43,10 @@ public class TurretName
             }
             GL11.glEnable(GL11.GL_SCISSOR_TEST);
             GuiUtils.glScissor(gui.getScreenPosX() + x, gui.getScreenPosY() + y, this.textfieldLength, 12);
-            this.data.fontRenderer.drawString(name, x - marquee, y, this.data.color, false);
+            this.fontRenderer.drawString(name, x - marquee, y, this.color, false);
             GL11.glDisable(GL11.GL_SCISSOR_TEST);
         } else {
-            this.data.fontRenderer.drawString(name, x + (this.textfieldLength - this.data.fontRenderer.getStringWidth(name)) / 2.0F, y, this.data.color, false);
+            this.fontRenderer.drawString(name, x + (this.textfieldLength - this.fontRenderer.getStringWidth(name)) / 2.0F, y, this.color, false);
         }
     }
 

@@ -6,7 +6,6 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.gui.element.assembly;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
@@ -19,6 +18,7 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.Range;
 
 import java.util.Locale;
 
@@ -29,32 +29,30 @@ public class AssemblyProgressBar
     public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "assembly.progress");
 
     private GuiElementInst label;
-    private boolean centerLabel;
+
     private int progressWidth;
 
     @Override
-    public void bakeData(IGui gui, JsonObject data) {
-        if( this.data == null ) {
-            JsonElement lblElem = data.get("label");
-            if( lblElem != null ) {
-                this.label = JsonUtils.GSON.fromJson(lblElem, GuiElementInst.class);
-                gui.getDefinition().initElement(this.label);
-                this.label.get().bakeData(gui, this.label.data);
-                this.centerLabel = JsonUtils.getBoolVal(data.get("centerLabel"), true);
-            }
-
-            JsonUtils.addDefaultJsonProperty(data, "size", new int[] {50, 5});
-            JsonUtils.addDefaultJsonProperty(data, "uv", new int[] {0, 222});
+    public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
+        JsonObject lblElem = data.getAsJsonObject("label");
+        if( lblElem != null ) {
+            this.label = new GuiElementInst(JsonUtils.getIntArray(lblElem.get("offset"), new int[] { 0, 0 }, Range.is(2)),
+                                            new AssemblyProgressLabel(), lblElem).initialize(gui);
+            this.label.alignment = new String[] { JsonUtils.getStringVal(lblElem.get("alignment"), "center") };
+            this.label.get().bakeData(gui, this.label.data, this.label);
         }
 
-        super.bakeData(gui, data);
+        JsonUtils.addDefaultJsonProperty(data, "size", new int[] { 50, 5 });
+        JsonUtils.addDefaultJsonProperty(data, "uv", new int[] { 0, 222 });
+
+        super.bakeData(gui, data, inst);
     }
 
     @Override
     public void update(IGui gui, JsonObject data) {
         GuiTurretAssembly gta = (GuiTurretAssembly) gui;
         double perc = gta.assembly.getTicksCrafted() / (double) gta.assembly.getMaxTicksCrafted();
-        this.progressWidth = Math.max(0, Math.min(this.data.size[0], (int) Math.round(perc * this.data.size[0])));
+        this.progressWidth = Math.max(0, Math.min(this.size[0], (int) Math.round(perc * this.size[0])));
     }
 
     @Override
@@ -62,14 +60,18 @@ public class AssemblyProgressBar
         super.render(gui, partTicks, x, y, mouseX, mouseY, data);
 
         if( this.label != null ) {
-            int lblX = x + this.label.pos[0] - (this.centerLabel ? (this.label.get().getWidth() / 2) : 0);
-            this.label.get().render(gui, partTicks, lblX, y + this.label.pos[1], mouseX, mouseY, this.label.data);
+            int lblX = x + this.label.pos[0];
+            switch( this.label.getAlignmentH() ) {
+                case CENTER: lblX += this.size[0] / 2; break;
+                case RIGHT:  lblX += this.size[0];     break;
+            }
+            GuiDefinition.renderElement(gui, lblX, y + this.label.pos[1], mouseX, mouseY, partTicks, this.label);
         }
     }
 
     @Override
     protected void drawRect(IGui gui) {
-        Gui.drawModalRectWithCustomSizedTexture(0, 0, this.data.uv[0], this.data.uv[1], this.progressWidth, this.data.size[1], this.data.textureSize[0], this.data.textureSize[1]);
+        Gui.drawModalRectWithCustomSizedTexture(0, 0, this.uv[0], this.uv[1], this.progressWidth, this.size[1], this.textureSize[0], this.textureSize[1]);
     }
 
     @Override
@@ -79,41 +81,35 @@ public class AssemblyProgressBar
 
     @Override
     public int getHeight() {
-        return this.data.size[1];
+        return this.size[1];
     }
 
     public static class AssemblyProgressLabel
             extends Text
     {
-        public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "assembly.progress_text");
-
         public int mainColor;
         public int strokeColor;
 
         @Override
-        public void bakeData(IGui gui, JsonObject data) {
-            boolean init = this.data == null;
+        public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
+            JsonUtils.addDefaultJsonProperty(data, "color", "0xFF00F000");
+            JsonUtils.addJsonProperty(data, "shadow", false);
+            JsonUtils.addJsonProperty(data, "wrapWidth", 0);
 
-            if( !data.has("color") ) data.addProperty("color", "0xFF00F000");
-            data.addProperty("shadow", false);
-            data.addProperty("wrapWidth", 0);
+            super.bakeData(gui, data, inst);
 
-            super.bakeData(gui, data);
-
-            if( init ) {
-                this.mainColor = this.data.color;
-                this.strokeColor = MiscUtils.hexToInt(JsonUtils.getStringVal(data.get("strokeColor"), "0xFF000000"));
-            }
+            this.mainColor = this.color;
+            this.strokeColor = MiscUtils.hexToInt(JsonUtils.getStringVal(data.get("strokeColor"), "0xFF000000"));
         }
 
         @Override
         public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
-            this.data.color = this.strokeColor;
+            this.color = this.strokeColor;
             super.render(gui, partTicks, x + 1, y, mouseX, mouseY, data);
             super.render(gui, partTicks, x - 1, y, mouseX, mouseY, data);
             super.render(gui, partTicks, x, y + 1, mouseX, mouseY, data);
             super.render(gui, partTicks, x, y - 1, mouseX, mouseY, data);
-            this.data.color = this.mainColor;
+            this.color = this.mainColor;
             super.render(gui, partTicks, x, y, mouseX, mouseY, data);
         }
 

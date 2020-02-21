@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
@@ -19,39 +20,20 @@ import java.util.List;
 public class PlayerIcon
         extends Texture
 {
-    public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu_info_playericon");
+    public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu.info_playericon");
 
     @Override
-    public void bakeData(IGui gui, JsonObject data) {
-        boolean initialize = this.data == null;
+    public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
+        JsonUtils.addDefaultJsonProperty(data, "size", new int[] { 16, 16 });
+        JsonUtils.addDefaultJsonProperty(data, "uv", new int[] { 0, 0 });
 
-        if( !data.has("size") ) {
-            JsonArray arr = new JsonArray();
-            arr.add(16); arr.add(16);
-            data.add("size", arr);
-        }
-        if( !data.has("uv") ) {
-            JsonArray arr = new JsonArray();
-            arr.add(0); arr.add(0);
-            data.add("uv", arr);
-        }
+        super.bakeData(gui, data, inst);
 
-        JsonUtils.addDefaultJsonProperty(data, "forceAlpha", true);
-
-        super.bakeData(gui, data);
-
-        if( initialize ) {
-            Iterator<JsonElement> uvArr = data.getAsJsonArray("uvs").iterator();
-            List<int[]> uvList = new ArrayList<>();
-            while( uvArr.hasNext() ) {
-                int[] uv = JsonUtils.getIntArray(uvArr.next(), Range.is(2));
-                uvList.add(uv);
-            }
-            if( uvList.size() > 0 ) {
-                this.data.uv = uvList.get(MiscUtils.RNG.randomInt(3) == 0 ? MiscUtils.RNG.randomInt(uvList.size()) : 0);
-            } else {
-                throw new JsonSyntaxException("Expected uvs array needs to contain at least one valid element");
-            }
+        JsonArray uvArr = data.getAsJsonArray("uvs");
+        if( uvArr.size() > 0 ) {
+            this.uv = JsonUtils.getIntArray(uvArr.get(MiscUtils.RNG.randomInt(3) == 0 ? MiscUtils.RNG.randomInt(uvArr.size()) : 0), Range.is(2));
+        } else {
+            throw new JsonSyntaxException("Expected uvs array needs to contain at least one valid element");
         }
     }
 }

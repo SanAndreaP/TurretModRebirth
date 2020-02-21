@@ -2,6 +2,7 @@ package de.sanandrew.mods.turretmod.client.gui.element.tcu.shieldcolor;
 
 import com.google.gson.JsonObject;
 import de.sanandrew.mods.sanlib.lib.ColorObj;
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
@@ -18,14 +19,14 @@ import java.util.Collections;
 public class ShieldRender
         implements IGuiElement
 {
-    public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu_colorizer_shield");
+    public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu.colorizer_shield");
 
     private int cubeSize;
 
     private ForcefieldCube cube;
 
     @Override
-    public void bakeData(IGui gui, JsonObject data) {
+    public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
         this.cubeSize = JsonUtils.getIntVal(data.get("cubeSize"), 61);
         this.cube = getCube(new ColorObj(0));
     }
@@ -53,16 +54,6 @@ public class ShieldRender
     @Override
     public int getHeight() {
         return this.cubeSize;
-    }
-
-    @Override
-    public boolean isVisible() {
-        return true;
-    }
-
-    @Override
-    public void setVisible(boolean visible) {
-
     }
 
     public void setColor(int color) {

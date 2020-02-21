@@ -1,6 +1,7 @@
 package de.sanandrew.mods.turretmod.client.gui.element.tcu;
 
 import com.google.gson.JsonObject;
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
@@ -19,10 +20,8 @@ public class TurretCam
 
     public BakedData data;
 
-    private boolean visible = true;
-
     @Override
-    public void bakeData(IGui gui, JsonObject data) {
+    public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
         if( this.data == null ) {
             this.data = new BakedData();
 
@@ -47,16 +46,6 @@ public class TurretCam
     @Override
     public int getHeight() {
         return this.data.size[1];
-    }
-
-    @Override
-    public boolean isVisible() {
-        return this.visible;
-    }
-
-    @Override
-    public void setVisible(boolean visible) {
-        this.visible = visible;
     }
 
     @SuppressWarnings("WeakerAccess")

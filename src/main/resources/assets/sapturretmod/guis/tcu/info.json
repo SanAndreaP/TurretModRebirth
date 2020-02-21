@@ -2,7 +2,6 @@
   "parent": "sapturretmod:guis/tcu/tcu.json",
   "texture": "sapturretmod:textures/gui/tcu/page_info.png",
   "backgroundElements": [
-
     {
       "type": "sapturretmod:turret_cam",
       "pos": [64, 30],
@@ -20,7 +19,7 @@
       }
     },
     {
-      "type": "sapturretmod:tcu_info_playericon",
+      "type": "sapturretmod:tcu.info_playericon",
       "pos": [8, 148],
       "data": {
         "uvs": [
@@ -34,19 +33,17 @@
       }
     },
     {
-      "type": "sapturretmod:tcu_info_progress",
+      "type": "sapturretmod:tcu.info_progress",
       "pos": [6, 100],
       "data": {
         "type": "health",
         "bar": {
-          "pos": [20, 11],
-          "data": {
-            "size": [140, 3],
-            "uv": [116, 244]
-          }
+          "offset": [20, 11],
+          "size": [140, 3],
+          "uv": [116, 244]
         },
         "text": {
-          "pos": [20, 2],
+          "offset": [20, 2],
           "data": {
             "color": "0xFFC20000"
           }
@@ -54,93 +51,78 @@
       }
     },
     {
-      "type": "sapturretmod:tcu_info_progress",
+      "type": "sapturretmod:tcu.info_progress",
       "pos": [6, 100],
       "data": {
         "type": "personal_shield",
         "bar": {
-          "pos": [20, 11],
-          "data": {
-            "size": [140, 3],
-            "uv": [116, 250]
-          }
+          "offset": [20, 11],
+          "size": [140, 3],
+          "uv": [116, 250]
         },
         "text": {
-          "pos": [161, 2],
-          "data": {
-            "color": "0xFFC709DD",
-            "justifyRight": true
-          }
+          "offset": [161, 2],
+          "color": "0xFFC709DD",
+          "alignment": ["right"]
         }
       }
     },
     {
-      "type": "sapturretmod:tcu_info_progress",
+      "type": "sapturretmod:tcu.info_progress",
       "pos": [6, 116],
       "data": {
         "type": "ammo",
         "bar": {
-          "pos": [20, 11],
-          "data": {
-            "size": [120, 3],
-            "uv": [116, 247]
-          }
+          "offset": [20, 11],
+          "size": [120, 3],
+          "uv": [116, 247]
         },
         "text": {
-          "pos": [20, 2],
-          "data": {
-            "color": "0xFF0061C2"
-          }
+          "offset": [20, 2],
+          "color": "0xFF0061C2"
         }
       }
     },
     {
-      "type": "sapturretmod:tcu_info_progress",
+      "type": "sapturretmod:tcu.info_progress",
       "pos": [6, 132],
       "data": {
         "type": "target",
         "text": {
-          "pos": [20, 4]
+          "offset": [20, 4]
         }
       }
     },
     {
-      "type": "sapturretmod:tcu_info_progress",
+      "type": "sapturretmod:tcu.info_progress",
       "pos": [6, 148],
       "data": {
         "type": "player",
         "text": {
-          "pos": [20, 4]
+          "offset": [20, 4]
         }
       }
     },
     {
-      "type": "sapturretmod:tcu_info_progress",
+      "type": "sapturretmod:tcu.info_progress",
       "pos": [6, 164],
       "id": "info_prog_forcefield",
       "data": {
         "type": "forcefield",
         "bar": {
-          "pos": [20, 11],
-          "data": {
-            "size": [140, 3],
-            "uv": [116, 253],
-            "uvBackground": [116, 236]
-          }
+          "offset": [20, 11],
+          "size": [140, 3],
+          "uv": [116, 253],
+          "uvBackground": [116, 236]
         },
         "text": {
-          "pos": [20, 2],
-          "data": {
-            "color": "0xFF997E00"
-          }
+          "offset": [20, 2],
+          "color": "0xFF997E00"
         },
         "icon": {
-          "type": "texture",
-          "pos": [3, 0],
-          "data": {
-            "size": [16, 16],
-            "uv": [176, 72]
-          }
+          "offset": [3, 0],
+          "size": [16, 16],
+          "uv": [176, 72]
         }
       }
     },
@@ -205,13 +187,13 @@
       }
     },
     {
-      "type": "sapturretmod:tcu_info_ammo",
+      "type": "sapturretmod:tcu.info_ammo",
       "pos": [150, 116]
     }
   ],
   "foregroundElements": [
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [59, 186],
       "data": {
         "size": [18, 18],
@@ -220,7 +202,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [79, 186],
       "data": {
         "size": [18, 18],
@@ -229,7 +211,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [79, 186],
       "data": {
         "size": [18, 18],
@@ -238,7 +220,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [99, 186],
       "data": {
         "size": [18, 18],
@@ -247,7 +229,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [99, 186],
       "data": {
         "size": [18, 18],
@@ -256,7 +238,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos":[6, 84],
       "data": {
         "size": [20, 16],
@@ -264,7 +246,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos":[6, 100],
       "data": {
         "size": [20, 16],
@@ -272,7 +254,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos":[6, 116],
       "data": {
         "size": [20, 16],
@@ -280,7 +262,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos":[6, 132],
       "data": {
         "size": [20, 16],
@@ -288,7 +270,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos":[6, 148],
       "data": {
         "size": [20, 16],
@@ -296,7 +278,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos":[6, 164],
       "data": {
         "size": [20, 16],
@@ -305,12 +287,11 @@
       }
     },
     {
-      "type": "sapturretmod:tcu_info_ammolabel",
+      "type": "sapturretmod:tcu.info_ammo_ttip",
       "pos": [150, 116]
     },
     {
-      "type": "sapturretmod:tcu_info_error",
-      "pos": [0, 0],
+      "type": "sapturretmod:tcu.info_error",
       "id": "errorDismantle",
       "data": {
         "size": [176, 236],

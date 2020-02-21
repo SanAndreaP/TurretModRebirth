@@ -17,7 +17,7 @@
       }
     },
     {
-      "type": "sapturretmod:tcu_page_nav",
+      "type": "sapturretmod:tcu.page_nav",
       "pos": [0, 214],
       "id": "pgNavigation",
       "data": {
@@ -32,7 +32,7 @@
   ],
   "foregroundElements": [
     {
-      "type": "sapturretmod:tcu_page_nav_label",
+      "type": "sapturretmod:tcu.page_nav_ttip",
       "pos": [0, 214],
       "data": {
         "for": "pgNavigation"

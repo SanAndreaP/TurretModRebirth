@@ -7,7 +7,7 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu.page;
 
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
-import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
@@ -23,15 +23,15 @@ import net.minecraft.util.ResourceLocation;
 public class GuiUpgrades
         implements IGuiTCU
 {
-    private IGuiElement hideUpgrades1;
-    private IGuiElement hideUpgrades2;
-    private IGuiElement hideUpgrades3;
+    private GuiElementInst hideUpgrades1;
+    private GuiElementInst hideUpgrades2;
+    private GuiElementInst hideUpgrades3;
 
     @Override
     public void initialize(IGuiTcuInst<?> gui, GuiDefinition guiDefinition) {
-        this.hideUpgrades1 = gui.getDefinition().getElementById("hideUpgrades1").get();
-        this.hideUpgrades2 = gui.getDefinition().getElementById("hideUpgrades2").get();
-        this.hideUpgrades3 = gui.getDefinition().getElementById("hideUpgrades3").get();
+        this.hideUpgrades1 = gui.getDefinition().getElementById("hideUpgrades1");
+        this.hideUpgrades2 = gui.getDefinition().getElementById("hideUpgrades2");
+        this.hideUpgrades3 = gui.getDefinition().getElementById("hideUpgrades3");
     }
 
     @Override

@@ -62,7 +62,7 @@ public abstract class TargetType<T>
             elem.element = new TargetNode<>(id, this, width);
             gui.getDefinition().initElement(elem);
             elem.data = nodeData;
-            elem.get().bakeData(gui, elem.data);
+            elem.get().bakeData(gui, elem.data, elem);
             if( Strings.isNullOrEmpty(filter) || elem.get(TargetNode.class).getName().toLowerCase(Locale.ROOT).contains(filter.toLowerCase(Locale.ROOT)) ) {
                 elements.add(elem);
                 elem.pos[1] = posY.getAndAdd(elem.get().getHeight());

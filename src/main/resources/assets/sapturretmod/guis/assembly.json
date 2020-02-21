@@ -5,7 +5,6 @@
   "backgroundElements": [
     {
       "type": "texture",
-      "pos": [0, 0],
       "data": {
         "size": [230, 222],
         "uv": [0, 0]
@@ -28,15 +27,12 @@
       "pos": [156, 31],
       "data": {
         "label": {
-          "type": "sapturretmod:assembly.progress_text",
-          "pos": [25, 6],
-          "data": {}
+          "offset": [0, 6]
         }
       }
     },
     {
-      "type": "sapturretmod:assembly.ghost_items",
-      "pos":[0, 0]
+      "type": "sapturretmod:assembly.ghost_items"
     }
   ],
   "foregroundElements": [
@@ -47,13 +43,7 @@
       "data": {
         "size": [50, 12],
         "buttonFunction": 0,
-        "label": {
-          "type": "button_text",
-          "pos": [0, 0],
-          "data": {
-            "text": "gui.sapturretmod.tassembly.cancel"
-          }
-        }
+        "labelText": "gui.sapturretmod.tassembly.cancel"
       }
     },
     {
@@ -63,13 +53,7 @@
       "data": {
         "size": [50, 12],
         "buttonFunction": 1,
-        "label": {
-          "type": "button_text",
-          "pos": [0, 0],
-          "data": {
-            "text": "gui.sapturretmod.tassembly.automate.enable"
-          }
-        }
+        "labelText": "gui.sapturretmod.tassembly.automate.enable"
       }
     },
     {
@@ -79,13 +63,7 @@
       "data": {
         "size": [50, 12],
         "buttonFunction": 1,
-        "label": {
-          "type": "button_text",
-          "pos": [0, 0],
-          "data": {
-            "text": "gui.sapturretmod.tassembly.automate.disable"
-          }
-        }
+        "labelText": "gui.sapturretmod.tassembly.automate.disable"
       }
     },
     {
@@ -94,13 +72,11 @@
       "data": {
         "texture": "sapturretmod:textures/gui/turretassembly/assembly.png",
         "size": [16, 9],
+        "uvSize": [16, 9],
         "buttonFunction": 2,
         "uvEnabled": [50, 222],
         "uvHover": [50, 231],
-        "uvDisabled": [50, 222],
-        "ctHorizontal": 0,
-        "ctVertical": 0,
-        "uvSize": [16, 9]
+        "uvDisabled": [50, 222]
       }
     },
     {
@@ -109,13 +85,11 @@
       "data": {
         "texture": "sapturretmod:textures/gui/turretassembly/assembly.png",
         "size": [16, 9],
+        "uvSize": [16, 9],
         "buttonFunction": 3,
         "uvEnabled": [66, 222],
         "uvHover": [66, 231],
-        "uvDisabled": [66, 222],
-        "ctHorizontal": 0,
-        "ctVertical": 0,
-        "uvSize": [16, 9]
+        "uvDisabled": [66, 222]
       }
     },
     {
@@ -126,52 +100,31 @@
           "itemColumns": 6,
           "scrollbarHeight": 76,
           "areaTextureUV": [0, 0],
+          "scrollbarPos": [144, 7],
           "scrollButton": {
-            "type": "texture",
-            "pos": [144, 7],
-            "data": {
-              "size": [6, 6],
-              "uv": [230, 0]
-            }
-          },
-          "scrollButtonDeactive": {
-            "type": "texture",
-            "pos": [144, 7],
-            "data": {
-              "size": [6, 6],
-              "uv": [230, 6]
-            }
+            "size": [6, 6],
+            "uv": [230, 0],
+            "uvDisabled": [230, 6]
           }
         },
         "activeRecipeMarker": {
-          "type": "texture",
-          "pos": [-2, -2],
-          "data": {
-            "size": [22, 22],
-            "uv": [82, 222]
-          }
+          "offset": [-2, -2],
+          "size": [22, 22],
+          "uv": [82, 222]
         },
-        "recipeLabel": {
-          "type": "label",
-          "pos": [0, 0],
-          "data": {
-            "backgroundColor": "0xF0001000",
-            "borderTopColor": "0x5000FF00",
-            "borderBottomColor": "0x50007F00",
-            "content": {
-              "type": "sapturretmod:assembly.recipe_label",
-              "pos": [0, 0],
-              "data": {
-                "borderColor": "0x5000FF00",
-                "compactIngredientsColumns": 6
-              }
-            }
+        "recipeTooltip": {
+          "backgroundColor": "0xF0001000",
+          "borderTopColor": "0x5000FF00",
+          "borderBottomColor": "0x50007F00",
+          "label": {
+            "borderColor": "0x5000FF00",
+            "compactIngredientsColumns": 6
           }
         }
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [210, 8],
       "data": {
         "size": [12, 82],
@@ -179,8 +132,7 @@
         "borderTopColor": "0x50FF0000",
         "borderBottomColor": "0x507F0000",
         "content": {
-          "type": "rflux_text",
-          "pos": [0, 0]
+          "type": "rflux_text"
         }
       }
     }

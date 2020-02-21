@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.client.gui.assembly;
 
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Button;
@@ -59,9 +60,9 @@ public class GuiTurretAssembly
     public int[] currRecipeCoords;
     public static String currGroup;
 
-    private Button cancelButton;
-    private Button automateButton;
-    private Button manualButton;
+    private GuiElementInst cancelButton;
+    private GuiElementInst automateButton;
+    private GuiElementInst manualButton;
     private boolean shiftPressed;
 
     public GuiTurretAssembly(InventoryPlayer invPlayer, TileEntityTurretAssembly tile) {
@@ -84,9 +85,9 @@ public class GuiTurretAssembly
 
         GuiHelper.initGuiDef(this.guiDef, this);
 
-        this.cancelButton = (Button) this.guiDef.getElementById("cancel-button").get();
-        this.automateButton = (Button) this.guiDef.getElementById("automate-button").get();
-        this.manualButton = (Button) this.guiDef.getElementById("manual-button").get();
+        this.cancelButton = this.guiDef.getElementById("cancel-button");
+        this.automateButton = this.guiDef.getElementById("automate-button");
+        this.manualButton = this.guiDef.getElementById("manual-button");
 
         if( this.assembly.currRecipe != null ) {
             currGroup = this.assembly.currRecipe.getGroup();
@@ -117,13 +118,13 @@ public class GuiTurretAssembly
         }
 
         if( this.assembly.currRecipe != null ) {
-            this.cancelButton.setEnabled(true);
-            this.automateButton.setEnabled(false);
-            this.manualButton.setEnabled(false);
+            this.cancelButton.get(Button.class).setEnabled(true);
+            this.automateButton.get(Button.class).setEnabled(false);
+            this.manualButton.get(Button.class).setEnabled(false);
         } else {
-            this.cancelButton.setEnabled(false);
-            this.automateButton.setEnabled(!this.assembly.isAutomated());
-            this.manualButton.setEnabled(this.assembly.isAutomated());
+            this.cancelButton.get(Button.class).setEnabled(false);
+            this.automateButton.get(Button.class).setEnabled(!this.assembly.isAutomated());
+            this.manualButton.get(Button.class).setEnabled(this.assembly.isAutomated());
         }
 
         this.automateButton.setVisible(ItemStackUtils.isItem(this.assembly.getInventory().getStackInSlot(1), ItemRegistry.ASSEMBLY_UPG_AUTO));

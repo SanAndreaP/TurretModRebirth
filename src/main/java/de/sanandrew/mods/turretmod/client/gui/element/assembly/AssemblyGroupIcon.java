@@ -20,7 +20,7 @@ public class AssemblyGroupIcon
     }
 
     @Override
-    public void update(IGui gui, JsonObject data) {
-        this.data.stack = AssemblyManager.INSTANCE.getGroupIcon(GuiTurretAssembly.currGroup);
+    protected ItemStack getDynamicStack(IGui gui) {
+        return AssemblyManager.INSTANCE.getGroupIcon(GuiTurretAssembly.currGroup);
     }
 }

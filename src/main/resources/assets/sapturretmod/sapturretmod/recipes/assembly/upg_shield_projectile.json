@@ -18,6 +18,7 @@
       "showTooltipText": true,
       "items": [
         {
+          "type": "sanlib:item_nbt",
           "item": "minecraft:enchanted_book",
           "nbt": {
             "StoredEnchantments": [

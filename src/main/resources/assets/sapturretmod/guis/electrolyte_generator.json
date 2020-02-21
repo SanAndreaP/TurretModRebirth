@@ -5,7 +5,6 @@
   "backgroundElements": [
     {
       "type": "texture",
-      "pos": [0, 0],
       "data": {
         "size": [176, 222],
         "uv": [0, 0]
@@ -45,20 +44,18 @@
     {
       "type": "dynamic_text",
       "pos": [150, 100],
+      "alignment": ["right"],
       "data": {
         "color": "0xFF404040",
-        "text": "",
-        "justifyRight": true,
         "key": "efficiency"
       }
     },
     {
       "type": "dynamic_text",
       "pos": [150, 110],
+      "alignment": ["right"],
       "data": {
         "color": "0xFF404040",
-        "text": "",
-        "justifyRight": true,
         "key": "powergen"
       }
     },
@@ -136,7 +133,7 @@
   ],
   "foregroundElements": [
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [156, 75],
       "data": {
         "size": [12, 59],
@@ -144,8 +141,7 @@
         "borderTopColor": "0x50FF0000",
         "borderBottomColor": "0x507F0000",
         "content": {
-          "type": "rflux_text",
-          "pos": [0, 0]
+          "type": "rflux_text"
         }
       }
     }

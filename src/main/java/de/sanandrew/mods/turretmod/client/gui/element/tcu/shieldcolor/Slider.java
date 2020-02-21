@@ -59,7 +59,7 @@ class Slider
             sd.valueTxt.pos = JsonUtils.getIntArray(tfData.get("offset"), new int[] { 3, 0 }, Range.is(2));
             gui.getDefinition().initElement(sd.valueTxt);
             JsonUtils.addDefaultJsonProperty(sd.valueTxt.data, "size", JsonUtils.getIntArray(tfData.get("size"), new int[] { 40, sd.size[1] }));
-            tf.bakeData(gui, sd.valueTxt.data);
+            tf.bakeData(gui, sd.valueTxt.data, sd.valueTxt);
 
             tf.setValidator(s -> toValueConverter.apply(sd, s) != null);
             tf.setResponder(s -> {

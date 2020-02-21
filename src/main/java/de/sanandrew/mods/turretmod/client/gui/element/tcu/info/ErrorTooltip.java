@@ -1,63 +1,57 @@
 package de.sanandrew.mods.turretmod.client.gui.element.tcu.info;
 
 import com.google.gson.JsonObject;
-import com.mojang.realmsclient.gui.ChatFormatting;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
-import de.sanandrew.mods.sanlib.lib.client.gui.element.Label;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.Tooltip;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
-import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import net.minecraft.util.ResourceLocation;
 
-public class ErrorLabel
-        extends Label
+public class ErrorTooltip
+        extends Tooltip
 {
-    public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu_info_error");
+    public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu.info_error");
 
     private long errTimeActivated;
     private int errTimeDurationMS;
     private boolean shown;
 
     @Override
-    public void bakeData(IGui gui, JsonObject data) {
-        if( this.data == null ) {
-            this.errTimeDurationMS = JsonUtils.getIntVal(data.get("timeShown"), 5000);
+    public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
+        this.errTimeDurationMS = JsonUtils.getIntVal(data.get("timeShown"), 5000);
 
-            JsonUtils.addDefaultJsonProperty(data, "backgroundColor", "0xF0100000");
-            JsonUtils.addDefaultJsonProperty(data, "borderTopColor", "0x50FF0000");
-            JsonUtils.addDefaultJsonProperty(data, "borderBottomColor", "0x507F0000");
-        }
+        JsonUtils.addDefaultJsonProperty(data, "backgroundColor", "0xF0100000");
+        JsonUtils.addDefaultJsonProperty(data, "borderTopColor", "0x50FF0000");
+        JsonUtils.addDefaultJsonProperty(data, "borderBottomColor", "0x507F0000");
 
-        super.bakeData(gui, data);
+        super.bakeData(gui, data, inst);
     }
 
     @Override
-    public GuiElementInst getLabel(IGui gui, JsonObject data) {
+    public GuiElementInst getContent(IGui gui, JsonObject data) {
         if( !data.has("content") ) {
-            GuiElementInst txtInst = new GuiElementInst();
-            txtInst.element = new Text();
-            txtInst.data = new JsonObject();
+            GuiElementInst txtInst = new GuiElementInst(new Text()).initialize(gui);
 
             JsonUtils.addJsonProperty(txtInst.data, "text", JsonUtils.getStringVal(data.get("text")));
             JsonUtils.addJsonProperty(txtInst.data, "color", JsonUtils.getStringVal(data.get("color"), "0xFFFF8080"));
             JsonUtils.addJsonProperty(txtInst.data, "wrapWidth", JsonUtils.getIntVal(data.get("wrapWidth"), gui.getDefinition().width));
 
-            gui.getDefinition().initElement(txtInst);
-            txtInst.get().bakeData(gui, txtInst.data);
-
             return txtInst;
         }
-        return super.getLabel(gui, data);
+
+        return super.getContent(gui, data);
     }
 
     public void activate() {
         this.errTimeActivated = System.currentTimeMillis();
+        this.shown = true;
     }
 
     public void deactivate() {
         this.errTimeActivated = System.currentTimeMillis() - this.errTimeDurationMS;
+        this.shown = false;
     }
 
     @Override
@@ -74,6 +68,6 @@ public class ErrorLabel
 
     @Override
     public boolean isVisible() {
-        return this.shown && super.isVisible();
+        return this.shown;
     }
 }

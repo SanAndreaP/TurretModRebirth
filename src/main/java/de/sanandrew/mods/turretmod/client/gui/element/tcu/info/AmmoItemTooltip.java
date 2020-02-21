@@ -1,11 +1,12 @@
 package de.sanandrew.mods.turretmod.client.gui.element.tcu.info;
 
 import com.google.gson.JsonObject;
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
-import de.sanandrew.mods.sanlib.lib.client.gui.element.Label;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.Tooltip;
 import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
@@ -18,47 +19,36 @@ import net.minecraft.util.ResourceLocation;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AmmoItemLabel
-        extends Label
+public class AmmoItemTooltip
+        extends Tooltip
 {
-    public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu_info_ammolabel");
+    public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu.info_ammo_ttip");
 
     @Override
-    public void bakeData(IGui gui, JsonObject data) {
+    public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
         JsonUtils.addDefaultJsonProperty(data, "size", new int[] {16, 16});
 
-        super.bakeData(gui, data);
+        super.bakeData(gui, data, inst);
     }
 
     @Override
-    public GuiElementInst getLabel(IGui gui, JsonObject data) {
-        GuiElementInst lbl = new GuiElementInst();
-        lbl.element = new AmmoTooltip();
-
-        gui.getDefinition().initElement(lbl);
-        lbl.get().bakeData(gui, lbl.data);
-
-        return lbl;
+    public GuiElementInst getContent(IGui gui, JsonObject data) {
+        return new GuiElementInst(new AmmoTooltip()).initialize(gui);
     }
 
     @Override
     public void update(IGui gui, JsonObject data) {
-        IGuiElement elem = this.data.content.get();
-        if( elem instanceof AmmoTooltip ) {
-            ((AmmoTooltip) elem).currStack = ((IGuiTcuInst<?>) gui).getTurretInst().getTargetProcessor().getAmmoStack();
-        }
+        this.getChild(CONTENT).get(AmmoTooltip.class).currStack = ((IGuiTcuInst<?>) gui).getTurretInst().getTargetProcessor().getAmmoStack();
 
         super.update(gui, data);
     }
 
     @Override
     public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
-        int locMouseX = mouseX - gui.getScreenPosX();
-        int locMouseY = mouseY - gui.getScreenPosY();
-        if( locMouseX >= x && locMouseX < x + this.data.size[0] && locMouseY >= y && locMouseY < y + this.data.size[1] ) {
+        if( IGuiElement.isHovering(gui, x, y, mouseX, mouseY, this.size[0], this.size[1]) ) {
             GlStateManager.disableDepth();
             GlStateManager.colorMask(true, true, true, false);
-            GuiUtils.drawGradientRect(x, y, this.data.size[0], this.data.size[1], 0x80FFFFFF, 0x80FFFFFF, false);
+            GuiUtils.drawGradientRect(x, y, this.size[0], this.size[1], 0x80FFFFFF, 0x80FFFFFF, false);
             GlStateManager.colorMask(true, true, true, true);
             GlStateManager.enableDepth();
         }
@@ -68,12 +58,12 @@ public class AmmoItemLabel
 
     @Override
     public int getWidth() {
-        return this.data.size[0];
+        return this.size[0];
     }
 
     @Override
     public int getHeight() {
-        return this.data.size[1];
+        return this.size[1];
     }
 
     private static final class AmmoTooltip
@@ -87,7 +77,7 @@ public class AmmoItemLabel
         private int height;
 
         @Override
-        public void bakeData(IGui gui, JsonObject data) { }
+        public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) { }
 
         @Override
         public void update(IGui gui, JsonObject data) {
@@ -99,18 +89,13 @@ public class AmmoItemLabel
 
                 List<String> ttip = gui.get().getItemToolTip(this.currStack);
                 for( String line : ttip ) {
-                    GuiElementInst txtElem = new GuiElementInst();
-                    txtElem.data = new JsonObject();
+                    GuiElementInst txtElem = new GuiElementInst(new int[] {0, this.height}, new Text()).initialize(gui);
 
-                    txtElem.pos = new int[] {0, this.height};
-                    txtElem.data.addProperty("color", "0xFFFFFFFF");
-                    txtElem.data.addProperty("text", line);
-                    txtElem.data.addProperty("shadow", true);
-                    txtElem.element = new Text();
+                    JsonUtils.addJsonProperty(txtElem.data, "color", "0xFFFFFFFF");
+                    JsonUtils.addJsonProperty(txtElem.data, "text", line);
+                    JsonUtils.addJsonProperty(txtElem.data, "shadow", true);
 
-                    gui.getDefinition().initElement(txtElem);
-
-                    txtElem.get().bakeData(gui, txtElem.data);
+                    txtElem.get().bakeData(gui, txtElem.data, txtElem);
 
                     this.lines.add(txtElem);
 
@@ -124,7 +109,7 @@ public class AmmoItemLabel
         @Override
         public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
             for( GuiElementInst line : this.lines ) {
-                line.get().render(gui, partTicks, x + line.pos[0], y + line.pos[1], mouseX, mouseY, line.data);
+                GuiDefinition.renderElement(gui, x + line.pos[0], y + line.pos[1], mouseX, mouseY, partTicks, line);
                 this.width = Math.max(this.width, line.get().getWidth());
             }
         }
@@ -138,13 +123,5 @@ public class AmmoItemLabel
         public int getHeight() {
             return this.height;
         }
-
-        @Override
-        public boolean isVisible() {
-            return true;
-        }
-
-        @Override
-        public void setVisible(boolean visible) { }
     }
 }

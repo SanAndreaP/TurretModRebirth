@@ -10,6 +10,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.JsonReader;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
@@ -25,6 +26,7 @@ import org.apache.logging.log4j.Level;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -50,7 +52,7 @@ public final class AssemblyRecipeLoader
         }
 
         try( BufferedReader reader = Files.newBufferedReader(file) ) {
-            JsonObject json = JsonUtils.fromJson(reader, JsonObject.class);
+            JsonObject json = fromJson(reader, JsonObject.class);
             ResourceLocation id = new ResourceLocation(modId, "recipes/assembly/" + file.getFileName().toString());
 
             if( json == null ) {
@@ -95,5 +97,15 @@ public final class AssemblyRecipeLoader
         }
 
         return true;
+    }
+
+    public static <T> T fromJson(Reader reader, Class<T> clazz) {
+        JsonReader jsonReader = new JsonReader(reader);
+        jsonReader.setLenient(true);
+        try {
+            return JsonUtils.GSON.getAdapter(clazz).read(jsonReader);
+        } catch( IOException e ) {
+            throw new JsonParseException(e);
+        }
     }
 }

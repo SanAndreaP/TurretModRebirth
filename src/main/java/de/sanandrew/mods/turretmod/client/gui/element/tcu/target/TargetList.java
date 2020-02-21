@@ -25,12 +25,10 @@ public class TargetList
     private TargetType<?> type;
 
     @Override
-    public void bakeData(IGui gui, JsonObject data) {
-        if( this.type == null ) {
-            this.type = TargetType.fromString(JsonUtils.getStringVal(data.get("targetType")));
-        }
+    public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
+        this.type = TargetType.fromString(JsonUtils.getStringVal(data.get("targetType")));
 
-        super.bakeData(gui, data);
+        super.bakeData(gui, data, inst);
     }
 
     @Override
@@ -43,7 +41,7 @@ public class TargetList
         List<GuiElementInst> elements = new ArrayList<>();
         JsonObject nodeData = MiscUtils.defIfNull(data.getAsJsonObject("node"), JsonObject::new);
 
-        this.type.buildElements(gui, turretInst, nodeData, this.data.areaSize[0], filter, elements);
+        this.type.buildElements(gui, turretInst, nodeData, this.areaSize[0], filter, elements);
 
         return elements.toArray(new GuiElementInst[0]);
     }
@@ -53,11 +51,11 @@ public class TargetList
         this.scroll = 0.0F;
 
         GuiElementInst[] elements = this.getElements(gui, data, filter);
-        this.data.elements.clear();
+        this.elements.clear();
         Arrays.stream(elements).forEach(e -> {
             TargetNode<?> node = e.get(TargetNode.class);
-            node.bakeData(gui, e.data);
-            this.data.elements.put(Range.closedOpen(e.pos[1], e.pos[1] + node.getHeight()), e);
+            node.bakeData(gui, e.data, e);
+            this.elements.put(Range.closedOpen(e.pos[1], e.pos[1] + node.getHeight()), e);
         });
     }
 }

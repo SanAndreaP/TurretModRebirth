@@ -7,13 +7,14 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu.page;
 
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Button;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.TextField;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.info.ErrorLabel;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.info.ErrorTooltip;
 import de.sanandrew.mods.turretmod.network.PacketPlayerTurretAction;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketTurretNaming;
@@ -29,26 +30,26 @@ public class GuiInfo
     private static final int ACTION_RANGE_SHOW = 3;
     private static final int ACTION_RANGE_HIDE = 4;
 
-    private Button setActive;
-    private Button setDeactive;
-    private Button showRange;
-    private Button hideRange;
+    private GuiElementInst setActive;
+    private GuiElementInst setDeactive;
+    private GuiElementInst showRange;
+    private GuiElementInst hideRange;
 
     private TextField turretName;
 
-    private ErrorLabel errorDismantle;
+    private ErrorTooltip errorDismantle;
 
     @Override
     public void initialize(IGuiTcuInst<?> gui, GuiDefinition guiDefinition) {
         Button dismantle = guiDefinition.getElementById("dismantle").get(Button.class);
-        this.setActive = guiDefinition.getElementById("activate").get(Button.class);
-        this.setDeactive = guiDefinition.getElementById("deactivate").get(Button.class);
-        this.showRange = guiDefinition.getElementById("showRange").get(Button.class);
-        this.hideRange = guiDefinition.getElementById("hideRange").get(Button.class);
+        this.setActive = guiDefinition.getElementById("activate");
+        this.setDeactive = guiDefinition.getElementById("deactivate");
+        this.showRange = guiDefinition.getElementById("showRange");
+        this.hideRange = guiDefinition.getElementById("hideRange");
 
         this.turretName = guiDefinition.getElementById("turretNameInput").get(TextField.class);
 
-        this.errorDismantle = guiDefinition.getElementById("errorDismantle").get(ErrorLabel.class);
+        this.errorDismantle = guiDefinition.getElementById("errorDismantle").get(ErrorTooltip.class);
 
         this.setActive.setVisible(false);
         this.hideRange.setVisible(false);
@@ -58,10 +59,10 @@ public class GuiInfo
 
         if( !gui.hasPermision() ) {
             dismantle.setEnabled(false);
-            this.setActive.setEnabled(false);
-            this.setDeactive.setEnabled(false);
-            this.showRange.setEnabled(false);
-            this.hideRange.setEnabled(false);
+            this.setActive.get(Button.class).setEnabled(false);
+            this.setDeactive.get(Button.class).setEnabled(false);
+            this.showRange.get(Button.class).setEnabled(false);
+            this.hideRange.get(Button.class).setEnabled(false);
             this.turretName.setEnabled(false);
         }
     }

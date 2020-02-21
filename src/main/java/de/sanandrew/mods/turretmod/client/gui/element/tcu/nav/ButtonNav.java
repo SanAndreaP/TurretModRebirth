@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Button;
-import de.sanandrew.mods.sanlib.lib.client.gui.element.IButtonLabel;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Item;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
@@ -16,6 +15,8 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
+import java.util.Map;
+
 public class ButtonNav
         extends Button
 {
@@ -23,6 +24,7 @@ public class ButtonNav
 
     public String page;
     int pageIdx;
+
     private ItemStack pageStack = ItemStack.EMPTY;
 
     ButtonNav(int id, String page) {
@@ -31,30 +33,24 @@ public class ButtonNav
     }
 
     @Override
-    public void bakeData(IGui gui, JsonObject data) {
-        boolean initialize = this.data == null;
+    public void buildChildren(IGui gui, JsonObject data, Map<String, GuiElementInst> listToBuild) {
+        listToBuild.put(LABEL, new GuiElementInst(new Label()).initialize(gui));
+    }
 
-        JsonUtils.addDefaultJsonProperty(data, "size", new int[] { 16, 16});
-        JsonUtils.addDefaultJsonProperty(data, "uvEnabled", new int[] {0, 0});
-        JsonUtils.addDefaultJsonProperty(data, "uvDisabled", new int[] {0, 0});
-        JsonUtils.addDefaultJsonProperty(data, "uvHover", new int[] {0, 0});
-        JsonUtils.addDefaultJsonProperty(data, "uvSize", new int[] {0, 0});
-        JsonUtils.addDefaultJsonProperty(data, "ctHorizontal", 0);
-        JsonUtils.addDefaultJsonProperty(data, "ctVertical", 0);
+    @Override
+    public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
+        JsonUtils.addDefaultJsonProperty(data, "size", new int[] { 16, 16 });
+        JsonUtils.addDefaultJsonProperty(data, "uvEnabled", new int[] { 0, 0 });
+        JsonUtils.addDefaultJsonProperty(data, "uvDisabled", new int[] { 0, 0 });
+        JsonUtils.addDefaultJsonProperty(data, "uvHover", new int[] { 0, 0 });
+        JsonUtils.addDefaultJsonProperty(data, "uvSize", new int[] { 0, 0 });
+        JsonUtils.addDefaultJsonProperty(data, "centralTextureWidth", 0);
+        JsonUtils.addDefaultJsonProperty(data, "centralTextureHeight", 0);
         JsonUtils.addDefaultJsonProperty(data, "buttonFunction", -1);
 
-        super.bakeData(gui, data);
+        super.bakeData(gui, data, inst);
 
-        if( initialize ) {
-            this.pageStack = GuiTcuRegistry.INSTANCE.getGuiEntry(this.page).getIcon();
-
-            if( this.data.label == null ) {
-                this.data.label = new GuiElementInst();
-                this.data.label.element = new Label();
-                gui.getDefinition().initElement(this.data.label);
-                this.data.label.get().bakeData(gui, this.data.label.data);
-            }
-        }
+        this.pageStack = GuiTcuRegistry.INSTANCE.getGuiEntry(this.page).getIcon();
     }
 
     boolean isHovering() {
@@ -69,7 +65,6 @@ public class ButtonNav
 
     public class Label
             extends Item
-            implements IButtonLabel
     {
         @Override
         protected ItemStack getBakedStack(IGui gui, JsonObject data) {
@@ -92,12 +87,12 @@ public class ButtonNav
         }
 
         @Override
-        public void renderLabel(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data, boolean enabled, boolean hovered) {
+        public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
             if( ButtonNav.this.pageStack == null ) {
                 ButtonNav.this.pageStack = new ItemStack(Blocks.BARRIER, 1);
             }
 
-            if( enabled && !hovered ) {
+            if( ButtonNav.this.isEnabled() && !ButtonNav.this.isCurrHovering ) {
                 SHADER_GRAYSCALE.render(() -> super.render(gui, partTicks, x, y, mouseX, mouseY, data), 1.0F);
             } else {
                 super.render(gui, partTicks, x, y, mouseX, mouseY, data);

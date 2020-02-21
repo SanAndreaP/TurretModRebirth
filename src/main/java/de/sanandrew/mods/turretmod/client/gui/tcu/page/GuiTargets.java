@@ -9,7 +9,6 @@ package de.sanandrew.mods.turretmod.client.gui.tcu.page;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
-import de.sanandrew.mods.sanlib.lib.client.gui.element.Button;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.TextField;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
@@ -31,8 +30,8 @@ public class GuiTargets
 
     private final TargetType<?> type;
 
-    private Button blacklist;
-    private Button whitelist;
+    private GuiElementInst blacklist;
+    private GuiElementInst whitelist;
 
     private GuiElementInst targetList;
     private TextField      search;
@@ -44,8 +43,8 @@ public class GuiTargets
     @Override
     public void initialize(IGuiTcuInst<?> gui, GuiDefinition guiDefinition) {
         this.targetList = guiDefinition.getElementById("targetList");
-        this.blacklist = guiDefinition.getElementById("blacklist").get(Button.class);
-        this.whitelist = guiDefinition.getElementById("whitelist").get(Button.class);
+        this.blacklist = guiDefinition.getElementById("blacklist");
+        this.whitelist = guiDefinition.getElementById("whitelist");
         this.search = guiDefinition.getElementById("search").get(TextField.class);
     }
 

@@ -11,7 +11,7 @@ import net.minecraft.util.ResourceLocation;
 public class AmmoItem
         extends Item
 {
-    public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu_info_ammo");
+    public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu.info_ammo");
 
     @Override
     protected ItemStack getBakedStack(IGui gui, JsonObject data) {
@@ -19,7 +19,7 @@ public class AmmoItem
     }
 
     @Override
-    public void update(IGui gui, JsonObject data) {
-        this.data.stack = ((IGuiTcuInst<?>) gui).getTurretInst().getTargetProcessor().getAmmoStack();
+    protected ItemStack getDynamicStack(IGui gui) {
+        return ((IGuiTcuInst<?>) gui).getTurretInst().getTargetProcessor().getAmmoStack();
     }
 }

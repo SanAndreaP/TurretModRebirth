@@ -17,6 +17,7 @@
       "showTooltipText": true,
       "items": [
         {
+          "type": "sanlib:item_nbt",
           "item": "minecraft:potion",
           "nbt": {
             "Potion": "minecraft:regeneration"

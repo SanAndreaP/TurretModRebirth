@@ -2,20 +2,19 @@ package de.sanandrew.mods.turretmod.client.gui.element.tcu.shieldcolor;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ElementParent;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
+import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.Range;
 import org.lwjgl.input.Mouse;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -27,15 +26,15 @@ public class CheckBox
     public static final ResourceLocation ID = new ResourceLocation("check_box");
 
     public static final String LABEL = "label";
-    public enum BtnTextures { DEFAULT, HOVER, CHECKED, CHECKED_HOVER, DISABLED; private final String n = name(); };
-
-    public boolean          ckbRight;
 
     private boolean checked;
     private boolean enabled = true;
-    private int currWidth;
-    private int currHeight;
+    private int[]   currSize;
+    private int[]   lblPos = new int[2];
+    private int[]   btnPos = new int[2];
+    private int[]   lblOffset = new int[2];
     private boolean prevMouseDown;
+    private GuiElementInst.Justify[] alignment;
 
     private Function<Boolean, Boolean> checkedChanging = b -> true;
     private Consumer<Boolean>          checkedChanged  = b -> {};
@@ -65,30 +64,39 @@ public class CheckBox
                     lblData = lbl.getAsJsonObject();
                     lblPos = JsonUtils.getIntArray(lblData.get("offset"), new int[] {2, 0}, Range.is(2));
                 }
-                lblInst = new GuiElementInst(lblPos, this.getLabelElement(gui, lblData), lblData).initialize(gui);
+                lblInst = new GuiElementInst(lblPos, this.getLabel(gui, lblData), lblData).initialize(gui);
             }
         }
 
         if( lblInst != null ) {
+            this.lblOffset = lblInst.pos;
             lblInst.alignment = new String[] { "left", "center" };
-
             listToBuild.put(LABEL, lblInst);
         }
 
         GuiElementInst tx = new GuiElementInst(new Texture(), JsonUtils.deepCopy(data)).initialize(gui);
         listToBuild.put(BtnTextures.DEFAULT.n, tx);
+        tx.setVisible(false);
+
         tx = new GuiElementInst(new Texture(), JsonUtils.deepCopy(data)).initialize(gui);
         tx.data.add("uv", data.get("uvHover"));
         listToBuild.put(BtnTextures.HOVER.n, tx);
+        tx.setVisible(false);
+
         tx = new GuiElementInst(new Texture(), JsonUtils.deepCopy(data)).initialize(gui);
         tx.data.add("uv", data.get("uvChecked"));
         listToBuild.put(BtnTextures.CHECKED.n, tx);
+        tx.setVisible(false);
+
         tx = new GuiElementInst(new Texture(), JsonUtils.deepCopy(data)).initialize(gui);
         tx.data.add("uv", data.get("uvCheckedHover"));
         listToBuild.put(BtnTextures.CHECKED_HOVER.n, tx);
+        tx.setVisible(false);
+
         tx = new GuiElementInst(new Texture(), JsonUtils.deepCopy(data)).initialize(gui);
         tx.data.add("uv", data.get("uvDisabled"));
         listToBuild.put(BtnTextures.DISABLED.n, tx);
+        tx.setVisible(false);
     }
 
     /*
@@ -160,6 +168,8 @@ public class CheckBox
 
     @Override
     public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
+        this.alignment = new GuiElementInst.Justify[] { inst.getAlignmentH(), inst.getAlignmentV() };
+
 //        this.texture = gui.getDefinition().getTexture(data.get("texture"));
         int[] size = JsonUtils.getIntArray(data.get("size"), Range.is(2));
         int[] uv = JsonUtils.getIntArray(data.get("uv"), Range.is(2));
@@ -168,7 +178,7 @@ public class CheckBox
         JsonUtils.addDefaultJsonProperty(data, "uvCheckedHover", new int[] { uv[0], uv[1] + size[1] * 3 });
         JsonUtils.addDefaultJsonProperty(data, "uvDisabled", new int[] { uv[0], uv[1] + size[1] * 4 });
 
-        this.ckbRight = JsonUtils.getBoolVal(data.get("alignRight"), false);
+//        this.ckbRight = JsonUtils.getBoolVal(data.get("alignRight"), false);
 
 //        JsonObject lbl = MiscUtils.defIfNull(data.getAsJsonObject("label"), JsonObject::new);
 //        this.labelColorHover = MiscUtils.hexToInt(JsonUtils.getStringVal(lbl.get("colorHover"), "0xFF0040A0"));
@@ -184,12 +194,16 @@ public class CheckBox
 //        this.labelColor = this.label.get(Text.class).data.color;
         super.bakeData(gui, data, inst);
 
-        GuiElementInst label = this.getChild(LABEL);
-        this.calcWidth(label);
+        GuiElementInst lbl = this.getChild(LABEL);
+        if( lbl != null ) {
+            lbl.alignment = inst.alignment;
+        }
+
+        this.calcSize();
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends Text> T getLabelElement(IGui gui, JsonObject data) {
+    public <T extends Text> T getLabel(IGui gui, JsonObject data) {
         return (T) new Text();
     }
 
@@ -212,27 +226,98 @@ public class CheckBox
         return this.checked;
     }
 
-    protected void calcWidth(GuiElementInst label) {
+    protected void calcSize() {
+        GuiElementInst label = this.getChild(LABEL);
+
+        this.currSize = new int[2];
+        this.btnPos = new int[2];
+        this.lblPos = new int[2];
+
+        int[] ls = {0, 0};
+        int[] lp = this.lblOffset;
         IGuiElement e = this.getChild(BtnTextures.DEFAULT.n).get();
-        int[] size = { e.getWidth(), e.getHeight() };
+        int[] cs = { e.getWidth(), e.getHeight() };
+
         if( label != null ) {
-            this.currWidth = Math.max(size[0], size[0] + label.pos[0] + label.get().getWidth());
-            this.currHeight = Math.max(size[1], label.pos[1] + label.get().getHeight());
+            ls = new int[] { label.get().getWidth(), label.get().getHeight() };
+//            this.currSize = new int[] {
+//                    Math.max(size[0], size[0] + label.pos[0] + label.get().getWidth()),
+//                    Math.max(size[1], label.pos[1] + label.get().getHeight())
+//            };
+        }
+
+    /*
+    *   HL: cx = 0,                           lx = cw + lox,              w = lx + lw
+        HC: cx = max(0, (lw + lox - cw) / 2), lx = max(cw, lw) / 2 + lox, w = max(cw, lw + lox)
+        HR: cx = lw + lox,                    lx = lw,                    w = cx + cw
+    * */
+        switch( this.alignment[0] ) {
+            case CENTER:
+                this.btnPos[0] = Math.max(0, (ls[0] + lp[0] - cs[0]) / 2);
+                this.lblPos[0] = Math.max(cs[0], ls[0]) / 2 + lp[0];
+                this.currSize[0] = Math.max(cs[0], ls[0] + lp[0]);
+                break;
+            case RIGHT:
+                this.btnPos[0] = ls[0] + lp[0];
+                this.lblPos[0] = ls[0];
+                this.currSize[0] = this.btnPos[0] + cs[0];
+                break;
+            default:
+                this.btnPos[0] = 0;
+                this.lblPos[0] = cs[0] + lp[0];
+                this.currSize[0] = this.lblPos[0] + ls[0];
+                break;
+        }
+        /*
+        // no HC
+        VT: cy = 0,                           ly = loy,                         h = max(cy + ch, ly + lh)
+        VC: cy = max(0, (lh + loy - ch) / 2), ly = max(0, (ch - lh)) / 2 + loy, h = max(cy + ch, ly + lh)
+        VB: cy = max(0, lh + loy - ch),       ly = max(0, ch - lh + loy),       h = max(cy + ch, ly + lh)
+        // HC
+        VT: cy = 0,                           ly = ch + loy,                    h = ly + lh
+        VB: cy = lh + loy,                    ly = 0,                           h = ly + lh
+        */
+        if( this.alignment[0] == GuiElementInst.Justify.CENTER ) {
+            switch( this.alignment[1] ) {
+                case TOP:
+                    this.btnPos[1] = 0;
+                    this.lblPos[1] = cs[1] + lp[1];
+                    break;
+                case BOTTOM:
+                    this.btnPos[1] = ls[1] + lp[1];
+                    this.lblPos[1] = 0;
+                    break;
+            }
+            this.currSize[1] = this.lblPos[1] + ls[1];
         } else {
-            this.currWidth = size[0];
-            this.currHeight = size[1];
+            switch( this.alignment[1] ) {
+                case TOP:
+                    this.btnPos[1] = 0;
+                    this.lblPos[1] = lp[1];
+                    break;
+                case CENTER:
+                    this.btnPos[1] = Math.max(0, (ls[1] + lp[1] - cs[1]) / 2);
+                    this.lblPos[1] = Math.max(0, (cs[1] - ls[1])) / 2 + lp[1];
+                case BOTTOM:
+                    this.btnPos[1] = Math.max(0, ls[1] + lp[1] - cs[1]);
+                    this.lblPos[1] = Math.max(0, cs[1] - ls[1] + lp[1]);
+                    break;
+            }
+            this.currSize[1] = Math.max(this.btnPos[1] + cs[1], this.lblPos[1] + ls[1]);
         }
     }
 
     @Override
     public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
         GuiElementInst label = this.getChild(LABEL);
-        this.calcWidth(label);
+        this.calcSize();
 
-        boolean hovering = IGuiElement.isHovering(gui, x, y, mouseX, mouseY, this.currWidth, this.currHeight);
+        boolean hovering = IGuiElement.isHovering(gui, x, y, mouseX, mouseY, this.currSize[0], this.currSize[1]);
 
-        GuiElementInst drawnBtn = null;
-        String txtColor = "";
+        String txtColor;
+        Arrays.asList(BtnTextures.VALUES).forEach(b -> this.getChild(b.n).setVisible(false));
+
+        GuiElementInst currBtn;
         if( this.enabled ) {
             if( Mouse.isButtonDown(0) ) {
                 this.prevMouseDown = true;
@@ -245,26 +330,33 @@ public class CheckBox
             }
 
             if( hovering ) {
-                drawnBtn = this.getChild((this.checked ? BtnTextures.CHECKED_HOVER : BtnTextures.HOVER).n);
+                currBtn = this.getChild((this.checked ? BtnTextures.CHECKED_HOVER : BtnTextures.HOVER).n);
                 txtColor = "hover";
             } else {
-                drawnBtn = this.getChild((this.checked ? BtnTextures.CHECKED : BtnTextures.DEFAULT).n);
+                currBtn = this.getChild((this.checked ? BtnTextures.CHECKED : BtnTextures.DEFAULT).n);
                 txtColor = "default";
             }
         } else {
-            drawnBtn = this.getChild(BtnTextures.DISABLED.n);
+            currBtn = this.getChild(BtnTextures.DISABLED.n);
             txtColor = "disabled";
         }
 
-        int posX = x;
+        currBtn.setVisible(true);
+        currBtn.pos = this.btnPos;
+
+        GuiUtils.drawGradientRect(x, y, this.currSize[0], this.currSize[1], 0xFFFF0000, 0xFF00FFFF, false);
+
+//        int posX = x;
         if( label != null ) {
             IGuiElement e = label.get();
             if( e instanceof Text ) {
                 ((Text) e).setColor(txtColor);
             }
 
-            GuiDefinition.renderElement(gui, this.ckbRight ? x : x + label.pos[0], y + label.pos[1], mouseX, mouseY, partTicks, label);
-            posX = this.ckbRight ? x + e.getWidth() + label.pos[0] : x;
+            label.pos = this.lblPos;
+
+//            GuiDefinition.renderElement(gui, x + this.lblPos[0], y + this.lblPos[1], mouseX, mouseY, partTicks, label);
+//            posX = this.ckbRight ? x + e.getWidth() + label.pos[0] : x;
         }
 
 //        gui.get().mc.renderEngine.bindTexture(this.texture);
@@ -272,17 +364,18 @@ public class CheckBox
 //        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 //        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 //        Gui.drawModalRectWithCustomSizedTexture(posX, y, uv[0], uv[1], this.size[0], this.size[1], this.textureSize[0], this.textureSize[1]);
-        GuiDefinition.renderElement(gui, this.ckbRight ? x + drawnBtn.get().getWidth() : x, y, mouseX, mouseY, partTicks, drawnBtn);
+//        GuiDefinition.renderElement(gui, x + this.ckbPos[0], y + this.ckbPos[1], mouseX, mouseY, partTicks, drawnBtn);
+        super.render(gui, partTicks, x, y, mouseX, mouseY, data);
     }
 
     @Override
     public int getWidth() {
-        return this.currWidth;
+        return this.currSize[0];
     }
 
     @Override
     public int getHeight() {
-        return this.currHeight;
+        return this.currSize[1];
     }
 
     public void setEnabled(boolean enabled) {
@@ -291,5 +384,12 @@ public class CheckBox
 
     public boolean isEnabled() {
         return this.enabled;
+    }
+
+    public enum BtnTextures {
+        DEFAULT, HOVER, CHECKED, CHECKED_HOVER, DISABLED;
+
+        private final String n = name();
+        private static final BtnTextures[] VALUES = values();
     }
 }

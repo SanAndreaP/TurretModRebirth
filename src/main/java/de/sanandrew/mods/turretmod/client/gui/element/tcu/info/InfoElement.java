@@ -2,6 +2,7 @@ package de.sanandrew.mods.turretmod.client.gui.element.tcu.info;
 
 import com.google.common.base.Strings;
 import com.google.gson.JsonObject;
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
@@ -28,7 +29,9 @@ import java.util.function.Function;
 public class InfoElement
         implements IGuiElement
 {
-    public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu_info_progress");
+    public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu.info_progress");
+
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###.#");
 
     private static final String HEALTH          = "health";
     private static final String AMMO            = "ammo";
@@ -39,39 +42,34 @@ public class InfoElement
 
     private int[]          size;
     private String         type;
-    private GuiElementInst bar     = null;
-    private GuiElementInst text    = null;
-    private GuiElementInst icon    = null;
+    private GuiElementInst bar;
+    private GuiElementInst text;
+    private GuiElementInst icon;
     private boolean        visible = true;
-    private boolean        forceVisible = true;
 
     @Override
-    public void bakeData(IGui gui, JsonObject data) {
+    public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
         this.size = JsonUtils.getIntArray(data.get("size"), new int[] { 164, 16 }, Range.is(2));
 
         this.type = JsonUtils.getStringVal(data.get("type"));
 
         if( data.has("bar") ) {
-            this.bar = JsonUtils.GSON.fromJson(data.get("bar"), GuiElementInst.class);
-            this.bar.element = new InfoBar();
-            gui.getDefinition().initElement(this.bar);
-            this.bar.data.addProperty("type", this.type);
-            this.bar.get().bakeData(gui, this.bar.data);
+            this.bar = new GuiElementInst(new InfoBar(), data.getAsJsonObject("bar")).initialize(gui);
+            this.bar.pos = JsonUtils.getIntArray(this.bar.data.get("offset"), new int[2], Range.is(2));
+            this.bar.get().bakeData(gui, this.bar.data, this.bar);
         }
 
         if( data.has("text") ) {
-            this.text = JsonUtils.GSON.fromJson(data.get("text"), GuiElementInst.class);
-            this.text.element = new InfoText();
-            gui.getDefinition().initElement(this.text);
-            this.text.data.addProperty("type", this.type);
-            this.text.get().bakeData(gui, this.text.data);
+            this.text = new GuiElementInst(new InfoText(), data.getAsJsonObject("text")).initialize(gui);
+            this.text.pos = JsonUtils.getIntArray(this.text.data.get("offset"), new int[2], Range.is(2));
+            this.text.alignment = JsonUtils.getStringArray(this.text.data.get("alignment"), new String[0], Range.between(1, 2));
+            this.text.get().bakeData(gui, this.text.data, this.text);
         }
 
         if( data.has("icon") ) {
-            this.icon = JsonUtils.GSON.fromJson(data.get("icon"), GuiElementInst.class);
-            gui.getDefinition().initElement(this.icon);
-            this.icon.data.addProperty("type", this.type);
-            this.icon.get().bakeData(gui, this.icon.data);
+            this.icon = new GuiElementInst(new Texture(), data.getAsJsonObject("icon")).initialize(gui);
+            this.icon.pos = JsonUtils.getIntArray(this.icon.data.get("offset"), new int[2], Range.is(2));
+            this.icon.get().bakeData(gui, this.icon.data, this.icon);
         }
     }
 
@@ -86,7 +84,11 @@ public class InfoElement
             return;
         }
 
-        Consumer<GuiElementInst> u = inst -> { if( inst != null ) inst.get().update(gui, inst.data); };
+        Consumer<GuiElementInst> u = inst -> {
+            if( inst != null ) {
+                inst.get().update(gui, inst.data);
+            }
+        };
         u.accept(this.bar);
         u.accept(this.text);
         u.accept(this.icon);
@@ -94,7 +96,11 @@ public class InfoElement
 
     @Override
     public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
-        Consumer<GuiElementInst> r = inst -> { if( inst != null ) inst.get().render(gui, partTicks, x + inst.pos[0], y + inst.pos[1], mouseX, mouseY, inst.data); };
+        Consumer<GuiElementInst> r = inst -> {
+            if( inst != null ) {
+                GuiDefinition.renderElement(gui, x + inst.pos[0], y + inst.pos[1], mouseX, mouseY, partTicks, inst);
+            }
+        };
         r.accept(this.bar);
         r.accept(this.text);
         r.accept(this.icon);
@@ -112,27 +118,18 @@ public class InfoElement
 
     @Override
     public boolean isVisible() {
-        return this.visible && this.forceVisible;
+        return this.visible;
     }
 
-    @Override
-    public void setVisible(boolean visible) {
-        this.forceVisible = visible;
-    }
-
-    public static class InfoBar
+    public class InfoBar
             extends Texture
     {
-        private String type = null;
         private int[]  uvBg = null;
 
         @Override
-        public void bakeData(IGui gui, JsonObject data) {
-            super.bakeData(gui, data);
+        public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
+            super.bakeData(gui, data, inst);
 
-            if( this.type == null ) {
-                this.type = JsonUtils.getStringVal(data.get("type"));
-            }
             if( this.uvBg == null ) {
                 this.uvBg = JsonUtils.getIntArray(data.get("uvBackground"), null, Range.is(2));
             }
@@ -143,7 +140,7 @@ public class InfoElement
             ITurretInst ti = ((IGuiTcuInst<?>) gui).getTurretInst();
 
             double perc = 0.0D;
-            switch( this.type ) {
+            switch( InfoElement.this.type ) {
                 case HEALTH:
                     perc = v(ti.get(),
                              e -> e.getHealth() / (double) e.getMaxHealth());
@@ -163,38 +160,30 @@ public class InfoElement
 
             if( perc > -0.1D ) {
                 if( this.uvBg != null ) {
-                    Gui.drawModalRectWithCustomSizedTexture(0, 0, this.uvBg[0], this.uvBg[1], this.data.size[0], this.data.size[1],
-                                                            this.data.textureSize[0], this.data.textureSize[1]);
+                    Gui.drawModalRectWithCustomSizedTexture(0, 0, this.uvBg[0], this.uvBg[1], this.size[0], this.size[1],
+                                                            this.textureSize[0], this.textureSize[1]);
                 }
 
-                int barX = Math.max(0, Math.min(this.data.size[0], MathHelper.ceil(perc * this.data.size[0])));
-                Gui.drawModalRectWithCustomSizedTexture(0, 0, this.data.uv[0], this.data.uv[1], barX, this.data.size[1],
-                                                        this.data.textureSize[0], this.data.textureSize[1]);
+                int barX = Math.max(0, Math.min(this.size[0], MathHelper.ceil(perc * this.size[0])));
+                Gui.drawModalRectWithCustomSizedTexture(0, 0, this.uv[0], this.uv[1], barX, this.size[1],
+                                                        this.textureSize[0], this.textureSize[1]);
             }
         }
 
-        private static <T> double v(T e, Function<T, Double> func) {
+        private <T> double v(T e, Function<T, Double> func) {
             return func.apply(e);
         }
     }
 
-    public static final class InfoText
+    public final class InfoText
             extends Text
     {
-        private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###.#");
-
-        private String type = null;
-
         @Override
-        public void bakeData(IGui gui, JsonObject data) {
+        public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
             JsonUtils.addDefaultJsonProperty(data, "color", "0xFF000000");
             JsonUtils.addDefaultJsonProperty(data, "shadow", false);
 
-            super.bakeData(gui, data);
-
-            if( this.type == null ) {
-                this.type = JsonUtils.getStringVal(data.get("type"));
-            }
+            super.bakeData(gui, data, inst);
         }
 
         @Override
@@ -212,7 +201,7 @@ public class InfoElement
             ITurretInst ti = ((IGuiTcuInst<?>) gui).getTurretInst();
             double[] vals;
 
-            switch( this.type ) {
+            switch( InfoElement.this.type ) {
                 case HEALTH:
                     vals = v(ti.get(),
                              e -> new double[] { e.getHealth(), e.getMaxHealth() });
@@ -243,11 +232,11 @@ public class InfoElement
             return "";
         }
 
-        private static <T, U> U v(T e, Function<T, U> func) {
+        private <T, U> U v(T e, Function<T, U> func) {
             return func.apply(e);
         }
 
-        private static String getRatioText(double[] vals, String unit) {
+        private String getRatioText(double[] vals, String unit) {
             return vals != null ? String.format("%s/%s %s", DECIMAL_FORMAT.format(vals[0]), DECIMAL_FORMAT.format(vals[1]), unit) : "";
         }
     }

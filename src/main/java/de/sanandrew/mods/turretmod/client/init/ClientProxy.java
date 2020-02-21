@@ -32,16 +32,15 @@ import de.sanandrew.mods.turretmod.client.gui.element.assembly.AssemblyGhostItem
 import de.sanandrew.mods.turretmod.client.gui.element.assembly.AssemblyGroupIcon;
 import de.sanandrew.mods.turretmod.client.gui.element.assembly.AssemblyProgressBar;
 import de.sanandrew.mods.turretmod.client.gui.element.assembly.AssemblyRecipeArea;
-import de.sanandrew.mods.turretmod.client.gui.element.assembly.AssemblyRecipeLabel;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.info.AmmoItem;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.info.AmmoItemLabel;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.info.ErrorLabel;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.info.AmmoItemTooltip;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.info.ErrorTooltip;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.info.PlayerIcon;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.info.InfoElement;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.nav.PageNavigation;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.TurretCam;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.TurretName;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.nav.PageNavigationLabel;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.nav.PageNavigationTooltip;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.shieldcolor.CheckBox;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.shieldcolor.ColorPicker;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.shieldcolor.ShieldRender;
@@ -98,20 +97,18 @@ public class ClientProxy
         GuiDefinition.TYPES.put(AssemblyRecipeArea.ID, AssemblyRecipeArea::new);
         GuiDefinition.TYPES.put(AssemblyGroupIcon.ID, AssemblyGroupIcon::new);
         GuiDefinition.TYPES.put(AssemblyProgressBar.ID, AssemblyProgressBar::new);
-        GuiDefinition.TYPES.put(AssemblyProgressBar.AssemblyProgressLabel.ID, AssemblyProgressBar.AssemblyProgressLabel::new);
-        GuiDefinition.TYPES.put(AssemblyRecipeLabel.ID, AssemblyRecipeLabel::new);
         GuiDefinition.TYPES.put(AssemblyGhostItems.ID, AssemblyGhostItems::new);
 
         GuiDefinition.TYPES.put(PageNavigation.ID, PageNavigation::new);
-        GuiDefinition.TYPES.put(PageNavigationLabel.ID, PageNavigationLabel::new);
+        GuiDefinition.TYPES.put(PageNavigationTooltip.ID, PageNavigationTooltip::new);
         GuiDefinition.TYPES.put(TurretName.ID, TurretName::new);
         GuiDefinition.TYPES.put(TurretCam.ID, TurretCam::new);
         GuiDefinition.TYPES.put(PlayerIcon.ID, PlayerIcon::new);
         GuiDefinition.TYPES.put(AmmoItem.ID, AmmoItem::new);
         GuiDefinition.TYPES.put(InfoElement.ID, InfoElement::new);
-        GuiDefinition.TYPES.put(AmmoItemLabel.ID, AmmoItemLabel::new);
+        GuiDefinition.TYPES.put(AmmoItemTooltip.ID, AmmoItemTooltip::new);
         GuiDefinition.TYPES.put(TargetList.ID, TargetList::new);
-        GuiDefinition.TYPES.put(ErrorLabel.ID, ErrorLabel::new);
+        GuiDefinition.TYPES.put(ErrorTooltip.ID, ErrorTooltip::new);
         GuiDefinition.TYPES.put(ShieldRender.ID, ShieldRender::new);
 
         GuiDefinition.TYPES.put(ColorPicker.ID, ColorPicker::new);

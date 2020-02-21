@@ -1,6 +1,7 @@
 package de.sanandrew.mods.turretmod.client.gui.element.assembly;
 
 import com.google.gson.JsonObject;
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
@@ -25,19 +26,18 @@ public class AssemblyGhostItems
 
     public final List<SlotData> slotsRendered = new ArrayList<>();
 
-    public final ItemStack upgIconAuto = new ItemStack(ItemRegistry.ASSEMBLY_UPG_AUTO);
-    public final ItemStack upgIconSpeed = new ItemStack(ItemRegistry.ASSEMBLY_UPG_SPEED);
+    public final ItemStack upgIconAuto   = new ItemStack(ItemRegistry.ASSEMBLY_UPG_AUTO);
+    public final ItemStack upgIconSpeed  = new ItemStack(ItemRegistry.ASSEMBLY_UPG_SPEED);
     public final ItemStack upgIconFilter = new ItemStack(ItemRegistry.ASSEMBLY_UPG_FILTER);
-    public final ItemStack cartridge = new ItemStack(ItemRegistry.AMMO_CARTRIDGE);
+    public final ItemStack cartridge     = new ItemStack(ItemRegistry.AMMO_CARTRIDGE);
 
     @Override
-    public void bakeData(IGui gui, JsonObject data) {
-        JsonUtils.addJsonProperty(data, "size", new int[] { 16, 16});
-        JsonUtils.addJsonProperty(data, "uv", new int[] {0, 0});
-        data.addProperty("forceAlpha", true);
-        if( !data.has("color") ) data.addProperty("color", "0xA0FFFFFF");
+    public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
+        JsonUtils.addJsonProperty(data, "size", new int[] { 16, 16 });
+        JsonUtils.addJsonProperty(data, "uv", new int[] { 0, 0 });
+        JsonUtils.addDefaultJsonProperty(data, "color", "0xA0FFFFFF");
 
-        super.bakeData(gui, data);
+        super.bakeData(gui, data, inst);
     }
 
     @Override
@@ -47,9 +47,15 @@ public class AssemblyGhostItems
         this.slotsRendered.clear();
 
         GuiTurretAssembly gta = (GuiTurretAssembly) gui;
-        if( !gta.assembly.hasAutoUpgrade() ) this.slotsRendered.add(new SlotData(upgIconAuto, 14, 100));
-        if( !gta.assembly.hasSpeedUpgrade() ) this.slotsRendered.add(new SlotData(upgIconSpeed, 14, 118));
-        if( !ItemStackUtils.isValid(gta.assembly.getInventory().getStackInSlot(4)) ) this.slotsRendered.add(new SlotData(cartridge, 181, 10));
+        if( !gta.assembly.hasAutoUpgrade() ) {
+            this.slotsRendered.add(new SlotData(upgIconAuto, 14, 100));
+        }
+        if( !gta.assembly.hasSpeedUpgrade() ) {
+            this.slotsRendered.add(new SlotData(upgIconSpeed, 14, 118));
+        }
+        if( !ItemStackUtils.isValid(gta.assembly.getInventory().getStackInSlot(4)) ) {
+            this.slotsRendered.add(new SlotData(cartridge, 181, 10));
+        }
         if( !gta.assembly.hasFilterUpgrade() ) {
             this.slotsRendered.add(new SlotData(upgIconFilter, 202, 100));
         } else {
@@ -71,7 +77,7 @@ public class AssemblyGhostItems
     public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
         for( SlotData item : this.slotsRendered ) {
             RenderUtils.renderStackInGui(item.stack, item.x, item.y, 1.0D);
-            this.data.uv = new int[] {item.x, item.y};
+            this.uv = new int[] { item.x, item.y };
             GlStateManager.disableDepth();
             super.render(gui, partTicks, item.x, item.y, mouseX, mouseY, data);
             GlStateManager.enableDepth();
@@ -81,8 +87,8 @@ public class AssemblyGhostItems
     public static class SlotData
     {
         public final ItemStack stack;
-        public final int x;
-        public final int y;
+        public final int       x;
+        public final int       y;
 
         public SlotData(ItemStack stack, int x, int y) {
             this.stack = stack;

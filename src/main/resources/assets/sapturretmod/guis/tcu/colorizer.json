@@ -52,14 +52,14 @@
     {
       "type": "text",
       "pos": [105, 106],
+      "alignment": ["right"],
       "data": {
         "text": "gui.sapturretmod.tcu.page.colorizer.colorcode",
-        "justify": "right",
         "color": "0xFF404040"
       }
     },
     {
-      "type": "sapturretmod:tcu_colorizer_shield",
+      "type": "sapturretmod:tcu.colorizer_shield",
       "id": "shield",
       "pos": [88, 132]
     },
@@ -67,10 +67,11 @@
       "type": "check_box",
       "pos": [10, 112],
       "id": "cull-faces",
+      "alignment": ["left", "bottom"],
       "data": {
         "size": [8, 8],
         "uv": [0, 0],
-        "label": {
+        "labelText": {
           "text": "gui.sapturretmod.tcu.page.colorizer.cullfaces"
         }
       }
