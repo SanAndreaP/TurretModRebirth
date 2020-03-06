@@ -37,13 +37,19 @@ public class TargetNode<T>
 
     @Override
     public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
+
         GuiDefinition guiDef = gui.getDefinition();
         ITurretInst turretInst = ((IGuiTcuInst<?>) gui).getTurretInst();
         TargetType.EntityType type = this.targetType.getType(turretInst, this.targetId);
 ////        JsonObject ckbData = MiscUtils.defIfNull(, JsonObject::new).getAsJsonObject();
 //
         this.margins = JsonUtils.getIntArray(data.get("margins"), new int[] {2, 2, 0, 2}, Range.is(4));
-        this.name = this.targetType.getName(turretInst, this.targetId);
+
+        JsonObject lblData = new JsonObject();
+
+        data.add("labelText", lblData);
+
+        super.bakeData(gui, data, inst);
 //
 //        CheckBox ckb = new CheckBox();
 //        this.checkbox = new GuiElementInst(ckb, data.getAsJsonObject("checkbox")).initialize(gui);
@@ -68,24 +74,27 @@ public class TargetNode<T>
     }
 
     @Override
-    public <T extends Text> T getLabel(IGui gui, JsonObject data) {
-        return super.getLabel(gui, data);
+    @SuppressWarnings("unchecked")
+    public <U extends Text> U getLabel(IGui gui, JsonObject data) {
+        return (U) new Label();
     }
 
-    private static String getTextColor(JsonObject textData, TargetType.EntityType type, String suffix) {
-        if( suffix.equalsIgnoreCase("disabled") ) {
-            return JsonUtils.getStringVal(textData.get("colorDisabled"), "0xFF404040");
-        }
+//    private static JsonObject getTextColor(JsonObject textData, TargetType.EntityType type) {
+//        String[] suffixes = {"default", "hover", "disabled"};
 
-        switch( type ) {
-            case HOSTILE:
-                return JsonUtils.getStringVal(textData.get("colorHostile" + suffix), suffix.equalsIgnoreCase("hover") ? "0xFFC00000" : "0xFF800000");
-            case PEACEFUL:
-                return JsonUtils.getStringVal(textData.get("colorPeaceful" + suffix), suffix.equalsIgnoreCase("hover") ? "0xFF00C000" : "0xFF008000");
-            default:
-                return JsonUtils.getStringVal(textData.get("color" + suffix), suffix.equalsIgnoreCase("hover") ? "0xFF0040A0" : "0xFF000000");
-        }
-    }
+//        if( suffix.equalsIgnoreCase("disabled") ) {
+//            return JsonUtils.getStringVal(textData.get("colorDisabled"), "0xFF404040");
+//        }
+//
+//        switch( type ) {
+//            case HOSTILE:
+//                return JsonUtils.getStringVal(textData.get("colorHostile" + suffix), suffix.equalsIgnoreCase("hover") ? "0xFFC00000" : "0xFF800000");
+//            case PEACEFUL:
+//                return JsonUtils.getStringVal(textData.get("colorPeaceful" + suffix), suffix.equalsIgnoreCase("hover") ? "0xFF00C000" : "0xFF008000");
+//            default:
+//                return JsonUtils.getStringVal(textData.get("color" + suffix), suffix.equalsIgnoreCase("hover") ? "0xFF0040A0" : "0xFF000000");
+//        }
+//    }
 
     @Override
     public void update(IGui gui, JsonObject data) {
@@ -140,7 +149,24 @@ public class TargetNode<T>
 //        return this.checkbox.get().keyTyped(gui, typedChar, keyCode);
 //    }
 
-    public String getName() {
+    public String getName(ITurretInst turretInst) {
+        if( this.name == null ) {
+            this.name = this.targetType.getName(turretInst, this.targetId);
+        }
         return this.name;
+    }
+
+    private final class Label
+            extends Text
+    {
+        @Override
+        public String getBakedText(IGui gui, JsonObject data) {
+            return "";
+        }
+
+        @Override
+        public String getDynamicText(IGui gui, String originalText) {
+            return MiscUtils.defIfNull(TargetNode.this.getName(((IGuiTcuInst<?>) gui).getTurretInst()), "");
+        }
     }
 }

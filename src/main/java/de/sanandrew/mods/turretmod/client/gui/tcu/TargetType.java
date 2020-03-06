@@ -58,12 +58,9 @@ public abstract class TargetType<T>
     public void buildElements(IGui gui, ITurretInst turretInst, JsonObject nodeData, int width, String filter, List<GuiElementInst> elements) {
         MutableInt posY = new MutableInt(0);
         this.getTargets(turretInst).forEach((id, enabled) -> {
-            GuiElementInst elem = new GuiElementInst();
-            elem.element = new TargetNode<>(id, this, width);
-            gui.getDefinition().initElement(elem);
-            elem.data = nodeData;
+            GuiElementInst elem = new GuiElementInst(new TargetNode<>(id, this, width), nodeData).initialize(gui);
             elem.get().bakeData(gui, elem.data, elem);
-            if( Strings.isNullOrEmpty(filter) || elem.get(TargetNode.class).getName().toLowerCase(Locale.ROOT).contains(filter.toLowerCase(Locale.ROOT)) ) {
+            if( Strings.isNullOrEmpty(filter) || elem.get(TargetNode.class).getName(turretInst).toLowerCase(Locale.ROOT).contains(filter.toLowerCase(Locale.ROOT)) ) {
                 elements.add(elem);
                 elem.pos[1] = posY.getAndAdd(elem.get().getHeight());
             }

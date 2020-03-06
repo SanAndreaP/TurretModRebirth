@@ -282,13 +282,14 @@ public class CheckBox
                 case TOP:
                     this.btnPos[1] = 0;
                     this.lblPos[1] = cs[1] + lp[1];
+                    this.currSize[1] = this.lblPos[1] + ls[1];
                     break;
                 case BOTTOM:
                     this.btnPos[1] = ls[1] + lp[1];
                     this.lblPos[1] = 0;
+                    this.currSize[1] = this.btnPos[1] + cs[1];
                     break;
             }
-            this.currSize[1] = this.lblPos[1] + ls[1];
         } else {
             switch( this.alignment[1] ) {
                 case TOP:
@@ -298,6 +299,7 @@ public class CheckBox
                 case CENTER:
                     this.btnPos[1] = Math.max(0, (ls[1] + lp[1] - cs[1]) / 2);
                     this.lblPos[1] = Math.max(0, (cs[1] - ls[1])) / 2 + lp[1];
+                    break;
                 case BOTTOM:
                     this.btnPos[1] = Math.max(0, ls[1] + lp[1] - cs[1]);
                     this.lblPos[1] = Math.max(0, cs[1] - ls[1] + lp[1]);
@@ -344,7 +346,7 @@ public class CheckBox
         currBtn.setVisible(true);
         currBtn.pos = this.btnPos;
 
-        GuiUtils.drawGradientRect(x, y, this.currSize[0], this.currSize[1], 0xFFFF0000, 0xFF00FFFF, false);
+//        GuiUtils.drawGradientRect(x, y, this.currSize[0], this.currSize[1], 0xFFFF0000, 0xFF00FFFF, false);
 
 //        int posX = x;
         if( label != null ) {
@@ -354,6 +356,14 @@ public class CheckBox
             }
 
             label.pos = this.lblPos;
+            switch( this.alignment[1] ) {
+                case CENTER:
+                    label.pos[1] += label.get().getHeight() / 2;
+                    break;
+                case BOTTOM:
+                    label.pos[1] += label.get().getHeight();
+                    break;
+            }
 
 //            GuiDefinition.renderElement(gui, x + this.lblPos[0], y + this.lblPos[1], mouseX, mouseY, partTicks, label);
 //            posX = this.ckbRight ? x + e.getWidth() + label.pos[0] : x;

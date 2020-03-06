@@ -67,13 +67,11 @@
       "type": "check_box",
       "pos": [10, 112],
       "id": "cull-faces",
-      "alignment": ["left", "bottom"],
+      "alignment": ["left", "center"],
       "data": {
         "size": [8, 8],
         "uv": [0, 0],
-        "labelText": {
-          "text": "gui.sapturretmod.tcu.page.colorizer.cullfaces"
-        }
+        "labelText": "gui.sapturretmod.tcu.page.colorizer.cullfaces"
       }
     }
   ],

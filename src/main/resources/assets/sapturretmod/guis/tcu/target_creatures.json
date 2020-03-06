@@ -10,21 +10,16 @@
         "targetType": "creature",
         "areaSize": [153, 135],
         "rasterized": true,
+        "scrollbarPos": [162, 53],
         "scrollButton": {
-          "type": "texture",
-          "pos": [162, 53],
-          "data": {
-            "size": [6, 6],
-            "uv": [176, 0]
-          }
+          "size": [6, 6],
+          "uv": [176, 0],
+          "uvDisabled": [176, 6]
         },
-        "scrollButtonDeactive": {
-          "type": "texture",
-          "pos": [162, 53],
-          "data": {
-            "size": [6, 6],
-            "uv": [176, 6]
-          }
+        "node": {
+          "size": [8, 8],
+          "uv": [0, 0],
+          "labelText": "gui.sapturretmod.tcu.page.colorizer.cullfaces"
         }
       }
     },

@@ -32,16 +32,20 @@ public class TargetList
     }
 
     @Override
+    public boolean bakeElements() {
+        return false;
+    }
+
+    @Override
     public GuiElementInst[] getElements(IGui gui, JsonObject data) {
-        return getElements(gui, data, "");
+        return getElements(gui, data, JsonUtils.getStringVal(data.get("filter"), ""));
     }
 
     private GuiElementInst[] getElements(IGui gui, JsonObject data, String filter) {
         ITurretInst turretInst = ((IGuiTcuInst<?>) gui).getTurretInst();
         List<GuiElementInst> elements = new ArrayList<>();
-        JsonObject nodeData = MiscUtils.defIfNull(data.getAsJsonObject("node"), JsonObject::new);
 
-        this.type.buildElements(gui, turretInst, nodeData, this.areaSize[0], filter, elements);
+        this.type.buildElements(gui, turretInst, data.getAsJsonObject("node"), this.areaSize[0], filter, elements);
 
         return elements.toArray(new GuiElementInst[0]);
     }
@@ -50,12 +54,16 @@ public class TargetList
     public void rebuild(IGui gui, JsonObject data, String filter) {
         this.scroll = 0.0F;
 
-        GuiElementInst[] elements = this.getElements(gui, data, filter);
-        this.elements.clear();
-        Arrays.stream(elements).forEach(e -> {
-            TargetNode<?> node = e.get(TargetNode.class);
-            node.bakeData(gui, e.data, e);
-            this.elements.put(Range.closedOpen(e.pos[1], e.pos[1] + node.getHeight()), e);
-        });
+        data = JsonUtils.deepCopy(data);
+        JsonUtils.addJsonProperty(data, "filter", filter);
+
+        this.rebuildElements(gui, data);
+//        GuiElementInst[] elements = this.getElements(gui, data, filter);
+//        this.elements.clear();
+//        Arrays.stream(elements).forEach(e -> {
+//            TargetNode<?> node = e.get(TargetNode.class);
+//            node.bakeData(gui, e.data, e);
+//            this.elements.put(Range.closedOpen(e.pos[1], e.pos[1] + node.getHeight()), e);
+//        });
     }
 }
