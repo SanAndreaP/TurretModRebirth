@@ -20,6 +20,7 @@ import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.registry.upgrades.shield.ShieldColorizer;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiShieldColorizer
@@ -47,9 +48,9 @@ public class GuiShieldColorizer
             this.syncColor(gui.getTurretInst());
         });
 
-        this.code.setValidator(s -> getInteger(s) != null);
+        this.code.setValidator(s -> TmrUtils.getInteger(s) != null);
         this.code.setResponder(s -> {
-            int clr = MiscUtils.defIfNull(getInteger(s), 0);
+            int clr = MiscUtils.defIfNull(TmrUtils.getInteger(s), 0);
             this.picker.setColor(clr);
             this.shield.setColor(clr);
             this.syncColor(gui.getTurretInst());
@@ -96,18 +97,5 @@ public class GuiShieldColorizer
             settings.setCullFaces(this.cullFaces.isChecked());
         }
         UpgradeRegistry.INSTANCE.syncWithServer(turretInst, Upgrades.SHIELD_COLORIZER.getId());
-    }
-
-    private static Integer getInteger(String s) {
-        try {
-            s = s.startsWith("#") ? s.substring(1) : s;
-            s = s.startsWith("0x") ? s : "0x" + s;
-
-            long l = Long.decode(s);
-
-            return (int) (l & 0xFFFFFFFFL);
-        } catch( NumberFormatException ex ) {
-            return null;
-        }
     }
 }

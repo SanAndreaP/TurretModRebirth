@@ -8,7 +8,6 @@ import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ElementParent;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
-import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.Range;
@@ -27,13 +26,13 @@ public class CheckBox
 
     public static final String LABEL = "label";
 
-    private boolean checked;
-    private boolean enabled = true;
-    private int[]   currSize;
-    private int[]   lblPos = new int[2];
-    private int[]   btnPos = new int[2];
-    private int[]   lblOffset = new int[2];
-    private boolean prevMouseDown;
+    private boolean                  checked;
+    private boolean                  enabled   = true;
+    private int[]                    currSize;
+    private int[]                    lblPos    = new int[2];
+    private int[]                    btnPos    = new int[2];
+    private int[]                    lblOffset = new int[2];
+    private boolean                  prevMouseDown;
     private GuiElementInst.Justify[] alignment;
 
     private Function<Boolean, Boolean> checkedChanging = b -> true;
@@ -62,7 +61,7 @@ public class CheckBox
                     lblData.add("color", colors);
                 } else {
                     lblData = lbl.getAsJsonObject();
-                    lblPos = JsonUtils.getIntArray(lblData.get("offset"), new int[] {2, 0}, Range.is(2));
+                    lblPos = JsonUtils.getIntArray(lblData.get("offset"), new int[] { 2, 0 }, Range.is(2));
                 }
                 lblInst = new GuiElementInst(lblPos, this.getLabel(gui, lblData), lblData).initialize(gui);
             }
@@ -75,102 +74,34 @@ public class CheckBox
         }
 
         GuiElementInst tx = new GuiElementInst(new Texture(), JsonUtils.deepCopy(data)).initialize(gui);
-        listToBuild.put(BtnTextures.DEFAULT.n, tx);
+        listToBuild.put(ButtonTextures.DEFAULT.n, tx);
         tx.setVisible(false);
 
         tx = new GuiElementInst(new Texture(), JsonUtils.deepCopy(data)).initialize(gui);
         tx.data.add("uv", data.get("uvHover"));
-        listToBuild.put(BtnTextures.HOVER.n, tx);
+        listToBuild.put(ButtonTextures.HOVER.n, tx);
         tx.setVisible(false);
 
         tx = new GuiElementInst(new Texture(), JsonUtils.deepCopy(data)).initialize(gui);
         tx.data.add("uv", data.get("uvChecked"));
-        listToBuild.put(BtnTextures.CHECKED.n, tx);
+        listToBuild.put(ButtonTextures.CHECKED.n, tx);
         tx.setVisible(false);
 
         tx = new GuiElementInst(new Texture(), JsonUtils.deepCopy(data)).initialize(gui);
         tx.data.add("uv", data.get("uvCheckedHover"));
-        listToBuild.put(BtnTextures.CHECKED_HOVER.n, tx);
+        listToBuild.put(ButtonTextures.CHECKED_HOVER.n, tx);
         tx.setVisible(false);
 
         tx = new GuiElementInst(new Texture(), JsonUtils.deepCopy(data)).initialize(gui);
         tx.data.add("uv", data.get("uvDisabled"));
-        listToBuild.put(BtnTextures.DISABLED.n, tx);
+        listToBuild.put(ButtonTextures.DISABLED.n, tx);
         tx.setVisible(false);
     }
-
-    /*
-    checkbox align: left [top center bottom]; right [top center bottom] -> label next to checkbox
-    checkbox align: center [top] -> label below checkbox
-    checkbox align: center [bottom] -> label above checkbox
-
-    label align:
-        CB_L: left align, text depends
-        CB_R: right align, text depends
-        CB_C: center align, text depends
-
-        HL: cx = 0,                           lx = cw + lox,              w = lx + lw
-        HC: cx = max(0, (lw + lox - cw) / 2), lx = max(cw, lw) / 2 + lox, w = max(cw, lw + lox)
-        HR: cx = lw + lox,                    lx = lw,                    w = cx + cw
-
-        // no HC
-        VT: cy = 0,                           ly = loy,                        h = max(cy + ch, ly + lh)
-        VC: cy = max(0, (lh + loy - ch) / 2), ly = max(0, (ch - lh) / 2 + loy, h = max(cy + ch, ly + lh)
-        VB: cy = max(0, lh + loy - ch),       ly = max(0, ch - lh + loy),      h = max(cy + ch, ly + lh)
-        // HC
-        VT: cy = 0,                           ly = ch + loy,                   h = ly + lh
-        VB: cy = lh + loy,                    ly = 0,                          h = ly + lh
-
-        #///
-         //
-         /
-        CB_L_T: cx = 0                                lx = cw + lox                        w = lx + lw
-                cy = 0                                ly = loy                             h = max(cy + ch, ly + lh)
-         ///
-        #//
-         /
-        CB_L_C: cx = 0                                lx = cw + lox                        w = lx + lw
-                cy = max(0, (lh + loy - ch) / 2)      ly = max(0, (ch - lh) / 2 + loy      h = max(cy + ch, ly + lh)
-         ///
-         //
-        #/
-        CB_L_B: cx = 0                                lx = cw + lox                        w = lx + lw
-                cy = max(0, lh + loy - ch)            ly = max(0, ch - lh + loy)           h = max(cy + ch, ly + lh)
-
-        \\\#
-         \\
-          \
-        CB_R_T: cx = lw + lox                         lx = lw                              w = cx + cw
-                cy = 0                                ly = loy                             h = max(cy + ch, ly + lh)
-        \\\
-         \\#
-          \
-        CB_R_C: cx = lw + lox                         lx = lw                              w = cx + cw
-                cy = max(0, (lh + loy - ch) / 2)      ly = max(0, (ch - lh) / 2 + loy      h = max(cy + ch, ly + lh)
-        \\\
-         \\
-          \#
-        CB_R_B: cx = lw + lox                         lx = lw                              w = cx + cw
-                cy = max(0, lh + loy - ch)            ly = max(0, ch - lh + loy)           h = max(cy + ch, ly + lh)
-
-          #
-        |||||
-         |||
-        CB_C_T: cx = max(0, (lw + lox - cw) / 2)      lx = max(cw, lw) / 2 + lox           w = max(cw, lw + lox)
-                cy = 0                                ly = ch + loy                        h = ly + lh
-        |||||
-         |||
-          #
-        CB_C_B: cx = max(0, (lw + lox - cw) / 2)      lx = max(cw, lw) / 2 + lox           w = max(cw, lw + lox)
-                cy = lh + loy                         ly = 0                               h = ly + lh
-
-     */
 
     @Override
     public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
         this.alignment = new GuiElementInst.Justify[] { inst.getAlignmentH(), inst.getAlignmentV() };
 
-//        this.texture = gui.getDefinition().getTexture(data.get("texture"));
         int[] size = JsonUtils.getIntArray(data.get("size"), Range.is(2));
         int[] uv = JsonUtils.getIntArray(data.get("uv"), Range.is(2));
         JsonUtils.addDefaultJsonProperty(data, "uvHover", new int[] { uv[0], uv[1] + size[1] });
@@ -178,20 +109,6 @@ public class CheckBox
         JsonUtils.addDefaultJsonProperty(data, "uvCheckedHover", new int[] { uv[0], uv[1] + size[1] * 3 });
         JsonUtils.addDefaultJsonProperty(data, "uvDisabled", new int[] { uv[0], uv[1] + size[1] * 4 });
 
-//        this.ckbRight = JsonUtils.getBoolVal(data.get("alignRight"), false);
-
-//        JsonObject lbl = MiscUtils.defIfNull(data.getAsJsonObject("label"), JsonObject::new);
-//        this.labelColorHover = MiscUtils.hexToInt(JsonUtils.getStringVal(lbl.get("colorHover"), "0xFF0040A0"));
-//        this.labelColorDisabled = MiscUtils.hexToInt(JsonUtils.getStringVal(lbl.get("colorDisabled"), "0xFF404040"));
-//
-//        this.label = new GuiElementInst();
-//        this.label.pos = JsonUtils.getIntArray(lbl.get("offset"), new int[] {2, 0}, Range.is(2));
-//        this.label.element = this.getLabelElement(gui, lbl);
-//        this.label.data = lbl;
-//        gui.getDefinition().initElement(this.label);
-//        this.label.get().bakeData(gui, this.label.data);
-//
-//        this.labelColor = this.label.get(Text.class).data.color;
         super.bakeData(gui, data, inst);
 
         GuiElementInst lbl = this.getChild(LABEL);
@@ -233,79 +150,62 @@ public class CheckBox
         this.btnPos = new int[2];
         this.lblPos = new int[2];
 
-        int[] ls = {0, 0};
-        int[] lp = this.lblOffset;
-        IGuiElement e = this.getChild(BtnTextures.DEFAULT.n).get();
-        int[] cs = { e.getWidth(), e.getHeight() };
+        int[] lblSize = { 0, 0 };
+        int[] cLblPos = this.lblOffset;
+        IGuiElement e = this.getChild(ButtonTextures.DEFAULT.n).get();
+        int[] buttonSize = { e.getWidth(), e.getHeight() };
 
         if( label != null ) {
-            ls = new int[] { label.get().getWidth(), label.get().getHeight() };
-//            this.currSize = new int[] {
-//                    Math.max(size[0], size[0] + label.pos[0] + label.get().getWidth()),
-//                    Math.max(size[1], label.pos[1] + label.get().getHeight())
-//            };
+            lblSize = new int[] { label.get().getWidth(), label.get().getHeight() };
         }
 
-    /*
-    *   HL: cx = 0,                           lx = cw + lox,              w = lx + lw
-        HC: cx = max(0, (lw + lox - cw) / 2), lx = max(cw, lw) / 2 + lox, w = max(cw, lw + lox)
-        HR: cx = lw + lox,                    lx = lw,                    w = cx + cw
-    * */
         switch( this.alignment[0] ) {
             case CENTER:
-                this.btnPos[0] = Math.max(0, (ls[0] + lp[0] - cs[0]) / 2);
-                this.lblPos[0] = Math.max(cs[0], ls[0]) / 2 + lp[0];
-                this.currSize[0] = Math.max(cs[0], ls[0] + lp[0]);
+                this.btnPos[0] = Math.max(0, (lblSize[0] + cLblPos[0] - buttonSize[0]) / 2);
+                this.lblPos[0] = Math.max(buttonSize[0], lblSize[0]) / 2 + cLblPos[0];
+                this.currSize[0] = Math.max(buttonSize[0], lblSize[0] + cLblPos[0]);
                 break;
             case RIGHT:
-                this.btnPos[0] = ls[0] + lp[0];
-                this.lblPos[0] = ls[0];
-                this.currSize[0] = this.btnPos[0] + cs[0];
+                this.btnPos[0] = lblSize[0] + cLblPos[0];
+                this.lblPos[0] = lblSize[0];
+                this.currSize[0] = this.btnPos[0] + buttonSize[0];
                 break;
             default:
                 this.btnPos[0] = 0;
-                this.lblPos[0] = cs[0] + lp[0];
-                this.currSize[0] = this.lblPos[0] + ls[0];
+                this.lblPos[0] = buttonSize[0] + cLblPos[0];
+                this.currSize[0] = this.lblPos[0] + lblSize[0];
                 break;
         }
-        /*
-        // no HC
-        VT: cy = 0,                           ly = loy,                         h = max(cy + ch, ly + lh)
-        VC: cy = max(0, (lh + loy - ch) / 2), ly = max(0, (ch - lh)) / 2 + loy, h = max(cy + ch, ly + lh)
-        VB: cy = max(0, lh + loy - ch),       ly = max(0, ch - lh + loy),       h = max(cy + ch, ly + lh)
-        // HC
-        VT: cy = 0,                           ly = ch + loy,                    h = ly + lh
-        VB: cy = lh + loy,                    ly = 0,                           h = ly + lh
-        */
+
         if( this.alignment[0] == GuiElementInst.Justify.CENTER ) {
             switch( this.alignment[1] ) {
                 case TOP:
                     this.btnPos[1] = 0;
-                    this.lblPos[1] = cs[1] + lp[1];
-                    this.currSize[1] = this.lblPos[1] + ls[1];
+                    this.lblPos[1] = buttonSize[1] + cLblPos[1];
+                    this.currSize[1] = this.lblPos[1] + lblSize[1];
                     break;
                 case BOTTOM:
-                    this.btnPos[1] = ls[1] + lp[1];
+                    this.btnPos[1] = lblSize[1] + cLblPos[1];
                     this.lblPos[1] = 0;
-                    this.currSize[1] = this.btnPos[1] + cs[1];
+                    this.currSize[1] = this.btnPos[1] + buttonSize[1];
                     break;
             }
         } else {
             switch( this.alignment[1] ) {
                 case TOP:
                     this.btnPos[1] = 0;
-                    this.lblPos[1] = lp[1];
+                    this.lblPos[1] = cLblPos[1];
                     break;
                 case CENTER:
-                    this.btnPos[1] = Math.max(0, (ls[1] + lp[1] - cs[1]) / 2);
-                    this.lblPos[1] = Math.max(0, (cs[1] - ls[1])) / 2 + lp[1];
+                    this.btnPos[1] = Math.max(0, (lblSize[1] + cLblPos[1] - buttonSize[1]) / 2);
+                    this.lblPos[1] = Math.max(0, (buttonSize[1] - lblSize[1])) / 2 + cLblPos[1];
                     break;
                 case BOTTOM:
-                    this.btnPos[1] = Math.max(0, ls[1] + lp[1] - cs[1]);
-                    this.lblPos[1] = Math.max(0, cs[1] - ls[1] + lp[1]);
+                    this.btnPos[1] = Math.max(0, lblSize[1] + cLblPos[1] - buttonSize[1]);
+                    this.lblPos[1] = Math.max(0, buttonSize[1] - lblSize[1] + cLblPos[1]);
                     break;
             }
-            this.currSize[1] = Math.max(this.btnPos[1] + cs[1], this.lblPos[1] + ls[1]);
+            this.currSize[1] = Math.max(this.btnPos[1] + buttonSize[1], this.lblPos[1] + lblSize[1]);
         }
     }
 
@@ -317,7 +217,7 @@ public class CheckBox
         boolean hovering = IGuiElement.isHovering(gui, x, y, mouseX, mouseY, this.currSize[0], this.currSize[1]);
 
         String txtColor;
-        Arrays.asList(BtnTextures.VALUES).forEach(b -> this.getChild(b.n).setVisible(false));
+        Arrays.asList(ButtonTextures.VALUES).forEach(b -> this.getChild(b.n).setVisible(false));
 
         GuiElementInst currBtn;
         if( this.enabled ) {
@@ -332,23 +232,20 @@ public class CheckBox
             }
 
             if( hovering ) {
-                currBtn = this.getChild((this.checked ? BtnTextures.CHECKED_HOVER : BtnTextures.HOVER).n);
+                currBtn = this.getChild((this.checked ? ButtonTextures.CHECKED_HOVER : ButtonTextures.HOVER).n);
                 txtColor = "hover";
             } else {
-                currBtn = this.getChild((this.checked ? BtnTextures.CHECKED : BtnTextures.DEFAULT).n);
+                currBtn = this.getChild((this.checked ? ButtonTextures.CHECKED : ButtonTextures.DEFAULT).n);
                 txtColor = "default";
             }
         } else {
-            currBtn = this.getChild(BtnTextures.DISABLED.n);
+            currBtn = this.getChild(ButtonTextures.DISABLED.n);
             txtColor = "disabled";
         }
 
         currBtn.setVisible(true);
         currBtn.pos = this.btnPos;
 
-//        GuiUtils.drawGradientRect(x, y, this.currSize[0], this.currSize[1], 0xFFFF0000, 0xFF00FFFF, false);
-
-//        int posX = x;
         if( label != null ) {
             IGuiElement e = label.get();
             if( e instanceof Text ) {
@@ -364,17 +261,8 @@ public class CheckBox
                     label.pos[1] += label.get().getHeight();
                     break;
             }
-
-//            GuiDefinition.renderElement(gui, x + this.lblPos[0], y + this.lblPos[1], mouseX, mouseY, partTicks, label);
-//            posX = this.ckbRight ? x + e.getWidth() + label.pos[0] : x;
         }
 
-//        gui.get().mc.renderEngine.bindTexture(this.texture);
-//        GlStateManager.enableBlend();
-//        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-//        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-//        Gui.drawModalRectWithCustomSizedTexture(posX, y, uv[0], uv[1], this.size[0], this.size[1], this.textureSize[0], this.textureSize[1]);
-//        GuiDefinition.renderElement(gui, x + this.ckbPos[0], y + this.ckbPos[1], mouseX, mouseY, partTicks, drawnBtn);
         super.render(gui, partTicks, x, y, mouseX, mouseY, data);
     }
 
@@ -396,10 +284,16 @@ public class CheckBox
         return this.enabled;
     }
 
-    public enum BtnTextures {
-        DEFAULT, HOVER, CHECKED, CHECKED_HOVER, DISABLED;
+    public enum ButtonTextures
+    {
+        DEFAULT,
+        HOVER,
+        CHECKED,
+        CHECKED_HOVER,
+        DISABLED;
 
         private final String n = name();
-        private static final BtnTextures[] VALUES = values();
+
+        private static final ButtonTextures[] VALUES = values();
     }
 }

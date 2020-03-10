@@ -15,6 +15,10 @@
           "size": [6, 6],
           "uv": [176, 0],
           "uvDisabled": [176, 6]
+        },
+        "node": {
+          "size": [8, 8],
+          "uv": [176, 12]
         }
       }
     },
@@ -78,7 +82,7 @@
   ],
   "foregroundElements": [
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [7, 190],
       "data": {
         "size": [18, 18],
@@ -87,7 +91,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [7, 190],
       "data": {
         "size": [18, 18],
@@ -96,7 +100,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [26, 190],
       "data": {
         "size": [18, 18],
@@ -105,7 +109,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [45, 190],
       "data": {
         "size": [18, 18],

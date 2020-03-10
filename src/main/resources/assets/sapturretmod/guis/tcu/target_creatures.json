@@ -18,8 +18,7 @@
         },
         "node": {
           "size": [8, 8],
-          "uv": [0, 0],
-          "labelText": "gui.sapturretmod.tcu.page.colorizer.cullfaces"
+          "uv": [176, 12]
         }
       }
     },
@@ -119,7 +118,7 @@
   ],
   "foregroundElements": [
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [7, 190],
       "data": {
         "size": [18, 18],
@@ -128,7 +127,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [7, 190],
       "data": {
         "size": [18, 18],
@@ -137,7 +136,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [26, 190],
       "data": {
         "size": [18, 18],
@@ -146,7 +145,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [45, 190],
       "data": {
         "size": [18, 18],
@@ -155,7 +154,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [113, 190],
       "data": {
         "size": [18, 18],
@@ -164,7 +163,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [132, 190],
       "data": {
         "size": [18, 18],
@@ -173,7 +172,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [151, 190],
       "data": {
         "size": [18, 18],

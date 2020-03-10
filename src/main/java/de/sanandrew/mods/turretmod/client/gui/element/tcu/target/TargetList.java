@@ -50,7 +50,6 @@ public class TargetList
         return elements.toArray(new GuiElementInst[0]);
     }
 
-    @SuppressWarnings("UnstableApiUsage")
     public void rebuild(IGui gui, JsonObject data, String filter) {
         this.scroll = 0.0F;
 
@@ -58,12 +57,5 @@ public class TargetList
         JsonUtils.addJsonProperty(data, "filter", filter);
 
         this.rebuildElements(gui, data);
-//        GuiElementInst[] elements = this.getElements(gui, data, filter);
-//        this.elements.clear();
-//        Arrays.stream(elements).forEach(e -> {
-//            TargetNode<?> node = e.get(TargetNode.class);
-//            node.bakeData(gui, e.data, e);
-//            this.elements.put(Range.closedOpen(e.pos[1], e.pos[1] + node.getHeight()), e);
-//        });
     }
 }

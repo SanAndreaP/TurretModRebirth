@@ -41,9 +41,9 @@ public abstract class TargetType<T>
 
     public abstract void updateTarget(ITurretInst turretInst, T id, boolean enabled);
 
-    public abstract String getName(ITurretInst turretInst, T id);
+    public abstract String getName(T id);
 
-    public abstract EntityType getType(ITurretInst turretInst, T id);
+    public abstract EntityType getType(T id);
 
     public abstract boolean isTargeted(ITurretInst turretInst, T id);
 
@@ -59,10 +59,17 @@ public abstract class TargetType<T>
         MutableInt posY = new MutableInt(0);
         this.getTargets(turretInst).forEach((id, enabled) -> {
             GuiElementInst elem = new GuiElementInst(new TargetNode<>(id, this, width), nodeData).initialize(gui);
-            elem.get().bakeData(gui, elem.data, elem);
-            if( Strings.isNullOrEmpty(filter) || elem.get(TargetNode.class).getName(turretInst).toLowerCase(Locale.ROOT).contains(filter.toLowerCase(Locale.ROOT)) ) {
+            TargetNode<?> node = elem.get(TargetNode.class);
+            node.bakeData(gui, elem.data, elem);
+            if( Strings.isNullOrEmpty(filter) || node.getName().toLowerCase(Locale.ROOT).contains(filter.toLowerCase(Locale.ROOT)) ) {
                 elements.add(elem);
                 elem.pos[1] = posY.getAndAdd(elem.get().getHeight());
+
+                node.setOnCheckedChanged(byUser -> {
+                    if( byUser ) {
+                        this.updateTarget(turretInst, id, node.isChecked());
+                    }
+                });
             }
         });
     }
@@ -72,14 +79,14 @@ public abstract class TargetType<T>
                                    () -> { throw new IllegalArgumentException(String.format("No type %s.%s", TargetType.class.getCanonicalName(), s)); });
     }
 
-    Map<T, Boolean> getSortedEntities(ITurretInst turretInst, Map<T, Boolean> entities) {
+    Map<T, Boolean> getSortedEntities(Map<T, Boolean> entities) {
         Map<T, Boolean> sortedEntities = new TreeMap<>((e1, e2) -> {
-            EntityType c1 = this.getType(turretInst, e1);
-            EntityType c2 = this.getType(turretInst, e2);
+            EntityType c1 = this.getType(e1);
+            EntityType c2 = this.getType(e2);
 
             int p = Integer.compare(c2.ordinal(), c1.ordinal());
             if( p == 0 ) {
-                return this.getName(turretInst, e1).compareTo(this.getName(turretInst, e2));
+                return this.getName(e1).compareTo(this.getName(e2));
             } else {
                 return p;
             }
@@ -106,12 +113,12 @@ public abstract class TargetType<T>
         }
 
         @Override
-        public String getName(ITurretInst turretInst, UUID id) {
+        public String getName(UUID id) {
             return PlayerList.INSTANCE.getPlayerName(id);
         }
 
         @Override
-        public EntityType getType(ITurretInst turretInst, UUID id) {
+        public EntityType getType(UUID id) {
             return EntityType.NEUTRAL;
         }
 
@@ -134,7 +141,7 @@ public abstract class TargetType<T>
 
         @Override
         public Map<UUID, Boolean> getTargets(ITurretInst turretInst) {
-            return getSortedEntities(turretInst, turretInst.getTargetProcessor().getPlayerTargets());
+            return getSortedEntities(turretInst.getTargetProcessor().getPlayerTargets());
         }
 
         @Override
@@ -160,12 +167,12 @@ public abstract class TargetType<T>
         }
 
         @Override
-        public String getName(ITurretInst turretInst, ResourceLocation id) {
+        public String getName(ResourceLocation id) {
             return LangUtils.translateEntityCls(MiscUtils.defIfNull(EntityList.getClass(id), Entity.class));
         }
 
         @Override
-        public EntityType getType(ITurretInst turretInst, ResourceLocation id) {
+        public EntityType getType(ResourceLocation id) {
             Class<?> cls = MiscUtils.defIfNull(EntityList.getClass(id), Entity.class);
 
             return IMob.class.isAssignableFrom(cls) ? EntityType.HOSTILE : IAnimals.class.isAssignableFrom(cls) ? EntityType.PEACEFUL : EntityType.NEUTRAL;
@@ -183,7 +190,7 @@ public abstract class TargetType<T>
 
         @Override
         public Map<ResourceLocation, Boolean> getTargets(ITurretInst turretInst) {
-            return getSortedEntities(turretInst, turretInst.getTargetProcessor().getEntityTargets());
+            return getSortedEntities(turretInst.getTargetProcessor().getEntityTargets());
         }
 
         @Override
@@ -198,7 +205,7 @@ public abstract class TargetType<T>
             ITargetProcessor processor = turretInst.getTargetProcessor();
 
             ResourceLocation[] entities = processor.getEntityTargets().keySet().stream()
-                                                   .filter(id -> type == null || this.getType(turretInst, id) == type).toArray(ResourceLocation[]::new);
+                                                   .filter(id -> type == null || this.getType(id) == type).toArray(ResourceLocation[]::new);
             for( ResourceLocation id : entities ) {
                 processor.updateEntityTarget(id, enable);
             }

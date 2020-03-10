@@ -329,4 +329,17 @@ public class TmrUtils
 
         return null;
     }
+
+    public static Integer getInteger(String s) {
+        try {
+            s = s.startsWith("#") ? s.substring(1) : s;
+            s = s.startsWith("0x") ? s : "0x" + s;
+
+            long l = Long.decode(s);
+
+            return (int) (l & 0xFFFFFFFFL);
+        } catch( NumberFormatException ex ) {
+            return null;
+        }
+    }
 }

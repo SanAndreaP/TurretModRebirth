@@ -31,8 +31,8 @@ class Slider
     private Procedure      callback;
     private BiFunction<Slider, Float, String> toTextConverter;
 
-    static Slider load(IGui gui, JsonObject data, float valueBase, float textMulti) {
-        Slider sd = new Slider();
+    static Slider load(IGui gui, JsonObject data, final float valueBase, final float scale) {
+        final Slider sd = new Slider();
 
         sd.valueBase = valueBase;
 
@@ -45,13 +45,13 @@ class Slider
         if( JsonUtils.getBoolVal(tfData.get("visible"), true) ) {
             BiFunction<Slider, String, Float> toValueConverter = (sl, s) -> {
                 try {
-                    return Math.max(0.0F, Math.min(sl.size[0], Float.parseFloat(s) / textMulti / valueBase) * sl.size[0]);
+                    return Math.max(0.0F, Math.min(sl.size[0], Float.parseFloat(s) / scale / valueBase) * sl.size[0]);
                 } catch( NumberFormatException ignored ) { }
 
                 return null;
             };
 
-            sd.toTextConverter = (sl, f) -> String.format("%.1f", f / (float) sl.size[0] * valueBase * textMulti);
+            sd.toTextConverter = (sl, f) -> String.format("%.1f", f / (float) sl.size[0] * valueBase * scale);
             sd.valueTxt = new GuiElementInst();
 
             TextField tf = new TextField();
