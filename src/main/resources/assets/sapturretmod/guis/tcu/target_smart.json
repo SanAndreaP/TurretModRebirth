@@ -221,7 +221,7 @@
   ],
   "foregroundElements": [
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [10, 48],
       "data": {
         "size": [18, 18],
@@ -229,7 +229,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [29, 48],
       "data": {
         "size": [18, 18],
@@ -237,7 +237,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [48, 48],
       "data": {
         "size": [18, 18],
@@ -245,7 +245,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [10, 82],
       "data": {
         "size": [18, 18],
@@ -253,7 +253,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [29, 82],
       "data": {
         "size": [18, 18],
@@ -261,7 +261,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [48, 82],
       "data": {
         "size": [18, 18],
@@ -269,7 +269,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [10, 116],
       "data": {
         "size": [18, 18],
@@ -277,7 +277,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [29, 116],
       "data": {
         "size": [18, 18],
@@ -285,7 +285,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [48, 116],
       "data": {
         "size": [18, 18],
@@ -293,7 +293,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [10, 150],
       "data": {
         "size": [18, 18],
@@ -301,7 +301,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [29, 150],
       "data": {
         "size": [18, 18],
@@ -309,7 +309,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [48, 150],
       "data": {
         "size": [18, 18],
@@ -317,7 +317,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [67, 150],
       "data": {
         "size": [18, 18],
@@ -325,7 +325,7 @@
       }
     },
     {
-      "type": "label",
+      "type": "tooltip",
       "pos": [86, 150],
       "data": {
         "size": [18, 18],

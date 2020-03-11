@@ -13,6 +13,10 @@
           "textfield": {
             "offset": [2, 0],
             "size": [38, 12]
+          },
+          "marker": {
+            "size": [5, 15],
+            "uv": [184, 0]
           }
         },
         "saturationSlider": {
@@ -21,6 +25,10 @@
           "textfield": {
             "offset": [2, 0],
             "size": [38, 12]
+          },
+          "marker": {
+            "size": [5, 15],
+            "uv": [184, 0]
           }
         },
         "luminanceSlider": {
@@ -29,6 +37,10 @@
           "textfield": {
             "offset": [2, 0],
             "size": [38, 12]
+          },
+          "marker": {
+            "size": [5, 15],
+            "uv": [184, 0]
           }
         },
         "alphaSlider": {
@@ -37,6 +49,10 @@
           "textfield": {
             "offset": [2, 0],
             "size": [38, 12]
+          },
+          "marker": {
+            "size": [5, 15],
+            "uv": [184, 0]
           }
         }
       }
@@ -65,12 +81,12 @@
     },
     {
       "type": "check_box",
-      "pos": [10, 112],
+      "pos": [169, 124],
       "id": "cull-faces",
-      "alignment": ["left", "center"],
+      "alignment": ["right", "center"],
       "data": {
         "size": [8, 8],
-        "uv": [0, 0],
+        "uv": [176, 12],
         "labelText": "gui.sapturretmod.tcu.page.colorizer.cullfaces"
       }
     }

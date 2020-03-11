@@ -6,9 +6,11 @@ import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.TextField;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.function.Procedure;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import net.minecraft.client.renderer.GlStateManager;
 import org.apache.commons.lang3.Range;
 import org.lwjgl.input.Mouse;
 
@@ -19,14 +21,13 @@ class Slider
 {
     int[] size;
     int[] pos;
-    private int[] markerUV;
-    private int[] markerOffset;
 
-    private static boolean prevMouseDown;
-    private        boolean prevMouseDownInst;
+    private static boolean prevMouseDownAll;
+    private        boolean prevMouseDown;
 
     private float          value;
     private GuiElementInst valueTxt;
+    private GuiElementInst marker;
     private float          valueBase;
     private Procedure      callback;
     private BiFunction<Slider, Float, String> toTextConverter;
@@ -38,8 +39,6 @@ class Slider
 
         sd.size = JsonUtils.getIntArray(data.get("size"), Range.is(2));
         sd.pos = JsonUtils.getIntArray(data.get("pos"), Range.is(2));
-        sd.markerUV = JsonUtils.getIntArray(data.get("markerUV"), new int[] { 0, 0 }, Range.is(2));
-        sd.markerOffset = JsonUtils.getIntArray(data.get("markerOffset"), new int[] { -1, -1 }, Range.is(2));
 
         JsonObject tfData = MiscUtils.defIfNull(data.getAsJsonObject("textfield"), JsonObject::new);
         if( JsonUtils.getBoolVal(tfData.get("visible"), true) ) {
@@ -51,16 +50,14 @@ class Slider
                 return null;
             };
 
+            JsonUtils.addDefaultJsonProperty(tfData, "size", new int[] { 40, sd.size[1] });
+
             sd.toTextConverter = (sl, f) -> String.format("%.1f", f / (float) sl.size[0] * valueBase * scale);
-            sd.valueTxt = new GuiElementInst();
 
             TextField tf = new TextField();
-            sd.valueTxt.element = tf;
-            sd.valueTxt.pos = JsonUtils.getIntArray(tfData.get("offset"), new int[] { 3, 0 }, Range.is(2));
-            gui.getDefinition().initElement(sd.valueTxt);
-            JsonUtils.addDefaultJsonProperty(sd.valueTxt.data, "size", JsonUtils.getIntArray(tfData.get("size"), new int[] { 40, sd.size[1] }));
-            tf.bakeData(gui, sd.valueTxt.data, sd.valueTxt);
+            sd.valueTxt = new GuiElementInst(JsonUtils.getIntArray(tfData.get("offset"), new int[] { 3, 0 }, Range.is(2)), tf, tfData).initialize(gui);
 
+            tf.bakeData(gui, sd.valueTxt.data, sd.valueTxt);
             tf.setValidator(s -> toValueConverter.apply(sd, s) != null);
             tf.setResponder(s -> {
                 sd.value = toValueConverter.apply(sd, s);
@@ -69,6 +66,9 @@ class Slider
                 }
             });
         }
+        JsonObject mrkData = MiscUtils.defIfNull(data.getAsJsonObject("marker"), JsonObject::new);
+        sd.marker = new GuiElementInst(JsonUtils.getIntArray(mrkData.get("offset"), new int[] { -2, -2 }), new Marker(), mrkData).initialize(gui);
+        sd.marker.get().bakeData(gui, sd.marker.data, sd.marker);
 
         return sd;
     }
@@ -89,21 +89,24 @@ class Slider
 
     void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY) {
         if( Mouse.isButtonDown(0) ) {
-            if( !prevMouseDown && IGuiElement.isHovering(gui, x + this.pos[0], y + this.pos[1], mouseX, mouseY, this.size[0], this.size[1]) ) {
-                prevMouseDown = true;
-                this.prevMouseDownInst = true;
+            if( !prevMouseDownAll && IGuiElement.isHovering(gui, x + this.pos[0], y + this.pos[1], mouseX, mouseY, this.size[0], this.size[1]) ) {
+                prevMouseDownAll = true;
+                this.prevMouseDown = true;
             }
-            if( this.prevMouseDownInst ) {
+            if( this.prevMouseDown ) {
                 this.setSliderValue(mouseX - gui.getScreenPosX() - x - this.pos[0]);
             }
         } else {
-            prevMouseDown = false;
-            this.prevMouseDownInst = false;
+            prevMouseDownAll = false;
+            this.prevMouseDown = false;
         }
 
+        GuiDefinition.renderElement(gui, x + this.pos[0] + Math.round(this.value) + this.marker.pos[0],
+                                    y + this.pos[1] + this.marker.pos[1], mouseX, mouseY, partTicks, this.marker);
+
         if( this.valueTxt != null ) {
-            this.valueTxt.get().render(gui, partTicks, x + this.pos[0] + this.size[0] + this.valueTxt.pos[0], y + this.pos[1] + this.valueTxt.pos[1],
-                                       mouseX, mouseY, this.valueTxt.data);
+            GuiDefinition.renderElement(gui, x + this.pos[0] + this.size[0] + this.valueTxt.pos[0], y + this.pos[1] + this.valueTxt.pos[1],
+                                        mouseX, mouseY, partTicks, this.valueTxt);
         }
     }
 
@@ -130,5 +133,29 @@ class Slider
 
     void setCallback(Procedure callback) {
         this.callback = callback;
+    }
+
+    private static final class Marker
+            extends Texture
+    {
+        private boolean invertMask;
+
+        @Override
+        public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
+            super.bakeData(gui, data, inst);
+
+            this.invertMask = JsonUtils.getBoolVal(data.get("invertMask"), true);
+        }
+
+        @Override
+        protected void drawRect(IGui gui) {
+            if( this.invertMask ) {
+                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+                super.drawRect(gui);
+                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_DST_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            } else {
+                super.drawRect(gui);
+            }
+        }
     }
 }
