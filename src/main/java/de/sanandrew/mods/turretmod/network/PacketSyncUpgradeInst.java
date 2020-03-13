@@ -18,6 +18,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.Level;
 
 import java.io.*;
@@ -49,11 +50,15 @@ public class PacketSyncUpgradeInst
 
     @Override
     public void handleClientMessage(PacketSyncUpgradeInst packet, EntityPlayer player) {
-        this.handleServerMessage(packet, player);
+        handleMessage(packet, player, Side.CLIENT);
     }
 
     @Override
     public void handleServerMessage(PacketSyncUpgradeInst packet, EntityPlayer player) {
+        handleMessage(packet, player, Side.SERVER);
+    }
+
+    private static void handleMessage(PacketSyncUpgradeInst packet, EntityPlayer player, Side side) {
         if( packet.instData.length > 0 ) {
             Entity e = player.world.getEntityByID(packet.turretId);
             if( e instanceof ITurretInst ) {
@@ -63,10 +68,13 @@ public class PacketSyncUpgradeInst
                     try( ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(packet.instData)) ) {
                         upgInstance.fromBytes(ois);
                     } catch( IOException ex ) {
-                        TmrConstants.LOG.log(Level.ERROR, "Cannot sync upgrade instance", ex);
+                        TmrConstants.LOG.log(Level.ERROR, String.format("Cannot sync upgrade instance on side %s.", side), ex);
                     }
                 } else {
-                    TmrConstants.LOG.log(Level.ERROR, "Cannot sync upgrade instance from upgrade ID {0}; it has no default instance available!");
+                    TmrConstants.LOG.log(Level.ERROR,
+                                         String.format("Cannot sync upgrade instance on side %s from upgrade ID %s; it has no default instance available!",
+                                                       side, packet.upgradeId),
+                                         new Exception("No upgrade instance"));
                 }
             }
         }

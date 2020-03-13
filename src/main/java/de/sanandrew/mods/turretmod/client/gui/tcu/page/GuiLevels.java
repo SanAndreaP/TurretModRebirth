@@ -7,6 +7,7 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu.page;
 
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
@@ -14,6 +15,8 @@ import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
+import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.level.LevelIndicator;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.registry.upgrades.leveling.LevelStorage;
 import de.sanandrew.mods.turretmod.registry.Lang;
@@ -23,6 +26,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import org.apache.commons.lang3.mutable.MutableInt;
 
@@ -35,27 +39,40 @@ import java.util.List;
 import java.util.Map;
 
 public class GuiLevels
-//        implements IGuiTCU
+        implements IGuiTCU
 {
 //    private int currLvl = 0;
 //    private int minXp   = 0;
 //    private int maxXp   = 0;
 //    private int currXp  = 0;
-//
-//    private GuiDefinition guiDef;
-//
-//    {
-//        try {
-//            guiDef = GuiDefinition.getNewDefinition(Resources.GUI_STRUCT_TCU_LEVELS.resource);
-//        } catch( IOException e ) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    private Map<String, ModifierInfo> currModifiers = new HashMap<>();
-//
+
+    private GuiElementInst lvlIndicator;
+
+    @Override
+    public void initialize(IGuiTcuInst<?> gui, GuiDefinition guiDefinition) {
+        this.lvlIndicator = guiDefinition.getElementById("level_indicator");
+    }
+
+    @Override
+    public ResourceLocation getGuiDefinition() {
+        return Resources.GUI_STRUCT_TCU_LEVELS.resource;
+    }
+
+    @Override
+    public void updateScreen(IGuiTcuInst<?> gui) {
+        IUpgradeProcessor processor = gui.getTurretInst().getUpgradeProcessor();
+        if( processor.hasUpgrade(Upgrades.LEVELING) ) {
+            LevelStorage storage = processor.getUpgradeInstance(Upgrades.LEVELING.getId());
+            if( storage != null ) {
+                this.lvlIndicator.get(LevelIndicator.class).setLevel(storage);
+            }
+        }
+    }
+
+    //    private Map<String, ModifierInfo> currModifiers = new HashMap<>();
+
 //    @Override
-//    public void initialize(IGuiTcuInst<?> gui) {
+//    public void updateScreen(IGuiTcuInst<?> gui) {
 //        IUpgradeProcessor processor = gui.getTurretInst().getUpgradeProcessor();
 //        if( processor.hasUpgrade(Upgrades.LEVELING) ) {
 //            LevelStorage stg = processor.getUpgradeInstance(Upgrades.LEVELING.getId());
@@ -66,11 +83,6 @@ public class GuiLevels
 //                this.currXp = stg.getXp();
 //            }
 //        }
-//    }
-//
-//    @Override
-//    public void updateScreen(IGuiTcuInst<?> gui) {
-//        this.initialize(gui);
 //
 //        ITurretInst turretInst = gui.getTurretInst();
 //        AbstractAttributeMap attrMap = turretInst.get().getAttributeMap();
@@ -95,6 +107,7 @@ public class GuiLevels
 //            });
 //        }
 //    }
+//
 //
 //    @Override
 //    public void drawBackground(IGuiTcuInst<?> gui, float partialTicks, int mouseX, int mouseY) {
@@ -129,19 +142,19 @@ public class GuiLevels
 //    public GuiDefinition getDefinition() {
 //        return null;
 //    }
-//
-//    public static boolean showTab(IGuiTcuInst<?> gui) {
-//        return gui.hasPermision() && gui.getTurretInst().getUpgradeProcessor().hasUpgrade(Upgrades.LEVELING);
-//    }
-//
-//    private static final class ModifierInfo
-//    {
-//        private final double baseValue;
-//        private double modValue;
-//
-//        private ModifierInfo(double baseValue) {
-//            this.baseValue = baseValue;
-//            this.modValue = baseValue;
-//        }
-//    }
+
+    public static boolean showTab(IGuiTcuInst<?> gui) {
+        return gui.hasPermision() && gui.getTurretInst().getUpgradeProcessor().hasUpgrade(Upgrades.LEVELING);
+    }
+
+    private static final class ModifierInfo
+    {
+        private final double baseValue;
+        private double modValue;
+
+        private ModifierInfo(double baseValue) {
+            this.baseValue = baseValue;
+            this.modValue = baseValue;
+        }
+    }
 }

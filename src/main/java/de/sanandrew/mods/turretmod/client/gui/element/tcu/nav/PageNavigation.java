@@ -156,7 +156,7 @@ public class PageNavigation
         public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
             JsonUtils.addDefaultJsonProperty(data, "size", new int[] {16, 16});
             JsonUtils.addDefaultJsonProperty(data, "uvSize", new int[] {16, 16});
-            JsonUtils.addDefaultJsonProperty(data, "texture", Resources.GUI_TCU_BUTTONS.resource.toString());
+            JsonUtils.addDefaultJsonProperty(data, "texture", Resources.GUI_TCU_BUTTONS.toString());
             JsonUtils.addDefaultJsonProperty(data, "buttonFunction", -1);
 
             super.bakeData(gui, data, inst);

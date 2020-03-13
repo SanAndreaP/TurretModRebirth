@@ -42,7 +42,8 @@ public class ElectrolyteBar
 
     @Override
     protected void drawRect(IGui gui) {
-        Gui.drawModalRectWithCustomSizedTexture(0, 0, this.uv[0], this.uv[1], this.energyBarWidth, this.size[1], this.textureSize[0], this.textureSize[1]);
+        Gui.drawModalRectWithCustomSizedTexture(0, 0, this.uv[0], this.uv[1], this.energyBarWidth, this.size[1],
+                                                this.textureSize[0], this.textureSize[1]);
     }
 
     @Override

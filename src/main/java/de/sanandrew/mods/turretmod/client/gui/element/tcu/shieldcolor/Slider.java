@@ -30,6 +30,7 @@ class Slider
     private GuiElementInst marker;
     private float          valueBase;
     private Procedure      callback;
+
     private BiFunction<Slider, Float, String> toTextConverter;
 
     static Slider load(IGui gui, JsonObject data, final float valueBase, final float scale) {
@@ -101,8 +102,8 @@ class Slider
             this.prevMouseDown = false;
         }
 
-        GuiDefinition.renderElement(gui, x + this.pos[0] + Math.round(this.value) + this.marker.pos[0],
-                                    y + this.pos[1] + this.marker.pos[1], mouseX, mouseY, partTicks, this.marker);
+        GuiDefinition.renderElement(gui, x + this.pos[0] + Math.round(this.value) + this.marker.pos[0], y + this.pos[1] + this.marker.pos[1],
+                                    mouseX, mouseY, partTicks, this.marker);
 
         if( this.valueTxt != null ) {
             GuiDefinition.renderElement(gui, x + this.pos[0] + this.size[0] + this.valueTxt.pos[0], y + this.pos[1] + this.valueTxt.pos[1],
@@ -150,9 +151,11 @@ class Slider
         @Override
         protected void drawRect(IGui gui) {
             if( this.invertMask ) {
-                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR,
+                                                    GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
                 super.drawRect(gui);
-                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_DST_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                                                    GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
             } else {
                 super.drawRect(gui);
             }

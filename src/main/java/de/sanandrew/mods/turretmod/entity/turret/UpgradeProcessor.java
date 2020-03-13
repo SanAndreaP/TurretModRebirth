@@ -34,9 +34,11 @@ import net.minecraftforge.common.util.Constants;
 import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nonnull;
+import java.util.Deque;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.stream.Stream;
 
 public final class UpgradeProcessor
@@ -49,6 +51,8 @@ public final class UpgradeProcessor
 
     private boolean hasChanged = false;
     private final ITurretInst turret;
+
+    private Deque<IUpgrade> firstSynchronize = new ConcurrentLinkedDeque<>();
 
     UpgradeProcessor(ITurretInst turret) {
         this.turret = turret;
@@ -89,6 +93,10 @@ public final class UpgradeProcessor
                     dropUpgrade(turretL, i, this.upgradeStacks.get(i), null);
                 }
             }
+        }
+
+        while( !this.firstSynchronize.isEmpty() ) {
+            UpgradeRegistry.INSTANCE.syncWithClients(this.turret, this.firstSynchronize.pollFirst().getId());
         }
     }
 
@@ -204,6 +212,9 @@ public final class UpgradeProcessor
             if( ItemStackUtils.isValid(stack) ) {
                 IUpgrade upg = UpgradeRegistry.INSTANCE.getObject(stack);
                 upg.initialize(this.turret, stack);
+                if( upg.getClass().getAnnotation(IUpgrade.InitSynchronizeClient.class) != null ) {
+                    this.firstSynchronize.offerLast(upg);
+                }
             }
         }
 
@@ -382,5 +393,8 @@ public final class UpgradeProcessor
         IUpgrade upg = UpgradeRegistry.INSTANCE.getObject(upgStack);
         upg.initialize(this.turret, upgStack);
         upg.onLoad(this.turret, nbt);
+        if( upg.getClass().getAnnotation(IUpgrade.InitSynchronizeClient.class) != null ) {
+            this.firstSynchronize.offerLast(upg);
+        }
     }
 }

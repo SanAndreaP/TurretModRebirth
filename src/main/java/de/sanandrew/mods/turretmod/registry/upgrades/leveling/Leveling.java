@@ -4,13 +4,13 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
-import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
+@IUpgrade.InitSynchronizeClient
 public class Leveling
         implements IUpgrade
 {
@@ -28,17 +28,14 @@ public class Leveling
     @Override
     public void initialize(ITurretInst turretInst, ItemStack stack) {
         IUpgradeProcessor processor = turretInst.getUpgradeProcessor();
-        if( processor.getUpgradeInstance(ID) == null ) {
-            if( turretInst.get().isServerWorld() ) {
-                NBTTagCompound lvlNbt = stack.getSubCompound(NBT_ITEM_LEVELS);
-                LevelStorage stg = lvlNbt != null && lvlNbt.hasKey(NBT_EXPERIENCE)
-                                   ? new LevelStorage(lvlNbt.getInteger(NBT_EXPERIENCE))
-                                   : new LevelStorage();
-                processor.setUpgradeInstance(ID, stg);
-                UpgradeRegistry.INSTANCE.syncWithClients(turretInst, ID);
-            } else {
-                processor.setUpgradeInstance(ID, new LevelStorage());
-            }
+        if( turretInst.get().isServerWorld() ) {
+            NBTTagCompound lvlNbt = stack.getSubCompound(NBT_ITEM_LEVELS);
+            LevelStorage stg = lvlNbt != null && lvlNbt.hasKey(NBT_EXPERIENCE)
+                               ? new LevelStorage(lvlNbt.getInteger(NBT_EXPERIENCE))
+                               : new LevelStorage();
+            processor.setUpgradeInstance(ID, stg);
+        } else {
+            processor.setUpgradeInstance(ID, new LevelStorage());
         }
     }
 

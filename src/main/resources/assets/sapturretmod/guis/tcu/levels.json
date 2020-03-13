@@ -1,14 +1,19 @@
 {
-  "width": 230,
-  "height": 222,
+  "parent": "sapturretmod:guis/tcu/tcu.json",
   "texture": "sapturretmod:textures/gui/tcu/page_info.png",
   "backgroundElements": [
     {
-      "type": "texture",
-      "pos": [0, 0],
+      "type": "sapturretmod:tcu.levels_indicator",
+      "id": "level_indicator",
+      "pos": [10, 40],
       "data": {
-        "size": [230, 222],
-        "uv": [0, 0]
+        "text": {
+
+        },
+        "progressbar": {
+          "size": [100, 10],
+          "uv": [0, 0]
+        }
       }
     }
   ],

@@ -16,6 +16,7 @@ import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuContainer;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuScreen;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TargetType;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiInfo;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiLevels;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiShieldColorizer;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiSmartTargets;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiTargets;
@@ -52,15 +53,15 @@ import java.util.function.Supplier;
 public final class GuiTcuRegistry
         implements IGuiTcuRegistry
 {
-    public static final String GUI_INFO = "info";
-    public static final String GUI_TARGETS_MOB = "targets.creature";
-    public static final String GUI_TARGETS_PLAYER = "targets.player";
-    public static final String GUI_TARGETS_SMART = "targets.smart";
-    public static final String GUI_UPGRADES = "upgrades";
-    public static final String GUI_COLORIZER = "colorizer";
-    public static final String GUI_LEVELING = "leveling";
+    private static final String GUI_INFO           = "info";
+    private static final String GUI_TARGETS_MOB    = "targets.creature";
+    private static final String GUI_TARGETS_PLAYER = "targets.player";
+    private static final String GUI_TARGETS_SMART  = "targets.smart";
+    private static final String GUI_UPGRADES       = "upgrades";
+    private static final String GUI_COLORIZER      = "colorizer";
+    private static final String GUI_LEVELING       = "leveling";
 
-    public static final List<String> GUI_ENTRIES = new ArrayList<>();
+    public static final List<String>   GUI_ENTRIES = new ArrayList<>();
     public static final GuiTcuRegistry INSTANCE = new GuiTcuRegistry();
 
     @SideOnly(Side.CLIENT)
@@ -150,7 +151,7 @@ public final class GuiTcuRegistry
         registry.registerGuiEntry(GUI_TARGETS_SMART, 3, null);
         registry.registerGuiEntry(GUI_UPGRADES, 4, (player, turretInst) -> new ContainerTurretUpgrades(player.inventory, (UpgradeProcessor) turretInst.getUpgradeProcessor()));
         registry.registerGuiEntry(GUI_COLORIZER, 5, null);
-//        registry.registerGuiEntry(GUI_LEVELING, 6, null);
+        registry.registerGuiEntry(GUI_LEVELING, 6, null);
     }
 
     @SideOnly(Side.CLIENT)
@@ -161,7 +162,7 @@ public final class GuiTcuRegistry
         registry.registerGui(GUI_TARGETS_SMART, UpgradeRegistry.INSTANCE.getItem(Upgrades.SMART_TGT.getId()), GuiSmartTargets::new, GuiSmartTargets::showTab);
         registry.registerGui(GUI_UPGRADES, UpgradeRegistry.INSTANCE.getItem(UpgradeRegistry.EMPTY_UPGRADE.getId()), GuiUpgrades::new, IGuiTcuInst::hasPermision);
         registry.registerGui(GUI_COLORIZER, UpgradeRegistry.INSTANCE.getItem(Upgrades.SHIELD_COLORIZER.getId()), GuiShieldColorizer::new, GuiShieldColorizer::showTab);
-//        registry.registerGui(GuiTcuRegistry.GUI_LEVELING, UpgradeRegistry.INSTANCE.getItem(Upgrades.LEVELING.getId()), GuiLevels::new, GuiLevels::showTab);
+        registry.registerGui(GuiTcuRegistry.GUI_LEVELING, UpgradeRegistry.INSTANCE.getItem(Upgrades.LEVELING.getId()), GuiLevels::new, GuiLevels::showTab);
     }
 
     @SubscribeEvent

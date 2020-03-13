@@ -8,6 +8,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nullable;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * <p>A registry object defining a turret upgrade.</p>
@@ -87,4 +91,8 @@ public interface IUpgrade
      * @param stack
      */
     default void terminate(ITurretInst turretInst, ItemStack stack) { }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    @interface InitSynchronizeClient { }
 }
