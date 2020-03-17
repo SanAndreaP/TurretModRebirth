@@ -17,6 +17,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.level.LevelIndicator;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.level.LevelModifiers;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.registry.upgrades.leveling.LevelStorage;
 import de.sanandrew.mods.turretmod.registry.Lang;
@@ -41,16 +42,13 @@ import java.util.Map;
 public class GuiLevels
         implements IGuiTCU
 {
-//    private int currLvl = 0;
-//    private int minXp   = 0;
-//    private int maxXp   = 0;
-//    private int currXp  = 0;
-
     private GuiElementInst lvlIndicator;
+    private GuiElementInst lvlModifiers;
 
     @Override
     public void initialize(IGuiTcuInst<?> gui, GuiDefinition guiDefinition) {
         this.lvlIndicator = guiDefinition.getElementById("level_indicator");
+        this.lvlModifiers = guiDefinition.getElementById("level_modifiers");
     }
 
     @Override
@@ -60,11 +58,13 @@ public class GuiLevels
 
     @Override
     public void updateScreen(IGuiTcuInst<?> gui) {
-        IUpgradeProcessor processor = gui.getTurretInst().getUpgradeProcessor();
+        ITurretInst turretInst = gui.getTurretInst();
+        IUpgradeProcessor processor = turretInst.getUpgradeProcessor();
         if( processor.hasUpgrade(Upgrades.LEVELING) ) {
             LevelStorage storage = processor.getUpgradeInstance(Upgrades.LEVELING.getId());
             if( storage != null ) {
                 this.lvlIndicator.get(LevelIndicator.class).setLevel(storage);
+                this.lvlModifiers.get(LevelModifiers.class).setModifierList(gui, storage, turretInst);
             }
         }
     }
@@ -145,16 +145,5 @@ public class GuiLevels
 
     public static boolean showTab(IGuiTcuInst<?> gui) {
         return gui.hasPermision() && gui.getTurretInst().getUpgradeProcessor().hasUpgrade(Upgrades.LEVELING);
-    }
-
-    private static final class ModifierInfo
-    {
-        private final double baseValue;
-        private double modValue;
-
-        private ModifierInfo(double baseValue) {
-            this.baseValue = baseValue;
-            this.modValue = baseValue;
-        }
     }
 }

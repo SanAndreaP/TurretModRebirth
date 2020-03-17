@@ -9,6 +9,10 @@ import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeInstance;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
+import net.minecraft.entity.ai.attributes.AttributeMap;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.common.Loader;
 import org.apache.logging.log4j.Level;
@@ -19,7 +23,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -146,7 +153,31 @@ public class LevelStorage
         );
     }
 
-    public List<Stage> fetchCurrentStages() {
+    public Map<String, ModifierInfo> fetchCurrentModifiers(ITurretInst turretInst) {
+        final Map<String, ModifierInfo> currModifiers = new HashMap<>();
+        final Map<String, Map<Integer, List<Double>>> modMap = new HashMap<>();
+        final AbstractAttributeMap attrMap = turretInst.get().getAttributeMap();
+
+        this.fetchCurrentStages().forEach(s -> Arrays.stream(s.modifiers).forEach(m -> modMap.computeIfAbsent(m.attributeName, k -> new HashMap<>())
+                                                                                             .computeIfAbsent(m.modifier.getOperation(), k -> new ArrayList<>())
+                                                                                             .add(m.modifier.getAmount())));
+
+        modMap.forEach((attrName, mods) -> {
+            IAttributeInstance attrInst = attrMap.getAttributeInstanceByName(attrName);
+            if( attrInst != null ) {
+                final ModifierInfo modInfo = currModifiers.computeIfAbsent(attrName, a -> new ModifierInfo(attrInst.getBaseValue()));
+                mods.getOrDefault(0, Collections.emptyList()).forEach(m -> modInfo.modValue += m);
+
+                final double modValFn = modInfo.modValue;
+                mods.getOrDefault(1, Collections.emptyList()).forEach(m -> modInfo.modValue += modValFn * m);
+                mods.getOrDefault(2, Collections.emptyList()).forEach(m -> modInfo.modValue += modInfo.modValue * m);
+            }
+        });
+
+        return currModifiers;
+    }
+
+    private List<Stage> fetchCurrentStages() {
         final int currLevel = this.getLevel();
         return Arrays.stream(stages).filter(s -> s.check(currLevel, Stage.NULL_STAGE)).collect(Collectors.toList());
     }
@@ -209,5 +240,20 @@ public class LevelStorage
 
     public int getCurrentLevelMinXp() {
         return getXpReqForNextLevel(this.getLevel());
+    }
+
+    public static final class ModifierInfo
+    {
+        public final double baseValue;
+        private double modValue;
+
+        private ModifierInfo(double baseValue) {
+            this.baseValue = baseValue;
+            this.modValue = baseValue;
+        }
+
+        public double getModValue() {
+            return modValue;
+        }
     }
 }

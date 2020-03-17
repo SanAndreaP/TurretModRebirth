@@ -1,18 +1,34 @@
 {
   "parent": "sapturretmod:guis/tcu/tcu.json",
-  "texture": "sapturretmod:textures/gui/tcu/page_info.png",
+  "texture": "sapturretmod:textures/gui/tcu/page_levels.png",
   "backgroundElements": [
     {
       "type": "sapturretmod:tcu.levels_indicator",
       "id": "level_indicator",
-      "pos": [10, 40],
+      "pos": [18, 47],
       "data": {
         "text": {
 
         },
         "progressbar": {
-          "size": [100, 10],
-          "uv": [0, 0]
+          "size": [140, 3],
+          "uv": [116, 236]
+        }
+      }
+    },
+    {
+      "type": "sapturretmod:tcu.levels_modifiers",
+      "id": "level_modifiers",
+      "pos": [8, 82],
+      "data": {
+        "area": {
+          "areaSize": [153, 106],
+          "scrollbarPos": [162, 82],
+          "scrollButton": {
+            "size": [6, 6],
+            "uv": [176, 0],
+            "uvDisabled": [176, 6]
+          }
         }
       }
     }

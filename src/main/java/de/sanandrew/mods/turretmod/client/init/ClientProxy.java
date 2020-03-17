@@ -38,6 +38,7 @@ import de.sanandrew.mods.turretmod.client.gui.element.tcu.info.ErrorTooltip;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.info.PlayerIcon;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.info.InfoElement;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.level.LevelIndicator;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.level.LevelModifiers;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.nav.PageNavigation;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.TurretCam;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.TurretName;
@@ -112,6 +113,7 @@ public class ClientProxy
         GuiDefinition.TYPES.put(ErrorTooltip.ID, ErrorTooltip::new);
         GuiDefinition.TYPES.put(ShieldRender.ID, ShieldRender::new);
         GuiDefinition.TYPES.put(LevelIndicator.ID, LevelIndicator::new);
+        GuiDefinition.TYPES.put(LevelModifiers.ID, LevelModifiers::new);
 
         GuiDefinition.TYPES.put(ColorPicker.ID, ColorPicker::new);
         GuiDefinition.TYPES.put(CheckBox.ID, CheckBox::new);
