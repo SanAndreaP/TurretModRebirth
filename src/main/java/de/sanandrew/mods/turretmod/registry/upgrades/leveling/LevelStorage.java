@@ -10,8 +10,6 @@ import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
-import net.minecraft.entity.ai.attributes.AttributeMap;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.common.Loader;
@@ -37,7 +35,7 @@ public class LevelStorage
 {
     @Value(comment = "The maximum XP a turret can gain through the Leveling upgrade. The default is 50 levels worth; see https://minecraft.gamepedia.com/Experience#Leveling_up")
     private static int      maxXp      = 5_345; // level 50
-    @Value(value = "stages", comment = "A list of JSON strings defining the level stages which are applied once a turret levels up to a stage level.", reqWorldRestart = true)
+    @Value(value = "stages", comment = "A JSON array defining the level stages which are applied once a turret levels up to a stage level.", reqWorldRestart = true)
     private static String[] stagesJson = getDefaultStages();
     private static Stage[]  stages     = {};
 
@@ -62,7 +60,7 @@ public class LevelStorage
 
     @Init
     public static void initStages() {
-        stages = Stage.load(stagesJson);
+        stages = Stage.load(String.join("\n", stagesJson));
     }
 
     private static int getXpReqForNextLevel(int lvl) {
@@ -77,11 +75,12 @@ public class LevelStorage
         }
     }
 
-    private static String[] getDefaultStages() {
-        try( BufferedReader r = TmrUtils.getFile(Loader.instance().getModList().stream().filter(c -> c.getModId().equals(TmrConstants.ID)).findFirst()
-                                                       .orElseThrow(IOException::new),
-                                                 "assets/" + TmrConstants.ID + "/stages_default.txt")
-        ) {
+    static String[] getDefaultStages() {
+        try( BufferedReader r = TmrUtils.getFile(Loader.instance().getModList().stream()
+                                                       .filter(c -> c.getModId().equals(TmrConstants.ID))
+                                                       .findFirst().orElseThrow(IOException::new),
+                                                 "assets/" + TmrConstants.ID + "/stages_default.json") )
+        {
             if( r != null ) {
                 return r.lines().toArray(String[]::new);
             }
@@ -196,7 +195,6 @@ public class LevelStorage
     }
 
     /*
-
     ------------------------------------------------------------------------------------------------------------------------
     How I figured out the formula for getting the level at {x} XP points (last formula, as it was the most complicated one)
     Base formula (y = 4.5x² - 162.5x + 2220; x = level; y = total xp points) from minecraft wiki
@@ -245,7 +243,7 @@ public class LevelStorage
     public static final class ModifierInfo
     {
         public final double baseValue;
-        private double modValue;
+        private      double modValue;
 
         private ModifierInfo(double baseValue) {
             this.baseValue = baseValue;

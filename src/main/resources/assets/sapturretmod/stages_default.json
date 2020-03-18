@@ -1,0 +1,47 @@
+[
+  {
+    "level": 10,
+    "modifiers": [
+      { "attribute": "generic.maxHealth", "id": "319f04a2-107f-4a18-88ff-6f1108a0bb10", "name": "10_health", "amount": 0.1, "mode": 1 }
+    ]
+  },
+  {
+    "level": 20,
+    "modifiers": [
+      { "attribute": "generic.maxHealth", "id": "edb3cc5a-0060-4027-9b81-18d2caab8614", "name": "20_health", "amount": 0.1, "mode": 1 }
+    ]
+  },
+  {
+    "level": 30,
+    "modifiers": [
+      { "attribute": "generic.maxHealth", "id": "c7bb3726-3b37-4a8d-ad5c-aabdcc928512", "name": "30_health", "amount": 0.1, "mode": 1 }
+    ]
+  },
+  {
+    "level": 35,
+    "modifiers": [
+      { "attribute": "generic.attackDamage", "id": "a9732c79-b283-4cea-86df-f0ca76dd964b", "name": "35_atkdmg", "amount": 0.15, "mode": 1 }
+    ]
+  },
+  {
+    "level": 40,
+    "modifiers": [
+      { "attribute": "generic.maxHealth", "id": "bc1973c1-e2d9-4143-859c-05e7cce86506", "name": "40_health", "amount": 0.2, "mode": 1 }
+    ]
+  },
+  {
+    "level": 45,
+    "modifiers": [
+      { "attribute": "generic.maxHealth",    "id": "891d6710-8dc7-4a73-af5f-1b1a73dd7570", "name": "45_health", "amount": 0.2,  "mode": 1 },
+      { "attribute": "generic.attackDamage", "id": "3a2ee125-8173-4ae9-88a8-7a4d18e62ee1", "name": "45_atkdmg", "amount": 0.15, "mode": 1 }
+    ]
+  },
+  {
+    "level": 50,
+    "modifiers": [
+      { "attribute": "generic.maxHealth",           "id": "2ff8d544-ecfc-4508-abc8-cd63441443b9", "name": "50_health", "amount": 0.3,   "mode": 1 },
+      { "attribute": "generic.attackDamage",        "id": "9d301b4e-4586-47bc-8ddf-97625e5ec31e", "name": "50_atkdmg", "amount": 0.2,   "mode": 1 },
+      { "attribute": "sapturretmod.maxReloadTicks", "id": "56b907cf-efd4-4e08-a6d7-e0eb4bd9db9f", "name": "50_reload", "amount": -0.25, "mode": 2 }
+    ]
+  }
+]
