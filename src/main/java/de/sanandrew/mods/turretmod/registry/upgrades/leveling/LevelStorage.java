@@ -34,7 +34,7 @@ public class LevelStorage
         implements IUpgradeInstance<LevelStorage>
 {
     @Value(comment = "The maximum XP a turret can gain through the Leveling upgrade. The default is 50 levels worth; see https://minecraft.gamepedia.com/Experience#Leveling_up")
-    private static int      maxXp      = 5_345; // level 50
+    public static int      maxXp      = 5_345; // level 50
     @Value(value = "stages", comment = "A JSON array defining the level stages which are applied once a turret levels up to a stage level.", reqWorldRestart = true)
     private static String[] stagesJson = getDefaultStages();
     private static Stage[]  stages     = {};

@@ -5,15 +5,28 @@
     {
       "type": "sapturretmod:tcu.levels_indicator",
       "id": "level_indicator",
-      "pos": [18, 47],
+      "pos": [8, 47],
       "data": {
         "text": {
-
+          "text": "gui.sapturretmod.tcu.page.leveling.level",
+          "color": "0xFF404040"
         },
         "progressbar": {
-          "size": [140, 3],
-          "uv": [116, 236]
+          "size": [162, 3],
+          "uv": [94, 236]
+        },
+        "progressbarTotal": {
+          "size": [162, 3],
+          "uv": [94, 236]
         }
+      }
+    },
+    {
+      "type": "text",
+      "pos": [8, 60],
+      "data": {
+        "text": "gui.sapturretmod.tcu.page.leveling.modifier",
+        "color": "0xFF404040"
       }
     },
     {
@@ -21,13 +34,24 @@
       "id": "level_modifiers",
       "pos": [8, 82],
       "data": {
-        "area": {
-          "areaSize": [153, 106],
-          "scrollbarPos": [162, 82],
-          "scrollButton": {
-            "size": [6, 6],
-            "uv": [176, 0],
-            "uvDisabled": [176, 6]
+        "areaSize": [153, 100],
+        "scrollbarPos": [162, 88],
+        "scrollButton": {
+          "size": [6, 6],
+          "uv": [176, 0],
+          "uvDisabled": [176, 6]
+        },
+        "node": {
+          "background": {
+            "size": [153, 17],
+            "uv": [103, 239]
+          },
+          "attributeName": {
+            "color": "0xFFFFFFFF"
+          },
+          "modifierValue": {
+            "text": "gui.sapturretmod.tcu.page.leveling.modValue",
+            "color": "0xFFFFFFFF"
           }
         }
       }

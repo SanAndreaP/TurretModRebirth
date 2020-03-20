@@ -64,7 +64,7 @@ public class GuiLevels
             LevelStorage storage = processor.getUpgradeInstance(Upgrades.LEVELING.getId());
             if( storage != null ) {
                 this.lvlIndicator.get(LevelIndicator.class).setLevel(storage);
-                this.lvlModifiers.get(LevelModifiers.class).setModifierList(gui, storage, turretInst);
+                this.lvlModifiers.get(LevelModifiers.class).setModifierList(gui, this.lvlModifiers.data, storage, turretInst);
             }
         }
     }
