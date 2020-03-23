@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,7 @@ public class LevelStorage
         implements IUpgradeInstance<LevelStorage>
 {
     @Value(comment = "The maximum XP a turret can gain through the Leveling upgrade. The default is 50 levels worth; see https://minecraft.gamepedia.com/Experience#Leveling_up")
-    public static int      maxXp      = 5_345; // level 50
+    public static  int      maxXp      = 5_345; // level 50
     @Value(value = "stages", comment = "A JSON array defining the level stages which are applied once a turret levels up to a stage level.", reqWorldRestart = true)
     private static String[] stagesJson = getDefaultStages();
     private static Stage[]  stages     = {};
@@ -259,6 +260,26 @@ public class LevelStorage
 
         public double getModValue() {
             return modValue;
+        }
+
+        @Override
+        @SuppressWarnings("NonFinalFieldReferenceInEquals")
+        public boolean equals(Object o) {
+            if( this == o ) {
+                return true;
+            }
+            if( o == null || getClass() != o.getClass() ) {
+                return false;
+            }
+            ModifierInfo that = (ModifierInfo) o;
+            return Double.compare(that.baseValue, this.baseValue) == 0 &&
+                   Double.compare(that.modValue, this.modValue) == 0;
+        }
+
+        @Override
+        @SuppressWarnings("NonFinalFieldReferencedInHashCode")
+        public int hashCode() {
+            return Objects.hash(this.baseValue, this.modValue);
         }
     }
 }

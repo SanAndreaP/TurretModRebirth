@@ -9,11 +9,13 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.network.PacketEffect;
 import de.sanandrew.mods.turretmod.registry.EnumEffect;
+import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import org.apache.logging.log4j.Level;
 
@@ -46,12 +48,21 @@ public class Stage
                     List<Modifier> modifiers = new ArrayList<>();
                     stage.get("modifiers").getAsJsonArray().forEach(m -> {
                         JsonObject mod = m.getAsJsonObject();
+                        ResourceLocation turret = null;
 
                         AttributeModifier attributeModifier = new AttributeModifier(UUID.fromString(mod.get("id").getAsString()),
                                                                                     NAME_PREFIX + mod.get("name").getAsString(),
                                                                                     mod.get("amount").getAsDouble(),
                                                                                     mod.get("mode").getAsInt());
-                        modifiers.add(new Modifier(mod.get("attribute").getAsString(), attributeModifier));
+                        if( mod.has("turret") ) {
+                            turret = new ResourceLocation(mod.get("turret").getAsString());
+                            if( !TurretRegistry.INSTANCE.getObject(turret).isValid() ) {
+                                TmrConstants.LOG.log(Level.WARN, String.format("Skipping modifier %s for level %d, as it tries to target non-existing turret %s",
+                                                                               mod.get("name"), lvl, mod.get("turret")));
+                                return;
+                            }
+                        }
+                        modifiers.add(new Modifier(mod.get("attribute").getAsString(), attributeModifier, turret));
                     });
 
                     stageList.add(new Stage(lvl, modifiers.toArray(new Modifier[0])));
@@ -76,7 +87,9 @@ public class Stage
     void apply(ITurretInst turretInst, boolean playSound) {
         boolean hasMultiplier = false;
         for( Modifier m : this.modifiers ) {
-            hasMultiplier |= TmrUtils.tryApplyModifier(turretInst.get(), m.attributeName, m.modifier);
+            if( m.turret == null || m.turret.equals(turretInst.getTurret().getId()) ) {
+                hasMultiplier |= TmrUtils.tryApplyModifier(turretInst.get(), m.attributeName, m.modifier);
+            }
         }
 
         if( playSound && hasMultiplier ) {
@@ -90,10 +103,12 @@ public class Stage
     {
         final String            attributeName;
         final AttributeModifier modifier;
+        final ResourceLocation  turret;
 
-        private Modifier(String attributeName, AttributeModifier modifier) {
+        private Modifier(String attributeName, AttributeModifier modifier, ResourceLocation turret) {
             this.attributeName = attributeName;
             this.modifier = modifier;
+            this.turret = turret;
         }
     }
 }

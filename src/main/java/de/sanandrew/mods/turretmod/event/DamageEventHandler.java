@@ -6,6 +6,7 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.event;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
@@ -25,11 +26,15 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class DamageEventHandler
 {
+    private static final String DISABLE_XP_DROP_TAG = TmrConstants.ID + ":disable_xp_drop";
+
     @SubscribeEvent
     public void onDamage(LivingHurtEvent event) {
         if( event.getEntity() instanceof EntityTurret ) {
@@ -64,15 +69,24 @@ public class DamageEventHandler
             ITurretInst turret = ((EntityTurretProjectile.ITurretDamageSource) dmgSrc).getTurretInst();
             if( turret != null && turret.getUpgradeProcessor().hasUpgrade(Upgrades.LEVELING) ) {
                 LevelStorage lvlStorage = turret.getUpgradeProcessor().getUpgradeInstance(Upgrades.LEVELING.getId());
-                if( lvlStorage != null ) {
+                if( lvlStorage != null && lvlStorage.getXp() < LevelStorage.maxXp ) {
                     EntityPlayer faker = FakePlayerFactory.getMinecraft((WorldServer) corpse.world);
 
                     int xp = TmrUtils.getExperiencePoints(event.getEntityLiving(), faker);
                     xp = net.minecraftforge.event.ForgeEventFactory.getExperienceDrop(corpse, faker, xp);
 
                     lvlStorage.addXp(xp);
+
+                    corpse.addTag(DISABLE_XP_DROP_TAG);
                 }
             }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onXpDrop(LivingExperienceDropEvent event) {
+        if( event.getEntity().getTags().contains(DISABLE_XP_DROP_TAG) ) {
+            event.setCanceled(true);
         }
     }
 
