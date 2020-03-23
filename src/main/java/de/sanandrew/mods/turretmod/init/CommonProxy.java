@@ -33,7 +33,7 @@ import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
-import de.sanandrew.mods.turretmod.registry.EnumParticle;
+import de.sanandrew.mods.turretmod.registry.EnumEffect;
 import de.sanandrew.mods.turretmod.world.PlayerList;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.Entity;
@@ -149,7 +149,7 @@ public class CommonProxy
         }
     }
 
-    public void spawnParticle(EnumParticle particle, double x, double y, double z, Tuple data) { }
+    public void addEffect(EnumEffect effect, double x, double y, double z, Tuple data) { }
 
     public void playTurretLaser(ITurretInst turretInst) { }
 

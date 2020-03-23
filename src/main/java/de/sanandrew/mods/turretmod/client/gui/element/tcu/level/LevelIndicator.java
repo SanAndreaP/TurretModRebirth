@@ -48,12 +48,12 @@ public class LevelIndicator
         this.text.get().bakeData(gui, this.text.data, this.text);
 
         JsonObject prgData = MiscUtils.defIfNull(data.getAsJsonObject("progressbar"), JsonObject::new);
-        offset = JsonUtils.getIntArray(prgData.get("offset"), new int[] {0, this.text.pos[1] + this.text.get().getHeight() + 3}, Range.is(2));
+        offset = JsonUtils.getIntArray(prgData.get("offset"), new int[] {0, this.text.pos[1] + this.text.get().getHeight() + 1}, Range.is(2));
         this.progress = new GuiElementInst(offset, new LevelBar(false), prgData).initialize(gui);
         this.progress.get().bakeData(gui, this.progress.data, this.progress);
 
         prgData = MiscUtils.defIfNull(data.getAsJsonObject("progressbarTotal"), JsonObject::new);
-        offset = JsonUtils.getIntArray(prgData.get("offset"), new int[] {0, this.text.pos[1] + this.progress.pos[1] + this.text.get().getHeight() + 9}, Range.is(2));
+        offset = JsonUtils.getIntArray(prgData.get("offset"), new int[] {0, this.progress.pos[1] + 6}, Range.is(2));
         this.progressTotal = new GuiElementInst(offset, new LevelBar(true), prgData).initialize(gui);
         this.progressTotal.get().bakeData(gui, this.progressTotal.data, this.progressTotal);
 

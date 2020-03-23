@@ -8,10 +8,13 @@
  */
 package de.sanandrew.mods.turretmod.registry;
 
-public enum EnumParticle
+public enum EnumEffect
 {
     ASSEMBLY_SPARK,
     SHOTGUN_SHOT,
     CRYO_PARTICLE,
-    MINIGUN_SHOT
+    MINIGUN_SHOT,
+    LEVEL_UP;
+
+    public static final EnumEffect[] VALUES = values();
 }

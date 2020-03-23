@@ -20,6 +20,7 @@ import org.apache.commons.lang3.Range;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class LevelModifiers
@@ -48,7 +49,7 @@ public class LevelModifiers
             JsonObject elemData = JsonUtils.deepCopy(elementData.getAsJsonObject("node"));
             LevelStorage.ModifierInfo info = e.getValue();
 
-            GuiElementInst elem = new GuiElementInst(new int[] { 0, posY }, new ModifierNode(e.getKey(), info.getModValue() - info.baseValue), elemData)
+            GuiElementInst elem = new GuiElementInst(new int[] { 0, posY }, new ModifierNode(e.getKey(), (info.getModValue() - info.baseValue) / info.baseValue * 100.0F), elemData)
                                                     .initialize(gui);
             elem.get().bakeData(gui, elemData, elem);
             elements.add(elem);
@@ -86,14 +87,14 @@ public class LevelModifiers
 
             JsonObject jsonAttrName = MiscUtils.defIfNull(data.getAsJsonObject("attributeName"), JsonObject::new);
             JsonUtils.addJsonProperty(jsonAttrName, "text", "attribute." + this.attributeName);
-            this.attrName = new GuiElementInst(JsonUtils.getIntArray(jsonAttrName.get("offset"), new int[] {3, 3}, Range.is(2)), new Text(), jsonAttrName)
+            this.attrName = new GuiElementInst(JsonUtils.getIntArray(jsonAttrName.get("offset"), new int[] {5, 5}, Range.is(2)), new Text(), jsonAttrName)
                                               .initialize(gui);
             this.attrName.get().bakeData(gui, jsonAttrName, this.attrName);
 
             JsonObject jsonModValue = MiscUtils.defIfNull(data.getAsJsonObject("modifierValue"), JsonObject::new);
-            this.modValue = new GuiElementInst(JsonUtils.getIntArray(jsonModValue.get("offset"), new int[] {this.background.get().getWidth() - 3, 3}, Range.is(2)),
+            this.modValue = new GuiElementInst(JsonUtils.getIntArray(jsonModValue.get("offset"), new int[] {this.background.get().getWidth() - 5, 5}, Range.is(2)),
                                                new ModifierValueText(), jsonModValue).initialize(gui);
-            this.modValue.alignment = new String[] { GuiElementInst.Justify.TOP.name(), GuiElementInst.Justify.CENTER.name() };
+            this.modValue.alignment = new String[] { GuiElementInst.Justify.RIGHT.name(), GuiElementInst.Justify.TOP.name() };
             this.modValue.get().bakeData(gui, jsonModValue, this.modValue);
 
         }
@@ -127,7 +128,7 @@ public class LevelModifiers
         {
             @Override
             public String getDynamicText(IGui gui, String originalText) {
-                return String.format(originalText, ModifierNode.this.modifierValue);
+                return String.format(originalText, String.format(Locale.ROOT, "%.1f", ModifierNode.this.modifierValue));
             }
         }
     }

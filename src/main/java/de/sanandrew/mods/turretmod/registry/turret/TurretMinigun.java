@@ -16,7 +16,7 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
-import de.sanandrew.mods.turretmod.registry.EnumParticle;
+import de.sanandrew.mods.turretmod.registry.EnumEffect;
 import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.Sounds;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
@@ -80,8 +80,8 @@ public class TurretMinigun
             }
 
             if( turretL.world.isRemote ) {
-                TurretModRebirth.proxy.spawnParticle(EnumParticle.MINIGUN_SHOT, turretL.posX, turretL.posY + 1.5F, turretL.posZ,
-                                                     new Tuple(turretL.rotationYawHead, turretL.rotationPitch - 7.5F, ram.isLeftShot));
+                TurretModRebirth.proxy.addEffect(EnumEffect.MINIGUN_SHOT, turretL.posX, turretL.posY + 1.5F, turretL.posZ,
+                                                 new Tuple(turretL.rotationYawHead, turretL.rotationPitch - 7.5F, ram.isLeftShot));
             }
         }
     }

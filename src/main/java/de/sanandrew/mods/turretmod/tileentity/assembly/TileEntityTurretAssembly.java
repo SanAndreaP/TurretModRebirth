@@ -18,7 +18,7 @@ import de.sanandrew.mods.turretmod.inventory.AssemblyInventory;
 import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
 import de.sanandrew.mods.turretmod.network.TileClientSync;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
-import de.sanandrew.mods.turretmod.registry.EnumParticle;
+import de.sanandrew.mods.turretmod.registry.EnumEffect;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.item.EntityItem;
@@ -293,7 +293,7 @@ public class TileEntityTurretAssembly
         }
 
         if( this.isActiveClient && this.spawnParticle != null ) {
-            TurretModRebirth.proxy.spawnParticle(EnumParticle.ASSEMBLY_SPARK, spawnParticle.getValue(0), spawnParticle.<Double>getValue(1) + 0.05D, spawnParticle.getValue(2), null);
+            TurretModRebirth.proxy.addEffect(EnumEffect.ASSEMBLY_SPARK, spawnParticle.getValue(0), spawnParticle.<Double>getValue(1) + 0.05D, spawnParticle.getValue(2), null);
             this.spawnParticle = null;
         }
     }

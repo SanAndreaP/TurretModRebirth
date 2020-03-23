@@ -251,35 +251,46 @@ public class TmrUtils
     }
 
     //TODO: use this for modifier applications
-    public static void tryApplyModifier(EntityLivingBase e, IAttribute attribute, AttributeModifier modifier) {
+    public static boolean tryApplyModifier(EntityLivingBase e, IAttribute attribute, AttributeModifier modifier) {
         IAttributeInstance attrib = e.getEntityAttribute(attribute);
         if( !attrib.hasModifier(modifier) ) {
             attrib.applyModifier(modifier);
+            return true;
         }
+        return false;
     }
 
     //TODO: use this for modifier applications
-    public static void tryApplyModifier(EntityLivingBase e, String attributeName, AttributeModifier modifier) {
+    public static boolean tryApplyModifier(EntityLivingBase e, String attributeName, AttributeModifier modifier) {
         IAttributeInstance attrib = e.getAttributeMap().getAttributeInstanceByName(attributeName);
         if( attrib != null && !attrib.hasModifier(modifier) ) {
             attrib.applyModifier(modifier);
+            return true;
         }
+
+        return false;
     }
 
     //TODO: use this for modifier removal
-    public static void tryRemoveModifier(EntityLivingBase e, IAttribute attribute, AttributeModifier modifier) {
+    public static boolean tryRemoveModifier(EntityLivingBase e, IAttribute attribute, AttributeModifier modifier) {
         IAttributeInstance attrib = e.getEntityAttribute(attribute);
         if( attrib.hasModifier(modifier) ) {
             attrib.removeModifier(modifier);
+            return true;
         }
+
+        return false;
     }
 
     //TODO: use this for modifier removal
-    public static void tryRemoveModifier(EntityLivingBase e, String attributeName, AttributeModifier modifier) {
+    public static boolean tryRemoveModifier(EntityLivingBase e, String attributeName, AttributeModifier modifier) {
         IAttributeInstance attrib = e.getAttributeMap().getAttributeInstanceByName(attributeName);
         if( attrib != null && attrib.hasModifier(modifier) ) {
             attrib.removeModifier(modifier);
+            return true;
         }
+
+        return false;
     }
 
     public static NonNullList<ItemStack> getCompactItems(NonNullList<ItemStack> items, int maxInvStackSize) {

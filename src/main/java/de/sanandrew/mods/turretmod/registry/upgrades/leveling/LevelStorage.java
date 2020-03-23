@@ -42,6 +42,7 @@ public class LevelStorage
     int xp;
 
     private int     prevXp;
+    private int     prevLvl;
     private int     cachedLevel;
     private Stage   currStage   = Stage.NULL_STAGE;
     private boolean initialized = false;
@@ -49,12 +50,14 @@ public class LevelStorage
     LevelStorage() {
         this.xp = 0;
         this.prevXp = 0;
+        this.prevLvl = 0;
         this.cachedLevel = -1;
     }
 
     LevelStorage(int xp) {
         this.xp = xp;
         this.prevXp = 0;
+        this.prevLvl = 0;
         this.cachedLevel = -1;
     }
 
@@ -112,20 +115,20 @@ public class LevelStorage
             this.prevXp = this.xp;
             this.cachedLevel = -1;
 
-            applyEffects(turretInst);
+            applyEffects(turretInst, this.initialized);
         }
 
         if( !this.initialized ) {
             this.initialized = true;
 
             // cleanup dangling modifiers
-            List<UUID> currModIds = Arrays.stream(stages).map(s -> Arrays.stream(s.modifiers).map(m -> m.modifier.getID()).collect(Collectors.toList()))
-                                          .reduce(new ArrayList<>(), (result, element) -> {
-                                              result.addAll(element);
-                                              return result;
-                                          });
+            List<UUID> currModifierIds = Arrays.stream(stages).map(s -> Arrays.stream(s.modifiers).map(m -> m.modifier.getID()).collect(Collectors.toList()))
+                                               .reduce(new ArrayList<>(), (result, element) -> {
+                                                   result.addAll(element);
+                                                   return result;
+                                               });
             e.getAttributeMap().getAllAttributes().forEach(a -> a.getModifiers().forEach(m -> {
-                                                               if( m.getName().startsWith(Stage.NAME_PREFIX) && !currModIds.contains(m.getID()) ) {
+                                                               if( m.getName().startsWith(Stage.NAME_PREFIX) && !currModifierIds.contains(m.getID()) ) {
                                                                    a.removeModifier(m);
                                                                }
                                                            })
@@ -133,13 +136,17 @@ public class LevelStorage
         }
     }
 
-    void applyEffects(ITurretInst turretInst) {
+    void applyEffects(ITurretInst turretInst, boolean playSound) {
         final int currLevel = this.getLevel();
-        Arrays.stream(stages).forEach(s -> {
-            if( s.check(currLevel, this.currStage) ) {
-                s.apply(turretInst);
-            }
-        });
+        if( this.prevLvl != currLevel ) {
+            this.prevLvl = currLevel;
+
+            Arrays.stream(stages).forEach(s -> {
+                if( s.check(currLevel, this.currStage) ) {
+                    s.apply(turretInst, playSound);
+                }
+            });
+        }
     }
 
     void removeEffects(ITurretInst turretInst) {

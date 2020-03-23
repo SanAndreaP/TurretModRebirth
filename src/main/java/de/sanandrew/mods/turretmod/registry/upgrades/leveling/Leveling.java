@@ -43,7 +43,7 @@ public class Leveling
     public void onLoad(ITurretInst turretInst, NBTTagCompound nbt) {
         LevelStorage stg = new LevelStorage(nbt.getInteger(NBT_EXPERIENCE));
         turretInst.getUpgradeProcessor().setUpgradeInstance(ID, stg);
-        stg.applyEffects(turretInst);
+        stg.applyEffects(turretInst, false);
     }
 
     @Override

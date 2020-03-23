@@ -7,8 +7,14 @@ import com.google.gson.JsonSyntaxException;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.network.PacketEffect;
+import de.sanandrew.mods.turretmod.registry.EnumEffect;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundCategory;
 import org.apache.logging.log4j.Level;
 
 import java.util.ArrayList;
@@ -67,9 +73,16 @@ public class Stage
         return level >= this.level && currStage.level < this.level;
     }
 
-    void apply(ITurretInst turretInst) {
+    void apply(ITurretInst turretInst, boolean playSound) {
+        boolean hasMultiplier = false;
         for( Modifier m : this.modifiers ) {
-            TmrUtils.tryApplyModifier(turretInst.get(), m.attributeName, m.modifier);
+            hasMultiplier |= TmrUtils.tryApplyModifier(turretInst.get(), m.attributeName, m.modifier);
+        }
+
+        if( playSound && hasMultiplier ) {
+            EntityLiving markus = turretInst.get();
+            PacketEffect.addEffect(EnumEffect.LEVEL_UP, markus.dimension, markus.posX, markus.posY, markus.posZ, null);
+//            markus.world.playSound(markus.posX, markus.posY, markus.posZ, SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.NEUTRAL, 1.0F, 1.0F, false);
         }
     }
 

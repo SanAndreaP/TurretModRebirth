@@ -16,7 +16,7 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectileInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.registry.EnumParticle;
+import de.sanandrew.mods.turretmod.registry.EnumEffect;
 import de.sanandrew.mods.turretmod.registry.Sounds;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import net.minecraft.entity.Entity;
@@ -86,8 +86,8 @@ public class CryoBall
     public void onUpdate(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile) {
         Entity projEntity = projectile.get();
         if( projEntity.world.isRemote ) {
-            TurretModRebirth.proxy.spawnParticle(EnumParticle.CRYO_PARTICLE, projEntity.posX, projEntity.posY, projEntity.posZ,
-                                                 new Tuple(projEntity.motionX, projEntity.motionY, projEntity.motionZ));
+            TurretModRebirth.proxy.addEffect(EnumEffect.CRYO_PARTICLE, projEntity.posX, projEntity.posY, projEntity.posZ,
+                                             new Tuple(projEntity.motionX, projEntity.motionY, projEntity.motionZ));
         }
     }
 

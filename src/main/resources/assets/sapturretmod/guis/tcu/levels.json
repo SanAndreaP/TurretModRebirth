@@ -5,7 +5,7 @@
     {
       "type": "sapturretmod:tcu.levels_indicator",
       "id": "level_indicator",
-      "pos": [8, 47],
+      "pos": [7, 49],
       "data": {
         "text": {
           "text": "gui.sapturretmod.tcu.page.leveling.level",
@@ -23,7 +23,7 @@
     },
     {
       "type": "text",
-      "pos": [8, 60],
+      "pos": [7, 77],
       "data": {
         "text": "gui.sapturretmod.tcu.page.leveling.modifier",
         "color": "0xFF404040"
@@ -32,7 +32,7 @@
     {
       "type": "sapturretmod:tcu.levels_modifiers",
       "id": "level_modifiers",
-      "pos": [8, 82],
+      "pos": [8, 88],
       "data": {
         "areaSize": [153, 100],
         "scrollbarPos": [162, 88],

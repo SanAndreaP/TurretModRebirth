@@ -66,7 +66,7 @@ import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.init.CommonProxy;
-import de.sanandrew.mods.turretmod.registry.EnumParticle;
+import de.sanandrew.mods.turretmod.registry.EnumEffect;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import net.minecraft.client.Minecraft;
@@ -76,10 +76,13 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -218,9 +221,9 @@ public class ClientProxy
     }
 
     @Override
-    public void spawnParticle(EnumParticle particle, double x, double y, double z, Tuple data) {
+    public void addEffect(EnumEffect effect, double x, double y, double z, Tuple data) {
         Minecraft mc = Minecraft.getMinecraft();
-        switch( particle ) {
+        switch( effect ) {
             case ASSEMBLY_SPARK:
                 mc.effectRenderer.addEffect(new ParticleAssemblySpark(mc.world, x, y, z, 0.0D, 0.0D, 0.0D));
                 break;
@@ -277,6 +280,9 @@ public class ClientProxy
                     mc.effectRenderer.addEffect(fx);
                 }
                 break;
+            }
+            case LEVEL_UP: {
+                mc.world.playSound(x, y, z, SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.NEUTRAL, 1.0F, 1.0F, false);
             }
         }
     }
