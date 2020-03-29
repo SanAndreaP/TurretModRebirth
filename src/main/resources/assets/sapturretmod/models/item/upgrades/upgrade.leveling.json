@@ -1,6 +1,6 @@
 {
   "parent": "sapturretmod:item/upgrades/upgrade_base",
   "textures": {
-    "layer1": "sapturretmod:items/upgrades/smarttgt"
+    "layer1": "sapturretmod:items/upgrades/leveling"
   }
 }

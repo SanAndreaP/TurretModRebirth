@@ -17,6 +17,7 @@ import de.sanandrew.mods.turretmod.registry.upgrades.leveling.LevelStorage;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.Range;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +28,7 @@ public class LevelModifiers
             extends ScrollArea
 {
     public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu.levels_modifiers");
+    private static final DecimalFormat formatter = new DecimalFormat("+0.0;-0.0");
 
     private int                                    prevModifierHash = 0;
     private Map<String, LevelStorage.ModifierInfo> modifiers        = Collections.emptyMap();
@@ -126,9 +128,10 @@ public class LevelModifiers
         private final class ModifierValueText
                 extends Text
         {
+
             @Override
             public String getDynamicText(IGui gui, String originalText) {
-                return String.format(originalText, String.format(Locale.ROOT, "%.1f", ModifierNode.this.modifierValue));
+                return String.format(originalText, formatter.format(ModifierNode.this.modifierValue));
             }
         }
     }

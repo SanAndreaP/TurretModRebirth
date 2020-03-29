@@ -48,9 +48,15 @@ public class RenderTurretCam
             RenderTurretCam.bindTurretCamTx(turretInst, quality);
             GlStateManager.pushMatrix();
             GlStateManager.translate(x, y, 0);
-            GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+            if( turretInst.isBuoy() ) {
+                GlStateManager.translate(width, height, 0);
+            } else {
+                GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+            }
             GlStateManager.scale(1.0F / 256.0F * width, 1.0F / 256.0F * height, 1.0F);
+
             GuiUtils.drawTexturedModalRect(-256, -256, 0.0F, 0, 0, 256, 256);
+
             GlStateManager.popMatrix();
         } else {
             Minecraft.getMinecraft().renderEngine.bindTexture(Resources.GUI_TCU_CAM_NA.resource);

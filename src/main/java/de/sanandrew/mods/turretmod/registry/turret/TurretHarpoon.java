@@ -105,6 +105,6 @@ public class TurretHarpoon
 
     @Override
     public float getEyeHeight(float height) {
-        return height * 0.4F;
+        return height * 0.155F;
     }
 }

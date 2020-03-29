@@ -14,6 +14,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.init.TmrConfig;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
@@ -35,7 +36,8 @@ public class LayerTurretUpgradesShieldGen<E extends EntityLiving & ITurretInst>
                     GlStateManager.pushMatrix();
                     GlStateManager.rotate(netHeadYaw + 90.0F + 180.0F * y, 0.0F, 1.0F, 0.0F);
                     GlStateManager.rotate(-headPitch, 1.0F, 0.0F, 0.0F);
-                    RenderUtils.renderStackInWorld(slotStack, -0.15D + 0.01765F * x, 0.125F, -0.25D, 90.0F, 90.0F, 0.0F, 0.2D);
+                    RenderUtils.renderStackInWorld(slotStack, -0.2375D + 0.01765F * x, 0.125F, -0.075D, 90.0F, 90.0F, 0.0F, 0.2D,
+                                                   ItemCameraTransforms.TransformType.HEAD, turret);
                     GlStateManager.popMatrix();
                 }
             }
