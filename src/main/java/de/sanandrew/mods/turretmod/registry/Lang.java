@@ -13,11 +13,7 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 
 public final class Lang
 {
-    public static final TranslateKey TCU_BTN                     = new TranslateKey("gui.%s.tcu.button.%%s", TmrConstants.ID);
     public static final TranslateKey TCU_PAGE_TITLE              = new TranslateKey("gui.%s.tcu.page.%%s.title", TmrConstants.ID);
-    public static final TranslateKey TCU_DISMANTLE_ERROR         = new TranslateKey("gui.%s.tcu.page.info.dismantle.error", TmrConstants.ID);
-    public static final TranslateKey TCU_SMARTTGT_GBOX           = new TranslateKey("gui.%s.tcu.page.targets.smart.%%s", TmrConstants.ID);
-    public static final TranslateKey TCU_COLORIZER_CLRCODE       = new TranslateKey("gui.%s.tcu.page.colorizer.colorcode", TmrConstants.ID);
     public static final TranslateKey TCU_LABEL_HEALTH            = new TranslateKey("gui.%s.tcu.label.health", TmrConstants.ID);
     public static final TranslateKey TCU_LABEL_AMMO              = new TranslateKey("gui.%s.tcu.label.ammo", TmrConstants.ID);
     public static final TranslateKey TCU_LABEL_TARGET            = new TranslateKey("gui.%s.tcu.label.target", TmrConstants.ID);

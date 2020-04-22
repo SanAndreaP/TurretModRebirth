@@ -25,6 +25,7 @@ idea {
 version = "1.12-4.0.0-beta.4"
 group = "de.sanandrew.mods"
 archivesBaseName = "TurretMod"
+String[] excludes = ["**/*.psd", "**/*.bbmodel"];
 
 sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
 compileJava {
@@ -75,14 +76,14 @@ processResources {
     }
 
     from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info', '**/*.psd', '**/*.bbmodel'
+        exclude 'mcmod.info'
     }
 
     rename '(.+_at.cfg)', 'META-INF/$1'
 }
 
 jar {
-    exclude "**/*.psd"
+    exclude(excludes)
     manifest {
         attributes 'FMLAT': 'turretmodrebirth_at.cfg'
     }
@@ -90,12 +91,14 @@ jar {
 
 sourceJar {
     from sourceSets.main.java
+    exclude(excludes)
     appendix = 'src'
     archiveName = "${baseName}-${version}-${appendix}.jar"
 }
 
 task deobfJar(type: Jar) {
     from sourceSets.main.output
+    exclude(excludes)
     appendix = 'deobf'
     archiveName = "${baseName}-${version}-${appendix}.jar"
     manifest {

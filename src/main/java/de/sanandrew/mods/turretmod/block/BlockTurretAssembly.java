@@ -163,7 +163,7 @@ public class BlockTurretAssembly
     private static final class MyStateImplementation
             extends BlockStateContainer.StateImplementation
     {
-        MyStateImplementation(Block blockIn, ImmutableMap<IProperty<?>, Comparable<?>> propertiesIn) {
+        private MyStateImplementation(Block blockIn, ImmutableMap<IProperty<?>, Comparable<?>> propertiesIn) {
             super(blockIn, propertiesIn);
         }
 

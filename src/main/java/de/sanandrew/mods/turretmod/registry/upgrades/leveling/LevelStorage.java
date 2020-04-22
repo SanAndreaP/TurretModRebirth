@@ -29,6 +29,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("FieldMayBeFinal")
 @IUpgradeInstance.Tickable
 @Category("Leveling")
 public class LevelStorage

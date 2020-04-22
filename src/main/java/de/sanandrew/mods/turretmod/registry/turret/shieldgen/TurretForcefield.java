@@ -30,7 +30,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 @Category("forcefield")
-@SuppressWarnings("WeakerAccess")
 public class TurretForcefield
         implements ITurret
 {

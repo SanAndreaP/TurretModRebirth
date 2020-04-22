@@ -95,7 +95,6 @@ public class Stage
         if( playSound && hasMultiplier ) {
             EntityLiving markus = turretInst.get();
             PacketEffect.addEffect(EnumEffect.LEVEL_UP, markus.dimension, markus.posX, markus.posY, markus.posZ, null);
-//            markus.world.playSound(markus.posX, markus.posY, markus.posZ, SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.NEUTRAL, 1.0F, 1.0F, false);
         }
     }
 

@@ -30,7 +30,6 @@ import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
 import de.sanandrew.mods.turretmod.item.ItemRemapper;
-import de.sanandrew.mods.turretmod.registry.Lang;
 import de.sanandrew.mods.turretmod.registry.Sounds;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import io.netty.buffer.ByteBuf;
@@ -239,7 +238,6 @@ public class EntityTurret
     public void onLivingUpdate() {
         if( !this.delegate.isBuoy() ) {
             this.motionY -= 0.0325F;
-            super.move(MoverType.SELF, 0.0F, this.motionY, 0.0F);
         } else {
             if( this.isSubmergedInLiquid(this.height + 0.2F) ) {
                 this.motionY += 0.0125F;
@@ -256,8 +254,8 @@ public class EntityTurret
                     this.motionY *= 0.75F;
                 }
             }
-            super.move(MoverType.SELF, 0.0F, this.motionY, 0.0F);
         }
+        super.move(MoverType.SELF, 0.0F, this.motionY, 0.0F);
 
         this.world.profiler.startSection("ai");
 
@@ -469,14 +467,14 @@ public class EntityTurret
 
     @Override
     public void readEntityFromNBT(NBTTagCompound nbt) {
-        super.readEntityFromNBT(nbt);
-
         String turretId = nbt.getString("turretId");
         if( UuidUtils.isStringUuid(turretId) ) {
             loadDelegate(ItemRemapper.OLD_TURRET_MAPPINGS.get(UUID.fromString(turretId)));
         } else {
             loadDelegate(new ResourceLocation(turretId));
         }
+
+        super.readEntityFromNBT(nbt);
 
         this.targetProc.readFromNbt(nbt);
         this.upgProc.readFromNbt(nbt);
