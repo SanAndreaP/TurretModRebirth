@@ -3,8 +3,10 @@
 	"textures": {
 		"0": "sapturretmod:blocks/turret_crate",
 		"1": "sapturretmod:blocks/turret_crate_frame",
+		"2": "sapturretmod:blocks/turret_crate_e",
 		"particle": "sapturretmod:blocks/turret_crate"
 	},
+	"sanlib_emissive_marker": true,
 	"elements": [
 		{
 			"name": "base",
@@ -17,6 +19,20 @@
 				"west": {"uv": [2, 2, 14, 14], "texture": "#0"},
 				"up": {"uv": [2, 2, 14, 14], "texture": "#0"},
 				"down": {"uv": [2, 2, 14, 14], "texture": "#0"}
+			}
+		},
+		{
+			"name": "base_emissive",
+			"from": [1.99, 1.99, 1.99],
+			"to": [14.01, 14.01, 14.01],
+			"emissive": true,
+			"faces": {
+				"north": {"uv": [2, 2, 14, 14], "texture": "#2"},
+				"east": {"uv": [2, 2, 14, 14], "texture": "#2"},
+				"south": {"uv": [2, 2, 14, 14], "texture": "#2"},
+				"west": {"uv": [2, 2, 14, 14], "texture": "#2"},
+				"up": {"uv": [2, 2, 14, 14], "texture": "#2"},
+				"down": {"uv": [2, 2, 14, 14], "texture": "#2"}
 			}
 		},
 		{
