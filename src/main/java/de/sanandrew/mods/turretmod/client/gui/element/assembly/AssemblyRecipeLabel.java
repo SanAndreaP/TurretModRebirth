@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,14 +32,12 @@ public class AssemblyRecipeLabel
     private int borderColor;
     private int compactIngredientsColumns;
 
-    private int           currWidth;
-    private int           currHeight;
-    private long          currTicks;
-    private int           ticksCrafting;
-    private int           rfPerTick;
-    private ItemStack[][] ingredients;
-    private int[]         ingredientSize;
-    private boolean       shiftPressed;
+    private int  currWidth;
+    private int  currHeight;
+    private long currTicks;
+
+    private final List<RenderElement> renderedIngredients = new ArrayList<>();
+    private final List<RenderElement> renderedData        = new ArrayList<>();
 
     @Override
     public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
@@ -64,18 +63,18 @@ public class AssemblyRecipeLabel
     @Override
     public void update(IGui gui, JsonObject data) {
         GuiTurretAssembly gta = (GuiTurretAssembly) gui;
-        this.ticksCrafting = gta.getProcessTime(gta.hoveredRecipe);
-        this.rfPerTick = gta.getRfPerTick(gta.hoveredRecipe);
-        this.shiftPressed = gta.isShiftPressed();
+        int ticksCrafting = gta.getProcessTime(gta.hoveredRecipe);
+        int rfPerTick = gta.getRfPerTick(gta.hoveredRecipe);
+        boolean shiftPressed = gta.isShiftPressed();
 
         NonNullList<Ingredient> ingredients = gta.hoveredRecipe.getIngredients();
         int max = ingredients.size();
-        this.ingredients = new ItemStack[max][];
-        this.ingredientSize = new int[max];
+        ItemStack[][] ingredientsVariants = new ItemStack[max][];
+        int[] ingredientSize = new int[max];
         for( int i = 0; i < max; i++ ) {
             AssemblyIngredient aIng = (AssemblyIngredient) ingredients.get(i);
-            this.ingredients[i] = aIng.getMatchingStacks();
-            this.ingredientSize[i] = aIng.getCount();
+            ingredientsVariants[i] = aIng.getMatchingStacks();
+            ingredientSize[i] = aIng.getCount();
         }
 
         this.itemTooltip.element.update(gui, this.itemTooltip.data);
@@ -83,14 +82,13 @@ public class AssemblyRecipeLabel
         this.rfIcon.element.update(gui, this.rfIcon.data);
 
         this.currTicks++;
-    }
 
-    @Override
-    public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
+        this.renderedIngredients.clear();
+        this.renderedData.clear();
+
         ItemTooltipText itt = this.itemTooltip.get(ItemTooltipText.class);
-        int origY = y;
-
-        GuiDefinition.renderElement(gui, x, y, mouseX, mouseY, partTicks, this.itemTooltip);
+        int x = 0;
+        int y = 0;
 
         this.currWidth = itt.getWidth();
         y += itt.getHeight() + 2;
@@ -98,57 +96,75 @@ public class AssemblyRecipeLabel
 
         y += 2;
         int col = 0;
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0, 0, 200);
-        for( int i = 0; this.ingredients != null && i < this.ingredients.length; i++ ) {
-            ItemStack[] variants = this.ingredients[i];
+
+        for( int i = 0; i < ingredientsVariants.length; i++ ) {
+            ItemStack[] variants = ingredientsVariants[i];
             ItemStack variant = variants[(int) (this.currTicks / 20) % variants.length];
 
-            if( this.shiftPressed ) {
+            if( shiftPressed ) {
                 y += 1;
-                RenderUtils.renderStackInGui(variant, x + 1, y, 0.5D);
+                this.renderedIngredients.add(new RenderElement(x + 1, y, (xr, yr, mx, my, pt) -> RenderUtils.renderStackInGui(variant, xr, yr, 0.5D)));
                 List<String> ingLines = gui.get().getItemToolTip(variant);
-                ingLines.set(0, String.format("%dx %s", this.ingredientSize[i], ingLines.get(0)));
+                ingLines.set(0, String.format("%dx %s", ingredientSize[i], ingLines.get(0)));
                 for( String line : ingLines ) {
-                    itt.fontRenderer.drawString(line, x + 11, y, itt.color, itt.shadow);
+                    this.renderedIngredients.add(new RenderElement(x + 11, y, (xr, yr, mx, my, pt) -> itt.fontRenderer.drawString(line, xr, yr, itt.color, itt.shadow)));
                     y += 10;
                     this.currWidth = Math.max(this.currWidth, 11 + itt.fontRenderer.getStringWidth(line));
                 }
             } else {
-                RenderUtils.renderStackInGui(variant, x + col * 18 + 1, y + 1, 1.0D, itt.fontRenderer, String.format("%d", this.ingredientSize[i]), true);
+                int ingSize = ingredientSize[i];
+                this.renderedIngredients.add(new RenderElement(x + col * 18 + 1, y + 1, (xr, yr, mx, my, pt) ->
+                                           RenderUtils.renderStackInGui(variant, xr, yr, 1.0D, itt.fontRenderer, String.format("%d", ingSize), true)
+                                       ));
 
                 col++;
                 this.currWidth = Math.max(this.currWidth, col * 18);
 
-                if( col >= this.compactIngredientsColumns && i < this.ingredients.length - 1 ) {
+                if( col >= this.compactIngredientsColumns && i < ingredientsVariants.length - 1 ) {
                     y += 18;
                     col = 0;
-                } else if( i == this.ingredients.length - 1 ) {
+                } else if( i == ingredientsVariants.length - 1 ) {
                     y += 19;
                 }
             }
         }
-        GlStateManager.popMatrix();
 
-        GlStateManager.disableDepth();
-        Gui.drawRect(x - 2, bar1Y, x + this.currWidth + 2, bar1Y + 1, this.borderColor);
-        Gui.drawRect(x - 2, y, x + this.currWidth + 2, y + 1, this.borderColor);
+        this.renderedData.add(new RenderElement(x - 2, bar1Y, (xr, yr, mx, my, pt) -> Gui.drawRect(xr, yr, xr + this.currWidth + 4, yr + 1, this.borderColor)));
+        this.renderedData.add(new RenderElement(x - 2, y, (xr, yr, mx, my, pt) -> Gui.drawRect(xr, yr, xr + this.currWidth + 4, yr + 1, this.borderColor)));
 
         y += 3;
-        String ticks = MiscUtils.getTimeFromTicks(this.ticksCrafting);
-        this.timeIcon.element.render(gui, partTicks, x, y, mouseX, mouseY, this.timeIcon.data);
-        itt.fontRenderer.drawString(ticks, x + this.timeIcon.element.getWidth() + 2, y + 1, itt.color, itt.shadow);
+        String ticks = MiscUtils.getTimeFromTicks(ticksCrafting);
+        this.renderedData.add(new RenderElement(x, y, (xr, yr, mx, my, pt) -> {
+            this.timeIcon.element.render(gui, pt, xr, yr, mx, my, this.timeIcon.data);
+            itt.fontRenderer.drawString(ticks, xr + this.timeIcon.element.getWidth() + 2, yr + 1, itt.color, itt.shadow);
+        }));
         y += Math.max(this.timeIcon.element.getHeight() + 2, itt.fontRenderer.FONT_HEIGHT);
         this.currWidth = Math.max(this.currWidth, this.timeIcon.element.getWidth() + 2 + itt.fontRenderer.getStringWidth(ticks));
 
-        String rf = String.format("%d RF/t", this.rfPerTick);
-        this.rfIcon.element.render(gui, partTicks, x, y, mouseX, mouseY, this.rfIcon.data);
-        itt.fontRenderer.drawString(rf, x + this.rfIcon.element.getWidth() + 2, y + 1, itt.color, itt.shadow);
+        String rf = String.format("%d RF/t", rfPerTick);
+        this.renderedData.add(new RenderElement(x, y, (xr, yr, mx, my, pt) -> {
+            this.rfIcon.element.render(gui, pt, xr, yr, mx, my, this.rfIcon.data);
+            itt.fontRenderer.drawString(rf, xr + this.rfIcon.element.getWidth() + 2, yr + 1, itt.color, itt.shadow);
+        }));
         y += Math.max(this.rfIcon.element.getHeight(), itt.fontRenderer.FONT_HEIGHT);
+
         this.currWidth = Math.max(this.currWidth, this.rfIcon.element.getWidth() + 2 + itt.fontRenderer.getStringWidth(rf));
+        this.currHeight = y;
 
-        this.currHeight = y - origY;
+        GlStateManager.enableDepth();
+    }
 
+    @Override
+    public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
+        GuiDefinition.renderElement(gui, x, y, mouseX, mouseY, partTicks, this.itemTooltip);
+
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0, 0, 200);
+        this.renderedIngredients.forEach(ri -> ri.render.accept(x + ri.x, y + ri.y, mouseX, mouseY, partTicks));
+        GlStateManager.popMatrix();
+
+        GlStateManager.disableDepth();
+        this.renderedData.forEach(ri -> ri.render.accept(x + ri.x, y + ri.y, mouseX, mouseY, partTicks));
         GlStateManager.enableDepth();
     }
 
@@ -162,12 +178,22 @@ public class AssemblyRecipeLabel
         return this.currHeight;
     }
 
+    public static class RenderElement
+    {
+        public int            x;
+        public int            y;
+        public RenderFunction render;
+
+        private RenderElement(int x, int y, RenderFunction render) {
+            this.x = x;
+            this.y = y;
+            this.render = render;
+        }
+    }
+
     public static class ItemTooltipText
             extends Text
     {
-        private List<String> lines = Collections.emptyList();
-        private int          currWidth;
-
         @Override
         public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
             JsonUtils.addDefaultJsonProperty(data, "color", "0xFFFFFFFF");
@@ -177,38 +203,26 @@ public class AssemblyRecipeLabel
         }
 
         @Override
-        public void update(IGui gui, JsonObject data) {
-            super.update(gui, data);
-
-            GuiTurretAssembly gta = (GuiTurretAssembly) gui;
-            this.currWidth = 0;
-            this.lines = gui.get().getItemToolTip(gta.hoveredRecipe.getRecipeOutput());
-            this.lines.forEach(l -> this.currWidth = Math.max(this.fontRenderer.getStringWidth(l), this.currWidth));
-        }
-
-        @Override
-        public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
-            int currY = y;
-            for( String line : this.lines ) {
-                this.text = line;
-                super.render(gui, partTicks, x, currY, mouseX, mouseY, data);
-                currY += this.fontRenderer.FONT_HEIGHT + 1;
-            }
-        }
-
-        @Override
         public String getBakedText(IGui gui, JsonObject data) {
             return "";
         }
 
         @Override
-        public int getHeight() {
-            return (this.fontRenderer.FONT_HEIGHT + 1) * this.lines.size() - 2;
+        public String getDynamicText(IGui gui, String originalText) {
+            GuiTurretAssembly gta = (GuiTurretAssembly) gui;
+
+            return gta.hoveredRecipe != null ? String.join("\n", gui.get().getItemToolTip(gta.hoveredRecipe.getRecipeOutput())) : "";
         }
 
         @Override
-        public int getWidth() {
-            return currWidth;
+        public boolean forceRenderUpdate(IGui gui) {
+            return false;
         }
+    }
+
+    @FunctionalInterface
+    private interface RenderFunction
+    {
+        void accept(int x, int y, int mouseX, int mouseY, float partTicks);
     }
 }

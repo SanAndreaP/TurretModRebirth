@@ -188,16 +188,17 @@ public class RenderTurretCam
 
     private static class CamEntry
     {
-        final int quality;
-        final int textureId;
-        boolean active;
-        long lastUpdTime;
+        private final int     quality;
+        private final int     textureId;
+        private       boolean active;
+        private       long    lastUpdTime;
 
-        CamEntry(int quality) {
+        private CamEntry(int quality) {
             this.textureId = GL11.glGenTextures();
             this.active = true;
             this.lastUpdTime = 0;
             this.quality = quality;
+
             GlStateManager.bindTexture(this.textureId);
             GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, quality, quality, 0, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, BufferUtils.createByteBuffer(3 * quality * quality));
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);

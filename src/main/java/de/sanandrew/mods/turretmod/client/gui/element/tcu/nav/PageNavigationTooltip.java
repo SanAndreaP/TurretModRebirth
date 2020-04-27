@@ -18,6 +18,8 @@ public class PageNavigationTooltip
 
     private GuiElementInst pageNavigation;
 
+    private int[] tabPos = null;
+
     @Override
     public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
         JsonUtils.addDefaultJsonProperty(data, "size", new int[] { 16, 16});
@@ -28,20 +30,31 @@ public class PageNavigationTooltip
     }
 
     @Override
+    public void update(IGui gui, JsonObject data) {
+        PageNavigation pgn = this.pageNavigation.get(PageNavigation.class);
+        Label lbl = this.getChild(CONTENT).get(Label.class);
+        this.tabPos = null;
+
+        pgn.shownTabs.forEach((e, p) -> {
+            if( e.get(ButtonNav.class).isHovering() ) {
+                lbl.text = LangUtils.translate(Lang.TCU_PAGE_TITLE.get(p));
+                this.tabPos = e.pos;
+            }
+        });
+
+        super.update(gui, data);
+    }
+
+    @Override
     public GuiElementInst getContent(IGui gui, JsonObject data) {
         return new GuiElementInst(new Label()).initialize(gui);
     }
 
     @Override
     public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
-        PageNavigation pgn = this.pageNavigation.get(PageNavigation.class);
-        Label lbl = this.getChild(CONTENT).get(Label.class);
-        pgn.shownTabs.forEach((e, p) -> {
-            if( e.get(ButtonNav.class).isHovering() ) {
-                lbl.text = LangUtils.translate(Lang.TCU_PAGE_TITLE.get(p));
-                super.render(gui, partTicks, e.pos[0] + x, e.pos[1] + y, mouseX, mouseY, data);
-            }
-        });
+        if( this.tabPos != null ) {
+            super.render(gui, partTicks, this.tabPos[0] + x, this.tabPos[1] + y, mouseX, mouseY, data);
+        }
     }
 
     private static class Label

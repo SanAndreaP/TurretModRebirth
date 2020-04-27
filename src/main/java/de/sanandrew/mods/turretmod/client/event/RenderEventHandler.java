@@ -28,6 +28,8 @@ public class RenderEventHandler
 
     @SubscribeEvent
     public void onRenderWorldLast(RenderWorldLastEvent event) {
+//        for(int i = 0; i < 10000000; i++) System.nanoTime(); // lag-induced testing
+
         Minecraft mc = Minecraft.getMinecraft();
         Entity renderEntity = mc.getRenderViewEntity();
 

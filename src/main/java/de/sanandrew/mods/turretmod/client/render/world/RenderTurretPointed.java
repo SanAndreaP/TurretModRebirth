@@ -151,8 +151,9 @@ public final class RenderTurretPointed
 
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
         float alphaMulti = Math.min(1.0F, lbl.progress);
-        ColorObj clrTop = new ColorObj(0x0050FF00 | (Math.max(Math.round(0xCC * alphaMulti), 4) << 24));
-        ColorObj clrBottom = new ColorObj(0x00288000 | (Math.max(Math.round(0xCC * alphaMulti), 4) << 24));
+        int alphaFlagFrame = Math.max(Math.round(0xCC * alphaMulti), 4) << 24;
+        ColorObj clrTop = new ColorObj(0x0050FF00 | alphaFlagFrame);
+        ColorObj clrBottom = new ColorObj(0x00288000 | alphaFlagFrame);
         ColorObj clrMain = new ColorObj(0x00001000 | (Math.max(Math.round(0xA0 * alphaMulti), 4) << 24));
 
         // main bg
@@ -218,17 +219,17 @@ public final class RenderTurretPointed
 
     private static class LabelEntry
     {
-        long beginTick;
-        long endTick;
-        boolean wasActive;
-        boolean active;
-        float angleY;
-        float angleX;
-        float maxHeight;
-        float maxWidth;
-        float progress;
+        private long    beginTick;
+        private long    endTick;
+        private boolean wasActive;
+        private boolean active;
+        private float   angleY;
+        private float   angleX;
+        private float   maxHeight;
+        private float   maxWidth;
+        private float   progress;
 
-        LabelEntry(RenderManager rMan) {
+        private LabelEntry(RenderManager rMan) {
             this.active = true;
             this.wasActive = false;
             this.beginTick = -1;

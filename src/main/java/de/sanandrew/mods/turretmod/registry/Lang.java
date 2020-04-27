@@ -33,7 +33,7 @@ public final class Lang
 
     public static final TranslateKey TURRET_DESC = new TranslateKey("%s.turret.%%s.desc", TmrConstants.ID);
 
-    public static final TranslateKey ATTRIBUTE     = new TranslateKey("attribute.%s");
+    public static final TranslateKey ATTRIBUTE = new TranslateKey("attribute.%s");
 
     public static final TranslateKey ITEM_TURRET_PLACER = new TranslateKey("item.%s:turret.%%s", TmrConstants.ID);
 
