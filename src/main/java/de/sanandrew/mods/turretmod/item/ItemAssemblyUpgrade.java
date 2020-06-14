@@ -69,6 +69,16 @@ public abstract class ItemAssemblyUpgrade
         }
     }
 
+    static class Redstone
+            extends ItemAssemblyUpgrade
+    {
+        Redstone() {
+            super();
+            this.setTranslationKey(TmrConstants.ID + ":turret_assembly_redstone");
+            this.setRegistryName(TmrConstants.ID, "assembly_upg_redstone");
+        }
+    }
+
     public static class Filter
         extends ItemAssemblyUpgrade
     {

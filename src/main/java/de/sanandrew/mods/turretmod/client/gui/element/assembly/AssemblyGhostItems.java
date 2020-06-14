@@ -9,6 +9,7 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
+import de.sanandrew.mods.turretmod.inventory.AssemblyInventory;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
@@ -29,6 +30,7 @@ public class AssemblyGhostItems
     public final ItemStack upgIconAuto   = new ItemStack(ItemRegistry.ASSEMBLY_UPG_AUTO);
     public final ItemStack upgIconSpeed  = new ItemStack(ItemRegistry.ASSEMBLY_UPG_SPEED);
     public final ItemStack upgIconFilter = new ItemStack(ItemRegistry.ASSEMBLY_UPG_FILTER);
+    public final ItemStack upgIconRedstone = new ItemStack(ItemRegistry.ASSEMBLY_UPG_REDSTONE);
     public final ItemStack cartridge     = new ItemStack(ItemRegistry.AMMO_CARTRIDGE);
 
     @Override
@@ -53,7 +55,7 @@ public class AssemblyGhostItems
         if( !gta.assembly.hasSpeedUpgrade() ) {
             this.slotsRendered.add(new SlotData(upgIconSpeed, 14, 118));
         }
-        if( !ItemStackUtils.isValid(gta.assembly.getInventory().getStackInSlot(4)) ) {
+        if( !ItemStackUtils.isValid(gta.assembly.getInventory().getStackInSlot(AssemblyInventory.SLOT_OUTPUT_CARTRIDGE)) ) {
             this.slotsRendered.add(new SlotData(cartridge, 181, 10));
         }
         if( !gta.assembly.hasFilterUpgrade() ) {
@@ -63,13 +65,16 @@ public class AssemblyGhostItems
             for( int i = 0; i < filteredStacks.size(); i++ ) {
                 ItemStack filterStack = filteredStacks.get(i);
                 // if the stack in the filter is valid and the slot has no valid item in it...
-                if( ItemStackUtils.isValid(filterStack) && !ItemStackUtils.isValid(gta.assembly.getInventory().getStackInSlot(i + 5)) ) {
+                if( ItemStackUtils.isValid(filterStack) && !ItemStackUtils.isValid(gta.assembly.getInventory().getStackInSlot(i + AssemblyInventory.RESOURCE_SLOT_FIRST)) ) {
                     int x = i % 9;
                     int y = i / 9;
 
                     this.slotsRendered.add(new SlotData(filterStack.copy(), 36 + x * 18, 100 + y * 18));
                 }
             }
+        }
+        if( !gta.assembly.hasRedstoneUpgrade() ) {
+            this.slotsRendered.add(new SlotData(upgIconRedstone, 202, 118));
         }
     }
 

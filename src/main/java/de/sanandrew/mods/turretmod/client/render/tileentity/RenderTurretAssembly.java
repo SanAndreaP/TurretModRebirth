@@ -17,6 +17,7 @@ import de.sanandrew.mods.turretmod.client.model.block.ModelTurretAssembly;
 import de.sanandrew.mods.turretmod.client.shader.ShaderItemAlphaOverride;
 import de.sanandrew.mods.turretmod.client.shader.Shaders;
 import de.sanandrew.mods.turretmod.client.init.ClientProxy;
+import de.sanandrew.mods.turretmod.inventory.AssemblyInventory;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.registry.Resources;
 import net.minecraft.client.Minecraft;
@@ -55,7 +56,7 @@ public class RenderTurretAssembly
 
         renderItem(tile);
 
-        if( tile.isActive && tile.robotArmX >= 4.0F && tile.robotArmX <= 10.0F && tile.robotArmY <= -3.5F && tile.robotArmY >= -9.5F ) {
+        if( tile.isActiveClient && tile.robotArmX >= 4.0F && tile.robotArmX <= 10.0F && tile.robotArmY <= -3.5F && tile.robotArmY >= -9.5F ) {
             tile.spawnParticle = this.renderLaser(BlockRegistry.TURRET_ASSEMBLY.getDirection(tile.getBlockMetadata()), tile.getPos());
         }
 
@@ -144,13 +145,16 @@ public class RenderTurretAssembly
         }
 
         if( assembly.hasAutoUpgrade() ) {
-            RenderUtils.renderStackInWorld(assembly.getInventory().getStackInSlot(1), -0.425D + xShift++ * 0.025D, 0.85D, -0.35D, 0.0F, 90.0F, 0.0F, 0.15D);
+            RenderUtils.renderStackInWorld(assembly.getInventory().getStackInSlot(AssemblyInventory.SLOT_UPGRADE_AUTO), -0.325D + xShift++ * 0.215D, 0.84D, -0.40D, 0.0F, 0.0F, 0.0F, 0.15D);
         }
         if( assembly.hasSpeedUpgrade() ) {
-            RenderUtils.renderStackInWorld(assembly.getInventory().getStackInSlot(2), -0.425D + xShift++ * 0.025D, 0.85D, -0.35D, 0.0F, 90.0F, 0.0F, 0.15D);
+            RenderUtils.renderStackInWorld(assembly.getInventory().getStackInSlot(AssemblyInventory.SLOT_UPGRADE_SPEED), -0.325D + xShift++ * 0.215D, 0.84D, -0.40D, 0.0F, 0.0F, 0.0F, 0.15D);
         }
         if( assembly.hasFilterUpgrade() ) {
-            RenderUtils.renderStackInWorld(assembly.getInventory().getStackInSlot(3), -0.425D + xShift * 0.025D, 0.85D, -0.35D, 0.0F, 90.0F, 0.0F, 0.15D);
+            RenderUtils.renderStackInWorld(assembly.getInventory().getStackInSlot(AssemblyInventory.SLOT_UPGRADE_FILTER), -0.325D + xShift++ * 0.215D, 0.84D, -0.40D, 0.0F, 0.0F, 0.0F, 0.15D);
+        }
+        if( assembly.hasRedstoneUpgrade() ) {
+            RenderUtils.renderStackInWorld(assembly.getInventory().getStackInSlot(AssemblyInventory.SLOT_UPGRADE_REDSTONE), -0.325D + xShift * 0.215D, 0.84D, -0.40D, 0.0F, 0.0F, 0.0F, 0.15D);
         }
         GlStateManager.popMatrix();
     }

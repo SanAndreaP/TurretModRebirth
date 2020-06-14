@@ -43,6 +43,7 @@ public final class ModelRegistry
         setStandardModel(ItemRegistry.ASSEMBLY_UPG_FILTER);
         setStandardModel(ItemRegistry.ASSEMBLY_UPG_AUTO);
         setStandardModel(ItemRegistry.ASSEMBLY_UPG_SPEED);
+        setStandardModel(ItemRegistry.ASSEMBLY_UPG_REDSTONE);
         setStandardModel(BlockRegistry.ELECTROLYTE_GENERATOR);
         setStandardModel(BlockRegistry.TURRET_ASSEMBLY);
         setStandardModel(BlockRegistry.TURRET_CRATE);

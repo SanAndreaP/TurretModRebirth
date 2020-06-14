@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.inventory.container;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.turretmod.inventory.AssemblyInventory;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
@@ -20,6 +21,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
+import java.util.Comparator;
 
 public class ContainerTurretAssembly
         extends Container
@@ -32,26 +34,27 @@ public class ContainerTurretAssembly
         this.inventory = this.tile.getInventory();
 
         IInventory tileInv = assembly.getInventory();
-        this.addSlotToContainer(new SlotOutput(tileInv, 0, 163, 10));
-        this.addSlotToContainer(new SlotOutput(tileInv, 4, 181, 10));
+        this.addSlotToContainer(new SlotOutput(tileInv, AssemblyInventory.SLOT_OUTPUT, 163, 10));
+        this.addSlotToContainer(new SlotOutput(tileInv, AssemblyInventory.SLOT_OUTPUT_CARTRIDGE, 181, 10));
         this.addSlotToContainer(new SlotAutoUpgrade());
         this.addSlotToContainer(new SlotSpeedUpgrade());
         this.addSlotToContainer(new SlotFilterUpgrade());
+        this.addSlotToContainer(new SlotRedstoneUpgrade());
 
         for( int i = 0; i < 2; i++ ) {
             for( int j = 0; j < 9; j++ ) {
-                this.addSlotToContainer(new SlotIngredients(j + i * 9 + 5, 36 + j * 18, 100 + i * 18));
+                this.addSlotToContainer(new SlotIngredients(j + i * 9 + AssemblyInventory.RESOURCE_SLOT_FIRST, 36 + j * 18, 100 + i * 18));
             }
+        }
+
+        for( int i = 0; i < 9; i++ ) {
+            this.addSlotToContainer(new Slot(playerInv, i, 36 + i * 18, 198));
         }
 
         for( int i = 0; i < 3; i++ ) {
             for( int j = 0; j < 9; j++ ) {
                 this.addSlotToContainer(new Slot(playerInv, j + i * 9 + 9, 36 + j * 18, 140 + i * 18));
             }
-        }
-
-        for( int i = 0; i < 9; i++ ) {
-            this.addSlotToContainer(new Slot(playerInv, i, 36 + i * 18, 198));
         }
     }
 
@@ -64,7 +67,7 @@ public class ContainerTurretAssembly
         int origStackSize = desiredItm.getItemStackLimit(origStack);
         desiredItm.setMaxStackSize(1);
         slotStack.setCount(1);
-        if( !super.mergeItemStack(slotStack, 1 + upgSlot, 2 + upgSlot, false) ) {
+        if( !super.mergeItemStack(slotStack, upgSlot, upgSlot + 1, false) ) {
             slotStack.setCount(origStack.getCount());
             desiredItm.setMaxStackSize(origStackSize);
             return true;
@@ -90,23 +93,28 @@ public class ContainerTurretAssembly
             ItemStack slotStack = slot.getStack();
             origStack = slotStack.copy();
 
-            if( slotId < 23 ) { // if clicked stack is from TileEntity
-                if( !super.mergeItemStack(slotStack, 23, 59, true) ) {
+            int invSize = this.inventory.getSizeInventory();
+            if( slotId < invSize ) { // if clicked stack is from TileEntity
+                if( !super.mergeItemStack(slotStack, invSize, invSize + 36, false) ) {
                     return ItemStackUtils.getEmpty();
                 }
             } else if( origStack.getItem() == ItemRegistry.ASSEMBLY_UPG_AUTO ) {
-                if( transferUpgrade(ItemRegistry.ASSEMBLY_UPG_AUTO, origStack, slotStack, 0) ) {
+                if( transferUpgrade(ItemRegistry.ASSEMBLY_UPG_AUTO, origStack, slotStack, AssemblyInventory.SLOT_UPGRADE_AUTO) ) {
                     return ItemStackUtils.getEmpty();
                 }
             } else if( origStack.getItem() == ItemRegistry.ASSEMBLY_UPG_SPEED ) {
-                if( transferUpgrade(ItemRegistry.ASSEMBLY_UPG_SPEED, origStack, slotStack, 1) ) {
+                if( transferUpgrade(ItemRegistry.ASSEMBLY_UPG_SPEED, origStack, slotStack, AssemblyInventory.SLOT_UPGRADE_SPEED) ) {
                     return ItemStackUtils.getEmpty();
                 }
             } else if( origStack.getItem() == ItemRegistry.ASSEMBLY_UPG_FILTER ) {
-                if( transferUpgrade(ItemRegistry.ASSEMBLY_UPG_FILTER, origStack, slotStack, 2) ) {
+                if( transferUpgrade(ItemRegistry.ASSEMBLY_UPG_FILTER, origStack, slotStack, AssemblyInventory.SLOT_UPGRADE_FILTER) ) {
                     return ItemStackUtils.getEmpty();
                 }
-            } else if( !this.mergeItemStack(slotStack, 5, 23, false) ) { // if clicked stack is from player and also merge to input slots is sucessful
+            } else if( origStack.getItem() == ItemRegistry.ASSEMBLY_UPG_REDSTONE ) {
+                if( transferUpgrade(ItemRegistry.ASSEMBLY_UPG_REDSTONE, origStack, slotStack, AssemblyInventory.SLOT_UPGRADE_REDSTONE) ) {
+                    return ItemStackUtils.getEmpty();
+                }
+            } else if( !this.mergeItemStack(slotStack, AssemblyInventory.RESOURCE_SLOT_FIRST, invSize, false) ) { // if clicked stack is from player and also merge to input slots is sucessful
                 return ItemStackUtils.getEmpty();
             }
 
@@ -135,7 +143,7 @@ public class ContainerTurretAssembly
             extends Slot
     {
         SlotAutoUpgrade() {
-            super(ContainerTurretAssembly.this.inventory, 1, 14, 100);
+            super(ContainerTurretAssembly.this.inventory, AssemblyInventory.SLOT_UPGRADE_AUTO, 14, 100);
         }
 
         @Override
@@ -148,7 +156,7 @@ public class ContainerTurretAssembly
             extends Slot
     {
         SlotSpeedUpgrade() {
-            super(ContainerTurretAssembly.this.inventory, 2, 14, 118);
+            super(ContainerTurretAssembly.this.inventory, AssemblyInventory.SLOT_UPGRADE_SPEED, 14, 118);
         }
 
         @Override
@@ -157,11 +165,24 @@ public class ContainerTurretAssembly
         }
     }
 
+    private class SlotRedstoneUpgrade
+            extends Slot
+    {
+        SlotRedstoneUpgrade() {
+            super(ContainerTurretAssembly.this.inventory, AssemblyInventory.SLOT_UPGRADE_REDSTONE, 202, 118);
+        }
+
+        @Override
+        public boolean isItemValid(@Nonnull ItemStack stack) {
+            return !ContainerTurretAssembly.this.tile.hasRedstoneUpgrade() && stack.getItem() == ItemRegistry.ASSEMBLY_UPG_REDSTONE;
+        }
+    }
+
     private class SlotFilterUpgrade
             extends Slot
     {
         SlotFilterUpgrade() {
-            super(ContainerTurretAssembly.this.inventory, 3, 202, 100);
+            super(ContainerTurretAssembly.this.inventory, AssemblyInventory.SLOT_UPGRADE_FILTER, 202, 100);
         }
 
         @Override

@@ -14,15 +14,18 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
+import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.inventory.AssemblyInventory;
 import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
 import de.sanandrew.mods.turretmod.network.TileClientSync;
-import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import de.sanandrew.mods.turretmod.registry.EnumEffect;
-import de.sanandrew.mods.turretmod.init.TurretModRebirth;
+import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.block.BlockRedstoneDiode;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -50,6 +53,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class TileEntityTurretAssembly
@@ -72,7 +76,8 @@ public class TileEntityTurretAssembly
     private boolean prevActive;
     private boolean automate;
     public boolean isActive;
-    private boolean isActiveClient;
+    private boolean prevActiveClient;
+    public boolean isActiveClient;
 
     public IAssemblyRecipe currRecipe;
     public int craftingAmount;
@@ -173,12 +178,19 @@ public class TileEntityTurretAssembly
         return this.invHandler.hasFilterUpgrade();
     }
 
+    public boolean hasRedstoneUpgrade() {
+        return this.invHandler.hasRedstoneUpgrade();
+    }
+
     public NonNullList<ItemStack> getFilterStacks() {
         return this.invHandler.getFilterStacks();
     }
 
     @Override
     public void update() {
+        this.prevActive = this.isActive;
+        this.prevActiveClient = this.isActiveClient;
+
         if( !this.world.isRemote ) {
             if( this.automate && !this.hasAutoUpgrade() ) {
                 this.automate = false;
@@ -195,53 +207,66 @@ public class TileEntityTurretAssembly
 
             this.isActiveClient = this.isActive;
             if( this.isActive && this.currRecipe != null ) {
-                for( int i = 0; i < maxLoop; i++ ) {
-                    if( this.energyStorage.fluxAmount >= this.fluxConsumption && this.world.getRedstonePowerFromNeighbors(this.pos) == 0 ) {
-                        this.energyStorage.fluxAmount -= this.fluxConsumption;
-                        if( ++this.ticksCrafted >= this.maxTicksCrafted ) {
-                            ItemStack stack = this.currRecipe.getCraftingResult(this.invHandler);
-                            if( !ItemStackUtils.isValid(stack) ) {
-                                this.cancelCrafting();
-                                return;
-                            }
-
-                            this.invHandler.fillOutput(stack);
-                            this.removedItems = null;
-
-                            if( !this.invHandler.canFillOutput(stack) ) {
-                                this.isActive = false;
-                                this.isActiveClient = false;
-                            }
-
-                            if( this.craftingAmount > 1 || this.automate ) {
-                                if( !this.automate ) {
-                                    this.craftingAmount--;
-                                }
-
-                                if( this.isActive ) {
-                                    this.removedItems = this.craftingAmount >= 1 ? AssemblyManager.INSTANCE.checkAndConsumeResources(this.invHandler, this.world, this.currRecipe) : null;
-                                    if( this.removedItems == null ) {
-                                        this.isActive = false;
-                                        this.isActiveClient = false;
-                                    }
-                                }
-                            } else {
-                                this.cancelCrafting();
-                                return;
-                            }
-                            this.ticksCrafted = 0;
-
-                            markDirty = true;
-                        }
-
+                if( this.hasRedstoneUpgrade() && this.isRedstonePowered() ) {
+                    this.isActiveClient = false;
+                    if( this.prevActiveClient ) {
                         this.doSync = true;
-                    } else {
-                        this.isActiveClient = false;
+                    }
+                } else {
+                    if( !this.prevActiveClient ) {
                         this.doSync = true;
                     }
 
-                    if( !this.isActive || this.currRecipe == null ) {
-                        break;
+                    for( int i = 0; i < maxLoop; i++ ) {
+                        if( this.energyStorage.fluxAmount >= this.fluxConsumption ) {
+                            this.energyStorage.fluxAmount -= this.fluxConsumption;
+                            if( ++this.ticksCrafted >= this.maxTicksCrafted ) {
+                                ItemStack stack = this.currRecipe.getCraftingResult(this.invHandler);
+                                if( !ItemStackUtils.isValid(stack) ) {
+                                    this.cancelCrafting();
+                                    return;
+                                }
+
+                                this.invHandler.fillOutput(stack);
+                                this.removedItems = null;
+
+                                if( !this.invHandler.canFillOutput(stack) ) {
+                                    this.isActive = false;
+                                    this.isActiveClient = false;
+                                }
+
+                                if( this.craftingAmount > 1 || this.automate ) {
+                                    if( !this.automate ) {
+                                        this.craftingAmount--;
+                                    }
+
+                                    if( this.isActive ) {
+                                        this.removedItems = this.craftingAmount >= 1
+                                                            ? AssemblyManager.INSTANCE.checkAndConsumeResources(this.invHandler, this.world, this.currRecipe)
+                                                            : null;
+                                        if( this.removedItems == null ) {
+                                            this.isActive = false;
+                                            this.isActiveClient = false;
+                                        }
+                                    }
+                                } else {
+                                    this.cancelCrafting();
+                                    return;
+                                }
+                                this.ticksCrafted = 0;
+
+                                markDirty = true;
+                            }
+
+                            this.doSync = true;
+                        } else {
+                            this.isActiveClient = false;
+                            this.doSync = true;
+                        }
+
+                        if( !this.isActive || this.currRecipe == null ) {
+                            break;
+                        }
                     }
                 }
             } else {
@@ -261,8 +286,15 @@ public class TileEntityTurretAssembly
             this.processRobotArm();
         }
 
-        this.prevActive = this.isActive;
         this.ticksExisted++;
+    }
+
+    private boolean isRedstonePowered() {
+        if( this.world.isSidePowered(this.pos.down(), EnumFacing.DOWN) ) {
+            return true;
+        }
+
+        return Arrays.stream(EnumFacing.HORIZONTALS).anyMatch(f -> RedstonePowerProxy.INSTANCE.isPowered(this.world, this.pos, f));
     }
 
     private void processRobotArm() {
@@ -290,7 +322,7 @@ public class TileEntityTurretAssembly
 
         if( this.isActiveClient && (!this.prevActive || this.ticksExisted % 20 == 0) ) {
             this.animateRobotArmRng();
-        } else if( this.prevActive && !this.isActiveClient ) {
+        } else if( this.prevActive && !this.isActiveClient && !this.isActive ) {
             this.animateRobotArmReset();
             this.spawnParticle = null;
         }
@@ -528,5 +560,32 @@ public class TileEntityTurretAssembly
 
     public boolean hasCustomName() {
         return this.customName != null;
+    }
+
+    private static final class RedstonePowerProxy
+            extends BlockRedstoneDiode
+    {
+        private static final RedstonePowerProxy INSTANCE = new RedstonePowerProxy();
+
+        private RedstonePowerProxy() {
+            super(false);
+        }
+
+        @Override
+        protected int getDelay(IBlockState state) { return Integer.MAX_VALUE; }
+
+        @Override
+        protected IBlockState getPoweredState(IBlockState unpoweredState) { return null; }
+
+        @Override
+        protected IBlockState getUnpoweredState(IBlockState poweredState) { return null; }
+
+        protected BlockStateContainer createBlockState() {
+            return Blocks.UNPOWERED_REPEATER.getBlockState();
+        }
+
+        public boolean isPowered(World worldIn, BlockPos pos, EnumFacing facing) {
+            return super.shouldBePowered(worldIn, pos, this.blockState.getBaseState().withProperty(FACING, facing));
+        }
     }
 }

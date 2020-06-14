@@ -19,6 +19,7 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.client.util.GuiHelper;
+import de.sanandrew.mods.turretmod.inventory.AssemblyInventory;
 import de.sanandrew.mods.turretmod.inventory.container.ContainerTurretAssembly;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketAssemblyToggleAutomate;
@@ -127,7 +128,7 @@ public class GuiTurretAssembly
             this.manualButton.get(Button.class).setEnabled(this.assembly.isAutomated());
         }
 
-        this.automateButton.setVisible(ItemStackUtils.isItem(this.assembly.getInventory().getStackInSlot(1), ItemRegistry.ASSEMBLY_UPG_AUTO));
+        this.automateButton.setVisible(ItemStackUtils.isItem(this.assembly.getInventory().getStackInSlot(AssemblyInventory.SLOT_UPGRADE_AUTO), ItemRegistry.ASSEMBLY_UPG_AUTO));
         this.manualButton.setVisible(this.automateButton.isVisible());
 
         this.guiDef.update(this);

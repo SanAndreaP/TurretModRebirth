@@ -34,6 +34,8 @@ item.sapturretmod:turret_assembly_filter.name=Filter Upgrade
 item.sapturretmod:turret_assembly_filter.ttip=Used in the Turret Assembly Table
 item.sapturretmod:turret_assembly_filter.conf=Configured
 item.sapturretmod:turret_assembly_filter.inst=Right-click to configure, Shift-right-click to clear config.
+item.sapturretmod:turret_assembly_redstone.name=Redstone Awareness Upgrade
+item.sapturretmod:turret_assembly_redstone.ttip=Used in the Turret Assembly Table
 # Ammo
 item.sapturretmod:ammo.arrow.name=Arrow Bolt
 item.sapturretmod:ammo.shotgunshell.name=Shotgun Shell

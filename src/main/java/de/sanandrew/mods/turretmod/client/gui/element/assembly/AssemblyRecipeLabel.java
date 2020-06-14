@@ -11,6 +11,7 @@ import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.assembly.AssemblyIngredient;
+import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -25,6 +26,8 @@ import java.util.List;
 public class AssemblyRecipeLabel
         implements IGuiElement
 {
+    private IAssemblyRecipe prevRecipe;
+
     private GuiElementInst itemTooltip;
     private GuiElementInst timeIcon;
     private GuiElementInst rfIcon;
@@ -63,18 +66,21 @@ public class AssemblyRecipeLabel
     @Override
     public void update(IGui gui, JsonObject data) {
         GuiTurretAssembly gta = (GuiTurretAssembly) gui;
-        int ticksCrafting = gta.getProcessTime(gta.hoveredRecipe);
-        int rfPerTick = gta.getRfPerTick(gta.hoveredRecipe);
-        boolean shiftPressed = gta.isShiftPressed();
 
-        NonNullList<Ingredient> ingredients = gta.hoveredRecipe.getIngredients();
-        int max = ingredients.size();
-        ItemStack[][] ingredientsVariants = new ItemStack[max][];
-        int[] ingredientSize = new int[max];
-        for( int i = 0; i < max; i++ ) {
+        this.prevRecipe = gta.hoveredRecipe;
+
+        int                     ticksCrafting       = gta.getProcessTime(gta.hoveredRecipe);
+        int                     rfPerTick           = gta.getRfPerTick(gta.hoveredRecipe);
+        boolean                 shiftPressed        = gta.isShiftPressed();
+        NonNullList<Ingredient> ingredients         = gta.hoveredRecipe.getIngredients();
+        int                     ingredientSize      = ingredients.size();
+        ItemStack[][]           ingredientsVariants = new ItemStack[ingredientSize][];
+        int[]                   ingredientCounts    = new int[ingredientSize];
+
+        for( int i = 0; i < ingredientSize; i++ ) {
             AssemblyIngredient aIng = (AssemblyIngredient) ingredients.get(i);
             ingredientsVariants[i] = aIng.getMatchingStacks();
-            ingredientSize[i] = aIng.getCount();
+            ingredientCounts[i] = aIng.getCount();
         }
 
         this.itemTooltip.element.update(gui, this.itemTooltip.data);
@@ -87,8 +93,8 @@ public class AssemblyRecipeLabel
         this.renderedData.clear();
 
         ItemTooltipText itt = this.itemTooltip.get(ItemTooltipText.class);
-        int x = 0;
-        int y = 0;
+        int             x   = 0;
+        int             y   = 0;
 
         this.currWidth = itt.getWidth();
         y += itt.getHeight() + 2;
@@ -99,23 +105,23 @@ public class AssemblyRecipeLabel
 
         for( int i = 0; i < ingredientsVariants.length; i++ ) {
             ItemStack[] variants = ingredientsVariants[i];
-            ItemStack variant = variants[(int) (this.currTicks / 20) % variants.length];
+            ItemStack   variant  = variants[(int) (this.currTicks / 20) % variants.length];
 
             if( shiftPressed ) {
                 y += 1;
                 this.renderedIngredients.add(new RenderElement(x + 1, y, (xr, yr, mx, my, pt) -> RenderUtils.renderStackInGui(variant, xr, yr, 0.5D)));
                 List<String> ingLines = gui.get().getItemToolTip(variant);
-                ingLines.set(0, String.format("%dx %s", ingredientSize[i], ingLines.get(0)));
+                ingLines.set(0, String.format("%dx %s", ingredientCounts[i], ingLines.get(0)));
                 for( String line : ingLines ) {
                     this.renderedIngredients.add(new RenderElement(x + 11, y, (xr, yr, mx, my, pt) -> itt.fontRenderer.drawString(line, xr, yr, itt.color, itt.shadow)));
                     y += 10;
                     this.currWidth = Math.max(this.currWidth, 11 + itt.fontRenderer.getStringWidth(line));
                 }
             } else {
-                int ingSize = ingredientSize[i];
+                int ingSize = ingredientCounts[i];
                 this.renderedIngredients.add(new RenderElement(x + col * 18 + 1, y + 1, (xr, yr, mx, my, pt) ->
-                                           RenderUtils.renderStackInGui(variant, xr, yr, 1.0D, itt.fontRenderer, String.format("%d", ingSize), true)
-                                       ));
+                        RenderUtils.renderStackInGui(variant, xr, yr, 1.0D, itt.fontRenderer, String.format("%d", ingSize), true)
+                ));
 
                 col++;
                 this.currWidth = Math.max(this.currWidth, col * 18);
@@ -166,6 +172,11 @@ public class AssemblyRecipeLabel
         GlStateManager.disableDepth();
         this.renderedData.forEach(ri -> ri.render.accept(x + ri.x, y + ri.y, mouseX, mouseY, partTicks));
         GlStateManager.enableDepth();
+    }
+
+    @Override
+    public boolean forceRenderUpdate(IGui gui) {
+        return this.prevRecipe != ((GuiTurretAssembly) gui).hoveredRecipe;
     }
 
     @Override

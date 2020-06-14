@@ -25,6 +25,7 @@ public class TurretCrateInventory
         implements IInventory, INBTSerializable<NBTTagCompound>
 {
     public static final int SIZE_UPGRADE_STORAGE = 36;
+    public static final int SLOT_AMMO = SIZE_UPGRADE_STORAGE + 1;
 
     private final TileEntityTurretCrate tile;
     private final NonNullList<ItemStack> upgrades = NonNullList.withSize(SIZE_UPGRADE_STORAGE, ItemStack.EMPTY);
@@ -77,7 +78,7 @@ public class TurretCrateInventory
                 if( stack.getCount() == 0 ) {
                     this.removeStackFromSlot(index);
                 }
-                if( index == SIZE_UPGRADE_STORAGE + 1 ) {
+                if( index == SLOT_AMMO ) {
                     this.reduceAmmoList();
                 }
 
@@ -96,7 +97,7 @@ public class TurretCrateInventory
             return stack;
         } else if( index >= 1 && index <= SIZE_UPGRADE_STORAGE ) {
             return this.upgrades.set(index - 1, ItemStack.EMPTY);
-        } else if( index == SIZE_UPGRADE_STORAGE + 1 && this.ammo.size() > 0 ) {
+        } else if( index == SLOT_AMMO && this.ammo.size() > 0 ) {
             ItemStack removed = this.ammo.remove(0);
             this.reduceAmmoList();
             return removed;

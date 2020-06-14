@@ -56,6 +56,7 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class TmrUtils
         implements ITmrUtils
@@ -230,6 +231,14 @@ public class TmrUtils
 
     public static float wrap360(float angle) {
         return angle >= 360.0F ? wrap360(angle - 360.0F) : angle < 0 ? wrap360(angle + 360.0F) : angle;
+    }
+
+    public static <T, R> R applyNonNull(T nullableObj, Function<T, R> onNonNull, R defReturn) {
+        if( nullableObj != null ) {
+            return onNonNull.apply(nullableObj);
+        }
+
+        return defReturn;
     }
 
     public static BlockStateContainer buildCustomBlockStateContainer(Block block,

@@ -39,6 +39,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class BlockTurretAssembly
         extends BlockHorizontal
@@ -160,6 +161,10 @@ public class BlockTurretAssembly
         return this.getStateFromMeta(meta).getValue(FACING);
     }
 
+    @Override
+    public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, @Nullable EnumFacing side) {
+        return TmrUtils.applyNonNull(world.getTileEntity(pos), te -> ((TileEntityTurretAssembly) te).hasRedstoneUpgrade(), false);
+    }
     private static final class MyStateImplementation
             extends BlockStateContainer.StateImplementation
     {

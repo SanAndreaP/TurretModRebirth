@@ -31,7 +31,7 @@ public class ContainerTurretCrate
         IInventory tileInv = this.tile.getInventory();
 
         this.addSlotToContainer(new SlotOutput(tileInv, 0, 8, 18));
-        this.addSlotToContainer(this.ammoSlot = new SlotAmmo(tileInv, TurretCrateInventory.SIZE_UPGRADE_STORAGE + 1, 62, 18));
+        this.addSlotToContainer(this.ammoSlot = new SlotAmmo(tileInv, TurretCrateInventory.SLOT_AMMO, 62, 18));
 
         for( int i = 0; i < TurretCrateInventory.SIZE_UPGRADE_STORAGE; i++ ) {
             int row = i / 9;
@@ -70,12 +70,10 @@ public class ContainerTurretCrate
             ItemStack slotStack = slot.getStack();
             origStack = slotStack.copy();
 
-            if( slotId <= TurretCrateInventory.SIZE_UPGRADE_STORAGE + 1 ) { // if clicked stack is from TileEntity
-                if( !super.mergeItemStack(slotStack, 27, 63, true) ) {
+            if( slotId <= TurretCrateInventory.SLOT_AMMO ) { // if clicked stack is from TileEntity
+                if( !super.mergeItemStack(slotStack, TurretCrateInventory.SLOT_AMMO + 1, TurretCrateInventory.SLOT_AMMO + 1 + 36, true) ) { // merge into player inventory
                     return ItemStackUtils.getEmpty();
                 }
-            } else if( !this.mergeItemStack(slotStack, 0, 27, false) ) { // if clicked stack is from player and also merge to input slots is sucessful
-                return ItemStackUtils.getEmpty();
             }
 
             if( TmrUtils.finishTransfer(player, origStack, slot, slotStack) ) {

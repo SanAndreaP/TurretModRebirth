@@ -29,6 +29,7 @@ public class ItemRegistry
     public static final ItemAssemblyUpgrade ASSEMBLY_UPG_AUTO = new ItemAssemblyUpgrade.Automation();
     public static final ItemAssemblyUpgrade ASSEMBLY_UPG_SPEED = new ItemAssemblyUpgrade.Speed();
     public static final ItemAssemblyUpgrade.Filter ASSEMBLY_UPG_FILTER = new ItemAssemblyUpgrade.Filter();
+    public static final ItemAssemblyUpgrade ASSEMBLY_UPG_REDSTONE = new ItemAssemblyUpgrade.Redstone();
     public static final ItemTurretInfo TURRET_INFO = new ItemTurretInfo();
     public static final ItemAmmoCartridge AMMO_CARTRIDGE = new ItemAmmoCartridge();
 
@@ -42,6 +43,7 @@ public class ItemRegistry
                                         ASSEMBLY_UPG_AUTO,
                                         ASSEMBLY_UPG_SPEED,
                                         ASSEMBLY_UPG_FILTER,
+                                        ASSEMBLY_UPG_REDSTONE,
                                         TURRET_INFO,
                                         AMMO_CARTRIDGE
         );
