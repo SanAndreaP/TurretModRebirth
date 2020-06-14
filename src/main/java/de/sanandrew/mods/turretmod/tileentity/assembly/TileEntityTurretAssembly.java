@@ -322,7 +322,7 @@ public class TileEntityTurretAssembly
 
         if( this.isActiveClient && (!this.prevActive || this.ticksExisted % 20 == 0) ) {
             this.animateRobotArmRng();
-        } else if( this.prevActive && !this.isActiveClient && !this.isActive ) {
+        } else if( !this.isActiveClient && !this.isActive ) {
             this.animateRobotArmReset();
             this.spawnParticle = null;
         }

@@ -47,14 +47,14 @@ public class ContainerTurretAssembly
             }
         }
 
-        for( int i = 0; i < 9; i++ ) {
-            this.addSlotToContainer(new Slot(playerInv, i, 36 + i * 18, 198));
-        }
-
         for( int i = 0; i < 3; i++ ) {
             for( int j = 0; j < 9; j++ ) {
                 this.addSlotToContainer(new Slot(playerInv, j + i * 9 + 9, 36 + j * 18, 140 + i * 18));
             }
+        }
+
+        for( int i = 0; i < 9; i++ ) {
+            this.addSlotToContainer(new Slot(playerInv, i, 36 + i * 18, 198));
         }
     }
 
@@ -95,7 +95,7 @@ public class ContainerTurretAssembly
 
             int invSize = this.inventory.getSizeInventory();
             if( slotId < invSize ) { // if clicked stack is from TileEntity
-                if( !super.mergeItemStack(slotStack, invSize, invSize + 36, false) ) {
+                if( !super.mergeItemStack(slotStack, invSize, invSize + 36, true) ) {
                     return ItemStackUtils.getEmpty();
                 }
             } else if( origStack.getItem() == ItemRegistry.ASSEMBLY_UPG_AUTO ) {

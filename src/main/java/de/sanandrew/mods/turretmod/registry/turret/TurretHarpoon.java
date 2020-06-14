@@ -46,12 +46,12 @@ public class TurretHarpoon
 
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {
-        return Resources.TURRET_T1_CROSSBOW.resource;
+        return Resources.TURRET_T1_HARPOON.resource;
     }
 
     @Override
     public ResourceLocation getGlowTexture(ITurretInst turretInst) {
-        return Resources.TURRET_T1_CROSSBOW_GLOW.resource;
+        return Resources.TURRET_T1_HARPOON_GLOW.resource;
     }
 
     @Override

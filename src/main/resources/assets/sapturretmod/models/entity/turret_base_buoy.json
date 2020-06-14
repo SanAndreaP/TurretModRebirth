@@ -32,8 +32,8 @@
       "sizeX": 6,
       "sizeY": 3,
       "sizeZ": 6,
-      "textureX": 0,
-      "textureY": 49,
+      "textureX": 32,
+      "textureY": 0,
       "textureWidth": 128,
       "textureHeight": 64,
       "offsetX": -3,
@@ -50,10 +50,10 @@
       "textureWidth": 128,
       "textureHeight": 64,
       "offsetX": -0.5,
-      "offsetY": -4,
+      "offsetY": -3.5,
       "offsetZ": -0.5,
       "rotationPointX": -2,
-      "rotationPointY": -9
+      "rotationPointY": -8
     },
     {
       "boxName": "ammoBar",
@@ -65,10 +65,10 @@
       "textureWidth": 128,
       "textureHeight": 64,
       "offsetX": -0.5,
-      "offsetY": -4,
+      "offsetY": -3.5,
       "offsetZ": -0.5,
       "rotationPointX": 2,
-      "rotationPointY": -9
+      "rotationPointY": -8
     },
     {
       "boxName": "baseFeetI",
@@ -81,7 +81,8 @@
       "textureHeight": 64,
       "offsetX": -6,
       "offsetY": -4,
-      "offsetZ": -6
+      "offsetZ": -6,
+      "parentBox": "base"
     },
     {
       "boxName": "baseFeetII",
@@ -94,7 +95,8 @@
       "textureHeight": 64,
       "offsetX": -5,
       "offsetY": -3,
-      "offsetZ": -5
+      "offsetZ": -5,
+      "parentBox": "base"
     },
     {
       "boxName": "baseFeetIII",
@@ -107,7 +109,8 @@
       "textureHeight": 64,
       "offsetX": -4,
       "offsetY": -2,
-      "offsetZ": -4
+      "offsetZ": -4,
+      "parentBox": "base"
     },
     {
       "boxName": "baseFeetIV",
@@ -120,7 +123,8 @@
       "textureHeight": 64,
       "offsetX": -3,
       "offsetY": -1,
-      "offsetZ": -3
+      "offsetZ": -3,
+      "parentBox": "base"
     },
     {
       "boxName": "throatEdgeI",
@@ -132,11 +136,12 @@
       "textureWidth": 128,
       "textureHeight": 64,
       "offsetX": 0,
-      "offsetY": -16,
+      "offsetY": -20,
       "offsetZ": 0,
-      "rotationPointY": 16,
+      "rotationPointY": 19,
       "rotateAngleX": -0.05235987755982988,
-      "rotateAngleZ": 0.05235987755982988
+      "rotateAngleZ": 0.05235987755982988,
+      "parentBox": "throat"
     },
     {
       "boxName": "throatEdgeII",
@@ -148,11 +153,12 @@
       "textureWidth": 128,
       "textureHeight": 64,
       "offsetX": -1,
-      "offsetY": -16,
+      "offsetY": -20,
       "offsetZ": 0,
-      "rotationPointY": 16,
+      "rotationPointY": 19,
       "rotateAngleX": -0.05235987755982988,
-      "rotateAngleZ": -0.05235987755982988
+      "rotateAngleZ": -0.05235987755982988,
+      "parentBox": "throat"
     },
     {
       "boxName": "throatEdgeIII",
@@ -164,11 +170,12 @@
       "textureWidth": 128,
       "textureHeight": 64,
       "offsetX": 0,
-      "offsetY": -16,
+      "offsetY": -20,
       "offsetZ": -1,
-      "rotationPointY": 16,
+      "rotationPointY": 19,
       "rotateAngleX": 0.05235987755982988,
-      "rotateAngleZ": 0.05235987755982988
+      "rotateAngleZ": 0.05235987755982988,
+      "parentBox": "throat"
     },
     {
       "boxName": "throatEdgeIV",
@@ -180,11 +187,12 @@
       "textureWidth": 128,
       "textureHeight": 64,
       "offsetX": -1,
-      "offsetY": -16,
+      "offsetY": -20,
       "offsetZ": -1,
-      "rotationPointY": 16,
+      "rotationPointY": 19,
       "rotateAngleX": 0.05235987755982988,
-      "rotateAngleZ": -0.05235987755982988
+      "rotateAngleZ": -0.05235987755982988,
+      "parentBox": "throat"
     },
     {
       "boxName": "antenna",
@@ -197,62 +205,67 @@
       "textureHeight": 64,
       "offsetX": -0.5,
       "offsetY": -13,
-      "offsetZ": -0.5
+      "offsetZ": -0.5,
+      "parentBox": "base"
     },
     {
       "boxName": "baseRingI",
       "sizeX": 3,
       "sizeY": 3,
       "sizeZ": 13,
-      "textureX": 96,
-      "textureY": 0,
+      "textureX": 35,
+      "textureY": 36,
       "textureWidth": 128,
       "textureHeight": 64,
       "offsetX": 5,
       "offsetY": -7,
-      "offsetZ": -8
+      "offsetZ": -8,
+      "parentBox": "base"
     },
     {
       "boxName": "baseRingII",
       "sizeX": 3,
       "sizeY": 3,
       "sizeZ": 13,
-      "textureX": 96,
-      "textureY": 0,
+      "textureX": 35,
+      "textureY": 36,
       "textureWidth": 128,
       "textureHeight": 64,
       "offsetX": 5,
       "offsetY": -7,
       "offsetZ": -8,
-      "rotateAngleY": -1.5707963267948966
+      "rotateAngleY": -1.5707963267948966,
+      "parentBox": "base"
     },
     {
       "boxName": "baseRingIII",
       "sizeX": 3,
       "sizeY": 3,
       "sizeZ": 13,
-      "textureX": 96,
-      "textureY": 0,
+      "textureX": 35,
+      "textureY": 36,
       "textureWidth": 128,
       "textureHeight": 64,
       "offsetX": 5,
       "offsetY": -7,
       "offsetZ": -8,
-      "rotateAngleY": -3.141592653589793
+      "rotateAngleY": -3.141592653589793,
+      "parentBox": "base"
     },
     {
       "boxName": "baseRingIV",
       "sizeX": 3,
       "sizeY": 3,
       "sizeZ": 13,
-      "textureX": 96,
-      "textureY": 0,
+      "textureX": 35,
+      "textureY": 36,
       "textureWidth": 128,
       "textureHeight": 64,
       "offsetX": 5,
       "offsetY": -7,
       "offsetZ": -8,
-      "rotateAngleY": 1.5707963267948966
+      "rotateAngleY": 1.5707963267948966,
+      "parentBox": "base"
     }
   ]
 }

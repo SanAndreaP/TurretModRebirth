@@ -29,6 +29,10 @@ public class LayerTurretUpgrades<E extends EntityLiving & ITurretInst>
             int cnt = proc.getSizeInventory();
             double shiftY = 1.53D - turret.getEyeHeight();
 
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(0.0D, shiftY, 0.0D);
+            GlStateManager.rotate(netHeadYaw + 180.0F, 0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate(-headPitch, 1.0F, 0.0F, 0.0F);
             for( int i = 0; i < cnt; i++ ) {
                 ItemStack slotStack = proc.getStackInSlot(i);
                 if( ItemStackUtils.isValid(slotStack) ) {
@@ -37,14 +41,11 @@ public class LayerTurretUpgrades<E extends EntityLiving & ITurretInst>
                     int x = i % 18;
                     int y = i / 18;
 
-                    GlStateManager.pushMatrix();
-                    GlStateManager.rotate(netHeadYaw + 180.0F, 0.0F, 1.0F, 0.0F);
-                    GlStateManager.rotate(-headPitch, 1.0F, 0.0F, 0.0F);
-                    RenderUtils.renderStackInWorld(slotStack, -0.2375D + 0.01765F * x, -0.09375D + shiftY + 0.1875F * y, -0.075D, 90.0F, 90.0F, 0.0F, 0.2D,
-                                                   ItemCameraTransforms.TransformType.HEAD, turret);
-                    GlStateManager.popMatrix();
+                    RenderUtils.renderStackInWorld(slotStack, -0.15D + 0.01765F * x, -0.09375D + 0.1875F * y, -0.21D, 90.0F, 90.0F, 0.0F, 0.2D,
+                                                   ItemCameraTransforms.TransformType.FIXED, turret);
                 }
             }
+            GlStateManager.popMatrix();
         }
     }
 

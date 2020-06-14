@@ -21,6 +21,8 @@ import javax.annotation.Nonnull;
 public class ItemTurretControlUnit
         extends Item
 {
+    private static final int EE_NAME_COUNT = 5;
+
     private long prevDisplayNameTime = 0;
     private int nameId = 0;
 
@@ -35,12 +37,19 @@ public class ItemTurretControlUnit
     public String getItemStackDisplayName(@Nonnull ItemStack stack) {
         long currDisplayNameTime = System.currentTimeMillis();
         if( this.prevDisplayNameTime + 1000 < currDisplayNameTime ) {
-            final int count = 5;
-            double indFloat = MiscUtils.RNG.randomInt(20) != 0 ? 1 : MiscUtils.RNG.randomInt(count - 1) + 2;
-            this.nameId = MathHelper.ceil(indFloat);
+            if( MiscUtils.RNG.randomInt(20) != 0 ) {
+                this.nameId = 0;
+            } else {
+                this.nameId = MathHelper.ceil(MiscUtils.RNG.randomInt(EE_NAME_COUNT - 1) + 2);
+            }
         }
 
         this.prevDisplayNameTime = currDisplayNameTime;
-        return LangUtils.translate(String.format("%s.name.%d", this.getTranslationKey(), this.nameId));
+
+        if( this.nameId < 1 ) {
+            return super.getItemStackDisplayName(stack);
+        } else {
+            return LangUtils.translate(String.format("%s.name.%d", this.getTranslationKey(), this.nameId));
+        }
     }
 }
