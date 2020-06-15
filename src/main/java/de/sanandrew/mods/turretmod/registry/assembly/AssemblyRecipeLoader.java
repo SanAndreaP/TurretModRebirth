@@ -16,6 +16,7 @@ import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.assembly.AssemblyIngredient;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyManager;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -27,6 +28,7 @@ import org.apache.logging.log4j.Level;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -80,6 +82,30 @@ public final class AssemblyRecipeLoader
                         ingredients.add(AssemblyIngredient.fromJson(jobj, context));
                     } else {
                         throw new JsonSyntaxException("An ingredient needs to be an object");
+                    }
+                }
+
+                String cstRecipeClassPath = JsonUtils.getStringVal(json.get("recipeClass"), null);
+                if( cstRecipeClassPath != null ) {
+                    try {
+                        @SuppressWarnings("unchecked")
+                        Class<? extends AssemblyRecipe> cls = (Class<? extends AssemblyRecipe>) Class.forName(cstRecipeClassPath);
+
+                        registry.registerRecipe(cls.getConstructor(ResourceLocation.class,
+                                                                   String.class,
+                                                                   NonNullList.class,
+                                                                   int.class,
+                                                                   int.class,
+                                                                   ItemStack.class
+                        ).newInstance(id,
+                                      JsonUtils.getStringVal(json.get("group")),
+                                      ingredients,
+                                      JsonUtils.getIntVal(json.get("fluxPerTick")),
+                                      JsonUtils.getIntVal(json.get("ticksProcessing")),
+                                      JsonUtils.getItemStack(json.get("result"))));
+                        return true;
+                    } catch( ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e ) {
+                        TmrConstants.LOG.log(Level.ERROR, "Cannot load recipe class, defaulting to AssemblyRecipe.", e);
                     }
                 }
 

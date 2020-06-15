@@ -1,5 +1,6 @@
 {
   "type": "sapturretmod:assembly.recipe",
+  "recipeClass": "de.sanandrew.mods.turretmod.registry.assembly.recipe.TurretCrossbowRecipe",
   "group": "turrets",
   "fluxPerTick": 10,
   "ticksProcessing": 100,

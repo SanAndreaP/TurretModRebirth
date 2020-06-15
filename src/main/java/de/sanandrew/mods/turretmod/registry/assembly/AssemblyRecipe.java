@@ -6,7 +6,6 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.registry.assembly;
 
-import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.inventory.IInventory;
@@ -26,7 +25,7 @@ public class AssemblyRecipe
     private final ItemStack result;
     private final String group;
 
-    AssemblyRecipe(ResourceLocation id, String group, NonNullList<Ingredient> ingredients, int fluxPerTick, int processTime, ItemStack result) {
+    public AssemblyRecipe(ResourceLocation id, String group, NonNullList<Ingredient> ingredients, int fluxPerTick, int processTime, ItemStack result) {
         this.id = id;
         this.group = group;
         this.ingredients = ingredients;
