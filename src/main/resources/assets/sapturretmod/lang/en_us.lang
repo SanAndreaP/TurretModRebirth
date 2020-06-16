@@ -8,9 +8,17 @@ item.sapturretmod:turret_info.name=Turret Lexicon
 item.sapturretmod:turret_info.desc=Gives information about the\nitems in the Turret Mod.
 # Turrets
 item.sapturretmod:turret.name=Defense Turret
+item.sapturretmod:turret.variant=Variant: %s
 item.sapturretmod:turret.customname=Name: %s
 item.sapturretmod:turret.health=Health: %s HP
 item.sapturretmod:turret.crossbow.name=Crossbow Turret (T1)
+item.sapturretmod:turret.crossbow.variant.0=Oak
+item.sapturretmod:turret.crossbow.variant.1=Spruce
+item.sapturretmod:turret.crossbow.variant.2=Birch
+item.sapturretmod:turret.crossbow.variant.3=Jungle
+item.sapturretmod:turret.crossbow.variant.4=Acacia
+item.sapturretmod:turret.crossbow.variant.5=Dark Oak
+item.sapturretmod:turret.harpoon.name=Harpoon Turret (T1)
 item.sapturretmod:turret.shotgun.name=Shotgun Turret (T1)
 item.sapturretmod:turret.cryolator.name=Cryolator Turret (T1)
 item.sapturretmod:turret.revolver.name=Revolver Turret (T2)

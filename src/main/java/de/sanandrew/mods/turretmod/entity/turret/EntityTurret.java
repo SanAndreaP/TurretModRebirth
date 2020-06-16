@@ -24,6 +24,7 @@ import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.item.ItemTurret;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketUpdateTurretState;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
@@ -638,7 +639,14 @@ public class EntityTurret
     @Override
     @Nonnull
     public ItemStack getPickedResult(RayTraceResult target) {
-        return TurretRegistry.INSTANCE.getItem(this.delegate.getId());
+        ItemStack pickedItem = TurretRegistry.INSTANCE.getItem(this.delegate.getId());
+        int variant = this.getVariant();
+
+        if( variant > 0 ) {
+            new ItemTurret.TurretStats(null, null, variant).updateData(pickedItem);
+        }
+
+        return pickedItem;
     }
 
     @Override

@@ -78,9 +78,9 @@ public class RenderElectrolyteGenerator
             for( int i = 0; i <= steps2; i++ ) {
                 double x = i / (double) steps2;
                 double y = Math.pow(x, 4.0D);
-                builtVecMain[i] = new Vec3d(x * -0.35D, y * -0.5D, 0.00D);
-                builtVecA[i] = new Vec3d(x * -0.35D, y * -0.5D, 0.0D);
-                builtVecB[i] = new Vec3d(x * -0.35D, y * -0.5D, 0.0D);
+                builtVecMain[i] = new Vec3d(x * -0.35D, y * -0.49D, 0.00D);
+                builtVecA[i] = builtVecMain[i].scale(1D);
+                builtVecB[i] = builtVecMain[i].scale(1D);
             }
 
             builtVecA[0] = builtVecMain[0].add(rotateVecXY(builtVecMain[1].subtract(builtVecMain[0]).normalize().scale(scale), perpendAngle));
@@ -89,9 +89,9 @@ public class RenderElectrolyteGenerator
             for( int i = 1; i < builtVecA.length - 1; i++) {
                 Vec3d vecBtwPre = builtVecMain[i].subtract(builtVecMain[i-1]);
                 Vec3d vecBtwPost = builtVecMain[i+1].subtract(builtVecMain[i]);
-                double btwAngle = Math.acos(vecBtwPre.dotProduct(vecBtwPost) / vecBtwPre.lengthSquared());
-                builtVecA[i] = builtVecMain[i].add(rotateVecXY( vecBtwPre.normalize().scale(scale), perpendAngle + btwAngle / 2.0D));
-                builtVecB[i] = builtVecMain[i].add(rotateVecXY( vecBtwPre.normalize().scale(scale), -perpendAngle - btwAngle / 2.0D));
+                double btwAngle = Math.acos(Math.min(vecBtwPre.dotProduct(vecBtwPost) / vecBtwPre.lengthSquared(), 1.0D));
+                builtVecA[i] = builtVecMain[i].add(rotateVecXY(vecBtwPre.normalize().scale(scale), perpendAngle + btwAngle / 2.0D));
+                builtVecB[i] = builtVecMain[i].add(rotateVecXY(vecBtwPre.normalize().scale(scale), -perpendAngle - btwAngle / 2.0D));
             }
 
             Vec3d vecBtw = builtVecMain[builtVecMain.length-1].subtract(builtVecMain[builtVecMain.length-2]).normalize().scale(scale);
@@ -113,15 +113,15 @@ public class RenderElectrolyteGenerator
             for( int i = 0; i < builtVecA.length - 1; i++ ) {
                 final double u = Math.abs(builtVecA[i+1].subtract(builtVecA[i]).length()) * 4.5D;
 
-                buf.pos(builtVecA[i].x, builtVecA[i].y, -scale).tex(0.0D, 1.0D).endVertex();
-                buf.pos(builtVecA[i+1].x, builtVecA[i+1].y, -scale).tex(u, 1.0D).endVertex();
-                buf.pos(builtVecB[i+1].x, builtVecB[i+1].y, scale).tex(u, 0.0D).endVertex();
-                buf.pos(builtVecB[i].x, builtVecB[i].y, scale).tex(0.0D, 0.0D).endVertex();
+                buf.pos(builtVecA[i].x, builtVecA[i].y, -scale)    .tex(0.0D, 1.0D).endVertex();
+                buf.pos(builtVecA[i+1].x, builtVecA[i+1].y, -scale).tex(u, 1.0D)   .endVertex();
+                buf.pos(builtVecB[i+1].x, builtVecB[i+1].y, scale) .tex(u, 0.0D)   .endVertex();
+                buf.pos(builtVecB[i].x, builtVecB[i].y, scale)     .tex(0.0D, 0.0D).endVertex();
 
-                buf.pos(builtVecA[i].x, builtVecA[i].y, scale).tex(0.0D, 1.0D).endVertex();
-                buf.pos(builtVecA[i+1].x, builtVecA[i+1].y, scale).tex(u, 1.0D).endVertex();
-                buf.pos(builtVecB[i+1].x, builtVecB[i+1].y, -scale).tex(u, 0.0D).endVertex();
-                buf.pos(builtVecB[i].x, builtVecB[i].y, -scale).tex(0.0D, 0.0D).endVertex();
+                buf.pos(builtVecA[i].x, builtVecA[i].y, scale)     .tex(0.0D, 1.0D).endVertex();
+                buf.pos(builtVecA[i+1].x, builtVecA[i+1].y, scale) .tex(u, 1.0D)   .endVertex();
+                buf.pos(builtVecB[i+1].x, builtVecB[i+1].y, -scale).tex(u, 0.0D)   .endVertex();
+                buf.pos(builtVecB[i].x, builtVecB[i].y, -scale)    .tex(0.0D, 0.0D).endVertex();
             }
 
             tess.draw();

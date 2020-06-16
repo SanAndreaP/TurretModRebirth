@@ -37,7 +37,7 @@
       "textureWidth": 128,
       "textureHeight": 64,
       "offsetX": -3,
-      "offsetY": -8,
+      "offsetY": -7,
       "offsetZ": -3
     },
     {
@@ -53,7 +53,7 @@
       "offsetY": -3.5,
       "offsetZ": -0.5,
       "rotationPointX": -2,
-      "rotationPointY": -8
+      "rotationPointY": -7
     },
     {
       "boxName": "ammoBar",
@@ -68,7 +68,7 @@
       "offsetY": -3.5,
       "offsetZ": -0.5,
       "rotationPointX": 2,
-      "rotationPointY": -8
+      "rotationPointY": -7
     },
     {
       "boxName": "baseFeetI",
@@ -204,7 +204,7 @@
       "textureWidth": 128,
       "textureHeight": 64,
       "offsetX": -0.5,
-      "offsetY": -13,
+      "offsetY": -12,
       "offsetZ": -0.5,
       "parentBox": "base"
     },

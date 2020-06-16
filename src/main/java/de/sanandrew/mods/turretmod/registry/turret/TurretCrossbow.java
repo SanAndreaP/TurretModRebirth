@@ -46,7 +46,7 @@ public class TurretCrossbow
 
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {
-        return Resources.TURRET_T1_CROSSBOW.resource;
+        return Resources.TURRET_T1_CROSSBOW.resources[turretInst.getVariant()];
     }
 
     @Override

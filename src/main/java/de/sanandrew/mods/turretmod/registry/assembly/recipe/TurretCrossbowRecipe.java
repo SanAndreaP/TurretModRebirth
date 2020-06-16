@@ -39,7 +39,9 @@ public class TurretCrossbowRecipe
 
         ItemStack result = super.getCraftingResult(inv);
 
-        new ItemTurret.TurretStats(null, null, type).updateData(result);
+        if( type != null && BlockPlanks.EnumType.byMetadata(type) != BlockPlanks.EnumType.OAK ) {
+            new ItemTurret.TurretStats(null, null, type).updateData(result);
+        }
 
         return result;
     }

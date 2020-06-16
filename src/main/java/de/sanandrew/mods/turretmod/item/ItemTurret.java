@@ -60,6 +60,11 @@ public class ItemTurret
         super.addInformation(stack, worldIn, tooltip, flagIn);
 
         TurretStats stats = new TurretStats(stack.getTagCompound());
+        if( stats.variant != null ) {
+            tooltip.add(LangUtils.translate(Lang.ITEM_TURRET_PLACER.get("variant"),
+                                            LangUtils.translate(this.getTranslationKey() + String.format(".variant.%s", stats.variant))));
+        }
+
         if( stats.name != null ) {
             tooltip.add(LangUtils.translate(Lang.ITEM_TURRET_PLACER.get("customname"), stats.name));
         }

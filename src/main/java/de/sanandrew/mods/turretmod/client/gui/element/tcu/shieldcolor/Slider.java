@@ -45,7 +45,7 @@ class Slider
         if( JsonUtils.getBoolVal(tfData.get("visible"), true) ) {
             BiFunction<Slider, String, Float> toValueConverter = (sl, s) -> {
                 try {
-                    return Math.max(0.0F, Math.min(sl.size[0], Float.parseFloat(s) / scale / valueBase) * sl.size[0]);
+                    return Math.max(0.0F, Math.min(sl.size[0] - 1, Float.parseFloat(s) / scale / valueBase) * (sl.size[0] - 1));
                 } catch( NumberFormatException ignored ) { }
 
                 return null;
@@ -53,7 +53,7 @@ class Slider
 
             JsonUtils.addDefaultJsonProperty(tfData, "size", new int[] { 40, sd.size[1] });
 
-            sd.toTextConverter = (sl, f) -> String.format("%.1f", f / (float) sl.size[0] * valueBase * scale);
+            sd.toTextConverter = (sl, f) -> String.format("%.1f", f / (float) (sl.size[0] - 1) * valueBase * scale);
 
             TextField tf = new TextField();
             sd.valueTxt = new GuiElementInst(JsonUtils.getIntArray(tfData.get("offset"), new int[] { 3, 0 }, Range.is(2)), tf, tfData).initialize(gui);
@@ -112,7 +112,7 @@ class Slider
     }
 
     private void setSliderValue(int value) {
-        this.value = Math.max(0, Math.min(this.size[0], value));
+        this.value = Math.max(0, Math.min(this.size[0] - 1, value));
         if( this.valueTxt != null && this.toTextConverter != null ) {
             this.valueTxt.get(TextField.class).setText(this.toTextConverter.apply(this, this.value));
         }
@@ -122,14 +122,14 @@ class Slider
     }
 
     void setValue(float val) {
-        this.value = val * this.size[0] / this.valueBase;
+        this.value = val * (this.size[0] - 1) / this.valueBase;
         if( this.valueTxt != null && this.toTextConverter != null ) {
             this.valueTxt.get(TextField.class).setText(this.toTextConverter.apply(this, this.value));
         }
     }
 
     float getValue() {
-        return this.value / this.size[0] * this.valueBase;
+        return this.value / (this.size[0] - 1) * this.valueBase;
     }
 
     void setCallback(Procedure callback) {
