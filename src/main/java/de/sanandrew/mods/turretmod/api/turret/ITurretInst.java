@@ -60,6 +60,10 @@ public interface ITurretInst
 
     TileEntityTurretCrate dismantle();
 
+    int getVariant();
+
+    void setVariant(int variant);
+
     @SideOnly(Side.CLIENT)
     int getPartBrightnessForRender(double partY);
 }

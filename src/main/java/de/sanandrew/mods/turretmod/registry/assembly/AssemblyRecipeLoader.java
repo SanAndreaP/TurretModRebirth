@@ -104,7 +104,9 @@ public final class AssemblyRecipeLoader
                                       JsonUtils.getIntVal(json.get("ticksProcessing")),
                                       JsonUtils.getItemStack(json.get("result"))));
                         return true;
-                    } catch( ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e ) {
+                    } catch( ClassNotFoundException | ClassCastException | NoSuchMethodException | InstantiationException
+                             | IllegalAccessException | InvocationTargetException e )
+                    {
                         TmrConstants.LOG.log(Level.ERROR, "Cannot load recipe class, defaulting to AssemblyRecipe.", e);
                     }
                 }

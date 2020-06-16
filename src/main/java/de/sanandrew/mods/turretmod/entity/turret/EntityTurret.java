@@ -75,6 +75,7 @@ public class EntityTurret
     private static final AxisAlignedBB UPWARDS_BLOCK = new AxisAlignedBB(0.1D, 0.99D, 0.1D, 1.0D, 1.0D, 1.0D);
 
     private static final DataParameter<Boolean> SHOT_CHNG = EntityDataManager.createKey(EntityTurret.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Integer> VARIANT = EntityDataManager.createKey(EntityTurret.class, DataSerializers.VARINT);
 
     private boolean showRange;
     public boolean inGui;
@@ -137,6 +138,7 @@ public class EntityTurret
         this.dwBools.registerDwValue();
 
         this.dataManager.register(SHOT_CHNG, false);
+        this.dataManager.register(VARIANT, 0);
 
         this.setActive(true);
     }
@@ -462,6 +464,8 @@ public class EntityTurret
             nbt.setString("ownerName", this.ownerName);
         }
 
+        nbt.setInteger("Variant", this.getVariant());
+
         this.delegate.onSave(this, nbt);
     }
 
@@ -484,6 +488,8 @@ public class EntityTurret
             this.ownerUUID = UUID.fromString(nbt.getString("ownerUUID"));
             this.ownerName = nbt.getString("ownerName");
         }
+
+        this.setVariant(nbt.getInteger("Variant"));
 
         this.delegate.onLoad(this, nbt);
     }
@@ -705,6 +711,16 @@ public class EntityTurret
         }
 
         return null;
+    }
+
+    @Override
+    public int getVariant() {
+        return this.dataManager.get(VARIANT);
+    }
+
+    @Override
+    public void setVariant(int variant) {
+        this.dataManager.set(VARIANT, variant);
     }
 
     @Override

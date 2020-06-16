@@ -2,6 +2,7 @@ package de.sanandrew.mods.turretmod.registry.assembly.recipe;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.item.ItemTurret;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyRecipe;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.init.Blocks;
@@ -18,22 +19,27 @@ public class TurretCrossbowRecipe
         super(id, group, ingredients, fluxPerTick, processTime, result);
     }
 
-
     @Override
     public ItemStack getCraftingResult(IInventory inv) {
-        BlockPlanks.EnumType type = BlockPlanks.EnumType.OAK;
+        Integer type = null;
 
         for( int i = 0, max = inv.getSizeInventory(); i < max; i++ ) {
             ItemStack slotStack = inv.getStackInSlot(i);
             if( ItemStackUtils.isBlock(slotStack, Blocks.PLANKS) ) {
-                type = BlockPlanks.EnumType.byMetadata(slotStack.getItemDamage());
-                break;
+                int meta = slotStack.getItemDamage();
+
+                if( type != null && type != meta ) {
+                    type = null;
+                    break;
+                }
+
+                type = meta;
             }
         }
 
         ItemStack result = super.getCraftingResult(inv);
 
-        result.getOrCreateSubCompound(TmrConstants.ID + ".Variant").setString("Throat", type.getName());
+        new ItemTurret.TurretStats(null, null, type).updateData(result);
 
         return result;
     }
