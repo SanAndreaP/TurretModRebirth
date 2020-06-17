@@ -47,6 +47,7 @@ item.sapturretmod:turret_assembly_redstone.ttip=Used in the Turret Assembly Tabl
 # Ammo
 item.sapturretmod:ammo.arrow.name=Arrow Bolt
 item.sapturretmod:ammo.shotgunshell.name=Shotgun Shell
+item.sapturretmod:ammo.harpoon.name=Harpoon
 item.sapturretmod:ammo.cryocell.1.name=Cryo Cell SG1
 item.sapturretmod:ammo.cryocell.2.name=Cryo Cell SG2
 item.sapturretmod:ammo.cryocell.3.name=Cryo Cell SG3
