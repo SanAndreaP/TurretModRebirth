@@ -110,6 +110,7 @@ attribute.sapturretmod.maxInitShootTicks=Targeting Time
 # Turrets
 entity.sapturretmod:turret.name=Defense Turret
 entity.sapturretmod:turret.crossbow.name=Crossbow Turret (T1)
+entity.sapturretmod:turret.harpoon.name=Harpoon Turret (T1)
 entity.sapturretmod:turret.shotgun.name=Shotgun Turret (T1)
 entity.sapturretmod:turret.cryolator.name=Cryolator Turret (T1)
 entity.sapturretmod:turret.revolver.name=Revolver Turret (T2)

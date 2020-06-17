@@ -9,7 +9,6 @@
 package de.sanandrew.mods.turretmod.registry.assembly;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.assembly.AssemblyIngredient;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyManager;
@@ -23,7 +22,12 @@ import org.apache.logging.log4j.Level;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.security.InvalidParameterException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
@@ -32,12 +36,12 @@ public final class AssemblyManager
 {
     public static final AssemblyManager INSTANCE = new AssemblyManager();
 
-    private final Map<ResourceLocation, IAssemblyRecipe> recipes = new LinkedHashMap<>();
-    private final Map<String, List<ResourceLocation>> groups = new HashMap<>();
-    private Map<String, ItemStack> groupIcons = new HashMap<>();
+    private final Map<ResourceLocation, IAssemblyRecipe> recipes    = new LinkedHashMap<>();
+    private final Map<String, List<ResourceLocation>>    groups     = new HashMap<>();
+    private final Map<String, ItemStack>                 groupIcons = new HashMap<>();
 
-    private String[] cacheGroupNames;
-    private List<IAssemblyRecipe> cacheRecipes;
+    private String[]                           cacheGroupNames;
+    private List<IAssemblyRecipe>              cacheRecipes;
     private Map<String, List<IAssemblyRecipe>> cacheGroupToRecipes;
 
     @Override
@@ -56,12 +60,11 @@ public final class AssemblyManager
             return false;
         }
 
-        if( recipes.containsKey(id) ){
+        if( recipes.containsKey(id) ) {
             this.removeRecipe(id);
         }
 
         this.recipes.put(id, recipe);
-
         this.groups.computeIfAbsent(recipe.getGroup(), k -> new ArrayList<>()).add(id);
 
         this.invalidateCaches();
@@ -101,7 +104,7 @@ public final class AssemblyManager
         if( this.cacheGroupToRecipes == null ) {
             this.cacheGroupToRecipes = this.groups.entrySet().stream()
                                                   .collect(Collectors.toMap(Map.Entry::getKey,
-                                                           e -> e.getValue().stream().map(this::getRecipe).collect(Collectors.toList())));
+                                                                            e -> e.getValue().stream().map(this::getRecipe).collect(Collectors.toList())));
         }
 
         return this.cacheGroupToRecipes.get(groupName);
@@ -135,14 +138,14 @@ public final class AssemblyManager
     public void finalizeRegistry() {
         LinkedHashMap<ResourceLocation, IAssemblyRecipe> recipeOrdered = new LinkedHashMap<>(this.recipes);
         this.recipes.clear();
-        this.recipes.putAll(recipeOrdered.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey))
+        this.recipes.putAll(recipeOrdered.entrySet().stream().sorted(Map.Entry.comparingByKey())
                                          .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, throwingMerger(), () -> new LinkedHashMap<>())));
     }
 
     /** See {@link java.util.stream.Collectors#throwingMerger()} **/
     @SuppressWarnings("JavadocReference")
     private static <T> BinaryOperator<T> throwingMerger() {
-        return (u,v) -> { throw new IllegalStateException(String.format("Duplicate key %s", u)); };
+        return (u, v) -> { throw new IllegalStateException(String.format("Duplicate key %s", u)); };
     }
 
     @Nullable
@@ -156,8 +159,8 @@ public final class AssemblyManager
                 ingredients.entrySet().forEach(e -> {
                     int v = e.getValue();
                     if( v > 0 && e.getKey().apply(slotStack) ) {
-                        int extractAmount = Math.min(slotStack.getCount(), v);
-                        ItemStack removed = slotStack.copy();
+                        int       extractAmount = Math.min(slotStack.getCount(), v);
+                        ItemStack removed       = slotStack.copy();
                         removed.setCount(extractAmount);
                         slotStack.shrink(extractAmount);
 
