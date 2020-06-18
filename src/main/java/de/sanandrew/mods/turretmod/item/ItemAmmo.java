@@ -6,9 +6,11 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.item;
 
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.registry.TmrCreativeTabs;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -29,6 +31,21 @@ public class ItemAmmo
         this.setCreativeTab(TmrCreativeTabs.TURRETS);
         this.setRegistryName(ammo.getId());
         this.setTranslationKey(ammo.getId().toString());
+    }
+
+    @Override
+    public String getTranslationKey() {
+        return MiscUtils.defIfNull(this.ammo.getItemTranslationKey(), super::getTranslationKey);
+    }
+
+    @Override
+    public String getTranslationKey(ItemStack stack) {
+        return this.getTranslationKey();
+    }
+
+    @Override
+    public String getItemStackDisplayName(ItemStack stack) {
+        return MiscUtils.defIfNull(this.ammo.getDisplayName(stack), () -> super.getItemStackDisplayName(stack));
     }
 
     @Override

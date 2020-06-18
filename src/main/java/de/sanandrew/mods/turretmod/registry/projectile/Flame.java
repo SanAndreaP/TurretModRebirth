@@ -141,7 +141,7 @@ public class Flame
             return true;
         } else {
             float lastDmg = projectile.getLastCausedDamage();
-            hitObj.entityHit.setFire(5);
+            hitObj.entityHit.setFire(10);
             return lastDmg >= 0.0F && lastDmg - damageReduction <= 0.0F;
         }
     }

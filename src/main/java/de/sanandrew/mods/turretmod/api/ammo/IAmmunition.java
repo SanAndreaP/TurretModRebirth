@@ -61,6 +61,14 @@ public interface IAmmunition
     @Nullable
     IProjectile getProjectile(ITurretInst turretInst);
 
+    default String getDisplayName(ItemStack stack) {
+        return null;
+    }
+
+    default String getItemTranslationKey() {
+        return null;
+    }
+
     /**
      * <p>Allows this ammunition object to add tooltip information, if needed.</p>
      * <p><i>Notice: when overriding this method, please call <tt>IAmmunition.super.addInformation(...)</tt> at the end of your implementation.</i></p>

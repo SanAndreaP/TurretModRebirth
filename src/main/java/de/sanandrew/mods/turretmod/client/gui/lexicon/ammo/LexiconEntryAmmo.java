@@ -56,6 +56,11 @@ final class LexiconEntryAmmo
         return this.icon;
     }
 
+    @Override
+    public String getTitleLangKey(String modId) {
+        return this.icon.getTranslationKey() + ".name";
+    }
+
     @Nonnull
     @Override
     public String getSrcTitle() {
