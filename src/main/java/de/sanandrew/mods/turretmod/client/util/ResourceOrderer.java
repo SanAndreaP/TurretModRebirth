@@ -42,7 +42,7 @@ public final class ResourceOrderer
         input.sort(Comparator.comparingInt((ItemStack i) -> {
             int ind = ORDERED_LIST.indexOf(i.getItem().getRegistryName());
             return ind == -1 ? Integer.MAX_VALUE : ind;
-        }).thenComparing(ItemStack::getDisplayName));
+        }).thenComparing(a -> a.getItem().getClass().getName()).thenComparing(ItemStack::getDisplayName));
     }
 
     public static <T> Comparator<T> getOrderComparator(Function<T, ResourceLocation> reslocGetter, Function<T, String> nameGetter) {

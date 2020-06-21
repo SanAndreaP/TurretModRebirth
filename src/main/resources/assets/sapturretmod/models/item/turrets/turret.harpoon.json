@@ -1,0 +1,6 @@
+{
+  "parent": "sapturretmod:item/turrets/standard_buoy",
+  "textures": {
+    "0": "sapturretmod:items/turrets/turret_harpoon"
+  }
+}
