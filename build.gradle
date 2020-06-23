@@ -40,6 +40,7 @@ minecraft {
 
 repositories {
     mavenCentral()
+    maven { url 'https://maven.blamejared.com' } // Patchouli
 	maven { // location of the maven that hosts JEI files
         name = "Progwml6"
 		url = "http://dvs1.progwml6.com/files/maven"
@@ -63,6 +64,7 @@ dependencies {
     runtime "mezz.jei:jei_1.12.2:4.8.5.147"
     deobfCompile("mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.19-11") { transitive = false }
     deobfCompile "de.sanandrew.mods:SanLib:1.12.2-1.6.0"
+    compile "vazkii.patchouli:Patchouli:1.0-20.108"
 }
 
 processResources {

@@ -77,6 +77,8 @@ public enum Resources
     GUI_STRUCT_TCU_COLORIZER       ("guis/tcu/colorizer.json"),
     GUI_STRUCT_TCU_LEVELS          ("guis/tcu/levels.json"),
 
+    PATCHOULI                      ("turret_lexicon"),
+
     TINFO_GRP_AMMO   ("textures/gui/lexicon/group_ammo.png"),
     TINFO_GRP_INFO   ("textures/gui/lexicon/group_info.png"),
     TINFO_GRP_MISC   ("textures/gui/lexicon/group_misc.png"),
