@@ -5,11 +5,8 @@
   "show_progress": false,
   "open_sound": "",
   "flip_sound": "minecraft:ui.button.click",
-  "model": "sapturretmod:turret_info",
-  "creative_tab": "sapturretmod:misc",
   "dont_generate_book": true,
   "custom_book_item": "sapturretmod:turret_info",
-  "use_blocky_font": true,
-  "i18n": true,
+  "use_blocky_font": false,
   "pause_game": false
 }

@@ -1,0 +1,6 @@
+{
+  "name": "Turrets",
+  "description": "Find information on every turret in the game.",
+  "icon": "sapturretmod:turret.crossbow",
+  "advancement": null
+}

@@ -1,0 +1,31 @@
+{
+  "processor": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentTurretStats",
+  "include": [
+    {
+      "template": "sapturretmod:turret_stat",
+      "as": "health_stat",
+      "x": 0,
+      "y": 0,
+      "using": {
+        "value": "#health# HP",
+        "tooltip_1": "Health",
+        "tooltip_2": "1.0 HP = 0.5 hearts",
+        "health": true
+      }
+    },
+    {
+      "template": "sapturretmod:turret_stat",
+      "as": "tier_stat",
+      "x": 50,
+      "y": 0,
+      "using": {
+        "value": "#tier",
+        "tooltip_1": "Tier",
+        "tooltip_2": "technological ranking",
+        "tier": true
+      }
+    }
+  ],
+  "components": [
+  ]
+}

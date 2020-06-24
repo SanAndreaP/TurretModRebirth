@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
+import com.mojang.realmsclient.gui.ChatFormatting;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.registry.Resources;
@@ -45,6 +46,10 @@ public class ItemTurretInfo
     public void addInformation(@Nonnull ItemStack stack, World world, List<String> list, ITooltipFlag advInfo) {
         String[] lines = LangUtils.translate(this.getTranslationKey() + ".desc").split("\\\\n");
         list.addAll(Arrays.asList(lines));
+
+        if( !PATCHOULI_AVAILABLE ) {
+            list.add(ChatFormatting.RED + "Patchouli is required in order to view this content!");
+        }
 
         super.addInformation(stack, world, list, advInfo);
     }
