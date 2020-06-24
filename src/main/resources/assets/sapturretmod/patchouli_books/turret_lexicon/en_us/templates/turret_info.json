@@ -1,0 +1,57 @@
+{
+  "processor": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentTurretStats",
+  "components": [
+    {
+      "type": "header",
+      "text": "#name",
+      "x": -1, "y": -1
+    },
+    {
+      "type": "separator",
+      "x": -1, "y": -1
+    },
+    {
+      "type": "text",
+      "text": "#text",
+      "x": 0, "y": 22
+    },
+    {
+      "type": "image",
+      "image": "sapturretmod:textures/gui/lexicon/elements.png",
+      "width": 9, "height": 9,
+      "u": 52,    "v": 0,
+      "x": 0,     "y": 110
+    },
+    {
+      "type": "image",
+      "image": "sapturretmod:textures/gui/lexicon/elements.png",
+      "width": 9, "height": 9,
+      "u": 88,    "v": 0,
+      "x": 50,    "y": 110
+    },
+
+    {
+      "type": "text",
+      "text": "#health# HP",
+      "x": 12, "y": 110
+    },
+    {
+      "type": "text",
+      "text": "#tier",
+      "x": 62, "y": 110
+    },
+
+    {
+      "type": "tooltip",
+      "tooltip": ["Health", "&71.0 HP = 0.5 hearts"],
+      "width": 50, "height": 12,
+      "x": 0,      "y": 110
+    },
+    {
+      "type": "tooltip",
+      "tooltip": ["Tier", "&7the higher the tier, the better the turret"],
+      "width": 50, "height": 12,
+      "x": 50,     "y": 110
+    }
+  ]
+}

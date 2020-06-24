@@ -4,8 +4,10 @@
   "category": "sapturretmod:turrets",
   "pages": [
     {
-      "type": "text",
-      "text": "Meant for basic defense and beginners. Not very strong but one of the cheapest to make.$(br2)This comes in 6 different woods."
+      "type": "sapturretmod:turret_info",
+      "text": "Meant for basic defense and beginners. Not very strong but one of the cheapest to make.$(br2)This comes in 6 different woods.",
+      "name": "Crossbow Turret",
+      "turret_type": "sapturretmod:turret.crossbow"
     },
     {
       "type": "entity",
@@ -15,8 +17,7 @@
       "offset": 0.1
     },
     {
-      "type": "sapturretmod:turret_stats",
-      "turret_type": "sapturretmod:turret.crossbow"
+      "type": "empty"
     }
   ]
 }
