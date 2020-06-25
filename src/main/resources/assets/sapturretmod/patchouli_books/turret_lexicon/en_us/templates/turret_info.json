@@ -1,5 +1,5 @@
 {
-  "processor": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentTurretStats",
+  "processor": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentTurretStatProcessor",
   "components": [
     {
       "type": "header",
@@ -15,6 +15,7 @@
       "text": "#text",
       "x": 0, "y": 22
     },
+
     {
       "type": "image",
       "image": "sapturretmod:textures/gui/lexicon/elements.png",
@@ -29,6 +30,13 @@
       "u": 88,    "v": 0,
       "x": 50,    "y": 110
     },
+    {
+      "type": "image",
+      "image": "sapturretmod:textures/gui/lexicon/elements.png",
+      "width": 9, "height": 9,
+      "u": 70,    "v": 0,
+      "x": 0,     "y": 126
+    },
 
     {
       "type": "text",
@@ -40,18 +48,36 @@
       "text": "#tier",
       "x": 62, "y": 110
     },
+    {
+      "type": "text",
+      "text": "#range",
+      "x": 12, "y": 122
+    },
 
     {
       "type": "tooltip",
       "tooltip": ["Health", "&71.0 HP = 0.5 hearts"],
-      "width": 50, "height": 12,
+      "width": 50, "height": 10,
       "x": 0,      "y": 110
     },
     {
       "type": "tooltip",
       "tooltip": ["Tier", "&7the higher the tier, the better the turret"],
-      "width": 50, "height": 12,
+      "width": 50, "height": 10,
       "x": 50,     "y": 110
+    },
+    {
+      "type": "tooltip",
+      "tooltip": ["Range", "&7the bounding box from min to max", "&7the turret is at the center of it"],
+      "width": 100, "height": 20,
+      "x": 0,      "y": 122
+    },
+
+    {
+      "type": "custom",
+      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentTurretEntity",
+      "turret": "#turret",
+      "x": 0, "y": 0
     }
   ]
 }

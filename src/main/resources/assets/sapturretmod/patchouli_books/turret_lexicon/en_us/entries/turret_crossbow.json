@@ -10,7 +10,7 @@
       "turret_type": "sapturretmod:turret.crossbow"
     },
     {
-      "type": "entity",
+      "type": "empty",
       "entity": "sapturretmod:turret{turretId: 'sapturretmod:turret.crossbow'}",
       "text": "$(italic)Cheap but reliable!",
       "name": " ",
