@@ -5,6 +5,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
@@ -13,6 +14,7 @@ import vazkii.patchouli.api.IComponentRenderContext;
 import vazkii.patchouli.api.ICustomComponent;
 import vazkii.patchouli.api.VariableHolder;
 import vazkii.patchouli.client.base.ClientTicker;
+import vazkii.patchouli.client.book.page.PageEntity;
 
 import java.lang.ref.WeakReference;
 
@@ -39,6 +41,8 @@ public class ComponentTurretEntity
 
     @Override
     public void render(IComponentRenderContext context, float partTicks, int mouseX, int mouseY) {
+        Gui.drawRect(this.x, this.y, this.x + 46, this.y + 60, 0xFFFF0000);
+        Gui.drawRect(this.x, this.y, this.x + 23, this.y + 60, 0xFFFFFF00);
         drawTurret(Minecraft.getMinecraft(), this.x, this.y, partTicks, false);
     }
 
@@ -61,11 +65,13 @@ public class ComponentTurretEntity
         turret.inGui = true;
 
         float rotation = (ClientTicker.total - ClientTicker.delta) + ClientTicker.delta * partTicks;
+//        float rotation = 45F;
 
+        GlStateManager.enableColorMaterial();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x + 1.0F, y - 6.0F, 50.0F);
-        GlStateManager.scale(-25.0F, 25.0F, 25.0F);
+        GlStateManager.translate(x + 23.0F, y + 52.0F, 500.0F);
+        GlStateManager.scale(25.0F, 25.0F, 25.0F);
 
         GlStateManager.rotate(180.0F + (float) (bouncy ? Math.sin(rotation * 0.25F) * 10.0F : 0.0F), 0.0F, 0.0F, 1.0F);
         GlStateManager.rotate(22.5F, 1.0F, 0.0F, 0.0F);

@@ -76,7 +76,7 @@
     {
       "type": "custom",
       "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentTurretEntity",
-      "turret": "#turret",
+      "turret": "#turret_type",
       "x": 0, "y": 0
     }
   ]
