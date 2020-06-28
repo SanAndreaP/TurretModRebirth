@@ -3,6 +3,7 @@ package de.sanandrew.mods.turretmod.client.compat.patchouli;
 import com.google.gson.annotations.SerializedName;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -10,6 +11,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import vazkii.patchouli.api.IComponentRenderContext;
 import vazkii.patchouli.api.ICustomComponent;
 import vazkii.patchouli.api.VariableHolder;
@@ -18,6 +21,8 @@ import vazkii.patchouli.client.base.ClientTicker;
 import java.lang.ref.WeakReference;
 import java.util.Calendar;
 
+@SideOnly(Side.CLIENT)
+@SuppressWarnings("unused")
 public class ComponentTurretEntity
         implements ICustomComponent
 {
@@ -30,7 +35,7 @@ public class ComponentTurretEntity
     public boolean rotate      = true;
     @SerializedName("default_rotation")
     public float   defRotation = 45.0F;
-    public float   scale       = 25.0F;
+    public float   scale       = 20.0F;
     public float   offset      = 0.0F;
 
     transient private ITurret                     turret;
@@ -51,8 +56,8 @@ public class ComponentTurretEntity
 
     @Override
     public void render(IComponentRenderContext context, float partTicks, int mouseX, int mouseY) {
-        Gui.drawRect(this.x, this.y, this.x + 46, this.y + 60, 0xFFFF0000);
-        Gui.drawRect(this.x, this.y, this.x + 23, this.y + 60, 0xFFFFFF00);
+        Minecraft.getMinecraft().getTextureManager().bindTexture(Resources.TINFO_ELEMENTS.resource);
+        Gui.drawModalRectWithCustomSizedTexture(this.x, this.y, 0, 0, 46, 60, 256, 256);
         drawTurret(Minecraft.getMinecraft(), this.x, this.y, partTicks);
     }
 
@@ -79,7 +84,7 @@ public class ComponentTurretEntity
         GlStateManager.enableColorMaterial();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x + 23.0F, y + 52.0F + this.offset, 500.0F);
+        GlStateManager.translate(x + 23.0F, y + 47.0F + this.offset, 500.0F);
         GlStateManager.scale(this.scale, this.scale, this.scale);
 
         GlStateManager.rotate(180.0F + (float) (this.bouncy ? Math.sin(rotation * 0.25F) * 10.0F : 0.0F), 0.0F, 0.0F, 1.0F);

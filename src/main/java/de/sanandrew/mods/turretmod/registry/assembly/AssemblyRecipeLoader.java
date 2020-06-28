@@ -23,6 +23,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.Level;
 
 import java.io.BufferedReader;
@@ -55,7 +56,7 @@ public final class AssemblyRecipeLoader
 
         try( BufferedReader reader = Files.newBufferedReader(file) ) {
             JsonObject json = fromJson(reader, JsonObject.class);
-            ResourceLocation id = new ResourceLocation(modId, "recipes/assembly/" + file.getFileName().toString());
+            ResourceLocation id = new ResourceLocation(modId, FilenameUtils.removeExtension(file.getFileName().toString()));
 
             if( json == null ) {
                 throw new JsonSyntaxException("Cannot read valid JSON");

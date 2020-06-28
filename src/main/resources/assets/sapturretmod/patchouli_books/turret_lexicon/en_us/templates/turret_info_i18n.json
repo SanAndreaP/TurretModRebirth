@@ -1,0 +1,25 @@
+{
+  "include": [
+    {
+      "template": "sapturretmod:turret_info",
+      "as": "turret_info",
+      "using": {
+        "name": "#name",
+        "text": "#text",
+        "turret_type": "#turret_type",
+        "tier": "#tier",
+        "tier_tip1": "Tier",
+        "tier_tip2": "The higher the tier, the better it is",
+        "health": "#health# HP",
+        "health_tip1": "Health",
+        "health_tip2": "71.0 HP = 0.5 hearts",
+        "ammo": "#ammo# rounds",
+        "ammo_tip1": "Ammo capacity",
+        "ammo_tip2": "How many rounds it can hold",
+        "reload": "#reload",
+        "reload_tip1": "Cooldown time",
+        "reload_tip2": "How long it takes between shots"
+      }
+    }
+  ]
+}

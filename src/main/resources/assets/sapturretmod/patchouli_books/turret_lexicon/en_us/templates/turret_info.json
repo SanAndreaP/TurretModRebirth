@@ -17,67 +17,85 @@
     },
 
     {
-      "type": "image",
-      "image": "sapturretmod:textures/gui/lexicon/elements.png",
-      "width": 9, "height": 9,
-      "u": 52,    "v": 0,
-      "x": 0,     "y": 110
+      "type": "custom",
+      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentTurretEntity",
+      "turret": "#turret_type",
+      "x": 0, "y": 80
     },
+
     {
       "type": "image",
       "image": "sapturretmod:textures/gui/lexicon/elements.png",
       "width": 9, "height": 9,
       "u": 88,    "v": 0,
-      "x": 50,    "y": 110
+      "x": 50,    "y": 80
     },
     {
       "type": "image",
       "image": "sapturretmod:textures/gui/lexicon/elements.png",
       "width": 9, "height": 9,
-      "u": 70,    "v": 0,
-      "x": 0,     "y": 126
+      "u": 52,    "v": 0,
+      "x": 50,    "y": 93
+    },
+    {
+      "type": "image",
+      "image": "sapturretmod:textures/gui/lexicon/elements.png",
+      "width": 9, "height": 9,
+      "u": 61,    "v": 0,
+      "x": 50,    "y": 106
+    },
+    {
+      "type": "image",
+      "image": "sapturretmod:textures/gui/lexicon/elements.png",
+      "width": 9, "height": 9,
+      "u": 79,    "v": 0,
+      "x": 50,    "y": 119
     },
 
-    {
-      "type": "text",
-      "text": "#health# HP",
-      "x": 12, "y": 110
-    },
     {
       "type": "text",
       "text": "#tier",
-      "x": 62, "y": 110
+      "x": 62, "y": 80
     },
     {
       "type": "text",
-      "text": "#range",
-      "x": 12, "y": 122
+      "text": "#health",
+      "x": 62, "y": 93
+    },
+    {
+      "type": "text",
+      "text": "#ammo",
+      "x": 62, "y": 106
+    },
+    {
+      "type": "text",
+      "text": "#reload",
+      "x": 62, "y": 119
     },
 
     {
       "type": "tooltip",
-      "tooltip": ["Health", "&71.0 HP = 0.5 hearts"],
+      "tooltip": ["#tier_tip1", "&7#tier_tip2#"],
       "width": 50, "height": 10,
-      "x": 0,      "y": 110
+      "x": 50,     "y": 79
     },
     {
       "type": "tooltip",
-      "tooltip": ["Tier", "&7the higher the tier, the better the turret"],
+      "tooltip": ["#health_tip1", "&7#health_tip2#"],
       "width": 50, "height": 10,
-      "x": 50,     "y": 110
+      "x": 50,     "y": 92
     },
     {
       "type": "tooltip",
-      "tooltip": ["Range", "&7the bounding box from min to max", "&7the turret is at the center of it"],
-      "width": 100, "height": 20,
-      "x": 0,      "y": 122
+      "tooltip": ["#ammo_tip1", "&7#ammo_tip2#"],
+      "width": 50, "height": 10,
+      "x": 50,     "y": 105
     },
-
     {
-      "type": "custom",
-      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentTurretEntity",
-      "turret": "#turret_type",
-      "x": 0, "y": 0
+      "type": "tooltip",
+      "tooltip": ["#reload_tip1", "&7#reload_tip2#"],
+      "width": 50, "height": 10,
+      "x": 50,     "y": 118
     }
   ]
 }

@@ -1,0 +1,128 @@
+{
+  "processor": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentAssemblyProcessor",
+  "components": [
+    {
+      "type": "image",
+      "image": "sapturretmod:textures/gui/lexicon/assembly.png",
+      "width": 100, "height": 119,
+      "u": 0,       "v": 0,
+      "x": 0,       "y": 0,
+      "texture_width": 128,
+      "texture_height": 128
+    },
+    {
+      "type": "item",
+      "item": "#output",
+      "x": 81, "y": 67,
+      "link_recipe": true
+    },
+    {
+      "type": "item",
+      "item": "#input_0",
+      "x": 5, "y": 5,
+      "guard": "#input_0"
+    },
+    {
+      "type": "item",
+      "item": "#input_1",
+      "x": 24, "y": 5,
+      "guard": "#input_1"
+    },
+    {
+      "type": "item",
+      "item": "#input_2",
+      "x": 43, "y": 5,
+      "guard": "#input_2"
+    },
+    {
+      "type": "item",
+      "item": "#input_3",
+      "x": 5, "y": 24,
+      "guard": "#input_3"
+    },
+    {
+      "type": "item",
+      "item": "#input_4",
+      "x": 24, "y": 24,
+      "guard": "#input_4"
+    },
+    {
+      "type": "item",
+      "item": "#input_5",
+      "x": 43, "y": 24,
+      "guard": "#input_5"
+    },
+    {
+      "type": "item",
+      "item": "#input_6",
+      "x": 5, "y": 43,
+      "guard": "#input_6"
+    },
+    {
+      "type": "item",
+      "item": "#input_7",
+      "x": 24, "y": 43,
+      "guard": "#input_7"
+    },
+    {
+      "type": "item",
+      "item": "#input_8",
+      "x": 43, "y": 43,
+      "guard": "#input_8"
+    },
+    {
+      "type": "item",
+      "item": "#input_9",
+      "x": 5, "y": 62,
+      "guard": "#input_9"
+    },
+    {
+      "type": "item",
+      "item": "#input_10",
+      "x": 24, "y": 62,
+      "guard": "#input_10"
+    },
+    {
+      "type": "item",
+      "item": "#input_11",
+      "x": 43, "y": 62,
+      "guard": "#input_11"
+    },
+    {
+      "type": "item",
+      "item": "#input_12",
+      "x": 5, "y": 81,
+      "guard": "#input_12"
+    },
+    {
+      "type": "item",
+      "item": "#input_13",
+      "x": 24, "y": 81,
+      "guard": "#input_13"
+    },
+    {
+      "type": "item",
+      "item": "#input_14",
+      "x": 43, "y": 81,
+      "guard": "#input_14"
+    },
+    {
+      "type": "item",
+      "item": "#input_15",
+      "x": 5, "y": 100,
+      "guard": "#input_15"
+    },
+    {
+      "type": "item",
+      "item": "#input_16",
+      "x": 24, "y": 100,
+      "guard": "#input_16"
+    },
+    {
+      "type": "item",
+      "item": "#input_17",
+      "x": 43, "y": 100,
+      "guard": "#input_17"
+    }
+  ]
+}
