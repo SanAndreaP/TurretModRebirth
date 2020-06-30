@@ -271,8 +271,7 @@ public final class UpgradeProcessor
             if( tierRange != null && !tierRange.contains(this.turret.getTurret().getTier()) ) {
                 return false;
             }
-            ITurret[] applicableTurrets = upg.getApplicableTurrets();
-            if( applicableTurrets != null && applicableTurrets.length > 0 && Stream.of(applicableTurrets).noneMatch(u -> Objects.equals(u, this.turret.getTurret())) ) {
+            if( upg.isApplicable(this.turret.getTurret()) ) {
                 return false;
             }
 

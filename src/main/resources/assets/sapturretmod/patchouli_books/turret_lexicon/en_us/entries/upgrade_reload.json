@@ -1,6 +1,6 @@
 {
-  "name": "Fuel Purification Upgrade",
-  "icon": "sapturretmod:upgrade.fuelpurifier",
+  "name": "Reload Upgrades",
+  "icon": "sapturretmod:upgrade.reload.1",
   "category": "sapturretmod:upgrades",
   "pages": [
     {

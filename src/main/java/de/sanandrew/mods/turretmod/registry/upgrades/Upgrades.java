@@ -21,7 +21,7 @@ public class Upgrades
 {
     public static final ResourceLocation UPG_ENTRY_STORAGE = new ResourceLocation(TmrConstants.ID, "upgrade_storage");
     public static final ResourceLocation UPG_ENTRY_FUEL_PURIFY = new ResourceLocation(TmrConstants.ID, "upgrade_fuelpurify");
-    public static final ResourceLocation UPG_ENTRY_ENDER_TOXIN = new ResourceLocation(TmrConstants.ID, "upgrade_fuelpurify");
+    public static final ResourceLocation UPG_ENTRY_ENDER_TOXIN = new ResourceLocation(TmrConstants.ID, "upgrade_endertoxin");
 
     public static final IUpgrade UPG_STORAGE_I = new SimpleUpgrade("upgstorage.1", UPG_ENTRY_STORAGE);
     public static final IUpgrade UPG_STORAGE_II = new SimpleUpgrade("upgstorage.2", UPG_STORAGE_I, UPG_ENTRY_STORAGE);

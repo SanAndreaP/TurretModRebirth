@@ -13,6 +13,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Arrays;
 
 /**
  * <p>A registry object defining a turret upgrade.</p>
@@ -39,6 +40,11 @@ public interface IUpgrade
     @Nullable
     default ITurret[] getApplicableTurrets() {
         return null;
+    }
+
+    default boolean isApplicable(ITurret turret) {
+        ITurret[] applicables = this.getApplicableTurrets();
+        return applicables == null || applicables.length <= 0 || Arrays.binarySearch(applicables, turret) >= 0;
     }
 
     /**

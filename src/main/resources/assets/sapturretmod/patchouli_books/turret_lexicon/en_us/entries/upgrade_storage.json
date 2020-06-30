@@ -1,6 +1,6 @@
 {
   "name": "Upgrade Storage",
-  "icon": "sapturretmod:upgrade.storage1",
+  "icon": "sapturretmod:upgrade.upgstorage.1",
   "category": "sapturretmod:upgrades",
   "pages": [
     {

@@ -1,6 +1,6 @@
 {
   "name": "Health Upgrades",
-  "icon": "sapturretmod:upgrade.health1",
+  "icon": "sapturretmod:upgrade.health.1",
   "category": "sapturretmod:upgrades",
   "pages": [
     {

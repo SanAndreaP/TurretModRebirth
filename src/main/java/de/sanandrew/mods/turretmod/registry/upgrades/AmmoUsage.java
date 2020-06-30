@@ -16,6 +16,7 @@ public abstract class AmmoUsage
         implements IUpgrade
 {
     private final ResourceLocation id;
+    private static final ResourceLocation BOOK_ENTRY_ID = new ResourceLocation(TmrConstants.ID, "upgrade_economy");
 
     AmmoUsage(String name) {
         this.id = new ResourceLocation(TmrConstants.ID, "upgrade." + name);
@@ -24,6 +25,11 @@ public abstract class AmmoUsage
     @Override
     public ResourceLocation getId() {
         return this.id;
+    }
+
+    @Override
+    public ResourceLocation getBookEntryId() {
+        return BOOK_ENTRY_ID;
     }
 
     static class MK1

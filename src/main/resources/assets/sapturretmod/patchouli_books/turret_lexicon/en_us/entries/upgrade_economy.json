@@ -1,7 +1,7 @@
 {
   "name": "Economy Upgrades",
-  "icon": "sapturretmod:upgrade.economy1",
-  "category": "sapturretmod:upgrade",
+  "icon": "sapturretmod:upgrade.ammousage.1",
+  "category": "sapturretmod:upgrades",
   "pages": [
     {
       "type": "empty"

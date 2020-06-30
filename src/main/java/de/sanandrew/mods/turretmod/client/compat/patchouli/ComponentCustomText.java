@@ -74,9 +74,9 @@ public class ComponentCustomText
                 font.setUnicodeFlag(true);
             }
             if( alignment.equals("right") ) {
-                this.tx = -context.getFont().getStringWidth(this.text);
+                this.tx = -font.getStringWidth(this.text);
             } else if( this.alignment.equals("center") ) {
-                this.tx = -(context.getFont().getStringWidth(this.text) / 2);
+                this.tx = -(font.getStringWidth(this.text) / 2);
             } else {
                 this.tx = 0;
             }

@@ -9,6 +9,7 @@ import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import vazkii.patchouli.api.IComponentRenderContext;
@@ -40,13 +41,23 @@ public class ComponentTurretEntries
     public int    maxEntriesShown = 5;
     @SerializedName("entries_type")
     public String type;
+    public String title;
+    @SerializedName("title_color")
+    public String colorStr;
 
-    transient private ITurret turret;
+    transient Integer color;
+    transient ITurret turret;
 
     transient private static int entriesShownPos = 0;
 
     @Override
     public void build(int x, int y, int pgNum) {
+        try {
+            this.color = Integer.parseInt(this.colorStr, 16);
+        } catch (NumberFormatException var5) {
+            this.color = null;
+        }
+
         this.x = x;
         this.y = y;
         this.pgNum = pgNum;
@@ -76,8 +87,7 @@ public class ComponentTurretEntries
             }).filter(e -> e != null && !e.shouldHide()).collect(Collectors.toList());
         } else if( type.equals("upgrades") ) {
             entries = UpgradeRegistry.INSTANCE.getObjects().stream().map(u -> {
-                ITurret[] applicables = u.getApplicableTurrets();
-                if( applicables == null || Arrays.binarySearch(applicables, this.turret) >= 0 ) {
+                if( u.isApplicable(this.turret) ) {
                     ResourceLocation rl = u.getBookEntryId();
                     if( rl != null ) {
                         return guiBook.book.contents.entries.get(rl);
@@ -85,20 +95,20 @@ public class ComponentTurretEntries
                 }
 
                 return null;
-            }).filter(e -> e != null && !e.shouldHide()).collect(Collectors.toList());
+            }).filter(e -> e != null && !e.shouldHide()).distinct().collect(Collectors.toList());
         } else {
             return;
         }
 
-        if( entriesShownPos + this.maxEntriesShown < entries.size() ) {
-            entries.subList(entriesShownPos + this.maxEntriesShown, entries.size()).clear();
-        }
-        entries.subList(0, entriesShownPos).clear();
+//        if( entriesShownPos + this.maxEntriesShown < entries.size() ) {
+//            entries.subList(entriesShownPos + this.maxEntriesShown, entries.size()).clear();
+//        }
+//        entries.subList(0, entriesShownPos).clear();
         Collections.sort(entries);
 
         for( int i = 0, max = entries.size(); i < max; i++ ) {
             BookEntry entry = entries.get(i);
-            GuiButton button = new GuiButtonEntryFixed(guiBook, this.x, this.y + 20 + i * 11, entry, i);
+            GuiButton button = new GuiButtonEntryFixed(guiBook, this.x, this.y + 30 + i * 11, entry, i);
             context.registerButton(button, pgNum, () -> {
                  GuiBookEntry.displayOrBookmark(guiBook, entry);
             });
@@ -107,7 +117,10 @@ public class ComponentTurretEntries
 
     @Override
     public void render(IComponentRenderContext context, float partTicks, int mouseX, int mouseY) {
-
+        GlStateManager.pushMatrix();
+        int xPos = this.x + 58 - (context.getFont().getStringWidth(this.title) / 2);
+        context.getFont().drawString(this.title, xPos, this.y, MiscUtils.defIfNull(this.color, context::getHeaderColor), false);
+        GlStateManager.popMatrix();
     }
 
     private static GuiBook getGuiBook(IComponentRenderContext context) {
