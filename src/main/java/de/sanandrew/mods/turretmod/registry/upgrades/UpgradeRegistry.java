@@ -128,6 +128,7 @@ public final class UpgradeRegistry
             implements IUpgrade
     {
         private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "upgrade.empty");
+        private static final ResourceLocation BOOK_ENTRY_ID = new ResourceLocation(TmrConstants.ID, "upgrade_empty");
 
         @Override
         public ResourceLocation getId() {
@@ -137,6 +138,11 @@ public final class UpgradeRegistry
         @Override
         public Range<Integer> getTierRange() {
             return Range.is(-1);
+        }
+
+        @Override
+        public ResourceLocation getBookEntryId() {
+            return BOOK_ENTRY_ID;
         }
     }
 }

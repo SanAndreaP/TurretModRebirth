@@ -1,0 +1,10 @@
+{
+  "name": "Upgrade Storage",
+  "icon": "sapturretmod:upgrade.storage1",
+  "category": "sapturretmod:upgrades",
+  "pages": [
+    {
+      "type": "empty"
+    }
+  ]
+}

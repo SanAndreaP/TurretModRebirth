@@ -1,0 +1,10 @@
+{
+  "name": "Ender Toxin Upgrades",
+  "icon": "sapturretmod:upgrade.endertoxin1",
+  "category": "sapturretmod:upgrades",
+  "pages": [
+    {
+      "type": "empty"
+    }
+  ]
+}

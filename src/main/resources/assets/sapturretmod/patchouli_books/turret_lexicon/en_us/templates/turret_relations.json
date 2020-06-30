@@ -1,0 +1,30 @@
+{
+  "components": [
+    {
+      "type": "header",
+      "text": "Ammunitions",
+      "x": -1,
+      "y": 0
+    },
+    {
+      "type": "header",
+      "text": "Upgrades",
+      "x": -1,
+      "y": 75
+    },
+    {
+      "type": "custom",
+      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentTurretEntries",
+      "turret": "#turret_type",
+      "entries_type": "ammo",
+      "y": 10
+    },
+    {
+      "type": "custom",
+      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentTurretEntries",
+      "turret": "#turret_type",
+      "entries_type": "upgrades",
+      "y": 85
+    }
+  ]
+}

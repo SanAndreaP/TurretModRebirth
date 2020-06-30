@@ -7,6 +7,7 @@
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.turretmod.api.IRegistry;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
@@ -14,12 +15,17 @@ import de.sanandrew.mods.turretmod.registry.upgrades.leveling.Leveling;
 import de.sanandrew.mods.turretmod.registry.upgrades.shield.UpgradeShieldColorizer;
 import de.sanandrew.mods.turretmod.registry.upgrades.shield.UpgradeShieldPersonal;
 import de.sanandrew.mods.turretmod.registry.upgrades.smarttargeting.SmartTargeting;
+import net.minecraft.util.ResourceLocation;
 
 public class Upgrades
 {
-    public static final IUpgrade UPG_STORAGE_I = new SimpleUpgrade("upgstorage.1");
-    public static final IUpgrade UPG_STORAGE_II = new SimpleUpgrade("upgstorage.2", UPG_STORAGE_I);
-    public static final IUpgrade UPG_STORAGE_III = new SimpleUpgrade("upgstorage.3", UPG_STORAGE_II);
+    public static final ResourceLocation UPG_ENTRY_STORAGE = new ResourceLocation(TmrConstants.ID, "upgrade_storage");
+    public static final ResourceLocation UPG_ENTRY_FUEL_PURIFY = new ResourceLocation(TmrConstants.ID, "upgrade_fuelpurify");
+    public static final ResourceLocation UPG_ENTRY_ENDER_TOXIN = new ResourceLocation(TmrConstants.ID, "upgrade_fuelpurify");
+
+    public static final IUpgrade UPG_STORAGE_I = new SimpleUpgrade("upgstorage.1", UPG_ENTRY_STORAGE);
+    public static final IUpgrade UPG_STORAGE_II = new SimpleUpgrade("upgstorage.2", UPG_STORAGE_I, UPG_ENTRY_STORAGE);
+    public static final IUpgrade UPG_STORAGE_III = new SimpleUpgrade("upgstorage.3", UPG_STORAGE_II, UPG_ENTRY_STORAGE);
     public static final IUpgrade AMMO_STORAGE = new AmmoStorage();
     public static final IUpgrade HEALTH_I = new Health.MK1();
     public static final IUpgrade HEALTH_II = new Health.MK2();
@@ -32,15 +38,15 @@ public class Upgrades
     public static final IUpgrade ECONOMY_II = new AmmoUsage.MK2();
     public static final IUpgrade ECONOMY_INF = new AmmoUsage.MKInf();
     public static final IUpgrade ENDER_MEDIUM = new SimpleUpgrade("endermedium", Turrets.LASER);
-    public static final IUpgrade FUEL_PURIFY = new SimpleUpgrade("fuelpurifier", Turrets.FLAMETHROWER);
+    public static final IUpgrade FUEL_PURIFY = new SimpleUpgrade("fuelpurifier", UPG_ENTRY_FUEL_PURIFY, Turrets.FLAMETHROWER);
     public static final IUpgrade SHIELD_PERSONAL = new UpgradeShieldPersonal();
     public static final IUpgrade SHIELD_PROJECTILE = new SimpleUpgrade("shield.projectile", Turrets.FORCEFIELD);
     public static final IUpgrade SHIELD_EXPLOSIVE =  new SimpleUpgrade("shield.explosive", Turrets.FORCEFIELD);
     public static final IUpgrade SHIELD_STRENGTH_I = new SimpleUpgrade("shield.strength.1", Turrets.FORCEFIELD);
     public static final IUpgrade SHIELD_STRENGTH_II = new SimpleUpgrade("shield.strength.2", SHIELD_STRENGTH_I, Turrets.FORCEFIELD);
     public static final IUpgrade SHIELD_COLORIZER =  new UpgradeShieldColorizer();
-    public static final IUpgrade ENDER_TOXIN_I = new SimpleUpgrade("endertoxin.1");
-    public static final IUpgrade ENDER_TOXIN_II =  new SimpleUpgrade("endertoxin.2", ENDER_TOXIN_I);
+    public static final IUpgrade ENDER_TOXIN_I = new SimpleUpgrade("endertoxin.1", UPG_ENTRY_ENDER_TOXIN);
+    public static final IUpgrade ENDER_TOXIN_II =  new SimpleUpgrade("endertoxin.2", ENDER_TOXIN_I, UPG_ENTRY_ENDER_TOXIN);
     public static final IUpgrade TURRET_SAFE = new SimpleUpgrade("turretsafe");
     public static final IUpgrade LEVELING = new Leveling();
 

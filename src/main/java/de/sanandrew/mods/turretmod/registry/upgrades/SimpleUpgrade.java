@@ -19,22 +19,38 @@ public class SimpleUpgrade
         implements IUpgrade
 {
     private final ResourceLocation id;
+    private final ResourceLocation bookEntryId;
     private final ITurret[] applicableTurrets;
     private final IUpgrade dependantOn;
 
     SimpleUpgrade(String name, @Nullable ITurret... applicableTurrets) {
-        this(name, null, applicableTurrets);
+        this(name, null, null, applicableTurrets);
+    }
+
+    SimpleUpgrade(String name, ResourceLocation bookEntryId, @Nullable ITurret... applicableTurrets) {
+        this(name, null, bookEntryId, applicableTurrets);
     }
 
     SimpleUpgrade(String name, IUpgrade dependantOn, @Nullable ITurret... applicableTurrets) {
+        this(name, dependantOn, new ResourceLocation(TmrConstants.ID, "upgrade_" + name), applicableTurrets);
+    }
+
+    SimpleUpgrade(String name, IUpgrade dependantOn, ResourceLocation bookEntryId, @Nullable ITurret... applicableTurrets) {
         this.id = new ResourceLocation(TmrConstants.ID, "upgrade." + name);
+        this.bookEntryId = bookEntryId;
         this.applicableTurrets = applicableTurrets;
         this.dependantOn = dependantOn;
+
     }
 
     @Override
     public ResourceLocation getId() {
         return this.id;
+    }
+
+    @Override
+    public ResourceLocation getBookEntryId() {
+        return this.bookEntryId;
     }
 
     @Nullable

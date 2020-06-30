@@ -1,0 +1,10 @@
+{
+  "name": "Crossbow Bolt",
+  "icon": "sapturretmod:ammo.arrow",
+  "category": "sapturretmod:ammo",
+  "pages": [
+    {
+      "type": "empty"
+    }
+  ]
+}

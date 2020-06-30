@@ -1,6 +1,6 @@
 {
   "name": "Turrets",
-  "description": "Find information on every turret in the game.",
+  "description": "Find information like range, health, etc. on every turret available.",
   "icon": "sapturretmod:turret.crossbow",
   "advancement": null
 }

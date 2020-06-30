@@ -1,0 +1,10 @@
+{
+  "name": "Economy Upgrades",
+  "icon": "sapturretmod:upgrade.economy1",
+  "category": "sapturretmod:upgrade",
+  "pages": [
+    {
+      "type": "empty"
+    }
+  ]
+}

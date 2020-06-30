@@ -20,7 +20,7 @@ import java.io.ObjectOutputStream;
 
 @SuppressWarnings({"SameReturnValue", "unused"})
 public interface ITurret
-        extends IRegistryObject
+        extends IRegistryObject, Comparable<ITurret>
 {
     default void entityInit(ITurretInst turretInst) { }
 
@@ -90,6 +90,11 @@ public interface ITurret
 
     default float getEyeHeight(float height) {
         return height * 0.85F;
+    }
+
+    @Override
+    default int compareTo(ITurret t) {
+        return this.getId().compareTo(t.getId());
     }
 
     enum AttackType

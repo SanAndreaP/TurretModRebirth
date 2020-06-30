@@ -25,6 +25,8 @@ import java.util.UUID;
 public abstract class Health
         implements IUpgrade
 {
+    private static final ResourceLocation BOOK_ENTRY_ID = new ResourceLocation(TmrConstants.ID, "upgrade_health");
+
     private final ResourceLocation id;
     private final AttributeModifier modifier;
 
@@ -36,6 +38,11 @@ public abstract class Health
     @Override
     public ResourceLocation getId() {
         return this.id;
+    }
+
+    @Override
+    public ResourceLocation getBookEntryId() {
+        return BOOK_ENTRY_ID;
     }
 
     @Override

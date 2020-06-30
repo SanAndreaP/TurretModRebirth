@@ -3,6 +3,7 @@ package de.sanandrew.mods.turretmod.api.ammo;
 import de.sanandrew.mods.turretmod.api.IRegistryObject;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
@@ -19,7 +20,12 @@ public interface IAmmunitionGroup
      * @return the stack to be used as icon for this group, cannot be <tt>null</tt>
      */
     @Nonnull
+    @Deprecated
     ItemStack getIcon();
+
+    default ResourceLocation getBookEntryId() {
+        return null;
+    }
 
     /**
      * @return the turret delegate that can use the ammo contained in this group, cannot be <tt>null</tt>

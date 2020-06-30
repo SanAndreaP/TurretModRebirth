@@ -43,28 +43,26 @@ public final class Ammunitions
     enum Groups
             implements IAmmunitionGroup
     {
-        ARROW("arrow", Turrets.CROSSBOW, Ammunitions.ARROW.getId()),
-        HARPOON("harpoon", Turrets.HARPOON, Ammunitions.HARPOON.getId()),
-        BULLET("bullet", Turrets.REVOLVER, Ammunitions.BULLET.getId()),
-        CRYO_CELL("cryocell", Turrets.CRYOLATOR, Ammunitions.CRYOCELL_MK1.getId()),
-        ELEC_CELL("eleccell", Turrets.FORCEFIELD, Ammunitions.ELECTROLYTECELL.getId()),
-        FUEL_TANK("fueltank", Turrets.FLAMETHROWER, Ammunitions.FUELTANK.getId()),
-        FLUX_CELL("fluxcell", Turrets.LASER, Ammunitions.FLUXCELL.getId()),
-        MG_SHELL("shell.minigun", Turrets.MINIGUN, Ammunitions.MGSHELL.getId()),
-        SG_SHELL("shell.shotgun", Turrets.SHOTGUN, Ammunitions.SGSHELL.getId()),
+        ARROW("arrow", Turrets.CROSSBOW),
+        HARPOON("harpoon", Turrets.HARPOON),
+        BULLET("bullet", Turrets.REVOLVER),
+        CRYO_CELL("cryocell", Turrets.CRYOLATOR),
+        ELEC_CELL("eleccell", Turrets.FORCEFIELD),
+        FUEL_TANK("fueltank", Turrets.FLAMETHROWER),
+        FLUX_CELL("fluxcell", Turrets.LASER),
+        MG_SHELL("shell_minigun", Turrets.MINIGUN),
+        SG_SHELL("shell_shotgun", Turrets.SHOTGUN),
 
-        UNKNOWN("null", TurretRegistry.INSTANCE.getDefaultObject(), null);
+        UNKNOWN("null", TurretRegistry.INSTANCE.getDefaultObject());
 
         private final ResourceLocation id;
-        private final ResourceLocation typeIcon;
+        private final ResourceLocation patchouliId;
         private final ITurret          turret;
 
-        private ItemStack icon;
-
-        Groups(@Nonnull String name, @Nonnull ITurret turret, ResourceLocation typeIcon) {
+        Groups(@Nonnull String name, @Nonnull ITurret turret) {
             this.id = new ResourceLocation(TmrConstants.ID, "ammo." + name);
             this.turret = turret;
-            this.typeIcon = typeIcon;
+            this.patchouliId = new ResourceLocation(TmrConstants.ID, "ammo_" + name);
         }
 
         @Override
@@ -80,16 +78,14 @@ public final class Ammunitions
         }
 
         @Override
+        public ResourceLocation getBookEntryId() {
+            return this.patchouliId;
+        }
+
+        @Override
         @Nonnull
         public ItemStack getIcon() {
-            if( this.typeIcon == null ) {
-                return ItemStack.EMPTY;
-            }
-
-            if( this.icon == null ) {
-                this.icon = AmmunitionRegistry.INSTANCE.getItem(this.typeIcon);
-            }
-            return this.icon;
+            return ItemStack.EMPTY;
         }
     }
 }

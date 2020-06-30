@@ -1,0 +1,6 @@
+{
+  "name": "Upgrades",
+  "description": "Find information on what an upgrade will do to your turret.",
+  "icon": "sapturretmod:upgrade.empty",
+  "advancement": null
+}

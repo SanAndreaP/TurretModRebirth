@@ -1,0 +1,10 @@
+{
+  "name": "Fuel Purification Upgrade",
+  "icon": "sapturretmod:upgrade.fuelpurify",
+  "category": "sapturretmod:upgrades",
+  "pages": [
+    {
+      "type": "empty"
+    }
+  ]
+}

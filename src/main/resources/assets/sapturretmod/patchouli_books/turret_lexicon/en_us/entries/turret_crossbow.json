@@ -20,7 +20,8 @@
       "recipe": "sapturretmod:turret_mk1_crossbow"
     },
     {
-      "type": "empty"
+      "type": "sapturretmod:turret_relations",
+      "turret_type": "sapturretmod:turret.crossbow"
     }
   ]
 }

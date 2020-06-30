@@ -1,0 +1,10 @@
+{
+  "name": "Health Upgrades",
+  "icon": "sapturretmod:upgrade.health1",
+  "category": "sapturretmod:upgrades",
+  "pages": [
+    {
+      "type": "empty"
+    }
+  ]
+}
