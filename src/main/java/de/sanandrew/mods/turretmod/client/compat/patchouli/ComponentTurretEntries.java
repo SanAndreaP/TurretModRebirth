@@ -2,7 +2,6 @@ package de.sanandrew.mods.turretmod.client.compat.patchouli;
 
 import com.google.gson.annotations.SerializedName;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
-import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
@@ -21,37 +20,38 @@ import vazkii.patchouli.client.book.gui.GuiBookEntry;
 import vazkii.patchouli.client.book.gui.button.GuiButtonBook;
 import vazkii.patchouli.client.book.gui.button.GuiButtonEntry;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @SuppressWarnings("WeakerAccess")
 public class ComponentTurretEntries
         implements ICustomComponent
 {
-    private int x;
-    private int y;
+    private          int x;
+    private          int y;
     transient public int pgNum;
 
     @VariableHolder
-    @SerializedName("turret")
-    public String turretId;
+    @SerializedName("target_id")
+    public String targetId;
     @SerializedName("max_entries_shown")
     public int    maxEntriesShown = 5;
     @SerializedName("entries_type")
-    public String type;
+    public String entriesType;
     @SerializedName("title_color")
     public String colorStr;
     public String title;
 
-    transient private       Integer              color;
-    transient private       ITurret              turret;
-    transient private final List<GuiButtonEntry> entryButtons = new ArrayList<>();
-
-    transient private int entriesShownPos = 0;
+    transient private       Integer         color;
+    transient private final List<GuiButton> entryButtons    = new ArrayList<>();
+    transient private       GuiButtonBook   prevScrollBtn;
+    transient private       GuiButtonBook   nextScrollBtn;
+    transient private       EntryType       type;
+    transient private       int             entriesShownPos = 0;
 
     @Override
     public void build(int x, int y, int pgNum) {
@@ -65,7 +65,7 @@ public class ComponentTurretEntries
         this.y = y;
         this.pgNum = pgNum;
 
-        this.turret = TurretRegistry.INSTANCE.getObject(new ResourceLocation(this.turretId));
+        this.type = EntryType.getTypeFromString(this.entriesType);
     }
 
     @Override
@@ -77,53 +77,29 @@ public class ComponentTurretEntries
         }
 
         // purge stuck buttons from GUI
-        guiBook.getButtonList().removeIf(b -> b instanceof GuiButtonEntryFixed && !b.visible);
+        this.entryButtons.add(this.prevScrollBtn);
+        this.entryButtons.add(this.nextScrollBtn);
+        guiBook.getButtonList().removeIf(this.entryButtons::contains);
         this.entryButtons.clear();
 
-        final List<BookEntry> entries;
-        if( type.equals("ammo") ) {
-            entries = AmmunitionRegistry.INSTANCE.getGroups(this.turret).stream().map(g -> {
-                ResourceLocation rl = g.getBookEntryId();
-                if( rl != null ) {
-                    return guiBook.book.contents.entries.get(rl);
-                }
-
-                return null;
-            }).filter(e -> e != null && !e.shouldHide()).collect(Collectors.toList());
-        } else if( type.equals("upgrades") ) {
-            entries = UpgradeRegistry.INSTANCE.getObjects().stream().map(u -> {
-                if( u.isApplicable(this.turret) ) {
-                    ResourceLocation rl = u.getBookEntryId();
-                    if( rl != null ) {
-                        return guiBook.book.contents.entries.get(rl);
-                    }
-                }
-
-                return null;
-            }).filter(e -> e != null && !e.shouldHide()).distinct().collect(Collectors.toList());
-        } else {
-            return;
-        }
-
-        Collections.sort(entries);
+        final List<BookEntry> entries = this.type.grabEntries(guiBook, this.targetId);
 
         for( int i = 0, max = entries.size(); i < max; i++ ) {
-            BookEntry entry  = entries.get(i);
+            BookEntry      entry  = entries.get(i);
             GuiButtonEntry button = new GuiButtonEntryFixed(guiBook, this.x, this.y + 30 + i * 11 - this.entriesShownPos * 11, entry, i);
-            context.registerButton(button, pgNum, () -> {
-                GuiBookEntry.displayOrBookmark(guiBook, entry);
-            });
+            context.registerButton(button, pgNum, () -> GuiBookEntry.displayOrBookmark(guiBook, entry));
             this.entryButtons.add(button);
             button.visible = button.id >= this.entriesShownPos && button.id < this.entriesShownPos + this.maxEntriesShown;
         }
 
         if( this.entryButtons.size() > this.maxEntriesShown ) {
-            context.registerButton(new GuiButtonBook(guiBook, this.x, this.y + 18, 0, 0, 10, 10,
-                                                     () -> this.entriesShownPos > 0),
-                                   pgNum, () -> moveButtons(true));
-            context.registerButton(new GuiButtonBook(guiBook, this.x + 116 - 10, this.y + 18, 0, 0, 10, 10,
-                                                     () -> this.entriesShownPos + this.maxEntriesShown < this.entryButtons.size()),
-                                   pgNum, () -> moveButtons(false));
+            this.prevScrollBtn = new GuiButtonBook(guiBook, this.x, this.y + 20, 330, 9, 11, 5,
+                                                   () -> this.entriesShownPos > 0);
+            this.nextScrollBtn = new GuiButtonBook(guiBook, this.x + 116 - 11, this.y + 20, 330, 15, 11, 5,
+                                                   () -> this.entriesShownPos + this.maxEntriesShown < this.entryButtons.size());
+
+            context.registerButton(this.prevScrollBtn, pgNum, () -> moveButtons(true));
+            context.registerButton(this.nextScrollBtn, pgNum, () -> moveButtons(false));
         }
     }
 
@@ -180,6 +156,41 @@ public class ComponentTurretEntries
             }
 
             super.drawButton(mc, mouseX, mouseY, partialTicks);
+        }
+    }
+
+    private enum EntryType
+    {
+        AMMO((g, s) -> {
+            return AmmunitionRegistry.INSTANCE.getGroups(TurretRegistry.INSTANCE.getObject(new ResourceLocation(s))).stream()
+                                              .map(a -> g.book.contents.entries.get(a.getBookEntryId()));
+        }),
+        UPGRADES((g, s) -> {
+            return UpgradeRegistry.INSTANCE.getObjects().stream().map(u -> {
+                if( u.isApplicable(TurretRegistry.INSTANCE.getObject(new ResourceLocation(s))) ) {
+                    return g.book.contents.entries.get(u.getBookEntryId());
+                }
+
+                return null;
+            }).distinct();
+        }),
+
+        UNKNOWN((g, s) -> Stream.empty());
+
+        private final BiFunction<GuiBook, String, Stream<BookEntry>> grabEntriesFunc;
+
+        public static final EntryType[] VALUES = values();
+
+        EntryType(BiFunction<GuiBook, String, Stream<BookEntry>> grabEntriesFunc) {
+            this.grabEntriesFunc = grabEntriesFunc;
+        }
+
+        public List<BookEntry> grabEntries(GuiBook book, String id) {
+            return this.grabEntriesFunc.apply(book, id).filter(e -> e != null && !e.shouldHide()).sorted().collect(Collectors.toList());
+        }
+
+        public static EntryType getTypeFromString(String type) {
+            return Arrays.stream(VALUES).filter(e -> e.name().equalsIgnoreCase(type)).findFirst().orElse(UNKNOWN);
         }
     }
 }

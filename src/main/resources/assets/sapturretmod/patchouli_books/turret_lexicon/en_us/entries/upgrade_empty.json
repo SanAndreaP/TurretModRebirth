@@ -2,6 +2,7 @@
   "name": "Upgrade Base",
   "icon": "sapturretmod:upgrade.empty",
   "category": "sapturretmod:upgrades",
+  "priority": true,
   "pages": [
     {
       "type": "empty"

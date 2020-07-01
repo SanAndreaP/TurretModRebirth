@@ -43,8 +43,18 @@ public interface IUpgrade
     }
 
     default boolean isApplicable(ITurret turret) {
+        return this.isApplicable(turret, false);
+    }
+
+    default boolean isApplicable(ITurret turret, boolean isSpecialized) {
         ITurret[] applicables = this.getApplicableTurrets();
-        return applicables == null || applicables.length <= 0 || Arrays.binarySearch(applicables, turret) >= 0;
+        boolean isEmpty = applicables == null || applicables.length == 0;
+
+        if( isSpecialized && isEmpty ) {
+            return false;
+        }
+
+        return isEmpty || Arrays.binarySearch(applicables, turret) >= 0;
     }
 
     /**
