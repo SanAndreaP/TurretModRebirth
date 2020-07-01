@@ -18,9 +18,11 @@ import vazkii.patchouli.api.VariableHolder;
 import vazkii.patchouli.client.book.BookEntry;
 import vazkii.patchouli.client.book.gui.GuiBook;
 import vazkii.patchouli.client.book.gui.GuiBookEntry;
+import vazkii.patchouli.client.book.gui.button.GuiButtonBook;
 import vazkii.patchouli.client.book.gui.button.GuiButtonEntry;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +34,7 @@ public class ComponentTurretEntries
 {
     private int x;
     private int y;
-    private int pgNum;
+    transient public int pgNum;
 
     @VariableHolder
     @SerializedName("turret")
@@ -41,20 +43,21 @@ public class ComponentTurretEntries
     public int    maxEntriesShown = 5;
     @SerializedName("entries_type")
     public String type;
-    public String title;
     @SerializedName("title_color")
     public String colorStr;
+    public String title;
 
-    transient Integer color;
-    transient ITurret turret;
+    transient private       Integer              color;
+    transient private       ITurret              turret;
+    transient private final List<GuiButtonEntry> entryButtons = new ArrayList<>();
 
-    transient private static int entriesShownPos = 0;
+    transient private int entriesShownPos = 0;
 
     @Override
     public void build(int x, int y, int pgNum) {
         try {
             this.color = Integer.parseInt(this.colorStr, 16);
-        } catch (NumberFormatException var5) {
+        } catch( NumberFormatException var5 ) {
             this.color = null;
         }
 
@@ -75,6 +78,8 @@ public class ComponentTurretEntries
 
         // purge stuck buttons from GUI
         guiBook.getButtonList().removeIf(b -> b instanceof GuiButtonEntryFixed && !b.visible);
+        this.entryButtons.clear();
+
         final List<BookEntry> entries;
         if( type.equals("ammo") ) {
             entries = AmmunitionRegistry.INSTANCE.getGroups(this.turret).stream().map(g -> {
@@ -100,17 +105,37 @@ public class ComponentTurretEntries
             return;
         }
 
-//        if( entriesShownPos + this.maxEntriesShown < entries.size() ) {
-//            entries.subList(entriesShownPos + this.maxEntriesShown, entries.size()).clear();
-//        }
-//        entries.subList(0, entriesShownPos).clear();
         Collections.sort(entries);
 
         for( int i = 0, max = entries.size(); i < max; i++ ) {
-            BookEntry entry = entries.get(i);
-            GuiButton button = new GuiButtonEntryFixed(guiBook, this.x, this.y + 30 + i * 11, entry, i);
+            BookEntry entry  = entries.get(i);
+            GuiButtonEntry button = new GuiButtonEntryFixed(guiBook, this.x, this.y + 30 + i * 11 - this.entriesShownPos * 11, entry, i);
             context.registerButton(button, pgNum, () -> {
-                 GuiBookEntry.displayOrBookmark(guiBook, entry);
+                GuiBookEntry.displayOrBookmark(guiBook, entry);
+            });
+            this.entryButtons.add(button);
+            button.visible = button.id >= this.entriesShownPos && button.id < this.entriesShownPos + this.maxEntriesShown;
+        }
+
+        if( this.entryButtons.size() > this.maxEntriesShown ) {
+            context.registerButton(new GuiButtonBook(guiBook, this.x, this.y + 18, 0, 0, 10, 10,
+                                                     () -> this.entriesShownPos > 0),
+                                   pgNum, () -> moveButtons(true));
+            context.registerButton(new GuiButtonBook(guiBook, this.x + 116 - 10, this.y + 18, 0, 0, 10, 10,
+                                                     () -> this.entriesShownPos + this.maxEntriesShown < this.entryButtons.size()),
+                                   pgNum, () -> moveButtons(false));
+        }
+    }
+
+    void moveButtons(boolean prev) {
+        int prevPos = this.entriesShownPos;
+        this.entriesShownPos += prev && this.entriesShownPos > 0
+                                ? -1
+                                : (!prev && this.entriesShownPos + this.maxEntriesShown < this.entryButtons.size() ? 1 : 0);
+        if( this.entriesShownPos != prevPos ) {
+            this.entryButtons.forEach(b -> {
+                b.y += (prevPos - this.entriesShownPos) * 11;
+                b.visible = b.id >= this.entriesShownPos && b.id < this.entriesShownPos + this.maxEntriesShown;
             });
         }
     }
@@ -121,6 +146,8 @@ public class ComponentTurretEntries
         int xPos = this.x + 58 - (context.getFont().getStringWidth(this.title) / 2);
         context.getFont().drawString(this.title, xPos, this.y, MiscUtils.defIfNull(this.color, context::getHeaderColor), false);
         GlStateManager.popMatrix();
+
+        MouseEventHandler.setCurrHoveredComponent(this, context.isAreaHovered(mouseX, mouseY, this.x, this.y + 11, 116, this.maxEntriesShown * 11 - 1));
     }
 
     private static GuiBook getGuiBook(IComponentRenderContext context) {
@@ -141,6 +168,7 @@ public class ComponentTurretEntries
             super(parent, x, y, entry, i);
 
             this._parent = parent;
+            this.id = i;
         }
 
         @Override

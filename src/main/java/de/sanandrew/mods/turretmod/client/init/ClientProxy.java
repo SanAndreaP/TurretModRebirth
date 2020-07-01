@@ -19,6 +19,7 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.audio.SoundLaser;
+import de.sanandrew.mods.turretmod.client.compat.patchouli.MouseEventHandler;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import de.sanandrew.mods.turretmod.client.event.RenderEventHandler;
 import de.sanandrew.mods.turretmod.client.event.RenderForcefieldHandler;
@@ -128,6 +129,7 @@ public class ClientProxy
 
         MinecraftForge.EVENT_BUS.register(new RenderEventHandler());
         MinecraftForge.EVENT_BUS.register(new ClientWorldEventListener());
+        MouseEventHandler.register();
 
         RenderingRegistry.registerEntityRenderingHandler(EntityTurret.class, RenderTurret::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretProjectile.class, RenderProjectile::new);
