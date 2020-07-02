@@ -1,0 +1,28 @@
+{
+  "name": "Harpoon Turret",
+  "icon": "sapturretmod:turret.harpoon",
+  "category": "sapturretmod:turrets",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "sapturretmod:turret_info_buoy",
+      "text": "A turret only meant for swimming enemies, this can only be placed on water.$(br)Its stats are comparable to the $(l:turrets/crossbow)Crossbow Turret$(/l).",
+      "name": "Harpoon Turret",
+      "turret_type": "sapturretmod:turret.harpoon"
+    },
+    {
+      "type": "sapturretmod:turret_range_buoy",
+      "turret_type": "sapturretmod:turret.harpoon",
+      "flavor_text": "Call me Ishmael."
+    },
+    {
+      "type": "sapturretmod:turret_assembly",
+      "title": "Harpoon Turret",
+      "recipe": "sapturretmod:turret_mk1_harpoon"
+    },
+    {
+      "type": "sapturretmod:turret_relations",
+      "turret_type": "sapturretmod:turret.harpoon"
+    }
+  ]
+}

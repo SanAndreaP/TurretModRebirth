@@ -5,7 +5,7 @@
   "sortnum": 1,
   "pages": [
     {
-      "type": "sapturretmod:turret_info_i18n",
+      "type": "sapturretmod:turret_info",
       "text": "Meant for basic defense and beginners. Not very strong but one of the cheapest to make.$(br2)This comes in 6 different woods.",
       "name": "Crossbow Turret",
       "turret_type": "sapturretmod:turret.crossbow"

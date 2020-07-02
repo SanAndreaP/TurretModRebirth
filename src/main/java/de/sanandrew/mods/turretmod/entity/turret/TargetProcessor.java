@@ -337,9 +337,6 @@ public final class TargetProcessor
     @Override
     public AxisAlignedBB getAdjustedRange(boolean doOffset) {
         AxisAlignedBB aabb = this.turret.getRangeBB();
-        if( this.turret.isBuoy() ) {
-            aabb = new AxisAlignedBB(aabb.minX, -aabb.maxY, aabb.minZ, aabb.maxX, -aabb.minY, aabb.maxZ);
-        }
         EntityLiving turretL = this.turret.get();
         return doOffset ? aabb.offset(turretL.posX, turretL.posY, turretL.posZ) : aabb;
     }

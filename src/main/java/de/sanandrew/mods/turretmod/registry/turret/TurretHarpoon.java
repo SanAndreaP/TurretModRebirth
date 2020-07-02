@@ -40,9 +40,9 @@ public class TurretHarpoon
     @Value(comment = "Horizontal length of half the edge of the targeting box. The total edge length is [value * 2], with the turret centered in it.", range = @Range(minD = 1.0D), reqMcRestart = true)
     public static double rangeH = 16.0D;
     @Value(comment = "Vertical length of the edge of the targeting box, from the turret upwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
-    public static double rangeU = 8.0D;
+    public static double rangeU = 4.0D;
     @Value(comment = "Vertical length of the edge of the targeting box, from the turret downwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
-    public static double rangeD = 4.0D;
+    public static double rangeD = 8.0D;
 
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {

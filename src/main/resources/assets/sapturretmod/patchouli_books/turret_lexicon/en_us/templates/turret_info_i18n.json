@@ -1,7 +1,7 @@
 {
   "include": [
     {
-      "template": "sapturretmod:turret_info",
+      "template": "sapturretmod:turret_info_base",
       "as": "turret_info",
       "using": {
         "name": "#name",

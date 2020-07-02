@@ -5,15 +5,15 @@
   "sortnum": 2,
   "pages": [
     {
-      "type": "sapturretmod:turret_info_i18n",
-      "text": "Deals low amounts of damage per projectile, but compensates for it with a rapid firing rate.$(br2)Can only attack flying enemies.",
+      "type": "sapturretmod:turret_info",
+      "text": "Deals low amounts of damage per projectile, but compensates for it with a rapid firing rate and bigger ammo storage.$(br2)Can only attack flying enemies.",
       "name": "Minigun Turret",
       "turret_type": "sapturretmod:turret.minigun"
     },
     {
       "type": "sapturretmod:turret_range",
       "turret_type": "sapturretmod:turret.minigun",
-      "flavor_text": "It's a bird! It's a plane!"
+      "flavor_text": "I believe I can fly..."
     },
     {
       "type": "sapturretmod:turret_assembly",

@@ -19,7 +19,8 @@
       "type": "custom",
       "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentTurretEntity",
       "turret": "#turret_type",
-      "x": 0, "y": 80
+      "x": 0, "y": 80,
+      "scale": 0.90
     }
   ]
 }

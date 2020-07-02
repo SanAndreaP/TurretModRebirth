@@ -35,7 +35,7 @@ public class ComponentTurretEntity
     public boolean rotate      = true;
     @SerializedName("default_rotation")
     public float   defRotation = 45.0F;
-    public float   scale       = 20.0F;
+    public float   scale       = 1.0F;
     public float   offset      = 0.0F;
 
     transient private ITurret                     turret;
@@ -85,7 +85,7 @@ public class ComponentTurretEntity
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.pushMatrix();
         GlStateManager.translate(x + 23.0F, y + 47.0F + this.offset, 500.0F);
-        GlStateManager.scale(this.scale, this.scale, this.scale);
+        GlStateManager.scale(this.scale * 20.0D, this.scale * 20.0D, this.scale * 20.0D);
 
         GlStateManager.rotate(180.0F + (float) (this.bouncy ? Math.sin(rotation * 0.25F) * 10.0F : 0.0F), 0.0F, 0.0F, 1.0F);
         GlStateManager.rotate(22.5F, 1.0F, 0.0F, 0.0F);

@@ -1,0 +1,89 @@
+{
+  "processor": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentTurretStatProcessor",
+  "components": [
+    {
+      "type": "custom",
+      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentCustomText",
+      "text": "#rangeLX",
+      "rotation": 27.5,
+      "x": 21, "y": 104,
+      "alignment": "center"
+    },
+    {
+      "type": "custom",
+      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentCustomText",
+      "text": "#rangeLY",
+      "rotation": 90.0,
+      "x": 8, "y": 72,
+      "alignment": "center"
+    },
+    {
+      "type": "custom",
+      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentCustomText",
+      "text": "#rangeLZ",
+      "rotation": -27.5,
+      "x": 107, "y": 104,
+      "alignment": "center"
+    },
+    {
+      "type": "custom",
+      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentCustomText",
+      "text": "#rangeHX",
+      "rotation": 27.5,
+      "x": 46, "y": 117,
+      "alignment": "center"
+    },
+    {
+      "type": "custom",
+      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentCustomText",
+      "text": "#rangeHY",
+      "rotation": 90.0,
+      "x": 8, "y": 40,
+      "alignment": "center"
+    },
+    {
+      "type": "custom",
+      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentCustomText",
+      "text": "#rangeHZ",
+      "rotation": -27.5,
+      "x": 82, "y": 117,
+      "alignment": "center"
+    },
+    {
+      "type": "image",
+      "image": "sapturretmod:textures/gui/lexicon/range_diagram_ms_buoy.png",
+      "x": 0,              "y": 0,
+      "u": 0,               "w": 0,
+      "width": 128,         "height": 128,
+      "texture_width": 128, "texture_height": 128
+    },
+    {
+      "type": "image",
+      "image": "sapturretmod:textures/gui/lexicon/range_diagram_low_buoy.png",
+      "x": 0,              "y": 0,
+      "u": 0,               "w": 0,
+      "width": 128,         "height": 128,
+      "texture_width": 128, "texture_height": 128
+    },
+    {
+      "type": "item",
+      "item": "#turret_type",
+      "x": 56, "y": 42
+    },
+    {
+      "type": "custom",
+      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentCustomImage",
+      "image": "sapturretmod:textures/gui/lexicon/range_diagram_high_buoy.png",
+      "x": 0,              "y": 0,
+      "u": 0,               "w": 0,
+      "width": 128,         "height": 128,
+      "texture_width": 128, "texture_height": 128,
+      "z_index": 200
+    },
+    {
+      "type": "text",
+      "text": "$(italic)#flavor_text#",
+      "x": 0, "y": 132
+    }
+  ]
+}

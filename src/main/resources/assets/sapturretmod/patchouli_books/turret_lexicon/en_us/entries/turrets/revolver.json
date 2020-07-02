@@ -5,8 +5,8 @@
   "sortnum": 2,
   "pages": [
     {
-      "type": "sapturretmod:turret_info_i18n",
-      "text": "The upgraded version of the $(l:turrets/turret_crossbow)Crossbow Turret$(/l), with more range, greater health and more damage, although with less knockback effect.",
+      "type": "sapturretmod:turret_info",
+      "text": "The upgraded version of the $(l:turrets/crossbow)Crossbow Turret$(/l), with more range, greater health and more damage, although with less knockback effect.",
       "name": "Revolver Turret",
       "turret_type": "sapturretmod:turret.revolver"
     },
