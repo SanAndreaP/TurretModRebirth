@@ -1,0 +1,28 @@
+{
+  "name": "Shotgun Turret",
+  "icon": "sapturretmod:turret.shotgun",
+  "category": "sapturretmod:turrets",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "sapturretmod:turret_info_i18n",
+      "text": "Used for basic crowd control. Very weak, but can hit multiple targets at once, due to its ammo dispersing into multiple projectiles.",
+      "name": "Shotgun Turret",
+      "turret_type": "sapturretmod:turret.shotgun"
+    },
+    {
+      "type": "sapturretmod:turret_range",
+      "turret_type": "sapturretmod:turret.shotgun",
+      "flavor_text": "locked and loaded"
+    },
+    {
+      "type": "sapturretmod:turret_assembly",
+      "title": "Shotgun Turret",
+      "recipe": "sapturretmod:turret_mk1_shotgun"
+    },
+    {
+      "type": "sapturretmod:turret_relations",
+      "turret_type": "sapturretmod:turret.shotgun"
+    }
+  ]
+}

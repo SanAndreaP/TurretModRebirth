@@ -1,0 +1,28 @@
+{
+  "name": "Minigun Turret",
+  "icon": "sapturretmod:turret.minigun",
+  "category": "sapturretmod:turrets",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "sapturretmod:turret_info_i18n",
+      "text": "Deals low amounts of damage per projectile, but compensates for it with a rapid firing rate.$(br2)Can only attack flying enemies.",
+      "name": "Minigun Turret",
+      "turret_type": "sapturretmod:turret.minigun"
+    },
+    {
+      "type": "sapturretmod:turret_range",
+      "turret_type": "sapturretmod:turret.minigun",
+      "flavor_text": "It's a bird! It's a plane!"
+    },
+    {
+      "type": "sapturretmod:turret_assembly",
+      "title": "Minigun Turret",
+      "recipe": "sapturretmod:turret_mk2_minigun"
+    },
+    {
+      "type": "sapturretmod:turret_relations",
+      "turret_type": "sapturretmod:turret.minigun"
+    }
+  ]
+}

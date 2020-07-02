@@ -2,6 +2,7 @@
   "name": "Crossbow Turret",
   "icon": "sapturretmod:turret.crossbow",
   "category": "sapturretmod:turrets",
+  "sortnum": 1,
   "pages": [
     {
       "type": "sapturretmod:turret_info_i18n",
@@ -12,7 +13,7 @@
     {
       "type": "sapturretmod:turret_range",
       "turret_type": "sapturretmod:turret.crossbow",
-      "flavor_text": "cheap but reliable!"
+      "flavor_text": "I was an adventurer once..."
     },
     {
       "type": "sapturretmod:turret_assembly",

@@ -23,7 +23,7 @@ import java.util.UUID;
 public abstract class ReloadTime
         implements IUpgrade
 {
-    private static final ResourceLocation BOOK_ENTRY_ID = new ResourceLocation(TmrConstants.ID, "upgrade_reload");
+    private static final ResourceLocation BOOK_ENTRY_ID = new ResourceLocation(TmrConstants.ID, "upgrades/upgrade_reload");
 
     private final ResourceLocation id;
     private final AttributeModifier modifier;

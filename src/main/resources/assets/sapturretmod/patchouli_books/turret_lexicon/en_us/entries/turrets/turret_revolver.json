@@ -1,0 +1,28 @@
+{
+  "name": "Revolver Turret",
+  "icon": "sapturretmod:turret.revolver",
+  "category": "sapturretmod:turrets",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "sapturretmod:turret_info_i18n",
+      "text": "The upgraded version of the $(l:turrets/turret_crossbow)Crossbow Turret$(/l), with more range, greater health and more damage, although with less knockback effect.",
+      "name": "Revolver Turret",
+      "turret_type": "sapturretmod:turret.revolver"
+    },
+    {
+      "type": "sapturretmod:turret_range",
+      "turret_type": "sapturretmod:turret.revolver",
+      "flavor_text": "So anyway, I started blasting..."
+    },
+    {
+      "type": "sapturretmod:turret_assembly",
+      "title": "Revolver Turret",
+      "recipe": "sapturretmod:turret_mk2_revolver"
+    },
+    {
+      "type": "sapturretmod:turret_relations",
+      "turret_type": "sapturretmod:turret.revolver"
+    }
+  ]
+}

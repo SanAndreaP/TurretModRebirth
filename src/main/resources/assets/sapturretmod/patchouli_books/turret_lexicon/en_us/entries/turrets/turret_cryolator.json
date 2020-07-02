@@ -1,0 +1,28 @@
+{
+  "name": "Cryolator Turret",
+  "icon": "sapturretmod:turret.cryolator",
+  "category": "sapturretmod:turrets",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "sapturretmod:turret_info_i18n",
+      "text": "Slow down your enemies with this turret. But beware that this deals no damage!$(br2)It'll only attack targets which are not already slowed down.",
+      "name": "Cryolator Turret",
+      "turret_type": "sapturretmod:turret.cryolator"
+    },
+    {
+      "type": "sapturretmod:turret_range",
+      "turret_type": "sapturretmod:turret.cryolator",
+      "flavor_text": "0 calories"
+    },
+    {
+      "type": "sapturretmod:turret_assembly",
+      "title": "Cryolator Turret",
+      "recipe": "sapturretmod:turret_mk1_cryolator"
+    },
+    {
+      "type": "sapturretmod:turret_relations",
+      "turret_type": "sapturretmod:turret.cryolator"
+    }
+  ]
+}
