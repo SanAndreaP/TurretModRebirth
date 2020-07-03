@@ -10,10 +10,11 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
-import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
+import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.Range;
 
@@ -23,10 +24,22 @@ public class MinigunShell
         implements IAmmunition
 {
     private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo.minigunshell");
+    private static final ResourceLocation BOOK_ENTRY_ID = new ResourceLocation(TmrConstants.ID, "ammo/minigunshell");
 
     @Override
     public ResourceLocation getId() {
         return ID;
+    }
+
+    @Override
+    public ResourceLocation getBookEntryId() {
+        return BOOK_ENTRY_ID;
+    }
+
+    @Nonnull
+    @Override
+    public ITurret getTurret() {
+        return Turrets.MINIGUN;
     }
 
     @Override
@@ -37,12 +50,6 @@ public class MinigunShell
     @Override
     public Range<Float> getDamageInfo() {
         return Range.is(Projectiles.MG_PEBBLE.getDamage());
-    }
-
-    @Nonnull
-    @Override
-    public IAmmunitionGroup getGroup() {
-        return Ammunitions.Groups.MG_SHELL;
     }
 
     @Override

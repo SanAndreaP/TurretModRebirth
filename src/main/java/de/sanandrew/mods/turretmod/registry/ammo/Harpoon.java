@@ -10,10 +10,11 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
-import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
+import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.Range;
 
@@ -23,6 +24,7 @@ public class Harpoon
         implements IAmmunition
 {
     private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo.harpoon");
+    private static final ResourceLocation BOOK_ENTRY_ID = new ResourceLocation(TmrConstants.ID, "ammo/harpoon");
 
     @Override
     public ResourceLocation getId() {
@@ -30,14 +32,19 @@ public class Harpoon
     }
 
     @Override
-    public int getAmmoCapacity() {
-        return 1;
+    public ResourceLocation getBookEntryId() {
+        return BOOK_ENTRY_ID;
     }
 
     @Nonnull
     @Override
-    public IAmmunitionGroup getGroup() {
-        return Ammunitions.Groups.HARPOON;
+    public ITurret getTurret() {
+        return Turrets.HARPOON;
+    }
+
+    @Override
+    public int getAmmoCapacity() {
+        return 1;
     }
 
     @Override

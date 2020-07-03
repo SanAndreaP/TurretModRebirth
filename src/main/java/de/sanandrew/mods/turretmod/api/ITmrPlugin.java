@@ -44,9 +44,6 @@ public interface ITmrPlugin
     default void registerProjectiles(IProjectileRegistry registry) { }
 
     @SideOnly(Side.CLIENT)
-    default void registerLexicon(ILexiconInst registry) { }
-
-    @SideOnly(Side.CLIENT)
     default void registerTurretRenderer(ITurretRenderRegistry<?> registry) { }
 
     @SideOnly(Side.CLIENT)

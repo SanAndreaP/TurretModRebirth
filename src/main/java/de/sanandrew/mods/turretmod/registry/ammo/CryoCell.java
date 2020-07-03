@@ -11,10 +11,11 @@ package de.sanandrew.mods.turretmod.registry.ammo;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
-import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionGroup;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
+import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -28,6 +29,19 @@ import java.util.List;
 public abstract class CryoCell
         implements IAmmunition
 {
+    private static final ResourceLocation BOOK_ENTRY_ID = new ResourceLocation(TmrConstants.ID, "ammo/cryocell");
+
+    @Override
+    public ResourceLocation getBookEntryId() {
+        return BOOK_ENTRY_ID;
+    }
+
+    @Nonnull
+    @Override
+    public ITurret getTurret() {
+        return Turrets.CRYOLATOR;
+    }
+
     @Override
     public int getAmmoCapacity() {
         return 1;
@@ -42,12 +56,6 @@ public abstract class CryoCell
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
         tooltip.add(LangUtils.translate("item." + this.getId().toString() + ".name"));
         IAmmunition.super.addInformation(stack, world, tooltip, flag);
-    }
-
-    @Nonnull
-    @Override
-    public IAmmunitionGroup getGroup() {
-        return Ammunitions.Groups.CRYO_CELL;
     }
 
     public static class Mk1

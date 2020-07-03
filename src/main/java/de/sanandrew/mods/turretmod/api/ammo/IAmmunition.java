@@ -9,9 +9,11 @@
 package de.sanandrew.mods.turretmod.api.ammo;
 
 import de.sanandrew.mods.turretmod.api.IRegistryObject;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.Range;
@@ -27,15 +29,6 @@ public interface IAmmunition
         extends IRegistryObject
 {
     /**
-     * <p>Returns the ammunition group.</p>
-     * <p><i>Example:</i> Each Cryo-Cell ammunition object returns the same group instance (with the ID <tt>sapturretmod:cryocell</tt>).
-     *
-     * @return The group representing this ammunition object.
-     */
-    @Nonnull
-    IAmmunitionGroup getGroup();
-
-    /**
      * <p>Returns the damage dealt, represented as a range, by a projectile spawned by this ammunition object. This is primarily used by the Turret Lexicon.</p>
      * <p>If the projectile deals the same amount of damage, this returns {@link Range#is(Comparable) Range.is(damage)}.</p>
      * <p>If the projectile deals a variable amount of damage, this returns {@link Range#between(Comparable, Comparable) Range.between(minDamage, maxDamage)}.</p>
@@ -49,6 +42,16 @@ public interface IAmmunition
      * @return The amount of rounds provided by one item.
      */
     int getAmmoCapacity();
+
+    default ResourceLocation getBookEntryId() {
+        return null;
+    }
+
+    /**
+     * @return the turret delegate that can use this ammo, cannot be <tt>null</tt>
+     */
+    @Nonnull
+    ITurret getTurret();
 
     /**
      * <p>Returns the projectile delegate to be shot.</p>
@@ -81,7 +84,6 @@ public interface IAmmunition
     default void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
         if( flag.isAdvanced() ) {
             tooltip.add(TextFormatting.DARK_GRAY + "aid: " + this.getId().toString());
-            tooltip.add(TextFormatting.DARK_GRAY + "gid: " + this.getGroup().getId().toString());
         }
     }
 }

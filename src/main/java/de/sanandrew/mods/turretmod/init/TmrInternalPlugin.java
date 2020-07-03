@@ -6,7 +6,6 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.init;
 
-import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconInst;
 import de.sanandrew.mods.turretmod.api.ITmrPlugin;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
@@ -22,7 +21,6 @@ import de.sanandrew.mods.turretmod.api.turret.IGuiTcuRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
-import de.sanandrew.mods.turretmod.client.gui.lexicon.Categories;
 import de.sanandrew.mods.turretmod.client.gui.tcu.label.Labels;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderProjectile;
 import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
@@ -87,12 +85,6 @@ public class TmrInternalPlugin
     @Override
     public void registerProjectiles(IProjectileRegistry registry) {
         Projectiles.initialize(registry);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerLexicon(ILexiconInst registry) {
-        Categories.initialize(registry);
     }
 
     @Override

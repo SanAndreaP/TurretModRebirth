@@ -162,7 +162,7 @@ public class ComponentTurretEntries
     private enum EntryType
     {
         AMMO((g, s) -> {
-            return AmmunitionRegistry.INSTANCE.getGroups(TurretRegistry.INSTANCE.getObject(new ResourceLocation(s))).stream()
+            return AmmunitionRegistry.INSTANCE.getObjects(TurretRegistry.INSTANCE.getObject(new ResourceLocation(s))).stream()
                                               .map(a -> g.book.contents.entries.get(a.getBookEntryId()));
         }),
         UPGRADES((g, s) -> {
