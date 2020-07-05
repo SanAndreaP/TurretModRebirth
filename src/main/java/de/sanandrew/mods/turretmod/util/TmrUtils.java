@@ -53,7 +53,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -361,5 +363,21 @@ public class TmrUtils
         } catch( NumberFormatException ex ) {
             return null;
         }
+    }
+
+    public static NumberFormat getNumberFormat(int numFract, boolean grouping, String langCode) {
+        NumberFormat nf;
+
+        if( numFract == 0 ) {
+            nf = NumberFormat.getIntegerInstance(Locale.forLanguageTag(langCode));
+            nf.setGroupingUsed(false);
+        } else {
+            nf = NumberFormat.getNumberInstance(Locale.forLanguageTag(langCode));
+            nf.setMaximumFractionDigits(numFract);
+            nf.setMinimumFractionDigits(numFract);
+            nf.setGroupingUsed(grouping);
+        }
+
+        return nf;
     }
 }

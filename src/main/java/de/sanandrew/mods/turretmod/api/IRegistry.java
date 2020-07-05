@@ -23,6 +23,17 @@ public interface IRegistry<T extends IRegistryObject>
     void register(@Nonnull T obj);
 
     /**
+     * <p>Registers multiple objects to this registry.</p>
+     *
+     * @param objects The objects to be registered.
+     * @throws NullPointerException if the registry or one of the objects is <tt>null</tt>
+     */
+    @SuppressWarnings("unchecked")
+    default void registerAll(T... objects) {
+        Arrays.stream(objects).forEach(this::register);
+    }
+
+    /**
      * <p>Returns an unmodifiable view of the objects registered in this registry.</p>
      *
      * @return an unmodifiable view of registered objects.
@@ -98,18 +109,5 @@ public interface IRegistry<T extends IRegistryObject>
      */
     default boolean isEqual(@Nonnull ItemStack stack1, @Nonnull ItemStack stack2) {
         return this.isEqual(this.getObject(stack1), this.getObject(stack2));
-    }
-
-    /**
-     * <p>A helper method to register multiple objects at once.</p>
-     *
-     * @param registry The registry to be filled.
-     * @param objects The object(s) to be registered.
-     * @param <T> The type of the registry objects.
-     * @throws NullPointerException if the registry or one of the objects is <tt>null</tt>
-     */
-    @SafeVarargs
-    static <T extends IRegistryObject> void registerAll(IRegistry<T> registry, T... objects) {
-        Arrays.stream(objects).forEach(registry::register);
     }
 }

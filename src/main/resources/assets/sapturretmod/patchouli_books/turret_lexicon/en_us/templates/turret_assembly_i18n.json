@@ -1,0 +1,12 @@
+{
+  "include": [
+    {
+      "template": "sapturretmod:turret_assembly",
+      "as": "turret_assembly",
+      "using": {
+        "header": "Assembly Recipe",
+        "recipe": "#recipe"
+      }
+    }
+  ]
+}

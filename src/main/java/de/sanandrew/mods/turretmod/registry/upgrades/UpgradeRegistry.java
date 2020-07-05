@@ -8,8 +8,11 @@
  */
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
+import com.google.common.base.Objects;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
@@ -122,6 +125,32 @@ public final class UpgradeRegistry
     @Override
     public IUpgrade getEmptyUpgrade() {
         return EMPTY_UPGRADE;
+    }
+
+    @Override
+    public boolean isApplicable(IUpgrade upgrade, ITurret turret) {
+        return this.isApplicable(upgrade, turret, false);
+    }
+
+    @Override
+    public boolean isApplicable(IUpgrade upgrade, ITurret turret, boolean isSpecialized) {
+        if( !upgrade.isValid() ) {
+            return false;
+        }
+
+        ITurret[] applicables = upgrade.getApplicableTurrets();
+        boolean isEmpty = applicables == null || applicables.length == 0;
+
+        if( isSpecialized && isEmpty ) {
+            return false;
+        }
+
+        Range<Integer> tierRange = upgrade.getTierRange();
+        if( tierRange != null && !tierRange.contains(turret.getTier()) ) {
+            return false;
+        }
+
+        return isEmpty || Arrays.asList(applicables).contains(turret);
     }
 
     static final class EmptyUpgrade

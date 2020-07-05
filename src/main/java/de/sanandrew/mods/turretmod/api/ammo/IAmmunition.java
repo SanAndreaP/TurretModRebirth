@@ -38,6 +38,10 @@ public interface IAmmunition
     @Nonnull
     Range<Float> getDamageInfo();
 
+    default String[] getSubtypes() {
+        return null;
+    }
+
     /**
      * @return The amount of rounds provided by one item.
      */
@@ -81,9 +85,5 @@ public interface IAmmunition
      * @param tooltip The list of lines to be populated by this method, preferrably an <tt>ArrayList</tt>.
      * @param flag The flag of the tooltip to be drawn, determines if advanced information is to be shown or not.
      */
-    default void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
-        if( flag.isAdvanced() ) {
-            tooltip.add(TextFormatting.DARK_GRAY + "aid: " + this.getId().toString());
-        }
-    }
+    default void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {}
 }

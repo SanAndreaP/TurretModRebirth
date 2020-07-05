@@ -29,15 +29,16 @@ import java.util.stream.Collectors;
 public class AssemblyIngredient
         extends Ingredient
 {
-    private final int count;
-    private NonNullList<ItemStack> itemList;
+    private final int                    count;
+    private final NonNullList<ItemStack> itemList;
+
     private ItemStack[] items;
-    private IntList itemIds;
+    private IntList     itemIds;
 
     /**
      * <p>Creates a new ingredient defined by a list of items.</p>
      *
-     * @param count the amount of items required by this ingredient.
+     * @param count  the amount of items required by this ingredient.
      * @param stacks one or more items that represent this ingredient.
      */
     public AssemblyIngredient(int count, ItemStack... stacks) {
@@ -48,8 +49,9 @@ public class AssemblyIngredient
 
     /**
      * <p>Creates a new ingredient defined by a list of ore dictionary names.</p>
+     *
      * @param count The amount of items required by this ingredient.
-     * @param ores One or more ore dictionary names, whose items represent this ingredient.
+     * @param ores  One or more ore dictionary names, whose items represent this ingredient.
      */
     public AssemblyIngredient(int count, String... ores) {
         super(0);
@@ -129,6 +131,7 @@ public class AssemblyIngredient
 
     /**
      * <p>Indicates wether this ingredient is considered simple. Some recipes do additional operations if all ingredients are simple.</p>
+     *
      * @return <tt>true</tt>, if this ingredient is considered simple; <tt>false</tt> otherwise.
      */
     @Override
@@ -140,16 +143,18 @@ public class AssemblyIngredient
      * <p>Reads an ingredient from the given JSON element.</p>
      *
      * @param json The JSON element an ingredient should be read from.
-     * @param ctx The JSON context.
+     * @param ctx  The JSON context.
+     *
      * @return the ingredient read from the JSON element.
+     *
      * @throws JsonSyntaxException if the JSON element does not contain a valid ingredient.
      */
     public static AssemblyIngredient fromJson(@Nullable JsonElement json, JsonContext ctx) {
         if( json != null && !json.isJsonNull() ) {
             if( json.isJsonObject() ) {
                 JsonObject jsonObj = json.getAsJsonObject();
-                int count = JsonUtils.getIntVal(jsonObj.get("count"), 1);
-                Ingredient defIng = CraftingHelper.getIngredient(jsonObj.get("items"), ctx);
+                int        count   = JsonUtils.getIntVal(jsonObj.get("count"), 1);
+                Ingredient defIng  = CraftingHelper.getIngredient(jsonObj.get("items"), ctx);
 
                 return new AssemblyIngredient(count, defIng.getMatchingStacks());
             } else {

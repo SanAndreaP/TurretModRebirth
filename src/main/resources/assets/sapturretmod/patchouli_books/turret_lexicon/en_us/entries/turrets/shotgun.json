@@ -16,8 +16,7 @@
       "flavor_text": "kar en tuk"
     },
     {
-      "type": "sapturretmod:turret_assembly",
-      "title": "Shotgun Turret",
+      "type": "sapturretmod:turret_assembly_i18n",
       "recipe": "sapturretmod:turret_mk1_shotgun"
     },
     {

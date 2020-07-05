@@ -49,6 +49,8 @@ import de.sanandrew.mods.turretmod.client.gui.element.tcu.shieldcolor.ColorPicke
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.shieldcolor.ShieldRender;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.target.TargetList;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.PlayerHeads;
+import de.sanandrew.mods.turretmod.client.model.item.ColorCartridge;
+import de.sanandrew.mods.turretmod.client.model.item.ColorTippedBolt;
 import de.sanandrew.mods.turretmod.client.particle.ParticleAssemblySpark;
 import de.sanandrew.mods.turretmod.client.particle.ParticleCryoTrail;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderProjectile;
@@ -61,6 +63,7 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretProjectile;
 import de.sanandrew.mods.turretmod.item.ItemAmmoCartridge;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.registry.ammo.Ammunitions;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretLaser;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
@@ -75,6 +78,7 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleSmokeNormal;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -147,7 +151,6 @@ public class ClientProxy
 
         IReloadableResourceManager mcResourceMgr = (IReloadableResourceManager)Minecraft.getMinecraft().getResourceManager();
         mcResourceMgr.registerReloadListener(RenderForcefieldHandler.INSTANCE);
-        mcResourceMgr.registerReloadListener(ResourceOrderer.INSTANCE);
 
         Shaders.initShaders();
     }
@@ -157,6 +160,9 @@ public class ClientProxy
         super.postInit(event);
 
         PlayerHeads.preLoadPlayerHeadsAsync();
+
+        Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new ColorTippedBolt(), ItemRegistry.TURRET_AMMO.get(Ammunitions.TIPPED_BOLT.getId()));
+        Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new ColorCartridge(), ItemRegistry.AMMO_CARTRIDGE);
     }
 
     @Override

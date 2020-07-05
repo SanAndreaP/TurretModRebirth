@@ -12,6 +12,7 @@ import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
+import de.sanandrew.mods.turretmod.registry.Resources;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
@@ -25,8 +26,6 @@ import java.util.UUID;
 public abstract class Health
         implements IUpgrade
 {
-    private static final ResourceLocation BOOK_ENTRY_ID = new ResourceLocation(TmrConstants.ID, "upgrades/upgrade_health");
-
     private final ResourceLocation id;
     private final AttributeModifier modifier;
 
@@ -42,7 +41,7 @@ public abstract class Health
 
     @Override
     public ResourceLocation getBookEntryId() {
-        return BOOK_ENTRY_ID;
+        return Resources.PATCHOULI_E_UPGRADE_HEALTH.resource;
     }
 
     @Override

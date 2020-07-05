@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.registry.ammo;
 
+import com.google.common.base.Strings;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
@@ -18,14 +19,22 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.item.ItemAmmo;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.Constants;
 import org.apache.commons.lang3.Range;
 import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
 import java.security.InvalidParameterException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class AmmunitionRegistry
         implements IAmmunitionRegistry
@@ -102,19 +111,52 @@ public final class AmmunitionRegistry
     }
 
     @Override
+    public String getSubtype(ItemStack stack) {
+        if( stack.getItem() instanceof ItemAmmo ) {
+            NBTTagCompound tmrStack = stack.getSubCompound(TmrConstants.ID);
+            if( tmrStack != null && tmrStack.hasKey("subtype", Constants.NBT.TAG_STRING) ) {
+                return tmrStack.getString("subtype");
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public ItemStack setSubtype(ItemStack stack, String type) {
+        if( !Strings.isNullOrEmpty(type) ) {
+            Item item = stack.getItem();
+            if( item instanceof ItemAmmo ) {
+                String[] subtypes = ((ItemAmmo) item).ammo.getSubtypes();
+                if( subtypes != null && Arrays.asList(subtypes).contains(type) ) {
+                    stack.getOrCreateSubCompound(TmrConstants.ID).setString("subtype", type);
+                }
+            }
+        }
+
+        return stack;
+    }
+
+    @Override
     @Nonnull
     public IAmmunition getDefaultObject() {
         return NULL_TYPE;
     }
 
+    @Nonnull
+    @Override
+    public ItemStack getItem(ResourceLocation id) {
+        return this.getItem(id, null);
+    }
+
     @Override
     @Nonnull
-    public ItemStack getItem(ResourceLocation id) {
+    public ItemStack getItem(ResourceLocation id, String subtype) {
         if( !this.getObject(id).isValid() ) {
             throw new IllegalArgumentException("Cannot get turret ammo item with invalid type!");
         }
 
-        return new ItemStack(ItemRegistry.TURRET_AMMO.get(id), 1);
+        return setSubtype(new ItemStack(ItemRegistry.TURRET_AMMO.get(id), 1), subtype);
     }
 
     private static class UModList<T>

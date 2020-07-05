@@ -3,6 +3,7 @@ package de.sanandrew.mods.turretmod.client.compat.patchouli;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -12,7 +13,6 @@ import vazkii.patchouli.api.IComponentProcessor;
 import vazkii.patchouli.api.IVariableProvider;
 
 import java.text.NumberFormat;
-import java.util.Locale;
 
 @SideOnly(Side.CLIENT)
 @SuppressWarnings("unused")
@@ -32,13 +32,13 @@ public class ComponentTurretStatProcessor
 
         switch( s ) {
             case "tier": {
-                return getNumberFormat(0, false, langCode).format(turret.getTier());
+                return TmrUtils.getNumberFormat(0, false, langCode).format(turret.getTier());
             }
             case "health": {
-                return getNumberFormat(1, true, langCode).format(turret.getHealth());
+                return TmrUtils.getNumberFormat(1, true, langCode).format(turret.getHealth());
             }
             case "ammo": {
-                return getNumberFormat(0, true, langCode).format(turret.getAmmoCapacity());
+                return TmrUtils.getNumberFormat(0, true, langCode).format(turret.getAmmoCapacity());
             }
             case "reload": {
                 return MiscUtils.getTimeFromTicks(turret.getReloadTicks());
@@ -46,7 +46,7 @@ public class ComponentTurretStatProcessor
             default: {
                 if( s.contains("range") ) {
                     AxisAlignedBB aabb = this.turret.getRangeBB(null);
-                    NumberFormat nf = getNumberFormat(0, true, langCode);
+                    NumberFormat nf = TmrUtils.getNumberFormat(0, true, langCode);
                     switch( s ) {
                         case "rangeLX": return nf.format(aabb.minX * -1.0D);
                         case "rangeLY": return nf.format(aabb.minY * -1.0D);
@@ -60,21 +60,5 @@ public class ComponentTurretStatProcessor
         }
 
         return null;
-    }
-
-    public NumberFormat getNumberFormat(int numFract, boolean grouping, String langCode) {
-        NumberFormat nf;
-
-        if( numFract == 0 ) {
-            nf = NumberFormat.getIntegerInstance(Locale.forLanguageTag(langCode));
-            nf.setGroupingUsed(false);
-        } else {
-            nf = NumberFormat.getNumberInstance(Locale.forLanguageTag(langCode));
-            nf.setMaximumFractionDigits(numFract);
-            nf.setMinimumFractionDigits(numFract);
-            nf.setGroupingUsed(grouping);
-        }
-
-        return nf;
     }
 }

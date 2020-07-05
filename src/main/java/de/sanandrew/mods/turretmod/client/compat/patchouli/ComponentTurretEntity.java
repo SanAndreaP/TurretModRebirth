@@ -57,6 +57,9 @@ public class ComponentTurretEntity
     @Override
     public void render(IComponentRenderContext context, float partTicks, int mouseX, int mouseY) {
         Minecraft.getMinecraft().getTextureManager().bindTexture(Resources.TINFO_ELEMENTS.resource);
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                                            GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         Gui.drawModalRectWithCustomSizedTexture(this.x, this.y, 0, 0, 46, 60, 256, 256);
         drawTurret(Minecraft.getMinecraft(), this.x, this.y, partTicks);
     }

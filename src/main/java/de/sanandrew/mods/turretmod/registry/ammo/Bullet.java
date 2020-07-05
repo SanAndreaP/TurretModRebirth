@@ -13,6 +13,7 @@ import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import net.minecraft.util.ResourceLocation;
@@ -24,7 +25,6 @@ public class Bullet
         implements IAmmunition
 {
     private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo.bullet");
-    private static final ResourceLocation BOOK_ENTRY_ID = new ResourceLocation(TmrConstants.ID, "ammo/bullet");
 
     @Override
     public ResourceLocation getId() {
@@ -33,7 +33,7 @@ public class Bullet
 
     @Override
     public ResourceLocation getBookEntryId() {
-        return BOOK_ENTRY_ID;
+        return Resources.PATCHOULI_E_AMMO_BULLET.resource;
     }
 
     @Nonnull

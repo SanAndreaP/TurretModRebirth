@@ -1,5 +1,6 @@
 package de.sanandrew.mods.turretmod.inventory;
 
+import com.google.common.base.Strings;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.item.ItemAmmo;
@@ -160,6 +161,12 @@ public final class AmmoCartridgeInventory
         this.load();
         return this.stacks.stream().map(AmmunitionRegistry.INSTANCE::getObject).filter(IAmmunition::isValid).reduce((t1, t2) -> t1)
                           .orElse(AmmunitionRegistry.INSTANCE.getDefaultObject());
+    }
+
+    public String getAmmoSubtype() {
+        this.load();
+        return this.stacks.stream().map(AmmunitionRegistry.INSTANCE::getSubtype).filter(s -> !Strings.isNullOrEmpty(s)).reduce((t1, t2) -> t1)
+                          .orElse(null);
     }
 
     private void save() {

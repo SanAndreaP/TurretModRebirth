@@ -13,7 +13,6 @@ import de.sanandrew.mods.turretmod.api.repairkit.IRepairKit;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
-import de.sanandrew.mods.turretmod.item.*;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.Ammunitions;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
@@ -48,7 +47,7 @@ public class ItemRemapper
     private static final ResourceLocation OLD_AMMO_ID = new ResourceLocation(TmrConstants.ID, "turret_ammo");
     private static final Map<UUID, ResourceLocation> OLD_AMMO_MAPPINGS = new HashMap<UUID, ResourceLocation>() {
         {
-            this.put(UUID.fromString("7B497E61-4E8D-4E49-AC71-414751E399E8"), Ammunitions.ARROW.getId());
+            this.put(UUID.fromString("7B497E61-4E8D-4E49-AC71-414751E399E8"), Ammunitions.BOLT.getId());
             this.put(UUID.fromString("3B3AA3F7-DA37-4B92-8F18-53694361447F"), Ammunitions.SGSHELL.getId());
             this.put(UUID.fromString("0B567594-E5CA-48B5-A538-E87C213F439C"), Ammunitions.CRYOCELL_MK1.getId());
             this.put(UUID.fromString("CB5BE826-0480-4D30-AF1F-23BE19329B37"), Ammunitions.CRYOCELL_MK2.getId());
@@ -121,7 +120,7 @@ public class ItemRemapper
         List<RegistryEvent.MissingMappings.Mapping<Item>> list = event.getMappings();
         for( RegistryEvent.MissingMappings.Mapping<Item> map : list ) {
             if( map.key.equals(OLD_AMMO_ID) ) {
-                map.remap(ItemRegistry.TURRET_AMMO.get(Ammunitions.ARROW.getId()));
+                map.remap(ItemRegistry.TURRET_AMMO.get(Ammunitions.BOLT.getId()));
             } else if( map.key.equals(OLD_TURRET_ID) ) {
                 map.remap(ItemRegistry.TURRET_PLACERS.get(Turrets.CROSSBOW.getId()));
             } else if( map.key.equals(OLD_UPGRADE_ID) ) {

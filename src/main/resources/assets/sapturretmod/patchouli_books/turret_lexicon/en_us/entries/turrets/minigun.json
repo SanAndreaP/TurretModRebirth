@@ -16,8 +16,7 @@
       "flavor_text": "I believe I can fly..."
     },
     {
-      "type": "sapturretmod:turret_assembly",
-      "title": "Minigun Turret",
+      "type": "sapturretmod:turret_assembly_i18n",
       "recipe": "sapturretmod:turret_mk2_minigun"
     },
     {

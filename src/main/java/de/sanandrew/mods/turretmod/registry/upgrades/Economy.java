@@ -10,15 +10,15 @@ package de.sanandrew.mods.turretmod.registry.upgrades;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
+import de.sanandrew.mods.turretmod.registry.Resources;
 import net.minecraft.util.ResourceLocation;
 
-public abstract class AmmoUsage
+public abstract class Economy
         implements IUpgrade
 {
     private final ResourceLocation id;
-    private static final ResourceLocation BOOK_ENTRY_ID = new ResourceLocation(TmrConstants.ID, "upgrades/upgrade_economy");
 
-    AmmoUsage(String name) {
+    Economy(String name) {
         this.id = new ResourceLocation(TmrConstants.ID, "upgrade." + name);
     }
 
@@ -29,11 +29,11 @@ public abstract class AmmoUsage
 
     @Override
     public ResourceLocation getBookEntryId() {
-        return BOOK_ENTRY_ID;
+        return Resources.PATCHOULI_E_UPGRADE_ECONOMY.resource;
     }
 
     static class MK1
-            extends AmmoUsage
+            extends Economy
     {
         MK1() {
             super("ammousage.1");
@@ -41,7 +41,7 @@ public abstract class AmmoUsage
     }
 
     static class MK2
-            extends AmmoUsage
+            extends Economy
     {
         MK2() {
             super("ammousage.2");
@@ -54,7 +54,7 @@ public abstract class AmmoUsage
     }
 
     static class MKInf
-            extends AmmoUsage
+            extends Economy
     {
         MKInf() {
             super("ammousage.inf");

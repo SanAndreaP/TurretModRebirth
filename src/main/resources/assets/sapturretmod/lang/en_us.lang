@@ -46,6 +46,7 @@ item.sapturretmod:turret_assembly_redstone.name=Redstone Awareness Upgrade
 item.sapturretmod:turret_assembly_redstone.ttip=Used in the Turret Assembly Table
 # Ammo
 item.sapturretmod:ammo.arrow.name=Arrow Bolt
+item.sapturretmod:ammo.tipped_bolt.name=Tipped Arrow Bolt
 item.sapturretmod:ammo.shotgunshell.name=Shotgun Shell
 item.sapturretmod:ammo.harpoon.name=Harpoon
 item.sapturretmod:ammo.cryocell.name=Cryo Cell

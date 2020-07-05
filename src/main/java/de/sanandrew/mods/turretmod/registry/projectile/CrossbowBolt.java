@@ -8,16 +8,27 @@
  */
 package de.sanandrew.mods.turretmod.registry.projectile;
 
+import com.google.common.base.Strings;
 import de.sanandrew.mods.sanlib.lib.util.config.Category;
 import de.sanandrew.mods.sanlib.lib.util.config.Range;
 import de.sanandrew.mods.sanlib.lib.util.config.Value;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectileInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.registry.ammo.Ammunitions;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionType;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.RayTraceResult;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 @Category("crossbow bolt")
 public class CrossbowBolt
@@ -77,5 +88,20 @@ public class CrossbowBolt
     @Override
     public double getScatterValue() {
         return scatter;
+    }
+
+    @Override
+    public void onDamageEntityPost(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile, Entity target, DamageSource damageSrc) {
+        if( target instanceof EntityLivingBase && projectile.getAmmunition() == Ammunitions.TIPPED_BOLT ) {
+            String subtype = projectile.getAmmunitionSubtype();
+            if( !Strings.isNullOrEmpty(subtype) ) {
+                PotionType potion = PotionType.REGISTRY.getObject(new ResourceLocation(subtype));
+                for( PotionEffect effect : potion.getEffects()) {
+                    ((EntityLivingBase) target).addPotionEffect(new PotionEffect(effect.getPotion(), Math.max(effect.getDuration() / 8, 1),
+                                                                                 effect.getAmplifier(), effect.getIsAmbient(),
+                                                                                 effect.doesShowParticles()));
+                }
+            }
+        }
     }
 }

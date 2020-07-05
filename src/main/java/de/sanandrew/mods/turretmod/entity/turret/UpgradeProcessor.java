@@ -267,11 +267,7 @@ public final class UpgradeProcessor
             if( this.hasUpgrade(upg) ) {
                 return false;
             }
-            Range<Integer> tierRange = upg.getTierRange();
-            if( tierRange != null && !tierRange.contains(this.turret.getTurret().getTier()) ) {
-                return false;
-            }
-            if( upg.isApplicable(this.turret.getTurret()) ) {
+            if( !UpgradeRegistry.INSTANCE.isApplicable(upg, this.turret.getTurret()) ) {
                 return false;
             }
 

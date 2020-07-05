@@ -6,14 +6,14 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.registry.ammo;
 
-import de.sanandrew.mods.turretmod.api.IRegistry;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
 
 @SuppressWarnings("WeakerAccess")
 public final class Ammunitions
 {
-    public static final IAmmunition ARROW           = new Arrow();
+    public static final IAmmunition BOLT            = new Bolt();
+    public static final IAmmunition TIPPED_BOLT     = new TippedBolt();
     public static final IAmmunition HARPOON         = new Harpoon();
     public static final IAmmunition SGSHELL         = new ShotgunShell();
     public static final IAmmunition CRYOCELL_MK1    = new CryoCell.Mk1();
@@ -26,8 +26,6 @@ public final class Ammunitions
     public static final IAmmunition FUELTANK        = new FuelTank();
 
     public static void initialize(IAmmunitionRegistry registry) {
-        IRegistry.registerAll(registry,
-                              ARROW, HARPOON, SGSHELL, CRYOCELL_MK1, CRYOCELL_MK2, CRYOCELL_MK3, BULLET, MGSHELL, ELECTROLYTECELL,
-                              FLUXCELL, FUELTANK);
+        registry.registerAll(BOLT, TIPPED_BOLT, HARPOON, SGSHELL, CRYOCELL_MK1, CRYOCELL_MK2, CRYOCELL_MK3, BULLET, MGSHELL, ELECTROLYTECELL, FLUXCELL, FUELTANK);
     }
 }

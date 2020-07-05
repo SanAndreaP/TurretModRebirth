@@ -23,4 +23,8 @@ public interface IProjectileInst
      * @return this projectile instance as an {@link Entity}
      */
     Entity get();
+
+    IAmmunition getAmmunition();
+
+    String getAmmunitionSubtype();
 }

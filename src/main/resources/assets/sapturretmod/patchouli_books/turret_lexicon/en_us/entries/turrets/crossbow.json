@@ -16,8 +16,7 @@
       "flavor_text": "I was an adventurer once..."
     },
     {
-      "type": "sapturretmod:turret_assembly",
-      "title": "Crossbow Turret",
+      "type": "sapturretmod:turret_assembly_i18n",
       "recipe": "sapturretmod:turret_mk1_crossbow"
     },
     {

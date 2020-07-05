@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.entity.turret;
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.sanlib.lib.util.ReflectionUtils;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
@@ -31,7 +32,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -97,9 +97,11 @@ public final class TargetProcessor
             return ItemAmmoCartridge.extractAmmoStacks(stack, this);
         } else if( this.isAmmoApplicable(stack) ) {
             IAmmunition type = AmmunitionRegistry.INSTANCE.getObject(stack);
+            String subtype = MiscUtils.defIfNull(AmmunitionRegistry.INSTANCE.getSubtype(stack), "");
             IAmmunition currType = AmmunitionRegistry.INSTANCE.getObject(this.ammoStack);
+            String currSubtype = MiscUtils.defIfNull(AmmunitionRegistry.INSTANCE.getSubtype(this.ammoStack), "");
 
-            if( currType.isValid() && !currType.getId().equals(type.getId()) ) {
+            if( currType.isValid() && !(currType.getId().equals(type.getId()) && currSubtype.equals(subtype)) ) {
                 if( excessInv != null ) {
                     this.putAmmoInInventory(excessInv);
                 } else {
@@ -110,7 +112,7 @@ public final class TargetProcessor
             int maxCapacity = this.getMaxAmmoCapacity() - this.ammoCount;
             if( maxCapacity > 0 ) {
                 if( !this.hasAmmo() ) {
-                    this.ammoStack = AmmunitionRegistry.INSTANCE.getItem(type.getId());
+                    this.ammoStack = AmmunitionRegistry.INSTANCE.getItem(type.getId(), subtype);
                 } else if( !AmmunitionRegistry.INSTANCE.isEqual(stack, this.ammoStack) ) {
                     return false;
                 }
@@ -314,13 +316,15 @@ public final class TargetProcessor
     @Override
     public Entity getProjectile() {
         if( this.hasAmmo() ) {
-            IProjectile proj = AmmunitionRegistry.INSTANCE.getObject(this.ammoStack).getProjectile(this.turret);
+            IAmmunition ammo = AmmunitionRegistry.INSTANCE.getObject(this.ammoStack);
+            String ammoSubtype = AmmunitionRegistry.INSTANCE.getSubtype(this.ammoStack);
+            IProjectile proj = ammo.getProjectile(this.turret);
             if( proj != null ) {
                 double attackModifier = this.turret.get().getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue();
                 if( this.entityToAttack != null ) {
-                    return new EntityTurretProjectile(this.turret.get().world, proj, (EntityTurret) this.turret, this.entityToAttack, attackModifier);
+                    return new EntityTurretProjectile(this.turret.get().world, proj, ammo, ammoSubtype, (EntityTurret) this.turret, this.entityToAttack, attackModifier);
                 } else {
-                    return new EntityTurretProjectile(this.turret.get().world, proj, (EntityTurret) this.turret, this.turret.get().getLookVec(), attackModifier);
+                    return new EntityTurretProjectile(this.turret.get().world, proj, ammo, ammoSubtype, (EntityTurret) this.turret, this.turret.get().getLookVec(), attackModifier);
                 }
             }
         }

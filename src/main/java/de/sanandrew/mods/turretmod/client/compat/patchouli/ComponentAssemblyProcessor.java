@@ -1,5 +1,6 @@
 package de.sanandrew.mods.turretmod.client.compat.patchouli;
 
+import de.sanandrew.mods.turretmod.api.assembly.AssemblyIngredient;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import net.minecraft.item.ItemStack;
@@ -11,6 +12,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import vazkii.patchouli.api.IComponentProcessor;
 import vazkii.patchouli.api.IVariableProvider;
 import vazkii.patchouli.common.util.ItemStackUtil;
+
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 @SideOnly(Side.CLIENT)
 @SuppressWarnings("unused")
@@ -35,12 +39,28 @@ public class ComponentAssemblyProcessor
                     NonNullList<Ingredient> items = this.recipe.getIngredients();
 
                     if( i < items.size() ) {
-                        return ItemStackUtil.serializeIngredient(items.get(i));
+                        Ingredient ingredient = items.get(i);
+                        
+                        if( ingredient instanceof AssemblyIngredient ) {
+                            final int cnt = ((AssemblyIngredient) ingredient).getCount();
+                            ingredient = Ingredient.fromStacks(Arrays.stream(ingredient.getMatchingStacks())
+                                                                     .map(stack -> copyStackWithSize(stack, cnt))
+                                                                     .toArray(ItemStack[]::new));
+                        }
+
+                        return ItemStackUtil.serializeIngredient(ingredient);
                     }
                 } catch( NumberFormatException ignored ) {}
             }
         }
 
         return null;
+    }
+
+    private static ItemStack copyStackWithSize(ItemStack stack, int size) {
+        stack = stack.copy();
+        stack.setCount(size);
+
+        return stack;
     }
 }

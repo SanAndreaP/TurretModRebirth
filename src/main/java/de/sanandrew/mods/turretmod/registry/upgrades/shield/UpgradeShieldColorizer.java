@@ -4,6 +4,7 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
+import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import de.sanandrew.mods.turretmod.registry.turret.shieldgen.ShieldTurret;
 import net.minecraft.item.ItemStack;
@@ -23,6 +24,11 @@ public class UpgradeShieldColorizer
     @Nonnull
     public ResourceLocation getId() {
         return ID;
+    }
+
+    @Override
+    public ResourceLocation getBookEntryId() {
+        return Resources.PATCHOULI_E_UPGRADE_SHIELD_COLORIZER.resource;
     }
 
     @Nullable

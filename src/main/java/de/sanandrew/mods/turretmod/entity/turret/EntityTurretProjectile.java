@@ -12,9 +12,11 @@ import com.google.common.base.Strings;
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectileInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.projectile.ProjectileRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
@@ -62,6 +64,8 @@ public class EntityTurretProjectile
     private EntityTurret shooterCache;
     private Entity lastDamaged;
     private int lastDamagedTimer;
+    private IAmmunition ammunition;
+    private String ammoSubtype;
 
     private double maxDist;
     private float lastDamage;
@@ -76,20 +80,24 @@ public class EntityTurretProjectile
         this.lastDamage = -1.0F;
     }
 
-    EntityTurretProjectile(World world, IProjectile delegate, EntityTurret shooter, Entity target, double attackModifier) {
-        this(world, delegate, shooter, target, null, attackModifier);
+    @SuppressWarnings("unused")
+    EntityTurretProjectile(World world, IProjectile delegate, IAmmunition ammunition, String ammoSubtype, EntityTurret shooter, Entity target, double attackModifier) {
+        this(world, delegate, ammunition, ammoSubtype, shooter, target, null, attackModifier);
     }
 
-    EntityTurretProjectile(World world, IProjectile delegate, EntityTurret shooter, Vec3d shootingVec, double attackModifier) {
-        this(world, delegate, shooter, null, shootingVec, attackModifier);
+    @SuppressWarnings("unused")
+    EntityTurretProjectile(World world, IProjectile delegate, IAmmunition ammunition, String ammoSubtype, EntityTurret shooter, Vec3d shootingVec, double attackModifier) {
+        this(world, delegate, ammunition, ammoSubtype, shooter, null, shootingVec, attackModifier);
     }
 
-    private EntityTurretProjectile(World world, IProjectile delegate, EntityTurret shooter, Entity target, Vec3d shootingVec, double attackModifier) {
+    private EntityTurretProjectile(World world, IProjectile delegate, IAmmunition ammunition, String ammoSubtype, EntityTurret shooter, Entity target, Vec3d shootingVec, double attackModifier) {
         this(world);
 
         this.delegate = delegate;
         this.shooterUUID = shooter.getUniqueID();
         this.shooterCache = shooter;
+        this.ammunition = ammunition;
+        this.ammoSubtype = ammoSubtype;
 
         this.attackModifier = attackModifier;
 
@@ -389,11 +397,17 @@ public class EntityTurretProjectile
         if( !this.delegate.isValid() ) {
             this.setDead();
         }
+        if( nbt.hasKey("AttackModifier") ) {
+            this.attackModifier = nbt.getDouble("AttackModifier");
+        }
         if( nbt.hasKey("shooter") ) {
             this.shooterUUID = UUID.fromString(nbt.getString("shooter"));
         }
-        if( nbt.hasKey("AttackModifier") ) {
-            this.attackModifier = nbt.getDouble("AttackModifier");
+        if( nbt.hasKey("AmmoType") ) {
+            this.ammunition = AmmunitionRegistry.INSTANCE.getObject(new ResourceLocation(nbt.getString("AmmoType")));
+        }
+        if( nbt.hasKey("AmmoSubtype") ) {
+            this.ammoSubtype = nbt.getString("AmmoSubtype");
         }
         this.lastDamage = nbt.hasKey("LastDamage") ? nbt.getFloat("LastDamage") : Float.MAX_VALUE;
     }
@@ -404,6 +418,12 @@ public class EntityTurretProjectile
         nbt.setDouble("AttackModifier", this.attackModifier);
         if( this.shooterUUID != null ) {
             nbt.setString("shooter", this.shooterUUID.toString());
+        }
+        if( this.ammunition != null ) {
+            nbt.setString("AmmoType", this.ammunition.getId().toString());
+        }
+        if( this.ammoSubtype != null ) {
+            nbt.setString("AmmoSubtype", this.ammoSubtype);
         }
     }
 
@@ -436,6 +456,14 @@ public class EntityTurretProjectile
         if( this.shooterCache != null ) {
             buffer.writeInt(this.shooterCache.getEntityId());
         }
+        buffer.writeBoolean(this.ammunition != null);
+        if( this.ammunition != null ) {
+            ByteBufUtils.writeUTF8String(buffer, this.ammunition.getId().toString());
+        }
+        buffer.writeBoolean(this.ammoSubtype != null);
+        if( this.ammoSubtype != null ) {
+            ByteBufUtils.writeUTF8String(buffer, this.ammoSubtype);
+        }
     }
 
     @Override
@@ -446,6 +474,12 @@ public class EntityTurretProjectile
 
         if( buffer.readBoolean() ) {
             this.shooterCache = (EntityTurret) this.world.getEntityByID(buffer.readInt());
+        }
+        if( buffer.readBoolean() ) {
+            this.ammunition = AmmunitionRegistry.INSTANCE.getObject(new ResourceLocation(ByteBufUtils.readUTF8String(buffer)));
+        }
+        if( buffer.readBoolean() ) {
+            this.ammoSubtype = ByteBufUtils.readUTF8String(buffer);
         }
     }
 
@@ -462,6 +496,16 @@ public class EntityTurretProjectile
     @Override
     public Entity get() {
         return this;
+    }
+
+    @Override
+    public IAmmunition getAmmunition() {
+        return MiscUtils.defIfNull(this.ammunition, AmmunitionRegistry.INSTANCE::getDefaultObject);
+    }
+
+    @Override
+    public String getAmmunitionSubtype() {
+        return this.ammoSubtype;
     }
 
     public interface ITurretDamageSource {

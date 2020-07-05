@@ -7,10 +7,7 @@
         "name": "#name",
         "text": "#text",
         "turret_type": "#turret_type",
-        "tier": "#tier",
-        "health": "#health",
-        "ammo": "#ammo",
-        "reload": "#reload"
+        "fire_resistant": "#fire_resistant"
       }
     }
   ],

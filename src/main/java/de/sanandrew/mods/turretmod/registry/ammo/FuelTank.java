@@ -13,6 +13,7 @@ import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
@@ -25,7 +26,6 @@ public class FuelTank
         implements IAmmunition
 {
     private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo.fueltank");
-    private static final ResourceLocation BOOK_ENTRY_ID = new ResourceLocation(TmrConstants.ID, "ammo/fueltank");
 
     @Override
     public ResourceLocation getId() {
@@ -34,7 +34,7 @@ public class FuelTank
 
     @Override
     public ResourceLocation getBookEntryId() {
-        return BOOK_ENTRY_ID;
+        return Resources.PATCHOULI_E_AMMO_FUELTANK.resource;
     }
 
     @Nonnull

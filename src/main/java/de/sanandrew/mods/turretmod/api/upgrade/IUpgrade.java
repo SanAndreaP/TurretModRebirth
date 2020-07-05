@@ -42,21 +42,6 @@ public interface IUpgrade
         return null;
     }
 
-    default boolean isApplicable(ITurret turret) {
-        return this.isApplicable(turret, false);
-    }
-
-    default boolean isApplicable(ITurret turret, boolean isSpecialized) {
-        ITurret[] applicables = this.getApplicableTurrets();
-        boolean isEmpty = applicables == null || applicables.length == 0;
-
-        if( isSpecialized && isEmpty ) {
-            return false;
-        }
-
-        return isEmpty || Arrays.binarySearch(applicables, turret) >= 0;
-    }
-
     /**
      * <p>Returns a range (minimum and maximum; inclusive) of applicable turret tiers.</p>
      * <p>If this upgrade can be applied to one tier, this returns {@link Range#is(Comparable) Range.is(tier)}.</p>

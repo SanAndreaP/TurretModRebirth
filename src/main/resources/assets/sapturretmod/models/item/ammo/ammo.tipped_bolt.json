@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "sapturretmod:items/ammo/tipped_bolt_head",
+    "layer1": "sapturretmod:items/ammo/tipped_bolt_base"
+  }
+}

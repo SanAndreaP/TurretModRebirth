@@ -77,7 +77,32 @@ public enum Resources
     GUI_STRUCT_TCU_COLORIZER       ("guis/tcu/colorizer.json"),
     GUI_STRUCT_TCU_LEVELS          ("guis/tcu/levels.json"),
 
-    PATCHOULI                      ("turret_lexicon"),
+    PATCHOULI("turret_lexicon"),
+    PATCHOULI_E_AMMO_BOLT           ("ammo/bolt"),
+    PATCHOULI_E_AMMO_HARPOON        ("ammo/harpoon"),
+    PATCHOULI_E_AMMO_SHOTGUNSHELL   ("ammo/shotgunshell"),
+    PATCHOULI_E_AMMO_CRYOCELL       ("ammo/cryocell"),
+    PATCHOULI_E_AMMO_BULLET         ("ammo/bullet"),
+    PATCHOULI_E_AMMO_MINIGUNSHELL   ("ammo/minigunshell"),
+    PATCHOULI_E_AMMO_ELECTROLYTECELL("ammo/eleccell"),
+    PATCHOULI_E_AMMO_FUELTANK       ("ammo/fueltank"),
+    PATCHOULI_E_AMMO_FLUXCELL       ("ammo/fluxcell"),
+    PATCHOULI_E_UPGRADE_HEALTH("upgrades/health"),
+    PATCHOULI_E_UPGRADE_RELOAD("upgrades/reload"),
+    PATCHOULI_E_UPGRADE_SMARTTGT("upgrades/smart_targeting"),
+    PATCHOULI_E_UPGRADE_AMMOSTORAGE("upgrades/ammo_storage"),
+    PATCHOULI_E_UPGRADE_ECONOMY("upgrades/economy"),
+    PATCHOULI_E_UPGRADE_UPGSTORAGE("upgrades/upgrade_storage"),
+    PATCHOULI_E_UPGRADE_SHIELD_PERSONAL("upgrades/shield_personal"),
+    PATCHOULI_E_UPGRADE_SHIELD_EXPLOSIVE("upgrades/shield_explosive"),
+    PATCHOULI_E_UPGRADE_SHIELD_PROJECTILE("upgrades/shield_projectile"),
+    PATCHOULI_E_UPGRADE_SHIELD_STRENGTH("upgrades/shield_strength"),
+    PATCHOULI_E_UPGRADE_SHIELD_COLORIZER("upgrades/shield_colorizer"),
+    PATCHOULI_E_UPGRADE_FUELPURIFY("upgrades/fuelpurify"),
+    PATCHOULI_E_UPGRADE_ENDERTOXIN("upgrades/endertoxin"),
+    PATCHOULI_E_UPGRADE_ENDERMEDIUM("upgrades/endermedium"),
+    PATCHOULI_E_UPGRADE_SAFE("upgrades/safe"),
+    PATCHOULI_E_UPGRADE_LEVELING("upgrades/leveling"),
 
     TINFO_GRP_AMMO   ("textures/gui/lexicon/group_ammo.png"),
     TINFO_GRP_INFO   ("textures/gui/lexicon/group_info.png"),
@@ -99,9 +124,7 @@ public enum Resources
     SHADER_GRAYSCALE_FRAG      ("shader/grayscale.frag"),
     SHADER_ALPHA_OVERRIDE_FRAG ("shader/alpha_override.frag"),
 
-    JEI_ASSEMBLY_BKG("textures/gui/turretassembly/jei_crafting.png"),
-
-    ITEM_ORDER_LIST("item_order.cfg");
+    JEI_ASSEMBLY_BKG("textures/gui/turretassembly/jei_crafting.png");
 
     public final ResourceLocation[] resources;
     public final ResourceLocation resource;

@@ -19,7 +19,6 @@ public class RepairKits
     public static final IRepairKit REGEN_MK1 = new RepairKitRegeneration("1", 0.5F, 0, 900);
 
     public static void initialize(IRepairKitRegistry registry) {
-        IRegistry.registerAll(registry,
-                              STANDARD_MK1, STANDARD_MK2, STANDARD_MK3, STANDARD_MK4, REGEN_MK1);
+        registry.registerAll(STANDARD_MK1, STANDARD_MK2, STANDARD_MK3, STANDARD_MK4, REGEN_MK1);
     }
 }

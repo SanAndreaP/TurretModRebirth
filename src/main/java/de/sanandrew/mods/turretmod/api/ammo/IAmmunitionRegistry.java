@@ -2,6 +2,8 @@ package de.sanandrew.mods.turretmod.api.ammo;
 
 import de.sanandrew.mods.turretmod.api.IRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -23,4 +25,11 @@ public interface IAmmunitionRegistry
      */
     @Nonnull
     Collection<IAmmunition> getObjects(ITurret turret);
+
+    String getSubtype(ItemStack stack);
+
+    ItemStack setSubtype(ItemStack stack, String type);
+
+    @Nonnull
+    ItemStack getItem(ResourceLocation id, String subtype);
 }

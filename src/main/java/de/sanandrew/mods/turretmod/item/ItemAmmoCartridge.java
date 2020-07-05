@@ -55,18 +55,30 @@ public class ItemAmmoCartridge
         if( this.isInCreativeTab(tab) ) {
             AmmunitionRegistry.INSTANCE.getObjects().forEach(t -> {
                 if( t.isValid() ) {
-                    ItemStack typeStack = AmmunitionRegistry.INSTANCE.getItem(t.getId());
-                    typeStack.setCount(typeStack.getMaxStackSize());
-                    ItemStack filled = new ItemStack(this, 1);
-                    IInventory inv = getInventory(filled);
-                    if( inv != null ) {
-                        for( int i = 0, max = inv.getSizeInventory(); i < max; i++ ) {
-                            inv.setInventorySlotContents(i, typeStack.copy());
+                    String[] subtypes = t.getSubtypes();
+                    if( subtypes != null && subtypes.length > 0 ) {
+                        for( String subtype : subtypes ) {
+                            ItemStack typeStack = AmmunitionRegistry.INSTANCE.getItem(t.getId(), subtype);
+                            this.addItem(typeStack, list);
                         }
-                        list.add(filled);
+                    } else {
+                        ItemStack typeStack = AmmunitionRegistry.INSTANCE.getItem(t.getId());
+                        this.addItem(typeStack, list);
                     }
                 }
             });
+        }
+    }
+
+    private void addItem(ItemStack stack, NonNullList<ItemStack> list) {
+        stack.setCount(stack.getMaxStackSize());
+        ItemStack filled = new ItemStack(this, 1);
+        IInventory inv = getInventory(filled);
+        if( inv != null ) {
+            for( int i = 0, max = inv.getSizeInventory(); i < max; i++ ) {
+                inv.setInventorySlotContents(i, stack.copy());
+            }
+            list.add(filled);
         }
     }
 

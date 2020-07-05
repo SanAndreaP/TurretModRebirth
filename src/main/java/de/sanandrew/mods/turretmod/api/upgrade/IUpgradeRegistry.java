@@ -1,6 +1,7 @@
 package de.sanandrew.mods.turretmod.api.upgrade;
 
 import de.sanandrew.mods.turretmod.api.IRegistry;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -58,4 +59,8 @@ public interface IUpgradeRegistry
      * @return the upgrade object of an empty upgrade.
      */
     IUpgrade getEmptyUpgrade();
+
+    boolean isApplicable(IUpgrade upgrade, ITurret turret);
+
+    boolean isApplicable(IUpgrade upgrade, ITurret turret, boolean isSpecialized);
 }

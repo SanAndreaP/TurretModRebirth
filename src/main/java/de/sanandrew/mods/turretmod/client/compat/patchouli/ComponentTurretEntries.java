@@ -167,7 +167,7 @@ public class ComponentTurretEntries
         }),
         UPGRADES((g, s) -> {
             return UpgradeRegistry.INSTANCE.getObjects().stream().map(u -> {
-                if( u.isApplicable(TurretRegistry.INSTANCE.getObject(new ResourceLocation(s))) ) {
+                if( UpgradeRegistry.INSTANCE.isApplicable(u, TurretRegistry.INSTANCE.getObject(new ResourceLocation(s))) ) {
                     return g.book.contents.entries.get(u.getBookEntryId());
                 }
 

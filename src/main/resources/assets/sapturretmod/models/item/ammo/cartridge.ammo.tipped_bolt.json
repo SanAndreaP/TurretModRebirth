@@ -1,0 +1,8 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "sapturretmod:items/ammo/cartridge",
+    "layer1": "sapturretmod:items/ammo/cartridge.tipped_bolt_head",
+    "layer2": "sapturretmod:items/ammo/cartridge.tipped_bolt_base"
+  }
+}

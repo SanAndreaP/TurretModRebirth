@@ -48,11 +48,7 @@ public class RenderTurretCam
             RenderTurretCam.bindTurretCamTx(turretInst, quality);
             GlStateManager.pushMatrix();
             GlStateManager.translate(x, y, 0);
-            if( turretInst.isBuoy() ) {
-                GlStateManager.translate(width, height, 0);
-            } else {
-                GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
-            }
+            GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
             GlStateManager.scale(1.0F / 256.0F * width, 1.0F / 256.0F * height, 1.0F);
 
             GuiUtils.drawTexturedModalRect(-256, -256, 0.0F, 0, 0, 256, 256);
@@ -117,17 +113,8 @@ public class RenderTurretCam
                         RenderEventHandler.renderPlayer = true;
                         RenderEventHandler.renderEntity = mc.player;
 
-                        turretL.prevRotationYaw = turretL.prevRotationYawHead;
                         turretL.rotationYaw = turretL.rotationYawHead;
-                        if( turret.isBuoy() ) {
-                            turretL.posY -= 1.0F;
-                            turretL.prevPosY -= 1.0F;
-                            turretL.lastTickPosY -= 1.0F;
-                            turretL.rotationPitch += 180.0F;
-                            turretL.prevRotationPitch += 180.0F;
-                            turretL.rotationYaw = -turretL.rotationYawHead;
-                            turretL.prevRotationYaw = -turretL.prevRotationYawHead;
-                        }
+                        turretL.prevRotationYaw = turretL.prevRotationYawHead;
 
                         int fps = Math.min(Minecraft.getDebugFPS(), mc.gameSettings.limitFramerate);
                         fps = Math.max(fps, 60);

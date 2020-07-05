@@ -1,0 +1,15 @@
+{
+  "processor": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentAmmoStatProcessor",
+  "components": [
+    {
+      "type": "text",
+      "text": "#text#$(br2)$(8)Damage dealt: $(0)#from# - #to# HP",
+      "guard": "#to->exists"
+    },
+    {
+      "type": "text",
+      "text": "#text#$(br2)$(8)Damage dealt: $(0)#from# HP",
+      "guard": "#to->exists->inv"
+    }
+  ]
+}

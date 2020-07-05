@@ -1,0 +1,28 @@
+{
+  "name": "Laser Turret",
+  "icon": "sapturretmod:turret.laser",
+  "category": "sapturretmod:turrets",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "sapturretmod:turret_info",
+      "text": "With more health, higher damage and firing rate than both the $(l:turrets/crossbow)Crossbow$(/l) or $(l:turrets/revolver)Revolver$(/l) Turrets, this can burn anything alive.",
+      "name": "Laser Turret",
+      "turret_type": "sapturretmod:turret.laser",
+      "fire_resistant": true
+    },
+    {
+      "type": "sapturretmod:turret_range",
+      "turret_type": "sapturretmod:turret.laser",
+      "flavor_text": "pew pew pew"
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:turret_mk3_laser"
+    },
+    {
+      "type": "sapturretmod:turret_relations",
+      "turret_type": "sapturretmod:turret.laser"
+    }
+  ]
+}

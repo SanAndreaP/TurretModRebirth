@@ -14,6 +14,7 @@ import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import net.minecraft.client.util.ITooltipFlag;
@@ -29,11 +30,9 @@ import java.util.List;
 public abstract class CryoCell
         implements IAmmunition
 {
-    private static final ResourceLocation BOOK_ENTRY_ID = new ResourceLocation(TmrConstants.ID, "ammo/cryocell");
-
     @Override
     public ResourceLocation getBookEntryId() {
-        return BOOK_ENTRY_ID;
+        return Resources.PATCHOULI_E_AMMO_CRYOCELL.resource;
     }
 
     @Nonnull

@@ -44,6 +44,14 @@
       "u": 79,    "v": 0,
       "x": 50,    "y": 119
     },
+    {
+      "type": "image",
+      "image": "sapturretmod:textures/gui/lexicon/elements.png",
+      "width": 9, "height": 9,
+      "u": 97,    "v": 0,
+      "x": 50,    "y": 132,
+      "guard": "#fire_resistant->exists"
+    },
 
     {
       "type": "text",
@@ -52,13 +60,13 @@
     },
     {
       "type": "text",
-      "text": "#health",
-      "x": 62, "y": 93
+      "x": 62, "y": 93,
+      "text": "#health##health_suffix#"
     },
     {
       "type": "text",
-      "text": "#ammo",
-      "x": 62, "y": 106
+      "x": 62, "y": 106,
+      "text": "#ammo##ammo_suffix#"
     },
     {
       "type": "text",
@@ -89,6 +97,13 @@
       "tooltip": ["#reload_tip1", "&7#reload_tip2#"],
       "width": 50, "height": 10,
       "x": 50,     "y": 118
+    },
+    {
+      "type": "tooltip",
+      "tooltip": ["#fire_resistant_tip1", "&7#fire_resistant_tip2#"],
+      "width": 10, "height": 10,
+      "x": 50,     "y": 131,
+      "guard": "#fire_resistant->exists"
     }
   ]
 }

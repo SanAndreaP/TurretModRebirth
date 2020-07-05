@@ -26,8 +26,7 @@ public class Projectiles
     public static final IProjectile FLAME_PURIFY  = new Flame(Flame.ID2);
 
     public static void initialize(IProjectileRegistry registry) {
-        IRegistry.registerAll(registry,
-                              CB_BOLT, HARPOON, CRYO_BALL_I, CRYO_BALL_II, CRYO_BALL_III, PEBBLE, BULLET, MG_PEBBLE, LASER_NORMAL, LASER_BLURAY, FLAME_NORMAL,
-                              FLAME_PURIFY);
+        registry.registerAll(CB_BOLT, HARPOON, CRYO_BALL_I, CRYO_BALL_II, CRYO_BALL_III, PEBBLE, BULLET, MG_PEBBLE, LASER_NORMAL, LASER_BLURAY,
+                             FLAME_NORMAL, FLAME_PURIFY);
     }
 }
