@@ -1,5 +1,6 @@
 package de.sanandrew.mods.turretmod.crafting;
 
+import com.google.gson.JsonObject;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.Ammunitions;
 import net.minecraft.init.Items;
@@ -10,6 +11,8 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.crafting.IRecipeFactory;
+import net.minecraftforge.common.crafting.JsonContext;
 
 public class RecipeTippedBolt
         extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe>
@@ -78,5 +81,15 @@ public class RecipeTippedBolt
     @Override
     public boolean isDynamic() {
         return true;
+    }
+
+    @SuppressWarnings("unused")
+    public static class Factory
+            implements IRecipeFactory
+    {
+        @Override
+        public IRecipe parse(JsonContext context, JsonObject json) {
+            return new RecipeTippedBolt();
+        }
     }
 }

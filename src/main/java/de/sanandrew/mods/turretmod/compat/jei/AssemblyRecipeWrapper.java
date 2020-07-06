@@ -15,14 +15,12 @@ import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.registry.Lang;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
-import mezz.jei.api.recipe.IRecipeWrapperFactory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,7 +33,7 @@ class AssemblyRecipeWrapper
     private final int fluxPerTick;
     private final int timeInTicks;
 
-    private AssemblyRecipeWrapper(IAssemblyRecipe recipe) {
+    AssemblyRecipeWrapper(IAssemblyRecipe recipe) {
         ImmutableList.Builder<List<ItemStack>> inputBuilder = ImmutableList.builder();
         for( Ingredient item : recipe.getIngredients()) {
             inputBuilder.add(Arrays.asList(item.getMatchingStacks()));
@@ -58,25 +56,5 @@ class AssemblyRecipeWrapper
         minecraft.fontRenderer.drawString(s, 0, 90, 0xFF808080);
         s = LangUtils.translate(Lang.JEI_ASSEMBLY_TIME) + ' ' + MiscUtils.getTimeFromTicks(this.timeInTicks);
         minecraft.fontRenderer.drawString(s, 0, 100, 0xFF808080);
-    }
-
-    @Nullable
-    @Override
-    public List<String> getTooltipStrings(int mouseX, int mouseY) {
-        return ImmutableList.of();
-    }
-
-    @Override
-    public boolean handleClick(Minecraft minecraft, int mouseX, int mouseY, int mouseButton) {
-        return false;
-    }
-
-    public static class Factory
-            implements IRecipeWrapperFactory<IAssemblyRecipe>
-    {
-        @Override
-        public IRecipeWrapper getRecipeWrapper(IAssemblyRecipe recipe) {
-            return new AssemblyRecipeWrapper(recipe);
-        }
     }
 }

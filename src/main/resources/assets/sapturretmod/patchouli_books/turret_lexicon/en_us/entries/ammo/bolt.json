@@ -7,7 +7,7 @@
       "type": "sapturretmod:ammo_info",
       "ammo_type": "sapturretmod:ammo.arrow",
       "name": "Crossbow Bolts",
-      "text": "These bolts have a smaller knockback effect and act like regular arrows, just smaller.$(br2)As with normal arrows, these can be tipped with potions.$(br2)These can be used by the $(l:turrets/crossbow)Crossbow$(/l) Turret."
+      "text": "These bolts have a smaller knockback effect and act like regular arrows, just smaller.$(br2)As with normal arrows, these can be tipped with potions.$(br2)Used by the $(l:turrets/crossbow)Crossbow$(/l) Turret."
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
