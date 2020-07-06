@@ -172,7 +172,7 @@ public class ComponentTurretEntries
                 }
 
                 return null;
-            }).distinct();
+            });
         }),
 
         UNKNOWN((g, s) -> Stream.empty());
@@ -186,7 +186,7 @@ public class ComponentTurretEntries
         }
 
         public List<BookEntry> grabEntries(GuiBook book, String id) {
-            return this.grabEntriesFunc.apply(book, id).filter(e -> e != null && !e.shouldHide()).sorted().collect(Collectors.toList());
+            return this.grabEntriesFunc.apply(book, id).distinct().filter(e -> e != null && !e.shouldHide()).sorted().collect(Collectors.toList());
         }
 
         public static EntryType getTypeFromString(String type) {

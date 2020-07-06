@@ -7,6 +7,7 @@
   "flip_sound": "minecraft:ui.button.click",
   "book_texture": "sapturretmod:textures/gui/lexicon/book.png",
   "filler_texture": "sapturretmod:textures/gui/lexicon/page_filler.png",
+  "crafting_texture": "sapturretmod:textures/gui/lexicon/page_crafting.png",
   "dont_generate_book": true,
   "custom_book_item": "sapturretmod:turret_info",
   "use_blocky_font": false,
