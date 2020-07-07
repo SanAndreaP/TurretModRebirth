@@ -25,7 +25,7 @@ public class RecipeTippedBolt
 
         if( w == 3 && h == 3 ) {
             Item boltItem = AmmunitionRegistry.INSTANCE.getItem(Ammunitions.BOLT.getId()).getItem();
-            // Minecraft thinks rows are columns and columns are rows...
+            // MCP thinks rows are columns and columns are rows...
             for( int row = 0; row < w; row++ ) {
                 for( int col = 0; col < h; col++ ) {
                     ItemStack itemstack = inv.getStackInRowAndColumn(row, col);

@@ -370,7 +370,7 @@ public class TmrUtils
 
         if( numFract == 0 ) {
             nf = NumberFormat.getIntegerInstance(Locale.forLanguageTag(langCode));
-            nf.setGroupingUsed(false);
+            nf.setGroupingUsed(grouping);
         } else {
             nf = NumberFormat.getNumberInstance(Locale.forLanguageTag(langCode));
             nf.setMaximumFractionDigits(numFract);
@@ -379,5 +379,45 @@ public class TmrUtils
         }
 
         return nf;
+    }
+
+    private enum SiPrefixes {
+        YOTTA("Y", 24),
+        ZETTA("Z", 21),
+        EXA  ("E", 18),
+        PETA ("P", 15),
+        TERA ("T", 12),
+        GIGA ("G", 9),
+        MEGA ("M", 6),
+        KILO ("k", 3),
+        NONE ("", 0),
+        MILLI("m", -3),
+        MICRO("μ", -6),
+        NANO ("n", -9),
+        PICO ("p", -12),
+        FEMTO("f", -15),
+        ATTO ("a", -18),
+        ZEPTO("z", -21),
+        YOCTO("y", -24);
+
+        public final int exp;
+        public final String prefix;
+
+        public static final SiPrefixes[] VALUES = values();
+
+        SiPrefixes(String prefix, int exp) {
+            this.prefix = prefix;
+            this.exp = exp;
+        }
+    }
+    public static String getNumberSiPrefixed(double number, int precision, String langCode) {
+        for( SiPrefixes prefix : SiPrefixes.VALUES ) {
+            double scaledNum = number / Math.pow(10, prefix.exp);
+            if( scaledNum >= 1.0 ) {
+                return getNumberFormat(precision, false, langCode).format(scaledNum) + ' ' + prefix.prefix;
+            }
+        }
+
+        return getNumberFormat(precision, false, langCode).format(number) + ' ';
     }
 }

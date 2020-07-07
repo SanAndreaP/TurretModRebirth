@@ -5,7 +5,9 @@
       "as": "turret_assembly",
       "using": {
         "header": "Assembly Recipe",
-        "recipe": "#recipe"
+        "recipe": "#recipe",
+        "time_processing_tip": "Crafting duration",
+        "rf_cost_tip": "Total RF use"
       }
     }
   ]

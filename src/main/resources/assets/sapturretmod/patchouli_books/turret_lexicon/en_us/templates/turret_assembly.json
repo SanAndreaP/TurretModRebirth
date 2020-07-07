@@ -18,7 +18,7 @@
     {
       "type": "item",
       "item": "#output",
-      "x": 81, "y": 79,
+      "x": 81, "y": 74,
       "link_recipe": true
     },
     {
@@ -128,6 +128,28 @@
       "item": "#input_17",
       "x": 43, "y": 112,
       "guard": "#input_17"
+    },
+    {
+      "type": "text",
+      "text": "#time_processing",
+      "x": 80, "y": 96
+    },
+    {
+      "type": "tooltip",
+      "tooltip": ["#time_processing_tip", "&7#time_processing_full# ticks"],
+      "x": 69, "y": 96,
+      "width": 45, "height": 10
+    },
+    {
+      "type": "text",
+      "text": "#rf_cost#RF",
+      "x": 80, "y": 107
+    },
+    {
+      "type": "tooltip",
+      "tooltip": ["#rf_cost_tip", "&7#rf_cost_full# RF"],
+      "x": 69, "y": 107,
+      "width": 45, "height": 10
     }
   ]
 }
