@@ -19,7 +19,8 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.audio.SoundLaser;
-import de.sanandrew.mods.turretmod.client.compat.patchouli.MouseEventHandler;
+import de.sanandrew.mods.turretmod.client.compat.patchouli.PageCustomCrafting;
+import de.sanandrew.mods.turretmod.client.compat.patchouli.PatchouliMouseEventHandler;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import de.sanandrew.mods.turretmod.client.event.RenderEventHandler;
 import de.sanandrew.mods.turretmod.client.event.RenderForcefieldHandler;
@@ -57,7 +58,6 @@ import de.sanandrew.mods.turretmod.client.render.projectile.RenderProjectile;
 import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
 import de.sanandrew.mods.turretmod.client.render.world.RenderTurretPointed;
 import de.sanandrew.mods.turretmod.client.shader.Shaders;
-import de.sanandrew.mods.turretmod.client.util.ResourceOrderer;
 import de.sanandrew.mods.turretmod.client.world.ClientWorldEventListener;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretProjectile;
@@ -78,10 +78,8 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleSmokeNormal;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
@@ -133,7 +131,8 @@ public class ClientProxy
 
         MinecraftForge.EVENT_BUS.register(new RenderEventHandler());
         MinecraftForge.EVENT_BUS.register(new ClientWorldEventListener());
-        MouseEventHandler.register();
+        PatchouliMouseEventHandler.register();
+        PageCustomCrafting.registerPage();
 
         RenderingRegistry.registerEntityRenderingHandler(EntityTurret.class, RenderTurret::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretProjectile.class, RenderProjectile::new);

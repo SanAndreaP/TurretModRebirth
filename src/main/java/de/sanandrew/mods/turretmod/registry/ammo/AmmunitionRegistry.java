@@ -114,8 +114,8 @@ public final class AmmunitionRegistry
     public String getSubtype(ItemStack stack) {
         if( stack.getItem() instanceof ItemAmmo ) {
             NBTTagCompound tmrStack = stack.getSubCompound(TmrConstants.ID);
-            if( tmrStack != null && tmrStack.hasKey("subtype", Constants.NBT.TAG_STRING) ) {
-                return tmrStack.getString("subtype");
+            if( tmrStack != null && tmrStack.hasKey("Subtype", Constants.NBT.TAG_STRING) ) {
+                return tmrStack.getString("Subtype");
             }
         }
 
@@ -129,7 +129,7 @@ public final class AmmunitionRegistry
             if( item instanceof ItemAmmo ) {
                 String[] subtypes = ((ItemAmmo) item).ammo.getSubtypes();
                 if( subtypes != null && Arrays.asList(subtypes).contains(type) ) {
-                    stack.getOrCreateSubCompound(TmrConstants.ID).setString("subtype", type);
+                    stack.getOrCreateSubCompound(TmrConstants.ID).setString("Subtype", type);
                 }
             }
         }

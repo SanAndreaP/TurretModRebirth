@@ -13,7 +13,7 @@ import vazkii.patchouli.api.VariableHolder;
 import vazkii.patchouli.client.book.gui.GuiBook;
 
 @SideOnly(Side.CLIENT)
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class ComponentCustomText
         implements ICustomComponent
 {
@@ -30,9 +30,9 @@ public class ComponentCustomText
     public String alignment  = "left";
     public float  rotation   = 0.0F;
 
-    transient boolean blockyFont;
-    transient Integer          color;
-    transient int              tx = 0;
+    transient private boolean blockyFont;
+    transient private Integer color;
+    transient private int     tx = 0;
 
     @Override
     public void build(int x, int y, int pgNum) {
@@ -48,8 +48,8 @@ public class ComponentCustomText
 
     @Override
     public void render(IComponentRenderContext context, float partTicks, int mouseX, int mouseY) {
-        FontRenderer font = context.getFont();
-        boolean wasUnicode = font.getUnicodeFlag();
+        FontRenderer font       = context.getFont();
+        boolean      wasUnicode = font.getUnicodeFlag();
         font.setUnicodeFlag(!this.blockyFont);
 
         GlStateManager.pushMatrix();
@@ -65,9 +65,9 @@ public class ComponentCustomText
     public void onDisplayed(IComponentRenderContext context) {
         GuiScreen gui = context.getGui();
         if( gui instanceof GuiBook ) {
-            GuiBook guiBook = (GuiBook) gui;
-            FontRenderer font = context.getFont();
-            boolean wasUnicode = font.getUnicodeFlag();
+            GuiBook      guiBook    = (GuiBook) gui;
+            FontRenderer font       = context.getFont();
+            boolean      wasUnicode = font.getUnicodeFlag();
 
             this.blockyFont = guiBook.book.useBlockyFont;
             if( !this.blockyFont ) {

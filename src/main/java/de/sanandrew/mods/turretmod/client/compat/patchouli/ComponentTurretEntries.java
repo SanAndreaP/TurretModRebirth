@@ -123,7 +123,7 @@ public class ComponentTurretEntries
         context.getFont().drawString(this.title, xPos, this.y, MiscUtils.defIfNull(this.color, context::getHeaderColor), false);
         GlStateManager.popMatrix();
 
-        MouseEventHandler.setCurrHoveredComponent(this, context.isAreaHovered(mouseX, mouseY, this.x, this.y + 11, 116, this.maxEntriesShown * 11 - 1));
+        PatchouliMouseEventHandler.setCurrHoveredComponent(this, context.isAreaHovered(mouseX, mouseY, this.x, this.y + 11, 116, this.maxEntriesShown * 11 - 1));
     }
 
     private static GuiBook getGuiBook(IComponentRenderContext context) {

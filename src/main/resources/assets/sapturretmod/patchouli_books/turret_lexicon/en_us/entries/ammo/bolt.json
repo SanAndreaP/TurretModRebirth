@@ -12,6 +12,51 @@
     {
       "type": "sapturretmod:turret_assembly_i18n",
       "recipe": "sapturretmod:ammo_arrow_sng"
+    },
+    {
+      "type": "sapturretmod:custom_crafting",
+      "pattern_1": ["###", "#P#", "###"],
+      "mappings_1": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:regeneration\"}"
+      },
+      "output_1": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:regeneration\"}}",
+      "pattern_2": ["###", "#P#", "###"],
+      "mappings_2": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:long_regeneration\"}"
+      },
+      "output_2": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:long_regeneration\"}}"
+    },
+    {
+      "type": "sapturretmod:custom_crafting",
+      "pattern_1": ["###", "#P#", "###"],
+      "mappings_1": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:strong_regeneration\"}"
+      },
+      "output_1": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:strong_regeneration\"}}",
+      "pattern_2": ["###", "#P#", "###"],
+      "mappings_2": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:healing\"}"
+      },
+      "output_2": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:healing\"}}"
+    },
+    {
+      "type": "sapturretmod:custom_crafting",
+      "pattern_1": ["###", "#P#", "###"],
+      "mappings_1": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:strong_healing\"}"
+      },
+      "output_1": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:strong_healing\"}}",
+      "pattern_2": ["###", "#P#", "###"],
+      "mappings_2": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:invisibility\"}"
+      },
+      "output_2": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:invisibility\"}}"
     }
   ]
 }

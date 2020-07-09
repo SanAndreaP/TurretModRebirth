@@ -10,19 +10,17 @@ import org.lwjgl.input.Mouse;
 import vazkii.patchouli.client.book.gui.GuiBook;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Queue;
 
-public class MouseEventHandler
+public class PatchouliMouseEventHandler
 {
     private static List<WeakReference<ComponentTurretEntries>> currHovered = new ArrayList<>();
 
     public static void register() {
         if( Loader.isModLoaded("patchouli") ) {
-            MinecraftForge.EVENT_BUS.register(new MouseEventHandler());
+            MinecraftForge.EVENT_BUS.register(new PatchouliMouseEventHandler());
         }
     }
 
