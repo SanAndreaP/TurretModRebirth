@@ -33,54 +33,54 @@ import java.io.ObjectOutputStream;
 public class TurretForcefield
         implements ITurret
 {
-    private static final ResourceLocation REGISTRY_ID = new ResourceLocation(TmrConstants.ID, "turret.forcefield");
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "turret.forcefield");
 
     private static AxisAlignedBB rangeBB1;
     private static AxisAlignedBB rangeBB2;
     private static AxisAlignedBB rangeBB3;
 
     @Value(comment = "Maximum health this turret has.", range = @Range(minD = 0.1D, maxD = 1024.0D), reqWorldRestart = true)
-    public static float health = 30.0F;
+    public static float  health                        = 30.0F;
     @Value(comment = "Capacity of ammo rounds this turret can hold.", range = @Range(minI = 1, maxI = Short.MAX_VALUE), reqWorldRestart = true)
-    public static int ammoCapacity = 512;
+    public static int    ammoCapacity                  = 512;
     @Value(comment = "Maximum tick time between shots. 20 ticks = 1 second.", range = @Range(minI = 1), reqWorldRestart = true)
-    public static int reloadTicks = 1;
+    public static int    reloadTicks                   = 1;
     @Value(comment = "Horizontal length of half the edge of the targeting box without upgrades. The total edge length is [value * 2], with the turret centered in it.", range = @Range(minD = 1.0D), reqMcRestart = true)
-    public static double rangeFirstH = 8.0D;
+    public static double rangeFirstH                   = 8.0D;
     @Value(comment = "Vertical length of the edge of the targeting box without upgrades, from the turret upwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
-    public static double rangeFirstU = 8.0D;
+    public static double rangeFirstU                   = 8.0D;
     @Value(comment = "Vertical length of the edge of the targeting box without upgrades, from the turret downwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
-    public static double rangeFirstD = 2.0D;
+    public static double rangeFirstD                   = 2.0D;
     @Value(comment = "Horizontal length of half the edge of the targeting box with shield strength 1 upgrade. The total edge length is [value * 2], with the turret centered in it.", range = @Range(minD = 1.0D), reqMcRestart = true)
-    public static double rangeSecondH = 16.0D;
+    public static double rangeSecondH                  = 16.0D;
     @Value(comment = "Vertical length of the edge of the targeting box with shield strength 1 upgrade, from the turret upwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
-    public static double rangeSecondU = 16.0D;
+    public static double rangeSecondU                  = 16.0D;
     @Value(comment = "Vertical length of the edge of the targeting box with shield strength 1 upgrade, from the turret downwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
-    public static double rangeSecondD = 2.0D;
+    public static double rangeSecondD                  = 2.0D;
     @Value(comment = "Horizontal length of half the edge of the targeting box with shield strength 2 upgrade. The total edge length is [value * 2], with the turret centered in it.", range = @Range(minD = 1.0D), reqMcRestart = true)
-    public static double rangeThirdH = 24.0D;
+    public static double rangeThirdH                   = 24.0D;
     @Value(comment = "Vertical length of the edge of the targeting box with shield strength 2 upgrade, from the turret upwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
-    public static double rangeThirdU = 24.0D;
+    public static double rangeThirdU                   = 24.0D;
     @Value(comment = "Vertical length of the edge of the targeting box with shield strength 2 upgrade, from the turret downwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
-    public static double rangeThirdD = 2.0D;
+    public static double rangeThirdD                   = 2.0D;
     @Value(comment = "How much damage does the shield take when pushing out enemies.", range = @Range(minD = 0.0D))
-    public static float shieldDamagePerEntity = 1.0F;
+    public static float  shieldDamagePerEntity         = 1.0F;
     @Value(comment = "How much damage does the shield take when pushing out enemy projectiles.", range = @Range(minD = 0.0D))
-    public static float shieldDamagePerProjectile = 0.5F;
+    public static float  shieldDamagePerProjectile     = 0.5F;
     @Value(comment = "How much damage does the shield take when protecting a block by enemy explosions.", range = @Range(minD = 0.0D))
-    public static float shieldDamagePerExplodedBlock = 0.5F;
+    public static float  shieldDamagePerExplodedBlock  = 0.5F;
     @Value(comment = "How much damage does the shield take when protecting an entity by enemy explosions.", range = @Range(minD = 0.0D))
-    public static float shieldDamagePerExplodedEntity = 1.0F;
+    public static float  shieldDamagePerExplodedEntity = 1.0F;
     @Value(comment = "To which value a destroyed shield needs to recover to in order to re-activate.", range = @Range(minD = 0.0D))
-    public static float maxShieldRecoveryValue = 100.0F;
+    public static float  maxShieldRecoveryValue        = 100.0F;
     @Value(comment = "How much a shield regenerates every tick. 20 ticks = 1 second.", range = @Range(minD = 0.0D))
-    public static float shieldRecoveryPerTick = 0.0005F;
+    public static float  shieldRecoveryPerTick         = 0.0005F;
     @Value(comment = "Value of the shield without upgrades.", range = @Range(minD = 0.0D), reqMcRestart = true)
-    public static float shieldValueFirst = 100.0F;
+    public static float  shieldValueFirst              = 100.0F;
     @Value(comment = "Value of the shield with shield strength 1 upgrade.", range = @Range(minD = 0.0D), reqMcRestart = true)
-    public static float shieldValueSecond = 150.0F;
+    public static float  shieldValueSecond             = 150.0F;
     @Value(comment = "Value of the shield with shield strength 2 upgrade.", range = @Range(minD = 0.0D), reqMcRestart = true)
-    public static float shieldValueThird = 250.0F;
+    public static float  shieldValueThird              = 250.0F;
 
     @Override
     public void applyEntityAttributes(ITurretInst turretInst) {
@@ -208,6 +208,11 @@ public class TurretForcefield
     @Nonnull
     @Override
     public ResourceLocation getId() {
-        return REGISTRY_ID;
+        return ID;
+    }
+
+    @Override
+    public ResourceLocation getBookEntryId() {
+        return Resources.PATCHOULI_E_TURRET_FORCEFIELD.resource;
     }
 }

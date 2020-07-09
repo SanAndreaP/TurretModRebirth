@@ -2,6 +2,7 @@ package de.sanandrew.mods.turretmod.client.compat.patchouli;
 
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
+import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.client.Minecraft;
@@ -14,6 +15,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.Range;
 import vazkii.patchouli.api.IComponentProcessor;
 import vazkii.patchouli.api.IVariableProvider;
+import vazkii.patchouli.client.book.BookEntry;
+import vazkii.patchouli.common.book.BookRegistry;
 import vazkii.patchouli.common.util.ItemStackUtil;
 
 import java.util.Arrays;
@@ -68,6 +71,15 @@ public class ComponentAmmoStatProcessor
                 });
 
                 return ItemStackUtil.serializeIngredient(Ingredient.fromStacks(items.toArray(new ItemStack[0])));
+            }
+            case "turret_link": {
+                ResourceLocation link = this.ammo.getTurret().getBookEntryId();
+                if( link != null ) {
+                    BookEntry entry = BookRegistry.INSTANCE.books.get(Resources.PATCHOULI.resource).contents.entries.get(link);
+                    if( entry != null ) {
+                        return "$(l:" + link.getPath() + ")" + entry.getName() + "$(/l)";
+                    }
+                }
             }
         }
 

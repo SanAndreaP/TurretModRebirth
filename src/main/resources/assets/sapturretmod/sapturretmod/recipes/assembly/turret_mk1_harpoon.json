@@ -1,0 +1,59 @@
+{
+  "type": "sapturretmod:assembly.recipe",
+  "group": "turrets",
+  "fluxPerTick": 10,
+  "ticksProcessing": 100,
+  "ingredients": [
+    {
+      "count": 12,
+      "items": [
+        {
+          "item": "minecraft:hardened_clay"
+        },
+        {
+          "item": "minecraft:stained_hardened_clay",
+          "data": 32767
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:bow"
+        }
+      ]
+    },
+    {
+      "count": 4,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        }
+      ]
+    },
+    {
+      "count": 4,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "blockCactus"
+        }
+      ]
+    },
+    {
+      "count": 2,
+      "items": [
+        {
+          "item": "minecraft:wool",
+          "data": 32767
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret.harpoon",
+    "count": 1
+  }
+}

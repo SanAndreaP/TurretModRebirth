@@ -2,12 +2,13 @@
   "name": "Crossbow Bolts",
   "icon": "sapturretmod:ammo.arrow",
   "category": "sapturretmod:ammo",
+  "sortnum": 1,
   "pages": [
     {
       "type": "sapturretmod:ammo_info",
       "ammo_type": "sapturretmod:ammo.arrow",
       "name": "Crossbow Bolts",
-      "text": "These bolts have a smaller knockback effect and act like regular arrows, just smaller.$(br2)As with normal arrows, these can be tipped with potions.$(br2)Used by the $(l:turrets/crossbow)Crossbow$(/l) Turret."
+      "text": "These bolts act like regular arrows, just smaller and with smaller knockback effect.$(br2)As with normal arrows, these can be tipped with potions."
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
@@ -18,45 +19,240 @@
       "pattern_1": ["###", "#P#", "###"],
       "mappings_1": {
         "#": "minecraft:arrow",
-        "P": "minecraft:lingering_potion{Potion:\"minecraft:regeneration\"}"
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:night_vision\"}"
       },
-      "output_1": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:regeneration\"}}",
+      "output_1": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:night_vision\"}}",
       "pattern_2": ["###", "#P#", "###"],
       "mappings_2": {
         "#": "minecraft:arrow",
-        "P": "minecraft:lingering_potion{Potion:\"minecraft:long_regeneration\"}"
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:long_night_vision\"}"
       },
-      "output_2": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:long_regeneration\"}}"
+      "output_2": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:long_night_vision\"}}"
     },
     {
       "type": "sapturretmod:custom_crafting",
       "pattern_1": ["###", "#P#", "###"],
       "mappings_1": {
-        "#": "minecraft:arrow",
-        "P": "minecraft:lingering_potion{Potion:\"minecraft:strong_regeneration\"}"
-      },
-      "output_1": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:strong_regeneration\"}}",
-      "pattern_2": ["###", "#P#", "###"],
-      "mappings_2": {
-        "#": "minecraft:arrow",
-        "P": "minecraft:lingering_potion{Potion:\"minecraft:healing\"}"
-      },
-      "output_2": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:healing\"}}"
-    },
-    {
-      "type": "sapturretmod:custom_crafting",
-      "pattern_1": ["###", "#P#", "###"],
-      "mappings_1": {
-        "#": "minecraft:arrow",
-        "P": "minecraft:lingering_potion{Potion:\"minecraft:strong_healing\"}"
-      },
-      "output_1": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:strong_healing\"}}",
-      "pattern_2": ["###", "#P#", "###"],
-      "mappings_2": {
         "#": "minecraft:arrow",
         "P": "minecraft:lingering_potion{Potion:\"minecraft:invisibility\"}"
       },
-      "output_2": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:invisibility\"}}"
+      "output_1": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:invisibility\"}}",
+      "pattern_2": ["###", "#P#", "###"],
+      "mappings_2": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:long_invisibility\"}"
+      },
+      "output_2": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:long_invisibility\"}}"
+    },
+    {
+      "type": "sapturretmod:custom_crafting",
+      "pattern_1": ["###", "#P#", "###"],
+      "mappings_1": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:leaping\"}"
+      },
+      "output_1": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:leaping\"}}",
+      "pattern_2": ["###", "#P#", "###"],
+      "mappings_2": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:long_leaping\"}"
+      },
+      "output_2": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:long_leaping\"}}"
+    },
+    {
+      "type": "sapturretmod:custom_crafting",
+      "pattern_1": ["###", "#P#", "###"],
+      "mappings_1": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:strong_leaping\"}"
+      },
+      "output_1": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:strong_leaping\"}}",
+      "pattern_2": ["###", "#P#", "###"],
+      "mappings_2": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:fire_resistance\"}"
+      },
+      "output_2": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:fire_resistance\"}}"
+    },
+    {
+      "type": "sapturretmod:custom_crafting",
+      "pattern_1": ["###", "#P#", "###"],
+      "mappings_1": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:long_fire_resistance\"}"
+      },
+      "output_1": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:long_fire_resistance\"}}",
+      "pattern_2": ["###", "#P#", "###"],
+      "mappings_2": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:swiftness\"}"
+      },
+      "output_2": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:swiftness\"}}"
+    },
+    {
+      "type": "sapturretmod:custom_crafting",
+      "pattern_1": ["###", "#P#", "###"],
+      "mappings_1": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:long_swiftness\"}"
+      },
+      "output_1": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:long_swiftness\"}}",
+      "pattern_2": ["###", "#P#", "###"],
+      "mappings_2": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:strong_swiftness\"}"
+      },
+      "output_2": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:strong_swiftness\"}}"
+    },
+    {
+      "type": "sapturretmod:custom_crafting",
+      "pattern_1": ["###", "#P#", "###"],
+      "mappings_1": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:slowness\"}"
+      },
+      "output_1": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:slowness\"}}",
+      "pattern_2": ["###", "#P#", "###"],
+      "mappings_2": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:long_slowness\"}"
+      },
+      "output_2": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:long_slowness\"}}"
+    },
+    {
+      "type": "sapturretmod:custom_crafting",
+      "pattern_1": ["###", "#P#", "###"],
+      "mappings_1": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:water_breathing\"}"
+      },
+      "output_1": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:water_breathing\"}}",
+      "pattern_2": ["###", "#P#", "###"],
+      "mappings_2": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:long_water_breathing\"}"
+      },
+      "output_2": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:long_water_breathing\"}}"
+    },
+    {
+      "type": "sapturretmod:custom_crafting",
+      "pattern_1": ["###", "#P#", "###"],
+      "mappings_1": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:healing\"}"
+      },
+      "output_1": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:healing\"}}",
+      "pattern_2": ["###", "#P#", "###"],
+      "mappings_2": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:strong_healing\"}"
+      },
+      "output_2": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:strong_healing\"}}"
+    },
+    {
+      "type": "sapturretmod:custom_crafting",
+      "pattern_1": ["###", "#P#", "###"],
+      "mappings_1": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:harming\"}"
+      },
+      "output_1": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:harming\"}}",
+      "pattern_2": ["###", "#P#", "###"],
+      "mappings_2": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:strong_harming\"}"
+      },
+      "output_2": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:strong_harming\"}}"
+    },
+    {
+      "type": "sapturretmod:custom_crafting",
+      "pattern_1": ["###", "#P#", "###"],
+      "mappings_1": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:poison\"}"
+      },
+      "output_1": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:poison\"}}",
+      "pattern_2": ["###", "#P#", "###"],
+      "mappings_2": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:long_poison\"}"
+      },
+      "output_2": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:long_poison\"}}"
+    },
+    {
+      "type": "sapturretmod:custom_crafting",
+      "pattern_1": ["###", "#P#", "###"],
+      "mappings_1": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:strong_poison\"}"
+      },
+      "output_1": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:strong_poison\"}}",
+      "pattern_2": ["###", "#P#", "###"],
+      "mappings_2": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:regeneration\"}"
+      },
+      "output_2": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:regeneration\"}}"
+    },
+    {
+      "type": "sapturretmod:custom_crafting",
+      "pattern_1": ["###", "#P#", "###"],
+      "mappings_1": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:long_regeneration\"}"
+      },
+      "output_1": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:long_regeneration\"}}",
+      "pattern_2": ["###", "#P#", "###"],
+      "mappings_2": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:strong_regeneration\"}"
+      },
+      "output_2": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:strong_regeneration\"}}"
+    },
+    {
+      "type": "sapturretmod:custom_crafting",
+      "pattern_1": ["###", "#P#", "###"],
+      "mappings_1": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:strength\"}"
+      },
+      "output_1": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:strength\"}}",
+      "pattern_2": ["###", "#P#", "###"],
+      "mappings_2": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:long_strength\"}"
+      },
+      "output_2": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:long_strength\"}}"
+    },
+    {
+      "type": "sapturretmod:custom_crafting",
+      "pattern_1": ["###", "#P#", "###"],
+      "mappings_1": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:strong_strength\"}"
+      },
+      "output_1": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:strong_strength\"}}",
+      "pattern_2": ["###", "#P#", "###"],
+      "mappings_2": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:weakness\"}"
+      },
+      "output_2": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:weakness\"}}"
+    },
+    {
+      "type": "sapturretmod:custom_crafting",
+      "pattern_1": ["###", "#P#", "###"],
+      "mappings_1": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:long_weakness\"}"
+      },
+      "output_1": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:long_weakness\"}}",
+      "pattern_2": ["###", "#P#", "###"],
+      "mappings_2": {
+        "#": "minecraft:arrow",
+        "P": "minecraft:lingering_potion{Potion:\"minecraft:luck\"}"
+      },
+      "output_2": "sapturretmod:ammo.tipped_bolt{sapturretmod:{Subtype:\"minecraft:luck\"}}"
     }
   ]
 }

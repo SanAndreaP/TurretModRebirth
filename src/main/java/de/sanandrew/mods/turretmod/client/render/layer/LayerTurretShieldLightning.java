@@ -31,6 +31,10 @@ public class LayerTurretShieldLightning<E extends EntityLiving & ITurretInst>
 
     @Override
     public void doRenderLayer(E turretInst, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        if( turretInst.isInGui() ) {
+            return;
+        }
+
         LIGHTNING_RENDERS.forEach((key, value) -> value.removeIf(RenderLightning::finished));
         LIGHTNING_RENDERS.entrySet().removeIf(entry -> entry.getValue().isEmpty());
 

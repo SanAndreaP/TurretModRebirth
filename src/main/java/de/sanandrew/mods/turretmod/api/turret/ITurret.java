@@ -97,6 +97,10 @@ public interface ITurret
         return this.getId().compareTo(t.getId());
     }
 
+    default ResourceLocation getBookEntryId() {
+        return null;
+    }
+
     enum AttackType
     {
         ALL,

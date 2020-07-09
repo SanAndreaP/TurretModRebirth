@@ -32,22 +32,22 @@ import javax.annotation.Nonnull;
 public class TurretMinigun
         implements ITurret
 {
-    private static final ResourceLocation REGISTRY_ID = new ResourceLocation(TmrConstants.ID, "turret.minigun");
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "turret.minigun");
 
     private static AxisAlignedBB rangeBB;
 
     @Value(comment = "Maximum health this turret has.", range = @Range(minD = 0.1D, maxD = 1024.0D), reqWorldRestart = true)
-    public static float health = 30.0F;
+    public static float  health       = 30.0F;
     @Value(comment = "Capacity of ammo rounds this turret can hold.", range = @Range(minI = 1, maxI = Short.MAX_VALUE), reqWorldRestart = true)
-    public static int ammoCapacity = 512;
+    public static int    ammoCapacity = 512;
     @Value(comment = "Maximum tick time between shots. 20 ticks = 1 second.", range = @Range(minI = 1), reqWorldRestart = true)
-    public static int reloadTicks = 3;
+    public static int    reloadTicks  = 3;
     @Value(comment = "Horizontal length of half the edge of the targeting box. The total edge length is [value * 2], with the turret centered in it.", range = @Range(minD = 1.0D), reqMcRestart = true)
-    public static double rangeH = 20.0D;
+    public static double rangeH       = 20.0D;
     @Value(comment = "Vertical length of the edge of the targeting box, from the turret upwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
-    public static double rangeU = 20.0D;
+    public static double rangeU       = 20.0D;
     @Value(comment = "Vertical length of the edge of the targeting box, from the turret downwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
-    public static double rangeD = 4.0D;
+    public static double rangeD       = 4.0D;
 
     @Override
     public void onUpdate(ITurretInst turretInst) {
@@ -88,7 +88,9 @@ public class TurretMinigun
 
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {
-        return (turretInst.get().hasCustomName() && turretInst.get().getCustomNameTag().equalsIgnoreCase("silverchiren") ? Resources.TURRET_T2_MINIGUN_EE : Resources.TURRET_T2_MINIGUN).resource;
+        return (turretInst.get().hasCustomName() && turretInst.get().getCustomNameTag().equalsIgnoreCase("silverchiren")
+                ? Resources.TURRET_T2_MINIGUN_EE
+                : Resources.TURRET_T2_MINIGUN).resource;
     }
 
     @Override
@@ -112,7 +114,12 @@ public class TurretMinigun
     @Nonnull
     @Override
     public ResourceLocation getId() {
-        return REGISTRY_ID;
+        return ID;
+    }
+
+    @Override
+    public ResourceLocation getBookEntryId() {
+        return Resources.PATCHOULI_E_TURRET_MINIGUN.resource;
     }
 
     @Override
@@ -120,14 +127,16 @@ public class TurretMinigun
         return 2;
     }
 
-    public static final class MyRAM implements ITurretRAM {
-        public float barrelLeft = 0.0F;
+    public static final class MyRAM
+            implements ITurretRAM
+    {
+        public float barrelLeft  = 0.0F;
         public float barrelRight = 0.0F;
 
-        public float prevBarrelLeft = 0.0F;
+        public float prevBarrelLeft  = 0.0F;
         public float prevBarrelRight = 0.0F;
 
-        float maxBarrelLeft = 0.0F;
+        float maxBarrelLeft  = 0.0F;
         float maxBarrelRight = 0.0F;
 
         public boolean isLeftShot = false;

@@ -1,0 +1,18 @@
+{
+  "name": "Bullets",
+  "icon": "sapturretmod:ammo.bullet",
+  "category": "sapturretmod:ammo",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "sapturretmod:ammo_info",
+      "ammo_type": "sapturretmod:ammo.bullet",
+      "name": "Bullets",
+      "text": "These bolts act like regular arrows, just smaller and with smaller knockback effect.$(br2)As with normal arrows, these can be tipped with potions."
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:ammo_arrow_sng"
+    }
+  ]
+}

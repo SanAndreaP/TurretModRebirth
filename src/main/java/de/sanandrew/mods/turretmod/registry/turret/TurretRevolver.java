@@ -32,22 +32,22 @@ import javax.annotation.Nonnull;
 public class TurretRevolver
         implements ITurret
 {
-    private static final ResourceLocation REGISTRY_ID = new ResourceLocation(TmrConstants.ID, "turret.revolver");
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "turret.revolver");
 
     private static AxisAlignedBB rangeBB;
 
     @Value(comment = "Maximum health this turret has.", range = @Range(minD = 0.1D, maxD = 1024.0D), reqWorldRestart = true)
-    public static float health = 30.0F;
+    public static float  health       = 30.0F;
     @Value(comment = "Capacity of ammo rounds this turret can hold.", range = @Range(minI = 1, maxI = Short.MAX_VALUE), reqWorldRestart = true)
-    public static int ammoCapacity = 256;
+    public static int    ammoCapacity = 256;
     @Value(comment = "Maximum tick time between shots. 20 ticks = 1 second.", range = @Range(minI = 1), reqWorldRestart = true)
-    public static int reloadTicks = 15;
+    public static int    reloadTicks  = 15;
     @Value(comment = "Horizontal length of half the edge of the targeting box. The total edge length is [value * 2], with the turret centered in it.", range = @Range(minD = 1.0D), reqMcRestart = true)
-    public static double rangeH = 20.0D;
+    public static double rangeH       = 20.0D;
     @Value(comment = "Vertical length of the edge of the targeting box, from the turret upwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
-    public static double rangeU = 10.0D;
+    public static double rangeU       = 10.0D;
     @Value(comment = "Vertical length of the edge of the targeting box, from the turret downwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
-    public static double rangeD = 4.0D;
+    public static double rangeD       = 4.0D;
 
     @Override
     public void onUpdate(ITurretInst turretInst) {
@@ -116,12 +116,13 @@ public class TurretRevolver
         return 2;
     }
 
-    public static class MyRAM implements ITurretRAM
+    public static class MyRAM
+            implements ITurretRAM
     {
-        public float barrelLeft = 1.0F;
+        public float barrelLeft  = 1.0F;
         public float barrelRight = 1.0F;
 
-        public float prevBarrelLeft = 1.0F;
+        public float prevBarrelLeft  = 1.0F;
         public float prevBarrelRight = 1.0F;
 
         boolean isLeftShot = false;
@@ -145,6 +146,11 @@ public class TurretRevolver
     @Nonnull
     @Override
     public ResourceLocation getId() {
-        return REGISTRY_ID;
+        return ID;
+    }
+
+    @Override
+    public ResourceLocation getBookEntryId() {
+        return Resources.PATCHOULI_E_TURRET_REVOLVER.resource;
     }
 }

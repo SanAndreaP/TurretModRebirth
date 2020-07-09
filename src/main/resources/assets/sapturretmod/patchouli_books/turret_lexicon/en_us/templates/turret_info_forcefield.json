@@ -1,0 +1,23 @@
+{
+  "include": [
+    {
+      "template": "sapturretmod:turret_info_i18n",
+      "as": "turret_info",
+      "using": {
+        "name": "#name",
+        "text": "#text",
+        "turret_type": "#turret_type",
+        "fire_resistant": "#fire_resistant"
+      }
+    }
+  ],
+  "components": [
+    {
+      "type": "custom",
+      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentTurretEntity",
+      "turret": "#turret_type",
+      "x": 0, "y": 80,
+      "scale": 0.90
+    }
+  ]
+}

@@ -22,14 +22,36 @@
     },
     {
       "type": "text",
-      "text": "#text#$(br2)$(8)Damage dealt: $(0)#from# - #to# HP",
-      "x": 0, "y": 45,
+      "text": "#text",
+      "x": 0, "y": 45
+    },
+    {
+      "type": "text",
+      "text": "$(8)Used by:",
+      "guard": "#turret_link#",
+      "x": 0, "y": 111
+    },
+    {
+      "type": "text",
+      "text": "#turret_link",
+      "guard": "#turret_link",
+      "x": 5, "y": 121
+    },
+    {
+      "type": "text",
+      "text": "$(8)Damage dealt:",
+      "x": 0, "y": 131
+    },
+    {
+      "type": "text",
+      "text": "#from# - #to# HP",
+      "x": 5, "y": 141,
       "guard": "#to->exists"
     },
     {
       "type": "text",
-      "text": "#text#$(br2)$(8)Damage dealt: $(0)#from# HP",
-      "x": 0, "y": 45,
+      "text": "#from# HP",
+      "x": 5, "y": 141,
       "guard": "#to->exists->inv"
     }
   ]

@@ -27,22 +27,22 @@ import javax.annotation.Nonnull;
 public class TurretCrossbow
         implements ITurret
 {
-    private static final ResourceLocation REGISTRY_ID = new ResourceLocation(TmrConstants.ID, "turret.crossbow");
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "turret.crossbow");
 
     private static AxisAlignedBB rangeBB;
 
     @Value(comment = "Maximum health this turret has.", range = @Range(minD = 0.1D, maxD = 1024.0D), reqWorldRestart = true)
-    public static float health = 20.0F;
+    public static float  health       = 20.0F;
     @Value(comment = "Capacity of ammo rounds this turret can hold.", range = @Range(minI = 1, maxI = Short.MAX_VALUE), reqWorldRestart = true)
-    public static int ammoCapacity = 256;
+    public static int    ammoCapacity = 256;
     @Value(comment = "Maximum tick time between shots. 20 ticks = 1 second.", range = @Range(minI = 1), reqWorldRestart = true)
-    public static int reloadTicks = 20;
+    public static int    reloadTicks  = 20;
     @Value(comment = "Horizontal length of half the edge of the targeting box. The total edge length is [value * 2], with the turret centered in it.", range = @Range(minD = 1.0D), reqMcRestart = true)
-    public static double rangeH = 16.0D;
+    public static double rangeH       = 16.0D;
     @Value(comment = "Vertical length of the edge of the targeting box, from the turret upwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
-    public static double rangeU = 8.0D;
+    public static double rangeU       = 8.0D;
     @Value(comment = "Vertical length of the edge of the targeting box, from the turret downwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
-    public static double rangeD = 4.0D;
+    public static double rangeD       = 4.0D;
 
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {
@@ -90,6 +90,11 @@ public class TurretCrossbow
     @Nonnull
     @Override
     public ResourceLocation getId() {
-        return REGISTRY_ID;
+        return ID;
+    }
+
+    @Override
+    public ResourceLocation getBookEntryId() {
+        return Resources.PATCHOULI_E_TURRET_CROSSBOW.resource;
     }
 }
