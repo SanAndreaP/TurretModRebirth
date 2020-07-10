@@ -26,33 +26,68 @@
       "x": 0, "y": 45
     },
     {
-      "type": "text",
-      "text": "$(8)Used by:",
+      "type": "image",
+      "image": "sapturretmod:textures/gui/lexicon/elements.png",
+      "x": 0,     "y": 111,
+      "u": 61,    "v": 0,
+      "width": 9, "height": 9
+    },
+    {
+      "type": "image",
+      "image": "sapturretmod:textures/gui/lexicon/elements.png",
+      "x": 0,     "y": 121,
+      "u": 106,   "v": 0,
+      "width": 9, "height": 9
+    },
+    {
+      "type": "image",
+      "image": "sapturretmod:textures/gui/lexicon/elements.png",
+      "x": 0,     "y": 131,
+      "u": 115,   "v": 0,
+      "width": 9, "height": 9,
+      "guard": "#turret_link#"
+    },
+    {
+      "type": "tooltip",
+      "tooltip": ["#rounds_tip"],
+      "x": 0,       "y": 111,
+      "width": 100, "height": 9
+    },
+    {
+      "type": "tooltip",
+      "tooltip": ["#damage_tip1", "&7#damage_tip2#"],
+      "x": 0,       "y": 121,
+      "width": 100, "height": 9
+    },
+    {
+      "type": "tooltip",
+      "tooltip": ["#turret_tip"],
       "guard": "#turret_link#",
-      "x": 0, "y": 111
+      "x": 0,       "y": 131,
+      "width": 100, "height": 9
+    },
+    {
+      "type": "text",
+      "text": "#rounds_provided##rounds_suffix#",
+      "x": 12, "y": 111
+    },
+    {
+      "type": "text",
+      "text": "#from# - #to##damage_suffix#",
+      "x": 12, "y": 121,
+      "guard": "#to->exists"
+    },
+    {
+      "type": "text",
+      "text": "#from##damage_suffix#",
+      "x": 12, "y": 121,
+      "guard": "#to->exists->inv"
     },
     {
       "type": "text",
       "text": "#turret_link",
       "guard": "#turret_link",
-      "x": 5, "y": 121
-    },
-    {
-      "type": "text",
-      "text": "$(8)Damage dealt:",
-      "x": 0, "y": 131
-    },
-    {
-      "type": "text",
-      "text": "#from# - #to# HP",
-      "x": 5, "y": 141,
-      "guard": "#to->exists"
-    },
-    {
-      "type": "text",
-      "text": "#from# HP",
-      "x": 5, "y": 141,
-      "guard": "#to->exists->inv"
+      "x": 12, "y": 131
     }
   ]
 }

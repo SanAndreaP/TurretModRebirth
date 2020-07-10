@@ -7,7 +7,8 @@
         "header": "Assembly Recipe",
         "recipe": "#recipe",
         "time_processing_tip": "Crafting duration",
-        "rf_cost_tip": "Total RF use"
+        "rf_cost_tip": "Total RF use",
+        "flavor_text": "#flavor_text"
       }
     }
   ]

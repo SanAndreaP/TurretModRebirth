@@ -137,7 +137,7 @@
     {
       "type": "tooltip",
       "tooltip": ["#time_processing_tip", "&7#time_processing_full# ticks"],
-      "x": 69, "y": 96,
+      "x": 69,     "y": 96,
       "width": 45, "height": 10
     },
     {
@@ -148,8 +148,14 @@
     {
       "type": "tooltip",
       "tooltip": ["#rf_cost_tip", "&7#rf_cost_full# RF"],
-      "x": 69, "y": 107,
+      "x": 69,     "y": 107,
       "width": 45, "height": 10
+    },
+    {
+      "type": "text",
+      "text": "$(italic)#flavor_text#",
+      "x": 0, "y": 132,
+      "guard": "#flavor_text"
     }
   ]
 }

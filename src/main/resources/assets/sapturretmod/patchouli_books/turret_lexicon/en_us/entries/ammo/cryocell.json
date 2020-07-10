@@ -1,0 +1,29 @@
+{
+  "name": "Cryo-Cells",
+  "icon": "sapturretmod:ammo.cryocell.1",
+  "category": "sapturretmod:ammo",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "sapturretmod:ammo_info_i18n",
+      "ammo_type": "sapturretmod:ammo.cryocell.1",
+      "name": "Cryo-Cells",
+      "text": "This comes in 3 versions, which apply different slowness effects mentioned below their respective crafting recipe.$(br2)Does not cause immunity nor any damage to the target."
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:ammo_cryocell_1",
+      "flavor_text": "Slowness I for 15s"
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:ammo_cryocell_2",
+      "flavor_text": "Slowness III for 10s"
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:ammo_cryocell_3",
+      "flavor_text": "Slowness V for 5s"
+    }
+  ]
+}

@@ -52,6 +52,9 @@ public class ComponentAmmoStatProcessor
                 }
                 break;
             }
+            case "rounds_provided": {
+                return TmrUtils.getNumberFormat(0, true, langCode).format(this.ammo.getAmmoCapacity());
+            }
             case "item": {
                 NonNullList<ItemStack> items = NonNullList.create();
                 ResourceLocation eid = this.ammo.getBookEntryId();
@@ -59,7 +62,6 @@ public class ComponentAmmoStatProcessor
                     return null;
                 }
 
-                items.add(AmmunitionRegistry.INSTANCE.getItem(this.ammo.getId(), this.subtype));
                 AmmunitionRegistry.INSTANCE.getObjects().stream().filter(a -> eid.equals(a.getBookEntryId())).forEach(a -> {
                     String[] aSubtypes = a.getSubtypes();
                     ResourceLocation aId = a.getId();
