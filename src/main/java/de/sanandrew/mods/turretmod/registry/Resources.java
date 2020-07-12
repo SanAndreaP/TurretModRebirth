@@ -93,7 +93,7 @@ public enum Resources
     PATCHOULI_E_AMMO_CRYOCELL       ("ammo/cryocell"),
     PATCHOULI_E_AMMO_BULLET         ("ammo/bullet"),
     PATCHOULI_E_AMMO_MINIGUNSHELL   ("ammo/minigunshell"),
-    PATCHOULI_E_AMMO_ELECTROLYTECELL("ammo/eleccell"),
+    PATCHOULI_E_AMMO_ELECTROLYTECELL("ammo/electrolytecell"),
     PATCHOULI_E_AMMO_FUELTANK       ("ammo/fueltank"),
     PATCHOULI_E_AMMO_FLUXCELL       ("ammo/fluxcell"),
     PATCHOULI_E_UPGRADE_HEALTH           ("upgrades/health"),

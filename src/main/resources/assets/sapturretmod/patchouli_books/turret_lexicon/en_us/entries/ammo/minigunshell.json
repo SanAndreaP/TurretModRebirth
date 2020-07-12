@@ -1,0 +1,18 @@
+{
+  "name": "Minigun Shells",
+  "icon": "sapturretmod:ammo.minigunshell",
+  "category": "sapturretmod:ammo",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "sapturretmod:ammo_info_i18n",
+      "ammo_type": "sapturretmod:ammo.minigunshell",
+      "name": "Minigun Shells",
+      "text": "Seeds can penetrate any creature, if given enough velocity. Coupled with high firing rate, take down anything that attempts to fly away!$(br2)$(5)$(o)No knockback effect"
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:ammo_minigunshell"
+    }
+  ]
+}

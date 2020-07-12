@@ -6,11 +6,13 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.event;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.event.world.GetCollisionBoxesEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.List;
@@ -18,10 +20,11 @@ import java.util.List;
 /**
  * fixes the collision for players... basically makes the turret solid for players, walk-through for anything else.
  */
+@Mod.EventBusSubscriber(modid = TmrConstants.ID)
 public class CollisionEventHandler
 {
     @SubscribeEvent
-    public void onCollision(GetCollisionBoxesEvent event) {
+    public static void onCollision(GetCollisionBoxesEvent event) {
         Entity entityIn = event.getEntity();
         AxisAlignedBB aabb = event.getAabb();
 

@@ -11,6 +11,15 @@
           "item": "minecraft:iron_bars"
         }
       ]
+    },
+    {
+      "count": 4,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "stickWood"
+        }
+      ]
     }
   ],
   "result": {

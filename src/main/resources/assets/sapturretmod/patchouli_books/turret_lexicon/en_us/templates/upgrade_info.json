@@ -1,0 +1,28 @@
+{
+  "components": [
+    {
+      "type": "header",
+      "text": "#name",
+      "x": -1, "y": -1
+    },
+    {
+      "type": "custom",
+      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentCustomImage",
+      "image": "sapturretmod:textures/gui/lexicon/page_crafting.png",
+      "u": 0,               "v": 102,
+      "x": 25,              "y": 10,
+      "width": 66,          "height": 26,
+      "texture_width": 128, "texture_height": 128
+    },
+    {
+      "type": "item",
+      "item": "#item",
+      "x": 50, "y": 15
+    },
+    {
+      "type": "text",
+      "text": "#text",
+      "x": 0, "y": 45
+    }
+  ]
+}

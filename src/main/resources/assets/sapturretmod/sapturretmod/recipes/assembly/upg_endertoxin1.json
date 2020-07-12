@@ -27,6 +27,15 @@
           }
         }
       ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "slimeball"
+        }
+      ]
     }
   ],
   "result": {

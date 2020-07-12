@@ -4,7 +4,8 @@
       "template": "sapturretmod:turret_assembly",
       "as": "turret_assembly",
       "using": {
-        "header": "Assembly Recipe",
+        "header_std": "Assembly Recipe",
+        "header": "#header",
         "recipe": "#recipe",
         "time_processing_tip": "Crafting duration",
         "rf_cost_tip": "Total RF use",

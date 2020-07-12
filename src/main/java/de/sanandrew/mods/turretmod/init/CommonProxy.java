@@ -14,12 +14,8 @@ import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.client.event.CollisionEventHandler;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretProjectile;
-import de.sanandrew.mods.turretmod.event.CapabilityEventHandler;
-import de.sanandrew.mods.turretmod.event.DamageEventHandler;
-import de.sanandrew.mods.turretmod.event.ExplosionEventHandler;
 import de.sanandrew.mods.turretmod.inventory.container.ContainerAssemblyFilter;
 import de.sanandrew.mods.turretmod.inventory.container.ContainerCartridge;
 import de.sanandrew.mods.turretmod.inventory.container.ContainerElectrolyteGenerator;
@@ -29,13 +25,13 @@ import de.sanandrew.mods.turretmod.item.ItemAmmoCartridge;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.network.PacketOpenGui;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
+import de.sanandrew.mods.turretmod.registry.EnumEffect;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
-import de.sanandrew.mods.turretmod.registry.EnumEffect;
-import de.sanandrew.mods.turretmod.world.PlayerList;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
+import de.sanandrew.mods.turretmod.world.PlayerList;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -59,10 +55,6 @@ public class CommonProxy
 {
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(PlayerList.INSTANCE);
-        MinecraftForge.EVENT_BUS.register(new DamageEventHandler());
-        MinecraftForge.EVENT_BUS.register(new ExplosionEventHandler());
-        MinecraftForge.EVENT_BUS.register(new CollisionEventHandler());
-        MinecraftForge.EVENT_BUS.register(new CapabilityEventHandler());
 
         EntityRegistry.registerModEntity(new ResourceLocation(TmrConstants.ID, "turret"), EntityTurret.class, TmrConstants.ID + ".turret", 0, TurretModRebirth.instance, 128, 1, true);
         EntityRegistry.registerModEntity(new ResourceLocation(TmrConstants.ID, "projectile"), EntityTurretProjectile.class, TmrConstants.ID + ".projectile", 1, TurretModRebirth.instance, 128, 1, true);

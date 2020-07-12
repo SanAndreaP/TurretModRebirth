@@ -45,8 +45,8 @@ item.sapturretmod:turret_assembly_filter.inst=Right-click to configure, Shift-ri
 item.sapturretmod:turret_assembly_redstone.name=Redstone Awareness Upgrade
 item.sapturretmod:turret_assembly_redstone.ttip=Used in the Turret Assembly Table
 # Ammo
-item.sapturretmod:ammo.arrow.name=Arrow Bolt
-item.sapturretmod:ammo.tipped_bolt.name=Tipped Arrow Bolt
+item.sapturretmod:ammo.arrow.name=Crossbow Bolt
+item.sapturretmod:ammo.tipped_bolt.name=Tipped Crossbow Bolt
 item.sapturretmod:ammo.shotgunshell.name=Shotgun Shell
 item.sapturretmod:ammo.harpoon.name=Harpoon
 item.sapturretmod:ammo.cryocell.name=Cryo-Cell
@@ -56,7 +56,7 @@ item.sapturretmod:ammo.cryocell.3.name=Type: SG3
 item.sapturretmod:ammo.bullet.name=Revolver Bullets
 item.sapturretmod:ammo.minigunshell.name=Minigun Rounds
 item.sapturretmod:ammo.eleccell.name=Electrolyte Cell
-item.sapturretmod:ammo.fluxcell.name=Flux Cell
+item.sapturretmod:ammo.fluxcell.name=Flux-Cell
 item.sapturretmod:ammo.fueltank.name=Fuel Tank
 item.sapturretmod:ammo.cartridge.name=Ammunition Cartridge
 # Repair Kits
@@ -248,18 +248,6 @@ sanlib.lexicon.sapturretmod.stat.reload=Reload Time
 sanlib.lexicon.sapturretmod.stat.tier=Tier
 sanlib.lexicon.sapturretmod.stat.rounds=Rounds provided
 sanlib.lexicon.sapturretmod.stat.damage=Damage per projectile
-# Ammo
-sanlib.lexicon.sapturretmod.ammo.name=Ammunition Types
-sanlib.lexicon.sapturretmod.ammo.turret=Applicable Turret
-sanlib.lexicon.sapturretmod.ammo.sapturretmod:ammo.arrow.text=These arrows have a smaller knockback effect and act like regular ones, just smaller. Very precise.
-sanlib.lexicon.sapturretmod.ammo.sapturretmod:ammo.harpoon.text=Similar to Arrow Bolts with small knockback, but unlike those, the Harpoons can be used underwater.
-sanlib.lexicon.sapturretmod.ammo.sapturretmod:ammo.shell.shotgun.text=One shell turns into 6 dispersed pebble projectiles when shot, which have no knockback effect.\nDoes not cause any immunity to the target, thus targets hit by multiple pebbles will take damage from all of them.
-sanlib.lexicon.sapturretmod.ammo.sapturretmod:ammo.cryocell.text=This comes in 3 versions, which apply different slowness effects:\nCell SG1: Slowness I for 15s\nCell SG2: Slowness III for 10s\nCell SG3: Slowness V for 5s.\n\nDoes not cause immunity nor any damage to the target.
-sanlib.lexicon.sapturretmod.ammo.sapturretmod:ammo.bullet.text=It has less of a knockback effect compared to Arrow Bolts, but do more damage than them. Unlike other ammo types, one item provides twice the rounds.
-sanlib.lexicon.sapturretmod.ammo.sapturretmod:ammo.shell.minigun.text=The shells contain seeds which do little damage and no knockback, but like the shotgun pebbles, they do not cause any immunity to the target. This, in combination with the rapid firing rate of the turret, compensate for their weakness.\nDue to the rapid firing rate, an item provides 4 shots instead of the usual 1.
-sanlib.lexicon.sapturretmod.ammo.sapturretmod:ammo.eleccell.text=Provides the energy necessary to charge up a big forcefield.
-sanlib.lexicon.sapturretmod.ammo.sapturretmod:ammo.fluxcell.text=Lasers have no knockback effect and don't damage anything immune to fire (unless upgraded), but deal quite a decent amount of damage and also set the target on fire for 5 seconds.
-sanlib.lexicon.sapturretmod.ammo.sapturretmod:ammo.fueltank.text=Flames have, like lasers, no knockback effect and are ineffective against fire-resistant targets (unless upgraded). They deal a hefty amount of damage and sets targets on fire for 10 seconds.\nA tank item provides 16 shots, due to the rapid firing rate of the turret.
 # Info
 sanlib.lexicon.sapturretmod.info.name=About
 sanlib.lexicon.sapturretmod.info.version=Version
@@ -302,7 +290,7 @@ sanlib.lexicon.sapturretmod.upgrade.sapturretmod:upgrade.shield.strength.1.text=
 sanlib.lexicon.sapturretmod.upgrade.sapturretmod:upgrade.shield.strength.2.text=Increases the radius of the Forcefield Turret to 24 blocks and hitpoints of the forcefield to 250 HP.\n\nAdds a secondary booster to the forcefield generator to further increase hitpoints and range of the protective shield.
 sanlib.lexicon.sapturretmod.upgrade.sapturretmod:upgrade.shield.colorizer.text=Allows the colorization of the Forcefield Turret's shield and provides the ability to controll its transparency.
 sanlib.lexicon.sapturretmod.upgrade.sapturretmod:upgrade.endertoxin.1.text=Infuses the projectiles of a turret with water in order to be able to damage ender-based creatures like Endermen.\n\nIt also prevents Endermen and Shulkers from teleporting away if damaged by one of these infused projectiles.
-sanlib.lexicon.sapturretmod.upgrade.sapturretmod:upgrade.endertoxin.2.text=Coats the water-infused projectiles of a turret with TNT in order to be able to damage huge ender-based creatures like the Ender Dragon.
+sanlib.lexicon.sapturretmod.upgrade.sapturretmod:upgrade.endertoxin.2.text=Coats the water-infused projectiles of a turret with gunpowder in order to be able to damage huge ender-based creatures like the Ender Dragon.
 sanlib.lexicon.sapturretmod.upgrade.assembly_auto.text=Enables automation of the assembly table. Once this is applied, a button will appear where you can toggle the assembly table between manual and automation mode.\n\nIn manual mode it will act like without the upgrade, crafting items on your command.\n\nIn automation mode, you can tell it to craft a specific item. Once the items and the power are available, it'll start crafting and keep crafting until it runs out of ingredients, energy or space in the output slot.\nYou cannot change the item crafted until you cancel it.
 sanlib.lexicon.sapturretmod.upgrade.assembly_speed.text=Optimizes the assembly process and makes the assembly table 4x faster. Since this optimization isn't free to come by, it'll increase the energy consumption of the current crafting operation by 10%% (after the 4x increase of RF/t).
 sanlib.lexicon.sapturretmod.upgrade.assembly_filter.text=Filters what's going into the assembly table.\nAfter right-clicking you can configure the filter. In empty slots can go anything. In configured slots can only go the item configured (obviously), but those items won't go anywhere else, not even in empty configured slots.\nShift-right-click clears the filter.\n\nThe filter operates not only on the user-side of things (putting stuff into the table via GUI) but also with external insertion devices like the hopper.\n\nPlease note that you can't configure the stack size of items, thus it will always try to put a whole stack (depends on how many items can be stacked together) in a slot.\n\nf you want to put in more than 1 stack into the table, you can configure 2 or more slots with the same item.

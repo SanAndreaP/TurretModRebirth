@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "sapturretmod:turret_info_buoy",
-      "text": "A turret only meant for swimming enemies, this can only be placed on water.$(br)Its stats are comparable to the $(l:turrets/crossbow)Crossbow$(/l) Turret.",
+      "text": "If you need to defend yourself from the depths of the ocean, then this might just do the job!$(br2)$(5)$(o)Can only attack swimming enemies",
       "name": "Harpoon Turret",
       "turret_type": "sapturretmod:turret.harpoon"
     },

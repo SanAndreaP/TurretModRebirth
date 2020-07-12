@@ -4,7 +4,28 @@
   "category": "sapturretmod:upgrades",
   "pages": [
     {
-      "type": "empty"
+      "type": "sapturretmod:upgrade_info",
+      "name": "Economy Upgrades",
+      "item": "sapturretmod:upgrade.ammousage.1,sapturretmod:upgrade.ammousage.2,sapturretmod:upgrade.ammousage.inf",
+      "text": "Increase the chance of not consuming ammunition with these upgrades!$(br2)The last tier only works if the ammo storage is full. Otherwise the previous tiers are used.$(br2)$(o)Chances are additive.$(br)$(5)The next tier requires the previous installed.$()"
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:upg_economy1",
+      "flavor_text": "Chance not consuming ammo: 10%",
+      "header": "Economy I"
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:upg_economy2",
+      "flavor_text": "Chance not consuming ammo: 35%",
+      "header": "Economy II"
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:upg_economy3",
+      "flavor_text": "Infinite ammo, if full",
+      "header": "Infinitas Oeconomia"
     }
   ]
 }

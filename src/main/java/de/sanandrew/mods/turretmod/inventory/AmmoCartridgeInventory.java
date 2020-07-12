@@ -2,6 +2,7 @@ package de.sanandrew.mods.turretmod.inventory;
 
 import com.google.common.base.Strings;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.item.ItemAmmo;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
@@ -101,8 +102,12 @@ public final class AmmoCartridgeInventory
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
         this.load();
-        return ItemStackUtils.isValid(stack) && stack.getItem() instanceof ItemAmmo
-               && (this.isEmpty() || AmmunitionRegistry.INSTANCE.isEqual(this.getAmmoType(), AmmunitionRegistry.INSTANCE.getObject(stack)));
+        return ItemStackUtils.isValid(stack) && stack.getItem() instanceof ItemAmmo && (this.isEmpty() || isTypeEqual(stack));
+    }
+    
+    private boolean isTypeEqual(ItemStack stack) {
+        return AmmunitionRegistry.INSTANCE.isEqual(this.getAmmoType(), AmmunitionRegistry.INSTANCE.getObject(stack))
+               && MiscUtils.defIfNull(this.getAmmoSubtype(), "").equals(MiscUtils.defIfNull(AmmunitionRegistry.INSTANCE.getSubtype(stack), ""));
     }
 
     @Override

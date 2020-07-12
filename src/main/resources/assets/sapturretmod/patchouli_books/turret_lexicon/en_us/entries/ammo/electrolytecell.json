@@ -1,0 +1,18 @@
+{
+  "name": "Electrolyte Cells",
+  "icon": "sapturretmod:ammo.eleccell",
+  "category": "sapturretmod:ammo",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "sapturretmod:ammo_info_i18n",
+      "ammo_type": "sapturretmod:ammo.eleccell",
+      "name": "Electrolyte Cells",
+      "text": "To operate a big forcefield, you need something that has enough capacitance. This potato-powered battery is perfect for this job."
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:ammo_eleccell"
+    }
+  ]
+}

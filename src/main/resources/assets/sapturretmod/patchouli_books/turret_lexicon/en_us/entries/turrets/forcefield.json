@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "sapturretmod:turret_info_forcefield",
-      "text": "It creates a forcefield around it that protects the area from any intruders.$(br)Targets within its range will immediately be pushed out, just make sure they don't get stuck.",
+      "text": "It creates a forcefield around it that protects the area from $(5)$(o)any$() intruders.$(br)Targets within its range will immediately be pushed out, just make sure they don't get stuck.",
       "name": "Forcefield Turret",
       "turret_type": "sapturretmod:turret.forcefield"
     },

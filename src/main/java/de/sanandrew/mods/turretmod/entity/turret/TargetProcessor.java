@@ -98,10 +98,8 @@ public final class TargetProcessor
         } else if( this.isAmmoApplicable(stack) ) {
             IAmmunition type = AmmunitionRegistry.INSTANCE.getObject(stack);
             String subtype = MiscUtils.defIfNull(AmmunitionRegistry.INSTANCE.getSubtype(stack), "");
-            IAmmunition currType = AmmunitionRegistry.INSTANCE.getObject(this.ammoStack);
-            String currSubtype = MiscUtils.defIfNull(AmmunitionRegistry.INSTANCE.getSubtype(this.ammoStack), "");
 
-            if( currType.isValid() && !(currType.getId().equals(type.getId()) && currSubtype.equals(subtype)) ) {
+            if( !this.isAmmoTypeEqual(type, subtype) ) {
                 if( excessInv != null ) {
                     this.putAmmoInInventory(excessInv);
                 } else {
@@ -262,7 +260,7 @@ public final class TargetProcessor
         if( ItemStackUtils.isValid(stack) ) {
             IAmmunition stackType = AmmunitionRegistry.INSTANCE.getObject(stack);
             if( stackType.isValid() ) {
-                if( AmmunitionRegistry.INSTANCE.getObject(this.ammoStack).getId().equals(stackType.getId()) ) {
+                if( this.isAmmoTypeEqual(stackType, AmmunitionRegistry.INSTANCE.getSubtype(stack)) ) {
                     return this.ammoCount < this.getMaxAmmoCapacity();
                 } else {
                     Collection<IAmmunition> types = AmmunitionRegistry.INSTANCE.getObjects(this.turret.getTurret());
@@ -272,6 +270,14 @@ public final class TargetProcessor
         }
 
         return false;
+    }
+
+    private boolean isAmmoTypeEqual(IAmmunition ammo, String subtype) {
+        subtype = subtype != null ? subtype : "";
+        IAmmunition currType = AmmunitionRegistry.INSTANCE.getObject(this.ammoStack);
+        String currSubtype = MiscUtils.defIfNull(AmmunitionRegistry.INSTANCE.getSubtype(this.ammoStack), "");
+
+        return currType.getId().equals(ammo.getId()) && subtype.equals(currSubtype);
     }
 
     @Override

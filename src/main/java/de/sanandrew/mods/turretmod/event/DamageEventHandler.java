@@ -28,15 +28,17 @@ import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+@Mod.EventBusSubscriber(modid = TmrConstants.ID)
 public class DamageEventHandler
 {
     private static final String DISABLE_XP_DROP_TAG = TmrConstants.ID + ":disable_xp_drop";
 
     @SubscribeEvent
-    public void onDamage(LivingHurtEvent event) {
+    public static void onDamage(LivingHurtEvent event) {
         if( event.getEntity() instanceof EntityTurret ) {
             EntityTurret turret = (EntityTurret) event.getEntity();
             if( !turret.world.isRemote ) {
@@ -62,7 +64,7 @@ public class DamageEventHandler
     }
 
     @SubscribeEvent
-    public void onDeath(LivingDeathEvent event) {
+    public static void onDeath(LivingDeathEvent event) {
         DamageSource dmgSrc = event.getSource();
         EntityLivingBase corpse = event.getEntityLiving();
         if( dmgSrc instanceof EntityTurretProjectile.ITurretDamageSource && corpse.world instanceof WorldServer ) {
@@ -84,14 +86,14 @@ public class DamageEventHandler
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onXpDrop(LivingExperienceDropEvent event) {
+    public static void onXpDrop(LivingExperienceDropEvent event) {
         if( event.getEntity().getTags().contains(DISABLE_XP_DROP_TAG) ) {
             event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
-    public void onEnderTeleport(EnderTeleportEvent event) {
+    public static void onEnderTeleport(EnderTeleportEvent event) {
         Entity t = event.getEntity();
         if( t instanceof EntityLiving ) {
             EntityLivingBase e = ((EntityLiving) t).getAttackTarget();

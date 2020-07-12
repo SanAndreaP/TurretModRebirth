@@ -3,8 +3,15 @@
   "components": [
     {
       "type": "header",
+      "text": "#header_std",
+      "x": -1, "y": -1,
+      "guard": "#header->exists->inv"
+    },
+    {
+      "type": "header",
       "text": "#header",
-      "x": -1, "y": -1
+      "x": -1, "y": -1,
+      "guard": "#header->exists"
     },
     {
       "type": "image",

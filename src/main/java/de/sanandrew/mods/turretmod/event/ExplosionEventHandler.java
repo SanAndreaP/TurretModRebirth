@@ -6,6 +6,7 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.event;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.turret.shieldgen.ShieldHandler;
 import de.sanandrew.mods.turretmod.registry.turret.shieldgen.TurretForcefield;
@@ -13,10 +14,12 @@ import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.function.Predicate;
 
+@Mod.EventBusSubscriber(modid = TmrConstants.ID)
 public class ExplosionEventHandler
 {
     private static final Predicate<EntityLivingBase> CHK_ENTITY = entity -> {
@@ -29,7 +32,7 @@ public class ExplosionEventHandler
     };
 
     @SubscribeEvent
-    public void onExplosion(ExplosionEvent.Detonate event) {
+    public static void onExplosion(ExplosionEvent.Detonate event) {
         float radius = event.getExplosion().size;
         AxisAlignedBB aabb = new AxisAlignedBB(-radius, -radius, -radius, radius, radius, radius).grow(24.0D).offset(event.getExplosion().getPosition());
 
