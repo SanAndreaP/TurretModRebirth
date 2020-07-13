@@ -7,7 +7,7 @@
     "type": "sapturretmod:upgrade_info",
     "name": "Ender Toxin I",
     "item": "sapturretmod:upgrade.endertoxin.1",
-    "text": "Infuse the projectiles of a turret with slimy water in order to be able to damage ender-based creatures like Endermen. It also prevents Endermen and Shulkers from teleporting away if damaged by one of these infused projectiles."
+    "text": "Infuses the projectiles of a turret with slimy water in order to be able to damage ender-based creatures like Endermen. It also prevents Endermen and Shulkers from teleporting away if damaged by one of these infused projectiles."
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
@@ -17,7 +17,7 @@
       "type": "sapturretmod:upgrade_info",
       "name": "Ender Toxin II",
       "item": "sapturretmod:upgrade.endertoxin.2",
-      "text": "In addition to the slime-water-infusion, the projectiles are coated with TNT in order to be able to damage huge ender-based creatures like the Ender Dragon.$(br2)$(5)Requires Ender Toxin I to be installed.$()"
+      "text": "In addition to the slime-water-infusion, the projectiles are coated with TNT in order to be able to damage huge ender-based creatures like the Ender Dragon.$(br2)$(5)$(o)Requires Ender Toxin I to be installed.$()"
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",

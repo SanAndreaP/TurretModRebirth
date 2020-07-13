@@ -5,27 +5,33 @@
   "pages": [
     {
       "type": "sapturretmod:upgrade_info",
-      "name": "Economy Upgrades",
-      "item": "sapturretmod:upgrade.ammousage.1,sapturretmod:upgrade.ammousage.2,sapturretmod:upgrade.ammousage.inf",
-      "text": "Increase the chance of not consuming ammunition with these upgrades!$(br2)The last tier only works if the ammo storage is full. Otherwise the previous tiers are used.$(br2)$(o)Chances are additive.$(br)$(5)The next tier requires the previous installed.$()"
+      "name": "Economy I",
+      "item": "sapturretmod:upgrade.ammousage.1",
+      "text": "A turret fitted with this upgrade has a 15% chance of not consuming ammo."
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:upg_economy1",
-      "flavor_text": "Chance not consuming ammo: 10%",
-      "header": "Economy I"
+      "recipe": "sapturretmod:upg_economy1"
+    },
+    {
+      "type": "sapturretmod:upgrade_info",
+      "name": "Economy II",
+      "item": "sapturretmod:upgrade.ammousage.2",
+      "text": "This upgrade increases the chance chance of not consuming ammo by 35% (in total: 50%).$(br2)$(5)$(o)Requires Economy I to be installed.$()"
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:upg_economy2",
-      "flavor_text": "Chance not consuming ammo: 35%",
-      "header": "Economy II"
+      "recipe": "sapturretmod:upg_economy2"
+    },
+    {
+      "type": "sapturretmod:upgrade_info",
+      "name": "Infinitas Oeconomia",
+      "item": "sapturretmod:upgrade.ammousage.inf",
+      "text": "An unlimited ammo supply is guaranteed, given the turret is filled with ammo.$(br)Failing that, the turret resorts to the other 2 Economy upgrades.$(br2)$(5)$(o)Requires Economy II to be installed.$()"
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:upg_economy3",
-      "flavor_text": "Infinite ammo, if full",
-      "header": "Infinitas Oeconomia"
+      "recipe": "sapturretmod:upg_economy3"
     }
   ]
 }

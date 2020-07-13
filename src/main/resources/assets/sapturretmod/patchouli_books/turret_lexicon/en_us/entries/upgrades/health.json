@@ -4,7 +4,44 @@
   "category": "sapturretmod:upgrades",
   "pages": [
     {
-      "type": "empty"
+      "type": "sapturretmod:upgrade_info",
+      "name": "Health I",
+      "item": "sapturretmod:upgrade.health.1",
+      "text": "By strengthening the structure of the chassis, the turret gains 25% additional health.$(br2)$(o)Note: These will not increase the turrets health automatically! You must heal it afterwards.$()"
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:upg_health1"
+    },
+    {
+      "type": "sapturretmod:upgrade_info",
+      "name": "Health II",
+      "item": "sapturretmod:upgrade.health.2",
+      "text": "Further increases the maximum turret health by 25% (in total: 50%).$(br2)$(5)$(o)Requires Health I to be installed.$()"
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:upg_health2"
+    },
+    {
+      "type": "sapturretmod:upgrade_info",
+      "name": "Health III",
+      "item": "sapturretmod:upgrade.health.3",
+      "text": "Increases the maximum turret health even further by 25% (in total: 75%).$(br2)$(5)$(o)Requires Health II to be installed.$()$(br)$(3)$(o)Can only be applied to tiers 1-4"
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:upg_health3"
+    },
+    {
+      "type": "sapturretmod:upgrade_info",
+      "name": "Health IV",
+      "item": "sapturretmod:upgrade.health.4",
+      "text": "Maximum strengthening of the turret increases its maximum health by 25% (in total: 100%).$(br2)$(5)$(o)Requires Health III to be installed.$()$(br)$(3)$(o)Can only be applied to tiers 1-3"
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:upg_health4"
     }
   ]
 }

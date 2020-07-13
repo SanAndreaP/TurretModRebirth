@@ -99,6 +99,12 @@ public abstract class Health
         public IUpgrade getDependantOn() {
             return Upgrades.HEALTH_II;
         }
+
+        @Nullable
+        @Override
+        public Range<Integer> getTierRange() {
+            return Range.between(1, 4);
+        }
     }
 
     static class MK4
@@ -116,7 +122,7 @@ public abstract class Health
         @Nullable
         @Override
         public Range<Integer> getTierRange() {
-            return Range.between(4, Integer.MAX_VALUE);
+            return Range.between(1, 3);
         }
     }
 }
