@@ -17,7 +17,7 @@
       "type": "sapturretmod:upgrade_info",
       "name": "Reload Time II",
       "item": "sapturretmod:upgrade.reload.2",
-      "text": "Further decreases the reload time by 25% (in total: 50%).$(br2)$(5)$(o)Requires Reload Time I to be installed.$()"
+      "text": "Further decreases the reload time by 35% (in total: 50%).$(br2)$(5)$(o)Requires Reload Time I to be installed.$()"
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
