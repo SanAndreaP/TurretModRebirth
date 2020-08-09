@@ -4,7 +4,27 @@
   "category": "sapturretmod:upgrades",
   "pages": [
     {
-      "type": "empty"
+      "type": "sapturretmod:upgrade_info",
+      "name": "Upgrade Storage",
+      "item": "sapturretmod:upgrade.upgstorage.1",
+      "text": "Are the 9 slots provided to you for upgrading a turret not enough? These upgrades each unlock an additional row of 9 upgrade slots."
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:upg_storage1",
+      "header": "Upgrade Storage I"
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:upg_storage2",
+      "header": "Upgrade Storage II",
+      "flavor_text": "$(5)$(o)Requires Upgrade Storage I$()"
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:upg_storage3",
+      "header": "Upgrade Storage III",
+      "flavor_text": "$(5)$(o)Requires Upgrade Storage II$()"
     }
   ]
 }

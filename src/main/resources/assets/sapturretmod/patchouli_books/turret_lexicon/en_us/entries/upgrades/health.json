@@ -5,43 +5,32 @@
   "pages": [
     {
       "type": "sapturretmod:upgrade_info",
-      "name": "Health I",
+      "name": "Health Upgrades",
       "item": "sapturretmod:upgrade.health.1",
-      "text": "Strengthens the structure of the turret chassis to gain 25% additional maximum health.$(br2)$(o)Note: These types of upgrades will not increase the turrets health automatically! You must heal it afterwards.$()"
+      "text": "Strengthens the structure of the turret chassis to gain 25% additional maximum health with each tier.$(br2)$(o)Note: These types of upgrades will not increase the turrets health automatically! You must heal it afterwards.$()"
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:upg_health1"
-    },
-    {
-      "type": "sapturretmod:upgrade_info",
-      "name": "Health II",
-      "item": "sapturretmod:upgrade.health.2",
-      "text": "Strengthens the structure of the turret chassis to gain 25% additional maximum health. (in total: 50%)$(br2)$(5)$(o)Requires Health I to be installed.$()"
+      "recipe": "sapturretmod:upg_health1",
+      "header": "Health I"
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:upg_health2"
-    },
-    {
-      "type": "sapturretmod:upgrade_info",
-      "name": "Health III",
-      "item": "sapturretmod:upgrade.health.3",
-      "text": "Strengthens the structure of the turret chassis to gain 25% additional maximum health. (in total: 75%)$(br2)$(5)$(o)Requires Health II to be installed.$()$(br)$(3)$(o)Can only be applied to tiers 1-4$()"
+      "recipe": "sapturretmod:upg_health2",
+      "header": "Health II",
+      "flavor_text": "$(5)$(o)Requires Health I$()"
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:upg_health3"
-    },
-    {
-      "type": "sapturretmod:upgrade_info",
-      "name": "Health IV",
-      "item": "sapturretmod:upgrade.health.4",
-      "text": "Strengthens the structure of the turret chassis to gain 25% additional maximum health. (in total: 100%)$(br2)$(5)$(o)Requires Health III to be installed.$()$(br)$(3)$(o)Can only be applied to tiers 1-3$()"
+      "recipe": "sapturretmod:upg_health3",
+      "header": "Health III",
+      "flavor_text": "$(5)$(o)Requires Health II$()$(br)$(3)$(o)Only applicable to tiers 1-4$()"
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:upg_health4"
+      "recipe": "sapturretmod:upg_health4",
+      "header": "Health IV",
+      "flavor_text": "$(5)$(o)Requires Health III$()$(br)$(3)$(o)Only applicable to tiers 1-3$()"
     }
   ]
 }

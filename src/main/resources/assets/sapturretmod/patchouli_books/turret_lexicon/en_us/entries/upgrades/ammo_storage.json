@@ -1,0 +1,17 @@
+{
+  "name": "Ammo Storage",
+  "icon": "sapturretmod:upgrade.ammostorage",
+  "category": "sapturretmod:upgrades",
+  "pages": [
+    {
+      "type": "sapturretmod:upgrade_info",
+      "name": "Ammo Storage",
+      "item": "sapturretmod:upgrade.ammostorage",
+      "text": "Doubles the amount of rounds a turret can hold by adding an additional storage component."
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:upg_ammostorage"
+    }
+  ]
+}

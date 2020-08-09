@@ -1,0 +1,17 @@
+{
+  "name": "Ender Gain Medium",
+  "icon": "sapturretmod:upgrade.endermedium",
+  "category": "sapturretmod:upgrades",
+  "pages": [
+    {
+      "type": "sapturretmod:upgrade_info",
+      "name": "Ender Gain Medium",
+      "item": "sapturretmod:upgrade.endermedium",
+      "text": "Changes the gain medium of the $(l:turrets/laser)Laser Turret$(/l) to create a higher frequency laser beam. This allows the turret to damage fire-resistant entities and increases damage output."
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:upg_endermedium"
+    }
+  ]
+}
