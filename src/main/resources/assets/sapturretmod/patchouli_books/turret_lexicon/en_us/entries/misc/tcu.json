@@ -1,0 +1,17 @@
+{
+  "name": "Turret Control Unit (TCU)",
+  "icon": "sapturretmod:turret_control_unit",
+  "category": "sapturretmod:misc",
+  "priority": true,
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "sapturretmod:turret_control_unit",
+      "text": "An essential item to control any aspect of a turret.$(br2)Right-click a turret with it will show you an UI for turret configuration.$(br2)Note that certain upgrades may add pages, explained in the respective upgrade entry."
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:misc_tcu"
+    }
+  ]
+}
