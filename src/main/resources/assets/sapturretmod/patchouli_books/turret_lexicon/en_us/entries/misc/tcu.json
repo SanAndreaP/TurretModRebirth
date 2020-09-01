@@ -12,6 +12,18 @@
     {
       "type": "sapturretmod:turret_assembly_i18n",
       "recipe": "sapturretmod:misc_tcu"
+    },
+    {
+      "type": "spotlight",
+      "item": "minecraft:book",
+      "title": "1. Tab: Turret Info",
+      "text": "This tab will show you general information (a POV camera, turret name - editable, health, ammo, current target, owner, shielding - only on the $(l:turrets/forcefield)Forcefield Turret$()).$(br2)At the bottom are control buttons to dismantle and (de-)activate the turret as well as toggle a display showing its range."
+    },
+    {
+      "type": "image",
+      "images": ["sapturretmod:textures/gui/lexicon/tcu_tab_info.png"],
+      "border": true,
+      "text": "$(italic)An example of the info page for a $(l:turrets/crossbow)Crossbow Turret$(/l) inside a forest$(/italic)"
     }
   ]
 }
