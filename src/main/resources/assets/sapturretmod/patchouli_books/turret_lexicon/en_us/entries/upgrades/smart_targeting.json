@@ -7,11 +7,21 @@
       "type": "sapturretmod:upgrade_info",
       "name": "Smart Targeting",
       "item": "sapturretmod:upgrade.smarttgt",
-      "text": "Allows for detailed control on how turrets target entities. Adds an additional tab to the TCU UI for configuration of this upgrade"
+      "text": "Allows for detailed control on how turrets target entities.$(br2)Adds an additional tab to the $(l:misc/tcu)TCU$() UI for configuration of this upgrade (described in the upcoming pages)."
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
       "recipe": "sapturretmod:upg_smarttgt"
+    },
+    {
+      "type": "image",
+      "title": "TCU Tab",
+      "images": ["sapturretmod:textures/gui/lexicon/tcu/tab_smarttgt.png"],
+      "border": true
+    },
+    {
+      "type": "text",
+      "text": "To configure this upgrade, it provides the TCU with an additional tab. There are 4 different \"awareness\" settings:$(br)\"Turret Awareness\" has the turret check its range for other turrets and exclude entities that are already targeted. Either all turrets are ignored (setting is disabled), only turrets of the same type are checked (default behavior of this upgrade) or any turret is checked."
     }
   ]
 }

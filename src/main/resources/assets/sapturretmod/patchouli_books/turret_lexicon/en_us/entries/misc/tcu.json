@@ -11,19 +11,56 @@
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:misc_tcu"
+      "recipe": "sapturretmod:misc_tcu",
+      "flavor_text": "The next pages explain the tab pages of the UI"
     },
     {
       "type": "spotlight",
       "item": "minecraft:book",
-      "title": "1. Tab: Turret Info",
+      "title": "Turret Info",
       "text": "This tab will show you general information (a POV camera, turret name - editable, health, ammo, current target, owner, shielding - only on the $(l:turrets/forcefield)Forcefield Turret$()).$(br2)At the bottom are control buttons to dismantle and (de-)activate the turret as well as toggle a display showing its range."
     },
     {
       "type": "image",
-      "images": ["sapturretmod:textures/gui/lexicon/tcu_tab_info.png"],
+      "images": ["sapturretmod:textures/gui/lexicon/tcu/tab_info.png"],
       "border": true,
       "text": "$(italic)An example of the info page for a $(l:turrets/crossbow)Crossbow Turret$(/l) inside a forest$(/italic)"
+    },
+    {
+      "type": "spotlight",
+      "item": "minecraft:skull:2",
+      "title": "Entity Target Settings",
+      "text": "Here you can configure which types of entities can be targeted by the turret by either individually selecting entries in the list or selecting groups of entities (all or none; monsters, animals, other)$(br2)It also features a Blacklist/Whitelist mode. The default is a whitelist."
+    },
+    {
+      "type": "image",
+      "images": ["sapturretmod:textures/gui/lexicon/tcu/tab_tgt_creatures.png"],
+      "border": true,
+      "text": "$(italic)The target page with only 2 entities selected, in whitelist mode$(/italic)"
+    },
+    {
+      "type": "spotlight",
+      "item": "minecraft:skull:3",
+      "title": "Player Target Settings",
+      "text": "Just like in the Entity Target Settings tab, you can configure which players can be targeted by the turret, including yourself!$(br2)It also features a Blacklist/Whitelist mode. The default is a whitelist."
+    },
+    {
+      "type": "image",
+      "images": ["sapturretmod:textures/gui/lexicon/tcu/tab_tgt_players.png"],
+      "border": true,
+      "text": "$(italic)The target page with no players selected, in whitelist mode$(/italic)"
+    },
+    {
+      "type": "spotlight",
+      "item": "sapturretmod:upgrade.empty",
+      "title": "Upgrades",
+      "text": "Add or remove upgrades with ease here, similar to a chest.$(br2)Greyed out slots are locked and you'll need the $(l:upgrades/upgrade_storage)Upgrade Storage upgrades$() in order to unlock them."
+    },
+    {
+      "type": "image",
+      "images": ["sapturretmod:textures/gui/lexicon/tcu/tab_upgrades.png"],
+      "border": true,
+      "text": "$(italic)The upgrades page with some upgrades applied$(/italic)"
     }
   ]
 }
