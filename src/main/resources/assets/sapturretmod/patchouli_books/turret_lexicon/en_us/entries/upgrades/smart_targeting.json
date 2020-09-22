@@ -16,12 +16,28 @@
     {
       "type": "image",
       "title": "TCU Tab",
-      "images": ["sapturretmod:textures/gui/lexicon/tcu/tab_smarttgt.png"],
+      "images": ["sapturretmod:textures/gui/lexicon/tcu/tab_tgt_smart.png"],
       "border": true
     },
     {
       "type": "text",
-      "text": "To configure this upgrade, it provides the TCU with an additional tab. There are 4 different \"awareness\" settings:$(br)\"Turret Awareness\" has the turret check its range for other turrets and exclude entities that are already targeted. Either all turrets are ignored (setting is disabled), only turrets of the same type are checked (default behavior of this upgrade) or any turret is checked."
+      "text": "To configure this upgrade, the TCU is provided with an additional tab. There are 4 different \"awareness\" settings:$(br2)$(bold)\"Turret Awareness\"$() has the turret check its range for other turrets and exclude entities that are already targeted. Either all turrets are ignored (default without upgrade), only turrets of the same type are checked (default with upgrade; e.g. Revolver turrets only check other Revolver turrets) or any turret is checked."
+    },
+    {
+      "type": "text",
+      "text": "$(bold)\"Tamed Awareness\"$() controls how the turret acts around tamables (tamed entities like wolves, horses, etc.) - provided that the entity type is targeted as well. Either all tamables (default) or only tamables belonging to a targeted player are attacked, or every tamable is ignored.$(br2)\"$(bold)\"Age Awareness\"$() is pretty straight-forward: Either both adults and children (default), only adults or only children (if you're monster that is) are attacked"
+    },
+    {
+      "type": "text",
+      "text": "$(bold)\"Count Awareness\"$() allows the turret to count the entities to be targeted within its range before deciding to attack. Default is no counting whatsoever. Other than that you can let it count globally (all types are summarized) or per type (each type is summarized separately), each with a \"$(italic)less than$()\" or \"$(italic)more than$()\" setting. Once set to count, you can adjust the target amount in the number field.$(br2)Examples on the next pages."
+    },
+    {
+      "type": "text",
+      "text": "$(italic)Example 1: \"Shoot when global entity amount is more than... 8\"$()$(br2)The turret will attack if there's more than 8 targeted entities in its range: 4 zombies and 5 skeletons = 9 entities. Targeting them is at random, it does not register that there's more skeletons than zombies."
+    },
+    {
+      "type": "text",
+      "text": "$(italic)Example 2: \"Shoot when amount of the same type of entity is more than... 16\"$()$(br2)The turret will attack if there's more than 16 targeted entities of the same type in its range: 18 cows and 16 sheep. Only the cows are attacked, as long as there are more than 16. Sheep are ignored, since there are no more than 16."
     }
   ]
 }

@@ -128,7 +128,7 @@ public class TurretModRebirth
 
     // for debugging purposes only!
     @Mod.EventHandler
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void loadComplete(net.minecraftforge.fml.common.event.FMLLoadCompleteEvent event) {
         if( this.isDev ) {
             java.util.function.Function<Object, Long> gos = (obj -> {
