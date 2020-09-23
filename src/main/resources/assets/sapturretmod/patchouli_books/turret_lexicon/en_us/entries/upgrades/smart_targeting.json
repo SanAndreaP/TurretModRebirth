@@ -17,11 +17,12 @@
       "type": "image",
       "title": "TCU Tab",
       "images": ["sapturretmod:textures/gui/lexicon/tcu/tab_tgt_smart.png"],
+      "text": "To configure this upgrade, the TCU is provided with an additional tab.",
       "border": true
     },
     {
       "type": "text",
-      "text": "To configure this upgrade, the TCU is provided with an additional tab. There are 4 different \"awareness\" settings:$(br2)$(bold)\"Turret Awareness\"$() has the turret check its range for other turrets and exclude entities that are already targeted. Either all turrets are ignored (default without upgrade), only turrets of the same type are checked (default with upgrade; e.g. Revolver turrets only check other Revolver turrets) or any turret is checked."
+      "text": "There are 4 different \"awareness\" settings:$(br2)$(bold)\"Turret Awareness\"$() has the turret check its range for other turrets and exclude entities that are already targeted. Either all turrets are ignored (default without upgrade), only turrets of the same type are checked (default with upgrade; e.g. Revolver turrets only check other Revolver turrets) or any turret is checked."
     },
     {
       "type": "text",

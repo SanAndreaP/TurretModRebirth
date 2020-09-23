@@ -1,0 +1,28 @@
+{
+  "name": "Shield Colorizer Upgrade",
+  "icon": "sapturretmod:upgrade.shield.colorizer",
+  "category": "sapturretmod:upgrades",
+  "pages": [
+    {
+      "type": "sapturretmod:upgrade_info",
+      "name": "Smart Targeting",
+      "item": "sapturretmod:upgrade.shield.colorizer",
+      "text": "Lets you change the color, transparency and culling of the forcefield from the $(l:turrets/forcefield)Forcefield Turret$(/l).$(br2)Adds an additional tab to the $(l:misc/tcu)TCU$() UI for configuration of this upgrade (described in the upcoming pages)."
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:upg_shield_colorizer"
+    },
+    {
+      "type": "image",
+      "title": "TCU Tab",
+      "images": ["sapturretmod:textures/gui/lexicon/tcu/tab_shield_colorizer.png"],
+      "text": "To configure this upgrade, the TCU is provided with an additional tab.",
+      "border": true
+    },
+    {
+      "type": "text",
+      "text": "For setting the $(bold)color$(), you can either use the HSLO sliders (hue, saturation, luminance, opacity), adjust their value next to them manually or enter the color code as a hexadecimal value (OORRGGBB, O-opacity, R-red, G-green, B-blue; ranging from 00 to FF).$(br2)If you set it to $(bold)cull faces$(), if you stand inside the forcefield, you won't see it at all, regardless of opacity. Only those outside can see it."
+    }
+  ]
+}
