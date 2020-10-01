@@ -6,9 +6,10 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.registry.turret.shieldgen;
 
-import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.network.PacketEffect;
+import de.sanandrew.mods.turretmod.registry.EnumEffect;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.block.material.Material;
@@ -20,10 +21,8 @@ import net.minecraft.entity.projectile.EntityFireball;
 import net.minecraft.entity.projectile.EntityLlamaSpit;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.network.play.server.SPacketEntityVelocity;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.WorldServer;
 
 import java.util.ArrayList;
@@ -93,18 +92,11 @@ public class ShieldHandler
                     if( opOwner.isPresent() ) {
                         projectile.setDead();
 
-                        for( int i = 0; i < 20; i++ ) {
-                            double d2 = MiscUtils.RNG.randomGaussian() * 0.02D;
-                            double d0 = MiscUtils.RNG.randomGaussian() * 0.02D;
-                            double d1 = MiscUtils.RNG.randomGaussian() * 0.02D;
-                            turretL.world.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL,
-                                                        projectile.posX + MiscUtils.RNG.randomDouble() * 2.0D - 1.0D,
-                                                        projectile.posY + MiscUtils.RNG.randomDouble(),
-                                                        projectile.posZ + MiscUtils.RNG.randomDouble() * 2.0D - 1.0D, d2, d0, d1);
-                        }
+                        PacketEffect.addEffect(EnumEffect.PROJECTILE_DEATH, projectile.dimension, projectile.posX, projectile.posY, projectile.posZ, null);
 
-                        if( opOwner.get() instanceof EntityCreature ) {
-                            TmrUtils.INSTANCE.setEntityTarget((EntityCreature) opOwner.get(), processor.getTurretInst());
+                        Entity owner = opOwner.get();
+                        if( owner instanceof EntityCreature ) {
+                            TmrUtils.INSTANCE.setEntityTarget((EntityCreature) owner, processor.getTurretInst());
                         }
 
                         hasPushed = true;
@@ -115,6 +107,8 @@ public class ShieldHandler
                         if( shield.getValue() <= 0.0F ) {
                             break;
                         }
+
+                        recognizedEntities.add(owner);
                     }
                 }
             }

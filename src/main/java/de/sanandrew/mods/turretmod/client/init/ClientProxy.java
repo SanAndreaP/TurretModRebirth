@@ -75,6 +75,7 @@ import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleExplosion;
 import net.minecraft.client.particle.ParticleSmokeNormal;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -85,6 +86,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -228,6 +230,7 @@ public class ClientProxy
     }
 
     @Override
+    @SuppressWarnings("ConstantConditions")
     public void addEffect(EnumEffect effect, double x, double y, double z, Tuple data) {
         Minecraft mc = Minecraft.getMinecraft();
         switch( effect ) {
@@ -243,10 +246,13 @@ public class ClientProxy
                 double zShift = Math.cos(rotXZ) * 0.6F * Math.cos(rotY);
 
                 for( int i = 0; i < 8; i++ ) {
-                    double xDist = MiscUtils.RNG.randomDouble() * 0.05 - 0.025;
-                    double yDist = MiscUtils.RNG.randomDouble() * 0.05 - 0.025;
-                    double zDist = MiscUtils.RNG.randomDouble() * 0.05 - 0.025;
-                    Particle fx = new ParticleSmokeNormal.Factory().createParticle(0, mc.world, x + xShift, y + yShift, z + zShift, xShift * 0.1F + xDist, yShift * 0.1F + yDist, zShift * 0.1F + zDist);
+                    Particle fx = new ParticleSmokeNormal.Factory().createParticle(0, mc.world,
+                                                                                   x + xShift,
+                                                                                   y + yShift,
+                                                                                   z + zShift,
+                                                                                   xShift * 0.1F + MiscUtils.RNG.randomDouble() * 0.05 - 0.025,
+                                                                                   yShift * 0.1F + MiscUtils.RNG.randomDouble() * 0.05 - 0.025,
+                                                                                   zShift * 0.1F + MiscUtils.RNG.randomDouble() * 0.05 - 0.025);
                     mc.effectRenderer.addEffect(fx);
                 }
                 break;
@@ -291,6 +297,18 @@ public class ClientProxy
             case LEVEL_UP: {
                 mc.world.playSound(x, y, z, SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.NEUTRAL, 1.0F, 1.0F, false);
             }
+            case PROJECTILE_DEATH: {
+                for( int i = 0; i < 20; i++ ) {
+                    Particle fx = new ParticleExplosion.Factory().createParticle(0, mc.world,
+                                                                                 x + MiscUtils.RNG.randomDouble() * 2.0D - 1.0D,
+                                                                                 y + MiscUtils.RNG.randomDouble(),
+                                                                                 z + MiscUtils.RNG.randomDouble() * 2.0D - 1.0D,
+                                                                                 MiscUtils.RNG.randomGaussian() * 0.02D,
+                                                                                 MiscUtils.RNG.randomGaussian() * 0.02D,
+                                                                                 MiscUtils.RNG.randomGaussian() * 0.02D);
+                    mc.effectRenderer.addEffect(fx);
+                }
+            }
         }
     }
 
@@ -320,11 +338,7 @@ public class ClientProxy
 
     public static float[] forceGlow() {
         float[] prevBright = new float[] {OpenGlHelper.lastBrightnessX, OpenGlHelper.lastBrightnessY};
-        int brightness = 0xF0;
-        int brightX = brightness % 65536;
-        int brightY = brightness / 65536;
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightX, brightY);
-
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 0xF0, 0x0);
         return prevBright;
     }
 

@@ -7,7 +7,7 @@
       "type": "sapturretmod:upgrade_info",
       "name": "Upgrade Storage",
       "item": "sapturretmod:upgrade.upgstorage.1",
-      "text": "Are the 9 slots provided to you for upgrading a turret not enough? These upgrades each unlock an additional row of 9 upgrade slots."
+      "text": "If the 9 slots provided to you for upgrading a turret are not enough, these upgrades each unlock an additional row of 9 upgrade slots."
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",

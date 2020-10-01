@@ -78,7 +78,7 @@ public class PacketEffect
         buf.writeDouble(this.x);
         buf.writeDouble(this.y);
         buf.writeDouble(this.z);
-        if(this.data != null) {
+        if( this.data != null ) {
             final byte[] dataArray;
             try( ByteArrayOutputStream baos = new ByteArrayOutputStream();
                  ObjectOutputStream oos = new ObjectOutputStream(baos) )

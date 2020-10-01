@@ -14,7 +14,8 @@ public enum EnumEffect
     SHOTGUN_SHOT,
     CRYO_PARTICLE,
     MINIGUN_SHOT,
-    LEVEL_UP;
+    LEVEL_UP,
+    PROJECTILE_DEATH;
 
     public static final EnumEffect[] VALUES = values();
 }

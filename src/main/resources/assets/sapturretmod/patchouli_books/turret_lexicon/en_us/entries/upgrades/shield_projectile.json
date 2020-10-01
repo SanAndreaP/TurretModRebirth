@@ -1,0 +1,17 @@
+{
+  "name": "Projectile Deflector",
+  "icon": "sapturretmod:upgrade.shield.projectile",
+  "category": "sapturretmod:upgrades",
+  "pages": [
+    {
+      "type": "sapturretmod:upgrade_info",
+      "name": "Projectile Deflector",
+      "item": "sapturretmod:upgrade.shield.projectile",
+      "text": "Augments the $(l:turrets/forcefield)Forcefield Turret$(/l) and allows its shield to absorb incoming enemy projectiles. Each projectile absorbed does 0.5 points of damage to the shield."
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:upg_shield_projectile"
+    }
+  ]
+}

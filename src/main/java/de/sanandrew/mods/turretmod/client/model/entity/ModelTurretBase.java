@@ -33,6 +33,7 @@ public class ModelTurretBase
 
 	private final ModelJsonLoader<ModelTurretBase, ModelJsonLoader.ModelJson> modelJson;
 	private final float scale;
+	private boolean isGlowing = false;
 
 	public ModelTurretBase(float scale) {
 	    this(scale, Resources.TURRET_T1_BASE.resource);
@@ -48,13 +49,19 @@ public class ModelTurretBase
 		this.setRotationAngles(limbSwing, limbSwingAmount, rotFloat, rotYaw, rotPitch, scale, entity);
 
 		if( this.modelJson.isLoaded() ) {
+			float[] lmCoords = new float[] { OpenGlHelper.lastBrightnessX, OpenGlHelper.lastBrightnessY };
 			Arrays.asList(this.modelJson.getMainBoxes()).forEach((box) -> {
-				ITurretInst turret = (ITurretInst) entity;
-				int b = turret.getPartBrightnessForRender(getSubmergedBoxOffset(box));
-				OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, b % 0x1_0000, (float) b / 0x1_0000);
+				if( this.isGlowing ) {
+					OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 0xF0, 0x00);
+				} else {
+					ITurretInst turret = (ITurretInst) entity;
+					int         b      = turret.getPartBrightnessForRender(getSubmergedBoxOffset(box));
+					OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, b % 0x1_0000, (float) b / 0x1_0000);
+				}
 
 				box.render(scale);
 			});
+			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lmCoords[0], lmCoords[1]);
 		}
 	}
 
@@ -104,5 +111,9 @@ public class ModelTurretBase
 
 	List<String> getMandatoryBoxes() {
 		return Arrays.asList("head", "healthBar", "ammoBar");
+	}
+
+	public void setGlowing(boolean glowing) {
+		this.isGlowing = glowing;
 	}
 }

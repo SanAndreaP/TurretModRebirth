@@ -29,8 +29,10 @@ public abstract class TargetingEvent
     public static class ProcessorTick
             extends TargetingEvent
     {
-        public ProcessorTick(ITargetProcessor processor) {
+        public final long processTicks;
+        public ProcessorTick(ITargetProcessor processor, long processTicks) {
             super(processor);
+            this.processTicks = processTicks;
         }
     }
 

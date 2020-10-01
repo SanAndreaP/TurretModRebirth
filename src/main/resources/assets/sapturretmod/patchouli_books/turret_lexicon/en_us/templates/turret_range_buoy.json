@@ -12,7 +12,7 @@
     {
       "type": "custom",
       "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentCustomText",
-      "text": "#rangeLY",
+      "text": "#rangeHY",
       "rotation": 90.0,
       "x": 8, "y": 72,
       "alignment": "center"
@@ -36,7 +36,7 @@
     {
       "type": "custom",
       "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentCustomText",
-      "text": "#rangeHY",
+      "text": "#rangeLY",
       "rotation": 90.0,
       "x": 8, "y": 40,
       "alignment": "center"

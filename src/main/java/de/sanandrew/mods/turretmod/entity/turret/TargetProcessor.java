@@ -408,10 +408,11 @@ public final class TargetProcessor
 
         AxisAlignedBB aabb = this.getAdjustedRange(true);
 
+        if( TARGET_BUS.post(new TargetingEvent.ProcessorTick(this, this.processTicks)) ) {
+            return;
+        }
+
         if( this.processTicks++ % 10 == 0 ) {
-            if( TARGET_BUS.post(new TargetingEvent.ProcessorTick(this)) ) {
-                return;
-            }
             if( this.entityToAttack == null ) {
                 for( Entity entityObj : getValidTargetList(aabb) ) {
                     if( this.checkTargetListeners(entityObj) ) {

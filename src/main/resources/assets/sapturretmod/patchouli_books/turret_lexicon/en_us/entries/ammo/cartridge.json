@@ -8,12 +8,16 @@
       "type": "spotlight",
       "item": "sapturretmod:ammo.cartridge",
       "title": "Ammo Cartridge",
-      "text": "Carry more rounds with the ammo cartridge! Right-click whilst holding it to open a chest-like UI.$(br)Any round on the ground that is picked up will be put into a cartridge.$(br)$(italic)A cartridge can only hold one type of ammo! Once you put crossbow bolts in it, it'll not accept bullets anymore until it is empty.$()"
+      "text": "Carry more rounds with the ammo cartridge! Use ($(k:use)) it to open a chest-like UI, on a turret it will attempt to fill that turret up, as long as it's the right kind of ammo.$(br2)$(italic)A cartridge can only hold one type of ammo! Once you put, for example, crossbow bolts in it, it'll not accept bullets anymore until it is empty.$()"
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
       "recipe": "sapturretmod:upg_empty",
       "flavor_text": "*slaps cartridge* This boy can fit so many rounds in it"
+    },
+    {
+      "type": "text",
+      "text": "Note: If you have a cartridge in your inventory that isn't empty, once you pick up ammo, the cartridge checks if it can accept the ammo and store it before it goes into your inventory."
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "name": "Smart Targeting Upgrade",
+  "name": "Smart Targeting",
   "icon": "sapturretmod:upgrade.smarttgt",
   "category": "sapturretmod:upgrades",
   "pages": [
@@ -26,7 +26,7 @@
     },
     {
       "type": "text",
-      "text": "$(bold)\"Tamed Awareness\"$() controls how the turret acts around tamables (tamed entities like wolves, horses, etc.) - provided that the entity type is targeted as well. Either all tamables (default) or only tamables belonging to a targeted player are attacked, or every tamable is ignored.$(br2)\"$(bold)\"Age Awareness\"$() is pretty straight-forward: Either both adults and children (default), only adults or only children (if you're monster that is) are attacked"
+      "text": "$(bold)\"Tamed Awareness\"$() controls how the turret acts around tamables (tamed entities like wolves, horses, etc.) - provided that the entity type is targeted as well. Either all tamables (default) or only tamables belonging to a targeted player are attacked, or every tamable is ignored.$(br2)$(bold)\"Age Awareness\"$() is pretty straight-forward: Either both adults and children (default), only adults or only children are attacked"
     },
     {
       "type": "text",
@@ -34,7 +34,7 @@
     },
     {
       "type": "text",
-      "text": "$(italic)Example 1: \"Shoot when global entity amount is more than... 8\"$()$(br2)The turret will attack if there's more than 8 targeted entities in its range: 4 zombies and 5 skeletons = 9 entities. Targeting them is at random, it does not register that there's more skeletons than zombies."
+      "text": "$(italic)Example 1: \"Shoot when global entity amount is more than... 8\"$()$(br2)The turret will attack if there's more than 8 targeted entities in its range: 4 zombies and 5 skeletons = 9 entities. Targeting them is at random, it does not care that there's more skeletons than zombies."
     },
     {
       "type": "text",

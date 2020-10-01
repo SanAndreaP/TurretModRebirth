@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.client.render.layer;
 
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.init.ClientProxy;
+import de.sanandrew.mods.turretmod.client.model.entity.ModelTurretBase;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLiving;
@@ -25,6 +26,10 @@ public class LayerTurretGlow<E extends EntityLiving & ITurretInst>
     public LayerTurretGlow(RenderLiving<E> turretRenderer, ModelBase glowModel) {
         this.turretRenderer = turretRenderer;
         this.glowModel = glowModel;
+
+        if( this.glowModel instanceof ModelTurretBase ) {
+            ((ModelTurretBase) this.glowModel).setGlowing(true);
+        }
     }
 
     @Override
@@ -39,14 +44,10 @@ public class LayerTurretGlow<E extends EntityLiving & ITurretInst>
         GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
 
         GlStateManager.depthMask(false);
-
-        float[] prevBright = ClientProxy.forceGlow();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
         this.glowModel.setLivingAnimations(turret, limbSwing, limbSwingAmount, partialTicks);
         this.glowModel.render(turret, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-
-        ClientProxy.resetGlow(prevBright);
 
         GlStateManager.depthMask(true);
 
