@@ -125,11 +125,11 @@ entity.sapturretmod:turret.flamethrower.name=Flamethrower Turret (T3)
 death.attack.sapturretmod.turret.sapturretmod:crossbow=%1$s was shot by %2$s
 death.attack.sapturretmod.turret.sapturretmod:shotgun=%1$s has been turned into cheese by %2$s
 death.attack.sapturretmod.turret.sapturretmod:snowball=%1$s was frozen solid by %2$s
-death.attack.sapturretmod.turret.sapturretmod:revolver=%1$s played russian roulette with %2$s and lost
+death.attack.sapturretmod.turret.sapturretmod:revolver=%1$s played gunslinger with %2$s and lost
 death.attack.sapturretmod.turret.sapturretmod:minigun=%1$s was pricked to death by %2$s
 death.attack.sapturretmod.turret.sapturretmod:shieldgen=%1$s was smushed to death by %2$s
-death.attack.sapturretmod.turret.sapturretmod:laser=%1$s was cut precisely and burnt by %2$s
-death.attack.sapturretmod.turret.sapturretmod:flamethrower=%1$s has been cooked to well-done by %2$s
+death.attack.sapturretmod.turret.sapturretmod:laser=%1$s was cut precisely by %2$s
+death.attack.sapturretmod.turret.sapturretmod:flamethrower=%1$s has been cooked well-done by %2$s
 
 #### GUI ####
 # TCU

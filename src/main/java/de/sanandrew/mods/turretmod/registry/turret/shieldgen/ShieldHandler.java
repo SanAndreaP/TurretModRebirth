@@ -66,7 +66,7 @@ public class ShieldHandler
                     double dY = turretInst.get().posY - target.posY;
                     double dZ = turretInst.get().posZ - target.posZ;
 
-                    if( knockBackEntity(turretInst, target, 1.0F, dX, dY, dZ) ) {
+                    if( knockBackEntity(turretInst, target, dX, dY, dZ) ) {
                         if( target instanceof EntityCreature ) {
                             TmrUtils.INSTANCE.setEntityTarget((EntityCreature) target, processor.getTurretInst());
                         }
@@ -90,25 +90,23 @@ public class ShieldHandler
                     Optional<Entity> opOwner = PROJ_GET_OWNER.stream().map(func -> func.apply(projectile))
                                                              .filter(owner -> owner != null && processor.isEntityTargeted(owner)).findFirst();
                     if( opOwner.isPresent() ) {
-                        projectile.setDead();
+                        if( knockBackProjectile(turretInst, projectile) ) {
+                            Entity owner = opOwner.get();
+                            if( owner instanceof EntityCreature ) {
+                                TmrUtils.INSTANCE.setEntityTarget((EntityCreature) owner, processor.getTurretInst());
+                            }
 
-                        PacketEffect.addEffect(EnumEffect.PROJECTILE_DEATH, projectile.dimension, projectile.posX, projectile.posY, projectile.posZ, null);
+                            hasPushed = true;
 
-                        Entity owner = opOwner.get();
-                        if( owner instanceof EntityCreature ) {
-                            TmrUtils.INSTANCE.setEntityTarget((EntityCreature) owner, processor.getTurretInst());
+                            shield.damage(TurretForcefield.shieldDamagePerProjectile);
+                            turretInst.updateState();
+
+                            if( shield.getValue() <= 0.0F ) {
+                                break;
+                            }
                         }
 
-                        hasPushed = true;
-
-                        shield.damage(TurretForcefield.shieldDamagePerProjectile);
-                        turretInst.updateState();
-
-                        if( shield.getValue() <= 0.0F ) {
-                            break;
-                        }
-
-                        recognizedEntities.add(owner);
+                        recognizedEntities.add(projectile);
                     }
                 }
             }
@@ -159,8 +157,36 @@ public class ShieldHandler
         }
     }
 
-    private static boolean knockBackEntity(ITurretInst turretInst, Entity entity, float strength, double xRatio, double yRatio, double zRatio) {
+    private static boolean knockBackProjectile(ITurretInst turretInst, Entity projectile) {
+        int ticksPushed = ALREADY_PUSHED.containsKey(turretInst) ? ALREADY_PUSHED.get(turretInst).getOrDefault(projectile, -1) : -1;
+
+        boolean hasPushed = false;
+        if( ticksPushed < 0 ) {
+            projectile.prevRotationPitch = 0.0F;
+            projectile.prevRotationYaw = 0.0F;
+
+            projectile.setVelocity(-projectile.motionX, projectile.motionY, -projectile.motionZ);
+
+            projectile.velocityChanged = true;
+
+            ALREADY_PUSHED.computeIfAbsent(turretInst, inst -> new WeakHashMap<>()).put(projectile, turretInst.get().ticksExisted + 20);
+
+            hasPushed = true;
+        } else if( ticksPushed < turretInst.get().ticksExisted ) {
+            projectile.setDead();
+
+            PacketEffect.addEffect(EnumEffect.PROJECTILE_DEATH, projectile.dimension, projectile.posX, projectile.posY, projectile.posZ, null);
+
+            hasPushed = true;
+        }
+
+        return hasPushed;
+    }
+
+    private static boolean knockBackEntity(ITurretInst turretInst, Entity entity, double xRatio, double yRatio, double zRatio) {
+        final float strength = 1.0F;
         boolean hasBeenPushed = ALREADY_PUSHED.containsKey(turretInst) && ALREADY_PUSHED.get(turretInst).getOrDefault(entity, -1) > turretInst.get().ticksExisted;
+
         if( hasBeenPushed ) {
             return false;
         } else {

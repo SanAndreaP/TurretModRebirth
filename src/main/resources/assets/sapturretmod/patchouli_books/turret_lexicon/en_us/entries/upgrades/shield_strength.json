@@ -1,0 +1,25 @@
+{
+  "name": "Shield Amplifier Upgrades",
+  "icon": "sapturretmod:upgrade.shield.strength.1",
+  "category": "sapturretmod:upgrades",
+  "pages": [
+    {
+      "type": "sapturretmod:upgrade_info",
+      "name": "Amplifier Upgrades",
+      "item": "sapturretmod:upgrade.shield.strength.1",
+      "text": "These types of upgrades improve upon the performance of the $(l:turrets/forcefield)Forcefield Turret$(/l) and increase range radius (R) and shielding points (S).$(br2)$(italic)Stats are mentioned below their crafting recipes, each level \"replaces\" the stats of the previous.$()"
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:upg_shield_strength1",
+      "header": "Amplifier I",
+      "flavor_text": "$(italic)R: 16 blocks; S: 150 points$()"
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:upg_shield_strength2",
+      "header": "Amplifier II",
+      "flavor_text": "$(italic)R: 24 blocks; S: 250 points$(br)$(5)Requires Amplifier I$()"
+    }
+  ]
+}

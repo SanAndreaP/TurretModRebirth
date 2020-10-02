@@ -1,0 +1,17 @@
+{
+  "name": "Turret Safe",
+  "icon": "sapturretmod:upgrade.turretsafe",
+  "category": "sapturretmod:upgrades",
+  "pages": [
+    {
+      "type": "sapturretmod:upgrade_info",
+      "name": "Turret Safe",
+      "item": "sapturretmod:upgrade.turretsafe",
+      "text": "Normally, when a turret dies, its parts disintegrate into the aether, leaving only ammo and upgrades at its place. To prevent that, this upgrade stores the turret into the $(l:misc/crate)Turret Crate$(/l) right before it dies.$(br)Though, the upgrade itself will be converted to an upgrade base, once activated."
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:upg_turretsafe"
+    }
+  ]
+}
