@@ -7,7 +7,11 @@
 package de.sanandrew.mods.turretmod.registry.turret.shieldgen;
 
 import de.sanandrew.mods.sanlib.lib.ColorObj;
-import de.sanandrew.mods.turretmod.api.turret.*;
+import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
+import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
+import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.registry.upgrades.shield.ShieldColorizer;
 import de.sanandrew.mods.turretmod.util.TmrUtils;

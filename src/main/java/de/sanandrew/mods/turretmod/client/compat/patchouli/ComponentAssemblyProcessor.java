@@ -17,7 +17,6 @@ import vazkii.patchouli.api.IVariableProvider;
 import vazkii.patchouli.common.util.ItemStackUtil;
 
 import java.util.Arrays;
-import java.util.stream.Stream;
 
 @SideOnly(Side.CLIENT)
 @SuppressWarnings("unused")

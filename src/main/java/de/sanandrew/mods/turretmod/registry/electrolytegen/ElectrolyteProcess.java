@@ -48,13 +48,13 @@ public class ElectrolyteProcess
     public void writeToByteBuf(ByteBuf buf) {
         ByteBufUtils.writeItemStack(buf, this.processStack);
         buf.writeShort(this.progress);
-        ByteBufUtils.writeUTF8String(buf, this.recipe.getId().toString());
+        ByteBufUtils.writeUTF8String(buf, this.recipe != null ? this.recipe.getId().toString() : "");
     }
 
     public void writeToNBT(NBTTagCompound nbt) {
         ItemStackUtils.writeStackToTag(this.processStack, nbt, "ProgressItem");
         nbt.setShort("Progress", this.progress);
-        nbt.setString("Recipe", this.recipe.getId().toString());
+        nbt.setString("Recipe", this.recipe != null ? this.recipe.getId().toString() : "");
     }
 
     public int getProgress() {

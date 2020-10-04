@@ -19,7 +19,6 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
 import de.sanandrew.mods.turretmod.registry.EnumEffect;
 import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.Sounds;
-import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -80,8 +79,7 @@ public class TurretMinigun
             }
 
             if( turretL.world.isRemote ) {
-                TurretModRebirth.proxy.addEffect(EnumEffect.MINIGUN_SHOT, turretL.posX, turretL.posY + 1.5F, turretL.posZ,
-                                                 new Tuple(turretL.rotationYawHead, turretL.rotationPitch - 7.5F, ram.isLeftShot));
+                EnumEffect.MINIGUN_SHOT.addEffect(turretL, new Tuple(turretL.rotationYawHead, turretL.rotationPitch - 7.5F, ram.isLeftShot));
             }
         }
     }

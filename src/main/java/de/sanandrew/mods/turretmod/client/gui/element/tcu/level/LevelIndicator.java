@@ -23,10 +23,12 @@ public class LevelIndicator
 
     private int currLvl;
     private int minXp;
+    private int excXp;
     private int maxXp;
     private int currXp;
 
-    private GuiElementInst text;
+    private GuiElementInst textLvl;
+    private GuiElementInst textExp;
     private GuiElementInst progress;
     private GuiElementInst progressTotal;
 
@@ -38,22 +40,33 @@ public class LevelIndicator
         this.minXp = storage.getCurrentLevelMinXp();
         this.maxXp = storage.getNextLevelMinXp();
         this.currXp = storage.getXp();
+        this.excXp = storage.getExcessXp();
     }
 
     @Override
     public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
-        JsonObject txtData = MiscUtils.defIfNull(data.getAsJsonObject("text"), JsonObject::new);
+        JsonObject txtData = MiscUtils.defIfNull(data.getAsJsonObject("textLevel"), JsonObject::new);
         int[] offset = JsonUtils.getIntArray(txtData.get("offset"), new int[2], Range.is(2));
-        this.text = new GuiElementInst(offset, new LevelText(), txtData).initialize(gui);
-        this.text.get().bakeData(gui, this.text.data, this.text);
+        this.textLvl = new GuiElementInst(offset, new LevelText(), txtData).initialize(gui);
+        this.textLvl.alignment = JsonUtils.getStringArray(txtData.get("alignment"), new String[] { "center", "top"});
+        this.textLvl.get().bakeData(gui, this.textLvl.data, this.textLvl);
 
         JsonObject prgData = MiscUtils.defIfNull(data.getAsJsonObject("progressbar"), JsonObject::new);
-        offset = JsonUtils.getIntArray(prgData.get("offset"), new int[] {0, this.text.pos[1] + this.text.get().getHeight() + 1}, Range.is(2));
+        offset = JsonUtils.getIntArray(prgData.get("offset"), new int[2], Range.is(2));
+        offset[1] += this.textLvl.pos[1] + this.textLvl.get().getHeight() - 2;
         this.progress = new GuiElementInst(offset, new LevelBar(false), prgData).initialize(gui);
         this.progress.get().bakeData(gui, this.progress.data, this.progress);
 
+        txtData = MiscUtils.defIfNull(data.getAsJsonObject("textXP"), JsonObject::new);
+        offset = JsonUtils.getIntArray(txtData.get("offset"), new int[2], Range.is(2));
+        offset[1] += this.progress.pos[1] + 6;
+        this.textExp = new GuiElementInst(offset, new LevelXP(), txtData).initialize(gui);
+        this.textExp.alignment = JsonUtils.getStringArray(txtData.get("alignment"), new String[] { "center", "top"});
+        this.textExp.get().bakeData(gui, this.textExp.data, this.textExp);
+
         prgData = MiscUtils.defIfNull(data.getAsJsonObject("progressbarTotal"), JsonObject::new);
-        offset = JsonUtils.getIntArray(prgData.get("offset"), new int[] {0, this.progress.pos[1] + 6}, Range.is(2));
+        offset = JsonUtils.getIntArray(prgData.get("offset"), new int[2], Range.is(2));
+        offset[1] += textExp.pos[1] + textExp.get().getHeight() - 2;
         this.progressTotal = new GuiElementInst(offset, new LevelBar(true), prgData).initialize(gui);
         this.progressTotal.get().bakeData(gui, this.progressTotal.data, this.progressTotal);
 
@@ -62,7 +75,7 @@ public class LevelIndicator
 
     @Override
     public void update(IGui gui, JsonObject data) {
-        this.text.get().update(gui, this.text.data);
+        this.textLvl.get().update(gui, this.textLvl.data);
         this.progress.get().update(gui, this.progress.data);
         this.progressTotal.get().update(gui, this.progressTotal.data);
 
@@ -71,9 +84,10 @@ public class LevelIndicator
 
     @Override
     public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
-        GuiDefinition.renderElement(gui, x + this.text.pos[0], y + this.text.pos[1], mouseX, mouseY, partTicks, this.text);
         GuiDefinition.renderElement(gui, x + this.progress.pos[0], y + this.progress.pos[1], mouseX, mouseY, partTicks, this.progress);
         GuiDefinition.renderElement(gui, x + this.progressTotal.pos[0], y + this.progressTotal.pos[1], mouseX, mouseY, partTicks, this.progressTotal);
+        GuiDefinition.renderElement(gui, x + this.textLvl.pos[0], y + this.textLvl.pos[1], mouseX, mouseY, partTicks, this.textLvl);
+        GuiDefinition.renderElement(gui, x + this.textExp.pos[0], y + this.textExp.pos[1], mouseX, mouseY, partTicks, this.textExp);
     }
 
     @Override
@@ -87,20 +101,44 @@ public class LevelIndicator
     }
 
     private void calcSize() {
-        this.currWidth = Math.max(this.text.pos[0] + this.text.get().getWidth(),
+        this.currWidth = Math.max(this.textLvl.pos[0] + this.textLvl.get().getWidth(),
                                   Math.max(this.progress.pos[0] + this.progress.get().getWidth(),
                                            this.progressTotal.pos[0] + this.progressTotal.get().getWidth()));
-        this.currHeight = Math.max(this.text.pos[1] + this.text.get().getHeight(),
+        this.currHeight = Math.max(this.textLvl.pos[1] + this.textLvl.get().getHeight(),
                                    Math.max(this.progress.pos[1] + this.progress.get().getHeight(),
                                             this.progressTotal.pos[1] + this.progressTotal.get().getHeight()));
     }
 
-    private final class LevelText
+    private class LevelText
             extends Text
     {
         @Override
         public String getDynamicText(IGui gui, String originalText) {
             return String.format(originalText, LevelIndicator.this.currLvl);
+        }
+
+        @Override
+        public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
+            if( this.colors.containsKey("stroke") ) {
+                this.setColor("stroke");
+                super.render(gui, partTicks, x + 1, y, mouseX, mouseY, data);
+                super.render(gui, partTicks, x - 1, y, mouseX, mouseY, data);
+                super.render(gui, partTicks, x, y + 1, mouseX, mouseY, data);
+                super.render(gui, partTicks, x, y - 1, mouseX, mouseY, data);
+                this.setColor(null);
+            }
+
+            super.render(gui, partTicks, x, y, mouseX, mouseY, data);
+        }
+    }
+
+    private final class LevelXP
+            extends LevelText
+    {
+        @Override
+        public String getDynamicText(IGui gui, String originalText) {
+            return String.format(originalText, String.format(LevelIndicator.this.excXp > 0 ? "%d (+%d)" : "%d",
+                                                             LevelIndicator.this.currXp, LevelIndicator.this.excXp));
         }
     }
 

@@ -1,7 +1,6 @@
 package de.sanandrew.mods.turretmod.client.gui.element.tcu.info;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
@@ -12,10 +11,6 @@ import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.Range;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class PlayerIcon
         extends Texture

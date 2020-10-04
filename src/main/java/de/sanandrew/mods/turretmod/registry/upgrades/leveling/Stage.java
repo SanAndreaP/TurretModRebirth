@@ -7,16 +7,12 @@ import com.google.gson.JsonSyntaxException;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.network.PacketEffect;
 import de.sanandrew.mods.turretmod.registry.EnumEffect;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
 import org.apache.logging.log4j.Level;
 
 import java.util.ArrayList;
@@ -94,7 +90,7 @@ public class Stage
 
         if( playSound && hasMultiplier ) {
             EntityLiving markus = turretInst.get();
-            PacketEffect.addEffect(EnumEffect.LEVEL_UP, markus.dimension, markus.posX, markus.posY, markus.posZ, null);
+            EnumEffect.LEVEL_UP.addEffect(markus);
         }
     }
 

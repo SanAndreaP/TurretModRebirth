@@ -6,8 +6,8 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.registry.projectile;
 
-import de.sanandrew.mods.turretmod.api.ammo.IProjectileRegistry;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectileRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;

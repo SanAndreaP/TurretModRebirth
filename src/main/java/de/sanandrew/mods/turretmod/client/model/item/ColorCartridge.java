@@ -4,14 +4,10 @@ import com.google.common.base.Strings;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.inventory.AmmoCartridgeInventory;
 import de.sanandrew.mods.turretmod.item.ItemAmmoCartridge;
-import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionType;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.util.ResourceLocation;
 
 public class ColorCartridge
         implements IItemColor

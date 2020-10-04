@@ -6,7 +6,6 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.registry.projectile;
 
-import de.sanandrew.mods.turretmod.api.IRegistry;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectileRegistry;
 

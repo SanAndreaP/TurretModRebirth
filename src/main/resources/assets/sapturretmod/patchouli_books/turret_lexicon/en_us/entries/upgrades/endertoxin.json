@@ -17,7 +17,7 @@
       "type": "sapturretmod:upgrade_info",
       "name": "Ender Toxin II",
       "item": "sapturretmod:upgrade.endertoxin.2",
-      "text": "The turret will be able to damage huge ender-based creatures like the Ender Dragon due to further projectile augmentation with explosives.$(br2)$(5)$(o)Requires Ender Toxin I$()"
+      "text": "The turret will be able to damage huge ender-based creatures like the Ender Dragon due to further projectile augmentation with explosives.$(br)Coincidentially, the Wither also seems to be affected by this...$(br2)$(5)$(o)Requires Ender Toxin I$()"
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",

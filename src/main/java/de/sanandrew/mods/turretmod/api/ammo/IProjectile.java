@@ -182,6 +182,10 @@ public interface IProjectile
         /**
          * An ender dragon, only used if turret has "anti-enderdragon" upgrade
          */
-        SPECIAL_ENDER_DRAGON
+        SPECIAL_ENDER_DRAGON,
+        /**
+         * A wither, only used if turret has "anti-enderdragon" upgrade
+         */
+        SPECIAL_WITHER
     }
 }

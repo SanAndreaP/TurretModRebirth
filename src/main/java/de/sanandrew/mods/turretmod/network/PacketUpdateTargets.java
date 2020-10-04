@@ -51,7 +51,7 @@ public class PacketUpdateTargets
     }
 
     public static PacketUpdateTargets updateTargets(ITurretInst turretInst, UUID[] playerIds, boolean enabled) {
-        PacketUpdateTargets p = new PacketUpdateTargets(turretInst, PacketSubtype.ENTITY_ID, enabled);
+        PacketUpdateTargets p = new PacketUpdateTargets(turretInst, PacketSubtype.PLAYER_ID, enabled);
         p.playerIds = playerIds;
 
         return p;

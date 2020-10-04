@@ -1,17 +1,13 @@
 package de.sanandrew.mods.turretmod.compat.jei;
 
-import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
-import de.sanandrew.mods.turretmod.item.ItemAmmo;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.Ammunitions;
-import mezz.jei.api.ISubtypeRegistry;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.wrapper.IShapedCraftingRecipeWrapper;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
-import net.minecraft.util.ResourceLocation;
 
 import java.util.Arrays;
 import java.util.List;

@@ -28,6 +28,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MultiPartEntityPart;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -80,12 +81,10 @@ public class EntityTurretProjectile
         this.lastDamage = -1.0F;
     }
 
-    @SuppressWarnings("unused")
     EntityTurretProjectile(World world, IProjectile delegate, IAmmunition ammunition, String ammoSubtype, EntityTurret shooter, Entity target, double attackModifier) {
         this(world, delegate, ammunition, ammoSubtype, shooter, target, null, attackModifier);
     }
 
-    @SuppressWarnings("unused")
     EntityTurretProjectile(World world, IProjectile delegate, IAmmunition ammunition, String ammoSubtype, EntityTurret shooter, Vec3d shootingVec, double attackModifier) {
         this(world, delegate, ammunition, ammoSubtype, shooter, null, shootingVec, attackModifier);
     }
@@ -291,12 +290,10 @@ public class EntityTurretProjectile
                 double preHitMotionY = hitObj.entityHit.motionY;
                 double preHitMotionZ = hitObj.entityHit.motionZ;
 
-                if( hitObj.entityHit instanceof EntityLivingBase ) {
-                    ((EntityLivingBase) hitObj.entityHit).hurtResistantTime = 0;
+                hitObj.entityHit.hurtResistantTime = 0;
 
-                    if( hitObj.entityHit instanceof EntityCreature && this.shooterCache != null ) {
-                        TmrUtils.INSTANCE.setEntityTarget((EntityCreature) hitObj.entityHit, this.shooterCache);
-                    }
+                if( hitObj.entityHit instanceof EntityCreature && this.shooterCache != null ) {
+                    TmrUtils.INSTANCE.setEntityTarget((EntityCreature) hitObj.entityHit, this.shooterCache);
                 }
 
                 if( this.delegate.onDamageEntityPre(this.shooterCache, this, hitObj.entityHit, damagesource, dmg) && hitObj.entityHit.attackEntityFrom(damagesource, dmg.floatValue()) ) {
@@ -350,6 +347,8 @@ public class EntityTurretProjectile
                 return new DamageSourceProjectile(projectile.get(), turret).setIsThornsDamage();
             case SPECIAL_ENDER_DRAGON:
                 return new DamageSourceProjectile(projectile.get(), turret).setExplosion();
+            case SPECIAL_WITHER:
+                return new DamageSourceHiddenProjectile(projectile.get(), turret);
             default:
                 return new DamageSourceIndirectProjectile(projectile.get(), turret);
         }
@@ -361,12 +360,22 @@ public class EntityTurretProjectile
     }
 
     private IProjectile.TargetType getTargetType(Entity entity) {
-        if( entity instanceof EntityEnderman && this.shooterCache.getUpgradeProcessor().hasUpgrade(Upgrades.ENDER_TOXIN_I) ) {
+        if( this.shooterCache == null ) {
+            return IProjectile.TargetType.REGULAR;
+        }
+
+        boolean hasToxinI = this.shooterCache.getUpgradeProcessor().hasUpgrade(Upgrades.ENDER_TOXIN_I);
+        boolean hasToxinII = hasToxinI && this.shooterCache.getUpgradeProcessor().hasUpgrade(Upgrades.ENDER_TOXIN_II);
+
+        if( entity instanceof EntityEnderman && hasToxinI ) {
             return IProjectile.TargetType.SPECIAL_ENDERMAN;
-        } else if( (entity instanceof EntityDragon || (entity instanceof MultiPartEntityPart && ((MultiPartEntityPart) entity).parent instanceof EntityDragon))
-                           && this.shooterCache.getUpgradeProcessor().hasUpgrade(Upgrades.ENDER_TOXIN_II) )
+        } else if( (entity instanceof EntityDragon
+                       || (entity instanceof MultiPartEntityPart && ((MultiPartEntityPart) entity).parent instanceof EntityDragon))
+                   && hasToxinII )
         {
             return IProjectile.TargetType.SPECIAL_ENDER_DRAGON;
+        } else if( entity instanceof EntityWither && hasToxinII ) {
+            return IProjectile.TargetType.SPECIAL_WITHER;
         } else {
             return IProjectile.TargetType.REGULAR;
         }
@@ -512,15 +521,14 @@ public class EntityTurretProjectile
         ITurretInst getTurretInst();
     }
 
-    public static class DamageSourceProjectile
+    public static class DamageSourceHiddenProjectile
             extends EntityDamageSource
             implements ITurretDamageSource
     {
         private final ITurretInst turretInst;
 
-        DamageSourceProjectile(Entity projectile, ITurretInst turretInst) {
+        DamageSourceHiddenProjectile(Entity projectile, ITurretInst turretInst) {
             super(TmrConstants.ID + ".turret", projectile);
-            this.setProjectile();
 
             this.turretInst = turretInst;
         }
@@ -555,6 +563,16 @@ public class EntityTurretProjectile
         @Override
         public ITurretInst getTurretInst() {
             return this.turretInst;
+        }
+    }
+
+    public static class DamageSourceProjectile
+            extends DamageSourceHiddenProjectile
+    {
+        DamageSourceProjectile(Entity projectile, ITurretInst turretInst) {
+            super(projectile, turretInst);
+
+            this.setProjectile();
         }
     }
 

@@ -19,7 +19,6 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
 import de.sanandrew.mods.turretmod.registry.EnumEffect;
 import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.Sounds;
-import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -65,8 +64,7 @@ public class TurretShotgun
 
             if( turretInst.wasShooting() ) {
                 ram.barrelPos = 0.0F;
-                TurretModRebirth.proxy.addEffect(EnumEffect.SHOTGUN_SHOT, turretL.posX, turretL.posY + 1.5F, turretL.posZ,
-                                                 new Tuple(turretL.rotationYawHead, turretL.rotationPitch));
+                EnumEffect.SHOTGUN_SHOT.addEffect(turretL, new Tuple(turretL.rotationYawHead, turretL.rotationPitch));
             }
         }
     }

@@ -1,6 +1,5 @@
 package de.sanandrew.mods.turretmod.api;
 
-import de.sanandrew.mods.sanlib.api.client.lexicon.ILexiconInst;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectileRegistry;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyManager;
@@ -13,13 +12,10 @@ import de.sanandrew.mods.turretmod.api.repairkit.IRepairKitRegistry;
 import de.sanandrew.mods.turretmod.api.turret.IGuiTcuRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.UUID;
 
 public interface ITmrPlugin
 {

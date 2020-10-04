@@ -191,15 +191,27 @@ public class LevelStorage
     }
 
     public int getXp() {
+        return Math.min(this.xp, maxXp);
+    }
+
+    public int getExcessXp() {
+        return Math.max(this.xp - maxXp, 0);
+    }
+
+    public int getFullXp() {
         return this.xp;
+    }
+
+    public int retrieveExcessXp() {
+        int exp = this.getExcessXp();
+        this.xp -= exp;
+
+        return exp;
     }
 
     public void addXp(int xp) {
         if( xp > 0 ) {
             this.xp += xp;
-            if( this.xp > maxXp ) {
-                this.xp = maxXp;
-            }
         }
     }
 

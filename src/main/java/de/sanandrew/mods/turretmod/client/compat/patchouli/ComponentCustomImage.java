@@ -7,8 +7,6 @@ import net.minecraft.util.ResourceLocation;
 import vazkii.patchouli.api.IComponentRenderContext;
 import vazkii.patchouli.api.ICustomComponent;
 import vazkii.patchouli.api.VariableHolder;
-import vazkii.patchouli.client.book.BookEntry;
-import vazkii.patchouli.client.book.BookPage;
 
 public class ComponentCustomImage
         implements ICustomComponent

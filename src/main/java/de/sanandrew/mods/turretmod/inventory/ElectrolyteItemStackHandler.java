@@ -6,7 +6,6 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.inventory;
 
-import de.sanandrew.mods.turretmod.inventory.ElectrolyteInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 

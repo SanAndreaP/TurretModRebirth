@@ -10,8 +10,8 @@ package de.sanandrew.mods.turretmod.client.model.entity;
 
 import de.sanandrew.mods.sanlib.lib.client.ModelJsonLoader;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.registry.turret.TurretRevolver;
 import de.sanandrew.mods.turretmod.registry.Resources;
+import de.sanandrew.mods.turretmod.registry.turret.TurretRevolver;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.entity.EntityLivingBase;

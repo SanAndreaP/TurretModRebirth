@@ -3,16 +3,12 @@ package de.sanandrew.mods.turretmod.registry.assembly.recipe;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.item.ItemTurret;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyRecipe;
-import net.minecraft.block.BlockPlanks;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.oredict.OreDictionary;
-
-import java.util.Arrays;
 
 public class TurretShotgunRecipe
         extends AssemblyRecipe

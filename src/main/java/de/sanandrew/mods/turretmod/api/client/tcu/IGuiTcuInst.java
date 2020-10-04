@@ -13,7 +13,6 @@ import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.ResourceLocation;
 
 /**
  * A Turret Control Unit GUI instance.

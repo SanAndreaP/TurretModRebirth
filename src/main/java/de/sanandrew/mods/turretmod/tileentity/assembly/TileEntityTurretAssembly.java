@@ -14,7 +14,6 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
-import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.inventory.AssemblyInventory;
 import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
 import de.sanandrew.mods.turretmod.network.TileClientSync;
@@ -328,7 +327,8 @@ public class TileEntityTurretAssembly
         }
 
         if( this.isActiveClient && this.spawnParticle != null ) {
-            TurretModRebirth.proxy.addEffect(EnumEffect.ASSEMBLY_SPARK, spawnParticle.getValue(0), spawnParticle.<Double>getValue(1) + 0.05D, spawnParticle.getValue(2), null);
+            EnumEffect.ASSEMBLY_SPARK.addEffect(true, this.world.provider.getDimension(),
+                                                spawnParticle.getValue(0), spawnParticle.<Double>getValue(1) + 0.05D, spawnParticle.getValue(2));
             this.spawnParticle = null;
         }
     }

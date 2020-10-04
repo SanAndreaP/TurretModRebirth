@@ -18,7 +18,6 @@ import de.sanandrew.mods.turretmod.api.ammo.IProjectileInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.EnumEffect;
 import de.sanandrew.mods.turretmod.registry.Sounds;
-import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.MobEffects;
@@ -86,8 +85,7 @@ public class CryoBall
     public void onUpdate(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile) {
         Entity projEntity = projectile.get();
         if( projEntity.world.isRemote ) {
-            TurretModRebirth.proxy.addEffect(EnumEffect.CRYO_PARTICLE, projEntity.posX, projEntity.posY, projEntity.posZ,
-                                             new Tuple(projEntity.motionX, projEntity.motionY, projEntity.motionZ));
+            EnumEffect.CRYO_PARTICLE.addEffect(projEntity, new Tuple(projEntity.motionX, projEntity.motionY, projEntity.motionZ));
         }
     }
 
@@ -140,8 +138,6 @@ public class CryoBall
 
     @Override
     public void onDamageEntityPost(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile, Entity target, DamageSource damageSrc) {
-        if( target instanceof EntityLivingBase ) {
-            ((EntityLivingBase) target).hurtResistantTime = 0;
-        }
+        target.hurtResistantTime = 0;
     }
 }

@@ -30,7 +30,7 @@
       "type": "spotlight",
       "item": "minecraft:skull:2",
       "title": "Entity Target Settings",
-      "text": "Here you can configure which types of entities can be targeted by the turret by either individually selecting entries in the list or selecting groups of entities (all or none; monsters, animals, other)$(br2)It also features a Blacklist/Whitelist mode. The default is a whitelist."
+      "text": "Here you can configure which types of entities the turret can target by either individually selecting entries in the list or selecting groups of entities (all or none; monsters, animals, other)$(br2)It also features a Blacklist/Whitelist mode. The default is a whitelist."
     },
     {
       "type": "image",

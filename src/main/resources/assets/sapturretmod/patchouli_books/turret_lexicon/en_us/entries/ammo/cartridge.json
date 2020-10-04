@@ -17,7 +17,7 @@
     },
     {
       "type": "text",
-      "text": "Note: If you have a cartridge in your inventory that isn't empty, once you pick up ammo, the cartridge checks if it can accept the ammo and store it before it goes into your inventory."
+      "text": "Note: If you have a cartridge in your inventory that isn't full, once you pick up ammo, the cartridge checks if it can accept the ammo and store it before it goes into your inventory."
     }
   ]
 }

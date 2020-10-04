@@ -1,6 +1,5 @@
 package de.sanandrew.mods.turretmod.client.compat.patchouli;
 
-import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;

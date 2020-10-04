@@ -1,7 +1,6 @@
 package de.sanandrew.mods.turretmod.registry.assembly.recipe;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.item.ItemTurret;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyRecipe;
 import net.minecraft.block.BlockPlanks;

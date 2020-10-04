@@ -14,6 +14,8 @@ import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
+import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
+import de.sanandrew.mods.turretmod.registry.upgrades.leveling.LevelStorage;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -26,6 +28,7 @@ public class PacketPlayerTurretAction
     public static final byte SET_ACTIVE = 0;
     private static final byte DISMANTLE = 1;
     public static final byte SET_DEACTIVE = 2;
+    public static final byte RETRIEVE_XP = 3;
 
     private int turretId;
     private byte actionId;
@@ -60,6 +63,11 @@ public class PacketPlayerTurretAction
                 case SET_DEACTIVE:
                     turretInst.setActive(false);
                     break;
+                case RETRIEVE_XP:
+                    LevelStorage lvlStg = turretInst.getUpgradeProcessor().getUpgradeInstance(Upgrades.LEVELING.getId());
+                    if( lvlStg != null ) {
+                        player.addExperience(lvlStg.retrieveExcessXp());
+                    }
             }
         }
     }

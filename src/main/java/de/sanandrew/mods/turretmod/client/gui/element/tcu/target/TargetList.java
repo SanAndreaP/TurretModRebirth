@@ -1,12 +1,10 @@
 package de.sanandrew.mods.turretmod.client.gui.element.tcu.target;
 
-import com.google.common.collect.Range;
 import com.google.gson.JsonObject;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ScrollArea;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
-import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
@@ -14,7 +12,6 @@ import de.sanandrew.mods.turretmod.client.gui.tcu.TargetType;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class TargetList

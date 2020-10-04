@@ -26,7 +26,7 @@ public class PacketEffect
 
     private boolean errored;
 
-    public PacketEffect() {}
+    public PacketEffect() { }
 
     public PacketEffect(EnumEffect effect, double x, double y, double z, Tuple data) {
         this.effect = effect;
@@ -96,9 +96,5 @@ public class PacketEffect
         } else {
             buf.writeByte(0);
         }
-    }
-
-    public static void addEffect(EnumEffect effect, int dimension, double x, double y, double z, Tuple data) {
-        PacketRegistry.sendToAllAround(new PacketEffect(effect, x, y, z, data), dimension, x, y, z, 64.0D);
     }
 }

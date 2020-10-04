@@ -11,6 +11,7 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
@@ -61,7 +62,7 @@ public class PageNavigation
         final String currEntry = guiTcuInst.getCurrentEntryKey();
 
         final int tabScrollElemLWidth = this.tabScrollL.get().getWidth();
-        final IGuiElement tabScrollElemR = this.tabScrollR.get();
+        final int tabScrollElemRWidth = this.tabScrollR.get().getWidth();
 
         int cntAvailableTabs = 0;
         for( Map.Entry<GuiElementInst, String> entry : this.pages.entrySet() ) {
@@ -82,8 +83,8 @@ public class PageNavigation
         }
         this.shownTabs = this.fetchShownPageButtons();
 
-        int tabWidth = this.shownTabs.keySet().stream().map(elem -> elem.get().getWidth()).reduce((e1, e2) -> e1 + e2 + 2).orElse(0);
-        int tabLeft = (guiTcuInst.getWidth() - tabWidth - tabScrollElemLWidth - tabScrollElemR.getWidth() - 4) / 2;
+        int tabWidth = this.shownTabs.keySet().stream().map(elem -> elem.get().getWidth()).reduce((e1, e2) -> e1 + e2 + 2).orElse(2);
+        int tabLeft = (guiTcuInst.getWidth() - tabWidth - tabScrollElemLWidth - tabScrollElemRWidth - 4) / 2;
 
         this.tabScrollL.pos[0] = tabLeft;
         this.tabScrollL.setVisible(this.tabStartIdx > 0);
@@ -92,7 +93,7 @@ public class PageNavigation
 
         int shownId = 0;
         for( Map.Entry<GuiElementInst, String> entry : this.shownTabs.entrySet() ) {
-            entry.getKey().pos[0] = tabLeft + tabScrollElemLWidth + 2 + shownId++ * 16;
+            entry.getKey().pos[0] = tabLeft + tabScrollElemLWidth + 2 + shownId++ * 18;
         }
     }
 

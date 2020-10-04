@@ -11,14 +11,8 @@ package de.sanandrew.mods.turretmod.item;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.TmrCreativeTabs;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
 
 public class ItemUpgrade
         extends Item

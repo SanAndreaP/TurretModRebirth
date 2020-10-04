@@ -8,7 +8,6 @@ package de.sanandrew.mods.turretmod.registry.turret.shieldgen;
 
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.network.PacketEffect;
 import de.sanandrew.mods.turretmod.registry.EnumEffect;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
@@ -175,7 +174,7 @@ public class ShieldHandler
         } else if( ticksPushed < turretInst.get().ticksExisted ) {
             projectile.setDead();
 
-            PacketEffect.addEffect(EnumEffect.PROJECTILE_DEATH, projectile.dimension, projectile.posX, projectile.posY, projectile.posZ, null);
+            EnumEffect.PROJECTILE_DEATH.addEffect(projectile);
 
             hasPushed = true;
         }

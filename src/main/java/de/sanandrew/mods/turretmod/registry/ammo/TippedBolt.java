@@ -1,7 +1,6 @@
 package de.sanandrew.mods.turretmod.registry.ammo;
 
 import com.google.common.base.Strings;
-import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
@@ -12,7 +11,6 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class TippedBolt

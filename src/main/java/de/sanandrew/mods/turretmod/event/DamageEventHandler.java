@@ -11,9 +11,9 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretProjectile;
-import de.sanandrew.mods.turretmod.registry.upgrades.leveling.LevelStorage;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
+import de.sanandrew.mods.turretmod.registry.upgrades.leveling.LevelStorage;
 import de.sanandrew.mods.turretmod.registry.upgrades.shield.ShieldPersonal;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
@@ -71,7 +71,7 @@ public class DamageEventHandler
             ITurretInst turret = ((EntityTurretProjectile.ITurretDamageSource) dmgSrc).getTurretInst();
             if( turret != null && turret.getUpgradeProcessor().hasUpgrade(Upgrades.LEVELING) ) {
                 LevelStorage lvlStorage = turret.getUpgradeProcessor().getUpgradeInstance(Upgrades.LEVELING.getId());
-                if( lvlStorage != null && lvlStorage.getXp() < LevelStorage.maxXp ) {
+                if( lvlStorage != null ) {
                     EntityPlayer faker = FakePlayerFactory.getMinecraft((WorldServer) corpse.world);
 
                     int xp = TmrUtils.getExperiencePoints(event.getEntityLiving(), faker);

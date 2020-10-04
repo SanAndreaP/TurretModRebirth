@@ -9,7 +9,6 @@
 package de.sanandrew.mods.turretmod.client.render.layer;
 
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.client.init.ClientProxy;
 import de.sanandrew.mods.turretmod.client.model.entity.ModelTurretBase;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;

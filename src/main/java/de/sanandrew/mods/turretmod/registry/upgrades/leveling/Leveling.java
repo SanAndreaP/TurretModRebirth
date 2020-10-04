@@ -54,7 +54,7 @@ public class Leveling
 
     @Override
     public void onSave(ITurretInst turretInst, NBTTagCompound nbt) {
-        nbt.setInteger(NBT_EXPERIENCE, turretInst.getUpgradeProcessor().<LevelStorage>getUpgradeInstance(ID).getXp());
+        nbt.setInteger(NBT_EXPERIENCE, turretInst.getUpgradeProcessor().<LevelStorage>getUpgradeInstance(ID).getFullXp());
     }
 
     @Override

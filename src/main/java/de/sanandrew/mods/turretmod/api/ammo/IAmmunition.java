@@ -14,7 +14,6 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.Range;
 

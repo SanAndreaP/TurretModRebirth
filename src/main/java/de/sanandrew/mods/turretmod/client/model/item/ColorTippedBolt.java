@@ -1,7 +1,6 @@
 package de.sanandrew.mods.turretmod.client.model.item;
 
 import com.google.common.base.Strings;
-import de.sanandrew.mods.turretmod.item.ItemAmmo;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.ItemStack;

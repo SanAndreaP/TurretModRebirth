@@ -5,11 +5,25 @@
     {
       "type": "sapturretmod:tcu.levels_indicator",
       "id": "level_indicator",
-      "pos": [7, 49],
+      "pos": [7, 28],
       "data": {
-        "text": {
-          "text": "gui.sapturretmod.tcu.page.leveling.level",
-          "color": "0xFF404040"
+        "textLevel": {
+          "offset": [81, 3],
+          "text": "%d",
+          "color": {
+            "default": "0xFF80FF20",
+            "stroke": "0xFF000000"
+          },
+          "alignment": ["center", "top"]
+        },
+        "textXP": {
+          "offset": [81, 4],
+          "text": "gui.sapturretmod.tcu.page.leveling.xp",
+          "color": {
+            "default": "0xFF80FF20",
+            "stroke": "0xFF000000"
+          },
+          "alignment": ["center", "top"]
         },
         "progressbar": {
           "size": [162, 3],
@@ -23,7 +37,7 @@
     },
     {
       "type": "text",
-      "pos": [7, 77],
+      "pos": [7, 63],
       "data": {
         "text": "gui.sapturretmod.tcu.page.leveling.modifier",
         "color": "0xFF404040"
@@ -32,10 +46,10 @@
     {
       "type": "sapturretmod:tcu.levels_modifiers",
       "id": "level_modifiers",
-      "pos": [8, 88],
+      "pos": [8, 74],
       "data": {
-        "areaSize": [153, 100],
-        "scrollbarPos": [162, 88],
+        "areaSize": [153, 114],
+        "scrollbarPos": [162, 74],
         "scrollButton": {
           "size": [6, 6],
           "uv": [176, 0],
@@ -55,7 +69,28 @@
           }
         }
       }
+    },
+    {
+      "type": "button",
+      "id": "retrieve_excess_xp",
+      "pos": [79, 190],
+      "data": {
+        "useVanillaTexture": false,
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "uvEnabled": [238, 18],
+        "buttonFunction": 0
+      }
     }
   ],
-  "foregroundElements": []
+  "foregroundElements": [
+    {
+      "type": "tooltip",
+      "pos": [79, 190],
+      "data": {
+        "size": [18, 18],
+        "text": "gui.sapturretmod.tcu.page.leveling.retrieve"
+      }
+    }
+  ]
 }

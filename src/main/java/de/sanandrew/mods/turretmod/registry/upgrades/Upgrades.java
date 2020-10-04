@@ -6,7 +6,6 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
-import de.sanandrew.mods.turretmod.api.IRegistry;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
 import de.sanandrew.mods.turretmod.registry.Resources;

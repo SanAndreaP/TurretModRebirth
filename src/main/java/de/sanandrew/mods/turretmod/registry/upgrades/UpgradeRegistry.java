@@ -8,9 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.registry.upgrades;
 
-import com.google.common.base.Objects;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
@@ -26,7 +24,11 @@ import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class UpgradeRegistry
         implements IUpgradeRegistry
