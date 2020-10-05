@@ -93,8 +93,4 @@ public class TurretCryolator
         return ID;
     }
 
-    @Override
-    public ResourceLocation getBookEntryId() {
-        return Resources.PATCHOULI_E_TURRET_CRYOLATOR.resource;
-    }
 }

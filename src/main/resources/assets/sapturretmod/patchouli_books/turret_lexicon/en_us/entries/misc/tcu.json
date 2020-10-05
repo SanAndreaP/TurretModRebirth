@@ -52,7 +52,7 @@
     },
     {
       "type": "spotlight",
-      "item": "sapturretmod:upgrade.empty",
+      "item": "sapturretmod:upgrade_empty",
       "title": "Upgrades",
       "text": "Add or remove upgrades with ease here, similar to a chest.$(br2)Greyed out slots are locked and you'll need the $(l:upgrades/upgrade_storage)Upgrade Storage upgrades$() in order to unlock them."
     },

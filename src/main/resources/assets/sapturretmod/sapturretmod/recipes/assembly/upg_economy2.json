@@ -9,7 +9,7 @@
       "showTooltipText": true,
       "items": [
         {
-          "item": "sapturretmod:upgrade.empty"
+          "item": "sapturretmod:upgrade_empty"
         }
       ]
     },
@@ -31,7 +31,7 @@
     }
   ],
   "result": {
-    "item": "sapturretmod:upgrade.ammousage.2",
+    "item": "sapturretmod:upgrade_economy_2",
     "count": 1
   }
 }

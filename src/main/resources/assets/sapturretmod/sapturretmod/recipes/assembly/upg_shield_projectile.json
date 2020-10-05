@@ -9,7 +9,7 @@
       "showTooltipText": true,
       "items": [
         {
-          "item": "sapturretmod:upgrade.empty"
+          "item": "sapturretmod:upgrade_empty"
         }
       ]
     },
@@ -33,7 +33,7 @@
     }
   ],
   "result": {
-    "item": "sapturretmod:upgrade.shield.projectile",
+    "item": "sapturretmod:upgrade_shield_projectile",
     "count": 1
   }
 }

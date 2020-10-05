@@ -13,7 +13,6 @@ import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.Range;
 
@@ -24,6 +23,7 @@ import java.util.List;
 /**
  * <p>A registry object defining an ammunition item.</p>
  */
+@SuppressWarnings("unused")
 public interface IAmmunition
         extends IRegistryObject
 {
@@ -45,10 +45,6 @@ public interface IAmmunition
      * @return The amount of rounds provided by one item.
      */
     int getAmmoCapacity();
-
-    default ResourceLocation getBookEntryId() {
-        return null;
-    }
 
     /**
      * @return the turret delegate that can use this ammo, cannot be <tt>null</tt>

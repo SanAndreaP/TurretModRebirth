@@ -4,7 +4,6 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
-import de.sanandrew.mods.turretmod.registry.Resources;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -15,7 +14,7 @@ import javax.annotation.Nonnull;
 public class Leveling
         implements IUpgrade
 {
-    static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "upgrade.leveling");
+    static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "upgrade_leveling");
 
     private static final String NBT_ITEM_LEVELS = "Levels";
     private static final String NBT_EXPERIENCE  = "Experience";
@@ -24,11 +23,6 @@ public class Leveling
     @Override
     public ResourceLocation getId() {
         return ID;
-    }
-
-    @Override
-    public ResourceLocation getBookEntryId() {
-        return Resources.PATCHOULI_E_UPGRADE_LEVELING.resource;
     }
 
     @Override

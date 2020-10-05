@@ -11,7 +11,6 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
@@ -26,12 +25,12 @@ public class PageNavigation
 {
     public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu.page_nav");
 
-    private Map<GuiElementInst, String> pages = new TreeMap<>(new ComparatorTabButton());
-    private GuiElementInst                        tabScrollL;
-    private GuiElementInst                        tabScrollR;
-    private int                                   maxTabsShown;
+    private final Map<GuiElementInst, String> pages = new TreeMap<>(new ComparatorTabButton());
 
-    private int     tabStartIdx = 0;
+    private GuiElementInst tabScrollL;
+    private GuiElementInst tabScrollR;
+    private int            maxTabsShown;
+    private int            tabStartIdx = 0;
 
     Map<GuiElementInst, String> shownTabs = Collections.emptyMap();
 
@@ -59,15 +58,15 @@ public class PageNavigation
     @Override
     public void update(IGui gui, JsonObject data) {
         final IGuiTcuInst<?> guiTcuInst = (IGuiTcuInst<?>) gui;
-        final String currEntry = guiTcuInst.getCurrentEntryKey();
+        final String         currEntry  = guiTcuInst.getCurrentEntryKey();
 
         final int tabScrollElemLWidth = this.tabScrollL.get().getWidth();
         final int tabScrollElemRWidth = this.tabScrollR.get().getWidth();
 
         int cntAvailableTabs = 0;
         for( Map.Entry<GuiElementInst, String> entry : this.pages.entrySet() ) {
-            GuiElementInst btn = entry.getKey();
-            ButtonNav btnNav = btn.get(ButtonNav.class);
+            GuiElementInst btn    = entry.getKey();
+            ButtonNav      btnNav = btn.get(ButtonNav.class);
             if( GuiTcuRegistry.INSTANCE.getGuiEntry(btnNav.page).showTab(guiTcuInst) ) {
                 cntAvailableTabs++;
 
@@ -84,7 +83,7 @@ public class PageNavigation
         this.shownTabs = this.fetchShownPageButtons();
 
         int tabWidth = this.shownTabs.keySet().stream().map(elem -> elem.get().getWidth()).reduce((e1, e2) -> e1 + e2 + 2).orElse(2);
-        int tabLeft = (guiTcuInst.getWidth() - tabWidth - tabScrollElemLWidth - tabScrollElemRWidth - 4) / 2;
+        int tabLeft  = (guiTcuInst.getWidth() - tabWidth - tabScrollElemLWidth - tabScrollElemRWidth - 4) / 2;
 
         this.tabScrollL.pos[0] = tabLeft;
         this.tabScrollL.setVisible(this.tabStartIdx > 0);
@@ -155,8 +154,8 @@ public class PageNavigation
 
         @Override
         public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
-            JsonUtils.addDefaultJsonProperty(data, "size", new int[] {16, 16});
-            JsonUtils.addDefaultJsonProperty(data, "uvSize", new int[] {16, 16});
+            JsonUtils.addDefaultJsonProperty(data, "size", new int[] { 16, 16 });
+            JsonUtils.addDefaultJsonProperty(data, "uvSize", new int[] { 16, 16 });
             JsonUtils.addDefaultJsonProperty(data, "texture", Resources.GUI_TCU_BUTTONS.toString());
             JsonUtils.addDefaultJsonProperty(data, "buttonFunction", -1);
 

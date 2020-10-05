@@ -8,7 +8,8 @@
       "type": "sapturretmod:ammo_info_i18n",
       "ammo_type": "sapturretmod:ammo.fueltank",
       "name": "Fuel Tank",
-      "text": "Lava can be used to create enemy-penetrating flames, and this is exactly what this contains.$(br2)$(5)$(o)Sets flammable targets on fire$(br)No knockback effect"
+      "text": "Lava can be used to create enemy-penetrating flames, and this is exactly what this contains.$(br2)$(5)$(o)Sets flammable targets on fire$(br)No knockback effect",
+      "turret_link": "$(l:turrets/flamethrower)Flamethrower Turret$(/l)"
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",

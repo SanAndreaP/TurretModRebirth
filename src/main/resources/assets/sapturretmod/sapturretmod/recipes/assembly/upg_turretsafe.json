@@ -9,7 +9,7 @@
       "showTooltipText": true,
       "items": [
         {
-          "item": "sapturretmod:upgrade.empty"
+          "item": "sapturretmod:upgrade_empty"
         }
       ]
     },
@@ -32,7 +32,7 @@
     }
   ],
   "result": {
-    "item": "sapturretmod:upgrade.turretsafe",
+    "item": "sapturretmod:upgrade_turret_safe",
     "count": 1
   }
 }

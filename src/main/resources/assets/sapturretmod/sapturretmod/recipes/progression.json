@@ -11,14 +11,14 @@
         { "item": "sapturretmod:turret.forcefield" },
         { "item": "sapturretmod:turret.revolver" },
         { "item": "sapturretmod:turret.minigun" },
-        { "item": "sapturretmod:upgrade.ammousage.2" },
-        { "item": "sapturretmod:upgrade.endertoxin.1" },
-        { "item": "sapturretmod:upgrade.health.2" },
-        { "item": "sapturretmod:upgrade.shield.colorizer" },
-        { "item": "sapturretmod:upgrade.shield.personal" },
-        { "item": "sapturretmod:upgrade.shield.strength.1" },
-        { "item": "sapturretmod:upgrade.smarttgt" },
-        { "item": "sapturretmod:upgrade.upgstorage.2" }
+        { "item": "sapturretmod:upgrade_economy_2" },
+        { "item": "sapturretmod:upgrade_ender_toxin_1" },
+        { "item": "sapturretmod:upgrade_health_2" },
+        { "item": "sapturretmod:upgrade_shield_colorizer" },
+        { "item": "sapturretmod:upgrade_shield_personal" },
+        { "item": "sapturretmod:upgrade_shield_strength_1" },
+        { "item": "sapturretmod:upgrade_smart_targeting" },
+        { "item": "sapturretmod:upgrade_storage_2" }
       ]
     },
     {
@@ -30,16 +30,16 @@
         { "item": "sapturretmod:repkit.standard.3" },
         { "item": "sapturretmod:turret.flamethrower" },
         { "item": "sapturretmod:turret.laser" },
-        { "item": "sapturretmod:upgrade.ammousage.inf" },
-        { "item": "sapturretmod:upgrade.endermedium" },
-        { "item": "sapturretmod:upgrade.endertoxin.2" },
-        { "item": "sapturretmod:upgrade.fuelpurifier" },
-        { "item": "sapturretmod:upgrade.health.3" },
-        { "item": "sapturretmod:upgrade.reload.2" },
-        { "item": "sapturretmod:upgrade.shield.explosive" },
-        { "item": "sapturretmod:upgrade.shield.projectile" },
-        { "item": "sapturretmod:upgrade.shield.strength.2" },
-        { "item": "sapturretmod:upgrade.upgstorage.3" }
+        { "item": "sapturretmod:upgrade_economy_infinite" },
+        { "item": "sapturretmod:upgrade_ender_gain_medium" },
+        { "item": "sapturretmod:upgrade_ender_toxin_2" },
+        { "item": "sapturretmod:upgrade_fuel_purifier" },
+        { "item": "sapturretmod:upgrade_health_3" },
+        { "item": "sapturretmod:upgrade_reload_2" },
+        { "item": "sapturretmod:upgrade_shield_explosive" },
+        { "item": "sapturretmod:upgrade_shield_projectile" },
+        { "item": "sapturretmod:upgrade_shield_strength_2" },
+        { "item": "sapturretmod:upgrade_storage_3" }
       ]
     }
   ]

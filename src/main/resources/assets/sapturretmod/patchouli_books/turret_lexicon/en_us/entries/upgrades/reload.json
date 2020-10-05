@@ -1,12 +1,12 @@
 {
   "name": "Reload Upgrades",
-  "icon": "sapturretmod:upgrade.reload.1",
+  "icon": "sapturretmod:upgrade_reload_1",
   "category": "sapturretmod:upgrades",
   "pages": [
     {
       "type": "sapturretmod:upgrade_info",
       "name": "Reload Time I",
-      "item": "sapturretmod:upgrade.reload.1",
+      "item": "sapturretmod:upgrade_reload_1",
       "text": "Cooling down the parts of the loading and shooting mechanisms, this decreases the reload time by 15%.$(br2)$(o)Note: The $(l:turrets/forcefield)Forcefield Turret$(/l) will use these to faster regenerate its shield instead.$()"
     },
     {
@@ -16,7 +16,7 @@
     {
       "type": "sapturretmod:upgrade_info",
       "name": "Reload Time II",
-      "item": "sapturretmod:upgrade.reload.2",
+      "item": "sapturretmod:upgrade_reload_2",
       "text": "Further decreases the reload time by 35% (in total: 50%).$(br2)$(5)$(o)Requires Reload Time I$()"
     },
     {

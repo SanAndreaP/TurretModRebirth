@@ -9,7 +9,7 @@
       "showTooltipText": true,
       "items": [
         {
-          "item": "sapturretmod:upgrade.empty"
+          "item": "sapturretmod:upgrade_empty"
         }
       ]
     },
@@ -42,7 +42,7 @@
     }
   ],
   "result": {
-    "item": "sapturretmod:upgrade.shield.personal",
+    "item": "sapturretmod:upgrade_shield_personal",
     "count": 1
   }
 }

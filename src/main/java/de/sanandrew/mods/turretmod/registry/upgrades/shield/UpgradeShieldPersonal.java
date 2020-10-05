@@ -9,7 +9,6 @@ package de.sanandrew.mods.turretmod.registry.upgrades.shield;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
-import de.sanandrew.mods.turretmod.registry.Resources;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -17,16 +16,11 @@ import net.minecraft.util.ResourceLocation;
 public class UpgradeShieldPersonal
         implements IUpgrade
 {
-    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "upgrade.shield.personal");
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "upgrade_shield_personal");
 
     @Override
     public ResourceLocation getId() {
         return ID;
-    }
-
-    @Override
-    public ResourceLocation getBookEntryId() {
-        return Resources.PATCHOULI_E_UPGRADE_SHIELD_PERSONAL.resource;
     }
 
     @Override

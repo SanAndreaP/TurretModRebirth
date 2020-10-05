@@ -9,7 +9,7 @@
       "showTooltipText": true,
       "items": [
         {
-          "item": "sapturretmod:upgrade.empty"
+          "item": "sapturretmod:upgrade_empty"
         }
       ]
     },
@@ -23,7 +23,7 @@
     }
   ],
   "result": {
-    "item": "sapturretmod:upgrade.endertoxin.2",
+    "item": "sapturretmod:upgrade_ender_toxin_2",
     "count": 1
   }
 }

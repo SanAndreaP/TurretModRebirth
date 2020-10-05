@@ -93,8 +93,4 @@ public class TurretFlamethrower
         return ID;
     }
 
-    @Override
-    public ResourceLocation getBookEntryId() {
-        return Resources.PATCHOULI_E_TURRET_FLAMETHROWER.resource;
-    }
 }

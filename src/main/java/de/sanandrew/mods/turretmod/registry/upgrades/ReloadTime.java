@@ -13,7 +13,6 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
-import de.sanandrew.mods.turretmod.registry.Resources;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.item.ItemStack;
@@ -29,17 +28,12 @@ public abstract class ReloadTime
 
     ReloadTime(String name, String modUUID, double value) {
         this.modifier = new AttributeModifier(UUID.fromString(modUUID), String.format("%s:%s", TmrConstants.ID, name), value, EntityUtils.ATTR_ADD_PERC_VAL_TO_SUM);
-        this.id = new ResourceLocation(TmrConstants.ID, "upgrade." + name);
+        this.id = new ResourceLocation(TmrConstants.ID, "upgrade_" + name);
     }
 
     @Override
     public ResourceLocation getId() {
         return this.id;
-    }
-
-    @Override
-    public ResourceLocation getBookEntryId() {
-        return Resources.PATCHOULI_E_UPGRADE_RELOAD.resource;
     }
 
     @Override
@@ -69,7 +63,7 @@ public abstract class ReloadTime
             extends ReloadTime
     {
         MK1() {
-            super("reload.1", "E6DAE7D4-A730-4F57-B3F9-61C369033625", -0.15D);
+            super("reload_1", "E6DAE7D4-A730-4F57-B3F9-61C369033625", -0.15D);
         }
     }
 
@@ -77,7 +71,7 @@ public abstract class ReloadTime
             extends ReloadTime
     {
         MK2() {
-            super("reload.2", "BA6FE867-0EBF-4E1A-9ED9-05E2B47143F8", -0.35D);
+            super("reload_2", "BA6FE867-0EBF-4E1A-9ED9-05E2B47143F8", -0.35D);
         }
 
         @Override

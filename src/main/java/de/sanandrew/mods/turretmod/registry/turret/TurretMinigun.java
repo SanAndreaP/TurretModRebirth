@@ -116,11 +116,6 @@ public class TurretMinigun
     }
 
     @Override
-    public ResourceLocation getBookEntryId() {
-        return Resources.PATCHOULI_E_TURRET_MINIGUN.resource;
-    }
-
-    @Override
     public int getTier() {
         return 2;
     }

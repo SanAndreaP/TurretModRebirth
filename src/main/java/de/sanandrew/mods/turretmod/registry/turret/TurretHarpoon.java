@@ -94,11 +94,6 @@ public class TurretHarpoon
     }
 
     @Override
-    public ResourceLocation getBookEntryId() {
-        return Resources.PATCHOULI_E_TURRET_HARPOON.resource;
-    }
-
-    @Override
     public AttackType getAttackType() {
         return AttackType.WATER;
     }

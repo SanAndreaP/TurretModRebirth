@@ -1,12 +1,12 @@
 {
   "name": "Shield Explosion Absorber",
-  "icon": "sapturretmod:upgrade.shield.explosive",
+  "icon": "sapturretmod:upgrade_shield_explosive",
   "category": "sapturretmod:upgrades",
   "pages": [
     {
       "type": "sapturretmod:upgrade_info",
       "name": "Explosion Absorber",
-      "item": "sapturretmod:upgrade.shield.explosive",
+      "item": "sapturretmod:upgrade_shield_explosive",
       "text": "Augments the $(l:turrets/forcefield)Forcefield Turret$(/l) and allows its shield to absorb enemy explosions.$(br2)Each block protected does 0.5 points of damage to the shield, and each entity protected 1 point."
     },
     {

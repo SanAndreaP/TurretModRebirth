@@ -2,6 +2,7 @@ package de.sanandrew.mods.turretmod.client.compat.patchouli;
 
 import com.google.gson.annotations.SerializedName;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
@@ -11,6 +12,9 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.tuple.Pair;
 import vazkii.patchouli.api.IComponentRenderContext;
 import vazkii.patchouli.api.ICustomComponent;
 import vazkii.patchouli.api.VariableHolder;
@@ -23,10 +27,12 @@ import vazkii.patchouli.client.book.gui.button.GuiButtonEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@SideOnly(Side.CLIENT)
 @SuppressWarnings("WeakerAccess")
 public class ComponentTurretEntries
         implements ICustomComponent
@@ -162,17 +168,15 @@ public class ComponentTurretEntries
     private enum EntryType
     {
         AMMO((g, s) -> {
-            return AmmunitionRegistry.INSTANCE.getObjects(TurretRegistry.INSTANCE.getObject(new ResourceLocation(s))).stream()
-                                              .map(a -> g.book.contents.entries.get(a.getBookEntryId()));
+            return AmmunitionRegistry.INSTANCE.getObjects(getTurret(s)).stream()
+                                              .map(a -> g.book.contents.recipeMappings.get(PatchouliHelper.getWrapper(AmmunitionRegistry.INSTANCE, a)))
+                                              .filter(Objects::nonNull).map(Pair::getKey);
         }),
         UPGRADES((g, s) -> {
-            return UpgradeRegistry.INSTANCE.getObjects().stream().map(u -> {
-                if( UpgradeRegistry.INSTANCE.isApplicable(u, TurretRegistry.INSTANCE.getObject(new ResourceLocation(s))) ) {
-                    return g.book.contents.entries.get(u.getBookEntryId());
-                }
-
-                return null;
-            });
+            return UpgradeRegistry.INSTANCE.getObjects().stream()
+                                           .filter(u -> UpgradeRegistry.INSTANCE.isApplicable(u, getTurret(s)))
+                                           .map(u -> g.book.contents.recipeMappings.get(PatchouliHelper.getWrapper(UpgradeRegistry.INSTANCE, u)))
+                                           .filter(Objects::nonNull).map(Pair::getKey);
         }),
 
         UNKNOWN((g, s) -> Stream.empty());
@@ -191,6 +195,10 @@ public class ComponentTurretEntries
 
         public static EntryType getTypeFromString(String type) {
             return Arrays.stream(VALUES).filter(e -> e.name().equalsIgnoreCase(type)).findFirst().orElse(UNKNOWN);
+        }
+
+        private static ITurret getTurret(String id) {
+            return TurretRegistry.INSTANCE.getObject(new ResourceLocation(id));
         }
     }
 }

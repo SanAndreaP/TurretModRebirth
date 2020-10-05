@@ -1,4 +1,5 @@
 {
+  "processor": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentAmmoStatProcessor",
   "include": [
     {
       "template": "sapturretmod:ammo_info",
@@ -9,6 +10,7 @@
         "name": "#name",
         "item": "#item",
         "text": "#text",
+        "turret_link": "#turret_link",
         "rounds_tip": "Rounds provided per item",
         "rounds_suffix": " rounds",
         "damage_tip1": "Damage dealt",

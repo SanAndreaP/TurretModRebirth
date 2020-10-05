@@ -8,7 +8,7 @@
       "count": 1,
       "items": [
         {
-          "item": "sapturretmod:upgrade.empty"
+          "item": "sapturretmod:upgrade_empty"
         }
       ]
     },
@@ -50,7 +50,7 @@
     }
   ],
   "result": {
-    "item": "sapturretmod:upgrade.shield.colorizer",
+    "item": "sapturretmod:upgrade_shield_colorizer",
     "count": 1
   }
 }

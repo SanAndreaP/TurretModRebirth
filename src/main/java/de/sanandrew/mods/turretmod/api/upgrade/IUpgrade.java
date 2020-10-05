@@ -5,7 +5,6 @@ import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nullable;
@@ -54,8 +53,6 @@ public interface IUpgrade
     default Range<Integer> getTierRange() {
         return null;
     }
-
-    default ResourceLocation getBookEntryId() { return null; }
 
     /**
      * <p>Initializes this upgrade; invoked upon application to or loading from the specified turret instance.</p>

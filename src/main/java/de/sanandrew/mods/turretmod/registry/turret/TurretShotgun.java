@@ -118,11 +118,6 @@ public class TurretShotgun
         return ID;
     }
 
-    @Override
-    public ResourceLocation getBookEntryId() {
-        return Resources.PATCHOULI_E_TURRET_SHOTGUN.resource;
-    }
-
     public static class MyRAM
             implements ITurretRAM
     {

@@ -1,13 +1,13 @@
 {
   "name": "Upgrade Base",
-  "icon": "sapturretmod:upgrade.empty",
+  "icon": "sapturretmod:upgrade_empty",
   "category": "sapturretmod:upgrades",
   "priority": true,
   "pages": [
     {
       "type": "sapturretmod:upgrade_info",
       "name": "Upgrade Base",
-      "item": "sapturretmod:upgrade.empty",
+      "item": "sapturretmod:upgrade_empty",
       "text": "Used as a crafting ingredient for all other upgrades. Cannot be applied to anything, as it would do nothing."
     },
     {

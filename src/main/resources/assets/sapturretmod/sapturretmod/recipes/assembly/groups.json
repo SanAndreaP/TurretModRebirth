@@ -22,7 +22,7 @@
     {
       "name": "upgrades",
       "icon": {
-        "item": "sapturretmod:upgrade.empty"
+        "item": "sapturretmod:upgrade_empty"
       }
     },
     {

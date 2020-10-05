@@ -9,7 +9,7 @@
       "showTooltipText": true,
       "items": [
         {
-          "item": "sapturretmod:upgrade.empty"
+          "item": "sapturretmod:upgrade_empty"
         }
       ]
     },
@@ -23,7 +23,7 @@
     }
   ],
   "result": {
-    "item": "sapturretmod:upgrade.reload.2",
+    "item": "sapturretmod:upgrade_reload_2",
     "count": 1
   }
 }

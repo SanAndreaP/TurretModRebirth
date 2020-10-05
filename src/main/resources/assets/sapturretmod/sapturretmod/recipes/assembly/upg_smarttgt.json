@@ -9,7 +9,7 @@
       "showTooltipText": true,
       "items": [
         {
-          "item": "sapturretmod:upgrade.empty"
+          "item": "sapturretmod:upgrade_empty"
         }
       ]
     },
@@ -31,7 +31,7 @@
     }
   ],
   "result": {
-    "item": "sapturretmod:upgrade.smarttgt",
+    "item": "sapturretmod:upgrade_smart_targeting",
     "count": 1
   }
 }

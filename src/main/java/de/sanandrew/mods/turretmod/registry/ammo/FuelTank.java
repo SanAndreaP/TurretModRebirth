@@ -13,7 +13,6 @@ import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
@@ -30,11 +29,6 @@ public class FuelTank
     @Override
     public ResourceLocation getId() {
         return ID;
-    }
-
-    @Override
-    public ResourceLocation getBookEntryId() {
-        return Resources.PATCHOULI_E_AMMO_FUELTANK.resource;
     }
 
     @Nonnull
