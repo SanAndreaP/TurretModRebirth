@@ -1,0 +1,28 @@
+{
+  "name": "Leveling",
+  "icon": "sapturretmod:upgrade.leveling",
+  "category": "sapturretmod:upgrades",
+  "pages": [
+    {
+      "type": "sapturretmod:upgrade_info",
+      "name": "Leveling",
+      "item": "sapturretmod:upgrade.leveling",
+      "text": "Level up your turrets with this. Once a turret kills an enemy, it'll gather the resulting XP as if the target would've been killed by a player.$(br2)Adds an additional tab to the $(l:misc/tcu)TCU$() UI for managing this upgrade (described in the upcoming pages)."
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:upg_leveling"
+    },
+    {
+      "type": "image",
+      "title": "TCU Tab",
+      "images": ["sapturretmod:textures/gui/lexicon/tcu/tab_leveling.png"],
+      "text": "To manage this upgrade, the TCU is provided with an additional tab.",
+      "border": true
+    },
+    {
+      "type": "text",
+      "text": "The top progress bar represents the amount of XP until the next level-up and the current turret level.$(br2)Below is the total amount of XP and - in case the maximum level is reached - the excess XP inside brackets.$(br2)After that is a list of Modifiers gained by leveling up.$(br2)Last, but not least, there is a button to retrieve excess XP."
+    }
+  ]
+}
