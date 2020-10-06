@@ -108,6 +108,38 @@ public class ItemRemapper
         }
     };
 
+    private static final Map<ResourceLocation, ResourceLocation> OLD_UPGRADE_ID_MAPPINGS = new HashMap<ResourceLocation, ResourceLocation>() {
+        {
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.upgstorage.1"), Upgrades.UPG_STORAGE_I.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.upgstorage.2"), Upgrades.UPG_STORAGE_II.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.upgstorage.3"), Upgrades.UPG_STORAGE_III.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.ammostorage"), Upgrades.AMMO_STORAGE.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.health.1"), Upgrades.HEALTH_I.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.health.2"), Upgrades.HEALTH_II.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.health.3"), Upgrades.HEALTH_III.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.health.4"), Upgrades.HEALTH_IV.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.reload.1"), Upgrades.RELOAD_I.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.reload.2"), Upgrades.RELOAD_II.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.smarttgt"), Upgrades.SMART_TGT.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.ammousage.1"), Upgrades.ECONOMY_I.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.ammousage.2"), Upgrades.ECONOMY_II.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.ammousage.inf"), Upgrades.ECONOMY_INF.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.endermedium"), Upgrades.ENDER_MEDIUM.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.fuelpurifier"), Upgrades.FUEL_PURIFY.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.shield.personal"), Upgrades.SHIELD_PERSONAL.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.shield.projectile"), Upgrades.SHIELD_PROJECTILE.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.shield.explosive"), Upgrades.SHIELD_EXPLOSIVE.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.shield.strength.1"), Upgrades.SHIELD_STRENGTH_I.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.shield.strength.2"), Upgrades.SHIELD_STRENGTH_II.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.shield.colorizer"), Upgrades.SHIELD_COLORIZER.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.endertoxin.1"), Upgrades.ENDER_TOXIN_I.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.endertoxin.2"), Upgrades.ENDER_TOXIN_II.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.leveling"), Upgrades.LEVELING.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.turretsafe"), Upgrades.TURRET_SAFE.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "upgrade.empty"), UpgradeRegistry.EMPTY_UPGRADE.getId());
+        }
+    };
+
     private static final ResourceLocation OLD_REPKIT_ID = new ResourceLocation(TmrConstants.ID, "repair_kit");
     private static final Map<UUID, IRepairKit> OLD_REPKIT_MAPPINGS = new HashMap<UUID, IRepairKit>() {
         {
@@ -132,6 +164,8 @@ public class ItemRemapper
                 map.remap(ItemRegistry.TURRET_UPGRADES.get(UpgradeRegistry.EMPTY_UPGRADE.getId()));
             } else if( map.key.equals(OLD_REPKIT_ID) ) {
                 map.remap(ItemRegistry.TURRET_REPAIRKITS.get(RepairKits.STANDARD_MK1.getId()));
+            } else if( OLD_UPGRADE_ID_MAPPINGS.containsKey(map.key) ) {
+                map.remap(Item.getByNameOrId(OLD_UPGRADE_ID_MAPPINGS.get(map.key).toString()));
             }
         }
     }
