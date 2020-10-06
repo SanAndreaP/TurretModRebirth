@@ -13,6 +13,7 @@ import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.upgrades.leveling.LevelStorage;
+import de.sanandrew.mods.turretmod.registry.upgrades.leveling.Stage;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.Range;
 
@@ -28,8 +29,8 @@ public class LevelModifiers
     public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu.levels_modifiers");
     private static final DecimalFormat formatter = new DecimalFormat("+0.0;-0.0");
 
-    private int                                    prevModifierHash = 0;
-    private Map<String, LevelStorage.ModifierInfo> modifiers        = Collections.emptyMap();
+    private int                             prevModifierHash = 0;
+    private Map<String, Stage.ModifierInfo> modifiers        = Collections.emptyMap();
 
     public void setModifierList(IGui gui, JsonObject data, LevelStorage storage, ITurretInst turretInst) {
         this.modifiers = storage.fetchCurrentModifiers(turretInst);
@@ -45,9 +46,9 @@ public class LevelModifiers
         List<GuiElementInst> elements = new ArrayList<>();
         int posY = 0;
 
-        for( Map.Entry<String, LevelStorage.ModifierInfo> e : LevelModifiers.this.modifiers.entrySet() ) {
-            JsonObject elemData = JsonUtils.deepCopy(elementData.getAsJsonObject("node"));
-            LevelStorage.ModifierInfo info = e.getValue();
+        for( Map.Entry<String, Stage.ModifierInfo> e : LevelModifiers.this.modifiers.entrySet() ) {
+            JsonObject         elemData = JsonUtils.deepCopy(elementData.getAsJsonObject("node"));
+            Stage.ModifierInfo info     = e.getValue();
 
             GuiElementInst elem = new GuiElementInst(new int[] { 0, posY }, new ModifierNode(e.getKey(), (info.getModValue() - info.baseValue) / info.baseValue * 100.0F), elemData)
                                                     .initialize(gui);

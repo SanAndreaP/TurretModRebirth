@@ -1,30 +1,20 @@
 package de.sanandrew.mods.turretmod.client.compat.patchouli;
 
 import com.google.gson.annotations.SerializedName;
-import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 import vazkii.patchouli.api.IComponentRenderContext;
-import vazkii.patchouli.api.ICustomComponent;
-import vazkii.patchouli.api.VariableHolder;
 import vazkii.patchouli.client.book.BookEntry;
 import vazkii.patchouli.client.book.gui.GuiBook;
 import vazkii.patchouli.client.book.gui.GuiBookEntry;
-import vazkii.patchouli.client.book.gui.button.GuiButtonBook;
 import vazkii.patchouli.client.book.gui.button.GuiButtonEntry;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -32,113 +22,37 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@SideOnly(Side.CLIENT)
-@SuppressWarnings("WeakerAccess")
 public class ComponentTurretEntries
-        implements ICustomComponent
+        extends ComponentEntryList<GuiButtonEntry>
 {
-    private          int x;
-    private          int y;
-    transient public int pgNum;
-
-    @VariableHolder
-    @SerializedName("target_id")
-    public String targetId;
-    @SerializedName("max_entries_shown")
-    public int    maxEntriesShown = 5;
     @SerializedName("entries_type")
     public String entriesType;
-    @SerializedName("title_color")
-    public String colorStr;
-    public String title;
 
-    transient private       Integer         color;
-    transient private final List<GuiButton> entryButtons    = new ArrayList<>();
-    transient private       GuiButtonBook   prevScrollBtn;
-    transient private       GuiButtonBook   nextScrollBtn;
-    transient private       EntryType       type;
-    transient private       int             entriesShownPos = 0;
+    transient private EntryType type;
 
     @Override
     public void build(int x, int y, int pgNum) {
-        try {
-            this.color = Integer.parseInt(this.colorStr, 16);
-        } catch( NumberFormatException var5 ) {
-            this.color = null;
-        }
-
-        this.x = x;
-        this.y = y;
-        this.pgNum = pgNum;
+        super.build(x, y, pgNum);
 
         this.type = EntryType.getTypeFromString(this.entriesType);
     }
 
     @Override
-    public void onDisplayed(IComponentRenderContext context) {
-        final GuiBook guiBook = ComponentTurretEntries.getGuiBook(context);
+    public void buildEntries(IComponentRenderContext context, GuiBook book, List<GuiButtonEntry> entries, int x, int y) {
+        final List<BookEntry> bookEntries = this.type.grabEntries(book, this.targetId);
 
-        if( guiBook == null ) {
-            return;
-        }
-
-        // purge stuck buttons from GUI
-        this.entryButtons.add(this.prevScrollBtn);
-        this.entryButtons.add(this.nextScrollBtn);
-        guiBook.getButtonList().removeIf(this.entryButtons::contains);
-        this.entryButtons.clear();
-
-        final List<BookEntry> entries = this.type.grabEntries(guiBook, this.targetId);
-
-        for( int i = 0, max = entries.size(); i < max; i++ ) {
-            BookEntry      entry  = entries.get(i);
-            GuiButtonEntry button = new GuiButtonEntryFixed(guiBook, this.x, this.y + 30 + i * 11 - this.entriesShownPos * 11, entry, i);
-            context.registerButton(button, pgNum, () -> GuiBookEntry.displayOrBookmark(guiBook, entry));
-            this.entryButtons.add(button);
-            button.visible = button.id >= this.entriesShownPos && button.id < this.entriesShownPos + this.maxEntriesShown;
-        }
-
-        if( this.entryButtons.size() > this.maxEntriesShown ) {
-            this.prevScrollBtn = new GuiButtonBook(guiBook, this.x, this.y + 20, 330, 9, 11, 5,
-                                                   () -> this.entriesShownPos > 0);
-            this.nextScrollBtn = new GuiButtonBook(guiBook, this.x + 116 - 11, this.y + 20, 330, 15, 11, 5,
-                                                   () -> this.entriesShownPos + this.maxEntriesShown < this.entryButtons.size());
-
-            context.registerButton(this.prevScrollBtn, pgNum, () -> moveButtons(true));
-            context.registerButton(this.nextScrollBtn, pgNum, () -> moveButtons(false));
-        }
-    }
-
-    void moveButtons(boolean prev) {
-        int prevPos = this.entriesShownPos;
-        this.entriesShownPos += prev && this.entriesShownPos > 0
-                                ? -1
-                                : (!prev && this.entriesShownPos + this.maxEntriesShown < this.entryButtons.size() ? 1 : 0);
-        if( this.entriesShownPos != prevPos ) {
-            this.entryButtons.forEach(b -> {
-                b.y += (prevPos - this.entriesShownPos) * 11;
-                b.visible = b.id >= this.entriesShownPos && b.id < this.entriesShownPos + this.maxEntriesShown;
-            });
+        for( int i = 0, max = bookEntries.size(); i < max; i++ ) {
+            BookEntry      entry  = bookEntries.get(i);
+            GuiButtonEntry button = new GuiButtonEntryFixed(book, x, y + 30 + i * 11, entry, i);
+            context.registerButton(button, pgNum, () -> GuiBookEntry.displayOrBookmark(book, entry));
+            entries.add(button);
         }
     }
 
     @Override
-    public void render(IComponentRenderContext context, float partTicks, int mouseX, int mouseY) {
-        GlStateManager.pushMatrix();
-        int xPos = this.x + 58 - (context.getFont().getStringWidth(this.title) / 2);
-        context.getFont().drawString(this.title, xPos, this.y, MiscUtils.defIfNull(this.color, context::getHeaderColor), false);
-        GlStateManager.popMatrix();
-
-        PatchouliMouseEventHandler.setCurrHoveredComponent(this, context.isAreaHovered(mouseX, mouseY, this.x, this.y + 11, 116, this.maxEntriesShown * 11 - 1));
-    }
-
-    private static GuiBook getGuiBook(IComponentRenderContext context) {
-        GuiScreen gui = context.getGui();
-        if( gui instanceof GuiBook ) {
-            return ((GuiBook) gui);
-        }
-
-        return null;
+    void setEntryScroll(GuiButtonEntry entry, int prevShownPos, int currShownPos) {
+        entry.y += (prevShownPos - currShownPos) * 11;
+        entry.visible = entry.id >= currShownPos && entry.id < currShownPos + this.maxEntriesShown;
     }
 
     private class GuiButtonEntryFixed

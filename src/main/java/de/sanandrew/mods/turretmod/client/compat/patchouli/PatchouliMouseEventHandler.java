@@ -16,7 +16,7 @@ import java.util.List;
 
 public class PatchouliMouseEventHandler
 {
-    private static List<WeakReference<ComponentTurretEntries>> currHovered = new ArrayList<>();
+    private static List<WeakReference<ComponentEntryList>> currHovered = new ArrayList<>();
 
     public static void register() {
         if( Loader.isModLoaded("patchouli") ) {
@@ -24,13 +24,13 @@ public class PatchouliMouseEventHandler
         }
     }
 
-    static void setCurrHoveredComponent(ComponentTurretEntries component, boolean active) {
+    static void setCurrHoveredComponent(ComponentEntryList component, boolean active) {
         if( active ) {
             currHovered.add(new WeakReference<>(component));
         } else {
             currHovered.removeIf(r -> {
                 if( r != null ) {
-                    ComponentTurretEntries e = r.get();
+                    ComponentEntryList e = r.get();
                     return e == null || e.equals(component);
                 }
 
@@ -45,14 +45,14 @@ public class PatchouliMouseEventHandler
         if( gui instanceof GuiBook ) {
             GuiBook guiBook = (GuiBook) gui;
             int pageBook = guiBook.getPage() + 1;
-            for( Iterator<WeakReference<ComponentTurretEntries>> it = currHovered.iterator(); it.hasNext(); ) {
-                WeakReference<ComponentTurretEntries> r = it.next();
+            for( Iterator<WeakReference<ComponentEntryList>> it = currHovered.iterator(); it.hasNext(); ) {
+                WeakReference<ComponentEntryList> r = it.next();
                 if( r == null ) {
                     it.remove();
                     continue;
                 }
 
-                ComponentTurretEntries component = r.get();
+                ComponentEntryList component = r.get();
                 if( component != null ) {
                     if( pageBook != MathHelper.ceil(component.pgNum / 1.99F) ) {
                         it.remove();

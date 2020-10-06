@@ -2,5 +2,6 @@
   "name": "Miscellaneous",
   "description": "Any items or blocks that cannot fit any of the existing categories can be found here.",
   "icon": "sapturretmod:turret_control_unit",
-  "advancement": null
+  "advancement": null,
+  "sortnum": 0
 }

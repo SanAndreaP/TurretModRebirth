@@ -9,8 +9,6 @@ import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeInstance;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
-import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.common.Loader;
 import org.apache.logging.log4j.Level;
@@ -21,11 +19,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -161,28 +156,8 @@ public class LevelStorage
         );
     }
 
-    public Map<String, ModifierInfo> fetchCurrentModifiers(ITurretInst turretInst) {
-        final Map<String, ModifierInfo> currModifiers = new HashMap<>();
-        final Map<String, Map<Integer, List<Double>>> modMap = new HashMap<>();
-        final AbstractAttributeMap attrMap = turretInst.get().getAttributeMap();
-
-        this.fetchCurrentStages().forEach(s -> Arrays.stream(s.modifiers).forEach(m -> modMap.computeIfAbsent(m.attributeName, k -> new HashMap<>())
-                                                                                             .computeIfAbsent(m.modifier.getOperation(), k -> new ArrayList<>())
-                                                                                             .add(m.modifier.getAmount())));
-
-        modMap.forEach((attrName, mods) -> {
-            IAttributeInstance attrInst = attrMap.getAttributeInstanceByName(attrName);
-            if( attrInst != null ) {
-                final ModifierInfo modInfo = currModifiers.computeIfAbsent(attrName, a -> new ModifierInfo(attrInst.getBaseValue()));
-                mods.getOrDefault(0, Collections.emptyList()).forEach(m -> modInfo.modValue += m);
-
-                final double modValFn = modInfo.modValue;
-                mods.getOrDefault(1, Collections.emptyList()).forEach(m -> modInfo.modValue += modValFn * m);
-                mods.getOrDefault(2, Collections.emptyList()).forEach(m -> modInfo.modValue += modInfo.modValue * m);
-            }
-        });
-
-        return currModifiers;
+    public Map<String, Stage.ModifierInfo> fetchCurrentModifiers(ITurretInst turretInst) {
+        return Stage.fetchModifiers(this.fetchCurrentStages(), turretInst.get().getAttributeMap());
     }
 
     private List<Stage> fetchCurrentStages() {
@@ -215,6 +190,10 @@ public class LevelStorage
         }
     }
 
+    public static Stage[] getStages() {
+        return stages;
+    }
+
     /*
     ------------------------------------------------------------------------------------------------------------------------
     How I figured out the formula for getting the level at {x} XP points (last formula, as it was the most complicated one)
@@ -244,12 +223,13 @@ public class LevelStorage
             return this.cachedLevel;
         }
 
-        if( this.xp <= 352 ) { // below lvl 16
-            return MathHelper.floor(Math.sqrt(this.xp + 9.0D) - 3.0D);
-        } else if( this.xp <= 1507 ) { // below lvl 31
-            return MathHelper.floor(Math.sqrt(0.4D * this.xp - 78.39D) + 8.1D);
+        int xp = this.getXp();
+        if( xp <= 352 ) { // below lvl 16
+            return MathHelper.floor(Math.sqrt(xp + 9.0D) - 3.0D);
+        } else if( xp <= 1507 ) { // below lvl 31
+            return MathHelper.floor(Math.sqrt(0.4D * xp - 78.39D) + 8.1D);
         } else { // at or above lvl 31
-            return MathHelper.floor(Math.sqrt((10.0D / 45.0D) * this.xp - 167.33D) + 18.056D);
+            return MathHelper.floor(Math.sqrt((10.0D / 45.0D) * xp - 167.33D) + 18.056D);
         }
     }
 
@@ -261,38 +241,4 @@ public class LevelStorage
         return getXpReqForNextLevel(this.getLevel());
     }
 
-    public static final class ModifierInfo
-    {
-        public final double baseValue;
-        private      double modValue;
-
-        private ModifierInfo(double baseValue) {
-            this.baseValue = baseValue;
-            this.modValue = baseValue;
-        }
-
-        public double getModValue() {
-            return modValue;
-        }
-
-        @Override
-        @SuppressWarnings("NonFinalFieldReferenceInEquals")
-        public boolean equals(Object o) {
-            if( this == o ) {
-                return true;
-            }
-            if( o == null || getClass() != o.getClass() ) {
-                return false;
-            }
-            ModifierInfo that = (ModifierInfo) o;
-            return Double.compare(that.baseValue, this.baseValue) == 0 &&
-                   Double.compare(that.modValue, this.modValue) == 0;
-        }
-
-        @Override
-        @SuppressWarnings("NonFinalFieldReferencedInHashCode")
-        public int hashCode() {
-            return Objects.hash(this.baseValue, this.modValue);
-        }
-    }
 }
