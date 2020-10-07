@@ -1,0 +1,11 @@
+{
+  "components": [
+    {
+      "type": "custom",
+      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentLevelingMilestones",
+      "title": "Milestones",
+      "max_entries_shown": 12,
+      "y": 0
+    }
+  ]
+}

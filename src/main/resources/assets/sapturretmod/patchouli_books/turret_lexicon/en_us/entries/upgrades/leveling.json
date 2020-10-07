@@ -23,6 +23,9 @@
     {
       "type": "text",
       "text": "The top progress bar represents the amount of XP until the next level-up and the current turret level.$(br2)Below is the total amount of XP and - in case the maximum level is reached - the excess XP inside brackets.$(br2)After that is a list of Modifiers gained by leveling up.$(br2)Last, but not least, there is a button to retrieve excess XP."
+    },
+    {
+      "type": "sapturretmod:leveling_milestones"
     }
   ]
 }

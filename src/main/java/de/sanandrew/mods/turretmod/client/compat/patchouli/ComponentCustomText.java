@@ -17,8 +17,8 @@ import vazkii.patchouli.client.book.gui.GuiBook;
 public class ComponentCustomText
         implements ICustomComponent
 {
-    private int x;
-    private int y;
+    int x;
+    int y;
 
     @VariableHolder
     public String text;
@@ -31,8 +31,16 @@ public class ComponentCustomText
     public float  rotation   = 0.0F;
 
     transient private boolean blockyFont;
-    transient private Integer color;
+    transient Integer color;
     transient private int     tx = 0;
+    transient boolean visible = true;
+
+    public ComponentCustomText() { }
+
+    public ComponentCustomText(String text, String color) {
+        this.text = text;
+        this.colorStr = color;
+    }
 
     @Override
     public void build(int x, int y, int pgNum) {
@@ -48,6 +56,10 @@ public class ComponentCustomText
 
     @Override
     public void render(IComponentRenderContext context, float partTicks, int mouseX, int mouseY) {
+        if( !this.visible ) {
+            return;
+        }
+
         FontRenderer font       = context.getFont();
         boolean      wasUnicode = font.getUnicodeFlag();
         font.setUnicodeFlag(!this.blockyFont);

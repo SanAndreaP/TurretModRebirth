@@ -26,8 +26,8 @@ import java.util.Map;
 public class LevelModifiers
             extends ScrollArea
 {
-    public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu.levels_modifiers");
-    private static final DecimalFormat formatter = new DecimalFormat("+0.0;-0.0");
+    public static final ResourceLocation ID        = new ResourceLocation(TmrConstants.ID, "tcu.levels_modifiers");
+    public static final DecimalFormat    FORMATTER = new DecimalFormat("+0.0;-0.0");
 
     private int                             prevModifierHash = 0;
     private Map<String, Stage.ModifierInfo> modifiers        = Collections.emptyMap();
@@ -130,7 +130,7 @@ public class LevelModifiers
 
             @Override
             public String getDynamicText(IGui gui, String originalText) {
-                return String.format(originalText, formatter.format(ModifierNode.this.modifierValue));
+                return String.format(originalText, FORMATTER.format(ModifierNode.this.modifierValue));
             }
         }
     }

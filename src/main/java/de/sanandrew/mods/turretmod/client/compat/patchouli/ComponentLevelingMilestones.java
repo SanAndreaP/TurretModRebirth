@@ -1,65 +1,125 @@
 package de.sanandrew.mods.turretmod.client.compat.patchouli;
 
-import com.google.gson.annotations.SerializedName;
-import de.sanandrew.mods.turretmod.api.turret.ITurret;
-import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
-import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
-import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.level.LevelModifiers;
 import de.sanandrew.mods.turretmod.registry.upgrades.leveling.LevelStorage;
 import de.sanandrew.mods.turretmod.registry.upgrades.leveling.Stage;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.mutable.MutableInt;
 import vazkii.patchouli.api.IComponentRenderContext;
-import vazkii.patchouli.client.book.BookEntry;
 import vazkii.patchouli.client.book.gui.GuiBook;
-import vazkii.patchouli.client.book.gui.GuiBookEntry;
-import vazkii.patchouli.client.book.gui.button.GuiButtonEntry;
-import vazkii.patchouli.client.book.template.component.ComponentText;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class ComponentLevelingMilestones
-        extends ComponentEntryList<ComponentText>
+        extends ComponentEntryList<ComponentCustomText>
 {
-    private List<ComponentText> myEntryList;
+    private final Map<ComponentCustomText, Integer> entryIds = new HashMap<>();
 
     @Override
-    public void buildEntries(IComponentRenderContext context, GuiBook book, List<ComponentText> entries, int x, int y) {
-//        final List<String> bookEntries = this.type.grabEntries(book, this.targetId);
+    public void buildEntries(IComponentRenderContext context, GuiBook book, List<ComponentCustomText> entries, int x, int y) {
         Stage[] stages = LevelStorage.getStages();
-        Map<Integer, List<String>> milestones = new HashMap<>();
+        Map<Integer, Map<String, String>> milestones = new HashMap<>();
 
-
-        for( int i = 0, max = stages.length; i < max; i++ ) {
-            Stage s = stages[i];
-            List<String> modStr = Stage.fetchModifiers(Collections.singleton(s), null).entrySet().stream()
-                                       .map(e -> String.format("%s: %.2f", e.getKey(), e.getValue().getModValue())).collect(Collectors.toList());
-            milestones.computeIfAbsent(s.level, ArrayList::new).addAll(modStr);
-//            BookEntry      entry  = bookEntries.get(i);
-//            GuiButtonEntry button = new GuiButtonEntryFixed(book, x, y + 30 + i * 11, entry, i);
-//            context.registerButton(button, pgNum, () -> GuiBookEntry.displayOrBookmark(book, entry));
-//            entries.add(button);
+        for( Stage s : stages ) {
+            Map<String, String> modStr = Stage.fetchModifiers(Collections.singleton(s), null).entrySet().stream()
+                                              .collect(Collectors.toMap(Map.Entry::getKey,
+                                                                        v -> getModVal(v.getValue())));
+            milestones.computeIfAbsent(s.level, HashMap::new).putAll(modStr);
         }
 
-        this.myEntryList = entries;
+        this.entryIds.clear();
+
+        int pgNum = book.getPage();
+        MutableInt line = new MutableInt(0);
+        milestones.entrySet().stream().sorted(Comparator.comparingInt(Map.Entry::getKey)).forEach(e -> {
+            ComponentCustomText txt = new ComponentCustomText(String.format("§lat level %d", e.getKey()), "000000");
+            txt.build(x, y + line.getValue() * 11 + 11, pgNum);
+            entries.add(txt);
+            this.entryIds.put(txt, line.getAndIncrement());
+
+            e.getValue().entrySet().stream().sorted(Map.Entry.comparingByKey()).forEach(m -> {
+                ComponentModifier md = new ComponentModifier(LangUtils.translate("attribute." + m.getKey()), m.getValue(), "404040", "000000");
+                md.build(x, y + line.getValue() * 11 + 11, pgNum);
+                entries.add(md);
+                this.entryIds.put(md, line.getAndIncrement());
+            });
+        });
+    }
+
+    private static String getModVal(Stage.ModifierInfo m) {
+        return String.format("%s %%", LevelModifiers.FORMATTER.format(m.getModValue() - m.baseValue));
     }
 
     @Override
-    void setEntryScroll(ComponentText entry, int prevShownPos, int currShownPos) {
-        int entryId = this.myEntryList.indexOf(entry);
+    public void onDisplayed(IComponentRenderContext context) {
+        super.onDisplayed(context);
+
+        for( ComponentCustomText txt : this.entryIds.keySet() ) {
+            txt.onDisplayed(context);
+        }
+    }
+
+    @Override
+    void setEntryScroll(ComponentCustomText entry, int prevShownPos, int currShownPos) {
+        int entryId = this.entryIds.get(entry);
 
         entry.y += (prevShownPos - currShownPos) * 11;
-        entry.guard = entryId >= currShownPos && entryId < currShownPos + this.maxEntriesShown ? null : "false";
+        entry.visible = entryId >= currShownPos && entryId < currShownPos + this.maxEntriesShown;
+    }
+
+    @Override
+    public void render(IComponentRenderContext context, float partTicks, int mouseX, int mouseY) {
+        super.render(context, partTicks, mouseX, mouseY);
+
+        this.entryIds.keySet().forEach(e -> e.render(context, partTicks, mouseX, mouseY));
+    }
+
+    private static final class ComponentModifier
+            extends ComponentCustomText
+    {
+        private final ComponentCustomText nameComponent;
+        private final ComponentCustomText valueComponent;
+
+        private ComponentModifier(String name, String value, String nameColor, String valueColor) {
+            this.nameComponent = new ComponentCustomText("\u00b7 " + name, nameColor);
+            this.valueComponent = new ComponentCustomText(value, valueColor);
+
+            this.valueComponent.alignment = "right";
+        }
+
+        @Override
+        public void build(int x, int y, int pgNum) {
+            this.x = x;
+            this.y = y;
+
+            this.nameComponent.build(0, 0, pgNum);
+            this.valueComponent.build(0, 0, pgNum);
+        }
+
+        @Override
+        public void render(IComponentRenderContext context, float partTicks, int mouseX, int mouseY) {
+            if( !this.visible ) {
+                return;
+            }
+
+            this.nameComponent.x = this.x + 5;
+            this.nameComponent.y = this.y;
+            this.valueComponent.x = this.x + 116;
+            this.valueComponent.y = this.y;
+
+            this.nameComponent.render(context, partTicks, mouseX, mouseY);
+            this.valueComponent.render(context, partTicks, mouseX, mouseY);
+        }
+
+        @Override
+        public void onDisplayed(IComponentRenderContext context) {
+            this.nameComponent.onDisplayed(context);
+            this.valueComponent.onDisplayed(context);
+        }
     }
 }
