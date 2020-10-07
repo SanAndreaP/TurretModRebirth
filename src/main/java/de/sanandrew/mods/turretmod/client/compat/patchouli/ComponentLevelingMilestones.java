@@ -1,11 +1,13 @@
 package de.sanandrew.mods.turretmod.client.compat.patchouli;
 
+import com.google.gson.annotations.SerializedName;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.level.LevelModifiers;
 import de.sanandrew.mods.turretmod.registry.upgrades.leveling.LevelStorage;
 import de.sanandrew.mods.turretmod.registry.upgrades.leveling.Stage;
 import org.apache.commons.lang3.mutable.MutableInt;
 import vazkii.patchouli.api.IComponentRenderContext;
+import vazkii.patchouli.api.VariableHolder;
 import vazkii.patchouli.client.book.gui.GuiBook;
 
 import java.util.Collections;
@@ -18,17 +20,32 @@ import java.util.stream.Collectors;
 public class ComponentLevelingMilestones
         extends ComponentEntryList<ComponentCustomText>
 {
+    @VariableHolder
+    @SerializedName("level_text")
+    public String levelTxt;
+    @SerializedName("level_text_color")
+    public String levelTextClr = "0x000000";
+    @VariableHolder
+    @SerializedName("modifier_label")
+    public String modValLbl;
+    @SerializedName("modifier_label_color")
+    public String modLblClr = "0x404040";
+    @VariableHolder
+    @SerializedName("modifier_value")
+    public String modValTxt;
+    @SerializedName("modifier_value_color")
+    public String modValClr = "0x000000";
+
     private final Map<ComponentCustomText, Integer> entryIds = new HashMap<>();
 
     @Override
     public void buildEntries(IComponentRenderContext context, GuiBook book, List<ComponentCustomText> entries, int x, int y) {
-        Stage[] stages = LevelStorage.getStages();
-        Map<Integer, Map<String, String>> milestones = new HashMap<>();
+        Stage[]                                       stages     = LevelStorage.getStages();
+        Map<Integer, Map<String, Stage.ModifierInfo>> milestones = new HashMap<>();
 
         for( Stage s : stages ) {
-            Map<String, String> modStr = Stage.fetchModifiers(Collections.singleton(s), null).entrySet().stream()
-                                              .collect(Collectors.toMap(Map.Entry::getKey,
-                                                                        v -> getModVal(v.getValue())));
+            Map<String, Stage.ModifierInfo> modStr = Stage.fetchModifiers(Collections.singleton(s), null).entrySet().stream()
+                                                          .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
             milestones.computeIfAbsent(s.level, HashMap::new).putAll(modStr);
         }
 
@@ -37,13 +54,14 @@ public class ComponentLevelingMilestones
         int pgNum = book.getPage();
         MutableInt line = new MutableInt(0);
         milestones.entrySet().stream().sorted(Comparator.comparingInt(Map.Entry::getKey)).forEach(e -> {
-            ComponentCustomText txt = new ComponentCustomText(String.format("§lat level %d", e.getKey()), "000000");
+            ComponentCustomText txt = new ComponentCustomText(String.format(this.levelTxt, e.getKey()), this.levelTextClr);
             txt.build(x, y + line.getValue() * 11 + 11, pgNum);
             entries.add(txt);
             this.entryIds.put(txt, line.getAndIncrement());
 
             e.getValue().entrySet().stream().sorted(Map.Entry.comparingByKey()).forEach(m -> {
-                ComponentModifier md = new ComponentModifier(LangUtils.translate("attribute." + m.getKey()), m.getValue(), "404040", "000000");
+                ComponentModifier md = new ComponentModifier(this.getModLbl(m.getKey()), this.getModVal(m.getValue()),
+                                                             this.modLblClr, this.modValClr);
                 md.build(x, y + line.getValue() * 11 + 11, pgNum);
                 entries.add(md);
                 this.entryIds.put(md, line.getAndIncrement());
@@ -51,8 +69,12 @@ public class ComponentLevelingMilestones
         });
     }
 
-    private static String getModVal(Stage.ModifierInfo m) {
-        return String.format("%s %%", LevelModifiers.FORMATTER.format(m.getModValue() - m.baseValue));
+    private String getModLbl(String attrName) {
+        return String.format(this.modValLbl, LangUtils.translate("attribute." + attrName));
+    }
+
+    private String getModVal(Stage.ModifierInfo m) {
+        return String.format(this.modValTxt, LevelModifiers.FORMATTER.format(m.getModValue() - m.baseValue));
     }
 
     @Override
@@ -86,7 +108,7 @@ public class ComponentLevelingMilestones
         private final ComponentCustomText valueComponent;
 
         private ComponentModifier(String name, String value, String nameColor, String valueColor) {
-            this.nameComponent = new ComponentCustomText("\u00b7 " + name, nameColor);
+            this.nameComponent = new ComponentCustomText(name, nameColor);
             this.valueComponent = new ComponentCustomText(value, valueColor);
 
             this.valueComponent.alignment = "right";
@@ -107,7 +129,7 @@ public class ComponentLevelingMilestones
                 return;
             }
 
-            this.nameComponent.x = this.x + 5;
+            this.nameComponent.x = this.x;
             this.nameComponent.y = this.y;
             this.valueComponent.x = this.x + 116;
             this.valueComponent.y = this.y;

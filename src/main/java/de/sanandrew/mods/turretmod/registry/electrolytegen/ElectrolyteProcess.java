@@ -89,9 +89,10 @@ public class ElectrolyteProcess
         implements IElectrolyteRecipe
     {
         public static final InvalidRecipe INSTANCE = new InvalidRecipe();
+        private static final ResourceLocation ID = new ResourceLocation("null", "null");
 
         @Override
-        public ResourceLocation getId() { return null; }
+        public ResourceLocation getId() { return ID; }
 
         @Override
         public float getEfficiency() { return 0; }

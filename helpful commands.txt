@@ -1,0 +1,2 @@
+Rename Bulk File w/ RegExp
+[PS] :> ls | Rename-Item -NewName {$_ -replace 'unwanted_(.*)$', '$1'}

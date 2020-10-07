@@ -38,10 +38,12 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.common.ModContainer;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
@@ -53,6 +55,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
@@ -419,5 +423,11 @@ public class TmrUtils
         }
 
         return getNumberFormat(precision, false, langCode).format(number) + ' ';
+    }
+
+    public static ResourceLocation getPathedRL(String domain, Path root, Path file) {
+        Path filePath = Paths.get(FilenameUtils.getPathNoEndSeparator(root.relativize(file).toString()),
+                                  FilenameUtils.removeExtension(file.getFileName().toString()));
+        return new ResourceLocation(domain, FilenameUtils.separatorsToUnix(filePath.toString()));
     }
 }

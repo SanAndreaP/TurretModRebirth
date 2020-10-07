@@ -3,9 +3,12 @@
     {
       "type": "custom",
       "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentLevelingMilestones",
-      "title": "Milestones",
+      "title": "Level-Ups",
       "max_entries_shown": 12,
-      "y": 0
+      "y": 0,
+      "level_text": "§lat level %s",
+      "modifier_label": "  \u00b7 %s",
+      "modifier_value": "%s %%"
     }
   ]
 }

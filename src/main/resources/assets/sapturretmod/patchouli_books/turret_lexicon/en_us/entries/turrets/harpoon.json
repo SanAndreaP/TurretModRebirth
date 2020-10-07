@@ -17,7 +17,7 @@
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:turret_mk1_harpoon"
+      "recipe": "sapturretmod:turrets/harpoon"
     },
     {
       "type": "sapturretmod:turret_relations",

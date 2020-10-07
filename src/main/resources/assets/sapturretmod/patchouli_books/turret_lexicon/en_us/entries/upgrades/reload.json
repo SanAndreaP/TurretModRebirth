@@ -11,7 +11,7 @@
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:upg_reload1"
+      "recipe": "sapturretmod:upgrades/reload1"
     },
     {
       "type": "sapturretmod:upgrade_info",
@@ -21,7 +21,7 @@
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:upg_reload2"
+      "recipe": "sapturretmod:upgrades/reload2"
     }
   ]
 }

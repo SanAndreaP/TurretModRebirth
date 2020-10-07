@@ -12,7 +12,7 @@
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:ammo_cartridge",
+      "recipe": "sapturretmod:ammo/cartridge",
       "flavor_text": "*slaps cartridge* This boy can fit so many rounds in it"
     },
     {

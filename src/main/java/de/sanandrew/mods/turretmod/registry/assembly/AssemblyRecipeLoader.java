@@ -16,6 +16,7 @@ import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.assembly.AssemblyIngredient;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyManager;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
@@ -32,6 +33,7 @@ import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public final class AssemblyRecipeLoader
 {
@@ -46,17 +48,17 @@ public final class AssemblyRecipeLoader
     private static void loadJsonRecipes(ModContainer mod, final IAssemblyManager registry) {
         final String modId = mod.getModId();
 
-        MiscUtils.findFiles(mod, "assets/" + modId + '/' + TmrConstants.ID + "/recipes/assembly/", null, (root, file) -> processJson(modId, file, registry));
+        MiscUtils.findFiles(mod, "assets/" + modId + '/' + TmrConstants.ID + "/recipes/assembly/", null, (root, file) -> processJson(modId, root, file, registry));
     }
 
-    private static boolean processJson(final String modId, Path file, final IAssemblyManager registry) {
+    private static boolean processJson(final String modId, Path root, Path file, final IAssemblyManager registry) {
         if( !file.toString().endsWith(".json") ) {
             return true;
         }
 
         try( BufferedReader reader = Files.newBufferedReader(file) ) {
             JsonObject json = fromJson(reader, JsonObject.class);
-            ResourceLocation id = new ResourceLocation(modId, FilenameUtils.removeExtension(file.getFileName().toString()));
+            ResourceLocation id = TmrUtils.getPathedRL(modId, root, file);
 
             if( json == null ) {
                 throw new JsonSyntaxException("Cannot read valid JSON");

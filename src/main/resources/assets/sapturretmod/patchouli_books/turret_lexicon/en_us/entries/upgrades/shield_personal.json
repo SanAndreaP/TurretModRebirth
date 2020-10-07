@@ -11,7 +11,7 @@
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:upg_shield_pers"
+      "recipe": "sapturretmod:upgrades/shield_pers"
     }
   ]
 }

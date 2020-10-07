@@ -13,7 +13,7 @@
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:ammo_eleccell"
+      "recipe": "sapturretmod:ammo/eleccell"
     }
   ]
 }

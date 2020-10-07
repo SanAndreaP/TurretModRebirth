@@ -11,7 +11,7 @@
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:upg_shield_colorizer"
+      "recipe": "sapturretmod:upgrades/shield_colorizer"
     },
     {
       "type": "image",

@@ -13,7 +13,7 @@
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:ammo_minigunshell"
+      "recipe": "sapturretmod:ammo/minigunshell"
     }
   ]
 }

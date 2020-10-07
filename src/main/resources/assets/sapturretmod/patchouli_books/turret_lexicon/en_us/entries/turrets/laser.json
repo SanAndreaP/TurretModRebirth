@@ -18,7 +18,7 @@
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:turret_mk3_laser"
+      "recipe": "sapturretmod:turrets/laser"
     },
     {
       "type": "sapturretmod:turret_relations",

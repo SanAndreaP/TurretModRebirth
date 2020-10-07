@@ -17,7 +17,7 @@
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:turret_mk1_cryolator"
+      "recipe": "sapturretmod:turrets/cryolator"
     },
     {
       "type": "sapturretmod:turret_relations",

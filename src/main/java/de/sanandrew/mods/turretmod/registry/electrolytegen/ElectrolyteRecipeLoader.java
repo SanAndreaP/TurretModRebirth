@@ -14,6 +14,7 @@ import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.electrolytegen.IElectrolyteManager;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
@@ -40,17 +41,18 @@ public class ElectrolyteRecipeLoader
 
     private static void loadJsonRecipes(ModContainer mod, IElectrolyteManager registry) {
         String modId = mod.getModId();
-        MiscUtils.findFiles(mod, "assets/" + modId + '/' + TmrConstants.ID + "/recipes/electrolytegen/", null, (root, file) -> processJson(modId, file, registry));
+        MiscUtils.findFiles(mod, "assets/" + modId + '/' + TmrConstants.ID + "/recipes/electrolytegen/", null, (root, file) -> processJson(modId, root, file, registry));
     }
 
-    private static boolean processJson(final String modId, Path file, IElectrolyteManager registry) {
+    private static boolean processJson(final String modId, Path root, Path file, IElectrolyteManager registry) {
         if( !file.toString().endsWith(".json") ) {
             return true;
         }
 
         try( BufferedReader reader = Files.newBufferedReader(file) ) {
             JsonObject json = JsonUtils.fromJson(reader, JsonObject.class);
-            ResourceLocation id = new ResourceLocation(modId, "recipes/electrolytegen/" + file.getFileName().toString());
+            ResourceLocation id = TmrUtils.getPathedRL(modId, root, file);
+            //new ResourceLocation(modId, "recipes/electrolytegen/" + file.getFileName().toString());
 
             if( json == null ) {
                 throw new JsonSyntaxException("Cannot read valid JSON");
