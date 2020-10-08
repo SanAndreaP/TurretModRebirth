@@ -59,7 +59,9 @@ public interface IGuiTcuInst<T extends GuiScreen>
      */
     default boolean hasPermision() {
         Minecraft mc = this.get().mc;
-        return ItemStackUtils.isItem(mc.player.getHeldItemMainhand(), ItemRegistry.TURRET_CONTROL_UNIT) && this.getTurretInst().hasPlayerPermission(mc.player);
+        return (ItemStackUtils.isItem(mc.player.getHeldItemMainhand(), ItemRegistry.TURRET_CONTROL_UNIT)
+                    || ItemStackUtils.isItem(mc.player.getHeldItemOffhand(), ItemRegistry.TURRET_CONTROL_UNIT))
+               && this.getTurretInst().hasPlayerPermission(mc.player);
     }
 
     /**

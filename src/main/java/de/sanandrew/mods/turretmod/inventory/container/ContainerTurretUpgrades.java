@@ -48,23 +48,6 @@ public class ContainerTurretUpgrades
         return TmrUtils.mergeItemStack(this, stack, beginSlot, endSlot, reverse);
     }
 
-    private boolean transferUpgrade(Item desiredItm, @Nonnull ItemStack origStack, @Nonnull ItemStack slotStack) {
-        int origStackSize = desiredItm.getItemStackLimit(origStack);
-        desiredItm.setMaxStackSize(1);
-        slotStack.setCount(1);
-
-        if( !this.mergeItemStack(slotStack, 0, 36, false) ) {
-            slotStack.setCount(origStack.getCount());
-            desiredItm.setMaxStackSize(origStackSize);
-            return true;
-        } else {
-            slotStack.setCount(origStack.getCount() - 1);
-        }
-
-        desiredItm.setMaxStackSize(origStackSize);
-        return false;
-    }
-
     @Override
     @Nonnull
     public ItemStack transferStackInSlot(EntityPlayer player, int slotId) {
@@ -72,7 +55,7 @@ public class ContainerTurretUpgrades
         Slot slot = this.inventorySlots.get(slotId);
 
         if( slot != null && slot.getHasStack() ) {
-            ItemStack slotStack = slot.getStack().copy();
+            ItemStack slotStack = slot.getStack();
             origStack = slotStack.copy();
 
             if( slotId < 36 ) { // if clicked stack is from Processor
@@ -80,7 +63,7 @@ public class ContainerTurretUpgrades
                     return ItemStackUtils.getEmpty();
                 }
             } else if( origStack.getItem() instanceof ItemUpgrade ) {
-                if( transferUpgrade(origStack.getItem(), origStack, slotStack) ) {
+                if( !this.mergeItemStack(slotStack, 0, 36, false) ) {
                     return ItemStackUtils.getEmpty();
                 }
             }

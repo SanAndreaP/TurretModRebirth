@@ -62,21 +62,6 @@ public class ContainerTurretAssembly
         return this.inventory.isUsableByPlayer(player);
     }
 
-    private boolean transferUpgrade(Item desiredItm, @Nonnull ItemStack origStack, @Nonnull ItemStack slotStack, int upgSlot) {
-        int origStackSize = desiredItm.getItemStackLimit(origStack);
-        desiredItm.setMaxStackSize(1);
-        slotStack.setCount(1);
-        if( !super.mergeItemStack(slotStack, upgSlot, upgSlot + 1, false) ) {
-            slotStack.setCount(origStack.getCount());
-            desiredItm.setMaxStackSize(origStackSize);
-            return true;
-        } else {
-            slotStack.setCount(origStack.getCount() - 1);
-        }
-        desiredItm.setMaxStackSize(origStackSize);
-        return false;
-    }
-
     @Override
     protected boolean mergeItemStack(@Nonnull ItemStack stack, int beginSlot, int endSlot, boolean reverse) {
         return TmrUtils.mergeItemStack(this, stack, beginSlot, endSlot, reverse);
@@ -98,19 +83,19 @@ public class ContainerTurretAssembly
                     return ItemStackUtils.getEmpty();
                 }
             } else if( origStack.getItem() == ItemRegistry.ASSEMBLY_UPG_AUTO ) {
-                if( transferUpgrade(ItemRegistry.ASSEMBLY_UPG_AUTO, origStack, slotStack, AssemblyInventory.SLOT_UPGRADE_AUTO) ) {
+                if( !this.mergeItemStack(slotStack, AssemblyInventory.SLOT_UPGRADE_AUTO, AssemblyInventory.SLOT_UPGRADE_AUTO + 1, false) ) {
                     return ItemStackUtils.getEmpty();
                 }
             } else if( origStack.getItem() == ItemRegistry.ASSEMBLY_UPG_SPEED ) {
-                if( transferUpgrade(ItemRegistry.ASSEMBLY_UPG_SPEED, origStack, slotStack, AssemblyInventory.SLOT_UPGRADE_SPEED) ) {
+                if( !this.mergeItemStack(slotStack, AssemblyInventory.SLOT_UPGRADE_SPEED, AssemblyInventory.SLOT_UPGRADE_SPEED + 1, false) ) {
                     return ItemStackUtils.getEmpty();
                 }
             } else if( origStack.getItem() == ItemRegistry.ASSEMBLY_UPG_FILTER ) {
-                if( transferUpgrade(ItemRegistry.ASSEMBLY_UPG_FILTER, origStack, slotStack, AssemblyInventory.SLOT_UPGRADE_FILTER) ) {
+                if( !this.mergeItemStack(slotStack, AssemblyInventory.SLOT_UPGRADE_FILTER, AssemblyInventory.SLOT_UPGRADE_FILTER + 1, false) ) {
                     return ItemStackUtils.getEmpty();
                 }
             } else if( origStack.getItem() == ItemRegistry.ASSEMBLY_UPG_REDSTONE ) {
-                if( transferUpgrade(ItemRegistry.ASSEMBLY_UPG_REDSTONE, origStack, slotStack, AssemblyInventory.SLOT_UPGRADE_REDSTONE) ) {
+                if( !this.mergeItemStack(slotStack, AssemblyInventory.SLOT_UPGRADE_REDSTONE, AssemblyInventory.SLOT_UPGRADE_REDSTONE + 1, false) ) {
                     return ItemStackUtils.getEmpty();
                 }
             } else if( !this.mergeItemStack(slotStack, AssemblyInventory.RESOURCE_SLOT_FIRST, invSize, false) ) { // if clicked stack is from player and also merge to input slots is sucessful

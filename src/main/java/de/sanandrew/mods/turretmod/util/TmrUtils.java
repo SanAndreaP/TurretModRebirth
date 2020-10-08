@@ -159,15 +159,16 @@ public class TmrUtils
 
                 if( ItemStackUtils.areEqual(slotStack, stack) && slot.isItemValid(stack) ) {
                     int combStackSize = slotStack.getCount() + stack.getCount();
+                    int maxStackSize = Math.min(stack.getMaxStackSize(), slot.getItemStackLimit(stack));
 
-                    if( combStackSize <= stack.getMaxStackSize() ) {
+                    if( combStackSize <= maxStackSize ) {
                         stack.setCount(0);
                         slotStack.setCount(combStackSize);
                         slot.onSlotChanged();
                         slotChanged = true;
-                    } else if( slotStack.getCount() < stack.getMaxStackSize() ) {
-                        stack.shrink(stack.getMaxStackSize() - slotStack.getCount());
-                        slotStack.setCount(stack.getMaxStackSize());
+                    } else if( slotStack.getCount() < maxStackSize ) {
+                        stack.shrink(maxStackSize - slotStack.getCount());
+                        slotStack.setCount(maxStackSize);
                         slot.onSlotChanged();
                         slotChanged = true;
                     }
@@ -188,15 +189,26 @@ public class TmrUtils
                 start = beginSlot;
             }
 
-            while( !reverse && start < endSlot || reverse && start >= beginSlot ) {
+            while( stack.getCount() > 0 && (!reverse && start < endSlot || reverse && start >= beginSlot) ) {
                 slot = container.inventorySlots.get(start);
 
                 if( !ItemStackUtils.isValid(slot.getStack()) && slot.isItemValid(stack) ) {
-                    slot.putStack(stack.copy());
-                    slot.onSlotChanged();
-                    stack.setCount(0);
-                    slotChanged = true;
-                    break;
+                    int maxStackSize = Math.min(stack.getMaxStackSize(), slot.getItemStackLimit(stack));
+                    if( stack.getCount() > maxStackSize ) {
+                        ItemStack newSlotStack = stack.copy();
+
+                        stack.shrink(maxStackSize);
+                        newSlotStack.setCount(maxStackSize);
+                        slot.putStack(newSlotStack);
+                        slot.onSlotChanged();
+                        slotChanged = true;
+                    } else {
+                        slot.putStack(stack.copy());
+                        slot.onSlotChanged();
+                        stack.setCount(0);
+                        slotChanged = true;
+                        break;
+                    }
                 }
 
                 if( reverse ) {
