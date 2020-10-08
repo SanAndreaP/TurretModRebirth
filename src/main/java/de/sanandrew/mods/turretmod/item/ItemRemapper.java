@@ -65,6 +65,25 @@ public class ItemRemapper
         }
     };
 
+    private static final Map<ResourceLocation, ResourceLocation> OLD_AMMO_ID_MAPPINGS = new HashMap<ResourceLocation, ResourceLocation>()
+    {
+        {
+            this.put(new ResourceLocation(TmrConstants.ID, "ammo.arrow"), Ammunitions.BOLT.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "ammo.tipped_bolt"), Ammunitions.TIPPED_BOLT.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "ammo.cryocell.1"), Ammunitions.CRYOCELL_MK1.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "ammo.cryocell.2"), Ammunitions.CRYOCELL_MK2.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "ammo.cryocell.3"), Ammunitions.CRYOCELL_MK3.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "ammo.shotgunshell"), Ammunitions.SGSHELL.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "ammo.harpoon"), Ammunitions.HARPOON.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "ammo.bullet"), Ammunitions.BULLET.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "ammo.minigunshell"), Ammunitions.MGSHELL.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "ammo.eleccell"), Ammunitions.ELECTROLYTECELL.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "ammo.fluxcell"), Ammunitions.FLUXCELL.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "ammo.fueltank"), Ammunitions.FUELTANK.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "ammo.cartridge"), ItemRegistry.AMMO_CARTRIDGE.getRegistryName());
+        }
+    };
+
     private static final ResourceLocation OLD_TURRET_ID = new ResourceLocation(TmrConstants.ID, "turret_placer");
     public static final Map<UUID, ResourceLocation> OLD_TURRET_MAPPINGS = Collections.unmodifiableMap(new HashMap<UUID, ResourceLocation>() {
         {
@@ -166,6 +185,8 @@ public class ItemRemapper
                 map.remap(ItemRegistry.TURRET_REPAIRKITS.get(RepairKits.STANDARD_MK1.getId()));
             } else if( OLD_UPGRADE_ID_MAPPINGS.containsKey(map.key) ) {
                 map.remap(Item.getByNameOrId(OLD_UPGRADE_ID_MAPPINGS.get(map.key).toString()));
+            } else if( OLD_AMMO_ID_MAPPINGS.containsKey(map.key) ) {
+                map.remap(Item.getByNameOrId(OLD_AMMO_ID_MAPPINGS.get(map.key).toString()));
             }
         }
     }

@@ -11,7 +11,7 @@
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:upgrades/turretsafe"
+      "recipe": "sapturretmod:upgrades/turret_safe"
     }
   ]
 }

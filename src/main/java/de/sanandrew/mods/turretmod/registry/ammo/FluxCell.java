@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
 public class FluxCell
         implements IAmmunition
 {
-    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo.fluxcell");
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo_flux_cell");
 
     @Override
     public ResourceLocation getId() {

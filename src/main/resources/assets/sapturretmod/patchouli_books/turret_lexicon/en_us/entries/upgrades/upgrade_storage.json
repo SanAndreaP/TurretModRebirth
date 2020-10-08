@@ -11,18 +11,18 @@
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:upgrades/storage1",
+      "recipe": "sapturretmod:upgrades/storage_1",
       "header": "Upgrade Storage I"
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:upgrades/storage2",
+      "recipe": "sapturretmod:upgrades/storage_2",
       "header": "Upgrade Storage II",
       "flavor_text": "$(5)$(o)Requires Upgrade Storage I$()"
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:upgrades/storage3",
+      "recipe": "sapturretmod:upgrades/storage_3",
       "header": "Upgrade Storage III",
       "flavor_text": "$(5)$(o)Requires Upgrade Storage II$()"
     }

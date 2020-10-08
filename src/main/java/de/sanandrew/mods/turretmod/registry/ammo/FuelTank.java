@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
 public class FuelTank
         implements IAmmunition
 {
-    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo.fueltank");
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo_fuel_tank");
 
     @Override
     public ResourceLocation getId() {

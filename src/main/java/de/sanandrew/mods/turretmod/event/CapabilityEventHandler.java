@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Mod.EventBusSubscriber(modid = TmrConstants.ID)
 public class CapabilityEventHandler
 {
-    private static final ResourceLocation CAP_AMMO_CARTRIDGE = new ResourceLocation(TmrConstants.ID, "ammo.cartridge");
+    private static final ResourceLocation CAP_AMMO_CARTRIDGE = new ResourceLocation(TmrConstants.ID, "ammo_cartridge");
 
     @SubscribeEvent
     public static void attachCapabilityItemStack(AttachCapabilitiesEvent<ItemStack> event) {

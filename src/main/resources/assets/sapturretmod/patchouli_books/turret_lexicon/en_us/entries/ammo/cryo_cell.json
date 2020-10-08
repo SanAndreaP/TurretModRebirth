@@ -1,0 +1,33 @@
+{
+  "name": "Cryo-Cells",
+  "icon": "sapturretmod:ammo_cryo_cell_1",
+  "category": "sapturretmod:ammo",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "sapturretmod:ammo_info_i18n",
+      "ammo_type": "sapturretmod:ammo_cryo_cell_1;sapturretmod:ammo_cryo_cell_2;sapturretmod:ammo_cryo_cell_3",
+      "name": "Cryo-Cells",
+      "text": "These come in 3 versions that apply different slowness effects $(o)(mentioned below their respective crafting recipe)$().$(br2)$(5)$(o)No knockback effect",
+      "turret_link": "$(l:turrets/cryolator)Cryolator Turret$(/l)"
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:ammo/cryocell_1",
+      "header": "Cryo-Cell SG1",
+      "flavor_text": "Slowness I for 15s"
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:ammo/cryocell_2",
+      "header": "Cryo-Cell SG2",
+      "flavor_text": "Slowness III for 10s"
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:ammo/cryocell_3",
+      "header": "Cryo-Cell SG3",
+      "flavor_text": "Slowness V for 5s"
+    }
+  ]
+}

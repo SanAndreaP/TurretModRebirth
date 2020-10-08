@@ -31,7 +31,7 @@ public class MeshDefAmmoCartridge
 
         ItemRegistry.TURRET_AMMO.forEach((key, value) -> {
             if( value.ammo.isValid() ) {
-                this.ammoToModel.put(key, new ModelResourceLocation(new ResourceLocation(key.getNamespace(), "ammo/cartridge." + key.getPath()), "inventory"));
+                this.ammoToModel.put(key, new ModelResourceLocation(new ResourceLocation(key.getNamespace(), "ammo/cartridge_" + key.getPath()), "inventory"));
             }
         });
     }

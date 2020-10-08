@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("WeakerAccess")
 public class ComponentLevelingMilestones
         extends ComponentEntryList<ComponentCustomText>
 {

@@ -1,12 +1,12 @@
 {
   "name": "Ammo Cartridge",
-  "icon": "sapturretmod:ammo.cartridge",
+  "icon": "sapturretmod:ammo_cartridge",
   "category": "sapturretmod:ammo",
   "priority": true,
   "pages": [
     {
       "type": "spotlight",
-      "item": "sapturretmod:ammo.cartridge",
+      "item": "sapturretmod:ammo_cartridge",
       "title": "Ammo Cartridge",
       "text": "Carry more rounds with the ammo cartridge! Use ($(k:use)) it to open a chest-like UI, on a turret it will attempt to fill that turret up, as long as it's the right kind of ammo.$(br2)$(italic)A cartridge can only hold one type of ammo! Once you put, for example, crossbow bolts in it, it'll not accept bullets anymore until it is empty.$()"
     },

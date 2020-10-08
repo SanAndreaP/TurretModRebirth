@@ -1,5 +1,4 @@
 {
-  "processor": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentAmmoStatProcessor",
   "include": [
     {
       "template": "sapturretmod:ammo_info",

@@ -1,7 +1,7 @@
 {
   "name": "Ammunitions",
   "description": "Find information like damage, modifiers, etc. on any type of ammunition available.",
-  "icon": "sapturretmod:ammo.cartridge",
+  "icon": "sapturretmod:ammo_cartridge",
   "advancement": null,
   "sortnum": 2
 }

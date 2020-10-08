@@ -152,7 +152,7 @@ public class Stage
         public final double baseValue;
         private      double modValue;
 
-        public ModifierInfo(double baseValue) {
+        private ModifierInfo(double baseValue) {
             this.baseValue = baseValue;
             this.modValue = baseValue;
         }

@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 public class ShotgunShell
         implements IAmmunition
 {
-    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo.shotgunshell");
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo_shotgun_shell");
 
     @Override
     public ResourceLocation getId() {

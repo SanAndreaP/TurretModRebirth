@@ -1,0 +1,19 @@
+{
+  "name": "Flux-Cells",
+  "icon": "sapturretmod:ammo_flux_cell",
+  "category": "sapturretmod:ammo",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "sapturretmod:ammo_info_i18n",
+      "ammo_type": "sapturretmod:ammo_flux_cell",
+      "name": "Flux-Cells",
+      "text": "Redstone has shown itself that it is fast and energetic enough to power this laser.$(br2)$(5)$(o)Sets flammable targets on fire$(br)No knockback effect",
+      "turret_link": "$(l:turrets/laser)Laser Turret$(/l)"
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:ammo/flux_cell"
+    }
+  ]
+}

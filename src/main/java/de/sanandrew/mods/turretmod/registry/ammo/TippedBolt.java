@@ -28,7 +28,7 @@ public class TippedBolt
         SUBTYPES = potionTypes.toArray(new String[0]);
     }
 
-    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo.tipped_bolt");
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo_tipped_bolt");
 
     @Override
     public ResourceLocation getId() {

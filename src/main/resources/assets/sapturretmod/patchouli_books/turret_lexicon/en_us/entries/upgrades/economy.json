@@ -11,7 +11,7 @@
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:upgrades/economy1"
+      "recipe": "sapturretmod:upgrades/economy_1"
     },
     {
       "type": "sapturretmod:upgrade_info",
@@ -21,7 +21,7 @@
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:upgrades/economy2"
+      "recipe": "sapturretmod:upgrades/economy_2"
     },
     {
       "type": "sapturretmod:upgrade_info",
@@ -31,7 +31,7 @@
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:upgrades/economy3"
+      "recipe": "sapturretmod:upgrades/economy_3"
     }
   ]
 }

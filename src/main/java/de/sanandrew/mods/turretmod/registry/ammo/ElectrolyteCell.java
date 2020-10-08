@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 public class ElectrolyteCell
         implements IAmmunition
 {
-    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo.eleccell");
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo_electrolyte_cell");
 
     @Override
     public ResourceLocation getId() {

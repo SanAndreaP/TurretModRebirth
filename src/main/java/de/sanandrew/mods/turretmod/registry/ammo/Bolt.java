@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 public class Bolt
         implements IAmmunition
 {
-    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo.arrow");
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo_bolt");
 
     @Override
     public ResourceLocation getId() {

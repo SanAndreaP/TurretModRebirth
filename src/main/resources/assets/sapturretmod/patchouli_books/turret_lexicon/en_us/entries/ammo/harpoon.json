@@ -1,12 +1,12 @@
 {
   "name": "Harpoons",
-  "icon": "sapturretmod:ammo.harpoon",
+  "icon": "sapturretmod:ammo_harpoon",
   "category": "sapturretmod:ammo",
   "sortnum": 1,
   "pages": [
     {
       "type": "sapturretmod:ammo_info_i18n",
-      "ammo_type": "sapturretmod:ammo.harpoon",
+      "ammo_type": "sapturretmod:ammo_harpoon",
       "name": "Harpoons",
       "text": "Harpoons have comparable stats to the $(l:ammo/bolt)Crossbow Bolts$(/l). Due to their heavier and more water-resistant nature, these are ideal for naval combat.$(br2)$(5)$(o)Small knockback effect",
       "turret_link": "$(l:turrets/harpoon)Harpoon Turret$(/l)"

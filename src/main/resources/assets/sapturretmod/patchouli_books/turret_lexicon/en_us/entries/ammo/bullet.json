@@ -1,12 +1,12 @@
 {
   "name": "Bullets",
-  "icon": "sapturretmod:ammo.bullet",
+  "icon": "sapturretmod:ammo_bullet",
   "category": "sapturretmod:ammo",
   "sortnum": 2,
   "pages": [
     {
       "type": "sapturretmod:ammo_info_i18n",
-      "ammo_type": "sapturretmod:ammo.bullet",
+      "ammo_type": "sapturretmod:ammo_bullet",
       "name": "Bullets",
       "text": "Shot with very high velocity, these do more damage and are way more accurate compared to $(l:ammo/bolt)Crossbow Bolts$(/l).$(br2)$(5)$(o)Very small knockback effect",
       "turret_link": "$(l:turrets/revolver)Revolver Turret$(/l)"

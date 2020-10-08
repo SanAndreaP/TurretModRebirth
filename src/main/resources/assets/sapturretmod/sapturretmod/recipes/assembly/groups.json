@@ -16,7 +16,7 @@
     {
       "name": "ammo",
       "icon": {
-        "item": "sapturretmod:ammo.arrow"
+        "item": "sapturretmod:ammo_bolt"
       }
     },
     {

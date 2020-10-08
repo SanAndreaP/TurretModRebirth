@@ -8,7 +8,7 @@
       "count": 2,
       "items": [
         {
-          "item": "sapturretmod:ammo.cryocell.1"
+          "item": "sapturretmod:ammo_cryo_cell_1"
         }
       ]
     },
@@ -22,7 +22,7 @@
     }
   ],
   "result": {
-    "item": "sapturretmod:ammo.cryocell.2",
+    "item": "sapturretmod:ammo_cryo_cell_2",
     "count": 2
   }
 }

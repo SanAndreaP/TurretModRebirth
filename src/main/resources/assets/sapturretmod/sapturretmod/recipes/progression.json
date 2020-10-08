@@ -4,9 +4,9 @@
     {
       "id": "sapturretmod:progress:tier_2",
       "unlocks": [
-        { "item": "sapturretmod:ammo.eleccell" },
-        { "item": "sapturretmod:ammo.minigunshell" },
-        { "item": "sapturretmod:ammo.bullet" },
+        { "item": "sapturretmod:ammo_electrolyte_cell" },
+        { "item": "sapturretmod:ammo_minigun_shell" },
+        { "item": "sapturretmod:ammo_bullet" },
         { "item": "sapturretmod:repkit.standard.2" },
         { "item": "sapturretmod:turret.forcefield" },
         { "item": "sapturretmod:turret.revolver" },
@@ -25,8 +25,8 @@
       "id": "sapturretmod:progress:tier_3",
       "unlocks": [
         { "progression": "sapturretmod:progress:tier_2" },
-        { "item": "sapturretmod:ammo.fluxcell" },
-        { "item": "sapturretmod:ammo.fueltank" },
+        { "item": "sapturretmod:ammo_flux_cell" },
+        { "item": "sapturretmod:ammo_fuel_tank" },
         { "item": "sapturretmod:repkit.standard.3" },
         { "item": "sapturretmod:turret.flamethrower" },
         { "item": "sapturretmod:turret.laser" },

@@ -11,13 +11,13 @@
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:upgrades/shield_strength1",
+      "recipe": "sapturretmod:upgrades/shield_strength_1",
       "header": "Amplifier I",
       "flavor_text": "$(italic)R: 16 blocks; S: 150 points$()"
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:upgrades/shield_strength2",
+      "recipe": "sapturretmod:upgrades/shield_strength_2",
       "header": "Amplifier II",
       "flavor_text": "$(italic)R: 24 blocks; S: 250 points$(br)$(5)Requires Amplifier I$()"
     }

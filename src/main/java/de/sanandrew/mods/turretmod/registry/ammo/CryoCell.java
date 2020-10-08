@@ -8,7 +8,6 @@
  */
 package de.sanandrew.mods.turretmod.registry.ammo;
 
-import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
@@ -16,20 +15,14 @@ import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.projectile.Projectiles;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.List;
 
 public abstract class CryoCell
         implements IAmmunition
 {
-
     @Nonnull
     @Override
     public ITurret getTurret() {
@@ -41,21 +34,10 @@ public abstract class CryoCell
         return 1;
     }
 
-    @Override
-    public String getItemTranslationKey() {
-        return "item." + TmrConstants.ID + ":ammo.cryocell";
-    }
-
-    @Override
-    public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
-        tooltip.add(LangUtils.translate("item." + this.getId().toString() + ".name"));
-        IAmmunition.super.addInformation(stack, world, tooltip, flag);
-    }
-
     public static class Mk1
             extends CryoCell
     {
-        private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo.cryocell.1");
+        private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo_cryo_cell_1");
 
         @Override
         public ResourceLocation getId() {
@@ -76,7 +58,7 @@ public abstract class CryoCell
     public static class Mk2
             extends CryoCell
     {
-        private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo.cryocell.2");
+        private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo_cryo_cell_2");
 
         @Override
         public ResourceLocation getId() {
@@ -97,7 +79,7 @@ public abstract class CryoCell
     public static class Mk3
             extends CryoCell
     {
-        private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo.cryocell.3");
+        private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo_cryo_cell_3");
 
         @Override
         public ResourceLocation getId() {

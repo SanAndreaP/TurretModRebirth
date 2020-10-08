@@ -11,7 +11,7 @@
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
-      "recipe": "sapturretmod:upgrades/smarttgt"
+      "recipe": "sapturretmod:upgrades/smart_targeting"
     },
     {
       "type": "image",

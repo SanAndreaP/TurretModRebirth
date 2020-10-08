@@ -58,12 +58,12 @@ public class ComponentTurretEntries
     private class GuiButtonEntryFixed
             extends GuiButtonEntry
     {
-        GuiBook _parent;
+        private final GuiBook parent;
 
-        public GuiButtonEntryFixed(GuiBook parent, int x, int y, BookEntry entry, int i) {
+        private GuiButtonEntryFixed(GuiBook parent, int x, int y, BookEntry entry, int i) {
             super(parent, x, y, entry, i);
 
-            this._parent = parent;
+            this.parent = parent;
             this.id = i;
         }
 
@@ -71,7 +71,7 @@ public class ComponentTurretEntries
         public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
             // if the button is still rendered on a page not belonging to it, hide the button.
             // Once these types of buttons are rebuilt on the proper page, these will be purged from the buttonList first.
-            if( this.visible && _parent.getPage() + 1 != MathHelper.ceil(ComponentTurretEntries.this.pgNum / 1.99F) ) {
+            if( this.visible && parent.getPage() + 1 != MathHelper.ceil(ComponentTurretEntries.this.pgNum / 1.99F) ) {
                 this.visible = false;
             }
 

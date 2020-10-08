@@ -1,7 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "sapturretmod:items/ammo/cartridge",
-    "layer1": "sapturretmod:items/ammo/cartridge.shotgunshell"
-  }
-}
