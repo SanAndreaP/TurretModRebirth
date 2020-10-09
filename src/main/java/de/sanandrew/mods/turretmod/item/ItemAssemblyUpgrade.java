@@ -31,6 +31,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class ItemAssemblyUpgrade
@@ -97,7 +98,7 @@ public abstract class ItemAssemblyUpgrade
             if( nbt != null && nbt.hasKey("filteredStacks") ) {
                 tooltip.add(TextFormatting.ITALIC + LangUtils.translate(this.getTranslationKey() + ".conf"));
             } else {
-                tooltip.add(LangUtils.translate(this.getTranslationKey() + ".inst"));
+                tooltip.addAll(Arrays.asList(LangUtils.translate(this.getTranslationKey() + ".inst").split("\\n")));
             }
         }
 

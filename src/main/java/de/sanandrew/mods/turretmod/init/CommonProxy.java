@@ -150,4 +150,8 @@ public class CommonProxy
     public boolean hasForcefield(Entity e, Class<? extends IForcefieldProvider> providerCls) {
         return false;
     }
+
+    public boolean isPlayerPressingShift() {
+        return false;
+    }
 }

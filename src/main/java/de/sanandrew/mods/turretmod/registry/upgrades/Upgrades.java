@@ -17,8 +17,8 @@ import de.sanandrew.mods.turretmod.registry.upgrades.smarttargeting.SmartTargeti
 public class Upgrades
 {
     public static final IUpgrade UPG_STORAGE_I      = new SimpleUpgrade("storage_1");
-    public static final IUpgrade UPG_STORAGE_II     = new SimpleUpgrade("storage_2");
-    public static final IUpgrade UPG_STORAGE_III    = new SimpleUpgrade("storage_3");
+    public static final IUpgrade UPG_STORAGE_II     = new SimpleUpgrade("storage_2", UPG_STORAGE_I);
+    public static final IUpgrade UPG_STORAGE_III    = new SimpleUpgrade("storage_3", UPG_STORAGE_II);
     public static final IUpgrade AMMO_STORAGE       = new AmmoStorage();
     public static final IUpgrade HEALTH_I           = new Health.MK1();
     public static final IUpgrade HEALTH_II          = new Health.MK2();
@@ -39,7 +39,7 @@ public class Upgrades
     public static final IUpgrade SHIELD_STRENGTH_II = new SimpleUpgrade("shield_strength_2", SHIELD_STRENGTH_I, Turrets.FORCEFIELD);
     public static final IUpgrade SHIELD_COLORIZER   = new UpgradeShieldColorizer();
     public static final IUpgrade ENDER_TOXIN_I      = new SimpleUpgrade("ender_toxin_1");
-    public static final IUpgrade ENDER_TOXIN_II     = new SimpleUpgrade("ender_toxin_2");
+    public static final IUpgrade ENDER_TOXIN_II     = new SimpleUpgrade("ender_toxin_2", ENDER_TOXIN_I);
     public static final IUpgrade TURRET_SAFE        = new SimpleUpgrade("turret_safe");
     public static final IUpgrade LEVELING           = new Leveling();
 

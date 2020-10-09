@@ -47,7 +47,7 @@ public class TmrCreativeTabs
         @SideOnly(Side.CLIENT)
         public void displayAllRelevantItems(NonNullList<ItemStack> itmList) {
             super.displayAllRelevantItems(itmList);
-            ResourceOrderer.orderItems(itmList);
+            itmList.sort(ResourceOrderer.getComparator());
         }
     };
 
@@ -69,7 +69,7 @@ public class TmrCreativeTabs
         @SideOnly(Side.CLIENT)
         public void displayAllRelevantItems(NonNullList<ItemStack> itmList) {
             super.displayAllRelevantItems(itmList);
-            ResourceOrderer.orderItems(itmList);
+            itmList.sort(ResourceOrderer.getComparator());
         }
     };
 
@@ -98,7 +98,7 @@ public class TmrCreativeTabs
         @SideOnly(Side.CLIENT)
         public void displayAllRelevantItems(NonNullList<ItemStack> itmList) {
             super.displayAllRelevantItems(itmList);
-            ResourceOrderer.orderItems(itmList);
+            itmList.sort(ResourceOrderer.getComparator());
         }
     };
 }

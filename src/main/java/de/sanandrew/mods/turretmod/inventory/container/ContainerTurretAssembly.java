@@ -17,7 +17,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -113,7 +112,7 @@ public class ContainerTurretAssembly
     private class SlotIngredients
             extends Slot
     {
-        SlotIngredients(int id, int x, int y) {
+        private SlotIngredients(int id, int x, int y) {
             super(ContainerTurretAssembly.this.inventory, id, x, y);
         }
 
@@ -126,7 +125,7 @@ public class ContainerTurretAssembly
     private class SlotAutoUpgrade
             extends Slot
     {
-        SlotAutoUpgrade() {
+        private SlotAutoUpgrade() {
             super(ContainerTurretAssembly.this.inventory, AssemblyInventory.SLOT_UPGRADE_AUTO, 14, 100);
         }
 
@@ -134,12 +133,17 @@ public class ContainerTurretAssembly
         public boolean isItemValid(@Nonnull ItemStack stack) {
             return !ContainerTurretAssembly.this.tile.hasAutoUpgrade() && stack.getItem() == ItemRegistry.ASSEMBLY_UPG_AUTO;
         }
+
+        @Override
+        public int getSlotStackLimit() {
+            return 1;
+        }
     }
 
     private class SlotSpeedUpgrade
             extends Slot
     {
-        SlotSpeedUpgrade() {
+        private SlotSpeedUpgrade() {
             super(ContainerTurretAssembly.this.inventory, AssemblyInventory.SLOT_UPGRADE_SPEED, 14, 118);
         }
 
@@ -147,12 +151,17 @@ public class ContainerTurretAssembly
         public boolean isItemValid(@Nonnull ItemStack stack) {
             return !ContainerTurretAssembly.this.tile.hasSpeedUpgrade() && stack.getItem() == ItemRegistry.ASSEMBLY_UPG_SPEED;
         }
+
+        @Override
+        public int getSlotStackLimit() {
+            return 1;
+        }
     }
 
     private class SlotRedstoneUpgrade
             extends Slot
     {
-        SlotRedstoneUpgrade() {
+        private SlotRedstoneUpgrade() {
             super(ContainerTurretAssembly.this.inventory, AssemblyInventory.SLOT_UPGRADE_REDSTONE, 202, 118);
         }
 
@@ -160,18 +169,28 @@ public class ContainerTurretAssembly
         public boolean isItemValid(@Nonnull ItemStack stack) {
             return !ContainerTurretAssembly.this.tile.hasRedstoneUpgrade() && stack.getItem() == ItemRegistry.ASSEMBLY_UPG_REDSTONE;
         }
+
+        @Override
+        public int getSlotStackLimit() {
+            return 1;
+        }
     }
 
     private class SlotFilterUpgrade
             extends Slot
     {
-        SlotFilterUpgrade() {
+        private SlotFilterUpgrade() {
             super(ContainerTurretAssembly.this.inventory, AssemblyInventory.SLOT_UPGRADE_FILTER, 202, 100);
         }
 
         @Override
         public boolean isItemValid(@Nonnull ItemStack stack) {
             return !ContainerTurretAssembly.this.tile.hasFilterUpgrade() && stack.getItem() == ItemRegistry.ASSEMBLY_UPG_FILTER;
+        }
+
+        @Override
+        public int getSlotStackLimit() {
+            return 1;
         }
     }
 }

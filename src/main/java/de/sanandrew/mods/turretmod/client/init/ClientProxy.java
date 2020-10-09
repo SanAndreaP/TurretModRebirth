@@ -270,4 +270,9 @@ public class ClientProxy
         buf.pos(maxX, maxY, 0.0D).color(clr2.fRed(), clr2.fGreen(), clr2.fBlue(), clr2.fAlpha()).endVertex();
         buf.pos(maxX, minY, 0.0D).color(clr1.fRed(), clr1.fGreen(), clr1.fBlue(), clr1.fAlpha()).endVertex();
     }
+
+    @Override
+    public boolean isPlayerPressingShift() {
+        return ClientTickHandler.isShiftKeyDown;
+    }
 }

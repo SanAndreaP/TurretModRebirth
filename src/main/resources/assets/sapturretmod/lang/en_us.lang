@@ -7,7 +7,6 @@ tile.sapturretmod:turret_crate.name=Turret Crate
 item.sapturretmod:turret_info.name=Turret Lexicon
 item.sapturretmod:turret_info.desc=Gives information about the\nitems in the Turret Mod.
 # Turrets
-item.sapturretmod:turret.name=Defense Turret
 item.sapturretmod:turret.variant=Variant: %s
 item.sapturretmod:turret.customname=Name: %s
 item.sapturretmod:turret.health=Health: %s HP
@@ -41,7 +40,7 @@ item.sapturretmod:turret_assembly_speed.ttip=Used in the Turret Assembly Table
 item.sapturretmod:turret_assembly_filter.name=Filter Upgrade
 item.sapturretmod:turret_assembly_filter.ttip=Used in the Turret Assembly Table
 item.sapturretmod:turret_assembly_filter.conf=Configured
-item.sapturretmod:turret_assembly_filter.inst=Right-click to configure, Shift-right-click to clear config.
+item.sapturretmod:turret_assembly_filter.inst=Right-click to configure\nShift-right-click to clear config.
 item.sapturretmod:turret_assembly_redstone.name=Redstone Awareness Upgrade
 item.sapturretmod:turret_assembly_redstone.ttip=Used in the Turret Assembly Table
 # Ammo
@@ -66,8 +65,10 @@ item.sapturretmod:repkit.standard.4.name=Repair Kit 20HS
 item.sapturretmod:repkit.regen.1.name=Repair Kit 01H40R
 # Turret Upgrades
 item.sapturretmod:upgrade.requires=Requires:
-item.sapturretmod:upgrade.applicableTo=Only Applicable On:
-item.sapturretmod:upgrade.shdetails=<Hold Shift>
+item.sapturretmod:upgrade.applicable_to=Only Applicable On:
+item.sapturretmod:upgrade.tier_range_single=Only for Tier:
+item.sapturretmod:upgrade.tier_range_multiple=Only for Tiers:
+item.sapturretmod:upgrade.shift_details=<Hold Shift>
 item.sapturretmod:upgrade_empty.name=Upgrade Base
 item.sapturretmod:upgrade_health_1.name=Health I Upgrade
 item.sapturretmod:upgrade_health_2.name=Health II Upgrade
@@ -94,6 +95,7 @@ item.sapturretmod:upgrade_shield_colorizer.name=Shield Colorizer Upgrade
 item.sapturretmod:upgrade_ender_toxin_1.name=Ender Toxin I Upgrade
 item.sapturretmod:upgrade_ender_toxin_2.name=Ender Toxin II Upgrade
 item.sapturretmod:upgrade_turret_safe.name=Turret Safe Upgrade
+item.sapturretmod:upgrade_leveling.name=Leveling Upgrade
 
 #### Entities ####
 attribute.generic.maxHealth=Max. Health
@@ -110,7 +112,6 @@ attribute.sapturretmod.maxAmmoCapacity=Max. Ammo Capacity
 attribute.sapturretmod.maxReloadTicks=Reload Time
 attribute.sapturretmod.maxInitShootTicks=Targeting Time
 # Turrets
-entity.sapturretmod:turret.name=Defense Turret
 entity.sapturretmod:turret.crossbow.name=Crossbow Turret (T1)
 entity.sapturretmod:turret.harpoon.name=Harpoon Turret (T1)
 entity.sapturretmod:turret.shotgun.name=Shotgun Turret (T1)

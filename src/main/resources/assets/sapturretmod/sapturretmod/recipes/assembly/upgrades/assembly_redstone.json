@@ -1,0 +1,47 @@
+{
+  "type": "sapturretmod:assembly.recipe",
+  "group": "upgrades",
+  "fluxPerTick": 60,
+  "ticksProcessing": 300,
+  "ingredients": [
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "gemEmerald"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "nuggetGold"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "items": [
+        {
+          "item": "minecraft:lever"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:assembly_upg_redstone",
+    "count": 1
+  }
+}

@@ -15,6 +15,7 @@ import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
+import de.sanandrew.mods.turretmod.client.util.ResourceOrderer;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 class AssemblyRecipes
         extends ScrollArea
@@ -43,7 +45,9 @@ class AssemblyRecipes
 
     @Override
     public GuiElementInst[] getElements(IGui gui, JsonObject elementData) {
-        List<IAssemblyRecipe> recipes = AssemblyManager.INSTANCE.getRecipes(this.group);
+        List<IAssemblyRecipe> recipes = AssemblyManager.INSTANCE.getRecipes(this.group).stream()
+                                                                .sorted((r1, r2) -> ResourceOrderer.getComparator().compare(r1.getRecipeOutput(), r2.getRecipeOutput()))
+                                                                .collect(Collectors.toList());
         Map<Integer, List<IAssemblyRecipe>> rowMap = new HashMap<>();
         List<GuiElementInst> newRows = new ArrayList<>();
 

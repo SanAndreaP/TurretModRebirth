@@ -11,11 +11,14 @@ package de.sanandrew.mods.turretmod.client.event;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.lwjgl.input.Keyboard;
 
 public class ClientTickHandler
 {
     public static int ticksInGame;
+    public static boolean isShiftKeyDown;
 
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
@@ -25,5 +28,7 @@ public class ClientTickHandler
                 ticksInGame++;
             }
         }
+
+        isShiftKeyDown = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
     }
 }

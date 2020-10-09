@@ -22,20 +22,8 @@ public final class Lang
     public static final TranslateKey TCU_LABEL_TURRETSHIELD      = new TranslateKey("gui.%s.tcu.label.shield_turret", TmrConstants.ID);
     public static final TranslateKey TCU_LABEL_TURRETSHIELD_RECV = new TranslateKey("gui.%s.tcu.label.shield_turret_recv", TmrConstants.ID);
 
-    public static final TranslateKey LEXICON_TURRET_ITEM     = new TranslateKey("sanlib.lexicon.%s.turret.%%s", TmrConstants.ID);
-    public static final TranslateKey LEXICON_STAT_ITEM       = new TranslateKey("sanlib.lexicon.%s.stat.%%s", TmrConstants.ID);
-    public static final TranslateKey LEXICON_AMMO_ITEM       = new TranslateKey("sanlib.lexicon.%s.ammo.%%s", TmrConstants.ID);
-    public static final TranslateKey LEXICON_UPGRADE_ITEM    = new TranslateKey("sanlib.lexicon.%s.upgrade.%%s", TmrConstants.ID);
-    public static final TranslateKey LEXICON_INFO_ITEM       = new TranslateKey("sanlib.lexicon.%s.info.%%s", TmrConstants.ID);
-    public static final TranslateKey LEXICON_ASSEMBLY_RECIPE = new TranslateKey("sanlib.lexicon.%s.assembly", TmrConstants.ID);
-    public static final TranslateKey LEXICON_DETAILS         = new TranslateKey("sanlib.lexicon.%s.details", TmrConstants.ID);
-    public static final TranslateKey LEXICON_DESCRIPTION     = new TranslateKey("sanlib.lexicon.%s.desc", TmrConstants.ID);
-
-    public static final TranslateKey TURRET_DESC = new TranslateKey("%s.turret.%%s.desc", TmrConstants.ID);
-
-    public static final TranslateKey ATTRIBUTE = new TranslateKey("attribute.%s");
-
     public static final TranslateKey ITEM_TURRET_PLACER = new TranslateKey("item.%s:turret.%%s", TmrConstants.ID);
+    public static final TranslateKey ITEM_UPGRADE = new TranslateKey("item.%s:upgrade.%%s", TmrConstants.ID);
 
     public static final TranslateKey JEI_ASSEMBLY_TITLE  = new TranslateKey("jei.%s.assembly.title", TmrConstants.ID);
     public static final TranslateKey JEI_ASSEMBLY_ENERGY = new TranslateKey("jei.%s.assembly.energy", TmrConstants.ID);
