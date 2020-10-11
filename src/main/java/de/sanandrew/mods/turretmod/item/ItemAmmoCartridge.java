@@ -45,8 +45,6 @@ public class ItemAmmoCartridge
         this.setRegistryName(TmrConstants.ID, "ammo_cartridge");
         this.setTranslationKey(TmrConstants.ID + ":ammo_cartridge");
         this.setMaxStackSize(1);
-        this.setHasSubtypes(true);
-        this.setMaxDamage(0);
     }
 
     @Override

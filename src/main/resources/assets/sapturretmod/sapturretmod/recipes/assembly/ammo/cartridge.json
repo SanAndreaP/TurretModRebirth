@@ -1,0 +1,30 @@
+{
+  "type": "sapturretmod:assembly.recipe",
+  "group": "ammo",
+  "fluxPerTick": 25,
+  "ticksProcessing": 100,
+  "ingredients": [
+    {
+      "count": 5,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotIron"
+        }
+      ]
+    },
+    {
+      "count": 2,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "leather"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:ammo_cartridge",
+    "count": 1
+  }
+}
