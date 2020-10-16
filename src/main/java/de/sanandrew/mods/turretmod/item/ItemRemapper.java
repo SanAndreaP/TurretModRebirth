@@ -65,8 +65,7 @@ public class ItemRemapper
         }
     };
 
-    private static final Map<ResourceLocation, ResourceLocation> OLD_AMMO_ID_MAPPINGS = new HashMap<ResourceLocation, ResourceLocation>()
-    {
+    private static final Map<ResourceLocation, ResourceLocation> OLD_AMMO_ID_MAPPINGS = new HashMap<ResourceLocation, ResourceLocation>() {
         {
             this.put(new ResourceLocation(TmrConstants.ID, "ammo.arrow"), Ammunitions.BOLT.getId());
             this.put(new ResourceLocation(TmrConstants.ID, "ammo.tipped_bolt"), Ammunitions.TIPPED_BOLT.getId());
@@ -97,6 +96,20 @@ public class ItemRemapper
             this.put(UUID.fromString("0C61E401-A5F9-44E9-8B29-3A3DC7762C73"), Turrets.FLAMETHROWER.getId());
         }
     });
+
+    public static final Map<ResourceLocation, ResourceLocation> OLD_TURRET_ID_MAPPINGS = new HashMap<ResourceLocation, ResourceLocation>() {
+        {
+            this.put(new ResourceLocation(TmrConstants.ID, "turret.crossbow"), Turrets.CROSSBOW.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "turret.shotgun"), Turrets.SHOTGUN.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "turret.cryolator"), Turrets.CRYOLATOR.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "turret.harpoon"), Turrets.HARPOON.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "turret.revolver"), Turrets.REVOLVER.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "turret.minigun"), Turrets.MINIGUN.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "turret.forcefield"), Turrets.FORCEFIELD.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "turret.laser"), Turrets.LASER.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "turret.flamethrower"), Turrets.FLAMETHROWER.getId());
+        }
+    };
 
     private static final ResourceLocation OLD_UPGRADE_ID = new ResourceLocation(TmrConstants.ID, "turret_upgrade");
     private static final Map<UUID, ResourceLocation> OLD_UPGRADE_MAPPINGS = new HashMap<UUID, ResourceLocation>() {
@@ -171,6 +184,16 @@ public class ItemRemapper
         }
     };
 
+    private static final Map<ResourceLocation, ResourceLocation> OLD_REPKIT_ID_MAPPINGS = new HashMap<ResourceLocation, ResourceLocation>() {
+        {
+            this.put(new ResourceLocation(TmrConstants.ID, "repkit.standard.1"), RepairKits.STANDARD_MK1.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "repkit.standard.2"), RepairKits.STANDARD_MK2.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "repkit.standard.3"), RepairKits.STANDARD_MK3.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "repkit.standard.4"), RepairKits.STANDARD_MK4.getId());
+            this.put(new ResourceLocation(TmrConstants.ID, "repkit.regen.1"), RepairKits.REGEN_MK1.getId());
+        }
+    };
+
     @SubscribeEvent
     public static void onMissingItem(RegistryEvent.MissingMappings<Item> event) {
         List<RegistryEvent.MissingMappings.Mapping<Item>> list = event.getMappings();
@@ -187,6 +210,10 @@ public class ItemRemapper
                 map.remap(Item.getByNameOrId(OLD_UPGRADE_ID_MAPPINGS.get(map.key).toString()));
             } else if( OLD_AMMO_ID_MAPPINGS.containsKey(map.key) ) {
                 map.remap(Item.getByNameOrId(OLD_AMMO_ID_MAPPINGS.get(map.key).toString()));
+            } else if( OLD_TURRET_ID_MAPPINGS.containsKey(map.key) ) {
+                map.remap(Item.getByNameOrId(OLD_TURRET_ID_MAPPINGS.get(map.key).toString()));
+            } else if( OLD_REPKIT_ID_MAPPINGS.containsKey(map.key) ) {
+                map.remap(Item.getByNameOrId(OLD_REPKIT_ID_MAPPINGS.get(map.key).toString()));
             }
         }
     }

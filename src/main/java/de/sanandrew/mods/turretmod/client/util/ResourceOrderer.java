@@ -1,6 +1,7 @@
 package de.sanandrew.mods.turretmod.client.util;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.turretmod.api.repairkit.IRepairKit;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
@@ -13,12 +14,13 @@ import de.sanandrew.mods.turretmod.item.ItemRepairKit;
 import de.sanandrew.mods.turretmod.item.ItemTurret;
 import de.sanandrew.mods.turretmod.item.ItemUpgrade;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
+import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegeneration;
+import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitStandard;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import java.util.Comparator;
-import java.util.List;
 
 public final class ResourceOrderer
 {
@@ -112,7 +114,24 @@ public final class ResourceOrderer
             }
         } else if( i1 instanceof ItemRepairKit || i2 instanceof ItemRepairKit ) {
             if( i1 instanceof ItemRepairKit && i2 instanceof ItemRepairKit ) {
-                return Float.compare(((ItemRepairKit) i1).kit.getHealAmount(), ((ItemRepairKit) i2).kit.getHealAmount());
+                IRepairKit r1 = ((ItemRepairKit) i1).kit;
+                IRepairKit r2 = ((ItemRepairKit) i2).kit;
+
+                if( r1 instanceof RepairKitStandard ) {
+                    if( !(r2 instanceof RepairKitStandard) ) {
+                        return -1;
+                    }
+                } else if( r1 instanceof RepairKitRegeneration ) {
+                    if( !(r2 instanceof RepairKitRegeneration) ) {
+                        return r2 instanceof RepairKitStandard ? 1 : -1;
+                    }
+                } else {
+                    if( r2 instanceof RepairKitStandard || r2 instanceof RepairKitRegeneration ) {
+                        return 1;
+                    }
+                }
+
+                return Float.compare(r1.getHealAmount(), r2.getHealAmount());
             } else {
                 return i1 instanceof ItemRepairKit ? -1 : 1;
             }

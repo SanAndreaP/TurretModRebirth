@@ -10,7 +10,7 @@
     {
       "name": "turrets",
       "icon": {
-        "item": "sapturretmod:turret.crossbow"
+        "item": "sapturretmod:turret_crossbow"
       }
     },
     {
@@ -26,9 +26,9 @@
       }
     },
     {
-      "name": "repkit",
+      "name": "repair_kit",
       "icon": {
-        "item": "sapturretmod:repkit.standard.1"
+        "item": "sapturretmod:repair_kit_standard_1"
       }
     }
   ]

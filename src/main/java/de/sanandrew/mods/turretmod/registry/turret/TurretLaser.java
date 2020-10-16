@@ -31,7 +31,7 @@ import javax.annotation.Nonnull;
 public class TurretLaser
         implements ITurret
 {
-    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "turret.laser");
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "turret_laser");
 
     private static AxisAlignedBB rangeBB;
 

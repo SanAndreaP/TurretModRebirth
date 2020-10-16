@@ -27,7 +27,7 @@ import javax.annotation.Nonnull;
 public class TurretHarpoon
         implements ITurret
 {
-    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "turret.harpoon");
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "turret_harpoon");
 
     private static AxisAlignedBB rangeBB;
 

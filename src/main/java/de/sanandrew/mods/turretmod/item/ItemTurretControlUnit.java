@@ -14,7 +14,6 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.registry.TmrCreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.MathHelper;
 
 import javax.annotation.Nonnull;
 
@@ -26,7 +25,7 @@ public class ItemTurretControlUnit
     private long prevDisplayNameTime = 0;
     private int nameId = 0;
 
-    public ItemTurretControlUnit() {
+    ItemTurretControlUnit() {
         super();
         this.setCreativeTab(TmrCreativeTabs.MISC);
         this.setTranslationKey(TmrConstants.ID + ":turret_control_unit");
@@ -37,10 +36,10 @@ public class ItemTurretControlUnit
     public String getItemStackDisplayName(@Nonnull ItemStack stack) {
         long currDisplayNameTime = System.currentTimeMillis();
         if( this.prevDisplayNameTime + 1000 < currDisplayNameTime ) {
-            if( MiscUtils.RNG.randomInt(20) != 0 ) {
+            if( MiscUtils.RNG.randomInt(1000) != 0 ) {
                 this.nameId = 0;
             } else {
-                this.nameId = MathHelper.ceil(MiscUtils.RNG.randomInt(EE_NAME_COUNT - 1) + 2);
+                this.nameId = MiscUtils.RNG.randomInt(EE_NAME_COUNT - 1) + 1;// MathHelper.ceil(MiscUtils.RNG.randomInt(EE_NAME_COUNT - 1) + 2);
             }
         }
 
@@ -49,7 +48,7 @@ public class ItemTurretControlUnit
         if( this.nameId < 1 ) {
             return super.getItemStackDisplayName(stack);
         } else {
-            return LangUtils.translate(String.format("%s.name.%d", this.getTranslationKey(), this.nameId));
+            return LangUtils.translate(String.format("%s.name_%d", this.getTranslationKey(), this.nameId));
         }
     }
 }

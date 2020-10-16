@@ -23,11 +23,10 @@ import net.minecraft.util.math.AxisAlignedBB;
 import javax.annotation.Nonnull;
 
 @Category("crossbow")
-@SuppressWarnings("WeakerAccess")
 public class TurretCrossbow
         implements ITurret
 {
-    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "turret.crossbow");
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "turret_crossbow");
 
     private static AxisAlignedBB rangeBB;
 

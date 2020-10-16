@@ -1,6 +1,6 @@
 {
   "type": "sapturretmod:assembly.recipe",
-  "group": "repkit",
+  "group": "repair_kit",
   "fluxPerTick": 25,
   "ticksProcessing": 600,
   "ingredients": [
@@ -29,13 +29,13 @@
       "count": 1,
       "items": [
         {
-          "item": "sapturretmod:repkit.standard.2"
+          "item": "sapturretmod:repair_kit_standard_2"
         }
       ]
     }
   ],
   "result": {
-    "item": "sapturretmod:repkit.standard.3",
+    "item": "sapturretmod:repair_kit_standard_3",
     "count": 1
   }
 }

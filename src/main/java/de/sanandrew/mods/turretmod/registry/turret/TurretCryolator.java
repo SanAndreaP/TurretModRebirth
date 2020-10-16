@@ -27,7 +27,7 @@ import javax.annotation.Nonnull;
 public class TurretCryolator
         implements ITurret
 {
-    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "turret.cryolator");
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "turret_cryolator");
 
     private static AxisAlignedBB rangeBB;
 

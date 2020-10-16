@@ -20,7 +20,7 @@ public class RepairKitStandard
     private final float heal;
 
     RepairKitStandard(String suffix, float heal) {
-        this.id = new ResourceLocation(TmrConstants.ID, "repkit.standard." + suffix);
+        this.id = new ResourceLocation(TmrConstants.ID, "repair_kit_standard_" + suffix);
         this.heal = heal;
     }
 

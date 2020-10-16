@@ -33,7 +33,7 @@ import java.io.ObjectOutputStream;
 public class TurretForcefield
         implements ITurret
 {
-    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "turret.forcefield");
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "turret_forcefield");
 
     private static AxisAlignedBB rangeBB1;
     private static AxisAlignedBB rangeBB2;

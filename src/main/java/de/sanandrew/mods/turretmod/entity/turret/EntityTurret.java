@@ -476,7 +476,12 @@ public class EntityTurret
         if( UuidUtils.isStringUuid(turretId) ) {
             loadDelegate(ItemRemapper.OLD_TURRET_MAPPINGS.get(UUID.fromString(turretId)));
         } else {
-            loadDelegate(new ResourceLocation(turretId));
+            ResourceLocation turretIdRL = new ResourceLocation(turretId);
+            if( ItemRemapper.OLD_TURRET_ID_MAPPINGS.containsKey(turretIdRL) ) { // TODO: fix for new names, remove with new MC version (> 1.12.2)
+                turretIdRL = ItemRemapper.OLD_TURRET_ID_MAPPINGS.get(turretIdRL);
+            }
+
+            loadDelegate(turretIdRL);
         }
 
         super.readEntityFromNBT(nbt);

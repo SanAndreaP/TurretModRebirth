@@ -1,6 +1,6 @@
 {
   "name": "Flamethrower Turret",
-  "icon": "sapturretmod:turret.flamethrower",
+  "icon": "sapturretmod:turret_flamethrower",
   "category": "sapturretmod:turrets",
   "sortnum": 3,
   "pages": [
@@ -8,12 +8,12 @@
       "type": "sapturretmod:turret_info",
       "text": "This turret deals high amounts of damage to multiple targets at once on a rather short distance.",
       "name": "Flamethrower Turret",
-      "turret_type": "sapturretmod:turret.flamethrower",
+      "turret_type": "sapturretmod:turret_flamethrower",
       "fire_resistant": true
     },
     {
       "type": "sapturretmod:turret_range",
-      "turret_type": "sapturretmod:turret.flamethrower",
+      "turret_type": "sapturretmod:turret_flamethrower",
       "flavor_text": "This is fine."
     },
     {
@@ -22,7 +22,7 @@
     },
     {
       "type": "sapturretmod:turret_relations",
-      "turret_type": "sapturretmod:turret.flamethrower"
+      "turret_type": "sapturretmod:turret_flamethrower"
     }
   ]
 }

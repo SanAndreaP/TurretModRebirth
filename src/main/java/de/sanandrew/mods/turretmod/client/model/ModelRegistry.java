@@ -62,7 +62,7 @@ public final class ModelRegistry
         });
         ItemRegistry.TURRET_REPAIRKITS.forEach((rl, item) -> {
             ResourceLocation regName = Objects.requireNonNull(item.getRegistryName());
-            setStandardModel(item, new ResourceLocation(regName.getNamespace(), "repairkits/" + regName.getPath()));
+            setStandardModel(item, new ResourceLocation(regName.getNamespace(), "repair_kits/" + regName.getPath()));
         });
 
         setCustomMeshModel(ItemRegistry.AMMO_CARTRIDGE, new MeshDefAmmoCartridge());

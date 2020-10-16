@@ -24,7 +24,7 @@ public class RepairKitRegeneration
     private final int regenTime;
 
     RepairKitRegeneration(String suffix, float heal, int level, int time) {
-        this.id = new ResourceLocation(TmrConstants.ID, "repkit.regen." + suffix);
+        this.id = new ResourceLocation(TmrConstants.ID, "repair_kit_regeneration_" + suffix);
         this.heal = heal;
         this.regenLvl = level;
         this.regenTime = time;

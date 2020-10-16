@@ -27,7 +27,7 @@ import javax.annotation.Nonnull;
 public class TurretFlamethrower
         implements ITurret
 {
-    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "turret.flamethrower");
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "turret_flamethrower");
 
     private static AxisAlignedBB rangeBB;
 

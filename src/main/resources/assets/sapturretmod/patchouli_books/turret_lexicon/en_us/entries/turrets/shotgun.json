@@ -1,6 +1,6 @@
 {
   "name": "Shotgun Turret",
-  "icon": "sapturretmod:turret.shotgun",
+  "icon": "sapturretmod:turret_shotgun",
   "category": "sapturretmod:turrets",
   "sortnum": 1,
   "pages": [
@@ -8,11 +8,11 @@
       "type": "sapturretmod:turret_info",
       "text": "Used for basic crowd control. Very weak, but can hit multiple targets at once, due to its ammo dispersing into multiple projectiles.",
       "name": "Shotgun Turret",
-      "turret_type": "sapturretmod:turret.shotgun"
+      "turret_type": "sapturretmod:turret_shotgun"
     },
     {
       "type": "sapturretmod:turret_range",
-      "turret_type": "sapturretmod:turret.shotgun",
+      "turret_type": "sapturretmod:turret_shotgun",
       "flavor_text": "kar en tuk"
     },
     {
@@ -21,7 +21,7 @@
     },
     {
       "type": "sapturretmod:turret_relations",
-      "turret_type": "sapturretmod:turret.shotgun"
+      "turret_type": "sapturretmod:turret_shotgun"
     }
   ]
 }

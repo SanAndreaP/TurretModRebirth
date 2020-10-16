@@ -27,11 +27,11 @@ public class MeshDefAmmoCartridge
     private final Map<ResourceLocation, ModelResourceLocation> ammoToModel = new HashMap<>();
 
     public MeshDefAmmoCartridge() {
-        this.ammoToModel.put(null, new ModelResourceLocation(new ResourceLocation(TmrConstants.ID, "ammo/cartridge"), "inventory"));
+        this.ammoToModel.put(null, new ModelResourceLocation(new ResourceLocation(TmrConstants.ID, "ammo/cartridge/cartridge"), "inventory"));
 
         ItemRegistry.TURRET_AMMO.forEach((key, value) -> {
             if( value.ammo.isValid() ) {
-                this.ammoToModel.put(key, new ModelResourceLocation(new ResourceLocation(key.getNamespace(), "ammo/cartridge_" + key.getPath()), "inventory"));
+                this.ammoToModel.put(key, new ModelResourceLocation(new ResourceLocation(key.getNamespace(), "ammo/cartridge/cartridge_" + key.getPath()), "inventory"));
             }
         });
     }

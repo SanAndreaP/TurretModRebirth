@@ -44,7 +44,7 @@ public class ItemTurretInfo
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(@Nonnull ItemStack stack, World world, List<String> list, ITooltipFlag advInfo) {
-        String[] lines = LangUtils.translate(this.getTranslationKey() + ".desc").split("\\\\n");
+        String[] lines = LangUtils.translate(this.getTranslationKey() + ".desc").split("\\n");
         list.addAll(Arrays.asList(lines));
 
         if( !PATCHOULI_AVAILABLE ) {
