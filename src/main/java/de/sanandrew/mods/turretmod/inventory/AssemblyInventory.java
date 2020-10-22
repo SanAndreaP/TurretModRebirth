@@ -257,7 +257,7 @@ public class AssemblyInventory
     }
 
     private void updateTile(int slot) {
-        if( slot < RESOURCE_SLOT_FIRST ) {
+        if( !this.tile.getWorld().isRemote && slot < RESOURCE_SLOT_FIRST ) {
             if( !this.hasAutoUpgrade() ) {
                 this.tile.setAutomated(false);
             }

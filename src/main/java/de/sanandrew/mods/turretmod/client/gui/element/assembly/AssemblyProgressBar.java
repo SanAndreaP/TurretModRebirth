@@ -87,29 +87,29 @@ public class AssemblyProgressBar
     public static class AssemblyProgressLabel
             extends Text
     {
-        public int mainColor;
-        public int strokeColor;
-
         @Override
         public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
-            JsonUtils.addDefaultJsonProperty(data, "color", "0xFF00F000");
+            if( !data.has("color") ) {
+                JsonObject colorObj = new JsonObject();
+                colorObj.addProperty("default", "0xFF9999FF");
+                colorObj.addProperty("stroke", "0xFF000000");
+                data.add("color", colorObj);
+            }
+
             JsonUtils.addJsonProperty(data, "shadow", false);
             JsonUtils.addJsonProperty(data, "wrapWidth", 0);
 
             super.bakeData(gui, data, inst);
-
-            this.mainColor = this.color;
-            this.strokeColor = MiscUtils.hexToInt(JsonUtils.getStringVal(data.get("strokeColor"), "0xFF000000"));
         }
 
         @Override
         public void render(IGui gui, float partTicks, int x, int y, int mouseX, int mouseY, JsonObject data) {
-            this.color = this.strokeColor;
+            this.setColor("stroke");
             super.render(gui, partTicks, x + 1, y, mouseX, mouseY, data);
             super.render(gui, partTicks, x - 1, y, mouseX, mouseY, data);
             super.render(gui, partTicks, x, y + 1, mouseX, mouseY, data);
             super.render(gui, partTicks, x, y - 1, mouseX, mouseY, data);
-            this.color = this.mainColor;
+            this.setColor(null);
             super.render(gui, partTicks, x, y, mouseX, mouseY, data);
         }
 

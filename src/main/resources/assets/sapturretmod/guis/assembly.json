@@ -24,10 +24,10 @@
     },
     {
       "type": "sapturretmod:assembly.progress",
-      "pos": [156, 31],
+      "pos": [156, 38],
       "data": {
         "label": {
-          "offset": [0, 6]
+          "offset": [0, -6]
         }
       }
     },
