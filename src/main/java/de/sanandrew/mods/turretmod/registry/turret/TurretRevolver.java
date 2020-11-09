@@ -81,7 +81,7 @@ public class TurretRevolver
             }
 
             if( turretL.world.isRemote ) {
-                EnumEffect.SHOTGUN_SHOT.addEffect(turretL, new Tuple(turretL.rotationYawHead + partShift, turretL.rotationPitch));
+                EnumEffect.SHOTGUN_SMOKE.addEffect(turretL, new Tuple(turretL.rotationYawHead + partShift, turretL.rotationPitch));
             }
         }
     }

@@ -64,7 +64,7 @@ public class TurretShotgun
 
             if( turretInst.wasShooting() ) {
                 ram.barrelPos = 0.0F;
-                EnumEffect.SHOTGUN_SHOT.addEffect(turretL, new Tuple(turretL.rotationYawHead, turretL.rotationPitch));
+                EnumEffect.SHOTGUN_SMOKE.addEffect(turretL, new Tuple(turretL.rotationYawHead, turretL.rotationPitch));
             }
         }
     }

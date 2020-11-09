@@ -6,7 +6,7 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.client.particle;
+package de.sanandrew.mods.turretmod.client.effect;
 
 import net.minecraft.client.particle.Particle;
 import net.minecraft.world.World;
