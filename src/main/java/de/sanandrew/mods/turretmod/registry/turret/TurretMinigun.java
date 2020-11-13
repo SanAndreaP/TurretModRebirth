@@ -79,7 +79,7 @@ public class TurretMinigun
             }
 
             if( turretL.world.isRemote ) {
-                EnumEffect.MINIGUN_SHOT.addEffect(turretL, new Tuple(turretL.rotationYawHead, turretL.rotationPitch - 7.5F, ram.isLeftShot));
+                EnumEffect.MINIGUN_SMOKE.addEffect(turretL, new Tuple(turretL.rotationYawHead, turretL.rotationPitch - 7.5F, ram.isLeftShot));
             }
         }
     }

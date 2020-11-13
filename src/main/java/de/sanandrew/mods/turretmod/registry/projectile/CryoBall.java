@@ -85,7 +85,7 @@ public class CryoBall
     public void onUpdate(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile) {
         Entity projEntity = projectile.get();
         if( projEntity.world.isRemote ) {
-            EnumEffect.CRYO_PARTICLE.addEffect(projEntity, new Tuple(projEntity.motionX, projEntity.motionY, projEntity.motionZ));
+            EnumEffect.CRYO_VAPOR.addEffect(projEntity, new Tuple(projEntity.motionX, projEntity.motionY, projEntity.motionZ));
         }
     }
 

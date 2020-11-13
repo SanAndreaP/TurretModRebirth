@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.client.util;
 
 import de.sanandrew.core.manpack.util.client.helpers.SAPClientUtils;
 import de.sanandrew.core.manpack.util.javatuples.Tuple;
-import de.sanandrew.mods.turretmod.client.particle.ParticleItemTransmitterAction;
+import de.sanandrew.mods.turretmod.client.effect.ParticleItemTransmitterAction;
 import de.sanandrew.mods.turretmod.util.ParticleProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Vec3;

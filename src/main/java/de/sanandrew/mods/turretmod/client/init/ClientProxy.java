@@ -51,7 +51,7 @@ import de.sanandrew.mods.turretmod.client.gui.element.tcu.target.TargetList;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.PlayerHeads;
 import de.sanandrew.mods.turretmod.client.model.item.ColorCartridge;
 import de.sanandrew.mods.turretmod.client.model.item.ColorTippedBolt;
-import de.sanandrew.mods.turretmod.client.particle.ParticleHandler;
+import de.sanandrew.mods.turretmod.client.effect.EffectHandler;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderProjectile;
 import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
 import de.sanandrew.mods.turretmod.client.render.world.RenderTurretPointed;
@@ -223,7 +223,7 @@ public class ClientProxy
 
     @Override
     public void addEffect(EnumEffect effect, double x, double y, double z, Tuple data) {
-        ParticleHandler.handle(effect, x, y, z, data);
+        EffectHandler.handle(effect, x, y, z, data);
     }
 
     @Override

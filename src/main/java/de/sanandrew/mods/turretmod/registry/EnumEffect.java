@@ -17,9 +17,9 @@ import net.minecraft.entity.Entity;
 public enum EnumEffect
 {
     ASSEMBLY_SPARK,
-    SHOTGUN_SHOT,
-    CRYO_PARTICLE,
-    MINIGUN_SHOT,
+    SHOTGUN_SMOKE,
+    CRYO_VAPOR,
+    MINIGUN_SMOKE,
     LEVEL_UP,
     PROJECTILE_DEATH;
 
