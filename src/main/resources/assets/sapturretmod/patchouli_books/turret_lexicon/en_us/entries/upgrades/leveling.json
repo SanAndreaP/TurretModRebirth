@@ -17,8 +17,7 @@
       "type": "image",
       "title": "TCU Tab",
       "images": ["sapturretmod:textures/gui/lexicon/tcu/tab_leveling.png"],
-      "text": "To manage this upgrade, the TCU is provided with an additional tab.",
-      "border": true
+      "text": "To manage this upgrade, the TCU is provided with an additional tab."
     },
     {
       "type": "text",

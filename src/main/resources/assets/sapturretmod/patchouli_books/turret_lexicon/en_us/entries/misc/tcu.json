@@ -23,7 +23,6 @@
     {
       "type": "image",
       "images": ["sapturretmod:textures/gui/lexicon/tcu/tab_info.png"],
-      "border": true,
       "text": "$(italic)An example of the info page for a $(l:turrets/crossbow)Crossbow Turret$(/l) inside a forest$(/italic)"
     },
     {
@@ -35,7 +34,6 @@
     {
       "type": "image",
       "images": ["sapturretmod:textures/gui/lexicon/tcu/tab_tgt_creatures.png"],
-      "border": true,
       "text": "$(italic)The target page with only 2 entities selected, in whitelist mode$(/italic)"
     },
     {
@@ -47,7 +45,6 @@
     {
       "type": "image",
       "images": ["sapturretmod:textures/gui/lexicon/tcu/tab_tgt_players.png"],
-      "border": true,
       "text": "$(italic)The target page with no players selected, in whitelist mode$(/italic)"
     },
     {
@@ -59,7 +56,6 @@
     {
       "type": "image",
       "images": ["sapturretmod:textures/gui/lexicon/tcu/tab_upgrades.png"],
-      "border": true,
       "text": "$(italic)The upgrades page with some upgrades applied$(/italic)"
     }
   ]

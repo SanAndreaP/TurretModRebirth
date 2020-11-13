@@ -17,8 +17,7 @@
       "type": "image",
       "title": "TCU Tab",
       "images": ["sapturretmod:textures/gui/lexicon/tcu/tab_tgt_smart.png"],
-      "text": "To configure this upgrade, the TCU is provided with an additional tab.",
-      "border": true
+      "text": "To configure this upgrade, the TCU is provided with an additional tab."
     },
     {
       "type": "text",

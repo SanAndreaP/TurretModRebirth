@@ -12,7 +12,19 @@
     {
       "type": "crafting",
       "recipe": "sapturretmod:turret_assembly",
-      "text": "$(italic)"
+      "text": "To make it work you need to feed it power. The assembly table accepts RF (Redstone Flux), FE (Forge Energy) and T (Tesla). If you don't have any device powering it, you can always use our $(l:misc/electrolyte_generator)Electrolyte Generator$(/l) next to it."
+    },
+    {
+      "type": "image",
+      "title": "UI (Input Slots)",
+      "images": ["sapturretmod:textures/gui/lexicon/assembly/ui_slots.png"],
+      "text": "In order to upgrade it or give resources for it to craft with, the UI provides you with input slots. The top 2 rows are the slots from the assembly table, with the 4 outermost slots to the left and right being reserved for upgrades, and the bottom 4 rows are your inventory slots.$(br)A hopper connected to one of the sides of the table can insert items into it."
+    },
+    {
+      "type": "image",
+      "title": "UI (Recipes)",
+      "images": ["sapturretmod:textures/gui/lexicon/assembly/ui_recipes.png"],
+      "text": "To craft something, you need to tell the table which item to craft. You'll do that by first selecting the item group on the left with the up/down arrows, until you find the item on the right. Clicking on it will start 1 crafting operation. If you hold "
     }
   ]
 }
