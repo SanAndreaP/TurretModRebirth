@@ -4,7 +4,6 @@ import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.registry.EnumEffect;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleExplosion;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.particle.ParticleSmokeNormal;
@@ -37,18 +36,9 @@ public final class EffectHandler
             case LEVEL_UP:
                 playLevelUpSFX(mc.world, x, y, z);
                 break;
-            case PROJECTILE_DEATH: {
-                for( int i = 0; i < 20; i++ ) {
-                    Particle fx = new ParticleExplosion.Factory().createParticle(0, mc.world,
-                                                                                 x + MiscUtils.RNG.randomDouble() * 2.0D - 1.0D,
-                                                                                 y + MiscUtils.RNG.randomDouble(),
-                                                                                 z + MiscUtils.RNG.randomDouble() * 2.0D - 1.0D,
-                                                                                 MiscUtils.RNG.randomGaussian() * 0.02D,
-                                                                                 MiscUtils.RNG.randomGaussian() * 0.02D,
-                                                                                 MiscUtils.RNG.randomGaussian() * 0.02D);
-                    mc.effectRenderer.addEffect(fx);
-                }
-            }
+            case PROJECTILE_DEATH:
+                spawnProjectileDeathSmoke(mc.effectRenderer, mc.world, x, y, z);
+                break;
         }
     }
 
@@ -111,6 +101,19 @@ public final class EffectHandler
             double partMotionZ = diffMotionZ + MiscUtils.RNG.randomDouble() * 0.05D - 0.025D;
 
             renderer.addEffect(new ParticleCryoTrail(world, x - diffMotionX * i, y - diffMotionY * i, z - diffMotionZ * i, partMotionX, partMotionY, partMotionZ));
+        }
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private static void spawnProjectileDeathSmoke(ParticleManager renderer, World world, double x, double y, double z) {
+        for( int i = 0; i < 20; i++ ) {
+            renderer.addEffect(new ParticleExplosion.Factory().createParticle(0, world,
+                                                                              x + MiscUtils.RNG.randomDouble() * 2.0D - 1.0D,
+                                                                              y + MiscUtils.RNG.randomDouble(),
+                                                                              z + MiscUtils.RNG.randomDouble() * 2.0D - 1.0D,
+                                                                              MiscUtils.RNG.randomGaussian() * 0.02D,
+                                                                              MiscUtils.RNG.randomGaussian() * 0.02D,
+                                                                              MiscUtils.RNG.randomGaussian() * 0.02D));
         }
     }
 }
