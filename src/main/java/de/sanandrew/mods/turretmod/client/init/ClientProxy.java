@@ -273,6 +273,6 @@ public class ClientProxy
 
     @Override
     public boolean isPlayerPressingShift() {
-        return ClientTickHandler.isShiftKeyDown;
+        return ClientTickHandler.isSneaking;
     }
 }

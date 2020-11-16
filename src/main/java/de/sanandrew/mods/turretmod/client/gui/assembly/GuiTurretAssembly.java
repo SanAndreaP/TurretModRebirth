@@ -28,9 +28,11 @@ import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.MathHelper;
@@ -244,7 +246,7 @@ public class GuiTurretAssembly
 
     @Override
     protected void keyTyped(char keyChar, int keyCode) throws IOException {
-        this.shiftPressed = keyCode == Keyboard.KEY_LSHIFT || keyCode == Keyboard.KEY_RSHIFT;
+        this.shiftPressed = keyCode == this.mc.gameSettings.keyBindSneak.getKeyCode();
 
         super.keyTyped(keyChar, keyCode);
     }
