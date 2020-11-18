@@ -35,6 +35,21 @@
                  "sapturretmod:textures/gui/lexicon/assembly/ui_recipes_2.png",
                  "sapturretmod:textures/gui/lexicon/assembly/ui_recipes_3.png"],
       "text": "$(italic)Holding $(k:sneak) whilst hovering over a recipe shows you more details.$()"
+    },
+    {
+      "type": "text",
+      "title": "UI - Output & Other",
+      "text": "Once the table finishes crafting, it'll put the result into the output slots. The first output slot will have the result (with an exception in case for ammo), the second slot is meant for filled $(l:ammo/cartridge)ammo cartridges$(/l) (more info on that can be found in its entry).$(br2)Below those you'll see the number of crafting operations remaining and a progress bar showing the current crafting process."
+    },
+    {
+      "type": "image",
+      "images": ["sapturretmod:textures/gui/lexicon/assembly/ui_output_1.png"],
+      "text": "On the right is the red energy bar, showing how much is stored."
+    },
+    {
+      "type": "text",
+      "title": "UI - Output & Other",
+      "text": "At the bottom is the \"Cancel\" button, which cancels the current crafting process and returns the ingredients back into the input (or into the world in case there's no room for them).$(br)Below it are placeholders meant for the $(l:misc/assembly_upgrade_auto)automation upgrade$(/l)."
     }
   ]
 }
