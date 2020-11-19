@@ -12,6 +12,7 @@
     {
       "type": "crafting",
       "recipe": "sapturretmod:turret_assembly",
+      "title": " ",
       "text": "To make it work you need to feed it power. The assembly table accepts RF (Redstone Flux), FE (Forge Energy) and T (Tesla). If you don't have any device powering it, you can always use our $(l:misc/electrolyte_generator)Electrolyte Generator$(/l) next to it."
     },
     {
@@ -22,7 +23,7 @@
     {
       "type": "image",
       "images": ["sapturretmod:textures/gui/lexicon/assembly/ui_slots.png"],
-      "text": "$(italic)The slots of the assembly table, recipe input slots can be filtered with an upgrade.$()"
+      "text": "$(italic)The slots of the assembly table, recipe input slots can be filtered with $(l:misc/assembly_upgrade_filter)an upgrade$(/l).$()"
     },
     {
       "type": "text",
