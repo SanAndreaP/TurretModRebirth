@@ -16,7 +16,7 @@ import java.util.List;
 
 public class PatchouliMouseEventHandler
 {
-    private static List<WeakReference<ComponentEntryList>> currHovered = new ArrayList<>();
+    private static final List<WeakReference<ComponentEntryList<?>>> CURR_HOVERED = new ArrayList<>();
 
     public static void register() {
         if( Loader.isModLoaded("patchouli") ) {
@@ -24,13 +24,13 @@ public class PatchouliMouseEventHandler
         }
     }
 
-    static void setCurrHoveredComponent(ComponentEntryList component, boolean active) {
+    static void setCurrHoveredComponent(ComponentEntryList<?> component, boolean active) {
         if( active ) {
-            currHovered.add(new WeakReference<>(component));
+            CURR_HOVERED.add(new WeakReference<>(component));
         } else {
-            currHovered.removeIf(r -> {
+            CURR_HOVERED.removeIf(r -> {
                 if( r != null ) {
-                    ComponentEntryList e = r.get();
+                    ComponentEntryList<?> e = r.get();
                     return e == null || e.equals(component);
                 }
 
@@ -45,14 +45,14 @@ public class PatchouliMouseEventHandler
         if( gui instanceof GuiBook ) {
             GuiBook guiBook = (GuiBook) gui;
             int pageBook = guiBook.getPage() + 1;
-            for( Iterator<WeakReference<ComponentEntryList>> it = currHovered.iterator(); it.hasNext(); ) {
-                WeakReference<ComponentEntryList> r = it.next();
+            for( Iterator<WeakReference<ComponentEntryList<?>>> it = CURR_HOVERED.iterator(); it.hasNext(); ) {
+                WeakReference<ComponentEntryList<?>> r = it.next();
                 if( r == null ) {
                     it.remove();
                     continue;
                 }
 
-                ComponentEntryList component = r.get();
+                ComponentEntryList<?> component = r.get();
                 if( component != null ) {
                     if( pageBook != MathHelper.ceil(component.pgNum / 1.99F) ) {
                         it.remove();

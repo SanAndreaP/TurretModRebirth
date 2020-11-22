@@ -25,10 +25,17 @@ import java.util.stream.Stream;
 public class ComponentTurretEntries
         extends ComponentEntryList<GuiButtonEntry>
 {
+    private static final int ENTRY_HEIGHT = 11;
+
     @SerializedName("entries_type")
     public String entriesType;
 
     transient private EntryType type;
+
+    @Override
+    public int getEntryHeight() {
+        return ENTRY_HEIGHT;
+    }
 
     @Override
     public void build(int x, int y, int pgNum) {
@@ -43,7 +50,7 @@ public class ComponentTurretEntries
 
         for( int i = 0, max = bookEntries.size(); i < max; i++ ) {
             BookEntry      entry  = bookEntries.get(i);
-            GuiButtonEntry button = new GuiButtonEntryFixed(book, x, y + 30 + i * 11, entry, i);
+            GuiButtonEntry button = new GuiButtonEntryFixed(book, x, y + 19 + i * ENTRY_HEIGHT, entry, i);
             context.registerButton(button, pgNum, () -> GuiBookEntry.displayOrBookmark(book, entry));
             entries.add(button);
         }
@@ -51,7 +58,7 @@ public class ComponentTurretEntries
 
     @Override
     void setEntryScroll(GuiButtonEntry entry, int prevShownPos, int currShownPos) {
-        entry.y += (prevShownPos - currShownPos) * 11;
+        entry.y += (prevShownPos - currShownPos) * ENTRY_HEIGHT;
         entry.visible = entry.id >= currShownPos && entry.id < currShownPos + this.maxEntriesShown;
     }
 

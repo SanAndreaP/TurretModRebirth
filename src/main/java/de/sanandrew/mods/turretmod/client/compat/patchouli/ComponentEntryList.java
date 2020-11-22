@@ -31,10 +31,11 @@ public abstract class ComponentEntryList<T>
     public int    maxEntriesShown = 5;
     @SerializedName("title_color")
     public String colorStr;
+    @VariableHolder
     public String title;
 
+    transient protected final List<T>       entries = new ArrayList<>();
     transient private       Integer       color;
-    transient private final List<T>       entries = new ArrayList<>();
     transient private       GuiButtonBook prevScrollBtn;
     transient private       GuiButtonBook   nextScrollBtn;
     transient private       int             entriesShownPos = 0;
@@ -69,17 +70,18 @@ public abstract class ComponentEntryList<T>
         guiBook.getButtonList().removeIf(this.entries::contains);
         this.entries.clear();
 
-        this.buildEntries(context, guiBook, this.entries, this.x, this.y);
+        this.buildEntries(context, guiBook, this.entries, this.x, this.y + 11);
         this.entries.forEach(e -> this.setEntryScroll(e, 0, this.entriesShownPos));
 
         if( this.entries.size() > this.maxEntriesShown ) {
             this.prevScrollBtn = new GuiButtonBook(guiBook, this.x, this.y + 20, 330, 9, 11, 5,
-                                                   () -> this.entriesShownPos > 0);
+                                                   () -> this.entriesShownPos > 0 && guiBook.getPage() == this.pgNum / 2);
             this.nextScrollBtn = new GuiButtonBook(guiBook, this.x + 116 - 11, this.y + 20, 330, 15, 11, 5,
-                                                   () -> this.entriesShownPos + this.maxEntriesShown < this.entries.size());
+                                                   () -> this.entriesShownPos + this.maxEntriesShown < this.entries.size()
+                                                         && guiBook.getPage() == this.pgNum / 2 );
 
-            context.registerButton(this.prevScrollBtn, pgNum, () -> moveButtons(true));
-            context.registerButton(this.nextScrollBtn, pgNum, () -> moveButtons(false));
+            context.registerButton(this.prevScrollBtn, this.pgNum, () -> moveButtons(true));
+            context.registerButton(this.nextScrollBtn, this.pgNum, () -> moveButtons(false));
         }
     }
 
@@ -93,6 +95,8 @@ public abstract class ComponentEntryList<T>
         }
     }
 
+    abstract int getEntryHeight();
+
     abstract void setEntryScroll(T entry, int prevShownPos, int currShownPos);
 
     @Override
@@ -102,7 +106,7 @@ public abstract class ComponentEntryList<T>
         context.getFont().drawString(this.title, xPos, this.y, MiscUtils.defIfNull(this.color, context::getHeaderColor), false);
         GlStateManager.popMatrix();
 
-        PatchouliMouseEventHandler.setCurrHoveredComponent(this, context.isAreaHovered(mouseX, mouseY, this.x, this.y + 11, 116, this.maxEntriesShown * 11 - 1));
+        PatchouliMouseEventHandler.setCurrHoveredComponent(this, context.isAreaHovered(mouseX, mouseY, this.x, this.y + 11, 116, this.maxEntriesShown * this.getEntryHeight() - 1));
     }
 
     private static GuiBook getGuiBook(IComponentRenderContext context) {

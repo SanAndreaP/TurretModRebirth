@@ -25,9 +25,10 @@
       "text": "$(italic)The input gets pulled into processing slots, with the progress shown on each item.$()"
     },
     {
-      "type": "text",
+      "type": "sapturretmod:electrolyte_ingredients_i18n",
       "title": "Ingredients",
-      "text": "The following items can be used for electrolysis. Their tooltip will show their efficiency, multiplier and trash/treasure outputs."
+      "text": "The following items can be used for electrolysis. Their tooltip will show their efficiency, multiplier and trash/treasure chances.",
+      "ingredients_title": "Electrolytes"
     }
   ]
 }

@@ -1,0 +1,17 @@
+{
+  "include": [
+    {
+      "template": "sapturretmod:electrolyte_ingredients",
+      "as": "electrolyte_ingredients",
+      "using": {
+        "title": "#title",
+        "text": "#text",
+        "ingredients_title": "#ingredients_title",
+        "ttip_efficiency": "Efficiency: §6%.0f%%",
+        "ttip_processing_time": "Porcessing Time: §6%s",
+        "ttip_trash": "Trash chance: §6%.0f%%",
+        "ttip_treasure": "Treasure chance: §6%.0f%%"
+      }
+    }
+  ]
+}

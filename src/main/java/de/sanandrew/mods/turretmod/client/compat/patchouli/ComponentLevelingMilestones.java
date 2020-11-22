@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
 public class ComponentLevelingMilestones
         extends ComponentEntryList<ComponentCustomText>
 {
+    private static final int ENTRY_HEIGHT = 11;
+
     @VariableHolder
     @SerializedName("level_text")
     public String levelTxt;
@@ -40,6 +42,11 @@ public class ComponentLevelingMilestones
     private final Map<ComponentCustomText, Integer> entryIds = new HashMap<>();
 
     @Override
+    int getEntryHeight() {
+        return ENTRY_HEIGHT;
+    }
+
+    @Override
     public void buildEntries(IComponentRenderContext context, GuiBook book, List<ComponentCustomText> entries, int x, int y) {
         Stage[]                                       stages     = LevelStorage.getStages();
         Map<Integer, Map<String, Stage.ModifierInfo>> milestones = new HashMap<>();
@@ -56,14 +63,14 @@ public class ComponentLevelingMilestones
         MutableInt line = new MutableInt(0);
         milestones.entrySet().stream().sorted(Comparator.comparingInt(Map.Entry::getKey)).forEach(e -> {
             ComponentCustomText txt = new ComponentCustomText(String.format(this.levelTxt, e.getKey()), this.levelTextClr);
-            txt.build(x, y + line.getValue() * 11 + 11, pgNum);
+            txt.build(x, y + line.getValue() * ENTRY_HEIGHT, pgNum);
             entries.add(txt);
             this.entryIds.put(txt, line.getAndIncrement());
 
             e.getValue().entrySet().stream().sorted(Map.Entry.comparingByKey()).forEach(m -> {
                 ComponentModifier md = new ComponentModifier(this.getModLbl(m.getKey()), this.getModVal(m.getValue()),
                                                              this.modLblClr, this.modValClr);
-                md.build(x, y + line.getValue() * 11 + 11, pgNum);
+                md.build(x, y + line.getValue() * ENTRY_HEIGHT, pgNum);
                 entries.add(md);
                 this.entryIds.put(md, line.getAndIncrement());
             });
@@ -91,7 +98,7 @@ public class ComponentLevelingMilestones
     void setEntryScroll(ComponentCustomText entry, int prevShownPos, int currShownPos) {
         int entryId = this.entryIds.get(entry);
 
-        entry.y += (prevShownPos - currShownPos) * 11;
+        entry.y += (prevShownPos - currShownPos) * ENTRY_HEIGHT;
         entry.visible = entryId >= currShownPos && entryId < currShownPos + this.maxEntriesShown;
     }
 
@@ -99,7 +106,7 @@ public class ComponentLevelingMilestones
     public void render(IComponentRenderContext context, float partTicks, int mouseX, int mouseY) {
         super.render(context, partTicks, mouseX, mouseY);
 
-        this.entryIds.keySet().forEach(e -> e.render(context, partTicks, mouseX, mouseY));
+        this.entries.forEach(e -> e.render(context, partTicks, mouseX, mouseY));
     }
 
     private static final class ComponentModifier
