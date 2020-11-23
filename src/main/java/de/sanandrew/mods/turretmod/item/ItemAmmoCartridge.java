@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
+import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
@@ -26,9 +27,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -136,4 +139,19 @@ public class ItemAmmoCartridge
         return success;
     }
 
+    public static boolean putAmmoInPlayerCartridge(ItemStack stack, EntityPlayer player) {
+        for( int i = 0, max = player.inventory.getSizeInventory(); i < max; i++ ) {
+            ItemStack invStack = player.inventory.getStackInSlot(i);
+            if( invStack.getItem() == ItemRegistry.AMMO_CARTRIDGE ) {
+                AmmoCartridgeInventory cartridge = ItemAmmoCartridge.getInventory(invStack);
+                ItemStack remain = InventoryUtils.addStackToCapability(stack, cartridge, EnumFacing.UP, false);
+                stack.setCount(remain.getCount());
+                if( !ItemStackUtils.isValid(remain) ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }

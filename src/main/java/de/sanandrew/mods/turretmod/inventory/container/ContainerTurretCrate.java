@@ -8,6 +8,8 @@ package de.sanandrew.mods.turretmod.inventory.container;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.inventory.TurretCrateInventory;
+import de.sanandrew.mods.turretmod.item.ItemAmmoCartridge;
+import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,13 +33,14 @@ public class ContainerTurretCrate
         IInventory tileInv = this.tile.getInventory();
 
         this.addSlotToContainer(new SlotOutput(tileInv, 0, 8, 18));
-        this.addSlotToContainer(this.ammoSlot = new SlotAmmo(tileInv, TurretCrateInventory.SLOT_AMMO, 62, 18));
 
         for( int i = 0; i < TurretCrateInventory.SIZE_UPGRADE_STORAGE; i++ ) {
             int row = i / 9;
             int col = i % 9;
             this.addSlotToContainer(new SlotOutput(tileInv, i + 1, 8 + col * 18, 44 + row * 18));
         }
+
+        this.addSlotToContainer(this.ammoSlot = new SlotAmmo(tileInv, TurretCrateInventory.SLOT_AMMO, 62, 18));
 
         for( int i = 0; i < 3; i++ ) {
             for( int j = 0; j < 9; j++ ) {
@@ -70,8 +73,14 @@ public class ContainerTurretCrate
             ItemStack slotStack = slot.getStack();
             origStack = slotStack.copy();
 
-            if( slotId <= TurretCrateInventory.SLOT_AMMO ) { // if clicked stack is from TileEntity
+            if( slotId < TurretCrateInventory.SLOT_AMMO ) { // if clicked stack is from TileEntity
                 if( !super.mergeItemStack(slotStack, TurretCrateInventory.SLOT_AMMO + 1, TurretCrateInventory.SLOT_AMMO + 1 + 36, true) ) { // merge into player inventory
+                    return ItemStackUtils.getEmpty();
+                }
+            } else if( slotId == TurretCrateInventory.SLOT_AMMO ) {// if clicked stack is from ammo slot
+                if( !ItemAmmoCartridge.putAmmoInPlayerCartridge(slotStack, player)
+                    && !super.mergeItemStack(slotStack, TurretCrateInventory.SLOT_AMMO + 1, TurretCrateInventory.SLOT_AMMO + 1 + 36, true) )
+                {
                     return ItemStackUtils.getEmpty();
                 }
             }

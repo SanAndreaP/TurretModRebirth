@@ -23,17 +23,8 @@ public class PickupEventHandler
         EntityPlayer player = event.getEntityPlayer();
         ItemStack    stack  = event.getItem().getItem();
         if( stack.getItem() instanceof ItemAmmo ) {
-            for( int i = 0, max = player.inventory.getSizeInventory(); i < max; i++ ) {
-                ItemStack invStack = player.inventory.getStackInSlot(i);
-                if( invStack.getItem() == ItemRegistry.AMMO_CARTRIDGE ) {
-                    AmmoCartridgeInventory cartridge = ItemAmmoCartridge.getInventory(invStack);
-                    ItemStack remain = InventoryUtils.addStackToCapability(stack, cartridge, EnumFacing.UP, false);
-                    stack.setCount(remain.getCount());
-                    if( !ItemStackUtils.isValid(remain) ) {
-                        event.setResult(Event.Result.ALLOW);
-                        break;
-                    }
-                }
+            if( ItemAmmoCartridge.putAmmoInPlayerCartridge(stack, player) ) {
+                event.setResult(Event.Result.ALLOW);
             }
         }
     }

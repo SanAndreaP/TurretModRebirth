@@ -18,7 +18,7 @@
       "type": "spotlight",
       "item": "minecraft:book",
       "title": "Turret Info",
-      "text": "This tab will show you general information (a POV camera, turret name - editable, health, ammo, current target, owner, shielding - only on the $(l:turrets/forcefield)Forcefield Turret$()).$(br2)At the bottom are control buttons to dismantle and (de-)activate the turret as well as toggle a display showing its range."
+      "text": "This tab will show you general information (a POV camera, turret name (editable), etc.). $(italic)Hovering over the icon on the left shows you what it is.$()$(br2)At the bottom are control buttons to dismantle the turret (requires a $(l:misc/turret_crate)Turret Crate$(/l)),$(br)de-/activate it as well as toggle a display showing its range."
     },
     {
       "type": "image",
