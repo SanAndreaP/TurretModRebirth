@@ -49,7 +49,6 @@
     },
     {
       "type": "text",
-      "title": "UI - Output & Other",
       "text": "At the bottom is the \"Cancel\" button, which cancels the current crafting process and returns the ingredients back into the input (or into the world in case there's no room for them).$(br)Below it are placeholders meant for the $(l:misc/assembly_upgrade_auto)automation upgrade$(/l)."
     }
   ]

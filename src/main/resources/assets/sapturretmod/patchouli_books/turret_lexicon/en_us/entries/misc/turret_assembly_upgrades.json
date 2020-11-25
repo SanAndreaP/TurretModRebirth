@@ -1,0 +1,23 @@
+{
+  "name": "Turret Assembly Upgrades",
+  "icon": "sapturretmod:assembly_upg_auto",
+  "category": "sapturretmod:misc",
+  "pages": [
+    {
+      "type": "text",
+      "text": "The following upgrades allow you to augment the $(l:misc/turret_assembly)assembly table$(/l) in different ways. Just place the upgrade of choice in the upgrade slots of the assembly table UI. Once inserted, its functionality is immediately available."
+    },
+    {
+      "type": "crafting",
+      "recipe": "sapturretmod:upgrades/assembly_speed",
+      "title": "Speed Upgrade",
+      "text": "This will increase the crafting speed, making it 4 times faster. Be careful, though, not only will this increase the consumption of energy units per second, but adds a 10% penalty to it as well."
+    },
+    {
+      "type": "crafting",
+      "recipe": "sapturretmod:upgrades/assembly_auto",
+      "title": "Automation Upgrade",
+      "text": "If you want to automatically craft one specific recipe indefinitely, use this upgrade and two new buttons will appear inside the assembly table UI:\"Manual\", which is the standard behavior, and \"Automate\".$(br2)Once automation is activated, "
+    }
+  ]
+}
