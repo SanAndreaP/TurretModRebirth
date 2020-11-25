@@ -13,7 +13,7 @@
     {
       "type": "sapturretmod:turret_range",
       "turret_type": "sapturretmod:turret_minigun",
-      "flavor_text": "I believe I can fly..."
+      "text": "I believe I can fly..."
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",

@@ -18,19 +18,19 @@
       "type": "sapturretmod:turret_assembly_i18n",
       "recipe": "sapturretmod:upgrades/health_2",
       "header": "Health II",
-      "flavor_text": "$(5)$(italic)Requires Health I$()"
+      "text": "$(5)$(italic)Requires Health I$()"
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
       "recipe": "sapturretmod:upgrades/health_3",
       "header": "Health III",
-      "flavor_text": "$(5)$(italic)Requires Health II$(br)$(3)Only applicable to tiers 1-4$()"
+      "text": "$(5)$(italic)Requires Health II$(br)$(3)Only applicable to tiers 1-4$()"
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
       "recipe": "sapturretmod:upgrades/health_4",
       "header": "Health IV",
-      "flavor_text": "$(5)$(italic)Requires Health III$(br)$(3)Only applicable to tiers 1-3$()"
+      "text": "$(5)$(italic)Requires Health III$(br)$(3)Only applicable to tiers 1-3$()"
     }
   ]
 }

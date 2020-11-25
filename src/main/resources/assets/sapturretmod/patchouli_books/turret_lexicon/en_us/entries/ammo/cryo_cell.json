@@ -15,19 +15,19 @@
       "type": "sapturretmod:turret_assembly_i18n",
       "recipe": "sapturretmod:ammo/cryocell_1",
       "header": "Cryo-Cell SG1",
-      "flavor_text": "Slowness I for 15s"
+      "text": "Slowness I for 15s"
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
       "recipe": "sapturretmod:ammo/cryocell_2",
       "header": "Cryo-Cell SG2",
-      "flavor_text": "Slowness III for 10s"
+      "text": "Slowness III for 10s"
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
       "recipe": "sapturretmod:ammo/cryocell_3",
       "header": "Cryo-Cell SG3",
-      "flavor_text": "Slowness V for 5s"
+      "text": "Slowness V for 5s"
     }
   ]
 }

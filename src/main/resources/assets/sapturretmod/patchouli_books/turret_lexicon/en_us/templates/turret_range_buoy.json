@@ -82,7 +82,7 @@
     },
     {
       "type": "text",
-      "text": "$(italic)#flavor_text#",
+      "text": "$(italic)#text#",
       "x": 0, "y": 132
     }
   ]

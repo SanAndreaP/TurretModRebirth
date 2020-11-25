@@ -14,7 +14,7 @@
     {
       "type": "sapturretmod:turret_range",
       "turret_type": "sapturretmod:turret_flamethrower",
-      "flavor_text": "This is fine."
+      "text": "This is fine."
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
