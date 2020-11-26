@@ -4,8 +4,8 @@
   "category": "sapturretmod:upgrades",
   "pages": [
     {
-      "type": "sapturretmod:upgrade_info",
-      "name": "Smart Targeting",
+      "type": "sapturretmod:spotlight_multi",
+      "title": "Smart Targeting",
       "item": "sapturretmod:upgrade_smart_targeting",
       "text": "Allows for detailed control on how turrets target entities.$(br2)Adds an additional tab to the $(l:misc/tcu)TCU$() UI for configuration of this upgrade (described in the upcoming pages)."
     },

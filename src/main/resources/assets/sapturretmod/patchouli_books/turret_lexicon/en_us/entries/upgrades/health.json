@@ -4,9 +4,9 @@
   "category": "sapturretmod:upgrades",
   "pages": [
     {
-      "type": "sapturretmod:upgrade_info",
-      "name": "Health Upgrades",
-      "item": "sapturretmod:upgrade_health_1",
+      "type": "sapturretmod:spotlight_multi",
+      "title": "Health Upgrades",
+      "item": "sapturretmod:upgrade_health_1,sapturretmod:upgrade_health_2,sapturretmod:upgrade_health_3,sapturretmod:upgrade_health_4",
       "text": "Strengthens the structure of the turret chassis to gain 25% additional maximum health with each tier.$(br2)$(o)Note: These types of upgrades will not increase the turrets health automatically! You must heal it afterwards.$()"
     },
     {

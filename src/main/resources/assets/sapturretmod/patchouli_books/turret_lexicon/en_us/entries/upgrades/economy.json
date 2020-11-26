@@ -4,8 +4,8 @@
   "category": "sapturretmod:upgrades",
   "pages": [
     {
-      "type": "sapturretmod:upgrade_info",
-      "name": "Economy I",
+      "type": "sapturretmod:spotlight_multi",
+      "title": "Economy I",
       "item": "sapturretmod:upgrade_economy_1",
       "text": "A turret fitted with this upgrade has a 15% chance of not consuming ammo by occasionally doubling the item inside the turret container before it is shot."
     },
@@ -14,8 +14,8 @@
       "recipe": "sapturretmod:upgrades/economy_1"
     },
     {
-      "type": "sapturretmod:upgrade_info",
-      "name": "Economy II",
+      "type": "sapturretmod:spotlight_multi",
+      "title": "Economy II",
       "item": "sapturretmod:upgrade_economy_2",
       "text": "This upgrade increases the chance of not consuming ammo by 35% (in total: 50%).$(br2)$(5)$(o)Requires Economy I$()"
     },
@@ -24,8 +24,8 @@
       "recipe": "sapturretmod:upgrades/economy_2"
     },
     {
-      "type": "sapturretmod:upgrade_info",
-      "name": "Infinitas Oeconomia",
+      "type": "sapturretmod:spotlight_multi",
+      "title": "Infinitas Oeconomia",
       "item": "sapturretmod:upgrade_economy_infinite",
       "text": "An unlimited ammo supply is guaranteed, given the turret is filled with rounds.$(br)Failing that, the turret resorts to the other 2 Economy upgrades.$(br2)$(5)$(o)Requires Economy II$()"
     },

@@ -4,8 +4,8 @@
   "category": "sapturretmod:upgrades",
   "pages": [
     {
-      "type": "sapturretmod:upgrade_info",
-      "name": "Fuel Purifier",
+      "type": "sapturretmod:spotlight_multi",
+      "title": "Fuel Purifier",
       "item": "sapturretmod:upgrade_fuel_purifier",
       "text": "Modifies the tank filters of the $(l:turrets/flamethrower)Flamethrower Turret$(/l) to act as a catalyst which purifies the fuel. This allows the turret to damage fire-resistant entities and increases damage output.$(br2)Be careful, though: blocks hit by these blue flames may catch on fire!"
     },

@@ -4,8 +4,8 @@
   "category": "sapturretmod:upgrades",
   "pages": [
     {
-      "type": "sapturretmod:upgrade_info",
-      "name": "Shield Colorizer",
+      "type": "sapturretmod:spotlight_multi",
+      "title": "Shield Colorizer",
       "item": "sapturretmod:upgrade_shield_colorizer",
       "text": "Lets you change the color, transparency and culling of the forcefield from the $(l:turrets/forcefield)Forcefield Turret$(/l).$(br2)Adds an additional tab to the $(l:misc/tcu)TCU$() UI for configuration of this upgrade (described in the upcoming pages)."
     },

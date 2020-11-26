@@ -36,7 +36,7 @@
     {
       "type": "text",
       "title": "Filter Upgrade",
-      "text": "Filters items into specific slots within the turret assembly. By default, it is not configured. To do so, right-click whilst sneaking and holding it in your hands. This will open up a UI representing the input slots.$(br)Put the item(s) of choice inside (these will not be consumed) and close the UI. Now, if you put that into the upgrade slot, it will prevent anything other than the filtered items from being inserted into their slots. Empty slots accept anything that is not filtered already."
+      "text": "Filters items into specific slots within the turret assembly. To configure it, hold it and right-click whilst sneaking. This will open up a UI representing the input slots. Put the item(s) of choice inside (these will not be consumed). Now, if you put that into the upgrade slot, it will prevent anything other than the filtered items from being inserted into their slots. Empty slots accept anything that is not filtered already."
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",
@@ -45,7 +45,7 @@
     {
       "type": "text",
       "title": "Redstone Upgrade",
-      "text": "For the redstone engineers, this will allow you to control the turret assembly with a redstone signal. When powered, the turret assembly will pause any crafting it currently is processing.$(br2)The block can be controlled from pretty much any side"
+      "text": "Control the turret assembly with this via a redstone signal. When the turret assembly is powered, it will pause any crafting it currently is processing.$(br2)The block can be controlled from pretty much any side"
     },
     {
       "type": "sapturretmod:turret_assembly_i18n",

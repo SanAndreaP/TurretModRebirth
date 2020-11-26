@@ -4,8 +4,8 @@
   "category": "sapturretmod:upgrades",
   "pages": [
     {
-      "type": "sapturretmod:upgrade_info",
-      "name": "Projectile Deflector",
+      "type": "sapturretmod:spotlight_multi",
+      "title": "Projectile Deflector",
       "item": "sapturretmod:upgrade_shield_projectile",
       "text": "Augments the $(l:turrets/forcefield)Forcefield Turret$(/l) and allows its shield to push incoming enemy projectiles away. If the projectile gets stuck in the shield, it will be absorbed after a second.$(br2)Each projectile pushed/absorbed does 0.5 points of damage to the shield."
     },
