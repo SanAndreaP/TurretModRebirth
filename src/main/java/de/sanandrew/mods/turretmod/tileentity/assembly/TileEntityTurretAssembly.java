@@ -289,7 +289,7 @@ public class TileEntityTurretAssembly
     }
 
     private boolean isRedstonePowered() {
-        if( this.world.isSidePowered(this.pos.down(), EnumFacing.DOWN) ) {
+        if( this.world.isSidePowered(this.pos.down(), EnumFacing.DOWN) || this.world.isSidePowered(this.pos.up(), EnumFacing.UP) ) {
             return true;
         }
 
