@@ -1,0 +1,38 @@
+{
+  "name": "Repair Kits",
+  "icon": "sapturretmod:repair_kit_standard_1",
+  "category": "sapturretmod:misc",
+  "pages": [
+    {
+      "type": "spotlight_multi",
+      "item": "sapturretmod:repair_kit_standard_1,sapturretmod:repair_kit_standard_2,sapturretmod:repair_kit_standard_3,sapturretmod:repair_kit_standard_4,sapturretmod:repair_kit_regeneration_1",
+      "title": "Repair Kits",
+      "text": "Repairing a turret is made easy with these repair kits. Each restores a certain amount of health and can only be used if difference of the turrets' health and its maximum is below the healing effect."
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:repair_kit_standard_1",
+      "text": "$(italic)heals for 2.5 hearts$()"
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:repair_kit_standard_2",
+      "text": "$(italic)heals for 5 hearts$()"
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:repair_kit_standard_3",
+      "text": "$(italic)heals for 7.5 hearts$()"
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:repair_kit_standard_4",
+      "text": "$(italic)heals for 10 hearts$()"
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:repair_kit_regeneration_1",
+      "text": "$(italic)heals for 0.25 hearts$(br)Applies Regeneration I for 45 seconds$()"
+    }
+  ]
+}
