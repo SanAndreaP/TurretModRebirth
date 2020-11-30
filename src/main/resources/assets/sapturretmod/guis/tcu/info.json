@@ -122,7 +122,7 @@
         "icon": {
           "offset": [3, 0],
           "size": [16, 16],
-          "uv": [176, 72]
+          "uv": [176, 108]
         }
       }
     },
@@ -135,7 +135,7 @@
         "uvSize": [18, 18],
         "buttonFunction": 0,
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
-        "uvEnabled": [176, 0]
+        "uvEnabled": [176, 18]
       }
     },
     {
@@ -147,7 +147,7 @@
         "uvSize": [18, 18],
         "buttonFunction": 1,
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
-        "uvEnabled": [194, 0]
+        "uvEnabled": [194, 18]
       }
     },
     {
@@ -159,7 +159,7 @@
         "uvSize": [18, 18],
         "buttonFunction": 2,
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
-        "uvEnabled": [212, 0]
+        "uvEnabled": [212, 18]
       }
     },
     {
@@ -171,7 +171,7 @@
         "uvSize": [18, 18],
         "buttonFunction": 3,
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
-        "uvEnabled": [176, 36]
+        "uvEnabled": [176, 72]
       }
     },
     {
@@ -183,7 +183,7 @@
         "uvSize": [18, 18],
         "buttonFunction": 4,
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
-        "uvEnabled": [194, 36]
+        "uvEnabled": [194, 72]
       }
     },
     {
@@ -242,7 +242,7 @@
       "pos":[6, 84],
       "data": {
         "size": [20, 16],
-        "text": "gui.sapturretmod.tcu.page.info.name"
+        "text": "gui.sapturretmod.tcu.page.sapturretmod:info.name"
       }
     },
     {
@@ -250,7 +250,7 @@
       "pos":[6, 100],
       "data": {
         "size": [20, 16],
-        "text": "gui.sapturretmod.tcu.page.info.health"
+        "text": "gui.sapturretmod.tcu.page.sapturretmod:info.health"
       }
     },
     {
@@ -258,7 +258,7 @@
       "pos":[6, 116],
       "data": {
         "size": [20, 16],
-        "text": "gui.sapturretmod.tcu.page.info.ammo"
+        "text": "gui.sapturretmod.tcu.page.sapturretmod:info.ammo"
       }
     },
     {
@@ -266,7 +266,7 @@
       "pos":[6, 132],
       "data": {
         "size": [20, 16],
-        "text": "gui.sapturretmod.tcu.page.info.target"
+        "text": "gui.sapturretmod.tcu.page.sapturretmod:info.target"
       }
     },
     {
@@ -274,7 +274,7 @@
       "pos":[6, 148],
       "data": {
         "size": [20, 16],
-        "text": "gui.sapturretmod.tcu.page.info.player"
+        "text": "gui.sapturretmod.tcu.page.sapturretmod:info.player"
       }
     },
     {
@@ -282,7 +282,7 @@
       "pos":[6, 164],
       "data": {
         "size": [20, 16],
-        "text": "gui.sapturretmod.tcu.page.info.forcefield",
+        "text": "gui.sapturretmod.tcu.page.sapturretmod:info.forcefield",
         "for": "info_prog_forcefield"
       }
     },
@@ -295,7 +295,7 @@
       "id": "errorDismantle",
       "data": {
         "size": [176, 236],
-        "text": "gui.sapturretmod.tcu.page.info.dismantle.error"
+        "text": "gui.sapturretmod.tcu.page.sapturretmod:info.dismantle.error"
       }
     }
   ]

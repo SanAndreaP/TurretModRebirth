@@ -30,4 +30,6 @@ public interface IUpgradeProcessor
     void writeToNbt(NBTTagCompound nbt);
 
     void readFromNbt(NBTTagCompound nbt);
+
+    boolean canAccessRemotely();
 }

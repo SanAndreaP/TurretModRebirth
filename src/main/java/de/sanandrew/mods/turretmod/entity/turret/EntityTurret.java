@@ -23,9 +23,11 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
+import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.ItemRemapper;
 import de.sanandrew.mods.turretmod.item.ItemTurret;
+import de.sanandrew.mods.turretmod.item.ItemTurretControlUnit;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketUpdateTurretState;
 import de.sanandrew.mods.turretmod.registry.Sounds;
@@ -40,12 +42,14 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
@@ -353,7 +357,9 @@ public class EntityTurret
 
         if( this.world.isRemote ) {
             if( ItemStackUtils.isItem(stack, ItemRegistry.TURRET_CONTROL_UNIT) ) {
-                TmrUtils.INSTANCE.openGui(player, EnumGui.TCU, this.getEntityId(), 0, 0);
+                if( !player.isSneaking() ) {
+                    TmrUtils.INSTANCE.openGui(player, EnumGui.TCU, this.getEntityId(), 0, 0);
+                }
                 return true;
             } else if( !ItemStackUtils.isValid(stack) ) {
                 //TODO: do dedicated info GUI on right-click with empty hand
@@ -361,22 +367,27 @@ public class EntityTurret
 
             return false;
         } else if( ItemStackUtils.isValid(stack) ) {
-            IRepairKit repKit;
-
-            if( this.targetProc.addAmmo(stack, player) ) {
+            if( ItemStackUtils.isItem(stack, ItemRegistry.TURRET_CONTROL_UNIT) && player.isSneaking() ) {
+                ItemTurretControlUnit.bindTurret(stack, this);
+                return true;
+            } else if( this.targetProc.addAmmo(stack, player) ) {
                 this.onInteractSucceed(stack, player);
                 return true;
-            } else if( (repKit = RepairKitRegistry.INSTANCE.getObject(stack)).isApplicable(this) ) {
+            } else if( this.upgProc.tryApplyUpgrade(stack.copy()) ) {
+                stack.shrink(1);
+                this.onInteractSucceed(stack, player);
+                return true;
+            } else {
+                IRepairKit repKit = RepairKitRegistry.INSTANCE.getObject(stack);
+
+                if( repKit.isApplicable(this) ) {
                     this.heal(repKit.getHealAmount());
                     repKit.onHeal(this);
                     stack.shrink(1);
                     this.onInteractSucceed(stack, player);
 
                     return true;
-            } else if( this.upgProc.tryApplyUpgrade(stack.copy()) ) {
-                stack.shrink(1);
-                this.onInteractSucceed(stack, player);
-                return true;
+                }
             }
         }
 
@@ -536,6 +547,11 @@ public class EntityTurret
         if( type == MoverType.PISTON ) {
             super.move(type, motionX, motionY, motionZ);
         }
+    }
+
+    @Override
+    public boolean isGlowing() {
+        return super.isGlowing() || TurretModRebirth.proxy.checkTurretGlowing(this);
     }
 
     /**turrets are immobile, leave empty*/

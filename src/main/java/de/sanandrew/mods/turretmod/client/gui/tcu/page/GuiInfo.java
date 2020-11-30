@@ -30,6 +30,7 @@ public class GuiInfo
     private static final int ACTION_RANGE_SHOW = 3;
     private static final int ACTION_RANGE_HIDE = 4;
 
+    private GuiElementInst dismantle;
     private GuiElementInst setActive;
     private GuiElementInst setDeactive;
     private GuiElementInst showRange;
@@ -41,7 +42,7 @@ public class GuiInfo
 
     @Override
     public void initialize(IGuiTcuInst<?> gui, GuiDefinition guiDefinition) {
-        Button dismantle = guiDefinition.getElementById("dismantle").get(Button.class);
+        this.dismantle = guiDefinition.getElementById("dismantle");
         this.setActive = guiDefinition.getElementById("activate");
         this.setDeactive = guiDefinition.getElementById("deactivate");
         this.showRange = guiDefinition.getElementById("showRange");
@@ -58,12 +59,16 @@ public class GuiInfo
         this.turretName.setText(gui.getTurretInst().get().hasCustomName() ? gui.getTurretInst().get().getCustomNameTag() : "");
 
         if( !gui.hasPermision() ) {
-            dismantle.setEnabled(false);
+            this.dismantle.get(Button.class).setEnabled(false);
             this.setActive.get(Button.class).setEnabled(false);
             this.setDeactive.get(Button.class).setEnabled(false);
             this.showRange.get(Button.class).setEnabled(false);
             this.hideRange.get(Button.class).setEnabled(false);
             this.turretName.setEnabled(false);
+        } else {
+            if( gui.isRemote() && !gui.canRemoteTransfer() ) {
+                this.dismantle.get(Button.class).setEnabled(false);
+            }
         }
     }
 
@@ -74,6 +79,10 @@ public class GuiInfo
         this.setActive.setVisible(!this.setDeactive.isVisible());
         this.hideRange.setVisible(turretInst.showRange());
         this.showRange.setVisible(!this.hideRange.isVisible());
+
+        if( gui.isRemote() && !gui.canRemoteTransfer() ) { // prevent external upgrade removal from this staying enabled
+            this.dismantle.get(Button.class).setEnabled(false);
+        }
     }
 
     @Override

@@ -23,8 +23,11 @@ import de.sanandrew.mods.turretmod.client.model.entity.ModelTurretShotgun;
 import de.sanandrew.mods.turretmod.client.render.layer.LayerTurretGlow;
 import de.sanandrew.mods.turretmod.client.render.layer.LayerTurretUpgrades;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
+import de.sanandrew.mods.turretmod.item.ItemTurretControlUnit;
 import de.sanandrew.mods.turretmod.registry.Resources;
+import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -58,6 +61,7 @@ public class RenderTurret<E extends EntityLiving & ITurretInst>
         super(manager, new ModelBase() { }, 0.5F);
 
         TurretModRebirth.PLUGINS.forEach(plugin -> plugin.registerTurretRenderer(this));
+        TurretModRebirth.PLUGINS.forEach(plugin -> plugin.registerTurretRenderLayers(this));
     }
 
     @Override
@@ -93,6 +97,15 @@ public class RenderTurret<E extends EntityLiving & ITurretInst>
     }
 
     @Override
+    public void addCustomLayer(ITurret turret, LayerRenderer<E> layer) {
+        if( turret == null ) {
+            TurretRegistry.INSTANCE.getObjects().forEach(t -> this.addCustomLayer(t, layer));
+        } else {
+            this.turretLayers.get(turret).add(layer);
+        }
+    }
+
+    @Override
     public void doRender(E entity, double x, double y, double z, float entityYaw, float partialTicks) {
         ITurret turret = entity.getTurret();
         ITurretRender<?, E> render = this.turretRenders.get(turret);
@@ -102,6 +115,7 @@ public class RenderTurret<E extends EntityLiving & ITurretInst>
 
             super.doRender(entity, x, y, z, entityYaw, partialTicks);
             render.doRender(this, entity, x, y, z, entityYaw, partialTicks);
+
             renderTurretRange(entity, x, y, z);
         }
     }
@@ -245,6 +259,8 @@ public class RenderTurret<E extends EntityLiving & ITurretInst>
         registry.register(Turrets.FLAMETHROWER, new TurretRenderBase<>(registry, scale -> new ModelTurretBase(scale, Resources.TURRET_T3_FTHROWER_MODEL.resource)));
         registry.register(Turrets.FORCEFIELD, new TurretRenderShieldGen<>(registry));
     }
+
+    public static <T extends EntityLiving & ITurretInst> void initializeLayers(ITurretRenderRegistry<T> registry) { }
 
     @Override
     public boolean bindRenderEntityTexture(E entity) {

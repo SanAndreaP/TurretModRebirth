@@ -63,6 +63,7 @@ import de.sanandrew.mods.turretmod.init.CommonProxy;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.item.ItemAmmoCartridge;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.item.ItemTurretControlUnit;
 import de.sanandrew.mods.turretmod.registry.EnumEffect;
 import de.sanandrew.mods.turretmod.registry.ammo.Ammunitions;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
@@ -175,7 +176,7 @@ public class ClientProxy
                 case TCU:
                     Entity e = world.getEntityByID(x);
                     if( e instanceof ITurretInst ) {
-                        return GuiTcuRegistry.INSTANCE.openGUI(y, player, (ITurretInst) e);
+                        return GuiTcuRegistry.INSTANCE.openGUI(y, player, (ITurretInst) e, z == 1);
                     }
                     break;
                 case TASSEMBLY:
@@ -274,5 +275,10 @@ public class ClientProxy
     @Override
     public boolean isPlayerPressingShift() {
         return ClientTickHandler.isSneaking;
+    }
+
+    @Override
+    public boolean checkTurretGlowing(ITurretInst turret) {
+        return ItemTurretControlUnit.isHeldTcuBoundToTurret(Minecraft.getMinecraft().player, turret);
     }
 }

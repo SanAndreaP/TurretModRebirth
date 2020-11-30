@@ -9,10 +9,13 @@ import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.registry.Lang;
+import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.shieldgen.ShieldTurret;
 import de.sanandrew.mods.turretmod.registry.turret.shieldgen.TurretForcefield;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
@@ -204,25 +207,25 @@ public class InfoElement
             switch( InfoElement.this.type ) {
                 case HEALTH:
                     vals = v(ti.get(),
-                             e -> new double[] { e.getHealth(), e.getMaxHealth() });
+                             e -> new double[] { e.getHealth() / 2.0D, e.getMaxHealth() / 2.0D });
 
-                    return getRatioText(vals, "HP");
+                    return getRatioText(vals, "health.suffix");
                 case AMMO:
                     vals = v(ti.getTargetProcessor(),
                              t -> new double[] { t.getAmmoCount(), t.getMaxAmmoCapacity() });
 
-                    return getRatioText(vals, "rounds");
+                    return getRatioText(vals, "ammo.suffix");
                 case PERSONAL_SHIELD:
                     Double spVal = v(ti.getUpgradeProcessor().<ShieldPersonal>getUpgradeInstance(Upgrades.SHIELD_PERSONAL.getId()),
-                                     u -> u != null ? (double) u.getValue() : null);
+                                     u -> u != null ? (double) u.getValue() / 2.0D : null);
                     if( spVal != null ) {
-                        return String.format(" (+%s AP)", DECIMAL_FORMAT.format(spVal));
+                        return String.format(LangUtils.translate(Lang.TCU_PAGE_ELEMENT.get(GuiTcuRegistry.INFO, "armor.suffix")), DECIMAL_FORMAT.format(spVal));
                     }
                 case FORCEFIELD:
                     vals = v(ti.getTurret() instanceof TurretForcefield ? ti.<ShieldTurret>getRAM(null) : null,
                              s -> s != null ? new double[] { s.getValue(), s.getMaxValue() } : null);
 
-                    return getRatioText(vals, "SP");
+                    return getRatioText(vals, "forcefield.suffix");
                 case TARGET:
                     return MiscUtils.defIfNull(Strings.emptyToNull(ti.getTargetProcessor().getTargetName()), "N/A");
                 case PLAYER:
@@ -237,7 +240,12 @@ public class InfoElement
         }
 
         private String getRatioText(double[] vals, String unit) {
-            return vals != null ? String.format("%s/%s %s", DECIMAL_FORMAT.format(vals[0]), DECIMAL_FORMAT.format(vals[1]), unit) : "";
+            if( vals != null ) {
+                String val = String.format("%s/%s", DECIMAL_FORMAT.format(vals[0]), DECIMAL_FORMAT.format(vals[1]));
+                return LangUtils.translate(Lang.TCU_PAGE_ELEMENT.get(GuiTcuRegistry.INFO, unit), val);
+            }
+
+            return "";
         }
     }
 }

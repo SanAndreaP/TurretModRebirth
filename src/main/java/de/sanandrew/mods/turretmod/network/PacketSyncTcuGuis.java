@@ -12,6 +12,7 @@ import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
@@ -23,25 +24,25 @@ import java.util.TreeMap;
 public class PacketSyncTcuGuis
         extends AbstractMessage<PacketSyncTcuGuis>
 {
-    private Map<Integer, String> guis;
+    private Map<Integer, ResourceLocation> pageIds;
 
     @SuppressWarnings("unused")
     public PacketSyncTcuGuis() {
-        this.guis = new TreeMap<>();
-        for( int i = 0, max = GuiTcuRegistry.GUI_ENTRIES.size(); i < max; i++ ) {
-            this.guis.put(i, GuiTcuRegistry.GUI_ENTRIES.get(i));
+        this.pageIds = new TreeMap<>();
+        for( int i = 0, max = GuiTcuRegistry.PAGE_KEYS.size(); i < max; i++ ) {
+            this.pageIds.put(i, GuiTcuRegistry.PAGE_KEYS.get(i));
         }
     }
 
     @Override
     public void handleClientMessage(PacketSyncTcuGuis packet, EntityPlayer player) {
         if( FMLCommonHandler.instance().getSide() == Side.CLIENT ) {
-            GuiTcuRegistry.GUI_ENTRIES.clear();
-            packet.guis.forEach((pos, gui) -> {
-                if( GuiTcuRegistry.GUI_ENTRIES.size() >= pos ) {
-                    GuiTcuRegistry.GUI_ENTRIES.add(gui);
+            GuiTcuRegistry.PAGE_KEYS.clear();
+            packet.pageIds.forEach((pos, key) -> {
+                if( GuiTcuRegistry.PAGE_KEYS.size() >= pos ) {
+                    GuiTcuRegistry.PAGE_KEYS.add(key);
                 } else {
-                    GuiTcuRegistry.GUI_ENTRIES.set(pos, gui);
+                    GuiTcuRegistry.PAGE_KEYS.set(pos, key);
                 }
             });
         }
@@ -53,19 +54,19 @@ public class PacketSyncTcuGuis
     @Override
     public void fromBytes(ByteBuf buf) {
         int size = buf.readInt();
-        this.guis = new HashMap<>(size);
+        this.pageIds = new HashMap<>(size);
 
         for( int i = 0; i < size; i++ ) {
-            this.guis.put(i, ByteBufUtils.readUTF8String(buf));
+            this.pageIds.put(i, new ResourceLocation(ByteBufUtils.readUTF8String(buf)));
         }
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeInt(this.guis.size());
-        this.guis.forEach((pos, gui) -> {
+        buf.writeInt(this.pageIds.size());
+        this.pageIds.forEach((pos, key) -> {
             buf.writeInt(pos);
-            ByteBufUtils.writeUTF8String(buf, gui);
+            ByteBufUtils.writeUTF8String(buf, key.toString());
         });
     }
 }

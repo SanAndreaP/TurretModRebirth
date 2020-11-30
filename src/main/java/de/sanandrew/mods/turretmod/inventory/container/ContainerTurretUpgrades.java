@@ -16,7 +16,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -25,10 +24,10 @@ public class ContainerTurretUpgrades
         extends Container
 {
 
-    public ContainerTurretUpgrades(IInventory playerInv, UpgradeProcessor proc) {
+    public ContainerTurretUpgrades(IInventory playerInv, UpgradeProcessor proc, boolean isRemote) {
         for( int i = 0; i < 4; i++ ) {
             for( int j = 0; j < 9; j++ ) {
-                this.addSlotToContainer(new SlotUpgrade(proc, j + i * 9, 8 + j * 18, 40 + i * 18));
+                this.addSlotToContainer(new SlotUpgrade(proc, j + i * 9, 8 + j * 18, 40 + i * 18, isRemote));
             }
         }
 
@@ -83,15 +82,24 @@ public class ContainerTurretUpgrades
             extends Slot
     {
         private final UpgradeProcessor upgProc;
+        private final boolean isRemote;
 
-        SlotUpgrade(UpgradeProcessor proc, int id, int x, int y) {
+        SlotUpgrade(UpgradeProcessor proc, int id, int x, int y, boolean isRemote) {
             super(proc, id, x, y);
             this.upgProc = proc;
+            this.isRemote = isRemote;
         }
 
         @Override
         public boolean isItemValid(@Nonnull ItemStack stack) {
-            return this.upgProc.isItemValidForSlot(this.getSlotIndex(), stack);
+            return (!this.isRemote || this.upgProc.canAccessRemotely())
+                   && this.upgProc.isItemValidForSlot(this.getSlotIndex(), stack);
+        }
+
+        @Override
+        public boolean canTakeStack(EntityPlayer playerIn) {
+            return (!this.isRemote || this.upgProc.canAccessRemotely())
+                   && super.canTakeStack(playerIn);
         }
     }
 }

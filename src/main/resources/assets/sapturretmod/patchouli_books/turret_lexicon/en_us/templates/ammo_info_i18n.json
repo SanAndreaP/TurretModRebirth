@@ -12,9 +12,8 @@
         "turret_link": "#turret_link",
         "rounds_tip": "Rounds provided per item",
         "rounds_suffix": " rounds",
-        "damage_tip1": "Damage dealt",
-        "damage_tip2": "1 HP = 0.5 hearts",
-        "damage_suffix": " HP",
+        "damage_tip": "Damage dealt per projectile",
+        "damage_suffix": " hearts",
         "turret_tip": "Used by Turret"
       }
     }

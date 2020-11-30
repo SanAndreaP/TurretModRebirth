@@ -7,12 +7,10 @@
 package de.sanandrew.mods.turretmod.api.event;
 
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
-
-import java.util.function.BiFunction;
 
 @Cancelable
 @SuppressWarnings("WeakerAccess")
@@ -21,9 +19,9 @@ public class OpenTcuContainerEvent
 {
     public final EntityPlayer player;
     public final ITurretInst turretInst;
-    public BiFunction<EntityPlayer, ITurretInst, Container> factory;
+    public GuiTcuRegistry.ContainerFactory factory;
 
-    public OpenTcuContainerEvent(EntityPlayer player, ITurretInst turretInst, BiFunction<EntityPlayer, ITurretInst, Container> factory) {
+    public OpenTcuContainerEvent(EntityPlayer player, ITurretInst turretInst, GuiTcuRegistry.ContainerFactory factory) {
         this.player = player;
         this.turretInst = turretInst;
         this.factory = factory;

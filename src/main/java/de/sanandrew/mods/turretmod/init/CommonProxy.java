@@ -66,6 +66,10 @@ public class CommonProxy
 
     public void postInit(FMLPostInitializationEvent event) { }
 
+    public boolean checkTurretGlowing(ITurretInst turret) {
+        return false;
+    }
+
     @Override
     public final Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
         if( id >= 0 && id < EnumGui.VALUES.length ) {
@@ -74,7 +78,7 @@ public class CommonProxy
                 case TCU:
                     Entity e = world.getEntityByID(x);
                     if( e instanceof ITurretInst ) {
-                        return GuiTcuRegistry.INSTANCE.openContainer(y, player, (ITurretInst) e);
+                        return GuiTcuRegistry.INSTANCE.openContainer(y, player, (ITurretInst) e, z == 1);
                     }
                     break;
                 case TASSEMBLY:

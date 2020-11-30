@@ -35,7 +35,7 @@ public class ComponentTurretStatProcessor
                 return TmrUtils.getNumberFormat(0, false, langCode).format(turret.getTier());
             }
             case "health": {
-                return TmrUtils.getNumberFormat(1, true, langCode).format(turret.getHealth());
+                return TmrUtils.getNumberFormat(1, true, langCode).format(turret.getHealth() / 2F);
             }
             case "ammo": {
                 return TmrUtils.getNumberFormat(0, true, langCode).format(turret.getAmmoCapacity());

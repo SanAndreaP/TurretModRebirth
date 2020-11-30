@@ -13,9 +13,14 @@ import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.util.GuiHelper;
+import de.sanandrew.mods.turretmod.item.ItemTurretControlUnit;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Level;
 
 import java.io.IOException;
@@ -24,9 +29,10 @@ public class GuiTcuScreen
         extends GuiScreen
         implements IGuiTcuInst<GuiTcuScreen>
 {
-    private final String entryKey;
-    private final ITurretInst turret;
-    private final IGuiTCU guiDelegate;
+    private final ResourceLocation pageKey;
+    private final ITurretInst      turret;
+    private final IGuiTCU     guiDelegate;
+    private final boolean     isRemote;
 
     private int posX;
     private int posY;
@@ -35,11 +41,13 @@ public class GuiTcuScreen
 
     private GuiDefinition guiDef;
 
-    public GuiTcuScreen(String entryKey, IGuiTCU gui, ITurretInst turretInst) {
+    public GuiTcuScreen(ResourceLocation pageKey, IGuiTCU gui, ITurretInst turretInst, boolean isRemote) {
         super();
-        this.entryKey = entryKey;
+        this.pageKey = pageKey;
         this.turret = turretInst;
         this.guiDelegate = gui;
+
+        this.isRemote = isRemote;
 
         try {
             this.guiDef = GuiDefinition.getNewDefinition(this.guiDelegate.getGuiDefinition());
@@ -67,7 +75,9 @@ public class GuiTcuScreen
     @Override
     public void updateScreen() {
         super.updateScreen();
-        this.checkForClosing();
+
+        checkGuiClose(this);
+
         this.guiDelegate.updateScreen(this);
 
         this.guiDef.update(this);
@@ -169,8 +179,8 @@ public class GuiTcuScreen
     }
 
     @Override
-    public String getCurrentEntryKey() {
-        return this.entryKey;
+    public ResourceLocation getCurrentPageKey() {
+        return this.pageKey;
     }
 
     @Override
@@ -194,7 +204,31 @@ public class GuiTcuScreen
     }
 
     @Override
+    public boolean isRemote() {
+        return this.isRemote;
+    }
+
+    @Override
+    public boolean canRemoteTransfer() {
+        return this.turret.getUpgradeProcessor().canAccessRemotely();
+    }
+
+    @Override
     public boolean performAction(IGuiElement element, int action) {
         return this.guiDelegate.onElementAction(this, element, action);
+    }
+
+    static void checkGuiClose(IGuiTcuInst<?> gui) {
+        Minecraft        mc      = gui.get().mc;
+        ITurretInst      turret  = gui.getTurretInst();
+        EntityLivingBase turretL = turret.get();
+
+        if( turretL.isDead ) {
+            mc.player.closeScreen();
+        } else if( turretL.getDistance(mc.player) > (gui.isRemote() ? 64.0D : 6.0D) ) {
+            if( !ItemTurretControlUnit.isHeldTcuBoundToTurret(mc.player, turret) ) {
+                mc.player.closeScreen();
+            }
+        }
     }
 }

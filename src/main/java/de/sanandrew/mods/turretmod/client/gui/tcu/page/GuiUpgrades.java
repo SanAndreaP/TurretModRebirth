@@ -40,8 +40,8 @@ public class GuiUpgrades
     }
 
     @Override
-    public Container getContainer(EntityPlayer player, ITurretInst turretInst) {
-        return new ContainerTurretUpgrades(player.inventory, (UpgradeProcessor) turretInst.getUpgradeProcessor());
+    public Container getContainer(EntityPlayer player, ITurretInst turretInst, boolean isRemote) {
+        return new ContainerTurretUpgrades(player.inventory, (UpgradeProcessor) turretInst.getUpgradeProcessor(), isRemote);
     }
 
     @Override

@@ -14,6 +14,7 @@ import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.Map;
 
@@ -22,14 +23,14 @@ public class ButtonNav
 {
     private static final ShaderGrayscale SHADER_GRAYSCALE = new ShaderGrayscale(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
-    public String page;
+    public ResourceLocation pageKey;
     int pageIdx;
 
     private ItemStack pageStack = ItemStack.EMPTY;
 
-    ButtonNav(int id, String page) {
+    ButtonNav(int id, ResourceLocation pageKey) {
         this.pageIdx = id;
-        this.page = page;
+        this.pageKey = pageKey;
     }
 
     @Override
@@ -50,7 +51,7 @@ public class ButtonNav
 
         super.bakeData(gui, data, inst);
 
-        this.pageStack = GuiTcuRegistry.INSTANCE.getGuiEntry(this.page).getIcon();
+        this.pageStack = GuiTcuRegistry.INSTANCE.getPage(this.pageKey).getIcon();
     }
 
     boolean isHovering() {
@@ -59,8 +60,9 @@ public class ButtonNav
 
     @Override
     public void performAction(IGui gui, int id) {
-        TurretModRebirth.proxy.openGui(gui.get().mc.player, EnumGui.TCU, ((IGuiTcuInst<?>) gui).getTurretInst().get().getEntityId(),
-                                       GuiTcuRegistry.GUI_ENTRIES.indexOf(this.page), 0);
+        IGuiTcuInst<?> tcu = (IGuiTcuInst<?>) gui;
+        TurretModRebirth.proxy.openGui(gui.get().mc.player, EnumGui.TCU, tcu.getTurretInst().get().getEntityId(),
+                                       GuiTcuRegistry.PAGE_KEYS.indexOf(this.pageKey), tcu.isRemote() ? 1 : 0);
     }
 
     public class Label

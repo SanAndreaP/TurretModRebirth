@@ -1,6 +1,6 @@
 {
   "name": "Turret Lexicon",
-  "landing_text": "LANDING TEXT",
+  "landing_text": "sapturretmod.lexicon.landing",
   "version": 3,
   "show_progress": false,
   "open_sound": "",

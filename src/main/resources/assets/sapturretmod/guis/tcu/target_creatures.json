@@ -112,7 +112,7 @@
       "id": "search",
       "data": {
         "size": [160, 10],
-        "placeholderText": "gui.sapturretmod.tcu.page.targets.search.placeholder"
+        "placeholderText": "gui.sapturretmod.tcu.page.sapturretmod:targets.search.placeholder"
       }
     }
   ],

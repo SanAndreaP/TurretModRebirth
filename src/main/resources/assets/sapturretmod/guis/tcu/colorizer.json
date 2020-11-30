@@ -70,7 +70,7 @@
       "pos": [105, 106],
       "alignment": ["right"],
       "data": {
-        "text": "gui.sapturretmod.tcu.page.colorizer.colorcode",
+        "text": "gui.sapturretmod.tcu.page.sapturretmod:colorizer.colorcode",
         "color": "0xFF404040"
       }
     },
@@ -87,7 +87,7 @@
       "data": {
         "size": [8, 8],
         "uv": [176, 12],
-        "labelText": "gui.sapturretmod.tcu.page.colorizer.cullfaces"
+        "labelText": "gui.sapturretmod.tcu.page.sapturretmod:colorizer.cullfaces"
       }
     }
   ],

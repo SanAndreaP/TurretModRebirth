@@ -79,7 +79,7 @@ public class TmrInternalPlugin
 
     @Override
     public void registerTcuEntries(IGuiTcuRegistry registry) {
-        GuiTcuRegistry.initializeEntries(registry);
+        GuiTcuRegistry.initializePages(registry);
     }
 
     @Override
@@ -91,6 +91,11 @@ public class TmrInternalPlugin
     @SideOnly(Side.CLIENT)
     public void registerTurretRenderer(ITurretRenderRegistry<?> registry) {
         RenderTurret.initialize(registry);
+    }
+
+    @Override
+    public void registerTurretRenderLayers(ITurretRenderRegistry<?> registry) {
+        RenderTurret.initializeLayers(registry);
     }
 
     @Override
@@ -107,6 +112,6 @@ public class TmrInternalPlugin
     @Override
     @SideOnly(Side.CLIENT)
     public void registerTcuGuis(IGuiTcuRegistry registry) {
-        GuiTcuRegistry.initializeGuis(registry);
+        GuiTcuRegistry.initializePagesClient(registry);
     }
 }

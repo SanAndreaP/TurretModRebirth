@@ -13,6 +13,7 @@ import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * A Turret Control Unit GUI instance.
@@ -85,12 +86,9 @@ public interface IGuiTcuInst<T extends GuiScreen>
     /**
      * @return the key of the current TCU GUI page.
      */
-    String getCurrentEntryKey();
+    ResourceLocation getCurrentPageKey();
 
-    default void checkForClosing() {
-        Minecraft mc = this.get().mc;
-        if( this.getTurretInst().get().isDead || this.getTurretInst().get().getDistance(mc.player) > 36.0D ) {
-            mc.player.closeScreen();
-        }
-    }
+    boolean isRemote();
+
+    boolean canRemoteTransfer();
 }

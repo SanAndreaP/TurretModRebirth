@@ -43,6 +43,9 @@ public interface ITmrPlugin
     default void registerTurretRenderer(ITurretRenderRegistry<?> registry) { }
 
     @SideOnly(Side.CLIENT)
+    default void registerTurretRenderLayers(ITurretRenderRegistry<?> registry) { }
+
+    @SideOnly(Side.CLIENT)
     default <T extends Entity> void registerProjectileRenderer(IRenderRegistry<ResourceLocation, T, IRender<T>> registry) { }
 
     @SideOnly(Side.CLIENT)

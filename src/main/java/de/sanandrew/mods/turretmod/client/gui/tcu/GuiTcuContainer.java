@@ -18,6 +18,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.inventory.Container;
+import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Level;
 
 import java.io.IOException;
@@ -26,18 +27,21 @@ public class GuiTcuContainer
         extends GuiContainer
         implements IGuiTcuInst<GuiTcuContainer>
 {
-    private final String entryKey;
-    private final ITurretInst turret;
-    private final IGuiTCU guiDelegate;
+    private final ResourceLocation pageKey;
+    private final ITurretInst      turret;
+    private final IGuiTCU     guiDelegate;
+    private final boolean     isRemote;
 
-    private float currPartTicks;
+    private float         currPartTicks;
     private GuiDefinition guiDef;
 
-    public GuiTcuContainer(String entryKey, IGuiTCU gui, Container guiContainer, ITurretInst turretInst) {
+    public GuiTcuContainer(ResourceLocation pageKey, IGuiTCU gui, Container guiContainer, ITurretInst turretInst, boolean isRemote) {
         super(guiContainer);
-        this.entryKey = entryKey;
+        this.pageKey = pageKey;
         this.turret = turretInst;
         this.guiDelegate = gui;
+
+        this.isRemote = isRemote;
 
         try {
             this.guiDef = GuiDefinition.getNewDefinition(this.guiDelegate.getGuiDefinition());
@@ -62,7 +66,9 @@ public class GuiTcuContainer
     @Override
     public void updateScreen() {
         super.updateScreen();
-        this.checkForClosing();
+
+        GuiTcuScreen.checkGuiClose(this);
+
         this.guiDelegate.updateScreen(this);
 
         this.guiDef.update(this);
@@ -173,8 +179,8 @@ public class GuiTcuContainer
     }
 
     @Override
-    public String getCurrentEntryKey() {
-        return this.entryKey;
+    public ResourceLocation getCurrentPageKey() {
+        return this.pageKey;
     }
 
     @Override
@@ -195,6 +201,16 @@ public class GuiTcuContainer
     @Override
     public int getScreenPosY() {
         return this.guiTop;
+    }
+
+    @Override
+    public boolean isRemote() {
+        return this.isRemote;
+    }
+
+    @Override
+    public boolean canRemoteTransfer() {
+        return this.turret.getUpgradeProcessor().canAccessRemotely();
     }
 
     @Override

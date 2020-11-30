@@ -26,7 +26,7 @@ public interface IGuiTCU
      *
      * @return A container to be used or <tt>null</tt>, if this is not a container GUI.
      */
-    default Container getContainer(EntityPlayer player, ITurretInst turretInst) { return null; }
+    default Container getContainer(EntityPlayer player, ITurretInst turretInst, boolean isRemote) { return null; }
 
     /**
      * <p>Initializes this page upon opening the GUI or when changing resolution.</p>

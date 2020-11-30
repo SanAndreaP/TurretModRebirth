@@ -11,6 +11,7 @@ import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -21,11 +22,17 @@ import java.util.function.Supplier;
 
 public interface IGuiTcuRegistry
 {
-    void registerGuiEntry(String key, int position, @Nullable BiFunction<EntityPlayer, ITurretInst, Container> containerFactory);
+    void registerPage(ResourceLocation key, int position, @Nullable ContainerFactory containerFactory);
 
     @SideOnly(Side.CLIENT)
-    void registerGui(String key, ItemStack icon, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc);
+    void registerPageGUI(ResourceLocation key, ItemStack icon, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc);
 
     @SideOnly(Side.CLIENT)
-    void registerGui(String key, Supplier<ItemStack> iconSupplier, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc);
+    void registerPageGUI(ResourceLocation key, Supplier<ItemStack> iconSupplier, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc);
+
+    @FunctionalInterface
+    interface ContainerFactory
+    {
+        Container get(EntityPlayer player, ITurretInst turretInst, boolean isRemote);
+    }
 }

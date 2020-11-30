@@ -18,7 +18,7 @@
         },
         "textXP": {
           "offset": [81, 4],
-          "text": "gui.sapturretmod.tcu.page.leveling.xp",
+          "text": "gui.sapturretmod.tcu.page.sapturretmod:leveling.xp",
           "color": {
             "default": "0xFF80FF20",
             "stroke": "0xFF000000"
@@ -39,7 +39,7 @@
       "type": "text",
       "pos": [7, 63],
       "data": {
-        "text": "gui.sapturretmod.tcu.page.leveling.modifier",
+        "text": "gui.sapturretmod.tcu.page.sapturretmod:leveling.modifier",
         "color": "0xFF404040"
       }
     },
@@ -64,7 +64,7 @@
             "color": "0xFFFFFFFF"
           },
           "modifierValue": {
-            "text": "gui.sapturretmod.tcu.page.leveling.modValue",
+            "text": "gui.sapturretmod.tcu.page.sapturretmod:leveling.modValue",
             "color": "0xFFFFFFFF"
           }
         }
@@ -89,7 +89,7 @@
       "pos": [79, 190],
       "data": {
         "size": [18, 18],
-        "text": "gui.sapturretmod.tcu.page.leveling.retrieve"
+        "text": "gui.sapturretmod.tcu.page.sapturretmod:leveling.retrieve"
       }
     }
   ]

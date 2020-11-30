@@ -25,12 +25,12 @@ public enum EnumEffect
 
     public static final EnumEffect[] VALUES = values();
 
-    public void addEffect(boolean remote, int dimension, double x, double y, double z) {
-        this.addEffect(remote, dimension, x, y, z, null);
+    public void addEffect(boolean isRemote, int dimension, double x, double y, double z) {
+        this.addEffect(isRemote, dimension, x, y, z, null);
     }
 
-    public void addEffect(boolean remote, int dimension, double x, double y, double z, Tuple data) {
-        if( remote ) {
+    public void addEffect(boolean isRemote, int dimension, double x, double y, double z, Tuple data) {
+        if( isRemote ) {
             TurretModRebirth.proxy.addEffect(this, x, y, z, data);
         } else {
             PacketRegistry.sendToAllAround(new PacketEffect(this, x, y, z, data), dimension, x, y, z, 64.0D);

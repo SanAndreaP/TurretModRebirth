@@ -46,11 +46,11 @@ public class ComponentAmmoStatProcessor
 
         switch( s ) {
             case "from": {
-                return TmrUtils.getNumberFormat(1, true, langCode).format(min);
+                return TmrUtils.getNumberFormat(1, true, langCode).format(min / 2F);
             }
             case "to": {
                 if( min < max - 0.01F ) {
-                    return TmrUtils.getNumberFormat(1, true, langCode).format(max);
+                    return TmrUtils.getNumberFormat(1, true, langCode).format(max / 2F);
                 }
                 break;
             }

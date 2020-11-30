@@ -8,7 +8,7 @@
       "data": {
         "size": [162, 30],
         "title": {
-          "text": "gui.sapturretmod.tcu.page.targets.smart.turret"
+          "text": "gui.sapturretmod.tcu.page.sapturretmod:targets.smart.turret"
         }
       }
     },
@@ -18,7 +18,7 @@
       "data": {
         "size": [162, 30],
         "title": {
-          "text": "gui.sapturretmod.tcu.page.targets.smart.tamed"
+          "text": "gui.sapturretmod.tcu.page.sapturretmod:targets.smart.tamed"
         }
       }
     },
@@ -28,7 +28,7 @@
       "data": {
         "size": [162, 30],
         "title": {
-          "text": "gui.sapturretmod.tcu.page.targets.smart.age"
+          "text": "gui.sapturretmod.tcu.page.sapturretmod:targets.smart.age"
         }
       }
     },
@@ -38,7 +38,7 @@
       "data": {
         "size": [162, 30],
         "title": {
-          "text": "gui.sapturretmod.tcu.page.targets.smart.count"
+          "text": "gui.sapturretmod.tcu.page.sapturretmod:targets.smart.count"
         }
       }
     },

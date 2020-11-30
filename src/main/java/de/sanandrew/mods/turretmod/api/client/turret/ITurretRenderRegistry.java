@@ -19,4 +19,6 @@ public interface ITurretRenderRegistry<E extends EntityLiving & ITurretInst>
     void addUpgradeLayer(List<LayerRenderer<E>> layerList);
 
     <T extends ModelBase> void addGlowLayer(List<LayerRenderer<E>> layerList, ITurretRender<T, E> render);
+
+    void addCustomLayer(ITurret turret, LayerRenderer<E> layer);
 }

@@ -6,12 +6,14 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.registry.turret;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.client.event.OpenTcuGuiEvent;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.event.OpenTcuContainerEvent;
 import de.sanandrew.mods.turretmod.api.turret.IGuiTcuRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuContainer;
 import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuScreen;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TargetType;
@@ -34,6 +36,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -46,43 +49,43 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public final class GuiTcuRegistry
         implements IGuiTcuRegistry
 {
-    private static final String GUI_INFO           = "info";
-    private static final String GUI_TARGETS_MOB    = "targets.creature";
-    private static final String GUI_TARGETS_PLAYER = "targets.player";
-    private static final String GUI_TARGETS_SMART  = "targets.smart";
-    private static final String GUI_UPGRADES       = "upgrades";
-    private static final String GUI_COLORIZER      = "colorizer";
-    private static final String GUI_LEVELING       = "leveling";
+    public static final ResourceLocation INFO           = new ResourceLocation(TmrConstants.ID, "info");
+    public static final ResourceLocation TARGETS_MOB    = new ResourceLocation(TmrConstants.ID, "targets.creature");
+    public static final ResourceLocation TARGETS_PLAYER = new ResourceLocation(TmrConstants.ID, "targets.player");
+    public static final ResourceLocation TARGETS_SMART  = new ResourceLocation(TmrConstants.ID, "targets.smart");
+    public static final ResourceLocation UPGRADES       = new ResourceLocation(TmrConstants.ID, "upgrades");
+    public static final ResourceLocation COLORIZER      = new ResourceLocation(TmrConstants.ID, "colorizer");
+    public static final ResourceLocation LEVELING       = new ResourceLocation(TmrConstants.ID, "leveling");
 
-    public static final List<String>   GUI_ENTRIES = new ArrayList<>();
-    public static final GuiTcuRegistry INSTANCE = new GuiTcuRegistry();
+    public static final List<ResourceLocation> PAGE_KEYS = new ArrayList<>();
+    public static final GuiTcuRegistry         INSTANCE  = new GuiTcuRegistry();
 
     @SideOnly(Side.CLIENT)
-    private static Map<String, GuiEntry> guis;
-    private static Map<String, BiFunction<EntityPlayer, ITurretInst, Container>> containers;
+    private static Map<ResourceLocation, Page>             pages;
+    private static Map<ResourceLocation, ContainerFactory> containers;
 
     private GuiTcuRegistry() { }
 
     @SideOnly(Side.CLIENT)
-    public Gui openGUI(int type, EntityPlayer player, ITurretInst turretInst) {
-        if( type >= 0 && type < GUI_ENTRIES.size() ) {
-            GuiEntry entry = getGuiEntry(GUI_ENTRIES.get(type));
-            if( entry != null ) {
-                OpenTcuGuiEvent event = new OpenTcuGuiEvent(player, turretInst, entry.factory);
+    public Gui openGUI(int type, EntityPlayer player, ITurretInst turretInst, boolean isRemote) {
+        if( type >= 0 && type < PAGE_KEYS.size() ) {
+            Page page = getPage(PAGE_KEYS.get(type));
+            if( page != null ) {
+                OpenTcuGuiEvent event = new OpenTcuGuiEvent(player, turretInst, page.factory);
                 if( !MinecraftForge.EVENT_BUS.post(event) ) {
-                    IGuiTCU guiDelegate = event.factory.get();
-                    Container cnt = guiDelegate.getContainer(player, turretInst);
+                    IGuiTCU   guiDelegate = event.factory.get();
+                    Container cnt         = guiDelegate.getContainer(player, turretInst, isRemote);
+
                     if( cnt != null ) {
-                        return new GuiTcuContainer(GUI_ENTRIES.get(type), guiDelegate, cnt, turretInst);
+                        return new GuiTcuContainer(PAGE_KEYS.get(type), guiDelegate, cnt, turretInst, isRemote);
                     } else {
-                        return new GuiTcuScreen(GUI_ENTRIES.get(type), guiDelegate, turretInst);
+                        return new GuiTcuScreen(PAGE_KEYS.get(type), guiDelegate, turretInst, isRemote);
                     }
                 }
             }
@@ -91,17 +94,17 @@ public final class GuiTcuRegistry
         return null;
     }
 
-    public GuiEntry getGuiEntry(String location) {
-        return guis.get(location);
+    public Page getPage(ResourceLocation location) {
+        return pages.get(location);
     }
 
-    public Container openContainer(int type, EntityPlayer player, ITurretInst turretInst) {
-        if( type >= 0 && type < GUI_ENTRIES.size() ) {
-            String key = GUI_ENTRIES.get(type);
+    public Container openContainer(int type, EntityPlayer player, ITurretInst turretInst, boolean isRemote) {
+        if( type >= 0 && type < PAGE_KEYS.size() ) {
+            ResourceLocation      key   = PAGE_KEYS.get(type);
             OpenTcuContainerEvent event = new OpenTcuContainerEvent(player, turretInst, containers.get(key));
             if( !MinecraftForge.EVENT_BUS.post(event) ) {
                 if( event.factory != null ) {
-                    return event.factory.apply(player, turretInst);
+                    return event.factory.get(player, turretInst, isRemote);
                 }
             }
         }
@@ -110,15 +113,15 @@ public final class GuiTcuRegistry
     }
 
     @Override
-    public void registerGuiEntry(String key, int position, @Nullable BiFunction<EntityPlayer, ITurretInst, Container> containerFactory) {
+    public void registerPage(ResourceLocation key, int position, @Nullable ContainerFactory containerFactory) {
         if( containers == null ) {
             containers = new HashMap<>();
         }
 
-        if( position >= GUI_ENTRIES.size() ) {
-            GUI_ENTRIES.add(key);
+        if( position >= PAGE_KEYS.size() ) {
+            PAGE_KEYS.add(key);
         } else {
-            GUI_ENTRIES.set(position, key);
+            PAGE_KEYS.set(position, key);
         }
 
         containers.put(key, containerFactory);
@@ -126,43 +129,43 @@ public final class GuiTcuRegistry
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void registerGui(String key, ItemStack icon, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc) {
-        if( guis == null ) {
-            guis = new HashMap<>();
+    public void registerPageGUI(ResourceLocation key, ItemStack icon, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc) {
+        if( pages == null ) {
+            pages = new HashMap<>();
         }
 
-        guis.put(key, new GuiEntry(() -> icon, factory, canShowTabFunc));
+        pages.put(key, new Page(() -> icon, factory, canShowTabFunc));
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void registerGui(String key, Supplier<ItemStack> iconSupplier, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc) {
-        if( guis == null ) {
-            guis = new HashMap<>();
+    public void registerPageGUI(ResourceLocation key, Supplier<ItemStack> iconSupplier, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc) {
+        if( pages == null ) {
+            pages = new HashMap<>();
         }
 
-        guis.put(key, new GuiEntry(iconSupplier, factory, canShowTabFunc));
+        pages.put(key, new Page(iconSupplier, factory, canShowTabFunc));
     }
 
-    public static void initializeEntries(IGuiTcuRegistry registry) {
-        registry.registerGuiEntry(GUI_INFO, 0, null);
-        registry.registerGuiEntry(GUI_TARGETS_MOB, 1, null);
-        registry.registerGuiEntry(GUI_TARGETS_PLAYER, 2, null);
-        registry.registerGuiEntry(GUI_TARGETS_SMART, 3, null);
-        registry.registerGuiEntry(GUI_UPGRADES, 4, (player, turretInst) -> new ContainerTurretUpgrades(player.inventory, (UpgradeProcessor) turretInst.getUpgradeProcessor()));
-        registry.registerGuiEntry(GUI_COLORIZER, 5, null);
-        registry.registerGuiEntry(GUI_LEVELING, 6, null);
+    public static void initializePages(IGuiTcuRegistry registry) {
+        registry.registerPage(INFO,           0, null);
+        registry.registerPage(TARGETS_MOB,    1, null);
+        registry.registerPage(TARGETS_PLAYER, 2, null);
+        registry.registerPage(TARGETS_SMART,  3, null);
+        registry.registerPage(UPGRADES,       4, (player, turretInst, isRemote) -> new ContainerTurretUpgrades(player.inventory, (UpgradeProcessor) turretInst.getUpgradeProcessor(), isRemote));
+        registry.registerPage(COLORIZER,      5, null);
+        registry.registerPage(LEVELING,       6, null);
     }
 
     @SideOnly(Side.CLIENT)
-    public static void initializeGuis(IGuiTcuRegistry registry) {
-        registry.registerGui(GUI_INFO, new ItemStack(Items.BOOK), GuiInfo::new, null);
-        registry.registerGui(GUI_TARGETS_MOB, new ItemStack(Items.SKULL, 1, 2), () -> new GuiTargets(TargetType.CREATURE), IGuiTcuInst::hasPermision);
-        registry.registerGui(GUI_TARGETS_PLAYER, PlayerHeads::getRandomSkull, () -> new GuiTargets(TargetType.PLAYER), IGuiTcuInst::hasPermision);
-        registry.registerGui(GUI_TARGETS_SMART, UpgradeRegistry.INSTANCE.getItem(Upgrades.SMART_TGT.getId()), GuiSmartTargets::new, GuiSmartTargets::showTab);
-        registry.registerGui(GUI_UPGRADES, UpgradeRegistry.INSTANCE.getItem(UpgradeRegistry.EMPTY_UPGRADE.getId()), GuiUpgrades::new, IGuiTcuInst::hasPermision);
-        registry.registerGui(GUI_COLORIZER, UpgradeRegistry.INSTANCE.getItem(Upgrades.SHIELD_COLORIZER.getId()), GuiShieldColorizer::new, GuiShieldColorizer::showTab);
-        registry.registerGui(GuiTcuRegistry.GUI_LEVELING, UpgradeRegistry.INSTANCE.getItem(Upgrades.LEVELING.getId()), GuiLevels::new, GuiLevels::showTab);
+    public static void initializePagesClient(IGuiTcuRegistry registry) {
+        registry.registerPageGUI(INFO,           new ItemStack(Items.BOOK),                     GuiInfo::new,                              null);
+        registry.registerPageGUI(TARGETS_MOB,    new ItemStack(Items.SKULL, 1, 2),              () -> new GuiTargets(TargetType.CREATURE), IGuiTcuInst::hasPermision);
+        registry.registerPageGUI(TARGETS_PLAYER, PlayerHeads::getRandomSkull,                   () -> new GuiTargets(TargetType.PLAYER),   IGuiTcuInst::hasPermision);
+        registry.registerPageGUI(TARGETS_SMART,  getUpgradeItem(Upgrades.SMART_TGT),            GuiSmartTargets::new,                      GuiSmartTargets::showTab);
+        registry.registerPageGUI(UPGRADES,       getUpgradeItem(UpgradeRegistry.EMPTY_UPGRADE), GuiUpgrades::new,                          IGuiTcuInst::hasPermision);
+        registry.registerPageGUI(COLORIZER,      getUpgradeItem(Upgrades.SHIELD_COLORIZER),     GuiShieldColorizer::new,                   GuiShieldColorizer::showTab);
+        registry.registerPageGUI(LEVELING,       getUpgradeItem(Upgrades.LEVELING),             GuiLevels::new,                            GuiLevels::showTab);
     }
 
     @SubscribeEvent
@@ -179,14 +182,18 @@ public final class GuiTcuRegistry
         }
     }
 
+    private static ItemStack getUpgradeItem(IUpgrade upgrade) {
+        return UpgradeRegistry.INSTANCE.getItem(upgrade.getId());
+    }
+
     @SideOnly(Side.CLIENT)
-    public static final class GuiEntry
+    public static final class Page
     {
         private final Supplier<ItemStack>               icon;
         private final Function<IGuiTcuInst<?>, Boolean> canShowTabFunc;
         private final Supplier<IGuiTCU>                 factory;
 
-        private GuiEntry(Supplier<ItemStack> icon, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc) {
+        private Page(Supplier<ItemStack> icon, Supplier<IGuiTCU> factory, Function<IGuiTcuInst<?>, Boolean> canShowTabFunc) {
             this.icon = icon;
             this.factory = factory;
             this.canShowTabFunc = canShowTabFunc;
@@ -200,4 +207,5 @@ public final class GuiTcuRegistry
             return this.icon.get();
         }
     }
+
 }

@@ -5,14 +5,6 @@
   "ticksProcessing": 600,
   "ingredients": [
     {
-      "count": 2,
-      "items": [
-        {
-          "item": "minecraft:leather"
-        }
-      ]
-    },
-    {
       "count": 1,
       "showTooltipText": true,
       "items": [
@@ -29,13 +21,13 @@
       "count": 1,
       "items": [
         {
-          "item": "sapturretmod:repair_kit_standard_2"
+          "item": "sapturretmod:repair_kit_standard_3"
         }
       ]
     }
   ],
   "result": {
-    "item": "sapturretmod:repair_kit_standard_3",
+    "item": "sapturretmod:repair_kit_standard_4",
     "count": 1
   }
 }

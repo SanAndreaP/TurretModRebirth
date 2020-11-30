@@ -25,25 +25,25 @@ public class PageNavigation
 {
     public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu.page_nav");
 
-    private final Map<GuiElementInst, String> pages = new TreeMap<>(new ComparatorTabButton());
+    private final Map<GuiElementInst, ResourceLocation> pages = new TreeMap<>(new ComparatorTabButton());
 
     private GuiElementInst tabScrollL;
     private GuiElementInst tabScrollR;
     private int            maxTabsShown;
     private int            tabStartIdx = 0;
 
-    Map<GuiElementInst, String> shownTabs = Collections.emptyMap();
+    Map<GuiElementInst, ResourceLocation> shownTabs = Collections.emptyMap();
 
     @Override
     public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
         this.maxTabsShown = JsonUtils.getIntVal(data.get("tabsShown"), 7);
 
         int currIdx = 0;
-        for( String page : GuiTcuRegistry.GUI_ENTRIES ) {
-            GuiElementInst btn = new GuiElementInst(new ButtonNav(currIdx++, page), data.getAsJsonObject("buttonData")).initialize(gui);
+        for( ResourceLocation pageKey : GuiTcuRegistry.PAGE_KEYS ) {
+            GuiElementInst btn = new GuiElementInst(new ButtonNav(currIdx++, pageKey), data.getAsJsonObject("buttonData")).initialize(gui);
             btn.get().bakeData(gui, btn.data, btn);
 
-            this.pages.put(btn, page);
+            this.pages.put(btn, pageKey);
         }
 
         this.tabScrollL = new GuiElementInst(new ButtonTabScroll(0), data.getAsJsonObject("tabScrollLeft")).initialize(gui);
@@ -57,22 +57,22 @@ public class PageNavigation
 
     @Override
     public void update(IGui gui, JsonObject data) {
-        final IGuiTcuInst<?> guiTcuInst = (IGuiTcuInst<?>) gui;
-        final String         currEntry  = guiTcuInst.getCurrentEntryKey();
+        final IGuiTcuInst<?>   tcu = (IGuiTcuInst<?>) gui;
+        final ResourceLocation cPageKey  = tcu.getCurrentPageKey();
 
         final int tabScrollElemLWidth = this.tabScrollL.get().getWidth();
         final int tabScrollElemRWidth = this.tabScrollR.get().getWidth();
 
         int cntAvailableTabs = 0;
-        for( Map.Entry<GuiElementInst, String> entry : this.pages.entrySet() ) {
+        for( Map.Entry<GuiElementInst, ResourceLocation> entry : this.pages.entrySet() ) {
             GuiElementInst btn    = entry.getKey();
             ButtonNav      btnNav = btn.get(ButtonNav.class);
-            if( GuiTcuRegistry.INSTANCE.getGuiEntry(btnNav.page).showTab(guiTcuInst) ) {
+            if( GuiTcuRegistry.INSTANCE.getPage(btnNav.pageKey).showTab(tcu) ) {
                 cntAvailableTabs++;
 
                 if( btnNav.pageIdx >= this.tabStartIdx && btnNav.pageIdx <= this.tabStartIdx + this.maxTabsShown ) {
                     btn.setVisible(true);
-                    btnNav.setEnabled(!currEntry.equals(btnNav.page));
+                    btnNav.setEnabled(!cPageKey.equals(btnNav.pageKey));
 
                     continue;
                 }
@@ -83,7 +83,7 @@ public class PageNavigation
         this.shownTabs = this.fetchShownPageButtons();
 
         int tabWidth = this.shownTabs.keySet().stream().map(elem -> elem.get().getWidth()).reduce((e1, e2) -> e1 + e2 + 2).orElse(2);
-        int tabLeft  = (guiTcuInst.getWidth() - tabWidth - tabScrollElemLWidth - tabScrollElemRWidth - 4) / 2;
+        int tabLeft  = (tcu.getWidth() - tabWidth - tabScrollElemLWidth - tabScrollElemRWidth - 4) / 2;
 
         this.tabScrollL.pos[0] = tabLeft;
         this.tabScrollL.setVisible(this.tabStartIdx > 0);
@@ -91,12 +91,12 @@ public class PageNavigation
         this.tabScrollR.setVisible(this.tabStartIdx < cntAvailableTabs - shownTabs.size());
 
         int shownId = 0;
-        for( Map.Entry<GuiElementInst, String> entry : this.shownTabs.entrySet() ) {
-            entry.getKey().pos[0] = tabLeft + tabScrollElemLWidth + 2 + shownId++ * 18;
+        for( Map.Entry<GuiElementInst, ResourceLocation> tab : this.shownTabs.entrySet() ) {
+            tab.getKey().pos[0] = tabLeft + tabScrollElemLWidth + 2 + shownId++ * 18;
         }
     }
 
-    private Map<GuiElementInst, String> fetchShownPageButtons() {
+    private Map<GuiElementInst, ResourceLocation> fetchShownPageButtons() {
         return this.pages.entrySet().stream()
                          .filter(e -> e.getKey().isVisible())
                          .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (u, v) -> u, () -> new TreeMap<>(new ComparatorTabButton())));
@@ -111,7 +111,7 @@ public class PageNavigation
 
     @Override
     public boolean mouseClicked(IGui gui, int mouseX, int mouseY, int mouseButton) throws IOException {
-        for( Map.Entry<GuiElementInst, String> e : this.shownTabs.entrySet() ) {
+        for( Map.Entry<GuiElementInst, ResourceLocation> e : this.shownTabs.entrySet() ) {
             if( e.getKey().get().mouseClicked(gui, mouseX, mouseY, mouseButton) ) {
                 return true;
             }

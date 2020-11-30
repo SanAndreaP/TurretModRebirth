@@ -14,6 +14,7 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 public final class Lang
 {
     public static final TranslateKey TCU_PAGE_TITLE              = new TranslateKey("gui.%s.tcu.page.%%s.title", TmrConstants.ID);
+    public static final TranslateKey TCU_PAGE_ELEMENT            = new TranslateKey("gui.%s.tcu.page.%%s.%%s", TmrConstants.ID);
     public static final TranslateKey TCU_LABEL_HEALTH            = new TranslateKey("gui.%s.tcu.label.health", TmrConstants.ID);
     public static final TranslateKey TCU_LABEL_AMMO              = new TranslateKey("gui.%s.tcu.label.ammo", TmrConstants.ID);
     public static final TranslateKey TCU_LABEL_TARGET            = new TranslateKey("gui.%s.tcu.label.target", TmrConstants.ID);

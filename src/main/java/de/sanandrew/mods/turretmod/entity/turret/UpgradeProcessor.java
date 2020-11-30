@@ -388,4 +388,10 @@ public final class UpgradeProcessor
             this.firstSynchronize.offerLast(upg);
         }
     }
+
+    //TODO: add upgrade for this
+    @Override
+    public boolean canAccessRemotely() {
+        return false;
+    }
 }

@@ -55,7 +55,7 @@
     },
     {
       "type": "tooltip",
-      "tooltip": ["#damage_tip1", "&7#damage_tip2#"],
+      "tooltip": ["#damage_tip"],
       "x": 0,       "y": 121,
       "width": 100, "height": 9
     },
