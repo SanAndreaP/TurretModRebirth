@@ -82,7 +82,7 @@ public class ContainerElectrolyteGenerator
     @Override
     @Nonnull
     public ItemStack transferStackInSlot(EntityPlayer player, int slotId) {
-        ItemStack origStack = ItemStackUtils.getEmpty();
+        ItemStack origStack = ItemStack.EMPTY;
         Slot slot = this.inventorySlots.get(slotId);
 
         if( slot != null && slot.getHasStack() ) {
@@ -91,13 +91,13 @@ public class ContainerElectrolyteGenerator
 
             if( slotId < 23 ) { // if clicked stack is from TileEntity
                 if( !this.mergeItemStack(slotStack, 22, 58, true) ) {
-                    return ItemStackUtils.getEmpty();
+                    return ItemStack.EMPTY;
                 }
             } else if( !this.mergeItemStackInput(slotStack) ) { // if clicked stack is from player and also merge to input slots is sucessful
-                return ItemStackUtils.getEmpty();
+                return ItemStack.EMPTY;
             }
 
-            if (TmrUtils.finishTransfer(player, origStack, slot, slotStack)) return ItemStackUtils.getEmpty();
+            if (TmrUtils.finishTransfer(player, origStack, slot, slotStack)) return ItemStack.EMPTY;
         }
 
         return origStack;
@@ -130,7 +130,7 @@ public class ContainerElectrolyteGenerator
         @Nonnull
         public ItemStack getStack() {
             ElectrolyteProcess proc = this.generator.processes[this.index];
-            return proc == null ? ItemStackUtils.getEmpty() : proc.processStack;
+            return proc == null ? ItemStack.EMPTY : proc.processStack;
         }
 
         @Override
@@ -147,7 +147,7 @@ public class ContainerElectrolyteGenerator
         @Override
         @Nonnull
         public ItemStack decrStackSize(int amount) {
-            return ItemStackUtils.getEmpty();
+            return ItemStack.EMPTY;
         }
 
         @Override

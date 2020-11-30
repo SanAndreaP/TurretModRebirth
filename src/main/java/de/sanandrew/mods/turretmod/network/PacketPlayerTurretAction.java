@@ -84,7 +84,7 @@ public class PacketPlayerTurretAction
                 if( turretInst.dismantle() != null ) {
                     crateStack.shrink(1);
                     if( crateStack.getCount() < 1 ) {
-                        player.inventory.setInventorySlotContents(crateItm.getValue(0), ItemStackUtils.getEmpty());
+                        player.inventory.setInventorySlotContents(crateItm.getValue(0), ItemStack.EMPTY);
                     } else {
                         player.inventory.setInventorySlotContents(crateItm.getValue(0), crateStack.copy());
                     }

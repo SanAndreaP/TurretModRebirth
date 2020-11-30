@@ -377,21 +377,27 @@ public class EntityTurret
                 stack.shrink(1);
                 this.onInteractSucceed(stack, player);
                 return true;
-            } else {
-                IRepairKit repKit = RepairKitRegistry.INSTANCE.getObject(stack);
-
-                if( repKit.isApplicable(this) ) {
-                    this.heal(repKit.getHealAmount());
-                    repKit.onHeal(this);
-                    stack.shrink(1);
-                    this.onInteractSucceed(stack, player);
-
-                    return true;
-                }
+            } else if( this.applyRepairKit(stack) ) {
+                stack.shrink(1);
+                this.onInteractSucceed(stack, player);
             }
         }
 
         return super.processInteract(player, hand);
+    }
+
+    @Override
+    public boolean applyRepairKit(ItemStack stack) {
+        IRepairKit repKit = RepairKitRegistry.INSTANCE.getObject(stack);
+
+        if( repKit.isApplicable(this) ) {
+            this.heal(repKit.getHealAmount());
+            repKit.onHeal(this);
+
+            return true;
+        }
+
+        return false;
     }
 
     @Override

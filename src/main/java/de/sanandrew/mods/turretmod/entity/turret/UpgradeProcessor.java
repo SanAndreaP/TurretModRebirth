@@ -41,14 +41,14 @@ public final class UpgradeProcessor
         implements IUpgradeProcessor
 {
     @Nonnull
-    private final NonNullList<ItemStack> upgradeStacks = NonNullList.withSize(36, ItemStackUtils.getEmpty());
+    private final NonNullList<ItemStack> upgradeStacks = NonNullList.withSize(36, ItemStack.EMPTY);
     private final Map<ResourceLocation, IUpgradeInstance<?>> upgInstances = new ConcurrentHashMap<>();
     private final Map<ResourceLocation, IUpgradeInstance<?>> upgTickable = new ConcurrentHashMap<>();
 
     private boolean hasChanged = false;
     private final ITurretInst turret;
 
-    private Deque<IUpgrade> firstSynchronize = new ConcurrentLinkedDeque<>();
+    private final Deque<IUpgrade> firstSynchronize = new ConcurrentLinkedDeque<>();
 
     UpgradeProcessor(ITurretInst turret) {
         this.turret = turret;
@@ -104,7 +104,7 @@ public final class UpgradeProcessor
             }
             upg = upg != null ? upg : UpgradeRegistry.INSTANCE.getObject(stack);
             upg.terminate(this.turret, stack);
-            this.upgradeStacks.set(slot, ItemStackUtils.getEmpty());
+            this.upgradeStacks.set(slot, ItemStack.EMPTY);
         }
     }
 
@@ -152,7 +152,7 @@ public final class UpgradeProcessor
     @Override
     @Nonnull
     public ItemStack getStackInSlot(int slot) {
-        return slot >= 0 && slot < this.upgradeStacks.size() ? this.upgradeStacks.get(slot) : ItemStackUtils.getEmpty();
+        return slot >= 0 && slot < this.upgradeStacks.size() ? this.upgradeStacks.get(slot) : ItemStack.EMPTY;
     }
 
     @Override
@@ -167,12 +167,12 @@ public final class UpgradeProcessor
                 upg.terminate(this.turret, slotStack);
 
                 itemstack = slotStack;
-                this.upgradeStacks.set(slot, ItemStackUtils.getEmpty());
+                this.upgradeStacks.set(slot, ItemStack.EMPTY);
             } else {
                 itemstack = slotStack.splitStack(amount);
 
                 if( slotStack.getCount() == 0 ) {
-                    this.upgradeStacks.set(slot, ItemStackUtils.getEmpty());
+                    this.upgradeStacks.set(slot, ItemStack.EMPTY);
                 }
             }
 
@@ -180,7 +180,7 @@ public final class UpgradeProcessor
 
             return itemstack;
         } else {
-            return ItemStackUtils.getEmpty();
+            return ItemStack.EMPTY;
         }
     }
 
@@ -189,10 +189,10 @@ public final class UpgradeProcessor
     public ItemStack removeStackFromSlot(int slot) {
         if( ItemStackUtils.isValid(this.upgradeStacks.get(slot)) ) {
             ItemStack itemstack = this.upgradeStacks.get(slot);
-            this.upgradeStacks.set(slot, ItemStackUtils.getEmpty());
+            this.upgradeStacks.set(slot, ItemStack.EMPTY);
             return itemstack;
         } else {
-            return ItemStackUtils.getEmpty();
+            return ItemStack.EMPTY;
         }
     }
 
@@ -389,9 +389,8 @@ public final class UpgradeProcessor
         }
     }
 
-    //TODO: add upgrade for this
     @Override
     public boolean canAccessRemotely() {
-        return false;
+        return this.hasUpgrade(Upgrades.REMOTE_ACCESS);
     }
 }

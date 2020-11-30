@@ -1,0 +1,31 @@
+{
+  "parent": "sapturretmod:guis/tcu/tcu.json",
+  "texture": "sapturretmod:textures/gui/tcu/page_remote_access.png",
+  "backgroundElements": [
+    {
+      "type": "text",
+      "pos": [8, 113],
+      "data": {
+        "color": "0xFF404040",
+        "text": "container.inventory"
+      }
+    },
+    {
+      "type": "text",
+      "pos": [46, 63],
+      "data": {
+        "color": "0xFF404040",
+        "text": "gui.sapturretmod.tcu.page.sapturretmod:remote_access.ammo"
+      }
+    },
+    {
+      "type": "text",
+      "pos": [46, 99],
+      "data": {
+        "color": "0xFF404040",
+        "text": "gui.sapturretmod.tcu.page.sapturretmod:remote_access.repair_kit"
+      }
+    }
+  ],
+  "foregroundElements": []
+}

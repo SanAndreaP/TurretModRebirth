@@ -66,7 +66,7 @@ public class ContainerTurretCrate
     @Override
     @Nonnull
     public ItemStack transferStackInSlot(EntityPlayer player, int slotId) {
-        ItemStack origStack = ItemStackUtils.getEmpty();
+        ItemStack origStack = ItemStack.EMPTY;
         Slot slot = this.inventorySlots.get(slotId);
 
         if( slot != null && slot.getHasStack() ) {
@@ -75,18 +75,18 @@ public class ContainerTurretCrate
 
             if( slotId < TurretCrateInventory.SLOT_AMMO ) { // if clicked stack is from TileEntity
                 if( !super.mergeItemStack(slotStack, TurretCrateInventory.SLOT_AMMO + 1, TurretCrateInventory.SLOT_AMMO + 1 + 36, true) ) { // merge into player inventory
-                    return ItemStackUtils.getEmpty();
+                    return ItemStack.EMPTY;
                 }
             } else if( slotId == TurretCrateInventory.SLOT_AMMO ) {// if clicked stack is from ammo slot
                 if( !ItemAmmoCartridge.putAmmoInPlayerCartridge(slotStack, player)
                     && !super.mergeItemStack(slotStack, TurretCrateInventory.SLOT_AMMO + 1, TurretCrateInventory.SLOT_AMMO + 1 + 36, true) )
                 {
-                    return ItemStackUtils.getEmpty();
+                    return ItemStack.EMPTY;
                 }
             }
 
             if( TmrUtils.finishTransfer(player, origStack, slot, slotStack) ) {
-                return ItemStackUtils.getEmpty();
+                return ItemStack.EMPTY;
             }
         }
 

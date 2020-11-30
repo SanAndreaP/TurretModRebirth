@@ -75,6 +75,7 @@ public enum Resources
     GUI_STRUCT_TCU_UPGRADES        ("guis/tcu/upgrades.json"),
     GUI_STRUCT_TCU_COLORIZER       ("guis/tcu/colorizer.json"),
     GUI_STRUCT_TCU_LEVELS          ("guis/tcu/levels.json"),
+    GUI_STRUCT_TCU_REMOTE_ACCESS   ("guis/tcu/remote_access.json"),
 
     PATCHOULI("turret_lexicon"),
     PATCHOULI_CAT_AMMO("ammo"),

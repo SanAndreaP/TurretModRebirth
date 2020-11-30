@@ -1,0 +1,27 @@
+{
+  "name": "Remote Access",
+  "icon": "sapturretmod:upgrade_remote_access",
+  "category": "sapturretmod:upgrades",
+  "pages": [
+    {
+      "type": "sapturretmod:spotlight_multi",
+      "title": "Remote Access",
+      "item": "sapturretmod:upgrade_remote_access",
+      "text": "This upgrade allows you to manipulate the turret via items over a greater distance. When you are further away and want to transfer ammo or repair kits, a new TCU tab is added just for this, since the info tab does not allow you to access your inventory."
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:upgrades/remote_access"
+    },
+    {
+      "type": "image",
+      "title": "TCU Tab",
+      "images": ["sapturretmod:textures/gui/lexicon/tcu/tab_remote_access.png"],
+      "text": "To configure this upgrade, the TCU is provided with an additional tab."
+    },
+    {
+      "type": "text",
+      "text": "There are two named slots, one for ammo and one for repair kits. The ammo slot will allow you to use the $(l:ammo/cartridge)ammo cartridge$(/l), which will only consume its contents. As for different types of compatible ammo, this will behave the same way as if you'd give the ammo directly to the turret via right-clicking it."
+    }
+  ]
+}

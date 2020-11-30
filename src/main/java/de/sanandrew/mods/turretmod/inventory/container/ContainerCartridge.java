@@ -50,7 +50,7 @@ public class ContainerCartridge
     @Override
     @Nonnull
     public ItemStack transferStackInSlot(EntityPlayer player, int slotId) {
-        ItemStack origStack = ItemStackUtils.getEmpty();
+        ItemStack origStack = ItemStack.EMPTY;
         Slot slot = this.inventorySlots.get(slotId);
 
         if( slot != null && slot.getHasStack() ) {
@@ -59,14 +59,14 @@ public class ContainerCartridge
 
             if( slotId < 27 ) { // if clicked stack is from TileEntity
                 if( !super.mergeItemStack(slotStack, 27, 63, true) ) {
-                    return ItemStackUtils.getEmpty();
+                    return ItemStack.EMPTY;
                 }
             } else if( !this.mergeItemStack(slotStack, 0, 27, false) ) { // if clicked stack is from player and also merge to input slots is sucessful
-                return ItemStackUtils.getEmpty();
+                return ItemStack.EMPTY;
             }
 
             if( TmrUtils.finishTransfer(player, origStack, slot, slotStack) ) {
-                return ItemStackUtils.getEmpty();
+                return ItemStack.EMPTY;
             }
         }
 

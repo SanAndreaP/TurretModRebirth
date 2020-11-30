@@ -22,7 +22,7 @@ public class RenderPebble<T extends Entity>
         implements IRender<T>
 {
     @Nonnull
-    private ItemStack gravelItem = ItemStackUtils.getEmpty();
+    private ItemStack gravelItem = ItemStack.EMPTY;
 
     @Override
     public void doRender(IRenderInst<T> render, T entity, double x, double y, double z, float entityYaw, float partialTicks) {

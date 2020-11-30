@@ -19,12 +19,14 @@ import de.sanandrew.mods.turretmod.client.gui.tcu.GuiTcuScreen;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TargetType;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiInfo;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiLevels;
+import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiRemoteAccess;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiShieldColorizer;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiSmartTargets;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiTargets;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.GuiUpgrades;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.PlayerHeads;
 import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
+import de.sanandrew.mods.turretmod.inventory.container.ContainerTurretRemoteAccess;
 import de.sanandrew.mods.turretmod.inventory.container.ContainerTurretUpgrades;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncTcuGuis;
@@ -62,6 +64,7 @@ public final class GuiTcuRegistry
     public static final ResourceLocation UPGRADES       = new ResourceLocation(TmrConstants.ID, "upgrades");
     public static final ResourceLocation COLORIZER      = new ResourceLocation(TmrConstants.ID, "colorizer");
     public static final ResourceLocation LEVELING       = new ResourceLocation(TmrConstants.ID, "leveling");
+    public static final ResourceLocation REMOTE_ACCESS  = new ResourceLocation(TmrConstants.ID, "remote_access");
 
     public static final List<ResourceLocation> PAGE_KEYS = new ArrayList<>();
     public static final GuiTcuRegistry         INSTANCE  = new GuiTcuRegistry();
@@ -155,6 +158,7 @@ public final class GuiTcuRegistry
         registry.registerPage(UPGRADES,       4, (player, turretInst, isRemote) -> new ContainerTurretUpgrades(player.inventory, (UpgradeProcessor) turretInst.getUpgradeProcessor(), isRemote));
         registry.registerPage(COLORIZER,      5, null);
         registry.registerPage(LEVELING,       6, null);
+        registry.registerPage(REMOTE_ACCESS,  7, (player, turretInst, isRemote) -> new ContainerTurretRemoteAccess(player.inventory, turretInst));
     }
 
     @SideOnly(Side.CLIENT)
@@ -166,6 +170,7 @@ public final class GuiTcuRegistry
         registry.registerPageGUI(UPGRADES,       getUpgradeItem(UpgradeRegistry.EMPTY_UPGRADE), GuiUpgrades::new,                          IGuiTcuInst::hasPermision);
         registry.registerPageGUI(COLORIZER,      getUpgradeItem(Upgrades.SHIELD_COLORIZER),     GuiShieldColorizer::new,                   GuiShieldColorizer::showTab);
         registry.registerPageGUI(LEVELING,       getUpgradeItem(Upgrades.LEVELING),             GuiLevels::new,                            GuiLevels::showTab);
+        registry.registerPageGUI(REMOTE_ACCESS,  getUpgradeItem(Upgrades.REMOTE_ACCESS),        GuiRemoteAccess::new,                      GuiRemoteAccess::showTab);
     }
 
     @SubscribeEvent

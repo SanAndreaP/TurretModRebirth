@@ -30,7 +30,7 @@ public class InventoryAssemblyFilter
     @Override
     @Nonnull
     public ItemStack getStackInSlot(int slot) {
-        return slot >= 0 && slot < this.invStacks.size() ? this.invStacks.get(slot) : ItemStackUtils.getEmpty();
+        return slot >= 0 && slot < this.invStacks.size() ? this.invStacks.get(slot) : ItemStack.EMPTY;
     }
 
     @Override
@@ -41,21 +41,21 @@ public class InventoryAssemblyFilter
 
             if( this.invStacks.get(slot).getCount() <= amount ) {
                 itemstack = this.invStacks.get(slot);
-                this.invStacks.set(slot, ItemStackUtils.getEmpty());
+                this.invStacks.set(slot, ItemStack.EMPTY);
                 this.markDirty();
                 return itemstack;
             } else {
                 itemstack = this.invStacks.get(slot).splitStack(amount);
 
                 if( this.invStacks.get(slot).getCount() == 0 ) {
-                    this.invStacks.set(slot, ItemStackUtils.getEmpty());
+                    this.invStacks.set(slot, ItemStack.EMPTY);
                 }
 
                 this.markDirty();
                 return itemstack;
             }
         } else {
-            return ItemStackUtils.getEmpty();
+            return ItemStack.EMPTY;
         }
     }
 
@@ -64,10 +64,10 @@ public class InventoryAssemblyFilter
     public ItemStack removeStackFromSlot(int slot) {
         if( ItemStackUtils.isValid(this.invStacks.get(slot)) ) {
             ItemStack itemstack = this.invStacks.get(slot);
-            this.invStacks.set(slot, ItemStackUtils.getEmpty());
+            this.invStacks.set(slot, ItemStack.EMPTY);
             return itemstack;
         } else {
-            return ItemStackUtils.getEmpty();
+            return ItemStack.EMPTY;
         }
     }
 
@@ -147,6 +147,6 @@ public class InventoryAssemblyFilter
 
     @Override
     public void clear() {
-        this.invStacks.replaceAll(stack -> ItemStackUtils.getEmpty());
+        this.invStacks.replaceAll(stack -> ItemStack.EMPTY);
     }
 }

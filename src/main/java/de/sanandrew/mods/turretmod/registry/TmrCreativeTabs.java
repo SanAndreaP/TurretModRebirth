@@ -53,7 +53,7 @@ public class TmrCreativeTabs
 
     public static final CreativeTabs MISC = new CreativeTabs(TmrConstants.ID + ":misc") {
         @Nonnull
-        private ItemStack currTabIcon = ItemStackUtils.getEmpty();
+        private ItemStack currTabIcon = ItemStack.EMPTY;
 
         @Override
         @SideOnly(Side.CLIENT)

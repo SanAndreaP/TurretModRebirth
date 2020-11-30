@@ -69,7 +69,7 @@ public class ContainerTurretAssembly
     @Override
     @Nonnull
     public ItemStack transferStackInSlot(EntityPlayer player, int slotId) {
-        ItemStack origStack = ItemStackUtils.getEmpty();
+        ItemStack origStack = ItemStack.EMPTY;
         Slot slot = this.inventorySlots.get(slotId);
 
         if( slot != null && slot.getHasStack() ) {
@@ -79,30 +79,30 @@ public class ContainerTurretAssembly
             int invSize = this.inventory.getSizeInventory();
             if( slotId < invSize ) { // if clicked stack is from TileEntity
                 if( !super.mergeItemStack(slotStack, invSize, invSize + 36, true) ) {
-                    return ItemStackUtils.getEmpty();
+                    return ItemStack.EMPTY;
                 }
             } else if( origStack.getItem() == ItemRegistry.ASSEMBLY_UPG_AUTO ) {
                 if( !this.mergeItemStack(slotStack, AssemblyInventory.SLOT_UPGRADE_AUTO, AssemblyInventory.SLOT_UPGRADE_AUTO + 1, false) ) {
-                    return ItemStackUtils.getEmpty();
+                    return ItemStack.EMPTY;
                 }
             } else if( origStack.getItem() == ItemRegistry.ASSEMBLY_UPG_SPEED ) {
                 if( !this.mergeItemStack(slotStack, AssemblyInventory.SLOT_UPGRADE_SPEED, AssemblyInventory.SLOT_UPGRADE_SPEED + 1, false) ) {
-                    return ItemStackUtils.getEmpty();
+                    return ItemStack.EMPTY;
                 }
             } else if( origStack.getItem() == ItemRegistry.ASSEMBLY_UPG_FILTER ) {
                 if( !this.mergeItemStack(slotStack, AssemblyInventory.SLOT_UPGRADE_FILTER, AssemblyInventory.SLOT_UPGRADE_FILTER + 1, false) ) {
-                    return ItemStackUtils.getEmpty();
+                    return ItemStack.EMPTY;
                 }
             } else if( origStack.getItem() == ItemRegistry.ASSEMBLY_UPG_REDSTONE ) {
                 if( !this.mergeItemStack(slotStack, AssemblyInventory.SLOT_UPGRADE_REDSTONE, AssemblyInventory.SLOT_UPGRADE_REDSTONE + 1, false) ) {
-                    return ItemStackUtils.getEmpty();
+                    return ItemStack.EMPTY;
                 }
             } else if( !this.mergeItemStack(slotStack, AssemblyInventory.RESOURCE_SLOT_FIRST, invSize, false) ) { // if clicked stack is from player and also merge to input slots is sucessful
-                return ItemStackUtils.getEmpty();
+                return ItemStack.EMPTY;
             }
 
             if( TmrUtils.finishTransfer(player, origStack, slot, slotStack) ) {
-                return ItemStackUtils.getEmpty();
+                return ItemStack.EMPTY;
             }
         }
 

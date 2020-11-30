@@ -76,20 +76,20 @@ public class ContainerAssemblyFilter
             ItemStack origStack = slotStack.copy();
 
             if( slotId < 18 ) {
-                slot.putStack(ItemStackUtils.getEmpty());
+                slot.putStack(ItemStack.EMPTY);
             } else {
                 for( int i = 0; i < 18; i++ ) {
                     Slot fltSlot = this.inventorySlots.get(i);
                     if( !fltSlot.getHasStack() ) {
                         origStack.setCount(1);
                         fltSlot.putStack(origStack);
-                        return ItemStackUtils.getEmpty();
+                        return ItemStack.EMPTY;
                     }
                 }
             }
         }
 
-        return ItemStackUtils.getEmpty();
+        return ItemStack.EMPTY;
     }
 
     static class SlotFilter
@@ -101,7 +101,7 @@ public class ContainerAssemblyFilter
 
         @Override
         public boolean canTakeStack(EntityPlayer player) {
-            this.putStack(ItemStackUtils.getEmpty());
+            this.putStack(ItemStack.EMPTY);
             return false;
         }
 

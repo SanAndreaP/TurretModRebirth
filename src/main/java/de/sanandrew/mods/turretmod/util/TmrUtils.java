@@ -224,7 +224,7 @@ public class TmrUtils
 
     public static boolean finishTransfer(EntityPlayer player, ItemStack origStack, Slot slot, ItemStack slotStack) {
         if( slotStack.getCount() == 0 ) { // if stackSize of slot got to 0
-            slot.putStack(ItemStackUtils.getEmpty());
+            slot.putStack(ItemStack.EMPTY);
         } else { // update changed slot stack state
             slot.onSlotChanged();
         }

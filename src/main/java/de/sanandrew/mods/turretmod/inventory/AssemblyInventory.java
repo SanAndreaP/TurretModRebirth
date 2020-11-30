@@ -42,7 +42,7 @@ public class AssemblyInventory
     public static final int SLOT_UPGRADE_FILTER = 4;
     public static final int SLOT_UPGRADE_REDSTONE = 5;
 
-    private final NonNullList<ItemStack> assemblyStacks = NonNullList.withSize(24, ItemStackUtils.getEmpty());
+    private final NonNullList<ItemStack> assemblyStacks = NonNullList.withSize(24, ItemStack.EMPTY);
 
     private static final int[] SLOTS_INSERT = new int[RESOURCE_SLOTS];
     private static final int[] SLOTS_EXTRACT =  new int[] {SLOT_OUTPUT, SLOT_OUTPUT_CARTRIDGE};
@@ -209,7 +209,7 @@ public class AssemblyInventory
 
             if( stack.getCount() <= size ) {
                 itemstack = stack;
-                this.assemblyStacks.set(slot, ItemStackUtils.getEmpty());
+                this.assemblyStacks.set(slot, ItemStack.EMPTY);
 
                 this.updateTile(slot);
 
@@ -218,7 +218,7 @@ public class AssemblyInventory
                 itemstack = stack.splitStack(size);
 
                 if( stack.getCount() == 0 ) {
-                    this.assemblyStacks.set(slot, ItemStackUtils.getEmpty());
+                    this.assemblyStacks.set(slot, ItemStack.EMPTY);
                 }
 
                 this.updateTile(slot);
@@ -235,13 +235,13 @@ public class AssemblyInventory
     public ItemStack removeStackFromSlot(int slot) {
         if( ItemStackUtils.isValid(this.assemblyStacks.get(slot)) ) {
             ItemStack itemstack = this.assemblyStacks.get(slot);
-            this.assemblyStacks.set(slot, ItemStackUtils.getEmpty());
+            this.assemblyStacks.set(slot, ItemStack.EMPTY);
 
             this.updateTile(slot);
 
             return itemstack;
         } else {
-            return ItemStackUtils.getEmpty();
+            return ItemStack.EMPTY;
         }
     }
 

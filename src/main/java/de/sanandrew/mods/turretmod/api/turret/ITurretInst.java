@@ -9,6 +9,7 @@ package de.sanandrew.mods.turretmod.api.turret;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.relauncher.Side;
@@ -35,6 +36,8 @@ public interface ITurretInst
     boolean wasShooting();
 
     void setShooting();
+
+    boolean applyRepairKit(ItemStack stack);
 
     ITargetProcessor getTargetProcessor();
 

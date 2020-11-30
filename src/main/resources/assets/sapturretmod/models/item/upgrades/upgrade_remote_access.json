@@ -1,6 +1,6 @@
 {
   "parent": "sapturretmod:item/upgrades/upgrade_base",
   "textures": {
-    "layer1": "sapturretmod:items/upgrades/smart_targeting"
+    "layer1": "sapturretmod:items/upgrades/remote_access"
   }
 }

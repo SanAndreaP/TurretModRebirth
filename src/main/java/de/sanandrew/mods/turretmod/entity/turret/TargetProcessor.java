@@ -78,7 +78,7 @@ public final class TargetProcessor
         this.playerTargetList = new HashMap<>();
         this.turret = turret;
         this.initShootTicks = 20;
-        this.ammoStack = ItemStackUtils.getEmpty();
+        this.ammoStack = ItemStack.EMPTY;
     }
 
     public void init() {
@@ -230,7 +230,7 @@ public final class TargetProcessor
     void dropAmmo() {
         if( this.hasAmmo() ) {
             NonNullList<ItemStack> items = this.extractAmmoItems();
-            this.ammoStack = ItemStackUtils.getEmpty();
+            this.ammoStack = ItemStack.EMPTY;
             this.spawnItemEntities(items);
         }
     }
@@ -240,7 +240,7 @@ public final class TargetProcessor
         if( this.hasAmmo() ) {
             NonNullList<ItemStack> items = this.extractAmmoItems();
 
-            this.ammoStack = ItemStackUtils.getEmpty();
+            this.ammoStack = ItemStack.EMPTY;
 
             if( !items.isEmpty() ) {
                 EntityLiving turretL = this.turret.get();

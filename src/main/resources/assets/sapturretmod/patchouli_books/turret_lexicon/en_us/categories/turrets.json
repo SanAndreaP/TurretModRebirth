@@ -3,5 +3,5 @@
   "description": "Find information like range, health, etc. on every turret available.$(br2)Most turrets can only attack grounded enemies like Creepers, Zombies, etc., unless it is $(5)$(o)specified$().",
   "icon": "sapturretmod:turret_crossbow",
   "advancement": null,
-  "sortnum": 1
+  "sortnum": 0
 }
