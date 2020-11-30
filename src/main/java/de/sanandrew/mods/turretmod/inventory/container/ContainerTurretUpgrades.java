@@ -8,7 +8,6 @@
  */
 package de.sanandrew.mods.turretmod.inventory.container;
 
-import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
 import de.sanandrew.mods.turretmod.item.ItemUpgrade;
 import de.sanandrew.mods.turretmod.util.TmrUtils;

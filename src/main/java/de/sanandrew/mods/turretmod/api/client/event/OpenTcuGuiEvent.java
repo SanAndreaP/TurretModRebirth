@@ -7,6 +7,7 @@
 package de.sanandrew.mods.turretmod.api.client.event;
 
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
+import de.sanandrew.mods.turretmod.api.turret.IGuiTcuRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
@@ -37,10 +38,12 @@ public class OpenTcuGuiEvent
      */
     @Nonnull
     public Supplier<IGuiTCU> factory;
+    public IGuiTcuRegistry.ContainerFactory   containerFactory;
 
-    public OpenTcuGuiEvent(EntityPlayer player, ITurretInst turretInst, @Nonnull Supplier<IGuiTCU> factory) {
+    public OpenTcuGuiEvent(EntityPlayer player, ITurretInst turretInst, @Nonnull Supplier<IGuiTCU> factory, IGuiTcuRegistry.ContainerFactory containerFactory) {
         this.player = player;
         this.turretInst = turretInst;
         this.factory = factory;
+        this.containerFactory = containerFactory;
     }
 }

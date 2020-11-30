@@ -12,18 +12,22 @@
     },
     {
       "type": "text",
-      "pos": [46, 63],
+      "pos": [43, 28],
+      "alignment": ["center"],
       "data": {
         "color": "0xFF404040",
-        "text": "gui.sapturretmod.tcu.page.sapturretmod:remote_access.ammo"
+        "text": "container.inventory",
+        "text2": "gui.sapturretmod.tcu.page.sapturretmod:remote_access.ammo"
       }
     },
     {
       "type": "text",
-      "pos": [46, 99],
+      "pos": [133, 28],
+      "alignment": ["center"],
       "data": {
         "color": "0xFF404040",
-        "text": "gui.sapturretmod.tcu.page.sapturretmod:remote_access.repair_kit"
+        "text": "container.inventory",
+        "text2": "gui.sapturretmod.tcu.page.sapturretmod:remote_access.repair_kit"
       }
     }
   ],

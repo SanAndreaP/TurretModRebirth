@@ -79,11 +79,12 @@ public final class GuiTcuRegistry
     public Gui openGUI(int type, EntityPlayer player, ITurretInst turretInst, boolean isRemote) {
         if( type >= 0 && type < PAGE_KEYS.size() ) {
             Page page = getPage(PAGE_KEYS.get(type));
+            ContainerFactory cntFactory = getContainerFactory(PAGE_KEYS.get(type));
             if( page != null ) {
-                OpenTcuGuiEvent event = new OpenTcuGuiEvent(player, turretInst, page.factory);
+                OpenTcuGuiEvent event = new OpenTcuGuiEvent(player, turretInst, page.factory, cntFactory);
                 if( !MinecraftForge.EVENT_BUS.post(event) ) {
                     IGuiTCU   guiDelegate = event.factory.get();
-                    Container cnt         = guiDelegate.getContainer(player, turretInst, isRemote);
+                    Container cnt         = cntFactory != null ? cntFactory.get(player, turretInst, isRemote) : null;
 
                     if( cnt != null ) {
                         return new GuiTcuContainer(PAGE_KEYS.get(type), guiDelegate, cnt, turretInst, isRemote);
@@ -99,6 +100,10 @@ public final class GuiTcuRegistry
 
     public Page getPage(ResourceLocation location) {
         return pages.get(location);
+    }
+
+    public ContainerFactory getContainerFactory(ResourceLocation location) {
+        return containers.get(location);
     }
 
     public Container openContainer(int type, EntityPlayer player, ITurretInst turretInst, boolean isRemote) {

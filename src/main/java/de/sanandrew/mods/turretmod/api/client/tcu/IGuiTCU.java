@@ -20,15 +20,6 @@ import net.minecraft.util.ResourceLocation;
 public interface IGuiTCU
 {
     /**
-     * <p>Returns the container on GUI construction to be used.</p>
-     * <p>If a container instance is returned, the TCU GUI will be a container GUI.</p>
-     * <p>If <tt>null</tt> is returned, the TCU GUI will be a "regular" GUI.</p>
-     *
-     * @return A container to be used or <tt>null</tt>, if this is not a container GUI.
-     */
-    default Container getContainer(EntityPlayer player, ITurretInst turretInst, boolean isRemote) { return null; }
-
-    /**
      * <p>Initializes this page upon opening the GUI or when changing resolution.</p>
      *
      * @param gui The TCU GUI instance.
