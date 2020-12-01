@@ -164,14 +164,19 @@ public final class AmmoCartridgeInventory
 
     public IAmmunition getAmmoType() {
         this.load();
-        return this.stacks.stream().map(AmmunitionRegistry.INSTANCE::getObject).filter(IAmmunition::isValid).reduce((t1, t2) -> t1)
+        return this.stacks.stream().map(AmmunitionRegistry.INSTANCE::getObject).filter(IAmmunition::isValid).findFirst()
                           .orElse(AmmunitionRegistry.INSTANCE.getDefaultObject());
     }
 
     public String getAmmoSubtype() {
         this.load();
-        return this.stacks.stream().map(AmmunitionRegistry.INSTANCE::getSubtype).filter(s -> !Strings.isNullOrEmpty(s)).reduce((t1, t2) -> t1)
+        return this.stacks.stream().map(AmmunitionRegistry.INSTANCE::getSubtype).filter(s -> !Strings.isNullOrEmpty(s)).findFirst()
                           .orElse(null);
+    }
+
+    public ItemStack getAmmoTypeItem() {
+        this.load();
+        return this.stacks.stream().filter(i -> AmmunitionRegistry.INSTANCE.getObject(i).isValid()).findFirst().orElse(ItemStack.EMPTY).copy();
     }
 
     private void save() {

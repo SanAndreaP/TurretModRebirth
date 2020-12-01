@@ -126,7 +126,9 @@ public class ItemAmmoCartridge
                 ItemStack invStack = itemHandler.getStackInSlot(i);
                 if( ItemStackUtils.isValid(invStack) && invStack.getItem() instanceof ItemAmmo ) {
                     ITargetProcessor.ApplyType applyType = processor.getAmmoApplyType(invStack);
-                    if( applyType == ITargetProcessor.ApplyType.ADD || (replace && applyType == ITargetProcessor.ApplyType.REPLACE) ) {
+
+                    if( applyType == ITargetProcessor.ApplyType.ADD
+                        || (applyType == ITargetProcessor.ApplyType.REPLACE && (replace || !processor.hasAmmo())) ) {
                         ItemStack copyInvStack = invStack.copy();
                         if( processor.addAmmo(copyInvStack, item) ) {
                             success = true;

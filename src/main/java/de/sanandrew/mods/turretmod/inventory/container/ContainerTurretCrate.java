@@ -23,9 +23,9 @@ import javax.annotation.Nonnull;
 public class ContainerTurretCrate
         extends Container
 {
-    private TileEntityTurretCrate tile;
+    private final TileEntityTurretCrate tile;
 
-    private SlotAmmo ammoSlot;
+    private final SlotAmmo ammoSlot;
 
     public ContainerTurretCrate(IInventory playerInv, TileEntityTurretCrate crate) {
         this.tile = crate;

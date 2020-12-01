@@ -16,8 +16,7 @@
       "alignment": ["center"],
       "data": {
         "color": "0xFF404040",
-        "text": "container.inventory",
-        "text2": "gui.sapturretmod.tcu.page.sapturretmod:remote_access.ammo"
+        "text": "gui.sapturretmod.tcu.page.sapturretmod:remote_access.repair_kit"
       }
     },
     {
@@ -26,8 +25,7 @@
       "alignment": ["center"],
       "data": {
         "color": "0xFF404040",
-        "text": "container.inventory",
-        "text2": "gui.sapturretmod.tcu.page.sapturretmod:remote_access.repair_kit"
+        "text": "gui.sapturretmod.tcu.page.sapturretmod:remote_access.ammo"
       }
     }
   ],

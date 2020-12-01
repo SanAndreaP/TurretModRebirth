@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.inventory.container;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
@@ -16,6 +17,7 @@ import de.sanandrew.mods.turretmod.inventory.AmmoCartridgeInventory;
 import de.sanandrew.mods.turretmod.item.ItemAmmo;
 import de.sanandrew.mods.turretmod.item.ItemAmmoCartridge;
 import de.sanandrew.mods.turretmod.item.ItemRepairKit;
+import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,9 +35,12 @@ import java.util.function.Function;
 public class ContainerTurretRemoteAccess
         extends Container
 {
-    private static final int SLOT_IN_REPAIR_KIT = 0;
-    private static final int SLOT_IN_AMMO  = 1;
-    private static final int SLOT_OUT_AMMO = 0;
+    private static final int SLOT_INV_IN_REPAIR_KIT = 0;
+    private static final int SLOT_CNT_IN_REPAIR_KIT = 0;
+    private static final int SLOT_INV_IN_AMMO  = 1;
+    private static final int SLOT_CNT_IN_AMMO  = 1;
+    private static final int SLOT_INV_OUT_AMMO = 0;
+    private static final int SLOT_CNT_OUT_AMMO = 2;
 
     private final ITurretInst       turretInst;
     private final EntityPlayer      player;
@@ -46,10 +51,10 @@ public class ContainerTurretRemoteAccess
         this.turretInst = turretInst;
         this.player = playerInv.player;
 
-        this.addSlotToContainer(new SlotInput(this.invInput, SLOT_IN_REPAIR_KIT, 26, 40, s -> s.getItem() instanceof ItemRepairKit));
-        this.addSlotToContainer(new SlotInput(this.invInput, SLOT_IN_AMMO, 134, 40, s -> s.getItem() instanceof ItemAmmo
-                                                                                         || s.getItem() instanceof ItemAmmoCartridge));
-        this.addSlotToContainer(new SlotOutput(this.invOutput, SLOT_OUT_AMMO, 134, 76));
+        this.addSlotToContainer(new SlotInput(this.invInput, SLOT_INV_IN_REPAIR_KIT, 26, 40, s -> s.getItem() instanceof ItemRepairKit));
+        this.addSlotToContainer(new SlotInput(this.invInput, SLOT_INV_IN_AMMO, 134, 40, s -> s.getItem() instanceof ItemAmmo
+                                                                                             || s.getItem() instanceof ItemAmmoCartridge));
+        this.addSlotToContainer(new SlotOutput(this.invOutput, SLOT_INV_OUT_AMMO, 134, 76));
 
         for( int i = 0; i < 3; i++ ) {
             for( int j = 0; j < 9; j++ ) {
@@ -83,6 +88,12 @@ public class ContainerTurretRemoteAccess
                 if( !this.mergeItemStack(slotStack, 0, 2, false) ) {
                     return ItemStack.EMPTY;
                 }
+            } else if( slotId == SLOT_CNT_OUT_AMMO ) {// if clicked stack is from ammo slot
+                if( !ItemAmmoCartridge.putAmmoInPlayerCartridge(slotStack, player)
+                    && !super.mergeItemStack(slotStack, 3, 39, true) )
+                {
+                    return ItemStack.EMPTY;
+                }
             } else {
                 if( !super.mergeItemStack(slotStack, 3, 39, true) ) {
                     return ItemStack.EMPTY;
@@ -114,49 +125,32 @@ public class ContainerTurretRemoteAccess
 
         boolean syncContainer = false;
 
-        if( turretInst.applyRepairKit(this.invInput.getStackInSlot(SLOT_IN_REPAIR_KIT)) ) {
-            this.invInput.decrStackSize(SLOT_IN_REPAIR_KIT, 1);
+        if( turretInst.applyRepairKit(this.invInput.getStackInSlot(SLOT_INV_IN_REPAIR_KIT)) ) {
+            this.invInput.decrStackSize(SLOT_INV_IN_REPAIR_KIT, 1);
             syncContainer = true;
         }
 
-        ItemStack ammoInput = this.invInput.getStackInSlot(SLOT_IN_AMMO).copy();
+        ItemStack ammoInput = this.invInput.getStackInSlot(SLOT_INV_IN_AMMO).copy();
         if( ItemStackUtils.isValid(ammoInput) ) {
-            ITargetProcessor tgtProc = turretInst.getTargetProcessor();
+            ITargetProcessor processor = turretInst.getTargetProcessor();
             boolean syncTurret = false;
             if( ammoInput.getItem() instanceof ItemAmmo ) {
-                ITargetProcessor.ApplyType ammoApplyType = tgtProc.getAmmoApplyType(ammoInput);
+                ITargetProcessor.ApplyType ammoApplyType = processor.getAmmoApplyType(ammoInput);
 
                 if( ammoApplyType == ITargetProcessor.ApplyType.REPLACE ) {
-                    ItemStack ammoIntern = tgtProc.getAmmoStack();
-                    ItemStack ammoOutput = this.invOutput.getStackInSlot(SLOT_OUT_AMMO);
-
-                    ammoIntern.setCount(tgtProc.getAmmoCount());
-
-                    boolean success = false;
-                    if( !ItemStackUtils.isValid(ammoOutput) ) {
-                        this.invOutput.setInventorySlotContents(SLOT_OUT_AMMO, ammoIntern);
-
-                        success = true;
-                    } else if( ItemStackUtils.areEqual(ammoIntern, ammoOutput) ) {
-                        ammoOutput.grow(ammoIntern.getCount());
-                        this.invOutput.setInventorySlotContents(SLOT_OUT_AMMO, ammoOutput);
-
-                        success = true;
-                    }
-
-                    if( success ) {
+                    if( this.extractAmmo(processor) ) {
                         int amt = ammoInput.getCount();
                         ammoInput.setCount(1);
-                        ((TargetProcessor) tgtProc).setAmmoStackInternal(ammoInput, amt);
+                        ((TargetProcessor) processor).setAmmoStackInternal(ammoInput, amt);
 
-                        this.invInput.setInventorySlotContents(SLOT_IN_AMMO, ItemStack.EMPTY);
+                        this.invInput.setInventorySlotContents(SLOT_INV_IN_AMMO, ItemStack.EMPTY);
 
                         syncTurret = true;
                         syncContainer = true;
                     }
                 } else if( ammoApplyType == ITargetProcessor.ApplyType.ADD ) {
-                    if( tgtProc.addAmmo(ammoInput) ) {
-                        this.invInput.setInventorySlotContents(SLOT_IN_AMMO, ammoInput);
+                    if( processor.addAmmo(ammoInput) ) {
+                        this.invInput.setInventorySlotContents(SLOT_INV_IN_AMMO, ammoInput);
 
                         syncTurret = true;
                         syncContainer = true;
@@ -165,13 +159,14 @@ public class ContainerTurretRemoteAccess
             } else if( ammoInput.getItem() instanceof ItemAmmoCartridge ) {
                 AmmoCartridgeInventory inv = ItemAmmoCartridge.getInventory(ammoInput);
                 if( inv != null && !inv.isEmpty() ) {
-                    if( ItemAmmoCartridge.extractAmmoStacks(ammoInput, tgtProc, false) ) {
-                        if( inv.isEmpty() ) {
-                            this.invOutput.setInventorySlotContents(SLOT_OUT_AMMO, ammoInput);
-                            this.invInput.setInventorySlotContents(SLOT_IN_AMMO, ItemStack.EMPTY);
-                        } else {
-                            this.invInput.setInventorySlotContents(SLOT_IN_AMMO, ammoInput);
-                        }
+                    if( this.grabAmmo(processor, inv, ammoInput) ) {
+                        syncTurret = true;
+                        syncContainer = true;
+                    } else if( processor.getAmmoApplyType(inv.getAmmoTypeItem()) == ITargetProcessor.ApplyType.REPLACE
+                               && this.extractAmmo(processor) )
+                    {
+                        ((TargetProcessor) processor).setAmmoStackInternal(ItemStack.EMPTY, 0);
+                        this.grabAmmo(processor, inv, ammoInput);
 
                         syncTurret = true;
                         syncContainer = true;
@@ -185,12 +180,50 @@ public class ContainerTurretRemoteAccess
         }
 
         if( syncContainer ) {
-            playerMP.sendSlotContents(this, SLOT_IN_REPAIR_KIT, this.invInput.getStackInSlot(SLOT_IN_REPAIR_KIT));
-            playerMP.sendSlotContents(this, SLOT_IN_AMMO, this.invInput.getStackInSlot(SLOT_IN_AMMO));
-            playerMP.sendSlotContents(this, 2 + SLOT_OUT_AMMO, this.invOutput.getStackInSlot(SLOT_OUT_AMMO));
+            playerMP.sendSlotContents(this, SLOT_CNT_IN_REPAIR_KIT, this.invInput.getStackInSlot(SLOT_INV_IN_REPAIR_KIT));
+            playerMP.sendSlotContents(this, SLOT_CNT_IN_AMMO, this.invInput.getStackInSlot(SLOT_INV_IN_AMMO));
+            playerMP.sendSlotContents(this, SLOT_CNT_OUT_AMMO, this.invOutput.getStackInSlot(SLOT_INV_OUT_AMMO));
         }
 
         super.onCraftMatrixChanged(inventoryIn);
+    }
+
+    private boolean extractAmmo(ITargetProcessor processor) {
+        ItemStack ammoTurret = processor.getAmmoStack();
+        ItemStack ammoOutput = this.invOutput.getStackInSlot(SLOT_INV_OUT_AMMO);
+        IAmmunition type = AmmunitionRegistry.INSTANCE.getObject(ammoTurret);
+
+        if( type.isValid() ) {
+            ammoTurret.setCount(processor.getAmmoCount() / type.getAmmoCapacity());
+
+            if( !ItemStackUtils.isValid(ammoOutput) ) {
+                this.invOutput.setInventorySlotContents(SLOT_INV_OUT_AMMO, ammoTurret);
+
+                return true;
+            } else if( ItemStackUtils.areEqual(ammoTurret, ammoOutput) ) {
+                ammoOutput.grow(ammoTurret.getCount());
+                this.invOutput.setInventorySlotContents(SLOT_INV_OUT_AMMO, ammoOutput);
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean grabAmmo(ITargetProcessor processor, AmmoCartridgeInventory cartridgeInv, ItemStack cartridge) {
+        if( ItemAmmoCartridge.extractAmmoStacks(cartridge, processor, false) ) {
+            if( cartridgeInv.isEmpty() && !ItemStackUtils.isValid(this.invOutput.getStackInSlot(SLOT_INV_OUT_AMMO)) ) {
+                this.invOutput.setInventorySlotContents(SLOT_INV_OUT_AMMO, cartridge);
+                this.invInput.setInventorySlotContents(SLOT_INV_IN_AMMO, ItemStack.EMPTY);
+            } else {
+                this.invInput.setInventorySlotContents(SLOT_INV_IN_AMMO, cartridge);
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -280,9 +313,15 @@ public class ContainerTurretRemoteAccess
 
         @Override
         public ItemStack getStack() {
-            ItemStack stack = ContainerTurretRemoteAccess.this.turretInst.getTargetProcessor().getAmmoStack();
-            stack.setCount(ContainerTurretRemoteAccess.this.turretInst.getTargetProcessor().getAmmoCount());
-            return stack;
+            ITargetProcessor processor = ContainerTurretRemoteAccess.this.turretInst.getTargetProcessor();
+            ItemStack stack = processor.getAmmoStack();
+            IAmmunition type = AmmunitionRegistry.INSTANCE.getObject(stack);
+            if( type.isValid() ) {
+                stack.setCount(processor.getAmmoCount() / type.getAmmoCapacity());
+                return stack;
+            }
+
+            return ItemStack.EMPTY;
         }
 
         @Override

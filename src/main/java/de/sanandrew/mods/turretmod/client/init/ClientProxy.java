@@ -281,6 +281,11 @@ public class ClientProxy
 
     @Override
     public boolean checkTurretGlowing(ITurretInst turret) {
-        return ItemTurretControlUnit.isHeldTcuBoundToTurret(Minecraft.getMinecraft().player, turret);
+        Minecraft mc = Minecraft.getMinecraft();
+        if( mc.pointedEntity != turret.get() ) {
+            return ItemTurretControlUnit.isHeldTcuBoundToTurret(Minecraft.getMinecraft().player, turret);
+        }
+
+        return false;
     }
 }
