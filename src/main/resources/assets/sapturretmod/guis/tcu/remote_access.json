@@ -31,5 +31,20 @@
       }
     }
   ],
-  "foregroundElements": []
+  "foregroundElements": [
+    {
+      "type": "sapturretmod:tcu.remote_access_health",
+      "pos": [26, 76],
+      "data": {
+        "heartTexture": {
+          "size": [12, 10],
+          "uv": [176, 0],
+          "offset": [2, 3]
+        },
+        "tooltip": {
+          "text": "%s/%s hearts"
+        }
+      }
+    }
+  ]
 }

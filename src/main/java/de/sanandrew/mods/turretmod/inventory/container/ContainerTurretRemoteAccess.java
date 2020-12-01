@@ -9,12 +9,18 @@
 package de.sanandrew.mods.turretmod.inventory.container;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
+import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
+import de.sanandrew.mods.turretmod.inventory.AmmoCartridgeInventory;
+import de.sanandrew.mods.turretmod.item.ItemAmmo;
+import de.sanandrew.mods.turretmod.item.ItemAmmoCartridge;
+import de.sanandrew.mods.turretmod.item.ItemRepairKit;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ClickType;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
@@ -22,19 +28,28 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
+import java.util.function.Function;
 
 public class ContainerTurretRemoteAccess
         extends Container
 {
-    private final ITurretInst turretInst;
-    private final Inventory inv = new Inventory();
+    private static final int SLOT_IN_REPAIR_KIT = 0;
+    private static final int SLOT_IN_AMMO  = 1;
+    private static final int SLOT_OUT_AMMO = 0;
 
-    public ContainerTurretRemoteAccess(IInventory playerInv, ITurretInst turretInst) {
+    private final ITurretInst       turretInst;
+    private final EntityPlayer      player;
+    private final IInventory invInput = new InventoryInput(this);
+    private final IInventory invOutput = new InventoryOutput();
+
+    public ContainerTurretRemoteAccess(InventoryPlayer playerInv, ITurretInst turretInst) {
         this.turretInst = turretInst;
+        this.player = playerInv.player;
 
-        this.addSlotToContainer(new Slot(this.inv, 0, 26, 40));
-        this.addSlotToContainer(new Slot(this.inv, 1, 134, 40));
-        this.addSlotToContainer(new SlotOutput(this.inv, 2, 134, 76));
+        this.addSlotToContainer(new SlotInput(this.invInput, SLOT_IN_REPAIR_KIT, 26, 40, s -> s.getItem() instanceof ItemRepairKit));
+        this.addSlotToContainer(new SlotInput(this.invInput, SLOT_IN_AMMO, 134, 40, s -> s.getItem() instanceof ItemAmmo
+                                                                                         || s.getItem() instanceof ItemAmmoCartridge));
+        this.addSlotToContainer(new SlotOutput(this.invOutput, SLOT_OUT_AMMO, 134, 76));
 
         for( int i = 0; i < 3; i++ ) {
             for( int j = 0; j < 9; j++ ) {
@@ -46,39 +61,7 @@ public class ContainerTurretRemoteAccess
             this.addSlotToContainer(new Slot(playerInv, i, 8 + i * 18, 183));
         }
 
-        //noinspection ConstantConditions
-        this.addSlotToContainer(new Slot(null, -1, 116, 58) {
-            @Override
-            public ItemStack getStack() {
-                return ContainerTurretRemoteAccess.this.turretInst.getTargetProcessor().getAmmoStack();
-            }
-
-            @Override
-            public void putStack(ItemStack stack) { }
-
-            @Override
-            public void onSlotChanged() { }
-
-            @Override
-            public int getSlotStackLimit() {
-                return this.getStack().getCount();
-            }
-
-            @Override
-            public ItemStack decrStackSize(int amount) {
-                return ItemStack.EMPTY;
-            }
-
-            @Override
-            public boolean canTakeStack(EntityPlayer playerIn) {
-                return false;
-            }
-
-            @Override
-            public boolean isItemValid(ItemStack stack) {
-                return false;
-            }
-        });
+        this.addSlotToContainer(new SlotAmmo(116, 58));
     }
 
     @Override
@@ -120,36 +103,212 @@ public class ContainerTurretRemoteAccess
     }
 
     @Override
-    public void onContainerClosed(EntityPlayer playerIn) {
-        this.inv.closeInventory(playerIn);
-        super.onContainerClosed(playerIn);
-    }
-
-    private class Inventory
-            extends InventoryBasic
-    {
-        private static final int SIZE = 3;
-
-        public Inventory() {
-            super("Remote Access", true, SIZE);
+    public void onCraftMatrixChanged(IInventory inventoryIn) {
+        if( this.player.world.isRemote ) {
+            super.onCraftMatrixChanged(inventoryIn);
+            return;
         }
 
-        @Override
-        public void closeInventory(EntityPlayer player) {
-            if( !player.world.isRemote ) {
-                for( int i = 0; i < SIZE; i++ ) {
-                    ItemStack stack = this.getStackInSlot(i);
-                    if( ItemStackUtils.isValid(stack) ) {
-                        player.world.spawnEntity(new EntityItem(player.world, player.posX, player.posY, player.posZ, stack.copy()));
+        EntityPlayerMP playerMP = (EntityPlayerMP) player;
+        ITurretInst turretInst = ContainerTurretRemoteAccess.this.turretInst;
+
+        boolean syncContainer = false;
+
+        if( turretInst.applyRepairKit(this.invInput.getStackInSlot(SLOT_IN_REPAIR_KIT)) ) {
+            this.invInput.decrStackSize(SLOT_IN_REPAIR_KIT, 1);
+            syncContainer = true;
+        }
+
+        ItemStack ammoInput = this.invInput.getStackInSlot(SLOT_IN_AMMO).copy();
+        if( ItemStackUtils.isValid(ammoInput) ) {
+            ITargetProcessor tgtProc = turretInst.getTargetProcessor();
+            boolean syncTurret = false;
+            if( ammoInput.getItem() instanceof ItemAmmo ) {
+                ITargetProcessor.ApplyType ammoApplyType = tgtProc.getAmmoApplyType(ammoInput);
+
+                if( ammoApplyType == ITargetProcessor.ApplyType.REPLACE ) {
+                    ItemStack ammoIntern = tgtProc.getAmmoStack();
+                    ItemStack ammoOutput = this.invOutput.getStackInSlot(SLOT_OUT_AMMO);
+
+                    ammoIntern.setCount(tgtProc.getAmmoCount());
+
+                    boolean success = false;
+                    if( !ItemStackUtils.isValid(ammoOutput) ) {
+                        this.invOutput.setInventorySlotContents(SLOT_OUT_AMMO, ammoIntern);
+
+                        success = true;
+                    } else if( ItemStackUtils.areEqual(ammoIntern, ammoOutput) ) {
+                        ammoOutput.grow(ammoIntern.getCount());
+                        this.invOutput.setInventorySlotContents(SLOT_OUT_AMMO, ammoOutput);
+
+                        success = true;
+                    }
+
+                    if( success ) {
+                        int amt = ammoInput.getCount();
+                        ammoInput.setCount(1);
+                        ((TargetProcessor) tgtProc).setAmmoStackInternal(ammoInput, amt);
+
+                        this.invInput.setInventorySlotContents(SLOT_IN_AMMO, ItemStack.EMPTY);
+
+                        syncTurret = true;
+                        syncContainer = true;
+                    }
+                } else if( ammoApplyType == ITargetProcessor.ApplyType.ADD ) {
+                    if( tgtProc.addAmmo(ammoInput) ) {
+                        this.invInput.setInventorySlotContents(SLOT_IN_AMMO, ammoInput);
+
+                        syncTurret = true;
+                        syncContainer = true;
                     }
                 }
+            } else if( ammoInput.getItem() instanceof ItemAmmoCartridge ) {
+                AmmoCartridgeInventory inv = ItemAmmoCartridge.getInventory(ammoInput);
+                if( inv != null && !inv.isEmpty() ) {
+                    if( ItemAmmoCartridge.extractAmmoStacks(ammoInput, tgtProc, false) ) {
+                        if( inv.isEmpty() ) {
+                            this.invOutput.setInventorySlotContents(SLOT_OUT_AMMO, ammoInput);
+                            this.invInput.setInventorySlotContents(SLOT_IN_AMMO, ItemStack.EMPTY);
+                        } else {
+                            this.invInput.setInventorySlotContents(SLOT_IN_AMMO, ammoInput);
+                        }
+
+                        syncTurret = true;
+                        syncContainer = true;
+                    }
+                }
+            }
+
+            if( syncTurret ) {
+                this.turretInst.updateState();
+            }
+        }
+
+        if( syncContainer ) {
+            playerMP.sendSlotContents(this, SLOT_IN_REPAIR_KIT, this.invInput.getStackInSlot(SLOT_IN_REPAIR_KIT));
+            playerMP.sendSlotContents(this, SLOT_IN_AMMO, this.invInput.getStackInSlot(SLOT_IN_AMMO));
+            playerMP.sendSlotContents(this, 2 + SLOT_OUT_AMMO, this.invOutput.getStackInSlot(SLOT_OUT_AMMO));
+        }
+
+        super.onCraftMatrixChanged(inventoryIn);
+    }
+
+    @Override
+    public void onContainerClosed(EntityPlayer player) {
+        if( !player.world.isRemote ) {
+            dropStacksOnClose(this.invInput, player);
+            dropStacksOnClose(this.invOutput, player);
+        }
+
+        super.onContainerClosed(player);
+    }
+
+    private static void dropStacksOnClose(IInventory inv, EntityPlayer player) {
+        for( int i = 0, max = inv.getSizeInventory(); i < max; i++ ) {
+            ItemStack stack = inv.getStackInSlot(i);
+            if( ItemStackUtils.isValid(stack) ) {
+                player.world.spawnEntity(new EntityItem(player.world, player.posX, player.posY, player.posZ, stack.copy()));
             }
         }
     }
 
-//    private class SlotRepkitInput
-//            extends Slot
-//    {
-//
-//    }
+    private static class InventoryInput
+            extends InventoryBasic
+    {
+        private final Container parent;
+        private InventoryInput(Container parent) {
+            super("Remote Access Input", true, 2);
+
+            this.parent = parent;
+        }
+
+        @Override
+        public void setInventorySlotContents(int index, ItemStack stack) {
+            super.setInventorySlotContents(index, stack);
+            this.parent.onCraftMatrixChanged(this);
+        }
+
+        @Override
+        public ItemStack decrStackSize(int index, int count) {
+            ItemStack remainder = super.decrStackSize(index, count);
+
+            if( ItemStackUtils.isValid(remainder) ) {
+                this.parent.onCraftMatrixChanged(this);
+            }
+
+            return remainder;
+        }
+    }
+
+    private static class InventoryOutput
+            extends InventoryBasic
+    {
+        private InventoryOutput() {
+            super("Remote Access Output", true, 1);
+        }
+
+        @Override
+        public int getInventoryStackLimit() {
+            return Integer.MAX_VALUE;
+        }
+    }
+
+    private static class SlotInput
+            extends Slot
+    {
+        private final Function<ItemStack, Boolean> checker;
+
+        private SlotInput(IInventory inv, int id, int x, int y, Function<ItemStack, Boolean> checker) {
+            super(inv, id, x, y);
+
+            this.checker = checker;
+        }
+
+        @Override
+        public boolean isItemValid(ItemStack stack) {
+            return this.checker.apply(stack);
+        }
+    }
+
+    private class SlotAmmo
+            extends Slot
+    {
+        @SuppressWarnings("ConstantConditions")
+        private SlotAmmo(int x, int y) {
+            super(null, -1, x, y);
+        }
+
+        @Override
+        public ItemStack getStack() {
+            ItemStack stack = ContainerTurretRemoteAccess.this.turretInst.getTargetProcessor().getAmmoStack();
+            stack.setCount(ContainerTurretRemoteAccess.this.turretInst.getTargetProcessor().getAmmoCount());
+            return stack;
+        }
+
+        @Override
+        public void putStack(ItemStack stack) { }
+
+        @Override
+        public void onSlotChanged() { }
+
+        @Override
+        public int getSlotStackLimit() {
+            return this.getStack().getCount();
+        }
+
+        @Override
+        public ItemStack decrStackSize(int amount) {
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        public boolean canTakeStack(EntityPlayer playerIn) {
+            return false;
+        }
+
+        @Override
+        public boolean isItemValid(ItemStack stack) {
+            return false;
+        }
+    }
 }

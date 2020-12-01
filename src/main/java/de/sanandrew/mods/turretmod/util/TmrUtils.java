@@ -57,6 +57,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
@@ -68,6 +69,8 @@ public class TmrUtils
         implements ITmrUtils
 {
     public static final TmrUtils INSTANCE = new TmrUtils();
+
+    public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###.#");
 
     //region SRG-Reflections
     public static int getExperiencePoints(EntityLivingBase target, EntityPlayer player) {

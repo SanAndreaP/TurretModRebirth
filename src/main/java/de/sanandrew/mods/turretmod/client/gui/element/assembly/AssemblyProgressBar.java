@@ -79,11 +79,6 @@ public class AssemblyProgressBar
         return this.progressWidth;
     }
 
-    @Override
-    public int getHeight() {
-        return this.size[1];
-    }
-
     public static class AssemblyProgressLabel
             extends Text
     {

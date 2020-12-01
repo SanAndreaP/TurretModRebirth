@@ -20,12 +20,12 @@ import de.sanandrew.mods.turretmod.registry.turret.shieldgen.ShieldTurret;
 import de.sanandrew.mods.turretmod.registry.turret.shieldgen.TurretForcefield;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.registry.upgrades.shield.ShieldPersonal;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import org.apache.commons.lang3.Range;
 
-import java.text.DecimalFormat;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -33,8 +33,6 @@ public class InfoElement
         implements IGuiElement
 {
     public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu.info_progress");
-
-    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###.#");
 
     private static final String HEALTH          = "health";
     private static final String AMMO            = "ammo";
@@ -217,9 +215,9 @@ public class InfoElement
                     return getRatioText(vals, "ammo.suffix");
                 case PERSONAL_SHIELD:
                     Double spVal = v(ti.getUpgradeProcessor().<ShieldPersonal>getUpgradeInstance(Upgrades.SHIELD_PERSONAL.getId()),
-                                     u -> u != null ? (double) u.getValue() / 2.0D : null);
+                                     u -> u != null ? u.getValue() / 2.0D : null);
                     if( spVal != null ) {
-                        return String.format(LangUtils.translate(Lang.TCU_PAGE_ELEMENT.get(GuiTcuRegistry.INFO, "armor.suffix")), DECIMAL_FORMAT.format(spVal));
+                        return String.format(LangUtils.translate(Lang.TCU_PAGE_ELEMENT.get(GuiTcuRegistry.INFO, "armor.suffix")), TmrUtils.DECIMAL_FORMAT.format(spVal));
                     }
                 case FORCEFIELD:
                     vals = v(ti.getTurret() instanceof TurretForcefield ? ti.<ShieldTurret>getRAM(null) : null,
@@ -241,7 +239,7 @@ public class InfoElement
 
         private String getRatioText(double[] vals, String unit) {
             if( vals != null ) {
-                String val = String.format("%s/%s", DECIMAL_FORMAT.format(vals[0]), DECIMAL_FORMAT.format(vals[1]));
+                String val = String.format("%s/%s", TmrUtils.DECIMAL_FORMAT.format(vals[0]), TmrUtils.DECIMAL_FORMAT.format(vals[1]));
                 return LangUtils.translate(Lang.TCU_PAGE_ELEMENT.get(GuiTcuRegistry.INFO, unit), val);
             }
 

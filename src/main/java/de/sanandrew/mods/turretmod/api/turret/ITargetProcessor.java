@@ -38,6 +38,8 @@ public interface ITargetProcessor
 
     boolean isAmmoApplicable(@Nonnull ItemStack stack);
 
+    ApplyType getAmmoApplyType(@Nonnull ItemStack stack);
+
     int getMaxAmmoCapacity();
 
     int getMaxShootTicks();
@@ -111,4 +113,10 @@ public interface ITargetProcessor
     void setEntityBlacklist(boolean isBlacklist);
 
     void setPlayerBlacklist(boolean isBlacklist);
+
+    enum ApplyType {
+        ADD,
+        REPLACE,
+        NOT_COMPATIBLE
+    }
 }

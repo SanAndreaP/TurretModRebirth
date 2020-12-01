@@ -94,7 +94,7 @@ public final class TargetProcessor
     @Override
     public boolean addAmmo(@Nonnull ItemStack stack, ICapabilityProvider excessInv) {
         if( stack.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN) ) {
-            return ItemAmmoCartridge.extractAmmoStacks(stack, this);
+            return ItemAmmoCartridge.extractAmmoStacks(stack, this, true);
         } else if( this.isAmmoApplicable(stack) ) {
             IAmmunition type = AmmunitionRegistry.INSTANCE.getObject(stack);
             String subtype = MiscUtils.defIfNull(AmmunitionRegistry.INSTANCE.getSubtype(stack), "");
@@ -154,6 +154,11 @@ public final class TargetProcessor
 
     public void setAmmoStackInternal(ItemStack stack) {
         this.ammoStack = stack;
+    }
+
+    public void setAmmoStackInternal(ItemStack stack, int count) {
+        this.ammoStack = stack;
+        this.ammoCount = count;
     }
 
     @Override
@@ -257,19 +262,24 @@ public final class TargetProcessor
 
     @Override
     public boolean isAmmoApplicable(@Nonnull ItemStack stack) {
+        return getAmmoApplyType(stack) != ApplyType.NOT_COMPATIBLE;
+    }
+
+    @Override
+    public ApplyType getAmmoApplyType(@Nonnull ItemStack stack) {
         if( ItemStackUtils.isValid(stack) ) {
             IAmmunition stackType = AmmunitionRegistry.INSTANCE.getObject(stack);
             if( stackType.isValid() ) {
                 if( this.isAmmoTypeEqual(stackType, AmmunitionRegistry.INSTANCE.getSubtype(stack)) ) {
-                    return this.ammoCount < this.getMaxAmmoCapacity();
+                    return this.ammoCount < this.getMaxAmmoCapacity() ? ApplyType.ADD : ApplyType.NOT_COMPATIBLE;
                 } else {
                     Collection<IAmmunition> types = AmmunitionRegistry.INSTANCE.getObjects(this.turret.getTurret());
-                    return types.contains(stackType);
+                    return types.contains(stackType) ? ApplyType.REPLACE : ApplyType.NOT_COMPATIBLE;
                 }
             }
         }
 
-        return false;
+        return ApplyType.NOT_COMPATIBLE;
     }
 
     private boolean isAmmoTypeEqual(IAmmunition ammo, String subtype) {

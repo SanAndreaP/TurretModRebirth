@@ -33,6 +33,7 @@ import de.sanandrew.mods.turretmod.client.gui.element.assembly.AssemblyGhostItem
 import de.sanandrew.mods.turretmod.client.gui.element.assembly.AssemblyGroupIcon;
 import de.sanandrew.mods.turretmod.client.gui.element.assembly.AssemblyProgressBar;
 import de.sanandrew.mods.turretmod.client.gui.element.assembly.AssemblyRecipeArea;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.RemoteAccessHealth;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.TurretCam;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.TurretName;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.info.AmmoItem;
@@ -115,6 +116,7 @@ public class ClientProxy
         GuiDefinition.TYPES.put(ShieldRender.ID, ShieldRender::new);
         GuiDefinition.TYPES.put(LevelIndicator.ID, LevelIndicator::new);
         GuiDefinition.TYPES.put(LevelModifiers.ID, LevelModifiers::new);
+        GuiDefinition.TYPES.put(RemoteAccessHealth.ID, RemoteAccessHealth::new);
 
         GuiDefinition.TYPES.put(ColorPicker.ID, ColorPicker::new);
         GuiDefinition.TYPES.put(CheckBox.ID, CheckBox::new);

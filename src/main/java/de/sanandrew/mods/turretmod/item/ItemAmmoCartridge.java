@@ -118,14 +118,15 @@ public class ItemAmmoCartridge
         return null;
     }
 
-    public static boolean extractAmmoStacks(ItemStack item, ITargetProcessor processor) {
+    public static boolean extractAmmoStacks(ItemStack item, ITargetProcessor processor, boolean replace) {
         boolean success = false;
         IItemHandler itemHandler = item.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
         if( itemHandler != null ) {
             for( int i = 0, max = itemHandler.getSlots(); i < max; i++ ) {
                 ItemStack invStack = itemHandler.getStackInSlot(i);
                 if( ItemStackUtils.isValid(invStack) && invStack.getItem() instanceof ItemAmmo ) {
-                    if( processor.isAmmoApplicable(invStack) ) {
+                    ITargetProcessor.ApplyType applyType = processor.getAmmoApplyType(invStack);
+                    if( applyType == ITargetProcessor.ApplyType.ADD || (replace && applyType == ITargetProcessor.ApplyType.REPLACE) ) {
                         ItemStack copyInvStack = invStack.copy();
                         if( processor.addAmmo(copyInvStack, item) ) {
                             success = true;
