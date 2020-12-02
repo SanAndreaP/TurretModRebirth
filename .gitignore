@@ -7,3 +7,6 @@ build/
 libs/
 run/
 *.lnk
+out/
+TurretModRebirth.ipr
+TurretModRebirth.iws
