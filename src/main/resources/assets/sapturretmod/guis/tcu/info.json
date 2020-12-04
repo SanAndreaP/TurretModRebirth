@@ -44,9 +44,7 @@
         },
         "text": {
           "offset": [20, 2],
-          "data": {
-            "color": "0xFFC20000"
-          }
+          "color": "0xFFC20000"
         }
       }
     },
