@@ -29,6 +29,7 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
+@SuppressWarnings("NullableProblems")
 public class AssemblyInventory
         implements ISidedInventory, INBTSerializable<NBTTagCompound>
 {
@@ -42,7 +43,7 @@ public class AssemblyInventory
     public static final int SLOT_UPGRADE_FILTER = 4;
     public static final int SLOT_UPGRADE_REDSTONE = 5;
 
-    private final NonNullList<ItemStack> assemblyStacks = NonNullList.withSize(24, ItemStack.EMPTY);
+    private final NonNullList<ItemStack> stacks = NonNullList.withSize(24, ItemStack.EMPTY);
 
     private static final int[] SLOTS_INSERT = new int[RESOURCE_SLOTS];
     private static final int[] SLOTS_EXTRACT =  new int[] {SLOT_OUTPUT, SLOT_OUTPUT_CARTRIDGE};
@@ -73,40 +74,40 @@ public class AssemblyInventory
 
     public NonNullList<ItemStack> getFilterStacks() {
         if( this.hasFilterUpgrade() ) {
-            return ItemAssemblyUpgrade.Filter.getFilterStacks(this.assemblyStacks.get(SLOT_UPGRADE_FILTER));
+            return ItemAssemblyUpgrade.Filter.getFilterStacks(this.stacks.get(SLOT_UPGRADE_FILTER));
         } else {
             return ItemAssemblyUpgrade.Filter.getEmptyInv();
         }
     }
 
     public boolean hasAutoUpgrade() {
-        return ItemStackUtils.isItem(this.assemblyStacks.get(SLOT_UPGRADE_AUTO), ItemRegistry.ASSEMBLY_UPG_AUTO);
+        return ItemStackUtils.isItem(this.stacks.get(SLOT_UPGRADE_AUTO), ItemRegistry.ASSEMBLY_UPG_AUTO);
     }
 
     public boolean hasSpeedUpgrade() {
-        return ItemStackUtils.isItem(this.assemblyStacks.get(SLOT_UPGRADE_SPEED), ItemRegistry.ASSEMBLY_UPG_SPEED);
+        return ItemStackUtils.isItem(this.stacks.get(SLOT_UPGRADE_SPEED), ItemRegistry.ASSEMBLY_UPG_SPEED);
     }
 
     public boolean hasFilterUpgrade() {
-        return ItemStackUtils.isItem(this.assemblyStacks.get(SLOT_UPGRADE_FILTER), ItemRegistry.ASSEMBLY_UPG_FILTER);
+        return ItemStackUtils.isItem(this.stacks.get(SLOT_UPGRADE_FILTER), ItemRegistry.ASSEMBLY_UPG_FILTER);
     }
 
     public boolean hasRedstoneUpgrade() {
-        return ItemStackUtils.isItem(this.assemblyStacks.get(SLOT_UPGRADE_REDSTONE), ItemRegistry.ASSEMBLY_UPG_REDSTONE);
+        return ItemStackUtils.isItem(this.stacks.get(SLOT_UPGRADE_REDSTONE), ItemRegistry.ASSEMBLY_UPG_REDSTONE);
     }
 
     public boolean canFillOutput(ItemStack stack) {
         StackContainerSlotData ihm = getFirstItemContainer();
         if( ihm != null ) {
             if( fillItemContainer(ihm.handler, stack, true) ) {
-                this.tryPushOutputToItemContainer(ihm.handler);
+//                this.tryPushOutputToItemContainer(ihm.handler);
                 return true;
             }
 
-            this.pushItemContainerToOutput(ihm.slot);
+//            this.pushItemContainerToOutput(ihm.slot);
         }
 
-        ItemStack invStack = this.assemblyStacks.get(SLOT_OUTPUT);
+        ItemStack invStack = this.stacks.get(SLOT_OUTPUT);
         return !ItemStackUtils.isValid(invStack) || invStack.getCount() < invStack.getMaxStackSize() && ItemStackUtils.canStack(invStack, stack, true);
     }
 
@@ -120,10 +121,10 @@ public class AssemblyInventory
             this.pushItemContainerToOutput(ihm.slot);
         }
 
-        if( ItemStackUtils.isValid(this.assemblyStacks.get(SLOT_OUTPUT)) ) {
-            this.assemblyStacks.get(SLOT_OUTPUT).grow(stack.getCount());
+        if( ItemStackUtils.isValid(this.stacks.get(SLOT_OUTPUT)) ) {
+            this.stacks.get(SLOT_OUTPUT).grow(stack.getCount());
         } else {
-            this.assemblyStacks.set(SLOT_OUTPUT, stack.copy());
+            this.stacks.set(SLOT_OUTPUT, stack.copy());
             this.markDirty();
         }
     }
@@ -140,24 +141,24 @@ public class AssemblyInventory
     }
 
     private void tryPushOutputToItemContainer(IItemHandler handler) {
-        if( fillItemContainer(handler, this.assemblyStacks.get(SLOT_OUTPUT), true) ) {
-            fillItemContainer(handler, this.assemblyStacks.get(SLOT_OUTPUT), false);
-            this.assemblyStacks.set(SLOT_OUTPUT, ItemStack.EMPTY);
+        if( fillItemContainer(handler, this.stacks.get(SLOT_OUTPUT), true) ) {
+            fillItemContainer(handler, this.stacks.get(SLOT_OUTPUT), false);
+            this.stacks.set(SLOT_OUTPUT, ItemStack.EMPTY);
             this.markDirty();
         }
     }
 
     private void pushItemContainerToOutput(int containerSlot) {
-        if( !ItemStackUtils.isValid(this.assemblyStacks.get(SLOT_OUTPUT_CARTRIDGE)) ) {
-            this.assemblyStacks.set(SLOT_OUTPUT_CARTRIDGE, this.assemblyStacks.get(containerSlot).copy());
-            this.assemblyStacks.set(containerSlot, ItemStack.EMPTY);
+        if( !ItemStackUtils.isValid(this.stacks.get(SLOT_OUTPUT_CARTRIDGE)) ) {
+            this.stacks.set(SLOT_OUTPUT_CARTRIDGE, this.stacks.get(containerSlot).copy());
+            this.stacks.set(containerSlot, ItemStack.EMPTY);
             this.markDirty();
         }
     }
 
     private StackContainerSlotData getFirstItemContainer() {
         for( int slot : SLOTS_INSERT ) {
-            ItemStack stack = this.assemblyStacks.get(slot);
+            ItemStack stack = this.stacks.get(slot);
             if( ItemStackUtils.isValid(stack) ) {
                 IItemHandler itemHandler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
                 if( itemHandler != null ) {
@@ -186,18 +187,18 @@ public class AssemblyInventory
 
     @Override
     public int getSizeInventory() {
-        return this.assemblyStacks.size();
+        return this.stacks.size();
     }
 
     @Override
     public boolean isEmpty() {
-        return this.assemblyStacks.stream().noneMatch(ItemStackUtils::isValid);
+        return this.stacks.isEmpty() || this.stacks.stream().noneMatch(ItemStackUtils::isValid);
     }
 
     @Override
     @Nonnull
     public ItemStack getStackInSlot(int slot) {
-        return this.assemblyStacks.get(slot);
+        return this.stacks.get(slot);
     }
 
     @Override
@@ -205,26 +206,23 @@ public class AssemblyInventory
     public ItemStack decrStackSize(int slot, int size) {
         ItemStack stack = this.getStackInSlot(slot);
         if( ItemStackUtils.isValid(stack) ) {
-            ItemStack itemstack;
+            ItemStack newStack;
 
             if( stack.getCount() <= size ) {
-                itemstack = stack;
-                this.assemblyStacks.set(slot, ItemStack.EMPTY);
+                newStack = stack;
 
-                this.updateTile(slot);
-
-                return itemstack;
+                this.stacks.set(slot, ItemStack.EMPTY);
             } else {
-                itemstack = stack.splitStack(size);
+                newStack = stack.splitStack(size);
 
                 if( stack.getCount() == 0 ) {
-                    this.assemblyStacks.set(slot, ItemStack.EMPTY);
+                    this.stacks.set(slot, ItemStack.EMPTY);
                 }
-
-                this.updateTile(slot);
-
-                return itemstack;
             }
+
+            this.updateTile(slot);
+
+            return newStack;
         } else {
             return ItemStack.EMPTY;
         }
@@ -233,9 +231,9 @@ public class AssemblyInventory
     @Override
     @Nonnull
     public ItemStack removeStackFromSlot(int slot) {
-        if( ItemStackUtils.isValid(this.assemblyStacks.get(slot)) ) {
-            ItemStack itemstack = this.assemblyStacks.get(slot);
-            this.assemblyStacks.set(slot, ItemStack.EMPTY);
+        if( ItemStackUtils.isValid(this.stacks.get(slot)) ) {
+            ItemStack itemstack = this.stacks.get(slot);
+            this.stacks.set(slot, ItemStack.EMPTY);
 
             this.updateTile(slot);
 
@@ -247,7 +245,7 @@ public class AssemblyInventory
 
     @Override
     public void setInventorySlotContents(int slot, @Nonnull ItemStack stack) {
-        this.assemblyStacks.set(slot, stack);
+        this.stacks.set(slot, stack);
 
         if( ItemStackUtils.isValid(stack) && stack.getCount() > this.getInventoryStackLimit() ) {
             stack.setCount(this.getInventoryStackLimit());
@@ -258,7 +256,7 @@ public class AssemblyInventory
 
     private void updateTile(int slot) {
         if( !this.tile.getWorld().isRemote && slot < RESOURCE_SLOT_FIRST ) {
-            if( !this.hasAutoUpgrade() ) {
+            if( slot == SLOT_UPGRADE_AUTO && !this.hasAutoUpgrade() ) {
                 this.tile.setAutomated(false);
             }
 
@@ -345,13 +343,13 @@ public class AssemblyInventory
 
     @Override
     public void clear() {
-        this.assemblyStacks.clear();
+        this.stacks.clear();
     }
 
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setTag("inventory", ItemStackUtils.writeItemStacksToTag(this.assemblyStacks, 64));
+        nbt.setTag("inventory", ItemStackUtils.writeItemStacksToTag(this.stacks, 64));
         return nbt;
     }
 
@@ -362,16 +360,16 @@ public class AssemblyInventory
             NonNullList<ItemStack> oldStacks = NonNullList.withSize(23, ItemStack.EMPTY);
             ItemStackUtils.readItemStacksFromTag(oldStacks, inventory);
 
-            this.assemblyStacks.set(SLOT_OUTPUT, oldStacks.get(0));
-            this.assemblyStacks.set(SLOT_UPGRADE_AUTO, oldStacks.get(1));
-            this.assemblyStacks.set(SLOT_UPGRADE_SPEED, oldStacks.get(2));
-            this.assemblyStacks.set(SLOT_UPGRADE_FILTER, oldStacks.get(3));
-            this.assemblyStacks.set(SLOT_OUTPUT_CARTRIDGE, oldStacks.get(4));
+            this.stacks.set(SLOT_OUTPUT, oldStacks.get(0));
+            this.stacks.set(SLOT_UPGRADE_AUTO, oldStacks.get(1));
+            this.stacks.set(SLOT_UPGRADE_SPEED, oldStacks.get(2));
+            this.stacks.set(SLOT_UPGRADE_FILTER, oldStacks.get(3));
+            this.stacks.set(SLOT_OUTPUT_CARTRIDGE, oldStacks.get(4));
             for(int i = 0, j = 5; i < SLOTS_INSERT.length; i++) {
-                this.assemblyStacks.set(SLOTS_INSERT[i], oldStacks.get(j++));
+                this.stacks.set(SLOTS_INSERT[i], oldStacks.get(j++));
             }
         } else {
-            ItemStackUtils.readItemStacksFromTag(this.assemblyStacks, inventory);
+            ItemStackUtils.readItemStacksFromTag(this.stacks, inventory);
         }
     }
 

@@ -9,11 +9,11 @@
 package de.sanandrew.mods.turretmod.tileentity.assembly;
 
 import de.sanandrew.mods.sanlib.lib.Tuple;
-import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
+import de.sanandrew.mods.turretmod.inventory.AssemblyCache;
 import de.sanandrew.mods.turretmod.inventory.AssemblyInventory;
 import de.sanandrew.mods.turretmod.network.PacketSyncTileEntity;
 import de.sanandrew.mods.turretmod.network.TileClientSync;
@@ -23,7 +23,6 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.block.BlockRedstoneDiode;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -53,8 +52,8 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
 import java.util.Arrays;
-import java.util.List;
 
+@SuppressWarnings("NullableProblems")
 public class TileEntityTurretAssembly
         extends TileEntity
         implements TileClientSync, ITickable
@@ -75,7 +74,6 @@ public class TileEntityTurretAssembly
     private boolean prevActive;
     private boolean automate;
     public boolean isActive;
-    private boolean prevActiveClient;
     public boolean isActiveClient;
 
     public IAssemblyRecipe currRecipe;
@@ -94,7 +92,7 @@ public class TileEntityTurretAssembly
     private final IItemHandler itemHandlerBottom;
     private final IItemHandler itemHandlerSide;
 
-    private List<ItemStack> removedItems;
+    private final AssemblyCache cache;
 
     public TileEntityTurretAssembly() {
         this.robotArmX = 2.0F;
@@ -110,6 +108,7 @@ public class TileEntityTurretAssembly
         this.invHandler = new AssemblyInventory(this);
         this.itemHandlerBottom = new SidedInvWrapper(this.invHandler, EnumFacing.DOWN);
         this.itemHandlerSide = new SidedInvWrapper(this.invHandler, EnumFacing.WEST);
+        this.cache = new AssemblyCache(this, this.invHandler);
     }
 
     public void beginCrafting(IAssemblyRecipe recipe, int count) {
@@ -128,16 +127,8 @@ public class TileEntityTurretAssembly
     }
 
     public void cancelCrafting() {
-        if( this.removedItems != null ) {
-            this.removedItems.forEach(is -> {
-                ItemStack remains = InventoryUtils.addStackToInventory(is, this.invHandler);
-                if( ItemStackUtils.isValid(remains) ) {
-                    EntityItem item = new EntityItem(this.world, this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D, remains);
-                    this.world.spawnEntity(item);
-                }
-            });
-            this.removedItems = null;
-        }
+        this.cache.dropItems();
+
         this.currRecipe = null;
         this.craftingAmount = 0;
         this.ticksCrafted = 0;
@@ -150,19 +141,24 @@ public class TileEntityTurretAssembly
     }
 
     private void initCrafting() {
-        if( this.currRecipe != null ) {
+        this.doSync = true;
+
+        if( this.currRecipe != null && this.craftingAmount >= 1 ) {
             ItemStack result = this.currRecipe.getCraftingResult(this.invHandler);
             if( this.invHandler.canFillOutput(result) ) {
-                this.removedItems = AssemblyManager.INSTANCE.checkAndConsumeResources(this.invHandler, this.world, this.currRecipe);
-                if( this.removedItems != null ) {
+                this.cache.insert(AssemblyManager.INSTANCE.checkAndConsumeResources(this.invHandler, this.world, this.currRecipe));
+                if( !this.cache.isEmpty() ) {
                     this.maxTicksCrafted = this.currRecipe.getProcessTime();
                     this.fluxConsumption = MathHelper.ceil(this.currRecipe.getFluxPerTick() * (this.hasSpeedUpgrade() ? 1.1F : 1.0F));
                     this.ticksCrafted = 0;
                     this.isActive = true;
-                    this.doSync = true;
+                    return;
                 }
             }
         }
+
+        this.isActive = false;
+        this.isActiveClient = false;
     }
 
     public boolean hasAutoUpgrade() {
@@ -188,7 +184,7 @@ public class TileEntityTurretAssembly
     @Override
     public void update() {
         this.prevActive = this.isActive;
-        this.prevActiveClient = this.isActiveClient;
+        boolean prevActiveClient = this.isActiveClient;
 
         if( !this.world.isRemote ) {
             if( this.automate && !this.hasAutoUpgrade() ) {
@@ -208,31 +204,26 @@ public class TileEntityTurretAssembly
             if( this.isActive && this.currRecipe != null ) {
                 if( this.hasRedstoneUpgrade() && this.isRedstonePowered() ) {
                     this.isActiveClient = false;
-                    if( this.prevActiveClient ) {
+                    if( prevActiveClient ) {
                         this.doSync = true;
                     }
                 } else {
-                    if( !this.prevActiveClient ) {
+                    if( !prevActiveClient ) {
                         this.doSync = true;
                     }
 
                     for( int i = 0; i < maxLoop; i++ ) {
                         if( this.energyStorage.fluxAmount >= this.fluxConsumption ) {
                             this.energyStorage.fluxAmount -= this.fluxConsumption;
-                            if( ++this.ticksCrafted >= this.maxTicksCrafted ) {
-                                ItemStack stack = this.currRecipe.getCraftingResult(this.invHandler);
+                            if( ++this.ticksCrafted >= this.maxTicksCrafted ) { // if finished crafting...
+                                ItemStack stack = this.currRecipe.getCraftingResult(this.cache);
                                 if( !ItemStackUtils.isValid(stack) ) {
                                     this.cancelCrafting();
                                     return;
                                 }
 
                                 this.invHandler.fillOutput(stack);
-                                this.removedItems = null;
-
-                                if( !this.invHandler.canFillOutput(stack) ) {
-                                    this.isActive = false;
-                                    this.isActiveClient = false;
-                                }
+                                this.cache.clear();
 
                                 if( this.craftingAmount > 1 || this.automate ) {
                                     if( !this.automate ) {
@@ -240,13 +231,7 @@ public class TileEntityTurretAssembly
                                     }
 
                                     if( this.isActive ) {
-                                        this.removedItems = this.craftingAmount >= 1
-                                                            ? AssemblyManager.INSTANCE.checkAndConsumeResources(this.invHandler, this.world, this.currRecipe)
-                                                            : null;
-                                        if( this.removedItems == null ) {
-                                            this.isActive = false;
-                                            this.isActiveClient = false;
-                                        }
+                                        this.initCrafting();
                                     }
                                 } else {
                                     this.cancelCrafting();
@@ -381,8 +366,8 @@ public class TileEntityTurretAssembly
 
         this.writeNBT(nbt);
 
-        if( this.removedItems != null ) {
-            nbt.setTag("RemovedItems", ItemStackUtils.writeItemStacksToTag(this.removedItems, this.invHandler.getInventoryStackLimit()));
+        if( !this.cache.isEmpty() ) {
+            nbt.setTag("RemovedItems", this.cache.getCompound());
         }
 
         return nbt;
@@ -396,8 +381,10 @@ public class TileEntityTurretAssembly
 
         if( nbt.hasKey("RemovedItems", Constants.NBT.TAG_LIST) ) {
             NBTTagList remItems = nbt.getTagList("RemovedItems", Constants.NBT.TAG_COMPOUND);
-            this.removedItems = NonNullList.withSize(remItems.tagCount(), ItemStack.EMPTY);
-            ItemStackUtils.readItemStacksFromTag(this.removedItems, remItems);
+            NonNullList<ItemStack> remStacks = NonNullList.withSize(remItems.tagCount(), ItemStack.EMPTY);
+            ItemStackUtils.readItemStacksFromTag(remStacks, remItems);
+
+            this.cache.insert(remStacks);
         }
 
         this.doSync = true;
