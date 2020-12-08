@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.registry.turret;
 
 import de.sanandrew.mods.sanlib.lib.Tuple;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.config.Category;
 import de.sanandrew.mods.sanlib.lib.util.config.Range;
 import de.sanandrew.mods.sanlib.lib.util.config.Value;
@@ -19,7 +20,11 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
 import de.sanandrew.mods.turretmod.registry.EnumEffect;
 import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.Sounds;
+import net.minecraft.block.BlockPlanks;
+import net.minecraft.block.BlockStoneBrick;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -48,6 +53,8 @@ public class TurretShotgun
     @Value(comment = "Vertical length of the edge of the targeting box, from the turret downwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
     public static double rangeD       = 4.0D;
 
+    public static final DualVariants VARIANTS = new Variants();
+
     @Override
     public void onUpdate(ITurretInst turretInst) {
         EntityLiving turretL = turretInst.get();
@@ -71,7 +78,7 @@ public class TurretShotgun
 
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {
-        return Resources.TURRET_T1_SHOTGUN.resource;
+        return VARIANTS.get(turretInst.getVariant()).texture;
     }
 
     @Override
@@ -123,5 +130,42 @@ public class TurretShotgun
     {
         public float barrelPos     = 1.0F;
         public float prevBarrelPos = 1.0F;
+    }
+
+    private static final class Variants
+            extends DualVariants
+    {
+        Variants() {
+            super(Resources.TURRET_T1_SHOTGUN.location);
+
+            for( BlockPlanks.EnumType pType : BlockPlanks.EnumType.values() ) {
+                put(0, pType.getMetadata(), "stone", pType.getName()); // STONE
+                for( BlockStoneBrick.EnumType sType : BlockStoneBrick.EnumType.values() ) {
+                    put(sType.getMetadata() + 1, pType.getMetadata(), sType.getName(), pType.getName()); // STONEBRICKS
+                }
+            }
+        }
+
+        @Override
+        public int checkBase(ItemStack stack) {
+            if( ItemStackUtils.isBlock(stack, Blocks.STONE) && stack.getMetadata() == 0 ) {
+                return 0;
+            } else if( ItemStackUtils.isBlock(stack, Blocks.STONEBRICK) ) {
+                return stack.getMetadata() + 1;
+            }
+
+            return -1;
+        }
+
+        @Override
+        public int checkFrame(ItemStack stack) {
+            if( ItemStackUtils.isBlock(stack, Blocks.LOG) ) {
+                return stack.getMetadata() & 0b11;
+            } else if( ItemStackUtils.isBlock(stack, Blocks.LOG2) ) {
+                return (stack.getMetadata() & 0b11) + 4;
+            }
+
+            return -1;
+        }
     }
 }

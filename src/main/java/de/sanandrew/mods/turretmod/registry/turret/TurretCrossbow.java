@@ -8,8 +8,6 @@
  */
 package de.sanandrew.mods.turretmod.registry.turret;
 
-import com.google.common.collect.Table;
-import com.google.common.collect.TreeBasedTable;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.config.Category;
 import de.sanandrew.mods.sanlib.lib.util.config.Range;
@@ -49,9 +47,11 @@ public class TurretCrossbow
     @Value(comment = "Vertical length of the edge of the targeting box, from the turret downwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
     public static double rangeD       = 4.0D;
 
+    public static final DualVariants VARIANTS = new Variants();
+
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {
-        return Variant.get(turretInst.getVariant()).texture;
+        return VARIANTS.get(turretInst.getVariant()).texture;
     }
 
     @Override
@@ -98,15 +98,12 @@ public class TurretCrossbow
         return ID;
     }
 
-    public static final class Variant
+    private static final class Variants
+            extends DualVariants
     {
-        private static final Table<Integer, Integer, Variant> VARIANTS = TreeBasedTable.create();
+        Variants() {
+            super(Resources.TURRET_T1_CROSSBOW.location);
 
-        public final int id;
-        public final String suffix;
-        public final ResourceLocation texture;
-
-        static {
             for( BlockPlanks.EnumType pType : BlockPlanks.EnumType.values() ) {
                 put(0, pType.getMetadata(), "cobblestone", pType.getName());       // COBBLE
                 put(1, pType.getMetadata(), "mossy_cobblestone", pType.getName()); // MOSSY_COBBLE
@@ -116,43 +113,33 @@ public class TurretCrossbow
             }
         }
 
-        private static void put(int cobbleId, int plankId, String cobbleTx, String plankTx) {
-            VARIANTS.put(cobbleId, plankId, new Variant(cobbleId, plankId, cobbleTx, plankTx));
-        }
-
-        private Variant(int cobbleId, int plankId, String cobbleName, String plankName) {
-            this.id = ((cobbleId << 4) & 0b11110000) | (plankId & 0b1111);
-            this.suffix = String.format("%s_%s", cobbleName, plankName);
-            this.texture = new ResourceLocation(String.format(Resources.TURRET_T1_CROSSBOW.location, cobbleName, plankName));
-        }
-
-        public static Variant get(ItemStack cobbleStack, ItemStack plankStack) {
-            int cobble = 0;
-            int plank = 0;
-
-            if( ItemStackUtils.isBlock(cobbleStack, Blocks.MOSSY_COBBLESTONE) ) {
-                cobble = 1;
-            } else if( ItemStackUtils.isBlock(cobbleStack, Blocks.STONE) ) {
-                switch( cobbleStack.getMetadata() ) {
-                    case 1: cobble = 2; break;
-                    case 3: cobble = 3; break;
-                    case 5: cobble = 4; break;
+        @Override
+        public int checkBase(ItemStack stack) {
+            if( ItemStackUtils.isBlock(stack, Blocks.COBBLESTONE) ) {
+                return 0;
+            } else if( ItemStackUtils.isBlock(stack, Blocks.MOSSY_COBBLESTONE) ) {
+                return 1;
+            } else if( ItemStackUtils.isBlock(stack, Blocks.STONE) ) {
+                switch( stack.getMetadata() ) {
+                    case 1:
+                        return 2;
+                    case 3:
+                        return 3;
+                    case 5:
+                        return 4;
                 }
             }
 
-            if( ItemStackUtils.isBlock(plankStack, Blocks.PLANKS) ) {
-                plank = plankStack.getMetadata();
+            return -1;
+        }
+
+        @Override
+        public int checkFrame(ItemStack stack) {
+            if( ItemStackUtils.isBlock(stack, Blocks.PLANKS) ) {
+                return stack.getMetadata();
             }
 
-            return get(cobble, plank);
-        }
-
-        public static Variant get(int cobbleId, int plankId) {
-            return VARIANTS.contains(cobbleId, plankId) ? VARIANTS.get(cobbleId, plankId) : VARIANTS.get(0, 0);
-        }
-
-        public static Variant get(int id) {
-            return get((id >> 4) & 0b1111, id & 0b1111);
+            return -1;
         }
     }
 }
