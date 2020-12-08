@@ -8,6 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.registry.turret;
 
+import com.google.common.collect.Table;
+import com.google.common.collect.TreeBasedTable;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.config.Category;
 import de.sanandrew.mods.sanlib.lib.util.config.Range;
 import de.sanandrew.mods.sanlib.lib.util.config.Value;
@@ -15,7 +18,10 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.Resources;
+import net.minecraft.block.BlockPlanks;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -45,7 +51,7 @@ public class TurretCrossbow
 
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {
-        return Resources.TURRET_T1_CROSSBOW.resources[turretInst.getVariant()];
+        return Variant.get(turretInst.getVariant()).texture;
     }
 
     @Override
@@ -92,4 +98,61 @@ public class TurretCrossbow
         return ID;
     }
 
+    public static final class Variant
+    {
+        private static final Table<Integer, Integer, Variant> VARIANTS = TreeBasedTable.create();
+
+        public final int id;
+        public final String suffix;
+        public final ResourceLocation texture;
+
+        static {
+            for( BlockPlanks.EnumType pType : BlockPlanks.EnumType.values() ) {
+                put(0, pType.getMetadata(), "cobblestone", pType.getName());       // COBBLE
+                put(1, pType.getMetadata(), "mossy_cobblestone", pType.getName()); // MOSSY_COBBLE
+                put(2, pType.getMetadata(), "granite", pType.getName());           // GRANITE
+                put(3, pType.getMetadata(), "diorite", pType.getName());           // DIORITE
+                put(4, pType.getMetadata(), "andesite", pType.getName());          // ANDESITE
+            }
+        }
+
+        private static void put(int cobbleId, int plankId, String cobbleTx, String plankTx) {
+            VARIANTS.put(cobbleId, plankId, new Variant(cobbleId, plankId, cobbleTx, plankTx));
+        }
+
+        private Variant(int cobbleId, int plankId, String cobbleName, String plankName) {
+            this.id = ((cobbleId << 4) & 0b11110000) | (plankId & 0b1111);
+            this.suffix = String.format("%s_%s", cobbleName, plankName);
+            this.texture = new ResourceLocation(String.format(Resources.TURRET_T1_CROSSBOW.location, cobbleName, plankName));
+        }
+
+        public static Variant get(ItemStack cobbleStack, ItemStack plankStack) {
+            int cobble = 0;
+            int plank = 0;
+
+            if( ItemStackUtils.isBlock(cobbleStack, Blocks.MOSSY_COBBLESTONE) ) {
+                cobble = 1;
+            } else if( ItemStackUtils.isBlock(cobbleStack, Blocks.STONE) ) {
+                switch( cobbleStack.getMetadata() ) {
+                    case 1: cobble = 2; break;
+                    case 3: cobble = 3; break;
+                    case 5: cobble = 4; break;
+                }
+            }
+
+            if( ItemStackUtils.isBlock(plankStack, Blocks.PLANKS) ) {
+                plank = plankStack.getMetadata();
+            }
+
+            return get(cobble, plank);
+        }
+
+        public static Variant get(int cobbleId, int plankId) {
+            return VARIANTS.contains(cobbleId, plankId) ? VARIANTS.get(cobbleId, plankId) : VARIANTS.get(0, 0);
+        }
+
+        public static Variant get(int id) {
+            return get((id >> 4) & 0b1111, id & 0b1111);
+        }
+    }
 }

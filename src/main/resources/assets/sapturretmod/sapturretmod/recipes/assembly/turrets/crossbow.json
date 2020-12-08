@@ -11,6 +11,18 @@
         {
           "type": "forge:ore_dict",
           "ore": "cobblestone"
+        },
+        {
+          "item": "minecraft:stone",
+          "data": 1
+        },
+        {
+          "item": "minecraft:stone",
+          "data": 3
+        },
+        {
+          "item": "minecraft:stone",
+          "data": 5
         }
       ]
     },

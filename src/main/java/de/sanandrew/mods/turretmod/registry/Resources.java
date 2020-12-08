@@ -17,13 +17,8 @@ public enum Resources
 {
     TURRET_T1_BASE           ("models/entity/turret_base.json"),
     TURRET_T1_BASE_BUOY      ("models/entity/turret_base_buoy.json"),
-    TURRET_T1_CROSSBOW       ("textures/entities/turrets/t1_crossbow.png",
-                              "textures/entities/turrets/t1_crossbow_spruce.png",
-                              "textures/entities/turrets/t1_crossbow_birch.png",
-                              "textures/entities/turrets/t1_crossbow_jungle.png",
-                              "textures/entities/turrets/t1_crossbow_acacia.png",
-                              "textures/entities/turrets/t1_crossbow_dark_oak.png"),
-    TURRET_T1_CROSSBOW_GLOW  ("textures/entities/turrets/t1_crossbow_glow.png"),
+    TURRET_T1_CROSSBOW       ("textures/entities/turrets/t1_crossbow/%s_%s.png"),
+    TURRET_T1_CROSSBOW_GLOW  ("textures/entities/turrets/t1_crossbow/glow.png"),
     TURRET_T1_SNOWBALL       ("textures/entities/turrets/t1_snowball.png"),
     TURRET_T1_SNOWBALL_GLOW  ("textures/entities/turrets/t1_snowball_glow.png"),
     TURRET_T1_SHOTGUN        ("textures/entities/turrets/t1_shotgun.png"),
@@ -107,9 +102,15 @@ public enum Resources
     public final ResourceLocation[] resources;
     public final ResourceLocation resource;
 
+    public final String[] locations;
+    public final String location;
+
     Resources(String... locations) {
         this.resources = Arrays.stream(locations).map(l -> new ResourceLocation(TmrConstants.ID, l)).toArray(ResourceLocation[]::new);
         this.resource = this.resources[0];
+
+        this.locations = Arrays.stream(resources).map(ResourceLocation::toString).toArray(String[]::new);
+        this.location = this.locations[0];
     }
 
     @Override
