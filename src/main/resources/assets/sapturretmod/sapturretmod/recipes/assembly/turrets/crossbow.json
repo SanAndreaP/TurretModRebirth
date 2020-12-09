@@ -13,6 +13,9 @@
           "ore": "cobblestone"
         },
         {
+          "item": "minecraft:mossy_cobblestone"
+        },
+        {
           "item": "minecraft:stone",
           "data": 1
         },

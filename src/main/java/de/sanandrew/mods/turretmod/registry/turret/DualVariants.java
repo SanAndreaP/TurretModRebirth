@@ -63,7 +63,7 @@ public abstract class DualVariants
     public abstract int checkFrame(ItemStack stack);
 
     public int checkType(int currType, int newType) {
-        if( currType >= 0 && currType != newType ) {
+        if( currType >= 0 && newType >= 0 && currType != newType ) {
             return -1;
         }
 

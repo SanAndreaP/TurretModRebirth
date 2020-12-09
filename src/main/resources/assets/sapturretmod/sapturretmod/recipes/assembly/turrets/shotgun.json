@@ -10,6 +10,10 @@
         {
           "type": "forge:ore_dict",
           "ore": "stone"
+        },
+        {
+          "item": "minecraft:stonebrick",
+          "data": 32767
         }
       ]
     },
