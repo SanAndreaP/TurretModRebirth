@@ -9,7 +9,6 @@
 package de.sanandrew.mods.turretmod.registry.turret;
 
 import de.sanandrew.mods.sanlib.lib.Tuple;
-import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.config.Category;
 import de.sanandrew.mods.sanlib.lib.util.config.Range;
 import de.sanandrew.mods.sanlib.lib.util.config.Value;
@@ -17,6 +16,7 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
+import de.sanandrew.mods.turretmod.api.turret.ITurretVariant;
 import de.sanandrew.mods.turretmod.registry.EnumEffect;
 import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.Sounds;
@@ -53,7 +53,24 @@ public class TurretShotgun
     @Value(comment = "Vertical length of the edge of the targeting box, from the turret downwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
     public static double rangeD       = 4.0D;
 
-    public static final DualVariants VARIANTS = new Variants();
+    public static final DualItemVariants VARIANTS = new DualItemVariants();
+
+    static {
+        for( BlockPlanks.EnumType pType : BlockPlanks.EnumType.values() ) {
+            String txPath = Resources.TURRET_T1_SHOTGUN.resource.getPath();
+            int logMeta = pType.getMetadata();
+            ItemStack log = new ItemStack(logMeta < 4 ? Blocks.LOG : Blocks.LOG2, 1, logMeta - (logMeta < 4 ? 0 : 4));
+
+            VARIANTS.register(new ItemStack(Blocks.STONE, 1, 0), log,
+                              VARIANTS.buildVariant(TmrConstants.ID, txPath, "stone", pType.getName()));
+            for( BlockStoneBrick.EnumType sType : BlockStoneBrick.EnumType.values() ) {
+                ItemStack brick = new ItemStack(Blocks.STONEBRICK, 1, sType.getMetadata());
+
+                VARIANTS.register(brick, log,
+                                  VARIANTS.buildVariant(TmrConstants.ID, txPath, sType.getName(), pType.getName()));
+            }
+        }
+    }
 
     @Override
     public void onUpdate(ITurretInst turretInst) {
@@ -78,7 +95,7 @@ public class TurretShotgun
 
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {
-        return VARIANTS.get(turretInst.getVariant()).texture;
+        return turretInst.getVariant().getTexture();
     }
 
     @Override
@@ -125,47 +142,20 @@ public class TurretShotgun
         return ID;
     }
 
+    @Override
+    public ITurretVariant getVariant(ITurretInst turretInst, ResourceLocation id) {
+        return VARIANTS.get(id);
+    }
+
+    @Override
+    public void registerVariant(ITurretVariant variant) {
+        VARIANTS.register(variant);
+    }
+
     public static class MyRAM
             implements ITurretRAM
     {
         public float barrelPos     = 1.0F;
         public float prevBarrelPos = 1.0F;
-    }
-
-    private static final class Variants
-            extends DualVariants
-    {
-        Variants() {
-            super(Resources.TURRET_T1_SHOTGUN.location);
-
-            for( BlockPlanks.EnumType pType : BlockPlanks.EnumType.values() ) {
-                put(0, pType.getMetadata(), "stone", pType.getName()); // STONE
-                for( BlockStoneBrick.EnumType sType : BlockStoneBrick.EnumType.values() ) {
-                    put(sType.getMetadata() + 1, pType.getMetadata(), sType.getName(), pType.getName()); // STONEBRICKS
-                }
-            }
-        }
-
-        @Override
-        public int checkBase(ItemStack stack) {
-            if( ItemStackUtils.isBlock(stack, Blocks.STONE) && stack.getMetadata() == 0 ) {
-                return 0;
-            } else if( ItemStackUtils.isBlock(stack, Blocks.STONEBRICK) ) {
-                return stack.getMetadata() + 1;
-            }
-
-            return -1;
-        }
-
-        @Override
-        public int checkFrame(ItemStack stack) {
-            if( ItemStackUtils.isBlock(stack, Blocks.LOG) ) {
-                return stack.getMetadata() & 0b11;
-            } else if( ItemStackUtils.isBlock(stack, Blocks.LOG2) ) {
-                return (stack.getMetadata() & 0b11) + 4;
-            }
-
-            return -1;
-        }
     }
 }

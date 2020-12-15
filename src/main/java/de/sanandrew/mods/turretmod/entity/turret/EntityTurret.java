@@ -20,6 +20,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
+import de.sanandrew.mods.turretmod.api.turret.ITurretVariant;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
@@ -64,6 +65,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
@@ -80,7 +82,7 @@ public class EntityTurret
     private static final AxisAlignedBB UPWARDS_BLOCK = new AxisAlignedBB(0.1D, 0.99D, 0.1D, 1.0D, 1.0D, 1.0D);
 
     private static final DataParameter<Boolean> SHOT_CHNG = EntityDataManager.createKey(EntityTurret.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Integer> VARIANT = EntityDataManager.createKey(EntityTurret.class, DataSerializers.VARINT);
+    private static final DataParameter<String> VARIANT = EntityDataManager.createKey(EntityTurret.class, DataSerializers.STRING);
 
     private boolean showRange;
     public boolean inGui;
@@ -143,7 +145,7 @@ public class EntityTurret
         this.dwBools.registerDwValue();
 
         this.dataManager.register(SHOT_CHNG, false);
-        this.dataManager.register(VARIANT, 0);
+        this.dataManager.register(VARIANT, "");
 
         this.setActive(true);
     }
@@ -482,7 +484,7 @@ public class EntityTurret
             nbt.setString("ownerName", this.ownerName);
         }
 
-        nbt.setInteger("Variant", this.getVariant());
+        nbt.setString("Variant", this.getVariant().getId().toString());
 
         this.delegate.onSave(this, nbt);
     }
@@ -512,7 +514,9 @@ public class EntityTurret
             this.ownerName = nbt.getString("ownerName");
         }
 
-        this.setVariant(nbt.getInteger("Variant"));
+        if( nbt.hasKey("Variant", Constants.NBT.TAG_STRING) ) {
+            this.setVariant(new ResourceLocation(nbt.getString("Variant")));
+        }
 
         this.delegate.onLoad(this, nbt);
     }
@@ -667,9 +671,9 @@ public class EntityTurret
     @Nonnull
     public ItemStack getPickedResult(RayTraceResult target) {
         ItemStack pickedItem = TurretRegistry.INSTANCE.getItem(this.delegate.getId());
-        int variant = this.getVariant();
+        ITurretVariant variant = this.getVariant();
 
-        if( variant > 0 ) {
+        if( variant != null ) {
             new ItemTurret.TurretStats(null, null, variant).updateData(pickedItem);
         }
 
@@ -749,13 +753,13 @@ public class EntityTurret
     }
 
     @Override
-    public int getVariant() {
-        return this.dataManager.get(VARIANT);
+    public ITurretVariant getVariant() {
+        return this.delegate.getVariant(this, new ResourceLocation(this.dataManager.get(VARIANT)));
     }
 
     @Override
-    public void setVariant(int variant) {
-        this.dataManager.set(VARIANT, variant);
+    public void setVariant(ResourceLocation variantId) {
+        this.dataManager.set(VARIANT, variantId.toString());
     }
 
     @Override

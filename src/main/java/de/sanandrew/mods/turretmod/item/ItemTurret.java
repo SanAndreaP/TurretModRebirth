@@ -9,6 +9,7 @@ package de.sanandrew.mods.turretmod.item;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretVariant;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.Lang;
 import de.sanandrew.mods.turretmod.registry.TmrCreativeTabs;
@@ -156,20 +157,20 @@ public class ItemTurret
     public static final class TurretStats
     {
         public final Float health;
-        public final String name;
-        public final Integer variant;
+        public final String         name;
+        public final ResourceLocation variant;
 
         public TurretStats(ITurretInst turretInst) {
             EntityLiving bob = turretInst.get();
             this.health = bob.getHealth();
             this.name = bob.hasCustomName() ? bob.getCustomNameTag() : null;
-            this.variant = turretInst.getVariant();
+            this.variant = turretInst.getVariant().getId();
         }
 
-        public TurretStats(Float health, String name, Integer variant) {
+        public TurretStats(Float health, String name, ITurretVariant variant) {
             this.health = health;
             this.name = name;
-            this.variant = variant;
+            this.variant = variant.getId();
         }
 
         public TurretStats(NBTTagCompound nbt) {
@@ -178,7 +179,7 @@ public class ItemTurret
 
                 this.health = nbt.hasKey("Health", Constants.NBT.TAG_ANY_NUMERIC) ? nbt.getFloat("Health") : null;
                 this.name = nbt.hasKey("Name", Constants.NBT.TAG_STRING) ? nbt.getString("Name") : null;
-                this.variant = nbt.hasKey("Variant", Constants.NBT.TAG_ANY_NUMERIC) ? nbt.getInteger("Variant") : null;
+                this.variant = nbt.hasKey("Variant", Constants.NBT.TAG_STRING) ? new ResourceLocation(nbt.getString("Variant")) : null;
             } else {
                 this.health = null;
                 this.name = null;
@@ -211,7 +212,7 @@ public class ItemTurret
                 nbt.setString("Name", this.name);
             }
             if( this.variant != null ) {
-                nbt.setInteger("Variant", this.variant);
+                nbt.setString("Variant", this.variant.toString());
             }
 
             return nbt;

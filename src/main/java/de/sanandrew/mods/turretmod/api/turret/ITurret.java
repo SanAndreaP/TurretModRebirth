@@ -92,6 +92,12 @@ public interface ITurret
         return height * 0.85F;
     }
 
+    default ITurretVariant getVariant(ITurretInst turretInst, ResourceLocation id) {
+        return null;
+    }
+
+    default void registerVariant(ITurretVariant variant) { }
+
     @Override
     default int compareTo(ITurret t) {
         return this.getId().compareTo(t.getId());

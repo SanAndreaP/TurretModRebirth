@@ -8,13 +8,13 @@
  */
 package de.sanandrew.mods.turretmod.registry.turret;
 
-import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.config.Category;
 import de.sanandrew.mods.sanlib.lib.util.config.Range;
 import de.sanandrew.mods.sanlib.lib.util.config.Value;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretVariant;
 import de.sanandrew.mods.turretmod.registry.Resources;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.init.Blocks;
@@ -47,11 +47,30 @@ public class TurretCrossbow
     @Value(comment = "Vertical length of the edge of the targeting box, from the turret downwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
     public static double rangeD       = 4.0D;
 
-    public static final DualVariants VARIANTS = new Variants();
+    public static final DualItemVariants VARIANTS = new DualItemVariants();
+
+    static {
+        for( BlockPlanks.EnumType pType : BlockPlanks.EnumType.values() ) {
+            ItemStack plank = new ItemStack(Blocks.PLANKS, 1, pType.getMetadata());
+            String plankName = pType.getName();
+            String txPath = Resources.TURRET_T1_BASE.resource.getPath();
+
+            VARIANTS.register(new ItemStack(Blocks.COBBLESTONE, 1, 0), plank,
+                              VARIANTS.buildVariant(TmrConstants.ID, txPath, "cobblestone", plankName));       // COBBLE
+            VARIANTS.register(new ItemStack(Blocks.MOSSY_COBBLESTONE, 1, 0), plank,
+                              VARIANTS.buildVariant(TmrConstants.ID, txPath, "mossy_cobblestone", plankName)); // MOSSY_COBBLE
+            VARIANTS.register(new ItemStack(Blocks.STONE, 1, 1), plank,
+                              VARIANTS.buildVariant(TmrConstants.ID, txPath, "granite", plankName));           // GRANITE
+            VARIANTS.register(new ItemStack(Blocks.STONE, 1, 3), plank,
+                              VARIANTS.buildVariant(TmrConstants.ID, txPath, "diorite", plankName));           // DIORITE
+            VARIANTS.register(new ItemStack(Blocks.STONE, 1, 5), plank,
+                              VARIANTS.buildVariant(TmrConstants.ID, txPath, "andesite", plankName));          // ANDESITE
+        }
+    }
 
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {
-        return VARIANTS.get(turretInst.getVariant()).texture;
+        return turretInst.getVariant().getTexture();
     }
 
     @Override
@@ -64,6 +83,7 @@ public class TurretCrossbow
         if( rangeBB == null ) {
             rangeBB = new AxisAlignedBB(-rangeH, -rangeD, -rangeH, rangeH, rangeU, rangeH);
         }
+
         return rangeBB;
     }
 
@@ -98,48 +118,13 @@ public class TurretCrossbow
         return ID;
     }
 
-    private static final class Variants
-            extends DualVariants
-    {
-        Variants() {
-            super(Resources.TURRET_T1_CROSSBOW.location);
+    @Override
+    public ITurretVariant getVariant(ITurretInst turretInst, ResourceLocation id) {
+        return VARIANTS.getOrDefault(id);
+    }
 
-            for( BlockPlanks.EnumType pType : BlockPlanks.EnumType.values() ) {
-                put(0, pType.getMetadata(), "cobblestone", pType.getName());       // COBBLE
-                put(1, pType.getMetadata(), "mossy_cobblestone", pType.getName()); // MOSSY_COBBLE
-                put(2, pType.getMetadata(), "granite", pType.getName());           // GRANITE
-                put(3, pType.getMetadata(), "diorite", pType.getName());           // DIORITE
-                put(4, pType.getMetadata(), "andesite", pType.getName());          // ANDESITE
-            }
-        }
-
-        @Override
-        public int checkBase(ItemStack stack) {
-            if( ItemStackUtils.isBlock(stack, Blocks.COBBLESTONE) ) {
-                return 0;
-            } else if( ItemStackUtils.isBlock(stack, Blocks.MOSSY_COBBLESTONE) ) {
-                return 1;
-            } else if( ItemStackUtils.isBlock(stack, Blocks.STONE) ) {
-                switch( stack.getMetadata() ) {
-                    case 1:
-                        return 2;
-                    case 3:
-                        return 3;
-                    case 5:
-                        return 4;
-                }
-            }
-
-            return -1;
-        }
-
-        @Override
-        public int checkFrame(ItemStack stack) {
-            if( ItemStackUtils.isBlock(stack, Blocks.PLANKS) ) {
-                return stack.getMetadata();
-            }
-
-            return -1;
-        }
+    @Override
+    public void registerVariant(ITurretVariant variant) {
+        VARIANTS.register(variant);
     }
 }
