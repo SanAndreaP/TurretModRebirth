@@ -14,7 +14,8 @@ import de.sanandrew.mods.sanlib.lib.util.config.Value;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.api.turret.ITurretVariant;
+import de.sanandrew.mods.turretmod.api.turret.IVariant;
+import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
 import de.sanandrew.mods.turretmod.registry.Resources;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.init.Blocks;
@@ -28,7 +29,7 @@ import javax.annotation.Nonnull;
 
 @Category("crossbow")
 public class TurretCrossbow
-        implements ITurret
+        implements ITurret, IVariantHolder
 {
     private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "turret_crossbow");
 
@@ -53,7 +54,7 @@ public class TurretCrossbow
         for( BlockPlanks.EnumType pType : BlockPlanks.EnumType.values() ) {
             ItemStack plank = new ItemStack(Blocks.PLANKS, 1, pType.getMetadata());
             String plankName = pType.getName();
-            String txPath = Resources.TURRET_T1_BASE.resource.getPath();
+            String txPath = Resources.TURRET_T1_CROSSBOW.resource.getPath();
 
             VARIANTS.register(new ItemStack(Blocks.COBBLESTONE, 1, 0), plank,
                               VARIANTS.buildVariant(TmrConstants.ID, txPath, "cobblestone", plankName));       // COBBLE
@@ -119,12 +120,17 @@ public class TurretCrossbow
     }
 
     @Override
-    public ITurretVariant getVariant(ITurretInst turretInst, ResourceLocation id) {
+    public IVariant getVariant(ITurretInst turretInst, ResourceLocation id) {
         return VARIANTS.getOrDefault(id);
     }
 
     @Override
-    public void registerVariant(ITurretVariant variant) {
+    public void registerVariant(IVariant variant) {
         VARIANTS.register(variant);
+    }
+
+    @Override
+    public boolean isDefaultVariant(IVariant variant) {
+        return VARIANTS.isDefaultVariant(variant);
     }
 }

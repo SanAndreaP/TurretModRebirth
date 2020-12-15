@@ -9,7 +9,7 @@ package de.sanandrew.mods.turretmod.item;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.api.turret.ITurretVariant;
+import de.sanandrew.mods.turretmod.api.turret.IVariant;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.Lang;
 import de.sanandrew.mods.turretmod.registry.TmrCreativeTabs;
@@ -167,7 +167,7 @@ public class ItemTurret
             this.variant = turretInst.getVariant().getId();
         }
 
-        public TurretStats(Float health, String name, ITurretVariant variant) {
+        public TurretStats(Float health, String name, IVariant variant) {
             this.health = health;
             this.name = name;
             this.variant = variant.getId();

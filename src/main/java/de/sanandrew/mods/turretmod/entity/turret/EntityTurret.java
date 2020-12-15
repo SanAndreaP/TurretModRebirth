@@ -20,8 +20,9 @@ import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
-import de.sanandrew.mods.turretmod.api.turret.ITurretVariant;
+import de.sanandrew.mods.turretmod.api.turret.IVariant;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
+import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
@@ -43,14 +44,12 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
@@ -484,7 +483,9 @@ public class EntityTurret
             nbt.setString("ownerName", this.ownerName);
         }
 
-        nbt.setString("Variant", this.getVariant().getId().toString());
+        if( this.delegate instanceof IVariantHolder ) {
+            nbt.setString("Variant", this.getVariant().getId().toString());
+        }
 
         this.delegate.onSave(this, nbt);
     }
@@ -671,10 +672,12 @@ public class EntityTurret
     @Nonnull
     public ItemStack getPickedResult(RayTraceResult target) {
         ItemStack pickedItem = TurretRegistry.INSTANCE.getItem(this.delegate.getId());
-        ITurretVariant variant = this.getVariant();
+        if( this.delegate instanceof IVariantHolder ) {
+            IVariant variant = this.getVariant();
 
-        if( variant != null ) {
-            new ItemTurret.TurretStats(null, null, variant).updateData(pickedItem);
+            if( !((IVariantHolder) this.delegate).isDefaultVariant(variant) ) {
+                new ItemTurret.TurretStats(null, null, variant).updateData(pickedItem);
+            }
         }
 
         return pickedItem;
@@ -753,13 +756,19 @@ public class EntityTurret
     }
 
     @Override
-    public ITurretVariant getVariant() {
-        return this.delegate.getVariant(this, new ResourceLocation(this.dataManager.get(VARIANT)));
+    public IVariant getVariant() {
+        if( this.delegate instanceof IVariantHolder ) {
+            return ((IVariantHolder) this.delegate).getVariant(this, new ResourceLocation(this.dataManager.get(VARIANT)));
+        }
+
+        return null;
     }
 
     @Override
     public void setVariant(ResourceLocation variantId) {
-        this.dataManager.set(VARIANT, variantId.toString());
+        if( this.delegate instanceof IVariantHolder ) {
+            this.dataManager.set(VARIANT, variantId.toString());
+        }
     }
 
     @Override

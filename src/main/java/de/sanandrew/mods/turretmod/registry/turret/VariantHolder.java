@@ -1,7 +1,7 @@
 package de.sanandrew.mods.turretmod.registry.turret;
 
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
-import de.sanandrew.mods.turretmod.api.turret.ITurretVariant;
+import de.sanandrew.mods.turretmod.api.turret.IVariant;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.HashMap;
@@ -9,30 +9,30 @@ import java.util.Map;
 
 public class VariantHolder
 {
-    private ITurretVariant defaultVariant;
-    final Map<ResourceLocation, ITurretVariant> variants = new HashMap<>();
+    private IVariant                        defaultVariant;
+    final   Map<ResourceLocation, IVariant> variants = new HashMap<>();
 
-    public void register(ITurretVariant variant) {
+    public void register(IVariant variant) {
         this.variants.put(variant.getId(), variant);
         if( this.defaultVariant == null ) {
             this.defaultVariant = variant;
         }
     }
 
-    public ITurretVariant get(ResourceLocation id) {
+    public IVariant get(ResourceLocation id) {
         return this.variants.get(id);
     }
 
-    public ITurretVariant getOrDefault(ResourceLocation id) {
+    public IVariant getOrDefault(ResourceLocation id) {
         return MiscUtils.defIfNull(this.variants.get(id), this.defaultVariant);
     }
 
-    public boolean isDefaultVariant(ITurretVariant variant) {
-        return this.defaultVariant == variant;
+    public boolean isDefaultVariant(IVariant variant) {
+        return variant == null || this.defaultVariant.getId().equals(variant.getId());
     }
 
     public static class Variant
-            implements ITurretVariant
+            implements IVariant
     {
         private final ResourceLocation id;
         private final ResourceLocation texture;

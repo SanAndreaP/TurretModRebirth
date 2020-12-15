@@ -64,7 +64,7 @@ public interface ITurretInst
 
     TileEntityTurretCrate dismantle();
 
-    ITurretVariant getVariant();
+    IVariant getVariant();
 
     void setVariant(ResourceLocation variant);
 

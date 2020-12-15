@@ -17,11 +17,11 @@ public enum Resources
 {
     TURRET_T1_BASE           ("models/entity/turret_base.json"),
     TURRET_T1_BASE_BUOY      ("models/entity/turret_base_buoy.json"),
-    TURRET_T1_CROSSBOW       ("textures/entities/turrets/t1_crossbow/%s.png"),
+    TURRET_T1_CROSSBOW       ("textures/entities/turrets/t1_crossbow/%s_%s.png"),
     TURRET_T1_CROSSBOW_GLOW  ("textures/entities/turrets/t1_crossbow/glow.png"),
     TURRET_T1_SNOWBALL       ("textures/entities/turrets/t1_snowball.png"),
     TURRET_T1_SNOWBALL_GLOW  ("textures/entities/turrets/t1_snowball_glow.png"),
-    TURRET_T1_SHOTGUN        ("textures/entities/turrets/t1_shotgun/%s.png"),
+    TURRET_T1_SHOTGUN        ("textures/entities/turrets/t1_shotgun/%s_%s.png"),
     TURRET_T1_SHOTGUN_GLOW   ("textures/entities/turrets/t1_shotgun/glow.png"),
     TURRET_T1_HARPOON        ("textures/entities/turrets/t1_harpoon.png"),
     TURRET_T1_HARPOON_GLOW   ("textures/entities/turrets/t1_harpoon_glow.png"),

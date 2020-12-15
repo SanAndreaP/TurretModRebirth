@@ -16,7 +16,8 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
-import de.sanandrew.mods.turretmod.api.turret.ITurretVariant;
+import de.sanandrew.mods.turretmod.api.turret.IVariant;
+import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
 import de.sanandrew.mods.turretmod.registry.EnumEffect;
 import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.Sounds;
@@ -34,7 +35,7 @@ import javax.annotation.Nonnull;
 @Category("shotgun")
 @SuppressWarnings("WeakerAccess")
 public class TurretShotgun
-        implements ITurret
+        implements ITurret, IVariantHolder
 {
     private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "turret_shotgun");
 
@@ -143,13 +144,18 @@ public class TurretShotgun
     }
 
     @Override
-    public ITurretVariant getVariant(ITurretInst turretInst, ResourceLocation id) {
-        return VARIANTS.get(id);
+    public IVariant getVariant(ITurretInst turretInst, ResourceLocation id) {
+        return VARIANTS.getOrDefault(id);
     }
 
     @Override
-    public void registerVariant(ITurretVariant variant) {
+    public void registerVariant(IVariant variant) {
         VARIANTS.register(variant);
+    }
+
+    @Override
+    public boolean isDefaultVariant(IVariant variant) {
+        return VARIANTS.isDefaultVariant(variant);
     }
 
     public static class MyRAM

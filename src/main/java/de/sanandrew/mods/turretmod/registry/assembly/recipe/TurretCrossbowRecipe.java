@@ -1,9 +1,8 @@
 package de.sanandrew.mods.turretmod.registry.assembly.recipe;
 
-import de.sanandrew.mods.turretmod.api.turret.ITurretVariant;
+import de.sanandrew.mods.turretmod.api.turret.IVariant;
 import de.sanandrew.mods.turretmod.item.ItemTurret;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyRecipe;
-import de.sanandrew.mods.turretmod.registry.turret.VariantHolder;
 import de.sanandrew.mods.turretmod.registry.turret.TurretCrossbow;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -20,8 +19,8 @@ public class TurretCrossbowRecipe
 
     @Override
     public ItemStack getCraftingResult(IInventory inv) {
-        ItemStack      result  = super.getCraftingResult(inv);
-        ITurretVariant variant = TurretCrossbow.VARIANTS.get(inv);
+        ItemStack result  = super.getCraftingResult(inv);
+        IVariant  variant = TurretCrossbow.VARIANTS.get(inv);
 
         if( !TurretCrossbow.VARIANTS.isDefaultVariant(variant) ) {
             new ItemTurret.TurretStats(null, null, variant).updateData(result);
