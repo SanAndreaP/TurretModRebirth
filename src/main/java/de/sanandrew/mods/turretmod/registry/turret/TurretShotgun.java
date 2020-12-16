@@ -57,18 +57,18 @@ public class TurretShotgun
     public static final DualItemVariants VARIANTS = new DualItemVariants();
 
     static {
-        for( BlockPlanks.EnumType pType : BlockPlanks.EnumType.values() ) {
-            String txPath = Resources.TURRET_T1_SHOTGUN.resource.getPath();
-            int logMeta = pType.getMetadata();
-            ItemStack log = new ItemStack(logMeta < 4 ? Blocks.LOG : Blocks.LOG2, 1, logMeta - (logMeta < 4 ? 0 : 4));
+        String txPath = Resources.TURRET_T1_SHOTGUN.resource.getPath();
 
-            VARIANTS.register(new ItemStack(Blocks.STONE, 1, 0), log,
-                              VARIANTS.buildVariant(TmrConstants.ID, txPath, "stone", pType.getName()));
+        for( BlockPlanks.EnumType pType : BlockPlanks.EnumType.values() ) {
+            int       logMeta = pType.getMetadata();
+            ItemStack log     = new ItemStack(logMeta < 4 ? Blocks.LOG : Blocks.LOG2, 1, logMeta - (logMeta < 4 ? 0 : 4));
+
+            VARIANTS.register(new ItemStack(Blocks.STONE, 1, 0), log, VARIANTS.buildVariant(TmrConstants.ID, txPath, "stone", pType.getName()));
+
             for( BlockStoneBrick.EnumType sType : BlockStoneBrick.EnumType.values() ) {
                 ItemStack brick = new ItemStack(Blocks.STONEBRICK, 1, sType.getMetadata());
 
-                VARIANTS.register(brick, log,
-                                  VARIANTS.buildVariant(TmrConstants.ID, txPath, sType.getName(), pType.getName()));
+                VARIANTS.register(brick, log, VARIANTS.buildVariant(TmrConstants.ID, txPath, sType.getName(), pType.getName()));
             }
         }
     }

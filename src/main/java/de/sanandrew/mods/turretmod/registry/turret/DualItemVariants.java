@@ -10,13 +10,17 @@ import net.minecraft.util.ResourceLocation;
 import java.util.Objects;
 
 public class DualItemVariants
-        extends VariantHolder
+        extends VariantHolder.ItemVariants<Table<Long, Long, IVariant>>
 {
-    private final Table<Long, Long, IVariant> variants = TreeBasedTable.create();
+    @Override
+    public Table<Long, Long, IVariant> buildVariantMap() {
+        return TreeBasedTable.create();
+    }
 
     public void register(ItemStack base, ItemStack frame, IVariant variant) {
         super.register(variant);
-        this.variants.put(getIdFromStack(base), getIdFromStack(frame), variant);
+
+        this.variantMap.put(getIdFromStack(base), getIdFromStack(frame), variant);
     }
 
     public IVariant get(ItemStack base, ItemStack frame) {
@@ -47,7 +51,7 @@ public class DualItemVariants
     }
 
     public IVariant get(long baseHash, long frameHash) {
-        return this.variants.get(baseHash, frameHash);
+        return this.variantMap.get(baseHash, frameHash);
     }
 
     public long checkType(long currType, long newType) {
@@ -60,7 +64,7 @@ public class DualItemVariants
 
     protected long getBaseId(ItemStack stack) {
         long id = getIdFromStack(stack);
-        if( this.variants.containsRow(id) ) {
+        if( this.variantMap.containsRow(id) ) {
             return id;
         }
 
@@ -69,15 +73,11 @@ public class DualItemVariants
 
     protected long getFrameId(ItemStack stack) {
         long id = getIdFromStack(stack);
-        if( this.variants.containsColumn(id) ) {
+        if( this.variantMap.containsColumn(id) ) {
             return id;
         }
 
         return -1L;
-    }
-
-    protected long getIdFromStack(ItemStack stack) {
-        return ((long) (stack.getMetadata() & Integer.MAX_VALUE) << 32) | Objects.hashCode(stack.getItem());
     }
 
     public IVariant buildVariant(String modId, String textureBase, String baseName, String frameName) {

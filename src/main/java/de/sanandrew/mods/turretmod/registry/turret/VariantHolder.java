@@ -2,10 +2,12 @@ package de.sanandrew.mods.turretmod.registry.turret;
 
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.turret.IVariant;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class VariantHolder
 {
@@ -50,6 +52,26 @@ public class VariantHolder
         @Override
         public ResourceLocation getTexture() {
             return this.texture;
+        }
+    }
+
+    public static abstract class ItemVariants<T>
+            extends VariantHolder
+    {
+        public final T variantMap = buildVariantMap();
+
+        public abstract T buildVariantMap();
+
+        protected long getIdFromStack(ItemStack stack) {
+            return ((long) (stack.getMetadata() & Integer.MAX_VALUE) << 32) | Objects.hashCode(stack.getItem());
+        }
+
+        public long checkType(long currType, long newType) {
+            if( currType >= 0L && newType >= 0L && currType != newType ) {
+                return -1L;
+            }
+
+            return newType >= 0L ? newType : currType;
         }
     }
 }

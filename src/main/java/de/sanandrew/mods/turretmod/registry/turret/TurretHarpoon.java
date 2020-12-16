@@ -14,18 +14,25 @@ import de.sanandrew.mods.sanlib.lib.util.config.Value;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.IVariant;
+import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
 import de.sanandrew.mods.turretmod.registry.Resources;
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 
 @Category("harpoon")
 @SuppressWarnings("WeakerAccess")
 public class TurretHarpoon
-        implements ITurret
+        implements ITurret, IVariantHolder
 {
     private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "turret_harpoon");
 
@@ -44,9 +51,27 @@ public class TurretHarpoon
     @Value(comment = "Vertical length of the edge of the targeting box, from the turret downwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
     public static double rangeD       = 8.0D;
 
+    public static final SingleItemVariants VARIANTS = new SingleItemVariants();
+
+    static {
+        String txPath = Resources.TURRET_T1_HARPOON.resource.getPath();
+
+        VARIANTS.register(new ItemStack(Blocks.HARDENED_CLAY), VARIANTS.buildVariant(TmrConstants.ID, txPath, "terracotta"));
+
+        for( EnumDyeColor clr : EnumDyeColor.values() ) {
+            String clrName    = clr.getName();
+            String glazedName = String.format("%s_glazed_terracotta", clrName);
+
+            VARIANTS.register(new ItemStack(Blocks.STAINED_HARDENED_CLAY, 1, clr.getMetadata()),
+                              VARIANTS.buildVariant(TmrConstants.ID, txPath, String.format("%s_terracotta", clrName)));
+            VARIANTS.register(new ItemStack(Objects.requireNonNull(Block.getBlockFromName(glazedName))),
+                              VARIANTS.buildVariant(TmrConstants.ID, txPath, glazedName));
+        }
+    }
+
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {
-        return Resources.TURRET_T1_HARPOON.resource;
+        return turretInst.getVariant().getTexture();
     }
 
     @Override
@@ -106,5 +131,20 @@ public class TurretHarpoon
     @Override
     public float getEyeHeight(float height) {
         return height * 0.155F;
+    }
+
+    @Override
+    public IVariant getVariant(ITurretInst turretInst, ResourceLocation id) {
+        return VARIANTS.getOrDefault(id);
+    }
+
+    @Override
+    public void registerVariant(IVariant variant) {
+        VARIANTS.register(variant);
+    }
+
+    @Override
+    public boolean isDefaultVariant(IVariant variant) {
+        return VARIANTS.isDefaultVariant(variant);
     }
 }
