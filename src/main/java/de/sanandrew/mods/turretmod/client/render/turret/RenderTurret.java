@@ -93,7 +93,7 @@ public class RenderTurret<E extends EntityLiving & ITurretInst>
 
     @Override
     public <T extends ModelBase> void addGlowLayer(List<LayerRenderer<E>> layerList, ITurretRender<T, E> render) {
-        layerList.add(new LayerTurretGlow<>(this, render.getNewModel(0.001F)));
+        layerList.add(new LayerTurretGlow<>(this, render.getNewModel(0.005F)));
     }
 
     @Override
