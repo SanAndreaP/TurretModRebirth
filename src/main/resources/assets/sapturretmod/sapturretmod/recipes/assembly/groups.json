@@ -2,31 +2,36 @@
   "type": "sapturretmod:assembly.tabs",
   "tabs": [
     {
-      "name": "misc",
-      "icon": {
-        "item": "sapturretmod:turret_control_unit"
-      }
-    },
-    {
       "name": "turrets",
+      "order": 0,
       "icon": {
         "item": "sapturretmod:turret_crossbow"
       }
     },
     {
+      "name": "misc",
+      "order": 1,
+      "icon": {
+        "item": "sapturretmod:turret_control_unit"
+      }
+    },
+    {
       "name": "ammo",
+      "order": 2,
       "icon": {
         "item": "sapturretmod:ammo_bolt"
       }
     },
     {
       "name": "upgrades",
+      "order": 3,
       "icon": {
         "item": "sapturretmod:upgrade_empty"
       }
     },
     {
       "name": "repair_kit",
+      "order": 4,
       "icon": {
         "item": "sapturretmod:repair_kit_standard_1"
       }

@@ -14,18 +14,26 @@ import de.sanandrew.mods.sanlib.lib.util.config.Value;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.IVariant;
+import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
 import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.Sounds;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockPlanks;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 
 @Category("cryolator")
 @SuppressWarnings("WeakerAccess")
 public class TurretCryolator
-        implements ITurret
+        implements ITurret, IVariantHolder
 {
     private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "turret_cryolator");
 
@@ -44,14 +52,24 @@ public class TurretCryolator
     @Value(comment = "Vertical length of the edge of the targeting box, from the turret downwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
     public static double rangeD          = 8.0D;
 
+    public static final SingleItemVariants VARIANTS = new SingleItemVariants();
+
+    static {
+        String txPath = Resources.TURRET_T1_CRYOLATOR.resource.getPath();
+
+        for( BlockPlanks.EnumType plank : BlockPlanks.EnumType.values() ) {
+            VARIANTS.register(new ItemStack(Blocks.PLANKS, 1, plank.getMetadata()), VARIANTS.buildVariant(TmrConstants.ID, txPath, plank.getName()));
+        }
+    }
+
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {
-        return Resources.TURRET_T1_SNOWBALL.resource;
+        return turretInst.getVariant().getTexture();
     }
 
     @Override
     public ResourceLocation getGlowTexture(ITurretInst turretInst) {
-        return Resources.TURRET_T1_SNOWBALL_GLOW.resource;
+        return Resources.TURRET_T1_CRYOLATOR_GLOW.resource;
     }
 
     @Override
@@ -93,4 +111,18 @@ public class TurretCryolator
         return ID;
     }
 
+    @Override
+    public IVariant getVariant(ITurretInst turretInst, ResourceLocation id) {
+        return VARIANTS.getOrDefault(id);
+    }
+
+    @Override
+    public boolean isDefaultVariant(IVariant variant) {
+        return VARIANTS.isDefaultVariant(variant);
+    }
+
+    @Override
+    public void registerVariant(IVariant variant) {
+        VARIANTS.register(variant);
+    }
 }
