@@ -16,10 +16,14 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
+import de.sanandrew.mods.turretmod.api.turret.IVariant;
+import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
 import de.sanandrew.mods.turretmod.registry.EnumEffect;
 import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.Sounds;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -29,7 +33,7 @@ import javax.annotation.Nonnull;
 @Category("minigun")
 @SuppressWarnings("WeakerAccess")
 public class TurretMinigun
-        implements ITurret
+        implements ITurret, IVariantHolder
 {
     private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "turret_minigun");
 
@@ -47,6 +51,24 @@ public class TurretMinigun
     public static double rangeU       = 20.0D;
     @Value(comment = "Vertical length of the edge of the targeting box, from the turret downwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
     public static double rangeD       = 4.0D;
+
+    public static final SingleItemVariants VARIANTS = new SingleItemVariants();
+    private static final ResourceLocation MELON_VARIANT;
+
+    static {
+        String    txPath    = Resources.TURRET_T2_MINIGUN.resource.getPath();
+
+        VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 0), VARIANTS.buildVariant(TmrConstants.ID, txPath, "stone"));
+        VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 1), VARIANTS.buildVariant(TmrConstants.ID, txPath, "sandstone"));
+        VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 3), VARIANTS.buildVariant(TmrConstants.ID, txPath, "cobblestone"));
+        VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 4), VARIANTS.buildVariant(TmrConstants.ID, txPath, "bricks"));
+        VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 5), VARIANTS.buildVariant(TmrConstants.ID, txPath, "stone_bricks"));
+        VARIANTS.register(new ItemStack(Blocks.STONE_SLAB2, 1, 0), VARIANTS.buildVariant(TmrConstants.ID, txPath, "red_sandstone"));
+
+        IVariant melon = VARIANTS.buildVariant(TmrConstants.ID, txPath, "melon");
+        VARIANTS.register(melon);
+        MELON_VARIANT = melon.getId();
+    }
 
     @Override
     public void onUpdate(ITurretInst turretInst) {
@@ -87,8 +109,8 @@ public class TurretMinigun
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {
         return (turretInst.get().hasCustomName() && turretInst.get().getCustomNameTag().equalsIgnoreCase("silverchiren")
-                ? Resources.TURRET_T2_MINIGUN_EE
-                : Resources.TURRET_T2_MINIGUN).resource;
+                ? VARIANTS.getOrDefault(MELON_VARIANT)
+                : turretInst.getVariant()).getTexture();
     }
 
     @Override
@@ -118,6 +140,21 @@ public class TurretMinigun
     @Override
     public int getTier() {
         return 2;
+    }
+
+    @Override
+    public IVariant getVariant(ITurretInst turretInst, ResourceLocation id) {
+        return VARIANTS.getOrDefault(id);
+    }
+
+    @Override
+    public void registerVariant(IVariant variant) {
+        VARIANTS.register(variant);
+    }
+
+    @Override
+    public boolean isDefaultVariant(IVariant variant) {
+        return VARIANTS.isDefaultVariant(variant);
     }
 
     public static final class MyRAM

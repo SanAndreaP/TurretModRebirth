@@ -16,10 +16,16 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
+import de.sanandrew.mods.turretmod.api.turret.IVariant;
+import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
 import de.sanandrew.mods.turretmod.registry.EnumEffect;
 import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.Sounds;
+import net.minecraft.block.BlockPlanks;
+import net.minecraft.block.BlockStoneBrick;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -29,7 +35,7 @@ import javax.annotation.Nonnull;
 @Category("revolver")
 @SuppressWarnings("WeakerAccess")
 public class TurretRevolver
-        implements ITurret
+        implements ITurret, IVariantHolder
 {
     private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "turret_revolver");
 
@@ -47,6 +53,23 @@ public class TurretRevolver
     public static double rangeU       = 10.0D;
     @Value(comment = "Vertical length of the edge of the targeting box, from the turret downwards.", range = @Range(minD = 1.0D), reqMcRestart = true)
     public static double rangeD       = 4.0D;
+
+    public static final DualItemVariants VARIANTS = new DualItemVariants();
+
+    static {
+        for( BlockStoneBrick.EnumType bType : BlockStoneBrick.EnumType.values() ) {
+            ItemStack brick     = new ItemStack(Blocks.STONEBRICK, 1, bType.getMetadata());
+            String    brickName = bType.getName();
+            String    txPath    = Resources.TURRET_T2_REVOLVER.resource.getPath();
+
+            VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 0), brick, VARIANTS.buildVariant(TmrConstants.ID, txPath, "stone", brickName));
+            VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 1), brick, VARIANTS.buildVariant(TmrConstants.ID, txPath, "sandstone", brickName));
+            VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 3), brick, VARIANTS.buildVariant(TmrConstants.ID, txPath, "cobblestone", brickName));
+            VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 4), brick, VARIANTS.buildVariant(TmrConstants.ID, txPath, "bricks", brickName));
+            VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 5), brick, VARIANTS.buildVariant(TmrConstants.ID, txPath, "stone_bricks", brickName));
+            VARIANTS.register(new ItemStack(Blocks.STONE_SLAB2, 1, 0), brick, VARIANTS.buildVariant(TmrConstants.ID, txPath, "red_sandstone", brickName));
+        }
+    }
 
     @Override
     public void onUpdate(ITurretInst turretInst) {
@@ -88,7 +111,7 @@ public class TurretRevolver
 
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {
-        return Resources.TURRET_T2_REVOLVER.resource;
+        return turretInst.getVariant().getTexture();
     }
 
     @Override
@@ -147,4 +170,18 @@ public class TurretRevolver
         return ID;
     }
 
+    @Override
+    public void registerVariant(IVariant variant) {
+        VARIANTS.register(variant);
+    }
+
+    @Override
+    public IVariant getVariant(ITurretInst turretInst, ResourceLocation id) {
+        return VARIANTS.getOrDefault(id);
+    }
+
+    @Override
+    public boolean isDefaultVariant(IVariant variant) {
+        return VARIANTS.isDefaultVariant(variant);
+    }
 }

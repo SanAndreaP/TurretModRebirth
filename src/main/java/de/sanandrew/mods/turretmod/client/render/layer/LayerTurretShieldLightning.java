@@ -89,9 +89,9 @@ public class LayerTurretShieldLightning<E extends EntityLiving & ITurretInst>
         }
 
         void renderLightning(Tessellator tess, float partTicks) {
-            double xPos[] = new double[8];
-            double zPos[] = new double[8];
-            double maxX = 0.0D;
+            double[] xPos = new double[8];
+            double[] zPos = new double[8];
+            double   maxX = 0.0D;
             double maxZ = 0.0D;
             XorShiftRandom rngMain = new XorShiftRandom(this.seed);
             BufferBuilder buf = tess.getBuffer();
@@ -164,8 +164,8 @@ public class LayerTurretShieldLightning<E extends EntityLiving & ITurretInst>
 
                             float lum = 0.5F;
                             float alpha = (this.ticksVisible - ClientTickHandler.ticksInGame - partTicks) / MAX_TICKS_VISIBLE;
-                            buf.pos(xTwigMin + minX,    level * 16,       zTwigMin + minZ)   .color(0.9F * lum, 0.2F * lum, 0.2F * lum, alpha).endVertex();
-                            buf.pos(xTwigMax + xBranch, (level + 1) * 16, zTwigMax + zBranch).color(0.9F * lum, 0.2F * lum, 0.2F * lum, alpha).endVertex();
+                            buf.pos(xTwigMin + minX,    level * 16,       zTwigMin + minZ)   .color(0.9F * lum, 0.8F * lum, 0.1F * lum, alpha).endVertex();
+                            buf.pos(xTwigMax + xBranch, (level + 1) * 16, zTwigMax + zBranch).color(0.9F * lum, 0.8F * lum, 0.1F * lum, alpha).endVertex();
                         }
 
                         tess.draw();

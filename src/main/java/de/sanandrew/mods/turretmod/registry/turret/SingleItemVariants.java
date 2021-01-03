@@ -24,6 +24,7 @@ public class SingleItemVariants
         return get(getIdFromStack(base));
     }
 
+    @Override
     public IVariant get(IInventory inv) {
         long base = -2;
 

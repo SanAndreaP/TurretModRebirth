@@ -1,5 +1,6 @@
 {
   "type": "sapturretmod:assembly.recipe",
+  "recipeClass": "de.sanandrew.mods.turretmod.registry.assembly.recipe.TurretVariantRecipe$Minigun",
   "group": "turrets",
   "fluxPerTick": 15,
   "ticksProcessing": 100,
@@ -32,19 +33,30 @@
       ]
     },
     {
-      "count": 2,
-      "items": [
-        {
-          "item": "minecraft:stonebrick",
-          "data": 0
-        }
-      ]
-    },
-    {
-      "count": 4,
+      "count": 8,
       "items": [
         {
           "item": "minecraft:stone_slab",
+          "data": 0
+        },
+        {
+          "item": "minecraft:stone_slab",
+          "data": 1
+        },
+        {
+          "item": "minecraft:stone_slab",
+          "data": 3
+        },
+        {
+          "item": "minecraft:stone_slab",
+          "data": 4
+        },
+        {
+          "item": "minecraft:stone_slab",
+          "data": 5
+        },
+        {
+          "item": "minecraft:stone_slab2",
           "data": 0
         }
       ]

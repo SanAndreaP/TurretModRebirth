@@ -27,6 +27,7 @@ public class DualItemVariants
         return get(getIdFromStack(base), getIdFromStack(frame));
     }
 
+    @Override
     public IVariant get(IInventory inv) {
         long base = -2;
         long frame = -2;

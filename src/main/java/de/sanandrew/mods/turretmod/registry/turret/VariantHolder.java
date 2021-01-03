@@ -2,6 +2,7 @@ package de.sanandrew.mods.turretmod.registry.turret;
 
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.turret.IVariant;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -61,6 +62,8 @@ public class VariantHolder
         public final T variantMap = buildVariantMap();
 
         public abstract T buildVariantMap();
+
+        public abstract IVariant get(IInventory inv);
 
         protected long getIdFromStack(ItemStack stack) {
             return ((long) (stack.getMetadata() & Integer.MAX_VALUE) << 32) | Objects.hashCode(stack.getItem());
