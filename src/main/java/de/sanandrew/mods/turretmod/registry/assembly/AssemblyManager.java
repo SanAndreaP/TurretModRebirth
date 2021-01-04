@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -36,9 +37,10 @@ public final class AssemblyManager
 {
     public static final AssemblyManager INSTANCE = new AssemblyManager();
 
-    private final Map<ResourceLocation, IAssemblyRecipe> recipes    = new LinkedHashMap<>();
-    private final Map<String, List<ResourceLocation>>    groups     = new HashMap<>();
-    private final Map<String, ItemStack>                 groupIcons = new HashMap<>();
+    private final Map<ResourceLocation, IAssemblyRecipe> recipes     = new LinkedHashMap<>();
+    private final Map<String, List<ResourceLocation>>    groups      = new HashMap<>();
+    private final Map<String, ItemStack>                 groupIcons  = new HashMap<>();
+    private final Map<String, Integer>                   groupOrders = new HashMap<>();
 
     private String[]                           cacheGroupNames;
     private List<IAssemblyRecipe>              cacheRecipes;
@@ -66,6 +68,9 @@ public final class AssemblyManager
 
         this.recipes.put(id, recipe);
         this.groups.computeIfAbsent(recipe.getGroup(), k -> new ArrayList<>()).add(id);
+        this.groupOrders.putIfAbsent(recipe.getGroup(), 0);
+
+        this.cacheGroupNames = null;
 
         this.invalidateCaches();
 
@@ -91,9 +96,17 @@ public final class AssemblyManager
     }
 
     @Override
+    public void setGroupOrder(String group, int sort) {
+        this.cacheGroupNames = null;
+
+        this.groupOrders.put(group, sort);
+    }
+
+    @Override
     public String[] getGroups() {
         if( this.cacheGroupNames == null ) {
-            this.cacheGroupNames = this.groups.keySet().toArray(new String[0]);
+            this.cacheGroupNames = this.groups.keySet().stream().sorted(Comparator.comparingInt(g -> this.groupOrders.getOrDefault(g, 0)))
+                                              .toArray(String[]::new);
         }
 
         return this.cacheGroupNames;

@@ -36,6 +36,8 @@ public interface IAssemblyManager
      */
     ItemStack getGroupIcon(String group);
 
+    void setGroupOrder(String group, int sort);
+
     /**
      * <p>Returns an array of group names used by all registered recipes.</p>
      *

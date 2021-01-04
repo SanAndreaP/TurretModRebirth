@@ -24,7 +24,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.Level;
 
 import java.io.BufferedReader;
@@ -33,7 +32,6 @@ import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public final class AssemblyRecipeLoader
 {
@@ -72,7 +70,9 @@ public final class AssemblyRecipeLoader
                 for( JsonElement tab : json.getAsJsonArray("tabs") ) {
                     if( tab.isJsonObject() ) {
                         JsonObject tabObj = tab.getAsJsonObject();
-                        registry.setGroupIcon(JsonUtils.getStringVal(tabObj.get("name")), JsonUtils.getItemStack(tabObj.get("icon")));
+                        String grpName = JsonUtils.getStringVal(tabObj.get("name"));
+                        registry.setGroupIcon(grpName, JsonUtils.getItemStack(tabObj.get("icon")));
+                        registry.setGroupOrder(grpName, JsonUtils.getIntVal(tabObj.get("order"), 0));
                     } else {
                         throw new JsonSyntaxException("A group definition needs to be an object");
                     }
