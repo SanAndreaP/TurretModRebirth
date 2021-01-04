@@ -2,6 +2,22 @@
   "parent": "sapturretmod:models/entity/turret_base.json",
   "cubes": [
     {
+      "boxName": "shieldBar",
+      "sizeX": 1,
+      "sizeY": 5,
+      "sizeZ": 1,
+      "textureX": 16,
+      "textureY": 27,
+      "textureWidth": 128,
+      "textureHeight": 64,
+      "rotationPointX": 0.0,
+      "rotationPointY": 19.0,
+      "rotationPointZ": -2.0,
+      "offsetX": -0.5,
+      "offsetY": -4.0,
+      "offsetZ": -0.5
+    },
+    {
       "boxName": "antenna",
       "sizeX": 1,
       "sizeY": 8,

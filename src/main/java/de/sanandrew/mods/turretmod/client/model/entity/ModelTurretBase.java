@@ -109,7 +109,7 @@ public class ModelTurretBase
 		return this.scale;
 	}
 
-	List<String> getMandatoryBoxes() {
+	protected List<String> getMandatoryBoxes() {
 		return Arrays.asList("head", "healthBar", "ammoBar");
 	}
 
