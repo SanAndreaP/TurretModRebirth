@@ -23,11 +23,20 @@
       ]
     },
     {
+      "count": 4,
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "dustRedstone"
+        }
+      ]
+    },
+    {
       "count": 1,
       "items": [
         {
           "type": "forge:ore_dict",
-          "ore": "blockRedstone"
+          "ore": "glowstone"
         }
       ]
     },
