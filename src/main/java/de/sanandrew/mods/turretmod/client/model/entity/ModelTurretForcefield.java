@@ -3,8 +3,7 @@ package de.sanandrew.mods.turretmod.client.model.entity;
 import de.sanandrew.mods.sanlib.lib.client.ModelJsonLoader;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.Resources;
-import de.sanandrew.mods.turretmod.registry.turret.shieldgen.ShieldHandler;
-import de.sanandrew.mods.turretmod.registry.turret.shieldgen.ShieldTurret;
+import de.sanandrew.mods.turretmod.registry.turret.forcefield.Forcefield;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.entity.Entity;
@@ -18,7 +17,7 @@ public class ModelTurretForcefield
     private ModelRenderer shieldBar;
 
     public ModelTurretForcefield(float scale) {
-        super(scale, Resources.TURRET_T2_SHIELDGEN_MODEL.resource);
+        super(scale, Resources.TURRET_T2_FORCEFIELD_MODEL.resource);
     }
 
     @Override
@@ -42,11 +41,11 @@ public class ModelTurretForcefield
 
         ITurretInst turret = (ITurretInst) entity;
 
-        ShieldTurret shieldTurret = turret.getRAM(null);
+        Forcefield forcefieldTurret = turret.getRAM(null);
 
-        if( shieldTurret != null ) {
-            float maxShield = turret.isInGui() ? 2.0F : shieldTurret.getMaxValue();
-            float shield    = turret.isInGui() ? 1.0F : shieldTurret.getValue();
+        if( forcefieldTurret != null ) {
+            float maxShield = turret.isInGui() ? 2.0F : forcefieldTurret.getMaxValue();
+            float shield    = turret.isInGui() ? 1.0F : forcefieldTurret.getValue();
 
             this.shieldBar.rotateAngleX = ((float) Math.PI / 2.0F) * (Math.max(0.0F, maxShield - shield) / maxShield);
         } else {

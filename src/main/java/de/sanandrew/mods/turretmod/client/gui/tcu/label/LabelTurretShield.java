@@ -12,8 +12,8 @@ import de.sanandrew.mods.turretmod.api.client.tcu.ILabelElement;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.init.ClientProxy;
 import de.sanandrew.mods.turretmod.registry.Lang;
-import de.sanandrew.mods.turretmod.registry.turret.shieldgen.ShieldTurret;
-import de.sanandrew.mods.turretmod.registry.turret.shieldgen.TurretForcefield;
+import de.sanandrew.mods.turretmod.registry.turret.forcefield.Forcefield;
+import de.sanandrew.mods.turretmod.registry.turret.forcefield.TurretForcefield;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 
@@ -37,8 +37,8 @@ public class LabelTurretShield
 
     @Override
     public void renderQuads(ITurretInst turretInst, float maxWidth, float progress, FontRenderer fontRenderer, float currHeight, BufferBuilder buffer) {
-        ShieldTurret shield = turretInst.getRAM(null);
-        float shieldPerc = shield == null ? 0.0F : shield.getValue() / shield.getMaxValue() * maxWidth;
+        Forcefield shield     = turretInst.getRAM(null);
+        float      shieldPerc = shield == null ? 0.0F : shield.getValue() / shield.getMaxValue() * maxWidth;
 
         currHeight += fontRenderer.FONT_HEIGHT + 2.0F;
 
@@ -52,7 +52,7 @@ public class LabelTurretShield
     }
 
     private static String getLabel(ITurretInst turretInst) {
-        ShieldTurret shield = turretInst.getRAM(null);
+        Forcefield shield = turretInst.getRAM(null);
 
         if( shield != null ) {
             if( shield.isInRecovery() ) {

@@ -8,8 +8,8 @@ package de.sanandrew.mods.turretmod.event;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.registry.turret.shieldgen.ShieldHandler;
-import de.sanandrew.mods.turretmod.registry.turret.shieldgen.TurretForcefield;
+import de.sanandrew.mods.turretmod.registry.turret.forcefield.ForcefieldHandler;
+import de.sanandrew.mods.turretmod.registry.turret.forcefield.TurretForcefield;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -37,7 +37,7 @@ public class ExplosionEventHandler
         AxisAlignedBB aabb = new AxisAlignedBB(-radius, -radius, -radius, radius, radius, radius).grow(24.0D).offset(event.getExplosion().getPosition());
 
         for( EntityLivingBase living : event.getWorld().getEntitiesWithinAABB(EntityLivingBase.class, aabb, CHK_ENTITY::test) ) {
-            ShieldHandler.onExplosion((ITurretInst) living, aabb, event.getAffectedBlocks(), event.getAffectedEntities());
+            ForcefieldHandler.onExplosion((ITurretInst) living, aabb, event.getAffectedBlocks(), event.getAffectedEntities());
         }
     }
 }

@@ -1,5 +1,6 @@
-package de.sanandrew.mods.turretmod.registry.turret;
+package de.sanandrew.mods.turretmod.registry.turret.variant;
 
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.turret.IVariant;
 import net.minecraft.inventory.IInventory;
@@ -10,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class VariantHolder
+public class VariantContainer
 {
     private IVariant                        defaultVariant;
     final   Map<ResourceLocation, IVariant> variants = new HashMap<>();
@@ -54,10 +55,15 @@ public class VariantHolder
         public ResourceLocation getTexture() {
             return this.texture;
         }
+
+        @Override
+        public String getTranslatedName() {
+            return LangUtils.translate(String.format("turret_variant.%s", this.id.toString()));
+        }
     }
 
     public static abstract class ItemVariants<T>
-            extends VariantHolder
+            extends VariantContainer
     {
         public final T variantMap = buildVariantMap();
 

@@ -6,7 +6,7 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.registry.turret.shieldgen;
+package de.sanandrew.mods.turretmod.registry.turret.forcefield;
 
 import de.sanandrew.mods.sanlib.lib.util.config.Category;
 import de.sanandrew.mods.sanlib.lib.util.config.Range;
@@ -89,60 +89,60 @@ public class TurretForcefield
 
     @Override
     public void onUpdate(ITurretInst turretInst) {
-        ShieldTurret shield = turretInst.getRAM(() -> new ShieldTurret(turretInst));
+        Forcefield shield = turretInst.getRAM(() -> new Forcefield(turretInst));
         shield.onTick();
     }
 
     @Override
     public void writeSpawnData(ITurretInst turretInst, ByteBuf buf) {
-        ShieldTurret shield = turretInst.getRAM(() -> new ShieldTurret(turretInst));
+        Forcefield shield = turretInst.getRAM(() -> new Forcefield(turretInst));
         buf.writeFloat(shield.value);
         buf.writeFloat(shield.recovery);
     }
 
     @Override
     public void readSpawnData(ITurretInst turretInst, ByteBuf buf) {
-        ShieldTurret shield = turretInst.getRAM(() -> new ShieldTurret(turretInst));
+        Forcefield shield = turretInst.getRAM(() -> new Forcefield(turretInst));
         shield.value = buf.readFloat();
         shield.recovery = buf.readFloat();
     }
 
     @Override
     public void writeSyncData(ITurretInst turretInst, ObjectOutputStream stream) throws IOException {
-        ShieldTurret shield = turretInst.getRAM(() -> new ShieldTurret(turretInst));
+        Forcefield shield = turretInst.getRAM(() -> new Forcefield(turretInst));
         stream.writeFloat(shield.value);
         stream.writeFloat(shield.recovery);
     }
 
     @Override
     public void readSyncData(ITurretInst turretInst, ObjectInputStream stream) throws IOException {
-        ShieldTurret shield = turretInst.getRAM(() -> new ShieldTurret(turretInst));
+        Forcefield shield = turretInst.getRAM(() -> new Forcefield(turretInst));
         shield.value = stream.readFloat();
         shield.recovery = stream.readFloat();
     }
 
     @Override
     public void onSave(ITurretInst turretInst, NBTTagCompound nbt) {
-        ShieldTurret shield = turretInst.getRAM(() -> new ShieldTurret(turretInst));
+        Forcefield shield = turretInst.getRAM(() -> new Forcefield(turretInst));
         nbt.setFloat("shieldValue", shield.value);
         nbt.setFloat("shieldRecovery", shield.recovery);
     }
 
     @Override
     public void onLoad(ITurretInst turretInst, NBTTagCompound nbt) {
-        ShieldTurret shield = turretInst.getRAM(() -> new ShieldTurret(turretInst));
+        Forcefield shield = turretInst.getRAM(() -> new Forcefield(turretInst));
         shield.value = nbt.getFloat("shieldValue");
         shield.recovery = nbt.getFloat("shieldRecovery");
     }
 
     @Override
     public ResourceLocation getStandardTexture(ITurretInst turretInst) {
-        return Resources.TURRET_T2_SHIELDGEN.resource;
+        return Resources.TURRET_T2_FORCEFIELD.resource;
     }
 
     @Override
     public ResourceLocation getGlowTexture(ITurretInst turretInst) {
-        return Resources.TURRET_T2_SHIELDGEN_GLOW.resource;
+        return Resources.TURRET_T2_FORCEFIELD_GLOW.resource;
     }
 
     @Override

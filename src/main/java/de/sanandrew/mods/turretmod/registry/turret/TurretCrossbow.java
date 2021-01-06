@@ -17,6 +17,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.IVariant;
 import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
 import de.sanandrew.mods.turretmod.registry.Resources;
+import de.sanandrew.mods.turretmod.registry.turret.variant.DualItemVariants;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
@@ -56,16 +57,11 @@ public class TurretCrossbow
             String plankName = pType.getName();
             String txPath = Resources.TURRET_T1_CROSSBOW.resource.getPath();
 
-            VARIANTS.register(new ItemStack(Blocks.COBBLESTONE, 1, 0), plank,
-                              VARIANTS.buildVariant(TmrConstants.ID, txPath, "cobblestone", plankName));       // COBBLE
-            VARIANTS.register(new ItemStack(Blocks.MOSSY_COBBLESTONE, 1, 0), plank,
-                              VARIANTS.buildVariant(TmrConstants.ID, txPath, "mossy_cobblestone", plankName)); // MOSSY_COBBLE
-            VARIANTS.register(new ItemStack(Blocks.STONE, 1, 1), plank,
-                              VARIANTS.buildVariant(TmrConstants.ID, txPath, "granite", plankName));           // GRANITE
-            VARIANTS.register(new ItemStack(Blocks.STONE, 1, 3), plank,
-                              VARIANTS.buildVariant(TmrConstants.ID, txPath, "diorite", plankName));           // DIORITE
-            VARIANTS.register(new ItemStack(Blocks.STONE, 1, 5), plank,
-                              VARIANTS.buildVariant(TmrConstants.ID, txPath, "andesite", plankName));          // ANDESITE
+            VARIANTS.register(new ItemStack(Blocks.COBBLESTONE, 1, 0), plank, txPath, "cobblestone", plankName);             // COBBLE
+            VARIANTS.register(new ItemStack(Blocks.MOSSY_COBBLESTONE, 1, 0), plank, txPath, "mossy_cobblestone", plankName); // MOSSY_COBBLE
+            VARIANTS.register(new ItemStack(Blocks.STONE, 1, 1), plank, txPath, "granite", plankName);                       // GRANITE
+            VARIANTS.register(new ItemStack(Blocks.STONE, 1, 3), plank, txPath, "diorite", plankName);                       // DIORITE
+            VARIANTS.register(new ItemStack(Blocks.STONE, 1, 5), plank, txPath, "andesite", plankName);                      // ANDESITE
         }
     }
 
@@ -120,7 +116,7 @@ public class TurretCrossbow
     }
 
     @Override
-    public IVariant getVariant(ITurretInst turretInst, ResourceLocation id) {
+    public IVariant getVariant(ResourceLocation id) {
         return VARIANTS.getOrDefault(id);
     }
 

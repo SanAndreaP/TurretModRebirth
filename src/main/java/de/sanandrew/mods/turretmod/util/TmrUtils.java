@@ -65,6 +65,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+@SuppressWarnings({ "unused", "UnusedReturnValue" })
 public class TmrUtils
         implements ITmrUtils
 {
@@ -280,7 +281,6 @@ public class TmrUtils
         }
     }
 
-    //TODO: use this for modifier applications
     public static boolean tryApplyModifier(EntityLivingBase e, IAttribute attribute, AttributeModifier modifier) {
         IAttributeInstance attrib = e.getEntityAttribute(attribute);
         if( !attrib.hasModifier(modifier) ) {
@@ -290,7 +290,6 @@ public class TmrUtils
         return false;
     }
 
-    //TODO: use this for modifier applications
     public static boolean tryApplyModifier(EntityLivingBase e, String attributeName, AttributeModifier modifier) {
         IAttributeInstance attrib = e.getAttributeMap().getAttributeInstanceByName(attributeName);
         if( attrib != null && !attrib.hasModifier(modifier) ) {
@@ -301,7 +300,6 @@ public class TmrUtils
         return false;
     }
 
-    //TODO: use this for modifier removal
     public static boolean tryRemoveModifier(EntityLivingBase e, IAttribute attribute, AttributeModifier modifier) {
         IAttributeInstance attrib = e.getEntityAttribute(attribute);
         if( attrib.hasModifier(modifier) ) {
@@ -312,7 +310,6 @@ public class TmrUtils
         return false;
     }
 
-    //TODO: use this for modifier removal
     public static boolean tryRemoveModifier(EntityLivingBase e, String attributeName, AttributeModifier modifier) {
         IAttributeInstance attrib = e.getAttributeMap().getAttributeInstanceByName(attributeName);
         if( attrib != null && attrib.hasModifier(modifier) ) {
@@ -389,13 +386,13 @@ public class TmrUtils
 
         if( numFract == 0 ) {
             nf = NumberFormat.getIntegerInstance(Locale.forLanguageTag(langCode));
-            nf.setGroupingUsed(grouping);
         } else {
             nf = NumberFormat.getNumberInstance(Locale.forLanguageTag(langCode));
             nf.setMaximumFractionDigits(numFract);
             nf.setMinimumFractionDigits(numFract);
-            nf.setGroupingUsed(grouping);
         }
+
+        nf.setGroupingUsed(grouping);
 
         return nf;
     }

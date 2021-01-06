@@ -10,6 +10,7 @@ import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.IVariant;
+import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.registry.Lang;
 import de.sanandrew.mods.turretmod.registry.TmrCreativeTabs;
@@ -61,9 +62,9 @@ public class ItemTurret
         super.addInformation(stack, worldIn, tooltip, flagIn);
 
         TurretStats stats = new TurretStats(stack.getTagCompound());
-        if( stats.variant != null ) {
-            tooltip.add(LangUtils.translate(Lang.ITEM_TURRET_PLACER.get("variant"),
-                                            LangUtils.translate(this.getTranslationKey() + String.format(".variant_%s", stats.variant))));
+        if( stats.variant != null && this.turret instanceof IVariantHolder ) {
+            IVariant variant = ((IVariantHolder) this.turret).getVariant(stats.variant);
+            tooltip.add(LangUtils.translate(Lang.ITEM_TURRET_PLACER.get("variant"), variant.getTranslatedName()));
         }
 
         if( stats.name != null ) {

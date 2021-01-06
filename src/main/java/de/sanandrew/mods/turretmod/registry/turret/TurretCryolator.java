@@ -18,17 +18,15 @@ import de.sanandrew.mods.turretmod.api.turret.IVariant;
 import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
 import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.Sounds;
-import net.minecraft.block.Block;
+import de.sanandrew.mods.turretmod.registry.turret.variant.SingleItemVariants;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import javax.annotation.Nonnull;
-import java.util.Objects;
 
 @Category("cryolator")
 @SuppressWarnings("WeakerAccess")
@@ -58,7 +56,7 @@ public class TurretCryolator
         String txPath = Resources.TURRET_T1_CRYOLATOR.resource.getPath();
 
         for( BlockPlanks.EnumType plank : BlockPlanks.EnumType.values() ) {
-            VARIANTS.register(new ItemStack(Blocks.PLANKS, 1, plank.getMetadata()), VARIANTS.buildVariant(TmrConstants.ID, txPath, plank.getName()));
+            VARIANTS.register(new ItemStack(Blocks.PLANKS, 1, plank.getMetadata()), txPath, plank.getName());
         }
     }
 
@@ -112,7 +110,7 @@ public class TurretCryolator
     }
 
     @Override
-    public IVariant getVariant(ITurretInst turretInst, ResourceLocation id) {
+    public IVariant getVariant(ResourceLocation id) {
         return VARIANTS.getOrDefault(id);
     }
 
