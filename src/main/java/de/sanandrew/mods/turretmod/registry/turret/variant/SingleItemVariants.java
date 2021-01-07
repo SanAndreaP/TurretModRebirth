@@ -64,7 +64,7 @@ public class SingleItemVariants
         ResourceLocation texture = new ResourceLocation(modId, String.format(texturePath, name));
 
         return new Variant(id, texture) {
-            private final String itemLangKey = ItemStackUtils.isValid(stack) ? stack.getTranslationKey() : null;
+            private final String itemLangKey = ItemStackUtils.isValid(stack) ? stack.getTranslationKey() + ".name" : null;
 
             @Override
             public String getTranslatedName() {

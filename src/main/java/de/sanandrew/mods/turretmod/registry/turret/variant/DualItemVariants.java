@@ -88,12 +88,12 @@ public class DualItemVariants
         ResourceLocation texture = new ResourceLocation(modId, String.format(textureBase, baseName, frameName));
 
         return new Variant(id, texture) {
-            private final String langKeyBase = base.getTranslationKey();
-            private final String langKeyFrame = frame.getTranslationKey();
+            private final String langKeyBase = base.getTranslationKey() + ".name";
+            private final String langKeyFrame = frame.getTranslationKey() + ".name";
 
             @Override
             public String getTranslatedName() {
-                return String.format("%s-%s", LangUtils.translate(langKeyBase), LangUtils.translate(this.langKeyFrame));
+                return String.format("%s / %s", LangUtils.translate(langKeyBase), LangUtils.translate(this.langKeyFrame));
             }
         };
     }
