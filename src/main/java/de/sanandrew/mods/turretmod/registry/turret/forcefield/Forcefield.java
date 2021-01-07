@@ -4,7 +4,7 @@
    * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
    *                http://creativecommons.org/licenses/by-nc-sa/4.0/
    *******************************************************************************************************************/
-package de.sanandrew.mods.turretmod.registry.turret.shieldgen;
+package de.sanandrew.mods.turretmod.registry.turret.forcefield;
 
 import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
@@ -18,7 +18,7 @@ import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 
-public final class ShieldTurret
+public final class Forcefield
         implements ITurretRAM, IForcefieldProvider
 {
     static final ColorObj CRIT_COLOR = new ColorObj(0x40FF0000);
@@ -34,7 +34,7 @@ public final class ShieldTurret
     private float[] baseColorHsl = this.baseColor.calcHSL();
     private float[] hslDiff = getHslDiff();
 
-    ShieldTurret(ITurretInst turretInst) {
+    Forcefield(ITurretInst turretInst) {
         this.turretInst = turretInst;
         this.prevValue = 0.0F;
         this.value = 0.0F;
@@ -163,8 +163,8 @@ public final class ShieldTurret
         }
 
         if( this.turretInst.get().world.isRemote ) {
-            if( this.isInRecovery() && !TmrUtils.INSTANCE.hasForcefield(this.turretInst.get(), ShieldTurretRecovery.class) ) {
-                TmrUtils.INSTANCE.addForcefield(this.turretInst.get(), new ShieldTurretRecovery(this));
+            if( this.isInRecovery() && !TmrUtils.INSTANCE.hasForcefield(this.turretInst.get(), ForcefieldRecovery.class) ) {
+                TmrUtils.INSTANCE.addForcefield(this.turretInst.get(), new ForcefieldRecovery(this));
             }
 
             if( this.isShieldActive() && !TmrUtils.INSTANCE.hasForcefield(this.turretInst.get(), this.getClass()) ) {
@@ -176,9 +176,9 @@ public final class ShieldTurret
     int getCritColor(float relation) {
         float alpha = CRIT_COLOR.fAlpha() + (this.baseColor.fAlpha() - CRIT_COLOR.fAlpha()) * relation;
         float[] hslDif = this.hslDiff.clone();
-        hslDif[0] = TmrUtils.wrap360(ShieldTurret.CRIT_CLR_HSL[0] + (hslDif[0] > 180.0F ? -(360.0F - hslDif[0]) : hslDif[0]) * relation);
-        hslDif[1] = ShieldTurret.CRIT_CLR_HSL[1] + hslDif[1] * relation;
-        hslDif[2] = ShieldTurret.CRIT_CLR_HSL[2] + hslDif[2] * relation;
+        hslDif[0] = TmrUtils.wrap360(Forcefield.CRIT_CLR_HSL[0] + (hslDif[0] > 180.0F ? -(360.0F - hslDif[0]) : hslDif[0]) * relation);
+        hslDif[1] = Forcefield.CRIT_CLR_HSL[1] + hslDif[1] * relation;
+        hslDif[2] = Forcefield.CRIT_CLR_HSL[2] + hslDif[2] * relation;
 
         return ColorObj.fromHSLA(hslDif[0], hslDif[1], hslDif[2], alpha).getColorInt();
     }

@@ -7,4 +7,6 @@ public interface IVariant
     ResourceLocation getId();
 
     ResourceLocation getTexture();
+
+    String getTranslatedName();
 }

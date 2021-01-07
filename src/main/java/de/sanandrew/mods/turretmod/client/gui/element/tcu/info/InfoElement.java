@@ -16,8 +16,8 @@ import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.Lang;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
-import de.sanandrew.mods.turretmod.registry.turret.shieldgen.ShieldTurret;
-import de.sanandrew.mods.turretmod.registry.turret.shieldgen.TurretForcefield;
+import de.sanandrew.mods.turretmod.registry.turret.forcefield.Forcefield;
+import de.sanandrew.mods.turretmod.registry.turret.forcefield.TurretForcefield;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.registry.upgrades.shield.ShieldPersonal;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
@@ -155,7 +155,7 @@ public class InfoElement
                              u -> u != null ? u.getValue() / (double) ShieldPersonal.MAX_VALUE : 0.0D);
                     break;
                 case FORCEFIELD:
-                    perc = v(ti.getTurret() instanceof TurretForcefield ? ti.<ShieldTurret>getRAM(null) : null,
+                    perc = v(ti.getTurret() instanceof TurretForcefield ? ti.<Forcefield>getRAM(null) : null,
                              s -> s != null ? s.getValue() / (double) s.getMaxValue() : -1.0D);
             }
 
@@ -220,7 +220,7 @@ public class InfoElement
                         return String.format(LangUtils.translate(Lang.TCU_PAGE_ELEMENT.get(GuiTcuRegistry.INFO, "armor.suffix")), TmrUtils.DECIMAL_FORMAT.format(spVal));
                     }
                 case FORCEFIELD:
-                    vals = v(ti.getTurret() instanceof TurretForcefield ? ti.<ShieldTurret>getRAM(null) : null,
+                    vals = v(ti.getTurret() instanceof TurretForcefield ? ti.<Forcefield>getRAM(null) : null,
                              s -> s != null ? new double[] { s.getValue(), s.getMaxValue() } : null);
 
                     return getRatioText(vals, "forcefield.suffix");

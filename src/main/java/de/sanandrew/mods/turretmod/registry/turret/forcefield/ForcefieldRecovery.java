@@ -4,18 +4,18 @@
    * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
    *                http://creativecommons.org/licenses/by-nc-sa/4.0/
    *******************************************************************************************************************/
-package de.sanandrew.mods.turretmod.registry.turret.shieldgen;
+package de.sanandrew.mods.turretmod.registry.turret.forcefield;
 
 import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
 import net.minecraft.util.math.AxisAlignedBB;
 
-public final class ShieldTurretRecovery
+public final class ForcefieldRecovery
         implements IForcefieldProvider
 {
-    private final ShieldTurret delegate;
+    private final Forcefield delegate;
 
-    ShieldTurretRecovery(ShieldTurret delegate) {
+    ForcefieldRecovery(Forcefield delegate) {
         this.delegate = delegate;
     }
 
@@ -35,8 +35,8 @@ public final class ShieldTurretRecovery
         if( perc < 0.9F ) {
             perc = perc / 0.9F;
 
-            ColorObj newClr = new ColorObj(ShieldTurret.CRIT_COLOR);
-            newClr.setAlpha(Math.round(ShieldTurret.CRIT_COLOR.fAlpha() * 255.0F * perc));
+            ColorObj newClr = new ColorObj(Forcefield.CRIT_COLOR);
+            newClr.setAlpha(Math.round(Forcefield.CRIT_COLOR.fAlpha() * 255.0F * perc));
 
             return newClr.getColorInt();
         } else {

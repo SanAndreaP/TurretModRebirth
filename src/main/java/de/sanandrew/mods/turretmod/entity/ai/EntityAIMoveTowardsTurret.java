@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.entity.ai;
 
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -78,7 +79,7 @@ public final class EntityAIMoveTowardsTurret
 
     @Override
     public void startExecuting() {
-        this.theEntity.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).applyModifier(new AttributeModifier("turretRangeMod", this.targetTurret.getTargetProcessor().getRangeVal(), 0));
+        TmrUtils.tryApplyModifier(this.theEntity, SharedMonsterAttributes.FOLLOW_RANGE, new AttributeModifier("turretRangeMod", this.targetTurret.getTargetProcessor().getRangeVal(), 0));
         this.theEntity.getNavigator().setPath(this.turretPath, this.speed);
     }
 }

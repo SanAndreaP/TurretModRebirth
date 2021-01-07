@@ -17,6 +17,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.IVariant;
 import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
 import de.sanandrew.mods.turretmod.registry.Resources;
+import de.sanandrew.mods.turretmod.registry.turret.variant.SingleItemVariants;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
@@ -56,16 +57,14 @@ public class TurretHarpoon
     static {
         String txPath = Resources.TURRET_T1_HARPOON.resource.getPath();
 
-        VARIANTS.register(new ItemStack(Blocks.HARDENED_CLAY), VARIANTS.buildVariant(TmrConstants.ID, txPath, "terracotta"));
+        VARIANTS.register(new ItemStack(Blocks.HARDENED_CLAY), txPath, "terracotta");
 
         for( EnumDyeColor clr : EnumDyeColor.values() ) {
             String clrName    = clr.getName();
             String glazedName = String.format("%s_glazed_terracotta", clrName);
 
-            VARIANTS.register(new ItemStack(Blocks.STAINED_HARDENED_CLAY, 1, clr.getMetadata()),
-                              VARIANTS.buildVariant(TmrConstants.ID, txPath, String.format("%s_terracotta", clrName)));
-            VARIANTS.register(new ItemStack(Objects.requireNonNull(Block.getBlockFromName(glazedName))),
-                              VARIANTS.buildVariant(TmrConstants.ID, txPath, glazedName));
+            VARIANTS.register(new ItemStack(Blocks.STAINED_HARDENED_CLAY, 1, clr.getMetadata()), txPath, String.format("%s_terracotta", clrName));
+            VARIANTS.register(new ItemStack(Objects.requireNonNull(Block.getBlockFromName(glazedName))), txPath, glazedName);
         }
     }
 
@@ -134,7 +133,7 @@ public class TurretHarpoon
     }
 
     @Override
-    public IVariant getVariant(ITurretInst turretInst, ResourceLocation id) {
+    public IVariant getVariant(ResourceLocation id) {
         return VARIANTS.getOrDefault(id);
     }
 

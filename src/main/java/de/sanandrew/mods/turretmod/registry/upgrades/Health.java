@@ -12,6 +12,7 @@ import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
+import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
@@ -41,21 +42,15 @@ public abstract class Health
     @Override
     public void initialize(ITurretInst turretInst, ItemStack stack) {
         if( !turretInst.get().world.isRemote ) {
-            IAttributeInstance attrib = turretInst.get().getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH);
-            if( attrib.getModifier(this.modifier.getID()) != null ) {
-                attrib.removeModifier(this.modifier);
-            }
-
-            attrib.applyModifier(this.modifier);
+            TmrUtils.tryRemoveModifier(turretInst.get(), SharedMonsterAttributes.MAX_HEALTH, this.modifier);
+            TmrUtils.tryApplyModifier(turretInst.get(), SharedMonsterAttributes.MAX_HEALTH, this.modifier);
         }
     }
 
     @Override
     public void terminate(ITurretInst turretInst, ItemStack stack) {
         if( !turretInst.get().world.isRemote ) {
-            IAttributeInstance attrib = turretInst.get().getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH);
-            if( attrib.getModifier(this.modifier.getID()) != null ) {
-                attrib.removeModifier(this.modifier);
+            if( TmrUtils.tryRemoveModifier(turretInst.get(), SharedMonsterAttributes.MAX_HEALTH, this.modifier) ) {
                 turretInst.get().setHealth(turretInst.get().getHealth());
             }
         }

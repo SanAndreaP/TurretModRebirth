@@ -758,7 +758,7 @@ public class EntityTurret
     @Override
     public IVariant getVariant() {
         if( this.delegate instanceof IVariantHolder ) {
-            return ((IVariantHolder) this.delegate).getVariant(this, new ResourceLocation(this.dataManager.get(VARIANT)));
+            return ((IVariantHolder) this.delegate).getVariant(new ResourceLocation(this.dataManager.get(VARIANT)));
         }
 
         return null;

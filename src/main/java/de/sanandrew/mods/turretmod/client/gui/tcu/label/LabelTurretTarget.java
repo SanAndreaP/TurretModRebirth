@@ -11,7 +11,7 @@ import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelElement;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.Lang;
-import de.sanandrew.mods.turretmod.registry.turret.shieldgen.TurretForcefield;
+import de.sanandrew.mods.turretmod.registry.turret.forcefield.TurretForcefield;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.Entity;
 

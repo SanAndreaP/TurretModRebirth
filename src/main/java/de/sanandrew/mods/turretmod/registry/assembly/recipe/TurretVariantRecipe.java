@@ -1,7 +1,6 @@
 package de.sanandrew.mods.turretmod.registry.assembly.recipe;
 
 import de.sanandrew.mods.turretmod.api.turret.IVariant;
-import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
 import de.sanandrew.mods.turretmod.item.ItemTurret;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyRecipe;
 import de.sanandrew.mods.turretmod.registry.turret.TurretCrossbow;
@@ -10,7 +9,7 @@ import de.sanandrew.mods.turretmod.registry.turret.TurretHarpoon;
 import de.sanandrew.mods.turretmod.registry.turret.TurretMinigun;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRevolver;
 import de.sanandrew.mods.turretmod.registry.turret.TurretShotgun;
-import de.sanandrew.mods.turretmod.registry.turret.VariantHolder;
+import de.sanandrew.mods.turretmod.registry.turret.variant.VariantContainer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -26,7 +25,7 @@ public abstract class TurretVariantRecipe
 
     @Override
     public ItemStack getCraftingResult(IInventory inv) {
-        VariantHolder.ItemVariants<?> vh = getVariantHolder();
+        VariantContainer.ItemVariants<?> vh = getVariantHolder();
 
         ItemStack result  = super.getCraftingResult(inv);
         IVariant  variant = vh.get(inv);
@@ -38,7 +37,7 @@ public abstract class TurretVariantRecipe
         return result;
     }
 
-    abstract VariantHolder.ItemVariants<?> getVariantHolder();
+    abstract VariantContainer.ItemVariants<?> getVariantHolder();
 
     public static class Crossbow
             extends TurretVariantRecipe
@@ -48,7 +47,7 @@ public abstract class TurretVariantRecipe
         }
 
         @Override
-        VariantHolder.ItemVariants<?> getVariantHolder() {
+        VariantContainer.ItemVariants<?> getVariantHolder() {
             return TurretCrossbow.VARIANTS;
         }
     }
@@ -61,7 +60,7 @@ public abstract class TurretVariantRecipe
         }
 
         @Override
-        VariantHolder.ItemVariants<?> getVariantHolder() {
+        VariantContainer.ItemVariants<?> getVariantHolder() {
             return TurretShotgun.VARIANTS;
         }
     }
@@ -74,7 +73,7 @@ public abstract class TurretVariantRecipe
         }
 
         @Override
-        VariantHolder.ItemVariants<?> getVariantHolder() {
+        VariantContainer.ItemVariants<?> getVariantHolder() {
             return TurretCryolator.VARIANTS;
         }
     }
@@ -87,7 +86,7 @@ public abstract class TurretVariantRecipe
         }
 
         @Override
-        VariantHolder.ItemVariants<?> getVariantHolder() {
+        VariantContainer.ItemVariants<?> getVariantHolder() {
             return TurretHarpoon.VARIANTS;
         }
     }
@@ -100,7 +99,7 @@ public abstract class TurretVariantRecipe
         }
 
         @Override
-        VariantHolder.ItemVariants<?> getVariantHolder() {
+        VariantContainer.ItemVariants<?> getVariantHolder() {
             return TurretRevolver.VARIANTS;
         }
     }
@@ -113,7 +112,7 @@ public abstract class TurretVariantRecipe
         }
 
         @Override
-        VariantHolder.ItemVariants<?> getVariantHolder() {
+        VariantContainer.ItemVariants<?> getVariantHolder() {
             return TurretMinigun.VARIANTS;
         }
     }

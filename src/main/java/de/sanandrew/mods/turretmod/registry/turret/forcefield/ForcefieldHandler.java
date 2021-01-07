@@ -4,7 +4,7 @@
    * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
    *                http://creativecommons.org/licenses/by-nc-sa/4.0/
    *******************************************************************************************************************/
-package de.sanandrew.mods.turretmod.registry.turret.shieldgen;
+package de.sanandrew.mods.turretmod.registry.turret.forcefield;
 
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
@@ -30,7 +30,7 @@ import java.util.Optional;
 import java.util.WeakHashMap;
 import java.util.function.Function;
 
-public class ShieldHandler
+public class ForcefieldHandler
 {
     public static final List<Function<Entity, Entity>> PROJ_GET_OWNER = new ArrayList<>();
 
@@ -53,7 +53,7 @@ public class ShieldHandler
     }
 
     public static void onTargeting(ITurretInst turretInst, ITargetProcessor processor) {
-        ShieldTurret shield = turretInst.getRAM(null);
+        Forcefield   shield  = turretInst.getRAM(null);
         EntityLiving turretL = turretInst.get();
         boolean hasPushed = false;
         List<Entity> recognizedEntities = new ArrayList<>();
@@ -134,7 +134,7 @@ public class ShieldHandler
         if( turretBB.intersects(explosionBB) ) {
             blocksAffected.removeIf(blockPos -> {
                 if( turretInst.get().world.getBlockState(blockPos).getMaterial() != Material.AIR && turretBB.intersects(new AxisAlignedBB(blockPos)) ) {
-                    ShieldTurret shield = turretInst.getRAM(null);
+                    Forcefield shield = turretInst.getRAM(null);
                     if( shield != null && shield.isShieldActive() ) {
                         shield.damage(TurretForcefield.shieldDamagePerExplodedBlock);
                         return true;
@@ -144,7 +144,7 @@ public class ShieldHandler
             });
             entitiesAffected.removeIf(entity -> {
                 if( turretBB.intersects(entity.getEntityBoundingBox()) && !turretInst.getTargetProcessor().isEntityTargeted(entity) ) {
-                    ShieldTurret shield = turretInst.getRAM(null);
+                    Forcefield shield = turretInst.getRAM(null);
                     if( shield != null && shield.isShieldActive() ) {
                         shield.damage(TurretForcefield.shieldDamagePerExplodedEntity);
                         return true;

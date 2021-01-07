@@ -1,5 +1,8 @@
-package de.sanandrew.mods.turretmod.registry.turret;
+package de.sanandrew.mods.turretmod.registry.turret.variant;
 
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.IVariant;
 import gnu.trove.map.hash.TLongObjectHashMap;
 import net.minecraft.inventory.IInventory;
@@ -7,17 +10,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 public class SingleItemVariants
-        extends VariantHolder.ItemVariants<TLongObjectHashMap<IVariant>>
+        extends VariantContainer.ItemVariants<TLongObjectHashMap<IVariant>>
 {
     @Override
     public TLongObjectHashMap<IVariant> buildVariantMap() {
         return new TLongObjectHashMap<>();
     }
 
-    public void register(ItemStack base, IVariant variant) {
-        super.register(variant);
+    public void register(ItemStack base, String texturePath, String name) {
+        IVariant v = buildVariant(base, TmrConstants.ID, texturePath, name);
 
-        this.variantMap.put(getIdFromStack(base), variant);
+        super.register(v);
+
+        this.variantMap.put(getIdFromStack(base), v);
     }
 
     public IVariant get(ItemStack base) {
@@ -54,10 +59,17 @@ public class SingleItemVariants
         return -1L;
     }
 
-    public IVariant buildVariant(String modId, String texturePath, String name) {
+    public IVariant buildVariant(ItemStack stack, String modId, String texturePath, String name) {
         ResourceLocation id = new ResourceLocation(modId, name);
         ResourceLocation texture = new ResourceLocation(modId, String.format(texturePath, name));
 
-        return new Variant(id, texture);
+        return new Variant(id, texture) {
+            private final String itemLangKey = ItemStackUtils.isValid(stack) ? stack.getTranslationKey() : null;
+
+            @Override
+            public String getTranslatedName() {
+                return this.itemLangKey != null ? LangUtils.translate(this.itemLangKey) : super.getTranslatedName();
+            }
+        };
     }
 }

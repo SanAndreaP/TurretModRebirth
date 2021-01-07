@@ -13,8 +13,8 @@ import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketSyncAttackTarget;
 import de.sanandrew.mods.turretmod.registry.turret.TurretCryolator;
 import de.sanandrew.mods.turretmod.registry.turret.TurretShotgun;
-import de.sanandrew.mods.turretmod.registry.turret.shieldgen.ShieldHandler;
-import de.sanandrew.mods.turretmod.registry.turret.shieldgen.TurretForcefield;
+import de.sanandrew.mods.turretmod.registry.turret.forcefield.ForcefieldHandler;
+import de.sanandrew.mods.turretmod.registry.turret.forcefield.TurretForcefield;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.registry.upgrades.smarttargeting.AdvTargetSettings;
 import net.minecraft.entity.Entity;
@@ -35,7 +35,7 @@ public class TargetingEventHandler
         if( turretInst.getTurret() instanceof TurretForcefield ) {
             event.setCanceled(true);
 
-            ShieldHandler.onTargeting(turretInst, event.processor);
+            ForcefieldHandler.onTargeting(turretInst, event.processor);
         }
     }
 

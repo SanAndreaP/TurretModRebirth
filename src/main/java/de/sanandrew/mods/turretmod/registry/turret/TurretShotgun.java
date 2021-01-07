@@ -21,6 +21,7 @@ import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
 import de.sanandrew.mods.turretmod.registry.EnumEffect;
 import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.Sounds;
+import de.sanandrew.mods.turretmod.registry.turret.variant.DualItemVariants;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.BlockStoneBrick;
 import net.minecraft.entity.EntityLiving;
@@ -63,12 +64,12 @@ public class TurretShotgun
             int       logMeta = pType.getMetadata();
             ItemStack log     = new ItemStack(logMeta < 4 ? Blocks.LOG : Blocks.LOG2, 1, logMeta - (logMeta < 4 ? 0 : 4));
 
-            VARIANTS.register(new ItemStack(Blocks.STONE, 1, 0), log, VARIANTS.buildVariant(TmrConstants.ID, txPath, "stone", pType.getName()));
+            VARIANTS.register(new ItemStack(Blocks.STONE, 1, 0), log, txPath, "stone", pType.getName());
 
             for( BlockStoneBrick.EnumType sType : BlockStoneBrick.EnumType.values() ) {
                 ItemStack brick = new ItemStack(Blocks.STONEBRICK, 1, sType.getMetadata());
 
-                VARIANTS.register(brick, log, VARIANTS.buildVariant(TmrConstants.ID, txPath, sType.getName(), pType.getName()));
+                VARIANTS.register(brick, log, txPath, sType.getName(), pType.getName());
             }
         }
     }
@@ -144,7 +145,7 @@ public class TurretShotgun
     }
 
     @Override
-    public IVariant getVariant(ITurretInst turretInst, ResourceLocation id) {
+    public IVariant getVariant(ResourceLocation id) {
         return VARIANTS.getOrDefault(id);
     }
 

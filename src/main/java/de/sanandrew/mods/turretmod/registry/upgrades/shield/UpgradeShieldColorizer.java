@@ -5,7 +5,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.registry.turret.Turrets;
-import de.sanandrew.mods.turretmod.registry.turret.shieldgen.ShieldTurret;
+import de.sanandrew.mods.turretmod.registry.turret.forcefield.Forcefield;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -58,7 +58,7 @@ public class UpgradeShieldColorizer
     }
 
     static void recalcColor(ITurretInst turretInst) {
-        ShieldTurret shield = turretInst.getRAM(null);
+        Forcefield shield = turretInst.getRAM(null);
         if( shield != null ) {
             shield.recalcBaseColor();
         }

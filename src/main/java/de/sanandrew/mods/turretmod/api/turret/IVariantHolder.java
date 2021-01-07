@@ -4,8 +4,11 @@ import net.minecraft.util.ResourceLocation;
 
 public interface IVariantHolder
 {
+    default IVariant getVariant(ITurretInst turretInst, ResourceLocation id) {
+        return getVariant(id);
+    }
 
-    IVariant getVariant(ITurretInst turretInst, ResourceLocation id);
+    IVariant getVariant(ResourceLocation id);
 
     void registerVariant(IVariant variant);
 

@@ -1,23 +1,25 @@
-package de.sanandrew.mods.turretmod.registry.turret;
+package de.sanandrew.mods.turretmod.registry.turret.variant;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
+import de.sanandrew.mods.sanlib.lib.util.LangUtils;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.IVariant;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.Objects;
-
 public class DualItemVariants
-        extends VariantHolder.ItemVariants<Table<Long, Long, IVariant>>
+        extends VariantContainer.ItemVariants<Table<Long, Long, IVariant>>
 {
     @Override
     public Table<Long, Long, IVariant> buildVariantMap() {
         return TreeBasedTable.create();
     }
 
-    public void register(ItemStack base, ItemStack frame, IVariant variant) {
+    public void register(ItemStack base, ItemStack frame, String textureBase, String baseName, String frameName) {
+        IVariant variant = buildVariant(base, frame, TmrConstants.ID, textureBase, baseName, frameName);
+
         super.register(variant);
 
         this.variantMap.put(getIdFromStack(base), getIdFromStack(frame), variant);
@@ -81,10 +83,18 @@ public class DualItemVariants
         return -1L;
     }
 
-    public IVariant buildVariant(String modId, String textureBase, String baseName, String frameName) {
+    public IVariant buildVariant(ItemStack base, ItemStack frame, String modId, String textureBase, String baseName, String frameName) {
         ResourceLocation id = new ResourceLocation(modId, String.format("%s_%s", baseName, frameName));
         ResourceLocation texture = new ResourceLocation(modId, String.format(textureBase, baseName, frameName));
 
-        return new Variant(id, texture);
+        return new Variant(id, texture) {
+            private final String langKeyBase = base.getTranslationKey();
+            private final String langKeyFrame = frame.getTranslationKey();
+
+            @Override
+            public String getTranslatedName() {
+                return String.format("%s-%s", LangUtils.translate(langKeyBase), LangUtils.translate(this.langKeyFrame));
+            }
+        };
     }
 }

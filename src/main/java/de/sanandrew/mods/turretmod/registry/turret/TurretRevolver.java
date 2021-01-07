@@ -21,7 +21,7 @@ import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
 import de.sanandrew.mods.turretmod.registry.EnumEffect;
 import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.Sounds;
-import net.minecraft.block.BlockPlanks;
+import de.sanandrew.mods.turretmod.registry.turret.variant.DualItemVariants;
 import net.minecraft.block.BlockStoneBrick;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.init.Blocks;
@@ -62,12 +62,12 @@ public class TurretRevolver
             String    brickName = bType.getName();
             String    txPath    = Resources.TURRET_T2_REVOLVER.resource.getPath();
 
-            VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 0), brick, VARIANTS.buildVariant(TmrConstants.ID, txPath, "stone", brickName));
-            VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 1), brick, VARIANTS.buildVariant(TmrConstants.ID, txPath, "sandstone", brickName));
-            VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 3), brick, VARIANTS.buildVariant(TmrConstants.ID, txPath, "cobblestone", brickName));
-            VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 4), brick, VARIANTS.buildVariant(TmrConstants.ID, txPath, "bricks", brickName));
-            VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 5), brick, VARIANTS.buildVariant(TmrConstants.ID, txPath, "stone_bricks", brickName));
-            VARIANTS.register(new ItemStack(Blocks.STONE_SLAB2, 1, 0), brick, VARIANTS.buildVariant(TmrConstants.ID, txPath, "red_sandstone", brickName));
+            VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 0), brick, txPath, "stone", brickName);
+            VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 1), brick, txPath, "sandstone", brickName);
+            VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 3), brick, txPath, "cobblestone", brickName);
+            VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 4), brick, txPath, "bricks", brickName);
+            VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 5), brick, txPath, "stone_bricks", brickName);
+            VARIANTS.register(new ItemStack(Blocks.STONE_SLAB2, 1, 0), brick, txPath, "red_sandstone", brickName);
         }
     }
 
@@ -176,7 +176,7 @@ public class TurretRevolver
     }
 
     @Override
-    public IVariant getVariant(ITurretInst turretInst, ResourceLocation id) {
+    public IVariant getVariant(ResourceLocation id) {
         return VARIANTS.getOrDefault(id);
     }
 

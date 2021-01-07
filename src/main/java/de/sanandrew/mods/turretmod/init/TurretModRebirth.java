@@ -19,7 +19,7 @@ import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteManager;
 import de.sanandrew.mods.turretmod.registry.projectile.ProjectileRegistry;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
-import de.sanandrew.mods.turretmod.registry.turret.shieldgen.ShieldHandler;
+import de.sanandrew.mods.turretmod.registry.turret.forcefield.ForcefieldHandler;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.Entity;
@@ -121,7 +121,7 @@ public class TurretModRebirth
     public void interModComm(FMLInterModComms.IMCEvent event) {
         event.getMessages().forEach(message -> {
             if( message.key.equals(TmrConstants.ID + ":checkProjForShield") && message.isFunctionMessage() ) {
-                message.getFunctionValue(Entity.class, Entity.class).ifPresent(ShieldHandler.PROJ_GET_OWNER::add);
+                message.getFunctionValue(Entity.class, Entity.class).ifPresent(ForcefieldHandler.PROJ_GET_OWNER::add);
             }
         });
     }
