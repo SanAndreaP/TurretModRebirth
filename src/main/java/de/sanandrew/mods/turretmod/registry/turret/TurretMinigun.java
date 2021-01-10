@@ -63,7 +63,7 @@ public class TurretMinigun
         VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 1),  txPath, "sandstone");
         VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 3),  txPath, "cobblestone");
         VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 4),  txPath, "bricks");
-        VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 5),  txPath, "stone_bricks");
+        VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 5),  txPath, "stonebrick");
         VARIANTS.register(new ItemStack(Blocks.STONE_SLAB2, 1, 0), txPath, "red_sandstone");
 
         IVariant melon = VARIANTS.buildVariant(ItemStack.EMPTY, TmrConstants.ID, txPath, "melon");

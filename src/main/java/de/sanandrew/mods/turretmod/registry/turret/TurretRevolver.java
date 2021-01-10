@@ -66,7 +66,7 @@ public class TurretRevolver
             VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 1), brick, txPath, "sandstone", brickName);
             VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 3), brick, txPath, "cobblestone", brickName);
             VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 4), brick, txPath, "bricks", brickName);
-            VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 5), brick, txPath, "stone_bricks", brickName);
+            VARIANTS.register(new ItemStack(Blocks.STONE_SLAB, 1, 5), brick, txPath, "stonebrick", brickName);
             VARIANTS.register(new ItemStack(Blocks.STONE_SLAB2, 1, 0), brick, txPath, "red_sandstone", brickName);
         }
     }
