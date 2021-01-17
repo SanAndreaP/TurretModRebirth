@@ -1,99 +1,100 @@
 {
-  "parent": "sapturretmod:item/turrets/standard",
-  "textures": {
-    "0": "sapturretmod:items/turrets/turret_revolver"
-  },
-  "elements": [
-    {
-      "name": "head",
-      "from": [ 5.0, 10.0, 5.0 ],
-      "to": [ 11.0, 16.0, 11.0 ],
-      "faces": {
-        "north": { "texture": "#0", "uv": [ 0.0, 0.0, 8.0, 8.0 ] },
-        "east": { "texture": "#0", "uv": [ 0.0, 8.0, 8.0, 16.0 ] },
-        "south": { "texture": "#0", "uv": [ 0.0, 8.0, 8.0, 16.0 ] },
-        "west": { "texture": "#0", "uv": [ 0.0, 8.0, 8.0, 16.0 ] },
-        "up": { "texture": "#0", "uv": [ 0.0, 8.0, 8.0, 16.0 ] },
-        "down": { "texture": "#0", "uv": [ 0.0, 8.0, 8.0, 16.0 ] }
-      }
-    },
-    {
-      "name": "bottom1",
-      "from": [ 3.0, 0.0, 3.0 ],
-      "to": [ 13.0, 1.0, 13.0 ],
-      "faces": {
-        "north": { "texture": "#0", "uv": [ 8.0, 8.0, 16.0, 9.0 ] },
-        "east": { "texture": "#0", "uv": [ 8.0, 8.0, 16.0, 9.0 ] },
-        "south": { "texture": "#0", "uv": [ 8.0, 8.0, 16.0, 9.0 ] },
-        "west": { "texture": "#0", "uv": [ 8.0, 8.0, 16.0, 9.0 ] },
-        "up": { "texture": "#0", "uv": [ 8.0, 8.0, 16.0, 16.0 ] },
-        "down": { "texture": "#0", "uv": [ 8.0, 8.0, 16.0, 16.0 ] }
-      }
-    },
-    {
-      "name": "bottom2",
-      "from": [ 4.0, 1.0, 4.0 ],
-      "to": [ 12.0, 2.0, 12.0 ],
-      "faces": {
-        "north": { "texture": "#0", "uv": [ 8.0, 8.0, 16.0, 9.0 ] },
-        "east": { "texture": "#0", "uv": [ 8.0, 8.0, 16.0, 9.0 ] },
-        "south": { "texture": "#0", "uv": [ 8.0, 8.0, 16.0, 9.0 ] },
-        "west": { "texture": "#0", "uv": [ 8.0, 8.0, 16.0, 9.0 ] },
-        "up": { "texture": "#0", "uv": [ 8.0, 8.0, 16.0, 16.0 ] },
-        "down": { "texture": "#0", "uv": [ 8.0, 8.0, 16.0, 16.0 ] }
-      }
-    },
-    {
-      "name": "bottom3",
-      "from": [ 5.0, 2.0, 5.0 ],
-      "to": [ 11.0, 3.0, 11.0 ],
-      "faces": {
-        "north": { "texture": "#0", "uv": [ 8.0, 8.0, 16.0, 9.0 ] },
-        "east": { "texture": "#0", "uv": [ 8.0, 8.0, 16.0, 9.0 ] },
-        "south": { "texture": "#0", "uv": [ 8.0, 8.0, 16.0, 9.0 ] },
-        "west": { "texture": "#0", "uv": [ 8.0, 8.0, 16.0, 9.0 ] },
-        "up": { "texture": "#0", "uv": [ 8.0, 8.0, 16.0, 16.0 ] },
-        "down": { "texture": "#0", "uv": [ 8.0, 8.0, 16.0, 16.0 ] }
-      }
-    },
-    {
-      "name": "handle",
-      "from": [ 7.0, 3.0, 7.0 ],
-      "to": [ 9.0, 10.0, 9.0 ],
-      "faces": {
-        "north": { "texture": "#0", "uv": [ 8.0, 0.0, 10.0, 7.0 ] },
-        "east": { "texture": "#0", "uv": [ 8.0, 0.0, 10.0, 7.0 ] },
-        "south": { "texture": "#0", "uv": [ 8.0, 0.0, 10.0, 7.0 ] },
-        "west": { "texture": "#0", "uv": [ 8.0, 0.0, 10.0, 7.0 ] },
-        "up": { "texture": "#0", "uv": [ 8.0, 0.0, 10.0, 2.0 ] },
-        "down": { "texture": "#0", "uv": [ 8.0, 0.0, 10.0, 2.0 ] }
-      }
-    },
-    {
-      "name": "barrel1",
-      "from": [ 6.75, 11.75, 2.0 ],
-      "to": [ 7.25, 12.25, 6.0 ],
-      "faces": {
-        "north": { "texture": "#0", "uv": [ 10.0, 4.0, 11.0, 5.0 ] },
-        "east": { "texture": "#0", "uv": [ 10.0, 0.0, 11.0, 4.0 ], "rotation": 90 },
-        "south": { "texture": "#0", "uv": [ 10.0, 0.0, 11.0, 1.0 ] },
-        "west": { "texture": "#0", "uv": [ 10.0, 0.0, 11.0, 4.0 ], "rotation": 270 },
-        "up": { "texture": "#0", "uv": [ 10.0, 0.0, 11.0, 4.0 ] },
-        "down": { "texture": "#0", "uv": [ 10.0, 0.0, 11.0, 4.0 ] }
-      }
-    },
-    {
-      "name": "barrel2",
-      "from": [ 8.75, 11.75, 2.0 ],
-      "to": [ 9.25, 12.25, 6.0 ],
-      "faces": {
-        "north": { "texture": "#0", "uv": [ 10.0, 4.0, 11.0, 5.0 ] },
-        "east": { "texture": "#0", "uv": [ 10.0, 0.0, 11.0, 4.0 ], "rotation": 90 },
-        "south": { "texture": "#0", "uv": [ 10.0, 0.0, 11.0, 1.0 ] },
-        "west": { "texture": "#0", "uv": [ 10.0, 0.0, 11.0, 4.0 ], "rotation": 270 },
-        "up": { "texture": "#0", "uv": [ 10.0, 0.0, 11.0, 4.0 ] },
-        "down": { "texture": "#0", "uv": [ 10.0, 0.0, 11.0, 4.0 ] }
-      }
-    }
-  ]
+	"credit": "Made with Blockbench",
+	"parent": "sapturretmod:item/turrets/standard",
+	"textures": {
+		"0": "sapturretmod:items/turrets/turret_revolver"
+	},
+	"elements": [
+		{
+			"name": "head",
+			"from": [5, 10, 5],
+			"to": [11, 16, 11],
+			"faces": {
+				"north": {"uv": [0, 0, 8, 8], "texture": "#0"},
+				"east": {"uv": [0, 8, 8, 16], "texture": "#0"},
+				"south": {"uv": [0, 8, 8, 16], "texture": "#0"},
+				"west": {"uv": [0, 8, 8, 16], "texture": "#0"},
+				"up": {"uv": [0, 8, 8, 16], "texture": "#0"},
+				"down": {"uv": [0, 8, 8, 16], "texture": "#0"}
+			}
+		},
+		{
+			"name": "bottom1",
+			"from": [3, 0, 3],
+			"to": [13, 1, 13],
+			"faces": {
+				"north": {"uv": [8, 8, 16, 9], "texture": "#0"},
+				"east": {"uv": [8, 8, 16, 9], "texture": "#0"},
+				"south": {"uv": [8, 8, 16, 9], "texture": "#0"},
+				"west": {"uv": [8, 8, 16, 9], "texture": "#0"},
+				"up": {"uv": [8, 8, 16, 16], "texture": "#0"},
+				"down": {"uv": [8, 8, 16, 16], "texture": "#0"}
+			}
+		},
+		{
+			"name": "bottom2",
+			"from": [4, 1, 4],
+			"to": [12, 2, 12],
+			"faces": {
+				"north": {"uv": [9, 9, 15, 10], "texture": "#0"},
+				"east": {"uv": [9, 9, 15, 10], "texture": "#0"},
+				"south": {"uv": [9, 9, 15, 10], "texture": "#0"},
+				"west": {"uv": [9, 9, 15, 10], "texture": "#0"},
+				"up": {"uv": [9, 9, 15, 15], "texture": "#0"},
+				"down": {"uv": [9, 9, 15, 15], "texture": "#0"}
+			}
+		},
+		{
+			"name": "bottom3",
+			"from": [5, 2, 5],
+			"to": [11, 3, 11],
+			"faces": {
+				"north": {"uv": [10, 9, 14, 10], "texture": "#0"},
+				"east": {"uv": [10, 9, 14, 10], "texture": "#0"},
+				"south": {"uv": [10, 9, 14, 10], "texture": "#0"},
+				"west": {"uv": [10, 9, 14, 10], "texture": "#0"},
+				"up": {"uv": [10, 10, 14, 14], "texture": "#0"},
+				"down": {"uv": [10, 10, 14, 14], "texture": "#0"}
+			}
+		},
+		{
+			"name": "handle",
+			"from": [7, 3, 7],
+			"to": [9, 10, 9],
+			"faces": {
+				"north": {"uv": [8, 0, 10, 7], "texture": "#0"},
+				"east": {"uv": [8, 0, 10, 7], "texture": "#0"},
+				"south": {"uv": [8, 0, 10, 7], "texture": "#0"},
+				"west": {"uv": [8, 0, 10, 7], "texture": "#0"},
+				"up": {"uv": [8, 0, 10, 2], "texture": "#0"},
+				"down": {"uv": [8, 0, 10, 2], "texture": "#0"}
+			}
+		},
+		{
+			"name": "barrel1",
+			"from": [6.5, 11.5, 2],
+			"to": [7.25, 12.25, 6],
+			"faces": {
+				"north": {"uv": [10, 4, 11, 5], "texture": "#0"},
+				"east": {"uv": [10, 0, 11, 4], "rotation": 90, "texture": "#0"},
+				"south": {"uv": [10, 0, 11, 1], "texture": "#0"},
+				"west": {"uv": [10, 0, 11, 4], "rotation": 270, "texture": "#0"},
+				"up": {"uv": [10, 0, 11, 4], "texture": "#0"},
+				"down": {"uv": [10, 0, 11, 4], "texture": "#0"}
+			}
+		},
+		{
+			"name": "barrel2",
+			"from": [8.75, 11.5, 2],
+			"to": [9.5, 12.25, 6],
+			"faces": {
+				"north": {"uv": [10, 4, 11, 5], "texture": "#0"},
+				"east": {"uv": [10, 0, 11, 4], "rotation": 90, "texture": "#0"},
+				"south": {"uv": [10, 0, 11, 1], "texture": "#0"},
+				"west": {"uv": [10, 0, 11, 4], "rotation": 270, "texture": "#0"},
+				"up": {"uv": [10, 0, 11, 4], "texture": "#0"},
+				"down": {"uv": [10, 0, 11, 4], "texture": "#0"}
+			}
+		}
+	]
 }
