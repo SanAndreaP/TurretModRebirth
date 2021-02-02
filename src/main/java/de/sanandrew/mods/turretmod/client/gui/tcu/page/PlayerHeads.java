@@ -52,7 +52,13 @@ public final class PlayerHeads
 
     public static ItemStack getRandomSkull() {
         if( lastHead == null || lastHead.<Long>getValue(0) + 5000 < System.currentTimeMillis() ) {
-            lastHead = new Tuple(System.currentTimeMillis(), PLAYER_PROFILES[MiscUtils.RNG.randomInt(PLAYER_PROFILES.length)]);
+            GameProfile p;
+            if( MiscUtils.RNG.randomInt(100) == 0 ) {
+                p = PLAYER_PROFILES[1 + MiscUtils.RNG.randomInt(PLAYER_PROFILES.length - 1)];
+            } else {
+                p = PLAYER_PROFILES[0];
+            }
+            lastHead = new Tuple(System.currentTimeMillis(), p);
         }
 
         ItemStack stack = new ItemStack(Items.SKULL, 1, 3);
