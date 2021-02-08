@@ -13,6 +13,10 @@
       "recipe": "sapturretmod:turret_crate",
       "title": " ",
       "text": "If you transfer ammo from the crate via shift-clicking, it'll try to fill up available $(l:ammo/cartridge)ammo cartridges$(/l) first before putting the items into your inventory."
+    },
+    {
+      "type": "sapturretmod:turret_assembly_i18n",
+      "recipe": "sapturretmod:misc/turret_crate"
     }
   ]
 }
