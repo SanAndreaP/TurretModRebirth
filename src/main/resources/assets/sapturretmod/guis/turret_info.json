@@ -66,6 +66,16 @@
     },
     {
       "type": "sapturretmod:info_progress",
+      "pos": [4, 67],
+      "data": {
+        "type": "turret_name",
+        "text": {
+          "offset": [20, 4]
+        }
+      }
+    },
+    {
+      "type": "sapturretmod:info_progress",
       "pos": [4, 83],
       "data": {
         "type": "health",
@@ -180,7 +190,100 @@
         "texture": "sapturretmod:textures/gui/turretinfo/elements_regular.png",
         "uvEnabled": [208, 72]
       }
+    },
+    {
+      "type": "sapturretmod:info_ammo",
+      "pos": [166, 99]
+    },
+    {
+      "type": "sapturretmod:tinfo_upgrade_items",
+      "pos": [6, 31]
     }
   ],
-  "foregroundElements": []
+  "foregroundElements": [
+    {
+      "type": "tooltip",
+      "pos": [76, 170],
+      "data": {
+        "size": [18, 18],
+        "for": "activate",
+        "text": "gui.sapturretmod.tcu.button.info.activate"
+      }
+    },
+    {
+      "type": "tooltip",
+      "pos": [76, 170],
+      "data": {
+        "size": [18, 18],
+        "for": "deactivate",
+        "text": "gui.sapturretmod.tcu.button.info.deactivate"
+      }
+    },
+    {
+      "type": "tooltip",
+      "pos": [96, 170],
+      "data": {
+        "size": [18, 18],
+        "for": "showRange",
+        "text": "gui.sapturretmod.tcu.button.info.show_range"
+      }
+    },
+    {
+      "type": "tooltip",
+      "pos": [96, 170],
+      "data": {
+        "size": [18, 18],
+        "for": "hideRange",
+        "text": "gui.sapturretmod.tcu.button.info.hide_range"
+      }
+    },
+    {
+      "type": "tooltip",
+      "pos":[4, 67],
+      "data": {
+        "size": [20, 16],
+        "text": "gui.sapturretmod.tcu.page.sapturretmod:info.name"
+      }
+    },
+    {
+      "type": "tooltip",
+      "pos":[4, 83],
+      "data": {
+        "size": [20, 16],
+        "text": "gui.sapturretmod.tcu.page.sapturretmod:info.health"
+      }
+    },
+    {
+      "type": "tooltip",
+      "pos":[4, 99],
+      "data": {
+        "size": [20, 16],
+        "text": "gui.sapturretmod.tcu.page.sapturretmod:info.ammo"
+      }
+    },
+    {
+      "type": "tooltip",
+      "pos":[4, 115],
+      "data": {
+        "size": [20, 16],
+        "text": "gui.sapturretmod.tcu.page.sapturretmod:info.target"
+      }
+    },
+    {
+      "type": "tooltip",
+      "pos":[4, 131],
+      "data": {
+        "size": [20, 16],
+        "text": "gui.sapturretmod.tcu.page.sapturretmod:info.player"
+      }
+    },
+    {
+      "type": "sapturretmod:info_ammo_ttip",
+      "pos": [166, 99]
+    },
+    {
+      "type": "sapturretmod:tinfo_upgrade_ttips",
+      "pos": [6, 31]
+    }
+  ]
 }

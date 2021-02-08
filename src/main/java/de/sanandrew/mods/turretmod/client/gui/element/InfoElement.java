@@ -2,6 +2,7 @@ package de.sanandrew.mods.turretmod.client.gui.element;
 
 import com.google.common.base.Strings;
 import com.google.gson.JsonObject;
+import com.mojang.realmsclient.gui.ChatFormatting;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
@@ -34,6 +35,7 @@ public class InfoElement
 {
     public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "info_progress");
 
+    private static final String TURRET_NAME     = "turret_name";
     private static final String HEALTH          = "health";
     private static final String AMMO            = "ammo";
     private static final String PERSONAL_SHIELD = "personal_shield";
@@ -203,6 +205,8 @@ public class InfoElement
             double[] vals;
 
             switch( InfoElement.this.type ) {
+                case TURRET_NAME:
+                    return ti.get().hasCustomName() ? ti.get().getCustomNameTag() : ChatFormatting.ITALIC + "N/A";
                 case HEALTH:
                     vals = v(ti.get(),
                              e -> new double[] { e.getHealth() / 2.0D, e.getMaxHealth() / 2.0D });
@@ -225,9 +229,9 @@ public class InfoElement
 
                     return getRatioText(vals, "forcefield.suffix");
                 case TARGET:
-                    return MiscUtils.defIfNull(Strings.emptyToNull(ti.getTargetProcessor().getTargetName()), "N/A");
+                    return MiscUtils.defIfNull(Strings.emptyToNull(ti.getTargetProcessor().getTargetName()), ChatFormatting.ITALIC + "N/A");
                 case PLAYER:
-                    return MiscUtils.defIfNull(Strings.emptyToNull(ti.getOwnerName()), "N/A");
+                    return MiscUtils.defIfNull(Strings.emptyToNull(ti.getOwnerName()), ChatFormatting.ITALIC + "N/A");
             }
 
             return "";

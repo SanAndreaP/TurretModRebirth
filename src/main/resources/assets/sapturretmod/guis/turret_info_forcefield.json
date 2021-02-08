@@ -20,5 +20,14 @@
       }
     }
   ],
-  "foregroundElements": []
+  "foregroundElements": [
+    {
+      "type": "tooltip",
+      "pos":[4, 147],
+      "data": {
+        "size": [20, 16],
+        "text": "gui.sapturretmod.tcu.page.sapturretmod:info.forcefield"
+      }
+    }
+  ]
 }

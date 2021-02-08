@@ -52,6 +52,8 @@ import de.sanandrew.mods.turretmod.client.gui.element.tcu.shieldcolor.ShieldRend
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.target.TargetList;
 import de.sanandrew.mods.turretmod.client.gui.element.tinfo.InfoStrokeText;
 import de.sanandrew.mods.turretmod.client.gui.element.tinfo.InfoBgTexture;
+import de.sanandrew.mods.turretmod.client.gui.element.tinfo.InfoUpgradeItems;
+import de.sanandrew.mods.turretmod.client.gui.element.tinfo.InfoUpgradeTooltips;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.PlayerHeads;
 import de.sanandrew.mods.turretmod.client.model.item.ColorCartridge;
 import de.sanandrew.mods.turretmod.client.model.item.ColorTippedBolt;
@@ -127,6 +129,8 @@ public class ClientProxy
         GuiDefinition.TYPES.put(InfoBgTexture.ID, InfoBgTexture::new);
         GuiDefinition.TYPES.put(InfoStrokeText.ID, InfoStrokeText::new);
         GuiDefinition.TYPES.put(InfoStrokeText.InfoTurretName.ID, InfoStrokeText.InfoTurretName::new);
+        GuiDefinition.TYPES.put(InfoUpgradeItems.ID, InfoUpgradeItems::new);
+        GuiDefinition.TYPES.put(InfoUpgradeTooltips.ID, InfoUpgradeTooltips::new);
     }
 
     @Override
