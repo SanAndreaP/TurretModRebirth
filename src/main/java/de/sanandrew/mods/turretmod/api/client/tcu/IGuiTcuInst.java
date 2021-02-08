@@ -8,7 +8,6 @@ package de.sanandrew.mods.turretmod.api.client.tcu;
 
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -21,17 +20,12 @@ import net.minecraft.util.ResourceLocation;
  */
 @SuppressWarnings("JavadocReference")
 public interface IGuiTcuInst<T extends GuiScreen>
-        extends IGui
+        extends IGui, IGuiTurretProvider
 {
     /**
      * @return the {@link GuiScreen} instance of this GUI.
      */
     T getGui();
-
-    /**
-     * @return the turret instance associated with this GUI.
-     */
-    ITurretInst getTurretInst();
 
     /**
      * @return the X position of this GUI.

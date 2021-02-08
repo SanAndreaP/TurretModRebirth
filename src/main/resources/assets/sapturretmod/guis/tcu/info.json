@@ -19,7 +19,7 @@
       }
     },
     {
-      "type": "sapturretmod:tcu.info_playericon",
+      "type": "sapturretmod:info_playericon",
       "pos": [8, 148],
       "data": {
         "uvs": [
@@ -28,12 +28,13 @@
           [240, 32],
           [240, 48],
           [240, 64],
-          [240, 80]
+          [240, 80],
+          [240, 96]
         ]
       }
     },
     {
-      "type": "sapturretmod:tcu.info_progress",
+      "type": "sapturretmod:info_progress",
       "pos": [6, 100],
       "data": {
         "type": "health",
@@ -49,7 +50,7 @@
       }
     },
     {
-      "type": "sapturretmod:tcu.info_progress",
+      "type": "sapturretmod:info_progress",
       "pos": [6, 100],
       "data": {
         "type": "personal_shield",
@@ -66,7 +67,7 @@
       }
     },
     {
-      "type": "sapturretmod:tcu.info_progress",
+      "type": "sapturretmod:info_progress",
       "pos": [6, 116],
       "data": {
         "type": "ammo",
@@ -82,7 +83,7 @@
       }
     },
     {
-      "type": "sapturretmod:tcu.info_progress",
+      "type": "sapturretmod:info_progress",
       "pos": [6, 132],
       "data": {
         "type": "target",
@@ -92,7 +93,7 @@
       }
     },
     {
-      "type": "sapturretmod:tcu.info_progress",
+      "type": "sapturretmod:info_progress",
       "pos": [6, 148],
       "data": {
         "type": "player",
@@ -102,7 +103,7 @@
       }
     },
     {
-      "type": "sapturretmod:tcu.info_progress",
+      "type": "sapturretmod:info_progress",
       "pos": [6, 164],
       "id": "info_prog_forcefield",
       "data": {
@@ -185,7 +186,7 @@
       }
     },
     {
-      "type": "sapturretmod:tcu.info_ammo",
+      "type": "sapturretmod:info_ammo",
       "pos": [150, 116]
     }
   ],
@@ -285,7 +286,7 @@
       }
     },
     {
-      "type": "sapturretmod:tcu.info_ammo_ttip",
+      "type": "sapturretmod:info_ammo_ttip",
       "pos": [150, 116]
     },
     {

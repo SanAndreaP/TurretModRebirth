@@ -1,0 +1,24 @@
+{
+  "parent": "sapturretmod:guis/turret_info.json",
+  "texture": "sapturretmod:textures/gui/turretinfo/elements_forcefield.png",
+  "backgroundElements": [
+    {
+      "type": "sapturretmod:info_progress",
+      "pos": [4, 147],
+      "id": "info_prog_forcefield",
+      "data": {
+        "type": "forcefield",
+        "bar": {
+          "offset": [20, 11],
+          "size": [158, 3],
+          "uv": [0, 206]
+        },
+        "text": {
+          "offset": [20, 2],
+          "color": "0xFF997E00"
+        }
+      }
+    }
+  ],
+  "foregroundElements": []
+}

@@ -1,0 +1,186 @@
+{
+  "texture": "sapturretmod:textures/gui/turretinfo/elements_regular.png",
+  "width": 190,
+  "height": 197,
+  "backgroundElements": [
+    {
+      "type": "sapturretmod:tinfo_texture",
+      "data": {
+        "size": [190, 197],
+        "uv": [0, 0]
+      }
+    },
+    {
+      "type": "texture",
+      "data": {
+        "size": [190, 197],
+        "uv": [0, 0]
+      }
+    },
+    {
+      "type": "sapturretmod:tinfo_turret_name",
+      "pos": [6, 6],
+      "data": {
+        "color": {
+          "default": "0xFF404040",
+          "stroke": "0xFFC6C6C6"
+        }
+      }
+    },
+    {
+      "type": "sapturretmod:tinfo_text",
+      "pos": [6, 19],
+      "data": {
+        "text": "gui.sapturretmod.tcu.page.sapturretmod:upgrades.title",
+        "color": {
+          "default": "0xFF404040",
+          "stroke": "0xFFC6C6C6"
+        }
+      }
+    },
+    {
+      "type": "sapturretmod:tinfo_text",
+      "pos": [6, 55],
+      "data": {
+        "text": "gui.sapturretmod.tcu.page.sapturretmod:info.title",
+        "color": {
+          "default": "0xFF404040",
+          "stroke": "0xFFC6C6C6"
+        }
+      }
+    },
+    {
+      "type": "sapturretmod:info_playericon",
+      "pos": [6, 131],
+      "data": {
+        "uvs": [
+          [240,  0],
+          [240, 16],
+          [240, 32],
+          [240, 48],
+          [240, 64],
+          [240, 80],
+          [240, 96]
+        ]
+      }
+    },
+    {
+      "type": "sapturretmod:info_progress",
+      "pos": [4, 83],
+      "data": {
+        "type": "health",
+        "bar": {
+          "offset": [20, 11],
+          "size": [158, 3],
+          "uv": [0, 197]
+        },
+        "text": {
+          "offset": [20, 2],
+          "color": "0xFFC20000"
+        }
+      }
+    },
+    {
+      "type": "sapturretmod:info_progress",
+      "pos": [4, 83],
+      "data": {
+        "type": "personal_shield",
+        "bar": {
+          "offset": [20, 11],
+          "size": [158, 3],
+          "uv": [0, 203]
+        },
+        "text": {
+          "offset": [179, 2],
+          "color": "0xFFC709DD",
+          "alignment": ["right"]
+        }
+      }
+    },
+    {
+      "type": "sapturretmod:info_progress",
+      "pos": [4, 99],
+      "data": {
+        "type": "ammo",
+        "bar": {
+          "offset": [20, 11],
+          "size": [138, 3],
+          "uv": [0, 200]
+        },
+        "text": {
+          "offset": [20, 2],
+          "color": "0xFF0061C2"
+        }
+      }
+    },
+    {
+      "type": "sapturretmod:info_progress",
+      "pos": [4, 115],
+      "data": {
+        "type": "target",
+        "text": {
+          "offset": [20, 4]
+        }
+      }
+    },
+    {
+      "type": "sapturretmod:info_progress",
+      "pos": [4, 131],
+      "data": {
+        "type": "player",
+        "text": {
+          "offset": [20, 4]
+        }
+      }
+    },
+    {
+      "type": "button",
+      "pos": [76, 170],
+      "id": "activate",
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "buttonFunction": 1,
+        "texture": "sapturretmod:textures/gui/turretinfo/elements_regular.png",
+        "uvEnabled": [190, 18]
+      }
+    },
+    {
+      "type": "button",
+      "pos": [76, 170],
+      "id": "deactivate",
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "buttonFunction": 2,
+        "texture": "sapturretmod:textures/gui/turretinfo/elements_regular.png",
+        "uvEnabled": [208, 18]
+      }
+    },
+    {
+      "type": "button",
+      "pos": [96, 170],
+      "id": "showRange",
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "buttonFunction": 3,
+        "texture": "sapturretmod:textures/gui/turretinfo/elements_regular.png",
+        "uvEnabled": [190, 72]
+      }
+    },
+    {
+      "type": "button",
+      "pos": [96, 170],
+      "id": "hideRange",
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "buttonFunction": 4,
+        "texture": "sapturretmod:textures/gui/turretinfo/elements_regular.png",
+        "uvEnabled": [208, 72]
+      }
+    }
+  ],
+  "foregroundElements": []
+}

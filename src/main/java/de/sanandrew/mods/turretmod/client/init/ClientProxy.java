@@ -26,6 +26,7 @@ import de.sanandrew.mods.turretmod.client.event.RenderForcefieldHandler;
 import de.sanandrew.mods.turretmod.client.gui.GuiCartridge;
 import de.sanandrew.mods.turretmod.client.gui.GuiElectrolyteGenerator;
 import de.sanandrew.mods.turretmod.client.gui.GuiTurretCrate;
+import de.sanandrew.mods.turretmod.client.gui.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiAssemblyFilter;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
 import de.sanandrew.mods.turretmod.client.gui.element.ElectrolyteBar;
@@ -35,12 +36,12 @@ import de.sanandrew.mods.turretmod.client.gui.element.assembly.AssemblyProgressB
 import de.sanandrew.mods.turretmod.client.gui.element.assembly.AssemblyRecipeArea;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.RemoteAccessHealth;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.TurretCam;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.TurretName;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.info.AmmoItem;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.info.AmmoItemTooltip;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.TcuTurretName;
+import de.sanandrew.mods.turretmod.client.gui.element.AmmoItem;
+import de.sanandrew.mods.turretmod.client.gui.element.AmmoItemTooltip;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.info.ErrorTooltip;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.info.InfoElement;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.info.PlayerIcon;
+import de.sanandrew.mods.turretmod.client.gui.element.InfoElement;
+import de.sanandrew.mods.turretmod.client.gui.element.PlayerIcon;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.level.LevelIndicator;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.level.LevelModifiers;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.nav.PageNavigation;
@@ -49,6 +50,8 @@ import de.sanandrew.mods.turretmod.client.gui.element.tcu.shieldcolor.CheckBox;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.shieldcolor.ColorPicker;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.shieldcolor.ShieldRender;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.target.TargetList;
+import de.sanandrew.mods.turretmod.client.gui.element.tinfo.InfoStrokeText;
+import de.sanandrew.mods.turretmod.client.gui.element.tinfo.InfoBgTexture;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.PlayerHeads;
 import de.sanandrew.mods.turretmod.client.model.item.ColorCartridge;
 import de.sanandrew.mods.turretmod.client.model.item.ColorTippedBolt;
@@ -105,7 +108,7 @@ public class ClientProxy
 
         GuiDefinition.TYPES.put(PageNavigation.ID, PageNavigation::new);
         GuiDefinition.TYPES.put(PageNavigationTooltip.ID, PageNavigationTooltip::new);
-        GuiDefinition.TYPES.put(TurretName.ID, TurretName::new);
+        GuiDefinition.TYPES.put(TcuTurretName.ID, TcuTurretName::new);
         GuiDefinition.TYPES.put(TurretCam.ID, TurretCam::new);
         GuiDefinition.TYPES.put(PlayerIcon.ID, PlayerIcon::new);
         GuiDefinition.TYPES.put(AmmoItem.ID, AmmoItem::new);
@@ -120,6 +123,10 @@ public class ClientProxy
 
         GuiDefinition.TYPES.put(ColorPicker.ID, ColorPicker::new);
         GuiDefinition.TYPES.put(CheckBox.ID, CheckBox::new);
+
+        GuiDefinition.TYPES.put(InfoBgTexture.ID, InfoBgTexture::new);
+        GuiDefinition.TYPES.put(InfoStrokeText.ID, InfoStrokeText::new);
+        GuiDefinition.TYPES.put(InfoStrokeText.InfoTurretName.ID, InfoStrokeText.InfoTurretName::new);
     }
 
     @Override
@@ -141,6 +148,8 @@ public class ClientProxy
 
         TurretModRebirth.PLUGINS.forEach(plugin -> plugin.registerTcuGuis(GuiTcuRegistry.INSTANCE));
         TurretModRebirth.PLUGINS.forEach(plugin -> plugin.registerTcuLabelElements(RenderTurretPointed.INSTANCE));
+
+        InfoBgTexture.initialize();
 
         MinecraftForge.EVENT_BUS.register(RenderForcefieldHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
@@ -175,10 +184,11 @@ public class ClientProxy
         if( id >= 0 && id < EnumGui.VALUES.length ) {
             TileEntity te;
             switch( EnumGui.VALUES[id] ) {
-                case TCU:
-                    Entity e = world.getEntityByID(x);
-                    if( e instanceof ITurretInst ) {
-                        return GuiTcuRegistry.INSTANCE.openGUI(y, player, (ITurretInst) e, z == 1);
+                case TCU: {
+                        Entity e = world.getEntityByID(x);
+                        if( e instanceof ITurretInst ) {
+                            return GuiTcuRegistry.INSTANCE.openGUI(y, player, (ITurretInst) e, z == 1);
+                        }
                     }
                     break;
                 case TASSEMBLY:
@@ -199,7 +209,7 @@ public class ClientProxy
                         return new GuiElectrolyteGenerator(player.inventory, (TileEntityElectrolyteGenerator) te);
                     }
                     break;
-                case TINFO:
+                case LEXICON:
                     return lexiconInstance.getGui();
                 case CARTRIDGE:
                     ItemStack heldStack = TmrUtils.getHeldItemOfType(player, ItemRegistry.AMMO_CARTRIDGE);
@@ -216,6 +226,14 @@ public class ClientProxy
                         return new GuiTurretCrate(player.inventory, (TileEntityTurretCrate) te);
                     }
                     break;
+                case TINFO: {
+                        Entity e = world.getEntityByID(x);
+                        if( e instanceof ITurretInst ) {
+                            return new GuiTurretInfo((ITurretInst) e);
+                        }
+                    }
+                    break;
+
             }
         } else {
             TmrConstants.LOG.log(Level.WARN, String.format("Gui ID %d cannot be opened as it isn't a valid index in EnumGui!", id));

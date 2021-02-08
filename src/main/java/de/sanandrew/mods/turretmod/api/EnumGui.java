@@ -13,10 +13,11 @@ public enum EnumGui
     TASSEMBLY,
     TASSEMBLY_FLT,
     ELECTROLYTE_GENERATOR,
-    TINFO,
+    LEXICON,
     TCU,
     CARTRIDGE,
-    TCRATE;
+    TCRATE,
+    TINFO;
 
     public static final EnumGui[] VALUES = values();
 }

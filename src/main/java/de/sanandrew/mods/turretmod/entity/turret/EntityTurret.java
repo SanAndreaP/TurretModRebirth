@@ -362,8 +362,8 @@ public class EntityTurret
                     TmrUtils.INSTANCE.openGui(player, EnumGui.TCU, this.getEntityId(), 0, 0);
                 }
                 return true;
-            } else if( !ItemStackUtils.isValid(stack) ) {
-                //TODO: do dedicated info GUI on right-click with empty hand
+            } else if( !ItemStackUtils.isValid(stack) && hand == EnumHand.MAIN_HAND ) {
+                TmrUtils.INSTANCE.openGui(player, EnumGui.TINFO, this.getEntityId(), 0, 0);
             }
 
             return false;

@@ -97,6 +97,7 @@ item.sapturretmod:upgrade_ender_toxin_1.name=Ender Toxin I Upgrade
 item.sapturretmod:upgrade_ender_toxin_2.name=Ender Toxin II Upgrade
 item.sapturretmod:upgrade_turret_safe.name=Turret Safe Upgrade
 item.sapturretmod:upgrade_leveling.name=Leveling Upgrade
+item.sapturretmod:upgrade_remote_access.name=Remote Access Upgrade
 
 #### Entities ####
 attribute.generic.maxHealth=Max. Health

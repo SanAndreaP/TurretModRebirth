@@ -70,6 +70,8 @@ public enum Resources
     GUI_STRUCT_TCU_COLORIZER       ("guis/tcu/colorizer.json"),
     GUI_STRUCT_TCU_LEVELS          ("guis/tcu/levels.json"),
     GUI_STRUCT_TCU_REMOTE_ACCESS   ("guis/tcu/remote_access.json"),
+    GUI_STRUCT_TINFO               ("guis/turret_info.json"),
+    GUI_STRUCT_TINFO_FORCEFIELD    ("guis/turret_info_forcefield.json"),
 
     PATCHOULI("turret_lexicon"),
     PATCHOULI_CAT_AMMO("ammo"),
