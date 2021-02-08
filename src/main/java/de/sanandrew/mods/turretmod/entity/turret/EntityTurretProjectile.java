@@ -25,6 +25,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityMultiPart;
 import net.minecraft.entity.MultiPartEntityPart;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.boss.EntityDragon;
@@ -237,6 +238,13 @@ public class EntityTurretProjectile
                 RayTraceResult interceptObj = collisionAABB.calculateIntercept(posVec, futurePosVec);
 
                 if( interceptObj != null ) {
+                    Entity validator = collidedEntity;
+                    if( collidedEntity instanceof MultiPartEntityPart ) {
+                        IEntityMultiPart iemp = ((MultiPartEntityPart) collidedEntity).parent;
+                        if( iemp instanceof Entity ) {
+                            validator = (Entity) iemp;
+                        }
+                    }
 //                    if( collidedEntity instanceof EntityDragonPart ) {
 //                        IEntityMultiPart multiEntity = ((EntityDragonPart) collidedEntity).entityDragonObj;
 //                        if( multiEntity instanceof EntityDragon ) {
@@ -248,7 +256,7 @@ public class EntityTurretProjectile
                     double vecDistance = posVec.distanceTo(interceptObj.hitVec);
                     boolean isClosest = vecDistance < minDist || minDist == 0.0D;
 
-                    if( (this.shooterCache == null || this.shooterCache.getTargetProcessor().isEntityValidTarget(collidedEntity)) && isClosest ) {
+                    if( (this.shooterCache == null || this.shooterCache.getTargetProcessor().isEntityValidTarget(validator)) && isClosest ) {
                         entity = collidedEntity;
                         minDist = vecDistance;
                     }
