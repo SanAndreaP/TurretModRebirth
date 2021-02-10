@@ -14,7 +14,6 @@ import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.electrolytegen.IElectrolyteManager;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
@@ -51,7 +50,7 @@ public class ElectrolyteRecipeLoader
 
         try( BufferedReader reader = Files.newBufferedReader(file) ) {
             JsonObject json = JsonUtils.fromJson(reader, JsonObject.class);
-            ResourceLocation id = TmrUtils.getPathedRL(modId, root, file);
+            ResourceLocation id = MiscUtils.getPathedRL(modId, root, file);
             //new ResourceLocation(modId, "recipes/electrolytegen/" + file.getFileName().toString());
 
             if( json == null ) {

@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.inventory.container;
 
+import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
@@ -18,7 +19,6 @@ import de.sanandrew.mods.turretmod.item.ItemAmmo;
 import de.sanandrew.mods.turretmod.item.ItemAmmoCartridge;
 import de.sanandrew.mods.turretmod.item.ItemRepairKit;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -71,7 +71,7 @@ public class ContainerTurretRemoteAccess
 
     @Override
     protected boolean mergeItemStack(@Nonnull ItemStack stack, int beginSlot, int endSlot, boolean reverse) {
-        return TmrUtils.mergeItemStack(this, stack, beginSlot, endSlot, reverse);
+        return InventoryUtils.mergeItemStack(this, stack, beginSlot, endSlot, reverse);
     }
 
     @Override
@@ -100,7 +100,7 @@ public class ContainerTurretRemoteAccess
                 }
             }
 
-            if( TmrUtils.finishTransfer(player, origStack, slot, slotStack) ) {
+            if( InventoryUtils.finishTransfer(player, origStack, slot, slotStack) ) {
                 return ItemStack.EMPTY;
             }
         }

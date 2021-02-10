@@ -4,7 +4,6 @@ import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.assembly.AssemblyIngredient;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyManager;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -55,13 +54,13 @@ public class ComponentAssemblyProcessor
                     }
                 } catch( NumberFormatException ignored ) {}
             } else if( s.equals("rf_cost") ) {
-                return TmrUtils.getNumberSiPrefixed(this.recipe.getFluxPerTick() * this.recipe.getProcessTime(), 1, langCode);
+                return MiscUtils.getNumberSiPrefixed(this.recipe.getFluxPerTick() * this.recipe.getProcessTime(), 1, langCode);
             } else if( s.equals("time_processing") ) {
                 return MiscUtils.getTimeFromTicks(this.recipe.getProcessTime());
             } else if( s.equals("rf_cost_full") ) {
-                return TmrUtils.getNumberFormat(0, true, langCode).format((long) this.recipe.getFluxPerTick() * this.recipe.getProcessTime());
+                return MiscUtils.getNumberFormat(0, true, langCode).format((long) this.recipe.getFluxPerTick() * this.recipe.getProcessTime());
             } else if( s.equals("time_processing_full") ) {
-                return TmrUtils.getNumberFormat(0, true, langCode).format(this.recipe.getProcessTime());
+                return MiscUtils.getNumberFormat(0, true, langCode).format(this.recipe.getProcessTime());
             }
         }
 

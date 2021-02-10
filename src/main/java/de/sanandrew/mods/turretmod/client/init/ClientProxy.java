@@ -13,6 +13,7 @@ import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.PlayerUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
@@ -20,6 +21,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.audio.SoundLaser;
 import de.sanandrew.mods.turretmod.client.compat.patchouli.PageCustomCrafting;
 import de.sanandrew.mods.turretmod.client.compat.patchouli.PatchouliMouseEventHandler;
+import de.sanandrew.mods.turretmod.client.effect.EffectHandler;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import de.sanandrew.mods.turretmod.client.event.RenderEventHandler;
 import de.sanandrew.mods.turretmod.client.event.RenderForcefieldHandler;
@@ -29,19 +31,19 @@ import de.sanandrew.mods.turretmod.client.gui.GuiTurretCrate;
 import de.sanandrew.mods.turretmod.client.gui.GuiTurretInfo;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiAssemblyFilter;
 import de.sanandrew.mods.turretmod.client.gui.assembly.GuiTurretAssembly;
+import de.sanandrew.mods.turretmod.client.gui.element.AmmoItem;
+import de.sanandrew.mods.turretmod.client.gui.element.AmmoItemTooltip;
 import de.sanandrew.mods.turretmod.client.gui.element.ElectrolyteBar;
+import de.sanandrew.mods.turretmod.client.gui.element.InfoElement;
+import de.sanandrew.mods.turretmod.client.gui.element.PlayerIcon;
 import de.sanandrew.mods.turretmod.client.gui.element.assembly.AssemblyGhostItems;
 import de.sanandrew.mods.turretmod.client.gui.element.assembly.AssemblyGroupIcon;
 import de.sanandrew.mods.turretmod.client.gui.element.assembly.AssemblyProgressBar;
 import de.sanandrew.mods.turretmod.client.gui.element.assembly.AssemblyRecipeArea;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.RemoteAccessHealth;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.TurretCam;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.TcuTurretName;
-import de.sanandrew.mods.turretmod.client.gui.element.AmmoItem;
-import de.sanandrew.mods.turretmod.client.gui.element.AmmoItemTooltip;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.TurretCam;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.info.ErrorTooltip;
-import de.sanandrew.mods.turretmod.client.gui.element.InfoElement;
-import de.sanandrew.mods.turretmod.client.gui.element.PlayerIcon;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.level.LevelIndicator;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.level.LevelModifiers;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.nav.PageNavigation;
@@ -50,14 +52,13 @@ import de.sanandrew.mods.turretmod.client.gui.element.tcu.shieldcolor.CheckBox;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.shieldcolor.ColorPicker;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.shieldcolor.ShieldRender;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.target.TargetList;
-import de.sanandrew.mods.turretmod.client.gui.element.tinfo.InfoStrokeText;
 import de.sanandrew.mods.turretmod.client.gui.element.tinfo.InfoBgTexture;
+import de.sanandrew.mods.turretmod.client.gui.element.tinfo.InfoStrokeText;
 import de.sanandrew.mods.turretmod.client.gui.element.tinfo.InfoUpgradeItems;
 import de.sanandrew.mods.turretmod.client.gui.element.tinfo.InfoUpgradeTooltips;
 import de.sanandrew.mods.turretmod.client.gui.tcu.page.PlayerHeads;
 import de.sanandrew.mods.turretmod.client.model.item.ColorCartridge;
 import de.sanandrew.mods.turretmod.client.model.item.ColorTippedBolt;
-import de.sanandrew.mods.turretmod.client.effect.EffectHandler;
 import de.sanandrew.mods.turretmod.client.render.projectile.RenderProjectile;
 import de.sanandrew.mods.turretmod.client.render.turret.RenderTurret;
 import de.sanandrew.mods.turretmod.client.render.world.RenderTurretPointed;
@@ -77,7 +78,6 @@ import de.sanandrew.mods.turretmod.registry.turret.TurretLaser;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -202,7 +202,7 @@ public class ClientProxy
                     }
                     break;
                 case TASSEMBLY_FLT:
-                    ItemStack stack = TmrUtils.getHeldItemOfType(player, ItemRegistry.ASSEMBLY_UPG_FILTER);
+                    ItemStack stack = PlayerUtils.getHeldItemOfType(player, ItemRegistry.ASSEMBLY_UPG_FILTER);
                     if( ItemStackUtils.isValid(stack) && stack.getItem() == ItemRegistry.ASSEMBLY_UPG_FILTER ) {
                         return new GuiAssemblyFilter(player.inventory, stack);
                     }
@@ -216,7 +216,7 @@ public class ClientProxy
                 case LEXICON:
                     return lexiconInstance.getGui();
                 case CARTRIDGE:
-                    ItemStack heldStack = TmrUtils.getHeldItemOfType(player, ItemRegistry.AMMO_CARTRIDGE);
+                    ItemStack heldStack = PlayerUtils.getHeldItemOfType(player, ItemRegistry.AMMO_CARTRIDGE);
                     if( ItemStackUtils.isValid(heldStack) ) {
                         IInventory inv = ItemAmmoCartridge.getInventory(heldStack);
                         if( inv != null ) {

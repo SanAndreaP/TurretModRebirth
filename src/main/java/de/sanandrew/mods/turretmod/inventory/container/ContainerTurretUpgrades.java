@@ -8,9 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.inventory.container;
 
+import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
 import de.sanandrew.mods.turretmod.item.ItemUpgrade;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -43,7 +43,7 @@ public class ContainerTurretUpgrades
 
     @Override
     protected boolean mergeItemStack(@Nonnull ItemStack stack, int beginSlot, int endSlot, boolean reverse) {
-        return TmrUtils.mergeItemStack(this, stack, beginSlot, endSlot, reverse);
+        return InventoryUtils.mergeItemStack(this, stack, beginSlot, endSlot, reverse);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class ContainerTurretUpgrades
                 }
             }
 
-            if (TmrUtils.finishTransfer(player, origStack, slot, slotStack)) return ItemStack.EMPTY;
+            if ( InventoryUtils.finishTransfer(player, origStack, slot, slotStack)) return ItemStack.EMPTY;
         }
 
         return origStack;

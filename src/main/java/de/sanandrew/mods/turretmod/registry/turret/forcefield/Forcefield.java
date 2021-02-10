@@ -7,6 +7,7 @@
 package de.sanandrew.mods.turretmod.registry.turret.forcefield;
 
 import de.sanandrew.mods.sanlib.lib.ColorObj;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
@@ -58,7 +59,7 @@ public final class Forcefield
 
     private float[] getHslDiff() {
         return new float[] {
-                TmrUtils.wrap360(baseColorHsl[0] - CRIT_CLR_HSL[0]),
+                MiscUtils.wrap360(baseColorHsl[0] - CRIT_CLR_HSL[0]),
                 baseColorHsl[1] - CRIT_CLR_HSL[1],
                 baseColorHsl[2] - CRIT_CLR_HSL[2]
         };
@@ -176,7 +177,7 @@ public final class Forcefield
     int getCritColor(float relation) {
         float alpha = CRIT_COLOR.fAlpha() + (this.baseColor.fAlpha() - CRIT_COLOR.fAlpha()) * relation;
         float[] hslDif = this.hslDiff.clone();
-        hslDif[0] = TmrUtils.wrap360(Forcefield.CRIT_CLR_HSL[0] + (hslDif[0] > 180.0F ? -(360.0F - hslDif[0]) : hslDif[0]) * relation);
+        hslDif[0] = MiscUtils.wrap360(Forcefield.CRIT_CLR_HSL[0] + (hslDif[0] > 180.0F ? -(360.0F - hslDif[0]) : hslDif[0]) * relation);
         hslDif[1] = Forcefield.CRIT_CLR_HSL[1] + hslDif[1] * relation;
         hslDif[2] = Forcefield.CRIT_CLR_HSL[2] + hslDif[2] * relation;
 

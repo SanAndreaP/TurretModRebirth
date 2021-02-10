@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.init;
 
 import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.PlayerUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
@@ -30,7 +31,6 @@ import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import de.sanandrew.mods.turretmod.world.PlayerList;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -88,7 +88,7 @@ public class CommonProxy
                     }
                     break;
                 case TASSEMBLY_FLT:
-                    ItemStack stack = TmrUtils.getHeldItemOfType(player, ItemRegistry.ASSEMBLY_UPG_FILTER);
+                    ItemStack stack = PlayerUtils.getHeldItemOfType(player, ItemRegistry.ASSEMBLY_UPG_FILTER);
                     if( ItemStackUtils.isValid(stack) ) {
                         return new ContainerAssemblyFilter(player.inventory, stack, player.inventory.currentItem);
                     }
@@ -100,7 +100,7 @@ public class CommonProxy
                     }
                     break;
                 case CARTRIDGE:
-                    ItemStack heldStack = TmrUtils.getHeldItemOfType(player, ItemRegistry.AMMO_CARTRIDGE);
+                    ItemStack heldStack = PlayerUtils.getHeldItemOfType(player, ItemRegistry.AMMO_CARTRIDGE);
                     if( ItemStackUtils.isValid(heldStack) ) {
                         IInventory inv = ItemAmmoCartridge.getInventory(heldStack);
                         if( inv != null ) {

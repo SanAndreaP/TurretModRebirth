@@ -8,7 +8,6 @@ import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -106,7 +105,7 @@ public class TurretCrateInventory
     }
 
     private void reduceAmmoList() {
-        NonNullList<ItemStack> combinedList = TmrUtils.getCompactItems(this.ammo, this.getInventoryStackLimit());
+        NonNullList<ItemStack> combinedList = ItemStackUtils.getCompactItems(this.ammo, this.getInventoryStackLimit());
         this.ammo.clear();
         this.ammo.addAll(combinedList);
         this.ammoCntCache = -1;

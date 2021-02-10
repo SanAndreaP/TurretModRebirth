@@ -4,12 +4,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.EnumEffect;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -92,7 +92,7 @@ public class Stage
         boolean hasMultiplier = false;
         for( Modifier m : this.modifiers ) {
             if( m.turret == null || m.turret.equals(turretInst.getTurret().getId()) ) {
-                hasMultiplier |= TmrUtils.tryApplyModifier(turretInst.get(), m.attributeName, m.modifier);
+                hasMultiplier |= EntityUtils.tryApplyModifier(turretInst.get(), m.attributeName, m.modifier);
             }
         }
 

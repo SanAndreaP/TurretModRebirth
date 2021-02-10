@@ -3,7 +3,6 @@ package de.sanandrew.mods.turretmod.client.compat.patchouli;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -32,13 +31,13 @@ public class ComponentTurretStatProcessor
 
         switch( s ) {
             case "tier": {
-                return TmrUtils.getNumberFormat(0, false, langCode).format(turret.getTier());
+                return MiscUtils.getNumberFormat(0, false, langCode).format(turret.getTier());
             }
             case "health": {
-                return TmrUtils.getNumberFormat(1, true, langCode).format(turret.getHealth() / 2F);
+                return MiscUtils.getNumberFormat(1, true, langCode).format(turret.getHealth() / 2F);
             }
             case "ammo": {
-                return TmrUtils.getNumberFormat(0, true, langCode).format(turret.getAmmoCapacity());
+                return MiscUtils.getNumberFormat(0, true, langCode).format(turret.getAmmoCapacity());
             }
             case "reload": {
                 return MiscUtils.getTimeFromTicks(turret.getReloadTicks());
@@ -46,7 +45,7 @@ public class ComponentTurretStatProcessor
             default: {
                 if( s.contains("range") ) {
                     AxisAlignedBB aabb = this.turret.getRangeBB(null);
-                    NumberFormat nf = TmrUtils.getNumberFormat(0, true, langCode);
+                    NumberFormat nf = MiscUtils.getNumberFormat(0, true, langCode);
                     switch( s ) {
                         case "rangeLX": return nf.format(aabb.minX * -1.0D);
                         case "rangeLY": return nf.format(aabb.minY * -1.0D);

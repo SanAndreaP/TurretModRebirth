@@ -16,7 +16,6 @@ import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.assembly.AssemblyIngredient;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyManager;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
@@ -56,7 +55,7 @@ public final class AssemblyRecipeLoader
 
         try( BufferedReader reader = Files.newBufferedReader(file) ) {
             JsonObject json = fromJson(reader, JsonObject.class);
-            ResourceLocation id = TmrUtils.getPathedRL(modId, root, file);
+            ResourceLocation id = MiscUtils.getPathedRL(modId, root, file);
 
             if( json == null ) {
                 throw new JsonSyntaxException("Cannot read valid JSON");

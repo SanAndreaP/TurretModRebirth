@@ -7,12 +7,13 @@
 package de.sanandrew.mods.turretmod.block;
 
 import com.google.common.collect.ImmutableMap;
+import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.registry.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -55,7 +56,7 @@ public class BlockTurretCrate
         TileEntityTurretCrate crate = (TileEntityTurretCrate) world.getTileEntity(pos);
 
         if( crate != null ) {
-            TmrUtils.dropBlockItems(crate.getInventory(), world, pos);
+            InventoryUtils.dropBlockItems(crate.getInventory(), world, pos);
         }
 
         world.updateComparatorOutputLevel(pos, this);
@@ -64,7 +65,7 @@ public class BlockTurretCrate
 
     @Override
     protected BlockStateContainer createBlockState() {
-        return TmrUtils.buildCustomBlockStateContainer(this, MyStateImplementation::new);
+        return MiscUtils.buildCustomBlockStateContainer(this, MyStateImplementation::new);
     }
 
     @Override

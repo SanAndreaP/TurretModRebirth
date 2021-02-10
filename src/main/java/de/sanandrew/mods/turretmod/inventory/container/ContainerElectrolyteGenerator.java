@@ -8,10 +8,10 @@
  */
 package de.sanandrew.mods.turretmod.inventory.container;
 
+import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.registry.electrolytegen.ElectrolyteProcess;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -97,7 +97,9 @@ public class ContainerElectrolyteGenerator
                 return ItemStack.EMPTY;
             }
 
-            if (TmrUtils.finishTransfer(player, origStack, slot, slotStack)) return ItemStack.EMPTY;
+            if( InventoryUtils.finishTransfer(player, origStack, slot, slotStack) ) {
+                return ItemStack.EMPTY;
+            }
         }
 
         return origStack;

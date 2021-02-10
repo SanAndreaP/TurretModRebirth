@@ -7,8 +7,8 @@
 package de.sanandrew.mods.turretmod.registry.upgrades.shield;
 
 import de.sanandrew.mods.sanlib.lib.ColorObj;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.util.math.AxisAlignedBB;
 
 public final class ShieldPersonalRecovery
@@ -17,7 +17,7 @@ public final class ShieldPersonalRecovery
     private static final ColorObj CRIT_COLOR = new ColorObj(0x40FF0000);
     private static final float[] CRIT_CLR_HSL = CRIT_COLOR.calcHSL();
     private static final float[] HSL_DIF = new float[] {
-            TmrUtils.wrap360(ShieldPersonal.BASE_CLR_HSL[0] - CRIT_CLR_HSL[0]),
+            MiscUtils.wrap360(ShieldPersonal.BASE_CLR_HSL[0] - CRIT_CLR_HSL[0]),
             ShieldPersonal.BASE_CLR_HSL[1] - CRIT_CLR_HSL[1],
             ShieldPersonal.BASE_CLR_HSL[2] - CRIT_CLR_HSL[2]
     };
@@ -52,7 +52,7 @@ public final class ShieldPersonalRecovery
             perc = (perc - 0.9F) * 10.0F;
 
             float[] hslDif = HSL_DIF.clone();
-            hslDif[0] = TmrUtils.wrap360(CRIT_CLR_HSL[0] + (hslDif[0] > 180.0F ? -(360.0F - hslDif[0]) : hslDif[0]) * perc);
+            hslDif[0] = MiscUtils.wrap360(CRIT_CLR_HSL[0] + (hslDif[0] > 180.0F ? -(360.0F - hslDif[0]) : hslDif[0]) * perc);
             hslDif[1] = CRIT_CLR_HSL[1] + hslDif[1] * perc;
             hslDif[2] = CRIT_CLR_HSL[2] + hslDif[2] * perc;
 

@@ -20,7 +20,6 @@ import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.registry.upgrades.shield.ShieldColorizer;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiShieldColorizer
@@ -48,9 +47,9 @@ public class GuiShieldColorizer
             this.syncColor(gui.getTurretInst());
         });
 
-        this.code.setValidator(s -> TmrUtils.getInteger(s) != null);
+        this.code.setValidator(s -> MiscUtils.getInteger(s) != null);
         this.code.setResponder(s -> {
-            int clr = MiscUtils.defIfNull(TmrUtils.getInteger(s), 0);
+            int clr = MiscUtils.defIfNull(MiscUtils.getInteger(s), 0);
             this.picker.setColor(clr);
             this.shield.setColor(clr);
             this.syncColor(gui.getTurretInst());

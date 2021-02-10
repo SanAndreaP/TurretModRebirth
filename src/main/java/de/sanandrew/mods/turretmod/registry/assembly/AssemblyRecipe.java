@@ -6,8 +6,8 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.registry.assembly;
 
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -95,6 +95,6 @@ public class AssemblyRecipe
             items.add(inv.getStackInSlot(slot));
         }
 
-        return TmrUtils.getCompactItems(items, inv.getSizeInventory());
+        return ItemStackUtils.getCompactItems(items, inv.getSizeInventory());
     }
 }

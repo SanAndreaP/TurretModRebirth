@@ -9,12 +9,13 @@
 package de.sanandrew.mods.turretmod.block;
 
 import com.google.common.collect.ImmutableMap;
+import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.registry.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.SoundType;
@@ -103,7 +104,7 @@ public class BlockTurretAssembly
         TileEntityTurretAssembly assembly = (TileEntityTurretAssembly) world.getTileEntity(pos);
 
         if( assembly != null ) {
-            TmrUtils.dropBlockItems(assembly.getInventory(), world, pos);
+            InventoryUtils.dropBlockItems(assembly.getInventory(), world, pos);
         }
 
         world.updateComparatorOutputLevel(pos, this);
@@ -134,7 +135,7 @@ public class BlockTurretAssembly
 
     @Override
     protected BlockStateContainer createBlockState() {
-        return TmrUtils.buildCustomBlockStateContainer(this, MyStateImplementation::new, FACING);
+        return MiscUtils.buildCustomBlockStateContainer(this, MyStateImplementation::new, FACING);
     }
 
     @Override
@@ -163,7 +164,7 @@ public class BlockTurretAssembly
 
     @Override
     public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, @Nullable EnumFacing side) {
-        return TmrUtils.applyNonNull(world.getTileEntity(pos), te -> ((TileEntityTurretAssembly) te).hasRedstoneUpgrade(), false);
+        return MiscUtils.applyNonNull(world.getTileEntity(pos), te -> ((TileEntityTurretAssembly) te).hasRedstoneUpgrade(), false);
     }
     private static final class MyStateImplementation
             extends BlockStateContainer.StateImplementation

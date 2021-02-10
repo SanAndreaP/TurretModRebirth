@@ -7,18 +7,9 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu.page;
 
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
-import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTCU;
 import de.sanandrew.mods.turretmod.api.client.tcu.IGuiTcuInst;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
-import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
-import de.sanandrew.mods.turretmod.inventory.container.ContainerTurretRemoteAccess;
-import de.sanandrew.mods.turretmod.inventory.container.ContainerTurretUpgrades;
 import de.sanandrew.mods.turretmod.registry.Resources;
-import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiRemoteAccess

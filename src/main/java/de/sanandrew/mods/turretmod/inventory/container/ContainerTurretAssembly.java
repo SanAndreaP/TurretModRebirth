@@ -8,10 +8,10 @@
  */
 package de.sanandrew.mods.turretmod.inventory.container;
 
+import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.turretmod.inventory.AssemblyInventory;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -62,7 +62,7 @@ public class ContainerTurretAssembly
 
     @Override
     protected boolean mergeItemStack(@Nonnull ItemStack stack, int beginSlot, int endSlot, boolean reverse) {
-        return TmrUtils.mergeItemStack(this, stack, beginSlot, endSlot, reverse);
+        return InventoryUtils.mergeItemStack(this, stack, beginSlot, endSlot, reverse);
     }
 
     @Override
@@ -100,7 +100,7 @@ public class ContainerTurretAssembly
                 return ItemStack.EMPTY;
             }
 
-            if( TmrUtils.finishTransfer(player, origStack, slot, slotStack) ) {
+            if( InventoryUtils.finishTransfer(player, origStack, slot, slotStack) ) {
                 return ItemStack.EMPTY;
             }
         }

@@ -20,8 +20,8 @@ import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
-import de.sanandrew.mods.turretmod.api.turret.IVariant;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
+import de.sanandrew.mods.turretmod.api.turret.IVariant;
 import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
@@ -291,8 +291,8 @@ public class EntityTurret
                 this.faceEntity(this.targetProc.getTarget(), 10.0F, this.getVerticalFaceSpeed());
             } else if( this.world.isRemote && TmrUtils.INSTANCE.getPassengersOfClass(this, EntityPlayer.class).size() < 1 ) {
                 this.rotationYawHead += 1.0F;
-                this.rotationYawHead = TmrUtils.wrap360(this.rotationYawHead);
-                this.prevRotationYawHead = TmrUtils.wrap360(this.prevRotationYawHead);
+                this.rotationYawHead = MiscUtils.wrap360(this.rotationYawHead);
+                this.prevRotationYawHead = MiscUtils.wrap360(this.prevRotationYawHead);
 
                 if( this.rotationPitch < 0.0F ) {
                     this.rotationPitch += 5.0F;
@@ -307,8 +307,8 @@ public class EntityTurret
                 }
             }
         } else {
-            this.rotationYawHead = TmrUtils.wrap360(this.rotationYawHead);
-            this.prevRotationYawHead = TmrUtils.wrap360(this.prevRotationYawHead);
+            this.rotationYawHead = MiscUtils.wrap360(this.rotationYawHead);
+            this.prevRotationYawHead = MiscUtils.wrap360(this.prevRotationYawHead);
             @SuppressWarnings("IntegerDivisionInFloatingPointContext")
             float closestRot = (MathHelper.ceil(this.rotationYawHead) / 90) * 90.0F;
             if( this.rotationYawHead > closestRot ) {

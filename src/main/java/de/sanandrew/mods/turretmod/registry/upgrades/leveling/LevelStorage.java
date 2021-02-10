@@ -1,5 +1,6 @@
 package de.sanandrew.mods.turretmod.registry.upgrades.leveling;
 
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.sanlib.lib.util.config.Category;
 import de.sanandrew.mods.sanlib.lib.util.config.Init;
 import de.sanandrew.mods.sanlib.lib.util.config.Value;
@@ -7,7 +8,6 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeInstance;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.common.Loader;
@@ -76,10 +76,10 @@ public class LevelStorage
     }
 
     static String[] getDefaultStages() {
-        try( BufferedReader r = TmrUtils.getFile(Loader.instance().getModList().stream()
-                                                       .filter(c -> c.getModId().equals(TmrConstants.ID))
-                                                       .findFirst().orElseThrow(IOException::new),
-                                                 "assets/" + TmrConstants.ID + "/stages_default.json") )
+        try( BufferedReader r = MiscUtils.getFile(Loader.instance().getModList().stream()
+                                                        .filter(c -> c.getModId().equals(TmrConstants.ID))
+                                                        .findFirst().orElseThrow(IOException::new),
+                                                  "assets/" + TmrConstants.ID + "/stages_default.json") )
         {
             if( r != null ) {
                 return r.lines().toArray(String[]::new);

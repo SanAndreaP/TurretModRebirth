@@ -6,12 +6,10 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.inventory.container;
 
-import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.turretmod.inventory.TurretCrateInventory;
 import de.sanandrew.mods.turretmod.item.ItemAmmoCartridge;
-import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -60,7 +58,7 @@ public class ContainerTurretCrate
 
     @Override
     protected boolean mergeItemStack(@Nonnull ItemStack stack, int beginSlot, int endSlot, boolean reverse) {
-        return TmrUtils.mergeItemStack(this, stack, beginSlot, endSlot, reverse);
+        return InventoryUtils.mergeItemStack(this, stack, beginSlot, endSlot, reverse);
     }
 
     @Override
@@ -85,7 +83,7 @@ public class ContainerTurretCrate
                 }
             }
 
-            if( TmrUtils.finishTransfer(player, origStack, slot, slotStack) ) {
+            if( InventoryUtils.finishTransfer(player, origStack, slot, slotStack) ) {
                 return ItemStack.EMPTY;
             }
         }

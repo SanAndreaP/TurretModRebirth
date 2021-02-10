@@ -13,9 +13,7 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -40,15 +38,15 @@ public abstract class ReloadTime
     @Override
     public void initialize(ITurretInst turretInst, ItemStack stack) {
         if( !turretInst.get().world.isRemote ) {
-            TmrUtils.tryRemoveModifier(turretInst.get(), TurretAttributes.MAX_RELOAD_TICKS, this.modifier);
-            TmrUtils.tryApplyModifier(turretInst.get(), TurretAttributes.MAX_RELOAD_TICKS, this.modifier);
+            EntityUtils.tryRemoveModifier(turretInst.get(), TurretAttributes.MAX_RELOAD_TICKS, this.modifier);
+            EntityUtils.tryApplyModifier(turretInst.get(), TurretAttributes.MAX_RELOAD_TICKS, this.modifier);
         }
     }
 
     @Override
     public void terminate(ITurretInst turretInst, ItemStack stack) {
         if( !turretInst.get().world.isRemote ) {
-            TmrUtils.tryRemoveModifier(turretInst.get(), TurretAttributes.MAX_RELOAD_TICKS, this.modifier);
+            EntityUtils.tryRemoveModifier(turretInst.get(), TurretAttributes.MAX_RELOAD_TICKS, this.modifier);
         }
     }
 

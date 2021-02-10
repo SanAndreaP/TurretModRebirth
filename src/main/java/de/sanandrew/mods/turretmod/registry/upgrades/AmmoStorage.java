@@ -13,9 +13,7 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -36,15 +34,15 @@ public class AmmoStorage
     @Override
     public void initialize(ITurretInst turretInst, ItemStack stack) {
         if( !turretInst.get().world.isRemote ) {
-            TmrUtils.tryRemoveModifier(turretInst.get(), TurretAttributes.MAX_AMMO_CAPACITY, MODIFIER);
-            TmrUtils.tryApplyModifier(turretInst.get(), TurretAttributes.MAX_AMMO_CAPACITY, MODIFIER);
+            EntityUtils.tryRemoveModifier(turretInst.get(), TurretAttributes.MAX_AMMO_CAPACITY, MODIFIER);
+            EntityUtils.tryApplyModifier(turretInst.get(), TurretAttributes.MAX_AMMO_CAPACITY, MODIFIER);
         }
     }
 
     @Override
     public void terminate(ITurretInst turretInst, ItemStack stack) {
         if( !turretInst.get().world.isRemote ) {
-            if( TmrUtils.tryRemoveModifier(turretInst.get(), TurretAttributes.MAX_AMMO_CAPACITY, MODIFIER) ) {
+            if( EntityUtils.tryRemoveModifier(turretInst.get(), TurretAttributes.MAX_AMMO_CAPACITY, MODIFIER) ) {
                 turretInst.getTargetProcessor().dropExcessAmmo();
                 turretInst.updateState();
             }

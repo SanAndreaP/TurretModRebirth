@@ -9,12 +9,13 @@
 package de.sanandrew.mods.turretmod.block;
 
 import com.google.common.collect.ImmutableMap;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.EnumGui;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.registry.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -41,6 +42,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 
+@SuppressWarnings("NullableProblems")
 public class BlockElectrolyteGenerator
         extends Block
 {
@@ -90,7 +92,7 @@ public class BlockElectrolyteGenerator
                 IItemHandler handler = electrolyteGen.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
                 if( handler != null ) {
                     for( int i = 0, max = handler.getSlots(); i < max; i++ ) {
-                        TmrUtils.dropItem(handler.getStackInSlot(i), world, pos);
+                        ItemStackUtils.dropBlockItem(handler.getStackInSlot(i), world, pos);
                     }
                 }
 
@@ -148,7 +150,7 @@ public class BlockElectrolyteGenerator
 
     @Override
     protected BlockStateContainer createBlockState() {
-        return TmrUtils.buildCustomBlockStateContainer(this, MyStateImplementation::new, TILE_HOLDER);
+        return MiscUtils.buildCustomBlockStateContainer(this, MyStateImplementation::new, TILE_HOLDER);
     }
 
     @Override

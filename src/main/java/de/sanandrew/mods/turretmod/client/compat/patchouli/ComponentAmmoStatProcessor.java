@@ -2,10 +2,7 @@ package de.sanandrew.mods.turretmod.client.compat.patchouli;
 
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
-import de.sanandrew.mods.turretmod.registry.Resources;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
-import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -14,16 +11,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.Range;
-import org.apache.commons.lang3.tuple.Pair;
 import vazkii.patchouli.api.IComponentProcessor;
 import vazkii.patchouli.api.IVariableProvider;
-import vazkii.patchouli.client.book.BookContents;
-import vazkii.patchouli.client.book.BookEntry;
-import vazkii.patchouli.common.book.BookRegistry;
 import vazkii.patchouli.common.util.ItemStackUtil;
 
 import java.util.Arrays;
-import java.util.function.Function;
 
 @SideOnly(Side.CLIENT)
 public class ComponentAmmoStatProcessor
@@ -46,16 +38,16 @@ public class ComponentAmmoStatProcessor
 
         switch( s ) {
             case "from": {
-                return TmrUtils.getNumberFormat(1, true, langCode).format(min / 2F);
+                return MiscUtils.getNumberFormat(1, true, langCode).format(min / 2F);
             }
             case "to": {
                 if( min < max - 0.01F ) {
-                    return TmrUtils.getNumberFormat(1, true, langCode).format(max / 2F);
+                    return MiscUtils.getNumberFormat(1, true, langCode).format(max / 2F);
                 }
                 break;
             }
             case "rounds_provided": {
-                return TmrUtils.getNumberFormat(0, true, langCode).format(this.ammo[0].getAmmoCapacity());
+                return MiscUtils.getNumberFormat(0, true, langCode).format(this.ammo[0].getAmmoCapacity());
             }
             case "item": {
                 NonNullList<ItemStack> items = NonNullList.create();
