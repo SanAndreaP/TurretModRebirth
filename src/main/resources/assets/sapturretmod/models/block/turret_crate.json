@@ -26,6 +26,7 @@
 			"from": [1.99, 1.99, 1.99],
 			"to": [14.01, 14.01, 14.01],
 			"emissive": true,
+			"shade": false,
 			"faces": {
 				"north": {"uv": [2, 2, 14, 14], "texture": "#2"},
 				"east": {"uv": [2, 2, 14, 14], "texture": "#2"},
