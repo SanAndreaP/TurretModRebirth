@@ -1,6 +1,6 @@
 ### 1.12.2-4.0.0-beta.4
 
-##### This needs at least SanLib 1.6.0 and Minecraft Forge 14.23.5.2768 or higher!
+##### This needs at least SanLib 1.6.0 and Minecraft Forge 14.23.5.2847 or higher!
 
 ###### _Additions_
 * TCU can now be bound to a turret for remote access
