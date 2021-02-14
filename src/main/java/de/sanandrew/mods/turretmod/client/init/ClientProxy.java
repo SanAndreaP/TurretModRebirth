@@ -20,6 +20,7 @@ import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.audio.SoundLaser;
 import de.sanandrew.mods.turretmod.client.compat.patchouli.PageCustomCrafting;
+import de.sanandrew.mods.turretmod.client.compat.patchouli.PatchouliHelper;
 import de.sanandrew.mods.turretmod.client.compat.patchouli.PatchouliMouseEventHandler;
 import de.sanandrew.mods.turretmod.client.effect.EffectHandler;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
@@ -139,8 +140,8 @@ public class ClientProxy
 
         MinecraftForge.EVENT_BUS.register(new RenderEventHandler());
         MinecraftForge.EVENT_BUS.register(new ClientWorldEventListener());
-        PatchouliMouseEventHandler.register();
-        PageCustomCrafting.registerPage();
+
+        PatchouliHelper.preInit();
 
         RenderingRegistry.registerEntityRenderingHandler(EntityTurret.class, RenderTurret::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityTurretProjectile.class, RenderProjectile::new);
