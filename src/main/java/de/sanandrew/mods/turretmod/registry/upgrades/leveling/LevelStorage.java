@@ -13,7 +13,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.common.Loader;
 import org.apache.logging.log4j.Level;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -76,14 +75,17 @@ public class LevelStorage
     }
 
     static String[] getDefaultStages() {
-        try( BufferedReader r = MiscUtils.getFile(Loader.instance().getModList().stream()
-                                                        .filter(c -> c.getModId().equals(TmrConstants.ID))
-                                                        .findFirst().orElseThrow(IOException::new),
-                                                  "assets/" + TmrConstants.ID + "/stages_default.json") )
-        {
-            if( r != null ) {
-                return r.lines().toArray(String[]::new);
-            }
+        final List<String> stageLines = new ArrayList<>();
+        try {
+            MiscUtils.readFile(Loader.instance().getModList().stream().filter(c -> c.getModId().equals(TmrConstants.ID))
+                                     .findFirst().orElseThrow(IOException::new),
+                               "assets/" + TmrConstants.ID + "/stages_default.json",
+                               r -> {
+                                   System.out.println("read file successfully...");
+                                   stageLines.addAll(r.lines().collect(Collectors.toList()));
+            });
+
+            return stageLines.toArray(new String[0]);
         } catch( IOException e ) {
             TmrConstants.LOG.log(Level.ERROR, "Cannot load default stages: {}", e.getMessage());
         }
