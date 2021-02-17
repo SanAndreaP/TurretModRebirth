@@ -165,7 +165,9 @@ public class ItemTurret
             EntityLiving bob = turretInst.get();
             this.health = bob.getHealth();
             this.name = bob.hasCustomName() ? bob.getCustomNameTag() : null;
-            this.variant = turretInst.getVariant().getId();
+
+            IVariant variant = turretInst.getVariant();
+            this.variant = variant != null ? variant.getId() : null;
         }
 
         public TurretStats(Float health, String name, IVariant variant) {
