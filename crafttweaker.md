@@ -1,15 +1,15 @@
-#CraftTweaker support
+# CraftTweaker support
 
-##Turret Assembly Table
+## Turret Assembly Table
 ```zs
 import mods.sapturretmod.TurretAssembly
 ```
 In order to manipulate the recipes used by the turret assembly table, you'll need to import this CraftTweaker class first.
 
-###removing
+### removing
 Removing recipes automatically removes a group if that group has no recipes.
 
-#####remove recipes
+##### remove recipes
 ```zs
 removeRecipeByName(String id)
 ```
@@ -26,7 +26,7 @@ removeRecipeByOutput(IItemStack output, String group)
 ```
 remove any and all recipes by looking it up through an output item. The 2nd command only removes recipes within the specified group.
 
-#####remove all recipes
+##### remove all recipes
 ```zs
 removeAllRecipes()
 ```
@@ -36,10 +36,10 @@ removeAllRecipes(String group)
 ```
 remove all turret assembly table recipes, where the 2nd command only removes those within a specified group.
 
-###adding
+### adding
 Adding recipes automatically registers a new group, if that group is not yet available. You're advised to set an icon for the new group, though.
 
-#####add new recipes
+##### add new recipes
 ```zs
 addRecipe(String group, IIngredient[] inputs, IItemStack output, int fluxPerTick, int processTime)
 ```
@@ -51,13 +51,13 @@ register a new recipe to a (new) group within the turret assembly table with an 
 
 With the 2nd command, you can define your own ID for the recipe.
 
-#####setting a group icon
+##### setting a group icon
 ```zs
 setGroupIcon(String group, IItemStack item)
 ```
 sets the icon of the group to the specified item. Used by the turret assembly table GUI.
 
-#####setting a group ordinal number
+##### setting a group ordinal number
 ```zs
 setGroupOrder(String group, int ordinal)
 ```
@@ -70,15 +70,15 @@ The sorting for the standard groups is as follows:
 3. upgrades
 4. repair_kit
 
-##Electrolyte Generator
+## Electrolyte Generator
 ```zs
 import mods.sapturretmod.ElectrolyteGenerator;
 ```
 In order to manipulate the fuels used by the electrolyte generator, you'll need to import this CraftTweaker class first.
 
-###removing
+### removing
 
-#####remove fuel
+##### remove fuel
 ```zs
 removeFuelByName(String id)
 ```
@@ -89,13 +89,13 @@ removeFuelsByInput(IIngredient input)
 ```
 looks up any and all recipes which can match the given input and removes those.
 
-#####remove all fuels
+##### remove all fuels
 ```zs
 removeAllFuels()
 ```
 removes all electrolyte generator recipes.
 
-###add new fuels
+### add new fuels
 There are 4 commands for adding electrolyte fuel:
 
 ```zs
@@ -115,7 +115,7 @@ The 1st and 2nd command create a recipe with an input, a trash and treasure item
 
 The 3rd and 4th command is like the 1st and 2nd one, but additionally, you can define your own ID for the recipe.
 
-##Example script
+## Example script
 ```zs
 import mods.sapturretmod.ElectrolyteGenerator;
 import mods.sapturretmod.TurretAssembly;
