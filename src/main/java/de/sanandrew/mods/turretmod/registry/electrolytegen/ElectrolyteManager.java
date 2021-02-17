@@ -94,4 +94,10 @@ public class ElectrolyteManager
 
         this.cacheFuels = null;
     }
+
+    public void clearFuels() {
+        this.fuels.clear();
+
+        this.cacheFuels = null;
+    }
 }

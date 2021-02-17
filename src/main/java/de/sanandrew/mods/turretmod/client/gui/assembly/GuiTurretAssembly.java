@@ -230,7 +230,9 @@ public class GuiTurretAssembly
             if( currInd == g.size() ) {
                 currInd = 0;
             }
-            currGroup = g.get(currInd);
+            if( currInd < g.size() ) {
+                currGroup = g.get(currInd);
+            }
         }
     }
 

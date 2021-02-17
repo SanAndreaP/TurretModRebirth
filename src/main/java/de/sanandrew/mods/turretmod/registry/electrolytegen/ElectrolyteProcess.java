@@ -71,7 +71,7 @@ public class ElectrolyteProcess
 
     public ItemStack getTreasureStack(IInventory inv) {
         if( this.treasureStack == null ) {
-            this.treasureStack = MiscUtils.RNG.randomFloat() < this.recipe.getTreasureChance() ? this.recipe.getCraftingResult(inv) : ItemStack.EMPTY;
+            this.treasureStack = MiscUtils.RNG.randomFloat() < this.recipe.getTreasureChance() ? this.recipe.getTreasureResult(inv) : ItemStack.EMPTY;
         }
 
         return this.treasureStack;

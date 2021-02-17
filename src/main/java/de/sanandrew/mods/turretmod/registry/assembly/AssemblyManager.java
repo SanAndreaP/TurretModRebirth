@@ -8,7 +8,9 @@
  */
 package de.sanandrew.mods.turretmod.registry.assembly;
 
+import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.assembly.AssemblyIngredient;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyManager;
@@ -30,6 +32,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BinaryOperator;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public final class AssemblyManager
@@ -48,17 +51,23 @@ public final class AssemblyManager
 
     @Override
     public boolean registerRecipe(@Nonnull IAssemblyRecipe recipe) {
+        return registerRecipe(recipe, false);
+    }
+
+    public boolean registerRecipe(@Nonnull IAssemblyRecipe recipe, boolean throwException) {
+        final Consumer<String> exc = throwException ? s -> { throw new RuntimeException(s); } : s -> TmrConstants.LOG.log(Level.ERROR, s, new InvalidParameterException());
+
         ResourceLocation id = recipe.getId();
         if( id == null ) {
-            TmrConstants.LOG.log(Level.ERROR, "ID for assembly recipe cannot be null!", new InvalidParameterException());
+            exc.accept("ID for assembly recipe cannot be null!");
             return false;
         }
         if( recipe.getFluxPerTick() < 0 ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("Flux usage cannot be smaller than 0 for assembly recipe %s!", id), new InvalidParameterException());
+            exc.accept(String.format("Flux usage cannot be smaller than 0 for assembly recipe %s!", id));
             return false;
         }
         if( recipe.getProcessTime() < 0 ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("Processing time cannot be smaller than 0 for assembly recipe %s!", id), new InvalidParameterException());
+            exc.accept(String.format("Processing time cannot be smaller than 0 for assembly recipe %s!", id));
             return false;
         }
 
@@ -70,8 +79,6 @@ public final class AssemblyManager
         this.groups.computeIfAbsent(recipe.getGroup(), k -> new ArrayList<>()).add(id);
         this.groupOrders.putIfAbsent(recipe.getGroup(), 0);
 
-        this.cacheGroupNames = null;
-
         this.invalidateCaches();
 
         return true;
@@ -79,8 +86,13 @@ public final class AssemblyManager
 
     @Override
     public void removeRecipe(ResourceLocation id) {
-        this.recipes.remove(id);
-        this.groups.forEach((k, v) -> v.removeIf(r -> r.equals(id)));
+        IAssemblyRecipe recipe = this.recipes.remove(id);
+        String recipeGroup = recipe.getGroup();
+        this.groups.get(recipeGroup).removeIf(r -> r.equals(id));
+
+        if( this.groups.get(recipeGroup).size() < 1 ) {
+            this.groups.remove(recipeGroup);
+        }
 
         this.invalidateCaches();
     }
@@ -96,10 +108,10 @@ public final class AssemblyManager
     }
 
     @Override
-    public void setGroupOrder(String group, int sort) {
+    public void setGroupOrder(String group, int ordinal) {
         this.cacheGroupNames = null;
 
-        this.groupOrders.put(group, sort);
+        this.groupOrders.put(group, ordinal);
     }
 
     @Override
@@ -147,6 +159,21 @@ public final class AssemblyManager
         return this.cacheRecipes;
     }
 
+    public void clearRecipes() {
+        this.recipes.clear();
+        this.groups.clear();
+
+        this.invalidateCaches();
+    }
+
+    public void clearRecipesByGroup(String group) {
+        new ArrayList<>(this.recipes.keySet()).forEach(id -> {
+            if( this.recipes.get(id).getGroup().equals(group) ) {
+                this.removeRecipe(id);
+            }
+        });
+    }
+
     @SuppressWarnings("Convert2MethodRef")
     public void finalizeRegistry() {
         LinkedHashMap<ResourceLocation, IAssemblyRecipe> recipeOrdered = new LinkedHashMap<>(this.recipes);
@@ -167,11 +194,17 @@ public final class AssemblyManager
             List<ItemStack> removedStacks = new ArrayList<>();
             Map<AssemblyIngredient, Integer> ingredients = recipe.getIngredients().stream().collect(Collectors.toMap(a -> (AssemblyIngredient) a,
                                                                                                                      a -> ((AssemblyIngredient) a).getCount()));
+
+
             for( int slot = inv.getSizeInventory() - 1; slot > 3; slot-- ) {
                 ItemStack slotStack = inv.getStackInSlot(slot);
                 ingredients.entrySet().forEach(e -> {
                     int v = e.getValue();
-                    if( v > 0 && e.getKey().apply(slotStack) ) {
+                    AssemblyIngredient ingredient = e.getKey();
+                    ItemStack slotStackMatch = slotStack.copy();
+
+                    slotStackMatch.setCount(ingredient.getCount());
+                    if( v > 0 && e.getKey().apply(slotStackMatch) ) {
                         int       extractAmount = Math.min(slotStack.getCount(), v);
                         ItemStack removed       = slotStack.copy();
                         removed.setCount(extractAmount);

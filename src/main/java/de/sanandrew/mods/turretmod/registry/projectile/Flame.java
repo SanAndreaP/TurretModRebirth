@@ -124,7 +124,13 @@ public class Flame
 
     @Override
     public DamageSource getCustomDamageSrc(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile, Entity target, TargetType type) {
-        return EntityTurretProjectile.getDamageSource(turret, projectile, type).setFireDamage();
+        DamageSource ds = EntityTurretProjectile.getDamageSource(turret, projectile, type);
+
+        if( !this.purifying ) {
+            ds.setFireDamage();
+        }
+
+        return ds;
     }
 
     @Override

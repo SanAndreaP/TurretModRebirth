@@ -560,7 +560,8 @@ public class EntityTurretProjectile
 
         static ITextComponent getDeathMessage(EntityLivingBase attacked, ITurretInst turret, String damageType) {
             String turretOwner = turret.getOwnerName();
-            String turretName = turret.get().getDisplayName().getFormattedText();
+            String turretName = turret.get().getName();
+
             if( !Strings.isNullOrEmpty(turretOwner) ) {
                 turretName = turretOwner + "'s " + turretName;
             }
@@ -598,7 +599,8 @@ public class EntityTurretProjectile
         }
 
         @Override
-        public ITextComponent getDeathMessage(EntityLivingBase attacked) {
+        @Nonnull
+        public ITextComponent getDeathMessage(@Nonnull EntityLivingBase attacked) {
             return this.turretInst != null ? DamageSourceProjectile.getDeathMessage(attacked, this.turretInst, this.damageType) : super.getDeathMessage(attacked);
         }
 

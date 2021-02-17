@@ -1,5 +1,16 @@
-### 1.12.2-4.0.0-beta.4
+### 1.12.2-4.0.0-beta.4.1
+##### This needs at least SanLib 1.6.1 and Minecraft Forge 14.23.5.2847 or higher!
 
+* fixed death message not translating correctly (Note: Scaled Health's Blight entities have their message cut off, because they instanciate their own TextComponentTranslation and it's missing parameters. This is not fixable on my end)
+* added loads of entities to the target categories of the config (**Note: delete the config in order to have those new entities show up**)
+* Ender Gain Medium and Fuel Purifier upgrades now correctly prohibit the DamageSource being flammable, thus being able to damage fire-resistant entities now
+* CraftTweaker support for the Turret Assembly Table and Electrolyte Generator
+* fixed Turret Assembly Table not consuming ingredients correctly with certain recipes
+* fixed Turret Assembly Table crashing when no recipe is registered
+* fixed Electrolyte Generator not extracting treasure
+
+
+### 1.12.2-4.0.0-beta.4
 ##### This needs at least SanLib 1.6.0 and Minecraft Forge 14.23.5.2847 or higher!
 
 ###### _Additions_

@@ -95,6 +95,6 @@ public class AssemblyRecipe
             items.add(inv.getStackInSlot(slot));
         }
 
-        return ItemStackUtils.getCompactItems(items, inv.getSizeInventory());
+        return ItemStackUtils.getCompactItems(items, Integer.MAX_VALUE, Integer.MAX_VALUE);
     }
 }

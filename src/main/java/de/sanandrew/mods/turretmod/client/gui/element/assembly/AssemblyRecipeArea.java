@@ -61,6 +61,10 @@ public class AssemblyRecipeArea
 
     @Override
     public void update(IGui gui, JsonObject data) {
+        if( GuiTurretAssembly.currGroup == null ) {
+            return;
+        }
+
         GuiElementInst grpInst = this.getChild(GuiTurretAssembly.currGroup);
         AssemblyRecipes grpImpl = grpInst.get(AssemblyRecipes.class);
 

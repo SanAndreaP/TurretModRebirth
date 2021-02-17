@@ -100,7 +100,13 @@ public class Laser
 
     @Override
     public DamageSource getCustomDamageSrc(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile, Entity target, TargetType type) {
-        return EntityTurretProjectile.getDamageSource(turret, projectile, type).setFireDamage();
+        DamageSource ds = EntityTurretProjectile.getDamageSource(turret, projectile, type);
+
+        if( !this.isBlue ) {
+            ds.setFireDamage();
+        }
+
+        return ds;
     }
 
     @Override

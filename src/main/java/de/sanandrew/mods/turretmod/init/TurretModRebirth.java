@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.init;
 import de.sanandrew.mods.turretmod.api.ITmrPlugin;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
+import de.sanandrew.mods.turretmod.compat.crafttweaker.CTHandler;
 import de.sanandrew.mods.turretmod.entity.turret.TargetList;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
@@ -102,6 +103,8 @@ public class TurretModRebirth
             plugin.registerAssemblyRecipes(AssemblyManager.INSTANCE);
             plugin.registerElectrolyteRecipes(ElectrolyteManager.INSTANCE);
         });
+
+        CTHandler.onInit();
 
         proxy.init(event);
     }
