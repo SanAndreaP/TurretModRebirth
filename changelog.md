@@ -1,3 +1,7 @@
+### 1.12.2-4.0.0-beta.4.3
+##### This needs at least SanLib 1.6.1 and Minecraft Forge 14.23.5.2847 or higher!
+* changed ItemRemapper to only try to remap unchecked chunks and players only, also surrounded with try-catch to prevent crashes during world load
+
 ### 1.12.2-4.0.0-beta.4.2
 ##### This needs at least SanLib 1.6.1 and Minecraft Forge 14.23.5.2847 or higher!
 * fixed turret dismantling erroring when used on a turret without variants
