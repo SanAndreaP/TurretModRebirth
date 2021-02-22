@@ -27,17 +27,24 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.world.ChunkEvent;
+import net.minecraftforge.event.world.ChunkDataEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -45,7 +52,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-@SuppressWarnings("serial")
 @Mod.EventBusSubscriber(modid = TmrConstants.ID)
 public class ItemRemapper
 {
@@ -194,6 +200,8 @@ public class ItemRemapper
         }
     };
 
+    private static final Map<Integer, List<ChunkPos>> REMAPPED_CHUNKS = new HashMap<>();
+
     @SubscribeEvent
     public static void onMissingItem(RegistryEvent.MissingMappings<Item> event) {
         List<RegistryEvent.MissingMappings.Mapping<Item>> list = event.getMappings();
@@ -219,58 +227,118 @@ public class ItemRemapper
     }
 
     @SubscribeEvent
-    public static void onChunkLoad(ChunkEvent.Load event) {
-        // replace items in loaded tile entities (chests etc.)
-        Chunk chunk = event.getChunk();
-        chunk.getTileEntityMap().values().forEach(te -> Arrays.stream(EnumFacing.VALUES).forEach(f -> {
-            IItemHandler handler = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, f);
-            if( handler instanceof IItemHandlerModifiable ) {
-                replaceOldItems((IItemHandlerModifiable) handler);
-            }
-        }));
+    public static void onWorldUnload(WorldEvent.Unload event) {
+        REMAPPED_CHUNKS.clear();
+    }
 
-        // replace items in entities (donkeys with chests etc.) and turrets
-        Arrays.stream(chunk.getEntityLists()).forEach(cimm -> cimm.forEach(e -> {
-            IItemHandler handler = e.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
-            if( handler instanceof IItemHandlerModifiable ) {
-                replaceOldItems((IItemHandlerModifiable) handler);
-            }
+    @SubscribeEvent
+    public static void onChunkDataSave(ChunkDataEvent.Save event) {
+        int dimId = event.getWorld().provider.getDimension();
+        if( REMAPPED_CHUNKS.containsKey(dimId) ) {
+            List<ChunkPos> chunkPosList = REMAPPED_CHUNKS.get(dimId);
+            ChunkPos pos = event.getChunk().getPos();
+            if( chunkPosList.contains(pos) ) {
+                event.getData().setBoolean(TmrConstants.ID + ":remapped_chunk", true);
 
-            if( e instanceof EntityTurret ) {
-                EntityTurret turret = (EntityTurret) e;
-                ItemStack oldStack = turret.getTargetProcessor().getAmmoStack();
-                if( ItemStackUtils.isValid(oldStack) && oldStack.getItem() instanceof ItemAmmo ) {
-                    ItemStack newAmmoStack = getNewAmmoStack(oldStack);
-                    if( ItemStackUtils.isValid(newAmmoStack) ) {
-                        ((TargetProcessor) turret.getTargetProcessor()).setAmmoStackInternal(newAmmoStack);
+                chunkPosList.remove(pos);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onChunkDataLoad(ChunkDataEvent.Load event) {
+        int dimId = event.getWorld().provider.getDimension();
+
+        if( event.getData().getBoolean(TmrConstants.ID + ":remapped_chunk") ) {
+            REMAPPED_CHUNKS.computeIfAbsent(dimId, id -> new ArrayList<>()).add(event.getChunk().getPos());
+        } else {
+            // replace items in loaded tile entities (chests etc.)
+            try {
+                Chunk chunk = event.getChunk();
+
+                chunk.getTileEntityMap().values().forEach(te -> Arrays.stream(EnumFacing.VALUES).forEach(f -> {
+                    IItemHandler handler = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, f);
+                    if( handler instanceof IItemHandlerModifiable ) {
+                        replaceOldItems((IItemHandlerModifiable) handler);
                     }
-                }
+                }));
 
-                IUpgradeProcessor uProc = turret.getUpgradeProcessor();
-                for( int i = 0, max = uProc.getSizeInventory(); i < max; i++ ) {
-                    oldStack = uProc.getStackInSlot(i);
-                    if( ItemStackUtils.isValid(oldStack) && oldStack.getItem() instanceof ItemUpgrade ) {
-                        ItemStack newUpgradeStack = getNewUpgradeStack(oldStack);
-                        if( ItemStackUtils.isValid(newUpgradeStack) ) {
-                            uProc.setInventorySlotContents(i, newUpgradeStack);
+                // replace items in entities (donkeys with chests etc.) and turrets
+                Arrays.stream(chunk.getEntityLists()).forEach(cimm -> cimm.forEach(e -> {
+                    IItemHandler handler = e.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
+                    if( handler instanceof IItemHandlerModifiable ) {
+                        replaceOldItems((IItemHandlerModifiable) handler);
+                    }
+
+                    if( e instanceof EntityTurret ) {
+                        EntityTurret turret   = (EntityTurret) e;
+                        ItemStack    oldStack = turret.getTargetProcessor().getAmmoStack();
+                        if( ItemStackUtils.isValid(oldStack) && oldStack.getItem() instanceof ItemAmmo ) {
+                            ItemStack newAmmoStack = getNewAmmoStack(oldStack);
+                            if( ItemStackUtils.isValid(newAmmoStack) ) {
+                                ((TargetProcessor) turret.getTargetProcessor()).setAmmoStackInternal(newAmmoStack);
+                            }
+                        }
+
+                        IUpgradeProcessor uProc = turret.getUpgradeProcessor();
+                        for( int i = 0, max = uProc.getSizeInventory(); i < max; i++ ) {
+                            oldStack = uProc.getStackInSlot(i);
+                            if( ItemStackUtils.isValid(oldStack) && oldStack.getItem() instanceof ItemUpgrade ) {
+                                ItemStack newUpgradeStack = getNewUpgradeStack(oldStack);
+                                if( ItemStackUtils.isValid(newUpgradeStack) ) {
+                                    uProc.setInventorySlotContents(i, newUpgradeStack);
+                                }
+                            }
                         }
                     }
-                }
-            }
-        }));
+                }));
+
+                REMAPPED_CHUNKS.computeIfAbsent(dimId, id -> new ArrayList<>()).add(event.getChunk().getPos());
+            } catch( Exception ignored ) { }
+        }
     }
 
     @SubscribeEvent
     public static void onPlayerJoin(EntityJoinWorldEvent event) {
         // replace items in player inventories
-        if( event.getEntity() instanceof EntityPlayer && !event.getWorld().isRemote ) {
+        if( event.getEntity() instanceof EntityPlayer ) {
             EntityPlayer player = (EntityPlayer) event.getEntity();
-            IItemHandler handler = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
-            if( handler instanceof IItemHandlerModifiable ) {
-                replaceOldItems((IItemHandlerModifiable) handler);
-                player.inventoryContainer.detectAndSendChanges();
+            if( !checkPlayerItemMapper(player) ) {
+                IItemHandler handler = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
+                if( handler instanceof IItemHandlerModifiable ) {
+                    replaceOldItems((IItemHandlerModifiable) handler);
+                    player.inventoryContainer.detectAndSendChanges();
+                }
             }
         }
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private static boolean checkPlayerItemMapper(EntityPlayer player) {
+        if( !player.world.isRemote ) {
+            File wsd           = player.world.getSaveHandler().getWorldDirectory();
+            Path newFileMarker = Paths.get(wsd.getAbsolutePath(), TmrConstants.ID + "_new_items.bin");
+            if( wsd != null ) {
+                try {
+                    if( !Files.exists(newFileMarker) ) {
+                        Files.createFile(newFileMarker);
+                        return false;
+                    } else {
+                        List<String> uuids = Files.readAllLines(newFileMarker);
+                        String playerId = player.getUniqueID().toString();
+                        if( !uuids.contains(playerId) ) {
+                            uuids = new ArrayList<>(uuids);
+                            uuids.add(playerId);
+                            Files.write(newFileMarker, uuids);
+
+                            return false;
+                        }
+                    }
+                } catch( Exception ignored ) {}
+            }
+        }
+
+        return true;
     }
 
     private static void replaceOldItems(IItemHandlerModifiable handler) {
