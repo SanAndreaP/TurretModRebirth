@@ -1,3 +1,7 @@
+### 1.12.2-4.0.0-beta.4.4
+##### This needs at least SanLib 1.6.1 and Minecraft Forge 14.23.5.2847 or higher!
+* ItemRemapper now only runs when there are missing mappings
+
 ### 1.12.2-4.0.0-beta.4.3
 ##### This needs at least SanLib 1.6.1 and Minecraft Forge 14.23.5.2847 or higher!
 * changed ItemRemapper to only try to remap unchecked chunks and players only, also surrounded with try-catch to prevent crashes during world load

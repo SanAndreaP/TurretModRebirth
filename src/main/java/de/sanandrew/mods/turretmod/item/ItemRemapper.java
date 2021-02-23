@@ -200,27 +200,35 @@ public class ItemRemapper
         }
     };
 
-    private static final Map<Integer, List<ChunkPos>> REMAPPED_CHUNKS = new HashMap<>();
+    private static boolean activated = false;
 
     @SubscribeEvent
     public static void onMissingItem(RegistryEvent.MissingMappings<Item> event) {
         List<RegistryEvent.MissingMappings.Mapping<Item>> list = event.getMappings();
         for( RegistryEvent.MissingMappings.Mapping<Item> map : list ) {
             if( map.key.equals(OLD_AMMO_ID) ) {
+                activated = true;
                 map.remap(ItemRegistry.TURRET_AMMO.get(Ammunitions.BOLT.getId()));
             } else if( map.key.equals(OLD_TURRET_ID) ) {
+                activated = true;
                 map.remap(ItemRegistry.TURRET_PLACERS.get(Turrets.CROSSBOW.getId()));
             } else if( map.key.equals(OLD_UPGRADE_ID) ) {
+                activated = true;
                 map.remap(ItemRegistry.TURRET_UPGRADES.get(UpgradeRegistry.EMPTY_UPGRADE.getId()));
             } else if( map.key.equals(OLD_REPKIT_ID) ) {
+                activated = true;
                 map.remap(ItemRegistry.TURRET_REPAIRKITS.get(RepairKits.STANDARD_MK1.getId()));
             } else if( OLD_UPGRADE_ID_MAPPINGS.containsKey(map.key) ) {
+                activated = true;
                 map.remap(Item.getByNameOrId(OLD_UPGRADE_ID_MAPPINGS.get(map.key).toString()));
             } else if( OLD_AMMO_ID_MAPPINGS.containsKey(map.key) ) {
+                activated = true;
                 map.remap(Item.getByNameOrId(OLD_AMMO_ID_MAPPINGS.get(map.key).toString()));
             } else if( OLD_TURRET_ID_MAPPINGS.containsKey(map.key) ) {
+                activated = true;
                 map.remap(Item.getByNameOrId(OLD_TURRET_ID_MAPPINGS.get(map.key).toString()));
             } else if( OLD_REPKIT_ID_MAPPINGS.containsKey(map.key) ) {
+                activated = true;
                 map.remap(Item.getByNameOrId(OLD_REPKIT_ID_MAPPINGS.get(map.key).toString()));
             }
         }
@@ -228,30 +236,14 @@ public class ItemRemapper
 
     @SubscribeEvent
     public static void onWorldUnload(WorldEvent.Unload event) {
-        REMAPPED_CHUNKS.clear();
-    }
-
-    @SubscribeEvent
-    public static void onChunkDataSave(ChunkDataEvent.Save event) {
-        int dimId = event.getWorld().provider.getDimension();
-        if( REMAPPED_CHUNKS.containsKey(dimId) ) {
-            List<ChunkPos> chunkPosList = REMAPPED_CHUNKS.get(dimId);
-            ChunkPos pos = event.getChunk().getPos();
-            if( chunkPosList.contains(pos) ) {
-                event.getData().setBoolean(TmrConstants.ID + ":remapped_chunk", true);
-
-                chunkPosList.remove(pos);
-            }
+        if( !event.getWorld().isRemote ) {
+            activated = false;
         }
     }
 
     @SubscribeEvent
     public static void onChunkDataLoad(ChunkDataEvent.Load event) {
-        int dimId = event.getWorld().provider.getDimension();
-
-        if( event.getData().getBoolean(TmrConstants.ID + ":remapped_chunk") ) {
-            REMAPPED_CHUNKS.computeIfAbsent(dimId, id -> new ArrayList<>()).add(event.getChunk().getPos());
-        } else {
+        if( activated ) {
             // replace items in loaded tile entities (chests etc.)
             try {
                 Chunk chunk = event.getChunk();
@@ -292,18 +284,16 @@ public class ItemRemapper
                         }
                     }
                 }));
-
-                REMAPPED_CHUNKS.computeIfAbsent(dimId, id -> new ArrayList<>()).add(event.getChunk().getPos());
-            } catch( Exception ignored ) { }
+            } catch( Exception ignored ) {}
         }
     }
 
     @SubscribeEvent
     public static void onPlayerJoin(EntityJoinWorldEvent event) {
         // replace items in player inventories
-        if( event.getEntity() instanceof EntityPlayer ) {
+        if( activated && event.getEntity() instanceof EntityPlayer ) {
             EntityPlayer player = (EntityPlayer) event.getEntity();
-            if( !checkPlayerItemMapper(player) ) {
+            if( !player.world.isRemote ) {
                 IItemHandler handler = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
                 if( handler instanceof IItemHandlerModifiable ) {
                     replaceOldItems((IItemHandlerModifiable) handler);
@@ -311,34 +301,6 @@ public class ItemRemapper
                 }
             }
         }
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    private static boolean checkPlayerItemMapper(EntityPlayer player) {
-        if( !player.world.isRemote ) {
-            File wsd           = player.world.getSaveHandler().getWorldDirectory();
-            Path newFileMarker = Paths.get(wsd.getAbsolutePath(), TmrConstants.ID + "_new_items.bin");
-            if( wsd != null ) {
-                try {
-                    if( !Files.exists(newFileMarker) ) {
-                        Files.createFile(newFileMarker);
-                        return false;
-                    } else {
-                        List<String> uuids = Files.readAllLines(newFileMarker);
-                        String playerId = player.getUniqueID().toString();
-                        if( !uuids.contains(playerId) ) {
-                            uuids = new ArrayList<>(uuids);
-                            uuids.add(playerId);
-                            Files.write(newFileMarker, uuids);
-
-                            return false;
-                        }
-                    }
-                } catch( Exception ignored ) {}
-            }
-        }
-
-        return true;
     }
 
     private static void replaceOldItems(IItemHandlerModifiable handler) {
