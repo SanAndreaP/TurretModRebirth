@@ -41,6 +41,7 @@ public class MinigunShell
         return 4;
     }
 
+    @Nonnull
     @Override
     public Range<Float> getDamageInfo() {
         return Range.is(Projectiles.MG_PEBBLE.getDamage());

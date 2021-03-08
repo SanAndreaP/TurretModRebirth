@@ -1,61 +1,43 @@
 package de.sanandrew.mods.turretmod.api.assembly;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntComparators;
-import it.unimi.dsi.fastutil.ints.IntList;
-import net.minecraft.client.util.RecipeItemHelper;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.NonNullList;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.common.crafting.CompoundIngredient;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.JsonContext;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.common.crafting.IIngredientSerializer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * <p>An ingredient for a recipe used by the turret assembly table.</p>
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class AssemblyIngredient
-        extends Ingredient
+        extends CompoundIngredient
 {
-    private final int                    count;
-    private final NonNullList<ItemStack> itemList;
-
-    private ItemStack[] items;
-    private IntList     itemIds;
+    private final int count;
 
     /**
      * <p>Creates a new ingredient defined by a list of items.</p>
      *
      * @param count  the amount of items required by this ingredient.
-     * @param stacks one or more items that represent this ingredient.
+     * @param ingredients one or more items that represent this ingredient.
      */
-    public AssemblyIngredient(int count, ItemStack... stacks) {
-        super(0);
-        this.itemList = NonNullList.from(ItemStack.EMPTY, stacks);
-        this.count = count;
-    }
-
-    /**
-     * <p>Creates a new ingredient defined by a list of ore dictionary names.</p>
-     *
-     * @param count The amount of items required by this ingredient.
-     * @param ores  One or more ore dictionary names, whose items represent this ingredient.
-     */
-    public AssemblyIngredient(int count, String... ores) {
-        super(0);
-        this.itemList = Arrays.stream(ores).map(OreDictionary::getOres).collect(NonNullList::create, NonNullList::addAll, NonNullList::addAll);
+    public AssemblyIngredient(int count, List<Ingredient> ingredients) {
+        super(ingredients);
         this.count = count;
     }
 
@@ -68,100 +50,73 @@ public class AssemblyIngredient
         return this.count;
     }
 
-    /**
-     * @return an array of ItemStacks that can match this ingredient.
-     */
     @Override
-    @Nonnull
-    public ItemStack[] getMatchingStacks() {
-        if( this.items == null || this.items.length != this.itemList.size() ) {
-            NonNullList<ItemStack> lst = NonNullList.create();
-            for( ItemStack stack : this.itemList ) {
-                if( stack.getMetadata() == OreDictionary.WILDCARD_VALUE ) {
-                    stack.getItem().getSubItems(CreativeTabs.SEARCH, lst);
-                } else {
-                    lst.add(stack);
-                }
-            }
-            this.items = lst.toArray(new ItemStack[0]);
-        }
-
-        return this.items;
-    }
-
-    /**
-     * @return a list of numerical item IDs from the matching ItemStacks of this ingredient, for networking purposes (?).
-     */
-    @Override
-    @Nonnull
-    public IntList getValidItemStacksPacked() {
-        if( this.itemIds == null || this.itemIds.size() != this.itemList.size() ) {
-            this.items = new ItemStack[0];
-            this.itemIds = Arrays.stream(this.getMatchingStacks()).map(RecipeItemHelper::pack).collect(Collectors.toCollection(() -> new IntArrayList(this.itemList.size())));
-            this.itemIds.sort(IntComparators.NATURAL_COMPARATOR);
-        }
-
-        return this.itemIds;
-    }
-
-
-    @Override
-    public boolean apply(@Nullable ItemStack input) {
+    public boolean test(@Nullable ItemStack input) {
         if( input == null ) {
             return false;
         }
 
-        for( ItemStack target : this.itemList ) {
-            if( ItemStackUtils.areEqualNbtFit(input, target, false, true, false) && input.getCount() >= this.count ) {
-                return true;
-            }
+        return input.getCount() >= this.count && super.test(input);
+    }
+
+    @Nonnull
+    @Override
+    public IIngredientSerializer<? extends Ingredient> getSerializer()
+    {
+        return Serializer.INSTANCE;
+    }
+
+    @Nonnull
+    @Override
+    public JsonElement serialize()
+    {
+        JsonObject json = new JsonObject();
+        json.addProperty("type", Objects.requireNonNull(CraftingHelper.getID(Serializer.INSTANCE)).toString());
+        json.addProperty("count", this.count);
+
+        JsonArray jArr = new JsonArray();
+        this.getChildren().forEach(i -> jArr.add(i.serialize()));
+
+        json.add("items", jArr);
+
+        return json;
+    }
+
+    public static class Serializer implements IIngredientSerializer<AssemblyIngredient>
+    {
+        public static final Serializer INSTANCE = new Serializer();
+
+        @Nonnull
+        @Override
+        public AssemblyIngredient parse(PacketBuffer buffer) {
+            return new AssemblyIngredient(buffer.readVarInt(), Stream.generate(() -> Ingredient.read(buffer)).limit(buffer.readVarInt()).collect(Collectors.toList()));
         }
 
-        return false;
-    }
+        @Nonnull
+        @Override
+        public AssemblyIngredient parse(JsonObject json) {
+            int              count       = JsonUtils.getIntVal(json.get("count"), 1);
+            JsonElement      items       = json.get("items");
+            List<Ingredient> ingredients = new ArrayList<>();
 
-    /**
-     * <p>Invalidates the caches of this ingredient, which will be rebuilt upon accessing them again.</p>
-     */
-    @Override
-    protected void invalidate() {
-        this.itemIds = null;
-        this.items = null;
-    }
-
-    /**
-     * <p>Indicates wether this ingredient is considered simple. Some recipes do additional operations if all ingredients are simple.</p>
-     *
-     * @return <tt>true</tt>, if this ingredient is considered simple; <tt>false</tt> otherwise.
-     */
-    @Override
-    public boolean isSimple() {
-        return true;
-    }
-
-    /**
-     * <p>Reads an ingredient from the given JSON element.</p>
-     *
-     * @param json The JSON element an ingredient should be read from.
-     * @param ctx  The JSON context.
-     *
-     * @return the ingredient read from the JSON element.
-     *
-     * @throws JsonSyntaxException if the JSON element does not contain a valid ingredient.
-     */
-    public static AssemblyIngredient fromJson(@Nullable JsonElement json, JsonContext ctx) {
-        if( json != null && !json.isJsonNull() ) {
-            if( json.isJsonObject() ) {
-                JsonObject jsonObj = json.getAsJsonObject();
-                int        count   = JsonUtils.getIntVal(jsonObj.get("count"), 1);
-                Ingredient defIng  = CraftingHelper.getIngredient(jsonObj.get("items"), ctx);
-
-                return new AssemblyIngredient(count, defIng.getMatchingStacks());
+            if( items != null && items.isJsonArray() ) {
+                for( JsonElement e : items.getAsJsonArray() ) {
+                    ingredients.add(CraftingHelper.getIngredient(e));
+                }
             } else {
-                throw new JsonSyntaxException("Assembly Table Ingredient needs to be object");
+                throw new JsonSyntaxException("AssemblyIngredient needs a list of items!");
             }
-        } else {
-            throw new JsonSyntaxException("Assembly Table Ingredient cannot be null");
+
+            return new AssemblyIngredient(count, ingredients);
+        }
+
+        @Override
+        public void write(PacketBuffer buffer, AssemblyIngredient ingredient) {
+            buffer.writeVarInt(ingredient.count);
+
+            Collection<Ingredient> children = ingredient.getChildren();
+            buffer.writeVarInt(children.size());
+            children.forEach(c -> c.write(buffer));
         }
     }
 }

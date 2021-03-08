@@ -1,0 +1,116 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+    }
+}
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+apply plugin: 'idea'
+idea {
+    module {
+        inheritOutputDirs = true
+    }
+    project {
+        languageLevel = '1.8' //due to a bug in gradle or IDEA, this doesn't work :(
+    }
+}
+
+version = "1.12-4.0.0-beta.4.4"
+group = "de.sanandrew.mods"
+archivesBaseName = "TurretMod"
+String[] excludes = ["**/*.psd", "**/*.bbmodel", "**/*.ps1"];
+
+sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
+compileJava {
+    sourceCompatibility = targetCompatibility = "1.8"
+}
+
+minecraft {
+    version = "1.12.2-14.23.5.2847"
+    runDir = "run"
+    mappings = "snapshot_20180814"
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://maven.blamejared.com' } // Patchouli & CraftTweaker
+	maven { // location of the maven that hosts JEI files
+        name = "Progwml6"
+		url = "http://dvs1.progwml6.com/files/maven"
+	}
+    maven { // location of a maven mirror for JEI files, as a fallback
+        name = "ModMaven"
+        url = "https://modmaven.k-4u.nl"
+    }
+    maven { // TOP
+        name 'tterrag maven'
+        url "https://maven.tterrag.com/"
+    }
+    maven {
+        name = "SanLib"
+        url = "https://github.com/SanAndreasP/SanLib/raw/1.12/maven/"
+    }
+}
+
+dependencies {
+    deobfCompile "mezz.jei:jei_1.12.2:4.8.5.147:api"
+    runtime "mezz.jei:jei_1.12.2:4.8.5.147"
+    deobfCompile("mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.19-11") { transitive = false }
+    deobfCompile "de.sanandrew.mods:SanLib:1.12.2-1.6.1"
+    deobfCompile "vazkii.patchouli:Patchouli:1.0-23.6"
+    deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.20.618"
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+
+    rename '(.+_at.cfg)', 'META-INF/$1'
+}
+
+jar {
+    exclude(excludes)
+    manifest {
+        attributes 'FMLAT': 'turretmodrebirth_at.cfg'
+    }
+}
+
+sourceJar {
+    from sourceSets.main.java
+    exclude(excludes)
+    appendix = 'src'
+    archiveName = "${baseName}-${version}-${appendix}.jar"
+}
+
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    exclude(excludes)
+    appendix = 'deobf'
+    archiveName = "${baseName}-${version}-${appendix}.jar"
+    manifest {
+        attributes 'FMLAT': 'turretmodrebirth_at.cfg'
+    }
+}
+
+artifacts {
+    archives deobfJar
+    archives sourceJar
+    archives jar
+}

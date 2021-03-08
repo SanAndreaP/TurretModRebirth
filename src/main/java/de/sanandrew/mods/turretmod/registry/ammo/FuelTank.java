@@ -42,6 +42,7 @@ public class FuelTank
         return 16;
     }
 
+    @Nonnull
     @Override
     public Range<Float> getDamageInfo() {
         return Range.is(Projectiles.FLAME_NORMAL.getDamage());

@@ -41,6 +41,7 @@ public class Harpoon
         return 1;
     }
 
+    @Nonnull
     @Override
     public Range<Float> getDamageInfo() {
         return Range.is(Projectiles.HARPOON.getDamage());

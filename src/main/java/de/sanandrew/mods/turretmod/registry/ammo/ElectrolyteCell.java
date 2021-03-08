@@ -40,6 +40,7 @@ public class ElectrolyteCell
         return 2;
     }
 
+    @Nonnull
     @Override
     public Range<Float> getDamageInfo() {
         return Range.is(0.0F);

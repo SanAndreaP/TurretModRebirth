@@ -17,6 +17,7 @@ import de.sanandrew.mods.turretmod.api.assembly.IAssemblyManager;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.Level;
@@ -38,6 +39,7 @@ import java.util.stream.Collectors;
 public final class AssemblyManager
         implements IAssemblyManager
 {
+    public static final IRecipeType<IAssemblyRecipe> TYPE = IRecipeType.register(TmrConstants.ID + ":turret_assembly");
     public static final AssemblyManager INSTANCE = new AssemblyManager();
 
     private final Map<ResourceLocation, IAssemblyRecipe> recipes     = new LinkedHashMap<>();
@@ -58,10 +60,6 @@ public final class AssemblyManager
         final Consumer<String> exc = throwException ? s -> { throw new RuntimeException(s); } : s -> TmrConstants.LOG.log(Level.ERROR, s, new InvalidParameterException());
 
         ResourceLocation id = recipe.getId();
-        if( id == null ) {
-            exc.accept("ID for assembly recipe cannot be null!");
-            return false;
-        }
         if( recipe.getFluxPerTick() < 0 ) {
             exc.accept(String.format("Flux usage cannot be smaller than 0 for assembly recipe %s!", id));
             return false;

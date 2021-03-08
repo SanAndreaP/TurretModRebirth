@@ -17,7 +17,11 @@ public final class TmrConstants
     public static final String VERSION = "4.0.0-beta.4.4";
     public static final String CHANNEL = "SapTurretModNWCH";
     public static final String NAME = "Turret Mod Rebirth";
-    public static final String DEPENDENCIES = "required-after:forge@[14.23.5.2847,];required-after:sanlib@[1.6.1,];after:patchouli";
+
+    static final String BUILD_MCVER    = "1.16.4";
+    static final String BUILD_FORGEVER = "1.16.4-35.1.4";
+    static final String BUILD_MAPPINGS_CHANNEL = "snapshot";
+    static final String BUILD_MAPPINGS_VERSION = "20201028-1.16.3";
 
     public static final String API_ID = "sapturretmod_api";
     public static final String API_VERSION = "1.2.0-beta.4";

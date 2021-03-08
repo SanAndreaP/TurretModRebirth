@@ -41,6 +41,7 @@ public class ShotgunShell
         return 1;
     }
 
+    @Nonnull
     @Override
     public Range<Float> getDamageInfo() {
         return Range.is(Projectiles.PEBBLE.getDamage());

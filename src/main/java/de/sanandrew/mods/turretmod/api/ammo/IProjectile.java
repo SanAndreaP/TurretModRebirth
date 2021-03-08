@@ -3,7 +3,7 @@ package de.sanandrew.mods.turretmod.api.ammo;
 import de.sanandrew.mods.turretmod.api.IRegistryObject;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.boss.EntityWither;
+import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.RayTraceResult;
@@ -127,7 +127,7 @@ public interface IProjectile
      * @return <tt>true</tt>, if the target should be damaged, <tt>false</tt> otherwise
      */
     default boolean onDamageEntityPre(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile, Entity target, DamageSource damageSrc, MutableFloat damage) {
-        return !(target instanceof EntityWither && ((EntityWither) target).isArmored() && damageSrc.isProjectile());
+        return !(target instanceof WitherEntity && ((WitherEntity) target).isCharged() && damageSrc.isProjectile());
     }
 
     /**

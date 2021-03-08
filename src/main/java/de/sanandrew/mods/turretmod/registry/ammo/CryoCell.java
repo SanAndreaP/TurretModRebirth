@@ -49,6 +49,7 @@ public abstract class CryoCell
             return Projectiles.CRYO_BALL_I;
         }
 
+        @Nonnull
         @Override
         public Range<Float> getDamageInfo() {
             return Range.is(Projectiles.CRYO_BALL_I.getDamage());
@@ -70,6 +71,7 @@ public abstract class CryoCell
             return Projectiles.CRYO_BALL_II;
         }
 
+        @Nonnull
         @Override
         public Range<Float> getDamageInfo() {
             return Range.is(Projectiles.CRYO_BALL_II.getDamage());
@@ -91,6 +93,7 @@ public abstract class CryoCell
             return Projectiles.CRYO_BALL_III;
         }
 
+        @Nonnull
         @Override
         public Range<Float> getDamageInfo() {
             return Range.is(Projectiles.CRYO_BALL_III.getDamage());

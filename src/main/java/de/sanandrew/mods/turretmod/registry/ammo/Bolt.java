@@ -41,6 +41,7 @@ public class Bolt
         return Turrets.CROSSBOW;
     }
 
+    @Nonnull
     @Override
     public Range<Float> getDamageInfo() {
         return Range.is(Projectiles.CB_BOLT.getDamage());

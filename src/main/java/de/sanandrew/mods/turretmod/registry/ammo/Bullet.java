@@ -41,6 +41,7 @@ public class Bullet
         return 2;
     }
 
+    @Nonnull
     @Override
     public Range<Float> getDamageInfo() {
         return Range.is(Projectiles.BULLET.getDamage());

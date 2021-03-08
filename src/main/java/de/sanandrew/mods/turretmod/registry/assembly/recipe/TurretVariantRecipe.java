@@ -1,5 +1,6 @@
 package de.sanandrew.mods.turretmod.registry.assembly.recipe;
 
+import de.sanandrew.mods.turretmod.api.assembly.IAssemblyInventory;
 import de.sanandrew.mods.turretmod.api.turret.IVariant;
 import de.sanandrew.mods.turretmod.item.ItemTurret;
 import de.sanandrew.mods.turretmod.registry.assembly.AssemblyRecipe;
@@ -10,11 +11,12 @@ import de.sanandrew.mods.turretmod.registry.turret.TurretMinigun;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRevolver;
 import de.sanandrew.mods.turretmod.registry.turret.TurretShotgun;
 import de.sanandrew.mods.turretmod.registry.turret.variant.VariantContainer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+
+import javax.annotation.Nonnull;
 
 public abstract class TurretVariantRecipe
         extends AssemblyRecipe
@@ -23,8 +25,9 @@ public abstract class TurretVariantRecipe
         super(id, group, ingredients, fluxPerTick, processTime, result);
     }
 
+    @Nonnull
     @Override
-    public ItemStack getCraftingResult(IInventory inv) {
+    public ItemStack getCraftingResult(@Nonnull IAssemblyInventory inv) {
         VariantContainer.ItemVariants<?> vh = getVariantHolder();
 
         ItemStack result  = super.getCraftingResult(inv);

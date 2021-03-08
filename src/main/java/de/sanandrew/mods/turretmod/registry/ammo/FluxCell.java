@@ -42,6 +42,7 @@ public class FluxCell
         return 1;
     }
 
+    @Nonnull
     @Override
     public Range<Float> getDamageInfo() {
         return Range.is(Projectiles.LASER_NORMAL.getDamage());

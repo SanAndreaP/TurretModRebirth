@@ -7,6 +7,7 @@
 package de.sanandrew.mods.turretmod.inventory;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.turretmod.api.assembly.IAssemblyInventory;
 import de.sanandrew.mods.turretmod.item.ItemAssemblyUpgrade;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.tileentity.assembly.TileEntityTurretAssembly;
@@ -14,6 +15,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
@@ -31,7 +33,7 @@ import java.util.stream.IntStream;
 
 @SuppressWarnings("NullableProblems")
 public class AssemblyInventory
-        implements ISidedInventory, INBTSerializable<NBTTagCompound>
+        implements IAssemblyInventory, INBTSerializable<CompoundNBT>
 {
     public static final int RESOURCE_SLOTS = 18;
     public static final int RESOURCE_SLOT_FIRST;
