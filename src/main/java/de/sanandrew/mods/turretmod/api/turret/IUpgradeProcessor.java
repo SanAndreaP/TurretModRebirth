@@ -4,7 +4,7 @@ import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeInstance;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
@@ -27,9 +27,9 @@ public interface IUpgradeProcessor
 
     boolean tryApplyUpgrade(@Nonnull ItemStack upgStack);
 
-    void writeToNbt(NBTTagCompound nbt);
+    CompoundNBT write(CompoundNBT nbt);
 
-    void readFromNbt(NBTTagCompound nbt);
+    void read(CompoundNBT nbt);
 
     boolean canAccessRemotely();
 }

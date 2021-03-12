@@ -1,0 +1,26 @@
+modLoader="javafml"
+loaderVersion="[35,)"
+license="BSD 3-Clause \"New\" or \"Revised\" License"
+issueTrackerURL="https://github.com/SanAndreasP/TurretModRebirth/issues"
+
+[[mods]]
+    modId="sapturretmod"
+    version="$version"
+    displayName="$name"
+    logoFile="assets/logo.png"
+    authors="SanAndreasP"
+    description='''
+    A library made for and required by all my mods.
+    '''
+    [[dependencies.sapturretmod]]
+        modId="forge"
+        mandatory=true
+        versionRange="[35,)"
+        ordering="NONE"
+        side="BOTH"
+    [[dependencies.sapturretmod]]
+        modId="minecraft"
+        mandatory=true
+        versionRange="[1.16.4,1.17)"
+        ordering="NONE"
+        side="BOTH"

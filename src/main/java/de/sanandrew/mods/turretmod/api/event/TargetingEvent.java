@@ -9,8 +9,8 @@ package de.sanandrew.mods.turretmod.api.event;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.eventbus.api.Cancelable;
+import net.minecraftforge.eventbus.api.Event;
 
 import javax.annotation.Nonnull;
 

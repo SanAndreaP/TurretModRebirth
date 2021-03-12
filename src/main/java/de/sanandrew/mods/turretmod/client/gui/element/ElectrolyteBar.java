@@ -1,12 +1,13 @@
 package de.sanandrew.mods.turretmod.client.gui.element;
 
 import com.google.gson.JsonObject;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
@@ -36,14 +37,14 @@ public class ElectrolyteBar
     @Override
     public void update(IGui gui, JsonObject data) {
         IGuiElectrolyte gel = (IGuiElectrolyte) gui;
-        double energyPerc = gel.getProcess(this.slot) / (double) gel.getMaxProcess(this.slot);
+        double energyPerc = gel.getProgress(this.slot) / (double) gel.getMaxProgress(this.slot);
         this.energyBarWidth = Math.max(0, Math.min(this.size[0], MathHelper.ceil((1.0F - energyPerc) * this.size[0])));
     }
 
     @Override
-    protected void drawRect(IGui gui) {
-        Gui.drawModalRectWithCustomSizedTexture(0, 0, this.uv[0], this.uv[1], this.energyBarWidth, this.size[1],
-                                                this.textureSize[0], this.textureSize[1]);
+    protected void drawRect(IGui gui, MatrixStack stack) {
+        AbstractGui.blit(stack, 0, 0, (float)this.uv[0], (float)this.uv[1], this.energyBarWidth, this.size[1],
+                         this.textureSize[0], this.textureSize[1]);
     }
 
     @Override
@@ -58,9 +59,9 @@ public class ElectrolyteBar
 
     public interface IGuiElectrolyte
     {
-        int getProcess(int slot);
+        int getProgress(int slot);
 
-        int getMaxProcess(int slot);
+        int getMaxProgress(int slot);
     }
 
 }

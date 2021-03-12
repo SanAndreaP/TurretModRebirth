@@ -1,11 +1,10 @@
 package de.sanandrew.mods.turretmod.api.assembly;
 
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.ResourceLocation;
 
 /**
  * <p>An object defining a turret assembly table recipe.</p>
- * <p>This is a custom declaration (pre 1.14) / extension (1.14) of {@link net.minecraft.item.crafting.IRecipe}</p>
+ * <p>This is a custom declaration (pre 1.14) / extension (1.14) of {@link IRecipe}</p>
  */
 public interface IAssemblyRecipe
         extends IRecipe<IAssemblyInventory>

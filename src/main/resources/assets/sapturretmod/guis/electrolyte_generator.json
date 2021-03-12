@@ -60,7 +60,7 @@
       }
     },
     {
-      "type": "rflux_bar",
+      "type": "energy_bar",
       "pos": [156, 75],
       "data": {
         "size": [12, 59],

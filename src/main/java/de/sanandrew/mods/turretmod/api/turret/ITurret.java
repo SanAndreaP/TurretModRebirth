@@ -8,7 +8,7 @@ package de.sanandrew.mods.turretmod.api.turret;
 
 import de.sanandrew.mods.turretmod.api.IRegistryObject;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -46,9 +46,9 @@ public interface ITurret
 
     default void readSyncData(ITurretInst turretInst, ObjectInputStream stream) throws IOException { }
 
-    default void onSave(ITurretInst turretInst, NBTTagCompound nbt) { }
+    default void write(ITurretInst turretInst, CompoundNBT nbt) { }
 
-    default void onLoad(ITurretInst turretInst, NBTTagCompound nbt) { }
+    default void read(ITurretInst turretInst, CompoundNBT nbt) { }
 
     default float getDeactiveHeadPitch() {
         return 30.0F;

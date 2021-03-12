@@ -14,8 +14,6 @@ import java.util.List;
 
 /**
  * An object used to manage recipes for the turret assembly table.
- *
- * @see de.sanandrew.mods.turretmod.api.ITmrPlugin#registerAssemblyRecipes(IAssemblyManager) ITmrPlugin.registerAssemblyRecipes(IAssemblyManager)
  */
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public interface IAssemblyManager

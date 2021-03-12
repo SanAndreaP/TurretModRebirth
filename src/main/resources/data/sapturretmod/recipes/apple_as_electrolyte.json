@@ -1,0 +1,14 @@
+{
+  "type": "sapturretmod:electrolyte_generator",
+  "ingredient": {
+    "item": "minecraft:apple"
+  },
+  "efficiency": 1.3,
+  "processTime": 220,
+  "trashResult": {
+    "item": "minecraft:wheat_seeds"
+  },
+  "treasureResult": {
+    "item": "minecraft:gold_nugget"
+  }
+}

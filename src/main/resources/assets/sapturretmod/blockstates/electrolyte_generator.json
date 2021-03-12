@@ -1,7 +1,6 @@
 {
     "variants": {
-        "tile_main=true": { "model": "sapturretmod:electrolyte_generator" },
-        "tile_main=false": { "model": "sapturretmod:electrolyte_generator" },
-        "inventory": { "model": "sapturretmod:electrolyte_generator" }
+        "tile_main=true": { "model": "sapturretmod:block/electrolyte_generator_bottom" },
+        "tile_main=false": { "model": "sapturretmod:block/electrolyte_generator_top" }
     }
 }

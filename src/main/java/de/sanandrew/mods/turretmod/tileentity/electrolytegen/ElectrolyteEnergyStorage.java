@@ -6,12 +6,12 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.tileentity.electrolytegen;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.energy.IEnergyStorage;
 
 final class ElectrolyteEnergyStorage
-        implements IEnergyStorage, INBTSerializable<NBTTagCompound>
+        implements IEnergyStorage, INBTSerializable<CompoundNBT>
 {
     int fluxAmount;
     private int prevFluxAmount;
@@ -85,16 +85,16 @@ final class ElectrolyteEnergyStorage
 
 
     @Override
-    public NBTTagCompound serializeNBT() {
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setInteger("fluxAmount", this.fluxAmount);
-        nbt.setInteger("fluxBuffer", this.fluxBuffer);
+    public CompoundNBT serializeNBT() {
+        CompoundNBT nbt = new CompoundNBT();
+        nbt.putInt("fluxAmount", this.fluxAmount);
+        nbt.putInt("fluxBuffer", this.fluxBuffer);
         return nbt;
     }
 
     @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
-        this.fluxAmount = nbt.getInteger("fluxAmount");
-        this.fluxBuffer = nbt.getInteger("fluxBuffer");
+    public void deserializeNBT(CompoundNBT nbt) {
+        this.fluxAmount = nbt.getInt("fluxAmount");
+        this.fluxBuffer = nbt.getInt("fluxBuffer");
     }
 }

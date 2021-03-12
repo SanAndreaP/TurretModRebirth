@@ -8,37 +8,33 @@ package de.sanandrew.mods.turretmod.api.electrolytegen;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 public interface IElectrolyteRecipe
-//        extends IRecipe //TODO: implement in 1.14
+        extends IRecipe<IElectrolyteInventory> //TODO: implement in 1.14
 {
-    ResourceLocation getId();
-
     float getEfficiency();
 
     int getProcessTime();
 
-    boolean matches(IInventory inv, World worldIn);
-
-    ItemStack getCraftingResult(IInventory inv);
-
-    ItemStack getTreasureResult(IInventory inv);
-
-    default boolean canFit(int width, int height) {
-        return true;
+    default ItemStack getCraftingResult(IElectrolyteInventory inv) {
+        return getTrashResult(inv);
     }
 
-    ItemStack getRecipeOutput();
+    ItemStack getTrashResult(IElectrolyteInventory inv);
 
-    NonNullList<Ingredient> getIngredients();
-
-    String getGroup();
+    ItemStack getTreasureResult(IElectrolyteInventory inv);
 
     float getTrashChance();
 
     float getTreasureChance();
+
+    @Override
+    default boolean canFit(int width, int height) {
+        return true;
+    }
 }

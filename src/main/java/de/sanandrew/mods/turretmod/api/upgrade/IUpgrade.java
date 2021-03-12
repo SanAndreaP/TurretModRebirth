@@ -4,7 +4,7 @@ import de.sanandrew.mods.turretmod.api.IRegistryObject;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nullable;
@@ -71,7 +71,7 @@ public interface IUpgrade
      * @param turretInst The turret instance which holds this upgrade.
      * @param nbt The NBT tag of the upgrade item.
      */
-    default void onLoad(ITurretInst turretInst, NBTTagCompound nbt) { }
+    default void read(ITurretInst turretInst, CompoundNBT nbt) { }
 
     /**
      * <p>Saves additional data for this upgrade to the provided NBT tag.</p>
@@ -80,7 +80,7 @@ public interface IUpgrade
      * @param turretInst The turret instance which holds this upgrade.
      * @param nbt The NBT tag of the upgrade item.
      */
-    default void onSave(ITurretInst turretInst, NBTTagCompound nbt) { }
+    default void write(ITurretInst turretInst, CompoundNBT nbt) { }
 
     /**
      * <p>Terminates this upgrade upon removal from the specified turret instance.</p>

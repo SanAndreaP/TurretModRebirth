@@ -10,20 +10,24 @@ package de.sanandrew.mods.turretmod.world;
 
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.network.PacketRegistry;
+import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.network.PacketSyncPlayerList;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.world.storage.MapStorage;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.storage.DimensionSavedDataManager;
 import net.minecraft.world.storage.WorldSavedData;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -32,11 +36,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PlayerList
         extends WorldSavedData
 {
-    private static final String WSD_NAME = String.format("%s_%s", TmrConstants.ID, "playerList");
+    private static final String WSD_NAME = String.format("%s:%s", TmrConstants.ID, "PlayerList");
     public static final PlayerList INSTANCE = new PlayerList();
 
     //concurrent hash map to prevent different dimension altering this list at the same time
-    private final Map<UUID, String> playerMap = new ConcurrentHashMap<>();
+    private final Map<UUID, ITextComponent> playerMap = new ConcurrentHashMap<>();
 
     private PlayerList() {
         this(WSD_NAME);
@@ -47,16 +51,16 @@ public class PlayerList
         super(s);
     }
 
-    public String getPlayerName(UUID playerUUID) {
+    public ITextComponent getPlayerName(UUID playerUUID) {
         if( playerUUID.equals(UuidUtils.EMPTY_UUID) ) {
-            return "[deprecated]";
+            return new StringTextComponent("[removed]");
         }
 
-        String s = this.playerMap.get(playerUUID);
-        return s == null ? "UNKNOWN" : this.playerMap.get(playerUUID);
+        ITextComponent s = this.playerMap.get(playerUUID);
+        return s == null ? new StringTextComponent("[unknown]") : this.playerMap.get(playerUUID);
     }
 
-    public Map<UUID, String> getPlayerMap() {
+    public Map<UUID, ITextComponent> getPlayerMap() {
         return new HashMap<>(this.playerMap);
     }
 
@@ -70,19 +74,18 @@ public class PlayerList
         return players;
     }
 
-    public void putPlayersClient(Map<UUID, String> players) {
-        if( FMLCommonHandler.instance().getSide() == Side.CLIENT ) {
-            this.playerMap.putAll(players);
-        }
+    @OnlyIn(Dist.CLIENT)
+    public void putPlayersClient(Map<UUID, ITextComponent> players) {
+        this.playerMap.putAll(players);
     }
 
     private void syncList() {
-        PacketRegistry.sendToAll(new PacketSyncPlayerList(this));
+        TurretModRebirth.NETWORK.sendToAll(new PacketSyncPlayerList(), null);
     }
 
     @SubscribeEvent
     public void onEntitySpawn(EntityJoinWorldEvent event) {
-        if( event.getEntity() instanceof EntityPlayer && !event.getWorld().isRemote ) {
+        if( event.getEntity() instanceof PlayerEntity && !event.getWorld().isRemote ) {
             this.playerMap.put(event.getEntity().getUniqueID(), event.getEntity().getName());
             this.syncList();
             this.markDirty();
@@ -91,50 +94,52 @@ public class PlayerList
 
     @SubscribeEvent
     public void onWorldLoad(WorldEvent.Load event) {
-        if( !event.getWorld().isRemote ) {
-            MapStorage storage = event.getWorld().getMapStorage();
-            if( storage != null ) {
-                PlayerList result = (PlayerList) storage.getOrLoadData(PlayerList.class, WSD_NAME);
-                if( result == null ) {
-                    result = this;
-                }
+        if( (event.getWorld() instanceof ServerWorld) ) {
+            DimensionSavedDataManager storage = ((ServerWorld) event.getWorld()).getSavedData();
+            PlayerList result = storage.getOrCreate(PlayerList::new, WSD_NAME);
 
-                this.playerMap.putAll(result.playerMap);
-                storage.setData(WSD_NAME, this);
-                this.syncList();
-            }
+            this.playerMap.putAll(result.playerMap);
+            storage.set(this);
+            this.syncList();
         }
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbt) {
-        String tmrNbtName = WSD_NAME;
-        if( nbt.hasKey(tmrNbtName) ) {
-            NBTTagCompound tmrNBT = nbt.getCompoundTag(tmrNbtName);
-            if( tmrNBT.hasKey("players") ) {
-                NBTTagList nbtList = tmrNBT.getTagList("players", Constants.NBT.TAG_COMPOUND);
-                int size = nbtList.tagCount();
+    public void read(CompoundNBT nbt) {
+        if( nbt.contains(WSD_NAME) ) {
+            CompoundNBT tmrNBT = nbt.getCompound(WSD_NAME);
+            if( tmrNBT.contains("Players") ) {
+                ListNBT nbtList = tmrNBT.getList("Players", Constants.NBT.TAG_COMPOUND);
+                int     size    = nbtList.size();
                 for( int i = 0; i < size; i++ ) {
-                    NBTTagCompound playerNbt = nbtList.getCompoundTagAt(i);
-                    this.playerMap.put(UUID.fromString(playerNbt.getString("playerUUID")), playerNbt.getString("playerName"));
+                    CompoundNBT playerNbt = nbtList.getCompound(i);
+
+                    if( playerNbt.contains("PlayerIdMSB") && playerNbt.contains("PlayerIdLSB") ) {
+                        UUID           id   = new UUID(playerNbt.getLong("PlayerIdMSB"), playerNbt.getLong("PlayerLSB"));
+                        ITextComponent name = ITextComponent.Serializer.getComponentFromJson(playerNbt.getString("PlayerName"));
+
+                        this.playerMap.put(id, name);
+                    }
                 }
             }
         }
     }
 
+    @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        NBTTagCompound tmrNBT = new NBTTagCompound();
-        NBTTagList nbtList = new NBTTagList();
-        for( Map.Entry<UUID, String> player : this.playerMap.entrySet() ) {
-            NBTTagCompound playerNbt = new NBTTagCompound();
-            playerNbt.setString("playerUUID", player.getKey().toString());
-            playerNbt.setString("playerName", player.getValue());
-            nbtList.appendTag(playerNbt);
+    public CompoundNBT write(@Nonnull CompoundNBT compound) {
+        CompoundNBT tmrNBT = new CompoundNBT();
+        ListNBT nbtList = new ListNBT();
+        for( Map.Entry<UUID, ITextComponent> player : this.playerMap.entrySet() ) {
+            CompoundNBT playerNbt = new CompoundNBT();
+            playerNbt.putLong("PlayerIdMSB", player.getKey().getMostSignificantBits());
+            playerNbt.putLong("PlayerIdLSB", player.getKey().getLeastSignificantBits());
+            playerNbt.putString("PlayerName", ITextComponent.Serializer.toJson(player.getValue()));
+            nbtList.add(playerNbt);
         }
-        tmrNBT.setTag("players", nbtList);
-        nbt.setTag(WSD_NAME, tmrNBT);
+        tmrNBT.put("Players", nbtList);
+        compound.put(WSD_NAME, tmrNBT);
 
-        return nbt;
+        return compound;
     }
 }

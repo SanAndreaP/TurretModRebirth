@@ -8,52 +8,55 @@
  */
 package de.sanandrew.mods.turretmod.network;
 
-import de.sanandrew.mods.sanlib.lib.network.AbstractMessage;
+import de.sanandrew.mods.sanlib.lib.network.SimpleMessage;
+import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.world.PlayerList;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class PacketSyncPlayerList
-        extends AbstractMessage<PacketSyncPlayerList>
+        extends SimpleMessage
 {
-    private Map<UUID, String> players;
+    private final Map<UUID, ITextComponent> players;
 
     @SuppressWarnings("unused")
-    public PacketSyncPlayerList() { }
-
-    public PacketSyncPlayerList(PlayerList pList) {
-        this.players = pList.getPlayerMap();
+    public PacketSyncPlayerList() {
+        this.players = PlayerList.INSTANCE.getPlayerMap();
     }
 
-    @Override
-    public void handleClientMessage(PacketSyncPlayerList packet, EntityPlayer player) {
-        PlayerList.INSTANCE.putPlayersClient(packet.players);
-    }
-
-    @Override
-    public void handleServerMessage(PacketSyncPlayerList packet, EntityPlayer player) { }
-
-    @Override
-    public void fromBytes(ByteBuf buf) {
-        int size = buf.readInt();
+    public PacketSyncPlayerList(PacketBuffer packetBuffer) {
+        int size = packetBuffer.readVarInt();
         this.players = new HashMap<>(size);
 
         for( int i = 0; i < size; i++ ) {
-            this.players.put(UUID.fromString(ByteBufUtils.readUTF8String(buf)), ByteBufUtils.readUTF8String(buf));
+            this.players.put(packetBuffer.readUniqueId(), packetBuffer.readTextComponent());
         }
     }
 
     @Override
-    public void toBytes(ByteBuf buf) {
-        buf.writeInt(this.players.size());
-        for( Map.Entry<UUID, String> player : this.players.entrySet() ) {
-            ByteBufUtils.writeUTF8String(buf, player.getKey().toString());
-            ByteBufUtils.writeUTF8String(buf, player.getValue());
+    public void encode(PacketBuffer packetBuffer) {
+        packetBuffer.writeVarInt(this.players.size());
+        for( Map.Entry<UUID, ITextComponent> player : this.players.entrySet() ) {
+            packetBuffer.writeUniqueId(player.getKey());
+            packetBuffer.writeTextComponent(player.getValue());
         }
+    }
+
+    @Override
+    public void handle(Supplier<NetworkEvent.Context> supplier) {
+        TurretModRebirth.PROXY.fillPlayerListClient(this.players);
+    }
+
+    @Override
+    public boolean handleOnMainThread() {
+        return true;
     }
 }

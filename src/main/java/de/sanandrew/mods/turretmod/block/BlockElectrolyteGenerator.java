@@ -8,88 +8,89 @@
  */
 package de.sanandrew.mods.turretmod.block;
 
-import com.google.common.collect.ImmutableMap;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
-import de.sanandrew.mods.turretmod.api.EnumGui;
-import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.init.TurretModRebirth;
-import de.sanandrew.mods.turretmod.registry.TmrCreativeTabs;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.ContainerBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.block.material.MaterialColor;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-@SuppressWarnings("NullableProblems")
+@SuppressWarnings({ "NullableProblems", "deprecation" })
 public class BlockElectrolyteGenerator
-        extends Block
+        extends ContainerBlock
 {
-    private static final AxisAlignedBB MAIN_SEL_BB = new AxisAlignedBB(0, 0, 0, 1, 2, 1);
-    private static final AxisAlignedBB UPPER_SEL_BB = new AxisAlignedBB(0, -1, 0, 1, 1, 1);
+    private static final VoxelShape MAIN_SEL_BB = Block.makeCuboidShape(0, 0, 0, 16, 32, 16);
+    private static final VoxelShape UPPER_SEL_BB = Block.makeCuboidShape(0, -16, 0, 16, 16, 16);
 
-    private static final PropertyBool TILE_HOLDER = PropertyBool.create("tile_main");
+    private static final BooleanProperty TILE_HOLDER = BooleanProperty.create("tile_main");
 
     BlockElectrolyteGenerator() {
-        super(Material.ROCK);
-        this.blockHardness = 4.25F;
-        this.blockSoundType = SoundType.STONE;
-        this.setCreativeTab(TmrCreativeTabs.MISC);
-        this.setTranslationKey(TmrConstants.ID + ":potato_generator");
-        this.setLightOpacity(0);
-        this.setDefaultState(this.blockState.getBaseState().withProperty(TILE_HOLDER, true));
-        this.setRegistryName(TmrConstants.ID, "electrolyte_generator");
+        super(Properties.create(Material.IRON, MaterialColor.BROWN)
+                        .hardnessAndResistance(4.25F)
+                        .sound(SoundType.STONE)
+                        .notSolid()
+                        .setRequiresTool());
+//        this. = 4.25F;
+//        this.soundType = SoundType.STONE;
+//        this.setCreativeTab(TmrCreativeTabs.MISC);
+//        this.setTranslationKey(TmrConstants.ID + ":potato_generator");
+//        this.setLightOpacity(0);
+        this.setDefaultState(this.stateContainer.getBaseState().with(TILE_HOLDER, true));
+//        this.setRegistryName(TmrConstants.ID, "");
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public IBlockState getStateFromMeta(int meta) {
-        return getDefaultState().withProperty(TILE_HOLDER, meta == 0);
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(TILE_HOLDER);
     }
 
     @Override
-    public int getMetaFromState(IBlockState state) {
-        boolean type = state.getValue(TILE_HOLDER);
-        return type ? 0 : 1;
-    }
+    @Deprecated
+    public void onBlockAdded(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
+        super.onBlockAdded(state, worldIn, pos, oldState, isMoving);
 
-    @Override
-    public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
-        super.onBlockAdded(worldIn, pos, state);
-
-        if( state.getValue(TILE_HOLDER) ) {
-            worldIn.setBlockState(pos.up(1), this.blockState.getBaseState().withProperty(TILE_HOLDER, false));
+        if( state.get(TILE_HOLDER) ) {
+            worldIn.setBlockState(pos.up(1), this.stateContainer.getBaseState().with(TILE_HOLDER, false));
         }
     }
 
     @Override
-    public void breakBlock(World world, BlockPos pos, IBlockState state) {
-        if( state.getValue(TILE_HOLDER) ) {
+    @Deprecated
+    @SuppressWarnings("ConstantConditions")
+    public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+        if( state.get(TILE_HOLDER) ) {
             TileEntityElectrolyteGenerator electrolyteGen = (TileEntityElectrolyteGenerator) world.getTileEntity(pos);
 
             if( electrolyteGen != null ) {
-                IItemHandler handler = electrolyteGen.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
+                IItemHandler handler = electrolyteGen.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN).orElse(null);
                 if( handler != null ) {
                     for( int i = 0, max = handler.getSlots(); i < max; i++ ) {
                         ItemStackUtils.dropBlockItem(handler.getStackInSlot(i), world, pos);
@@ -102,46 +103,79 @@ public class BlockElectrolyteGenerator
             BlockPos upBlock = pos.up(1);
             if( world.getBlockState(upBlock).getBlock() == this ) {
                 world.playEvent(2001, upBlock, getStateId(world.getBlockState(upBlock)));
-                world.setBlockToAir(upBlock);
+                world.setBlockState(upBlock, Blocks.AIR.getDefaultState(), 35);
             }
         } else {
             BlockPos downBlock = pos.down(1);
             if( world.getBlockState(downBlock).getBlock() == this ) {
                 world.playEvent(2001, downBlock, getStateId(world.getBlockState(downBlock)));
-                world.setBlockToAir(downBlock);
+                world.setBlockState(downBlock, Blocks.AIR.getDefaultState(), 35);
             }
         }
 
-        super.breakBlock(world, pos, state);
+        super.onReplaced(state, world, pos, newState, isMoving);
     }
 
     @Override
-    public int damageDropped(IBlockState state) {
-        return 0;
+    public void onBlockHarvested(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+        if( !world.isRemote && player.isCreative() ) {
+            if( !state.get(TILE_HOLDER) ) {
+                BlockPos blockpos = pos.down();
+                BlockState blockstate = world.getBlockState(blockpos);
+                if( blockstate.getBlock() == state.getBlock() && blockstate.get(TILE_HOLDER) ) {
+                    world.setBlockState(blockpos, Blocks.AIR.getDefaultState(), 35);
+                    world.playEvent(player, 2001, blockpos, Block.getStateId(blockstate));
+                }
+            }
+        }
+
+        super.onBlockHarvested(world, pos, state, player);
+    }
+
+    @Nullable
+    @Override
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        BlockPos blockpos = context.getPos();
+        World world = context.getWorld();
+        if( blockpos.getY() < world.getHeight() - 1 && world.getBlockState(blockpos.up()).isReplaceable(context) ) {
+            return this.getDefaultState().with(TILE_HOLDER, true);
+        } else {
+            return null;
+        }
     }
 
     @Override
-    public boolean canPlaceBlockAt(World world, BlockPos pos) {
-        return super.canPlaceBlockAt(world, pos) && world.getBlockState(pos.up(1)).getBlock().isReplaceable(world, pos.up(1));
-    }
-
-    @Override
-    @SuppressWarnings("TailRecursion")
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-        if( !world.isRemote ) {
-            if( state.getValue(TILE_HOLDER) ) {
-                TurretModRebirth.proxy.openGui(player, EnumGui.ELECTROLYTE_GENERATOR, pos.getX(), pos.getY(), pos.getZ());
+    @Deprecated
+    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        if (worldIn.isRemote) {
+            return ActionResultType.SUCCESS;
+        } else {
+            if( state.get(TILE_HOLDER) ) {
+                TileEntity tileentity = worldIn.getTileEntity(pos);
+                if( tileentity instanceof TileEntityElectrolyteGenerator ) {
+                    player.openContainer((TileEntityElectrolyteGenerator) tileentity);
+                }
             } else {
-                return this.onBlockActivated(world, pos.down(1), world.getBlockState(pos.down(1)), player, hand, side, hitX, hitY, hitZ);
+                return this.onBlockActivated(worldIn.getBlockState(pos.down()), worldIn, pos.down(), player, handIn, hit);
             }
-        }
 
-        return true;
+            return ActionResultType.CONSUME;
+        }
     }
 
+//    @Override
+//    @Deprecated
+//    public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
+//        BlockPos blockpos = pos.down();
+//        BlockState blockstate = worldIn.getBlockState(blockpos);
+//        return blockstate.isIn(this);
+//    }
+
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, @Nonnull ItemStack stack) {
-        if( stack.hasDisplayName() && state.getValue(TILE_HOLDER) ) {
+    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        world.setBlockState(pos.up(), state.with(TILE_HOLDER, false), 3);
+
+        if( stack.hasDisplayName() && state.get(TILE_HOLDER) ) {
             TileEntity te = world.getTileEntity(pos);
             assert te != null;
             ((TileEntityElectrolyteGenerator) te).setCustomName(stack.getDisplayName());
@@ -149,65 +183,45 @@ public class BlockElectrolyteGenerator
     }
 
     @Override
-    protected BlockStateContainer createBlockState() {
-        return MiscUtils.buildCustomBlockStateContainer(this, MyStateImplementation::new, TILE_HOLDER);
+    @Deprecated
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.MODEL;
     }
 
     @Override
-    public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos) {
-        return false;
+    public boolean hasTileEntity(BlockState state) {
+        return state.get(TILE_HOLDER);
     }
 
+    @Nullable
     @Override
-    public boolean hasTileEntity(IBlockState state) {
-        return state.getValue(TILE_HOLDER);
-    }
-
-    @Override
-    public TileEntity createTileEntity(World world, IBlockState state) {
+    public TileEntity createNewTileEntity(IBlockReader worldIn) {
         return new TileEntityElectrolyteGenerator();
     }
 
-    private static final class MyStateImplementation
-            extends BlockStateContainer.StateImplementation
-    {
-        private MyStateImplementation(Block blockIn, ImmutableMap<IProperty<?>, Comparable<?>> propertiesIn) {
-            super(blockIn, propertiesIn);
-        }
+    @Override
+    @Deprecated
+    public boolean hasComparatorInputOverride(BlockState state) {
+        return true;
+    }
 
-        @Override
-        public boolean isFullCube() {
-            return false;
-        }
+    @Override
+    @Deprecated
+    public int getComparatorInputOverride(BlockState blockState, World worldIn, BlockPos pos) {
+        return blockState.get(TILE_HOLDER)
+               ? Container.calcRedstoneFromInventory((IInventory) worldIn.getTileEntity(pos))
+               : getComparatorInputOverride(worldIn.getBlockState(pos.down()), worldIn, pos.down());
+    }
 
-        @Override
-        public EnumBlockRenderType getRenderType() {
-            return this.getValue(TILE_HOLDER) ? EnumBlockRenderType.MODEL : EnumBlockRenderType.INVISIBLE;
-        }
+    @Override
+    @Deprecated
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+        return state.get(TILE_HOLDER) ? MAIN_SEL_BB : UPPER_SEL_BB;
+    }
 
-        @Override
-        public boolean hasComparatorInputOverride() {
-            return true;
-        }
-
-        @Override
-        public int getComparatorInputOverride(World worldIn, BlockPos pos) {
-            return this.getValue(TILE_HOLDER) ? Container.calcRedstoneFromInventory((IInventory) worldIn.getTileEntity(pos)) : 0;
-        }
-
-        @Override
-        public AxisAlignedBB getSelectedBoundingBox(World worldIn, BlockPos pos) {
-            return (this.getValue(TILE_HOLDER) ? MAIN_SEL_BB : UPPER_SEL_BB).offset(pos);
-        }
-
-        @Override
-        public boolean isOpaqueCube() {
-            return false;
-        }
-
-        @Override
-        public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, BlockPos pos, EnumFacing facing) {
-            return this.getValue(TILE_HOLDER) ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
-        }
+    @Override
+    @Deprecated
+    public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos) {
+        return super.getOpacity(state, worldIn, pos);
     }
 }

@@ -2,12 +2,13 @@ package de.sanandrew.mods.turretmod.api.turret;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fml.common.eventhandler.EventBus;
+import net.minecraftforge.eventbus.EventBus;
+import net.minecraftforge.eventbus.api.BusBuilder;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.UUID;
 @SuppressWarnings("unused")
 public interface ITargetProcessor
 {
-    EventBus TARGET_BUS = new EventBus();
+    EventBus TARGET_BUS = new EventBus(BusBuilder.builder());
 
     boolean addAmmo(@Nonnull ItemStack stack);
 
@@ -80,9 +81,9 @@ public interface ITargetProcessor
 
     Entity getTarget();
 
-    void writeToNbt(NBTTagCompound nbt);
+    CompoundNBT write(CompoundNBT nbt);
 
-    void readFromNbt(NBTTagCompound nbt);
+    void read(CompoundNBT nbt);
 
     ResourceLocation[] getEnabledEntityTargets();
 

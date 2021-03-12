@@ -6,21 +6,20 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.api.turret;
 
-import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.function.Supplier;
 
 public interface ITurretInst
 {
-    EntityLiving get();
+    LivingEntity get();
 
     ITurret getTurret();
 
@@ -52,7 +51,7 @@ public interface ITurretInst
 
     void setShowRange(boolean showRange);
 
-    boolean hasPlayerPermission(EntityPlayer player);
+    boolean hasPlayerPermission(PlayerEntity player);
 
     boolean isInGui();
 
@@ -62,12 +61,13 @@ public interface ITurretInst
 
     ITurret.AttackType getAttackType();
 
-    TileEntityTurretCrate dismantle();
+    //TODO: reimplement
+//    TileEntityTurretCrate dismantle();
 
     IVariant getVariant();
 
     void setVariant(ResourceLocation variant);
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     int getPartBrightnessForRender(double partY);
 }
