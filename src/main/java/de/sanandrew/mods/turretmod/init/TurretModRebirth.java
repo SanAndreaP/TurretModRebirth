@@ -13,14 +13,18 @@ import de.sanandrew.mods.turretmod.api.ITmrPlugin;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
 import de.sanandrew.mods.turretmod.client.init.ClientProxy;
+import de.sanandrew.mods.turretmod.datagenerator.ElectrolyteProvider;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.world.PlayerList;
+import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
+import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import org.objectweb.asm.Type;
@@ -50,9 +54,11 @@ public class TurretModRebirth
 //    private boolean isDev;
 
     public TurretModRebirth() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::constructMod);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(PROXY::setupClient);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupCommon);
+        IEventBus meb = FMLJavaModLoadingContext.get().getModEventBus();
+        meb.addListener(this::gatherData);
+        meb.addListener(this::constructMod);
+        meb.addListener(PROXY::setupClient);
+        meb.addListener(this::setupCommon);
     }
 
     private void constructMod(FMLConstructModEvent event) {
@@ -76,6 +82,14 @@ public class TurretModRebirth
         MinecraftForge.EVENT_BUS.register(PlayerList.INSTANCE);
 
 //        TurretModRebirth.PLUGINS.forEach(plugin -> plugin.registerTcuEntries(GuiTcuRegistry.INSTANCE));
+    }
+
+    private void gatherData(GatherDataEvent event) {
+        DataGenerator gen = event.getGenerator();
+
+        if( event.includeServer() ) {
+            gen.addProvider(new ElectrolyteProvider(gen));
+        }
     }
 
 //    @Mod.EventHandler

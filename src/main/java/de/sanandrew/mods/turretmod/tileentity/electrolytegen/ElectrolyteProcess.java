@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
 
 public class ElectrolyteProcess
 {
-    public static final ElectrolyteProcess NULL_PROCESS = new NullProcess();
+    public static final ElectrolyteProcess EMPTY = new EmptyProcess();
 
     public final ResourceLocation recipe;
 
@@ -38,36 +38,20 @@ public class ElectrolyteProcess
         this.processStack = stack;
     }
 
-//    public ElectrolyteProcess(ByteBuf buf) {
-//        this.processStack = ByteBufUtils.readItemStack(buf);
-//        this.progress = buf.readShort();
-//        this.recipe = MiscUtils.defIfNull(ElectrolyteManager.INSTANCE.getFuel(new ResourceLocation(ByteBufUtils.readUTF8String(buf))), InvalidRecipe.INSTANCE);
-//    }
-
     public ElectrolyteProcess(CompoundNBT nbt) {
         this.processStack = ItemStack.read(nbt.getCompound("ProgressItem"));
         this.progress = nbt.getShort("Progress");
-        this.recipe = MiscUtils.defIfNull(new ResourceLocation(nbt.getString("Recipe")), NullRecipe.INSTANCE.getId());
+        this.recipe = MiscUtils.defIfNull(new ResourceLocation(nbt.getString("Recipe")), EmptyRecipe.INSTANCE.getId());
     }
 
-    ElectrolyteProcess() {
-        this(null, ItemStack.EMPTY);
+    ElectrolyteProcess(ItemStack stack) {
+        this(null, stack);
     }
-
-//    public void writeToByteBuf(ByteBuf buf) {
-//        ByteBufUtils.writeItemStack(buf, this.processStack);
-//        buf.writeShort(this.progress);
-//        ByteBufUtils.writeUTF8String(buf, this.recipe != null ? this.recipe.getId().toString() : "");
-//    }
 
     public void write(CompoundNBT nbt) {
         ItemStackUtils.writeStackToTag(this.processStack, nbt, "ProgressItem");
         nbt.putInt("Progress", this.progress);
         nbt.putString("Recipe", this.recipe != null ? this.recipe.toString() : "");
-    }
-
-    public int getProgress() {
-        return this.progress;
     }
 
     public ItemStack getTrashStack(IElectrolyteInventory inv) {
@@ -91,7 +75,7 @@ public class ElectrolyteProcess
     }
 
     public IElectrolyteRecipe grabRecipe(World world) {
-        return MiscUtils.defIfNull(ElectrolyteManager.INSTANCE.getFuel(world, this.recipe), NullRecipe.INSTANCE);
+        return MiscUtils.defIfNull(ElectrolyteManager.INSTANCE.getFuel(world, this.recipe), EmptyRecipe.INSTANCE);
     }
 
     public void incrProgress() {
@@ -111,13 +95,13 @@ public class ElectrolyteProcess
     }
 
     public boolean isValid() {
-        return this.recipe != NullRecipe.INSTANCE.getId();
+        return this.recipe != EmptyRecipe.INSTANCE.getId();
     }
 
-    private static final class NullProcess
+    private static final class EmptyProcess
             extends ElectrolyteProcess
     {
-        NullProcess() {
+        EmptyProcess() {
             super(null, ItemStack.EMPTY);
             this.progress = -1;
         }
@@ -136,11 +120,11 @@ public class ElectrolyteProcess
         }
     }
 
-    private static final class NullRecipe
+    private static final class EmptyRecipe
             implements IElectrolyteRecipe
     {
-        public static final  NullRecipe       INSTANCE = new NullRecipe();
-        private static final ResourceLocation ID       = new ResourceLocation(TmrConstants.ID, "null");
+        public static final  EmptyRecipe      INSTANCE = new EmptyRecipe();
+        private static final ResourceLocation ID       = new ResourceLocation(TmrConstants.ID, "empty");
 
         @Nonnull
         @Override

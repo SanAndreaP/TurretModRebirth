@@ -1,0 +1,16 @@
+{
+  "type": "sapturretmod:electrolyte_generator",
+  "ingredient": {
+    "item": "minecraft:carrot"
+  },
+  "efficiency": 1.0,
+  "processTime": 250,
+  "trashChance": 0.2,
+  "trashResult": {
+    "item": "minecraft:orange_dye"
+  },
+  "treasureChance": 0.1,
+  "treasureResult": {
+    "item": "minecraft:sugar"
+  }
+}

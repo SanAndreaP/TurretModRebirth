@@ -9,17 +9,15 @@ package de.sanandrew.mods.turretmod.tileentity.electrolytegen;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.electrolytegen.IElectrolyteInventory;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemStackHandler;
+import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 public final class ElectrolyteInventory
@@ -30,14 +28,19 @@ public final class ElectrolyteInventory
     LazyOptional<ElectrolyteInventory> lazyOptional = LazyOptional.of(() -> this);
     final Supplier<World> world;
 
+    private static final Range<Integer> INPUT_SLOTS = Range.between(0, 8);
+    private static final Range<Integer> OUTPUT_SLOTS = Range.between(INPUT_SLOTS.getMaximum() + 1, INPUT_SLOTS.getMaximum() + 5);
+
+    private static final int MAX_SLOTS = OUTPUT_SLOTS.getMaximum() + 1;
+
     public ElectrolyteInventory(Supplier<World> worldSupplier) {
-        super(14);
+        super(MAX_SLOTS);
         this.world = worldSupplier;
     }
 
     public boolean isOutputFull(@Nonnull ItemStack stack) {
         ItemStack myStack = stack.copy();
-        for( int i = 9; i < 14 && ItemStackUtils.isValid(myStack); i++ ) {
+        for( int i = OUTPUT_SLOTS.getMinimum(), sz = OUTPUT_SLOTS.getMaximum(); i <= sz && ItemStackUtils.isValid(myStack); i++ ) {
             myStack = super.insertItem(i, myStack, true);
         }
 
@@ -57,20 +60,20 @@ public final class ElectrolyteInventory
 
     public void addExtraction(@Nonnull ItemStack stack) {
         ItemStack myStack = stack.copy();
-        for( int i = 9; i < 14 && ItemStackUtils.isValid(myStack); i++ ) {
+        for( int i = OUTPUT_SLOTS.getMinimum(), sz = OUTPUT_SLOTS.getMaximum(); i <= sz && ItemStackUtils.isValid(myStack); i++ ) {
             myStack = super.insertItem(i, myStack, false);
         }
     }
 
     @Override
     public int getStackLimit(int slot, @Nonnull ItemStack stack) {
-        return slot < 9 ? 1 : super.getStackLimit(slot, stack);
+        return INPUT_SLOTS.contains(slot) ? 1 : super.getStackLimit(slot, stack);
     }
 
     @Nonnull
-    public ItemStack extractInsertItem(int slot, boolean simulate) {
-        if( slot < 9 ) {
-            return super.extractItem(slot, 1, simulate);
+    public ItemStack extractInsertItem(int slot, int amount, boolean simulate) {
+        if( INPUT_SLOTS.contains(slot) ) {
+            return super.extractItem(slot, amount, simulate);
         }
 
         return ItemStack.EMPTY;
@@ -79,7 +82,7 @@ public final class ElectrolyteInventory
     @Override
     @Nonnull
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if( slot > 8 ) {
+        if( OUTPUT_SLOTS.contains(slot) ) {
             return super.extractItem(slot, amount, simulate);
         }
 
@@ -89,12 +92,6 @@ public final class ElectrolyteInventory
     NonNullList<ItemStack> getStacksArray() {
         return this.stacks;
     }
-
-//    @Override
-//    protected void onLoad() {
-//        super.onLoad();
-//        Optional.ofNullable(this.tile).ifPresent(t -> t.containerItemHandler.onLoad());
-//    }
 
     @Override
     public int getSizeInventory() {
@@ -117,7 +114,7 @@ public final class ElectrolyteInventory
     }
 
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
+    public void setInventorySlotContents(int index, @Nonnull ItemStack stack) {
         this.removeStackFromSlot(index);
         this.insertItem(index, stack, false);
     }
@@ -141,21 +138,10 @@ public final class ElectrolyteInventory
 
     @Override
     public boolean isItemValidForSlot(int index, @Nonnull ItemStack stack) {
-        return index < 9 && ElectrolyteManager.INSTANCE.getFuel(this.world.get(), stack) != null && !ItemStackUtils.isValid(this.stacks.get(index));
+        return INPUT_SLOTS.contains(index)
+               && ElectrolyteManager.INSTANCE.getFuel(this.world.get(), stack) != null
+               && !ItemStackUtils.isValid(this.stacks.get(index));
     }
-
-//    @Override
-//    public int getField(int id) {
-//        return 0;
-//    }
-//
-//    @Override
-//    public void setField(int id, int value) { }
-//
-//    @Override
-//    public int getFieldCount() {
-//        return 0;
-//    }
 
     @Override
     public void clear() {
@@ -172,19 +158,4 @@ public final class ElectrolyteInventory
     public World getWorld() {
         return world.get();
     }
-
-    //    @Override
-//    public String getName() {
-//        return this.tile.getName();
-//    }
-//
-//    @Override
-//    public boolean hasCustomName() {
-//        return this.tile.hasCustomName();
-//    }
-//
-//    @Override
-//    public ITextComponent getDisplayName() {
-//        return this.tile.getDisplayName();
-//    }
 }

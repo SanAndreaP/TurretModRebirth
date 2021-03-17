@@ -5,9 +5,11 @@
   },
   "efficiency": 1.3,
   "processTime": 220,
+  "trashChance": 0.2,
   "trashResult": {
     "item": "minecraft:wheat_seeds"
   },
+  "treasureChance": 0.02,
   "treasureResult": {
     "item": "minecraft:gold_nugget"
   }

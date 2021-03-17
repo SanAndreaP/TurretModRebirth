@@ -1,0 +1,16 @@
+{
+  "type": "sapturretmod:electrolyte_generator",
+  "ingredient": {
+    "item": "minecraft:poisonous_potato"
+  },
+  "efficiency": 1.2,
+  "processTime": 150,
+  "trashChance": 0.1,
+  "trashResult": {
+    "item": "minecraft:sugar"
+  },
+  "treasureChance": 0.01,
+  "treasureResult": {
+    "item": "minecraft:baked_potato"
+  }
+}

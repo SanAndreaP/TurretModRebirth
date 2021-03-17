@@ -6,13 +6,11 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.tileentity.electrolytegen;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.electrolytegen.IElectrolyteInventory;
 import de.sanandrew.mods.turretmod.api.electrolytegen.IElectrolyteRecipe;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
@@ -106,14 +104,16 @@ public class ElectrolyteRecipe
         return this.trash;
     }
 
+    @Nonnull
     @Override
     public NonNullList<Ingredient> getIngredients() {
         return NonNullList.withSize(1, this.ingredient);
     }
 
+    @Nonnull
     @Override
     public String getGroup() {
-        return "electrolytegen";
+        return "electrolyte_generator";
     }
 
     @Override
@@ -134,7 +134,7 @@ public class ElectrolyteRecipe
 
         @Override
         public ElectrolyteRecipe read(@Nonnull ResourceLocation recipeId, JsonObject json) {
-            float efficiency = JsonUtils.getIntVal(json.get("efficiency"));
+            float efficiency = JsonUtils.getFloatVal(json.get("efficiency"));
             int processTime = JsonUtils.getIntVal(json.get("processTime"));
             Ingredient ingredient = Ingredient.deserialize(json.get("ingredient"));
             ItemStack trashResult = ShapedRecipe.deserializeItem(json.getAsJsonObject("trashResult"));

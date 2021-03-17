@@ -1,0 +1,16 @@
+{
+  "type": "sapturretmod:electrolyte_generator",
+  "ingredient": {
+    "item": "minecraft:beetroot"
+  },
+  "efficiency": 1.0,
+  "processTime": 200,
+  "trashChance": 0.2,
+  "trashResult": {
+    "item": "minecraft:red_dye"
+  },
+  "treasureChance": 0.02,
+  "treasureResult": {
+    "item": "minecraft:redstone"
+  }
+}

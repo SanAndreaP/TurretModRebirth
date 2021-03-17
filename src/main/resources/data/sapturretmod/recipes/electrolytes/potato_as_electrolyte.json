@@ -1,0 +1,16 @@
+{
+  "type": "sapturretmod:electrolyte_generator",
+  "ingredient": {
+    "item": "minecraft:potato"
+  },
+  "efficiency": 1.0,
+  "processTime": 200,
+  "trashChance": 0.2,
+  "trashResult": {
+    "item": "minecraft:sugar"
+  },
+  "treasureChance": 0.02,
+  "treasureResult": {
+    "item": "minecraft:baked_potato"
+  }
+}
