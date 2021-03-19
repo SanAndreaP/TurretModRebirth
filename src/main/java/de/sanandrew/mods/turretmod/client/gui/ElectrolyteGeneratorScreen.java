@@ -18,29 +18,26 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.client.gui.element.ElectrolyteBar;
 import de.sanandrew.mods.turretmod.client.init.ClientProxy;
 import de.sanandrew.mods.turretmod.init.Resources;
-import de.sanandrew.mods.turretmod.inventory.ContainerElectrolyteGenerator;
-import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
+import de.sanandrew.mods.turretmod.inventory.ElectrolyteGeneratorContainer;
+import de.sanandrew.mods.turretmod.tileentity.electrolytegen.ElectrolyteGeneratorTileEntity;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import org.apache.logging.log4j.Level;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
-public class GuiElectrolyteGenerator
-        extends ContainerScreen<ContainerElectrolyteGenerator>
-        implements IGui, EnergyStorageBar.IGuiEnergyContainer, ContainerName.IContainerName, ElectrolyteBar.IGuiElectrolyte, DynamicText.IGuiDynamicText
+public class ElectrolyteGeneratorScreen
+        extends ContainerScreen<ElectrolyteGeneratorContainer>
+        implements IGui, EnergyStorageBar.IGuiEnergyContainer, ContainerName.IContainerName, ElectrolyteBar.IElectrolyteInfo, DynamicText.IGuiDynamicText
 {
-//    private int currEnergy;
-//    private int maxEnergy;
-//    private float currEffective;
-//    private int generatedEnergy;
     private float currPartTicks;
 
     private GuiDefinition guiDef;
 
-    public GuiElectrolyteGenerator(ContainerElectrolyteGenerator container, PlayerInventory playerInventory, ITextComponent title) {
+    public ElectrolyteGeneratorScreen(ElectrolyteGeneratorContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
 
         try {
@@ -52,7 +49,6 @@ public class GuiElectrolyteGenerator
         }
     }
 
-
     @Override
     protected void init() {
         super.init();
@@ -63,7 +59,7 @@ public class GuiElectrolyteGenerator
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
@@ -73,37 +69,19 @@ public class GuiElectrolyteGenerator
     public void tick() {
         super.tick();
 
-//        IEnergyStorage stg = this.generator.getCapability(CapabilityEnergy.ENERGY, EnumFacing.DOWN);
-//        if( stg != null ) {
-//            this.currEnergy = stg.getEnergyStored();
-//            this.maxEnergy = stg.getMaxEnergyStored();
-//        }
-//
-//        this.currEffective = this.generator.efficiency;
-//        this.generatedEnergy = this.generator.getGeneratedFlux();
-
         this.guiDef.update(this);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int x, int y) {
+    protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrixStack, float partialTicks, int x, int y) {
         this.currPartTicks = partialTicks;
         ClientProxy.drawGDBackground(this.guiDef, matrixStack, this, partialTicks, x, y);
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int x, int y) {
-//        RenderHelper.disableStandardItemLighting();
+    protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrixStack, int x, int y) {
         this.guiDef.drawForeground(this, matrixStack, x, y, this.currPartTicks);
-//        RenderHelper.enableStandardItemLighting();
     }
-
-//    @Override
-//    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-//        RenderHelper.disableStandardItemLighting();
-//        this.guiDef.drawForeground(this, mouseX, mouseY, this.currPartTicks);
-//        RenderHelper.enableGUIStandardItemLighting();
-//    }
 
     @Override
     public int getEnergy() {
@@ -112,7 +90,7 @@ public class GuiElectrolyteGenerator
 
     @Override
     public int getMaxEnergy() {
-        return TileEntityElectrolyteGenerator.MAX_FLUX_STORAGE;
+        return ElectrolyteGeneratorTileEntity.MAX_FLUX_STORAGE;
     }
 
     @Override

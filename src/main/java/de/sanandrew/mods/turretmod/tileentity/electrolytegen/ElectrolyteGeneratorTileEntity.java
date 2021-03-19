@@ -12,7 +12,7 @@ import de.sanandrew.mods.sanlib.lib.power.EnergyHelper;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.electrolytegen.IElectrolyteRecipe;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
-import de.sanandrew.mods.turretmod.inventory.ContainerElectrolyteGenerator;
+import de.sanandrew.mods.turretmod.inventory.ElectrolyteGeneratorContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -40,7 +40,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class TileEntityElectrolyteGenerator
+public class ElectrolyteGeneratorTileEntity
         extends TileEntity
         implements ITickableTileEntity, INamedContainerProvider, INameable
 {
@@ -63,7 +63,7 @@ public class TileEntityElectrolyteGenerator
         return this.efficiency < 0.1F ? 0 : Math.min(200, (int) Math.round(Math.pow(1.6D, this.efficiency) / (68.0D + (127433.0D / 177119.0D)) * 80.0D));
     }
 
-    public TileEntityElectrolyteGenerator() {
+    public ElectrolyteGeneratorTileEntity() {
         super(BlockRegistry.ELECTROLYTE_GENERATOR_ENTITY);
     }
 
@@ -79,7 +79,7 @@ public class TileEntityElectrolyteGenerator
 
                 this.efficiency = 0.0F;
 
-                for( int i = 0; i < ElectrolyteProcessList.PROCESSES_COUNT; i++ ) {
+                for( int i = 0; i < ElectrolyteInventory.INPUT_SLOT_COUNT; i++ ) {
                     this.processSlot(i);
                 }
 
@@ -95,7 +95,7 @@ public class TileEntityElectrolyteGenerator
     }
 
     private void processSlot(int slot) {
-        ElectrolyteProcess process     = this.processes.get(slot);
+        ElectrolyteProcess process = this.processes.get(slot);
 
         if( process.isValid() ) {
             ItemStack trashStack = process.getTrashStack(this.itemHandler);
@@ -232,6 +232,17 @@ public class TileEntityElectrolyteGenerator
 
     @Nonnull
     @Override
+    public CompoundNBT getUpdateTag() {
+        return this.processes.serializeProcessStacks(super.getUpdateTag());
+    }
+
+    @Override
+    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
+        this.processes.deserializeProcessStacks(tag);
+    }
+
+    @Nonnull
+    @Override
     public ITextComponent getDisplayName() {
         return this.customName != null ? this.customName : this.getBlockState().getBlock().getTranslatedName();
     }
@@ -273,7 +284,7 @@ public class TileEntityElectrolyteGenerator
     @Nullable
     @Override
     public Container createMenu(int id, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
-        return new ContainerElectrolyteGenerator(id, playerInventory, this.itemHandler, this.syncData, this.processes);
+        return new ElectrolyteGeneratorContainer(id, playerInventory, this.itemHandler, this.syncData, this.processes);
     }
 
     public void setCustomName(ITextComponent name) {

@@ -3,13 +3,16 @@ package de.sanandrew.mods.turretmod.client.init;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
-import de.sanandrew.mods.turretmod.client.gui.GuiElectrolyteGenerator;
+import de.sanandrew.mods.turretmod.block.BlockRegistry;
+import de.sanandrew.mods.turretmod.client.gui.ElectrolyteGeneratorScreen;
 import de.sanandrew.mods.turretmod.client.gui.element.ElectrolyteBar;
+import de.sanandrew.mods.turretmod.client.renderer.tileentity.ElectrolyteGeneratorRenderer;
 import de.sanandrew.mods.turretmod.init.IProxy;
 import de.sanandrew.mods.turretmod.inventory.ContainerRegistry;
 import de.sanandrew.mods.turretmod.world.PlayerList;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import java.util.Map;
@@ -20,9 +23,11 @@ public class ClientProxy
 {
     @Override
     public void setupClient(FMLClientSetupEvent event) {
-        ScreenManager.registerFactory(ContainerRegistry.ELECTROLYTE_GENERATOR, GuiElectrolyteGenerator::new);
+        ScreenManager.registerFactory(ContainerRegistry.ELECTROLYTE_GENERATOR, ElectrolyteGeneratorScreen::new);
 
         GuiDefinition.TYPES.put(ElectrolyteBar.ID, ElectrolyteBar::new);
+
+        ClientRegistry.bindTileEntityRenderer(BlockRegistry.ELECTROLYTE_GENERATOR_ENTITY, ElectrolyteGeneratorRenderer::new);
     }
 
     @Override

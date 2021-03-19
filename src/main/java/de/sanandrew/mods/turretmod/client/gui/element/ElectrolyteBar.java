@@ -11,7 +11,6 @@ import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
-@SuppressWarnings({"Duplicates"})
 public class ElectrolyteBar
         extends Texture
 {
@@ -22,7 +21,7 @@ public class ElectrolyteBar
 
     @Override
     public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
-        if( !(gui instanceof IGuiElectrolyte) ) {
+        if( !(gui instanceof IElectrolyteInfo) ) {
             throw new RuntimeException("Cannot use electrolyte_bar on a GUI which doesn't implement IGuiElectrolyte");
         }
 
@@ -36,8 +35,9 @@ public class ElectrolyteBar
 
     @Override
     public void update(IGui gui, JsonObject data) {
-        IGuiElectrolyte gel = (IGuiElectrolyte) gui;
-        double energyPerc = gel.getProgress(this.slot) / (double) gel.getMaxProgress(this.slot);
+        IElectrolyteInfo gel        = (IElectrolyteInfo) gui;
+        double           energyPerc = gel.getProgress(this.slot) / (double) gel.getMaxProgress(this.slot);
+
         this.energyBarWidth = Math.max(0, Math.min(this.size[0], MathHelper.ceil((1.0F - energyPerc) * this.size[0])));
     }
 
@@ -57,11 +57,10 @@ public class ElectrolyteBar
         return this.size[1];
     }
 
-    public interface IGuiElectrolyte
+    public interface IElectrolyteInfo
     {
         int getProgress(int slot);
 
         int getMaxProgress(int slot);
     }
-
 }

@@ -28,8 +28,10 @@ public final class ElectrolyteInventory
     LazyOptional<ElectrolyteInventory> lazyOptional = LazyOptional.of(() -> this);
     final Supplier<World> world;
 
-    private static final Range<Integer> INPUT_SLOTS = Range.between(0, 8);
-    private static final Range<Integer> OUTPUT_SLOTS = Range.between(INPUT_SLOTS.getMaximum() + 1, INPUT_SLOTS.getMaximum() + 5);
+    public static final int INPUT_SLOT_COUNT = 9;
+    public static final int OUTPUT_SLOT_COUNT = 5;
+    private static final Range<Integer> INPUT_SLOTS = Range.between(0, INPUT_SLOT_COUNT - 1);
+    private static final Range<Integer> OUTPUT_SLOTS = Range.between(INPUT_SLOTS.getMaximum() + 1, INPUT_SLOTS.getMaximum() + OUTPUT_SLOT_COUNT);
 
     private static final int MAX_SLOTS = OUTPUT_SLOTS.getMaximum() + 1;
 
@@ -147,7 +149,6 @@ public final class ElectrolyteInventory
     public void clear() {
         this.stacks.clear();
     }
-
 
     @SuppressWarnings("unchecked")
     <T> LazyOptional<T> getLO() {

@@ -35,21 +35,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-//@Mod(modid = TmrConstants.ID, version = TmrConstants.VERSION, name = TmrConstants.NAME, guiFactory = TurretModRebirth.GUI_FACTORY, dependencies = TmrConstants.DEPENDENCIES)
 @Mod(TmrConstants.ID)
 public class TurretModRebirth
 {
     public static final List<ITmrPlugin> PLUGINS = new ArrayList<>();
-//    static final         String               GUI_FACTORY      = "de.sanandrew.mods.turretmod.client.gui.config.TmrGuiFactory";
-//    private static final String               MOD_PROXY_CLIENT = "de.sanandrew.mods.turretmod.client.init.ClientProxy";
-//    private static final String               MOD_PROXY_COMMON = "de.sanandrew.mods.turretmod.init.CommonProxy";
     public static final MessageHandler   NETWORK = new MessageHandler(TmrConstants.ID, "1.0.0");
-//    @Mod.Instance(TmrConstants.ID)
-//    public static       TurretModRebirth instance;
-//    @SidedProxy(modId = TmrConstants.ID, clientSide = TurretModRebirth.MOD_PROXY_CLIENT, serverSide = TurretModRebirth.MOD_PROXY_COMMON)
-//    public static        CommonProxy          proxy;
-
-    public static final IProxy PROXY = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> ServerProxy::new);
+    public static final IProxy           PROXY   = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
 //    private boolean isDev;
 

@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.block;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.init.TmrCreativeTabs;
-import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
+import de.sanandrew.mods.turretmod.tileentity.electrolytegen.ElectrolyteGeneratorTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -27,11 +27,11 @@ import java.util.Objects;
 public class BlockRegistry
 {
 //    public static final BlockTurretAssembly TURRET_ASSEMBLY = new BlockTurretAssembly();
-    public static final BlockElectrolyteGenerator ELECTROLYTE_GENERATOR = new BlockElectrolyteGenerator();
+    public static final ElectrolyteGeneratorBlock ELECTROLYTE_GENERATOR = new ElectrolyteGeneratorBlock();
 //    public static final BlockTurretCrate TURRET_CRATE = new BlockTurretCrate();
 
-    public static final TileEntityType<TileEntityElectrolyteGenerator> ELECTROLYTE_GENERATOR_ENTITY =
-            new TileEntityType<>(TileEntityElectrolyteGenerator::new, Collections.singleton(ELECTROLYTE_GENERATOR), null);
+    public static final TileEntityType<ElectrolyteGeneratorTileEntity> ELECTROLYTE_GENERATOR_ENTITY =
+            new TileEntityType<>(ElectrolyteGeneratorTileEntity::new, Collections.singleton(ELECTROLYTE_GENERATOR), null);
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {

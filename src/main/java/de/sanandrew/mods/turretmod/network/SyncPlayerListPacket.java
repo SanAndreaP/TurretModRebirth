@@ -22,17 +22,17 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-public class PacketSyncPlayerList
+public class SyncPlayerListPacket
         extends SimpleMessage
 {
     private final Map<UUID, ITextComponent> players;
 
     @SuppressWarnings("unused")
-    public PacketSyncPlayerList() {
+    public SyncPlayerListPacket() {
         this.players = PlayerList.INSTANCE.getPlayerMap();
     }
 
-    public PacketSyncPlayerList(PacketBuffer packetBuffer) {
+    public SyncPlayerListPacket(PacketBuffer packetBuffer) {
         int size = packetBuffer.readVarInt();
         this.players = new HashMap<>(size);
 

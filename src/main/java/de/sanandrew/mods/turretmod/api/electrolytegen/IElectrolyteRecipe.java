@@ -6,22 +6,20 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.api.electrolytegen;
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
 
 public interface IElectrolyteRecipe
-        extends IRecipe<IElectrolyteInventory> //TODO: implement in 1.14
+        extends IRecipe<IElectrolyteInventory>
 {
     float getEfficiency();
 
     int getProcessTime();
 
-    default ItemStack getCraftingResult(IElectrolyteInventory inv) {
+    @Nonnull
+    default ItemStack getCraftingResult(@Nonnull IElectrolyteInventory inv) {
         return getTrashResult(inv);
     }
 

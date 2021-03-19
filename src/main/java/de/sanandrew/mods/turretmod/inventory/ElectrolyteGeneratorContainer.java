@@ -13,7 +13,7 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.ElectrolyteInventory;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.ElectrolyteProcess;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.ElectrolyteSyncData;
-import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
+import de.sanandrew.mods.turretmod.tileentity.electrolytegen.ElectrolyteGeneratorTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -30,14 +30,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class ContainerElectrolyteGenerator
+public class ElectrolyteGeneratorContainer
         extends Container
 {
     private final ElectrolyteInventory inventory;
     public final  ElectrolyteSyncData      data;
     private final List<ElectrolyteProcess> processesView;
 
-    public ContainerElectrolyteGenerator(int id, PlayerInventory playerInventory, ElectrolyteInventory electrolyteInventory,
+    public ElectrolyteGeneratorContainer(int id, PlayerInventory playerInventory, ElectrolyteInventory electrolyteInventory,
                                          ElectrolyteSyncData syncData, NonNullList<ElectrolyteProcess> processes)
     {
         super(ContainerRegistry.ELECTROLYTE_GENERATOR, id);
@@ -47,15 +47,14 @@ public class ContainerElectrolyteGenerator
         this.inventory = electrolyteInventory;
         this.data = syncData;
 
-        for( int i = 0; i < 9; i++ ) {
-            this.addSlot(new SlotInput(i, 8 + i*18, 17));
+        for( int i = 0; i < ElectrolyteInventory.INPUT_SLOT_COUNT; i++ ) {
+            this.addSlot(new InputSlot(i, 8 + i * 18, 17));
         }
-
-        for( int i = 0; i < 9; i++ ) {
-            this.addSlot(new SlotProcessing(i, 8 + i*18));
-        }
-        for( int i = 0; i < 5; i++ ) {
+        for( int i = 0; i < ElectrolyteInventory.OUTPUT_SLOT_COUNT; i++ ) {
             this.addSlot(new SlotItemHandler(this.inventory, i+9, 44 + i*18, 76));
+        }
+        for( int i = 0; i < ElectrolyteInventory.INPUT_SLOT_COUNT; i++ ) {
+            this.addSlot(new ProcessingSlot(i, 8 + i * 18));
         }
 
         for( int i = 0; i < 3; i++ ) {
@@ -106,11 +105,15 @@ public class ContainerElectrolyteGenerator
         Slot slot = this.inventorySlots.get(slotId);
 
         if( slot != null && slot.getHasStack() ) {
+            // 2x input slots, because of processing slots
+            final int maxTESlotId = ElectrolyteInventory.INPUT_SLOT_COUNT * 2 + ElectrolyteInventory.OUTPUT_SLOT_COUNT - 1;
+
             ItemStack slotStack = slot.getStack();
             origStack = slotStack.copy();
 
-            if( slotId < 23 ) { // if clicked stack is from TileEntity
-                if( !this.mergeItemStack(slotStack, 22, 58, true) ) {
+            //TODO: check, if shift-click puts invalid items in the input slots
+            if( slotId <= maxTESlotId ) { // if clicked stack is from TileEntity
+                if( !this.mergeItemStack(slotStack, maxTESlotId, maxTESlotId + 36, true) ) {
                     return ItemStack.EMPTY;
                 }
             } else if( !this.mergeItemStackInput(slotStack) ) { // if clicked stack is from player and also merge to input slots is sucessful
@@ -126,47 +129,52 @@ public class ContainerElectrolyteGenerator
     }
 
     public static class Factory
-            implements IContainerFactory<ContainerElectrolyteGenerator>
+            implements IContainerFactory<ElectrolyteGeneratorContainer>
     {
         public static final Factory INSTANCE = new Factory();
 
         @Override
-        public ContainerElectrolyteGenerator create(int windowId, PlayerInventory inv, PacketBuffer data) {
+        public ElectrolyteGeneratorContainer create(int windowId, PlayerInventory inv, PacketBuffer data) {
             TileEntity te = Objects.requireNonNull(inv.player.world.getTileEntity(data.readBlockPos()));
-            return new ContainerElectrolyteGenerator(windowId, inv, new ElectrolyteInventory(() -> inv.player.world),
-                                                     new ElectrolyteSyncData(), ((TileEntityElectrolyteGenerator) te).processes);
+            return new ElectrolyteGeneratorContainer(windowId, inv, new ElectrolyteInventory(() -> inv.player.world),
+                                                     new ElectrolyteSyncData(), ((ElectrolyteGeneratorTileEntity) te).processes);
         }
     }
 
-    class SlotInput
+    private class InputSlot
             extends SlotItemHandler
     {
         private final int index;
 
-        public SlotInput(int index, int xPosition, int yPosition) {
-            super(ContainerElectrolyteGenerator.this.inventory, index, xPosition, yPosition);
+        public InputSlot(int index, int xPosition, int yPosition) {
+            super(ElectrolyteGeneratorContainer.this.inventory, index, xPosition, yPosition);
             this.index = index;
         }
 
         @Override
+        public boolean isItemValid(@Nonnull ItemStack stack) {
+            return ElectrolyteGeneratorContainer.this.inventory.isItemValidForSlot(this.index, stack);
+        }
+
+        @Override
         public boolean canTakeStack(PlayerEntity playerIn) {
-            return !ContainerElectrolyteGenerator.this.inventory.extractInsertItem(this.index, 1, true).isEmpty();
+            return !ElectrolyteGeneratorContainer.this.inventory.extractInsertItem(this.index, 1, true).isEmpty();
         }
 
         @Nonnull
         @Override
         public ItemStack decrStackSize(int amount) {
-            return ContainerElectrolyteGenerator.this.inventory.extractInsertItem(this.index, amount, false);
+            return ElectrolyteGeneratorContainer.this.inventory.extractInsertItem(this.index, amount, false);
         }
     }
 
-    class SlotProcessing
+    private class ProcessingSlot
             extends Slot
     {
         private final int index;
 
-        SlotProcessing(int id, int x) {
-            super(ContainerElectrolyteGenerator.this.inventory, id, x, 43);
+        ProcessingSlot(int id, int x) {
+            super(ElectrolyteGeneratorContainer.this.inventory, id, x, 43);
             this.index = id;
         }
 
@@ -183,7 +191,7 @@ public class ContainerElectrolyteGenerator
         @Override
         @Nonnull
         public ItemStack getStack() {
-            return ContainerElectrolyteGenerator.this.processesView.get(this.index).processStack;
+            return ElectrolyteGeneratorContainer.this.processesView.get(this.index).processStack;
         }
 
         @Override

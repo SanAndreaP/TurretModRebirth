@@ -11,7 +11,7 @@ package de.sanandrew.mods.turretmod.world;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
-import de.sanandrew.mods.turretmod.network.PacketSyncPlayerList;
+import de.sanandrew.mods.turretmod.network.SyncPlayerListPacket;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -80,7 +80,7 @@ public class PlayerList
     }
 
     private void syncList() {
-        TurretModRebirth.NETWORK.sendToAll(new PacketSyncPlayerList(), null);
+        TurretModRebirth.NETWORK.sendToAll(new SyncPlayerListPacket(), null);
     }
 
     @SubscribeEvent

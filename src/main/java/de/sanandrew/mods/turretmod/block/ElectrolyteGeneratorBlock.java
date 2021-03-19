@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.block;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.turretmod.tileentity.electrolytegen.TileEntityElectrolyteGenerator;
+import de.sanandrew.mods.turretmod.tileentity.electrolytegen.ElectrolyteGeneratorTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -47,7 +47,7 @@ import javax.annotation.Nullable;
 import java.util.Optional;
 
 @SuppressWarnings("deprecation")
-public class BlockElectrolyteGenerator
+public class ElectrolyteGeneratorBlock
         extends ContainerBlock
 {
     private static final VoxelShape MAIN_SEL_BB = Block.makeCuboidShape(0, 0, 0, 16, 32, 16);
@@ -55,7 +55,7 @@ public class BlockElectrolyteGenerator
 
     private static final BooleanProperty TILE_HOLDER = BooleanProperty.create("tile_main");
 
-    BlockElectrolyteGenerator() {
+    ElectrolyteGeneratorBlock() {
         super(Properties.create(Material.IRON, MaterialColor.BROWN)
                         .hardnessAndResistance(4.25F)
                         .sound(SoundType.STONE)
@@ -82,7 +82,7 @@ public class BlockElectrolyteGenerator
     @Override
     public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
         if( state.get(TILE_HOLDER) ) {
-            TileEntityElectrolyteGenerator electrolyteGen = (TileEntityElectrolyteGenerator) world.getTileEntity(pos);
+            ElectrolyteGeneratorTileEntity electrolyteGen = (ElectrolyteGeneratorTileEntity) world.getTileEntity(pos);
 
             if( electrolyteGen != null ) {
                 Optional<IItemHandler> loHandler = electrolyteGen.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN).resolve();
@@ -150,7 +150,7 @@ public class BlockElectrolyteGenerator
         } else {
             if( state.get(TILE_HOLDER) ) {
                 TileEntity tileentity = worldIn.getTileEntity(pos);
-                if( tileentity instanceof TileEntityElectrolyteGenerator ) {
+                if( tileentity instanceof ElectrolyteGeneratorTileEntity ) {
                     NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileentity, b -> b.writeBlockPos(pos));
                 }
             } else {
@@ -168,7 +168,7 @@ public class BlockElectrolyteGenerator
         if( stack.hasDisplayName() && state.get(TILE_HOLDER) ) {
             TileEntity te = world.getTileEntity(pos);
             assert te != null;
-            ((TileEntityElectrolyteGenerator) te).setCustomName(stack.getDisplayName());
+            ((ElectrolyteGeneratorTileEntity) te).setCustomName(stack.getDisplayName());
         }
     }
 
@@ -186,7 +186,7 @@ public class BlockElectrolyteGenerator
     @Nullable
     @Override
     public TileEntity createNewTileEntity(@Nonnull IBlockReader worldIn) {
-        return new TileEntityElectrolyteGenerator();
+        return new ElectrolyteGeneratorTileEntity();
     }
 
     @Override

@@ -12,14 +12,12 @@ import java.util.List;
 public class ElectrolyteProcessList
         extends NonNullList<ElectrolyteProcess>
 {
-    public static final int PROCESSES_COUNT = 9;
-
     public ElectrolyteProcessList() {
         super(build(), ElectrolyteProcess.EMPTY);
     }
 
     private static List<ElectrolyteProcess> build() {
-        ElectrolyteProcess[] s = new ElectrolyteProcess[PROCESSES_COUNT];
+        ElectrolyteProcess[] s = new ElectrolyteProcess[ElectrolyteInventory.INPUT_SLOT_COUNT];
         Arrays.fill(s, ElectrolyteProcess.EMPTY);
 
         return Arrays.asList(s);
@@ -27,7 +25,7 @@ public class ElectrolyteProcessList
 
     public CompoundNBT serializeProcessStacks(CompoundNBT nbt) {
         ListNBT list = new ListNBT();
-        for( int i = 0; i < PROCESSES_COUNT; i++ ) {
+        for( int i = 0; i < ElectrolyteInventory.INPUT_SLOT_COUNT; i++ ) {
             CompoundNBT snbt = new CompoundNBT();
             this.get(i).processStack.write(snbt);
             snbt.putInt("ProcessSlot", i);

@@ -141,7 +141,7 @@
         "borderTopColor": "0x50FF0000",
         "borderBottomColor": "0x507F0000",
         "content": {
-          "type": "rflux_text"
+          "type": "energy_text"
         }
       }
     }
