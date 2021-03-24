@@ -10,7 +10,9 @@ package de.sanandrew.mods.turretmod.client.event;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
 
@@ -27,7 +29,19 @@ public class ClientTickHandler
                 ticksInGame++;
             }
         }
+    }
 
+    @SubscribeEvent
+    public void onKeyInput(InputEvent.KeyInputEvent event) {
+        setSneaking();
+    }
+
+    @SubscribeEvent
+    public void onKeyInput(GuiScreenEvent.KeyboardInputEvent.Pre event) {
+        setSneaking();
+    }
+
+    private static void setSneaking() {
         isSneaking = Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode());
     }
 }

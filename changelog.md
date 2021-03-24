@@ -1,3 +1,7 @@
+### 1.12.2-4.0.0-beta.4.5
+##### This needs at least SanLib 1.6.1 and Minecraft Forge 14.23.5.2847 or higher!
+* ClientTickHandler now checks if the sneak key is pressed on the key input events to prevent IndexOutOfBoundsException crashes
+
 ### 1.12.2-4.0.0-beta.4.4
 ##### This needs at least SanLib 1.6.1 and Minecraft Forge 14.23.5.2847 or higher!
 * ItemRemapper now only runs when there are missing mappings
