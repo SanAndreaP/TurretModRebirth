@@ -4,9 +4,8 @@
    * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
    *                http://creativecommons.org/licenses/by-nc-sa/4.0/
    *******************************************************************************************************************/
-package de.sanandrew.mods.turretmod.api.event;
+package de.sanandrew.mods.turretmod.api.turret;
 
-import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.eventbus.api.Cancelable;
@@ -15,7 +14,6 @@ import net.minecraftforge.eventbus.api.Event;
 import javax.annotation.Nonnull;
 
 @Event.HasResult
-@SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class TargetingEvent
         extends Event
 {
@@ -56,7 +54,6 @@ public abstract class TargetingEvent
         }
     }
 
-    @SuppressWarnings("CanBeFinal")
     public static class ConsumeAmmo
             extends TargetingEvent
     {

@@ -6,6 +6,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.eventbus.EventBus;
 import net.minecraftforge.eventbus.api.BusBuilder;
@@ -18,7 +19,7 @@ import java.util.UUID;
 @SuppressWarnings("unused")
 public interface ITargetProcessor
 {
-    EventBus TARGET_BUS = new EventBus(BusBuilder.builder());
+    EventBus TARGET_BUS = new EventBus(BusBuilder.builder().setTrackPhases(false));
 
     boolean addAmmo(@Nonnull ItemStack stack);
 
@@ -81,9 +82,9 @@ public interface ITargetProcessor
 
     Entity getTarget();
 
-    CompoundNBT write(CompoundNBT nbt);
+    CompoundNBT save(CompoundNBT nbt);
 
-    void read(CompoundNBT nbt);
+    void load(CompoundNBT nbt);
 
     ResourceLocation[] getEnabledEntityTargets();
 
@@ -101,7 +102,7 @@ public interface ITargetProcessor
 
     void updatePlayerTargets(UUID[] uuids);
 
-    String getTargetName();
+    ITextComponent getTargetName();
 
     void onTick();
 

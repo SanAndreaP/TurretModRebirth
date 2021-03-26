@@ -27,7 +27,6 @@ public class SyncPlayerListPacket
 {
     private final Map<UUID, ITextComponent> players;
 
-    @SuppressWarnings("unused")
     public SyncPlayerListPacket() {
         this.players = PlayerList.INSTANCE.getPlayerMap();
     }

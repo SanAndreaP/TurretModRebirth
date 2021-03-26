@@ -1,5 +1,6 @@
 package de.sanandrew.mods.turretmod.init;
 
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
@@ -14,4 +15,9 @@ public class ServerProxy
 
     @Override
     public void fillPlayerListClient(Map<UUID, ITextComponent> map) { }
+
+    @Override
+    public boolean checkTurretGlowing(ITurretInst turretInst) {
+        return false;
+    }
 }

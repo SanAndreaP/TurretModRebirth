@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -23,7 +24,7 @@ public interface ITurretInst
 
     ITurret getTurret();
 
-    String getOwnerName();
+    ITextComponent getOwnerName();
 
     AxisAlignedBB getRangeBB();
 
@@ -41,7 +42,8 @@ public interface ITurretInst
 
     ITargetProcessor getTargetProcessor();
 
-    IUpgradeProcessor getUpgradeProcessor();
+    //TODO: reimplement upgrades
+//    IUpgradeProcessor getUpgradeProcessor();
 
     boolean isActive();
 
@@ -61,7 +63,6 @@ public interface ITurretInst
 
     ITurret.AttackType getAttackType();
 
-    //TODO: reimplement
 //    TileEntityTurretCrate dismantle();
 
     IVariant getVariant();

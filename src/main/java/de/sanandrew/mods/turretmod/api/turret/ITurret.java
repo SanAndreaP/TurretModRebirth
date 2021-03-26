@@ -8,7 +8,10 @@ package de.sanandrew.mods.turretmod.api.turret;
 
 import de.sanandrew.mods.turretmod.api.IRegistryObject;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.Pose;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -36,19 +39,19 @@ public interface ITurret
 
     int getTier();
 
-    default void onUpdate(ITurretInst turretInst) { }
+    default void tick(ITurretInst turretInst) { }
 
-    default void writeSpawnData(ITurretInst turretInst, ByteBuf buf) { }
+    default void writeSpawnData(ITurretInst turretInst, PacketBuffer buf) { }
 
-    default void readSpawnData(ITurretInst turretInst, ByteBuf buf) { }
+    default void readSpawnData(ITurretInst turretInst, PacketBuffer buf) { }
 
     default void writeSyncData(ITurretInst turretInst, ObjectOutputStream stream) throws IOException { }
 
     default void readSyncData(ITurretInst turretInst, ObjectInputStream stream) throws IOException { }
 
-    default void write(ITurretInst turretInst, CompoundNBT nbt) { }
+    default void onSave(ITurretInst turretInst, CompoundNBT nbt) { }
 
-    default void read(ITurretInst turretInst, CompoundNBT nbt) { }
+    default void onLoad(ITurretInst turretInst, CompoundNBT nbt) { }
 
     default float getDeactiveHeadPitch() {
         return 30.0F;
@@ -88,8 +91,8 @@ public interface ITurret
         return false;
     }
 
-    default float getEyeHeight(float height) {
-        return height * 0.85F;
+    default float getEyeHeight(Pose poseIn, EntitySize sizeIn) {
+        return sizeIn.height * 0.85F;
     }
 
     @Override

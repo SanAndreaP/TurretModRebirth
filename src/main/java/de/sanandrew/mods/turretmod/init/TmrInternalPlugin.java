@@ -8,36 +8,31 @@ package de.sanandrew.mods.turretmod.init;
 
 import de.sanandrew.mods.turretmod.api.ITmrPlugin;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
-import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
-import de.sanandrew.mods.turretmod.api.ammo.IProjectileRegistry;
-import de.sanandrew.mods.turretmod.api.repairkit.IRepairKitRegistry;
-import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
-import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
 
 //TODO: reimplement
 @TmrPlugin
 public class TmrInternalPlugin
         implements ITmrPlugin
 {
-    @Override
-    public void registerTurrets(ITurretRegistry registry) {
-//        Turrets.initialize(registry);
-    }
-
-    @Override
-    public void registerRepairKits(IRepairKitRegistry registry) {
-//        RepairKits.initialize(registry);
-    }
-
-    @Override
-    public void registerAmmo(IAmmunitionRegistry registry) {
-//        Ammunitions.initialize(registry);
-    }
-
-    @Override
-    public void registerUpgrades(IUpgradeRegistry registry) {
-//        Upgrades.initialize(registry);
-    }
+//    @Override
+//    public void registerTurrets(ITurretRegistry registry) {
+////        Turrets.initialize(registry);
+//    }
+//
+//    @Override
+//    public void registerRepairKits(IRepairKitRegistry registry) {
+////        RepairKits.initialize(registry);
+//    }
+//
+//    @Override
+//    public void registerAmmo(IAmmunitionRegistry registry) {
+////        Ammunitions.initialize(registry);
+//    }
+//
+//    @Override
+//    public void registerUpgrades(IUpgradeRegistry registry) {
+////        Upgrades.initialize(registry);
+//    }
 
     @Override
     public void setup() {
@@ -49,10 +44,10 @@ public class TmrInternalPlugin
 //        GuiTcuRegistry.initializePages(registry);
 //    }
 
-    @Override
-    public void registerProjectiles(IProjectileRegistry registry) {
-//        Projectiles.initialize(registry);
-    }
+//    @Override
+//    public void registerProjectiles(IProjectileRegistry registry) {
+////        Projectiles.initialize(registry);
+//    }
 
 //    @Override
 //    @SideOnly(Side.CLIENT)

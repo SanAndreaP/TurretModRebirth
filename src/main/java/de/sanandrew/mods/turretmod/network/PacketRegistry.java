@@ -14,6 +14,7 @@ public final class PacketRegistry
 {
     public static void initialize() {
         TurretModRebirth.NETWORK.registerMessage(0, SyncPlayerListPacket.class, SyncPlayerListPacket::new);
+        TurretModRebirth.NETWORK.registerMessage(1, UpdateTurretStatePacket.class, UpdateTurretStatePacket::new);
 //        TurretModRebirth.network.registerMessage(1,  PacketUpdateTargets.class, PacketUpdateTargets::new);
 //        TurretModRebirth.network.registerMessage(2,  PacketUpdateTurretState.class, PacketUpdateTurretState::new);
 //        TurretModRebirth.network.registerMessage(3,  PacketPlayerTurretAction.class, PacketPlayerTurretAction::new);

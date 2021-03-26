@@ -3,6 +3,7 @@ package de.sanandrew.mods.turretmod.client.init;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.client.gui.ElectrolyteGeneratorScreen;
 import de.sanandrew.mods.turretmod.client.gui.element.ElectrolyteBar;
@@ -10,6 +11,7 @@ import de.sanandrew.mods.turretmod.client.renderer.tileentity.ElectrolyteGenerat
 import de.sanandrew.mods.turretmod.init.IProxy;
 import de.sanandrew.mods.turretmod.inventory.ContainerRegistry;
 import de.sanandrew.mods.turretmod.world.PlayerList;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -33,6 +35,17 @@ public class ClientProxy
     @Override
     public void fillPlayerListClient(Map<UUID, ITextComponent> map) {
         PlayerList.INSTANCE.putPlayersClient(map);
+    }
+
+    @Override
+    public boolean checkTurretGlowing(ITurretInst turretInst) {
+        Minecraft mc = Minecraft.getInstance();
+        if( mc.pointedEntity != turretInst.get() ) {
+            //TODO: reimplement TCU
+//            return ItemTurretControlUnit.isHeldTcuBoundToTurret(Minecraft.getMinecraft().player, turret);
+        }
+
+        return false;
     }
 
     public static void initGuiDef(GuiDefinition guiDef, IGui gui) {

@@ -12,6 +12,7 @@ import java.util.Collection;
  *
  * @param <T> the type of objects registered by this registry.
  */
+@SuppressWarnings("unused")
 public interface IRegistry<T extends IRegistryObject>
 {
     /**
