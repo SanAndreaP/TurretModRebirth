@@ -40,28 +40,28 @@ public interface IRegistry<T extends IRegistryObject>
      * @return an unmodifiable view of registered objects.
      */
     @Nonnull
-    Collection<T> getObjects();
+    Collection<T> getAll();
 
     /**
      * <p>Fetches an object that has the given ID.</p>
-     * <p>If no object is found, this returns the {@link #getDefaultObject() default object}.</p>
+     * <p>If no object is found, this returns the {@link #getDefault() default object}.</p>
      *
      * @param id The ID of the object requested.
      * @return the object with the ID given or the default object, if none is found.
      */
     @Nonnull
-    T getObject(ResourceLocation id);
+    T get(ResourceLocation id);
 
     /**
      * <p>Reads the object from the given ItemStack.</p>
      * <p>If no object can be found either in this registry or in the ItemStack itself, or this registry doesn't support items,
-     *    this returns the {@link #getDefaultObject() default object}.</p>
+     *    this returns the {@link #getDefault() default object}.</p>
      *
      * @param stack The ItemStack that may contain a registered object.
      * @return the object contained in the ItemStack or the default object, if none is found.
      */
     @Nonnull
-    T getObject(ItemStack stack);
+    T get(ItemStack stack);
 
     /**
      * <p>Returns the default object, an unregistered empty object that returns <tt>false</tt> in {@link IRegistryObject#isValid()}.</p>
@@ -69,7 +69,7 @@ public interface IRegistry<T extends IRegistryObject>
      * @return the default object.
      */
     @Nonnull
-    T getDefaultObject();
+    T getDefault();
 
     /**
      * <p>Creates a new ItemStack instance with a stack size of 1, containing the object given by its ID.</p>
@@ -109,6 +109,6 @@ public interface IRegistry<T extends IRegistryObject>
      * @see IRegistry#isEqual(IRegistryObject, IRegistryObject)
      */
     default boolean isEqual(@Nonnull ItemStack stack1, @Nonnull ItemStack stack2) {
-        return this.isEqual(this.getObject(stack1), this.getObject(stack2));
+        return this.isEqual(this.get(stack1), this.get(stack2));
     }
 }

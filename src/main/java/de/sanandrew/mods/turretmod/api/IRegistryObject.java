@@ -18,7 +18,7 @@ public interface IRegistryObject
 
     /**
      * <p>Indicates wether this object is considered valid or not.</p>
-     * <p>A {@link IRegistry#getDefaultObject() default object} returns <tt>false</tt>.</p>
+     * <p>A {@link IRegistry#getDefault() default object} returns <tt>false</tt>.</p>
      *
      * @return <tt>true</tt>, if this type is valid and usable; <tt>false</tt> otherwise.
      */

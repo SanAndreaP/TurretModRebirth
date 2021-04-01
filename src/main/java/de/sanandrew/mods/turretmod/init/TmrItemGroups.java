@@ -19,7 +19,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 
-public class TmrCreativeTabs
+public class TmrItemGroups
 {
 //    public static final ItemGroup TURRETS = new ItemGroup(TmrConstants.ID + ":turrets") {
 //        private NonNullList<ItemStack> tabIcons = null;

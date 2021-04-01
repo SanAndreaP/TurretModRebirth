@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.block;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.init.TmrCreativeTabs;
+import de.sanandrew.mods.turretmod.init.TmrItemGroups;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.ElectrolyteGeneratorTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
@@ -58,7 +58,7 @@ public class BlockRegistry
     }
 
     private static BlockItem getBlockItem(Block block) {
-        BlockItem bi = new BlockItem(block, new Item.Properties().group(TmrCreativeTabs.MISC));
+        BlockItem bi = new BlockItem(block, new Item.Properties().group(TmrItemGroups.MISC));
         bi.setRegistryName(Objects.requireNonNull(block.getRegistryName()));
         return bi;
     }

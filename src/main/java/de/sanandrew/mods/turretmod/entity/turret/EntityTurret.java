@@ -25,10 +25,8 @@ import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.item.ItemRemapper;
 import de.sanandrew.mods.turretmod.item.ItemTurret;
-import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.network.PacketUpdateTurretState;
 import de.sanandrew.mods.turretmod.network.UpdateTurretStatePacket;
-import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
 import de.sanandrew.mods.turretmod.util.TmrUtils;
 import net.minecraft.entity.Entity;
@@ -73,7 +71,10 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -123,7 +124,7 @@ public class EntityTurret
         //TODO: reimplement upgrades
 //        this.upgProc = new UpgradeProcessor(this);
         this.rotationYaw = 0.0F;
-        this.delegate = TurretRegistry.INSTANCE.getDefaultObject();
+        this.delegate = TurretRegistry.INSTANCE.getDefault();
     }
 
     //TODO: figure out how to apply the delegate on spawn
@@ -469,7 +470,7 @@ public class EntityTurret
 
     @Override
     public void readSpawnData(PacketBuffer buffer) {
-        this.delegate = TurretRegistry.INSTANCE.getObject(buffer.readResourceLocation());
+        this.delegate = TurretRegistry.INSTANCE.get(buffer.readResourceLocation());
 
         this.targetProc.load(buffer.readCompoundTag());
         //TODO: reimplement upgrades
@@ -532,7 +533,7 @@ public class EntityTurret
     }
 
     private void loadDelegate(ResourceLocation id) {
-        this.loadDelegate(TurretRegistry.INSTANCE.getObject(id));
+        this.loadDelegate(TurretRegistry.INSTANCE.get(id));
     }
 
     private void loadDelegate(ITurret turret) {
@@ -634,6 +635,7 @@ public class EntityTurret
         return true;
     }
 
+    @Nonnull
     @Override
     public ITextComponent getOwnerName() {
         return this.ownerName;
@@ -704,13 +706,8 @@ public class EntityTurret
     }
 
     @Override
-    public AxisAlignedBB getCollisionBox(Entity entity) {
-        return entity instanceof EntityPlayer ? entity.getEntityBoundingBox() : null;
-    }
-
-    @Override
-    public AxisAlignedBB getCollisionBoundingBox() {
-        return null;
+    public boolean canCollide(@Nonnull Entity entity) {
+        return entity instanceof PlayerEntity || super.canCollide(entity);
     }
 
     public AxisAlignedBB getRangeBB() {
@@ -723,7 +720,7 @@ public class EntityTurret
     }
 
     @Override
-    public EntityLiving get() {
+    public LivingEntity get() {
         return this;
     }
 
@@ -737,13 +734,10 @@ public class EntityTurret
         return this.delegate.getAttackType();
     }
 
+    @Nonnull
     @Override
-    public String getName() {
-        if( this.hasCustomName() ) {
-            return this.getCustomNameTag();
-        } else {
-            return LangUtils.translate(LangUtils.ENTITY_NAME.get(this.delegate.getId()));
-        }
+    protected ITextComponent getProfessionName() {
+        return new TranslationTextComponent(LangUtils.ENTITY_NAME.get(this.delegate.getId()));
     }
 
     @Override
@@ -751,24 +745,25 @@ public class EntityTurret
         return this.delegate.isBuoy();
     }
 
-    @Override
-    public TileEntityTurretCrate dismantle() {
-        BlockPos cratePos = this.getPosition();
-        if( this.world.setBlockState(cratePos, BlockRegistry.TURRET_CRATE.getDefaultState(), 3) ) {
-            TileEntity te = this.world.getTileEntity(cratePos);
-
-            if( te instanceof TileEntityTurretCrate ) {
-                TileEntityTurretCrate crate = (TileEntityTurretCrate) te;
-                crate.insertTurret(this);
-
-                this.onKillCommand();
-
-                return crate;
-            }
-        }
-
-        return null;
-    }
+    //TODO: reimplement dismantling
+//    @Override
+//    public TileEntityTurretCrate dismantle() {
+//        BlockPos cratePos = this.getPosition();
+//        if( this.world.setBlockState(cratePos, BlockRegistry.TURRET_CRATE.getDefaultState(), 3) ) {
+//            TileEntity te = this.world.getTileEntity(cratePos);
+//
+//            if( te instanceof TileEntityTurretCrate ) {
+//                TileEntityTurretCrate crate = (TileEntityTurretCrate) te;
+//                crate.insertTurret(this);
+//
+//                this.onKillCommand();
+//
+//                return crate;
+//            }
+//        }
+//
+//        return null;
+//    }
 
     @Override
     public IVariant getVariant() {
@@ -787,13 +782,12 @@ public class EntityTurret
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public int getPartBrightnessForRender(double partY) {
-        BlockPos.MutableBlockPos bpos = new BlockPos.MutableBlockPos(MathHelper.floor(this.posX), 0, MathHelper.floor(this.posZ));
+        BlockPos bpos = new BlockPos(MathHelper.floor(this.getPosX()), MathHelper.floor(this.getPosY() + partY), MathHelper.floor(this.getPosZ()));
 
         if( this.world.isBlockLoaded(bpos) ) {
-            bpos.setY(MathHelper.floor(this.posY + partY));
-            return this.world.getCombinedLight(bpos, 0);
+            return this.world.getLightSubtracted(bpos, 0);
         } else {
             return 0;
         }
