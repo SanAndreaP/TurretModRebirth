@@ -1,3 +1,7 @@
+### 1.12.2-4.0.0-beta.4.6
+##### This needs at least SanLib 1.6.1 and Minecraft Forge 14.23.5.2847 or higher!
+* ClientTickHandlers key input events now catch IndexOutOfBoundsException, as the previous fix did not work
+
 ### 1.12.2-4.0.0-beta.4.5
 ##### This needs at least SanLib 1.6.1 and Minecraft Forge 14.23.5.2847 or higher!
 * ClientTickHandler now checks if the sneak key is pressed on the key input events to prevent IndexOutOfBoundsException crashes

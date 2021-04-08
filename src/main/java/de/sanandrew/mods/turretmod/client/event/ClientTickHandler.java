@@ -42,6 +42,8 @@ public class ClientTickHandler
     }
 
     private static void setSneaking() {
-        isSneaking = Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode());
+        try {
+            isSneaking = Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode());
+        } catch( IndexOutOfBoundsException ignored ) { } // meh...
     }
 }
