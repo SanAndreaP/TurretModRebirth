@@ -40,10 +40,10 @@ public class UpdateTurretStatePacket
     private final byte[]    delegateData;
 
     public UpdateTurretStatePacket(ITurretInst turret) {
-        this.turretId = turret.get().getEntityId();
+        this.turretId = turret.get().getId();
         ITargetProcessor tgtProc = turret.getTargetProcessor();
         if( tgtProc.hasTarget() ) {
-            this.entityToAttackId = tgtProc.getTarget().getEntityId();
+            this.entityToAttackId = tgtProc.getTarget().getId();
         } else {
             this.entityToAttackId = -1;
         }
@@ -67,7 +67,7 @@ public class UpdateTurretStatePacket
         this.entityToAttackId = buffer.readInt();
         this.currAmmoCount = buffer.readInt();
         this.isShooting = buffer.readBoolean();
-        this.ammoStack = buffer.readItemStack();
+        this.ammoStack = buffer.readItem();
         this.delegateData = new byte[buffer.readInt()];
         if( this.delegateData.length > 0 ) {
             buffer.readBytes(this.delegateData);
@@ -80,7 +80,7 @@ public class UpdateTurretStatePacket
         buffer.writeInt(this.entityToAttackId);
         buffer.writeInt(this.currAmmoCount);
         buffer.writeBoolean(this.isShooting);
-        buffer.writeItemStack(this.ammoStack);
+        buffer.writeItem(this.ammoStack);
         buffer.writeInt(this.delegateData.length);
         buffer.writeBytes(this.delegateData);
 
@@ -90,7 +90,7 @@ public class UpdateTurretStatePacket
     public void handle(Supplier<NetworkEvent.Context> supplier) {
         ServerPlayerEntity player = supplier.get().getSender();
         if( player != null ) {
-            Entity e = player.world.getEntityByID(this.turretId);
+            Entity e = player.level.getEntity(this.turretId);
             if( e instanceof ITurretInst ) {
                 ITurretInst turret = (ITurretInst) e;
                 ((TargetProcessor) turret.getTargetProcessor()).updateClientState(this.entityToAttackId, this.currAmmoCount, this.ammoStack, this.isShooting);

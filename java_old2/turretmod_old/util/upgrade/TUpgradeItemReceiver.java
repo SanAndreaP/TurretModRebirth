@@ -6,7 +6,7 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.util.upgrade;
+package de.sanandrew.mods.turretmod.client.util.upgrade;
 
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.mods.turretmod.api.Turret;

@@ -6,7 +6,7 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.util;
+package de.sanandrew.mods.turretmod.client.util;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

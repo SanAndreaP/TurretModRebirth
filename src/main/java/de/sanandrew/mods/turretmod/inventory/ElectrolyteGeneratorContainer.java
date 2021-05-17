@@ -67,26 +67,26 @@ public class ElectrolyteGeneratorContainer
             this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 198));
         }
 
-        trackIntArray(this.data);
+        this.addDataSlots(this.data);
     }
 
     @Override
-    public boolean canInteractWith(@Nonnull PlayerEntity playerIn) {
-        return this.inventory.isUsableByPlayer(playerIn);
+    public boolean stillValid(@Nonnull PlayerEntity playerIn) {
+        return this.inventory.stillValid(playerIn);
     }
 
-    private boolean mergeItemStackInput(@Nonnull ItemStack stack) {
+    private boolean moveItemStackToInput(@Nonnull ItemStack stack) {
         boolean slotChanged = false;
         int start = 0;
         Slot slot;
 
         while( start < 9 ) {
-            slot = this.inventorySlots.get(start);
+            slot = this.slots.get(start);
 
-            if( !ItemStackUtils.isValid(slot.getStack()) && slot.isItemValid(stack) ) {
-                slot.putStack(stack.copy());
-                slot.getStack().setCount(1);
-                slot.onSlotChanged();
+            if( !ItemStackUtils.isValid(slot.getItem()) && slot.mayPlace(stack) ) {
+                slot.set(stack.copy());
+                slot.getItem().setCount(1);
+                slot.setChanged();
                 stack.shrink(1);
                 slotChanged = true;
                 break;
@@ -100,23 +100,23 @@ public class ElectrolyteGeneratorContainer
 
     @Override
     @Nonnull
-    public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotId) {
+    public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotId) {
         ItemStack origStack = ItemStack.EMPTY;
-        Slot slot = this.inventorySlots.get(slotId);
+        Slot slot = this.slots.get(slotId);
 
-        if( slot != null && slot.getHasStack() ) {
+        if( slot != null && slot.hasItem() ) {
             // 2x input slots, because of processing slots
             final int maxTESlotId = ElectrolyteInventory.INPUT_SLOT_COUNT * 2 + ElectrolyteInventory.OUTPUT_SLOT_COUNT - 1;
 
-            ItemStack slotStack = slot.getStack();
+            ItemStack slotStack = slot.getItem();
             origStack = slotStack.copy();
 
             //TODO: check, if shift-click puts invalid items in the input slots
             if( slotId <= maxTESlotId ) { // if clicked stack is from TileEntity
-                if( !this.mergeItemStack(slotStack, maxTESlotId, maxTESlotId + 36, true) ) {
+                if( !this.moveItemStackTo(slotStack, maxTESlotId, maxTESlotId + 36, true) ) {
                     return ItemStack.EMPTY;
                 }
-            } else if( !this.mergeItemStackInput(slotStack) ) { // if clicked stack is from player and also merge to input slots is sucessful
+            } else if( !this.moveItemStackToInput(slotStack) ) { // if clicked stack is from player and also merge to input slots is sucessful
                 return ItemStack.EMPTY;
             }
 
@@ -135,8 +135,8 @@ public class ElectrolyteGeneratorContainer
 
         @Override
         public ElectrolyteGeneratorContainer create(int windowId, PlayerInventory inv, PacketBuffer data) {
-            TileEntity te = Objects.requireNonNull(inv.player.world.getTileEntity(data.readBlockPos()));
-            return new ElectrolyteGeneratorContainer(windowId, inv, new ElectrolyteInventory(() -> inv.player.world),
+            TileEntity te = Objects.requireNonNull(inv.player.level.getBlockEntity(data.readBlockPos()));
+            return new ElectrolyteGeneratorContainer(windowId, inv, new ElectrolyteInventory(() -> inv.player.level),
                                                      new ElectrolyteSyncData(), ((ElectrolyteGeneratorTileEntity) te).processes);
         }
     }
@@ -152,18 +152,18 @@ public class ElectrolyteGeneratorContainer
         }
 
         @Override
-        public boolean isItemValid(@Nonnull ItemStack stack) {
-            return ElectrolyteGeneratorContainer.this.inventory.isItemValidForSlot(this.index, stack);
+        public boolean mayPlace(@Nonnull ItemStack stack) {
+            return ElectrolyteGeneratorContainer.this.inventory.isItemValid(this.index, stack);
         }
 
         @Override
-        public boolean canTakeStack(PlayerEntity playerIn) {
+        public boolean mayPickup(PlayerEntity playerIn) {
             return !ElectrolyteGeneratorContainer.this.inventory.extractInsertItem(this.index, 1, true).isEmpty();
         }
 
         @Nonnull
         @Override
-        public ItemStack decrStackSize(int amount) {
+        public ItemStack remove(int amount) {
             return ElectrolyteGeneratorContainer.this.inventory.extractInsertItem(this.index, amount, false);
         }
     }
@@ -179,35 +179,35 @@ public class ElectrolyteGeneratorContainer
         }
 
         @Override
-        public boolean isItemValid(@Nonnull ItemStack stack) {
+        public boolean mayPlace(@Nonnull ItemStack stack) {
             return false;
         }
 
         @Override
-        public boolean canTakeStack(@Nonnull PlayerEntity player) {
+        public boolean mayPickup(@Nonnull PlayerEntity player) {
             return false;
         }
 
         @Override
         @Nonnull
-        public ItemStack getStack() {
+        public ItemStack getItem() {
             return ElectrolyteGeneratorContainer.this.processesView.get(this.index).processStack;
         }
 
         @Override
-        public void putStack(@Nonnull ItemStack stack) { }
+        public void set(@Nonnull ItemStack stack) { }
 
         @Override
-        public void onSlotChange(@Nonnull ItemStack stack1, @Nonnull ItemStack stack2) { }
+        public void onQuickCraft(@Nonnull ItemStack stack1, @Nonnull ItemStack stack2) { }
 
         @Override
-        public int getItemStackLimit(@Nonnull ItemStack stack) {
+        public int getMaxStackSize(@Nonnull ItemStack stack) {
             return 1;
         }
 
         @Override
         @Nonnull
-        public ItemStack decrStackSize(int amount) {
+        public ItemStack remove(int amount) {
             return ItemStack.EMPTY;
         }
     }

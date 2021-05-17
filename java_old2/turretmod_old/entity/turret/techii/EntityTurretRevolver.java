@@ -2,8 +2,8 @@ package de.sanandrew.mods.turretmod.entity.turret.techii;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.entity.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.util.Textures;
-import de.sanandrew.mods.turretmod.util.TurretMod;
+import de.sanandrew.mods.turretmod.client.util.Textures;
+import de.sanandrew.mods.turretmod.client.util.TurretMod;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;

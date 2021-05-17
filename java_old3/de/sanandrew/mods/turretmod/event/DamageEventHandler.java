@@ -16,7 +16,7 @@ import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.registry.upgrades.leveling.LevelStorage;
 import de.sanandrew.mods.turretmod.registry.upgrades.shield.ShieldPersonal;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
+import de.sanandrew.mods.turretmod.client.util.TmrUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;

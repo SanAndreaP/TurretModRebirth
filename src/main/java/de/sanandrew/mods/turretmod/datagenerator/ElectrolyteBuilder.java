@@ -33,11 +33,11 @@ public class ElectrolyteBuilder
     }
 
     public static ElectrolyteBuilder newElectrolyte(IItemProvider item) {
-        return new ElectrolyteBuilder(Ingredient.fromItems(item));
+        return new ElectrolyteBuilder(Ingredient.of(item));
     }
 
     public static ElectrolyteBuilder newElectrolyte(ITag<Item> tag) {
-        return new ElectrolyteBuilder(Ingredient.fromTag(tag));
+        return new ElectrolyteBuilder(Ingredient.of(tag));
     }
 
     public ElectrolyteBuilder efficiency(float percent) {
@@ -75,7 +75,7 @@ public class ElectrolyteBuilder
     }
 
     public void build(Consumer<IFinishedRecipe> consumerIn) {
-        ResourceLocation ingId = Objects.requireNonNull(this.ingredient.getMatchingStacks()[0].getItem().getRegistryName());
+        ResourceLocation ingId = Objects.requireNonNull(this.ingredient.getItems()[0].getItem().getRegistryName());
         consumerIn.accept(new Result(new ResourceLocation(TmrConstants.ID, "electrolytes/" + ingId.getPath() + "_as_electrolyte")));
     }
 
@@ -89,9 +89,9 @@ public class ElectrolyteBuilder
         }
 
         @Override
-        public void serialize(JsonObject json) {
+        public void serializeRecipeData(JsonObject json) {
             json.addProperty("type", ElectrolyteManager.TYPE.toString());
-            json.add("ingredient", ingredient.serialize());
+            json.add("ingredient", ingredient.toJson());
             json.addProperty("efficiency", efficiency);
             json.addProperty("processTime", processTime);
             if( trashResult != null && trashChance >= 0.00 ) {
@@ -113,25 +113,25 @@ public class ElectrolyteBuilder
 
         @Nonnull
         @Override
-        public ResourceLocation getID() {
+        public ResourceLocation getId() {
             return this.id;
         }
 
         @Nonnull
         @Override
-        public IRecipeSerializer<?> getSerializer() {
+        public IRecipeSerializer<?> getType() {
             return ElectrolyteRecipe.Serializer.INSTANCE;
         }
 
         @Nullable
         @Override
-        public JsonObject getAdvancementJson() {
+        public JsonObject serializeAdvancement() {
             return null;
         }
 
         @Nullable
         @Override
-        public ResourceLocation getAdvancementID() {
+        public ResourceLocation getAdvancementId() {
             return null;
         }
     }

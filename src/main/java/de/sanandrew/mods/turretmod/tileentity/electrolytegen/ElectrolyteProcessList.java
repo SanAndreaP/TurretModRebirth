@@ -27,7 +27,7 @@ public class ElectrolyteProcessList
         ListNBT list = new ListNBT();
         for( int i = 0; i < ElectrolyteInventory.INPUT_SLOT_COUNT; i++ ) {
             CompoundNBT snbt = new CompoundNBT();
-            this.get(i).processStack.write(snbt);
+            this.get(i).processStack.save(snbt);
             snbt.putInt("ProcessSlot", i);
 
             list.add(snbt);
@@ -43,7 +43,7 @@ public class ElectrolyteProcessList
             ListNBT list = nbt.getList("ProcessStacks", Constants.NBT.TAG_COMPOUND);
             for( int i = 0, sz = list.size(); i < sz; i++ ) {
                 CompoundNBT snbt = list.getCompound(i);
-                this.set(snbt.getInt("ProcessSlot"), new ElectrolyteProcess(ItemStack.read(snbt)));
+                this.set(snbt.getInt("ProcessSlot"), new ElectrolyteProcess(ItemStack.of(snbt)));
             }
         }
     }

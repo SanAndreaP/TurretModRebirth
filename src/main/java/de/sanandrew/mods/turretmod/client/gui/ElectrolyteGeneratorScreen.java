@@ -42,8 +42,8 @@ public class ElectrolyteGeneratorScreen
 
         try {
             this.guiDef = GuiDefinition.getNewDefinition(Resources.GUI_STRUCT_ELECTROLYTE.resource);
-            this.xSize = this.guiDef.width;
-            this.ySize = this.guiDef.height;
+            this.width = this.guiDef.width;
+            this.height = this.guiDef.height;
         } catch( IOException e ) {
             TmrConstants.LOG.log(Level.ERROR, e);
         }
@@ -62,7 +62,7 @@ public class ElectrolyteGeneratorScreen
     public void render(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
+        this.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
     @Override
@@ -73,19 +73,19 @@ public class ElectrolyteGeneratorScreen
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrixStack, float partialTicks, int x, int y) {
+    protected void renderBg(@Nonnull MatrixStack matrixStack, float partialTicks, int x, int y) {
         this.currPartTicks = partialTicks;
         ClientProxy.drawGDBackground(this.guiDef, matrixStack, this, partialTicks, x, y);
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrixStack, int x, int y) {
+    protected void renderLabels(@Nonnull MatrixStack matrixStack, int x, int y) {
         this.guiDef.drawForeground(this, matrixStack, x, y, this.currPartTicks);
     }
 
     @Override
     public int getEnergy() {
-        return this.container.data.getEnergyStored();
+        return this.menu.data.getEnergyStored();
     }
 
     @Override
@@ -100,12 +100,12 @@ public class ElectrolyteGeneratorScreen
 
     @Override
     public int getScreenPosX() {
-        return this.guiLeft;
+        return this.leftPos;
     }
 
     @Override
     public int getScreenPosY() {
-        return this.guiTop;
+        return this.topPos;
     }
 
     @Override
@@ -120,20 +120,20 @@ public class ElectrolyteGeneratorScreen
 
     @Override
     public int getProgress(int slot) {
-        return this.container.data.getProgress(slot);
+        return this.menu.data.getProgress(slot);
     }
 
     @Override
     public int getMaxProgress(int slot) {
-        return this.container.data.getMaxProgress(slot);
+        return this.menu.data.getMaxProgress(slot);
     }
 
     @Override
     public String getText(String key, String originalText) {
         if( "efficiency".equalsIgnoreCase(key) ) {
-            return String.format("%.2f%%", this.container.data.getEfficiency() / 9.0F * 100.0F);
+            return String.format("%.2f%%", this.menu.data.getEfficiency() / 9.0F * 100.0F);
         } else if( "powergen".equalsIgnoreCase(key) ) {
-            return String.format("%d RF/t", this.container.data.getEnergyGenerated());
+            return String.format("%d RF/t", this.menu.data.getEnergyGenerated());
         }
         return null;
     }

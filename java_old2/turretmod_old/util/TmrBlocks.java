@@ -6,7 +6,7 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.util;
+package de.sanandrew.mods.turretmod.client.util;
 
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;

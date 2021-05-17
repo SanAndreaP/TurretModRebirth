@@ -14,7 +14,7 @@ import de.sanandrew.core.manpack.util.javatuples.Tuple;
 import de.sanandrew.mods.turretmod.api.TurretUpgrade;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.network.PacketManager;
-import de.sanandrew.mods.turretmod.util.TurretMod;
+import de.sanandrew.mods.turretmod.client.util.TurretMod;
 import de.sanandrew.mods.turretmod.api.registry.TurretUpgradeRegistry;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;

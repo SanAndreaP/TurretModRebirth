@@ -33,29 +33,29 @@ public class ItemTurretLexicon
     public static final boolean PATCHOULI_AVAILABLE = ModList.get().isLoaded("patchouli");
 
     public ItemTurretLexicon() {
-        super(new Properties().group(TmrItemGroups.MISC));
+        super(new Properties().tab(TmrItemGroups.MISC));
     }
 
     @Override
-    public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         if( !PATCHOULI_AVAILABLE ) {
-            tooltip.add(new StringTextComponent("Patchouli is required in order to view this content!").mergeStyle(TextFormatting.RED));
+            tooltip.add(new StringTextComponent("Patchouli is required in order to view this content!").withStyle(TextFormatting.RED));
         }
 
-        super.addInformation(stack, world, tooltip, flag);
+        super.appendHoverText(stack, world, tooltip, flag);
     }
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
+    public ActionResult<ItemStack> use(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
         if( PATCHOULI_AVAILABLE ) {
             if( player instanceof ServerPlayerEntity ) {
                 vazkii.patchouli.api.PatchouliAPI.get().openBookGUI((ServerPlayerEntity) player, Resources.PATCHOULI.resource);
 
-                return ActionResult.resultSuccess(player.getHeldItem(hand));
+                return ActionResult.success(player.getItemInHand(hand));
             }
         }
 
-        return super.onItemRightClick(world, player, hand);
+        return super.use(world, player, hand);
     }
 }

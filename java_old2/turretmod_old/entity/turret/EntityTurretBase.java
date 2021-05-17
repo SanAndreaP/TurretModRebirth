@@ -15,7 +15,7 @@ import de.sanandrew.mods.turretmod.api.*;
 import de.sanandrew.mods.turretmod.entity.turret.handler.TurretTargetHandler;
 import de.sanandrew.mods.turretmod.entity.turret.handler.TurretUpgradeHandler;
 import de.sanandrew.mods.turretmod.item.ItemTurret;
-import de.sanandrew.mods.turretmod.util.*;
+import de.sanandrew.mods.turretmod.client.util.*;
 import net.minecraft.block.Block;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;

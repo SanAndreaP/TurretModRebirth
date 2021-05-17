@@ -14,7 +14,7 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.entity.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.network.packet.PacketUpgradeList;
 import de.sanandrew.mods.turretmod.network.packet.PacketUpgradeListRequest;
-import de.sanandrew.mods.turretmod.util.TurretMod;
+import de.sanandrew.mods.turretmod.client.util.TurretMod;
 import net.minecraft.entity.ai.attributes.BaseAttributeMap;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;

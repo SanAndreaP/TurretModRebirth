@@ -1,7 +1,9 @@
 package de.sanandrew.mods.turretmod.api.turret;
 
 import de.sanandrew.mods.turretmod.api.IRegistry;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.event.RegistryEvent;
 
 import javax.annotation.Nonnull;
 
@@ -9,8 +11,10 @@ import javax.annotation.Nonnull;
 public interface ITurretRegistry
         extends IRegistry<ITurret>
 {
-    ITurret getType(Class<? extends ITurret> clazz);
+    void registerItems(RegistryEvent.Register<Item> event, String modId);
 
     @Nonnull
     ItemStack getItem(ITurretInst turretInst);
+
+
 }

@@ -39,7 +39,7 @@ public class ElectrolyteProcess
     }
 
     public ElectrolyteProcess(CompoundNBT nbt) {
-        this.processStack = ItemStack.read(nbt.getCompound("ProgressItem"));
+        this.processStack = ItemStack.of(nbt.getCompound("ProgressItem"));
         this.progress = nbt.getShort("Progress");
         this.recipe = MiscUtils.defIfNull(new ResourceLocation(nbt.getString("Recipe")), EmptyRecipe.INSTANCE.getId());
     }
@@ -155,7 +155,7 @@ public class ElectrolyteProcess
         public ItemStack getTrashResult(IElectrolyteInventory inv) { return ItemStack.EMPTY; }
 
         @Override
-        public boolean canFit(int width, int height) {
+        public boolean canCraftInDimensions(int width, int height) {
             return false;
         }
 
@@ -164,8 +164,9 @@ public class ElectrolyteProcess
 
         @Nonnull
         @Override
-        public ItemStack getRecipeOutput() { return ItemStack.EMPTY; }
+        public ItemStack getResultItem() { return ItemStack.EMPTY; }
 
+        @Nonnull
         @Override
         public NonNullList<Ingredient> getIngredients() { return NonNullList.create(); }
 

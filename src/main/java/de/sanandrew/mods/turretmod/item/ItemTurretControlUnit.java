@@ -44,12 +44,12 @@ public class ItemTurretControlUnit
     private int nameId = 0;
 
     ItemTurretControlUnit() {
-        super(new Properties().group(TmrItemGroups.MISC));
+        super(new Properties().tab(TmrItemGroups.MISC));
     }
 
     @Nonnull
     @Override
-    public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
+    public ITextComponent getName(@Nonnull ItemStack stack) {
         long currDisplayNameTime = System.currentTimeMillis();
         if( this.prevDisplayNameTime + 1000 < currDisplayNameTime ) {
             if( MiscUtils.RNG.randomInt(1000) != 0 ) {
@@ -62,30 +62,30 @@ public class ItemTurretControlUnit
         this.prevDisplayNameTime = currDisplayNameTime;
 
         if( this.nameId < 1 ) {
-            return super.getDisplayName(stack);
+            return super.getName(stack);
         } else {
-            return new TranslationTextComponent(String.format("%s.%d", this.getTranslationKey(), this.nameId));
+            return new TranslationTextComponent(String.format("%s.%d", this.getDescriptionId(), this.nameId));
         }
     }
 
     @Override
-    public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        super.addInformation(stack, world, tooltip, flag);
+    public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        super.appendHoverText(stack, world, tooltip, flag);
 
         if( getBoundID(stack) != null ) {
-            tooltip.add(new TranslationTextComponent(String.format("%s.bound", this.getTranslationKey())).mergeStyle(TextFormatting.GRAY));
+            tooltip.add(new TranslationTextComponent(String.format("%s.bound", this.getDescriptionId())).withStyle(TextFormatting.GRAY));
         }
     }
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
-        ItemStack heldStack = player.getHeldItem(hand);
+    public ActionResult<ItemStack> use(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
+        ItemStack heldStack = player.getItemInHand(hand);
         if( ItemStackUtils.isItem(heldStack, ItemRegistry.TURRET_CONTROL_UNIT) ) {
             ITurretInst turretInst = getBoundTurret(heldStack, world);
             if( turretInst != null ) {
-                if( !world.isRemote ) {
-                    if( player.isSneaking() ) {
+                if( !world.isClientSide ) {
+                    if( player.isCrouching() ) {
                         bindTurret(heldStack, null);
                     } else {
                         //TODO: reimplement TCU GUI
@@ -93,17 +93,17 @@ public class ItemTurretControlUnit
                     }
                 }
 
-                return ActionResult.resultSuccess(heldStack);
+                return ActionResult.success(heldStack);
             }
         }
 
-        return super.onItemRightClick(world, player, hand);
+        return super.use(world, player, hand);
     }
 
     private static UUID getBoundID(ItemStack stack) {
-        CompoundNBT boundTurret = stack.getChildTag(NBT_BOUND_TURRET);
+        CompoundNBT boundTurret = stack.getTagElement(NBT_BOUND_TURRET);
         if( boundTurret != null && boundTurret.contains("Id") ) {
-            return boundTurret.getUniqueId("Id");
+            return boundTurret.getUUID("Id");
         }
 
         return null;
@@ -114,11 +114,11 @@ public class ItemTurretControlUnit
             return false;
         }
 
-        ItemStack mh = player.getHeldItemMainhand();
-        ItemStack oh = player.getHeldItemOffhand();
+        ItemStack mh = player.getMainHandItem();
+        ItemStack oh = player.getOffhandItem();
 
-        return ItemTurretControlUnit.getBoundTurret(mh, player.world) == turretInst
-               || ItemTurretControlUnit.getBoundTurret(oh, player.world) == turretInst;
+        return ItemTurretControlUnit.getBoundTurret(mh, player.level) == turretInst
+               || ItemTurretControlUnit.getBoundTurret(oh, player.level) == turretInst;
     }
 
     public static ITurretInst getBoundTurret(ItemStack stack, World world) {
@@ -142,14 +142,14 @@ public class ItemTurretControlUnit
             return;
         }
 
-        CompoundNBT tag = stack.getChildTag(NBT_BOUND_TURRET);
+        CompoundNBT tag = stack.getTagElement(NBT_BOUND_TURRET);
         if( turretInst != null ) {
             if( tag == null ) {
-                tag = stack.getOrCreateChildTag(NBT_BOUND_TURRET);
+                tag = stack.getOrCreateTagElement(NBT_BOUND_TURRET);
             }
-            tag.putUniqueId(NBT_BOUND_TURRET_ID, turretInst.get().getUniqueID());
+            tag.putUUID(NBT_BOUND_TURRET_ID, turretInst.get().getUUID());
         } else {
-            stack.removeChildTag(NBT_BOUND_TURRET);
+            stack.removeTagKey(NBT_BOUND_TURRET);
 
             CompoundNBT cmp = stack.getTag();
             if( cmp != null && cmp.isEmpty() ) {

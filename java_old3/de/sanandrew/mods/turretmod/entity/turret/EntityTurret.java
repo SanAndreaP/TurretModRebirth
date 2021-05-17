@@ -36,7 +36,7 @@ import de.sanandrew.mods.turretmod.registry.Sounds;
 import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityTurretCrate;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
+import de.sanandrew.mods.turretmod.client.util.TmrUtils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;

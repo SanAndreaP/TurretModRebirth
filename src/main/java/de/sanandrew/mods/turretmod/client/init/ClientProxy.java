@@ -7,6 +7,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.client.gui.ElectrolyteGeneratorScreen;
 import de.sanandrew.mods.turretmod.client.gui.element.ElectrolyteBar;
+import de.sanandrew.mods.turretmod.client.model.ModelRegistry;
 import de.sanandrew.mods.turretmod.client.renderer.tileentity.ElectrolyteGeneratorRenderer;
 import de.sanandrew.mods.turretmod.init.IProxy;
 import de.sanandrew.mods.turretmod.inventory.ContainerRegistry;
@@ -25,11 +26,11 @@ public class ClientProxy
 {
     @Override
     public void setupClient(FMLClientSetupEvent event) {
-        ScreenManager.registerFactory(ContainerRegistry.ELECTROLYTE_GENERATOR, ElectrolyteGeneratorScreen::new);
+        ScreenManager.register(ContainerRegistry.ELECTROLYTE_GENERATOR, ElectrolyteGeneratorScreen::new);
 
         GuiDefinition.TYPES.put(ElectrolyteBar.ID, ElectrolyteBar::new);
 
-        ClientRegistry.bindTileEntityRenderer(BlockRegistry.ELECTROLYTE_GENERATOR_ENTITY, ElectrolyteGeneratorRenderer::new);
+        ModelRegistry.registerModels(event);
     }
 
     @Override
@@ -40,7 +41,7 @@ public class ClientProxy
     @Override
     public boolean checkTurretGlowing(ITurretInst turretInst) {
         Minecraft mc = Minecraft.getInstance();
-        if( mc.pointedEntity != turretInst.get() ) {
+        if( mc.crosshairPickEntity != turretInst.get() ) {
             //TODO: reimplement TCU
 //            return ItemTurretControlUnit.isHeldTcuBoundToTurret(Minecraft.getMinecraft().player, turret);
         }
@@ -50,7 +51,7 @@ public class ClientProxy
 
     public static void initGuiDef(GuiDefinition guiDef, IGui gui) {
         if( guiDef == null ) {
-            gui.get().getMinecraft().displayGuiScreen(null);
+            gui.get().getMinecraft().setScreen(null);
             return;
         }
 
@@ -58,9 +59,9 @@ public class ClientProxy
     }
 
     public static void drawGDBackground(GuiDefinition guiDef, MatrixStack stack, IGui gui, float partTicks, int mouseX, int mouseY) {
-        stack.push();
+        stack.pushPose();
         stack.translate(gui.getScreenPosX(), gui.getScreenPosY(), 0.0F);
         guiDef.drawBackground(gui, stack, mouseX, mouseY, partTicks);
-        stack.pop();
+        stack.popPose();
     }
 }

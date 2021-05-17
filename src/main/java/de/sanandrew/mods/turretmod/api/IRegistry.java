@@ -35,6 +35,12 @@ public interface IRegistry<T extends IRegistryObject>
     }
 
     /**
+     * <p>Registers an ID of a new object which is going to be loaded from datapack data.</p>
+     * @param id The ID of the object loaded from data
+     */
+    void register(@Nonnull ResourceLocation id);
+
+    /**
      * <p>Returns an unmodifiable view of the objects registered in this registry.</p>
      *
      * @return an unmodifiable view of registered objects.

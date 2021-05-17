@@ -56,7 +56,7 @@ public class TmrItemGroups
         @Nonnull
         @Override
         @OnlyIn(Dist.CLIENT)
-        public ItemStack createIcon() {
+        public ItemStack makeIcon() {
             if( !ItemStackUtils.isValid(this.currTabIcon) ) {
                 this.currTabIcon = new ItemStack(BlockRegistry.ELECTROLYTE_GENERATOR);//new ItemStack(ItemRegistry.TURRET_CONTROL_UNIT, 1);
             }
@@ -66,8 +66,8 @@ public class TmrItemGroups
 
         @Override
         @OnlyIn(Dist.CLIENT)
-        public void fill(@Nonnull NonNullList<ItemStack> items) {
-            super.fill(items);
+        public void fillItemList(@Nonnull NonNullList<ItemStack> items) {
+            super.fillItemList(items);
             items.sort(ResourceOrderer.getComparator());
         }
     };

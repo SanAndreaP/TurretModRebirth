@@ -16,8 +16,8 @@ import de.sanandrew.mods.turretmod.client.gui.tcu.tooltip.LineInfoBar.LineHealth
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter.Request;
-import de.sanandrew.mods.turretmod.util.TmrBlocks;
-import de.sanandrew.mods.turretmod.util.TmrItems;
+import de.sanandrew.mods.turretmod.client.util.TmrBlocks;
+import de.sanandrew.mods.turretmod.client.util.TmrItems;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;

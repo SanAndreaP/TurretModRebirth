@@ -4,7 +4,7 @@ import net.minecraft.util.ResourceLocation;
 
 public interface IVariant
 {
-    ResourceLocation getId();
+    <T> T getId();
 
     ResourceLocation getTexture();
 

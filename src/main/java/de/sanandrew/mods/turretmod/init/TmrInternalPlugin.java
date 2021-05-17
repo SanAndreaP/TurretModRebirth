@@ -7,17 +7,24 @@
 package de.sanandrew.mods.turretmod.init;
 
 import de.sanandrew.mods.turretmod.api.ITmrPlugin;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
+import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
+import de.sanandrew.mods.turretmod.entity.turret.variant.DualItemVariants;
+import de.sanandrew.mods.turretmod.entity.turret.variant.VariantContainer;
+import net.minecraft.util.ResourceLocation;
 
 //TODO: reimplement
 @TmrPlugin
 public class TmrInternalPlugin
         implements ITmrPlugin
 {
-//    @Override
-//    public void registerTurrets(ITurretRegistry registry) {
-////        Turrets.initialize(registry);
-//    }
+    @Override
+    public void registerTurrets(ITurretRegistry registry) {
+        VariantContainer.VARIANT_CONTAINERS.put(new ResourceLocation("dual_item"), DualItemVariants::new);
+
+        registry.register(new ResourceLocation(TmrConstants.ID, "crossbow_turret"));
+    }
 //
 //    @Override
 //    public void registerRepairKits(IRepairKitRegistry registry) {

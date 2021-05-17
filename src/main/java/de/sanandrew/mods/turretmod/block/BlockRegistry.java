@@ -58,7 +58,7 @@ public class BlockRegistry
     }
 
     private static BlockItem getBlockItem(Block block) {
-        BlockItem bi = new BlockItem(block, new Item.Properties().group(TmrItemGroups.MISC));
+        BlockItem bi = new BlockItem(block, new Item.Properties().tab(TmrItemGroups.MISC));
         bi.setRegistryName(Objects.requireNonNull(block.getRegistryName()));
         return bi;
     }

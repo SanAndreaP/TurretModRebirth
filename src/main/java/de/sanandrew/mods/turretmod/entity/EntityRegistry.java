@@ -7,20 +7,20 @@ import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.ParallelDispatchEvent;
 
 @Mod.EventBusSubscriber(modid = TmrConstants.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class EntityRegistry
 {
     //TODO: use setCustomClientFactory for sending delegate (& owner)?
-    public static final EntityType<EntityTurret> TURRET = EntityType.Builder.create(EntityTurret::new, EntityClassification.MISC).trackingRange(10).build("turret");
+    public static final EntityType<EntityTurret> TURRET = EntityType.Builder.<EntityTurret>of(EntityTurret::new, EntityClassification.MISC)
+                                                                            .clientTrackingRange(10)
+                                                                            .build("turret");
 
     @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
@@ -32,12 +32,16 @@ public class EntityRegistry
         event.getRegistry().registerAll(TurretAttributes.MAX_AMMO_CAPACITY.setRegistryName(new ResourceLocation(TmrConstants.ID, "max_ammo_capacity")),
                                         TurretAttributes.MAX_RELOAD_TICKS.setRegistryName(new ResourceLocation(TmrConstants.ID, "max_reload_ticks")),
                                         TurretAttributes.MAX_INIT_SHOOT_TICKS.setRegistryName(new ResourceLocation(TmrConstants.ID, "max_init_shoot_ticks")));
+    }
 
-        GlobalEntityTypeAttributes.put(TURRET, LivingEntity.registerAttributes()
-                                                           .createMutableAttribute(Attributes.ATTACK_DAMAGE, 1.0D)
-                                                           .createMutableAttribute(TurretAttributes.MAX_AMMO_CAPACITY)
-                                                           .createMutableAttribute(TurretAttributes.MAX_RELOAD_TICKS)
-                                                           .createMutableAttribute(TurretAttributes.MAX_INIT_SHOOT_TICKS)
-                                                           .create());
+    @SubscribeEvent
+    public static void registerEntityAttributes(EntityAttributeCreationEvent event) {
+        event.put(TURRET, LivingEntity.createLivingAttributes()
+                                      .add(Attributes.FOLLOW_RANGE, 0.0D)
+                                      .add(Attributes.ATTACK_DAMAGE, 1.0D)
+                                      .add(TurretAttributes.MAX_AMMO_CAPACITY)
+                                      .add(TurretAttributes.MAX_RELOAD_TICKS)
+                                      .add(TurretAttributes.MAX_INIT_SHOOT_TICKS)
+                                      .build());
     }
 }

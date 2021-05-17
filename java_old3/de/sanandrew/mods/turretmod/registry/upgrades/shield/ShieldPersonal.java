@@ -10,7 +10,7 @@ import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.turretmod.api.turret.IForcefieldProvider;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeInstance;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
+import de.sanandrew.mods.turretmod.client.util.TmrUtils;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import java.io.IOException;

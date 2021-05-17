@@ -77,9 +77,9 @@ public class ElectrolyteRecipe
 
     @Override
     public boolean matches(IElectrolyteInventory inv, @Nonnull World worldIn) {
-        for( int i = 0, max = inv.getSizeInventory(); i < max; i++ ) {
-            for( ItemStack stack : this.ingredient.getMatchingStacks() ) {
-                if( ItemStackUtils.areEqualNbtFit(stack, inv.getStackInSlot(i), false, true) ) {
+        for( int i = 0, max = inv.getContainerSize(); i < max; i++ ) {
+            for( ItemStack stack : this.ingredient.getItems() ) {
+                if( ItemStackUtils.areEqualNbtFit(stack, inv.getItem(i), false, true) ) {
                     return true;
                 }
             }
@@ -100,7 +100,7 @@ public class ElectrolyteRecipe
 
     @Nonnull
     @Override
-    public ItemStack getRecipeOutput() {
+    public ItemStack getResultItem() {
         return this.trash;
     }
 
@@ -132,13 +132,14 @@ public class ElectrolyteRecipe
     {
         public static final Serializer INSTANCE = new Serializer();
 
+        @Nonnull
         @Override
-        public ElectrolyteRecipe read(@Nonnull ResourceLocation recipeId, JsonObject json) {
+        public ElectrolyteRecipe fromJson(@Nonnull ResourceLocation recipeId, JsonObject json) {
             float efficiency = JsonUtils.getFloatVal(json.get("efficiency"));
             int processTime = JsonUtils.getIntVal(json.get("processTime"));
-            Ingredient ingredient = Ingredient.deserialize(json.get("ingredient"));
-            ItemStack trashResult = ShapedRecipe.deserializeItem(json.getAsJsonObject("trashResult"));
-            ItemStack treasureResult = ShapedRecipe.deserializeItem(json.getAsJsonObject("treasureResult"));
+            Ingredient ingredient = Ingredient.fromJson(json.get("ingredient"));
+            ItemStack trashResult = ShapedRecipe.itemFromJson(json.getAsJsonObject("trashResult"));
+            ItemStack treasureResult = ShapedRecipe.itemFromJson(json.getAsJsonObject("treasureResult"));
             float trashChance = JsonUtils.getFloatVal(json.get("trashChance"), 0.2F);
             float treasureChance = JsonUtils.getFloatVal(json.get("treasureChance"), 0.02F);
 
@@ -147,12 +148,12 @@ public class ElectrolyteRecipe
 
         @Nonnull
         @Override
-        public ElectrolyteRecipe read(@Nonnull ResourceLocation recipeId, PacketBuffer buffer) {
+        public ElectrolyteRecipe fromNetwork(@Nonnull ResourceLocation recipeId, PacketBuffer buffer) {
             float efficiency = buffer.readFloat();
             int processTime = buffer.readVarInt();
-            Ingredient ingredient = Ingredient.read(buffer);
-            ItemStack trashResult = buffer.readItemStack();
-            ItemStack treasureResult = buffer.readItemStack();
+            Ingredient ingredient = Ingredient.fromNetwork(buffer);
+            ItemStack trashResult = buffer.readItem();
+            ItemStack treasureResult = buffer.readItem();
             float trashChance = buffer.readFloat();
             float treasureChance = buffer.readFloat();
 
@@ -160,12 +161,12 @@ public class ElectrolyteRecipe
         }
 
         @Override
-        public void write(PacketBuffer buffer, ElectrolyteRecipe recipe) {
+        public void toNetwork(PacketBuffer buffer, ElectrolyteRecipe recipe) {
             buffer.writeFloat(recipe.efficiency);
             buffer.writeVarInt(recipe.procTime);
-            Ingredient.read(buffer);
-            buffer.writeItemStack(recipe.trash);
-            buffer.writeItemStack(recipe.treasure);
+            recipe.ingredient.toNetwork(buffer);
+            buffer.writeItem(recipe.trash);
+            buffer.writeItem(recipe.treasure);
             buffer.writeFloat(recipe.trashChance);
             buffer.writeFloat(recipe.treasureChance);
         }

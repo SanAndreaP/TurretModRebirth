@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.network.packet;
 
 import de.sanandrew.core.manpack.network.IPacket;
 import de.sanandrew.core.manpack.util.javatuples.Tuple;
-import de.sanandrew.mods.turretmod.util.TurretMod;
+import de.sanandrew.mods.turretmod.client.util.TurretMod;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;

@@ -6,12 +6,12 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.util.upgrade;
+package de.sanandrew.mods.turretmod.client.util.upgrade;
 
 import de.sanandrew.core.manpack.util.EnumAttrModifierOperation;
 import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.entity.turret.TurretAttributes;
-import de.sanandrew.mods.turretmod.util.TurretInfoApi;
+import de.sanandrew.mods.turretmod.client.util.TurretInfoApi;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.ItemStack;
 

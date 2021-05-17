@@ -19,7 +19,8 @@ public interface IElectrolyteRecipe
     int getProcessTime();
 
     @Nonnull
-    default ItemStack getCraftingResult(@Nonnull IElectrolyteInventory inv) {
+    @Override
+    default ItemStack assemble(@Nonnull IElectrolyteInventory inv) {
         return getTrashResult(inv);
     }
 
@@ -32,7 +33,7 @@ public interface IElectrolyteRecipe
     float getTreasureChance();
 
     @Override
-    default boolean canFit(int width, int height) {
+    default boolean canCraftInDimensions(int width, int height) {
         return true;
     }
 }

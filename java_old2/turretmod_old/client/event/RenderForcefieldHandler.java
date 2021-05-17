@@ -16,7 +16,7 @@ import de.sanandrew.core.manpack.util.helpers.SAPUtils;
 import de.sanandrew.core.manpack.util.helpers.SAPUtils.RGBAValues;
 import de.sanandrew.mods.turretmod.api.ForcefieldProvider;
 import de.sanandrew.mods.turretmod.client.render.ForcefieldCube;
-import de.sanandrew.mods.turretmod.util.Textures;
+import de.sanandrew.mods.turretmod.client.util.Textures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.OpenGlHelper;

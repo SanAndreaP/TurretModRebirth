@@ -9,8 +9,8 @@
 package de.sanandrew.mods.turretmod.block;
 
 import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter;
-import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
-import de.sanandrew.mods.turretmod.util.TurretMod;
+import de.sanandrew.mods.turretmod.client.util.TmrCreativeTabs;
+import de.sanandrew.mods.turretmod.client.util.TurretMod;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;

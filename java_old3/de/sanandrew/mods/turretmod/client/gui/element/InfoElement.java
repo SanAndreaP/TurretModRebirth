@@ -21,7 +21,7 @@ import de.sanandrew.mods.turretmod.registry.turret.forcefield.Forcefield;
 import de.sanandrew.mods.turretmod.registry.turret.forcefield.TurretForcefield;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.registry.upgrades.shield.ShieldPersonal;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
+import de.sanandrew.mods.turretmod.client.util.TmrUtils;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;

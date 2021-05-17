@@ -15,7 +15,7 @@ import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.registry.upgrades.shield.ShieldColorizer;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
+import de.sanandrew.mods.turretmod.client.util.TmrUtils;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 

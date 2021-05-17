@@ -19,7 +19,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.registry.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.registry.projectile.ProjectileRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.Upgrades;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
+import de.sanandrew.mods.turretmod.client.util.TmrUtils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;

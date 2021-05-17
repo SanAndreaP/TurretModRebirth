@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.client.render;
 
 import de.sanandrew.core.manpack.util.helpers.SAPUtils.RGBAValues;
-import de.sanandrew.mods.turretmod.util.TurretMod;
+import de.sanandrew.mods.turretmod.client.util.TurretMod;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;

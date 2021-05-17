@@ -33,29 +33,29 @@ public class ElectrolyteGeneratorRenderer
     }
 
     @Override
-    public void render(@Nonnull ElectrolyteGeneratorTileEntity tile, float partialTicks, @Nonnull MatrixStack stack, @Nonnull IRenderTypeBuffer buffer,
+    public void render(@Nonnull ElectrolyteGeneratorTileEntity tile, float partialTicks, @Nonnull MatrixStack pose, @Nonnull IRenderTypeBuffer buffer,
                        int combinedLight, int combinedOverlay)
     {
-        stack.push();
-        stack.translate(0.5F, 1.5F, 0.5F);
-        stack.rotate(Vector3f.XP.rotationDegrees(180.0F));
+        pose.pushPose();
+        pose.translate(0.5F, 1.5F, 0.5F);
+        pose.mulPose(Vector3f.XP.rotationDegrees(180.0F));
 
         for( int i = 0, max = ElectrolyteInventory.INPUT_SLOT_COUNT; i < max; i++ ) {
             ElectrolyteProcess proc = tile.processes.get(i);
             if( ItemStackUtils.isValid(proc.processStack) ) {
-                drawElectrolyteItem(i, proc.processStack, stack, buffer, combinedLight, combinedOverlay);
+                drawElectrolyteItem(i, proc.processStack, pose, buffer, combinedLight, combinedOverlay);
             }
         }
 
-        stack.pop();
+        pose.popPose();
     }
 
-    private static void drawElectrolyteItem(int index, @Nonnull ItemStack item, MatrixStack stack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
-        stack.push();
-        stack.rotate(Vector3f.YP.rotationDegrees(40.0F * index));
-        stack.translate(0.4F, 0.0F, 0.0F);
+    private static void drawElectrolyteItem(int index, @Nonnull ItemStack item, MatrixStack pose, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
+        pose.pushPose();
+        pose.mulPose(Vector3f.YP.rotationDegrees(40.0F * index));
+        pose.translate(0.4F, 0.0F, 0.0F);
         for( int i = 0, max = 3; i < max; i++ ) {
-            RenderUtils.renderStackInWorld(item, stack, new Vector3f(0.0F, 0.0001F * i, 0.0F), new Vector3f(0.0F, (180.0F / max) * i, 0.0F), 0.3F, buffer, combinedLight, combinedOverlay);
+            RenderUtils.renderStackInWorld(item, pose, new Vector3f(0.0F, 0.0001F * i, 0.0F), new Vector3f(0.0F, (180.0F / max) * i, 0.0F), 0.3F, buffer, combinedLight, combinedOverlay);
         }
 
         Parabole p = PARABOLES[index];
@@ -63,20 +63,20 @@ public class ElectrolyteGeneratorRenderer
             p = new Parabole();
             PARABOLES[index] = p;
         }
-        p.draw(stack, buffer, combinedLight);
+        p.draw(pose, buffer, combinedLight);
 
-        stack.pop();
+        pose.popPose();
     }
 
     private static class Parabole {
         private static final int        STEPS         = 10;
         private static final float      SCALE         = 0.01F;
         private static final double     PERPEND_ANGLE = 90.0D * Math.PI / 180.0D;
-        private static final RenderType TYPE_WIRE     = RenderType.makeType("electrolyte_wire", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256,
-                                                                        RenderType.State.getBuilder().texture(new RenderState.TextureState(Resources.TILE_ELECTROLYTE_GEN_WIRE.resource, false, false))
-                                                                                        .cull(new RenderState.CullState(false))
-                                                                                        .lightmap(new RenderState.LightmapState(true))
-                                                                                        .build(false));
+        private static final RenderType TYPE_WIRE     = RenderType.create("electrolyte_wire", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256,
+                                                                          RenderType.State.builder().setTextureState(new RenderState.TextureState(Resources.TILE_ELECTROLYTE_GEN_WIRE.resource, false, false))
+                                                                                          .setCullState(new RenderState.CullState(false))
+                                                                                          .setLightmapState(new RenderState.LightmapState(true))
+                                                                                          .createCompositeState(false));
 
         private final Vector3d[] vecsA = new Vector3d[STEPS + 1];
         private final Vector3d[] vecsB = new Vector3d[STEPS + 1];
@@ -99,7 +99,7 @@ public class ElectrolyteGeneratorRenderer
             for( int i = 1; i < vecsA.length - 1; i++) {
                 Vector3d vecBtwPre = builtVecMain[i].subtract(builtVecMain[i-1]);
                 Vector3d vecBtwPost = builtVecMain[i+1].subtract(builtVecMain[i]);
-                double btwAngle = Math.acos(Math.min(vecBtwPre.dotProduct(vecBtwPost) / vecBtwPre.lengthSquared(), 1.0D));
+                double btwAngle = Math.acos(Math.min(vecBtwPre.dot(vecBtwPost) / vecBtwPre.lengthSqr(), 1.0D));
                 this.vecsA[i] = builtVecMain[i].add(rotateVecXY(vecBtwPre.normalize().scale(SCALE),  PERPEND_ANGLE + btwAngle / 2.0D));
                 this.vecsB[i] = builtVecMain[i].add(rotateVecXY(vecBtwPre.normalize().scale(SCALE), -PERPEND_ANGLE - btwAngle / 2.0D));
             }
@@ -114,19 +114,19 @@ public class ElectrolyteGeneratorRenderer
         }
 
         void draw(MatrixStack stack, IRenderTypeBuffer buffer, int light) {
-            Matrix4f stackMatrix = stack.getLast().getMatrix();
+            Matrix4f pose = stack.last().pose();
             IVertexBuilder buf = buffer.getBuffer(TYPE_WIRE);
             for( int i = 0; i < this.vecsA.length - 1; i++ ) {
-                drawQuad(i, buf, stackMatrix, this.vecsA, this.vecsB, -SCALE, SCALE, this.texsU[i], light);
-                drawQuad(i, buf, stackMatrix, this.vecsA, this.vecsB, SCALE, -SCALE, this.texsU[i], light);
+                drawQuad(i, buf, pose, this.vecsA, this.vecsB, -SCALE, SCALE, this.texsU[i], light);
+                drawQuad(i, buf, pose, this.vecsA, this.vecsB, SCALE, -SCALE, this.texsU[i], light);
             }
         }
 
         private static void drawQuad(int i, IVertexBuilder buf, Matrix4f matrix, Vector3d[] vecA, Vector3d[] vecB, float zA, float zB, float u, int light) {
-            buf.pos(matrix, (float) vecA[i].x, (float) vecA[i].y, zA)        .color(1.0F, 1.0F, 1.0F, 1.0F).tex(0.0F, 1.0F).lightmap(light).endVertex();
-            buf.pos(matrix, (float) vecA[i + 1].x, (float) vecA[i + 1].y, zA).color(1.0F, 1.0F, 1.0F, 1.0F).tex(u, 1.0F)   .lightmap(light).endVertex();
-            buf.pos(matrix, (float) vecB[i + 1].x, (float) vecB[i + 1].y, zB).color(1.0F, 1.0F, 1.0F, 1.0F).tex(u, 0.0F)   .lightmap(light).endVertex();
-            buf.pos(matrix, (float) vecB[i].x, (float) vecB[i].y, zB)        .color(1.0F, 1.0F, 1.0F, 1.0F).tex(0.0F, 0.0F).lightmap(light).endVertex();
+            buf.vertex(matrix, (float) vecA[i].x, (float) vecA[i].y, zA)        .color(1.0F, 1.0F, 1.0F, 1.0F).uv(0.0F, 1.0F).uv2(light).endVertex();
+            buf.vertex(matrix, (float) vecA[i + 1].x, (float) vecA[i + 1].y, zA).color(1.0F, 1.0F, 1.0F, 1.0F).uv(u, 1.0F)   .uv2(light).endVertex();
+            buf.vertex(matrix, (float) vecB[i + 1].x, (float) vecB[i + 1].y, zB).color(1.0F, 1.0F, 1.0F, 1.0F).uv(u, 0.0F)   .uv2(light).endVertex();
+            buf.vertex(matrix, (float) vecB[i].x, (float) vecB[i].y, zB)        .color(1.0F, 1.0F, 1.0F, 1.0F).uv(0.0F, 0.0F).uv2(light).endVertex();
         }
 
         private static Vector3d rotateVecXY(Vector3d vec, double yaw) {

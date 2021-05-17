@@ -223,8 +223,8 @@ public final class TargetProcessor
         if( !stacks.isEmpty() ) {
             LivingEntity turretL = this.turret.get();
             stacks.forEach(stack -> {
-                ItemEntity item = new ItemEntity(turretL.world, turretL.getPosX(), turretL.getPosY(), turretL.getPosZ(), stack);
-                turretL.world.addEntity(item);
+                ItemEntity item = new ItemEntity(turretL.level, turretL.getX(), turretL.getY(), turretL.getZ(), stack);
+                turretL.level.addFreshEntity(item);
             });
         }
     }
@@ -249,8 +249,8 @@ public final class TargetProcessor
                 for( ItemStack stack : items ) {
                     stack = InventoryUtils.addStackToCapability(stack, inventory, Direction.UP, false);
                     if( ItemStackUtils.isValid(stack) ) {
-                        ItemEntity item = new ItemEntity(turretL.world, turretL.getPosX(), turretL.getPosY(), turretL.getPosZ(), stack);
-                        turretL.world.addEntity(item);
+                        ItemEntity item = new ItemEntity(turretL.level, turretL.getX(), turretL.getY(), turretL.getZ(), stack);
+                        turretL.level.addFreshEntity(item);
                     }
                 }
             }
@@ -358,7 +358,7 @@ public final class TargetProcessor
     public AxisAlignedBB getAdjustedRange(boolean doOffset) {
         AxisAlignedBB aabb = this.turret.getRangeBB();
         LivingEntity turretL = this.turret.get();
-        return doOffset ? aabb.offset(turretL.getPosX(), turretL.getPosY(), turretL.getPosZ()) : aabb;
+        return doOffset ? aabb.move(turretL.getX(), turretL.getY(), turretL.getZ()) : aabb;
     }
 
     private boolean checkTargetListeners(Entity e) {
@@ -375,7 +375,7 @@ public final class TargetProcessor
 
         Entity projectile = this.getProjectile();
         if( projectile != null ) {
-            this.turret.get().world.addEntity(projectile);
+            this.turret.get().level.addFreshEntity(projectile);
             this.playSound(this.turret.getShootSound(), 1.8F);
             this.turret.setShooting();
             this.decrAmmo();
@@ -389,8 +389,8 @@ public final class TargetProcessor
     @Override
     public void playSound(SoundEvent sound, float volume) {
         LivingEntity turretL = this.turret.get();
-        final float pitch = 1.0F / (turretL.getRNG().nextFloat() * 0.4F + 1.2F) + 0.5F;
-        turretL.world.playSound(null, turretL.getPosX(), turretL.getPosY(), turretL.getPosZ(), sound, SoundCategory.NEUTRAL, volume, pitch);
+        final float pitch = 1.0F / (turretL.getRandom().nextFloat() * 0.4F + 1.2F) + 0.5F;
+        turretL.level.playSound(null, turretL.getX(), turretL.getY(), turretL.getZ(), sound, SoundCategory.NEUTRAL, volume, pitch);
     }
 
     @Override
@@ -413,7 +413,7 @@ public final class TargetProcessor
         }
 
         if( this.entityToAttack == null && !this.entityToAttackID.equals(UuidUtils.EMPTY_UUID) ) {
-            this.entityToAttack = EntityUtils.getEntityByUUID(turretL.world, this.entityToAttackID);
+            this.entityToAttack = EntityUtils.getEntityByUUID(turretL.level, this.entityToAttackID);
         }
 
         AxisAlignedBB aabb = this.getAdjustedRange(true);
@@ -427,7 +427,7 @@ public final class TargetProcessor
                 for( Entity entityObj : getValidTargetList(aabb) ) {
                     if( this.checkTargetListeners(entityObj) ) {
                         this.entityToAttack = entityObj;
-                        this.entityToAttackID = entityObj.getUniqueID();
+                        this.entityToAttackID = entityObj.getUUID();
                         changed = true;
                         break;
                     }
@@ -497,7 +497,7 @@ public final class TargetProcessor
     @Override
     public boolean isEntityTargeted(Entity entity) {
         if( entity instanceof PlayerEntity ) {
-            UUID id = entity.getUniqueID();
+            UUID id = entity.getUUID();
             return this.playerTargetList.containsKey(id) && (this.isPlayerTargetListDenying ^ this.isPlayerTargeted(id));
         } else {
             ResourceLocation id = entity.getType().getRegistryName();
@@ -506,12 +506,12 @@ public final class TargetProcessor
     }
 
     private List<Entity> getValidTargetList(AxisAlignedBB aabb) {
-        return turret.get().world.getEntitiesInAABBexcluding(turret.get(), aabb, entity -> this.isEntityValidTarget(entity, aabb));
+        return turret.get().level.getEntities(turret.get(), aabb, entity -> this.isEntityValidTarget(entity, aabb));
     }
 
     private boolean isEntityValidTarget(Entity entity, AxisAlignedBB aabb) {
         return isEntityTargeted(entity) && entity.isAlive() && entity.getBoundingBox().intersects(aabb)
-               && (this.turret.getTurret().canSeeThroughBlocks() || this.turret.get().canEntityBeSeen(entity));
+               && (this.turret.getTurret().canSeeThroughBlocks() || this.turret.get().canSee(entity));
     }
 
     @Override
@@ -552,8 +552,8 @@ public final class TargetProcessor
     @Override
     public CompoundNBT save(CompoundNBT nbt) {
         nbt.putInt(NBT_AMMO_COUNT, this.ammoCount);
-        nbt.put(NBT_AMMO_STACK, this.ammoStack.write(new CompoundNBT()));
-        nbt.putUniqueId(NBT_TARGET_ID, this.entityToAttackID);
+        nbt.put(NBT_AMMO_STACK, this.ammoStack.save(new CompoundNBT()));
+        nbt.putUUID(NBT_TARGET_ID, this.entityToAttackID);
 
         nbt.putBoolean(NBT_ENTITYTGTLIST_DENY, this.isEntityTargetListDenying);
         nbt.put(NBT_ENTITYTGTLIST, new ListNBT() {{
@@ -566,7 +566,7 @@ public final class TargetProcessor
         nbt.putBoolean(NBT_PLAYERTGTLIST_DENY, this.isPlayerTargetListDenying);
         nbt.put(NBT_PLAYERTGTLIST, new ListNBT() {{
             TargetProcessor.this.getPlayerTargets().forEach((id, enabled) -> this.add(new CompoundNBT() {{
-                this.putUniqueId(NBT_TGTLIST_ID, id);
+                this.putUUID(NBT_TGTLIST_ID, id);
                 this.putBoolean(NBT_TGTLIST_ENABLED, enabled);
             }}));
         }});
@@ -581,8 +581,8 @@ public final class TargetProcessor
         }
 
         this.ammoCount = nbt.getInt(NBT_AMMO_COUNT);
-        this.ammoStack = ItemStack.read(nbt.getCompound(NBT_AMMO_STACK));
-        this.entityToAttackID = nbt.getUniqueId(NBT_TARGET_ID);
+        this.ammoStack = ItemStack.of(nbt.getCompound(NBT_AMMO_STACK));
+        this.entityToAttackID = nbt.getUUID(NBT_TARGET_ID);
 
         this.isEntityTargetListDenying = nbt.getBoolean(NBT_ENTITYTGTLIST_DENY);
         ListNBT entityTargets = nbt.getList(NBT_ENTITYTGTLIST, Constants.NBT.TAG_COMPOUND);
@@ -595,7 +595,7 @@ public final class TargetProcessor
         ListNBT playerTargets = nbt.getList(NBT_PLAYERTGTLIST, Constants.NBT.TAG_COMPOUND);
         for( int i = 0, max = playerTargets.size(); i < max; i++ ) {
             CompoundNBT entry = playerTargets.getCompound(i);
-            this.updatePlayerTarget(entry.getUniqueId(NBT_TGTLIST_ID), entry.getBoolean(NBT_TGTLIST_ENABLED));
+            this.updatePlayerTarget(entry.getUUID(NBT_TGTLIST_ID), entry.getBoolean(NBT_TGTLIST_ENABLED));
         }
     }
 
@@ -651,8 +651,8 @@ public final class TargetProcessor
 
     public void updateClientState(int targetId, int ammoCount, @Nonnull ItemStack ammoStack, boolean isShooting) {
         LivingEntity turretL = this.turret.get();
-        if( turretL.world.isRemote ) {
-            this.entityToAttack = targetId < 0 ? null : turretL.world.getEntityByID(targetId);
+        if( turretL.level.isClientSide ) {
+            this.entityToAttack = targetId < 0 ? null : turretL.level.getEntity(targetId);
             this.ammoCount = ammoCount;
             this.ammoStack = ammoStack;
             this.isShootingClt = isShooting;

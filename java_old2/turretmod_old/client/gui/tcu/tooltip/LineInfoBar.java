@@ -6,7 +6,7 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.gui.tcu.tooltip;
 
-import de.sanandrew.mods.turretmod.util.Textures;
+import de.sanandrew.mods.turretmod.client.util.Textures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 

@@ -11,7 +11,7 @@ package de.sanandrew.mods.turretmod.network;
 import de.sanandrew.core.manpack.network.NetworkManager;
 import de.sanandrew.core.manpack.util.javatuples.Tuple;
 import de.sanandrew.mods.turretmod.network.packet.*;
-import de.sanandrew.mods.turretmod.util.TurretMod;
+import de.sanandrew.mods.turretmod.client.util.TurretMod;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 public final class PacketManager

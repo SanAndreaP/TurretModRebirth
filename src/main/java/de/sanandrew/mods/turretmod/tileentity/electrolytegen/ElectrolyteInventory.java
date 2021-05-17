@@ -53,7 +53,7 @@ public final class ElectrolyteInventory
     @Nonnull
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
         this.validateSlotIndex(slot);
-        if( this.isItemValidForSlot(slot, stack) ) {
+        if( this.isItemValid(slot, stack) ) {
             return super.insertItem(slot, stack, simulate);
         }
 
@@ -96,7 +96,7 @@ public final class ElectrolyteInventory
     }
 
     @Override
-    public int getSizeInventory() {
+    public int getContainerSize() {
         return this.stacks.size();
     }
 
@@ -105,48 +105,50 @@ public final class ElectrolyteInventory
         return this.stacks.stream().noneMatch(ItemStackUtils::isValid);
     }
 
+    @Nonnull
     @Override
-    public ItemStack decrStackSize(int index, int count) {
+    public ItemStack getItem(int slot) {
+        return this.getStackInSlot(slot);
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack removeItem(int index, int count) {
         return this.extractItem(index, count, false);
     }
 
+    @Nonnull
     @Override
-    public ItemStack removeStackFromSlot(int index) {
+    public ItemStack removeItemNoUpdate(int index) {
         return this.extractItem(index, this.getStackInSlot(index).getCount(), false);
     }
 
     @Override
-    public void setInventorySlotContents(int index, @Nonnull ItemStack stack) {
-        this.removeStackFromSlot(index);
+    public void setItem(int index, @Nonnull ItemStack stack) {
+        this.removeItemNoUpdate(index);
         this.insertItem(index, stack, false);
     }
 
     @Override
-    public int getInventoryStackLimit() {
+    public int getMaxStackSize() {
         return 64;
     }
 
     @Override
-    public void markDirty() { }
+    public void setChanged() { }
 
     @Override
-    public boolean isUsableByPlayer(@Nonnull PlayerEntity player) { return true; }
+    public boolean stillValid(@Nonnull PlayerEntity player) { return true; }
 
     @Override
-    public void openInventory(@Nonnull PlayerEntity player) { }
-
-    @Override
-    public void closeInventory(@Nonnull PlayerEntity player) { }
-
-    @Override
-    public boolean isItemValidForSlot(int index, @Nonnull ItemStack stack) {
+    public boolean isItemValid(int index, @Nonnull ItemStack stack) {
         return INPUT_SLOTS.contains(index)
                && ElectrolyteManager.INSTANCE.getFuel(this.world.get(), stack) != null
                && !ItemStackUtils.isValid(this.stacks.get(index));
     }
 
     @Override
-    public void clear() {
+    public void clearContent() {
         this.stacks.clear();
     }
 

@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.entity.turret.techi;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
-import de.sanandrew.mods.turretmod.util.Textures;
+import de.sanandrew.mods.turretmod.client.util.Textures;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;

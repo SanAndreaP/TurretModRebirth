@@ -10,7 +10,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
@@ -1119,15 +1119,15 @@ public final class TargetList
 //        }
 
         if( groundRegenerate ) {
-            groundEntities = Registry.ENTITY_TYPE.stream()
-                                       .filter(t -> {
+            groundEntities = ForgeRegistries.ENTITIES.getEntries().stream()
+                                            .filter(e -> {
                                            Stream<String> feStr = Arrays.stream(flyingEntities);
                                            Stream<String> weStr = Arrays.stream(waterEntities);
-                                           String nmStr = Objects.requireNonNull(t.getRegistryName()).toString();
-                                           EntityClassification c = t.getClassification();
+                                           String nmStr = Objects.requireNonNull(e.getKey().getRegistryName()).toString();
+                                           EntityClassification c = e.getValue().getCategory();
 
                                            return c != EntityClassification.MISC && feStr.noneMatch(nmStr::equals) && weStr.noneMatch(nmStr::equals);
-                                       }).map(t -> t.getRegistryName().toString()).toArray(String[]::new);
+                                       }).map(e -> e.getKey().getRegistryName().toString()).toArray(String[]::new);
 
             groundEntities = ArrayUtils.addAll(groundEntities, Arrays.stream(guaranteedGround).filter(v -> Arrays.stream(groundEntities).noneMatch(g -> g.equals(v))).toArray(String[]::new));
         }
@@ -1185,11 +1185,11 @@ public final class TargetList
         }
 
         return entities.stream()
-                       .map(e -> EntityType.byKey(e.toString()))
-                       .filter(t -> t.isPresent() && t.get().getClassification() != EntityClassification.MISC)
+                       .map(e -> EntityType.byString(e.toString()))
+                       .filter(t -> t.isPresent() && t.get().getCategory() != EntityClassification.MISC)
                        .collect(Collectors.toMap(t -> EntityType.getKey(t.get()), t -> {
-                                    EntityClassification classification = t.get().getClassification();
-                                    return !classification.getPeacefulCreature() && !classification.getAnimal();
+                                    EntityClassification classification = t.get().getCategory();
+                                    return !classification.isFriendly() && !classification.isPersistent();
                                 }));
     }
 }

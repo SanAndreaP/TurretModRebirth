@@ -14,7 +14,7 @@ import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.client.model.ModelItemTransmitter;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter.Request;
-import de.sanandrew.mods.turretmod.util.Textures;
+import de.sanandrew.mods.turretmod.client.util.Textures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;

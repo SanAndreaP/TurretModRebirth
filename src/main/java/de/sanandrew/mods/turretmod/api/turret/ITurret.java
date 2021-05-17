@@ -16,6 +16,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -29,6 +30,9 @@ public interface ITurret
 
     default void applyEntityAttributes(ITurretInst turretInst) { }
 
+    @Nonnull
+    ResourceLocation getModelLocation();
+
     ResourceLocation getStandardTexture(ITurretInst turretInst);
 
     ResourceLocation getGlowTexture(ITurretInst turretInst);
@@ -36,6 +40,14 @@ public interface ITurret
     SoundEvent getShootSound(ITurretInst turretInst);
 
     AxisAlignedBB getRangeBB(@Nullable ITurretInst turretInst);
+
+    default String getCustomRenderClass() {
+        return null;
+    }
+
+    default String getCustomModelClass() {
+        return null;
+    }
 
     int getTier();
 

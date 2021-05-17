@@ -85,27 +85,30 @@ public class PlayerList
 
     @SubscribeEvent
     public void onEntitySpawn(EntityJoinWorldEvent event) {
-        if( event.getEntity() instanceof PlayerEntity && !event.getWorld().isRemote ) {
-            this.playerMap.put(event.getEntity().getUniqueID(), event.getEntity().getName());
+        if( event.getEntity() instanceof PlayerEntity && !event.getWorld().isClientSide ) {
+            this.playerMap.put(event.getEntity().getUUID(), event.getEntity().getName());
             this.syncList();
-            this.markDirty();
+            this.setDirty();
         }
     }
 
     @SubscribeEvent
     public void onWorldLoad(WorldEvent.Load event) {
         if( (event.getWorld() instanceof ServerWorld) ) {
-            DimensionSavedDataManager storage = ((ServerWorld) event.getWorld()).getSavedData();
-            PlayerList result = storage.getOrCreate(PlayerList::new, WSD_NAME);
+            DimensionSavedDataManager storage = ((ServerWorld) event.getWorld()).getDataStorage();
+            PlayerList result = storage.get(PlayerList::new, WSD_NAME);
 
-            this.playerMap.putAll(result.playerMap);
+            if( result != null ) {
+                this.playerMap.putAll(result.playerMap);
+            }
+
             storage.set(this);
             this.syncList();
         }
     }
 
     @Override
-    public void read(CompoundNBT nbt) {
+    public void load(CompoundNBT nbt) {
         if( nbt.contains(WSD_NAME) ) {
             CompoundNBT tmrNBT = nbt.getCompound(WSD_NAME);
             if( tmrNBT.contains("Players") ) {
@@ -116,7 +119,7 @@ public class PlayerList
 
                     if( playerNbt.contains("PlayerIdMSB") && playerNbt.contains("PlayerIdLSB") ) {
                         UUID           id   = new UUID(playerNbt.getLong("PlayerIdMSB"), playerNbt.getLong("PlayerLSB"));
-                        ITextComponent name = ITextComponent.Serializer.getComponentFromJson(playerNbt.getString("PlayerName"));
+                        ITextComponent name = ITextComponent.Serializer.fromJson(playerNbt.getString("PlayerName"));
 
                         this.playerMap.put(id, name);
                     }
@@ -127,7 +130,7 @@ public class PlayerList
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT compound) {
+    public CompoundNBT save(@Nonnull CompoundNBT compound) {
         CompoundNBT tmrNBT = new CompoundNBT();
         ListNBT nbtList = new ListNBT();
         for( Map.Entry<UUID, ITextComponent> player : this.playerMap.entrySet() ) {

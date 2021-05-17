@@ -9,8 +9,8 @@
 package de.sanandrew.mods.turretmod.item;
 
 import de.sanandrew.core.manpack.util.helpers.SAPUtils;
-import de.sanandrew.mods.turretmod.util.TmrCreativeTabs;
-import de.sanandrew.mods.turretmod.util.TurretMod;
+import de.sanandrew.mods.turretmod.client.util.TmrCreativeTabs;
+import de.sanandrew.mods.turretmod.client.util.TurretMod;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;

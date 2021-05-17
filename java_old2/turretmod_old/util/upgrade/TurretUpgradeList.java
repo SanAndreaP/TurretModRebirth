@@ -6,20 +6,20 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.util.upgrade;
+package de.sanandrew.mods.turretmod.client.util.upgrade;
 
 import de.sanandrew.mods.turretmod.api.TurretUpgrade;
 import de.sanandrew.mods.turretmod.api.registry.TurretUpgradeRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.techi.EntityTurretCrossbow;
-import de.sanandrew.mods.turretmod.util.upgrade.TUpgradeHealth.TUpgradeHealthI;
-import de.sanandrew.mods.turretmod.util.upgrade.TUpgradeHealth.TUpgradeHealthII;
-import de.sanandrew.mods.turretmod.util.upgrade.TUpgradeHealth.TUpgradeHealthIII;
-import de.sanandrew.mods.turretmod.util.upgrade.TUpgradeHealth.TUpgradeHealthIV;
-import de.sanandrew.mods.turretmod.util.upgrade.TUpgradeReloadTime.TUpgradeReloadTimeI;
-import de.sanandrew.mods.turretmod.util.upgrade.TUpgradeReloadTime.TUpgradeReloadTimeII;
-import de.sanandrew.mods.turretmod.util.upgrade.TUpgradeUpgStorage.TUpgradeUpgStorageI;
-import de.sanandrew.mods.turretmod.util.upgrade.TUpgradeUpgStorage.TUpgradeUpgStorageII;
-import de.sanandrew.mods.turretmod.util.upgrade.TUpgradeUpgStorage.TUpgradeUpgStorageIII;
+import de.sanandrew.mods.turretmod.client.util.upgrade.TUpgradeHealth.TUpgradeHealthI;
+import de.sanandrew.mods.turretmod.client.util.upgrade.TUpgradeHealth.TUpgradeHealthII;
+import de.sanandrew.mods.turretmod.client.util.upgrade.TUpgradeHealth.TUpgradeHealthIII;
+import de.sanandrew.mods.turretmod.client.util.upgrade.TUpgradeHealth.TUpgradeHealthIV;
+import de.sanandrew.mods.turretmod.client.util.upgrade.TUpgradeReloadTime.TUpgradeReloadTimeI;
+import de.sanandrew.mods.turretmod.client.util.upgrade.TUpgradeReloadTime.TUpgradeReloadTimeII;
+import de.sanandrew.mods.turretmod.client.util.upgrade.TUpgradeUpgStorage.TUpgradeUpgStorageI;
+import de.sanandrew.mods.turretmod.client.util.upgrade.TUpgradeUpgStorage.TUpgradeUpgStorageII;
+import de.sanandrew.mods.turretmod.client.util.upgrade.TUpgradeUpgStorage.TUpgradeUpgStorageIII;
 
 import java.lang.reflect.Field;
 

@@ -8,7 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.registry.projectile;
 
-import de.sanandrew.mods.turretmod.util.TurretMod;
+import de.sanandrew.mods.turretmod.client.util.TurretMod;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;

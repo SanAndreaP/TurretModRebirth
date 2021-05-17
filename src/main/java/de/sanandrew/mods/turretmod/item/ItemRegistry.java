@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.item;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.entity.turret.TurretRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
@@ -35,7 +36,7 @@ public class ItemRegistry
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
-        event.getRegistry().registerAll(TURRET_PLACERS.entrySet().stream().map(e -> e.getValue().setRegistryName(e.getKey())).toArray(Item[]::new));
+        TurretRegistry.INSTANCE.registerItems(event, TmrConstants.ID);
 //        event.getRegistry().registerAll(TURRET_AMMO.values().toArray(new Item[0]));
 //        event.getRegistry().registerAll(TURRET_UPGRADES.values().toArray(new Item[0]));
 //        event.getRegistry().registerAll(TURRET_REPAIRKITS.values().toArray(new Item[0]));

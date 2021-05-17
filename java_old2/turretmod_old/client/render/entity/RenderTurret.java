@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.client.render.entity;
 
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
-import de.sanandrew.mods.turretmod.util.TurretMod;
+import de.sanandrew.mods.turretmod.client.util.TurretMod;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.OpenGlHelper;

@@ -13,8 +13,6 @@ import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.world.PlayerList;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.HashMap;
@@ -36,7 +34,7 @@ public class SyncPlayerListPacket
         this.players = new HashMap<>(size);
 
         for( int i = 0; i < size; i++ ) {
-            this.players.put(packetBuffer.readUniqueId(), packetBuffer.readTextComponent());
+            this.players.put(packetBuffer.readUUID(), packetBuffer.readComponent());
         }
     }
 
@@ -44,8 +42,8 @@ public class SyncPlayerListPacket
     public void encode(PacketBuffer packetBuffer) {
         packetBuffer.writeVarInt(this.players.size());
         for( Map.Entry<UUID, ITextComponent> player : this.players.entrySet() ) {
-            packetBuffer.writeUniqueId(player.getKey());
-            packetBuffer.writeTextComponent(player.getValue());
+            packetBuffer.writeUUID(player.getKey());
+            packetBuffer.writeComponent(player.getValue());
         }
     }
 

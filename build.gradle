@@ -14,7 +14,7 @@ apply plugin: 'maven-publish'
 
 Object grabConstant = { String name ->
     name = name.toUpperCase(Locale.ROOT)
-    def f = new File("src/main/java/de/sanandrew/mods/turretmod/api/TmrConstants.java").text
+    def f = new File("$project.projectDir/src/main/java/de/sanandrew/mods/turretmod/api/TmrConstants.java").text
     def m = f =~ name + /\s*=\s*"(.*?)"/
     if( m.find() ) {
         return m.group(1)
@@ -61,7 +61,8 @@ minecraft {
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.disableRefMap', 'true'
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${project.projectDir}/build/createSrgToMcp/output.srg"
 
             mods {
                 sanlib {
@@ -80,6 +81,8 @@ minecraft {
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${project.projectDir}/build/createSrgToMcp/output.srg"
 
             mods {
                 sanlib {
@@ -226,9 +229,7 @@ publishing {
     }
 }
 
-import net.minecraftforge.gradle.common.task.SignJar
-
-task signJar(type: SignJar, dependsOn: jar) {
+task signJar(type: net.minecraftforge.gradle.common.task.SignJar, dependsOn: jar) {
     onlyIf {
         project.hasProperty('keyStore')
     }

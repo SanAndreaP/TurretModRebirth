@@ -1,0 +1,12 @@
+{
+  "ammoCapacity": 1,
+  "turret": "sapturretmod:crossbow",
+  "projectile": {
+    "damage": 4.0,
+    "speed": 1.0,
+    "arc": 0.4,
+    "knockback": [0.01, 0.1],
+    "scatter": 0.1,
+    "ricochetSound": "minecraft:entity.arrow.hit"
+  }
+}

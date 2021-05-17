@@ -16,7 +16,7 @@ public class ElectrolyteProvider
     }
 
     @Override
-    protected void registerRecipes(@Nonnull Consumer<IFinishedRecipe> consumer) {
+    protected void buildShapelessRecipes(@Nonnull Consumer<IFinishedRecipe> consumer) {
         ElectrolyteBuilder.newElectrolyte(Items.APPLE)           .efficiency(1.3F).processTime(220).trash(Items.WHEAT_SEEDS).treasure(Items.GOLD_NUGGET)        .build(consumer);
         ElectrolyteBuilder.newElectrolyte(Items.BEETROOT)        .efficiency(1.0F).processTime(200).trash(Items.RED_DYE)    .treasure(Items.REDSTONE)           .build(consumer);
         ElectrolyteBuilder.newElectrolyte(Items.CARROT)          .efficiency(1.0F).processTime(250).trash(Items.ORANGE_DYE) .treasure(Items.SUGAR, 0.1F)        .build(consumer);

@@ -19,7 +19,7 @@ import de.sanandrew.mods.turretmod.registry.repairkit.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.GuiTcuRegistry;
 import de.sanandrew.mods.turretmod.registry.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.registry.upgrades.UpgradeRegistry;
-import de.sanandrew.mods.turretmod.util.TmrUtils;
+import de.sanandrew.mods.turretmod.client.util.TmrUtils;
 import de.sanandrew.mods.turretmod.world.PlayerList;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModList;

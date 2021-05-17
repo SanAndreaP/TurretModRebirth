@@ -13,7 +13,7 @@ import de.sanandrew.core.manpack.util.javatuples.Quartet;
 import de.sanandrew.core.manpack.util.javatuples.Tuple;
 import de.sanandrew.mods.turretmod.network.PacketManager;
 import de.sanandrew.mods.turretmod.tileentity.TileEntityItemTransmitter;
-import de.sanandrew.mods.turretmod.util.TurretMod;
+import de.sanandrew.mods.turretmod.client.util.TurretMod;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;

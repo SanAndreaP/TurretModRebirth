@@ -1,6 +1,0 @@
-{
-  "parent": "sapturretmod:item/turrets/standard",
-  "textures": {
-    "0": "sapturretmod:items/turrets/turret_crossbow"
-  }
-}

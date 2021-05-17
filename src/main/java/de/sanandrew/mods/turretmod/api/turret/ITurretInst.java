@@ -67,7 +67,7 @@ public interface ITurretInst
 
     IVariant getVariant();
 
-    void setVariant(ResourceLocation variant);
+    void setVariant(Object variantId);
 
     @OnlyIn(Dist.CLIENT)
     int getPartBrightnessForRender(double partY);

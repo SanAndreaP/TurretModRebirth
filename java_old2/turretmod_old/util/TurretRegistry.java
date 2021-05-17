@@ -6,7 +6,7 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.util;
+package de.sanandrew.mods.turretmod.client.util;
 
 import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.api.TurretAmmo;
@@ -17,9 +17,9 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurretOP;
 import de.sanandrew.mods.turretmod.entity.turret.techi.EntityTurretCrossbow;
 import de.sanandrew.mods.turretmod.entity.turret.techii.EntityTurretRevolver;
 import de.sanandrew.mods.turretmod.item.ItemTurretAmmo;
-import de.sanandrew.mods.turretmod.util.ammo.AmmoArrow;
-import de.sanandrew.mods.turretmod.util.ammo.AmmoBullet;
-import de.sanandrew.mods.turretmod.util.healitems.HealthpackCobble;
+import de.sanandrew.mods.turretmod.client.util.ammo.AmmoArrow;
+import de.sanandrew.mods.turretmod.client.util.ammo.AmmoBullet;
+import de.sanandrew.mods.turretmod.client.util.healitems.HealthpackCobble;
 
 import java.util.*;
 

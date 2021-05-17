@@ -56,7 +56,7 @@ public class ElectrolyteGeneratorTileEntity
 
     private ITextComponent customName;
 
-    final ElectrolyteInventory itemHandler = new ElectrolyteInventory(this::getWorld);
+    final ElectrolyteInventory itemHandler = new ElectrolyteInventory(this::getLevel);
     final ElectrolyteEnergyStorage energyStorage = new ElectrolyteEnergyStorage();
 
     public int getGeneratedFlux() {
@@ -69,7 +69,7 @@ public class ElectrolyteGeneratorTileEntity
 
     @Override
     public void tick() {
-        if( this.world != null && !this.world.isRemote ) {
+        if( this.level != null && !this.level.isClientSide ) {
             this.energyStorage.resetFluxExtract();
 
             this.energyStorage.emptyBuffer();
@@ -118,30 +118,28 @@ public class ElectrolyteGeneratorTileEntity
 
                 process = ElectrolyteProcess.EMPTY;
 
-                this.markDirty();
+                this.setChanged();
 
-                if( this.world != null ) {
-                    this.world.notifyBlockUpdate(this.pos, this.getBlockState(), this.getBlockState(), 3);
+                if( this.level != null ) {
+                    this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 3);
                 }
             } else {
                 process.incrProgress();
 
-                this.markDirty();
+                this.setChanged();
             }
 
             this.efficiency += process.getEfficiency(this.itemHandler);
         }
 
-        if( !process.isValid() ) {
-            IElectrolyteRecipe recipe = ElectrolyteManager.INSTANCE.getFuel(this.world, this.itemHandler.extractInsertItem(slot, 1, true));
+        if( !process.isValid() && this.level != null ) {
+            IElectrolyteRecipe recipe = ElectrolyteManager.INSTANCE.getFuel(this.level, this.itemHandler.extractInsertItem(slot, 1, true));
             if( recipe != null ) {
                 process = new ElectrolyteProcess(recipe.getId(), this.itemHandler.extractInsertItem(slot, 1, false));
 
-                this.markDirty();
+                this.setChanged();
 
-                if( this.world != null ) {
-                    this.world.notifyBlockUpdate(this.pos, this.getBlockState(), this.getBlockState(), 2);
-                }
+                this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 2);
             }
         }
 
@@ -149,15 +147,15 @@ public class ElectrolyteGeneratorTileEntity
     }
 
     private void transferEnergy() {
-        if( this.world != null && this.energyStorage.fluxExtractPerTick > 0 ) {
+        if( this.level != null && this.energyStorage.fluxExtractPerTick > 0 ) {
             for( Direction direction : Direction.values() ) {
                 if( direction == Direction.UP ) {
                     continue;
                 }
                 Direction otherDir = direction.getOpposite();
 
-                BlockPos adjPos = this.pos.add(direction.getXOffset(), direction.getYOffset(), direction.getZOffset());
-                TileEntity te = this.world.getTileEntity(adjPos);
+                BlockPos adjPos = this.worldPosition.offset(direction.getStepX(), direction.getStepY(), direction.getStepZ());
+                TileEntity te = this.level.getBlockEntity(adjPos);
 
                 if( te == null || !EnergyHelper.canConnectEnergy(te, otherDir) ) {
                     continue;
@@ -168,6 +166,7 @@ public class ElectrolyteGeneratorTileEntity
 
                 EnergyHelper.extractEnergy(this, direction, receivable, false);
 
+                //noinspection ConstantConditions
                 if( this.energyStorage.fluxExtractPerTick <= 0 ) {
                     break;
                 }
@@ -176,8 +175,8 @@ public class ElectrolyteGeneratorTileEntity
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
-        super.read(state, nbt);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
+        super.load(state, nbt);
 
         ListNBT progressesNbt = nbt.getList("Progress", Constants.NBT.TAG_COMPOUND);
         for( int i = 0, max = progressesNbt.size(); i < max; i++ ) {
@@ -190,14 +189,14 @@ public class ElectrolyteGeneratorTileEntity
         this.itemHandler.deserializeNBT(nbt.getCompound("CapabilityInventory"));
 
         if( nbt.contains("CustomName", Constants.NBT.TAG_STRING) ) {
-            this.customName = ITextComponent.Serializer.getComponentFromJson(nbt.getString("CustomName"));
+            this.customName = ITextComponent.Serializer.fromJson(nbt.getString("CustomName"));
         }
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbt) {
-        super.write(nbt);
+    public CompoundNBT save(@Nonnull CompoundNBT nbt) {
+        super.save(nbt);
 
         ListNBT progressesNbt = new ListNBT();
         for( int i = 0, max = this.processes.size(); i < max; i++ ) {
@@ -221,13 +220,13 @@ public class ElectrolyteGeneratorTileEntity
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.pos, -1, this.processes.serializeProcessStacks(new CompoundNBT()));
+        return new SUpdateTileEntityPacket(this.worldPosition, -1, this.processes.serializeProcessStacks(new CompoundNBT()));
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        this.processes.deserializeProcessStacks(pkt.getNbtCompound());
+        this.processes.deserializeProcessStacks(pkt.getTag());
     }
 
     @Nonnull
@@ -244,7 +243,7 @@ public class ElectrolyteGeneratorTileEntity
     @Nonnull
     @Override
     public ITextComponent getDisplayName() {
-        return this.customName != null ? this.customName : this.getBlockState().getBlock().getTranslatedName();
+        return this.customName != null ? this.customName : this.getBlockState().getBlock().getName();
     }
 
     @Nonnull

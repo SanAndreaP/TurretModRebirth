@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
-	"parent": "sapturretmod:item/turrets/standard",
+	"parent": "sapturretmod:item/standard_turret",
 	"textures": {
-		"0": "sapturretmod:items/turrets/turret_flamethrower"
+		"0": "sapturretmod:items/flamethrower_turret"
 	},
 	"elements": [
 		{

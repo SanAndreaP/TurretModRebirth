@@ -1,6 +1,8 @@
 package de.sanandrew.mods.turretmod.init;
 
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import net.minecraft.resources.IResource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 

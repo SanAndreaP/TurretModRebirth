@@ -37,7 +37,7 @@ public class ElectrolyteManager
 
     @Override
     public IElectrolyteRecipe getFuel(World world, ResourceLocation id) {
-        return world.getRecipeManager().getRecipe(id).map(r -> (IElectrolyteRecipe) r).orElse(EmptyRecipe.INSTANCE);
+        return world.getRecipeManager().byKey(id).map(r -> (IElectrolyteRecipe) r).orElse(EmptyRecipe.INSTANCE);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class ElectrolyteManager
         }
 
         for( IElectrolyteRecipe recipe : this.getFuels(world) ) {
-            for( ItemStack key : recipe.getIngredients().get(0).getMatchingStacks() ) {
+            for( ItemStack key : recipe.getIngredients().get(0).getItems() ) {
                 if( ItemStackUtils.areEqual(key, stack, key.hasTag(), false) ) {
                     return recipe;
                 }

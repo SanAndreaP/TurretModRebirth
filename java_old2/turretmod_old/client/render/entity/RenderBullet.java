@@ -8,7 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.client.render.entity;
 
-import de.sanandrew.mods.turretmod.util.Textures;
+import de.sanandrew.mods.turretmod.client.util.Textures;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.util.ResourceLocation;
 

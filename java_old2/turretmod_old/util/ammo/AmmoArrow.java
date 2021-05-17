@@ -6,7 +6,7 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.util.ammo;
+package de.sanandrew.mods.turretmod.client.util.ammo;
 
 import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.api.TurretAmmo;

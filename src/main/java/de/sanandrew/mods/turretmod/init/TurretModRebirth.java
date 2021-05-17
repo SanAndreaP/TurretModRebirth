@@ -14,15 +14,20 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
 import de.sanandrew.mods.turretmod.client.init.ClientProxy;
 import de.sanandrew.mods.turretmod.datagenerator.ElectrolyteProvider;
+import de.sanandrew.mods.turretmod.entity.EntityRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.TargetList;
+import de.sanandrew.mods.turretmod.entity.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.world.PlayerList;
 import net.minecraft.data.DataGenerator;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -60,12 +65,12 @@ public class TurretModRebirth
 
         loadPlugins(ModList.get().getAllScanData());
 
-//        ModLoadingContext.get().registerConfig();
+//        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ForgeConfigSpec.);
 
         PacketRegistry.initialize();
 
 //        PLUGINS.forEach(plugin -> plugin.preSetup(TmrUtils.INSTANCE));
-//        PLUGINS.forEach(plugin -> plugin.registerTurrets(TurretRegistry.INSTANCE));
+        PLUGINS.forEach(plugin -> plugin.registerTurrets(TurretRegistry.INSTANCE));
 //        PLUGINS.forEach(plugin -> plugin.registerAmmo(AmmunitionRegistry.INSTANCE));
 //        PLUGINS.forEach(plugin -> plugin.registerRepairKits(RepairKitRegistry.INSTANCE));
 //        PLUGINS.forEach(plugin -> plugin.registerUpgrades(UpgradeRegistry.INSTANCE));

@@ -27,35 +27,35 @@ public final class DataWatcherBooleans<T extends Entity>
         this.entity = e;
         Class<? extends Entity> entityCls = e.getClass();
         if( !PARAMS.containsKey(entityCls) ) {
-            PARAMS.put(entityCls, EntityDataManager.createKey(e.getClass(), DataSerializers.VARINT));
+            PARAMS.put(entityCls, EntityDataManager.defineId(e.getClass(), DataSerializers.INT));
         }
         this.param = PARAMS.get(entityCls);
     }
 
     void registerDwValue() {
-        this.entity.getDataManager().register(this.param, 0);
+        this.entity.getEntityData().define(this.param, 0);
     }
 
     void setBit(int bit, boolean value) {
-        int dwVal = this.entity.getDataManager().get(this.param);
+        int dwVal = this.entity.getEntityData().get(this.param);
         if( value ) {
             dwVal = dwVal | (1 << bit);
         } else {
             dwVal = dwVal & ~( 1 << bit );
         }
-        this.entity.getDataManager().set(this.param, dwVal);
+        this.entity.getEntityData().set(this.param, dwVal);
     }
 
     boolean getBit(int bit) {
-        return (((this.entity.getDataManager().get(this.param) & (1 << bit)) >> bit) & 1) == 1;
+        return (((this.entity.getEntityData().get(this.param) & (1 << bit)) >> bit) & 1) == 1;
     }
 
     void save(CompoundNBT nbt) {
-        nbt.putInt("dataWatcherBools", this.entity.getDataManager().get(this.param));
+        nbt.putInt("dataWatcherBools", this.entity.getEntityData().get(this.param));
     }
 
     void load(CompoundNBT nbt) {
-        this.entity.getDataManager().set(this.param, nbt.getInt("dataWatcherBools"));
+        this.entity.getEntityData().set(this.param, nbt.getInt("dataWatcherBools"));
     }
 
     public enum Turret {

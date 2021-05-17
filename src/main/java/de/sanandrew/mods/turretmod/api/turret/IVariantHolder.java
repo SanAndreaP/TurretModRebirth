@@ -1,14 +1,18 @@
 package de.sanandrew.mods.turretmod.api.turret;
 
-import net.minecraft.util.ResourceLocation;
-
 public interface IVariantHolder
 {
-    default IVariant getVariant(ITurretInst turretInst, ResourceLocation id) {
+    default IVariant getVariant(ITurretInst turretInst, Object id) {
         return getVariant(id);
     }
 
-    IVariant getVariant(ResourceLocation id);
+    default boolean hasVariants() {
+        return true;
+    }
+
+    IVariant getVariant(Object id);
+
+    IVariant getVariant(String id);
 
     void registerVariant(IVariant variant);
 

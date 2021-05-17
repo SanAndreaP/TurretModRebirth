@@ -6,13 +6,13 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.util.upgrade;
+package de.sanandrew.mods.turretmod.client.util.upgrade;
 
 import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.api.TurretUpgrade;
 import de.sanandrew.mods.turretmod.api.UpgradeQueueData;
 import de.sanandrew.mods.turretmod.api.registry.TurretUpgradeRegistry;
-import de.sanandrew.mods.turretmod.util.TurretMod;
+import de.sanandrew.mods.turretmod.client.util.TurretMod;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.ArrayList;

@@ -11,7 +11,7 @@ package de.sanandrew.mods.turretmod.registry.projectile;
 import de.sanandrew.mods.turretmod.api.Turret;
 import de.sanandrew.mods.turretmod.api.TurretProjectile;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurretBase;
-import de.sanandrew.mods.turretmod.util.ReflectionManager;
+import de.sanandrew.mods.turretmod.client.util.ReflectionManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.Enchantment;

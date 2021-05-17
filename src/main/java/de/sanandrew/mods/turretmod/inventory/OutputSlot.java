@@ -10,6 +10,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class OutputSlot
         extends Slot
 {
@@ -18,7 +20,7 @@ public class OutputSlot
     }
 
     @Override
-    public boolean isItemValid(ItemStack stack) {
+    public boolean mayPlace(@Nonnull ItemStack stack) {
         return false;
     }
 }
