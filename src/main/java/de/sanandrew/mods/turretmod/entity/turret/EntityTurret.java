@@ -23,7 +23,7 @@ import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.entity.EntityRegistry;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
-import de.sanandrew.mods.turretmod.item.ItemTurret;
+import de.sanandrew.mods.turretmod.item.TurretItem;
 import de.sanandrew.mods.turretmod.network.UpdateTurretStatePacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
@@ -48,6 +48,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -78,8 +79,9 @@ public class EntityTurret
 {
     private static final AxisAlignedBB UPWARDS_BLOCK = new AxisAlignedBB(0.1D, 0.99D, 0.1D, 1.0D, 1.0D, 1.0D);
 
-    private static final DataParameter<Boolean> SHOT_CHNG = EntityDataManager.defineId(EntityTurret.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<String> VARIANT = EntityDataManager.defineId(EntityTurret.class, DataSerializers.STRING);
+    private static final DataParameter<Boolean> DATA_SHOT_CHANGED = EntityDataManager.defineId(EntityTurret.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<String>  DATA_VARIANT      = EntityDataManager.defineId(EntityTurret.class, DataSerializers.STRING);
+    private static final DataParameter<Boolean> DATA_IS_ACTIVE = EntityDataManager.defineId(EntityTurret.class, DataSerializers.BOOLEAN);
 
     private boolean showRange;
     public boolean inGui;
@@ -93,7 +95,6 @@ public class EntityTurret
     @Nonnull
     private ITextComponent ownerName;
 
-    private DataWatcherBooleans<EntityTurret> dwBools;
     private boolean prevShotChng;
 
     private ITurretRAM turretRAM;
@@ -126,8 +127,6 @@ public class EntityTurret
         this.yHeadRotO = this.yBodyRot;
     }
 
-    //TODO: figure out how to apply the delegate and owner on spawn
-    //** called when turret is placed down **/
     public EntityTurret(World world, PlayerEntity owner, ITurret delegate, Vector3d pos) {
         this(world, delegate, pos);
 
@@ -139,29 +138,34 @@ public class EntityTurret
     protected void defineSynchedData() {
         super.defineSynchedData();
 
-        this.dwBools = new DataWatcherBooleans<>(this);
-        this.dwBools.registerDwValue();
-
-        this.entityData.define(SHOT_CHNG, false);
-        this.entityData.define(VARIANT, "");
+        this.entityData.define(DATA_SHOT_CHANGED, false);
+        this.entityData.define(DATA_VARIANT, "");
+        this.entityData.define(DATA_IS_ACTIVE, false);
 
         this.setActive(true);
     }
 
-    //TODO: reimplement sounds
-//    @Override
-//    protected SoundEvent getHurtSound(DamageSource dmgSrc) {
-//        return MiscUtils.defIfNull(this.delegate.getHurtSound(this), Sounds.HIT_TURRETHIT);
-//    }
-//
-//    @Override
-//    protected SoundEvent getDeathSound() {
-//        return MiscUtils.defIfNull(this.delegate.getDeathSound(this), Sounds.HIT_TURRETDEATH);
-//    }
-//
-//    private SoundEvent getCollectSound() {
-//        return MiscUtils.defIfNull(this.delegate.getCollectSound(this), Sounds.COLLECT_IA_GET);
-//    }
+    @Override
+    protected SoundEvent getHurtSound(@Nonnull DamageSource dmgSrc) {
+        return this.delegate.getHurtSound(this);
+    }
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        return this.delegate.getDeathSound(this);
+    }
+
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return this.delegate.getIdleSound(this);
+    }
+
+    protected void playPickupSound() {
+        SoundEvent pickupSound = this.delegate.getPickupSound(this);
+        if( pickupSound != null ) {
+            this.level.playSound(null, this, pickupSound, SoundCategory.NEUTRAL, 1.0F, 1.0F);
+        }
+    }
 
     @Override
     public boolean removeWhenFarAway(double distanceToClosestPlayer) {
@@ -219,7 +223,7 @@ public class EntityTurret
         if( !this.inGui ) {
             super.tick();
 
-            this.yRot = this.yRotO = 0.0F;
+            this.yBodyRot = this.yBodyRotO = 0.0F;
 
             this.delegate.tick(this);
         }
@@ -227,13 +231,13 @@ public class EntityTurret
 
     @Override
     public boolean wasShooting() {
-        boolean shot = this.entityData.get(SHOT_CHNG) != this.prevShotChng;
-        this.prevShotChng = this.entityData.get(SHOT_CHNG);
+        boolean shot = this.entityData.get(DATA_SHOT_CHANGED) != this.prevShotChng;
+        this.prevShotChng = this.entityData.get(DATA_SHOT_CHANGED);
         return shot;
     }
 
     public void setShooting() {
-        this.entityData.set(SHOT_CHNG, !this.entityData.get(SHOT_CHNG));
+        this.entityData.set(DATA_SHOT_CHANGED, !this.entityData.get(DATA_SHOT_CHANGED));
     }
 
     private boolean isSubmergedInLiquid(double heightMod) {
@@ -293,9 +297,9 @@ public class EntityTurret
         if( this.isActive() ) {
             if( this.targetProc.hasTarget() ) {
                 this.lookAt(this.targetProc.getTarget(), 10.0F, this.getHeadRotSpeed());
-            } else if( this.level.isClientSide && this.getControllingPassenger() instanceof PlayerEntity ) {
-                this.yRot = MiscUtils.wrap360(this.yRot + 1.0F);
-                this.yRotO = MiscUtils.wrap360(this.yRotO);
+            } else if( this.level.isClientSide && !(this.getControllingPassenger() instanceof PlayerEntity) ) {
+                this.yHeadRot = MiscUtils.wrap360(this.yHeadRot + 1.0F);
+                this.yHeadRotO = MiscUtils.wrap360(this.yHeadRotO);
 
                 if( this.xRot < 0.0F ) {
                     this.xRot += 5.0F;
@@ -310,26 +314,26 @@ public class EntityTurret
                 }
             }
         } else {
-            this.yRot = MiscUtils.wrap360(this.yRot);
-            this.yRotO = MiscUtils.wrap360(this.yRotO);
-            int closestRot = (MathHelper.ceil(this.yRot) / 90) * 90;
-            if( this.yRot > closestRot ) {
-                this.yRot -= 5.0F;
-                if( this.yRot < closestRot ) {
-                    this.yRot = closestRot;
+            this.yHeadRot = MiscUtils.wrap360(this.yHeadRot);
+            this.yHeadRotO = MiscUtils.wrap360(this.yHeadRotO);
+            int closestRot = (MathHelper.ceil(this.yHeadRot) / 90) * 90;
+            if( this.yHeadRot > closestRot ) {
+                this.yHeadRot -= 5.0F;
+                if( this.yHeadRot < closestRot ) {
+                    this.yHeadRot = closestRot;
                 }
-            } else if( this.yRot < closestRot ) {
-                this.yRot += 5.0F;
-                if( this.yRot > closestRot ) {
-                    this.yRot = closestRot;
+            } else if( this.yHeadRot < closestRot ) {
+                this.yHeadRot += 5.0F;
+                if( this.yHeadRot > closestRot ) {
+                    this.yHeadRot = closestRot;
                 }
             }
 
             final float lockedPitch = this.delegate.getDeactiveHeadPitch();
-            if( this.yRot < lockedPitch ) {
-                this.yRot += 1.0F;
-                if( this.yRot > lockedPitch ) {
-                    this.yRot = lockedPitch;
+            if( this.xRot < lockedPitch ) {
+                this.xRot += 1.0F;
+                if( this.xRot > lockedPitch ) {
+                    this.xRot = lockedPitch;
                 }
             } else if( this.xRot > lockedPitch ) {
                 this.xRot -= 1.0F;
@@ -351,8 +355,8 @@ public class EntityTurret
 
         this.updateState();
         player.containerMenu.broadcastChanges();
-        //TODO: reimplement sounds
-//        this.level.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), this.getCollectSound(), SoundCategory.NEUTRAL, 1.0F, 1.0F);
+
+        this.playPickupSound();
     }
 
     @Nonnull
@@ -470,6 +474,7 @@ public class EntityTurret
     }
 
     public static final String NBT_TURRET_ID      = "TurretId";
+    public static final String NBT_IS_ACTIVE      = "IsActive";
     public static final String NBT_TURRET_VARIANT = "Variant";
     public static final String NBT_OWNER          = "Owner";
     public static final String NBT_ID             = "Id";
@@ -484,7 +489,7 @@ public class EntityTurret
         this.targetProc.save(compound);
         //TODO: reimplement upgrades
 //        this.upgProc.writeToNbt(nbt);
-        this.dwBools.save(compound);
+        compound.putBoolean(NBT_IS_ACTIVE, this.isActive());
 
         compound.put(NBT_OWNER, new CompoundNBT() {{
             this.putUUID(NBT_ID, EntityTurret.this.ownerId);
@@ -507,7 +512,7 @@ public class EntityTurret
         this.targetProc.load(compound);
         //TODO: reimplement upgrades
 //        this.upgProc.readFromNbt(nbt);
-        this.dwBools.load(compound);
+        this.setActive(compound.getBoolean(NBT_IS_ACTIVE));
 
         CompoundNBT ownerCompound = compound.getCompound(NBT_OWNER);
         this.ownerId = ownerCompound.getUUID(NBT_ID);
@@ -573,15 +578,15 @@ public class EntityTurret
     }
 
     public SoundEvent getNoAmmoSound() {
-        return MiscUtils.defIfNull(this.delegate.getNoAmmoSound(this), SoundEvents.DISPENSER_FAIL);
+        return MiscUtils.defIfNull(this.delegate.getEmptySound(this), SoundEvents.DISPENSER_FAIL);
     }
 
     public boolean isActive() {
-        return this.dwBools.getBit(DataWatcherBooleans.Turret.ACTIVE.bit);
+        return this.entityData.get(DATA_IS_ACTIVE);
     }
 
     public void setActive(boolean isActive) {
-        this.dwBools.setBit(DataWatcherBooleans.Turret.ACTIVE.bit, isActive);
+        this.entityData.set(DATA_IS_ACTIVE, isActive);
     }
 
     @Override
@@ -680,7 +685,7 @@ public class EntityTurret
             IVariant variant = this.getVariant();
 
             if( !((IVariantHolder) this.delegate).isDefaultVariant(variant) ) {
-                new ItemTurret.TurretStats(null, null, variant).updateData(pickedItem);
+                new TurretItem.TurretStats(null, null, variant).updateData(pickedItem);
             }
         }
 
@@ -756,7 +761,7 @@ public class EntityTurret
     public IVariant getVariant() {
         if( this.delegate instanceof IVariantHolder ) {
             IVariantHolder vh = (IVariantHolder) this.delegate;
-            return vh.hasVariants() ? vh.getVariant(this.entityData.get(VARIANT)) : null;
+            return vh.hasVariants() ? vh.getVariant(this.entityData.get(DATA_VARIANT)) : null;
         }
 
         return null;
@@ -765,7 +770,7 @@ public class EntityTurret
     @Override
     public void setVariant(Object variantId) {
         if( this.delegate instanceof IVariantHolder && ((IVariantHolder) this.delegate).hasVariants() ) {
-            this.entityData.set(VARIANT, variantId.toString());
+            this.entityData.set(DATA_VARIANT, variantId.toString());
         }
     }
 

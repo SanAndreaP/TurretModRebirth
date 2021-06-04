@@ -1,111 +1,105 @@
 {
-  "idle.turretidle": {
+  "turret_idle": {
     "category": "neutral",
-    "sounds": [
-      "sapturretmod:idle/turretidle1",
-      "sapturretmod:idle/turretidle2",
-      "sapturretmod:idle/turretidle3",
-      "sapturretmod:idle/turretidle4"
-    ],
-    "subtitle": "subtitles.sapturretmod.turretIdle"
+    "sounds": ["sapturretmod:turret_idle_1",
+               "sapturretmod:turret_idle_2",
+               "sapturretmod:turret_idle_3",
+               "sapturretmod:turret_idle_4"],
+    "subtitle": "subtitles.sapturretmod.turret_idle"
   },
-  "idle.turretexp": {
+  "collector_turret_idle": {
     "category": "neutral",
-    "sounds": [
-      "sapturretmod:idle/turretexp1",
-      "sapturretmod:idle/turretexp2"
-    ]
+    "sounds": ["sapturretmod:collector_turret_idle_1",
+               "sapturretmod:collector_turret_idle_2"],
+    "subtitle": "subtitles.sapturretmod.collector_turret_idle"
   },
-  "collect.chest": {
+  "turret_pickup_chest": {
     "category": "neutral",
-    "sounds": ["sapturretmod:collect/chest"]
+    "sounds": ["sapturretmod:turret_pickup_chest"],
+    "subtitle": "subtitles.sapturretmod.turret_pickup_chest"
   },
-  "collect.ia_get": {
+  "turret_pickup": {
     "category": "neutral",
-    "sounds": ["sapturretmod:collect/ia_get"],
-    "subtitle": "subtitles.sapturretmod.turretGather"
+    "sounds": ["sapturretmod:turret_pickup"],
+    "subtitle": "subtitles.sapturretmod.turret_pickup"
   },
-  "hit.turretdeath": {
+  "turret_death": {
     "category": "neutral",
-    "sounds": ["sapturretmod:hit/turretdeath"],
-    "subtitle": "subtitles.sapturretmod.turretDeath"
+    "sounds": ["sapturretmod:turret_death"],
+    "subtitle": "subtitles.sapturretmod.turret_death"
   },
-  "hit.turrethit": {
+  "turret_hurt": {
     "category": "neutral",
-    "sounds": ["sapturretmod:hit/turrethit"],
-    "subtitle": "subtitles.sapturretmod.turretHit"
+    "sounds": ["sapturretmod:turret_hurt"],
+    "subtitle": "subtitles.sapturretmod.turret_hurt"
   },
-  "shoot.shotgun": {
+  "shotgun_turret_shot": {
     "category": "neutral",
-    "sounds": ["sapturretmod:shoot/shotgun"],
-    "subtitle": "subtitles.sapturretmod.turretShoot.shotgun"
+    "sounds": ["sapturretmod:shotgun_turret_shot"],
+    "subtitle": "subtitles.sapturretmod.shotgun_turret_shot"
   },
-  "shoot.cryolator": {
+  "cryolator_turret_shot": {
     "category": "neutral",
-    "sounds": ["sapturretmod:shoot/cryolator"],
-    "subtitle": "subtitles.sapturretmod.turretShoot.cryolator"
+    "sounds": ["sapturretmod:cryolator_turret_shot"],
+    "subtitle": "subtitles.sapturretmod.cryolator_turret_shot"
   },
-  "shoot.minigun": {
+  "minigun_turret_shot": {
     "category": "neutral",
-    "sounds": ["sapturretmod:shoot/minigun"],
-    "subtitle": "subtitles.sapturretmod.turretShoot.minigun"
+    "sounds": ["sapturretmod:minigun_turret_shot"],
+    "subtitle": "subtitles.sapturretmod.minigun_turret_shot"
   },
-  "shoot.revolver": {
+  "revolver_turret_shot": {
     "category": "neutral",
-    "sounds": ["sapturretmod:shoot/pistol"],
-    "subtitle": "subtitles.sapturretmod.turretShoot.pistol"
+    "sounds": ["sapturretmod:revolver_turret_shot"],
+    "subtitle": "subtitles.sapturretmod.revolver_turret_shot"
   },
-  "shoot.laser": {
+  "laser_turret_shot": {
     "category": "neutral",
-    "sounds": ["sapturretmod:shoot/laser_const"],
-    "subtitle": "subtitles.sapturretmod.turretShoot.laser"
+    "sounds": ["sapturretmod:laser_turret_shot"],
+    "subtitle": "subtitles.sapturretmod.laser_turret_shot"
   },
-  "shoot.flamethrower": {
+  "flamethrower_turret_shot": {
     "category": "neutral",
-    "sounds": [
-      "sapturretmod:shoot/flamethrower"
-    ],
-    "subtitle": "subtitles.sapturretmod.turretShoot.flamethrower"
+    "sounds": ["sapturretmod:flamethrower_turret_shot"],
+    "subtitle": "subtitles.sapturretmod.flamethrower_turret_shot"
   },
-  "shoot.sniper": {
+  "plasma_turret_shot": {
     "category": "neutral",
-    "sounds": ["sapturretmod:shoot/sniper"],
-    "subtitle": "subtitles.sapturretmod.turretShoot.sniper"
+    "sounds": ["sapturretmod:plasma_turret_shot"],
+    "subtitle": "subtitles.sapturretmod.plasma_turret_shot"
   },
-  "shoot.healBeam": {
+  "healer_turret_shot": {
     "category": "neutral",
-    "sounds": ["sapturretmod:shoot/healBeam"],
-    "subtitle": "subtitles.sapturretmod.turretShoot.healer"
+    "sounds": ["sapturretmod:healer_turret_shot"],
+    "subtitle": "subtitles.sapturretmod.healer_turret_shot"
   },
-  "shoot.flak": {
+  "flak_turret_shot": {
     "category": "neutral",
-    "sounds": ["sapturretmod:shoot/flak"],
-    "subtitle": "subtitles.sapturretmod.turretShoot.flak"
+    "sounds": ["sapturretmod:flak_turret_shot"],
+    "subtitle": "subtitles.sapturretmod.flak_turret_shot"
   },
-  "shoot.artillery": {
+  "artillery_turret_shot": {
     "category": "neutral",
-    "sounds": ["sapturretmod:shoot/artillery"],
-    "subtitle": "subtitles.sapturretmod.turretShoot.artillery"
+    "sounds": ["sapturretmod:artillery_turret_shot"],
+    "subtitle": "subtitles.sapturretmod.artillery_turret_shot"
   },
-  "ricochet.bullet": {
+  "ricochet_bullet": {
     "category": "neutral",
-    "sounds": [
-      "sapturretmod:ricochet/bullet1",
-      "sapturretmod:ricochet/bullet2",
-      "sapturretmod:ricochet/bullet3",
-      "sapturretmod:ricochet/bullet4",
-      "sapturretmod:ricochet/bullet5"
-    ],
-    "subtitle": "subtitles.sapturretmod.turretRicochet.bullet"
+    "sounds": ["sapturretmod:ricochet_bullet_1",
+               "sapturretmod:ricochet_bullet_2",
+               "sapturretmod:ricochet_bullet_3",
+               "sapturretmod:ricochet_bullet_4",
+               "sapturretmod:ricochet_bullet_5"],
+    "subtitle": "subtitles.sapturretmod.ricochet_bullet"
   },
-  "ricochet.splash": {
+  "ricochet_splash": {
     "category": "neutral",
-    "sounds": ["sapturretmod:ricochet/splash1"],
-    "subtitle": "subtitles.sapturretmod.turretRicochet.splash"
+    "sounds": ["sapturretmod:ricochet_splash"],
+    "subtitle": "subtitles.sapturretmod.ricochet_splash"
   },
-  "misc.shieldActive": {
+  "shield_active": {
     "category": "neutral",
-    "sounds": ["sapturretmod:misc/shieldActive"],
-    "subtitle": "subtitles.sapturretmod.turretShield.active"
+    "sounds": ["sapturretmod:shield_active"],
+    "subtitle": "subtitles.sapturretmod.shield_active"
   }
 }

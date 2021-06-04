@@ -14,7 +14,6 @@ import de.sanandrew.mods.sanlib.lib.util.ReflectionUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.client.model.entity.ModelTurretBase;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.TurretRegistry;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -35,9 +34,9 @@ import java.util.function.Supplier;
 public class TurretRenderer<E extends LivingEntity & ITurretInst>
         extends LivingRenderer<E, EntityModel<E>>
 {
-    private final Map<ITurret, TurretRenderBase<E, ?>> delegates = new HashMap<>();
+    private final Map<ITurret, LivingRenderer<E, ?>> delegates = new HashMap<>();
 
-    public void register(ITurret turret, TurretRenderBase<E, ?> renderer) {
+    public void register(ITurret turret, LivingRenderer<E, ?> renderer) {
         this.delegates.put(turret, renderer);
     }
 
@@ -69,7 +68,7 @@ public class TurretRenderer<E extends LivingEntity & ITurretInst>
     public void initialize() {
         for( ITurret turret : TurretRegistry.INSTANCE.getAll() ) {
             Function<ResourceLocation, EntityModel<E>> s;
-            TurretRenderBase<E, EntityModel<E>> trb;
+            LivingRenderer<E, EntityModel<E>> trb;
 
             String customModelClassName = turret.getCustomModelClass();
             if( customModelClassName != null ) {

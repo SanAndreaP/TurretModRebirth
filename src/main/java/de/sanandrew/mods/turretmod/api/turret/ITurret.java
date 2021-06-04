@@ -7,7 +7,6 @@
 package de.sanandrew.mods.turretmod.api.turret;
 
 import de.sanandrew.mods.turretmod.api.IRegistryObject;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.Pose;
 import net.minecraft.nbt.CompoundNBT;
@@ -33,7 +32,7 @@ public interface ITurret
     @Nonnull
     ResourceLocation getModelLocation();
 
-    ResourceLocation getStandardTexture(ITurretInst turretInst);
+    ResourceLocation getBaseTexture(ITurretInst turretInst);
 
     ResourceLocation getGlowTexture(ITurretInst turretInst);
 
@@ -41,10 +40,41 @@ public interface ITurret
 
     AxisAlignedBB getRangeBB(@Nullable ITurretInst turretInst);
 
+    /**
+     * <p>Returns the classpath to a custom render class. If no custom class is needed, this returns <tt>null</tt>.</p>
+     * <p>There are certain requirements this class needs to fullfill:</p>
+     * <ul>
+     *     <li>extends {@link net.minecraft.client.renderer.entity.LivingRenderer net.minecraft.client.renderer.entity.LivingRenderer}<br>
+     *         {@link net.minecraft.client.renderer.entity.LivingRenderer &lt;T extends net.minecraft.entity.LivingEntity & ITurretInst,<br>}
+     *         {@link net.minecraft.client.renderer.entity.LivingRenderer &nbsp;M extends EntityModel&lt;T&gt;&gt;}.</li>
+     *     <li>has a constructor with following parameters:
+     *          <ul>
+     *              <li>{@link net.minecraft.client.renderer.entity.EntityRendererManager}</li>
+     *              <li>{@link java.util.function.Supplier java.util.function.Supplier&lt;M&gt;} (This supplier should be called to get the model instance for the renderer)</li>
+     *          </ul>
+     *     </li>
+     * </ul>
+     * @return A classpath to a render class or <tt>null</tt>
+     */
     default String getCustomRenderClass() {
         return null;
     }
 
+    /**
+     * <p>Returns the classpath to a custom model class. If no custom class is needed, this returns <tt>null</tt>.</p>
+     * <p>There are certain requirements this class needs to fullfill:</p>
+     * <ul>
+     *     <li>extends {@link net.minecraft.client.renderer.entity.model.EntityModel net.minecraft.client.renderer.entity.model.EntityModel}<br>
+     *         {@link net.minecraft.client.renderer.entity.model.EntityModel &lt;T extends net.minecraft.entity.LivingEntity & ITurretInst&gt;}.</li>
+     *     <li>has a constructor with following parameters:
+     *          <ul>
+     *              <li>{@link ResourceLocation} (this points to a JSON file, which can be loaded with the {@link de.sanandrew.mods.sanlib.lib.client.ModelJsonLoader} class)</li>
+     *          </ul>
+     *     </li>
+     * </ul>
+     *
+     * @return A classpath to a model class or <tt>null</tt>
+     */
     default String getCustomModelClass() {
         return null;
     }
@@ -73,6 +103,10 @@ public interface ITurret
         return false;
     }
 
+    default SoundEvent getIdleSound(ITurretInst turretInst) {
+        return null;
+    }
+
     default SoundEvent getHurtSound(ITurretInst turretInst) {
         return null;
     }
@@ -81,11 +115,11 @@ public interface ITurret
         return null;
     }
 
-    default SoundEvent getNoAmmoSound(ITurretInst turretInst) {
+    default SoundEvent getEmptySound(ITurretInst turretInst) {
         return null;
     }
 
-    default SoundEvent getCollectSound(ITurretInst turretInst) {
+    default SoundEvent getPickupSound(ITurretInst turretInst) {
         return null;
     }
 

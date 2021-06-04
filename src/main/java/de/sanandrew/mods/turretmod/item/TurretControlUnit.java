@@ -33,7 +33,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-public class ItemTurretControlUnit
+public class TurretControlUnit
         extends Item
 {
     private static final String NBT_BOUND_TURRET = TmrConstants.ID + ".bound_turret";
@@ -43,7 +43,7 @@ public class ItemTurretControlUnit
     private long prevDisplayNameTime = 0;
     private int nameId = 0;
 
-    ItemTurretControlUnit() {
+    TurretControlUnit() {
         super(new Properties().tab(TmrItemGroups.MISC));
     }
 
@@ -117,8 +117,8 @@ public class ItemTurretControlUnit
         ItemStack mh = player.getMainHandItem();
         ItemStack oh = player.getOffhandItem();
 
-        return ItemTurretControlUnit.getBoundTurret(mh, player.level) == turretInst
-               || ItemTurretControlUnit.getBoundTurret(oh, player.level) == turretInst;
+        return TurretControlUnit.getBoundTurret(mh, player.level) == turretInst
+               || TurretControlUnit.getBoundTurret(oh, player.level) == turretInst;
     }
 
     public static ITurretInst getBoundTurret(ItemStack stack, World world) {

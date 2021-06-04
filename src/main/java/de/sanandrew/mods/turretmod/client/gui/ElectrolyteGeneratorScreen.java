@@ -14,10 +14,10 @@ import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ContainerName;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.DynamicText;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.EnergyStorageBar;
+import de.sanandrew.mods.turretmod.api.ResourceLocations;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.client.gui.element.ElectrolyteBar;
 import de.sanandrew.mods.turretmod.client.init.ClientProxy;
-import de.sanandrew.mods.turretmod.init.Resources;
 import de.sanandrew.mods.turretmod.inventory.ElectrolyteGeneratorContainer;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.ElectrolyteGeneratorTileEntity;
 import net.minecraft.client.gui.screen.Screen;
@@ -41,7 +41,7 @@ public class ElectrolyteGeneratorScreen
         super(container, playerInventory, title);
 
         try {
-            this.guiDef = GuiDefinition.getNewDefinition(Resources.GUI_STRUCT_ELECTROLYTE.resource);
+            this.guiDef = GuiDefinition.getNewDefinition(ResourceLocations.MODEL_GUI_ELECTROLYTE);
             this.width = this.guiDef.width;
             this.height = this.guiDef.height;
         } catch( IOException e ) {

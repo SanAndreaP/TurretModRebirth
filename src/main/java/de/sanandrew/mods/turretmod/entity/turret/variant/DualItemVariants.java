@@ -1,15 +1,11 @@
 package de.sanandrew.mods.turretmod.entity.turret.variant;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.turret.IVariant;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -35,25 +31,6 @@ public class DualItemVariants
         this.registeredFrames.add(variant.<DualResourceLocation>getId().frame);
 
         super.register(variant);
-    }
-
-    @Override
-    public void register(JsonObject jobj) throws JsonParseException, IllegalArgumentException {
-        String baseId = JsonUtils.getStringVal(jobj.get("base"));
-        String frameId = JsonUtils.getStringVal(jobj.get("frame"));
-        String name = JsonUtils.getStringVal(jobj.get("name"), null);
-        ItemStack base  = new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(baseId)));
-        ItemStack frame = new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(frameId)));
-
-        if( ItemStackUtils.isValid(base) ) {
-            if( ItemStackUtils.isValid(frame) ) {
-                this.register(base, frame, name);
-            } else {
-                throw new IllegalArgumentException("A variant cannot be registered: Invalid frame item: " + frameId);
-            }
-        } else {
-            throw new IllegalArgumentException("A variant cannot be registered: Invalid base item: " + baseId);
-        }
     }
 
     public IVariant get(ItemStack base, ItemStack frame) {

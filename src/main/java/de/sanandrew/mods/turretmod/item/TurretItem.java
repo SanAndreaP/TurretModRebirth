@@ -20,7 +20,6 @@ import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -31,7 +30,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
@@ -46,13 +44,13 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 @SuppressWarnings("Duplicates")
-public class ItemTurret
+public class TurretItem
         extends Item
 {
     public final ResourceLocation turretId;
     private ITurret turretCache;
 
-    public ItemTurret(ResourceLocation turretId) {
+    public TurretItem(ResourceLocation turretId) {
         super(new Properties().tab(TmrItemGroups.MISC)); //TODO: use turret group
         this.turretId = turretId;
     }

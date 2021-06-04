@@ -56,7 +56,7 @@ public class TurretRenderBase<T extends LivingEntity & ITurretInst, M extends En
     @Nonnull
     @Override
     public ResourceLocation getTextureLocation(@Nonnull T entity) {
-        return entity.getTurret().getStandardTexture(entity);
+        return entity.getTurret().getBaseTexture(entity);
     }
 
     protected static void renderTurretRange(ITurretInst turret, MatrixStack stack) {

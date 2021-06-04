@@ -15,7 +15,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.item.ItemTurret;
+import de.sanandrew.mods.turretmod.item.TurretItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -38,7 +38,7 @@ public final class TurretRegistry
 {
     public static final TurretRegistry INSTANCE = new TurretRegistry();
 
-    private static final ITurret NULL_TYPE = new EmptyTurret();
+    private static final ITurret EMPTY = new EmptyTurret();
 
     private final Map<ResourceLocation, ITurret> turrets;
     private final Collection<ITurret>            turretsView;
@@ -58,7 +58,7 @@ public final class TurretRegistry
     @Nonnull
     @Override
     public ITurret get(ResourceLocation id) {
-        return this.turrets.getOrDefault(id, NULL_TYPE);
+        return this.turrets.getOrDefault(id, EMPTY);
     }
 
     @Override
@@ -72,24 +72,24 @@ public final class TurretRegistry
 
         this.turrets.put(id, obj);
 
-        ItemRegistry.TURRET_PLACERS.put(id, new ItemTurret(id));
+        ItemRegistry.TURRET_PLACERS.put(id, new TurretItem(id));
     }
 
-    @Override
-    public void register(@Nonnull ResourceLocation id) {
-        if( this.turrets.containsKey(id) ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("The turret %s is already registered!", id), new InvalidParameterException());
-            return;
-        }
-
-        try( InputStream is = TurretModRebirth.class.getClassLoader().getResourceAsStream("./data/" + id.getNamespace() + "/turrets/" + id.getPath() + ".json") ) {
-            this.turrets.put(id, new JsonTurret(id, is));
-        } catch( IOException | NullPointerException ex ) {
-            this.turrets.put(id, NULL_TYPE);
-        }
-
-        ItemRegistry.TURRET_PLACERS.put(id, new ItemTurret(id));
-    }
+//    @Override
+//    public void register(@Nonnull ResourceLocation id) {
+//        if( this.turrets.containsKey(id) ) {
+//            TmrConstants.LOG.log(Level.ERROR, String.format("The turret %s is already registered!", id), new InvalidParameterException());
+//            return;
+//        }
+//
+//        try( InputStream is = TurretModRebirth.class.getClassLoader().getResourceAsStream("./data/" + id.getNamespace() + "/turrets/" + id.getPath() + ".json") ) {
+//            this.turrets.put(id, new JsonTurret(id, is));
+//        } catch( IOException | NullPointerException ex ) {
+//            this.turrets.put(id, EMPTY);
+//        }
+//
+//        ItemRegistry.TURRET_PLACERS.put(id, new TurretItem(id));
+//    }
 
     @Override
     public void registerItems(RegistryEvent.Register<Item> event, final String modId) {
@@ -101,7 +101,7 @@ public final class TurretRegistry
     @Nonnull
     @Override
     public ITurret getDefault() {
-        return NULL_TYPE;
+        return EMPTY;
     }
 
     @Override
@@ -118,7 +118,7 @@ public final class TurretRegistry
     @Nonnull
     public ItemStack getItem(ITurretInst turretInst) {
         ItemStack stack = this.getItem(turretInst.getTurret().getId());
-        new ItemTurret.TurretStats(turretInst).updateData(stack);
+        new TurretItem.TurretStats(turretInst).updateData(stack);
 
         return stack;
     }
@@ -126,11 +126,11 @@ public final class TurretRegistry
     @Nonnull
     @Override
     public ITurret get(@Nonnull ItemStack stack) {
-        if( ItemStackUtils.isValid(stack) && stack.getItem() instanceof ItemTurret ) {
-            return this.get(((ItemTurret) stack.getItem()).turretId);
+        if( ItemStackUtils.isValid(stack) && stack.getItem() instanceof TurretItem ) {
+            return this.get(((TurretItem) stack.getItem()).turretId);
         }
 
-        return TurretRegistry.NULL_TYPE;
+        return TurretRegistry.EMPTY;
     }
 
     private static class EmptyTurret
@@ -141,7 +141,7 @@ public final class TurretRegistry
         @Nonnull @Override public ResourceLocation getId() { return new ResourceLocation("null"); }
         @Nonnull @Override public ResourceLocation getModelLocation() { return new ResourceLocation("null"); }
         
-        @Override public ResourceLocation getStandardTexture(ITurretInst turretInst) { return null; }
+        @Override public ResourceLocation getBaseTexture(ITurretInst turretInst) { return null; }
         @Override public ResourceLocation getGlowTexture(ITurretInst turretInst) { return null; }
         @Override public SoundEvent getShootSound(ITurretInst turretInst) { return null; }
         @Override public AxisAlignedBB getRangeBB(ITurretInst turretInst) { return BB; }

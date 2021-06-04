@@ -565,7 +565,7 @@ public class EntityTurretProjectile
             if( !Strings.isNullOrEmpty(turretOwner) ) {
                 turretName = turretOwner + "'s " + turretName;
             }
-            String s = "death.attack." + damageType + '.' + turret.getTurret().getId();
+            String s = "death.attack." + turret.getTurret().getId();
             return new TextComponentTranslation(s, attacked.getDisplayName(), turretName);
         }
 
