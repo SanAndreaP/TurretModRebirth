@@ -6,6 +6,7 @@ public final class ResourceLocations
 {
     public static final ResourceLocation SOUND_RICOCHET_SPLASH    = new ResourceLocation(TmrConstants.ID, "ricochet_splash");
     public static final ResourceLocation SOUND_RICOCHET_BULLET    = new ResourceLocation(TmrConstants.ID, "ricochet_bullet");
+    public static final ResourceLocation SOUND_RICOCHET_ARROW     = new ResourceLocation("entity.arrow.hit");
     public static final ResourceLocation SOUND_SHOOT_CROSSBOW     = new ResourceLocation("block.dispenser.launch");
     public static final ResourceLocation SOUND_SHOOT_CRYOLATOR    = new ResourceLocation(TmrConstants.ID, "cryolator_shot");
     public static final ResourceLocation SOUND_SHOOT_SHOTGUN      = new ResourceLocation(TmrConstants.ID, "shotgun_shot");

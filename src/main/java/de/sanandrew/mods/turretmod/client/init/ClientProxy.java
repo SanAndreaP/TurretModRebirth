@@ -14,12 +14,15 @@ import de.sanandrew.mods.turretmod.inventory.ContainerRegistry;
 import de.sanandrew.mods.turretmod.world.PlayerList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class ClientProxy
         implements IProxy
@@ -63,5 +66,10 @@ public class ClientProxy
         stack.translate(gui.getScreenPosX(), gui.getScreenPosY(), 0.0F);
         guiDef.drawBackground(gui, stack, mouseX, mouseY, partTicks);
         stack.popPose();
+    }
+
+    @Override
+    public PlayerEntity getNetworkPlayer(Supplier<NetworkEvent.Context> networkContextSupplier) {
+        return Minecraft.getInstance().player;
     }
 }

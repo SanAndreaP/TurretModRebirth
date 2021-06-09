@@ -2,6 +2,7 @@ package de.sanandrew.mods.turretmod.entity;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
+import de.sanandrew.mods.turretmod.entity.projectile.TurretProjectileEntity;
 import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -17,14 +18,17 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = TmrConstants.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class EntityRegistry
 {
-    //TODO: use setCustomClientFactory for sending delegate (& owner)?
     public static final EntityType<EntityTurret> TURRET = EntityType.Builder.<EntityTurret>of(EntityTurret::new, EntityClassification.MISC)
                                                                             .clientTrackingRange(10)
                                                                             .build("turret");
+    public static final EntityType<TurretProjectileEntity> PROJECTILE = EntityType.Builder.<TurretProjectileEntity>of(TurretProjectileEntity::new, EntityClassification.MISC)
+                                                                            .clientTrackingRange(10)
+                                                                            .build("projectile");
 
     @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
-        event.getRegistry().registerAll(TURRET.setRegistryName(new ResourceLocation(TmrConstants.ID, "turret")));
+        event.getRegistry().registerAll(TURRET.setRegistryName(new ResourceLocation(TmrConstants.ID, "turret")),
+                                        PROJECTILE.setRegistryName(new ResourceLocation(TmrConstants.ID, "projectile")));
     }
 
     @SubscribeEvent

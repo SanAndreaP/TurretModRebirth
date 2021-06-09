@@ -1,5 +1,7 @@
 package de.sanandrew.mods.turretmod.api;
 
+import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectileRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
 
 public interface ITmrPlugin
@@ -10,7 +12,7 @@ public interface ITmrPlugin
 
 //    default void registerRepairKits(IRepairKitRegistry registry) { }
 //
-//    default void registerAmmo(IAmmunitionRegistry registry) { }
+    default void registerAmmo(IAmmunitionRegistry registry) { }
 //
 //    default void registerUpgrades(IUpgradeRegistry registry) { }
 
@@ -18,7 +20,7 @@ public interface ITmrPlugin
 
 //    default void registerTcuEntries(IGuiTcuRegistry registry) { }
 
-//    default void registerProjectiles(IProjectileRegistry registry) { }
+    default void registerProjectiles(IProjectileRegistry registry) { }
 
 //    @OnlyIn(Dist.CLIENT)
 //    default <T extends Entity> void registerProjectileRenderer(IRenderRegistry<ResourceLocation, T, IRender<T>> registry) { }

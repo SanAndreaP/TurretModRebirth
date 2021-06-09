@@ -16,6 +16,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 public interface ITurretInst
@@ -54,6 +55,11 @@ public interface ITurretInst
     void setShowRange(boolean showRange);
 
     boolean hasPlayerPermission(PlayerEntity player);
+
+    boolean isOwner(PlayerEntity player);
+
+    @Nullable
+    PlayerEntity getOwner();
 
     boolean isInGui();
 

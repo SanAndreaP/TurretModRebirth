@@ -69,6 +69,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -650,12 +651,23 @@ public class EntityTurret
         }
 
         //TODO: re-implement config
-        return true;
+        return isOwner(player);
 //        if( TmrUtils.INSTANCE.canPlayerEditAll() || this.ownerId.equals(profile.getId()) ) {
 //            return true;
 //        }
 //
 //        return player.hasPermissionLevel(2) && TmrUtils.INSTANCE.canOpEditAll();
+    }
+
+    @Override
+    public boolean isOwner(PlayerEntity player) {
+        return this.ownerId.equals(player.getUUID());
+    }
+
+    @Nullable
+    @Override
+    public PlayerEntity getOwner() {
+        return this.level.getPlayerByUUID(this.ownerId);
     }
 
     @Override

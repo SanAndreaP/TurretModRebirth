@@ -30,4 +30,7 @@ public final class Lang
     public static final TranslateKey JEI_ASSEMBLY_TITLE  = LangUtils.newKey("jei.%s.assembly.title").format(TmrConstants.ID).build();
     public static final TranslateKey JEI_ASSEMBLY_ENERGY = LangUtils.newKey("jei.%s.assembly.energy").format(TmrConstants.ID).build();
     public static final TranslateKey JEI_ASSEMBLY_TIME   = LangUtils.newKey("jei.%s.assembly.time").format(TmrConstants.ID).build();
+
+    public static final TranslateKey DEATH_OWNER = LangUtils.newKey("death.attack.%s.with_owner").format(TmrConstants.ID).build();
+    public static final TranslateKey DEATH_TURRET = LangUtils.newKey("death.attack.%s").withoutRlColon().build();
 }

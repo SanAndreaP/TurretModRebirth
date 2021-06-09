@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.block;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.init.TmrItemGroups;
+import de.sanandrew.mods.turretmod.item.TmrItemGroups;
 import de.sanandrew.mods.turretmod.tileentity.electrolytegen.ElectrolyteGeneratorTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;

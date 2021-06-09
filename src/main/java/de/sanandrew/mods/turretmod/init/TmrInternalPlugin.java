@@ -7,13 +7,13 @@
 package de.sanandrew.mods.turretmod.init;
 
 import de.sanandrew.mods.turretmod.api.ITmrPlugin;
-import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
+import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectileRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
-import de.sanandrew.mods.turretmod.entity.turret.delegate.Crossbow;
-import de.sanandrew.mods.turretmod.entity.turret.variant.DualItemVariants;
-import de.sanandrew.mods.turretmod.entity.turret.variant.VariantContainer;
-import net.minecraft.util.ResourceLocation;
+import de.sanandrew.mods.turretmod.entity.projectile.Projectiles;
+import de.sanandrew.mods.turretmod.entity.turret.Turrets;
+import de.sanandrew.mods.turretmod.item.ammo.Ammunitions;
 
 //TODO: reimplement
 @TmrPlugin
@@ -22,7 +22,7 @@ public class TmrInternalPlugin
 {
     @Override
     public void registerTurrets(ITurretRegistry registry) {
-        registry.register(new Crossbow(new ResourceLocation(TmrConstants.ID, "crossbow_turret")));
+        Turrets.register(registry);
     }
 //
 //    @Override
@@ -30,10 +30,10 @@ public class TmrInternalPlugin
 ////        RepairKits.initialize(registry);
 //    }
 //
-//    @Override
-//    public void registerAmmo(IAmmunitionRegistry registry) {
-////        Ammunitions.initialize(registry);
-//    }
+    @Override
+    public void registerAmmo(IAmmunitionRegistry registry) {
+        Ammunitions.register(registry);
+    }
 //
 //    @Override
 //    public void registerUpgrades(IUpgradeRegistry registry) {
@@ -50,10 +50,10 @@ public class TmrInternalPlugin
 //        GuiTcuRegistry.initializePages(registry);
 //    }
 
-//    @Override
-//    public void registerProjectiles(IProjectileRegistry registry) {
-////        Projectiles.initialize(registry);
-//    }
+    @Override
+    public void registerProjectiles(IProjectileRegistry registry) {
+        Projectiles.register(registry);
+    }
 
 //    @Override
 //    @SideOnly(Side.CLIENT)

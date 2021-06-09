@@ -14,7 +14,6 @@ import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
 import de.sanandrew.mods.turretmod.entity.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.variant.VariantContainer;
 import de.sanandrew.mods.turretmod.init.Lang;
-import de.sanandrew.mods.turretmod.init.TmrItemGroups;
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.client.util.ITooltipFlag;
@@ -51,7 +50,7 @@ public class TurretItem
     private ITurret turretCache;
 
     public TurretItem(ResourceLocation turretId) {
-        super(new Properties().tab(TmrItemGroups.MISC)); //TODO: use turret group
+        super(new Properties().tab(TmrItemGroups.TURRETS));
         this.turretId = turretId;
     }
 
@@ -74,11 +73,7 @@ public class TurretItem
     }
 
     public ITurret getTurret() {
-        if( this.turretCache == null ) {
-            this.turretCache = TurretRegistry.INSTANCE.get(this.turretId);
-        }
-
-        return this.turretCache;
+        return this.turretCache != null ? this.turretCache : (this.turretCache = TurretRegistry.INSTANCE.get(this.turretId));
     }
 
     @Nonnull

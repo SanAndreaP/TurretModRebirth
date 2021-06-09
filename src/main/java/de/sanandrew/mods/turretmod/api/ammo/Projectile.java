@@ -1,0 +1,76 @@
+package de.sanandrew.mods.turretmod.api.ammo;
+
+import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+public abstract class Projectile
+        implements IProjectile
+{
+    private final ResourceLocation id;
+
+    protected float speed = 1.0F;
+    protected float arc = 0.4F;
+    protected float damage = 4.0F;
+    protected float horizontalKnockback = 0.01F;
+    protected float verticalKnockback = 0.1F;
+    protected double scatter = 0.1D;
+    protected ResourceLocation ricochetSound = null;
+
+    private SoundEvent ricochetSoundCache = null;
+
+    protected Projectile(ResourceLocation id) {
+        this.id = id;
+    }
+
+    @Nonnull
+    @Override
+    public ResourceLocation getId() {
+        return this.id;
+    }
+
+    @Override
+    public float getSpeed() {
+        return this.speed;
+    }
+
+    @Override
+    public float getArc() {
+        return this.arc;
+    }
+
+    @Override
+    public float getDamage(@Nullable ITurretInst turret, @Nullable IProjectileInst projectile, @Nullable Entity target, @Nullable DamageSource damageSrc, float attackModifier) {
+        return this.damage * attackModifier;
+    }
+
+    @Override
+    public float getKnockbackHorizontal() {
+        return this.horizontalKnockback;
+    }
+
+    @Override
+    public float getKnockbackVertical() {
+        return this.verticalKnockback;
+    }
+
+    @Override
+    public SoundEvent getRicochetSound() {
+        return this.ricochetSoundCache = lazyLoad(this.ricochetSound, this.ricochetSoundCache);
+    }
+
+    @Override
+    public double getScatterValue() {
+        return this.scatter;
+    }
+
+    protected static SoundEvent lazyLoad(ResourceLocation id, SoundEvent currEvent) {
+        return currEvent != null ? currEvent : (id != null ? ForgeRegistries.SOUND_EVENTS.getValue(id) : null);
+    }
+}

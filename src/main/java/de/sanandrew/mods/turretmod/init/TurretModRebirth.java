@@ -14,8 +14,10 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
 import de.sanandrew.mods.turretmod.client.init.ClientProxy;
 import de.sanandrew.mods.turretmod.datagenerator.ElectrolyteProvider;
+import de.sanandrew.mods.turretmod.entity.projectile.ProjectileRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.TargetList;
 import de.sanandrew.mods.turretmod.entity.turret.TurretRegistry;
+import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.world.PlayerList;
 import net.minecraft.data.DataGenerator;
@@ -67,10 +69,10 @@ public class TurretModRebirth
 
 //        PLUGINS.forEach(plugin -> plugin.preSetup(TmrUtils.INSTANCE));
         PLUGINS.forEach(plugin -> plugin.registerTurrets(TurretRegistry.INSTANCE));
-//        PLUGINS.forEach(plugin -> plugin.registerAmmo(AmmunitionRegistry.INSTANCE));
+        PLUGINS.forEach(plugin -> plugin.registerAmmo(AmmunitionRegistry.INSTANCE));
+        PLUGINS.forEach(plugin -> plugin.registerProjectiles(ProjectileRegistry.INSTANCE));
 //        PLUGINS.forEach(plugin -> plugin.registerRepairKits(RepairKitRegistry.INSTANCE));
 //        PLUGINS.forEach(plugin -> plugin.registerUpgrades(UpgradeRegistry.INSTANCE));
-//        PLUGINS.forEach(plugin -> plugin.registerProjectiles(ProjectileRegistry.INSTANCE));
     }
 
     private void setupCommon(FMLCommonSetupEvent event) {

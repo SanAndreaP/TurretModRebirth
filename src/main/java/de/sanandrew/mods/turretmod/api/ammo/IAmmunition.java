@@ -13,6 +13,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.Range;
 
@@ -27,16 +28,6 @@ import java.util.List;
 public interface IAmmunition
         extends IRegistryObject
 {
-    /**
-     * <p>Returns the damage dealt, represented as a range, by a projectile spawned by this ammunition object. This is primarily used by the Turret Lexicon.</p>
-     * <p>If the projectile deals the same amount of damage, this returns {@link Range#is(Comparable) Range.is(damage)}.</p>
-     * <p>If the projectile deals a variable amount of damage, this returns {@link Range#between(Comparable, Comparable) Range.between(minDamage, maxDamage)}.</p>
-     *
-     * @return The amount of damage, as a range, a projectile can deal.
-     */
-    @Nonnull
-    Range<Float> getDamageInfo();
-
     default String[] getSubtypes() {
         return null;
     }
@@ -63,14 +54,6 @@ public interface IAmmunition
     @Nullable
     IProjectile getProjectile(ITurretInst turretInst);
 
-    default String getDisplayName(ItemStack stack) {
-        return null;
-    }
-
-    default String getItemTranslationKey() {
-        return null;
-    }
-
     /**
      * <p>Allows this ammunition object to add tooltip information, if needed.</p>
      * <p><i>Notice: when overriding this method, please call <tt>IAmmunition.super.addInformation(...)</tt> at the end of your implementation.</i></p>
@@ -80,5 +63,5 @@ public interface IAmmunition
      * @param tooltip The list of lines to be populated by this method, preferrably an <tt>ArrayList</tt>.
      * @param flag The flag of the tooltip to be drawn, determines if advanced information is to be shown or not.
      */
-    default void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {}
+    default void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {}
 }

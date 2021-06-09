@@ -13,7 +13,9 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
+import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -88,7 +90,7 @@ public class UpdateTurretStatePacket
 
     @Override
     public void handle(Supplier<NetworkEvent.Context> supplier) {
-        ServerPlayerEntity player = supplier.get().getSender();
+        PlayerEntity player = TurretModRebirth.PROXY.getNetworkPlayer(supplier);
         if( player != null ) {
             Entity e = player.level.getEntity(this.turretId);
             if( e instanceof ITurretInst ) {
@@ -104,5 +106,10 @@ public class UpdateTurretStatePacket
                 }
             }
         }
+    }
+
+    @Override
+    public boolean handleOnMainThread() {
+        return true;
     }
 }

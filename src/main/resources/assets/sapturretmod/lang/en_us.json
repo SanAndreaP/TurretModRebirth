@@ -119,6 +119,7 @@
   "entity.sapturretmod.laser_turret": "Laser Turret (T3)",
   "entity.sapturretmod.flamethrower_turret": "Flamethrower Turret (T3)",
   "_comment": "Death Messages",
+  "death.attack.sapturretmod.with_owner": "%1$s's %2$s",
   "death.attack.sapturretmod.crossbow_turret": "%1$s was shot by %2$s",
   "death.attack.sapturretmod.shotgun_turret": "%1$s has been turned into cheese by %2$s",
   "death.attack.sapturretmod.snowball_turret": "%1$s was frozen solid by %2$s",
