@@ -60,7 +60,7 @@ public class TurretRenderBase<T extends LivingEntity & ITurretInst, M extends En
     }
 
     protected static void renderTurretRange(ITurretInst turret, MatrixStack stack) {
-        if( turret.showRange() ) {
+        if( turret.shouldShowRange() ) {
             RenderSystem.disableTexture();
 
             Tessellator   tess = Tessellator.getInstance();

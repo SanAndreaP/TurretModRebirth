@@ -18,10 +18,10 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
-public class Bolt
+public class CrossbowBolt
         extends Ammunition
 {
-    public Bolt(ResourceLocation id) {
+    public CrossbowBolt(ResourceLocation id) {
         super(id);
     }
 

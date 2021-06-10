@@ -50,7 +50,7 @@ public interface ITurretInst
 
     void setActive(boolean isActive);
 
-    boolean showRange();
+    boolean shouldShowRange();
 
     void setShowRange(boolean showRange);
 

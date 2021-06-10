@@ -22,6 +22,7 @@ public abstract class Projectile
     protected float verticalKnockback = 0.1F;
     protected double scatter = 0.1D;
     protected ResourceLocation ricochetSound = null;
+    protected ResourceLocation texture = null;
 
     private SoundEvent ricochetSoundCache = null;
 
@@ -68,6 +69,11 @@ public abstract class Projectile
     @Override
     public double getScatterValue() {
         return this.scatter;
+    }
+
+    @Override
+    public ResourceLocation getTexture(IProjectileInst projectileInst) {
+        return this.texture;
     }
 
     protected static SoundEvent lazyLoad(ResourceLocation id, SoundEvent currEvent) {

@@ -8,9 +8,14 @@ import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.client.gui.ElectrolyteGeneratorScreen;
 import de.sanandrew.mods.turretmod.client.gui.element.ElectrolyteBar;
 import de.sanandrew.mods.turretmod.client.model.ModelRegistry;
+import de.sanandrew.mods.turretmod.client.renderer.color.TippedBoltColor;
 import de.sanandrew.mods.turretmod.client.renderer.tileentity.ElectrolyteGeneratorRenderer;
 import de.sanandrew.mods.turretmod.init.IProxy;
 import de.sanandrew.mods.turretmod.inventory.ContainerRegistry;
+import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.item.TurretControlUnit;
+import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
+import de.sanandrew.mods.turretmod.item.ammo.Ammunitions;
 import de.sanandrew.mods.turretmod.world.PlayerList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
@@ -34,6 +39,9 @@ public class ClientProxy
         GuiDefinition.TYPES.put(ElectrolyteBar.ID, ElectrolyteBar::new);
 
         ModelRegistry.registerModels(event);
+
+        Minecraft.getInstance().getItemColors().register(new TippedBoltColor(), AmmunitionRegistry.INSTANCE.getItem(Ammunitions.TIPPED_BOLT.getId()).getItem());
+//        Minecraft.getInstance().getItemColors().register(new ColorCartridge(), ItemRegistry.AMMO_CARTRIDGE);
     }
 
     @Override
@@ -45,8 +53,7 @@ public class ClientProxy
     public boolean checkTurretGlowing(ITurretInst turretInst) {
         Minecraft mc = Minecraft.getInstance();
         if( mc.crosshairPickEntity != turretInst.get() ) {
-            //TODO: reimplement TCU
-//            return ItemTurretControlUnit.isHeldTcuBoundToTurret(Minecraft.getMinecraft().player, turret);
+            return TurretControlUnit.isHeldTcuBoundToTurret(Minecraft.getInstance().player, turretInst);
         }
 
         return false;

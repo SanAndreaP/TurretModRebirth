@@ -104,17 +104,6 @@ public class TurretRenderer<E extends LivingEntity & ITurretInst>
             register(turret, trb);
         }
     }
-//    public void initialize() {
-//        register(Turrets.CROSSBOW, new TurretRenderBase<>(this.renderManager, ModelTurretBase::new));
-//        register(Turrets.HARPOON, new TurretRenderBase<>(this.renderManager, () -> new ModelTurretBase<>(Resources.TURRET_T1_BASE_BUOY.resource)));
-//        register(Turrets.SHOTGUN, new TurretRenderBase<>(this.renderManager, ModelTurretShotgun::new));
-//        register(Turrets.CRYOLATOR, new TurretRenderBase<>(this.renderManager, ModelTurretBase::new));
-//        register(Turrets.REVOLVER, new TurretRenderBase<>(this.renderManager, ModelTurretRevolver::new));
-//        register(Turrets.MINIGUN, new TurretRenderBase<>(this.renderManager, ModelTurretMinigun::new));
-//        register(Turrets.LASER, new TurretRenderBase<>(this.renderManager, ModelTurretLaser::new));
-//        register(Turrets.FLAMETHROWER, new TurretRenderBase<>(this.renderManager, () -> new ModelTurretBase<>(Resources.TURRET_T3_FTHROWER_MODEL.resource)));
-//        register(Turrets.FORCEFIELD, new TurretRenderShieldGen<>(this.renderManager));
-//    }
 
     private static final class EmptyModel<E extends LivingEntity>
             extends EntityModel<E>

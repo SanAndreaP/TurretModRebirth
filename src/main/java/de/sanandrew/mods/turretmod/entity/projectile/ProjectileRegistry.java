@@ -38,6 +38,7 @@ public final class ProjectileRegistry
         @Override public SoundEvent getRicochetSound() { return null; }
         @Override public double getScatterValue() { return 0; }
         @Override public boolean isValid() { return false; }
+        @Override public ResourceLocation getTexture(IProjectileInst projectileInst) { return null; }
     };
 
     private final Map<ResourceLocation, IProjectile> projectiles;

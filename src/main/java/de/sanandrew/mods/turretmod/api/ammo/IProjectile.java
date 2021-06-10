@@ -4,6 +4,7 @@ import de.sanandrew.mods.turretmod.api.IRegistryObject;
 import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.RayTraceResult;
 
@@ -177,6 +178,26 @@ public interface IProjectile
     default boolean detectFluidCollision() {
         return false;
     }
+
+    /**
+     * <p>Returns the classpath to a custom render class. If no custom class is needed, this returns <tt>null</tt>.</p>
+     * <p>There are certain requirements this class needs to fullfill:</p>
+     * <ul>
+     *     <li>extends {@link net.minecraft.client.renderer.entity.EntityRenderer net.minecraft.client.renderer.entity.EntityRenderer}<br>
+     *         {@link net.minecraft.client.renderer.entity.EntityRenderer &lt;E extends net.minecraft.entity.Entity & IProjectileInst&gt;}.</li>
+     *     <li>has a constructor with following parameters:
+     *          <ul>
+     *              <li>{@link net.minecraft.client.renderer.entity.EntityRendererManager}</li>
+     *          </ul>
+     *     </li>
+     * </ul>
+     * @return A classpath to a render class or <tt>null</tt>
+     */
+    default String getCustomRenderClass() {
+        return null;
+    }
+
+    ResourceLocation getTexture(IProjectileInst projectileInst);
 
     /**
      * <p>An enumerator determining the type of the target when acquiring the source of damage.</p>

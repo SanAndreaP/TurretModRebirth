@@ -1,4 +1,4 @@
-package de.sanandrew.mods.turretmod.tileentity.electrolytegen;
+package de.sanandrew.mods.turretmod.tileentity.electrolyte;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;

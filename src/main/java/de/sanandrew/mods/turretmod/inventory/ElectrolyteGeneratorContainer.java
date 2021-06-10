@@ -10,10 +10,10 @@ package de.sanandrew.mods.turretmod.inventory;
 
 import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.turretmod.tileentity.electrolytegen.ElectrolyteInventory;
-import de.sanandrew.mods.turretmod.tileentity.electrolytegen.ElectrolyteProcess;
-import de.sanandrew.mods.turretmod.tileentity.electrolytegen.ElectrolyteSyncData;
-import de.sanandrew.mods.turretmod.tileentity.electrolytegen.ElectrolyteGeneratorTileEntity;
+import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteInventory;
+import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteProcess;
+import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteSyncData;
+import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteGeneratorTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;

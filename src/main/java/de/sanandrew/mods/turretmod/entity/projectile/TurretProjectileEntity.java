@@ -29,9 +29,11 @@ import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.server.SSpawnObjectPacket;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.IndirectEntityDamageSource;
@@ -48,33 +50,32 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.entity.PartEntity;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class TurretProjectileEntity
         extends ProjectileEntity
         implements IEntityAdditionalSpawnData, IProjectileInst
 {
+    private final LastDamagedList lastDamaged = new LastDamagedList();
+
     @Nonnull
     private IProjectile delegate;
-
     @Nonnull
     private IAmmunition ammunition;
     private String ammoSubtype;
-
     private double maxDist;
     private float attackModifier;
-
     private float lastDamage;
-    private UUID          lastDamagedId;
-    private int          lastDamagedNetId;
-    private WeakReference<Entity> lastDamagedEntity;
-
     private BlockPos lastBlockHit;
 
     @SuppressWarnings("WeakerAccess")
@@ -157,9 +158,7 @@ public class TurretProjectileEntity
     }
 
     @Override
-    protected void defineSynchedData() {
-
-    }
+    protected void defineSynchedData() { }
 
     @Override
     public void tick() {
@@ -173,8 +172,6 @@ public class TurretProjectileEntity
         super.tick();
         this.delegate.tick(ownerTurret, this);
 
-//        Minecraft.getInstance().level.addParticle(ParticleTypes.LARGE_SMOKE, this.position().x, this.position().y, this.position().z, 0.0D, 0.0D, 0.0D);
-
         Vector3d moveVector = this.getDeltaMovement();
         if (this.xRotO == 0.0F && this.yRotO == 0.0F) {
             this.forceUpdateRotation(moveVector);
@@ -184,90 +181,36 @@ public class TurretProjectileEntity
 
         this.doCollisionCheck(moveVector);
 
-            moveVector = this.getDeltaMovement();
-            double futurePosX = this.getX() + moveVector.x;
-            double futurePosY = this.getY() + moveVector.y;
-            double futurePosZ = this.getZ() + moveVector.z;
+        moveVector = this.getDeltaMovement();
+        double futurePosX = this.getX() + moveVector.x;
+        double futurePosY = this.getY() + moveVector.y;
+        double futurePosZ = this.getZ() + moveVector.z;
 
-//            float moveHorizontalNormal = MathHelper.sqrt(getHorizontalDistanceSqr(moveVector));
-//            this.yRot = (float)(MathHelper.atan2(moveVector.x, moveVector.z) * (double)(180F / (float)Math.PI));
-//
-//            this.xRot = (float)(MathHelper.atan2(moveVector.y, moveHorizontalNormal) * (double)(180F / (float)Math.PI));
-//            this.xRot = lerpRotation(this.xRotO, this.xRot);
-//            this.yRot = lerpRotation(this.yRotO, this.yRot);
+        float inertia = this.delegate.getAirInertia();
 
-            float inertia = this.delegate.getAirInertia();
-
-            if (this.isInWater()) {
-                BlockPos currPos   = this.blockPosition();
-                Fluid    fluid     = this.level.getFluidState(currPos).getType();
-                float    viscosity = 1.0F;
-                if( fluid != Fluids.EMPTY ) {
-                    viscosity = fluid.getTickDelay(this.level) / 2.5F;
-                }
-
-                inertia = this.delegate.getFluidInertia(viscosity);
+        if (this.isInWater()) {
+            BlockPos currPos   = this.blockPosition();
+            Fluid    fluid     = this.level.getFluidState(currPos).getType();
+            float    viscosity = 1.0F;
+            if( fluid != Fluids.EMPTY ) {
+                viscosity = fluid.getTickDelay(this.level) / 2.5F;
             }
 
-            this.setDeltaMovement(moveVector.scale(MathHelper.clamp(inertia, 0.0F, 1.0F)).subtract(0, this.delegate.getArc() * 0.1F, 0));
-            this.updateRotation();
+            inertia = this.delegate.getFluidInertia(viscosity);
+        }
 
-            this.setPos(futurePosX, futurePosY, futurePosZ);
+        this.setDeltaMovement(moveVector.scale(MathHelper.clamp(inertia, 0.0F, 1.0F)).subtract(0, this.delegate.getArc() * 0.1F, 0));
+        this.updateRotation();
 
-//        this.doCollisionCheck();
-
-//        this.posX += this.motionX;
-//        this.posY += this.motionY;
-//        this.posZ += this.motionZ;
-//        float yRotVec = MathHelper.sqrt(this.xPower * this.xPower + this.zPower * this.zPower);
-//        this.yRot = (float)(Math.atan2(this.xPower, this.zPower) * 180.0D / Math.PI);
-//
-//        this.xRot = (float)(Math.atan2(this.yPower, yRotVec) * 180.0D / Math.PI);
-//        while( this.yRot - this.yRotO < -180.0F ) {
-//            this.yRotO -= 360.0F;
-//        }
-//
-//        while( this.yRot - this.yRotO >= 180.0F ) {
-//            this.yRotO += 360.0F;
-//        }
-//
-//        while( this.xRot - this.xRotO < -180.0F ) {
-//            this.xRotO -= 360.0F;
-//        }
-//
-//        while( this.xRot - this.xRotO >= 180.0F ) {
-//            this.xRotO += 360.0F;
-//        }
-//
-//        this.yRot = this.yRotO + (this.yRot - this.yRotO) * 0.2F;
-//        this.xRot = this.xRotO + (this.xRot - this.xRotO) * 0.2F;
-//        float speed = this.delegate.getSpeedMultiplierAir();
-//
-//        if( this.isInWater() ) {
-//            BlockPos currPos   = this.blockPosition();
-//            Fluid    fluid     = this.level.getFluidState(currPos).getType();
-//            float    viscosity = 1.0F;
-//            if( fluid != Fluids.EMPTY ) {
-//                viscosity = fluid.getTickDelay(this.level) / 2.5F;
-//            }
-//            speed = this.delegate.getSpeedMultiplierLiquid(viscosity);
-//        }
-//
-//
-//        this.xPower *= speed;
-//        this.yPower *= speed;
-//        this.zPower *= speed;
-//        this.yPower -= this.delegate.getArc() * 0.1F;
-//        this.setDeltaMovement(vector3d.add(this.xPower, this.yPower, this.zPower).scale((double)f));
-//        this.setPos(this.xPower, this.yPower, this.zPower);
+        this.setPos(futurePosX, futurePosY, futurePosZ);
 
     }
 
     private void forceUpdateRotation(Vector3d moveVector) {
         float horizontalNormal = MathHelper.sqrt(getHorizontalDistanceSqr(moveVector));
 
-        this.xRot = lerpRotation(this.xRotO, (float)(MathHelper.atan2(moveVector.y, horizontalNormal) * (double)(180F / (float)Math.PI)));
-        this.yRot = lerpRotation(this.yRotO, (float)(MathHelper.atan2(moveVector.x, moveVector.z) * (double)(180F / (float)Math.PI)));
+        this.xRot = (float)(MathHelper.atan2(moveVector.y, horizontalNormal) * (double)(180F / (float)Math.PI));
+        this.yRot = (float)(MathHelper.atan2(moveVector.x, moveVector.z) * (double)(180F / (float)Math.PI));
 
         this.xRotO = this.xRot;
         this.yRotO = this.yRot;
@@ -283,6 +226,10 @@ public class TurretProjectileEntity
             isTarget = ownerTurret.getTargetProcessor().isEntityValidTarget(entity);
         }
 
+        if( this.lastDamaged.stream().anyMatch(e -> e.getLastDamagedEntity(this.level) == entity) ) { // do not attack the same entity twice
+            return false;
+        }
+
         return super.canHitEntity(entity) && entity != owner && isTarget;
     }
 
@@ -292,31 +239,14 @@ public class TurretProjectileEntity
     }
 
     private void doCollisionCheck(Vector3d moveVector) {
-        // BLOCK COLLISION CHECKS
-        Vector3d position = this.position();
-//        BlockPos blockPos = this.blockPosition();
-//        BlockState blockState = this.level.getBlockState(blockPos);
-//        if( !blockState.isAir(this.level, blockPos) ) {
-//            VoxelShape collisionShape = blockState.getCollisionShape(this.level, blockPos);
-//            if( !collisionShape.isEmpty() ) {
-//                for( AxisAlignedBB axisalignedbb : collisionShape.toAabbs() ) {
-//                    if( axisalignedbb.move(blockPos).contains(position) ) {
-//                        Vector3d blockPosVector = new Vector3d(blockPos.getX() + 0.5D, blockPos.getY() + 0.5D, blockPos.getZ() + 0.5D);
-//                        if( this.delegate.onHit(ownerTurret, this, collisionShape.clip(position, blockPosVector, blockPos)) ) {
-//                            this.remove();
-//                            return;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-
-        Vector3d       futurePos = position.add(moveVector);
+        Vector3d pos = this.position();
+        Vector3d       futurePos = pos.add(moveVector);
         RayTraceResult rtResult = null;
 
+        // BLOCK COLLISION CHECKS
         if( this.lastBlockHit == null || !this.lastBlockHit.equals(this.blockPosition()) ) {
             RayTraceContext.FluidMode fluidMode = this.delegate.detectFluidCollision() ? RayTraceContext.FluidMode.ANY : RayTraceContext.FluidMode.NONE;
-            rtResult  = this.level.clip(new RayTraceContext(position, futurePos, RayTraceContext.BlockMode.COLLIDER, fluidMode, this));
+            rtResult  = this.level.clip(new RayTraceContext(pos, futurePos, RayTraceContext.BlockMode.COLLIDER, fluidMode, this));
             if( rtResult.getType() != RayTraceResult.Type.MISS ) {
                 futurePos = rtResult.getLocation();
             }
@@ -324,18 +254,10 @@ public class TurretProjectileEntity
 
         // ENTITY COLLISION CHECKS
         while( this.isAlive() ) {
-            EntityRayTraceResult hitEntityResult = this.findHitEntity(position, futurePos);
+            EntityRayTraceResult hitEntityResult = this.findHitEntity(pos, futurePos);
             if( hitEntityResult != null ) {
                 rtResult = hitEntityResult;
             }
-
-//            if( rtResult instanceof EntityRayTraceResult && rtResult.getType() == RayTraceResult.Type.ENTITY ) {
-//                Entity entity = ((EntityRayTraceResult) rtResult).getEntity();
-//                if( entity instanceof PlayerEntity && ownerTurret.isOwner((PlayerEntity) entity) && !((PlayerEntity) owner).canHarmPlayer((PlayerEntity) entity) ) {
-//                    rtResult = null;
-//                    hitEntityResult = null;
-//                }
-//            }
 
             if( rtResult != null
                 && rtResult.getType() != RayTraceResult.Type.MISS
@@ -351,140 +273,7 @@ public class TurretProjectileEntity
 
             rtResult = null;
         }
-//        Vec3d posVec = new Vec3d(this.posX, this.posY, this.posZ);
-//        Vec3d futurePosVec = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
-//        RayTraceResult hitObj = this.world.rayTraceBlocks(posVec, futurePosVec, false, true, false);
-//
-//        posVec = new Vec3d(this.posX, this.posY, this.posZ);
-//        futurePosVec = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
-//
-//        if( hitObj != null ) {
-//            futurePosVec = new Vec3d(hitObj.hitVec.x, hitObj.hitVec.y, hitObj.hitVec.z);
-//        }
-//
-//        Entity entity = null;
-//        AxisAlignedBB checkBB = this.getEntityBoundingBox().expand(this.motionX, this.motionY, this.motionZ).grow(1.0D);
-//        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, checkBB);
-//        double minDist = 0.0D;
-//
-//        for( Entity collidedEntity : list ) {
-//            if( collidedEntity.canBeCollidedWith() && collidedEntity != this.shooterCache ) {
-//                AxisAlignedBB collisionAABB = collidedEntity.getEntityBoundingBox().grow(0.3D);
-//                RayTraceResult interceptObj = collisionAABB.calculateIntercept(posVec, futurePosVec);
-//
-//                if( interceptObj != null ) {
-//                    Entity validator = collidedEntity;
-//                    if( collidedEntity instanceof MultiPartEntityPart ) {
-//                        IEntityMultiPart iemp = ((MultiPartEntityPart) collidedEntity).parent;
-//                        if( iemp instanceof Entity ) {
-//                            validator = (Entity) iemp;
-//                        }
-//                    }
-////                    if( collidedEntity instanceof EntityDragonPart ) {
-////                        IEntityMultiPart multiEntity = ((EntityDragonPart) collidedEntity).entityDragonObj;
-////                        if( multiEntity instanceof EntityDragon ) {
-////                            dragonPart = (EntityDragonPart) collidedEntity;
-////                            collidedEntity = (EntityDragon) multiEntity;
-////                        }
-////                    }
-//
-//                    double vecDistance = posVec.distanceTo(interceptObj.hitVec);
-//                    boolean isClosest = vecDistance < minDist || minDist == 0.0D;
-//
-//                    if( (this.shooterCache == null || this.shooterCache.getTargetProcessor().isEntityValidTarget(validator)) && isClosest ) {
-//                        entity = collidedEntity;
-//                        minDist = vecDistance;
-//                    }
-//
-////                    if( !EntityTurret.class.isAssignableFrom(collidedEntity.getClass()) && (vecDistance < minDist || minDist == 0.0D) ) {
-////                        entity = collidedEntity;
-////                        minDist = vecDistance;
-////                    }
-//                }
-//            }
-//        }
-//
-//        if( entity != null ) {
-//            hitObj = new RayTraceResult(entity);
-//        }
-//
-//        if( hitObj != null && hitObj.entityHit instanceof EntityPlayer ) {
-//            EntityPlayer player = (EntityPlayer)hitObj.entityHit;
-//
-//            if( player.capabilities.disableDamage ) {
-//                hitObj = null;
-//            }
-//        }
-//
-//        if( hitObj != null ) {
-//            if( hitObj.entityHit != null ) {
-//                MutableFloat dmg = new MutableFloat(this.delegate.getDamage() * this.attackModifier);
-//
-//                IProjectile.TargetType tgtType = this.getTargetType(hitObj.entityHit);
-//                DamageSource damagesource = this.getProjDamageSource(hitObj.entityHit, tgtType);
-//
-//                if( this.isBurning() && !(hitObj.entityHit instanceof EntityEnderman) ) {
-//                    hitObj.entityHit.setFire(5);
-//                }
-//
-//                boolean preHitVelocityChanged = hitObj.entityHit.velocityChanged;
-//                boolean preHitAirBorne = hitObj.entityHit.isAirBorne;
-//                double preHitMotionX = hitObj.entityHit.motionX;
-//                double preHitMotionY = hitObj.entityHit.motionY;
-//                double preHitMotionZ = hitObj.entityHit.motionZ;
-//
-//                hitObj.entityHit.hurtResistantTime = 0;
-//
-//                if( hitObj.entityHit instanceof EntityCreature && this.shooterCache != null ) {
-//                    TmrUtils.INSTANCE.setEntityTarget((EntityCreature) hitObj.entityHit, this.shooterCache);
-//                }
-//
-//                if( this.delegate.onDamageEntityPre(this.shooterCache, this, hitObj.entityHit, damagesource, dmg) && hitObj.entityHit.attackEntityFrom(damagesource, dmg.floatValue()) ) {
-//                    this.lastDamage = dmg.floatValue();
-//                    this.lastDamaged = hitObj.entityHit;
-//                    this.lastDamagedTimer = 0;
-//
-//                    hitObj.entityHit.velocityChanged = preHitVelocityChanged;
-//                    hitObj.entityHit.isAirBorne = preHitAirBorne;
-//                    hitObj.entityHit.motionX = preHitMotionX;
-//                    hitObj.entityHit.motionY = preHitMotionY;
-//                    hitObj.entityHit.motionZ = preHitMotionZ;
-//
-//                    this.delegate.onDamageEntityPost(this.shooterCache, this, hitObj.entityHit, damagesource);
-//                    if( hitObj.entityHit instanceof EntityLivingBase ) {
-//                        EntityLivingBase living = (EntityLivingBase) hitObj.entityHit;
-//
-//                        if( !this.world.isRemote ) {
-//                            living.setArrowCountInEntity(living.getArrowCountInEntity() + 1);
-//                        }
-//
-//                        double deltaX = this.posX - living.posX;
-//                        double deltaZ = this.posZ - living.posZ;
-//
-//                        while( deltaX * deltaX + deltaZ * deltaZ < 0.0001D ) {
-//                            deltaZ = (Math.random() - Math.random()) * 0.01D;
-//                            deltaX = (Math.random() - Math.random()) * 0.01D;
-//                        }
-//
-//                        this.knockBackEntity(living, deltaX, deltaZ);
-//
-//                        if( this.shooterCache != null ) {
-//                            EnchantmentHelper.applyThornEnchantments(living, this.shooterCache);
-//                            EnchantmentHelper.applyArthropodEnchantments(this.shooterCache, living);
-//                        }
-//                    }
-//                }
-//            }
-//
-//            if( this.delegate.onHit(this.shooterCache, this, hitObj) ) {
-//                this.setPosition(hitObj.hitVec.x, hitObj.hitVec.y, hitObj.hitVec.z);
-//                this.playSound(this.delegate.getRicochetSound(), 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
-//                this.setDead();
-//            }
-//        }
     }
-
-
 
     @Override
     protected void onHitBlock(@Nonnull BlockRayTraceResult rtResult) {
@@ -495,9 +284,7 @@ public class TurretProjectileEntity
 
         if( this.delegate.processImpact(ownerTurret, this, rtResult) && this.delegate.finishImpact(ownerTurret, this, rtResult) ) {
             this.playHitSound();
-            if( !this.level.isClientSide ) {
-                this.remove();
-            }
+            this.remove();
         } else {
             this.lastBlockHit = rtResult.getBlockPos();
         }
@@ -521,9 +308,7 @@ public class TurretProjectileEntity
 
             if( target.hurt(dmgSource, damage) ) {
                 this.lastDamage = damage;
-                this.lastDamagedId = target.getUUID();
-                this.lastDamagedNetId = target.getId();
-                this.lastDamagedEntity = new WeakReference<>(target);
+                this.lastDamaged.addEntity(target);
 
                 if( target instanceof LivingEntity ) {
                     float knockbackH = this.delegate.getKnockbackHorizontal();
@@ -542,9 +327,7 @@ public class TurretProjectileEntity
 
             if( this.delegate.finishImpact(ownerTurret, this, rtResult) ) {
                 this.playHitSound();
-                if( !this.level.isClientSide ) {
-                    this.remove();
-                }
+                this.remove();
             }
         }
     }
@@ -599,44 +382,25 @@ public class TurretProjectileEntity
         }
     }
 
-//    private void knockBackEntity(EntityLivingBase living, double deltaX, double deltaZ) {
-//        if( this.rand.nextDouble() >= living.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).getAttributeValue() ) {
-//            living.isAirBorne = true;
-//            double normXZ = MathHelper.sqrt(deltaX * deltaX + deltaZ * deltaZ);
-//            double kbStrengthXZ = this.delegate.getKnockbackHorizontal();
-//            double kbStrengthY = this.delegate.getKnockbackVertical();
-//            living.motionX /= 2.0D;
-//            living.motionY /= 2.0D;
-//            living.motionZ /= 2.0D;
-//            living.motionX -= deltaX / normXZ * kbStrengthXZ;
-//            living.motionY += kbStrengthY;
-//            living.motionZ -= deltaZ / normXZ * kbStrengthXZ;
-//
-//            if( living.motionY > 0.4000000059604645D ) {
-//                living.motionY = 0.4000000059604645D;
-//            }
-//        }
-//    }
-
     private static final String NBT_DELEGATE_ID = "DelegateId";
     private static final String NBT_ATTACK_MODIFIER = "AttackModifier";
     private static final String NBT_AMMO_TYPE = "AmmoType";
     private static final String NBT_AMMO_SUBTYPE = "AmmoSubtype";
     private static final String NBT_LAST_DAMAGE  = "LastDamage";
-    private static final String NBT_LAST_DAMAGED_ID  = "LastDamagedEntityId";
 
     @Override
     public void readAdditionalSaveData(@Nonnull CompoundNBT nbt) {
         super.readAdditionalSaveData(nbt);
 
-        this.lastDamagedEntity = null;
+        this.lastDamaged.clear();
 
         this.delegate = ProjectileRegistry.INSTANCE.get(new ResourceLocation(nbt.getString(NBT_DELEGATE_ID)));
         this.ammunition = AmmunitionRegistry.INSTANCE.get(new ResourceLocation(nbt.getString(NBT_AMMO_TYPE)));
         this.attackModifier = nbt.getFloat(NBT_ATTACK_MODIFIER);
         this.lastDamage = nbt.getFloat(NBT_LAST_DAMAGE);
-        this.lastDamagedId = nbt.contains(NBT_LAST_DAMAGED_ID) ? nbt.getUUID(NBT_LAST_DAMAGED_ID) : null;
         this.ammoSubtype = nbt.contains(NBT_AMMO_SUBTYPE) ? nbt.getString(NBT_AMMO_SUBTYPE) : null;
+
+        this.lastDamaged.loadFromTag(nbt);
     }
 
     @Override
@@ -649,16 +413,14 @@ public class TurretProjectileEntity
         if( this.ammoSubtype != null ) {
             nbt.putString(NBT_AMMO_SUBTYPE, this.ammoSubtype);
         }
-        if( this.lastDamagedId != null ) {
-            nbt.putUUID(NBT_LAST_DAMAGED_ID, this.lastDamagedId);
-        }
+
+        this.lastDamaged.saveToTag(nbt);
     }
 
     @Nonnull
     @Override
     public IPacket<?> getAddEntityPacket() {
-        Entity entity = this.getOwner();
-        return new SSpawnObjectPacket(this, entity == null ? 0 : entity.getId());
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
@@ -669,6 +431,7 @@ public class TurretProjectileEntity
         buffer.writeResourceLocation(this.ammunition.getId());
         buffer.writeFloat(this.xRot);
         buffer.writeFloat(this.yRot);
+
         buffer.writeBoolean(owner != null);
         if( owner != null ) {
             buffer.writeInt(owner.getId());
@@ -677,6 +440,8 @@ public class TurretProjectileEntity
         if( this.ammoSubtype != null ) {
             buffer.writeUtf(this.ammoSubtype);
         }
+
+        this.lastDamaged.saveToPacket(buffer, this.level);
     }
 
     @Override
@@ -692,6 +457,8 @@ public class TurretProjectileEntity
         if( buffer.readBoolean() ) {
             this.ammoSubtype = buffer.readUtf();
         }
+
+        this.lastDamaged.loadFromPacket(buffer, this.level);
     }
 
     @Override
@@ -699,31 +466,20 @@ public class TurretProjectileEntity
         return this.lastDamage;
     }
 
+    @Nonnull
     @Override
-    public Entity getLastDamagedEntity() {
-        if( this.lastDamagedId != null ) {
-            Entity cachedEntity = this.lastDamagedEntity != null ? this.lastDamagedEntity.get() : null;
-            if( cachedEntity == null ) {
-                if( this.level instanceof ServerWorld ) {
-                    cachedEntity = ((ServerWorld) this.level).getEntity(this.lastDamagedId);
-                } else if( this.lastDamagedNetId != 0 ) {
-                    cachedEntity = this.level.getEntity(this.lastDamagedNetId);
-                }
-
-                if( cachedEntity != null ) {
-                    this.lastDamagedEntity = new WeakReference<>(cachedEntity);
-                }
-            }
-
-            return cachedEntity;
-        }
-
-        return null;
+    public Entity[] getLastDamagedEntities() {
+        return this.lastDamaged.getEntities(this.level);
     }
 
     @Override
     public Entity get() {
         return this;
+    }
+
+    @Override
+    public IProjectile getProjectile() {
+        return this.delegate;
     }
 
     @Nonnull
@@ -805,6 +561,102 @@ public class TurretProjectileEntity
         @Override
         public ITurretInst getTurretInst() {
             return this.turretInst;
+        }
+    }
+
+    private static class LastDamagedEntry
+    {
+        @Nonnull
+        private final UUID lastDamagedId;
+        private       int  lastDamagedNetId;
+        private       WeakReference<Entity> lastDamagedEntity;
+
+        private LastDamagedEntry(Entity e) {
+            this.lastDamagedId = e.getUUID();
+            this.lastDamagedNetId = e.getId();
+            this.lastDamagedEntity = new WeakReference<>(e);
+        }
+
+        private LastDamagedEntry(@Nonnull UUID id) {
+            this.lastDamagedId = id;
+        }
+
+        public Entity getLastDamagedEntity(World level) {
+            Entity cachedEntity = this.lastDamagedEntity != null ? this.lastDamagedEntity.get() : null;
+            if( cachedEntity == null ) {
+                if( level instanceof ServerWorld ) {
+                    cachedEntity = ((ServerWorld) level).getEntity(this.lastDamagedId);
+                } else if( this.lastDamagedNetId != 0 ) {
+                    cachedEntity = level.getEntity(this.lastDamagedNetId);
+                }
+
+                if( cachedEntity != null ) {
+                    this.lastDamagedEntity = new WeakReference<>(cachedEntity);
+                }
+            }
+
+            return cachedEntity;
+        }
+    }
+
+    private static class LastDamagedList
+            extends ArrayList<LastDamagedEntry>
+    {
+        private static final String NBT_LAST_DAMAGED_IDS = "LastDamagedEntityIds";
+
+        private void addEntity(Entity e) {
+            this.add(new LastDamagedEntry(e));
+        }
+
+        private Entity[] getEntities(World level) {
+            return this.stream().map(e -> e.getLastDamagedEntity(level)).toArray(Entity[]::new);
+        }
+
+        private void loadFromTag(CompoundNBT nbt) {
+            ListNBT ids = nbt.getList(NBT_LAST_DAMAGED_IDS, Constants.NBT.TAG_INT_ARRAY);
+
+            this.clear();
+
+            for( INBT id : ids ) {
+                this.add(new LastDamagedEntry(NBTUtil.loadUUID(id)));
+            }
+        }
+
+        private void saveToTag(CompoundNBT nbt) {
+            ListNBT ids = new ListNBT();
+
+            for( LastDamagedEntry entry : this ) {
+                ids.add(NBTUtil.createUUID(entry.lastDamagedId));
+            }
+
+            nbt.put(NBT_LAST_DAMAGED_IDS, ids);
+        }
+
+        private void saveToPacket(PacketBuffer buffer, World level) {
+            List<Integer> ids = new ArrayList<>();
+
+            for( LastDamagedEntry entry : this ) {
+                Entity e = entry.getLastDamagedEntity(level);
+                if( e != null ) {
+                    ids.add(e.getId());
+                }
+            }
+
+            buffer.writeVarInt(ids.size());
+            for( Integer id : ids ) {
+                buffer.writeVarInt(id);
+            }
+        }
+
+        private void loadFromPacket(PacketBuffer buffer, World level) {
+            this.clear();
+
+            for( int i = 0, max = buffer.readVarInt(); i < max ; i++ ) {
+                Entity e = level.getEntity(buffer.readVarInt());
+                if( e != null ) {
+                    this.add(new LastDamagedEntry(e));
+                }
+            }
         }
     }
 }

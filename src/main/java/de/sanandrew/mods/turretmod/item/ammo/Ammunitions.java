@@ -9,15 +9,15 @@ package de.sanandrew.mods.turretmod.item.ammo;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
-import de.sanandrew.mods.turretmod.item.ammo.delegate.Bolt;
-import de.sanandrew.mods.turretmod.item.ammo.delegate.TippedBolt;
+import de.sanandrew.mods.turretmod.item.ammo.delegate.CrossbowBolt;
+import de.sanandrew.mods.turretmod.item.ammo.delegate.TippedCrossbowBolt;
 import net.minecraft.util.ResourceLocation;
 
 @SuppressWarnings("WeakerAccess")
 public final class Ammunitions
 {
-    public static final IAmmunition BOLT            = new Bolt(new ResourceLocation(TmrConstants.ID, "crossbow_bolt"));
-    public static final IAmmunition TIPPED_BOLT     = new TippedBolt(new ResourceLocation(TmrConstants.ID, "tipped_crossbow_bolt"));
+    public static final IAmmunition BOLT            = new CrossbowBolt(new ResourceLocation(TmrConstants.ID, "crossbow_bolt"));
+    public static final IAmmunition TIPPED_BOLT     = new TippedCrossbowBolt(new ResourceLocation(TmrConstants.ID, "tipped_crossbow_bolt"));
 //    public static final IAmmunition HARPOON         = new Harpoon();
 //    public static final IAmmunition SGSHELL         = new ShotgunShell();
 //    public static final IAmmunition CRYOCELL_MK1    = new CryoCell.Mk1();

@@ -92,7 +92,7 @@ public final class TargetProcessor
         return this.addAmmo(stack, null);
     }
 
-    //TODO: reimplement ammo
+    //todo: reimplement ammo cartridge
     @Override
     public boolean addAmmo(@Nonnull ItemStack stack, ICapabilityProvider excessInv) {
         if( stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN).isPresent() ) {
@@ -168,7 +168,6 @@ public final class TargetProcessor
         return ItemStackUtils.isValid(this.ammoStack) && this.ammoCount > 0;
     }
 
-    //TODO: reimplement ammo
     @Override
     public void dropExcessAmmo() {
         if( this.hasAmmo() ) {
@@ -195,7 +194,6 @@ public final class TargetProcessor
         }
     }
 
-    //TODO: reimplement ammo
     @Override
     public void decrAmmo() {
         TargetingEvent.ConsumeAmmo event = new TargetingEvent.ConsumeAmmo(this, this.ammoStack, 1);
@@ -207,7 +205,6 @@ public final class TargetProcessor
         }
     }
 
-    //TODO: reimplement ammo
     public NonNullList<ItemStack> extractAmmoItems() {
         NonNullList<ItemStack> items = NonNullList.create();
         int maxStackSize = this.ammoStack.getMaxStackSize();
@@ -270,7 +267,6 @@ public final class TargetProcessor
         return getAmmoApplyType(stack) != ApplyType.NOT_COMPATIBLE;
     }
 
-    //TODO: reimplement ammo
     @Override
     public ApplyType getAmmoApplyType(@Nonnull ItemStack stack) {
         if( ItemStackUtils.isValid(stack) ) {
@@ -288,7 +284,6 @@ public final class TargetProcessor
         return ApplyType.NOT_COMPATIBLE;
     }
 
-    //TODO: reimplement ammo
     private boolean isAmmoTypeEqual(IAmmunition ammo, String subtype) {
         subtype = subtype != null ? subtype : "";
         IAmmunition currType = AmmunitionRegistry.INSTANCE.get(this.ammoStack);
@@ -336,7 +331,6 @@ public final class TargetProcessor
         return (int) Math.round(this.turret.get().getAttributeValue(TurretAttributes.MAX_INIT_SHOOT_TICKS));
     }
 
-    //TODO: reimplement ammo & projectiles
     @Override
     public Entity getProjectile() {
         if( this.hasAmmo() ) {

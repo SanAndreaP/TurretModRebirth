@@ -9,9 +9,11 @@
 package de.sanandrew.mods.turretmod.client.model;
 
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
+import de.sanandrew.mods.turretmod.client.renderer.projectile.TurretProjectileRenderer;
 import de.sanandrew.mods.turretmod.client.renderer.tileentity.ElectrolyteGeneratorRenderer;
 import de.sanandrew.mods.turretmod.client.renderer.turret.TurretRenderer;
 import de.sanandrew.mods.turretmod.entity.EntityRegistry;
+import de.sanandrew.mods.turretmod.entity.projectile.TurretProjectileEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
@@ -65,6 +67,7 @@ public final class ModelRegistry
 //        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityElectrolyteGenerator.class, new RenderElectrolyteGenerator());
 
         RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.TURRET, TurretRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.PROJECTILE, TurretProjectileRenderer::new);
 
         ClientRegistry.bindTileEntityRenderer(BlockRegistry.ELECTROLYTE_GENERATOR_ENTITY, ElectrolyteGeneratorRenderer::new);
     }

@@ -15,8 +15,8 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TippedBolt
-        extends Bolt
+public class TippedCrossbowBolt
+        extends CrossbowBolt
 {
     private static final String[] SUBTYPES;
     static {
@@ -30,7 +30,7 @@ public class TippedBolt
         SUBTYPES = potionTypes.toArray(new String[0]);
     }
 
-    public TippedBolt(ResourceLocation id) {
+    public TippedCrossbowBolt(ResourceLocation id) {
         super(id);
     }
 

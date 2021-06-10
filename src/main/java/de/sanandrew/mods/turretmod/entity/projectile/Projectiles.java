@@ -9,12 +9,12 @@ package de.sanandrew.mods.turretmod.entity.projectile;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectileRegistry;
-import de.sanandrew.mods.turretmod.entity.projectile.delegate.Bolt;
+import de.sanandrew.mods.turretmod.entity.projectile.delegate.CrossbowBolt;
 import net.minecraft.util.ResourceLocation;
 
 public final class Projectiles
 {
-    public static final IProjectile CB_BOLT       = new Bolt(new ResourceLocation(TmrConstants.ID, "bolt"));
+    public static final IProjectile CB_BOLT       = new CrossbowBolt(new ResourceLocation(TmrConstants.ID, "bolt"));
 //    public static final IProjectile HARPOON       = new Harpoon();
 //    public static final IProjectile CRYO_BALL_I   = new CryoBall(CryoBall.ID1);
 //    public static final IProjectile CRYO_BALL_II  = new CryoBall(CryoBall.ID2);

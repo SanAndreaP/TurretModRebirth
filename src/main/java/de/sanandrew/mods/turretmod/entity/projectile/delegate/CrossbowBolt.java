@@ -17,18 +17,19 @@ import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class Bolt
+public class CrossbowBolt
         extends Projectile
 {
-    public Bolt(ResourceLocation id) {
+    public CrossbowBolt(ResourceLocation id) {
         super(id);
 
         this.ricochetSound = ResourceLocations.SOUND_RICOCHET_ARROW;
+
+        this.texture = ResourceLocations.TEXTURE_ENTITY_CROSSBOW_BOLT;
     }
 
     @Override
     public void onPostEntityDamage(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile, Entity target, DamageSource damageSrc) {
-        //TODO: reimplement tipped bolts
         if( target instanceof LivingEntity && projectile.getAmmunition() == Ammunitions.TIPPED_BOLT ) {
             String subtype = projectile.getAmmunitionSubtype();
             if( !Strings.isNullOrEmpty(subtype) ) {

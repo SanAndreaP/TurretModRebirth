@@ -4,21 +4,21 @@ import net.minecraft.util.ResourceLocation;
 
 public final class ResourceLocations
 {
-    public static final ResourceLocation SOUND_RICOCHET_SPLASH    = new ResourceLocation(TmrConstants.ID, "ricochet_splash");
-    public static final ResourceLocation SOUND_RICOCHET_BULLET    = new ResourceLocation(TmrConstants.ID, "ricochet_bullet");
+    public static final ResourceLocation SOUND_RICOCHET_SPLASH    = rl("ricochet_splash");
+    public static final ResourceLocation SOUND_RICOCHET_BULLET    = rl("ricochet_bullet");
     public static final ResourceLocation SOUND_RICOCHET_ARROW     = new ResourceLocation("entity.arrow.hit");
     public static final ResourceLocation SOUND_SHOOT_CROSSBOW     = new ResourceLocation("block.dispenser.launch");
-    public static final ResourceLocation SOUND_SHOOT_CRYOLATOR    = new ResourceLocation(TmrConstants.ID, "cryolator_shot");
-    public static final ResourceLocation SOUND_SHOOT_SHOTGUN      = new ResourceLocation(TmrConstants.ID, "shotgun_shot");
-    public static final ResourceLocation SOUND_SHOOT_REVOLVER     = new ResourceLocation(TmrConstants.ID, "revolver_shot");
-    public static final ResourceLocation SOUND_SHOOT_MINIGUN      = new ResourceLocation(TmrConstants.ID, "minigun_shot");
-    public static final ResourceLocation SOUND_SHOOT_LASER        = new ResourceLocation(TmrConstants.ID, "laser_shot");
-    public static final ResourceLocation SOUND_SHOOT_FLAMETHROWER = new ResourceLocation(TmrConstants.ID, "flamethrower_shot");
+    public static final ResourceLocation SOUND_SHOOT_CRYOLATOR    = rl("cryolator_shot");
+    public static final ResourceLocation SOUND_SHOOT_SHOTGUN      = rl("shotgun_shot");
+    public static final ResourceLocation SOUND_SHOOT_REVOLVER     = rl("revolver_shot");
+    public static final ResourceLocation SOUND_SHOOT_MINIGUN      = rl("minigun_shot");
+    public static final ResourceLocation SOUND_SHOOT_LASER        = rl("laser_shot");
+    public static final ResourceLocation SOUND_SHOOT_FLAMETHROWER = rl("flamethrower_shot");
     public static final ResourceLocation SOUND_TURRET_EMPTY       = new ResourceLocation("block.dispenser.fail");
-    public static final ResourceLocation SOUND_TURRET_HIT         = new ResourceLocation(TmrConstants.ID, "turret_hurt");
-    public static final ResourceLocation SOUND_TURRET_DEATH       = new ResourceLocation(TmrConstants.ID, "turret_death");
-    public static final ResourceLocation SOUND_TURRET_PICKUP      = new ResourceLocation(TmrConstants.ID, "turret_pickup");
-    public static final ResourceLocation SOUND_TURRET_IDLE        = new ResourceLocation(TmrConstants.ID, "turret_idle");
+    public static final ResourceLocation SOUND_TURRET_HIT         = rl("turret_hurt");
+    public static final ResourceLocation SOUND_TURRET_DEATH       = rl("turret_death");
+    public static final ResourceLocation SOUND_TURRET_PICKUP      = rl("turret_pickup");
+    public static final ResourceLocation SOUND_TURRET_IDLE        = rl("turret_idle");
 
     public static final ResourceLocation MODEL_ENTITY_BASE                = rl("models/entity/turret_base.json");
     public static final ResourceLocation MODEL_ENTITY_BASE_BUOY           = rl("models/entity/turret_base_buoy.json");
@@ -46,6 +46,7 @@ public final class ResourceLocations
 
     public static final String           TEXTURE_ENTITY_CROSSBOW_BASE      = tx("textures/entities/turrets/t1_crossbow/%s.png");
     public static final ResourceLocation TEXTURE_ENTITY_CROSSBOW_GLOW      = rl("textures/entities/turrets/t1_crossbow/glow.png");
+    public static final ResourceLocation TEXTURE_ENTITY_CROSSBOW_BOLT      = new ResourceLocation("textures/entity/projectiles/arrow.png");
     public static final String           TEXTURE_ENTITY_CRYOLATOR_BASE     = tx("textures/entities/turrets/t1_cryolator/%s.png");
     public static final ResourceLocation TEXTURE_ENTITY_CRYOLATOR_GLOW     = rl("textures/entities/turrets/t1_cryolator/glow.png");
     public static final String           TEXTURE_ENTITY_SHOTGUN_BASE       = tx("textures/entities/turrets/t1_shotgun/%s.png");

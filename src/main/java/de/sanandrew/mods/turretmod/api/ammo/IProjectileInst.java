@@ -2,6 +2,8 @@ package de.sanandrew.mods.turretmod.api.ammo;
 
 import net.minecraft.entity.Entity;
 
+import javax.annotation.Nonnull;
+
 /**
  * <p>An instance of a projectile entity.</p>
  */
@@ -13,11 +15,12 @@ public interface IProjectileInst
     float getLastCausedDamage();
 
     /**
-     * <p>Returns the last entity to have been damaged by this projectile.</p>
+     * <p>Returns the last entities to have been damaged by this projectile.</p>
      *
-     * @return the last damaged entity or <tt>null</tt>, if the projectile instance is new.
+     * @return the last damaged entities. This is an empty array if no entities have been damaged yet.
      */
-    Entity getLastDamagedEntity();
+    @Nonnull
+    Entity[] getLastDamagedEntities();
 
     /**
      * @return this projectile instance as an {@link Entity}
@@ -27,4 +30,6 @@ public interface IProjectileInst
     IAmmunition getAmmunition();
 
     String getAmmunitionSubtype();
+
+    IProjectile getProjectile();
 }

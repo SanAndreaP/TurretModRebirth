@@ -1,7 +1,7 @@
 package de.sanandrew.mods.turretmod.init;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.tileentity.electrolytegen.ElectrolyteRecipe;
+import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
