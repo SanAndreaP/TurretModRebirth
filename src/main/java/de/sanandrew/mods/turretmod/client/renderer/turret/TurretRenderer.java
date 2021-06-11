@@ -12,7 +12,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import de.sanandrew.mods.sanlib.lib.util.ReflectionUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.client.model.entity.ModelTurretBase;
 import de.sanandrew.mods.turretmod.entity.turret.TurretRegistry;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class TurretRenderer<E extends LivingEntity & ITurretInst>
+public class TurretRenderer<E extends LivingEntity & ITurretEntity>
         extends LivingRenderer<E, EntityModel<E>>
 {
     private final Map<ITurret, LivingRenderer<E, ?>> delegates = new HashMap<>();
@@ -48,7 +48,7 @@ public class TurretRenderer<E extends LivingEntity & ITurretInst>
 
     @Override
     public void render(E turretInst, float yaw, float partialTicks, @Nonnull MatrixStack stack, @Nonnull IRenderTypeBuffer buffer, int light) {
-        this.delegates.computeIfPresent(turretInst.getTurret(), (t, r) -> {
+        this.delegates.computeIfPresent(turretInst.getDelegate(), (t, r) -> {
             r.render(turretInst, yaw, partialTicks, stack, buffer, light);
             return r;
         });

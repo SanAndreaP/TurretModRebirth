@@ -3,7 +3,7 @@ package de.sanandrew.mods.turretmod.client.renderer.projectile;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import de.sanandrew.mods.sanlib.lib.util.ReflectionUtils;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
-import de.sanandrew.mods.turretmod.api.ammo.IProjectileInst;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectileEntity;
 import de.sanandrew.mods.turretmod.entity.projectile.ProjectileRegistry;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -18,7 +18,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TurretProjectileRenderer<E extends Entity & IProjectileInst>
+public class TurretProjectileRenderer<E extends Entity & IProjectileEntity>
         extends EntityRenderer<E>
 {
     private final Map<IProjectile, EntityRenderer<E>> delegates = new HashMap<>();
@@ -34,9 +34,9 @@ public class TurretProjectileRenderer<E extends Entity & IProjectileInst>
     }
 
     @Override
-    public void render(E projectileInst, float yaw, float partialTicks, @Nonnull MatrixStack stack, @Nonnull IRenderTypeBuffer buffer, int light) {
-        this.delegates.computeIfPresent(projectileInst.getProjectile(), (t, r) -> {
-            r.render(projectileInst, yaw, partialTicks, stack, buffer, light);
+    public void render(E projectile, float yaw, float partialTicks, @Nonnull MatrixStack stack, @Nonnull IRenderTypeBuffer buffer, int light) {
+        this.delegates.computeIfPresent(projectile.getDelegate(), (t, r) -> {
+            r.render(projectile, yaw, partialTicks, stack, buffer, light);
             return r;
         });
     }
@@ -53,10 +53,10 @@ public class TurretProjectileRenderer<E extends Entity & IProjectileInst>
     }
 
     public void initialize() {
-        for( IProjectile projectile : ProjectileRegistry.INSTANCE.getAll() ) {
+        for( IProjectile delegate : ProjectileRegistry.INSTANCE.getAll() ) {
             EntityRenderer<E> prb;
 
-            String customRenderClassName = projectile.getCustomRenderClass();
+            String customRenderClassName = delegate.getCustomRenderClass();
             if( customRenderClassName != null ) {
                 try {
                     final Constructor<?> c = Class.forName(customRenderClassName).getConstructor(EntityRendererManager.class);
@@ -68,7 +68,7 @@ public class TurretProjectileRenderer<E extends Entity & IProjectileInst>
                 prb = new TurretProjectileBaseRenderer<>(this.entityRenderDispatcher);
             }
 
-            register(projectile, prb);
+            register(delegate, prb);
         }
     }
 }

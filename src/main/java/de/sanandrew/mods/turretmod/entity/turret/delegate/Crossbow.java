@@ -1,7 +1,7 @@
 package de.sanandrew.mods.turretmod.entity.turret.delegate;
 
 import de.sanandrew.mods.turretmod.api.ResourceLocations;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.api.turret.IVariant;
 import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
 import de.sanandrew.mods.turretmod.api.turret.Turret;
@@ -54,7 +54,7 @@ public class Crossbow
     }
 
     @Override
-    public ResourceLocation getBaseTexture(ITurretInst turretInst) {
+    public ResourceLocation getBaseTexture(ITurretEntity turretInst) {
         this.buildVariants();
 
         return turretInst.getVariant().getTexture();

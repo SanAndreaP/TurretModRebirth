@@ -2,7 +2,7 @@ package de.sanandrew.mods.turretmod.client.renderer.projectile;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import de.sanandrew.mods.turretmod.api.ammo.IProjectileInst;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectileEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -17,10 +17,10 @@ import net.minecraft.util.math.vector.Vector3f;
 
 import javax.annotation.Nonnull;
 
-public class TurretProjectileBaseRenderer<E extends Entity &IProjectileInst>
+public class TurretProjectileBaseRenderer<E extends Entity & IProjectileEntity>
         extends EntityRenderer<E>
 {
-    protected TurretProjectileBaseRenderer(EntityRendererManager manager) {
+    public TurretProjectileBaseRenderer(EntityRendererManager manager) {
         super(manager);
     }
 
@@ -42,30 +42,31 @@ public class TurretProjectileBaseRenderer<E extends Entity &IProjectileInst>
 
 
         // fletching back
-        this.vertex(pose, normal, builder, -7, -2, -2, 0.0F, 0.15625F, -1, 0, 0, light);
-        this.vertex(pose, normal, builder, -7, -2, 2, 0.15625F, 0.15625F, -1, 0, 0, light);
-        this.vertex(pose, normal, builder, -7, 2, 2, 0.15625F, 0.3125F, -1, 0, 0, light);
-        this.vertex(pose, normal, builder, -7, 2, -2, 0.0F, 0.3125F, -1, 0, 0, light);
+        this.vertex(projectileInst, pose, normal, builder, -7, -2, -2, 0.0F, 0.15625F, -1, 0, 0, light);
+        this.vertex(projectileInst, pose, normal, builder, -7, -2, 2, 0.15625F, 0.15625F, -1, 0, 0, light);
+        this.vertex(projectileInst, pose, normal, builder, -7, 2, 2, 0.15625F, 0.3125F, -1, 0, 0, light);
+        this.vertex(projectileInst, pose, normal, builder, -7, 2, -2, 0.0F, 0.3125F, -1, 0, 0, light);
         // fletching front
-        this.vertex(pose, normal, builder, -7, 2, -2, 0.0F, 0.15625F, 1, 0, 0, light);
-        this.vertex(pose, normal, builder, -7, 2, 2, 0.15625F, 0.15625F, 1, 0, 0, light);
-        this.vertex(pose, normal, builder, -7, -2, 2, 0.15625F, 0.3125F, 1, 0, 0, light);
-        this.vertex(pose, normal, builder, -7, -2, -2, 0.0F, 0.3125F, 1, 0, 0, light);
+        this.vertex(projectileInst, pose, normal, builder, -7, 2, -2, 0.0F, 0.15625F, 1, 0, 0, light);
+        this.vertex(projectileInst, pose, normal, builder, -7, 2, 2, 0.15625F, 0.15625F, 1, 0, 0, light);
+        this.vertex(projectileInst, pose, normal, builder, -7, -2, 2, 0.15625F, 0.3125F, 1, 0, 0, light);
+        this.vertex(projectileInst, pose, normal, builder, -7, -2, -2, 0.0F, 0.3125F, 1, 0, 0, light);
 
         // arrow
         for(int j = 0; j < 4; ++j) {
             mStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
-            this.vertex(pose, normal, builder, -8, -2, 0, 0.0F, 0.0F, 0, 1, 0, light);
-            this.vertex(pose, normal, builder, 8, -2, 0, 0.5F, 0.0F, 0, 1, 0, light);
-            this.vertex(pose, normal, builder, 8, 2, 0, 0.5F, 0.15625F, 0, 1, 0, light);
-            this.vertex(pose, normal, builder, -8, 2, 0, 0.0F, 0.15625F, 0, 1, 0, light);
+            this.vertex(projectileInst, pose, normal, builder, -8, -2, 0, 0.0F, 0.0F, 0, 1, 0, light);
+            this.vertex(projectileInst, pose, normal, builder, 8, -2, 0, 0.5F, 0.0F, 0, 1, 0, light);
+            this.vertex(projectileInst, pose, normal, builder, 8, 2, 0, 0.5F, 0.15625F, 0, 1, 0, light);
+            this.vertex(projectileInst, pose, normal, builder, -8, 2, 0, 0.0F, 0.15625F, 0, 1, 0, light);
         }
 
         mStack.popPose();
+
         super.render(projectileInst, yaw, partialTicks, mStack, buffer, light);
     }
 
-    public void vertex(Matrix4f pose, Matrix3f normal, IVertexBuilder builder, int x, int y, int z, float u, float v, int nrmX, int nrmZ, int nrmY, int light) {
+    public void vertex(E projectileInst, Matrix4f pose, Matrix3f normal, IVertexBuilder builder, int x, int y, int z, float u, float v, int nrmX, int nrmZ, int nrmY, int light) {
         builder.vertex(pose, (float)x, (float)y, (float)z).color(255, 255, 255, 255).uv(u, v).overlayCoords(OverlayTexture.NO_OVERLAY)
                .uv2(light).normal(normal, (float)nrmX, (float)nrmY, (float)nrmZ).endVertex();
     }
@@ -73,6 +74,6 @@ public class TurretProjectileBaseRenderer<E extends Entity &IProjectileInst>
     @Nonnull
     @Override
     public ResourceLocation getTextureLocation(@Nonnull E projectileInst) {
-        return projectileInst.getProjectile().getTexture(projectileInst);
+        return projectileInst.getDelegate().getTexture(projectileInst);
     }
 }

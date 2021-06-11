@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 /**
  * <p>An instance of a projectile entity.</p>
  */
-public interface IProjectileInst
+public interface IProjectileEntity
 {
     /**
      * @return the last damage value caused to a target or {@link Float#MAX_VALUE}, if the projectile instance is new.
@@ -31,5 +31,5 @@ public interface IProjectileInst
 
     String getAmmunitionSubtype();
 
-    IProjectile getProjectile();
+    IProjectile getDelegate();
 }

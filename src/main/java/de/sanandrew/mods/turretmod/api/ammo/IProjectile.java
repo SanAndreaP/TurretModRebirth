@@ -1,7 +1,7 @@
 package de.sanandrew.mods.turretmod.api.ammo;
 
 import de.sanandrew.mods.turretmod.api.IRegistryObject;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * <p>A turret projectile defined by its ammunition.</p>
+ * <p>A turret projectile delegate defined by its ammunition.</p>
  */
 @SuppressWarnings("unused")
 public interface IProjectile
@@ -41,11 +41,11 @@ public interface IProjectile
      * @param projectile The projectile entity
      * @param target The target that got hit
      * @param damageSrc The damage source that causes the damage
+     * @param attackModifier The modifier the turret applies to the damage, should be multiplied with the result
      *
-     * @param attackModifier
      * @return the damage the projectile deals on hit.
      */
-    float getDamage(@Nullable ITurretInst turret, @Nullable IProjectileInst projectile, @Nullable Entity target, @Nullable DamageSource damageSrc, float attackModifier);
+    float getDamage(@Nullable ITurretEntity turret, @Nullable IProjectileEntity projectile, @Nullable Entity target, @Nullable DamageSource damageSrc, float attackModifier);
 
     /**
      * <p>Returns the damage (in health points; 1.0 HP = ½ hearts) the projectile can deal to an entity.</p>
@@ -95,7 +95,7 @@ public interface IProjectile
      *             <p><b>This method should return a different damage source type appropriate for this target type.</b></p>
      * @return a custom damage source appropriate for this projectile or <tt>null</tt>, if it's the standard projectile damage
      */
-    default DamageSource getCustomDamageSource(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile, Entity target, TargetType type) {
+    default DamageSource getCustomDamageSource(@Nullable ITurretEntity turret, @Nonnull IProjectileEntity projectile, Entity target, TargetType type) {
         return null;
     }
 
@@ -105,7 +105,7 @@ public interface IProjectile
      * @param turret The turret that creates this projectile.
      * @param projectile The projectile entity.
      */
-    default void onShoot(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile) { }
+    default void onShoot(@Nullable ITurretEntity turret, @Nonnull IProjectileEntity projectile) { }
 
     /**
      * <p>Invoked when the projectile ticks.</p>
@@ -113,7 +113,7 @@ public interface IProjectile
      * @param turret The turret that owns this projectile.
      * @param projectile The projectile entity.
      */
-    default void tick(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile) { }
+    default void tick(@Nullable ITurretEntity turret, @Nonnull IProjectileEntity projectile) { }
 
     /**
      * <p>Invoked when a projectile hits something, be it entity or block.</p>
@@ -124,7 +124,7 @@ public interface IProjectile
      * @param hitObj The object representing what the projectile hit.
      * @return <tt>true</tt>, if the projectile should further process the impact; <tt>false</tt> otherwise
      */
-    default boolean processImpact(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile, RayTraceResult hitObj) {
+    default boolean processImpact(@Nullable ITurretEntity turret, @Nonnull IProjectileEntity projectile, RayTraceResult hitObj) {
         return true;
     }
 
@@ -137,7 +137,7 @@ public interface IProjectile
      * @param hitObj The object representing what the projectile hit.
      * @return <tt>true</tt>, if the projectile should be stopped and killed; <tt>false</tt> otherwise
      */
-    default boolean finishImpact(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile, RayTraceResult hitObj) {
+    default boolean finishImpact(@Nullable ITurretEntity turret, @Nonnull IProjectileEntity projectile, RayTraceResult hitObj) {
         return true;
     }
 
@@ -149,7 +149,7 @@ public interface IProjectile
      * @param target The target that got hit.
      * @param damageSrc The damage source that caused the damage.
      */
-    default void onPostEntityDamage(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile, Entity target, DamageSource damageSrc) { }
+    default void onPostEntityDamage(@Nullable ITurretEntity turret, @Nonnull IProjectileEntity projectile, Entity target, DamageSource damageSrc) { }
 
     /**
      * <p>Returns the multiplier the projectile applies to its velocity whilst traveling in air. A lower value means higher slowdown.</p>
@@ -170,7 +170,6 @@ public interface IProjectile
      * @return the value by which velocity is multiplied each tick
      * @see net.minecraft.fluid.Fluid#getTickDelay(net.minecraft.world.IWorldReader)
      */
-    @SuppressWarnings("JavadocReference")
     default float getFluidInertia(float viscosity) {
         return 0.8F * (2.0F - viscosity);
     }
@@ -197,12 +196,12 @@ public interface IProjectile
         return null;
     }
 
-    ResourceLocation getTexture(IProjectileInst projectileInst);
+    ResourceLocation getTexture(IProjectileEntity projectileInst);
 
     /**
      * <p>An enumerator determining the type of the target when acquiring the source of damage.</p>
      *
-     * @see IProjectile#getCustomDamageSource(ITurretInst, IProjectileInst, Entity, TargetType)
+     * @see IProjectile#getCustomDamageSource(ITurretEntity, IProjectileEntity, Entity, TargetType)
      */
     enum TargetType
     {

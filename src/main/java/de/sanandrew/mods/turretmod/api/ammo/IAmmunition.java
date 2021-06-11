@@ -10,12 +10,11 @@ package de.sanandrew.mods.turretmod.api.ammo;
 
 import de.sanandrew.mods.turretmod.api.IRegistryObject;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,24 +34,24 @@ public interface IAmmunition
     /**
      * @return The amount of rounds provided by one item.
      */
-    int getAmmoCapacity();
+    int getCapacity();
 
     /**
      * @return the turret delegate that can use this ammo, cannot be <tt>null</tt>
      */
     @Nonnull
-    ITurret getTurret();
+    ITurret getApplicableTurret();
 
     /**
      * <p>Returns the projectile delegate to be shot.</p>
      * <p>If this returns null, no projectile is fired. Use the {@link de.sanandrew.mods.turretmod.api.event.TargetingEvent.ProcessorTick TargetingEvent.ProcessorTick} event
      *    in order for custom turret effects (like shooting multiple projectiles at once).</p>
      *
-     * @param turretInst The turret firing the projectile.
+     * @param turret The turret firing the projectile.
      * @return The projectile delegate or <tt>null</tt>, if no projectile should be fired.
      */
     @Nullable
-    IProjectile getProjectile(ITurretInst turretInst);
+    IProjectile getProjectile(ITurretEntity turret);
 
     /**
      * <p>Allows this ammunition object to add tooltip information, if needed.</p>

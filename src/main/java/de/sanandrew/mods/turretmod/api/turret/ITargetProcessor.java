@@ -76,7 +76,7 @@ public interface ITargetProcessor
 
     boolean isEntityTargeted(ResourceLocation id);
 
-    ITurretInst getTurretInst();
+    ITurretEntity getTurretInst();
 
     boolean hasTarget();
 

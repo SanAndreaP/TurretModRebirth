@@ -9,7 +9,7 @@ public abstract class Ammunition
 {
     private final ResourceLocation id;
 
-    protected int ammoCapacity;
+    protected int capacity;
 
     public Ammunition(ResourceLocation id) {
         this.id = id;
@@ -22,7 +22,7 @@ public abstract class Ammunition
     }
 
     @Override
-    public int getAmmoCapacity() {
-        return this.ammoCapacity;
+    public int getCapacity() {
+        return this.capacity;
     }
 }

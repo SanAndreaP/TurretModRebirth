@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.client.renderer.turret.layer;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
@@ -18,7 +18,7 @@ import net.minecraft.entity.LivingEntity;
 
 import javax.annotation.Nonnull;
 
-public class LayerTurretUpgrades<E extends LivingEntity & ITurretInst, M extends EntityModel<E>>
+public class LayerTurretUpgrades<E extends LivingEntity & ITurretEntity, M extends EntityModel<E>>
         extends LayerRenderer<E, M>
 {
     public LayerTurretUpgrades(IEntityRenderer<E, M> entityRendererIn) {

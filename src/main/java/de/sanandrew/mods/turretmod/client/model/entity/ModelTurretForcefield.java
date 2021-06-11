@@ -1,7 +1,7 @@
 package de.sanandrew.mods.turretmod.client.model.entity;
 
 import de.sanandrew.mods.sanlib.lib.client.ModelJsonLoader;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.resources.IResourceManager;
@@ -9,7 +9,7 @@ import net.minecraft.resources.IResourceManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModelTurretForcefield<E extends LivingEntity & ITurretInst>
+public class ModelTurretForcefield<E extends LivingEntity & ITurretEntity>
         extends ModelTurretBase<E>
 {
     private ModelRenderer shieldBar;

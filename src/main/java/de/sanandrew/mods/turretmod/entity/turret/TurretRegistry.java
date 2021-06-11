@@ -11,9 +11,8 @@ package de.sanandrew.mods.turretmod.entity.turret;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
-import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.TurretItem;
 import net.minecraft.item.Item;
@@ -25,8 +24,6 @@ import net.minecraftforge.event.RegistryEvent;
 import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
-import java.io.InputStream;
 import java.security.InvalidParameterException;
 import java.util.Collection;
 import java.util.Collections;
@@ -116,8 +113,8 @@ public final class TurretRegistry
 
     @Override
     @Nonnull
-    public ItemStack getItem(ITurretInst turretInst) {
-        ItemStack stack = this.getItem(turretInst.getTurret().getId());
+    public ItemStack getItem(ITurretEntity turretInst) {
+        ItemStack stack = this.getItem(turretInst.getDelegate().getId());
         new TurretItem.TurretStats(turretInst).updateData(stack);
 
         return stack;
@@ -141,10 +138,10 @@ public final class TurretRegistry
         @Nonnull @Override public ResourceLocation getId() { return new ResourceLocation("null"); }
         @Nonnull @Override public ResourceLocation getModelLocation() { return new ResourceLocation("null"); }
         
-        @Override public ResourceLocation getBaseTexture(ITurretInst turretInst) { return null; }
-        @Override public ResourceLocation getGlowTexture(ITurretInst turretInst) { return null; }
-        @Override public SoundEvent getShootSound(ITurretInst turretInst) { return null; }
-        @Override public AxisAlignedBB getRangeBB(ITurretInst turretInst) { return BB; }
+        @Override public ResourceLocation getBaseTexture(ITurretEntity turretInst) { return null; }
+        @Override public ResourceLocation getGlowTexture(ITurretEntity turretInst) { return null; }
+        @Override public SoundEvent getShootSound(ITurretEntity turretInst) { return null; }
+        @Override public AxisAlignedBB getRangeBB(ITurretEntity turretInst) { return BB; }
         @Override public int getTier() { return 0; }
         @Override public float getHealth() { return 0; }
         @Override public int getAmmoCapacity() { return 0; }

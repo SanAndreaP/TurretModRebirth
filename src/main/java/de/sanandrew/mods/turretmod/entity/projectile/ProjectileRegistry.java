@@ -7,9 +7,9 @@
 package de.sanandrew.mods.turretmod.entity.projectile;
 
 import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
-import de.sanandrew.mods.turretmod.api.ammo.IProjectileInst;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectileEntity;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectileRegistry;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
@@ -32,17 +32,17 @@ public final class ProjectileRegistry
         @Nonnull @Override public ResourceLocation getId() { return new ResourceLocation("null"); }
         @Override public float getSpeed() { return 0; }
         @Override public float getArc() { return 0; }
-        @Override public float getDamage(@Nullable ITurretInst turret, @Nullable IProjectileInst projectile, @Nullable Entity target, @Nullable DamageSource damageSrc, float attackModifier) { return 0; }
+        @Override public float getDamage(@Nullable ITurretEntity turret, @Nullable IProjectileEntity projectile, @Nullable Entity target, @Nullable DamageSource damageSrc, float attackModifier) { return 0; }
         @Override public float getKnockbackHorizontal() { return 0; }
         @Override public float getKnockbackVertical() { return 0; }
         @Override public SoundEvent getRicochetSound() { return null; }
         @Override public double getScatterValue() { return 0; }
         @Override public boolean isValid() { return false; }
-        @Override public ResourceLocation getTexture(IProjectileInst projectileInst) { return null; }
+        @Override public ResourceLocation getTexture(IProjectileEntity projectileInst) { return null; }
     };
 
     private final Map<ResourceLocation, IProjectile> projectiles;
-    private final Collection<IProjectile> projList;
+    private final Collection<IProjectile>            projList;
 
     private ProjectileRegistry() {
         this.projectiles = new HashMap<>();

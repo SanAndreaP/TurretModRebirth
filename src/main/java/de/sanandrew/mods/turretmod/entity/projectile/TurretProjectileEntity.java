@@ -13,8 +13,8 @@ import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
-import de.sanandrew.mods.turretmod.api.ammo.IProjectileInst;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectileEntity;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.entity.EntityRegistry;
 import de.sanandrew.mods.turretmod.init.Lang;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
@@ -64,7 +64,7 @@ import java.util.UUID;
 
 public class TurretProjectileEntity
         extends ProjectileEntity
-        implements IEntityAdditionalSpawnData, IProjectileInst
+        implements IEntityAdditionalSpawnData, IProjectileEntity
 {
     private final LastDamagedList lastDamaged = new LastDamagedList();
 
@@ -117,10 +117,10 @@ public class TurretProjectileEntity
         this.setPos(ownerPos.x, ownerPos.y + owner.getEyeHeight() - 0.1D, ownerPos.z);
         this.setHeadingFromVec(shootingVec, this.delegate.getArc());
 
-        if( owner instanceof ITurretInst ) {
-            this.maxDist = ((ITurretInst) owner).getTargetProcessor().getRangeVal() * 4.0D;
+        if( owner instanceof ITurretEntity ) {
+            this.maxDist = ((ITurretEntity) owner).getTargetProcessor().getRangeVal() * 4.0D;
 
-            this.delegate.onShoot((ITurretInst) owner, this);
+            this.delegate.onShoot((ITurretEntity) owner, this);
         }
     }
 
@@ -162,8 +162,8 @@ public class TurretProjectileEntity
 
     @Override
     public void tick() {
-        Entity owner = this.getOwner();
-        ITurretInst ownerTurret = owner instanceof ITurretInst ? (ITurretInst) owner : null;
+        Entity        owner       = this.getOwner();
+        ITurretEntity ownerTurret = owner instanceof ITurretEntity ? (ITurretEntity) owner : null;
         if( (owner != null && this.distanceTo(owner) > this.maxDist) || !this.delegate.isValid() ) {
             this.remove();
             return;
@@ -218,8 +218,8 @@ public class TurretProjectileEntity
 
     @Override
     protected boolean canHitEntity(@Nonnull Entity entity) {
-        Entity owner = this.getOwner();
-        ITurretInst ownerTurret = owner instanceof ITurretInst ? (ITurretInst) owner : null;
+        Entity        owner       = this.getOwner();
+        ITurretEntity ownerTurret = owner instanceof ITurretEntity ? (ITurretEntity) owner : null;
 
         boolean isTarget = true;
         if( ownerTurret != null ) {
@@ -279,8 +279,8 @@ public class TurretProjectileEntity
     protected void onHitBlock(@Nonnull BlockRayTraceResult rtResult) {
         super.onHitBlock(rtResult);
 
-        Entity owner = this.getOwner();
-        ITurretInst ownerTurret = owner instanceof ITurretInst ? (ITurretInst) owner : null;
+        Entity        owner       = this.getOwner();
+        ITurretEntity ownerTurret = owner instanceof ITurretEntity ? (ITurretEntity) owner : null;
 
         if( this.delegate.processImpact(ownerTurret, this, rtResult) && this.delegate.finishImpact(ownerTurret, this, rtResult) ) {
             this.playHitSound();
@@ -294,9 +294,9 @@ public class TurretProjectileEntity
     protected void onHitEntity(@Nonnull EntityRayTraceResult rtResult) {
         super.onHitEntity(rtResult);
 
-        Entity owner = this.getOwner();
-        ITurretInst ownerTurret = owner instanceof ITurretInst ? (ITurretInst) owner : null;
-        Entity target = rtResult.getEntity();
+        Entity        owner       = this.getOwner();
+        ITurretEntity ownerTurret = owner instanceof ITurretEntity ? (ITurretEntity) owner : null;
+        Entity        target      = rtResult.getEntity();
 
         if( this.delegate.processImpact(ownerTurret, this, rtResult) ) {
             DamageSource dmgSource = this.getProjDamageSource(target, owner, this.getTargetType(target, owner));
@@ -339,7 +339,7 @@ public class TurretProjectileEntity
         }
     }
 
-    public static DamageSource getDamageSource(ITurretInst turret, @Nonnull IProjectileInst projectile, IProjectile.TargetType type) {
+    public static DamageSource getDamageSource(ITurretEntity turret, @Nonnull IProjectileEntity projectile, IProjectile.TargetType type) {
         switch( type ) {
             case SPECIAL_ENDERMAN:
                 return new DamageSourceHiddenProjectile(projectile.get(), turret).setThorns().setProjectile();
@@ -353,17 +353,17 @@ public class TurretProjectileEntity
     }
 
     private DamageSource getProjDamageSource(Entity hitEntity, Entity owner, IProjectile.TargetType type) {
-        ITurretInst ownerTurret = owner instanceof ITurretInst ? (ITurretInst) owner : null;
+        ITurretEntity ownerTurret = owner instanceof ITurretEntity ? (ITurretEntity) owner : null;
         return MiscUtils.defIfNull(this.delegate.getCustomDamageSource(ownerTurret, this, hitEntity, type),
                                    () -> getDamageSource(ownerTurret, this, type));
     }
 
     private IProjectile.TargetType getTargetType(Entity entity, Entity owner) {
-        if( !(owner instanceof ITurretInst) ) {
+        if( !(owner instanceof ITurretEntity) ) {
             return IProjectile.TargetType.REGULAR;
         }
 
-        ITurretInst ownerTurret = (ITurretInst) owner;
+        ITurretEntity ownerTurret = (ITurretEntity) owner;
         //TODO: reimplement upgrades
         boolean hasToxinI = false;//this.shooterCache.getUpgradeProcessor().hasUpgrade(Upgrades.ENDER_TOXIN_I);
         boolean hasToxinII = hasToxinI && false;//this.shooterCache.getUpgradeProcessor().hasUpgrade(Upgrades.ENDER_TOXIN_II);
@@ -478,7 +478,7 @@ public class TurretProjectileEntity
     }
 
     @Override
-    public IProjectile getProjectile() {
+    public IProjectile getDelegate() {
         return this.delegate;
     }
 
@@ -494,16 +494,16 @@ public class TurretProjectileEntity
     }
 
     public interface ITurretDamageSource {
-        ITurretInst getTurretInst();
+        ITurretEntity getTurretInst();
     }
 
     public static class DamageSourceHiddenProjectile
             extends EntityDamageSource
             implements ITurretDamageSource
     {
-        private final ITurretInst turretInst;
+        private final ITurretEntity turretInst;
 
-        DamageSourceHiddenProjectile(Entity projectile, ITurretInst turretInst) {
+        DamageSourceHiddenProjectile(Entity projectile, ITurretEntity turretInst) {
             super(TmrConstants.ID + ".turret", projectile);
 
             this.turretInst = turretInst;
@@ -521,18 +521,18 @@ public class TurretProjectileEntity
             return getDeathMessage(attacked, this.turretInst);
         }
 
-        static ITextComponent getDeathMessage(LivingEntity attacked, ITurretInst turret) {
+        static ITextComponent getDeathMessage(LivingEntity attacked, ITurretEntity turret) {
             ITextComponent turretOwner = turret.getOwnerName();
             ITextComponent turretName = turret.get().getName();
 
             if( !Strings.isNullOrEmpty(turretOwner.getString()) ) {
                 turretName = new TranslationTextComponent(Lang.DEATH_OWNER.get(), turretOwner, turretName);
             }
-            return new TranslationTextComponent(Lang.DEATH_TURRET.get(turret.getTurret().getId()), attacked.getDisplayName(), turretName);
+            return new TranslationTextComponent(Lang.DEATH_TURRET.get(turret.getDelegate().getId()), attacked.getDisplayName(), turretName);
         }
 
         @Override
-        public ITurretInst getTurretInst() {
+        public ITurretEntity getTurretInst() {
             return this.turretInst;
         }
     }
@@ -541,9 +541,9 @@ public class TurretProjectileEntity
             extends IndirectEntityDamageSource
             implements ITurretDamageSource
     {
-        private final ITurretInst turretInst;
+        private final ITurretEntity turretInst;
 
-        DamageSourceIndirectProjectile(Entity projectile, ITurretInst turretInst) {
+        DamageSourceIndirectProjectile(Entity projectile, ITurretEntity turretInst) {
             super(TmrConstants.ID + ".turret", projectile, turretInst != null ? turretInst.get() : projectile);
             this.setProjectile();
 
@@ -559,7 +559,7 @@ public class TurretProjectileEntity
         }
 
         @Override
-        public ITurretInst getTurretInst() {
+        public ITurretEntity getTurretInst() {
             return this.turretInst;
         }
     }

@@ -25,20 +25,20 @@ import java.io.ObjectOutputStream;
 public interface ITurret
         extends IRegistryObject, Comparable<ITurret>
 {
-    default void entityInit(ITurretInst turretInst) { }
+    default void entityInit(ITurretEntity turretInst) { }
 
-    default void applyEntityAttributes(ITurretInst turretInst) { }
+    default void applyEntityAttributes(ITurretEntity turretInst) { }
 
     @Nonnull
     ResourceLocation getModelLocation();
 
-    ResourceLocation getBaseTexture(ITurretInst turretInst);
+    ResourceLocation getBaseTexture(ITurretEntity turretInst);
 
-    ResourceLocation getGlowTexture(ITurretInst turretInst);
+    ResourceLocation getGlowTexture(ITurretEntity turretInst);
 
-    SoundEvent getShootSound(ITurretInst turretInst);
+    SoundEvent getShootSound(ITurretEntity turretInst);
 
-    AxisAlignedBB getRangeBB(@Nullable ITurretInst turretInst);
+    AxisAlignedBB getRangeBB(@Nullable ITurretEntity turretInst);
 
     /**
      * <p>Returns the classpath to a custom render class. If no custom class is needed, this returns <tt>null</tt>.</p>
@@ -81,19 +81,19 @@ public interface ITurret
 
     int getTier();
 
-    default void tick(ITurretInst turretInst) { }
+    default void tick(ITurretEntity turretInst) { }
 
-    default void writeSpawnData(ITurretInst turretInst, PacketBuffer buf) { }
+    default void writeSpawnData(ITurretEntity turretInst, PacketBuffer buf) { }
 
-    default void readSpawnData(ITurretInst turretInst, PacketBuffer buf) { }
+    default void readSpawnData(ITurretEntity turretInst, PacketBuffer buf) { }
 
-    default void writeSyncData(ITurretInst turretInst, ObjectOutputStream stream) throws IOException { }
+    default void writeSyncData(ITurretEntity turretInst, ObjectOutputStream stream) throws IOException { }
 
-    default void readSyncData(ITurretInst turretInst, ObjectInputStream stream) throws IOException { }
+    default void readSyncData(ITurretEntity turretInst, ObjectInputStream stream) throws IOException { }
 
-    default void onSave(ITurretInst turretInst, CompoundNBT nbt) { }
+    default void onSave(ITurretEntity turretInst, CompoundNBT nbt) { }
 
-    default void onLoad(ITurretInst turretInst, CompoundNBT nbt) { }
+    default void onLoad(ITurretEntity turretInst, CompoundNBT nbt) { }
 
     default float getDeactiveHeadPitch() {
         return 30.0F;
@@ -103,23 +103,23 @@ public interface ITurret
         return false;
     }
 
-    default SoundEvent getIdleSound(ITurretInst turretInst) {
+    default SoundEvent getIdleSound(ITurretEntity turretInst) {
         return null;
     }
 
-    default SoundEvent getHurtSound(ITurretInst turretInst) {
+    default SoundEvent getHurtSound(ITurretEntity turretInst) {
         return null;
     }
 
-    default SoundEvent getDeathSound(ITurretInst turretInst) {
+    default SoundEvent getDeathSound(ITurretEntity turretInst) {
         return null;
     }
 
-    default SoundEvent getEmptySound(ITurretInst turretInst) {
+    default SoundEvent getEmptySound(ITurretEntity turretInst) {
         return null;
     }
 
-    default SoundEvent getPickupSound(ITurretInst turretInst) {
+    default SoundEvent getPickupSound(ITurretEntity turretInst) {
         return null;
     }
 

@@ -12,8 +12,8 @@ import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
+import de.sanandrew.mods.turretmod.entity.turret.TurretEntity;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -81,7 +81,7 @@ public class TurretControlUnit
     public ActionResult<ItemStack> use(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack heldStack = player.getItemInHand(hand);
         if( ItemStackUtils.isItem(heldStack, ItemRegistry.TURRET_CONTROL_UNIT) ) {
-            ITurretInst turretInst = getBoundTurret(heldStack, world);
+            ITurretEntity turretInst = getBoundTurret(heldStack, world);
             if( turretInst != null ) {
                 if( !world.isClientSide ) {
                     if( player.isCrouching() ) {
@@ -108,7 +108,7 @@ public class TurretControlUnit
         return null;
     }
 
-    public static boolean isHeldTcuBoundToTurret(PlayerEntity player, ITurretInst turretInst) {
+    public static boolean isHeldTcuBoundToTurret(PlayerEntity player, ITurretEntity turretInst) {
         if( player == null ) {
             return false;
         }
@@ -120,7 +120,7 @@ public class TurretControlUnit
                || TurretControlUnit.getBoundTurret(oh, player.level) == turretInst;
     }
 
-    public static ITurretInst getBoundTurret(ItemStack stack, World world) {
+    public static ITurretEntity getBoundTurret(ItemStack stack, World world) {
         if( !ItemStackUtils.isItem(stack, ItemRegistry.TURRET_CONTROL_UNIT) ) {
             return null;
         }
@@ -128,15 +128,15 @@ public class TurretControlUnit
         UUID id = getBoundID(stack);
         if( id != null ) {
             Entity entity = EntityUtils.getEntityByUUID(world, id);
-            if( entity instanceof EntityTurret ) {
-                return (EntityTurret) entity;
+            if( entity instanceof TurretEntity ) {
+                return (TurretEntity) entity;
             }
         }
 
         return null;
     }
 
-    public static void bindTurret(ItemStack stack, ITurretInst turretInst) {
+    public static void bindTurret(ItemStack stack, ITurretEntity turretInst) {
         if( !ItemStackUtils.isItem(stack, ItemRegistry.TURRET_CONTROL_UNIT) ) {
             return;
         }

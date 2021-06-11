@@ -16,7 +16,7 @@ import de.sanandrew.mods.sanlib.lib.util.ReflectionUtils;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
 import de.sanandrew.mods.turretmod.api.turret.IVariant;
 import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
@@ -77,15 +77,15 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-public class EntityTurret
+public class TurretEntity
         extends MobEntity
-        implements IEntityAdditionalSpawnData, ITurretInst
+        implements IEntityAdditionalSpawnData, ITurretEntity
 {
     private static final AxisAlignedBB UPWARDS_BLOCK = new AxisAlignedBB(0.1D, 0.99D, 0.1D, 1.0D, 1.0D, 1.0D);
 
-    private static final DataParameter<Boolean> DATA_SHOT_CHANGED = EntityDataManager.defineId(EntityTurret.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<String>  DATA_VARIANT   = EntityDataManager.defineId(EntityTurret.class, DataSerializers.STRING);
-    private static final DataParameter<Boolean> DATA_IS_ACTIVE = EntityDataManager.defineId(EntityTurret.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> DATA_SHOT_CHANGED = EntityDataManager.defineId(TurretEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<String>  DATA_VARIANT   = EntityDataManager.defineId(TurretEntity.class, DataSerializers.STRING);
+    private static final DataParameter<Boolean> DATA_IS_ACTIVE = EntityDataManager.defineId(TurretEntity.class, DataSerializers.BOOLEAN);
 
     public static final String NBT_TURRET_ID      = "TurretId";
     public static final String NBT_IS_ACTIVE      = "IsActive";
@@ -99,8 +99,8 @@ public class EntityTurret
 //    private final UpgradeProcessor upgProc;
 
     @Nonnull
-    private ITurret        delegate;
-    private boolean        showRange;
+    private ITurret delegate;
+    private boolean showRange;
     public  boolean        inGui;
     @Nonnull
     private UUID           ownerId;
@@ -109,7 +109,7 @@ public class EntityTurret
     private boolean        prevShotChng;
     private ITurretRAM     turretRAM;
 
-    public EntityTurret(EntityType<EntityTurret> type, World world) {
+    public TurretEntity(EntityType<TurretEntity> type, World world) {
         super(type, world);
         this.ownerId = UuidUtils.EMPTY_UUID;
         this.ownerName = StringTextComponent.EMPTY;
@@ -120,7 +120,7 @@ public class EntityTurret
         this.delegate = TurretRegistry.INSTANCE.getDefault();
     }
 
-    public EntityTurret(World world, ITurret delegate, Vector3d pos) {
+    public TurretEntity(World world, ITurret delegate, Vector3d pos) {
         this(EntityRegistry.TURRET, world);
 
         this.loadDelegate(delegate);
@@ -132,7 +132,7 @@ public class EntityTurret
         this.yHeadRotO = this.yBodyRot;
     }
 
-    public EntityTurret(World world, PlayerEntity owner, ITurret delegate, Vector3d pos) {
+    public TurretEntity(World world, PlayerEntity owner, ITurret delegate, Vector3d pos) {
         this(world, delegate, pos);
 
         this.ownerId = owner.getUUID();
@@ -243,7 +243,7 @@ public class EntityTurret
 //region Getters/Setters
     @Override
     protected float getStandingEyeHeight(@Nonnull Pose poseIn, @Nonnull EntitySize sizeIn) {
-        return MiscUtils.applyNonNull(this.delegate, t -> t.getEyeHeight(poseIn, sizeIn), 0.0F);
+        return this.delegate.getEyeHeight(poseIn, sizeIn);
     }
 
     @Override
@@ -402,8 +402,9 @@ public class EntityTurret
         return this;
     }
 
+    @Nonnull
     @Override
-    public ITurret getTurret() {
+    public ITurret getDelegate() {
         return this.delegate;
     }
 
@@ -447,8 +448,8 @@ public class EntityTurret
     }
 
     private static boolean isAABBInside(AxisAlignedBB bb1) {
-        return bb1.minX <= EntityTurret.UPWARDS_BLOCK.minX && bb1.minY <= EntityTurret.UPWARDS_BLOCK.minY && bb1.minZ <= EntityTurret.UPWARDS_BLOCK.minZ
-               && bb1.maxX >= EntityTurret.UPWARDS_BLOCK.maxX && bb1.maxY >= EntityTurret.UPWARDS_BLOCK.maxY && bb1.maxZ >= EntityTurret.UPWARDS_BLOCK.maxZ;
+        return bb1.minX <= TurretEntity.UPWARDS_BLOCK.minX && bb1.minY <= TurretEntity.UPWARDS_BLOCK.minY && bb1.minZ <= TurretEntity.UPWARDS_BLOCK.minZ
+               && bb1.maxX >= TurretEntity.UPWARDS_BLOCK.maxX && bb1.maxY >= TurretEntity.UPWARDS_BLOCK.maxY && bb1.maxZ >= TurretEntity.UPWARDS_BLOCK.maxZ;
     }
 
     public static boolean canTurretBePlaced(ITurret delegate, World level, BlockPos pos, boolean doBlockCheckOnly) {
@@ -468,7 +469,7 @@ public class EntityTurret
 
         if( !doBlockCheckOnly ) {
             AxisAlignedBB aabb = new AxisAlignedBB(posPlaced).move(0, buoyant ? -2 : 0, 0);
-            return level.getEntitiesOfClass(EntityTurret.class, aabb).isEmpty();
+            return level.getEntitiesOfClass(TurretEntity.class, aabb).isEmpty();
         }
 
         return true;
@@ -731,8 +732,8 @@ public class EntityTurret
 
         compound.put(NBT_OWNER, new CompoundNBT()
         {{
-            this.putUUID(NBT_OWNER_ID, EntityTurret.this.ownerId);
-            this.putString(NBT_OWNER_NAME, ITextComponent.Serializer.toJson(EntityTurret.this.ownerName));
+            this.putUUID(NBT_OWNER_ID, TurretEntity.this.ownerId);
+            this.putString(NBT_OWNER_NAME, ITextComponent.Serializer.toJson(TurretEntity.this.ownerName));
         }});
 
         if( this.delegate instanceof IVariantHolder ) {
@@ -804,8 +805,8 @@ public class EntityTurret
         this.loadDelegate(TurretRegistry.INSTANCE.get(id));
     }
 
-    private void loadDelegate(ITurret turret) {
-        this.delegate = turret;
+    private void loadDelegate(ITurret delegate) {
+        this.delegate = delegate;
         this.delegate.entityInit(this);
         this.delegate.applyEntityAttributes(this);
 

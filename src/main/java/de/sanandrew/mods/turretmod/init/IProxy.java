@@ -1,9 +1,7 @@
 package de.sanandrew.mods.turretmod.init;
 
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.resources.IResource;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -18,7 +16,9 @@ public interface IProxy
 
     void fillPlayerListClient(Map<UUID, ITextComponent> map);
 
-    boolean checkTurretGlowing(ITurretInst turretInst);
+    boolean checkTurretGlowing(ITurretEntity turretInst);
 
     PlayerEntity getNetworkPlayer(Supplier<NetworkEvent.Context> networkContextSupplier);
+
+    IRenderClassProvider getRenderClassProvider();
 }

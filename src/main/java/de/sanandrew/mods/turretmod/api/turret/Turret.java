@@ -1,7 +1,6 @@
 package de.sanandrew.mods.turretmod.api.turret;
 
 import de.sanandrew.mods.turretmod.api.ResourceLocations;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -98,47 +97,47 @@ public abstract class Turret
     }
 
     @Override
-    public ResourceLocation getBaseTexture(ITurretInst turretInst) {
+    public ResourceLocation getBaseTexture(ITurretEntity turretInst) {
         return this.baseTexture;
     }
 
     @Override
-    public ResourceLocation getGlowTexture(ITurretInst turretInst) {
+    public ResourceLocation getGlowTexture(ITurretEntity turretInst) {
         return this.glowTexture;
     }
 
     @Override
-    public SoundEvent getShootSound(ITurretInst turretInst) {
+    public SoundEvent getShootSound(ITurretEntity turretInst) {
         return this.shootSound = lazyLoad(this.soundIds.shootSound, this.shootSound);
     }
 
     @Override
-    public SoundEvent getEmptySound(ITurretInst turretInst) {
+    public SoundEvent getEmptySound(ITurretEntity turretInst) {
         return this.emptySound = lazyLoad(this.soundIds.emptySound, this.emptySound);
     }
 
     @Override
-    public SoundEvent getIdleSound(ITurretInst turretInst) {
+    public SoundEvent getIdleSound(ITurretEntity turretInst) {
         return this.idleSound = lazyLoad(this.soundIds.idleSound, this.idleSound);
     }
 
     @Override
-    public SoundEvent getHurtSound(ITurretInst turretInst) {
+    public SoundEvent getHurtSound(ITurretEntity turretInst) {
         return this.hurtSound = lazyLoad(this.soundIds.hurtSound, this.hurtSound);
     }
 
     @Override
-    public SoundEvent getDeathSound(ITurretInst turretInst) {
+    public SoundEvent getDeathSound(ITurretEntity turretInst) {
         return this.deathSound = lazyLoad(this.soundIds.deathSound, this.deathSound);
     }
 
     @Override
-    public SoundEvent getPickupSound(ITurretInst turretInst) {
+    public SoundEvent getPickupSound(ITurretEntity turretInst) {
         return this.pickupSound = lazyLoad(this.soundIds.pickupSound, this.pickupSound);
     }
 
     @Override
-    public AxisAlignedBB getRangeBB(@Nullable ITurretInst turretInst) {
+    public AxisAlignedBB getRangeBB(@Nullable ITurretEntity turretInst) {
         return this.range;
     }
 

@@ -10,7 +10,7 @@ package de.sanandrew.mods.turretmod.client.renderer.turret.layer;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.client.renderer.turret.TurretRenderBase;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -21,7 +21,7 @@ import net.minecraft.entity.LivingEntity;
 
 import javax.annotation.Nonnull;
 
-public class LayerTurretGlow<E extends LivingEntity & ITurretInst, M extends EntityModel<E>>
+public class LayerTurretGlow<E extends LivingEntity & ITurretEntity, M extends EntityModel<E>>
         extends LayerRenderer<E, M>
 {
     public LayerTurretGlow(TurretRenderBase<E, M> turretRenderer) {
@@ -31,7 +31,7 @@ public class LayerTurretGlow<E extends LivingEntity & ITurretInst, M extends Ent
     public void render(@Nonnull MatrixStack stack, IRenderTypeBuffer buffer, int packedLight, E turret,
                        float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
     {
-        IVertexBuilder ivertexbuilder = buffer.getBuffer(RenderType.eyes(turret.getTurret().getGlowTexture(turret)));
+        IVertexBuilder ivertexbuilder = buffer.getBuffer(RenderType.eyes(turret.getDelegate().getGlowTexture(turret)));
         this.getParentModel().renderToBuffer(stack, ivertexbuilder, 0xF00000, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
     }
 }

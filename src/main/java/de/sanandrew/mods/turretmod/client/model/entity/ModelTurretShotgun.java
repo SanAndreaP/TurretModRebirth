@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.client.model.entity;
 
 import de.sanandrew.mods.sanlib.lib.client.ModelJsonLoader;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.resources.IResourceManager;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ModelTurretShotgun<E extends LivingEntity & ITurretInst>
+public class ModelTurretShotgun<E extends LivingEntity & ITurretEntity>
 		extends ModelTurretBase<E>
 {
 	private ModelRenderer barrel;

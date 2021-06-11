@@ -6,12 +6,12 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.client.renderer.turret;
 
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.client.model.entity.ModelTurretForcefield;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.entity.LivingEntity;
 
-public class TurretRenderShieldGen<E extends LivingEntity & ITurretInst>
+public class TurretRenderShieldGen<E extends LivingEntity & ITurretEntity>
         extends TurretRenderBase<E, ModelTurretForcefield<E>>
 {
     public TurretRenderShieldGen(EntityRendererManager manager) {

@@ -14,7 +14,7 @@ import net.minecraft.util.ResourceLocation;
 
 public final class Projectiles
 {
-    public static final IProjectile CB_BOLT       = new CrossbowBolt(new ResourceLocation(TmrConstants.ID, "bolt"));
+    public static final IProjectile CB_BOLT = new CrossbowBolt(new ResourceLocation(TmrConstants.ID, "bolt"));
 //    public static final IProjectile HARPOON       = new Harpoon();
 //    public static final IProjectile CRYO_BALL_I   = new CryoBall(CryoBall.ID1);
 //    public static final IProjectile CRYO_BALL_II  = new CryoBall(CryoBall.ID2);

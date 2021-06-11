@@ -11,12 +11,11 @@ package de.sanandrew.mods.turretmod.network;
 import de.sanandrew.mods.sanlib.lib.network.SimpleMessage;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -41,7 +40,7 @@ public class UpdateTurretStatePacket
     private final boolean   isShooting;
     private final byte[]    delegateData;
 
-    public UpdateTurretStatePacket(ITurretInst turret) {
+    public UpdateTurretStatePacket(ITurretEntity turret) {
         this.turretId = turret.get().getId();
         ITargetProcessor tgtProc = turret.getTargetProcessor();
         if( tgtProc.hasTarget() ) {
@@ -55,7 +54,7 @@ public class UpdateTurretStatePacket
 
         byte[] dData = new byte[0];
         try( ByteArrayOutputStream bos = new ByteArrayOutputStream(); ObjectOutputStream oos = new ObjectOutputStream(bos) ) {
-            turret.getTurret().writeSyncData(turret, oos);
+            turret.getDelegate().writeSyncData(turret, oos);
             oos.close();
             dData = bos.toByteArray();
         } catch( IOException e ) {
@@ -93,13 +92,13 @@ public class UpdateTurretStatePacket
         PlayerEntity player = TurretModRebirth.PROXY.getNetworkPlayer(supplier);
         if( player != null ) {
             Entity e = player.level.getEntity(this.turretId);
-            if( e instanceof ITurretInst ) {
-                ITurretInst turret = (ITurretInst) e;
+            if( e instanceof ITurretEntity ) {
+                ITurretEntity turret = (ITurretEntity) e;
                 ((TargetProcessor) turret.getTargetProcessor()).updateClientState(this.entityToAttackId, this.currAmmoCount, this.ammoStack, this.isShooting);
 
                 if( this.delegateData.length > 0 ) {
                     try( ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(this.delegateData)) ) {
-                        turret.getTurret().readSyncData(turret, ois);
+                        turret.getDelegate().readSyncData(turret, ois);
                     } catch( IOException ex ) {
                         TmrConstants.LOG.log(Level.ERROR, "Cannot sync turret instance", ex);
                     }

@@ -21,7 +21,7 @@ public interface IAmmunitionRegistry
     /**
      * <p>Returns an unmodifiable view of the objects registered in this registry, compatible with the given turret.</p>
      *
-     * @param turret The turret which should be filtered
+     * @param turret The turret delegate which should be filtered
      * @return an unmodifiable view of registered objects compatible with this turret.
      */
     @Nonnull

@@ -9,7 +9,7 @@ package de.sanandrew.mods.turretmod.client.renderer.turret;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.client.renderer.turret.layer.LayerTurretGlow;
 import de.sanandrew.mods.turretmod.client.renderer.turret.layer.LayerTurretUpgrades;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -27,7 +27,7 @@ import org.lwjgl.opengl.GL11;
 import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
-public class TurretRenderBase<T extends LivingEntity & ITurretInst, M extends EntityModel<T>>
+public class TurretRenderBase<T extends LivingEntity & ITurretEntity, M extends EntityModel<T>>
         extends LivingRenderer<T, M>
 {
     public TurretRenderBase(EntityRendererManager manager, Supplier<M> modelFactory) {
@@ -56,10 +56,10 @@ public class TurretRenderBase<T extends LivingEntity & ITurretInst, M extends En
     @Nonnull
     @Override
     public ResourceLocation getTextureLocation(@Nonnull T entity) {
-        return entity.getTurret().getBaseTexture(entity);
+        return entity.getDelegate().getBaseTexture(entity);
     }
 
-    protected static void renderTurretRange(ITurretInst turret, MatrixStack stack) {
+    protected static void renderTurretRange(ITurretEntity turret, MatrixStack stack) {
         if( turret.shouldShowRange() ) {
             RenderSystem.disableTexture();
 

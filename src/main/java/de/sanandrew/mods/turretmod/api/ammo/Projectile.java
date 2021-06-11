@@ -1,6 +1,6 @@
 package de.sanandrew.mods.turretmod.api.ammo;
 
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
@@ -47,7 +47,7 @@ public abstract class Projectile
     }
 
     @Override
-    public float getDamage(@Nullable ITurretInst turret, @Nullable IProjectileInst projectile, @Nullable Entity target, @Nullable DamageSource damageSrc, float attackModifier) {
+    public float getDamage(@Nullable ITurretEntity turret, @Nullable IProjectileEntity projectile, @Nullable Entity target, @Nullable DamageSource damageSrc, float attackModifier) {
         return this.damage * attackModifier;
     }
 
@@ -72,7 +72,7 @@ public abstract class Projectile
     }
 
     @Override
-    public ResourceLocation getTexture(IProjectileInst projectileInst) {
+    public ResourceLocation getTexture(IProjectileEntity projectileInst) {
         return this.texture;
     }
 

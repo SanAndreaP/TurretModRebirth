@@ -16,7 +16,7 @@ import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.api.turret.TargetingEvent;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.entity.projectile.TurretProjectileEntity;
@@ -56,8 +56,8 @@ public final class TargetProcessor
         implements ITargetProcessor
 {
     private final Map<ResourceLocation, Boolean> entityTargetList;
-    private final Map<UUID, Boolean>             playerTargetList;
-    private final ITurretInst                    turret;
+    private final Map<UUID, Boolean> playerTargetList;
+    private final ITurretEntity      turret;
 
     private int       ammoCount;
     @Nonnull
@@ -73,7 +73,7 @@ public final class TargetProcessor
 
     private long processTicks = 0;
 
-    TargetProcessor(ITurretInst turret) {
+    TargetProcessor(ITurretEntity turret) {
         this.entityTargetList = new HashMap<>();
         this.playerTargetList = new HashMap<>();
         this.turret = turret;
@@ -117,7 +117,7 @@ public final class TargetProcessor
                     return false;
                 }
 
-                int provided = type.getAmmoCapacity();
+                int provided = type.getCapacity();
                 int providedStack = stack.getCount() * provided; //provides 4*16=64, needs 56 = 56 / 64 * 4
                 if( providedStack - maxCapacity > 0 ) {
                     int stackSub = MathHelper.floor(maxCapacity / (double) providedStack * stack.getCount());
@@ -179,8 +179,8 @@ public final class TargetProcessor
 
                 while( decrAmmo > 0 && type.isValid() ) {
                     ItemStack stack = this.ammoStack.copy();
-                    stack.setCount(Math.min(decrAmmo / type.getAmmoCapacity(), maxStackSize));
-                    decrAmmo -= stack.getCount() * type.getAmmoCapacity();
+                    stack.setCount(Math.min(decrAmmo / type.getCapacity(), maxStackSize));
+                    decrAmmo -= stack.getCount() * type.getCapacity();
                     if( stack.getCount() <= 0 ) {
                         break;
                     }
@@ -212,8 +212,8 @@ public final class TargetProcessor
 
         while( this.ammoCount > 0 && type.isValid() ) {
             ItemStack stack = this.ammoStack.copy();
-            stack.setCount(Math.min(this.ammoCount / type.getAmmoCapacity(), maxStackSize));
-            this.ammoCount -= stack.getCount() * type.getAmmoCapacity();
+            stack.setCount(Math.min(this.ammoCount / type.getCapacity(), maxStackSize));
+            this.ammoCount -= stack.getCount() * type.getCapacity();
             if( stack.getCount() <= 0 ) {
                 this.ammoCount = 0;
                 break;
@@ -275,7 +275,7 @@ public final class TargetProcessor
                 if( this.isAmmoTypeEqual(stackType, AmmunitionRegistry.INSTANCE.getSubtype(stack)) ) {
                     return this.ammoCount < this.getMaxAmmoCapacity() ? ApplyType.ADD : ApplyType.NOT_COMPATIBLE;
                 } else {
-                    Collection<IAmmunition> types = AmmunitionRegistry.INSTANCE.getAll(this.turret.getTurret());
+                    Collection<IAmmunition> types = AmmunitionRegistry.INSTANCE.getAll(this.turret.getDelegate());
                     return types.contains(stackType) ? ApplyType.REPLACE : ApplyType.NOT_COMPATIBLE;
                 }
             }
@@ -516,7 +516,7 @@ public final class TargetProcessor
 
     private boolean isEntityValidTarget(Entity entity, AxisAlignedBB aabb) {
         return isEntityTargeted(entity) && entity.isAlive() && entity.getBoundingBox().intersects(aabb)
-               && (this.turret.getTurret().canSeeThroughBlocks() || this.turret.get().canSee(entity));
+               && (this.turret.getDelegate().canSeeThroughBlocks() || this.turret.get().canSee(entity));
     }
 
     @Override
@@ -530,7 +530,7 @@ public final class TargetProcessor
     }
 
     @Override
-    public ITurretInst getTurretInst() {
+    public ITurretEntity getTurretInst() {
         return this.turret;
     }
 

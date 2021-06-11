@@ -10,7 +10,7 @@ public abstract class RenderStateAccessor
     public static final RenderState.ShadeModelState SMOOTH_SHADE = RenderState.SMOOTH_SHADE;
     public static final LightmapState NO_LIGHTMAP = RenderState.NO_LIGHTMAP;
 
-    public RenderStateAccessor(String p_i225973_1_, Runnable p_i225973_2_, Runnable p_i225973_3_) {
+    private RenderStateAccessor(String p_i225973_1_, Runnable p_i225973_2_, Runnable p_i225973_3_) {
         super(p_i225973_1_, p_i225973_2_, p_i225973_3_);
     }
 }

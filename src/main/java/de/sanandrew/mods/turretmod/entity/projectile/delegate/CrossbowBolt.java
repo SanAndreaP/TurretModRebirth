@@ -2,9 +2,10 @@ package de.sanandrew.mods.turretmod.entity.projectile.delegate;
 
 import com.google.common.base.Strings;
 import de.sanandrew.mods.turretmod.api.ResourceLocations;
-import de.sanandrew.mods.turretmod.api.ammo.IProjectileInst;
+import de.sanandrew.mods.turretmod.api.ammo.IProjectileEntity;
 import de.sanandrew.mods.turretmod.api.ammo.Projectile;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
+import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.item.ammo.Ammunitions;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -29,7 +30,7 @@ public class CrossbowBolt
     }
 
     @Override
-    public void onPostEntityDamage(@Nullable ITurretInst turret, @Nonnull IProjectileInst projectile, Entity target, DamageSource damageSrc) {
+    public void onPostEntityDamage(@Nullable ITurretEntity turret, @Nonnull IProjectileEntity projectile, Entity target, DamageSource damageSrc) {
         if( target instanceof LivingEntity && projectile.getAmmunition() == Ammunitions.TIPPED_BOLT ) {
             String subtype = projectile.getAmmunitionSubtype();
             if( !Strings.isNullOrEmpty(subtype) ) {
@@ -43,5 +44,10 @@ public class CrossbowBolt
                 }
             }
         }
+    }
+
+    @Override
+    public String getCustomRenderClass() {
+        return TurretModRebirth.PROXY.getRenderClassProvider().getCrossbowBoltRenderClass();
     }
 }

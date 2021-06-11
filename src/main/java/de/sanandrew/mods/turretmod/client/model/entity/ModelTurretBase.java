@@ -13,7 +13,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import de.sanandrew.mods.sanlib.lib.client.ModelJsonHandler;
 import de.sanandrew.mods.sanlib.lib.client.ModelJsonLoader;
 import de.sanandrew.mods.turretmod.api.ResourceLocations;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 
-public class ModelTurretBase<E extends LivingEntity & ITurretInst>
+public class ModelTurretBase<E extends LivingEntity & ITurretEntity>
 		extends EntityModel<E>
 		implements ModelJsonHandler<ModelTurretBase<E>, ModelJsonLoader.JsonBase>
 {

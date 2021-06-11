@@ -10,7 +10,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import de.sanandrew.mods.sanlib.lib.XorShiftRandom;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
 import de.sanandrew.mods.turretmod.client.util.RenderStateAccessor;
 import net.minecraft.client.Minecraft;
@@ -27,11 +27,11 @@ import java.util.Queue;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class LayerTurretShieldLightning<E extends LivingEntity & ITurretInst, M extends EntityModel<E>>
+public class LayerTurretShieldLightning<E extends LivingEntity & ITurretEntity, M extends EntityModel<E>>
         extends LayerRenderer<E, M>
 {
-    private static final WeakHashMap<ITurretInst, Queue<RenderLightning>> LIGHTNING_RENDERS = new WeakHashMap<>();
-    private static final RenderType LIGHTNING_TYPE = RenderType.create("tf_lightning", DefaultVertexFormats.POSITION_COLOR, 7, 256, false, true,
+    private static final WeakHashMap<ITurretEntity, Queue<RenderLightning>> LIGHTNING_RENDERS = new WeakHashMap<>();
+    private static final RenderType                                         LIGHTNING_TYPE    = RenderType.create("tf_lightning", DefaultVertexFormats.POSITION_COLOR, 7, 256, false, true,
                                                                          RenderType.State.builder()
                                                                                          .setWriteMaskState(RenderStateAccessor.COLOR_DEPTH_WRITE)
                                                                                          .setTransparencyState(RenderStateAccessor.LIGHTNING_TRANSPARENCY)

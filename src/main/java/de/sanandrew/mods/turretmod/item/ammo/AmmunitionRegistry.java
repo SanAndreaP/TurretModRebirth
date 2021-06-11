@@ -15,7 +15,7 @@ import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.entity.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import net.minecraft.item.Item;
@@ -49,9 +49,9 @@ public final class AmmunitionRegistry
         private final ResourceLocation id = new ResourceLocation("null");
 
         @Nonnull @Override public ResourceLocation getId()                               { return this.id; }
-        @Nonnull @Override public ITurret          getTurret()                           { return TurretRegistry.INSTANCE.getDefault(); }
-        @Override          public int              getAmmoCapacity()                     { return 0; }
-        @Override          public IProjectile      getProjectile(ITurretInst turretInst) { return null; }
+        @Nonnull @Override public ITurret getApplicableTurret()                           { return TurretRegistry.INSTANCE.getDefault(); }
+        @Override          public int getCapacity()                     { return 0; }
+        @Override          public IProjectile getProjectile(ITurretEntity turret) { return null; }
         @Override          public boolean          isValid()                             { return false; }
     };
 
@@ -104,13 +104,13 @@ public final class AmmunitionRegistry
             return;
         }
 
-        if( obj.getAmmoCapacity() < 1 ) {
+        if( obj.getCapacity() < 1 ) {
             TmrConstants.LOG.log(Level.ERROR, String.format("Ammo ID %s provides less than 1 round!", obj.getId()), new InvalidParameterException());
             return;
         }
 
         this.ammoTypes.put(obj.getId(), obj);
-        this.ammoTypesFromTurret.computeIfAbsent(obj.getTurret(), (t) -> new UModList<>()).mList.add(obj);
+        this.ammoTypesFromTurret.computeIfAbsent(obj.getApplicableTurret(), (t) -> new UModList<>()).mList.add(obj);
 
         ItemRegistry.TURRET_AMMO.put(obj.getId(), new AmmoItem(obj.getId()));
     }

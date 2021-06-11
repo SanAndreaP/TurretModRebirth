@@ -7,10 +7,10 @@
 package de.sanandrew.mods.turretmod.item;
 
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
-import de.sanandrew.mods.turretmod.api.turret.ITurretInst;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.api.turret.IVariant;
 import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
-import de.sanandrew.mods.turretmod.entity.turret.EntityTurret;
+import de.sanandrew.mods.turretmod.entity.turret.TurretEntity;
 import de.sanandrew.mods.turretmod.entity.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.variant.VariantContainer;
 import de.sanandrew.mods.turretmod.init.Lang;
@@ -47,7 +47,7 @@ public class TurretItem
         extends Item
 {
     public final ResourceLocation turretId;
-    private ITurret turretCache;
+    private      ITurret          turretCache;
 
     public TurretItem(ResourceLocation turretId) {
         super(new Properties().tab(TmrItemGroups.TURRETS));
@@ -84,9 +84,9 @@ public class TurretItem
             BlockPos placingOn = context.getClickedPos().relative(context.getClickedFace());
 
             ItemStack itemStack = context.getItemInHand();
-            if( !this.getTurret().isBuoy() && EntityTurret.canTurretBePlaced(this.turretCache, level, placingOn, false) ) {
+            if( !this.getTurret().isBuoy() && TurretEntity.canTurretBePlaced(this.turretCache, level, placingOn, false) ) {
                 PlayerEntity player = context.getPlayer();
-                EntityTurret bob = spawnTurret(level, this.turretCache, placingOn, player);
+                TurretEntity bob    = spawnTurret(level, this.turretCache, placingOn, player);
                 new TurretStats(itemStack.getTag()).apply(bob);
 
                 if( player == null || player.isCreative() ) {
@@ -120,8 +120,9 @@ public class TurretItem
                 }
 
                 BlockPos lowerPos = blockPos.below();
-                if( this.getTurret().isBuoy() && isBlockLiquid(level, blockPos) && isBlockLiquid(level, lowerPos) && EntityTurret.canTurretBePlaced(this.turretCache, level, lowerPos, false) ) {
-                    EntityTurret susan = spawnTurret(level, this.turretCache, lowerPos, player);
+                if( this.getTurret().isBuoy() && isBlockLiquid(level, blockPos) && isBlockLiquid(level, lowerPos) && TurretEntity
+                        .canTurretBePlaced(this.turretCache, level, lowerPos, false) ) {
+                    TurretEntity susan = spawnTurret(level, this.turretCache, lowerPos, player);
                     new TurretStats(stack.getTag()).apply(susan);
 
                     if( !player.isCreative() ) {
@@ -175,13 +176,13 @@ public class TurretItem
     }
 
     @Nonnull
-    private static EntityTurret spawnTurret(World level, ITurret turret, BlockPos pos, PlayerEntity owner) {
+    private static TurretEntity spawnTurret(World level, ITurret turret, BlockPos pos, PlayerEntity owner) {
         return spawnTurret(level, turret, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, owner);
     }
 
     @Nonnull
-    private static EntityTurret spawnTurret(World level, ITurret turret, double x, double y, double z, PlayerEntity owner) {
-        EntityTurret turretE = new EntityTurret(level, owner, turret, new Vector3d(x, y, z));
+    private static TurretEntity spawnTurret(World level, ITurret turret, double x, double y, double z, PlayerEntity owner) {
+        TurretEntity turretE = new TurretEntity(level, owner, turret, new Vector3d(x, y, z));
         level.addFreshEntity(turretE);
         turretE.playAmbientSound();
 
@@ -194,9 +195,9 @@ public class TurretItem
         public final ITextComponent   name;
         public final String variant;
 
-        public TurretStats(ITurretInst turretInst) {
-            LivingEntity bob = turretInst.get();
-            ITurret turret = turretInst.getTurret();
+        public TurretStats(ITurretEntity turretInst) {
+            LivingEntity bob    = turretInst.get();
+            ITurret      turret = turretInst.getDelegate();
             this.health = bob.getHealth();
             this.name = bob.hasCustomName() ? bob.getCustomName() : null;
 
@@ -228,7 +229,7 @@ public class TurretItem
             }
         }
 
-        public void apply(ITurretInst turretInst) {
+        public void apply(ITurretEntity turretInst) {
             LivingEntity bob = turretInst.get();
             if( this.health != null ) {
                 bob.setHealth(this.health);
