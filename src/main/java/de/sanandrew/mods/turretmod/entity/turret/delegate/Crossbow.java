@@ -21,7 +21,7 @@ public class Crossbow
     private DualItemVariants variantContainer;
 
     public Crossbow(ResourceLocation id) {
-        super(id, 1, false, AttackType.GROUND, new SoundIds(ResourceLocations.SOUND_SHOOT_CROSSBOW).withDefaults());
+        super(id, 1, false, TargetType.GROUND, new SoundIds(ResourceLocations.SOUND_SHOOT_CROSSBOW).withDefaults());
 
         this.glowTexture = ResourceLocations.TEXTURE_ENTITY_CROSSBOW_GLOW;
         this.range = new AxisAlignedBB(-16.0D, -4.0D, -16.0D, 16.0D, 8.0D, 16.0D);
@@ -54,10 +54,10 @@ public class Crossbow
     }
 
     @Override
-    public ResourceLocation getBaseTexture(ITurretEntity turretInst) {
+    public ResourceLocation getBaseTexture(ITurretEntity turret) {
         this.buildVariants();
 
-        return turretInst.getVariant().getTexture();
+        return turret.getVariant().getTexture();
     }
 
     @Override

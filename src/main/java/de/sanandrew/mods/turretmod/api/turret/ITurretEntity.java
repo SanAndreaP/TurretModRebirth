@@ -66,7 +66,7 @@ public interface ITurretEntity
 
     void updateState();
 
-    ITurret.AttackType getAttackType();
+    ITurret.TargetType getAttackType();
 
 //    TileEntityTurretCrate dismantle();
 

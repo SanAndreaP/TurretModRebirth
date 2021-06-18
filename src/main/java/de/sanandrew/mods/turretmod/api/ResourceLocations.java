@@ -4,6 +4,8 @@ import net.minecraft.util.ResourceLocation;
 
 public final class ResourceLocations
 {
+    public static final ResourceLocation NULL = new ResourceLocation("null");
+
     public static final ResourceLocation SOUND_RICOCHET_SPLASH    = rl("ricochet_splash");
     public static final ResourceLocation SOUND_RICOCHET_BULLET    = rl("ricochet_bullet");
     public static final ResourceLocation SOUND_RICOCHET_ARROW     = new ResourceLocation("entity.arrow.hit");
@@ -28,21 +30,22 @@ public final class ResourceLocations
     public static final ResourceLocation MODEL_ENTITY_MINIGUN             = rl("models/entity/turret_minigun.json");
     public static final ResourceLocation MODEL_ENTITY_LASER               = rl("models/entity/turret_laser.json");
     public static final ResourceLocation MODEL_ENTITY_FTHROWER            = rl("models/entity/turret_flamethrower.json");
-    public static final ResourceLocation MODEL_GUI_ASSEMBLY               = rl("guis/assembly.json");
-    public static final ResourceLocation MODEL_GUI_ELECTROLYTE            = rl("guis/electrolyte_generator.json");
-    public static final ResourceLocation MODEL_GUI_CARTRIDGE              = rl("guis/ammo_cartridge.json");
-    public static final ResourceLocation MODEL_GUI_TCRATE                 = rl("guis/turret_crate.json");
-    public static final ResourceLocation MODEL_GUI_TCU_INFO               = rl("guis/tcu/info.json");
-    public static final ResourceLocation MODEL_GUI_TCU_TARGET_CREATURES   = rl("guis/tcu/target_creatures.json");
-    public static final ResourceLocation MODEL_GUI_TCU_TARGET_PLAYERS     = rl("guis/tcu/target_players.json");
-    public static final ResourceLocation MODEL_GUI_TCU_TARGET_SMART       = rl("guis/tcu/target_smart.json");
-    public static final ResourceLocation MODEL_GUI_TCU_UPGRADES           = rl("guis/tcu/upgrades.json");
-    public static final ResourceLocation MODEL_GUI_TCU_COLORIZER          = rl("guis/tcu/colorizer.json");
-    public static final ResourceLocation MODEL_GUI_TCU_LEVELS             = rl("guis/tcu/levels.json");
-    public static final ResourceLocation MODEL_GUI_TCU_REMOTE_ACCESS      = rl("guis/tcu/remote_access.json");
-    public static final ResourceLocation MODEL_GUI_TINFO                  = rl("guis/turret_info.json");
-    public static final ResourceLocation MODEL_GUI_TINFO_FORCEFIELD       = rl("guis/turret_info_forcefield.json");
     public static final ResourceLocation MODEL_TILE_TURRET_ASSEMBLY_MODEL = rl("models/block/turret_assembly_tile.json");
+
+    public static final ResourceLocation GUI_ASSEMBLY             = rl("guis/assembly.json");
+    public static final ResourceLocation GUI_ELECTROLYTE          = rl("guis/electrolyte_generator.json");
+    public static final ResourceLocation GUI_CARTRIDGE            = rl("guis/ammo_cartridge.json");
+    public static final ResourceLocation GUI_TCRATE               = rl("guis/turret_crate.json");
+    public static final ResourceLocation GUI_TCU_INFO             = rl("guis/tcu/info.json");
+    public static final ResourceLocation GUI_TCU_TARGET_CREATURES = rl("guis/tcu/target_creatures.json");
+    public static final ResourceLocation GUI_TCU_TARGET_PLAYERS   = rl("guis/tcu/target_players.json");
+    public static final ResourceLocation GUI_TCU_TARGET_SMART     = rl("guis/tcu/target_smart.json");
+    public static final ResourceLocation GUI_TCU_UPGRADES         = rl("guis/tcu/upgrades.json");
+    public static final ResourceLocation GUI_TCU_COLORIZER        = rl("guis/tcu/colorizer.json");
+    public static final ResourceLocation GUI_TCU_LEVELS           = rl("guis/tcu/levels.json");
+    public static final ResourceLocation GUI_TCU_REMOTE_ACCESS    = rl("guis/tcu/remote_access.json");
+    public static final ResourceLocation GUI_TINFO                = rl("guis/turret_info.json");
+    public static final ResourceLocation GUI_TINFO_FORCEFIELD     = rl("guis/turret_info_forcefield.json");
 
     public static final String           TEXTURE_ENTITY_CROSSBOW_BASE      = tx("textures/entities/turrets/t1_crossbow/%s.png");
     public static final ResourceLocation TEXTURE_ENTITY_CROSSBOW_GLOW      = rl("textures/entities/turrets/t1_crossbow/glow.png");

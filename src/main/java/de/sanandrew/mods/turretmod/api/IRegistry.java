@@ -60,14 +60,16 @@ public interface IRegistry<T extends IRegistryObject>
 
     /**
      * <p>Reads the object from the given ItemStack.</p>
-     * <p>If no object can be found either in this registry or in the ItemStack itself, or this registry doesn't support items,
-     *    this returns the {@link #getDefault() default object}.</p>
+     * <p>If no object can be found either in this registry or in the ItemStack itself, this returns the {@link #getDefault() default object}.</p>
+     * <p>If this registry doesn't support items, this throws an {@link UnsupportedOperationException}.</p>
      *
      * @param stack The ItemStack that may contain a registered object.
      * @return the object contained in the ItemStack or the default object, if none is found.
      */
     @Nonnull
-    T get(ItemStack stack);
+    default T get(ItemStack stack) {
+        throw new UnsupportedOperationException("Cannot fetch from item! This registry does not use items.");
+    }
 
     /**
      * <p>Returns the default object, an unregistered empty object that returns <tt>false</tt> in {@link IRegistryObject#isValid()}.</p>
@@ -88,7 +90,12 @@ public interface IRegistry<T extends IRegistryObject>
      */
     @Nonnull
     default ItemStack getItem(ResourceLocation id) {
-        throw new UnsupportedOperationException("Cannot create item! This registry does not register items.");
+        throw new UnsupportedOperationException("Cannot create item! This registry does not use items.");
+    }
+
+    @Nonnull
+    default ItemStack getItem(T obj) {
+        return this.getItem(obj.getId());
     }
 
     /**

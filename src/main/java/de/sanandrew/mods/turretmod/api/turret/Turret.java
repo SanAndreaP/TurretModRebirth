@@ -18,9 +18,9 @@ public abstract class Turret
 {
     protected final ResourceLocation id;
     protected final int tier;
-    protected final boolean isBuoy;
-    protected final AttackType attackType;
-    protected final SoundIds soundIds;
+    protected final boolean    isBuoy;
+    protected final TargetType targetType;
+    protected final SoundIds   soundIds;
     /**
      * <p>Holds the location to a custom model JSON. If needed, this should be set during construction.</p>
      */
@@ -57,11 +57,11 @@ public abstract class Turret
     protected int           ammoCapacity; // configurable
     protected int           reloadTicks;  // configurable
 
-    public Turret(ResourceLocation id, int tier, boolean isBuoy, AttackType attackType, SoundIds soundIds) {
+    public Turret(ResourceLocation id, int tier, boolean isBuoy, TargetType targetType, SoundIds soundIds) {
         this.id = id;
         this.tier = tier;
         this.isBuoy = isBuoy;
-        this.attackType = attackType;
+        this.targetType = targetType;
         this.soundIds = soundIds;
 
         this.health = 20.0F;
@@ -97,47 +97,47 @@ public abstract class Turret
     }
 
     @Override
-    public ResourceLocation getBaseTexture(ITurretEntity turretInst) {
+    public ResourceLocation getBaseTexture(ITurretEntity turret) {
         return this.baseTexture;
     }
 
     @Override
-    public ResourceLocation getGlowTexture(ITurretEntity turretInst) {
+    public ResourceLocation getGlowTexture(ITurretEntity turret) {
         return this.glowTexture;
     }
 
     @Override
-    public SoundEvent getShootSound(ITurretEntity turretInst) {
+    public SoundEvent getShootSound(ITurretEntity turret) {
         return this.shootSound = lazyLoad(this.soundIds.shootSound, this.shootSound);
     }
 
     @Override
-    public SoundEvent getEmptySound(ITurretEntity turretInst) {
+    public SoundEvent getEmptySound(ITurretEntity turret) {
         return this.emptySound = lazyLoad(this.soundIds.emptySound, this.emptySound);
     }
 
     @Override
-    public SoundEvent getIdleSound(ITurretEntity turretInst) {
+    public SoundEvent getIdleSound(ITurretEntity turret) {
         return this.idleSound = lazyLoad(this.soundIds.idleSound, this.idleSound);
     }
 
     @Override
-    public SoundEvent getHurtSound(ITurretEntity turretInst) {
+    public SoundEvent getHurtSound(ITurretEntity turret) {
         return this.hurtSound = lazyLoad(this.soundIds.hurtSound, this.hurtSound);
     }
 
     @Override
-    public SoundEvent getDeathSound(ITurretEntity turretInst) {
+    public SoundEvent getDeathSound(ITurretEntity turret) {
         return this.deathSound = lazyLoad(this.soundIds.deathSound, this.deathSound);
     }
 
     @Override
-    public SoundEvent getPickupSound(ITurretEntity turretInst) {
+    public SoundEvent getPickupSound(ITurretEntity turret) {
         return this.pickupSound = lazyLoad(this.soundIds.pickupSound, this.pickupSound);
     }
 
     @Override
-    public AxisAlignedBB getRangeBB(@Nullable ITurretEntity turretInst) {
+    public AxisAlignedBB getRangeBB(@Nullable ITurretEntity turret) {
         return this.range;
     }
 
@@ -162,8 +162,8 @@ public abstract class Turret
     }
 
     @Override
-    public AttackType getAttackType() {
-        return this.attackType;
+    public TargetType getTargetType() {
+        return this.targetType;
     }
 
     @Override

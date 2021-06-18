@@ -26,6 +26,7 @@ public class TmrItemGroups
     public static final ItemGroup TURRETS = new ItemGroup(TmrConstants.ID + ":turrets") {
         private NonNullList<ItemStack> tabIcons = null;
 
+        @Nonnull
         @Override
         @OnlyIn(Dist.CLIENT)
         public ItemStack getIconItem() {

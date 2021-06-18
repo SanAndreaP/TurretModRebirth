@@ -23,6 +23,7 @@ import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.entity.EntityRegistry;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
+import de.sanandrew.mods.turretmod.inventory.container.TcuContainerFactory;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.TurretControlUnit;
 import de.sanandrew.mods.turretmod.item.TurretItem;
@@ -36,6 +37,7 @@ import net.minecraft.entity.MoverType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
@@ -242,8 +244,9 @@ public class TurretEntity
 
 //region Getters/Setters
     @Override
+    @SuppressWarnings("ConstantConditions")
     protected float getStandingEyeHeight(@Nonnull Pose poseIn, @Nonnull EntitySize sizeIn) {
-        return this.delegate.getEyeHeight(poseIn, sizeIn);
+        return this.delegate != null ? this.delegate.getEyeHeight(poseIn, sizeIn) : super.getStandingEyeHeight(poseIn, sizeIn);
     }
 
     @Override
@@ -409,8 +412,8 @@ public class TurretEntity
     }
 
     @Override
-    public ITurret.AttackType getAttackType() {
-        return this.delegate.getAttackType();
+    public ITurret.TargetType getAttackType() {
+        return this.delegate.getTargetType();
     }
 
     @Override
@@ -597,22 +600,27 @@ public class TurretEntity
         if( this.level.isClientSide ) {
             //TODO: reimplement TCU & GUIs
 //            if( ItemStackUtils.isItem(stack, ItemRegistry.TURRET_CONTROL_UNIT) ) {
-//                if( !player.isSneaking() ) {
-//                    TmrUtils.INSTANCE.openGui(player, EnumGui.TCU, this.getEntityId(), 0, 0);
+//                if( !player.isCrouching() ) {
+//                    NetworkHooks.openGui((ServerPlayerEntity) player, new TcuContainerFactory.Provider(stack, this));
 //                }
 //                return ActionResultType.SUCCESS;
-//            } else if( !ItemStackUtils.isValid(stack) && hand == EnumHand.MAIN_HAND ) {
-//                TmrUtils.INSTANCE.openGui(player, EnumGui.TINFO, this.getEntityId(), 0, 0);
+//            } //else
+            // if( !ItemStackUtils.isValid(stack) && hand == EnumHand.MAIN_HAND ) {
+                //TmrUtils.INSTANCE.openGui(player, EnumGui.TINFO, this.getEntityId(), 0, 0);
 //            }
+
+            if( ItemStackUtils.isItem(stack, ItemRegistry.AMMO_CARTRIDGE) ) {
+                return ActionResultType.SUCCESS;
+            }
 
             return ActionResultType.PASS;
         } else if( ItemStackUtils.isValid(stack) ) {
             if( ItemStackUtils.isItem(stack, ItemRegistry.TURRET_CONTROL_UNIT) && player.isCrouching() ) {
                 TurretControlUnit.bindTurret(stack, this);
-                return ActionResultType.SUCCESS;
+                return ActionResultType.CONSUME;
             } else if( this.targetProc.addAmmo(stack, player) ) {
                 this.onInteractSucceed(stack, player);
-                return ActionResultType.SUCCESS;
+                return ActionResultType.CONSUME;
                 //TODO: reimplement upgrades
 //            } else if( this.upgProc.tryApplyUpgrade(stack.copy()) ) {
 //                stack.shrink(1);
@@ -621,7 +629,7 @@ public class TurretEntity
             } else if( this.applyRepairKit(stack) ) {
                 stack.shrink(1);
                 this.onInteractSucceed(stack, player);
-                return ActionResultType.SUCCESS;
+                return ActionResultType.CONSUME;
             }
         }
 
@@ -773,8 +781,11 @@ public class TurretEntity
 
     @Override
     public void writeSpawnData(PacketBuffer buffer) {
+        CompoundNBT targetProcNbt = new CompoundNBT();
+        this.targetProc.save(targetProcNbt);
+
         buffer.writeResourceLocation(this.delegate.getId());
-        buffer.writeNbt(this.targetProc.save(new CompoundNBT()));
+        buffer.writeNbt(targetProcNbt);
 
         //TODO: reimplement upgrades
 //        NBTTagCompound upgNbt = new NBTTagCompound();

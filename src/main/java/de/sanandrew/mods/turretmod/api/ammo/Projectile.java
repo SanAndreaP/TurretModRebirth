@@ -72,7 +72,7 @@ public abstract class Projectile
     }
 
     @Override
-    public ResourceLocation getTexture(IProjectileEntity projectileInst) {
+    public ResourceLocation getTexture(IProjectileEntity projectile) {
         return this.texture;
     }
 

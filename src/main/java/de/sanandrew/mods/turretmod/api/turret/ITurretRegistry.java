@@ -14,7 +14,7 @@ public interface ITurretRegistry
     void registerItems(RegistryEvent.Register<Item> event, String modId);
 
     @Nonnull
-    ItemStack getItem(ITurretEntity turretInst);
+    ItemStack getItem(ITurretEntity turret);
 
 
 }

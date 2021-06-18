@@ -50,6 +50,11 @@ public class TurretRenderBase<T extends LivingEntity & ITurretEntity, M extends 
         renderTurretRange(turretInst, stack);
     }
 
+    @Override
+    protected boolean shouldShowName(@Nonnull T entity) {
+        return false;
+    }
+
     /**
      * This is returning the glow layer texture for {@link LayerTurretGlow}, since the {@link TurretRenderer} handles the regular model rendering
      */

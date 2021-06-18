@@ -4,14 +4,20 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
+import de.sanandrew.mods.turretmod.client.gui.AmmoCartridgeScreen;
 import de.sanandrew.mods.turretmod.client.gui.ElectrolyteGeneratorScreen;
+import de.sanandrew.mods.turretmod.client.gui.TcuScreen;
 import de.sanandrew.mods.turretmod.client.gui.element.ElectrolyteBar;
 import de.sanandrew.mods.turretmod.client.model.ModelRegistry;
 import de.sanandrew.mods.turretmod.client.renderer.RenderClassProvider;
+import de.sanandrew.mods.turretmod.client.renderer.color.AmmoCartridgeColor;
 import de.sanandrew.mods.turretmod.client.renderer.color.TippedBoltColor;
+import de.sanandrew.mods.turretmod.client.renderer.turret.LabelRegistry;
 import de.sanandrew.mods.turretmod.init.IProxy;
 import de.sanandrew.mods.turretmod.init.IRenderClassProvider;
+import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.inventory.ContainerRegistry;
+import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.TurretControlUnit;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.item.ammo.Ammunitions;
@@ -33,13 +39,17 @@ public class ClientProxy
     @Override
     public void setupClient(FMLClientSetupEvent event) {
         ScreenManager.register(ContainerRegistry.ELECTROLYTE_GENERATOR, ElectrolyteGeneratorScreen::new);
+        ScreenManager.register(ContainerRegistry.AMMO_CARTRIGE, AmmoCartridgeScreen::new);
+        ScreenManager.register(ContainerRegistry.TCU, TcuScreen::new);
 
         GuiDefinition.TYPES.put(ElectrolyteBar.ID, ElectrolyteBar::new);
 
         ModelRegistry.registerModels(event);
 
         Minecraft.getInstance().getItemColors().register(new TippedBoltColor(), AmmunitionRegistry.INSTANCE.getItem(Ammunitions.TIPPED_BOLT.getId()).getItem());
-//        Minecraft.getInstance().getItemColors().register(new ColorCartridge(), ItemRegistry.AMMO_CARTRIDGE);
+        Minecraft.getInstance().getItemColors().register(new AmmoCartridgeColor(), ItemRegistry.AMMO_CARTRIDGE);
+
+        TurretModRebirth.PLUGINS.forEach(p -> p.registerTcuLabelElements(LabelRegistry.INSTANCE));
     }
 
     @Override

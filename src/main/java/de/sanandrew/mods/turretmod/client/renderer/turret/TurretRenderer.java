@@ -60,11 +60,6 @@ public class TurretRenderer<E extends LivingEntity & ITurretEntity>
         return TextureManager.INTENTIONAL_MISSING_TEXTURE;
     }
 
-    @Override
-    protected boolean shouldShowName(@Nonnull E entity) {
-        return false;
-    }
-
     public void initialize() {
         for( ITurret turret : TurretRegistry.INSTANCE.getAll() ) {
             Function<ResourceLocation, EntityModel<E>> s;

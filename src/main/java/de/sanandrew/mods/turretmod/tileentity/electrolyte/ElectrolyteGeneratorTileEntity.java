@@ -12,7 +12,7 @@ import de.sanandrew.mods.sanlib.lib.power.EnergyHelper;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.electrolytegen.IElectrolyteRecipe;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
-import de.sanandrew.mods.turretmod.inventory.ElectrolyteGeneratorContainer;
+import de.sanandrew.mods.turretmod.inventory.container.ElectrolyteGeneratorContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;

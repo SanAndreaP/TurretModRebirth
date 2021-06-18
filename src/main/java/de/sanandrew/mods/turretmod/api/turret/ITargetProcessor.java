@@ -76,13 +76,13 @@ public interface ITargetProcessor
 
     boolean isEntityTargeted(ResourceLocation id);
 
-    ITurretEntity getTurretInst();
+    ITurretEntity getTurret();
 
     boolean hasTarget();
 
     Entity getTarget();
 
-    CompoundNBT save(CompoundNBT nbt);
+    void save(CompoundNBT nbt);
 
     void load(CompoundNBT nbt);
 

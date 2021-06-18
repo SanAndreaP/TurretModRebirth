@@ -10,6 +10,7 @@ package de.sanandrew.mods.turretmod.item;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.entity.turret.TurretRegistry;
+import de.sanandrew.mods.turretmod.item.ammo.AmmoCartridgeItem;
 import de.sanandrew.mods.turretmod.item.ammo.AmmoItem;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
 import net.minecraft.item.Item;
@@ -33,8 +34,8 @@ public class ItemRegistry
 //    public static final ItemAssemblyUpgrade ASSEMBLY_UPG_SPEED = new ItemAssemblyUpgrade.Speed();
 //    public static final ItemAssemblyUpgrade.Filter ASSEMBLY_UPG_FILTER = new ItemAssemblyUpgrade.Filter();
 //    public static final ItemAssemblyUpgrade ASSEMBLY_UPG_REDSTONE = new ItemAssemblyUpgrade.Redstone();
-    public static final TurretLexicon     TURRET_LEXICON      = new TurretLexicon();
-//    public static final ItemAmmoCartridge AMMO_CARTRIDGE = new ItemAmmoCartridge();
+    public static final TurretLexicon     TURRET_LEXICON = new TurretLexicon();
+    public static final AmmoCartridgeItem AMMO_CARTRIDGE = new AmmoCartridgeItem();
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
@@ -47,8 +48,8 @@ public class ItemRegistry
 //                                        ASSEMBLY_UPG_SPEED,
 //                                        ASSEMBLY_UPG_FILTER,
 //                                        ASSEMBLY_UPG_REDSTONE,
-                                        TURRET_LEXICON.setRegistryName(new ResourceLocation(TmrConstants.ID, "turret_lexicon"))//,
-//                                        AMMO_CARTRIDGE
+                                        TURRET_LEXICON.setRegistryName(new ResourceLocation(TmrConstants.ID, "turret_lexicon")),
+                                        AMMO_CARTRIDGE.setRegistryName(new ResourceLocation(TmrConstants.ID, "ammo_cartridge"))
         );
     }
 }

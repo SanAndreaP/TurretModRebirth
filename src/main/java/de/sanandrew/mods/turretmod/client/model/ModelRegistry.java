@@ -8,92 +8,70 @@
  */
 package de.sanandrew.mods.turretmod.client.model;
 
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
+import de.sanandrew.mods.turretmod.client.renderer.cartridge.AmmoCartridgeItemOverrides;
+import de.sanandrew.mods.turretmod.client.renderer.cartridge.AmmoCartridgeModel;
 import de.sanandrew.mods.turretmod.client.renderer.projectile.TurretProjectileRenderer;
 import de.sanandrew.mods.turretmod.client.renderer.tileentity.ElectrolyteGeneratorRenderer;
 import de.sanandrew.mods.turretmod.client.renderer.turret.TurretRenderer;
 import de.sanandrew.mods.turretmod.entity.EntityRegistry;
-import de.sanandrew.mods.turretmod.entity.projectile.TurretProjectileEntity;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
+import de.sanandrew.mods.turretmod.item.ammo.Ammunitions;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ModelManager;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemModelsProperties;
+import net.minecraft.client.renderer.model.ModelRotation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @OnlyIn(Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = TmrConstants.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class ModelRegistry
 {
     public static void registerModels(FMLClientSetupEvent event) {
-//        event.enqueueWork(() -> {
-//            ItemModelsProperties.register();
-//        });
-
-//        setStandardModel(ItemRegistry.TURRET_CONTROL_UNIT);
-//        setStandardModel(ItemRegistry.TURRET_INFO);
-//        setStandardModel(ItemRegistry.ASSEMBLY_UPG_FILTER);
-//        setStandardModel(ItemRegistry.ASSEMBLY_UPG_AUTO);
-//        setStandardModel(ItemRegistry.ASSEMBLY_UPG_SPEED);
-//        setStandardModel(ItemRegistry.ASSEMBLY_UPG_REDSTONE);
-//        setStandardModel(BlockRegistry.ELECTROLYTE_GENERATOR);
-//        setStandardModel(BlockRegistry.TURRET_ASSEMBLY);
-//        setStandardModel(BlockRegistry.TURRET_CRATE);
-
-//        ItemRegistry.TURRET_PLACERS.forEach((rl, item) -> {
-//            ResourceLocation regName = Objects.requireNonNull(item.getRegistryName());
-//            setStandardModel(item, new ResourceLocation(regName.getNamespace(), "turrets/" + regName.getPath()));
-//        });
-//        ItemRegistry.TURRET_AMMO.forEach((rl, item) -> {
-//            ResourceLocation regName = Objects.requireNonNull(item.getRegistryName());
-//            setStandardModel(item, new ResourceLocation(regName.getNamespace(), "ammo/" + regName.getPath()));
-//        });
-//        ItemRegistry.TURRET_UPGRADES.forEach((rl, item) -> {
-//            ResourceLocation regName = Objects.requireNonNull(item.getRegistryName());
-//            setStandardModel(item, new ResourceLocation(regName.getNamespace(), "upgrades/" + regName.getPath()));
-//        });
-//        ItemRegistry.TURRET_REPAIRKITS.forEach((rl, item) -> {
-//            ResourceLocation regName = Objects.requireNonNull(item.getRegistryName());
-//            setStandardModel(item, new ResourceLocation(regName.getNamespace(), "repair_kits/" + regName.getPath()));
-//        });
-
-//        setCustomMeshModel(ItemRegistry.AMMO_CARTRIDGE, new MeshDefAmmoCartridge());
-//
-//        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurretAssembly.class, new RenderTurretAssembly());
-//        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityElectrolyteGenerator.class, new RenderElectrolyteGenerator());
-
         RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.TURRET, TurretRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.PROJECTILE, TurretProjectileRenderer::new);
 
         ClientRegistry.bindTileEntityRenderer(BlockRegistry.ELECTROLYTE_GENERATOR_ENTITY, ElectrolyteGeneratorRenderer::new);
     }
 
-//    private static void setStandardModel(Item item) {
-//        ResourceLocation regName = item.getRegistryName();
-//        if( regName != null ) {
-//            Minecraft.getInstance().getItemRenderer().getItemModelShaper().register(item, new ModelResourceLocation(regName, "inventory"));
-////            ModelLoaderRegistry.registerLoader(item, 0, new ModelResourceLocation(regName, "inventory"));
-//        }
-//    }
-//
-//    private static void setStandardModel(Item item, ResourceLocation modelLocation) {
-////        ModelLoader.instance().
-////        Minecraft.getInstance().getItemRenderer().getItemModelShaper().register(item, new ModelResourceLocation(modelLocation, "inventory"));
-//    }
+    @SubscribeEvent
+    public static void onModelLoad(ModelRegistryEvent event) {
+        AmmunitionRegistry.INSTANCE.getAll().forEach(a -> ModelLoader.addSpecialModel(new ModelResourceLocation(getModelRL(a.getId()), "inventory")));
+    }
 
-//    private static void setStandardModel(Block item) {
-//        Item itm = Item.getItemFromBlock(item);
-//        if( itm != Items.AIR ) {
-//            setStandardModel(itm);
-//        }
-//    }
+    @SubscribeEvent
+    public static void onModelBake(ModelBakeEvent event) {
+        AmmunitionRegistry.INSTANCE.getAll().forEach(a -> {
+            IBakedModel boltModel = event.getModelLoader().getBakedModel(new ModelResourceLocation(getModelRL(a.getId()), "inventory"),
+                                                                         ModelRotation.X0_Y0, event.getModelLoader().getSpriteMap()::getSprite);
 
-//    private static void setCustomMeshModel(@SuppressWarnings("SameParameterValue") Item item, IListedItemMeshDefinition mesher) {
-//        ModelLoader.setCustomMeshDefinition(item, mesher);
-//        ModelBakery.registerItemVariants(item, mesher.getDefinedResources());
-//    }
+            AmmoCartridgeItemOverrides.AMMO_MODELS.put(a, boltModel);
+        });
+
+        ModelResourceLocation itemModelResourceLocation = AmmoCartridgeModel.MODEL_RESOURCE_LOCATION;
+        IBakedModel existingModel = event.getModelRegistry().get(itemModelResourceLocation);
+        if (existingModel == null) {
+            TmrConstants.LOG.warn("Did not find the expected vanilla baked model for AmmoCartridgeModel in registry");
+        } else if (existingModel instanceof AmmoCartridgeModel) {
+            TmrConstants.LOG.warn("Tried to replace AmmoCartridgeModel twice");
+        } else {
+            AmmoCartridgeModel customModel = new AmmoCartridgeModel(existingModel);
+            event.getModelRegistry().put(itemModelResourceLocation, customModel);
+        }
+    }
+
+    private static ResourceLocation getModelRL(ResourceLocation id) {
+        return new ResourceLocation(id.getNamespace(), AmmoCartridgeModel.MODEL_RESOURCE_LOCATION.getPath() + '_'  + id.getPath());
+    }
 }

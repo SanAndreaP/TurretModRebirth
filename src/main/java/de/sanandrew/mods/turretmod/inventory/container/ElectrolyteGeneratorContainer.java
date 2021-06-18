@@ -6,10 +6,11 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.inventory;
+package de.sanandrew.mods.turretmod.inventory.container;
 
 import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.turretmod.inventory.ContainerRegistry;
 import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteInventory;
 import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteProcess;
 import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteSyncData;

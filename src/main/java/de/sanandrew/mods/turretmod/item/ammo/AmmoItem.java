@@ -29,7 +29,7 @@ public class AmmoItem
         extends Item
 {
     public final ResourceLocation ammoId;
-    private      IAmmunition          ammoCache;
+    private      IAmmunition      ammoCache;
 
     public AmmoItem(ResourceLocation ammoId) {
         super(new Properties().tab(TmrItemGroups.TURRETS));

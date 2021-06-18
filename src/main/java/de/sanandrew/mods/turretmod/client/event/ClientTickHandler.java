@@ -12,10 +12,12 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+@OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = TmrConstants.ID, value = Dist.CLIENT)
 public class ClientTickHandler
 {
@@ -23,7 +25,7 @@ public class ClientTickHandler
     public static boolean isSneaking;
 
     @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event) {
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
         if( event.phase == TickEvent.Phase.END ) {
             Screen gui = Minecraft.getInstance().screen;
             if( gui == null || !gui.isPauseScreen() ) {

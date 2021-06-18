@@ -50,6 +50,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.entity.PartEntity;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -495,6 +497,12 @@ public class TurretProjectileEntity
 
     public interface ITurretDamageSource {
         ITurretEntity getTurretInst();
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public boolean shouldShowName() {
+        return false;
     }
 
     public static class DamageSourceHiddenProjectile

@@ -16,7 +16,7 @@ public final class Lang
 {
     public static final TranslateKey TCU_PAGE_TITLE              = LangUtils.newKey("gui.%s.tcu.page.%%s.title").format(TmrConstants.ID).build();
     public static final TranslateKey TCU_PAGE_ELEMENT            = LangUtils.newKey("gui.%s.tcu.page.%%s.%%s").format(TmrConstants.ID).build();
-    public static final TranslateKey TCU_LABEL_HEALTH            = LangUtils.newKey("gui.%s.tcu.label.health").format(TmrConstants.ID).build();
+    public static final TranslateKey TCU_LABEL                   = LangUtils.newKey("gui.%s.tcu.label.%%s").format(TmrConstants.ID).build();
     public static final TranslateKey TCU_LABEL_AMMO              = LangUtils.newKey("gui.%s.tcu.label.ammo").format(TmrConstants.ID).build();
     public static final TranslateKey TCU_LABEL_TARGET            = LangUtils.newKey("gui.%s.tcu.label.target").format(TmrConstants.ID).build();
     public static final TranslateKey TCU_LABEL_PRSSHIELD         = LangUtils.newKey("gui.%s.tcu.label.shield_pers").format(TmrConstants.ID).build();

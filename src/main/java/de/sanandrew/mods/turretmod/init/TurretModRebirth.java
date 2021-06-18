@@ -15,8 +15,8 @@ import de.sanandrew.mods.turretmod.api.TmrPlugin;
 import de.sanandrew.mods.turretmod.client.init.ClientProxy;
 import de.sanandrew.mods.turretmod.datagenerator.ElectrolyteProvider;
 import de.sanandrew.mods.turretmod.entity.projectile.ProjectileRegistry;
-import de.sanandrew.mods.turretmod.entity.turret.TargetList;
 import de.sanandrew.mods.turretmod.entity.turret.TurretRegistry;
+import de.sanandrew.mods.turretmod.init.config.Targets;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.world.PlayerList;
@@ -25,11 +25,15 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import org.objectweb.asm.Type;
@@ -51,11 +55,13 @@ public class TurretModRebirth
 
     public TurretModRebirth() {
         IEventBus meb = FMLJavaModLoadingContext.get().getModEventBus();
+
+        TmrConfig.register();
+
         meb.addListener(this::gatherData);
         meb.addListener(this::constructMod);
         meb.addListener(PROXY::setupClient);
         meb.addListener(this::setupCommon);
-        meb.addListener(this::complete);
     }
 
     private void constructMod(FMLConstructModEvent event) {
@@ -78,11 +84,8 @@ public class TurretModRebirth
     private void setupCommon(FMLCommonSetupEvent event) {
         MinecraftForge.EVENT_BUS.register(PlayerList.INSTANCE);
 
+        PLUGINS.forEach(ITmrPlugin::setup);
 //        TurretModRebirth.PLUGINS.forEach(plugin -> plugin.registerTcuEntries(GuiTcuRegistry.INSTANCE));
-    }
-
-    private void complete(FMLLoadCompleteEvent event) {
-        TargetList.finalizeList();
     }
 
     private void gatherData(GatherDataEvent event) {

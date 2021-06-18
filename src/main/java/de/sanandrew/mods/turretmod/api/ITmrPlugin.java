@@ -3,6 +3,8 @@ package de.sanandrew.mods.turretmod.api;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectileRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public interface ITmrPlugin
 {
@@ -25,8 +27,8 @@ public interface ITmrPlugin
 //    @OnlyIn(Dist.CLIENT)
 //    default <T extends Entity> void registerProjectileRenderer(IRenderRegistry<ResourceLocation, T, IRender<T>> registry) { }
 
-//    @OnlyIn(Dist.CLIENT)
-//    default void registerTcuLabelElements(ILabelRegistry registry) { }
+    @OnlyIn(Dist.CLIENT)
+    default void registerTcuLabelElements(de.sanandrew.mods.turretmod.api.client.tcu.ILabelRegistry registry) { }
 
 //    @OnlyIn(Dist.CLIENT)
 //    default void registerTcuGuis(IGuiTcuRegistry registry) { }

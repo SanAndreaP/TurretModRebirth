@@ -14,13 +14,17 @@ import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.entity.turret.TurretEntity;
+import de.sanandrew.mods.turretmod.inventory.container.TcuContainerFactory;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -81,14 +85,13 @@ public class TurretControlUnit
     public ActionResult<ItemStack> use(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack heldStack = player.getItemInHand(hand);
         if( ItemStackUtils.isItem(heldStack, ItemRegistry.TURRET_CONTROL_UNIT) ) {
-            ITurretEntity turretInst = getBoundTurret(heldStack, world);
-            if( turretInst != null ) {
+            ITurretEntity turret = getBoundTurret(heldStack, world);
+            if( turret != null ) {
                 if( !world.isClientSide ) {
                     if( player.isCrouching() ) {
                         bindTurret(heldStack, null);
-                    } else {
-                        //TODO: reimplement TCU GUI
-//                        TurretModRebirth.proxy.openGui(player, EnumGui.TCU, turretInst.get().getEntityId(), 0, 1);
+                    } else if( player instanceof ServerPlayerEntity ) {
+                        TcuContainerFactory.openTcu((ServerPlayerEntity) player, heldStack, turret);
                     }
                 }
 
@@ -97,6 +100,24 @@ public class TurretControlUnit
         }
 
         return super.use(world, player, hand);
+    }
+
+    @Nonnull
+    @Override
+    public ActionResultType interactLivingEntity(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, @Nonnull LivingEntity entity, @Nonnull Hand hand) {
+        if( entity instanceof ITurretEntity ) {
+            if( !player.level.isClientSide ) {
+                if( player.isCrouching() ) {
+                    bindTurret(stack, (ITurretEntity) entity);
+                } else if( player instanceof ServerPlayerEntity ) {
+                    TcuContainerFactory.openTcu((ServerPlayerEntity) player, stack, (ITurretEntity) entity);
+                }
+            }
+
+            return ActionResultType.SUCCESS;
+        }
+
+        return super.interactLivingEntity(stack, player, entity, hand);
     }
 
     private static UUID getBoundID(ItemStack stack) {
@@ -108,16 +129,30 @@ public class TurretControlUnit
         return null;
     }
 
+    public static boolean isTcuHeld(PlayerEntity player) {
+        return ItemStackUtils.isValid(getHeldTcu(player));
+    }
+
+    public static ItemStack getHeldTcu(PlayerEntity player) {
+        ItemStack s = player.getMainHandItem();
+        if( ItemStackUtils.isItem(s, ItemRegistry.TURRET_CONTROL_UNIT) ) {
+            return s;
+        }
+
+        s = player.getOffhandItem();
+        if( ItemStackUtils.isItem(s, ItemRegistry.TURRET_CONTROL_UNIT) ) {
+            return s;
+        }
+
+        return ItemStack.EMPTY;
+    }
+
     public static boolean isHeldTcuBoundToTurret(PlayerEntity player, ITurretEntity turretInst) {
         if( player == null ) {
             return false;
         }
 
-        ItemStack mh = player.getMainHandItem();
-        ItemStack oh = player.getOffhandItem();
-
-        return TurretControlUnit.getBoundTurret(mh, player.level) == turretInst
-               || TurretControlUnit.getBoundTurret(oh, player.level) == turretInst;
+        return TurretControlUnit.getBoundTurret(getHeldTcu(player), player.level) == turretInst;
     }
 
     public static ITurretEntity getBoundTurret(ItemStack stack, World world) {

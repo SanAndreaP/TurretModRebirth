@@ -2,7 +2,7 @@ package de.sanandrew.mods.turretmod.api.turret;
 
 public interface IVariantHolder
 {
-    default IVariant getVariant(ITurretEntity turretInst, Object id) {
+    default IVariant getVariant(ITurretEntity turret, Object id) {
         return getVariant(id);
     }
 

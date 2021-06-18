@@ -1,7 +1,14 @@
 package de.sanandrew.mods.turretmod.init;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
+import de.sanandrew.mods.turretmod.inventory.AmmoCartridgeInventory;
+import de.sanandrew.mods.turretmod.item.ItemRegistry;
+import de.sanandrew.mods.turretmod.item.TurretItem;
+import de.sanandrew.mods.turretmod.item.ammo.AmmoCartridgeItem;
+import de.sanandrew.mods.turretmod.item.ammo.AmmoItem;
+import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -28,12 +35,12 @@ public final class ResourceOrderer
     private static final Comparator<ItemStack> COMPARATOR = (is1, is2) -> {
         Item i1 = is1.getItem();
         Item i2 = is2.getItem();
-//        if( i1 == ItemRegistry.TURRET_INFO || i2 == ItemRegistry.TURRET_INFO ) {
-//            return i1 == ItemRegistry.TURRET_INFO ? -1 : 1;
-//        }
-//        if( i1 == ItemRegistry.TURRET_CONTROL_UNIT || i2 == ItemRegistry.TURRET_CONTROL_UNIT ) {
-//            return i1 == ItemRegistry.TURRET_CONTROL_UNIT ? -1 : 1;
-//        }
+        if( i1 == ItemRegistry.TURRET_LEXICON || i2 == ItemRegistry.TURRET_LEXICON ) {
+            return i1 == ItemRegistry.TURRET_LEXICON ? -1 : 1;
+        }
+        if( i1 == ItemRegistry.TURRET_CONTROL_UNIT || i2 == ItemRegistry.TURRET_CONTROL_UNIT ) {
+            return i1 == ItemRegistry.TURRET_CONTROL_UNIT ? -1 : 1;
+        }
 //        if( ItemStackUtils.isBlock(is1, BlockRegistry.TURRET_ASSEMBLY) || ItemStackUtils.isBlock(is2, BlockRegistry.TURRET_ASSEMBLY) ) {
 //            return ItemStackUtils.isBlock(is1, BlockRegistry.TURRET_ASSEMBLY) ? -1 : 1;
 //        }
@@ -43,61 +50,61 @@ public final class ResourceOrderer
 //        if( ItemStackUtils.isBlock(is1, BlockRegistry.TURRET_CRATE) || ItemStackUtils.isBlock(is2, BlockRegistry.TURRET_CRATE) ) {
 //            return ItemStackUtils.isBlock(is1, BlockRegistry.TURRET_CRATE) ? -1 : 1;
 //        }
-//
-//        if( i1 instanceof ItemTurret || i2 instanceof ItemTurret ) {
-//            if( i1 instanceof ItemTurret && i2 instanceof ItemTurret ) {
-//                ITurret t1 = ((ItemTurret) i1).turret;
-//                ITurret t2 = ((ItemTurret) i2).turret;
-//
-//                int tier1 = t1.getTier();
-//                int tier2 = t2.getTier();
-//
-//                if( tier1 != tier2 ) {
-//                    return Integer.compare(tier1, tier2);
-//                }
-//            } else {
-//                return i1 instanceof ItemTurret ? -1 : 1;
-//            }
-//        } else if( i1 instanceof ItemAmmo || i2 instanceof ItemAmmo ) {
-//            if( i1 instanceof ItemAmmo && i2 instanceof ItemAmmo ) {
-//                ITurret t1 = ((ItemAmmo) i1).ammo.getTurret();
-//                ITurret t2 = ((ItemAmmo) i2).ammo.getTurret();
-//
-//                int tier1 = t1.getTier();
-//                int tier2 = t2.getTier();
-//
-//                if( tier1 != tier2 ) {
-//                    return Integer.compare(tier1, tier2);
-//                }
-//            } else {
-//                return i1 instanceof ItemAmmo ? -1 : 1;
-//            }
-//        } else if( i1 instanceof ItemAmmoCartridge || i2 instanceof ItemAmmoCartridge ) {
-//            if( i1 instanceof ItemAmmoCartridge && i2 instanceof ItemAmmoCartridge ) {
-//                AmmoCartridgeInventory a1 = ItemAmmoCartridge.getInventory(is1);
-//                AmmoCartridgeInventory a2 = ItemAmmoCartridge.getInventory(is2);
-//                if( a1 == null || a2 == null ) {
-//                    return a1 == null ? (a2 == null ? 0 : -1) : 1;
-//                }
-//
-//                ITurret t1 = a1.getAmmoType().getTurret();
-//                ITurret t2 = a2.getAmmoType().getTurret();
-//
-//                int tier1 = t1.getTier();
-//                int tier2 = t2.getTier();
-//
-//                if( tier1 == tier2 ) {
-//                    ItemStack isa1 = AmmunitionRegistry.INSTANCE.getItem(a1.getAmmoType().getId(), a1.getAmmoSubtype());
-//                    ItemStack isa2 = AmmunitionRegistry.INSTANCE.getItem(a2.getAmmoType().getId(), a1.getAmmoSubtype());
-//
-//                    return isa1.getDisplayName().compareTo(isa2.getDisplayName());
-//                } else {
-//                    return Integer.compare(tier1, tier2);
-//                }
-//            } else {
-//                return i1 instanceof ItemAmmoCartridge ? -1 : 1;
-//            }
-//        } else if( i1 instanceof ItemRepairKit || i2 instanceof ItemRepairKit ) {
+
+        if( i1 instanceof TurretItem || i2 instanceof TurretItem ) {
+            if( i1 instanceof TurretItem && i2 instanceof TurretItem ) {
+                ITurret t1 = ((TurretItem) i1).getTurret();
+                ITurret t2 = ((TurretItem) i2).getTurret();
+
+                int tier1 = t1.getTier();
+                int tier2 = t2.getTier();
+
+                if( tier1 != tier2 ) {
+                    return Integer.compare(tier1, tier2);
+                }
+            } else {
+                return i1 instanceof TurretItem ? -1 : 1;
+            }
+        } else if( i1 instanceof AmmoItem || i2 instanceof AmmoItem ) {
+            if( i1 instanceof AmmoItem && i2 instanceof AmmoItem ) {
+                ITurret t1 = ((AmmoItem) i1).getAmmo().getApplicableTurret();
+                ITurret t2 = ((AmmoItem) i2).getAmmo().getApplicableTurret();
+
+                int tier1 = t1.getTier();
+                int tier2 = t2.getTier();
+
+                if( tier1 != tier2 ) {
+                    return Integer.compare(tier1, tier2);
+                }
+            } else {
+                return i1 instanceof AmmoItem ? -1 : 1;
+            }
+        } else if( i1 instanceof AmmoCartridgeItem || i2 instanceof AmmoCartridgeItem ) {
+            if( i1 instanceof AmmoCartridgeItem && i2 instanceof AmmoCartridgeItem ) {
+                AmmoCartridgeInventory a1 = AmmoCartridgeItem.getInventory(is1);
+                AmmoCartridgeInventory a2 = AmmoCartridgeItem.getInventory(is2);
+                if( a1 == null || a2 == null ) {
+                    return a1 == null ? (a2 == null ? 0 : -1) : 1;
+                }
+
+                ITurret t1 = a1.getAmmoType().getApplicableTurret();
+                ITurret t2 = a2.getAmmoType().getApplicableTurret();
+
+                int tier1 = t1.getTier();
+                int tier2 = t2.getTier();
+
+                if( tier1 == tier2 ) {
+                    ItemStack isa1 = AmmunitionRegistry.INSTANCE.getItem(a1.getAmmoType(), a1.getAmmoSubtype());
+                    ItemStack isa2 = AmmunitionRegistry.INSTANCE.getItem(a2.getAmmoType(), a1.getAmmoSubtype());
+
+                    return isa1.getDisplayName().getString().compareTo(isa2.getDisplayName().getString());
+                } else {
+                    return Integer.compare(tier1, tier2);
+                }
+            } else {
+                return i1 instanceof AmmoCartridgeItem ? -1 : 1;
+            }
+        } //else if( i1 instanceof ItemRepairKit || i2 instanceof ItemRepairKit ) {
 //            if( i1 instanceof ItemRepairKit && i2 instanceof ItemRepairKit ) {
 //                IRepairKit r1 = ((ItemRepairKit) i1).kit;
 //                IRepairKit r2 = ((ItemRepairKit) i2).kit;
@@ -139,7 +146,6 @@ public final class ResourceOrderer
 //            }
 //        }
 
-        //TODO: translate this??????
         return is1.getDisplayName().getString().compareTo(is2.getDisplayName().getString());
     };
 

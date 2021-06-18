@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.entity.turret;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.turretmod.api.ResourceLocations;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
@@ -37,37 +38,33 @@ public final class TurretRegistry
 
     private static final ITurret EMPTY = new EmptyTurret();
 
-    private final Map<ResourceLocation, ITurret> turrets;
-    private final Collection<ITurret>            turretsView;
+    private static final Map<ResourceLocation, ITurret> TURRETS = new HashMap<>();
+    private static final Collection<ITurret>            TURRETS_VIEW = Collections.unmodifiableCollection(TURRETS.values());
 
-    private TurretRegistry() {
-        this.turrets = new HashMap<>();
-
-        this.turretsView = Collections.unmodifiableCollection(turrets.values());
-    }
+    private TurretRegistry() { }
 
     @Nonnull
     @Override
     public Collection<ITurret> getAll() {
-        return this.turretsView;
+        return TURRETS_VIEW;
     }
 
     @Nonnull
     @Override
     public ITurret get(ResourceLocation id) {
-        return this.turrets.getOrDefault(id, EMPTY);
+        return TURRETS.getOrDefault(id, EMPTY);
     }
 
     @Override
     public void register(@Nonnull ITurret obj) {
         ResourceLocation id = obj.getId();
 
-        if( this.turrets.containsKey(id) ) {
+        if( TURRETS.containsKey(id) ) {
             TmrConstants.LOG.log(Level.ERROR, String.format("The turret %s is already registered!", id), new InvalidParameterException());
             return;
         }
 
-        this.turrets.put(id, obj);
+        TURRETS.put(id, obj);
 
         ItemRegistry.TURRET_PLACERS.put(id, new TurretItem(id));
     }
@@ -113,9 +110,9 @@ public final class TurretRegistry
 
     @Override
     @Nonnull
-    public ItemStack getItem(ITurretEntity turretInst) {
-        ItemStack stack = this.getItem(turretInst.getDelegate().getId());
-        new TurretItem.TurretStats(turretInst).updateData(stack);
+    public ItemStack getItem(ITurretEntity turret) {
+        ItemStack stack = this.getItem(turret.getDelegate().getId());
+        new TurretItem.TurretStats(turret).updateData(stack);
 
         return stack;
     }
@@ -135,13 +132,13 @@ public final class TurretRegistry
     {
         private static final AxisAlignedBB BB = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 
-        @Nonnull @Override public ResourceLocation getId() { return new ResourceLocation("null"); }
-        @Nonnull @Override public ResourceLocation getModelLocation() { return new ResourceLocation("null"); }
+        @Nonnull @Override public ResourceLocation getId() { return ResourceLocations.NULL; }
+        @Nonnull @Override public ResourceLocation getModelLocation() { return ResourceLocations.NULL; }
         
-        @Override public ResourceLocation getBaseTexture(ITurretEntity turretInst) { return null; }
-        @Override public ResourceLocation getGlowTexture(ITurretEntity turretInst) { return null; }
-        @Override public SoundEvent getShootSound(ITurretEntity turretInst) { return null; }
-        @Override public AxisAlignedBB getRangeBB(ITurretEntity turretInst) { return BB; }
+        @Override public ResourceLocation getBaseTexture(ITurretEntity turret) { return null; }
+        @Override public ResourceLocation getGlowTexture(ITurretEntity turret) { return null; }
+        @Override public SoundEvent getShootSound(ITurretEntity turret) { return null; }
+        @Override public AxisAlignedBB getRangeBB(ITurretEntity turret) { return BB; }
         @Override public int getTier() { return 0; }
         @Override public float getHealth() { return 0; }
         @Override public int getAmmoCapacity() { return 0; }

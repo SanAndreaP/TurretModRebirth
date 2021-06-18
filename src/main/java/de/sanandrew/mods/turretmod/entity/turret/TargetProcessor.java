@@ -20,6 +20,8 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.api.turret.TargetingEvent;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.entity.projectile.TurretProjectileEntity;
+import de.sanandrew.mods.turretmod.init.config.Targets;
+import de.sanandrew.mods.turretmod.item.ammo.AmmoCartridgeItem;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.world.PlayerList;
 import net.minecraft.entity.Entity;
@@ -83,7 +85,7 @@ public final class TargetProcessor
     }
 
     public void init() {
-        this.entityTargetList.putAll(TargetList.getStandardTargetList(this.turret.getAttackType()));
+        this.entityTargetList.putAll(Targets.getTargetList(this.turret.getAttackType()));
         this.playerTargetList.putAll(PlayerList.INSTANCE.getDefaultPlayerList());
     }
 
@@ -92,11 +94,10 @@ public final class TargetProcessor
         return this.addAmmo(stack, null);
     }
 
-    //todo: reimplement ammo cartridge
     @Override
     public boolean addAmmo(@Nonnull ItemStack stack, ICapabilityProvider excessInv) {
         if( stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN).isPresent() ) {
-//            return ItemAmmoCartridge.extractAmmoStacks(stack, this, true);
+            return AmmoCartridgeItem.extractAmmoStacks(stack, this, true);
         } else if( this.isAmmoApplicable(stack) ) {
             IAmmunition type    = AmmunitionRegistry.INSTANCE.get(stack);
             String      subtype = MiscUtils.defIfNull(AmmunitionRegistry.INSTANCE.getSubtype(stack), "");
@@ -530,7 +531,7 @@ public final class TargetProcessor
     }
 
     @Override
-    public ITurretEntity getTurretInst() {
+    public ITurretEntity getTurret() {
         return this.turret;
     }
 
@@ -555,7 +556,7 @@ public final class TargetProcessor
     public static final String NBT_TGTLIST_ENABLED    = "Enabled";
 
     @Override
-    public CompoundNBT save(CompoundNBT nbt) {
+    public void save(CompoundNBT nbt) {
         nbt.putInt(NBT_AMMO_COUNT, this.ammoCount);
         nbt.put(NBT_AMMO_STACK, this.ammoStack.save(new CompoundNBT()));
         nbt.putUUID(NBT_TARGET_ID, this.entityToAttackID);
@@ -575,8 +576,6 @@ public final class TargetProcessor
                 this.putBoolean(NBT_TGTLIST_ENABLED, enabled);
             }}));
         }});
-
-        return nbt;
     }
 
     @Override
@@ -626,7 +625,7 @@ public final class TargetProcessor
 
     @Override
     public void updateEntityTarget(ResourceLocation res, boolean active) {
-        if( TargetList.isEntityTargetable(res, this.turret.getAttackType()) ) {
+        if( Targets.canBeTargeted(res, this.turret.getAttackType()) ) {
             this.entityTargetList.put(res, active);
         }
     }
@@ -640,7 +639,7 @@ public final class TargetProcessor
     public void updateEntityTargets(ResourceLocation[] keys) {
         this.entityTargetList.entrySet().forEach(entry -> entry.setValue(false));
 
-        Arrays.stream(keys).filter(r -> TargetList.isEntityTargetable(r, this.turret.getAttackType())).forEach(r -> this.entityTargetList.put(r, true));
+        Arrays.stream(keys).filter(r -> Targets.canBeTargeted(r, this.turret.getAttackType())).forEach(r -> this.entityTargetList.put(r, true));
     }
 
     @Override

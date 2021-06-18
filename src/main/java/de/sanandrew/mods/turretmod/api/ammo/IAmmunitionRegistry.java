@@ -33,4 +33,9 @@ public interface IAmmunitionRegistry
 
     @Nonnull
     ItemStack getItem(ResourceLocation id, String subtype);
+
+    @Nonnull
+    default ItemStack getItem(IAmmunition obj, String subtype) {
+        return this.getItem(obj.getId(), subtype);
+    }
 }
