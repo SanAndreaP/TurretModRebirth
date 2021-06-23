@@ -37,7 +37,7 @@ public class TurretCamElement
         ITurretEntity turretInst = ((TcuInfoScreen) gui).getTurret();
 
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        TurretCamera.drawTurretCam(turretInst, mStack, 256, x, y, this.data.size[0] * 3, this.data.size[1] * 3);
+        TurretCamera.drawTurretCam(turretInst, mStack, this.data.quality, x, y, this.data.size[0], this.data.size[1]);
     }
 
     @Override
