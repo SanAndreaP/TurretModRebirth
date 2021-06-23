@@ -4,7 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ContainerName;
-import de.sanandrew.mods.turretmod.api.ResourceLocations;
+import de.sanandrew.mods.turretmod.api.Resources;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.client.init.ClientProxy;
 import de.sanandrew.mods.turretmod.inventory.container.AmmoCartridgeContainer;
@@ -29,9 +29,9 @@ public class AmmoCartridgeScreen
         super(cartridge, playerInv, title);
 
         try {
-            this.guiDef = GuiDefinition.getNewDefinition(ResourceLocations.GUI_CARTRIDGE);
-            this.width = this.guiDef.width;
-            this.height = this.guiDef.height;
+            this.guiDef = GuiDefinition.getNewDefinition(Resources.GUI_CARTRIDGE);
+            this.imageWidth = this.guiDef.width;
+            this.imageHeight = this.guiDef.height;
         } catch( IOException e ) {
             TmrConstants.LOG.log(Level.ERROR, e);
         }

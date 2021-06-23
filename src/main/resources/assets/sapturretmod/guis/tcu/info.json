@@ -1,5 +1,4 @@
 {
-  "parent": "sapturretmod:guis/tcu/tcu.json",
   "texture": "sapturretmod:textures/gui/tcu/page_info.png",
   "backgroundElements": [
     {
@@ -132,7 +131,6 @@
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
-        "buttonFunction": 0,
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
         "uvEnabled": [176, 18]
       }
@@ -144,7 +142,6 @@
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
-        "buttonFunction": 1,
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
         "uvEnabled": [194, 18]
       }
@@ -156,7 +153,6 @@
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
-        "buttonFunction": 2,
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
         "uvEnabled": [212, 18]
       }
@@ -168,7 +164,6 @@
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
-        "buttonFunction": 3,
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
         "uvEnabled": [176, 72]
       }
@@ -180,7 +175,6 @@
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
-        "buttonFunction": 4,
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
         "uvEnabled": [194, 72]
       }

@@ -17,6 +17,7 @@ import de.sanandrew.mods.turretmod.datagenerator.ElectrolyteProvider;
 import de.sanandrew.mods.turretmod.entity.projectile.ProjectileRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.init.config.Targets;
+import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import de.sanandrew.mods.turretmod.world.PlayerList;
@@ -85,6 +86,7 @@ public class TurretModRebirth
         MinecraftForge.EVENT_BUS.register(PlayerList.INSTANCE);
 
         PLUGINS.forEach(ITmrPlugin::setup);
+        PLUGINS.forEach(plugin -> plugin.registerTcuPages(ItemRegistry.TURRET_CONTROL_UNIT));
 //        TurretModRebirth.PLUGINS.forEach(plugin -> plugin.registerTcuEntries(GuiTcuRegistry.INSTANCE));
     }
 

@@ -598,7 +598,7 @@ public class TurretEntity
         ItemStack stack = player.getItemInHand(hand);
 
         if( this.level.isClientSide ) {
-            //TODO: reimplement TCU & GUIs
+            //TODO: reimplement GUIs
 //            if( ItemStackUtils.isItem(stack, ItemRegistry.TURRET_CONTROL_UNIT) ) {
 //                if( !player.isCrouching() ) {
 //                    NetworkHooks.openGui((ServerPlayerEntity) player, new TcuContainerFactory.Provider(stack, this));

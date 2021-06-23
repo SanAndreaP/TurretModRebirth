@@ -14,7 +14,7 @@ import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ContainerName;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.DynamicText;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.EnergyStorageBar;
-import de.sanandrew.mods.turretmod.api.ResourceLocations;
+import de.sanandrew.mods.turretmod.api.Resources;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.client.gui.element.ElectrolyteBar;
 import de.sanandrew.mods.turretmod.client.init.ClientProxy;
@@ -41,9 +41,9 @@ public class ElectrolyteGeneratorScreen
         super(container, playerInventory, title);
 
         try {
-            this.guiDef = GuiDefinition.getNewDefinition(ResourceLocations.GUI_ELECTROLYTE);
-            this.width = this.guiDef.width;
-            this.height = this.guiDef.height;
+            this.guiDef = GuiDefinition.getNewDefinition(Resources.GUI_ELECTROLYTE);
+            this.imageWidth = this.guiDef.width;
+            this.imageHeight = this.guiDef.height;
         } catch( IOException e ) {
             TmrConstants.LOG.log(Level.ERROR, e);
         }

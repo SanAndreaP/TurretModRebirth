@@ -2,6 +2,8 @@ package de.sanandrew.mods.turretmod.init;
 
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -21,4 +23,6 @@ public interface IProxy
     PlayerEntity getNetworkPlayer(Supplier<NetworkEvent.Context> networkContextSupplier);
 
     IRenderClassProvider getRenderClassProvider();
+
+    void openTcuGuiRemote(ItemStack stack, ITurretEntity turret, ResourceLocation type);
 }

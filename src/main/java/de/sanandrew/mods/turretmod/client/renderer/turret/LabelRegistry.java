@@ -4,7 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.sanandrew.mods.sanlib.lib.ColorObj;
-import de.sanandrew.mods.turretmod.api.ResourceLocations;
+import de.sanandrew.mods.turretmod.api.Resources;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelRegistry;
 import de.sanandrew.mods.turretmod.api.client.tcu.ILabelRenderer;
@@ -63,7 +63,7 @@ public final class LabelRegistry
         @Override public boolean isVisible(ITurretEntity turret) { return false; }
         @Override public int getMinWidth(ILabelRegistry registry, ITurretEntity turret) { return 0; }
         @Override public int getHeight(ILabelRegistry registry, ITurretEntity turret) { return 0; }
-        @Nonnull @Override public ResourceLocation getId() { return ResourceLocations.NULL; }
+        @Nonnull @Override public ResourceLocation getId() { return Resources.NULL; }
     };
 
     private final List<Label> currentLabels = new ArrayList<>();
@@ -190,6 +190,10 @@ public final class LabelRegistry
         registry.register(new Health(new ResourceLocation(TmrConstants.ID, "health")));
         registry.register(new Ammo(new ResourceLocation(TmrConstants.ID, "ammo")));
         registry.register(new Target(new ResourceLocation(TmrConstants.ID, "target")));
+    }
+
+    public void cleanupRenderers() {
+        this.currentLabels.clear();
     }
 
     private static class Label

@@ -2,7 +2,7 @@ package de.sanandrew.mods.turretmod.api;
 
 import net.minecraft.util.ResourceLocation;
 
-public final class ResourceLocations
+public final class Resources
 {
     public static final ResourceLocation NULL = new ResourceLocation("null");
 
@@ -36,6 +36,7 @@ public final class ResourceLocations
     public static final ResourceLocation GUI_ELECTROLYTE          = rl("guis/electrolyte_generator.json");
     public static final ResourceLocation GUI_CARTRIDGE            = rl("guis/ammo_cartridge.json");
     public static final ResourceLocation GUI_TCRATE               = rl("guis/turret_crate.json");
+    public static final ResourceLocation GUI_TCU_BASE             = rl("guis/tcu/base.json");
     public static final ResourceLocation GUI_TCU_INFO             = rl("guis/tcu/info.json");
     public static final ResourceLocation GUI_TCU_TARGET_CREATURES = rl("guis/tcu/target_creatures.json");
     public static final ResourceLocation GUI_TCU_TARGET_PLAYERS   = rl("guis/tcu/target_players.json");

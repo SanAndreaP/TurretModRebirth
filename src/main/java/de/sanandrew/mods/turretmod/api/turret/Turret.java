@@ -1,6 +1,6 @@
 package de.sanandrew.mods.turretmod.api.turret;
 
-import de.sanandrew.mods.turretmod.api.ResourceLocations;
+import de.sanandrew.mods.turretmod.api.Resources;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -67,7 +67,7 @@ public abstract class Turret
         this.health = 20.0F;
         this.ammoCapacity = 256;
         this.reloadTicks = 20;
-        this.model = isBuoy ? ResourceLocations.MODEL_ENTITY_BASE_BUOY : ResourceLocations.MODEL_ENTITY_BASE;
+        this.model = isBuoy ? Resources.MODEL_ENTITY_BASE_BUOY : Resources.MODEL_ENTITY_BASE;
     }
 
     /**
@@ -219,10 +219,10 @@ public abstract class Turret
         }
 
         public SoundIds withDefaults() {
-            this.emptySound = ResourceLocations.SOUND_TURRET_EMPTY;
-            this.idleSound = ResourceLocations.SOUND_TURRET_IDLE;
-            this.hurtSound = ResourceLocations.SOUND_TURRET_HIT;
-            this.deathSound = ResourceLocations.SOUND_TURRET_DEATH;
+            this.emptySound = Resources.SOUND_TURRET_EMPTY;
+            this.idleSound = Resources.SOUND_TURRET_IDLE;
+            this.hurtSound = Resources.SOUND_TURRET_HIT;
+            this.deathSound = Resources.SOUND_TURRET_DEATH;
 
             return this;
         }

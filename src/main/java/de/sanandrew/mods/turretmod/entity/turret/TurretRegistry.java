@@ -9,7 +9,7 @@
 package de.sanandrew.mods.turretmod.entity.turret;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.turretmod.api.ResourceLocations;
+import de.sanandrew.mods.turretmod.api.Resources;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
@@ -132,8 +132,8 @@ public final class TurretRegistry
     {
         private static final AxisAlignedBB BB = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
 
-        @Nonnull @Override public ResourceLocation getId() { return ResourceLocations.NULL; }
-        @Nonnull @Override public ResourceLocation getModelLocation() { return ResourceLocations.NULL; }
+        @Nonnull @Override public ResourceLocation getId() { return Resources.NULL; }
+        @Nonnull @Override public ResourceLocation getModelLocation() { return Resources.NULL; }
         
         @Override public ResourceLocation getBaseTexture(ITurretEntity turret) { return null; }
         @Override public ResourceLocation getGlowTexture(ITurretEntity turret) { return null; }

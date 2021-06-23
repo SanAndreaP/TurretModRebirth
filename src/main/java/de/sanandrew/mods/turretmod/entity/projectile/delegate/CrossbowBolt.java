@@ -1,7 +1,7 @@
 package de.sanandrew.mods.turretmod.entity.projectile.delegate;
 
 import com.google.common.base.Strings;
-import de.sanandrew.mods.turretmod.api.ResourceLocations;
+import de.sanandrew.mods.turretmod.api.Resources;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectileEntity;
 import de.sanandrew.mods.turretmod.api.ammo.Projectile;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
@@ -24,9 +24,9 @@ public class CrossbowBolt
     public CrossbowBolt(ResourceLocation id) {
         super(id);
 
-        this.ricochetSound = ResourceLocations.SOUND_RICOCHET_ARROW;
+        this.ricochetSound = Resources.SOUND_RICOCHET_ARROW;
 
-        this.texture = ResourceLocations.TEXTURE_ENTITY_CROSSBOW_BOLT;
+        this.texture = Resources.TEXTURE_ENTITY_CROSSBOW_BOLT;
     }
 
     @Override

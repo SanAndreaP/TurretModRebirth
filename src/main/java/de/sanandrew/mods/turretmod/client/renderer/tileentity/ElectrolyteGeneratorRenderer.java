@@ -4,7 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.turretmod.api.ResourceLocations;
+import de.sanandrew.mods.turretmod.api.Resources;
 import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteGeneratorTileEntity;
 import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteInventory;
 import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteProcess;
@@ -73,7 +73,7 @@ public class ElectrolyteGeneratorRenderer
         private static final float      SCALE         = 0.01F;
         private static final double     PERPEND_ANGLE = 90.0D * Math.PI / 180.0D;
         private static final RenderType TYPE_WIRE     = RenderType.create("electrolyte_wire", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256,
-                                                                          RenderType.State.builder().setTextureState(new RenderState.TextureState(ResourceLocations.TEXTURE_TILE_ELECTROLYTE_GEN_WIRE, false, false))
+                                                                          RenderType.State.builder().setTextureState(new RenderState.TextureState(Resources.TEXTURE_TILE_ELECTROLYTE_GEN_WIRE, false, false))
                                                                                           .setCullState(new RenderState.CullState(false))
                                                                                           .setLightmapState(new RenderState.LightmapState(true))
                                                                                           .createCompositeState(false));

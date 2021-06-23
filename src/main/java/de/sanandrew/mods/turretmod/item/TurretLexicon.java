@@ -8,7 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
-import de.sanandrew.mods.turretmod.api.ResourceLocations;
+import de.sanandrew.mods.turretmod.api.Resources;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -49,7 +49,7 @@ public class TurretLexicon
     public ActionResult<ItemStack> use(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
         if( PATCHOULI_AVAILABLE ) {
             if( player instanceof ServerPlayerEntity ) {
-                vazkii.patchouli.api.PatchouliAPI.get().openBookGUI((ServerPlayerEntity) player, ResourceLocations.PATCHOULI);
+                vazkii.patchouli.api.PatchouliAPI.get().openBookGUI((ServerPlayerEntity) player, Resources.PATCHOULI);
 
                 return ActionResult.success(player.getItemInHand(hand));
             }

@@ -1,6 +1,6 @@
 package de.sanandrew.mods.turretmod.entity.turret.delegate;
 
-import de.sanandrew.mods.turretmod.api.ResourceLocations;
+import de.sanandrew.mods.turretmod.api.Resources;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.api.turret.IVariant;
 import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
@@ -21,15 +21,15 @@ public class Crossbow
     private DualItemVariants variantContainer;
 
     public Crossbow(ResourceLocation id) {
-        super(id, 1, false, TargetType.GROUND, new SoundIds(ResourceLocations.SOUND_SHOOT_CROSSBOW).withDefaults());
+        super(id, 1, false, TargetType.GROUND, new SoundIds(Resources.SOUND_SHOOT_CROSSBOW).withDefaults());
 
-        this.glowTexture = ResourceLocations.TEXTURE_ENTITY_CROSSBOW_GLOW;
+        this.glowTexture = Resources.TEXTURE_ENTITY_CROSSBOW_GLOW;
         this.range = new AxisAlignedBB(-16.0D, -4.0D, -16.0D, 16.0D, 8.0D, 16.0D);
     }
 
     private void buildVariants() {
         if( this.variantContainer == null ) {
-            this.variantContainer = new DualItemVariants(ResourceLocations.TEXTURE_ENTITY_CROSSBOW_BASE);
+            this.variantContainer = new DualItemVariants(Resources.TEXTURE_ENTITY_CROSSBOW_BASE);
             Map<String, ItemStack> bases = new LinkedHashMap<>();
             bases.put("cobblestone", new ItemStack(Blocks.COBBLESTONE));
             bases.put("mossy_cobblestone", new ItemStack(Blocks.MOSSY_COBBLESTONE));

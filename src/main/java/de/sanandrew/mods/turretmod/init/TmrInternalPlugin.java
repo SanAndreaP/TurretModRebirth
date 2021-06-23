@@ -10,10 +10,12 @@ import de.sanandrew.mods.turretmod.api.ITmrPlugin;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectileRegistry;
+import de.sanandrew.mods.turretmod.api.tcu.ITcuRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
 import de.sanandrew.mods.turretmod.client.renderer.turret.LabelRegistry;
 import de.sanandrew.mods.turretmod.entity.projectile.Projectiles;
 import de.sanandrew.mods.turretmod.entity.turret.Turrets;
+import de.sanandrew.mods.turretmod.item.TurretControlUnit;
 import de.sanandrew.mods.turretmod.item.ammo.Ammunitions;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -48,10 +50,10 @@ public class TmrInternalPlugin
 //        ITargetProcessor.TARGET_BUS.register(new TargetingEventHandler());
     }
 
-//    @Override
-//    public void registerTcuEntries(IGuiTcuRegistry registry) {
-//        GuiTcuRegistry.initializePages(registry);
-//    }
+    @Override
+    public void registerTcuPages(ITcuRegistry registry) {
+        TurretControlUnit.register(registry);
+    }
 
     @Override
     public void registerProjectiles(IProjectileRegistry registry) {
@@ -64,31 +66,14 @@ public class TmrInternalPlugin
         LabelRegistry.register(registry);
     }
 
-    //    @Override
-//    @SideOnly(Side.CLIENT)
-//    public void registerTurretRenderer(ITurretRenderRegistry<?> registry) {
-//        TurretRenderer.initialize(registry);
-//    }
-//
 //    @Override
 //    public void registerTurretRenderLayers(ITurretRenderRegistry<?> registry) {
 //        TurretRenderer.initializeLayers(registry);
 //    }
-//
-//    @Override
-//    public <T extends Entity> void registerProjectileRenderer(IRenderRegistry<ResourceLocation, T, IRender<T>> registry) {
-//        RenderProjectile.initialize(registry);
-//    }
-//
-//    @Override
-//    @SideOnly(Side.CLIENT)
-//    public void registerTcuLabelElements(ILabelRegistry registry) {
-//        Labels.initialize(registry);
-//    }
-//
-//    @Override
-//    @SideOnly(Side.CLIENT)
-//    public void registerTcuGuis(IGuiTcuRegistry registry) {
-//        GuiTcuRegistry.initializePagesClient(registry);
-//    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void registerTcuScreens(ITcuRegistry registry) {
+        TurretControlUnit.registerClient(registry);
+    }
 }

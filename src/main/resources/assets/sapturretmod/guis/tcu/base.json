@@ -1,6 +1,7 @@
 {
   "width": 176,
   "height": 236,
+  "texture": "sapturretmod:textures/gui/tcu/page_info.png",
   "backgroundElements": [
     {
       "type": "texture",
@@ -17,7 +18,7 @@
       }
     },
     {
-      "type": "sapturretmod:tcu.page_nav",
+      "type": "sapturretmod:tcu_page_nav",
       "pos": [0, 214],
       "id": "pgNavigation",
       "data": {
@@ -32,7 +33,7 @@
   ],
   "foregroundElements": [
     {
-      "type": "sapturretmod:tcu.page_nav_ttip",
+      "type": "sapturretmod:tcu_page_nav_ttip",
       "pos": [0, 214],
       "data": {
         "for": "pgNavigation"

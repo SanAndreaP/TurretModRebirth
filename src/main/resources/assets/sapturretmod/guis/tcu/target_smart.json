@@ -1,5 +1,4 @@
 {
-  "parent": "sapturretmod:guis/tcu/tcu.json",
   "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
   "backgroundElements": [
     {

@@ -12,7 +12,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import de.sanandrew.mods.sanlib.lib.client.ModelJsonHandler;
 import de.sanandrew.mods.sanlib.lib.client.ModelJsonLoader;
-import de.sanandrew.mods.turretmod.api.ResourceLocations;
+import de.sanandrew.mods.turretmod.api.Resources;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -35,7 +35,7 @@ public class ModelTurretBase<E extends LivingEntity & ITurretEntity>
 	private final ModelJsonLoader<ModelTurretBase<E>, ModelJsonLoader.JsonBase> modelJson;
 
 	public ModelTurretBase() {
-	    this(ResourceLocations.MODEL_ENTITY_BASE);
+	    this(Resources.MODEL_ENTITY_BASE);
     }
 
     public ModelTurretBase(ResourceLocation modelLocation) {
