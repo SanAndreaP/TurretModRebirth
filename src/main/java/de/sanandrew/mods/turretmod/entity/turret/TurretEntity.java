@@ -445,6 +445,12 @@ public class TurretEntity
         }
     }
 
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public int getCameraQuality() {
+        return 48;
+    }
+
     private boolean isSubmergedInLiquid(double heightMod) {
         BlockPos pos = new BlockPos(this.getX(), this.getY() + heightMod, this.getZ());
         return this.level.getBlockState(pos).getMaterial().isLiquid();

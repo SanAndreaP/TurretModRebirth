@@ -82,7 +82,7 @@ public class TcuScreen
 
     @Override
     public void render(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-//        this.renderBackground(matrixStack);
+        this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         if( this.currScreen != null ) {
             this.currScreen.render(matrixStack, mouseX, mouseY, partialTicks);

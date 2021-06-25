@@ -76,4 +76,7 @@ public interface ITurretEntity
 
     @OnlyIn(Dist.CLIENT)
     int getPartBrightnessForRender(double partY);
+
+    @OnlyIn(Dist.CLIENT)
+    int getCameraQuality();
 }
