@@ -8,18 +8,20 @@
  */
 package de.sanandrew.mods.turretmod.item;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.client.tcu.ITcuScreen;
 import de.sanandrew.mods.turretmod.api.tcu.ITcuRegistry;
 import de.sanandrew.mods.turretmod.api.tcu.TcuContainer;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
+import de.sanandrew.mods.turretmod.client.gui.tcu.TcuInfoPage;
+import de.sanandrew.mods.turretmod.client.gui.tcu.TcuScreen;
 import de.sanandrew.mods.turretmod.entity.turret.TurretEntity;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.inventory.container.TcuContainerFactory;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -34,7 +36,6 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -180,7 +181,7 @@ public class TurretControlUnit
 
         UUID id = getBoundID(stack);
         if( id != null ) {
-            Entity entity = EntityUtils.getEntityByUUID(world, id);
+            Entity entity = EntityUtils.getServerEntity(world, id);
             if( entity instanceof TurretEntity ) {
                 return (TurretEntity) entity;
             }
@@ -214,9 +215,11 @@ public class TurretControlUnit
         if( player == null || player.level.isClientSide ) {
             TurretModRebirth.PROXY.openTcuGuiRemote(stack, turret, type);
         } else {
-            NetworkHooks.openGui(player, new TcuContainerFactory.Provider(stack, turret, type), buf -> {
+            boolean isRemote = isHeldTcuBoundToTurret(player, turret);
+            NetworkHooks.openGui(player, new TcuContainerFactory.Provider(stack, turret, type, isRemote), buf -> {
                 buf.writeVarInt(turret.get().getId());
                 buf.writeResourceLocation(type);
+                buf.writeBoolean(isRemote);
             });
         }
     }
@@ -241,9 +244,9 @@ public class TurretControlUnit
     @Override
     @OnlyIn(Dist.CLIENT)
     public void registerTcuScreen(@Nonnull ResourceLocation id, Supplier<ItemStack> iconSupplier,
-                                  de.sanandrew.mods.turretmod.client.gui.TcuScreen.ScreenProvider screenProvider)
+                                  Function<ContainerScreen<TcuContainer>, ITcuScreen> screenProvider)
     {
-        de.sanandrew.mods.turretmod.client.gui.TcuScreen.registerScreen(id, iconSupplier, screenProvider);
+        TcuScreen.registerScreen(id, iconSupplier, screenProvider);
     }
 
     public static final ResourceLocation INFO              = new ResourceLocation(TmrConstants.ID, "info");
@@ -258,19 +261,11 @@ public class TurretControlUnit
 
     @OnlyIn(Dist.CLIENT)
     public static void registerClient(ITcuRegistry registry) {
-        registry.registerTcuScreen(INFO, new SimpleItem(Items.BOOK), de.sanandrew.mods.turretmod.client.gui.TcuInfoScreen::new);
+        registry.registerTcuScreen(INFO, new SimpleItem(Items.BOOK), TcuInfoPage::new);
         registry.registerTcuScreen(TARGETS_CREATURES, new SimpleItem(Items.ZOMBIE_HEAD),
-                                   (t, w, h) -> new Screen(StringTextComponent.EMPTY) {
-            @Override
-            public void render(@Nonnull MatrixStack p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
-            }
-        });
+                                   s -> null);
         registry.registerTcuScreen(TARGETS_PLAYERS, de.sanandrew.mods.turretmod.client.init.PlayerHeads::getRandomSkull,
-                                   (t, w, h) -> new Screen(StringTextComponent.EMPTY) {
-            @Override
-            public void render(@Nonnull MatrixStack p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
-            }
-        });
+                                   s -> null);
     }
 
     private static final class SimpleItem

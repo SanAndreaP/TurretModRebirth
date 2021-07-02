@@ -7,10 +7,12 @@ import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Tooltip;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
-import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.init.Lang;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public class PageNavigationTooltip
         extends Tooltip
@@ -31,19 +33,19 @@ public class PageNavigationTooltip
     }
 
     @Override
-    public void update(IGui gui, JsonObject data) {
+    public void tick(IGui gui, JsonObject data) {
         PageNavigation pgn = this.pageNavigation.get(PageNavigation.class);
         Label lbl = this.getChild(CONTENT).get(Label.class);
         this.tabPos = null;
 
         pgn.shownTabs.forEach((e, p) -> {
             if( e.get(ButtonNav.class).isHovering() ) {
-                lbl.text = LangUtils.translate(Lang.TCU_PAGE_TITLE.get(p));
+                lbl.text = new TranslationTextComponent(Lang.TCU_PAGE_TITLE.get(p));
                 this.tabPos = e.pos;
             }
         });
 
-        super.update(gui, data);
+        super.tick(gui, data);
     }
 
     @Override
@@ -61,7 +63,7 @@ public class PageNavigationTooltip
     private static class Label
             extends Text
     {
-        private String text = "";
+        private ITextComponent text = StringTextComponent.EMPTY;
 
         @Override
         public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
@@ -71,12 +73,12 @@ public class PageNavigationTooltip
         }
 
         @Override
-        public String getBakedText(IGui gui, JsonObject data) {
-            return "";
+        public ITextComponent getBakedText(IGui gui, JsonObject data) {
+            return StringTextComponent.EMPTY;
         }
 
         @Override
-        public String getDynamicText(IGui gui, String originalText) {
+        public ITextComponent getDynamicText(IGui gui, ITextComponent originalText) {
             return this.text;
         }
     }

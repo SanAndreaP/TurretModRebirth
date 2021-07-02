@@ -10,7 +10,7 @@ import de.sanandrew.mods.sanlib.lib.client.gui.element.ButtonSL;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.Resources;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.client.gui.TcuScreen;
+import de.sanandrew.mods.turretmod.client.gui.tcu.TcuScreen;
 import de.sanandrew.mods.turretmod.item.TurretControlUnit;
 import net.minecraft.util.ResourceLocation;
 
@@ -56,7 +56,7 @@ public class PageNavigation
     }
 
     @Override
-    public void update(IGui gui, JsonObject data) {
+    public void tick(IGui gui, JsonObject data) {
         final TcuScreen     tcu      = (TcuScreen) gui;
         final ResourceLocation currPage = tcu.getCurrPage();
 

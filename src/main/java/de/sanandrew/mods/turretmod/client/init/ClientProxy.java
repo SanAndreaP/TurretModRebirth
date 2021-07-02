@@ -1,14 +1,13 @@
 package de.sanandrew.mods.turretmod.client.init;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import de.sanandrew.mods.sanlib.lib.client.ShaderHelper;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.client.gui.AmmoCartridgeScreen;
 import de.sanandrew.mods.turretmod.client.gui.ElectrolyteGeneratorScreen;
-import de.sanandrew.mods.turretmod.client.gui.TcuScreen;
+import de.sanandrew.mods.turretmod.client.gui.tcu.TcuScreen;
 import de.sanandrew.mods.turretmod.client.gui.element.ElectrolyteBar;
 import de.sanandrew.mods.turretmod.client.gui.element.TurretCamElement;
 import de.sanandrew.mods.turretmod.client.gui.element.TurretName;
@@ -19,7 +18,6 @@ import de.sanandrew.mods.turretmod.client.renderer.RenderClassProvider;
 import de.sanandrew.mods.turretmod.client.renderer.color.AmmoCartridgeColor;
 import de.sanandrew.mods.turretmod.client.renderer.color.TippedBoltColor;
 import de.sanandrew.mods.turretmod.client.renderer.turret.LabelRegistry;
-import de.sanandrew.mods.turretmod.client.renderer.turret.TurretCamera;
 import de.sanandrew.mods.turretmod.client.shader.Shaders;
 import de.sanandrew.mods.turretmod.init.IProxy;
 import de.sanandrew.mods.turretmod.init.IRenderClassProvider;
@@ -40,7 +38,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.NetworkHooks;
 
 import java.util.Map;
 import java.util.UUID;
@@ -74,7 +71,7 @@ public class ClientProxy
 
     @Override
     public void fillPlayerListClient(Map<UUID, ITextComponent> map) {
-        PlayerList.INSTANCE.putPlayersClient(map);
+        PlayerList.getData().putPlayersClient(map);
     }
 
     @Override

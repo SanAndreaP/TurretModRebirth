@@ -1,5 +1,8 @@
 package de.sanandrew.mods.turretmod.api.tcu;
 
+import de.sanandrew.mods.turretmod.api.client.tcu.ITcuScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -18,5 +21,5 @@ public interface ITcuRegistry
 
     @OnlyIn(Dist.CLIENT)
     void registerTcuScreen(@Nonnull ResourceLocation id, Supplier<ItemStack> iconSupplier,
-                           de.sanandrew.mods.turretmod.client.gui.TcuScreen.ScreenProvider screenProvider);
+                           Function<ContainerScreen<TcuContainer>, ITcuScreen> screenProvider);
 }

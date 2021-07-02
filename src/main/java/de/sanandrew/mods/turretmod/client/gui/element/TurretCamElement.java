@@ -9,7 +9,7 @@ import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
-import de.sanandrew.mods.turretmod.client.gui.TcuInfoScreen;
+import de.sanandrew.mods.turretmod.client.gui.tcu.TcuInfoPage;
 import de.sanandrew.mods.turretmod.client.renderer.turret.TurretCamera;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.Range;
@@ -34,7 +34,7 @@ public class TurretCamElement
     @Override
     @SuppressWarnings("deprecation")
     public void render(IGui gui, MatrixStack mStack, float partTicks, int x, int y, double mouseX, double mouseY, JsonObject data) {
-        ITurretEntity turretInst = ((TcuInfoScreen) gui).getTurret();
+        ITurretEntity turretInst = ((TcuInfoPage) gui).getTurret();
 
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         TurretCamera.drawTurretCam(turretInst, mStack, x, y, this.data.size[0], this.data.size[1]);

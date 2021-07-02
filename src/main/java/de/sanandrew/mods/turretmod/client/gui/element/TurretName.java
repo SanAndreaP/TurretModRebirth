@@ -9,8 +9,10 @@ import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.client.gui.TcuScreen;
+import de.sanandrew.mods.turretmod.client.gui.tcu.TcuScreen;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import org.lwjgl.opengl.GL11;
 
 public class TurretName
@@ -31,7 +33,7 @@ public class TurretName
 
     @Override
     public void render(IGui gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, JsonObject data) {
-        String name = this.getDynamicText(gui, "");
+        ITextComponent name = this.getDynamicText(gui, StringTextComponent.EMPTY);
         int strWidth = this.fontRenderer.width(name);
         if( strWidth > this.textfieldLength ) {
             long currTime = System.currentTimeMillis();
@@ -52,12 +54,12 @@ public class TurretName
     }
 
     @Override
-    public String getBakedText(IGui gui, JsonObject data) {
-        return "";
+    public ITextComponent getBakedText(IGui gui, JsonObject data) {
+        return StringTextComponent.EMPTY;
     }
 
     @Override
-    public String getDynamicText(IGui gui, String originalText) {
-        return ((TcuScreen) gui).getTurret().get().getDisplayName().getString();
+    public ITextComponent getDynamicText(IGui gui, ITextComponent originalText) {
+        return ((TcuScreen) gui).getTurret().get().getDisplayName();
     }
 }

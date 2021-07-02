@@ -128,10 +128,10 @@ public class TurretProjectileEntity
 
     @Override
     public void shoot(double x, double y, double z, float recoil, float randomMultiplier) {
-        Vector3d randomVectorGaussian = new Vector3d(this.random.nextGaussian() * (this.random.nextBoolean() ? -1 : 1) * 0.0075D * randomMultiplier,
-                                                     this.random.nextGaussian() * (this.random.nextBoolean() ? -1 : 1) * 0.0075D * randomMultiplier,
-                                                     this.random.nextGaussian() * (this.random.nextBoolean() ? -1 : 1) * 0.0075D * randomMultiplier);
-        Vector3d moveVector = new Vector3d(x, y, z).normalize().add(randomVectorGaussian).scale(recoil);
+        Vector3d randomVec = new Vector3d(this.random.nextGaussian() * (this.random.nextBoolean() ? -1 : 1) * 0.0075D * randomMultiplier,
+                                          this.random.nextGaussian() * (this.random.nextBoolean() ? -1 : 1) * 0.0075D * randomMultiplier,
+                                          this.random.nextGaussian() * (this.random.nextBoolean() ? -1 : 1) * 0.0075D * randomMultiplier);
+        Vector3d moveVector = new Vector3d(x, y, z).normalize().add(randomVec).scale(recoil);
 
         this.setDeltaMovement(moveVector);
         this.forceUpdateRotation(moveVector);
@@ -146,7 +146,10 @@ public class TurretProjectileEntity
         Vector3d newVector = vector.normalize().scale(speed);
 
         if( scatter >= 0.000001D ) {
-            newVector = newVector.add(MiscUtils.RNG.randomVector(new Vector3d(-1, -1, -1), new Vector3d(1, 1, 1)).normalize().scale(scatter));
+            Vector3d randomVec = new Vector3d(this.random.nextGaussian() * (this.random.nextBoolean() ? -1 : 1),
+                                              this.random.nextGaussian() * (this.random.nextBoolean() ? -1 : 1),
+                                              this.random.nextGaussian() * (this.random.nextBoolean() ? -1 : 1));
+            newVector = newVector.add(randomVec.normalize().scale(scatter));
         }
         if( yArc >= 0.000001D ) {
             newVector = newVector.add(0.0D, yArc * Math.sqrt(vector.x * vector.x + vector.z * vector.z) * 0.05D, 0.0D);

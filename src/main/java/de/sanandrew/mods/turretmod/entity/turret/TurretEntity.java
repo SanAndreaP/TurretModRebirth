@@ -23,7 +23,6 @@ import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.entity.EntityRegistry;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
-import de.sanandrew.mods.turretmod.inventory.container.TcuContainerFactory;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.TurretControlUnit;
 import de.sanandrew.mods.turretmod.item.TurretItem;
@@ -37,7 +36,6 @@ import net.minecraft.entity.MoverType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
@@ -90,6 +88,7 @@ public class TurretEntity
     private static final DataParameter<Boolean> DATA_IS_ACTIVE = EntityDataManager.defineId(TurretEntity.class, DataSerializers.BOOLEAN);
 
     public static final String NBT_TURRET_ID      = "TurretId";
+    public static final String NBT_TURRET_NAME    = "TurretName";
     public static final String NBT_IS_ACTIVE      = "IsActive";
     public static final String NBT_TURRET_VARIANT = "Variant";
     public static final String NBT_OWNER          = "Owner";
@@ -434,6 +433,13 @@ public class TurretEntity
     }
 
     @Override
+    public boolean canRemoteTransfer() {
+        //TODO: reimplement upgrades
+//        return this.getUpgradeProcessor().canAccessRemotely();
+        return false;
+    }
+
+    @Override
     @OnlyIn(Dist.CLIENT)
     public int getPartBrightnessForRender(double partY) {
         BlockPos bpos = new BlockPos(MathHelper.floor(this.getX()), MathHelper.floor(this.getY() + partY), MathHelper.floor(this.getZ()));
@@ -744,14 +750,17 @@ public class TurretEntity
 //        this.upgProc.writeToNbt(nbt);
         compound.putBoolean(NBT_IS_ACTIVE, this.isActive());
 
-        compound.put(NBT_OWNER, new CompoundNBT()
-        {{
+        compound.put(NBT_OWNER, new CompoundNBT() {{
             this.putUUID(NBT_OWNER_ID, TurretEntity.this.ownerId);
             this.putString(NBT_OWNER_NAME, ITextComponent.Serializer.toJson(TurretEntity.this.ownerName));
         }});
 
         if( this.delegate instanceof IVariantHolder ) {
             compound.putString(NBT_TURRET_VARIANT, this.getVariant().getId().toString());
+        }
+
+        if( this.hasCustomName() ) {
+            compound.putString(NBT_TURRET_NAME, ITextComponent.Serializer.toJson(this.getCustomName()));
         }
 
         this.delegate.onSave(this, compound);
@@ -774,6 +783,13 @@ public class TurretEntity
 
         if( compound.contains(NBT_TURRET_VARIANT, Constants.NBT.TAG_STRING) ) {
             this.setVariant(compound.getString(NBT_TURRET_VARIANT));
+        }
+
+        if( compound.contains(NBT_TURRET_NAME, Constants.NBT.TAG_STRING) ) {
+            ITextComponent cn = ITextComponent.Serializer.fromJson(compound.getString(NBT_TURRET_NAME));
+            if( cn != null ) {
+                this.setCustomName(cn);
+            }
         }
 
         this.delegate.onLoad(this, compound);

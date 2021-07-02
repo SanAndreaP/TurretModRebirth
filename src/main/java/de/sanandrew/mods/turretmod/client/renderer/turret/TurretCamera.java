@@ -81,7 +81,7 @@ public class TurretCamera
 
     @SuppressWarnings({ "deprecation", "ConstantConditions" })
     public static void render(Minecraft mc, MatrixStack mStack, final float renderTickTime) {
-        Screen prevScreen = null;
+//        Screen prevScreen = null;
 
         if( mc.level == null ) {
             return;
@@ -95,11 +95,11 @@ public class TurretCamera
                                                                 && updTime - e.getValue().lastUpdTime > e.getValue().maxUpdTime)
                                                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         if( disp.size() > 0 ) {
-            if( !mc.isPaused() ) {
-                prevScreen = mc.screen;
-                mc.pauseGame(true);
-                mc.screen = null;
-            }
+//            if( !mc.isPaused() ) {
+//                prevScreen = mc.screen;
+//                mc.pauseGame(true);
+//                mc.screen = null;
+//            }
 
             GameSettings settings         = mc.options;
             boolean      prevHideGui      = settings.hideGui;
@@ -143,7 +143,7 @@ public class TurretCamera
             settings.mipmapLevels = prevMipmapLevels;
             mc.setCameraEntity(prevCameraEntity);
 
-            mc.setScreen(prevScreen);
+//            mc.setScreen(prevScreen);
         }
 
         TURRETS.forEach((turret, camEntry) -> camEntry.active = false);

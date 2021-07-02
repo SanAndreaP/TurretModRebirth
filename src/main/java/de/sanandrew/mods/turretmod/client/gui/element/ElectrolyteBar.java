@@ -34,7 +34,7 @@ public class ElectrolyteBar
     }
 
     @Override
-    public void update(IGui gui, JsonObject data) {
+    public void tick(IGui gui, JsonObject data) {
         IElectrolyteInfo gel        = (IElectrolyteInfo) gui;
         double           energyPerc = gel.getProgress(this.slot) / (double) gel.getMaxProgress(this.slot);
 

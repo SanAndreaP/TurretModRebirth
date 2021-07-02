@@ -28,10 +28,12 @@ public class LayerTurretGlow<E extends LivingEntity & ITurretEntity, M extends E
         super(turretRenderer);
     }
 
-    public void render(@Nonnull MatrixStack stack, IRenderTypeBuffer buffer, int packedLight, E turret,
+    public void render(@Nonnull MatrixStack stack, @Nonnull IRenderTypeBuffer buffer, int packedLight, E turret,
                        float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
     {
-        IVertexBuilder ivertexbuilder = buffer.getBuffer(RenderType.eyes(turret.getDelegate().getGlowTexture(turret)));
-        this.getParentModel().renderToBuffer(stack, ivertexbuilder, 0xF00000, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        if( turret.isActive() ) {
+            IVertexBuilder ivertexbuilder = buffer.getBuffer(RenderType.eyes(turret.getDelegate().getGlowTexture(turret)));
+            this.getParentModel().renderToBuffer(stack, ivertexbuilder, 0xF00000, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        }
     }
 }

@@ -15,13 +15,15 @@ public class TcuContainer
         extends Container
 {
     public final ITurretEntity turret;
+    public final boolean isRemote;
     public final ResourceLocation currPage;
 
-    public TcuContainer(int windowId, PlayerInventory playerInventory, ITurretEntity turret, ResourceLocation currPage) {
+    public TcuContainer(int windowId, PlayerInventory playerInventory, ITurretEntity turret, ResourceLocation currPage, boolean isRemote) {
         super(ContainerRegistry.TCU, windowId);
 
         this.turret = turret;
         this.currPage = currPage;
+        this.isRemote = isRemote;
     }
 
     @Override
@@ -31,6 +33,6 @@ public class TcuContainer
 
     @FunctionalInterface
     public interface TcuContainerProvider {
-        TcuContainer apply(int windowId, PlayerInventory playerInventory, ITurretEntity turret, ResourceLocation currPage);
+        TcuContainer apply(int windowId, PlayerInventory playerInventory, ITurretEntity turret, ResourceLocation currPage, boolean isRemote);
     }
 }

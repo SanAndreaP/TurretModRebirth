@@ -74,6 +74,8 @@ public interface ITurretEntity
 
     void setVariant(Object variantId);
 
+    boolean canRemoteTransfer();
+
     @OnlyIn(Dist.CLIENT)
     int getPartBrightnessForRender(double partY);
 

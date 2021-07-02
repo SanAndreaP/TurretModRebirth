@@ -26,7 +26,7 @@ public class SyncPlayerListPacket
     private final Map<UUID, ITextComponent> players;
 
     public SyncPlayerListPacket() {
-        this.players = PlayerList.INSTANCE.getPlayerMap();
+        this.players = PlayerList.getPlayerMap();
     }
 
     public SyncPlayerListPacket(PacketBuffer packetBuffer) {

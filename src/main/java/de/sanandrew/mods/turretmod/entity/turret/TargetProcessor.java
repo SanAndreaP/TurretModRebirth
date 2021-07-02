@@ -86,7 +86,7 @@ public final class TargetProcessor
 
     public void init() {
         this.entityTargetList.putAll(Targets.getTargetList(this.turret.getAttackType()));
-        this.playerTargetList.putAll(PlayerList.INSTANCE.getDefaultPlayerList());
+        this.playerTargetList.putAll(PlayerList.getDefaultPlayerList());
     }
 
     @Override
@@ -419,7 +419,7 @@ public final class TargetProcessor
         }
 
         if( this.entityToAttack == null && !this.entityToAttackID.equals(UuidUtils.EMPTY_UUID) ) {
-            this.entityToAttack = EntityUtils.getEntityByUUID(turretL.level, this.entityToAttackID);
+            this.entityToAttack = EntityUtils.getServerEntity(turretL.level, this.entityToAttackID);
         }
 
         AxisAlignedBB aabb = this.getAdjustedRange(true);

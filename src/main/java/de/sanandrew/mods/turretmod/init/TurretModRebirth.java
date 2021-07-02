@@ -83,8 +83,6 @@ public class TurretModRebirth
     }
 
     private void setupCommon(FMLCommonSetupEvent event) {
-        MinecraftForge.EVENT_BUS.register(PlayerList.INSTANCE);
-
         PLUGINS.forEach(ITmrPlugin::setup);
         PLUGINS.forEach(plugin -> plugin.registerTcuPages(ItemRegistry.TURRET_CONTROL_UNIT));
 //        TurretModRebirth.PLUGINS.forEach(plugin -> plugin.registerTcuEntries(GuiTcuRegistry.INSTANCE));

@@ -13,10 +13,15 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.network.SyncPlayerListPacket;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.Dimension;
+import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.DimensionSavedDataManager;
 import net.minecraft.world.storage.WorldSavedData;
@@ -26,18 +31,24 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Mod.EventBusSubscriber(modid = TmrConstants.ID)
 public class PlayerList
         extends WorldSavedData
 {
-    private static final String WSD_NAME = String.format("%s:%s", TmrConstants.ID, "PlayerList");
-    public static final PlayerList INSTANCE = new PlayerList();
+    private static final String WSD_NAME = String.format("%s_%s", TmrConstants.ID, "playerlist");
+    @Nullable
+    private static PlayerList playerList;
 
     //concurrent hash map to prevent different dimension altering this list at the same time
     private final Map<UUID, ITextComponent> playerMap = new ConcurrentHashMap<>();
@@ -51,78 +62,19 @@ public class PlayerList
         super(s);
     }
 
-    public ITextComponent getPlayerName(UUID playerUUID) {
-        if( playerUUID.equals(UuidUtils.EMPTY_UUID) ) {
-            return new StringTextComponent("[removed]");
-        }
-
-        ITextComponent s = this.playerMap.get(playerUUID);
-        return s == null ? new StringTextComponent("[unknown]") : this.playerMap.get(playerUUID);
-    }
-
-    public Map<UUID, ITextComponent> getPlayerMap() {
-        return new HashMap<>(this.playerMap);
-    }
-
-    public Map<UUID, Boolean> getDefaultPlayerList() {
-        Map<UUID, Boolean> players = new HashMap<>(this.playerMap.size());
-
-        for( UUID playerUUID : this.playerMap.keySet() ) {
-            players.put(playerUUID, false);
-        }
-
-        return players;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public void putPlayersClient(Map<UUID, ITextComponent> players) {
-        this.playerMap.putAll(players);
-    }
-
-    private void syncList() {
-        TurretModRebirth.NETWORK.sendToAll(new SyncPlayerListPacket(), null);
-    }
-
-    @SubscribeEvent
-    public void onEntitySpawn(EntityJoinWorldEvent event) {
-        if( event.getEntity() instanceof PlayerEntity && !event.getWorld().isClientSide ) {
-            this.playerMap.put(event.getEntity().getUUID(), event.getEntity().getName());
-            this.syncList();
-            this.setDirty();
-        }
-    }
-
-    @SubscribeEvent
-    public void onWorldLoad(WorldEvent.Load event) {
-        if( (event.getWorld() instanceof ServerWorld) ) {
-            DimensionSavedDataManager storage = ((ServerWorld) event.getWorld()).getDataStorage();
-            PlayerList result = storage.get(PlayerList::new, WSD_NAME);
-
-            if( result != null ) {
-                this.playerMap.putAll(result.playerMap);
-            }
-
-            storage.set(this);
-            this.syncList();
-        }
-    }
-
     @Override
     public void load(CompoundNBT nbt) {
-        if( nbt.contains(WSD_NAME) ) {
-            CompoundNBT tmrNBT = nbt.getCompound(WSD_NAME);
-            if( tmrNBT.contains("Players") ) {
-                ListNBT nbtList = tmrNBT.getList("Players", Constants.NBT.TAG_COMPOUND);
-                int     size    = nbtList.size();
-                for( int i = 0; i < size; i++ ) {
-                    CompoundNBT playerNbt = nbtList.getCompound(i);
+        if( nbt.contains("Players") ) {
+            ListNBT nbtList = nbt.getList("Players", Constants.NBT.TAG_COMPOUND);
+            int     size    = nbtList.size();
+            for( int i = 0; i < size; i++ ) {
+                CompoundNBT playerNbt = nbtList.getCompound(i);
 
-                    if( playerNbt.contains("PlayerIdMSB") && playerNbt.contains("PlayerIdLSB") ) {
-                        UUID           id   = new UUID(playerNbt.getLong("PlayerIdMSB"), playerNbt.getLong("PlayerLSB"));
-                        ITextComponent name = ITextComponent.Serializer.fromJson(playerNbt.getString("PlayerName"));
+                if( playerNbt.contains("PlayerId") ) {
+                    UUID           id   = playerNbt.getUUID("PlayerId");
+                    ITextComponent name = ITextComponent.Serializer.fromJson(playerNbt.getString("PlayerName"));
 
-                        this.playerMap.put(id, name);
-                    }
+                    this.playerMap.put(id, name);
                 }
             }
         }
@@ -131,18 +83,80 @@ public class PlayerList
     @Nonnull
     @Override
     public CompoundNBT save(@Nonnull CompoundNBT compound) {
-        CompoundNBT tmrNBT = new CompoundNBT();
         ListNBT nbtList = new ListNBT();
         for( Map.Entry<UUID, ITextComponent> player : this.playerMap.entrySet() ) {
             CompoundNBT playerNbt = new CompoundNBT();
-            playerNbt.putLong("PlayerIdMSB", player.getKey().getMostSignificantBits());
-            playerNbt.putLong("PlayerIdLSB", player.getKey().getLeastSignificantBits());
+            playerNbt.putUUID("PlayerId", player.getKey());
             playerNbt.putString("PlayerName", ITextComponent.Serializer.toJson(player.getValue()));
             nbtList.add(playerNbt);
         }
-        tmrNBT.put("Players", nbtList);
-        compound.put(WSD_NAME, tmrNBT);
+        compound.put("Players", nbtList);
 
         return compound;
+    }
+
+    @SubscribeEvent
+    public static void onEntitySpawn(EntityJoinWorldEvent event) {
+        if( playerList != null && event.getEntity() instanceof PlayerEntity && !event.getWorld().isClientSide ) {
+            playerList.playerMap.put(event.getEntity().getUUID(), event.getEntity().getName());
+            playerList.setDirty();
+
+            syncList();
+        }
+    }
+
+    @SubscribeEvent
+    public static void onWorldLoad(WorldEvent.Load event) {
+        if( event.getWorld() instanceof ServerWorld && ((ServerWorld) event.getWorld()).dimension() == World.OVERWORLD ) {
+            DimensionSavedDataManager storage = ((ServerWorld) event.getWorld()).getDataStorage();
+            playerList = storage.computeIfAbsent(PlayerList::new, WSD_NAME);
+
+            syncList();
+        }
+    }
+
+    public static ITextComponent getPlayerName(UUID playerUUID) {
+        if( playerList == null ) {
+            return StringTextComponent.EMPTY;
+        }
+
+        if( playerUUID.equals(UuidUtils.EMPTY_UUID) ) {
+            return new StringTextComponent("[removed]");
+        }
+
+        ITextComponent s = playerList.playerMap.get(playerUUID);
+        return s == null ? new StringTextComponent("[unknown]") : playerList.playerMap.get(playerUUID);
+    }
+
+    public static Map<UUID, ITextComponent> getPlayerMap() {
+        return playerList != null ? new HashMap<>(playerList.playerMap) : Collections.emptyMap();
+    }
+
+    public static Map<UUID, Boolean> getDefaultPlayerList() {
+        Map<UUID, Boolean> players = new HashMap<>();
+
+        if( playerList != null ) {
+            for( UUID playerUUID : playerList.playerMap.keySet() ) {
+                players.put(playerUUID, false);
+            }
+        }
+
+        return players;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static void putPlayersClient(Map<UUID, ITextComponent> players) {
+        if( playerList != null ) {
+            playerList.playerMap.putAll(players);
+        }
+    }
+
+    private static void syncList() {
+        TurretModRebirth.NETWORK.sendToAll(new SyncPlayerListPacket(), null);
+    }
+
+    @Nullable
+    public static PlayerList getData() {
+        return playerList;
     }
 }

@@ -1,0 +1,144 @@
+/*
+ * ****************************************************************************************************************
+ * Authors:   SanAndreasP
+ * Copyright: SanAndreasP
+ * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+ * http://creativecommons.org/licenses/by-nc-sa/4.0/
+ * *****************************************************************************************************************
+ */
+package de.sanandrew.mods.turretmod.network;
+
+import de.sanandrew.mods.sanlib.lib.Tuple;
+import de.sanandrew.mods.sanlib.lib.network.SimpleMessage;
+import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
+import de.sanandrew.mods.turretmod.init.TurretModRebirth;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
+
+public class TurretPlayerAction
+        extends SimpleMessage
+{
+    public static final  byte SET_ACTIVE = 0;
+    public static final  byte SET_DEACTIVE = 1;
+    public static final byte RETRIEVE_XP = 2;
+    private static final byte DISMANTLE = 3;
+    private static final byte RENAME = 4;
+
+    private final int  turretId;
+    private final byte actionId;
+
+    private String customName;
+
+    public TurretPlayerAction(ITurretEntity turret, byte action) {
+        this.turretId = turret.get().getId();
+        this.actionId = action;
+    }
+
+    public TurretPlayerAction(ITurretEntity turret, String cstName) {
+        this.turretId = turret.get().getId();
+        this.actionId = RENAME;
+        this.customName = cstName;
+    }
+
+    public TurretPlayerAction(PacketBuffer buffer) {
+        this.turretId = buffer.readVarInt();
+        this.actionId = buffer.readByte();
+
+        if( this.actionId == RENAME ) {
+            this.customName = buffer.readBoolean() ? buffer.readUtf(260) : null;
+        }
+    }
+
+    @Override
+    public void encode(PacketBuffer buffer) {
+        buffer.writeVarInt(this.turretId);
+        buffer.writeByte(this.actionId);
+
+        if( this.actionId == RENAME ) {
+            if( this.customName == null ) {
+                buffer.writeBoolean(false);
+            } else {
+                buffer.writeBoolean(true);
+                buffer.writeUtf(this.customName, 260);
+            }
+        }
+    }
+
+    @Override
+    public void handle(Supplier<NetworkEvent.Context> supplier) {
+        PlayerEntity player = TurretModRebirth.PROXY.getNetworkPlayer(supplier);
+
+        Entity e = player.level.getEntity(this.turretId);
+        if( e instanceof ITurretEntity) {
+            ITurretEntity turretInst = (ITurretEntity) e;
+            if( !turretInst.hasPlayerPermission(player) ) {
+                return;
+            }
+
+            switch( this.actionId ) {
+                case DISMANTLE:
+                    tryDismantle(player, turretInst);
+                    break;
+                case SET_ACTIVE:
+                    turretInst.setActive(true);
+                    break;
+                case SET_DEACTIVE:
+                    turretInst.setActive(false);
+                    break;
+                case RETRIEVE_XP:
+                    //TODO: reimplement upgrades
+//                    LevelStorage lvlStg = turretInst.getUpgradeProcessor().getUpgradeInstance(Upgrades.LEVELING.getId());
+//                    if( lvlStg != null ) {
+//                        player.addExperience(lvlStg.retrieveExcessXp());
+//                    }
+                    break;
+                case RENAME:
+                    turretInst.get().setCustomName(this.customName != null ? new StringTextComponent(this.customName) : null);
+                    break;
+            }
+        }
+
+    }
+
+    @Override
+    public boolean handleOnMainThread() {
+        return true;
+    }
+
+    //TODO: reimplement dismantling
+    public static boolean tryDismantle(PlayerEntity player, ITurretEntity turret) {
+        Tuple crateItm = InventoryUtils.getSimilarStackFromInventory(/*new ItemStack(BlockRegistry.TURRET_CRATE)*/ ItemStack.EMPTY, player.inventory, false);
+        if( crateItm != null && ItemStackUtils.isValid(crateItm.getValue(1)) ) {
+            ItemStack    crateStack = crateItm.getValue(1);
+            LivingEntity turretL    = turret.get();
+            if( turretL.level.isClientSide ) {
+                TurretModRebirth.NETWORK.sendToServer(new TurretPlayerAction(turret, DISMANTLE));
+//                PacketRegistry.sendToServer(new PacketPlayerTurretAction(turret, PacketPlayerTurretAction.DISMANTLE));
+                return true;
+            } else {
+//                if( turret.dismantle() != null ) {
+//                    crateStack.shrink(1);
+//                    if( crateStack.getCount() < 1 ) {
+//                        player.inventory.setInventorySlotContents(crateItm.getValue(0), ItemStack.EMPTY);
+//                    } else {
+//                        player.inventory.setInventorySlotContents(crateItm.getValue(0), crateStack.copy());
+//                    }
+//                    player.inventoryContainer.detectAndSendChanges();
+//
+//                    return true;
+//                }
+            }
+        }
+
+        return false;
+    }
+}
