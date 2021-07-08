@@ -27,7 +27,6 @@ public class TurretCamElement
             this.data = new BakedData();
 
             this.data.size = JsonUtils.getIntArray(data.get("size"), Range.is(2));
-            this.data.quality = JsonUtils.getIntVal(data.get("quality"));
         }
     }
 
@@ -53,6 +52,5 @@ public class TurretCamElement
     public static final class BakedData
     {
         public int[] size;
-        public int   quality;
     }
 }

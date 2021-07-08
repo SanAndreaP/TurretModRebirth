@@ -19,7 +19,7 @@ final class ElectrolyteEnergyStorage
     private int fluxBuffer;
 
     void resetFluxExtract() {
-        this.fluxExtractPerTick = Math.min(this.fluxAmount, ElectrolyteGeneratorTileEntity.MAX_FLUX_EXTRACT);
+        this.fluxExtractPerTick = Math.min(this.fluxAmount, ElectrolyteGeneratorEntity.MAX_FLUX_EXTRACT);
     }
 
     void updatePrevFlux() {
@@ -32,7 +32,7 @@ final class ElectrolyteEnergyStorage
 
     void emptyBuffer() {
         if( this.fluxBuffer > 0 ) {
-            int fluxSubtracted = Math.min(ElectrolyteGeneratorTileEntity.MAX_FLUX_STORAGE - this.fluxAmount, Math.min(ElectrolyteGeneratorTileEntity.MAX_FLUX_GENERATED, this.fluxBuffer));
+            int fluxSubtracted = Math.min(ElectrolyteGeneratorEntity.MAX_FLUX_STORAGE - this.fluxAmount, Math.min(ElectrolyteGeneratorEntity.MAX_FLUX_GENERATED, this.fluxBuffer));
             this.fluxBuffer -= fluxSubtracted;
             this.fluxAmount += fluxSubtracted;
         }
@@ -43,7 +43,7 @@ final class ElectrolyteEnergyStorage
     }
 
     boolean isBufferEmpty() {
-        return this.fluxBuffer <= ElectrolyteGeneratorTileEntity.MAX_FLUX_GENERATED;
+        return this.fluxBuffer <= ElectrolyteGeneratorEntity.MAX_FLUX_GENERATED;
     }
 
     @Override
@@ -53,7 +53,7 @@ final class ElectrolyteEnergyStorage
 
     @Override
     public int extractEnergy(int maxExtract, boolean simulate) {
-        int energyExtracted = Math.min(this.fluxExtractPerTick, Math.min(ElectrolyteGeneratorTileEntity.MAX_FLUX_EXTRACT, maxExtract));
+        int energyExtracted = Math.min(this.fluxExtractPerTick, Math.min(ElectrolyteGeneratorEntity.MAX_FLUX_EXTRACT, maxExtract));
 
         if( !simulate ) {
             this.fluxAmount -= energyExtracted;
@@ -70,7 +70,7 @@ final class ElectrolyteEnergyStorage
 
     @Override
     public int getMaxEnergyStored() {
-        return ElectrolyteGeneratorTileEntity.MAX_FLUX_STORAGE;
+        return ElectrolyteGeneratorEntity.MAX_FLUX_STORAGE;
     }
 
     @Override

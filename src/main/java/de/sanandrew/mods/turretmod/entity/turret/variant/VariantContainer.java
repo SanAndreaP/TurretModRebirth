@@ -23,7 +23,7 @@ public abstract class VariantContainer
     }
 
     public IVariant get(Object id) {
-        return MiscUtils.defIfNull(this.variants.get(id), this.defaultVariant);
+        return MiscUtils.get(this.variants.get(id), this.defaultVariant);
     }
 
     public boolean isDefault(IVariant variant) {

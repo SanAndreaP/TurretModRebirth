@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import de.sanandrew.mods.sanlib.lib.client.util.RenderUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.Resources;
-import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteGeneratorTileEntity;
+import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteGeneratorEntity;
 import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteInventory;
 import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteProcess;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -23,7 +23,7 @@ import org.lwjgl.opengl.GL11;
 import javax.annotation.Nonnull;
 
 public class ElectrolyteGeneratorRenderer
-        extends TileEntityRenderer<ElectrolyteGeneratorTileEntity>
+        extends TileEntityRenderer<ElectrolyteGeneratorEntity>
 {
 
     private static final Parabole[] PARABOLES = new Parabole[ElectrolyteInventory.INPUT_SLOT_COUNT];
@@ -33,7 +33,7 @@ public class ElectrolyteGeneratorRenderer
     }
 
     @Override
-    public void render(@Nonnull ElectrolyteGeneratorTileEntity tile, float partialTicks, @Nonnull MatrixStack pose, @Nonnull IRenderTypeBuffer buffer,
+    public void render(@Nonnull ElectrolyteGeneratorEntity tile, float partialTicks, @Nonnull MatrixStack pose, @Nonnull IRenderTypeBuffer buffer,
                        int combinedLight, int combinedOverlay)
     {
         pose.pushPose();

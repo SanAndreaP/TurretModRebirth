@@ -5,8 +5,7 @@
       "type": "sapturretmod:turret_cam",
       "pos": [64, 30],
       "data": {
-        "size": [48, 48],
-        "quality": 48
+        "size": [48, 48]
       }
     },
     {
@@ -15,6 +14,18 @@
       "id": "turretNameInput",
       "data": {
         "size": [138, 10]
+      }
+    },
+    {
+      "type": "sapturretmod:tcu_info",
+      "pos": [6, 100],
+      "data": {
+        "areaSize": [164, 80],
+        "scrollButton": {
+          "size": [5, 5],
+          "uv": [0, 0],
+          "uvDisabled": [0, 5]
+        }
       }
     },
     {
@@ -191,7 +202,7 @@
       "data": {
         "size": [18, 18],
         "for": "dismantle",
-        "text": "gui.sapturretmod.tcu.button.info.dismantle"
+        "text": "gui.sapturretmod.tcu.info.dismantle"
       }
     },
     {
@@ -200,7 +211,7 @@
       "data": {
         "size": [18, 18],
         "for": "activate",
-        "text": "gui.sapturretmod.tcu.button.info.activate"
+        "text": "gui.sapturretmod.tcu.info.activate"
       }
     },
     {
@@ -209,7 +220,7 @@
       "data": {
         "size": [18, 18],
         "for": "deactivate",
-        "text": "gui.sapturretmod.tcu.button.info.deactivate"
+        "text": "gui.sapturretmod.tcu.info.deactivate"
       }
     },
     {
@@ -218,7 +229,7 @@
       "data": {
         "size": [18, 18],
         "for": "showRange",
-        "text": "gui.sapturretmod.tcu.button.info.show_range"
+        "text": "gui.sapturretmod.tcu.info.show_range"
       }
     },
     {
@@ -227,7 +238,7 @@
       "data": {
         "size": [18, 18],
         "for": "hideRange",
-        "text": "gui.sapturretmod.tcu.button.info.hide_range"
+        "text": "gui.sapturretmod.tcu.info.hide_range"
       }
     },
     {
@@ -235,7 +246,7 @@
       "pos":[6, 84],
       "data": {
         "size": [20, 16],
-        "text": "gui.sapturretmod.tcu.page.sapturretmod:info.name"
+        "text": "gui.sapturretmod.tcu.info.name"
       }
     },
     {
@@ -243,7 +254,7 @@
       "pos":[6, 100],
       "data": {
         "size": [20, 16],
-        "text": "gui.sapturretmod.tcu.page.sapturretmod:info.health"
+        "text": "gui.sapturretmod.tcu.info.health.tooltip"
       }
     },
     {
@@ -251,7 +262,7 @@
       "pos":[6, 116],
       "data": {
         "size": [20, 16],
-        "text": "gui.sapturretmod.tcu.page.sapturretmod:info.ammo"
+        "text": "gui.sapturretmod.tcu.info.ammo.tooltip"
       }
     },
     {
@@ -259,7 +270,7 @@
       "pos":[6, 132],
       "data": {
         "size": [20, 16],
-        "text": "gui.sapturretmod.tcu.page.sapturretmod:info.target"
+        "text": "gui.sapturretmod.tcu.info.target"
       }
     },
     {
@@ -267,7 +278,7 @@
       "pos":[6, 148],
       "data": {
         "size": [20, 16],
-        "text": "gui.sapturretmod.tcu.page.sapturretmod:info.player"
+        "text": "gui.sapturretmod.tcu.info.player"
       }
     },
     {
@@ -275,7 +286,7 @@
       "pos":[6, 164],
       "data": {
         "size": [20, 16],
-        "text": "gui.sapturretmod.tcu.page.sapturretmod:info.forcefield",
+        "text": "gui.sapturretmod.tcu.info.forcefield.tooltip",
         "for": "info_prog_forcefield"
       }
     },
@@ -284,11 +295,11 @@
       "pos": [150, 116]
     },
     {
-      "type": "sapturretmod:tcu.info_error",
+      "type": "sapturretmod:error_tooltip",
       "id": "errorDismantle",
       "data": {
         "size": [176, 236],
-        "text": "gui.sapturretmod.tcu.page.sapturretmod:info.dismantle.error"
+        "text": "gui.sapturretmod.tcu.info.dismantle.error"
       }
     }
   ]

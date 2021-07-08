@@ -14,9 +14,9 @@ public final class ElectrolyteSyncData
 
     private static final int MAX_SIZE = MAX_PROGRESSES.getMaximum() + 1;
 
-    private final ElectrolyteGeneratorTileEntity boundTile;
+    private final ElectrolyteGeneratorEntity boundTile;
 
-    public ElectrolyteSyncData(ElectrolyteGeneratorTileEntity tile) {
+    public ElectrolyteSyncData(ElectrolyteGeneratorEntity tile) {
         super(MAX_SIZE);
         this.boundTile = tile;
     }

@@ -22,7 +22,7 @@ public class TippedBoltColor
             if( !Strings.isNullOrEmpty(potionTypeId) ) {
                 ResourceLocation potionId = new ResourceLocation(potionTypeId);
 
-                return PotionUtils.getColor(MiscUtils.defIfNull(ForgeRegistries.POTION_TYPES.getValue(potionId), Potions.EMPTY));
+                return PotionUtils.getColor(MiscUtils.get(ForgeRegistries.POTION_TYPES.getValue(potionId), Potions.EMPTY));
             }
         }
 

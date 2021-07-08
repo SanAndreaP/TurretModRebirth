@@ -13,6 +13,7 @@ import de.sanandrew.mods.sanlib.lib.network.SimpleMessage;
 import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
+import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -24,7 +25,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class TurretPlayerAction
+public class TurretPlayerActionPacket
         extends SimpleMessage
 {
     public static final  byte SET_ACTIVE = 0;
@@ -38,18 +39,18 @@ public class TurretPlayerAction
 
     private String customName;
 
-    public TurretPlayerAction(ITurretEntity turret, byte action) {
+    public TurretPlayerActionPacket(ITurretEntity turret, byte action) {
         this.turretId = turret.get().getId();
         this.actionId = action;
     }
 
-    public TurretPlayerAction(ITurretEntity turret, String cstName) {
+    public TurretPlayerActionPacket(ITurretEntity turret, String cstName) {
         this.turretId = turret.get().getId();
         this.actionId = RENAME;
         this.customName = cstName;
     }
 
-    public TurretPlayerAction(PacketBuffer buffer) {
+    public TurretPlayerActionPacket(PacketBuffer buffer) {
         this.turretId = buffer.readVarInt();
         this.actionId = buffer.readByte();
 
@@ -75,7 +76,10 @@ public class TurretPlayerAction
 
     @Override
     public void handle(Supplier<NetworkEvent.Context> supplier) {
-        PlayerEntity player = TurretModRebirth.PROXY.getNetworkPlayer(supplier);
+        PlayerEntity player = supplier.get().getSender();
+        if( player == null ) { // if this is not sent from a player, do nothing!
+            return;
+        }
 
         Entity e = player.level.getEntity(this.turretId);
         if( e instanceof ITurretEntity) {
@@ -114,28 +118,26 @@ public class TurretPlayerAction
         return true;
     }
 
-    //TODO: reimplement dismantling
     public static boolean tryDismantle(PlayerEntity player, ITurretEntity turret) {
-        Tuple crateItm = InventoryUtils.getSimilarStackFromInventory(/*new ItemStack(BlockRegistry.TURRET_CRATE)*/ ItemStack.EMPTY, player.inventory, false);
+        Tuple crateItm = InventoryUtils.getSimilarStackFromInventory(new ItemStack(BlockRegistry.TURRET_CRATE), player.inventory, false);
         if( crateItm != null && ItemStackUtils.isValid(crateItm.getValue(1)) ) {
             ItemStack    crateStack = crateItm.getValue(1);
             LivingEntity turretL    = turret.get();
             if( turretL.level.isClientSide ) {
-                TurretModRebirth.NETWORK.sendToServer(new TurretPlayerAction(turret, DISMANTLE));
-//                PacketRegistry.sendToServer(new PacketPlayerTurretAction(turret, PacketPlayerTurretAction.DISMANTLE));
+                TurretModRebirth.NETWORK.sendToServer(new TurretPlayerActionPacket(turret, DISMANTLE));
                 return true;
             } else {
-//                if( turret.dismantle() != null ) {
-//                    crateStack.shrink(1);
-//                    if( crateStack.getCount() < 1 ) {
-//                        player.inventory.setInventorySlotContents(crateItm.getValue(0), ItemStack.EMPTY);
-//                    } else {
-//                        player.inventory.setInventorySlotContents(crateItm.getValue(0), crateStack.copy());
-//                    }
-//                    player.inventoryContainer.detectAndSendChanges();
-//
-//                    return true;
-//                }
+                if( turret.dismantle() != null ) {
+                    crateStack.shrink(1);
+                    if( crateStack.getCount() < 1 ) {
+                        player.inventory.setItem(crateItm.getValue(0), ItemStack.EMPTY);
+                    } else {
+                        player.inventory.setItem(crateItm.getValue(0), crateStack.copy());
+                    }
+                    player.inventoryMenu.broadcastChanges();
+
+                    return true;
+                }
             }
         }
 

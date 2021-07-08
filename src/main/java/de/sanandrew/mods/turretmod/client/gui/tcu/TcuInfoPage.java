@@ -8,8 +8,9 @@ import de.sanandrew.mods.turretmod.api.Resources;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.tcu.TcuContainer;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
+import de.sanandrew.mods.turretmod.client.gui.element.ErrorTooltip;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
-import de.sanandrew.mods.turretmod.network.TurretPlayerAction;
+import de.sanandrew.mods.turretmod.network.TurretPlayerActionPacket;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.glfw.GLFW;
@@ -31,11 +32,18 @@ public class TcuInfoPage
     private ButtonSL showRange;
     private ButtonSL hideRange;
 
+    private ErrorTooltip errorDismantle;
+
     public TcuInfoPage(ContainerScreen<TcuContainer> tcuScreen) {
         super(tcuScreen);
 
         this.turret = tcuScreen.getMenu().turret;
         this.isRemote = tcuScreen.getMenu().isRemote;
+
+        if( this.guiDefinition != null ) {
+            this.guiDefinition.width = tcuScreen.getXSize();
+            this.guiDefinition.height = tcuScreen.getYSize();
+        }
     }
 
     @Override
@@ -50,10 +58,12 @@ public class TcuInfoPage
 
     @Override
     protected void initGd() {
+        this.errorDismantle = this.guiDefinition.getElementById("errorDismantle").get(ErrorTooltip.class);
+
         this.dismantle = this.guiDefinition.getElementById("dismantle").get(ButtonSL.class);
         this.dismantle.buttonFunction = btn -> {
-            if( !TurretPlayerAction.tryDismantle(Objects.requireNonNull(this.mc.player), this.turret) ) {
-//                this.errorDismantle.activate();
+            if( !TurretPlayerActionPacket.tryDismantle(Objects.requireNonNull(this.mc.player), this.turret) ) {
+                this.errorDismantle.activate();
             } else {
                 this.mc.setScreen(null);
             }
@@ -61,10 +71,10 @@ public class TcuInfoPage
 
         this.setActive = this.guiDefinition.getElementById("activate").get(ButtonSL.class);
         this.setActive.setVisible(false);
-        this.setActive.buttonFunction = btn -> TurretModRebirth.NETWORK.sendToServer(new TurretPlayerAction(this.turret, TurretPlayerAction.SET_ACTIVE));
+        this.setActive.buttonFunction = btn -> TurretModRebirth.NETWORK.sendToServer(new TurretPlayerActionPacket(this.turret, TurretPlayerActionPacket.SET_ACTIVE));
 
         this.setDeactive = this.guiDefinition.getElementById("deactivate").get(ButtonSL.class);
-        this.setDeactive.buttonFunction = btn -> TurretModRebirth.NETWORK.sendToServer(new TurretPlayerAction(this.turret, TurretPlayerAction.SET_DEACTIVE));
+        this.setDeactive.buttonFunction = btn -> TurretModRebirth.NETWORK.sendToServer(new TurretPlayerActionPacket(this.turret, TurretPlayerActionPacket.SET_DEACTIVE));
 
         this.showRange = this.guiDefinition.getElementById("showRange").get(ButtonSL.class);
         this.showRange.buttonFunction = btn -> this.turret.setShowRange(true);
@@ -117,7 +127,7 @@ public class TcuInfoPage
     @Override
     public void onClose() {
         String tn = this.turretName.getText();
-        TurretModRebirth.NETWORK.sendToServer(new TurretPlayerAction(this.turret, Strings.isNullOrEmpty(tn) ? null : tn));
+        TurretModRebirth.NETWORK.sendToServer(new TurretPlayerActionPacket(this.turret, Strings.isNullOrEmpty(tn) ? null : tn));
 
         super.onClose();
     }

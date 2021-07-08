@@ -241,14 +241,6 @@ public class TurretControlUnit
         }
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void registerTcuScreen(@Nonnull ResourceLocation id, Supplier<ItemStack> iconSupplier,
-                                  Function<ContainerScreen<TcuContainer>, ITcuScreen> screenProvider)
-    {
-        TcuScreen.registerScreen(id, iconSupplier, screenProvider);
-    }
-
     public static final ResourceLocation INFO              = new ResourceLocation(TmrConstants.ID, "info");
     public static final ResourceLocation TARGETS_CREATURES = new ResourceLocation(TmrConstants.ID, "targets_creatures");
     public static final ResourceLocation TARGETS_PLAYERS   = new ResourceLocation(TmrConstants.ID, "targets_players");
@@ -257,29 +249,5 @@ public class TurretControlUnit
         registry.registerTcuPage(INFO);
         registry.registerTcuPage(TARGETS_CREATURES);
         registry.registerTcuPage(TARGETS_PLAYERS);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static void registerClient(ITcuRegistry registry) {
-        registry.registerTcuScreen(INFO, new SimpleItem(Items.BOOK), TcuInfoPage::new);
-        registry.registerTcuScreen(TARGETS_CREATURES, new SimpleItem(Items.ZOMBIE_HEAD),
-                                   s -> null);
-        registry.registerTcuScreen(TARGETS_PLAYERS, de.sanandrew.mods.turretmod.client.init.PlayerHeads::getRandomSkull,
-                                   s -> null);
-    }
-
-    private static final class SimpleItem
-            implements Supplier<ItemStack>
-    {
-        private final ItemStack stack;
-
-        private SimpleItem(Item item) {
-            this.stack = new ItemStack(item);
-        }
-
-        @Override
-        public ItemStack get() {
-            return this.stack;
-        }
     }
 }

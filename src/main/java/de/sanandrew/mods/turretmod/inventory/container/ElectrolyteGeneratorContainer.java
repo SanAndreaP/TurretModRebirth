@@ -14,7 +14,7 @@ import de.sanandrew.mods.turretmod.inventory.ContainerRegistry;
 import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteInventory;
 import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteProcess;
 import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteSyncData;
-import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteGeneratorTileEntity;
+import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteGeneratorEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -138,7 +138,7 @@ public class ElectrolyteGeneratorContainer
         public ElectrolyteGeneratorContainer create(int windowId, PlayerInventory inv, PacketBuffer data) {
             TileEntity te = Objects.requireNonNull(inv.player.level.getBlockEntity(data.readBlockPos()));
             return new ElectrolyteGeneratorContainer(windowId, inv, new ElectrolyteInventory(() -> inv.player.level),
-                                                     new ElectrolyteSyncData(), ((ElectrolyteGeneratorTileEntity) te).processes);
+                                                     new ElectrolyteSyncData(), ((ElectrolyteGeneratorEntity) te).processes);
         }
     }
 

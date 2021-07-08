@@ -40,7 +40,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ElectrolyteGeneratorTileEntity
+public class ElectrolyteGeneratorEntity
         extends TileEntity
         implements ITickableTileEntity, INamedContainerProvider, INameable
 {
@@ -63,7 +63,7 @@ public class ElectrolyteGeneratorTileEntity
         return this.efficiency < 0.1F ? 0 : Math.min(200, (int) Math.round(Math.pow(1.6D, this.efficiency) / (68.0D + (127433.0D / 177119.0D)) * 80.0D));
     }
 
-    public ElectrolyteGeneratorTileEntity() {
+    public ElectrolyteGeneratorEntity() {
         super(BlockRegistry.ELECTROLYTE_GENERATOR_ENTITY);
     }
 

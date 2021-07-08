@@ -39,7 +39,7 @@ public class TcuScreen
         super(tcuContainer, playerInv, title);
 
         this.currPage = tcuContainer.currPage;
-        this.currScreen = MiscUtils.applyNonNull(PAGES.get(tcuContainer.currPage),
+        this.currScreen = MiscUtils.apply(PAGES.get(tcuContainer.currPage),
                                                  p -> this.guiDefinition != null
                                                       ? p.apply(this)
                                                       : EMPTY_SCREEN,
@@ -141,6 +141,6 @@ public class TcuScreen
     }
 
     public static ItemStack getIcon(ResourceLocation id) {
-        return MiscUtils.applyNonNull(PAGE_ICONS.get(id), Supplier::get, ItemStack.EMPTY);
+        return MiscUtils.apply(PAGE_ICONS.get(id), Supplier::get, ItemStack.EMPTY);
     }
 }

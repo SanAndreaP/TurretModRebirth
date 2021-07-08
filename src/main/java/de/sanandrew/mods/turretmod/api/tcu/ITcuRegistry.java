@@ -18,8 +18,4 @@ public interface ITcuRegistry
     void registerTcuPage(@Nonnull ResourceLocation id);
 
     void registerTcuPage(@Nonnull ResourceLocation id, @Nullable TcuContainer.TcuContainerProvider containerProvider);
-
-    @OnlyIn(Dist.CLIENT)
-    void registerTcuScreen(@Nonnull ResourceLocation id, Supplier<ItemStack> iconSupplier,
-                           Function<ContainerScreen<TcuContainer>, ITcuScreen> screenProvider);
 }

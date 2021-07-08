@@ -17,7 +17,7 @@ import de.sanandrew.mods.turretmod.api.Resources;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.client.gui.element.ElectrolyteBar;
 import de.sanandrew.mods.turretmod.inventory.container.ElectrolyteGeneratorContainer;
-import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteGeneratorTileEntity;
+import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteGeneratorEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -31,7 +31,6 @@ public class ElectrolyteGeneratorScreen
 {
     public ElectrolyteGeneratorScreen(ElectrolyteGeneratorContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
-
     }
 
     @Override
@@ -51,7 +50,7 @@ public class ElectrolyteGeneratorScreen
 
     @Override
     public int getMaxEnergy() {
-        return ElectrolyteGeneratorTileEntity.MAX_FLUX_STORAGE;
+        return ElectrolyteGeneratorEntity.MAX_FLUX_STORAGE;
     }
 
     @Override

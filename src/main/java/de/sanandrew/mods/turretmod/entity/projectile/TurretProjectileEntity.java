@@ -359,7 +359,7 @@ public class TurretProjectileEntity
 
     private DamageSource getProjDamageSource(Entity hitEntity, Entity owner, IProjectile.TargetType type) {
         ITurretEntity ownerTurret = owner instanceof ITurretEntity ? (ITurretEntity) owner : null;
-        return MiscUtils.defIfNull(this.delegate.getCustomDamageSource(ownerTurret, this, hitEntity, type),
+        return MiscUtils.get(this.delegate.getCustomDamageSource(ownerTurret, this, hitEntity, type),
                                    () -> getDamageSource(ownerTurret, this, type));
     }
 

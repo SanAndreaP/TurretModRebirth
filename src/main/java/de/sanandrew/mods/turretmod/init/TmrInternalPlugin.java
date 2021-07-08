@@ -10,8 +10,10 @@ import de.sanandrew.mods.turretmod.api.ITmrPlugin;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectileRegistry;
+import de.sanandrew.mods.turretmod.api.client.tcu.ITcuClientRegistry;
 import de.sanandrew.mods.turretmod.api.tcu.ITcuRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
+import de.sanandrew.mods.turretmod.client.init.TcuClientRegistry;
 import de.sanandrew.mods.turretmod.client.renderer.turret.LabelRegistry;
 import de.sanandrew.mods.turretmod.entity.projectile.Projectiles;
 import de.sanandrew.mods.turretmod.entity.turret.Turrets;
@@ -60,12 +62,6 @@ public class TmrInternalPlugin
         Projectiles.register(registry);
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void registerTcuLabelElements(de.sanandrew.mods.turretmod.api.client.tcu.ILabelRegistry registry) {
-        LabelRegistry.register(registry);
-    }
-
 //    @Override
 //    public void registerTurretRenderLayers(ITurretRenderRegistry<?> registry) {
 //        TurretRenderer.initializeLayers(registry);
@@ -73,7 +69,8 @@ public class TmrInternalPlugin
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void registerTcuScreens(ITcuRegistry registry) {
-        TurretControlUnit.registerClient(registry);
+    public void registerTcuClient(ITcuClientRegistry registry) {
+        LabelRegistry.register(registry.getLabelRegistry());
+        TcuClientRegistry.registerTcuClient(registry);
     }
 }

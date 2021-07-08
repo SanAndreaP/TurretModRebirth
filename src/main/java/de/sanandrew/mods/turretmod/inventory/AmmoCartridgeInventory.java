@@ -112,10 +112,10 @@ public final class AmmoCartridgeInventory
 
     @Override
     public boolean stillValid(@Nonnull PlayerEntity player) {
-        ItemStack heldItem = MiscUtils.applyNonNull(this.slotId, player.inventory::getItem, this.holder);
+        ItemStack heldItem = MiscUtils.apply(this.slotId, player.inventory::getItem, this.holder);
 
         return ItemStackUtils.isItem(heldItem, ItemRegistry.AMMO_CARTRIDGE)
-               && MiscUtils.applyNonNull(AmmoCartridgeItem.getInventory(heldItem), i -> i.invId, ~this.invId) == this.invId;
+               && MiscUtils.apply(AmmoCartridgeItem.getInventory(heldItem), i -> i.invId, ~this.invId) == this.invId;
     }
 
     @Override
@@ -126,7 +126,7 @@ public final class AmmoCartridgeInventory
     
     private boolean isTypeEqual(ItemStack stack) {
         return AmmunitionRegistry.INSTANCE.isEqual(this.getAmmoType(), AmmunitionRegistry.INSTANCE.get(stack))
-               && MiscUtils.defIfNull(this.getAmmoSubtype(), "").equals(MiscUtils.defIfNull(AmmunitionRegistry.INSTANCE.getSubtype(stack), ""));
+               && MiscUtils.get(this.getAmmoSubtype(), "").equals(MiscUtils.get(AmmunitionRegistry.INSTANCE.getSubtype(stack), ""));
     }
 
     @Override

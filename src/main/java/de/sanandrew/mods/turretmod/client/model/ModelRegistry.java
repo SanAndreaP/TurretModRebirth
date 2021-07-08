@@ -17,9 +17,9 @@ import de.sanandrew.mods.turretmod.client.renderer.tileentity.ElectrolyteGenerat
 import de.sanandrew.mods.turretmod.client.renderer.turret.TurretRenderer;
 import de.sanandrew.mods.turretmod.entity.EntityRegistry;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
-import de.sanandrew.mods.turretmod.item.ammo.Ammunitions;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ModelManager;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.model.ModelRotation;
 import net.minecraft.util.ResourceLocation;
@@ -32,17 +32,18 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = TmrConstants.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class ModelRegistry
 {
-    public static void registerModels(FMLClientSetupEvent event) {
+    public static void registerModels() {
         RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.TURRET, TurretRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.PROJECTILE, TurretProjectileRenderer::new);
 
         ClientRegistry.bindTileEntityRenderer(BlockRegistry.ELECTROLYTE_GENERATOR_ENTITY, ElectrolyteGeneratorRenderer::new);
+
+        RenderTypeLookup.setRenderLayer(BlockRegistry.TURRET_CRATE, RenderType.cutout());
     }
 
     @SubscribeEvent
@@ -59,19 +60,20 @@ public final class ModelRegistry
             AmmoCartridgeItemOverrides.AMMO_MODELS.put(a, boltModel);
         });
 
-        ModelResourceLocation itemModelResourceLocation = AmmoCartridgeModel.MODEL_RESOURCE_LOCATION;
-        IBakedModel existingModel = event.getModelRegistry().get(itemModelResourceLocation);
-        if (existingModel == null) {
+        ModelResourceLocation itemModelRL   = AmmoCartridgeModel.MODEL_RESOURCE_LOCATION;
+        IBakedModel           existingModel = event.getModelRegistry().get(itemModelRL);
+
+        if( existingModel == null ) {
             TmrConstants.LOG.warn("Did not find the expected vanilla baked model for AmmoCartridgeModel in registry");
-        } else if (existingModel instanceof AmmoCartridgeModel) {
+        } else if( existingModel instanceof AmmoCartridgeModel ) {
             TmrConstants.LOG.warn("Tried to replace AmmoCartridgeModel twice");
         } else {
             AmmoCartridgeModel customModel = new AmmoCartridgeModel(existingModel);
-            event.getModelRegistry().put(itemModelResourceLocation, customModel);
+            event.getModelRegistry().put(itemModelRL, customModel);
         }
     }
 
     private static ResourceLocation getModelRL(ResourceLocation id) {
-        return new ResourceLocation(id.getNamespace(), AmmoCartridgeModel.MODEL_RESOURCE_LOCATION.getPath() + '_'  + id.getPath());
+        return new ResourceLocation(id.getNamespace(), AmmoCartridgeModel.MODEL_RESOURCE_LOCATION.getPath() + '_' + id.getPath());
     }
 }

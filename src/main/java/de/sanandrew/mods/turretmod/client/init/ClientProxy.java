@@ -1,18 +1,19 @@
 package de.sanandrew.mods.turretmod.client.init;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
-import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.client.gui.AmmoCartridgeScreen;
 import de.sanandrew.mods.turretmod.client.gui.ElectrolyteGeneratorScreen;
-import de.sanandrew.mods.turretmod.client.gui.tcu.TcuScreen;
+import de.sanandrew.mods.turretmod.client.gui.TurretCrateScreen;
 import de.sanandrew.mods.turretmod.client.gui.element.ElectrolyteBar;
+import de.sanandrew.mods.turretmod.client.gui.element.ErrorTooltip;
+import de.sanandrew.mods.turretmod.client.gui.element.TcuInfo;
 import de.sanandrew.mods.turretmod.client.gui.element.TurretCamElement;
 import de.sanandrew.mods.turretmod.client.gui.element.TurretName;
 import de.sanandrew.mods.turretmod.client.gui.element.nav.PageNavigation;
 import de.sanandrew.mods.turretmod.client.gui.element.nav.PageNavigationTooltip;
+import de.sanandrew.mods.turretmod.client.gui.tcu.TcuScreen;
 import de.sanandrew.mods.turretmod.client.model.ModelRegistry;
 import de.sanandrew.mods.turretmod.client.renderer.RenderClassProvider;
 import de.sanandrew.mods.turretmod.client.renderer.color.AmmoCartridgeColor;
@@ -51,27 +52,29 @@ public class ClientProxy
         ScreenManager.register(ContainerRegistry.ELECTROLYTE_GENERATOR, ElectrolyteGeneratorScreen::new);
         ScreenManager.register(ContainerRegistry.AMMO_CARTRIGE, AmmoCartridgeScreen::new);
         ScreenManager.register(ContainerRegistry.TCU, TcuScreen::new);
+        ScreenManager.register(ContainerRegistry.TURRET_CRATE, TurretCrateScreen::new);
 
         GuiDefinition.TYPES.put(ElectrolyteBar.ID, ElectrolyteBar::new);
         GuiDefinition.TYPES.put(TurretName.ID, TurretName::new);
         GuiDefinition.TYPES.put(PageNavigation.ID, PageNavigation::new);
         GuiDefinition.TYPES.put(PageNavigationTooltip.ID, PageNavigationTooltip::new);
         GuiDefinition.TYPES.put(TurretCamElement.ID, TurretCamElement::new);
+        GuiDefinition.TYPES.put(ErrorTooltip.ID, ErrorTooltip::new);
+        GuiDefinition.TYPES.put(TcuInfo.ID, TcuInfo::new);
 
-        ModelRegistry.registerModels(event);
+        ModelRegistry.registerModels();
         Minecraft.getInstance().execute(Shaders::initShaders);
         PlayerHeads.preLoadPlayerHeadsAsync();
 
         Minecraft.getInstance().getItemColors().register(new TippedBoltColor(), AmmunitionRegistry.INSTANCE.getItem(Ammunitions.TIPPED_BOLT.getId()).getItem());
         Minecraft.getInstance().getItemColors().register(new AmmoCartridgeColor(), ItemRegistry.AMMO_CARTRIDGE);
 
-        TurretModRebirth.PLUGINS.forEach(p -> p.registerTcuLabelElements(LabelRegistry.INSTANCE));
-        TurretModRebirth.PLUGINS.forEach(plugin -> plugin.registerTcuScreens(ItemRegistry.TURRET_CONTROL_UNIT));
+        TurretModRebirth.PLUGINS.forEach(plugin -> plugin.registerTcuClient(TcuClientRegistry.INSTANCE));
     }
 
     @Override
     public void fillPlayerListClient(Map<UUID, ITextComponent> map) {
-        PlayerList.getData().putPlayersClient(map);
+        PlayerList.putPlayersClient(map);
     }
 
     @Override
@@ -82,22 +85,6 @@ public class ClientProxy
         }
 
         return false;
-    }
-
-    public static void initGuiDef(GuiDefinition guiDef, IGui gui) {
-        if( guiDef == null ) {
-            gui.get().getMinecraft().setScreen(null);
-            return;
-        }
-
-        guiDef.initGui(gui);
-    }
-
-    public static void drawGDBackground(GuiDefinition guiDef, MatrixStack stack, IGui gui, float partTicks, int mouseX, int mouseY) {
-        stack.pushPose();
-        stack.translate(gui.getScreenPosX(), gui.getScreenPosY(), 0.0F);
-        guiDef.drawBackground(gui, stack, mouseX, mouseY, partTicks);
-        stack.popPose();
     }
 
     @Override

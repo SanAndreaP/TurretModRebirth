@@ -33,6 +33,8 @@ public class ElectrolyteProcess
     private ItemStack treasureStack = null;
     protected int progress = 0;
 
+    private IElectrolyteRecipe recipeInst;
+
     public ElectrolyteProcess(ResourceLocation recipe, ItemStack stack) {
         this.recipe = recipe;
         this.processStack = stack;
@@ -41,7 +43,7 @@ public class ElectrolyteProcess
     public ElectrolyteProcess(CompoundNBT nbt) {
         this.processStack = ItemStack.of(nbt.getCompound("ProgressItem"));
         this.progress = nbt.getShort("Progress");
-        this.recipe = MiscUtils.defIfNull(new ResourceLocation(nbt.getString("Recipe")), EmptyRecipe.INSTANCE.getId());
+        this.recipe = MiscUtils.get(new ResourceLocation(nbt.getString("Recipe")), EmptyRecipe.INSTANCE.getId());
     }
 
     ElectrolyteProcess(ItemStack stack) {
@@ -55,7 +57,7 @@ public class ElectrolyteProcess
     }
 
     public ItemStack getTrashStack(IElectrolyteInventory inv) {
-        IElectrolyteRecipe recipe = grabRecipe(inv.getWorld());
+        IElectrolyteRecipe recipe = this.grabRecipe(inv);
 
         if( this.trashStack == null ) {
             this.trashStack = MiscUtils.RNG.randomFloat() < recipe.getTrashChance() ? recipe.getTrashResult(inv) : ItemStack.EMPTY;
@@ -65,7 +67,7 @@ public class ElectrolyteProcess
     }
 
     public ItemStack getTreasureStack(IElectrolyteInventory inv) {
-        IElectrolyteRecipe recipe = grabRecipe(inv.getWorld());
+        IElectrolyteRecipe recipe = this.grabRecipe(inv);
 
         if( this.treasureStack == null ) {
             this.treasureStack = MiscUtils.RNG.randomFloat() < recipe.getTreasureChance() ? recipe.getTreasureResult(inv) : ItemStack.EMPTY;
@@ -74,8 +76,12 @@ public class ElectrolyteProcess
         return this.treasureStack;
     }
 
-    public IElectrolyteRecipe grabRecipe(World world) {
-        return MiscUtils.defIfNull(ElectrolyteManager.INSTANCE.getFuel(world, this.recipe), EmptyRecipe.INSTANCE);
+    private IElectrolyteRecipe grabRecipe(IElectrolyteInventory inv) {
+        if( this.recipeInst == null ) {
+            this.recipeInst = MiscUtils.get(ElectrolyteManager.INSTANCE.getFuel(inv.getWorld(), this.recipe), EmptyRecipe.INSTANCE);
+        }
+
+        return this.recipeInst;
     }
 
     public void incrProgress() {
@@ -87,11 +93,11 @@ public class ElectrolyteProcess
     }
 
     public int getMaxProgress(IElectrolyteInventory inv) {
-        return grabRecipe(inv.getWorld()).getProcessTime();
+        return this.grabRecipe(inv).getProcessTime();
     }
 
     public float getEfficiency(IElectrolyteInventory inv) {
-        return grabRecipe(inv.getWorld()).getEfficiency();
+        return this.grabRecipe(inv).getEfficiency();
     }
 
     public boolean isValid() {

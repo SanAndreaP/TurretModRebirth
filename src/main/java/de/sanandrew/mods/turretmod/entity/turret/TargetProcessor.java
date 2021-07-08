@@ -100,7 +100,7 @@ public final class TargetProcessor
             return AmmoCartridgeItem.extractAmmoStacks(stack, this, true);
         } else if( this.isAmmoApplicable(stack) ) {
             IAmmunition type    = AmmunitionRegistry.INSTANCE.get(stack);
-            String      subtype = MiscUtils.defIfNull(AmmunitionRegistry.INSTANCE.getSubtype(stack), "");
+            String      subtype = MiscUtils.get(AmmunitionRegistry.INSTANCE.getSubtype(stack), "");
 
             if( !this.isAmmoTypeEqual(type, subtype) ) {
                 if( excessInv != null ) {
@@ -288,7 +288,7 @@ public final class TargetProcessor
     private boolean isAmmoTypeEqual(IAmmunition ammo, String subtype) {
         subtype = subtype != null ? subtype : "";
         IAmmunition currType = AmmunitionRegistry.INSTANCE.get(this.ammoStack);
-        String currSubtype = MiscUtils.defIfNull(AmmunitionRegistry.INSTANCE.getSubtype(this.ammoStack), "");
+        String currSubtype = MiscUtils.get(AmmunitionRegistry.INSTANCE.getSubtype(this.ammoStack), "");
 
         return currType.getId().equals(ammo.getId()) && subtype.equals(currSubtype);
     }

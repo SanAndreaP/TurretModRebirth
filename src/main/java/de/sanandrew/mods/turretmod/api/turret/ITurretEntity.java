@@ -6,6 +6,7 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.api.turret;
 
+import de.sanandrew.mods.turretmod.tileentity.TurretCrateEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -68,8 +69,6 @@ public interface ITurretEntity
 
     ITurret.TargetType getAttackType();
 
-//    TileEntityTurretCrate dismantle();
-
     IVariant getVariant();
 
     void setVariant(Object variantId);
@@ -81,4 +80,6 @@ public interface ITurretEntity
 
     @OnlyIn(Dist.CLIENT)
     int getCameraQuality();
+
+    TurretCrateEntity dismantle();
 }

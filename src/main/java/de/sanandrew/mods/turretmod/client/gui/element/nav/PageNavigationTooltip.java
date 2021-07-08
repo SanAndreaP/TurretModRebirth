@@ -40,7 +40,7 @@ public class PageNavigationTooltip
 
         pgn.shownTabs.forEach((e, p) -> {
             if( e.get(ButtonNav.class).isHovering() ) {
-                lbl.text = new TranslationTextComponent(Lang.TCU_PAGE_TITLE.get(p));
+                lbl.text = new TranslationTextComponent(Lang.TCU_TEXT.get(p));
                 this.tabPos = e.pos;
             }
         });

@@ -6,7 +6,7 @@
 		"2": "sapturretmod:blocks/turret_crate_e",
 		"particle": "sapturretmod:blocks/turret_crate"
 	},
-	"sanlib_emissive_marker": true,
+	"loader": "sanlib:emissive",
 	"elements": [
 		{
 			"name": "base",

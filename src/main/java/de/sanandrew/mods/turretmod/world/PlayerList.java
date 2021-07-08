@@ -13,14 +13,11 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.network.SyncPlayerListPacket;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.Dimension;
-import net.minecraft.world.DimensionType;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.DimensionSavedDataManager;
@@ -32,7 +29,6 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -107,11 +103,15 @@ public class PlayerList
 
     @SubscribeEvent
     public static void onWorldLoad(WorldEvent.Load event) {
-        if( event.getWorld() instanceof ServerWorld && ((ServerWorld) event.getWorld()).dimension() == World.OVERWORLD ) {
-            DimensionSavedDataManager storage = ((ServerWorld) event.getWorld()).getDataStorage();
-            playerList = storage.computeIfAbsent(PlayerList::new, WSD_NAME);
+        IWorld level = event.getWorld();
+        if( level instanceof ServerWorld ) {
+            ServerWorld sLevel = (ServerWorld) level;
+            if( sLevel.dimension() == World.OVERWORLD ) {
+                DimensionSavedDataManager storage = sLevel.getDataStorage();
+                playerList = storage.computeIfAbsent(PlayerList::new, WSD_NAME);
 
-            syncList();
+                syncList();
+            }
         }
     }
 

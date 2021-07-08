@@ -21,12 +21,14 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
 import de.sanandrew.mods.turretmod.api.turret.IVariant;
 import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
+import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.entity.EntityRegistry;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.TurretControlUnit;
 import de.sanandrew.mods.turretmod.item.TurretItem;
 import de.sanandrew.mods.turretmod.network.UpdateTurretStatePacket;
+import de.sanandrew.mods.turretmod.tileentity.TurretCrateEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
@@ -46,6 +48,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
@@ -163,7 +166,7 @@ public class TurretEntity
 
     @Override
     public SoundEvent getNoAmmoSound() {
-        return MiscUtils.defIfNull(this.delegate.getEmptySound(this), SoundEvents.DISPENSER_FAIL);
+        return MiscUtils.get(this.delegate.getEmptySound(this), SoundEvents.DISPENSER_FAIL);
     }
 
     protected void playPickupSound() {
@@ -693,25 +696,24 @@ public class TurretEntity
         return false;
     }
 
-    //TODO: reimplement dismantling
-//    @Override
-//    public TileEntityTurretCrate dismantle() {
-//        BlockPos cratePos = this.getPosition();
-//        if( this.level.setBlockState(cratePos, BlockRegistry.TURRET_CRATE.getDefaultState(), 3) ) {
-//            TileEntity te = this.level.getTileEntity(cratePos);
-//
-//            if( te instanceof TileEntityTurretCrate ) {
-//                TileEntityTurretCrate crate = (TileEntityTurretCrate) te;
-//                crate.insertTurret(this);
-//
-//                this.onKillCommand();
-//
-//                return crate;
-//            }
-//        }
-//
-//        return null;
-//    }
+    @Override
+    public TurretCrateEntity dismantle() {
+        BlockPos cratePos = this.blockPosition();
+        if( this.level.setBlock(cratePos, BlockRegistry.TURRET_CRATE.defaultBlockState(), 3) ) {
+            TileEntity te = this.level.getBlockEntity(cratePos);
+
+            if( te instanceof TurretCrateEntity ) {
+                TurretCrateEntity crate = (TurretCrateEntity) te;
+                crate.insertTurret(this);
+
+                this.kill();
+
+                return crate;
+            }
+        }
+
+        return null;
+    }
 
     private void onInteractSucceed(@Nonnull ItemStack heldItem, PlayerEntity player) {
         if( heldItem.getCount() == 0 ) {
@@ -779,7 +781,7 @@ public class TurretEntity
 
         CompoundNBT ownerCompound = compound.getCompound(NBT_OWNER);
         this.ownerId = ownerCompound.getUUID(NBT_OWNER_ID);
-        this.ownerName = MiscUtils.defIfNull(ITextComponent.Serializer.fromJson(ownerCompound.getString(NBT_OWNER_NAME)), StringTextComponent.EMPTY);
+        this.ownerName = MiscUtils.get(ITextComponent.Serializer.fromJson(ownerCompound.getString(NBT_OWNER_NAME)), StringTextComponent.EMPTY);
 
         if( compound.contains(NBT_TURRET_VARIANT, Constants.NBT.TAG_STRING) ) {
             this.setVariant(compound.getString(NBT_TURRET_VARIANT));

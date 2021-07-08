@@ -17,7 +17,6 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.client.event.RenderEventHandler;
 import net.minecraft.client.GameSettings;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.shader.Framebuffer;
@@ -91,16 +90,10 @@ public class TurretCamera
 
         final long updTime = System.nanoTime();
         Map<ITurretEntity, CamEntry> disp = TURRETS.entrySet().stream()
-                                                   .filter(e -> MiscUtils.applyNonNull(e.getKey(), t -> t != null && t.isActive(), false)
+                                                   .filter(e -> MiscUtils.apply(e.getKey(), t -> t != null && t.isActive(), false)
                                                                 && updTime - e.getValue().lastUpdTime > e.getValue().maxUpdTime)
                                                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         if( disp.size() > 0 ) {
-//            if( !mc.isPaused() ) {
-//                prevScreen = mc.screen;
-//                mc.pauseGame(true);
-//                mc.screen = null;
-//            }
-
             GameSettings settings         = mc.options;
             boolean      prevHideGui      = settings.hideGui;
             int          prevMipmapLevels = settings.mipmapLevels;
@@ -142,8 +135,6 @@ public class TurretCamera
             settings.hideGui = prevHideGui;
             settings.mipmapLevels = prevMipmapLevels;
             mc.setCameraEntity(prevCameraEntity);
-
-//            mc.setScreen(prevScreen);
         }
 
         TURRETS.forEach((turret, camEntry) -> camEntry.active = false);
