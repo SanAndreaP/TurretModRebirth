@@ -66,6 +66,7 @@ public final class TcuClientRegistry
         registry.registerTcuInfoProvider(0, new HealthProvider());
         registry.registerTcuInfoProvider(0, new HealthProvider());
         registry.registerTcuInfoProvider(0, new HealthProvider());
+        registry.registerTcuInfoProvider(0, new HealthProvider());
     }
 
     public static List<ITcuInfoProvider> getProviders() {

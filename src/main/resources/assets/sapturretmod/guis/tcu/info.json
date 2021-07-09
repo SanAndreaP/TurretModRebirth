@@ -2,6 +2,14 @@
   "texture": "sapturretmod:textures/gui/tcu/page_info.png",
   "backgroundElements": [
     {
+      "type": "texture",
+      "pos": [63, 29],
+      "data": {
+        "size": [50, 50],
+        "uv": [0, 0]
+      }
+    },
+    {
       "type": "sapturretmod:turret_cam",
       "pos": [64, 30],
       "data": {
@@ -17,121 +25,23 @@
       }
     },
     {
+      "type": "texture",
+      "pos": [6, 84],
+      "data": {
+        "size": [164, 96],
+        "uv": [0, 50]
+      }
+    },
+    {
       "type": "sapturretmod:tcu_info",
-      "pos": [6, 100],
+      "pos": [6, 84],
       "data": {
-        "areaSize": [164, 80],
+        "areaSize": [160, 96],
+        "scrollbarPos": [166, 84],
         "scrollButton": {
-          "size": [5, 5],
-          "uv": [0, 0],
-          "uvDisabled": [0, 5]
-        }
-      }
-    },
-    {
-      "type": "sapturretmod:info_playericon",
-      "pos": [8, 148],
-      "data": {
-        "uvs": [
-          [240,  0],
-          [240, 16],
-          [240, 32],
-          [240, 48],
-          [240, 64],
-          [240, 80],
-          [240, 96]
-        ]
-      }
-    },
-    {
-      "type": "sapturretmod:info_progress",
-      "pos": [6, 100],
-      "data": {
-        "type": "health",
-        "bar": {
-          "offset": [20, 11],
-          "size": [140, 3],
-          "uv": [116, 244]
-        },
-        "text": {
-          "offset": [20, 2],
-          "color": "0xFFC20000"
-        }
-      }
-    },
-    {
-      "type": "sapturretmod:info_progress",
-      "pos": [6, 100],
-      "data": {
-        "type": "personal_shield",
-        "bar": {
-          "offset": [20, 11],
-          "size": [140, 3],
-          "uv": [116, 250]
-        },
-        "text": {
-          "offset": [161, 2],
-          "color": "0xFFC709DD",
-          "alignment": ["right"]
-        }
-      }
-    },
-    {
-      "type": "sapturretmod:info_progress",
-      "pos": [6, 116],
-      "data": {
-        "type": "ammo",
-        "bar": {
-          "offset": [20, 11],
-          "size": [120, 3],
-          "uv": [116, 247]
-        },
-        "text": {
-          "offset": [20, 2],
-          "color": "0xFF0061C2"
-        }
-      }
-    },
-    {
-      "type": "sapturretmod:info_progress",
-      "pos": [6, 132],
-      "data": {
-        "type": "target",
-        "text": {
-          "offset": [20, 4]
-        }
-      }
-    },
-    {
-      "type": "sapturretmod:info_progress",
-      "pos": [6, 148],
-      "data": {
-        "type": "player",
-        "text": {
-          "offset": [20, 4]
-        }
-      }
-    },
-    {
-      "type": "sapturretmod:info_progress",
-      "pos": [6, 164],
-      "id": "info_prog_forcefield",
-      "data": {
-        "type": "forcefield",
-        "bar": {
-          "offset": [20, 11],
-          "size": [140, 3],
-          "uv": [116, 253],
-          "uvBackground": [116, 236]
-        },
-        "text": {
-          "offset": [20, 2],
-          "color": "0xFF997E00"
-        },
-        "icon": {
-          "offset": [3, 0],
-          "size": [16, 16],
-          "uv": [176, 108]
+          "size": [4, 16],
+          "uv": [164, 66],
+          "uvDisabled": [164, 50]
         }
       }
     },
@@ -143,7 +53,7 @@
         "size": [18, 18],
         "uvSize": [18, 18],
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
-        "uvEnabled": [176, 18]
+        "uvEnabled": [168, 18]
       }
     },
     {
@@ -154,7 +64,7 @@
         "size": [18, 18],
         "uvSize": [18, 18],
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
-        "uvEnabled": [194, 18]
+        "uvEnabled": [186, 18]
       }
     },
     {
@@ -165,7 +75,7 @@
         "size": [18, 18],
         "uvSize": [18, 18],
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
-        "uvEnabled": [212, 18]
+        "uvEnabled": [204, 18]
       }
     },
     {
@@ -176,7 +86,7 @@
         "size": [18, 18],
         "uvSize": [18, 18],
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
-        "uvEnabled": [176, 72]
+        "uvEnabled": [168, 72]
       }
     },
     {
@@ -187,12 +97,8 @@
         "size": [18, 18],
         "uvSize": [18, 18],
         "texture": "sapturretmod:textures/gui/tcu/page_info.png",
-        "uvEnabled": [194, 72]
+        "uvEnabled": [186, 72]
       }
-    },
-    {
-      "type": "sapturretmod:info_ammo",
-      "pos": [150, 116]
     }
   ],
   "foregroundElements": [
@@ -240,59 +146,6 @@
         "for": "hideRange",
         "text": "gui.sapturretmod.tcu.info.hide_range"
       }
-    },
-    {
-      "type": "tooltip",
-      "pos":[6, 84],
-      "data": {
-        "size": [20, 16],
-        "text": "gui.sapturretmod.tcu.info.name"
-      }
-    },
-    {
-      "type": "tooltip",
-      "pos":[6, 100],
-      "data": {
-        "size": [20, 16],
-        "text": "gui.sapturretmod.tcu.info.health.tooltip"
-      }
-    },
-    {
-      "type": "tooltip",
-      "pos":[6, 116],
-      "data": {
-        "size": [20, 16],
-        "text": "gui.sapturretmod.tcu.info.ammo.tooltip"
-      }
-    },
-    {
-      "type": "tooltip",
-      "pos":[6, 132],
-      "data": {
-        "size": [20, 16],
-        "text": "gui.sapturretmod.tcu.info.target"
-      }
-    },
-    {
-      "type": "tooltip",
-      "pos":[6, 148],
-      "data": {
-        "size": [20, 16],
-        "text": "gui.sapturretmod.tcu.info.player"
-      }
-    },
-    {
-      "type": "tooltip",
-      "pos":[6, 164],
-      "data": {
-        "size": [20, 16],
-        "text": "gui.sapturretmod.tcu.info.forcefield.tooltip",
-        "for": "info_prog_forcefield"
-      }
-    },
-    {
-      "type": "sapturretmod:info_ammo_ttip",
-      "pos": [150, 116]
     },
     {
       "type": "sapturretmod:error_tooltip",

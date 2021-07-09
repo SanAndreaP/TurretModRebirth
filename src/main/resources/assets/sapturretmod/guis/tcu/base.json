@@ -1,7 +1,7 @@
 {
   "width": 176,
   "height": 236,
-  "texture": "sapturretmod:textures/gui/tcu/page_info.png",
+  "texture": "sapturretmod:textures/gui/tcu/base.png",
   "backgroundElements": [
     {
       "type": "texture",

@@ -95,7 +95,9 @@ public class TcuInfo
 
         @Override
         public void render(IGui gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, JsonObject data) {
-            Screen.fill(stack, x, y, x + this.w, y + this.h, 0xFF000000 | (0xFF00000 >> this.index*4));
+            int i = this.index + 1;
+            int clr = 0xFF_00_00_00 | ((0x0F_F0_00_00 * (i % 2)) >>> i * 4) | (0xFF_FF_00_00 * (1 - i % 2) >>> i * 4);
+            Screen.fill(stack, x, y, x + this.w, y + this.h, clr);
 
             if( this.provider.useStandardRenderer() ) {
                 GuiDefinition.renderElement(gui, stack, x, y, mouseX, mouseY, partTicks, this.icon);
