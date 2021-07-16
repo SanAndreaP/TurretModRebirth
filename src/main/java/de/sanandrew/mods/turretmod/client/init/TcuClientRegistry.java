@@ -8,6 +8,7 @@ import de.sanandrew.mods.turretmod.api.tcu.TcuContainer;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuInfoPage;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuScreen;
+import de.sanandrew.mods.turretmod.client.gui.tcu.info.AmmoProvider;
 import de.sanandrew.mods.turretmod.client.gui.tcu.info.HealthProvider;
 import de.sanandrew.mods.turretmod.client.renderer.turret.LabelRegistry;
 import de.sanandrew.mods.turretmod.item.TurretControlUnit;
@@ -61,12 +62,7 @@ public final class TcuClientRegistry
                                    s -> null);
 
         registry.registerTcuInfoProvider(0, new HealthProvider());
-        registry.registerTcuInfoProvider(0, new HealthProvider());
-        registry.registerTcuInfoProvider(0, new HealthProvider());
-        registry.registerTcuInfoProvider(0, new HealthProvider());
-        registry.registerTcuInfoProvider(0, new HealthProvider());
-        registry.registerTcuInfoProvider(0, new HealthProvider());
-        registry.registerTcuInfoProvider(0, new HealthProvider());
+        registry.registerTcuInfoProvider(1, new AmmoProvider());
     }
 
     public static List<ITcuInfoProvider> getProviders() {

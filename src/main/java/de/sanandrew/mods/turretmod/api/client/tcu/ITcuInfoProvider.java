@@ -8,11 +8,15 @@ import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
+@SuppressWarnings("unused")
 public interface ITcuInfoProvider
 {
-    int[] DEFAULT_ICON_SIZE = new int[] {16, 16};
-    int[] DEFAULT_TEXTURE_SIZE = { 256, 256};
+    int[] DEFAULT_TEXTURE_SIZE = { 256, 256 };
+
+    String getName();
 
     @Nullable
     ITextComponent getLabel();
@@ -30,12 +34,7 @@ public interface ITcuInfoProvider
     ITexture buildIcon();
 
     @Nullable
-    ITexture getProgressBar();
-
-    @Nonnull
-    default int[] getTextureSize() {
-        return DEFAULT_TEXTURE_SIZE;
-    }
+    ITexture buildProgressBar();
 
     default void render(Screen gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) { }
 
@@ -61,12 +60,87 @@ public interface ITcuInfoProvider
             return DEFAULT_TEXTURE_SIZE;
         }
 
-        int[] getSize(int maxWidth, int maxHeight);
-
         int[] getUV(int maxWidth, int maxHeight);
 
         default int[] getBackgroundUV(int maxWidth, int maxHeight) {
             return null;
+        }
+
+        default int[] getMargins() {
+            return new int[4];
+        }
+
+        static ITexture icon(BiFunction<Integer, Integer, int[]> uv) {
+            return icon(uv, () -> null, new int[4]);
+        }
+
+        static ITexture icon(BiFunction<Integer, Integer, int[]> uv, int[] margins) {
+            return icon(uv, () -> null, margins);
+        }
+
+        static ITexture icon(BiFunction<Integer, Integer, int[]> uv, Supplier<ResourceLocation> texture) {
+            return icon(uv, texture, new int[4]);
+        }
+
+        static ITexture icon(BiFunction<Integer, Integer, int[]> uv, Supplier<ResourceLocation> texture, int[] margins) {
+            return new ITexture() {
+                @Override
+                public int[] getUV(int maxWidth, int maxHeight) {
+                    return uv.apply(maxWidth, maxHeight);
+                }
+
+                @Nullable
+                @Override
+                public ResourceLocation getTexture() {
+                    return texture.get();
+                }
+
+                @Override
+                public int[] getMargins() {
+                    return margins;
+                }
+            };
+        }
+
+        static ITexture progressBar(BiFunction<Integer, Integer, int[]> uv, BiFunction<Integer, Integer, int[]> bgUv) {
+            return progressBar(uv, bgUv, () -> null, new int[4]);
+        }
+
+        static ITexture progressBar(BiFunction<Integer, Integer, int[]> uv, BiFunction<Integer, Integer, int[]> bgUv, int[] margins) {
+            return progressBar(uv, bgUv, () -> null, margins);
+        }
+
+        static ITexture progressBar(BiFunction<Integer, Integer, int[]> uv, BiFunction<Integer, Integer, int[]> bgUv,
+                                    Supplier<ResourceLocation> texture)
+        {
+            return progressBar(uv, bgUv, texture, new int[4]);
+        }
+
+        static ITexture progressBar(BiFunction<Integer, Integer, int[]> uv, BiFunction<Integer, Integer, int[]> bgUv,
+                                    Supplier<ResourceLocation> texture, int[] margins)
+        {
+            return new ITexture() {
+                @Override
+                public int[] getUV(int maxWidth, int maxHeight) {
+                    return uv.apply(maxWidth, maxHeight);
+                }
+
+                @Override
+                public int[] getBackgroundUV(int maxWidth, int maxHeight) {
+                    return bgUv.apply(maxWidth, maxHeight);
+                }
+
+                @Nullable
+                @Override
+                public ResourceLocation getTexture() {
+                    return texture.get();
+                }
+
+                @Override
+                public int[] getMargins() {
+                    return margins;
+                }
+            };
         }
     }
 
@@ -85,7 +159,7 @@ public interface ITcuInfoProvider
 
         @Nullable
         @Override
-        default ITexture getProgressBar() {
+        default ITexture buildProgressBar() {
             return null;
         }
 
