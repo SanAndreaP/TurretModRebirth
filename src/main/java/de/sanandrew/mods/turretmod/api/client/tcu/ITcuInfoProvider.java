@@ -1,6 +1,8 @@
 package de.sanandrew.mods.turretmod.api.client.tcu;
 
+import com.google.gson.JsonObject;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.ResourceLocation;
@@ -38,6 +40,10 @@ public interface ITcuInfoProvider
 
     default void render(Screen gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) { }
 
+    default void renderOutside(Screen gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) { }
+
+    default void customBake(IGui iGui, JsonObject data, int maxWidth, int maxHeight) { }
+
     default boolean useStandardRenderer() {
         return true;
     }
@@ -62,27 +68,19 @@ public interface ITcuInfoProvider
 
         int[] getUV(int maxWidth, int maxHeight);
 
+        int[] getSize(int maxWidth, int maxHeight);
+
+        int[] getOffset(int maxWidth, int maxHeight);
+
         default int[] getBackgroundUV(int maxWidth, int maxHeight) {
             return null;
         }
 
-        default int[] getMargins() {
-            return new int[4];
-        }
-
         static ITexture icon(BiFunction<Integer, Integer, int[]> uv) {
-            return icon(uv, () -> null, new int[4]);
-        }
-
-        static ITexture icon(BiFunction<Integer, Integer, int[]> uv, int[] margins) {
-            return icon(uv, () -> null, margins);
+            return icon(uv, () -> null);
         }
 
         static ITexture icon(BiFunction<Integer, Integer, int[]> uv, Supplier<ResourceLocation> texture) {
-            return icon(uv, texture, new int[4]);
-        }
-
-        static ITexture icon(BiFunction<Integer, Integer, int[]> uv, Supplier<ResourceLocation> texture, int[] margins) {
             return new ITexture() {
                 @Override
                 public int[] getUV(int maxWidth, int maxHeight) {
@@ -96,28 +94,23 @@ public interface ITcuInfoProvider
                 }
 
                 @Override
-                public int[] getMargins() {
-                    return margins;
+                public int[] getSize(int maxWidth, int maxHeight) {
+                    return new int[] {16, 16};
+                }
+
+                @Override
+                public int[] getOffset(int maxWidth, int maxHeight) {
+                    return new int[] {0, 0};
                 }
             };
         }
 
         static ITexture progressBar(BiFunction<Integer, Integer, int[]> uv, BiFunction<Integer, Integer, int[]> bgUv) {
-            return progressBar(uv, bgUv, () -> null, new int[4]);
-        }
-
-        static ITexture progressBar(BiFunction<Integer, Integer, int[]> uv, BiFunction<Integer, Integer, int[]> bgUv, int[] margins) {
-            return progressBar(uv, bgUv, () -> null, margins);
+            return progressBar(uv, bgUv, () -> null);
         }
 
         static ITexture progressBar(BiFunction<Integer, Integer, int[]> uv, BiFunction<Integer, Integer, int[]> bgUv,
                                     Supplier<ResourceLocation> texture)
-        {
-            return progressBar(uv, bgUv, texture, new int[4]);
-        }
-
-        static ITexture progressBar(BiFunction<Integer, Integer, int[]> uv, BiFunction<Integer, Integer, int[]> bgUv,
-                                    Supplier<ResourceLocation> texture, int[] margins)
         {
             return new ITexture() {
                 @Override
@@ -137,8 +130,13 @@ public interface ITcuInfoProvider
                 }
 
                 @Override
-                public int[] getMargins() {
-                    return margins;
+                public int[] getSize(int maxWidth, int maxHeight) {
+                    return new int[] {maxWidth - 20, 3};
+                }
+
+                @Override
+                public int[] getOffset(int maxWidth, int maxHeight) {
+                    return new int[] {18, 11};
                 }
             };
         }

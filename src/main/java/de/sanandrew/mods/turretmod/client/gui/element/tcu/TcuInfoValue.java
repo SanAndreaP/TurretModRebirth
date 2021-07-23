@@ -12,9 +12,14 @@ import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuInfoProvider;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuInfoPage;
+import net.minecraft.util.text.Color;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
 
-final class TcuInfoValue
+import java.util.function.Supplier;
+
+public final class TcuInfoValue
         implements IGuiElement
 {
     private final ITcuInfoProvider provider;
@@ -33,29 +38,27 @@ final class TcuInfoValue
 
     @Override
     public void bakeData(IGui gui, JsonObject data, GuiElementInst elem) {
+        JsonObject valData = MiscUtils.get(data.getAsJsonObject(this.provider.getName()),
+                                           () -> MiscUtils.get(data.getAsJsonObject("default"), JsonObject::new));
         if( this.provider.useStandardRenderer() ) {
-            JsonObject valData = MiscUtils.get(data.getAsJsonObject(this.provider.getName()),
-                                               () -> MiscUtils.get(data.getAsJsonObject("default"), JsonObject::new));
 
             this.setIcon(gui, valData);
             this.setProgressBar(gui, valData);
+            this.setValueLabel(gui, valData);
+        }
+
+        if( this.provider.useCustomRenderer() ) {
+            this.provider.customBake(gui, valData, this.w, this.h);
         }
     }
 
     private void setIcon(IGui gui, JsonObject data) {
         ITcuInfoProvider.ITexture icon = this.provider.buildIcon();
         JsonObject icData = MiscUtils.get(data.getAsJsonObject("icon"), JsonObject::new);
-        int[] icMg = MiscUtils.get(JsonUtils.getIntArray(icData.get("margins"), (int[]) null), icon::getMargins);
+        int[] pos = cData(this.w, this.h, icData, icon);
 
-        this.icon = new GuiElementInst(new int[] { icMg[3], icMg[0] }, new Texture(), data.getAsJsonObject("icon"));
+        this.icon = new GuiElementInst(pos, new Texture(), JsonUtils.deepCopy(icData));
         this.icon.initialize(gui);
-
-        MiscUtils.accept(icon.getTexture(), t -> JsonUtils.addDefaultJsonProperty(this.icon.data, "texture", t.toString()));
-        JsonUtils.addDefaultJsonProperty(this.icon.data, "size",
-                                         new int[] { this.h - icMg[1] - icMg[3], this.h - icMg[0] - icMg[2] });
-        JsonUtils.addDefaultJsonProperty(this.icon.data, "uv", icon.getUV(this.w, this.h));
-        JsonUtils.addDefaultJsonProperty(this.icon.data, "textureSize", icon.getTextureSize());
-
         this.icon.get().bakeData(gui, this.icon.data, this.icon);
     }
 
@@ -63,17 +66,12 @@ final class TcuInfoValue
         ITcuInfoProvider.ITexture pb = this.provider.buildProgressBar();
         if( pb != null ) {
             JsonObject pbData = MiscUtils.get(data.getAsJsonObject("progressBar"), JsonObject::new);
-            int[] pbMg = MiscUtils.get(JsonUtils.getIntArray(pbData.get("margins"), (int[]) null), pb::getMargins);
+            int[] pos = cData(this.w, this.h, pbData, pb);
 
-            this.progBar = new GuiElementInst(new int[] { this.h + pbMg[3] + 3, this.h - 6 - pbMg[2] }, new TcuInfoProgressBar(this.provider), pbData);
+            JsonUtils.addDefaultJsonProperty(pbData, "uvBackground", pb.getBackgroundUV(this.w, this.h));
+
+            this.progBar = new GuiElementInst(pos, new TcuInfoProgressBar(this.provider), pbData);
             this.progBar.initialize(gui);
-
-            MiscUtils.accept(pb.getTexture(), t -> JsonUtils.addDefaultJsonProperty(this.progBar.data, "texture", t.toString()));
-            JsonUtils.addDefaultJsonProperty(this.progBar.data, "size",
-                                             new int[] { this.w - this.h - pbMg[1] - pbMg[3] - 6, JsonUtils.getIntVal(data.get("height"), 3) });
-            JsonUtils.addDefaultJsonProperty(this.progBar.data, "uv", pb.getUV(this.w, this.h));
-            JsonUtils.addDefaultJsonProperty(this.progBar.data, "uvBackground", pb.getBackgroundUV(this.w, this.h));
-            JsonUtils.addDefaultJsonProperty(this.progBar.data, "textureSize", pb.getTextureSize());
 
             this.progBar.get().bakeData(gui, this.progBar.data, this.progBar);
         }
@@ -83,15 +81,26 @@ final class TcuInfoValue
         ITextComponent valText = this.provider.getValueStr();
         if( valText != null ) {
             JsonObject txtData = MiscUtils.get(data.getAsJsonObject("valueLabel"), JsonObject::new);
-            int[] txMg = JsonUtils.getIntArray(txtData.get("margins"), new int[4]);
+            int[] pos = JsonUtils.getIntArray(txtData.get("offset"), new int[] {18, 2});
 
-            this.valLbl = new GuiElementInst(new int[] { this.h + txMg[3] + 3, txMg[0] }, new Text() {
-                @Override
-                public ITextComponent getDynamicText(IGui gui, ITextComponent originalText) {
-                    return valText;
-                }
-            }, txtData);
+            this.valLbl = new GuiElementInst(pos, new ValueText(this.provider), txtData);
+            this.valLbl.initialize(gui);
+
+            this.valLbl.get().bakeData(gui, this.valLbl.data, this.valLbl);
         }
+    }
+
+    private static int[] cData(int w, int h, JsonObject data, ITcuInfoProvider.ITexture t) {
+        JsonUtils.addDefaultJsonProperty(data, "size", t.getSize(w, h));
+        JsonUtils.addDefaultJsonProperty(data, "uv", t.getUV(w, h));
+        JsonUtils.addDefaultJsonProperty(data, "textureSize", t.getTextureSize());
+        MiscUtils.accept(t.getTexture(), tx -> JsonUtils.addDefaultJsonProperty(data, "texture", tx.toString()));
+
+        return off(data, () -> t.getOffset(w, h));
+    }
+
+    public static int[] off(JsonObject data, Supplier<int[]> t) {
+        return MiscUtils.get(JsonUtils.getIntArray(data.get("offset"), (int[]) null), t);
     }
 
     @Override
@@ -104,6 +113,7 @@ final class TcuInfoValue
 
         if( this.provider.useStandardRenderer() ) {
             MiscUtils.accept(this.progBar, p -> p.get().tick(gui, p.data));
+            MiscUtils.accept(this.valLbl, v -> v.get().tick(gui, v.data));
         }
     }
 
@@ -113,6 +123,7 @@ final class TcuInfoValue
 
         if( this.provider.useStandardRenderer() ) {
             MiscUtils.accept(this.progBar, p -> GuiDefinition.renderElement(gui, stack, x + p.pos[0], y + p.pos[1], mouseX, mouseY, partTicks, p));
+            MiscUtils.accept(this.valLbl, v -> GuiDefinition.renderElement(gui, stack, x + v.pos[0], y + v.pos[1], mouseX, mouseY, partTicks, v));
         }
 
         if( this.provider.useCustomRenderer() ) {
@@ -133,5 +144,36 @@ final class TcuInfoValue
     @Override
     public boolean isVisible() {
         return this.provider.isVisible();
+    }
+
+    private static class ValueText
+            extends Text
+    {
+        private final ITcuInfoProvider provider;
+
+        public ValueText(ITcuInfoProvider provider) {
+            this.provider = provider;
+        }
+
+        @Override
+        public ITextComponent getBakedText(IGui gui, JsonObject data) {
+            return StringTextComponent.EMPTY;
+        }
+
+        @Override
+        public ITextComponent getDynamicText(IGui gui, ITextComponent originalText) {
+            ITextComponent valStr = this.provider.getValueStr();
+            if( valStr == null ) {
+                return originalText;
+            }
+
+            Color valClr = MiscUtils.apply(valStr.getStyle(), Style::getColor, null);
+            if( valClr != null ) {
+                this.colors.put("styleClr", valClr.getValue());
+                this.setColor("styleClr");
+            }
+
+            return this.provider.getValueStr();
+        }
     }
 }

@@ -57,13 +57,13 @@ public class HealthProvider
     @Nonnull
     @Override
     public ITexture buildIcon() {
-        return (mw, mh) -> new int[] { 86, 16 };
+        return ITexture.icon((mw, mh) -> new int[] { 86, 16 });
     }
 
     @Nullable
     @Override
     public ITexture buildProgressBar() {
-        return ITexture.progressBar((mw, mh) -> new int[] { 0, 149},
-                                    (mw, mh) -> new int[] {0, 146});
+        return ITexture.progressBar((mw, mh) -> new int[] { 0, 149 },
+                                    (mw, mh) -> new int[] { 0, 146 });
     }
 }

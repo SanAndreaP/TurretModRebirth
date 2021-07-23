@@ -35,6 +35,7 @@
     {
       "type": "sapturretmod:tcu_info",
       "pos": [6, 84],
+      "id": "infoArea",
       "data": {
         "areaSize": [160, 96],
         "scrollbarPos": [166, 84],

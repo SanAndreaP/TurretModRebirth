@@ -1,9 +1,24 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu.info;
 
+import com.google.gson.JsonObject;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
+import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
+import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.Item;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
+import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
+import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuInfoProvider;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.TcuInfoValue;
 import de.sanandrew.mods.turretmod.init.Lang;
+import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.Color;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
@@ -17,6 +32,7 @@ public class AmmoProvider
 {
     private int ammo;
     private int maxAmmo;
+    private ItemStack item = ItemStack.EMPTY;
 
     @Override
     public String getName() {
@@ -26,7 +42,7 @@ public class AmmoProvider
     @Nullable
     @Override
     public ITextComponent getLabel() {
-        return new TranslationTextComponent(Lang.TCU_TEXT.get("info.health.tooltip"));
+        return new TranslationTextComponent(Lang.TCU_TEXT.get("info.ammo.tooltip"));
     }
 
     @Override
@@ -34,6 +50,7 @@ public class AmmoProvider
         MiscUtils.accept(turret.getTargetProcessor(), e -> {
             this.ammo = e.getAmmoCount();
             this.maxAmmo = e.getMaxAmmoCapacity();
+            this.item = e.getAmmoStack();
         });
     }
 
@@ -41,7 +58,7 @@ public class AmmoProvider
     @Override
     public ITextComponent getValueStr() {
         return new TranslationTextComponent(Lang.TCU_TEXT.get("info.ammo.suffix"), this.ammo)
-                   .withStyle(Style.EMPTY.withColor(Color.fromRgb(0xFFA03030)));
+                   .withStyle(Style.EMPTY.withColor(Color.fromRgb(0xFF3030A0)));
     }
 
     @Override
@@ -57,13 +74,82 @@ public class AmmoProvider
     @Nonnull
     @Override
     public ITexture buildIcon() {
-        return (mw, mh) -> new int[] { 86, 32 };
+        return ITexture.icon((mw, mh) -> new int[] { 86, 32 });
     }
 
     @Nullable
     @Override
     public ITexture buildProgressBar() {
-        return ITexture.progressBar((mw, mh) -> new int[] { 0, 155},
-                                    (mw, mh) -> new int[] {0, 152});
+        return ITexture.progressBar((mw, mh) -> new int[] { 0, 155 },
+                                    (mw, mh) -> new int[] { 0, 152 });
+    }
+
+    private GuiElementInst itemBackg;
+    private GuiElementInst itemElem;
+
+    @Override
+    public void customBake(IGui iGui, JsonObject data, int maxWidth, int maxHeight) {
+        JsonObject itemBgData = MiscUtils.get(data.getAsJsonObject("ammoItemBackground"), JsonObject::new);
+        int[] posBg = TcuInfoValue.off(itemBgData, () -> new int[]{maxWidth - 2, 0});
+
+        JsonUtils.addDefaultJsonProperty(itemBgData, "size", new int[] {16, 16});
+        JsonUtils.addDefaultJsonProperty(itemBgData, "uv", new int[] {50, 0});
+
+        this.itemBackg = new GuiElementInst(posBg, new Texture(), itemBgData);
+        this.itemBackg.alignment = new String[] { "right" };
+
+        this.itemBackg.initialize( iGui);
+        this.itemBackg.get().bakeData( iGui, itemBgData, this.itemBackg);
+
+        JsonObject itemData = MiscUtils.get(data.getAsJsonObject("ammoItem"), JsonObject::new);
+        int[] posItem = TcuInfoValue.off(itemData, () -> new int[]{maxWidth - 2, 0});
+
+        this.itemElem = new GuiElementInst(posItem, new AmmoItem(), itemData);
+        this.itemElem.alignment = new String[] { "right" };
+
+        this.itemElem.initialize( iGui);
+        this.itemElem.get().bakeData( iGui, itemData, this.itemElem);
+    }
+
+    @Override
+    public boolean useCustomRenderer() {
+        return true;
+    }
+
+    @Override
+    public void render(Screen gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) {
+        GuiDefinition.renderElement((IGui) gui, stack, x + this.itemBackg.pos[0], y + this.itemBackg.pos[1], mouseX, mouseY, partTicks, this.itemBackg);
+        this.renderAmmoItem((IGui) gui, stack, partTicks, x, y, mouseX, mouseY);
+    }
+
+    private void renderAmmoItem(IGui gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY) {
+        IGuiElement ie = this.itemElem.get();
+        int[] size = {ie.getWidth(), ie.getHeight()};
+
+        x += this.itemElem.pos[0];
+        y += this.itemElem.pos[1];
+
+        GuiDefinition.renderElement(gui, stack, x, y, mouseX, mouseY, partTicks, this.itemElem);
+
+        x -= size[0];
+        if( IGuiElement.isHovering(gui, x, y, mouseX, mouseY, size[0], size[1]) ) {
+            RenderSystem.disableDepthTest();
+            AbstractGui.fill(stack, x, y, x + size[0], y + size[1], 0x80FFFFFF);
+            RenderSystem.enableDepthTest();
+        }
+    }
+
+    private class AmmoItem
+            extends Item
+    {
+        @Override
+        protected ItemStack getBakedItem(IGui gui, JsonObject data) {
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        protected ItemStack getDynamicStack(IGui gui) {
+            return AmmoProvider.this.item;
+        }
     }
 }
