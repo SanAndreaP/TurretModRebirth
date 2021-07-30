@@ -2,6 +2,7 @@ package de.sanandrew.mods.turretmod.api.client.tcu;
 
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import net.minecraft.client.gui.screen.Screen;
@@ -16,6 +17,7 @@ import java.util.function.Supplier;
 @SuppressWarnings("unused")
 public interface ITcuInfoProvider
 {
+    @SuppressWarnings("java:S2386")
     int[] DEFAULT_TEXTURE_SIZE = { 256, 256 };
 
     String getName();
@@ -38,11 +40,18 @@ public interface ITcuInfoProvider
     @Nullable
     ITexture buildProgressBar();
 
+    @SuppressWarnings("java:S107")
     default void render(Screen gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) { }
 
+    @SuppressWarnings("java:S107")
     default void renderOutside(Screen gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) { }
 
-    default void customBake(IGui iGui, JsonObject data, int maxWidth, int maxHeight) { }
+    default void onClose(Screen gui, ITurretEntity turret) { }
+
+    @Nonnull
+    default GuiElementInst[] buildCustomElements(IGui gui, JsonObject data, int maxWidth, int maxHeight) {
+        return new GuiElementInst[0];
+    }
 
     default boolean useStandardRenderer() {
         return true;
@@ -72,6 +81,7 @@ public interface ITcuInfoProvider
 
         int[] getOffset(int maxWidth, int maxHeight);
 
+        @Nullable
         default int[] getBackgroundUV(int maxWidth, int maxHeight) {
             return null;
         }
@@ -158,12 +168,6 @@ public interface ITcuInfoProvider
         @Nullable
         @Override
         default ITexture buildProgressBar() {
-            return null;
-        }
-
-        @Nullable
-        @Override
-        default ITextComponent getLabel() {
             return null;
         }
 

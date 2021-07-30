@@ -3,13 +3,11 @@ package de.sanandrew.mods.turretmod.client.gui.tcu.info;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Item;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
-import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuInfoProvider;
@@ -84,31 +82,27 @@ public class AmmoProvider
                                     (mw, mh) -> new int[] { 0, 152 });
     }
 
-    private GuiElementInst itemBackg;
     private GuiElementInst itemElem;
 
+    @Nonnull
     @Override
-    public void customBake(IGui iGui, JsonObject data, int maxWidth, int maxHeight) {
+    public GuiElementInst[] buildCustomElements(IGui gui, JsonObject data, int maxWidth, int maxHeight) {
         JsonObject itemBgData = MiscUtils.get(data.getAsJsonObject("ammoItemBackground"), JsonObject::new);
         int[] posBg = TcuInfoValue.off(itemBgData, () -> new int[]{maxWidth - 2, 0});
 
         JsonUtils.addDefaultJsonProperty(itemBgData, "size", new int[] {16, 16});
         JsonUtils.addDefaultJsonProperty(itemBgData, "uv", new int[] {50, 0});
 
-        this.itemBackg = new GuiElementInst(posBg, new Texture(), itemBgData);
-        this.itemBackg.alignment = new String[] { "right" };
-
-        this.itemBackg.initialize( iGui);
-        this.itemBackg.get().bakeData( iGui, itemBgData, this.itemBackg);
+        GuiElementInst itemBackg = new GuiElementInst(posBg, new Texture(), itemBgData).initialize(gui);
+        itemBackg.alignment = new String[] { "right" };
 
         JsonObject itemData = MiscUtils.get(data.getAsJsonObject("ammoItem"), JsonObject::new);
         int[] posItem = TcuInfoValue.off(itemData, () -> new int[]{maxWidth - 2, 0});
 
-        this.itemElem = new GuiElementInst(posItem, new AmmoItem(), itemData);
+        this.itemElem = new GuiElementInst(posItem, new AmmoItem(), itemData).initialize(gui);
         this.itemElem.alignment = new String[] { "right" };
 
-        this.itemElem.initialize( iGui);
-        this.itemElem.get().bakeData( iGui, itemData, this.itemElem);
+        return new GuiElementInst[] {itemBackg, this.itemElem};
     }
 
     @Override
@@ -118,20 +112,16 @@ public class AmmoProvider
 
     @Override
     public void render(Screen gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) {
-        GuiDefinition.renderElement((IGui) gui, stack, x + this.itemBackg.pos[0], y + this.itemBackg.pos[1], mouseX, mouseY, partTicks, this.itemBackg);
-        this.renderAmmoItem((IGui) gui, stack, partTicks, x, y, mouseX, mouseY);
+        this.renderAmmoOverlay((IGui) gui, stack, x, y, mouseX, mouseY);
     }
 
-    private void renderAmmoItem(IGui gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY) {
+    private void renderAmmoOverlay(IGui gui, MatrixStack stack, int x, int y, double mouseX, double mouseY) {
         IGuiElement ie = this.itemElem.get();
         int[] size = {ie.getWidth(), ie.getHeight()};
 
-        x += this.itemElem.pos[0];
+        x += this.itemElem.pos[0] - size[0];
         y += this.itemElem.pos[1];
 
-        GuiDefinition.renderElement(gui, stack, x, y, mouseX, mouseY, partTicks, this.itemElem);
-
-        x -= size[0];
         if( IGuiElement.isHovering(gui, x, y, mouseX, mouseY, size[0], size[1]) ) {
             RenderSystem.disableDepthTest();
             AbstractGui.fill(stack, x, y, x + size[0], y + size[1], 0x80FFFFFF);

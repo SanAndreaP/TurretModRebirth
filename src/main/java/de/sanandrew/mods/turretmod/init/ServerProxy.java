@@ -16,10 +16,14 @@ public class ServerProxy
         implements IProxy, IRenderClassProvider
 {
     @Override
-    public void setupClient(FMLClientSetupEvent event) { }
+    public void setupClient(FMLClientSetupEvent event) {
+        // client-side only
+    }
 
     @Override
-    public void fillPlayerListClient(Map<UUID, ITextComponent> map) { }
+    public void fillPlayerListClient(Map<UUID, ITextComponent> map) {
+        // client-side only
+    }
 
     @Override
     public boolean checkTurretGlowing(ITurretEntity turretInst) {
@@ -37,5 +41,7 @@ public class ServerProxy
     }
 
     @Override
-    public void openTcuGuiRemote(ItemStack stack, ITurretEntity turret, ResourceLocation type) { }
+    public void openTcuGuiRemote(ItemStack stack, ITurretEntity turret, ResourceLocation type) {
+        // client-side only
+    }
 }

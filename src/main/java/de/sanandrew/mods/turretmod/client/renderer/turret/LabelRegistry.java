@@ -74,7 +74,8 @@ public final class LabelRegistry
     public void register(@Nonnull ILabelRenderer obj) {
         ResourceLocation id = obj.getId();
         if( LABEL_RENDERERS.containsKey(id) ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("The TCU label %s is already registered!", id), new InvalidParameterException());
+            String msg = String.format("The TCU label %s is already registered!", id);
+            TmrConstants.LOG.log(Level.ERROR, msg, new InvalidParameterException());
             return;
         }
 
@@ -158,7 +159,10 @@ public final class LabelRegistry
     @Override
     public void quadPC(BufferBuilder buf, Matrix4f pose, Vector2f pos, Vector2f size, int color) {
         ColorObj c = new ColorObj(color);
-        int      r = c.red(), g = c.green(), b = c.blue(), a = c.alpha();
+        int r = c.red();
+        int g = c.green();
+        int b = c.blue();
+        int a = c.alpha();
 
         buf.vertex(pose, pos.x,          pos.y,          0).color(r, g, b, a).endVertex();
         buf.vertex(pose, pos.x,          pos.y + size.y, 0).color(r, g, b, a).endVertex();
@@ -177,7 +181,10 @@ public final class LabelRegistry
     @Override
     public void quadPCT(BufferBuilder buf, Matrix4f pose, Vector2f pos, Vector2f size, int color, Vector2f uv, Vector2f uvSize) {
         ColorObj c = new ColorObj(color);
-        int      r = c.red(), g = c.green(), b = c.blue(), a = c.alpha();
+        int r = c.red();
+        int g = c.green();
+        int b = c.blue();
+        int a = c.alpha();
 
         buf.vertex(pose, pos.x,          pos.y,          0).color(r, g, b, a).uv(uv.x,            uv.y)           .endVertex();
         buf.vertex(pose, pos.x,          pos.y + size.y, 0).color(r, g, b, a).uv(uv.x,            uv.y + uvSize.y).endVertex();
@@ -268,7 +275,7 @@ public final class LabelRegistry
                 mat.translate(camPos.x, camPos.y, camPos.z);
                 mat.scale(scale, scale, scale);
                 mat.mulPose(camera.rotation());
-                mat.mulPose(TransformationHelper.quatFromXYZ(new Vector3f(0, 0, 180), true));
+                mat.mulPose(TransformationHelper.quatFromXYZ(new Vector3f(0.0F, 0.0F, 180.0F), true));
                 mat.translate((totalWidth) / -2.0F, -totalHeight, 0.0F);
 
                 RenderSystem.disableDepthTest();
@@ -280,25 +287,26 @@ public final class LabelRegistry
                 BufferBuilder buf = tess.getBuilder();
                 buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
-                int tw = totalWidth + 8, th = totalHeight + 8;
+                int tw = totalWidth + 8;
+                int th = totalHeight + 8;
                 Matrix4f pose = mat.last().pose();
-                INSTANCE.quadPC(buf, pose, new Vector2f(1, 0),      new Vector2f(tw - 2, 1), 0x00343048 | alphaBg);
-                INSTANCE.quadPC(buf, pose, new Vector2f(0, 1),      new Vector2f(1, th - 2), 0x00343048 | alphaBg);
-                INSTANCE.quadPC(buf, pose, new Vector2f(1, th - 1), new Vector2f(tw - 2, 1), 0x00343048 | alphaBg);
-                INSTANCE.quadPC(buf, pose, new Vector2f(tw - 1, 1), new Vector2f(1, th - 2), 0x00343048 | alphaBg);
+                INSTANCE.quadPC(buf, pose, new Vector2f(1.0F, 0.0F),      new Vector2f(tw - 2.0F, 1.0F), 0x00343048 | alphaBg);
+                INSTANCE.quadPC(buf, pose, new Vector2f(0.0F, 1.0F),      new Vector2f(1.0F, th - 2.0F), 0x00343048 | alphaBg);
+                INSTANCE.quadPC(buf, pose, new Vector2f(1.0F, th - 1.0F), new Vector2f(tw - 2.0F, 1.0F), 0x00343048 | alphaBg);
+                INSTANCE.quadPC(buf, pose, new Vector2f(tw - 1.0F, 1.0F), new Vector2f(1.0F, th - 2.0F), 0x00343048 | alphaBg);
 
-                INSTANCE.quadPC(buf, pose, new Vector2f(1, 1),      new Vector2f(tw - 2, 1), 0x008880DD | alphaBg);
-                INSTANCE.quadPC(buf, pose, new Vector2f(1, 2),      new Vector2f(1, th - 4), 0x008880DD | alphaBg);
-                INSTANCE.quadPC(buf, pose, new Vector2f(1, th - 2), new Vector2f(tw - 2, 1), 0x008880DD | alphaBg);
-                INSTANCE.quadPC(buf, pose, new Vector2f(tw - 2, 2), new Vector2f(1, th - 4), 0x008880DD | alphaBg);
+                INSTANCE.quadPC(buf, pose, new Vector2f(1.0F, 1.0F),      new Vector2f(tw - 2.0F, 1.0F), 0x008880DD | alphaBg);
+                INSTANCE.quadPC(buf, pose, new Vector2f(1.0F, 2.0F),      new Vector2f(1.0F, th - 4.0F), 0x008880DD | alphaBg);
+                INSTANCE.quadPC(buf, pose, new Vector2f(1.0F, th - 2.0F), new Vector2f(tw - 2.0F, 1.0F), 0x008880DD | alphaBg);
+                INSTANCE.quadPC(buf, pose, new Vector2f(tw - 2.0F, 2.0F), new Vector2f(1.0F, th - 4.0F), 0x008880DD | alphaBg);
 
-                INSTANCE.quadPC(buf, pose, new Vector2f(2, 2), new Vector2f(tw - 4, th - 4), 0x00151019 | alphaBg);
+                INSTANCE.quadPC(buf, pose, new Vector2f(2.0F, 2.0F), new Vector2f(tw - 4.0F, th - 4.0F), 0x00151019 | alphaBg);
                 tess.end();
 
-                mat.translate(4, 4, 0);
+                mat.translate(4.0F, 4.0F, 0.0F);
                 LABEL_RENDERER_VIEW.stream().filter(l -> l.isVisible(turret)).forEach(l -> {
                     l.render(INSTANCE, turret, context, mat, totalWidth, totalHeight, partialTicks, alpha);
-                    mat.translate(0, l.getHeight(INSTANCE, turret) + 2, 0);
+                    mat.translate(0.0F, l.getHeight(INSTANCE, turret) + 2.0F, 0.0F);
                 });
 
                 RenderSystem.enableTexture();

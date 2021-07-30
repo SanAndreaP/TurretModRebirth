@@ -55,7 +55,7 @@ public class UpdateTurretStatePacket
         byte[] dData = new byte[0];
         try( ByteArrayOutputStream bos = new ByteArrayOutputStream(); ObjectOutputStream oos = new ObjectOutputStream(bos) ) {
             turret.getDelegate().writeSyncData(turret, oos);
-            oos.close();
+            oos.flush();
             dData = bos.toByteArray();
         } catch( IOException e ) {
             TmrConstants.LOG.log(Level.ERROR, "Cannot sync turret instance", e);

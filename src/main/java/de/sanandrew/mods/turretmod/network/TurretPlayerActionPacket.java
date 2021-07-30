@@ -44,10 +44,10 @@ public class TurretPlayerActionPacket
         this.actionId = action;
     }
 
-    public TurretPlayerActionPacket(ITurretEntity turret, String cstName) {
+    private TurretPlayerActionPacket(ITurretEntity turret, String cstName) {
         this.turretId = turret.get().getId();
         this.actionId = RENAME;
-        this.customName = cstName;
+        this.customName = cstName != null && cstName.length() > 0 ? cstName : null;
     }
 
     public TurretPlayerActionPacket(PacketBuffer buffer) {
@@ -106,7 +106,7 @@ public class TurretPlayerActionPacket
 //                    }
                     break;
                 case RENAME:
-                    turretInst.get().setCustomName(this.customName != null ? new StringTextComponent(this.customName) : null);
+                    rename(turretInst, this.customName);
                     break;
             }
         }
@@ -116,6 +116,14 @@ public class TurretPlayerActionPacket
     @Override
     public boolean handleOnMainThread() {
         return true;
+    }
+
+    public static void rename(ITurretEntity turret, String cstName) {
+        if( turret.get().level.isClientSide ) {
+            TurretModRebirth.NETWORK.sendToServer(new TurretPlayerActionPacket(turret, cstName));
+        } else {
+            turret.get().setCustomName(cstName != null ? new StringTextComponent(cstName) : null);
+        }
     }
 
     public static boolean tryDismantle(PlayerEntity player, ITurretEntity turret) {

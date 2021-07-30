@@ -24,8 +24,6 @@ public class TcuInfoPage
     private final ITurretEntity turret;
     private final boolean isRemote;
 
-    private TextField turretName;
-
     private ButtonSL dismantle;
     private ButtonSL setActive;
     private ButtonSL setDeactive;
@@ -83,9 +81,9 @@ public class TcuInfoPage
         this.hideRange.buttonFunction = btn -> this.turret.setShowRange(false);
         this.hideRange.setVisible(false);
 
-        this.turretName = this.guiDefinition.getElementById("turretNameInput").get(TextField.class);
-        this.turretName.setMaxStringLength(128);
-        this.turretName.setText(this.turret.get().hasCustomName() ? Objects.requireNonNull(this.turret.get().getCustomName()).getString() : "");
+//        this.turretName = this.guiDefinition.getElementById("turretNameInput").get(TextField.class);
+//        this.turretName.setMaxStringLength(128);
+//        this.turretName.setText(this.turret.get().hasCustomName() ? Objects.requireNonNull(this.turret.get().getCustomName()).getString() : "");
 
         if( !this.turret.hasPlayerPermission(this.mc.player) ) {
             this.dismantle.setActive(false);
@@ -93,7 +91,7 @@ public class TcuInfoPage
             this.setDeactive.setActive(false);
             this.showRange.setActive(false);
             this.hideRange.setActive(false);
-            this.turretName.setEnabled(false);
+//            this.turretName.setEnabled(false);
         } else {
             if( this.isRemote && !this.turret.canRemoteTransfer() ) {
                 this.dismantle.setActive(false);
@@ -121,16 +119,15 @@ public class TcuInfoPage
             return false;
         }
 
-        return super.keyPressed(keyCode, scanCode, modifiers) || this.turretName.canConsumeInput();
+        return super.keyPressed(keyCode, scanCode, modifiers);// || this.turretName.canConsumeInput();
     }
 
-    @Override
-    public void onClose() {
-        String tn = this.turretName.getText();
-        TurretModRebirth.NETWORK.sendToServer(new TurretPlayerActionPacket(this.turret, Strings.isNullOrEmpty(tn) ? null : tn));
-
-        super.onClose();
-    }
+//    @Override
+//    public void onClose() {
+//        TurretPlayerActionPacket.rename(this.turret, this.turretName.getText());
+//
+//        super.onClose();
+//    }
 
     public ITurretEntity getTurret() {
         return this.turret;

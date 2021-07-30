@@ -5,11 +5,11 @@ import de.sanandrew.mods.turretmod.api.client.tcu.ITcuClientRegistry;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuInfoProvider;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuScreen;
 import de.sanandrew.mods.turretmod.api.tcu.TcuContainer;
-import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuInfoPage;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuScreen;
 import de.sanandrew.mods.turretmod.client.gui.tcu.info.AmmoProvider;
 import de.sanandrew.mods.turretmod.client.gui.tcu.info.HealthProvider;
+import de.sanandrew.mods.turretmod.client.gui.tcu.info.NameProvider;
 import de.sanandrew.mods.turretmod.client.renderer.turret.LabelRegistry;
 import de.sanandrew.mods.turretmod.item.TurretControlUnit;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -17,11 +17,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -61,8 +58,9 @@ public final class TcuClientRegistry
         registry.registerTcuScreen(TurretControlUnit.TARGETS_PLAYERS, de.sanandrew.mods.turretmod.client.init.PlayerHeads::getRandomSkull,
                                    s -> null);
 
-        registry.registerTcuInfoProvider(0, new HealthProvider());
-        registry.registerTcuInfoProvider(1, new AmmoProvider());
+        registry.registerTcuInfoProvider(0, new NameProvider());
+        registry.registerTcuInfoProvider(1, new HealthProvider());
+        registry.registerTcuInfoProvider(2, new AmmoProvider());
     }
 
     public static List<ITcuInfoProvider> getProviders() {

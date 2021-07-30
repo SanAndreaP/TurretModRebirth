@@ -6,6 +6,7 @@ import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.ElementParent;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
@@ -17,10 +18,11 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 
+import java.util.Map;
 import java.util.function.Supplier;
 
 public final class TcuInfoValue
-        implements IGuiElement
+        extends ElementParent<Integer>
 {
     private final ITcuInfoProvider provider;
     private final int              w;
@@ -37,29 +39,39 @@ public final class TcuInfoValue
     }
 
     @Override
-    public void bakeData(IGui gui, JsonObject data, GuiElementInst elem) {
+    public void buildChildren(IGui gui, JsonObject data, Map<Integer, GuiElementInst> children) {
         JsonObject valData = MiscUtils.get(data.getAsJsonObject(this.provider.getName()),
                                            () -> MiscUtils.get(data.getAsJsonObject("default"), JsonObject::new));
-        if( this.provider.useStandardRenderer() ) {
 
-            this.setIcon(gui, valData);
+        this.setIcon(gui, valData);
+        children.put(0, this.icon);
+
+        if( this.provider.useStandardRenderer() ) {
             this.setProgressBar(gui, valData);
+            if( this.progBar != null ) {
+                children.put(1, this.progBar);
+            }
+
             this.setValueLabel(gui, valData);
+            if( this.valLbl != null ) {
+                children.put(2, this.valLbl);
+            }
         }
 
         if( this.provider.useCustomRenderer() ) {
-            this.provider.customBake(gui, valData, this.w, this.h);
+            GuiElementInst[] cstChildren = this.provider.buildCustomElements(gui, valData, this.w, this.h);
+            for( int i = 0, max = cstChildren.length; i < max; i++ ) {
+                children.put(3 + i, cstChildren[i]);
+            }
         }
     }
 
     private void setIcon(IGui gui, JsonObject data) {
-        ITcuInfoProvider.ITexture icon = this.provider.buildIcon();
+        ITcuInfoProvider.ITexture ico = this.provider.buildIcon();
         JsonObject icData = MiscUtils.get(data.getAsJsonObject("icon"), JsonObject::new);
-        int[] pos = cData(this.w, this.h, icData, icon);
+        int[] pos = cData(this.w, this.h, icData, ico);
 
-        this.icon = new GuiElementInst(pos, new Texture(), JsonUtils.deepCopy(icData));
-        this.icon.initialize(gui);
-        this.icon.get().bakeData(gui, this.icon.data, this.icon);
+        this.icon = new GuiElementInst(pos, new Texture(), JsonUtils.deepCopy(icData)).initialize(gui);
     }
 
     private void setProgressBar(IGui gui, JsonObject data) {
@@ -70,10 +82,7 @@ public final class TcuInfoValue
 
             JsonUtils.addDefaultJsonProperty(pbData, "uvBackground", pb.getBackgroundUV(this.w, this.h));
 
-            this.progBar = new GuiElementInst(pos, new TcuInfoProgressBar(this.provider), pbData);
-            this.progBar.initialize(gui);
-
-            this.progBar.get().bakeData(gui, this.progBar.data, this.progBar);
+            this.progBar = new GuiElementInst(pos, new TcuInfoProgressBar(this.provider), pbData).initialize(gui);
         }
     }
 
@@ -83,10 +92,7 @@ public final class TcuInfoValue
             JsonObject txtData = MiscUtils.get(data.getAsJsonObject("valueLabel"), JsonObject::new);
             int[] pos = JsonUtils.getIntArray(txtData.get("offset"), new int[] {18, 2});
 
-            this.valLbl = new GuiElementInst(pos, new ValueText(this.provider), txtData);
-            this.valLbl.initialize(gui);
-
-            this.valLbl.get().bakeData(gui, this.valLbl.data, this.valLbl);
+            this.valLbl = new GuiElementInst(pos, new ValueText(this.provider), txtData).initialize(gui);
         }
     }
 
@@ -109,25 +115,24 @@ public final class TcuInfoValue
             this.provider.tick(((TcuInfoPage) gui).getTurret());
         }
 
-        this.icon.get().tick(gui, this.icon.data);
-
-        if( this.provider.useStandardRenderer() ) {
-            MiscUtils.accept(this.progBar, p -> p.get().tick(gui, p.data));
-            MiscUtils.accept(this.valLbl, v -> v.get().tick(gui, v.data));
-        }
+        super.tick(gui, data);
     }
 
     @Override
     public void render(IGui gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, JsonObject data) {
-        GuiDefinition.renderElement(gui, stack, x + this.icon.pos[0], y + this.icon.pos[1], mouseX, mouseY, partTicks, this.icon);
-
-        if( this.provider.useStandardRenderer() ) {
-            MiscUtils.accept(this.progBar, p -> GuiDefinition.renderElement(gui, stack, x + p.pos[0], y + p.pos[1], mouseX, mouseY, partTicks, p));
-            MiscUtils.accept(this.valLbl, v -> GuiDefinition.renderElement(gui, stack, x + v.pos[0], y + v.pos[1], mouseX, mouseY, partTicks, v));
-        }
+        super.render(gui, stack, partTicks, x, y, mouseX, mouseY, data);
 
         if( this.provider.useCustomRenderer() ) {
             this.provider.render(gui.get(), stack, partTicks, x, y, mouseX, mouseY, this.w, this.h);
+        }
+    }
+
+    @Override
+    public void onClose(IGui gui) {
+        super.onClose(gui);
+
+        if( gui instanceof TcuInfoPage ) {
+            this.provider.onClose(gui.get(), ((TcuInfoPage) gui).getTurret());
         }
     }
 
