@@ -74,6 +74,7 @@ public class TurretCamera
 
             GuiUtils.drawTexture(mStack, 0, 0, 0.0F, 0, 64 * RNG.randomInt(3), 256, 64);
         }
+        RenderSystem.disableAlphaTest();
 
         mStack.popPose();
     }

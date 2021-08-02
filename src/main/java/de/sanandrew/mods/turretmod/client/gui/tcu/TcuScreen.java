@@ -64,9 +64,8 @@ public class TcuScreen
     }
 
     @Override
-    protected void renderBg(@Nonnull MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-        super.renderBg(matrixStack, partialTicks, mouseX, mouseY);
-        this.currScreen.render(matrixStack, mouseX, mouseY, partialTicks);
+    protected void renderGd(@Nonnull MatrixStack mStack, int mouseX, int mouseY, float partialTicks) {
+        this.currScreen.render(mStack, mouseX, mouseY, partialTicks);
     }
 
     @Override
@@ -134,10 +133,11 @@ public class TcuScreen
     }
 
     public static void registerScreen(ResourceLocation id, Supplier<ItemStack> icon, Function<ContainerScreen<TcuContainer>, ITcuScreen> screenProvider) {
-        if( !PAGES.containsKey(id) ) {
-            PAGES.put(id, screenProvider);
-            PAGE_ICONS.put(id, icon);
-        }
+        PAGES.computeIfAbsent(id, k -> {
+            PAGE_ICONS.put(k, icon);
+
+            return screenProvider;
+        });
     }
 
     public static ItemStack getIcon(ResourceLocation id) {

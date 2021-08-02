@@ -2,14 +2,11 @@ package de.sanandrew.mods.turretmod.client.gui.element.tcu;
 
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
-import de.sanandrew.mods.sanlib.lib.client.gui.element.ElementParent;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ScrollArea;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
-import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuInfoProvider;

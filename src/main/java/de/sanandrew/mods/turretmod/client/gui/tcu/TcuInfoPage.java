@@ -1,9 +1,7 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu;
 
-import com.google.common.base.Strings;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ButtonSL;
-import de.sanandrew.mods.sanlib.lib.client.gui.element.TextField;
 import de.sanandrew.mods.turretmod.api.Resources;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.tcu.TcuContainer;

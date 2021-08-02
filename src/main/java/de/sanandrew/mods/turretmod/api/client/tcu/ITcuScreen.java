@@ -1,8 +1,6 @@
 package de.sanandrew.mods.turretmod.api.client.tcu;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
-import javafx.stage.Screen;
 import net.minecraft.client.Minecraft;
 
 import javax.annotation.Nonnull;

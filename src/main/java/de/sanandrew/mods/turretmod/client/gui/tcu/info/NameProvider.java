@@ -64,9 +64,9 @@ public class NameProvider
     public GuiElementInst[] buildCustomElements(IGui gui, JsonObject data, int maxWidth, int maxHeight) {
         JsonObject txtData = MiscUtils.get(data.getAsJsonObject("textField"), JsonObject::new);
 
-        JsonUtils.addDefaultJsonProperty(txtData, "size", new int[] { maxWidth - 20, 10 });
+        JsonUtils.addDefaultJsonProperty(txtData, "size", new int[] { maxWidth - 24, 10 });
 
-        int[] pos = TcuInfoValue.off(txtData, () -> new int[]{ 2, 3 });
+        int[] pos = TcuInfoValue.off(txtData, () -> new int[]{ 20, 3 });
         GuiElementInst txt = new GuiElementInst(pos, new TextField(), txtData).initialize(gui);
 
         this.txtField = txt.get(TextField.class);

@@ -17,14 +17,6 @@
       }
     },
     {
-      "type": "textfield",
-      "pos": [27, 87],
-      "id": "turretNameInput",
-      "data": {
-        "size": [138, 10]
-      }
-    },
-    {
       "type": "texture",
       "pos": [6, 84],
       "data": {
