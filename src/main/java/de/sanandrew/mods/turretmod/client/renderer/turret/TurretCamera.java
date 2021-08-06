@@ -43,6 +43,8 @@ public class TurretCamera
     private static final WeakHashMap<ITurretEntity, CamEntry> TURRETS = new WeakHashMap<>();
     private static final XorShiftRandom                       RNG     = new XorShiftRandom();
 
+    private TurretCamera() { }
+
     public static void bindTurretCamTx(ITurretEntity turret) {
         CamEntry entry = TURRETS.get(turret);
         if( entry == null ) {
@@ -57,7 +59,8 @@ public class TurretCamera
         }
     }
 
-    public static void drawTurretCam(ITurretEntity turretInst, MatrixStack mStack, int x, int y, int width, int height) {
+    @SuppressWarnings("deprecation")
+    public static void drawTurretCam(ITurretEntity turretInst, MatrixStack mStack, double x, double y, int width, int height) {
         mStack.pushPose();
 
         if( turretInst.isActive() ) {
@@ -74,6 +77,7 @@ public class TurretCamera
 
             GuiUtils.drawTexture(mStack, 0, 0, 0.0F, 0, 64 * RNG.randomInt(3), 256, 64);
         }
+
         RenderSystem.disableAlphaTest();
 
         mStack.popPose();
@@ -81,8 +85,6 @@ public class TurretCamera
 
     @SuppressWarnings({ "deprecation", "ConstantConditions" })
     public static void render(Minecraft mc, MatrixStack mStack, final float renderTickTime) {
-//        Screen prevScreen = null;
-
         if( mc.level == null ) {
             return;
         }

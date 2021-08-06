@@ -110,7 +110,7 @@ public final class TcuInfoValue
     @Override
     public void tick(IGui gui, JsonObject data) {
         if( gui instanceof TcuInfoPage ) {
-            this.provider.tick(((TcuInfoPage) gui).getTurret());
+            this.provider.tick(gui, ((TcuInfoPage) gui).getTurret());
         }
 
         super.tick(gui, data);
@@ -121,7 +121,13 @@ public final class TcuInfoValue
         super.render(gui, stack, partTicks, x, y, mouseX, mouseY, data);
 
         if( this.provider.useCustomRenderer() ) {
-            this.provider.render(gui.get(), stack, partTicks, x, y, mouseX, mouseY, this.w, this.h);
+            this.provider.render(gui, stack, partTicks, x, y, mouseX, mouseY, this.w, this.h);
+        }
+    }
+
+    public void renderOutside(IGui gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY) {
+        if( this.provider.useCustomRenderer() ) {
+            this.provider.renderOutside(gui, stack, partTicks, x, y, mouseX, mouseY, this.w, this.h);
         }
     }
 
@@ -130,7 +136,7 @@ public final class TcuInfoValue
         super.onClose(gui);
 
         if( gui instanceof TcuInfoPage ) {
-            this.provider.onClose(gui.get(), ((TcuInfoPage) gui).getTurret());
+            this.provider.onClose(gui, ((TcuInfoPage) gui).getTurret());
         }
     }
 
@@ -147,6 +153,42 @@ public final class TcuInfoValue
     @Override
     public boolean isVisible() {
         return this.provider.isVisible();
+    }
+
+    @Override
+    public boolean mouseScrolled(IGui gui, double mouseX, double mouseY, double mouseScroll) {
+        return this.provider.mouseScrolled(gui, mouseX, mouseY, mouseScroll)
+               || super.mouseScrolled(gui, mouseX, mouseY, mouseScroll);
+    }
+
+    @Override
+    public boolean mouseClicked(IGui gui, double mouseX, double mouseY, int button) {
+        return this.provider.mouseClicked(gui, mouseX, mouseY, button)
+               || super.mouseClicked(gui, mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseReleased(IGui gui, double mouseX, double mouseY, int button) {
+        return this.provider.mouseReleased(gui, mouseX, mouseY, button)
+               || super.mouseReleased(gui, mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseDragged(IGui gui, double mouseX, double mouseY, int button, double dragX, double dragY) {
+        return this.provider.mouseDragged(gui, mouseX, mouseY, button, dragX, dragY)
+               || super.mouseDragged(gui, mouseX, mouseY, button, dragX, dragY);
+    }
+
+    @Override
+    public boolean keyPressed(IGui gui, int keyCode, int scanCode, int modifiers) {
+        return this.provider.keyPressed(gui, keyCode, scanCode, modifiers)
+               || super.keyPressed(gui, keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean keyReleased(IGui gui, int keyCode, int scanCode, int modifiers) {
+        return this.provider.keyReleased(gui, keyCode, scanCode, modifiers)
+               || super.keyReleased(gui, keyCode, scanCode, modifiers);
     }
 
     private static class ValueText

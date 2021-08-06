@@ -4,8 +4,8 @@ import com.google.gson.JsonObject;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
+import de.sanandrew.mods.sanlib.lib.client.gui.IGuiReference;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
@@ -16,6 +16,7 @@ import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
 public interface ITcuInfoProvider
+        extends IGuiReference
 {
     @SuppressWarnings("java:S2386")
     int[] DEFAULT_TEXTURE_SIZE = { 256, 256 };
@@ -25,7 +26,7 @@ public interface ITcuInfoProvider
     @Nullable
     ITextComponent getLabel();
 
-    void tick(ITurretEntity turret);
+    void tick(IGui gui, ITurretEntity turret);
 
     @Nullable
     ITextComponent getValueStr();
@@ -41,12 +42,14 @@ public interface ITcuInfoProvider
     ITexture buildProgressBar();
 
     @SuppressWarnings("java:S107")
-    default void render(Screen gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) { }
+    default void render(IGui gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) { }
 
     @SuppressWarnings("java:S107")
-    default void renderOutside(Screen gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) { }
+    default void renderOutside(IGui gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) { }
 
-    default void onClose(Screen gui, ITurretEntity turret) { }
+    default void onClose(IGui gui, ITurretEntity turret) {
+        this.onClose(gui);
+    }
 
     @Nonnull
     default GuiElementInst[] buildCustomElements(IGui gui, JsonObject data, int maxWidth, int maxHeight) {
@@ -178,7 +181,7 @@ public interface ITcuInfoProvider
         }
 
         @Override
-        void render(Screen gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight);
+        void render(IGui gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight);
 
         @Override
         default boolean useStandardRenderer() {

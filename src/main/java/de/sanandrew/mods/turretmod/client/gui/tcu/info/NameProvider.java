@@ -12,7 +12,6 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.TcuInfoValue;
 import de.sanandrew.mods.turretmod.init.Lang;
 import de.sanandrew.mods.turretmod.network.TurretPlayerActionPacket;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -38,7 +37,7 @@ public class NameProvider
     }
 
     @Override
-    public void tick(ITurretEntity turret) {
+    public void tick(IGui gui, ITurretEntity turret) {
         if( !this.nameSet ) {
             MiscUtils.accept(turret.get(), e -> {
                 this.nameSet = true;
@@ -53,8 +52,8 @@ public class NameProvider
     }
 
     @Override
-    public void onClose(Screen gui, ITurretEntity turret) {
-        if( this.nameChanged && !this.txtField.isFocused() ) {
+    public void onClose(IGui gui, ITurretEntity turret) {
+        if( this.nameChanged ) {
             TurretPlayerActionPacket.rename(turret, this.txtField.getText());
         }
     }
@@ -62,6 +61,9 @@ public class NameProvider
     @Nonnull
     @Override
     public GuiElementInst[] buildCustomElements(IGui gui, JsonObject data, int maxWidth, int maxHeight) {
+        this.nameSet = false;
+        this.nameChanged = false;
+
         JsonObject txtData = MiscUtils.get(data.getAsJsonObject("textField"), JsonObject::new);
 
         JsonUtils.addDefaultJsonProperty(txtData, "size", new int[] { maxWidth - 24, 10 });
@@ -75,13 +77,18 @@ public class NameProvider
     }
 
     @Override
-    public void render(Screen gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) {
+    public void render(IGui gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) {
         // this does not need to render anything, as it just adds a text field element
+    }
+
+    @Override
+    public boolean keyPressed(IGui gui, int keyCode, int scanCode, int modifiers) {
+        return this.txtField.keyPressed(gui, keyCode, scanCode, modifiers) || this.txtField.canConsumeInput();
     }
 
     @Nonnull
     @Override
     public ITexture buildIcon() {
-        return ITexture.icon((mw, mh) -> new int[] { 86, 16 });
+        return ITexture.icon((mw, mh) -> new int[] { 86, 0 });
     }
 }

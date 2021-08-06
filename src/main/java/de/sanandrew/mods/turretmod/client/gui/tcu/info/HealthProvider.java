@@ -1,5 +1,6 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu.info;
 
+import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuInfoProvider;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
@@ -30,7 +31,7 @@ public class HealthProvider
     }
 
     @Override
-    public void tick(ITurretEntity turret) {
+    public void tick(IGui gui, ITurretEntity turret) {
         MiscUtils.accept(turret.get(), e -> {
             this.health = e.getHealth();
             this.maxHealth = e.getMaxHealth();

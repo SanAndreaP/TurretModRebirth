@@ -108,6 +108,8 @@ public class TurretPlayerActionPacket
                 case RENAME:
                     rename(turretInst, this.customName);
                     break;
+                default:
+                    // no-op
             }
         }
 
