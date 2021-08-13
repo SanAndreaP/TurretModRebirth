@@ -62,41 +62,44 @@ public class TurretRenderer<E extends LivingEntity & ITurretEntity>
 
     public void initialize() {
         for( ITurret turret : TurretRegistry.INSTANCE.getAll() ) {
-            Function<ResourceLocation, EntityModel<E>> s;
-            LivingRenderer<E, EntityModel<E>> trb;
+            register(turret, this.getRenderer(turret));
+        }
+    }
 
-            String customModelClassName = turret.getCustomModelClass();
-            if( customModelClassName != null ) {
-                try {
-                    final Constructor<?> c = Class.forName(customModelClassName).getConstructor(ResourceLocation.class);
-                    s = modelLocation -> {
-                        try {
-                            return ReflectionUtils.getCasted(c.newInstance(modelLocation));
-                        } catch( InstantiationException | IllegalAccessException | InvocationTargetException e ) {
-                            throw new RuntimeException(e);
-                        }
-                    };
-                } catch( NoSuchMethodException | ClassNotFoundException e ) {
-                    throw new RuntimeException(e);
-                }
-            } else {
-                s = ModelTurretBase::new;
+    private static <E extends LivingEntity & ITurretEntity> Function<ResourceLocation, EntityModel<E>> getModelLocationFunc(String cstModelClassName) {
+        if( cstModelClassName != null ) {
+            try {
+                final Constructor<?> c = Class.forName(cstModelClassName).getConstructor(ResourceLocation.class);
+                return modelLocation -> {
+                    try {
+                        return ReflectionUtils.getCasted(c.newInstance(modelLocation));
+                    } catch( InstantiationException | IllegalAccessException | InvocationTargetException e ) {
+                        throw new ModelLoadException(e);
+                    }
+                };
+            } catch( NoSuchMethodException | ClassNotFoundException e ) {
+                throw new ModelLoadException(e);
             }
+        } else {
+            return ModelTurretBase::new;
+        }
+    }
 
+    private LivingRenderer<E, EntityModel<E>> getRenderer(ITurret turret) {
+        Function<ResourceLocation, EntityModel<E>> modelFunc = getModelLocationFunc(turret.getCustomModelClass());
 
-            String customRenderClassName = turret.getCustomRenderClass();
-            if( customRenderClassName != null ) {
-                try {
-                    final Constructor<?> c = Class.forName(customRenderClassName).getConstructor(EntityRendererManager.class, Supplier.class);
-                    trb = ReflectionUtils.getCasted(c.newInstance(this.entityRenderDispatcher, (Supplier<? extends EntityModel<?>>) () -> s.apply(turret.getModelLocation())));
-                } catch( NoSuchMethodException | ClassNotFoundException | InvocationTargetException | InstantiationException | IllegalAccessException e ) {
-                    throw new RuntimeException(e);
-                }
-            } else {
-                trb = new TurretRenderBase<>(this.entityRenderDispatcher, () -> s.apply(turret.getModelLocation()));
+        String cstRenderClass = turret.getCustomRenderClass();
+        if( cstRenderClass != null ) {
+            try {
+                final Constructor<?> c = Class.forName(cstRenderClass).getConstructor(EntityRendererManager.class, Supplier.class);
+                final Supplier<? extends EntityModel<?>> newModelFunc = () -> modelFunc.apply(turret.getModelLocation());
+
+                return ReflectionUtils.getCasted(c.newInstance(this.entityRenderDispatcher, newModelFunc));
+            } catch( NoSuchMethodException | ClassNotFoundException | InvocationTargetException | InstantiationException | IllegalAccessException e ) {
+                throw new ModelLoadException(e);
             }
-
-            register(turret, trb);
+        } else {
+            return new TurretRenderBase<>(this.entityRenderDispatcher, () -> modelFunc.apply(turret.getModelLocation()));
         }
     }
 
@@ -104,9 +107,21 @@ public class TurretRenderer<E extends LivingEntity & ITurretEntity>
             extends EntityModel<E>
     {
         @Override
-        public void setupAnim(@Nonnull E entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) { }
+        public void setupAnim(@Nonnull E entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+            // no-op
+        }
 
         @Override
-        public void renderToBuffer(@Nonnull MatrixStack matrixStackIn, @Nonnull IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) { }
+        public void renderToBuffer(@Nonnull MatrixStack matrixStackIn, @Nonnull IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+            // no-op
+        }
+    }
+
+    public static final class ModelLoadException
+            extends RuntimeException
+    {
+        public ModelLoadException(Throwable ex) {
+            super(ex);
+        }
     }
 }

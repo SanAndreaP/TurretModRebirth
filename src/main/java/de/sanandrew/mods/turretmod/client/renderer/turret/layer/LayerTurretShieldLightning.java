@@ -12,7 +12,7 @@ import de.sanandrew.mods.sanlib.lib.XorShiftRandom;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.client.event.ClientTickHandler;
-import de.sanandrew.mods.turretmod.client.util.RenderStateAccessor;
+import de.sanandrew.mods.turretmod.client.renderer.TmrRenderTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -31,13 +31,7 @@ public class LayerTurretShieldLightning<E extends LivingEntity & ITurretEntity, 
         extends LayerRenderer<E, M>
 {
     private static final WeakHashMap<ITurretEntity, Queue<RenderLightning>> LIGHTNING_RENDERS = new WeakHashMap<>();
-    private static final RenderType                                         LIGHTNING_TYPE    = RenderType.create("tf_lightning", DefaultVertexFormats.POSITION_COLOR, 7, 256, false, true,
-                                                                         RenderType.State.builder()
-                                                                                         .setWriteMaskState(RenderStateAccessor.COLOR_DEPTH_WRITE)
-                                                                                         .setTransparencyState(RenderStateAccessor.LIGHTNING_TRANSPARENCY)
-                                                                                         .setShadeModelState(RenderStateAccessor.SMOOTH_SHADE)
-                                                                                         .setLightmapState(RenderStateAccessor.NO_LIGHTMAP)
-                                                                                         .createCompositeState(false));
+    private static final RenderType                                         LIGHTNING_TYPE    = TmrRenderTypes.lightning();
 
     public LayerTurretShieldLightning(IEntityRenderer<E, M> renderer) {
         super(renderer);
