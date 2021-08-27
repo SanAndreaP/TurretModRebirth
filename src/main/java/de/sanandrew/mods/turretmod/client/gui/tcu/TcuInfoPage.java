@@ -28,8 +28,6 @@ public class TcuInfoPage
     private ButtonSL showRange;
     private ButtonSL hideRange;
 
-    private ErrorTooltip errorDismantle;
-
     public TcuInfoPage(ContainerScreen<TcuContainer> tcuScreen) {
         super(tcuScreen);
 
@@ -54,12 +52,12 @@ public class TcuInfoPage
 
     @Override
     protected void initGd() {
-        this.errorDismantle = this.guiDefinition.getElementById("errorDismantle").get(ErrorTooltip.class);
+        final ErrorTooltip errorDismantle = this.guiDefinition.getElementById("errorDismantle").get(ErrorTooltip.class);
 
         this.dismantle = this.guiDefinition.getElementById("dismantle").get(ButtonSL.class);
         this.dismantle.buttonFunction = btn -> {
             if( !TurretPlayerActionPacket.tryDismantle(Objects.requireNonNull(this.mc.player), this.turret) ) {
-                this.errorDismantle.activate();
+                errorDismantle.activate();
             } else {
                 this.mc.setScreen(null);
             }
@@ -79,17 +77,12 @@ public class TcuInfoPage
         this.hideRange.buttonFunction = btn -> this.turret.setShowRange(false);
         this.hideRange.setVisible(false);
 
-//        this.turretName = this.guiDefinition.getElementById("turretNameInput").get(TextField.class);
-//        this.turretName.setMaxStringLength(128);
-//        this.turretName.setText(this.turret.get().hasCustomName() ? Objects.requireNonNull(this.turret.get().getCustomName()).getString() : "");
-
         if( !this.turret.hasPlayerPermission(this.mc.player) ) {
             this.dismantle.setActive(false);
             this.setActive.setActive(false);
             this.setDeactive.setActive(false);
             this.showRange.setActive(false);
             this.hideRange.setActive(false);
-//            this.turretName.setEnabled(false);
         } else {
             if( this.isRemote && !this.turret.canRemoteTransfer() ) {
                 this.dismantle.setActive(false);
@@ -117,15 +110,8 @@ public class TcuInfoPage
             return false;
         }
 
-        return super.keyPressed(keyCode, scanCode, modifiers);// || this.turretName.canConsumeInput();
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
-
-//    @Override
-//    public void onClose() {
-//        TurretPlayerActionPacket.rename(this.turret, this.turretName.getText());
-//
-//        super.onClose();
-//    }
 
     public ITurretEntity getTurret() {
         return this.turret;

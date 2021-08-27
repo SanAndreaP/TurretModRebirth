@@ -1,12 +1,12 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu.info;
 
 import com.google.gson.JsonObject;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.TextField;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.api.client.tcu.IIcon;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuInfoProvider;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.TcuInfoValue;
@@ -16,21 +16,21 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class NameProvider
-        implements ITcuInfoProvider.Custom
+        implements ITcuInfoProvider
 {
     private boolean nameSet = false;
     private boolean nameChanged = false;
     private TextField txtField;
 
+    @Nonnull
     @Override
     public String getName() {
         return "name";
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public ITextComponent getLabel() {
         return new TranslationTextComponent(Lang.TCU_TEXT.get("info.name.tooltip"));
@@ -77,18 +77,13 @@ public class NameProvider
     }
 
     @Override
-    public void render(IGui gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) {
-        // this does not need to render anything, as it just adds a text field element
-    }
-
-    @Override
     public boolean keyPressed(IGui gui, int keyCode, int scanCode, int modifiers) {
         return this.txtField.keyPressed(gui, keyCode, scanCode, modifiers) || this.txtField.canConsumeInput();
     }
 
     @Nonnull
     @Override
-    public ITexture buildIcon() {
-        return ITexture.icon((mw, mh) -> new int[] { 86, 0 });
+    public IIcon getIcon() {
+        return IIcon.get((mw, mh) -> new int[] { 86, 0 });
     }
 }

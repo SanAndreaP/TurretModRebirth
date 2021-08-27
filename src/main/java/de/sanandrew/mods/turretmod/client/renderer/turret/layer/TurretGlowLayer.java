@@ -21,10 +21,10 @@ import net.minecraft.entity.LivingEntity;
 
 import javax.annotation.Nonnull;
 
-public class LayerTurretGlow<E extends LivingEntity & ITurretEntity, M extends EntityModel<E>>
+public class TurretGlowLayer<E extends LivingEntity & ITurretEntity, M extends EntityModel<E>>
         extends LayerRenderer<E, M>
 {
-    public LayerTurretGlow(TurretRenderBase<E, M> turretRenderer) {
+    public TurretGlowLayer(TurretRenderBase<E, M> turretRenderer) {
         super(turretRenderer);
     }
 
@@ -32,8 +32,8 @@ public class LayerTurretGlow<E extends LivingEntity & ITurretEntity, M extends E
                        float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
     {
         if( turret.isActive() ) {
-            IVertexBuilder ivertexbuilder = buffer.getBuffer(RenderType.eyes(turret.getDelegate().getGlowTexture(turret)));
-            this.getParentModel().renderToBuffer(stack, ivertexbuilder, 0xF00000, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+            IVertexBuilder vb = buffer.getBuffer(RenderType.eyes(turret.getDelegate().getGlowTexture(turret)));
+            this.getParentModel().renderToBuffer(stack, vb, 0xF00000, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         }
     }
 }

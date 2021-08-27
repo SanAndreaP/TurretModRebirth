@@ -30,9 +30,9 @@ public final class TcuInfoProgressBar
 
     @Override
     protected void drawRect(IGui gui, MatrixStack stack) {
-        int barX = Math.max(0, Math.min(this.size[0], MathHelper.ceil((this.provider.getCurrValue() / this.provider.getMaxValue()) * (double)this.size[0])));
-
-        AbstractGui.blit(stack, 0, 0, this.uvBg[0], this.uvBg[1], this.size[0], this.size[1], this.textureSize[0], this.textureSize[1]);
-        AbstractGui.blit(stack, 0, 0, this.uv[0], this.uv[1], barX, this.size[1], this.textureSize[0], this.textureSize[1]);
+//        int barX = Math.max(0, Math.min(this.size[0], MathHelper.ceil((this.provider.getCurrValue() / this.provider.getMaxValue()) * (double)this.size[0])));
+//
+//        AbstractGui.blit(stack, 0, 0, this.uvBg[0], this.uvBg[1], this.size[0], this.size[1], this.textureSize[0], this.textureSize[1]);
+//        AbstractGui.blit(stack, 0, 0, this.uv[0], this.uv[1], barX, this.size[1], this.textureSize[0], this.textureSize[1]);
     }
 }

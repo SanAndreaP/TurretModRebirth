@@ -3,7 +3,6 @@ package de.sanandrew.mods.turretmod.client.renderer;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 
 import javax.annotation.Nonnull;
 import java.util.OptionalDouble;
@@ -11,6 +10,8 @@ import java.util.OptionalDouble;
 public class TmrRenderTypes
         extends RenderType
 {
+    public static final RenderType TMR_LIGHTNING = lightning();
+
     @SuppressWarnings({"ConstantConditions", "java:S4449"})
     private TmrRenderTypes() {
         super("", null, 0, 0, false, false, null, null);
@@ -19,7 +20,7 @@ public class TmrRenderTypes
     }
 
     @Nonnull
-    public static RenderType line(final float width) {
+    public static RenderType tmrLine(final float width) {
         return RenderType.create(String.format("tmr_lines_%.5f", width), DefaultVertexFormats.POSITION_COLOR, 1, 256,
                                  RenderType.State.builder().setLineState(new RenderState.LineState(OptionalDouble.of(width)))
                                                  .setLayeringState(VIEW_OFFSET_Z_LAYERING).setTransparencyState(TRANSLUCENT_TRANSPARENCY)
@@ -27,7 +28,7 @@ public class TmrRenderTypes
     }
 
     @Nonnull
-    public static RenderType lightning() {
+    private static RenderType tmrLightning() {
         return RenderType.create("tmr_lightning", DefaultVertexFormats.POSITION_COLOR, 7, 256, false, true,
                                  RenderType.State.builder().setWriteMaskState(COLOR_DEPTH_WRITE)
                                                  .setTransparencyState(LIGHTNING_TRANSPARENCY)

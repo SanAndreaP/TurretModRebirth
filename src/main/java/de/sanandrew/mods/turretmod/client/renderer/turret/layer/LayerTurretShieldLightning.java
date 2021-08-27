@@ -19,7 +19,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.LivingEntity;
 
 import javax.annotation.Nonnull;
@@ -31,7 +30,6 @@ public class LayerTurretShieldLightning<E extends LivingEntity & ITurretEntity, 
         extends LayerRenderer<E, M>
 {
     private static final WeakHashMap<ITurretEntity, Queue<RenderLightning>> LIGHTNING_RENDERS = new WeakHashMap<>();
-    private static final RenderType                                         LIGHTNING_TYPE    = TmrRenderTypes.lightning();
 
     public LayerTurretShieldLightning(IEntityRenderer<E, M> renderer) {
         super(renderer);
@@ -129,7 +127,7 @@ public class LayerTurretShieldLightning<E extends LivingEntity & ITurretEntity, 
                             minZ += rngBranch.randomInt(31) - 15;
                         }
 
-                        IVertexBuilder twigBuffer = builder.getBuffer(LIGHTNING_TYPE);
+                        IVertexBuilder twigBuffer = builder.getBuffer(TmrRenderTypes.TMR_LIGHTNING);
 //                        buf.begin(GL11.GL_TRIANGLE_STRIP, DefaultVertexFormats.POSITION_COLOR);
 //                        builder.
 

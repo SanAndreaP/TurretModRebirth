@@ -14,6 +14,7 @@ import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Tooltip;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.api.client.tcu.IIcon;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuInfoProvider;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.TcuInfoValue;
@@ -21,13 +22,10 @@ import de.sanandrew.mods.turretmod.init.Lang;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.Color;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Map;
 
 public class AmmoProvider
@@ -40,12 +38,19 @@ public class AmmoProvider
     private GuiElementInst itemElem;
     private GuiElementInst itemTtip;
 
+    @Nonnull
     @Override
     public String getName() {
         return "ammo";
     }
 
-    @Nullable
+    @Nonnull
+    @Override
+    public IIcon getIcon() {
+        return IIcon.get((mw, mh) -> new int[] { 86, 32 });
+    }
+
+    @Nonnull
     @Override
     public ITextComponent getLabel() {
         return new TranslationTextComponent(Lang.TCU_TEXT.get("info.ammo.tooltip"));
@@ -65,41 +70,41 @@ public class AmmoProvider
         this.itemTtip.get().tick(gui, this.itemTtip.data);
     }
 
-    @Nullable
-    @Override
-    public ITextComponent getValueStr() {
-        return new TranslationTextComponent(Lang.TCU_TEXT.get("info.ammo.suffix"), this.ammo)
-                   .withStyle(Style.EMPTY.withColor(Color.fromRgb(0xFF3030A0)));
-    }
-
-    @Override
-    public float getCurrValue() {
-        return this.ammo;
-    }
-
-    @Override
-    public float getMaxValue() {
-        return this.maxAmmo;
-    }
-
-    @Nonnull
-    @Override
-    public ITexture buildIcon() {
-        return ITexture.icon((mw, mh) -> new int[] { 86, 32 });
-    }
-
-    @Nullable
-    @Override
-    public ITexture buildProgressBar() {
-        return ITexture.progressBar((mw, mh) -> new int[] { 0, 155 },
-                                    (mw, mh) -> new int[] { 0, 152 });
-    }
-
+    //    @Nullable
+//    @Override
+//    public ITextComponent getValueStr() {
+//        return new TranslationTextComponent(Lang.TCU_TEXT.get("info.ammo.suffix"), this.ammo)
+//                   .withStyle(Style.EMPTY.withColor(Color.fromRgb(0xFF3030A0)));
+//    }
+//
+//    @Override
+//    public float getCurrValue() {
+//        return this.ammo;
+//    }
+//
+//    @Override
+//    public float getMaxValue() {
+//        return this.maxAmmo;
+//    }
+//
+//    @Nonnull
+//    @Override
+//    public ITexture buildIcon() {
+//        return ITexture.icon((mw, mh) -> new int[] { 86, 32 });
+//    }
+//
+//    @Nullable
+//    @Override
+//    public ITexture buildProgressBar() {
+//        return ITexture.progressBar((mw, mh) -> new int[] { 0, 155 },
+//                                    (mw, mh) -> new int[] { 0, 152 });
+//    }
+//
     @Nonnull
     @Override
     public GuiElementInst[] buildCustomElements(IGui gui, JsonObject data, int maxWidth, int maxHeight) {
         JsonObject itemBgData = MiscUtils.get(data.getAsJsonObject("ammoItemBackground"), JsonObject::new);
-        int[] posBg = TcuInfoValue.off(itemBgData, () -> new int[]{maxWidth - 2, 0});
+        int[] posBg = TcuInfoValue.off(itemBgData, () -> new int[]{ maxWidth - 2, 0});
 
         JsonUtils.addDefaultJsonProperty(itemBgData, "size", new int[] {16, 16});
         JsonUtils.addDefaultJsonProperty(itemBgData, "uv", new int[] {50, 0});
@@ -129,12 +134,7 @@ public class AmmoProvider
     }
 
     @Override
-    public boolean useCustomRenderer() {
-        return true;
-    }
-
-    @Override
-    public void render(IGui gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) {
+    public void renderContent(IGui gui, ITurretEntity turret, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) {
         IGuiElement ie = this.itemElem.get();
         int[] size = {ie.getWidth(), ie.getHeight()};
 
@@ -148,8 +148,9 @@ public class AmmoProvider
         }
     }
 
+
     @Override
-    public void renderOutside(IGui gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) {
+    public void renderOutside(IGui gui, ITurretEntity turret, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) {
         GuiDefinition.renderElement(gui, stack, x + this.itemTtip.pos[0], y + this.itemTtip.pos[1], mouseX, mouseY, partTicks, this.itemTtip);
     }
 

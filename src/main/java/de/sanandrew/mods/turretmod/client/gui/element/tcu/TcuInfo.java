@@ -15,6 +15,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
+/*
+
+|        elementWidth = areaSize[0]         |
+|-------------------------------------------|-
+|                   name                  |O| elementHeight
+|-----------------------------------------| |-
+|                  health                 | |
+|-----------------------------------------| |
+|                   ammo                  | |
+|-----------------------------------------| |
+|                   etc.                  | |
+--------------------------------------------|
+ */
+
 public class TcuInfo
         extends ScrollArea
 {
