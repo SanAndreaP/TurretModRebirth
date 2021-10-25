@@ -1,11 +1,12 @@
+//file:noinspection GroovyAssignabilityCheck
+//file:noinspection GrUnresolvedAccess
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
-        jcenter()
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -14,101 +15,80 @@ apply plugin: 'maven-publish'
 
 Object grabConstant = { String name ->
     name = name.toUpperCase(Locale.ROOT)
-    def f = new File("$project.projectDir/src/main/java/de/sanandrew/mods/turretmod/api/TmrConstants.java").text
+    def f = new File("${project.projectDir}/src/main/java/de/sanandrew/mods/turretmod/api/TmrConstants.java").text
     def m = f =~ name + /\s*=\s*"(.*?)"/
     if( m.find() ) {
         return m.group(1)
     } else {
-        throw new IllegalArgumentException("Cannot grab constant " + name + "!")
+        throw new IllegalArgumentException("Cannot grab constant ${name}!")
     }
 } as Object
 
-version = grabConstant("BUILD_MCVER") + '-' + grabConstant("VERSION")
-group = "de.sanandrew.mods"
-archivesBaseName = "TurretMod"
-String[] excludes = ["**/*.psd", "**/*.bbmodel", "**/*.ps1"]
+version = "${grabConstant('BUILD_MCVER')}-${grabConstant('VERSION')}"
+group = 'de.sanandrew.mods'
+archivesBaseName = 'TurretMod'
+String[] excludes = ['*.psd', '*.bbmodel', '*.ps1']
 
-//noinspection GroovyUnusedAssignment
-sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 compileJava {
-    sourceCompatibility = targetCompatibility = "1.8"
+    sourceCompatibility = targetCompatibility = '1.8'
     options.debug = true
-    options.debugOptions.debugLevel = "source,lines,vars"
+    options.debugOptions.debugLevel = 'source,lines,vars'
 }
 
-println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+println("Java: ${System.getProperty('java.version')} | JVM: ${System.getProperty('java.vm.version')} (${System.getProperty('java.vendor')}) | Arch: ${System.getProperty('os.arch')}")
 minecraft {
-    // The mappings can be changed at any time, and must be in the following format.
-    // snapshot_YYYYMMDD   Snapshot are built nightly.
-    // stable_#            Stables are built at the discretion of the MCP team.
-    // Use non-default mappings at your own risk. they may not always work.
-    // Simply re-run your setup task after changing the mappings to update your workspace.
-    //noinspection GroovyAssignabilityCheck
-    mappings channel: grabConstant("BUILD_MAPPINGS_CHANNEL"), version: grabConstant("BUILD_MAPPINGS_VERSION")
-    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
-    
+    mappings channel: grabConstant('BUILD_MAPPINGS_CHANNEL'), version: grabConstant('BUILD_MAPPINGS_VERSION')
+
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
-    // Default run configurations.
-    // These can be tweaked, removed, or duplicated as needed.
     runs {
         client {
-            //noinspection GroovyAssignabilityCheck
             workingDirectory project.file('run')
 
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
-            // Recommended logging level for the console
+            property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${project.projectDir}/build/createSrgToMcp/output.srg"
 
             mods {
                 sanlib {
-                    //noinspection GroovyAssignabilityCheck
                     source sourceSets.main
                 }
             }
         }
 
         server {
-            //noinspection GroovyAssignabilityCheck
             workingDirectory project.file('run')
 
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
-            // Recommended logging level for the console
+            property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${project.projectDir}/build/createSrgToMcp/output.srg"
 
             mods {
                 sanlib {
-                    //noinspection GroovyAssignabilityCheck
                     source sourceSets.main
                 }
             }
         }
 
+        clientSAP {
+            parent minecraft.runs.client
+
+            args '--uuid', '044d980d-5c2a-4030-95cf-cbfde69ea3cb'
+        }
+
         data {
-            //noinspection GroovyAssignabilityCheck
             workingDirectory project.file('run')
 
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
-            // Recommended logging level for the console
+            property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
 
-            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            //noinspection GroovyAssignabilityCheck
             args '--mod', grabConstant("ID"), '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
                 sanlib {
-                    //noinspection GroovyAssignabilityCheck
                     source sourceSets.main
                 }
             }
@@ -116,109 +96,71 @@ minecraft {
     }
 }
 
-// Include resources generated by data generators.
 sourceSets.main.resources {
     srcDir 'src/generated/resources'
 }
 
 repositories {
     maven { url 'https://maven.blamejared.com' }
-	maven {
-		// location of the maven that hosts JEI files
-		name = "Progwml6 maven"
-		url = "https://dvs1.progwml6.com/files/maven/"
+	maven { // location of the maven that hosts JEI files
+		name 'Progwml6 maven'
+		url 'https://dvs1.progwml6.com/files/maven/'
 	}
-	maven {
-		// location of a maven mirror for JEI files, as a fallback
-		name = "ModMaven"
-		url = "https://modmaven.k-4u.nl"
+	maven { // location of a maven mirror for JEI files, as a fallback
+		name 'ModMaven'
+		url 'https://modmaven.k-4u.nl'
 	}
     maven { // TOP
         name 'tterrag maven'
-        url "https://maven.tterrag.com/"
+        url 'https://maven.tterrag.com/'
     }
     maven {
-        name = "SanLib"
-        url = "https://github.com/SanAndreasP/SanLib/raw/1.16/maven/"
+        name 'SanLib'
+        url 'https://github.com/SanAndreasP/SanLib/raw/1.16/maven/'
     }
 }
 
 dependencies {
-    // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
-    // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
-    // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    //noinspection GroovyAssignabilityCheck
     minecraft 'net.minecraftforge:forge:' + grabConstant("BUILD_FORGEVER")
 
-    // You may put jars on which you depend on in ./libs or you may define them like so..
-    // compile "some.group:artifact:version:classifier"
-    // compile "some.group:artifact:version"
-
-    // Real examples
-    // compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    // compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
-
-    // The 'provided' configuration is for optional dependencies that exist at compile-time but might not at runtime.
-    // provided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-
-    // These dependencies get remapped to your current MCP mappings
-    // deobf 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-
-    // For more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
-	
-	compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.0.7-13:api")
-	runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.0.7-13")
-	compileOnly fg.deobf("mezz.jei:jei-1.16.4:7.6.1.71:api")
-	runtimeOnly fg.deobf("mezz.jei:jei-1.16.4:7.6.1.71")
-    compileOnly fg.deobf("vazkii.patchouli:Patchouli:1.16.4-50:api")
-    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:1.16.4-50")
-	compile fg.deobf("de.sanandrew.mods:SanLib:1.16.5-2.0.0")
-
+	compileOnly fg.deobf('mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.1.4-22:api')
+	runtimeOnly fg.deobf('mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.1.4-22')
+	compileOnly fg.deobf('mezz.jei:jei-1.16.5:7.7.1.121:api')
+	runtimeOnly fg.deobf('mezz.jei:jei-1.16.5:7.7.1.121')
+    compileOnly fg.deobf('vazkii.patchouli:Patchouli:1.16.4-53.2:api')
+    runtimeOnly fg.deobf('vazkii.patchouli:Patchouli:1.16.4-53.2')
+	compileOnly fg.deobf('de.sanandrew.mods:SanLib:1.16.5-2.0.0')
 }
 
 processResources {
-    from(sourceSets.main.resources.srcDirs) {
-        include 'META-INF/mods.toml'
-        expand 'version': grabConstant("VERSION"),
-               'name': grabConstant("NAME")
-    }
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'META-INF/mods.toml'
+    filesMatching('META-INF/mods.toml') {
+        filter {
+            it.replaceAll('$version', grabConstant('VERSION'))
+            it.replaceAll('$name', grabConstant('NAME'))
+        }
     }
 }
 
-// Example for how to get properties into the manifest for reading by the runtime..
 jar {
     exclude(excludes)
     manifest {
         attributes([
-            "Specification-Title": grabConstant("ID"),
-            "Specification-Vendor": "SanAndreasP",
-            "Specification-Version": "1", // We are version 1 of ourselves
-            "Implementation-Title": grabConstant("ID"),
-            "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"SanAndreasP",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            'Specification-Title': grabConstant('ID'),
+            'Specification-Vendor': 'SanAndreasP',
+            'Specification-Version': '1', // We are version 1 of ourselves
+            'Implementation-Title': grabConstant('ID'),
+            'Implementation-Version': archiveVersion,
+            'Implementation-Vendor' :'SanAndreasP',
+            'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
+    finalizedBy('reobfJar')
 }
-
-// Example configuration to allow publishing using the maven-publish task
-// This is the preferred method to reobfuscate your jar file
-jar.finalizedBy('reobfJar') 
-// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
-//publish.dependsOn('reobfJar')
 
 publishing {
     publications {
-        //noinspection GroovyAssignabilityCheck
         mavenJava(MavenPublication) {
-            //noinspection GroovyAssignabilityCheck
             artifactId = archivesBaseName
-            //noinspection GroovyAssignabilityCheck
             artifact jar
         }
     }
@@ -229,18 +171,21 @@ publishing {
     }
 }
 
-task signJar(type: net.minecraftforge.gradle.common.task.SignJar, dependsOn: jar) {
+import net.minecraftforge.gradle.common.tasks.SignJar
+
+task signJar(type: SignJar, dependsOn: jar) {
     onlyIf {
         project.hasProperty('keyStore')
     }
-    //noinspection GroovyAssignabilityCheck
+
     keyStore = project.findProperty('keyStore')
     alias = project.findProperty('keyStoreAlias')
     storePass = project.findProperty('keyStorePass')
     keyPass = project.findProperty('keyStoreKeyPass')
-    inputFile = jar.archivePath
-    outputFile = jar.archivePath
+    inputFile = jar.archiveFile
+    outputFile = jar.archiveFile
 }
 
-build.dependsOn signJar
-build.finalizedBy publish
+build.finalizedBy signJar
+publishMavenJavaPublicationToMavenRepository.dependsOn signJar
+signJar.finalizedBy publish

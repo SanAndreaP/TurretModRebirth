@@ -63,11 +63,11 @@ public class AmmoProvider
             this.maxAmmo = e.getMaxAmmoCapacity();
             this.item = e.getAmmoStack();
 
-            GuiElementInst ammoTtip = this.itemTtip.get(Tooltip.class).getChild(Tooltip.CONTENT);
+            GuiElementInst ammoTtip = this.itemTtip.get(Tooltip.class).get(Tooltip.CONTENT);
             ammoTtip.get(AmmoText.class).setItem(gui, ammoTtip.data, this.item);
         });
 
-        this.itemTtip.get().tick(gui, this.itemTtip.data);
+        this.itemTtip.get().tick(gui, this.itemTtip);
     }
 
     //    @Nullable

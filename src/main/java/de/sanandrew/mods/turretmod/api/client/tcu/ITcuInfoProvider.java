@@ -34,16 +34,13 @@ public interface ITcuInfoProvider
     @Nonnull
     ITextComponent getLabel();
 
+    default void setup(IGui gui, ITurretEntity turret) { }
+
     void tick(IGui gui, ITurretEntity turret);
 
     default void renderContent(IGui gui, ITurretEntity turret, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) { }
 
     default void renderOutside(IGui gui, ITurretEntity turret, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) { }
-
-    @Nonnull
-    default GuiElementInst[] buildCustomElements(IGui gui, JsonObject data, int maxWidth, int maxHeight) {
-        return new GuiElementInst[0];
-    }
 
     default void onClose(IGui gui, ITurretEntity turret) {
         this.onClose(gui);
@@ -52,6 +49,8 @@ public interface ITcuInfoProvider
     default boolean isVisible(ITurretEntity turret) {
         return true;
     }
+
+    default void loadJson(IGui gui, JsonObject data) { }
 
     //    @SuppressWarnings("java:S2386")
 //

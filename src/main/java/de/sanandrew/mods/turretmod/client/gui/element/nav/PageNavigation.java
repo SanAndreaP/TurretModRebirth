@@ -2,13 +2,14 @@ package de.sanandrew.mods.turretmod.client.gui.element.nav;
 
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import de.sanandrew.mods.sanlib.lib.client.gui.EmptyGuiElement;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ButtonSL;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
-import de.sanandrew.mods.turretmod.api.Resources;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuScreen;
 import de.sanandrew.mods.turretmod.item.TurretControlUnit;
@@ -16,6 +17,7 @@ import net.minecraft.util.ResourceLocation;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -25,38 +27,92 @@ public class PageNavigation
 {
     public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu_page_nav");
 
-    private final Map<GuiElementInst, ResourceLocation> pages = new TreeMap<>(new ComparatorTabButton());
+    protected final Map<GuiElementInst, ResourceLocation> pages = new TreeMap<>(new ComparatorTabButton());
 
-    private GuiElementInst tabScrollL;
-    private GuiElementInst tabScrollR;
-    private int            maxTabsShown;
-    private int            tabStartIdx = 0;
+    protected GuiElementInst tabScrollL;
+    protected GuiElementInst tabScrollR;
+    protected int            maxTabsShown;
+    protected int            tabStartIdx = 0;
 
     Map<GuiElementInst, ResourceLocation> shownTabs = Collections.emptyMap();
 
-    @Override
-    public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
-        this.maxTabsShown = JsonUtils.getIntVal(data.get("tabsShown"), 7);
+    public PageNavigation(int maxTabsShown, GuiElementInst tabScrollL, GuiElementInst tabScrollR, Map<GuiElementInst, ResourceLocation> pages) {
+        this.maxTabsShown = maxTabsShown;
+        this.tabScrollL = tabScrollL;
+        this.tabScrollR = tabScrollR;
 
-        int currIdx = 0;
-        for( ResourceLocation pageKey : TurretControlUnit.PAGES ) {
-            GuiElementInst btn = new GuiElementInst(new ButtonNav(pageKey, currIdx++), data.getAsJsonObject("buttonData")).initialize(gui);
-            btn.get().bakeData(gui, btn.data, btn);
-
-            this.pages.put(btn, pageKey);
-        }
-
-        this.tabScrollL = new GuiElementInst(new ButtonTabScroll(0), data.getAsJsonObject("tabScrollLeft")).initialize(gui);
-        this.tabScrollL.get().bakeData(gui, this.tabScrollL.data, this.tabScrollL);
-        this.tabScrollL.setVisible(false);
-
-        this.tabScrollR = new GuiElementInst(new ButtonTabScroll(1), data.getAsJsonObject("tabScrollRight")).initialize(gui);
-        this.tabScrollR.get().bakeData(gui, this.tabScrollR.data, this.tabScrollR);
-        this.tabScrollR.setVisible(false);
+        this.pages.putAll(pages);
     }
 
     @Override
-    public void tick(IGui gui, JsonObject data) {
+    public void setup(IGui gui, GuiElementInst inst) {
+        this.tabScrollL.get().setup(gui, this.tabScrollL);
+        this.tabScrollR.get().setup(gui, this.tabScrollR);
+
+        this.pages.keySet().forEach(t -> t.get().setup(gui, t));
+
+        this.tabScrollL.get(ButtonSL.class).setVisible(false);
+        this.tabScrollR.get(ButtonSL.class).setVisible(false);
+
+        this.setupVisuals(gui);
+    }
+
+    public static class Builder
+            implements IBuilder<PageNavigation>
+    {
+        public final Map<ButtonNav.Builder, ResourceLocation> btnPages;
+        public final ButtonSL.Builder                         btnTabScrollL;
+        public final ButtonSL.Builder                         btnTabScrollR;
+
+        protected int maxTabsShown = 7;
+
+        public Builder(ButtonSL.Builder btnTabScrollL, ButtonSL.Builder btnTabScrollR, Map<ButtonNav.Builder, ResourceLocation> btnPages) {
+            this.btnTabScrollL = btnTabScrollL;
+            this.btnTabScrollR = btnTabScrollR;
+            this.btnPages = btnPages;
+        }
+
+        @Override
+        public void sanitize(IGui gui) {
+            if( this.maxTabsShown <= 0 ) { this.maxTabsShown = 1; }
+        }
+
+        public Builder maxTabsShown(int shownTabs) { this.maxTabsShown = shownTabs; return this; }
+
+        @Override
+        public PageNavigation get(IGui gui) {
+            this.sanitize(gui);
+
+            Map<GuiElementInst, ResourceLocation> pages = new HashMap<>();
+            this.btnPages.forEach((b, k) -> pages.put(new GuiElementInst(b.get(gui)).initialize(gui), k));
+
+            return new PageNavigation(this.maxTabsShown, new GuiElementInst(this.btnTabScrollL.get(gui)).initialize(gui),
+                                      new GuiElementInst(this.btnTabScrollR.get(gui)).initialize(gui), pages);
+        }
+
+        public static Builder buildFromJson(IGui gui, JsonObject data) {
+            JsonObject tsl = MiscUtils.get(data.getAsJsonObject("tabScrollLeft"), JsonObject::new);
+            JsonObject tsr = MiscUtils.get(data.getAsJsonObject("tabScrollRight"), JsonObject::new);
+            JsonObject btn = MiscUtils.get(data.getAsJsonObject("buttonData"), JsonObject::new);
+
+            Map<ButtonNav.Builder, ResourceLocation> btnList = new HashMap<>();
+            for( ResourceLocation pgKey : TurretControlUnit.PAGES ) {
+                btnList.put(ButtonNav.Builder.buildFromJson(gui, btn, pgKey), pgKey);
+            }
+
+            Builder b = new Builder(ButtonSL.Builder.buildFromJson(gui, tsl), ButtonSL.Builder.buildFromJson(gui, tsr), btnList);
+
+            JsonUtils.fetchInt(data.get("maxTabsShown"), b::maxTabsShown);
+
+            return b;
+        }
+
+        public static PageNavigation fromJson(IGui gui, JsonObject data) {
+            return buildFromJson(gui, data).get(gui);
+        }
+    }
+
+    private void setupVisuals(IGui gui) {
         final TcuScreen     tcu      = (TcuScreen) gui;
         final ResourceLocation currPage = tcu.getCurrPage();
 
@@ -67,15 +123,15 @@ public class PageNavigation
         for( Map.Entry<GuiElementInst, ResourceLocation> entry : this.pages.entrySet() ) {
             GuiElementInst btn    = entry.getKey();
             ButtonNav      btnNav = btn.get(ButtonNav.class);
-//            if( TurretControlUnit.PAGES.(btnNav.pageKey).showTab(tcu) ) {
-                cntAvailableTabs++;
+//            if( btnNav.showTab(tcu) ) { // TODO: check if tab can be shown
+            cntAvailableTabs++;
 
-                if( btnNav.order >= this.tabStartIdx && btnNav.order <= this.tabStartIdx + this.maxTabsShown ) {
-                    btn.setVisible(true);
-                    btnNav.setActive(!currPage.equals(btnNav.pageKey));
+            if( btnNav.order >= this.tabStartIdx && btnNav.order <= this.tabStartIdx + this.maxTabsShown ) {
+                btn.setVisible(true);
+                btnNav.setActive(!currPage.equals(btnNav.pageKey));
 
-                    continue;
-                }
+                continue;
+            }
 //            }
 
             btn.setVisible(false);
@@ -96,6 +152,32 @@ public class PageNavigation
         }
     }
 
+    //    @Override
+//    public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
+//        this.maxTabsShown = JsonUtils.getIntVal(data.get("tabsShown"), 7);
+//
+//        int currIdx = 0;
+//        for( ResourceLocation pageKey : TurretControlUnit.PAGES ) {
+//            GuiElementInst btn = new GuiElementInst(new ButtonNav(pageKey, currIdx++), data.getAsJsonObject("buttonData")).initialize(gui);
+//            btn.get().bakeData(gui, btn.data, btn);
+//
+//            this.pages.put(btn, pageKey);
+//        }
+//
+//        this.tabScrollL = new GuiElementInst(new ButtonTabScroll(0), data.getAsJsonObject("tabScrollLeft")).initialize(gui);
+//        this.tabScrollL.get().bakeData(gui, this.tabScrollL.data, this.tabScrollL);
+//        this.tabScrollL.setVisible(false);
+//
+//        this.tabScrollR = new GuiElementInst(new ButtonTabScroll(1), data.getAsJsonObject("tabScrollRight")).initialize(gui);
+//        this.tabScrollR.get().bakeData(gui, this.tabScrollR.data, this.tabScrollR);
+//        this.tabScrollR.setVisible(false);
+//    }
+
+    @Override
+    public void tick(IGui gui, GuiElementInst e) {
+        this.setupVisuals(gui);
+    }
+
     private Map<GuiElementInst, ResourceLocation> fetchShownPageButtons() {
         return this.pages.entrySet().stream()
                          .filter(e -> e.getKey().isVisible())
@@ -103,7 +185,7 @@ public class PageNavigation
     }
 
     @Override
-    public void render(IGui gui, MatrixStack mStack, float partTicks, int x, int y, double mouseX, double mouseY, JsonObject data) {
+    public void render(IGui gui, MatrixStack mStack, float partTicks, int x, int y, double mouseX, double mouseY, GuiElementInst e) {
         GuiDefinition.renderElement(gui, mStack, x + this.tabScrollL.pos[0], y, mouseX, mouseY, partTicks, this.tabScrollL);
         GuiDefinition.renderElement(gui, mStack, x + this.tabScrollR.pos[0], y, mouseX, mouseY, partTicks, this.tabScrollR);
         this.shownTabs.forEach((btn, page) -> GuiDefinition.renderElement(gui, mStack, x + btn.pos[0], y, mouseX, mouseY, partTicks, btn));
@@ -148,18 +230,24 @@ public class PageNavigation
     {
         private final int direction;
 
-        private ButtonTabScroll(int direction) {
+        private ButtonTabScroll(ResourceLocation texture, int[] size, int[] textureSize, int[] uvEnabled, int[] uvHover, int[] uvDisabled, int[] uvSize, int[] centralTextureSize, int direction) {
+            super(texture, size, textureSize, uvEnabled, uvHover, uvDisabled, uvSize, centralTextureSize, new GuiElementInst(new EmptyGuiElement()));
             this.direction = direction;
         }
 
-        @Override
-        public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
-            JsonUtils.addDefaultJsonProperty(data, "size", new int[] { 16, 16 });
-            JsonUtils.addDefaultJsonProperty(data, "uvSize", new int[] { 16, 16 });
-            JsonUtils.addDefaultJsonProperty(data, "texture", Resources.TEXTURE_GUI_TCU_BUTTONS.toString());
-            JsonUtils.addDefaultJsonProperty(data, "buttonFunction", -1);
+//        @Override
+//        public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
+//            JsonUtils.addDefaultJsonProperty(data, "size", new int[] { 16, 16 });
+//            JsonUtils.addDefaultJsonProperty(data, "uvSize", new int[] { 16, 16 });
+//            JsonUtils.addDefaultJsonProperty(data, "texture", Resources.TEXTURE_GUI_TCU_BUTTONS.toString());
+//            JsonUtils.addDefaultJsonProperty(data, "buttonFunction", -1);
+//
+//            super.bakeData(gui, data, inst);
+//        }
 
-            super.bakeData(gui, data, inst);
+        @Override
+        public void setup(IGui gui, GuiElementInst inst) {
+            super.setup(gui, inst);
 
             this.setFunction(btn -> {
                 if( PageNavigation.this.tabStartIdx > 0 && this.direction == 0 ) {

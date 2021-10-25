@@ -55,26 +55,26 @@ public class TcuInfoPage
         final ErrorTooltip errorDismantle = this.guiDefinition.getElementById("errorDismantle").get(ErrorTooltip.class);
 
         this.dismantle = this.guiDefinition.getElementById("dismantle").get(ButtonSL.class);
-        this.dismantle.buttonFunction = btn -> {
+        this.dismantle.setFunction(btn -> {
             if( !TurretPlayerActionPacket.tryDismantle(Objects.requireNonNull(this.mc.player), this.turret) ) {
                 errorDismantle.activate();
             } else {
                 this.mc.setScreen(null);
             }
-        };
+        });
 
         this.setActive = this.guiDefinition.getElementById("activate").get(ButtonSL.class);
         this.setActive.setVisible(false);
-        this.setActive.buttonFunction = btn -> TurretModRebirth.NETWORK.sendToServer(new TurretPlayerActionPacket(this.turret, TurretPlayerActionPacket.SET_ACTIVE));
+        this.setActive.setFunction(btn -> TurretModRebirth.NETWORK.sendToServer(new TurretPlayerActionPacket(this.turret, TurretPlayerActionPacket.SET_ACTIVE)));
 
         this.setDeactive = this.guiDefinition.getElementById("deactivate").get(ButtonSL.class);
-        this.setDeactive.buttonFunction = btn -> TurretModRebirth.NETWORK.sendToServer(new TurretPlayerActionPacket(this.turret, TurretPlayerActionPacket.SET_DEACTIVE));
+        this.setDeactive.setFunction(btn -> TurretModRebirth.NETWORK.sendToServer(new TurretPlayerActionPacket(this.turret, TurretPlayerActionPacket.SET_DEACTIVE)));
 
         this.showRange = this.guiDefinition.getElementById("showRange").get(ButtonSL.class);
-        this.showRange.buttonFunction = btn -> this.turret.setShowRange(true);
+        this.showRange.setFunction(btn -> this.turret.setShowRange(true));
 
         this.hideRange = this.guiDefinition.getElementById("hideRange").get(ButtonSL.class);
-        this.hideRange.buttonFunction = btn -> this.turret.setShowRange(false);
+        this.hideRange.setFunction(btn -> this.turret.setShowRange(false));
         this.hideRange.setVisible(false);
 
         if( !this.turret.hasPlayerPermission(this.mc.player) ) {

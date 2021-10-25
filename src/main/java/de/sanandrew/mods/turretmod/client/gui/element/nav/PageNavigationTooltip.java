@@ -7,56 +7,60 @@ import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Tooltip;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.init.Lang;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+
+import java.util.Map;
 
 public class PageNavigationTooltip
         extends Tooltip
 {
     public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu_page_nav_ttip");
 
-    private GuiElementInst pageNavigation;
-
     private int[] tabPos = null;
 
-    @Override
-    public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
-        JsonUtils.addDefaultJsonProperty(data, "size", new int[] { 16, 16});
-
-        super.bakeData(gui, data, inst);
-
-        this.pageNavigation = gui.getDefinition().getElementById(JsonUtils.getStringVal(data.get("for")));
+    public PageNavigationTooltip(int[] mouseOverSize, int backgroundColor, int borderTopColor, int borderBottomColor, int[] padding, String visibleForId, GuiElementInst content) {
+        super(mouseOverSize, backgroundColor, borderTopColor, borderBottomColor, padding, visibleForId, content);
     }
 
     @Override
-    public void tick(IGui gui, JsonObject data) {
-        PageNavigation pgn = this.pageNavigation.get(PageNavigation.class);
-        Label lbl = this.getChild(CONTENT).get(Label.class);
+    public void setup(IGui gui, GuiElementInst inst) {
+        super.setup(gui, inst);
+
+        this.setupVisuals();
+    }
+
+    @SuppressWarnings("java:S1854")
+    private void setupVisuals() {
+        PageNavigation pgn = this.visibleFor.get(PageNavigation.class);
+        Label lbl = this.get(CONTENT).get(Label.class);
         this.tabPos = null;
 
-        pgn.shownTabs.forEach((e, p) -> {
-            if( e.get(ButtonNav.class).isHovering() ) {
+        pgn.shownTabs.forEach((b, p) -> {
+            if( b.get(ButtonNav.class).isHovering() ) {
                 lbl.text = new TranslationTextComponent(Lang.TCU_TEXT.get(p));
-                this.tabPos = e.pos;
+                this.tabPos = b.pos;
             }
         });
-
-        super.tick(gui, data);
     }
 
     @Override
-    public GuiElementInst getContent(IGui gui, JsonObject data) {
-        return new GuiElementInst(new Label()).initialize(gui);
+    public void tick(IGui gui, GuiElementInst e) {
+        this.setupVisuals();
+
+        super.tick(gui, e);
     }
 
     @Override
-    public void render(IGui gui, MatrixStack mStack, float partTicks, int x, int y, double mouseX, double mouseY, JsonObject data) {
+    public void render(IGui gui, MatrixStack mStack, float partTicks, int x, int y, double mouseX, double mouseY, GuiElementInst e) {
         if( this.tabPos != null ) {
-            super.render(gui, mStack, partTicks, this.tabPos[0] + x, this.tabPos[1] + y, mouseX, mouseY, data);
+            super.render(gui, mStack, partTicks, this.tabPos[0] + x, this.tabPos[1] + y, mouseX, mouseY, e);
         }
     }
 
@@ -65,21 +69,62 @@ public class PageNavigationTooltip
     {
         private ITextComponent text = StringTextComponent.EMPTY;
 
-        @Override
-        public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
-            JsonUtils.addDefaultJsonProperty(data, "color", "0xFFFFFFFF");
-
-            super.bakeData(gui, data, inst);
-        }
-
-        @Override
-        public ITextComponent getBakedText(IGui gui, JsonObject data) {
-            return StringTextComponent.EMPTY;
+        public Label(boolean shadow, int wrapWidth, int lineHeight, FontRenderer fontRenderer, Map<String, Integer> colors) {
+            super(StringTextComponent.EMPTY, shadow, wrapWidth, lineHeight, fontRenderer, colors);
         }
 
         @Override
         public ITextComponent getDynamicText(IGui gui, ITextComponent originalText) {
             return this.text;
+        }
+
+        public static class Builder
+                extends Text.Builder
+        {
+            public Builder() {
+                super(StringTextComponent.EMPTY);
+            }
+
+            @Override
+            public Label get(IGui gui) {
+                return new Label(this.shadow, this.wrapWidth, this.lineHeight, this.fontRenderer, this.colors);
+            }
+
+            public static Builder buildFromJson(IGui gui, JsonObject data) {
+                return IBuilder.copyValues(Text.Builder.buildFromJson(gui, JsonUtils.addDefaultJsonProperty(data, "color", "0xFFFFFFFF")), new Builder());
+            }
+
+            public static Label fromJson(IGui gui, JsonObject data) {
+                return buildFromJson(gui, data).get(gui);
+            }
+        }
+    }
+
+    public static class Builder
+            extends Tooltip.Builder
+    {
+        public Builder(int[] mouseOverSize) {
+            super(mouseOverSize);
+        }
+
+        @Override
+        public PageNavigationTooltip get(IGui gui) {
+            return new PageNavigationTooltip(this.mouseOverSize, this.backgroundColor, this.borderTopColor, this.borderBottomColor, this.padding, this.visibleForId, this.content);
+        }
+
+        @Override
+        protected GuiElementInst loadContent(IGui gui, JsonObject data) {
+            return new GuiElementInst(Label.Builder.fromJson(gui, MiscUtils.get(data.get("label").getAsJsonObject(), JsonObject::new)));
+        }
+
+        public static Builder buildFromJson(IGui gui, JsonObject data) {
+            Tooltip.Builder tb = Tooltip.Builder.buildFromJson(gui, JsonUtils.addDefaultJsonProperty(data, "size", new int[] { 16, 16 }), b -> null);
+
+            return IBuilder.copyValues(tb, new Builder(tb.mouseOverSize));
+        }
+
+        public static PageNavigationTooltip fromJson(IGui gui, JsonObject data) {
+            return buildFromJson(gui, data).get(gui);
         }
     }
 }

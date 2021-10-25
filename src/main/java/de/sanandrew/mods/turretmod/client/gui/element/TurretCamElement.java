@@ -19,38 +19,58 @@ public class TurretCamElement
 {
     public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "turret_cam");
 
-    public BakedData data;
+    private final int[] size;
 
-    @Override
-    public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
-        if( this.data == null ) {
-            this.data = new BakedData();
-
-            this.data.size = JsonUtils.getIntArray(data.get("size"), Range.is(2));
-        }
+    public TurretCamElement(int[] size) {
+        this.size = size;
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public void render(IGui gui, MatrixStack mStack, float partTicks, int x, int y, double mouseX, double mouseY, JsonObject data) {
+    public void render(IGui gui, MatrixStack mStack, float partTicks, int x, int y, double mouseX, double mouseY, GuiElementInst e) {
         ITurretEntity turretInst = ((TcuInfoPage) gui).getTurret();
 
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        TurretCamera.drawTurretCam(turretInst, mStack, x, y, this.data.size[0], this.data.size[1]);
+        TurretCamera.drawTurretCam(turretInst, mStack, x, y, this.size[0], this.size[1]);
     }
 
     @Override
     public int getWidth() {
-        return this.data.size[0];
+        return this.size[0];
     }
 
     @Override
     public int getHeight() {
-        return this.data.size[1];
+        return this.size[1];
     }
 
-    public static final class BakedData
+    public static class Builder
+            implements IBuilder<TurretCamElement>
     {
-        public int[] size;
+        public final int[] size;
+
+        public Builder(int[] size) {
+            this.size = size;
+        }
+
+
+        @Override
+        public void sanitize(IGui gui) {
+            // no-op
+        }
+
+        @Override
+        public TurretCamElement get(IGui gui) {
+            return new TurretCamElement(this.size);
+        }
+
+        @SuppressWarnings("unused")
+        public static Builder buildFromJson(IGui gui, JsonObject data) {
+            return new Builder(JsonUtils.getIntArray(data.get("size"), Range.is(2)));
+        }
+
+        public static TurretCamElement fromJson(IGui gui, JsonObject data) {
+            return buildFromJson(gui, data).get(gui);
+        }
     }
 }

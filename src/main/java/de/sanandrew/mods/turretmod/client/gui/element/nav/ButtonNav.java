@@ -1,5 +1,6 @@
 package de.sanandrew.mods.turretmod.client.gui.element.nav;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
@@ -18,8 +19,6 @@ import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.Map;
-
 public class ButtonNav
         extends ButtonSL
 {
@@ -30,28 +29,18 @@ public class ButtonNav
 
     private ItemStack pageStack = ItemStack.EMPTY;
 
-    ButtonNav(ResourceLocation pageKey, int order) {
+    @SuppressWarnings("java:S107")
+    ButtonNav(ResourceLocation texture, int[] size, int[] textureSize, int[] uvEnabled, int[] uvHover, int[] uvDisabled, int[] uvSize, int[] centralTextureSize, ResourceLocation pageKey) {
+        super(texture, size, textureSize, uvEnabled, uvHover, uvDisabled, uvSize, centralTextureSize, null);
+        this.put(LABEL, new GuiElementInst(new Label()));
+
         this.pageKey = pageKey;
-        this.order = order;
+        this.order = TurretControlUnit.PAGES.indexOf(pageKey);
     }
 
     @Override
-    public void buildChildren(IGui gui, JsonObject data, Map<String, GuiElementInst> listToBuild) {
-        listToBuild.put(LABEL, new GuiElementInst(new Label()).initialize(gui));
-    }
-
-    @Override
-    public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
-        JsonUtils.addDefaultJsonProperty(data, "size", new int[] { 16, 16 });
-        JsonUtils.addDefaultJsonProperty(data, "uvEnabled", new int[] { 0, 0 });
-        JsonUtils.addDefaultJsonProperty(data, "uvDisabled", new int[] { 0, 0 });
-        JsonUtils.addDefaultJsonProperty(data, "uvHover", new int[] { 0, 0 });
-        JsonUtils.addDefaultJsonProperty(data, "uvSize", new int[] { 0, 0 });
-        JsonUtils.addDefaultJsonProperty(data, "centralTextureWidth", 0);
-        JsonUtils.addDefaultJsonProperty(data, "centralTextureHeight", 0);
-        JsonUtils.addDefaultJsonProperty(data, "buttonFunction", -1);
-
-        super.bakeData(gui, data, inst);
+    public void setup(IGui gui, GuiElementInst inst) {
+        super.setup(gui, inst);
 
         this.pageStack = TcuScreen.getIcon(this.pageKey);
         this.setFunction(btn -> {
@@ -67,25 +56,11 @@ public class ButtonNav
         return this.isCurrHovering;
     }
 
-//    @Override
-//    public boolean mouseClicked(IGui gui, double mouseX, double mouseY, int button) {
-//        return super.mouseClicked(gui, mouseX, mouseY, button);
-//    }
-//
-//    @Override
-//    public void performAction(IGui gui, int id) {
-//
-////        IGuiTcuInst<?> tcu = (IGuiTcuInst<?>) gui;
-////        TurretModRebirth.proxy.openGui(gui.get().mc.player, EnumGui.TCU, tcu.getTurretInst().get().getEntityId(),
-////                                       GuiTcuRegistry.PAGE_KEYS.indexOf(this.pageKey), tcu.isRemote() ? 1 : 0);
-//    }
-
     public class Label
             extends Item
     {
-        @Override
-        protected ItemStack getBakedItem(IGui gui, JsonObject data) {
-            return ItemStack.EMPTY;
+        Label() {
+            super(ItemStack.EMPTY, 1.0F);
         }
 
         @Override
@@ -104,18 +79,65 @@ public class ButtonNav
         }
 
         @Override
-        public void render(IGui gui, MatrixStack mStack, float partTicks, int x, int y, double mouseX, double mouseY, JsonObject data) {
+        public void render(IGui gui, MatrixStack mStack, float partTicks, int x, int y, double mouseX, double mouseY, GuiElementInst e) {
             if( ButtonNav.this.pageStack == null ) {
                 ButtonNav.this.pageStack = new ItemStack(Blocks.BARRIER, 1);
             }
 
             if( !ButtonNav.this.isActive() ) {
-                super.render(gui, mStack, partTicks, x, y, mouseX, mouseY, data);
+                super.render(gui, mStack, partTicks, x, y, mouseX, mouseY, e);
             } else if( !ButtonNav.this.isCurrHovering ) {
-                SHADER_GRAYSCALE.render(() -> super.render(gui, mStack, partTicks, x, y, mouseX, mouseY, data), 1.0F);
+                SHADER_GRAYSCALE.render(() -> super.render(gui, mStack, partTicks, x, y, mouseX, mouseY, e), 1.0F);
             } else {
-                super.render(gui, mStack, partTicks, x, y, mouseX, mouseY, data);
+                super.render(gui, mStack, partTicks, x, y, mouseX, mouseY, e);
             }
+        }
+    }
+
+    public static class Builder
+            extends ButtonSL.Builder
+    {
+        public final ResourceLocation pageKey;
+
+        public Builder(int[] size, ResourceLocation pageKey) {
+            super(size);
+
+            this.pageKey = pageKey;
+        }
+
+        @Override
+        public void sanitize(IGui gui) {
+            if( this.uvEnabled == null )          { this.uvEnabled = new int[] { 0, 0 }; }
+            if( this.uvDisabled == null )         { this.uvDisabled = new int[] { 0, 0 }; }
+            if( this.uvHover == null )            { this.uvHover = new int[] { 0, 0 }; }
+            if( this.uvSize == null )             { this.uvSize = new int[] { 0, 0 }; }
+            if( this.centralTextureSize == null ) { this.centralTextureSize = new int[] { 0, 0 }; }
+
+            super.sanitize(gui);
+        }
+
+        @Override
+        protected GuiElementInst loadLabel(IGui gui, JsonElement lblData) {
+            return null;
+        }
+
+        @Override
+        public ButtonNav get(IGui gui) {
+            this.sanitize(gui);
+
+            return new ButtonNav(this.texture, this.size, this.textureSize, this.uvEnabled, this.uvHover, this.uvDisabled, this.uvSize, this.centralTextureSize, this.pageKey);
+        }
+
+        public static Builder buildFromJson(IGui gui, JsonObject data, ResourceLocation pageKey) {
+            JsonUtils.addDefaultJsonProperty(data, "size", new int[] { 16, 16 });
+
+            ButtonSL.Builder sb = ButtonSL.Builder.buildFromJson(gui, data);
+
+            return IBuilder.copyValues(sb, new Builder(sb.size, pageKey));
+        }
+
+        public static ButtonNav fromJson(IGui gui, JsonObject data, ResourceLocation pageKey) {
+            return buildFromJson(gui, data, pageKey).get(gui);
         }
     }
 }

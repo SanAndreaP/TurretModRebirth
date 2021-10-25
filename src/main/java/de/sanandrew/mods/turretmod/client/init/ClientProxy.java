@@ -53,12 +53,12 @@ public class ClientProxy
         ScreenManager.register(ContainerRegistry.TCU, TcuScreen::new);
         ScreenManager.register(ContainerRegistry.TURRET_CRATE, TurretCrateScreen::new);
 
-        GuiDefinition.TYPES.put(ElectrolyteBar.ID, ElectrolyteBar::new);
-        GuiDefinition.TYPES.put(TurretName.ID, TurretName::new);
-        GuiDefinition.TYPES.put(PageNavigation.ID, PageNavigation::new);
-        GuiDefinition.TYPES.put(PageNavigationTooltip.ID, PageNavigationTooltip::new);
-        GuiDefinition.TYPES.put(TurretCamElement.ID, TurretCamElement::new);
-        GuiDefinition.TYPES.put(ErrorTooltip.ID, ErrorTooltip::new);
+        GuiDefinition.TYPES.put(ElectrolyteBar.ID, ElectrolyteBar.Builder::fromJson);
+        GuiDefinition.TYPES.put(TurretName.ID, TurretName.Builder::fromJson);
+        GuiDefinition.TYPES.put(PageNavigation.ID, PageNavigation.Builder::fromJson);
+        GuiDefinition.TYPES.put(PageNavigationTooltip.ID, PageNavigationTooltip.Builder::fromJson);
+        GuiDefinition.TYPES.put(TurretCamElement.ID, TurretCamElement.Builder::fromJson);
+        GuiDefinition.TYPES.put(ErrorTooltip.ID, ErrorTooltip.Builder::fromJson);
         GuiDefinition.TYPES.put(TcuInfo.ID, TcuInfo::new);
 
         ModelRegistry.registerModels();
