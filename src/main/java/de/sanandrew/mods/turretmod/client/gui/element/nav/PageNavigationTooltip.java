@@ -109,18 +109,23 @@ public class PageNavigationTooltip
 
         @Override
         public PageNavigationTooltip get(IGui gui) {
+            this.sanitize(gui);
+
             return new PageNavigationTooltip(this.mouseOverSize, this.backgroundColor, this.borderTopColor, this.borderBottomColor, this.padding, this.visibleForId, this.content);
         }
 
         @Override
         protected GuiElementInst loadContent(IGui gui, JsonObject data) {
-            return new GuiElementInst(Label.Builder.fromJson(gui, MiscUtils.get(data.get("label").getAsJsonObject(), JsonObject::new)));
+            return new GuiElementInst(Label.Builder.fromJson(gui, MiscUtils.get(data.getAsJsonObject("label"), JsonObject::new)));
         }
 
         public static Builder buildFromJson(IGui gui, JsonObject data) {
-            Tooltip.Builder tb = Tooltip.Builder.buildFromJson(gui, JsonUtils.addDefaultJsonProperty(data, "size", new int[] { 16, 16 }), b -> null);
+            Tooltip.Builder tb = Tooltip.Builder.buildFromJson(gui, JsonUtils.addDefaultJsonProperty(data, "size", new int[] { 16, 16 }), b -> (g, j) -> null);
 
-            return IBuilder.copyValues(tb, new Builder(tb.mouseOverSize));
+            Builder b = IBuilder.copyValues(tb, new Builder(tb.mouseOverSize));
+            b.content(b.loadContent(gui, data));
+
+            return b;
         }
 
         public static PageNavigationTooltip fromJson(IGui gui, JsonObject data) {

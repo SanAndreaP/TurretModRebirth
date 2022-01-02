@@ -6,6 +6,7 @@ import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiReference;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.TcuInfoValue;
 import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nonnull;
@@ -28,15 +29,11 @@ public interface ITcuInfoProvider
     @Nonnull
     String getName();
 
-    @Nonnull
-    IIcon getIcon();
+    default void load(IGui gui, ITurretEntity turret, int w, int h, TcuInfoValue container) { }
 
-    @Nonnull
-    ITextComponent getLabel();
+    default void setup(IGui gui, ITurretEntity turret, int w, int h) { }
 
-    default void setup(IGui gui, ITurretEntity turret) { }
-
-    void tick(IGui gui, ITurretEntity turret);
+    default void tick(IGui gui, ITurretEntity turret) { }
 
     default void renderContent(IGui gui, ITurretEntity turret, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) { }
 
@@ -50,7 +47,7 @@ public interface ITcuInfoProvider
         return true;
     }
 
-    default void loadJson(IGui gui, JsonObject data) { }
+    default void loadJson(IGui gui, JsonObject data, int w, int h) { }
 
     //    @SuppressWarnings("java:S2386")
 //

@@ -41,7 +41,7 @@ public class TcuScreen
         this.currPage = tcuContainer.currPage;
         this.currScreen = MiscUtils.apply(PAGES.get(tcuContainer.currPage),
                                                  p -> this.guiDefinition != null
-                                                      ? p.apply(this)
+                                                      ? MiscUtils.get(p.apply(this), EMPTY_SCREEN)
                                                       : EMPTY_SCREEN,
                                                  EMPTY_SCREEN);
     }

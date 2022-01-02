@@ -12,27 +12,27 @@ import net.minecraft.util.math.MathHelper;
 import org.apache.commons.lang3.Range;
 
 public final class TcuInfoProgressBar
-        extends Texture
+//        extends Texture
 {
-    private final ITcuInfoProvider provider;
-    private int[] uvBg;
-
-    public TcuInfoProgressBar(ITcuInfoProvider provider) {
-        this.provider = provider;
-    }
-
-    @Override
-    public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
-        this.uvBg = JsonUtils.getIntArray(data.get("uvBackground"), Range.is(2));
-
-        super.bakeData(gui, data, inst);
-    }
-
-    @Override
-    protected void drawRect(IGui gui, MatrixStack stack) {
-//        int barX = Math.max(0, Math.min(this.size[0], MathHelper.ceil((this.provider.getCurrValue() / this.provider.getMaxValue()) * (double)this.size[0])));
+//    private final ITcuInfoProvider provider;
+//    private int[] uvBg;
 //
-//        AbstractGui.blit(stack, 0, 0, this.uvBg[0], this.uvBg[1], this.size[0], this.size[1], this.textureSize[0], this.textureSize[1]);
-//        AbstractGui.blit(stack, 0, 0, this.uv[0], this.uv[1], barX, this.size[1], this.textureSize[0], this.textureSize[1]);
-    }
+//    public TcuInfoProgressBar(ITcuInfoProvider provider) {
+//        this.provider = provider;
+//    }
+//
+//    @Override
+//    public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
+//        this.uvBg = JsonUtils.getIntArray(data.get("uvBackground"), Range.is(2));
+//
+//        super.bakeData(gui, data, inst);
+//    }
+//
+//    @Override
+//    protected void drawRect(IGui gui, MatrixStack stack) {
+////        int barX = Math.max(0, Math.min(this.size[0], MathHelper.ceil((this.provider.getCurrValue() / this.provider.getMaxValue()) * (double)this.size[0])));
+////
+////        AbstractGui.blit(stack, 0, 0, this.uvBg[0], this.uvBg[1], this.size[0], this.size[1], this.textureSize[0], this.textureSize[1]);
+////        AbstractGui.blit(stack, 0, 0, this.uv[0], this.uv[1], barX, this.size[1], this.textureSize[0], this.textureSize[1]);
+//    }
 }

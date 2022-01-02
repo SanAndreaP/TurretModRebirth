@@ -31,7 +31,7 @@ public class ButtonNav
 
     @SuppressWarnings("java:S107")
     ButtonNav(ResourceLocation texture, int[] size, int[] textureSize, int[] uvEnabled, int[] uvHover, int[] uvDisabled, int[] uvSize, int[] centralTextureSize, ResourceLocation pageKey) {
-        super(texture, size, textureSize, uvEnabled, uvHover, uvDisabled, uvSize, centralTextureSize, null);
+        super(texture, size, textureSize, uvEnabled, uvHover, uvDisabled, uvSize, centralTextureSize, GuiElementInst.EMPTY);
         this.put(LABEL, new GuiElementInst(new Label()));
 
         this.pageKey = pageKey;

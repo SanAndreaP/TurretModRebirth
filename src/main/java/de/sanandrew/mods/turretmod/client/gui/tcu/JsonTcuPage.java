@@ -40,16 +40,13 @@ public abstract class JsonTcuPage
 
     @Override
     public void tick() {
-        this.guiDefinition.update(this);
+        this.guiDefinition.tick(this);
     }
 
     @Override
     public void render(@Nonnull MatrixStack mStack, int mouseX, int mouseY, float partTicks) {
-        mStack.pushPose();
-        mStack.translate(this.leftPos, this.topPos, 0);
         this.guiDefinition.drawBackground(this, mStack, mouseX, mouseY, partTicks);
         this.guiDefinition.drawForeground(this, mStack, mouseX, mouseY, partTicks);
-        mStack.popPose();
     }
 
     @Override

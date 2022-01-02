@@ -23,9 +23,11 @@
       "id": "pgNavigation",
       "data": {
         "tabScrollLeft": {
+          "size": [18, 18],
           "uvEnabled": [18, 0]
         },
         "tabScrollRight": {
+          "size": [18, 18],
           "uvEnabled": [36, 0]
         }
       }

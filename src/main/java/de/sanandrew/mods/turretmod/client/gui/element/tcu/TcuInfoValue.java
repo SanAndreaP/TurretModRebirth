@@ -2,21 +2,15 @@ package de.sanandrew.mods.turretmod.client.gui.element.tcu;
 
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ElementParent;
-import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
-import de.sanandrew.mods.sanlib.lib.client.gui.element.Tooltip;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
-import de.sanandrew.mods.turretmod.api.client.tcu.IIcon;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuInfoProvider;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
-import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nonnull;
-import java.util.function.Supplier;
 
 public final class TcuInfoValue
         extends ElementParent<Integer>
@@ -25,30 +19,28 @@ public final class TcuInfoValue
     private final ITcuInfoProvider provider;
     private final int              w;
     private final int              h;
+    private final ITurretEntity turret;
 
-    private ITurretEntity turret;
-    private final GuiElementInst icon;
-    private final GuiElementInst ttip;
-
-    TcuInfoValue(@Nonnull ITcuInfoProvider provider, int w, int h, IGui gui, GuiElementInst icon, GuiElementInst ttip) {
+    TcuInfoValue(@Nonnull ITcuInfoProvider provider, IGui gui, ITurretEntity turret, int w, int h) {
         this.provider = provider;
+        this.turret = turret;
         this.w = w;
         this.h = h;
-        this.icon = icon.initialize(gui);
-        this.ttip = ttip.initialize(gui);
+
+        this.provider.load(gui, turret, w, h, this);
     }
 
     public static class Builder
             implements IBuilder<TcuInfoValue>
     {
-        GuiElementInst icon;
-        GuiElementInst tooltip;
+        final ITurretEntity turret;
         final ITcuInfoProvider provider;
         final int              w;
         final int              h;
 
-        public Builder(ITcuInfoProvider provider, int w, int h) {
+        public Builder(ITcuInfoProvider provider, ITurretEntity turret, int w, int h) {
             this.provider = provider;
+            this.turret = turret;
             this.w = w;
             this.h = h;
         }
@@ -60,57 +52,17 @@ public final class TcuInfoValue
 
         @Override
         public TcuInfoValue get(IGui gui) {
-            return null;
+            this.sanitize(gui);
+
+            return new TcuInfoValue(this.provider, gui, this.turret, this.w, this.h);
         }
 
-        public static Builder buildFromJson(IGui gui, JsonObject data, @Nonnull ITcuInfoProvider provider, int w, int h) {
-            Builder b = new Builder(provider, w, h);
-
+        public static Builder buildFromJson(IGui gui, JsonObject data, @Nonnull ITcuInfoProvider provider, ITurretEntity turret, int w, int h) {
             JsonObject valData = JsonUtils.deepCopy(MiscUtils.get(data.getAsJsonObject(provider.getName()), () -> MiscUtils.get(data.getAsJsonObject("default"), JsonObject::new)));
 
-            IIcon prvIcon = provider.getIcon();
-            JsonObject iconData = MiscUtils.get(valData.getAsJsonObject("icon"), JsonObject::new);
-            JsonUtils.addDefaultJsonProperty(iconData, "size", prvIcon.getSize(w, h));
-            JsonUtils.addDefaultJsonProperty(iconData, "uv", prvIcon.getUV(w, h));
-            JsonUtils.addDefaultJsonProperty(iconData, "textureSize", prvIcon.getTextureSize());
-            MiscUtils.accept(prvIcon.getTexture(), tx -> JsonUtils.addDefaultJsonProperty(iconData, "texture", tx.toString()));
-            b.icon = new GuiElementInst(off(iconData, () -> prvIcon.getOffset(w, h)), Texture.Builder.fromJson(gui, iconData));
+            provider.loadJson(gui, valData, w, h);
 
-            ITextComponent prvLbl = provider.getLabel();
-            JsonObject ttipData = MiscUtils.get(valData.getAsJsonObject("tooltip"), JsonObject::new);
-            JsonUtils.addDefaultJsonProperty(ttipData, "size", JsonUtils.getIntArray(iconData.get("size")));
-            Tooltip.Builder.
-//        ITextComponent lblTxt = this.provider.getLabel();
-//        JsonObject ttipData = MiscUtils.get(data.getAsJsonObject("tooltip"), JsonObject::new);
-//        JsonUtils.addDefaultJsonProperty(ttipData, "size", this.icon.get(Texture.class).size);
-//
-//        JsonObject txtData = MiscUtils.get(ttipData.getAsJsonObject("text"), JsonObject::new);
-//        JsonUtils.addDefaultJsonProperty(txtData, "color", "0xFFFFFFFF");
-//
-//        final GuiElementInst txtElem = new GuiElementInst(new Text() {
-//            @Override
-//            public ITextComponent getBakedText(IGui gui, JsonObject data) {
-//                return lblTxt;
-//            }
-//        }, txtData).initialize(gui);
-//
-//        this.ttip = new GuiElementInst(this.icon.pos, new Tooltip() {
-//            @Override
-//            public GuiElementInst getContent(IGui gui, JsonObject data) {
-//                return txtElem;
-//            }
-//        }, ttipData).initialize(gui);
-
-            Tooltip.Builder tb = Tooltip.Builder.buildFromJson(gui, ttipData);
-        }
-
-        private static int[] cData(int w, int h, JsonObject data, IIcon t) {
-
-            return off(data, () -> t.getOffset(w, h));
-        }
-
-        public static int[] off(JsonObject data, Supplier<int[]> t) {
-            return MiscUtils.get(JsonUtils.getIntArray(data.get("offset"), (int[]) null), t);
+            return new Builder(provider, turret, w, h);
         }
     }
 
@@ -168,8 +120,6 @@ public final class TcuInfoValue
     public void tick(IGui gui, GuiElementInst e) {
         this.provider.tick(gui, this.turret);
 
-        this.ttip.get().tick(gui, this.ttip);
-
         super.tick(gui, e);
     }
 
@@ -181,8 +131,6 @@ public final class TcuInfoValue
     }
 
     public void renderOutside(IGui gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY) {
-        GuiDefinition.renderElement(gui, stack, x + this.ttip.pos[0], y + this.ttip.pos[1], mouseX, mouseY, partTicks, this.ttip, true);
-
         this.provider.renderOutside(gui, this.turret, stack, partTicks, x, y, mouseX, mouseY, this.w, this.h);
     }
 

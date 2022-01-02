@@ -24,30 +24,30 @@ public class HealthProvider
         return "health";
     }
 
-    @Nonnull
-    @Override
-    public ITextComponent getLabel() {
-        return new TranslationTextComponent(Lang.TCU_TEXT.get("info.health.tooltip"));
-    }
-
-    @Override
-    public void renderContent(IGui gui, ITurretEntity turret, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) {
-
-    }
-
-    @Override
-    public void tick(IGui gui, ITurretEntity turret) {
-        MiscUtils.accept(turret.get(), e -> {
-            this.health = e.getHealth();
-            this.maxHealth = e.getMaxHealth();
-        });
-    }
-
-    @Nonnull
-    @Override
-    public IIcon getIcon() {
-        return IIcon.get((mw, mh) -> new int[] { 86, 16 });
-    }
+//    @Nonnull
+//    @Override
+//    public ITextComponent getLabel() {
+//        return new TranslationTextComponent(Lang.TCU_TEXT.get("info.health.tooltip"));
+//    }
+//
+//    @Override
+//    public void renderContent(IGui gui, ITurretEntity turret, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) {
+//        // TODO: render personal shield
+//    }
+//
+//    @Override
+//    public void tick(IGui gui, ITurretEntity turret) {
+//        MiscUtils.accept(turret.get(), e -> {
+//            this.health = e.getHealth();
+//            this.maxHealth = e.getMaxHealth();
+//        });
+//    }
+//
+//    @Nonnull
+//    @Override
+//    public IIcon getIcon() {
+//        return IIcon.get((mw, mh) -> new int[] { 86, 16 });
+//    }
 
 //    @Nullable
 //    @Override

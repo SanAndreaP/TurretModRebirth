@@ -10,6 +10,8 @@ import de.sanandrew.mods.sanlib.lib.client.gui.element.ScrollButton;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuInfoProvider;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
+import de.sanandrew.mods.turretmod.client.gui.tcu.TcuScreen;
 import de.sanandrew.mods.turretmod.client.init.TcuClientRegistry;
 import net.minecraft.util.ResourceLocation;
 
@@ -101,9 +103,12 @@ public class TcuInfo
             final JsonObject elemData = je.getAsJsonObject();
             final int w = this.areaSize[0];
             final int h = this.elementHeight;
+            final ITurretEntity turret = ((TcuScreen) gui).getTurret();
 
+
+//            return new GuiElementInst[0];
             GuiElementInst[] elem = IntStream.range(0, providers.size())
-                                             .mapToObj(i -> new GuiElementInst(new int[] { 0, h * i}, new TcuInfoValue(providers.get(i), w, h)))
+                                             .mapToObj(i -> getInfoValue(gui, elemData, providers.get(i), turret, w, h, h * i))
                                              .toArray(GuiElementInst[]::new);
             Arrays.stream(elem).forEach(e -> e.initialize(gui));
 
@@ -119,6 +124,12 @@ public class TcuInfo
             b.elements(b.loadElements(gui, data.get("elementData")));
 
             return b;
+        }
+
+        private static GuiElementInst getInfoValue(IGui gui, JsonObject data, ITcuInfoProvider provider, ITurretEntity turret, int w, int h, int y) {
+            TcuInfoValue.Builder b = TcuInfoValue.Builder.buildFromJson(gui, data, provider, turret, w, h);
+
+            return new GuiElementInst(new int[] { 0, y }, b.get(gui));
         }
     }
 }

@@ -129,15 +129,14 @@ dependencies {
 	runtimeOnly fg.deobf('mezz.jei:jei-1.16.5:7.7.1.121')
     compileOnly fg.deobf('vazkii.patchouli:Patchouli:1.16.4-53.2:api')
     runtimeOnly fg.deobf('vazkii.patchouli:Patchouli:1.16.4-53.2')
-	compileOnly fg.deobf('de.sanandrew.mods:SanLib:1.16.5-2.0.0')
+	implementation fg.deobf('de.sanandrew.mods:SanLib:1.16.5-2.0.0')
 }
 
 processResources {
+    outputs.upToDateWhen { false } // ensure resources are copied properly
     filesMatching('META-INF/mods.toml') {
-        filter {
-            it.replaceAll('$version', grabConstant('VERSION'))
-            it.replaceAll('$name', grabConstant('NAME'))
-        }
+        expand (version: grabConstant('VERSION'),
+                name: grabConstant('NAME'))
     }
 }
 

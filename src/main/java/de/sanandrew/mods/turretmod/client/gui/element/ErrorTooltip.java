@@ -70,7 +70,7 @@ public class ErrorTooltip
             JsonUtils.addDefaultJsonProperty(data, "borderTopColor", "0x50FF0000");
             JsonUtils.addDefaultJsonProperty(data, "borderBottomColor", "0x507F0000");
 
-            Tooltip.Builder tb = Tooltip.Builder.buildFromJson(gui, data, b -> null);
+            Tooltip.Builder tb = Tooltip.Builder.buildFromJson(gui, data, b -> (g, j) -> null);
             Builder b = IBuilder.copyValues(tb, new Builder(tb.mouseOverSize));
 
             GuiElementInst content = b.loadContent(gui, data);

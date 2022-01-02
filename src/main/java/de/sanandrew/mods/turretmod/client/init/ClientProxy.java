@@ -59,7 +59,7 @@ public class ClientProxy
         GuiDefinition.TYPES.put(PageNavigationTooltip.ID, PageNavigationTooltip.Builder::fromJson);
         GuiDefinition.TYPES.put(TurretCamElement.ID, TurretCamElement.Builder::fromJson);
         GuiDefinition.TYPES.put(ErrorTooltip.ID, ErrorTooltip.Builder::fromJson);
-        GuiDefinition.TYPES.put(TcuInfo.ID, TcuInfo::new);
+        GuiDefinition.TYPES.put(TcuInfo.ID, TcuInfo.Builder::fromJson);
 
         ModelRegistry.registerModels();
         Minecraft.getInstance().execute(Shaders::initShaders);

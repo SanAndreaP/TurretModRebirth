@@ -5,8 +5,8 @@ issueTrackerURL="https://github.com/SanAndreasP/TurretModRebirth/issues"
 
 [[mods]]
     modId="sapturretmod"
-    version="$version"
-    displayName="$name"
+    version="${version}"
+    displayName="${name}"
     logoFile="assets/logo.png"
     authors="SanAndreasP"
     description='''

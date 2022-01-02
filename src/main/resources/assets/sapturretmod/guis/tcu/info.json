@@ -45,7 +45,7 @@
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
-        "texture": "sapturretmod:textures/gui/tcu/page_info.png",
+        "useVanillaTexture": false,
         "uvEnabled": [168, 18]
       }
     },
@@ -56,7 +56,7 @@
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
-        "texture": "sapturretmod:textures/gui/tcu/page_info.png",
+        "useVanillaTexture": false,
         "uvEnabled": [186, 18]
       }
     },
@@ -67,7 +67,7 @@
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
-        "texture": "sapturretmod:textures/gui/tcu/page_info.png",
+        "useVanillaTexture": false,
         "uvEnabled": [204, 18]
       }
     },
@@ -78,7 +78,7 @@
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
-        "texture": "sapturretmod:textures/gui/tcu/page_info.png",
+        "useVanillaTexture": false,
         "uvEnabled": [168, 72]
       }
     },
@@ -89,7 +89,7 @@
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
-        "texture": "sapturretmod:textures/gui/tcu/page_info.png",
+        "useVanillaTexture": false,
         "uvEnabled": [186, 72]
       }
     }

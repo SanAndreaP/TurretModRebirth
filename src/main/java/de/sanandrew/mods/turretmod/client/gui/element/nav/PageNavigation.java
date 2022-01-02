@@ -199,11 +199,11 @@ public class PageNavigation
             }
         }
 
-        if( this.tabScrollL.get(ButtonTabScroll.class).mouseClicked(gui, mouseX, mouseY, mouseButton) ) {
+        if( this.tabScrollL.get(ButtonSL.class).mouseClicked(gui, mouseX, mouseY, mouseButton) ) {
             return true;
         }
 
-        return this.tabScrollR.get(ButtonTabScroll.class).mouseClicked(gui, mouseX, mouseY, mouseButton);
+        return this.tabScrollR.get(ButtonSL.class).mouseClicked(gui, mouseX, mouseY, mouseButton);
     }
 
     @Override
@@ -225,37 +225,45 @@ public class PageNavigation
         }
     }
 
-    private final class ButtonTabScroll
-            extends ButtonSL
-    {
-        private final int direction;
-
-        private ButtonTabScroll(ResourceLocation texture, int[] size, int[] textureSize, int[] uvEnabled, int[] uvHover, int[] uvDisabled, int[] uvSize, int[] centralTextureSize, int direction) {
-            super(texture, size, textureSize, uvEnabled, uvHover, uvDisabled, uvSize, centralTextureSize, new GuiElementInst(new EmptyGuiElement()));
-            this.direction = direction;
-        }
-
-//        @Override
-//        public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
-//            JsonUtils.addDefaultJsonProperty(data, "size", new int[] { 16, 16 });
-//            JsonUtils.addDefaultJsonProperty(data, "uvSize", new int[] { 16, 16 });
-//            JsonUtils.addDefaultJsonProperty(data, "texture", Resources.TEXTURE_GUI_TCU_BUTTONS.toString());
-//            JsonUtils.addDefaultJsonProperty(data, "buttonFunction", -1);
+//    private final class ButtonTabScroll
+//            extends ButtonSL
+//    {
+//        private final int direction;
 //
-//            super.bakeData(gui, data, inst);
+//        private ButtonTabScroll(ResourceLocation texture, int[] size, int[] textureSize, int[] uvEnabled, int[] uvHover, int[] uvDisabled, int[] uvSize, int[] centralTextureSize, int direction) {
+//            super(texture, size, textureSize, uvEnabled, uvHover, uvDisabled, uvSize, centralTextureSize, new GuiElementInst(new EmptyGuiElement()));
+//            this.direction = direction;
 //        }
-
-        @Override
-        public void setup(IGui gui, GuiElementInst inst) {
-            super.setup(gui, inst);
-
-            this.setFunction(btn -> {
-                if( PageNavigation.this.tabStartIdx > 0 && this.direction == 0 ) {
-                    PageNavigation.this.tabStartIdx--;
-                } else if( PageNavigation.this.tabStartIdx < PageNavigation.this.pages.size() - PageNavigation.this.maxTabsShown && this.direction == 1 ) {
-                    PageNavigation.this.tabStartIdx++;
-                }
-            });
-        }
-    }
+//
+////        @Override
+////        public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
+////            JsonUtils.addDefaultJsonProperty(data, "size", new int[] { 16, 16 });
+////            JsonUtils.addDefaultJsonProperty(data, "uvSize", new int[] { 16, 16 });
+////            JsonUtils.addDefaultJsonProperty(data, "texture", Resources.TEXTURE_GUI_TCU_BUTTONS.toString());
+////            JsonUtils.addDefaultJsonProperty(data, "buttonFunction", -1);
+////
+////            super.bakeData(gui, data, inst);
+////        }
+//
+//        @Override
+//        public void setup(IGui gui, GuiElementInst inst) {
+//            super.setup(gui, inst);
+//
+//            this.setFunction(btn -> {
+//                if( PageNavigation.this.tabStartIdx > 0 && this.direction == 0 ) {
+//                    PageNavigation.this.tabStartIdx--;
+//                } else if( PageNavigation.this.tabStartIdx < PageNavigation.this.pages.size() - PageNavigation.this.maxTabsShown && this.direction == 1 ) {
+//                    PageNavigation.this.tabStartIdx++;
+//                }
+//            });
+//        }
+//
+//        public static class Builder
+//                extends ButtonSL.Builder
+//        {
+//            public Builder(int[] size) {
+//                super(size);
+//            }
+//        }
+//    }
 }
