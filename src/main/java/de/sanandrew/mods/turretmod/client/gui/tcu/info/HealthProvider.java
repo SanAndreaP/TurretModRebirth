@@ -1,7 +1,11 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu.info;
 
+import com.google.gson.JsonObject;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
+import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.IIcon;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuInfoProvider;
@@ -9,6 +13,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.init.Lang;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nonnull;
 
@@ -18,13 +23,28 @@ public class HealthProvider
     private float health;
     private float maxHealth;
 
+    GuiElementInst icon;
+
     @Nonnull
     @Override
     public String getName() {
         return "health";
     }
 
-//    @Nonnull
+    @Override
+    public void loadJson(IGui gui, JsonObject data, int w, int h) {
+        JsonObject txtData = MiscUtils.get(data.getAsJsonObject("icon"), JsonObject::new);
+
+        JsonUtils.addDefaultJsonProperty(txtData, "size", new int[] {16, 16});
+        JsonUtils.addDefaultJsonProperty(txtData, "uv", new int[] {})
+
+        Texture.Builder tb = Texture.Builder.buildFromJson(gui, txtData);
+
+//        Texture.Builder txtBuilder = new Texture.Builder(JsonUtils.getIntArray(txtData, new int[] {16, 16}, Range.is(3)));
+//        txtBuilder.
+    }
+
+    //    @Nonnull
 //    @Override
 //    public ITextComponent getLabel() {
 //        return new TranslationTextComponent(Lang.TCU_TEXT.get("info.health.tooltip"));

@@ -24,7 +24,7 @@ public class TcuInfoPage
 
     private ButtonSL dismantle;
     private ButtonSL setActive;
-    private ButtonSL setDeactive;
+    private ButtonSL setInactive;
     private ButtonSL showRange;
     private ButtonSL hideRange;
 
@@ -67,8 +67,8 @@ public class TcuInfoPage
         this.setActive.setVisible(false);
         this.setActive.setFunction(btn -> TurretModRebirth.NETWORK.sendToServer(new TurretPlayerActionPacket(this.turret, TurretPlayerActionPacket.SET_ACTIVE)));
 
-        this.setDeactive = this.guiDefinition.getElementById("deactivate").get(ButtonSL.class);
-        this.setDeactive.setFunction(btn -> TurretModRebirth.NETWORK.sendToServer(new TurretPlayerActionPacket(this.turret, TurretPlayerActionPacket.SET_DEACTIVE)));
+        this.setInactive = this.guiDefinition.getElementById("deactivate").get(ButtonSL.class);
+        this.setInactive.setFunction(btn -> TurretModRebirth.NETWORK.sendToServer(new TurretPlayerActionPacket(this.turret, TurretPlayerActionPacket.SET_DEACTIVE)));
 
         this.showRange = this.guiDefinition.getElementById("showRange").get(ButtonSL.class);
         this.showRange.setFunction(btn -> this.turret.setShowRange(true));
@@ -80,7 +80,7 @@ public class TcuInfoPage
         if( !this.turret.hasPlayerPermission(this.mc.player) ) {
             this.dismantle.setActive(false);
             this.setActive.setActive(false);
-            this.setDeactive.setActive(false);
+            this.setInactive.setActive(false);
             this.showRange.setActive(false);
             this.hideRange.setActive(false);
         } else {
@@ -94,8 +94,8 @@ public class TcuInfoPage
     public void tick() {
         super.tick();
 
-        this.setDeactive.setVisible(this.turret.isActive());
-        this.setActive.setVisible(!this.setDeactive.isVisible());
+        this.setInactive.setVisible(this.turret.isActive());
+        this.setActive.setVisible(!this.setInactive.isVisible());
         this.hideRange.setVisible(this.turret.shouldShowRange());
         this.showRange.setVisible(!this.hideRange.isVisible());
 

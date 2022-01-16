@@ -634,7 +634,7 @@ public class TurretEntity
                 TurretControlUnit.bindTurret(stack, this);
                 return ActionResultType.CONSUME;
             } else if( this.targetProc.addAmmo(stack, player) ) {
-                this.onInteractSucceed(stack, player);
+                this.onPickupSucceed(stack, player);
                 return ActionResultType.CONSUME;
                 //TODO: reimplement upgrades
 //            } else if( this.upgProc.tryApplyUpgrade(stack.copy()) ) {
@@ -643,7 +643,7 @@ public class TurretEntity
 //                return ActionResultType.SUCCESS;
             } else if( this.applyRepairKit(stack) ) {
                 stack.shrink(1);
-                this.onInteractSucceed(stack, player);
+                this.onPickupSucceed(stack, player);
                 return ActionResultType.CONSUME;
             }
         }
@@ -715,7 +715,7 @@ public class TurretEntity
         return null;
     }
 
-    private void onInteractSucceed(@Nonnull ItemStack heldItem, PlayerEntity player) {
+    private void onPickupSucceed(@Nonnull ItemStack heldItem, PlayerEntity player) {
         if( heldItem.getCount() == 0 ) {
             player.inventory.removeItemNoUpdate(player.inventory.selected);
         } else {

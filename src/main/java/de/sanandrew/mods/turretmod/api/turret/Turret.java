@@ -223,6 +223,7 @@ public abstract class Turret
             this.idleSound = Resources.SOUND_TURRET_IDLE;
             this.hurtSound = Resources.SOUND_TURRET_HIT;
             this.deathSound = Resources.SOUND_TURRET_DEATH;
+            this.pickupSound = Resources.SOUND_TURRET_PICKUP;
 
             return this;
         }
