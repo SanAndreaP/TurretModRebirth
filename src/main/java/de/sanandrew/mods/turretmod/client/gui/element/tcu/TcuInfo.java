@@ -8,9 +8,11 @@ import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ScrollArea;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ScrollButton;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuInfoProvider;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
+import de.sanandrew.mods.turretmod.client.gui.tcu.TcuInfoPage;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuScreen;
 import de.sanandrew.mods.turretmod.client.init.TcuClientRegistry;
 import net.minecraft.util.ResourceLocation;
@@ -103,7 +105,7 @@ public class TcuInfo
             final JsonObject elemData = je.getAsJsonObject();
             final int w = this.areaSize[0];
             final int h = this.elementHeight;
-            final ITurretEntity turret = ((TcuScreen) gui).getTurret();
+            final ITurretEntity turret = ((TcuInfoPage) gui).getTurret();
 
 
 //            return new GuiElementInst[0];
@@ -116,14 +118,18 @@ public class TcuInfo
         }
 
         public static Builder buildFromJson(IGui gui, JsonObject data) {
-            ScrollArea.Builder sab = ScrollArea.Builder.buildFromJson(gui, data, b -> null);
+            ScrollArea.Builder sab = ScrollArea.Builder.buildFromJson(gui, data, b -> (g, j) -> null);
             Builder b = IBuilder.copyValues(sab, new Builder(sab.areaSize));
 
             JsonUtils.fetchInt(data.get("elementHeight"), b::elementHeight);
 
-            b.elements(b.loadElements(gui, data.get("elementData")));
+            b.elements(b.loadElements(gui, MiscUtils.get(data.get("elementData"), JsonObject::new)));
 
             return b;
+        }
+
+        public static ScrollArea fromJson(IGui gui, JsonObject data) {
+            return buildFromJson(gui, data).get(gui);
         }
 
         private static GuiElementInst getInfoValue(IGui gui, JsonObject data, ITcuInfoProvider provider, ITurretEntity turret, int w, int h, int y) {

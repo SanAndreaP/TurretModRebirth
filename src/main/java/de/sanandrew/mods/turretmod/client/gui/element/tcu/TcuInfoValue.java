@@ -30,6 +30,13 @@ public final class TcuInfoValue
         this.provider.load(gui, turret, w, h, this);
     }
 
+    @Override
+    public void setup(IGui gui, GuiElementInst inst) {
+        super.setup(gui, inst);
+
+        this.provider.setup(gui, this.turret, this.w, this.h);
+    }
+
     public static class Builder
             implements IBuilder<TcuInfoValue>
     {

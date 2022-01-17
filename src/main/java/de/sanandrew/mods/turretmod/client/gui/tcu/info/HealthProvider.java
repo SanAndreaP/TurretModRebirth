@@ -2,6 +2,7 @@ package de.sanandrew.mods.turretmod.client.gui.tcu.info;
 
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
@@ -10,6 +11,7 @@ import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.IIcon;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuInfoProvider;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.TcuInfoValue;
 import de.sanandrew.mods.turretmod.init.Lang;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -36,12 +38,23 @@ public class HealthProvider
         JsonObject txtData = MiscUtils.get(data.getAsJsonObject("icon"), JsonObject::new);
 
         JsonUtils.addDefaultJsonProperty(txtData, "size", new int[] {16, 16});
-        JsonUtils.addDefaultJsonProperty(txtData, "uv", new int[] {})
+        JsonUtils.addDefaultJsonProperty(txtData, "uv", new int[] {88, 16});
 
         Texture.Builder tb = Texture.Builder.buildFromJson(gui, txtData);
+        this.icon = new GuiElementInst(JsonUtils.getIntArray(txtData.get("offset"), new int[] {0, 0}, Range.is(2)), tb.get(gui)).initialize(gui);
 
 //        Texture.Builder txtBuilder = new Texture.Builder(JsonUtils.getIntArray(txtData, new int[] {16, 16}, Range.is(3)));
 //        txtBuilder.
+    }
+
+    @Override
+    public void setup(IGui gui, ITurretEntity turret, int w, int h) {
+        this.icon.element.setup(gui, this.icon);
+    }
+
+    @Override
+    public void renderContent(IGui gui, ITurretEntity turret, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) {
+        GuiDefinition.renderElement(gui, stack, x + this.icon.pos[0], y + this.icon.pos[1], mouseX, mouseY, partTicks, this.icon);
     }
 
     //    @Nonnull
