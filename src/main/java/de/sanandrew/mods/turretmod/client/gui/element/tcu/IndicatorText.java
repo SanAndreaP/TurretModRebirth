@@ -13,28 +13,28 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class TcuInfoProgressText
+public class IndicatorText
         extends Text
 {
-    private Supplier<String> getVal = () -> "";
-    private Supplier<String>   getMax = () -> "";
+    private Supplier<String> valSupplier = () -> "";
+    private Supplier<String> maxSupplier = () -> "";
 
     private String currVal = "";
     private String currMax = "";
 
-    public TcuInfoProgressText(@Nonnull ITextComponent text, boolean shadow, int wrapWidth, int lineHeight, FontRenderer fontRenderer, Map<String, Integer> colors) {
+    public IndicatorText(@Nonnull ITextComponent text, boolean shadow, int wrapWidth, int lineHeight, FontRenderer fontRenderer, Map<String, Integer> colors) {
         super(text, shadow, wrapWidth, lineHeight, fontRenderer, colors);
     }
 
-    public void setValueFunc(@Nonnull Supplier<String> getValue, @Nonnull Supplier<String> getMax) {
-        this.getVal = getValue;
-        this.getMax = getMax;
+    public void setValueSuppliers(@Nonnull Supplier<String> valueSupplier, @Nonnull Supplier<String> maxSupplier) {
+        this.valSupplier = valueSupplier;
+        this.maxSupplier = maxSupplier;
     }
 
     @Override
     public void tick(IGui gui, GuiElementInst inst) {
-        this.currVal = this.getVal.get();
-        this.currMax = this.getMax.get();
+        this.currVal = this.valSupplier.get();
+        this.currMax = this.maxSupplier.get();
 
         super.tick(gui, inst);
     }
@@ -56,10 +56,10 @@ public class TcuInfoProgressText
         }
 
         @Override
-        public TcuInfoProgressText get(IGui gui) {
+        public IndicatorText get(IGui gui) {
             this.sanitize(gui);
 
-            return new TcuInfoProgressText(this.text, this.shadow, this.wrapWidth, this.lineHeight, this.fontRenderer, this.colors);
+            return new IndicatorText(this.text, this.shadow, this.wrapWidth, this.lineHeight, this.fontRenderer, this.colors);
         }
 
         public static Builder buildFromJson(IGui gui, JsonObject data) {
@@ -67,7 +67,7 @@ public class TcuInfoProgressText
             return IBuilder.copyValues(b, new Builder(b.text));
         }
 
-        public static TcuInfoProgressText fromJson(IGui gui, JsonObject data) {
+        public static IndicatorText fromJson(IGui gui, JsonObject data) {
             return buildFromJson(gui, data).get(gui);
         }
     }

@@ -2,46 +2,76 @@ package de.sanandrew.mods.turretmod.client.gui.tcu.info;
 
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
-import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
-import de.sanandrew.mods.sanlib.lib.client.gui.element.ElementParent;
-import de.sanandrew.mods.sanlib.lib.client.gui.element.Item;
-import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
-import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
-import de.sanandrew.mods.sanlib.lib.client.gui.element.Tooltip;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
-import de.sanandrew.mods.turretmod.api.client.tcu.IIcon;
-import de.sanandrew.mods.turretmod.api.client.tcu.ITcuInfoProvider;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.TcuInfoValue;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.AmmoItem;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.IndicatorText;
 import de.sanandrew.mods.turretmod.init.Lang;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nonnull;
-import java.util.Map;
 
+//TODO: render ammo item
 public class AmmoProvider
-        implements ITcuInfoProvider
+        extends IndicatorProvider
 {
+    private ItemStack      item = ItemStack.EMPTY;
+
+    private GuiElementInst itemIcon;
+
     @Nonnull
     @Override
     public String getName() {
         return "ammo";
     }
+
+    @Override
+    protected void calcValues(ITurretEntity turret) {
+        MiscUtils.accept(turret.getTargetProcessor(), e -> {
+            this.currValue = e.getAmmoCount();
+            this.maxValue = e.getMaxAmmoCapacity();
+            this.item = e.getAmmoStack();
+        });
+    }
+
+    @Override
+    protected int[] getDefaultIconUV() {
+        return new int[] { 88, 32 };
+    }
+
+    @Override
+    protected int[] getDefaultIndicatorUV() {
+        return new int[] { 0, 155 };
+    }
+
+    @Override
+    protected String getDefaultTooltipText() {
+        return Lang.TCU_TEXT.get("info.ammo.tooltip");
+    }
+
+    @Override
+    protected String getDefaultLabelText() {
+        return Lang.TCU_TEXT.get("info.ammo.value");
+    }
+
+    @Override
+    protected int getDefaultLabelColor() {
+        return 0xFF3030A0;
+    }
+
+    @Override
+    protected String getNumberFormat(double value) {
+        return String.format("%.0f", value);
+    }
 //    private int ammo;
 //    private int maxAmmo;
-//    private ItemStack item = ItemStack.EMPTY;
 //
-//    private GuiElementInst itemElem;
-//    private GuiElementInst itemTtip;
+    private GuiElementInst itemTtip;
 //
 //    @Nonnull
 //    @Override
@@ -58,11 +88,32 @@ public class AmmoProvider
 //    @Nonnull
 //    @Override
 //    public ITextComponent getLabel() {
-//        return new TranslationTextComponent(Lang.TCU_TEXT.get("info.ammo.tooltip"));
+//        return new TranslationTextComponent();
 //    }
-//
-//    @Override
-//    public void tick(IGui gui, ITurretEntity turret) {
+
+
+    @Override
+    public void loadJson(IGui gui, JsonObject data, int w, int h) {
+        super.loadJson(gui, data, w, h);
+
+
+        JsonObject itemData = MiscUtils.get(data.getAsJsonObject("ammoItem"), JsonObject::new);
+
+        AmmoItem itemElem = AmmoItem.Builder.fromJson(gui, itemData);
+        this.itemIcon = new GuiElementInst(JsonUtils.getIntArray(itemData.get(OFFSET_JSON_ELEM), new int[] {0, 0}, Range.is(2)), itemElem).initialize(gui);
+    }
+
+    @Override
+    public void setup(IGui gui, ITurretEntity turret, int w, int h) {
+        super.setup(gui, turret, w, h);
+
+        this.itemIcon.get(AmmoItem.class).setItemSupplier(() -> this.item);
+
+        this.itemIcon.get().setup(gui, this.itemIcon);
+    }
+
+    @Override
+    public void tick(IGui gui, ITurretEntity turret) {
 //        MiscUtils.accept(turret.getTargetProcessor(), e -> {
 //            this.ammo = e.getAmmoCount();
 //            this.maxAmmo = e.getMaxAmmoCapacity();
@@ -71,14 +122,24 @@ public class AmmoProvider
 //            GuiElementInst ammoTtip = this.itemTtip.get(Tooltip.class).get(Tooltip.CONTENT);
 //            ammoTtip.get(AmmoText.class).setItem(gui, ammoTtip.data, this.item);
 //        });
-//
+        super.tick(gui, turret);
+
+        this.itemIcon.get().tick(gui, this.itemIcon);
 //        this.itemTtip.get().tick(gui, this.itemTtip);
-//    }
-//
+    }
+
+    @Override
+    public void renderContent(IGui gui, ITurretEntity turret, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) {
+        super.renderContent(gui, turret, stack, partTicks, x, y, mouseX, mouseY, maxWidth, maxHeight);
+
+        GuiDefinition.renderElement(gui, stack, x + this.itemIcon.pos[0] + 144, y + this.itemIcon.pos[1], mouseX, mouseY, partTicks, this.itemIcon);
+    }
+
+    //
 //    //    @Nullable
 ////    @Override
 ////    public ITextComponent getValueStr() {
-////        return new TranslationTextComponent(Lang.TCU_TEXT.get("info.ammo.suffix"), this.ammo)
+////        return new TranslationTextComponent(, this.ammo)
 ////                   .withStyle(Style.EMPTY.withColor(Color.fromRgb(0xFF3030A0)));
 ////    }
 ////
@@ -95,13 +156,13 @@ public class AmmoProvider
 ////    @Nonnull
 ////    @Override
 ////    public ITexture buildIcon() {
-////        return ITexture.icon((mw, mh) -> new int[] { 86, 32 });
+////        return ITexture.icon((mw, mh) -> );
 ////    }
 ////
 ////    @Nullable
 ////    @Override
 ////    public ITexture buildProgressBar() {
-////        return ITexture.progressBar((mw, mh) -> new int[] { 0, 155 },
+////        return ITexture.progressBar((mw, mh) -> ,
 ////                                    (mw, mh) -> new int[] { 0, 152 });
 ////    }
 ////

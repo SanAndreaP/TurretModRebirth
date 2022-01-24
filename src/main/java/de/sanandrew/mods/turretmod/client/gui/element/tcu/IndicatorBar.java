@@ -16,28 +16,28 @@ import javax.annotation.Nonnull;
 import java.util.function.DoubleSupplier;
 
 @SuppressWarnings("ProtectedMemberInFinalClass")
-public final class TcuInfoProgressBar
+public final class IndicatorBar
         extends Texture
 {
-    private DoubleSupplier getPercentage = () -> 0.0D;
+    private DoubleSupplier percSupplier = () -> 0.0D;
 
     private double currPerc = 0D;
 
     protected int[] uvBg;
 
-    public TcuInfoProgressBar(ResourceLocation txLocation, int[] size, int[] textureSize, int[] uv, int[] uvBg, float[] scale, ColorObj color) {
+    public IndicatorBar(ResourceLocation txLocation, int[] size, int[] textureSize, int[] uv, int[] uvBg, float[] scale, ColorObj color) {
         super(txLocation, size, textureSize, uv, scale, color);
 
         this.uvBg = uvBg;
     }
 
-    public void setPercentageFunc(@Nonnull DoubleSupplier getPercentage) {
-        this.getPercentage = getPercentage;
+    public void setPercentageSupplier(@Nonnull DoubleSupplier supplier) {
+        this.percSupplier = supplier;
     }
 
     @Override
     public void tick(IGui gui, GuiElementInst inst) {
-        this.currPerc = this.getPercentage.getAsDouble();
+        this.currPerc = this.percSupplier.getAsDouble();
     }
 
     @Override
@@ -65,12 +65,11 @@ public final class TcuInfoProgressBar
         public Builder uvBackground(int u, int v) { return this.uvBackground(new int[] { u, v }); }
 
         @Override
-        public TcuInfoProgressBar get(IGui gui) {
+        public IndicatorBar get(IGui gui) {
             this.sanitize(gui);
 
-            return new TcuInfoProgressBar(this.texture, this.size, this.textureSize, this.uv, this.uvBg, this.scale, this.color);
+            return new IndicatorBar(this.texture, this.size, this.textureSize, this.uv, this.uvBg, this.scale, this.color);
         }
-
 
         public static Builder buildFromJson(IGui gui, JsonObject data) {
             Texture.Builder tb = Texture.Builder.buildFromJson(gui, data);
@@ -81,7 +80,7 @@ public final class TcuInfoProgressBar
             return b;
         }
 
-        public static TcuInfoProgressBar fromJson(IGui gui, JsonObject data) {
+        public static IndicatorBar fromJson(IGui gui, JsonObject data) {
             return buildFromJson(gui, data).get(gui);
         }
     }
