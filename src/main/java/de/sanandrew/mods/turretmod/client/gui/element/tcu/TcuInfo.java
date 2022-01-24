@@ -107,8 +107,6 @@ public class TcuInfo
             final int h = this.elementHeight;
             final ITurretEntity turret = ((TcuInfoPage) gui).getTurret();
 
-
-//            return new GuiElementInst[0];
             GuiElementInst[] elem = IntStream.range(0, providers.size())
                                              .mapToObj(i -> getInfoValue(gui, elemData, providers.get(i), turret, w, h, h * i))
                                              .toArray(GuiElementInst[]::new);

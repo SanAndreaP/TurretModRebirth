@@ -2,37 +2,87 @@ package de.sanandrew.mods.turretmod.client.gui.element.tcu;
 
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
-import de.sanandrew.mods.turretmod.api.client.tcu.ITcuInfoProvider;
 import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import org.apache.commons.lang3.Range;
 
+import javax.annotation.Nonnull;
+import java.util.function.DoubleSupplier;
+
+@SuppressWarnings("ProtectedMemberInFinalClass")
 public final class TcuInfoProgressBar
-//        extends Texture
+        extends Texture
 {
-//    private final ITcuInfoProvider provider;
-//    private int[] uvBg;
-//
-//    public TcuInfoProgressBar(ITcuInfoProvider provider) {
-//        this.provider = provider;
-//    }
-//
-//    @Override
-//    public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
-//        this.uvBg = JsonUtils.getIntArray(data.get("uvBackground"), Range.is(2));
-//
-//        super.bakeData(gui, data, inst);
-//    }
-//
-//    @Override
-//    protected void drawRect(IGui gui, MatrixStack stack) {
-////        int barX = Math.max(0, Math.min(this.size[0], MathHelper.ceil((this.provider.getCurrValue() / this.provider.getMaxValue()) * (double)this.size[0])));
-////
-////        AbstractGui.blit(stack, 0, 0, this.uvBg[0], this.uvBg[1], this.size[0], this.size[1], this.textureSize[0], this.textureSize[1]);
-////        AbstractGui.blit(stack, 0, 0, this.uv[0], this.uv[1], barX, this.size[1], this.textureSize[0], this.textureSize[1]);
-//    }
+    private DoubleSupplier getPercentage = () -> 0.0D;
+
+    private double currPerc = 0D;
+
+    protected int[] uvBg;
+
+    public TcuInfoProgressBar(ResourceLocation txLocation, int[] size, int[] textureSize, int[] uv, int[] uvBg, float[] scale, ColorObj color) {
+        super(txLocation, size, textureSize, uv, scale, color);
+
+        this.uvBg = uvBg;
+    }
+
+    public void setPercentageFunc(@Nonnull DoubleSupplier getPercentage) {
+        this.getPercentage = getPercentage;
+    }
+
+    @Override
+    public void tick(IGui gui, GuiElementInst inst) {
+        this.currPerc = this.getPercentage.getAsDouble();
+    }
+
+    @Override
+    protected void drawRect(IGui gui, MatrixStack stack) {
+        if( this.uvBg != null ) {
+            AbstractGui.blit(stack, 0, 0, this.uvBg[0], this.uvBg[1], this.size[0], this.size[1], this.textureSize[0], this.textureSize[1]);
+        }
+
+        int barX = Math.max(0, Math.min(this.size[0], MathHelper.ceil(this.currPerc * this.size[0])));
+        AbstractGui.blit(stack, 0, 0, this.uv[0], this.uv[1], barX, this.size[1], this.textureSize[0], this.textureSize[1]);
+    }
+
+    @SuppressWarnings("unused")
+    public static class Builder
+            extends Texture.Builder
+    {
+        protected int[] uvBg;
+
+        public Builder(int[] size) {
+            super(size);
+        }
+
+        public Builder uvBackground(int[] uv) { this.uvBg = uv; return this; }
+
+        public Builder uvBackground(int u, int v) { return this.uvBackground(new int[] { u, v }); }
+
+        @Override
+        public TcuInfoProgressBar get(IGui gui) {
+            this.sanitize(gui);
+
+            return new TcuInfoProgressBar(this.texture, this.size, this.textureSize, this.uv, this.uvBg, this.scale, this.color);
+        }
+
+
+        public static Builder buildFromJson(IGui gui, JsonObject data) {
+            Texture.Builder tb = Texture.Builder.buildFromJson(gui, data);
+            Builder b = IBuilder.copyValues(tb, new Builder(tb.size));
+
+            JsonUtils.fetchIntArray(data.get("uvBackground"), b::uvBackground, Range.is(2));
+
+            return b;
+        }
+
+        public static TcuInfoProgressBar fromJson(IGui gui, JsonObject data) {
+            return buildFromJson(gui, data).get(gui);
+        }
+    }
 }

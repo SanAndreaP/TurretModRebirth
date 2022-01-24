@@ -26,6 +26,8 @@ import javax.annotation.Nonnull;
 public interface ITcuInfoProvider
         extends IGuiReference
 {
+    String OFFSET_JSON_ELEM = "offset";
+
     @Nonnull
     String getName();
 
