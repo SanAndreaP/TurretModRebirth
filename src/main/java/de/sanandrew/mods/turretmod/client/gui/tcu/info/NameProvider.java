@@ -19,8 +19,8 @@ import javax.annotation.Nonnull;
 public class NameProvider
         extends IllustratedProvider
 {
-    private boolean nameSet = false;
-    private boolean nameChanged = false;
+    private boolean nameSet;
+    private boolean nameChanged;
 
     protected GuiElementInst txtField;
 
@@ -32,7 +32,7 @@ public class NameProvider
 
     @Override
     protected int[] getDefaultIconUV() {
-        return new int[] {86, 0};
+        return new int[] { 88, 0 };
     }
 
     @Override
@@ -42,14 +42,17 @@ public class NameProvider
 
     @Override
     public void loadJson(IGui gui, JsonObject data, int w, int h) {
+        this.nameSet = false;
+        this.nameChanged = false;
+
         super.loadJson(gui, data, w, h);
 
         JsonObject tfData = MiscUtils.get(data.getAsJsonObject("textfield"), JsonObject::new);
 
-        JsonUtils.addDefaultJsonProperty(tfData, "size", new int[] { w - 24, 10 });
+        JsonUtils.addDefaultJsonProperty(tfData, "size", new int[] { w - 25, 10 });
 
         TextField tfElem = TextField.Builder.fromJson(gui, tfData);
-        this.txtField = new GuiElementInst(JsonUtils.getIntArray(tfData.get(OFFSET_JSON_ELEM), new int[] { 20, 3 }, Range.is(2)), tfElem).initialize(gui);
+        this.txtField = new GuiElementInst(JsonUtils.getIntArray(tfData.get(OFFSET_JSON_ELEM), new int[] { 19, 3 }, Range.is(2)), tfElem).initialize(gui);
     }
 
     @Override
@@ -67,9 +70,9 @@ public class NameProvider
             if( !this.nameSet ) {
                 MiscUtils.accept(turret.get(), e -> {
                     this.nameSet = true;
-                        tf.setMaxStringLength(260);
-                        tf.setText(MiscUtils.get(MiscUtils.apply(e.getCustomName(), ITextComponent::getString), ""));
-                        tf.setResponder(s -> this.nameChanged = true);
+                    tf.setMaxStringLength(260);
+                    tf.setText(MiscUtils.get(MiscUtils.apply(e.getCustomName(), ITextComponent::getString), ""));
+                    tf.setResponder(s -> this.nameChanged = true);
                 });
             } else if( this.nameChanged && !tf.isFocused() ) {
                 TurretPlayerActionPacket.rename(turret, tf.getText());
@@ -87,11 +90,6 @@ public class NameProvider
     }
 
     @Override
-    public boolean mouseClicked(IGui gui, double mouseX, double mouseY, int button) {
-        return this.txtField.get(TextField.class).mouseClicked(gui, mouseX, mouseY, button);
-    }
-
-    @Override
     public void onClose(IGui gui, ITurretEntity turret) {
         super.onClose(gui, turret);
 
@@ -101,7 +99,17 @@ public class NameProvider
     }
 
     @Override
+    public boolean mouseClicked(IGui gui, double mouseX, double mouseY, int button) {
+        return this.txtField.get(TextField.class).mouseClicked(gui, mouseX, mouseY, button);
+    }
+
+    @Override
     public boolean keyPressed(IGui gui, int keyCode, int scanCode, int modifiers) {
         return MiscUtils.apply(this.txtField.get(TextField.class), tf -> tf.keyPressed(gui, keyCode, scanCode, modifiers) || tf.canConsumeInput());
+    }
+
+    @Override
+    public boolean charTyped(IGui gui, char typedChar, int keyCode) {
+        return MiscUtils.apply(this.txtField.get(TextField.class), tf -> tf.charTyped(gui, typedChar, keyCode) || tf.canConsumeInput());
     }
 }

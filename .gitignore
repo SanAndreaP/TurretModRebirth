@@ -10,4 +10,4 @@ run/
 out/
 TurretModRebirth.ipr
 TurretModRebirth.iws
-src/generated/
+src/generated/resources/.cache/

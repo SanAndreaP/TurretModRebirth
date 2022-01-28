@@ -198,4 +198,10 @@ public final class TcuInfoValue
         return this.provider.keyReleased(gui, keyCode, scanCode, modifiers)
                || super.keyReleased(gui, keyCode, scanCode, modifiers);
     }
+
+    @Override
+    public boolean charTyped(IGui gui, char typedChar, int keyCode) {
+        return this.provider.charTyped(gui, typedChar, keyCode)
+               || super.charTyped(gui, typedChar, keyCode);
+    }
 }

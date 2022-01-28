@@ -83,6 +83,8 @@ public class ElectrolyteBar
 
         @Override
         public ElectrolyteBar get(IGui gui) {
+            this.sanitize(gui);
+
             return new ElectrolyteBar(this.texture, this.size, this.textureSize, this.uv, this.scale, this.color, this.slot);
         }
 

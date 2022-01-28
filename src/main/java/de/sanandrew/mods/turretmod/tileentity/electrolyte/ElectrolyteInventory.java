@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.commons.lang3.Range;
 
@@ -35,6 +36,8 @@ public final class ElectrolyteInventory
 
     private static final int MAX_SLOTS = OUTPUT_SLOTS.getMaximum() + 1;
 
+    private boolean checkForOutputSlotsOnInsert = false;
+
     public ElectrolyteInventory(Supplier<World> worldSupplier) {
         super(MAX_SLOTS);
         this.world = worldSupplier;
@@ -43,27 +46,23 @@ public final class ElectrolyteInventory
     public boolean isOutputFull(@Nonnull ItemStack stack) {
         ItemStack myStack = stack.copy();
         for( int i = OUTPUT_SLOTS.getMinimum(), sz = OUTPUT_SLOTS.getMaximum(); i <= sz && ItemStackUtils.isValid(myStack); i++ ) {
-            myStack = super.insertItem(i, myStack, true);
+            myStack = this.insertItemOutput(i, myStack, true);
         }
 
         return ItemStackUtils.isValid(myStack);
     }
 
-    @Override
-    @Nonnull
-    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        this.validateSlotIndex(slot);
-        if( this.isItemValid(slot, stack) ) {
-            return super.insertItem(slot, stack, simulate);
-        }
-
-        return stack;
+    private ItemStack insertItemOutput(int slot, @Nonnull ItemStack stack, boolean simulate) {
+        this.checkForOutputSlotsOnInsert = true;
+        ItemStack result = this.insertItem(slot, stack, simulate);
+        this.checkForOutputSlotsOnInsert = false;
+        return result;
     }
 
     public void addExtraction(@Nonnull ItemStack stack) {
         ItemStack myStack = stack.copy();
         for( int i = OUTPUT_SLOTS.getMinimum(), sz = OUTPUT_SLOTS.getMaximum(); i <= sz && ItemStackUtils.isValid(myStack); i++ ) {
-            myStack = super.insertItem(i, myStack, false);
+            myStack = this.insertItemOutput(i, myStack, false);
         }
     }
 
@@ -142,9 +141,13 @@ public final class ElectrolyteInventory
 
     @Override
     public boolean isItemValid(int index, @Nonnull ItemStack stack) {
-        return INPUT_SLOTS.contains(index)
-               && ElectrolyteManager.INSTANCE.getFuel(this.world.get(), stack) != null
-               && !ItemStackUtils.isValid(this.stacks.get(index));
+        if( this.checkForOutputSlotsOnInsert ) {
+            return OUTPUT_SLOTS.contains(index);
+        } else {
+            return INPUT_SLOTS.contains(index)
+                   && ElectrolyteManager.INSTANCE.getFuel(this.world.get(), stack) != null
+                   && !ItemStackUtils.isValid(this.stacks.get(index));
+        }
     }
 
     @Override
