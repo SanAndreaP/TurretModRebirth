@@ -10,6 +10,7 @@ import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
+import de.sanandrew.mods.turretmod.client.gui.element.StackedScrollArea;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuTargetPage;
 import net.minecraft.util.ResourceLocation;
 
@@ -22,7 +23,7 @@ import java.util.stream.IntStream;
 
 // TODO: use StackPanel to prevent using set positions for elements
 public class TargetList
-        extends ScrollArea
+        extends StackedScrollArea
 {
     public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu_target_list");
 
@@ -94,7 +95,7 @@ public class TargetList
         }
 
         private static GuiElementInst getTargetEntry(IGui gui, JsonObject data, ITurretEntity turret, ResourceLocation creatureId, UUID playerId, int w, int h, int y) {
-            return new GuiElementInst(new int[] { 0, y }, Target.Builder.fromJson(gui, data, turret, creatureId, playerId, w, h));
+            return new GuiElementInst(new int[] { 0, 0 }, Target.Builder.fromJson(gui, data, turret, creatureId, playerId, w, h));
         }
 
 //        private static GuiElementInst getInfoValue(IGui gui, JsonObject data, ITcuInfoProvider provider, ITurretEntity turret, int w, int h, int y) {
