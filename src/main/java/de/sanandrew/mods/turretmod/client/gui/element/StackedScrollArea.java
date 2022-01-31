@@ -44,7 +44,7 @@ public class StackedScrollArea
         elementsIntrn.forEach(e -> {
             int newPosY = e.pos[1] + updatePosY.getValue();
             int elemHeight = e.get().getHeight();
-            this.elements.put(Range.closedOpen(newPosY, newPosY + elemHeight), e);
+            this.elements.put(Range.closed(newPosY, newPosY + elemHeight), e);
             updatePosY.add(e.pos[1] + elemHeight);
         });
 
@@ -53,10 +53,11 @@ public class StackedScrollArea
 
     @Override
     protected void renderElements(IGui gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, GuiElementInst inst) {
+        final int correctedY = y + this.sData.minY;
         MutableInt updatePosY = new MutableInt(0);
 
         this.doWorkV(e -> {
-            int newPosY = y + e.pos[1] + updatePosY.getValue();
+            int newPosY = correctedY + e.pos[1] + updatePosY.getValue();
             GuiDefinition.renderElement(gui, stack, x + e.pos[0], newPosY, mouseX, mouseY, partTicks, e, true);
             updatePosY.add(e.pos[1] + e.get().getHeight());
         });

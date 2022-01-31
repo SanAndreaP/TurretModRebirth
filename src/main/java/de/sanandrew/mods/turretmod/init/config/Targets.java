@@ -1,6 +1,7 @@
 package de.sanandrew.mods.turretmod.init.config;
 
 import com.google.common.collect.Collections2;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import net.minecraft.entity.EntityClassification;
@@ -8,6 +9,8 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -102,6 +105,14 @@ public final class Targets
 
     public static Map<ResourceLocation, Boolean> getTargetList(ITurret.TargetType targetType) {
         return Collections.unmodifiableMap(CURRENT_ENTITY_LISTS.get(targetType));
+    }
+
+    public static ITextComponent getTargetName(ResourceLocation creatureId) {
+        return MiscUtils.apply(ForgeRegistries.ENTITIES.getValue(creatureId), EntityType::getDescription, StringTextComponent.EMPTY);
+    }
+
+    public static EntityClassification getTargetType(ResourceLocation creatureId) {
+        return MiscUtils.apply(ForgeRegistries.ENTITIES.getValue(creatureId), EntityType::getCategory, EntityClassification.MISC);
     }
 
     @Nonnull
