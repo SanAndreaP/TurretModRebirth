@@ -71,6 +71,8 @@ public class ElectrolyteGeneratorContainer
         this.addDataSlots(this.data);
     }
 
+
+
     @Override
     public boolean stillValid(@Nonnull PlayerEntity playerIn) {
         return this.inventory.stillValid(playerIn);

@@ -11,7 +11,7 @@
       }
     },
     {
-      "type": "container_name",
+      "type": "screen_title",
       "pos": [8, 6],
       "data": {
         "color": "0xFF404040"
@@ -43,20 +43,20 @@
     },
     {
       "type": "dynamic_text",
+      "id": "efficiency",
       "pos": [150, 100],
       "alignment": ["right"],
       "data": {
-        "color": "0xFF404040",
-        "key": "efficiency"
+        "color": "0xFF404040"
       }
     },
     {
       "type": "dynamic_text",
+      "id": "powergen",
       "pos": [150, 110],
       "alignment": ["right"],
       "data": {
-        "color": "0xFF404040",
-        "key": "powergen"
+        "color": "0xFF404040"
       }
     },
     {

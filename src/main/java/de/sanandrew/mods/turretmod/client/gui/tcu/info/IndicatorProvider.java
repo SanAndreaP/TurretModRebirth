@@ -7,6 +7,7 @@ import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.api.client.tcu.ITcuScreen;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.IndicatorBar;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.IndicatorText;
@@ -27,24 +28,27 @@ public abstract class IndicatorProvider
     public void loadJson(IGui gui, JsonObject data, int w, int h) {
         super.loadJson(gui, data, w, h);
 
+        this.indicator = this.loadIndicator(gui, MiscUtils.get(data.getAsJsonObject("indicator"), JsonObject::new));
+        this.label = this.loadLabel(gui, MiscUtils.get(data.getAsJsonObject("label"), JsonObject::new));
+    }
 
-        JsonObject indData = MiscUtils.get(data.getAsJsonObject("indicator"), JsonObject::new);
+    protected GuiElementInst loadIndicator(IGui gui, JsonObject data) {
+        JsonUtils.addDefaultJsonProperty(data, "size", this.getDefaultIndicatorSize());
+        JsonUtils.addDefaultJsonProperty(data, "uv", this.getDefaultIndicatorUV());
+        JsonUtils.addDefaultJsonProperty(data, "uvBackground", this.getDefaultIndicatorBgUV());
 
-        JsonUtils.addDefaultJsonProperty(indData, "size", this.getDefaultIndicatorSize());
-        JsonUtils.addDefaultJsonProperty(indData, "uv", this.getDefaultIndicatorUV());
-        JsonUtils.addDefaultJsonProperty(indData, "uvBackground", this.getDefaultIndicatorBgUV());
+        IndicatorBar indElem = IndicatorBar.Builder.fromJson(gui, data);
 
-        IndicatorBar indElem = IndicatorBar.Builder.fromJson(gui, indData);
-        this.indicator = new GuiElementInst(JsonUtils.getIntArray(indData.get(OFFSET_JSON_ELEM), new int[] {0, 0}, Range.is(2)), indElem).initialize(gui);
+        return new GuiElementInst(JsonUtils.getIntArray(data.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] { 0, 0}, Range.is(2)), indElem).initialize(gui);
+    }
 
+    protected GuiElementInst loadLabel(IGui gui, JsonObject data) {
+        JsonUtils.addDefaultJsonProperty(data, "text", this.getDefaultLabelText());
+        JsonUtils.addDefaultJsonProperty(data, "color", "#" + Integer.toHexString(this.getDefaultLabelColor()));
 
-        JsonObject txtData = MiscUtils.get(data.getAsJsonObject("label"), JsonObject::new);
+        IndicatorText txtElem = IndicatorText.Builder.fromJson(gui, data);
 
-        JsonUtils.addDefaultJsonProperty(txtData, "text", this.getDefaultLabelText());
-        JsonUtils.addDefaultJsonProperty(txtData, "color", "#" + Integer.toHexString(this.getDefaultLabelColor()));
-
-        IndicatorText txtElem = IndicatorText.Builder.fromJson(gui, txtData);
-        this.label = new GuiElementInst(JsonUtils.getIntArray(txtData.get(OFFSET_JSON_ELEM), new int[] {0, 0}, Range.is(2)), txtElem).initialize(gui);
+        return new GuiElementInst(JsonUtils.getIntArray(data.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] { 0, 0}, Range.is(2)), txtElem).initialize(gui);
     }
 
     @Override

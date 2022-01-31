@@ -63,6 +63,7 @@ public class AmmoItemTooltip
                     tti++;
                 }
             }
+
             if( update ) {
                 p.update();
             }

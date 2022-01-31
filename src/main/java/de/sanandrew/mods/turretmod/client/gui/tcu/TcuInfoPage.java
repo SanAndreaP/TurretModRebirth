@@ -19,8 +19,6 @@ import java.util.Objects;
 public class TcuInfoPage
         extends JsonTcuPage
 {
-    private final ITurretEntity turret;
-    private final boolean isRemote;
 
     private ButtonSL dismantle;
     private ButtonSL setActive;
@@ -30,9 +28,6 @@ public class TcuInfoPage
 
     public TcuInfoPage(ContainerScreen<TcuContainer> tcuScreen) {
         super(tcuScreen);
-
-        this.turret = tcuScreen.getMenu().turret;
-        this.isRemote = tcuScreen.getMenu().isRemote;
 
         if( this.guiDefinition != null ) {
             this.guiDefinition.width = tcuScreen.getXSize();

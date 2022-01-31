@@ -22,11 +22,12 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import org.apache.logging.log4j.Level;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
 public class ElectrolyteGeneratorScreen
         extends JsonGuiContainer<ElectrolyteGeneratorContainer>
-        implements EnergyStorageBar.IGuiEnergyContainer, ElectrolyteBar.IElectrolyteInfo, DynamicText.IGuiDynamicText
+        implements EnergyStorageBar.IGuiEnergyContainer, ElectrolyteBar.IElectrolyteInfo
 {
     public ElectrolyteGeneratorScreen(ElectrolyteGeneratorContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
@@ -40,6 +41,16 @@ public class ElectrolyteGeneratorScreen
             TmrConstants.LOG.log(Level.ERROR, e);
             return null;
         }
+    }
+
+    @Override
+    protected void initGd() {
+        this.guiDefinition.getElementById("efficiency").get(DynamicText.class).setTextFunc(
+                (g, o) -> new StringTextComponent(String.format("%.2f%%", this.menu.data.getEfficiency() / 9.0F * 100.0F))
+        );
+        this.guiDefinition.getElementById("powergen").get(DynamicText.class).setTextFunc(
+                (g, o) -> new StringTextComponent(String.format("%d RF/t", this.menu.data.getEnergyGenerated()))
+        );
     }
 
     @Override
@@ -62,14 +73,9 @@ public class ElectrolyteGeneratorScreen
         return this.menu.data.getMaxProgress(slot);
     }
 
+    @Nonnull
     @Override
-    public ITextComponent getText(String key, ITextComponent originalText) {
-        if( "efficiency".equalsIgnoreCase(key) ) {
-            return new StringTextComponent(String.format("%.2f%%", this.menu.data.getEfficiency() / 9.0F * 100.0F));
-        } else if( "powergen".equalsIgnoreCase(key) ) {
-            return new StringTextComponent(String.format("%d RF/t", this.menu.data.getEnergyGenerated()));
-        }
-
-        return null;
+    public ITextComponent getTitle() {
+        return super.getTitle();
     }
 }

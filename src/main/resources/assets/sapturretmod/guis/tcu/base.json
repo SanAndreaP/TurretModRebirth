@@ -11,7 +11,7 @@
       }
     },
     {
-      "type": "sapturretmod:turret_name",
+      "type": "sapturretmod:turret_type_name",
       "pos": [16, 9],
       "data": {
         "color": "0xFFA0A0FF"

@@ -82,4 +82,6 @@ public interface ITurretEntity
     int getCameraQuality();
 
     TurretCrateEntity dismantle();
+
+    ITextComponent getTurretTypeName();
 }

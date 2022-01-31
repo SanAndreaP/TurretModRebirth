@@ -37,92 +37,6 @@ public final class TcuInfoValue
         this.provider.setup(gui, this.turret, this.w, this.h);
     }
 
-    public static class Builder
-            implements IBuilder<TcuInfoValue>
-    {
-        final ITurretEntity turret;
-        final ITcuInfoProvider provider;
-        final int              w;
-        final int              h;
-
-        public Builder(ITcuInfoProvider provider, ITurretEntity turret, int w, int h) {
-            this.provider = provider;
-            this.turret = turret;
-            this.w = w;
-            this.h = h;
-        }
-
-        @Override
-        public void sanitize(IGui gui) {
-
-        }
-
-        @Override
-        public TcuInfoValue get(IGui gui) {
-            this.sanitize(gui);
-
-            return new TcuInfoValue(this.provider, gui, this.turret, this.w, this.h);
-        }
-
-        public static Builder buildFromJson(IGui gui, JsonObject data, @Nonnull ITcuInfoProvider provider, ITurretEntity turret, int w, int h) {
-            JsonObject valData = JsonUtils.deepCopy(MiscUtils.get(data.getAsJsonObject(provider.getName()), () -> MiscUtils.get(data.getAsJsonObject("default"), JsonObject::new)));
-
-            provider.loadJson(gui, valData, w, h);
-
-            return new Builder(provider, turret, w, h);
-        }
-    }
-
-//    @Override
-//    public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
-//        super.bakeData(gui, data, inst);
-//
-//        if( gui instanceof TcuInfoPage ) {
-//            this.turret = ((TcuInfoPage) gui).getTurret();
-//
-//            this.setTooltip(gui, MiscUtils.get(data.getAsJsonObject(this.provider.getName()),
-//                                               () -> MiscUtils.get(data.getAsJsonObject("default"), JsonObject::new)));
-//            this.ttip.get().bakeData(gui, this.ttip.data, this.ttip);
-//        }
-//    }
-
-//    @Override
-//    public void buildChildren(IGui gui, JsonObject data, Map<Integer, GuiElementInst> children) {
-//        JsonObject valData = MiscUtils.get(data.getAsJsonObject(this.provider.getName()),
-//                                           () -> MiscUtils.get(data.getAsJsonObject("default"), JsonObject::new));
-//
-//        this.setIcon(gui, valData);
-//        children.put(0, this.icon);
-//
-//        GuiElementInst[] cstChildren = this.provider.buildCustomElements(gui, valData, this.w, this.h);
-//        for( int i = 0, max = cstChildren.length; i < max; i++ ) {
-//            children.put(3 + i, cstChildren[i]);
-//        }
-//    }
-
-//    private void setTooltip(IGui gui, JsonObject data) {
-//        ITextComponent lblTxt = this.provider.getLabel();
-//        JsonObject ttipData = MiscUtils.get(data.getAsJsonObject("tooltip"), JsonObject::new);
-//        JsonUtils.addDefaultJsonProperty(ttipData, "size", this.icon.get(Texture.class).size);
-//
-//        JsonObject txtData = MiscUtils.get(ttipData.getAsJsonObject("text"), JsonObject::new);
-//        JsonUtils.addDefaultJsonProperty(txtData, "color", "0xFFFFFFFF");
-//
-//        final GuiElementInst txtElem = new GuiElementInst(new Text() {
-//            @Override
-//            public ITextComponent getBakedText(IGui gui, JsonObject data) {
-//                return lblTxt;
-//            }
-//        }, txtData).initialize(gui);
-//
-//        this.ttip = new GuiElementInst(this.icon.pos, new Tooltip() {
-//            @Override
-//            public GuiElementInst getContent(IGui gui, JsonObject data) {
-//                return txtElem;
-//            }
-//        }, ttipData).initialize(gui);
-//    }
-
     @Override
     public void tick(IGui gui, GuiElementInst e) {
         this.provider.tick(gui, this.turret);
@@ -203,5 +117,39 @@ public final class TcuInfoValue
     public boolean charTyped(IGui gui, char typedChar, int keyCode) {
         return this.provider.charTyped(gui, typedChar, keyCode)
                || super.charTyped(gui, typedChar, keyCode);
+    }
+
+    public static class Builder
+            implements IBuilder<TcuInfoValue>
+    {
+        final ITurretEntity turret;
+        final ITcuInfoProvider provider;
+        final int              w;
+        final int              h;
+
+        public Builder(ITcuInfoProvider provider, ITurretEntity turret, int w, int h) {
+            this.provider = provider;
+            this.turret = turret;
+            this.w = w;
+            this.h = h;
+        }
+
+        @Override
+        public void sanitize(IGui gui) { /* no-op */ }
+
+        @Override
+        public TcuInfoValue get(IGui gui) {
+            this.sanitize(gui);
+
+            return new TcuInfoValue(this.provider, gui, this.turret, this.w, this.h);
+        }
+
+        public static Builder buildFromJson(IGui gui, JsonObject data, @Nonnull ITcuInfoProvider provider, ITurretEntity turret, int w, int h) {
+            JsonObject valData = JsonUtils.deepCopy(MiscUtils.get(data.getAsJsonObject(provider.getName()), () -> MiscUtils.get(data.getAsJsonObject("default"), JsonObject::new)));
+
+            provider.loadJson(gui, valData, w, h);
+
+            return new Builder(provider, turret, w, h);
+        }
     }
 }

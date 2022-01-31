@@ -1,6 +1,5 @@
 package de.sanandrew.mods.turretmod.api.tcu;
 
-import de.sanandrew.mods.turretmod.api.IRegistryObject;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.inventory.ContainerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
@@ -10,7 +9,7 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "java:S1172"})
 public class TcuContainer
         extends Container
 {

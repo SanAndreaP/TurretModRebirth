@@ -2,47 +2,50 @@
   "texture": "sapturretmod:textures/gui/tcu/page_targets.png",
   "backgroundElements": [
     {
-      "type": "sapturretmod:target_list",
-      "pos": [8, 53],
+      "type": "texture",
+      "pos": [7, 44],
+      "data": {
+        "size": [169, 190],
+        "uv": [7, 44]
+      }
+    },
+    {
+      "type": "sapturretmod:tcu_target_list",
+      "pos": [8, 45],
       "id": "targetList",
       "data": {
-        "targetType": "creature",
-        "areaSize": [153, 135],
-        "rasterized": true,
-        "scrollbarPos": [162, 53],
+        "listCreatures": true,
+        "areaSize": [156, 144],
+        "scrollbarPos": [164, 45],
         "scrollButton": {
-          "size": [6, 6],
-          "uv": [176, 0],
-          "uvDisabled": [176, 6]
-        },
-        "node": {
-          "size": [8, 8],
-          "uv": [176, 12]
+          "size": [4, 16],
+          "uv": [180, 16],
+          "uvDisabled": [180, 0]
         }
       }
     },
     {
       "type": "button",
       "pos": [7, 190],
-      "id": "blacklist",
+      "id": "denylist",
       "data": {
         "size": [18, 18],
         "texture": "sapturretmod:textures/gui/tcu/page_targets.png",
         "uvSize": [18, 18],
         "uvEnabled": [202, 0],
-        "buttonFunction": 0
+        "useVanillaTexture": false
       }
     },
     {
       "type": "button",
       "pos": [7, 190],
-      "id": "whitelist",
+      "id": "allowlist",
       "data": {
         "size": [18, 18],
         "texture": "sapturretmod:textures/gui/tcu/page_targets.png",
         "uvSize": [18, 18],
         "uvEnabled": [184, 0],
-        "buttonFunction": 0
+        "useVanillaTexture": false
       }
     },
     {
@@ -54,7 +57,7 @@
         "texture": "sapturretmod:textures/gui/tcu/page_targets.png",
         "uvSize": [18, 18],
         "uvEnabled": [220, 0],
-        "buttonFunction": 1
+        "useVanillaTexture": false
       }
     },
     {
@@ -66,7 +69,7 @@
         "texture": "sapturretmod:textures/gui/tcu/page_targets.png",
         "uvSize": [18, 18],
         "uvEnabled": [238, 0],
-        "buttonFunction": 2
+        "useVanillaTexture": false
       }
     },
     {
@@ -78,7 +81,7 @@
         "texture": "sapturretmod:textures/gui/tcu/page_targets.png",
         "uvSize": [18, 18],
         "uvEnabled": [202, 36],
-        "buttonFunction": 3
+        "useVanillaTexture": false
       }
     },
     {
@@ -90,7 +93,7 @@
         "texture": "sapturretmod:textures/gui/tcu/page_targets.png",
         "uvSize": [18, 18],
         "uvEnabled": [220, 36],
-        "buttonFunction": 4
+        "useVanillaTexture": false
       }
     },
     {
@@ -102,16 +105,16 @@
         "texture": "sapturretmod:textures/gui/tcu/page_targets.png",
         "uvSize": [18, 18],
         "uvEnabled": [238, 36],
-        "buttonFunction": 5
+        "useVanillaTexture": false
       }
     },
     {
-      "type": "textField",
-      "pos": [8, 40],
+      "type": "textfield",
+      "pos": [8, 30],
       "id": "search",
       "data": {
         "size": [160, 10],
-        "placeholderText": "gui.sapturretmod.tcu.page.sapturretmod:targets.search.placeholder"
+        "placeholderText": "gui.sapturretmod.tcu.targets.search.placeholder"
       }
     }
   ],
@@ -121,8 +124,8 @@
       "pos": [7, 190],
       "data": {
         "size": [18, 18],
-        "for": "blacklist",
-        "text": "gui.sapturretmod.tcu.button.targets.blacklist"
+        "for": "denylist",
+        "text": "gui.sapturretmod.tcu.targets.denylist"
       }
     },
     {
@@ -130,8 +133,8 @@
       "pos": [7, 190],
       "data": {
         "size": [18, 18],
-        "for": "whitelist",
-        "text": "gui.sapturretmod.tcu.button.targets.whitelist"
+        "for": "allowlist",
+        "text": "gui.sapturretmod.tcu.targets.allowlist"
       }
     },
     {
@@ -140,7 +143,7 @@
       "data": {
         "size": [18, 18],
         "for": "selectAll",
-        "text": "gui.sapturretmod.tcu.button.targets.select_all"
+        "text": "gui.sapturretmod.tcu.targets.select_all"
       }
     },
     {
@@ -149,7 +152,7 @@
       "data": {
         "size": [18, 18],
         "for": "deselectAll",
-        "text": "gui.sapturretmod.tcu.button.targets.deselect_all"
+        "text": "gui.sapturretmod.tcu.targets.deselect_all"
       }
     },
     {
@@ -158,7 +161,7 @@
       "data": {
         "size": [18, 18],
         "for": "selectMobs",
-        "text": "gui.sapturretmod.tcu.button.targets.creature.select_mobs"
+        "text": "gui.sapturretmod.tcu.targets.creature.select_mobs"
       }
     },
     {
@@ -167,7 +170,7 @@
       "data": {
         "size": [18, 18],
         "for": "selectAnimals",
-        "text": "gui.sapturretmod.tcu.button.targets.creature.select_animals"
+        "text": "gui.sapturretmod.tcu.targets.creature.select_animals"
       }
     },
     {
@@ -176,7 +179,7 @@
       "data": {
         "size": [18, 18],
         "for": "selectOther",
-        "text": "gui.sapturretmod.tcu.button.targets.creature.select_other"
+        "text": "gui.sapturretmod.tcu.targets.creature.select_other"
       }
     }
   ]

@@ -7,6 +7,8 @@ import javax.annotation.Nonnull;
 
 public interface ITcuScreen
 {
+    String OFFSET_JSON_ELEM = "offset";
+
     default void init(Minecraft mc, int leftPos, int topPos) { }
 
     default void tick() { }

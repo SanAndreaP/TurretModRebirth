@@ -10,6 +10,7 @@ import de.sanandrew.mods.sanlib.lib.client.gui.element.Tooltip;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuInfoProvider;
+import de.sanandrew.mods.turretmod.api.client.tcu.ITcuScreen;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import org.apache.commons.lang3.Range;
 
@@ -23,22 +24,26 @@ public abstract class IllustratedProvider
 
     @Override
     public void loadJson(IGui gui, JsonObject data, int w, int h) {
-        JsonObject iconData = MiscUtils.get(data.getAsJsonObject("icon"), JsonObject::new);
+        this.icon = this.loadIcon(gui, MiscUtils.get(data.getAsJsonObject("icon"), JsonObject::new));
+        this.tooltip = this.loadTooltip(gui, MiscUtils.get(data.getAsJsonObject("tooltip"), JsonObject::new));
+    }
 
-        JsonUtils.addDefaultJsonProperty(iconData, "size", this.getDefaultIconSize());
-        JsonUtils.addDefaultJsonProperty(iconData, "uv", this.getDefaultIconUV());
+    protected GuiElementInst loadIcon(IGui gui, JsonObject data) {
+        JsonUtils.addDefaultJsonProperty(data, "size", this.getDefaultIconSize());
+        JsonUtils.addDefaultJsonProperty(data, "uv", this.getDefaultIconUV());
 
-        Texture iconElem = Texture.Builder.fromJson(gui, iconData);
-        this.icon = new GuiElementInst(JsonUtils.getIntArray(iconData.get(OFFSET_JSON_ELEM), new int[] {0, 0}, Range.is(2)), iconElem).initialize(gui);
+        Texture iconElem = Texture.Builder.fromJson(gui, data);
 
+        return new GuiElementInst(JsonUtils.getIntArray(data.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] { 0, 0}, Range.is(2)), iconElem).initialize(gui);
+    }
 
-        JsonObject ttipData = MiscUtils.get(data.getAsJsonObject("tooltip"), JsonObject::new);
+    protected GuiElementInst loadTooltip(IGui gui, JsonObject data) {
+        JsonUtils.addDefaultJsonProperty(data, "size", this.getDefaultTooltipHoverSize());
+        JsonUtils.addDefaultJsonProperty(data, "text", this.getDefaultTooltipText());
 
-        JsonUtils.addDefaultJsonProperty(ttipData, "size", this.getDefaultTooltipHoverSize());
-        JsonUtils.addDefaultJsonProperty(ttipData, "text", this.getDefaultTooltipText());
+        Tooltip ttipElem = Tooltip.Builder.fromJson(gui, data);
 
-        Tooltip ttipElem = Tooltip.Builder.fromJson(gui, ttipData);
-        this.tooltip = new GuiElementInst(JsonUtils.getIntArray(ttipData.get(OFFSET_JSON_ELEM), this.icon.pos, Range.is(2)), ttipElem).initialize(gui);
+        return new GuiElementInst(JsonUtils.getIntArray(data.get(ITcuScreen.OFFSET_JSON_ELEM), this.icon.pos, Range.is(2)), ttipElem).initialize(gui);
     }
 
     @Override

@@ -4,22 +4,31 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuScreen;
+import de.sanandrew.mods.turretmod.api.tcu.TcuContainer;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 
 import javax.annotation.Nonnull;
 
 public abstract class JsonTcuPage
         implements IGui, ITcuScreen
 {
-    final Screen tcuScreen;
+    final ContainerScreen<TcuContainer> tcuScreen;
+    final ITurretEntity turret;
+    final boolean       isRemote;
     final GuiDefinition guiDefinition = this.buildGuiDefinition();
+
     Minecraft mc;
     int leftPos;
     int topPos;
 
-    JsonTcuPage(Screen tcuScreen) {
+    JsonTcuPage(ContainerScreen<TcuContainer> tcuScreen) {
         this.tcuScreen = tcuScreen;
+
+        this.turret = tcuScreen.getMenu().turret;
+        this.isRemote = tcuScreen.getMenu().isRemote;
     }
 
     protected abstract GuiDefinition buildGuiDefinition();

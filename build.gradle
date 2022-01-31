@@ -101,22 +101,25 @@ sourceSets.main.resources {
 }
 
 repositories {
-    maven { url 'https://maven.blamejared.com' }
-	maven { // location of the maven that hosts JEI files
+	maven { // JEI
 		name 'Progwml6 maven'
-		url 'https://dvs1.progwml6.com/files/maven/'
+		url 'https://dvs1.progwml6.com/files/maven'
 	}
-	maven { // location of a maven mirror for JEI files, as a fallback
+	maven { // JEI mirror
 		name 'ModMaven'
-		url 'https://modmaven.k-4u.nl'
+		url 'https://modmaven.dev'
 	}
     maven { // TOP
         name 'tterrag maven'
-        url 'https://maven.tterrag.com/'
+        url 'https://maven.tterrag.com'
     }
-    maven {
+    maven { // Patchouli
+        name 'blamejared maven'
+        url 'https://maven.blamejared.com'
+    }
+    maven { // SanLib
         name 'SanLib'
-        url 'https://github.com/SanAndreasP/SanLib/raw/1.16/maven/'
+        url 'https://repo.repsy.io/mvn/sanandreasp/sanlib'
     }
 }
 
@@ -129,7 +132,7 @@ dependencies {
 	runtimeOnly fg.deobf('mezz.jei:jei-1.16.5:7.7.1.121')
     compileOnly fg.deobf('vazkii.patchouli:Patchouli:1.16.4-53.2:api')
     runtimeOnly fg.deobf('vazkii.patchouli:Patchouli:1.16.4-53.2')
-	implementation fg.deobf('de.sanandrew.mods:SanLib:1.16.5-2.0.0')
+	implementation fg.deobf('de.sanandrew.mods:sanlib:1.16.5-2.0.0-SNAPSHOT')
 }
 
 processResources {

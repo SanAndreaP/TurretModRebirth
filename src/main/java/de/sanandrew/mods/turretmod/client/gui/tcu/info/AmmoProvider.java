@@ -7,6 +7,7 @@ import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.api.client.tcu.ITcuScreen;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.AmmoItem;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.AmmoItemTooltip;
@@ -76,12 +77,12 @@ public class AmmoProvider
 
         JsonObject itemData = MiscUtils.get(data.getAsJsonObject("ammoItem"), JsonObject::new);
         AmmoItem itemElem = AmmoItem.Builder.fromJson(gui, itemData);
-        this.itemIcon = new GuiElementInst(JsonUtils.getIntArray(itemData.get(OFFSET_JSON_ELEM), new int[] {0, 0}, Range.is(2)), itemElem).initialize(gui);
+        this.itemIcon = new GuiElementInst(JsonUtils.getIntArray(itemData.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] { 0, 0}, Range.is(2)), itemElem).initialize(gui);
 
         JsonObject ttipData = MiscUtils.get(data.getAsJsonObject("ammoTooltip"), JsonObject::new);
         JsonUtils.addDefaultJsonProperty(ttipData, "size", new int[] {itemElem.getWidth(), itemElem.getHeight()});
         AmmoItemTooltip ttipElem = AmmoItemTooltip.Builder.fromJson(gui, ttipData);
-        this.itemTtip = new GuiElementInst(JsonUtils.getIntArray(ttipData.get(OFFSET_JSON_ELEM), new int[] {0, 0}, Range.is(2)), ttipElem).initialize(gui);
+        this.itemTtip = new GuiElementInst(JsonUtils.getIntArray(ttipData.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] { 0, 0}, Range.is(2)), ttipElem).initialize(gui);
     }
 
     @Override

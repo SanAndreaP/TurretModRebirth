@@ -18,6 +18,7 @@ import net.minecraft.block.ContainerBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -70,14 +71,14 @@ public class ElectrolyteGeneratorBlock
     public void onPlace(@Nonnull BlockState state, @Nonnull World level, @Nonnull BlockPos pos, @Nonnull BlockState oldState, boolean isMoving) {
         super.onPlace(state, level, pos, oldState, isMoving);
 
-        if( state.getValue(TILE_HOLDER) ) {
+        if( Boolean.TRUE.equals(state.getValue(TILE_HOLDER)) ) {
             level.setBlock(pos.above(), this.stateDefinition.any().setValue(TILE_HOLDER, false), 3);
         }
     }
 
     @Override
     public void onRemove(BlockState state, @Nonnull World level, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
-        if( state.getValue(TILE_HOLDER) ) {
+        if( Boolean.TRUE.equals(state.getValue(TILE_HOLDER)) ) {
             ElectrolyteGeneratorEntity electrolyteGen = (ElectrolyteGeneratorEntity) level.getBlockEntity(pos);
 
             if( electrolyteGen != null ) {
@@ -110,14 +111,12 @@ public class ElectrolyteGeneratorBlock
 
     @Override
     public void playerWillDestroy(World level, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull PlayerEntity player) {
-        if( !level.isClientSide && player.isCreative() ) {
-            if( !state.getValue(TILE_HOLDER) ) {
-                BlockPos blockpos = pos.below();
-                BlockState blockstate = level.getBlockState(blockpos);
-                if( blockstate.getBlock() == state.getBlock() && blockstate.getValue(TILE_HOLDER) ) {
-                    level.setBlock(blockpos, Blocks.AIR.defaultBlockState(), 35);
-                    level.levelEvent(player, 2001, blockpos, Block.getId(blockstate));
-                }
+        if( !level.isClientSide && player.isCreative() && Boolean.FALSE.equals(state.getValue(TILE_HOLDER)) ) {
+            BlockPos blockpos = pos.below();
+            BlockState blockstate = level.getBlockState(blockpos);
+            if( blockstate.getBlock() == state.getBlock() && Boolean.TRUE.equals(blockstate.getValue(TILE_HOLDER)) ) {
+                level.setBlock(blockpos, Blocks.AIR.defaultBlockState(), 35);
+                level.levelEvent(player, 2001, blockpos, Block.getId(blockstate));
             }
         }
 
@@ -142,7 +141,7 @@ public class ElectrolyteGeneratorBlock
                                 @Nonnull Hand hand, @Nonnull BlockRayTraceResult hit)
     {
         if( player instanceof ServerPlayerEntity ) {
-            if( state.getValue(TILE_HOLDER) ) {
+            if( Boolean.TRUE.equals(state.getValue(TILE_HOLDER)) ) {
                 TileEntity tileentity = level.getBlockEntity(pos);
                 if( tileentity instanceof ElectrolyteGeneratorEntity ) {
                     NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileentity, b -> b.writeBlockPos(pos));
@@ -161,7 +160,7 @@ public class ElectrolyteGeneratorBlock
     public void setPlacedBy(World level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         level.setBlock(pos.above(), state.setValue(TILE_HOLDER, false), 3);
 
-        if( stack.hasCustomHoverName() && state.getValue(TILE_HOLDER) ) {
+        if( stack.hasCustomHoverName() && Boolean.TRUE.equals(state.getValue(TILE_HOLDER)) ) {
             TileEntity te = level.getBlockEntity(pos);
             assert te != null;
             ((ElectrolyteGeneratorEntity) te).setCustomName(stack.getDisplayName());
@@ -192,7 +191,7 @@ public class ElectrolyteGeneratorBlock
 
     @Override
     public int getAnalogOutputSignal(BlockState blockState, @Nonnull World worldIn, @Nonnull BlockPos pos) {
-        return blockState.getValue(TILE_HOLDER)
+        return Boolean.TRUE.equals(blockState.getValue(TILE_HOLDER))
                ? Container.getRedstoneSignalFromBlockEntity(worldIn.getBlockEntity(pos))
                : this.getAnalogOutputSignal(worldIn.getBlockState(pos.below()), worldIn, pos.below());
     }
@@ -200,6 +199,12 @@ public class ElectrolyteGeneratorBlock
     @Nonnull
     @Override
     public VoxelShape getShape(BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos, @Nonnull ISelectionContext context) {
-        return state.getValue(TILE_HOLDER) ? MAIN_SEL_BB : UPPER_SEL_BB;
+        return Boolean.TRUE.equals(state.getValue(TILE_HOLDER)) ? MAIN_SEL_BB : UPPER_SEL_BB;
+    }
+
+    @Nonnull
+    @Override
+    public PushReaction getPistonPushReaction(@Nonnull BlockState state) {
+        return PushReaction.BLOCK;
     }
 }

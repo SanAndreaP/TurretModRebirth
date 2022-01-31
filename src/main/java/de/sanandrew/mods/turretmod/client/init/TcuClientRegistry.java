@@ -7,9 +7,12 @@ import de.sanandrew.mods.turretmod.api.client.tcu.ITcuScreen;
 import de.sanandrew.mods.turretmod.api.tcu.TcuContainer;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuInfoPage;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuScreen;
+import de.sanandrew.mods.turretmod.client.gui.tcu.TcuTargetPage;
 import de.sanandrew.mods.turretmod.client.gui.tcu.info.AmmoProvider;
 import de.sanandrew.mods.turretmod.client.gui.tcu.info.HealthProvider;
 import de.sanandrew.mods.turretmod.client.gui.tcu.info.NameProvider;
+import de.sanandrew.mods.turretmod.client.gui.tcu.info.OwnerProvider;
+import de.sanandrew.mods.turretmod.client.gui.tcu.info.TargetProvider;
 import de.sanandrew.mods.turretmod.client.renderer.turret.LabelRegistry;
 import de.sanandrew.mods.turretmod.item.TurretControlUnit;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -17,6 +20,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -26,6 +31,7 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+@OnlyIn(Dist.CLIENT)
 public final class TcuClientRegistry
         implements ITcuClientRegistry
 {
@@ -48,19 +54,19 @@ public final class TcuClientRegistry
 
     @Override
     public void registerTcuInfoProvider(int priority, ITcuInfoProvider provider) {
-        TCU_INFO_PROVIDERS.computeIfAbsent(priority, ArrayList::new).add(provider);
+        TCU_INFO_PROVIDERS.computeIfAbsent(priority, i -> new ArrayList<>()).add(provider);
     }
 
     public static void registerTcuClient(ITcuClientRegistry registry) {
         registry.registerTcuScreen(TurretControlUnit.INFO, new SimpleItem(Items.BOOK), TcuInfoPage::new);
-        registry.registerTcuScreen(TurretControlUnit.TARGETS_CREATURES, new SimpleItem(Items.ZOMBIE_HEAD),
-                                   s -> null);
-        registry.registerTcuScreen(TurretControlUnit.TARGETS_PLAYERS, de.sanandrew.mods.turretmod.client.init.PlayerHeads::getRandomSkull,
-                                   s -> null);
+        registry.registerTcuScreen(TurretControlUnit.TARGETS_CREATURES, new SimpleItem(Items.ZOMBIE_HEAD), TcuTargetPage.Creatures::new);
+        registry.registerTcuScreen(TurretControlUnit.TARGETS_PLAYERS, de.sanandrew.mods.turretmod.client.init.PlayerHeads::getRandomSkull, s -> null);
 
         registry.registerTcuInfoProvider(0, new NameProvider());
         registry.registerTcuInfoProvider(1, new HealthProvider());
         registry.registerTcuInfoProvider(2, new AmmoProvider());
+        registry.registerTcuInfoProvider(3, new TargetProvider());
+        registry.registerTcuInfoProvider(4, new OwnerProvider());
     }
 
     public static List<ITcuInfoProvider> getProviders() {

@@ -8,9 +8,10 @@ import de.sanandrew.mods.turretmod.client.gui.ElectrolyteGeneratorScreen;
 import de.sanandrew.mods.turretmod.client.gui.TurretCrateScreen;
 import de.sanandrew.mods.turretmod.client.gui.element.ElectrolyteBar;
 import de.sanandrew.mods.turretmod.client.gui.element.ErrorTooltip;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.TargetList;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.TcuInfo;
 import de.sanandrew.mods.turretmod.client.gui.element.TurretCamElement;
-import de.sanandrew.mods.turretmod.client.gui.element.TurretName;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.TurretTypeName;
 import de.sanandrew.mods.turretmod.client.gui.element.nav.PageNavigation;
 import de.sanandrew.mods.turretmod.client.gui.element.nav.PageNavigationTooltip;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuScreen;
@@ -54,12 +55,13 @@ public class ClientProxy
         ScreenManager.register(ContainerRegistry.TURRET_CRATE, TurretCrateScreen::new);
 
         GuiDefinition.TYPES.put(ElectrolyteBar.ID, ElectrolyteBar.Builder::fromJson);
-        GuiDefinition.TYPES.put(TurretName.ID, TurretName.Builder::fromJson);
+        GuiDefinition.TYPES.put(TurretTypeName.ID, TurretTypeName.Builder::fromJson);
         GuiDefinition.TYPES.put(PageNavigation.ID, PageNavigation.Builder::fromJson);
         GuiDefinition.TYPES.put(PageNavigationTooltip.ID, PageNavigationTooltip.Builder::fromJson);
         GuiDefinition.TYPES.put(TurretCamElement.ID, TurretCamElement.Builder::fromJson);
         GuiDefinition.TYPES.put(ErrorTooltip.ID, ErrorTooltip.Builder::fromJson);
         GuiDefinition.TYPES.put(TcuInfo.ID, TcuInfo.Builder::fromJson);
+        GuiDefinition.TYPES.put(TargetList.ID, TargetList.Builder::fromJson);
 
         ModelRegistry.registerModels();
         Minecraft.getInstance().execute(Shaders::initShaders);

@@ -8,6 +8,7 @@ import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.TextField;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.api.client.tcu.ITcuScreen;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.init.Lang;
 import de.sanandrew.mods.turretmod.network.TurretPlayerActionPacket;
@@ -52,7 +53,7 @@ public class NameProvider
         JsonUtils.addDefaultJsonProperty(tfData, "size", new int[] { w - 25, 10 });
 
         TextField tfElem = TextField.Builder.fromJson(gui, tfData);
-        this.txtField = new GuiElementInst(JsonUtils.getIntArray(tfData.get(OFFSET_JSON_ELEM), new int[] { 19, 3 }, Range.is(2)), tfElem).initialize(gui);
+        this.txtField = new GuiElementInst(JsonUtils.getIntArray(tfData.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] { 19, 3 }, Range.is(2)), tfElem).initialize(gui);
     }
 
     @Override

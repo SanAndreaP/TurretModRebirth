@@ -29,6 +29,12 @@ import de.sanandrew.mods.turretmod.item.TurretControlUnit;
 import de.sanandrew.mods.turretmod.item.TurretItem;
 import de.sanandrew.mods.turretmod.network.UpdateTurretStatePacket;
 import de.sanandrew.mods.turretmod.tileentity.TurretCrateEntity;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.crash.CrashReport;
+import net.minecraft.crash.CrashReportCategory;
+import net.minecraft.crash.ReportedException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
@@ -37,6 +43,8 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
+import net.minecraft.entity.passive.IFlyingAnimal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -46,13 +54,16 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.ReuseableStream;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
@@ -60,7 +71,10 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.shapes.IBooleanFunction;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -79,6 +93,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class TurretEntity
         extends MobEntity
@@ -214,11 +229,37 @@ public class TurretEntity
     public void knockback(float strength, double ratioX, double ratioZ) { /* turrets can't be knocked back */ }
 
     @Override
-    public void travel(@Nonnull Vector3d travelVector) { /* turrets can't travel on their own */ }
+    public void push(@Nonnull Entity entity) { /* turrets can't be pushed by entities */ }
+
+    @Override
+    public void push(double dx, double dy, double dz) { /* turrets can't be pushed by entities */ }
+
+    @Override
+    public void travel(@Nonnull Vector3d travelVector) {
+        double       motionY = this.getDeltaMovement().y;
+        final double height  = this.getBbHeight();
+
+        if( this.delegate.isBuoy() ) {
+            Vector3d dm = this.getDeltaMovement();
+            if( this.isSubmergedInLiquid(height + 0.2F) ) {
+                motionY += 0.08F;
+            } else if( this.isSubmergedInLiquid(height + 0.05F) ) {
+                motionY += 0.005F;
+            } else if( !this.isSubmergedInLiquid(height - 0.2F) ) {
+                motionY -= 0.08F;
+            } else {
+                motionY -= 0.005F;
+            }
+
+            this.setDeltaMovement(dm.x, motionY * 0.98D, dm.z);
+        }
+
+        super.travel(travelVector);
+    }
 
     @Override
     public void move(@Nonnull MoverType typeIn, @Nonnull Vector3d pos) {
-        if( typeIn == MoverType.PISTON || typeIn == MoverType.SELF ) {
+        if( typeIn != MoverType.PLAYER ) {
             super.move(typeIn, pos);
         }
     }
@@ -460,6 +501,11 @@ public class TurretEntity
         return 48;
     }
 
+    @Override
+    public ITextComponent getTurretTypeName() {
+        return this.getTypeName();
+    }
+
     private boolean isSubmergedInLiquid(double heightMod) {
         BlockPos pos = new BlockPos(this.getX(), this.getY() + heightMod, this.getZ());
         return this.level.getBlockState(pos).getMaterial().isLiquid();
@@ -510,31 +556,7 @@ public class TurretEntity
     public void baseTick() {
         super.baseTick();
 
-        double          motionY  = this.getDeltaMovement().y;
-        final double    height   = this.getBbHeight();
         final IProfiler profiler = this.level.getProfiler();
-
-        if( !this.delegate.isBuoy() ) {
-            motionY -= 0.0325F;
-        } else {
-            if( this.isSubmergedInLiquid(height + 0.2F) ) {
-                motionY += 0.0125F;
-            } else if( this.isSubmergedInLiquid(height + 0.05F) ) {
-                motionY += 0.005F;
-                if( motionY > 0.025F ) {
-                    motionY *= 0.75F;
-                }
-            } else if( !this.isSubmergedInLiquid(height - 0.2F) ) {
-                motionY -= 0.0325F;
-            } else {
-                motionY -= 0.005F;
-                if( motionY < -0.025F ) {
-                    motionY *= 0.75F;
-                }
-            }
-        }
-
-        this.move(MoverType.SELF, new Vector3d(0.0F, motionY, 0.0F));
 
         profiler.push("turretAI");
 

@@ -2,12 +2,10 @@ package de.sanandrew.mods.turretmod.api.client.tcu;
 
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiReference;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.TcuInfoValue;
-import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nonnull;
 
@@ -26,7 +24,6 @@ import javax.annotation.Nonnull;
 public interface ITcuInfoProvider
         extends IGuiReference
 {
-    String OFFSET_JSON_ELEM = "offset";
 
     @Nonnull
     String getName();
