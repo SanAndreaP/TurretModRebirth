@@ -12,6 +12,8 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.client.gui.element.StackedScrollArea;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuTargetPage;
+import de.sanandrew.mods.turretmod.init.config.Targets;
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
@@ -19,9 +21,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-// TODO: use StackPanel to prevent using set positions for elements
 public class TargetList
         extends StackedScrollArea
 {
@@ -31,6 +33,38 @@ public class TargetList
         super(areaSize, scrollHeight, true, maxScrollDelta, scrollbarPos, scrollButton, gui);
 
         Arrays.stream(elements).forEach(e -> this.add(e.initialize(gui)));
+    }
+
+    @Override
+    protected List<GuiElementInst> sortAndFilter(List<GuiElementInst> elements) {
+        return elements.stream().sorted(this::compareTargets).collect(Collectors.toList());
+    }
+
+    private int compareTargets(GuiElementInst e1, GuiElementInst e2) {
+        Target t1 = e1.get(Target.class);
+        Target t2 = e2.get(Target.class);
+        int c = Integer.compare(getTargetTypeSort(t2), getTargetTypeSort(t1));
+
+        if( c == 0 ) {
+            c = t1.text.getString().compareToIgnoreCase(t2.text.getString());
+        }
+
+        return c;
+    }
+
+    private static int getTargetTypeSort(Target t) {
+        if( !t.isCreature() ) {
+            return 0;
+        }
+
+        EntityClassification c = Targets.getCondensedType(Targets.getTargetType(t.creatureId));
+        if( c == EntityClassification.MONSTER ) {
+            return 2;
+        } else if( c == EntityClassification.CREATURE ) {
+            return 1;
+        }
+
+        return 0;
     }
 
     public static class Builder
@@ -71,9 +105,6 @@ public class TargetList
                                 .mapToObj(i -> getTargetEntry(gui, elemData, turret, null, players.get(i), w, h, h * i))
                                 .toArray(GuiElementInst[]::new);
             }
-//            GuiElementInst[] elem = IntStream.range(0, providers.size())
-//                                             .mapToObj(i -> getInfoValue(gui, elemData, providers.get(i), turret, w, h, h * i))
-//                                             .toArray(GuiElementInst[]::new);
             Arrays.stream(elem).forEach(e -> e.initialize(gui));
 
             return elem;

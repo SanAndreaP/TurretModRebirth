@@ -25,6 +25,7 @@ import de.sanandrew.mods.turretmod.item.ammo.AmmoCartridgeItem;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.world.PlayerList;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.item.ItemEntity;
@@ -45,20 +46,24 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.items.CapabilityItemHandler;
+import org.lwjgl.system.CallbackI;
 
 import javax.annotation.Nonnull;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public final class TargetProcessor
         implements ITargetProcessor
 {
     private final Map<ResourceLocation, Boolean> entityTargetList;
+    private final List<ResourceLocation> updatedEntityTargets;
     private final Map<UUID, Boolean> playerTargetList;
+    private final List<UUID> updatedPlayerTargets;
     private final ITurretEntity      turret;
 
     private int       ammoCount;
@@ -77,7 +82,9 @@ public final class TargetProcessor
 
     TargetProcessor(ITurretEntity turret) {
         this.entityTargetList = new HashMap<>();
+        this.updatedEntityTargets = new ArrayList<>();
         this.playerTargetList = new HashMap<>();
+        this.updatedPlayerTargets = new ArrayList<>();
         this.turret = turret;
         this.initShootTicks = 20;
         this.ammoStack = ItemStack.EMPTY;
@@ -627,39 +634,79 @@ public final class TargetProcessor
     public void updateEntityTarget(ResourceLocation res, boolean active) {
         if( Targets.canBeTargeted(res, this.turret.getAttackType()) ) {
             this.entityTargetList.put(res, active);
+            this.updatedEntityTargets.add(res);
         }
+    }
+
+    @Override
+    public void updateEntityTargets(EntityClassification cls, boolean active) {
+        final EntityClassification clsC = Targets.getCondensedType(cls);
+        this.entityTargetList.entrySet().forEach(entry -> {
+            if( Targets.getCondensedType(Targets.getTargetType(entry.getKey())) == clsC ) {
+                entry.setValue(active);
+                this.updatedEntityTargets.add(entry.getKey());
+            }
+        });
     }
 
     @Override
     public void updatePlayerTarget(UUID uid, boolean active) {
         this.playerTargetList.put(uid, active);
+        this.updatedPlayerTargets.add(uid);
     }
 
     @Override
-    public void updateEntityTargets(ResourceLocation[] keys) {
-        this.entityTargetList.entrySet().forEach(entry -> entry.setValue(false));
+    public void updateAllEntityTargets(boolean active) {
+        this.entityTargetList.entrySet().forEach(entry -> {
+            entry.setValue(active);
+            this.updatedEntityTargets.add(entry.getKey());
+        });
 
-        Arrays.stream(keys).filter(r -> Targets.canBeTargeted(r, this.turret.getAttackType())).forEach(r -> this.entityTargetList.put(r, true));
+//        Arrays.stream(keys).filter(r -> Targets.canBeTargeted(r, this.turret.getAttackType())).forEach(r -> this.entityTargetList.put(r, true));
     }
 
     @Override
-    public void updatePlayerTargets(UUID[] uuids) {
-        this.playerTargetList.entrySet().forEach(entry -> entry.setValue(false));
+    public void updateAllPlayerTargets(boolean active) {
+        this.playerTargetList.entrySet().forEach(entry -> {
+            entry.setValue(true);
+            this.updatedPlayerTargets.add(entry.getKey());
+        });
 
-        for( UUID uuid : uuids ) {
-            if( uuid != null ) {
-                this.playerTargetList.put(uuid, true);
-            }
-        }
+//        for( UUID uuid : uuids ) {
+//            if( uuid != null ) {
+//                this.playerTargetList.put(uuid, true);
+//            }
+//        }
     }
 
-    public void updateClientState(int targetId, int ammoCount, @Nonnull ItemStack ammoStack, boolean isShooting) {
+    public Map<ResourceLocation, Boolean> grabUpdatedCreatures() { //TODO: figure out why updatedEntityTargets contains ALL targets
+        Map<ResourceLocation, Boolean> ret = this.entityTargetList.entrySet().stream().filter(e -> this.updatedEntityTargets.contains(e.getKey()))
+                                                                  .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        this.updatedEntityTargets.clear();
+
+        return ret;
+    }
+
+    public Map<UUID, Boolean> grabUpdatedPlayers() {
+        Map<UUID, Boolean> ret = this.playerTargetList.entrySet().stream().filter(e -> this.updatedPlayerTargets.contains(e.getKey()))
+                                                      .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        this.updatedPlayerTargets.clear();
+
+        return ret;
+    }
+
+    public void updateClientState(int targetId, int ammoCount, @Nonnull ItemStack ammoStack, boolean isShooting,
+                                  Map<ResourceLocation, Boolean> updatedEntityTargets, Map<UUID, Boolean> updatedPlayerTargets)
+    {
         LivingEntity turretL = this.turret.get();
         if( turretL.level.isClientSide ) {
             this.entityToAttack = targetId < 0 ? null : turretL.level.getEntity(targetId);
             this.ammoCount = ammoCount;
             this.ammoStack = ammoStack;
             this.isShootingClt = isShooting;
+
+            this.entityTargetList.putAll(updatedEntityTargets);
+            this.playerTargetList.putAll(updatedPlayerTargets);
         }
     }
 

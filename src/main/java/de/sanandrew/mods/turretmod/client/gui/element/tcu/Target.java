@@ -13,9 +13,11 @@ import de.sanandrew.mods.turretmod.api.client.tcu.ITcuScreen;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.init.config.Targets;
+import de.sanandrew.mods.turretmod.network.TurretPlayerActionPacket;
 import de.sanandrew.mods.turretmod.world.PlayerList;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.ITextComponent;
 import org.apache.commons.lang3.Range;
 
 import java.util.UUID;
@@ -29,17 +31,19 @@ public class Target
     static final String ICON = "icon";
 
     private final ITurretEntity    turret;
-    private final ResourceLocation creatureId;
-    private final UUID             playerId;
     private final int              w;
     private final int              h;
+    final ResourceLocation creatureId;
+    final UUID             playerId;
+    final ITextComponent text;
 
     public Target(ITurretEntity turret, ResourceLocation creatureId, int w, int h) {
         this.turret = turret;
-        this.creatureId = creatureId;
-        this.playerId = null;
         this.w = w;
         this.h = h;
+        this.creatureId = creatureId;
+        this.playerId = null;
+        this.text = Targets.getTargetName(creatureId);
     }
 
     public Target(ITurretEntity turret, UUID playerId, int w, int h) {
@@ -48,30 +52,32 @@ public class Target
         this.h = h;
         this.creatureId = null;
         this.playerId = playerId;
+        this.text = PlayerList.getPlayerName(playerId);
     }
 
     @Override
     public void setup(IGui gui, GuiElementInst inst) {
-        boolean isCreature = this.isCreature();
-        boolean isPlayer = this.isPlayer();
+        this.get(LABEL).get(DynamicText.class).setTextFunc((g, o) -> this.text);
 
-        this.get(LABEL).get(DynamicText.class).setTextFunc((g, o) -> { // TODO: cache this text
-            if( isCreature ) {
-                return Targets.getTargetName(this.creatureId);
-            } else if( isPlayer ) {
-                return PlayerList.getPlayerName(this.playerId);
-            }
-
-            return StringTextComponent.EMPTY;
-        });
-
-        if( isCreature ) {
+        if( this.isCreature() ) {
             this.get(ICON).get(CreatureIcon.class).setEntityTypeSupplier(() -> Targets.getTargetType(this.creatureId));
         }
 
         super.setup(gui, inst);
 
         this.setTargetToggle();
+
+        Button.IPressable pFunc = btn -> {
+            boolean activate = this.get(TOGGLE_BUTTON_OFF).get(ButtonSL.class).isButton(btn);
+            if( this.isCreature() ) {
+                TurretPlayerActionPacket.setTarget(this.turret, activate, this.creatureId, null);
+            } else if( this.isPlayer() ) {
+                TurretPlayerActionPacket.setTarget(this.turret, activate, this.playerId);
+            }
+        };
+
+        this.get(TOGGLE_BUTTON_ON).get(ButtonSL.class).setFunction(pFunc);
+        this.get(TOGGLE_BUTTON_OFF).get(ButtonSL.class).setFunction(pFunc);
     }
 
     @Override
@@ -102,11 +108,11 @@ public class Target
         return this.h;
     }
 
-    private boolean isCreature() {
+    boolean isCreature() {
         return this.creatureId != null;
     }
 
-    private boolean isPlayer() {
+    boolean isPlayer() {
         return this.playerId != null;
     }
 

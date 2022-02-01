@@ -6,6 +6,7 @@ import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
+import de.sanandrew.mods.turretmod.init.config.Targets;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.Range;
@@ -39,12 +40,10 @@ public class CreatureIcon
     public void setup(IGui gui, GuiElementInst inst) {
         super.setup(gui, inst);
 
-        EntityClassification cls = this.entityTypeSupplier.get();
-        if( cls == null ) {
-            this.uv = new int[2];
-        } else if( !cls.isFriendly() ) {
+        EntityClassification cls = Targets.getCondensedType(this.entityTypeSupplier.get());
+        if( cls == EntityClassification.MONSTER ) {
             this.uv = this.uvMobs;
-        } else if( cls != EntityClassification.MISC ) {
+        } else if( cls == EntityClassification.CREATURE ) {
             this.uv = this.uvAnimals;
         } else {
             this.uv = this.uvMisc;

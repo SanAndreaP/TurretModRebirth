@@ -41,6 +41,8 @@ public class StackedScrollArea
         this.elements.clear();
         this.prebuiltElements.clear();
 
+        elementsIntrn = this.sortAndFilter(elementsIntrn);
+
         elementsIntrn.forEach(e -> {
             int newPosY = e.pos[1] + updatePosY.getValue();
             int elemHeight = e.get().getHeight();
@@ -49,6 +51,10 @@ public class StackedScrollArea
         });
 
         this.update();
+    }
+
+    protected List<GuiElementInst> sortAndFilter(List<GuiElementInst> elements) {
+        return elements;
     }
 
     @Override

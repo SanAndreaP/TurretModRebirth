@@ -117,7 +117,22 @@ public final class Targets
 
     @Nonnull
     private static TargetEntry getEntry(ForgeConfigSpec.ConfigValue<List<? extends TargetEntry>> entries, EntityType<?> entityType) {
-        return entries.get().stream().map(e -> (TargetEntry) e).filter(t -> t.id.equals(entityType.toString())).findFirst().orElse(TargetEntry.EMPTY);
+        return entries.get().stream().map(TargetEntry.class::cast).filter(t -> t.id.equals(entityType.toString())).findFirst().orElse(TargetEntry.EMPTY);
+    }
+
+    @Nonnull
+    public static EntityClassification getCondensedType(EntityClassification cls) {
+        if( cls == null ) {
+            return EntityClassification.MISC;
+        }
+
+        if( !cls.isFriendly() ) {
+            return EntityClassification.MONSTER;
+        } else if( cls != EntityClassification.MISC ) {
+            return EntityClassification.CREATURE;
+        } else {
+            return EntityClassification.MISC;
+        }
     }
 
     public static class TargetEntry

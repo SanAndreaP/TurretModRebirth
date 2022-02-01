@@ -1,6 +1,7 @@
 package de.sanandrew.mods.turretmod.api.turret;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
@@ -96,11 +97,13 @@ public interface ITargetProcessor
 
     void updateEntityTarget(ResourceLocation res, boolean active);
 
+    void updateEntityTargets(EntityClassification res, boolean active);
+
     void updatePlayerTarget(UUID uid, boolean active);
 
-    void updateEntityTargets(ResourceLocation[] keys);
+    void updateAllEntityTargets(boolean active);
 
-    void updatePlayerTargets(UUID[] uuids);
+    void updateAllPlayerTargets(boolean active);
 
     ITextComponent getTargetName();
 
