@@ -216,11 +216,11 @@ public class TurretPlayerActionPacket
         } else {
             ITargetProcessor tp = turret.getTargetProcessor();
             if( creatureId != null ) {
-                tp.updateEntityTarget(creatureId, activated);
+                tp.updateEntityTarget(creatureId, activated, true);
             } else if( creatureType != null ) {
-                tp.updateEntityTargets(creatureType, activated);
+                tp.updateEntityTargets(creatureType, activated, true);
             } else {
-                tp.updateAllEntityTargets(activated);
+                tp.updateAllEntityTargets(activated, true);
             }
             turret.updateState();
         }
@@ -232,9 +232,9 @@ public class TurretPlayerActionPacket
         } else {
             ITargetProcessor tp = turret.getTargetProcessor();
             if( playerId != null ) {
-                tp.updatePlayerTarget(playerId, activated);
+                tp.updatePlayerTarget(playerId, activated, true);
             } else {
-                tp.updateAllPlayerTargets(activated);
+                tp.updateAllPlayerTargets(activated, true);
             }
             turret.updateState();
         }

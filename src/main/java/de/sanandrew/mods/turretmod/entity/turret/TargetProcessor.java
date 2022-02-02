@@ -12,6 +12,7 @@ import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.sanlib.lib.util.NBTUtils;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectile;
@@ -46,7 +47,6 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.items.CapabilityItemHandler;
-import org.lwjgl.system.CallbackI;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -301,17 +301,17 @@ public final class TargetProcessor
     }
 
     @Override
-    public final int getMaxAmmoCapacity() {
+    public int getMaxAmmoCapacity() {
         return MathHelper.ceil(this.turret.get().getAttributeValue(TurretAttributes.MAX_AMMO_CAPACITY));
     }
 
     @Override
-    public final int getMaxShootTicks() {
+    public int getMaxShootTicks() {
         return MathHelper.ceil(this.turret.get().getAttributeValue(TurretAttributes.MAX_RELOAD_TICKS));
     }
 
     @Override
-    public final boolean isShooting() {
+    public boolean isShooting() {
         return this.initShootTicks <= 0 || this.isShootingClt;
     }
 
@@ -435,15 +435,13 @@ public final class TargetProcessor
             return;
         }
 
-        if( this.processTicks++ % 10 == 0 ) {
-            if( this.entityToAttack == null ) {
-                for( Entity entityObj : getValidTargetList(aabb) ) {
-                    if( this.checkTargetListeners(entityObj) ) {
-                        this.entityToAttack = entityObj;
-                        this.entityToAttackID = entityObj.getUUID();
-                        changed = true;
-                        break;
-                    }
+        if( this.processTicks++ % 10 == 0 && this.entityToAttack == null ) {
+            for( Entity entityObj : getValidTargetList(aabb) ) {
+                if( this.checkTargetListeners(entityObj) ) {
+                    this.entityToAttack = entityObj;
+                    this.entityToAttackID = entityObj.getUUID();
+                    changed = true;
+                    break;
                 }
             }
         }
@@ -569,20 +567,18 @@ public final class TargetProcessor
         nbt.putUUID(NBT_TARGET_ID, this.entityToAttackID);
 
         nbt.putBoolean(NBT_ENTITYTGTLIST_DENY, this.isEntityTargetListDenying);
-        nbt.put(NBT_ENTITYTGTLIST, new ListNBT() {{
-            TargetProcessor.this.getEntityTargets().forEach((id, enabled) -> this.add(new CompoundNBT() {{
-                this.putString(NBT_TGTLIST_ID, id.toString());
-                this.putBoolean(NBT_TGTLIST_ENABLED, enabled);
-            }}));
-        }});
+        nbt.put(NBT_ENTITYTGTLIST, NBTUtils.getNewNbtList(TargetProcessor.this.getEntityTargets().entrySet(), (e, l) -> l.add(MiscUtils.apply(new CompoundNBT(), c -> {
+            c.putString(NBT_TGTLIST_ID, e.getKey().toString());
+            c.putBoolean(NBT_TGTLIST_ENABLED, e.getValue());
+            return c;
+        }))));
 
         nbt.putBoolean(NBT_PLAYERTGTLIST_DENY, this.isPlayerTargetListDenying);
-        nbt.put(NBT_PLAYERTGTLIST, new ListNBT() {{
-            TargetProcessor.this.getPlayerTargets().forEach((id, enabled) -> this.add(new CompoundNBT() {{
-                this.putUUID(NBT_TGTLIST_ID, id);
-                this.putBoolean(NBT_TGTLIST_ENABLED, enabled);
-            }}));
-        }});
+        nbt.put(NBT_PLAYERTGTLIST, NBTUtils.getNewNbtList(TargetProcessor.this.getPlayerTargets().entrySet(), (e, l) -> l.add(MiscUtils.apply(new CompoundNBT(), c -> {
+            c.putUUID(NBT_TGTLIST_ID, e.getKey());
+            c.putBoolean(NBT_TGTLIST_ENABLED, e.getValue());
+            return c;
+        }))));
     }
 
     @Override
@@ -599,14 +595,14 @@ public final class TargetProcessor
         ListNBT entityTargets = nbt.getList(NBT_ENTITYTGTLIST, Constants.NBT.TAG_COMPOUND);
         for( int i = 0, max = entityTargets.size(); i < max; i++ ) {
             CompoundNBT entry = entityTargets.getCompound(i);
-            this.updateEntityTarget(new ResourceLocation(entry.getString(NBT_TGTLIST_ID)), entry.getBoolean(NBT_TGTLIST_ENABLED));
+            this.updateEntityTarget(new ResourceLocation(entry.getString(NBT_TGTLIST_ID)), entry.getBoolean(NBT_TGTLIST_ENABLED), false);
         }
 
         this.isPlayerTargetListDenying = nbt.getBoolean(NBT_PLAYERTGTLIST_DENY);
         ListNBT playerTargets = nbt.getList(NBT_PLAYERTGTLIST, Constants.NBT.TAG_COMPOUND);
         for( int i = 0, max = playerTargets.size(); i < max; i++ ) {
             CompoundNBT entry = playerTargets.getCompound(i);
-            this.updatePlayerTarget(entry.getUUID(NBT_TGTLIST_ID), entry.getBoolean(NBT_TGTLIST_ENABLED));
+            this.updatePlayerTarget(entry.getUUID(NBT_TGTLIST_ID), entry.getBoolean(NBT_TGTLIST_ENABLED), false);
         }
     }
 
@@ -631,55 +627,57 @@ public final class TargetProcessor
     }
 
     @Override
-    public void updateEntityTarget(ResourceLocation res, boolean active) {
+    public void updateEntityTarget(ResourceLocation res, boolean active, boolean forClient) {
         if( Targets.canBeTargeted(res, this.turret.getAttackType()) ) {
             this.entityTargetList.put(res, active);
-            this.updatedEntityTargets.add(res);
+            if( forClient ) {
+                this.updatedEntityTargets.add(res);
+            }
         }
     }
 
     @Override
-    public void updateEntityTargets(EntityClassification cls, boolean active) {
+    public void updateEntityTargets(EntityClassification cls, boolean active, boolean forClient) {
         final EntityClassification clsC = Targets.getCondensedType(cls);
         this.entityTargetList.entrySet().forEach(entry -> {
             if( Targets.getCondensedType(Targets.getTargetType(entry.getKey())) == clsC ) {
                 entry.setValue(active);
+                if( forClient ) {
+                    this.updatedEntityTargets.add(entry.getKey());
+                }
+            }
+        });
+    }
+
+    @Override
+    public void updatePlayerTarget(UUID uid, boolean active, boolean forClient) {
+        this.playerTargetList.put(uid, active);
+        if( forClient ) {
+            this.updatedPlayerTargets.add(uid);
+        }
+    }
+
+    @Override
+    public void updateAllEntityTargets(boolean active, boolean forClient) {
+        this.entityTargetList.entrySet().forEach(entry -> {
+            entry.setValue(active);
+            if( forClient ) {
                 this.updatedEntityTargets.add(entry.getKey());
             }
         });
     }
 
     @Override
-    public void updatePlayerTarget(UUID uid, boolean active) {
-        this.playerTargetList.put(uid, active);
-        this.updatedPlayerTargets.add(uid);
-    }
-
-    @Override
-    public void updateAllEntityTargets(boolean active) {
-        this.entityTargetList.entrySet().forEach(entry -> {
-            entry.setValue(active);
-            this.updatedEntityTargets.add(entry.getKey());
-        });
-
-//        Arrays.stream(keys).filter(r -> Targets.canBeTargeted(r, this.turret.getAttackType())).forEach(r -> this.entityTargetList.put(r, true));
-    }
-
-    @Override
-    public void updateAllPlayerTargets(boolean active) {
+    public void updateAllPlayerTargets(boolean active, boolean forClient) {
         this.playerTargetList.entrySet().forEach(entry -> {
             entry.setValue(true);
-            this.updatedPlayerTargets.add(entry.getKey());
+            if( forClient ) {
+                this.updatedPlayerTargets.add(entry.getKey());
+            }
         });
-
-//        for( UUID uuid : uuids ) {
-//            if( uuid != null ) {
-//                this.playerTargetList.put(uuid, true);
-//            }
-//        }
     }
 
-    public Map<ResourceLocation, Boolean> grabUpdatedCreatures() { //TODO: figure out why updatedEntityTargets contains ALL targets
+    public Map<ResourceLocation, Boolean> grabUpdatedCreatures() {
         Map<ResourceLocation, Boolean> ret = this.entityTargetList.entrySet().stream().filter(e -> this.updatedEntityTargets.contains(e.getKey()))
                                                                   .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         this.updatedEntityTargets.clear();

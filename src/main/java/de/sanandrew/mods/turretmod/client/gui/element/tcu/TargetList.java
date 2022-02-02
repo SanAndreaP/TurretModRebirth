@@ -15,11 +15,13 @@ import de.sanandrew.mods.turretmod.client.gui.tcu.TcuTargetPage;
 import de.sanandrew.mods.turretmod.init.config.Targets;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.ResourceLocation;
+import org.apache.logging.log4j.util.Strings;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -29,6 +31,8 @@ public class TargetList
 {
     public static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "tcu_target_list");
 
+    private String filterStr;
+
     public TargetList(int[] areaSize, int scrollHeight, float maxScrollDelta, int[] scrollbarPos, ScrollButton scrollButton, IGui gui, GuiElementInst[] elements) {
         super(areaSize, scrollHeight, true, maxScrollDelta, scrollbarPos, scrollButton, gui);
 
@@ -37,7 +41,13 @@ public class TargetList
 
     @Override
     protected List<GuiElementInst> sortAndFilter(List<GuiElementInst> elements) {
-        return elements.stream().sorted(this::compareTargets).collect(Collectors.toList());
+        return elements.stream().sorted(this::compareTargets).filter(this::filterTarget).collect(Collectors.toList());
+    }
+
+    public void filter(IGui gui, String filterStr) {
+        this.filterStr = filterStr;
+
+        this.update(gui);
     }
 
     private int compareTargets(GuiElementInst e1, GuiElementInst e2) {
@@ -65,6 +75,14 @@ public class TargetList
         }
 
         return 0;
+    }
+
+    private boolean filterTarget(GuiElementInst e) {
+        if( Strings.isNotBlank(this.filterStr) ) {
+            return e.get(Target.class).text.getString().toLowerCase(Locale.ROOT).contains(this.filterStr.toLowerCase(Locale.ROOT));
+        }
+
+        return true;
     }
 
     public static class Builder

@@ -4,18 +4,17 @@ import com.google.common.collect.Range;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ScrollArea;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ScrollButton;
-import de.sanandrew.mods.sanlib.lib.client.util.GuiUtils;
 import org.apache.commons.lang3.mutable.MutableInt;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -23,19 +22,38 @@ import java.util.function.Function;
 public class StackedScrollArea
         extends ScrollArea
 {
+    private final List<GuiElementInst> allElements = new ArrayList<>();
+
     public StackedScrollArea(int[] areaSize, int scrollHeight, boolean rasterized, float maxScrollDelta, int[] scrollbarPos, ScrollButton scrollButton, IGui gui) {
         super(areaSize, scrollHeight, rasterized, maxScrollDelta, scrollbarPos, scrollButton, gui);
+    }
+
+    @Override
+    public void put(Range<Integer> id, @Nonnull GuiElementInst child) {
+        super.put(id, child);
+
+        this.allElements.add(child);
+    }
+
+    @Override
+    public GuiElementInst remove(Range<Integer> id) {
+        GuiElementInst elem = super.remove(id);
+
+        this.allElements.remove(elem);
+
+        return elem;
     }
 
     @Override
     public void update(IGui gui) {
         MutableInt           updatePosY    = new MutableInt(0);
         List<GuiElementInst> elementsIntrn = new ArrayList<>();
-        elementsIntrn.addAll(this.elements.asMapOfRanges().values());
+        elementsIntrn.addAll(this.allElements);
         elementsIntrn.addAll(this.prebuiltElements);
 
         if( !this.prebuiltElements.isEmpty() ) {
             this.prebuiltElements.forEach(e -> e.get().setup(gui, e));
+            this.allElements.addAll(this.prebuiltElements);
         }
 
         this.elements.clear();

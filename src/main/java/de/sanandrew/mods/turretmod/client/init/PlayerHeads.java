@@ -57,6 +57,11 @@ public final class PlayerHeads
             } else {
                 p = PLAYER_PROFILES[0];
             }
+
+            if( p == null ) {
+                p = new GameProfile(null, "null");
+            }
+
             lastHead = new Tuple(System.currentTimeMillis(), p);
         }
 

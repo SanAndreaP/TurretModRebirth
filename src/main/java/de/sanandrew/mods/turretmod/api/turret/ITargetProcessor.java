@@ -95,15 +95,15 @@ public interface ITargetProcessor
 
     Map<UUID, Boolean> getPlayerTargets();
 
-    void updateEntityTarget(ResourceLocation res, boolean active);
+    void updateEntityTarget(ResourceLocation res, boolean active, boolean forClient);
 
-    void updateEntityTargets(EntityClassification res, boolean active);
+    void updateEntityTargets(EntityClassification res, boolean active, boolean forClient);
 
-    void updatePlayerTarget(UUID uid, boolean active);
+    void updatePlayerTarget(UUID uid, boolean active, boolean forClient);
 
-    void updateAllEntityTargets(boolean active);
+    void updateAllEntityTargets(boolean active, boolean forClient);
 
-    void updateAllPlayerTargets(boolean active);
+    void updateAllPlayerTargets(boolean active, boolean forClient);
 
     ITextComponent getTargetName();
 
