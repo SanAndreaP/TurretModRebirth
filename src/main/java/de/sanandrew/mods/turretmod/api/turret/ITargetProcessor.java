@@ -111,13 +111,13 @@ public interface ITargetProcessor
 
     void onTickClient();
 
-    boolean isEntityBlacklist();
+    boolean isEntityDenyList();
 
-    boolean isPlayerBlacklist();
+    boolean isPlayerDenyList();
 
-    void setEntityBlacklist(boolean isBlacklist);
+    void setEntityDenyList(boolean isDenyList);
 
-    void setPlayerBlacklist(boolean isBlacklist);
+    void setPlayerDenyList(boolean isDenyList);
 
     enum ApplyType {
         ADD,

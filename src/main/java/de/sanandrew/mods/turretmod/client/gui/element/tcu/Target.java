@@ -1,12 +1,15 @@
 package de.sanandrew.mods.turretmod.client.gui.element.tcu;
 
 import com.google.gson.JsonObject;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import de.sanandrew.mods.sanlib.lib.client.gui.EmptyGuiElement;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
+import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ButtonSL;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.DynamicText;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ElementParent;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuScreen;
@@ -30,12 +33,15 @@ public class Target
     static final String LABEL = "label";
     static final String ICON = "icon";
 
-    private final ITurretEntity    turret;
-    private final int              w;
-    private final int              h;
+    private final ITurretEntity turret;
+    private final int           w;
+    private final int           h;
+
     final ResourceLocation creatureId;
     final UUID             playerId;
-    final ITextComponent text;
+    final ITextComponent   text;
+
+    private boolean isHovering;
 
     public Target(ITurretEntity turret, ResourceLocation creatureId, int w, int h) {
         this.turret = turret;
@@ -67,17 +73,22 @@ public class Target
 
         this.setTargetToggle();
 
-        Button.IPressable pFunc = btn -> {
-            boolean activate = this.get(TOGGLE_BUTTON_OFF).get(ButtonSL.class).isButton(btn);
-            if( this.isCreature() ) {
-                TurretPlayerActionPacket.setTarget(this.turret, activate, this.creatureId, null);
-            } else if( this.isPlayer() ) {
-                TurretPlayerActionPacket.setTarget(this.turret, activate, this.playerId);
-            }
-        };
+        MiscUtils.accept(this.get(TOGGLE_BUTTON_ON).get(ButtonSL.class), b -> {
+            b.setFunction(this::onToggleBtnPress);
+            b.setHoverFunction((g, x, y, mx, my) -> this.isHovering);
+        });
+        MiscUtils.accept(this.get(TOGGLE_BUTTON_OFF).get(ButtonSL.class), b -> {
+            b.setFunction(this::onToggleBtnPress);
+            b.setHoverFunction((g, x, y, mx, my) -> this.isHovering);
+        });
+    }
 
-        this.get(TOGGLE_BUTTON_ON).get(ButtonSL.class).setFunction(pFunc);
-        this.get(TOGGLE_BUTTON_OFF).get(ButtonSL.class).setFunction(pFunc);
+    @Override
+    public void render(IGui gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, GuiElementInst inst) {
+        this.isHovering = IGuiElement.isHovering(gui, x, y, mouseX, mouseY, this.w, this.h);
+        this.get(LABEL).get(Text.class).setColor(this.isHovering ? "hover" : null);
+
+        super.render(gui, stack, partTicks, x, y, mouseX, mouseY, inst);
     }
 
     @Override
@@ -96,6 +107,15 @@ public class Target
 
         this.get(TOGGLE_BUTTON_OFF).get(ButtonSL.class).setVisible(!checked);
         this.get(TOGGLE_BUTTON_ON).get(ButtonSL.class).setVisible(checked);
+    }
+
+    private void onToggleBtnPress(Button btn) {
+        boolean activate = this.get(TOGGLE_BUTTON_OFF).get(ButtonSL.class).isButton(btn);
+        if( this.isCreature() ) {
+            TurretPlayerActionPacket.setCreatureTarget(this.turret, activate, this.creatureId, null);
+        } else if( this.isPlayer() ) {
+            TurretPlayerActionPacket.setPlayerTarget(this.turret, activate, this.playerId);
+        }
     }
 
     @Override
@@ -186,6 +206,13 @@ public class Target
         }
 
         private void loadLabel(IGui gui, JsonObject lblData) {
+            if( !lblData.has("color") ) {
+                JsonObject color = new JsonObject();
+                JsonUtils.addJsonProperty(color, "default", "0xFF000000");
+                JsonUtils.addJsonProperty(color, "hover", "0xFF339900");
+                lblData.add("color", color);
+            }
+
             DynamicText.Builder lblB = DynamicText.Builder.buildFromJson(gui, lblData);
             this.label = new GuiElementInst(JsonUtils.getIntArray(lblData.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] { 16, 2 }, Range.is(2)),
                                             lblB.get(gui)).initialize(gui);

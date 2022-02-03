@@ -47,6 +47,9 @@ public class UpdateTurretStatePacket
     private final Map<ResourceLocation, Boolean> creatureTargets;
     private final Map<UUID, Boolean>             playerTargets;
 
+    private final boolean isCreatureDenyList;
+    private final boolean isPlayerDenyList;
+
     public UpdateTurretStatePacket(ITurretEntity turret) {
         this.turretId = turret.get().getId();
         TargetProcessor tgtProc = (TargetProcessor) turret.getTargetProcessor();
@@ -60,6 +63,8 @@ public class UpdateTurretStatePacket
         this.isShooting = tgtProc.isShooting();
         this.creatureTargets = tgtProc.grabUpdatedCreatures();
         this.playerTargets = tgtProc.grabUpdatedPlayers();
+        this.isCreatureDenyList = tgtProc.isEntityDenyList();
+        this.isPlayerDenyList = tgtProc.isPlayerDenyList();
 
         byte[] dData = new byte[0];
         try( ByteArrayOutputStream bos = new ByteArrayOutputStream(); ObjectOutputStream oos = new ObjectOutputStream(bos) ) {
@@ -87,6 +92,8 @@ public class UpdateTurretStatePacket
         for( int i = 0, max = buffer.readInt(); i < max; i++ ) {
             this.playerTargets.put(buffer.readUUID(), buffer.readBoolean());
         }
+        this.isCreatureDenyList = buffer.readBoolean();
+        this.isPlayerDenyList = buffer.readBoolean();
 
         this.delegateData = new byte[buffer.readInt()];
         if( this.delegateData.length > 0 ) {
@@ -112,6 +119,8 @@ public class UpdateTurretStatePacket
             buffer.writeUUID(e.getKey());
             buffer.writeBoolean(e.getValue());
         }
+        buffer.writeBoolean(this.isCreatureDenyList);
+        buffer.writeBoolean(this.isPlayerDenyList);
 
         buffer.writeInt(this.delegateData.length);
         buffer.writeBytes(this.delegateData);
@@ -126,7 +135,7 @@ public class UpdateTurretStatePacket
             if( e instanceof ITurretEntity ) {
                 ITurretEntity turret = (ITurretEntity) e;
                 ((TargetProcessor) turret.getTargetProcessor()).updateClientState(this.entityToAttackId, this.currAmmoCount, this.ammoStack, this.isShooting,
-                                                                                  this.creatureTargets, this.playerTargets);
+                                                                                  this.creatureTargets, this.playerTargets, this.isCreatureDenyList, this.isPlayerDenyList);
 
                 if( this.delegateData.length > 0 ) {
                     try( ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(this.delegateData)) ) {

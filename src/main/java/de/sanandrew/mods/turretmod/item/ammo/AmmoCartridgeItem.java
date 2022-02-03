@@ -113,7 +113,9 @@ public class AmmoCartridgeItem
     public void appendHoverText(@Nonnull ItemStack stack, @Nullable World level, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         AmmoCartridgeInventory inv = getInventory(stack);
         if( inv != null && !inv.isEmpty() ) {
-            tooltip.add(new TranslationTextComponent(this.getDescriptionId() + ".stored", inv.getTotalAmmoCount(), AmmunitionRegistry.INSTANCE.getItem(inv.getAmmoType().getId()).getDisplayName()));
+            ItemStack infoStack = inv.getAmmoTypeItem();
+            tooltip.add(new TranslationTextComponent(this.getDescriptionId() + ".stored", inv.getTotalAmmoCount(), infoStack.getDisplayName()));
+            infoStack.getItem().appendHoverText(infoStack, level, tooltip, flag);
         }
 
         super.appendHoverText(stack, level, tooltip, flag);

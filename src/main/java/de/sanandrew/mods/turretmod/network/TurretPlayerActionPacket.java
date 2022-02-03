@@ -12,6 +12,7 @@ import de.sanandrew.mods.sanlib.lib.Tuple;
 import de.sanandrew.mods.sanlib.lib.network.SimpleMessage;
 import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
@@ -40,14 +41,16 @@ public class TurretPlayerActionPacket
     private static final byte RENAME = 4;
     private static final byte SET_TARGET_CREATURE = 5;
     private static final byte SET_TARGET_PLAYER = 6;
+    private static final byte SET_FILTERTYPE_CREATURE = 7;
+    private static final byte SET_FILTERTYPE_PLAYER = 8;
 
     private final int  turretId;
     private final byte actionId;
 
     private String customName;
 
-    private boolean              targetActivate;
-    private ResourceLocation     targetCreatureId;
+    private boolean          targetFlag;
+    private ResourceLocation targetCreatureId;
     private EntityClassification targetCreatureType;
     private UUID                 targetPlayerId;
 
@@ -63,14 +66,14 @@ public class TurretPlayerActionPacket
 
     private TurretPlayerActionPacket(ITurretEntity turret, boolean targetActivate, ResourceLocation targetCreatureId, EntityClassification targetCreatureType) {
         this(turret, SET_TARGET_CREATURE);
-        this.targetActivate = targetActivate;
+        this.targetFlag = targetActivate;
         this.targetCreatureId = targetCreatureId;
         this.targetCreatureType = targetCreatureType;
     }
 
     private TurretPlayerActionPacket(ITurretEntity turret, boolean targetActivate, UUID targetPlayerId) {
         this(turret, SET_TARGET_PLAYER);
-        this.targetActivate = targetActivate;
+        this.targetFlag = targetActivate;
         this.targetPlayerId = targetPlayerId;
     }
 
@@ -81,21 +84,15 @@ public class TurretPlayerActionPacket
         if( this.actionId == RENAME ) {
             this.customName = buffer.readBoolean() ? buffer.readUtf(260) : null;
         } else if( this.actionId == SET_TARGET_CREATURE ) {
-            this.targetActivate = buffer.readBoolean();
+            this.targetFlag = buffer.readBoolean();
             this.targetCreatureId = buffer.readBoolean() ? buffer.readResourceLocation() : null;
-            this.targetCreatureType = buffer.readBoolean() ? readTargetType(buffer) : null;
+            this.targetCreatureType = buffer.readBoolean() ? EntityClassification.byName(buffer.readUtf()) : null;
         } else if( this.actionId == SET_TARGET_PLAYER ) {
-            this.targetActivate = buffer.readBoolean();
+            this.targetFlag = buffer.readBoolean();
             this.targetPlayerId = buffer.readBoolean() ? buffer.readUUID() : null;
+        } else if( this.actionId == SET_FILTERTYPE_CREATURE || this.actionId == SET_FILTERTYPE_PLAYER ) {
+            this.targetFlag = buffer.readBoolean();
         }
-    }
-
-    private static EntityClassification readTargetType(PacketBuffer buffer) {
-        try {
-            return buffer.readWithCodec(EntityClassification.CODEC);
-        } catch( IOException ex ) { /* ignored */ }
-
-        return null;
     }
 
     @Override
@@ -106,12 +103,14 @@ public class TurretPlayerActionPacket
         if( this.actionId == RENAME ) {
             writeOptional(this.customName != null, buffer, b -> b.writeUtf(this.customName, 260));
         } else if( this.actionId == SET_TARGET_CREATURE ) {
-            buffer.writeBoolean(this.targetActivate);
+            buffer.writeBoolean(this.targetFlag);
             writeOptional(this.targetCreatureId != null, buffer, b -> b.writeResourceLocation(this.targetCreatureId));
-            writeOptional(this.targetCreatureType != null, buffer, b -> b.writeWithCodec(EntityClassification.CODEC, this.targetCreatureType));
+            writeOptional(this.targetCreatureType != null, buffer, b -> b.writeUtf(this.targetCreatureType.getName()));
         } else if( this.actionId == SET_TARGET_PLAYER ) {
-            buffer.writeBoolean(this.targetActivate);
+            buffer.writeBoolean(this.targetFlag);
             writeOptional(this.targetPlayerId != null, buffer, b -> b.writeUUID(this.targetPlayerId));
+        } else if( this.actionId == SET_FILTERTYPE_CREATURE || this.actionId == SET_FILTERTYPE_PLAYER ) {
+            buffer.writeBoolean(this.targetFlag);
         }
     }
 
@@ -159,10 +158,16 @@ public class TurretPlayerActionPacket
                     rename(turretInst, this.customName);
                     break;
                 case SET_TARGET_CREATURE:
-                    setTarget(turretInst, this.targetActivate, this.targetCreatureId, this.targetCreatureType);
+                    setCreatureTarget(turretInst, this.targetFlag, this.targetCreatureId, this.targetCreatureType);
                     break;
                 case SET_TARGET_PLAYER:
-                    setTarget(turretInst, this.targetActivate, this.targetPlayerId);
+                    setPlayerTarget(turretInst, this.targetFlag, this.targetPlayerId);
+                    break;
+                case SET_FILTERTYPE_CREATURE:
+                    setFilterType(turretInst, this.targetFlag, true);
+                    break;
+                case SET_FILTERTYPE_PLAYER:
+                    setFilterType(turretInst, this.targetFlag, false);
                     break;
                 default:
                     // no-op
@@ -210,7 +215,7 @@ public class TurretPlayerActionPacket
         return false;
     }
 
-    public static void setTarget(ITurretEntity turret, boolean activated, ResourceLocation creatureId, EntityClassification creatureType) {
+    public static void setCreatureTarget(ITurretEntity turret, boolean activated, ResourceLocation creatureId, EntityClassification creatureType) {
         if( turret.get().level.isClientSide ) {
             TurretModRebirth.NETWORK.sendToServer(new TurretPlayerActionPacket(turret, activated, creatureId, creatureType));
         } else {
@@ -226,7 +231,7 @@ public class TurretPlayerActionPacket
         }
     }
 
-    public static void setTarget(ITurretEntity turret, boolean activated, UUID playerId) {
+    public static void setPlayerTarget(ITurretEntity turret, boolean activated, UUID playerId) {
         if( turret.get().level.isClientSide ) {
             TurretModRebirth.NETWORK.sendToServer(new TurretPlayerActionPacket(turret, activated, playerId));
         } else {
@@ -235,6 +240,23 @@ public class TurretPlayerActionPacket
                 tp.updatePlayerTarget(playerId, activated, true);
             } else {
                 tp.updateAllPlayerTargets(activated, true);
+            }
+            turret.updateState();
+        }
+    }
+
+    public static void setFilterType(ITurretEntity turret, boolean isDenyList, boolean isCreatureList) {
+        if( turret.get().level.isClientSide ) {
+            MiscUtils.accept(new TurretPlayerActionPacket(turret, isCreatureList ? SET_FILTERTYPE_CREATURE : SET_FILTERTYPE_PLAYER), p -> {
+                p.targetFlag = isDenyList;
+                TurretModRebirth.NETWORK.sendToServer(p);
+            });
+        } else {
+            ITargetProcessor tp = turret.getTargetProcessor();
+            if( isCreatureList ) {
+                tp.setEntityDenyList(isDenyList);
+            } else {
+                tp.setPlayerDenyList(isDenyList);
             }
             turret.updateState();
         }

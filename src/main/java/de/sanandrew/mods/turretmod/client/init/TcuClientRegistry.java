@@ -60,7 +60,7 @@ public final class TcuClientRegistry
     public static void registerTcuClient(ITcuClientRegistry registry) {
         registry.registerTcuScreen(TurretControlUnit.INFO, new SimpleItem(Items.BOOK), TcuInfoPage::new);
         registry.registerTcuScreen(TurretControlUnit.TARGETS_CREATURES, new SimpleItem(Items.ZOMBIE_HEAD), TcuTargetPage.Creatures::new);
-        registry.registerTcuScreen(TurretControlUnit.TARGETS_PLAYERS, de.sanandrew.mods.turretmod.client.init.PlayerHeads::getRandomSkull, s -> null);
+        registry.registerTcuScreen(TurretControlUnit.TARGETS_PLAYERS, de.sanandrew.mods.turretmod.client.init.PlayerHeads::getRandomSkull, TcuTargetPage.Players::new);
 
         registry.registerTcuInfoProvider(0, new NameProvider());
         registry.registerTcuInfoProvider(1, new HealthProvider());

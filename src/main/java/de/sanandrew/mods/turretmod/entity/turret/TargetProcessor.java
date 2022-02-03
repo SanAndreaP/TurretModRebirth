@@ -476,23 +476,23 @@ public final class TargetProcessor
     }
 
     @Override
-    public boolean isEntityBlacklist() {
+    public boolean isEntityDenyList() {
         return this.isEntityTargetListDenying;
     }
 
     @Override
-    public boolean isPlayerBlacklist() {
+    public boolean isPlayerDenyList() {
         return this.isPlayerTargetListDenying;
     }
 
     @Override
-    public void setEntityBlacklist(boolean isBlacklist) {
-        this.isEntityTargetListDenying = isBlacklist;
+    public void setEntityDenyList(boolean isDenyList) {
+        this.isEntityTargetListDenying = isDenyList;
     }
 
     @Override
-    public void setPlayerBlacklist(boolean isBlacklist) {
-        this.isPlayerTargetListDenying = isBlacklist;
+    public void setPlayerDenyList(boolean isDenyList) {
+        this.isPlayerTargetListDenying = isDenyList;
     }
 
     @Override
@@ -694,7 +694,8 @@ public final class TargetProcessor
     }
 
     public void updateClientState(int targetId, int ammoCount, @Nonnull ItemStack ammoStack, boolean isShooting,
-                                  Map<ResourceLocation, Boolean> updatedEntityTargets, Map<UUID, Boolean> updatedPlayerTargets)
+                                  Map<ResourceLocation, Boolean> updatedEntityTargets, Map<UUID, Boolean> updatedPlayerTargets,
+                                  boolean isCreatureDenyList, boolean isPlayerDenyList)
     {
         LivingEntity turretL = this.turret.get();
         if( turretL.level.isClientSide ) {
@@ -705,6 +706,9 @@ public final class TargetProcessor
 
             this.entityTargetList.putAll(updatedEntityTargets);
             this.playerTargetList.putAll(updatedPlayerTargets);
+
+            this.isEntityTargetListDenying = isCreatureDenyList;
+            this.isPlayerTargetListDenying = isPlayerDenyList;
         }
     }
 
