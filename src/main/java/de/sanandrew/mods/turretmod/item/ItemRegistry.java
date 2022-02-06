@@ -13,6 +13,7 @@ import de.sanandrew.mods.turretmod.entity.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.item.ammo.AmmoCartridgeItem;
 import de.sanandrew.mods.turretmod.item.ammo.AmmoItem;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
+import de.sanandrew.mods.turretmod.item.upgrades.UpgradeRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
@@ -27,7 +28,7 @@ public class ItemRegistry
 {
     public static final Map<ResourceLocation, TurretItem> TURRET_PLACERS      = new LinkedHashMap<>();
     public static final Map<ResourceLocation, AmmoItem>   TURRET_AMMO         = new LinkedHashMap<>();
-//    public static final Map<ResourceLocation, ItemUpgrade> TURRET_UPGRADES = new LinkedHashMap<>();
+    public static final Map<ResourceLocation, ItemUpgrade> TURRET_UPGRADES    = new LinkedHashMap<>();
 //    public static final Map<ResourceLocation, ItemRepairKit> TURRET_REPAIRKITS = new LinkedHashMap<>();
     public static final TurretControlUnit                 TURRET_CONTROL_UNIT = new TurretControlUnit();
 //    public static final ItemAssemblyUpgrade ASSEMBLY_UPG_AUTO = new ItemAssemblyUpgrade.Automation();
@@ -41,6 +42,7 @@ public class ItemRegistry
     public static void registerItems(RegistryEvent.Register<Item> event) {
         TurretRegistry.INSTANCE.registerItems(event, TmrConstants.ID);
         AmmunitionRegistry.INSTANCE.registerItems(event, TmrConstants.ID);
+        UpgradeRegistry.INSTANCE.registerItems(event, TmrConstants.ID);
 //        event.getRegistry().registerAll(TURRET_UPGRADES.values().toArray(new Item[0]));
 //        event.getRegistry().registerAll(TURRET_REPAIRKITS.values().toArray(new Item[0]));
         event.getRegistry().registerAll(TURRET_CONTROL_UNIT.setRegistryName(new ResourceLocation(TmrConstants.ID, "turret_control_unit")),

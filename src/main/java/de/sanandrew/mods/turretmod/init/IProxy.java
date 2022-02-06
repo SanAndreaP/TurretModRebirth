@@ -1,6 +1,7 @@
 package de.sanandrew.mods.turretmod.init;
 
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
+import de.sanandrew.mods.turretmod.world.PlayerList;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -16,7 +17,7 @@ public interface IProxy
 {
     void setupClient(FMLClientSetupEvent event);
 
-    void fillPlayerListClient(Map<UUID, ITextComponent> map);
+    void fillPlayerListClient(Map<UUID, PlayerList.PlayerData> map);
 
     boolean checkTurretGlowing(ITurretEntity turretInst);
 
@@ -25,4 +26,6 @@ public interface IProxy
     IRenderClassProvider getRenderClassProvider();
 
     void openTcuGuiRemote(ItemStack stack, ITurretEntity turret, ResourceLocation type);
+
+    boolean isSneakPressed();
 }

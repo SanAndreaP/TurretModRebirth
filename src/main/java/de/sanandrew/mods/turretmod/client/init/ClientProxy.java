@@ -74,8 +74,8 @@ public class ClientProxy
     }
 
     @Override
-    public void fillPlayerListClient(Map<UUID, ITextComponent> map) {
-        PlayerList.putPlayersClient(map);
+    public void fillPlayerListClient(Map<UUID, PlayerList.PlayerData> map) {
+        PlayerList.syncPlayersClient(map);
     }
 
     @Override
@@ -115,5 +115,10 @@ public class ClientProxy
         if( tcuHeld != null ) {
             TurretModRebirth.NETWORK.sendToServer(new OpenRemoteTcuGuiPacket(turret, tcuHeld, type));
         }
+    }
+
+    @Override
+    public boolean isSneakPressed() {
+        return Minecraft.getInstance().options.keyShift.isDown();
     }
 }

@@ -20,8 +20,6 @@ import java.util.UUID;
 @SuppressWarnings("unused")
 public interface ITargetProcessor
 {
-    EventBus TARGET_BUS = new EventBus(BusBuilder.builder().setTrackPhases(false));
-
     boolean addAmmo(@Nonnull ItemStack stack);
 
     boolean addAmmo(@Nonnull ItemStack stack, ICapabilityProvider excessInv);

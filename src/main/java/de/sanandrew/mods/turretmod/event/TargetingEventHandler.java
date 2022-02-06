@@ -6,14 +6,20 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.event;
 
-import de.sanandrew.mods.turretmod.api.event.TargetingEvent;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
+import de.sanandrew.mods.turretmod.api.turret.TargetingEvent;
+import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
+@Mod.EventBusSubscriber(modid = TmrConstants.ID)
 public class TargetingEventHandler
 {
     @SubscribeEvent
-    public void onProcessorTick(TargetingEvent.ProcessorTick event) {
+    public static void onProcessorTick(TargetingEvent.ProcessorTick event) {
         ITurretEntity turret = event.processor.getTurret();
 
         //TODO: reimplement forcefield turret
@@ -25,7 +31,7 @@ public class TargetingEventHandler
     }
 
     @SubscribeEvent
-    public void onTargetCheck(TargetingEvent.TargetCheck event) {
+    public static void onTargetCheck(TargetingEvent.TargetCheck event) {
         ITurretEntity turret = event.processor.getTurret();
 
         //TODO: reimplement cryolator turret
@@ -33,7 +39,7 @@ public class TargetingEventHandler
 //            event.setResult(Event.Result.DENY);
 //        }
 
-        //TODO: reimplement upgrades
+        //TODO: reimplement smart targeting upgrade
 //        if( turret.getUpgradeProcessor().hasUpgrade(Upgrades.SMART_TGT) ) {
 //            AdvTargetSettings settings = event.processor.getTurretInst().getUpgradeProcessor().getUpgradeInstance(Upgrades.SMART_TGT.getId());
 //            if( settings != null ) {
@@ -46,7 +52,7 @@ public class TargetingEventHandler
     }
 
     @SubscribeEvent
-    public void onShooting(TargetingEvent.Shooting event) {
+    public static void onShooting(TargetingEvent.Shooting event) {
         ITurretEntity turret = event.processor.getTurret();
 
         //TODO: reimplement shotgun turret
@@ -77,25 +83,24 @@ public class TargetingEventHandler
     }
 
     @SubscribeEvent
-    public void onAmmoConsumption(TargetingEvent.ConsumeAmmo event) {
+    public static void onAmmoConsumption(TargetingEvent.ConsumeAmmo event) {
         ITurretEntity turret = event.processor.getTurret();
 
-        //TODO: reimplement upgrades
-//        if( turret.getUpgradeProcessor().hasUpgrade(Upgrades.ECONOMY_INF) && event.processor.getAmmoCount() == event.processor.getMaxAmmoCapacity() ) {
-//            event.setResult(Event.Result.DENY);
-//        } else {
-//            if( turret.getUpgradeProcessor().hasUpgrade(Upgrades.ECONOMY_I) && MiscUtils.RNG.randomFloat() < 0.15F ) {
-//                event.setResult(Event.Result.DENY);
-//            }
-//            if( turret.getUpgradeProcessor().hasUpgrade(Upgrades.ECONOMY_II) && MiscUtils.RNG.randomFloat() < 0.35F ) {
-//                event.setResult(Event.Result.DENY);
-//            }
-//        }
+        if( turret.getUpgradeProcessor().hasUpgrade(Upgrades.ECONOMY_INF) && event.processor.getAmmoCount() == event.processor.getMaxAmmoCapacity() ) {
+            event.setResult(Event.Result.DENY);
+        } else {
+            if( turret.getUpgradeProcessor().hasUpgrade(Upgrades.ECONOMY_I) && MiscUtils.RNG.randomFloat() < 0.15F ) {
+                event.setResult(Event.Result.DENY);
+            }
+            if( turret.getUpgradeProcessor().hasUpgrade(Upgrades.ECONOMY_II) && MiscUtils.RNG.randomFloat() < 0.35F ) {
+                event.setResult(Event.Result.DENY);
+            }
+        }
     }
 
     //TODO: ??????????
 //    @SubscribeEvent
-//    public void onEntityAttackTarget(LivingSetAttackTargetEvent event) {
+//    public static void onEntityAttackTarget(LivingSetAttackTargetEvent event) {
 //        Entity e = event.getEntity();
 //        if( event.getTarget() == null && !e.level.isClientSide ) {
 ////            TurretModRebirth.NETWORK.sendToAllNear(new PacketSyncAttackTarget(e, null), e.dimension, e.posX, e.posY, e.posZ, 64.0D);

@@ -7,7 +7,7 @@ import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuScreen;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.PlayerIcon;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.PlayerIconInfo;
 import de.sanandrew.mods.turretmod.init.Lang;
 import net.minecraft.util.text.ITextComponent;
 import org.apache.commons.lang3.Range;
@@ -36,7 +36,7 @@ public class OwnerProvider
 
     @Override
     public void setup(IGui gui, ITurretEntity turret, int w, int h) {
-        this.icon.get(PlayerIcon.class).setPlayerNameSupplier(() -> turret.getOwnerName().getString());
+        this.icon.get(PlayerIconInfo.class).setPlayerNameSupplier(() -> turret.getOwnerName().getString());
 
         super.setup(gui, turret, w, h);
     }
@@ -67,7 +67,7 @@ public class OwnerProvider
             data.add("playerUvIds", puv);
         }
 
-        PlayerIcon iconElem = PlayerIcon.Builder.fromJson(gui, data);
+        PlayerIconInfo iconElem = PlayerIconInfo.Builder.fromJson(gui, data);
 
         return new GuiElementInst(JsonUtils.getIntArray(data.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] { 0, 0}, Range.is(2)), iconElem).initialize(gui);
     }

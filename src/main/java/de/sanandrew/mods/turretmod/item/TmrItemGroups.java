@@ -12,7 +12,6 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.init.ResourceOrderer;
-import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -75,32 +74,33 @@ public class TmrItemGroups
         }
     };
 
-//    public static final ItemGroup UPGRADES = new ItemGroup(TmrConstants.ID + ":upgrades") {
-//        private NonNullList<ItemStack> tabIcons = null;
-//
-//        @Override
-//        @OnlyIn(Dist.CLIENT)
-//        public ItemStack getIcon() {
-//            return createIcon();
-//        }
-//
-//        @Nonnull
-//        @Override
-//        @OnlyIn(Dist.CLIENT)
-//        public ItemStack createIcon() {
-//            if( this.tabIcons == null ) {
-//                this.tabIcons = NonNullList.create();
-//                ItemRegistry.TURRET_UPGRADES.forEach((rl, item) -> this.tabIcons.add(new ItemStack(item)));
-//            }
-//
-//            return this.tabIcons.get((int) (System.currentTimeMillis() / 4250L) % this.tabIcons.size());
-//        }
-//
-//        @Override
-//        @OnlyIn(Dist.CLIENT)
-//        public void fill(@Nonnull NonNullList<ItemStack> items) {
-//            super.fill(items);
-//            items.sort(ResourceOrderer.getComparator());
-//        }
-//    };
+    public static final ItemGroup UPGRADES = new ItemGroup(TmrConstants.ID + ":upgrades") {
+        private NonNullList<ItemStack> tabIcons = null;
+
+        @Nonnull
+        @Override
+        @OnlyIn(Dist.CLIENT)
+        public ItemStack getIconItem() {
+            return makeIcon();
+        }
+
+        @Nonnull
+        @Override
+        @OnlyIn(Dist.CLIENT)
+        public ItemStack makeIcon() {
+            if( this.tabIcons == null ) {
+                this.tabIcons = NonNullList.create();
+                ItemRegistry.TURRET_UPGRADES.forEach((rl, item) -> this.tabIcons.add(new ItemStack(item)));
+            }
+
+            return this.tabIcons.get((int) (System.currentTimeMillis() / 4250L) % this.tabIcons.size());
+        }
+
+        @Override
+        @OnlyIn(Dist.CLIENT)
+        public void fillItemList(@Nonnull NonNullList<ItemStack> items) {
+            super.fillItemList(items);
+            items.sort(ResourceOrderer.getComparator());
+        }
+    };
 }

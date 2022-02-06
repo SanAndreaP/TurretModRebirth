@@ -1,6 +1,7 @@
 package de.sanandrew.mods.turretmod.init;
 
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
+import de.sanandrew.mods.turretmod.world.PlayerList;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -21,7 +22,7 @@ public class ServerProxy
     }
 
     @Override
-    public void fillPlayerListClient(Map<UUID, ITextComponent> map) {
+    public void fillPlayerListClient(Map<UUID, PlayerList.PlayerData> map) {
         // client-side only
     }
 
@@ -43,5 +44,10 @@ public class ServerProxy
     @Override
     public void openTcuGuiRemote(ItemStack stack, ITurretEntity turret, ResourceLocation type) {
         // client-side only
+    }
+
+    @Override
+    public boolean isSneakPressed() {
+        return false;
     }
 }

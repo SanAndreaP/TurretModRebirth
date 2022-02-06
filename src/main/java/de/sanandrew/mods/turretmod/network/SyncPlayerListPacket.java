@@ -12,7 +12,6 @@ import de.sanandrew.mods.sanlib.lib.network.SimpleMessage;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.world.PlayerList;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.HashMap;
@@ -23,7 +22,7 @@ import java.util.function.Supplier;
 public class SyncPlayerListPacket
         extends SimpleMessage
 {
-    private final Map<UUID, ITextComponent> players;
+    private final Map<UUID, PlayerList.PlayerData> players;
 
     public SyncPlayerListPacket() {
         this.players = PlayerList.getPlayerMap();
@@ -34,16 +33,16 @@ public class SyncPlayerListPacket
         this.players = new HashMap<>(size);
 
         for( int i = 0; i < size; i++ ) {
-            this.players.put(packetBuffer.readUUID(), packetBuffer.readComponent());
+            this.players.put(packetBuffer.readUUID(), new PlayerList.PlayerData(packetBuffer.readComponent()));
         }
     }
 
     @Override
     public void encode(PacketBuffer packetBuffer) {
         packetBuffer.writeVarInt(this.players.size());
-        for( Map.Entry<UUID, ITextComponent> player : this.players.entrySet() ) {
+        for( Map.Entry<UUID, PlayerList.PlayerData> player : this.players.entrySet() ) {
             packetBuffer.writeUUID(player.getKey());
-            packetBuffer.writeComponent(player.getValue());
+            packetBuffer.writeComponent(player.getValue().name);
         }
     }
 

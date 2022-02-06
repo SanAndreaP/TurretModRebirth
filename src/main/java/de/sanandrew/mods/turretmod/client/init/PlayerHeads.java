@@ -27,7 +27,7 @@ public final class PlayerHeads
             UUID.fromString("044d980d-5c2a-4030-95cf-cbfde69ea3cb"), // SanAndreasP
             UUID.fromString("5399b615-3440-4c66-939d-ab1375952ac3"), // Drullkus
             UUID.fromString("8c826f34-113b-4238-a173-44639c53b6e6"), // Vazkii
-            UUID.fromString("d183e5a2-a087-462a-963e-c3d7295f9ec5"), // Darkhax
+            UUID.fromString("d183e5a2-a087-462a-963e-c3d7295f9ec5") // Darkhax
     };
 
     private static final GameProfile[] PLAYER_PROFILES = new GameProfile[PLAYERS.length];

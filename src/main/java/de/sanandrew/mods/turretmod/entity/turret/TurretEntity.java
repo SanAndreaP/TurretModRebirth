@@ -18,6 +18,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRAM;
+import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.api.turret.IVariant;
 import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
@@ -29,12 +30,6 @@ import de.sanandrew.mods.turretmod.item.TurretControlUnit;
 import de.sanandrew.mods.turretmod.item.TurretItem;
 import de.sanandrew.mods.turretmod.network.UpdateTurretStatePacket;
 import de.sanandrew.mods.turretmod.tileentity.TurretCrateEntity;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.crash.CrashReport;
-import net.minecraft.crash.CrashReportCategory;
-import net.minecraft.crash.ReportedException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
@@ -43,8 +38,6 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.passive.IFlyingAnimal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -54,16 +47,13 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.ReuseableStream;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
@@ -71,10 +61,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.shapes.IBooleanFunction;
-import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -93,7 +80,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 public class TurretEntity
         extends MobEntity
@@ -114,8 +100,7 @@ public class TurretEntity
     public static final String NBT_OWNER_NAME     = "Name";
 
     private final TargetProcessor targetProc;
-    //TODO: reimplement upgrades
-//    private final UpgradeProcessor upgProc;
+    private final UpgradeProcessor upgProc;
 
     @Nonnull
     private ITurret delegate;
@@ -133,8 +118,7 @@ public class TurretEntity
         this.ownerId = UuidUtils.EMPTY_UUID;
         this.ownerName = StringTextComponent.EMPTY;
         this.targetProc = new TargetProcessor(this);
-        //TODO: reimplement upgrades
-//        this.upgProc = new UpgradeProcessor(this);
+        this.upgProc = new UpgradeProcessor(this);
         this.yRot = 0.0F;
         this.delegate = TurretRegistry.INSTANCE.getDefault();
     }
@@ -317,6 +301,7 @@ public class TurretEntity
         return pickedItem;
     }
 
+    @Override
     @Nullable
     public Entity getControllingPassenger() {
         List<Entity> list = this.getPassengers();
@@ -351,11 +336,10 @@ public class TurretEntity
         return this.targetProc;
     }
 
-    //TODO: reimplement upgrades
-//    @Override
-//    public IUpgradeProcessor getUpgradeProcessor() {
-//        return this.upgProc;
-//    }
+    @Override
+    public IUpgradeProcessor getUpgradeProcessor() {
+        return this.upgProc;
+    }
 
     @Override
     public boolean isActive() {
@@ -478,9 +462,7 @@ public class TurretEntity
 
     @Override
     public boolean canRemoteTransfer() {
-        //TODO: reimplement upgrades
-//        return this.getUpgradeProcessor().canAccessRemotely();
-        return false;
+        return this.getUpgradeProcessor().canAccessRemotely();
     }
 
     @Override
@@ -568,8 +550,7 @@ public class TurretEntity
 //        this.xxa = 0.0F; // moveStrafing
 //        this.zza = 0.0F; // moveForward
 
-        //TODO: reimplement upgrades
-//        this.upgProc.onTick();
+        this.upgProc.onTick();
 
         if( !this.level.isClientSide ) {
             this.targetProc.onTick();
@@ -658,11 +639,10 @@ public class TurretEntity
             } else if( this.targetProc.addAmmo(stack, player) ) {
                 this.onPickupSucceed(stack, player);
                 return ActionResultType.CONSUME;
-                //TODO: reimplement upgrades
-//            } else if( this.upgProc.tryApplyUpgrade(stack.copy()) ) {
-//                stack.shrink(1);
-//                this.onInteractSucceed(stack, player);
-//                return ActionResultType.SUCCESS;
+            } else if( this.upgProc.tryApplyUpgrade(stack.copy()) ) {
+                stack.shrink(1);
+                this.onPickupSucceed(stack, player);
+                return ActionResultType.SUCCESS;
             } else if( this.applyRepairKit(stack) ) {
                 stack.shrink(1);
                 this.onPickupSucceed(stack, player);
@@ -679,8 +659,7 @@ public class TurretEntity
 
         if( !this.level.isClientSide ) {
             this.targetProc.dropAmmo();
-            //TODO: reimplement upgrades
-//            this.upgProc.dropUpgrades();
+            this.upgProc.dropUpgrades();
         }
 
         //just insta-kill it
@@ -770,14 +749,14 @@ public class TurretEntity
         compound.putString(NBT_TURRET_ID, this.delegate.getId().toString());
 
         this.targetProc.save(compound);
-        //TODO: reimplement upgrades
-//        this.upgProc.writeToNbt(nbt);
+        this.upgProc.save(compound);
         compound.putBoolean(NBT_IS_ACTIVE, this.isActive());
 
-        compound.put(NBT_OWNER, new CompoundNBT() {{
-            this.putUUID(NBT_OWNER_ID, TurretEntity.this.ownerId);
-            this.putString(NBT_OWNER_NAME, ITextComponent.Serializer.toJson(TurretEntity.this.ownerName));
-        }});
+        compound.put(NBT_OWNER, MiscUtils.apply(new CompoundNBT(), c -> {
+            c.putUUID(NBT_OWNER_ID, TurretEntity.this.ownerId);
+            c.putString(NBT_OWNER_NAME, ITextComponent.Serializer.toJson(TurretEntity.this.ownerName));
+            return c;
+        }));
 
         if( this.delegate instanceof IVariantHolder ) {
             compound.putString(NBT_TURRET_VARIANT, this.getVariant().getId().toString());
@@ -797,8 +776,7 @@ public class TurretEntity
         this.loadDelegate(new ResourceLocation(compound.getString(NBT_TURRET_ID)));
 
         this.targetProc.load(compound);
-        //TODO: reimplement upgrades
-//        this.upgProc.readFromNbt(nbt);
+        this.upgProc.load(compound);
         this.setActive(compound.getBoolean(NBT_IS_ACTIVE));
 
         CompoundNBT ownerCompound = compound.getCompound(NBT_OWNER);
@@ -827,16 +805,15 @@ public class TurretEntity
 
     @Override
     public void writeSpawnData(PacketBuffer buffer) {
+        buffer.writeResourceLocation(this.delegate.getId());
+
         CompoundNBT targetProcNbt = new CompoundNBT();
         this.targetProc.save(targetProcNbt);
-
-        buffer.writeResourceLocation(this.delegate.getId());
         buffer.writeNbt(targetProcNbt);
 
-        //TODO: reimplement upgrades
-//        NBTTagCompound upgNbt = new NBTTagCompound();
-//        this.upgProc.writeToNbt(upgNbt);
-//        ByteBufUtils.writeTag(buffer, upgNbt);
+        CompoundNBT upgNbt = new CompoundNBT();
+        this.upgProc.save(upgNbt);
+        buffer.writeNbt(upgNbt);
 
         buffer.writeUUID(this.ownerId);
         buffer.writeComponent(this.ownerName);
@@ -849,8 +826,7 @@ public class TurretEntity
         this.loadDelegate(buffer.readResourceLocation());
 
         this.targetProc.load(buffer.readNbt());
-        //TODO: reimplement upgrades
-//        this.upgProc.readFromNbt(ByteBufUtils.readTag(buffer));
+        this.upgProc.load(buffer.readNbt());
 
         this.ownerId = buffer.readUUID();
         this.ownerName = buffer.readComponent();

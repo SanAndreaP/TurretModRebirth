@@ -13,12 +13,14 @@ import de.sanandrew.mods.turretmod.api.ammo.IProjectileRegistry;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuClientRegistry;
 import de.sanandrew.mods.turretmod.api.tcu.ITcuRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
+import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
 import de.sanandrew.mods.turretmod.client.init.TcuClientRegistry;
 import de.sanandrew.mods.turretmod.client.renderer.turret.LabelRegistry;
 import de.sanandrew.mods.turretmod.entity.projectile.Projectiles;
 import de.sanandrew.mods.turretmod.entity.turret.Turrets;
 import de.sanandrew.mods.turretmod.item.TurretControlUnit;
 import de.sanandrew.mods.turretmod.item.ammo.Ammunitions;
+import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -41,11 +43,11 @@ public class TmrInternalPlugin
     public void registerAmmo(IAmmunitionRegistry registry) {
         Ammunitions.register(registry);
     }
-//
-//    @Override
-//    public void registerUpgrades(IUpgradeRegistry registry) {
-////        Upgrades.initialize(registry);
-//    }
+
+    @Override
+    public void registerUpgrades(IUpgradeRegistry registry) {
+        Upgrades.initialize(registry);
+    }
 
     @Override
     public void setup() {

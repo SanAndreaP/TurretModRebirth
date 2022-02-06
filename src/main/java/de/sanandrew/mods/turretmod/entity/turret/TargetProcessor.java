@@ -43,6 +43,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.eventbus.api.Event;
@@ -205,7 +206,7 @@ public final class TargetProcessor
     @Override
     public void decrAmmo() {
         TargetingEvent.ConsumeAmmo event = new TargetingEvent.ConsumeAmmo(this, this.ammoStack, 1);
-        if( !TARGET_BUS.post(event) && event.getResult() != Event.Result.DENY ) {
+        if( !MinecraftForge.EVENT_BUS.post(event) && event.getResult() != Event.Result.DENY ) {
             this.ammoCount -= event.consumeAmount;
             if( this.ammoCount < 0 ) {
                 this.ammoCount = 0;
@@ -376,13 +377,13 @@ public final class TargetProcessor
 
     private boolean checkTargetListeners(Entity e) {
         TargetingEvent.TargetCheck event = new TargetingEvent.TargetCheck(this, e);
-        return !TARGET_BUS.post(event) && event.getResult() != Event.Result.DENY;
+        return !MinecraftForge.EVENT_BUS.post(event) && event.getResult() != Event.Result.DENY;
     }
 
     @Override
     public boolean shootProjectile() {
         TargetingEvent.Shooting event = new TargetingEvent.Shooting(this);
-        if( TARGET_BUS.post(event) ) {
+        if( MinecraftForge.EVENT_BUS.post(event) ) {
             return event.getResult() != Event.Result.DENY;
         }
 
@@ -431,7 +432,7 @@ public final class TargetProcessor
 
         AxisAlignedBB aabb = this.getAdjustedRange(true);
 
-        if( TARGET_BUS.post(new TargetingEvent.ProcessorTick(this, this.processTicks)) ) {
+        if( MinecraftForge.EVENT_BUS.post(new TargetingEvent.ProcessorTick(this, this.processTicks)) ) {
             return;
         }
 

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class PlayerIcon
+public class PlayerIconInfo
         extends Texture
 {
     protected int[][] uvs;
@@ -28,7 +28,7 @@ public class PlayerIcon
     @Nonnull
     private Supplier<String> playerNameSupplier = () -> null;
 
-    public PlayerIcon(ResourceLocation txLocation, int[] size, int[] textureSize, int[][] uvs, float[] scale, ColorObj color, Map<String, Integer> playerUvIds) {
+    public PlayerIconInfo(ResourceLocation txLocation, int[] size, int[] textureSize, int[][] uvs, float[] scale, ColorObj color, Map<String, Integer> playerUvIds) {
         super(txLocation, size, textureSize, uvs[0], scale, color);
 
         this.uvs = uvs;
@@ -80,9 +80,9 @@ public class PlayerIcon
         }
 
         @Override
-        public PlayerIcon get(IGui gui) {
+        public PlayerIconInfo get(IGui gui) {
             this.sanitize(gui);
-            return new PlayerIcon(this.texture, this.size, this.textureSize, this.uvs, this.scale, this.color, this.playerUvIds);
+            return new PlayerIconInfo(this.texture, this.size, this.textureSize, this.uvs, this.scale, this.color, this.playerUvIds);
         }
 
         public static Builder buildFromJson(IGui gui, JsonObject data) {
@@ -106,7 +106,7 @@ public class PlayerIcon
             return b;
         }
 
-        public static PlayerIcon fromJson(IGui gui, JsonObject data) {
+        public static PlayerIconInfo fromJson(IGui gui, JsonObject data) {
             return buildFromJson(gui, data).get(gui);
         }
     }

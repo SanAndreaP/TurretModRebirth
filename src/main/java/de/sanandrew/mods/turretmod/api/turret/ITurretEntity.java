@@ -43,8 +43,7 @@ public interface ITurretEntity
 
     ITargetProcessor getTargetProcessor();
 
-    //TODO: reimplement upgrades
-//    IUpgradeProcessor getUpgradeProcessor();
+    IUpgradeProcessor getUpgradeProcessor();
 
     boolean isActive();
 

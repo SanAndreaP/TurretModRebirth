@@ -224,6 +224,11 @@ public class Target
                                            iB.get(gui)).initialize(gui);
         }
 
+        private void loadPlayerIcon(IGui gui, JsonObject iconData, int w) {
+            this.icon = new GuiElementInst(JsonUtils.getIntArray(iconData.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] { w - 10, 2 }, Range.is(2)),
+                                           new PlayerIconTarget(this.playerId)).initialize(gui);
+        }
+
         public static Builder buildFromJson(IGui gui, JsonObject data, ITurretEntity turret, ResourceLocation creatureId, UUID playerId, int w, int h) {
             Builder b = new Builder(turret, creatureId, playerId, w, h);
 
@@ -232,7 +237,7 @@ public class Target
             if( creatureId != null ) {
                 b.loadCreatureIcon(gui, MiscUtils.get(data.getAsJsonObject(ICON + "Creature"), JsonObject::new), w);
             } else {
-                b.icon = new GuiElementInst(new EmptyGuiElement()); //TODO: do player icons
+                b.loadPlayerIcon(gui, MiscUtils.get(data.getAsJsonObject(ICON + "Player"), JsonObject::new), w);
             }
 
             return b;
