@@ -1,12 +1,13 @@
 package de.sanandrew.mods.turretmod.item.upgrades.leveling;
 
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
-import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeInstance;
+import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeData;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifierManager;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -24,11 +25,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 //@SuppressWarnings("FieldMayBeFinal")
-@IUpgradeInstance.Tickable
+@IUpgradeData.Syncable
 //@Category("Leveling")
 public class LevelStorage
-        implements IUpgradeInstance<LevelStorage>
+        implements IUpgradeData<LevelStorage>
 {
+    private static final String NBT_EXPERIENCE  = "Experience";
+
 //    @Value(comment = "The maximum XP a turret can gain through the Leveling upgrade. The default is 50 levels worth; see https://minecraft.gamepedia.com/Experience#Leveling_up")
     public static  int      maxXp      = 5_345; // level 50
 //    @Value(value = "stages", comment = "A JSON array defining the level stages which are applied once a turret levels up to a stage level.", reqWorldRestart = true)
@@ -50,15 +53,19 @@ public class LevelStorage
         this.cachedLevel = -1;
     }
 
-    LevelStorage(int xp) {
-        this.xp = xp;
-        this.prevXp = 0;
-        this.prevLvl = 0;
-        this.cachedLevel = -1;
+    @Override
+    public void load(ITurretEntity turretInst, @Nonnull CompoundNBT nbt) {
+        this.xp = nbt.getInt(NBT_EXPERIENCE);
     }
 
-//    @Init
+    @Override
+    public void save(ITurretEntity turretInst, @Nonnull CompoundNBT nbt) {
+        nbt.putInt(NBT_EXPERIENCE, this.xp);
+    }
+
+    //    @Init
     public static void initStages() {
+        //TODO: use datapacks for this
         stages = Stage.load(String.join("\n", stagesJson));
     }
 
@@ -94,24 +101,23 @@ public class LevelStorage
         return new String[0];
     }
 
-    @Override
-    public void fromBytes(ObjectInputStream stream) throws IOException {
-        this.xp = stream.readInt();
-        this.prevXp = 0;
-        this.cachedLevel = -1;
-    }
-
-    @Override
-    public void toBytes(ObjectOutputStream stream) throws IOException {
-        stream.writeInt(this.xp);
-    }
+//    @Override
+//    public void fromBytes(ObjectInputStream stream) throws IOException {
+//        this.xp = stream.readInt();
+//        this.prevXp = 0;
+//        this.cachedLevel = -1;
+//    }
+//
+//    @Override
+//    public void toBytes(ObjectOutputStream stream) throws IOException {
+//        stream.writeInt(this.xp);
+//    }
 
     @Override
     public void onTick(ITurretEntity turretInst) {
         LivingEntity e = turretInst.get();
         if( !e.level.isClientSide && this.prevXp != this.xp ) {
-            //TODO: sync with client
-//            UpgradeRegistry.INSTANCE.syncWithClients(turretInst, Leveling.ID);
+            turretInst.getUpgradeProcessor().syncUpgrade(Leveling.ID);
 
             this.prevXp = this.xp;
             this.cachedLevel = -1;

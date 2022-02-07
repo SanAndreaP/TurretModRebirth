@@ -30,19 +30,19 @@ public class UpgradeShieldColorizer
 
     @Override
     public void initialize(ITurretEntity turretInst, ItemStack stack) {
-        turretInst.getUpgradeProcessor().setUpgradeInstance(ID, new ShieldColorizer());
+//        turretInst.getUpgradeProcessor().setUpgradeData(ID, new ShieldColorizer());
         recalcColor(turretInst);
     }
 
     @Override
     public void onLoad(ITurretEntity turretInst, CompoundNBT nbt) {
-        turretInst.getUpgradeProcessor().setUpgradeInstance(ID, new ShieldColorizer(nbt));
+//        turretInst.getUpgradeProcessor().setUpgradeData(ID, new ShieldColorizer(nbt));
         recalcColor(turretInst);
     }
 
     @Override
     public void onSave(ITurretEntity turretInst, CompoundNBT nbt) {
-        ShieldColorizer settings = turretInst.getUpgradeProcessor().getUpgradeInstance(ID);
+        ShieldColorizer settings = turretInst.getUpgradeProcessor().getUpgradeData(ID);
         if( settings != null ) {
             settings.writeToNbt(nbt);
         }
@@ -50,7 +50,7 @@ public class UpgradeShieldColorizer
 
     @Override
     public void terminate(ITurretEntity turretInst, ItemStack stack) {
-        turretInst.getUpgradeProcessor().delUpgradeInstance(ID);
+//        turretInst.getUpgradeProcessor().removeUpgradeData(ID);
         recalcColor(turretInst);
     }
 

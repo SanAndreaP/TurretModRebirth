@@ -46,7 +46,7 @@ public class AmmoStorage
     public void terminate(ITurretEntity turretInst, ItemStack stack) {
         if( !turretInst.get().level.isClientSide && EntityUtils.tryRemoveModifier(turretInst.get(), TurretAttributes.MAX_AMMO_CAPACITY, MODIFIER) ) {
             turretInst.getTargetProcessor().dropExcessAmmo();
-            turretInst.updateState();
+            turretInst.syncState();
         }
     }
 }

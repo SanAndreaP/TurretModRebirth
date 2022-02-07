@@ -1,16 +1,16 @@
 package de.sanandrew.mods.turretmod.item.upgrades.shield;
 
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
-import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeInstance;
+import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeData;
 import net.minecraft.nbt.CompoundNBT;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-@IUpgradeInstance.Tickable
+@IUpgradeData.Syncable
 public class ShieldColorizer
-        implements IUpgradeInstance<ShieldColorizer>
+        implements IUpgradeData<ShieldColorizer>
 {
     private int color = 0x40FFFFFF;
     private boolean cullFaces = false;
@@ -22,17 +22,17 @@ public class ShieldColorizer
         this.loadFromNbt(nbt);
     }
 
-    @Override
-    public void fromBytes(ObjectInputStream stream) throws IOException {
-        this.setColor(stream.readInt());
-        this.setCullFaces(stream.readBoolean());
-    }
-
-    @Override
-    public void toBytes(ObjectOutputStream stream) throws IOException {
-        stream.writeInt(this.color);
-        stream.writeBoolean(this.cullFaces);
-    }
+//    @Override
+//    public void fromBytes(ObjectInputStream stream) throws IOException {
+//        this.setColor(stream.readInt());
+//        this.setCullFaces(stream.readBoolean());
+//    }
+//
+//    @Override
+//    public void toBytes(ObjectOutputStream stream) throws IOException {
+//        stream.writeInt(this.color);
+//        stream.writeBoolean(this.cullFaces);
+//    }
 
     private void loadFromNbt(CompoundNBT nbt) {
         this.setColor(nbt.getInt("Color"));

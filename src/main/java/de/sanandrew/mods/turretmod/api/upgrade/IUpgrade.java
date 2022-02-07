@@ -71,6 +71,7 @@ public interface IUpgrade
      * @param turretInst The turret instance which holds this upgrade.
      * @param nbt The NBT tag of the upgrade item.
      */
+    @Deprecated
     default void onLoad(ITurretEntity turretInst, CompoundNBT nbt) { }
 
     /**
@@ -80,7 +81,12 @@ public interface IUpgrade
      * @param turretInst The turret instance which holds this upgrade.
      * @param nbt The NBT tag of the upgrade item.
      */
+    @Deprecated
     default void onSave(ITurretEntity turretInst, CompoundNBT nbt) { }
+
+    default IUpgradeData<?> getData(ITurretEntity turretInst) {
+        return null;
+    }
 
     /**
      * <p>Terminates this upgrade upon removal from the specified turret instance.</p>
@@ -91,8 +97,4 @@ public interface IUpgrade
      * @param stack
      */
     default void terminate(ITurretEntity turretInst, ItemStack stack) { }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
-    @interface InitSynchronizeClient { }
 }

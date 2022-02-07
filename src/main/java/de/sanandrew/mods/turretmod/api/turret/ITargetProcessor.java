@@ -103,6 +103,8 @@ public interface ITargetProcessor
 
     void updateAllPlayerTargets(boolean active, boolean forClient);
 
+    void syncTargets();
+
     ITextComponent getTargetName();
 
     void onTick();

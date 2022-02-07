@@ -21,9 +21,11 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.api.turret.TargetingEvent;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.entity.projectile.TurretProjectileEntity;
+import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.init.config.Targets;
 import de.sanandrew.mods.turretmod.item.ammo.AmmoCartridgeItem;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
+import de.sanandrew.mods.turretmod.network.SyncTurretTargetsPacket;
 import de.sanandrew.mods.turretmod.world.PlayerList;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
@@ -47,6 +49,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
@@ -417,7 +420,7 @@ public final class TargetProcessor
                 this.resetInitShootTicks();
                 this.entityToAttack = null;
                 this.entityToAttackID = UuidUtils.EMPTY_UUID;
-                this.turret.updateState();
+                this.turret.syncState();
             }
             return;
         }
@@ -464,7 +467,7 @@ public final class TargetProcessor
         }
 
         if( changed ) {
-            this.turret.updateState();
+            this.turret.syncState();
         }
     }
 
@@ -678,6 +681,13 @@ public final class TargetProcessor
         });
     }
 
+    @Override
+    public void syncTargets() {
+        LivingEntity te = this.turret.get();
+        TurretModRebirth.NETWORK.sendToAllNear(new SyncTurretTargetsPacket(this),
+                                               new PacketDistributor.TargetPoint(te.getX(), te.getY(), te.getZ(), 64.0D, te.level.dimension()));
+    }
+
     public Map<ResourceLocation, Boolean> grabUpdatedCreatures() {
         Map<ResourceLocation, Boolean> ret = this.entityTargetList.entrySet().stream().filter(e -> this.updatedEntityTargets.contains(e.getKey()))
                                                                   .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -694,10 +704,7 @@ public final class TargetProcessor
         return ret;
     }
 
-    public void updateClientState(int targetId, int ammoCount, @Nonnull ItemStack ammoStack, boolean isShooting,
-                                  Map<ResourceLocation, Boolean> updatedEntityTargets, Map<UUID, Boolean> updatedPlayerTargets,
-                                  boolean isCreatureDenyList, boolean isPlayerDenyList)
-    {
+    public void updateClientState(int targetId, int ammoCount, @Nonnull ItemStack ammoStack, boolean isShooting) {
         LivingEntity turretL = this.turret.get();
         if( turretL.level.isClientSide ) {
             this.entityToAttack = targetId < 0 ? null : turretL.level.getEntity(targetId);
@@ -705,6 +712,13 @@ public final class TargetProcessor
             this.ammoStack = ammoStack;
             this.isShootingClt = isShooting;
 
+        }
+    }
+
+    public void updateClientTargets(Map<ResourceLocation, Boolean> updatedEntityTargets, Map<UUID, Boolean> updatedPlayerTargets,
+                                    boolean isCreatureDenyList, boolean isPlayerDenyList)
+    {
+        if( this.turret.get().level.isClientSide ) {
             this.entityTargetList.putAll(updatedEntityTargets);
             this.playerTargetList.putAll(updatedPlayerTargets);
 

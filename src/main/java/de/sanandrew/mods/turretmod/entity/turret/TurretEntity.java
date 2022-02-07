@@ -28,7 +28,7 @@ import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.TurretControlUnit;
 import de.sanandrew.mods.turretmod.item.TurretItem;
-import de.sanandrew.mods.turretmod.network.UpdateTurretStatePacket;
+import de.sanandrew.mods.turretmod.network.SyncTurretStatePacket;
 import de.sanandrew.mods.turretmod.tileentity.TurretCrateEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
@@ -608,6 +608,15 @@ public class TurretEntity
         }
 
         profiler.pop();
+
+        if( this.level.isClientSide && this.tickCount % 20 == 0 ) {
+            for( int i = 0, max = this.upgProc.getContainerSize(); i < max; i++ ) {
+                if( ItemStackUtils.isValid(this.upgProc.getItem(i)) ) {
+                    System.out.println(this.upgProc.getItem(i));
+                }
+            }
+            System.out.println("----");
+        }
     }
 
     @Nonnull
@@ -677,8 +686,8 @@ public class TurretEntity
     }
 
     @Override
-    public void updateState() {
-        TurretModRebirth.NETWORK.sendToAllNear(new UpdateTurretStatePacket(this),
+    public void syncState() {
+        TurretModRebirth.NETWORK.sendToAllNear(new SyncTurretStatePacket(this),
                                                new PacketDistributor.TargetPoint(this.getX(), this.getY(), this.getZ(), 64.0D, this.level.dimension()));
     }
 
@@ -723,7 +732,7 @@ public class TurretEntity
             player.inventory.setItem(player.inventory.selected, heldItem.copy());
         }
 
-        this.updateState();
+        this.syncState();
         player.containerMenu.broadcastChanges();
 
         this.playPickupSound();

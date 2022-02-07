@@ -4,6 +4,8 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import de.sanandrew.mods.turretmod.entity.turret.TurretRegistry;
+import de.sanandrew.mods.turretmod.item.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.tileentity.TurretCrateEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
@@ -120,15 +122,14 @@ public class TurretCrateInventory
         }
     }
 
-    //TODO: reimplement upgrades
-//    public void replaceSafeUpgrade() {
-//        for( int i = 0; i < SIZE_UPGRADE_STORAGE; i++ ) {
-//            ItemStack upgStack = this.upgrades.get(i);
-//            if( UpgradeRegistry.INSTANCE.isType(upgStack, Upgrades.TURRET_SAFE) ) {
-//                this.upgrades.set(i, UpgradeRegistry.INSTANCE.getItem(UpgradeRegistry.INSTANCE.getEmptyUpgrade().getId()));
-//            }
-//        }
-//    }
+    public void replaceSafeUpgrade() {
+        for( int i = 0; i < SIZE_UPGRADE_STORAGE; i++ ) {
+            ItemStack upgStack = this.upgrades.get(i);
+            if( UpgradeRegistry.INSTANCE.isType(upgStack, Upgrades.TURRET_SAFE) ) {
+                this.upgrades.set(i, UpgradeRegistry.INSTANCE.getItem(UpgradeRegistry.INSTANCE.getEmptyUpgrade().getId()));
+            }
+        }
+    }
 
     @Override
     public void setChanged() { }

@@ -1,7 +1,7 @@
 package de.sanandrew.mods.turretmod.api.turret;
 
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
-import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeInstance;
+import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeData;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.IContainerProvider;
 import net.minecraft.item.ItemStack;
@@ -20,11 +20,13 @@ public interface IUpgradeProcessor
 
     boolean hasUpgrade(IUpgrade upg);
 
-    <T extends IUpgradeInstance<?>> T getUpgradeInstance(ResourceLocation id);
+    <T extends IUpgradeData<?>> T getUpgradeData(ResourceLocation id);
 
-    void setUpgradeInstance(ResourceLocation id, IUpgradeInstance<?> inst);
+//    void setUpgradeData(ResourceLocation id, IUpgradeData<?> inst);
 
-    void delUpgradeInstance(ResourceLocation id);
+//    void removeUpgradeData(ResourceLocation id);
+
+    void syncUpgrade(ResourceLocation id);
 
     boolean tryApplyUpgrade(@Nonnull ItemStack upgStack);
 

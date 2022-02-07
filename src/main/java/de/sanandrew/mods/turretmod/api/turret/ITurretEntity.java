@@ -64,7 +64,7 @@ public interface ITurretEntity
 
     <V extends ITurretRAM> V getRAM(Supplier<V> onNull);
 
-    void updateState();
+    void syncState();
 
     ITurret.TargetType getAttackType();
 

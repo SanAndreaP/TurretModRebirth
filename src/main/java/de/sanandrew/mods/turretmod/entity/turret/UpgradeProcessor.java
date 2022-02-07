@@ -14,11 +14,12 @@ import de.sanandrew.mods.sanlib.lib.util.ReflectionUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
-import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeInstance;
-import de.sanandrew.mods.turretmod.inventory.container.ElectrolyteGeneratorContainer;
+import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeData;
+import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.item.ItemUpgrade;
 import de.sanandrew.mods.turretmod.item.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
+import de.sanandrew.mods.turretmod.network.SyncUpgradesPacket;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,26 +30,27 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Deque;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.stream.IntStream;
 
 public final class UpgradeProcessor
         implements IUpgradeProcessor
 {
+    private static final int SLOTS = 36;
     @Nonnull
-    private final NonNullList<ItemStack> upgradeStacks = NonNullList.withSize(36, ItemStack.EMPTY);
-    private final Map<ResourceLocation, IUpgradeInstance<?>> upgInstances = new ConcurrentHashMap<>();
-    private final Map<ResourceLocation, IUpgradeInstance<?>> upgTickable = new ConcurrentHashMap<>();
+    private final NonNullList<ItemStack> upgradeStacks = NonNullList.withSize(SLOTS, ItemStack.EMPTY);
+    private final IUpgradeData<?>[]      upgradeData   = new IUpgradeData<?>[SLOTS];
 
-    private boolean hasChanged = false;
     private final ITurretEntity turret;
 
-    private final Deque<IUpgrade> firstSynchronize = new ConcurrentLinkedDeque<>();
+    private final BlockingDeque<Integer> changedSlots = new LinkedBlockingDeque<>();
 
     UpgradeProcessor(ITurretEntity turret) {
         this.turret = turret;
@@ -56,89 +58,68 @@ public final class UpgradeProcessor
 
     @Override
     public void onTick() {
-        this.upgTickable.forEach((key, val) -> val.onTick(this.turret));
-
-        if( this.hasChanged ) {
-            LivingEntity turretL = this.turret.get();
-
-            for( int i = 0, max = this.upgradeStacks.size(); i < max; i++ ) {
-                ItemStack invStack = this.upgradeStacks.get(i);
-                if( ItemStackUtils.isValid(invStack) ) {
-                    IUpgrade upg = UpgradeRegistry.INSTANCE.get(invStack);
-                    IUpgrade dep = upg.getDependantOn();
-                    if( dep != null && !this.hasUpgrade(dep) ) {
-                        dropUpgrade(turretL, i, invStack, upg);
-                    }
-                }
-            }
-
-            if( !this.hasUpgrade(Upgrades.UPG_STORAGE_III) ) {
-                for( int i = 27, max = this.upgradeStacks.size(); i < max; i++ ) {
-                    dropUpgrade(turretL, i, this.upgradeStacks.get(i), null);
-                }
-            }
-
-            if( !this.hasUpgrade(Upgrades.UPG_STORAGE_II) ) {
-                for( int i = 18; i < 27; i++ ) {
-                    dropUpgrade(turretL, i, this.upgradeStacks.get(i), null);
-                }
-            }
-
-            if( !this.hasUpgrade(Upgrades.UPG_STORAGE_I) ) {
-                for( int i = 9; i < 18; i++ ) {
-                    dropUpgrade(turretL, i, this.upgradeStacks.get(i), null);
-                }
-            }
-        }
-
-        while( !this.firstSynchronize.isEmpty() ) {
-            //TODO: sync with clients
-//            UpgradeRegistry.INSTANCE.syncWithClients(this.turret, this.firstSynchronize.pollFirst().getId());
+        for( IUpgradeData<?> ud : this.upgradeData ) {
+            MiscUtils.accept(ud, val -> val.onTick(this.turret));
         }
     }
 
-    private void dropUpgrade(LivingEntity entity, int slot, ItemStack stack, IUpgrade upg) {
+    private void dropUpgrade(LivingEntity entity, int slot, ItemStack stack) {
         if( ItemStackUtils.isValid(stack) ) {
             if( !entity.level.isClientSide ) {
                 ItemEntity itm = new ItemEntity(entity.level, entity.getX(), entity.getY(), entity.getZ(), stack);
                 entity.level.addFreshEntity(itm);
             }
-            upg = upg != null ? upg : UpgradeRegistry.INSTANCE.get(stack);
-            upg.terminate(this.turret, stack);
-            this.upgradeStacks.set(slot, ItemStack.EMPTY);
+
+            this.setItem(slot, ItemStack.EMPTY);
         }
+    }
+
+    private int getUpgradeSlot(ResourceLocation id) {
+        final ItemStack upgItemStack = UpgradeRegistry.INSTANCE.getItem(id);
+        return IntStream.range(0, SLOTS).filter(slot -> ItemStackUtils.areEqual(upgItemStack, this.upgradeStacks.get(slot), false)).findFirst().orElse(-1);
     }
 
     @Override
     public boolean hasUpgrade(ResourceLocation id) {
-        final ItemStack upgItemStack = UpgradeRegistry.INSTANCE.getItem(id);
-        return this.upgradeStacks.stream().anyMatch(currStack -> ItemStackUtils.areEqual(upgItemStack, currStack, false));
+        return this.getUpgradeSlot(id) >= 0;
     }
 
     @Override
     public boolean hasUpgrade(IUpgrade upg) {
-        final ItemStack upgItemStack = UpgradeRegistry.INSTANCE.getItem(upg.getId());
-        return this.upgradeStacks.stream().anyMatch(currStack -> ItemStackUtils.areEqual(upgItemStack, currStack, false));
+        return this.getUpgradeSlot(upg.getId()) >= 0;
     }
 
     @Override
-    public <T extends IUpgradeInstance<?>> T getUpgradeInstance(ResourceLocation id) {
-        return ReflectionUtils.getCasted(this.upgInstances.get(id));
+    public <T extends IUpgradeData<?>> T getUpgradeData(ResourceLocation id) {
+        int uSlot = this.getUpgradeSlot(id);
+        return uSlot >= 0 ? ReflectionUtils.getCasted(this.upgradeData[uSlot]) : null;
     }
 
     @Override
-    public void setUpgradeInstance(ResourceLocation id, IUpgradeInstance<?> inst) {
-        this.upgInstances.put(id, inst);
-        if( inst.getClass().getAnnotation(IUpgradeInstance.Tickable.class) != null ) {
-            this.upgTickable.put(id, inst);
+    public void syncUpgrade(ResourceLocation id) {
+        LivingEntity te = this.turret.get();
+
+        if( !te.level.isClientSide ) {
+            int uSlot = this.getUpgradeSlot(id);
+
+            TurretModRebirth.NETWORK.sendToAllNear(new SyncUpgradesPacket(this.turret, uSlot),
+                                                   new PacketDistributor.TargetPoint(te.getX(), te.getY(), te.getZ(), 64.0D, te.level.dimension()));
         }
     }
 
-    @Override
-    public void delUpgradeInstance(ResourceLocation id) {
-        this.upgInstances.remove(id);
-        this.upgTickable.remove(id);
-    }
+//    @Override
+//    public void setUpgradeData(ResourceLocation id, IUpgradeData<?> inst) {
+//        this.upgInstances.put(id, inst);
+//        if( inst.getClass().getAnnotation(IUpgradeData.Tickable.class) != null ) {
+//            this.upgTickable.put(id, inst);
+//        }
+//    }
+
+//    @Override
+//    public void removeUpgradeData(ResourceLocation id) {
+//        this.upgInstances.remove(id);
+//        this.upgTickable.remove(id);
+//    }
 
     @Override
     public int getContainerSize() {
@@ -156,6 +137,15 @@ public final class UpgradeProcessor
         return slot >= 0 && slot < this.upgradeStacks.size() ? this.upgradeStacks.get(slot) : ItemStack.EMPTY;
     }
 
+    private void terminate(int slot, ItemStack slotStack) {
+        ItemStack iStack = MiscUtils.get(slotStack, () -> this.upgradeStacks.get(slot));
+
+        IUpgrade upg = UpgradeRegistry.INSTANCE.get(iStack);
+        MiscUtils.accept(this.upgradeData[slot], ud -> ud.save(this.turret, iStack.getOrCreateTagElement("UpgradeData")));
+        this.upgradeData[slot] = null;
+        upg.terminate(this.turret, iStack);
+    }
+
     @Override
     @Nonnull
     public ItemStack removeItem(int slot, int amount) {
@@ -164,8 +154,7 @@ public final class UpgradeProcessor
             ItemStack itemstack;
 
             if( slotStack.getCount() <= amount ) {
-                IUpgrade upg = UpgradeRegistry.INSTANCE.get(slotStack);
-                upg.terminate(this.turret, slotStack);
+                this.terminate(slot, slotStack);
 
                 itemstack = slotStack;
                 this.upgradeStacks.set(slot, ItemStack.EMPTY);
@@ -176,6 +165,8 @@ public final class UpgradeProcessor
                     this.upgradeStacks.set(slot, ItemStack.EMPTY);
                 }
             }
+
+            this.changedSlots.offerLast(slot);
 
             this.setChanged();
 
@@ -188,8 +179,9 @@ public final class UpgradeProcessor
     @Override
     @Nonnull
     public ItemStack removeItemNoUpdate(int slot) {
-        if( ItemStackUtils.isValid(this.upgradeStacks.get(slot)) ) {
-            ItemStack itemstack = this.upgradeStacks.get(slot);
+        ItemStack itemstack = this.upgradeStacks.get(slot);
+        if( ItemStackUtils.isValid(itemstack) ) {
+            this.terminate(slot, itemstack);
             this.upgradeStacks.set(slot, ItemStack.EMPTY);
             return itemstack;
         } else {
@@ -202,26 +194,32 @@ public final class UpgradeProcessor
         ItemStack slotStack = this.upgradeStacks.get(slot);
         if( !ItemStackUtils.areEqual(slotStack, stack) ) {
             if( ItemStackUtils.isValid(slotStack) ) {
-                IUpgrade upg = UpgradeRegistry.INSTANCE.get(slotStack);
-                upg.terminate(this.turret, slotStack);
+                this.terminate(slot, slotStack);
             }
 
             if( ItemStackUtils.isValid(stack) ) {
                 IUpgrade upg = UpgradeRegistry.INSTANCE.get(stack);
+                this.upgradeStacks.set(slot, stack);
+                MiscUtils.accept(upg.getData(this.turret), ud -> {
+                    this.upgradeData[slot] = ud;
+                    MiscUtils.accept(stack.getTagElement("UpgradeData"), tag -> ud.load(this.turret, tag));
+                });
                 upg.initialize(this.turret, stack);
-                if( upg.getClass().getAnnotation(IUpgrade.InitSynchronizeClient.class) != null ) {
-                    this.firstSynchronize.offerLast(upg);
+                if( stack.getCount() > this.getMaxStackSize() ) {
+                    stack.setCount(this.getMaxStackSize());
                 }
+            } else {
+                this.upgradeData[slot] = null;
+                this.upgradeStacks.set(slot, ItemStack.EMPTY);
+            }
+
+
+            if( !this.turret.get().level.isClientSide ) {
+                this.changedSlots.offerLast(slot);
+
+                this.setChanged();
             }
         }
-
-        this.upgradeStacks.set(slot, stack);
-
-        if( ItemStackUtils.isValid(stack) && stack.getCount() > this.getMaxStackSize() ) {
-            stack.setCount(this.getMaxStackSize());
-        }
-
-        this.setChanged();
     }
 
 //    @Nullable
@@ -252,22 +250,50 @@ public final class UpgradeProcessor
 
     @Override
     public void setChanged() {
-        this.hasChanged = true;
+        LivingEntity turretL = this.turret.get();
+
+        for( int i = 0, max = this.upgradeStacks.size(); i < max; i++ ) {
+            ItemStack invStack = this.upgradeStacks.get(i);
+            if( ItemStackUtils.isValid(invStack) ) {
+                IUpgrade upg = UpgradeRegistry.INSTANCE.get(invStack);
+                IUpgrade dep = upg.getDependantOn();
+                if( dep != null && !this.hasUpgrade(dep) ) {
+                    dropUpgrade(turretL, i, invStack);
+                }
+            }
+        }
+
+        if( !this.hasUpgrade(Upgrades.UPG_STORAGE_III) ) {
+            for( int i = 27, max = this.upgradeStacks.size(); i < max; i++ ) {
+                dropUpgrade(turretL, i, this.upgradeStacks.get(i));
+            }
+        }
+
+        if( !this.hasUpgrade(Upgrades.UPG_STORAGE_II) ) {
+            for( int i = 18; i < 27; i++ ) {
+                dropUpgrade(turretL, i, this.upgradeStacks.get(i));
+            }
+        }
+
+        if( !this.hasUpgrade(Upgrades.UPG_STORAGE_I) ) {
+            for( int i = 9; i < 18; i++ ) {
+                dropUpgrade(turretL, i, this.upgradeStacks.get(i));
+            }
+        }
+
+        List<Integer> syncSlots = new ArrayList<>();
+        this.changedSlots.drainTo(syncSlots);
+        if( !syncSlots.isEmpty() ) {
+            LivingEntity te = this.turret.get();
+            TurretModRebirth.NETWORK.sendToAllNear(new SyncUpgradesPacket(this.turret, syncSlots.stream().mapToInt(i->i).toArray()),
+                                                   new PacketDistributor.TargetPoint(te.getX(), te.getY(), te.getZ(), 64.0D, te.level.dimension()));
+        }
     }
 
     @Override
     public boolean stillValid(@Nonnull PlayerEntity player) {
         return true;
     }
-
-//    @Override
-//    public boolean isUsableByPlayer(PlayerEntity player) { return true; }
-//
-//    @Override
-//    public void openContainer(PlayerEntity player) {}
-//
-//    @Override
-//    public void closeInventory(PlayerEntity player) {}
 
     private boolean isUpgradeItemApplicable(ItemStack stack) {
         if( stack.getItem() instanceof ItemUpgrade ) {
@@ -319,12 +345,10 @@ public final class UpgradeProcessor
     @Override
     public boolean tryApplyUpgrade(@Nonnull ItemStack upgStack) {
         if( this.isUpgradeItemApplicable(upgStack) ) {
-            LivingEntity turretL = this.turret.get();
             for( int i = 0, max = this.upgradeStacks.size(); i < max; i++ ) {
                 if( this.isUpgradeItemApplicableForSlot(i, upgStack, false) ) {
                     this.setItem(i, upgStack);
-                    //TODO: sync upgrade slot
-//                    PacketRegistry.sendToAllAround(new PacketUpdateUgradeSlot(this.turret, i, upgStack), turretL.dimension, turretL.posX, turretL.posY, turretL.posZ, 64.0D);
+
                     return true;
                 }
             }
@@ -333,7 +357,7 @@ public final class UpgradeProcessor
         return false;
     }
 
-    void dropUpgrades() {
+    public void dropUpgrades() {
         LivingEntity turretL = this.turret.get();
 
         for( int i = 0, max = this.getContainerSize(); i < max; i++ ) {
@@ -356,37 +380,34 @@ public final class UpgradeProcessor
         }
     }
 
-    public NonNullList<ItemStack> extractUpgrades() {
-        NonNullList<ItemStack> newList = NonNullList.create();
-        newList.addAll(this.upgradeStacks);
-        this.upgradeStacks.clear();
-        return newList;
-    }
+//    public NonNullList<ItemStack> extractUpgrades() {
+//        NonNullList<ItemStack> newList = NonNullList.create();
+//        newList.addAll(this.upgradeStacks);
+//        this.upgradeStacks.clear();
+//        return newList;
+//    }
 
     @Override
     public void save(CompoundNBT nbt) {
-        nbt.put("upgInventory", ItemStackUtils.writeItemStacksToTag(this.upgradeStacks, 1, this::callbackWriteUpgStack));
+        nbt.put("Upgrades", ItemStackUtils.writeItemStacksToTag(this.upgradeStacks, 1, this::callbackWriteUpgStack));
     }
 
     @Override
     public void load(CompoundNBT nbt) {
-        if( nbt != null ) {
-            ItemStackUtils.readItemStacksFromTag(this.upgradeStacks, nbt.getList("upgInventory", Constants.NBT.TAG_COMPOUND), this::callbackReadUpgStack);
-        }
+        ItemStackUtils.readItemStacksFromTag(this.upgradeStacks, nbt.getList("Upgrades", Constants.NBT.TAG_COMPOUND), this::callbackReadUpgStack);
     }
 
     private void callbackWriteUpgStack(@Nonnull ItemStack upgStack, CompoundNBT nbt) {
-        IUpgrade upg = UpgradeRegistry.INSTANCE.get(upgStack);
-        upg.onSave(this.turret, nbt);
+        MiscUtils.accept(this.upgradeData[nbt.getShort("Slot")], data -> data.save(this.turret, nbt));
     }
 
     private void callbackReadUpgStack(@Nonnull ItemStack upgStack, CompoundNBT nbt) {
         IUpgrade upg = UpgradeRegistry.INSTANCE.get(upgStack);
+        MiscUtils.accept(upg.getData(this.turret), data -> {
+            this.upgradeData[nbt.getShort("Slot")] = data;
+            data.load(this.turret, nbt);
+        });
         upg.initialize(this.turret, upgStack);
-        upg.onLoad(this.turret, nbt);
-        if( upg.getClass().getAnnotation(IUpgrade.InitSynchronizeClient.class) != null ) {
-            this.firstSynchronize.offerLast(upg);
-        }
     }
 
     @Override

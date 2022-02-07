@@ -14,9 +14,11 @@ public final class PacketRegistry
 {
     public static void initialize() {
         TurretModRebirth.NETWORK.registerMessage(0, SyncPlayerListPacket.class, SyncPlayerListPacket::new);
-        TurretModRebirth.NETWORK.registerMessage(1, UpdateTurretStatePacket.class, UpdateTurretStatePacket::new);
-        TurretModRebirth.NETWORK.registerMessage(2, OpenRemoteTcuGuiPacket.class, OpenRemoteTcuGuiPacket::new);
-        TurretModRebirth.NETWORK.registerMessage(3, TurretPlayerActionPacket.class, TurretPlayerActionPacket::new);
+        TurretModRebirth.NETWORK.registerMessage(1, SyncTurretStatePacket.class, SyncTurretStatePacket::new);
+        TurretModRebirth.NETWORK.registerMessage(2, SyncTurretTargetsPacket.class, SyncTurretTargetsPacket::new);
+        TurretModRebirth.NETWORK.registerMessage(3, OpenRemoteTcuGuiPacket.class, OpenRemoteTcuGuiPacket::new);
+        TurretModRebirth.NETWORK.registerMessage(4, TurretPlayerActionPacket.class, TurretPlayerActionPacket::new);
+        TurretModRebirth.NETWORK.registerMessage(5, SyncUpgradesPacket.class, SyncUpgradesPacket::new);
 //        TurretModRebirth.network.registerMessage(1,  PacketUpdateTargets.class, PacketUpdateTargets::new);
 //        TurretModRebirth.network.registerMessage(2,  PacketUpdateTurretState.class, PacketUpdateTurretState::new);
 //        TurretModRebirth.network.registerMessage(3,  PacketPlayerTurretAction.class, PacketPlayerTurretAction::new);

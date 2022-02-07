@@ -17,6 +17,8 @@ import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
+import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
+import de.sanandrew.mods.turretmod.item.upgrades.leveling.LevelStorage;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.LivingEntity;
@@ -148,11 +150,10 @@ public class TurretPlayerActionPacket
                     turretInst.setActive(false);
                     break;
                 case RETRIEVE_XP:
-                    //TODO: reimplement upgrades
-//                    LevelStorage lvlStg = turretInst.getUpgradeProcessor().getUpgradeInstance(Upgrades.LEVELING.getId());
-//                    if( lvlStg != null ) {
-//                        player.addExperience(lvlStg.retrieveExcessXp());
-//                    }
+                    LevelStorage lvlStg = turretInst.getUpgradeProcessor().getUpgradeData(Upgrades.LEVELING.getId());
+                    if( lvlStg != null ) {
+                        player.giveExperiencePoints(lvlStg.retrieveExcessXp());
+                    }
                     break;
                 case RENAME:
                     rename(turretInst, this.customName);
@@ -169,11 +170,8 @@ public class TurretPlayerActionPacket
                 case SET_FILTERTYPE_PLAYER:
                     setFilterType(turretInst, this.targetFlag, false);
                     break;
-                default:
-                    // no-op
             }
         }
-
     }
 
     @Override
@@ -227,7 +225,7 @@ public class TurretPlayerActionPacket
             } else {
                 tp.updateAllEntityTargets(activated, true);
             }
-            turret.updateState();
+            tp.syncTargets();
         }
     }
 
@@ -241,7 +239,7 @@ public class TurretPlayerActionPacket
             } else {
                 tp.updateAllPlayerTargets(activated, true);
             }
-            turret.updateState();
+            tp.syncTargets();
         }
     }
 
@@ -258,7 +256,7 @@ public class TurretPlayerActionPacket
             } else {
                 tp.setPlayerDenyList(isDenyList);
             }
-            turret.updateState();
+            tp.syncTargets();
         }
     }
 
