@@ -91,8 +91,11 @@ public final class UpgradeProcessor
 
     @Override
     public <T extends IUpgradeData<?>> T getUpgradeData(ResourceLocation id) {
-        int uSlot = this.getUpgradeSlot(id);
-        return uSlot >= 0 ? ReflectionUtils.getCasted(this.upgradeData[uSlot]) : null;
+        return ReflectionUtils.getCasted(this.getUpgradeData(this.getUpgradeSlot(id)));
+    }
+
+    public IUpgradeData<?> getUpgradeData(int slot) {
+        return slot >= 0 ? this.upgradeData[slot] : null;
     }
 
     @Override

@@ -1,7 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "sapturretmod:items/tipped_crossbow_bolt_head",
-    "layer1": "sapturretmod:items/tipped_crossbow_bolt_base"
-  }
-}

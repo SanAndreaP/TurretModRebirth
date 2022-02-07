@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "sapturretmod:item/ammo/cartridge/cartridge",
+    "layer1": "sapturretmod:item/ammo/cartridge/tipped_crossbow_bolt_head",
+    "layer2": "sapturretmod:item/ammo/cartridge/tipped_crossbow_bolt_base"
+  }
+}

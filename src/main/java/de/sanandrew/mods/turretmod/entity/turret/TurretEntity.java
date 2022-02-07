@@ -547,8 +547,6 @@ public class TurretEntity
         } else if( !this.level.isClientSide ) {
             this.yBodyRot = 0.0F;
         }
-//        this.xxa = 0.0F; // moveStrafing
-//        this.zza = 0.0F; // moveForward
 
         this.upgProc.onTick();
 
@@ -559,63 +557,62 @@ public class TurretEntity
         }
 
         if( this.isActive() ) {
-            if( this.targetProc.hasTarget() ) {
-                this.lookAt(this.targetProc.getTarget(), 10.0F, this.getHeadRotSpeed());
-            } else if( !(this.getControllingPassenger() instanceof PlayerEntity) ) {
-                this.yHeadRot = MiscUtils.wrap360(this.yHeadRot + 1.0F);
-                this.yHeadRotO = MiscUtils.wrap360(this.yHeadRotO);
-
-                if( this.xRot < 0.0F ) {
-                    this.xRot += 5.0F;
-                    if( this.xRot > 0.0F ) {
-                        this.xRot = 0.0F;
-                    }
-                } else if( this.xRot > 0.0F ) {
-                    this.xRot -= 5.0F;
-                    if( this.xRot < 0.0F ) {
-                        this.xRot = 0.0F;
-                    }
-                }
-            }
+            this.tickActive();
         } else {
-            this.yHeadRot = MiscUtils.wrap360(this.yHeadRot);
-            this.yHeadRotO = MiscUtils.wrap360(this.yHeadRotO);
-            int closestRot = (MathHelper.ceil(this.yHeadRot) / 90) * 90;
-            if( this.yHeadRot > closestRot ) {
-                this.yHeadRot -= 5.0F;
-                if( this.yHeadRot < closestRot ) {
-                    this.yHeadRot = closestRot;
-                }
-            } else if( this.yHeadRot < closestRot ) {
-                this.yHeadRot += 5.0F;
-                if( this.yHeadRot > closestRot ) {
-                    this.yHeadRot = closestRot;
-                }
-            }
-
-            final float lockedPitch = this.delegate.getDeactiveHeadPitch();
-            if( this.xRot < lockedPitch ) {
-                this.xRot += 1.0F;
-                if( this.xRot > lockedPitch ) {
-                    this.xRot = lockedPitch;
-                }
-            } else if( this.xRot > lockedPitch ) {
-                this.xRot -= 1.0F;
-                if( this.xRot < lockedPitch ) {
-                    this.xRot = lockedPitch;
-                }
-            }
+            this.tickDisabled();
         }
 
         profiler.pop();
+    }
 
-        if( this.level.isClientSide && this.tickCount % 20 == 0 ) {
-            for( int i = 0, max = this.upgProc.getContainerSize(); i < max; i++ ) {
-                if( ItemStackUtils.isValid(this.upgProc.getItem(i)) ) {
-                    System.out.println(this.upgProc.getItem(i));
+    private void tickActive() {
+        if( this.targetProc.hasTarget() ) {
+            this.lookAt(this.targetProc.getTarget(), 10.0F, this.getHeadRotSpeed());
+        } else if( !(this.getControllingPassenger() instanceof PlayerEntity) ) {
+            this.yHeadRot = MiscUtils.wrap360(this.yHeadRot + 1.0F);
+            this.yHeadRotO = MiscUtils.wrap360(this.yHeadRotO);
+
+            if( this.xRot < 0.0F ) {
+                this.xRot += 5.0F;
+                if( this.xRot > 0.0F ) {
+                    this.xRot = 0.0F;
+                }
+            } else if( this.xRot > 0.0F ) {
+                this.xRot -= 5.0F;
+                if( this.xRot < 0.0F ) {
+                    this.xRot = 0.0F;
                 }
             }
-            System.out.println("----");
+        }
+    }
+
+    private void tickDisabled() {
+        this.yHeadRot = MiscUtils.wrap360(this.yHeadRot);
+        this.yHeadRotO = MiscUtils.wrap360(this.yHeadRotO);
+        int closestRot = (MathHelper.ceil(this.yHeadRot) / 90) * 90;
+        if( this.yHeadRot > closestRot ) {
+            this.yHeadRot -= 5.0F;
+            if( this.yHeadRot < closestRot ) {
+                this.yHeadRot = closestRot;
+            }
+        } else if( this.yHeadRot < closestRot ) {
+            this.yHeadRot += 5.0F;
+            if( this.yHeadRot > closestRot ) {
+                this.yHeadRot = closestRot;
+            }
+        }
+
+        final float lockedPitch = this.delegate.getDeactiveHeadPitch();
+        if( this.xRot < lockedPitch ) {
+            this.xRot += 1.0F;
+            if( this.xRot > lockedPitch ) {
+                this.xRot = lockedPitch;
+            }
+        } else if( this.xRot > lockedPitch ) {
+            this.xRot -= 1.0F;
+            if( this.xRot < lockedPitch ) {
+                this.xRot = lockedPitch;
+            }
         }
     }
 

@@ -14,7 +14,7 @@ import javax.annotation.Nonnull;
 public class Leveling
         implements IUpgrade
 {
-    static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "upgrade_leveling");
+    static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "leveling_upgrade");
 
     @Nonnull
     @Override

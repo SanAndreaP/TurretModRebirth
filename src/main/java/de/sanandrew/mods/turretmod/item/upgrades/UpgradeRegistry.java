@@ -166,7 +166,7 @@ public final class UpgradeRegistry
     static final class EmptyUpgrade
             implements IUpgrade
     {
-        private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "upgrade_empty");
+        private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "empty_upgrade");
 
         @Nonnull
         @Override

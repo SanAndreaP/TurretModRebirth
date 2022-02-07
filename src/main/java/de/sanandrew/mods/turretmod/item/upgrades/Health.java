@@ -30,7 +30,7 @@ public abstract class Health
 
     Health(String name, String modUUID) {
         this.modifier = new AttributeModifier(UUID.fromString(modUUID), String.format("%s:%s", TmrConstants.ID, name), 0.25D, AttributeModifier.Operation.MULTIPLY_BASE);
-        this.id = new ResourceLocation(TmrConstants.ID, "upgrade_" + name);
+        this.id = new ResourceLocation(TmrConstants.ID, name + "_upgrade");
     }
 
     @Nonnull

@@ -20,7 +20,7 @@ public abstract class Economy
     private final ResourceLocation id;
 
     Economy(String name) {
-        this.id = new ResourceLocation(TmrConstants.ID, "upgrade_" + name);
+        this.id = new ResourceLocation(TmrConstants.ID, name + "_upgrade");
     }
 
     @Nonnull
@@ -54,7 +54,7 @@ public abstract class Economy
             extends Economy
     {
         MKInf() {
-            super("economy_infinite");
+            super("infinite_economy");
         }
 
         @Override

@@ -28,7 +28,7 @@ public abstract class ReloadTime
 
     ReloadTime(String name, String modUUID, double value) {
         this.modifier = new AttributeModifier(UUID.fromString(modUUID), String.format("%s:%s", TmrConstants.ID, name), value, AttributeModifier.Operation.MULTIPLY_BASE);
-        this.id = new ResourceLocation(TmrConstants.ID, "upgrade_" + name);
+        this.id = new ResourceLocation(TmrConstants.ID, name + "_upgrade");
     }
 
     @Nonnull

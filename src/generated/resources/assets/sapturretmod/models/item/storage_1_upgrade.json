@@ -1,0 +1,6 @@
+{
+  "parent": "sapturretmod:item/upgrade_base",
+  "textures": {
+    "layer1": "sapturretmod:item/upgrades/storage_1_upgrade"
+  }
+}

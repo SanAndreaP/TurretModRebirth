@@ -1,0 +1,6 @@
+{
+  "parent": "sapturretmod:item/upgrade_base",
+  "textures": {
+    "layer1": "sapturretmod:item/upgrades/health_3_upgrade"
+  }
+}

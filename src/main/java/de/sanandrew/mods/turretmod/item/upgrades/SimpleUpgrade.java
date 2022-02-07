@@ -28,7 +28,7 @@ public class SimpleUpgrade
     }
 
     SimpleUpgrade(String name, IUpgrade dependantOn, @Nullable ITurret... applicableTurrets) {
-        this.id = new ResourceLocation(TmrConstants.ID, "upgrade_" + name);
+        this.id = new ResourceLocation(TmrConstants.ID, name + "_upgrade");
         this.applicableTurrets = applicableTurrets;
         this.dependantOn = dependantOn;
     }

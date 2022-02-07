@@ -23,7 +23,7 @@ import java.util.UUID;
 public class AmmoStorage
         implements IUpgrade
 {
-    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "upgrade_ammo_storage");
+    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "ammo_storage_upgrade");
     private static final AttributeModifier MODIFIER = new AttributeModifier(UUID.fromString("3D3C0F11-E31A-4472-92BB-E1BE0354844E"),
                                                                             String.format("%s:%s", TmrConstants.ID, "ammoCapacityUpg"), 1.0D,
                                                                             AttributeModifier.Operation.MULTIPLY_BASE);

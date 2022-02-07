@@ -5,6 +5,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeData;
+import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.item.upgrades.UpgradeRegistry;
 import net.minecraft.entity.Entity;
@@ -34,7 +35,7 @@ public class SyncUpgradesPacket
             if( u.isValid() ) {
                 IUpgradeData<?> data = up.getUpgradeData(u.getId());
                 CompoundNBT dataNbt = null;
-                if( data.getClass().isAnnotationPresent(IUpgradeData.Syncable.class) ) {
+                if( data != null && data.getClass().isAnnotationPresent(IUpgradeData.Syncable.class) ) {
                     dataNbt = new CompoundNBT();
                     data.save(turret, dataNbt);
                 }
@@ -65,8 +66,16 @@ public class SyncUpgradesPacket
         if( player != null ) {
             Entity e = player.level.getEntity(this.turretId);
             if( e instanceof ITurretEntity ) {
+                ITurretEntity t = (ITurretEntity) e;
+                UpgradeProcessor upgProc = (UpgradeProcessor) t.getUpgradeProcessor();
                 for( Upgrade u : this.upgrades ) {
-                    ((ITurretEntity) e).getUpgradeProcessor().setItem(u.slot, u.iStack);
+                    upgProc.setItem(u.slot, u.iStack);
+                    if( u.dataNbt != null ) {
+                        IUpgradeData<?> ud = upgProc.getUpgradeData(u.slot);
+                        if( ud != null ) {
+                            ud.load(t, u.dataNbt);
+                        }
+                    }
                 }
             }
         }
