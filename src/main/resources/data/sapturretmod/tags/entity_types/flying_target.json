@@ -45,6 +45,7 @@
     {"id": "minecraft:ender_dragon",                 "required": false},
     {"id": "minecraft:ghast",                        "required": false},
     {"id": "minecraft:parrot",                       "required": false},
+    {"id": "minecraft:phantom",                      "required": false},
     {"id": "minecraft:vex",                          "required": false},
     {"id": "minecraft:wither",                       "required": false},
     {"id": "nex:ghast_queen",                        "required": false},
