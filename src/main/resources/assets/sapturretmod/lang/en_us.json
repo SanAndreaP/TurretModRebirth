@@ -141,6 +141,8 @@
   "gui.sapturretmod.tcu.label.shield_pers_recv": "Pers. Shield: Recovering %s",
   "gui.sapturretmod.tcu.label.shield_turret": "Shield: %s",
   "gui.sapturretmod.tcu.label.shield_turret_recv": "Shield: Recovering %s",
+  "gui.sapturretmod.tcu.label.level.text": "Level:",
+  "gui.sapturretmod.tcu.label.level.value": "%s",
 
   "gui.sapturretmod.tcu.sapturretmod:info": "Turret Info",
   "gui.sapturretmod.tcu.sapturretmod:targets_creatures": "Entity Target Settings",

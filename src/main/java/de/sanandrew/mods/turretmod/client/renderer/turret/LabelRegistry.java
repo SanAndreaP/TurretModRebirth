@@ -11,6 +11,7 @@ import de.sanandrew.mods.turretmod.api.client.tcu.ILabelRenderer;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.client.renderer.turret.label.Ammo;
 import de.sanandrew.mods.turretmod.client.renderer.turret.label.Health;
+import de.sanandrew.mods.turretmod.client.renderer.turret.label.LevelXp;
 import de.sanandrew.mods.turretmod.client.renderer.turret.label.Name;
 import de.sanandrew.mods.turretmod.client.renderer.turret.label.Target;
 import de.sanandrew.mods.turretmod.entity.turret.TurretEntity;
@@ -197,6 +198,7 @@ public final class LabelRegistry
         registry.register(new Health(new ResourceLocation(TmrConstants.ID, "health")));
         registry.register(new Ammo(new ResourceLocation(TmrConstants.ID, "ammo")));
         registry.register(new Target(new ResourceLocation(TmrConstants.ID, "target")));
+        registry.register(new LevelXp(new ResourceLocation(TmrConstants.ID, "level")));
     }
 
     public void cleanupRenderers() {

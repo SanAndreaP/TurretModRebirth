@@ -1,0 +1,6 @@
+{
+  "level": 40,
+  "modifiers": [
+    { "attribute": "generic.max_health", "id": "bc1973c1-e2d9-4143-859c-05e7cce86506", "name": "40_health", "amount": 0.2, "mode": 1 }
+  ]
+}

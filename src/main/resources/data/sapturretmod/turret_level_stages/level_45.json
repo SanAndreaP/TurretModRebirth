@@ -1,0 +1,7 @@
+{
+  "level": 45,
+  "modifiers": [
+    { "attribute": "generic.max_health",    "id": "891d6710-8dc7-4a73-af5f-1b1a73dd7570", "name": "45_health", "amount": 0.2,  "mode": 1 },
+    { "attribute": "generic.attack_damage", "id": "3a2ee125-8173-4ae9-88a8-7a4d18e62ee1", "name": "45_atkdmg", "amount": 0.15, "mode": 1 }
+  ]
+}

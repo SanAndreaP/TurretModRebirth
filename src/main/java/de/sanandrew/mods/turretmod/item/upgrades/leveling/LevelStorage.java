@@ -2,41 +2,36 @@ package de.sanandrew.mods.turretmod.item.upgrades.leveling;
 
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeData;
+import de.sanandrew.mods.turretmod.network.SyncTurretStages;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifierManager;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-//@SuppressWarnings("FieldMayBeFinal")
 @IUpgradeData.Syncable
-//@Category("Leveling")
 public class LevelStorage
         implements IUpgradeData<LevelStorage>
 {
     private static final String NBT_EXPERIENCE  = "Experience";
 
-//    @Value(comment = "The maximum XP a turret can gain through the Leveling upgrade. The default is 50 levels worth; see https://minecraft.gamepedia.com/Experience#Leveling_up")
-    public static  int      maxXp      = 5_345; // level 50
-//    @Value(value = "stages", comment = "A JSON array defining the level stages which are applied once a turret levels up to a stage level.", reqWorldRestart = true)
-    private static String[] stagesJson = getDefaultStages();
-    private static Stage[]  stages     = {};
+    private static final Map<ResourceLocation, Stage> STAGES = new ConcurrentHashMap<>();
+
+    public static int maxXp  = 5_345; // level 50
 
     int xp;
 
@@ -63,10 +58,13 @@ public class LevelStorage
         nbt.putInt(NBT_EXPERIENCE, this.xp);
     }
 
-    //    @Init
-    public static void initStages() {
-        //TODO: use datapacks for this
-        stages = Stage.load(String.join("\n", stagesJson));
+    public static void addStage(ResourceLocation id, Stage s) {
+        STAGES.put(id, s);
+    }
+
+    public static void applyStages(Map<ResourceLocation, Stage> s) {
+        STAGES.clear();
+        STAGES.putAll(s);
     }
 
     private static int getXpReqForNextLevel(int lvl) {
@@ -80,38 +78,6 @@ public class LevelStorage
             return MathHelper.floor(4.5D * lvl * lvl - 162.5D * lvl + 2220);
         }
     }
-
-    static String[] getDefaultStages() {
-        //TODO: use datapacks for this
-//        final List<String> stageLines = new ArrayList<>();
-//        try {
-//            MiscUtils.readFile(Loader.instance().getModList().stream().filter(c -> c.getModId().equals(TmrConstants.ID))
-//                                     .findFirst().orElseThrow(IOException::new),
-//                               "assets/" + TmrConstants.ID + "/stages_default.json",
-//                               r -> {
-//                                   System.out.println("read file successfully...");
-//                                   stageLines.addAll(r.lines().collect(Collectors.toList()));
-//            });
-//
-//            return stageLines.toArray(new String[0]);
-//        } catch( IOException e ) {
-//            TmrConstants.LOG.log(Level.ERROR, "Cannot load default stages: {}", e.getMessage());
-//        }
-
-        return new String[0];
-    }
-
-//    @Override
-//    public void fromBytes(ObjectInputStream stream) throws IOException {
-//        this.xp = stream.readInt();
-//        this.prevXp = 0;
-//        this.cachedLevel = -1;
-//    }
-//
-//    @Override
-//    public void toBytes(ObjectOutputStream stream) throws IOException {
-//        stream.writeInt(this.xp);
-//    }
 
     @Override
     public void onTick(ITurretEntity turretInst) {
@@ -130,7 +96,7 @@ public class LevelStorage
 
             // cleanup dangling modifiers
             AttributeModifierManager attribs = e.getAttributes();
-            List<UUID> currModifierIds = Arrays.stream(stages).map(s -> s.modifiers).flatMap(Stream::of).map(m -> m.modifier.getId()).collect(Collectors.toList());
+            List<UUID> currModifierIds = STAGES.values().stream().map(stage -> stage.modifiers).flatMap(Stream::of).map(m -> m.mod.getId()).collect(Collectors.toList());
             removeModifiers(attribs, currModifierIds);
         }
     }
@@ -158,7 +124,7 @@ public class LevelStorage
         if( this.prevLvl != currLevel ) {
             this.prevLvl = currLevel;
 
-            Arrays.stream(stages).forEach(s -> {
+            STAGES.forEach((r, s) -> {
                 if( s.check(currLevel, this.currStage) ) {
                     s.apply(turretInst, playSound);
                 }
@@ -176,7 +142,7 @@ public class LevelStorage
 
     private List<Stage> fetchCurrentStages() {
         final int currLevel = this.getLevel();
-        return Arrays.stream(stages).filter(s -> s.check(currLevel, Stage.NULL_STAGE)).collect(Collectors.toList());
+        return STAGES.values().stream().filter(s -> s.check(currLevel, Stage.NULL_STAGE)).collect(Collectors.toList());
     }
 
     public int getXp() {
@@ -202,10 +168,6 @@ public class LevelStorage
         if( xp > 0 ) {
             this.xp += xp;
         }
-    }
-
-    public static Stage[] getStages() {
-        return stages;
     }
 
     /*
@@ -237,13 +199,13 @@ public class LevelStorage
             return this.cachedLevel;
         }
 
-        int xp = this.getXp();
-        if( xp <= 352 ) { // below lvl 16
-            return MathHelper.floor(Math.sqrt(xp + 9.0D) - 3.0D);
-        } else if( xp <= 1507 ) { // below lvl 31
-            return MathHelper.floor(Math.sqrt(0.4D * xp - 78.39D) + 8.1D);
+        int xpc = this.getXp();
+        if( xpc <= 352 ) { // below lvl 16
+            return MathHelper.floor(Math.sqrt(xpc + 9.0D) - 3.0D);
+        } else if( xpc <= 1507 ) { // below lvl 31
+            return MathHelper.floor(Math.sqrt(0.4D * xpc - 78.39D) + 8.1D);
         } else { // at or above lvl 31
-            return MathHelper.floor(Math.sqrt((10.0D / 45.0D) * xp - 167.33D) + 18.056D);
+            return MathHelper.floor(Math.sqrt((10.0D / 45.0D) * xpc - 167.33D) + 18.056D);
         }
     }
 
@@ -255,4 +217,7 @@ public class LevelStorage
         return getXpReqForNextLevel(this.getLevel());
     }
 
+    public static SyncTurretStages getPacket() {
+        return new SyncTurretStages(STAGES);
+    }
 }

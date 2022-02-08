@@ -1,0 +1,8 @@
+{
+  "level": 50,
+  "modifiers": [
+    { "attribute": "generic.max_health",            "id": "2ff8d544-ecfc-4508-abc8-cd63441443b9", "name": "50_health", "amount": 0.3,   "mode": 1 },
+    { "attribute": "generic.attack_damage",         "id": "9d301b4e-4586-47bc-8ddf-97625e5ec31e", "name": "50_atkdmg", "amount": 0.2,   "mode": 1 },
+    { "attribute": "sapturretmod:max_reload_ticks", "id": "56b907cf-efd4-4e08-a6d7-e0eb4bd9db9f", "name": "50_reload", "amount": -0.25, "mode": 2 }
+  ]
+}

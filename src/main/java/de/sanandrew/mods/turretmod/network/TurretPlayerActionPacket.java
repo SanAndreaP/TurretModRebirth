@@ -29,7 +29,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-import java.io.IOException;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -103,25 +102,16 @@ public class TurretPlayerActionPacket
         buffer.writeByte(this.actionId);
 
         if( this.actionId == RENAME ) {
-            writeOptional(this.customName != null, buffer, b -> b.writeUtf(this.customName, 260));
+            PacketRegistry.writeOptional(this.customName != null, buffer, b -> b.writeUtf(this.customName, 260));
         } else if( this.actionId == SET_TARGET_CREATURE ) {
             buffer.writeBoolean(this.targetFlag);
-            writeOptional(this.targetCreatureId != null, buffer, b -> b.writeResourceLocation(this.targetCreatureId));
-            writeOptional(this.targetCreatureType != null, buffer, b -> b.writeUtf(this.targetCreatureType.getName()));
+            PacketRegistry.writeOptional(this.targetCreatureId != null, buffer, b -> b.writeResourceLocation(this.targetCreatureId));
+            PacketRegistry.writeOptional(this.targetCreatureType != null, buffer, b -> b.writeUtf(this.targetCreatureType.getName()));
         } else if( this.actionId == SET_TARGET_PLAYER ) {
             buffer.writeBoolean(this.targetFlag);
-            writeOptional(this.targetPlayerId != null, buffer, b -> b.writeUUID(this.targetPlayerId));
+            PacketRegistry.writeOptional(this.targetPlayerId != null, buffer, b -> b.writeUUID(this.targetPlayerId));
         } else if( this.actionId == SET_FILTERTYPE_CREATURE || this.actionId == SET_FILTERTYPE_PLAYER ) {
             buffer.writeBoolean(this.targetFlag);
-        }
-    }
-
-    private static void writeOptional(boolean doWrite, PacketBuffer buffer, IOErrorConsumer<PacketBuffer> writeValue) {
-        buffer.writeBoolean(doWrite);
-        if( doWrite ) {
-            try {
-                writeValue.accept(buffer);
-            } catch(IOException ex) { /* ignored */ }
         }
     }
 
@@ -260,9 +250,4 @@ public class TurretPlayerActionPacket
         }
     }
 
-    @FunctionalInterface
-    public interface IOErrorConsumer<T>
-    {
-        void accept(T t) throws IOException;
-    }
 }

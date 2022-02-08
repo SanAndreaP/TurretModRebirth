@@ -1,0 +1,6 @@
+{
+  "level": 35,
+  "modifiers": [
+    { "attribute": "generic.attack_damage", "id": "a9732c79-b283-4cea-86df-f0ca76dd964b", "name": "35_atkdmg", "amount": 0.15, "mode": 1 }
+  ]
+}

@@ -28,7 +28,7 @@ public class Health
     protected ITextComponent getValueTxt(ITurretEntity turret) {
         float hp = turret.get().getHealth();
 
-        return new TranslationTextComponent(Lang.TCU_LABEL.get("health.value"), hp / 2.0F);
+        return new TranslationTextComponent(Lang.TCU_LABEL.get("health.value"), String.format("%.1f", hp / 2.0F));
     }
 
     @Override

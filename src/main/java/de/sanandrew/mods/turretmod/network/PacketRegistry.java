@@ -9,6 +9,9 @@
 package de.sanandrew.mods.turretmod.network;
 
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
+import net.minecraft.network.PacketBuffer;
+
+import java.io.IOException;
 
 public final class PacketRegistry
 {
@@ -19,6 +22,7 @@ public final class PacketRegistry
         TurretModRebirth.NETWORK.registerMessage(3, OpenRemoteTcuGuiPacket.class, OpenRemoteTcuGuiPacket::new);
         TurretModRebirth.NETWORK.registerMessage(4, TurretPlayerActionPacket.class, TurretPlayerActionPacket::new);
         TurretModRebirth.NETWORK.registerMessage(5, SyncUpgradesPacket.class, SyncUpgradesPacket::new);
+        TurretModRebirth.NETWORK.registerMessage(6, SyncTurretStages.class, SyncTurretStages::new);
 //        TurretModRebirth.network.registerMessage(1,  PacketUpdateTargets.class, PacketUpdateTargets::new);
 //        TurretModRebirth.network.registerMessage(2,  PacketUpdateTurretState.class, PacketUpdateTurretState::new);
 //        TurretModRebirth.network.registerMessage(3,  PacketPlayerTurretAction.class, PacketPlayerTurretAction::new);
@@ -32,5 +36,20 @@ public final class PacketRegistry
 //        TurretModRebirth.network.registerMessage(11, PacketSyncTcuGuis.class, PacketSyncTcuGuis::new);
 //        TurretModRebirth.network.registerMessage(12, PacketSyncAttackTarget.class, PacketSyncAttackTarget::new);
 //        TurretModRebirth.network.registerMessage(13, PacketEffect.class, PacketEffect::new);
+    }
+
+    public static void writeOptional(boolean doWrite, PacketBuffer buffer, IOErrorConsumer<PacketBuffer> writeValue) {
+        buffer.writeBoolean(doWrite);
+        if( doWrite ) {
+            try {
+                writeValue.accept(buffer);
+            } catch(IOException ex) { /* ignored */ }
+        }
+    }
+
+    @FunctionalInterface
+    public interface IOErrorConsumer<T>
+    {
+        void accept(T t) throws IOException;
     }
 }

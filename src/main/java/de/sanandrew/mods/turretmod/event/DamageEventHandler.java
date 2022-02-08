@@ -67,8 +67,9 @@ public class DamageEventHandler
         DamageSource dmgSrc = event.getSource();
         LivingEntity corpse = event.getEntityLiving();
 
-        //TODO: check if entity should drop xp -> method 'shouldDropExperience' in LivingEntity is protected => add method to SanLib.EntityUtils
-        if( corpse.level instanceof ServerWorld && dmgSrc instanceof TurretProjectileEntity.ITurretDamageSource ) {
+        if( EntityUtils.shouldDropExperience(corpse) && corpse.level instanceof ServerWorld
+            && dmgSrc instanceof TurretProjectileEntity.ITurretDamageSource )
+        {
             ITurretEntity turret = ((TurretProjectileEntity.ITurretDamageSource) dmgSrc).getTurretInst();
             if( turret != null && turret.getUpgradeProcessor().hasUpgrade(Upgrades.LEVELING) ) {
                 LevelStorage lvlStorage = turret.getUpgradeProcessor().getUpgradeData(Upgrades.LEVELING.getId());
@@ -76,7 +77,6 @@ public class DamageEventHandler
                     PlayerEntity faker = FakePlayerFactory.getMinecraft((ServerWorld) corpse.level);
 
                     int xp = EntityUtils.getExperienceReward(event.getEntityLiving(), faker);
-
                     xp = net.minecraftforge.event.ForgeEventFactory.getExperienceDrop(corpse, faker, xp);
 
                     lvlStorage.addXp(xp);

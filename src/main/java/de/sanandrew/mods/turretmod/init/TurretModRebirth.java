@@ -20,8 +20,10 @@ import de.sanandrew.mods.turretmod.entity.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.item.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.turretmod.item.upgrades.leveling.StageLoader;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import net.minecraft.data.DataGenerator;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
@@ -29,6 +31,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import org.objectweb.asm.Type;
@@ -57,6 +60,8 @@ public class TurretModRebirth
         meb.addListener(this::constructMod);
         meb.addListener(PROXY::setupClient);
         meb.addListener(this::setupCommon);
+
+        MinecraftForge.EVENT_BUS.addListener(StageLoader::enableSync);
     }
 
     private void constructMod(FMLConstructModEvent event) {
