@@ -28,9 +28,12 @@ import java.util.stream.Collectors;
 public final class StageLoader
         extends JsonReloadListener
 {
-    private static boolean syncEnabled = false;
+    public static final StageLoader INSTANCE = new StageLoader();
 
-    public StageLoader() {
+    private static boolean syncEnabled = false;
+    private static Long lastUpdate = null;
+
+    private StageLoader() {
         super(JsonUtils.GSON, "turret_level_stages");
     }
 
@@ -39,17 +42,22 @@ public final class StageLoader
     }
 
     @Override
+    @SuppressWarnings("java:S2696")
     protected void apply(Map<ResourceLocation, JsonElement> files, @Nonnull IResourceManager resourceMgr, @Nonnull IProfiler profiler) {
         Map<ResourceLocation, Stage> stages = files.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, v -> fromJson(v.getValue())));
         LevelStorage.applyStages(stages);
 
         if( syncEnabled ) {
+            lastUpdate = System.currentTimeMillis();
             DistExecutor.unsafeCallWhenOn(Dist.DEDICATED_SERVER, () -> () -> {
-                //TODO: fix this in SanLib: sendToAll does not need a player parameter!
-                TurretModRebirth.NETWORK.sendToAll(new SyncTurretStages(stages), null);
+                TurretModRebirth.NETWORK.sendToAll(new SyncTurretStages(stages));
                 return null;
             });
         }
+    }
+
+    public static boolean needsUpdate(LevelStorage ls) {
+        return lastUpdate != null && (ls.lastUpdate == null || lastUpdate > ls.lastUpdate);
     }
 
     private static Stage fromJson(JsonElement je) {

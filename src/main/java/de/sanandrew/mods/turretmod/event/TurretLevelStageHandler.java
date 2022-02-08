@@ -19,7 +19,7 @@ public class TurretLevelStageHandler
 
     @SubscribeEvent
     public static void onAddReloadListener(AddReloadListenerEvent event) {
-        event.addListener(new StageLoader());
+        event.addListener(StageLoader.INSTANCE);
     }
 
     //sync stages with client

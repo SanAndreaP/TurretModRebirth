@@ -34,6 +34,7 @@ public class LevelStorage
     public static int maxXp  = 5_345; // level 50
 
     int xp;
+    Long lastUpdate = null;
 
     private int     prevXp;
     private int     prevLvl;
@@ -94,11 +95,19 @@ public class LevelStorage
         if( !this.initialized ) {
             this.initialized = true;
 
-            // cleanup dangling modifiers
-            AttributeModifierManager attribs = e.getAttributes();
-            List<UUID> currModifierIds = STAGES.values().stream().map(stage -> stage.modifiers).flatMap(Stream::of).map(m -> m.mod.getId()).collect(Collectors.toList());
-            removeModifiers(attribs, currModifierIds);
+            cleanupModifiers(e.getAttributes());
+        } else if( StageLoader.needsUpdate(this) ) {
+            this.lastUpdate = System.currentTimeMillis();
+
+            this.prevLvl = -1;
+            cleanupModifiers(e.getAttributes());
+            applyEffects(turretInst, false);
         }
+    }
+
+    private static void cleanupModifiers(AttributeModifierManager attribs) {
+        List<UUID> currModifierIds = STAGES.values().stream().map(stage -> stage.modifiers).flatMap(Stream::of).map(m -> m.mod.getId()).collect(Collectors.toList());
+        removeModifiers(attribs, currModifierIds);
     }
 
     private static void removeModifiers(AttributeModifierManager attribMgr, @Nonnull List<UUID> idsToStay) {

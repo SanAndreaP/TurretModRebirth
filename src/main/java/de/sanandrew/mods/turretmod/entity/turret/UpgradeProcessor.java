@@ -400,14 +400,14 @@ public final class UpgradeProcessor
         ItemStackUtils.readItemStacksFromTag(this.upgradeStacks, nbt.getList("Upgrades", Constants.NBT.TAG_COMPOUND), this::callbackReadUpgStack);
     }
 
-    private void callbackWriteUpgStack(@Nonnull ItemStack upgStack, CompoundNBT nbt) {
-        MiscUtils.accept(this.upgradeData[nbt.getShort("Slot")], data -> data.save(this.turret, nbt));
+    private void callbackWriteUpgStack(@Nonnull ItemStack upgStack, int slot, CompoundNBT nbt) {
+        MiscUtils.accept(this.upgradeData[slot], data -> data.save(this.turret, nbt));
     }
 
-    private void callbackReadUpgStack(@Nonnull ItemStack upgStack, CompoundNBT nbt) {
+    private void callbackReadUpgStack(@Nonnull ItemStack upgStack, int slot, CompoundNBT nbt) {
         IUpgrade upg = UpgradeRegistry.INSTANCE.get(upgStack);
         MiscUtils.accept(upg.getData(this.turret), data -> {
-            this.upgradeData[nbt.getShort("Slot")] = data;
+            this.upgradeData[slot] = data;
             data.load(this.turret, nbt);
         });
         upg.initialize(this.turret, upgStack);

@@ -193,7 +193,7 @@ public class PlayerList
     }
 
     private static void syncPlayers() {
-        TurretModRebirth.NETWORK.sendToAll(new SyncPlayerListPacket(), null);
+        TurretModRebirth.NETWORK.sendToAll(new SyncPlayerListPacket());
     }
 
     @Nullable
