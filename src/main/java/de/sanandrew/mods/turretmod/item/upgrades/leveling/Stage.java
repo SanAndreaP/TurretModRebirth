@@ -38,7 +38,7 @@ public class Stage
         boolean hasMultiplier = false;
         for( Modifier m : this.modifiers ) {
             if( m.turret == null || m.turret.equals(turretInst.getDelegate().getId()) ) {
-                hasMultiplier |= EntityUtils.tryApplyModifier(turretInst.get(), m.attribute, m.mod, false);
+                hasMultiplier |= EntityUtils.tryApplyModifier(turretInst.get(), m.attribute, m.mod, true);
             }
         }
 
