@@ -49,6 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
+import java.util.stream.Collectors;
 
 @OnlyIn(Dist.CLIENT)
 public final class LabelRegistry
@@ -102,6 +103,10 @@ public final class LabelRegistry
     @Override
     public ILabelRenderer getDefault() {
         return EMPTY;
+    }
+
+    static Collection<ILabelRenderer> getVisible(final ITurretEntity turret) {
+        return LABEL_RENDERER_VIEW.stream().filter(lr -> lr.isVisible(turret)).collect(Collectors.toList());
     }
 
     public void render(Minecraft mc, WorldRenderer context, MatrixStack mat, float partialTicks, ActiveRenderInfo cameraEntity) {
@@ -235,11 +240,11 @@ public final class LabelRegistry
             return this.turretRef.get();
         }
 
-        private int get(BiFunction<ILabelRenderer, TurretEntity, Integer> f, BinaryOperator<Integer> accumulator) {
+        private int get(Collection<ILabelRenderer> lrs, BiFunction<ILabelRenderer, TurretEntity, Integer> f, BinaryOperator<Integer> accumulator) {
             if( this.active || this.opacity > 0.0F ) {
                 TurretEntity turret = this.getTurret();
                 if( turret != null ) {
-                    return LABEL_RENDERER_VIEW.stream().map(l -> f.apply(l, turret)).reduce(0, accumulator);
+                    return lrs.stream().map(l -> f.apply(l, turret)).reduce(0, accumulator);
                 }
             }
 
@@ -260,14 +265,15 @@ public final class LabelRegistry
 
             if( doRender ) {
                 TurretEntity turret = this.getTurret();
+                Collection<ILabelRenderer> lrs = getVisible(turret);
 
                 if( turret == null ) {
                     return;
                 }
 
                 final float alpha = MathHelper.clamp(this.opacity, 0.0F, 1.0F);
-                final int totalWidth = this.get((iLabelRenderer1, turret2) -> iLabelRenderer1.getMinWidth(INSTANCE, turret2), Integer::max);
-                final int totalHeight = this.get((iLabelRenderer, turret1) -> iLabelRenderer.getHeight(INSTANCE, turret1) + 2, Integer::sum) - 2;
+                final int totalWidth = this.get(lrs, (lr, t) -> lr.getMinWidth(INSTANCE, t), Integer::max);
+                final int totalHeight = this.get(lrs, (lr, t) -> lr.getHeight(INSTANCE, t) + 2, Integer::sum) - 2;
 
                 Vector3d camPos = turret.getPosition(partialTicks).subtract(camera.getPosition());
                 int alphaBg = (Math.round(0xA0 * alpha) << 24) & 0xFF000000;
@@ -306,7 +312,7 @@ public final class LabelRegistry
                 tess.end();
 
                 mat.translate(4.0F, 4.0F, 0.0F);
-                LABEL_RENDERER_VIEW.stream().filter(l -> l.isVisible(turret)).forEach(l -> {
+                lrs.stream().filter(l -> l.isVisible(turret)).forEach(l -> {
                     l.render(INSTANCE, turret, context, mat, totalWidth, totalHeight, partialTicks, alpha);
                     mat.translate(0.0F, l.getHeight(INSTANCE, turret) + 2.0F, 0.0F);
                 });

@@ -30,7 +30,7 @@ public class LevelXp
 
     @Override
     protected ITextComponent getValueTxt(ITurretEntity turret) {
-        return new TranslationTextComponent(Lang.TCU_LABEL.get("level.value"), MiscUtils.apply(this.getLevelStorage(turret), ls -> ls.getLevel(), 0));
+        return new TranslationTextComponent(Lang.TCU_LABEL.get("level.value"), MiscUtils.apply(this.getLevelStorage(turret), LevelStorage::getLevel, 0));
     }
 
     @Override
