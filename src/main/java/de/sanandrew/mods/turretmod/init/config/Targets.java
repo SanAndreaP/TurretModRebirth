@@ -1,6 +1,5 @@
 package de.sanandrew.mods.turretmod.init.config;
 
-import com.google.common.collect.Collections2;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
@@ -11,6 +10,7 @@ import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -19,6 +19,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -29,6 +30,8 @@ import java.util.Objects;
 @Mod.EventBusSubscriber(modid = TmrConstants.ID)
 public final class Targets
 {
+    public static final Targets INSTANCE = new Targets();
+
     private static final ITag.INamedTag<EntityType<?>> FLYING_ENTITIES         = EntityTypeTags.bind(TmrConstants.ID + ":flying_target");
     private static final ITag.INamedTag<EntityType<?>> SWIMMING_ENTITIES       = EntityTypeTags.bind(TmrConstants.ID + ":swimming_target");
     private static final ITag.INamedTag<EntityType<?>> GROUNDED_ENTITIES       = EntityTypeTags.bind(TmrConstants.ID + ":grounded_target");
@@ -40,12 +43,14 @@ public final class Targets
 
     private static final TargetMap CURRENT_ENTITY_LISTS = new TargetMap();
 
-    public Targets(ForgeConfigSpec.Builder builder) {
+    public static Targets buildConfig(ForgeConfigSpec.Builder builder) {
         builder.push("targets");
 
         flyingEntities = builder.defineListAllowEmpty(Collections.singletonList("flyingEntities"), ArrayList::new, Objects::nonNull);
         swimmingEntities = builder.defineListAllowEmpty(Collections.singletonList("swimmingEntities"), ArrayList::new, Objects::nonNull);
         groundedEntities = builder.defineListAllowEmpty(Collections.singletonList("groundedEntities"), ArrayList::new, Objects::nonNull);
+
+        return INSTANCE;
     }
 
     public static boolean canBeTargeted(ResourceLocation entityTypeId, ITurret.TargetType targetType) {
@@ -59,7 +64,7 @@ public final class Targets
             TargetEntry es = getEntry(swimmingEntities, entityType);
             TargetEntry eg = getEntry(groundedEntities, entityType);
 
-            if( (ef.empty || ef.remove) && (es.empty || es.remove) && (eg.empty || eg.remove) ) {
+            if( (ef.isEmpty || ef.remove) && (es.isEmpty || es.remove) && (eg.isEmpty || eg.remove) ) {
                 return false;
             }
         }
@@ -72,15 +77,13 @@ public final class Targets
 
         if( targetType == ITurret.TargetType.AIR ) {
             TargetEntry e = getEntry(flyingEntities, entityType);
-            return FLYING_ENTITIES.contains(entityType) ? !e.remove : !e.empty;
+            return FLYING_ENTITIES.contains(entityType) ? !e.remove : !e.isEmpty;
         } else if( targetType == ITurret.TargetType.WATER ) {
             TargetEntry e = getEntry(swimmingEntities, entityType);
-            return SWIMMING_ENTITIES.contains(entityType) ? !e.remove : !e.empty;
+            return SWIMMING_ENTITIES.contains(entityType) ? !e.remove : !e.isEmpty;
         } else {
             TargetEntry e = getEntry(groundedEntities, entityType);
-            return e.empty
-                   ? GROUNDED_ENTITIES.contains(entityType) || !(canBeTargeted(entityType, ITurret.TargetType.AIR) || canBeTargeted(entityType, ITurret.TargetType.WATER))
-                   : !e.remove;
+            return GROUNDED_ENTITIES.contains(entityType) ? !e.remove : !e.isEmpty;
         }
     }
 
@@ -89,7 +92,7 @@ public final class Targets
         CURRENT_ENTITY_LISTS.clear();
 
         ForgeRegistries.ENTITIES.getValues().forEach(e -> {
-            if( e.getCategory() == EntityClassification.MISC ) {
+            if( e.getCategory() == EntityClassification.MISC && !canBeTargeted(e, ITurret.TargetType.ALL) ) {
                 return;
             }
 
@@ -135,11 +138,12 @@ public final class Targets
         }
     }
 
+    @SuppressWarnings({ "java:S1104", "unused" })
     public static class TargetEntry
     {
         public       String  id;
         public       boolean remove = false;
-        public final boolean empty;
+        public final boolean isEmpty;
 
         static final TargetEntry EMPTY = new TargetEntry(true);
 
@@ -147,8 +151,8 @@ public final class Targets
             this(false);
         }
 
-        public TargetEntry(boolean empty) {
-            this.empty = empty;
+        public TargetEntry(boolean isEmpty) {
+            this.isEmpty = isEmpty;
         }
     }
 

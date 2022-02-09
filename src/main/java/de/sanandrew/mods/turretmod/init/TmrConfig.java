@@ -13,7 +13,7 @@ public class TmrConfig
     static final        ForgeConfigSpec TARGETS_SPEC;
 
     static {
-        final Pair<Targets, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Targets::new);
+        final Pair<Targets, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Targets::buildConfig);
         TARGETS_SPEC = specPair.getRight();
         TARGETS = specPair.getLeft();
     }
