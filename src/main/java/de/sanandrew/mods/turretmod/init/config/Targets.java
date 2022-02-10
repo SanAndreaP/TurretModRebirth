@@ -10,7 +10,6 @@ import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -19,7 +18,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -30,27 +28,34 @@ import java.util.Objects;
 @Mod.EventBusSubscriber(modid = TmrConstants.ID)
 public final class Targets
 {
-    public static final Targets INSTANCE = new Targets();
+    private static Targets instance;
 
     private static final ITag.INamedTag<EntityType<?>> FLYING_ENTITIES         = EntityTypeTags.bind(TmrConstants.ID + ":flying_target");
     private static final ITag.INamedTag<EntityType<?>> SWIMMING_ENTITIES       = EntityTypeTags.bind(TmrConstants.ID + ":swimming_target");
     private static final ITag.INamedTag<EntityType<?>> GROUNDED_ENTITIES       = EntityTypeTags.bind(TmrConstants.ID + ":grounded_target");
     private static final ITag.INamedTag<EntityType<?>> NON_TARGETABLE_ENTITIES = EntityTypeTags.bind(TmrConstants.ID + ":not_targetable");
 
-    public static ForgeConfigSpec.ConfigValue<List<? extends TargetEntry>> flyingEntities;
-    public static ForgeConfigSpec.ConfigValue<List<? extends TargetEntry>> swimmingEntities;
-    public static ForgeConfigSpec.ConfigValue<List<? extends TargetEntry>> groundedEntities;
+    public final ForgeConfigSpec.ConfigValue<List<? extends TargetEntry>> flyingEntities;
+    public final ForgeConfigSpec.ConfigValue<List<? extends TargetEntry>> swimmingEntities;
+    public final ForgeConfigSpec.ConfigValue<List<? extends TargetEntry>> groundedEntities;
 
     private static final TargetMap CURRENT_ENTITY_LISTS = new TargetMap();
 
+    private Targets(ForgeConfigSpec.Builder cfgBuilder) {
+        cfgBuilder.push("targets");
+
+        this.flyingEntities = cfgBuilder.defineListAllowEmpty(Collections.singletonList("flyingEntities"), ArrayList::new, Objects::nonNull);
+        this.swimmingEntities = cfgBuilder.defineListAllowEmpty(Collections.singletonList("swimmingEntities"), ArrayList::new, Objects::nonNull);
+        this.groundedEntities = cfgBuilder.defineListAllowEmpty(Collections.singletonList("groundedEntities"), ArrayList::new, Objects::nonNull);
+    }
+
     public static Targets buildConfig(ForgeConfigSpec.Builder builder) {
-        builder.push("targets");
+        instance = new Targets(builder);
+        return instance;
+    }
 
-        flyingEntities = builder.defineListAllowEmpty(Collections.singletonList("flyingEntities"), ArrayList::new, Objects::nonNull);
-        swimmingEntities = builder.defineListAllowEmpty(Collections.singletonList("swimmingEntities"), ArrayList::new, Objects::nonNull);
-        groundedEntities = builder.defineListAllowEmpty(Collections.singletonList("groundedEntities"), ArrayList::new, Objects::nonNull);
-
-        return INSTANCE;
+    public static Targets getInstance() {
+        return instance;
     }
 
     public static boolean canBeTargeted(ResourceLocation entityTypeId, ITurret.TargetType targetType) {
@@ -60,9 +65,9 @@ public final class Targets
 
     public static boolean canBeTargeted(EntityType<?> entityType, ITurret.TargetType targetType) {
         if( NON_TARGETABLE_ENTITIES.contains(entityType) ) {
-            TargetEntry ef = getEntry(flyingEntities, entityType);
-            TargetEntry es = getEntry(swimmingEntities, entityType);
-            TargetEntry eg = getEntry(groundedEntities, entityType);
+            TargetEntry ef = getEntry(instance.flyingEntities, entityType);
+            TargetEntry es = getEntry(instance.swimmingEntities, entityType);
+            TargetEntry eg = getEntry(instance.groundedEntities, entityType);
 
             if( (ef.isEmpty || ef.remove) && (es.isEmpty || es.remove) && (eg.isEmpty || eg.remove) ) {
                 return false;
@@ -76,13 +81,13 @@ public final class Targets
         }
 
         if( targetType == ITurret.TargetType.AIR ) {
-            TargetEntry e = getEntry(flyingEntities, entityType);
+            TargetEntry e = getEntry(instance.flyingEntities, entityType);
             return FLYING_ENTITIES.contains(entityType) ? !e.remove : !e.isEmpty;
         } else if( targetType == ITurret.TargetType.WATER ) {
-            TargetEntry e = getEntry(swimmingEntities, entityType);
+            TargetEntry e = getEntry(instance.swimmingEntities, entityType);
             return SWIMMING_ENTITIES.contains(entityType) ? !e.remove : !e.isEmpty;
         } else {
-            TargetEntry e = getEntry(groundedEntities, entityType);
+            TargetEntry e = getEntry(instance.groundedEntities, entityType);
             return GROUNDED_ENTITIES.contains(entityType) ? !e.remove : !e.isEmpty;
         }
     }
