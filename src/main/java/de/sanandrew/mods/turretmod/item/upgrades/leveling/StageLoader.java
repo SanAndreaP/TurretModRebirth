@@ -37,6 +37,7 @@ public final class StageLoader
         super(JsonUtils.GSON, "turret_level_stages");
     }
 
+    @SuppressWarnings("unused")
     public static void enableSync(FMLServerStartedEvent event) {
         syncEnabled = true;
     }

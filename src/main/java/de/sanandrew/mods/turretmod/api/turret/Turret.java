@@ -68,6 +68,8 @@ public abstract class Turret
         this.ammoCapacity = 256;
         this.reloadTicks = 20;
         this.model = isBuoy ? Resources.MODEL_ENTITY_BASE_BUOY : Resources.MODEL_ENTITY_BASE;
+
+        this.initializeFromConfig();
     }
 
     /**

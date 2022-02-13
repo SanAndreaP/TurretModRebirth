@@ -6,16 +6,20 @@ import de.sanandrew.mods.turretmod.api.turret.IVariant;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class VariantContainer
 {
 
     private IVariant              defaultVariant;
+    private final List<IVariant> variantList = new ArrayList<>();
     final   Map<Object, IVariant> variants = new HashMap<>();
 
     public void register(IVariant variant) {
+        this.variantList.add(variant);
         this.variants.put(variant.getId(), variant);
         if( this.defaultVariant == null ) {
             this.defaultVariant = variant;
@@ -32,6 +36,10 @@ public abstract class VariantContainer
 
     public IVariant getDefault() {
         return this.defaultVariant;
+    }
+
+    public IVariant[] getAll() {
+        return this.variantList.toArray(new IVariant[0]);
     }
 
     public abstract IVariant get(IInventory inv);

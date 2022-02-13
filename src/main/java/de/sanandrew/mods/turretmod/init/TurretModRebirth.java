@@ -54,7 +54,7 @@ public class TurretModRebirth
     public TurretModRebirth() {
         IEventBus meb = FMLJavaModLoadingContext.get().getModEventBus();
 
-        TmrConfig.register();
+        TmrConfig.register(meb);
 
         meb.addListener(this::gatherData);
         meb.addListener(this::constructMod);

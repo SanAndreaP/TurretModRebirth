@@ -6,6 +6,7 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.item;
 
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.api.turret.IVariant;
@@ -14,18 +15,21 @@ import de.sanandrew.mods.turretmod.entity.turret.TurretEntity;
 import de.sanandrew.mods.turretmod.entity.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.variant.VariantContainer;
 import de.sanandrew.mods.turretmod.init.Lang;
+import de.sanandrew.mods.turretmod.init.TmrConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -40,9 +44,10 @@ import net.minecraftforge.fluids.IFluidBlock;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiFunction;
 
-@SuppressWarnings("Duplicates")
 public class TurretItem
         extends Item
 {
@@ -73,7 +78,7 @@ public class TurretItem
     }
 
     public ITurret getTurret() {
-        return this.turretCache != null ? this.turretCache : (this.turretCache = TurretRegistry.INSTANCE.get(this.turretId));
+        return MiscUtils.get(this.turretCache, () -> this.turretCache = TurretRegistry.INSTANCE.get(this.turretId));
     }
 
     @Nonnull
@@ -119,56 +124,48 @@ public class TurretItem
                     return new ActionResult<>(ActionResultType.FAIL, stack);
                 }
 
-                BlockPos lowerPos = blockPos.below();
-                if( this.getTurret().isBuoy() && isBlockLiquid(level, blockPos) && isBlockLiquid(level, lowerPos) && TurretEntity
-                        .canTurretBePlaced(this.turretCache, level, lowerPos, false) ) {
-                    TurretEntity susan = spawnTurret(level, this.turretCache, lowerPos, player);
-                    new TurretStats(stack.getTag()).apply(susan);
-
-                    if( !player.isCreative() ) {
-                        stack.shrink(1);
-                    }
+                if( this.trySpawnTurret(level, player, blockPos, stack.getTag()) ) {
+                    stack.shrink(1);
                 }
             }
         }
 
         return new ActionResult<>(ActionResultType.SUCCESS, stack);
-//        return super.use(level, player, hand);
     }
-//
-//    @Override
-//    @SuppressWarnings("ConstantConditions")
-//    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
-//        ItemStack stack = player.getHeldItem(hand);
-//
-//        if( !world.isRemote ) {
-//            RayTraceResult traceResult = this.rayTrace(world, player, true);
-//            if( traceResult != null && traceResult.typeOfHit == RayTraceResult.Type.BLOCK ) {
-//                BlockPos blockPos = traceResult.getBlockPos();
-//                if( !world.isBlockModifiable(player, blockPos) ) {
-//                    return new ActionResult<>(EnumActionResult.FAIL, stack);
-//                }
-//
-//                if( !player.canPlayerEdit(blockPos, traceResult.sideHit, stack) ) {
-//                    return new ActionResult<>(EnumActionResult.FAIL, stack);
-//                }
-//
-//                BlockPos lowerPos = blockPos.down();
-//                if( this.turret.isBuoy() && isBlockLiquid(world, blockPos) && isBlockLiquid(world, lowerPos) && EntityTurret.canTurretBePlaced(this.turret, world, lowerPos, false) ) {
-//                    EntityTurret susan = spawnTurret(world, this.turret, lowerPos, player);
-//                    if( susan != null ) {
-//                        new TurretStats(stack.getTagCompound()).apply(susan);
-//
-//                        if( !player.capabilities.isCreativeMode ) {
-//                            stack.shrink(1);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        return new ActionResult<>(EnumActionResult.SUCCESS, stack);
-//    }
+
+    private boolean trySpawnTurret(@Nonnull World level, @Nonnull PlayerEntity player, @Nonnull BlockPos blockPos, CompoundNBT itemNbt) {
+        BlockPos lowerPos = blockPos.below();
+        if( this.getTurret().isBuoy() && isBlockLiquid(level, blockPos) && isBlockLiquid(level, lowerPos) && TurretEntity
+                .canTurretBePlaced(this.turretCache, level, lowerPos, false) ) {
+            TurretEntity susan = spawnTurret(level, this.turretCache, lowerPos, player);
+            new TurretStats(itemNbt).apply(susan);
+
+            return !player.isCreative();
+        }
+
+        return false;
+    }
+
+    @Override
+    public void fillItemCategory(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
+        super.fillItemCategory(group, items);
+
+        if( this.allowdedIn(group) && Boolean.TRUE.equals(TmrConfig.TURRETS.showVariantsInItemGroup.get()) ) {
+            ITurret t = this.getTurret();
+            if( t instanceof IVariantHolder ) {
+                IVariantHolder vh = (IVariantHolder) t;
+                if( vh.hasVariants() ) {
+                    Arrays.stream(vh.getVariants()).forEach(v -> {
+                        if( !vh.isDefaultVariant(v) ) {
+                            ItemStack turretStack = new ItemStack(this);
+                            new TurretStats(null, null, v).updateData(turretStack);
+                            items.add(turretStack);
+                        }
+                    });
+                }
+            }
+        }
+    }
 
     private static boolean isBlockLiquid(World level, BlockPos pos) {
         Block b = level.getBlockState(pos).getBlock();
@@ -191,6 +188,11 @@ public class TurretItem
 
     public static final class TurretStats
     {
+        public static final String NBT_TURRET_STATS = "TurretStats";
+        public static final String NBT_TURRET_STATS_HEALTH = "Health";
+        public static final String NBT_TURRET_STATS_NAME = "Name";
+        public static final String NBT_TURRET_STATS_VARIANT = "Variant";
+
         public final Float            health;
         public final ITextComponent   name;
         public final String variant;
@@ -202,8 +204,8 @@ public class TurretItem
             this.name = bob.hasCustomName() ? bob.getCustomName() : null;
 
             if( turret instanceof VariantContainer ) {
-                IVariant variant = turretInst.getVariant();
-                this.variant = variant != null ? variant.getId() : null;
+                IVariant v = turretInst.getVariant();
+                this.variant = v != null ? v.getId() : null;
             } else {
                 this.variant = null;
             }
@@ -212,21 +214,29 @@ public class TurretItem
         public TurretStats(Float health, ITextComponent name, IVariant variant) {
             this.health = health;
             this.name = name;
-            this.variant = variant.getId();
+            this.variant = variant.getId().toString();
         }
 
         public TurretStats(CompoundNBT nbt) {
-            if( nbt != null && nbt.contains("TurretStats", Constants.NBT.TAG_COMPOUND) ) {
-                nbt = nbt.getCompound("TurretStats");
+            if( nbt != null && nbt.contains(NBT_TURRET_STATS, Constants.NBT.TAG_COMPOUND) ) {
+                nbt = nbt.getCompound(NBT_TURRET_STATS);
 
-                this.health = nbt.contains("Health", Constants.NBT.TAG_ANY_NUMERIC) ? nbt.getFloat("Health") : null;
-                this.name = nbt.contains("Name", Constants.NBT.TAG_STRING) ? ITextComponent.Serializer.fromJson(nbt.getString("Name")) : null;
-                this.variant = nbt.contains("Variant", Constants.NBT.TAG_STRING) ? nbt.getString("Variant") : null;
+                this.health = getNbt(nbt, NBT_TURRET_STATS_HEALTH, Constants.NBT.TAG_ANY_NUMERIC, CompoundNBT::getFloat);
+                this.name = getNbt(nbt, NBT_TURRET_STATS_NAME, Constants.NBT.TAG_STRING, (c, s) -> ITextComponent.Serializer.fromJson(c.getString(s)));
+                this.variant = getNbt(nbt, NBT_TURRET_STATS_VARIANT, Constants.NBT.TAG_STRING, CompoundNBT::getString);
             } else {
                 this.health = null;
                 this.name = null;
                 this.variant = null;
             }
+        }
+
+        private static <T> T getNbt(CompoundNBT nbt, String nbtName, int nbtType, BiFunction<CompoundNBT, String, T> func) {
+            if( nbt.contains(nbtName, nbtType) ) {
+                return func.apply(nbt, nbtName);
+            }
+
+            return null;
         }
 
         public void apply(ITurretEntity turretInst) {
@@ -242,22 +252,20 @@ public class TurretItem
             }
         }
 
-        public CompoundNBT updateData(ItemStack stack) {
-            return this.serialize(stack.getOrCreateTagElement("TurretStats"));
+        public void updateData(ItemStack stack) {
+            this.serialize(stack.getOrCreateTagElement(NBT_TURRET_STATS));
         }
 
-        public CompoundNBT serialize(CompoundNBT nbt) {
+        public void serialize(CompoundNBT nbt) {
             if( this.health != null ) {
-                nbt.putFloat("Health", this.health);
+                nbt.putFloat(NBT_TURRET_STATS_HEALTH, this.health);
             }
             if( this.name != null ) {
-                nbt.putString("Name", ITextComponent.Serializer.toJson(this.name));
+                nbt.putString(NBT_TURRET_STATS_NAME, ITextComponent.Serializer.toJson(this.name));
             }
             if( this.variant != null ) {
-                nbt.putString("Variant", this.variant);
+                nbt.putString(NBT_TURRET_STATS_VARIANT, this.variant);
             }
-
-            return nbt;
         }
     }
 }

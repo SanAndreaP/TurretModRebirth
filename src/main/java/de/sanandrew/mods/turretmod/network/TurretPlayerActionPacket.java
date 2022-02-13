@@ -160,6 +160,7 @@ public class TurretPlayerActionPacket
                 case SET_FILTERTYPE_PLAYER:
                     setFilterType(turretInst, this.targetFlag, false);
                     break;
+                default:
             }
         }
     }

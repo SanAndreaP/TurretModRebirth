@@ -6,6 +6,7 @@ import de.sanandrew.mods.turretmod.api.client.tcu.ITcuInfoProvider;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuScreen;
 import de.sanandrew.mods.turretmod.api.tcu.TcuContainer;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuInfoPage;
+import de.sanandrew.mods.turretmod.client.gui.tcu.TcuLevelsPage;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuScreen;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuTargetPage;
 import de.sanandrew.mods.turretmod.client.gui.tcu.info.AmmoProvider;
@@ -15,6 +16,8 @@ import de.sanandrew.mods.turretmod.client.gui.tcu.info.OwnerProvider;
 import de.sanandrew.mods.turretmod.client.gui.tcu.info.TargetProvider;
 import de.sanandrew.mods.turretmod.client.renderer.turret.LabelRegistry;
 import de.sanandrew.mods.turretmod.item.TurretControlUnit;
+import de.sanandrew.mods.turretmod.item.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -61,6 +64,8 @@ public final class TcuClientRegistry
         registry.registerTcuScreen(TurretControlUnit.INFO, new SimpleItem(Items.BOOK), TcuInfoPage::new);
         registry.registerTcuScreen(TurretControlUnit.TARGETS_CREATURES, new SimpleItem(Items.ZOMBIE_HEAD), TcuTargetPage.Creatures::new);
         registry.registerTcuScreen(TurretControlUnit.TARGETS_PLAYERS, de.sanandrew.mods.turretmod.client.init.PlayerHeads::getRandomSkull, TcuTargetPage.Players::new);
+
+        registry.registerTcuScreen(TurretControlUnit.LEVELS, () -> UpgradeRegistry.INSTANCE.getItem(Upgrades.LEVELING.getId()), TcuLevelsPage::new);
 
         registry.registerTcuInfoProvider(0, new NameProvider());
         registry.registerTcuInfoProvider(1, new HealthProvider());

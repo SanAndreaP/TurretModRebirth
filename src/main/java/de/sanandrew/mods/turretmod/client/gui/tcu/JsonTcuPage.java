@@ -29,6 +29,11 @@ public abstract class JsonTcuPage
 
         this.turret = tcuScreen.getMenu().turret;
         this.isRemote = tcuScreen.getMenu().isRemote;
+
+        if( this.guiDefinition != null ) {
+            this.guiDefinition.width = tcuScreen.getXSize();
+            this.guiDefinition.height = tcuScreen.getYSize();
+        }
     }
 
     protected abstract GuiDefinition buildGuiDefinition();

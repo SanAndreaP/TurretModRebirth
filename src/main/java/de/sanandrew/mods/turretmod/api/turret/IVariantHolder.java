@@ -10,6 +10,8 @@ public interface IVariantHolder
         return true;
     }
 
+    IVariant[] getVariants();
+
     IVariant getVariant(Object id);
 
     IVariant getVariant(String id);

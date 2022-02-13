@@ -18,7 +18,7 @@ import org.apache.commons.lang3.Range;
 import javax.annotation.Nonnull;
 
 public class AmmoProvider
-        extends IndicatorProvider
+        extends ValueProvider
 {
     private ItemStack      item = ItemStack.EMPTY;
 

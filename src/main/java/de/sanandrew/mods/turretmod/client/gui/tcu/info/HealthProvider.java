@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 
 //TODO: render personal shield
 public class HealthProvider
-        extends IndicatorProvider
+        extends ValueProvider
 {
     @Nonnull
     @Override

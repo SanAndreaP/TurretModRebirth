@@ -19,7 +19,6 @@ import java.util.Objects;
 public class TcuInfoPage
         extends JsonTcuPage
 {
-
     private ButtonSL dismantle;
     private ButtonSL setActive;
     private ButtonSL setInactive;
@@ -28,11 +27,6 @@ public class TcuInfoPage
 
     public TcuInfoPage(ContainerScreen<TcuContainer> tcuScreen) {
         super(tcuScreen);
-
-        if( this.guiDefinition != null ) {
-            this.guiDefinition.width = tcuScreen.getXSize();
-            this.guiDefinition.height = tcuScreen.getYSize();
-        }
     }
 
     @Override

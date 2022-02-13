@@ -13,7 +13,7 @@ import de.sanandrew.mods.turretmod.client.gui.element.tcu.IndicatorBar;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.IndicatorText;
 import org.apache.commons.lang3.Range;
 
-public abstract class IndicatorProvider
+public abstract class ValueProvider
         extends IllustratedProvider
 {
     protected static final int[] DEFAULT_INDICATOR_SIZE = new int[] { 120, 3 };

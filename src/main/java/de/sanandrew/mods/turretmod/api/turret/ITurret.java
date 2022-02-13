@@ -7,6 +7,7 @@
 package de.sanandrew.mods.turretmod.api.turret;
 
 import de.sanandrew.mods.turretmod.api.IRegistryObject;
+import de.sanandrew.mods.turretmod.entity.turret.delegate.Crossbow;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.Pose;
 import net.minecraft.nbt.CompoundNBT;
@@ -31,6 +32,8 @@ public interface ITurret
 
     @Nonnull
     ResourceLocation getModelLocation();
+
+    default void initializeFromConfig() { }
 
     ResourceLocation getBaseTexture(ITurretEntity turret);
 
