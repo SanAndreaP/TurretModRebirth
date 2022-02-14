@@ -38,7 +38,7 @@
       "type": "text",
       "pos": [7, 63],
       "data": {
-        "text": "gui.sapturretmod.tcu.page.sapturretmod:leveling.modifier",
+        "text": "gui.sapturretmod.tcu.text.leveling.modifier",
         "color": "0xFF404040"
       }
     },
@@ -71,7 +71,7 @@
     },
     {
       "type": "button",
-      "id": "retrieve_excess_xp",
+      "id": "retrieveExcess",
       "pos": [79, 190],
       "data": {
         "useVanillaTexture": false,
@@ -88,7 +88,7 @@
       "pos": [79, 190],
       "data": {
         "size": [18, 18],
-        "text": "gui.sapturretmod.tcu.page.sapturretmod:leveling.retrieve"
+        "text": "gui.sapturretmod.tcu.tooltip.leveling.retrieve"
       }
     }
   ]

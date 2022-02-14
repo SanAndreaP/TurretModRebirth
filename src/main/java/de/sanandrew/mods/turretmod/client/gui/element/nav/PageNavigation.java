@@ -2,7 +2,6 @@ package de.sanandrew.mods.turretmod.client.gui.element.nav;
 
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import de.sanandrew.mods.sanlib.lib.client.gui.EmptyGuiElement;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
@@ -11,9 +10,13 @@ import de.sanandrew.mods.sanlib.lib.client.gui.element.ButtonSL;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.client.tcu.TcuTabEvent;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuScreen;
 import de.sanandrew.mods.turretmod.item.TurretControlUnit;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -22,6 +25,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+@OnlyIn(Dist.CLIENT)
 public class PageNavigation
         implements IGuiElement
 {
@@ -57,6 +61,7 @@ public class PageNavigation
         this.setupVisuals(gui);
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public static class Builder
             implements IBuilder<PageNavigation>
     {
@@ -123,16 +128,17 @@ public class PageNavigation
         for( Map.Entry<GuiElementInst, ResourceLocation> entry : this.pages.entrySet() ) {
             GuiElementInst btn    = entry.getKey();
             ButtonNav      btnNav = btn.get(ButtonNav.class);
-//            if( btnNav.showTab(tcu) ) { // TODO: check if tab can be shown
-            cntAvailableTabs++;
 
-            if( btnNav.order >= this.tabStartIdx && btnNav.order <= this.tabStartIdx + this.maxTabsShown ) {
-                btn.setVisible(true);
-                btnNav.setActive(!currPage.equals(btnNav.pageKey));
+            if( !MinecraftForge.EVENT_BUS.post(new TcuTabEvent.TabIconShow(gui, tcu.getTurret(), btnNav.pageKey)) ) {
+                cntAvailableTabs++;
 
-                continue;
+                if( btnNav.order >= this.tabStartIdx && btnNav.order <= this.tabStartIdx + this.maxTabsShown ) {
+                    btn.setVisible(true);
+                    btnNav.setActive(!currPage.equals(btnNav.pageKey));
+
+                    continue;
+                }
             }
-//            }
 
             btn.setVisible(false);
         }
@@ -151,27 +157,6 @@ public class PageNavigation
             tab.getKey().pos[0] = tabLeft + tabScrollElemLWidth + 2 + shownId++ * 18;
         }
     }
-
-    //    @Override
-//    public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
-//        this.maxTabsShown = JsonUtils.getIntVal(data.get("tabsShown"), 7);
-//
-//        int currIdx = 0;
-//        for( ResourceLocation pageKey : TurretControlUnit.PAGES ) {
-//            GuiElementInst btn = new GuiElementInst(new ButtonNav(pageKey, currIdx++), data.getAsJsonObject("buttonData")).initialize(gui);
-//            btn.get().bakeData(gui, btn.data, btn);
-//
-//            this.pages.put(btn, pageKey);
-//        }
-//
-//        this.tabScrollL = new GuiElementInst(new ButtonTabScroll(0), data.getAsJsonObject("tabScrollLeft")).initialize(gui);
-//        this.tabScrollL.get().bakeData(gui, this.tabScrollL.data, this.tabScrollL);
-//        this.tabScrollL.setVisible(false);
-//
-//        this.tabScrollR = new GuiElementInst(new ButtonTabScroll(1), data.getAsJsonObject("tabScrollRight")).initialize(gui);
-//        this.tabScrollR.get().bakeData(gui, this.tabScrollR.data, this.tabScrollR);
-//        this.tabScrollR.setVisible(false);
-//    }
 
     @Override
     public void tick(IGui gui, GuiElementInst e) {
@@ -224,46 +209,4 @@ public class PageNavigation
             return Integer.compare(o1.get(ButtonNav.class).order, o2.get(ButtonNav.class).order);
         }
     }
-
-//    private final class ButtonTabScroll
-//            extends ButtonSL
-//    {
-//        private final int direction;
-//
-//        private ButtonTabScroll(ResourceLocation texture, int[] size, int[] textureSize, int[] uvEnabled, int[] uvHover, int[] uvDisabled, int[] uvSize, int[] centralTextureSize, int direction) {
-//            super(texture, size, textureSize, uvEnabled, uvHover, uvDisabled, uvSize, centralTextureSize, new GuiElementInst(new EmptyGuiElement()));
-//            this.direction = direction;
-//        }
-//
-////        @Override
-////        public void bakeData(IGui gui, JsonObject data, GuiElementInst inst) {
-////            JsonUtils.addDefaultJsonProperty(data, "size", new int[] { 16, 16 });
-////            JsonUtils.addDefaultJsonProperty(data, "uvSize", new int[] { 16, 16 });
-////            JsonUtils.addDefaultJsonProperty(data, "texture", Resources.TEXTURE_GUI_TCU_BUTTONS.toString());
-////            JsonUtils.addDefaultJsonProperty(data, "buttonFunction", -1);
-////
-////            super.bakeData(gui, data, inst);
-////        }
-//
-//        @Override
-//        public void setup(IGui gui, GuiElementInst inst) {
-//            super.setup(gui, inst);
-//
-//            this.setFunction(btn -> {
-//                if( PageNavigation.this.tabStartIdx > 0 && this.direction == 0 ) {
-//                    PageNavigation.this.tabStartIdx--;
-//                } else if( PageNavigation.this.tabStartIdx < PageNavigation.this.pages.size() - PageNavigation.this.maxTabsShown && this.direction == 1 ) {
-//                    PageNavigation.this.tabStartIdx++;
-//                }
-//            });
-//        }
-//
-//        public static class Builder
-//                extends ButtonSL.Builder
-//        {
-//            public Builder(int[] size) {
-//                super(size);
-//            }
-//        }
-//    }
 }
