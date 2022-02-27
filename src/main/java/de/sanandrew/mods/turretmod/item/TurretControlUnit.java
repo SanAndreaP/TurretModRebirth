@@ -244,7 +244,7 @@ public class TurretControlUnit
     public static final ResourceLocation INFO              = new ResourceLocation(TmrConstants.ID, "info");
     public static final ResourceLocation TARGETS_CREATURES = new ResourceLocation(TmrConstants.ID, "targets_creatures");
     public static final ResourceLocation TARGETS_PLAYERS   = new ResourceLocation(TmrConstants.ID, "targets_players");
-    public static final ResourceLocation LEVELS            = new ResourceLocation(TmrConstants.ID, "levels");
+    public static final ResourceLocation LEVELS            = new ResourceLocation(TmrConstants.ID, "leveling");
 
     public static void register(ITcuRegistry registry) {
         registry.registerTcuPage(INFO);

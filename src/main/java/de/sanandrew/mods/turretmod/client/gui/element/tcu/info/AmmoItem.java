@@ -1,4 +1,4 @@
-package de.sanandrew.mods.turretmod.client.gui.element.tcu;
+package de.sanandrew.mods.turretmod.client.gui.element.tcu.info;
 
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.matrix.MatrixStack;

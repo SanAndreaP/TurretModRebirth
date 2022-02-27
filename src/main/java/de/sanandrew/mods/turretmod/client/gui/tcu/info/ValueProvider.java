@@ -9,8 +9,8 @@ import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuScreen;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.IndicatorBar;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.IndicatorText;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.ValueBar;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.ValueText;
 import org.apache.commons.lang3.Range;
 
 public abstract class ValueProvider
@@ -37,7 +37,7 @@ public abstract class ValueProvider
         JsonUtils.addDefaultJsonProperty(data, "uv", this.getDefaultIndicatorUV());
         JsonUtils.addDefaultJsonProperty(data, "uvBackground", this.getDefaultIndicatorBgUV());
 
-        IndicatorBar indElem = IndicatorBar.Builder.fromJson(gui, data);
+        ValueBar indElem = ValueBar.Builder.fromJson(gui, data);
 
         return new GuiElementInst(JsonUtils.getIntArray(data.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] { 0, 0}, Range.is(2)), indElem).initialize(gui);
     }
@@ -46,7 +46,7 @@ public abstract class ValueProvider
         JsonUtils.addDefaultJsonProperty(data, "text", this.getDefaultLabelText());
         JsonUtils.addDefaultJsonProperty(data, "color", "#" + Integer.toHexString(this.getDefaultLabelColor()));
 
-        IndicatorText txtElem = IndicatorText.Builder.fromJson(gui, data);
+        ValueText txtElem = ValueText.Builder.fromJson(gui, data);
 
         return new GuiElementInst(JsonUtils.getIntArray(data.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] { 0, 0}, Range.is(2)), txtElem).initialize(gui);
     }
@@ -57,8 +57,8 @@ public abstract class ValueProvider
 
         this.calcValues(turret);
 
-        this.indicator.get(IndicatorBar.class).setPercentageSupplier(() -> this.maxValue != 0 ? this.currValue / this.maxValue : 0.0F);
-        this.label.get(IndicatorText.class).setValueSuppliers(() -> this.getNumberFormat(this.currValue), () -> this.getNumberFormat(this.maxValue));
+        this.indicator.get(ValueBar.class).setPercentageSupplier(() -> this.maxValue != 0 ? this.currValue / this.maxValue : 0.0F);
+        this.label.get(ValueText.class).setValueSuppliers(() -> this.getNumberFormat(this.currValue), () -> this.getNumberFormat(this.maxValue));
 
         this.indicator.get().setup(gui, this.indicator);
         this.label.get().setup(gui, this.tooltip);

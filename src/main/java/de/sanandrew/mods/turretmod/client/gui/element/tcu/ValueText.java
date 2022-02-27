@@ -13,7 +13,7 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class IndicatorText
+public class ValueText
         extends Text
 {
     private Supplier<String> valSupplier = () -> "";
@@ -22,7 +22,7 @@ public class IndicatorText
     private String currVal = "";
     private String currMax = "";
 
-    public IndicatorText(@Nonnull ITextComponent text, boolean shadow, int wrapWidth, int lineHeight, FontRenderer fontRenderer, Map<String, Integer> colors) {
+    public ValueText(@Nonnull ITextComponent text, boolean shadow, int wrapWidth, int lineHeight, FontRenderer fontRenderer, Map<String, Integer> colors) {
         super(text, shadow, wrapWidth, lineHeight, fontRenderer, colors);
     }
 
@@ -56,10 +56,10 @@ public class IndicatorText
         }
 
         @Override
-        public IndicatorText get(IGui gui) {
+        public ValueText get(IGui gui) {
             this.sanitize(gui);
 
-            return new IndicatorText(this.text, this.shadow, this.wrapWidth, this.lineHeight, this.fontRenderer, this.colors);
+            return new ValueText(this.text, this.shadow, this.wrapWidth, this.lineHeight, this.fontRenderer, this.colors);
         }
 
         public static Builder buildFromJson(IGui gui, JsonObject data) {
@@ -67,7 +67,7 @@ public class IndicatorText
             return IBuilder.copyValues(b, new Builder(b.text));
         }
 
-        public static IndicatorText fromJson(IGui gui, JsonObject data) {
+        public static ValueText fromJson(IGui gui, JsonObject data) {
             return buildFromJson(gui, data).get(gui);
         }
     }

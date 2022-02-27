@@ -1,8 +1,7 @@
-package de.sanandrew.mods.turretmod.client.gui.element.tcu;
+package de.sanandrew.mods.turretmod.client.gui.element.tcu.targets;
 
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import de.sanandrew.mods.sanlib.lib.client.gui.EmptyGuiElement;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;

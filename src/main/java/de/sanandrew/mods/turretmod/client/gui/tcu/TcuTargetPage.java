@@ -7,7 +7,7 @@ import de.sanandrew.mods.turretmod.api.Resources;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.tcu.TcuContainer;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.TargetList;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.targets.TargetList;
 import de.sanandrew.mods.turretmod.network.TurretPlayerActionPacket;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.EntityClassification;

@@ -8,7 +8,9 @@ import de.sanandrew.mods.turretmod.client.gui.ElectrolyteGeneratorScreen;
 import de.sanandrew.mods.turretmod.client.gui.TurretCrateScreen;
 import de.sanandrew.mods.turretmod.client.gui.element.ElectrolyteBar;
 import de.sanandrew.mods.turretmod.client.gui.element.ErrorTooltip;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.TargetList;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.ValueBar;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.levels.BorderedText;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.targets.TargetList;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.TcuInfo;
 import de.sanandrew.mods.turretmod.client.gui.element.TurretCamElement;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.TurretTypeName;
@@ -36,7 +38,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -62,6 +63,8 @@ public class ClientProxy
         GuiDefinition.TYPES.put(ErrorTooltip.ID, ErrorTooltip.Builder::fromJson);
         GuiDefinition.TYPES.put(TcuInfo.ID, TcuInfo.Builder::fromJson);
         GuiDefinition.TYPES.put(TargetList.ID, TargetList.Builder::fromJson);
+        GuiDefinition.TYPES.put(ValueBar.ID, ValueBar.Builder::fromJson);
+        GuiDefinition.TYPES.put(BorderedText.ID, BorderedText.Builder::fromJson);
 
         ModelRegistry.registerModels();
         Minecraft.getInstance().execute(Shaders::initShaders);

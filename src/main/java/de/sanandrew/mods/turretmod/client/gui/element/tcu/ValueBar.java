@@ -15,17 +15,20 @@ import org.apache.commons.lang3.Range;
 import javax.annotation.Nonnull;
 import java.util.function.DoubleSupplier;
 
+//TODO: put in SanLib
 @SuppressWarnings("ProtectedMemberInFinalClass")
-public final class IndicatorBar
+public final class ValueBar
         extends Texture
 {
+    public static final ResourceLocation ID = new ResourceLocation("value_bar");
+
     private DoubleSupplier percSupplier = () -> 0.0D;
 
     private double currPerc = 0D;
 
     protected int[] uvBg;
 
-    public IndicatorBar(ResourceLocation txLocation, int[] size, int[] textureSize, int[] uv, int[] uvBg, float[] scale, ColorObj color) {
+    public ValueBar(ResourceLocation txLocation, int[] size, int[] textureSize, int[] uv, int[] uvBg, float[] scale, ColorObj color) {
         super(txLocation, size, textureSize, uv, scale, color);
 
         this.uvBg = uvBg;
@@ -65,10 +68,10 @@ public final class IndicatorBar
         public Builder uvBackground(int u, int v) { return this.uvBackground(new int[] { u, v }); }
 
         @Override
-        public IndicatorBar get(IGui gui) {
+        public ValueBar get(IGui gui) {
             this.sanitize(gui);
 
-            return new IndicatorBar(this.texture, this.size, this.textureSize, this.uv, this.uvBg, this.scale, this.color);
+            return new ValueBar(this.texture, this.size, this.textureSize, this.uv, this.uvBg, this.scale, this.color);
         }
 
         public static Builder buildFromJson(IGui gui, JsonObject data) {
@@ -80,7 +83,7 @@ public final class IndicatorBar
             return b;
         }
 
-        public static IndicatorBar fromJson(IGui gui, JsonObject data) {
+        public static ValueBar fromJson(IGui gui, JsonObject data) {
             return buildFromJson(gui, data).get(gui);
         }
     }

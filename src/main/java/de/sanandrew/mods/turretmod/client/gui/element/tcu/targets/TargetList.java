@@ -1,4 +1,4 @@
-package de.sanandrew.mods.turretmod.client.gui.element.tcu;
+package de.sanandrew.mods.turretmod.client.gui.element.tcu.targets;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

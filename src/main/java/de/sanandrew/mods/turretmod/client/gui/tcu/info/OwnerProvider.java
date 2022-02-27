@@ -7,7 +7,7 @@ import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuScreen;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.PlayerIconInfo;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.info.PlayerIconInfo;
 import de.sanandrew.mods.turretmod.init.Lang;
 import net.minecraft.util.text.ITextComponent;
 import org.apache.commons.lang3.Range;

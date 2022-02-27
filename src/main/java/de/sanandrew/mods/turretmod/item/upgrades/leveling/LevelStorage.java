@@ -68,7 +68,7 @@ public class LevelStorage
         STAGES.putAll(s);
     }
 
-    private static int getXpReqForNextLevel(int lvl) {
+    private static int getMinXpForLevel(int lvl) {
         if( lvl < 0 ) {
             return 0;
         } else if( lvl < 17 ) {
@@ -218,12 +218,14 @@ public class LevelStorage
         }
     }
 
+    /** @return the minimum amount of XP for the next level (absolute from 0) */
     public int getNextLevelMinXp() {
-        return getXpReqForNextLevel(this.getLevel() + 1);
+        return getMinXpForLevel(this.getLevel() + 1);
     }
 
+    /** @return the minimum amount of XP for the current level (absolute from 0) */
     public int getCurrentLevelMinXp() {
-        return getXpReqForNextLevel(this.getLevel());
+        return getMinXpForLevel(this.getLevel());
     }
 
     public static SyncTurretStages getPacket() {

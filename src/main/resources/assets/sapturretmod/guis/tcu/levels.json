@@ -2,43 +2,42 @@
   "texture": "sapturretmod:textures/gui/tcu/page_levels.png",
   "backgroundElements": [
     {
-      "type": "sapturretmod:tcu.levels_indicator",
-      "id": "level_indicator",
-      "pos": [7, 28],
+      "type": "value_bar",
+      "id": "current_xp_progress",
+      "pos": [7, 38],
       "data": {
-        "textLevel": {
-          "offset": [81, 3],
-          "text": "%d",
-          "color": {
-            "default": "0xFF80FF20",
-            "stroke": "0xFF000000"
-          },
-          "alignment": ["center", "top"]
-        },
-        "textXP": {
-          "offset": [81, 4],
-          "text": "gui.sapturretmod.tcu.page.sapturretmod:leveling.xp",
-          "color": {
-            "default": "0xFF80FF20",
-            "stroke": "0xFF000000"
-          },
-          "alignment": ["center", "top"]
-        },
-        "progressbar": {
-          "size": [162, 3],
-          "uv": [94, 236]
-        },
-        "progressbarTotal": {
-          "size": [162, 3],
-          "uv": [94, 236]
-        }
+        "size": [162, 3],
+        "uv": [94, 236],
+        "uvBackground": [94, 233]
       }
+    },
+    {
+      "type": "value_bar",
+      "id": "total_xp_progress",
+      "pos": [7, 55],
+      "data": {
+        "size": [162, 3],
+        "uv": [94, 236],
+        "uvBackground": [94, 233]
+      }
+    },
+    {
+      "type": "bordered_text",
+      "id": "current_level",
+      "pos": [88, 32],
+      "alignment": ["center", "top"]
+    },
+    {
+      "type": "bordered_text",
+      "id": "excess_xp",
+      "pos": [88, 49],
+      "alignment": ["center", "top"]
     },
     {
       "type": "text",
       "pos": [7, 63],
       "data": {
-        "text": "gui.sapturretmod.tcu.text.leveling.modifier",
+        "text": "gui.sapturretmod.tcu.leveling.modifier",
         "color": "0xFF404040"
       }
     },
@@ -88,7 +87,7 @@
       "pos": [79, 190],
       "data": {
         "size": [18, 18],
-        "text": "gui.sapturretmod.tcu.tooltip.leveling.retrieve"
+        "text": "gui.sapturretmod.tcu.leveling.retrieve"
       }
     }
   ]
