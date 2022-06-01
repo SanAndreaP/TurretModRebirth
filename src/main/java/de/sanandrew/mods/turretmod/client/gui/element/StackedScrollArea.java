@@ -13,7 +13,6 @@ import org.apache.commons.lang3.mutable.MutableInt;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -42,6 +41,13 @@ public class StackedScrollArea
         this.allElements.remove(elem);
 
         return elem;
+    }
+
+    @Override
+    public void clear() {
+        super.clear();
+
+        this.allElements.clear();
     }
 
     @Override

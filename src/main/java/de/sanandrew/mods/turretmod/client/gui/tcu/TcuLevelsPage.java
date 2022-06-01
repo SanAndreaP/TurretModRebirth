@@ -6,6 +6,7 @@ import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.Resources;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.tcu.TcuContainer;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.ValueBar;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.levels.BorderedText;
 import de.sanandrew.mods.turretmod.init.Lang;
@@ -14,6 +15,8 @@ import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.item.upgrades.leveling.LevelStorage;
 import de.sanandrew.mods.turretmod.network.TurretPlayerActionPacket;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.util.text.IFormattableTextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import org.apache.logging.log4j.Level;
 
@@ -55,12 +58,27 @@ public class TcuLevelsPage
         this.guiDefinition.getElementById("total_xp_progress").get(ValueBar.class)
                           .setPercentageSupplier(() -> MiscUtils.apply(this.getLvlStorage(), ls -> ls.getXp() / (double) LevelStorage.maxXp));
 
-        this.guiDefinition.getElementById("current_level").get(BorderedText.class)
-                          .setTextFunc((g, ot) -> new TranslationTextComponent(Lang.TCU_TEXT.get("leveling.current_level"),
-                                                                               String.format("%d", MiscUtils.apply(this.getLvlStorage(), LevelStorage::getLevel, 0))));
-        this.guiDefinition.getElementById("excess_xp").get(BorderedText.class)
-                          .setTextFunc((g, ot) -> new TranslationTextComponent(Lang.TCU_TEXT.get("leveling.excess_xp"),
-                                                                               String.format("%d", MiscUtils.apply(this.getLvlStorage(), LevelStorage::getExcessXp, 0))));
+        this.guiDefinition.getElementById("level_text").get(BorderedText.class)
+                          .setTextFunc((g, ot) -> {
+                              LevelStorage lvlStg = this.getLvlStorage();
+                              if( lvlStg != null ) {
+                                  return new TranslationTextComponent(Lang.TCU_TEXT.get("leveling.current_level"), String.format("%d", lvlStg.getLevel()));
+                              }
+
+                              return StringTextComponent.EMPTY;
+                          });
+        this.guiDefinition.getElementById("exc_xp_text").get(BorderedText.class)
+                          .setTextFunc((g, ot) -> {
+                              LevelStorage lvlStg = this.getLvlStorage();
+                              if( lvlStg != null ) {
+                                  int excXp = lvlStg.getExcessXp();
+                                  if( excXp > 0 ) {
+                                      return new TranslationTextComponent(Lang.TCU_TEXT.get("leveling.excess_xp"), String.format("%d", excXp));
+                                  }
+                              }
+
+                              return StringTextComponent.EMPTY;
+                          });
     }
 
     private LevelStorage getLvlStorage() {
@@ -77,5 +95,9 @@ public class TcuLevelsPage
     private boolean canRetrieveXp() {
         LevelStorage stg = this.turret.getUpgradeProcessor().getUpgradeData(Upgrades.LEVELING.getId());
         return stg != null && stg.getExcessXp() > 0;
+    }
+
+    public ITurretEntity getTurret() {
+        return this.turret;
     }
 }

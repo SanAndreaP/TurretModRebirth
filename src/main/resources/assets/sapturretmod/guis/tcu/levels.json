@@ -2,35 +2,43 @@
   "texture": "sapturretmod:textures/gui/tcu/page_levels.png",
   "backgroundElements": [
     {
+      "type": "texture",
+      "pos": [7, 75],
+      "data": {
+        "size": [162, 104],
+        "uv": [7, 75]
+      }
+    },
+    {
       "type": "value_bar",
       "id": "current_xp_progress",
-      "pos": [7, 38],
+      "pos": [7, 37],
       "data": {
-        "size": [162, 3],
-        "uv": [94, 236],
-        "uvBackground": [94, 233]
+        "size": [162, 5],
+        "uv": [94, 234],
+        "uvBackground": [94, 229]
       }
     },
     {
       "type": "value_bar",
       "id": "total_xp_progress",
-      "pos": [7, 55],
+      "pos": [7, 43],
       "data": {
-        "size": [162, 3],
-        "uv": [94, 236],
-        "uvBackground": [94, 233]
+        "size": [162, 5],
+        "uv": [94, 234],
+        "uvBackground": [94, 229]
       }
     },
     {
       "type": "bordered_text",
-      "id": "current_level",
-      "pos": [88, 32],
+      "id": "level_text",
+      "pos": [88, 31],
       "alignment": ["center", "top"]
     },
     {
       "type": "bordered_text",
-      "id": "excess_xp",
-      "pos": [88, 49],
+      "id": "exc_xp_text",
+      "pos": [88, 47],
       "alignment": ["center", "top"]
     },
     {
@@ -42,26 +50,26 @@
       }
     },
     {
-      "type": "sapturretmod:tcu.levels_modifiers",
+      "type": "sapturretmod:tcu_modifier_list",
       "id": "level_modifiers",
-      "pos": [8, 74],
+      "pos": [8, 76],
       "data": {
-        "areaSize": [153, 114],
-        "scrollbarPos": [162, 74],
+        "areaSize": [156, 102],
+        "scrollbarPos": [164, 76],
         "scrollButton": {
-          "size": [6, 6],
-          "uv": [176, 0],
-          "uvDisabled": [176, 6]
+          "size": [4, 16],
+          "uv": [178, 16],
+          "uvDisabled": [178, 0]
         },
         "node": {
           "background": {
-            "size": [153, 17],
-            "uv": [103, 239]
+            "size": [156, 17],
+            "uv": [100, 239]
           },
-          "attributeName": {
+          "label": {
             "color": "0xFFFFFFFF"
           },
-          "modifierValue": {
+          "value": {
             "text": "gui.sapturretmod.tcu.page.sapturretmod:leveling.modValue",
             "color": "0xFFFFFFFF"
           }

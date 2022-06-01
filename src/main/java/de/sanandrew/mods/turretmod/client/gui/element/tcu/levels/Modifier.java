@@ -1,5 +1,6 @@
 package de.sanandrew.mods.turretmod.client.gui.element.tcu.levels;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
@@ -8,36 +9,118 @@ import de.sanandrew.mods.sanlib.lib.client.gui.element.ElementParent;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.client.gui.element.LoadElementFunction;
+import de.sanandrew.mods.turretmod.init.Lang;
 import de.sanandrew.mods.turretmod.item.upgrades.leveling.Stage;
 import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.util.text.TranslationTextComponent;
 import org.apache.commons.lang3.Range;
+
+import java.text.DecimalFormat;
 
 public class Modifier
         extends ElementParent<String>
 {
+    private static final DecimalFormat MOD_FORMAT = new DecimalFormat("+#0.0;-#0.0");
+
     private static final String BACKGROUND = "background";
     private static final String LABEL = "label";
     private static final String VALUE = "value";
 
-//    private final Attribute attrib;
+    public Modifier(Attribute attrib, Stage.ModifierInfo info, GuiElementInst background, GuiElementInst label, GuiElementInst value) {
+        this.put(BACKGROUND, background);
+        this.put(LABEL, label);
+        this.put(VALUE, value);
 
+        label.get(DynamicText.class).setTextFunc((g, t) -> new TranslationTextComponent(attrib.getDescriptionId()));
+        value.get(DynamicText.class).setTextFunc((g, t) -> {
+            double val = info.getModValue() / info.baseValue * 100 - 100;
+            return new TranslationTextComponent(Lang.TCU_TEXT.get("leveling.modValue"), MOD_FORMAT.format(val));
+        });
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
     public static class Builder
             implements IBuilder<Modifier>
     {
-        @Override
-        public void sanitize(IGui iGui) { }
+        private static final String OFFSET = "offset";
 
-        protected GuiElementInst loadBackground(IGui gui, JsonObject bgData) {
-            return new GuiElementInst(JsonUtils.getIntArray(bgData.get("offset"), new int[2], Range.is(2)), Texture.Builder.fromJson(gui, bgData));
+        private final Attribute attrib;
+        private final Stage.ModifierInfo info;
+
+        protected GuiElementInst background;
+        protected GuiElementInst label;
+        protected GuiElementInst value;
+
+        public Builder(Attribute attrib, Stage.ModifierInfo info) {
+            this.attrib = attrib;
+            this.info = info;
         }
 
-        protected GuiElementInst loadLabel(IGui gui, JsonObject lblData) {
-            return new GuiElementInst(JsonUtils.getIntArray(lblData.get("offset"), new int[2], Range.is(2)), DynamicText.Builder.fromJson(gui, lblData));
+        public Builder background(GuiElementInst background) { this.background = background; return this; }
+        public Builder label(GuiElementInst label) { this.label = label; return this; }
+        public Builder value(GuiElementInst value) { this.value = value; return this; }
+
+        @Override
+        public void sanitize(IGui iGui) {
+            if( this.background == null ) {
+                this.background = GuiElementInst.EMPTY;
+            }
+            if( this.label == null ) {
+                this.label = GuiElementInst.EMPTY;
+            }
+            if( this.value == null ) {
+                this.value = GuiElementInst.EMPTY;
+            }
         }
 
         @Override
-        public Modifier get(IGui iGui) {
-            return null;
+        public Modifier get(IGui gui) {
+            this.sanitize(gui);
+            return new Modifier(this.attrib, this.info, this.background.initialize(gui), this.label.initialize(gui), this.value.initialize(gui));
+        }
+
+        protected GuiElementInst loadBackground(IGui gui, JsonElement bgData) {
+            JsonObject bgDataObj = bgData.getAsJsonObject();
+            return new GuiElementInst(JsonUtils.getIntArray(bgDataObj.get(OFFSET), new int[2], Range.is(2)), Texture.Builder.fromJson(gui, bgDataObj));
+        }
+
+        protected GuiElementInst loadLabel(IGui gui, JsonElement lblData) {
+            JsonObject lblDataObj = lblData.getAsJsonObject();
+            String[] align = JsonUtils.getStringArray(lblDataObj.get("alignment"), new String[] {"left", "center"}, Range.between(1, 2));
+            GuiElementInst inst = new GuiElementInst(JsonUtils.getIntArray(lblDataObj.get(OFFSET), new int[] {3, 8}, Range.is(2)), DynamicText.Builder.fromJson(gui, lblDataObj));
+            inst.alignment = align;
+            return inst;
+        }
+
+        protected GuiElementInst loadValue(IGui gui, JsonElement valData) {
+            JsonObject valDataObj = valData.getAsJsonObject();
+            String[] align = JsonUtils.getStringArray(valDataObj.get("alignment"), new String[] {"right", "center"}, Range.between(1, 2));
+            GuiElementInst inst = new GuiElementInst(JsonUtils.getIntArray(valDataObj.get(OFFSET), new int[] {153, 8}, Range.is(2)), DynamicText.Builder.fromJson(gui, valDataObj));
+            inst.alignment = align;
+            return inst;
+        }
+
+        public static Builder buildFromJson(IGui gui, JsonObject data, Attribute attrib, Stage.ModifierInfo info,
+                                            LoadElementFunction<Modifier, Builder> loadBackground,
+                                            LoadElementFunction<Modifier, Builder> loadLabel,
+                                            LoadElementFunction<Modifier, Builder> loadValue)
+        {
+            Builder b = new Builder(attrib, info);
+
+            MiscUtils.accept(loadBackground, f -> MiscUtils.accept(f.apply(b, gui, data.get(BACKGROUND)), b::background));
+            MiscUtils.accept(loadLabel, f -> MiscUtils.accept(f.apply(b, gui, data.get(LABEL)), b::label));
+            MiscUtils.accept(loadValue, f -> MiscUtils.accept(f.apply(b, gui, data.get(VALUE)), b::value));
+
+            return b;
+        }
+
+        public static Builder buildFromJson(IGui gui, JsonObject data, Attribute attrib, Stage.ModifierInfo info) {
+            return buildFromJson(gui, data, attrib, info, b -> b::loadBackground, b -> b::loadLabel, b -> b::loadValue);
+        }
+
+        public static Modifier fromJson(IGui gui, JsonObject data, Attribute attrib, Stage.ModifierInfo info) {
+            return buildFromJson(gui, data, attrib, info).get(gui);
         }
     }
 }

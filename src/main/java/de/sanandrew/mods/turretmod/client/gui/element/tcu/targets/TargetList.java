@@ -146,11 +146,5 @@ public class TargetList
         private static GuiElementInst getTargetEntry(IGui gui, JsonObject data, ITurretEntity turret, ResourceLocation creatureId, UUID playerId, int w, int h, int y) {
             return new GuiElementInst(new int[] { 0, 0 }, Target.Builder.fromJson(gui, data, turret, creatureId, playerId, w, h));
         }
-
-//        private static GuiElementInst getInfoValue(IGui gui, JsonObject data, ITcuInfoProvider provider, ITurretEntity turret, int w, int h, int y) {
-//            TcuInfoValue.Builder b = TcuInfoValue.Builder.buildFromJson(gui, data, provider, turret, w, h);
-//
-//            return new GuiElementInst(new int[] { 0, y }, b.get(gui));
-//        }
     }
 }

@@ -42,6 +42,8 @@ public class LevelStorage
     private Stage   currStage   = Stage.NULL_STAGE;
     private boolean initialized = false;
 
+    private Integer modifierHash = null;
+
     LevelStorage() {
         this.xp = 0;
         this.prevXp = 0;
@@ -52,6 +54,7 @@ public class LevelStorage
     @Override
     public void load(ITurretEntity turretInst, @Nonnull CompoundNBT nbt) {
         this.xp = nbt.getInt(NBT_EXPERIENCE);
+        this.updateModHash();
     }
 
     @Override
@@ -138,11 +141,13 @@ public class LevelStorage
                     s.apply(turretInst, playSound);
                 }
             });
+            this.updateModHash();
         }
     }
 
     void clearEffects(ITurretEntity turretInst) {
         removeModifiers(turretInst.get().getAttributes(), Collections.emptyList());
+        this.updateModHash();
     }
 
     public Map<Attribute, Stage.ModifierInfo> fetchCurrentModifiers() {
@@ -230,5 +235,21 @@ public class LevelStorage
 
     public static SyncTurretStages getPacket() {
         return new SyncTurretStages(STAGES);
+    }
+
+    private void updateModHash() {
+        Map<Attribute, Stage.ModifierInfo> currMod = fetchCurrentModifiers();
+        this.modifierHash = 0;
+        currMod.forEach((key, value) -> {
+            this.modifierHash = Objects.hash(this.modifierHash, key, value);
+        });
+    }
+
+    public int getModHash() {
+        if( this.modifierHash == null ) {
+            this.updateModHash();
+        }
+
+        return this.modifierHash;
     }
 }

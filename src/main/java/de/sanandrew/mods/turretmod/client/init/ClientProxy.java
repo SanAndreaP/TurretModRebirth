@@ -10,6 +10,7 @@ import de.sanandrew.mods.turretmod.client.gui.element.ElectrolyteBar;
 import de.sanandrew.mods.turretmod.client.gui.element.ErrorTooltip;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.ValueBar;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.levels.BorderedText;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.levels.ModifierList;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.targets.TargetList;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.TcuInfo;
 import de.sanandrew.mods.turretmod.client.gui.element.TurretCamElement;
@@ -65,6 +66,7 @@ public class ClientProxy
         GuiDefinition.TYPES.put(TargetList.ID, TargetList.Builder::fromJson);
         GuiDefinition.TYPES.put(ValueBar.ID, ValueBar.Builder::fromJson);
         GuiDefinition.TYPES.put(BorderedText.ID, BorderedText.Builder::fromJson);
+        GuiDefinition.TYPES.put(ModifierList.ID, ModifierList.Builder::fromJson);
 
         ModelRegistry.registerModels();
         Minecraft.getInstance().execute(Shaders::initShaders);
