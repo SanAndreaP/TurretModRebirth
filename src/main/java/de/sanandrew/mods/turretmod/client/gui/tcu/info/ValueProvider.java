@@ -1,6 +1,7 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu.info;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
@@ -16,7 +17,7 @@ import org.apache.commons.lang3.Range;
 public abstract class ValueProvider
         extends IllustratedProvider
 {
-    protected static final int[] DEFAULT_INDICATOR_SIZE = new int[] { 120, 3 };
+    protected static final int[] DEFAULT_INDICATOR_SIZE = new int[] { 120, 5 };
 
     protected GuiElementInst indicator;
     protected GuiElementInst label;
@@ -39,16 +40,22 @@ public abstract class ValueProvider
 
         ValueBar indElem = ValueBar.Builder.fromJson(gui, data);
 
-        return new GuiElementInst(JsonUtils.getIntArray(data.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] { 0, 0}, Range.is(2)), indElem).initialize(gui);
+        return new GuiElementInst(JsonUtils.getIntArray(data.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] { 0, 0 }, Range.is(2)), indElem).initialize(gui);
     }
 
     protected GuiElementInst loadLabel(IGui gui, JsonObject data) {
         JsonUtils.addDefaultJsonProperty(data, "text", this.getDefaultLabelText());
-        JsonUtils.addDefaultJsonProperty(data, "color", "#" + Integer.toHexString(this.getDefaultLabelColor()));
+        if( !data.has("color") ) {
+            JsonObject colors = new JsonObject();
+            colors.add("default", new JsonPrimitive("#" + Integer.toHexString(this.getDefaultLabelColor())));
+            colors.add("borderColor", new JsonPrimitive("#" + Integer.toHexString(this.getDefaultLabelBorderColor())));
+            data.add("color", colors);
+        }
 
         ValueText txtElem = ValueText.Builder.fromJson(gui, data);
 
-        return new GuiElementInst(JsonUtils.getIntArray(data.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] { 0, 0}, Range.is(2)), txtElem).initialize(gui);
+        GuiElementInst inst = new GuiElementInst(JsonUtils.getIntArray(data.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] { 0, 0 }, Range.is(2)), txtElem);
+        return inst.initialize(gui);
     }
 
     @Override
@@ -76,8 +83,8 @@ public abstract class ValueProvider
     public void renderContent(IGui gui, ITurretEntity turret, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) {
         super.renderContent(gui, turret, stack, partTicks, x, y, mouseX, mouseY, maxWidth, maxHeight);
 
-        GuiDefinition.renderElement(gui, stack, x + this.indicator.pos[0] + 18, y + this.indicator.pos[1] + 11, mouseX, mouseY, partTicks, this.indicator);
-        GuiDefinition.renderElement(gui, stack, x + this.label.pos[0] + 18, y + this.label.pos[1] + 2, mouseX, mouseY, partTicks, this.label);
+        GuiDefinition.renderElement(gui, stack, x + this.indicator.pos[0] + 18, y + this.indicator.pos[1] + 9, mouseX, mouseY, partTicks, this.indicator);
+        GuiDefinition.renderElement(gui, stack, x + this.label.pos[0] + 19, y + this.label.pos[1] + 3, mouseX, mouseY, partTicks, this.label);
     }
 
     protected abstract void calcValues(ITurretEntity turret);
@@ -91,6 +98,10 @@ public abstract class ValueProvider
     protected abstract String getDefaultLabelText();
 
     protected abstract int getDefaultLabelColor();
+
+    protected int getDefaultLabelBorderColor() {
+        return 0xFF000000;
+    }
 
     protected abstract String getNumberFormat(double value);
 }

@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.levels.BorderedText;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -14,7 +15,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class ValueText
-        extends Text
+        extends BorderedText
 {
     private Supplier<String> valSupplier = () -> "";
     private Supplier<String> maxSupplier = () -> "";
@@ -22,8 +23,8 @@ public class ValueText
     private String currVal = "";
     private String currMax = "";
 
-    public ValueText(@Nonnull ITextComponent text, boolean shadow, int wrapWidth, int lineHeight, FontRenderer fontRenderer, Map<String, Integer> colors) {
-        super(text, shadow, wrapWidth, lineHeight, fontRenderer, colors);
+    public ValueText(@Nonnull ITextComponent text, int wrapWidth, int lineHeight, FontRenderer fontRenderer, Map<String, Integer> colors) {
+        super(text, wrapWidth, lineHeight, fontRenderer, colors);
     }
 
     public void setValueSuppliers(@Nonnull Supplier<String> valueSupplier, @Nonnull Supplier<String> maxSupplier) {
@@ -49,7 +50,7 @@ public class ValueText
     }
 
     public static class Builder
-            extends Text.Builder
+            extends BorderedText.Builder
     {
         public Builder(ITextComponent text) {
             super(text);
@@ -59,11 +60,11 @@ public class ValueText
         public ValueText get(IGui gui) {
             this.sanitize(gui);
 
-            return new ValueText(this.text, this.shadow, this.wrapWidth, this.lineHeight, this.fontRenderer, this.colors);
+            return new ValueText(this.text, this.wrapWidth, this.lineHeight, this.fontRenderer, this.colors);
         }
 
         public static Builder buildFromJson(IGui gui, JsonObject data) {
-            Text.Builder b = Text.Builder.buildFromJson(gui, data);
+            BorderedText.Builder b = BorderedText.Builder.buildFromJson(gui, data);
             return IBuilder.copyValues(b, new Builder(b.text));
         }
 

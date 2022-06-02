@@ -47,7 +47,7 @@ public class AmmoProvider
 
     @Override
     protected int[] getDefaultIndicatorUV() {
-        return new int[] { 0, 155 };
+        return new int[] { 0, 161 };
     }
 
     @Override
@@ -62,14 +62,18 @@ public class AmmoProvider
 
     @Override
     protected int getDefaultLabelColor() {
-        return 0xFF3030A0;
+        return 0xFF50AEFC;
+    }
+
+    @Override
+    protected int getDefaultLabelBorderColor() {
+        return 0xFF002040;
     }
 
     @Override
     protected String getNumberFormat(double value) {
         return String.format("%.0f", value);
     }
-
 
     @Override
     public void loadJson(IGui gui, JsonObject data, int w, int h) {

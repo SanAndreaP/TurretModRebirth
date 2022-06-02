@@ -27,7 +27,7 @@ public class HealthProvider
 
     @Override
     protected int[] getDefaultIndicatorUV() {
-        return new int[] { 0, 149 };
+        return new int[] { 0, 151 };
     }
 
     @Override
@@ -42,7 +42,12 @@ public class HealthProvider
 
     @Override
     protected int getDefaultLabelColor() {
-        return 0xFFA03030;
+        return 0xFFFC5050;
+    }
+
+    @Override
+    protected int getDefaultLabelBorderColor() {
+        return 0xFF400000;
     }
 
     @Override
