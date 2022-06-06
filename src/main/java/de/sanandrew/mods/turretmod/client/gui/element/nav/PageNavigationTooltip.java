@@ -40,7 +40,7 @@ public class PageNavigationTooltip
     private void setupVisuals() {
         PageNavigation pgn = this.visibleFor.get(PageNavigation.class);
         Label lbl = this.get(CONTENT).get(Label.class);
-        this.tabPos = null;
+        this.tabPos = new int[2];
 
         pgn.shownTabs.forEach((b, p) -> {
             if( b.get(ButtonNav.class).isHovering() ) {
@@ -55,6 +55,13 @@ public class PageNavigationTooltip
         this.setupVisuals();
 
         super.tick(gui, e);
+    }
+
+    @Override
+    public void renderTick(IGui gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, GuiElementInst inst) {
+        this.setupVisuals();
+
+        super.renderTick(gui, stack, partTicks, x, y, mouseX, mouseY, inst);
     }
 
     @Override
@@ -120,7 +127,7 @@ public class PageNavigationTooltip
         }
 
         public static Builder buildFromJson(IGui gui, JsonObject data) {
-            Tooltip.Builder tb = Tooltip.Builder.buildFromJson(gui, JsonUtils.addDefaultJsonProperty(data, "size", new int[] { 16, 16 }), b -> (g, j) -> null);
+            Tooltip.Builder tb = Tooltip.Builder.buildFromJson(gui, JsonUtils.addDefaultJsonProperty(data, "size", new int[] { 18, 18 }), b -> (g, j) -> null);
 
             Builder b = IBuilder.copyValues(tb, new Builder(tb.mouseOverSize));
             b.content(b.loadContent(gui, data));

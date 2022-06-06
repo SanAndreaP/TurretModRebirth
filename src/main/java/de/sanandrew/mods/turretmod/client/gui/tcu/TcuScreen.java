@@ -26,7 +26,10 @@ import java.util.function.Supplier;
 public class TcuScreen
         extends JsonGuiContainer<TcuContainer>
 {
-    private static final ITcuScreen EMPTY_SCREEN = (mStack, mouseX, mouseY, partTicks) -> { };
+    private static final ITcuScreen EMPTY_SCREEN = new ITcuScreen() {
+        @Override public void renderBackground(@Nonnull MatrixStack mStack, int mouseX, int mouseY, float partTicks) { /* no-op */ }
+        @Override public void renderForeground(@Nonnull MatrixStack mStack, int mouseX, int mouseY, float partTicks) { /* no-op */ }
+    };
 
     private static final Map<ResourceLocation, Function<ContainerScreen<TcuContainer>, ITcuScreen>> PAGES      = new HashMap<>();
     private static final Map<ResourceLocation, Supplier<ItemStack>>          PAGE_ICONS = new HashMap<>();
@@ -64,8 +67,18 @@ public class TcuScreen
     }
 
     @Override
+    protected void renderBg(@Nonnull MatrixStack mStack, float partialTicks, int mouseX, int mouseY) {
+        super.renderBg(mStack, partialTicks, mouseX, mouseY);
+
+        mStack.pushPose();
+        mStack.translate(this.leftPos, this.topPos, 0.0);
+        this.currScreen.renderBackground(mStack, mouseX, mouseY, partialTicks);
+        mStack.popPose();
+    }
+
+    @Override
     protected void renderGd(@Nonnull MatrixStack mStack, int mouseX, int mouseY, float partialTicks) {
-        this.currScreen.render(mStack, mouseX, mouseY, partialTicks);
+        this.currScreen.renderForeground(mStack, mouseX, mouseY, partialTicks);
     }
 
     @Override

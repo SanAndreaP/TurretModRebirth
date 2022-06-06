@@ -25,7 +25,7 @@ public interface IProxy
 
     IRenderClassProvider getRenderClassProvider();
 
-    void openTcuGuiRemote(ItemStack stack, ITurretEntity turret, ResourceLocation type);
+    void openTcuGuiRemote(ItemStack stack, ITurretEntity turret, ResourceLocation type, boolean initial);
 
     boolean isSneakPressed();
 }

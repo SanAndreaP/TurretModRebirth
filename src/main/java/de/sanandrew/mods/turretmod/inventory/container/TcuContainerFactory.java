@@ -31,9 +31,11 @@ public class TcuContainerFactory
         Entity e = inv.player.level.getEntity(data.readVarInt());
         ResourceLocation pageId = data.readResourceLocation();
         boolean isRemote = data.readBoolean();
+        boolean initial = data.readBoolean();
         TcuContainer.TcuContainerProvider prv = TCU_CONTAINERS.get(pageId);
         if( e instanceof ITurretEntity ) {
-            return prv != null ? prv.apply(windowId, inv, (ITurretEntity) e, pageId, isRemote) : new TcuContainer(windowId, inv, (ITurretEntity) e, pageId, isRemote);
+            return prv != null ? prv.apply(windowId, inv, (ITurretEntity) e, pageId, isRemote, initial)
+                               : new TcuContainer(windowId, inv, (ITurretEntity) e, pageId, isRemote, initial);
         }
 
         return null;
@@ -47,12 +49,14 @@ public class TcuContainerFactory
         private final ITurretEntity turret;
         private final ResourceLocation type;
         private final boolean isRemote;
+        private final boolean initial;
 
-        public Provider(@Nonnull ItemStack tcu, ITurretEntity turret, ResourceLocation type, boolean isRemote) {
+        public Provider(@Nonnull ItemStack tcu, ITurretEntity turret, ResourceLocation type, boolean isRemote, boolean initial) {
             this.tcu = tcu;
             this.turret = turret;
             this.type = type;
             this.isRemote = isRemote;
+            this.initial = initial;
         }
 
         @Nonnull
@@ -65,8 +69,8 @@ public class TcuContainerFactory
         @Override
         public Container createMenu(int id, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity player) {
             TcuContainer.TcuContainerProvider prv = TCU_CONTAINERS.get(this.type);
-            return prv != null ? prv.apply(id, playerInventory, this.turret, this.type, this.isRemote)
-                               : new TcuContainer(id, playerInventory, this.turret, this.type, this.isRemote);
+            return prv != null ? prv.apply(id, playerInventory, this.turret, this.type, this.isRemote, this.initial)
+                               : new TcuContainer(id, playerInventory, this.turret, this.type, this.isRemote, this.initial);
         }
     }
 }

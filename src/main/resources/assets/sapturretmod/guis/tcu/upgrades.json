@@ -2,6 +2,22 @@
   "texture": "sapturretmod:textures/gui/tcu/page_upgrades.png",
   "backgroundElements": [
     {
+      "type": "texture",
+      "pos": [7, 39],
+      "data": {
+        "size": [162, 161],
+        "uv": [7, 39]
+      }
+    },
+    {
+      "type": "text",
+      "pos": [8, 28],
+      "data": {
+        "color": "0xFF404040",
+        "text": "gui.sapturretmod.tcu.sapturretmod:upgrades"
+      }
+    },
+    {
       "type": "text",
       "pos": [8, 113],
       "data": {
@@ -12,30 +28,30 @@
   ],
   "foregroundElements": [
     {
-      "type": "rectangle",
+      "type": "texture",
       "id": "hideUpgrades1",
       "pos": [7, 57],
       "data": {
         "size": [162, 18],
-        "color": ["0x80FFFFFF"]
+        "uv": [94, 238]
       }
     },
     {
-      "type": "rectangle",
+      "type": "texture",
       "id": "hideUpgrades2",
       "pos": [7, 75],
       "data": {
         "size": [162, 18],
-        "color": ["0x80FFFFFF"]
+        "uv": [94, 238]
       }
     },
     {
-      "type": "rectangle",
+      "type": "texture",
       "id": "hideUpgrades3",
       "pos": [7, 93],
       "data": {
         "size": [162, 18],
-        "color": ["0x80FFFFFF"]
+        "uv": [94, 238]
       }
     }
   ]

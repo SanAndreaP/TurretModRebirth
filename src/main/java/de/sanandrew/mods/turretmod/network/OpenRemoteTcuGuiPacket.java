@@ -21,17 +21,20 @@ public class OpenRemoteTcuGuiPacket
     private final String tcuHand;
     private final int              turretNetId;
     private final ResourceLocation pageId;
+    private final boolean initial;
 
-    public OpenRemoteTcuGuiPacket(ITurretEntity turret, Hand tcuHand, ResourceLocation pageId) {
+    public OpenRemoteTcuGuiPacket(ITurretEntity turret, Hand tcuHand, ResourceLocation pageId, boolean initial) {
         this.tcuHand = tcuHand.name();
         this.turretNetId = turret.get().getId();
         this.pageId = pageId;
+        this.initial = initial;
     }
 
     public OpenRemoteTcuGuiPacket(PacketBuffer buffer) {
         this.tcuHand = buffer.readUtf(24);
         this.turretNetId = buffer.readVarInt();
         this.pageId = buffer.readResourceLocation();
+        this.initial = buffer.readBoolean();
     }
 
     @Override
@@ -39,6 +42,7 @@ public class OpenRemoteTcuGuiPacket
         buffer.writeUtf(this.tcuHand, 24);
         buffer.writeVarInt(this.turretNetId);
         buffer.writeResourceLocation(this.pageId);
+        buffer.writeBoolean(this.initial);
     }
 
     @Override
@@ -48,7 +52,7 @@ public class OpenRemoteTcuGuiPacket
             Entity e = player.level.getEntity(this.turretNetId);
             ItemStack tcu = player.getItemInHand(Hand.valueOf(this.tcuHand));
             if( e instanceof ITurretEntity && ItemStackUtils.isItem(tcu, ItemRegistry.TURRET_CONTROL_UNIT) ) {
-                TurretControlUnit.openTcu(player, tcu, (ITurretEntity) e, this.pageId);
+                TurretControlUnit.openTcu(player, tcu, (ITurretEntity) e, this.pageId, this.initial);
             }
         }
     }

@@ -18,6 +18,7 @@ public abstract class JsonTcuPage
     final ContainerScreen<TcuContainer> tcuScreen;
     final ITurretEntity turret;
     final boolean       isRemote;
+    final boolean       initial;
     final GuiDefinition guiDefinition = this.buildGuiDefinition();
 
     Minecraft mc;
@@ -29,6 +30,7 @@ public abstract class JsonTcuPage
 
         this.turret = tcuScreen.getMenu().turret;
         this.isRemote = tcuScreen.getMenu().isRemote;
+        this.initial = tcuScreen.getMenu().initial;
 
         if( this.guiDefinition != null ) {
             this.guiDefinition.width = tcuScreen.getXSize();
@@ -58,8 +60,11 @@ public abstract class JsonTcuPage
     }
 
     @Override
-    public void render(@Nonnull MatrixStack mStack, int mouseX, int mouseY, float partTicks) {
+    public void renderBackground(@Nonnull MatrixStack mStack, int mouseX, int mouseY, float partTicks) {
         this.guiDefinition.drawBackground(this, mStack, mouseX, mouseY, partTicks);
+    }
+
+    public void renderForeground(@Nonnull MatrixStack mStack, int mouseX, int mouseY, float partTicks) {
         this.guiDefinition.drawForeground(this, mStack, mouseX, mouseY, partTicks);
     }
 

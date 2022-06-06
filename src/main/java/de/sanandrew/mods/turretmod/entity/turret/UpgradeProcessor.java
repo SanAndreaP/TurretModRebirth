@@ -43,7 +43,7 @@ import java.util.stream.IntStream;
 public final class UpgradeProcessor
         implements IUpgradeProcessor
 {
-    private static final int SLOTS = 36;
+    public static final int SLOTS = 36;
     @Nonnull
     private final NonNullList<ItemStack> upgradeStacks = NonNullList.withSize(SLOTS, ItemStack.EMPTY);
     private final IUpgradeData<?>[]      upgradeData   = new IUpgradeData<?>[SLOTS];
@@ -140,13 +140,13 @@ public final class UpgradeProcessor
         return slot >= 0 && slot < this.upgradeStacks.size() ? this.upgradeStacks.get(slot) : ItemStack.EMPTY;
     }
 
-    private void terminate(int slot, ItemStack slotStack) {
+    public void terminate(int slot, ItemStack slotStack) {
         ItemStack iStack = MiscUtils.get(slotStack, () -> this.upgradeStacks.get(slot));
 
         IUpgrade upg = UpgradeRegistry.INSTANCE.get(iStack);
         MiscUtils.accept(this.upgradeData[slot], ud -> ud.save(this.turret, iStack.getOrCreateTagElement("UpgradeData")));
-        this.upgradeData[slot] = null;
         upg.terminate(this.turret, iStack);
+        this.upgradeData[slot] = null;
     }
 
     @Override

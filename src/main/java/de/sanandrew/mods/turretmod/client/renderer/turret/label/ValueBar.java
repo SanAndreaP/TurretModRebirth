@@ -19,6 +19,7 @@ import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 
+@SuppressWarnings("java:S5993")
 public abstract class ValueBar
         implements ILabelRenderer
 {
@@ -78,8 +79,8 @@ public abstract class ValueBar
 
         buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
-        registry.quadPC(buf, pose, new Vector2f(0, h - 2), new Vector2f(totalWidth, 2), clrBkg);
-        registry.quadPC(buf, pose, new Vector2f(0, h - 2), new Vector2f(totalWidth * val / maxVal, 2), clrFrg);
+        registry.quadPC(buf, pose, new Vector2f(0, h - 2.0F), new Vector2f(totalWidth, 2), clrBkg);
+        registry.quadPC(buf, pose, new Vector2f(0, h - 2.0F), new Vector2f(totalWidth * Math.min(val / maxVal, 1.0F), 2), clrFrg);
 
         tess.end();
 

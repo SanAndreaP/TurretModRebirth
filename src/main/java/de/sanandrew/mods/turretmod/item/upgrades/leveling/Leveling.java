@@ -6,6 +6,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeData;
 import de.sanandrew.mods.turretmod.item.TurretControlUnit;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -36,6 +37,14 @@ public class Leveling
     public static void onTabIconShow(TcuTabEvent.TabIconShow event) {
         if( event.tabId.equals(TurretControlUnit.LEVELS) && !event.turret.getUpgradeProcessor().hasUpgrade(ID) ) {
             event.setCanceled(true);
+        }
+    }
+
+    @Override
+    public void terminate(ITurretEntity turretInst, ItemStack stack) {
+        LevelStorage storage = turretInst.getUpgradeProcessor().getUpgradeData(ID);
+        if( storage != null ) {
+            storage.clearEffects(turretInst);
         }
     }
 }

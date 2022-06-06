@@ -104,7 +104,7 @@ public class ClientProxy
     }
 
     @Override
-    public void openTcuGuiRemote(ItemStack stack, ITurretEntity turret, ResourceLocation type) {
+    public void openTcuGuiRemote(ItemStack stack, ITurretEntity turret, ResourceLocation type, boolean initial) {
         PlayerEntity player = Minecraft.getInstance().player;
         if( player == null ) {
             return;
@@ -118,7 +118,7 @@ public class ClientProxy
         }
 
         if( tcuHeld != null ) {
-            TurretModRebirth.NETWORK.sendToServer(new OpenRemoteTcuGuiPacket(turret, tcuHeld, type));
+            TurretModRebirth.NETWORK.sendToServer(new OpenRemoteTcuGuiPacket(turret, tcuHeld, type, initial));
         }
     }
 

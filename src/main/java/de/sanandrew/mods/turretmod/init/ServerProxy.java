@@ -42,7 +42,7 @@ public class ServerProxy
     }
 
     @Override
-    public void openTcuGuiRemote(ItemStack stack, ITurretEntity turret, ResourceLocation type) {
+    public void openTcuGuiRemote(ItemStack stack, ITurretEntity turret, ResourceLocation type, boolean initial) {
         // client-side only
     }
 

@@ -13,7 +13,9 @@ public interface ITcuScreen
 
     default void tick() { }
 
-    void render(@Nonnull MatrixStack mStack, int mouseX, int mouseY, float partTicks);
+    void renderBackground(@Nonnull MatrixStack mStack, int mouseX, int mouseY, float partTicks);
+
+    void renderForeground(@Nonnull MatrixStack mStack, int mouseX, int mouseY, float partTicks);
 
     default boolean mouseClicked(double mx, double my, int btn) {
         return false;

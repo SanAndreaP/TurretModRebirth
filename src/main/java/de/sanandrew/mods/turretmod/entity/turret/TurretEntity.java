@@ -538,6 +538,12 @@ public class TurretEntity
     public void baseTick() {
         super.baseTick();
 
+        // fix health staying beyond max due to e.g. removing the health upgrades
+        float currHealth = this.getHealth();
+        if( currHealth > this.getMaxHealth() ) {
+            this.setHealth(currHealth);
+        }
+
         final IProfiler profiler = this.level.getProfiler();
 
         profiler.push("turretAI");

@@ -32,7 +32,10 @@ public class ButtonNav
     @SuppressWarnings("java:S107")
     ButtonNav(ResourceLocation texture, int[] size, int[] textureSize, int[] uvEnabled, int[] uvHover, int[] uvDisabled, int[] uvSize, int[] centralTextureSize, ResourceLocation pageKey) {
         super(texture, size, textureSize, uvEnabled, uvHover, uvDisabled, uvSize, centralTextureSize, GuiElementInst.EMPTY);
-        this.put(LABEL, new GuiElementInst(new Label()));
+
+        GuiElementInst lbl = new GuiElementInst(new int[] {size[0] / 2, size[1] / 2}, new Label());
+        lbl.alignment = new String[] {"center", "center"};
+        this.put(LABEL, lbl);
 
         this.pageKey = pageKey;
         this.order = TurretControlUnit.PAGES.indexOf(pageKey);
@@ -47,7 +50,7 @@ public class ButtonNav
             PlayerEntity player = Minecraft.getInstance().player;
             ITurretEntity turret = gui instanceof TcuScreen ? ((TcuScreen) gui).getTurret() : null;
             if( player != null && turret != null ) {
-                TurretControlUnit.openTcu(null, TurretControlUnit.getHeldTcu(player), turret, this.pageKey);
+                TurretControlUnit.openTcu(null, TurretControlUnit.getHeldTcu(player), turret, this.pageKey, false);
             }
         });
     }
@@ -107,11 +110,7 @@ public class ButtonNav
 
         @Override
         public void sanitize(IGui gui) {
-            if( this.uvEnabled == null )          { this.uvEnabled = new int[] { 0, 0 }; }
-            if( this.uvDisabled == null )         { this.uvDisabled = new int[] { 0, 0 }; }
-            if( this.uvHover == null )            { this.uvHover = new int[] { 0, 0 }; }
-            if( this.uvSize == null )             { this.uvSize = new int[] { 0, 0 }; }
-            if( this.centralTextureSize == null ) { this.centralTextureSize = new int[] { 0, 0 }; }
+            if( this.uvSize == null ) { this.uvSize = new int[] { 18, 18 }; }
 
             super.sanitize(gui);
         }
@@ -129,7 +128,7 @@ public class ButtonNav
         }
 
         public static Builder buildFromJson(IGui gui, JsonObject data, ResourceLocation pageKey) {
-            JsonUtils.addDefaultJsonProperty(data, "size", new int[] { 16, 16 });
+            JsonUtils.addDefaultJsonProperty(data, "size", new int[] { 18, 18 });
 
             ButtonSL.Builder sb = ButtonSL.Builder.buildFromJson(gui, data);
 

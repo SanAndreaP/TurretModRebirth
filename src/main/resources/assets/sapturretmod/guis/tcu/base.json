@@ -19,16 +19,26 @@
     },
     {
       "type": "sapturretmod:tcu_page_nav",
-      "pos": [0, 214],
+      "pos": [0, 213],
       "id": "pgNavigation",
       "data": {
         "tabScrollLeft": {
-          "size": [18, 18],
-          "uvEnabled": [18, 0]
+          "size": [8, 8],
+          "uvEnabled": [194, 8],
+          "uvSize": [8, 8],
+          "useVanillaTexture": false
         },
         "tabScrollRight": {
+          "size": [8, 8],
+          "uvEnabled": [202, 8],
+          "uvSize": [8, 8],
+          "useVanillaTexture": false
+        },
+        "buttonData": {
           "size": [18, 18],
-          "uvEnabled": [36, 0]
+          "uvEnabled": [176, 18],
+          "uvSize": [18, 18],
+          "useVanillaTexture": false
         }
       }
     }

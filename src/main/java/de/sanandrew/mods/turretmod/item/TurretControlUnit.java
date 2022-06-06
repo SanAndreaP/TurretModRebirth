@@ -21,6 +21,7 @@ import de.sanandrew.mods.turretmod.client.gui.tcu.TcuScreen;
 import de.sanandrew.mods.turretmod.entity.turret.TurretEntity;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.inventory.container.TcuContainerFactory;
+import de.sanandrew.mods.turretmod.inventory.container.TcuUpgradesContainer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -110,7 +111,7 @@ public class TurretControlUnit
                     if( player.isCrouching() ) {
                         bindTurret(heldStack, null);
                     } else if( player instanceof ServerPlayerEntity ) {
-                        openTcu((ServerPlayerEntity) player, heldStack, turret, PAGES.get(0));
+                        openTcu((ServerPlayerEntity) player, heldStack, turret, PAGES.get(0), true);
                     }
                 }
 
@@ -129,7 +130,7 @@ public class TurretControlUnit
                 if( player.isCrouching() ) {
                     bindTurret(stack, (ITurretEntity) entity);
                 } else if( player instanceof ServerPlayerEntity ) {
-                    openTcu((ServerPlayerEntity) player, stack, (ITurretEntity) entity, PAGES.get(0));
+                    openTcu((ServerPlayerEntity) player, stack, (ITurretEntity) entity, PAGES.get(0), true);
                 }
             }
 
@@ -211,15 +212,16 @@ public class TurretControlUnit
         }
     }
 
-    public static void openTcu(@Nullable ServerPlayerEntity player, ItemStack stack, ITurretEntity turret, ResourceLocation type) {
+    public static void openTcu(@Nullable ServerPlayerEntity player, ItemStack stack, ITurretEntity turret, ResourceLocation type, boolean initial) {
         if( player == null || player.level.isClientSide ) {
-            TurretModRebirth.PROXY.openTcuGuiRemote(stack, turret, type);
+            TurretModRebirth.PROXY.openTcuGuiRemote(stack, turret, type, initial);
         } else {
             boolean isRemote = isHeldTcuBoundToTurret(player, turret);
-            NetworkHooks.openGui(player, new TcuContainerFactory.Provider(stack, turret, type, isRemote), buf -> {
+            NetworkHooks.openGui(player, new TcuContainerFactory.Provider(stack, turret, type, isRemote, initial), buf -> {
                 buf.writeVarInt(turret.get().getId());
                 buf.writeResourceLocation(type);
                 buf.writeBoolean(isRemote);
+                buf.writeBoolean(initial);
             });
         }
     }
@@ -244,12 +246,14 @@ public class TurretControlUnit
     public static final ResourceLocation INFO              = new ResourceLocation(TmrConstants.ID, "info");
     public static final ResourceLocation TARGETS_CREATURES = new ResourceLocation(TmrConstants.ID, "targets_creatures");
     public static final ResourceLocation TARGETS_PLAYERS   = new ResourceLocation(TmrConstants.ID, "targets_players");
+    public static final ResourceLocation UPGRADES          = new ResourceLocation(TmrConstants.ID, "upgrades");
     public static final ResourceLocation LEVELS            = new ResourceLocation(TmrConstants.ID, "leveling");
 
     public static void register(ITcuRegistry registry) {
         registry.registerTcuPage(INFO);
         registry.registerTcuPage(TARGETS_CREATURES);
         registry.registerTcuPage(TARGETS_PLAYERS);
+        registry.registerTcuPage(UPGRADES, TcuUpgradesContainer::new);
         registry.registerTcuPage(LEVELS);
     }
 }
