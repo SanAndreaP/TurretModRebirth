@@ -52,6 +52,10 @@ public class DamageEventHandler
 //                    }
 //                    UpgradeRegistry.INSTANCE.syncWithClients(turret, Upgrades.SHIELD_PERSONAL.getId());
 //                }
+                if( proc.hasUpgrade(Upgrades.CREATIVE) ) {
+                    event.setCanceled(true);
+                }
+
                 if( !event.isCanceled() && proc.hasUpgrade(Upgrades.TURRET_SAFE) && turret.getHealth() - event.getAmount() <= 0.001F ) {
                     TurretCrateEntity crate = turret.dismantle();
                     if( crate != null ) {
@@ -99,8 +103,11 @@ public class DamageEventHandler
         Entity t = event.getEntity();
         if( t instanceof LivingEntity ) {
             LivingEntity e = ((LivingEntity) t).getLastHurtByMob();
-            if( e instanceof ITurretEntity && ((ITurretEntity) e).getUpgradeProcessor().hasUpgrade(Upgrades.ENDER_TOXIN_I) ) {
-                event.setCanceled(true);
+            if( e instanceof ITurretEntity ) {
+                IUpgradeProcessor proc = ((ITurretEntity) e).getUpgradeProcessor();
+                if( proc.hasUpgrade(Upgrades.ENDER_TOXIN_I) || proc.hasUpgrade(Upgrades.CREATIVE) ) {
+                    event.setCanceled(true);
+                }
             }
         }
     }

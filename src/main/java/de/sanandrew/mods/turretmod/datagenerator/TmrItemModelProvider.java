@@ -6,6 +6,7 @@ import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.item.ammo.Ammunitions;
 import de.sanandrew.mods.turretmod.item.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
@@ -65,7 +66,7 @@ public class TmrItemModelProvider
         this.singleTexture("upgrade_base", stdItemParent, LAYER_0, new ResourceLocation(TmrConstants.ID, "item/upgrades/background"));
 
         ResourceLocation baseModel = new ResourceLocation(TmrConstants.ID, "item/upgrade_base");
-        UpgradeRegistry.INSTANCE.getAll().stream().filter(u -> u.getId().getNamespace().equals(TmrConstants.ID)).forEach(u -> {
+        UpgradeRegistry.INSTANCE.getAll().stream().filter(u -> u.getId().getNamespace().equals(TmrConstants.ID) && !u.getId().equals(Upgrades.CREATIVE.getId())).forEach(u -> {
             String name = u.getId().getPath();
             this.singleTexture(name, baseModel, LAYER_1, new ResourceLocation(TmrConstants.ID, "item/upgrades/" + name));
         });

@@ -16,7 +16,9 @@ import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeData;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
+import de.sanandrew.mods.turretmod.inventory.container.TcuUpgradesContainer;
 import de.sanandrew.mods.turretmod.item.ItemUpgrade;
+import de.sanandrew.mods.turretmod.item.TurretControlUnit;
 import de.sanandrew.mods.turretmod.item.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.network.SyncUpgradesPacket;
@@ -298,9 +300,21 @@ public final class UpgradeProcessor
         return true;
     }
 
+    @SuppressWarnings("java:S1871")
     private boolean isUpgradeItemApplicable(ItemStack stack) {
         if( stack.getItem() instanceof ItemUpgrade ) {
             IUpgrade upg = ((ItemUpgrade) stack.getItem()).upgrade;
+
+            // check if this turret has the creative upgrade or if there's upgrades present when the inserted upgrade is the creative one.
+            // deny insertion if either of those are true
+            if( this.hasUpgrade(Upgrades.CREATIVE) ) {
+                return false;
+            } else if(upg.getId().equals(Upgrades.CREATIVE.getId())
+                      && IntStream.range(0, SLOTS).filter(slot -> this.upgradeStacks.get(slot).getItem() instanceof ItemUpgrade).findFirst().orElse(-1) >= 0 )
+            {
+                return false;
+            }
+
             if( this.hasUpgrade(upg) ) {
                 return false;
             }
@@ -418,11 +432,9 @@ public final class UpgradeProcessor
         return this.hasUpgrade(Upgrades.REMOTE_ACCESS);
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public Container createMenu(int id, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
-        //TODO: create container
-//        return new ElectrolyteGeneratorContainer(id, playerInventory, this.itemHandler, this.syncData, this.processes);
-        return null;
+        return new TcuUpgradesContainer(id, playerInventory, this.turret, TurretControlUnit.UPGRADES, false, true);
     }
 }

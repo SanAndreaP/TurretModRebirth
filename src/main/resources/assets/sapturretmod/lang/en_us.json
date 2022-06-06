@@ -94,6 +94,7 @@
   "item.sapturretmod.turret_safe_upgrade": "Turret Safe Upgrade",
   "item.sapturretmod.leveling_upgrade": "Leveling Upgrade",
   "item.sapturretmod.remote_access_upgrade": "Remote Access Upgrade",
+  "item.sapturretmod.creative_upgrade": "§dC§cr§6e§ea§2t§3i§9v§5e §fU§bp§dg§fr§da§bd§fe",
 
   "_comment": "### Entities ####",
   "attribute.name.sapturretmod.max_ammo_capacity": "Max. Ammo Capacity",
