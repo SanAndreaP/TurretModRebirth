@@ -8,6 +8,7 @@ import de.sanandrew.mods.turretmod.api.tcu.TcuContainer;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuInfoPage;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuLevelsPage;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuScreen;
+import de.sanandrew.mods.turretmod.client.gui.tcu.TcuSmartTargetingPage;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuTargetPage;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuUpgradesPage;
 import de.sanandrew.mods.turretmod.client.gui.tcu.info.AmmoProvider;
@@ -65,6 +66,7 @@ public final class TcuClientRegistry
         registry.registerTcuScreen(TurretControlUnit.INFO, new SimpleItem(Items.BOOK), TcuInfoPage::new);
         registry.registerTcuScreen(TurretControlUnit.TARGETS_CREATURES, new SimpleItem(Items.ZOMBIE_HEAD), TcuTargetPage.Creatures::new);
         registry.registerTcuScreen(TurretControlUnit.TARGETS_PLAYERS, de.sanandrew.mods.turretmod.client.init.PlayerHeads::getRandomSkull, TcuTargetPage.Players::new);
+        registry.registerTcuScreen(TurretControlUnit.TARGETS_SMART, () -> UpgradeRegistry.INSTANCE.getItem(Upgrades.SMART_TGT.getId()), TcuSmartTargetingPage::new);
         registry.registerTcuScreen(TurretControlUnit.UPGRADES, () -> UpgradeRegistry.INSTANCE.getItem(UpgradeRegistry.INSTANCE.getEmptyUpgrade().getId()), TcuUpgradesPage::new);
         registry.registerTcuScreen(TurretControlUnit.LEVELS, () -> UpgradeRegistry.INSTANCE.getItem(Upgrades.LEVELING.getId()), TcuLevelsPage::new);
 

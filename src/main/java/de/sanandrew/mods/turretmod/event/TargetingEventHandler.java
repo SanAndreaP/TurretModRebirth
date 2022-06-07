@@ -11,15 +11,20 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.api.turret.TargetingEvent;
-import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
+import de.sanandrew.mods.turretmod.item.upgrades.smarttargeting.AdvTargetSettings;
+import net.minecraft.entity.Entity;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.List;
+
 @Mod.EventBusSubscriber(modid = TmrConstants.ID)
 public class TargetingEventHandler
 {
+    private TargetingEventHandler() { }
+
     @SubscribeEvent
     public static void onProcessorTick(TargetingEvent.ProcessorTick event) {
         ITurretEntity turret = event.processor.getTurret();
@@ -41,16 +46,15 @@ public class TargetingEventHandler
 //            event.setResult(Event.Result.DENY);
 //        }
 
-        //TODO: reimplement smart targeting upgrade
-//        if( turret.getUpgradeProcessor().hasUpgrade(Upgrades.SMART_TGT) ) {
-//            AdvTargetSettings settings = event.processor.getTurretInst().getUpgradeProcessor().getUpgradeInstance(Upgrades.SMART_TGT.getId());
-//            if( settings != null ) {
-//                List<Entity> entities = turret.getTargetProcessor().getValidTargetList();
-//                if( !settings.isTargetValid(event.target, turret, entities) ) {
-//                    event.setResult(Event.Result.DENY);
-//                }
-//            }
-//        }
+        if( turret.getUpgradeProcessor().hasUpgrade(Upgrades.SMART_TGT) ) {
+            AdvTargetSettings settings = event.processor.getTurret().getUpgradeProcessor().getUpgradeData(Upgrades.SMART_TGT.getId());
+            if( settings != null ) {
+                List<Entity> entities = turret.getTargetProcessor().getValidTargetList();
+                if( !settings.isTargetValid(event.target, turret, entities) ) {
+                    event.setResult(Event.Result.DENY);
+                }
+            }
+        }
     }
 
     @SubscribeEvent

@@ -30,8 +30,8 @@ public class Stage
         this.modifiers = modifiers;
     }
 
-    boolean check(int level, Stage currStage) {
-        return level >= this.level && currStage.level < this.level;
+    boolean check(int level) {
+        return level >= this.level;
     }
 
     void apply(ITurretEntity turretInst, boolean playSound) {

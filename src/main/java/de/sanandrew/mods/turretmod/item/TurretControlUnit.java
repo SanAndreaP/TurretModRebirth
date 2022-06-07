@@ -246,6 +246,7 @@ public class TurretControlUnit
     public static final ResourceLocation INFO              = new ResourceLocation(TmrConstants.ID, "info");
     public static final ResourceLocation TARGETS_CREATURES = new ResourceLocation(TmrConstants.ID, "targets_creatures");
     public static final ResourceLocation TARGETS_PLAYERS   = new ResourceLocation(TmrConstants.ID, "targets_players");
+    public static final ResourceLocation TARGETS_SMART   = new ResourceLocation(TmrConstants.ID, "targets_smart");
     public static final ResourceLocation UPGRADES          = new ResourceLocation(TmrConstants.ID, "upgrades");
     public static final ResourceLocation LEVELS            = new ResourceLocation(TmrConstants.ID, "leveling");
 
@@ -253,6 +254,7 @@ public class TurretControlUnit
         registry.registerTcuPage(INFO);
         registry.registerTcuPage(TARGETS_CREATURES);
         registry.registerTcuPage(TARGETS_PLAYERS);
+        registry.registerTcuPage(TARGETS_SMART);
         registry.registerTcuPage(UPGRADES, TcuUpgradesContainer::new);
         registry.registerTcuPage(LEVELS);
     }

@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@SuppressWarnings({"java:S1104", "java:S1444", "unused"})
 @IUpgradeData.Syncable
 public class LevelStorage
         implements IUpgradeData<LevelStorage>
@@ -39,7 +40,6 @@ public class LevelStorage
     private int     prevXp;
     private int     prevLvl;
     private int     cachedLevel;
-    private Stage   currStage   = Stage.NULL_STAGE;
     private boolean initialized = false;
 
     private Integer modifierHash = null;
@@ -137,7 +137,7 @@ public class LevelStorage
             this.prevLvl = currLevel;
 
             STAGES.forEach((r, s) -> {
-                if( s.check(currLevel, this.currStage) ) {
+                if( s.check(currLevel) ) {
                     s.apply(turretInst, playSound);
                 }
             });
@@ -156,7 +156,7 @@ public class LevelStorage
 
     private List<Stage> fetchCurrentStages() {
         final int currLevel = this.getLevel();
-        return STAGES.values().stream().filter(s -> s.check(currLevel, Stage.NULL_STAGE)).collect(Collectors.toList());
+        return STAGES.values().stream().filter(s -> s.check(currLevel)).collect(Collectors.toList());
     }
 
     public int getXp() {
@@ -240,9 +240,7 @@ public class LevelStorage
     private void updateModHash() {
         Map<Attribute, Stage.ModifierInfo> currMod = fetchCurrentModifiers();
         this.modifierHash = 0;
-        currMod.forEach((key, value) -> {
-            this.modifierHash = Objects.hash(this.modifierHash, key, value);
-        });
+        currMod.forEach((key, value) -> this.modifierHash = Objects.hash(this.modifierHash, key, value));
     }
 
     public int getModHash() {

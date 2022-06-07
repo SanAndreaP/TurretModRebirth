@@ -32,19 +32,19 @@ public class Leveling
         return new LevelStorage();
     }
 
-    @OnlyIn(Dist.CLIENT)
-    @SubscribeEvent
-    public static void onTabIconShow(TcuTabEvent.TabIconShow event) {
-        if( event.tabId.equals(TurretControlUnit.LEVELS) && !event.turret.getUpgradeProcessor().hasUpgrade(ID) ) {
-            event.setCanceled(true);
-        }
-    }
-
     @Override
     public void terminate(ITurretEntity turretInst, ItemStack stack) {
         LevelStorage storage = turretInst.getUpgradeProcessor().getUpgradeData(ID);
         if( storage != null ) {
             storage.clearEffects(turretInst);
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void onTabIconShow(TcuTabEvent.TabIconShow event) {
+        if( event.tabId.equals(TurretControlUnit.LEVELS) && !event.turret.getUpgradeProcessor().hasUpgrade(ID) ) {
+            event.setCanceled(true);
         }
     }
 }

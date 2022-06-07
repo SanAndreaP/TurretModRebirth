@@ -6,37 +6,42 @@
    *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.item.upgrades.smarttargeting;
 
-//TODO: readd
+import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.client.tcu.TcuTabEvent;
+import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
+import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
+import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeData;
+import de.sanandrew.mods.turretmod.item.TurretControlUnit;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+
+import javax.annotation.Nonnull;
+
+@Mod.EventBusSubscriber(modid = TmrConstants.ID, value = Dist.CLIENT)
 public class SmartTargeting
-//        implements IUpgrade
+        implements IUpgrade
 {
-//    private static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "upgrade_smart_targeting");
-//
-//    @Override
-//    public ResourceLocation getId() {
-//        return ID;
-//    }
-//
-//    @Override
-//    public void initialize(ITurretInst turretInst, ItemStack stack) {
-//        turretInst.getUpgradeProcessor().setUpgradeInstance(ID, new AdvTargetSettings());
-//    }
-//
-//    @Override
-//    public void onLoad(ITurretInst turretInst, NBTTagCompound nbt) {
-//        turretInst.getUpgradeProcessor().setUpgradeInstance(ID, new AdvTargetSettings(nbt));
-//    }
-//
-//    @Override
-//    public void onSave(ITurretInst turretInst, NBTTagCompound nbt) {
-//        AdvTargetSettings settings = turretInst.getUpgradeProcessor().getUpgradeInstance(ID);
-//        if( settings != null ) {
-//            settings.writeToNbt(nbt);
-//        }
-//    }
-//
-//    @Override
-//    public void terminate(ITurretInst turretInst, ItemStack stack) {
-//        turretInst.getUpgradeProcessor().delUpgradeInstance(ID);
-//    }
+    static final ResourceLocation ID = new ResourceLocation(TmrConstants.ID, "smart_targeting_upgrade");
+
+    @Nonnull
+    @Override
+    public ResourceLocation getId() {
+        return ID;
+    }
+
+    @Override
+    public IUpgradeData<?> getData(ITurretEntity turretInst) {
+        return new AdvTargetSettings();
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void onTabIconShow(TcuTabEvent.TabIconShow event) {
+        if( event.tabId.equals(TurretControlUnit.TARGETS_SMART) && !event.turret.getUpgradeProcessor().hasUpgrade(ID) ) {
+            event.setCanceled(true);
+        }
+    }
 }

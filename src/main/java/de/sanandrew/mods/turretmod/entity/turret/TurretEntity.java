@@ -540,7 +540,7 @@ public class TurretEntity
 
         // fix health staying beyond max due to e.g. removing the health upgrades
         float currHealth = this.getHealth();
-        if( currHealth > this.getMaxHealth() ) {
+        if( !this.level.isClientSide && this.tickCount > 0 && currHealth > this.getMaxHealth() ) {
             this.setHealth(currHealth);
         }
 
