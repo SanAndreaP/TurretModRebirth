@@ -44,4 +44,9 @@ public class SmartTargeting
             event.setCanceled(true);
         }
     }
+
+    @Override
+    public boolean isCompatibleWithCreativeUpgrade() {
+        return true;
+    }
 }

@@ -97,4 +97,8 @@ public interface IUpgrade
      * @param stack
      */
     default void terminate(ITurretEntity turretInst, ItemStack stack) { }
+
+    default boolean isCompatibleWithCreativeUpgrade() {
+        return false;
+    }
 }

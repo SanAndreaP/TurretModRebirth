@@ -47,4 +47,9 @@ public class Leveling
             event.setCanceled(true);
         }
     }
+
+    @Override
+    public boolean isCompatibleWithCreativeUpgrade() {
+        return true;
+    }
 }

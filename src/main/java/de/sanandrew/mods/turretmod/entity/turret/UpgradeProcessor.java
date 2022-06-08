@@ -307,10 +307,10 @@ public final class UpgradeProcessor
 
             // check if this turret has the creative upgrade or if there's upgrades present when the inserted upgrade is the creative one.
             // deny insertion if either of those are true
-            if( this.hasUpgrade(Upgrades.CREATIVE) ) {
+            if( !upg.isCompatibleWithCreativeUpgrade() && this.hasUpgrade(Upgrades.CREATIVE) ) {
                 return false;
             } else if(upg.getId().equals(Upgrades.CREATIVE.getId())
-                      && IntStream.range(0, SLOTS).filter(slot -> this.upgradeStacks.get(slot).getItem() instanceof ItemUpgrade).findFirst().orElse(-1) >= 0 )
+                      && this.upgradeStacks.stream().filter(slot -> UpgradeRegistry.INSTANCE.get(slot).isCompatibleWithCreativeUpgrade()).findFirst().orElse(null) != null )
             {
                 return false;
             }
