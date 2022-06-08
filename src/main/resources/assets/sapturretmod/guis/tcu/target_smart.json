@@ -226,7 +226,7 @@
     {
       "type": "textfield",
       "pos": [110, 157],
-      "id": "countEntities",
+      "id": "countAmount",
       "data": {
         "size": [25, 10]
       }
