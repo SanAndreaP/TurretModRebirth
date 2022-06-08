@@ -21,7 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.registries.DeferredRegister;
 import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
@@ -60,7 +60,8 @@ public final class TurretRegistry
         ResourceLocation id = obj.getId();
 
         if( TURRETS.containsKey(id) ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("The turret %s is already registered!", id), new InvalidParameterException());
+            String msg = String.format("The turret %s is already registered!", id);
+            TmrConstants.LOG.log(Level.ERROR, msg, new InvalidParameterException());
             return;
         }
 
@@ -69,27 +70,18 @@ public final class TurretRegistry
         ItemRegistry.TURRET_PLACERS.put(id, new TurretItem(id));
     }
 
-//    @Override
-//    public void register(@Nonnull ResourceLocation id) {
-//        if( this.turrets.containsKey(id) ) {
-//            TmrConstants.LOG.log(Level.ERROR, String.format("The turret %s is already registered!", id), new InvalidParameterException());
-//            return;
-//        }
-//
-//        try( InputStream is = TurretModRebirth.class.getClassLoader().getResourceAsStream("./data/" + id.getNamespace() + "/turrets/" + id.getPath() + ".json") ) {
-//            this.turrets.put(id, new JsonTurret(id, is));
-//        } catch( IOException | NullPointerException ex ) {
-//            this.turrets.put(id, EMPTY);
-//        }
-//
-//        ItemRegistry.TURRET_PLACERS.put(id, new TurretItem(id));
-//    }
-
     @Override
-    public void registerItems(RegistryEvent.Register<Item> event, final String modId) {
-        event.getRegistry().registerAll(ItemRegistry.TURRET_PLACERS.entrySet().stream()
-                                                                   .filter(e -> e.getKey().getNamespace().equals(modId))
-                                                                   .map(e -> e.getValue().setRegistryName(e.getKey())).toArray(Item[]::new));
+    public void registerItems(DeferredRegister<Item> register, String modId) {
+        for( Map.Entry<ResourceLocation, TurretItem> e : ItemRegistry.TURRET_PLACERS.entrySet() ) {
+            ResourceLocation key = e.getKey();
+            TurretItem val = e.getValue();
+
+            if( key.getNamespace().equals(modId) ) {
+                register.register(key.getPath(), () -> val);
+            }
+        }
+//        ItemRegistry.TURRET_PLACERS.entrySet().stream().filter(e -> e.getKey().getNamespace().equals(modId))
+//                                   .forEach(e -> register.register(e.getKey().getPath(), e::getValue));
     }
 
     @Nonnull

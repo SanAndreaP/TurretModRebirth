@@ -18,7 +18,7 @@ import de.sanandrew.mods.turretmod.item.ItemUpgrade;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.registries.DeferredRegister;
 import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nonnull;
@@ -157,10 +157,9 @@ public final class UpgradeRegistry
     }
 
     @Override
-    public void registerItems(RegistryEvent.Register<Item> event, final String modId) {
-        event.getRegistry().registerAll(ItemRegistry.TURRET_UPGRADES.entrySet().stream()
-                                                                    .filter(e -> e.getKey().getNamespace().equals(modId))
-                                                                    .map(e -> e.getValue().setRegistryName(e.getKey())).toArray(Item[]::new));
+    public void registerItems(DeferredRegister<Item> register, final String modId) {
+        ItemRegistry.TURRET_UPGRADES.entrySet().stream().filter(e -> e.getKey().getNamespace().equals(modId))
+                                    .forEach(e -> register.register(e.getKey().getPath(), e::getValue));
     }
 
     static final class EmptyUpgrade

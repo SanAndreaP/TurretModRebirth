@@ -5,7 +5,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.registries.DeferredRegister;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -16,7 +16,7 @@ import java.util.Collection;
 public interface IAmmunitionRegistry
         extends IRegistry<IAmmunition>
 {
-    void registerItems(RegistryEvent.Register<Item> event, String modId);
+    void registerItems(DeferredRegister<Item> register, String modId);
 
     /**
      * <p>Returns an unmodifiable view of the objects registered in this registry, compatible with the given turret.</p>

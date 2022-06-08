@@ -9,15 +9,19 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod.EventBusSubscriber(modid = TmrConstants.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class EntityRegistry
 {
+    private static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES, TmrConstants.ID);
+    private static final DeferredRegister<Attribute> ATTRIBUTES = DeferredRegister.create(ForgeRegistries.ATTRIBUTES, TmrConstants.ID);
+
     public static final EntityType<TurretEntity>           TURRET     = EntityType.Builder.<TurretEntity>of(TurretEntity::new, EntityClassification.MISC)
                                                                                           .clientTrackingRange(10)
                                                                                           .build("turret");
@@ -25,17 +29,18 @@ public class EntityRegistry
                                                                             .clientTrackingRange(10)
                                                                             .build("projectile");
 
-    @SubscribeEvent
-    public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
-        event.getRegistry().registerAll(TURRET.setRegistryName(new ResourceLocation(TmrConstants.ID, "turret")),
-                                        PROJECTILE.setRegistryName(new ResourceLocation(TmrConstants.ID, "projectile")));
-    }
+    private EntityRegistry() { /* no-op */ }
 
-    @SubscribeEvent
-    public static void registerAttributes(RegistryEvent.Register<Attribute> event) {
-        event.getRegistry().registerAll(TurretAttributes.MAX_AMMO_CAPACITY.setRegistryName(new ResourceLocation(TmrConstants.ID, "max_ammo_capacity")),
-                                        TurretAttributes.MAX_RELOAD_TICKS.setRegistryName(new ResourceLocation(TmrConstants.ID, "max_reload_ticks")),
-                                        TurretAttributes.MAX_INIT_SHOOT_TICKS.setRegistryName(new ResourceLocation(TmrConstants.ID, "max_init_shoot_ticks")));
+    public static void register(IEventBus bus) {
+        ENTITY_TYPES.register("turret", () -> TURRET);
+        ENTITY_TYPES.register("projectile", () -> PROJECTILE);
+
+        ATTRIBUTES.register("max_ammo_capacity", () -> TurretAttributes.MAX_AMMO_CAPACITY);
+        ATTRIBUTES.register("max_reload_ticks", () -> TurretAttributes.MAX_RELOAD_TICKS);
+        ATTRIBUTES.register("max_init_shoot_ticks", () -> TurretAttributes.MAX_INIT_SHOOT_TICKS);
+
+        ENTITY_TYPES.register(bus);
+        ATTRIBUTES.register(bus);
     }
 
     @SubscribeEvent

@@ -23,7 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.registries.DeferredRegister;
 import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
@@ -39,6 +39,8 @@ public final class AmmunitionRegistry
         implements IAmmunitionRegistry
 {
     public static final AmmunitionRegistry INSTANCE = new AmmunitionRegistry();
+
+    private static final String NBT_SUBTYPE = "Subtype";
 
     private final Map<ResourceLocation, IAmmunition>  ammoTypes;
     private final Map<ITurret, UModList<IAmmunition>> ammoTypesFromTurret;
@@ -63,10 +65,9 @@ public final class AmmunitionRegistry
     }
 
     @Override
-    public void registerItems(RegistryEvent.Register<Item> event, final String modId) {
-        event.getRegistry().registerAll(ItemRegistry.TURRET_AMMO.entrySet().stream()
-                                                                .filter(e -> e.getKey().getNamespace().equals(modId))
-                                                                .map(e -> e.getValue().setRegistryName(e.getKey())).toArray(Item[]::new));
+    public void registerItems(DeferredRegister<Item> register, final String modId) {
+        ItemRegistry.TURRET_AMMO.entrySet().stream().filter(e -> e.getKey().getNamespace().equals(modId))
+                                .forEach(e -> register.register(e.getKey().getPath(), e::getValue));
     }
 
     @Override
@@ -100,17 +101,19 @@ public final class AmmunitionRegistry
     @Override
     public void register(@Nonnull IAmmunition obj) {
         if( this.ammoTypes.containsKey(obj.getId()) ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("The ammo ID %s is already registered!", obj.getId()), new InvalidParameterException());
+            String msg = String.format("The ammo ID %s is already registered!", obj.getId());
+            TmrConstants.LOG.log(Level.ERROR, msg, new InvalidParameterException());
             return;
         }
 
         if( obj.getCapacity() < 1 ) {
-            TmrConstants.LOG.log(Level.ERROR, String.format("Ammo ID %s provides less than 1 round!", obj.getId()), new InvalidParameterException());
+            String msg = String.format("Ammo ID %s provides less than 1 round!", obj.getId());
+            TmrConstants.LOG.log(Level.ERROR, msg, new InvalidParameterException());
             return;
         }
 
         this.ammoTypes.put(obj.getId(), obj);
-        this.ammoTypesFromTurret.computeIfAbsent(obj.getApplicableTurret(), (t) -> new UModList<>()).mList.add(obj);
+        this.ammoTypesFromTurret.computeIfAbsent(obj.getApplicableTurret(), t -> new UModList<>()).mList.add(obj);
 
         ItemRegistry.TURRET_AMMO.put(obj.getId(), new AmmoItem(obj.getId()));
     }
@@ -119,8 +122,8 @@ public final class AmmunitionRegistry
     public String getSubtype(ItemStack stack) {
         if( stack.getItem() instanceof AmmoItem ) {
             CompoundNBT tmrStack = stack.getTagElement(TmrConstants.ID);
-            if( tmrStack != null && tmrStack.contains("Subtype", Constants.NBT.TAG_STRING) ) {
-                return tmrStack.getString("Subtype");
+            if( tmrStack != null && tmrStack.contains(NBT_SUBTYPE, Constants.NBT.TAG_STRING) ) {
+                return tmrStack.getString(NBT_SUBTYPE);
             }
         }
 
@@ -134,7 +137,7 @@ public final class AmmunitionRegistry
             if( item instanceof AmmoItem ) {
                 String[] subtypes = ((AmmoItem) item).getAmmo().getSubtypes();
                 if( subtypes != null && Arrays.asList(subtypes).contains(type) ) {
-                    stack.getOrCreateTagElement(TmrConstants.ID).putString("Subtype", type);
+                    stack.getOrCreateTagElement(TmrConstants.ID).putString(NBT_SUBTYPE, type);
                 }
             }
         }

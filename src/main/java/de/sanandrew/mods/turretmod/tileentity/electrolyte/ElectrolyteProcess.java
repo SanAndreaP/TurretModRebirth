@@ -11,6 +11,7 @@ import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.electrolytegen.IElectrolyteInventory;
 import de.sanandrew.mods.turretmod.api.electrolytegen.IElectrolyteRecipe;
+import de.sanandrew.mods.turretmod.init.RecipeRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
@@ -57,20 +58,20 @@ public class ElectrolyteProcess
     }
 
     public ItemStack getTrashStack(IElectrolyteInventory inv) {
-        IElectrolyteRecipe recipe = this.grabRecipe(inv);
+        IElectrolyteRecipe r = this.grabRecipe(inv);
 
         if( this.trashStack == null ) {
-            this.trashStack = MiscUtils.RNG.randomFloat() < recipe.getTrashChance() ? recipe.getTrashResult(inv) : ItemStack.EMPTY;
+            this.trashStack = MiscUtils.RNG.randomFloat() < r.getTrashChance() ? r.getTrashResult(inv) : ItemStack.EMPTY;
         }
 
         return this.trashStack;
     }
 
     public ItemStack getTreasureStack(IElectrolyteInventory inv) {
-        IElectrolyteRecipe recipe = this.grabRecipe(inv);
+        IElectrolyteRecipe r = this.grabRecipe(inv);
 
         if( this.treasureStack == null ) {
-            this.treasureStack = MiscUtils.RNG.randomFloat() < recipe.getTreasureChance() ? recipe.getTreasureResult(inv) : ItemStack.EMPTY;
+            this.treasureStack = MiscUtils.RNG.randomFloat() < r.getTreasureChance() ? r.getTreasureResult(inv) : ItemStack.EMPTY;
         }
 
         return this.treasureStack;
@@ -113,7 +114,7 @@ public class ElectrolyteProcess
         }
 
         @Override
-        public void incrProgress() { }
+        public void incrProgress() { /* no-op */ }
 
         @Override
         public boolean hasFinished(IElectrolyteInventory inv) {
@@ -139,7 +140,7 @@ public class ElectrolyteProcess
         @Nonnull
         @Override
         public IRecipeSerializer<?> getSerializer() {
-            return ElectrolyteRecipe.Serializer.INSTANCE;
+            return RecipeRegistry.ELECTROLYTE_RECIPE_SER;
         }
 
         @Nonnull

@@ -2,6 +2,7 @@ package de.sanandrew.mods.turretmod.datagenerator;
 
 import com.google.gson.JsonObject;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.init.RecipeRegistry;
 import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteManager;
 import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteRecipe;
 import net.minecraft.data.IFinishedRecipe;
@@ -120,7 +121,7 @@ public class ElectrolyteBuilder
         @Nonnull
         @Override
         public IRecipeSerializer<?> getType() {
-            return ElectrolyteRecipe.Serializer.INSTANCE;
+            return RecipeRegistry.ELECTROLYTE_RECIPE_SER;
         }
 
         @Nullable

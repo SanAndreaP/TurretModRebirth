@@ -75,4 +75,12 @@ public class TmrInternalPlugin
         LabelRegistry.register(registry.getLabelRegistry());
         TcuClientRegistry.registerTcuClient(registry);
     }
+
+    public static int getSortId(ITmrPlugin p1, ITmrPlugin p2) {
+        if( p1 instanceof TmrInternalPlugin ) {
+            return -1;
+        }
+
+        return p2 instanceof TmrInternalPlugin ? 1 : 0;
+    }
 }

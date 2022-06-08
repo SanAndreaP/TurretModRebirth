@@ -2,11 +2,10 @@ package de.sanandrew.mods.turretmod.api.upgrade;
 
 import de.sanandrew.mods.turretmod.api.IRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
-import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.registries.DeferredRegister;
 
 import javax.annotation.Nonnull;
 
@@ -65,5 +64,5 @@ public interface IUpgradeRegistry
 
     boolean isApplicable(IUpgrade upgrade, ITurret turret, boolean isSpecialized);
 
-    void registerItems(RegistryEvent.Register<Item> event, String modId);
+    void registerItems(DeferredRegister<Item> register, String modId);
 }

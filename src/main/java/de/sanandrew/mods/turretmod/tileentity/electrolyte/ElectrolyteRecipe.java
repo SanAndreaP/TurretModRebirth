@@ -11,6 +11,7 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.electrolytegen.IElectrolyteInventory;
 import de.sanandrew.mods.turretmod.api.electrolytegen.IElectrolyteRecipe;
+import de.sanandrew.mods.turretmod.init.RecipeRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
@@ -36,6 +37,7 @@ public class ElectrolyteRecipe
     private final float trashChance;
     private final float treasureChance;
 
+    @SuppressWarnings("java:S107")
     public ElectrolyteRecipe(ResourceLocation id, @Nonnull Ingredient ingredient, @Nonnull ItemStack trash, @Nonnull ItemStack treasure, float efficiency, int processTime, float trashChance, float treasureChance) {
         this.id = id;
         this.ingredient = ingredient;
@@ -56,7 +58,7 @@ public class ElectrolyteRecipe
     @Nonnull
     @Override
     public IRecipeSerializer<?> getSerializer() {
-        return Serializer.INSTANCE;
+        return RecipeRegistry.ELECTROLYTE_RECIPE_SER;
     }
 
     @Nonnull
@@ -130,8 +132,6 @@ public class ElectrolyteRecipe
             extends ForgeRegistryEntry<IRecipeSerializer<?>>
             implements IRecipeSerializer<ElectrolyteRecipe>
     {
-        public static final Serializer INSTANCE = new Serializer();
-
         @Nonnull
         @Override
         public ElectrolyteRecipe fromJson(@Nonnull ResourceLocation recipeId, JsonObject json) {

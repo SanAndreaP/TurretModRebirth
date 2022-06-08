@@ -15,55 +15,46 @@ import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteGeneratorEn
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Collections;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 @SuppressWarnings("ConstantConditions")
-@Mod.EventBusSubscriber(modid = TmrConstants.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class BlockRegistry
 {
+    private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, TmrConstants.ID);
+    private static final DeferredRegister<TileEntityType<?>> TILE_ENTITIES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, TmrConstants.ID);
+
 //    public static final BlockTurretAssembly TURRET_ASSEMBLY = new BlockTurretAssembly();
     public static final ElectrolyteGeneratorBlock ELECTROLYTE_GENERATOR = new ElectrolyteGeneratorBlock();
     public static final TurretCrateBlock          TURRET_CRATE          = new TurretCrateBlock();
 
-    public static final TileEntityType<ElectrolyteGeneratorEntity> ELECTROLYTE_GENERATOR_ENTITY =
-            new TileEntityType<>(ElectrolyteGeneratorEntity::new, Collections.singleton(ELECTROLYTE_GENERATOR), null);
-    public static final TileEntityType<TurretCrateEntity>          TURRET_CRATE_ENTITY          =
-            new TileEntityType<>(TurretCrateEntity::new, Collections.singleton(TURRET_CRATE), null);
+    public static final TileEntityType<ElectrolyteGeneratorEntity> ELECTROLYTE_GENERATOR_ENTITY = newTileType(ElectrolyteGeneratorEntity::new, ELECTROLYTE_GENERATOR);
+    public static final TileEntityType<TurretCrateEntity>          TURRET_CRATE_ENTITY          = newTileType(TurretCrateEntity::new, TURRET_CRATE);
 
-    @SubscribeEvent
-    public static void registerBlocks(RegistryEvent.Register<Block> event) {
-//        TURRET_ASSEMBLY.setRegistryName(TmrConstants.ID, "turret_assembly");
-        ELECTROLYTE_GENERATOR.setRegistryName(TmrConstants.ID, "electrolyte_generator");
-        TURRET_CRATE.setRegistryName(TmrConstants.ID, "turret_crate");
+    private BlockRegistry() { /* no-op */ }
 
-//        event.getRegistry().registerAll(TURRET_ASSEMBLY, ELECTROLYTE_GENERATOR, TURRET_CRATE);
-        event.getRegistry().registerAll(ELECTROLYTE_GENERATOR, TURRET_CRATE);
+    public static void register(IEventBus bus) {
+        BLOCKS.register("electrolyte_generator", () -> ELECTROLYTE_GENERATOR);
+        BLOCKS.register("turret_crate", () -> TURRET_CRATE);
+
+        TILE_ENTITIES.register("electrolyte_generator", () -> ELECTROLYTE_GENERATOR_ENTITY);
+        TILE_ENTITIES.register("turret_crate", () -> TURRET_CRATE_ENTITY);
+
+        BLOCKS.register(bus);
+        TILE_ENTITIES.register(bus);
     }
 
-    @SubscribeEvent
-    public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
-        ELECTROLYTE_GENERATOR_ENTITY.setRegistryName(TmrConstants.ID, "electrolyte_generator_entity");
-        TURRET_CRATE_ENTITY.setRegistryName(TmrConstants.ID, "turret_crate_entity");
-
-        event.getRegistry().registerAll(ELECTROLYTE_GENERATOR_ENTITY, TURRET_CRATE_ENTITY);
-    }
-
-    @SubscribeEvent
-    public static void registerItems(RegistryEvent.Register<Item> event) {
-        event.getRegistry().registerAll(//getBlockItem(TURRET_ASSEMBLY),
-                                        getBlockItem(ELECTROLYTE_GENERATOR),
-                                        getBlockItem(TURRET_CRATE));
-    }
-
-    private static BlockItem getBlockItem(Block block) {
-        BlockItem bi = new BlockItem(block, new Item.Properties().tab(TmrItemGroups.MISC));
-        bi.setRegistryName(Objects.requireNonNull(block.getRegistryName()));
-        return bi;
+    private static <T extends TileEntity> TileEntityType<T> newTileType(Supplier<T> tileFactory, Block block) {
+        return new TileEntityType<>(tileFactory, Collections.singleton(block), null);
     }
 }
