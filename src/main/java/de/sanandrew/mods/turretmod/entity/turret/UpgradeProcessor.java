@@ -397,12 +397,12 @@ public final class UpgradeProcessor
         }
     }
 
-//    public NonNullList<ItemStack> extractUpgrades() {
-//        NonNullList<ItemStack> newList = NonNullList.create();
-//        newList.addAll(this.upgradeStacks);
-//        this.upgradeStacks.clear();
-//        return newList;
-//    }
+    public NonNullList<ItemStack> extractUpgrades() {
+        NonNullList<ItemStack> newList = NonNullList.create();
+        newList.addAll(this.upgradeStacks);
+        this.clearContent();
+        return newList;
+    }
 
     @Override
     public void save(CompoundNBT nbt) {

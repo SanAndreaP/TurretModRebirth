@@ -66,8 +66,8 @@ public final class TcuClientRegistry
         registry.registerTcuScreen(TurretControlUnit.INFO, new SimpleItem(Items.BOOK), TcuInfoPage::new);
         registry.registerTcuScreen(TurretControlUnit.TARGETS_CREATURES, new SimpleItem(Items.ZOMBIE_HEAD), TcuTargetPage.Creatures::new);
         registry.registerTcuScreen(TurretControlUnit.TARGETS_PLAYERS, de.sanandrew.mods.turretmod.client.init.PlayerHeads::getRandomSkull, TcuTargetPage.Players::new);
-        registry.registerTcuScreen(TurretControlUnit.TARGETS_SMART, () -> UpgradeRegistry.INSTANCE.getItem(Upgrades.SMART_TGT.getId()), TcuSmartTargetingPage::new);
         registry.registerTcuScreen(TurretControlUnit.UPGRADES, () -> UpgradeRegistry.INSTANCE.getItem(UpgradeRegistry.INSTANCE.getEmptyUpgrade().getId()), TcuUpgradesPage::new);
+        registry.registerTcuScreen(TurretControlUnit.TARGETS_SMART, () -> UpgradeRegistry.INSTANCE.getItem(Upgrades.SMART_TGT.getId()), TcuSmartTargetingPage::new);
         registry.registerTcuScreen(TurretControlUnit.LEVELS, () -> UpgradeRegistry.INSTANCE.getItem(Upgrades.LEVELING.getId()), TcuLevelsPage::new);
 
         registry.registerTcuInfoProvider(0, new NameProvider());

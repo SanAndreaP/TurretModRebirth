@@ -18,6 +18,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.entity.EntityRegistry;
 import de.sanandrew.mods.turretmod.init.Lang;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
+import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -62,6 +63,7 @@ import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class TurretProjectileEntity
@@ -163,7 +165,7 @@ public class TurretProjectileEntity
     }
 
     @Override
-    protected void defineSynchedData() { }
+    protected void defineSynchedData() { /* no-op */ }
 
     @Override
     public void tick() {
@@ -214,8 +216,8 @@ public class TurretProjectileEntity
     private void forceUpdateRotation(Vector3d moveVector) {
         float horizontalNormal = MathHelper.sqrt(getHorizontalDistanceSqr(moveVector));
 
-        this.xRot = (float)(MathHelper.atan2(moveVector.y, horizontalNormal) * (double)(180F / (float)Math.PI));
-        this.yRot = (float)(MathHelper.atan2(moveVector.x, moveVector.z) * (double)(180F / (float)Math.PI));
+        this.xRot = (float)(MathHelper.atan2(moveVector.y, horizontalNormal) * (180F / (float)Math.PI));
+        this.yRot = (float)(MathHelper.atan2(moveVector.x, moveVector.z) * (180F / (float)Math.PI));
 
         this.xRotO = this.xRot;
         this.yRotO = this.yRot;
@@ -369,9 +371,8 @@ public class TurretProjectileEntity
         }
 
         ITurretEntity ownerTurret = (ITurretEntity) owner;
-        //TODO: reimplement upgrades
-        boolean hasToxinI = false;//this.shooterCache.getUpgradeProcessor().hasUpgrade(Upgrades.ENDER_TOXIN_I);
-        boolean hasToxinII = hasToxinI && false;//this.shooterCache.getUpgradeProcessor().hasUpgrade(Upgrades.ENDER_TOXIN_II);
+        boolean hasToxinI = ownerTurret.getUpgradeProcessor().hasUpgrade(Upgrades.ENDER_TOXIN_I);
+        boolean hasToxinII = hasToxinI && ownerTurret.getUpgradeProcessor().hasUpgrade(Upgrades.ENDER_TOXIN_II);
 
         if( entity instanceof EndermanEntity && hasToxinI ) {
             return IProjectile.TargetType.SPECIAL_ENDERMAN;
@@ -482,6 +483,7 @@ public class TurretProjectileEntity
         return this;
     }
 
+    @Nonnull
     @Override
     public IProjectile getDelegate() {
         return this.delegate;
@@ -669,5 +671,26 @@ public class TurretProjectileEntity
                 }
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if( this == o ) {
+            return true;
+        }
+        if( !(o instanceof TurretProjectileEntity) ) {
+            return false;
+        }
+        if( !super.equals(o) ) {
+            return false;
+        }
+
+        TurretProjectileEntity that = (TurretProjectileEntity) o;
+        return this.delegate.equals(that.delegate) && this.ammunition.equals(that.ammunition) && Objects.equals(this.ammoSubtype, that.ammoSubtype);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), this.delegate, this.ammunition, this.ammoSubtype);
     }
 }

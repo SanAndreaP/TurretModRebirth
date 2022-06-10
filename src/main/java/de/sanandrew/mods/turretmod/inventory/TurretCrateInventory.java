@@ -4,6 +4,7 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.entity.turret.TargetProcessor;
 import de.sanandrew.mods.turretmod.entity.turret.TurretRegistry;
+import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
 import de.sanandrew.mods.turretmod.item.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.tileentity.TurretCrateEntity;
@@ -42,7 +43,7 @@ public class TurretCrateInventory
 
     @Override
     public boolean isEmpty() {
-        return !ItemStackUtils.isValid(this.turretStack) && (this.ammo.size() < 1 || this.ammo.stream().noneMatch(ItemStackUtils::isValid))
+        return !ItemStackUtils.isValid(this.turretStack) && (this.ammo.isEmpty() || this.ammo.stream().noneMatch(ItemStackUtils::isValid))
                     && this.upgrades.stream().noneMatch(ItemStackUtils::isValid);
     }
 
@@ -70,8 +71,6 @@ public class TurretCrateInventory
             if( stack.getCount() <= count ) {
                 itemstack = stack;
                 this.removeItemNoUpdate(index);
-
-                return itemstack;
             } else {
                 itemstack = stack.split(count);
 
@@ -81,9 +80,9 @@ public class TurretCrateInventory
                 if( index == SLOT_AMMO ) {
                     this.reduceAmmoList();
                 }
-
-                return itemstack;
             }
+
+            return itemstack;
         } else {
             return ItemStack.EMPTY;
         }
@@ -98,7 +97,7 @@ public class TurretCrateInventory
             return stack;
         } else if( index >= 1 && index <= SIZE_UPGRADE_STORAGE ) {
             return this.upgrades.set(index - 1, ItemStack.EMPTY);
-        } else if( index == SLOT_AMMO && this.ammo.size() > 0 ) {
+        } else if( index == SLOT_AMMO && !this.ammo.isEmpty() ) {
             ItemStack removed = this.ammo.remove(0);
             this.reduceAmmoList();
             return removed;
@@ -132,7 +131,7 @@ public class TurretCrateInventory
     }
 
     @Override
-    public void setChanged() { }
+    public void setChanged() { /* no-op */ }
 
     @Override
     public boolean stillValid(@Nonnull PlayerEntity player) {
@@ -170,7 +169,7 @@ public class TurretCrateInventory
         ItemStackUtils.readItemStacksFromTag(this.upgrades, nbt.getList("InventoryUpgrades", Constants.NBT.TAG_COMPOUND));
 
         ListNBT ammoTag = nbt.getList("InventoryAmmo", Constants.NBT.TAG_COMPOUND);
-        if( ammoTag.size() > 0 ) {
+        if( !ammoTag.isEmpty() ) {
             this.ammo.addAll(NonNullList.withSize(ammoTag.size(), ItemStack.EMPTY));
             this.ammoCntCache = -1;
             ItemStackUtils.readItemStacksFromTag(this.ammo, ammoTag);
@@ -185,11 +184,10 @@ public class TurretCrateInventory
         this.ammoCntCache = -1;
 
         this.upgrades.clear();
-        //TODO: reimplement upgrades
-//        NonNullList<ItemStack> tUpgrades = ((UpgradeProcessor) turretInst.getUpgradeProcessor()).extractUpgrades();
-//        for( int i = 0, max = this.upgrades.size(); i < max; i++ ) {
-//            this.upgrades.set(i, tUpgrades.get(i));
-//        }
+        NonNullList<ItemStack> tUpgrades = ((UpgradeProcessor) turretInst.getUpgradeProcessor()).extractUpgrades();
+        for( int i = 0, max = this.upgrades.size(); i < max; i++ ) {
+            this.upgrades.set(i, tUpgrades.get(i));
+        }
     }
 
     public int getAmmoCount() {

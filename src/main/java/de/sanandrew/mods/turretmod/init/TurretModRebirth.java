@@ -77,7 +77,7 @@ public class TurretModRebirth
 //        PLUGINS.forEach(plugin -> plugin.registerRepairKits(RepairKitRegistry.INSTANCE));
         PLUGINS.forEach(plugin -> plugin.registerUpgrades(UpgradeRegistry.INSTANCE));
 
-        // add block and item registries AFTER registering mod stuff to load things properly
+        // add forge registries AFTER mod registries to load things properly
         BlockRegistry.register(meb);
         ItemRegistry.register(meb);
         EntityRegistry.register(meb);
