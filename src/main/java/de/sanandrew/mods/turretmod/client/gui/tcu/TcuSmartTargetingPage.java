@@ -11,7 +11,7 @@ import de.sanandrew.mods.turretmod.api.tcu.TcuContainer;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
-import de.sanandrew.mods.turretmod.item.upgrades.smarttargeting.AdvTargetSettings;
+import de.sanandrew.mods.turretmod.item.upgrades.delegate.smarttargeting.AdvTargetSettings;
 import de.sanandrew.mods.turretmod.network.SmartTargetingActionPacket;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import org.apache.logging.log4j.Level;

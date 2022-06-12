@@ -43,8 +43,8 @@ public final class AmmunitionRegistry
     private static final String NBT_SUBTYPE = "Subtype";
 
     private final Map<ResourceLocation, IAmmunition>  ammoTypes;
-    private final Map<ITurret, UModList<IAmmunition>> ammoTypesFromTurret;
-    private final Collection<IAmmunition>             uAmmoTypes;
+    private final Map<ITurret, UModList<IAmmunition>> ammoTypeFromTurret;
+    private final Collection<IAmmunition>             ammoTypeCollection;
 
     private static final IAmmunition EMPTY = new IAmmunition()
     {
@@ -59,9 +59,9 @@ public final class AmmunitionRegistry
 
     private AmmunitionRegistry() {
         this.ammoTypes = new HashMap<>();
-        this.ammoTypesFromTurret = new HashMap<>();
+        this.ammoTypeFromTurret = new HashMap<>();
 
-        this.uAmmoTypes = Collections.unmodifiableCollection(this.ammoTypes.values());
+        this.ammoTypeCollection = Collections.unmodifiableCollection(this.ammoTypes.values());
     }
 
     @Override
@@ -73,7 +73,7 @@ public final class AmmunitionRegistry
     @Override
     @Nonnull
     public Collection<IAmmunition> getAll() {
-        return this.uAmmoTypes;
+        return this.ammoTypeCollection;
     }
 
     @Override
@@ -95,7 +95,7 @@ public final class AmmunitionRegistry
     @Override
     @Nonnull
     public Collection<IAmmunition> getAll(ITurret turret) {
-        return this.ammoTypesFromTurret.get(turret).umList;
+        return this.ammoTypeFromTurret.get(turret).umList;
     }
 
     @Override
@@ -113,7 +113,7 @@ public final class AmmunitionRegistry
         }
 
         this.ammoTypes.put(obj.getId(), obj);
-        this.ammoTypesFromTurret.computeIfAbsent(obj.getApplicableTurret(), t -> new UModList<>()).mList.add(obj);
+        this.ammoTypeFromTurret.computeIfAbsent(obj.getApplicableTurret(), t -> new UModList<>()).mList.add(obj);
 
         ItemRegistry.TURRET_AMMO.put(obj.getId(), new AmmoItem(obj.getId()));
     }
@@ -134,11 +134,8 @@ public final class AmmunitionRegistry
     public ItemStack setSubtype(ItemStack stack, String type) {
         if( !Strings.isNullOrEmpty(type) ) {
             Item item = stack.getItem();
-            if( item instanceof AmmoItem ) {
-                String[] subtypes = ((AmmoItem) item).getAmmo().getSubtypes();
-                if( subtypes != null && Arrays.asList(subtypes).contains(type) ) {
-                    stack.getOrCreateTagElement(TmrConstants.ID).putString(NBT_SUBTYPE, type);
-                }
+            if( item instanceof AmmoItem && Arrays.asList(((AmmoItem) item).getAmmo().getSubtypes()).contains(type) ) {
+                stack.getOrCreateTagElement(TmrConstants.ID).putString(NBT_SUBTYPE, type);
             }
         }
 

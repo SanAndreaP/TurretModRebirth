@@ -1,4 +1,4 @@
-package de.sanandrew.mods.turretmod.item.upgrades.leveling;
+package de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.client.tcu.TcuTabEvent;

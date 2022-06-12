@@ -14,6 +14,7 @@ import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.sanlib.lib.util.ReflectionUtils;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
+import de.sanandrew.mods.turretmod.api.repairkit.IRepairKit;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
@@ -28,6 +29,7 @@ import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.TurretControlUnit;
 import de.sanandrew.mods.turretmod.item.TurretItem;
+import de.sanandrew.mods.turretmod.item.repairkits.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.network.SyncTurretStatePacket;
 import de.sanandrew.mods.turretmod.tileentity.TurretCrateEntity;
 import net.minecraft.entity.Entity;
@@ -654,7 +656,7 @@ public class TurretEntity
             } else if( this.upgProc.tryApplyUpgrade(stack.copy()) ) {
                 stack.shrink(1);
                 this.onPickupSucceed(stack, player);
-                return ActionResultType.SUCCESS;
+                return ActionResultType.CONSUME;
             } else if( this.applyRepairKit(stack) ) {
                 stack.shrink(1);
                 this.onPickupSucceed(stack, player);
@@ -694,17 +696,16 @@ public class TurretEntity
                                                new PacketDistributor.TargetPoint(this.getX(), this.getY(), this.getZ(), 64.0D, this.level.dimension()));
     }
 
-    //TODO: reimplement repair kits
     @Override
     public boolean applyRepairKit(ItemStack stack) {
-//        IRepairKit repKit = RepairKitRegistry.INSTANCE.getObject(stack);
-//
-//        if( repKit.isApplicable(this) ) {
-//            this.heal(repKit.getHealAmount());
-//            repKit.onHeal(this);
-//
-//            return true;
-//        }
+        IRepairKit repKit = RepairKitRegistry.INSTANCE.get(stack);
+
+        if( repKit.isApplicable(this) ) {
+            this.heal(repKit.getBaseRestorationAmount());
+            repKit.onApply(this);
+
+            return true;
+        }
 
         return false;
     }

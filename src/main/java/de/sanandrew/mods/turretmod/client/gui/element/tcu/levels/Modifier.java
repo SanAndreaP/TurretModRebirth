@@ -12,7 +12,7 @@ import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuScreen;
 import de.sanandrew.mods.turretmod.client.gui.element.LoadElementFunction;
 import de.sanandrew.mods.turretmod.init.Lang;
-import de.sanandrew.mods.turretmod.item.upgrades.leveling.Stage;
+import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.Stage;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.util.text.TranslationTextComponent;
 import org.apache.commons.lang3.Range;

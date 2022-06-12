@@ -1,4 +1,4 @@
-package de.sanandrew.mods.turretmod.item.upgrades.leveling;
+package de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

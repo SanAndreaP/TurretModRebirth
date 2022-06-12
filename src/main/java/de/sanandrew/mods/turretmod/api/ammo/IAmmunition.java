@@ -27,8 +27,11 @@ import java.util.List;
 public interface IAmmunition
         extends IRegistryObject
 {
+    String[] NO_SUBTYPES = new String[0];
+
+    @Nonnull
     default String[] getSubtypes() {
-        return null;
+        return NO_SUBTYPES;
     }
 
     /**
@@ -55,12 +58,11 @@ public interface IAmmunition
 
     /**
      * <p>Allows this ammunition object to add tooltip information, if needed.</p>
-     * <p><i>Notice: when overriding this method, please call <tt>IAmmunition.super.addInformation(...)</tt> at the end of your implementation.</i></p>
      *
      * @param stack The <tt>ItemStack</tt> representing this ammunition object.
      * @param world The world the ItemStack exists in, if any.
      * @param tooltip The list of lines to be populated by this method, preferrably an <tt>ArrayList</tt>.
      * @param flag The flag of the tooltip to be drawn, determines if advanced information is to be shown or not.
      */
-    default void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {}
+    default void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) { }
 }

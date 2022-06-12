@@ -35,11 +35,11 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 public final class UpgradeProcessor
@@ -96,35 +96,17 @@ public final class UpgradeProcessor
         return ReflectionUtils.getCasted(this.getUpgradeData(this.getUpgradeSlot(id)));
     }
 
+    @SuppressWarnings("java:S1452")
     public IUpgradeData<?> getUpgradeData(int slot) {
         return slot >= 0 ? this.upgradeData[slot] : null;
     }
 
     @Override
     public void syncUpgrade(ResourceLocation id) {
-        LivingEntity te = this.turret.get();
-
-        if( !te.level.isClientSide ) {
-            int uSlot = this.getUpgradeSlot(id);
-
-            TurretModRebirth.NETWORK.sendToAllNear(new SyncUpgradesPacket(this.turret, uSlot),
-                                                   new PacketDistributor.TargetPoint(te.getX(), te.getY(), te.getZ(), 64.0D, te.level.dimension()));
+        if( !this.turret.get().level.isClientSide ) {
+            syncUpgrades(this.getUpgradeSlot(id));
         }
     }
-
-//    @Override
-//    public void setUpgradeData(ResourceLocation id, IUpgradeData<?> inst) {
-//        this.upgInstances.put(id, inst);
-//        if( inst.getClass().getAnnotation(IUpgradeData.Tickable.class) != null ) {
-//            this.upgTickable.put(id, inst);
-//        }
-//    }
-
-//    @Override
-//    public void removeUpgradeData(ResourceLocation id) {
-//        this.upgInstances.remove(id);
-//        this.upgTickable.remove(id);
-//    }
 
     @Override
     public int getContainerSize() {
@@ -227,77 +209,62 @@ public final class UpgradeProcessor
         }
     }
 
-//    @Nullable
-//    @Override
-//    public ITextComponent getCustomName() {
-//        return IUpgradeProcessor.super.getCustomName();
-//    }
-//
-//    @Override
-//    public String getName() {
-//        return "Upgrades";
-//    }
-//
-//    @Override
-//    public boolean hasCustomName() {
-//        return false;
-//    }
-//
-//    @Override
-//    public ITextComponent getContainerName() {
-//        return new TextComponentString(this.getName());
-//    }
-
     @Override
     public int getMaxStackSize() {
         return 1;
     }
 
+    private void dropUpgrades(LivingEntity tEntity, int from, int max, Predicate<ItemStack> check) {
+        do {
+            ItemStack stack = this.upgradeStacks.get(from);
+            if( check.test(stack) ) {
+                this.dropUpgrade(tEntity, from, stack);
+            }
+        } while( ++from < max );
+    }
+
     @Override
     public void setChanged() {
-        LivingEntity turretL = this.turret.get();
+        LivingEntity tEntity = this.turret.get();
 
-        for( int i = 0, max = this.upgradeStacks.size(); i < max; i++ ) {
-            ItemStack invStack = this.upgradeStacks.get(i);
-            if( ItemStackUtils.isValid(invStack) ) {
-                IUpgrade upg = UpgradeRegistry.INSTANCE.get(invStack);
-                IUpgrade dep = upg.getDependantOn();
-                if( dep != null && !this.hasUpgrade(dep) ) {
-                    dropUpgrade(turretL, i, invStack);
-                }
+        this.dropUpgrades(tEntity, 0, SLOTS, s -> {
+            if( ItemStackUtils.isValid(s) ) {
+                IUpgrade dep = UpgradeRegistry.INSTANCE.get(s).getDependantOn();
+
+                return dep != null && !this.hasUpgrade(dep);
             }
-        }
+
+            return false;
+        });
 
         if( !this.hasUpgrade(Upgrades.UPG_STORAGE_III) ) {
-            for( int i = 27, max = this.upgradeStacks.size(); i < max; i++ ) {
-                dropUpgrade(turretL, i, this.upgradeStacks.get(i));
-            }
+            this.dropUpgrades(tEntity, 27, SLOTS, s -> true);
         }
 
         if( !this.hasUpgrade(Upgrades.UPG_STORAGE_II) ) {
-            for( int i = 18; i < 27; i++ ) {
-                dropUpgrade(turretL, i, this.upgradeStacks.get(i));
-            }
+            this.dropUpgrades(tEntity, 18, 27, s -> true);
         }
 
         if( !this.hasUpgrade(Upgrades.UPG_STORAGE_I) ) {
-            for( int i = 9; i < 18; i++ ) {
-                dropUpgrade(turretL, i, this.upgradeStacks.get(i));
-            }
+            this.dropUpgrades(tEntity, 9, 18, s -> true);
         }
 
         List<Integer> syncSlots = new ArrayList<>();
         this.changedSlots.drainTo(syncSlots);
         if( !syncSlots.isEmpty() ) {
-            LivingEntity te = this.turret.get();
-            TurretModRebirth.NETWORK.sendToAllNear(new SyncUpgradesPacket(this.turret, syncSlots.stream().mapToInt(i->i).toArray()),
-                                                   new PacketDistributor.TargetPoint(te.getX(), te.getY(), te.getZ(), 64.0D, te.level.dimension()));
+            this.syncUpgrades(syncSlots.stream().mapToInt(i->i).toArray());
         }
     }
 
     @Override
     public boolean stillValid(@Nonnull PlayerEntity player) {
         return true;
+    }
+
+    private void syncUpgrades(int... slots) {
+        LivingEntity te = this.turret.get();
+        TurretModRebirth.NETWORK.sendToAllNear(new SyncUpgradesPacket(this.turret, slots),
+                                               new PacketDistributor.TargetPoint(te.getX(), te.getY(), te.getZ(), 64.0D, te.level.dimension()));
     }
 
     @SuppressWarnings("java:S1871")

@@ -3,7 +3,7 @@ package de.sanandrew.mods.turretmod.network;
 import de.sanandrew.mods.sanlib.lib.network.SimpleMessage;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
-import de.sanandrew.mods.turretmod.item.upgrades.smarttargeting.AdvTargetSettings;
+import de.sanandrew.mods.turretmod.item.upgrades.delegate.smarttargeting.AdvTargetSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;

@@ -1,6 +1,6 @@
 package de.sanandrew.mods.turretmod.init.config;
 
-import de.sanandrew.mods.turretmod.item.upgrades.leveling.LevelStorage;
+import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.LevelStorage;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class UpgradeConfig

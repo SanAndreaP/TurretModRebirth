@@ -1,12 +1,8 @@
-package de.sanandrew.mods.turretmod.item.upgrades.shield;
+package de.sanandrew.mods.turretmod.item.upgrades.delegate.shield;
 
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeData;
 import net.minecraft.nbt.CompoundNBT;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 @IUpgradeData.Syncable
 public class ShieldColorizer

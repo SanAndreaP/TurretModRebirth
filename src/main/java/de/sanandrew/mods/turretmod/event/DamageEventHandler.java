@@ -13,7 +13,7 @@ import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.entity.projectile.TurretProjectileEntity;
 import de.sanandrew.mods.turretmod.entity.turret.TurretEntity;
 import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
-import de.sanandrew.mods.turretmod.item.upgrades.leveling.LevelStorage;
+import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.LevelStorage;
 import de.sanandrew.mods.turretmod.tileentity.TurretCrateEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;

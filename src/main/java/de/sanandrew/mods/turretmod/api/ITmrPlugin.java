@@ -3,6 +3,7 @@ package de.sanandrew.mods.turretmod.api;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectileRegistry;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuClientRegistry;
+import de.sanandrew.mods.turretmod.api.repairkit.IRepairKitRegistry;
 import de.sanandrew.mods.turretmod.api.tcu.ITcuRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
@@ -11,12 +12,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public interface ITmrPlugin
 {
-    default void preSetup(ITmrUtils utils) { }
-
     default void registerTurrets(ITurretRegistry registry) { }
 
-//    default void registerRepairKits(IRepairKitRegistry registry) { }
-//
+    default void registerRepairKits(IRepairKitRegistry registry) { }
+
     default void registerAmmo(IAmmunitionRegistry registry) { }
 
     default void registerUpgrades(IUpgradeRegistry registry) { }

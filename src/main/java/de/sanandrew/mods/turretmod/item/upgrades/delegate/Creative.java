@@ -1,4 +1,4 @@
-package de.sanandrew.mods.turretmod.item.upgrades;
+package de.sanandrew.mods.turretmod.item.upgrades.delegate;
 
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;

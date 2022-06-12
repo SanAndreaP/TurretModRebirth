@@ -6,13 +6,14 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.item.upgrades;
+package de.sanandrew.mods.turretmod.item.upgrades.delegate;
 
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
+import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -52,18 +53,18 @@ public abstract class ReloadTime
         }
     }
 
-    static class MK1
+    public static class MK1
             extends ReloadTime
     {
-        MK1() {
+        public MK1() {
             super("reload_1", "E6DAE7D4-A730-4F57-B3F9-61C369033625", -0.15D);
         }
     }
 
-    static class MK2
+    public static class MK2
             extends ReloadTime
     {
-        MK2() {
+        public MK2() {
             super("reload_2", "BA6FE867-0EBF-4E1A-9ED9-05E2B47143F8", -0.35D);
         }
 

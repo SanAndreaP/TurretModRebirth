@@ -4,12 +4,11 @@
    * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
    *                http://creativecommons.org/licenses/by-nc-sa/4.0/
    *******************************************************************************************************************/
-package de.sanandrew.mods.turretmod.item.upgrades.smarttargeting;
+package de.sanandrew.mods.turretmod.item.upgrades.delegate.smarttargeting;
 
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeData;
-import de.sanandrew.mods.turretmod.item.upgrades.leveling.Leveling;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.TameableEntity;

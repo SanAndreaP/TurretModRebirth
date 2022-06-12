@@ -2,8 +2,8 @@ package de.sanandrew.mods.turretmod.event;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
-import de.sanandrew.mods.turretmod.item.upgrades.leveling.LevelStorage;
-import de.sanandrew.mods.turretmod.item.upgrades.leveling.StageLoader;
+import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.LevelStorage;
+import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.StageLoader;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.AddReloadListenerEvent;

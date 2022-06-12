@@ -4,7 +4,7 @@
    * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
    *                http://creativecommons.org/licenses/by-nc-sa/4.0/
    *******************************************************************************************************************/
-package de.sanandrew.mods.turretmod.item.upgrades.shield;
+package de.sanandrew.mods.turretmod.item.upgrades.delegate.shield;
 
 //TODO: readd
 public final class ShieldPersonalRecovery

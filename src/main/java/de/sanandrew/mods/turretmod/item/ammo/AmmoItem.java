@@ -37,7 +37,11 @@ public class AmmoItem
     }
 
     public IAmmunition getAmmo() {
-        return this.ammoCache != null ? this.ammoCache : (this.ammoCache = AmmunitionRegistry.INSTANCE.get(this.ammoId));
+        if( this.ammoCache == null ) {
+            this.ammoCache = AmmunitionRegistry.INSTANCE.get(this.ammoId);
+        }
+
+        return this.ammoCache;
     }
 
     @Override
@@ -61,7 +65,7 @@ public class AmmoItem
         if( this.allowdedIn(group) ) {
             String[] subtypes = this.getAmmo().getSubtypes();
 
-            if( subtypes != null && subtypes.length > 0 ) {
+            if( subtypes.length > 0 ) {
                 Arrays.stream(subtypes).forEach(s -> items.add(AmmunitionRegistry.INSTANCE.setSubtype(new ItemStack(this, 1), s)));
             } else {
                 super.fillItemCategory(group, items);

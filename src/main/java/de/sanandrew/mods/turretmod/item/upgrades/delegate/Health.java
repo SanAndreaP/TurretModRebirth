@@ -6,12 +6,13 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.item.upgrades;
+package de.sanandrew.mods.turretmod.item.upgrades.delegate;
 
 import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
+import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.item.ItemStack;
@@ -54,18 +55,18 @@ public abstract class Health
         }
     }
 
-    static class MK1
+    public static class MK1
             extends Health
     {
-        MK1() {
+        public MK1() {
             super("health_1", "673176FC-51F9-4CBC-BA12-5073B6867644");
         }
     }
 
-    static class MK2
+    public static class MK2
             extends Health
     {
-        MK2() {
+        public MK2() {
             super("health_2", "B7E5ADFA-517C-4167-A2FD-E0D31FA6E9BE");
         }
 
@@ -75,10 +76,10 @@ public abstract class Health
         }
     }
 
-    static class MK3
+    public static class MK3
             extends Health
     {
-        MK3() {
+        public MK3() {
             super("health_3", "D49F43AE-5EA4-4DD2-B08A-9B5F1966C091");
         }
 
@@ -94,10 +95,10 @@ public abstract class Health
         }
     }
 
-    static class MK4
+    public static class MK4
             extends Health
     {
-        MK4() {
+        public MK4() {
             super("health_4", "9431A60C-B995-4547-B143-2BEDC67467E1");
         }
 

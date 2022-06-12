@@ -6,10 +6,11 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/
  * *****************************************************************************************************************
  */
-package de.sanandrew.mods.turretmod.item.upgrades;
+package de.sanandrew.mods.turretmod.item.upgrades.delegate;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
+import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
@@ -29,18 +30,18 @@ public abstract class Economy
         return this.id;
     }
 
-    static class MK1
+    public static class MK1
             extends Economy
     {
-        MK1() {
+        public MK1() {
             super("economy_1");
         }
     }
 
-    static class MK2
+    public static class MK2
             extends Economy
     {
-        MK2() {
+        public MK2() {
             super("economy_2");
         }
 
@@ -50,10 +51,10 @@ public abstract class Economy
         }
     }
 
-    static class MKInf
+    public static class MKInf
             extends Economy
     {
-        MKInf() {
+        public MKInf() {
             super("infinite_economy");
         }
 

@@ -12,7 +12,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.api.turret.TargetingEvent;
 import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
-import de.sanandrew.mods.turretmod.item.upgrades.smarttargeting.AdvTargetSettings;
+import de.sanandrew.mods.turretmod.item.upgrades.delegate.smarttargeting.AdvTargetSettings;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

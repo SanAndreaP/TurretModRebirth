@@ -1,4 +1,4 @@
-package de.sanandrew.mods.turretmod.item.upgrades.shield;
+package de.sanandrew.mods.turretmod.item.upgrades.delegate.shield;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;

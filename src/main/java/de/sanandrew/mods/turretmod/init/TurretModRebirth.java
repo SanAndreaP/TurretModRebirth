@@ -22,8 +22,9 @@ import de.sanandrew.mods.turretmod.entity.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.inventory.ContainerRegistry;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
+import de.sanandrew.mods.turretmod.item.repairkits.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.item.upgrades.UpgradeRegistry;
-import de.sanandrew.mods.turretmod.item.upgrades.leveling.StageLoader;
+import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.StageLoader;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.MinecraftForge;
@@ -74,7 +75,7 @@ public class TurretModRebirth
         PLUGINS.forEach(plugin -> plugin.registerTurrets(TurretRegistry.INSTANCE));
         PLUGINS.forEach(plugin -> plugin.registerAmmo(AmmunitionRegistry.INSTANCE));
         PLUGINS.forEach(plugin -> plugin.registerProjectiles(ProjectileRegistry.INSTANCE));
-//        PLUGINS.forEach(plugin -> plugin.registerRepairKits(RepairKitRegistry.INSTANCE));
+        PLUGINS.forEach(plugin -> plugin.registerRepairKits(RepairKitRegistry.INSTANCE));
         PLUGINS.forEach(plugin -> plugin.registerUpgrades(UpgradeRegistry.INSTANCE));
 
         // add forge registries AFTER mod registries to load things properly

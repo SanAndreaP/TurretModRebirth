@@ -28,6 +28,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -39,6 +40,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
 
 public class AmmoCartridgeItem
@@ -55,14 +57,12 @@ public class AmmoCartridgeItem
         if( this.allowdedIn(group) ) {
             AmmunitionRegistry.INSTANCE.getAll().forEach(t -> {
                 if( t.isValid() ) {
+                    ResourceLocation typeId = t.getId();
                     String[] subtypes = t.getSubtypes();
-                    if( subtypes != null && subtypes.length > 0 ) {
-                        for( String subtype : subtypes ) {
-                            ItemStack typeStack = AmmunitionRegistry.INSTANCE.getItem(t.getId(), subtype);
-                            this.addItem(typeStack, list);
-                        }
+                    if( subtypes.length > 0 ) {
+                        Arrays.stream(subtypes).forEach(s -> this.addItem(AmmunitionRegistry.INSTANCE.getItem(typeId, s), list));
                     } else {
-                        ItemStack typeStack = AmmunitionRegistry.INSTANCE.getItem(t.getId());
+                        ItemStack typeStack = AmmunitionRegistry.INSTANCE.getItem(typeId);
                         this.addItem(typeStack, list);
                     }
                 }

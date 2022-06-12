@@ -1,8 +1,8 @@
 package de.sanandrew.mods.turretmod.network;
 
 import de.sanandrew.mods.sanlib.lib.network.SimpleMessage;
-import de.sanandrew.mods.turretmod.item.upgrades.leveling.LevelStorage;
-import de.sanandrew.mods.turretmod.item.upgrades.leveling.Stage;
+import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.LevelStorage;
+import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.Stage;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;

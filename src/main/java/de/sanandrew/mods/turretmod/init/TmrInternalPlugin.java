@@ -11,6 +11,7 @@ import de.sanandrew.mods.turretmod.api.TmrPlugin;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectileRegistry;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuClientRegistry;
+import de.sanandrew.mods.turretmod.api.repairkit.IRepairKitRegistry;
 import de.sanandrew.mods.turretmod.api.tcu.ITcuRegistry;
 import de.sanandrew.mods.turretmod.api.turret.ITurretRegistry;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeRegistry;
@@ -20,6 +21,7 @@ import de.sanandrew.mods.turretmod.entity.projectile.Projectiles;
 import de.sanandrew.mods.turretmod.entity.turret.Turrets;
 import de.sanandrew.mods.turretmod.item.TurretControlUnit;
 import de.sanandrew.mods.turretmod.item.ammo.Ammunitions;
+import de.sanandrew.mods.turretmod.item.repairkits.RepairKits;
 import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -33,12 +35,12 @@ public class TmrInternalPlugin
     public void registerTurrets(ITurretRegistry registry) {
         Turrets.register(registry);
     }
-//
-//    @Override
-//    public void registerRepairKits(IRepairKitRegistry registry) {
-////        RepairKits.initialize(registry);
-//    }
-//
+
+    @Override
+    public void registerRepairKits(IRepairKitRegistry registry) {
+        RepairKits.register(registry);
+    }
+
     @Override
     public void registerAmmo(IAmmunitionRegistry registry) {
         Ammunitions.register(registry);
@@ -46,7 +48,7 @@ public class TmrInternalPlugin
 
     @Override
     public void registerUpgrades(IUpgradeRegistry registry) {
-        Upgrades.initialize(registry);
+        Upgrades.register(registry);
     }
 
     @Override
