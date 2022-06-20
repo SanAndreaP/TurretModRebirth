@@ -2,13 +2,13 @@ package de.sanandrew.mods.turretmod.client.gui.tcu;
 
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ButtonSL;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.ProgressBar;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.Resources;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.tcu.TcuContainer;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.ValueBar;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.levels.BorderedText;
 import de.sanandrew.mods.turretmod.init.Lang;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
@@ -46,18 +46,18 @@ public class TcuLevelsPage
         this.retrieveExcess.setFunction(btn -> TurretModRebirth.NETWORK.sendToServer(new TurretPlayerActionPacket(this.turret, TurretPlayerActionPacket.RETRIEVE_XP)));
         this.retrieveExcess.setActive(this.canRetrieveXp());
 
-        this.guiDefinition.getElementById("current_xp_progress").get(ValueBar.class)
-                          .setPercentageSupplier(() -> MiscUtils.apply(this.getLvlStorage(), ls -> {
+        this.guiDefinition.getElementById("current_xp_progress").get(ProgressBar.class)
+                          .setPercentFunc(p -> MiscUtils.apply(this.getLvlStorage(), ls -> {
             double minXp = ls.getCurrentLevelMinXp();
             double maxXp = ls.getNextLevelMinXp() - minXp;
 
             return maxXp < 1 ? 0.0D : (ls.getXp() - minXp) / maxXp;
         }));
 
-        this.guiDefinition.getElementById("total_xp_progress").get(ValueBar.class)
-                          .setPercentageSupplier(() -> MiscUtils.apply(this.getLvlStorage(), ls -> ls.getXp() / (double) LevelStorage.maxXp));
+        this.guiDefinition.getElementById("total_xp_progress").get(ProgressBar.class)
+                          .setPercentFunc(p -> MiscUtils.apply(this.getLvlStorage(), ls -> ls.getXp() / (double) LevelStorage.maxXp));
 
-        this.guiDefinition.getElementById("level_text").get(BorderedText.class)
+        this.guiDefinition.getElementById("level_text").get(Text.class)
                           .setTextFunc((g, ot) -> {
                               LevelStorage lvlStg = this.getLvlStorage();
                               if( lvlStg != null ) {
@@ -66,7 +66,7 @@ public class TcuLevelsPage
 
                               return StringTextComponent.EMPTY;
                           });
-        this.guiDefinition.getElementById("exc_xp_text").get(BorderedText.class)
+        this.guiDefinition.getElementById("exc_xp_text").get(Text.class)
                           .setTextFunc((g, ot) -> {
                               LevelStorage lvlStg = this.getLvlStorage();
                               if( lvlStg != null ) {

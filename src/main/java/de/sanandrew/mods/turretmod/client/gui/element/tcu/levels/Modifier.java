@@ -4,8 +4,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
-import de.sanandrew.mods.sanlib.lib.client.gui.element.DynamicText;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ElementParent;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
@@ -33,8 +33,8 @@ public class Modifier
         this.put(LABEL, label);
         this.put(VALUE, value);
 
-        label.get(DynamicText.class).setTextFunc((g, t) -> new TranslationTextComponent(attrib.getDescriptionId()));
-        value.get(DynamicText.class).setTextFunc((g, t) -> {
+        label.get(Text.class).setTextFunc((g, t) -> new TranslationTextComponent(attrib.getDescriptionId()));
+        value.get(Text.class).setTextFunc((g, t) -> {
             double val = info.getModValue() / info.baseValue * 100 - 100;
             return new TranslationTextComponent(Lang.TCU_TEXT.get("leveling.modValue"), MOD_FORMAT.format(val));
         });
@@ -86,14 +86,14 @@ public class Modifier
 
         protected GuiElementInst loadLabel(IGui gui, JsonElement lblData) {
             JsonObject lblDataObj = lblData.getAsJsonObject();
-            GuiElementInst inst = new GuiElementInst(JsonUtils.getIntArray(lblDataObj.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] {3, 8}, Range.is(2)), DynamicText.Builder.fromJson(gui, lblDataObj));
+            GuiElementInst inst = new GuiElementInst(JsonUtils.getIntArray(lblDataObj.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] {3, 8}, Range.is(2)), Text.Builder.fromJson(gui, lblDataObj));
             inst.alignment = JsonUtils.getStringArray(lblDataObj.get("alignment"), new String[] {"left", "center"}, Range.between(1, 2));
             return inst;
         }
 
         protected GuiElementInst loadValue(IGui gui, JsonElement valData) {
             JsonObject valDataObj = valData.getAsJsonObject();
-            GuiElementInst inst = new GuiElementInst(JsonUtils.getIntArray(valDataObj.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] {153, 8}, Range.is(2)), DynamicText.Builder.fromJson(gui, valDataObj));
+            GuiElementInst inst = new GuiElementInst(JsonUtils.getIntArray(valDataObj.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] {153, 8}, Range.is(2)), Text.Builder.fromJson(gui, valDataObj));
             inst.alignment = JsonUtils.getStringArray(valDataObj.get("alignment"), new String[] {"right", "center"}, Range.between(1, 2));
             return inst;
         }

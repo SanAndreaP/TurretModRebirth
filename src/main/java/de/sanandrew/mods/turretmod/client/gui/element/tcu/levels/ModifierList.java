@@ -5,8 +5,8 @@ import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ScrollArea;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ScrollButton;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.StackedScrollArea;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.client.gui.element.StackedScrollArea;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuLevelsPage;
 import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
 import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.LevelStorage;
@@ -43,9 +43,7 @@ public class ModifierList
             this.prevModListHash = currModListHash;
             Map<Attribute, Stage.ModifierInfo> attribs = storage.fetchCurrentModifiers();
             this.clear();
-            attribs.forEach((key, val) -> {
-                this.add(new GuiElementInst(Modifier.Builder.fromJson(gui, this.nodeData, key, val)));
-            });
+            attribs.forEach((key, val) -> this.add(new GuiElementInst(Modifier.Builder.fromJson(gui, this.nodeData, key, val))));
         }
     }
 
@@ -73,7 +71,7 @@ public class ModifierList
         }
 
         public static Builder buildFromJson(IGui gui, JsonObject data) {
-            ScrollArea.Builder sab = ScrollArea.Builder.buildFromJson(gui, data, b -> (g, e) -> new GuiElementInst[0]);
+            ScrollArea.Builder sab = ScrollArea.Builder.buildFromJson(gui, data, null);
             return IBuilder.copyValues(sab, new Builder(sab.areaSize, data.getAsJsonObject("node")));
         }
 

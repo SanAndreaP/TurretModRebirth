@@ -76,8 +76,8 @@ public class PageNavigationTooltip
     {
         private ITextComponent text = StringTextComponent.EMPTY;
 
-        public Label(boolean shadow, int wrapWidth, int lineHeight, FontRenderer fontRenderer, Map<String, Integer> colors) {
-            super(StringTextComponent.EMPTY, shadow, wrapWidth, lineHeight, fontRenderer, colors);
+        public Label(boolean shadow, int wrapWidth, int lineHeight, FontRenderer fontRenderer, Map<String, Integer> colors, boolean bordered) {
+            super(StringTextComponent.EMPTY, shadow, wrapWidth, lineHeight, fontRenderer, colors, bordered);
         }
 
         @Override
@@ -94,7 +94,7 @@ public class PageNavigationTooltip
 
             @Override
             public Label get(IGui gui) {
-                return new Label(this.shadow, this.wrapWidth, this.lineHeight, this.fontRenderer, this.colors);
+                return new Label(this.shadow, this.wrapWidth, this.lineHeight, this.fontRenderer, this.colors, this.bordered);
             }
 
             public static Builder buildFromJson(IGui gui, JsonObject data) {

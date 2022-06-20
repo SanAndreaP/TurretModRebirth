@@ -5,7 +5,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
-import de.sanandrew.mods.sanlib.lib.client.gui.element.DynamicText;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuScreen;
@@ -30,13 +30,13 @@ public abstract class TextProvider
 
         JsonObject txtData = MiscUtils.get(data.getAsJsonObject("text"), JsonObject::new);
         JsonUtils.addDefaultJsonProperty(txtData, "color", "#FF000000");
-        DynamicText txtElem = DynamicText.Builder.fromJson(gui, txtData);
+        Text txtElem = Text.Builder.fromJson(gui, txtData);
         this.text = new GuiElementInst(JsonUtils.getIntArray(txtData.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] { 18, 4 }, Range.is(2)), txtElem).initialize(gui);
     }
 
     @Override
     public void setup(IGui gui, ITurretEntity turret, int w, int h) {
-        this.text.get(DynamicText.class).setTextFunc(this.getTextFunction(gui, turret));
+        this.text.get(Text.class).setTextFunc(this.getTextFunction(gui, turret));
 
         super.setup(gui, turret, w, h);
 

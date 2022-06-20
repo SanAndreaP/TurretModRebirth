@@ -42,7 +42,7 @@
       }
     },
     {
-      "type": "dynamic_text",
+      "type": "text",
       "id": "efficiency",
       "pos": [150, 100],
       "alignment": ["right"],
@@ -51,7 +51,7 @@
       }
     },
     {
-      "type": "dynamic_text",
+      "type": "text",
       "id": "powergen",
       "pos": [150, 110],
       "alignment": ["right"],
@@ -60,74 +60,102 @@
       }
     },
     {
-      "type": "energy_bar",
+      "type": "progress_bar",
       "pos": [156, 75],
+      "id": "energy",
       "data": {
         "size": [12, 59],
         "uv": [176, 0]
       }
     },
     {
-      "type": "sapturretmod:electrolyte_bar",
+      "type": "progress_bar",
       "pos": [8, 61],
+      "id": "progress_1",
       "data": {
-        "slot": 0
+        "size": [16, 3],
+        "uv": [176, 59],
+        "direction": "left_to_right"
       }
     },
     {
-      "type": "sapturretmod:electrolyte_bar",
+      "type": "progress_bar",
       "pos": [26, 61],
+      "id": "progress_2",
       "data": {
-        "slot": 1
+        "size": [16, 3],
+        "uv": [176, 59],
+        "direction": "left_to_right"
       }
     },
     {
-      "type": "sapturretmod:electrolyte_bar",
+      "type": "progress_bar",
       "pos": [44, 61],
+      "id": "progress_3",
       "data": {
-        "slot": 2
+        "size": [16, 3],
+        "uv": [176, 59],
+        "direction": "left_to_right"
       }
     },
     {
-      "type": "sapturretmod:electrolyte_bar",
+      "type": "progress_bar",
       "pos": [62, 61],
+      "id": "progress_4",
       "data": {
-        "slot": 3
+        "size": [16, 3],
+        "uv": [176, 59],
+        "direction": "left_to_right"
       }
     },
     {
-      "type": "sapturretmod:electrolyte_bar",
+      "type": "progress_bar",
       "pos": [80, 61],
+      "id": "progress_5",
       "data": {
-        "slot": 4
+        "size": [16, 3],
+        "uv": [176, 59],
+        "direction": "left_to_right"
       }
     },
     {
-      "type": "sapturretmod:electrolyte_bar",
+      "type": "progress_bar",
       "pos": [98, 61],
+      "id": "progress_6",
       "data": {
-        "slot": 5
+        "size": [16, 3],
+        "uv": [176, 59],
+        "direction": "left_to_right"
       }
     },
     {
-      "type": "sapturretmod:electrolyte_bar",
+      "type": "progress_bar",
       "pos": [116, 61],
+      "id": "progress_7",
       "data": {
-        "slot": 6
+        "size": [16, 3],
+        "uv": [176, 59],
+        "direction": "left_to_right"
       }
     },
     {
-      "type": "sapturretmod:electrolyte_bar",
+      "type": "progress_bar",
       "pos": [134, 61],
+      "id": "progress_8",
       "data": {
-        "slot": 7
+        "size": [16, 3],
+        "uv": [176, 59],
+        "direction": "left_to_right"
       }
     },
     {
-      "type": "sapturretmod:electrolyte_bar",
+      "type": "progress_bar",
       "pos": [152, 61],
+      "id": "progress_9",
       "data": {
-        "slot": 8
+        "size": [16, 3],
+        "uv": [176, 59],
+        "direction": "left_to_right"
       }
     }
   ],
@@ -141,7 +169,11 @@
         "borderTopColor": "0x50FF0000",
         "borderBottomColor": "0x507F0000",
         "content": {
-          "type": "energy_text"
+          "type": "text",
+          "id": "energy_tooltip",
+          "data": {
+            "color": "0xFFFFFFFF"
+          }
         }
       }
     }

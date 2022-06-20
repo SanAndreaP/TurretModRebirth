@@ -6,11 +6,11 @@ import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ScrollArea;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ScrollButton;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.StackedScrollArea;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
-import de.sanandrew.mods.turretmod.client.gui.element.StackedScrollArea;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuTargetPage;
 import de.sanandrew.mods.turretmod.init.config.Targets;
 import net.minecraft.entity.EntityClassification;
@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class TargetList
         extends StackedScrollArea
@@ -114,14 +113,12 @@ public class TargetList
             GuiElementInst[] elem;
             if( this.listCreatures ) {
                 List<ResourceLocation> creatures = new ArrayList<>(turret.getTargetProcessor().getEntityTargets().keySet());
-                elem = IntStream.range(0, creatures.size())
-                                .mapToObj(i -> getTargetEntry(gui, elemData, turret, creatures.get(i), null, w, h, h * i))
+                elem = creatures.stream().map(creature -> getTargetEntry(gui, elemData, turret, creature, null, w, h))
                                 .toArray(GuiElementInst[]::new);
             } else {
                 List<UUID> players = new ArrayList<>(turret.getTargetProcessor().getPlayerTargets().keySet());
-                elem = IntStream.range(0, players.size())
-                                .mapToObj(i -> getTargetEntry(gui, elemData, turret, null, players.get(i), w, h, h * i))
-                                .toArray(GuiElementInst[]::new);
+                elem = players.stream().map(player -> getTargetEntry(gui, elemData, turret, null, player, w, h))
+                              .toArray(GuiElementInst[]::new);
             }
             Arrays.stream(elem).forEach(e -> e.initialize(gui));
 
@@ -143,7 +140,7 @@ public class TargetList
             return buildFromJson(gui, data).get(gui);
         }
 
-        private static GuiElementInst getTargetEntry(IGui gui, JsonObject data, ITurretEntity turret, ResourceLocation creatureId, UUID playerId, int w, int h, int y) {
+        private static GuiElementInst getTargetEntry(IGui gui, JsonObject data, ITurretEntity turret, ResourceLocation creatureId, UUID playerId, int w, int h) {
             return new GuiElementInst(new int[] { 0, 0 }, Target.Builder.fromJson(gui, data, turret, creatureId, playerId, w, h));
         }
     }

@@ -10,13 +10,13 @@ package de.sanandrew.mods.turretmod.client.gui;
 
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.JsonGuiContainer;
-import de.sanandrew.mods.sanlib.lib.client.gui.element.DynamicText;
-import de.sanandrew.mods.sanlib.lib.client.gui.element.EnergyStorageBar;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.ProgressBar;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.turretmod.api.Resources;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.client.gui.element.ElectrolyteBar;
 import de.sanandrew.mods.turretmod.inventory.container.ElectrolyteGeneratorContainer;
 import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteGeneratorEntity;
+import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteInventory;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -27,7 +27,6 @@ import java.io.IOException;
 
 public class ElectrolyteGeneratorScreen
         extends JsonGuiContainer<ElectrolyteGeneratorContainer>
-        implements EnergyStorageBar.IGuiEnergyContainer, ElectrolyteBar.IElectrolyteInfo
 {
     public ElectrolyteGeneratorScreen(ElectrolyteGeneratorContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
@@ -45,32 +44,24 @@ public class ElectrolyteGeneratorScreen
 
     @Override
     protected void initGd() {
-        this.guiDefinition.getElementById("efficiency").get(DynamicText.class).setTextFunc(
+        this.guiDefinition.getElementById("efficiency").get(Text.class).setTextFunc(
                 (g, o) -> new StringTextComponent(String.format("%.2f%%", this.menu.data.getEfficiency() / 9.0F * 100.0F))
         );
-        this.guiDefinition.getElementById("powergen").get(DynamicText.class).setTextFunc(
+        this.guiDefinition.getElementById("powergen").get(Text.class).setTextFunc(
                 (g, o) -> new StringTextComponent(String.format("%d RF/t", this.menu.data.getEnergyGenerated()))
         );
-    }
 
-    @Override
-    public int getEnergy() {
-        return this.menu.data.getEnergyStored();
-    }
+        for( int i = 0; i < ElectrolyteInventory.INPUT_SLOT_COUNT; i++ ) {
+            final int slot = i;
+            this.guiDefinition.getElementById(String.format("progress_%d", i + 1)).get(ProgressBar.class)
+                              .setPercentFunc(p -> this.menu.data.getProgress(slot) / (double) this.menu.data.getMaxProgress(slot));
+        }
 
-    @Override
-    public int getMaxEnergy() {
-        return ElectrolyteGeneratorEntity.MAX_FLUX_STORAGE;
-    }
+        this.guiDefinition.getElementById("energy").get(ProgressBar.class)
+                          .setPercentFunc(p -> this.menu.data.getEnergyStored() / (double) ElectrolyteGeneratorEntity.MAX_FLUX_STORAGE);
 
-    @Override
-    public int getProgress(int slot) {
-        return this.menu.data.getProgress(slot);
-    }
-
-    @Override
-    public int getMaxProgress(int slot) {
-        return this.menu.data.getMaxProgress(slot);
+        this.guiDefinition.getElementById("energy_tooltip").get(Text.class)
+                          .setTextFunc((g, t) -> new StringTextComponent(String.format("%d / %d RF", this.menu.data.getEnergyStored(), ElectrolyteGeneratorEntity.MAX_FLUX_STORAGE)));
     }
 
     @Nonnull

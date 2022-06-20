@@ -6,17 +6,14 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.client.gui.AmmoCartridgeScreen;
 import de.sanandrew.mods.turretmod.client.gui.ElectrolyteGeneratorScreen;
 import de.sanandrew.mods.turretmod.client.gui.TurretCrateScreen;
-import de.sanandrew.mods.turretmod.client.gui.element.ElectrolyteBar;
 import de.sanandrew.mods.turretmod.client.gui.element.ErrorTooltip;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.ValueBar;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.levels.BorderedText;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.levels.ModifierList;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.targets.TargetList;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.TcuInfo;
 import de.sanandrew.mods.turretmod.client.gui.element.TurretCamElement;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.TurretTypeName;
 import de.sanandrew.mods.turretmod.client.gui.element.nav.PageNavigation;
 import de.sanandrew.mods.turretmod.client.gui.element.nav.PageNavigationTooltip;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.TcuInfo;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.TurretTypeName;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.levels.ModifierList;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.targets.TargetList;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuScreen;
 import de.sanandrew.mods.turretmod.client.model.ModelRegistry;
 import de.sanandrew.mods.turretmod.client.renderer.RenderClassProvider;
@@ -56,7 +53,6 @@ public class ClientProxy
         ScreenManager.register(ContainerRegistry.TCU, TcuScreen::new);
         ScreenManager.register(ContainerRegistry.TURRET_CRATE, TurretCrateScreen::new);
 
-        GuiDefinition.TYPES.put(ElectrolyteBar.ID, ElectrolyteBar.Builder::fromJson);
         GuiDefinition.TYPES.put(TurretTypeName.ID, TurretTypeName.Builder::fromJson);
         GuiDefinition.TYPES.put(PageNavigation.ID, PageNavigation.Builder::fromJson);
         GuiDefinition.TYPES.put(PageNavigationTooltip.ID, PageNavigationTooltip.Builder::fromJson);
@@ -64,8 +60,6 @@ public class ClientProxy
         GuiDefinition.TYPES.put(ErrorTooltip.ID, ErrorTooltip.Builder::fromJson);
         GuiDefinition.TYPES.put(TcuInfo.ID, TcuInfo.Builder::fromJson);
         GuiDefinition.TYPES.put(TargetList.ID, TargetList.Builder::fromJson);
-        GuiDefinition.TYPES.put(ValueBar.ID, ValueBar.Builder::fromJson);
-        GuiDefinition.TYPES.put(BorderedText.ID, BorderedText.Builder::fromJson);
         GuiDefinition.TYPES.put(ModifierList.ID, ModifierList.Builder::fromJson);
 
         ModelRegistry.registerModels();

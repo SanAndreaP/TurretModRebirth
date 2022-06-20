@@ -6,7 +6,6 @@ import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ButtonSL;
-import de.sanandrew.mods.sanlib.lib.client.gui.element.DynamicText;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ElementParent;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
@@ -62,7 +61,7 @@ public class Target
 
     @Override
     public void setup(IGui gui, GuiElementInst inst) {
-        this.get(LABEL).get(DynamicText.class).setTextFunc((g, o) -> this.text);
+        this.get(LABEL).get(Text.class).setTextFunc((g, o) -> this.text);
 
         if( this.isCreature() ) {
             this.get(ICON).get(CreatureIcon.class).setEntityTypeSupplier(() -> Targets.getTargetType(this.creatureId));
@@ -212,7 +211,7 @@ public class Target
                 lblData.add("color", color);
             }
 
-            DynamicText.Builder lblB = DynamicText.Builder.buildFromJson(gui, lblData);
+            Text.Builder lblB = Text.Builder.buildFromJson(gui, lblData);
             this.label = new GuiElementInst(JsonUtils.getIntArray(lblData.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] { 16, 2 }, Range.is(2)),
                                             lblB.get(gui)).initialize(gui);
         }

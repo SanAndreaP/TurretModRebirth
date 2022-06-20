@@ -27,8 +27,8 @@ public class TurretTypeName
 
     private long marqueeTime;
 
-    public TurretTypeName(boolean shadow, int wrapWidth, int lineHeight, FontRenderer fontRenderer, Map<String, Integer> colors, int textfieldWidth) {
-        super(StringTextComponent.EMPTY, shadow, wrapWidth, lineHeight, fontRenderer, colors);
+    public TurretTypeName(boolean shadow, int wrapWidth, int lineHeight, FontRenderer fontRenderer, Map<String, Integer> colors, boolean bordered, int textfieldWidth) {
+        super(StringTextComponent.EMPTY, shadow, wrapWidth, lineHeight, fontRenderer, colors, bordered);
 
         this.textfieldWidth = textfieldWidth;
     }
@@ -76,7 +76,7 @@ public class TurretTypeName
         public TurretTypeName get(IGui gui) {
             this.sanitize(gui);
 
-            return new TurretTypeName(this.shadow, this.wrapWidth, this.lineHeight, this.fontRenderer, this.colors, this.textfieldWidth);
+            return new TurretTypeName(this.shadow, this.wrapWidth, this.lineHeight, this.fontRenderer, this.colors, this.bordered, this.textfieldWidth);
         }
 
         public static Builder buildFromJson(IGui gui, JsonObject data) {
