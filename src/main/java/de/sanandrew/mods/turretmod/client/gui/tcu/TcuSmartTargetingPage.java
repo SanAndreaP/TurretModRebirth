@@ -40,6 +40,12 @@ public class TcuSmartTargetingPage
     private ButtonSL countIndivLess;
     private ButtonSL countIndivMore;
 
+    private ButtonSL priorityFirst;
+    private ButtonSL priorityClose;
+    private ButtonSL priorityHighHealth;
+    private ButtonSL priorityLowHealth;
+    private ButtonSL priorityRandom;
+
     private TextField countAmount;
 
     private AdvTargetSettings settings;
@@ -79,6 +85,12 @@ public class TcuSmartTargetingPage
         this.countGlobalMore = this.grabButton("countGlobalMore", t -> new SmartTargetingActionPacket(t, AdvTargetSettings.CountAwareness.ABOVE_GLOBAL));
         this.countIndivLess = this.grabButton("countIndivLess", t -> new SmartTargetingActionPacket(t, AdvTargetSettings.CountAwareness.BELOW_INDIVIDUAL));
         this.countIndivMore = this.grabButton("countIndivMore", t -> new SmartTargetingActionPacket(t, AdvTargetSettings.CountAwareness.ABOVE_INDIVIDUAL));
+
+        this.priorityFirst = this.grabButton("prioFirst", t -> new SmartTargetingActionPacket(t, AdvTargetSettings.PriorityAwareness.FIRST_DETECTED));
+        this.priorityClose = this.grabButton("prioClose", t -> new SmartTargetingActionPacket(t, AdvTargetSettings.PriorityAwareness.CLOSE));
+        this.priorityHighHealth = this.grabButton("prioHiHealth", t -> new SmartTargetingActionPacket(t, AdvTargetSettings.PriorityAwareness.HIGH_HEALTH));
+        this.priorityLowHealth = this.grabButton("prioLoHealth", t -> new SmartTargetingActionPacket(t, AdvTargetSettings.PriorityAwareness.LOW_HEALTH));
+        this.priorityRandom = this.grabButton("prioRandom", t -> new SmartTargetingActionPacket(t, AdvTargetSettings.PriorityAwareness.RANDOM));
 
         this.countAmount = this.guiDefinition.getElementById("countAmount").get(TextField.class);
         this.countAmount.setValidator(s -> Strings.isNullOrEmpty(s) || Boolean.TRUE.equals(MiscUtils.apply(MiscUtils.getInteger(s), i -> 0 <= i && i <= 256)));
@@ -126,5 +138,12 @@ public class TcuSmartTargetingPage
         this.countIndivMore.setActive(countAwareness != AdvTargetSettings.CountAwareness.ABOVE_INDIVIDUAL);
 
         this.countAmount.setEditable(countAwareness != AdvTargetSettings.CountAwareness.NO_COUNT);
+
+        AdvTargetSettings.PriorityAwareness priorityAwareness = this.settings.getPriorityAwareness();
+        this.priorityFirst.setActive(priorityAwareness != AdvTargetSettings.PriorityAwareness.FIRST_DETECTED);
+        this.priorityClose.setActive(priorityAwareness != AdvTargetSettings.PriorityAwareness.CLOSE);
+        this.priorityHighHealth.setActive(priorityAwareness != AdvTargetSettings.PriorityAwareness.HIGH_HEALTH);
+        this.priorityLowHealth.setActive(priorityAwareness != AdvTargetSettings.PriorityAwareness.LOW_HEALTH);
+        this.priorityRandom.setActive(priorityAwareness != AdvTargetSettings.PriorityAwareness.RANDOM);
     }
 }

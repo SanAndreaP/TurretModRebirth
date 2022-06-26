@@ -11,7 +11,7 @@
     },
     {
       "type": "texture",
-      "pos": [7, 37],
+      "pos": [7, 36],
       "data": {
         "size": [162, 5],
         "uv": [94, 229]
@@ -28,7 +28,7 @@
     {
       "type": "progress_bar",
       "id": "current_xp_progress",
-      "pos": [7, 37],
+      "pos": [7, 36],
       "data": {
         "size": [162, 5],
         "uv": [94, 234],
@@ -48,7 +48,7 @@
     {
       "type": "text",
       "id": "level_text",
-      "pos": [88, 31],
+      "pos": [88, 30],
       "alignment": ["center", "top"],
       "data": {
         "color": "0xFF80FF20",

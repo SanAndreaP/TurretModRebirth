@@ -38,10 +38,12 @@ public abstract class TargetingEvent
             extends TargetingEvent
     {
         public final Entity target;
+        public final boolean isLast;
 
-        public TargetCheck(ITargetProcessor processor, Entity target) {
+        public TargetCheck(ITargetProcessor processor, Entity target, boolean isLast) {
             super(processor);
             this.target = target;
+            this.isLast = isLast;
         }
     }
 

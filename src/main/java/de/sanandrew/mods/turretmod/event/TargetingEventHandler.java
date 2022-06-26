@@ -50,7 +50,7 @@ public class TargetingEventHandler
             AdvTargetSettings settings = event.processor.getTurret().getUpgradeProcessor().getUpgradeData(Upgrades.SMART_TGT.getId());
             if( settings != null ) {
                 List<Entity> entities = turret.getTargetProcessor().getValidTargetList();
-                if( !settings.isTargetValid(event.target, turret, entities) ) {
+                if( !settings.isTargetValid(event.target, turret, entities, event.isLast) ) {
                     event.setResult(Event.Result.DENY);
                 }
             }
@@ -109,13 +109,4 @@ public class TargetingEventHandler
             }
         }
     }
-
-    //TODO: ??????????
-//    @SubscribeEvent
-//    public static void onEntityAttackTarget(LivingSetAttackTargetEvent event) {
-//        Entity e = event.getEntity();
-//        if( event.getTarget() == null && !e.level.isClientSide ) {
-////            TurretModRebirth.NETWORK.sendToAllNear(new PacketSyncAttackTarget(e, null), e.dimension, e.posX, e.posY, e.posZ, 64.0D);
-//        }
-//    }
 }

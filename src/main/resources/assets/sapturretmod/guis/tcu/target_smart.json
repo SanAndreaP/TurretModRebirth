@@ -3,7 +3,7 @@
   "backgroundElements": [
     {
       "type": "group_box",
-      "pos": [7, 39],
+      "pos": [7, 29],
       "data": {
         "size": [162, 30],
         "title": {
@@ -13,7 +13,7 @@
     },
     {
       "type": "group_box",
-      "pos": [7, 73],
+      "pos": [7, 63],
       "data": {
         "size": [162, 30],
         "title": {
@@ -23,7 +23,7 @@
     },
     {
       "type": "group_box",
-      "pos": [7, 107],
+      "pos": [7, 97],
       "data": {
         "size": [162, 30],
         "title": {
@@ -33,7 +33,7 @@
     },
     {
       "type": "group_box",
-      "pos": [7, 141],
+      "pos": [7, 131],
       "data": {
         "size": [162, 30],
         "title": {
@@ -42,200 +42,237 @@
       }
     },
     {
+      "type": "group_box",
+      "pos": [7, 165],
+      "data": {
+        "size": [162, 30],
+        "title": {
+          "text": "gui.sapturretmod.tcu.targets.smart.priority"
+        }
+      }
+    },
+    {
       "type": "button",
       "id": "turretIgnore",
-      "pos": [10, 48],
+      "pos": [10, 38],
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
-        "buttonFunction": 0,
-        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
-        "uvEnabled": [212, 18],
+        "uvEnabled": [0, 18],
         "useVanillaTexture": false
       }
     },
     {
       "type": "button",
       "id": "turretCheckSame",
-      "pos": [29, 48],
+      "pos": [29, 38],
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
-        "buttonFunction": 1,
-        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
-        "uvEnabled": [176, 18],
+        "uvEnabled": [18, 18],
         "useVanillaTexture": false
       }
     },
     {
       "type": "button",
       "id": "turretCheckAll",
-      "pos": [48, 48],
+      "pos": [48, 38],
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
-        "buttonFunction": 2,
-        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
-        "uvEnabled": [194, 18],
+        "uvEnabled": [36, 18],
         "useVanillaTexture": false
       }
     },
     {
       "type": "button",
       "id": "tamedAll",
-      "pos": [10, 82],
+      "pos": [10, 72],
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
-        "buttonFunction": 3,
-        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
-        "uvEnabled": [194, 72],
+        "uvEnabled": [54, 18],
         "useVanillaTexture": false
       }
     },
     {
       "type": "button",
       "id": "tamedPlayers",
-      "pos": [29, 82],
+      "pos": [29, 72],
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
-        "buttonFunction": 4,
-        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
-        "uvEnabled": [176, 72],
+        "uvEnabled": [72, 18],
         "useVanillaTexture": false
       }
     },
     {
       "type": "button",
       "id": "tamedNone",
-      "pos": [48, 82],
+      "pos": [48, 72],
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
-        "buttonFunction": 5,
-        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
-        "uvEnabled": [230, 18],
+        "uvEnabled": [90, 18],
         "useVanillaTexture": false
       }
     },
     {
       "type": "button",
       "id": "childAdult",
-      "pos": [10, 116],
+      "pos": [10, 106],
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
-        "buttonFunction": 6,
-        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
-        "uvEnabled": [176, 126],
+        "uvEnabled": [108, 18],
         "useVanillaTexture": false
       }
     },
     {
       "type": "button",
       "id": "childOnly",
-      "pos": [29, 116],
+      "pos": [29, 106],
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
-        "buttonFunction": 7,
-        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
-        "uvEnabled": [212, 72],
+        "uvEnabled": [126, 18],
         "useVanillaTexture": false
       }
     },
     {
       "type": "button",
       "id": "adultOnly",
-      "pos": [48, 116],
+      "pos": [48, 106],
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
-        "buttonFunction": 8,
-        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
-        "uvEnabled": [230, 72],
+        "uvEnabled": [144, 18],
         "useVanillaTexture": false
       }
     },
     {
       "type": "button",
       "id": "noCount",
-      "pos": [10, 150],
+      "pos": [10, 140],
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
-        "buttonFunction": 9,
-        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
-        "uvEnabled": [194, 126],
+        "uvEnabled": [162, 18],
         "useVanillaTexture": false
       }
     },
     {
       "type": "button",
       "id": "countGlobalLess",
-      "pos": [29, 150],
+      "pos": [29, 140],
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
-        "buttonFunction": 10,
-        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
-        "uvEnabled": [212, 126],
+        "uvEnabled": [180, 18],
         "useVanillaTexture": false
       }
     },
     {
       "type": "button",
       "id": "countGlobalMore",
-      "pos": [48, 150],
+      "pos": [48, 140],
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
-        "buttonFunction": 11,
-        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
-        "uvEnabled": [230, 126],
+        "uvEnabled": [198, 18],
         "useVanillaTexture": false
       }
     },
     {
       "type": "button",
       "id": "countIndivLess",
-      "pos": [67, 150],
+      "pos": [67, 140],
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
-        "buttonFunction": 12,
-        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
-        "uvEnabled": [176, 180],
+        "uvEnabled": [216, 18],
         "useVanillaTexture": false
       }
     },
     {
       "type": "button",
       "id": "countIndivMore",
-      "pos": [86, 150],
+      "pos": [86, 140],
       "data": {
         "size": [18, 18],
         "uvSize": [18, 18],
-        "buttonFunction": 13,
-        "texture": "sapturretmod:textures/gui/tcu/page_smart.png",
-        "uvEnabled": [194, 180],
+        "uvEnabled": [234, 18],
         "useVanillaTexture": false
       }
     },
     {
       "type": "textfield",
-      "pos": [110, 157],
+      "pos": [110, 147],
       "id": "countAmount",
       "data": {
         "size": [25, 10]
+      }
+    },
+    {
+      "type": "button",
+      "id": "prioFirst",
+      "pos": [10, 174],
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "uvEnabled": [0, 72],
+        "useVanillaTexture": false
+      }
+    },
+    {
+      "type": "button",
+      "id": "prioClose",
+      "pos": [29, 174],
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "uvEnabled": [18, 72],
+        "useVanillaTexture": false
+      }
+    },
+    {
+      "type": "button",
+      "id": "prioHiHealth",
+      "pos": [48, 174],
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "uvEnabled": [36, 72],
+        "useVanillaTexture": false
+      }
+    },
+    {
+      "type": "button",
+      "id": "prioLoHealth",
+      "pos": [67, 174],
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "uvEnabled": [54, 72],
+        "useVanillaTexture": false
+      }
+    },
+    {
+      "type": "button",
+      "id": "prioRandom",
+      "pos": [86, 174],
+      "data": {
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "uvEnabled": [72, 72],
+        "useVanillaTexture": false
       }
     }
   ],
   "foregroundElements": [
     {
       "type": "tooltip",
-      "pos": [10, 48],
+      "pos": [10, 38],
       "data": {
         "size": [18, 18],
         "text": "gui.sapturretmod.tcu.targets.smart.turret_ignore"
@@ -243,7 +280,7 @@
     },
     {
       "type": "tooltip",
-      "pos": [29, 48],
+      "pos": [29, 38],
       "data": {
         "size": [18, 18],
         "text": "gui.sapturretmod.tcu.targets.smart.turret_same"
@@ -251,7 +288,7 @@
     },
     {
       "type": "tooltip",
-      "pos": [48, 48],
+      "pos": [48, 38],
       "data": {
         "size": [18, 18],
         "text": "gui.sapturretmod.tcu.targets.smart.turret_all"
@@ -259,7 +296,7 @@
     },
     {
       "type": "tooltip",
-      "pos": [10, 82],
+      "pos": [10, 72],
       "data": {
         "size": [18, 18],
         "text": "gui.sapturretmod.tcu.targets.smart.tamed_all"
@@ -267,7 +304,7 @@
     },
     {
       "type": "tooltip",
-      "pos": [29, 82],
+      "pos": [29, 72],
       "data": {
         "size": [18, 18],
         "text": "gui.sapturretmod.tcu.targets.smart.tamed_players"
@@ -275,7 +312,7 @@
     },
     {
       "type": "tooltip",
-      "pos": [48, 82],
+      "pos": [48, 72],
       "data": {
         "size": [18, 18],
         "text": "gui.sapturretmod.tcu.targets.smart.tamed_none"
@@ -283,7 +320,7 @@
     },
     {
       "type": "tooltip",
-      "pos": [10, 116],
+      "pos": [10, 106],
       "data": {
         "size": [18, 18],
         "text": "gui.sapturretmod.tcu.targets.smart.child_adult"
@@ -291,7 +328,7 @@
     },
     {
       "type": "tooltip",
-      "pos": [29, 116],
+      "pos": [29, 106],
       "data": {
         "size": [18, 18],
         "text": "gui.sapturretmod.tcu.targets.smart.child_only"
@@ -299,7 +336,7 @@
     },
     {
       "type": "tooltip",
-      "pos": [48, 116],
+      "pos": [48, 106],
       "data": {
         "size": [18, 18],
         "text": "gui.sapturretmod.tcu.targets.smart.adult_only"
@@ -307,7 +344,7 @@
     },
     {
       "type": "tooltip",
-      "pos": [10, 150],
+      "pos": [10, 140],
       "data": {
         "size": [18, 18],
         "text": "gui.sapturretmod.tcu.targets.smart.count_no"
@@ -315,7 +352,7 @@
     },
     {
       "type": "tooltip",
-      "pos": [29, 150],
+      "pos": [29, 140],
       "data": {
         "size": [18, 18],
         "text": "gui.sapturretmod.tcu.targets.smart.count_global_less"
@@ -323,7 +360,7 @@
     },
     {
       "type": "tooltip",
-      "pos": [48, 150],
+      "pos": [48, 140],
       "data": {
         "size": [18, 18],
         "text": "gui.sapturretmod.tcu.targets.smart.count_global_more"
@@ -331,7 +368,7 @@
     },
     {
       "type": "tooltip",
-      "pos": [67, 150],
+      "pos": [67, 140],
       "data": {
         "size": [18, 18],
         "text": "gui.sapturretmod.tcu.targets.smart.count_individual_less"
@@ -339,10 +376,50 @@
     },
     {
       "type": "tooltip",
-      "pos": [86, 150],
+      "pos": [86, 140],
       "data": {
         "size": [18, 18],
         "text": "gui.sapturretmod.tcu.targets.smart.count_individual_more"
+      }
+    },
+    {
+      "type": "tooltip",
+      "pos": [10, 174],
+      "data": {
+        "size": [18, 18],
+        "text": "gui.sapturretmod.tcu.targets.smart.priority_first"
+      }
+    },
+    {
+      "type": "tooltip",
+      "pos": [29, 174],
+      "data": {
+        "size": [18, 18],
+        "text": "gui.sapturretmod.tcu.targets.smart.priority_close"
+      }
+    },
+    {
+      "type": "tooltip",
+      "pos": [48, 174],
+      "data": {
+        "size": [18, 18],
+        "text": "gui.sapturretmod.tcu.targets.smart.priority_high_health"
+      }
+    },
+    {
+      "type": "tooltip",
+      "pos": [67, 174],
+      "data": {
+        "size": [18, 18],
+        "text": "gui.sapturretmod.tcu.targets.smart.priority_low_health"
+      }
+    },
+    {
+      "type": "tooltip",
+      "pos": [86, 174],
+      "data": {
+        "size": [18, 18],
+        "text": "gui.sapturretmod.tcu.targets.smart.priority_random"
       }
     }
   ]

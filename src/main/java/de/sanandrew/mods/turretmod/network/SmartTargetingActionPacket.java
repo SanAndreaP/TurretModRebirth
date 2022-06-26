@@ -19,6 +19,7 @@ public class SmartTargetingActionPacket
     public static final byte SET_CHILD_AWS = 2;
     public static final byte SET_COUNT_AWS = 3;
     public static final byte SET_COUNT_AMOUNT = 4;
+    public static final byte SET_PRIO_AWS = 5;
 
     private final int turretId;
     private final byte actionId;
@@ -26,6 +27,7 @@ public class SmartTargetingActionPacket
     private final AdvTargetSettings.TamedAwareness tamedAwareness;
     private final AdvTargetSettings.ChildAwareness childAwareness;
     private final AdvTargetSettings.CountAwareness countAwareness;
+    private final AdvTargetSettings.PriorityAwareness priorityAwareness;
     private final short count;
 
     private  SmartTargetingActionPacket(ITurretEntity turret,
@@ -33,6 +35,7 @@ public class SmartTargetingActionPacket
                                         AdvTargetSettings.TamedAwareness tamedAwareness,
                                         AdvTargetSettings.ChildAwareness childAwareness,
                                         AdvTargetSettings.CountAwareness countAwareness,
+                                        AdvTargetSettings.PriorityAwareness priorityAwareness,
                                         short count)
     {
         this.turretId = turret.get().getId();
@@ -40,6 +43,7 @@ public class SmartTargetingActionPacket
         this.tamedAwareness = tamedAwareness;
         this.childAwareness = childAwareness;
         this.countAwareness = countAwareness;
+        this.priorityAwareness = priorityAwareness;
         this.count = count;
 
         if( turretAwareness != null ) {
@@ -50,6 +54,8 @@ public class SmartTargetingActionPacket
             this.actionId = SET_CHILD_AWS;
         } else if( countAwareness != null ) {
             this.actionId = SET_COUNT_AWS;
+        } else if( priorityAwareness != null ) {
+            this.actionId = SET_PRIO_AWS;
         } else if( count >= 0 ) {
             this.actionId = SET_COUNT_AMOUNT;
         } else {
@@ -58,23 +64,27 @@ public class SmartTargetingActionPacket
     }
 
     public SmartTargetingActionPacket(ITurretEntity turret, AdvTargetSettings.TurretAwareness awareness) {
-        this(turret, awareness, null, null, null, (short) -1);
+        this(turret, awareness, null, null, null, null, (short) -1);
     }
 
     public SmartTargetingActionPacket(ITurretEntity turret, AdvTargetSettings.TamedAwareness awareness) {
-        this(turret, null, awareness, null, null, (short) -1);
+        this(turret, null, awareness, null, null, null, (short) -1);
     }
 
     public SmartTargetingActionPacket(ITurretEntity turret, AdvTargetSettings.ChildAwareness awareness) {
-        this(turret, null, null, awareness, null, (short) -1);
+        this(turret, null, null, awareness, null, null, (short) -1);
     }
 
     public SmartTargetingActionPacket(ITurretEntity turret, AdvTargetSettings.CountAwareness awareness) {
-        this(turret, null, null, null, awareness, (short) -1);
+        this(turret, null, null, null, awareness, null, (short) -1);
+    }
+
+    public SmartTargetingActionPacket(ITurretEntity turret, AdvTargetSettings.PriorityAwareness awareness) {
+        this(turret, null, null, null, null, awareness, (short) -1);
     }
 
     public SmartTargetingActionPacket(ITurretEntity turret, short count) {
-        this(turret, null, null, null, null, count);
+        this(turret, null, null, null, null, null, count);
     }
 
     public SmartTargetingActionPacket(PacketBuffer buffer) {
@@ -85,6 +95,7 @@ public class SmartTargetingActionPacket
         this.tamedAwareness = this.actionId == SET_TAMED_AWS ? AdvTargetSettings.TamedAwareness.fromIndex(buffer.readByte()) : null;
         this.childAwareness = this.actionId == SET_CHILD_AWS ? AdvTargetSettings.ChildAwareness.fromIndex(buffer.readByte()) : null;
         this.countAwareness = this.actionId == SET_COUNT_AWS ? AdvTargetSettings.CountAwareness.fromIndex(buffer.readByte()) : null;
+        this.priorityAwareness = this.actionId == SET_PRIO_AWS ? AdvTargetSettings.PriorityAwareness.fromIndex(buffer.readByte()) : null;
         this.count = this.actionId == SET_COUNT_AMOUNT ? buffer.readShort() : -1;
     }
 
@@ -98,6 +109,7 @@ public class SmartTargetingActionPacket
             case SET_TAMED_AWS: buffer.writeByte(this.tamedAwareness.getIndex()); break;
             case SET_CHILD_AWS: buffer.writeByte(this.childAwareness.getIndex()); break;
             case SET_COUNT_AWS: buffer.writeByte(this.countAwareness.getIndex()); break;
+            case SET_PRIO_AWS: buffer.writeByte(this.priorityAwareness.getIndex()); break;
             case SET_COUNT_AMOUNT: buffer.writeShort(this.count); break;
             default: // no-op
         }
@@ -126,6 +138,7 @@ public class SmartTargetingActionPacket
                 case SET_TAMED_AWS: tgtSettings.setTamedAwareness(this.tamedAwareness); break;
                 case SET_CHILD_AWS: tgtSettings.setChildAwareness(this.childAwareness); break;
                 case SET_COUNT_AWS: tgtSettings.setCountAwareness(this.countAwareness); break;
+                case SET_PRIO_AWS: tgtSettings.setPriorityAwareness(this.priorityAwareness); break;
                 case SET_COUNT_AMOUNT: tgtSettings.setCountEntities(this.count); break;
                 default: // no-op
             }

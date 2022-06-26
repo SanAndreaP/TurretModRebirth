@@ -28,15 +28,15 @@ public class TcuUpgradesContainer
         checkContainerSize(proc, UpgradeProcessor.SLOTS);
 
         for( int i = 0; i < UpgradeProcessor.SLOTS; ++i ) {
-            this.addSlot(new SlotUpgrade(proc, i, 8 + 18 * (i % 9), 40 + 18 * (i / 9)));
+            this.addSlot(new SlotUpgrade(proc, i, 8 + 18 * (i % 9), 41 + 18 * (i / 9)));
         }
 
         for( int i = 0; i < 27; ++i ) {
-            this.addSlot(new Slot(playerInventory, 9 + i, 8 + 18 * (i % 9), 125 + 18 * (i / 9)));
+            this.addSlot(new Slot(playerInventory, 9 + i, 8 + 18 * (i % 9), 126 + 18 * (i / 9)));
         }
 
         for( int i = 0; i < 9; ++i ) {
-            this.addSlot(new Slot(playerInventory, i, 8 + 18 * i, 183));
+            this.addSlot(new Slot(playerInventory, i, 8 + 18 * i, 184));
         }
     }
 

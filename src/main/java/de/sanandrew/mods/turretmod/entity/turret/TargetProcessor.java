@@ -56,6 +56,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -378,8 +379,8 @@ public final class TargetProcessor
         return doOffset ? aabb.move(turretL.getX(), turretL.getY(), turretL.getZ()) : aabb;
     }
 
-    private boolean checkTargetListeners(Entity e) {
-        TargetingEvent.TargetCheck event = new TargetingEvent.TargetCheck(this, e);
+    private boolean checkTargetListeners(Entity e, boolean isLast) {
+        TargetingEvent.TargetCheck event = new TargetingEvent.TargetCheck(this, e, isLast);
         return !MinecraftForge.EVENT_BUS.post(event) && event.getResult() != Event.Result.DENY;
     }
 
@@ -440,8 +441,10 @@ public final class TargetProcessor
         }
 
         if( this.processTicks++ % 10 == 0 && this.entityToAttack == null ) {
-            for( Entity entityObj : getValidTargetList(aabb) ) {
-                if( this.checkTargetListeners(entityObj) ) {
+            Iterator<Entity> targetIter = getValidTargetList(aabb).listIterator();
+            while( targetIter.hasNext() ) {
+                Entity entityObj = targetIter.next();
+                if( this.checkTargetListeners(entityObj, !targetIter.hasNext()) ) {
                     this.entityToAttack = entityObj;
                     this.entityToAttackID = entityObj.getUUID();
                     changed = true;
@@ -451,7 +454,7 @@ public final class TargetProcessor
         }
 
         if( this.entityToAttack != null ) {
-            if( this.isEntityValidTarget(this.entityToAttack, aabb) && this.checkTargetListeners(this.entityToAttack) ) {
+            if( this.isEntityValidTarget(this.entityToAttack, aabb) && this.checkTargetListeners(this.entityToAttack, false) ) {
                 if( this.canShoot() ) {
                     this.setShot(shootProjectile());
                     changed = true;
