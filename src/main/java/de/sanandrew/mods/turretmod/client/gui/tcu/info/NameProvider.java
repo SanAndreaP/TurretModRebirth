@@ -60,7 +60,12 @@ public class NameProvider
     public void setup(IGui gui, ITurretEntity turret, int w, int h) {
         super.setup(gui, turret, w, h);
 
-        this.txtField.get().setup(gui, this.txtField);
+        MiscUtils.accept(this.txtField.get(TextField.class), tf -> {
+            tf.setup(gui, this.txtField);
+            tf.setMaxStringLength(260);
+            tf.setText(MiscUtils.get(MiscUtils.apply(turret.get().getCustomName(), ITextComponent::getString), ""));
+            tf.setResponder(s -> this.nameChanged = true);
+        });
     }
 
     @Override
@@ -68,14 +73,7 @@ public class NameProvider
         super.tick(gui, turret);
 
         MiscUtils.accept(this.txtField.get(TextField.class), tf -> {
-            if( !this.nameSet ) {
-                MiscUtils.accept(turret.get(), e -> {
-                    this.nameSet = true;
-                    tf.setMaxStringLength(260);
-                    tf.setText(MiscUtils.get(MiscUtils.apply(e.getCustomName(), ITextComponent::getString), ""));
-                    tf.setResponder(s -> this.nameChanged = true);
-                });
-            } else if( this.nameChanged && !tf.isFocused() ) {
+            if( this.nameChanged && !tf.isFocused() ) {
                 TurretPlayerActionPacket.rename(turret, tf.getText());
             }
 

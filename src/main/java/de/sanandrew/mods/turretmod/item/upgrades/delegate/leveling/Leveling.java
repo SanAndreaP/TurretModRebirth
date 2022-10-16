@@ -29,12 +29,12 @@ public class Leveling
 
     @Override
     public IUpgradeData<?> getData(ITurretEntity turretInst) {
-        return new LevelStorage();
+        return new LevelData();
     }
 
     @Override
     public void terminate(ITurretEntity turretInst, ItemStack stack) {
-        LevelStorage storage = turretInst.getUpgradeProcessor().getUpgradeData(ID);
+        LevelData storage = turretInst.getUpgradeProcessor().getUpgradeData(ID);
         if( storage != null ) {
             storage.clearEffects(turretInst);
         }

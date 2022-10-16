@@ -1,7 +1,10 @@
 package de.sanandrew.mods.turretmod.api.client.tcu;
 
+import com.google.gson.JsonObject;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import net.minecraft.client.Minecraft;
+import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nonnull;
 
@@ -46,4 +49,12 @@ public interface ITcuScreen
     }
 
     default void onClose() { }
+
+    static int[] getOffset(JsonObject data) {
+        return getOffset(data, 0, 0);
+    }
+
+    static int[] getOffset(JsonObject data, int defX, int defY) {
+        return JsonUtils.getIntArray(data.get(OFFSET_JSON_ELEM), new int[] {defX, defY}, Range.is(2));
+    }
 }

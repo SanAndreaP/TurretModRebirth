@@ -9,7 +9,7 @@ import de.sanandrew.mods.sanlib.lib.client.gui.element.StackedScrollArea;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuLevelsPage;
 import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
-import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.LevelStorage;
+import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.LevelData;
 import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.Stage;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.util.ResourceLocation;
@@ -36,8 +36,8 @@ public class ModifierList
     public void tick(IGui gui, GuiElementInst inst) {
         super.tick(gui, inst);
 
-        LevelStorage storage  = ((TcuLevelsPage) gui).getTurret().getUpgradeProcessor().getUpgradeData(Upgrades.LEVELING.getId());
-        int currModListHash = storage.getModHash();
+        LevelData storage         = ((TcuLevelsPage) gui).getTurret().getUpgradeProcessor().getUpgradeData(Upgrades.LEVELING.getId());
+        int       currModListHash = storage.getModHash();
 
         if( this.prevModListHash == null || this.prevModListHash != currModListHash ) {
             this.prevModListHash = currModListHash;

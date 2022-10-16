@@ -1,11 +1,3 @@
-/*
- * ****************************************************************************************************************
- * Authors:   SanAndreasP
- * Copyright: SanAndreasP
- * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
- * http://creativecommons.org/licenses/by-nc-sa/4.0/
- * *****************************************************************************************************************
- */
 package de.sanandrew.mods.turretmod.block;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
@@ -14,7 +6,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.ContainerBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
@@ -38,6 +29,7 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -48,7 +40,7 @@ import java.util.Optional;
 
 @SuppressWarnings("deprecation")
 public class ElectrolyteGeneratorBlock
-        extends ContainerBlock
+        extends Block
 {
     private static final VoxelShape MAIN_SEL_BB = Block.box(0, 0, 0, 16, 32, 16);
     private static final VoxelShape UPPER_SEL_BB = Block.box(0, -16, 0, 16, 16, 16);
@@ -96,13 +88,13 @@ public class ElectrolyteGeneratorBlock
             BlockPos upBlock = pos.above();
             if( level.getBlockState(upBlock).getBlock() == this ) {
                 level.levelEvent(2001, upBlock, getId(level.getBlockState(upBlock)));
-                level.setBlock(upBlock, Blocks.AIR.defaultBlockState(), 35);
+                level.setBlock(upBlock, Blocks.AIR.defaultBlockState(), Constants.BlockFlags.DEFAULT | Constants.BlockFlags.NO_NEIGHBOR_DROPS);
             }
         } else {
             BlockPos downBlock = pos.below();
             if( level.getBlockState(downBlock).getBlock() == this ) {
                 level.levelEvent(2001, downBlock, getId(level.getBlockState(downBlock)));
-                level.setBlock(downBlock, Blocks.AIR.defaultBlockState(), 35);
+                level.setBlock(downBlock, Blocks.AIR.defaultBlockState(), Constants.BlockFlags.DEFAULT | Constants.BlockFlags.NO_NEIGHBOR_DROPS);
             }
         }
 
@@ -115,7 +107,7 @@ public class ElectrolyteGeneratorBlock
             BlockPos blockpos = pos.below();
             BlockState blockstate = level.getBlockState(blockpos);
             if( blockstate.getBlock() == state.getBlock() && Boolean.TRUE.equals(blockstate.getValue(TILE_HOLDER)) ) {
-                level.setBlock(blockpos, Blocks.AIR.defaultBlockState(), 35);
+                level.setBlock(blockpos, Blocks.AIR.defaultBlockState(), Constants.BlockFlags.DEFAULT | Constants.BlockFlags.NO_NEIGHBOR_DROPS);
                 level.levelEvent(player, 2001, blockpos, Block.getId(blockstate));
             }
         }
@@ -158,12 +150,13 @@ public class ElectrolyteGeneratorBlock
 
     @Override
     public void setPlacedBy(World level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        level.setBlock(pos.above(), state.setValue(TILE_HOLDER, false), 3);
+        level.setBlock(pos.above(), state.setValue(TILE_HOLDER, false), Constants.BlockFlags.DEFAULT);
 
         if( stack.hasCustomHoverName() && Boolean.TRUE.equals(state.getValue(TILE_HOLDER)) ) {
             TileEntity te = level.getBlockEntity(pos);
-            assert te != null;
-            ((ElectrolyteGeneratorEntity) te).setCustomName(stack.getDisplayName());
+            if( te instanceof ElectrolyteGeneratorEntity ) {
+                ((ElectrolyteGeneratorEntity) te).setCustomName(stack.getDisplayName());
+            }
         }
     }
 
@@ -180,7 +173,7 @@ public class ElectrolyteGeneratorBlock
 
     @Nullable
     @Override
-    public TileEntity newBlockEntity(@Nonnull IBlockReader level) {
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return new ElectrolyteGeneratorEntity();
     }
 

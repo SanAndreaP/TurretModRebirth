@@ -25,6 +25,7 @@ import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.init.config.Targets;
 import de.sanandrew.mods.turretmod.item.ammo.AmmoCartridgeItem;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
+import de.sanandrew.mods.turretmod.network.SyncTurretStatePacket;
 import de.sanandrew.mods.turretmod.network.SyncTurretTargetsPacket;
 import de.sanandrew.mods.turretmod.world.PlayerList;
 import net.minecraft.entity.Entity;
@@ -421,7 +422,7 @@ public final class TargetProcessor
                 this.resetInitShootTicks();
                 this.entityToAttack = null;
                 this.entityToAttackID = UuidUtils.EMPTY_UUID;
-                this.turret.syncState();
+                this.turret.syncState(SyncTurretStatePacket.TARGET);
             }
             return;
         }
@@ -470,7 +471,7 @@ public final class TargetProcessor
         }
 
         if( changed ) {
-            this.turret.syncState();
+            this.turret.syncState(SyncTurretStatePacket.TARGET);
         }
     }
 
@@ -707,14 +708,19 @@ public final class TargetProcessor
         return ret;
     }
 
-    public void updateClientState(int targetId, int ammoCount, @Nonnull ItemStack ammoStack, boolean isShooting) {
+    public void updateClientTarget(int targetId, boolean isShooting) {
         LivingEntity turretL = this.turret.get();
         if( turretL.level.isClientSide ) {
             this.entityToAttack = targetId < 0 ? null : turretL.level.getEntity(targetId);
+            this.isShootingClt = isShooting;
+        }
+    }
+
+    public void updateClientAmmo(int ammoCount, @Nonnull ItemStack ammoStack) {
+        LivingEntity turretL = this.turret.get();
+        if( turretL.level.isClientSide ) {
             this.ammoCount = ammoCount;
             this.ammoStack = ammoStack;
-            this.isShootingClt = isShooting;
-
         }
     }
 

@@ -36,14 +36,14 @@ public final class ElectrolyteSyncData
                     return this.boundTile.getGeneratedFlux();
                 case EFFICIENCY:
                     return Float.floatToIntBits(this.boundTile.efficiency);
-            }
-
-            if( PROGRESSES.contains(index) ) {
-                return this.boundTile.processes.get(index - PROGRESSES.getMinimum()).progress;
-            } else if( MAX_PROGRESSES.contains(index) ) {
-                return this.boundTile.processes.get(index - MAX_PROGRESSES.getMinimum()).getMaxProgress(this.boundTile.itemHandler);
-            } else {
-                return 0;
+                default:
+                    if( PROGRESSES.contains(index) ) {
+                        return this.boundTile.processes.get(index - PROGRESSES.getMinimum()).progress;
+                    } else if( MAX_PROGRESSES.contains(index) ) {
+                        return this.boundTile.processes.get(index - MAX_PROGRESSES.getMinimum()).getMaxProgress(this.boundTile.itemHandler);
+                    } else {
+                        return 0;
+                    }
             }
         }
 

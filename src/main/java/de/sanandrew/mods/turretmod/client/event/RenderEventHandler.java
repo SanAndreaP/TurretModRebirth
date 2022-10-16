@@ -2,6 +2,7 @@ package de.sanandrew.mods.turretmod.client.event;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.client.renderer.turret.ForcefieldRender;
 import de.sanandrew.mods.turretmod.client.renderer.turret.LabelRegistry;
 import de.sanandrew.mods.turretmod.client.renderer.turret.TurretCamera;
 import net.minecraft.client.Minecraft;
@@ -31,7 +32,10 @@ public class RenderEventHandler
         ActiveRenderInfo camera    = mc.gameRenderer.getMainCamera();
         float            partTicks = event.getPartialTicks();
 
-        LabelRegistry.INSTANCE.render(mc, event.getContext(), event.getMatrixStack(), partTicks, camera);
+        MatrixStack mStack = event.getMatrixStack();
+
+        ForcefieldRender.INSTANCE.render(mc, event.getMatrixStack(), partTicks, camera);
+        LabelRegistry.INSTANCE.render(mc, event.getContext(), mStack, partTicks, camera);
     }
 
     @SubscribeEvent

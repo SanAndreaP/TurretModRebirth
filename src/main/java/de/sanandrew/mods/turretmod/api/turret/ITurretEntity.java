@@ -17,6 +17,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 public interface ITurretEntity
@@ -58,13 +59,15 @@ public interface ITurretEntity
     boolean isOwner(PlayerEntity player);
 
     @Nullable
-    PlayerEntity getOwner();
+    UUID getOwnerId();
+
+    boolean hasOwner();
 
     boolean isInGui();
 
     <V extends ITurretRAM> V getRAM(Supplier<V> onNull);
 
-    void syncState();
+    void syncState(byte transferType);
 
     ITurret.TargetType getAttackType();
 
@@ -83,4 +86,12 @@ public interface ITurretEntity
     TurretCrateEntity dismantle();
 
     ITextComponent getTurretTypeName();
+
+    boolean hasClientForcefield(Class<? extends IForcefield> forcefieldClass);
+
+    void addClientForcefield(IForcefield forcefield);
+
+    void removeClientForcefield(Class<? extends IForcefield> forcefieldClass);
+
+    void changeOwner(UUID newOwner);
 }

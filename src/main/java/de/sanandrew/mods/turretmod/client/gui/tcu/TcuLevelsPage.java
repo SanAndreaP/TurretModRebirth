@@ -10,9 +10,8 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.tcu.TcuContainer;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.init.Lang;
-import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
-import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.LevelStorage;
+import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.LevelData;
 import de.sanandrew.mods.turretmod.network.TurretPlayerActionPacket;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.util.text.StringTextComponent;
@@ -43,7 +42,7 @@ public class TcuLevelsPage
     @Override
     protected void initGd() {
         this.retrieveExcess = this.guiDefinition.getElementById("retrieveExcess").get(ButtonSL.class);
-        this.retrieveExcess.setFunction(btn -> TurretModRebirth.NETWORK.sendToServer(new TurretPlayerActionPacket(this.turret, TurretPlayerActionPacket.RETRIEVE_XP)));
+        this.retrieveExcess.setFunction(btn -> TurretPlayerActionPacket.retrieveXp(turret, mc.player));
         this.retrieveExcess.setActive(this.canRetrieveXp());
 
         this.guiDefinition.getElementById("current_xp_progress").get(ProgressBar.class)
@@ -55,11 +54,11 @@ public class TcuLevelsPage
         }));
 
         this.guiDefinition.getElementById("total_xp_progress").get(ProgressBar.class)
-                          .setPercentFunc(p -> MiscUtils.apply(this.getLvlStorage(), ls -> ls.getXp() / (double) LevelStorage.maxXp));
+                          .setPercentFunc(p -> MiscUtils.apply(this.getLvlStorage(), ls -> ls.getXp() / (double) LevelData.maxXp));
 
         this.guiDefinition.getElementById("level_text").get(Text.class)
                           .setTextFunc((g, ot) -> {
-                              LevelStorage lvlStg = this.getLvlStorage();
+                              LevelData lvlStg = this.getLvlStorage();
                               if( lvlStg != null ) {
                                   return new TranslationTextComponent(Lang.TCU_TEXT.get("leveling.current_level"), String.format("%d", lvlStg.getLevel()));
                               }
@@ -68,7 +67,7 @@ public class TcuLevelsPage
                           });
         this.guiDefinition.getElementById("exc_xp_text").get(Text.class)
                           .setTextFunc((g, ot) -> {
-                              LevelStorage lvlStg = this.getLvlStorage();
+                              LevelData lvlStg = this.getLvlStorage();
                               if( lvlStg != null ) {
                                   int excXp = lvlStg.getExcessXp();
                                   if( excXp > 0 ) {
@@ -80,7 +79,7 @@ public class TcuLevelsPage
                           });
     }
 
-    private LevelStorage getLvlStorage() {
+    private LevelData getLvlStorage() {
         return this.tcuScreen.getMenu().turret.getUpgradeProcessor().getUpgradeData(Upgrades.LEVELING.getId());
     }
 
@@ -92,7 +91,7 @@ public class TcuLevelsPage
     }
 
     private boolean canRetrieveXp() {
-        LevelStorage stg = this.turret.getUpgradeProcessor().getUpgradeData(Upgrades.LEVELING.getId());
+        LevelData stg = this.turret.getUpgradeProcessor().getUpgradeData(Upgrades.LEVELING.getId());
         return stg != null && stg.getExcessXp() > 0;
     }
 

@@ -35,12 +35,12 @@ public class ItemRegistry
     public static final Map<ResourceLocation, AmmoItem>   TURRET_AMMO         = new LinkedHashMap<>();
     public static final Map<ResourceLocation, ItemUpgrade>   TURRET_UPGRADES     = new LinkedHashMap<>();
     public static final Map<ResourceLocation, RepairKitItem> TURRET_REPAIRKITS   = new LinkedHashMap<>();
-    public static final TurretControlUnit                    TURRET_CONTROL_UNIT = new TurretControlUnit();
-//    public static final ItemAssemblyUpgrade ASSEMBLY_UPG_AUTO = new ItemAssemblyUpgrade.Automation();
-//    public static final ItemAssemblyUpgrade ASSEMBLY_UPG_SPEED = new ItemAssemblyUpgrade.Speed();
-//    public static final ItemAssemblyUpgrade.Filter ASSEMBLY_UPG_FILTER = new ItemAssemblyUpgrade.Filter();
-//    public static final ItemAssemblyUpgrade ASSEMBLY_UPG_REDSTONE = new ItemAssemblyUpgrade.Redstone();
-    public static final TurretLexicon     TURRET_LEXICON = new TurretLexicon();
+    public static final TurretControlUnit          TURRET_CONTROL_UNIT   = new TurretControlUnit();
+    public static final AssemblyUpgradeItem        ASSEMBLY_UPG_AUTO     = new AssemblyUpgradeItem.Simple();
+    public static final AssemblyUpgradeItem        ASSEMBLY_UPG_SPEED    = new AssemblyUpgradeItem.Simple();
+    public static final AssemblyUpgradeItem.Filter ASSEMBLY_UPG_FILTER   = new AssemblyUpgradeItem.Filter();
+    public static final AssemblyUpgradeItem        ASSEMBLY_UPG_REDSTONE = new AssemblyUpgradeItem.Simple();
+    public static final TurretLexicon              TURRET_LEXICON        = new TurretLexicon();
     public static final AmmoCartridgeItem AMMO_CARTRIDGE = new AmmoCartridgeItem();
 
     private ItemRegistry() { /* no-op */ }
@@ -52,11 +52,17 @@ public class ItemRegistry
         RepairKitRegistry.INSTANCE.registerItems(ITEMS, TmrConstants.ID);
 
         ITEMS.register("electrolyte_generator", () -> new BlockItem(BlockRegistry.ELECTROLYTE_GENERATOR, new Item.Properties().tab(TmrItemGroups.MISC)));
+        ITEMS.register("turret_assembly", () -> new BlockItem(BlockRegistry.TURRET_ASSEMBLY, new Item.Properties().tab(TmrItemGroups.MISC)));
         ITEMS.register("turret_crate", () -> new BlockItem(BlockRegistry.TURRET_CRATE, new Item.Properties().tab(TmrItemGroups.MISC)));
 
         ITEMS.register("turret_control_unit", () -> TURRET_CONTROL_UNIT);
         ITEMS.register("turret_lexicon", () -> TURRET_LEXICON);
         ITEMS.register("ammo_cartridge", () -> AMMO_CARTRIDGE);
+
+        ITEMS.register("turret_assembly_auto_upgrade", () -> ASSEMBLY_UPG_AUTO);
+        ITEMS.register("turret_assembly_speed_upgrade", () -> ASSEMBLY_UPG_SPEED);
+        ITEMS.register("turret_assembly_filter_upgrade", () -> ASSEMBLY_UPG_FILTER);
+        ITEMS.register("turret_assembly_redstone_upgrade", () -> ASSEMBLY_UPG_REDSTONE);
 
         ITEMS.register(bus);
     }

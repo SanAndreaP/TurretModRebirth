@@ -9,7 +9,7 @@ package de.sanandrew.mods.turretmod.tileentity.electrolyte;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.electrolytegen.IElectrolyteInventory;
+import de.sanandrew.mods.turretmod.api.ILeveledInventory;
 import de.sanandrew.mods.turretmod.api.electrolytegen.IElectrolyteRecipe;
 import de.sanandrew.mods.turretmod.init.RecipeRegistry;
 import net.minecraft.item.ItemStack;
@@ -57,7 +57,7 @@ public class ElectrolyteProcess
         nbt.putString("Recipe", this.recipe != null ? this.recipe.toString() : "");
     }
 
-    public ItemStack getTrashStack(IElectrolyteInventory inv) {
+    public ItemStack getTrashStack(ILeveledInventory inv) {
         IElectrolyteRecipe r = this.grabRecipe(inv);
 
         if( this.trashStack == null ) {
@@ -67,7 +67,7 @@ public class ElectrolyteProcess
         return this.trashStack;
     }
 
-    public ItemStack getTreasureStack(IElectrolyteInventory inv) {
+    public ItemStack getTreasureStack(ILeveledInventory inv) {
         IElectrolyteRecipe r = this.grabRecipe(inv);
 
         if( this.treasureStack == null ) {
@@ -77,9 +77,9 @@ public class ElectrolyteProcess
         return this.treasureStack;
     }
 
-    private IElectrolyteRecipe grabRecipe(IElectrolyteInventory inv) {
+    private IElectrolyteRecipe grabRecipe(ILeveledInventory inv) {
         if( this.recipeInst == null ) {
-            this.recipeInst = MiscUtils.get(ElectrolyteManager.INSTANCE.getFuel(inv.getWorld(), this.recipe), EmptyRecipe.INSTANCE);
+            this.recipeInst = MiscUtils.get(ElectrolyteManager.INSTANCE.getFuel(inv.getLevel(), this.recipe), EmptyRecipe.INSTANCE);
         }
 
         return this.recipeInst;
@@ -89,15 +89,15 @@ public class ElectrolyteProcess
         this.progress++;
     }
 
-    public boolean hasFinished(IElectrolyteInventory inv) {
+    public boolean hasFinished(ILeveledInventory inv) {
         return this.progress >= getMaxProgress(inv);
     }
 
-    public int getMaxProgress(IElectrolyteInventory inv) {
+    public int getMaxProgress(ILeveledInventory inv) {
         return this.grabRecipe(inv).getProcessTime();
     }
 
-    public float getEfficiency(IElectrolyteInventory inv) {
+    public float getEfficiency(ILeveledInventory inv) {
         return this.grabRecipe(inv).getEfficiency();
     }
 
@@ -117,7 +117,7 @@ public class ElectrolyteProcess
         public void incrProgress() { /* no-op */ }
 
         @Override
-        public boolean hasFinished(IElectrolyteInventory inv) {
+        public boolean hasFinished(ILeveledInventory inv) {
             return true;
         }
 
@@ -156,10 +156,10 @@ public class ElectrolyteProcess
         public int getProcessTime() { return 0; }
 
         @Override
-        public boolean matches(@Nonnull IElectrolyteInventory inv, @Nonnull World worldIn) { return false; }
+        public boolean matches(@Nonnull ILeveledInventory inv, @Nonnull World worldIn) { return false; }
 
         @Override
-        public ItemStack getTrashResult(IElectrolyteInventory inv) { return ItemStack.EMPTY; }
+        public ItemStack getTrashResult(ILeveledInventory inv) { return ItemStack.EMPTY; }
 
         @Override
         public boolean canCraftInDimensions(int width, int height) {
@@ -167,7 +167,7 @@ public class ElectrolyteProcess
         }
 
         @Override
-        public ItemStack getTreasureResult(IElectrolyteInventory inv) { return ItemStack.EMPTY; }
+        public ItemStack getTreasureResult(ILeveledInventory inv) { return ItemStack.EMPTY; }
 
         @Nonnull
         @Override

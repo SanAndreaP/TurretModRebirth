@@ -8,6 +8,7 @@ package de.sanandrew.mods.turretmod.block;
 
 import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.turretmod.tileentity.TurretCrateEntity;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -25,10 +26,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.BitSetVoxelShapePart;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapeCube;
+import net.minecraft.util.math.shapes.VoxelShapePart;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -43,6 +48,16 @@ import javax.annotation.Nullable;
 public class TurretCrateBlock
         extends ContainerBlock
 {
+    private static final VoxelShape BLOCK_SHAPE = Util.make(() -> {
+        VoxelShape base = Block.box(2,2,2,14,14,14);
+        VoxelShape bar1 = Block.box(0,0,3,16,16,5);
+        VoxelShape bar2 = Block.box(0,0,11,16,16,13);
+        VoxelShape bar3 = Block.box(3,0,0,5,16,16);
+        VoxelShape bar4 = Block.box(11,0,0,13,16,16);
+
+        return VoxelShapes.or(base, bar1, bar2, bar3, bar4);
+    });
+
     TurretCrateBlock() {
         super(Properties.of(Material.METAL, MaterialColor.QUARTZ).strength(4.25F).sound(SoundType.METAL)
                         .requiresCorrectToolForDrops().noOcclusion());
@@ -109,5 +124,10 @@ public class TurretCrateBlock
     @Override
     public int getAnalogOutputSignal(@Nonnull BlockState state, World level, @Nonnull BlockPos pos) {
         return Container.getRedstoneSignalFromContainer((IInventory) level.getBlockEntity(pos));
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState p_220053_1_, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_) {
+        return BLOCK_SHAPE;
     }
 }

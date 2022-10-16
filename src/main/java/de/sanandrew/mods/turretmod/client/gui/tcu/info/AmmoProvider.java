@@ -5,6 +5,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuScreen;
@@ -22,6 +23,7 @@ public class AmmoProvider
 {
     private ItemStack      item = ItemStack.EMPTY;
 
+    private GuiElementInst itemBg;
     private GuiElementInst itemIcon;
     private GuiElementInst itemTtip;
 
@@ -81,18 +83,25 @@ public class AmmoProvider
 
         JsonObject itemData = MiscUtils.get(data.getAsJsonObject("ammoItem"), JsonObject::new);
         AmmoItem itemElem = AmmoItem.Builder.fromJson(gui, itemData);
-        this.itemIcon = new GuiElementInst(JsonUtils.getIntArray(itemData.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] { 0, 0}, Range.is(2)), itemElem).initialize(gui);
+        this.itemIcon = new GuiElementInst(JsonUtils.getIntArray(itemData.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] {0, 0}, Range.is(2)), itemElem).initialize(gui);
+
+        JsonObject bgData = MiscUtils.get(data.getAsJsonObject("ammoBackground"), JsonObject::new);
+        JsonUtils.addDefaultJsonProperty(bgData, "size", new int[] {itemElem.getWidth(), itemElem.getHeight()});
+        JsonUtils.addDefaultJsonProperty(bgData, "uv", new int[] {50, 0});
+        Texture bgElem = Texture.Builder.fromJson(gui, bgData);
+        this.itemBg = new GuiElementInst(JsonUtils.getIntArray(bgData.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] {0, 0}, Range.is(2)), bgElem);
 
         JsonObject ttipData = MiscUtils.get(data.getAsJsonObject("ammoTooltip"), JsonObject::new);
         JsonUtils.addDefaultJsonProperty(ttipData, "size", new int[] {itemElem.getWidth(), itemElem.getHeight()});
         AmmoItemTooltip ttipElem = AmmoItemTooltip.Builder.fromJson(gui, ttipData);
-        this.itemTtip = new GuiElementInst(JsonUtils.getIntArray(ttipData.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] { 0, 0}, Range.is(2)), ttipElem).initialize(gui);
+        this.itemTtip = new GuiElementInst(JsonUtils.getIntArray(ttipData.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] {0, 0}, Range.is(2)), ttipElem).initialize(gui);
     }
 
     @Override
     public void setup(IGui gui, ITurretEntity turret, int w, int h) {
         super.setup(gui, turret, w, h);
 
+        this.itemBg.get().setup(gui, this.itemBg);
         MiscUtils.accept(this.itemIcon.get(AmmoItem.class), e -> {
             e.setItemSupplier(() -> this.item);
             e.setup(gui, this.itemIcon);
@@ -107,6 +116,7 @@ public class AmmoProvider
     public void tick(IGui gui, ITurretEntity turret) {
         super.tick(gui, turret);
 
+        this.itemBg.get().tick(gui, this.itemBg);
         this.itemIcon.get().tick(gui, this.itemIcon);
         this.itemTtip.get().tick(gui, this.itemTtip);
     }
@@ -115,6 +125,7 @@ public class AmmoProvider
     public void renderContent(IGui gui, ITurretEntity turret, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) {
         super.renderContent(gui, turret, stack, partTicks, x, y, mouseX, mouseY, maxWidth, maxHeight);
 
+        GuiDefinition.renderElement(gui, stack, x + this.itemBg.pos[0] + 144, y + this.itemBg.pos[1], mouseX, mouseY, partTicks, this.itemBg);
         GuiDefinition.renderElement(gui, stack, x + this.itemIcon.pos[0] + 144, y + this.itemIcon.pos[1], mouseX, mouseY, partTicks, this.itemIcon);
     }
 

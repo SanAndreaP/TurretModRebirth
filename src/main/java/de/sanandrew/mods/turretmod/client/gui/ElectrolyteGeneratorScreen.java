@@ -15,7 +15,7 @@ import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.turretmod.api.Resources;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.inventory.container.ElectrolyteGeneratorContainer;
-import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteGeneratorEntity;
+import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteEnergyStorage;
 import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteInventory;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
@@ -58,10 +58,10 @@ public class ElectrolyteGeneratorScreen
         }
 
         this.guiDefinition.getElementById("energy").get(ProgressBar.class)
-                          .setPercentFunc(p -> this.menu.data.getEnergyStored() / (double) ElectrolyteGeneratorEntity.MAX_FLUX_STORAGE);
+                          .setPercentFunc(p -> this.menu.data.getEnergyStored() / (double) ElectrolyteEnergyStorage.MAX_FLUX_STORAGE);
 
         this.guiDefinition.getElementById("energy_tooltip").get(Text.class)
-                          .setTextFunc((g, t) -> new StringTextComponent(String.format("%d / %d RF", this.menu.data.getEnergyStored(), ElectrolyteGeneratorEntity.MAX_FLUX_STORAGE)));
+                          .setTextFunc((g, t) -> new StringTextComponent(String.format("%d / %d RF", this.menu.data.getEnergyStored(), ElectrolyteEnergyStorage.MAX_FLUX_STORAGE)));
     }
 
     @Nonnull

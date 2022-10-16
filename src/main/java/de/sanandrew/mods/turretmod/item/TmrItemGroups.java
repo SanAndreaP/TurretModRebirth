@@ -10,7 +10,6 @@ package de.sanandrew.mods.turretmod.item;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.init.ResourceOrderer;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -22,6 +21,8 @@ import javax.annotation.Nonnull;
 
 public class TmrItemGroups
 {
+    private TmrItemGroups() { }
+
     public static final ItemGroup TURRETS = new ItemGroup(TmrConstants.ID + ":turrets") {
         private NonNullList<ItemStack> tabIcons = null;
 
@@ -60,7 +61,7 @@ public class TmrItemGroups
         @OnlyIn(Dist.CLIENT)
         public ItemStack makeIcon() {
             if( !ItemStackUtils.isValid(this.currTabIcon) ) {
-                this.currTabIcon = new ItemStack(BlockRegistry.ELECTROLYTE_GENERATOR);//new ItemStack(ItemRegistry.TURRET_CONTROL_UNIT, 1);
+                this.currTabIcon = new ItemStack(ItemRegistry.TURRET_CONTROL_UNIT, 1);
             }
 
             return this.currTabIcon;

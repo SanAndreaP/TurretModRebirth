@@ -13,18 +13,40 @@ import java.util.Objects;
 
 public class TurretConfig
 {
-    public final ForgeConfigSpec.ConfigValue<Boolean> showVariantsInItemGroup;
+    private final ForgeConfigSpec.ConfigValue<Boolean> showVariantsInItemGroup;
+    private final ForgeConfigSpec.ConfigValue<Boolean> renderFancyShields;
+    private final ForgeConfigSpec.ConfigValue<Boolean> canPlayersEditAll;
+    private final ForgeConfigSpec.ConfigValue<Boolean> canAdminsEditAll;
 
     private final Map<Class<? extends ITurret>, TurretSpec> turretMap = new HashMap<>();
 
     private TurretConfig(ForgeConfigSpec.Builder builder) {
         this.showVariantsInItemGroup = builder.define("showVariantsInItemGroup", false);
+        this.renderFancyShields = builder.define("renderFancyShields", true);
+        this.canPlayersEditAll = builder.define("canPlayersEditAll", false);
+        this.canAdminsEditAll = builder.define("canAdminsEditAll", true);
 
         this.turretMap.put(Crossbow.class, new TurretSpec(builder.push("crossbow"), 20, 256, 20, new RangeSpec(16, 8, 4)));
     }
 
     public void load() {
         TurretRegistry.INSTANCE.getAll().forEach(ITurret::initializeFromConfig);
+    }
+
+    public boolean showVariantsInItemGroup() {
+        return Boolean.TRUE.equals(this.showVariantsInItemGroup.get());
+    }
+
+    public boolean renderFancyShields() {
+        return Boolean.TRUE.equals(this.renderFancyShields.get());
+    }
+
+    public boolean canPlayersEditAll() {
+        return Boolean.TRUE.equals(this.canPlayersEditAll.get());
+    }
+
+    public boolean canAdminsEditAll() {
+        return Boolean.TRUE.equals(this.canAdminsEditAll.get());
     }
 
     public static TurretConfig build(ForgeConfigSpec.Builder builder) {

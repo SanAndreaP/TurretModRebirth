@@ -7,9 +7,10 @@
 package de.sanandrew.mods.turretmod.client.renderer.turret;
 
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
-import de.sanandrew.mods.turretmod.client.renderer.turret.layer.TurretGlowLayer;
 import de.sanandrew.mods.turretmod.client.renderer.turret.layer.LayerTurretUpgrades;
+import de.sanandrew.mods.turretmod.client.renderer.turret.layer.TurretGlowLayer;
 import de.sanandrew.mods.turretmod.client.renderer.turret.layer.TurretRangeLayer;
+import de.sanandrew.mods.turretmod.client.renderer.turret.layer.TurretShieldLayer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
@@ -33,6 +34,7 @@ public class TurretRenderBase<T extends LivingEntity & ITurretEntity, M extends 
         this.addLayer(new LayerTurretUpgrades<>(this));
         this.addLayer(new TurretGlowLayer<>(this));
         this.addLayer(new TurretRangeLayer<>(this));
+        this.addLayer(new TurretShieldLayer<>(this));
     }
 
     @Override

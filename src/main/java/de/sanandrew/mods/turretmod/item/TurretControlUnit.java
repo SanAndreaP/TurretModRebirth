@@ -12,17 +12,13 @@ import de.sanandrew.mods.sanlib.lib.util.EntityUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.api.client.tcu.ITcuScreen;
 import de.sanandrew.mods.turretmod.api.tcu.ITcuRegistry;
 import de.sanandrew.mods.turretmod.api.tcu.TcuContainer;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
-import de.sanandrew.mods.turretmod.client.gui.tcu.TcuInfoPage;
-import de.sanandrew.mods.turretmod.client.gui.tcu.TcuScreen;
 import de.sanandrew.mods.turretmod.entity.turret.TurretEntity;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.inventory.container.TcuContainerFactory;
 import de.sanandrew.mods.turretmod.inventory.container.TcuUpgradesContainer;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -30,7 +26,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
@@ -40,8 +35,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 import org.apache.logging.log4j.Level;
 
@@ -50,21 +43,19 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.Consumer;
 
 public class TurretControlUnit
         extends Item
         implements ITcuRegistry
 {
-    private static final String NBT_BOUND_TURRET = TmrConstants.ID + ".bound_turret";
-    private static final String NBT_BOUND_TURRET_ID = "Id";
-    private static final int EE_NAME_COUNT = 5;
+    private static final String                 NBT_SAPTURRETMOD    = TmrConstants.ID;
+    private static final String                 NBT_BOUND_TURRET_ID = "Id";
+    private static final int                    EE_NAME_COUNT       = 5;
+    private static final List<ResourceLocation> PAGES               = new ArrayList<>();
 
     private long prevDisplayNameTime = 0;
-    private int nameId = 0;
-
-    public static final List<ResourceLocation>           PAGES = new ArrayList<>();
+    private int  nameId              = 0;
 
     TurretControlUnit() {
         super(new Properties().tab(TmrItemGroups.MISC));
@@ -78,7 +69,7 @@ public class TurretControlUnit
             if( MiscUtils.RNG.randomInt(1000) != 0 ) {
                 this.nameId = 0;
             } else {
-                this.nameId = MiscUtils.RNG.randomInt(EE_NAME_COUNT - 1) + 1;// MathHelper.ceil(MiscUtils.RNG.randomInt(EE_NAME_COUNT - 1) + 2);
+                this.nameId = MiscUtils.RNG.randomInt(EE_NAME_COUNT - 1) + 1;
             }
         }
 
@@ -100,13 +91,32 @@ public class TurretControlUnit
         }
     }
 
+    private boolean accessDenied(ITurretEntity turret, PlayerEntity player) {
+        if( !turret.hasPlayerPermission(player) ) {
+            ITextComponent errorMsg = new TranslationTextComponent(this.getDescriptionId() + ".access_denied").withStyle(TextFormatting.RED);
+            player.displayClientMessage(errorMsg, true);
+            return true;
+        }
+
+        return false;
+    }
+
     @Nonnull
     @Override
+    @SuppressWarnings("java:S3776")
     public ActionResult<ItemStack> use(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack heldStack = player.getItemInHand(hand);
         if( ItemStackUtils.isItem(heldStack, ItemRegistry.TURRET_CONTROL_UNIT) ) {
             ITurretEntity turret = getBoundTurret(heldStack, world);
             if( turret != null ) {
+                if( this.accessDenied(turret, player) ) {
+                    if( !world.isClientSide ) {
+                        bindTurret(heldStack, null);
+                    }
+
+                    return ActionResult.fail(heldStack);
+                }
+
                 if( !world.isClientSide ) {
                     if( player.isCrouching() ) {
                         bindTurret(heldStack, null);
@@ -126,11 +136,16 @@ public class TurretControlUnit
     @Override
     public ActionResultType interactLivingEntity(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, @Nonnull LivingEntity entity, @Nonnull Hand hand) {
         if( entity instanceof ITurretEntity ) {
+            ITurretEntity turret = (ITurretEntity) entity;
+            if( this.accessDenied(turret, player) ) {
+                return ActionResultType.FAIL;
+            }
+
             if( !player.level.isClientSide ) {
                 if( player.isCrouching() ) {
-                    bindTurret(stack, (ITurretEntity) entity);
+                    bindTurret(stack, turret);
                 } else if( player instanceof ServerPlayerEntity ) {
-                    openTcu((ServerPlayerEntity) player, stack, (ITurretEntity) entity, PAGES.get(0), true);
+                    openTcu((ServerPlayerEntity) player, stack, turret, PAGES.get(0), true);
                 }
             }
 
@@ -140,8 +155,16 @@ public class TurretControlUnit
         return super.interactLivingEntity(stack, player, entity, hand);
     }
 
+    public static int getPageOrder(ResourceLocation pageId) {
+        return PAGES.indexOf(pageId);
+    }
+
+    public static void forEachPage(Consumer<ResourceLocation> forEachFunc) {
+        PAGES.forEach(forEachFunc);
+    }
+
     private static UUID getBoundID(ItemStack stack) {
-        CompoundNBT boundTurret = stack.getTagElement(NBT_BOUND_TURRET);
+        CompoundNBT boundTurret = stack.getTagElement(NBT_SAPTURRETMOD);
         if( boundTurret != null && boundTurret.contains("Id") ) {
             return boundTurret.getUUID("Id");
         }
@@ -149,8 +172,8 @@ public class TurretControlUnit
         return null;
     }
 
-    public static boolean isTcuHeld(PlayerEntity player) {
-        return ItemStackUtils.isValid(getHeldTcu(player));
+    public static boolean isTcuHeld(PlayerEntity player, ITurretEntity turret) {
+        return ItemStackUtils.isValid(getHeldTcu(player)) && turret != null && turret.hasPlayerPermission(player);
     }
 
     public static ItemStack getHeldTcu(PlayerEntity player) {
@@ -196,14 +219,14 @@ public class TurretControlUnit
             return;
         }
 
-        CompoundNBT tag = stack.getTagElement(NBT_BOUND_TURRET);
+        CompoundNBT tag = stack.getTagElement(NBT_SAPTURRETMOD);
         if( turretInst != null ) {
             if( tag == null ) {
-                tag = stack.getOrCreateTagElement(NBT_BOUND_TURRET);
+                tag = stack.getOrCreateTagElement(NBT_SAPTURRETMOD);
             }
             tag.putUUID(NBT_BOUND_TURRET_ID, turretInst.get().getUUID());
         } else {
-            stack.removeTagKey(NBT_BOUND_TURRET);
+            stack.removeTagKey(NBT_SAPTURRETMOD);
 
             CompoundNBT cmp = stack.getTag();
             if( cmp != null && cmp.isEmpty() ) {
@@ -246,7 +269,7 @@ public class TurretControlUnit
     public static final ResourceLocation INFO              = new ResourceLocation(TmrConstants.ID, "info");
     public static final ResourceLocation TARGETS_CREATURES = new ResourceLocation(TmrConstants.ID, "targets_creatures");
     public static final ResourceLocation TARGETS_PLAYERS   = new ResourceLocation(TmrConstants.ID, "targets_players");
-    public static final ResourceLocation TARGETS_SMART   = new ResourceLocation(TmrConstants.ID, "targets_smart");
+    public static final ResourceLocation TARGETS_SMART     = new ResourceLocation(TmrConstants.ID, "targets_smart");
     public static final ResourceLocation UPGRADES          = new ResourceLocation(TmrConstants.ID, "upgrades");
     public static final ResourceLocation LEVELS            = new ResourceLocation(TmrConstants.ID, "leveling");
 

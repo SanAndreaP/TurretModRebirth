@@ -5,7 +5,6 @@ import de.sanandrew.mods.turretmod.init.Lang;
 
 import javax.annotation.Nonnull;
 
-//TODO: render personal shield
 public class HealthProvider
         extends ValueProvider
 {

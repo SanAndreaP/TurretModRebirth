@@ -16,7 +16,8 @@ public final class TcuInfoValue
         extends ElementParent<Integer>
 {
     @Nonnull
-    private final ITcuInfoProvider provider;
+    public final ITcuInfoProvider provider;
+
     private final int              w;
     private final int              h;
     private final ITurretEntity turret;
@@ -39,20 +40,26 @@ public final class TcuInfoValue
 
     @Override
     public void tick(IGui gui, GuiElementInst e) {
-        this.provider.tick(gui, this.turret);
+        if( this.isVisible() ) {
+            this.provider.tick(gui, this.turret);
+        }
 
         super.tick(gui, e);
     }
 
     @Override
     public void render(IGui gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, GuiElementInst e) {
-        super.render(gui, stack, partTicks, x, y, mouseX, mouseY, e);
+        if( this.isVisible() ) {
+            super.render(gui, stack, partTicks, x, y, mouseX, mouseY, e);
 
-        this.provider.renderContent(gui, this.turret, stack, partTicks, x, y, mouseX, mouseY, this.w, this.h);
+            this.provider.renderContent(gui, this.turret, stack, partTicks, x, y, mouseX, mouseY, this.w, this.h);
+        }
     }
 
     public void renderOutside(IGui gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY) {
-        this.provider.renderOutside(gui, this.turret, stack, partTicks, x, y, mouseX, mouseY, this.w, this.h);
+        if( this.isVisible() ) {
+            this.provider.renderOutside(gui, this.turret, stack, partTicks, x, y, mouseX, mouseY, this.w, this.h);
+        }
     }
 
     @Override

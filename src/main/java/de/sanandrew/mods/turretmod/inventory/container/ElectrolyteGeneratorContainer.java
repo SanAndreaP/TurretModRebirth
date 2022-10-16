@@ -1,11 +1,3 @@
-/*
- * ****************************************************************************************************************
- * Authors:   SanAndreasP
- * Copyright: SanAndreasP
- * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
- * http://creativecommons.org/licenses/by-nc-sa/4.0/
- * *****************************************************************************************************************
- */
 package de.sanandrew.mods.turretmod.inventory.container;
 
 import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
@@ -114,7 +106,6 @@ public class ElectrolyteGeneratorContainer
             ItemStack slotStack = slot.getItem();
             origStack = slotStack.copy();
 
-            //TODO: check, if shift-click puts invalid items in the input slots
             if( slotId <= maxTESlotId ) { // if clicked stack is from TileEntity
                 if( !this.moveItemStackTo(slotStack, maxTESlotId, maxTESlotId + 36, true) ) {
                     return ItemStack.EMPTY;
@@ -147,38 +138,38 @@ public class ElectrolyteGeneratorContainer
     private class InputSlot
             extends SlotItemHandler
     {
-        private final int index;
+        private final int myIndex;
 
         public InputSlot(int index, int xPosition, int yPosition) {
             super(ElectrolyteGeneratorContainer.this.inventory, index, xPosition, yPosition);
-            this.index = index;
+            this.myIndex = index;
         }
 
         @Override
         public boolean mayPlace(@Nonnull ItemStack stack) {
-            return ElectrolyteGeneratorContainer.this.inventory.isItemValid(this.index, stack);
+            return ElectrolyteGeneratorContainer.this.inventory.isItemValid(this.myIndex, stack);
         }
 
         @Override
         public boolean mayPickup(PlayerEntity playerIn) {
-            return !ElectrolyteGeneratorContainer.this.inventory.extractInsertItem(this.index, 1, true).isEmpty();
+            return !ElectrolyteGeneratorContainer.this.inventory.extractInsertItem(this.myIndex, 1, true).isEmpty();
         }
 
         @Nonnull
         @Override
         public ItemStack remove(int amount) {
-            return ElectrolyteGeneratorContainer.this.inventory.extractInsertItem(this.index, amount, false);
+            return ElectrolyteGeneratorContainer.this.inventory.extractInsertItem(this.myIndex, amount, false);
         }
     }
 
     private class ProcessingSlot
             extends Slot
     {
-        private final int index;
+        private final int myIndex;
 
         ProcessingSlot(int id, int x) {
             super(ElectrolyteGeneratorContainer.this.inventory, id, x, 43);
-            this.index = id;
+            this.myIndex = id;
         }
 
         @Override
@@ -194,14 +185,14 @@ public class ElectrolyteGeneratorContainer
         @Override
         @Nonnull
         public ItemStack getItem() {
-            return ElectrolyteGeneratorContainer.this.processesView.get(this.index).processStack;
+            return ElectrolyteGeneratorContainer.this.processesView.get(this.myIndex).processStack;
         }
 
         @Override
-        public void set(@Nonnull ItemStack stack) { }
+        public void set(@Nonnull ItemStack stack) { /* no-op */ }
 
         @Override
-        public void onQuickCraft(@Nonnull ItemStack stack1, @Nonnull ItemStack stack2) { }
+        public void onQuickCraft(@Nonnull ItemStack stack1, @Nonnull ItemStack stack2) { /* no-op */ }
 
         @Override
         public int getMaxStackSize(@Nonnull ItemStack stack) {

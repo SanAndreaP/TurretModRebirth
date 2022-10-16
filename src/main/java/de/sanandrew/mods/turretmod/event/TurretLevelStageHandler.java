@@ -2,7 +2,7 @@ package de.sanandrew.mods.turretmod.event;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
-import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.LevelStorage;
+import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.LevelData;
 import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.StageLoader;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -26,7 +26,7 @@ public class TurretLevelStageHandler
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         DistExecutor.unsafeCallWhenOn(Dist.DEDICATED_SERVER, () -> () -> {
-            TurretModRebirth.NETWORK.sendToPlayer(LevelStorage.getPacket(), (ServerPlayerEntity) event.getPlayer());
+            TurretModRebirth.NETWORK.sendToPlayer(LevelData.getPacket(), (ServerPlayerEntity) event.getPlayer());
             return null;
         });
     }

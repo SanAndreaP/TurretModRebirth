@@ -10,16 +10,20 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.energy.IEnergyStorage;
 
-final class ElectrolyteEnergyStorage
+public final class ElectrolyteEnergyStorage
         implements IEnergyStorage, INBTSerializable<CompoundNBT>
 {
+    public static final int MAX_FLUX_STORAGE = 500_000;
+    public static final int MAX_FLUX_EXTRACT   = 1_000;
+    public static final int MAX_FLUX_GENERATED = 200;
+
     int fluxAmount;
     private int prevFluxAmount;
     int fluxExtractPerTick;
     private int fluxBuffer;
 
     void resetFluxExtract() {
-        this.fluxExtractPerTick = Math.min(this.fluxAmount, ElectrolyteGeneratorEntity.MAX_FLUX_EXTRACT);
+        this.fluxExtractPerTick = Math.min(this.fluxAmount, MAX_FLUX_EXTRACT);
     }
 
     void updatePrevFlux() {
@@ -32,7 +36,7 @@ final class ElectrolyteEnergyStorage
 
     void emptyBuffer() {
         if( this.fluxBuffer > 0 ) {
-            int fluxSubtracted = Math.min(ElectrolyteGeneratorEntity.MAX_FLUX_STORAGE - this.fluxAmount, Math.min(ElectrolyteGeneratorEntity.MAX_FLUX_GENERATED, this.fluxBuffer));
+            int fluxSubtracted = Math.min(MAX_FLUX_STORAGE - this.fluxAmount, Math.min(MAX_FLUX_GENERATED, this.fluxBuffer));
             this.fluxBuffer -= fluxSubtracted;
             this.fluxAmount += fluxSubtracted;
         }
@@ -43,7 +47,7 @@ final class ElectrolyteEnergyStorage
     }
 
     boolean isBufferEmpty() {
-        return this.fluxBuffer <= ElectrolyteGeneratorEntity.MAX_FLUX_GENERATED;
+        return this.fluxBuffer <= MAX_FLUX_GENERATED;
     }
 
     @Override
@@ -53,7 +57,7 @@ final class ElectrolyteEnergyStorage
 
     @Override
     public int extractEnergy(int maxExtract, boolean simulate) {
-        int energyExtracted = Math.min(this.fluxExtractPerTick, Math.min(ElectrolyteGeneratorEntity.MAX_FLUX_EXTRACT, maxExtract));
+        int energyExtracted = Math.min(this.fluxExtractPerTick, Math.min(MAX_FLUX_EXTRACT, maxExtract));
 
         if( !simulate ) {
             this.fluxAmount -= energyExtracted;
@@ -70,7 +74,7 @@ final class ElectrolyteEnergyStorage
 
     @Override
     public int getMaxEnergyStored() {
-        return ElectrolyteGeneratorEntity.MAX_FLUX_STORAGE;
+        return MAX_FLUX_STORAGE;
     }
 
     @Override
@@ -87,14 +91,14 @@ final class ElectrolyteEnergyStorage
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
-        nbt.putInt("fluxAmount", this.fluxAmount);
-        nbt.putInt("fluxBuffer", this.fluxBuffer);
+        nbt.putInt("FluxAmount", this.fluxAmount);
+        nbt.putInt("FluxBuffer", this.fluxBuffer);
         return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        this.fluxAmount = nbt.getInt("fluxAmount");
-        this.fluxBuffer = nbt.getInt("fluxBuffer");
+        this.fluxAmount = nbt.getInt("FluxAmount");
+        this.fluxBuffer = nbt.getInt("FluxBuffer");
     }
 }

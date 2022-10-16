@@ -44,15 +44,11 @@ public class ElectrolyteGeneratorEntity
         extends TileEntity
         implements ITickableTileEntity, INamedContainerProvider, INameable
 {
-    public static final int MAX_FLUX_STORAGE = 500_000;
-    public static final int MAX_FLUX_EXTRACT = 1_000;
-    public static final int MAX_FLUX_GENERATED = 200;
-
     protected final ElectrolyteSyncData syncData = new ElectrolyteSyncData(this);
 
     public final ElectrolyteProcessList processes = new ElectrolyteProcessList();
 
-    public float efficiency;
+    float efficiency;
 
     private ITextComponent customName;
 
@@ -74,7 +70,7 @@ public class ElectrolyteGeneratorEntity
 
             this.energyStorage.emptyBuffer();
 
-            if( this.energyStorage.isBufferEmpty() && this.energyStorage.fluxAmount < MAX_FLUX_STORAGE ) {
+            if( this.energyStorage.isBufferEmpty() && this.energyStorage.fluxAmount < ElectrolyteEnergyStorage.MAX_FLUX_STORAGE ) {
                 int fluxEff = this.getGeneratedFlux();
 
                 this.efficiency = 0.0F;
@@ -161,7 +157,7 @@ public class ElectrolyteGeneratorEntity
                     continue;
                 }
 
-                long extractable = EnergyHelper.extractEnergy(this, direction, MAX_FLUX_EXTRACT, true);
+                long extractable = EnergyHelper.extractEnergy(this, direction, ElectrolyteEnergyStorage.MAX_FLUX_EXTRACT, true);
                 long receivable = EnergyHelper.receiveEnergy(te, otherDir, extractable, false);
 
                 EnergyHelper.extractEnergy(this, direction, receivable, false);
@@ -196,7 +192,7 @@ public class ElectrolyteGeneratorEntity
     @Nonnull
     @Override
     public CompoundNBT save(@Nonnull CompoundNBT nbt) {
-        super.save(nbt);
+        nbt = super.save(nbt);
 
         ListNBT progressesNbt = new ListNBT();
         for( int i = 0, max = this.processes.size(); i < max; i++ ) {
@@ -250,14 +246,10 @@ public class ElectrolyteGeneratorEntity
     @Override
     @SuppressWarnings("unchecked")
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
-        if( capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ) {
-            if( facing != Direction.UP ) {
-                return this.itemHandler.getLO();
-            }
-        } else if( capability == CapabilityEnergy.ENERGY ) {
-            if( facing != Direction.UP ) {
-                return LazyOptional.of(() -> (T) this.energyStorage);
-            }
+        if( capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing != Direction.UP ) {
+            return this.itemHandler.getLO();
+        } else if( capability == CapabilityEnergy.ENERGY && facing != Direction.UP ) {
+            return LazyOptional.of(() -> (T) this.energyStorage);
         }
 
         return super.getCapability(capability, facing);
@@ -280,13 +272,13 @@ public class ElectrolyteGeneratorEntity
         return this.customName;
     }
 
+    public void setCustomName(ITextComponent name) {
+        this.customName = name;
+    }
+
     @Nullable
     @Override
     public Container createMenu(int id, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
         return new ElectrolyteGeneratorContainer(id, playerInventory, this.itemHandler, this.syncData, this.processes);
-    }
-
-    public void setCustomName(ITextComponent name) {
-        this.customName = name;
     }
 }

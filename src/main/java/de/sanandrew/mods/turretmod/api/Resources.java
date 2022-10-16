@@ -30,9 +30,10 @@ public final class Resources
     public static final ResourceLocation MODEL_ENTITY_MINIGUN             = rl("models/entity/turret_minigun.json");
     public static final ResourceLocation MODEL_ENTITY_LASER               = rl("models/entity/turret_laser.json");
     public static final ResourceLocation MODEL_ENTITY_FTHROWER            = rl("models/entity/turret_flamethrower.json");
-    public static final ResourceLocation MODEL_TILE_TURRET_ASSEMBLY_MODEL = rl("models/block/turret_assembly_tile.json");
+    public static final ResourceLocation MODEL_TILE_TURRET_ASSEMBLY_MODEL = rl("models/entity/turret_assembly.json");
 
     public static final ResourceLocation GUI_ASSEMBLY             = rl("guis/assembly.json");
+    public static final ResourceLocation GUI_ASSEMBLY_FILTER      = rl("guis/assembly_filter.json");
     public static final ResourceLocation GUI_ELECTROLYTE          = rl("guis/electrolyte_generator.json");
     public static final ResourceLocation GUI_CARTRIDGE            = rl("guis/ammo_cartridge.json");
     public static final ResourceLocation GUI_TCRATE               = rl("guis/turret_crate.json");

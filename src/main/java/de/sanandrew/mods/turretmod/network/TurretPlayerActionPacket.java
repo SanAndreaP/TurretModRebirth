@@ -13,12 +13,13 @@ import de.sanandrew.mods.sanlib.lib.network.SimpleMessage;
 import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
-import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.LevelStorage;
+import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.LevelData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.LivingEntity;
@@ -29,21 +30,23 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.network.NetworkEvent;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 import java.util.function.Supplier;
 
 public class TurretPlayerActionPacket
         extends SimpleMessage
 {
-    public static final  byte SET_ACTIVE = 0;
-    public static final  byte SET_DEACTIVE = 1;
-    public static final byte RETRIEVE_XP = 2;
+    private static final byte SET_ACTIVE = 0;
+    private static final byte SET_DEACTIVE = 1;
+    private static final byte RETRIEVE_XP = 2;
     private static final byte DISMANTLE = 3;
     private static final byte RENAME = 4;
     private static final byte SET_TARGET_CREATURE = 5;
     private static final byte SET_TARGET_PLAYER = 6;
     private static final byte SET_FILTERTYPE_CREATURE = 7;
     private static final byte SET_FILTERTYPE_PLAYER = 8;
+    private static final byte SET_OWNER = 9;
 
     private final int  turretId;
     private final byte actionId;
@@ -55,7 +58,10 @@ public class TurretPlayerActionPacket
     private EntityClassification targetCreatureType;
     private UUID                 targetPlayerId;
 
-    public TurretPlayerActionPacket(ITurretEntity turret, byte action) {
+    @Nonnull
+    private UUID newOwner = UuidUtils.EMPTY_UUID;
+
+    private TurretPlayerActionPacket(ITurretEntity turret, byte action) {
         this.turretId = turret.get().getId();
         this.actionId = action;
     }
@@ -63,6 +69,11 @@ public class TurretPlayerActionPacket
     private TurretPlayerActionPacket(ITurretEntity turret, String cstName) {
         this(turret, RENAME);
         this.customName = cstName != null && cstName.length() > 0 ? cstName : null;
+    }
+
+    private TurretPlayerActionPacket(ITurretEntity turret, @Nonnull UUID newOwner) {
+        this(turret, SET_OWNER);
+        this.newOwner = newOwner;
     }
 
     private TurretPlayerActionPacket(ITurretEntity turret, boolean targetActivate, ResourceLocation targetCreatureId, EntityClassification targetCreatureType) {
@@ -93,6 +104,8 @@ public class TurretPlayerActionPacket
             this.targetPlayerId = buffer.readBoolean() ? buffer.readUUID() : null;
         } else if( this.actionId == SET_FILTERTYPE_CREATURE || this.actionId == SET_FILTERTYPE_PLAYER ) {
             this.targetFlag = buffer.readBoolean();
+        } else if( this.actionId == SET_OWNER ) {
+            this.newOwner = buffer.readUUID();
         }
     }
 
@@ -112,6 +125,8 @@ public class TurretPlayerActionPacket
             PacketRegistry.writeOptional(this.targetPlayerId != null, buffer, b -> b.writeUUID(this.targetPlayerId));
         } else if( this.actionId == SET_FILTERTYPE_CREATURE || this.actionId == SET_FILTERTYPE_PLAYER ) {
             buffer.writeBoolean(this.targetFlag);
+        } else if( this.actionId == SET_OWNER ) {
+            buffer.writeUUID(this.newOwner);
         }
     }
 
@@ -134,16 +149,13 @@ public class TurretPlayerActionPacket
                     tryDismantle(player, turretInst);
                     break;
                 case SET_ACTIVE:
-                    turretInst.setActive(true);
+                    toggleActive(turretInst, true);
                     break;
                 case SET_DEACTIVE:
-                    turretInst.setActive(false);
+                    toggleActive(turretInst, false);
                     break;
                 case RETRIEVE_XP:
-                    LevelStorage lvlStg = turretInst.getUpgradeProcessor().getUpgradeData(Upgrades.LEVELING.getId());
-                    if( lvlStg != null ) {
-                        player.giveExperiencePoints(lvlStg.retrieveExcessXp());
-                    }
+                    retrieveXp(turretInst, player);
                     break;
                 case RENAME:
                     rename(turretInst, this.customName);
@@ -160,7 +172,10 @@ public class TurretPlayerActionPacket
                 case SET_FILTERTYPE_PLAYER:
                     setFilterType(turretInst, this.targetFlag, false);
                     break;
-                default:
+                case SET_OWNER:
+                    setOwner(turretInst, this.newOwner);
+                    break;
+                default: // no other action available
             }
         }
     }
@@ -168,6 +183,26 @@ public class TurretPlayerActionPacket
     @Override
     public boolean handleOnMainThread() {
         return true;
+    }
+
+    //region Callers
+    public static void toggleActive(ITurretEntity turret, boolean active) {
+        if( turret.get().level.isClientSide ) {
+            TurretModRebirth.NETWORK.sendToServer(new TurretPlayerActionPacket(turret, active ? SET_ACTIVE : SET_DEACTIVE));
+        } else {
+            turret.setActive(active);
+        }
+    }
+
+    public static void retrieveXp(ITurretEntity turret, PlayerEntity player) {
+        if( turret.get().level.isClientSide ) {
+            TurretModRebirth.NETWORK.sendToServer(new TurretPlayerActionPacket(turret, RETRIEVE_XP));
+        } else {
+            LevelData lvlStg = turret.getUpgradeProcessor().getUpgradeData(Upgrades.LEVELING.getId());
+            if( lvlStg != null ) {
+                player.giveExperiencePoints(lvlStg.retrieveExcessXp());
+            }
+        }
     }
 
     public static void rename(ITurretEntity turret, String cstName) {
@@ -251,4 +286,13 @@ public class TurretPlayerActionPacket
         }
     }
 
+    public static void setOwner(ITurretEntity turret, UUID ownerId) {
+        if( turret.get().level.isClientSide ) {
+            TurretModRebirth.NETWORK.sendToServer(new TurretPlayerActionPacket(turret, ownerId));
+        } else {
+            turret.changeOwner(ownerId);
+            turret.syncState(SyncTurretStatePacket.OWNER);
+        }
+    }
+    //endregion
 }

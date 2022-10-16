@@ -1,7 +1,7 @@
 {
   "width": 230,
   "height": 222,
-  "texture": "sapturretmod:textures/gui/turretassembly/assembly.png",
+  "texture": "sapturretmod:textures/gui/assembly/assembly.png",
   "backgroundElements": [
     {
       "type": "texture",
@@ -11,8 +11,9 @@
       }
     },
     {
-      "type": "rflux_bar",
+      "type": "progress_bar",
       "pos": [210, 8],
+      "id": "energy",
       "data": {
         "size": [12, 82],
         "uv": [230, 12]
@@ -42,7 +43,6 @@
       "pos": [156, 48],
       "data": {
         "size": [50, 12],
-        "buttonFunction": 0,
         "labelText": "gui.sapturretmod.tassembly.cancel"
       }
     },
@@ -52,7 +52,6 @@
       "pos": [156, 61],
       "data": {
         "size": [50, 12],
-        "buttonFunction": 1,
         "labelText": "gui.sapturretmod.tassembly.automate.enable"
       }
     },
@@ -62,7 +61,6 @@
       "pos": [156, 74],
       "data": {
         "size": [50, 12],
-        "buttonFunction": 1,
         "labelText": "gui.sapturretmod.tassembly.automate.disable"
       }
     },
@@ -70,26 +68,24 @@
       "type": "button",
       "pos": [14, 23],
       "data": {
-        "texture": "sapturretmod:textures/gui/turretassembly/assembly.png",
         "size": [16, 9],
         "uvSize": [16, 9],
-        "buttonFunction": 2,
         "uvEnabled": [50, 222],
         "uvHover": [50, 231],
-        "uvDisabled": [50, 222]
+        "uvDisabled": [50, 222],
+        "useVanillaTexture": false
       }
     },
     {
       "type": "button",
       "pos": [14, 58],
       "data": {
-        "texture": "sapturretmod:textures/gui/turretassembly/assembly.png",
         "size": [16, 9],
         "uvSize": [16, 9],
-        "buttonFunction": 3,
         "uvEnabled": [66, 222],
         "uvHover": [66, 231],
-        "uvDisabled": [66, 222]
+        "uvDisabled": [66, 222],
+        "useVanillaTexture": false
       }
     },
     {
@@ -132,7 +128,11 @@
         "borderTopColor": "0x50FF0000",
         "borderBottomColor": "0x507F0000",
         "content": {
-          "type": "rflux_text"
+          "type": "text",
+          "id": "energy_tooltip",
+          "data": {
+            "color": "0xFFFFFFFF"
+          }
         }
       }
     }

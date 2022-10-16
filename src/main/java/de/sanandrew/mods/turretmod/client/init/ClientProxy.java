@@ -2,9 +2,12 @@ package de.sanandrew.mods.turretmod.client.init;
 
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.turretmod.api.turret.IForcefield;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.client.gui.AmmoCartridgeScreen;
+import de.sanandrew.mods.turretmod.client.gui.AssemblyFilterScreen;
 import de.sanandrew.mods.turretmod.client.gui.ElectrolyteGeneratorScreen;
+import de.sanandrew.mods.turretmod.client.gui.TurretAssemblyScreen;
 import de.sanandrew.mods.turretmod.client.gui.TurretCrateScreen;
 import de.sanandrew.mods.turretmod.client.gui.element.ErrorTooltip;
 import de.sanandrew.mods.turretmod.client.gui.element.TurretCamElement;
@@ -19,6 +22,7 @@ import de.sanandrew.mods.turretmod.client.model.ModelRegistry;
 import de.sanandrew.mods.turretmod.client.renderer.RenderClassProvider;
 import de.sanandrew.mods.turretmod.client.renderer.color.AmmoCartridgeColor;
 import de.sanandrew.mods.turretmod.client.renderer.color.TippedBoltColor;
+import de.sanandrew.mods.turretmod.client.renderer.turret.ForcefieldRender;
 import de.sanandrew.mods.turretmod.client.shader.Shaders;
 import de.sanandrew.mods.turretmod.init.IProxy;
 import de.sanandrew.mods.turretmod.init.IRenderClassProvider;
@@ -34,8 +38,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -52,6 +58,8 @@ public class ClientProxy
         ScreenManager.register(ContainerRegistry.AMMO_CARTRIGE, AmmoCartridgeScreen::new);
         ScreenManager.register(ContainerRegistry.TCU, TcuScreen::new);
         ScreenManager.register(ContainerRegistry.TURRET_CRATE, TurretCrateScreen::new);
+        ScreenManager.register(ContainerRegistry.ASSEMBLY, TurretAssemblyScreen::new);
+        ScreenManager.register(ContainerRegistry.ASSEMBLY_FILTER, AssemblyFilterScreen::new);
 
         GuiDefinition.TYPES.put(TurretTypeName.ID, TurretTypeName.Builder::fromJson);
         GuiDefinition.TYPES.put(PageNavigation.ID, PageNavigation.Builder::fromJson);
@@ -119,5 +127,25 @@ public class ClientProxy
     @Override
     public boolean isSneakPressed() {
         return Minecraft.getInstance().options.keyShift.isDown();
+    }
+
+    @Override
+    public boolean hasClientForcefield(ITurretEntity turretEntity, Class<? extends IForcefield> forcefieldClass) {
+        return ForcefieldRender.INSTANCE.hasForcefield(turretEntity.get(), forcefieldClass);
+    }
+
+    @Override
+    public void addClientForcefield(ITurretEntity turretEntity, IForcefield forcefield) {
+        ForcefieldRender.INSTANCE.addForcefieldRenderer(turretEntity.get(), forcefield);
+    }
+
+    @Override
+    public void removeClientForcefield(ITurretEntity turretEntity, Class<? extends IForcefield> forcefieldClass) {
+        ForcefieldRender.INSTANCE.removeForcefieldRenderer(turretEntity.get(), forcefieldClass);
+    }
+
+    @Override
+    public MinecraftServer getServer(World level) {
+        return Minecraft.getInstance().getSingleplayerServer();
     }
 }

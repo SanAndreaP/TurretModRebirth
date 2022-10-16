@@ -1,5 +1,5 @@
 {
-  "parent": "block/block",
+  "parent": "block/cube",
   "credit": "Model generated using MrCrayfish's Model Creator (http://mrcrayfish.com/modelcreator/)",
   "textures": {
     "particle": "sapturretmod:blocks/turret_assembly_side",

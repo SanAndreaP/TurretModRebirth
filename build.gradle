@@ -119,7 +119,7 @@ repositories {
     }
     maven { // SanLib
         name 'SanLib'
-        url 'https://repo.repsy.io/mvn/sanandreasp/sanlib'
+        url 'https://repo.repsy.io/mvn/sanandreap/sanlib'
     }
 }
 
@@ -148,11 +148,11 @@ jar {
     manifest {
         attributes([
             'Specification-Title': grabConstant('ID'),
-            'Specification-Vendor': 'SanAndreasP',
+            'Specification-Vendor': 'SanAndreaP',
             'Specification-Version': '1', // We are version 1 of ourselves
             'Implementation-Title': grabConstant('ID'),
             'Implementation-Version': archiveVersion,
-            'Implementation-Vendor' :'SanAndreasP',
+            'Implementation-Vendor' :'SanAndreaP',
             'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }

@@ -7,7 +7,6 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.tcu.TcuContainer;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.client.gui.element.ErrorTooltip;
-import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.network.TurretPlayerActionPacket;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import org.apache.logging.log4j.Level;
@@ -54,10 +53,10 @@ public class TcuInfoPage
 
         this.setActive = this.guiDefinition.getElementById("activate").get(ButtonSL.class);
         this.setActive.setVisible(false);
-        this.setActive.setFunction(btn -> TurretModRebirth.NETWORK.sendToServer(new TurretPlayerActionPacket(this.turret, TurretPlayerActionPacket.SET_ACTIVE)));
+        this.setActive.setFunction(btn -> TurretPlayerActionPacket.toggleActive(turret, true));
 
         this.setInactive = this.guiDefinition.getElementById("deactivate").get(ButtonSL.class);
-        this.setInactive.setFunction(btn -> TurretModRebirth.NETWORK.sendToServer(new TurretPlayerActionPacket(this.turret, TurretPlayerActionPacket.SET_DEACTIVE)));
+        this.setInactive.setFunction(btn -> TurretPlayerActionPacket.toggleActive(turret, false));
 
         this.showRange = this.guiDefinition.getElementById("showRange").get(ButtonSL.class);
         this.showRange.setFunction(btn -> this.turret.setShowRange(true));

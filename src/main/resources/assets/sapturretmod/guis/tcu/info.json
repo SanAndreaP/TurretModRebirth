@@ -25,20 +25,6 @@
       }
     },
     {
-      "type": "sapturretmod:tcu_info",
-      "pos": [6, 84],
-      "id": "infoArea",
-      "data": {
-        "areaSize": [160, 96],
-        "scrollbarPos": [166, 84],
-        "scrollButton": {
-          "size": [4, 16],
-          "uv": [164, 66],
-          "uvDisabled": [164, 50]
-        }
-      }
-    },
-    {
       "type": "button",
       "pos": [59, 186],
       "id": "dismantle",
@@ -91,6 +77,20 @@
         "uvSize": [18, 18],
         "useVanillaTexture": false,
         "uvEnabled": [186, 72]
+      }
+    },
+    {
+      "type": "sapturretmod:tcu_info",
+      "pos": [6, 84],
+      "id": "infoArea",
+      "data": {
+        "areaSize": [160, 96],
+        "scrollbarPos": [166, 84],
+        "scrollButton": {
+          "size": [4, 16],
+          "uv": [164, 66],
+          "uvDisabled": [164, 50]
+        }
       }
     }
   ],

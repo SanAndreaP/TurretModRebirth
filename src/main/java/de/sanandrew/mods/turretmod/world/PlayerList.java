@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.world;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Strings;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
@@ -135,6 +136,35 @@ public class PlayerList
 
         ITextComponent s = playerList.playerMap.get(playerUUID).name;
         return s == null ? new StringTextComponent("[unknown]") : s;
+    }
+
+    public static boolean playerNameExists(String name) {
+        return playerList != null && !Strings.isNullOrEmpty(name) && playerList.playerMap.values().stream().anyMatch(p -> name.equals(p.name.getString()));
+    }
+
+    @Nonnull
+    public static UUID getPlayerUUID(String name) {
+        if( playerList != null && !Strings.isNullOrEmpty(name) ) {
+            return playerList.playerMap.entrySet().stream()
+                                                  .filter(e -> name.equals(e.getValue().name.getString()))
+                                                  .map(Map.Entry::getKey)
+                                                  .findFirst()
+                                                  .orElse(UuidUtils.EMPTY_UUID);
+        }
+
+        return UuidUtils.EMPTY_UUID;
+    }
+
+    public static String getPlayerNameSuggestion(String partName) {
+        if( playerList != null && !Strings.isNullOrEmpty(partName) ) {
+            return playerList.playerMap.values().stream()
+                                       .map(e -> e.name.getString())
+                                       .filter(n -> n.startsWith(partName))
+                                       .findFirst()
+                                       .orElse("");
+        }
+
+        return "";
     }
 
     public static Map<UUID, PlayerData> getPlayerMap() {

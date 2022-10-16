@@ -1,6 +1,6 @@
 package de.sanandrew.mods.turretmod.init.config;
 
-import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.LevelStorage;
+import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.LevelData;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class UpgradeConfig
@@ -33,7 +33,7 @@ public class UpgradeConfig
 
         @SuppressWarnings("java:S2696")
         void load() {
-            LevelStorage.maxXp = this.maxXp.get();
+            LevelData.maxXp = this.maxXp.get();
         }
     }
 }

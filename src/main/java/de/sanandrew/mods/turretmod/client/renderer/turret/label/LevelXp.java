@@ -6,7 +6,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.init.Lang;
 import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
-import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.LevelStorage;
+import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.LevelData;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -20,7 +20,7 @@ public class LevelXp
 
     @Override
     public int getSortOrder() {
-        return 4;
+        return 5;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class LevelXp
 
     @Override
     protected ITextComponent getValueTxt(ITurretEntity turret) {
-        return new TranslationTextComponent(Lang.TCU_LABEL.get("level.value"), MiscUtils.apply(this.getLevelStorage(turret), LevelStorage::getLevel, 0));
+        return new TranslationTextComponent(Lang.TCU_LABEL.get("level.value"), MiscUtils.apply(this.getLevelStorage(turret), LevelData::getLevel, 0));
     }
 
     @Override
@@ -58,7 +58,7 @@ public class LevelXp
         return this.getLevelStorage(turret) != null;
     }
 
-    private LevelStorage getLevelStorage(ITurretEntity turret) {
+    private LevelData getLevelStorage(ITurretEntity turret) {
         IUpgradeProcessor up = turret.getUpgradeProcessor();
         if( up.hasUpgrade(Upgrades.LEVELING) ) {
             return up.getUpgradeData(Upgrades.LEVELING.getId());

@@ -18,7 +18,7 @@ public class Target
 
     @Override
     public int getSortOrder() {
-        return 3;
+        return 4;
     }
 
     @Override

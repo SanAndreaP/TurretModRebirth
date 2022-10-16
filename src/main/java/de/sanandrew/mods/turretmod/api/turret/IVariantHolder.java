@@ -1,5 +1,7 @@
 package de.sanandrew.mods.turretmod.api.turret;
 
+import net.minecraft.inventory.IInventory;
+
 public interface IVariantHolder
 {
     default IVariant getVariant(ITurretEntity turret, Object id) {
@@ -11,6 +13,8 @@ public interface IVariantHolder
     }
 
     IVariant[] getVariants();
+
+    IVariant getVariant(IInventory inv);
 
     IVariant getVariant(Object id);
 

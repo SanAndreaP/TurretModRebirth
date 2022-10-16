@@ -13,6 +13,7 @@ import de.sanandrew.mods.turretmod.client.renderer.turret.label.Ammo;
 import de.sanandrew.mods.turretmod.client.renderer.turret.label.Health;
 import de.sanandrew.mods.turretmod.client.renderer.turret.label.LevelXp;
 import de.sanandrew.mods.turretmod.client.renderer.turret.label.Name;
+import de.sanandrew.mods.turretmod.client.renderer.turret.label.PersonalShield;
 import de.sanandrew.mods.turretmod.client.renderer.turret.label.Target;
 import de.sanandrew.mods.turretmod.entity.turret.TurretEntity;
 import de.sanandrew.mods.turretmod.item.TurretControlUnit;
@@ -113,8 +114,9 @@ public final class LabelRegistry
         if( mc.player == mc.getCameraEntity() ) {
             TurretEntity turret = mc.crosshairPickEntity instanceof TurretEntity ? (TurretEntity) mc.crosshairPickEntity : null;
 
-            boolean tcuHeld = TurretControlUnit.isTcuHeld(mc.player);
+            boolean tcuHeld = TurretControlUnit.isTcuHeld(mc.player, turret);
             boolean hasActive = false;
+
             for( int i = this.currentLabels.size() - 1; i >= 0; i-- ) {
                 Label l = this.currentLabels.get(i);
                 l.setActive(turret, tcuHeld);
@@ -202,6 +204,7 @@ public final class LabelRegistry
         registry.register(new Name(new ResourceLocation(TmrConstants.ID, "name")));
         registry.register(new Health(new ResourceLocation(TmrConstants.ID, "health")));
         registry.register(new Ammo(new ResourceLocation(TmrConstants.ID, "ammo")));
+        registry.register(new PersonalShield(new ResourceLocation(TmrConstants.ID, "personal_shield")));
         registry.register(new Target(new ResourceLocation(TmrConstants.ID, "target")));
         registry.register(new LevelXp(new ResourceLocation(TmrConstants.ID, "level")));
     }

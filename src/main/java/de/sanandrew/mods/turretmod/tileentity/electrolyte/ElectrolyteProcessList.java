@@ -12,6 +12,9 @@ import java.util.List;
 public class ElectrolyteProcessList
         extends NonNullList<ElectrolyteProcess>
 {
+    public static final String NBT_PROCESS_STACKS = "ProcessStacks";
+    public static final String NBT_PROCESS_SLOT = "ProcessSlot";
+
     public ElectrolyteProcessList() {
         super(build(), ElectrolyteProcess.EMPTY);
     }
@@ -28,22 +31,22 @@ public class ElectrolyteProcessList
         for( int i = 0; i < ElectrolyteInventory.INPUT_SLOT_COUNT; i++ ) {
             CompoundNBT snbt = new CompoundNBT();
             this.get(i).processStack.save(snbt);
-            snbt.putInt("ProcessSlot", i);
+            snbt.putInt(NBT_PROCESS_SLOT, i);
 
             list.add(snbt);
         }
 
-        nbt.put("ProcessStacks", list);
+        nbt.put(NBT_PROCESS_STACKS, list);
 
         return nbt;
     }
 
     public void deserializeProcessStacks(CompoundNBT nbt) {
-        if( nbt.contains("ProcessStacks", Constants.NBT.TAG_LIST) ) {
-            ListNBT list = nbt.getList("ProcessStacks", Constants.NBT.TAG_COMPOUND);
+        if( nbt.contains(NBT_PROCESS_STACKS, Constants.NBT.TAG_LIST) ) {
+            ListNBT list = nbt.getList(NBT_PROCESS_STACKS, Constants.NBT.TAG_COMPOUND);
             for( int i = 0, sz = list.size(); i < sz; i++ ) {
                 CompoundNBT snbt = list.getCompound(i);
-                this.set(snbt.getInt("ProcessSlot"), new ElectrolyteProcess(ItemStack.of(snbt)));
+                this.set(snbt.getInt(NBT_PROCESS_SLOT), new ElectrolyteProcess(ItemStack.of(snbt)));
             }
         }
     }

@@ -150,7 +150,7 @@ public class TurretItem
     public void fillItemCategory(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
 
-        if( this.allowdedIn(group) && Boolean.TRUE.equals(TmrConfig.TURRETS.showVariantsInItemGroup.get()) ) {
+        if( this.allowdedIn(group) && TmrConfig.TURRETS.showVariantsInItemGroup() ) {
             ITurret t = this.getTurret();
             if( t instanceof IVariantHolder ) {
                 IVariantHolder vh = (IVariantHolder) t;

@@ -1,0 +1,30 @@
+{
+  "width": 176,
+  "height": 148,
+  "texture": "sapturretmod:textures/gui/assembly/filter.png",
+  "backgroundElements": [
+    {
+      "type": "texture",
+      "data": {
+        "size": [176, 148],
+        "uv": [0, 0]
+      }
+    },
+    {
+      "type": "screen_title",
+      "pos": [8, 6],
+      "data": {
+        "color": "0xFF404040"
+      }
+    },
+    {
+      "type": "text",
+      "pos": [8, 55],
+      "data": {
+        "color": "0xFF404040",
+        "text": "container.inventory"
+      }
+    }
+  ],
+  "foregroundElements": []
+}

@@ -13,7 +13,8 @@ import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.entity.projectile.TurretProjectileEntity;
 import de.sanandrew.mods.turretmod.entity.turret.TurretEntity;
 import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
-import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.LevelStorage;
+import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.LevelData;
+import de.sanandrew.mods.turretmod.item.upgrades.delegate.shield.ShieldData;
 import de.sanandrew.mods.turretmod.tileentity.TurretCrateEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -34,24 +35,25 @@ public class DamageEventHandler
 {
     private static final String DISABLE_XP_DROP_TAG = TmrConstants.ID + ":disable_xp_drop";
 
+    private DamageEventHandler() { }
+
     @SubscribeEvent
     public static void onDamage(LivingHurtEvent event) {
         if( event.getEntity() instanceof TurretEntity ) {
             TurretEntity turret = (TurretEntity) event.getEntity();
             if( !turret.level.isClientSide ) {
                 IUpgradeProcessor proc = turret.getUpgradeProcessor();
-//                TODO: reimplement shields
-//
-//                if( proc.hasUpgrade(Upgrades.SHIELD_PERSONAL) ) {
-//                    ShieldPersonal upgInst = proc.getUpgradeInstance(Upgrades.SHIELD_PERSONAL.getId());
-//                    float restDmg = upgInst.damage(event.getAmount());
-//                    if( restDmg <= 0.0F ) {
-//                        event.setCanceled(true);
-//                    } else {
-//                        event.setAmount(restDmg);
-//                    }
-//                    UpgradeRegistry.INSTANCE.syncWithClients(turret, Upgrades.SHIELD_PERSONAL.getId());
-//                }
+
+                if( proc.hasUpgrade(Upgrades.SHIELD_PERSONAL) ) {
+                    ShieldData shieldData = proc.getUpgradeData(Upgrades.SHIELD_PERSONAL.getId());
+                    float      restDmg = shieldData.damage(event.getAmount());
+                    if( restDmg <= 0.0F ) {
+                        event.setCanceled(true);
+                    } else {
+                        event.setAmount(restDmg);
+                    }
+                    proc.syncUpgrade(Upgrades.SHIELD_PERSONAL.getId());
+                }
                 if( proc.hasUpgrade(Upgrades.CREATIVE) ) {
                     event.setCanceled(true);
                 }
@@ -71,22 +73,29 @@ public class DamageEventHandler
         DamageSource dmgSrc = event.getSource();
         LivingEntity corpse = event.getEntityLiving();
 
-        if( EntityUtils.shouldDropExperience(corpse) && corpse.level instanceof ServerWorld
-            && dmgSrc instanceof TurretProjectileEntity.ITurretDamageSource )
+        ITurretEntity turret = null;
+        if( dmgSrc instanceof TurretProjectileEntity.ITurretDamageSource ) {
+            turret = ((TurretProjectileEntity.ITurretDamageSource) dmgSrc).getTurretInst();
+        } else {
+            Entity lastHurtByMob = corpse.getLastHurtByMob();
+            if( lastHurtByMob instanceof ITurretEntity ) {
+                turret = (ITurretEntity) lastHurtByMob;
+            }
+        }
+
+        if( turret != null && corpse.level instanceof ServerWorld && EntityUtils.shouldDropExperience(corpse)
+            && turret.getUpgradeProcessor().hasUpgrade(Upgrades.LEVELING) )
         {
-            ITurretEntity turret = ((TurretProjectileEntity.ITurretDamageSource) dmgSrc).getTurretInst();
-            if( turret != null && turret.getUpgradeProcessor().hasUpgrade(Upgrades.LEVELING) ) {
-                LevelStorage lvlStorage = turret.getUpgradeProcessor().getUpgradeData(Upgrades.LEVELING.getId());
-                if( lvlStorage != null ) {
-                    PlayerEntity faker = FakePlayerFactory.getMinecraft((ServerWorld) corpse.level);
+            LevelData lvlStorage = turret.getUpgradeProcessor().getUpgradeData(Upgrades.LEVELING.getId());
+            if( lvlStorage != null ) {
+                PlayerEntity faker = FakePlayerFactory.getMinecraft((ServerWorld) corpse.level);
 
-                    int xp = EntityUtils.getExperienceReward(event.getEntityLiving(), faker);
-                    xp = net.minecraftforge.event.ForgeEventFactory.getExperienceDrop(corpse, faker, xp);
+                int xp = EntityUtils.getExperienceReward(event.getEntityLiving(), faker);
+                xp = net.minecraftforge.event.ForgeEventFactory.getExperienceDrop(corpse, faker, xp);
 
-                    lvlStorage.addXp(xp);
+                lvlStorage.addXp(xp);
 
-                    corpse.addTag(DISABLE_XP_DROP_TAG);
-                }
+                corpse.addTag(DISABLE_XP_DROP_TAG);
             }
         }
     }

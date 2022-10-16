@@ -25,8 +25,8 @@ import java.util.stream.Stream;
 
 @SuppressWarnings({"java:S1104", "java:S1444", "unused"})
 @IUpgradeData.Syncable
-public class LevelStorage
-        implements IUpgradeData<LevelStorage>
+public class LevelData
+        implements IUpgradeData<LevelData>
 {
     private static final String NBT_EXPERIENCE  = "Experience";
 
@@ -44,7 +44,7 @@ public class LevelStorage
 
     private Integer modifierHash = null;
 
-    LevelStorage() {
+    LevelData() {
         this.xp = 0;
         this.prevXp = 0;
         this.prevLvl = 0;

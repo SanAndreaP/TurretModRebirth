@@ -8,6 +8,7 @@ import de.sanandrew.mods.turretmod.api.turret.Turret;
 import de.sanandrew.mods.turretmod.entity.turret.variant.DualItemVariants;
 import de.sanandrew.mods.turretmod.init.config.TurretConfig;
 import net.minecraft.block.Blocks;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -66,6 +67,11 @@ public class Crossbow
     @Override
     public IVariant getVariant(Object id) {
         return VARIANT_CONTAINER.get(id);
+    }
+
+    @Override
+    public IVariant getVariant(IInventory inv) {
+        return VARIANT_CONTAINER.get(inv);
     }
 
     @Override

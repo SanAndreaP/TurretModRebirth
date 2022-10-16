@@ -8,13 +8,14 @@
  */
 package de.sanandrew.mods.turretmod.entity.turret;
 
-import com.mojang.authlib.GameProfile;
+import com.google.common.base.Strings;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.LangUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.sanlib.lib.util.ReflectionUtils;
 import de.sanandrew.mods.sanlib.lib.util.UuidUtils;
 import de.sanandrew.mods.turretmod.api.repairkit.IRepairKit;
+import de.sanandrew.mods.turretmod.api.turret.IForcefield;
 import de.sanandrew.mods.turretmod.api.turret.ITargetProcessor;
 import de.sanandrew.mods.turretmod.api.turret.ITurret;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
@@ -25,6 +26,7 @@ import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.entity.EntityRegistry;
+import de.sanandrew.mods.turretmod.init.TmrConfig;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.TurretControlUnit;
@@ -32,6 +34,7 @@ import de.sanandrew.mods.turretmod.item.TurretItem;
 import de.sanandrew.mods.turretmod.item.repairkits.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.network.SyncTurretStatePacket;
 import de.sanandrew.mods.turretmod.tileentity.TurretCrateEntity;
+import de.sanandrew.mods.turretmod.world.PlayerList;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
@@ -371,28 +374,31 @@ public class TurretEntity
 
     @Override
     public boolean hasPlayerPermission(PlayerEntity player) {
+        // if it ain't a player, no permissions!
         if( player == null ) {
             return false;
         }
 
+        // there's no owner, everybody gets permission!
         if( this.ownerId.equals(UuidUtils.EMPTY_UUID) ) {
             return true;
         }
 
-        MinecraftServer mcSrv   = this.level.getServer();
-        GameProfile     profile = player.getGameProfile();
-
-        if( mcSrv != null && mcSrv.isSingleplayer() && mcSrv.getSingleplayerName().equals(profile.getName()) ) {
+        // If it's either the owner or everybody (<- if the config value is true), they'll get permissions
+        if( TmrConfig.TURRETS.canPlayersEditAll() || this.isOwner(player) ) {
             return true;
         }
 
-        //TODO: re-implement config
-        return isOwner(player);
-//        if( TmrUtils.INSTANCE.canPlayerEditAll() || this.ownerId.equals(profile.getId()) ) {
-//            return true;
-//        }
-//
-//        return player.hasPermissionLevel(2) && TmrUtils.INSTANCE.canOpEditAll();
+        // On Singleplayer, the world creator has permissions to all, if the config is right
+        MinecraftServer mcSrv   = TurretModRebirth.PROXY.getServer(player.level);
+        if( mcSrv != null && mcSrv.isSingleplayer() && mcSrv.getSingleplayerName().equals(player.getGameProfile().getName())
+            && TmrConfig.TURRETS.canAdminsEditAll() )
+        {
+            return true;
+        }
+
+        // Last, but not least, OPs get permissions, if the config value is true
+        return player.hasPermissions(2) && TmrConfig.TURRETS.canAdminsEditAll();
     }
 
     @Override
@@ -400,10 +406,33 @@ public class TurretEntity
         return this.ownerId.equals(player.getUUID());
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public PlayerEntity getOwner() {
-        return this.level.getPlayerByUUID(this.ownerId);
+    public UUID getOwnerId() {
+        return this.ownerId;
+    }
+
+    @Override
+    public boolean hasOwner() {
+        return !this.ownerId.equals(UuidUtils.EMPTY_UUID);
+    }
+
+    public void changeOwner(@Nonnull UUID ownerId) {
+        if( UuidUtils.EMPTY_UUID.equals(ownerId) ) {
+            this.ownerName = StringTextComponent.EMPTY;
+            this.ownerId = UuidUtils.EMPTY_UUID;
+        } else {
+            ITextComponent pName = PlayerList.getPlayerName(ownerId);
+            if( !Strings.isNullOrEmpty(pName.getString()) ) {
+                this.ownerName = pName;
+                this.ownerId = ownerId;
+            }
+        }
+    }
+
+    public void syncOwner(UUID ownerId, ITextComponent ownerName) {
+        this.ownerId = ownerId;
+        this.ownerName = ownerName;
     }
 
     @Override
@@ -488,6 +517,21 @@ public class TurretEntity
     @Override
     public ITextComponent getTurretTypeName() {
         return this.getTypeName();
+    }
+
+    @Override
+    public boolean hasClientForcefield(Class<? extends IForcefield> forcefieldClass) {
+        return TurretModRebirth.PROXY.hasClientForcefield(this, forcefieldClass);
+    }
+
+    @Override
+    public void addClientForcefield(IForcefield forcefield) {
+        TurretModRebirth.PROXY.addClientForcefield(this, forcefield);
+    }
+
+    @Override
+    public void removeClientForcefield(Class<? extends IForcefield> forcefieldClass) {
+        TurretModRebirth.PROXY.removeClientForcefield(this, forcefieldClass);
     }
 
     private boolean isSubmergedInLiquid(double heightMod) {
@@ -652,6 +696,7 @@ public class TurretEntity
                 return ActionResultType.CONSUME;
             } else if( this.targetProc.addAmmo(stack, player) ) {
                 this.onPickupSucceed(stack, player);
+                this.syncState(SyncTurretStatePacket.AMMO);
                 return ActionResultType.CONSUME;
             } else if( this.upgProc.tryApplyUpgrade(stack.copy()) ) {
                 stack.shrink(1);
@@ -691,8 +736,8 @@ public class TurretEntity
     }
 
     @Override
-    public void syncState() {
-        TurretModRebirth.NETWORK.sendToAllNear(new SyncTurretStatePacket(this),
+    public void syncState(byte transferType) {
+        TurretModRebirth.NETWORK.sendToAllNear(new SyncTurretStatePacket(this, transferType),
                                                new PacketDistributor.TargetPoint(this.getX(), this.getY(), this.getZ(), 64.0D, this.level.dimension()));
     }
 
@@ -736,7 +781,6 @@ public class TurretEntity
             player.inventory.setItem(player.inventory.selected, heldItem.copy());
         }
 
-        this.syncState();
         player.containerMenu.broadcastChanges();
 
         this.playPickupSound();

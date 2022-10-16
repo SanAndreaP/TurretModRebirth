@@ -1,7 +1,7 @@
 package de.sanandrew.mods.turretmod.network;
 
 import de.sanandrew.mods.sanlib.lib.network.SimpleMessage;
-import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.LevelStorage;
+import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.LevelData;
 import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.Stage;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.network.PacketBuffer;
@@ -71,7 +71,7 @@ public class SyncTurretStages
     @Override
     public void handle(Supplier<NetworkEvent.Context> supplier) {
         DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> {
-            LevelStorage.applyStages(this.stages);
+            LevelData.applyStages(this.stages);
             return null;
         });
     }

@@ -1,11 +1,13 @@
 package de.sanandrew.mods.turretmod.init;
 
+import de.sanandrew.mods.turretmod.api.turret.IForcefield;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.world.PlayerList;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -49,5 +51,21 @@ public class ServerProxy
     @Override
     public boolean isSneakPressed() {
         return false;
+    }
+
+    @Override
+    public boolean hasClientForcefield(ITurretEntity turretEntity, Class<? extends IForcefield> forcefieldClass) {
+        return false;
+    }
+
+    @Override
+    public void addClientForcefield(ITurretEntity turretEntity, IForcefield forcefield) { }
+
+    @Override
+    public void removeClientForcefield(ITurretEntity turretEntity, Class<? extends IForcefield> forcefieldClass) { }
+
+    @Override
+    public MinecraftServer getServer(World level) {
+        return level.getServer();
     }
 }

@@ -46,7 +46,7 @@ public final class StageLoader
     @SuppressWarnings("java:S2696")
     protected void apply(Map<ResourceLocation, JsonElement> files, @Nonnull IResourceManager resourceMgr, @Nonnull IProfiler profiler) {
         Map<ResourceLocation, Stage> stages = files.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, v -> fromJson(v.getValue())));
-        LevelStorage.applyStages(stages);
+        LevelData.applyStages(stages);
 
         if( syncEnabled ) {
             lastUpdate = System.currentTimeMillis();
@@ -57,7 +57,7 @@ public final class StageLoader
         }
     }
 
-    public static boolean needsUpdate(LevelStorage ls) {
+    public static boolean needsUpdate(LevelData ls) {
         return lastUpdate != null && (ls.lastUpdate == null || lastUpdate > ls.lastUpdate);
     }
 

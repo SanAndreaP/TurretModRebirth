@@ -29,15 +29,12 @@ public class ElectrolyteManager
 
     @Override
     public List<IElectrolyteRecipe> getFuels(World world) {
-        return world.getRecipeManager().getRecipes().stream()
-                    .filter(r -> r instanceof IElectrolyteRecipe && r.getType() == TYPE)
-                    .map(r -> (IElectrolyteRecipe) r)
-                    .collect(Collectors.toList());
+        return world.getRecipeManager().getAllRecipesFor(TYPE);
     }
 
     @Override
     public IElectrolyteRecipe getFuel(World world, ResourceLocation id) {
-        return world.getRecipeManager().byKey(id).map(r -> (IElectrolyteRecipe) r).orElse(EmptyRecipe.INSTANCE);
+        return world.getRecipeManager().byKey(id).map(IElectrolyteRecipe.class::cast).orElse(EmptyRecipe.INSTANCE);
     }
 
     @Override

@@ -15,6 +15,7 @@ import de.sanandrew.mods.turretmod.item.upgrades.delegate.Health;
 import de.sanandrew.mods.turretmod.item.upgrades.delegate.ReloadTime;
 import de.sanandrew.mods.turretmod.item.upgrades.delegate.SimpleUpgrade;
 import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.Leveling;
+import de.sanandrew.mods.turretmod.item.upgrades.delegate.shield.PersonalShield;
 import de.sanandrew.mods.turretmod.item.upgrades.delegate.smarttargeting.SmartTargeting;
 
 public class Upgrades
@@ -35,7 +36,7 @@ public class Upgrades
     public static final IUpgrade ECONOMY_INF        = new Economy.MKInf();
 //    public static final IUpgrade ENDER_MEDIUM       = new SimpleUpgrade("ender_gain_medium", Turrets.LASER);
 //    public static final IUpgrade FUEL_PURIFY        = new SimpleUpgrade("fuel_purifier", Turrets.FLAMETHROWER);
-//    public static final IUpgrade SHIELD_PERSONAL    = new UpgradeShieldPersonal();
+    public static final IUpgrade SHIELD_PERSONAL    = new PersonalShield();
 //    public static final IUpgrade SHIELD_PROJECTILE  = new SimpleUpgrade("shield_projectile", Turrets.FORCEFIELD);
 //    public static final IUpgrade SHIELD_EXPLOSIVE   = new SimpleUpgrade("shield_explosive", Turrets.FORCEFIELD);
 //    public static final IUpgrade SHIELD_STRENGTH_I  = new SimpleUpgrade("shield_strength_1", Turrets.FORCEFIELD);
@@ -50,8 +51,8 @@ public class Upgrades
 
     public static void register(IUpgradeRegistry registry) {
         registry.registerAll(UPG_STORAGE_I, UPG_STORAGE_II, UPG_STORAGE_III, AMMO_STORAGE, HEALTH_I, HEALTH_II, HEALTH_III, HEALTH_IV,
-                             RELOAD_I, RELOAD_II, SMART_TGT, ECONOMY_I, ECONOMY_II, ECONOMY_INF/*, ENDER_MEDIUM, FUEL_PURIFY,
-                             SHIELD_PERSONAL, SHIELD_PROJECTILE, SHIELD_EXPLOSIVE, SHIELD_STRENGTH_I, SHIELD_STRENGTH_II, SHIELD_COLORIZER*/,
+                             RELOAD_I, RELOAD_II, SMART_TGT, ECONOMY_I, ECONOMY_II, ECONOMY_INF, /*ENDER_MEDIUM, FUEL_PURIFY,*/
+                             SHIELD_PERSONAL/*, SHIELD_PROJECTILE, SHIELD_EXPLOSIVE, SHIELD_STRENGTH_I, SHIELD_STRENGTH_II, SHIELD_COLORIZER*/,
                              ENDER_TOXIN_I, ENDER_TOXIN_II, TURRET_SAFE, LEVELING, REMOTE_ACCESS, CREATIVE);
     }
 }

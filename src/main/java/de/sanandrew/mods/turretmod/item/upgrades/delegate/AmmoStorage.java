@@ -13,6 +13,7 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.api.turret.TurretAttributes;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
+import de.sanandrew.mods.turretmod.network.SyncTurretStatePacket;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -46,7 +47,7 @@ public class AmmoStorage
     public void terminate(ITurretEntity turretInst, ItemStack stack) {
         if( !turretInst.get().level.isClientSide && EntityUtils.tryRemoveModifier(turretInst.get(), TurretAttributes.MAX_AMMO_CAPACITY, MODIFIER) ) {
             turretInst.getTargetProcessor().dropExcessAmmo();
-            turretInst.syncState();
+            turretInst.syncState(SyncTurretStatePacket.AMMO);
         }
     }
 }

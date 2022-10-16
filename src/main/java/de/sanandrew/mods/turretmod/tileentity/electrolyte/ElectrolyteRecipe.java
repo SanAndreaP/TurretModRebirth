@@ -9,7 +9,7 @@ package de.sanandrew.mods.turretmod.tileentity.electrolyte;
 import com.google.gson.JsonObject;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
-import de.sanandrew.mods.turretmod.api.electrolytegen.IElectrolyteInventory;
+import de.sanandrew.mods.turretmod.api.ILeveledInventory;
 import de.sanandrew.mods.turretmod.api.electrolytegen.IElectrolyteRecipe;
 import de.sanandrew.mods.turretmod.init.RecipeRegistry;
 import net.minecraft.item.ItemStack;
@@ -78,7 +78,7 @@ public class ElectrolyteRecipe
     }
 
     @Override
-    public boolean matches(IElectrolyteInventory inv, @Nonnull World worldIn) {
+    public boolean matches(ILeveledInventory inv, @Nonnull World worldIn) {
         for( int i = 0, max = inv.getContainerSize(); i < max; i++ ) {
             for( ItemStack stack : this.ingredient.getItems() ) {
                 if( ItemStackUtils.areEqualNbtFit(stack, inv.getItem(i), false, true) ) {
@@ -91,12 +91,12 @@ public class ElectrolyteRecipe
     }
 
     @Override
-    public ItemStack getTrashResult(IElectrolyteInventory inv) {
+    public ItemStack getTrashResult(ILeveledInventory inv) {
         return this.trash.copy();
     }
 
     @Override
-    public ItemStack getTreasureResult(IElectrolyteInventory inv) {
+    public ItemStack getTreasureResult(ILeveledInventory inv) {
         return this.treasure.copy();
     }
 

@@ -8,6 +8,8 @@ package de.sanandrew.mods.turretmod.api.turret;
 
 import de.sanandrew.mods.turretmod.api.IRegistryObject;
 import de.sanandrew.mods.turretmod.entity.turret.delegate.Crossbow;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.Pose;
 import net.minecraft.nbt.CompoundNBT;
@@ -124,6 +126,10 @@ public interface ITurret
 
     default SoundEvent getPickupSound(ITurretEntity turret) {
         return null;
+    }
+
+    default BlockState getBreakingParticles(ITurretEntity turret) {
+        return Blocks.AIR.defaultBlockState();
     }
 
     float getHealth();

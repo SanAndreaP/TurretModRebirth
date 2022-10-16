@@ -213,9 +213,7 @@ public class PageNavigation
             JsonObject btn = MiscUtils.get(data.getAsJsonObject("buttonData"), JsonObject::new);
 
             Map<GuiElementInst, ResourceLocation> btnList = new HashMap<>();
-            for( ResourceLocation pgKey : TurretControlUnit.PAGES ) {
-                btnList.put(new GuiElementInst(ButtonNav.Builder.buildFromJson(gui, btn, pgKey).get(gui)), pgKey);
-            }
+            TurretControlUnit.forEachPage(pgKey -> btnList.put(new GuiElementInst(ButtonNav.Builder.buildFromJson(gui, btn, pgKey).get(gui)), pgKey));
 
             int tsPosY = JsonUtils.getIntArray(btn.get("size"), new int[] {0, 18}, Range.is(2))[1] / 2;
             GuiElementInst tsle = new GuiElementInst(new int[] {0, tsPosY}, ButtonSL.Builder.buildFromJson(gui, tsl).get(gui));

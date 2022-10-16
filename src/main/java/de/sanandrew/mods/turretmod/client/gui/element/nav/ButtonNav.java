@@ -30,15 +30,15 @@ public class ButtonNav
     private ItemStack pageStack = ItemStack.EMPTY;
 
     @SuppressWarnings("java:S107")
-    ButtonNav(ResourceLocation texture, int[] size, int[] textureSize, int[] uvEnabled, int[] uvHover, int[] uvDisabled, int[] uvSize, int[] centralTextureSize, ResourceLocation pageKey) {
+    ButtonNav(ResourceLocation texture, int[] size, int[] textureSize, int[] uvEnabled, int[] uvHover, int[] uvDisabled, int[] uvSize, int[] centralTextureSize, ResourceLocation pageId) {
         super(texture, size, textureSize, uvEnabled, uvHover, uvDisabled, uvSize, centralTextureSize, GuiElementInst.EMPTY);
 
         GuiElementInst lbl = new GuiElementInst(new int[] {size[0] / 2, size[1] / 2}, new Label());
         lbl.alignment = new String[] {"center", "center"};
         this.put(LABEL, lbl);
 
-        this.pageKey = pageKey;
-        this.order = TurretControlUnit.PAGES.indexOf(pageKey);
+        this.pageKey = pageId;
+        this.order = TurretControlUnit.getPageOrder(pageId);
     }
 
     @Override

@@ -6,13 +6,14 @@
  *******************************************************************************************************************/
 package de.sanandrew.mods.turretmod.api.electrolytegen;
 
+import de.sanandrew.mods.turretmod.api.ILeveledInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 
 import javax.annotation.Nonnull;
 
 public interface IElectrolyteRecipe
-        extends IRecipe<IElectrolyteInventory>
+        extends IRecipe<ILeveledInventory>
 {
     float getEfficiency();
 
@@ -20,13 +21,13 @@ public interface IElectrolyteRecipe
 
     @Nonnull
     @Override
-    default ItemStack assemble(@Nonnull IElectrolyteInventory inv) {
+    default ItemStack assemble(@Nonnull ILeveledInventory inv) {
         return getTrashResult(inv);
     }
 
-    ItemStack getTrashResult(IElectrolyteInventory inv);
+    ItemStack getTrashResult(ILeveledInventory inv);
 
-    ItemStack getTreasureResult(IElectrolyteInventory inv);
+    ItemStack getTreasureResult(ILeveledInventory inv);
 
     float getTrashChance();
 

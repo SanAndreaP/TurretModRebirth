@@ -7,13 +7,12 @@
 package de.sanandrew.mods.turretmod.tileentity.electrolyte;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
-import de.sanandrew.mods.turretmod.api.electrolytegen.IElectrolyteInventory;
+import de.sanandrew.mods.turretmod.api.ILeveledInventory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.commons.lang3.Range;
 
@@ -23,11 +22,11 @@ import java.util.function.Supplier;
 
 public final class ElectrolyteInventory
         extends ItemStackHandler
-        implements IElectrolyteInventory
+        implements ILeveledInventory
 {
     @Nullable
     LazyOptional<ElectrolyteInventory> lazyOptional = LazyOptional.of(() -> this);
-    final Supplier<World> world;
+    final Supplier<World> levelSupplier;
 
     public static final int INPUT_SLOT_COUNT = 9;
     public static final int OUTPUT_SLOT_COUNT = 5;
@@ -38,9 +37,9 @@ public final class ElectrolyteInventory
 
     private boolean checkForOutputSlotsOnInsert = false;
 
-    public ElectrolyteInventory(Supplier<World> worldSupplier) {
+    public ElectrolyteInventory(Supplier<World> levelSupplier) {
         super(MAX_SLOTS);
-        this.world = worldSupplier;
+        this.levelSupplier = levelSupplier;
     }
 
     public boolean isOutputFull(@Nonnull ItemStack stack) {
@@ -129,11 +128,6 @@ public final class ElectrolyteInventory
     }
 
     @Override
-    public int getMaxStackSize() {
-        return 64;
-    }
-
-    @Override
     public void setChanged() { }
 
     @Override
@@ -145,7 +139,7 @@ public final class ElectrolyteInventory
             return OUTPUT_SLOTS.contains(index);
         } else {
             return INPUT_SLOTS.contains(index)
-                   && ElectrolyteManager.INSTANCE.getFuel(this.world.get(), stack) != null
+                   && ElectrolyteManager.INSTANCE.getFuel(this.levelSupplier.get(), stack) != null
                    && !ItemStackUtils.isValid(this.stacks.get(index));
         }
     }
@@ -161,7 +155,7 @@ public final class ElectrolyteInventory
     }
 
     @Override
-    public World getWorld() {
-        return world.get();
+    public World getLevel() {
+        return levelSupplier.get();
     }
 }

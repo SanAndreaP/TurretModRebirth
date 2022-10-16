@@ -13,6 +13,7 @@ import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuScreen;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import org.apache.commons.lang3.Range;
@@ -41,7 +42,7 @@ public abstract class ValueProvider
     protected GuiElementInst loadIndicator(IGui gui, JsonObject data) {
         JsonUtils.addDefaultJsonProperty(data, "size", this.getDefaultIndicatorSize());
         JsonUtils.addDefaultJsonProperty(data, "uv", this.getDefaultIndicatorUV());
-        JsonUtils.addDefaultJsonProperty(data, "uvBackground", this.getDefaultIndicatorBgUV());
+        JsonUtils.addDefaultJsonProperty(data, "direction", "LEFT_TO_RIGHT");
 
         ProgressBar indElem = ProgressBar.Builder.fromJson(gui, data);
 
@@ -80,17 +81,7 @@ public abstract class ValueProvider
         this.calcValues(turret);
 
         this.indicator.get(ProgressBar.class).setPercentFunc(p -> this.maxValue != 0 ? this.currValue / this.maxValue : 0.0F);
-        this.label.get(Text.class)
-                  .setTextFunc((g, o) -> {
-                      String fVal = this.getNumberFormat(this.currValue);
-                      String fMax = this.getNumberFormat(this.maxValue);
-
-                      if( o instanceof TranslationTextComponent ) {
-                          return new TranslationTextComponent(((TranslationTextComponent) o).getKey(), fVal, fMax);
-                      }
-
-                      return new StringTextComponent(String.format(o.getString(), fVal, fMax));
-                  });
+        this.label.get(Text.class).setTextFunc(this::getLabelText);
 
         this.indicator.get().setup(gui, this.indicator);
         this.background.get().setup(gui, this.background);
@@ -110,9 +101,20 @@ public abstract class ValueProvider
     public void renderContent(IGui gui, ITurretEntity turret, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, int maxWidth, int maxHeight) {
         super.renderContent(gui, turret, stack, partTicks, x, y, mouseX, mouseY, maxWidth, maxHeight);
 
-        GuiDefinition.renderElement(gui, stack, x + this.indicator.pos[0] + 18, y + this.indicator.pos[1] + 9, mouseX, mouseY, partTicks, this.indicator);
         GuiDefinition.renderElement(gui, stack, x + this.background.pos[0] + 18, y + this.background.pos[1] + 9, mouseX, mouseY, partTicks, this.background);
+        GuiDefinition.renderElement(gui, stack, x + this.indicator.pos[0] + 18, y + this.indicator.pos[1] + 9, mouseX, mouseY, partTicks, this.indicator);
         GuiDefinition.renderElement(gui, stack, x + this.label.pos[0] + 19, y + this.label.pos[1] + 3, mouseX, mouseY, partTicks, this.label);
+    }
+
+    protected ITextComponent getLabelText(IGui gui, ITextComponent origTC) {
+        String fVal = this.getNumberFormat(this.currValue);
+        String fMax = this.getNumberFormat(this.maxValue);
+
+        if( origTC instanceof TranslationTextComponent ) {
+            return new TranslationTextComponent(((TranslationTextComponent) origTC).getKey(), fVal, fMax);
+        }
+
+        return new StringTextComponent(String.format(origTC.getString(), fVal, fMax));
     }
 
     protected abstract void calcValues(ITurretEntity turret);

@@ -8,6 +8,7 @@
  */
 package de.sanandrew.mods.turretmod.init;
 
+import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.sanlib.lib.network.MessageHandler;
 import de.sanandrew.mods.turretmod.api.ITmrPlugin;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
@@ -90,7 +91,6 @@ public class TurretModRebirth
     private void setupCommon(FMLCommonSetupEvent event) {
         PLUGINS.forEach(ITmrPlugin::setup);
         PLUGINS.forEach(plugin -> plugin.registerTcuPages(ItemRegistry.TURRET_CONTROL_UNIT));
-//        TurretModRebirth.PLUGINS.forEach(plugin -> plugin.registerTcuEntries(GuiTcuRegistry.INSTANCE));
     }
 
     private void gatherData(GatherDataEvent event) {
