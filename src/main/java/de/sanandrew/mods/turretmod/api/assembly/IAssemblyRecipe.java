@@ -7,8 +7,10 @@
 package de.sanandrew.mods.turretmod.api.assembly;
 
 import de.sanandrew.mods.turretmod.api.ILeveledInventory;
+import de.sanandrew.mods.turretmod.tileentity.assembly.AssemblyRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 
 import javax.annotation.Nonnull;
 
@@ -23,4 +25,7 @@ public interface IAssemblyRecipe
     default boolean canCraftInDimensions(int width, int height) {
         return true;
     }
+
+    @Nonnull
+    NonNullList<AssemblyRecipe.CountedIngredient> getCountedIngredients();
 }

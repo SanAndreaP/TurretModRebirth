@@ -51,7 +51,7 @@ public class TurretAssemblyContainer
 
         for( int i = 0; i < 2; i++ ) {
             for( int j = 0; j < 9; j++ ) {
-                this.addSlot(new SlotIngredients(AssemblyInventory.getInsertSlotId(j + i * 9), 36 + j * 18, 100 + i * 18));
+                this.addSlot(new SlotIngredients(AssemblyInventory.getInsertSlotId(j + i * 9), 36 + j * 18, 91 + i * 18));
             }
         }
 
@@ -138,7 +138,7 @@ public class TurretAssemblyContainer
             extends Slot
     {
         private SlotAutoUpgrade() {
-            super(TurretAssemblyContainer.this.inventory, AssemblyInventory.SLOT_UPGRADE_AUTO, 14, 100);
+            super(TurretAssemblyContainer.this.inventory, AssemblyInventory.SLOT_UPGRADE_AUTO, 14, 91);
         }
 
         @Override
@@ -156,7 +156,7 @@ public class TurretAssemblyContainer
             extends Slot
     {
         private SlotSpeedUpgrade() {
-            super(TurretAssemblyContainer.this.inventory, AssemblyInventory.SLOT_UPGRADE_SPEED, 14, 118);
+            super(TurretAssemblyContainer.this.inventory, AssemblyInventory.SLOT_UPGRADE_SPEED, 14, 109);
         }
 
         @Override
@@ -174,7 +174,7 @@ public class TurretAssemblyContainer
             extends Slot
     {
         private SlotRedstoneUpgrade() {
-            super(TurretAssemblyContainer.this.inventory, AssemblyInventory.SLOT_UPGRADE_REDSTONE, 202, 118);
+            super(TurretAssemblyContainer.this.inventory, AssemblyInventory.SLOT_UPGRADE_REDSTONE, 202, 109);
         }
 
         @Override
@@ -192,7 +192,7 @@ public class TurretAssemblyContainer
             extends Slot
     {
         private SlotFilterUpgrade() {
-            super(TurretAssemblyContainer.this.inventory, AssemblyInventory.SLOT_UPGRADE_FILTER, 202, 100);
+            super(TurretAssemblyContainer.this.inventory, AssemblyInventory.SLOT_UPGRADE_FILTER, 202, 91);
         }
 
         @Override

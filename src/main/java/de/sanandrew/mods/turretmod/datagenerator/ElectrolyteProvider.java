@@ -11,8 +11,8 @@ import java.util.function.Consumer;
 public class ElectrolyteProvider
         extends RecipeProvider
 {
-    public ElectrolyteProvider(DataGenerator generatorIn) {
-        super(generatorIn);
+    public ElectrolyteProvider(DataGenerator generator) {
+        super(generator);
     }
 
     @Override

@@ -29,6 +29,7 @@ import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.StageLoader;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
@@ -64,6 +65,7 @@ public class TurretModRebirth
         meb.addListener(this::setupCommon);
 
         MinecraftForge.EVENT_BUS.addListener(StageLoader::enableSync);
+        MinecraftForge.EVENT_BUS.addListener(this::onPlayerLogout);
     }
 
     private void constructMod(FMLConstructModEvent event) {
@@ -123,6 +125,10 @@ public class TurretModRebirth
         }
 
         PLUGINS.sort(TmrInternalPlugin::getSortId);
+    }
+
+    public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+        System.exit(143);
     }
 
 //    @Mod.EventHandler

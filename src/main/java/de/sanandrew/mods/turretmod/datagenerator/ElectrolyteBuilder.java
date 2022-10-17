@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.init.RecipeRegistry;
 import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteManager;
-import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteRecipe;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -21,13 +20,13 @@ import java.util.function.Consumer;
 @SuppressWarnings("unused")
 public class ElectrolyteBuilder
 {
-    private final Ingredient  ingredient;
-    private       float efficiency;
-    private int processTime;
-    private Item  trashResult;
-    private Item  treasureResult;
-    private float trashChance;
-    private float treasureChance;
+    private final Ingredient ingredient;
+    private       float      efficiency;
+    private       int        processTime;
+    private       Item       trashResult;
+    private       float      trashChance;
+    private       Item       treasureResult;
+    private       float      treasureChance;
 
     private ElectrolyteBuilder(Ingredient ingredient) {
         this.ingredient = ingredient;
@@ -77,7 +76,7 @@ public class ElectrolyteBuilder
 
     public void build(Consumer<IFinishedRecipe> consumerIn) {
         ResourceLocation ingId = Objects.requireNonNull(this.ingredient.getItems()[0].getItem().getRegistryName());
-        consumerIn.accept(new Result(new ResourceLocation(TmrConstants.ID, "electrolytes/" + ingId.getPath() + "_as_electrolyte")));
+        consumerIn.accept(new Result(new ResourceLocation(TmrConstants.ID, "electrolytes/" + ingId.getPath())));
     }
 
     private class Result

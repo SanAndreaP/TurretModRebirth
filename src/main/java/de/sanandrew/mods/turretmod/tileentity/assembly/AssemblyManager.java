@@ -157,13 +157,13 @@ public final class AssemblyManager
         if( recipe.canCraftInDimensions(9, 2) && recipe.matches(inv, world) ) {
             List<ItemStack> removedStacks = new ArrayList<>();
 
-            for( Ingredient ing : recipe.getIngredients() ) {
+            for( AssemblyRecipe.CountedIngredient ing : recipe.getCountedIngredients() ) {
                 boolean isSatisfied = false;
 
                 for( ItemStack ingStack : ing.getItems() ) {
                     Map<Integer, Integer> modifiedSlots    = new HashMap<>();
                     List<ItemStack>       removedStacksIng = new ArrayList<>();
-                    int                   totalAmt         = ingStack.getCount();
+                    int                   totalAmt         = ing.getCount();
 
                     for( int i = inputSlotIds.length - 1; i >= 0; i-- ) {
                         ItemStack slotStack = inv.getItem(inputSlotIds[i]);
