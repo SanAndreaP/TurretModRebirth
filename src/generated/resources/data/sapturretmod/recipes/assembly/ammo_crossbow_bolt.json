@@ -1,0 +1,15 @@
+{
+  "type": "sapturretmod:turret_assembly",
+  "group": "ammo",
+  "energyConsumption": 5,
+  "processTime": 60,
+  "ingredients": [
+    {
+      "item": "minecraft:arrow"
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:crossbow_bolt",
+    "count": 1
+  }
+}

@@ -54,7 +54,7 @@ public class ElectrolyteGeneratorScreen
         for( int i = 0; i < ElectrolyteInventory.INPUT_SLOT_COUNT; i++ ) {
             final int slot = i;
             this.guiDefinition.getElementById(String.format("progress_%d", i + 1)).get(ProgressBar.class)
-                              .setPercentFunc(p -> this.menu.data.getProgress(slot) / (double) this.menu.data.getMaxProgress(slot));
+                              .setPercentFunc(p -> 1.0F - this.menu.data.getProgress(slot) / (double) this.menu.data.getMaxProgress(slot));
         }
 
         this.guiDefinition.getElementById("energy").get(ProgressBar.class)

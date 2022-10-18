@@ -79,7 +79,6 @@ public class ClientProxy
         Minecraft.getInstance().getItemColors().register(new AmmoCartridgeColor(), ItemRegistry.AMMO_CARTRIDGE);
 
         TurretModRebirth.PLUGINS.forEach(plugin -> plugin.registerTcuClient(TcuClientRegistry.INSTANCE));
-        TurretModRebirth.PLUGINS.forEach(plugin -> plugin.registerTcuClient(TcuClientRegistry.INSTANCE));
     }
 
     @Override

@@ -17,6 +17,8 @@ import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.api.assembly.ICountedIngredient;
 import de.sanandrew.mods.turretmod.entity.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.Turrets;
+import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
+import de.sanandrew.mods.turretmod.item.ammo.Ammunitions;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.NonNullList;
@@ -30,7 +32,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public final class AssemblyManager
         implements IAssemblyManager
@@ -42,6 +46,7 @@ public final class AssemblyManager
 //    private final Map<String, List<ResourceLocation>>    groups      = new HashMap<>();
     private final Map<String, ItemStack>                 groupIcons  = new HashMap<>();
     private final Map<String, Integer>                   groupOrders = new HashMap<>();
+    private String[] groupsCache;
 //
 //    private String[]                           cacheGroupNames;
 //    private List<IAssemblyRecipe>              cacheRecipes;
@@ -113,10 +118,26 @@ public final class AssemblyManager
 
     @Override
     public String[] getGroups(World level) {
-        return this.getRecipes(level).stream().map(IAssemblyRecipe::getGroup).distinct()
-                                     .filter(g -> !Strings.isNullOrEmpty(g))
-                                     .sorted(Comparator.comparingInt(g -> this.groupOrders.getOrDefault(g, 0)))
-                                     .toArray(String[]::new);
+        if( this.groupsCache == null ) {
+            this.groupsCache = this.getRecipes(level).stream().map(IAssemblyRecipe::getGroup).distinct()
+                                                              .filter(g -> !Strings.isNullOrEmpty(g))
+                                                              .sorted(Comparator.comparingInt(g -> this.groupOrders.getOrDefault(g, 0)))
+                                                              .toArray(String[]::new);
+        }
+
+        return this.groupsCache;
+    }
+
+    public String getPreviousGroup(World level, String currentGroup) {
+        String[] groups = this.getGroups(level);
+        return IntStream.range(0, groups.length).filter(i -> Objects.equals(groups[i], currentGroup))
+                        .mapToObj(i -> i == 0 ? groups[groups.length - 1] : groups[i - 1]).findFirst().orElse("");
+    }
+
+    public String getNextGroup(World level, String currentGroup) {
+        String[] groups = this.getGroups(level);
+        return IntStream.range(0, groups.length).filter(i -> Objects.equals(groups[i], currentGroup))
+                        .mapToObj(i -> i == groups.length - 1 ? groups[0] : groups[i + 1]).findFirst().orElse("");
     }
 
     @Override
@@ -132,6 +153,8 @@ public final class AssemblyManager
     public static void registerGroupValues(IAssemblyManager manager) {
         manager.setGroupOrder("turrets", 0);
         manager.setGroupIcon("turrets", TurretRegistry.INSTANCE.getItem(Turrets.CROSSBOW));
+        manager.setGroupOrder("ammo", 1);
+        manager.setGroupIcon("ammo", AmmunitionRegistry.INSTANCE.getItem(Ammunitions.BOLT));
     }
 
 //    public IAssemblyRecipe findRecipe(ItemStack output) {

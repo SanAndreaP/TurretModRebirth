@@ -131,6 +131,14 @@ public class TurretAssemblyContainer
         return this.tile.getCurrentRecipeId() != null;
     }
 
+    public boolean hasAutoUpgrade() {
+        return this.tile.hasAutoUpgrade();
+    }
+
+    public boolean isAutomated() {
+        return this.tile.isAutomated();
+    }
+
     private class SlotIngredients
             extends Slot
     {

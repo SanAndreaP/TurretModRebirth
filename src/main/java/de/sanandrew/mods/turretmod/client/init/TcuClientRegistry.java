@@ -78,7 +78,6 @@ public final class TcuClientRegistry
 
         registry.registerTcuInfoProvider(0, new NameProvider());
         registry.registerTcuInfoProvider(1, new HealthProvider());
-        registry.registerTcuInfoProvider(1, new HealthProvider());
         registry.registerTcuInfoProvider(2, new AmmoProvider());
         registry.registerTcuInfoProvider(3, new PersonalShieldProvider());
         registry.registerTcuInfoProvider(4, new TargetProvider());

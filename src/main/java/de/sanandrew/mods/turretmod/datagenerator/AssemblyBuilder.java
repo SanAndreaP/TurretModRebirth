@@ -70,7 +70,7 @@ public class AssemblyBuilder
 
     public void build(Consumer<IFinishedRecipe> consumerIn) {
         ResourceLocation resId = Objects.requireNonNull(this.result.getItem().getRegistryName());
-        consumerIn.accept(new Result(new ResourceLocation(TmrConstants.ID, "assembly/" + resId.getPath())));
+        consumerIn.accept(new Result(new ResourceLocation(TmrConstants.ID, "assembly/" + this.group + "_" + resId.getPath())));
     }
 
     public static final class CompoundIngredientBuilder

@@ -82,7 +82,8 @@ public class AmmoProvider
         super.loadJson(gui, data, w, h);
 
         JsonObject itemData = MiscUtils.get(data.getAsJsonObject("ammoItem"), JsonObject::new);
-        Item       itemElem = Item.Builder.fromJson(gui, itemData);
+        JsonUtils.addDefaultJsonProperty(itemData, "doMouseOver", true);
+        Item itemElem = Item.Builder.fromJson(gui, itemData);
         this.itemIcon = new GuiElementInst(JsonUtils.getIntArray(itemData.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] {0, 0}, Range.is(2)), itemElem).initialize(gui);
 
         JsonObject bgData = MiscUtils.get(data.getAsJsonObject("ammoBackground"), JsonObject::new);

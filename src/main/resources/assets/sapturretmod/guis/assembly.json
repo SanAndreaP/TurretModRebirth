@@ -11,6 +11,21 @@
       }
     },
     {
+      "type": "screen_title",
+      "pos": [8, 6],
+      "data": {
+        "color": "0xFF404040"
+      }
+    },
+    {
+      "type": "text",
+      "pos": [36, 128],
+      "data": {
+        "color": "0xFF404040",
+        "text": "container.inventory"
+      }
+    },
+    {
       "type": "progress_bar",
       "pos": [210, 10],
       "id": "energy",
@@ -78,7 +93,15 @@
         "uvEnabled": [50, 222],
         "uvHover": [50, 232],
         "uvDisabled": [50, 222],
-        "useVanillaTexture": false
+        "useVanillaTexture": false,
+        "labelAlignment": ["right", "top"],
+        "label": {
+          "type": "item",
+          "pos": [17, 1],
+          "data": {
+            "scale": 0.5
+          }
+        }
       }
     },
     {
@@ -91,7 +114,15 @@
         "uvEnabled": [68, 222],
         "uvHover": [68, 232],
         "uvDisabled": [68, 222],
-        "useVanillaTexture": false
+        "useVanillaTexture": false,
+        "labelAlignment": ["right", "top"],
+        "label": {
+          "type": "item",
+          "pos": [17, 1],
+          "data": {
+            "scale": 0.5
+          }
+        }
       }
     },
     {
