@@ -358,6 +358,9 @@ public class TurretAssemblyEntity
         return tag;
     }
 
+    public ResourceLocation getCurrentRecipeId() {
+        return this.currRecipeId;
+    }
 
 //
 //    @Override

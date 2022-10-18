@@ -20,8 +20,12 @@
       }
     },
     {
-      "type": "sapturretmod:assembly.group_icon",
-      "pos": [16, 37]
+      "type": "item",
+      "pos": [14, 46],
+      "id": "group-icon",
+      "data": {
+        "doMouseOver": true
+      }
     },
     {
       "type": "sapturretmod:assembly.progress",

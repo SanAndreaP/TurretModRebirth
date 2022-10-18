@@ -1,0 +1,47 @@
+{
+  "type": "sapturretmod:turret_assembly",
+  "group": "turrets",
+  "energyConsumption": 10,
+  "processTime": 100,
+  "ingredients": [
+    {
+      "count": 12,
+      "ingredient": [
+        {
+          "tag": "forge:cobblestone"
+        },
+        {
+          "item": "minecraft:stone_bricks"
+        },
+        {
+          "item": "minecraft:mossy_stone_bricks"
+        },
+        {
+          "item": "minecraft:cracked_stone_bricks"
+        },
+        {
+          "item": "minecraft:chiseled_stone_bricks"
+        }
+      ]
+    },
+    {
+      "item": "minecraft:bow"
+    },
+    {
+      "count": 4,
+      "ingredient": {
+        "tag": "forge:dusts/redstone"
+      }
+    },
+    {
+      "count": 4,
+      "ingredient": {
+        "tag": "minecraft:planks"
+      }
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:crossbow_turret",
+    "count": 1
+  }
+}

@@ -3,6 +3,7 @@ package de.sanandrew.mods.turretmod.datagenerator;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import de.sanandrew.mods.turretmod.api.assembly.ICountedIngredient;
 import de.sanandrew.mods.turretmod.init.RecipeRegistry;
 import de.sanandrew.mods.turretmod.tileentity.assembly.AssemblyManager;
 import de.sanandrew.mods.turretmod.tileentity.assembly.AssemblyRecipe;
@@ -18,17 +19,19 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
 public class AssemblyBuilder
 {
-    private final String                                        group;
-    private final NonNullList<AssemblyRecipe.CountedIngredient> ingredients = NonNullList.create();
-    private       int                                           energyConsumption;
-    private       int                     processTime;
-    private final ItemStack               result;
+    private final String                          group;
+    private final NonNullList<ICountedIngredient> ingredients = NonNullList.create();
+    private       int       energyConsumption;
+    private       int       processTime;
+    private final ItemStack result;
 
     private AssemblyBuilder(String group, ItemStack result) {
         this.group = group;
@@ -41,16 +44,16 @@ public class AssemblyBuilder
 
     public AssemblyBuilder ingredient(int count, IItemProvider... items) {
         return this.ingredients(Arrays.stream(items).map(i -> new AssemblyRecipe.CountedIngredient(Ingredient.of(i), count))
-                                      .toArray(AssemblyRecipe.CountedIngredient[]::new));
+                                      .toArray(ICountedIngredient[]::new));
     }
 
     @SafeVarargs
     public final AssemblyBuilder ingredient(int count, ITag<Item>... tags) {
         return this.ingredients(Arrays.stream(tags).map(i -> new AssemblyRecipe.CountedIngredient(Ingredient.of(i), count))
-                                      .toArray(AssemblyRecipe.CountedIngredient[]::new));
+                                      .toArray(ICountedIngredient[]::new));
     }
 
-    public AssemblyBuilder ingredients(AssemblyRecipe.CountedIngredient... ingredients) {
+    public AssemblyBuilder ingredients(ICountedIngredient... ingredients) {
         this.ingredients.addAll(Arrays.asList(ingredients));
         return this;
     }
@@ -68,6 +71,35 @@ public class AssemblyBuilder
     public void build(Consumer<IFinishedRecipe> consumerIn) {
         ResourceLocation resId = Objects.requireNonNull(this.result.getItem().getRegistryName());
         consumerIn.accept(new Result(new ResourceLocation(TmrConstants.ID, "assembly/" + resId.getPath())));
+    }
+
+    public static final class CompoundIngredientBuilder
+    {
+        private final List<Ingredient> ingredients = new ArrayList<>();
+        private final int count;
+
+        public CompoundIngredientBuilder(int count) {
+            this.count = count;
+        }
+
+        public CompoundIngredientBuilder tag(ITag<Item> tag) {
+            this.ingredients.add(Ingredient.of(tag));
+            return this;
+        }
+
+        public CompoundIngredientBuilder item(IItemProvider... items) {
+            this.ingredients.add(Ingredient.of(items));
+            return this;
+        }
+
+        public CompoundIngredientBuilder item(ItemStack... items) {
+            this.ingredients.add(Ingredient.of(items));
+            return this;
+        }
+
+        public ICountedIngredient build() {
+            return new AssemblyRecipe.CountedIngredient(Ingredient.merge(this.ingredients), this.count);
+        }
     }
 
     private class Result

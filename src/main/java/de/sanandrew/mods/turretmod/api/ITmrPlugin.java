@@ -2,6 +2,7 @@ package de.sanandrew.mods.turretmod.api;
 
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunitionRegistry;
 import de.sanandrew.mods.turretmod.api.ammo.IProjectileRegistry;
+import de.sanandrew.mods.turretmod.api.assembly.IAssemblyManager;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuClientRegistry;
 import de.sanandrew.mods.turretmod.api.repairkit.IRepairKitRegistry;
 import de.sanandrew.mods.turretmod.api.tcu.ITcuRegistry;
@@ -33,4 +34,6 @@ public interface ITmrPlugin
 
     @OnlyIn(Dist.CLIENT)
     default void registerTcuClient(ITcuClientRegistry registry) { }
+
+    default void manageAssembly(IAssemblyManager manager) { }
 }

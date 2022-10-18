@@ -14,10 +14,11 @@ import de.sanandrew.mods.turretmod.api.ILeveledInventory;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyManager;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
-import net.minecraft.inventory.IInventory;
+import de.sanandrew.mods.turretmod.api.assembly.ICountedIngredient;
+import de.sanandrew.mods.turretmod.entity.turret.TurretRegistry;
+import de.sanandrew.mods.turretmod.entity.turret.Turrets;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -25,13 +26,11 @@ import net.minecraft.world.World;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public final class AssemblyManager
         implements IAssemblyManager
@@ -130,6 +129,11 @@ public final class AssemblyManager
         return this.getRecipes(level).stream().filter(r -> r.getId().equals(id)).findFirst().orElse(EmptyRecipe.INSTANCE);
     }
 
+    public static void registerGroupValues(IAssemblyManager manager) {
+        manager.setGroupOrder("turrets", 0);
+        manager.setGroupIcon("turrets", TurretRegistry.INSTANCE.getItem(Turrets.CROSSBOW));
+    }
+
 //    public IAssemblyRecipe findRecipe(ItemStack output) {
 //        for( IAssemblyRecipe recipe : this.getRecipes() ) {
 //            if( ItemStackUtils.areEqual(output, recipe.getResultItem(), false, true) ) {
@@ -157,13 +161,13 @@ public final class AssemblyManager
         if( recipe.canCraftInDimensions(9, 2) && recipe.matches(inv, world) ) {
             List<ItemStack> removedStacks = new ArrayList<>();
 
-            for( AssemblyRecipe.CountedIngredient ing : recipe.getCountedIngredients() ) {
+            for( ICountedIngredient ing : recipe.getCountedIngredients() ) {
                 boolean isSatisfied = false;
 
                 for( ItemStack ingStack : ing.getItems() ) {
                     Map<Integer, Integer> modifiedSlots    = new HashMap<>();
                     List<ItemStack>       removedStacksIng = new ArrayList<>();
-                    int                   totalAmt         = ing.getCount();
+                    int                   totalAmt         = ingStack.getCount();
 
                     for( int i = inputSlotIds.length - 1; i >= 0; i-- ) {
                         ItemStack slotStack = inv.getItem(inputSlotIds[i]);

@@ -1,12 +1,12 @@
 package de.sanandrew.mods.turretmod.tileentity.assembly;
 
 import de.sanandrew.mods.turretmod.api.ILeveledInventory;
+import de.sanandrew.mods.turretmod.api.assembly.ICountedIngredient;
 import de.sanandrew.mods.turretmod.api.turret.IVariant;
 import de.sanandrew.mods.turretmod.api.turret.IVariantHolder;
 import de.sanandrew.mods.turretmod.entity.turret.Turrets;
 import de.sanandrew.mods.turretmod.item.TurretItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
@@ -15,7 +15,7 @@ import javax.annotation.Nonnull;
 public abstract class TurretVariantRecipe
         extends AssemblyRecipe
 {
-    public TurretVariantRecipe(ResourceLocation id, String group, NonNullList<Ingredient> ingredients, int fluxPerTick, int processTime, ItemStack result) {
+    public TurretVariantRecipe(ResourceLocation id, String group, NonNullList<ICountedIngredient> ingredients, int fluxPerTick, int processTime, ItemStack result) {
         super(id, group, ingredients, fluxPerTick, processTime, result);
     }
 
@@ -39,7 +39,7 @@ public abstract class TurretVariantRecipe
     public static class Crossbow
             extends TurretVariantRecipe
     {
-        public Crossbow(ResourceLocation id, String group, NonNullList<Ingredient> ingredients, int fluxPerTick, int processTime, ItemStack result) {
+        public Crossbow(ResourceLocation id, String group, NonNullList<ICountedIngredient> ingredients, int fluxPerTick, int processTime, ItemStack result) {
             super(id, group, ingredients, fluxPerTick, processTime, result);
         }
 

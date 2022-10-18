@@ -7,8 +7,6 @@
 package de.sanandrew.mods.turretmod.api.assembly;
 
 import de.sanandrew.mods.turretmod.api.ILeveledInventory;
-import de.sanandrew.mods.turretmod.tileentity.assembly.AssemblyRecipe;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 
@@ -27,5 +25,5 @@ public interface IAssemblyRecipe
     }
 
     @Nonnull
-    NonNullList<AssemblyRecipe.CountedIngredient> getCountedIngredients();
+    NonNullList<ICountedIngredient> getCountedIngredients();
 }

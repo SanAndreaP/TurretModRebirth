@@ -5,12 +5,12 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.Item;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.client.tcu.ITcuScreen;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
-import de.sanandrew.mods.turretmod.client.gui.element.tcu.info.AmmoItem;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.info.AmmoItemTooltip;
 import de.sanandrew.mods.turretmod.init.Lang;
 import net.minecraft.item.ItemStack;
@@ -82,7 +82,7 @@ public class AmmoProvider
         super.loadJson(gui, data, w, h);
 
         JsonObject itemData = MiscUtils.get(data.getAsJsonObject("ammoItem"), JsonObject::new);
-        AmmoItem itemElem = AmmoItem.Builder.fromJson(gui, itemData);
+        Item       itemElem = Item.Builder.fromJson(gui, itemData);
         this.itemIcon = new GuiElementInst(JsonUtils.getIntArray(itemData.get(ITcuScreen.OFFSET_JSON_ELEM), new int[] {0, 0}, Range.is(2)), itemElem).initialize(gui);
 
         JsonObject bgData = MiscUtils.get(data.getAsJsonObject("ammoBackground"), JsonObject::new);
@@ -102,7 +102,7 @@ public class AmmoProvider
         super.setup(gui, turret, w, h);
 
         this.itemBg.get().setup(gui, this.itemBg);
-        MiscUtils.accept(this.itemIcon.get(AmmoItem.class), e -> {
+        MiscUtils.accept(this.itemIcon.get(Item.class), e -> {
             e.setItemSupplier(() -> this.item);
             e.setup(gui, this.itemIcon);
         });

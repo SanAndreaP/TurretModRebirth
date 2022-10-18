@@ -9,6 +9,7 @@
 package de.sanandrew.mods.turretmod.inventory.container;
 
 import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
+import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.inventory.ContainerRegistry;
 import de.sanandrew.mods.turretmod.inventory.OutputSlot;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
@@ -23,6 +24,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.IContainerFactory;
 
 import javax.annotation.Nonnull;
@@ -119,6 +121,14 @@ public class TurretAssemblyContainer
         }
 
         return origStack;
+    }
+
+    public ResourceLocation getCurrentRecipeId() {
+        return this.tile.getCurrentRecipeId();
+    }
+
+    public boolean hasCurrentRecipe() {
+        return this.tile.getCurrentRecipeId() != null;
     }
 
     private class SlotIngredients

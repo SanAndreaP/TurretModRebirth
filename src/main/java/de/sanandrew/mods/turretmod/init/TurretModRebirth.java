@@ -8,13 +8,13 @@
  */
 package de.sanandrew.mods.turretmod.init;
 
-import de.sanandrew.mods.sanlib.lib.ColorObj;
 import de.sanandrew.mods.sanlib.lib.network.MessageHandler;
 import de.sanandrew.mods.turretmod.api.ITmrPlugin;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.TmrPlugin;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.client.init.ClientProxy;
+import de.sanandrew.mods.turretmod.datagenerator.AssemblyProvider;
 import de.sanandrew.mods.turretmod.datagenerator.ElectrolyteProvider;
 import de.sanandrew.mods.turretmod.datagenerator.TmrItemModelProvider;
 import de.sanandrew.mods.turretmod.entity.EntityRegistry;
@@ -27,6 +27,7 @@ import de.sanandrew.mods.turretmod.item.repairkits.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.item.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.StageLoader;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
+import de.sanandrew.mods.turretmod.tileentity.assembly.AssemblyManager;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -80,6 +81,7 @@ public class TurretModRebirth
         PLUGINS.forEach(plugin -> plugin.registerProjectiles(ProjectileRegistry.INSTANCE));
         PLUGINS.forEach(plugin -> plugin.registerRepairKits(RepairKitRegistry.INSTANCE));
         PLUGINS.forEach(plugin -> plugin.registerUpgrades(UpgradeRegistry.INSTANCE));
+        PLUGINS.forEach(plugin -> plugin.manageAssembly(AssemblyManager.INSTANCE));
 
         // add forge registries AFTER mod registries to load things properly
         BlockRegistry.register(meb);
@@ -100,6 +102,7 @@ public class TurretModRebirth
 
         if( event.includeServer() ) {
             gen.addProvider(new ElectrolyteProvider(gen));
+            gen.addProvider(new AssemblyProvider(gen));
         }
         if( event.includeClient() ) {
             gen.addProvider(new TmrItemModelProvider(gen, event.getExistingFileHelper()));

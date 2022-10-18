@@ -12,6 +12,7 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.ILeveledInventory;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
+import de.sanandrew.mods.turretmod.api.assembly.ICountedIngredient;
 import de.sanandrew.mods.turretmod.init.RecipeRegistry;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -33,15 +34,15 @@ public class AssemblyRecipe
         implements IAssemblyRecipe
 {
     private final ResourceLocation id;
-    private final String group;
-    private final NonNullList<CountedIngredient> ingredients;
-    private final int                     energyConsumption;
+    private final String                          group;
+    private final NonNullList<ICountedIngredient> ingredients;
+    private final int                             energyConsumption;
     private final int                     processTime;
     private final ItemStack result;
 
-    public AssemblyRecipe(ResourceLocation id, String group, NonNullList<CountedIngredient> ingredients, int energyConsumption, int processTime, ItemStack result) {
+    public AssemblyRecipe(ResourceLocation id, String group, NonNullList<ICountedIngredient> ingredients, int energyConsumption, int processTime, ItemStack result) {
         this.id = id;
-        this.group = "turret_assembly." + group;
+        this.group = group; //"turret_assembly." +
         this.ingredients = ingredients;
         this.energyConsumption = energyConsumption;
         this.processTime = processTime;
@@ -81,7 +82,7 @@ public class AssemblyRecipe
         NonNullList<ItemStack> cmpInv = getCompactInventory(inv);
         return this.ingredients.stream().allMatch(i -> {
             for( ItemStack invStack : cmpInv ) {
-                if( i.ingredient.test(invStack) ) {
+                if( i.getIngredient().test(invStack) ) {
                     return true;
                 }
             }
@@ -105,12 +106,12 @@ public class AssemblyRecipe
     @Nonnull
     @Override
     public NonNullList<Ingredient> getIngredients() {
-        return this.ingredients.stream().map(ci -> ci.ingredient).collect(Collectors.toCollection(NonNullList::create));
+        return this.ingredients.stream().map(ICountedIngredient::getIngredient).collect(Collectors.toCollection(NonNullList::create));
     }
 
     @Override
     @Nonnull
-    public NonNullList<CountedIngredient> getCountedIngredients() {
+    public NonNullList<ICountedIngredient> getCountedIngredients() {
         return this.ingredients;
     }
 
@@ -143,7 +144,7 @@ public class AssemblyRecipe
             int fluxPerTick = JsonUtils.getIntVal(json.get("energyConsumption"));
             int processTime = JsonUtils.getIntVal(json.get("processTime"));
 
-            NonNullList<CountedIngredient> ingredients = NonNullList.create();
+            NonNullList<ICountedIngredient> ingredients = NonNullList.create();
             for( JsonElement ing : json.getAsJsonArray("ingredients") ) {
                 ingredients.add(CountedIngredient.fromJson(ing));
             }
@@ -159,8 +160,8 @@ public class AssemblyRecipe
             String group = buffer.readUtf(512);
             int fluxPerTick = buffer.readVarInt();
             int processTime = buffer.readVarInt();
-            int ingSz = buffer.readVarInt();
-            NonNullList<CountedIngredient> ingredients = NonNullList.create();
+            int                             ingSz       = buffer.readVarInt();
+            NonNullList<ICountedIngredient> ingredients = NonNullList.create();
 
             for( int i = 0; i < ingSz; i++ ) {
                 ingredients.add(CountedIngredient.fromNetwork(buffer));
@@ -178,7 +179,7 @@ public class AssemblyRecipe
             buffer.writeVarInt(recipe.processTime);
             buffer.writeVarInt(recipe.ingredients.size());
 
-            for( CountedIngredient i : recipe.ingredients ) {
+            for( ICountedIngredient i : recipe.ingredients ) {
                 i.toNetwork(buffer);
             }
 
@@ -187,7 +188,11 @@ public class AssemblyRecipe
     }
 
     public static class CountedIngredient
+            implements ICountedIngredient
     {
+        private static final String JSON_COUNT = "count";
+        private static final String JSON_INGREDIENT = "ingredient";
+
         private final Ingredient ingredient;
         private final int count;
 
@@ -196,38 +201,51 @@ public class AssemblyRecipe
             this.count = count;
         }
 
-        public int getCount() {
-            return this.count;
-        }
-
+        @Override
         public Ingredient getIngredient() {
             return this.ingredient;
         }
 
+        @Override
         public ItemStack[] getItems() {
             ItemStack[] stacks = this.ingredient.getItems();
+
             Arrays.stream(stacks).forEach(i -> i.setCount(this.count));
+
             return stacks;
         }
 
-        public static CountedIngredient fromJson(JsonElement json) {
+        public static ICountedIngredient fromJson(JsonElement json) {
             if( json.isJsonObject() ) {
-                return new CountedIngredient(Ingredient.fromJson(json), JsonUtils.getIntVal(json.getAsJsonObject().get("count"), 1));
-            } else {
-                return new CountedIngredient(Ingredient.fromJson(json), 1);
+                JsonObject jObj = json.getAsJsonObject();
+                if( jObj.has(JSON_COUNT) && jObj.has(JSON_INGREDIENT) ) {
+                    return new CountedIngredient(Ingredient.fromJson(jObj.get(JSON_INGREDIENT)), JsonUtils.getIntVal(jObj.get(JSON_COUNT)));
+                }
             }
+
+            return new CountedIngredient(Ingredient.fromJson(json), 1);
         }
 
+        @Override
         public JsonElement toJson() {
-            this.ingredient.toJson();
+            if( this.count == 1 ) {
+                return this.ingredient.toJson();
+            }
+
+            JsonObject jObj = new JsonObject();
+            jObj.addProperty(JSON_COUNT, this.count);
+            jObj.add(JSON_INGREDIENT, this.ingredient.toJson());
+
+            return jObj;
         }
 
+        @Override
         public void toNetwork(PacketBuffer buffer) {
             buffer.writeVarInt(this.count);
             this.ingredient.toNetwork(buffer);
         }
 
-        public static CountedIngredient fromNetwork(PacketBuffer buffer) {
+        public static ICountedIngredient fromNetwork(PacketBuffer buffer) {
             int count = buffer.readVarInt();
             return new CountedIngredient(Ingredient.fromNetwork(buffer), count);
         }
