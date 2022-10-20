@@ -1,0 +1,29 @@
+{
+  "type": "sapturretmod:turret_assembly",
+  "group": "upgrades",
+  "energyConsumption": 20,
+  "processTime": 600,
+  "ingredients": [
+    {
+      "item": "sapturretmod:empty_upgrade"
+    },
+    [
+      {
+        "type": "forge:nbt",
+        "item": "minecraft:bow",
+        "count": 1,
+        "nbt": "{Enchantments:[{lvl:1s,id:\"minecraft:infinity\"}],Damage:0}"
+      },
+      {
+        "type": "forge:nbt",
+        "item": "minecraft:enchanted_book",
+        "count": 1,
+        "nbt": "{StoredEnchantments:[{lvl:1s,id:\"minecraft:infinity\"}]}"
+      }
+    ]
+  ],
+  "result": {
+    "item": "sapturretmod:infinite_economy_upgrade",
+    "count": 1
+  }
+}

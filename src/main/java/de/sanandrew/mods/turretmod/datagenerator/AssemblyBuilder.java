@@ -16,6 +16,8 @@ import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.CompoundIngredient;
+import net.minecraftforge.common.crafting.NBTIngredient;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -43,6 +45,11 @@ public class AssemblyBuilder
     }
 
     public AssemblyBuilder ingredient(int count, IItemProvider... items) {
+        return this.ingredients(Arrays.stream(items).map(i -> new AssemblyRecipe.CountedIngredient(Ingredient.of(i), count))
+                                      .toArray(ICountedIngredient[]::new));
+    }
+
+    public AssemblyBuilder ingredient(int count, ItemStack... items) {
         return this.ingredients(Arrays.stream(items).map(i -> new AssemblyRecipe.CountedIngredient(Ingredient.of(i), count))
                                       .toArray(ICountedIngredient[]::new));
     }
@@ -97,8 +104,29 @@ public class AssemblyBuilder
             return this;
         }
 
+        public CompoundIngredientBuilder itemNbt(ItemStack item) {
+            this.ingredients.add(new AssemblyNbtIngredient(item));
+            return this;
+        }
+
         public ICountedIngredient build() {
-            return new AssemblyRecipe.CountedIngredient(Ingredient.merge(this.ingredients), this.count);
+            return new AssemblyRecipe.CountedIngredient(new AssemblyCompoundIngredient(this.ingredients), this.count);
+        }
+    }
+
+    private static class AssemblyCompoundIngredient
+            extends CompoundIngredient
+    {
+        protected AssemblyCompoundIngredient(List<Ingredient> children) {
+            super(children);
+        }
+    }
+
+    private static class AssemblyNbtIngredient
+            extends NBTIngredient
+    {
+        public AssemblyNbtIngredient(ItemStack stack) {
+            super(stack);
         }
     }
 

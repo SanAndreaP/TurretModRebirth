@@ -1,0 +1,24 @@
+{
+  "type": "sapturretmod:turret_assembly",
+  "group": "upgrades",
+  "energyConsumption": 20,
+  "processTime": 600,
+  "ingredients": [
+    {
+      "item": "sapturretmod:empty_upgrade"
+    },
+    {
+      "tag": "forge:gems/quartz"
+    },
+    {
+      "tag": "forge:ender_pearls"
+    },
+    {
+      "tag": "forge:dusts/redstone"
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:personal_shield_upgrade",
+    "count": 1
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "sapturretmod:turret_assembly",
+  "group": "upgrades",
+  "energyConsumption": 20,
+  "processTime": 600,
+  "ingredients": [
+    {
+      "item": "sapturretmod:empty_upgrade"
+    },
+    {
+      "tag": "forge:storage_blocks/gold"
+    },
+    {
+      "tag": "forge:gems/diamond"
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:economy_2_upgrade",
+    "count": 1
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "sapturretmod:turret_assembly",
+  "group": "upgrades",
+  "energyConsumption": 20,
+  "processTime": 600,
+  "ingredients": [
+    {
+      "item": "sapturretmod:empty_upgrade"
+    },
+    {
+      "count": 8,
+      "ingredient": {
+        "item": "minecraft:glistering_melon_slice"
+      }
+    },
+    {
+      "item": "minecraft:golden_apple"
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:health_2_upgrade",
+    "count": 1
+  }
+}

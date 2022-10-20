@@ -53,6 +53,22 @@
     },
     {
       "type": "sapturretmod:assembly.ghost_items"
+    },
+    {
+      "type": "scroll_area",
+      "pos": [36, 28],
+      "id": "recipe-list",
+      "data": {
+        "areaSize": [106, 52],
+        "scrollbarPos": [144, 25],
+        "scrollbarHeight": 58,
+        "scrollButton": {
+          "size": [6, 6],
+          "uv": [230, 0],
+          "uvDisabled": [230, 6]
+        },
+        "rasterized": true
+      }
     }
   ],
   "foregroundElements": [
@@ -62,7 +78,7 @@
       "pos": [156, 48],
       "data": {
         "size": [50, 12],
-        "labelText": "gui.sapturretmod.tassembly.cancel"
+        "label": "gui.sapturretmod.assembly.cancel"
       }
     },
     {
@@ -71,7 +87,7 @@
       "pos": [156, 61],
       "data": {
         "size": [50, 12],
-        "labelText": "gui.sapturretmod.tassembly.automate.enable"
+        "label": "gui.sapturretmod.assembly.automate_enable"
       }
     },
     {
@@ -80,7 +96,7 @@
       "pos": [156, 74],
       "data": {
         "size": [50, 12],
-        "labelText": "gui.sapturretmod.tassembly.automate.disable"
+        "label": "gui.sapturretmod.assembly.automate_disable"
       }
     },
     {

@@ -19,6 +19,7 @@ import de.sanandrew.mods.turretmod.entity.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.Turrets;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.item.ammo.Ammunitions;
+import de.sanandrew.mods.turretmod.item.upgrades.UpgradeRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.NonNullList;
@@ -155,6 +156,8 @@ public final class AssemblyManager
         manager.setGroupIcon("turrets", TurretRegistry.INSTANCE.getItem(Turrets.CROSSBOW));
         manager.setGroupOrder("ammo", 1);
         manager.setGroupIcon("ammo", AmmunitionRegistry.INSTANCE.getItem(Ammunitions.BOLT));
+        manager.setGroupOrder("upgrades", 2);
+        manager.setGroupIcon("upgrades", UpgradeRegistry.INSTANCE.getItem(UpgradeRegistry.EMPTY_UPGRADE));
     }
 
 //    public IAssemblyRecipe findRecipe(ItemStack output) {

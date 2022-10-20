@@ -1,0 +1,24 @@
+{
+  "type": "sapturretmod:turret_assembly",
+  "group": "upgrades",
+  "energyConsumption": 20,
+  "processTime": 600,
+  "ingredients": [
+    {
+      "item": "sapturretmod:empty_upgrade"
+    },
+    {
+      "item": "sapturretmod:turret_crate"
+    },
+    {
+      "count": 2,
+      "ingredient": {
+        "tag": "forge:dusts/redstone"
+      }
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret_safe_upgrade",
+    "count": 1
+  }
+}

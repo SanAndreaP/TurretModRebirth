@@ -1,0 +1,41 @@
+{
+  "type": "sapturretmod:turret_assembly",
+  "group": "upgrades",
+  "energyConsumption": 20,
+  "processTime": 600,
+  "ingredients": [
+    {
+      "item": "sapturretmod:empty_upgrade"
+    },
+    [
+      {
+        "item": "minecraft:water_bucket"
+      },
+      {
+        "type": "forge:nbt",
+        "item": "minecraft:potion",
+        "count": 1,
+        "nbt": "{Potion:\"minecraft:water\"}"
+      },
+      {
+        "type": "forge:nbt",
+        "item": "minecraft:lingering_potion",
+        "count": 1,
+        "nbt": "{Potion:\"minecraft:water\"}"
+      },
+      {
+        "type": "forge:nbt",
+        "item": "minecraft:splash_potion",
+        "count": 1,
+        "nbt": "{Potion:\"minecraft:water\"}"
+      }
+    ],
+    {
+      "tag": "forge:slimeballs"
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:ender_toxin_1_upgrade",
+    "count": 1
+  }
+}
