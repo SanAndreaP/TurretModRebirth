@@ -9,7 +9,6 @@ package de.sanandrew.mods.turretmod.client.shader;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.sanandrew.mods.sanlib.lib.client.ShaderHelper;
-import de.sanandrew.mods.sanlib.lib.function.Procedure;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.Texture;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -40,22 +39,22 @@ public class ShaderGrayscale
         }
     }
 
-    public void render(Procedure renderer, float brightness) {
-        int texture = 0;
-        boolean shaders = ShaderHelper.areShadersEnabled();
+    public void render(Runnable renderer, float brightness) {
+        int     textureId = 0;
+        boolean shaders   = ShaderHelper.areShadersEnabled();
 
-        if(shaders) {
+        if( shaders ) {
             RenderSystem.activeTexture(ARBMultitexture.GL_TEXTURE0_ARB + ShaderHelper.getSecondaryTextureUnit());
-            texture = GlStateManager._getInteger(GL11.GL_TEXTURE_BINDING_2D);
+            textureId = GlStateManager._getInteger(GL11.GL_TEXTURE_BINDING_2D);
+            ShaderHelper.useShader(Shaders.grayscaleItem, shader -> this.drawGrayscale(shader, brightness));
         }
 
-        ShaderHelper.useShader(Shaders.grayscaleItem, shader -> this.drawGrayscale(shader, brightness));
-        renderer.work();
-        ShaderHelper.releaseShader();
+        renderer.run();
 
-        if(shaders) {
+        if( shaders ) {
+            ShaderHelper.releaseShader();
             RenderSystem.activeTexture(ARBMultitexture.GL_TEXTURE0_ARB + ShaderHelper.getSecondaryTextureUnit());
-            RenderSystem.bindTexture(texture);
+            RenderSystem.bindTexture(textureId);
             RenderSystem.activeTexture(ARBMultitexture.GL_TEXTURE0_ARB);
         }
     }

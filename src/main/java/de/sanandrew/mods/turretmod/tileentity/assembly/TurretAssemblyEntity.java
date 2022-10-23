@@ -72,6 +72,7 @@ public class TurretAssemblyEntity
     private int              craftingAmount;
     private boolean automate;
 
+    private int ticksAlive = 0;
     private int ticksCrafted = 0;
     private int maxTicksCrafted = 0;
     private int fluxConsumption = 0;
@@ -103,6 +104,7 @@ public class TurretAssemblyEntity
         } else if( this.currRecipeId == null ) {
             this.currRecipeId = recipe.getId();
             this.craftingAmount = this.automate ? 1 : count;
+            this.broadcastChanges();
         }
     }
 
@@ -115,6 +117,8 @@ public class TurretAssemblyEntity
         this.fluxConsumption = 0;
         this.maxTicksCrafted = 0;
         this.isActive = false;
+
+        this.broadcastChanges();
     }
 
     public boolean hasAutoUpgrade() {
@@ -137,48 +141,59 @@ public class TurretAssemblyEntity
         return this.itemHandler.getFilterStacks();
     }
 
+    public int getCraftingAmount() {
+        return this.craftingAmount;
+    }
+
     @Override
     public void tick() {
         if( this.level == null ) {
             return;
         }
 
+        this.ticksAlive = this.ticksAlive >= 19 ? 0 : this.ticksAlive + 1;
+
         if( !this.level.isClientSide ) {
             boolean prevActive = this.isActive;
             boolean doSync = false;
-            this.energyStorage.updatePrevFlux();
+
+            if( this.ticksAlive % 10 == 0 ) {
+                if( this.energyStorage.hasFluxChanged() ) {
+                    doSync = true;
+                }
+                this.energyStorage.updatePrevFlux();
+            }
 
             if( this.automate && !this.hasAutoUpgrade() ) {
                 this.automate = false;
                 this.cancelCrafting();
-            }
-
-            if( this.energyStorage.hasFluxChanged() ) {
-                doSync = true;
+                return;
             }
 
             int maxLoop = this.hasSpeedUpgrade() ? 4 : 1;
 
-            if( this.isActive && this.currRecipeId != null ) {
-                if( this.hasRedstoneUpgrade() && this.isRedstonePowered() ) {
-                    this.isActive = false;
+            if( this.currRecipeId != null ) {
+                if( this.cache.isEmpty() ) {
+                    this.initCrafting();
                 } else {
+                    this.isActive = !this.hasRedstoneUpgrade() || !this.isRedstonePowered();
+                }
+
+                if( this.isActive ) {
                     if( !prevActive ) {
                         doSync = true;
                     }
 
                     for( int i = 0; i < maxLoop; i++ ) {
                         if( !this.process() ) {
-                            break;
+                            return;
                         }
                     }
                 }
-            } else {
-                this.initCrafting();
             }
 
             if( doSync || prevActive ^ this.isActive ) {
-                this.setChanged();
+                this.broadcastChanges();
             }
         } else {
             this.robotArm.process(this.isActive, this.hasSpeedUpgrade());
@@ -233,6 +248,8 @@ public class TurretAssemblyEntity
             }
         } else {
             this.isActive = false;
+            this.broadcastChanges();
+            return false;
         }
 
         return this.isActive && this.currRecipeId != null;
@@ -252,7 +269,7 @@ public class TurretAssemblyEntity
 //        return Direction.Plane.HORIZONTAL.stream().anyMatch(f -> RedstonePowerProxy.INSTANCE.isPowered(this.level, this.getBlockPos(), f));
     }
 
-    public IInventory getInventory() {
+    public AssemblyInventory getInventory() {
         return this.itemHandler;
     }
 
@@ -263,6 +280,7 @@ public class TurretAssemblyEntity
         this.isActive = tag.getBoolean(NBT_IS_ACTIVE);
         this.currRecipeId = tag.contains(NBT_RECIPE) ? new ResourceLocation(tag.getString(NBT_RECIPE)) : null;
         this.craftingAmount = tag.getInt(NBT_CRAFTING_AMOUNT);
+        this.automate = tag.getBoolean(NBT_AUTOMATE);
 
         this.ticksCrafted = tag.getInt(NBT_TICKS_CRAFTED);
         this.maxTicksCrafted = tag.getInt(NBT_MAX_TICKS_CRAFTED);
@@ -329,6 +347,7 @@ public class TurretAssemblyEntity
     private void loadSyncNBT(CompoundNBT tag) {
         this.isActive = tag.getBoolean(NBT_IS_ACTIVE);
         this.currRecipeId = tag.contains(NBT_RECIPE) ? new ResourceLocation(tag.getString(NBT_RECIPE)) : null;
+        this.automate = tag.getBoolean(NBT_AUTOMATE);
 
         if( tag.getBoolean("HasAutomationUpgrade") && !this.hasAutoUpgrade() ) {
             this.itemHandler.setItem(AssemblyInventory.SLOT_UPGRADE_AUTO, new ItemStack(ItemRegistry.ASSEMBLY_UPG_AUTO));
@@ -349,6 +368,7 @@ public class TurretAssemblyEntity
         if( this.currRecipeId != null ) {
             tag.putString(NBT_RECIPE, this.currRecipeId.toString());
         }
+        tag.putBoolean(NBT_AUTOMATE, this.automate);
 
         tag.putBoolean("HasAutomationUpgrade", this.hasAutoUpgrade());
         tag.putBoolean("HasSpeedUpgrade", this.hasSpeedUpgrade());
@@ -450,12 +470,23 @@ public class TurretAssemblyEntity
     }
 
     public void setAutomated(boolean b) {
+        if( !this.hasAutoUpgrade() ) {
+            return;
+        }
+
         if( this.currRecipeId == null ) {
             this.automate = b;
+            this.broadcastChanges();
         } else if( !b ) {
-            this.cancelCrafting();
             this.automate = false;
+            this.cancelCrafting();
         }
+    }
+
+    public void broadcastChanges() {
+        this.setChanged();
+        BlockState state = this.getBlockState();
+        this.level.markAndNotifyBlock(this.worldPosition, this.level.getChunkAt(this.worldPosition), state, state, Constants.BlockFlags.DEFAULT, 512);
     }
 
     public boolean isAutomated() {

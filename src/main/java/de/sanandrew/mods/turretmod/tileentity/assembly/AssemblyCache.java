@@ -13,20 +13,21 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @SuppressWarnings("NullableProblems")
 public class AssemblyCache
         implements IInventory
 {
-    private NonNullList<ItemStack> stacks;
+    private final NonNullList<ItemStack> stacks = NonNullList.withSize(AssemblyInventory.SLOTS_INSERT.length, ItemStack.EMPTY);
     private final TurretAssemblyEntity assembly;
     private final IInventory assemblyInventory;
 
     public AssemblyCache(TurretAssemblyEntity assembly, IInventory assemblyInventory) {
         this.assembly = assembly;
         this.assemblyInventory = assemblyInventory;
-        this.clearContent();
     }
 
     @Override
@@ -54,19 +55,17 @@ public class AssemblyCache
         this.clearContent();
     }
 
-    public void insert(ItemStack[] stacks) {
-        this.stacks = NonNullList.of(ItemStack.EMPTY, stacks);
-    }
-
+    @SuppressWarnings("ConstantConditions")
     public void insert(List<ItemStack> stacks) {
         if( stacks != null && !stacks.isEmpty() ) {
-            this.insert(stacks.toArray(new ItemStack[0]));
+            this.stacks.clear();
+            IntStream.range(0, Math.min(stacks.size(), this.stacks.size())).forEach(i -> this.stacks.set(i, stacks.get(i)));
         }
     }
 
     @Override
     public void clearContent() {
-        this.stacks = NonNullList.withSize(0, ItemStack.EMPTY);
+        this.stacks.clear();
     }
 
     @Override
@@ -85,10 +84,10 @@ public class AssemblyCache
     }
 
     @Override
-    public void setItem(int index, ItemStack stack) { }
+    public void setItem(int index, ItemStack stack) { /* no-op */ }
 
     @Override
-    public void setChanged() { }
+    public void setChanged() { /* no-op */ }
 
     @Override
     public boolean stillValid(PlayerEntity player) {

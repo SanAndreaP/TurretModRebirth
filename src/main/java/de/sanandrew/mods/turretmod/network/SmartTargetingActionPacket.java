@@ -123,7 +123,7 @@ public class SmartTargetingActionPacket
         }
 
         Entity e = player.level.getEntity(this.turretId);
-        if( e instanceof ITurretEntity) {
+        if( e instanceof ITurretEntity ) {
             ITurretEntity turretInst = (ITurretEntity) e;
             if( !turretInst.hasPlayerPermission(player) ) {
                 return;

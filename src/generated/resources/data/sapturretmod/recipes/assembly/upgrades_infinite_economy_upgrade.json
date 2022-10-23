@@ -9,13 +9,13 @@
     },
     [
       {
-        "type": "forge:nbt",
+        "type": "sanlib:nbt",
         "item": "minecraft:bow",
         "count": 1,
         "nbt": "{Enchantments:[{lvl:1s,id:\"minecraft:infinity\"}],Damage:0}"
       },
       {
-        "type": "forge:nbt",
+        "type": "sanlib:nbt",
         "item": "minecraft:enchanted_book",
         "count": 1,
         "nbt": "{StoredEnchantments:[{lvl:1s,id:\"minecraft:infinity\"}]}"

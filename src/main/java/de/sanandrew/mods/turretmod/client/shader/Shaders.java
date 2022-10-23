@@ -17,7 +17,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @SuppressWarnings("WeakerAccess")
 public final class Shaders
 {
-//    public static int categoryButton = 0;
     public static int grayscaleItem = 0;
     public static int alphaOverride = 0;
 
@@ -26,7 +25,6 @@ public final class Shaders
             return;
         }
 
-//        categoryButton = ShaderHelper.createProgram(null, Resources.SHADER_CATEGORY_BUTTON_FRAG);
         grayscaleItem = ShaderHelper.createProgram(null, Resources.SHADER_GRAYSCALE_FRAG);
         alphaOverride = ShaderHelper.createProgram(null, Resources.SHADER_ALPHA_OVERRIDE_FRAG);
     }

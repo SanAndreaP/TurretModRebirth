@@ -12,19 +12,19 @@
         "item": "minecraft:water_bucket"
       },
       {
-        "type": "forge:nbt",
+        "type": "sanlib:nbt",
         "item": "minecraft:potion",
         "count": 1,
         "nbt": "{Potion:\"minecraft:water\"}"
       },
       {
-        "type": "forge:nbt",
+        "type": "sanlib:nbt",
         "item": "minecraft:lingering_potion",
         "count": 1,
         "nbt": "{Potion:\"minecraft:water\"}"
       },
       {
-        "type": "forge:nbt",
+        "type": "sanlib:nbt",
         "item": "minecraft:splash_potion",
         "count": 1,
         "nbt": "{Potion:\"minecraft:water\"}"

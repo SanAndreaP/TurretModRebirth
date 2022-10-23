@@ -84,13 +84,13 @@ public class AssemblyProvider
 //                                                              .ingredient(1, Tags.Items.DYES_GREEN)
 //                                                              .ingredient(1, Tags.Items.DYES_BLUE)
 //                                                              .ingredient(1, Tags.Items.DUSTS_PRISMARINE));
-//        newUpgrade(consumer, Upgrades.SHIELD_EXPLOSIVE, b -> b.ingredients(getResistantItems(Enchantments.BLAST_PROTECTION)));
+//        newUpgrade(consumer, Upgrades.SHIELD_EXPLOSIVE, b -> b.ingredients(getResistantItems(Enchantments.BLAST_PROTECTION, 0)));
         newUpgrade(consumer, Upgrades.SHIELD_PERSONAL, b -> b.ingredient(1, Tags.Items.GEMS_QUARTZ)
                                                              .ingredient(1, Tags.Items.ENDER_PEARLS)
                                                              .ingredient(1, Tags.Items.DUSTS_REDSTONE));
 //        newUpgrade(consumer, Upgrades.SHIELD_PROJECTILE, 20, 600, b -> b.ingredients(getResistantItems(Enchantments.PROJECTILE_PROTECTION)));
-//        newUpgrade(consumer, Upgrades.SHIELD_STRENGTH_I, b -> b.ingredients(getResistantItems(Enchantments.ALL_DAMAGE_PROTECTION)));
-//        newUpgrade(consumer, Upgrades.SHIELD_STRENGTH_II, b -> b.ingredients(getResistantItems(Enchantments.ALL_DAMAGE_PROTECTION)));
+//        newUpgrade(consumer, Upgrades.SHIELD_STRENGTH_I, b -> b.ingredients(getResistantItems(Enchantments.ALL_DAMAGE_PROTECTION, 0)));
+//        newUpgrade(consumer, Upgrades.SHIELD_STRENGTH_II, b -> b.ingredients(getResistantItems(Enchantments.ALL_DAMAGE_PROTECTION, 1)));
         newUpgrade(consumer, Upgrades.SMART_TGT, b -> b.ingredient(1, Items.SPIDER_EYE)
                                                        .ingredient(1, Tags.Items.ENDER_PEARLS));
         newUpgrade(consumer, Upgrades.UPG_STORAGE_I, b -> b.ingredient(1, Items.TRAPPED_CHEST));
@@ -135,7 +135,7 @@ public class AssemblyProvider
                                                                .build();
     }
 
-    private static ICountedIngredient getResistantItems(Enchantment enchantment) {
+    private static ICountedIngredient getResistantItems(Enchantment enchantment, int level) {
         List<Item> enchantableItems = new ArrayList<>();
         enchantableItems.addAll(Lists.newArrayList(Items.LEATHER_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS));
         enchantableItems.addAll(Lists.newArrayList(Items.CHAINMAIL_HELMET, Items.CHAINMAIL_CHESTPLATE, Items.CHAINMAIL_LEGGINGS, Items.CHAINMAIL_BOOTS));
@@ -148,7 +148,7 @@ public class AssemblyProvider
         AssemblyBuilder.CompoundIngredientBuilder b = new AssemblyBuilder.CompoundIngredientBuilder(1);
         for( Item i : enchantableItems ) {
             ItemStack stack = new ItemStack(i);
-            EnchantmentHelper.setEnchantments(Maps.asMap(Sets.newHashSet(enchantment), k -> 1), stack);
+            EnchantmentHelper.setEnchantments(Maps.asMap(Sets.newHashSet(enchantment), k -> level), stack);
             b.itemNbt(stack);
         }
 

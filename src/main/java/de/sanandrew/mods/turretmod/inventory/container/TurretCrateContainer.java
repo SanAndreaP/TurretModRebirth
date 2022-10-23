@@ -8,7 +8,6 @@ package de.sanandrew.mods.turretmod.inventory.container;
 
 import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.turretmod.inventory.ContainerRegistry;
-import de.sanandrew.mods.turretmod.inventory.OutputSlot;
 import de.sanandrew.mods.turretmod.inventory.TurretCrateInventory;
 import de.sanandrew.mods.turretmod.item.ammo.AmmoCartridgeItem;
 import de.sanandrew.mods.turretmod.tileentity.TurretCrateEntity;
@@ -117,6 +116,19 @@ public class TurretCrateContainer
         public TurretCrateContainer create(int windowId, PlayerInventory inv, PacketBuffer data) {
             TileEntity te = Objects.requireNonNull(inv.player.level.getBlockEntity(data.readBlockPos()));
             return new TurretCrateContainer(windowId, inv, (TurretCrateEntity) te);
+        }
+    }
+
+    public static class OutputSlot
+            extends Slot
+    {
+        OutputSlot(IInventory inventoryIn, int index, int xPosition, int yPosition) {
+            super(inventoryIn, index, xPosition, yPosition);
+        }
+
+        @Override
+        public boolean mayPlace(@Nonnull ItemStack stack) {
+            return false;
         }
     }
 

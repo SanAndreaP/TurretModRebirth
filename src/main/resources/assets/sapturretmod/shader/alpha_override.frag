@@ -2,13 +2,16 @@
 
 uniform int time; // Passed in, see ShaderHelper.java
 
-uniform float alpha;
-uniform vec3 lighting;
 uniform sampler2D image;
+uniform float alpha;
+uniform float lighting;
 
 void main() {
-    vec2 texcoord = vec2(gl_TexCoord[0].st);
+    vec2 texcoord = gl_TexCoord[0].st;
     vec4 color = texture2D(image, texcoord);
 
-    gl_FragColor = gl_Color * vec4(color.r * lighting.r, color.g * lighting.g, color.b * lighting.b, color.a * alpha);
+//    color.rgb *= lighting;
+//    color.a *= alpha;
+
+    gl_FragColor = gl_Color * vec4(color.r, color.g, color.b, color.a * alpha);
 }

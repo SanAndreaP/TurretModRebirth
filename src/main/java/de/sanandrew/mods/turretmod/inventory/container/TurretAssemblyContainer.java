@@ -9,9 +9,7 @@
 package de.sanandrew.mods.turretmod.inventory.container;
 
 import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
-import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.inventory.ContainerRegistry;
-import de.sanandrew.mods.turretmod.inventory.OutputSlot;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.tileentity.assembly.AssemblyInventory;
 import de.sanandrew.mods.turretmod.tileentity.assembly.AssemblySyncData;
@@ -24,8 +22,9 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.IContainerFactory;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -34,7 +33,7 @@ public class TurretAssemblyContainer
         extends Container
 {
     private final IInventory           inventory;
-    private final TurretAssemblyEntity tile;
+    public final TurretAssemblyEntity tile;
     public final AssemblySyncData data;
 
     public TurretAssemblyContainer(int windowId, PlayerInventory playerInv, TurretAssemblyEntity assembly, AssemblySyncData syncData) {
@@ -43,9 +42,9 @@ public class TurretAssemblyContainer
         this.inventory = this.tile.getInventory();
         this.data = syncData;
 
-        IInventory tileInv = assembly.getInventory();
-        this.addSlot(new OutputSlot(tileInv, AssemblyInventory.SLOT_OUTPUT, 163, 10));
-        this.addSlot(new OutputSlot(tileInv, AssemblyInventory.SLOT_OUTPUT_CARTRIDGE, 181, 10));
+        IItemHandler tileInv = assembly.getInventory();
+        this.addSlot(new SlotItemHandler(tileInv, AssemblyInventory.SLOT_OUTPUT, 163, 10));
+        this.addSlot(new SlotItemHandler(tileInv, AssemblyInventory.SLOT_OUTPUT_CARTRIDGE, 181, 10));
         this.addSlot(new SlotAutoUpgrade());
         this.addSlot(new SlotSpeedUpgrade());
         this.addSlot(new SlotFilterUpgrade());
@@ -121,22 +120,6 @@ public class TurretAssemblyContainer
         }
 
         return origStack;
-    }
-
-    public ResourceLocation getCurrentRecipeId() {
-        return this.tile.getCurrentRecipeId();
-    }
-
-    public boolean hasCurrentRecipe() {
-        return this.tile.getCurrentRecipeId() != null;
-    }
-
-    public boolean hasAutoUpgrade() {
-        return this.tile.hasAutoUpgrade();
-    }
-
-    public boolean isAutomated() {
-        return this.tile.isAutomated();
     }
 
     private class SlotIngredients

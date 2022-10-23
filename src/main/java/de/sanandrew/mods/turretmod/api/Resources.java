@@ -94,7 +94,6 @@ public final class Resources
     public static final ResourceLocation PATCHOULI_CAT_UPGRADES = rl("upgrades");
     public static final ResourceLocation PATCHOULI_CAT_TURRETS  = rl("turrets");
 
-    public static final ResourceLocation SHADER_CATEGORY_BUTTON_FRAG = rl("shader/categorybtn.frag");
     public static final ResourceLocation SHADER_GRAYSCALE_FRAG       = rl("shader/grayscale.frag");
     public static final ResourceLocation SHADER_ALPHA_OVERRIDE_FRAG  = rl("shader/alpha_override.frag");
 

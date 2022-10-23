@@ -27,8 +27,8 @@
     },
     {
       "type": "progress_bar",
-      "pos": [210, 10],
       "id": "energy",
+      "pos": [210, 10],
       "data": {
         "size": [12, 75],
         "uv": [230, 12]
@@ -36,19 +36,33 @@
     },
     {
       "type": "item",
-      "pos": [14, 46],
       "id": "group-icon",
+      "pos": [14, 46],
       "data": {
         "doMouseOver": true
       }
     },
     {
-      "type": "sapturretmod:assembly.progress",
+      "type": "progress_bar",
+      "id": "crafting-progress",
       "pos": [156, 38],
       "data": {
-        "label": {
-          "offset": [0, -6]
-        }
+        "size": [50, 5],
+        "uv": [0, 222],
+        "direction": "left_to_right"
+      }
+    },
+    {
+      "type": "text",
+      "id": "recipe-count",
+      "pos": [181, 32],
+      "alignment": ["center", "top"],
+      "data": {
+        "color": {
+          "default": "0xFFFF8080",
+          "borderColor": "0xFF402020"
+        },
+        "bordered": true
       }
     },
     {
@@ -56,8 +70,8 @@
     },
     {
       "type": "scroll_area",
-      "pos": [36, 28],
       "id": "recipe-list",
+      "pos": [36, 28],
       "data": {
         "areaSize": [106, 52],
         "scrollbarPos": [144, 25],
@@ -72,6 +86,14 @@
     }
   ],
   "foregroundElements": [
+    {
+      "type": "texture",
+      "id": "recipe-marker",
+      "data": {
+        "size": [22, 22],
+        "uv": [0, 227]
+      }
+    },
     {
       "type": "button",
       "id": "cancel-button",
@@ -101,7 +123,7 @@
     },
     {
       "type": "button",
-      "id": "prev-tab",
+      "id": "prev-group",
       "pos": [13, 35],
       "data": {
         "size": [18, 10],
@@ -122,7 +144,7 @@
     },
     {
       "type": "button",
-      "id": "next-tab",
+      "id": "next-group",
       "pos": [13, 63],
       "data": {
         "size": [18, 10],
@@ -137,6 +159,50 @@
           "pos": [17, 1],
           "data": {
             "scale": 0.5
+          }
+        }
+      }
+    },
+    {
+      "type": "tooltip",
+      "id": "prev-group-ttip",
+      "pos": [13, 35],
+      "data": {
+        "size": [18, 10],
+        "text": ""
+      }
+    },
+    {
+      "type": "tooltip",
+      "id": "curr-group-ttip",
+      "pos": [14, 46],
+      "data": {
+        "size": [16, 16],
+        "text": ""
+      }
+    },
+    {
+      "type": "tooltip",
+      "id": "next-group-ttip",
+      "pos": [13, 63],
+      "data": {
+        "size": [18, 10],
+        "text": ""
+      }
+    },
+    {
+      "type": "tooltip",
+      "pos": [210, 10],
+      "data": {
+        "size": [12, 75],
+        "backgroundColor": "0xF0100000",
+        "borderTopColor": "0x50FF0000",
+        "borderBottomColor": "0x507F0000",
+        "content": {
+          "type": "text",
+          "id": "energy_tooltip",
+          "data": {
+            "color": "0xFFFFFFFF"
           }
         }
       }
@@ -168,23 +234,6 @@
           "label": {
             "borderColor": "0x5000FF00",
             "compactIngredientsColumns": 6
-          }
-        }
-      }
-    },
-    {
-      "type": "tooltip",
-      "pos": [210, 10],
-      "data": {
-        "size": [12, 75],
-        "backgroundColor": "0xF0100000",
-        "borderTopColor": "0x50FF0000",
-        "borderBottomColor": "0x507F0000",
-        "content": {
-          "type": "text",
-          "id": "energy_tooltip",
-          "data": {
-            "color": "0xFFFFFFFF"
           }
         }
       }

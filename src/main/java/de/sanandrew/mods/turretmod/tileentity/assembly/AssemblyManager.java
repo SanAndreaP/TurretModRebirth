@@ -186,12 +186,12 @@ public final class AssemblyManager
     public List<ItemStack> checkAndConsumeResources(ILeveledInventory inv, World world, IAssemblyRecipe recipe, int[] inputSlotIds) {
         if( recipe.canCraftInDimensions(9, 2) && recipe.matches(inv, world) ) {
             List<ItemStack> removedStacks = new ArrayList<>();
+            Map<Integer, Integer> modifiedSlots    = new HashMap<>();
 
             for( ICountedIngredient ing : recipe.getCountedIngredients() ) {
                 boolean isSatisfied = false;
 
                 for( ItemStack ingStack : ing.getItems() ) {
-                    Map<Integer, Integer> modifiedSlots    = new HashMap<>();
                     List<ItemStack>       removedStacksIng = new ArrayList<>();
                     int                   totalAmt         = ingStack.getCount();
 
@@ -213,7 +213,6 @@ public final class AssemblyManager
                         }
                     }
                     if( totalAmt == 0 ) {
-                        modifiedSlots.forEach((slotId, reduceAmt) -> inv.getItem(slotId).shrink(reduceAmt));
                         removedStacks.addAll(removedStacksIng);
                         isSatisfied = true;
                         break;
@@ -224,6 +223,7 @@ public final class AssemblyManager
                     return null;
                 }
             }
+            modifiedSlots.forEach((slotId, reduceAmt) -> inv.getItem(slotId).shrink(reduceAmt));
 
             return removedStacks;
         }

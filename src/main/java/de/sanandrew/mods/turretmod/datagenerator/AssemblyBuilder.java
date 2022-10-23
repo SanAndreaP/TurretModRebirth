@@ -2,6 +2,8 @@ package de.sanandrew.mods.turretmod.datagenerator;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.recipes.BetterNBTIngredient;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.assembly.ICountedIngredient;
 import de.sanandrew.mods.turretmod.init.RecipeRegistry;
@@ -12,11 +14,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CompoundIngredient;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.IIngredientSerializer;
 import net.minecraftforge.common.crafting.NBTIngredient;
 
 import javax.annotation.Nonnull;
@@ -105,7 +110,7 @@ public class AssemblyBuilder
         }
 
         public CompoundIngredientBuilder itemNbt(ItemStack item) {
-            this.ingredients.add(new AssemblyNbtIngredient(item));
+            this.ingredients.add(new BetterNBTIngredient(item));
             return this;
         }
 
@@ -119,14 +124,6 @@ public class AssemblyBuilder
     {
         protected AssemblyCompoundIngredient(List<Ingredient> children) {
             super(children);
-        }
-    }
-
-    private static class AssemblyNbtIngredient
-            extends NBTIngredient
-    {
-        public AssemblyNbtIngredient(ItemStack stack) {
-            super(stack);
         }
     }
 

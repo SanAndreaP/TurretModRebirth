@@ -137,7 +137,9 @@ public class AssemblyInventory
         if( ItemStackUtils.isValid(this.stacks.get(SLOT_OUTPUT)) ) {
             this.stacks.get(SLOT_OUTPUT).grow(stack.getCount());
         } else {
+//            this.setItem(SLOT_OUTPUT, stack.copy());
             this.stacks.set(SLOT_OUTPUT, stack.copy());
+            onContentsChanged(SLOT_OUTPUT);
 //            this.markDirty();
         }
     }
@@ -251,7 +253,7 @@ public class AssemblyInventory
             return true;
         }
 
-        return Arrays.binarySearch(SLOTS_INSERT, slot) >= 0 && this.isStackAcceptable(stack, slot);
+        return IntStream.of(SLOTS_INSERT).anyMatch(s -> s == slot) && this.isStackAcceptable(stack, slot);
     }
 
     @Override
@@ -291,7 +293,7 @@ public class AssemblyInventory
 
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
-        return isStackAcceptable(stack, slot);
+        return IntStream.of(SLOTS_INSERT).anyMatch(s -> s == slot) && isStackAcceptable(stack, slot);
     }
 
     //    @Override

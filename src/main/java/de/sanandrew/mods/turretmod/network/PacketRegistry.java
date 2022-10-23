@@ -24,6 +24,7 @@ public final class PacketRegistry
         TurretModRebirth.NETWORK.registerMessage(5, SyncUpgradesPacket.class, SyncUpgradesPacket::new);
         TurretModRebirth.NETWORK.registerMessage(6, SyncTurretStages.class, SyncTurretStages::new);
         TurretModRebirth.NETWORK.registerMessage(7, SmartTargetingActionPacket.class, SmartTargetingActionPacket::new);
+        TurretModRebirth.NETWORK.registerMessage(8, AssemblyActionPacket.class, AssemblyActionPacket::new);
     }
 
     public static void writeOptional(boolean doWrite, PacketBuffer buffer, IOErrorConsumer<PacketBuffer> writeValue) {
