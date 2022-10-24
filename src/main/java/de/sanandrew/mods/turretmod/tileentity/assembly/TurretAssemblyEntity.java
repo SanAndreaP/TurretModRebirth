@@ -11,6 +11,7 @@ package de.sanandrew.mods.turretmod.tileentity.assembly;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
+import de.sanandrew.mods.turretmod.block.TurretAssemblyBlock;
 import de.sanandrew.mods.turretmod.inventory.container.ElectrolyteGeneratorContainer;
 import de.sanandrew.mods.turretmod.inventory.container.TurretAssemblyContainer;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
@@ -146,6 +147,7 @@ public class TurretAssemblyEntity
     }
 
     @Override
+    @SuppressWarnings("java:S3776")
     public void tick() {
         if( this.level == null ) {
             return;
@@ -155,14 +157,7 @@ public class TurretAssemblyEntity
 
         if( !this.level.isClientSide ) {
             boolean prevActive = this.isActive;
-            boolean doSync = false;
-
-            if( this.ticksAlive % 10 == 0 ) {
-                if( this.energyStorage.hasFluxChanged() ) {
-                    doSync = true;
-                }
-                this.energyStorage.updatePrevFlux();
-            }
+            boolean doSync = this.ticksAlive % 10 == 0 && this.energyStorage.hasFluxChanged();
 
             if( this.automate && !this.hasAutoUpgrade() ) {
                 this.automate = false;
@@ -176,13 +171,11 @@ public class TurretAssemblyEntity
                 if( this.cache.isEmpty() ) {
                     this.initCrafting();
                 } else {
-                    this.isActive = !this.hasRedstoneUpgrade() || !this.isRedstonePowered();
+                    this.isActive = !this.hasRedstoneUpgrade() || this.getBlockState().getValue(TurretAssemblyBlock.ENABLED);
                 }
 
                 if( this.isActive ) {
-                    if( !prevActive ) {
-                        doSync = true;
-                    }
+                    doSync |= !prevActive;
 
                     for( int i = 0; i < maxLoop; i++ ) {
                         if( !this.process() ) {
@@ -219,6 +212,7 @@ public class TurretAssemblyEntity
         this.isActive = false;
     }
 
+    @SuppressWarnings("java:S3776")
     private boolean process() {
         if( this.energyStorage.fluxAmount >= this.fluxConsumption ) {
             this.energyStorage.fluxAmount -= this.fluxConsumption;
@@ -255,19 +249,19 @@ public class TurretAssemblyEntity
         return this.isActive && this.currRecipeId != null;
     }
 
-    private boolean isRedstonePowered() {
-        if( this.level == null ) {
-            return false;
-        }
-
-        BlockPos pos = this.getBlockPos();
-        return Arrays.stream(Direction.values()).anyMatch(dir -> isPowered(this.level, pos, dir));
-//        if( isPowered(this.level, this.getBlockPos().below(), Direction.DOWN) || isPowered(this.level, this.getBlockPos().above(), Direction.UP) ) {
-//            return true;
+//    private boolean isRedstonePowered() {
+//        if( this.level == null ) {
+//            return false;
 //        }
 //
-//        return Direction.Plane.HORIZONTAL.stream().anyMatch(f -> RedstonePowerProxy.INSTANCE.isPowered(this.level, this.getBlockPos(), f));
-    }
+//        BlockPos pos = this.getBlockPos();
+//        return Arrays.stream(Direction.values()).anyMatch(dir -> isPowered(this.level, pos, dir));
+////        if( isPowered(this.level, this.getBlockPos().below(), Direction.DOWN) || isPowered(this.level, this.getBlockPos().above(), Direction.UP) ) {
+////            return true;
+////        }
+////
+////        return Direction.Plane.HORIZONTAL.stream().anyMatch(f -> RedstonePowerProxy.INSTANCE.isPowered(this.level, this.getBlockPos(), f));
+//    }
 
     public AssemblyInventory getInventory() {
         return this.itemHandler;

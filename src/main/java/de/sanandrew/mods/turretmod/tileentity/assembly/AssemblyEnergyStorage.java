@@ -30,12 +30,12 @@ public final class AssemblyEnergyStorage
         return energyReceived;
     }
 
-    void updatePrevFlux() {
-        this.prevFluxAmount = this.fluxAmount;
-    }
-
     boolean hasFluxChanged() {
-        return this.prevFluxAmount != this.fluxAmount;
+        boolean prevFlux = this.prevFluxAmount != this.fluxAmount;
+
+        this.prevFluxAmount = this.fluxAmount;
+
+        return prevFlux;
     }
 
     @Override

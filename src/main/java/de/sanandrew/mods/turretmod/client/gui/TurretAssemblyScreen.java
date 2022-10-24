@@ -153,11 +153,12 @@ public class TurretAssemblyScreen
     }
 
     private void updateButtons() {
-        this.cancelButton.setActive(this.menu.tile.getCurrentRecipeId() != null);
+        boolean hasRecipe = this.menu.tile.getCurrentRecipeId() != null;
+        this.cancelButton.setActive(hasRecipe);
         this.automateButton.setVisible(this.menu.tile.hasAutoUpgrade());
-        this.automateButton.setActive(!this.menu.tile.isAutomated());
+        this.automateButton.setActive(!this.menu.tile.isAutomated() && !hasRecipe);
         this.manualButton.setVisible(this.menu.tile.hasAutoUpgrade());
-        this.manualButton.setActive(this.menu.tile.isAutomated());
+        this.manualButton.setActive(this.menu.tile.isAutomated() && !hasRecipe);
     }
 
     private void updateRecipeMarker(boolean isInit) {

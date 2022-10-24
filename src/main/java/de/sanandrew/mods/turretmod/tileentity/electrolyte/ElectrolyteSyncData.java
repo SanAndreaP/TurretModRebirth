@@ -1,5 +1,6 @@
 package de.sanandrew.mods.turretmod.tileentity.electrolyte;
 
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import net.minecraft.util.IntArray;
 import org.apache.commons.lang3.Range;
 
@@ -40,7 +41,13 @@ public final class ElectrolyteSyncData
                     if( PROGRESSES.contains(index) ) {
                         return this.boundTile.processes.get(index - PROGRESSES.getMinimum()).progress;
                     } else if( MAX_PROGRESSES.contains(index) ) {
-                        return this.boundTile.processes.get(index - MAX_PROGRESSES.getMinimum()).getMaxProgress(this.boundTile.itemHandler);
+                        return MiscUtils.apply(this.boundTile.processes.get(index - MAX_PROGRESSES.getMinimum()), p -> {
+                            if( p.isValid() ) {
+                                return p.getMaxProgress(this.boundTile.itemHandler);
+                            } else {
+                                return 0;
+                            }
+                        });
                     } else {
                         return 0;
                     }

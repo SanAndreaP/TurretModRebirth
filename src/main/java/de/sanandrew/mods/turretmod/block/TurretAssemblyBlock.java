@@ -18,7 +18,9 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -31,6 +33,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
@@ -42,6 +45,8 @@ import java.util.Map;
 public class TurretAssemblyBlock
         extends HorizontalBlock
 {
+    public static final   BooleanProperty            ENABLED      = BlockStateProperties.ENABLED;
+
     private static final Map<Direction, VoxelShape> BLOCK_SHAPES = Util.make(() -> {
         Map<Direction, VoxelShape> map = new EnumMap<>(Direction.class);
         VoxelShape base = Block.box(0.5,0,0.5,15.5,10,15.5);
@@ -71,30 +76,32 @@ public class TurretAssemblyBlock
         super(Properties.of(Material.STONE, MaterialColor.CLAY).strength(4.25F).sound(SoundType.STONE)
                         .requiresCorrectToolForDrops().noOcclusion());
 
-        this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
+        this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(ENABLED, true));
     }
 
     @Override
     protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(FACING);
+        builder.add(FACING, ENABLED);
     }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext useContext) {
-        return this.defaultBlockState().setValue(FACING, useContext.getHorizontalDirection().getOpposite());
+        return this.defaultBlockState().setValue(FACING, useContext.getHorizontalDirection().getOpposite()).setValue(ENABLED, true);
     }
 
     @Override
-    public void onRemove(@Nonnull BlockState state, World level, @Nonnull BlockPos pos, @Nonnull BlockState oldState, boolean isMoving) {
-        TurretAssemblyEntity assembly = (TurretAssemblyEntity) level.getBlockEntity(pos);
+    public void onRemove(@Nonnull BlockState state, @Nonnull World level, @Nonnull BlockPos pos, @Nonnull BlockState oldState, boolean isMoving) {
+        if( !oldState.is(state.getBlock()) ) {
+            TurretAssemblyEntity assembly = (TurretAssemblyEntity) level.getBlockEntity(pos);
 
-        if( assembly != null ) {
-            InventoryUtils.dropBlockItems(assembly.getInventory(), level, pos);
+            if( assembly != null ) {
+                InventoryUtils.dropBlockItems(assembly.getInventory(), level, pos);
+            }
+
+            level.updateNeighbourForOutputSignal(pos, this);
+            super.onRemove(state, level, pos, oldState, isMoving);
         }
-
-        level.updateNeighbourForOutputSignal(pos, this);
-        super.onRemove(state, level, pos, oldState, isMoving);
     }
 
     @Nonnull
@@ -162,6 +169,26 @@ public class TurretAssemblyBlock
         return MiscUtils.apply(world.getBlockEntity(pos), te -> ((TurretAssemblyEntity) te).hasRedstoneUpgrade(), false);
     }
 
+    @Override
+    public void onPlace(BlockState currState, @Nonnull World level, @Nonnull BlockPos pos, BlockState newState, boolean isMoving) {
+        if( !newState.is(currState.getBlock()) ) {
+            this.checkPoweredState(level, pos, currState);
+        }
+    }
+
+    @Override
+    public void neighborChanged(@Nonnull BlockState currState, @Nonnull World level, @Nonnull BlockPos pos, @Nonnull Block neighborBlock,
+                                @Nonnull BlockPos neighborPos, boolean isMoving)
+    {
+        this.checkPoweredState(level, pos, currState);
+    }
+
+    private void checkPoweredState(World level, BlockPos pos, BlockState currState) {
+        boolean noSignal = !level.hasNeighborSignal(pos);
+        if( noSignal != Boolean.TRUE.equals(currState.getValue(ENABLED)) ) {
+            level.setBlock(pos, currState.setValue(ENABLED, noSignal || !this.canConnectRedstone(currState, level, pos, null)), Constants.BlockFlags.NO_RERENDER);
+        }
+    }
 
     @Nonnull
     @Override
