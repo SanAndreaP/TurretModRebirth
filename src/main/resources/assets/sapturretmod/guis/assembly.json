@@ -208,6 +208,20 @@
       }
     },
     {
+      "type": "tooltip",
+      "id": "recipe-tooltip",
+      "pos": [0, 0],
+      "data": {
+        "size": [16, 16],
+        "backgroundColor": "0xF0100000",
+        "borderTopColor": "0x50FF0000",
+        "borderBottomColor": "0x507F0000",
+        "content": {
+          "type": "stack_panel"
+        }
+      }
+    },
+    {
       "type": "sapturretmod:assembly.recipes",
       "pos": [35, 9],
       "data": {

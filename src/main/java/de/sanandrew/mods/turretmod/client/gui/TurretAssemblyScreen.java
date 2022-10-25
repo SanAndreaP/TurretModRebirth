@@ -22,9 +22,12 @@ import de.sanandrew.mods.sanlib.lib.client.gui.element.ElementParent;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Item;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ProgressBar;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ScrollArea;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.StackPanel;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Tooltip;
+import de.sanandrew.mods.sanlib.lib.function.TriConsumer;
+import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.Resources;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
@@ -37,6 +40,7 @@ import de.sanandrew.mods.turretmod.inventory.container.TurretAssemblyContainer;
 import de.sanandrew.mods.turretmod.network.AssemblyActionPacket;
 import de.sanandrew.mods.turretmod.tileentity.assembly.AssemblyEnergyStorage;
 import de.sanandrew.mods.turretmod.tileentity.assembly.AssemblyManager;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
@@ -47,6 +51,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.TriPredicate;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.opengl.GL11;
 
@@ -55,6 +60,9 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 
 @SuppressWarnings("java:S110")
 public class TurretAssemblyScreen
@@ -64,6 +72,8 @@ public class TurretAssemblyScreen
 
     private static       String          lastGroup;
     private String group;
+    private IAssemblyRecipe currHoverRecipe;
+
     private ITextComponent prevGroupName = StringTextComponent.EMPTY;
     private ITextComponent currGroupName = StringTextComponent.EMPTY;
     private ITextComponent nextGroupName = StringTextComponent.EMPTY;
@@ -76,6 +86,7 @@ public class TurretAssemblyScreen
 
     private GuiElementInst recipeList;
     private GuiElementInst recipeMarker;
+    private GuiElementInst recipeTooltip;
 
     public TurretAssemblyScreen(TurretAssemblyContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
@@ -100,6 +111,9 @@ public class TurretAssemblyScreen
         this.nextGroupButton = this.guiDefinition.getElementById("next-group").get(ButtonSL.class);
         this.recipeList = this.guiDefinition.getElementById("recipe-list");
         this.recipeMarker = this.guiDefinition.getElementById("recipe-marker");
+        this.recipeTooltip = this.guiDefinition.getElementById("recipe-tooltip");
+
+        this.recipeTooltip.setVisible(false);
 
         this.setGroup(MiscUtils.apply(this.getCurrentRecipe(), IRecipe::getGroup, Strings.isNullOrEmpty(lastGroup)
                                                                                  ? AssemblyManager.INSTANCE.getGroups(this.getLevel())[0]
@@ -152,6 +166,13 @@ public class TurretAssemblyScreen
         this.updateRecipeMarker(false);
     }
 
+    @Override
+    protected void renderGd(@Nonnull MatrixStack mStack, int mouseX, int mouseY, float partialTicks) {
+        super.renderGd(mStack, mouseX, mouseY, partialTicks);
+
+        updateRecipeTooltip();
+    }
+
     private void updateButtons() {
         boolean hasRecipe = this.menu.tile.getCurrentRecipeId() != null;
         this.cancelButton.setActive(hasRecipe);
@@ -159,6 +180,18 @@ public class TurretAssemblyScreen
         this.automateButton.setActive(!this.menu.tile.isAutomated() && !hasRecipe);
         this.manualButton.setVisible(this.menu.tile.hasAutoUpgrade());
         this.manualButton.setActive(this.menu.tile.isAutomated() && !hasRecipe);
+    }
+
+    private static void forEachRecipeItem(ScrollArea recipeListInst, BiPredicate<GuiElementInst, GuiElementInst> onItem, Runnable onExit) {
+        for( GuiElementInst row : recipeListInst.getAll() ) {
+            for( GuiElementInst itm : row.get(RecipeRow.class).getAll() ) {
+                if( Boolean.TRUE.equals(onItem.test(row, itm)) ) {
+                    return;
+                }
+            }
+        }
+
+        MiscUtils.accept(onExit, Runnable::run);
     }
 
     private void updateRecipeMarker(boolean isInit) {
@@ -169,34 +202,84 @@ public class TurretAssemblyScreen
             this.prevGroupButton.setActive(false);
             this.nextGroupButton.setActive(false);
 
-            for( GuiElementInst row : recipeListInst.getAll() ) {
+            forEachRecipeItem(recipeListInst, (row, itm) -> {
                 RecipeRow rowInst = row.get(RecipeRow.class);
-                for( GuiElementInst itm : rowInst.getAll() ) {
-                    RecipeItem itmInst = itm.get(RecipeItem.class);
-                    if( itmInst.recipe.getId().equals(recipe.getId()) ) {
-                        recipeListInst.setEnabled(false);
+                RecipeItem itmInst = itm.get(RecipeItem.class);
 
-                        if( isInit ) {
-                            recipeListInst.scrollTo(row);
-                        }
+                if( itmInst.recipe.getId().equals(recipe.getId()) ) {
+                    recipeListInst.setEnabled(false);
 
-                        Texture recipeMarkerInst = this.recipeMarker.get(Texture.class);
-                        int offX = this.recipeList.pos[0] + (itmInst.getWidth() - recipeMarkerInst.getWidth()) / 2;
-                        int offY = this.recipeList.pos[1] + (rowInst.getHeight() - recipeMarkerInst.getHeight()) / 2 - recipeListInst.getScrollY();
-
-                        this.recipeMarker.pos[0] = itm.pos[0] + offX;
-                        this.recipeMarker.pos[1] = row.pos[1] + offY;
-                        this.recipeMarker.setVisible(true);
-
-                        return;
+                    if( isInit ) {
+                        recipeListInst.scrollTo(row);
                     }
+
+                    Texture recipeMarkerInst = this.recipeMarker.get(Texture.class);
+                    int offX = this.recipeList.pos[0] + (itmInst.getWidth() - recipeMarkerInst.getWidth()) / 2;
+                    int offY = this.recipeList.pos[1] + (rowInst.getHeight() - recipeMarkerInst.getHeight()) / 2 - recipeListInst.getScrollY();
+
+                    this.recipeMarker.pos[0] = itm.pos[0] + offX;
+                    this.recipeMarker.pos[1] = row.pos[1] + offY;
+                    this.recipeMarker.setVisible(true);
+
+                    return true;
                 }
-            }
+
+                return false;
+            }, null);
         } else if( recipe == null ) {
             this.prevGroupButton.setActive(true);
             this.nextGroupButton.setActive(true);
             recipeListInst.setEnabled(true);
             this.recipeMarker.setVisible(false);
+        }
+    }
+
+    private void updateRecipeTooltip() {
+        ScrollArea recipeListInst = this.recipeList.get(ScrollArea.class);
+
+        forEachRecipeItem(recipeListInst, (row, itm) -> {
+            RecipeItem itmInst = itm.get(RecipeItem.class);
+            if( itmInst.isHovering ) {
+                this.updateRecipeTooltip(itmInst.recipe, new int[] {this.recipeList.pos[0] + itm.pos[0],
+                                                                    this.recipeList.pos[1] + row.pos[1] - recipeListInst.getScrollY()});
+
+                return true;
+            }
+
+            return false;
+        }, () -> {
+            this.currHoverRecipe = null;
+            this.recipeTooltip.setVisible(false);
+        });
+    }
+
+    private void updateRecipeTooltip(IAssemblyRecipe recipe, int[] pos) {
+        if( recipe != null && (this.currHoverRecipe == null || !recipe.getId().equals(this.currHoverRecipe.getId())) ) {
+            MiscUtils.accept(this.recipeTooltip.get(Tooltip.class).get(Tooltip.CONTENT).get(StackPanel.class), p -> {
+                p.clear();
+                ItemStack result = recipe.getResultItem();
+                if( ItemStackUtils.isValid(result) ) {
+                    int tti = 0;
+                    for( ITextComponent tc : result.getTooltipLines(this.getMinecraft().player, ITooltipFlag.TooltipFlags.NORMAL) ) {
+                        Text.Builder tb = new Text.Builder(tc);
+                        tb.shadow(true);
+                        tb.color(0xFFA0A0A0);
+                        GuiElementInst e = new GuiElementInst(new int[] {0, tti == 1 ? 4 : (tti > 1 ? 2 : 0)}, tb.get(this)).initialize(this);
+                        e.get().setup(this, e);
+                        p.add(e);
+                        tti++;
+                    }
+                }
+
+                p.update();
+            });
+
+            this.currHoverRecipe = recipe;
+            this.recipeTooltip.pos = pos;
+            this.recipeTooltip.setVisible(true);
+        } else if( recipe == null ) {
+            this.currHoverRecipe = null;
+            this.recipeTooltip.setVisible(false);
         }
     }
 
