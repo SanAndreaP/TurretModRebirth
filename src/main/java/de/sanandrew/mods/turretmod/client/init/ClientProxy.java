@@ -1,6 +1,10 @@
 package de.sanandrew.mods.turretmod.client.init;
 
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
+import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.StackPanel;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.turret.IForcefield;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
@@ -37,17 +41,21 @@ import de.sanandrew.mods.turretmod.tileentity.assembly.AssemblyManager;
 import de.sanandrew.mods.turretmod.world.PlayerList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.function.IntUnaryOperator;
 import java.util.function.Supplier;
 
 public class ClientProxy
@@ -148,5 +156,44 @@ public class ClientProxy
     @Override
     public MinecraftServer getServer(World level) {
         return Minecraft.getInstance().getSingleplayerServer();
+    }
+
+    public static void buildItemTooltip(IGui gui, StackPanel p, ItemStack stack, boolean doSetup, GuiElementInst... additionalLines) {
+        final IntUnaryOperator yOffGetter = tti -> {
+            if( tti == 1 ) {
+                return 4;
+            }
+
+            return tti > 1 ? 2 : 0;
+        };
+
+        p.clear();
+        if( ItemStackUtils.isValid(stack) ) {
+            int tti = 0;
+            for( ITextComponent tc : stack.getTooltipLines(gui.get().getMinecraft().player, ITooltipFlag.TooltipFlags.NORMAL) ) {
+                Text.Builder tb = new Text.Builder(tc);
+                tb.shadow(true);
+                tb.color(0xFFA0A0A0);
+
+                GuiElementInst e = new GuiElementInst(new int[] {0, yOffGetter.applyAsInt(tti)}, tb.get(gui)).initialize(gui);
+                if( doSetup ) {
+                    e.get().setup(gui, e);
+                }
+                p.add(e);
+                tti++;
+            }
+            for( GuiElementInst elem : additionalLines ) {
+                elem.pos[1] += yOffGetter.applyAsInt(tti);
+                if( doSetup ) {
+                    elem.get().setup(gui, elem);
+                }
+                p.add(elem);
+                tti++;
+            }
+        }
+
+        if( doSetup ) {
+            p.update();
+        }
     }
 }

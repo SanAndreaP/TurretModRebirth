@@ -11,11 +11,9 @@ package de.sanandrew.mods.turretmod.client.gui;
 import com.google.common.base.Strings;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.sanandrew.mods.sanlib.lib.client.ShaderHelper;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
-import de.sanandrew.mods.sanlib.lib.client.gui.IGuiElement;
 import de.sanandrew.mods.sanlib.lib.client.gui.JsonGuiContainer;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ButtonSL;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ElementParent;
@@ -26,21 +24,19 @@ import de.sanandrew.mods.sanlib.lib.client.gui.element.StackPanel;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Tooltip;
-import de.sanandrew.mods.sanlib.lib.function.TriConsumer;
-import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.Resources;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
+import de.sanandrew.mods.turretmod.api.assembly.ICountedIngredient;
+import de.sanandrew.mods.turretmod.client.init.ClientProxy;
 import de.sanandrew.mods.turretmod.client.shader.ShaderAlphaOverride;
-import de.sanandrew.mods.turretmod.client.shader.ShaderGrayscale;
-import de.sanandrew.mods.turretmod.client.shader.Shaders;
 import de.sanandrew.mods.turretmod.init.Lang;
 import de.sanandrew.mods.turretmod.inventory.container.TurretAssemblyContainer;
 import de.sanandrew.mods.turretmod.network.AssemblyActionPacket;
 import de.sanandrew.mods.turretmod.tileentity.assembly.AssemblyEnergyStorage;
 import de.sanandrew.mods.turretmod.tileentity.assembly.AssemblyManager;
-import net.minecraft.client.util.ITooltipFlag;
+import de.sanandrew.mods.turretmod.tileentity.assembly.AssemblyRecipe;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
@@ -51,25 +47,19 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.TriPredicate;
 import org.apache.logging.log4j.Level;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
 @SuppressWarnings("java:S110")
 public class TurretAssemblyScreen
         extends JsonGuiContainer<TurretAssemblyContainer>
 {
-    private static final ShaderAlphaOverride SHADER_ALPHA_OVERRIDE = new ShaderAlphaOverride(PlayerContainer.BLOCK_ATLAS);
-
     private static       String          lastGroup;
     private String group;
     private IAssemblyRecipe currHoverRecipe;
@@ -87,6 +77,9 @@ public class TurretAssemblyScreen
     private GuiElementInst recipeList;
     private GuiElementInst recipeMarker;
     private GuiElementInst recipeTooltip;
+
+    private GuiElementInst smallIngredientsList;
+    private GuiElementInst bigIngredientsList;
 
     public TurretAssemblyScreen(TurretAssemblyContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
@@ -240,8 +233,8 @@ public class TurretAssemblyScreen
         forEachRecipeItem(recipeListInst, (row, itm) -> {
             RecipeItem itmInst = itm.get(RecipeItem.class);
             if( itmInst.isHovering ) {
-                this.updateRecipeTooltip(itmInst.recipe, new int[] {this.recipeList.pos[0] + itm.pos[0],
-                                                                    this.recipeList.pos[1] + row.pos[1] - recipeListInst.getScrollY()});
+                this.updateRecipeTooltip(itmInst.recipe, new int[] {this.recipeList.pos[0] + itm.pos[0] - 1,
+                                                                    this.recipeList.pos[1] + row.pos[1] - recipeListInst.getScrollY() - 1});
 
                 return true;
             }
@@ -255,23 +248,16 @@ public class TurretAssemblyScreen
 
     private void updateRecipeTooltip(IAssemblyRecipe recipe, int[] pos) {
         if( recipe != null && (this.currHoverRecipe == null || !recipe.getId().equals(this.currHoverRecipe.getId())) ) {
-            MiscUtils.accept(this.recipeTooltip.get(Tooltip.class).get(Tooltip.CONTENT).get(StackPanel.class), p -> {
-                p.clear();
-                ItemStack result = recipe.getResultItem();
-                if( ItemStackUtils.isValid(result) ) {
-                    int tti = 0;
-                    for( ITextComponent tc : result.getTooltipLines(this.getMinecraft().player, ITooltipFlag.TooltipFlags.NORMAL) ) {
-                        Text.Builder tb = new Text.Builder(tc);
-                        tb.shadow(true);
-                        tb.color(0xFFA0A0A0);
-                        GuiElementInst e = new GuiElementInst(new int[] {0, tti == 1 ? 4 : (tti > 1 ? 2 : 0)}, tb.get(this)).initialize(this);
-                        e.get().setup(this, e);
-                        p.add(e);
-                        tti++;
-                    }
+            MiscUtils.accept(new StackPanel.Builder().horizontal(true).get(this), sp -> {
+                this.smallIngredientsList = new GuiElementInst(sp).initialize(this);
+                for( ICountedIngredient i : recipe.getCountedIngredients() ) {
+                    ItemStack[] stacks = i.getItems();
+                    sp.add(new GuiElementInst(new Item.Builder(stacks[0]).get(this)).initialize(this));
                 }
+            });
 
-                p.update();
+            MiscUtils.accept(this.recipeTooltip.get(Tooltip.class).get(Tooltip.CONTENT).get(StackPanel.class), p -> {
+                ClientProxy.buildItemTooltip(this, p, recipe.getResultItem(), true, this.smallIngredientsList);
             });
 
             this.currHoverRecipe = recipe;
@@ -370,7 +356,7 @@ public class TurretAssemblyScreen
         private boolean isHovering = false;
 
         public RecipeItem(IAssemblyRecipe recipe, float scale) {
-            super(recipe.getResultItem(), scale, true);
+            super(recipe.getResultItem(), scale, MouseOverType.VANILLA);
             this.recipe = recipe;
 
             this.disabledTexture = new GuiElementInst(new Texture.Builder(new int[] {16, 16}).uv(86, 222).get(TurretAssemblyScreen.this))
@@ -388,19 +374,15 @@ public class TurretAssemblyScreen
         public void tick(IGui gui, GuiElementInst inst) {
             IAssemblyRecipe cr = TurretAssemblyScreen.this.getCurrentRecipe();
             this.isEnabled = cr == null || cr.getId().equals(this.recipe.getId());
-            this.doMouseOver = this.isEnabled;
+            this.mouseOverType = this.isEnabled ? MouseOverType.VANILLA : MouseOverType.NONE;
 
             super.tick(gui, inst);
         }
 
         @Override
         public void render(IGui gui, MatrixStack stack, float partTicks, int x, int y, double mouseX, double mouseY, GuiElementInst inst) {
-            this.isHovering = IGuiElement.isHovering(gui, x, y, mouseX, mouseY, this.size, this.size);
+            this.isHovering = this.mouseOverType.isHovering(gui, x, y, mouseX, mouseY, this.size, this.size);
 
-//            if( !this.isEnabled ) {
-//                SHADER_ALPHA_OVERRIDE.render(() -> super.render(gui, stack, partTicks, x, y, mouseX, mouseY, inst), 0.25F);
-//            } else {
-//            }
             super.render(gui, stack, partTicks, x, y, mouseX, mouseY, inst);
 
             if( !this.isEnabled ) {

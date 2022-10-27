@@ -7,6 +7,7 @@ import de.sanandrew.mods.sanlib.lib.client.gui.element.StackPanel;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Tooltip;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.turretmod.client.init.ClientProxy;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
@@ -48,25 +49,7 @@ public class AmmoItemTooltip
         this.currItem = this.itemSupplier.get();
 
         if( !ItemStackUtils.areEqual(prevItem, this.currItem) ) {
-            StackPanel p = this.get(CONTENT).get(StackPanel.class);
-            p.clear();
-            if( ItemStackUtils.isValid(this.currItem) ) {
-                int tti = 0;
-                for( ITextComponent tc : this.currItem.getTooltipLines(gui.get().getMinecraft().player, ITooltipFlag.TooltipFlags.NORMAL) ) {
-                    Text.Builder tb = new Text.Builder(tc);
-                    tb.shadow(true);
-                    GuiElementInst e = new GuiElementInst(new int[] {0, tti == 1 ? 4 : (tti > 1 ? 2 : 0)}, tb.get(gui)).initialize(gui);
-                    if( update ) {
-                        e.get().setup(gui, e);
-                    }
-                    p.add(e);
-                    tti++;
-                }
-            }
-
-            if( update ) {
-                p.update();
-            }
+            ClientProxy.buildItemTooltip(gui, this.get(CONTENT).get(StackPanel.class), this.currItem, update);
         }
     }
 
