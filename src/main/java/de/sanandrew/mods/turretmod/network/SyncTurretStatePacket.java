@@ -143,7 +143,7 @@ public class SyncTurretStatePacket
                     getTargetProcessor(turret).updateClientTarget(this.entityToAttackId, this.isShooting);
                 }
                 if( (this.transferType & AMMO) == AMMO ) {
-                    getTargetProcessor(turret).updateClientAmmo(this.entityToAttackId, this.ammoStack);
+                    getTargetProcessor(turret).updateClientAmmo(this.currAmmoCount, this.ammoStack);
                 }
                 if( (this.transferType & DELEGATE) == DELEGATE && this.delegateData.length > 0 ) {
                     try( ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(this.delegateData)) ) {

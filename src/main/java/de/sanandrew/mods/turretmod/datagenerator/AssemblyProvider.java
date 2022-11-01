@@ -41,6 +41,11 @@ public class AssemblyProvider
         super(generator);
     }
 
+    private static ItemStack withCount(ItemStack stack, int count) {
+        stack.setCount(count);
+        return stack;
+    }
+
     @Override
     protected void buildShapelessRecipes(@Nonnull Consumer<IFinishedRecipe> consumer) {
         AssemblyBuilder.newAssembly("turrets", TurretRegistry.INSTANCE.getItem(Turrets.CROSSBOW)).energyConsumption(10).processTime(100)
@@ -54,7 +59,7 @@ public class AssemblyProvider
                        .ingredient(4, ItemTags.PLANKS)
                        .build(consumer);
 
-        AssemblyBuilder.newAssembly("ammo", AmmunitionRegistry.INSTANCE.getItem(Ammunitions.BOLT)).energyConsumption(5).processTime(60)
+        AssemblyBuilder.newAssembly("ammo", withCount(AmmunitionRegistry.INSTANCE.getItem(Ammunitions.BOLT), 16)).energyConsumption(5).processTime(60)
                        .ingredient(1, Items.ARROW)
                        .build(consumer);
 

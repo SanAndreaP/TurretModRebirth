@@ -63,6 +63,7 @@ public class TurretAssemblyScreen
     private static       String          lastGroup;
     private String group;
     private IAssemblyRecipe currHoverRecipe;
+    private boolean isShiftPressed;
 
     private ITextComponent prevGroupName = StringTextComponent.EMPTY;
     private ITextComponent currGroupName = StringTextComponent.EMPTY;
@@ -166,6 +167,26 @@ public class TurretAssemblyScreen
         updateRecipeTooltip();
     }
 
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if( keyCode == this.getMinecraft().options.keyShift.getKey().getValue() ) {
+            this.isShiftPressed = true;
+            this.updateRecipeTooltip();
+        }
+
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+        if( keyCode == this.getMinecraft().options.keyShift.getKey().getValue() ) {
+            this.isShiftPressed = false;
+            this.updateRecipeTooltip();
+        }
+
+        return super.keyReleased(keyCode, scanCode, modifiers);
+    }
+
     private void updateButtons() {
         boolean hasRecipe = this.menu.tile.getCurrentRecipeId() != null;
         this.cancelButton.setActive(hasRecipe);
@@ -252,13 +273,28 @@ public class TurretAssemblyScreen
                 this.smallIngredientsList = new GuiElementInst(sp).initialize(this);
                 for( ICountedIngredient i : recipe.getCountedIngredients() ) {
                     ItemStack[] stacks = i.getItems();
-                    sp.add(new GuiElementInst(new Item.Builder(stacks[0]).get(this)).initialize(this));
+                    sp.add(new GuiElementInst(new int[] {1, 0}, new Item.Builder(stacks[0]).font(this.font).get(this)).initialize(this));
                 }
+                this.smallIngredientsList.setVisible(!this.isShiftPressed);
+            });
+            MiscUtils.accept(new StackPanel.Builder().get(this), sp -> {
+                this.bigIngredientsList = new GuiElementInst(sp).initialize(this);
+                for( ICountedIngredient i : recipe.getCountedIngredients() ) {
+                    ItemStack[] stacks = i.getItems();
+                    sp.add(new GuiElementInst(new int[] {0, 5}, MiscUtils.apply(new StackPanel.Builder().horizontal(true).get(this), spi -> {
+                        spi.add(new GuiElementInst(new Item.Builder(stacks[0]).scale(0.5F).get(this)).initialize(this));
+                        spi.add(new GuiElementInst(new int[] {5, 0}, MiscUtils.apply(new StackPanel.Builder().get(this), spt -> {
+                            ClientProxy.buildItemTooltip(this, spt, stacks[0], false);
+                            return spt;
+                        })));
+                        return spi;
+                    })).initialize(this));
+                }
+                this.bigIngredientsList.setVisible(this.isShiftPressed);
             });
 
-            MiscUtils.accept(this.recipeTooltip.get(Tooltip.class).get(Tooltip.CONTENT).get(StackPanel.class), p -> {
-                ClientProxy.buildItemTooltip(this, p, recipe.getResultItem(), true, this.smallIngredientsList);
-            });
+            MiscUtils.accept(this.recipeTooltip.get(Tooltip.class).get(Tooltip.CONTENT).get(StackPanel.class),
+                             p -> ClientProxy.buildItemTooltip(this, p, recipe.getResultItem(), true, this.smallIngredientsList, this.bigIngredientsList));
 
             this.currHoverRecipe = recipe;
             this.recipeTooltip.pos = pos;
@@ -266,6 +302,9 @@ public class TurretAssemblyScreen
         } else if( recipe == null ) {
             this.currHoverRecipe = null;
             this.recipeTooltip.setVisible(false);
+        } else {
+            this.smallIngredientsList.setVisible(!this.isShiftPressed);
+            this.bigIngredientsList.setVisible(this.isShiftPressed);
         }
     }
 
@@ -356,7 +395,7 @@ public class TurretAssemblyScreen
         private boolean isHovering = false;
 
         public RecipeItem(IAssemblyRecipe recipe, float scale) {
-            super(recipe.getResultItem(), scale, MouseOverType.VANILLA);
+            super(recipe.getResultItem(), scale, MouseOverType.VANILLA, TurretAssemblyScreen.this.font);
             this.recipe = recipe;
 
             this.disabledTexture = new GuiElementInst(new Texture.Builder(new int[] {16, 16}).uv(86, 222).get(TurretAssemblyScreen.this))
