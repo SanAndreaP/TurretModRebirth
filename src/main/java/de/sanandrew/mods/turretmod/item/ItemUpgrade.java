@@ -58,12 +58,12 @@ public class ItemUpgrade
         if( TurretModRebirth.PROXY.isSneakPressed() ) {
             if( hasPrereq ) {
                 lines.add(new TranslationTextComponent(Lang.ITEM_UPGRADE.get("requires")));
-                lines.add(new StringTextComponent(String.format("  %s", UpgradeRegistry.INSTANCE.getItem(prereq.getId()).getDisplayName())).withStyle(TextFormatting.GOLD));
+                lines.add(new StringTextComponent(String.format("  %s", UpgradeRegistry.INSTANCE.getItem(prereq.getId()).getDisplayName().getString())).withStyle(TextFormatting.GOLD));
             }
             if( hasTurretWL ) {
                 lines.add(new TranslationTextComponent(Lang.ITEM_UPGRADE.get("applicable_to")));
                 for( ITurret t : turretWL ) {
-                    lines.add(new StringTextComponent(String.format("  %s", TurretRegistry.INSTANCE.getItem(t.getId()).getDisplayName())).withStyle(TextFormatting.GOLD));
+                    lines.add(new StringTextComponent(String.format("  %s", TurretRegistry.INSTANCE.getItem(t.getId()).getDisplayName().getString())).withStyle(TextFormatting.GOLD));
                 }
             }
             if( hasRng ) {

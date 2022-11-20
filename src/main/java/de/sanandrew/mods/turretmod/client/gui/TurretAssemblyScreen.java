@@ -9,6 +9,8 @@
 package de.sanandrew.mods.turretmod.client.gui;
 
 import com.google.common.base.Strings;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
@@ -24,29 +26,32 @@ import de.sanandrew.mods.sanlib.lib.client.gui.element.StackPanel;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Tooltip;
+import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.Resources;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.api.assembly.ICountedIngredient;
 import de.sanandrew.mods.turretmod.client.init.ClientProxy;
-import de.sanandrew.mods.turretmod.client.shader.ShaderAlphaOverride;
 import de.sanandrew.mods.turretmod.init.Lang;
 import de.sanandrew.mods.turretmod.inventory.container.TurretAssemblyContainer;
+import de.sanandrew.mods.turretmod.item.AssemblyUpgradeItem;
 import de.sanandrew.mods.turretmod.network.AssemblyActionPacket;
 import de.sanandrew.mods.turretmod.tileentity.assembly.AssemblyEnergyStorage;
 import de.sanandrew.mods.turretmod.tileentity.assembly.AssemblyManager;
-import de.sanandrew.mods.turretmod.tileentity.assembly.AssemblyRecipe;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.Range;
 import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
@@ -54,6 +59,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
 @SuppressWarnings("java:S110")
@@ -82,6 +88,9 @@ public class TurretAssemblyScreen
     private GuiElementInst smallIngredientsList;
     private GuiElementInst bigIngredientsList;
 
+    private boolean hasMultipleIngredients;
+    private long prevSystemSeconds;
+
     public TurretAssemblyScreen(TurretAssemblyContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
     }
@@ -109,7 +118,7 @@ public class TurretAssemblyScreen
 
         this.recipeTooltip.setVisible(false);
 
-        this.setGroup(MiscUtils.apply(this.getCurrentRecipe(), IRecipe::getGroup, Strings.isNullOrEmpty(lastGroup)
+        this.loadRecipes(MiscUtils.apply(this.getCurrentRecipe(), IRecipe::getGroup, Strings.isNullOrEmpty(lastGroup)
                                                                                  ? AssemblyManager.INSTANCE.getGroups(this.getLevel())[0]
                                                                                  : lastGroup));
         this.recipeList.get(ScrollArea.class).update(this);
@@ -117,10 +126,10 @@ public class TurretAssemblyScreen
         this.updateButtons();
         this.updateRecipeMarker(true);
 
-        this.prevGroupButton.setFunction(b -> this.setGroup(this.getPrevGroup()));
+        this.prevGroupButton.setFunction(b -> this.loadRecipes(this.getPrevGroup()));
         this.prevGroupButton.get(ButtonSL.LABEL).get(Item.class).setItemSupplier(() -> AssemblyManager.INSTANCE.getGroupIcon(this.getPrevGroup()));
 
-        this.nextGroupButton.setFunction(b -> this.setGroup(this.getNextGroup()));
+        this.nextGroupButton.setFunction(b -> this.loadRecipes(this.getNextGroup()));
         this.nextGroupButton.get(ButtonSL.LABEL).get(Item.class).setItemSupplier(() -> AssemblyManager.INSTANCE.getGroupIcon(this.getNextGroup()));
 
         this.cancelButton.setFunction(b -> AssemblyActionPacket.cancelCraft(this.menu.tile));
@@ -198,7 +207,7 @@ public class TurretAssemblyScreen
 
     private static void forEachRecipeItem(ScrollArea recipeListInst, BiPredicate<GuiElementInst, GuiElementInst> onItem, Runnable onExit) {
         for( GuiElementInst row : recipeListInst.getAll() ) {
-            for( GuiElementInst itm : row.get(RecipeRow.class).getAll() ) {
+            for( GuiElementInst itm : row.get(Row.class).getAll() ) {
                 if( Boolean.TRUE.equals(onItem.test(row, itm)) ) {
                     return;
                 }
@@ -217,7 +226,7 @@ public class TurretAssemblyScreen
             this.nextGroupButton.setActive(false);
 
             forEachRecipeItem(recipeListInst, (row, itm) -> {
-                RecipeRow rowInst = row.get(RecipeRow.class);
+                Row        rowInst = row.get(Row.class);
                 RecipeItem itmInst = itm.get(RecipeItem.class);
 
                 if( itmInst.recipe.getId().equals(recipe.getId()) ) {
@@ -268,35 +277,13 @@ public class TurretAssemblyScreen
     }
 
     private void updateRecipeTooltip(IAssemblyRecipe recipe, int[] pos) {
-        if( recipe != null && (this.currHoverRecipe == null || !recipe.getId().equals(this.currHoverRecipe.getId())) ) {
-            MiscUtils.accept(new StackPanel.Builder().horizontal(true).get(this), sp -> {
-                this.smallIngredientsList = new GuiElementInst(sp).initialize(this);
-                for( ICountedIngredient i : recipe.getCountedIngredients() ) {
-                    ItemStack[] stacks = i.getItems();
-                    sp.add(new GuiElementInst(new int[] {1, 0}, new Item.Builder(stacks[0]).font(this.font).get(this)).initialize(this));
-                }
-                this.smallIngredientsList.setVisible(!this.isShiftPressed);
-            });
-            MiscUtils.accept(new StackPanel.Builder().get(this), sp -> {
-                this.bigIngredientsList = new GuiElementInst(sp).initialize(this);
-                for( ICountedIngredient i : recipe.getCountedIngredients() ) {
-                    ItemStack[] stacks = i.getItems();
-                    sp.add(new GuiElementInst(new int[] {0, 5}, MiscUtils.apply(new StackPanel.Builder().horizontal(true).get(this), spi -> {
-                        spi.add(new GuiElementInst(new Item.Builder(stacks[0]).scale(0.5F).get(this)).initialize(this));
-                        spi.add(new GuiElementInst(new int[] {5, 0}, MiscUtils.apply(new StackPanel.Builder().get(this), spt -> {
-                            ClientProxy.buildItemTooltip(this, spt, stacks[0], false);
-                            return spt;
-                        })));
-                        return spi;
-                    })).initialize(this));
-                }
-                this.bigIngredientsList.setVisible(this.isShiftPressed);
-            });
-
-            MiscUtils.accept(this.recipeTooltip.get(Tooltip.class).get(Tooltip.CONTENT).get(StackPanel.class),
-                             p -> ClientProxy.buildItemTooltip(this, p, recipe.getResultItem(), true, this.smallIngredientsList, this.bigIngredientsList));
-
+        long currSysSecs = System.nanoTime() / 1_000_000_000L;
+        boolean updateViaTime = this.hasMultipleIngredients && this.prevSystemSeconds != currSysSecs;
+        this.prevSystemSeconds = currSysSecs;
+        if( recipe != null && (this.currHoverRecipe == null || !recipe.getId().equals(this.currHoverRecipe.getId()) || updateViaTime) ) {
             this.currHoverRecipe = recipe;
+
+            this.buildRecipeTooltip();
             this.recipeTooltip.pos = pos;
             this.recipeTooltip.setVisible(true);
         } else if( recipe == null ) {
@@ -306,6 +293,96 @@ public class TurretAssemblyScreen
             this.smallIngredientsList.setVisible(!this.isShiftPressed);
             this.bigIngredientsList.setVisible(this.isShiftPressed);
         }
+    }
+
+    private BiFunction<IGui, ITextComponent, ITextComponent> getProcessTime() {
+        ITextComponent t = new StringTextComponent(MiscUtils.getTimeFromTicks(AssemblyUpgradeItem.Speed.getProcessingTime(this.menu.tile, this.currHoverRecipe)));
+        return (g, o) -> t;
+    }
+
+    private BiFunction<IGui, ITextComponent, ITextComponent> getEnergyConsumption() {
+        int i = AssemblyUpgradeItem.Speed.getEnergyConsumption(this.menu.tile, this.currHoverRecipe) * AssemblyUpgradeItem.Speed.getLoops(this.menu.tile);
+        return (g, o) -> injectParams(o, i);
+    }
+
+    private void buildRecipeTooltip() {
+        this.hasMultipleIngredients = false;
+
+        NonNullList<ICountedIngredient> ingredients = this.currHoverRecipe.getCountedIngredients();
+        StackPanel info = new StackPanel.Builder().horizontal(true).get(this);
+        StackPanel sil = new StackPanel.Builder().horizontal(true).get(this);
+        StackPanel bil = new StackPanel.Builder().horizontal(false).get(this);
+
+        JsonObject timeIconData = this.getTooltipItemData("timeIcon");
+        JsonObject timeTextData = JsonUtils.addDefaultJsonProperty(this.getTooltipItemData("timeText"), "color", "0xFFFFFF");
+        JsonObject energyIconData = this.getTooltipItemData("energyIcon");
+        JsonObject energyTextData = JsonUtils.addDefaultJsonProperty(this.getTooltipItemData("energyText"), "color", "0xFFFFFF");
+
+        info.add(new GuiElementInst(getOffset(timeIconData, 0, 0), Texture.Builder.fromJson(this, timeIconData)).initialize(this));
+        info.add(new GuiElementInst(getOffset(timeTextData, 3, 1), setDefaultTextAttr(Text.Builder.fromJson(this, timeTextData), this.getProcessTime())).initialize(this));
+        info.add(new GuiElementInst(getOffset(energyIconData, 6, 0), Texture.Builder.fromJson(this, energyIconData)).initialize(this));
+        info.add(new GuiElementInst(getOffset(energyTextData, 3, 1), setDefaultTextAttr(Text.Builder.fromJson(this, energyTextData), getEnergyConsumption())).initialize(this));
+
+        this.smallIngredientsList = new GuiElementInst(sil).initialize(this);
+        this.smallIngredientsList.setVisible(!this.isShiftPressed);
+
+        this.bigIngredientsList = new GuiElementInst(bil).initialize(this);
+        this.bigIngredientsList.setVisible(this.isShiftPressed);
+
+        JsonObject cmpItemData = JsonUtils.addDefaultJsonProperty(this.getTooltipItemData("compactIngredients"), "overlayFont", "standard");
+        JsonObject detRowData = this.getTooltipItemData("detailedIngredients");
+        JsonObject detItemData = JsonUtils.addDefaultJsonProperty(MiscUtils.get(detRowData.getAsJsonObject("item"), JsonObject::new), "scale", 0.5);
+        JsonObject detTtipData = MiscUtils.get(detRowData.getAsJsonObject("tooltip"), JsonObject::new);
+
+        int[] cmpItemOffset = getOffset(cmpItemData, 1, 0);
+        int[] detRowOffset = getOffset(detRowData, 0, 5);
+        int[] detItemOffset = getOffset(detItemData, 0, 0);
+        int[] detTtipOffset = getOffset(detTtipData, 5, 0);
+
+        for( ICountedIngredient i : ingredients ) {
+            ItemStack[] stacks = i.getItems();
+            this.hasMultipleIngredients |= stacks.length > 1;
+            final ItemStack currItem = stacks[stacks.length > 1 ? (int) (this.prevSystemSeconds % stacks.length) : 0];
+
+            sil.add(new GuiElementInst(cmpItemOffset, Item.Builder.buildFromJson(this, cmpItemData, (g, j) -> currItem).get(this)).initialize(this));
+
+            bil.add(new GuiElementInst(detRowOffset, MiscUtils.apply(new StackPanel.Builder().horizontal(true).get(this), spi -> {
+                spi.add(new GuiElementInst(detItemOffset, Item.Builder.buildFromJson(this, detItemData, (g, j) -> currItem).get(this)).initialize(this));
+                spi.add(new GuiElementInst(detTtipOffset, MiscUtils.apply(new StackPanel.Builder().get(this), spt -> {
+                    ClientProxy.buildItemTooltip(this, spt, currItem, true, false);
+                    return spt;
+                })).initialize(this));
+                return spi;
+            })).initialize(this));
+        }
+
+        MiscUtils.accept(this.recipeTooltip.get(Tooltip.class).get(Tooltip.CONTENT).get(StackPanel.class),
+                         p -> ClientProxy.buildItemTooltip(this, p, this.currHoverRecipe.getResultItem(), false, true,
+                                                           new GuiElementInst(info).initialize(this), this.smallIngredientsList, this.bigIngredientsList));
+    }
+
+    private static ITextComponent injectParams(ITextComponent tc, Object... args) {
+        String key;
+        if( tc instanceof TranslationTextComponent ) {
+            key = ((TranslationTextComponent) tc).getKey();
+        } else {
+            key = tc.getString();
+        }
+
+        return new TranslationTextComponent(key, args).withStyle(tc.getStyle());
+    }
+
+    private JsonObject getTooltipItemData(String name) {
+        return MiscUtils.get(this.recipeTooltip.data.getAsJsonObject("content").getAsJsonObject(name), JsonObject::new);
+    }
+
+    private static int[] getOffset(JsonObject itmData, int defX, int defY) {
+        return JsonUtils.getIntArray(itmData.get("offset"), new int[] {defX, defY}, Range.is(2));
+    }
+
+    private static Text setDefaultTextAttr(Text textElem, BiFunction<IGui, ITextComponent, ITextComponent> txtFunc) {
+        textElem.setTextFunc(txtFunc);
+        return textElem;
     }
 
     private String getPrevGroup() {
@@ -320,9 +397,9 @@ public class TurretAssemblyScreen
         return this.getMinecraft().level;
     }
 
-    private void setGroup(String group) {
+    private void loadRecipes(String group) {
         if( !Strings.isNullOrEmpty(group) ) {
-            if( !Objects.equals(this.group, group) ) { // TODO: load template data from JSON
+            if( !Objects.equals(this.group, group) ) {
                 ScrollArea recipeListInst = this.recipeList.get(ScrollArea.class);
                 recipeListInst.clear();
 
@@ -330,7 +407,7 @@ public class TurretAssemblyScreen
                 int recipesCount = recipes.size();
                 final int cols = 6;
                 for( int row = 0, max = MathHelper.ceil(recipesCount / (float) cols); row < max; row++ ) {
-                    RecipeRow rowElem = new RecipeRow();
+                    Row rowElem = new Row();
                     for( int col = 0; col < cols; col++ ) {
                         int i = row * cols + col;
                         if( i >= recipesCount ) {
@@ -378,7 +455,7 @@ public class TurretAssemblyScreen
         return super.getTitle();
     }
 
-    private static final class RecipeRow
+    private static final class Row
             extends ElementParent<Integer>
     {
         public void add(GuiElementInst elem) {

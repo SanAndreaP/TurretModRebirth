@@ -21,7 +21,7 @@ public final class TmrConstants
     public static final String NAME = "Turret Mod Rebirth";
 
     static final String BUILD_MCVER    = "1.16.5";
-    static final String BUILD_FORGEVER = "1.16.5-36.2.0";
+    static final String BUILD_FORGEVER = "1.16.5-36.2.34";
     static final String BUILD_MAPPINGS_CHANNEL = "official";
     static final String BUILD_MAPPINGS_VERSION = "1.16.5";
 

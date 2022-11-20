@@ -14,9 +14,11 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 
 public final class Lang
 {
+    public static final TranslateKey GUI_ITEM_TITLE_COUNT  = LangUtils.newKey("gui.%s.item_title_count").format(TmrConstants.ID).build();
     public static final TranslateKey TCU_TEXT  = LangUtils.newKey("gui.%s.tcu.%%s").format(TmrConstants.ID).build();
     public static final TranslateKey TCU_LABEL = LangUtils.newKey("gui.%s.tcu.label.%%s").format(TmrConstants.ID).build();
     public static final TranslateKey ASSEMBLY_GROUP_LABEL = LangUtils.newKey("gui.%s.assembly.group.%%s").format(TmrConstants.ID).build();
+    public static final TranslateKey ASSEMBLY = LangUtils.newKey("gui.%s.assembly.%%s").format(TmrConstants.ID).build();
 
     public static final TranslateKey ITEM_TURRET_PLACER = LangUtils.newKey("item.%s.turret.%%s").format(TmrConstants.ID).build();
     public static final TranslateKey ITEM_UPGRADE = LangUtils.newKey("item.%s.upgrade.%%s").format(TmrConstants.ID).build();

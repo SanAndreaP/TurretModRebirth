@@ -217,7 +217,18 @@
         "borderTopColor": "0x50FF0000",
         "borderBottomColor": "0x507F0000",
         "content": {
-          "type": "stack_panel"
+          "type": "stack_panel",
+          "timeIcon": {
+            "size": [9, 9],
+            "uv": [230, 87]
+          },
+          "energyIcon": {
+            "size": [9, 9],
+            "uv": [230, 96]
+          },
+          "energyText": {
+            "text": "gui.sapturretmod.assembly.recipe_rft"
+          }
         }
       }
     },

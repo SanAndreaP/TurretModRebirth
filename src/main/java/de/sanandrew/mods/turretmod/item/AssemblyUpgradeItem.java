@@ -10,8 +10,10 @@ package de.sanandrew.mods.turretmod.item;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.inventory.container.AmmoCartridgeContainer;
 import de.sanandrew.mods.turretmod.inventory.container.AssemblyFilterContainer;
+import de.sanandrew.mods.turretmod.tileentity.assembly.TurretAssemblyEntity;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -23,6 +25,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
@@ -54,6 +57,26 @@ public abstract class AssemblyUpgradeItem
     {
         Simple() {
             super();
+        }
+    }
+
+    public static class Speed
+        extends AssemblyUpgradeItem
+    {
+        Speed() {
+            super();
+        }
+
+        public static int getLoops(TurretAssemblyEntity assembly) {
+            return assembly.hasSpeedUpgrade() ? 4 : 1;
+        }
+
+        public static int getProcessingTime(TurretAssemblyEntity assembly, IAssemblyRecipe recipe) {
+            return recipe.getProcessTime() / getLoops(assembly);
+        }
+
+        public static int getEnergyConsumption(TurretAssemblyEntity assembly, IAssemblyRecipe recipe) {
+            return MathHelper.ceil(recipe.getEnergyConsumption() * (assembly.hasSpeedUpgrade() ? 1.1F : 1.0F));
         }
     }
 

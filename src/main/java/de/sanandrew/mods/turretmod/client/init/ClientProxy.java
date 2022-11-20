@@ -8,6 +8,7 @@ import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.turretmod.api.turret.IForcefield;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
+import de.sanandrew.mods.turretmod.client.event.SneakKeyHandler;
 import de.sanandrew.mods.turretmod.client.gui.AmmoCartridgeScreen;
 import de.sanandrew.mods.turretmod.client.gui.AssemblyFilterScreen;
 import de.sanandrew.mods.turretmod.client.gui.ElectrolyteGeneratorScreen;
@@ -30,6 +31,7 @@ import de.sanandrew.mods.turretmod.client.renderer.turret.ForcefieldRender;
 import de.sanandrew.mods.turretmod.client.shader.Shaders;
 import de.sanandrew.mods.turretmod.init.IProxy;
 import de.sanandrew.mods.turretmod.init.IRenderClassProvider;
+import de.sanandrew.mods.turretmod.init.Lang;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.inventory.ContainerRegistry;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
@@ -48,6 +50,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -135,7 +138,7 @@ public class ClientProxy
 
     @Override
     public boolean isSneakPressed() {
-        return Minecraft.getInstance().options.keyShift.isDown();
+        return SneakKeyHandler.isSneakPressed();
     }
 
     @Override
@@ -158,7 +161,7 @@ public class ClientProxy
         return Minecraft.getInstance().getSingleplayerServer();
     }
 
-    public static void buildItemTooltip(IGui gui, StackPanel p, ItemStack stack, boolean doSetup, GuiElementInst... additionalLines) {
+    public static void buildItemTooltip(IGui gui, StackPanel p, ItemStack stack, boolean addCount, boolean doSetup, GuiElementInst... additionalLines) {
         final IntUnaryOperator yOffGetter = tti -> {
             if( tti == 1 ) {
                 return 4;
@@ -171,6 +174,9 @@ public class ClientProxy
         if( ItemStackUtils.isValid(stack) ) {
             int tti = 0;
             for( ITextComponent tc : stack.getTooltipLines(gui.get().getMinecraft().player, ITooltipFlag.TooltipFlags.NORMAL) ) {
+                if( addCount && tti == 0 ) {
+                    tc = new TranslationTextComponent(Lang.GUI_ITEM_TITLE_COUNT.get(), String.format("%d", stack.getCount()), tc);
+                }
                 Text.Builder tb = new Text.Builder(tc);
                 tb.shadow(true);
                 tb.color(0xFFA0A0A0);

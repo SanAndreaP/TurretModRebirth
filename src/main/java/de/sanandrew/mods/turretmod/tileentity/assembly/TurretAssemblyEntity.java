@@ -14,6 +14,7 @@ import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.block.TurretAssemblyBlock;
 import de.sanandrew.mods.turretmod.inventory.container.ElectrolyteGeneratorContainer;
 import de.sanandrew.mods.turretmod.inventory.container.TurretAssemblyContainer;
+import de.sanandrew.mods.turretmod.item.AssemblyUpgradeItem;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -165,7 +166,7 @@ public class TurretAssemblyEntity
                 return;
             }
 
-            int maxLoop = this.hasSpeedUpgrade() ? 4 : 1;
+            int maxLoop = AssemblyUpgradeItem.Speed.getLoops(this);
 
             if( this.currRecipeId != null ) {
                 if( this.cache.isEmpty() ) {
@@ -201,7 +202,7 @@ public class TurretAssemblyEntity
                 this.cache.insert(AssemblyManager.INSTANCE.checkAndConsumeResources(this.itemHandler, this.level, recipe, AssemblyInventory.SLOTS_INSERT));
                 if( !this.cache.isEmpty() ) {
                     this.maxTicksCrafted = recipe.getProcessTime();
-                    this.fluxConsumption = MathHelper.ceil(recipe.getEnergyConsumption() * (this.hasSpeedUpgrade() ? 1.1F : 1.0F));
+                    this.fluxConsumption = AssemblyUpgradeItem.Speed.getEnergyConsumption(this, recipe);
                     this.ticksCrafted = 0;
                     this.isActive = true;
                     return;
@@ -248,20 +249,6 @@ public class TurretAssemblyEntity
 
         return this.isActive && this.currRecipeId != null;
     }
-
-//    private boolean isRedstonePowered() {
-//        if( this.level == null ) {
-//            return false;
-//        }
-//
-//        BlockPos pos = this.getBlockPos();
-//        return Arrays.stream(Direction.values()).anyMatch(dir -> isPowered(this.level, pos, dir));
-////        if( isPowered(this.level, this.getBlockPos().below(), Direction.DOWN) || isPowered(this.level, this.getBlockPos().above(), Direction.UP) ) {
-////            return true;
-////        }
-////
-////        return Direction.Plane.HORIZONTAL.stream().anyMatch(f -> RedstonePowerProxy.INSTANCE.isPowered(this.level, this.getBlockPos(), f));
-//    }
 
     public AssemblyInventory getInventory() {
         return this.itemHandler;
@@ -375,81 +362,6 @@ public class TurretAssemblyEntity
     public ResourceLocation getCurrentRecipeId() {
         return this.currRecipeId;
     }
-
-//
-//    @Override
-//    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-//        nbt = super.writeToNBT(nbt);
-//
-//        this.writeNBT(nbt);
-//
-//        if( !this.cache.isEmpty() ) {
-//            nbt.setTag("RemovedItems", this.cache.getCompound());
-//        }
-//
-//        return nbt;
-//    }
-//
-//    @Override
-//    public void readFromNBT(NBTTagCompound nbt) {
-//        super.readFromNBT(nbt);
-//
-//        this.readNBT(nbt);
-//
-//        if( nbt.hasKey("RemovedItems", Constants.NBT.TAG_LIST) ) {
-//            NBTTagList remItems = nbt.getTagList("RemovedItems", Constants.NBT.TAG_COMPOUND);
-//            NonNullList<ItemStack> remStacks = NonNullList.withSize(remItems.tagCount(), ItemStack.EMPTY);
-//            ItemStackUtils.readItemStacksFromTag(remStacks, remItems);
-//
-//            this.cache.insert(remStacks);
-//        }
-//
-//        this.doSync = true;
-//    }
-//
-//    private NBTTagCompound writeNBT(NBTTagCompound nbt) {
-//        nbt.setTag("inventory", this.itemHandler.serializeNBT());
-//
-//        if( this.currRecipe != null ) {
-//            nbt.setString("CraftingId", this.currRecipe.getId().toString());
-//            nbt.setInteger("CraftingAmount", this.craftingAmount);
-//        }
-//
-//        nbt.setTag("cap_energy", this.energyStorage.serializeNBT());
-//
-//        nbt.setBoolean("isActive", this.isActive);
-//        nbt.setInteger("ticksCrafted", this.ticksCrafted);
-//        nbt.setInteger("maxTicksCrafted", this.maxTicksCrafted);
-//        nbt.setInteger("fluxConsumption", this.fluxConsumption);
-//        nbt.setBoolean("automate", this.automate);
-//
-//        if( this.hasCustomName() ) {
-//            nbt.setString("customName", this.customName);
-//        }
-//
-//        return nbt;
-//    }
-//
-//    private void readNBT(NBTTagCompound nbt) {
-//        this.itemHandler.deserializeNBT(nbt.getCompoundTag("inventory"));
-//
-//        if( nbt.hasKey("CraftingId") && nbt.hasKey("CraftingAmount") ) {
-//            this.currRecipe = AssemblyManager.INSTANCE.getRecipe(new ResourceLocation(nbt.getString("CraftingId")));
-//            this.craftingAmount = nbt.getInteger("CraftingAmount");
-//        }
-//
-//        this.energyStorage.deserializeNBT(nbt.getCompoundTag("cap_energy"));
-//
-//        this.isActive = nbt.getBoolean("isActive");
-//        this.ticksCrafted = nbt.getInteger("ticksCrafted");
-//        this.maxTicksCrafted = nbt.getInteger("maxTicksCrafted");
-//        this.fluxConsumption = nbt.getInteger("fluxConsumption");
-//        this.automate = nbt.getBoolean("automate");
-//
-//        if( nbt.hasKey("customName") ) {
-//            this.customName = nbt.getString("customName");
-//        }
-//    }
 
     public int getTicksCrafted() {
         return this.ticksCrafted;

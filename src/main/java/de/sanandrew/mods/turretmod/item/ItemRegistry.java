@@ -38,7 +38,7 @@ public class ItemRegistry
     public static final Map<ResourceLocation, RepairKitItem> TURRET_REPAIRKITS     = new LinkedHashMap<>();
     public static final TurretControlUnit                    TURRET_CONTROL_UNIT   = new TurretControlUnit();
     public static final AssemblyUpgradeItem                  ASSEMBLY_UPG_AUTO     = new AssemblyUpgradeItem.Simple();
-    public static final AssemblyUpgradeItem                  ASSEMBLY_UPG_SPEED    = new AssemblyUpgradeItem.Simple();
+    public static final AssemblyUpgradeItem                  ASSEMBLY_UPG_SPEED    = new AssemblyUpgradeItem.Speed();
     public static final AssemblyUpgradeItem.Filter           ASSEMBLY_UPG_FILTER   = new AssemblyUpgradeItem.Filter();
     public static final AssemblyUpgradeItem                  ASSEMBLY_UPG_REDSTONE = new AssemblyUpgradeItem.Simple();
     public static final TurretLexicon                        TURRET_LEXICON        = new TurretLexicon();

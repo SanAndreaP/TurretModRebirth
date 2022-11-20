@@ -49,7 +49,7 @@ public class AmmoItemTooltip
         this.currItem = this.itemSupplier.get();
 
         if( !ItemStackUtils.areEqual(prevItem, this.currItem) ) {
-            ClientProxy.buildItemTooltip(gui, this.get(CONTENT).get(StackPanel.class), this.currItem, update);
+            ClientProxy.buildItemTooltip(gui, this.get(CONTENT).get(StackPanel.class), this.currItem, false, update);
         }
     }
 
