@@ -66,7 +66,8 @@
       }
     },
     {
-      "type": "sapturretmod:assembly.ghost_items"
+      "type": "sapturretmod:assembly_filter_items",
+      "pos": [36, 91]
     },
     {
       "type": "scroll_area",

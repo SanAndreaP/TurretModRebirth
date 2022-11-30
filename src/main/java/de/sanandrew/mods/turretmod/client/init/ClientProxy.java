@@ -14,6 +14,7 @@ import de.sanandrew.mods.turretmod.client.gui.AssemblyFilterScreen;
 import de.sanandrew.mods.turretmod.client.gui.ElectrolyteGeneratorScreen;
 import de.sanandrew.mods.turretmod.client.gui.TurretAssemblyScreen;
 import de.sanandrew.mods.turretmod.client.gui.TurretCrateScreen;
+import de.sanandrew.mods.turretmod.client.gui.element.AssemblyFilterItems;
 import de.sanandrew.mods.turretmod.client.gui.element.ErrorTooltip;
 import de.sanandrew.mods.turretmod.client.gui.element.TurretCamElement;
 import de.sanandrew.mods.turretmod.client.gui.element.nav.PageNavigation;
@@ -81,6 +82,7 @@ public class ClientProxy
         GuiDefinition.TYPES.put(TcuInfo.ID, TcuInfo.Builder::fromJson);
         GuiDefinition.TYPES.put(TargetList.ID, TargetList.Builder::fromJson);
         GuiDefinition.TYPES.put(ModifierList.ID, ModifierList.Builder::fromJson);
+        GuiDefinition.TYPES.put(AssemblyFilterItems.ID, AssemblyFilterItems.Builder::fromJson);
 
         ModelRegistry.registerModels();
         Minecraft.getInstance().execute(Shaders::initShaders);

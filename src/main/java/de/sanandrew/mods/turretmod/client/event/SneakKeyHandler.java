@@ -14,6 +14,8 @@ public class SneakKeyHandler
 {
     private static boolean isSneakPressed;
 
+    private SneakKeyHandler() { }
+
     @SubscribeEvent
     public static void onKeyRelease(GuiScreenEvent.KeyboardKeyReleasedEvent event) {
         if( event.getKeyCode() == Minecraft.getInstance().options.keyShift.getKey().getValue() ) {
