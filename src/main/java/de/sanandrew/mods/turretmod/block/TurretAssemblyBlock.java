@@ -190,6 +190,10 @@ public class TurretAssemblyBlock
         }
     }
 
+    public Direction getDirection(BlockState state) {
+        return state.getValue(FACING);
+    }
+
     @Nonnull
     @Override
     public PushReaction getPistonPushReaction(@Nonnull BlockState state) {

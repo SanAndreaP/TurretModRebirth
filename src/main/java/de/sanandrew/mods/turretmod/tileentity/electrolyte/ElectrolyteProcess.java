@@ -11,7 +11,7 @@ import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.ILeveledInventory;
 import de.sanandrew.mods.turretmod.api.electrolytegen.IElectrolyteRecipe;
-import de.sanandrew.mods.turretmod.init.RecipeRegistry;
+import de.sanandrew.mods.turretmod.recipe.RecipeRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;

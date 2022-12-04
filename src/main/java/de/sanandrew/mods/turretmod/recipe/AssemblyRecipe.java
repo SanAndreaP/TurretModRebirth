@@ -4,7 +4,7 @@
  * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
  *                http://creativecommons.org/licenses/by-nc-sa/4.0/
  *******************************************************************************************************************/
-package de.sanandrew.mods.turretmod.tileentity.assembly;
+package de.sanandrew.mods.turretmod.recipe;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -13,7 +13,7 @@ import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.ILeveledInventory;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.api.assembly.ICountedIngredient;
-import de.sanandrew.mods.turretmod.init.RecipeRegistry;
+import de.sanandrew.mods.turretmod.tileentity.assembly.AssemblyManager;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -131,11 +131,19 @@ public class AssemblyRecipe
         return ItemStackUtils.getCompactItems(items, Integer.MAX_VALUE, Integer.MAX_VALUE);
     }
 
-    public static final class Serializer
+    public static class Serializer
             extends ForgeRegistryEntry<IRecipeSerializer<?>>
             implements IRecipeSerializer<AssemblyRecipe>
     {
-        public static final Serializer INSTANCE = new Serializer();
+        private final IAssemblyConstructor recipeCtor;
+
+        public Serializer() {
+            this(AssemblyRecipe::new);
+        }
+
+        public Serializer(IAssemblyConstructor recipeCtor) {
+            this.recipeCtor = recipeCtor;
+        }
 
         @Nonnull
         @Override
@@ -151,7 +159,7 @@ public class AssemblyRecipe
 
             ItemStack result = ShapedRecipe.itemFromJson(json.getAsJsonObject("result"));
 
-            return new AssemblyRecipe(recipeId, group, ingredients, fluxPerTick, processTime, result);
+            return this.recipeCtor.get(recipeId, group, ingredients, fluxPerTick, processTime, result);
         }
 
         @Nonnull
@@ -169,7 +177,7 @@ public class AssemblyRecipe
 
             ItemStack result = buffer.readItem();
 
-            return new AssemblyRecipe(recipeId, group, ingredients, fluxPerTick, processTime, result);
+            return this.recipeCtor.get(recipeId, group, ingredients, fluxPerTick, processTime, result);
         }
 
         @Override
@@ -249,5 +257,11 @@ public class AssemblyRecipe
             int count = buffer.readVarInt();
             return new CountedIngredient(Ingredient.fromNetwork(buffer), count);
         }
+    }
+
+    @FunctionalInterface
+    public interface IAssemblyConstructor
+    {
+        AssemblyRecipe get(ResourceLocation id, String group, NonNullList<ICountedIngredient> ingredients, int energyConsumption, int processTime, ItemStack result);
     }
 }

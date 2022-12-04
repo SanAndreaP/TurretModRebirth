@@ -2,7 +2,7 @@ package de.sanandrew.mods.turretmod.datagenerator;
 
 import com.google.gson.JsonObject;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.init.RecipeRegistry;
+import de.sanandrew.mods.turretmod.recipe.RecipeRegistry;
 import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteManager;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;

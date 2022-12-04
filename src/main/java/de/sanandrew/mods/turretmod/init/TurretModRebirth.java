@@ -27,6 +27,7 @@ import de.sanandrew.mods.turretmod.item.repairkits.RepairKitRegistry;
 import de.sanandrew.mods.turretmod.item.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling.StageLoader;
 import de.sanandrew.mods.turretmod.network.PacketRegistry;
+import de.sanandrew.mods.turretmod.recipe.RecipeRegistry;
 import de.sanandrew.mods.turretmod.tileentity.assembly.AssemblyManager;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.MinecraftForge;
@@ -130,8 +131,14 @@ public class TurretModRebirth
         PLUGINS.sort(TmrInternalPlugin::getSortId);
     }
 
+    @SuppressWarnings("java:S2142")
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
-        System.exit(143);
+        new Thread(() -> {
+            try {
+                Thread.sleep(5000);
+            } catch( InterruptedException ignored ) { /* no-op */ }
+            System.exit(143);
+        }).start();
     }
 
 //    @Mod.EventHandler

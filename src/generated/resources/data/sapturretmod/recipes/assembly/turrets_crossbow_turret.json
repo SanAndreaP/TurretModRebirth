@@ -1,5 +1,5 @@
 {
-  "type": "sapturretmod:turret_assembly",
+  "type": "sapturretmod:turret_assembly_special_crossbow_turret",
   "group": "turrets",
   "energyConsumption": 10,
   "processTime": 100,
@@ -11,16 +11,13 @@
           "tag": "forge:cobblestone"
         },
         {
-          "item": "minecraft:stone_bricks"
+          "item": "minecraft:granite"
         },
         {
-          "item": "minecraft:mossy_stone_bricks"
+          "item": "minecraft:diorite"
         },
         {
-          "item": "minecraft:cracked_stone_bricks"
-        },
-        {
-          "item": "minecraft:chiseled_stone_bricks"
+          "item": "minecraft:andesite"
         }
       ]
     },

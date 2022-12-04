@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
+//TODO: use JSON-data for customization
 public class AssemblyFilterItems
         extends ElementParent<Integer>
 {

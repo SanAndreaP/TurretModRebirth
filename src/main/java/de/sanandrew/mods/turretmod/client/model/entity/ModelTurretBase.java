@@ -88,7 +88,7 @@ public class ModelTurretBase<E extends LivingEntity & ITurretEntity>
 	}
 
 	@Override
-	public void setTexture(String s) { }
+	public void setTexture(String s) { /* no-op */ }
 
 	@Override
 	public float getBaseScale() {

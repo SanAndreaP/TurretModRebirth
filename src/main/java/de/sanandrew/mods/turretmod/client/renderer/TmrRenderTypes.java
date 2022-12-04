@@ -18,6 +18,9 @@ public class TmrRenderTypes
         extends RenderType
 {
     public static final RenderType TMR_LIGHTNING = lightning();
+    public static final RenderType ASSEMBLY_LASER = create("tmr_assembly_laser", DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 256, false, true,
+                                                           RenderType.State.builder().setWriteMaskState(COLOR_DEPTH_WRITE).setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                                                                   .setOutputState(ITEM_ENTITY_TARGET).setShadeModelState(SMOOTH_SHADE).createCompositeState(false));
 
     @SuppressWarnings({"ConstantConditions", "java:S4449"})
     private TmrRenderTypes() {
@@ -28,7 +31,7 @@ public class TmrRenderTypes
 
     @Nonnull
     public static RenderType tmrLine(final float width) {
-        return RenderType.create(String.format("tmr_lines_%.5f", width), DefaultVertexFormats.POSITION_COLOR, GL11.GL_LINES, 256,
+        return create(String.format("tmr_lines_%.5f", width), DefaultVertexFormats.POSITION_COLOR, GL11.GL_LINES, 256,
                                  RenderType.State.builder().setLineState(new LineState(OptionalDouble.of(width)))
                                                  .setLayeringState(VIEW_OFFSET_Z_LAYERING).setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                                                  .setOutputState(ITEM_ENTITY_TARGET).setWriteMaskState(COLOR_DEPTH_WRITE).createCompositeState(false));

@@ -6,6 +6,7 @@ import de.sanandrew.mods.sanlib.lib.client.gui.IGui;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.StackPanel;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.turret.IForcefield;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.client.event.SneakKeyHandler;
@@ -40,16 +41,18 @@ import de.sanandrew.mods.turretmod.item.TurretControlUnit;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.item.ammo.Ammunitions;
 import de.sanandrew.mods.turretmod.network.OpenRemoteTcuGuiPacket;
-import de.sanandrew.mods.turretmod.tileentity.assembly.AssemblyManager;
 import de.sanandrew.mods.turretmod.world.PlayerList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.SSpawnParticlePacket;
+import net.minecraft.particles.IParticleData;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -58,13 +61,24 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.function.IntUnaryOperator;
 import java.util.function.Supplier;
 
 public class ClientProxy
         implements IProxy
 {
+    public static float getTrueBrightness(int light, World level) {
+        int skyLight = (light >> 20) & 0xF;
+        int blockLight = (light >> 4) & 0xF;
+        float sunAngle = level != null ? level.getSunAngle(1.0F) : 0.0F;
+
+        double maxAngle = sunAngle < Math.PI ? 0.0D : Math.PI * 2D;
+        sunAngle = (float)(sunAngle + (maxAngle - sunAngle) * 0.2D);
+        skyLight = Math.round(skyLight * MathHelper.cos(sunAngle));
+
+        return Math.max(skyLight / 15.0F, blockLight / 15.0F);
+    }
+
     @Override
     public void setupClient(FMLClientSetupEvent event) {
         ScreenManager.register(ContainerRegistry.ELECTROLYTE_GENERATOR, ElectrolyteGeneratorScreen::new);
@@ -161,6 +175,14 @@ public class ClientProxy
     @Override
     public MinecraftServer getServer(World level) {
         return Minecraft.getInstance().getSingleplayerServer();
+    }
+
+    @Override
+    public <T extends IParticleData> void spawnParticle(World level, T particle, double x, double y, double z, int count, float mX, float mY, float mZ, float mMax) {
+        MiscUtils.accept(Minecraft.getInstance().getConnection(), mc -> {
+            SSpawnParticlePacket p = new SSpawnParticlePacket(particle, false, x, y, z, mX, mY, mZ, mMax, count);
+            mc.handleParticleEvent(p);
+        });
     }
 
     public static void buildItemTooltip(IGui gui, StackPanel p, ItemStack stack, boolean addCount, boolean doSetup, GuiElementInst... additionalLines) {

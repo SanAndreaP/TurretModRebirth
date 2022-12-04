@@ -1,7 +1,6 @@
-package de.sanandrew.mods.turretmod.init;
+package de.sanandrew.mods.turretmod.recipe;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.tileentity.assembly.AssemblyRecipe;
 import de.sanandrew.mods.turretmod.tileentity.electrolyte.ElectrolyteRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -24,6 +23,8 @@ public class RecipeRegistry
 
         RECIPE_SERIALIZERS.register("electrolyte_generator", () -> ELECTROLYTE_RECIPE_SER);
         RECIPE_SERIALIZERS.register("turret_assembly", () -> ASSEMBLY_RECIPE_SER);
+
+        RECIPE_SERIALIZERS.register("turret_assembly_special_crossbow_turret", () -> TurretVariantRecipe.Crossbow.SERIALIZER);
 //        event.getRegistry().register(AssemblyRecipe.Serializer.INSTANCE.setRegistryName(new ResourceLocation(TmrConstants.ID, "turret_assembly")));
 
         RECIPE_SERIALIZERS.register(bus);

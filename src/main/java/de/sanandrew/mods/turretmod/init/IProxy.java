@@ -5,8 +5,10 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.world.PlayerList;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particles.IParticleData;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -38,4 +40,10 @@ public interface IProxy
     void removeClientForcefield(ITurretEntity turretEntity, Class<? extends IForcefield> forcefieldClass);
 
     MinecraftServer getServer(World level);
+
+    <T extends IParticleData> void spawnParticle(World level, T particle, double x, double y, double z, int count, float mX, float mY, float mZ, float mMax);
+
+    default <T extends IParticleData> void spawnParticle(World level, T particle, Vector3d pos, int count, float mX, float mY, float mZ, float mMax) {
+        spawnParticle(level, particle, pos.x, pos.y, pos.z, count, mX, mY, mZ, mMax);
+    }
 }

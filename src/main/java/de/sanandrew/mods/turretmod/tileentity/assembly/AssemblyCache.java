@@ -3,6 +3,7 @@ package de.sanandrew.mods.turretmod.tileentity.assembly;
 import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.api.ILeveledInventory;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
@@ -11,6 +12,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.Arrays;
@@ -19,7 +21,7 @@ import java.util.stream.IntStream;
 
 @SuppressWarnings("NullableProblems")
 public class AssemblyCache
-        implements IInventory
+        implements ILeveledInventory
 {
     private final NonNullList<ItemStack> stacks = NonNullList.withSize(AssemblyInventory.SLOTS_INSERT.length, ItemStack.EMPTY);
     private final TurretAssemblyEntity assembly;
@@ -103,5 +105,10 @@ public class AssemblyCache
 
     void deserializeNBT(CompoundNBT tag) {
         ItemStackUtils.readItemStacksFromTag(this.stacks, tag.getList("Items", Constants.NBT.TAG_COMPOUND));
+    }
+
+    @Override
+    public World getLevel() {
+        return this.assembly.getLevel();
     }
 }

@@ -1,4 +1,4 @@
-package de.sanandrew.mods.turretmod.client.renderer.tileentity;
+package de.sanandrew.mods.turretmod.client.renderer.block;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -28,8 +28,8 @@ public class ElectrolyteGeneratorRenderer
 
     private static final Parabole[] PARABOLES = new Parabole[ElectrolyteInventory.INPUT_SLOT_COUNT];
 
-    public ElectrolyteGeneratorRenderer(TileEntityRendererDispatcher rendererDispatcher) {
-        super(rendererDispatcher);
+    public ElectrolyteGeneratorRenderer(TileEntityRendererDispatcher dispatcher) {
+        super(dispatcher);
     }
 
     @Override

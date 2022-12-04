@@ -1,25 +1,28 @@
 package de.sanandrew.mods.turretmod.tileentity.assembly;
 
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
+import de.sanandrew.mods.turretmod.init.TurretModRebirth;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.world.World;
 
-class RobotArm
+public class RobotArm
 {
-    private float robotArmX = 2.0F;
-    private float robotArmY = -9.0F;
-    private float prevRobotArmX = 0.0F;
-    private float prevRobotArmY = 0.0F;
-    private float robotMotionX;
-    private float robotMotionY;
-    private float robotEndX;
-    private float robotEndY;
-    private double spawnParticleX;
-    private double spawnParticleY;
-    private double spawnParticleZ;
+    private float    robotArmX = 2.0F;
+    private float    robotArmY = -9.0F;
+    private float    prevRobotArmX = 0.0F;
+    private float    prevRobotArmY = 0.0F;
+    private float    robotMotionX;
+    private float    robotMotionY;
+    private float    robotEndX;
+    private float    robotEndY;
+    private Vector3d spawnParticlePos;
 
     private boolean prevActive;
     private int ticksToNextPos = 0;
 
-    void process(boolean isActive, boolean spedUp) {
+    void process(World level, boolean isActive, boolean spedUp) {
         this.prevRobotArmX = this.robotArmX;
         this.prevRobotArmY = this.robotArmY;
 
@@ -45,17 +48,19 @@ class RobotArm
             }
         } else {
             this.animateReset(spedUp);
-//            this.spawnParticle = null;
         }
 
-        //TODO: spawn particles
-//        if( this.isActiveClient && this.spawnParticle != null ) {
-//            EnumEffect.ASSEMBLY_SPARK.addEffect(true, this.world.provider.getDimension(),
-//                                                spawnParticle.getValue(0), spawnParticle.<Double>getValue(1) + 0.05D, spawnParticle.getValue(2));
-//            this.spawnParticle = null;
-//        }
+        if( this.spawnParticlePos != null ) {
+            TurretModRebirth.PROXY.spawnParticle(level, ParticleTypes.MYCELIUM, this.spawnParticlePos, 0, 0.0F, 0.2F, 0.0F, 1.0F);
+
+            this.spawnParticlePos = null;
+        }
 
         this.prevActive = isActive;
+    }
+
+    public void spawnParticle(double x, double y, double z) {
+        this.spawnParticlePos = new Vector3d(x, y, z);
     }
 
     private void animateRng(boolean spedUp) {
@@ -72,5 +77,17 @@ class RobotArm
         this.robotMotionY = (0.1F + MiscUtils.RNG.randomFloat() * 0.1F) * (y > this.robotArmY ? 1.0F : -1.0F) * speedMulti;
         this.robotEndX = x;
         this.robotEndY = y;
+    }
+
+    public float getArmX(float partTicks) {
+        return Math.max(2.0F, Math.min(12.0F, this.prevRobotArmX + (this.robotArmX - this.prevRobotArmX) * partTicks)) - 7.0F;
+    }
+
+    public float getArmZ(float partTicks) {
+        return Math.max(-11.0F, Math.min(-3.0F, this.prevRobotArmY + (this.robotArmY - this.prevRobotArmY) * partTicks));
+    }
+
+    public boolean isInBuildVicinity() {
+        return this.robotArmX >= 4.0F && this.robotArmX <= 10.0F && this.robotArmY <= -3.5F && this.robotArmY >= -9.5F;
     }
 }

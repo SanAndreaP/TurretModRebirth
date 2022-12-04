@@ -232,37 +232,6 @@
           }
         }
       }
-    },
-    {
-      "type": "sapturretmod:assembly.recipes",
-      "pos": [35, 9],
-      "data": {
-        "scrollArea": {
-          "itemColumns": 6,
-          "scrollbarHeight": 76,
-          "areaTextureUV": [0, 0],
-          "scrollbarPos": [144, 7],
-          "scrollButton": {
-            "size": [6, 6],
-            "uv": [230, 0],
-            "uvDisabled": [230, 6]
-          }
-        },
-        "activeRecipeMarker": {
-          "offset": [-2, -2],
-          "size": [22, 22],
-          "uv": [82, 222]
-        },
-        "recipeTooltip": {
-          "backgroundColor": "0xF0001000",
-          "borderTopColor": "0x5000FF00",
-          "borderBottomColor": "0x50007F00",
-          "label": {
-            "borderColor": "0x5000FF00",
-            "compactIngredientsColumns": 6
-          }
-        }
-      }
     }
   ]
 }

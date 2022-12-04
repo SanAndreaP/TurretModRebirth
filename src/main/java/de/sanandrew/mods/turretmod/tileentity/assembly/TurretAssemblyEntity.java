@@ -9,10 +9,10 @@
 package de.sanandrew.mods.turretmod.tileentity.assembly;
 
 import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
+import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.block.TurretAssemblyBlock;
-import de.sanandrew.mods.turretmod.inventory.container.ElectrolyteGeneratorContainer;
 import de.sanandrew.mods.turretmod.inventory.container.TurretAssemblyContainer;
 import de.sanandrew.mods.turretmod.item.AssemblyUpgradeItem;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
@@ -21,7 +21,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
@@ -35,7 +34,6 @@ import net.minecraft.util.INameable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -50,7 +48,6 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 
 @SuppressWarnings("NullableProblems")
 public class TurretAssemblyEntity
@@ -179,9 +176,11 @@ public class TurretAssemblyEntity
                     doSync |= !prevActive;
 
                     for( int i = 0; i < maxLoop; i++ ) {
+                        int prevTicksCrafted = this.ticksCrafted;
                         if( !this.process() ) {
                             return;
                         }
+                        doSync |= this.ticksCrafted != prevTicksCrafted;
                     }
                 }
             }
@@ -190,7 +189,7 @@ public class TurretAssemblyEntity
                 this.broadcastChanges();
             }
         } else {
-            this.robotArm.process(this.isActive, this.hasSpeedUpgrade());
+            this.robotArm.process(this.level, this.isActive, this.hasSpeedUpgrade());
         }
     }
 
@@ -218,7 +217,7 @@ public class TurretAssemblyEntity
         if( this.energyStorage.fluxAmount >= this.fluxConsumption ) {
             this.energyStorage.fluxAmount -= this.fluxConsumption;
             if( ++this.ticksCrafted >= this.maxTicksCrafted ) { // if finished crafting...
-                ItemStack stack = AssemblyManager.INSTANCE.getRecipe(this.level, this.currRecipeId).getResultItem();
+                ItemStack stack = AssemblyManager.INSTANCE.getRecipe(this.level, this.currRecipeId).assemble(this.cache);
                 if( !ItemStackUtils.isValid(stack) ) {
                     this.cancelCrafting();
                     return false;
@@ -329,7 +328,10 @@ public class TurretAssemblyEntity
         this.isActive = tag.getBoolean(NBT_IS_ACTIVE);
         this.currRecipeId = tag.contains(NBT_RECIPE) ? new ResourceLocation(tag.getString(NBT_RECIPE)) : null;
         this.automate = tag.getBoolean(NBT_AUTOMATE);
+        this.ticksCrafted = tag.getInt(NBT_TICKS_CRAFTED);
+        this.maxTicksCrafted = tag.getInt(NBT_MAX_TICKS_CRAFTED);
 
+        this.itemHandler.setStackInSlot(AssemblyInventory.SLOT_OUTPUT, ItemStack.of(tag.getCompound("Output")));
         if( tag.getBoolean("HasAutomationUpgrade") && !this.hasAutoUpgrade() ) {
             this.itemHandler.setItem(AssemblyInventory.SLOT_UPGRADE_AUTO, new ItemStack(ItemRegistry.ASSEMBLY_UPG_AUTO));
         }
@@ -350,7 +352,10 @@ public class TurretAssemblyEntity
             tag.putString(NBT_RECIPE, this.currRecipeId.toString());
         }
         tag.putBoolean(NBT_AUTOMATE, this.automate);
+        tag.putInt(NBT_TICKS_CRAFTED, this.ticksCrafted);
+        tag.putInt(NBT_MAX_TICKS_CRAFTED, this.maxTicksCrafted);
 
+        tag.put("Output", MiscUtils.apply(new CompoundNBT(), c -> this.getInventory().getStackInSlot(AssemblyInventory.SLOT_OUTPUT).save(c)));
         tag.putBoolean("HasAutomationUpgrade", this.hasAutoUpgrade());
         tag.putBoolean("HasSpeedUpgrade", this.hasSpeedUpgrade());
         tag.putBoolean("HasFilterUpgrade", this.hasFilterUpgrade());
@@ -436,6 +441,10 @@ public class TurretAssemblyEntity
         this.customName = name;
     }
 
+    public RobotArm getRobotArm() {
+        return this.robotArm;
+    }
+
     private static boolean isPowered(World level, BlockPos pos, Direction facing) {
         int i = level.getSignal(pos, facing);
         if (i >= 15) {
@@ -445,6 +454,10 @@ public class TurretAssemblyEntity
 
             return Math.max(i, blockstate.is(Blocks.REDSTONE_WIRE) ? blockstate.getValue(RedstoneWireBlock.POWER) : 0) > 0;
         }
+    }
+
+    public boolean isActive() {
+        return this.isActive;
     }
 
     @Nullable

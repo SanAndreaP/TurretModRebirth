@@ -20,6 +20,7 @@ import de.sanandrew.mods.turretmod.entity.turret.Turrets;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.item.ammo.Ammunitions;
 import de.sanandrew.mods.turretmod.item.upgrades.UpgradeRegistry;
+import de.sanandrew.mods.turretmod.recipe.AssemblyRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.NonNullList;

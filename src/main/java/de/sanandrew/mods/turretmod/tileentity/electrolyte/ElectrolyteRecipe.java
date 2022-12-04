@@ -11,7 +11,7 @@ import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.ILeveledInventory;
 import de.sanandrew.mods.turretmod.api.electrolytegen.IElectrolyteRecipe;
-import de.sanandrew.mods.turretmod.init.RecipeRegistry;
+import de.sanandrew.mods.turretmod.recipe.RecipeRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;

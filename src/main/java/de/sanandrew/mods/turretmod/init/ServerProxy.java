@@ -5,9 +5,11 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.world.PlayerList;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particles.IParticleData;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -67,5 +69,12 @@ public class ServerProxy
     @Override
     public MinecraftServer getServer(World level) {
         return level.getServer();
+    }
+
+    @Override
+    public <T extends IParticleData> void spawnParticle(World level, T particle, double x, double y, double z, int count, float mX, float mY, float mZ, float mMax) {
+        if( level instanceof ServerWorld ) {
+            ((ServerWorld) level).sendParticles(particle, x, y, z, count, mX, mY, mZ, mMax);
+        }
     }
 }

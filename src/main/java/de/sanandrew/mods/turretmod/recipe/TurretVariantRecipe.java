@@ -1,4 +1,4 @@
-package de.sanandrew.mods.turretmod.tileentity.assembly;
+package de.sanandrew.mods.turretmod.recipe;
 
 import de.sanandrew.mods.turretmod.api.ILeveledInventory;
 import de.sanandrew.mods.turretmod.api.assembly.ICountedIngredient;
@@ -15,7 +15,7 @@ import javax.annotation.Nonnull;
 public abstract class TurretVariantRecipe
         extends AssemblyRecipe
 {
-    public TurretVariantRecipe(ResourceLocation id, String group, NonNullList<ICountedIngredient> ingredients, int fluxPerTick, int processTime, ItemStack result) {
+    TurretVariantRecipe(ResourceLocation id, String group, NonNullList<ICountedIngredient> ingredients, int fluxPerTick, int processTime, ItemStack result) {
         super(id, group, ingredients, fluxPerTick, processTime, result);
     }
 
@@ -39,6 +39,8 @@ public abstract class TurretVariantRecipe
     public static class Crossbow
             extends TurretVariantRecipe
     {
+        public static final AssemblyRecipe.Serializer SERIALIZER = new AssemblyRecipe.Serializer(Crossbow::new);
+
         public Crossbow(ResourceLocation id, String group, NonNullList<ICountedIngredient> ingredients, int fluxPerTick, int processTime, ItemStack result) {
             super(id, group, ingredients, fluxPerTick, processTime, result);
         }

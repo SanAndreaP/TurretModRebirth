@@ -10,10 +10,11 @@ package de.sanandrew.mods.turretmod.client.model;
 
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
+import de.sanandrew.mods.turretmod.client.renderer.block.TurretAssemblyRenderer;
 import de.sanandrew.mods.turretmod.client.renderer.cartridge.AmmoCartridgeItemOverrides;
 import de.sanandrew.mods.turretmod.client.renderer.cartridge.AmmoCartridgeModel;
 import de.sanandrew.mods.turretmod.client.renderer.projectile.TurretProjectileRenderer;
-import de.sanandrew.mods.turretmod.client.renderer.tileentity.ElectrolyteGeneratorRenderer;
+import de.sanandrew.mods.turretmod.client.renderer.block.ElectrolyteGeneratorRenderer;
 import de.sanandrew.mods.turretmod.client.renderer.turret.TurretRenderer;
 import de.sanandrew.mods.turretmod.entity.EntityRegistry;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
@@ -44,6 +45,7 @@ public final class ModelRegistry
         RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.PROJECTILE, TurretProjectileRenderer::new);
 
         ClientRegistry.bindTileEntityRenderer(BlockRegistry.ELECTROLYTE_GENERATOR_ENTITY, ElectrolyteGeneratorRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(BlockRegistry.TURRET_ASSEMBLY_ENTITY, TurretAssemblyRenderer::new);
 
         RenderTypeLookup.setRenderLayer(BlockRegistry.TURRET_CRATE, RenderType.cutout());
     }
