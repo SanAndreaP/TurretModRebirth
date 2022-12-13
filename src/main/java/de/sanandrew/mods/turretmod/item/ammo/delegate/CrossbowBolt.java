@@ -15,6 +15,7 @@ import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.entity.projectile.Projectiles;
 import de.sanandrew.mods.turretmod.entity.turret.Turrets;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nonnull;
 
@@ -39,5 +40,10 @@ public class CrossbowBolt
     @Override
     public IProjectile getProjectile(ITurretEntity turret) {
         return Projectiles.CB_BOLT;
+    }
+
+    @Override
+    public Range<Float> getDamageInfo() {
+        return Range.is(4.0F);
     }
 }

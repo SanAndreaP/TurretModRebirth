@@ -14,7 +14,7 @@ import javax.annotation.Nonnull;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
-public class CustomElementComponent
+public abstract class CustomElementComponent
         implements ICustomComponent
 {
     private int x;

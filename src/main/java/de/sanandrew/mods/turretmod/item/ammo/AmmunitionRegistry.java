@@ -24,6 +24,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.DeferredRegister;
+import org.apache.commons.lang3.Range;
 import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
@@ -50,11 +51,12 @@ public final class AmmunitionRegistry
     {
         private final ResourceLocation id = new ResourceLocation("null");
 
-        @Nonnull @Override public ResourceLocation getId()                               { return this.id; }
-        @Nonnull @Override public ITurret getApplicableTurret()                           { return TurretRegistry.INSTANCE.getDefault(); }
-        @Override          public int getCapacity()                     { return 0; }
-        @Override          public IProjectile getProjectile(ITurretEntity turret) { return null; }
-        @Override          public boolean          isValid()                             { return false; }
+        @Nonnull @Override public ResourceLocation getId()                             { return this.id; }
+        @Nonnull @Override public ITurret          getApplicableTurret()               { return TurretRegistry.INSTANCE.getDefault(); }
+        @Override          public int              getCapacity()                       { return 0; }
+        @Override          public IProjectile      getProjectile(ITurretEntity turret) { return null; }
+        @Override          public boolean          isValid()                           { return false; }
+        @Override          public Range<Float>     getDamageInfo()                     { return null; }
     };
 
     private AmmunitionRegistry() {

@@ -47,12 +47,10 @@ public class TurretLexicon
     @Nonnull
     @Override
     public ActionResult<ItemStack> use(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
-        if( PATCHOULI_AVAILABLE ) {
-            if( player instanceof ServerPlayerEntity ) {
-                vazkii.patchouli.api.PatchouliAPI.get().openBookGUI((ServerPlayerEntity) player, Resources.PATCHOULI);
+        if( PATCHOULI_AVAILABLE && player instanceof ServerPlayerEntity ) {
+            vazkii.patchouli.api.PatchouliAPI.get().openBookGUI((ServerPlayerEntity) player, Resources.PATCHOULI);
 
-                return ActionResult.success(player.getItemInHand(hand));
-            }
+            return ActionResult.success(player.getItemInHand(hand));
         }
 
         return super.use(world, player, hand);
