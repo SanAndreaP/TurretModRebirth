@@ -128,6 +128,13 @@ public class TurretEntity
         this.delegate = TurretRegistry.INSTANCE.getDefault();
     }
 
+    public TurretEntity(World world, ITurret delegate) {
+        this(EntityRegistry.TURRET, world);
+
+        this.loadDelegate(delegate);
+        this.setHealth(this.getMaxHealth());
+    }
+
     public TurretEntity(World world, ITurret delegate, Vector3d pos) {
         this(EntityRegistry.TURRET, world);
 

@@ -15,6 +15,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -65,4 +66,6 @@ public interface IAmmunition
      * @param flag The flag of the tooltip to be drawn, determines if advanced information is to be shown or not.
      */
     default void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) { }
+
+    Range<Float> getDamageInfo();
 }
