@@ -6,20 +6,24 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
+import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 @SuppressWarnings("unused")
 public class PatchouliBuilder
 {
-    private final String name;
+    private final String           name;
     private final ResourceLocation category;
-    private final Icon icon;
-    private final List<Page<?>> pages = new ArrayList<>();
-    private int sortnum;
+    private final Icon             icon;
+    private final List<Page<?>>    pages = new ArrayList<>();
+    private       Integer          sortnum;
 
     private PatchouliBuilder(String name, ResourceLocation category, Icon icon) {
         this.name = name;
@@ -47,6 +51,24 @@ public class PatchouliBuilder
         return name;
     }
 
+    public PatchouliBuilder page(Page<?> p) {
+        this.pages.add(p);
+
+        return this;
+    }
+
+    public PatchouliBuilder sort(int index) {
+        this.sortnum = index;
+
+        return this;
+    }
+
+    static <T> JsonArray toJsonArray(List<T> l, BiConsumer<JsonArray, T> addElem) {
+        JsonArray a = new JsonArray();
+        l.forEach(i -> addElem.accept(a, i));
+
+        return a;
+    }
 
     public JsonElement toJson() {
         JsonObject obj = new JsonObject();
@@ -54,19 +76,26 @@ public class PatchouliBuilder
         obj.addProperty("category", this.category.toString());
         obj.addProperty("icon", this.icon.toString());
 
-        JsonArray pgArr = new JsonArray();
         if( pages.isEmpty() ) {
             throw new JsonSyntaxException("There must be at least one page present!");
         }
+        obj.add("pages", toJsonArray(pages, (a, p) -> a.add(p.toJson())));
+        MiscUtils.accept(this.sortnum, n -> obj.addProperty("sortnum", n));
 
-        pages.forEach(p ->);
+        return obj;
+    }
+
+    public void build(Consumer<PatchouliBuilder> consumerIn) {
+        consumerIn.accept(this);
+//        ResourceLocation resId = Objects.requireNonNull(this.result.getItem().getRegistryName());
+//        consumerIn.accept(new AssemblyBuilder.Result(new ResourceLocation(TmrConstants.ID, "assembly/" + this.group + "_" + resId.getPath())));
     }
 
     private static class Icon
     {
         private final ResourceLocation location;
-        private final Integer count;
-        private final CompoundNBT nbt;
+        private final Integer          count;
+        private final CompoundNBT      nbt;
 
         Icon(ResourceLocation locationOrItemId, int count, CompoundNBT nbt) {
             this.location = locationOrItemId;
@@ -94,8 +123,8 @@ public class PatchouliBuilder
     {
         final ResourceLocation type;
         ResourceLocation advancement;
-        String flag;
-        String anchor;
+        String           flag;
+        String           anchor;
 
         Page(ResourceLocation type) {
             this.type = type;
@@ -136,8 +165,8 @@ public class PatchouliBuilder
     {
         private final ResourceLocation recipe;
         private final ResourceLocation recipe2;
-        private String title;
-        private String text;
+        private       String           title;
+        private       String           text;
 
         public CraftingPage(ResourceLocation recipe) {
             this(recipe, null);
@@ -160,6 +189,14 @@ public class PatchouliBuilder
             }
             return this;
         }
+
+        @Override
+        public void fillJson(JsonObject obj) {
+            obj.addProperty("recipe", this.recipe.toString());
+            MiscUtils.accept(this.recipe2, r -> obj.addProperty("recipe2", this.recipe2.toString()));
+            MiscUtils.accept(this.title, t -> obj.addProperty("title", this.title));
+            MiscUtils.accept(this.text, t -> obj.addProperty("text", this.text));
+        }
     }
 
     private static final ResourceLocation ASSEMBLY_RECIPE_PAGE = new ResourceLocation(TmrConstants.ID, "assembly");
@@ -172,6 +209,11 @@ public class PatchouliBuilder
             super(ASSEMBLY_RECIPE_PAGE);
             this.recipe = recipe;
         }
+
+        @Override
+        public void fillJson(JsonObject obj) {
+            obj.addProperty("recipe", this.recipe.toString());
+        }
     }
 
     private static final ResourceLocation AMMO_INFO_PAGE = new ResourceLocation(TmrConstants.ID, "ammo_info");
@@ -181,7 +223,7 @@ public class PatchouliBuilder
         private final String                 name;
         private final List<ResourceLocation> types = new ArrayList<>();
         private       String                 text;
-        private String turretLink;
+        private       String                 turret;
 
         public AmmoInfoPage(String name) {
             super(AMMO_INFO_PAGE);
@@ -194,13 +236,21 @@ public class PatchouliBuilder
         }
 
         public AmmoInfoPage turret(String url, String name) {
-            this.turretLink = String.format("$(l:%s)%s$(/l)", url, name);
+            this.turret = String.format("$(l:%s)%s$(/l)", url, name);
             return this;
         }
 
         public AmmoInfoPage type(ResourceLocation type) {
             this.types.add(type);
             return this;
+        }
+
+        @Override
+        public void fillJson(JsonObject obj) {
+            obj.addProperty("name", this.name);
+            obj.add("types", toJsonArray(this.types, (a, t) -> a.add(t.toString())));
+            MiscUtils.accept(this.text, t -> obj.addProperty("text", t));
+            MiscUtils.accept(this.turret, t -> obj.addProperty("turret", t));
         }
     }
 }

@@ -2,12 +2,14 @@ package de.sanandrew.mods.turretmod.datagenerator;
 
 import com.google.common.collect.Sets;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
+import de.sanandrew.mods.turretmod.api.TmrConstants;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DirectoryCache;
 import net.minecraft.data.IDataProvider;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Set;
@@ -18,38 +20,37 @@ public class PatchouliProvider
 {
     private final DataGenerator generator;
 
-    public PatchouliProvider(DataGenerator p_i48869_1_) {
-        this.generator = p_i48869_1_;
+    public PatchouliProvider(DataGenerator generator) {
+        this.generator = generator;
     }
 
-    public void run(DirectoryCache cache) throws IOException {
-        Path                  path = this.generator.getOutputFolder();
-        Set<String> set  = Sets.newHashSet();
-        Consumer<PatchouliBuilder> consumer = (p_204017_3_) -> {
-            if( !set.add(String.format("%s/%s", p_204017_3_.getCategory(), p_204017_3_.getName()) ) {
-                throw new IllegalStateException(String.format("Duplicate entry %s/%s", p_204017_3_.getCategory(), p_204017_3_.getName()));
+    public void run(@Nonnull DirectoryCache cache) {
+        Path        outDir = this.generator.getOutputFolder();
+        Set<String> set    = Sets.newHashSet();
+        Consumer<PatchouliBuilder> consumer = builder -> {
+            if( !set.add(String.format("%s/%s", builder.getCategory(), builder.getName())) ) {
+                throw new IllegalStateException(String.format("Duplicate entry %s/%s", builder.getCategory(), builder.getName()));
             } else {
-                Path path1 = createPath(path, p_204017_3_);
+                Path path = createPath(outDir, builder);
 
                 try {
-                    IDataProvider.save(JsonUtils.GSON, cache, p_204017_3_., path1);
-                } catch (IOException ioexception) {
-                    LOGGER.error("Couldn't save advancement {}", path1, ioexception);
+                    IDataProvider.save(JsonUtils.GSON, cache, builder.toJson(), path);
+                } catch( IOException ioexception ) {
+                    TmrConstants.LOG.error("Couldn't save book entry {}", path, ioexception);
                 }
 
             }
         };
 
-        registerAdvancements(consumer, fileHelper);
+        registerEntries(consumer);
     }
 
     /**
      * Override this method for registering and generating custom book entries. <p>
      * Just use {@link PatchouliBuilder} to build your entry.
      * @param consumer used for the register function from {@link PatchouliBuilder}
-     * @param fileHelper used for the register function from {@link PatchouliBuilder}
      */
-    protected void registerEntries(Consumer<PatchouliBuilder> consumer, net.minecraftforge.common.data.ExistingFileHelper fileHelper) {
+    protected void registerEntries(Consumer<PatchouliBuilder> consumer) {
 
     }
 

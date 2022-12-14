@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "sapturretmod:items/turret_info"
+    "layer0": "sapturretmod:item/turret_lexicon"
   }
 }

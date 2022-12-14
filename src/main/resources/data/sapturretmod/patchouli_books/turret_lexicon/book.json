@@ -9,7 +9,7 @@
   "filler_texture": "sapturretmod:textures/gui/lexicon/page_filler.png",
   "crafting_texture": "sapturretmod:textures/gui/lexicon/page_crafting.png",
   "dont_generate_book": true,
-  "custom_book_item": "sapturretmod:turret_info",
+  "custom_book_item": "sapturretmod:turret_lexicon",
   "use_blocky_font": false,
   "pause_game": false
 }

@@ -16,6 +16,7 @@ import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.client.init.ClientProxy;
 import de.sanandrew.mods.turretmod.datagenerator.AssemblyProvider;
 import de.sanandrew.mods.turretmod.datagenerator.ElectrolyteProvider;
+import de.sanandrew.mods.turretmod.datagenerator.PatchouliProvider;
 import de.sanandrew.mods.turretmod.datagenerator.TmrItemModelProvider;
 import de.sanandrew.mods.turretmod.entity.EntityRegistry;
 import de.sanandrew.mods.turretmod.entity.projectile.ProjectileRegistry;
@@ -107,6 +108,7 @@ public class TurretModRebirth
         }
         if( event.includeClient() ) {
             gen.addProvider(new TmrItemModelProvider(gen, event.getExistingFileHelper()));
+            gen.addProvider(new PatchouliProvider(gen));
         }
     }
 
