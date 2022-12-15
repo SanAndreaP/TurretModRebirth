@@ -14,6 +14,7 @@ import javax.annotation.Nonnull;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
+@SuppressWarnings("unused")
 public abstract class CustomElementComponent
         implements ICustomComponent
 {
@@ -70,5 +71,13 @@ public abstract class CustomElementComponent
 
         this.elem = new GuiElementInst(this.onLoad.apply(DummyGui.INSTANCE, elemData));
         this.elem.data = elemData;
+    }
+
+    public static class Texture
+            extends CustomElementComponent
+    {
+        public Texture() {
+            super(de.sanandrew.mods.sanlib.lib.client.gui.element.Texture.Builder::fromJson);
+        }
     }
 }

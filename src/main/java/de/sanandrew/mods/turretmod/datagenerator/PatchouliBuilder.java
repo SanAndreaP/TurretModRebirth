@@ -7,6 +7,7 @@ import com.google.gson.JsonSyntaxException;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import net.minecraft.data.IFinishedRecipe;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 
@@ -68,6 +69,19 @@ public class PatchouliBuilder
         l.forEach(i -> addElem.accept(a, i));
 
         return a;
+    }
+
+    public static String getItemStr(ItemStack stack) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(stack.getItem().getRegistryName());
+        if( stack.getCount() > 1 ) {
+            sb.append("#").append(stack.getCount());
+        }
+        if( stack.hasTag() ) {
+            sb.append(stack.getTag());
+        }
+
+        return sb.toString();
     }
 
     public JsonElement toJson() {
@@ -248,7 +262,9 @@ public class PatchouliBuilder
         @Override
         public void fillJson(JsonObject obj) {
             obj.addProperty("name", this.name);
-            obj.add("ammo_types", toJsonArray(this.types, (a, t) -> a.add(t.toString())));
+            obj.addProperty("ammo_info.ammo_types", this.types.stream().collect(StringBuilder::new,
+                                                                                (sb, i) -> sb.append(i.toString()).append(";"),
+                                                                                StringBuilder::append).toString().replaceAll(";$", ""));
             MiscUtils.accept(this.text, t -> obj.addProperty("text", t));
             MiscUtils.accept(this.turret, t -> obj.addProperty("turret", t));
         }

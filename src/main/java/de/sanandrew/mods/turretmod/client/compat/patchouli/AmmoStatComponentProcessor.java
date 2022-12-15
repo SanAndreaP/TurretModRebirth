@@ -2,6 +2,7 @@ package de.sanandrew.mods.turretmod.client.compat.patchouli;
 
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
+import de.sanandrew.mods.turretmod.datagenerator.PatchouliBuilder;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -27,13 +28,13 @@ public class AmmoStatComponentProcessor
 
     @Override
     public void setup(IVariableProvider provider) {
-        this.ammo = Arrays.stream(provider.get("ammo_types").as(String[].class))
+        this.ammo = Arrays.stream(provider.get("ammo_types").asString().split(";"))
                           .map(id -> AmmunitionRegistry.INSTANCE.get(new ResourceLocation(id)))
                           .toArray(IAmmunition[]::new);
     }
 
-    @Nonnull
     @Override
+    @SuppressWarnings("NullableProblems")
     public IVariable process(String s) {
         String langCode = Minecraft.getInstance().getLanguageManager().getSelected().getCode();
         Range<Float> ammoDmg = this.ammo[0].getDamageInfo();
@@ -66,11 +67,13 @@ public class AmmoStatComponentProcessor
                     }
                 });
 
-                return IVariable.wrap(Ingredient.of(items.toArray(new ItemStack[0])).toJson());
+                return IVariable.wrap(items.stream().collect(StringBuilder::new,
+                                                             (sb, i) -> sb.append(PatchouliBuilder.getItemStr(i)).append(","),
+                                                             StringBuilder::append).toString().replaceAll(",$", ""));
             }
             default: // no-op
         }
 
-        return IVariable.empty();
+        return null;
     }
 }

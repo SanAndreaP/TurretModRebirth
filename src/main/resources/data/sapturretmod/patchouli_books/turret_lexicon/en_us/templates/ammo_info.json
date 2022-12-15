@@ -7,12 +7,11 @@
       "x": -1, "y": -1
     },
     {
-      "type": "custom",
-      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentCustomImage",
+      "type": "image",
       "image": "sapturretmod:textures/gui/lexicon/page_crafting.png",
-      "u": 0,               "v": 102,
+      "u": 0, "v": 102,
       "x": 25,              "y": 10,
-      "width": 66,          "height": 26,
+      "width": 66, "height": 26,
       "texture_width": 128, "texture_height": 128
     },
     {
@@ -85,8 +84,8 @@
     },
     {
       "type": "text",
-      "text": "#turret_link",
-      "guard": "#turret_link",
+      "text": "#turret",
+      "guard": "#turret",
       "x": 12, "y": 131
     }
   ]

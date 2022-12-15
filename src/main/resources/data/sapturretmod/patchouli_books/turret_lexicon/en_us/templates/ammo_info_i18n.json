@@ -9,7 +9,7 @@
         "name": "#name",
         "item": "#item",
         "text": "#text",
-        "turret_link": "#turret_link",
+        "turret": "#turret",
         "rounds_tip": "Rounds provided per item",
         "rounds_suffix": " rounds",
         "damage_tip": "Damage dealt per projectile",
