@@ -216,7 +216,7 @@ public class PatchouliBuilder
         }
     }
 
-    private static final ResourceLocation AMMO_INFO_PAGE = new ResourceLocation(TmrConstants.ID, "ammo_info");
+    private static final ResourceLocation AMMO_INFO_PAGE = new ResourceLocation(TmrConstants.ID, "ammo_info_i18n");
     public static class AmmoInfoPage
             extends Page<AmmoInfoPage>
     {
@@ -248,7 +248,7 @@ public class PatchouliBuilder
         @Override
         public void fillJson(JsonObject obj) {
             obj.addProperty("name", this.name);
-            obj.add("types", toJsonArray(this.types, (a, t) -> a.add(t.toString())));
+            obj.add("ammo_types", toJsonArray(this.types, (a, t) -> a.add(t.toString())));
             MiscUtils.accept(this.text, t -> obj.addProperty("text", t));
             MiscUtils.accept(this.turret, t -> obj.addProperty("turret", t));
         }

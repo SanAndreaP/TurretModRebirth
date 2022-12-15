@@ -19,6 +19,7 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 
 @OnlyIn(Dist.CLIENT)
+@SuppressWarnings("unused")
 public class AmmoStatComponentProcessor
         implements IComponentProcessor
 {
@@ -26,7 +27,8 @@ public class AmmoStatComponentProcessor
 
     @Override
     public void setup(IVariableProvider provider) {
-        this.ammo = Arrays.stream(provider.get("ammo_type").asString().split(";")).map(id -> AmmunitionRegistry.INSTANCE.get(new ResourceLocation(id)))
+        this.ammo = Arrays.stream(provider.get("ammo_types").as(String[].class))
+                          .map(id -> AmmunitionRegistry.INSTANCE.get(new ResourceLocation(id)))
                           .toArray(IAmmunition[]::new);
     }
 

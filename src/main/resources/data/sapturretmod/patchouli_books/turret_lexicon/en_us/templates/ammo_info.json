@@ -1,5 +1,5 @@
 {
-  "processor": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentAmmoStatProcessor",
+  "processor": "de.sanandrew.mods.turretmod.client.compat.patchouli.AmmoStatComponentProcessor",
   "components": [
     {
       "type": "header",
