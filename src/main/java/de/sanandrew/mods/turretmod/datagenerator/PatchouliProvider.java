@@ -3,11 +3,9 @@ package de.sanandrew.mods.turretmod.datagenerator;
 import com.google.common.collect.Sets;
 import de.sanandrew.mods.sanlib.lib.util.JsonUtils;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
-import de.sanandrew.mods.turretmod.item.ammo.Ammunitions;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DirectoryCache;
 import net.minecraft.data.IDataProvider;
-import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -52,7 +50,10 @@ public class PatchouliProvider
      * @param consumer used for the build function from {@link PatchouliBuilder}
      */
     protected void registerEntries(Consumer<PatchouliBuilder> consumer) {
-        registerAmmo(consumer);
+        PatchouliEntries.registerTurrets(consumer);
+        PatchouliEntries.registerAmmo(consumer);
+        PatchouliEntries.registerUpgrades(consumer);
+        PatchouliEntries.registerMisc(consumer);
     }
 
     private Path createPath(Path basePath, PatchouliBuilder builder) {
@@ -79,15 +80,5 @@ public class PatchouliProvider
     @Override
     public String getName() {
         return "PatchouliBooks";
-    }
-
-    private static void registerAmmo(Consumer<PatchouliBuilder> consumer) {
-        ResourceLocation category = new ResourceLocation(TmrConstants.ID, "ammo");
-        PatchouliBuilder.withIcon("Crossbow Bolts", category, Ammunitions.BOLT.getId()).sort(1)
-                .page(new PatchouliBuilder.AmmoInfoPage("Crossbow Bolts")
-                              .text("Bolts act like arrows, just smaller, to fit into the turret.$(br2)As with regular arrows, these can be tipped with potions.$(br2)$(5)$(o)Small knockback effect")
-                              .type(Ammunitions.BOLT.getId()).type(Ammunitions.TIPPED_BOLT.getId())
-                              .turret("turrets/crossbow", "Crossbow Turret"))
-                .build(consumer);
     }
 }

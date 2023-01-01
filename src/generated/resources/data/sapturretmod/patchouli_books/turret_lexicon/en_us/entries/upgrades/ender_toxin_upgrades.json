@@ -1,0 +1,28 @@
+{
+  "name": "Ender Toxin Upgrades",
+  "category": "sapturretmod:upgrades",
+  "icon": "sapturretmod:ender_toxin_1_upgrade",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "sapturretmod:ender_toxin_1_upgrade",
+      "title": "Ender Toxin I Upgrade",
+      "text": "Allows damaging ender-based creatures like Endermen by augmenting the projectiles themselves with a sticky fluid. It also prevents Endermen and Shulkers from teleporting away when hit."
+    },
+    {
+      "type": "sapturretmod:assembly_i18n",
+      "recipe": "sapturretmod:assembly/upgrades_ender_toxin_1_upgrade"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "sapturretmod:ender_toxin_2_upgrade",
+      "title": "Ender Toxin II Upgrade",
+      "text": "The turret will be able to damage huge ender-based creatures like the Ender Dragon due to further projectile augmentation with explosives.$(br)Coincidentally, the Wither also seems to be affected by this...$(br2)$(5)$(o)Requires Ender Toxin I$()"
+    },
+    {
+      "type": "sapturretmod:assembly_i18n",
+      "recipe": "sapturretmod:assembly/upgrades_ender_toxin_2_upgrade"
+    }
+  ],
+  "priority": false
+}

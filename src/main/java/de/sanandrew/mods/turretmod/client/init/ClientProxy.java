@@ -59,6 +59,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntUnaryOperator;
@@ -185,6 +186,14 @@ public class ClientProxy
         });
     }
 
+    public static List<ITextComponent> getTooltipLines(ItemStack stack) {
+        return getTooltipLines(Minecraft.getInstance(), stack);
+    }
+
+    public static List<ITextComponent> getTooltipLines(Minecraft mc, ItemStack stack) {
+        return stack.getTooltipLines(mc.player, ITooltipFlag.TooltipFlags.NORMAL);
+    }
+
     public static void buildItemTooltip(IGui gui, StackPanel p, ItemStack stack, boolean addCount, boolean doSetup, GuiElementInst... additionalLines) {
         final IntUnaryOperator yOffGetter = tti -> {
             if( tti == 1 ) {
@@ -197,7 +206,7 @@ public class ClientProxy
         p.clear();
         if( ItemStackUtils.isValid(stack) ) {
             int tti = 0;
-            for( ITextComponent tc : stack.getTooltipLines(gui.get().getMinecraft().player, ITooltipFlag.TooltipFlags.NORMAL) ) {
+            for( ITextComponent tc : getTooltipLines(gui.get().getMinecraft(), stack) ) {
                 if( addCount && tti == 0 ) {
                     tc = new TranslationTextComponent(Lang.GUI_ITEM_TITLE_COUNT.get(), String.format("%d", stack.getCount()), tc);
                 }

@@ -1,0 +1,27 @@
+{
+  "type": "sapturretmod:turret_assembly",
+  "group": "misc",
+  "energyConsumption": 10,
+  "processTime": 180,
+  "ingredients": [
+    {
+      "count": 5,
+      "ingredient": {
+        "tag": "forge:ingots/iron"
+      }
+    },
+    {
+      "count": 2,
+      "ingredient": {
+        "tag": "forge:dusts/redstone"
+      }
+    },
+    {
+      "tag": "forge:glass_panes"
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret_control_unit",
+    "count": 1
+  }
+}

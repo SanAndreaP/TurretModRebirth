@@ -105,26 +105,13 @@ public final class UpgradeRegistry
 
     @Override
     @Nonnull
-    public ItemStack getItem(ResourceLocation id) {
+    public ItemStack getItem(ResourceLocation id, int count) {
         if( !this.get(id).isValid() ) {
             throw new IllegalArgumentException("Cannot get upgrade item with invalid type!");
         }
 
-        return new ItemStack(ItemRegistry.TURRET_UPGRADES.get(id), 1);
+        return new ItemStack(ItemRegistry.TURRET_UPGRADES.get(id), count);
     }
-
-//    @Override
-//    public void syncWithServer(ITurretEntity turretInst, ResourceLocation id) {
-//        PacketRegistry.sendToServer(new PacketSyncUpgradeInst(turretInst, id));
-//    }
-//
-//    @Override
-//    public void syncWithClients(ITurretEntity turretInst, ResourceLocation id) {
-//        LivingEntity turretL = turretInst.get();
-//        if( !turretL.level.isClientSide ) {
-//            PacketRegistry.sendToAllAround(new PacketSyncUpgradeInst(turretInst, id), turretL.level.getDimension(), turretL.getX(), turretL.getY(), turretL.getZ(), 64.0D);
-//        }
-//    }
 
     @Override
     public IUpgrade getEmptyUpgrade() {

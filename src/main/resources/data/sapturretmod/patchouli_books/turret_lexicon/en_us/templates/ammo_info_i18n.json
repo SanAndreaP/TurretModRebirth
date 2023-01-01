@@ -4,8 +4,7 @@
       "template": "sapturretmod:ammo_info",
       "as": "ammo_info",
       "using": {
-        "ammo_type": "#ammo_type",
-        "ammo_subtype": "#ammo_subtype",
+        "ammo_types": "#ammo_types",
         "name": "#name",
         "item": "#item",
         "text": "#text",

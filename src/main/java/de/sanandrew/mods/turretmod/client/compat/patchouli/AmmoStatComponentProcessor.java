@@ -1,12 +1,11 @@
 package de.sanandrew.mods.turretmod.client.compat.patchouli;
 
+import com.google.gson.JsonElement;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.ammo.IAmmunition;
-import de.sanandrew.mods.turretmod.datagenerator.PatchouliBuilder;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -16,8 +15,9 @@ import vazkii.patchouli.api.IComponentProcessor;
 import vazkii.patchouli.api.IVariable;
 import vazkii.patchouli.api.IVariableProvider;
 
-import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.Spliterator;
+import java.util.stream.StreamSupport;
 
 @OnlyIn(Dist.CLIENT)
 @SuppressWarnings("unused")
@@ -28,9 +28,9 @@ public class AmmoStatComponentProcessor
 
     @Override
     public void setup(IVariableProvider provider) {
-        this.ammo = Arrays.stream(provider.get("ammo_types").asString().split(";"))
-                          .map(id -> AmmunitionRegistry.INSTANCE.get(new ResourceLocation(id)))
-                          .toArray(IAmmunition[]::new);
+        Spliterator<JsonElement> types = provider.get("ammo_types").unwrap().getAsJsonArray().spliterator();
+        this.ammo = StreamSupport.stream(types, false).map(id -> AmmunitionRegistry.INSTANCE.get(new ResourceLocation(id.getAsString())))
+                                 .toArray(IAmmunition[]::new);
     }
 
     @Override
@@ -67,9 +67,7 @@ public class AmmoStatComponentProcessor
                     }
                 });
 
-                return IVariable.wrap(items.stream().collect(StringBuilder::new,
-                                                             (sb, i) -> sb.append(PatchouliBuilder.getItemStr(i)).append(","),
-                                                             StringBuilder::append).toString().replaceAll(",$", ""));
+                return IVariable.wrap(PatchouliHelper.getItemStr(items));
             }
             default: // no-op
         }

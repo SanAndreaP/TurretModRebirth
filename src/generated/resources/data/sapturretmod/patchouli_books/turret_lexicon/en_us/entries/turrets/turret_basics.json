@@ -1,0 +1,24 @@
+{
+  "name": "Turret Basics",
+  "category": "sapturretmod:turrets",
+  "icon": "sapturretmod:turret_lexicon",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Once you craft a turret, you can then place it on a solid surface (or in water in case of buoyant turrets).$(br)Turrets are stationary, but can be pushed by pistons or moved in a minecart.$(br2)They have a certain amount of health and if damaged, can be repaired either with instant health potions or with $(l:misc/repair_kits)repair kits$(/l)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Turrets need ammo to operate (which types of ammo a turret can accept is shown within their respective lexicon entry).$(br)To give them ammo, right-click it with a compatible ammo item (or a non-empty $(l:ammo/ammo_ammo_cartridge)ammo cartridge$(/l)).$(br2)Both amounts of ammo and health can be seen on the turret base, where you can see two \"antennas\", a red one for health and a blue one for ammo."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "If they're upright, the turret is full with health/ammo and will appear to \"fall down\" once the amount of ammo/health decreases.$(br2)By default a turret only targets hostile creatures. Be careful, hostiles automatically try to defend themselves from turrets and attempt to damage them.$(br2)Right-clicking a turret with an empty hand will show an info page listing the upgrades and turret values."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Here you can also (de-)activate it and toggle range visibility.$(br2)Turrets can be fitted with upgrades to further enhance their capabilities. To upgrade one, just right-click it with the upgrade in hand.$(br2)For further configuration, like custom targeting settings, dismantling the turret, etc., you need the $(l:misc/tcu)Turret Control Unit$(/l)."
+    }
+  ],
+  "priority": true
+}

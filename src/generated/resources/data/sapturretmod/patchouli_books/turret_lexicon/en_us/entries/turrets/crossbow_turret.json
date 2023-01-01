@@ -1,0 +1,23 @@
+{
+  "name": "Crossbow Turret",
+  "category": "sapturretmod:turrets",
+  "icon": "sapturretmod:crossbow_turret",
+  "pages": [
+    {
+      "type": "sapturretmod:turret_info_i18n",
+      "turret": "sapturretmod:crossbow_turret",
+      "title": "Crossbow Turret",
+      "text": "Meant for basic defense and beginners. Not very strong but one of the cheapest to make.",
+      "scale": 1.1
+    },
+    {
+      "type": "sapturretmod:turret_range",
+      "turret": "sapturretmod:crossbow_turret",
+      "text": "I was an adventurer once..."
+    },
+    {
+      "type": "sapturretmod:assembly_i18n",
+      "recipe": "sapturretmod:assembly/turrets_crossbow_turret"
+    }
+  ]
+}

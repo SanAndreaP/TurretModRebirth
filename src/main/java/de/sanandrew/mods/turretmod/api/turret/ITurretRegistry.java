@@ -14,5 +14,10 @@ public interface ITurretRegistry
     void registerItems(DeferredRegister<Item> register, String modId);
 
     @Nonnull
-    ItemStack getItem(ITurretEntity turret);
+    default ItemStack getItem(ITurretEntity turret) {
+        return this.getItem(turret, 1);
+    }
+
+    @Nonnull
+    ItemStack getItem(ITurretEntity turret, int count);
 }

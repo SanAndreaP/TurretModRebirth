@@ -1,0 +1,178 @@
+{
+  "processor": "de.sanandrew.mods.turretmod.client.compat.patchouli.CustomCraftingProcessor",
+  "components": [
+    {
+      "type": "image",
+      "image": "sapturretmod:textures/gui/lexicon/page_crafting.png",
+      "x": -2, "y": 2, "u": 0, "v": 0, "width": 100, "height": 62, "texture_width": 128, "texture_height": 256
+    },
+    {
+      "type": "image",
+      "image": "sapturretmod:textures/gui/lexicon/page_crafting.png",
+      "x": 62, "y": 6, "u": 0, "v": 64, "width": 11, "height": 11, "texture_width": 128, "texture_height": 256,
+      "guard": "#shapeless"
+    },
+    {
+      "type": "tooltip",
+      "tooltip": ["Shapeless"],
+      "x": 62, "y": 6, "width": 11, "height": 11,
+      "guard": "#shapeless"
+    },
+    {
+      "type": "header",
+      "text": "#title",
+      "x": -1, "y": -6
+    },
+    {
+      "type": "item",
+      "item": "#output",
+      "x": 79, "y": 26, "link_recipe": true
+    },
+    {
+      "type": "item",
+      "item": "#input10",
+      "x": 3, "y": 7,
+      "guard": "#input10->exists"
+    },
+    {
+      "type": "item",
+      "item": "#input11",
+      "x": 22, "y": 7,
+      "guard": "#input11->exists"
+    },
+    {
+      "type": "item",
+      "item": "#input12",
+      "x": 41, "y": 7,
+      "guard": "#input12->exists"
+    },
+    {
+      "type": "item",
+      "item": "#input13",
+      "x": 3, "y": 26,
+      "guard": "#input13->exists"
+    },
+    {
+      "type": "item",
+      "item": "#input14",
+      "x": 22, "y": 26,
+      "guard": "#input14->exists"
+    },
+    {
+      "type": "item",
+      "item": "#input15",
+      "x": 41, "y": 26,
+      "guard": "#input15->exists"
+    },
+    {
+      "type": "item",
+      "item": "#input16",
+      "x": 3, "y": 45,
+      "guard": "#input16->exists"
+    },
+    {
+      "type": "item",
+      "item": "#input17",
+      "x": 22, "y": 45,
+      "guard": "#input17->exists"
+    },
+    {
+      "type": "item",
+      "item": "#input18",
+      "x": 41, "y": 45,
+      "guard": "#input18->exists"
+    },
+
+    {
+      "type": "image",
+      "image": "sapturretmod:textures/gui/lexicon/page_crafting.png",
+      "x": -2, "y": 80, "u": 0, "v": 0, "width": 100, "height": 62, "texture_width": 128, "texture_height": 256,
+      "guard": "#output2->exists"
+    },
+    {
+      "type": "image",
+      "image": "sapturretmod:textures/gui/lexicon/page_crafting.png",
+      "x": 62, "y": 84, "u": 0, "v": 64, "width": 11, "height": 11, "texture_width": 128, "texture_height": 256,
+      "guard": "#shapeless2"
+    },
+    {
+      "type": "tooltip",
+      "tooltip": ["Shapeless"],
+      "x": 62, "y": 84, "width": 11, "height": 11,
+      "guard": "#shapeless2"
+    },
+    {
+      "type": "header",
+      "text": "#title2",
+      "x": -1, "y": 72,
+      "guard": "#title2->exists"
+    },
+    {
+      "type": "item",
+      "item": "#output2",
+      "x": 79, "y": 104, "link_recipe": true,
+      "guard": "#output2->exists"
+    },
+    {
+      "type": "item",
+      "item": "#input20",
+      "x": 3, "y": 85,
+      "guard": "#input20->exists"
+    },
+    {
+      "type": "item",
+      "item": "#input21",
+      "x": 22, "y": 85,
+      "guard": "#input21->exists"
+    },
+    {
+      "type": "item",
+      "item": "#input22",
+      "x": 41, "y": 85,
+      "guard": "#input22->exists"
+    },
+    {
+      "type": "item",
+      "item": "#input23",
+      "x": 3, "y": 104,
+      "guard": "#input23->exists"
+    },
+    {
+      "type": "item",
+      "item": "#input24",
+      "x": 22, "y": 104,
+      "guard": "#input24->exists"
+    },
+    {
+      "type": "item",
+      "item": "#input25",
+      "x": 41, "y": 104,
+      "guard": "#input25->exists"
+    },
+    {
+      "type": "item",
+      "item": "#input26",
+      "x": 3, "y": 123,
+      "guard": "#input26->exists"
+    },
+    {
+      "type": "item",
+      "item": "#input27",
+      "x": 22, "y": 123,
+      "guard": "#input27->exists"
+    },
+    {
+      "type": "item",
+      "item": "#input28",
+      "x": 41, "y": 123,
+      "guard": "#input28->exists"
+    },
+
+    {
+      "type": "text",
+      "text": "#text",
+      "x": 0, "y": 72,
+      "guard": "#show_text"
+    }
+  ]
+}

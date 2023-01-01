@@ -152,18 +152,18 @@ public final class AmmunitionRegistry
 
     @Nonnull
     @Override
-    public ItemStack getItem(ResourceLocation id) {
-        return this.getItem(id, null);
+    public ItemStack getItem(ResourceLocation id, int count) {
+        return this.getItem(id, null, count);
     }
 
     @Override
     @Nonnull
-    public ItemStack getItem(ResourceLocation id, String subtype) {
+    public ItemStack getItem(ResourceLocation id, String subtype, int count) {
         if( !this.get(id).isValid() ) {
             throw new IllegalArgumentException("Cannot get turret ammo item with invalid type!");
         }
 
-        return setSubtype(new ItemStack(ItemRegistry.TURRET_AMMO.get(id), 1), subtype);
+        return setSubtype(new ItemStack(ItemRegistry.TURRET_AMMO.get(id), count), subtype);
     }
 
     private static class UModList<T>

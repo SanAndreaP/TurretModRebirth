@@ -1,12 +1,14 @@
 {
   "include": [
     {
-      "template": "sapturretmod:turret_info_base",
+      "template": "sapturretmod:turret_info",
       "as": "turret_info",
       "using": {
-        "name": "#name",
+        "title": "#title",
         "text": "#text",
-        "turret_type": "#turret_type",
+        "turret": "#turret",
+        "scale": "#scale",
+        "offset": "#offset",
         "fire_resistant": "#fire_resistant",
         "tier_tip1": "Tier",
         "tier_tip2": "The higher the tier, the better it is",

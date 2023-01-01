@@ -1,0 +1,27 @@
+{
+  "type": "sapturretmod:turret_assembly",
+  "group": "misc",
+  "energyConsumption": 5,
+  "processTime": 60,
+  "ingredients": [
+    {
+      "count": 2,
+      "ingredient": {
+        "tag": "forge:ingots/iron"
+      }
+    },
+    {
+      "count": 2,
+      "ingredient": {
+        "tag": "forge:gems/quartz"
+      }
+    },
+    {
+      "tag": "forge:chests/wooden"
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret_crate",
+    "count": 1
+  }
+}

@@ -106,11 +106,11 @@ public class RepairKitRegistry
 
     @Nonnull
     @Override
-    public ItemStack getItem(ResourceLocation id) {
+    public ItemStack getItem(ResourceLocation id, int count) {
         if( !this.get(id).isValid() ) {
             throw new IllegalArgumentException("Cannot get repair kit item with invalid type!");
         }
 
-        return new ItemStack(ItemRegistry.TURRET_REPAIRKITS.get(id), 1);
+        return new ItemStack(ItemRegistry.TURRET_REPAIRKITS.get(id), count);
     }
 }

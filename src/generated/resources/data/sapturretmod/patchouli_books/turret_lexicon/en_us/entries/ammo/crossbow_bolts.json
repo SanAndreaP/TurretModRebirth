@@ -6,9 +6,33 @@
     {
       "type": "sapturretmod:ammo_info_i18n",
       "name": "Crossbow Bolts",
-      "ammo_info.ammo_types": "sapturretmod:crossbow_bolt;sapturretmod:tipped_crossbow_bolt",
+      "ammo_types": [
+        "sapturretmod:crossbow_bolt",
+        "sapturretmod:tipped_crossbow_bolt"
+      ],
       "text": "Bolts act like arrows, just smaller, to fit into the turret.$(br2)As with regular arrows, these can be tipped with potions.$(br2)$(5)$(o)Small knockback effect",
-      "turret": "$(l:turrets/crossbow)Crossbow Turret$(/l)"
+      "turret": "$(l:turrets/crossbow_turret)Crossbow Turret$(/l)"
+    },
+    {
+      "type": "sapturretmod:assembly_i18n",
+      "recipe": "sapturretmod:assembly/ammo_crossbow_bolt"
+    },
+    {
+      "type": "sapturretmod:custom_crafting",
+      "output": "sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:night_vision\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:long_night_vision\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:invisibility\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:long_invisibility\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:leaping\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:long_leaping\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:strong_leaping\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:fire_resistance\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:long_fire_resistance\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:swiftness\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:long_swiftness\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:strong_swiftness\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:slowness\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:long_slowness\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:strong_slowness\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:turtle_master\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:long_turtle_master\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:strong_turtle_master\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:water_breathing\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:long_water_breathing\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:healing\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:strong_healing\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:harming\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:strong_harming\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:poison\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:long_poison\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:strong_poison\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:regeneration\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:long_regeneration\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:strong_regeneration\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:strength\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:long_strength\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:strong_strength\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:weakness\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:long_weakness\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:luck\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:slow_falling\"}},sapturretmod:tipped_crossbow_bolt#8{sapturretmod:{Subtype:\"minecraft:long_slow_falling\"}}",
+      "inputs": [
+        "sapturretmod:crossbow_bolt",
+        "sapturretmod:crossbow_bolt",
+        "sapturretmod:crossbow_bolt",
+        "sapturretmod:crossbow_bolt",
+        "minecraft:lingering_potion{Potion:\"minecraft:night_vision\"},minecraft:lingering_potion{Potion:\"minecraft:long_night_vision\"},minecraft:lingering_potion{Potion:\"minecraft:invisibility\"},minecraft:lingering_potion{Potion:\"minecraft:long_invisibility\"},minecraft:lingering_potion{Potion:\"minecraft:leaping\"},minecraft:lingering_potion{Potion:\"minecraft:long_leaping\"},minecraft:lingering_potion{Potion:\"minecraft:strong_leaping\"},minecraft:lingering_potion{Potion:\"minecraft:fire_resistance\"},minecraft:lingering_potion{Potion:\"minecraft:long_fire_resistance\"},minecraft:lingering_potion{Potion:\"minecraft:swiftness\"},minecraft:lingering_potion{Potion:\"minecraft:long_swiftness\"},minecraft:lingering_potion{Potion:\"minecraft:strong_swiftness\"},minecraft:lingering_potion{Potion:\"minecraft:slowness\"},minecraft:lingering_potion{Potion:\"minecraft:long_slowness\"},minecraft:lingering_potion{Potion:\"minecraft:strong_slowness\"},minecraft:lingering_potion{Potion:\"minecraft:turtle_master\"},minecraft:lingering_potion{Potion:\"minecraft:long_turtle_master\"},minecraft:lingering_potion{Potion:\"minecraft:strong_turtle_master\"},minecraft:lingering_potion{Potion:\"minecraft:water_breathing\"},minecraft:lingering_potion{Potion:\"minecraft:long_water_breathing\"},minecraft:lingering_potion{Potion:\"minecraft:healing\"},minecraft:lingering_potion{Potion:\"minecraft:strong_healing\"},minecraft:lingering_potion{Potion:\"minecraft:harming\"},minecraft:lingering_potion{Potion:\"minecraft:strong_harming\"},minecraft:lingering_potion{Potion:\"minecraft:poison\"},minecraft:lingering_potion{Potion:\"minecraft:long_poison\"},minecraft:lingering_potion{Potion:\"minecraft:strong_poison\"},minecraft:lingering_potion{Potion:\"minecraft:regeneration\"},minecraft:lingering_potion{Potion:\"minecraft:long_regeneration\"},minecraft:lingering_potion{Potion:\"minecraft:strong_regeneration\"},minecraft:lingering_potion{Potion:\"minecraft:strength\"},minecraft:lingering_potion{Potion:\"minecraft:long_strength\"},minecraft:lingering_potion{Potion:\"minecraft:strong_strength\"},minecraft:lingering_potion{Potion:\"minecraft:weakness\"},minecraft:lingering_potion{Potion:\"minecraft:long_weakness\"},minecraft:lingering_potion{Potion:\"minecraft:luck\"},minecraft:lingering_potion{Potion:\"minecraft:slow_falling\"},minecraft:lingering_potion{Potion:\"minecraft:long_slow_falling\"}",
+        "sapturretmod:crossbow_bolt",
+        "sapturretmod:crossbow_bolt",
+        "sapturretmod:crossbow_bolt",
+        "sapturretmod:crossbow_bolt"
+      ],
+      "title": "Tipped Crossbow Bolts",
+      "text": "The potions here are just examples. There may be other potions that can be used to tip bolts as well."
     }
   ],
   "sortnum": 1

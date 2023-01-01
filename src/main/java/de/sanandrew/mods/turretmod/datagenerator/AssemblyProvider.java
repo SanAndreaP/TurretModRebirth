@@ -9,6 +9,7 @@ import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.Turrets;
+import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.item.ammo.Ammunitions;
 import de.sanandrew.mods.turretmod.item.upgrades.UpgradeRegistry;
@@ -50,6 +51,7 @@ public class AssemblyProvider
         buildTurrets(consumer);
         buildAmmo(consumer);
         buildUpgrades(consumer);
+        buildMisc(consumer);
     }
 
     private static void buildTurrets(@Nonnull Consumer<IFinishedRecipe> consumer) {
@@ -66,10 +68,24 @@ public class AssemblyProvider
     }
 
     private static void buildAmmo(@Nonnull Consumer<IFinishedRecipe> consumer) {
+        AssemblyBuilder.newAssembly("ammo", new ItemStack(ItemRegistry.AMMO_CARTRIDGE)).energyConsumption(25).processTime(100)
+                               .ingredient(5, Tags.Items.INGOTS_IRON)
+                                       .ingredient(2, Tags.Items.LEATHER)
+                               .ingredient(1, Tags.Items.DUSTS_REDSTONE)
+                               .build(consumer);
+
         newAmmo(consumer, Ammunitions.BOLT, 16, b -> b.ingredient(1, Items.ARROW));
     }
 
     private static void buildUpgrades(@Nonnull Consumer<IFinishedRecipe> consumer) {
+        AssemblyBuilder.newAssembly("upgrades", UpgradeRegistry.INSTANCE.getItem(UpgradeRegistry.EMPTY_UPGRADE.getId(), 3))
+                                           .energyConsumption(80).processTime(400)
+                                           .ingredient(1, Tags.Items.GLASS_PANES)
+                                           .ingredient(2, Tags.Items.DUSTS_REDSTONE)
+                                           .ingredient(1, Tags.Items.INGOTS_GOLD)
+                                           .ingredient(1, Items.STONE_SLAB)
+                                           .build(consumer);
+
         newUpgrade(consumer, Upgrades.AMMO_STORAGE,               b -> b.ingredient(1, Items.HOPPER));
         newUpgrade(consumer, Upgrades.ECONOMY_I,                  b -> b.ingredient(1, Tags.Items.GEMS_EMERALD));
         newUpgrade(consumer, Upgrades.ECONOMY_II,                 b -> b.ingredient(1, Tags.Items.STORAGE_BLOCKS_GOLD)
@@ -112,6 +128,27 @@ public class AssemblyProvider
                                                                         .ingredient(1, Tags.Items.GEMS_DIAMOND));
         newUpgrade(consumer, Upgrades.TURRET_SAFE,                b -> b.ingredient(1, BlockRegistry.TURRET_CRATE)
                                                                         .ingredient(2, Tags.Items.DUSTS_REDSTONE));
+    }
+
+
+    private static void buildMisc(@Nonnull Consumer<IFinishedRecipe> consumer) {
+        final String cat = "misc";
+
+        AssemblyBuilder.newAssembly(cat, new ItemStack(ItemRegistry.TURRET_CONTROL_UNIT)).energyConsumption(10).processTime(180)
+                .ingredient(5, Tags.Items.INGOTS_IRON)
+                .ingredient(2, Tags.Items.DUSTS_REDSTONE)
+                .ingredient(1, Tags.Items.GLASS_PANES)
+                .build(consumer);
+
+        AssemblyBuilder.newAssembly(cat, new ItemStack(BlockRegistry.TURRET_CRATE)).energyConsumption(5).processTime(60)
+                .ingredient(2, Tags.Items.INGOTS_IRON)
+                .ingredient(2, Tags.Items.GEMS_QUARTZ)
+                .ingredient(1, Tags.Items.CHESTS_WOODEN)
+                .build(consumer);
+
+        AssemblyBuilder.newAssembly(cat, new ItemStack(ItemRegistry.TURRET_LEXICON)).energyConsumption(7500).processTime(10)
+                .ingredient(1, Items.BOOK)
+                .build(consumer);
     }
 
     private static void newAmmo(@Nonnull Consumer<IFinishedRecipe> consumer, IAmmunition ammo, int count, Consumer<AssemblyBuilder> addtBuild) {

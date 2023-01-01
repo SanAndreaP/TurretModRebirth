@@ -1,6 +1,7 @@
 package de.sanandrew.mods.turretmod.api;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
@@ -80,6 +81,21 @@ public interface IRegistry<T extends IRegistryObject>
     T getDefault();
 
     /**
+     * <p>Creates a new ItemStack instance with a custom stack size, containing the object given by its ID.</p>
+     * <p>If no object can be fetched with the ID, this returns {@link ItemStack#EMPTY}.</p>
+     * <p>If this registry doesn't support items, this throws an {@link UnsupportedOperationException}.</p>
+     *
+     * @param id the ID of the object whose ItemStack should be created.
+     * @param count the ItemStack count of the object.
+     * @return a new ItemStack containing the (default) object or <tt>ItemStack.EMPTY</tt>, if no object can be found.
+     * @throws UnsupportedOperationException if this registry doesn't support items.
+     */
+    @Nonnull
+    default ItemStack getItem(ResourceLocation id, int count) {
+        throw new UnsupportedOperationException("Cannot create item! This registry does not use items.");
+    }
+
+    /**
      * <p>Creates a new ItemStack instance with a stack size of 1, containing the object given by its ID.</p>
      * <p>If no object can be fetched with the ID, this returns {@link ItemStack#EMPTY}.</p>
      * <p>If this registry doesn't support items, this throws an {@link UnsupportedOperationException}.</p>
@@ -90,12 +106,12 @@ public interface IRegistry<T extends IRegistryObject>
      */
     @Nonnull
     default ItemStack getItem(ResourceLocation id) {
-        throw new UnsupportedOperationException("Cannot create item! This registry does not use items.");
+        return this.getItem(id, 1);
     }
 
     @Nonnull
     default ItemStack getItem(T obj) {
-        return this.getItem(obj.getId());
+        return this.getItem(obj.getId(), 1);
     }
 
     /**

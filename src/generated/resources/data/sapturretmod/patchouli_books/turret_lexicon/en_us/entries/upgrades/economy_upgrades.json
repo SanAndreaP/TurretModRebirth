@@ -1,0 +1,38 @@
+{
+  "name": "Economy Upgrades",
+  "category": "sapturretmod:upgrades",
+  "icon": "sapturretmod:economy_1_upgrade",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "sapturretmod:economy_1_upgrade",
+      "title": "Economy I Upgrade",
+      "text": "A turret fitted with this upgrade has a 15% chance of not consuming ammo by occasionally doubling the item inside the turret container before it is shot."
+    },
+    {
+      "type": "sapturretmod:assembly_i18n",
+      "recipe": "sapturretmod:assembly/upgrades_economy_1_upgrade"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "sapturretmod:economy_2_upgrade",
+      "title": "Economy II Upgrade",
+      "text": "This upgrade increases the chance of not consuming ammo by 35% (in total: 50%).$(br2)$(5)$(o)Requires Economy I$()"
+    },
+    {
+      "type": "sapturretmod:assembly_i18n",
+      "recipe": "sapturretmod:assembly/upgrades_economy_2_upgrade"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "sapturretmod:infinite_economy_upgrade",
+      "title": "Inf. Economy Upgrade",
+      "text": "An unlimited ammo supply is guaranteed, given the turret is filled with rounds.$(br)Failing that, the turret resorts to the other 2 Economy upgrades.$(br2)$(5)$(o)Requires Economy II$()"
+    },
+    {
+      "type": "sapturretmod:assembly_i18n",
+      "recipe": "sapturretmod:assembly/upgrades_infinite_economy_upgrade"
+    }
+  ],
+  "priority": false
+}

@@ -19,17 +19,7 @@ import java.util.List;
 public class TippedCrossbowBolt
         extends CrossbowBolt
 {
-    private static final String[] SUBTYPES;
-    static {
-        final List<String> potionTypes = new ArrayList<>();
-        ForgeRegistries.POTION_TYPES.forEach(p -> {
-            ResourceLocation id = p.getRegistryName();
-            if( id != null && !p.getEffects().isEmpty() ) {
-                potionTypes.add(id.toString());
-            }
-        });
-        SUBTYPES = potionTypes.toArray(new String[0]);
-    }
+    private String[] subtypes = null;
 
     public TippedCrossbowBolt(ResourceLocation id) {
         super(id);
@@ -38,7 +28,18 @@ public class TippedCrossbowBolt
     @Nonnull
     @Override
     public String[] getSubtypes() {
-        return SUBTYPES;
+        if( subtypes == null ) {
+            final List<String> potionTypes = new ArrayList<>();
+            ForgeRegistries.POTION_TYPES.forEach(p -> {
+                ResourceLocation id = p.getRegistryName();
+                if( id != null && !p.getEffects().isEmpty() ) {
+                    potionTypes.add(id.toString());
+                }
+            });
+            subtypes = potionTypes.toArray(new String[0]);
+        }
+
+        return subtypes;
     }
 
     @Override

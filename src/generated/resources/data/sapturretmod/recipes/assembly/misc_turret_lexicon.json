@@ -1,0 +1,15 @@
+{
+  "type": "sapturretmod:turret_assembly",
+  "group": "misc",
+  "energyConsumption": 7500,
+  "processTime": 10,
+  "ingredients": [
+    {
+      "item": "minecraft:book"
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret_lexicon",
+    "count": 1
+  }
+}

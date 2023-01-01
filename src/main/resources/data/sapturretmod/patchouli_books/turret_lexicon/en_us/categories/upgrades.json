@@ -1,7 +1,7 @@
 {
   "name": "Upgrades",
   "description": "Find information on what an upgrade will do to your turret.$(br2)Some upgrades $(5)require another upgrade$() to be pre-installed.$(br2)Some upgrades can only be applied to $(1)specific turrets$().$(br2)Some upgrades can only be applied to $(3)specific tier ranges$().",
-  "icon": "sapturretmod:upgrade_empty",
+  "icon": "sapturretmod:empty_upgrade",
   "advancement": null,
   "sortnum": 2
 }

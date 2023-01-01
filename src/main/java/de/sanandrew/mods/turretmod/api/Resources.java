@@ -83,6 +83,7 @@ public final class Resources
     public static final ResourceLocation TEXTURE_GUI_TURRETINFO            = rl("textures/gui/turretinfo/backg.png");
     public static final ResourceLocation TEXTURE_GUI_CARTRIDGE             = rl("textures/gui/ammo_cartridge.png");
     public static final ResourceLocation TEXTURE_GUI_TCU_HUD               = rl("textures/gui/tcu/hud.png");
+    public static final ResourceLocation TEXTURE_GUI_LEXICON_ELEMENTS      = rl("textures/gui/lexicon/elements.png");
     public static final ResourceLocation TEXTURE_TILE_TRANSMITTER          = rl("textures/blocks/item_transmitter.png");
     public static final ResourceLocation TEXTURE_TILE_TRANSMITTER_GLOW     = rl("textures/blocks/item_transmitter_glow.png");
     public static final ResourceLocation TEXTURE_TILE_TURRET_ASSEMBLY      = rl("textures/blocks/turret_assembly.png");
@@ -90,9 +91,10 @@ public final class Resources
     public static final ResourceLocation TEXTURE_JEI_ASSEMBLY_BKG          = rl("textures/gui/turretassembly/jei_crafting.png");
 
     public static final ResourceLocation PATCHOULI              = rl("turret_lexicon");
+    public static final ResourceLocation PATCHOULI_CAT_TURRETS  = rl("turrets");
     public static final ResourceLocation PATCHOULI_CAT_AMMO     = rl("ammo");
     public static final ResourceLocation PATCHOULI_CAT_UPGRADES = rl("upgrades");
-    public static final ResourceLocation PATCHOULI_CAT_TURRETS  = rl("turrets");
+    public static final ResourceLocation PATCHOULI_CAT_MISC     = rl("misc");
 
     public static final ResourceLocation SHADER_GRAYSCALE_FRAG       = rl("shader/grayscale.frag");
     public static final ResourceLocation SHADER_ALPHA_OVERRIDE_FRAG  = rl("shader/alpha_override.frag");

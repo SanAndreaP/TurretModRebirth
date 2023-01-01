@@ -1,0 +1,82 @@
+{
+  "name": "Turret Control Unit",
+  "category": "sapturretmod:misc",
+  "icon": "sapturretmod:turret_control_unit",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "sapturretmod:turret_control_unit",
+      "text": "An essential item to control any aspect of a turret.$(br)Pointing at a turret whilst holding this will show you some basic stats of the turret.$(br2)Right-click a turret with it will show you an UI for turret configuration.$(br)Certain upgrades may add pages, explained in the respective upgrade entry."
+    },
+    {
+      "type": "sapturretmod:assembly_i18n",
+      "recipe": "sapturretmod:assembly/misc_turret_control_unit",
+      "text": "The next pages explain the tab pages of the UI"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:book",
+      "title": "Turret Info",
+      "text": "This tab will show you general information (a POV camera, turret name (editable), etc.). $(italic)Hovering over the icon on the left shows you what it is.$()$(br2)At the bottom are control buttons to dismantle the turret (requires a $(l:misc/turret_crate)Turret Crate$(/l)),$(br)de-/activate it as well as toggle a display showing its range."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "sapturretmod:textures/gui/lexicon/tcu/tab_info.png"
+      ],
+      "text": "$(italic)An example of the info page for a $(l:turrets/crossbow)Crossbow Turret$(/l) inside a forest$(/italic"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:zombie_head",
+      "title": "Entity Target Settings",
+      "text": "Here you can configure which types of entities the turret can target by either individually selecting entries in the list or selecting groups of entities (all or none; monsters, animals, other)$(br2)It also features a Blacklist/Whitelist mode. The default is a whitelist."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "sapturretmod:textures/gui/lexicon/tcu/tab_tgt_creatures.png"
+      ],
+      "text": "$(italic)The target page with only 2 entities selected, in whitelist mode$(/italic)"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:player_head",
+      "title": "Player Target Settings",
+      "text": "Just like in the Entity Target Settings tab, you can configure which players can be targeted by the turret, including yourself!$(br2)It also features a Blacklist/Whitelist mode. The default is a whitelist."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "sapturretmod:textures/gui/lexicon/tcu/tab_tgt_players.png"
+      ],
+      "text": "$(italic)The target page with no players selected, in whitelist mode$(/italic)"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "sapturretmod:empty_upgrade",
+      "title": "Upgrades",
+      "text": "Add or remove upgrades with ease here, similar to a chest.$(br2)Greyed out slots are locked and you'll need the $(l:upgrades/upgrade_storage)Upgrade Storage upgrades$() in order to unlock them."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "sapturretmod:textures/gui/lexicon/tcu/tab_upgrades.png"
+      ],
+      "text": "$(italic)The upgrades page with some upgrades applied$(/italic)"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The TCU is capable of being bound to a specific turret. To do so you need to right-click a turret with the TCU whilst sneaking. Once that is done, you can access the TCU UI without being close to that turret. The only caveat is that you need $(l:upgrades/remote_access)an upgrade$(/l) in order to dismantle, manage upgrades or anything else involving item transfer.$(br)To unbind a bound TCU, just right-click it whilst sneaking, not pointing to a turret.",
+      "title": "Remote Access"
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "sapturretmod:textures/gui/lexicon/tcu/remote_access_highlight.png"
+      ],
+      "text": "When holding a bound TCU, the turret is highlighted while the TCU is in your hands.",
+      "border": true
+    }
+  ]
+}

@@ -92,18 +92,18 @@ public final class TurretRegistry
 
     @Override
     @Nonnull
-    public ItemStack getItem(ResourceLocation id) {
+    public ItemStack getItem(ResourceLocation id, int count) {
         if( !this.get(id).isValid() ) {
             throw new IllegalArgumentException("Cannot get turret item with invalid type!");
         }
 
-        return new ItemStack(ItemRegistry.TURRET_PLACERS.get(id), 1);
+        return new ItemStack(ItemRegistry.TURRET_PLACERS.get(id), count);
     }
 
     @Override
     @Nonnull
-    public ItemStack getItem(ITurretEntity turret) {
-        ItemStack stack = this.getItem(turret.getDelegate().getId());
+    public ItemStack getItem(ITurretEntity turret, int count) {
+        ItemStack stack = this.getItem(turret.getDelegate().getId(), count);
         new TurretItem.TurretStats(turret).updateData(stack);
 
         return stack;

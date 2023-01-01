@@ -1,0 +1,27 @@
+{
+  "type": "sapturretmod:turret_assembly",
+  "group": "ammo",
+  "energyConsumption": 25,
+  "processTime": 100,
+  "ingredients": [
+    {
+      "count": 5,
+      "ingredient": {
+        "tag": "forge:ingots/iron"
+      }
+    },
+    {
+      "count": 2,
+      "ingredient": {
+        "tag": "forge:leather"
+      }
+    },
+    {
+      "tag": "forge:dusts/redstone"
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:ammo_cartridge",
+    "count": 1
+  }
+}

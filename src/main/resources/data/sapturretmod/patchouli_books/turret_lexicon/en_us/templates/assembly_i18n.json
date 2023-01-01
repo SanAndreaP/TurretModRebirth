@@ -1,11 +1,11 @@
 {
   "include": [
     {
-      "template": "sapturretmod:turret_assembly",
-      "as": "turret_assembly",
+      "template": "sapturretmod:assembly",
+      "as": "assembly",
       "using": {
-        "header_std": "Assembly Recipe",
-        "header": "#header",
+        "title_std": "Assembly Recipe",
+        "title": "#title",
         "recipe": "#recipe",
         "time_processing_tip": "Crafting duration",
         "rf_cost_tip": "Total RF use",

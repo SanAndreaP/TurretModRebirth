@@ -1,0 +1,27 @@
+{
+  "type": "sapturretmod:turret_assembly",
+  "group": "upgrades",
+  "energyConsumption": 80,
+  "processTime": 400,
+  "ingredients": [
+    {
+      "tag": "forge:glass_panes"
+    },
+    {
+      "count": 2,
+      "ingredient": {
+        "tag": "forge:dusts/redstone"
+      }
+    },
+    {
+      "tag": "forge:ingots/gold"
+    },
+    {
+      "item": "minecraft:stone_slab"
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:empty_upgrade",
+    "count": 3
+  }
+}

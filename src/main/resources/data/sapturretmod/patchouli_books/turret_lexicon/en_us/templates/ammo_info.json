@@ -9,10 +9,10 @@
     {
       "type": "image",
       "image": "sapturretmod:textures/gui/lexicon/page_crafting.png",
+      "x": 25, "y": 10,
       "u": 0, "v": 102,
-      "x": 25,              "y": 10,
       "width": 66, "height": 26,
-      "texture_width": 128, "texture_height": 128
+      "texture_width": 128, "texture_height": 256
     },
     {
       "type": "item",
@@ -44,7 +44,7 @@
       "x": 0,     "y": 131,
       "u": 115,   "v": 0,
       "width": 9, "height": 9,
-      "guard": "#turret_link#"
+      "guard": "#turret->exists"
     },
     {
       "type": "tooltip",
@@ -61,7 +61,7 @@
     {
       "type": "tooltip",
       "tooltip": ["#turret_tip"],
-      "guard": "#turret_link#",
+      "guard": "#turret->exists",
       "x": 0,       "y": 131,
       "width": 100, "height": 9
     },
@@ -85,7 +85,7 @@
     {
       "type": "text",
       "text": "#turret",
-      "guard": "#turret",
+      "guard": "#turret->exists",
       "x": 12, "y": 131
     }
   ]

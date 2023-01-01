@@ -32,10 +32,20 @@ public interface IAmmunitionRegistry
     ItemStack setSubtype(ItemStack stack, String type);
 
     @Nonnull
-    ItemStack getItem(ResourceLocation id, String subtype);
+    ItemStack getItem(ResourceLocation id, String subtype, int count);
+
+    @Nonnull
+    default ItemStack getItem(ResourceLocation id, String subtype) {
+        return this.getItem(id, subtype, 1);
+    }
 
     @Nonnull
     default ItemStack getItem(IAmmunition obj, String subtype) {
-        return this.getItem(obj.getId(), subtype);
+        return this.getItem(obj.getId(), subtype, 1);
+    }
+
+    @Nonnull
+    default ItemStack getItem(IAmmunition obj, String subtype, int count) {
+        return this.getItem(obj.getId(), subtype, count);
     }
 }

@@ -12,7 +12,6 @@ import vazkii.patchouli.api.IComponentProcessor;
 import vazkii.patchouli.api.IVariable;
 import vazkii.patchouli.api.IVariableProvider;
 
-import javax.annotation.Nonnull;
 import java.text.NumberFormat;
 
 @OnlyIn(Dist.CLIENT)
@@ -24,28 +23,25 @@ public class TurretStatComponentProcessor
 
     @Override
     public void setup(IVariableProvider provider) {
-        this.turret = TurretRegistry.INSTANCE.get(new ResourceLocation(provider.get("turret_type").asString()));
+        this.turret = TurretRegistry.INSTANCE.get(new ResourceLocation(provider.get("turret").asString()));
     }
 
-    @Nonnull
     @Override
+    @SuppressWarnings("NullableProblems")
     public IVariable process(String s) {
         String langCode = Minecraft.getInstance().getLanguageManager().getSelected().getCode();
 
         switch( s ) {
-            case "tier": {
+            case "tier":
                 return IVariable.wrap(MiscUtils.getNumberFormat(0, false, langCode).format(turret.getTier()));
-            }
-            case "health": {
+            case "health":
                 return IVariable.wrap(MiscUtils.getNumberFormat(1, true, langCode).format(turret.getHealth() / 2F));
-            }
-            case "ammo": {
+            case "ammo":
                 return IVariable.wrap(MiscUtils.getNumberFormat(0, true, langCode).format(turret.getAmmoCapacity()));
-            }
-            case "reload": {
+            case "reload":
                 return IVariable.wrap(MiscUtils.getTimeFromTicks(turret.getReloadTicks()));
-            }
-            default: {
+
+            default:
                 if( s.contains("range") ) {
                     AxisAlignedBB aabb = this.turret.getRangeBB(null);
                     NumberFormat nf = MiscUtils.getNumberFormat(0, true, langCode);
@@ -56,11 +52,11 @@ public class TurretStatComponentProcessor
                         case "rangeHX": return IVariable.wrap(nf.format(aabb.maxX));
                         case "rangeHY": return IVariable.wrap(nf.format(aabb.maxY));
                         case "rangeHZ": return IVariable.wrap(nf.format(aabb.maxZ));
+                        default: // NO-OP
                     }
                 }
-            }
         }
 
-        return IVariable.empty();
+        return null;
     }
 }

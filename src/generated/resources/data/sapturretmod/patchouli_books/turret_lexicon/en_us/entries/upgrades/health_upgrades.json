@@ -1,0 +1,37 @@
+{
+  "name": "Health Upgrades",
+  "category": "sapturretmod:upgrades",
+  "icon": "sapturretmod:health_1_upgrade",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "sapturretmod:health_1_upgrade",
+      "title": "Health Upgrades",
+      "text": "Strengthens the structure of the turret chassis to gain 25% additional maximum health with each tier.$(br2)$(o)Note: These types of upgrades will not increase the turrets health automatically! You must heal it afterwards.$()"
+    },
+    {
+      "type": "sapturretmod:assembly_i18n",
+      "recipe": "sapturretmod:assembly/upgrades_health_1_upgrade",
+      "title": "Health I Upgrade"
+    },
+    {
+      "type": "sapturretmod:assembly_i18n",
+      "recipe": "sapturretmod:assembly/upgrades_health_2_upgrade",
+      "title": "Health II Upgrade",
+      "text": "$(5)$(italic)Requires Health I$()"
+    },
+    {
+      "type": "sapturretmod:assembly_i18n",
+      "recipe": "sapturretmod:assembly/upgrades_health_3_upgrade",
+      "title": "Health III Upgrade",
+      "text": "$(5)$(italic)Requires Health II$(br)$(3)Only applicable to tiers 1-4$()"
+    },
+    {
+      "type": "sapturretmod:assembly_i18n",
+      "recipe": "sapturretmod:assembly/upgrades_health_4_upgrade",
+      "title": "Health IV Upgrade",
+      "text": "$(5)$(italic)Requires Health III$(br)$(3)Only applicable to tiers 1-3$()"
+    }
+  ],
+  "priority": false
+}

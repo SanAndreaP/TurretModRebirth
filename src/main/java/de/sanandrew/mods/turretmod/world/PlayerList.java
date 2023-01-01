@@ -8,7 +8,6 @@
  */
 package de.sanandrew.mods.turretmod.world;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
@@ -18,7 +17,6 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.network.SyncPlayerListPacket;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -36,7 +34,6 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -134,7 +131,7 @@ public class PlayerList
             return new StringTextComponent("[removed]");
         }
 
-        ITextComponent s = playerList.playerMap.get(playerUUID).name;
+        ITextComponent s = MiscUtils.apply(playerList.playerMap.get(playerUUID), p -> p.name);
         return s == null ? new StringTextComponent("[unknown]") : s;
     }
 
@@ -215,15 +212,55 @@ public class PlayerList
     }
 
     public static ResourceLocation getSkinLocation(UUID playerId) {
-        return MiscUtils.get(playerList != null ? playerList.playerMap.get(playerId).texture : null, () -> DefaultPlayerSkin.getDefaultSkin(playerId));
+        return MiscUtils.get(playerList != null ? MiscUtils.apply(playerList.playerMap.get(playerId), p -> p.texture) : null, () -> DefaultPlayerSkin.getDefaultSkin(playerId));
     }
 
     public static String getSkinType(UUID playerId) {
-        return MiscUtils.get(playerList != null ? playerList.playerMap.get(playerId).skinModel : null, () -> DefaultPlayerSkin.getSkinModelName(playerId));
+        return MiscUtils.get(playerList != null ? MiscUtils.apply(playerList.playerMap.get(playerId), p -> p.skinModel) : null, () -> DefaultPlayerSkin.getSkinModelName(playerId));
     }
 
     private static void syncPlayers() {
         TurretModRebirth.NETWORK.sendToAll(new SyncPlayerListPacket());
+    }
+
+    public boolean removePlayer(UUID id) {
+        if( this.playerMap.remove(id) != null ) {
+            this.setDirty();
+            syncPlayers();
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean removePlayer(String playerNameOrUUID) {
+        if( UuidUtils.isStringUuid(playerNameOrUUID) ) {
+            return this.removePlayer(UUID.fromString(playerNameOrUUID));
+        }
+
+        if( this.playerMap.entrySet().removeIf(e -> playerNameOrUUID.equals(e.getValue().name.getString())) ) {
+            this.setDirty();
+            syncPlayers();
+            return true;
+        }
+
+        return false;
+    }
+
+    public void clear() {
+        this.playerMap.clear();
+        this.setDirty();
+        syncPlayers();
+    }
+
+    public void cleanse(IWorld level) {
+        if( level.isClientSide() ) {
+            return;
+        }
+
+        this.playerMap.entrySet().removeIf(e -> level.getPlayerByUUID(e.getKey()) == null);
+        this.setDirty();
+        syncPlayers();
     }
 
     @Nullable

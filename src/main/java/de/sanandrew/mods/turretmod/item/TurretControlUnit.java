@@ -15,10 +15,12 @@ import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.tcu.ITcuRegistry;
 import de.sanandrew.mods.turretmod.api.tcu.TcuContainer;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
+import de.sanandrew.mods.turretmod.entity.EntityRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.TurretEntity;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.inventory.container.TcuContainerFactory;
 import de.sanandrew.mods.turretmod.inventory.container.TcuUpgradesContainer;
+import net.minecraft.advancements.criterion.EntityPredicate;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -31,10 +33,12 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkHooks;
 import org.apache.logging.log4j.Level;
 
@@ -49,6 +53,7 @@ public class TurretControlUnit
         extends Item
         implements ITcuRegistry
 {
+    private static final AxisAlignedBB          GLOW_SRC_BB         = new AxisAlignedBB(-32, -32, -32, 32, 32, 32);
     private static final String                 NBT_SAPTURRETMOD    = TmrConstants.ID;
     private static final String                 NBT_BOUND_TURRET_ID = "Id";
     private static final int                    EE_NAME_COUNT       = 5;
@@ -107,7 +112,7 @@ public class TurretControlUnit
     public ActionResult<ItemStack> use(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack heldStack = player.getItemInHand(hand);
         if( ItemStackUtils.isItem(heldStack, ItemRegistry.TURRET_CONTROL_UNIT) ) {
-            ITurretEntity turret = getBoundTurret(heldStack, world);
+            ITurretEntity turret = getBoundTurret(heldStack, world, player);
             if( turret != null ) {
                 if( this.accessDenied(turret, player) ) {
                     if( !world.isClientSide ) {
@@ -195,17 +200,24 @@ public class TurretControlUnit
             return false;
         }
 
-        return TurretControlUnit.getBoundTurret(getHeldTcu(player), player.level) == turretInst;
+        return TurretControlUnit.getBoundTurret(getHeldTcu(player), player.level, player) == turretInst;
     }
 
-    public static ITurretEntity getBoundTurret(ItemStack stack, World world) {
+    public static ITurretEntity getBoundTurret(ItemStack stack, World world, @Nonnull PlayerEntity player) {
         if( !ItemStackUtils.isItem(stack, ItemRegistry.TURRET_CONTROL_UNIT) ) {
             return null;
         }
 
         UUID id = getBoundID(stack);
         if( id != null ) {
-            Entity entity = EntityUtils.getServerEntity(world, id);
+            Entity entity;
+            if( world instanceof ServerWorld ) {
+                entity = EntityUtils.getServerEntity(world, id);
+            } else {
+                entity = world.getEntitiesOfClass(TurretEntity.class, GLOW_SRC_BB.move(player.position()),e -> e.getUUID().equals(id))
+                              .stream().findFirst().orElse(null);
+            }
+
             if( entity instanceof TurretEntity ) {
                 return (TurretEntity) entity;
             }
