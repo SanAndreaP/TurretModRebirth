@@ -1,0 +1,38 @@
+{
+  "name": "Remote Access Upgrade",
+  "category": "sapturretmod:upgrades",
+  "icon": "sapturretmod:remote_access_upgrade",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "sapturretmod:remote_access_upgrade",
+      "title": "Remote Access Upgrade",
+      "text": "This upgrade allows you to manipulate the turret via items over a greater distance. When you are further away and want to transfer ammo or repair kits, a new TCU tab is added just for this, since the info tab does not allow you to access your inventory."
+    },
+    {
+      "type": "sapturretmod:assembly_i18n",
+      "recipe": "sapturretmod:assembly/upgrades_remote_access_upgrade"
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "sapturretmod:textures/gui/lexicon/tcu/tab_remote_access.png"
+      ],
+      "title": "TCU Tab",
+      "text": "To configure this upgrade, the TCU is provided with an additional tab."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "There are two input slots, one for repair kits and one for ammo. The repair kit one is straight forward: Put the repair kit(s) in and the turret will grab as many as it needs to heal up. Below is a slot which will show you how much health the turret has.$(br2)The ammo slot lets you (re-)fill the turret with the desired ammo. You can use the $(l:ammo/cartridge)ammo cartridge$(/l), which will only consume its contents and if empty, goes to the output slot below."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "If you try to fill up the turret with a different kind of ammo, the current type inside the turret gets ejected into the output slot and the new type will be inserted. This will only work if it can eject it (the output is empty or occupied with the same type of ammo as the ejected one).$(br2)When you transfer ammo from the output slot via shift-click, it will try to fill up cartridges in your inventory, that can accept the ammo, first."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The content of this UI is not stored and will be ejected out into the world once you close or switch the UI."
+    }
+  ],
+  "priority": false
+}

@@ -24,7 +24,7 @@
       "images": [
         "sapturretmod:textures/gui/lexicon/tcu/tab_info.png"
       ],
-      "text": "$(italic)An example of the info page for a $(l:turrets/crossbow)Crossbow Turret$(/l) inside a forest$(/italic"
+      "text": "$(italic)An example of the info page for a $(l:turrets/crossbow_turret)Crossbow Turret$(/l)$()"
     },
     {
       "type": "patchouli:spotlight",
@@ -37,7 +37,7 @@
       "images": [
         "sapturretmod:textures/gui/lexicon/tcu/tab_tgt_creatures.png"
       ],
-      "text": "$(italic)The target page with only 2 entities selected, in whitelist mode$(/italic)"
+      "text": "$(italic)The target page with monsters selected, in 'allow list' mode$()"
     },
     {
       "type": "patchouli:spotlight",
@@ -50,24 +50,24 @@
       "images": [
         "sapturretmod:textures/gui/lexicon/tcu/tab_tgt_players.png"
       ],
-      "text": "$(italic)The target page with no players selected, in whitelist mode$(/italic)"
+      "text": "$(italic)The target page with no players selected, in 'allow list' mode$()"
     },
     {
       "type": "patchouli:spotlight",
       "item": "sapturretmod:empty_upgrade",
       "title": "Upgrades",
-      "text": "Add or remove upgrades with ease here, similar to a chest.$(br2)Greyed out slots are locked and you'll need the $(l:upgrades/upgrade_storage)Upgrade Storage upgrades$() in order to unlock them."
+      "text": "Add or remove upgrades with ease here, similar to a chest.$(br2)Greyed out slots are locked and you'll need the $(l:upgrades/upgrade_storage_upgrade)Upgrade Storage upgrades$() in order to unlock them."
     },
     {
       "type": "patchouli:image",
       "images": [
         "sapturretmod:textures/gui/lexicon/tcu/tab_upgrades.png"
       ],
-      "text": "$(italic)The upgrades page with some upgrades applied$(/italic)"
+      "text": "$(italic)The upgrades page with some upgrades applied$()"
     },
     {
       "type": "patchouli:text",
-      "text": "The TCU is capable of being bound to a specific turret. To do so you need to right-click a turret with the TCU whilst sneaking. Once that is done, you can access the TCU UI without being close to that turret. The only caveat is that you need $(l:upgrades/remote_access)an upgrade$(/l) in order to dismantle, manage upgrades or anything else involving item transfer.$(br)To unbind a bound TCU, just right-click it whilst sneaking, not pointing to a turret.",
+      "text": "The TCU is capable of being bound to a specific turret. To do so you need to right-click a turret with the TCU whilst sneaking. Once that is done, you can access the TCU UI without being close to that turret. The only caveat is that you need $(l:upgrades/remote_access_upgrade)an upgrade$(/l) in order to dismantle, manage upgrades or anything else involving item transfer.$(br)To unbind a bound TCU, just right-click it whilst sneaking, not pointing to a turret.",
       "title": "Remote Access"
     },
     {
@@ -75,7 +75,7 @@
       "images": [
         "sapturretmod:textures/gui/lexicon/tcu/remote_access_highlight.png"
       ],
-      "text": "When holding a bound TCU, the turret is highlighted while the TCU is in your hands.",
+      "text": "$(italic)When holding a bound TCU, the turret is highlighted while the TCU is in your hands.$()",
       "border": true
     }
   ]

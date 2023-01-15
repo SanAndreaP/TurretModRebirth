@@ -1,0 +1,18 @@
+{
+  "name": "Personal Shield Upgrade",
+  "category": "sapturretmod:upgrades",
+  "icon": "sapturretmod:personal_shield_upgrade",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "sapturretmod:personal_shield_upgrade",
+      "title": "Personal Shield Upgrade",
+      "text": "Applying this to any turret will give it the ability to generate its own limited force field, protecting the turret from any incoming attacks as long as it's enabled.$(br)Once the shielding has been broken, it is slowly charged up by EM fields from the environment, during which the turret is vulnerable."
+    },
+    {
+      "type": "sapturretmod:assembly_i18n",
+      "recipe": "sapturretmod:assembly/upgrades_personal_shield_upgrade"
+    }
+  ],
+  "priority": false
+}

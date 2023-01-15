@@ -114,6 +114,7 @@ public final class PatchouliEntries
                    new UpgradeData(Upgrades.ECONOMY_INF, "Inf. Economy Upgrade",
                                    "An unlimited ammo supply is guaranteed, given the turret is filled with rounds.$(br)Failing that, the turret resorts to the other 2 Economy upgrades.$(br2)$(5)$(o)Requires Economy II$()",
                                    "infinite_economy_upgrade"));
+        //TODO: add ender medium
         newUpgrade(consumer, false, "Ender Toxin Upgrades",
                    new UpgradeData(Upgrades.ENDER_TOXIN_I, "Ender Toxin I Upgrade",
                                    "Allows damaging ender-based creatures like Endermen by augmenting the projectiles themselves with a sticky fluid. It also prevents Endermen and Shulkers from teleporting away when hit.",
@@ -121,6 +122,7 @@ public final class PatchouliEntries
                    new UpgradeData(Upgrades.ENDER_TOXIN_II, "Ender Toxin II Upgrade",
                                    "The turret will be able to damage huge ender-based creatures like the Ender Dragon due to further projectile augmentation with explosives.$(br)Coincidentally, the Wither also seems to be affected by this...$(br2)$(5)$(o)Requires Ender Toxin I$()",
                                    "ender_toxin_2_upgrade"));
+        //TODO: add fuel purify
         newUpgrade(consumer, false, "Health Upgrades",
                    new UpgradeData(Upgrades.HEALTH_I, "Health Upgrades",
                                    "Strengthens the structure of the turret chassis to gain 25% additional maximum health with each tier.$(br2)$(o)Note: These types of upgrades will not increase the turrets health automatically! You must heal it afterwards.$()")
@@ -135,6 +137,49 @@ public final class PatchouliEntries
                            .page(new PatchouliPages.Image("sapturretmod:textures/gui/lexicon/tcu/tab_leveling.png").title("TCU Tab").text("To manage this upgrade, the TCU is provided with an additional tab."))
                            .page(new PatchouliPages.Text("The top progress bar represents the amount of XP until the next level-up and the current turret level.$(br2)Below is the total amount of XP and - in case the maximum level is reached - the excess XP inside brackets.$(br2)After that is a list of Modifiers gained by leveling up (more on that on the upcoming pages).$(br2)Last, but not least, there is a button to retrieve excess XP."))
                            .page(new PatchouliPages.Text("Once a turret reaches a certain level, it may gain additional modifiers to its stats. On the right you can see a list of all possible level-ups.$(br2)Modifiers are additive, meaning if, for example, on level 10 a turret gains +10% health and on level 20 +15% health, the total health modifier will be +25%.")));
+        newUpgrade(consumer, false, "Reload Upgrades",
+                   new UpgradeData(Upgrades.RELOAD_I, "Reload I Upgrade",
+                                   "Cooling down the parts of the loading and shooting mechanisms, this decreases the reload time by 15%.$(br2)$(o)Note: The $(l:turrets/forcefield)Forcefield Turret$(/l) will use these to faster regenerate its shield instead.$()",
+                                   "reload_1_upgrade"),
+                   new UpgradeData(Upgrades.RELOAD_II, "Reload II Upgrade",
+                                   "Further decreases the reload time by 35% (in total: 50%).$(br2)$(5)$(o)Requires Reload Time I$()",
+                                   "reload_2_upgrade"));
+        newUpgrade(consumer, false, "Remote Access Upgrade",
+                   new UpgradeData(Upgrades.REMOTE_ACCESS, "Remote Access Upgrade",
+                                   "This upgrade allows you to manipulate the turret via items over a greater distance. When you are further away and want to transfer ammo or repair kits, a new TCU tab is added just for this, since the info tab does not allow you to access your inventory.",
+                                   "remote_access_upgrade")
+                           .page(new PatchouliPages.Image("sapturretmod:textures/gui/lexicon/tcu/tab_remote_access.png").title("TCU Tab").text("To configure this upgrade, the TCU is provided with an additional tab."))
+                           .page(new PatchouliPages.Text("There are two input slots, one for repair kits and one for ammo. The repair kit one is straight forward: Put the repair kit(s) in and the turret will grab as many as it needs to heal up. Below is a slot which will show you how much health the turret has.$(br2)The ammo slot lets you (re-)fill the turret with the desired ammo. You can use the $(l:ammo/cartridge)ammo cartridge$(/l), which will only consume its contents and if empty, goes to the output slot below."))
+                           .page(new PatchouliPages.Text("If you try to fill up the turret with a different kind of ammo, the current type inside the turret gets ejected into the output slot and the new type will be inserted. This will only work if it can eject it (the output is empty or occupied with the same type of ammo as the ejected one).$(br2)When you transfer ammo from the output slot via shift-click, it will first try to fill up cartridges in your inventory, that can accept the ammo ."))
+                           .page(new PatchouliPages.Text("The content of this UI is not stored and will be ejected out into the world once you close or switch the UI.")));
+        newUpgrade(consumer, false, "Turret Safe Upgrade",
+                   new UpgradeData(Upgrades.TURRET_SAFE, "Turret Safe Upgrade",
+                                   "Normally, when a turret dies, its parts disintegrate into the aether, leaving only ammo and upgrades at its place. To prevent that, this upgrade stores the turret into the $(l:misc/crate)Turret Crate$(/l) right before it dies.$(br)Though, the upgrade itself will be converted to an upgrade base, once activated.",
+                                   "turret_safe_upgrade"));
+        //TODO: add shield colorizer
+        //TODO: add explosive shield
+        //TODO: add projectile shield
+        //TODO: add shield strength
+        newUpgrade(consumer, false, "Personal Shield Upgrade",
+                   new UpgradeData(Upgrades.SHIELD_PERSONAL, "Personal Shield Upgrade",
+                                   "Applying this to any turret will give it the ability to generate its own limited force field, protecting the turret from any incoming attacks as long as it's enabled.$(br)Once the shielding has been broken, it is slowly charged up by EM fields from the environment, during which the turret is vulnerable.",
+                                   "personal_shield_upgrade"));
+        newUpgrade(consumer, false, "Smart Targeting Upgrade",
+                   new UpgradeData(Upgrades.SMART_TGT, "Smart Targeting Upgrade",
+                                   "Allows for detailed control on how turrets target entities.$(br2)Adds an additional tab to the $(l:misc/tcu)TCU$() UI for configuration of this upgrade (described in the upcoming pages).",
+                                   "smart_targeting_upgrade")
+                           .page(new PatchouliPages.Image("sapturretmod:textures/gui/lexicon/tcu/tab_tgt_smart.png").title("TCU Tab").text("To configure this upgrade, the TCU is provided with an additional tab."))
+                           .page(new PatchouliPages.Text("There are 4 different \"awareness\" settings:$(br2)$(bold)\"Turret Awareness\"$() has the turret check its range for other turrets and exclude entities that are already targeted. Either all turrets are ignored (default without upgrade), only turrets of the same type are checked (default with upgrade; e.g. Revolver turrets only check other Revolver turrets) or any turret is checked."))
+                           .page(new PatchouliPages.Text("$(bold)\"Tamed Awareness\"$() controls how the turret acts around tamables (tamed entities like wolves, horses, etc.) - provided that the entity type is targeted as well. Either all tamables (default) or only tamables belonging to a targeted player are attacked, or every tamable is ignored.$(br2)$(bold)\"Age Awareness\"$() is pretty straight-forward: Either both adults and children (default), only adults or only children are attacked"))
+                           .page(new PatchouliPages.Text("$(bold)\"Count Awareness\"$() allows the turret to count the entities to be targeted within its range before deciding to attack. Default is no counting whatsoever. Other than that you can let it count globally (all types are summarized) or per type (each type is summarized separately), each with a \"$(italic)less than$()\" or \"$(italic)more than$()\" setting. Once set to count, you can adjust the target amount in the number field.$(br2)Examples on the next pages."))
+                           .page(new PatchouliPages.Text("$(italic)Example 1: \"Shoot when global entity amount is more than... 8\"$()$(br2)The turret will attack if there's more than 8 targeted entities in its range: 4 zombies and 5 skeletons = 9 entities. Targeting them is at random, it does not care that there's more skeletons than zombies."))
+                           .page(new PatchouliPages.Text("$(italic)Example 2: \"Shoot when amount of the same type of entity is more than... 16\"$()$(br2)The turret will attack if there's more than 16 targeted entities of the same type in its range: 18 cows and 16 sheep. Only the cows are attacked, as long as there are more than 16. Sheep are ignored, since there are no more than 16.")));
+        newUpgrade(consumer, false, "Upgrade Storage",
+                   new UpgradeData(Upgrades.UPG_STORAGE_I, "Upgrade Storage",
+                                   "If the 9 slots provided to you for upgrading a turret are not enough, these upgrades each unlock an additional row of 9 upgrade slots.")
+                           .recipe("upgrade_storage_1", "Upgrade Storage I")
+                           .recipe("upgrade_storage_2", "Upgrade Storage II", "$(5)$(italic)Requires Upgrade Storage I$()")
+                           .recipe("upgrade_storage_3", "Upgrade Storage III", "$(5)$(italic)Requires Upgrade Storage II$()"));
     }
 
     private static void newUpgrade(Consumer<PatchouliBuilder> consumer, boolean priority, String title, UpgradeData... data) {
