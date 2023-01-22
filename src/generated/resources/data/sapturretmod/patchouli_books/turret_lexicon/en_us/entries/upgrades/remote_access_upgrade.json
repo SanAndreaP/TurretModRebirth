@@ -27,7 +27,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "If you try to fill up the turret with a different kind of ammo, the current type inside the turret gets ejected into the output slot and the new type will be inserted. This will only work if it can eject it (the output is empty or occupied with the same type of ammo as the ejected one).$(br2)When you transfer ammo from the output slot via shift-click, it will try to fill up cartridges in your inventory, that can accept the ammo, first."
+      "text": "If you try to fill up the turret with a different kind of ammo, the current type inside the turret gets ejected into the output slot and the new type will be inserted. This will only work if it can eject it (the output is empty or occupied with the same type of ammo as the ejected one).$(br2)When you transfer ammo from the output slot via shift-click, it will first try to fill up cartridges in your inventory, that can accept the ammo ."
     },
     {
       "type": "patchouli:text",

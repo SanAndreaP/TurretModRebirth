@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Once you craft a turret, you can then place it on a solid surface (or in water in case of buoyant turrets).$(br)Turrets are stationary, but can be pushed by pistons or moved in a minecart.$(br2)They have a certain amount of health and if damaged, can be repaired either with instant health potions or with $(l:misc/repair_kits)repair kits$(/l)."
+      "text": "Turrets can be placed on a solid surface (or in water in case of buoyant turrets).$(br)They are stationary, but can be pushed by pistons or moved in a minecart.$(br2)Since they can be damaged, you can repair them either with instant health potions or with $(l:misc/repair_kits)repair kits$(/l)."
     },
     {
       "type": "patchouli:text",
