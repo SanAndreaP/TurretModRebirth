@@ -23,11 +23,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The top progress bar represents the amount of XP until the next level-up and the current level.$(br2)Below is the amount of total and excess XP (represented in brackets).$(br2)Following that is a list of modifiers gained by leveling up (more on that on the upcoming pages).$(br2)Last, but not least, there are buttons to retrieve excess XP (left) and to show available modifiers (right)."
+      "text": "The top progress bar shows the amount of XP until the next level-up and the current level.$(br2)Below is the amount of total XP (and excess XP in brackets, if available).$(br2)After that is a list of modifiers gained by leveling up (more on that on the upcoming pages).$(br2)Last, but not least, are buttons to retrieve excess XP (left) and to show available modifiers (right)."
     },
     {
       "type": "patchouli:text",
-      "text": "Once a turret reaches a certain level, it may gain additional modifiers to its stats.$(br2)Modifiers are additive, meaning if, for example, on level 10 a turret gains +10% health and on level 20 +15% health, the total health modifier will be +25%.$(br2)A list of available modifiers can be shown"
+      "text": "Once a turret reaches a certain level, it may gain additional modifiers to its stats.$(br2)Modifiers are additive, meaning if, for example, on level 10 a turret gains +10% health and on level 20 +15% health, the total health modifier will be +25%.$(br2)A list of available modifiers can be shown within the tab."
     }
   ],
   "priority": false
