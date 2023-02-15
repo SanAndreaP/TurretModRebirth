@@ -85,7 +85,7 @@
   "foregroundElements": [
     {
       "type": "tooltip",
-      "pos": [7, 190],
+      "pos": [7, 186],
       "data": {
         "size": [18, 18],
         "for": "denylist",
@@ -94,7 +94,7 @@
     },
     {
       "type": "tooltip",
-      "pos": [7, 190],
+      "pos": [7, 186],
       "data": {
         "size": [18, 18],
         "for": "allowlist",
@@ -103,7 +103,7 @@
     },
     {
       "type": "tooltip",
-      "pos": [26, 190],
+      "pos": [26, 186],
       "data": {
         "size": [18, 18],
         "for": "selectAll",
@@ -112,7 +112,7 @@
     },
     {
       "type": "tooltip",
-      "pos": [45, 190],
+      "pos": [45, 186],
       "data": {
         "size": [18, 18],
         "for": "deselectAll",
