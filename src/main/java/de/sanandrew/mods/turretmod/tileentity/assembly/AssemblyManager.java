@@ -17,6 +17,7 @@ import de.sanandrew.mods.turretmod.api.assembly.IAssemblyRecipe;
 import de.sanandrew.mods.turretmod.api.assembly.ICountedIngredient;
 import de.sanandrew.mods.turretmod.entity.turret.TurretRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.Turrets;
+import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.item.ammo.Ammunitions;
 import de.sanandrew.mods.turretmod.item.upgrades.UpgradeRegistry;
@@ -159,6 +160,8 @@ public final class AssemblyManager
         manager.setGroupIcon("ammo", AmmunitionRegistry.INSTANCE.getItem(Ammunitions.BOLT));
         manager.setGroupOrder("upgrades", 2);
         manager.setGroupIcon("upgrades", UpgradeRegistry.INSTANCE.getItem(UpgradeRegistry.EMPTY_UPGRADE));
+        manager.setGroupOrder("misc", 3);
+        manager.setGroupIcon("misc", new ItemStack(ItemRegistry.TURRET_CONTROL_UNIT));
     }
 
 //    public IAssemblyRecipe findRecipe(ItemStack output) {

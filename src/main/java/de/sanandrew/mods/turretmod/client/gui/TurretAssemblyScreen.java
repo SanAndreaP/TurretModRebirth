@@ -66,10 +66,10 @@ import java.util.function.BiPredicate;
 public class TurretAssemblyScreen
         extends JsonGuiContainer<TurretAssemblyContainer>
 {
-    private static       String          lastGroup;
-    private String group;
-    private IAssemblyRecipe currHoverRecipe;
-    private boolean isShiftPressed;
+    private static String          lastGroup;
+    private        String          group;
+    private        IAssemblyRecipe currHoverRecipe;
+    private        boolean         isShiftPressed;
 
     private ITextComponent prevGroupName = StringTextComponent.EMPTY;
     private ITextComponent currGroupName = StringTextComponent.EMPTY;
@@ -77,9 +77,9 @@ public class TurretAssemblyScreen
 
     private ButtonSL cancelButton;
     private ButtonSL automateButton;
-    private ButtonSL   manualButton;
-    private ButtonSL   prevGroupButton;
-    private ButtonSL   nextGroupButton;
+    private ButtonSL manualButton;
+    private ButtonSL prevGroupButton;
+    private ButtonSL nextGroupButton;
 
     private GuiElementInst recipeList;
     private GuiElementInst recipeMarker;
@@ -89,7 +89,7 @@ public class TurretAssemblyScreen
     private GuiElementInst bigIngredientsList;
 
     private boolean hasMultipleIngredients;
-    private long prevSystemSeconds;
+    private long    prevSystemSeconds;
 
     public TurretAssemblyScreen(TurretAssemblyContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
@@ -119,8 +119,8 @@ public class TurretAssemblyScreen
         this.recipeTooltip.setVisible(false);
 
         this.loadRecipes(MiscUtils.apply(this.getCurrentRecipe(), IRecipe::getGroup, Strings.isNullOrEmpty(lastGroup)
-                                                                                 ? AssemblyManager.INSTANCE.getGroups(this.getLevel())[0]
-                                                                                 : lastGroup));
+                                                                                     ? AssemblyManager.INSTANCE.getGroups(this.getLevel())[0]
+                                                                                     : lastGroup));
         this.recipeList.get(ScrollArea.class).update(this);
 
         this.updateButtons();
@@ -139,7 +139,8 @@ public class TurretAssemblyScreen
         this.guiDefinition.getElementById("energy").get(ProgressBar.class)
                           .setPercentFunc(g -> this.menu.data.getEnergyStored() / (double) AssemblyEnergyStorage.MAX_FLUX_STORAGE);
         this.guiDefinition.getElementById("energy_tooltip").get(Text.class)
-                          .setTextFunc((g, t) -> new StringTextComponent(String.format("%d / %d RF", this.menu.data.getEnergyStored(), AssemblyEnergyStorage.MAX_FLUX_STORAGE)));
+                          .setTextFunc(
+                                  (g, t) -> new StringTextComponent(String.format("%d / %d RF", this.menu.data.getEnergyStored(), AssemblyEnergyStorage.MAX_FLUX_STORAGE)));
         this.guiDefinition.getElementById("group-icon").get(Item.class)
                           .setItemSupplier(() -> AssemblyManager.INSTANCE.getGroupIcon(this.group));
         this.guiDefinition.getElementById("crafting-progress").get(ProgressBar.class)
@@ -196,6 +197,16 @@ public class TurretAssemblyScreen
         return super.keyReleased(keyCode, scanCode, modifiers);
     }
 
+    @Override
+    public boolean mouseScrolled(double mx, double my, double scroll) {
+        forEachRecipeItem(this.recipeList.get(ScrollArea.class), (row, item) -> {
+            item.get(RecipeItem.class).isHovering = false;
+            return false;
+        }, () -> { });
+
+        return super.mouseScrolled(mx, my, scroll);
+    }
+
     private void updateButtons() {
         boolean hasRecipe = this.menu.tile.getCurrentRecipeId() != null;
         this.cancelButton.setActive(hasRecipe);
@@ -218,8 +229,8 @@ public class TurretAssemblyScreen
     }
 
     private void updateRecipeMarker(boolean isInit) {
-        IAssemblyRecipe recipe = this.getCurrentRecipe();
-        ScrollArea recipeListInst = this.recipeList.get(ScrollArea.class);
+        IAssemblyRecipe recipe         = this.getCurrentRecipe();
+        ScrollArea      recipeListInst = this.recipeList.get(ScrollArea.class);
 
         if( recipe != null && (!this.recipeMarker.isVisible() || isInit) ) {
             this.prevGroupButton.setActive(false);
@@ -237,8 +248,8 @@ public class TurretAssemblyScreen
                     }
 
                     Texture recipeMarkerInst = this.recipeMarker.get(Texture.class);
-                    int offX = this.recipeList.pos[0] + (itmInst.getWidth() - recipeMarkerInst.getWidth()) / 2;
-                    int offY = this.recipeList.pos[1] + (rowInst.getHeight() - recipeMarkerInst.getHeight()) / 2 - recipeListInst.getScrollY();
+                    int     offX             = this.recipeList.pos[0] + (itmInst.getWidth() - recipeMarkerInst.getWidth()) / 2;
+                    int     offY             = this.recipeList.pos[1] + (rowInst.getHeight() - recipeMarkerInst.getHeight()) / 2 - recipeListInst.getScrollY();
 
                     this.recipeMarker.pos[0] = itm.pos[0] + offX;
                     this.recipeMarker.pos[1] = row.pos[1] + offY;
@@ -263,8 +274,10 @@ public class TurretAssemblyScreen
         forEachRecipeItem(recipeListInst, (row, itm) -> {
             RecipeItem itmInst = itm.get(RecipeItem.class);
             if( itmInst.isHovering ) {
-                this.updateRecipeTooltip(itmInst.recipe, new int[] {this.recipeList.pos[0] + itm.pos[0] - 1,
-                                                                    this.recipeList.pos[1] + row.pos[1] - recipeListInst.getScrollY() - 1});
+                this.updateRecipeTooltip(itmInst.recipe, new int[] {
+                        this.recipeList.pos[0] + itm.pos[0] - 1,
+                        this.recipeList.pos[1] + row.pos[1] - recipeListInst.getScrollY() - 1
+                });
 
                 return true;
             }
@@ -277,7 +290,7 @@ public class TurretAssemblyScreen
     }
 
     private void updateRecipeTooltip(IAssemblyRecipe recipe, int[] pos) {
-        long currSysSecs = System.nanoTime() / 1_000_000_000L;
+        long    currSysSecs   = System.nanoTime() / 1_000_000_000L;
         boolean updateViaTime = this.hasMultipleIngredients && this.prevSystemSeconds != currSysSecs;
         this.prevSystemSeconds = currSysSecs;
         if( recipe != null && (this.currHoverRecipe == null || !recipe.getId().equals(this.currHoverRecipe.getId()) || updateViaTime) ) {
@@ -309,19 +322,20 @@ public class TurretAssemblyScreen
         this.hasMultipleIngredients = false;
 
         NonNullList<ICountedIngredient> ingredients = this.currHoverRecipe.getCountedIngredients();
-        StackPanel info = new StackPanel.Builder().horizontal(true).get(this);
-        StackPanel sil = new StackPanel.Builder().horizontal(true).get(this);
-        StackPanel bil = new StackPanel.Builder().horizontal(false).get(this);
+        StackPanel                      info        = new StackPanel.Builder().horizontal(true).get(this);
+        StackPanel                      sil         = new StackPanel.Builder().horizontal(true).get(this);
+        StackPanel                      bil         = new StackPanel.Builder().horizontal(false).get(this);
 
-        JsonObject timeIconData = this.getTooltipItemData("timeIcon");
-        JsonObject timeTextData = JsonUtils.addDefaultJsonProperty(this.getTooltipItemData("timeText"), "color", "0xFFFFFF");
+        JsonObject timeIconData   = this.getTooltipItemData("timeIcon");
+        JsonObject timeTextData   = JsonUtils.addDefaultJsonProperty(this.getTooltipItemData("timeText"), "color", "0xFFFFFF");
         JsonObject energyIconData = this.getTooltipItemData("energyIcon");
         JsonObject energyTextData = JsonUtils.addDefaultJsonProperty(this.getTooltipItemData("energyText"), "color", "0xFFFFFF");
 
         info.add(new GuiElementInst(getOffset(timeIconData, 0, 0), Texture.Builder.fromJson(this, timeIconData)).initialize(this));
         info.add(new GuiElementInst(getOffset(timeTextData, 3, 1), setDefaultTextAttr(Text.Builder.fromJson(this, timeTextData), this.getProcessTime())).initialize(this));
         info.add(new GuiElementInst(getOffset(energyIconData, 6, 0), Texture.Builder.fromJson(this, energyIconData)).initialize(this));
-        info.add(new GuiElementInst(getOffset(energyTextData, 3, 1), setDefaultTextAttr(Text.Builder.fromJson(this, energyTextData), getEnergyConsumption())).initialize(this));
+        info.add(
+                new GuiElementInst(getOffset(energyTextData, 3, 1), setDefaultTextAttr(Text.Builder.fromJson(this, energyTextData), getEnergyConsumption())).initialize(this));
 
         this.smallIngredientsList = new GuiElementInst(sil).initialize(this);
         this.smallIngredientsList.setVisible(!this.isShiftPressed);
@@ -330,12 +344,12 @@ public class TurretAssemblyScreen
         this.bigIngredientsList.setVisible(this.isShiftPressed);
 
         JsonObject cmpItemData = JsonUtils.addDefaultJsonProperty(this.getTooltipItemData("compactIngredients"), "overlayFont", "standard");
-        JsonObject detRowData = this.getTooltipItemData("detailedIngredients");
+        JsonObject detRowData  = this.getTooltipItemData("detailedIngredients");
         JsonObject detItemData = JsonUtils.addDefaultJsonProperty(MiscUtils.get(detRowData.getAsJsonObject("item"), JsonObject::new), "scale", 0.5);
         JsonObject detTtipData = MiscUtils.get(detRowData.getAsJsonObject("tooltip"), JsonObject::new);
 
         int[] cmpItemOffset = getOffset(cmpItemData, 1, 0);
-        int[] detRowOffset = getOffset(detRowData, 0, 5);
+        int[] detRowOffset  = getOffset(detRowData, 0, 5);
         int[] detItemOffset = getOffset(detItemData, 0, 0);
         int[] detTtipOffset = getOffset(detTtipData, 5, 0);
 
@@ -377,7 +391,7 @@ public class TurretAssemblyScreen
     }
 
     private static int[] getOffset(JsonObject itmData, int defX, int defY) {
-        return JsonUtils.getIntArray(itmData.get("offset"), new int[] {defX, defY}, Range.is(2));
+        return JsonUtils.getIntArray(itmData.get("offset"), new int[] { defX, defY }, Range.is(2));
     }
 
     private static Text setDefaultTextAttr(Text textElem, BiFunction<IGui, ITextComponent, ITextComponent> txtFunc) {
@@ -403,9 +417,9 @@ public class TurretAssemblyScreen
                 ScrollArea recipeListInst = this.recipeList.get(ScrollArea.class);
                 recipeListInst.clear();
 
-                List<IAssemblyRecipe> recipes = AssemblyManager.INSTANCE.getRecipes(this.getLevel(), group);
-                int recipesCount = recipes.size();
-                final int cols = 6;
+                List<IAssemblyRecipe> recipes      = AssemblyManager.INSTANCE.getRecipes(this.getLevel(), group);
+                int                   recipesCount = recipes.size();
+                final int             cols         = 6;
                 for( int row = 0, max = MathHelper.ceil(recipesCount / (float) cols); row < max; row++ ) {
                     Row rowElem = new Row();
                     for( int col = 0; col < cols; col++ ) {
@@ -466,17 +480,17 @@ public class TurretAssemblyScreen
     private final class RecipeItem
             extends Item
     {
-        private final GuiElementInst disabledTexture;
-        final IAssemblyRecipe recipe;
-        private boolean isEnabled = true;
-        private boolean isHovering = false;
+        private final GuiElementInst  disabledTexture;
+        final         IAssemblyRecipe recipe;
+        private       boolean         isEnabled  = true;
+        private       boolean         isHovering = false;
 
         public RecipeItem(IAssemblyRecipe recipe, float scale) {
             super(recipe.getResultItem(), scale, MouseOverType.VANILLA, TurretAssemblyScreen.this.font);
             this.recipe = recipe;
 
-            this.disabledTexture = new GuiElementInst(new Texture.Builder(new int[] {16, 16}).uv(86, 222).get(TurretAssemblyScreen.this))
-                                                     .initialize(TurretAssemblyScreen.this);
+            this.disabledTexture = new GuiElementInst(new Texture.Builder(new int[] { 16, 16 }).uv(86, 222).get(TurretAssemblyScreen.this))
+                    .initialize(TurretAssemblyScreen.this);
         }
 
         @Override
