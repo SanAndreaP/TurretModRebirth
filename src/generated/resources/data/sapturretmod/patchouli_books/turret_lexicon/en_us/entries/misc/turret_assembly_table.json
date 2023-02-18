@@ -1,0 +1,60 @@
+{
+  "name": "Turret Assembly Table",
+  "category": "sapturretmod:misc",
+  "icon": "sapturretmod:turret_assembly",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "sapturretmod:turret_assembly",
+      "text": "For creating anything involving turrets, this crafting station is all you need (next to the ingredients and a power source, of course). To operate it you need to interact ($(k:use) on the placed down block) with it, opening a UI, which is explained in subsequent pages."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "sapturretmod:turret_assembly",
+      "title": " ",
+      "text": "To make it work you need to feed it power. The assembly table accepts RF (Redstone Flux) and FE (Forge Energy). If you don't have any device powering it, you can always use the $(l:misc/electrolyte_generator)Electrolyte Generator$(/l) next to it."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "In order to upgrade it or give it resources to craft with, the UI provides you with input slots. The top 2 rows are the slots from the assembly table, with the 4 outermost slots to the left and right being reserved for upgrades, and the bottom 4 rows are your inventory slots.$(br)A hopper (or something similar, like pipes) connected to one of the sides of the table can insert items into it.",
+      "title": "UI - Input Slots"
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "sapturretmod:textures/gui/lexicon/assembly/ui_slots.png"
+      ],
+      "text": "$(italic)The slots of the assembly table, recipe input slots can be filtered with $(l:misc/assembly_upgrade_filter)an upgrade$(/l).$()"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "To craft something, you need to tell the table which item you desire. To do that, first select the group on the left with the up/down arrows, then look up the desired item on the right.$(br)A click on it will start 1 crafting operation (16, if you hold $(k:sneak)). Each additional click will add 1 (or 16) additional operations.$(br)The item tooltip will reveal its requirements, like ingredients, power and time to craft.",
+      "title": "UI - Recipes"
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "sapturretmod:textures/gui/lexicon/assembly/ui_recipes_1.png",
+        "sapturretmod:textures/gui/lexicon/assembly/ui_recipes_2.png",
+        "sapturretmod:textures/gui/lexicon/assembly/ui_recipes_3.png"
+      ],
+      "text": "$(italic)Holding $(k:sneak) whilst hovering over a recipe shows you more details.$()"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Once the table finishes crafting, it'll put the result into the output slots. The first output slot will have the result (with an exception in case for ammo), the second slot is meant for filled $(l:ammo/ammunition_cartridges)ammo cartridges$(/l) (more info on that can be found in its entry).$(br2)Below those you'll see the number of crafting operations remaining and a progress bar showing the current crafting process.",
+      "title": "UI - Output & Other"
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "sapturretmod:textures/gui/lexicon/assembly/ui_output_1.png"
+      ],
+      "text": "On the right is the red energy bar, showing how much is stored."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "At the bottom is the \"Cancel\" button, which cancels the current crafting process and returns the ingredients back into the input (or into the world in case there's no room for them).$(br)Below it are placeholders meant for the $(l:misc/assembly_upgrade_auto)automation upgrade$(/l)."
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ROR",
+    "IAI",
+    "CFC"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:repeater"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "A": {
+      "item": "minecraft:anvil",
+      "data": 0
+    },
+    "C": {
+      "tag": "forge:cobblestone"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    }
+  },
+  "result": {
+    "item": "sapturretmod:turret_assembly",
+    "count": 1
+  }
+}

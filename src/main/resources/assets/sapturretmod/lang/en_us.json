@@ -39,7 +39,7 @@
   "item.sapturretmod.turret_assembly_filter_upgrade.conf": "Configured",
   "item.sapturretmod.turret_assembly_filter_upgrade.inst.1": "Right-click to configure",
   "item.sapturretmod.turret_assembly_filter_upgrade.inst.2": "Shift-right-click to clear config.",
-  "item.sapturretmod.turret_assembly_redstone_upgrade": "Redstone Awareness Upgrade",
+  "item.sapturretmod.turret_assembly_redstone_upgrade": "Redstone Control Upgrade",
   "item.sapturretmod.turret_assembly_redstone_upgrade.ttip": "Used in the Turret Assembly Table",
   "_comment": "Ammo",
   "item.sapturretmod.crossbow_bolt": "Crossbow Bolt",

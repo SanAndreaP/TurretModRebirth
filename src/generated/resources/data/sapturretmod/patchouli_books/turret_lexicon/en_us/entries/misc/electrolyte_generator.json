@@ -1,0 +1,30 @@
+{
+  "name": "Electrolyte Generator",
+  "category": "sapturretmod:misc",
+  "icon": "sapturretmod:electrolyte_generator",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "sapturretmod:electrolyte_generator",
+      "text": "This device can generate energy by using the electrolytic capabilities of certain plant produce.$(br2)It has 9 input and 5 output slots. The more produce is processed simultaneously, the more efficient the generator becomes. Processed items may generate \"trash\" or \"treasure\" items."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "sapturretmod:electrolyte_generator",
+      "title": " ",
+      "text": "A hopper (or similar item transportation) can input items from the sides of the lower part of the generator and extract items out of the bottom. The top part of the generator has no transfer capabilities."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Power is transmitted through the sides or bottom of the lower part of the generator. It'll detect the type of power the receiver can accept. Redstone Flux (RF), Forge Energy (FE) or something compatible with either works, and can transfer up to 20,000 units per second.$(br2)Also, due to internal limitations, it can only generate up to 4,000 units per second.",
+      "title": "Power"
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "sapturretmod:textures/gui/lexicon/electrolyte_gui.png"
+      ],
+      "text": "$(italic)The input gets pulled into processing slots, with the progress shown on each item.$()"
+    }
+  ]
+}

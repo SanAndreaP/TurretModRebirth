@@ -1,0 +1,21 @@
+{
+  "type": "sapturretmod:turret_assembly",
+  "group": "misc",
+  "energyConsumption": 60,
+  "processTime": 300,
+  "ingredients": [
+    {
+      "tag": "forge:gems/emerald"
+    },
+    {
+      "tag": "forge:nuggets/gold"
+    },
+    {
+      "item": "minecraft:comparator"
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret_assembly_auto_upgrade",
+    "count": 1
+  }
+}

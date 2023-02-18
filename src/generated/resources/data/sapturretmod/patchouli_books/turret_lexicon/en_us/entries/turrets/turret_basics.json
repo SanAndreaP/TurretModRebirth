@@ -9,15 +9,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Turrets need ammo to operate (which types of ammo a turret can accept is shown within their respective lexicon entry).$(br)To give them ammo, right-click it with a compatible ammo item (or a non-empty $(l:ammo/ammo_ammo_cartridge)ammo cartridge$(/l)).$(br2)Both amounts of ammo and health are visible on the turret base with two \"antennas\", a red one for health and a blue one for ammo."
+      "text": "Ammunition is needed to be given to turrets, and only certain types of ammo are compatible with a turret, which is shown within the ammos' lexicon entry.$(br)To give them ammo, right-click it with a compatible item (or a non-empty $(l:ammo/ammunition_cartridges)ammunition cartridge$(/l)).$(br2)Both amounts of ammo and health are visible on the turret base with two \"antennas\", a red one for health and a blue one for ammo."
     },
     {
       "type": "patchouli:text",
-      "text": "If they're upright, the turret is full with health/ammo and will appear to \"fall down\" once the amount of ammo/health decreases.$(br2)By default a turret only targets hostile creatures. Be careful, hostiles automatically try to defend themselves from turrets and attempt to damage them.$(br2)Right-clicking a turret with an empty hand will show an info page listing the upgrades and turret values."
+      "text": "If they're upright, the turret is full with health/ammo and will appear to \"fall down\" once the amount of either decreases.$(br2)By default a turret only targets hostile creatures. Be careful, hostiles automatically try to defend themselves from turrets and attempt to damage them.$(br2)Right-clicking a turret with an empty hand will show an info page listing the upgrades and turret values."
     },
     {
       "type": "patchouli:text",
-      "text": "There you're able to (de-)activate it and toggle range visibility.$(br2)Turrets may be fitted with upgrades to further enhance their capabilities. To upgrade one, just right-click it with the upgrade in hand (or use the upgrades tab of the TCU).$(br2)For further configuration, like custom targeting settings, dismantling the turret, etc., you need the $(l:misc/tcu)Turret Control Unit (TCU)$(/l)."
+      "text": "There you're able to (de-)activate it and toggle range visibility.$(br2)Turrets may be fitted with upgrades to further enhance their capabilities. To upgrade one, just right-click it with the upgrade in hand (or use the upgrades tab of the TCU).$(br2)For further configuration, like custom targeting settings, dismantling the turret, etc., you need the $(l:misc/turret_control_unit)Turret Control Unit (TCU)$(/l)."
     }
   ],
   "priority": true

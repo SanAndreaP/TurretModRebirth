@@ -23,7 +23,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "There are two input slots, one for repair kits and one for ammo. The repair kit one is straight forward: Put the repair kit(s) in and the turret will grab as many as it needs to heal up. Below is a slot which will show you how much health the turret has.$(br2)The ammo slot lets you (re-)fill the turret with the desired ammo. You can use the $(l:ammo/cartridge)ammo cartridge$(/l), which will only consume its contents and if empty, goes to the output slot below."
+      "text": "There are two input slots, one for repair kits and one for ammo. The repair kit one is straight forward: Put the repair kit(s) in and the turret will grab as many as it needs to heal up. Below is a slot which will show you how much health the turret has.$(br2)The ammo slot lets you (re-)fill the turret with the desired ammo. You can use the $(l:ammo/ammunition_cartridges)ammo cartridge$(/l), which will only consume its contents and if empty, goes to the output slot below."
     },
     {
       "type": "patchouli:text",

@@ -23,6 +23,7 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.tags.ItemTags;
@@ -69,65 +70,85 @@ public class AssemblyProvider
 
     private static void buildAmmo(@Nonnull Consumer<IFinishedRecipe> consumer) {
         AssemblyBuilder.newAssembly("ammo", new ItemStack(ItemRegistry.AMMO_CARTRIDGE)).energyConsumption(25).processTime(100)
-                               .ingredient(5, Tags.Items.INGOTS_IRON)
-                                       .ingredient(2, Tags.Items.LEATHER)
-                               .ingredient(1, Tags.Items.DUSTS_REDSTONE)
-                               .build(consumer);
+                       .ingredient(5, Tags.Items.INGOTS_IRON)
+                       .ingredient(2, Tags.Items.LEATHER)
+                       .ingredient(1, Tags.Items.DUSTS_REDSTONE)
+                       .build(consumer);
 
         newAmmo(consumer, Ammunitions.BOLT, 16, b -> b.ingredient(1, Items.ARROW));
     }
 
     private static void buildUpgrades(@Nonnull Consumer<IFinishedRecipe> consumer) {
         AssemblyBuilder.newAssembly("upgrades", UpgradeRegistry.INSTANCE.getItem(UpgradeRegistry.EMPTY_UPGRADE.getId(), 3))
-                                           .energyConsumption(80).processTime(400)
-                                           .ingredient(1, Tags.Items.GLASS_PANES)
-                                           .ingredient(2, Tags.Items.DUSTS_REDSTONE)
-                                           .ingredient(1, Tags.Items.INGOTS_GOLD)
-                                           .ingredient(1, Items.STONE_SLAB)
-                                           .build(consumer);
+                       .energyConsumption(80).processTime(400)
+                       .ingredient(1, Tags.Items.GLASS_PANES)
+                       .ingredient(2, Tags.Items.DUSTS_REDSTONE)
+                       .ingredient(1, Tags.Items.INGOTS_GOLD)
+                       .ingredient(1, Items.STONE_SLAB)
+                       .build(consumer);
 
-        newUpgrade(consumer, Upgrades.AMMO_STORAGE,               b -> b.ingredient(1, Items.HOPPER));
-        newUpgrade(consumer, Upgrades.ECONOMY_I,                  b -> b.ingredient(1, Tags.Items.GEMS_EMERALD));
-        newUpgrade(consumer, Upgrades.ECONOMY_II,                 b -> b.ingredient(1, Tags.Items.STORAGE_BLOCKS_GOLD)
-                                                                        .ingredient(1, Tags.Items.GEMS_DIAMOND));
-        newUpgrade(consumer, Upgrades.ECONOMY_INF,                b -> b.ingredients(getInfinityItems()));
+        newUpgrade(consumer, Upgrades.AMMO_STORAGE,
+                   b -> b.ingredient(1, Items.HOPPER));
+        newUpgrade(consumer, Upgrades.ECONOMY_I,
+                   b -> b.ingredient(1, Tags.Items.GEMS_EMERALD));
+        newUpgrade(consumer, Upgrades.ECONOMY_II,
+                   b -> b.ingredient(1, Tags.Items.STORAGE_BLOCKS_GOLD)
+                         .ingredient(1, Tags.Items.GEMS_DIAMOND));
+        newUpgrade(consumer, Upgrades.ECONOMY_INF,
+                   b -> b.ingredients(getInfinityItems()));
 //        newUpgrade(consumer, Upgrades.ENDER_MEDIUM,               b -> b.ingredient(1, Tags.Items.ENDER_PEARLS));
-        newUpgrade(consumer, Upgrades.ENDER_TOXIN_I,              b -> b.ingredients(getWaterItems())
-                                                                        .ingredient(1, Tags.Items.SLIMEBALLS));
-        newUpgrade(consumer, Upgrades.ENDER_TOXIN_II,             b -> b.ingredient(1, new ItemStack(Items.TNT)));
+        newUpgrade(consumer, Upgrades.ENDER_TOXIN_I,
+                   b -> b.ingredients(getWaterItems())
+                         .ingredient(1, Tags.Items.SLIMEBALLS));
+        newUpgrade(consumer, Upgrades.ENDER_TOXIN_II,
+                   b -> b.ingredient(1, new ItemStack(Items.TNT)));
 //        newUpgrade(consumer, Upgrades.FUEL_PURIFIER,              b -> b.ingredient(1, ItemTags.SOUL_FIRE_BASE_BLOCKS)
 //                                                                        .ingredient(1, Items.MAGMA_CREAM));
-        newUpgrade(consumer, Upgrades.HEALTH_I,                   b -> b.ingredient(8, Items.GLISTERING_MELON_SLICE));
-        newUpgrade(consumer, Upgrades.HEALTH_II,                  b -> b.ingredient(8, Items.GLISTERING_MELON_SLICE)
-                                                                        .ingredient(1, Items.GOLDEN_APPLE));
-        newUpgrade(consumer, Upgrades.HEALTH_III,                 b -> b.ingredient(16, Items.GLISTERING_MELON_SLICE)
-                                                                        .ingredient(2, Items.GOLDEN_APPLE));
-        newUpgrade(consumer, Upgrades.HEALTH_IV,                  b -> b.ingredient(16, Items.GLISTERING_MELON_SLICE)
-                                                                        .ingredient(4, Items.GOLDEN_APPLE));
-        newUpgrade(consumer, Upgrades.LEVELING,                   b -> b.ingredient(1, Items.EXPERIENCE_BOTTLE));
-        newUpgrade(consumer, Upgrades.RELOAD_I,                   b -> b.ingredient(1, Items.ICE));
-        newUpgrade(consumer, Upgrades.RELOAD_II,                  b -> b.ingredient(1, Items.PACKED_ICE));
-        newUpgrade(consumer, Upgrades.REMOTE_ACCESS,              b -> b.ingredient(1, Items.POPPED_CHORUS_FRUIT));
+        newUpgrade(consumer, Upgrades.HEALTH_I,
+                   b -> b.ingredient(8, Items.GLISTERING_MELON_SLICE));
+        newUpgrade(consumer, Upgrades.HEALTH_II,
+                   b -> b.ingredient(8, Items.GLISTERING_MELON_SLICE)
+                         .ingredient(1, Items.GOLDEN_APPLE));
+        newUpgrade(consumer, Upgrades.HEALTH_III,
+                   b -> b.ingredient(16, Items.GLISTERING_MELON_SLICE)
+                         .ingredient(2, Items.GOLDEN_APPLE));
+        newUpgrade(consumer, Upgrades.HEALTH_IV,
+                   b -> b.ingredient(16, Items.GLISTERING_MELON_SLICE)
+                         .ingredient(4, Items.GOLDEN_APPLE));
+        newUpgrade(consumer, Upgrades.LEVELING,
+                   b -> b.ingredient(1, Items.EXPERIENCE_BOTTLE));
+        newUpgrade(consumer, Upgrades.RELOAD_I,
+                   b -> b.ingredient(1, Items.ICE));
+        newUpgrade(consumer, Upgrades.RELOAD_II,
+                   b -> b.ingredient(1, Items.PACKED_ICE));
+        newUpgrade(consumer, Upgrades.REMOTE_ACCESS,
+                   b -> b.ingredient(1, Items.POPPED_CHORUS_FRUIT));
 //        newUpgrade(consumer, Upgrades.SHIELD_COLORIZER,           b -> b.ingredient(1, Tags.Items.DYES_RED)
 //                                                                        .ingredient(1, Tags.Items.DYES_GREEN)
 //                                                                        .ingredient(1, Tags.Items.DYES_BLUE)
 //                                                                        .ingredient(1, Tags.Items.DUSTS_PRISMARINE));
 //        newUpgrade(consumer, Upgrades.SHIELD_EXPLOSIVE,           b -> b.ingredients(getResistantItems(Enchantments.BLAST_PROTECTION, 0)));
-        newUpgrade(consumer, Upgrades.SHIELD_PERSONAL,            b -> b.ingredient(1, Tags.Items.GEMS_QUARTZ)
-                                                                        .ingredient(1, Tags.Items.ENDER_PEARLS)
-                                                                        .ingredient(1, Tags.Items.DUSTS_REDSTONE));
+        newUpgrade(consumer, Upgrades.SHIELD_PERSONAL,
+                   b -> b.ingredient(1, Tags.Items.GEMS_QUARTZ)
+                         .ingredient(1, Tags.Items.ENDER_PEARLS)
+                         .ingredient(1, Tags.Items.DUSTS_REDSTONE));
 //        newUpgrade(consumer, Upgrades.SHIELD_PROJECTILE, 20, 600, b -> b.ingredients(getResistantItems(Enchantments.PROJECTILE_PROTECTION)));
 //        newUpgrade(consumer, Upgrades.SHIELD_STRENGTH_I,          b -> b.ingredients(getResistantItems(Enchantments.ALL_DAMAGE_PROTECTION, 0)));
 //        newUpgrade(consumer, Upgrades.SHIELD_STRENGTH_II,         b -> b.ingredients(getResistantItems(Enchantments.ALL_DAMAGE_PROTECTION, 1)));
-        newUpgrade(consumer, Upgrades.SMART_TGT,                  b -> b.ingredient(1, Items.SPIDER_EYE)
-                                                                        .ingredient(1, Tags.Items.ENDER_PEARLS));
-        newUpgrade(consumer, Upgrades.UPG_STORAGE_I,              b -> b.ingredient(1, Items.TRAPPED_CHEST));
-        newUpgrade(consumer, Upgrades.UPG_STORAGE_II,             b -> b.ingredient(1, Items.TRAPPED_CHEST)
-                                                                        .ingredient(1, Tags.Items.INGOTS_GOLD));
-        newUpgrade(consumer, Upgrades.UPG_STORAGE_III,            b -> b.ingredient(1, Items.TRAPPED_CHEST)
-                                                                        .ingredient(1, Tags.Items.GEMS_DIAMOND));
-        newUpgrade(consumer, Upgrades.TURRET_SAFE,                b -> b.ingredient(1, BlockRegistry.TURRET_CRATE)
-                                                                        .ingredient(2, Tags.Items.DUSTS_REDSTONE));
+        newUpgrade(consumer, Upgrades.SMART_TGT,
+                   b -> b.ingredient(1, Items.SPIDER_EYE)
+                         .ingredient(1, Tags.Items.ENDER_PEARLS));
+        newUpgrade(consumer, Upgrades.UPG_STORAGE_I,
+                   b -> b.ingredient(1, Items.TRAPPED_CHEST));
+        newUpgrade(consumer, Upgrades.UPG_STORAGE_II,
+                   b -> b.ingredient(1, Items.TRAPPED_CHEST)
+                         .ingredient(1, Tags.Items.INGOTS_GOLD));
+        newUpgrade(consumer, Upgrades.UPG_STORAGE_III,
+                   b -> b.ingredient(1, Items.TRAPPED_CHEST)
+                         .ingredient(1, Tags.Items.GEMS_DIAMOND));
+        newUpgrade(consumer, Upgrades.TURRET_SAFE,
+                   b -> b.ingredient(1, BlockRegistry.TURRET_CRATE)
+                         .ingredient(2, Tags.Items.DUSTS_REDSTONE));
     }
 
 
@@ -135,20 +156,41 @@ public class AssemblyProvider
         final String cat = "misc";
 
         AssemblyBuilder.newAssembly(cat, new ItemStack(ItemRegistry.TURRET_CONTROL_UNIT)).energyConsumption(10).processTime(180)
-                .ingredient(5, Tags.Items.INGOTS_IRON)
-                .ingredient(2, Tags.Items.DUSTS_REDSTONE)
-                .ingredient(1, Tags.Items.GLASS_PANES)
-                .build(consumer);
-
+                       .ingredient(5, Tags.Items.INGOTS_IRON)
+                       .ingredient(2, Tags.Items.DUSTS_REDSTONE)
+                       .ingredient(1, Tags.Items.GLASS_PANES)
+                       .build(consumer);
         AssemblyBuilder.newAssembly(cat, new ItemStack(BlockRegistry.TURRET_CRATE)).energyConsumption(5).processTime(60)
-                .ingredient(2, Tags.Items.INGOTS_IRON)
-                .ingredient(2, Tags.Items.GEMS_QUARTZ)
-                .ingredient(1, Tags.Items.CHESTS_WOODEN)
-                .build(consumer);
-
+                       .ingredient(2, Tags.Items.INGOTS_IRON)
+                       .ingredient(2, Tags.Items.GEMS_QUARTZ)
+                       .ingredient(1, Tags.Items.CHESTS_WOODEN)
+                       .build(consumer);
         AssemblyBuilder.newAssembly(cat, new ItemStack(ItemRegistry.TURRET_LEXICON)).energyConsumption(7500).processTime(10)
-                .ingredient(1, Items.BOOK)
-                .build(consumer);
+                       .ingredient(1, Items.BOOK)
+                       .build(consumer);
+        AssemblyBuilder.newAssembly(cat, new ItemStack(ItemRegistry.ASSEMBLY_UPG_SPEED)).energyConsumption(60).processTime(300)
+                       .ingredient(1, Tags.Items.GEMS_EMERALD)
+                       .ingredient(1, Tags.Items.NUGGETS_GOLD)
+                       .ingredient(1, Tags.Items.DUSTS_REDSTONE)
+                       .ingredients(getPotion(Potions.SWIFTNESS))
+                       .build(consumer);
+        AssemblyBuilder.newAssembly(cat, new ItemStack(ItemRegistry.ASSEMBLY_UPG_AUTO)).energyConsumption(60).processTime(300)
+                       .ingredient(1, Tags.Items.GEMS_EMERALD)
+                       .ingredient(1, Tags.Items.NUGGETS_GOLD)
+                       .ingredient(1, Items.COMPARATOR)
+                       .build(consumer);
+        AssemblyBuilder.newAssembly(cat, new ItemStack(ItemRegistry.ASSEMBLY_UPG_REDSTONE)).energyConsumption(60).processTime(300)
+                       .ingredient(1, Tags.Items.GEMS_EMERALD)
+                       .ingredient(1, Tags.Items.NUGGETS_GOLD)
+                       .ingredient(1, Tags.Items.DUSTS_REDSTONE)
+                       .ingredient(1, Items.LEVER)
+                       .build(consumer);
+        AssemblyBuilder.newAssembly(cat, new ItemStack(ItemRegistry.ASSEMBLY_UPG_FILTER)).energyConsumption(60).processTime(300)
+                       .ingredient(1, Tags.Items.GEMS_EMERALD)
+                       .ingredient(1, Tags.Items.NUGGETS_GOLD)
+                       .ingredient(1, Tags.Items.DUSTS_REDSTONE)
+                       .ingredient(1, Items.HOPPER)
+                       .build(consumer);
     }
 
     private static void newAmmo(@Nonnull Consumer<IFinishedRecipe> consumer, IAmmunition ammo, int count, Consumer<AssemblyBuilder> addtBuild) {
@@ -178,17 +220,7 @@ public class AssemblyProvider
     }
 
     private static ICountedIngredient getWaterItems() {
-        ItemStack bottle = new ItemStack(Items.POTION);
-        ItemStack linger = new ItemStack(Items.LINGERING_POTION);
-        ItemStack splash = new ItemStack(Items.SPLASH_POTION);
-
-        PotionUtils.setPotion(bottle, Potions.WATER);
-        PotionUtils.setPotion(linger, Potions.WATER);
-        PotionUtils.setPotion(splash, Potions.WATER);
-
-        return new AssemblyBuilder.CompoundIngredientBuilder(1).item(Items.WATER_BUCKET)
-                                                               .itemNbt(bottle).itemNbt(linger).itemNbt(splash)
-                                                               .build();
+        return getPotion(Potions.WATER, b -> b.item(Items.WATER_BUCKET));
     }
 
     private static ICountedIngredient getResistantItems(Enchantment enchantment, int level) {
@@ -209,5 +241,23 @@ public class AssemblyProvider
         }
 
         return b.build();
+    }
+
+    private static ICountedIngredient getPotion(Potion potion) {
+        return getPotion(potion, b -> {});
+    }
+
+    private static ICountedIngredient getPotion(Potion potion, Consumer<AssemblyBuilder.CompoundIngredientBuilder> whileBuild) {
+        ItemStack bottle = new ItemStack(Items.POTION);
+        ItemStack linger = new ItemStack(Items.LINGERING_POTION);
+        ItemStack splash = new ItemStack(Items.SPLASH_POTION);
+
+        PotionUtils.setPotion(bottle, potion);
+        PotionUtils.setPotion(linger, potion);
+        PotionUtils.setPotion(splash, potion);
+
+        AssemblyBuilder.CompoundIngredientBuilder builder = new AssemblyBuilder.CompoundIngredientBuilder(1);
+        whileBuild.accept(builder);
+        return builder.itemNbt(bottle).itemNbt(linger).itemNbt(splash).build();
     }
 }

@@ -7,7 +7,7 @@
       "type": "patchouli:spotlight",
       "item": "sapturretmod:leveling_upgrade",
       "title": "Leveling Upgrade",
-      "text": "Level up your turrets with this. Once a turret kills an enemy, it'll gather the resulting XP as if the target would've been killed by a player.$(br2)Adds an additional tab to the $(l:misc/tcu)TCU$() UI for managing this upgrade (described in the upcoming pages)."
+      "text": "Level up your turrets with this. Once a turret kills an enemy, it'll gather the resulting XP as if the target would've been killed by a player.$(br2)Adds an additional tab to the $(l:misc/turret_control_unit)TCU$() UI for managing this upgrade (described in the upcoming pages)."
     },
     {
       "type": "sapturretmod:assembly_i18n",

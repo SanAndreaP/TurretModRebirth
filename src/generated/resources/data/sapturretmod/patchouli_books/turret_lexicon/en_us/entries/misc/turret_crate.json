@@ -1,0 +1,22 @@
+{
+  "name": "Turret Crate",
+  "category": "sapturretmod:misc",
+  "icon": "sapturretmod:turret_crate",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "sapturretmod:turret_crate",
+      "text": "To store an already placed turret without destroying it, you need this crate. Once a turret is placed inside (either via dismantling it with the $(l:misc/turret_control_unit)TCU$(/l) or due to the $(l:upgrades/turret_safe_upgrade)Turret Safe upgrade$(/l) activating), you can then open it like a chest and grab its contents.$(br2)$(italic)Note: you cannot insert anything in this.$()"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "sapturretmod:turret_crate",
+      "title": " ",
+      "text": "If you transfer ammo from the crate via shift-clicking, it'll try to fill up available $(l:ammo/ammunition_cartridges)ammo cartridges$(/l) first before putting the items into your inventory."
+    },
+    {
+      "type": "sapturretmod:assembly_i18n",
+      "recipe": "sapturretmod:assembly/misc_turret_crate"
+    }
+  ]
+}

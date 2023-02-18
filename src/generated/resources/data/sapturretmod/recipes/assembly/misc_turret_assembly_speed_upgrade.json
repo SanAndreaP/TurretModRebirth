@@ -1,0 +1,41 @@
+{
+  "type": "sapturretmod:turret_assembly",
+  "group": "misc",
+  "energyConsumption": 60,
+  "processTime": 300,
+  "ingredients": [
+    {
+      "tag": "forge:gems/emerald"
+    },
+    {
+      "tag": "forge:nuggets/gold"
+    },
+    {
+      "tag": "forge:dusts/redstone"
+    },
+    [
+      {
+        "type": "sanlib:nbt",
+        "item": "minecraft:potion",
+        "count": 1,
+        "nbt": "{Potion:\"minecraft:swiftness\"}"
+      },
+      {
+        "type": "sanlib:nbt",
+        "item": "minecraft:lingering_potion",
+        "count": 1,
+        "nbt": "{Potion:\"minecraft:swiftness\"}"
+      },
+      {
+        "type": "sanlib:nbt",
+        "item": "minecraft:splash_potion",
+        "count": 1,
+        "nbt": "{Potion:\"minecraft:swiftness\"}"
+      }
+    ]
+  ],
+  "result": {
+    "item": "sapturretmod:turret_assembly_speed_upgrade",
+    "count": 1
+  }
+}

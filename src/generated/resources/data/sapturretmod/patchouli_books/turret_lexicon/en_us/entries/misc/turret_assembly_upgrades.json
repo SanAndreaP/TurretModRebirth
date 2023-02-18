@@ -1,0 +1,58 @@
+{
+  "name": "Turret Assembly Upgrades",
+  "category": "sapturretmod:misc",
+  "icon": "sapturretmod:turret_assembly_auto_upgrade",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "sapturretmod:turret_assembly_auto_upgrade,sapturretmod:turret_assembly_speed_upgrade,sapturretmod:turret_assembly_filter_upgrade,sapturretmod:turret_assembly_redstone_upgrade",
+      "title": "T. Assembly Upgrades",
+      "text": "The following upgrades allow you to augment the $(l:misc/turret_assembly_table)assembly table$(/l) in different ways. Just place the upgrade of choice in the upgrade slots of the assembly table UI. Once inserted, its functionality is immediately available."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "sapturretmod:textures/gui/lexicon/assembly/full_upgraded.png"
+      ],
+      "text": "$(italic)The turret assembly as it appears in world when fully upgraded$()",
+      "border": true
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "sapturretmod:turret_assembly_speed_upgrade",
+      "text": "This will increase the crafting speed, making it 4 times faster. Be careful, though, not only will this increase the consumption of energy units per second, but adds a 10% penalty to it as well."
+    },
+    {
+      "type": "sapturretmod:assembly_i18n",
+      "recipe": "sapturretmod:assembly/misc_turret_assembly_speed_upgrade"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "sapturretmod:turret_assembly_auto_upgrade",
+      "text": "To automatically craft one specific recipe indefinitely, this upgrade adds two new buttons to the assembly table UI: \"Manual\" and \"Automate\".$(br)Once automation is activated and a recipe is selected, instead of showing the amount of crafting operations, it'll show an infinity symbol and tries to craft until you cancel the crafting yourself."
+    },
+    {
+      "type": "sapturretmod:assembly_i18n",
+      "recipe": "sapturretmod:assembly/misc_turret_assembly_auto_upgrade"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "sapturretmod:turret_assembly_filter_upgrade",
+      "text": "Filters items into specific slots within the turret assembly. Hold it and right-click whilst sneaking to configure it. Within the now open UI, put the item(s) of choice inside (these won't be consumed). Filtered items will only go into their designated slots. Empty slots accept any unfiltered item."
+    },
+    {
+      "type": "sapturretmod:assembly_i18n",
+      "recipe": "sapturretmod:assembly/misc_turret_assembly_filter_upgrade"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "sapturretmod:turret_assembly_redstone_upgrade",
+      "title": "Redstone Ctrl. Upgrade",
+      "text": "Control the turret assembly with this via a redstone signal. When the turret assembly is powered, it will pause any crafting it currently is processing.$(br2)The block can be controlled from pretty much any side"
+    },
+    {
+      "type": "sapturretmod:assembly_i18n",
+      "recipe": "sapturretmod:assembly/misc_turret_assembly_redstone_upgrade"
+    }
+  ]
+}

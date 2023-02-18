@@ -7,7 +7,7 @@
       "type": "patchouli:spotlight",
       "item": "sapturretmod:smart_targeting_upgrade",
       "title": "Smart Targeting Upgrade",
-      "text": "Allows for detailed control on how turrets target entities.$(br2)Adds an additional tab to the $(l:misc/tcu)TCU$() UI for configuration of this upgrade (described in the upcoming pages)."
+      "text": "Allows for detailed control on how turrets target entities.$(br2)Adds an additional tab to the $(l:misc/turret_control_unit)TCU$() UI for configuration of this upgrade (described in the upcoming pages)."
     },
     {
       "type": "sapturretmod:assembly_i18n",
@@ -43,7 +43,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(bold)\"Priority Awareness\"$() controls which target in range gets attacked first.$(br)\"First detected\" is the default behavior. The turret just targets the first entity seen within range.$(br)\"Closest to turret\" chooses the nearest entity to be targeted.$(br)\"Highest health\" and \"Lowest Health\" determine the entity which has the highest/lowest amount of health within range.$(br)\"Random\" selects a random entity."
+      "text": "$(bold)\"Priority Awareness\"$() controls which target in range gets attacked first.$(br)\"First detected\" is the default behavior. The turret just targets the first entity seen within range.$(br)\"Closest to turret\" chooses the nearest entity to be targeted.$(br)\"Highest health\" and \"Lowest health\" determine and select the entity which has the highest/lowest amount of health within range.$(br)\"Random\" selects a random entity."
     }
   ],
   "priority": false

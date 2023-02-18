@@ -16,7 +16,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(bold)Note #1$(): A cartridge can only hold one type of ammo! Once you put crossbow bolts in it, for example, it'll no longer accept any other kind, like bullets, until it is empty once again."
+      "text": "$(bold)Note #1$(): A cartridge can only hold one type of ammo! For example, once you put crossbow bolts in it, it'll no longer accept any other kind, like bullets, until it is empty once again."
     },
     {
       "type": "patchouli:text",

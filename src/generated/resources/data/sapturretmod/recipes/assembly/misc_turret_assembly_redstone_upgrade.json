@@ -1,0 +1,24 @@
+{
+  "type": "sapturretmod:turret_assembly",
+  "group": "misc",
+  "energyConsumption": 60,
+  "processTime": 300,
+  "ingredients": [
+    {
+      "tag": "forge:gems/emerald"
+    },
+    {
+      "tag": "forge:nuggets/gold"
+    },
+    {
+      "tag": "forge:dusts/redstone"
+    },
+    {
+      "item": "minecraft:lever"
+    }
+  ],
+  "result": {
+    "item": "sapturretmod:turret_assembly_redstone_upgrade",
+    "count": 1
+  }
+}

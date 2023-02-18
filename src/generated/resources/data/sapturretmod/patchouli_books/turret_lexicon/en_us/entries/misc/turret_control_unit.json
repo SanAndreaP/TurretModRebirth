@@ -6,7 +6,7 @@
     {
       "type": "patchouli:spotlight",
       "item": "sapturretmod:turret_control_unit",
-      "text": "An essential item to control any aspect of a turret.$(br)Pointing at a turret whilst holding this will show you some basic stats of the turret.$(br2)Right-click a turret with it will show you an UI for turret configuration.$(br)Certain upgrades may add pages, explained in the respective upgrade entry."
+      "text": "An essential item to control any aspect of a turret.$(br)Pointing at a turret whilst holding this will show you some basic stats of it.$(br2)Right-click a turret with this will show you a configuration UI.$(br)Certain upgrades may add pages, explained in the respective upgrade entry."
     },
     {
       "type": "sapturretmod:assembly_i18n",
@@ -56,7 +56,7 @@
       "type": "patchouli:spotlight",
       "item": "sapturretmod:empty_upgrade",
       "title": "Upgrades",
-      "text": "Add or remove upgrades with ease here, similar to a chest.$(br2)Greyed out slots are locked and you'll need the $(l:upgrades/upgrade_storage_upgrade)Upgrade Storage upgrades$() in order to unlock them."
+      "text": "Add or remove upgrades with ease here, similar to a chest.$(br2)Greyed out slots are locked and you'll need the $(l:upgrades/upgrade_storage)Upgrade Storage upgrades$() in order to unlock them."
     },
     {
       "type": "patchouli:image",
@@ -67,7 +67,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The TCU is capable of being bound to a specific turret. To do so you need to right-click a turret whilst sneaking with the TCU. Once that is done, you can access the TCU UI without being close to that turret. The only caveat is that you need $(l:upgrades/remote_access_upgrade)an upgrade$(/l) in order to dismantle, manage upgrades or anything else involving item transfer.$(br)To unbind a bound TCU, just right-click the held TCU whilst sneaking, not pointing to a turret.",
+      "text": "The TCU is capable of being bound to a specific turret. To do so you need to right-click one whilst sneaking with the TCU. Once that is done, you can access the TCU UI without being close to that turret. The only caveat is that you need $(l:upgrades/remote_access_upgrade)an upgrade$(/l) in order to dismantle it or anything else involving item transfer.$(br)To unbind a turret, just right-click the held TCU whilst sneaking, not pointing to a turret.",
       "title": "Remote Access"
     },
     {

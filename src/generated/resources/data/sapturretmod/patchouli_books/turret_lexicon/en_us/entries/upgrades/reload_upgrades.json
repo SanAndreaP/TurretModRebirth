@@ -7,7 +7,7 @@
       "type": "patchouli:spotlight",
       "item": "sapturretmod:reload_1_upgrade",
       "title": "Reload I Upgrade",
-      "text": "Cooling down the parts of the loading and shooting mechanisms, this decreases the reload time by 15%.$(br2)$(o)Note: The $(l:turrets/forcefield)Forcefield Turret$(/l) will use these to faster regenerate its shield instead.$()"
+      "text": "Cooling down the parts of the loading and shooting mechanisms, this decreases the reload time by 15%.$(br2)$(o)Note: The $(l:turrets/forcefield_turret)Forcefield Turret$(/l) will use these to faster regenerate its shield instead.$()"
     },
     {
       "type": "sapturretmod:assembly_i18n",
