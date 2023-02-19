@@ -1,0 +1,35 @@
+{
+  "type": "sapturretmod:turret_assembly",
+  "group": "repair_kits",
+  "energyConsumption": 25,
+  "processTime": 600,
+  "ingredients": [
+    {
+      "item": "sapturretmod:standard_repair_kit_mk1"
+    },
+    [
+      {
+        "type": "sanlib:nbt",
+        "item": "minecraft:potion",
+        "count": 1,
+        "nbt": "{Potion:\"minecraft:healing\"}"
+      },
+      {
+        "type": "sanlib:nbt",
+        "item": "minecraft:lingering_potion",
+        "count": 1,
+        "nbt": "{Potion:\"minecraft:healing\"}"
+      },
+      {
+        "type": "sanlib:nbt",
+        "item": "minecraft:splash_potion",
+        "count": 1,
+        "nbt": "{Potion:\"minecraft:healing\"}"
+      }
+    ]
+  ],
+  "result": {
+    "item": "sapturretmod:standard_repair_kit_mk2",
+    "count": 1
+  }
+}

@@ -113,4 +113,8 @@ public class RepairKitRegistry
 
         return new ItemStack(ItemRegistry.TURRET_REPAIRKITS.get(id), count);
     }
+
+    public ItemStack getItem(@Nonnull IRepairKit repairKit, int count) {
+        return this.getItem(repairKit.getId(), count);
+    }
 }

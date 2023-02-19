@@ -5,10 +5,13 @@ import de.sanandrew.mods.turretmod.api.Resources;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgrade;
 import de.sanandrew.mods.turretmod.block.BlockRegistry;
+import de.sanandrew.mods.turretmod.client.compat.patchouli.PatchouliHelper;
 import de.sanandrew.mods.turretmod.entity.turret.Turrets;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.item.ammo.Ammunitions;
+import de.sanandrew.mods.turretmod.item.repairkits.RepairKitRegistry;
+import de.sanandrew.mods.turretmod.item.repairkits.RepairKits;
 import de.sanandrew.mods.turretmod.item.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
 import net.minecraft.item.Item;
@@ -334,6 +337,21 @@ public final class PatchouliEntries
                                       .title("Redstone Ctrl. Upgrade")
                                       .text("Control the turret assembly with this via a redstone signal. When the turret assembly is powered, it will pause any crafting it currently is processing.$(br2)The block can be controlled from pretty much any side"))
                         .page(new PatchouliPages.AssemblyRecipe(new ResourceLocation(TmrConstants.ID, "assembly/misc_turret_assembly_redstone_upgrade")))
+                        .build(consumer);
+        PatchouliBuilder.withIcon("Repair Kits", Resources.PATCHOULI_CAT_MISC, RepairKits.STD_MK_1.getId())
+                        .page(new PatchouliPages.Spotlight(PatchouliHelper.getRepairKitSpotlightItems())
+                                      .title("Repair Kits")
+                                      .text("Repairing a turret is made easy with these repair kits. Each restores a certain amount of health and can be used by just right-clicking a damaged turret.$(br2)Note: Can only be used if the difference of the turrets' maximum and current health is greater or equal to the healing effect."))
+                        .page(new PatchouliPages.AssemblyRecipe(new ResourceLocation(TmrConstants.ID, "assembly/repair_kits_standard_repair_kit_mk1"))
+                                      .text("$(italic)heals for 5 hearts$()"))
+                        .page(new PatchouliPages.AssemblyRecipe(new ResourceLocation(TmrConstants.ID, "assembly/repair_kits_standard_repair_kit_mk2"))
+                                      .text("$(italic)heals for 10 hearts$()"))
+                        .page(new PatchouliPages.AssemblyRecipe(new ResourceLocation(TmrConstants.ID, "assembly/repair_kits_standard_repair_kit_mk3"))
+                                      .text("$(italic)heals for 15 hearts$()"))
+                        .page(new PatchouliPages.AssemblyRecipe(new ResourceLocation(TmrConstants.ID, "assembly/repair_kits_standard_repair_kit_mk4"))
+                                      .text("$(italic)heals for 20 hearts$()"))
+                        .page(new PatchouliPages.AssemblyRecipe(new ResourceLocation(TmrConstants.ID, "assembly/repair_kits_regeneration_repair_kit_mk1"))
+                                      .text("$(italic)heals for 0.25 hearts$(br)Regeneration I for 45s$()"))
                         .build(consumer);
     }
     //endregion

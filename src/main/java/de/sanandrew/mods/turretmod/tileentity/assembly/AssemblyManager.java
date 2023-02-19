@@ -20,6 +20,8 @@ import de.sanandrew.mods.turretmod.entity.turret.Turrets;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.item.ammo.Ammunitions;
+import de.sanandrew.mods.turretmod.item.repairkits.RepairKitRegistry;
+import de.sanandrew.mods.turretmod.item.repairkits.RepairKits;
 import de.sanandrew.mods.turretmod.item.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.recipe.AssemblyRecipe;
 import net.minecraft.item.ItemStack;
@@ -162,6 +164,8 @@ public final class AssemblyManager
         manager.setGroupIcon("upgrades", UpgradeRegistry.INSTANCE.getItem(UpgradeRegistry.EMPTY_UPGRADE));
         manager.setGroupOrder("misc", 3);
         manager.setGroupIcon("misc", new ItemStack(ItemRegistry.TURRET_CONTROL_UNIT));
+        manager.setGroupOrder("repair_kits", 4);
+        manager.setGroupIcon("repair_kits", RepairKitRegistry.INSTANCE.getItem(RepairKits.STD_MK_1));
     }
 
 //    public IAssemblyRecipe findRecipe(ItemStack output) {

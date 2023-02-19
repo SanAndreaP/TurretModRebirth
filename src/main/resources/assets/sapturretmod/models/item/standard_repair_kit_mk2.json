@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "sapturretmod:item/repair_kits/repair_kit_std2"
+  }
+}

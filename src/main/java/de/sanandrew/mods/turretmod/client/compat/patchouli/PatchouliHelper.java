@@ -1,6 +1,8 @@
 package de.sanandrew.mods.turretmod.client.compat.patchouli;
 
 import com.google.gson.JsonArray;
+import de.sanandrew.mods.turretmod.item.repairkits.RepairKitRegistry;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.ModList;
 
@@ -65,6 +67,9 @@ public class PatchouliHelper
                      .replaceAll(",$", "");
     }
 
+    public static ItemStack[] getRepairKitSpotlightItems() {
+        return RepairKitRegistry.INSTANCE.getAll().stream().map(RepairKitRegistry.INSTANCE::getItem).toArray(ItemStack[]::new);
+    }
 
 //    public static vazkii.patchouli.common.util.ItemStackUtil.StackWrapper getWrapper(IRegistry<?> r, IRegistryObject o) {
 //        return new vazkii.patchouli.common.util.ItemStackUtil.StackWrapper(r.getItem(o.getId()));

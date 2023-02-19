@@ -12,6 +12,8 @@ import de.sanandrew.mods.turretmod.entity.turret.Turrets;
 import de.sanandrew.mods.turretmod.item.ItemRegistry;
 import de.sanandrew.mods.turretmod.item.ammo.AmmunitionRegistry;
 import de.sanandrew.mods.turretmod.item.ammo.Ammunitions;
+import de.sanandrew.mods.turretmod.item.repairkits.RepairKitRegistry;
+import de.sanandrew.mods.turretmod.item.repairkits.RepairKits;
 import de.sanandrew.mods.turretmod.item.upgrades.UpgradeRegistry;
 import de.sanandrew.mods.turretmod.item.upgrades.Upgrades;
 import net.minecraft.data.DataGenerator;
@@ -53,6 +55,7 @@ public class AssemblyProvider
         buildAmmo(consumer);
         buildUpgrades(consumer);
         buildMisc(consumer);
+        buildRepairKits(consumer);
     }
 
     private static void buildTurrets(@Nonnull Consumer<IFinishedRecipe> consumer) {
@@ -151,7 +154,6 @@ public class AssemblyProvider
                          .ingredient(2, Tags.Items.DUSTS_REDSTONE));
     }
 
-
     private static void buildMisc(@Nonnull Consumer<IFinishedRecipe> consumer) {
         final String cat = "misc";
 
@@ -190,6 +192,32 @@ public class AssemblyProvider
                        .ingredient(1, Tags.Items.NUGGETS_GOLD)
                        .ingredient(1, Tags.Items.DUSTS_REDSTONE)
                        .ingredient(1, Items.HOPPER)
+                       .build(consumer);
+    }
+
+    private static void buildRepairKits(@Nonnull Consumer<IFinishedRecipe> consumer) {
+        final String cat = "repair_kits";
+
+        AssemblyBuilder.newAssembly(cat, RepairKitRegistry.INSTANCE.getItem(RepairKits.STD_MK_1, 3)).energyConsumption(25).processTime(600)
+                       .ingredient(2, Tags.Items.LEATHER)
+                       .ingredients(getPotion(Potions.HEALING))
+                       .build(consumer);
+        AssemblyBuilder.newAssembly(cat, RepairKitRegistry.INSTANCE.getItem(RepairKits.STD_MK_2)).energyConsumption(25).processTime(600)
+                       .ingredient(1, RepairKitRegistry.INSTANCE.getItem(RepairKits.STD_MK_1))
+                       .ingredients(getPotion(Potions.HEALING))
+                       .build(consumer);
+        AssemblyBuilder.newAssembly(cat, RepairKitRegistry.INSTANCE.getItem(RepairKits.STD_MK_3)).energyConsumption(25).processTime(600)
+                       .ingredient(1, RepairKitRegistry.INSTANCE.getItem(RepairKits.STD_MK_2))
+                       .ingredients(getPotion(Potions.HEALING))
+                       .build(consumer);
+        AssemblyBuilder.newAssembly(cat, RepairKitRegistry.INSTANCE.getItem(RepairKits.STD_MK_4)).energyConsumption(25).processTime(600)
+                       .ingredient(1, RepairKitRegistry.INSTANCE.getItem(RepairKits.STD_MK_3))
+                       .ingredients(getPotion(Potions.HEALING))
+                       .build(consumer);
+
+        AssemblyBuilder.newAssembly(cat, RepairKitRegistry.INSTANCE.getItem(RepairKits.REG_MK_1, 6)).energyConsumption(25).processTime(600)
+                       .ingredient(2, Tags.Items.LEATHER)
+                       .ingredients(getPotion(Potions.REGENERATION))
                        .build(consumer);
     }
 

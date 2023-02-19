@@ -1,0 +1,38 @@
+{
+  "name": "Repair Kits",
+  "category": "sapturretmod:misc",
+  "icon": "sapturretmod:standard_repair_kit_mk1",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "sapturretmod:standard_repair_kit_mk1,sapturretmod:standard_repair_kit_mk2,sapturretmod:standard_repair_kit_mk3,sapturretmod:standard_repair_kit_mk4,sapturretmod:regeneration_repair_kit_mk1",
+      "title": "Repair Kits",
+      "text": "Repairing a turret is made easy with these repair kits. Each restores a certain amount of health and can be used by just right-clicking a damaged turret.$(br2)Note: Can only be used if the difference of the turrets' maximum and current health is greater or equal to the healing effect."
+    },
+    {
+      "type": "sapturretmod:assembly_i18n",
+      "recipe": "sapturretmod:assembly/repair_kits_standard_repair_kit_mk1",
+      "text": "$(italic)heals for 5 hearts$()"
+    },
+    {
+      "type": "sapturretmod:assembly_i18n",
+      "recipe": "sapturretmod:assembly/repair_kits_standard_repair_kit_mk2",
+      "text": "$(italic)heals for 10 hearts$()"
+    },
+    {
+      "type": "sapturretmod:assembly_i18n",
+      "recipe": "sapturretmod:assembly/repair_kits_standard_repair_kit_mk3",
+      "text": "$(italic)heals for 15 hearts$()"
+    },
+    {
+      "type": "sapturretmod:assembly_i18n",
+      "recipe": "sapturretmod:assembly/repair_kits_standard_repair_kit_mk4",
+      "text": "$(italic)heals for 20 hearts$()"
+    },
+    {
+      "type": "sapturretmod:assembly_i18n",
+      "recipe": "sapturretmod:assembly/repair_kits_regeneration_repair_kit_mk1",
+      "text": "$(italic)heals for 0.25 hearts$(br)Regeneration I for 45s$()"
+    }
+  ]
+}
