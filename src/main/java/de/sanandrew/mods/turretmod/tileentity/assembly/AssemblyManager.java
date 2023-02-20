@@ -47,59 +47,11 @@ public final class AssemblyManager
     public static final IRecipeType<IAssemblyRecipe> TYPE = IRecipeType.register(TmrConstants.ID + ":turret_assembly");
     public static final AssemblyManager INSTANCE = new AssemblyManager();
 
-//    private final Map<ResourceLocation, IAssemblyRecipe> recipes     = new LinkedHashMap<>();
-//    private final Map<String, List<ResourceLocation>>    groups      = new HashMap<>();
     private final Map<String, ItemStack>                 groupIcons  = new HashMap<>();
     private final Map<String, Integer>                   groupOrders = new HashMap<>();
     private String[] groupsCache;
-//
-//    private String[]                           cacheGroupNames;
-//    private List<IAssemblyRecipe>              cacheRecipes;
-//    private Map<String, List<IAssemblyRecipe>> cacheGroupToRecipes;
 
-//    @Override
-//    public boolean registerRecipe(@Nonnull IAssemblyRecipe recipe) {
-//        return registerRecipe(recipe, false);
-//    }
 
-//    public boolean registerRecipe(@Nonnull IAssemblyRecipe recipe, boolean throwException) {
-//        final Consumer<String> exc = throwException ? s -> { throw new RuntimeException(s); } : s -> TmrConstants.LOG.log(Level.ERROR, s, new InvalidParameterException());
-//
-//        ResourceLocation id = recipe.getId();
-//        if( recipe.getEnergyConsumption() < 0 ) {
-//            exc.accept(String.format("Flux usage cannot be smaller than 0 for assembly recipe %s!", id));
-//            return false;
-//        }
-//        if( recipe.getProcessTime() < 0 ) {
-//            exc.accept(String.format("Processing time cannot be smaller than 0 for assembly recipe %s!", id));
-//            return false;
-//        }
-//
-////        if( recipes.containsKey(id) ) {
-////            this.removeRecipe(id);
-////        }
-//
-//        this.recipes.put(id, recipe);
-//        this.groups.computeIfAbsent(recipe.getGroup(), k -> new ArrayList<>()).add(id);
-//        this.groupOrders.putIfAbsent(recipe.getGroup(), 0);
-//
-//        this.invalidateCaches();
-//
-//        return true;
-//    }
-
-//    @Override
-//    public void removeRecipe(ResourceLocation id) {
-//        IAssemblyRecipe recipe = this.recipes.remove(id);
-//        String recipeGroup = recipe.getGroup();
-//        this.groups.get(recipeGroup).removeIf(r -> r.equals(id));
-//
-//        if( this.groups.get(recipeGroup).size() < 1 ) {
-//            this.groups.remove(recipeGroup);
-//        }
-//
-//        this.invalidateCaches();
-//    }
 
     @Override
     public void setGroupIcon(String group, ItemStack icon) {
@@ -167,16 +119,6 @@ public final class AssemblyManager
         manager.setGroupOrder("repair_kits", 4);
         manager.setGroupIcon("repair_kits", RepairKitRegistry.INSTANCE.getItem(RepairKits.STD_MK_1));
     }
-
-//    public IAssemblyRecipe findRecipe(ItemStack output) {
-//        for( IAssemblyRecipe recipe : this.getRecipes() ) {
-//            if( ItemStackUtils.areEqual(output, recipe.getResultItem(), false, true) ) {
-//                return recipe;
-//            }
-//        }
-//
-//        return null;
-//    }
 
     private static final class EmptyRecipe
             extends AssemblyRecipe

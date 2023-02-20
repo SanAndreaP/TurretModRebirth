@@ -16,6 +16,8 @@ public final class RepairKits
 
     public static final IRepairKit REG_MK_1 = new RegenRepairKit(new ResourceLocation(TmrConstants.ID, "regeneration_repair_kit_mk1"), 45 * 20, 0);
 
+    private RepairKits() { }
+
     public static void register(IRepairKitRegistry registry) {
         registry.registerAll(STD_MK_1, STD_MK_2, STD_MK_3, STD_MK_4, REG_MK_1);
     }

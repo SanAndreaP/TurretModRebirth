@@ -224,7 +224,7 @@
   "gui.sapturretmod.assembly.group.misc": "Miscellaneous",
   "gui.sapturretmod.assembly.group.turrets": "Turrets",
   "gui.sapturretmod.assembly.group.ammo": "Ammunition",
-  "gui.sapturretmod.assembly.group.repkit": "Repair Kits",
+  "gui.sapturretmod.assembly.group.repair_kits": "Repair Kits",
   "gui.sapturretmod.assembly.group.upgrades": "Upgrades",
   "_comment": "Generator",
   "gui.sapturretmod.electrogen.efficiency": "Efficiency:",

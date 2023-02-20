@@ -31,6 +31,5 @@ public final class Ammunitions
 
     public static void register(IAmmunitionRegistry registry) {
         registry.registerAll(BOLT, TIPPED_BOLT);
-//        registry.registerAll(BOLT, TIPPED_BOLT, HARPOON, SGSHELL, CRYOCELL_MK1, CRYOCELL_MK2, CRYOCELL_MK3, BULLET, MGSHELL, ELECTROLYTECELL, FLUXCELL, FUELTANK);
     }
 }
