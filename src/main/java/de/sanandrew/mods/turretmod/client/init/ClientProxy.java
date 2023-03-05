@@ -19,9 +19,10 @@ import de.sanandrew.mods.turretmod.client.gui.element.AssemblyFilterItems;
 import de.sanandrew.mods.turretmod.client.gui.element.ErrorTooltip;
 import de.sanandrew.mods.turretmod.client.gui.element.TurretCamElement;
 import de.sanandrew.mods.turretmod.client.gui.element.nav.PageNavigation;
-import de.sanandrew.mods.turretmod.client.gui.element.nav.PageNavigationTooltip;
+import de.sanandrew.mods.turretmod.client.gui.element.nav.PageNavigationTooltips;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.TcuInfo;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.TurretTypeName;
+import de.sanandrew.mods.turretmod.client.gui.element.tcu.levels.ModifierInfoList;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.levels.ModifierList;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.targets.TargetList;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuScreen;
@@ -91,12 +92,13 @@ public class ClientProxy
 
         GuiDefinition.TYPES.put(TurretTypeName.ID, TurretTypeName.Builder::fromJson);
         GuiDefinition.TYPES.put(PageNavigation.ID, PageNavigation.Builder::fromJson);
-        GuiDefinition.TYPES.put(PageNavigationTooltip.ID, PageNavigationTooltip.Builder::fromJson);
+        GuiDefinition.TYPES.put(PageNavigationTooltips.ID, PageNavigationTooltips.Builder::fromJson);
         GuiDefinition.TYPES.put(TurretCamElement.ID, TurretCamElement.Builder::fromJson);
         GuiDefinition.TYPES.put(ErrorTooltip.ID, ErrorTooltip.Builder::fromJson);
         GuiDefinition.TYPES.put(TcuInfo.ID, TcuInfo.Builder::fromJson);
         GuiDefinition.TYPES.put(TargetList.ID, TargetList.Builder::fromJson);
         GuiDefinition.TYPES.put(ModifierList.ID, ModifierList.Builder::fromJson);
+        GuiDefinition.TYPES.put(ModifierInfoList.ID, ModifierInfoList.Builder::fromJson);
         GuiDefinition.TYPES.put(AssemblyFilterItems.ID, AssemblyFilterItems.Builder::fromJson);
 
         ModelRegistry.registerModels();

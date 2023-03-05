@@ -1,5 +1,6 @@
 package de.sanandrew.mods.turretmod.item.upgrades.delegate.leveling;
 
+import com.google.common.collect.Maps;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.api.upgrade.IUpgradeData;
 import de.sanandrew.mods.turretmod.network.SyncTurretStages;
@@ -42,7 +43,7 @@ public class LevelData
     private int     cachedLevel;
     private boolean initialized = false;
 
-    private Integer modifierHash = null;
+    private boolean hasModifierUpdated = false;
 
     LevelData() {
         this.xp = 0;
@@ -54,7 +55,7 @@ public class LevelData
     @Override
     public void load(ITurretEntity turretInst, @Nonnull CompoundNBT nbt) {
         this.xp = nbt.getInt(NBT_EXPERIENCE);
-        this.updateModHash();
+        this.hasModifierUpdated = true;
     }
 
     @Override
@@ -92,28 +93,28 @@ public class LevelData
             this.prevXp = this.xp;
             this.cachedLevel = -1;
 
-            applyEffects(turretInst, this.initialized);
+            this.applyEffects(turretInst, this.initialized);
         }
 
         if( !this.initialized ) {
             this.initialized = true;
 
-            cleanupModifiers(e.getAttributes());
+            this.cleanupModifiers(e.getAttributes());
         } else if( StageLoader.needsUpdate(this) ) {
             this.lastUpdate = System.currentTimeMillis();
 
             this.prevLvl = -1;
-            cleanupModifiers(e.getAttributes());
-            applyEffects(turretInst, false);
+            this.cleanupModifiers(e.getAttributes());
+            this.applyEffects(turretInst, false);
         }
     }
 
-    private static void cleanupModifiers(AttributeModifierManager attribs) {
+    private void cleanupModifiers(AttributeModifierManager attribs) {
         List<UUID> currModifierIds = STAGES.values().stream().map(stage -> stage.modifiers).flatMap(Stream::of).map(m -> m.mod.getId()).collect(Collectors.toList());
-        removeModifiers(attribs, currModifierIds);
+        this.removeModifiers(attribs, currModifierIds);
     }
 
-    private static void removeModifiers(AttributeModifierManager attribMgr, @Nonnull List<UUID> idsToStay) {
+    private void removeModifiers(AttributeModifierManager attribMgr, @Nonnull List<UUID> idsToStay) {
         ForgeRegistries.ATTRIBUTES.forEach(a -> {
             if( attribMgr.hasAttribute(a) ) {
                 ModifiableAttributeInstance ai = Objects.requireNonNull(attribMgr.getInstance(a));
@@ -125,6 +126,8 @@ public class LevelData
                 }
             }
         });
+
+        this.hasModifierUpdated = true;
     }
 
     private static boolean filterDanglingModifiers(AttributeModifier m, List<UUID> currModifierIds) {
@@ -141,13 +144,12 @@ public class LevelData
                     s.apply(turretInst, playSound);
                 }
             });
-            this.updateModHash();
+            this.hasModifierUpdated = true;
         }
     }
 
     void clearEffects(ITurretEntity turretInst) {
-        removeModifiers(turretInst.get().getAttributes(), Collections.emptyList());
-        this.updateModHash();
+        this.removeModifiers(turretInst.get().getAttributes(), Collections.emptyList());
     }
 
     public Map<Attribute, Stage.ModifierInfo> fetchCurrentModifiers() {
@@ -157,6 +159,10 @@ public class LevelData
     private List<Stage> fetchCurrentStages() {
         final int currLevel = this.getLevel();
         return STAGES.values().stream().filter(s -> s.check(currLevel)).collect(Collectors.toList());
+    }
+
+    public static Map<ResourceLocation, Stage> getAvailableStages() {
+        return Collections.unmodifiableMap(STAGES);
     }
 
     public int getXp() {
@@ -203,8 +209,8 @@ public class LevelData
 
     x = sqrt(0.̅2y - 167.33) + 18.0̅5
 
-    Notes: - to correctly get the level and not underlevel, 0.2̅ needs to be written as a simple fraction in code -> (10.0D / 45.0D)
-           - 18.05̅ can be rounded to 3 decimal places -> 18.056D
+    Notes: - to correctly get the level and not underlevel, 0.̅2 needs to be written as a simple fraction in code -> (10.0D / 45.0D)
+           - 18.0̅5 can be rounded to 3 decimal places -> 18.056D
            - The resulting decimal is floored, providing an integer
 
     */
@@ -237,17 +243,10 @@ public class LevelData
         return new SyncTurretStages(STAGES);
     }
 
-    private void updateModHash() {
-        Map<Attribute, Stage.ModifierInfo> currMod = fetchCurrentModifiers();
-        this.modifierHash = 0;
-        currMod.forEach((key, value) -> this.modifierHash = Objects.hash(this.modifierHash, key, value));
-    }
+    public boolean hasModifierUpdated() {
+        boolean updated = this.hasModifierUpdated;
+        this.hasModifierUpdated = false;
 
-    public int getModHash() {
-        if( this.modifierHash == null ) {
-            this.updateModHash();
-        }
-
-        return this.modifierHash;
+        return updated;
     }
 }

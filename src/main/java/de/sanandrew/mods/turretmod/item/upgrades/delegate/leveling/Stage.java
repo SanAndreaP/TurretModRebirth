@@ -92,8 +92,8 @@ public class Stage
             this.modValue = baseValue;
         }
 
-        public double getModValue() {
-            return this.modValue;
+        public double getModPercentage() {
+            return this.modValue * 100 / this.baseValue - 100;
         }
 
         @Override

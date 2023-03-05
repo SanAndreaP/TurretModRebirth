@@ -105,7 +105,7 @@ public class PageNavigation
         }
         this.shownTabs = this.fetchShownPageButtons();
 
-        int tabWidth = this.shownTabs.keySet().stream().map(elem -> elem.get().getWidth()).reduce(Integer::sum).orElse(0);
+        int tabWidth = this.getTabWidth() * this.shownTabs.size();
         int tabLeft  = (tcu.getDefinition().width - tabWidth - tabScrollElemLWidth - tabScrollElemRWidth - 4) / 2;
 
         this.tabScrollL.pos[0] = tabLeft;
@@ -115,11 +115,25 @@ public class PageNavigation
 
         int shownId = 0;
         for( Map.Entry<GuiElementInst, ResourceLocation> tab : this.shownTabs.entrySet() ) {
-            tab.getKey().pos[0] = tabLeft + tabScrollElemLWidth + 2 + shownId++ * tab.getKey().get().getWidth();
+            tab.getKey().pos[0] = getTabX(shownId++);
         }
 
         this.currWidth = tabWidth + 4 + tabScrollElemLWidth + tabScrollElemRWidth;
         this.currHeight = this.shownTabs.keySet().stream().map(elem -> elem.get().getHeight()).reduce(Math::max).orElse(0);
+    }
+
+    int getTabWidth() {
+        GuiElementInst firstTab = this.pages.keySet().stream().findFirst().orElse(null);
+        return firstTab != null ? firstTab.get().getWidth() : 0;
+    }
+
+    int getTabHeight() {
+        GuiElementInst firstTab = this.pages.keySet().stream().findFirst().orElse(null);
+        return firstTab != null ? firstTab.get().getHeight() : 0;
+    }
+
+    int getTabX(int index) {
+        return this.tabScrollL.pos[0] + this.tabScrollL.get().getWidth() + 2 + index * this.getTabWidth();
     }
 
     @Override

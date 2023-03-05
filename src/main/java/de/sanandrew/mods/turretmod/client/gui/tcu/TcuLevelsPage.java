@@ -1,9 +1,11 @@
 package de.sanandrew.mods.turretmod.client.gui.tcu;
 
 import de.sanandrew.mods.sanlib.lib.client.gui.GuiDefinition;
+import de.sanandrew.mods.sanlib.lib.client.gui.GuiElementInst;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ButtonSL;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.ProgressBar;
 import de.sanandrew.mods.sanlib.lib.client.gui.element.Text;
+import de.sanandrew.mods.sanlib.lib.client.gui.element.Texture;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.Resources;
 import de.sanandrew.mods.turretmod.api.TmrConstants;
@@ -24,6 +26,12 @@ public class TcuLevelsPage
         extends JsonTcuPage
 {
     private ButtonSL retrieveExcess;
+    private GuiElementInst showInfoBtn;
+    private GuiElementInst hideInfoBtn;
+    private GuiElementInst infoBg;
+    private GuiElementInst infoArea;
+
+    private boolean showInfo = false;
 
     public TcuLevelsPage(ContainerScreen<TcuContainer> tcuScreen) {
         super(tcuScreen);
@@ -43,7 +51,15 @@ public class TcuLevelsPage
     protected void initGd() {
         this.retrieveExcess = this.guiDefinition.getElementById("retrieveExcess").get(ButtonSL.class);
         this.retrieveExcess.setFunction(btn -> TurretPlayerActionPacket.retrieveXp(turret, mc.player));
-        this.retrieveExcess.setActive(this.canRetrieveXp());
+
+        this.showInfoBtn = this.guiDefinition.getElementById("showInfo");
+        this.showInfoBtn.get(ButtonSL.class).setFunction(btn -> this.showInfo = true);
+        this.hideInfoBtn = this.guiDefinition.getElementById("hideInfo");
+        this.hideInfoBtn.get(ButtonSL.class).setFunction(btn -> this.showInfo = false);
+        this.infoBg = this.guiDefinition.getElementById("infoBackground");
+        this.infoArea = this.guiDefinition.getElementById("level_modifiers_info");
+
+        this.updateElements();
 
         this.guiDefinition.getElementById("current_xp_progress").get(ProgressBar.class)
                           .setPercentFunc(p -> MiscUtils.apply(this.getLvlStorage(), ls -> {
@@ -87,7 +103,15 @@ public class TcuLevelsPage
     public void tick() {
         super.tick();
 
+        this.updateElements();
+    }
+
+    private void updateElements() {
         this.retrieveExcess.setActive(this.canRetrieveXp());
+        this.showInfoBtn.setVisible(!this.showInfo);
+        this.hideInfoBtn.setVisible(this.showInfo);
+        this.infoBg.setVisible(this.showInfo);
+        this.infoArea.setVisible(this.showInfo);
     }
 
     private boolean canRetrieveXp() {

@@ -45,8 +45,8 @@
   ],
   "foregroundElements": [
     {
-      "type": "sapturretmod:tcu_page_nav_ttip",
-      "pos": [0, 214],
+      "type": "sapturretmod:tcu_page_nav_ttips",
+      "pos": [0, 213],
       "data": {
         "for": "pgNavigation"
       }

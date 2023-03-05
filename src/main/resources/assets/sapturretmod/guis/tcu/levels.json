@@ -6,7 +6,7 @@
       "pos": [7, 75],
       "data": {
         "size": [162, 104],
-        "uv": [7, 75]
+        "uv": [0, 0]
       }
     },
     {
@@ -82,8 +82,8 @@
         "scrollbarPos": [164, 76],
         "scrollButton": {
           "size": [4, 16],
-          "uv": [178, 16],
-          "uvDisabled": [178, 0]
+          "uv": [162, 16],
+          "uvDisabled": [162, 0]
         },
         "node": {
           "background": {
@@ -108,8 +108,59 @@
         "useVanillaTexture": false,
         "size": [18, 18],
         "uvSize": [18, 18],
-        "uvEnabled": [238, 18],
-        "buttonFunction": 0
+        "uvEnabled": [238, 18]
+      }
+    },
+    {
+      "type": "button",
+      "id": "showInfo",
+      "pos": [151, 57],
+      "data": {
+        "useVanillaTexture": false,
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "uvEnabled": [202, 18]
+      }
+    },
+    {
+      "type": "button",
+      "id": "hideInfo",
+      "pos": [151, 57],
+      "data": {
+        "useVanillaTexture": false,
+        "size": [18, 18],
+        "uvSize": [18, 18],
+        "uvEnabled": [220, 18]
+      }
+    },
+    {
+      "type": "texture",
+      "id": "infoBackground",
+      "pos": [7, 75],
+      "data": {
+        "size":[162, 104],
+        "uv": [0, 104]
+      }
+    },
+    {
+      "type": "sapturretmod:tcu_modifier_info_list",
+      "id": "level_modifiers_info",
+      "pos": [12, 80],
+      "data": {
+        "areaSize": [148, 94],
+        "scrollbarPos": [160, 80],
+        "scrollButton": {
+          "size": [4, 16],
+          "uv": [162, 120],
+          "uvDisabled": [162, 104]
+        },
+        "node": {
+          "color": {
+            "default": "0xFFFFFFFF",
+            "modLabel": "0xFF808080",
+            "modValue": "0xFFA0A0A0"
+          }
+        }
       }
     }
   ],
@@ -120,6 +171,24 @@
       "data": {
         "size": [18, 18],
         "text": "gui.sapturretmod.tcu.leveling.retrieve"
+      }
+    },
+    {
+      "type": "tooltip",
+      "pos": [151, 57],
+      "data": {
+        "size": [18, 18],
+        "text": "gui.sapturretmod.tcu.leveling.info.show",
+        "for": "showInfo"
+      }
+    },
+    {
+      "type": "tooltip",
+      "pos": [151, 57],
+      "data": {
+        "size": [18, 18],
+        "text": "gui.sapturretmod.tcu.leveling.info.hide",
+        "for": "hideInfo"
       }
     }
   ]

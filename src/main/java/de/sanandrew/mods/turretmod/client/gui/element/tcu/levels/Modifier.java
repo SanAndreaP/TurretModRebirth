@@ -22,7 +22,7 @@ import java.text.DecimalFormat;
 public class Modifier
         extends ElementParent<String>
 {
-    private static final DecimalFormat MOD_FORMAT = new DecimalFormat("+#0.0;-#0.0");
+    public static final DecimalFormat MOD_FORMAT = new DecimalFormat("+#0.0;-#0.0");
 
     private static final String BACKGROUND = "background";
     private static final String LABEL = "label";
@@ -34,10 +34,8 @@ public class Modifier
         this.put(VALUE, value);
 
         label.get(Text.class).setTextFunc((g, t) -> new TranslationTextComponent(attrib.getDescriptionId()));
-        value.get(Text.class).setTextFunc((g, t) -> {
-            double val = info.getModValue() / info.baseValue * 100 - 100;
-            return new TranslationTextComponent(Lang.TCU_TEXT.get("leveling.modValue"), MOD_FORMAT.format(val));
-        });
+        value.get(Text.class).setTextFunc((g, t) -> new TranslationTextComponent(Lang.TCU_TEXT.get("leveling.modValue"),
+                                                                                 MOD_FORMAT.format(info.getModPercentage())));
     }
 
     @SuppressWarnings("UnusedReturnValue")
