@@ -2,6 +2,14 @@
   "texture": "sapturretmod:textures/gui/tcu/page_remote_access.png",
   "backgroundElements": [
     {
+      "type": "texture",
+      "pos": [7, 39],
+      "data": {
+        "size": [162, 161],
+        "uv": [7, 39]
+      }
+    },
+    {
       "type": "text",
       "pos": [8, 113],
       "data": {
@@ -11,11 +19,11 @@
     },
     {
       "type": "text",
-      "pos": [43, 28],
+      "pos": [35, 28],
       "alignment": ["center"],
       "data": {
         "color": "0xFF404040",
-        "text": "gui.sapturretmod.tcu.page.sapturretmod:remote_access.repair_kit"
+        "text": "gui.sapturretmod.tcu.remote_access.repair_kit"
       }
     },
     {
@@ -24,23 +32,29 @@
       "alignment": ["center"],
       "data": {
         "color": "0xFF404040",
-        "text": "gui.sapturretmod.tcu.page.sapturretmod:remote_access.ammo"
+        "text": "gui.sapturretmod.tcu.remote_access.ammo"
+      }
+    },
+    {
+      "type": "progress_bar",
+      "id": "health",
+      "pos": [28, 79],
+      "data": {
+        "size": [12, 10],
+        "uv": [176, 0],
+        "direction": "bottom_to_top",
+        "smooth": true
       }
     }
   ],
   "foregroundElements": [
     {
-      "type": "sapturretmod:tcu.remote_access_health",
+      "type": "tooltip",
+      "id": "healthTtip",
       "pos": [26, 76],
       "data": {
-        "heartTexture": {
-          "size": [12, 10],
-          "uv": [176, 0],
-          "offset": [2, 3]
-        },
-        "tooltip": {
-          "text": "%s/%s hearts"
-        }
+        "size": [18, 18],
+        "text": "gui.sapturretmod.tcu.remote_access.health"
       }
     }
   ]

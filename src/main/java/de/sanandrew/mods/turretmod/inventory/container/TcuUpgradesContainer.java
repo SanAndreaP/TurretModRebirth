@@ -1,14 +1,11 @@
 package de.sanandrew.mods.turretmod.inventory.container;
 
 import de.sanandrew.mods.sanlib.lib.util.InventoryUtils;
-import de.sanandrew.mods.sanlib.lib.util.ItemStackUtils;
 import de.sanandrew.mods.sanlib.lib.util.MiscUtils;
 import de.sanandrew.mods.turretmod.api.tcu.TcuContainer;
 import de.sanandrew.mods.turretmod.api.turret.ITurretEntity;
 import de.sanandrew.mods.turretmod.api.turret.IUpgradeProcessor;
 import de.sanandrew.mods.turretmod.entity.turret.UpgradeProcessor;
-import de.sanandrew.mods.turretmod.item.ItemRegistry;
-import de.sanandrew.mods.turretmod.item.ItemUpgrade;
 import de.sanandrew.mods.turretmod.item.upgrades.UpgradeRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -75,6 +72,7 @@ public class TcuUpgradesContainer
         return origStack;
     }
 
+    @SuppressWarnings("java:S2184")
     private void onSlotChange(ItemStack newStack, Slot slot, int currSlotId) {
         int newSlotId = slot.index;
 

@@ -119,19 +119,6 @@ public class TurretCrateContainer
         }
     }
 
-    public static class OutputSlot
-            extends Slot
-    {
-        OutputSlot(IInventory inventoryIn, int index, int xPosition, int yPosition) {
-            super(inventoryIn, index, xPosition, yPosition);
-        }
-
-        @Override
-        public boolean mayPlace(@Nonnull ItemStack stack) {
-            return false;
-        }
-    }
-
     public static final class SlotAmmo
             extends OutputSlot
     {

@@ -19,6 +19,7 @@ import de.sanandrew.mods.turretmod.entity.EntityRegistry;
 import de.sanandrew.mods.turretmod.entity.turret.TurretEntity;
 import de.sanandrew.mods.turretmod.init.TurretModRebirth;
 import de.sanandrew.mods.turretmod.inventory.container.TcuContainerFactory;
+import de.sanandrew.mods.turretmod.inventory.container.TcuRemoteAccessContainer;
 import de.sanandrew.mods.turretmod.inventory.container.TcuUpgradesContainer;
 import net.minecraft.advancements.criterion.EntityPredicate;
 import net.minecraft.client.util.ITooltipFlag;
@@ -284,6 +285,7 @@ public class TurretControlUnit
     public static final ResourceLocation TARGETS_SMART     = new ResourceLocation(TmrConstants.ID, "targets_smart");
     public static final ResourceLocation UPGRADES          = new ResourceLocation(TmrConstants.ID, "upgrades");
     public static final ResourceLocation LEVELS            = new ResourceLocation(TmrConstants.ID, "leveling");
+    public static final ResourceLocation REMOTE_ACCESS     = new ResourceLocation(TmrConstants.ID, "remote_access");
 
     public static void register(ITcuRegistry registry) {
         registry.registerTcuPage(INFO);
@@ -292,5 +294,6 @@ public class TurretControlUnit
         registry.registerTcuPage(TARGETS_SMART);
         registry.registerTcuPage(UPGRADES, TcuUpgradesContainer::new);
         registry.registerTcuPage(LEVELS);
+        registry.registerTcuPage(REMOTE_ACCESS, TcuRemoteAccessContainer::new);
     }
 }

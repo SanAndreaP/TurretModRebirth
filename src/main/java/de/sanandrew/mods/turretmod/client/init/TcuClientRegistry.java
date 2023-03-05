@@ -9,6 +9,7 @@ import de.sanandrew.mods.turretmod.api.tcu.TcuContainer;
 import de.sanandrew.mods.turretmod.client.gui.element.tcu.TcuInfoValue;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuInfoPage;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuLevelsPage;
+import de.sanandrew.mods.turretmod.client.gui.tcu.TcuRemoteAccessPage;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuScreen;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuSmartTargetingPage;
 import de.sanandrew.mods.turretmod.client.gui.tcu.TcuTargetPage;
@@ -75,6 +76,7 @@ public final class TcuClientRegistry
         registry.registerTcuScreen(TurretControlUnit.UPGRADES, () -> UpgradeRegistry.INSTANCE.getItem(UpgradeRegistry.INSTANCE.getEmptyUpgrade().getId()), TcuUpgradesPage::new);
         registry.registerTcuScreen(TurretControlUnit.TARGETS_SMART, () -> UpgradeRegistry.INSTANCE.getItem(Upgrades.SMART_TGT.getId()), TcuSmartTargetingPage::new);
         registry.registerTcuScreen(TurretControlUnit.LEVELS, () -> UpgradeRegistry.INSTANCE.getItem(Upgrades.LEVELING.getId()), TcuLevelsPage::new);
+        registry.registerTcuScreen(TurretControlUnit.REMOTE_ACCESS, () -> UpgradeRegistry.INSTANCE.getItem(Upgrades.REMOTE_ACCESS.getId()), TcuRemoteAccessPage::new);
 
         registry.registerTcuInfoProvider(0, new NameProvider());
         registry.registerTcuInfoProvider(1, new HealthProvider());

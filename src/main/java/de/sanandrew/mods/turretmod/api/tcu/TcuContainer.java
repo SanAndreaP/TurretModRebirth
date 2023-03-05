@@ -17,10 +17,12 @@ public class TcuContainer
     public final boolean isRemote;
     public final ResourceLocation currPage;
     public final boolean initial;
+    protected final PlayerInventory playerInventory;
 
     public TcuContainer(int windowId, PlayerInventory playerInventory, ITurretEntity turret, ResourceLocation currPage, boolean isRemote, boolean initial) {
         super(ContainerRegistry.TCU, windowId);
 
+        this.playerInventory = playerInventory;
         this.turret = turret;
         this.currPage = currPage;
         this.isRemote = isRemote;

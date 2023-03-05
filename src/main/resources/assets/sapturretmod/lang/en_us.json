@@ -217,6 +217,7 @@
   "gui.sapturretmod.tcu.colorizer.cullfaces": "Cull Inner Faces",
   "gui.sapturretmod.tcu.remote_access.ammo": "Ammunition",
   "gui.sapturretmod.tcu.remote_access.repair_kit": "Repair Kits",
+  "gui.sapturretmod.tcu.remote_access.health": "%s/%s hearts",
 
   "_comment": "Assembly",
   "gui.sapturretmod.assembly.cancel": "Cancel",
