@@ -597,7 +597,7 @@ public final class TargetProcessor
 
         this.ammoCount = nbt.getInt(NBT_AMMO_COUNT);
         this.ammoStack = ItemStack.of(nbt.getCompound(NBT_AMMO_STACK));
-        this.entityToAttackID = nbt.getUUID(NBT_TARGET_ID);
+        this.entityToAttackID = nbt.hasUUID(NBT_TARGET_ID) ? nbt.getUUID(NBT_TARGET_ID) : UuidUtils.EMPTY_UUID;
 
         this.isEntityTargetListDenying = nbt.getBoolean(NBT_ENTITYTGTLIST_DENY);
         ListNBT entityTargets = nbt.getList(NBT_ENTITYTGTLIST, Constants.NBT.TAG_COMPOUND);

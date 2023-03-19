@@ -3,7 +3,7 @@
   "backgroundElements": [
     {
       "type": "texture",
-      "pos": [7, 39],
+      "pos": [7, 40],
       "data": {
         "size": [162, 161],
         "uv": [7, 39]
@@ -11,7 +11,7 @@
     },
     {
       "type": "text",
-      "pos": [8, 113],
+      "pos": [8, 114],
       "data": {
         "color": "0xFF404040",
         "text": "container.inventory"
@@ -19,7 +19,7 @@
     },
     {
       "type": "text",
-      "pos": [35, 28],
+      "pos": [35, 29],
       "alignment": ["center"],
       "data": {
         "color": "0xFF404040",
@@ -28,7 +28,7 @@
     },
     {
       "type": "text",
-      "pos": [133, 28],
+      "pos": [133, 29],
       "alignment": ["center"],
       "data": {
         "color": "0xFF404040",
@@ -38,7 +38,7 @@
     {
       "type": "progress_bar",
       "id": "health",
-      "pos": [28, 79],
+      "pos": [28, 80],
       "data": {
         "size": [12, 10],
         "uv": [176, 0],
@@ -51,7 +51,7 @@
     {
       "type": "tooltip",
       "id": "healthTtip",
-      "pos": [26, 76],
+      "pos": [25, 76],
       "data": {
         "size": [18, 18],
         "text": "gui.sapturretmod.tcu.remote_access.health"

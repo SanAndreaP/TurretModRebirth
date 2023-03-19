@@ -844,7 +844,7 @@ public class TurretEntity
         this.setActive(compound.getBoolean(NBT_IS_ACTIVE));
 
         CompoundNBT ownerCompound = compound.getCompound(NBT_OWNER);
-        this.ownerId = ownerCompound.getUUID(NBT_OWNER_ID);
+        this.ownerId = ownerCompound.hasUUID(NBT_OWNER_ID) ? ownerCompound.getUUID(NBT_OWNER_ID) : UuidUtils.EMPTY_UUID;
         this.ownerName = MiscUtils.get(ITextComponent.Serializer.fromJson(ownerCompound.getString(NBT_OWNER_NAME)), StringTextComponent.EMPTY);
 
         if( compound.contains(NBT_TURRET_VARIANT, Constants.NBT.TAG_STRING) ) {

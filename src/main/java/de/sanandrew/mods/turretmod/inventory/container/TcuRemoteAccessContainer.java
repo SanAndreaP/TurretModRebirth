@@ -42,24 +42,24 @@ public class TcuRemoteAccessContainer
     public TcuRemoteAccessContainer(int windowId, PlayerInventory playerInventory, ITurretEntity turret, ResourceLocation currPage, boolean isRemote, boolean initial) {
         super(windowId, playerInventory, turret, currPage, isRemote, initial);
 
-        this.addSlot(new InputSlot(this.raInventory, SLOT_IN_REPAIR_KIT, 26, 40,
+        this.addSlot(new InputSlot(this.raInventory, SLOT_IN_REPAIR_KIT, 26, 41,
                                    s -> s.getItem() instanceof RepairKitItem,
                                    () -> this.slotsChanged(this.raInventory)));
-        this.addSlot(new InputSlot(this.raInventory, SLOT_IN_AMMO, 134, 40,
+        this.addSlot(new InputSlot(this.raInventory, SLOT_IN_AMMO, 134, 41,
                                    s -> s.getItem() instanceof AmmoItem || s.getItem() instanceof AmmoCartridgeItem,
                                    () -> this.slotsChanged(this.raInventory)));
-        this.addSlot(new AmmoSlot(116, 58));
-        this.addSlot(new OutputSlot(this.raInventory, SLOT_OUT_AMMO, 134, 76,
+        this.addSlot(new AmmoSlot(116, 59));
+        this.addSlot(new OutputSlot(this.raInventory, SLOT_OUT_AMMO, 134, 77,
                                     () -> this.slotsChanged(this.raInventory)));
 
         for( int i = 0; i < 3; i++ ) {
             for( int j = 0; j < 9; j++ ) {
-                this.addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 125 + i * 18));
+                this.addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 126 + i * 18));
             }
         }
 
         for( int i = 0; i < 9; i++ ) {
-            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 183));
+            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 184));
         }
     }
 
