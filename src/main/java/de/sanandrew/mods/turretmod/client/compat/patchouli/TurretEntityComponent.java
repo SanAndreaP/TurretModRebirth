@@ -83,7 +83,7 @@ public class TurretEntityComponent
             return;
         }
 
-        luke.inGui = true;
+//        luke.inGui = true;
         luke.setYHeadRot(0);
 
         float rotation = this.rotate || this.bouncy ? bookTick + partTicks : this.defRotation;

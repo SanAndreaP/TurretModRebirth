@@ -110,7 +110,7 @@ public class TurretEntity
     @Nonnull
     private ITurret delegate;
     private boolean showRange;
-    public  boolean        inGui;
+//    public  boolean        inGui;
     @Nonnull
     private UUID           ownerId;
     @Nonnull
@@ -442,10 +442,10 @@ public class TurretEntity
         this.ownerName = ownerName;
     }
 
-    @Override
-    public boolean isInGui() {
-        return this.inGui;
-    }
+//    @Override
+//    public boolean isInGui() {
+//        return this.inGui;
+//    }
 
     @Override
     public <V extends ITurretRAM> V getRAM(Supplier<V> onNull) {
@@ -578,13 +578,13 @@ public class TurretEntity
 //region Core
     @Override
     public void tick() {
-        if( !this.inGui ) {
+//        if( !this.inGui ) {
             super.tick();
 
             this.yBodyRot = this.yBodyRotO = 0.0F;
 
             this.delegate.tick(this);
-        }
+//        }
     }
 
     @Override

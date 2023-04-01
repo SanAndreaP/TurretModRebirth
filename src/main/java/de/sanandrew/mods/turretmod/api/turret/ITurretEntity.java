@@ -63,7 +63,7 @@ public interface ITurretEntity
 
     boolean hasOwner();
 
-    boolean isInGui();
+//    boolean isInGui();
 
     <V extends ITurretRAM> V getRAM(Supplier<V> onNull);
 

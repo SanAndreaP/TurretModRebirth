@@ -39,9 +39,9 @@ public class LayerTurretShieldLightning<E extends LivingEntity & ITurretEntity, 
     public void render(@Nonnull MatrixStack stack, @Nonnull IRenderTypeBuffer buffer, int packedLight, E turretInst,
                        float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
     {
-        if( turretInst.isInGui() ) {
-            return;
-        }
+//        if( turretInst.isInGui() ) {
+//            return;
+//        }
 
         LIGHTNING_RENDERS.forEach((key, value) -> value.removeIf(RenderLightning::finished));
         LIGHTNING_RENDERS.entrySet().removeIf(entry -> entry.getValue().isEmpty());

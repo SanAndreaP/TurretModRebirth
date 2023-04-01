@@ -46,36 +46,22 @@ public class ModelTurretBase<E extends LivingEntity & ITurretEntity>
 	@Override
 	public void renderToBuffer(@Nonnull MatrixStack stack, @Nonnull IVertexBuilder builder, int light, int overlay, float red, float green, float blue, float alpha) {
 		if( this.modelJson.isLoaded() ) {
-			Arrays.asList(this.modelJson.getMainBoxes()).forEach((box) -> {
-//					ITurretInst turret = (ITurretInst) entity;
-//					int         b      = turret.getPartBrightnessForRender(getSubmergedBoxOffset(box));
-
-				box.render(stack, builder, light, overlay, red, green, blue, alpha);
-			});
+			Arrays.asList(this.modelJson.getMainBoxes()).forEach(box -> box.render(stack, builder, light, overlay, red, green, blue, alpha));
 		}
 	}
-
-//	private static double getSubmergedBoxOffset(ModelRenderer box) {
-//		if( box.cubes.size() > 0 ) {
-//			ModelBox cube = box.cubeList.get(0);
-//			return (23.0D - box.rotationPointY - box.offsetY - cube.posY1) / 16.0D;
-//		}
-//
-//		return (23.0D - box.rotationPointY - box.offsetY) / 16.0D;
-//	}
 
 	@Override
 	public void setupAnim(E turret, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		this.head.yRot = netHeadYaw / (180.0F / (float)Math.PI);
         this.head.xRot = headPitch / (180.0F / (float)Math.PI);
 
-		float maxHealth = turret.isInGui() ? 2.0F : turret.get().getMaxHealth();
-		float health = turret.isInGui() ? 1.0F : turret.get().getHealth();
-		int maxAmmo = turret.isInGui() ? 2 : turret.getTargetProcessor().getMaxAmmoCapacity();
-		int ammo = turret.isInGui() ? 1 : turret.getTargetProcessor().getAmmoCount();
+		float maxHealth = turret.get().getMaxHealth();
+		float health = turret.get().getHealth();
+		float maxAmmo = turret.getTargetProcessor().getMaxAmmoCapacity();
+		float ammo = turret.getTargetProcessor().getAmmoCount();
 
-        this.healthBar.zRot = -((float)Math.PI / 2.0F) * (Math.max(0.0F, maxHealth - health) / maxHealth);
-        this.ammoBar.zRot = ((float)Math.PI / 2.0F) * (Math.max(0.0F, maxAmmo - ammo) / (float) maxAmmo);
+		this.healthBar.y = 19 + 4.01F * (Math.max(0.0F, maxHealth - health) / maxHealth);
+		this.ammoBar.y = 19 + 4.01F * (Math.max(0.0F, maxAmmo - ammo) / maxAmmo);
 	}
 
 	@Override
