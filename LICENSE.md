@@ -1,6 +1,6 @@
 BSD 3-Clause License
 
-Copyright (c) 2020, SanAndreasP  
+Copyright (c) 2011 - 2023, SanAndreaP  
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
