@@ -37,7 +37,7 @@ You want to translate the mod to a language you're proficient in? There are two 
 1. Fork[^2] this repo and go to the `src/main/resources/assets/sapturretmod/lang` directory. Here you can find the already translated files. Either modify an existing one or create a new file[^1].
    After you've done your changes, make a pull request (PR)[^3].
 
-2. Copy the currently available english translation file ([here](https://raw.githubusercontent.com/SanAndreaP/TurretModRebirth/src/main/resources/assets/sapturretmod/lang/en_us.json)) and create a new .json file[^1] somewhere (or download the file by right-clicking the link and choose `Save Target/Link As...`, optionally rename it).
+2. Copy the currently available english translation file ([here](https://raw.githubusercontent.com/SanAndreaP/TurretModRebirth/main/src/main/resources/assets/sapturretmod/lang/en_us.json)) and create a new .json file[^1] somewhere (or download the file by right-clicking the link and choose `Save Target/Link As...`, optionally rename it).
    After you've done your changes, create a new [issue](https://github.com/SanAndreaP/TurretModRebirth/issues) and attach your file there.
 
 ### For Developers
