@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: BSD-3-Clause                     *
  * Copyright © 2011-2023 SanAndreaP                          *
- * Full license text can be found within the LICENSE.md file */de.sanandrew.mods.turretmod.datagenerator;
+ * Full license text can be found within the LICENSE.md file */
+package de.sanandrew.mods.turretmod.datagenerator;
 
 import com.google.common.base.Strings;
 import de.sanandrew.mods.turretmod.api.Resources;
