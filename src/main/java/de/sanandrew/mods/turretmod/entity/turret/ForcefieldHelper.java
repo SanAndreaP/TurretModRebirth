@@ -1,3 +1,6 @@
+/* SPDX-License-Identifier: BSD-3-Clause                     *
+ * Copyright © 2011-2023 SanAndreaP                          *
+ * Full license text can be found within the LICENSE.md file */
 package de.sanandrew.mods.turretmod.entity.turret;
 
 import de.sanandrew.mods.sanlib.lib.ColorObj;

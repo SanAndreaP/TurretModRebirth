@@ -1,9 +1,6 @@
-/* ******************************************************************************************************************
- * Authors:   SanAndreasP
- * Copyright: SanAndreasP
- * License:   Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
- *                http://creativecommons.org/licenses/by-nc-sa/4.0/
- *******************************************************************************************************************/
+/* SPDX-License-Identifier: BSD-3-Clause                     *
+ * Copyright © 2011-2023 SanAndreaP                          *
+ * Full license text can be found within the LICENSE.md file */
 package de.sanandrew.mods.turretmod.api.electrolytegen;
 
 import de.sanandrew.mods.turretmod.api.ILeveledInventory;
