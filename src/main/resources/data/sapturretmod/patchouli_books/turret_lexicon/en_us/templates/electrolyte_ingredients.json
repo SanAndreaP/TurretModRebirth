@@ -21,7 +21,7 @@
     },
     {
       "type": "custom",
-      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentElectrolytes",
+      "class": "dev.sanandrea.mods.turretmod.client.compat.patchouli.ComponentElectrolytes",
       "x": 0, "y": 62,
       "title": "#ingredients_title",
       "max_entries_shown": 4,

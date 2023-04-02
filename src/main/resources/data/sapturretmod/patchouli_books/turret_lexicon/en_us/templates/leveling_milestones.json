@@ -2,7 +2,7 @@
   "components": [
     {
       "type": "custom",
-      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentLevelingMilestones",
+      "class": "dev.sanandrea.mods.turretmod.client.compat.patchouli.ComponentLevelingMilestones",
       "title": "Level-Ups",
       "max_entries_shown": 12,
       "y": 0,

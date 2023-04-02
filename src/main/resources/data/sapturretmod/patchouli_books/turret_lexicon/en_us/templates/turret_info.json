@@ -1,5 +1,5 @@
 {
-  "processor": "de.sanandrew.mods.turretmod.client.compat.patchouli.TurretStatComponentProcessor",
+  "processor": "dev.sanandrea.mods.turretmod.client.compat.patchouli.TurretStatComponentProcessor",
   "components": [
     {
       "type": "header",
@@ -107,7 +107,7 @@
     },
     {
       "type": "custom",
-      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.TurretEntityComponent",
+      "class": "dev.sanandrea.mods.turretmod.client.compat.patchouli.TurretEntityComponent",
       "turret": "#turret",
       "x": 0, "y": 80,
       "scale": "#scale",

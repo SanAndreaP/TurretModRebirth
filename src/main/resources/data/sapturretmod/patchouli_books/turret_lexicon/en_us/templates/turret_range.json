@@ -1,9 +1,9 @@
 {
-  "processor": "de.sanandrew.mods.turretmod.client.compat.patchouli.TurretStatComponentProcessor",
+  "processor": "dev.sanandrea.mods.turretmod.client.compat.patchouli.TurretStatComponentProcessor",
   "components": [
     {
       "type": "custom",
-      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.CustomTextComponent",
+      "class": "dev.sanandrea.mods.turretmod.client.compat.patchouli.CustomTextComponent",
       "text": "#rangeLX",
       "rotation": 27.5,
       "x": 21, "y": 104,
@@ -11,7 +11,7 @@
     },
     {
       "type": "custom",
-      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.CustomTextComponent",
+      "class": "dev.sanandrea.mods.turretmod.client.compat.patchouli.CustomTextComponent",
       "text": "#rangeLY",
       "rotation": 90.0,
       "x": 8, "y": 92,
@@ -19,7 +19,7 @@
     },
     {
       "type": "custom",
-      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.CustomTextComponent",
+      "class": "dev.sanandrea.mods.turretmod.client.compat.patchouli.CustomTextComponent",
       "text": "#rangeLZ",
       "rotation": -27.5,
       "x": 107, "y": 104,
@@ -27,7 +27,7 @@
     },
     {
       "type": "custom",
-      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.CustomTextComponent",
+      "class": "dev.sanandrea.mods.turretmod.client.compat.patchouli.CustomTextComponent",
       "text": "#rangeHX",
       "rotation": 27.5,
       "x": 46, "y": 117,
@@ -35,7 +35,7 @@
     },
     {
       "type": "custom",
-      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.CustomTextComponent",
+      "class": "dev.sanandrea.mods.turretmod.client.compat.patchouli.CustomTextComponent",
       "text": "#rangeHY",
       "rotation": 90.0,
       "x": 8, "y": 61,
@@ -43,7 +43,7 @@
     },
     {
       "type": "custom",
-      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.CustomTextComponent",
+      "class": "dev.sanandrea.mods.turretmod.client.compat.patchouli.CustomTextComponent",
       "text": "#rangeHZ",
       "rotation": -27.5,
       "x": 82, "y": 117,

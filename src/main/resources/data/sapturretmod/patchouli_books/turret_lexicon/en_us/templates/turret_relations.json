@@ -2,7 +2,7 @@
   "components": [
     {
       "type": "custom",
-      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentTurretEntries",
+      "class": "dev.sanandrea.mods.turretmod.client.compat.patchouli.ComponentTurretEntries",
       "target_id": "#turret_type",
       "entries_type": "ammo",
       "title": "Ammunitions",
@@ -10,7 +10,7 @@
     },
     {
       "type": "custom",
-      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentTurretEntries",
+      "class": "dev.sanandrea.mods.turretmod.client.compat.patchouli.ComponentTurretEntries",
       "target_id": "#turret_type",
       "entries_type": "upgrades",
       "title": "Upgrades",

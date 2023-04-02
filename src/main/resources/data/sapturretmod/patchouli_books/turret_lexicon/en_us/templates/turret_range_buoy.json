@@ -1,9 +1,9 @@
 {
-  "processor": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentTurretStatProcessor",
+  "processor": "dev.sanandrea.mods.turretmod.client.compat.patchouli.ComponentTurretStatProcessor",
   "components": [
     {
       "type": "custom",
-      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentCustomText",
+      "class": "dev.sanandrea.mods.turretmod.client.compat.patchouli.ComponentCustomText",
       "text": "#rangeLX",
       "rotation": 27.5,
       "x": 21, "y": 104,
@@ -11,7 +11,7 @@
     },
     {
       "type": "custom",
-      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentCustomText",
+      "class": "dev.sanandrea.mods.turretmod.client.compat.patchouli.ComponentCustomText",
       "text": "#rangeLY",
       "rotation": 90.0,
       "x": 8, "y": 72,
@@ -19,7 +19,7 @@
     },
     {
       "type": "custom",
-      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentCustomText",
+      "class": "dev.sanandrea.mods.turretmod.client.compat.patchouli.ComponentCustomText",
       "text": "#rangeLZ",
       "rotation": -27.5,
       "x": 107, "y": 104,
@@ -27,7 +27,7 @@
     },
     {
       "type": "custom",
-      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentCustomText",
+      "class": "dev.sanandrea.mods.turretmod.client.compat.patchouli.ComponentCustomText",
       "text": "#rangeHX",
       "rotation": 27.5,
       "x": 46, "y": 117,
@@ -35,7 +35,7 @@
     },
     {
       "type": "custom",
-      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentCustomText",
+      "class": "dev.sanandrea.mods.turretmod.client.compat.patchouli.ComponentCustomText",
       "text": "#rangeHY",
       "rotation": 90.0,
       "x": 8, "y": 40,
@@ -43,7 +43,7 @@
     },
     {
       "type": "custom",
-      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentCustomText",
+      "class": "dev.sanandrea.mods.turretmod.client.compat.patchouli.ComponentCustomText",
       "text": "#rangeHZ",
       "rotation": -27.5,
       "x": 82, "y": 117,
@@ -72,7 +72,7 @@
     },
     {
       "type": "custom",
-      "class": "de.sanandrew.mods.turretmod.client.compat.patchouli.ComponentCustomImage",
+      "class": "dev.sanandrea.mods.turretmod.client.compat.patchouli.ComponentCustomImage",
       "image": "sapturretmod:textures/gui/lexicon/range_diagram_high_buoy.png",
       "x": 0,              "y": 0,
       "u": 0,               "w": 0,

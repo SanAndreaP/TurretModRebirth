@@ -9,7 +9,7 @@
   "updateUrl": "",
   "authors": ["SanAndreasP"],
   "credits": "Darkhax, Drullkus, Vazkii",
-  "logoFile": "",
+  "logoFile": "logo.png",
   "screenshots": [],
   "dependencies": []
 }
