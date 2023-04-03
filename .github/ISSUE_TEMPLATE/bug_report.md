@@ -25,8 +25,8 @@ If applicable, add screenshots to help explain your problem.
 
 **Environment (please complete the following information):**
  - OS: [e.g. Windows 10]
- - Minecraft Version [e.g. 1.12.2]
- - Version [e.g. 4.0.0-beta.4.6]
+ - Minecraft Version: [e.g. 1.12.2]
+ - Version: [e.g. 4.0.0-beta.4.6]
 
 **Additional context**
 Add any other context about the problem here.
