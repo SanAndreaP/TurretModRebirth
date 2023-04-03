@@ -272,7 +272,7 @@ public final class UpgradeProcessor
             if( !upg.isCompatibleWithCreativeUpgrade() && this.hasUpgrade(Upgrades.CREATIVE) ) {
                 return false;
             } else if(upg.getId().equals(Upgrades.CREATIVE.getId())
-                      && this.upgradeStacks.stream().filter(slot -> UpgradeRegistry.INSTANCE.get(slot).isCompatibleWithCreativeUpgrade()).findFirst().orElse(null) != null )
+                      && this.upgradeStacks.stream().map(UpgradeRegistry.INSTANCE::get).filter(u -> u.isValid() && !u.isCompatibleWithCreativeUpgrade()).findFirst().orElse(null) != null )
             {
                 return false;
             }

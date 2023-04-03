@@ -36,4 +36,9 @@ public class RemoteAccess
     public ResourceLocation getId() {
         return ID;
     }
+
+    @Override
+    public boolean isCompatibleWithCreativeUpgrade() {
+        return true;
+    }
 }

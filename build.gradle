@@ -176,7 +176,8 @@ publishing {
 
 import net.minecraftforge.gradle.common.tasks.SignJar
 
-task signJar(type: SignJar, dependsOn: jar) {
+tasks.register('signJar', SignJar) {
+    dependsOn jar
     onlyIf {
         project.hasProperty('keyStore')
     }
