@@ -18,10 +18,12 @@ public abstract class TcuTabEvent
 {
     public final IGui          screen;
     public final ITurretEntity turret;
+    public final boolean isRemote;
 
-    public TcuTabEvent(IGui screen, ITurretEntity turret) {
+    public TcuTabEvent(IGui screen, ITurretEntity turret, boolean isRemote) {
         this.screen = screen;
         this.turret = turret;
+        this.isRemote = isRemote;
     }
 
     @Cancelable
@@ -30,8 +32,8 @@ public abstract class TcuTabEvent
     {
         public final ResourceLocation tabId;
 
-        public TabIconShow(IGui screen, ITurretEntity turret, ResourceLocation tabId) {
-            super(screen, turret);
+        public TabIconShow(IGui screen, ITurretEntity turret, ResourceLocation tabId, boolean isRemote) {
+            super(screen, turret, isRemote);
             this.tabId = tabId;
         }
     }

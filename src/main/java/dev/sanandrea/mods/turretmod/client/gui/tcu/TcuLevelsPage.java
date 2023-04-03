@@ -34,9 +34,12 @@ public class TcuLevelsPage
     private GuiElementInst infoArea;
 
     private boolean showInfo = false;
+    private final boolean isRemote;
 
     public TcuLevelsPage(ContainerScreen<TcuContainer> tcuScreen) {
         super(tcuScreen);
+
+        this.isRemote = ((TcuScreen) tcuScreen).isRemote;
     }
 
     @Override
@@ -117,6 +120,10 @@ public class TcuLevelsPage
     }
 
     private boolean canRetrieveXp() {
+        if( this.isRemote && !this.turret.getUpgradeProcessor().hasUpgrade(Upgrades.REMOTE_ACCESS) ) {
+            return false;
+        }
+
         LevelData stg = this.turret.getUpgradeProcessor().getUpgradeData(Upgrades.LEVELING.getId());
         return stg != null && stg.getExcessXp() > 0;
     }

@@ -51,9 +51,10 @@ public class ButtonNav
         this.pageStack = TcuScreen.getIcon(this.pageKey);
         this.setFunction(btn -> {
             PlayerEntity player = Minecraft.getInstance().player;
-            ITurretEntity turret = gui instanceof TcuScreen ? ((TcuScreen) gui).getTurret() : null;
+            TcuScreen tcuScreen = ((TcuScreen) gui);
+            ITurretEntity turret = tcuScreen.getTurret();
             if( player != null && turret != null ) {
-                TurretControlUnit.openTcu(null, TurretControlUnit.getHeldTcu(player), turret, this.pageKey, false);
+                TurretControlUnit.openTcu(null, TurretControlUnit.getHeldTcu(player), turret, this.pageKey, false, tcuScreen.isRemote);
             }
         });
     }

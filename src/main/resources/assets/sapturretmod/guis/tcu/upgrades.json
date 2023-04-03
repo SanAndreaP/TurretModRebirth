@@ -29,6 +29,15 @@
   "foregroundElements": [
     {
       "type": "texture",
+      "id": "hideUpgrades0",
+      "pos": [7, 40],
+      "data": {
+        "size": [162, 18],
+        "uv": [94, 238]
+      }
+    },
+    {
+      "type": "texture",
       "id": "hideUpgrades1",
       "pos": [7, 58],
       "data": {

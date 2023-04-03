@@ -120,7 +120,7 @@ public class TurretControlUnit
                     if( player.isCrouching() ) {
                         bindTurret(heldStack, null);
                     } else if( player instanceof ServerPlayerEntity ) {
-                        openTcu((ServerPlayerEntity) player, heldStack, turret, PAGES.get(0), true);
+                        openTcu((ServerPlayerEntity) player, heldStack, turret, PAGES.get(0), true, true);
                     }
                 }
 
@@ -144,7 +144,7 @@ public class TurretControlUnit
                 if( player.isCrouching() ) {
                     bindTurret(stack, turret);
                 } else if( player instanceof ServerPlayerEntity ) {
-                    openTcu((ServerPlayerEntity) player, stack, turret, PAGES.get(0), true);
+                    openTcu((ServerPlayerEntity) player, stack, turret, PAGES.get(0), true, false);
                 }
             }
 
@@ -241,11 +241,10 @@ public class TurretControlUnit
         }
     }
 
-    public static void openTcu(@Nullable ServerPlayerEntity player, ItemStack stack, ITurretEntity turret, ResourceLocation type, boolean initial) {
+    public static void openTcu(@Nullable ServerPlayerEntity player, ItemStack stack, ITurretEntity turret, ResourceLocation type, boolean initial, boolean isRemote) {
         if( player == null || player.level.isClientSide ) {
-            TurretModRebirth.PROXY.openTcuGuiRemote(stack, turret, type, initial);
+            TurretModRebirth.PROXY.openTcuGuiRemote(stack, turret, type, initial, isRemote);
         } else {
-            boolean isRemote = isHeldTcuBoundToTurret(player, turret);
             NetworkHooks.openGui(player, new TcuContainerFactory.Provider(stack, turret, type, isRemote, initial), buf -> {
                 buf.writeVarInt(turret.get().getId());
                 buf.writeResourceLocation(type);

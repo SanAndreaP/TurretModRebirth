@@ -10,6 +10,7 @@ import dev.sanandrea.mods.turretmod.api.turret.ITurretEntity;
 import dev.sanandrea.mods.turretmod.api.turret.IUpgradeProcessor;
 import dev.sanandrea.mods.turretmod.entity.turret.UpgradeProcessor;
 import dev.sanandrea.mods.turretmod.item.upgrades.UpgradeRegistry;
+import dev.sanandrea.mods.turretmod.item.upgrades.Upgrades;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
@@ -28,7 +29,7 @@ public class TcuUpgradesContainer
         checkContainerSize(proc, UpgradeProcessor.SLOTS);
 
         for( int i = 0; i < UpgradeProcessor.SLOTS; ++i ) {
-            this.addSlot(new SlotUpgrade(proc, i, 8 + 18 * (i % 9), 41 + 18 * (i / 9)));
+            this.addSlot(new SlotUpgrade(proc, i, 8 + 18 * (i % 9), 41 + 18 * (i / 9), isRemote));
         }
 
         for( int i = 0; i < 27; ++i ) {
@@ -51,11 +52,11 @@ public class TcuUpgradesContainer
         ItemStack origStack = ItemStack.EMPTY;
         Slot      slot      = this.slots.get(slotId);
 
-        if( slot != null && slot.hasItem() ) {
+        if( slot != null && slot.hasItem() && canTransfer(this.turret.getUpgradeProcessor(), this.isRemote) ) {
             ItemStack slotStack = slot.getItem();
             origStack = slotStack.copy();
 
-            if( slotId < UpgradeProcessor.SLOTS ) { // if clicked stack is from TileEntity
+            if( slotId < UpgradeProcessor.SLOTS ) { // if clicked stack is from upgrade slots
                 if( !InventoryUtils.mergeItemStack(this, slotStack, UpgradeProcessor.SLOTS, UpgradeProcessor.SLOTS + 36, true, true,
                                                    (ois, nis, s) -> this.onSlotChange(nis, s, slotId)) )
                 { // merge into player inventory
@@ -86,16 +87,31 @@ public class TcuUpgradesContainer
         }
     }
 
+    private static boolean canTransfer(IUpgradeProcessor proc, boolean isRemote) {
+        return !isRemote || proc.hasUpgrade(Upgrades.REMOTE_ACCESS);
+    }
+
     private static class SlotUpgrade
             extends Slot
     {
-        public SlotUpgrade(IUpgradeProcessor proc, int id, int x, int y) {
+        private final IUpgradeProcessor proc;
+        private final boolean isRemote;
+
+        public SlotUpgrade(IUpgradeProcessor proc, int id, int x, int y, boolean isRemote) {
             super(proc, id, x, y);
+
+            this.proc = proc;
+            this.isRemote = isRemote;
         }
 
         @Override
         public boolean mayPlace(@Nonnull ItemStack stack) {
-            return this.container.canPlaceItem(this.index, stack);
+            return this.container.canPlaceItem(this.index, stack) && canTransfer(this.proc, this.isRemote);
+        }
+
+        @Override
+        public boolean mayPickup(@Nonnull PlayerEntity player) {
+            return super.mayPickup(player) && canTransfer(this.proc, this.isRemote);
         }
     }
 }

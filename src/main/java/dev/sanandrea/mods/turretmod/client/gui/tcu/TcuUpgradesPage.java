@@ -17,10 +17,12 @@ import java.io.IOException;
 public class TcuUpgradesPage
         extends JsonTcuPage
 {
-    GuiElementInst[] upgDisabledElements = new GuiElementInst[3];
+    GuiElementInst[] upgDisabledElements = new GuiElementInst[4];
+    private final boolean isRemote;
 
     public TcuUpgradesPage(ContainerScreen<TcuContainer> tcuScreen) {
         super(tcuScreen);
+        this.isRemote = ((TcuScreen) tcuScreen).isRemote;
     }
 
     @Override
@@ -35,9 +37,10 @@ public class TcuUpgradesPage
 
     @Override
     protected void initGd() {
-        this.upgDisabledElements[0] = this.guiDefinition.getElementById("hideUpgrades1");
-        this.upgDisabledElements[1] = this.guiDefinition.getElementById("hideUpgrades2");
-        this.upgDisabledElements[2] = this.guiDefinition.getElementById("hideUpgrades3");
+        this.upgDisabledElements[0] = this.guiDefinition.getElementById("hideUpgrades0");
+        this.upgDisabledElements[1] = this.guiDefinition.getElementById("hideUpgrades1");
+        this.upgDisabledElements[2] = this.guiDefinition.getElementById("hideUpgrades2");
+        this.upgDisabledElements[3] = this.guiDefinition.getElementById("hideUpgrades3");
 
         this.updateDisabledSlots();
     }
@@ -50,8 +53,9 @@ public class TcuUpgradesPage
     }
 
     private void updateDisabledSlots() {
-        this.upgDisabledElements[0].setVisible(!this.turret.getUpgradeProcessor().hasUpgrade(Upgrades.UPG_STORAGE_I));
-        this.upgDisabledElements[1].setVisible(!this.turret.getUpgradeProcessor().hasUpgrade(Upgrades.UPG_STORAGE_II));
-        this.upgDisabledElements[2].setVisible(!this.turret.getUpgradeProcessor().hasUpgrade(Upgrades.UPG_STORAGE_III));
+        this.upgDisabledElements[0].setVisible(this.isRemote && !this.turret.getUpgradeProcessor().hasUpgrade(Upgrades.REMOTE_ACCESS));
+        this.upgDisabledElements[1].setVisible(!this.turret.getUpgradeProcessor().hasUpgrade(Upgrades.UPG_STORAGE_I));
+        this.upgDisabledElements[2].setVisible(!this.turret.getUpgradeProcessor().hasUpgrade(Upgrades.UPG_STORAGE_II));
+        this.upgDisabledElements[3].setVisible(!this.turret.getUpgradeProcessor().hasUpgrade(Upgrades.UPG_STORAGE_III));
     }
 }

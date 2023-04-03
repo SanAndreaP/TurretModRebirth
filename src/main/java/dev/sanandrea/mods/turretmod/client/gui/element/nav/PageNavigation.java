@@ -90,7 +90,7 @@ public class PageNavigation
             GuiElementInst btn    = entry.getKey();
             ButtonNav      btnNav = btn.get(ButtonNav.class);
 
-            if( !MinecraftForge.EVENT_BUS.post(new TcuTabEvent.TabIconShow(gui, tcu.getTurret(), btnNav.pageKey)) ) {
+            if( !MinecraftForge.EVENT_BUS.post(new TcuTabEvent.TabIconShow(gui, tcu.getTurret(), btnNav.pageKey, tcu.isRemote)) ) {
                 this.currAvailableTabs++;
 
                 if( btnNav.order >= tabStartIdx && btnNav.order < tabStartIdx + this.maxTabsShown ) {

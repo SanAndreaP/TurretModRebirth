@@ -10,6 +10,7 @@ import dev.sanandrea.mods.turretmod.item.upgrades.delegate.Creative;
 import dev.sanandrea.mods.turretmod.item.upgrades.delegate.Economy;
 import dev.sanandrea.mods.turretmod.item.upgrades.delegate.Health;
 import dev.sanandrea.mods.turretmod.item.upgrades.delegate.ReloadTime;
+import dev.sanandrea.mods.turretmod.item.upgrades.delegate.RemoteAccess;
 import dev.sanandrea.mods.turretmod.item.upgrades.delegate.SimpleUpgrade;
 import dev.sanandrea.mods.turretmod.item.upgrades.delegate.leveling.Leveling;
 import dev.sanandrea.mods.turretmod.item.upgrades.delegate.shield.PersonalShield;
@@ -43,7 +44,7 @@ public class Upgrades
     public static final IUpgrade ENDER_TOXIN_II     = new SimpleUpgrade("ender_toxin_2", ENDER_TOXIN_I);
     public static final IUpgrade TURRET_SAFE        = new SimpleUpgrade("turret_safe");
     public static final IUpgrade LEVELING           = new Leveling();
-    public static final IUpgrade REMOTE_ACCESS      = new SimpleUpgrade("remote_access");
+    public static final IUpgrade REMOTE_ACCESS      = new RemoteAccess();
     public static final IUpgrade CREATIVE           = new Creative();
 
     public static void register(IUpgradeRegistry registry) {

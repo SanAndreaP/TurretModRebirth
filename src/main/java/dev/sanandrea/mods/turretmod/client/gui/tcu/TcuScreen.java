@@ -41,10 +41,13 @@ public class TcuScreen
     private final ITcuScreen       currScreen;
     private final ResourceLocation currPage;
 
+    public final boolean isRemote;
+
     public TcuScreen(TcuContainer tcuContainer, PlayerInventory playerInv, ITextComponent title) {
         super(tcuContainer, playerInv, title);
 
         this.currPage = tcuContainer.currPage;
+        this.isRemote = tcuContainer.isRemote;
         this.currScreen = MiscUtils.apply(PAGES.get(tcuContainer.currPage),
                                                  p -> this.guiDefinition != null
                                                       ? MiscUtils.get(p.apply(this), EMPTY_SCREEN)
