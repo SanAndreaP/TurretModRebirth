@@ -4,6 +4,7 @@
 [![Version][b_version]](https://github.com/SanAndreaP/TurretModRebirth/tags)
 [![Game][b_game]](https://minecraft.net)
 [![API][b_api]](https://files.minecraftforge.net)
+[![CurseForge project page](http://cf.way2muchnoise.eu/short_turret-mod-rebirth.svg)](https://www.curseforge.com/minecraft/mc-mods/turret-mod-rebirth)
 
 [![Twitter][b_twitter]](https://twitter.com/SanAndreaP)
 [![Mastodon][b_mastodon]](https://peoplemaking.games/@SanAndreaP)
@@ -23,7 +24,7 @@ Recipes not only require items for the craft, but also consume power. Either you
 
 For more information on this mod, you can take a look into the in-game documentation (the "Turret Lexicon") - if you have [Patchouli](https://www.curseforge.com/minecraft/mc-mods/patchouli) installed as well - or read the wiki (comin soon™).
 
-*Things to know:*
+### Things to know
 
 - Right-clicking a turret with ammunition loads it up; with a repair kit you can heal it.
 - You want to move your turret? The "Turret Control Unit" (TCU) lets you dismantle it! You'll need a "Turret Crate" (or a chest on older versions) in your inventory for that, though.
